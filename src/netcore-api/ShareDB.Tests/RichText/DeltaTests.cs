@@ -367,12 +367,172 @@ namespace ShareDB.RichText
             Assert.That(attr1, Is.EqualTo(attr2));
         }
 
-        private static IEnumerable<JToken> Objs(params object[] objs)
+        [Test]
+        public void Diff_Insert()
+        {
+            var a = Delta.New().Insert("A");
+            var b = Delta.New().Insert("AB");
+            var expected = Delta.New().Retain(1).Insert("B");
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_Delete()
+        {
+            var a = Delta.New().Insert("AB");
+            var b = Delta.New().Insert("A");
+            var expected = Delta.New().Retain(1).Delete(1);
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_Retain()
+        {
+            var a = Delta.New().Insert("A");
+            var b = Delta.New().Insert("A");
+            var expected = Delta.New();
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_Format()
+        {
+            var a = Delta.New().Insert("A");
+            var b = Delta.New().Insert("A", Obj(new { bold = true }));
+            var expected = Delta.New().Retain(1, Obj(new { bold = true }));
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_ObjectAttributes()
+        {
+            var a = Delta.New().Insert("A", Obj(new { font = new { family = "Helvetica", size = "15px" } }));
+            var b = Delta.New().Insert("A", Obj(new { font = new { family = "Helvetica", size = "15px" } }));
+            var expected = Delta.New();
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_EmbedIntegerMatch()
+        {
+            var a = Delta.New().Insert(1);
+            var b = Delta.New().Insert(1);
+            var expected = Delta.New();
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_EmbedIntegerMismatch()
+        {
+            var a = Delta.New().Insert(1);
+            var b = Delta.New().Insert(2);
+            var expected = Delta.New().Delete(1).Insert(2);
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_EmbedObjectMatch()
+        {
+            var a = Delta.New().Insert(Obj(new { image = "http://quilljs.com" }));
+            var b = Delta.New().Insert(Obj(new { image = "http://quilljs.com" }));
+            var expected = Delta.New();
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_EmbedObjectMismatch()
+        {
+            var a = Delta.New().Insert(Obj(new { image = "http://quilljs.com", alt = "Overwrite" }));
+            var b = Delta.New().Insert(Obj(new { image = "http://quilljs.com" }));
+            var expected = Delta.New().Insert(Obj(new { image = "http://quilljs.com" })).Delete(1);
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_EmbedObjectChange()
+        {
+            JObject embed = Obj(new { image = "http://quilljs.com" });
+            var a = Delta.New().Insert(embed);
+            embed["image"] = "http://github.com";
+            var b = Delta.New().Insert(embed);
+            var expected = Delta.New().Insert(Obj(new { image = "http://github.com" })).Delete(1);
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_EmbedFalsePositive()
+        {
+            var a = Delta.New().Insert(1);
+            var b = Delta.New().Insert("\0");
+            var expected = Delta.New().Insert("\0").Delete(1);
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_ThrowsOnNonDocuments()
+        {
+            var a = Delta.New().Insert("A");
+            var b = Delta.New().Retain(1).Insert("B");
+            Assert.That(() => a.Diff(b), Throws.InvalidOperationException);
+            Assert.That(() => b.Diff(a), Throws.InvalidOperationException);
+        }
+
+        [Test]
+        public void Diff_InconvenientIndices()
+        {
+            var a = Delta.New().Insert("12", Obj(new { bold = true })).Insert("34", Obj(new { italic = true }));
+            var b = Delta.New().Insert("123", Obj(new { color = "red" }));
+            var expected = Delta.New()
+                .Retain(2, Obj(new { bold = (bool?) null, color = "red" }))
+                .Retain(1, Obj(new { italic = (bool?) null, color = "red" }))
+                .Delete(1);
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_Combination()
+        {
+            var a = Delta.New().Insert("Bad", Obj(new { color = "red" })).Insert("cat", Obj(new { color = "blue" }));
+            var b = Delta.New().Insert("Good", Obj(new { bold = true })).Insert("dog", Obj(new { italic = true }));
+            var expected = Delta.New()
+                .Insert("Good", Obj(new { bold = true }))
+                .Delete(2)
+                .Retain(1, Obj(new { italic = true, color = (string) null }))
+                .Delete(3)
+                .Insert("og", Obj(new { italic = true }));
+            Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_SameDocument()
+        {
+            var a = Delta.New().Insert("A").Insert("B", Obj(new { bold = true }));
+            var expected = Delta.New();
+            Assert.That(a.Diff(a), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+        }
+
+        [Test]
+        public void Diff_Immutability()
+        {
+            JToken attr1 = Obj(new { color = "red" });
+            JToken attr2 = Obj(new { color = "red" });
+            var a1 = Delta.New().Insert("A", attr1);
+            var a2 = Delta.New().Insert("A", attr1);
+            var b1 = Delta.New().Insert("A", Obj(new { bold = true })).Insert("B");
+            var b2 = Delta.New().Insert("A", Obj(new { bold = true })).Insert("B");
+            var expected = Delta.New().Retain(1, Obj(new { bold = true, color = (string) null })).Insert("B");
+            Assert.That(a1.Diff(b1), Is.EqualTo(expected).Using(Delta.EqualityComparer));
+            Assert.That(a1, Is.EqualTo(a2).Using(Delta.EqualityComparer));
+            Assert.That(b1, Is.EqualTo(b2).Using(Delta.EqualityComparer));
+            Assert.That(attr1, Is.EqualTo(attr2));
+        }
+
+        private static IEnumerable<JObject> Objs(params object[] objs)
         {
             return objs.Select(Obj);
         }
 
-        private static JToken Obj(object obj)
+        private static JObject Obj(object obj)
         {
             return JObject.FromObject(obj);
         }

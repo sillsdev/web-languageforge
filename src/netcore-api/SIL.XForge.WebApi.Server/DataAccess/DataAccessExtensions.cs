@@ -18,10 +18,10 @@ namespace SIL.XForge.WebApi.Server.DataAccess
 {
     public static class DataAccessExtensions
     {
-        public static IRepository<T> Get<T>(this IProjectRepositoryFactory<T> factory, Project project)
+        public static IRepository<T> Create<T>(this IProjectRepositoryFactory<T> factory, Project project)
             where T : IEntity
         {
-            return factory.Get(project.ProjectCode);
+            return factory.Create(project.ProjectCode);
         }
 
         public static Task<T> UpdateAsync<T>(this IRepository<T> repo, T entity,
@@ -71,11 +71,28 @@ namespace SIL.XForge.WebApi.Server.DataAccess
                 {
                     cm.SetDiscriminator("translate");
                 }, true);
+            services.AddMongoProjectRepositoryFactory<TranslateDocumentSet>("translate");
             return services;
         }
 
         private static void AddMongoRepository<T>(this IServiceCollection services, string collectionName,
             Action<BsonClassMap<T>> setup = null, bool subClass = false) where T : IEntity
+        {
+            RegisterEntity<T>(setup, subClass);
+            services.AddSingleton<IRepository<T>>(sp =>
+                new MongoRepository<T>(sp.GetService<IMongoClient>().GetDatabase("scriptureforge")
+                    .GetCollection<T>(collectionName)));
+        }
+
+        private static void AddMongoProjectRepositoryFactory<T>(this IServiceCollection services, string collectionName,
+            Action<BsonClassMap<T>> setup = null, bool subClass = false) where T : IEntity
+        {
+            RegisterEntity<T>(setup, subClass);
+            services.AddSingleton<IProjectRepositoryFactory<T>>(sp =>
+                new MongoProjectRepositoryFactory<T>(sp.GetService<IMongoClient>(), collectionName));
+        }
+
+        private static void RegisterEntity<T>(Action<BsonClassMap<T>> setup, bool subClass) where T : IEntity
         {
             BsonClassMap.RegisterClassMap<T>(cm =>
                 {
@@ -88,9 +105,6 @@ namespace SIL.XForge.WebApi.Server.DataAccess
                     }
                     setup?.Invoke(cm);
                 });
-            services.AddSingleton<IRepository<T>>(sp =>
-                new MongoRepository<T>(sp.GetService<IMongoClient>().GetDatabase("scriptureforge")
-                    .GetCollection<T>(collectionName)));
         }
     }
 }

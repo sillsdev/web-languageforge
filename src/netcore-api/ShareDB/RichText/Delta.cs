@@ -2,6 +2,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace ShareDB.RichText
 {
@@ -122,6 +123,58 @@ namespace ShareDB.RichText
             return delta.Chop();
         }
 
+        public Delta Diff(Delta other)
+        {
+            if (this == other)
+                return new Delta();
+
+            if (!TryConcatInserts(this, out string thisStr) || !TryConcatInserts(other, out string otherStr))
+                throw new InvalidOperationException("Both deltas must be documents.");
+
+            var delta = new Delta();
+            List<Diff> diffResult = Differ.Compute(thisStr, otherStr);
+            var thisIter = new OpIterator(this.Ops);
+            var otherIter = new OpIterator(other.Ops);
+            foreach (Diff component in diffResult)
+            {
+                int length = component.Text.Length;
+                while (length > 0)
+                {
+                    int opLength = 0;
+                    switch (component.Operation)
+                    {
+                        case Operation.Insert:
+                            opLength = Math.Min(otherIter.PeekLength(), length);
+                            delta.Add(otherIter.Next(opLength));
+                            break;
+
+                        case Operation.Delete:
+                            opLength = Math.Min(length, thisIter.PeekLength());
+                            thisIter.Next(opLength);
+                            delta.Delete(opLength);
+                            break;
+
+                        case Operation.Equal:
+                            opLength = Math.Min(Math.Min(thisIter.PeekLength(), otherIter.PeekLength()), length);
+                            JToken thisOp = thisIter.Next(opLength);
+                            JToken otherOp = otherIter.Next(opLength);
+                            if (JToken.DeepEquals(thisOp[InsertType], otherOp[InsertType]))
+                            {
+                                delta.Retain(opLength, DiffAttributes(thisOp[Attributes], otherOp[Attributes]));
+                            }
+                            else
+                            {
+                                delta.Add(otherOp);
+                                delta.Delete(opLength);
+                            }
+                            break;
+                    }
+                    length -= opLength;
+                }
+            }
+            return delta.Chop();
+        }
+
         public int GetLength()
         {
             return _ops.Sum(op => op.OpLength());
@@ -198,6 +251,38 @@ namespace ShareDB.RichText
                     attributes.Add(prop);
             }
 
+            return attributes.HasValues ? attributes : null;
+        }
+
+        private static bool TryConcatInserts(Delta delta, out string str)
+        {
+            var sb = new StringBuilder();
+            foreach (JToken op in delta.Ops)
+            {
+                if (op[InsertType] != null)
+                {
+                    sb.Append(op[InsertType]?.Type == JTokenType.String ? (string) op[InsertType] : "\0");
+                }
+                else
+                {
+                    str = null;
+                    return false;
+                }
+            }
+            str = sb.ToString();
+            return true;
+        }
+
+        private static JToken DiffAttributes(JToken a, JToken b)
+        {
+            JObject aObj = a?.Type == JTokenType.Object ? (JObject) a : new JObject();
+            JObject bObj = b?.Type == JTokenType.Object ? (JObject) b : new JObject();
+            JObject attributes = aObj.Properties().Select(p => p.Name).Concat(bObj.Properties().Select(p => p.Name))
+                .Aggregate(new JObject(), (attrs, key) => {
+                    if (!JToken.DeepEquals(aObj[key], bObj[key]))
+                        attrs[key] = bObj[key] == null ? JValue.CreateNull() : bObj[key];
+                    return attrs;
+                });
             return attributes.HasValues ? attributes : null;
         }
 
