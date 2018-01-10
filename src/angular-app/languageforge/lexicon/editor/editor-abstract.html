@@ -1,7 +1,7 @@
 <div data-ng-cloak id="lexAppContainer">
     <div class="row">
         <div class="col-12">
-            <div class="lexAppToolbar" data-ng-show="!$state.is('editor.list')">
+            <div class="lexAppToolbar" id="lexAppToolbar" data-ng-show="!$state.is('editor.list')">
                 <div class="float-left">
                     <a id="toListLink" data-ng-show="$state.is('editor.entry')" class="btn btn-std"
                        data-ng-click="returnToList()"
