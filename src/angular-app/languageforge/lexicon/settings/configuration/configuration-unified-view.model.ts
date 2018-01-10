@@ -8,7 +8,7 @@ import {OptionSelects} from './option-selects.model';
 
 export class ConfigurationUnifiedViewModel {
   // Group labels
-  groupLabels: string[];
+  groupLists: GroupList[];
 
   // Settings objects for Input System
   inputSystems: InputSystemSettings[];
@@ -36,10 +36,51 @@ export class ConfigurationUnifiedViewModel {
       }
     }
 
-    this.groupLabels = ConfigurationUnifiedViewModel.setGroupLabels(config, users);
+    this.groupLists = ConfigurationUnifiedViewModel.setGroupLists(config, users);
 
     console.log('inputSystems', this.inputSystems);
     console.log('entryFields', this.entryFields, 'senseFields', this.senseFields, 'exampleFields', this.exampleFields);
+  }
+
+  updateConfig(config: LexiconConfig) {
+    const entryConfig = config.entry;
+    ConfigurationUnifiedViewModel.fieldsToConfig(this.entryFields, config, entryConfig, this.groupLists);
+    if ('senses' in entryConfig.fields) {
+      const sensesConfig = entryConfig.fields.senses as LexConfigFieldList;
+      ConfigurationUnifiedViewModel.fieldsToConfig(this.senseFields, config, sensesConfig, this.groupLists);
+      if ('examples' in sensesConfig.fields) {
+        const examplesConfig = sensesConfig.fields.examples as LexConfigFieldList;
+        ConfigurationUnifiedViewModel.fieldsToConfig(this.exampleFields, config, examplesConfig, this.groupLists);
+      }
+    }
+  }
+
+  private static fieldsToConfig(fields: FieldSettings[], config: LexiconConfig, configFields: LexConfigFieldList,
+                                groupLists: GroupList[]) {
+
+    for (const field of fields) {
+      const configField = configFields.fields[field.fieldName];
+
+      // from setLevelViewModel
+      configField.label = field.name;
+      configField.hideIfEmpty = field.hiddenIfEmpty;
+
+      // from setLevelRoleSettings
+      const roleType = new RoleType();
+      for (const role of RoleType.roles()) {
+        const roleView: LexRoleViewConfig = config.roleViews[roleType[role]];
+        if (roleView != null && roleView.fields != null) {
+          roleView.fields[field.fieldName].show = field[role];
+        }
+      }
+
+      // from setLevelGroupSettings
+      for (let i = 0; i < groupLists.length; i++) {
+        const groupList = groupLists[i];
+        config.userViews[groupList.userId].fields[field.fieldName].show = field.groups[i].show;
+      }
+
+    }
   }
 
   private static setInputSystemViewModel(config: LexiconConfig): InputSystemSettings[] {
@@ -109,7 +150,7 @@ export class ConfigurationUnifiedViewModel {
     for (const fieldName of levelConfig.fieldOrder) {
       if (levelConfig.fields[fieldName].type !== 'fields') {
         const fieldSettings = new FieldSettings();
-		fieldSettings.fieldName = fieldName;
+        fieldSettings.fieldName = fieldName;
         fieldSettings.name = levelConfig.fields[fieldName].label;
         fieldSettings.hiddenIfEmpty = levelConfig.fields[fieldName].hideIfEmpty;
         ConfigurationUnifiedViewModel.setLevelRoleSettings(fieldName, config, fieldSettings);
@@ -145,18 +186,16 @@ export class ConfigurationUnifiedViewModel {
     }
   }
 
-  private static setGroupLabels(config: LexiconConfig, users: { [userId: string]: User }): string[] {
-    const groupLabels: string[] = [];
+  private static setGroupLists(config: LexiconConfig, users: { [userId: string]: User }): GroupList[] {
+    const groupLists: GroupList[] = [];
     let groupIndex = 0;
     for (const userId in config.userViews) {
-      if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null
-        && (userId in users)
-      ) {
-        groupLabels[groupIndex++] = users[userId].username;
+      if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null && (userId in users)) {
+        groupLists[groupIndex++] = new GroupList(users[userId].username, userId);
       }
     }
 
-    return groupLabels;
+    return groupLists;
   }
 
 }
@@ -176,8 +215,8 @@ export class InputSystemSettings {
 }
 
 export class FieldSettings extends InputSystemSettings {
-  hiddenIfEmpty: boolean;
   fieldName: string;
+  hiddenIfEmpty: boolean;
 }
 
 export class RoleType {
@@ -188,5 +227,15 @@ export class RoleType {
 
   static roles(): string[] {
     return ['observer', 'commenter', 'contributor', 'manager'];
+  }
+}
+
+export class GroupList {
+  label: string;
+  userId: string;
+
+  constructor(label: string, userId: string) {
+    this.label = label;
+    this.userId = userId;
   }
 }

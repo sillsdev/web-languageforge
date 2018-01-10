@@ -11,7 +11,7 @@
                 <th class="text-center">Commenter</th>
                 <th class="text-center">Contributor</th>
                 <th class="text-center">Manager</th>
-                <th class="text-center" data-ng-repeat="groupLabel in $ctrl.unifiedViewModel.groupLabels">{{groupLabel}}</th>
+                <th class="text-center" data-ng-repeat="groupList in $ctrl.unifiedViewModel.groupLists">{{groupList.label}}</th>
                 <th>
                     <button type="button" class="btn btn-std">
                             <i class="fa fa-plus"></i>
@@ -34,7 +34,7 @@
                 </tr>
                 <tr data-ng-repeat="inputSystem in $ctrl.unifiedViewModel.inputSystems">
                     <th class="text-center table-secondary" ></th>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.hiddenIfEmpty" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"></td>
                     <td class="text-center">{{inputSystem.name}}</td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.isAllRowSelected" data-ng-click="$ctrl.selectAll($index)" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.observer" data-ng-click="$ctrl.checkIfAllSelected($index)" aria-label="..." type="checkbox"></td>
