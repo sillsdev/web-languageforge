@@ -12,7 +12,7 @@
                 <th class="text-center">Contributor</th>
                 <th class="text-center">Manager</th>
                 <th class="text-center" data-ng-repeat="groupLabel in $ctrl.unifiedViewModel.groupLabels">{{groupLabel}}</th>
-                <th>                       
+                <th>
                     <button type="button" class="btn btn-std">
                             <i class="fa fa-plus"></i>
                     </button>
@@ -32,20 +32,20 @@
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td class="text-center" data-ng-repeat="group in $ctrl.unifiedViewModel.inputSystems[0].groups"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                 </tr>
-                <tr data-ng-repeat="inputSystems in $ctrl.unifiedViewModel.inputSystems">
+                <tr data-ng-repeat="inputSystem in $ctrl.unifiedViewModel.inputSystems">
                     <th class="text-center table-secondary" ></th>
-                    <td class="text-center"></td>
-                    <td class="text-center">{{inputSystems.name}}</td>
-                    <td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystems.observer" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystems.commenter" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystems.contributor" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystems.manager" aria-label="..." type="checkbox"></td>
-                    <td class="text-center" data-ng-repeat="group in inputSystems.groups"><input class="form-check-input position-static" data-ng-model="group" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.hiddenIfEmpty" aria-label="..." type="checkbox"></td>
+                    <td class="text-center">{{inputSystem.name}}</td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.isAllRowSelected" data-ng-click="$ctrl.selectAll($index)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.observer" data-ng-click="$ctrl.checkIfAllSelected($index)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.commenter" data-ng-click="$ctrl.checkIfAllSelected($index)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.contributor" data-ng-click="$ctrl.checkIfAllSelected($index)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.manager" data-ng-click="$ctrl.checkIfAllSelected($index)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center" data-ng-repeat="group in inputSystem.groups"><input class="form-check-input position-static" data-ng-model="group.show" data-ng-click="$ctrl.checkIfAllSelected($parent.$index)" aria-label="..." type="checkbox"></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <th class="text-center table-secondary">                        
+                    <th class="text-center table-secondary">
                         <button type="button" class="btn btn-std">
                             <i class="fa fa-plus"></i>
                         </button>
@@ -65,7 +65,7 @@
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
-                    <td class="text-center" data-ng-repeat="group in $ctrl.unifiedViewModel.entryFields[0].groups"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+                    <td class="text-center" data-ng-repeat="group in $ctrl.unifiedViewModel.entryFields[0].groups"><input class="form-check-input position-static" data-ng-model="group.show" aria-label="..." type="checkbox"></td>
                     <td></td>
                 </tr>
                 <tr data-ng-repeat="entryField in $ctrl.unifiedViewModel.entryFields">
@@ -77,7 +77,7 @@
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.commenter" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.contributor" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.manager" aria-label="..." type="checkbox"></td>
-                    <td class="text-center" data-ng-repeat="group in entryField.groups"><input class="form-check-input position-static" data-ng-model="group" aria-label="..." type="checkbox"></td>
+                    <td class="text-center" data-ng-repeat="group in entryField.groups"><input class="form-check-input position-static" data-ng-model="group.show" aria-label="..." type="checkbox"></td>
                     <td></td>
                 </tr>
                 <tr>
@@ -106,7 +106,7 @@
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.commenter" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.contributor" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.manager" aria-label="..." type="checkbox"></td>
-                    <td class="text-center" data-ng-repeat="group in senseField.groups"><input class="form-check-input position-static" data-ng-model="group" aria-label="..." type="checkbox"></td>
+                    <td class="text-center" data-ng-repeat="group in senseField.groups"><input class="form-check-input position-static" data-ng-model="group.show" aria-label="..." type="checkbox"></td>
                     <td></td>
                 </tr>
                 <tr>
@@ -135,13 +135,13 @@
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.commenter" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.contributor" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.manager" aria-label="..." type="checkbox"></td>
-                    <td data-ng-repeat="group in exampleField.groups" class="text-center"><input class="form-check-input position-static" data-ng-model="group" aria-label="..." type="checkbox"></td>
+                    <td data-ng-repeat="group in exampleField.groups" class="text-center"><input class="form-check-input position-static" data-ng-model="group.show" aria-label="..." type="checkbox"></td>
                     <td></td>
                 </tr>
                 <tr>
                     <td class="text-center table-secondary"><small data-translate="Custom Fields shown in <i>italics</i>"></small></td>
                 </tr>
-                <tr>    
+                <tr>
                     <th class="text-center table-secondary">
                         <button type="button" class="btn btn-std">
                             <i class="fa fa-plus"></i>
