@@ -13,7 +13,7 @@ function LexModals() {
     lastLanguageName: this.modalBodyDiv
       .all(by.repeater('language in languages').column('name')).last(),
     clearSearchButton: this.modalBodyDiv.element(by.id('clearSearch')),
-    addButton: this.modalFooterDiv.element(by.partialButtonText('Add'))
+    addButton: this.modalFooterDiv.element(by.id('select-language-add-btn'))
   };
   this.selectLanguage.firstLanguageRow = this.selectLanguage.languageRows.first();
   this.selectLanguage.lastLanguageRow = this.selectLanguage.languageRows.last();
@@ -25,7 +25,7 @@ function LexModals() {
     levelDropdown: element(by.id('level')),
     typeDropdown: element(by.id('type')),
     listCodeDropdown: element(by.id('optionListCode')),
-    addButton: element(by.css('.modal-footer')).element(by.partialButtonText('Add'))
+    addButton: element(by.id('addCustomFieldButton'))
   };
 
 }
