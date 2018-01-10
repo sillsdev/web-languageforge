@@ -17,18 +17,20 @@
     <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
         <div class="form-row align-items-center">
             <div class="col-auto">
-                <button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn btn-std" data-ng-click="archiveTexts()">
+                <button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn btn-std"
+                        id="project-archive-text-btn" data-ng-click="archiveTexts()">
                     <i class="fa fa-archive fa-lg"></i> Archive Texts</button>
             </div>
             <div class="col-auto">
-                <button data-ng-show="rights.create" class="btn btn-primary" data-ng-click="newTextCollapsed = !newTextCollapsed">
+                <button data-ng-show="rights.create" class="btn btn-primary" id="project-add-new-btn"
+                        data-ng-click="newTextCollapsed = !newTextCollapsed">
                     <i class="fa fa-plus"></i> Add New Text</button>
             </div>
         </div>
     </form>
     <div uib-collapse="newTextCollapsed">
         <div class="card new-text">
-            <form class="card-body row" name="newTextForm">
+            <form class="card-body row" name="newTextForm" id="project-new-text-form">
                 <div class="col-sm-6">
                     <div>
                         <div class="form-group">
@@ -85,7 +87,7 @@
                     <br>
                 </fieldset>
                 <div class="col-12 clearfix">
-                    <button type="submit" class="btn btn-primary" data-ng-disabled="newTextForm.$invalid"
+                    <button type="submit" class="btn btn-primary" data-ng-disabled="newTextForm.$invalid" id="project-save-btn"
                             data-ng-click="addText(); newTextCollapsed = true"><i class="fa fa-check"></i> Save</button>
                 </div>
             </form>
