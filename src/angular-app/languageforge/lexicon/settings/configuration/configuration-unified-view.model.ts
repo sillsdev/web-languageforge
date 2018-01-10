@@ -93,7 +93,8 @@ export class ConfigurationUnifiedViewModel {
           if (config.userViews[userId].fields.hasOwnProperty(fieldName)) {
             const multiTextField = config.userViews[userId].fields[fieldName] as LexViewMultiTextFieldConfig;
             if (multiTextField.overrideInputSystems) {
-              inputSystemSettings.groups[groupIndex++] = multiTextField.inputSystems.includes(tag);
+              inputSystemSettings.groups[groupIndex] = new Group();
+              inputSystemSettings.groups[groupIndex++].show = multiTextField.inputSystems.includes(tag);
               break;
             }
           }
@@ -138,7 +139,8 @@ export class ConfigurationUnifiedViewModel {
       if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null &&
         config.userViews[userId].fields != null
       ) {
-        fieldSettings.groups[groupIndex++] = config.userViews[userId].fields[fieldName].show;
+        fieldSettings.groups[groupIndex] = new Group();
+        fieldSettings.groups[groupIndex++].show = config.userViews[userId].fields[fieldName].show;
       }
     }
   }
@@ -159,13 +161,18 @@ export class ConfigurationUnifiedViewModel {
 
 }
 
+export class Group {
+  show: boolean;
+}
+
 export class InputSystemSettings {
   name: string;
   observer: boolean;
   commenter: boolean;
   contributor: boolean;
   manager: boolean;
-  groups: boolean[] = [];
+  groups: Group[] = [];
+  isAllRowSelected: boolean;
 }
 
 export class FieldSettings extends InputSystemSettings {
@@ -173,7 +180,7 @@ export class FieldSettings extends InputSystemSettings {
   fieldName: string;
 }
 
-class RoleType {
+export class RoleType {
   observer: string = 'observer';
   commenter: string = 'observer_with_comment';
   contributor: string = 'contributor';

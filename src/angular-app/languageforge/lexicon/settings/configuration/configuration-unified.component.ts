@@ -6,7 +6,7 @@ import {LexiconConfigService} from '../../core/lexicon-config.service';
 import {LexConfigField, LexiconConfig} from '../../shared/model/lexicon-config.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
 import {Field} from './configuration-fields.component';
-import {ConfigurationUnifiedViewModel} from './configuration-unified-view.model';
+import {ConfigurationUnifiedViewModel, InputSystemSettings, RoleType} from './configuration-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 
 export class UnifiedConfigurationController implements angular.IController {
@@ -15,17 +15,18 @@ export class UnifiedConfigurationController implements angular.IController {
   uccConfigDirty: LexiconConfig;
   uccInputSystemViewModels: { [inputSystemId: string]: ConfigurationInputSystemsViewModel };
   uccInputSystemsList: ConfigurationInputSystemsViewModel[];
-  uccUsers: { [userId: string]: User };
-  readonly uccConfigPristine: LexiconConfig;
+  uccUsers: { [userId: string]: User };readonly uccConfigPristine: LexiconConfig;
   readonly uccOptionLists: LexOptionList[];
   uccSelectField: (params: { fieldName: string }) => void;
   uccOnUpdate: (params: { $event: { configDirty: LexiconConfig } }) => void;
 
   unifiedViewModel: ConfigurationUnifiedViewModel;
+
   isCustomField = LexiconConfigService.isCustomField;
-  
+
   static $inject: string[] = ['$scope', '$uibModal'];
-  constructor(private $scope: angular.IScope, private $modal: ModalService) { }
+  constructor(private $scope: angular.IScope, private $modal: ModalService) {
+  }
 
   $onChanges(changes: any) {
     const configChange = changes.uccConfigDirty as angular.IChangesObject<LexiconConfig>;
@@ -35,6 +36,38 @@ export class UnifiedConfigurationController implements angular.IController {
       this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.uccConfigDirty, this.uccUsers);
     }
   }
+
+  selectAll(index: number): void {
+    const roles = RoleType.roles();
+    for (const role of roles) {
+      this.unifiedViewModel.inputSystems[index][role] = this.unifiedViewModel.inputSystems[index].isAllRowSelected;
+    }
+    for (const group of this.unifiedViewModel.inputSystems[index].groups) {
+      group.show = this.unifiedViewModel.inputSystems[index].isAllRowSelected;
+    }
+  }
+
+  checkIfAllSelected(index: number): void {
+    console.log(index);
+    const roles = RoleType.roles();
+
+    this.unifiedViewModel.inputSystems[index].isAllRowSelected = true;
+    for (const role of roles) {
+      if (!this.unifiedViewModel.inputSystems[index][role]) {
+        this.unifiedViewModel.inputSystems[index].isAllRowSelected = false;
+        break;
+      }
+    }
+    if (this.unifiedViewModel.inputSystems[index].isAllRowSelected) {
+      for (const group of this.unifiedViewModel.inputSystems[index].groups) {
+        if (!group.show) {
+          this.unifiedViewModel.inputSystems[index].isAllRowSelected = false;
+          break;
+        }
+      }
+    }
+  }
+
 }
 
 export const UnifiedConfigurationComponent: angular.IComponentOptions = {
