@@ -24,8 +24,6 @@ elif [ "$1" = "xf" ]
     gulp test-e2e-teardownTestEnvironment    #need to do this before switching hostname
     E2EHOSTNAME="scriptureforge.local"
     gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --excludeBellows
-
-
 elif [ "$1" = "jp" ]
   then
     E2EHOSTNAME="jamaicanpsalms.scriptureforge.local"
