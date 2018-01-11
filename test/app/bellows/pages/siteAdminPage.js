@@ -11,7 +11,6 @@ function SiteAdminPage() {
     browser.get(this.url);
   };
 
-  this.tabDivs = element.all(by.className('tab-pane'));
   this.activePane = element(by.css('div.tab-pane.active'));
 
   this.tabs = {
@@ -19,10 +18,8 @@ function SiteAdminPage() {
     archivedProjects: element(by.id('archivedprojects'))
   };
 
-  this.tabs.archivedProjects.republishButton =
-    this.activePane.element(by.id('site-admin-republish-btn'));
-  this.tabs.archivedProjects.deleteButton =
-    this.activePane.element(by.id('site-admin-delete-btn'));
+  this.tabs.archivedProjects.republishButton = element(by.id('site-admin-republish-btn'));
+  this.tabs.archivedProjects.deleteButton = element(by.id('site-admin-delete-btn'));
   this.tabs.archivedProjects.projectsList =
     element.all(by.repeater('project in visibleProjects'));
   this.tabs.archivedProjects.setCheckbox = function (row, value) {
