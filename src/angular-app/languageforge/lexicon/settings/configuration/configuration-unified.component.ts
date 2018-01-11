@@ -22,7 +22,8 @@ export class UnifiedConfigurationController implements angular.IController {
   uccOnUpdate: (params: { $event: { configDirty: LexiconConfig } }) => void;
 
   unifiedViewModel: ConfigurationUnifiedViewModel;
-
+  isCustomField = LexiconConfigService.isCustomField;
+  
   static $inject: string[] = ['$scope', '$uibModal'];
   constructor(private $scope: angular.IScope, private $modal: ModalService) { }
 
