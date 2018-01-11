@@ -733,7 +733,7 @@ gulp.task('test-e2e-local-lf', gulp.series(
 );
 
 gulp.task('test-e2e-compile', function(cb) {
-  return execute('cd test/app; ../../node_modules/typescript/bin/tsc', null, cb);
+  return execute('node_modules/typescript/bin/tsc -p test/app', null, cb);
 });
 
 // -------------------------------------
