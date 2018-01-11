@@ -14,6 +14,28 @@ if [ "$1" = "lf" ]
 elif [ "$1" = "sf" ]
   then
     E2EHOSTNAME="scriptureforge.local"
+elif [ "$1" = "xf" ]
+#run both lf and sf tests, but don't repeat the tests common to both
+  then
+    #run bellows and LF tests
+    E2EHOSTNAME="languageforge.local"
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
+    gulp test-e2e-teardownTestEnvironment
+    #run SF specific tests
+    E2EHOSTNAME="scriptureforge.local"
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --specs activity
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --specs project
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --specs projectSettings
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --specs question
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --specs text
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --specs textSettings
+
+    # Ensure cleanup
+    gulp test-e2e-teardownTestEnvironment
+    gulp test-e2e-useLiveConfig
+    gulp test-restart-webserver
+    exit $STATUS
+
 elif [ "$1" = "jp" ]
   then
     E2EHOSTNAME="jamaicanpsalms.scriptureforge.local"
