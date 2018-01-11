@@ -108,6 +108,7 @@ export class ConfigurationUnifiedViewModel {
     for (const fieldName of levelConfig.fieldOrder) {
       if (levelConfig.fields[fieldName].type !== 'fields') {
         const fieldSettings = new FieldSettings();
+		fieldSettings.fieldName = fieldName;
         fieldSettings.name = levelConfig.fields[fieldName].label;
         fieldSettings.hiddenIfEmpty = levelConfig.fields[fieldName].hideIfEmpty;
         ConfigurationUnifiedViewModel.setLevelRoleSettings(fieldName, config, fieldSettings);
@@ -169,6 +170,7 @@ export class InputSystemSettings {
 
 export class FieldSettings extends InputSystemSettings {
   hiddenIfEmpty: boolean;
+  fieldName: string;
 }
 
 class RoleType {

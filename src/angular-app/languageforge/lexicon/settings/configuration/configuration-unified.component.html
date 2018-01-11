@@ -1,6 +1,6 @@
 <!-- Table responsive as an experiment to proportion the table, if bothersome remove -->
 <div class="form-check row table-responsive-sm">
-    <table class="table table-striped">
+    <table class="table table-striped table-sm">
         <thead>
             <tr class="table-secondary">
                 <th class="text-center"></th>
@@ -12,7 +12,11 @@
                 <th class="text-center">Contributor</th>
                 <th class="text-center">Manager</th>
                 <th class="text-center" data-ng-repeat="groupLabel in $ctrl.unifiedViewModel.groupLabels">{{groupLabel}}</th>
-                <th><button type="button" class="btn btn-light">+</button></th>
+                <th>                       
+                    <button type="button" class="btn btn-std">
+                            <i class="fa fa-plus"></i>
+                    </button>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -31,7 +35,7 @@
                 <tr data-ng-repeat="inputSystems in $ctrl.unifiedViewModel.inputSystems">
                     <th class="text-center table-secondary" ></th>
                     <td class="text-center"></td>
-                    <th class="text-center">{{inputSystems.name}}</th>
+                    <td class="text-center">{{inputSystems.name}}</td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystems.observer" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystems.commenter" aria-label="..." type="checkbox"></td>
@@ -41,7 +45,11 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <th class="text-center table-secondary"><button type="button" class="btn btn-light">+</button></th>
+                    <th class="text-center table-secondary">                        
+                        <button type="button" class="btn btn-std">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </th>
                 </tr>
                 <tr>
                     <th class="text-center table-secondary"></th>
@@ -63,7 +71,7 @@
                 <tr data-ng-repeat="entryField in $ctrl.unifiedViewModel.entryFields">
                     <th class="text-center table-secondary" ></th>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.hiddenIfEmpty" aria-label="..." type="checkbox"></td>
-                    <th class="text-center">{{entryField.name}}</th>
+                    <td class="text-center" data-ng-style="{'font-style': $ctrl.isCustomField(entryField.fieldName) ? 'italic' : 'normal'}">{{entryField.name}}</td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.observer" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.commenter" aria-label="..." type="checkbox"></td>
@@ -92,7 +100,7 @@
                 <tr data-ng-repeat="senseField in $ctrl.unifiedViewModel.senseFields">
                     <th class="text-center table-secondary" ></th>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.hiddenIfEmpty" aria-label="..." type="checkbox"></td>
-                    <th class="text-center">{{senseField.name}}</th>
+                    <td class="text-center" data-ng-style="{'font-style': $ctrl.isCustomField(senseField.fieldName) ? 'italic' : 'normal'}">{{senseField.name}}</td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.observer" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.commenter" aria-label="..." type="checkbox"></td>
@@ -121,7 +129,7 @@
                 <tr data-ng-repeat="exampleField in $ctrl.unifiedViewModel.exampleFields">
                     <th class="text-center table-secondary"></th>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.hiddenIfEmpty" aria-label="..."  type="checkbox"></td>
-                    <th class="text-center">{{exampleField.name}}</th>
+                    <td class="text-center" data-ng-style="{'font-style': $ctrl.isCustomField(exampleField.fieldName) ? 'italic' : 'normal'}">{{exampleField.name}}</td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.observer" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.commenter" aria-label="..." type="checkbox"></td>
@@ -131,7 +139,14 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <th class="text-center table-secondary"><button type="button" class="btn btn-light">+</button></th>
+                    <td class="text-center table-secondary"><small data-translate="Custom Fields shown in <i>italics</i>"></small></td>
+                </tr>
+                <tr>    
+                    <th class="text-center table-secondary">
+                        <button type="button" class="btn btn-std">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </th>
                 </tr>
             </tr>
         </tbody>
