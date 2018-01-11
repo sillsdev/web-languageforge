@@ -4,7 +4,7 @@
     <div class="col-md-3 form-group">
         <!-- control buttons -->
         <div class="form-group">
-            <button data-ng-click="$ctrl.showAllFields = !$ctrl.showAllFields" class="btn btn-sm">
+            <button data-ng-click="$ctrl.showAllFields = !$ctrl.showAllFields" class="btn btn-sm" id="configuration-show-fields-btn">
                 <i data-ng-class="'fa ' + ($ctrl.showAllFields ? 'fa-minus-square-o' : 'fa-plus-square-o')"></i>
                 {{$ctrl.showAllFields ? 'Show Only Common Fields' : 'Show All Fields'}}
             </button>
@@ -45,7 +45,9 @@
         </dl>
         <small data-translate="Custom Fields shown in <i>italics</i>"></small>
         <div class="form-group">
-            <button class="btn btn-sm btn-primary" data-ng-click="$ctrl.openNewCustomFieldModal()"><i class="fa fa-plus iconPadding"></i>New Custom Field</button>
+            <button class="btn btn-sm btn-primary" id="configuration-new-field-btn"
+                    data-ng-click="$ctrl.openNewCustomFieldModal()">
+              <i class="fa fa-plus iconPadding"></i>New Custom Field</button>
         </div>
     </div>
 
@@ -53,7 +55,7 @@
     <div class="col-md-9">
         <!-- control buttons -->
         <div class="form-group" style="height: 30px">
-            <button class="btn btn-std" data-ng-click="$ctrl.removeSelectedCustomField()"
+            <button class="btn btn-std" id="configuration-remove-field-btn" data-ng-click="$ctrl.removeSelectedCustomField()"
                     data-ng-show="$ctrl.showRemoveCustomField($ctrl.fccCurrentField.name)">
                 <i class="fa fa-trash iconPadding"></i>Remove Custom Field</button>
         </div>
