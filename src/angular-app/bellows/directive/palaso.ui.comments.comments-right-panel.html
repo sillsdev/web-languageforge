@@ -13,7 +13,7 @@
     </div>
 </div>
 <div class="commentListView">
-    <div ng-show="rights.canComment()" class="newCommentForm">
+    <div ng-show="rights.canComment()" class="newCommentForm" id="comment-panel-new-comment">
         <div class="card card-default">
             <div class="card-body">
                 <form ng-submit="postNewComment()">
@@ -41,9 +41,10 @@
                         </div>
                         <div ng-hide="newComment.regarding.field" class="alert alert-warning"><span data-translate="Click on a field in the editor to give context to your comment"></span></div>
                     </div>
-                    <textarea required data-ng-model="newComment.content" class="form-control" placeholder="{{getNewCommentPlaceholderText()}}"  ></textarea>
+                    <textarea required data-ng-model="newComment.content"
+                              class="form-control" id="comment-panel-textarea" placeholder="{{getNewCommentPlaceholderText()}}"  ></textarea>
                     <div class="text-xs-right">
-                        <button type="submit" class="btn btn-sm btn-primary">Post</button>
+                        <button type="submit" class="btn btn-sm btn-primary" id="comment-panel-post-btn">Post</button>
                     </div>
                 </form>
             </div>
