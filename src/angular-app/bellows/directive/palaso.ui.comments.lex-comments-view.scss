@@ -1,0 +1,125 @@
+#lexAppEditView {
+    display: flex;
+    justify-content: center;
+    .container {
+        margin: 0;
+    }
+}
+
+.comments-right-panel {
+    width: 280px;
+    transition: width 0.5s;
+    overflow: hidden;
+    color: #104060;
+    font-size: 14px;
+    display: block;
+    .newCommentForm {
+        /* TODO: Enable again */
+        display: none;
+    }
+
+    .commentContainer {
+        border-radius: 0;
+        border: 0;
+        .card-title {
+            background: #cddeeb;
+            display: block;
+            font-weight: bold;
+            padding: 4px 14px;
+            margin: 0;
+        }
+
+        .card-block {
+            background: #e6eff5;
+            padding: 7px 14px;
+            .comment-meta {
+                display: flex;
+                justify-content: space-between;
+                > div {
+                    display: flex;
+                }
+
+                img {
+                    width: 40px !important;
+                    height: 40px;
+                    margin-right: 5px;
+                }
+
+                .data-and-author {
+                    line-height: 18px;
+                    .comment-author {
+                        font-weight: bold;
+                    }
+                }
+            }
+            .comment-body {
+                color: #373a3d;
+                margin: 10px 0 14px;
+            }
+
+            .comment-interaction {
+                display: flex;
+                justify-content: space-between;
+                font-size: 12px;
+                opacity: 0.75;
+            }
+
+            .comment-actions {
+                margin: 4px -14px;
+                padding: 4px 14px;
+                display: flex;
+                justify-content: space-between;
+                border: 1px solid #cddeeb;
+                border-left: 0;
+                border-right: 0;
+                > div {
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    i {
+                        font-size: 16px;
+                        margin-right: 4px;
+                    }
+
+                    span {
+                        font-size: 12px;
+                        opacity: 0.75;
+                    }
+                }
+            }
+            .commentRegarding {
+                /* TODO: Enable again */
+                display: none;
+            }
+
+            .commentRepliesContainer {
+                .comment-replies {
+                }
+                margin-left: 10px;
+                padding-left: 5px;
+                border-left: 1px solid #cddeeb;
+                > div {
+                    margin-bottom: 10px;
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+                .reply-meta {
+                    line-height: 18px;
+
+                    .comment-author {
+                        font-weight: bold;
+                        display: block;
+                    }
+
+                    .comment-date {
+                        display: block;
+                    }
+                }
+                .reply-content {
+                    color: #373a3d;
+                }
+            }
+        }
+    }
+}
