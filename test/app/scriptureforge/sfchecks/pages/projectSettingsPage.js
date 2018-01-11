@@ -19,9 +19,6 @@ function SfProjectSettingsPage() {
     this.projectSettingsLink.click();
   };
 
-  this.tabDivs = element.all(by.repeater('tab in tabs'));
-
-  // This should be updated when the pui-tab can handle ids
   this.tabs = {
     members: element(by.linkText('Members')),
     templates: element(by.linkText('Question Templates')),
