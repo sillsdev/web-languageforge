@@ -34,7 +34,7 @@ function ViewSettingsPage() {
       }.bind(this)
     },
     manager: {
-      // Might want better way to access this button, maybe Chris will know
+      // unsure if there is a better way to access this button - Mark W 2018-01-11
       showAllFieldsBtn: this.tabDivs.get(3).element(by.buttonText('Show All Fields')),
       go: function () {
         this.getTabByName('Manager').click();
