@@ -107,7 +107,7 @@ describe('Editor List and Entry', function () {
     browser.driver.executeScript('arguments[0].scrollIntoView();',
       editorPage.edit.pictures.addPictureLink.getWebElement());
     editorPage.edit.pictures.addPictureLink.click();
-    expect(editorPage.edit.pictures.addPictureLink.isPresent()).toBe(false);
+    expect(editorPage.edit.pictures.addPictureLink.isDisplayed()).toBe(false);
     expect(editorPage.edit.pictures.addDropBox.isDisplayed()).toBe(true);
   });
 
