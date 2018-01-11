@@ -33,8 +33,8 @@ namespace ShareDB.RichText
         public void Insert_ConsecutiveTextsMatchingAttrs_MergeOps()
         {
             var delta = Delta.New()
-                .Insert("a", Obj(new { bold = true }))
-                .Insert("b", Obj(new { bold = true }));
+                .Insert("a", new { bold = true })
+                .Insert("b", new { bold = true });
             Assert.That(delta.Ops, Is.EqualTo(Objs(new { insert = "ab", attributes = new { bold = true } })));
         }
 
@@ -42,7 +42,7 @@ namespace ShareDB.RichText
         public void Insert_ConsecutiveTextsDifferentAttrs_TwoOps()
         {
             var delta = Delta.New()
-                .Insert("a", Obj(new { bold = true }))
+                .Insert("a", new { bold = true })
                 .Insert("b");
             Assert.That(delta.Ops, Is.EqualTo(Objs(
                 new { insert = "a", attributes = new { bold = true } },
@@ -53,8 +53,8 @@ namespace ShareDB.RichText
         public void Insert_ConsecutiveEmbedsMatchingAttrs_TwoOps()
         {
             var delta = Delta.New()
-                .Insert(1, Obj(new { alt = "Description" }))
-                .Insert(Obj(new { url = "http://quilljs.com" }), Obj(new { alt = "Description" }));
+                .Insert(1, new { alt = "Description" })
+                .Insert(new { url = "http://quilljs.com" }, new { alt = "Description" });
             Assert.That(delta.Ops, Is.EqualTo(Objs(
                 new { insert = 1, attributes = new { alt = "Description" } },
                 new { insert = new { url = "http://quilljs.com" }, attributes = new { alt = "Description" } })));
@@ -63,7 +63,7 @@ namespace ShareDB.RichText
         [Test]
         public void Insert_TextAttributes_OneOp()
         {
-            JToken attrs = Obj(new { bold = true });
+            var attrs = new { bold = true };
             var delta = Delta.New().Insert("test", attrs);
             Assert.That(delta.Ops, Is.EqualTo(Objs(new { insert = "test", attributes = attrs })));
         }
@@ -78,7 +78,7 @@ namespace ShareDB.RichText
         [Test]
         public void Insert_EmbedAttributes_OneOp()
         {
-            JToken attrs = Obj(new { url = "http://quilljs.com", alt = "Quill" });
+            var attrs = new { url = "http://quilljs.com", alt = "Quill" };
             var delta = Delta.New().Insert(1, attrs);
             Assert.That(delta.Ops, Is.EqualTo(Objs(new { insert = 1, attributes = attrs })));
         }
@@ -86,8 +86,8 @@ namespace ShareDB.RichText
         [Test]
         public void Insert_ObjEmbedAttributes_OneOp()
         {
-            JToken embed = Obj(new { url = "http://quilljs.com" });
-            JToken attrs = Obj(new { alt = "Quill" });
+            var embed = new { url = "http://quilljs.com" };
+            var attrs = new { alt = "Quill" };
             var delta = Delta.New().Insert(embed, attrs);
             Assert.That(delta.Ops, Is.EqualTo(Objs(new { insert = embed, attributes = attrs })));
         }
@@ -119,7 +119,7 @@ namespace ShareDB.RichText
         [Test]
         public void Insert_EmptyAttributes_IgnoreAttributes()
         {
-            var delta = Delta.New().Insert("a", new JObject());
+            var delta = Delta.New().Insert("a", new {});
             var expected = Delta.New().Insert("a");
             Assert.That(delta, Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
@@ -141,7 +141,7 @@ namespace ShareDB.RichText
         [Test]
         public void Retain_Attributes_OneOp()
         {
-            JToken attrs = Obj(new { bold = true });
+            var attrs = new { bold = true };
             var delta = Delta.New().Retain(1, attrs);
             Assert.That(delta.Ops, Is.EqualTo(Objs(new { retain = 1, attributes = attrs })));
         }
@@ -150,8 +150,8 @@ namespace ShareDB.RichText
         public void Retain_ConsecutiveRetainsMatchingAttrs_MergeOps()
         {
             var delta = Delta.New()
-                .Retain(1, Obj(new { bold = true }))
-                .Retain(3, Obj(new { bold = true }));
+                .Retain(1, new { bold = true })
+                .Retain(3, new { bold = true });
             Assert.That(delta.Ops, Is.EqualTo(Objs(new { retain = 4, attributes = new { bold = true } })));
         }
 
@@ -159,7 +159,7 @@ namespace ShareDB.RichText
         public void Retain_ConsecutiveRetainsDifferentAttrs_TwoOps()
         {
             var delta = Delta.New()
-                .Retain(1, Obj(new { bold = true }))
+                .Retain(1, new { bold = true })
                 .Retain(3);
             Assert.That(delta.Ops, Is.EqualTo(Objs(
                 new { retain = 1, attributes = new { bold = true } },
@@ -169,7 +169,7 @@ namespace ShareDB.RichText
         [Test]
         public void Retain_EmptyAttributes_IgnoreAttributes()
         {
-            var delta = Delta.New().Retain(2, new JObject()).Delete(1);
+            var delta = Delta.New().Retain(2, new {}).Delete(1);
             var expected = Delta.New().Retain(2).Delete(1);
             Assert.That(delta, Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
@@ -208,8 +208,8 @@ namespace ShareDB.RichText
         public void Compose_InsertRetain_MergeOps()
         {
             var a = Delta.New().Insert("A");
-            var b = Delta.New().Retain(1, Obj(new { bold = true, color = "red", font = (string) null }));
-            var expected = Delta.New().Insert("A", Obj(new { bold = true, color = "red" }));
+            var b = Delta.New().Retain(1, new { bold = true, color = "red", font = (string) null });
+            var expected = Delta.New().Insert("A", new { bold = true, color = "red" });
             Assert.That(a.Compose(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
 
@@ -235,8 +235,8 @@ namespace ShareDB.RichText
         public void Compose_DeleteRetain_TwoOps()
         {
             var a = Delta.New().Delete(1);
-            var b = Delta.New().Retain(1, Obj(new { bold = true, color = "red" }));
-            var expected = Delta.New().Delete(1).Retain(1, Obj(new { bold = true, color = "red" }));
+            var b = Delta.New().Retain(1, new { bold = true, color = "red" });
+            var expected = Delta.New().Delete(1).Retain(1, new { bold = true, color = "red" });
             Assert.That(a.Compose(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
 
@@ -252,25 +252,25 @@ namespace ShareDB.RichText
         [Test]
         public void Compose_RetainInsert_TwoOps()
         {
-            var a = Delta.New().Retain(1, Obj(new { color = "blue" }));
+            var a = Delta.New().Retain(1, new { color = "blue" });
             var b = Delta.New().Insert("B");
-            var expected = Delta.New().Insert("B").Retain(1, Obj(new { color = "blue" }));
+            var expected = Delta.New().Insert("B").Retain(1, new { color = "blue" });
             Assert.That(a.Compose(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
 
         [Test]
         public void Compose_RetainRetain_MergeOps()
         {
-            var a = Delta.New().Retain(1, Obj(new { color = "blue" }));
-            var b = Delta.New().Retain(1, Obj(new { bold = true, color = "red", font = (string) null }));
-            var expected = Delta.New().Retain(1, Obj(new { bold = true, color = "red", font = (string) null }));
+            var a = Delta.New().Retain(1, new { color = "blue" });
+            var b = Delta.New().Retain(1, new { bold = true, color = "red", font = (string) null });
+            var expected = Delta.New().Retain(1, new { bold = true, color = "red", font = (string) null });
             Assert.That(a.Compose(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
 
         [Test]
         public void Compose_RetainDelete_MergeOps()
         {
-            var a = Delta.New().Retain(1, Obj(new { color = "blue" }));
+            var a = Delta.New().Retain(1, new { color = "blue" });
             var b = Delta.New().Delete(1);
             var expected = Delta.New().Delete(1);
             Assert.That(a.Compose(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
@@ -300,9 +300,9 @@ namespace ShareDB.RichText
         [Test]
         public void Compose_InsertEmbedRetain_MergeOps()
         {
-            var a = Delta.New().Insert(1, Obj(new { src = "http://quilljs.com/image.png" }));
-            var b = Delta.New().Retain(1, Obj(new { alt = "logo" }));
-            var expected = Delta.New().Insert(1, Obj(new { src = "http://quilljs.com/image.png", alt = "logo" }));
+            var a = Delta.New().Insert(1, new { src = "http://quilljs.com/image.png" });
+            var b = Delta.New().Retain(1, new { alt = "logo" });
+            var expected = Delta.New().Insert(1, new { src = "http://quilljs.com/image.png", alt = "logo" });
             Assert.That(a.Compose(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
 
@@ -336,8 +336,8 @@ namespace ShareDB.RichText
         [Test]
         public void Compose_RemoveAttributes_MergeOps()
         {
-            var a = Delta.New().Insert("A", Obj(new { bold = true }));
-            var b = Delta.New().Retain(1, Obj(new { bold = (bool?) null }));
+            var a = Delta.New().Insert("A", new { bold = true });
+            var b = Delta.New().Retain(1, new { bold = (bool?) null });
             var expected = Delta.New().Insert("A");
             Assert.That(a.Compose(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
@@ -345,8 +345,8 @@ namespace ShareDB.RichText
         [Test]
         public void Compose_RemoveEmbedAttributes_MergeOps()
         {
-            var a = Delta.New().Insert(2, Obj(new { bold = true }));
-            var b = Delta.New().Retain(1, Obj(new { bold = (bool?) null }));
+            var a = Delta.New().Insert(2, new { bold = true });
+            var b = Delta.New().Retain(1, new { bold = (bool?) null });
             var expected = Delta.New().Insert(2);
             Assert.That(a.Compose(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
@@ -358,9 +358,9 @@ namespace ShareDB.RichText
             JToken attr2 = Obj(new { bold = true });
             var a1 = Delta.New().Insert("Test", attr1);
             var a2 = Delta.New().Insert("Test", attr1);
-            var b1 = Delta.New().Retain(1, Obj(new { color = "red" })).Delete(2);
-            var b2 = Delta.New().Retain(1, Obj(new { color = "red" })).Delete(2);
-            var expected = Delta.New().Insert("T", Obj(new { color = "red", bold = true })).Insert("t", attr1);
+            var b1 = Delta.New().Retain(1, new { color = "red" }).Delete(2);
+            var b2 = Delta.New().Retain(1, new { color = "red" }).Delete(2);
+            var expected = Delta.New().Insert("T", new { color = "red", bold = true }).Insert("t", attr1);
             Assert.That(a1.Compose(b1), Is.EqualTo(expected).Using(Delta.EqualityComparer));
             Assert.That(a1, Is.EqualTo(a2).Using(Delta.EqualityComparer));
             Assert.That(b1, Is.EqualTo(b2).Using(Delta.EqualityComparer));
@@ -398,16 +398,16 @@ namespace ShareDB.RichText
         public void Diff_Format()
         {
             var a = Delta.New().Insert("A");
-            var b = Delta.New().Insert("A", Obj(new { bold = true }));
-            var expected = Delta.New().Retain(1, Obj(new { bold = true }));
+            var b = Delta.New().Insert("A", new { bold = true });
+            var expected = Delta.New().Retain(1, new { bold = true });
             Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
 
         [Test]
         public void Diff_ObjectAttributes()
         {
-            var a = Delta.New().Insert("A", Obj(new { font = new { family = "Helvetica", size = "15px" } }));
-            var b = Delta.New().Insert("A", Obj(new { font = new { family = "Helvetica", size = "15px" } }));
+            var a = Delta.New().Insert("A", new { font = new { family = "Helvetica", size = "15px" } });
+            var b = Delta.New().Insert("A", new { font = new { family = "Helvetica", size = "15px" } });
             var expected = Delta.New();
             Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
@@ -433,8 +433,8 @@ namespace ShareDB.RichText
         [Test]
         public void Diff_EmbedObjectMatch()
         {
-            var a = Delta.New().Insert(Obj(new { image = "http://quilljs.com" }));
-            var b = Delta.New().Insert(Obj(new { image = "http://quilljs.com" }));
+            var a = Delta.New().Insert(new { image = "http://quilljs.com" });
+            var b = Delta.New().Insert(new { image = "http://quilljs.com" });
             var expected = Delta.New();
             Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
@@ -442,9 +442,9 @@ namespace ShareDB.RichText
         [Test]
         public void Diff_EmbedObjectMismatch()
         {
-            var a = Delta.New().Insert(Obj(new { image = "http://quilljs.com", alt = "Overwrite" }));
-            var b = Delta.New().Insert(Obj(new { image = "http://quilljs.com" }));
-            var expected = Delta.New().Insert(Obj(new { image = "http://quilljs.com" })).Delete(1);
+            var a = Delta.New().Insert(new { image = "http://quilljs.com", alt = "Overwrite" });
+            var b = Delta.New().Insert(new { image = "http://quilljs.com" });
+            var expected = Delta.New().Insert(new { image = "http://quilljs.com" }).Delete(1);
             Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
 
@@ -455,7 +455,7 @@ namespace ShareDB.RichText
             var a = Delta.New().Insert(embed);
             embed["image"] = "http://github.com";
             var b = Delta.New().Insert(embed);
-            var expected = Delta.New().Insert(Obj(new { image = "http://github.com" })).Delete(1);
+            var expected = Delta.New().Insert(new { image = "http://github.com" }).Delete(1);
             Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
 
@@ -480,11 +480,11 @@ namespace ShareDB.RichText
         [Test]
         public void Diff_InconvenientIndices()
         {
-            var a = Delta.New().Insert("12", Obj(new { bold = true })).Insert("34", Obj(new { italic = true }));
-            var b = Delta.New().Insert("123", Obj(new { color = "red" }));
+            var a = Delta.New().Insert("12", new { bold = true }).Insert("34", new { italic = true });
+            var b = Delta.New().Insert("123", new { color = "red" });
             var expected = Delta.New()
-                .Retain(2, Obj(new { bold = (bool?) null, color = "red" }))
-                .Retain(1, Obj(new { italic = (bool?) null, color = "red" }))
+                .Retain(2, new { bold = (bool?) null, color = "red" })
+                .Retain(1, new { italic = (bool?) null, color = "red" })
                 .Delete(1);
             Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
@@ -492,21 +492,21 @@ namespace ShareDB.RichText
         [Test]
         public void Diff_Combination()
         {
-            var a = Delta.New().Insert("Bad", Obj(new { color = "red" })).Insert("cat", Obj(new { color = "blue" }));
-            var b = Delta.New().Insert("Good", Obj(new { bold = true })).Insert("dog", Obj(new { italic = true }));
+            var a = Delta.New().Insert("Bad", new { color = "red" }).Insert("cat", new { color = "blue" });
+            var b = Delta.New().Insert("Good", new { bold = true }).Insert("dog", new { italic = true });
             var expected = Delta.New()
-                .Insert("Good", Obj(new { bold = true }))
+                .Insert("Good", new { bold = true })
                 .Delete(2)
-                .Retain(1, Obj(new { italic = true, color = (string) null }))
+                .Retain(1, new { italic = true, color = (string) null })
                 .Delete(3)
-                .Insert("og", Obj(new { italic = true }));
+                .Insert("og", new { italic = true });
             Assert.That(a.Diff(b), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
 
         [Test]
         public void Diff_SameDocument()
         {
-            var a = Delta.New().Insert("A").Insert("B", Obj(new { bold = true }));
+            var a = Delta.New().Insert("A").Insert("B", new { bold = true });
             var expected = Delta.New();
             Assert.That(a.Diff(a), Is.EqualTo(expected).Using(Delta.EqualityComparer));
         }
@@ -518,9 +518,9 @@ namespace ShareDB.RichText
             JToken attr2 = Obj(new { color = "red" });
             var a1 = Delta.New().Insert("A", attr1);
             var a2 = Delta.New().Insert("A", attr1);
-            var b1 = Delta.New().Insert("A", Obj(new { bold = true })).Insert("B");
-            var b2 = Delta.New().Insert("A", Obj(new { bold = true })).Insert("B");
-            var expected = Delta.New().Retain(1, Obj(new { bold = true, color = (string) null })).Insert("B");
+            var b1 = Delta.New().Insert("A", new { bold = true }).Insert("B");
+            var b2 = Delta.New().Insert("A", new { bold = true }).Insert("B");
+            var expected = Delta.New().Retain(1, new { bold = true, color = (string) null }).Insert("B");
             Assert.That(a1.Diff(b1), Is.EqualTo(expected).Using(Delta.EqualityComparer));
             Assert.That(a1, Is.EqualTo(a2).Using(Delta.EqualityComparer));
             Assert.That(b1, Is.EqualTo(b2).Using(Delta.EqualityComparer));

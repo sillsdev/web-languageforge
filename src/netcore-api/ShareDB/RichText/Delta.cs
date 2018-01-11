@@ -40,14 +40,25 @@ namespace ShareDB.RichText
 
         public IReadOnlyList<JToken> Ops => _ops;
 
-        public Delta Insert(JToken text, JToken attributes = null)
+        public Delta Insert(object text, object attributes = null)
         {
-            if (text.Type == JTokenType.String && ((string) text).Length == 0)
+            var textToken = text as JToken;
+            if (textToken == null)
+                textToken = JToken.FromObject(text);
+            JToken attrsToken = null;
+            if (attributes != null)
+            {
+                attrsToken = attributes as JToken;
+                if (attrsToken == null)
+                    attrsToken = JToken.FromObject(attributes);
+            }
+
+            if (textToken.Type == JTokenType.String && ((string) textToken).Length == 0)
                 return this;
 
-            var newOp = new JObject(new JProperty(InsertType, text));
-            if (attributes != null && attributes.HasValues)
-                newOp[Attributes] = attributes;
+            var newOp = new JObject(new JProperty(InsertType, textToken));
+            if (attrsToken != null && attrsToken.HasValues)
+                newOp[Attributes] = attrsToken;
 
             return Add(newOp);
         }
@@ -60,14 +71,22 @@ namespace ShareDB.RichText
             return Add(new JObject(new JProperty(DeleteType, length)));
         }
 
-        public Delta Retain(int length, JToken attributes = null)
+        public Delta Retain(int length, object attributes = null)
         {
             if (length <= 0)
                 return this;
 
+            JToken attrsToken = null;
+            if (attributes != null)
+            {
+                attrsToken = attributes as JToken;
+                if (attrsToken == null)
+                    attrsToken = JToken.FromObject(attributes);
+            }
+
             var newOp = new JObject(new JProperty(RetainType, length));
-            if (attributes != null && attributes.HasValues)
-                newOp[Attributes] = attributes;
+            if (attrsToken != null && attrsToken.HasValues)
+                newOp[Attributes] = attrsToken;
 
             return Add(newOp);
         }
