@@ -34,6 +34,8 @@
 //   'test-e2e-env'
 //   'test-e2e-doTest'
 //   'test-e2e-run'
+//   'test-e2e-compile'
+//   'test-e2e-compile:watch'
 //   'test-dotnet'
 //   'sass'
 //   'sass:watch'
@@ -729,6 +731,10 @@ gulp.task('test-e2e-local-lf', gulp.series(
     'test-e2e-useLiveConfig',
     'test-restart-webserver')
 );
+
+gulp.task('test-e2e-compile', function(cb) {
+  return execute('cd test/app; ../../node_modules/typescript/bin/tsc', null, cb);
+});
 
 // -------------------------------------
 //   Task: Run .NET Core unit tests
