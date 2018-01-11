@@ -710,7 +710,7 @@ gulp.task('test-e2e-doTest', function (cb) {
 
 // -------------------------------------
 //   Task: E2E Test: Do TestV2
-//   Forked from Task: E2E Test: Do Test by Ben Kastner
+//   Forked from Task: E2E Test: Do Test by Ben Kastner 2018-01-11
 // -------------------------------------
 gulp.task('test-e2e-doTestV2', function (cb) {
   var params = require('yargs')
