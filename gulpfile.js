@@ -33,6 +33,7 @@
 //   'test-restart-webserver'
 //   'test-e2e-env'
 //   'test-e2e-doTest'
+//   'test-e2e-doTestV2'
 //   'test-e2e-run'
 //   'test-dotnet'
 //   'sass'
