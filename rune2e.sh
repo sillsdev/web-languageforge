@@ -11,19 +11,30 @@
 if [ "$1" = "lf" ]
   then
     E2EHOSTNAME="languageforge.local"
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 elif [ "$1" = "sf" ]
   then
     E2EHOSTNAME="scriptureforge.local"
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
+elif [ "$1" = "xf" ]
+  then
+    E2EHOSTNAME="languageforge.local"
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
+    gulp test-e2e-teardownTestEnvironment    #need to do this before switching hostname
+    E2EHOSTNAME="scriptureforge.local"
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --excludeBellows
 elif [ "$1" = "jp" ]
   then
     E2EHOSTNAME="jamaicanpsalms.scriptureforge.local"
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 else
     E2EHOSTNAME="languageforge.local"
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 fi
-gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
-STATUS=$?
 
-# Ensure cleanup
+# Ensure Cleanup
+
+STATUS=$?
 gulp test-e2e-teardownTestEnvironment
 gulp test-e2e-useLiveConfig
 gulp test-restart-webserver
