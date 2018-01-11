@@ -9,15 +9,15 @@ function ConfigurationPage() {
   this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   this.firstNoticeCloseButton = this.noticeList.first().element(by.className('close'));
 
-  this.settingsMenuLink = element(by.className('fa-cog'));
-  this.configurationLink = element(by.linkText('Configuration'));
+  this.settingsMenuLink = element(by.id('settingsDropdownButton'));
+  this.configurationLink = element(by.id('dropdown-configuration'));
   this.get = function get() {
     util.scrollTop();
     this.settingsMenuLink.click();
     this.configurationLink.click();
   };
 
-  this.applyButton = element(by.buttonText('Apply'));
+  this.applyButton = element(by.id('configuration-apply-btn'));
 
   var tabElements = element.all(by.tagName('pui-tab'));
   this.tab = function () {
@@ -30,6 +30,7 @@ function ConfigurationPage() {
     return element(by.cssContainingText('pui-tabset .tab-links .tab-link', tabName));
   };
 
+  // These will be updated once the pui-tab is updated to support unique id
   this.tabs = {
     inputSystems: element(by.linkText('Input Systems')),
     fields:       element(by.linkText('Fields')),
@@ -38,13 +39,13 @@ function ConfigurationPage() {
   };
 
   this.inputSystemsTab = {
-    newButton:    this.activePane.element(by.partialButtonText('New')),
-    moreButton:   this.activePane.element(by.css('.btn-group button')),
+    newButton:    this.activePane.element(by.id('configuration-new-btn')),
+    moreButton:   this.activePane.element(by.id('configuration-dropdown-btn')),
     moreButtonGroup: {
-      addIpa:     this.activePane.element(by.partialLinkText('Add IPA')),
-      addVoice:   this.activePane.element(by.partialLinkText('Add Voice')),
-      addVariant: this.activePane.element(by.partialLinkText('Add a variant')),
-      remove:     this.activePane.element(by.className('fa fa-trash'))
+      addIpa:     this.activePane.element(by.id('configuration-add-ipa-btn')),
+      addVoice:   this.activePane.element(by.id('configuration-add-voice-btn')),
+      addVariant: this.activePane.element(by.id('configuration-add-variant-btn')),
+      remove:     this.activePane.element(by.id('configuration-remove-btn'))
     },
     getLanguageByName: function getLanguageByName(languageName) {
       return element(by.css('div.tab-pane.active div.col-md-3 dl.picklists'))
@@ -89,8 +90,8 @@ function ConfigurationPage() {
       .all(by.model('$ctrl.fccCurrentField.inputSystems.selecteds[inputSystemTag]')),
     inputSystemUpButton: this.activePane.element(by.id('upButton')),
     inputSystemDownButton: this.activePane.element(by.id('downButton')),
-    newCustomFieldButton: this.activePane.element(by.buttonText('New Custom Field')),
-    removeCustomFieldButton: this.activePane.element(by.buttonText('Remove Custom Field'))
+    newCustomFieldButton: this.activePane.element(by.id('configuration-new-field-btn')),
+    removeCustomFieldButton: this.activePane.element(by.id('configuration-remove-field-btn'))
   };
 
   // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
@@ -99,8 +100,7 @@ function ConfigurationPage() {
     browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
   }.bind(this);
 
-  this.showAllFieldsButton = element(by.buttonText('Show All Fields'));
-  this.showCommonFieldsButton = element(by.buttonText('Show Only Common Fields'));
+  this.showAllFieldsButton = element(by.id('configuration-show-fields-btn'));
 
   this.entryFields = this.activePane
     .all(by.repeater('fieldName in $ctrl.fccConfigDirty.entry.fieldOrder'));

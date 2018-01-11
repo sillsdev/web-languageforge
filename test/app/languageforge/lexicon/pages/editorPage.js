@@ -43,15 +43,17 @@ function EditorPage() {
   this.firstNoticeCloseButton = this.noticeList.first().element(by.partialButtonText('×'));
 
   this.browseDiv = element(by.id('lexAppListView'));
+  this.browseDivSearch = this.browseDiv.element(by.id('editor-list-search-entries'));
   this.editDiv = element(by.id('lexAppEditView'));
-  this.editToolbarDiv = element(by.className('lexAppToolbar'));
+  this.editDivSearch = this.editDiv.element(by.id('editor-entry-search-entries'));
+  this.editToolbarDiv = element(by.id('lexAppToolbar'));
   this.commentDiv = element(by.id('lexAppCommentView'));
 
   // --- Browse view ---
   this.browse = {
 
     // Top row UI elements
-    noEntriesElem: this.browseDiv.element(by.className('no-entries')),
+    noEntriesElem: this.browseDiv.element(by.id('noEntries')),
     noEntriesNewWordBtn: element(by.id('noEntriesNewWord')),
     newWordBtn: element(by.id('newWord')),
     entryCountElem: this.browseDiv.element(by.id('totalNumberOfEntries')),
@@ -65,12 +67,10 @@ function EditorPage() {
 
     // Search typeahead
     search: {
-      input: this.browseDiv.element(by.css('div.typeahead')).element(by.css('input')),
-      clearBtn: this.browseDiv.element(by.css('div.typeahead')).element(by.className('fa-times')),
-      results: this.browseDiv.element(by.css('div.typeahead'))
-        .all(by.repeater('e in typeahead.searchResults')),
-      matchCountElem: this.browseDiv.element(by.css('div.typeahead'))
-        .element(by.binding('typeahead.matchCountCaption')),
+      input: this.browseDivSearch.element(by.css('input')),
+      clearBtn: this.browseDivSearch.element(by.className('fa-times')),
+      results: this.browseDivSearch.all(by.repeater('e in typeahead.searchResults')),
+      matchCountElem: this.browseDivSearch.element(by.binding('typeahead.matchCountCaption')),
       getMatchCount: function () {
         // Inside this function, "this" ==  EditorPage.browse.search
         return this.matchCountElem.getText().then(function (s) {
@@ -97,7 +97,6 @@ function EditorPage() {
   };
 
   // --- Edit view ---
-  //noinspection JSUnusedGlobalSymbols
   this.edit = {
     // Top row UI elements
     toListLink: this.editToolbarDiv.element(by.id('toListLink')),
@@ -131,7 +130,7 @@ function EditorPage() {
     },
 
     // Left sidebar UI elements
-    newWordBtn: this.editDiv.element(by.css('editorNewWordBtn')),
+    newWordBtn: this.editDiv.element(by.id('editorNewWordBtn')),
     entryCountElem: this.editDiv.element(by.id('totalNumberOfEntries')),
     getEntryCount: function () {
       return this.entryCountElem.getText().then(function (s) {
@@ -153,12 +152,10 @@ function EditorPage() {
     }.bind(this),
 
     search: {
-      input: this.editDiv.element(by.css('div.typeahead')).element(by.css('input')),
-      clearBtn: this.editDiv.element(by.css('div.typeahead')).element(by.className('fa-times')),
-      results: this.editDiv.element(by.css('div.typeahead'))
-        .all(by.repeater('e in typeahead.searchResults')),
-      matchCountElem: this.editDiv.element(by.css('div.typeahead'))
-        .element(by.binding('typeahead.matchCountCaption')),
+      input: this.editDivSearch.element(by.css('input')),
+      clearBtn: this.editDivSearch.element(by.className('fa-times')),
+      results: this.editDivSearch.all(by.repeater('e in typeahead.searchResults')),
+      matchCountElem: this.editDivSearch.element(by.binding('typeahead.matchCountCaption')),
       getMatchCount: function () {
         // Inside this function, "this" == EditorPage.edit.search
         return this.matchCountElem.getText().then(function (s) {
@@ -168,7 +165,7 @@ function EditorPage() {
     },
 
     // Top-row
-    renderedDiv: this.editDiv.element(by.className('dc-rendered-entryContainer')),
+    renderedDiv: this.editDiv.element(by.id('entryContainer')),
     deleteBtn: this.editDiv.element(by.id('deleteEntry')),
 
     // Helper functions for retrieving various field values
@@ -227,15 +224,15 @@ function EditorPage() {
       },
 
       moreDownload: function (searchLabel, index) {
-        return this.moreGroups(searchLabel, index).element(by.partialLinkText('Download'));
+        return this.moreGroups(searchLabel, index).element(by.id('dc-audio-download'));
       },
 
       moreDelete: function (searchLabel, index) {
-        return this.moreGroups(searchLabel, index).element(by.partialLinkText('Delete'));
+        return this.moreGroups(searchLabel, index).element(by.id('dc-audio-delete'));
       },
 
       moreUpload: function (searchLabel, index) {
-        return this.moreGroups(searchLabel, index).element(by.partialLinkText('Upload'));
+        return this.moreGroups(searchLabel, index).element(by.id('dc-audio-upload'));
       },
 
       uploadButtons: function (searchLabel) {
@@ -247,7 +244,7 @@ function EditorPage() {
       },
 
       uploadCancelButtons: function (searchLabel) {
-        return editorUtil.getOneField(searchLabel).all(by.id('audioAddCancel'));
+        return editorUtil.getOneField(searchLabel).all(by.css('.dc-audio i.fa-times'));
       },
 
       downloadButtons: function (searchLabel) {
@@ -282,7 +279,7 @@ function EditorPage() {
         });
       },
 
-      addPictureLink: element(by.linkText('Add Picture')),
+      addPictureLink: element(by.id('dc-picture-add-btn')),
       addDropBox: editorUtil.getOneField('Pictures').element(by.css('.drop-box')),
       addCancelButton: element(by.id('addCancel'))
     },
@@ -304,9 +301,8 @@ function EditorPage() {
   };
 
   // --- Comment view ---
-  //noinspection JSUnusedGlobalSymbols
   this.comment = {
-    toEditLink: element(by.css('#toEditLink')),
+    toEditLink: element(by.id('toEditLink')),
 
     // Top-row UI elements
     renderedDiv: this.commentDiv.element(by.css('dc-rendered')),
@@ -352,20 +348,8 @@ function EditorPage() {
 
     // Right half of page: comments
     newComment: {
-      textarea: this.commentDiv.element(by.css('.newCommentForm')).element(by.css('textarea')),
-      postBtn: this.commentDiv.element(by.css('.newCommentForm')).element(by.buttonText('Post')),
-      regardingDiv: this.commentDiv.element(by.css('.newCommentForm'))
-        .element(by.css('.commentRegarding')),
-      regarding: {
-        clearBtn: this.commentDiv.element(by.css('.newCommentForm'))
-          .element(by.css('.commentRegarding')).element(by.css('i.fa-trash')),
-        fieldLabel: this.commentDiv.element(by.css('.newCommentForm'))
-          .element(by.css('.commentRegarding')).element(by.css('.regardingFieldName')),
-        fieldWsid: this.commentDiv.element(by.css('.newCommentForm'))
-          .element(by.css('.commentRegarding')).element(by.css('.regardingInputSystem')),
-        fieldValue: this.commentDiv.element(by.css('.newCommentForm'))
-          .element(by.css('.commentRegarding')).element(by.css('.regardingFieldValue'))
-      }
+      textarea: element(by.id('comment-panel-textarea')),
+      postBtn: element(by.id('comment-panel-post-btn')),
     },
     commentsList: this.commentDiv.all(by.repeater('comment in currentEntryCommentsFiltered')),
     getComment: function (commentNum) {
