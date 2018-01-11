@@ -11,5 +11,6 @@ namespace SIL.XForge.WebApi.Server.Models
         public string BackgroundJobId { get; set; }
         public string State { get; set; }
         public double PercentCompleted { get; set; }
+        public int StartCount { get; set; }
     }
 }
