@@ -17,11 +17,7 @@ function ProjectsPage() {
   };
 
   this.testProjectName = 'Test Project';
-
   this.createBtn = element(by.id('startJoinProjectButton'));
-  this.newProjectNameInput  = element(by.model('newProject.projectName'));
-  this.newProjectTypeSelect = element(by.model('newProject.appName'));
-
   // Or just select "100" from the per-page dropdown, then you're pretty much guaranteed the Test
   // Project will be on page 1, and you can find it.
   this.itemsPerPageCtrl = element(by.model('itemsPerPage'));
