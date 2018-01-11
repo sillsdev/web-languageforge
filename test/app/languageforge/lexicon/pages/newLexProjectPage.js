@@ -13,10 +13,11 @@ function NewLexProjectPage() {
   // form controls
   this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   this.firstNoticeCloseButton = this.noticeList.first().element(by.partialButtonText('×'));
-  this.newLexProjectForm = element(by.tagName('form'));
+  this.newLexProjectForm = element(by.id('newLexProjectForm'));
   this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
   this.backButton = element(by.id('backButton'));
   this.nextButton = element(by.id('nextButton'));
+
   this.expectFormIsValid = function expectFormIsValid() {
     expect(this.nextButton.getAttribute('class')).toMatch(/btn-primary(?:\s|$)/);
   };
@@ -73,7 +74,7 @@ function NewLexProjectPage() {
 
   // step 3: verify data
   this.verifyDataPage = {};
-  this.verifyDataPage.title = element(by.tagName('h3'));
+  this.verifyDataPage.title = element(by.id('new-project-verify'));
   this.verifyDataPage.nonCriticalErrorsButton = element(by.id('nonCriticalErrorsButton'));
   this.verifyDataPage.entriesImported = element(by.binding('newProject.entriesImported'));
   this.verifyDataPage.importErrors = element(by.binding('newProject.importErrors'));
