@@ -2,6 +2,7 @@
 # Usage
 # rune2e.sh lf                                   : runs E2E tests for LF
 # rune2e.sh sf                                   : runs E2E tests for SF
+# run2e2.sh xf                                   : runs E2E tests for both LF and SF (only runs bellows tasks once)
 # rune2e.sh jp                                   : runs E2E tests for JP
 # rune2e.sh lf --specs lexicon-new-project       : runs lexicon-new-project spec for LF
 #
