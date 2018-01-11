@@ -2,7 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <RootNamespace>ShareDB</RootNamespace>
+
+    <IsPackable>false</IsPackable>
+
+    <RootNamespace>SIL.XForge.WebApi.Server</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ShareDB\ShareDB.csproj" />
+    <ProjectReference Include="..\SIL.XForge.WebApi.Server\SIL.XForge.WebApi.Server.csproj" />
   </ItemGroup>
 
 </Project>

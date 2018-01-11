@@ -12,6 +12,7 @@ using SIL.XForge.WebApi.Server.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -105,6 +106,12 @@ namespace SIL.XForge.WebApi.Server.Services
                 else
                     await CloneBookAsync(user, paratextProject, fileName, bookId, doc);
             }
+
+            var booksToRemove = new HashSet<string>(Directory.EnumerateFiles(projectPath)
+                .Select(p => Path.GetFileNameWithoutExtension(p)));
+            booksToRemove.ExceptWith(bookIds);
+            foreach (string bookId in booksToRemove)
+                File.Delete(GetBookTextFileName(projectPath, bookId));
         }
 
         private async Task SendReceiveBookAsync(User user, ParatextProject paratextProject, string fileName,
@@ -113,20 +120,22 @@ namespace SIL.XForge.WebApi.Server.Services
             await doc.FetchAsync();
             XElement bookTextElem = await LoadBookTextAsync(fileName);
 
-            XElement usxElem = DeltaUsxMapper.UpdateUsx(doc.Data, bookTextElem.Element("usx"));
+            XElement usxElem = DeltaUsxMapper.UpdateUsx(bookTextElem.Element("usx"), doc.Data);
 
             var revision = (string) bookTextElem.Attribute("revision");
 
-            if ((await _paratextService.TryUpdateBookTextAsync(user, paratextProject.Id, bookId, revision,
+            if (!(await _paratextService.TryUpdateBookTextAsync(user, paratextProject.Id, bookId, revision,
                 usxElem.ToString())).TryResult(out string bookText))
             {
-                bookTextElem = XElement.Parse(bookText);
-
-                await SaveBookTextAsync(bookTextElem, fileName);
-
-                Delta delta = DeltaUsxMapper.UpdateDelta(bookTextElem.Element("usx"), doc.Data);
-                await doc.SubmitOpAsync(delta);
+                return;
             }
+
+            bookTextElem = XElement.Parse(bookText);
+
+            Delta delta = DeltaUsxMapper.UpdateDelta(doc.Data, bookTextElem.Element("usx"));
+            await doc.SubmitOpAsync(delta);
+
+            await SaveBookTextAsync(bookTextElem, fileName);
         }
 
         private async Task CloneBookAsync(User user, ParatextProject paratextProject, string fileName,
@@ -140,10 +149,10 @@ namespace SIL.XForge.WebApi.Server.Services
 
             var bookTextElem = XElement.Parse(bookText);
 
-            await SaveBookTextAsync(bookTextElem, fileName);
-
-            Delta delta = DeltaUsxMapper.UpdateDelta(bookTextElem.Element("usx"), new Delta());
+            Delta delta = DeltaUsxMapper.UpdateDelta(new Delta(), bookTextElem.Element("usx"));
             await doc.CreateAsync(delta);
+
+            await SaveBookTextAsync(bookTextElem, fileName);
         }
 
         private async Task<XElement> LoadBookTextAsync(string fileName)
