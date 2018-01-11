@@ -7,8 +7,8 @@ function SfProjectSettingsPage() {
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
-  this.settingsMenuLink = element(by.className('btn dropdown-toggle'));
-  this.projectSettingsLink = element(by.linkText('Project Settings'));
+  this.settingsMenuLink = element(by.id('settingsDropdownButton'));
+  this.projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
   this.get = function get(projectName) {
@@ -21,6 +21,7 @@ function SfProjectSettingsPage() {
 
   this.tabDivs = element.all(by.repeater('tab in tabs'));
 
+  // This should be updated when the pui-tab can handle ids
   this.tabs = {
     members: element(by.linkText('Members')),
     templates: element(by.linkText('Question Templates')),
@@ -31,16 +32,16 @@ function SfProjectSettingsPage() {
   };
 
   this.membersTab = {
-    addButton: element(by.partialButtonText('Add Members')),
-    removeButton: element(by.partialButtonText('Remove Members')),
-    messageButton: element(by.partialButtonText('Message Selected Users')),
+    addButton: element(by.id('addMembersButton')),
+    removeButton: element(by.id('removeMembersBtn')),
+    messageButton: element(by.id('messageUsersButton')),
     listFilter: element(by.model('userFilter')),
     list: element.all(by.repeater('user in list.visibleUsers')),
     newMember: {
       input: element(by.model('term')),
       button: element(by.model('addMode')),
       warning: element(by.binding('warningText')),
-      results: element(by.css('.typeahead')).element(by.css('ul li'))
+      results: element(by.id('typeaheadDiv')).element(by.css('ul li'))
     }
   };
 
@@ -65,19 +66,19 @@ function SfProjectSettingsPage() {
 
   this.templatesTab = {
     list: element.all(by.repeater('template in visibleTemplates')),
-    addButton: element(by.partialButtonText('Add New Template')),
-    removeButton: element(by.partialButtonText('Remove Templates')),
+    addButton: element(by.id('project-settings-new-template-btn')),
+    removeButton: element(by.id('project-settings-remove-btn')),
     editor: {
       title: element(by.model('editedTemplate.title')),
       description: element(by.model('editedTemplate.description')),
-      saveButton: element(by.id('question_templates_save_button'))
+      saveButton: element(by.id('project-settings-question-save-btn'))
     }
   };
 
   this.archivedTextsTab = {
     textNames: element.all(by.repeater('text in visibleTexts').column('title')),
     textList: element.all(by.repeater('text in visibleTexts')),
-    publishButton: element(by.css('.republish-texts')),
+    publishButton: element(by.id('project-settings-republish-btn')),
     textLink: function textLink(title) {
       return element(by.linkText(title));
     }
@@ -119,7 +120,7 @@ function SfProjectSettingsPage() {
     addInput: element(by.id('picklistEditorFieldset')).element(by.model('newValue')),
     addButton: element(by.id('picklistEditorFieldset')).element(by.css('.add-item-to-list')),
     saveButton: element(by.id('user_profile_lists_save_button')),
-    unsavedWarning: element(by.css('span.unsaved-warning')),
+    unsavedWarning: element(by.id('project-settings-unsaved')),
     deleteButton: function deleteButton(repeaterRow) {
       // Given a single repeater row in the picklist, return the delete button for that row
       return repeaterRow.element(by.css('a:first-of-type'));
