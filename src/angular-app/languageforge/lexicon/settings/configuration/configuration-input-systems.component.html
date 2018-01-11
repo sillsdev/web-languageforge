@@ -3,7 +3,7 @@
     <div class="col-md-3">
         <!-- control buttons -->
         <div class="form-group">
-            <button class="btn btn-sm btn-primary" data-ng-click="$ctrl.openNewLanguageModal($ctrl.suggestedLanguageCodes)">
+            <button class="btn btn-sm btn-primary" id="configuration-new-btn" data-ng-click="$ctrl.openNewLanguageModal($ctrl.suggestedLanguageCodes)">
                 <i class="fa fa-plus iconPadding"></i>New</button>
         </div>
 
@@ -27,22 +27,22 @@
     <div class="col-md-9 settings-panel">
         <!-- control buttons -->
         <div uib-dropdown class="dropdown form-group btn-group">
-            <button uib-dropdown-toggle class="btn btn-sm btn-std pui-no-caret"><i class="fa fa-ellipsis-v"></i></button>
+            <button uib-dropdown-toggle class="btn btn-sm btn-std pui-no-caret" id="configuration-dropdown-btn"><i class="fa fa-ellipsis-v"></i></button>
             <div class="dropdown-menu" uib-dropdown-menu>
-                <a href class="dropdown-item" tabindex="-1" data-ng-class="{disabled: $ctrl.newExists($ctrl.selects.special.optionsOrder[1])}"
+                <a href class="dropdown-item" id="configuration-add-ipa-btn" tabindex="-1" data-ng-class="{disabled: $ctrl.newExists($ctrl.selects.special.optionsOrder[1])}"
                    data-ng-click="$ctrl.addInputSystem($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].language, $ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName, $ctrl.selects.special.optionsOrder[1])">
                     <i class="fa fa-plus"></i> Add IPA for
                     <span class="notranslate">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName}}</span></a>
-                <a href class="dropdown-item" tabindex="-1" data-ng-class="{disabled: $ctrl.newExists($ctrl.selects.special.optionsOrder[2])}"
+                <a href class="dropdown-item" id="configuration-add-voice-btn" tabindex="-1" data-ng-class="{disabled: $ctrl.newExists($ctrl.selects.special.optionsOrder[2])}"
                    data-ng-click="$ctrl.addInputSystem($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].language, $ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName, $ctrl.selects.special.optionsOrder[2])">
                     <i class="fa fa-plus"></i> Add Voice for
                     <span class="notranslate">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName}}</span></a>
-                <a href class="dropdown-item" tabindex="-1"
+                <a href class="dropdown-item" id="configuration-add-variant-btn" tabindex="-1"
                    data-ng-click="$ctrl.addInputSystem($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].language, $ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName, $ctrl.selects.special.optionsOrder[3])">
                     <i class="fa fa-plus"></i> Add a variant of
                     <span class="notranslate">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName}}</span></a>
                 <div class="dropdown-divider" data-ng-show="! $ctrl.isInputSystemInUse()"></div>
-                <a href class="dropdown-item" data-ng-show="! $ctrl.isInputSystemInUse()" tabindex="-1"
+                <a href class="dropdown-item" id="configuration-remove-btn" data-ng-show="! $ctrl.isInputSystemInUse()" tabindex="-1"
                    data-ng-click="$ctrl.removeInputSystem($ctrl.selectedInputSystemId)">
                     <i class="fa fa-trash"></i> Remove
                     <span class="notranslate">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].languageDisplayName()}}</span></a>

@@ -1,6 +1,6 @@
 <div id="lexAppListView" class="animate-switch">
     <div data-ng-hide="visibleEntries.length === 0" class="row">
-        <pui-typeahead class="typeahead col-xs-12 col-sm-8" placeholder="'Search Entries'"
+        <pui-typeahead class="typeahead col-xs-12 col-sm-8" id="editor-list-search-entries" placeholder="'Search Entries'"
                    items="typeahead.searchResults" term="typeahead.searchItemSelected"
                    search="typeahead.searchEntries" select="typeahead.searchSelect">
             <ul data-ng-if="typeahead.searchResults.length > 0" class="list-group">
@@ -64,7 +64,7 @@
         <br>
     </div>
     <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-        <div class="text-center no-entries" data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading">
+        <div class="text-center no-entries" id="noEntries" data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading">
             <h4>Looks like there are no entries yet.</h4>
             <button class="btn btn-primary" data-ng-click="navigateToLiftImport()"
                     data-ng-hide="projectSettings.hasSendReceive">
