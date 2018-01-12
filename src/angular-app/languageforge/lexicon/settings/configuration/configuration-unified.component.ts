@@ -43,31 +43,30 @@ export class UnifiedConfigurationController implements angular.IController {
     }
   }
 
-  selectAll(index: number): void {
+  selectAllRow(settings: InputSystemSettings): void {
     const roles = RoleType.roles();
     for (const role of roles) {
-      this.unifiedViewModel.inputSystems[index][role] = this.unifiedViewModel.inputSystems[index].isAllRowSelected;
+      settings[role] = settings.isAllRowSelected;
     }
-    for (const group of this.unifiedViewModel.inputSystems[index].groups) {
-      group.show = this.unifiedViewModel.inputSystems[index].isAllRowSelected;
+    for (const group of settings.groups) {
+      group.show = settings.isAllRowSelected;
     }
   }
 
-  checkIfAllSelected(index: number): void {
-    console.log(index);
+  checkIfAllRowSelected(settings: InputSystemSettings): void {
     const roles = RoleType.roles();
 
-    this.unifiedViewModel.inputSystems[index].isAllRowSelected = true;
+    settings.isAllRowSelected = true;
     for (const role of roles) {
-      if (!this.unifiedViewModel.inputSystems[index][role]) {
-        this.unifiedViewModel.inputSystems[index].isAllRowSelected = false;
+      if (!settings[role]) {
+        settings.isAllRowSelected = false;
         break;
       }
     }
-    if (this.unifiedViewModel.inputSystems[index].isAllRowSelected) {
-      for (const group of this.unifiedViewModel.inputSystems[index].groups) {
+    if (settings.isAllRowSelected) {
+      for (const group of settings.groups) {
         if (!group.show) {
-          this.unifiedViewModel.inputSystems[index].isAllRowSelected = false;
+          settings.isAllRowSelected = false;
           break;
         }
       }
