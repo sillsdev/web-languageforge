@@ -3,7 +3,12 @@
 module.exports = new SfTextSettingsPage();
 
 function SfTextSettingsPage() {
+  var textPage = require('./textPage.js');
   // currently this page is called questions-settings.html but will be refactored. IJH 2014-06
+  this.get = function get(projectName, textTitle) {
+    textPage.get(projectName, textTitle)
+    textPage.clickTextSettingsButton();
+  };
 
   this.tabs = {
     editText: element(by.id('questions-settings-edit-tab')),
