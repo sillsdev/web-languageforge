@@ -120,7 +120,9 @@ namespace SIL.XForge.WebApi.Server.Services
             await doc.FetchAsync();
             XElement bookTextElem = await LoadBookTextAsync(fileName);
 
-            XElement usxElem = DeltaUsxMapper.UpdateUsx(bookTextElem.Element("usx"), doc.Data);
+            XElement usxElem = bookTextElem.Element("usx");
+            XElement bookElem = usxElem.Element("book");
+            usxElem = DeltaUsxMapper.ToUsx((string) bookElem.Attribute("code"), (string) bookElem, doc.Data);
 
             var revision = (string) bookTextElem.Attribute("revision");
 
@@ -132,8 +134,9 @@ namespace SIL.XForge.WebApi.Server.Services
 
             bookTextElem = XElement.Parse(bookText);
 
-            Delta delta = DeltaUsxMapper.UpdateDelta(doc.Data, bookTextElem.Element("usx"));
-            await doc.SubmitOpAsync(delta);
+            Delta delta = DeltaUsxMapper.ToDelta(bookTextElem.Element("usx"));
+            Delta diffDelta = doc.Data.Diff(delta);
+            await doc.SubmitOpAsync(diffDelta);
 
             await SaveBookTextAsync(bookTextElem, fileName);
         }
@@ -149,7 +152,7 @@ namespace SIL.XForge.WebApi.Server.Services
 
             var bookTextElem = XElement.Parse(bookText);
 
-            Delta delta = DeltaUsxMapper.UpdateDelta(new Delta(), bookTextElem.Element("usx"));
+            Delta delta = DeltaUsxMapper.ToDelta(bookTextElem.Element("usx"));
             await doc.CreateAsync(delta);
 
             await SaveBookTextAsync(bookTextElem, fileName);

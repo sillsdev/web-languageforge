@@ -11,150 +11,92 @@ namespace SIL.XForge.WebApi.Server.Services
     public class DeltaUsxMapperTests
     {
         [Test]
-        public void UpdateUsx_UpdateHeaderPara()
+        public void UpdateUsx_HeaderPara()
         {
-            XElement oldUsxElem = Usx("PHM",
-                Para("h", "Philemon"));
-
             var delta = Delta.New()
-                .Insert("Filemon")
+                .Insert("Philemon")
                 .InsertPara("h");
 
-            XElement newUsxElem = DeltaUsxMapper.UpdateUsx(oldUsxElem, delta);
+            XElement newUsxElem = DeltaUsxMapper.ToUsx("PHM", null, delta);
+
             XElement expected = Usx("PHM",
-                Para("h", "Filemon"));
+                Para("h", "Philemon"));
             Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
         }
 
         [Test]
-        public void UpdateUsx_UpdateVerseText()
+        public void UpdateUsx_VerseText()
         {
-            XElement oldUsxElem = Usx("PHM",
-                Chapter("1"),
-                Para("p",
-                    Verse("1"),
-                    "Verse text."));
-
             var delta = Delta.New()
                 .InsertChapter("1")
                 .InsertVerse("1")
-                .Insert("Updated verse text.")
+                .Insert("Verse text.")
                 .InsertPara("p");
 
-            XElement newUsxElem = DeltaUsxMapper.UpdateUsx(oldUsxElem, delta);
+            XElement newUsxElem = DeltaUsxMapper.ToUsx("PHM", null, delta);
+
             XElement expected = Usx("PHM",
                 Chapter("1"),
                 Para("p",
                     Verse("1"),
-                    "Updated verse text."));
+                    "Verse text."));
             Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
         }
 
         [Test]
         public void UpdateUsx_StripVerseAlignmentParas()
         {
-            XElement oldUsxElem = Usx("PHM",
-                Chapter("1"),
-                Para("p",
-                    Verse("1"),
-                    "Verse text.",
-                    Verse("2"),
-                    "Second verse text."));
-
             var delta = Delta.New()
                 .InsertChapter("1")
                 .InsertVerse("1")
                 .Insert("Verse text.")
                 .InsertVerseAlignmentPara()
                 .InsertVerse("2")
-                .Insert("Updated second verse text.")
+                .Insert("Second verse text.")
                 .InsertPara("p");
 
-            XElement newUsxElem = DeltaUsxMapper.UpdateUsx(oldUsxElem, delta);
+            XElement newUsxElem = DeltaUsxMapper.ToUsx("PHM", null, delta);
+
             XElement expected = Usx("PHM",
                 Chapter("1"),
                 Para("p",
                     Verse("1"),
                     "Verse text.",
                     Verse("2"),
-                    "Updated second verse text."));
+                    "Second verse text."));
             Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
         }
 
         [Test]
-        public void UpdateUsx_UpdateCharText()
+        public void UpdateUsx_CharText()
         {
-            XElement oldUsxElem = Usx("PHM",
-                Chapter("1"),
-                Para("p",
-                    Verse("1"),
-                    "This is some ",
-                    Char("bd", "bold"),
-                    " text."));
-
             var delta = Delta.New()
                 .InsertChapter("1")
                 .InsertVerse("1")
                 .Insert("This is some ")
-                .InsertChar("bd", "really bold")
+                .InsertChar("bd", "bold")
                 .Insert(" text.")
                 .InsertPara("p");
 
-            XElement newUsxElem = DeltaUsxMapper.UpdateUsx(oldUsxElem, delta);
-            XElement expected = Usx("PHM",
-                Chapter("1"),
-                Para("p",
-                    Verse("1"),
-                    "This is some ",
-                    Char("bd", "really bold"),
-                    " text."));
-            Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
-        }
+            XElement newUsxElem = DeltaUsxMapper.ToUsx("PHM", null, delta);
 
-        [Test]
-        public void UpdateUsx_DeleteCharText()
-        {
-            XElement oldUsxElem = Usx("PHM",
+            XElement expected = Usx("PHM",
                 Chapter("1"),
                 Para("p",
                     Verse("1"),
                     "This is some ",
                     Char("bd", "bold"),
                     " text."));
-
-            var delta = Delta.New()
-                .InsertChapter("1")
-                .InsertVerse("1")
-                .Insert("This is some normal text.")
-                .InsertPara("p");
-
-            XElement newUsxElem = DeltaUsxMapper.UpdateUsx(oldUsxElem, delta);
-            XElement expected = Usx("PHM",
-                Chapter("1"),
-                Para("p",
-                    Verse("1"),
-                    "This is some normal text."));
             Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
         }
 
         [Test]
-        public void UpdateUsx_UpdateVerseWithNote()
+        public void UpdateUsx_Note()
         {
-            XElement oldUsxElem = Usx("PHM",
-                Chapter("1"),
-                Para("p",
-                    Verse("1"),
-                    "This is a verse with a footnote",
-                    Note("f", "+",
-                        Char("fr", "1.1: "),
-                        Char("ft", "Refers to "),
-                        Char("fq", "a footnote.")),
-                    ", so that we can test it."));
-
             var delta = Delta.New()
                 .InsertChapter("1")
                 .InsertVerse("1")
-                .Insert("This is an updated verse with a footnote")
+                .Insert("This is a verse with a footnote")
                 .InsertNote("_note_1", "f", "+", Delta.New()
                     .InsertChar("fr", "1.1: ")
                     .InsertChar("ft", "Refers to ")
@@ -162,24 +104,9 @@ namespace SIL.XForge.WebApi.Server.Services
                 .Insert(", so that we can test it.")
                 .InsertPara("p");
 
-            XElement newUsxElem = DeltaUsxMapper.UpdateUsx(oldUsxElem, delta);
-            XElement expected = Usx("PHM",
-                Chapter("1"),
-                Para("p",
-                    Verse("1"),
-                    "This is an updated verse with a footnote",
-                    Note("f", "+",
-                        Char("fr", "1.1: "),
-                        Char("ft", "Refers to "),
-                        Char("fq", "a footnote.")),
-                    ", so that we can test it."));
-            Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
-        }
+            XElement newUsxElem = DeltaUsxMapper.ToUsx("PHM", null, delta);
 
-        [Test]
-        public void UpdateUsx_DeleteNote()
-        {
-            XElement oldUsxElem = Usx("PHM",
+            XElement expected = Usx("PHM",
                 Chapter("1"),
                 Para("p",
                     Verse("1"),
@@ -189,19 +116,6 @@ namespace SIL.XForge.WebApi.Server.Services
                         Char("ft", "Refers to "),
                         Char("fq", "a footnote.")),
                     ", so that we can test it."));
-
-            var delta = Delta.New()
-                .InsertChapter("1")
-                .InsertVerse("1")
-                .Insert("This is a verse with no footnote, so we can test it.")
-                .InsertPara("p");
-
-            XElement newUsxElem = DeltaUsxMapper.UpdateUsx(oldUsxElem, delta);
-            XElement expected = Usx("PHM",
-                Chapter("1"),
-                Para("p",
-                    Verse("1"),
-                    "This is a verse with no footnote, so we can test it."));
             Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
         }
 
