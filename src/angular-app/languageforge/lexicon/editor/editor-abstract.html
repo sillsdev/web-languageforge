@@ -1,49 +1,51 @@
 <div data-ng-cloak id="lexAppContainer">
-    <div class="row">
-        <div class="col-12">
-            <div class="lexAppToolbar" data-ng-show="!$state.is('editor.list')">
-                <div class="float-left">
-                    <a id="toListLink" data-ng-show="$state.is('editor.entry')" class="btn btn-std"
-                       data-ng-click="returnToList()"
-                       title="Back to List">
-                        <i class="fa fa-arrow-circle-left"></i>
-                        <span class="d-none d-md-inline-block">List</span></a>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="lexAppToolbar" data-ng-show="!$state.is('editor.list')">
+                    <div class="float-left">
+                        <a id="toListLink" data-ng-show="$state.is('editor.entry')" class="btn btn-std"
+                           data-ng-click="returnToList()"
+                           title="Back to List">
+                            <i class="fa fa-arrow-circle-left"></i>
+                            <span class="d-none d-md-inline-block">List</span></a>
 
-                    <button id="editorNewWordBtn" class="btn btn-primary"
-                            data-ng-show="$state.is('editor.entry')" data-ng-if="rights.canEditEntry()"
-                            data-ng-click="newEntry()">
-                        <i class="fa fa-plus"></i><span class="hidden-md-down"> New Word</span></button>
+                        <button id="editorNewWordBtn" class="btn btn-primary"
+                                data-ng-show="$state.is('editor.entry')" data-ng-if="rights.canEditEntry()"
+                                data-ng-click="newEntry()">
+                            <i class="fa fa-plus"></i><span class="hidden-md-down"> New Word</span></button>
 
-                    <a id="toEditLink" data-ng-show="$state.is('editor.comments')" class="btn btn-std"
-                       data-ng-click="editEntry(currentEntry.id)" title="Return to Edit Entry">
-                        <i class="fa fa-arrow-circle-left"></i>
-                        Edit </a>
-                </div>
-                <div class="float-right" data-ng-show="$state.is('editor.entry')">
-                    <span data-ng-if="rights.canEditEntry()">
-                        <span class="text-muted">{{saveNotice()}}</span>
-                        <button id="saveEntryBtn" class="btn btn-primary" data-ng-click="saveCurrentEntry(true)"
-                                data-ng-disabled="!currentEntryIsDirty()">
-                            <i class="fa fa-save"></i> <span class="d-none d-md-inline-block">{{saveButtonTitle()}}</span>
+                        <a id="toEditLink" data-ng-show="$state.is('editor.comments')" class="btn btn-std"
+                           data-ng-click="editEntry(currentEntry.id)" title="Return to Edit Entry">
+                            <i class="fa fa-arrow-circle-left"></i>
+                            Edit </a>
+                    </div>
+                    <div class="float-right" data-ng-show="$state.is('editor.entry')">
+                        <span data-ng-if="rights.canEditEntry()">
+                            <span class="text-muted">{{saveNotice()}}</span>
+                            <button id="saveEntryBtn" class="btn btn-primary" data-ng-click="saveCurrentEntry(true)"
+                                    data-ng-disabled="!currentEntryIsDirty()">
+                                <i class="fa fa-save"></i> <span class="d-none d-md-inline-block">{{saveButtonTitle()}}</span>
+                            </button>
+                        </span>
+                        <span data-ng-if="entryLoaded()">
+                            <button id="toggleHiddenFieldsBtn" class="btn btn-std"
+                                    data-ng-click="show.emptyFields = !show.emptyFields">
+                                <i class="fa" data-ng-class="show.emptyFields ? 'fa-minus-square-o' : 'fa-plus-square-o'"></i>
+                                <span class="d-none d-md-inline-block">{{show.emptyFields ? 'Hide Extra Fields' : 'Show Extra Fields'}}</span>
+                            </button>
+                        </span>
+                        <button id="toCommentsLink"
+                           class="btn btn-primary" data-ng-click="showComments()" title="Show Comments">
+                            <current-entry-comment-count></current-entry-comment-count>
+                            <i class="fa fa-comments commentColor"></i>
                         </button>
-                    </span>
-                    <span data-ng-if="entryLoaded()">
-                        <button id="toggleHiddenFieldsBtn" class="btn btn-std"
-                                data-ng-click="show.emptyFields = !show.emptyFields">
-                            <i class="fa" data-ng-class="show.emptyFields ? 'fa-minus-square-o' : 'fa-plus-square-o'"></i>
-                            <span class="d-none d-md-inline-block">{{show.emptyFields ? 'Hide Extra Fields' : 'Show Extra Fields'}}</span>
-                        </button>
-                    </span>
-                    <button id="toCommentsLink"
-                       class="btn btn-primary" data-ng-click="showComments()" title="Show Comments">
-                        <current-entry-comment-count></current-entry-comment-count>
-                        <i class="fa fa-comments commentColor"></i>
-                    </button>
-                </div>
-                <div class="float-right" data-ng-show="$state.is('editor.comments')">
-                    <div id="commentsCount" class="btn btn-std">
-                        <current-entry-comment-count></current-entry-comment-count>
-                        <i class="fa fa-comments commentColor"></i>
+                    </div>
+                    <div class="float-right" data-ng-show="$state.is('editor.comments')">
+                        <div id="commentsCount" class="btn btn-std">
+                            <current-entry-comment-count></current-entry-comment-count>
+                            <i class="fa fa-comments commentColor"></i>
+                        </div>
                     </div>
                 </div>
             </div>
