@@ -10,7 +10,7 @@ namespace SIL.XForge.WebApi.Server.Services
 {
     public class DeltaUsxMapper
     {
-        public static Delta UpdateDelta(Delta oldDelta, XElement usxElem)
+        public static Delta ToDelta(XElement usxElem)
         {
             var newDelta = new Delta();
             int nextNoteId = 1;
@@ -30,7 +30,7 @@ namespace SIL.XForge.WebApi.Server.Services
                         break;
                 }
             }
-            return oldDelta.Ops.Count == 0 ? newDelta : oldDelta.Diff(newDelta);
+            return newDelta;
         }
 
         private static void ProcessChildNodes(Delta newDelta, XElement elem, ref bool inVerse, ref int nextNoteId,
@@ -91,11 +91,10 @@ namespace SIL.XForge.WebApi.Server.Services
             return attrs;
         }
 
-        public static XElement UpdateUsx(XElement oldUsxElem, Delta delta)
+        public static XElement ToUsx(string bookId, string desc, Delta delta)
         {
-            var newUsxElem = new XElement(oldUsxElem);
-            newUsxElem.Elements("para").Remove();
-            newUsxElem.Elements("chapter").Remove();
+            var newUsxElem = new XElement("usx", new XAttribute("version", "2.5"),
+                new XElement("book", new XAttribute("code", bookId), new XAttribute("style", "id"), desc));
             var childNodes = new List<XNode>();
             XElement noteElem = null;
             foreach (JToken op in delta.Ops)
