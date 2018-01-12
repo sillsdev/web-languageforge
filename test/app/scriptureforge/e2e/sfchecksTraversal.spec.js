@@ -20,7 +20,6 @@ describe('SFChecks E2E Page Traversal', function () {
     projectPage.invite.sendButton.click();
     projectPage.newText.showFormButton.click();
     projectPage.newText.title.click();
-    projectPage.newText.saveButton.click();
   });
 
   describe('Explore project settings page', function () {
@@ -41,7 +40,6 @@ describe('SFChecks E2E Page Traversal', function () {
       projectSettingsPage.templatesTab.removeButton.click();
       projectSettingsPage.templatesTab.editor.title.click();
       projectSettingsPage.templatesTab.editor.description.click();
-      projectSettingsPage.templatesTab.editor.saveButton.click();
     });
 
     it('Archive Text tab', function () {
@@ -53,6 +51,9 @@ describe('SFChecks E2E Page Traversal', function () {
     it('Project tab', function () {
       projectSettingsPage.tabs.project.click();
       projectSettingsPage.projectTab.name.click();
+      projectSettingsPage.projectTab.code.click();
+      projectSettingsPage.projectTab.allowAudioDownload.click();
+      projectSettingsPage.projectTab.usersSeeEachOthersResponses.click();
     });
 
     it('Options tab', function () {
@@ -69,7 +70,6 @@ describe('SFChecks E2E Page Traversal', function () {
       projectSettingsPage.communicationTab.sms.number.click();
       projectSettingsPage.communicationTab.email.address.click();
       projectSettingsPage.communicationTab.email.name.click();
-      projectSettingsPage.communicationTab.button.click();
     });
   });
 
