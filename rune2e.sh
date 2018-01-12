@@ -2,6 +2,7 @@
 # Usage
 # rune2e.sh lf                                   : runs E2E tests for LF
 # rune2e.sh sf                                   : runs E2E tests for SF
+# run2e2.sh xf                                   : runs E2E tests for both LF and SF (only runs bellows tasks once)
 # rune2e.sh jp                                   : runs E2E tests for JP
 # rune2e.sh lf --specs lexicon-new-project       : runs lexicon-new-project spec for LF
 #
@@ -11,41 +12,30 @@
 if [ "$1" = "lf" ]
   then
     E2EHOSTNAME="languageforge.local"
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 elif [ "$1" = "sf" ]
   then
     E2EHOSTNAME="scriptureforge.local"
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 elif [ "$1" = "xf" ]
-#run both lf and sf tests, but don't repeat the tests common to both
   then
-    #run bellows and LF tests
     E2EHOSTNAME="languageforge.local"
     gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
-    gulp test-e2e-teardownTestEnvironment
-    #run SF specific tests
+    gulp test-e2e-teardownTestEnvironment    #need to do this before switching hostname
     E2EHOSTNAME="scriptureforge.local"
-    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --specs activity
-    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --specs project
-    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --specs projectSettings
-    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --specs question
-    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --specs text
-    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --specs textSettings
-
-    # Ensure cleanup
-    gulp test-e2e-teardownTestEnvironment
-    gulp test-e2e-useLiveConfig
-    gulp test-restart-webserver
-    exit $STATUS
-
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2} --excludeBellows
 elif [ "$1" = "jp" ]
   then
     E2EHOSTNAME="jamaicanpsalms.scriptureforge.local"
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 else
     E2EHOSTNAME="languageforge.local"
+    gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 fi
-gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
-STATUS=$?
 
-# Ensure cleanup
+# Ensure Cleanup
+
+STATUS=$?
 gulp test-e2e-teardownTestEnvironment
 gulp test-e2e-useLiveConfig
 gulp test-restart-webserver
