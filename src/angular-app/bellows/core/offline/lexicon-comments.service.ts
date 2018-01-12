@@ -72,7 +72,7 @@ export class LexiconCommentService {
     this.comments.counts.currentEntry.fields = {};
     this.comments.items.currentEntry.length = 0;
     for (const comment of this.comments.items.all) {
-      const fieldName = comment.regarding.field;
+      const fieldName = comment.regarding.field  + '_' + comment.regarding.inputSystemAbbreviation;
       if (comment.entryRef === entryId) {
         if (fieldName && angular.isUndefined(this.comments.counts.currentEntry.fields[fieldName])) {
           this.comments.counts.currentEntry.fields[fieldName] = 0;
@@ -108,9 +108,9 @@ export class LexiconCommentService {
     }
   }
 
-  getFieldCommentCount(fieldName: string): number {
-    if (angular.isDefined(this.comments.counts.currentEntry.fields[fieldName])) {
-      return this.comments.counts.currentEntry.fields[fieldName];
+  getFieldCommentCount(contextId: string): number {
+    if (angular.isDefined(this.comments.counts.currentEntry.fields[contextId])) {
+      return this.comments.counts.currentEntry.fields[contextId];
     }
 
     return 0;
@@ -144,9 +144,11 @@ export class LexiconCommentService {
 
   refreshFilteredComments(filter: any): void {
     this.comments.items.currentEntryFiltered.length = 0;
-    const comments = this.$filter('filter')(this.comments.items.currentEntry, filter.byText);
+    let comments = this.$filter('filter')(this.comments.items.currentEntry, filter.byText);
     const arr = this.comments.items.currentEntryFiltered;
-    arr.push.apply(arr, this.$filter('filter')(comments, filter.byStatus));
+    comments = this.$filter('filter')(comments, filter.byStatus);
+    comments = this.$filter('filter')(comments, filter.byContext);
+    arr.push.apply(arr, comments);
   }
 
   update(commentData: any, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
