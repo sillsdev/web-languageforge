@@ -56,7 +56,7 @@ class LexTask {
   type: string;
 }
 
-class LexUserViewConfig extends LexRoleViewConfig { }
+export class LexUserViewConfig extends LexRoleViewConfig { }
 
 export class LexiconConfig {
   entry: LexConfigFieldList;
