@@ -42,6 +42,8 @@ angular.module('palaso.ui.comments')
         $scope.commentFilter = {
           text: '',
           status: 'all',
+          regardingField: '',
+          regardingInputSystemAbbreviation: '',
           byText: function byText(comment) {
             // Convert entire comment object to a big string and search for filter.
             // Note: This has a slight side effect of ID and avatar information
@@ -63,6 +65,24 @@ angular.module('palaso.ui.comments')
                   return true;
                 }
               }
+            }
+
+            return false;
+          },
+
+          byContext: function byContext(comment) {
+            console.log('reached');
+            if (!angular.isDefined(comment)) {
+              return false;
+            } else if (!$scope.commentFilter.regardingField ||
+              !$scope.commentFilter.regardingInputSystemAbbreviation) {
+              // Return true as we're most likely not running a valid context search so return all
+              console.log('nope');
+              return true;
+            } else if (comment.regarding.field === $scope.commentFilter.regardingField &&
+              comment.regarding.inputSystemAbbreviation === $scope.commentFilter.regardingInputSystemAbbreviation) {
+              console.log('boom!');
+              return true;
             }
 
             return false;
@@ -154,6 +174,13 @@ angular.module('palaso.ui.comments')
           return label;
         };
 
+        $scope.showCommentsInContext = function showCommentsInContext(field, abbreviation) {
+          console.log('go go go: ');
+          $scope.commentFilter.regardingField = field;
+          $scope.commentFilter.regardingInputSystemAbbreviation = abbreviation;
+          commentService.refreshFilteredComments($scope.commentFilter);
+        };
+
         $scope.$watch('entry', function (newVal) {
           if (newVal && !angular.equals(newVal, {})) {
             $scope.loadComments();
@@ -174,6 +201,15 @@ angular.module('palaso.ui.comments')
           }
 
         });
+
+        $scope.$watch('control.commentContext', function (newVal, oldVal) {
+          console.log('here');
+          if (newVal !== oldVal) {
+            console.log('change');
+            $scope.showCommentsInContext(newVal.field, newVal.abbreviation);
+          }
+
+        }, true);
 
       }],
 
