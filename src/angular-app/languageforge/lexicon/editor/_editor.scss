@@ -387,9 +387,13 @@ dc-entry .card {
     /*  TODO: review this in light of animation and the footer staying at the bottom. IJH 2014-09
         The view is used in edit and comment view */
 
-    overflow-y: auto;
-    overflow-x: hidden;
     min-height: 580px;
+  .field-container {
+    position: relative;
+    .dc-multitext-tag {
+      position: relative;
+    }
+  }
 }
 
 .entryItemView {
