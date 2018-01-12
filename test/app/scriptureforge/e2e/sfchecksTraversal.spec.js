@@ -51,7 +51,6 @@ describe('SFChecks E2E Page Traversal', function () {
     it('Project tab', function () {
       projectSettingsPage.tabs.project.click();
       projectSettingsPage.projectTab.name.click();
-      projectSettingsPage.projectTab.code.click();
       projectSettingsPage.projectTab.allowAudioDownload.click();
       projectSettingsPage.projectTab.usersSeeEachOthersResponses.click();
     });
