@@ -36,12 +36,12 @@
                     <th class="text-center table-secondary" ></th>
                     <td class="text-center"></td>
                     <td class="text-center">{{inputSystem.name}}</td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.isAllRowSelected" data-ng-click="$ctrl.selectAll($index)" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.observer" data-ng-click="$ctrl.checkIfAllSelected($index)" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.commenter" data-ng-click="$ctrl.checkIfAllSelected($index)" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.contributor" data-ng-click="$ctrl.checkIfAllSelected($index)" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.manager" data-ng-click="$ctrl.checkIfAllSelected($index)" aria-label="..." type="checkbox"></td>
-                    <td class="text-center" data-ng-repeat="group in inputSystem.groups"><input class="form-check-input position-static" data-ng-model="group.show" data-ng-click="$ctrl.checkIfAllSelected($parent.$index)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.isAllRowSelected" data-ng-click="$ctrl.selectAllRow(inputSystem)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.observer" data-ng-click="$ctrl.checkIfAllRowSelected(inputSystem)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.commenter" data-ng-click="$ctrl.checkIfAllRowSelected(inputSystem)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.contributor" data-ng-click="$ctrl.checkIfAllRowSelected(inputSystem)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystem.manager" data-ng-click="$ctrl.checkIfAllRowSelected(inputSystem)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center" data-ng-repeat="group in inputSystem.groups"><input class="form-check-input position-static" data-ng-model="group.show" data-ng-click="$ctrl.checkIfAllRowSelected(inputSystem)" aria-label="..." type="checkbox"></td>
                     <td></td>
                 </tr>
                 <tr>
@@ -72,12 +72,12 @@
                     <th class="text-center table-secondary" ></th>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.hiddenIfEmpty" aria-label="..." type="checkbox"></td>
                     <td class="text-center" data-ng-style="{'font-style': $ctrl.isCustomField(entryField.fieldName) ? 'italic' : 'normal'}">{{entryField.name}}</td>
-                    <td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.observer" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.commenter" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.contributor" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.manager" aria-label="..." type="checkbox"></td>
-                    <td class="text-center" data-ng-repeat="group in entryField.groups"><input class="form-check-input position-static" data-ng-model="group.show" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.isAllRowSelected" data-ng-click="$ctrl.selectAllRow(entryField)" aria-label="..."type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.observer" data-ng-click="$ctrl.checkIfAllRowSelected(entryField)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.commenter" data-ng-click="$ctrl.checkIfAllRowSelected(entryField)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.contributor" data-ng-click="$ctrl.checkIfAllRowSelected(entryField)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.manager" data-ng-click="$ctrl.checkIfAllRowSelected(entryField)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center" data-ng-repeat="group in entryField.groups"><input class="form-check-input position-static" data-ng-model="group.show" aria-label="..." data-ng-click="$ctrl.checkIfAllRowSelected(entryField)" type="checkbox"></td>
                     <td></td>
                 </tr>
                 <tr>
@@ -101,12 +101,12 @@
                     <th class="text-center table-secondary" ></th>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.hiddenIfEmpty" aria-label="..." type="checkbox"></td>
                     <td class="text-center" data-ng-style="{'font-style': $ctrl.isCustomField(senseField.fieldName) ? 'italic' : 'normal'}">{{senseField.name}}</td>
-                    <td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.observer" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.commenter" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.contributor" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.manager" aria-label="..." type="checkbox"></td>
-                    <td class="text-center" data-ng-repeat="group in senseField.groups"><input class="form-check-input position-static" data-ng-model="group.show" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.isAllRowSelected" data-ng-click="$ctrl.selectAllRow(senseField)" aria-label="..."type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.observer" data-ng-click="$ctrl.checkIfAllRowSelected(senseField)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.commenter" data-ng-click="$ctrl.checkIfAllRowSelected(senseField)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.contributor" data-ng-click="$ctrl.checkIfAllRowSelected(senseField)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.manager" data-ng-click="$ctrl.checkIfAllRowSelected(senseField)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center" data-ng-repeat="group in senseField.groups"><input class="form-check-input position-static" data-ng-model="group.show" data-ng-click="$ctrl.checkIfAllRowSelected(senseField)" aria-label="..." type="checkbox"></td>
                     <td></td>
                 </tr>
                 <tr>
@@ -130,12 +130,12 @@
                     <th class="text-center table-secondary"></th>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.hiddenIfEmpty" aria-label="..."  type="checkbox"></td>
                     <td class="text-center" data-ng-style="{'font-style': $ctrl.isCustomField(exampleField.fieldName) ? 'italic' : 'normal'}">{{exampleField.name}}</td>
-                    <td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.observer" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.commenter" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.contributor" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.manager" aria-label="..." type="checkbox"></td>
-                    <td data-ng-repeat="group in exampleField.groups" class="text-center"><input class="form-check-input position-static" data-ng-model="group.show" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.isAllRowSelected" data-ng-click="$ctrl.selectAllRow(exampleField)" aria-label="..."type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.observer" data-ng-click="$ctrl.checkIfAllRowSelected(exampleField)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.commenter" data-ng-click="$ctrl.checkIfAllRowSelected(exampleField)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.contributor" data-ng-click="$ctrl.checkIfAllRowSelected(exampleField)" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="exampleField.manager" data-ng-click="$ctrl.checkIfAllRowSelected(exampleField)" aria-label="..." type="checkbox"></td>
+                    <td data-ng-repeat="group in exampleField.groups" class="text-center"><input class="form-check-input position-static" data-ng-model="group.show" data-ng-click="$ctrl.checkIfAllRowSelected(exampleField)" aria-label="..." type="checkbox"></td>
                     <td></td>
                 </tr>
                 <tr>
