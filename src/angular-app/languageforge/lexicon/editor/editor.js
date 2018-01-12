@@ -52,6 +52,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
     $scope.visibleEntries = editorService.visibleEntries;
     $scope.filteredEntries = editorService.filteredEntries;
     $scope.entryListModifiers = editorService.entryListModifiers;
+    $scope.commentContext = {};
     $scope.sortEntries = function (args) {
       editorService.sortEntries.apply(this, arguments).then(function () {
         $scope.typeahead.searchEntries($scope.typeahead.searchItemSelected);
@@ -900,6 +901,12 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         if (entry.id) {
           $scope.editEntryAndScroll(entry.id);
         }
+      };
+
+      $scope.setCommentContext = function setCommentContext(field, abbreviation) {
+        $scope.commentContext.field = field;
+        $scope.commentContext.abbreviation = abbreviation;
+        console.log('all set - watch kick in place. ' + field + ', ' + abbreviation);
       };
     });
 
