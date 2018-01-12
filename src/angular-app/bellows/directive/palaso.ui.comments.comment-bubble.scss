@@ -1,16 +1,45 @@
-a.commentBubble:hover {
-    text-decoration: none;
-}
-a.commentBubble {
-    color: #faa732;
-    padding: 0 20px 0 20px;
-    position:relative;
-    top: -3px;
-}
-
-a.commentBubble .commentCount {
-    color: white;
+.commentBubbleContainer {
+  position: absolute;
+  right: -20px;
+  z-index: 20;
+  top: 4px;
+  a.commentBubble {
+    background: #104060;
+    border-radius: 50%;
     position: relative;
-    right: 32px;
-    bottom: 5px;
+    width: 31px;
+    height: 31px;
+    line-height: 28px;
+    display: block;
+    text-align: center;
+    &.noCount {
+      background: #ebebeb;
+      .commentCount {
+        display: none;
+      }
+    }
+    i {
+      color: #fff;
+      font-size: 12px;
+    }
+    &:hover {
+      text-decoration: none;
+    }
+    .commentCount {
+      color: #fff;
+      position: absolute;
+      top: -8px;
+      right: -2px;
+      background: #1d64f0;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+      display: block;
+      line-height: 18px;
+      text-align: center;
+      font-weight: normal;
+      padding: 0;
+    }
+  }
 }
