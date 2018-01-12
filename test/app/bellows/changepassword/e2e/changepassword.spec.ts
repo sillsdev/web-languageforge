@@ -1,7 +1,7 @@
 import {} from 'jasmine';
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 
-const constants = require('json!../../../testConstants.json');
+const constants = require('../../../testConstants.json');
 import {BellowsLoginPage} from '../../pages/loginPage';
 import {PageHeader} from '../../pages/pageHeader';
 import {BellowsChangePasswordPage} from '../../pages/changePasswordPage';
@@ -56,13 +56,13 @@ describe('E2E testing: Change password', function () {
     browser.wait(expectedCondition.elementToBeClickable(changePasswordPage.submitButton),
       CONDITION_TIMEOUT);
     changePasswordPage.submitButton.click();
-    expect(changePasswordPage.noticeList.count()).toBe(1);
+    expect<any>(changePasswordPage.noticeList.count()).toBe(1);
     expect(changePasswordPage.noticeList.first().getText()).toContain('Password updated');
     loginPage.logout();
 
     loginPage.login(constants.memberUsername, newPassword);
     browser.wait(expectedCondition.visibilityOf(header.myProjects.button), CONDITION_TIMEOUT);
-    expect(header.myProjects.button.isDisplayed()).toBe(true);
+    expect<any>(header.myProjects.button.isDisplayed()).toBe(true);
 
     // reset password back to original
     changePasswordPage.get();
