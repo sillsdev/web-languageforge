@@ -715,6 +715,7 @@ gulp.task('test-e2e-doTest', function (cb) {
 // -------------------------------------
 gulp.task('test-e2e-run',
   gulp.series(
+    'test-e2e-compile',
     'test-e2e-useTestConfig',
     'test-restart-webserver',
     'test-e2e-setupTestEnvironment',
@@ -723,6 +724,7 @@ gulp.task('test-e2e-run',
 gulp.task('test-e2e-run').description = 'Run the E2E test on local developer environment';
 
 gulp.task('test-e2e-local-lf', gulp.series(
+    'test-e2e-compile',
     'test-e2e-useTestConfig',
     'test-restart-webserver',
     'test-e2e-setupTestEnvironment',
