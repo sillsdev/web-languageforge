@@ -1,5 +1,4 @@
 import * as angular from 'angular';
-import { setTimeout } from 'core-js/library/web/timers';
 import { SmtTrainProgress } from 'machine';
 import Quill from 'quill';
 
@@ -141,8 +140,11 @@ export class TranslateEditorController implements angular.IController {
             new TranslateUserPreferences();
           this.source.inputSystem = this.tecProject.config.source.inputSystem;
           this.target.inputSystem = this.tecProject.config.target.inputSystem;
-          this.machine.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
+          this.machine.initialise(this.tecProject.slug);
           this.showFormats =  this.tecProject.config.userPreferences.isFormattingOptionsShown;
+
+          this.source.isScripture = this.tecProject.config.isTranslationDataScripture;
+          this.target.isScripture = this.tecProject.config.isTranslationDataScripture;
 
           if (this.tecProject.config.documentSets.idsOrdered != null &&
             this.tecProject.config.documentSets.idsOrdered.length > 0
@@ -204,7 +206,11 @@ export class TranslateEditorController implements angular.IController {
         }
       });
 
-      this.machine.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
+      this.machine.initialise(this.tecProject.slug);
+
+      this.source.isScripture = this.tecProject.config.isTranslationDataScripture;
+      this.target.isScripture = this.tecProject.config.isTranslationDataScripture;
+
       this.listenForTrainingStatus();
     }
   }
@@ -600,7 +606,7 @@ export class TranslateEditorController implements angular.IController {
 
         if (segmentChanged) {
           // select the corresponding source segment
-          this.source.switchCurrentSegment(this.target.currentSegmentIndex);
+          this.source.switchCurrentSegment(this.target.currentSegmentRef);
 
           if (this.currentDocType) {
             this.metricService.sendMetrics(true, this.target.currentSegmentDocumentSetId);
@@ -625,7 +631,7 @@ export class TranslateEditorController implements angular.IController {
 
       case DocType.SOURCE:
         if (segmentChanged) {
-          this.target.switchCurrentSegment(this.source.currentSegmentIndex);
+          this.target.switchCurrentSegment(this.source.currentSegmentRef);
 
           if (!this.currentDocType && this.selectedDocumentSetIndex in this.documentSets) {
             this.metricService.currentDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;

@@ -5,7 +5,7 @@ export class Segment {
   private _range: RangeStatic;
   private initialText: string;
 
-  constructor(public readonly documentSetId: string, public readonly index: number) { }
+  constructor(public readonly documentSetId: string, public readonly ref: string) { }
 
   get text(): string {
     return this._text;
