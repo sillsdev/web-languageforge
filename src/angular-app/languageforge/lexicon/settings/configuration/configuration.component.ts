@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import {JsonRpcResult} from '../../../../bellows/core/api/json-rpc.service';
 import {NoticeService} from '../../../../bellows/core/notice/notice.service';
 import {Session, SessionService} from '../../../../bellows/core/session.service';
 import {User} from '../../../../bellows/shared/model/user.model';
@@ -19,6 +20,11 @@ import {OptionSelects} from './option-selects.model';
 
 interface LexiconConfigControllerScope extends angular.IScope {
   configForm: angular.IFormController;
+}
+
+class LexiconConfigControllerApiResult {
+  users: JsonRpcResult;
+  session: Session;
 }
 
 export class LexiconConfigurationController implements angular.IController {
@@ -45,20 +51,31 @@ export class LexiconConfigurationController implements angular.IController {
   private session: Session;
   private warnOfUnsavedEditsId: string;
 
-  static $inject: string[] = ['$scope', 'silNoticeService',
-    'sessionService', 'lexProjectService',
-    'lexConfigService', 'lexSendReceive'];
-  constructor(private $scope: LexiconConfigControllerScope, private notice: NoticeService,
-              private sessionService: SessionService, private lexProjectService: LexiconProjectService,
-              private lexConfig: LexiconConfigService, private sendReceive: LexiconSendReceiveService) {
+  static $inject: string[] = ['$scope', '$q',
+    'silNoticeService', 'sessionService',
+    'lexProjectService', 'lexConfigService',
+    'lexSendReceive'];
+  constructor(private $scope: LexiconConfigControllerScope, private $q: angular.IQService,
+              private notice: NoticeService, private sessionService: SessionService,
+              private lexProjectService: LexiconProjectService, private lexConfig: LexiconConfigService,
+              private sendReceive: LexiconSendReceiveService) {
     lexProjectService.setBreadcrumbs('configuration', 'Configuration');
 
-    sessionService.getSession().then(session => {
-      this.session = session;
-      this.configDirty = angular.copy(session.projectSettings<LexiconProjectSettings>().config);
-      this.configPristine = angular.copy(session.projectSettings<LexiconProjectSettings>().config);
-      this.optionListsDirty = angular.copy(session.projectSettings<LexiconProjectSettings>().optionlists);
-      this.optionListsPristine = angular.copy(session.projectSettings<LexiconProjectSettings>().optionlists);
+    $q.all({
+      users: lexProjectService.users(),
+      session: sessionService.getSession()
+    }).then((result: LexiconConfigControllerApiResult) => {
+      if (result.users.ok) {
+        for (const user of (result.users.data.users as User[])) {
+          this.users[user.id] = user;
+        }
+      }
+
+      this.session = result.session;
+      this.configDirty = angular.copy(result.session.projectSettings<LexiconProjectSettings>().config);
+      this.configPristine = angular.copy(result.session.projectSettings<LexiconProjectSettings>().config);
+      this.optionListsDirty = angular.copy(result.session.projectSettings<LexiconProjectSettings>().optionlists);
+      this.optionListsPristine = angular.copy(result.session.projectSettings<LexiconProjectSettings>().optionlists);
       this.isSaving = false;
 
       this.setupView();
@@ -66,14 +83,6 @@ export class LexiconConfigurationController implements angular.IController {
 
       sendReceive.setPollUpdateSuccessCallback(this.pollUpdateSuccess);
       sendReceive.setSyncProjectStatusSuccessCallback(this.syncProjectStatusSuccess);
-    });
-
-    lexProjectService.users(result => {
-      if (result.ok) {
-        for (const user of (result.data.users as User[])) {
-          this.users[user.id] = user;
-        }
-      }
     });
   }
 
