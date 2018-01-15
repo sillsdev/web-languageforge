@@ -1,28 +1,27 @@
 import * as angular from 'angular';
 import Quill, { RangeStatic } from 'quill';
 
+import { InputSystem } from '../../../bellows/shared/model/input-system.model';
 import { DocType, SaveState } from '../core/constants';
 import { MachineService } from '../core/machine.service';
 import { RealTimeService } from '../core/realtime.service';
 import { MetricService } from './metric.service';
 import { SuggestionsTheme } from './quill/suggestions-theme';
 import { Segment } from './segment';
+import { MachineSegmenter, Segmenter, UsxSegmenter } from './segmenter';
 
 export abstract class DocumentEditor {
-  static isSelectionCollapsed(selection: RangeStatic): boolean {
-    return selection != null && selection.length === 0;
-  }
-
   static isTextEmpty(text: string): boolean {
     text = text.endsWith('\n') ? text.substr(0, text.length - 1) : text;
     return text === '';
   }
 
   modulesConfig: any = {};
-  inputSystem: any = {};
+  inputSystem: InputSystem = new InputSystem();
 
   protected currentSegment: Segment;
-  protected segmentRanges: RangeStatic[];
+  protected segmenter: Segmenter;
+  private _isScripture: boolean = false;
 
   private documentSetId: string = '';
   private readonly _created: angular.IDeferred<boolean>;
@@ -31,6 +30,7 @@ export abstract class DocumentEditor {
   constructor(private readonly $q: angular.IQService, protected readonly machine: MachineService,
               private readonly realTime: RealTimeService) {
     this._created = this.$q.defer();
+    this.segmenter = new MachineSegmenter(this, machine);
   }
 
   abstract get docType(): string;
@@ -57,8 +57,8 @@ export abstract class DocumentEditor {
     return this.currentSegment == null ? '' : this.currentSegment.documentSetId;
   }
 
-  get currentSegmentIndex(): number {
-    return this.currentSegment == null ? -1 : this.currentSegment.index;
+  get currentSegmentRef(): string {
+    return this.currentSegment == null ? '' : this.currentSegment.ref;
   }
 
   get saveState(): SaveState {
@@ -69,11 +69,22 @@ export abstract class DocumentEditor {
     return DocumentEditor.isTextEmpty(this.quill.getText());
   }
 
+  get isScripture(): boolean {
+    return this._isScripture;
+  }
+
+  set isScripture(value: boolean) {
+    if (value !== this._isScripture) {
+      this._isScripture = value;
+      this.segmenter = value ? new UsxSegmenter(this) : new MachineSegmenter(this, this.machine);
+    }
+  }
+
   openDocumentSet(collection: string, documentSetId: string): void {
     if (this.documentSetId !== documentSetId) {
       this.documentSetId = documentSetId;
       this.realTime.createAndSubscribeRichTextDoc(collection, this.docId, this.quill);
-      this.segmentRanges = null;
+      this.segmenter.reset();
     }
   }
 
@@ -86,22 +97,18 @@ export abstract class DocumentEditor {
   }
 
   update(textChange: boolean): boolean {
-    if (this.segmentRanges == null || textChange) {
-      this.segmentRanges = this.getSegmentRanges();
-    }
+    this.segmenter.update(textChange);
+
     const selection = this.quill.getSelection();
     if (selection == null) {
       return false;
     }
-    let segmentIndex = -1;
-    if (DocumentEditor.isSelectionCollapsed(selection)) {
-      segmentIndex = this.segmentRanges.findIndex(range => selection.index <= range.index + range.length);
-    }
-    if (segmentIndex === -1) {
-      segmentIndex = this.currentSegment == null ? this.segmentRanges.length - 1 : this.currentSegment.index;
+    let segmentRef = this.segmenter.getSegmentRef(selection);
+    if (segmentRef == null) {
+      segmentRef = this.currentSegment == null ? this.segmenter.lastSegmentRef : this.currentSegment.ref;
     }
 
-    if (this.switchCurrentSegment(segmentIndex)) {
+    if (this.switchCurrentSegment(segmentRef)) {
       // the selection has changed to a different segment
       return true;
     } else {
@@ -111,15 +118,15 @@ export abstract class DocumentEditor {
     }
   }
 
-  switchCurrentSegment(segmentIndex: number): boolean {
+  switchCurrentSegment(segmentRef: string): boolean {
     if (this.currentSegment != null && this.documentSetId === this.currentSegment.documentSetId
-      && segmentIndex === this.currentSegment.index
+      && segmentRef === this.currentSegment.ref
     ) {
       // the selection has not changed to a different segment
       return false;
     }
 
-    this.currentSegment = new Segment(this.documentSetId, segmentIndex);
+    this.currentSegment = new Segment(this.documentSetId, segmentRef);
     this.updateCurrentSegment();
     return true;
   }
@@ -162,32 +169,8 @@ export abstract class DocumentEditor {
     return this.documentSetId + ':' + this.docType;
   }
 
-  private getSegmentRange(index: number): RangeStatic {
-    if (this.isTextEmpty) {
-      return { index: 0, length: 0 };
-    }
-
-    const segments = this.getSegmentRanges();
-    return index < segments.length ? segments[index] : { index: this.quill.getLength() - 1, length: 0 };
-  }
-
-  private getSegmentRanges(): RangeStatic[] {
-    const text = this.quill.getText().substr(0, this.quill.getLength() - 1);
-    const segmentRanges = this.machine.tokenizeDocumentText(this.docType, text);
-    if (segmentRanges.length === 0) {
-      segmentRanges.push({ index: 0, length: 0 });
-    } else {
-      const lastSegmentRange = segmentRanges[segmentRanges.length - 1];
-      const lastSegmentEnd = lastSegmentRange.index + lastSegmentRange.length;
-      if (lastSegmentEnd < text.length) {
-        segmentRanges.push({ index: text.length, length: 0 });
-      }
-    }
-    return segmentRanges;
-  }
-
   private updateCurrentSegment() {
-    const range = this.getSegmentRange(this.currentSegment.index);
+    const range = this.segmenter.getSegmentRange(this.currentSegment.ref);
     const text = this.quill.getText(range.index, range.length);
     this.currentSegment.update(text, range);
   }
@@ -247,16 +230,16 @@ export class TargetDocumentEditor extends DocumentEditor {
       this.updateSuggestions();
     }
 
-    if (textChange && this.currentSegment != null && this.currentSegment.index === this.segmentRanges.length - 1) {
+    if (textChange && this.currentSegment != null && this.currentSegment.ref === this.segmenter.lastSegmentRef) {
       this.updateHighlight(this.currentSegment.range);
     }
 
     return segmentChanged;
   }
 
-  switchCurrentSegment(segmentIndex: number): boolean {
+  switchCurrentSegment(segmentRef: string): boolean {
     const previousSegment = this.currentSegment;
-    const segmentChanged = super.switchCurrentSegment(segmentIndex);
+    const segmentChanged = super.switchCurrentSegment(segmentRef);
     if (segmentChanged) {
       this.trainSegment(previousSegment);
     }
@@ -358,7 +341,7 @@ export class TargetDocumentEditor extends DocumentEditor {
     return this.machine.trainSegment()
       .then(() => {
         segment.acceptChanges();
-        this.$window.console.log('Segment ' + segment.index + ' of document ' + segment.documentSetId
+        this.$window.console.log('Segment ' + segment.ref + ' of document ' + segment.documentSetId
           + ' was trained successfully.');
       })
       .finally(() => this.pendingTrainCount--);
@@ -428,11 +411,11 @@ export class SourceDocumentEditor extends DocumentEditor {
     return segmentChanged;
   }
 
-  switchCurrentSegment(segmentIndex: number): boolean {
+  switchCurrentSegment(segmentRef: string): boolean {
     if (!this.hasFocus) {
       this.isCurrentSegmentHighlighted = false;
     }
-    const segmentChanged = super.switchCurrentSegment(segmentIndex);
+    const segmentChanged = super.switchCurrentSegment(segmentRef);
     if (!this.hasFocus) {
       this.isCurrentSegmentHighlighted = true;
     }

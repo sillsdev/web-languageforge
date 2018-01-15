@@ -14,26 +14,25 @@ namespace SIL.XForge.WebApi.Server.Services
         {
             var newDelta = new Delta();
             int nextNoteId = 1;
-            bool inVerse = false;
             foreach (XElement elem in usxElem.Elements())
             {
                 switch (elem.Name.LocalName)
                 {
                     case "para":
-                        ProcessChildNodes(newDelta, elem, ref inVerse, ref nextNoteId);
+                        ProcessChildNodes(newDelta, elem, ref nextNoteId);
                         newDelta.Insert("\n", OpAttributes("para", elem));
                         break;
                     case "chapter":
                         newDelta.Insert((string) elem.Attribute("number"));
                         newDelta.Insert("\n", OpAttributes("chapter", elem));
-                        inVerse = false;
                         break;
                 }
             }
+            newDelta.Insert("\n");
             return newDelta;
         }
 
-        private static void ProcessChildNodes(Delta newDelta, XElement elem, ref bool inVerse, ref int nextNoteId,
+        private static void ProcessChildNodes(Delta newDelta, XElement elem, ref int nextNoteId,
             JObject parentAttrs = null)
         {
             foreach (XNode node in elem.Nodes())
@@ -44,19 +43,7 @@ namespace SIL.XForge.WebApi.Server.Services
                         switch (e.Name.LocalName)
                         {
                             case "verse":
-                                if (inVerse)
-                                {
-                                    JToken lastOp = newDelta.Ops[newDelta.Ops.Count - 1];
-                                    var text = (string) lastOp[Delta.InsertType];
-                                    if (text == null || text != "\n")
-                                    {
-                                        newDelta.Insert("\n", new JObject(
-                                            new JProperty("para", new JObject(
-                                                new JProperty("verse-alignment", "")))));
-                                    }
-                                }
                                 newDelta.Insert((string) e.Attribute("number"), OpAttributes("verse", e, parentAttrs));
-                                inVerse = true;
                                 break;
 
                             case "char":
@@ -67,7 +54,7 @@ namespace SIL.XForge.WebApi.Server.Services
                                 string noteId = $"_note_{nextNoteId}";
                                 nextNoteId++;
                                 JObject noteAttrs = OpAttributes("note", e, parentAttrs, noteId);
-                                ProcessChildNodes(newDelta, e, ref inVerse, ref nextNoteId, noteAttrs);
+                                ProcessChildNodes(newDelta, e, ref nextNoteId, noteAttrs);
                                 break;
                         }
                         break;
@@ -119,11 +106,8 @@ namespace SIL.XForge.WebApi.Server.Services
                         switch (prop.Name)
                         {
                             case "para":
-                                if (prop.Value["verse-alignment"] == null)
-                                {
-                                    newUsxElem.Add(CreateContainerElement("para", prop.Value, childNodes));
-                                    childNodes.Clear();
-                                }
+                                newUsxElem.Add(CreateContainerElement("para", prop.Value, childNodes));
+                                childNodes.Clear();
                                 break;
 
                             case "chapter":
