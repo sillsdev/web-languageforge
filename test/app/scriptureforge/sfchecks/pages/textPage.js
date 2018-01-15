@@ -6,10 +6,18 @@ function SfTextPage() {
   // currently this page is called questions.html but will be refactored. IJH 2014-06
 
   var util = require('../../../bellows/pages/util.js');
+  var projectsPage = require('../../../bellows/pages/projectsPage.js');
+  var projectPage  = require('../../sfchecks/pages/projectPage.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
   this.notice = util.notice;
+
+  this.get = function get(projectName, textTitle) {
+    projectsPage.get();
+    projectsPage.clickOnProject(projectName);
+    projectPage.textLink(textTitle).click();
+  }
 
   this.archiveButton = element(by.id('questions-archive-btn'));
   this.makeTemplateBtn = element(by.id('questions-make-template-btn'));
