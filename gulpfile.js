@@ -710,6 +710,14 @@ gulp.task('test-e2e-doTest', function (cb) {
     .on('end', cb);
 });
 
+gulp.task('test-e2e-compile', function(cb) {
+  return execute('node_modules/typescript/bin/tsc -p test/app', null, cb);
+});
+
+gulp.task('test-e2e-compile:watch', function(cb) {
+  return execute('node_modules/typescript/bin/tsc -p test/app --watch', null, cb);
+});
+
 // -------------------------------------
 //   Task: E2E Test: Run
 // -------------------------------------
@@ -733,10 +741,6 @@ gulp.task('test-e2e-local-lf', gulp.series(
     'test-e2e-useLiveConfig',
     'test-restart-webserver')
 );
-
-gulp.task('test-e2e-compile', function(cb) {
-  return execute('node_modules/typescript/bin/tsc -p test/app', null, cb);
-});
 
 // -------------------------------------
 //   Task: Run .NET Core unit tests
