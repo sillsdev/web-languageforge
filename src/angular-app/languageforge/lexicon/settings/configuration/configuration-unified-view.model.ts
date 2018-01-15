@@ -118,6 +118,36 @@ export class ConfigurationUnifiedViewModel {
     }
   }
 
+  static selectAllRow(settings: SettingsBase): void {
+    const roles = RoleType.roles();
+    for (const role of roles) {
+      settings[role] = settings.isAllRowSelected;
+    }
+    for (const group of settings.groups) {
+      group.show = settings.isAllRowSelected;
+    }
+  }
+
+  static checkIfAllRowSelected(settings: SettingsBase): void {
+    const roles = RoleType.roles();
+
+    settings.isAllRowSelected = true;
+    for (const role of roles) {
+      if (!settings[role]) {
+        settings.isAllRowSelected = false;
+        break;
+      }
+    }
+    if (settings.isAllRowSelected) {
+      for (const group of settings.groups) {
+        if (!group.show) {
+          settings.isAllRowSelected = false;
+          break;
+        }
+      }
+    }
+  }
+
   private static fieldsToConfig(fields: FieldSettings[], config: LexiconConfig, configFields: LexConfigFieldList,
                                 groupLists: GroupList[]) {
 
@@ -159,6 +189,8 @@ export class ConfigurationUnifiedViewModel {
         ConfigurationUnifiedViewModel.setInputSystemRoleSettings(tag, config, inputSystemSettings);
         ConfigurationUnifiedViewModel.setInputSystemGroupSettings(tag, config, inputSystemSettings);
         inputSystems[i++] = inputSystemSettings;
+
+        ConfigurationUnifiedViewModel.checkIfAllRowSelected(inputSystemSettings);
       }
     }
 
@@ -222,6 +254,8 @@ export class ConfigurationUnifiedViewModel {
         ConfigurationUnifiedViewModel.setLevelRoleSettings(fieldName, config, fieldSettings);
         ConfigurationUnifiedViewModel.setLevelGroupSettings(fieldName, config, fieldSettings);
         fields[fieldIndex++] = fieldSettings;
+
+        ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSettings);
       }
     }
 

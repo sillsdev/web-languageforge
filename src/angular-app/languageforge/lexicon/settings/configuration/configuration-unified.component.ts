@@ -43,35 +43,9 @@ export class UnifiedConfigurationController implements angular.IController {
     }
   }
 
-  selectAllRow(settings: InputSystemSettings): void {
-    const roles = RoleType.roles();
-    for (const role of roles) {
-      settings[role] = settings.isAllRowSelected;
-    }
-    for (const group of settings.groups) {
-      group.show = settings.isAllRowSelected;
-    }
-  }
+  selectAllRow = ConfigurationUnifiedViewModel.selectAllRow;
 
-  checkIfAllRowSelected(settings: InputSystemSettings): void {
-    const roles = RoleType.roles();
-
-    settings.isAllRowSelected = true;
-    for (const role of roles) {
-      if (!settings[role]) {
-        settings.isAllRowSelected = false;
-        break;
-      }
-    }
-    if (settings.isAllRowSelected) {
-      for (const group of settings.groups) {
-        if (!group.show) {
-          settings.isAllRowSelected = false;
-          break;
-        }
-      }
-    }
-  }
+  checkIfAllRowSelected = ConfigurationUnifiedViewModel.checkIfAllRowSelected;
 
 }
 
