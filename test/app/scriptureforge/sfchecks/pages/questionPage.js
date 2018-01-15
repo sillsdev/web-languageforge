@@ -10,10 +10,17 @@ module.exports = new SfQuestionPage;
  */
 function SfQuestionPage() {
   var util = require('../../../bellows/pages/util.js');
+  var textPage = require('./textPage.js');
+
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
   this.notice = util.notice;
+
+  this.get = function get(projectName, textTitle, questionTitle) {
+    textPage.get(projectName, textTitle)
+    textPage.questionLink(questionTitle).click();
+  }
 
   this.answers  = {};
   this.comments = {};
