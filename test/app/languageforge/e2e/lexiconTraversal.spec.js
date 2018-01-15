@@ -32,7 +32,7 @@ describe('Lexicon E2E Page Traversal', function () {
 
     it('Option list tab', function () {
       configurationPage.tabs.optionlists.click();
-      // There is no model of opion list tab
+      // There is no model of option list tab - Mark W 2018-01-14
     });
   });
 
