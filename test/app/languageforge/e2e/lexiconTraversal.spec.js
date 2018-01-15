@@ -30,11 +30,6 @@ describe('Lexicon E2E Page Traversal', function () {
       configurationPage.inputSystemsTab.moreButton.click();
     });
 
-    it('Input systems tab', function () {
-      configurationPage.tabs.inputSystems.click();
-      configurationPage.inputSystemsTab.moreButton.click();
-    });
-
     it('Option list tab', function () {
       configurationPage.tabs.optionlists.click();
       // There is no model of opion list tab
