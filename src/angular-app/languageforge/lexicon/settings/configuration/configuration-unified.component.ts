@@ -10,12 +10,13 @@ import {
   LexConfigMultiText,
   LexConfigOptionList,
   LexiconConfig,
+  LexUserViewConfig,
   LexViewFieldConfig,
   LexViewMultiTextFieldConfig
 } from '../../shared/model/lexicon-config.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
 import {Field} from './configuration-fields.component';
-import {ConfigurationUnifiedViewModel} from './configuration-unified-view.model';
+import {ConfigurationUnifiedViewModel, Group, GroupList} from './configuration-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 
 export class UnifiedConfigurationController implements angular.IController {
@@ -33,9 +34,10 @@ export class UnifiedConfigurationController implements angular.IController {
     configDirty?: LexiconConfig } }) => void;
 
   unifiedViewModel: ConfigurationUnifiedViewModel;
+  typeahead: Typeahead;
 
-  static $inject: string[] = ['$scope', '$uibModal'];
-  constructor(private $scope: angular.IScope, private $modal: ModalService) {
+  static $inject: string[] = ['$scope', '$filter', '$uibModal'];
+  constructor(private $scope: angular.IScope, private $filter: angular.IFilterService, private $modal: ModalService) {
   }
 
   $onInit() {
@@ -50,6 +52,15 @@ export class UnifiedConfigurationController implements angular.IController {
       configChange.currentValue != null
     ) {
       this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.uccConfigDirty, this.uccUsers);
+      this.typeahead = new Typeahead(this.$filter);
+      for (const userId in this.uccUsers) {
+        if (this.uccUsers.hasOwnProperty(userId)) {
+          this.typeahead.usersWithoutSettings.push(this.uccUsers[userId]);
+        }
+      }
+      for (const groupList of this.unifiedViewModel.groupLists){
+        this.removeFromUsersWithoutSettings(groupList.userId);
+      }
     }
   }
 
@@ -204,7 +215,92 @@ export class UnifiedConfigurationController implements angular.IController {
       this.uccOnUpdate({ $event: { configDirty: this.uccConfigDirty } });
       this.selectField(customFieldName);
     }, angular.noop);
+  }
 
+  addGroup(): void {
+    const tempUser = this.typeahead.user;
+    this.typeahead.userName = '';
+    const index: number = this.unifiedViewModel.groupLists.length;
+    const tempGroupList = new GroupList(this.typeahead.user.username, this.typeahead.user.id);
+    this.unifiedViewModel.groupLists[index] = tempGroupList;
+    this.removeFromUsersWithoutSettings(tempGroupList.userId);
+
+    for (const field of this.unifiedViewModel.inputSystems) {
+      field.groups.push(new Group());
+    }
+
+    for (const field of this.unifiedViewModel.entryFields) {
+      field.groups.push(new Group());
+    }
+
+    for (const field of this.unifiedViewModel.senseFields) {
+      field.groups.push(new Group());
+    }
+
+    for (const field of this.unifiedViewModel.exampleFields) {
+      field.groups.push(new Group());
+    }
+
+    this.uccConfigDirty.userViews[tempGroupList.userId] =
+      angular.copy(this.uccConfigDirty.roleViews[tempUser.role]) as LexUserViewConfig;
+  }
+
+  removeGroup(groupList: GroupList): void {
+    const index: number = this.unifiedViewModel.groupLists.indexOf(groupList);
+    if (index !== -1) {
+      this.unifiedViewModel.groupLists.splice(index, 1);
+    }
+    this.typeahead.usersWithoutSettings.push(this.uccUsers[groupList.userId]);
+
+    for (const field of this.unifiedViewModel.inputSystems) {
+      field.groups.splice(index, 1);
+    }
+
+    for (const field of this.unifiedViewModel.entryFields) {
+      field.groups.splice(index, 1);
+    }
+
+    for (const field of this.unifiedViewModel.senseFields) {
+      field.groups.splice(index, 1);
+    }
+
+    for (const field of this.unifiedViewModel.exampleFields) {
+      field.groups.splice(index, 1);
+    }
+  }
+
+  removeFromUsersWithoutSettings(userId: string): void {
+    const tempUser: User = this.uccUsers[userId];
+    const removeIndex: number = this.typeahead.usersWithoutSettings.indexOf(tempUser);
+    if (removeIndex !== -1) {
+      this.typeahead.usersWithoutSettings.splice(removeIndex, 1);
+    }
+  }
+}
+
+class Typeahead {
+  user: User;
+  userName: string;
+  users: User[] = [];
+  usersWithoutSettings: User[] = [];
+  filter: angular.IFilterService;
+
+  constructor(filter: angular.IFilterService) {
+    this.filter = filter;
+  }
+
+  searchUsers = (user: User): void => {
+    this.users = this.filter('filter')(this.usersWithoutSettings, user);
+  }
+
+  selectUser = (user: User): void => {
+    this.user = user;
+    this.userName = user.name;
+  }
+
+  imageSource(avatarRef: string): string {
+    return avatarRef ? '/Site/views/shared/image/avatar/' + avatarRef :
+      '/Site/views/shared/image/avatar/anonymous02.png';
   }
 }
 

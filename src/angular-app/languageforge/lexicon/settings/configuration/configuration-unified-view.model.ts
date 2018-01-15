@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 import {User} from '../../../../bellows/shared/model/user.model';
 import {
   LexConfigFieldList, LexiconConfig, LexRoleViewConfig, LexUserViewConfig,
@@ -312,8 +314,8 @@ export class ConfigurationUnifiedViewModel {
             config.userViews[userId].fields[fieldName].type === 'multitext'
           ) {
             const multiTextField = config.userViews[userId].fields[fieldName] as LexViewMultiTextFieldConfig;
+            inputSystemSettings.groups[groupIndex] = new Group();
             if (multiTextField.overrideInputSystems) {
-              inputSystemSettings.groups[groupIndex] = new Group();
               inputSystemSettings.groups[groupIndex++].show = multiTextField.inputSystems.includes(tag);
               break;
             }
@@ -389,7 +391,7 @@ class SelectAllColumns {
 }
 
 export class Group {
-  show: boolean;
+  show: boolean = false;
 }
 
 export class SettingsBase {

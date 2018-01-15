@@ -12,13 +12,39 @@
                 <th class="text-center">Commenter</th>
                 <th class="text-center">Contributor</th>
                 <th class="text-center">Manager</th>
-                <th class="text-center" data-ng-repeat="groupList in $ctrl.unifiedViewModel.groupLists">{{groupList.label}}</th>
+                <th class="text-center" data-ng-repeat="groupList in $ctrl.unifiedViewModel.groupLists">{{groupList.label}}
+                    <i class="fa fa-trash" data-ng-click="$ctrl.removeGroup(groupList)"></i>
+                </th>
                 <th>
-                    <button type="button" class="btn btn-std"><i class="fa fa-plus"></i></button>
+                    <button type="button" class="btn btn-std" data-ng-click="newUserExpanded = !newUserExpanded"><i class="fa fa-plus"></i></button>
                 </th>
             </tr>
         </thead>
         <tbody>
+
+            <tr>
+                <div class=" new-item" uib-collapse="!newUserExpanded">
+                    <form class="form-inline">
+                        <div class="form-row align-items-start">
+                            <div class="col-auto">
+                                <pui-typeahead class="typeahead" items="$ctrl.typeahead.users" term="$ctrl.typeahead.userName" search="$ctrl.typeahead.searchUsers" select="$ctrl.typeahead.selectUser">
+                                    <ul>
+                                        <li typeahead-item="user" data-ng-repeat="user in $ctrl.typeahead.users" class="typeahead-item">
+                                            <img width="32px" data-ng-src="{{$ctrl.typeahead.imageSource(user.avatarRef)}}" class="left">
+                                            <p class="name">{{user.name}}</p>
+                                            <p class="email">{{user.email}}</p>
+                                        </li>
+                                    </ul>
+                                </pui-typeahead>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-sm btn-primary" data-ng-click="$ctrl.addGroup(); newUserExpanded = false"><i class="fa fa-plus iconPadding"></i>Add Member Specific Settings</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </tr>
+
             <tr>
                 <th class="text-center align-middle table-secondary">Input Systems</th>
                 <td></td>
