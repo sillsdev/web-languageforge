@@ -113,7 +113,7 @@ export class FieldConfigurationController implements angular.IController {
   }
 
   fieldConfigItemExists(itemName: string): boolean {
-    if (this.fccCurrentField != null && this.fccCurrentField != null) {
+    if (this.fccFieldConfig == null || this.fccCurrentField == null) {
       return false;
     }
     return itemName in this.fccFieldConfig[this.fccCurrentField.name];
