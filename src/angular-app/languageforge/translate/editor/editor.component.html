@@ -136,7 +136,7 @@
                         <i class="fa fa-exchange"></i></button>
                 </div>
                 <ng-quill-editor class="notranslate"
-                    id="editorSource" data-modules="$ctrl.source.modulesConfig" data-theme="suggestions"
+                    id="editorSource" spellcheck="false" data-modules="$ctrl.source.modulesConfig" data-theme="suggestions"
                     data-on-editor-created="$ctrl.onQuillCreated(editor, $ctrl.source)"
                     data-on-content-changed="$ctrl.onContentChanged($ctrl.source)"
                     data-on-selection-changed="$ctrl.onSelectionChanged($ctrl.source)"
@@ -152,7 +152,7 @@
                     <label class="editor-label">{{$ctrl.getEditorLabel($ctrl.right)}}</label>
                 </div>
                 <ng-quill-editor class="notranslate"
-                    id="editorTarget" data-modules="$ctrl.target.modulesConfig" data-theme="suggestions"
+                    id="editorTarget" spellcheck="false" data-modules="$ctrl.target.modulesConfig" data-theme="suggestions"
                     data-on-editor-created="$ctrl.onQuillCreated(editor, $ctrl.target)"
                     data-on-content-changed="$ctrl.onContentChanged($ctrl.target)"
                     data-on-selection-changed="$ctrl.onSelectionChanged($ctrl.target)"
