@@ -1,7 +1,5 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
-
 var constants = require('../../testConstants');
-
 
 export class BellowsLoginPage {
   get = function get() {
@@ -53,3 +51,5 @@ export class BellowsLoginPage {
     browser.get(browser.baseUrl + '/auth/logout');
   }
 }
+
+module.exports = new BellowsLoginPage();

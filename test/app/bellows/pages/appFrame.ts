@@ -1,9 +1,9 @@
-'use strict';
-
-var SfAppFrame = function () {
+import {} from 'jasmine';
+import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+export class SfAppFrame {
 
   // TODO: this will likely change when we refactor the display of notifications - cjh 2014-06
-  this.message = {
+  message = {
     success: element(by.css('.alert-success')),
     info:    element(by.css('.alert-info')),
     warn:    element(by.css('.alert-warning')),
@@ -11,16 +11,16 @@ var SfAppFrame = function () {
   };
 
   // Alternate names for the above
-  this.successMessage = this.message.success;
-  this.infoMessage    = this.message.info;
-  this.warnMessage    = this.message.warn;
-  this.errorMessage   = this.message.error;
+  successMessage = this.message.success;
+  infoMessage    = this.message.info;
+  warnMessage    = this.message.warn;
+  errorMessage   = this.message.error;
 
-  this.checkMsg = function (expected, msgType) {
+  checkMsg(expected: string, msgType: string) {
     msgType = msgType || 'success';
     expect(this.message[msgType].getText()).toMatch(expected);
-  };
+  }
 
-};
+}
 
 module.exports = new SfAppFrame();
