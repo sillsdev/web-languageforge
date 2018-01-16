@@ -1,5 +1,8 @@
-import {} from 'jasmine';
-import {browser, element, by, By, $, $$, ExpectedConditions, promise} from 'protractor';
+import 'jasmine';
+import {$, $$, browser, by, By, element, ExpectedConditions, promise} from 'protractor';
+import { ElementArrayFinder, ElementFinder } from 'protractor/built/element';
+import { logging } from 'selenium-webdriver';
+import 'util.d.ts';
 
 /*
  * New locator to find elements that match a CSS selector, whose text (via elem.innerText in the
@@ -13,47 +16,41 @@ import {browser, element, by, By, $, $$, ExpectedConditions, promise} from 'prot
  *
  * This function is added to Protractor's "by" namespace
  */
-by.addLocator('elemMatches', (selector: any, regexOrString: any, parentElem: any) => {
-  var searchScope = parentElem || document;
-  var regex = new RegExp(regexOrString);
-  var allElems = searchScope.querySelectorAll(selector);
-  return Array.prototype.filter.call(allElems, function (elem: any) {
-    return regex.test(elem.innerText);
+By.addLocator('elemMatches', (selector: string, regex: RegExp) => {
+  const allElems = document.querySelectorAll(selector);
+  return Array.prototype.filter.call(allElems, (elem: Element) => {
+    return regex.test(elem.textContent);
   });
 });
 
 export class Utils {
   private readonly CONDITION_TIMEOUT = 3000;
 
-  setCheckbox(checkboxElement: any, value: any) {
+  setCheckbox(checkboxElement: ElementFinder, value: boolean) {
     // Ensure a checkbox element will be either checked (true) or unchecked (false), regardless of
     // what its current value is
-    checkboxElement.isSelected().then(function (checked: any) {
+    checkboxElement.isSelected().then((checked: boolean) => {
       if (checked !== value) {
         checkboxElement.click();
       }
     });
   }
 
-  findDropdownByValue(dropdownElement: any, value: any) {
+  findDropdownByValue(dropdownElement: ElementFinder, value: string) {
     // Simpler (MUCH simpler) approach based on our custom elemMatches locator (defined below)
-    return dropdownElement.element(by.elemMatches('option', value));
+    return dropdownElement.element(By.elemMatches('option', value));
   }
 
-  clickDropdownByValue(dropdownElement: any, value: any) {
+  clickDropdownByValue(dropdownElement: ElementFinder, value: string) {
     // Select an element of the dropdown based on its value (its text)
     this.findDropdownByValue(dropdownElement, value).click();
   }
 
-  async findRowByFunc(repeater: any, searchFunc: any) {
+  findRowByFunc(elementArray: ElementArrayFinder, searchFunc: (searchText: string) => boolean) {
     // Repeater can be either a string or an already-created by.repeater() object
-    if (typeof repeater === 'string') {
-      repeater = element.all(by.repeater(repeater));
-    }
-
-    let foundRow: any = undefined;
-    await repeater.map(function (row: any) {
-      row.getText().then(function (rowText: any) {
+    let foundRow: ElementFinder;
+    elementArray.map((row: ElementFinder) => {
+      row.getText().then((rowText: string) => {
         if (searchFunc(rowText)) {
           foundRow = row;
         }
@@ -62,16 +59,8 @@ export class Utils {
     return foundRow;
   }
 
-  findRowByText(repeater: any, searchText: any, regExpFlags: any) {
-    // regExpFlags is completely optional and can be left out.
-    // searchText can be a string, in which case it is turned into a RegExp (with specified flags,
-    //   if given), or it can be a RegExp
-    // repeater is as in findRowByFunc
-    if (typeof searchText === 'string') {
-      searchText = new RegExp(searchText, regExpFlags);
-    }
-
-    return this.findRowByFunc(repeater, (rowText: any) => searchText.test(rowText));
+  findRowByText(elementArray: ElementArrayFinder, regex: RegExp) {
+    return this.findRowByFunc(elementArray, (rowText: string) => regex.test(rowText));
   }
 
   /*
@@ -81,7 +70,7 @@ export class Utils {
    * @param elem - ElementFinder
    * @param textString - string of text to set the value to
    */
-  sendText(elem: any, textString: string) {
+  sendText(elem: ElementFinder, textString: string) {
     browser.executeScript('arguments[0].value = arguments[1];', elem.getWebElement(), textString);
   }
 
@@ -113,14 +102,14 @@ export class Utils {
         this.notice.list.first().getText().then((text: any) => text.includes(includedText)),
         this.CONDITION_TIMEOUT);
     }
-  }
+  };
 
-  checkModalTextMatches(expectedText: any) {
+  checkModalTextMatches(expectedText: string) {
     const modalBody = element(by.css('.modal-body'));
 
     browser.wait(ExpectedConditions.visibilityOf(modalBody), this.CONDITION_TIMEOUT);
     expect(modalBody.getText()).toMatch(expectedText);
-  };
+  }
 
   clickModalButton(buttonText: string) {
     const button = element(by.css('.modal-footer')).element(by.partialButtonText(buttonText));
@@ -134,13 +123,13 @@ export class Utils {
     element(by.elemMatches('.breadcrumb > li', breadcrumbText)).click();
   }
 
-  parent(child: any) {
+  parent(child: ElementFinder) {
     return child.element(by.xpath('..'));
   }
 
   // This handy function comes from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-  escapeRegExp(string: string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+  escapeRegExp(stringToEscape: string) {
+    return stringToEscape.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
   }
 
   /*
@@ -153,56 +142,44 @@ export class Utils {
    * NOTE: If you want to be able to match across multiple lines with a `.*` component in your regex,
    * you'll need to use .toContainMultilineMatch() instead.
    */
-  this.registerCustomJasmineMatchers = function registerCustomJasmineMatchers() {
-    jasmine.addMatchers({
-        toContainMultilineMatch: function toContainMultilineMatch(jasmineUtil, customTesters) {
+  registerCustomJasmineMatchers() {
+    const matcherFactoryFunction = (multiline: boolean) => {
+      return {
+        compare: (list: string[], regex: RegExp) => {
+          let index = list.findIndex((item: string) => {
+            // The dot in Javascript regexes CANNOT match newlines, so we deal with that here
+            if (multiline) {
+              return regex.test(item.replace(/\n/g, ' '));
+            }
+            return regex.test(item);
+          });
+
           return {
-            compare: function checkList(list, regex) {
-              var checkItem = function (item) {
-                // The dot in Javascript regexes CANNOT match newlines, so we deal with that here
-                return regex.test(item.replace(/\n/g, ' '));
-              };
-              var index = list.findIndex(checkItem);
-
-              var compareResult = {};
-              compareResult.pass = index >= 0;
-              if (compareResult.pass) {
-                compareResult.message = 'Expected list not to contain a match for ' + regex.toString() + ' but it did.';
-              } else {
-                compareResult.message = 'Expected list to contain a match for ' + regex.toString() + ' but it did not.';
+            pass: index >= 0,
+            get message() {
+              if (index >= 0) {
+                return 'Expected list not to contain a match for ' + regex.toString() + ' but it did.';
               }
-
-              return compareResult;
+              return 'Expected list to contain a match for ' + regex.toString() + ' but it did not.';
             }
           };
-        },
-
-        toContainMatch: function toContainMatch(jasmineUtil, customTesters) {
-          return {
-            compare: function checkList(list, regex) {
-              var checkItem = function (item) {
-                return regex.test(item);
-              };
-              var index = list.findIndex(checkItem);
-
-              var compareResult = {};
-              compareResult.pass = index >= 0;
-              if (compareResult.pass) {
-                compareResult.message = 'Expected list not to contain a match for ' + regex.toString() + ' but it did.';
-              } else {
-                compareResult.message = 'Expected list to contain a match for ' + regex.toString() + ' but it did not.';
-              }
-
-              return compareResult;
-            }
-          }
         }
-      });
-  };
+      };
+    };
+
+    jasmine.addMatchers({
+      toContainMultilineMatch: () => {
+        return matcherFactoryFunction(true);
+      },
+      toContainMatch: () => {
+        return matcherFactoryFunction(false);
+      }
+    });
+  }
 
   // Errors we choose to ignore because they are typically not encountered by users, but only
   // in testing
-  isMessageToIgnore(message: any) {
+  isMessageToIgnore(message: logging.Entry ) {
     if (message.level.name === 'WARNING') return true;
 
     const text = message.message;
