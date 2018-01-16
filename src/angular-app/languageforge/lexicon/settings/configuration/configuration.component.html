@@ -5,7 +5,7 @@
     <i class="fa fa-check"></i>Apply</button>
 <form name="configForm" novalidate>
     <fieldset data-ng-disabled="$ctrl.isSaving">
-        <pui-tabset>
+        <pui-tabset active="$ctrl.active">
             <pui-tab heading="Unified">
                 <lsc-unified ucc-current-field="$ctrl.currentField"
                             ucc-field-config="$ctrl.fieldConfig"
@@ -16,6 +16,7 @@
                             ucc-users="$ctrl.users"
                             ucc-option-lists="$ctrl.optionListsDirty"
                             ucc-select-field="$ctrl.selectField(fieldName)"
+                            ucc-add-input-system="$ctrl.addNewInputSystem()"
                             ucc-on-update="$ctrl.onUpdate($event)"></lsc-unified>
             </pui-tab>
             <pui-tab heading="Fields">
@@ -33,6 +34,7 @@
                 <lsc-input-systems isc-input-system-view-models="$ctrl.inputSystemViewModels"
                                    isc-input-systems-list="$ctrl.inputSystemsList"
                                    isc-config-pristine="$ctrl.configPristine"
+                                   isc-add-input-system="$ctrl.addInputSystem"
                                    isc-on-update="$ctrl.onUpdate($event)"></lsc-input-systems>
             </pui-tab>
             <pui-tab heading="Option Lists">
