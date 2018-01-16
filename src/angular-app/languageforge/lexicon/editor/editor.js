@@ -52,7 +52,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
     $scope.visibleEntries = editorService.visibleEntries;
     $scope.filteredEntries = editorService.filteredEntries;
     $scope.entryListModifiers = editorService.entryListModifiers;
-    $scope.commentContext = {};
+    $scope.commentContext = {
+      field: '',
+      abbreviation: ''
+    };
+    $scope.commentPanelVisible = false;
     $scope.sortEntries = function (args) {
       editorService.sortEntries.apply(this, arguments).then(function () {
         $scope.typeahead.searchEntries($scope.typeahead.searchItemSelected);
@@ -680,8 +684,30 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
 
       // Comments View
       $scope.showComments = function showComments() {
-        $scope.saveCurrentEntry(true);
-        $state.go('editor.comments', { entryId: $scope.currentEntry.id });
+        if ($scope.commentPanelVisible === true && $scope.commentContext.field === '') {
+          $scope.hideCommentsPanel();
+          $scope.setCommentContext('', '');
+        } else {
+          $scope.setCommentContext('', '');
+          angular.element('.comments-right-panel').css({ paddingTop: 0 });
+          $scope.showCommentsPanel();
+        }
+      };
+
+      $scope.showCommentsPanel = function showCommentsPanel() {
+        $scope.commentPanelVisible = true;
+        angular.element('.comments-right-panel-container').addClass('panel-opening');
+        setTimeout(function () {
+          angular.element('.comments-right-panel-container').removeClass('panel-opening');
+        }, 500);
+      };
+
+      $scope.hideCommentsPanel = function hideCommentsPanel() {
+        $scope.commentPanelVisible = -1;
+        setTimeout(function () {
+          $scope.commentPanelVisible = false;
+          $scope.setCommentContext('', '');
+        }, 500); // Delay relates to the CSS timer
       };
 
       sendReceive.setPollUpdateSuccessCallback(pollUpdateSuccess);
@@ -906,7 +932,18 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       $scope.setCommentContext = function setCommentContext(field, abbreviation) {
         $scope.commentContext.field = field;
         $scope.commentContext.abbreviation = abbreviation;
-        console.log('all set - watch kick in place. ' + field + ', ' + abbreviation);
+      };
+
+      $scope.setCommentSenseLabel = function setCommentSenseLabel(fieldName, senseLabel) {
+        var field = null;
+        if ($scope.config.entry.fields.hasOwnProperty(fieldName)) {
+          field = $scope.config.entry.fields[fieldName];
+        }
+
+        if (field !== null) {
+          console.log(fieldName + ' - ' + senseLabel);
+          field.senseLabel = senseLabel;
+        }
       };
     });
 
