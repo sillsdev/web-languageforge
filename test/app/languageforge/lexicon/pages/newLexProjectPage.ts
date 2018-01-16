@@ -20,7 +20,7 @@ class NewLexProjectPage {
     expect(this.nextButton.getAttribute('class')).toMatch(/btn-primary(?:\s|$)/);
   };
 
-  expectFormIsNotValid = function expectFormIsNotValid() {
+  expectFormIsNotValid() {
     expect(this.nextButton.getAttribute('class')).not.toMatch(/btn-primary(?:\s|$)/);
   };
 
@@ -52,7 +52,7 @@ class NewLexProjectPage {
     passwordOk: element(by.id('passwordOk')),
     projectNoAccess: element(by.id('projectNoAccess')),
     projectOk: element(by.id('projectOk')),
-    projectSelect: function () {
+    projectSelect() {
       return element(by.id('srProjectSelect'));
     }
   }
