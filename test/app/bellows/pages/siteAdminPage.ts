@@ -1,4 +1,4 @@
-import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+import {browser, by, element} from 'protractor';
 const util = require('./util.js');
 
 export class SiteAdminPage {
