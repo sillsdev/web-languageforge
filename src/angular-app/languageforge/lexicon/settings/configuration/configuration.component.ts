@@ -175,6 +175,9 @@ export class LexiconConfigurationController implements angular.IController {
     if ($event.configDirty) {
       this.configDirty = $event.configDirty;
       this.$scope.configForm.$setDirty();
+
+      // Force fire $onChanges: see https://github.com/angular/angular.js/issues/14572
+      this.configDirty = angular.copy(this.configDirty);
     }
 
     if ($event.inputSystemViewModels) {
@@ -299,8 +302,7 @@ export class LexiconConfigurationController implements angular.IController {
     });
 
     // Force fire $onChanges: see https://github.com/angular/angular.js/issues/14572
-    const configCopy = angular.copy(this.configDirty);
-    this.configDirty = configCopy;
+    this.configDirty = angular.copy(this.configDirty);
 
     return isAnyTagUnspecified;
   }
