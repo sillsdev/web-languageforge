@@ -33,6 +33,10 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
             $scope.control.saveCurrentEntry();
           }, angular.noop);
       };
+
+      angular.forEach($scope.control.config.entry.fields.senses.fields, function (field) {
+        field.senseLabel = 'Meaning ' + ($scope.index + 1);
+      });
     }]
   };
 }]);
