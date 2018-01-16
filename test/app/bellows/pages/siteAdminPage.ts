@@ -4,7 +4,7 @@ const util = require('./util.js');
 export class SiteAdminPage {
 
   url = browser.baseUrl + '/app/siteadmin';
-  get = () => {
+  get() {
     // todo: refactor this to be a click recipe (as a user would click on the menu to navigate)
     browser.get(this.url);
   }
@@ -21,9 +21,9 @@ export class SiteAdminPage {
     deleteButton: element(by.id('site-admin-delete-btn')),
     projectsList: element.all(by.repeater('project in visibleProjects')),
     setCheckbox(row: number, value: boolean) {
-      const projectRow = this.tabs.archivedProjects.projectsList.get(row);
+      const projectRow = this.archivedProjectsTab.projectsList.get(row);
       const rowCheckbox = projectRow.element(by.css('input[type="checkbox"]'));
-      this.util.setCheckbox(rowCheckbox, value);
+      util.setCheckbox(rowCheckbox, value);
     }
   };
 
@@ -44,14 +44,14 @@ export class SiteAdminPage {
   passwordInput = element(by.model('record.password'));
 
   //noinspection JSUnusedGlobalSymbols
-  clearForm = function clearForm() {
+  clearForm() {
     this.usernameInput.clear();
     this.nameInput.clear();
     this.emailInput.clear();
     this.passwordInput.clear();
 
     // this.activeCheckbox.clear();
-  };
+  }
 }
 
 module.exports = new SiteAdminPage();
