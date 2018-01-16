@@ -28,6 +28,8 @@ class LexiconConfigControllerApiResult {
 }
 
 export class LexiconConfigurationController implements angular.IController {
+  active = Tab.Unified;
+  addInputSystem = false;
   currentField: Field = {
     name: '',
     inputSystems: {
@@ -91,20 +93,10 @@ export class LexiconConfigurationController implements angular.IController {
   }
 
   configurationApply() {
-    let isAnyTagUnspecified = false;
     this.isSaving = true;
 
     // Publish updates in configDirty to send to server
-    this.configDirty.inputSystems = {};
-    angular.forEach(this.inputSystemViewModels, viewModel => {
-      if (viewModel.inputSystem.tag.indexOf('-unspecified') > -1) {
-        isAnyTagUnspecified = true;
-        this.notice.push(this.notice.ERROR, 'Specify at least one Script, Region or Variant for ' +
-          viewModel.languageDisplayName());
-      }
-
-      this.configDirty.inputSystems[viewModel.inputSystem.tag] = viewModel.inputSystem;
-    });
+    const isAnyTagUnspecified = this.inputSystemViewModelToConfig();
 
     if (isAnyTagUnspecified) {
       this.isSaving = false;
@@ -164,6 +156,11 @@ export class LexiconConfigurationController implements angular.IController {
     }
   }
 
+  addNewInputSystem() {
+    this.active = Tab.InputSystems; // Switch to Input System tab
+    this.addInputSystem = true; // Show New Input System window
+  }
+
   // noinspection JSUnusedGlobalSymbols
   onUpdate = (
     $event: {
@@ -171,7 +168,8 @@ export class LexiconConfigurationController implements angular.IController {
       inputSystemViewModels?: { [inputSystemId: string]: ConfigurationInputSystemsViewModel },
       inputSystemsList?: ConfigurationInputSystemsViewModel[],
       optionListsDirty?: LexOptionList[],
-      unifiedViewModel?: ConfigurationUnifiedViewModel
+      unifiedViewModel?: ConfigurationUnifiedViewModel,
+      addInputSystem?: boolean
     }
   ): void => {
     if ($event.configDirty) {
@@ -182,6 +180,7 @@ export class LexiconConfigurationController implements angular.IController {
     if ($event.inputSystemViewModels) {
       this.inputSystemViewModels = $event.inputSystemViewModels;
       this.$scope.configForm.$setDirty();
+      this.inputSystemViewModelToConfig();
     }
 
     if ($event.inputSystemsList) {
@@ -197,6 +196,10 @@ export class LexiconConfigurationController implements angular.IController {
     if ($event.unifiedViewModel) {
         this.unifiedViewModel = $event.unifiedViewModel;
         this.$scope.configForm.$setDirty();
+    }
+
+    if ($event.addInputSystem != null) {
+      this.addInputSystem = $event.addInputSystem;
     }
   }
 
@@ -282,6 +285,26 @@ export class LexiconConfigurationController implements angular.IController {
     }
   }
 
+  private inputSystemViewModelToConfig(): boolean {
+    let isAnyTagUnspecified = false;
+    this.configDirty.inputSystems = {};
+    angular.forEach(this.inputSystemViewModels, viewModel => {
+      if (viewModel.inputSystem.tag.indexOf('-unspecified') > -1) {
+        isAnyTagUnspecified = true;
+        this.notice.push(this.notice.ERROR, 'Specify at least one Script, Region or Variant for ' +
+          viewModel.languageDisplayName());
+      }
+
+      this.configDirty.inputSystems[viewModel.inputSystem.tag] = viewModel.inputSystem;
+    });
+
+    // Force fire $onChanges: see https://github.com/angular/angular.js/issues/14572
+    const configCopy = angular.copy(this.configDirty);
+    this.configDirty = configCopy;
+
+    return isAnyTagUnspecified;
+  }
+
 }
 
 export const LexiconConfigurationComponent: angular.IComponentOptions = {
@@ -290,3 +313,10 @@ export const LexiconConfigurationComponent: angular.IComponentOptions = {
   controller: LexiconConfigurationController,
   templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration.component.html'
 };
+
+export enum Tab {
+  Unified = 0,
+  Fields,
+  InputSystems,
+  OptionLists
+}
