@@ -18,3 +18,5 @@ export class BellowsChangePasswordPage {
   submitButton = element(by.id('change-password-submit-button'));
   noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
 }
+
+module.exports = new BellowsChangePasswordPage();
