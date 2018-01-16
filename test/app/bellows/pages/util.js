@@ -69,7 +69,7 @@ function Utils() {
       }
     });
 
-    return result;
+    return result.promise;
   };
 
   this.findRowByText = function findRowByText(repeater, searchText, regExpFlags) {
