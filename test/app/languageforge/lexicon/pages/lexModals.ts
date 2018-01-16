@@ -1,11 +1,11 @@
-'use strict';
+import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 
-function LexModals() {
-  this.modalBodyDiv = element(by.className('modal-body'));
-  this.modalFooterDiv = element(by.className('modal-footer'));
+export class LexModals {
+  modalBodyDiv = element(by.className('modal-body'));
+  modalFooterDiv = element(by.className('modal-footer'));
 
   // select language modal
-  this.selectLanguage = {
+  selectLanguage = {
     searchLanguageInput: this.modalBodyDiv.element(by.model('searchText')),
     languageRows: this.modalBodyDiv.all(by.repeater('language in languages')),
     firstLanguageName: this.modalBodyDiv
@@ -14,20 +14,17 @@ function LexModals() {
       .all(by.repeater('language in languages').column('name')).last(),
     clearSearchButton: this.modalBodyDiv.element(by.id('clearSearch')),
     addButton: this.modalFooterDiv.element(by.id('select-language-add-btn'))
-  };
-  this.selectLanguage.firstLanguageRow = this.selectLanguage.languageRows.first();
-  this.selectLanguage.lastLanguageRow = this.selectLanguage.languageRows.last();
+  }
 
   // custom field modal
-  this.customField = {
+  customField = {
     displayNameInput: element(by.id('name')),
     fieldCodeExists: element(by.id('fieldCodeExists')),
     levelDropdown: element(by.id('level')),
     typeDropdown: element(by.id('type')),
     listCodeDropdown: element(by.id('optionListCode')),
     addButton: element(by.id('addCustomFieldButton'))
-  };
-
+  }
 }
 
 module.exports = new LexModals();
