@@ -10,9 +10,11 @@ export class InputSystemsConfigurationController implements angular.IController 
   iscInputSystemViewModels: { [inputSystemId: string]: ConfigurationInputSystemsViewModel };
   iscInputSystemsList: ConfigurationInputSystemsViewModel[];
   readonly iscConfigPristine: LexiconConfig;
+  iscAddInputSystem: boolean;
   iscOnUpdate: (params: { $event: {
     inputSystemViewModels?: { [inputSystemId: string]: ConfigurationInputSystemsViewModel },
-    inputSystemsList?: ConfigurationInputSystemsViewModel[]
+    inputSystemsList?: ConfigurationInputSystemsViewModel[],
+    addInputSystem?: boolean
   } }) => void;
 
   selectedInputSystemId: string = '';
@@ -49,6 +51,14 @@ export class InputSystemsConfigurationController implements angular.IController 
           }
         );
       }
+    }
+
+    const addInputSystemChange = changes.iscAddInputSystem as angular.IChangesObject<boolean>;
+    if (addInputSystemChange != null && addInputSystemChange.currentValue) {
+      this.openNewLanguageModal(this.suggestedLanguageCodes);
+      this.iscOnUpdate({ $event: {
+        addInputSystem: false
+      } });
     }
   }
 
@@ -171,6 +181,7 @@ export const InputSystemsConfigurationComponent: angular.IComponentOptions = {
     iscInputSystemViewModels: '<',
     iscInputSystemsList: '<',
     iscConfigPristine: '<',
+    iscAddInputSystem: '<',
     iscOnUpdate: '&'
   },
   controller: InputSystemsConfigurationController,

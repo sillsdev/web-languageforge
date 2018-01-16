@@ -18,6 +18,7 @@ export class UnifiedConfigurationController implements angular.IController {
   uccUsers: { [userId: string]: User };readonly uccConfigPristine: LexiconConfig;
   readonly uccOptionLists: LexOptionList[];
   uccSelectField: (params: { fieldName: string }) => void;
+  uccAddInputSystem: (params: {}) => void;
   uccOnUpdate: (params: { $event: { unifiedViewModel: ConfigurationUnifiedViewModel } }) => void;
 
   unifiedViewModel: ConfigurationUnifiedViewModel;
@@ -60,6 +61,7 @@ export const UnifiedConfigurationComponent: angular.IComponentOptions = {
     uccOptionLists: '<',
     uccUsers: '<',
     uccSelectField: '&',
+    uccAddInputSystem: '&',
     uccOnUpdate: '&'
   },
   controller: UnifiedConfigurationController,
