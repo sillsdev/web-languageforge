@@ -74,9 +74,9 @@ describe('Bellows E2E Page Traversal', function () {
   it('Explore site admin page', function() {
     siteAdminPage.get();
     siteAdminPage.tabs.archivedProjects.click();
-    siteAdminPage.tabs.archivedProjects.republishButton.click();
-    siteAdminPage.tabs.archivedProjects.deleteButton.click();
-    siteAdminPage.tabs.archivedProjects.projectsList.count();
+    siteAdminPage.archivedProjectsTab.republishButton.click();
+    siteAdminPage.archivedProjectsTab.deleteButton.click();
+    siteAdminPage.archivedProjectsTab.projectsList.count();
   });
 
   it('Explore user profile page', function () {
