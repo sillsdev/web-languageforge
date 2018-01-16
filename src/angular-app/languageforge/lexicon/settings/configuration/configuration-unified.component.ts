@@ -34,8 +34,6 @@ export class UnifiedConfigurationController implements angular.IController {
 
   unifiedViewModel: ConfigurationUnifiedViewModel;
 
-  isCustomField = LexiconConfigService.isCustomField;
-
   static $inject: string[] = ['$scope', '$uibModal'];
   constructor(private $scope: angular.IScope, private $modal: ModalService) {
   }
@@ -55,9 +53,12 @@ export class UnifiedConfigurationController implements angular.IController {
     }
   }
 
+  isCustomField = LexiconConfigService.isCustomField;
   selectAllRow = ConfigurationUnifiedViewModel.selectAllRow;
-
-  checkIfAllRowSelected = ConfigurationUnifiedViewModel.checkIfAllRowSelected;
+  selectAllRoleColumn = ConfigurationUnifiedViewModel.selectAllRoleColumn;
+  selectAllGroupColumn = ConfigurationUnifiedViewModel.selectAllGroupColumn;
+  checkIfAllRoleSelected = ConfigurationUnifiedViewModel.checkIfAllRoleSelected;
+  checkIfAllGroupSelected = ConfigurationUnifiedViewModel.checkIfAllGroupSelected;
 
   selectField(fieldName: string) {
     this.uccSelectField({ fieldName });
