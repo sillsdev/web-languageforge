@@ -1,5 +1,5 @@
 <form class="form-horizontal dc-pictures">
-    <div class="form-group row">
+    <div class="form-group row comment-bubble-group">
         <label class="col-form-label col-md-4 text-md-right">{{config.label}}</label>
         <div class="col-md-8">
             <div class="dc-picture" data-ng-repeat="picture in pictures">
@@ -39,6 +39,7 @@
                 </div>
             </div>
         </div>
+        <comment-bubble control="control" field="fieldName" input-system="" model="model"></comment-bubble>
     </div>
 </form>
 <div data-ng-show="control.rights.canEditEntry() && $state.is('editor.entry') && ! upload.showAddPicture"

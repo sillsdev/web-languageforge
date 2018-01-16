@@ -43,6 +43,9 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
           $scope.control.deleteEntry($scope.control.currentEntry);
         };
 
+        angular.forEach($scope.control.config.entry.fields, function (field) {
+          field.senseLabel = 'Entry';
+        });
       }]
     };
   }])
