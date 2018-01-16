@@ -1,6 +1,5 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 
-
 export class PageHeader {
   myProjects = {
     button:    element(by.id('myProjectDropdown')),
@@ -9,3 +8,5 @@ export class PageHeader {
 
   loginButton = element(by.partialButtonText('Login'));
 }
+
+module.exports = new PageHeader();
