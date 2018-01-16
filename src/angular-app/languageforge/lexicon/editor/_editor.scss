@@ -390,8 +390,13 @@ dc-entry .card {
     min-height: 580px;
   .field-container {
     position: relative;
-    .dc-multitext-tag {
+    .comment-bubble-group {
       position: relative;
+    }
+  }
+  .dc-example {
+    .commentBubbleContainer {
+      right: -41px;
     }
   }
 }
