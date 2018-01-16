@@ -21,6 +21,13 @@ angular.module('palaso.ui.comments')
          regarding: {}
          };
          */
+        $scope.panelVisible = false;
+        $scope.showNewComment = true;
+        $scope.commentInteractiveStatus = {
+          id: '',
+          visible: false
+        };
+
         $scope.initializeNewComment = function initializeNewComment() {
           $scope.newComment =  {
             id: '',
@@ -71,17 +78,13 @@ angular.module('palaso.ui.comments')
           },
 
           byContext: function byContext(comment) {
-            console.log('reached');
             if (!angular.isDefined(comment)) {
               return false;
-            } else if (!$scope.commentFilter.regardingField ||
-              !$scope.commentFilter.regardingInputSystemAbbreviation) {
+            } else if (!$scope.commentFilter.regardingField) {
               // Return true as we're most likely not running a valid context search so return all
-              console.log('nope');
               return true;
             } else if (comment.regarding.field === $scope.commentFilter.regardingField &&
               comment.regarding.inputSystemAbbreviation === $scope.commentFilter.regardingInputSystemAbbreviation) {
-              console.log('boom!');
               return true;
             }
 
@@ -131,19 +134,18 @@ angular.module('palaso.ui.comments')
         $scope.loadComments = function loadComments() {
           commentService.loadEntryComments($scope.entry.id);
           commentService.refreshFilteredComments($scope.commentFilter);
+          if ($scope.commentInteractiveStatus.id) {
+            angular.forEach($scope.currentEntryCommentsFiltered, function (comment) {
+              if (comment.id === $scope.commentInteractiveStatus.id) {
+                comment.showRepliesContainer = $scope.commentInteractiveStatus.visible;
+              }
+            });
+          }
         };
 
-        $scope.postNewComment = function postNewComment() {
-          commentService.update($scope.newComment, function (result) {
-            if (result.ok) {
-              $scope.control.editorService.refreshEditorData().then(function () {
-                $scope.loadComments();
-                $scope.initializeNewComment();
-              });
-            }
-          });
-
-          commentService.refreshFilteredComments($scope.commentFilter); // for instant feedback
+        $scope.setCommentInteractiveStatus = function setCommentInteractiveStatus(id, visible) {
+          $scope.commentInteractiveStatus.id = id;
+          $scope.commentInteractiveStatus.visible = visible;
         };
 
         $scope.plusOneComment = function plusOneComment(commentId) {
@@ -163,10 +165,10 @@ angular.module('palaso.ui.comments')
 
         $scope.getNewCommentPlaceholderText = function getNewCommentPlaceholderText() {
           var label;
-          if (commentService.comments.items.currentEntry.length === 0) {
+          if ($scope.currentEntryCommentsFiltered.length === 0) {
             label = $filter('translate')('Your comment goes here.  Be the first to share!');
-          } else if (commentService.comments.items.currentEntry.length < 3) {
-            label = $filter('translate')('Start a conversation.  Enter your comment here.');
+          } else if ($scope.currentEntryCommentsFiltered.length > 0) {
+            label = $filter('translate')('Start a new conversation thread.  Enter your comment here.');
           } else {
             label = $filter('translate')('Join the discussion and type your comment here.');
           }
@@ -175,11 +177,44 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.showCommentsInContext = function showCommentsInContext(field, abbreviation) {
-          console.log('go go go: ');
           $scope.commentFilter.regardingField = field;
           $scope.commentFilter.regardingInputSystemAbbreviation = abbreviation;
           commentService.refreshFilteredComments($scope.commentFilter);
         };
+
+        $scope.postNewComment = function postNewComment() {
+          commentService.update($scope.newComment, function (result) {
+            if (result.ok) {
+              $scope.control.editorService.refreshEditorData().then(function () {
+                var previousComment = $scope.newComment;
+                $scope.loadComments();
+                $scope.initializeNewComment();
+                $scope.newComment.regarding = previousComment.regarding;
+              });
+            }
+          });
+
+          commentService.refreshFilteredComments($scope.commentFilter); // for instant feedback
+        };
+
+        $scope.getSenseLabel = function getSenseLabel(regardingField) {
+            var configField = null;
+            if ($scope.control.config.entry.fields.hasOwnProperty(regardingField)) {
+              configField = $scope.control.config.entry.fields[regardingField];
+            } else if ($scope.control.config.entry.fields.senses.fields.hasOwnProperty(regardingField)) {
+              configField = $scope.control.config.entry.fields.senses.fields[regardingField];
+            } else if ($scope.control.config.entry.fields.senses.fields.examples.fields.hasOwnProperty(regardingField)) {
+              configField = $scope.control.config.entry.fields.senses.fields.examples.fields[regardingField];
+            }
+
+            if (configField !== null) {
+              if (configField.hasOwnProperty('senseLabel')) {
+                return configField.senseLabel;
+              }
+            }
+
+            return '';
+          };
 
         $scope.$watch('entry', function (newVal) {
           if (newVal && !angular.equals(newVal, {})) {
@@ -203,9 +238,7 @@ angular.module('palaso.ui.comments')
         });
 
         $scope.$watch('control.commentContext', function (newVal, oldVal) {
-          console.log('here');
           if (newVal !== oldVal) {
-            console.log('change');
             $scope.showCommentsInContext(newVal.field, newVal.abbreviation);
           }
 

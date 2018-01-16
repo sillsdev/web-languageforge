@@ -1,6 +1,6 @@
 <div class="commentContainer card">
     <div class="card-title">
-        {{comment.regarding.fieldNameForDisplay}} - {{comment.regarding.inputSystemAbbreviation}}
+        <span class="sense-label">{{getSenseLabel()}}</span> {{comment.regarding.fieldNameForDisplay}}{{(comment.regarding.inputSystemAbbreviation) ? ' - ' + comment.regarding.inputSystemAbbreviation : ''}}
     </div>
     <div class="card-block" data-ng-class="{resolvedComment: comment.status == 'resolved'}">
         <div class="commentContentContainer">
@@ -75,11 +75,11 @@
                 <div data-ng-show="comment.editing" class="commentEditing">
                     <!--suppress HtmlFormInputWithoutLabel -->
                     <textarea class="form-control" data-ng-model="editingCommentContent"></textarea>
-                    <div>
-                        <button data-ng-disabled="!comment.content" class="btn btn-sm btn-primary float-right"
+                    <div class="d-flex justify-content-end">
+                        <a class="btn btn-sm btn-std" data-ng-click="comment.editing = false">Cancel</a>
+                        <button data-ng-disabled="!comment.content" class="btn btn-sm btn-primary"
                                 data-ng-click="updateComment(comment)">Update
                         </button>
-                        <a class="btn btn-sm btn-std float-left" data-ng-click="comment.editing = false">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -102,11 +102,11 @@
                 <span>Comments</span>
             </div>
         </div>
-        <div class="commentRepliesContainer" data-ng-show="showRepliesContainer">
-            <div class="comment-replies">
+        <div class="commentRepliesContainer" data-ng-show="comment.showRepliesContainer" ng-class="(comment.showRepliesContainer) ? 'on' : 'off'">
+            <div class="comment-replies" ng-show="comment.replies.length">
                 <div data-ng-repeat="reply in comment.replies" data-ng-mouseenter="reply.hover = true"
                      data-ng-mouseleave="reply.hover = false">
-                    <div data-ng-hide="reply.editing">
+                    <div data-ng-hide="reply.editing" class="comment-reply">
                         <div class="reply-body">
                             <div class="reply-meta">
                                 <div class="comment-author">{{reply.authorInfo.createdByUserRef.name}}</div>
@@ -131,23 +131,25 @@
                             </div>
                         </div>
                     </div>
-                    <form data-ng-show="showReplies" data-ng-submit="submitReply(reply)">
+                    <form data-ng-show="reply.editing" data-ng-submit="submitReply(reply)" class="reply-edit-form">
                         <!--suppress HtmlFormInputWithoutLabel -->
                         <textarea class="form-control" data-ng-model="reply.editingContent"
                                   pui-auto-focus="reply.isAutoFocusEditing"></textarea>
-                        <button type="submit" class="btn btn-sm btn-primary">Update</button>
-                        <a href data-ng-click="reply.editing = false">Cancel</a>
+                        <div class="d-flex justify-content-end">
+                            <a href class="btn btn-sm btn-std" data-ng-click="cancelReply(reply)">Cancel</a>
+                            <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                        </div>
                     </form>
                 </div>
             </div>
-            <form class="commentNewReplyForm" data-ng-show="showNewReplyForm" data-ng-submit="submitReply(newReply)">
+            <form ng-show="showNewReplyForm" class="commentNewReplyForm" data-ng-submit="submitReply(newReply)">
                 <textarea class="form-control" placeholder="Reply here.  Press Enter when done."
                           data-ng-model="newReply.editingContent" pui-auto-focus="isAutoFocusNewReply"></textarea>
-                <button type="submit" class="btn btn-sm btn-primary">Post</button>
-                <a href data-ng-click="showNewReplyForm = false">Cancel</a>
+                <div class="d-flex justify-content-end">
+                    <a href class="btn btn-sm btn-std" data-ng-click="showCommentReplies()">Hide</a>
+                    <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-reply"></i> Reply</button>
+                </div>
             </form>
         </div>
-        <a href class="btn btn-sm btn-std float-right" data-ng-show="rights.canComment() && !showNewReplyForm"
-           data-ng-click="doReply()"><i class="fa fa-reply"></i> Reply</a>
     </div>
 </div>
