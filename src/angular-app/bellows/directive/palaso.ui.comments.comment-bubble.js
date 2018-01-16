@@ -8,11 +8,16 @@ angular.module('palaso.ui.comments')
       scope: {
         field: '=',
         control: '=',
-        inputSystem: '='
+        inputSystem: '<',
+        model: '='
       },
-      controller: ['$scope', 'lexCommentService', 'sessionService', function ($scope, commentService, ss) {
+      controller: ['$scope', 'lexCommentService', 'sessionService', '$element', function ($scope, commentService, ss, $element) {
+        if (!angular.isDefined($scope.inputSystem)) {
+          $scope.inputSystem = '';
+        }
 
         $scope.contextId = $scope.field + '_' + $scope.inputSystem;
+        $scope.element = $element;
 
         ss.getSession().then(function (session) {
           $scope.getCount = function getCount() {
@@ -31,7 +36,23 @@ angular.module('palaso.ui.comments')
           };
 
           $scope.getComments = function getComments() {
-            $scope.control.setCommentContext($scope.field, $scope.inputSystem);
+            if (!angular.isDefined($scope.inputSystem)) {
+              $scope.inputSystem = '';
+            }
+
+            if ($scope.control.commentContext.field === $scope.field &&
+              $scope.control.commentContext.abbreviation === $scope.inputSystem) {
+              $scope.control.hideCommentsPanel();
+            } else {
+              $scope.control.setCommentContext($scope.field, $scope.inputSystem);
+              $scope.control.selectFieldForComment($scope.field, $scope.model, $scope.inputSystem);
+              var bubbleOffset = $scope.element.offset().top;
+              var rightPanel = angular.element('.comments-right-panel');
+              var rightPanelOffset = rightPanel.offset().top;
+              var offsetAuthor = 40;
+              rightPanel.css({ paddingTop: (bubbleOffset - rightPanelOffset - offsetAuthor) });
+              $scope.control.showCommentsPanel();
+            }
           };
         });
 

@@ -10,7 +10,9 @@ angular.module('palaso.ui.dc.semanticdomain', [])
     scope: {
       config: '=',
       model: '=',
-      selectField: '&'
+      control: '=',
+      selectField: '&',
+      fieldName: '='
     },
     controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rightsService) {
       $scope.$state = $state;
