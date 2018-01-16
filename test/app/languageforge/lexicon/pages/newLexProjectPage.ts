@@ -1,49 +1,50 @@
-'use strict';
+import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 
-module.exports = new NewLexProjectPage();
+class NewLexProjectPage {
+  private readonly mockUpload = require('../../../bellows/pages/mockUploadElement.js');
+  private readonly modal      = require('./lexModals.js');
 
-function NewLexProjectPage() {
-  var mockUpload = require('../../../bellows/pages/mockUploadElement.js');
-  var modal      = require('./lexModals.js');
-
-  this.get = function get() {
+  get() {
     browser.get(browser.baseUrl + '/app/lexicon/new-project');
-  };
+  }
 
   // form controls
-  this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
-  this.firstNoticeCloseButton = this.noticeList.first().element(by.partialButtonText('×'));
-  this.newLexProjectForm = element(by.id('newLexProjectForm'));
-  this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
-  this.backButton = element(by.id('backButton'));
-  this.nextButton = element(by.id('nextButton'));
+  noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
+  firstNoticeCloseButton = this.noticeList.first().element(by.partialButtonText('×'));
+  newLexProjectForm = element(by.id('newLexProjectForm'));
+  progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
+  backButton = element(by.id('backButton'));
+  nextButton = element(by.id('nextButton'));
 
-  this.expectFormIsValid = function expectFormIsValid() {
+  expectFormIsValid() {
     expect(this.nextButton.getAttribute('class')).toMatch(/btn-primary(?:\s|$)/);
   };
 
-  this.expectFormIsNotValid = function expectFormIsNotValid() {
+  expectFormIsNotValid = function expectFormIsNotValid() {
     expect(this.nextButton.getAttribute('class')).not.toMatch(/btn-primary(?:\s|$)/);
   };
 
-  this.formStatus = element(by.id('form-status'));
-  this.formStatus.expectHasNoError = function () {
-    expect(this.formStatus.getAttribute('class')).not.toContain('alert');
-  }.bind(this);
+  formStatus = element(by.id('form-status'));
 
-  this.formStatus.expectContainsError = function (partialMsg) {
-    if (!partialMsg) partialMsg = '';
-    expect(this.formStatus.getAttribute('class')).toContain('alert-danger');
-    expect(this.formStatus.getText()).toContain(partialMsg);
-  }.bind(this);
+  // These functions have been moved from formStatus.
+  formStatusFuncs = {
+    expectHasNoError() {
+      expect(this.formStatus.getAttribute('class')).not.toContain('alert');
+    },
+    expectContainsError(partialMsg: string) {
+      if (!partialMsg) partialMsg = '';
+      expect(this.formStatus.getAttribute('class')).toContain('alert-danger');
+      expect(this.formStatus.getText()).toContain(partialMsg);
+    }
+  }
 
   // step 0: chooser
-  this.chooserPage = {
+  chooserPage = {
     sendReceiveButton: element(by.id('sendReceiveButton')),
     createButton: element(by.id('createButton'))
-  };
+  }
   // step 1: send receive credentials
-  this.srCredentialsPage = {
+  srCredentialsPage = {
     loginInput: element(by.id('srUsername')),
     loginOk: element(by.id('usernameOk')),
     passwordInput: element(by.id('srPassword')),
@@ -57,7 +58,7 @@ function NewLexProjectPage() {
   }
 
   // step 1: project name
-  this.namePage = {
+  namePage = {
     projectNameInput: element(by.model('newProject.projectName')),
     projectCodeInput: element(by.model('newProject.projectCode')),
     projectCodeUneditableInput: element(by.binding('newProject.projectCode')),
@@ -66,33 +67,33 @@ function NewLexProjectPage() {
     projectCodeAlphanumeric: element(by.id('projectCodeAlphanumeric')),
     projectCodeOk: element(by.id('projectCodeOk')),
     editProjectCodeCheckbox: element(by.model('newProject.editProjectCode'))
-  };
+  }
   // step 2: initial data
-  this.initialDataPage = {
+  initialDataPage = {
     browseButton: element(by.id('browseButton')),
-    mockUpload: mockUpload
-  };
+    mockUpload: this.mockUpload
+  }
   // step 3: verify data
-  this.verifyDataPage = {
+  verifyDataPage = {
     title: element(by.id('new-project-verify')),
     nonCriticalErrorsButton: element(by.id('nonCriticalErrorsButton')),
     entriesImported: element(by.binding('newProject.entriesImported')),
     importErrors: element(by.binding('newProject.importErrors'))
-  };
+  }
   // step 3 alternate: primary language
-  this.primaryLanguagePage = {
-    selectButton: element(by.id('selectLanguageButton'))
-  };
+  primaryLanguagePage = {
+    selectButton: element(by.id('selectLanguageButton')),
+    // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
+    selectButtonClick() {
+      this.primaryLanguagePage.selectButton.click();
+      browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
+    }
+  }
   // step 3 alternate: send receive clone
-  this.srClonePage = {
+  srClonePage = {
     cloning: element(by.id('cloning'))
-  };
-  // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
-  this.primaryLanguagePage.selectButtonClick = function () {
-    this.primaryLanguagePage.selectButton.click();
-    browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
-  }.bind(this);
+  }
 
-  // select language modal
-  this.modal = modal;
 }
+
+module.exports = new NewLexProjectPage();
