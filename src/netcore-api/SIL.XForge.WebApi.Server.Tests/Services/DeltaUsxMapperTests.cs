@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml.Linq;
 using NUnit.Framework;
 using ShareDB.RichText;

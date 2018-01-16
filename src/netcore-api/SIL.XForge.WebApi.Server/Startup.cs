@@ -1,7 +1,11 @@
+using AutoMapper;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -10,6 +14,7 @@ using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Options;
 using SIL.XForge.WebApi.Server.Services;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace SIL.XForge.WebApi.Server
@@ -69,6 +74,15 @@ namespace SIL.XForge.WebApi.Server
             services.AddMongoDataAccess(Configuration);
             services.AddSingleton<SendReceiveService>();
             services.AddSingleton<ParatextService>();
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper>(sp =>
+                {
+                    var actionCtxtAccessor = sp.GetRequiredService<IActionContextAccessor>();
+                    var urlHelperFactory = sp.GetRequiredService<IUrlHelperFactory>();
+                    return urlHelperFactory.GetUrlHelper(actionCtxtAccessor.ActionContext);
+                });
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

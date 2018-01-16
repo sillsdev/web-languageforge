@@ -8,6 +8,7 @@ using ShareDB;
 using ShareDB.RichText;
 using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Models;
+using SIL.XForge.WebApi.Server.Models.Translate;
 using SIL.XForge.WebApi.Server.Options;
 using System;
 using System.Collections.Generic;
