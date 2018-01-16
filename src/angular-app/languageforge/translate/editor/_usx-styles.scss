@@ -105,6 +105,10 @@ usx-para {
         margin-top: 0.5em;
         margin-bottom: 0.25em;
     }
+
+    &[data-style="li"] {
+        padding-left: 3em;
+    }
 }
 
 usx-char {

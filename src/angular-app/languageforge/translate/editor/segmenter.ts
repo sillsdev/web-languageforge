@@ -73,6 +73,10 @@ export class MachineSegmenter extends Segmenter {
 }
 
 export class UsxSegmenter extends Segmenter {
+  private static readonly ParagraphStyles: Set<string> = new Set<string>([
+    'p', 'm', 'pmo', 'pm', 'pmc', 'pmr', 'pi', 'mi', 'cls', 'li', 'pc', 'pr', 'ph', 'lit'
+  ]);
+
   protected updateSegments(): void {
     const delta = this.doc.quill.getContents();
     this.reset();
@@ -81,44 +85,63 @@ export class UsxSegmenter extends Segmenter {
     let verse = '';
     let curIndex = 0;
     let curRangeLen = 0;
-    delta.forEach(op => {
+    let lastParagraphLen = -1;
+    for (const op of delta.ops) {
       const len = typeof op.insert === 'string' ? op.insert.length : 1;
       if (op.attributes == null) {
         curRangeLen += len;
       } else {
         if (op.attributes.para != null) {
           const style = op.attributes.para.style as string;
+          if (UsxSegmenter.isParagraphStyle(style)) {
+            curRangeLen += len;
+            lastParagraphLen = curRangeLen;
+            continue;
+          }
+
+          if (verse !== '') {
+            this.addVerse(chapter, verse, curIndex, lastParagraphLen === -1 ? curRangeLen : lastParagraphLen);
+            if (lastParagraphLen !== -1) {
+              curIndex += lastParagraphLen;
+              curRangeLen -= lastParagraphLen;
+            }
+            verse = '';
+          }
+          lastParagraphLen = -1;
+
           let nextId = nextStyleIds.get(style);
           if (nextId == null) {
             nextId = 0;
             nextStyleIds.set(style, nextId);
           }
 
-          if (curRangeLen > 0) {
-            this._lastSegmentRef = style + '_' + nextId;
-            this.segments.set(this._lastSegmentRef, { index: curIndex, length: curRangeLen });
-          }
+          this._lastSegmentRef = style + '_' + nextId;
+          this.segments.set(this._lastSegmentRef, { index: curIndex, length: curRangeLen });
           curIndex += curRangeLen + len;
           curRangeLen = 0;
           nextId++;
           nextStyleIds.set(style, nextId);
         } else if (op.attributes.chapter != null) {
+          if (verse !== '') {
+            this.addVerse(chapter, verse, curIndex, lastParagraphLen === -1 ? curRangeLen : lastParagraphLen);
+            if (lastParagraphLen !== -1) {
+              curIndex += lastParagraphLen;
+              curRangeLen -= lastParagraphLen;
+            }
+            verse = '';
+          }
+          lastParagraphLen = -1;
+
           chapter = op.attributes.chapter.number as string;
-          verse = '';
           this._lastSegmentRef = 'chapter_' + chapter;
           this.segments.set(this._lastSegmentRef, { index: curIndex, length: curRangeLen });
           curIndex += curRangeLen + len;
           curRangeLen = 0;
         } else if (op.attributes.verse != null) {
           if (verse !== '') {
-            const verseText = this.doc.quill.getText(curIndex, curRangeLen);
-            let verseRangeLen = curRangeLen;
-            for (let i = verseText.length - 1; i >= 0 && UsxSegmenter.isWhitespace(verseText[i]); i--) {
-              verseRangeLen--;
-            }
-            this._lastSegmentRef = 'verse_' + chapter + ':' + verse;
-            this.segments.set(this._lastSegmentRef, { index: curIndex, length: verseRangeLen });
+            this.addVerse(chapter, verse, curIndex, curRangeLen);
           }
+          lastParagraphLen = -1;
           curIndex += curRangeLen;
           curRangeLen = len;
           verse = op.attributes.verse.number as string;
@@ -126,7 +149,22 @@ export class UsxSegmenter extends Segmenter {
           curRangeLen += len;
         }
       }
-    });
+    }
+  }
+
+  private addVerse(chapter: string, verse: string, curIndex: number, curRangeLen: number): void {
+    const verseText = this.doc.quill.getText(curIndex, curRangeLen);
+    let verseRangeLen = curRangeLen;
+    if (UsxSegmenter.isWhitespace(verseText[verseText.length - 1])) {
+      verseRangeLen--;
+    }
+    this._lastSegmentRef = 'verse_' + chapter + ':' + verse;
+    this.segments.set(this._lastSegmentRef, { index: curIndex, length: verseRangeLen });
+  }
+
+  private static isParagraphStyle(style: string): boolean {
+    style = style.replace(/[0-9]/g, '');
+    return UsxSegmenter.ParagraphStyles.has(style);
   }
 
   private static isWhitespace(char: string): boolean {

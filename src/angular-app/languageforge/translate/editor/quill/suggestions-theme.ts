@@ -85,19 +85,6 @@ export function registerSuggestionsTheme(): void {
         super.format(name, value);
       }
     }
-
-    // ensure sibling <verse>s with the same style attribute are combined into a single <verse> element
-    optimize(context: { [key: string]: any; }): void {
-      super.optimize(context);
-      const style = this.domNode.getAttribute('data-style');
-      const next = this.next;
-      if (style != null && next instanceof VerseInline && next.prev === this &&
-        next.domNode.getAttribute('data-style') === style
-      ) {
-        next.moveChildren(this);
-        next.remove();
-      }
-    }
   }
 
   class CharInline extends VerseInline {
@@ -172,15 +159,6 @@ export function registerSuggestionsTheme(): void {
     // noinspection JSUnusedGlobalSymbols
     static formats = VerseInline.formats;
     static value = VerseInline.value;
-
-    // noinspection JSUnusedGlobalSymbols
-    optimize(context: { [key: string]: any; }): void {
-      super.optimize(context);
-      const Break = Quill.import('blots/break');
-      if (this.children.length === 0 || (this.children.length === 1 && this.children.head instanceof Break)) {
-        this.formatAt(0, 1, 'block', true);
-      }
-    }
   }
 
   // inherit format method from VerseInline class
