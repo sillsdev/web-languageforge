@@ -22,6 +22,8 @@ export class ConfigurationUnifiedViewModel {
   // Settings objects for Example Fields
   exampleFields: FieldSettings[];
 
+  selectAllColumns: SelectAllColumns;
+
   constructor(config: LexiconConfig, users: { [userId: string]: User }) {
     this.inputSystems = ConfigurationUnifiedViewModel.setInputSystemViewModel(config);
 
@@ -40,6 +42,37 @@ export class ConfigurationUnifiedViewModel {
 
     console.log('inputSystems', this.inputSystems);
     console.log('entryFields', this.entryFields, 'senseFields', this.senseFields, 'exampleFields', this.exampleFields);
+
+    this.selectAllColumns = new SelectAllColumns();
+    const roles = RoleType.roles();
+    for (const role of roles) {
+      this.selectAllColumns.inputSystems[role] = false;
+      this.selectAllColumns.entryFields[role] = false;
+      this.selectAllColumns.senseFields[role] = false;
+      this.selectAllColumns.exampleFields[role] = false;
+      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.inputSystems,
+        this.selectAllColumns.inputSystems, role);
+      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.entryFields,
+        this.selectAllColumns.entryFields, role);
+      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.senseFields,
+        this.selectAllColumns.senseFields, role);
+      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.exampleFields,
+        this.selectAllColumns.exampleFields, role);
+    }
+    for (let i = 0; i < this.inputSystems[0].groups.length; i++) {
+      this.selectAllColumns.inputSystems.groups.push(new Group());
+      this.selectAllColumns.entryFields.groups.push(new Group());
+      this.selectAllColumns.senseFields.groups.push(new Group());
+      this.selectAllColumns.exampleFields.groups.push(new Group());
+      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.inputSystems,
+        this.selectAllColumns.inputSystems, i);
+      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.entryFields,
+        this.selectAllColumns.entryFields, i);
+      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.senseFields,
+        this.selectAllColumns.senseFields, i);
+      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.exampleFields,
+        this.selectAllColumns.exampleFields, i);
+    }
   }
 
   updateConfig(config: LexiconConfig) {
@@ -118,19 +151,20 @@ export class ConfigurationUnifiedViewModel {
     }
   }
 
-  static selectAllRow(settings: SettingsBase): void {
+  static selectAllRow(setting: SettingsBase, settings: SettingsBase[], selectAll: SettingsBase): void {
     const roles = RoleType.roles();
     for (const role of roles) {
-      settings[role] = settings.isAllRowSelected;
+      setting[role] = setting.isAllRowSelected;
+      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
     }
-    for (const group of settings.groups) {
-      group.show = settings.isAllRowSelected;
+    for (const group of setting.groups) {
+      group.show = setting.isAllRowSelected;
+      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(settings, selectAll, setting.groups.indexOf(group));
     }
   }
 
   static checkIfAllRowSelected(settings: SettingsBase): void {
     const roles = RoleType.roles();
-
     settings.isAllRowSelected = true;
     for (const role of roles) {
       if (!settings[role]) {
@@ -146,6 +180,53 @@ export class ConfigurationUnifiedViewModel {
         }
       }
     }
+  }
+
+  static selectAllRoleColumn(settings: SettingsBase[], selectAll: SettingsBase, role: string): void {
+    for (const setting of settings) {
+      setting[role] = selectAll[role];
+      ConfigurationUnifiedViewModel.checkIfAllRowSelected(setting);
+    }
+  }
+
+  static selectAllGroupColumn(settings: SettingsBase[], selectAll: SettingsBase, groupIndex: number): void {
+    for (const setting of settings) {
+      setting.groups[groupIndex].show = selectAll.groups[groupIndex].show;
+      ConfigurationUnifiedViewModel.checkIfAllRowSelected(setting);
+    }
+  }
+
+  static checkIfAllRoleColumnSelected(settings: SettingsBase[], selectAll: SettingsBase, role: string): void {
+    selectAll[role] = true;
+    for (const setting of settings) {
+      if (!setting[role]) {
+        selectAll[role] = false;
+        break;
+      }
+    }
+  }
+
+  static checkIfAllGroupColumnSelected(settings: SettingsBase[], selectAll: SettingsBase,
+                                       groupIndex: number): void {
+    selectAll.groups[groupIndex].show = true;
+    for (const setting of settings) {
+      if (!setting.groups[groupIndex].show) {
+        selectAll.groups[groupIndex].show = false;
+        break;
+      }
+    }
+  }
+
+  static checkIfAllRoleSelected(setting: SettingsBase, settings: SettingsBase[], selectAll: SettingsBase,
+                                role: string): void {
+    ConfigurationUnifiedViewModel.checkIfAllRowSelected(setting);
+    ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
+  }
+
+  static checkIfAllGroupSelected(setting: SettingsBase, settings: SettingsBase[], selectAll: SettingsBase,
+                                 groupIndex: number): void {
+    ConfigurationUnifiedViewModel.checkIfAllRowSelected(setting);
+    ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(settings, selectAll, groupIndex);
   }
 
   private static fieldsToConfig(fields: FieldSettings[], config: LexiconConfig, configFields: LexConfigFieldList,
@@ -298,6 +379,13 @@ export class ConfigurationUnifiedViewModel {
     return groupLists;
   }
 
+}
+
+class SelectAllColumns {
+  inputSystems: InputSystemSettings = new InputSystemSettings();
+  entryFields: FieldSettings = new FieldSettings();
+  senseFields: FieldSettings = new FieldSettings();
+  exampleFields: FieldSettings = new FieldSettings();
 }
 
 export class Group {
