@@ -1,5 +1,5 @@
 <form class="form-horizontal dc-multitext">
-    <div class="form-group row dc-multitext-tag" data-ng-repeat="tag in config.inputSystems">
+    <div class="form-group row comment-bubble-group" data-ng-repeat="tag in config.inputSystems">
         <label class="col-form-label col-md-4 text-md-right" data-ng-show="config.type != 'pictures'"
                data-ng-class="$first ? '' : 'd-none d-md-inline-block'">
             <span data-ng-show="$first">{{config.label}}</span></label>
@@ -18,6 +18,6 @@
                 </dc-audio>
             </div>
         </div>
-        <comment-bubble control="control" field="fieldName" input-system="tag"></comment-bubble>
+        <comment-bubble control="control" field="fieldName" input-system="inputSystems[tag].abbreviation" model="model"></comment-bubble>
     </div>
 </form>
