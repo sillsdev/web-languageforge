@@ -11,11 +11,9 @@ angular.module('palaso.ui.comments')
         function ($scope, commentService, sessionService, util, modal) {
           $scope.getAvatarUrl = util.constructor.getAvatarUrl;
 
-          $scope.showNewReplyForm = false;
+          $scope.showNewReplyForm = true;
 
           $scope.newReply = { id: '', editingContent: '' };
-
-          $scope.showRepliesContainer = false;
 
           $scope.editingCommentContent = '';
 
@@ -30,7 +28,10 @@ angular.module('palaso.ui.comments')
           }
 
           $scope.showCommentReplies = function showCommentReplies() {
-            $scope.showRepliesContainer = !$scope.showRepliesContainer;
+            $scope.$parent.showNewComment = !$scope.$parent.showNewComment;
+            $scope.comment.showRepliesContainer = !$scope.comment.showRepliesContainer;
+            $scope.setCommentInteractiveStatus($scope.comment.id, $scope.comment.showRepliesContainer);
+            $scope.getSenseLabel();
           };
 
           $scope.doReply = function doReply() {
@@ -44,6 +45,12 @@ angular.module('palaso.ui.comments')
             reply.editing = true;
             reply.editingContent = angular.copy(reply.content);
             reply.isAutoFocusEditing = true;
+            $scope.showNewReplyForm = false;
+          };
+
+          $scope.cancelReply = function cancelReply(reply) {
+            reply.editing = false;
+            $scope.showNewReplyForm = true;
           };
 
           $scope.submitReply = function submitReply(reply) {
@@ -51,13 +58,14 @@ angular.module('palaso.ui.comments')
             reply.content = angular.copy(reply.editingContent);
             delete reply.editingContent;
             updateReply($scope.comment.id, reply);
-            $scope.newReply = {id: '', editingContent: ''};
+            $scope.newReply = { id: '', editingContent: '' };
           };
 
           function updateReply(commentId, reply) {
             commentService.updateReply(commentId, reply, function (result) {
               if (result.ok) {
                 $scope.control.editorService.refreshEditorData().then($scope.loadComments);
+                $scope.showNewReplyForm = true;
               }
             });
           }
@@ -134,9 +142,12 @@ angular.module('palaso.ui.comments')
               $scope.comment.replies[i].editing = false;
             }
 
-            $scope.showNewReplyForm = false;
             $scope.comment.editing = false;
           }
+
+          $scope.getSenseLabel = function getSenseLabel() {
+            return $scope.$parent.getSenseLabel($scope.comment.regarding.field);
+          };
 
         }],
 
