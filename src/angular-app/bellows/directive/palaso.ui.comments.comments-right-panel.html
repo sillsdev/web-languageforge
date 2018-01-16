@@ -1,21 +1,31 @@
-<div>
-    <div class="comments-search-container">
-        <input dir="auto" class="form-control" placeholder="Filter Comments" ng-model="commentFilter.text" type="text">&nbsp;
-        <span ng-show="commentFilter.text != ''" title="Clear Filter" ng-click="commentFilter.text = ''">
-            <i class="fa fa-times"></i>
-        </span>
-        <!--suppress HtmlFormInputWithoutLabel -->
-        <select ng-show="rights.canUpdateCommentStatus()" class="form-control custom-select" data-ng-model="commentFilter.status">
-            <option value="all">Show All</option>
-            <option value="unresolved">Unresolved</option>
-            <option ng-if="rights.canUpdateCommentStatus()" value="todo">Todo</option>
-        </select>
+<div class="comments-right-panel-container" ng-class="{'context-mode': commentFilter.regardingField, 'panel-visible': control.commentPanelVisible > 0, 'panel-closing': control.commentPanelVisible === -1}">
+    <div ng-hide="commentFilter.regardingField">
+        <div class="comments-search-container">
+            <input dir="auto" class="form-control" placeholder="Filter Comments" ng-model="commentFilter.text" type="text">
+            <span ng-show="commentFilter.text != ''" title="Clear Filter" ng-click="commentFilter.text = ''">
+                <i class="fa fa-times"></i>
+            </span>
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select ng-show="rights.canUpdateCommentStatus()" class="form-control custom-select" data-ng-model="commentFilter.status">
+                <option value="all">Show All</option>
+                <option value="unresolved">Unresolved</option>
+                <option ng-if="rights.canUpdateCommentStatus()" value="todo">Todo</option>
+            </select>
+        </div>
     </div>
-</div>
-<div class="commentListView">
-    <div ng-show="rights.canComment()" class="newCommentForm">
+    <div class="commentListView">
+        <div class="commentListContainer">
+            <div ng-repeat="comment in currentEntryCommentsFiltered">
+                <dc-comment></dc-comment>
+            </div>
+        </div>
+    </div>
+    <div ng-show="rights.canComment() && newComment.regarding.field && showNewComment" class="newCommentForm" ng-class="(showNewComment) ? 'show' : 'nope'">
         <div class="card card-default">
-            <div class="card-body">
+            <div class="card-title" ng-show="currentEntryCommentsFiltered.length === 0">
+                <span class="sense-label">{{getSenseLabel(newComment.regarding.field)}}</span> {{newComment.regarding.fieldNameForDisplay}}{{(newComment.regarding.inputSystemAbbreviation) ? ' - ' + newComment.regarding.inputSystemAbbreviation : ''}}
+            </div>
+            <div class="card-block">
                 <form ng-submit="postNewComment()">
                     <div class="commentRegarding">
                         <i class="fa fa-times" style="float:right; color:#808080; cursor: pointer" ng-click="newComment.regarding.field = ''" ng-show="newComment.regarding.field"></i>
@@ -42,16 +52,11 @@
                         <div ng-hide="newComment.regarding.field" class="alert alert-warning"><span data-translate="Click on a field in the editor to give context to your comment"></span></div>
                     </div>
                     <textarea required data-ng-model="newComment.content" class="form-control" placeholder="{{getNewCommentPlaceholderText()}}"  ></textarea>
-                    <div class="text-xs-right">
+                    <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-sm btn-primary">Post</button>
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
-    <div class="commentListContainer">
-        <div ng-repeat="comment in currentEntryCommentsFiltered">
-            <dc-comment></dc-comment>
         </div>
     </div>
 </div>
