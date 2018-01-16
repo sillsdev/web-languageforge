@@ -1,28 +1,28 @@
-'use strict';
+import {browser, element, by} from 'protractor';
 
-var SignupPage = function () {
-  this.get = function () {
+export class SignupPage {
+  get() {
     browser.get(browser.baseUrl + '/public/signup');
-  };
+  }
 
-  this.getPrefilledEmail = function (email) {
+  getPrefilledEmail(email: string) {
     browser.get(browser.baseUrl + '/public/signup#!/?e=' + encodeURIComponent(email));
-  };
+  }
 
-  this.signupForm = element(by.id('signupForm'));
-  this.emailInput = element(by.id('email'));
-  this.emailInvalid = element(by.id('emailInvalid'));
-  this.emailTaken = element(by.id('emailTaken'));
+  signupForm = element(by.id('signupForm'));
+  emailInput = element(by.id('email'));
+  emailInvalid = element(by.id('emailInvalid'));
+  emailTaken = element(by.id('emailTaken'));
 
-  this.nameInput = element(by.id('name'));
+  nameInput = element(by.id('name'));
 
-  this.visiblePasswordInvalid = element(by.id('visiblePasswordInvalid'));
-  this.passwordInput = element(by.id('password'));
-  this.passwordIsWeak = element(by.id('passwordIsWeak'));
-  this.showPassword = element(by.model('$ctrl.showPassword'));
+  visiblePasswordInvalid = element(by.id('visiblePasswordInvalid'));
+  passwordInput = element(by.id('password'));
+  passwordIsWeak = element(by.id('passwordIsWeak'));
+  showPassword = element(by.model('$ctrl.showPassword'));
 
-  this.captchaDiv = element(by.id('pui-captcha'));
-  this.captcha = {
+  captchaDiv = element(by.id('pui-captcha'));
+  captcha = {
     expectedItemName: this.captchaDiv.element(by.id('expectedItemName')),
     blueSquareButton: this.captchaDiv.element(by.id('captcha0')),
     yellowCircleButton: this.captchaDiv.element(by.id('captcha1')),
@@ -30,7 +30,7 @@ var SignupPage = function () {
 
     setInvalidCaptcha: function () {
       this.blueSquareButton.click();
-      this.expectedItemName.getText().then(function (result) {
+      this.expectedItemName.getText().then((result: string) => {
         if (result === 'Blue Square') {
           element(by.id('pui-captcha')).element(by.id('captcha1')).click();
         }
@@ -38,8 +38,8 @@ var SignupPage = function () {
     },
 
     setValidCaptcha: function () {
-      this.expectedItemName.getText().then(function (result) {
-        var captchaDiv = element(by.id('pui-captcha'));
+      this.expectedItemName.getText().then((result: string) => {
+        let captchaDiv = element(by.id('pui-captcha'));
         switch (result) {
           case 'Blue Square' :
             captchaDiv.element(by.id('captcha0')).click();
@@ -55,9 +55,9 @@ var SignupPage = function () {
     }
   };
 
-  this.captchaInvalid = element(by.id('captchaInvalid'));
-  this.signupButton = element(by.id('submit'));
-  this.noticeList  = element.all(by.repeater('notice in $ctrl.notices()'));
+  captchaInvalid = element(by.id('captchaInvalid'));
+  signupButton = element(by.id('submit'));
+  noticeList  = element.all(by.repeater('notice in $ctrl.notices()'));
 };
 
 module.exports = new SignupPage();
