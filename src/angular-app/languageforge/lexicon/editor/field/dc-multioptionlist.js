@@ -10,8 +10,10 @@ angular.module('palaso.ui.dc.multioptionlist', [])
     scope: {
       config: '=',
       model: '=',
+      control: '=',
       items: '=',
-      selectField: '&'
+      selectField: '&',
+      fieldName: '='
     },
     controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rightsService) {
       $scope.$state = $state;

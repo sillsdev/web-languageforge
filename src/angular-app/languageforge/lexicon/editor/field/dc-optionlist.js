@@ -9,7 +9,8 @@ angular.module('palaso.ui.dc.optionlist', [])
         config: '=',
         model: '=',
         control: '=',
-        items: '='
+        items: '=',
+        fieldName: '='
       },
       controller: ['$scope', '$state', function ($scope, $state) {
         $scope.$state = $state;
