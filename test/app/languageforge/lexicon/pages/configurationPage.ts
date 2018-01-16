@@ -1,56 +1,59 @@
-'use strict';
+import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 
-module.exports = new ConfigurationPage();
+class ConfigurationPage {
+  private readonly modal = require('./lexModals.js');
+  private readonly util = require('../../../bellows/pages/util.js');
 
-function ConfigurationPage() {
-  var modal = require('./lexModals.js');
-  var util = require('../../../bellows/pages/util.js');
+  noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
+  firstNoticeCloseButton = this.noticeList.first().element(by.className('close'));
 
-  this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
-  this.firstNoticeCloseButton = this.noticeList.first().element(by.className('close'));
-
-  this.settingsMenuLink = element(by.id('settingsDropdownButton'));
-  this.configurationLink = element(by.id('dropdown-configuration'));
-  this.get = function get() {
-    util.scrollTop();
+  settingsMenuLink = element(by.id('settingsDropdownButton'));
+  configurationLink = element(by.id('dropdown-configuration'));
+  
+  get() {
+    this.util.scrollTop();
     this.settingsMenuLink.click();
     this.configurationLink.click();
+  }
+
+  applyButton = element(by.id('configuration-apply-btn'));
+
+  private readonly tabElements = element.all(by.tagName('pui-tab'));
+  tab() {
+    return this.tabElements.first();
   };
 
-  this.applyButton = element(by.id('configuration-apply-btn'));
+  activePane = element(by.css('div.tab-pane.active'));
 
-  var tabElements = element.all(by.tagName('pui-tab'));
-  this.tab = function () {
-    return tabElements.first();
-  };
-
-  this.activePane = element(by.css('div.tab-pane.active'));
-
-  this.getTabByName = function getTabByName(tabName) {
+  getTabByName(tabName: string) {
     return element(by.cssContainingText('pui-tabset .tab-links .tab-link', tabName));
-  };
+  }
 
   // These will be updated once the pui-tab is updated to support unique id
-  this.tabs = {
+  tabs = {
     inputSystems: element(by.linkText('Input Systems')),
     fields:       element(by.linkText('Fields')),
     tasks:        element(by.linkText('Tasks')),
     optionlists:  element(by.linkText('Option Lists'))
   };
 
-  this.inputSystemsTab = {
+  inputSystemsTab = {
     newButton:    this.activePane.element(by.id('configuration-new-btn')),
     moreButton:   this.activePane.element(by.id('configuration-dropdown-btn')),
     moreButtonGroup: {
       addIpa:     this.activePane.element(by.id('configuration-add-ipa-btn')),
       addVoice:   this.activePane.element(by.id('configuration-add-voice-btn')),
       addVariant: this.activePane.element(by.id('configuration-add-variant-btn')),
-      remove:     this.activePane.element(by.id('configuration-remove-btn'))
+      remove:     this.activePane.element(by.id('configuration-remove-btn')),
+      // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
+      newButtonClick: () => {
+        this.inputSystemsTab.newButton.click();
+        browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
+      }
     },
-    getLanguageByName: function getLanguageByName(languageName) {
-      return element(by.css('div.tab-pane.active div.col-md-3 dl.picklists'))
-        .element(by.cssContainingText('div[data-ng-repeat] span', languageName));
-    },
+    getLanguageByName: (languageName : string) =>
+      element(by.css('div.tab-pane.active div.col-md-3 dl.picklists'))
+        .element(by.cssContainingText('div[data-ng-repeat] span', languageName)),
 
     selectedInputSystem: {
       displayName:    this.activePane.element(by.id('languageDisplayName')),
@@ -70,13 +73,9 @@ function ConfigurationPage() {
     }
   };
 
-  // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
-  this.inputSystemsTab.newButtonClick = function () {
-    this.inputSystemsTab.newButton.click();
-    browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
-  }.bind(this);
 
-  this.fieldsTab = {
+
+  fieldsTab = {
     fieldSetupLabel: this.activePane.element(by.id('fieldSetupLabel')),
     hiddenIfEmptyCheckbox: this.activePane
       .element(by.model('$ctrl.fccFieldConfig[$ctrl.fccCurrentField.name].hideIfEmpty')),
@@ -91,36 +90,35 @@ function ConfigurationPage() {
     inputSystemUpButton: this.activePane.element(by.id('upButton')),
     inputSystemDownButton: this.activePane.element(by.id('downButton')),
     newCustomFieldButton: this.activePane.element(by.id('configuration-new-field-btn')),
-    removeCustomFieldButton: this.activePane.element(by.id('configuration-remove-field-btn'))
-  };
+    removeCustomFieldButton: this.activePane.element(by.id('configuration-remove-field-btn')),
+    // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
+    newCustomFieldButtonClick: () => {
+      this.fieldsTab.newCustomFieldButton.click();
+      browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
+    }
+  }
 
-  // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
-  this.fieldsTab.newCustomFieldButtonClick = function () {
-    this.fieldsTab.newCustomFieldButton.click();
-    browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
-  }.bind(this);
 
-  this.showAllFieldsButton = element(by.id('configuration-show-fields-btn'));
 
-  this.entryFields = this.activePane
+  showAllFieldsButton = element(by.id('configuration-show-fields-btn'));
+
+  entryFields = this.activePane
     .all(by.repeater('fieldName in $ctrl.fccConfigDirty.entry.fieldOrder'));
-  this.senseFields = this.activePane
+  senseFields = this.activePane
     .all(by.repeater('fieldName in $ctrl.fccConfigDirty.entry.fields.senses.fieldOrder'));
-  this.exampleFields = this.activePane.all(by
+  exampleFields = this.activePane.all(by
     .repeater('fieldName in $ctrl.fccConfigDirty.entry.fields.senses.fields.examples.fieldOrder'));
 
-  this.getFieldByName = function getFieldByName(fieldName) {
+  getFieldByName(fieldName: string) {
     return element(by
       .css('div.tab-pane.active > div > lsc-fields > div > div.col-md-3 dl.picklists'))
       .element(by.cssContainingText('div[data-ng-repeat] > span', fieldName));
-  };
+  }
 
-  this.hiddenIfEmpty = this.activePane.element(by.id('hideIfEmpty'));
-  this.captionHiddenIfEmpty = function () {
+  hiddenIfEmpty = this.activePane.element(by.id('hideIfEmpty'));
+  captionHiddenIfEmpty() {
     return this.activePane.element(by.id('captionHideIfEmpty'));
-  };
-
-  // select language and custom field modals
-  this.modal = modal;
-
+  }
 }
+
+module.exports = new ConfigurationPage();
