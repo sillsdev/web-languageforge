@@ -11,7 +11,8 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
     scope: {
       config: '=',
       pictures: '=',
-      control: '='
+      control: '=',
+      fieldName: '='
     },
     controller: ['$scope', '$state', 'Upload', '$filter', 'sessionService', 'lexProjectService',
       'lexConfigService', 'silNoticeService', 'modalService',
