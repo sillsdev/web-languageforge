@@ -72,18 +72,18 @@ export class LexiconCommentService {
     this.comments.counts.currentEntry.fields = {};
     this.comments.items.currentEntry.length = 0;
     for (const comment of this.comments.items.all) {
-      const fieldName = comment.regarding.field  + '_' + comment.regarding.inputSystemAbbreviation;
+      const contextId = comment.regarding.field  + '_' + comment.regarding.inputSystemAbbreviation;
       if (comment.entryRef === entryId) {
-        if (fieldName && angular.isUndefined(this.comments.counts.currentEntry.fields[fieldName])) {
-          this.comments.counts.currentEntry.fields[fieldName] = 0;
+        if (contextId && angular.isUndefined(this.comments.counts.currentEntry.fields[contextId])) {
+          this.comments.counts.currentEntry.fields[contextId] = 0;
         }
 
         this.comments.items.currentEntry.push(comment);
 
         // update the appropriate count for this field and update the total count
         if (comment.status !== 'resolved') {
-          if (fieldName) {
-            this.comments.counts.currentEntry.fields[fieldName]++;
+          if (contextId) {
+            this.comments.counts.currentEntry.fields[contextId]++;
           }
 
           this.comments.counts.currentEntry.total++;
