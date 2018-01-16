@@ -1,5 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Models;
 using System.Security.Claims;
@@ -7,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SIL.XForge.WebApi.Server.Controllers
 {
-    [Authorize]
-    public class ProjectResourceController<T> : Controller where T : Project
+    public class ProjectResourceController<T> : ResourceController where T : Project
     {
-        protected ProjectResourceController(IRepository<T> projectRepo)
+        protected ProjectResourceController(IMapper mapper, IRepository<T> projectRepo)
+            : base(mapper)
         {
             ProjectRepo = projectRepo;
         }

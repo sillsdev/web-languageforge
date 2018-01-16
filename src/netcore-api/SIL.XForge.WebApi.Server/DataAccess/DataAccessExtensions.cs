@@ -10,6 +10,8 @@ using MongoDB.Bson.Serialization.Options;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using SIL.XForge.WebApi.Server.Models;
+using SIL.XForge.WebApi.Server.Models.Lexicon;
+using SIL.XForge.WebApi.Server.Models.Translate;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -44,6 +46,13 @@ namespace SIL.XForge.WebApi.Server.DataAccess
 
             BsonSerializer.RegisterDiscriminatorConvention(typeof(Project),
                 new HierarchicalDiscriminatorConvention("appName"));
+            BsonSerializer.RegisterDiscriminatorConvention(typeof(LexConfig),
+                new HierarchicalDiscriminatorConvention("type"));
+            BsonSerializer.RegisterDiscriminatorConvention(typeof(LexViewFieldConfig),
+                new HierarchicalDiscriminatorConvention("type"));
+            BsonSerializer.RegisterDiscriminatorConvention(typeof(LexTask),
+                new HierarchicalDiscriminatorConvention("type"));
+
             var globalPack = new ConventionPack
             {
                 new CamelCaseElementNameConvention(),
@@ -53,6 +62,22 @@ namespace SIL.XForge.WebApi.Server.DataAccess
             var paratextProjectPack = new ConventionPack { new NoIdMemberConvention() };
             ConventionRegistry.Register("ParatextProject", paratextProjectPack, t => t == typeof(ParatextProject));
 
+            RegisterClass<LexConfig>(cm =>
+                {
+                    cm.MapMember(lc => lc.HideIfEmpty).SetSerializer(new EmptyStringBooleanSerializer());
+                });
+            RegisterClass<LexConfigFieldList>(cm => cm.SetDiscriminator(LexConfig.FieldList));
+            RegisterClass<LexConfigOptionList>(cm => cm.SetDiscriminator(LexConfig.OptionList));
+            RegisterClass<LexConfigMultiOptionList>(cm => cm.SetDiscriminator(LexConfig.MultiOptionList));
+            RegisterClass<LexConfigMultiText>(cm => cm.SetDiscriminator(LexConfig.MultiText));
+            RegisterClass<LexConfigPictures>(cm => cm.SetDiscriminator(LexConfig.Pictures));
+            RegisterClass<LexConfigMultiParagraph>(cm => cm.SetDiscriminator(LexConfig.MultiParagraph));
+            RegisterClass<LexViewFieldConfig>(cm => cm.SetDiscriminator("basic"));
+            RegisterClass<LexViewMultiTextFieldConfig>(cm => cm.SetDiscriminator("multitext"));
+            RegisterClass<LexTask>(cm => cm.SetDiscriminator(""));
+            RegisterClass<LexTaskDashboard>(cm => cm.SetDiscriminator(LexTask.Dashboard));
+            RegisterClass<LexTaskSemdom>(cm => cm.SetDiscriminator(LexTask.Semdom));
+
             services.AddSingleton<IMongoClient>(sp => new MongoClient(connectionString));
 
             services.AddMongoRepository<SendReceiveJob>("send_receive");
@@ -61,16 +86,13 @@ namespace SIL.XForge.WebApi.Server.DataAccess
                     cm.MapMember(u => u.SiteRole).SetSerializer(
                         new DictionaryInterfaceImplementerSerializer<Dictionary<string, string>>(
                             DictionaryRepresentation.Document, new SiteDomainSerializer(), new StringSerializer()));
+                    cm.MapMember(u => u.Projects)
+                        .SetSerializer(new EnumerableInterfaceImplementerSerializer<List<string>, string>(
+                            new StringSerializer(BsonType.ObjectId)));
                 });
             services.AddMongoRepository<Project>("projects");
-            services.AddMongoRepository<LexProject>("projects", cm =>
-                {
-                    cm.SetDiscriminator("lexicon");
-                }, true);
-            services.AddMongoRepository<TranslateProject>("projects", cm =>
-                {
-                    cm.SetDiscriminator("translate");
-                }, true);
+            services.AddMongoRepository<LexProject>("projects", cm => cm.SetDiscriminator("lexicon"), true);
+            services.AddMongoRepository<TranslateProject>("projects", cm => cm.SetDiscriminator("translate"), true);
             services.AddMongoProjectRepositoryFactory<TranslateDocumentSet>("translate");
             return services;
         }
@@ -104,6 +126,15 @@ namespace SIL.XForge.WebApi.Server.DataAccess
                             .SetSerializer(new StringSerializer(BsonType.ObjectId));
                     }
                     setup?.Invoke(cm);
+                });
+        }
+
+        private static void RegisterClass<T>(Action<BsonClassMap<T>> setup)
+        {
+            BsonClassMap.RegisterClassMap<T>(cm =>
+                {
+                    cm.AutoMap();
+                    setup(cm);
                 });
         }
     }
