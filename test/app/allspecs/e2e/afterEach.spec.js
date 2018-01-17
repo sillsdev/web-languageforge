@@ -3,7 +3,7 @@
 afterEach(function () {
   var appFrame = require('../../bellows/pages/appFrame.js');
   var body     = require('../../bellows/pages/pageBody.js');
-  var util     = require('../../bellows/pages/util.js');
+  var util = require('../../bellows/pages/utils.js');
 
   appFrame.errorMessage.isPresent().then(function (isPresent) {
     if (isPresent) {

@@ -4,7 +4,7 @@ describe('Configuration Input Systems', function () {
   var constants     = require('../../../../testConstants');
   var loginPage     = require('../../../../bellows/pages/loginPage.js');
   var projectsPage  = require('../../../../bellows/pages/projectsPage.js');
-  var util          = require('../../../../bellows/pages/util.js');
+  var util          = require('../../../../bellows/pages/utils.js');
   var configPage    = require('../../pages/configurationPage.js');
   var firstLanguage = 'Maori';
   var lastLanguage  = 'Rarotongan';

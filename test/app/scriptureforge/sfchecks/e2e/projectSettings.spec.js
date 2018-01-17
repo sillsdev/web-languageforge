@@ -3,7 +3,7 @@
 describe('SFChecks project settings page - project manager', function () {
   var constants       = require('../../../testConstants.json');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
-  var util            = require('../../../bellows/pages/util.js');
+  var util            = require('../../../bellows/pages/utils.js');
   var projectSettingsPage = require('../pages/projectSettingsPage.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;

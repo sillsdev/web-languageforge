@@ -2,7 +2,7 @@
 
 describe('Bellows E2E Project Settings App', function () {
   var constants      = require('../../../testConstants.json');
-  var util           = require('../../pages/util.js');
+  var util           = require('../../pages/utils.js');
   var loginPage      = require('../../pages/loginPage.js');
   var projectsPage   = require('../../pages/projectsPage.js');
   var siteAdminPage  = require('../../pages/siteAdminPage.js');

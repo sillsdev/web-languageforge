@@ -9,7 +9,7 @@ module.exports = new SfQuestionPage;
  * Note: "delete" is a reserved word, and the functionality will be moved to "archiving" later
  */
 function SfQuestionPage() {
-  var util = require('../../../bellows/pages/util.js');
+  var util = require('../../../bellows/pages/utils.js');
   var textPage = require('./textPage.js');
 
   var expectedCondition = protractor.ExpectedConditions;

@@ -3,7 +3,7 @@
 module.exports = new SfProjectPage();
 
 function SfProjectPage() {
-  var util = require('../../../bellows/pages/util.js');
+  var util = require('../../../bellows/pages/utils.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
