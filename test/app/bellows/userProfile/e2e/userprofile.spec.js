@@ -90,7 +90,7 @@ describe('User Profile E2E Test', function () {
         userProfile.myAccountTab.updateEmail(newEmail);
 
         // Ensure "Blue" won't match "Steel Blue", etc.
-        userProfile.myAccountTab.selectColor('^' + newColor + '$');
+        userProfile.myAccountTab.selectColor(new RegExp('^' + newColor + '$'));
         userProfile.myAccountTab.selectShape(newShape);
 
         userProfile.myAccountTab.updateMobilePhone(newMobilePhone);
