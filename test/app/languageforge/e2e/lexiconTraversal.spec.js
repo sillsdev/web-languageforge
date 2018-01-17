@@ -65,8 +65,8 @@ describe('Lexicon E2E Page Traversal', function () {
 
   it('Explore view settings page', function () {
     viewSettingsPage.get();
-    viewSettingsPage.tabs.observer.go();
-    viewSettingsPage.tabs.contributor.go();
-    viewSettingsPage.tabs.manager.go();
+    viewSettingsPage.goToObserverTab();
+    viewSettingsPage.goToContributorTab();
+    viewSettingsPage.goToManagerTab();
   });
 });
