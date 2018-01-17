@@ -19,7 +19,7 @@ export class ConfigurationUnifiedViewModel {
   constructor(config: LexiconConfig, users: { [userId: string]: User }) {
     this.groupLists = ConfigurationUnifiedViewModel.setGroupLists(config, users);
 
-    this.inputSystems = ConfigurationUnifiedViewModel.setInputSystemViewModel(config);
+    this.inputSystems = ConfigurationUnifiedViewModel.setInputSystemsViewModel(config);
 
     const entryConfig = config.entry;
     this.entryFields = ConfigurationUnifiedViewModel.setLevelViewModel(entryConfig, config);
@@ -64,7 +64,7 @@ export class ConfigurationUnifiedViewModel {
     }
   }
 
-  toConfig(config: LexiconConfig) {
+  toConfig(config: LexiconConfig): void {
     // Config updates for Input Systems
     ConfigurationUnifiedViewModel.inputSystemsToConfig(this.inputSystems, config, this.groupLists);
 
@@ -159,7 +159,8 @@ export class ConfigurationUnifiedViewModel {
     ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(settings, selectAll, groupIndex);
   }
 
-  private static inputSystemsToConfig(inputSystems: InputSystemSettings[], config: LexiconConfig, groups: GroupList[]) {
+  private static inputSystemsToConfig(inputSystems: InputSystemSettings[], config: LexiconConfig,
+                                      groups: GroupList[]): void {
     // iterate over every role type
     const roleType = new RoleType();
     for (const role of RoleType.roles()) {
@@ -218,7 +219,8 @@ export class ConfigurationUnifiedViewModel {
   }
 
   private static fieldsToConfig(fields: FieldSettings[], config: LexiconConfig, configFields: LexConfigFieldList,
-                                groupLists: GroupList[]) {
+                                groupLists: GroupList[]): void {
+    configFields.fieldOrder = [];
     for (const field of fields) {
       const configField = configFields.fields[field.fieldName];
 
@@ -241,32 +243,63 @@ export class ConfigurationUnifiedViewModel {
         config.userViews[groupList.userId].fields[field.fieldName].show = field.groups[i].show;
       }
 
+      configFields.fieldOrder.push(field.fieldName);
     }
   }
 
-  private static setInputSystemViewModel(config: LexiconConfig): InputSystemSettings[] {
+  private static setInputSystemsViewModel(config: LexiconConfig): InputSystemSettings[] {
     const inputSystems: InputSystemSettings[] = [];
+    const selectedManagerTags = ConfigurationUnifiedViewModel.getSelectedInputSystemsManagerTags(config);
     let i = 0;
+    for (const tag of selectedManagerTags) {
+      ConfigurationUnifiedViewModel.setInputSystemViewModel(config, inputSystems, tag, i);
+      i++;
+    }
     for (const tag in config.inputSystems) {
-      if (config.inputSystems.hasOwnProperty(tag)) {
-        const inputSystemSettings = new InputSystemSettings();
-        const inputSystemViewModel =
-          new ConfigurationInputSystemsViewModel(new OptionSelects(), config.inputSystems[tag]);
-        inputSystemSettings.tag = tag;
-        inputSystemSettings.name = inputSystemViewModel.languageDisplayName();
-        ConfigurationUnifiedViewModel.setInputSystemRoleSettings(tag, config, inputSystemSettings);
-        ConfigurationUnifiedViewModel.setInputSystemGroupSettings(tag, config, inputSystemSettings);
-        inputSystems[i++] = inputSystemSettings;
-
-        ConfigurationUnifiedViewModel.checkIfAllRowSelected(inputSystemSettings);
+      if (config.inputSystems.hasOwnProperty(tag) && !selectedManagerTags.includes(tag)) {
+        ConfigurationUnifiedViewModel.setInputSystemViewModel(config, inputSystems, tag, i);
+        i++;
       }
     }
 
     return inputSystems;
   }
 
+  private static setInputSystemViewModel(config: LexiconConfig, inputSystems: InputSystemSettings[], tag: string,
+                                         index: number): void {
+    const inputSystemSettings = new InputSystemSettings();
+    const inputSystemViewModel =
+      new ConfigurationInputSystemsViewModel(new OptionSelects(), config.inputSystems[tag]);
+    inputSystemSettings.tag = tag;
+    inputSystemSettings.name = inputSystemViewModel.languageDisplayName();
+    ConfigurationUnifiedViewModel.setInputSystemRoleSettings(tag, config, inputSystemSettings);
+    ConfigurationUnifiedViewModel.setInputSystemGroupSettings(tag, config, inputSystemSettings);
+    inputSystems[index] = inputSystemSettings;
+
+    ConfigurationUnifiedViewModel.checkIfAllRowSelected(inputSystemSettings);
+  }
+
+  private static getSelectedInputSystemsManagerTags(config: LexiconConfig): string[] {
+    const roleType = new RoleType();
+    const roleView: LexRoleViewConfig = config.roleViews[roleType.manager];
+    let tags: string[] = [];
+    if (roleView != null && roleView.fields != null) {
+      for (const fieldName in roleView.fields) {
+        if (roleView.fields.hasOwnProperty(fieldName) && roleView.fields[fieldName].type === 'multitext') {
+          const multiTextField = roleView.fields[fieldName] as LexViewMultiTextFieldConfig;
+          if (multiTextField.overrideInputSystems) {
+            tags = multiTextField.inputSystems;
+            break;
+          }
+        }
+      }
+    }
+
+    return tags;
+  }
+
   private static setInputSystemRoleSettings(tag: string, config: LexiconConfig,
-                                            inputSystemSettings: InputSystemSettings) {
+                                            inputSystemSettings: InputSystemSettings): void {
     const roles = RoleType.roles();
     const roleType = new RoleType();
 
@@ -288,7 +321,7 @@ export class ConfigurationUnifiedViewModel {
   }
 
   private static setInputSystemGroupSettings(tag: string, config: LexiconConfig,
-                                             inputSystemSettings: InputSystemSettings) {
+                                             inputSystemSettings: InputSystemSettings): void {
     let groupIndex = 0;
     for (const userId in config.userViews) {
       if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null &&
@@ -330,7 +363,7 @@ export class ConfigurationUnifiedViewModel {
     return fields;
   }
 
-  private static setLevelRoleSettings(fieldName: string, config: LexiconConfig, fieldSettings: FieldSettings) {
+  private static setLevelRoleSettings(fieldName: string, config: LexiconConfig, fieldSettings: FieldSettings): void {
     const roles = RoleType.roles();
     const roleType = new RoleType();
 
@@ -342,7 +375,7 @@ export class ConfigurationUnifiedViewModel {
     }
   }
 
-  private static setLevelGroupSettings(fieldName: string, config: LexiconConfig, fieldSettings: FieldSettings) {
+  private static setLevelGroupSettings(fieldName: string, config: LexiconConfig, fieldSettings: FieldSettings): void {
     let groupIndex = 0;
     for (const userId in config.userViews) {
       if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null &&

@@ -15,20 +15,15 @@ import {
   LexViewMultiTextFieldConfig
 } from '../../shared/model/lexicon-config.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
-import {Field} from './configuration-fields.component';
 import {ConfigurationUnifiedViewModel, Group, GroupList} from './configuration-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 
 export class UnifiedConfigurationController implements angular.IController {
-  uccCurrentField: Field;
   uccFieldConfig: { [fieldName: string]: LexConfigField };
   uccConfigDirty: LexiconConfig;
-  uccInputSystemViewModels: { [inputSystemId: string]: ConfigurationInputSystemsViewModel };
   uccInputSystemsList: ConfigurationInputSystemsViewModel[];
   uccUsers: { [userId: string]: User };
-  readonly uccConfigPristine: LexiconConfig;
   readonly uccOptionLists: LexOptionList[];
-  uccSelectField: (params: { fieldName: string }) => void;
   uccAddInputSystem: (params: {}) => void;
   uccOnUpdate: (params: { $event: { unifiedViewModel?: ConfigurationUnifiedViewModel,
     configDirty?: LexiconConfig } }) => void;
@@ -71,10 +66,6 @@ export class UnifiedConfigurationController implements angular.IController {
   selectAllGroupColumn = ConfigurationUnifiedViewModel.selectAllGroupColumn;
   checkIfAllRoleSelected = ConfigurationUnifiedViewModel.checkIfAllRoleSelected;
   checkIfAllGroupSelected = ConfigurationUnifiedViewModel.checkIfAllGroupSelected;
-
-  selectField(fieldName: string) {
-    this.uccSelectField({ fieldName });
-  }
 
   openNewCustomFieldModal(fieldLevel: string): void {
     class NewCustomData {
@@ -207,7 +198,6 @@ export class UnifiedConfigurationController implements angular.IController {
       });
 
       this.uccOnUpdate({ $event: { configDirty: this.uccConfigDirty } });
-      this.selectField(customFieldName);
     }, angular.noop);
   }
 
@@ -314,15 +304,11 @@ class Typeahead {
 
 export const UnifiedConfigurationComponent: angular.IComponentOptions = {
   bindings: {
-    uccCurrentField: '<',
     uccFieldConfig: '<',
     uccConfigDirty: '<',
-    uccConfigPristine: '<',
-    uccInputSystemViewModels: '<',
     uccInputSystemsList: '<',
-    uccOptionLists: '<',
     uccUsers: '<',
-    uccSelectField: '&',
+    uccOptionLists: '<',
     uccAddInputSystem: '&',
     uccOnUpdate: '&'
   },
