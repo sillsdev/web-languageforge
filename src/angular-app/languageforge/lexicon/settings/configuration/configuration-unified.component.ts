@@ -35,6 +35,7 @@ export class UnifiedConfigurationController implements angular.IController {
 
   unifiedViewModel: ConfigurationUnifiedViewModel;
   typeahead: Typeahead;
+  newUserExpanded: boolean;
 
   static $inject: string[] = ['$scope', '$filter', '$uibModal'];
   constructor(private $scope: angular.IScope, private $filter: angular.IFilterService, private $modal: ModalService) {
@@ -218,12 +219,18 @@ export class UnifiedConfigurationController implements angular.IController {
   }
 
   addGroup(): void {
-    const tempUser = this.typeahead.user;
+    const user = this.typeahead.user;
+    if (this.typeahead.usersWithoutSettings.indexOf(user) < 0) {
+      return;
+    }
+
     this.typeahead.userName = '';
-    const index: number = this.unifiedViewModel.groupLists.length;
-    const tempGroupList = new GroupList(this.typeahead.user.username, this.typeahead.user.id);
-    this.unifiedViewModel.groupLists[index] = tempGroupList;
-    this.removeFromUsersWithoutSettings(tempGroupList.userId);
+    this.removeFromUsersWithoutSettings(user.id);
+    this.unifiedViewModel.groupLists.push(new GroupList(user.username, user.id));
+    this.unifiedViewModel.selectAllColumns.inputSystems.groups.push(new Group());
+    this.unifiedViewModel.selectAllColumns.entryFields.groups.push(new Group());
+    this.unifiedViewModel.selectAllColumns.senseFields.groups.push(new Group());
+    this.unifiedViewModel.selectAllColumns.exampleFields.groups.push(new Group());
 
     for (const field of this.unifiedViewModel.inputSystems) {
       field.groups.push(new Group());
@@ -241,16 +248,20 @@ export class UnifiedConfigurationController implements angular.IController {
       field.groups.push(new Group());
     }
 
-    this.uccConfigDirty.userViews[tempGroupList.userId] =
-      angular.copy(this.uccConfigDirty.roleViews[tempUser.role]) as LexUserViewConfig;
+    this.uccConfigDirty.userViews[user.id] =
+      angular.copy(this.uccConfigDirty.roleViews[user.role]) as LexUserViewConfig;
+
+    this.newUserExpanded = false;
   }
 
-  removeGroup(groupList: GroupList): void {
-    const index: number = this.unifiedViewModel.groupLists.indexOf(groupList);
-    if (index !== -1) {
-      this.unifiedViewModel.groupLists.splice(index, 1);
-    }
-    this.typeahead.usersWithoutSettings.push(this.uccUsers[groupList.userId]);
+  removeGroup(index: number): void {
+    const userId = this.unifiedViewModel.groupLists[index].userId;
+    this.typeahead.usersWithoutSettings.push(this.uccUsers[userId]);
+    this.unifiedViewModel.groupLists.splice(index, 1);
+    this.unifiedViewModel.selectAllColumns.inputSystems.groups.splice(index, 1);
+    this.unifiedViewModel.selectAllColumns.entryFields.groups.splice(index, 1);
+    this.unifiedViewModel.selectAllColumns.senseFields.groups.splice(index, 1);
+    this.unifiedViewModel.selectAllColumns.exampleFields.groups.splice(index, 1);
 
     for (const field of this.unifiedViewModel.inputSystems) {
       field.groups.splice(index, 1);
@@ -270,8 +281,8 @@ export class UnifiedConfigurationController implements angular.IController {
   }
 
   removeFromUsersWithoutSettings(userId: string): void {
-    const tempUser: User = this.uccUsers[userId];
-    const removeIndex: number = this.typeahead.usersWithoutSettings.indexOf(tempUser);
+    const user: User = this.uccUsers[userId];
+    const removeIndex: number = this.typeahead.usersWithoutSettings.indexOf(user);
     if (removeIndex !== -1) {
       this.typeahead.usersWithoutSettings.splice(removeIndex, 1);
     }
@@ -289,6 +300,7 @@ class Typeahead {
     this.filter = filter;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   searchUsers = (user: User): void => {
     this.users = this.filter('filter')(this.usersWithoutSettings, user);
   }
@@ -298,6 +310,7 @@ class Typeahead {
     this.userName = user.name;
   }
 
+  // noinspection JSMethodCanBeStatic
   imageSource(avatarRef: string): string {
     return avatarRef ? '/Site/views/shared/image/avatar/' + avatarRef :
       '/Site/views/shared/image/avatar/anonymous02.png';
