@@ -39,6 +39,13 @@ namespace SIL.XForge.WebApi.Server.Controllers
                 .AfterMap<SendReceiveJobHrefAction>();
 
             CreateMap<ParatextUserInfo, ParatextUserInfoDto>();
+
+            CreateMap<LexPicture, LexPictureDto>()
+                .ReverseMap();
+            CreateMap<LexSense, LexSenseDto>()
+                .ReverseMap();
+            CreateMap<LexEntry, LexEntryDto>()
+                .ReverseMap();
         }
 
         private class HrefAction<TSource, TDestination> : IMappingAction<TSource, TDestination>

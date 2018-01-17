@@ -62,6 +62,12 @@ namespace SIL.XForge.WebApi.Server.DataAccess
             var paratextProjectPack = new ConventionPack { new NoIdMemberConvention() };
             ConventionRegistry.Register("ParatextProject", paratextProjectPack, t => t == typeof(ParatextProject));
 
+            RegisterClass<EntityBase>(cm =>
+                {
+                    cm.MapIdProperty(e => e.Id)
+                        .SetIdGenerator(StringObjectIdGenerator.Instance)
+                        .SetSerializer(new StringSerializer(BsonType.ObjectId));
+                });
             RegisterClass<LexConfig>(cm =>
                 {
                     cm.MapMember(lc => lc.HideIfEmpty).SetSerializer(new EmptyStringBooleanSerializer());
@@ -77,6 +83,19 @@ namespace SIL.XForge.WebApi.Server.DataAccess
             RegisterClass<LexTask>(cm => cm.SetDiscriminator(""));
             RegisterClass<LexTaskDashboard>(cm => cm.SetDiscriminator(LexTask.Dashboard));
             RegisterClass<LexTaskSemdom>(cm => cm.SetDiscriminator(LexTask.Semdom));
+            RegisterClass<LexAuthorInfo>(cm =>
+                {
+                    cm.MapMember(a => a.ModifiedByUserRef)
+                        .SetSerializer(new StringSerializer(BsonType.ObjectId));
+                    cm.MapMember(a => a.CreatedByUserRef)
+                        .SetSerializer(new StringSerializer(BsonType.ObjectId));
+                });
+            RegisterClass<LexSense>(cm =>
+                {
+                    cm.UnmapMember(s => s.CustomFields);
+                    cm.UnmapMember(s => s.AuthorInfo);
+                    cm.UnmapMember(s => s.ReversalEntries);
+                });
 
             services.AddSingleton<IMongoClient>(sp => new MongoClient(connectionString));
 
@@ -91,50 +110,40 @@ namespace SIL.XForge.WebApi.Server.DataAccess
                             new StringSerializer(BsonType.ObjectId)));
                 });
             services.AddMongoRepository<Project>("projects");
-            services.AddMongoRepository<LexProject>("projects", cm => cm.SetDiscriminator("lexicon"), true);
-            services.AddMongoRepository<TranslateProject>("projects", cm => cm.SetDiscriminator("translate"), true);
+            services.AddMongoRepository<LexProject>("projects", cm => cm.SetDiscriminator("lexicon"));
+            services.AddMongoRepository<TranslateProject>("projects", cm => cm.SetDiscriminator("translate"));
             services.AddMongoProjectRepositoryFactory<TranslateDocumentSet>("translate");
+            services.AddMongoProjectRepositoryFactory<LexEntry>("lexicon", cm =>
+                {
+                    cm.UnmapMember(e => e.Environments);
+                    cm.UnmapMember(e => e.MorphologyType);
+                });
             return services;
         }
 
         private static void AddMongoRepository<T>(this IServiceCollection services, string collectionName,
-            Action<BsonClassMap<T>> setup = null, bool subClass = false) where T : IEntity
+            Action<BsonClassMap<T>> setup = null) where T : IEntity
         {
-            RegisterEntity<T>(setup, subClass);
+            RegisterClass<T>(setup);
             services.AddSingleton<IRepository<T>>(sp =>
                 new MongoRepository<T>(sp.GetService<IMongoClient>().GetDatabase("scriptureforge")
                     .GetCollection<T>(collectionName)));
         }
 
         private static void AddMongoProjectRepositoryFactory<T>(this IServiceCollection services, string collectionName,
-            Action<BsonClassMap<T>> setup = null, bool subClass = false) where T : IEntity
+            Action<BsonClassMap<T>> setup = null) where T : IEntity
         {
-            RegisterEntity<T>(setup, subClass);
+            RegisterClass<T>(setup);
             services.AddSingleton<IProjectRepositoryFactory<T>>(sp =>
                 new MongoProjectRepositoryFactory<T>(sp.GetService<IMongoClient>(), collectionName));
         }
 
-        private static void RegisterEntity<T>(Action<BsonClassMap<T>> setup, bool subClass) where T : IEntity
+        private static void RegisterClass<T>(Action<BsonClassMap<T>> setup = null)
         {
             BsonClassMap.RegisterClassMap<T>(cm =>
                 {
                     cm.AutoMap();
-                    if (!subClass)
-                    {
-                        cm.MapIdProperty(e => e.Id)
-                            .SetIdGenerator(StringObjectIdGenerator.Instance)
-                            .SetSerializer(new StringSerializer(BsonType.ObjectId));
-                    }
                     setup?.Invoke(cm);
-                });
-        }
-
-        private static void RegisterClass<T>(Action<BsonClassMap<T>> setup)
-        {
-            BsonClassMap.RegisterClassMap<T>(cm =>
-                {
-                    cm.AutoMap();
-                    setup(cm);
                 });
         }
     }
