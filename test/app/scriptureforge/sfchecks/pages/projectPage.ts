@@ -4,7 +4,6 @@ const expectedCondition = protractor.ExpectedConditions;
 const CONDITION_TIMEOUT = 3000;
 
 export class SfProjectPage {
-  // var util = require('../../../bellows/pages/utils.js');
 
   notice = util.notice;
 
