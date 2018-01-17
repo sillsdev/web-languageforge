@@ -103,7 +103,7 @@ export class LexiconConfigurationController implements angular.IController {
       return;
     }
 
-    this.unifiedViewModel.updateConfig(this.configDirty);
+    this.unifiedViewModel.toConfig(this.configDirty);
 
     this.lexProjectService.updateConfiguration(this.configDirty, this.optionListsDirty, result => {
       if (result.ok) {
@@ -156,6 +156,7 @@ export class LexiconConfigurationController implements angular.IController {
     }
   }
 
+  // noinspection JSUnusedGlobalSymbols
   addNewInputSystem() {
     this.active = Tab.InputSystems; // Switch to Input System tab
     this.addInputSystem = true; // Show New Input System window
