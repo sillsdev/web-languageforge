@@ -1,5 +1,5 @@
 import {browser, element, by, ExpectedConditions, protractor} from 'protractor';
-const util = require('./util');
+const util = require('./utils');
 const CONDITION_TIMEOUT = 3000;
 /*
  * This object handles the user profile page and provides methods to access items in the activity
