@@ -1,3 +1,4 @@
+
 'use strict';
 
 describe('the questions list page (AKA the text page)', function () {
@@ -24,25 +25,22 @@ describe('the questions list page (AKA the text page)', function () {
       // Setup script creates two questions. Since we can't count on them being in specific
       // positions as that might be modified by other tests that add questions, we'll search for
       // them.
-      util.findRowByText(textPage.questionRows, constants.testText1Question1Title)
-        .then(function (row) {
-          // This seems to be the best way to check that the row exists
-          expect(typeof row === 'undefined').toBeFalsy();
-          var answerCount = row.element(by.binding('question.answerCount'));
-          var responseCount = row.element(by.binding('question.responseCount'));
-          expect(answerCount.getText()).toBe('1');
-          expect(responseCount.getText()).toBe('2');
-        });
+      util.findRowByText(textPage.questionRows, constants.testText1Question1Title).then((row) => {
+        expect(typeof row === 'undefined').toBeFalsy();
+        var answerCount = row.element(by.binding('question.answerCount'));
+        var responseCount = row.element(by.binding('question.responseCount'));
+        expect(answerCount.getText()).toBe('1');
+        expect(responseCount.getText()).toBe('2');
+      });
 
-      util.findRowByText(textPage.questionRows, constants.testText1Question2Title)
-        .then(function (row) {
-          // This seems to be the best way to check that the row exists
-          expect(typeof row === 'undefined').toBeFalsy();
-          var answerCount = row.element(By.binding('question.answerCount'));
-          var responseCount = row.element(By.binding('question.responseCount'));
-          expect(answerCount.getText()).toBe('1');
-          expect(responseCount.getText()).toBe('2');
-        });
+      util.findRowByText(textPage.questionRows, constants.testText1Question2Title).then((row) => {
+        expect(typeof row === 'undefined').toBeFalsy();
+        var answerCount = row.element(By.binding('question.answerCount'));
+        var responseCount = row.element(By.binding('question.responseCount'));
+        expect(answerCount.getText()).toBe('1');
+        expect(responseCount.getText()).toBe('2');
+
+      });
     });
 
     it('cannot archive questions', function () {
@@ -168,5 +166,4 @@ describe('the questions list page (AKA the text page)', function () {
     });
 
   });
-
 });
