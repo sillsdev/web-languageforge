@@ -1,4 +1,4 @@
-import {browser, element, by, ExpectedConditions, protractor} from 'protractor';
+import {browser, by, element, ExpectedConditions, protractor} from 'protractor';
 const util = require('./utils');
 const CONDITION_TIMEOUT = 3000;
 /*

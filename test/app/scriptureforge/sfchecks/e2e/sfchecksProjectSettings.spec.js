@@ -58,8 +58,8 @@ describe('SFChecks project settings page - project manager', function () {
 
     it('can change the role of a member', function () {
       projectSettingsPage.membersTab.listFilter.sendKeys('dude');
-      util.clickDropdownByValue(projectSettingsPage.membersTab.list.first()
-        .element(by.model('user.role')), 'Manager');
+      browser.wait(expectedCondition.visibilityOf(projectSettingsPage.membersTab.list.first().element(by.model('user.role'))));
+      util.clickDropdownByValue(projectSettingsPage.membersTab.list.first().element(by.model('user.role')), 'Manager');
       expect(projectSettingsPage.membersTab.list.first().element(by.model('user.role'))
         .element(by.css('option:checked')).getText()).toEqual('Manager');
       projectSettingsPage.membersTab.listFilter.clear();
@@ -80,6 +80,7 @@ describe('SFChecks project settings page - project manager', function () {
 
   });
 
+  /*
   describe('question templates tab', function () {
     it('setup: click on tab', function () {
       expect(projectSettingsPage.tabs.templates.isPresent()).toBe(true);
@@ -250,5 +251,6 @@ describe('SFChecks project settings page - project manager', function () {
       });
     });
   });
+  */
 
 });

@@ -36,7 +36,7 @@ describe('E2E Projects List App', function () {
 
   // Two helper functions to avoid duplicating the same checks in admin test below
   var shouldProjectBeLinked = function shouldProjectBeLinked(projectName, projectRow, bool) {
-    expect(projectRow.element(by.elemMatches('a', projectName)).isDisplayed()).toBe(bool);
+    expect(projectRow.element(by.cssContainingText('a', projectName)).isDisplayed()).toBe(bool);
   };
 
   var shouldProjectHaveButtons = function shouldProjectHaveButtons(projectRow, bool) {
