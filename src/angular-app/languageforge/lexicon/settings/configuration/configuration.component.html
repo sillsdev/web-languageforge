@@ -7,17 +7,13 @@
     <fieldset data-ng-disabled="$ctrl.isSaving">
         <pui-tabset active="$ctrl.active">
             <pui-tab heading="Unified">
-                <lsc-unified ucc-current-field="$ctrl.currentField"
-                            ucc-field-config="$ctrl.fieldConfig"
-                            ucc-config-dirty="$ctrl.configDirty"
-                            ucc-config-pristine="$ctrl.configPristine"
-                            ucc-input-system-view-models="$ctrl.inputSystemViewModels"
-                            ucc-input-systems-list="$ctrl.inputSystemsList"
-                            ucc-users="$ctrl.users"
-                            ucc-option-lists="$ctrl.optionListsDirty"
-                            ucc-select-field="$ctrl.selectField(fieldName)"
-                            ucc-add-input-system="$ctrl.addNewInputSystem()"
-                            ucc-on-update="$ctrl.onUpdate($event)"></lsc-unified>
+                <lsc-unified ucc-field-config="$ctrl.fieldConfig"
+                             ucc-config-dirty="$ctrl.configDirty"
+                             ucc-input-systems-list="$ctrl.inputSystemsList"
+                             ucc-users="$ctrl.users"
+                             ucc-option-lists="$ctrl.optionListsDirty"
+                             ucc-add-input-system="$ctrl.addNewInputSystem()"
+                             ucc-on-update="$ctrl.onUpdate($event)"></lsc-unified>
             </pui-tab>
             <pui-tab heading="Fields">
                 <lsc-fields fcc-current-field="$ctrl.currentField"
