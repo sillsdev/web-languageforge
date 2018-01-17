@@ -38,6 +38,9 @@ namespace SIL.XForge.WebApi.Server.DataAccess
         {
             try
             {
+                var now = DateTime.UtcNow;
+                entity.DateModified = now;
+                entity.DateCreated = now;
                 await _collection.InsertOneAsync(entity);
                 return true;
             }
@@ -56,6 +59,10 @@ namespace SIL.XForge.WebApi.Server.DataAccess
 
         public async Task<bool> UpdateAsync(T entity, bool upsert = false)
         {
+            var now = DateTime.UtcNow;
+            entity.DateModified = now;
+            if (entity.Id == null)
+                entity.DateCreated = now;
             ReplaceOneResult result = await _collection.ReplaceOneAsync(e => e.Id == entity.Id, entity,
                 new UpdateOptions { IsUpsert = upsert });
             if (result.IsAcknowledged)
@@ -66,7 +73,11 @@ namespace SIL.XForge.WebApi.Server.DataAccess
         public async Task<T> UpdateAsync(Expression<Func<T, bool>> filter,
             Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update, bool upsert = false)
         {
-            return await _collection.FindOneAndUpdateAsync(filter, update(Builders<T>.Update),
+            var now = DateTime.UtcNow;
+            return await _collection.FindOneAndUpdateAsync(filter,
+                update(Builders<T>.Update)
+                    .Set(e => e.DateModified, now)
+                    .SetOnInsert(e => e.DateCreated, now),
                 new FindOneAndUpdateOptions<T>
                 {
                     IsUpsert = upsert,

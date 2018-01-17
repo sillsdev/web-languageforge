@@ -6,17 +6,12 @@ namespace SIL.XForge.WebApi.Server.Controllers
 {
     public static class ControllersExtensions
     {
-        public static string GetUserId(this Controller controller)
-        {
-            return controller.User.GetUserId();
-        }
-
         public static string GetUserId(this ClaimsPrincipal user)
         {
             return user.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
-        public static string FullRouteUrl(this IUrlHelper urlHelper, string routeName, object values)
+        public static string FullRouteUrl(this IUrlHelper urlHelper, string routeName, object values = null)
         {
             return "/api2" + urlHelper.RouteUrl(routeName, values);
         }

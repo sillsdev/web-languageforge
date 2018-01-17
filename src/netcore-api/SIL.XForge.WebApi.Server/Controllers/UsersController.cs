@@ -49,7 +49,7 @@ namespace SIL.XForge.WebApi.Server.Controllers
         private string GetActualUserId(string userId)
         {
             if (userId == "me" || userId == "my")
-                return User.FindFirstValue(ClaimTypes.NameIdentifier);
+                return UserId;
             return userId;
         }
     }

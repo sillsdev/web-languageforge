@@ -15,7 +15,12 @@ namespace SIL.XForge.WebApi.Server.Controllers
             _mapper = mapper;
         }
 
-        protected T Map<T>(object obj, string routeName, object values) where T : ResourceDto
+        protected string UserId
+        {
+            get { return User.GetUserId(); }
+        }
+
+        protected T Map<T>(object obj, string routeName, object values = null) where T : ResourceDto
         {
             var dto = _mapper.Map<T>(obj);
             dto.Href = Url.FullRouteUrl(routeName, values);

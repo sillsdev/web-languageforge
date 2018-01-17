@@ -4,5 +4,6 @@ namespace SIL.XForge.WebApi.Server.Controllers
     {
         public const string SendReceiveJob = "SendReceiveJob";
         public const string Lexicon = "Lexicon";
+        public const string LexEntry = "LexEntry";
     }
 }
