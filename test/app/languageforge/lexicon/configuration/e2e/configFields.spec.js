@@ -4,7 +4,7 @@ describe('Configuration Fields', function () {
   var constants     = require('../../../../testConstants');
   var loginPage     = require('../../../../bellows/pages/loginPage.js');
   var projectsPage  = require('../../../../bellows/pages/projectsPage.js');
-  var util          = require('../../../../bellows/pages/util.js');
+  var util          = require('../../../../bellows/pages/utils.js');
   var configPage    = require('../../pages/configurationPage.js');
   var displayName = 'cust_name';
 

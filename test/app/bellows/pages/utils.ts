@@ -1,8 +1,8 @@
+///<reference path="utils.d.ts" />
 import 'jasmine';
 import {$, $$, browser, by, By, element, ExpectedConditions, promise} from 'protractor';
 import { ElementArrayFinder, ElementFinder } from 'protractor/built/element';
 import { logging } from 'selenium-webdriver';
-import 'util.d.ts';
 
 /*
  * New locator to find elements that match a CSS selector, whose text (via elem.innerText in the
@@ -90,16 +90,18 @@ export class Utils {
     }, timeout);
   }
 
+  private noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
+
   notice: any = {
-    list: element.all(by.repeater('notice in $ctrl.notices()')),
-    firstCloseButton: this.notice.list.first().element(by.partialButtonText('×')),
+    list: this.noticeList,
+    firstCloseButton: this.noticeList.first().element(by.partialButtonText('×')),
     waitToInclude: (includedText: any): void => {
       browser.wait(() =>
-        this.notice.list.count().then((count: any) =>
+        this.noticeList.count().then((count: any) =>
           count >= 1),
           this.CONDITION_TIMEOUT);
       browser.wait(() =>
-        this.notice.list.first().getText().then((text: any) => text.includes(includedText)),
+        this.noticeList.first().getText().then((text: any) => text.includes(includedText)),
         this.CONDITION_TIMEOUT);
     }
   };
@@ -195,3 +197,5 @@ export class Utils {
   }
 
 }
+
+module.exports = new Utils();
