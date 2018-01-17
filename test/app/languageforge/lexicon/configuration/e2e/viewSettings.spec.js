@@ -16,7 +16,7 @@ describe('View settings page', function () {
   });
 
   it('setup: click Manager tab', function () {
-    viewSettingsPage.getTabByName('Manager').click();
+    viewSettingsPage.goToManagerTab();
   });
 
   it('Hide Semantic Domain field for Manager', function () {
