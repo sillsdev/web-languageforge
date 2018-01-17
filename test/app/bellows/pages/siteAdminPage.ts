@@ -1,5 +1,5 @@
 import {browser, by, element} from 'protractor';
-const util = require('./util.js');
+const util = require('./utils.js');
 
 export class SiteAdminPage {
 

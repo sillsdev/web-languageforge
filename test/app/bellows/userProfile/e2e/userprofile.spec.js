@@ -4,7 +4,7 @@ describe('User Profile E2E Test', function () {
   var constants   = require('../../../testConstants');
   var loginPage   = require('../../pages/loginPage');
   var userProfile = require('../../pages/userProfilePage');
-  var util           = require('../../pages/util.js');
+  var util           = require('../../pages/utils.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 

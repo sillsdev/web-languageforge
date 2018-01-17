@@ -3,7 +3,7 @@
 describe('the questions list page (AKA the text page)', function () {
   var constants       = require('../../../testConstants.json');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
-  var util            = require('../../../bellows/pages/util.js');
+  var util            = require('../../../bellows/pages/utils.js');
   var projectListPage = require('../../../bellows/pages/projectsPage.js');
   var projectPage      = require('../pages/projectPage.js');
   var textPage         = require('../pages/textPage.js');

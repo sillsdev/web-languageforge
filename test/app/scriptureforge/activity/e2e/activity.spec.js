@@ -2,7 +2,7 @@
 
 describe('Activity E2E Test', function () {
   var constants       = require('../../../testConstants.json');
-  var util            = require('../../../bellows/pages/util.js');
+  var util            = require('../../../bellows/pages/utils.js');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
   var activityPage    = require('../../../bellows/pages/activityPage.js');
   var projectListPage = require('../../../bellows/pages/projectsPage.js');

@@ -4,7 +4,7 @@ describe('View settings page', function () {
   var constants    = require('../../../../testConstants');
   var loginPage    = require('../../../../bellows/pages/loginPage.js');
   var projectsPage = require('../../../../bellows/pages/projectsPage.js');
-  var util         = require('../../../../bellows/pages/util.js');
+  var util         = require('../../../../bellows/pages/utils.js');
   var editorPage       = require('../../pages/editorPage.js');
   var viewSettingsPage = require('../../pages/viewSettingsPage.js');
 

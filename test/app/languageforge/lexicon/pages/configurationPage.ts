@@ -2,14 +2,14 @@ import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 
 class ConfigurationPage {
   private readonly modal = require('./lexModals.js');
-  private readonly util = require('../../../bellows/pages/util.js');
+  private readonly util = require('../../../bellows/pages/utils.js');
 
   noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   firstNoticeCloseButton = this.noticeList.first().element(by.className('close'));
 
   settingsMenuLink = element(by.id('settingsDropdownButton'));
   configurationLink = element(by.id('dropdown-configuration'));
-  
+
   get() {
     this.util.scrollTop();
     this.settingsMenuLink.click();

@@ -5,7 +5,7 @@ module.exports = new SfTextPage();
 function SfTextPage() {
   // currently this page is called questions.html but will be refactored. IJH 2014-06
 
-  var util = require('../../../bellows/pages/util.js');
+  var util = require('../../../bellows/pages/utils.js');
   var projectsPage = require('../../../bellows/pages/projectsPage.js');
   var projectPage  = require('../../sfchecks/pages/projectPage.js');
   var expectedCondition = protractor.ExpectedConditions;

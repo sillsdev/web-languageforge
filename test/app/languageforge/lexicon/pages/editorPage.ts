@@ -2,7 +2,7 @@ import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 
 class EditorPage {
   private readonly mockUpload = require('../../../bellows/pages/mockUploadElement.js');
-  private readonly util = require('../../../bellows/pages/util.js');
+  private readonly util = require('../../../bellows/pages/utils.js');
   private readonly editorUtil = require('./editorUtil.js');
   private readonly CONDITION_TIMEOUT = 3000;
 

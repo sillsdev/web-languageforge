@@ -3,7 +3,7 @@
 describe('the project dashboard AKA text list page', function () {
   var constants       = require('../../../testConstants.json');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
-  var util            = require('../../../bellows/pages/util.js');
+  var util            = require('../../../bellows/pages/utils.js');
   var appFrame        = require('../../../bellows/pages/appFrame.js');
   var projectListPage = require('../../../bellows/pages/projectsPage.js');
   var projectPage         = require('../pages/projectPage.js');
