@@ -1,6 +1,6 @@
 import {browser, element, by, By, $, $$, ExpectedConditions, protractor} from 'protractor';
 const CONDITION_TIMEOUT = 3000;
-const util = require('./util');
+const util = require('./utils');
 
 export class ProjectsPage {
   url = '/app/projects';
