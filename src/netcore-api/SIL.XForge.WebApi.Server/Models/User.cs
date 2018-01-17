@@ -2,9 +2,8 @@ using System.Collections.Generic;
 
 namespace SIL.XForge.WebApi.Server.Models
 {
-    public class User : IEntity
+    public class User : EntityBase
     {
-        public string Id { get; set; }
         public string Username { get; set; }
         public string Name { get; set; }
         public string Role { get; set; }

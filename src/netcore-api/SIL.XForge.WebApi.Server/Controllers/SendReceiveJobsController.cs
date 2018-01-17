@@ -54,7 +54,7 @@ namespace SIL.XForge.WebApi.Server.Controllers
         [ProjectAuthorize(Domain.Projects, Operation.Edit)]
         public async Task<IActionResult> CreateAsync([FromBody] string projectId)
         {
-            bool created = (await _sendReceiveService.TryCreateJobAsync(this.GetUserId(), projectId))
+            bool created = (await _sendReceiveService.TryCreateJobAsync(UserId, projectId))
                 .TryResult(out SendReceiveJob job);
             SendReceiveJobDto dto = Map<SendReceiveJobDto>(job);
             if (created)

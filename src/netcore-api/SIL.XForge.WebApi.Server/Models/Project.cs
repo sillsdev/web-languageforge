@@ -2,12 +2,11 @@ using System.Collections.Generic;
 
 namespace SIL.XForge.WebApi.Server.Models
 {
-    public abstract class Project : IEntity
+    public abstract class Project : EntityBase
     {
         public const string LexiconApp = "lexicon";
         public const string TranslateApp = "translate";
 
-        public string Id { get; set; }
         public string ProjectName { get; set; }
         public Dictionary<string, ProjectRole> Users { get; protected set; } = new Dictionary<string, ProjectRole>();
         public string AppName { get; protected set; }
