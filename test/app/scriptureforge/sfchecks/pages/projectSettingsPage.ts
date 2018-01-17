@@ -88,9 +88,9 @@ class SfProjectSettingsPage {
 
   // getFirstCheckbox has to be a function because the .first() method will actually resolve the
   // finder
-  archivedTextsTabGetFirstCheckbox = function archivedTextsTabGetFirstCheckbox() {
+  archivedTextsTabGetFirstCheckbox() {
     return this.archivedTextsTab.textList.first().element(by.css('input[type="checkbox"]'));
-  };
+  }
 
   projectTab = {
     name: element(by.model('project.projectName')),
