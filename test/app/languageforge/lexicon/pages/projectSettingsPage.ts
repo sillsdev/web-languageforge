@@ -1,4 +1,4 @@
-import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
+import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
 
 export class ProjectSettingsPage {
   private readonly projectsPage = require('../../../bellows/pages/projectsPage.js');
@@ -15,14 +15,14 @@ export class ProjectSettingsPage {
     this.settingsMenuLink.click();
     browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink),this.CONDITION_TIMEOUT);
     this.projectSettingsLink.click();
-  };
+  }
 
   tabDivs = element.all(by.className('tab-pane'));
   activePane = element(by.css('div.tab-pane.active'));
 
   getTabByName(tabName: string) {
     return element(by.css('ul.nav-tabs')).element(by.cssContainingText('a', tabName));
-  };
+  }
 
   tabs = {
     project: this.getTabByName('Project Properties')
@@ -37,10 +37,10 @@ export class ProjectSettingsPage {
    * will be considered an exact match (so "Etymology" should not match "Etymology Comment").
    */
   getFieldByName(fieldName: string, treatAsRegex: boolean) {
-    var fieldRegex = (treatAsRegex ? fieldName : '^' + fieldName + '$');
-    return element(by.css('div.tab-pane.active dl.picklists'))
-      .element(by.elemMatches('div[data-ng-repeat]', fieldRegex));
-  };
+    const fieldRegex: string|RegExp = (treatAsRegex ? fieldName : new RegExp('^' + fieldName + '$'));
+    return element(By.css('div.tab-pane.active dl.picklists'))
+      .element(By.cssContainingText('div[data-ng-repeat]', fieldRegex));
+  }
 }
 
 module.exports = new ProjectSettingsPage();
