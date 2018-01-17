@@ -2,7 +2,7 @@
 
 describe('Lexicon E2E Page Traversal', function () {
   var constants           = require('../../testConstants.json');
-  var util                = require('../../bellows/pages/util.js');
+  var util                = require('../../bellows/pages/utils.js');
   var loginPage           = require('../../bellows/pages/loginPage.js');
   var configurationPage   = require('../lexicon/pages/configurationPage.js');
   var projectsPage        = require('../../bellows/pages/projectsPage.js');
