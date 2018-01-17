@@ -1,4 +1,4 @@
-import {browser, element, by, By, $, $$, ExpectedConditions, protractor} from 'protractor';
+import {$, $$, browser, by, By, element, ExpectedConditions, protractor} from 'protractor';
 const CONDITION_TIMEOUT = 3000;
 const util = require('./utils');
 
@@ -18,8 +18,8 @@ export class ProjectsPage {
 
   findProject(projectName: string) {
     let foundRow: any;
-    let result = protractor.promise.defer();
-    let searchName = new RegExp(projectName);
+    const result = protractor.promise.defer();
+    const searchName = new RegExp(projectName);
     this.projectsList.map((row: any) => {
       row.getText().then((text: string) => {
         if (searchName.test(text)) {
@@ -39,7 +39,7 @@ export class ProjectsPage {
 
   clickOnProject(projectName: string) {
     this.findProject(projectName).then((projectRow: any) => {
-      let projectLink = projectRow.element(by.css('a'));
+      const projectLink = projectRow.element(by.css('a'));
       projectLink.getAttribute('href').then((url: string) => {
         browser.get(url);
       });
@@ -47,11 +47,12 @@ export class ProjectsPage {
   }
 
   settingsBtn = element(by.id('settingsBtn'));
-  userManagementLink = (browser.baseUrl.includes('languageforge')) ? element(by.id('userManagementLink')) : element(by.id('dropdown-project-settings'));
+  userManagementLink = (browser.baseUrl.includes('languageforge')) ?
+    element(by.id('userManagementLink')) : element(by.id('dropdown-project-settings'));
 
   addUserToProject(projectName: any, usersName: string, roleText: string) {
     this.findProject(projectName).then((projectRow: any) => {
-      let projectLink = projectRow.element(by.css('a'));
+      const projectLink = projectRow.element(by.css('a'));
       projectLink.click();
       browser.wait(ExpectedConditions.visibilityOf(this.settingsBtn), CONDITION_TIMEOUT);
       this.settingsBtn.click();
@@ -59,16 +60,16 @@ export class ProjectsPage {
         CONDITION_TIMEOUT);
       this.userManagementLink.click();
 
-      let addMembersBtn = element(by.id('addMembersButton'));
+      const addMembersBtn = element(by.id('addMembersButton'));
       browser.wait(ExpectedConditions.visibilityOf(addMembersBtn), CONDITION_TIMEOUT);
       addMembersBtn.click();
-      let newMembersDiv = element(by.id('newMembersDiv'));
-      let userNameInput = newMembersDiv.element(by.id('typeaheadInput'));
+      const newMembersDiv = element(by.id('newMembersDiv'));
+      const userNameInput = newMembersDiv.element(by.id('typeaheadInput'));
       browser.wait(ExpectedConditions.visibilityOf(userNameInput), CONDITION_TIMEOUT);
       userNameInput.sendKeys(usersName);
 
-      let typeaheadDiv = element(by.id('typeaheadDiv'));
-      let typeaheadItems = typeaheadDiv.all(by.css('ul li'));
+      const typeaheadDiv = element(by.id('typeaheadDiv'));
+      const typeaheadItems = typeaheadDiv.all(by.css('ul li'));
       util.findRowByText(typeaheadItems, usersName).then((item: any) => {
         item.click();
       });
@@ -77,10 +78,10 @@ export class ProjectsPage {
       newMembersDiv.element(by.id('addUserButton')).click();
 
       // Now set the user to member or manager, as needed
-      let projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
+      const projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
       let foundUserRow: any;
       projectMemberRows.map((row: any) => {
-        let nameColumn = row.element(by.binding('user.username'));
+        const nameColumn = row.element(by.binding('user.username'));
         nameColumn.getText().then((text: string) => {
           if (text === usersName) {
             foundUserRow = row;
@@ -88,10 +89,10 @@ export class ProjectsPage {
         });
       }).then(() => {
         if (foundUserRow) {
-          let select = foundUserRow.element(by.css('select:not([disabled])'));
+          const select = foundUserRow.element(by.css('select:not([disabled])'));
           util.clickDropdownByValue(select, roleText);
         }
-      })
+      });
 
       this.get(); // After all is finished, reload projects page
     });
@@ -108,7 +109,7 @@ export class ProjectsPage {
 
   removeUserFromProject(projectName: string, userName: string) {
     this.findProject(projectName).then((projectRow: any) => {
-      let projectLink = projectRow.element(by.css('a'));
+      const projectLink = projectRow.element(by.css('a'));
       projectLink.click();
 
       this.settingsBtn.click();
@@ -126,10 +127,10 @@ export class ProjectsPage {
         projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
       }
 
-      let foundUserRow = projectMemberRows.first();
-      let rowCheckbox = foundUserRow.element(by.css('input[type="checkbox"]'));
+      const foundUserRow = projectMemberRows.first();
+      const rowCheckbox = foundUserRow.element(by.css('input[type="checkbox"]'));
       util.setCheckbox(rowCheckbox, true);
-      let removeMembersBtn = element(by.id('removeMembersBtn'));
+      const removeMembersBtn = element(by.id('removeMembersBtn'));
       removeMembersBtn.click();
 
       this.get(); // After all is finished, reload projects page

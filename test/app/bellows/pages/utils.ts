@@ -46,21 +46,31 @@ export class Utils {
     this.findDropdownByValue(dropdownElement, value).click();
   }
 
-  findRowByFunc(elementArray: ElementArrayFinder, searchFunc: (searchText: string) => boolean) {
+  findRowByFunc(elementArray: ElementArrayFinder, searchFunc: (rowText: string) => boolean): Promise<ElementFinder> {
     // Repeater can be either a string or an already-created by.repeater() object
     let foundRow: ElementFinder;
-    elementArray.map((row: ElementFinder) => {
-      row.getText().then((rowText: string) => {
-        if (searchFunc(rowText)) {
-          foundRow = row;
+    return new Promise<ElementFinder>((resolve, reject) => {
+      elementArray.map((row: ElementFinder) => {
+        row.getText().then((rowText: string) => {
+          if (searchFunc(rowText)) {
+            foundRow = row;
+          }
+        });
+      }).then(() => {
+        if (foundRow) {
+          resolve(foundRow);
+        } else {
+          reject('Row not found');
         }
       });
     });
-    return foundRow;
   }
 
-  findRowByText(elementArray: ElementArrayFinder, regex: RegExp) {
-    return this.findRowByFunc(elementArray, (rowText: string) => regex.test(rowText));
+  findRowByText(elementArray: ElementArrayFinder, searchString: string): Promise<ElementFinder> {
+    return this.findRowByFunc(elementArray, (rowText: string) => {
+      return rowText.includes(searchString);
+    }
+  );
   }
 
   /*
