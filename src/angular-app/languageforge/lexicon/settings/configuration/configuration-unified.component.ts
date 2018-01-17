@@ -76,7 +76,7 @@ export class UnifiedConfigurationController implements angular.IController {
     this.uccSelectField({ fieldName });
   }
 
-  openNewCustomFieldModal(): void {
+  openNewCustomFieldModal(fieldLevel: string): void {
     class NewCustomData {
       code: string;
       level: string;
@@ -92,14 +92,6 @@ export class UnifiedConfigurationController implements angular.IController {
         (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
           scope.fieldConfig = this.uccFieldConfig;
           scope.selects = {};
-          scope.selects.level = {
-            optionsOrder: ['entry', 'senses', 'examples'],
-            options: {
-              entry: 'Entry Level',
-              senses: 'Meaning Level',
-              examples: 'Example Level'
-            }
-          };
           scope.selects.type = {
             optionsOrder: ['multitext', 'optionlist', 'multioptionlist'],
             options: {
@@ -123,6 +115,7 @@ export class UnifiedConfigurationController implements angular.IController {
 
           scope.newCustomData = new NewCustomData();
           scope.newCustomData.name = '';
+          scope.newCustomData.level = fieldLevel;
           scope.customFieldNameExists = function customFieldNameExists(level: string, code: string) {
             const customFieldName = 'customField_' + level + '_' + code;
             return customFieldName in scope.fieldConfig;
