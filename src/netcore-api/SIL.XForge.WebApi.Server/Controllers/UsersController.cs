@@ -24,11 +24,11 @@ namespace SIL.XForge.WebApi.Server.Controllers
             _paratextService = paratextService;
         }
 
-        [HttpGet("{userId}/paratext")]
+        [HttpGet("{id}/paratext")]
         [SiteAuthorize(Domain.Users, Operation.ViewOwn)]
-        public async Task<IActionResult> GetParatextInfoAsync(string userId)
+        public async Task<IActionResult> GetParatextInfoAsync(string id)
         {
-            if (!(await _userRepo.TryGetAsync(GetActualUserId(userId))).TryResult(out User user))
+            if (!(await _userRepo.TryGetAsync(GetActualUserId(id))).TryResult(out User user))
                 return NotFound();
 
             if ((await _paratextService.TryGetUserInfoAsync(user)).TryResult(out ParatextUserInfo userInfo))
@@ -36,14 +36,17 @@ namespace SIL.XForge.WebApi.Server.Controllers
             return NoContent();
         }
 
-        [HttpGet("{userId}/projects")]
+        [HttpGet("{id}/projects")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetProjectsAsync(string userId)
+        public async Task<IActionResult> GetProjectsAsync(string id)
         {
-            if (!(await _userRepo.TryGetAsync(GetActualUserId(userId))).TryResult(out User user))
+            if (id != TestIds.UserId)
                 return NotFound();
 
-            return Ok(user.Projects.Select(p => Map(p, RouteNames.Lexicon)));
+            if (!(await _userRepo.TryGetAsync(GetActualUserId(id))).TryResult(out User user))
+                return NotFound();
+
+            return Ok(user.Projects.Where(p => p == TestIds.ProjectId).Select(p => Map(p, RouteNames.Lexicon)));
         }
 
         private string GetActualUserId(string userId)
