@@ -51,5 +51,3 @@ export class BellowsLoginPage {
     browser.get(browser.baseUrl + '/auth/logout');
   }
 }
-
-module.exports = new BellowsLoginPage();

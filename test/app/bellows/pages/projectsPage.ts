@@ -139,5 +139,3 @@ export class ProjectsPage {
     });
   }
 }
-
-module.exports = new ProjectsPage();

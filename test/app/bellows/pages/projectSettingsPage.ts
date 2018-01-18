@@ -59,5 +59,3 @@ export class BellowsProjectSettingsPage {
     deleteButton: this.activePane.element(by.id('deleteProject'))
   };
 }
-
-module.exports = new BellowsProjectSettingsPage();
