@@ -31,6 +31,9 @@ namespace SIL.XForge.WebApi.Server.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetAsync(string id)
         {
+            if (id != TestIds.ProjectId)
+                return NotFound();
+
             if ((await ProjectRepo.TryGetAsync(id)).TryResult(out LexProject project))
                 return Ok(Map<LexProjectDto>(project));
             return NotFound();
@@ -40,6 +43,9 @@ namespace SIL.XForge.WebApi.Server.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> CreateEntryAsync(string id, [FromBody] LexEntryDto entryDto)
         {
+            if (id != TestIds.ProjectId)
+                return NotFound();
+
             if (!(await ProjectRepo.TryGetAsync(id)).TryResult(out LexProject project))
                 return NotFound();
 
@@ -47,6 +53,7 @@ namespace SIL.XForge.WebApi.Server.Controllers
             LexEntry entry = Map<LexEntry>(entryDto);
             var now = DateTime.UtcNow;
             string userId = UserId;
+            userId = TestIds.UserId;
             entry.AuthorInfo.CreatedByUserRef = userId;
             entry.AuthorInfo.CreatedDate = now;
             entry.AuthorInfo.ModifiedByUserRef = userId;
@@ -63,6 +70,9 @@ namespace SIL.XForge.WebApi.Server.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetEntryAsync(string id, string entryId)
         {
+            if (id != TestIds.ProjectId)
+                return NotFound();
+
             if (!(await ProjectRepo.TryGetAsync(id)).TryResult(out LexProject project))
                 return NotFound();
 
@@ -78,6 +88,9 @@ namespace SIL.XForge.WebApi.Server.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> CreateAssetAsync(string id, IFormFile file, string mediaType)
         {
+            if (id != TestIds.ProjectId)
+                return NotFound();
+
             AssetType assetType;
             switch (mediaType)
             {
