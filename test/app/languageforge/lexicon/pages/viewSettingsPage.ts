@@ -41,7 +41,7 @@ class ViewSettingsPage {
 
   //noinspection JSUnusedGlobalSymbols
   accordionEnabledTasks = this.accordionDiv
-    .element(by.elemMatches('div.accordion-heading a', '^Enabled Tasks'));
+    .element(by.cssContainingText('div.accordion-heading a', new RegExp('^Enabled Tasks')));
 
   //noinspection JSUnusedGlobalSymbols
   entryFields = this.activePane.all(by.repeater('fieldName in fieldOrder.entry'));
@@ -57,9 +57,9 @@ class ViewSettingsPage {
    * will be considered an exact match (so "Etymology" should not match "Etymology Comment").
    */
   getFieldByName(fieldName: string, treatAsRegex: boolean) {
-    let fieldRegex = (treatAsRegex ? fieldName : '^' + fieldName + '$');
-    return element(by.css('div.tab-pane.active dl.picklists'))
-      .element(by.elemMatches('div[data-ng-repeat]', fieldRegex));
+    const fieldRegex: string|RegExp = (treatAsRegex ? fieldName : new RegExp('^' + fieldName + '$'));
+    return element(By.css('div.tab-pane.active dl.picklists'))
+      .element(By.cssContainingText('div[data-ng-repeat]', fieldRegex));
   }
 
   getFieldByNameIconClass(fieldName: string, treatAsRegex: boolean) {
@@ -83,7 +83,7 @@ class ViewSettingsPage {
 
   pickMemberWithViewSettings(memberName: string) {
     this.usersWithViewSettings
-      .element(by.elemMatches('div.picklists > ul.list-unstyled > li', memberName)).click();
+      .element(by.cssContainingText('div.picklists > ul.list-unstyled > li', memberName)).click();
   }
 
   //noinspection JSUnusedGlobalSymbols

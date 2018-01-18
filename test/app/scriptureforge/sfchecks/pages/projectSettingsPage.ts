@@ -1,25 +1,61 @@
-'use strict';
+import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 
-module.exports = new SfProjectSettingsPage();
 
-function SfProjectSettingsPage() {
-  var projectsPage = require('../../../bellows/pages/projectsPage.js');
-  var expectedCondition = protractor.ExpectedConditions;
-  var CONDITION_TIMEOUT = 3000;
+class MembersTab {
+  sfProjectSettingsPage: any;
+  constructor(sfProjectSettingsPage: any) {
+    this.sfProjectSettingsPage = sfProjectSettingsPage;
+  }
 
-  this.settingsMenuLink = element(by.id('settingsDropdownButton'));
-  this.projectSettingsLink = element(by.id('dropdown-project-settings'));
-
-  // Get the projectSettings for project projectName
-  this.get = function get(projectName) {
-    projectsPage.get();
-    projectsPage.clickOnProject(projectName);
-    browser.wait(expectedCondition.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
-    this.settingsMenuLink.click();
-    this.projectSettingsLink.click();
+  addButton = element(by.id('addMembersButton'));
+  removeButton = element(by.id('removeMembersBtn'));
+  messageButton = element(by.id('messageUsersButton'));
+  listFilter = element(by.model('userFilter'));
+  list = element.all(by.repeater('user in list.visibleUsers'));
+  newMember = {
+    input: element(by.model('term')),
+    button: element(by.model('addMode')),
+    warning: element(by.binding('warningText')),
+    results: element(by.id('typeaheadDiv')).element(by.css('ul li'))
   };
 
-  this.tabs = {
+  addNewMember(name: string) {
+    this.sfProjectSettingsPage.tabs.members.click();
+    this.addButton.click();
+    browser.wait(ExpectedConditions.visibilityOf(this.newMember.input),
+      this.sfProjectSettingsPage.CONDITION_TIMEOUT);
+    this.newMember.input.sendKeys(name);
+    browser.wait(ExpectedConditions.textToBePresentInElementValue(this.newMember.input,
+      name), this.sfProjectSettingsPage.CONDITION_TIMEOUT);
+    this.newMember.button.click();
+  }
+
+  waitForNewUserToLoad(memberCount: number) {
+    browser.wait(() => {
+      return this.list.count().then((count: number) => {
+        return count >= memberCount + 1;
+      });
+    });
+  }
+}
+
+class SfProjectSettingsPage {
+  private readonly projectsPage = require('../../../bellows/pages/projectsPage.js');
+  private readonly CONDITION_TIMEOUT = 3000;
+
+  settingsMenuLink = element(by.id('settingsDropdownButton'));
+  projectSettingsLink = element(by.id('dropdown-project-settings'));
+
+  // Get the projectSettings for project projectName
+  get(projectName: string) {
+    this.projectsPage.get();
+    this.projectsPage.clickOnProject(projectName);
+    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.CONDITION_TIMEOUT);
+    this.settingsMenuLink.click();
+    this.projectSettingsLink.click();
+  }
+
+  tabs = {
     members: element(by.linkText('Members')),
     templates: element(by.linkText('Question Templates')),
     archiveTexts: element(by.linkText('Archived Texts')),
@@ -28,40 +64,9 @@ function SfProjectSettingsPage() {
     communication: element(by.linkText('Communication Settings'))
   };
 
-  this.membersTab = {
-    addButton: element(by.id('addMembersButton')),
-    removeButton: element(by.id('removeMembersBtn')),
-    messageButton: element(by.id('messageUsersButton')),
-    listFilter: element(by.model('userFilter')),
-    list: element.all(by.repeater('user in list.visibleUsers')),
-    newMember: {
-      input: element(by.model('term')),
-      button: element(by.model('addMode')),
-      warning: element(by.binding('warningText')),
-      results: element(by.id('typeaheadDiv')).element(by.css('ul li'))
-    }
-  };
+  membersTab = new MembersTab(this);
 
-  this.membersTab.addNewMember = function (name) {
-    this.tabs.members.click();
-    this.membersTab.addButton.click();
-    browser.wait(expectedCondition.visibilityOf(this.membersTab.newMember.input),
-      CONDITION_TIMEOUT);
-    this.membersTab.newMember.input.sendKeys(name);
-    browser.wait(expectedCondition.textToBePresentInElementValue(this.membersTab.newMember.input,
-      name), CONDITION_TIMEOUT);
-    this.membersTab.newMember.button.click();
-  }.bind(this);
-
-  this.membersTab.waitForNewUserToLoad = function (memberCount) {
-    browser.wait(function () {
-      return this.membersTab.list.count().then(function (count) {
-        return count >= memberCount + 1;
-      });
-    }.bind(this));
-  }.bind(this);
-
-  this.templatesTab = {
+  templatesTab = {
     list: element.all(by.repeater('template in visibleTemplates')),
     addButton: element(by.id('project-settings-new-template-btn')),
     removeButton: element(by.id('project-settings-remove-btn')),
@@ -72,41 +77,40 @@ function SfProjectSettingsPage() {
     }
   };
 
-  this.archivedTextsTab = {
+  archivedTextsTab = {
     textNames: element.all(by.repeater('text in visibleTexts').column('title')),
     textList: element.all(by.repeater('text in visibleTexts')),
     publishButton: element(by.id('project-settings-republish-btn')),
-    textLink: function textLink(title) {
+    textLink(title: string) {
       return element(by.linkText(title));
     }
   };
 
   // getFirstCheckbox has to be a function because the .first() method will actually resolve the
   // finder
-  this.archivedTextsTabGetFirstCheckbox = function archivedTextsTabGetFirstCheckbox() {
+  archivedTextsTabGetFirstCheckbox() {
     return this.archivedTextsTab.textList.first().element(by.css('input[type="checkbox"]'));
-  };
+  }
 
-  this.projectTab = {
+  projectTab = {
     name: element(by.model('project.projectName')),
     code: element(by.model('project.projectCode')),
     featured: element(by.model('project.featured')),
     allowAudioDownload: element(by.model('project.allowAudioDownload')),
     usersSeeEachOthersResponses: element(by.model('project.usersSeeEachOthersResponses')),
-    saveButton: element(by.id('project-properties-save-button'))
+    saveButton: element(by.id('project-properties-save-button')),
+    // Set a checkbox to either true or false no matter what its current value is
+    // TODO: Move this function to a general utilities library somewhere
+    setCheckbox(checkboxElement: any, value: any) {
+      checkboxElement.isSelected().then((selected: any) => {
+        if (value !== selected) {
+          checkboxElement.click();
+        }
+      });
+    },
   };
 
-  // Set a checkbox to either true or false no matter what its current value is
-  // TODO: Move this function to a general utilities library somewhere
-  this.projectTab.setCheckbox = function(checkboxElement, value) {
-    checkboxElement.isSelected().then(function(selected) {
-      if (value !== selected) {
-        checkboxElement.click();
-      }
-    });
-  };
-
-  this.optionlistsTab = {
+  optionlistsTab = {
     // TODO: Find better names for these
     showList: element(by.id('showInProfileFieldset'))
       .all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
@@ -118,13 +122,13 @@ function SfProjectSettingsPage() {
     addButton: element(by.id('picklistEditorFieldset')).element(by.css('.add-item-to-list')),
     saveButton: element(by.id('user_profile_lists_save_button')),
     unsavedWarning: element(by.id('project-settings-unsaved')),
-    deleteButton: function deleteButton(repeaterRow) {
+    deleteButton(repeaterRow: any) {
       // Given a single repeater row in the picklist, return the delete button for that row
       return repeaterRow.element(by.css('a:first-of-type'));
     }
   }; // NYI - wait for refactor
 
-  this.communicationTab = {
+  communicationTab = {
     sms: {
       accountId: element(by.model('settings.sms.accountId')),
       authToken: element(by.model('settings.sms.authToken')),
@@ -136,5 +140,6 @@ function SfProjectSettingsPage() {
     },
     button: element(by.id('communication_settings_save_button'))
   };
-
 }
+
+module.exports = new SfProjectSettingsPage();
