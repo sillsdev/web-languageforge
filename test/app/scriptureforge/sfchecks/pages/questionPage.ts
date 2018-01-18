@@ -1,22 +1,22 @@
 import {$, $$, browser, by, By, element, ExpectedConditions, Key} from 'protractor';
+import { SfTextPage } from './textPage';
+import { Utils } from '../../../bellows/pages/utils.js';
 
 const CONDITION_TIMEOUT = 3000;
-const Utils = require('../../../bellows/pages/utils.js');
-
+const textPage = new SfTextPage();
+const utils = new Utils();
 /*
  * This object tests the Question page view where the user can do the following:
  * Answers {add, edit, archive (instead of delete) }
  * Comments {add, edit, archive (instead of delete) }
  * Note: "delete" is a reserved word, and the functionality will be moved to "archiving" later
  */
-class SfQuestionPage {
-  private textPage = require('./textPage.js');
-
-  notice = Utils.notice;
+export class SfQuestionPage {
+  notice = utils.notice;
 
   get(projectName: string, textTitle: string, questionTitle: string) {
-    this.textPage.get(projectName, textTitle);
-    this.textPage.questionLink(questionTitle).click();
+    textPage.get(projectName, textTitle);
+    textPage.questionLink(questionTitle).click();
   }
   answers = new Answers();
 
@@ -91,7 +91,7 @@ class Answers {
           .click();
       }
 
-      Utils.clickModalButton('Delete');
+      utils.clickModalButton('Delete');
     }
 
     // Private method to handle the upvote or downvote of an answer.
@@ -175,8 +175,6 @@ class Comments {
       this.list.get(index).element(by.linkText('delete')).click();
     }
 
-    Utils.clickModalButton('Delete');
+    utils.clickModalButton('Delete');
   }
 }
-
-module.exports = new SfQuestionPage();

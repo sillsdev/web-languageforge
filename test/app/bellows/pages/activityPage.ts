@@ -3,7 +3,7 @@ import {browser, element, by, By, $, $$, ExpectedConditions, Key} from 'protract
 /*
 // This object handles the activity page and provides methods to access items in the activity list
  */
-class SfActivityPage {
+export class SfActivityPage {
   activityURL = '/app/activity';
   activitiesList = element.all(by.repeater('item in $ctrl.filteredActivities'));
 
@@ -43,5 +43,3 @@ class SfActivityPage {
     });
   }
 }
-
-module.exports = new SfActivityPage();
