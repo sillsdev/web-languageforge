@@ -79,5 +79,3 @@ export class SfTextPage {
 
   textContent = element(by.id('textcontrol'));
 }
-
-module.exports = new SfTextPage();

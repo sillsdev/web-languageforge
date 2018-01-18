@@ -9,7 +9,7 @@ const Utils = require('../../../bellows/pages/utils.js');
  * Comments {add, edit, archive (instead of delete) }
  * Note: "delete" is a reserved word, and the functionality will be moved to "archiving" later
  */
-class SfQuestionPage {
+export class SfQuestionPage {
   private textPage = require('./textPage.js');
 
   notice = Utils.notice;
@@ -178,5 +178,3 @@ class Comments {
     Utils.clickModalButton('Delete');
   }
 }
-
-module.exports = new SfQuestionPage();
