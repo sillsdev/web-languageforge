@@ -1,19 +1,19 @@
 import {browser, element, by, ExpectedConditions} from 'protractor';
+import { ProjectsPage } from './projectsPage';
 //import {ProjectsPage} from './projectsPage'; - This will get updated along with the spec files - Mark W 2018-01-15
 const CONDITION_TIMEOUT = 3000;
 const util = require('./utils');
+const projectsPage = new ProjectsPage();
 
 export class BellowsProjectSettingsPage {
-  //projectsPage = new ProjectsPage(); - This will get updated along with the spec files - Mark W 2018-01-15
-  projectsPage = require('./projectsPage');
 
   settingsMenuLink = element(by.id('settingsDropdownButton'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
   get(projectName: string) {
-    this.projectsPage.get();
-    this.projectsPage.clickOnProject(projectName);
+    projectsPage.get();
+    projectsPage.clickOnProject(projectName);
     browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
     this.settingsMenuLink.click();
     browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), CONDITION_TIMEOUT);
@@ -59,5 +59,3 @@ export class BellowsProjectSettingsPage {
     deleteButton: this.activePane.element(by.id('deleteProject'))
   };
 }
-
-module.exports = new BellowsProjectSettingsPage();

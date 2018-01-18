@@ -1,56 +1,18 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
+import { ProjectsPage } from '../../../bellows/pages/projectsPage.js';
+const projectsPage = new ProjectsPage();
+const CONDITION_TIMEOUT = 3000;
 
-
-class MembersTab {
-  sfProjectSettingsPage: any;
-  constructor(sfProjectSettingsPage: any) {
-    this.sfProjectSettingsPage = sfProjectSettingsPage;
-  }
-
-  addButton = element(by.id('addMembersButton'));
-  removeButton = element(by.id('removeMembersBtn'));
-  messageButton = element(by.id('messageUsersButton'));
-  listFilter = element(by.model('userFilter'));
-  list = element.all(by.repeater('user in list.visibleUsers'));
-  newMember = {
-    input: element(by.model('term')),
-    button: element(by.model('addMode')),
-    warning: element(by.binding('warningText')),
-    results: element(by.id('typeaheadDiv')).element(by.css('ul li'))
-  };
-
-  addNewMember(name: string) {
-    this.sfProjectSettingsPage.tabs.members.click();
-    this.addButton.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.newMember.input),
-      this.sfProjectSettingsPage.CONDITION_TIMEOUT);
-    this.newMember.input.sendKeys(name);
-    browser.wait(ExpectedConditions.textToBePresentInElementValue(this.newMember.input,
-      name), this.sfProjectSettingsPage.CONDITION_TIMEOUT);
-    this.newMember.button.click();
-  }
-
-  waitForNewUserToLoad(memberCount: number) {
-    browser.wait(() => {
-      return this.list.count().then((count: number) => {
-        return count >= memberCount + 1;
-      });
-    });
-  }
-}
-
-class SfProjectSettingsPage {
-  private readonly projectsPage = require('../../../bellows/pages/projectsPage.js');
-  private readonly CONDITION_TIMEOUT = 3000;
+export class SfProjectSettingsPage {
 
   settingsMenuLink = element(by.id('settingsDropdownButton'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
   get(projectName: string) {
-    this.projectsPage.get();
-    this.projectsPage.clickOnProject(projectName);
-    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.CONDITION_TIMEOUT);
+    projectsPage.get();
+    projectsPage.clickOnProject(projectName);
+    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
     this.settingsMenuLink.click();
     this.projectSettingsLink.click();
   }
@@ -142,4 +104,41 @@ class SfProjectSettingsPage {
   };
 }
 
-module.exports = new SfProjectSettingsPage();
+
+class MembersTab {
+  sfProjectSettingsPage: any;
+  constructor(sfProjectSettingsPage: any) {
+    this.sfProjectSettingsPage = sfProjectSettingsPage;
+  }
+
+  addButton = element(by.id('addMembersButton'));
+  removeButton = element(by.id('removeMembersBtn'));
+  messageButton = element(by.id('messageUsersButton'));
+  listFilter = element(by.model('userFilter'));
+  list = element.all(by.repeater('user in list.visibleUsers'));
+  newMember = {
+    input: element(by.model('term')),
+    button: element(by.model('addMode')),
+    warning: element(by.binding('warningText')),
+    results: element(by.id('typeaheadDiv')).element(by.css('ul li'))
+  };
+
+  addNewMember(name: string) {
+    this.sfProjectSettingsPage.tabs.members.click();
+    this.addButton.click();
+    browser.wait(ExpectedConditions.visibilityOf(this.newMember.input),
+      this.sfProjectSettingsPage.CONDITION_TIMEOUT);
+    this.newMember.input.sendKeys(name);
+    browser.wait(ExpectedConditions.textToBePresentInElementValue(this.newMember.input,
+      name), this.sfProjectSettingsPage.CONDITION_TIMEOUT);
+    this.newMember.button.click();
+  }
+
+  waitForNewUserToLoad(memberCount: number) {
+    browser.wait(() => {
+      return this.list.count().then((count: number) => {
+        return count >= memberCount + 1;
+      });
+    });
+  }
+}
