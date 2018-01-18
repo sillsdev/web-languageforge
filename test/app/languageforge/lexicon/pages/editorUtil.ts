@@ -1,4 +1,5 @@
 import {browser, element, by, By, $, $$, ExpectedConditions, Key} from 'protractor';
+import { ElementFinder } from 'protractor/built/element';
 
 // Utility functions for parsing dc-* directives (dc-multitext, etc)
 export class EditorUtil {
@@ -107,11 +108,7 @@ export class EditorUtil {
     });
   }
 
-  getFields(searchLabel: any, rootElem: any) {
-    if (typeof (rootElem) === 'undefined') {
-      rootElem = element(by.className('dc-entry'));
-    }
-
+  getFields(searchLabel: any, rootElem: ElementFinder = element(by.className('dc-entry'))) {
     return rootElem.all(by.cssContainingText('div[data-ng-repeat="fieldName in config.fieldOrder"]',
       searchLabel));
   }
@@ -122,15 +119,11 @@ export class EditorUtil {
     });
   }
 
-  getOneField(searchLabel: any, idx: any, rootElem: any) {
-    if (typeof (idx) === 'undefined') {
-      idx = 0;
-    }
-
+  getOneField(searchLabel: any, idx: any = 0, rootElem: ElementFinder = element(by.className('dc-entry'))) {
     return this.getFields(searchLabel, rootElem).get(idx);
   };
 
-  getOneFieldValue(searchLabel: any, idx: any, multitextStrategy: any, rootElem: any) {
+  getOneFieldValue(searchLabel: any, idx: any = 0, multitextStrategy: any = undefined, rootElem: any = element(by.className('dc-entry'))) {
     var fieldElement = this.getOneField(searchLabel, idx, rootElem);
     return this.parseDcField(fieldElement, multitextStrategy);
   }
