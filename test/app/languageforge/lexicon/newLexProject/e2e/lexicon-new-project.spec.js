@@ -36,7 +36,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
     it('cannot see Back or Next buttons', function () {
       expect(page.backButton.isDisplayed()).toBe(false);
       expect(page.nextButton.isDisplayed()).toBe(false);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
     });
 
     it('can create a new project', function () {
@@ -77,12 +77,12 @@ describe('E2E testing: New Lex Project wizard app', function () {
     });
 
     it('cannot move on if Password is empty', function () {
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
-      page.formStatusFuncs.expectContainsError('Password cannot be empty.');
+      page.formStatus.expectContainsError('Password cannot be empty.');
     });
 
     it('cannot move on if username is incorrect', function () {
@@ -92,11 +92,11 @@ describe('E2E testing: New Lex Project wizard app', function () {
       browser.wait(expectedCondition.visibilityOf(page.srCredentialsPage.credentialsInvalid),
         CONDITION_TIMEOUT);
       expect(page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
-      page.formStatusFuncs.expectContainsError(
+      page.formStatus.expectContainsError(
         'The username or password isn\'t valid on LanguageDepot.org.');
     });
 
@@ -119,7 +119,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
-      page.formStatusFuncs.expectContainsError('Login cannot be empty.');
+      page.formStatus.expectContainsError('Login cannot be empty.');
     });
 
     it('cannot move on if credentials are invalid', function () {
@@ -129,7 +129,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
         CONDITION_TIMEOUT);
       expect(page.srCredentialsPage.loginOk.isPresent()).toBe(false);
       expect(page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true); // flaky assertion
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
@@ -144,26 +144,26 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.srCredentialsPage.passwordOk.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.projectSelect().isDisplayed()).toBe(true);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
     });
 
     it('cannot move on if no project is selected', function () {
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.projectSelect().isDisplayed()).toBe(true);
-      page.formStatusFuncs.expectContainsError('Please select a Project.');
+      page.formStatus.expectContainsError('Please select a Project.');
     });
 
     it('cannot move on if not a manager of the project', function () {
       util.clickDropdownByValue(page.srCredentialsPage.projectSelect(), 'mock-name2');
       expect(page.srCredentialsPage.projectNoAccess.isDisplayed()).toBe(true);
-      page.formStatusFuncs.expectContainsError('select a Project that you are the Manager of');
+      page.formStatus.expectContainsError('select a Project that you are the Manager of');
     });
 
     it('can move on when a managed project is selected', function () {
       util.clickDropdownByValue(page.srCredentialsPage.projectSelect(), 'mock-name4');
       expect(page.srCredentialsPage.projectOk.isDisplayed()).toBe(true);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
       page.expectFormIsValid();
     });
 
@@ -199,7 +199,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(true);
-      page.formStatusFuncs.expectContainsError('Project Name cannot be empty.');
+      page.formStatus.expectContainsError('Project Name cannot be empty.');
     });
 
     it('finds the test project already exists', function () {
@@ -211,7 +211,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
       expect(page.namePage.projectCodeInput.getAttribute('value'))
         .toEqual(constants.testProjectCode);
-      page.formStatusFuncs.expectContainsError('Another project with code \'' +
+      page.formStatus.expectContainsError('Another project with code \'' +
         constants.testProjectCode + '\' already exists.');
     });
 
@@ -221,7 +221,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
        * FIXME: added the following two lines so the test will work (previous error wasn't clearing)
        * as I couldn't re-produce the problem manually,
        * however is likely symptomatic of some funkiness with promises. IJH 2014-12
-       */
+       **/
       page.namePage.projectNameInput.sendKeys('a' + protractor.Key.TAB);
       page.namePage.projectNameInput.clear();
       page.namePage.projectNameInput.sendKeys(protractor.Key.TAB);
@@ -229,11 +229,11 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
       expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(true);
-      page.formStatusFuncs.expectContainsError('Project Name cannot be empty.');
+      page.formStatus.expectContainsError('Project Name cannot be empty.');
     });
 
     it('can verify that an unused project name is available', function () {
@@ -245,7 +245,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
       expect(page.namePage.projectCodeInput.getAttribute('value'))
         .toEqual(constants.newProjectCode);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
     });
 
     it('can not edit project code by default', function () {
@@ -260,7 +260,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.namePage.projectCodeInput.sendKeys('changed_new_project');
       page.namePage.projectNameInput.sendKeys(protractor.Key.TAB);     // trigger project code check
       expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual('changed_new_project');
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
     });
 
     it('project code cannot be empty; does not show an error but is still invalid', function () {
@@ -270,11 +270,11 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
       expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(true);
-      page.formStatusFuncs.expectContainsError('Project Code cannot be empty.');
+      page.formStatus.expectContainsError('Project Code cannot be empty.');
     });
 
     it('project code can be one character', function () {
@@ -285,7 +285,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
     });
 
     it('project code cannot be uppercase', function () {
@@ -296,9 +296,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
       page.nextButton.click();
-      page.formStatusFuncs.expectContainsError('Project Code must begin with a letter');
+      page.formStatus.expectContainsError('Project Code must begin with a letter');
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('aB' + protractor.Key.TAB);
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeAlphanumeric),
@@ -306,9 +306,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
       page.nextButton.click();
-      page.formStatusFuncs.expectContainsError('Project Code must begin with a letter');
+      page.formStatus.expectContainsError('Project Code must begin with a letter');
     });
 
     it('project code cannot start with a number', function () {
@@ -319,9 +319,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
       page.nextButton.click();
-      page.formStatusFuncs.expectContainsError('Project Code must begin with a letter');
+      page.formStatus.expectContainsError('Project Code must begin with a letter');
     });
 
     it('project code cannot use non-alphanumeric', function () {
@@ -332,9 +332,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
       page.nextButton.click();
-      page.formStatusFuncs.expectContainsError('Project Code must begin with a letter');
+      page.formStatus.expectContainsError('Project Code must begin with a letter');
     });
 
     it('project code reverts to default when Edit-project-code is disabled', function () {
@@ -343,7 +343,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.namePage.projectCodeInput.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeInput.getAttribute('value'))
         .toEqual(constants.newProjectCode);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
     });
 
     it('can create project', function () {
@@ -352,7 +352,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.nextButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(false);
       expect(page.initialDataPage.browseButton.isPresent()).toBe(true);
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
     });
 
   });
@@ -364,7 +364,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
       expect(page.progressIndicatorStep3Label.getText()).toEqual('Verify');
       page.expectFormIsNotValid();
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
     });
 
     describe('Mock file upload', function () {
@@ -382,7 +382,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
         expect(page.verifyDataPage.entriesImported.isPresent()).toBe(false);
         expect(page.noticeList.count()).toBe(1);
         expect(page.noticeList.get(0).getText()).toContain('is too large. It must be smaller than');
-        page.formStatusFuncs.expectHasNoError();
+        page.formStatus.expectHasNoError();
         page.initialDataPage.mockUpload.fileNameInput.clear();
         page.initialDataPage.mockUpload.fileSizeInput.clear();
         page.firstNoticeCloseButton.click();
@@ -400,7 +400,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
         expect(page.noticeList.count()).toBe(1);
         expect(page.noticeList.get(0).getText()).toContain(constants.testMockJpgImportFile.name +
           ' is not an allowed compressed file. Ensure the file is');
-        page.formStatusFuncs.expectHasNoError();
+        page.formStatus.expectHasNoError();
         page.initialDataPage.mockUpload.fileNameInput.clear();
         page.initialDataPage.mockUpload.fileSizeInput.clear();
         page.firstNoticeCloseButton.click();
@@ -417,7 +417,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
         expect(page.noticeList.count()).toBe(1);
         expect(page.noticeList.get(0).getText()).toContain('Successfully imported ' +
           constants.testMockZipImportFile.name);
-        page.formStatusFuncs.expectHasNoError();
+        page.formStatus.expectHasNoError();
       });
 
     });
@@ -429,7 +429,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
     it('displays stats', function () {
       expect(page.verifyDataPage.title.getText()).toEqual('Verify Data');
       expect(page.verifyDataPage.entriesImported.getText()).toEqual('2');
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
     });
 
     // regression avoidance test - should not redirect when button is clicked
@@ -438,7 +438,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.verifyDataPage.importErrors.isDisplayed()).toBe(false);
       page.verifyDataPage.nonCriticalErrorsButton.click();
       expect(page.verifyDataPage.title.getText()).toEqual('Verify Data');
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
       expect(page.verifyDataPage.importErrors.isDisplayed()).toBe(true);
       expect(page.verifyDataPage.importErrors.getText())
         .toContain('range file \'TestProj.lift-ranges\' was not found');
@@ -509,7 +509,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.expectFormIsNotValid();
       page.nextButton.click();
       expect(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
-      page.formStatusFuncs.expectContainsError('Please select a primary language for the project.');
+      page.formStatus.expectContainsError('Please select a primary language for the project.');
     });
 
     it('can select language', function () {
@@ -541,7 +541,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
     });
 
     it('can go to lexicon and primary language has changed', function () {
-      page.formStatusFuncs.expectHasNoError();
+      page.formStatus.expectHasNoError();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.expectFormIsValid();
       page.nextButton.click();
