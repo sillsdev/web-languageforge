@@ -1,22 +1,21 @@
-'use strict';
-
-module.exports = new EditorUtil();
+import {browser, element, by, By, $, $$, ExpectedConditions, Key} from 'protractor';
+import { ElementFinder } from 'protractor/built/element';
 
 // Utility functions for parsing dc-* directives (dc-multitext, etc)
-function EditorUtil() {
+export class EditorUtil {
   // --- Parsing fields ---
 
   // Return the multitext's values as [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
   // NOTE: Returns a promise. Use .then() to access the actual data.
-  this.dcMultitextToArray = function dcMultitextToArray(elem) {
+  dcMultitextToArray(elem: any) {
     var inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
-    return inputSystemDivs.map(function (div) {
+    return inputSystemDivs.map((div: any) => {
       var wsidSpan = div.element(by.css('.input-group > span.wsid'));
       var wordInput = div.element(by.css('.input-group > .dc-formattedtext input'));
-      return wsidSpan.getText().then(function (wsid) {
-        return wordInput.isPresent().then(function (isWordPresent) {
+      return wsidSpan.getText().then((wsid: any) => {
+        return wordInput.isPresent().then((isWordPresent: boolean) => {
           if (isWordPresent) {
-            return wordInput.getAttribute('value').then(function (word) {
+            return wordInput.getAttribute('value').then((word: string) => {
               return {
                 wsid: wsid,
                 value: word
@@ -32,8 +31,8 @@ function EditorUtil() {
 
   // Return the multitext's values as {en: 'word', de: 'Wort'}
   // NOTE: Returns a promise. Use .then() to access the actual data.
-  this.dcMultitextToObject = function (elem) {
-    return this.dcMultitextToArray(elem).then(function (values) {
+  dcMultitextToObject(elem: any) {
+    return this.dcMultitextToArray(elem).then((values: any) => {
       var result = {};
       for (var i = 0, l = values.length; i < l; i++) {
         result[values[i].wsid] = values[i].value;
@@ -41,42 +40,42 @@ function EditorUtil() {
 
       return result;
     });
-  }.bind(this);
+  }
 
   // Returns the value of the multitext's first writing system, no matter what writing system is
   // first. NOTE: Returns a promise. Use .then() to access the actual data.
-  this.dcMultitextToFirstValue = function dcMultitextToFirstValue(elem) {
-    return this.dcMultitextToArray(elem).then(function (values) {
+  dcMultitextToFirstValue(elem: any) {
+    return this.dcMultitextToArray(elem).then((values: any) => {
       return values[0].value;
     });
   };
 
-  this.dcOptionListToValue = function dcOptionListToValue(elem) {
+  dcOptionListToValue(elem: any) {
     var select = elem.element(by.css('.controls select'));
-    return select.element(by.css('option:checked')).getText().then(function (text) {
+    return select.element(by.css('option:checked')).getText().then((text: string) => {
       return text;
     });
   };
 
   // At the moment these are identical to dc-optionlist directives.
   // When they change, this function will need to be rewritten
-  this.dcMultiOptionListToValue = this.dcOptionListToValue;
+  dcMultiOptionListToValue = this.dcOptionListToValue;
 
-  this.dcPicturesToObject = function (elem) {
+  dcPicturesToObject(elem: any) {
     var pictures = elem.all(by.repeater('picture in pictures'));
-    return pictures.map(function (div) {
+    return pictures.map((div: any) => {
       var img = div.element(by.css('img'));
       var caption = div.element(by.css('dc-multitext'));
-      return img.getAttribute('src').then(function (src) {
+      return img.getAttribute('src').then((src: string) => {
         return {
           fileName: src.replace(/^.*[\\\/]/, ''),
           caption: this.dcMultitextToObject(caption)
         };
-      }.bind(this));
-    }.bind(this));
-  }.bind(this);
+      });
+    });
+  }
 
-  this.dcParsingFuncs = {
+  dcParsingFuncs = {
     multitext: {
       multitext_as_object: this.dcMultitextToObject,
       multitext_as_array: this.dcMultitextToArray,
@@ -88,10 +87,10 @@ function EditorUtil() {
     pictures: this.dcPicturesToObject
   };
 
-  this.getParser = function getParser(elem, multitextStrategy) {
+  getParser(elem: any, multitextStrategy: any) {
     multitextStrategy = multitextStrategy || this.dcParsingFuncs.multitext.default_strategy;
     var switchDiv = elem.element(by.css('[data-on="config.fields[fieldName].type"] > div'));
-    return switchDiv.getAttribute('data-ng-switch-when').then(function (fieldType) {
+    return switchDiv.getAttribute('data-ng-switch-when').then((fieldType: any) => {
       var parser;
       if (fieldType === 'multitext') {
         parser = this.dcParsingFuncs[fieldType][multitextStrategy];
@@ -100,47 +99,39 @@ function EditorUtil() {
       }
 
       return parser;
-    }.bind(this));
-  };
+    });
+  }
 
-  this.parseDcField = function parseDcField(elem, multitextStrategy) {
-    return this.getParser(elem, multitextStrategy).then(function (parser) {
+  parseDcField(elem: any, multitextStrategy: any) {
+    return this.getParser(elem, multitextStrategy).then((parser: any) => {
       return parser(elem);
     });
-  };
+  }
 
-  this.getFields = function getFields(searchLabel, rootElem) {
-    if (typeof (rootElem) === 'undefined') {
-      rootElem = element(by.className('dc-entry'));
-    }
-
+  getFields(searchLabel: any, rootElem: ElementFinder = element(by.className('dc-entry'))) {
     return rootElem.all(by.cssContainingText('div[data-ng-repeat="fieldName in config.fieldOrder"]',
       searchLabel));
-  };
+  }
 
-  this.getFieldValues = function (searchLabel, multitextStrategy, rootElem) {
-    return this.getFields(searchLabel, rootElem).map(function (fieldElem) {
+  getFieldValues(searchLabel: any, multitextStrategy: any, rootElem: any) {
+    return this.getFields(searchLabel, rootElem).map((fieldElem: any) => {
       return this.parseDcField(fieldElem, multitextStrategy);
-    }.bind(this));
-  }.bind(this);
+    });
+  }
 
-  this.getOneField = function getOneField(searchLabel, idx, rootElem) {
-    if (typeof (idx) === 'undefined') {
-      idx = 0;
-    }
-
+  getOneField(searchLabel: any, idx: any = 0, rootElem: ElementFinder = element(by.className('dc-entry'))) {
     return this.getFields(searchLabel, rootElem).get(idx);
   };
 
-  this.getOneFieldValue = function getOneFieldValue(searchLabel, idx, multitextStrategy, rootElem) {
+  getOneFieldValue(searchLabel: any, idx: any = 0, multitextStrategy: any = undefined, rootElem: any = element(by.className('dc-entry'))) {
     var fieldElement = this.getOneField(searchLabel, idx, rootElem);
     return this.parseDcField(fieldElement, multitextStrategy);
-  };
+  }
 
   // For convenience in writing test code, since the values in testConstants don't match the
   // displayed values. No need to worry about localization here, since E2E tests are all run in the
   // English-language interface.
-  this.partOfSpeechNames = {
+  partOfSpeechNames = {
     adj: 'Adjective',
     adv: 'Adverb',
     cla: 'Classifier',
@@ -155,29 +146,29 @@ function EditorUtil() {
 
   // Take an abbreviation for a part of speech and return the value that will
   // appear in the Part of Speech dropdown (for convenience in E2E tests).
-  this.expandPartOfSpeech = function expandPartOfSpeech(posAbbrev) {
+  expandPartOfSpeech(posAbbrev: any) {
     return this.partOfSpeechNames[posAbbrev] + ' (' + posAbbrev + ')';
   };
 
   // designed for use with Text-Angular controls (i.e. that don't have ordinary input or textarea)
-  this.selectElement = {
-    sendKeys: function sendKeys(element, keys) {
+  selectElement = {
+    sendKeys(element: any, keys: any) {
       element.click();
       browser.actions().sendKeys(keys).perform();
     },
 
-    clear: function clear(element) {
+    clear(element: any) {
       // fix problem with protractor not scrolling to element before click
-      element.getLocation().then(function (navDivLocation) {
+      element.getLocation().then((navDivLocation: any) => {
         var initTop = (navDivLocation.y - 150) > 0 ? navDivLocation.y - 150 : 1;
         var initLeft = navDivLocation.x;
         browser.executeScript('window.scrollTo(' + initLeft + ',' + initTop + ');');
       });
 
       element.click();
-      var ctrlA = protractor.Key.chord(protractor.Key.CONTROL, 'a');
+      const ctrlA = Key.chord(Key.CONTROL, 'a');
       browser.actions().sendKeys(ctrlA).perform();
-      browser.actions().sendKeys(protractor.Key.DELETE).perform();
+      browser.actions().sendKeys(Key.DELETE).perform();
     }
   };
 }

@@ -1,5 +1,5 @@
-import {} from 'jasmine';
 import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+
 export class SfAppFrame {
 
   // TODO: this will likely change when we refactor the display of notifications - cjh 2014-06
@@ -22,5 +22,3 @@ export class SfAppFrame {
   }
 
 }
-
-module.exports = new SfAppFrame();

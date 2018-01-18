@@ -1,7 +1,7 @@
 import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
 
 export class BellowsForgotPasswordPage {
-  get = () => {
+  get() {
     browser.get(browser.baseUrl + '/auth/forgot_password');
   }
 
@@ -12,5 +12,3 @@ export class BellowsForgotPasswordPage {
   usernameInput = element(by.id('username'));
   submitButton = element(by.id('forgot-password-submit-btn'));
 }
-
-module.exports = new BellowsForgotPasswordPage();
