@@ -4,9 +4,9 @@ import { BellowsLoginPage } from '../../pages/loginPage';
 import { ProjectsPage } from '../../pages/projectsPage';
 const constants = require('../../../testConstants.json');
 const CONDITION_TIMEOUT = 3000;
-
 const loginPage = new BellowsLoginPage();
 const projectsPage = new ProjectsPage();
+
 describe('E2E Projects List App', () => {
 
   describe('for Normal User', () => {
