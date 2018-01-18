@@ -5,7 +5,7 @@ const utils = require('../../../bellows/pages/utils.js');
 const editorUtil = require('./editorUtil.js');
 const CONDITION_TIMEOUT = 3000;
 
-class EditorPage {
+export class EditorPage {
 
   get(projectId: string, entryId: string) {
     let extra = projectId ? ('/' + projectId) : '';
@@ -450,7 +450,5 @@ class EditorPage {
       }
     };
   }
-
 }
-
-module.exports = new EditorPage();
+}

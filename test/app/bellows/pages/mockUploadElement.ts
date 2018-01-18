@@ -6,5 +6,3 @@ export class MockUploadElement {
   fileSizeInput = element(by.id('mockFileSize'));
   uploadButton = element(by.id('mockUploadButton'));
 }
-
-module.exports = new MockUploadElement();

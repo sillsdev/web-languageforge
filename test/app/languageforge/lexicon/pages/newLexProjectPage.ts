@@ -1,8 +1,11 @@
 import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+import { MockUploadElement } from '../../../bellows/pages/mockUploadElement';
+import { LexModals } from './lexModals';
 
-class NewLexProjectPage {
-  private readonly mockUpload = require('../../../bellows/pages/mockUploadElement.js');
-  modal      = require('./lexModals.js');
+const mockUpload = new MockUploadElement();
+const modal = new LexModals();
+
+export class NewLexProjectPage {
 
   get() {
     browser.get(browser.baseUrl + '/app/lexicon/new-project');
@@ -68,7 +71,7 @@ class NewLexProjectPage {
   // step 2: initial data
   initialDataPage = {
     browseButton: element(by.id('browseButton')),
-    mockUpload: this.mockUpload
+    mockUpload: mockUpload
   };
   // step 3: verify data
   verifyDataPage = {
@@ -92,5 +95,3 @@ class NewLexProjectPage {
   };
 
 }
-
-module.exports = new NewLexProjectPage();
