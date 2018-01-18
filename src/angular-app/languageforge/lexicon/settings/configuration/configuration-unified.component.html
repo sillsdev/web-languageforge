@@ -26,19 +26,20 @@
     <table class="table table-striped table-sm">
         <thead>
             <tr class="table-secondary">
-                <th class="text-center"></th>
-                <th class="text-center">Hidden if Empty</th>
-                <th class="text-center">Field</th>
+                <th class="text-center align-top"></th>
+                <th class="text-center align-top">Hidden if Empty</th>
+                <th class="text-center align-top">Field</th>
                 <th></th>
-                <th class="text-center">Observer</th>
-                <th class="text-center">Commenter</th>
-                <th class="text-center">Contributor</th>
-                <th class="text-center">Manager</th>
-                <th class="text-center" data-ng-repeat="groupList in $ctrl.unifiedViewModel.groupLists">{{groupList.label}}
+                <th class="text-center align-top">Observer</th>
+                <th class="text-center align-top">Commenter</th>
+                <th class="text-center align-top">Contributor</th>
+                <th class="text-center align-top">Manager</th>
+                <th class="text-center align-top" data-ng-repeat="groupList in $ctrl.unifiedViewModel.groupLists">{{groupList.label}}
                     <i class="fa fa-trash" data-ng-click="$ctrl.removeGroup($index)"></i>
                 </th>
                 <th>
-                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.newUserExpanded = !$ctrl.newUserExpanded"><i class="fa fa-plus"></i></button>
+                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.newUserExpanded = !$ctrl.newUserExpanded">
+                        <i class="fa fa-plus"></i></button>
                 </th>
             </tr>
         </thead>
