@@ -1,4 +1,4 @@
-namespace SIL.XForge.WebApi.Server.Models
+namespace SIL.XForge.WebApi.Server.Models.Translate
 {
     public class TranslateUserPreferences
     {
