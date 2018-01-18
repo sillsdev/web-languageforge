@@ -1,11 +1,11 @@
-import {browser, by, element, protractor} from 'protractor';
-const util = require('../../../bellows/pages/utils.js');
-const expectedCondition = protractor.ExpectedConditions;
+import {browser, by, element, ExpectedConditions} from 'protractor';
+import { Utils } from '../../../bellows/pages/utils.js';
+
 const CONDITION_TIMEOUT = 3000;
 
 export class SfProjectPage {
-
-  notice = util.notice;
+  private utils = new Utils();
+  notice = this.utils.notice;
 
   testData = {
     simpleUsx1: '<usx version="2.0"> <chapter number="1" style="c" /> ' +
@@ -55,7 +55,7 @@ export class SfProjectPage {
   addNewText(title: any, usx: string) {
     expect<any>(this.newText.showFormButton.isDisplayed()).toBe(true);
     this.newText.showFormButton.click();
-    browser.wait(expectedCondition.visibilityOf(this.newText.title), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(this.newText.title), CONDITION_TIMEOUT);
     this.newText.title.sendKeys(title);
     this.newText.usx.sendKeys(usx);
     this.newText.saveButton.click();

@@ -1,4 +1,5 @@
 import {$, $$, browser, by, By, element, ExpectedConditions, Key} from 'protractor';
+import { SfTextPage } from './textPage';
 
 const CONDITION_TIMEOUT = 3000;
 const Utils = require('../../../bellows/pages/utils.js');
@@ -10,8 +11,7 @@ const Utils = require('../../../bellows/pages/utils.js');
  * Note: "delete" is a reserved word, and the functionality will be moved to "archiving" later
  */
 export class SfQuestionPage {
-  private textPage = require('./textPage.js');
-
+  private textPage = new SfTextPage();
   notice = Utils.notice;
 
   get(projectName: string, textTitle: string, questionTitle: string) {

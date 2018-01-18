@@ -1,7 +1,8 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
+import { ProjectsPage } from '../../../bellows/pages/projectsPage.js';
 
 export class SfProjectSettingsPage {
-  private readonly projectsPage = require('../../../bellows/pages/projectsPage.js');
+  private projectsPage = new ProjectsPage();
   private readonly CONDITION_TIMEOUT = 3000;
 
   settingsMenuLink = element(by.id('settingsDropdownButton'));
