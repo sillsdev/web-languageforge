@@ -1,19 +1,20 @@
-import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
+import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+import { ElementArrayFinder, ElementFinder } from 'protractor/built/element';
+const mockUpload = require('../../../bellows/pages/mockUploadElement.js');
+const utils = require('../../../bellows/pages/utils.js');
+const editorUtil = require('./editorUtil.js');
+const CONDITION_TIMEOUT = 3000;
 
 class EditorPage {
-  private readonly mockUpload = require('../../../bellows/pages/mockUploadElement.js');
-  private readonly util = require('../../../bellows/pages/utils.js');
-  private readonly editorUtil = require('./editorUtil.js');
-  private readonly CONDITION_TIMEOUT = 3000;
 
   get(projectId: string, entryId: string) {
     let extra = projectId ? ('/' + projectId) : '';
     extra += (projectId && entryId) ? ('#!/editor/entry/' + entryId) : '';
     browser.get(browser.baseUrl + '/app/lexicon' + extra);
-  };
+  }
 
   getProjectIdFromUrl() {
-    return browser.getCurrentUrl().then((url) => {
+    return browser.getCurrentUrl().then(url => {
       const match = url.match(/\/app\/lexicon\/([0-9a-z]{24})/);
       let projectId = '';
       if (match) {
@@ -25,7 +26,7 @@ class EditorPage {
   }
 
   getEntryIdFromUrl() {
-    return browser.getCurrentUrl().then((url) => {
+    return browser.getCurrentUrl().then(url => {
       const match = url.match(/\/editor\/entry\/([0-9a-z_]{6,24})/);
       let entryId = '';
       if (match) {
@@ -53,10 +54,10 @@ class EditorPage {
     noEntriesNewWordBtn: element(by.id('noEntriesNewWord')),
     newWordBtn: element(by.id('newWord')),
     entryCountElem: this.browseDiv.element(by.id('totalNumberOfEntries')),
-    getEntryCount() {
+    getEntryCount: () => {
       // assumption is entry count > 0
-      browser.wait(ExpectedConditions.visibilityOf(this.entryCountElem), this.CONDITION_TIMEOUT);
-      return this.entryCountElem.getText().then((s: any) =>
+      browser.wait(ExpectedConditions.visibilityOf(this.browse.entryCountElem), CONDITION_TIMEOUT);
+      return this.browse.entryCountElem.getText().then((s: string) =>
         parseInt(s, 10)
       );
     },
@@ -67,9 +68,9 @@ class EditorPage {
       clearBtn: this.browseDivSearch.element(by.className('fa-times')),
       results: this.browseDivSearch.all(by.repeater('e in typeahead.searchResults')),
       matchCountElem: this.browseDivSearch.element(by.binding('typeahead.matchCountCaption')),
-      getMatchCount() {
+      getMatchCount: () => {
         // Inside this function, "this" ==  EditorPage.browse.search
-        return this.matchCountElem.getText().then((s: any) =>
+        return this.browse.search.matchCountElem.getText().then((s: string) =>
           parseInt(s, 10)
         );
       }
@@ -77,15 +78,15 @@ class EditorPage {
 
     // Entries list (main body of view)
     entriesList: this.browseDiv.all(by.repeater('entry in visibleEntries track by entry.id')),
-    findEntryByLexeme(lexeme: any) {
+    findEntryByLexeme: (lexeme: string) => {
       browser.wait(ExpectedConditions.visibilityOf(
-        element(by.id('lexAppListView'))),this.CONDITION_TIMEOUT);
-      return this.entriesList.filter((row: any) => {
-        const element = row.element(by.binding('entry.word'));
+        element(by.id('lexAppListView'))), CONDITION_TIMEOUT);
+      return this.browse.entriesList.filter((row: ElementFinder) => {
+        const elem = row.element(by.binding('entry.word'));
 
         // fix problem with protractor not scrolling to element before click
-        browser.driver.executeScript('arguments[0].scrollIntoView();', element.getWebElement());
-        return element.getText().then((word: any) =>
+        browser.driver.executeScript('arguments[0].scrollIntoView();', elem.getWebElement());
+        return elem.getText().then((word: string) =>
           (word.indexOf(lexeme) > -1)
         );
       });
@@ -105,22 +106,22 @@ class EditorPage {
       show: 'Show Extra Fields',
       hide: 'Hide Extra Fields'
     },
-    showHiddenFields() {
+    showHiddenFields: () => {
       // Only click the button if it will result in fields being shown
-      this.toggleHiddenFieldsBtn.getText().then((text: any) => {
-        if (text === this.toggleHiddenFieldsBtnText.show) {
-          this.util.scrollTop();
-          this.toggleHiddenFieldsBtn.click();
+      this.edit.toggleHiddenFieldsBtn.getText().then((text: string) => {
+        if (text === this.edit.toggleHiddenFieldsBtnText.show) {
+          utils.scrollTop();
+          this.edit.toggleHiddenFieldsBtn.click();
         }
       });
     },
 
-    hideHiddenFields() {
+    hideHiddenFields: () => {
       // Only click the button if it will result in fields being hidden
-      this.toggleHiddenFieldsBtn.getText().then((text: any) => {
-        if (text === this.toggleHiddenFieldsBtnText.hide) {
-          this.util.scrollTop();
-          this.toggleHiddenFieldsBtn.click();
+      this.edit.toggleHiddenFieldsBtn.getText().then((text: string) => {
+        if (text === this.edit.toggleHiddenFieldsBtnText.hide) {
+          utils.scrollTop();
+          this.edit.toggleHiddenFieldsBtn.click();
         }
       });
     },
@@ -128,20 +129,20 @@ class EditorPage {
     // Left sidebar UI elements
     newWordBtn: this.editDiv.element(by.id('editorNewWordBtn')),
     entryCountElem: this.editDiv.element(by.id('totalNumberOfEntries')),
-    getEntryCount() {
-      return this.entryCountElem.getText().then((s: any) =>
+    getEntryCount: () => {
+      return this.edit.entryCountElem.getText().then((s: string) =>
         parseInt(s, 10)
       );
     },
 
     entriesList: this.editDiv.all(by.repeater('entry in visibleEntries')),
-    findEntryByLexeme(lexeme: any) {
+    findEntryByLexeme: (lexeme: string) => {
       const div = this.editDiv.element(by.id('compactEntryListContainer'));
       return div.element(by.cssContainingText('.listItemPrimary',
         lexeme));
     },
 
-    findEntryByDefinition(definition: any) {
+    findEntryByDefinition: (definition: string) => {
       const div = this.editDiv.element(by.id('compactEntryListContainer'));
       return div.element(by.cssContainingText('.listItemSecondary',
         definition));
@@ -152,9 +153,9 @@ class EditorPage {
       clearBtn: this.editDivSearch.element(by.className('fa-times')),
       results: this.editDivSearch.all(by.repeater('e in typeahead.searchResults')),
       matchCountElem: this.editDivSearch.element(by.binding('typeahead.matchCountCaption')),
-      getMatchCount() {
+      getMatchCount: () => {
         // Inside this function, "this" == EditorPage.edit.search
-        return this.matchCountElem.getText().then((s: any) =>
+        return this.edit.search.matchCountElem.getText().then((s: string) =>
           parseInt(s, 10)
         );
       }
@@ -166,51 +167,51 @@ class EditorPage {
 
     // Helper functions for retrieving various field values
     fields: this.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
-    getLexemes() {
+    getLexemes: () => {
 
       // Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid:
       // 'de', value: 'Wort'}]
-      const lexeme = this.fields.get(0);
-      return this.editorUtil.dcMultitextToArray(lexeme);
+      const lexeme = this.edit.fields.get(0);
+      return editorUtil.dcMultitextToArray(lexeme);
     },
 
-    getLexemesAsObject() {
+    getLexemesAsObject: () => {
 
       // Returns lexemes in the format [{en: 'word', de: 'Wort'}]
-      const lexeme = this.fields.get(0);
-      return this.editorUtil.dcMultitextToObject(lexeme);
+      const lexeme = this.edit.fields.get(0);
+      return editorUtil.dcMultitextToObject(lexeme);
     },
 
-    getFirstLexeme() {
-      browser.wait(ExpectedConditions.visibilityOf(this.fields.get(0)),this.CONDITION_TIMEOUT);
+    getFirstLexeme: () => {
+      browser.wait(ExpectedConditions.visibilityOf(this.edit.fields.get(0)), CONDITION_TIMEOUT);
 
       // Returns the first (topmost) lexeme regardless of its wsid
-      const lexeme = this.fields.get(0);
-      return this.editorUtil.dcMultitextToFirstValue(lexeme);
+      const lexeme = this.edit.fields.get(0);
+      return editorUtil.dcMultitextToFirstValue(lexeme);
     },
 
-    getLexemeByWsid(searchWsid: any) {
-      const lexeme = this.fields.get(0);
-      return this.editorUtil.dcMultitextToObject(lexeme).then((lexemes: any) =>
+    getLexemeByWsid: (searchWsid: string) => {
+      const lexeme = this.edit.fields.get(0);
+      return editorUtil.dcMultitextToObject(lexeme).then((lexemes: string) =>
         lexemes[searchWsid]
       );
     },
 
     audio: {
-      players(searchLabel: any) {
-        return this.editorUtil.getOneField(searchLabel).all(by.css('.player a'));
+      players: (searchLabel: string) => {
+        return editorUtil.getOneField(searchLabel).all(by.css('.player a'));
       },
 
-      playerIcons(searchLabel: any) {
-        return this.editorUtil.getOneField(searchLabel).all(by.css('.player a > i'));
+      playerIcons: (searchLabel: string) => {
+        return editorUtil.getOneField(searchLabel).all(by.css('.player a > i'));
       },
 
-      moreControls(searchLabel: any) {
-        return this.editorUtil.getOneField(searchLabel).all(by.css('.dc-audio a.dropdown-toggle'));
+      moreControls: (searchLabel: string) => {
+        return editorUtil.getOneField(searchLabel).all(by.css('.dc-audio a.dropdown-toggle'));
       },
 
-      moreGroups(searchLabel: string, index: number) {
-        const allMoreGroups = this.editorUtil.getOneField(searchLabel).all(by.css('.dc-audio .dropdown'));
+      moreGroups: (searchLabel: string, index: number) => {
+        const allMoreGroups = editorUtil.getOneField(searchLabel).all(by.css('.dc-audio .dropdown'));
         if (index !== undefined) {
           if (index < 0) index = 0;
           return allMoreGroups.get(index);
@@ -219,38 +220,38 @@ class EditorPage {
         return allMoreGroups;
       },
 
-      moreDownload(searchLabel: string, index: number) {
-        return this.moreGroups(searchLabel, index).element(by.id('dc-audio-download'));
+      moreDownload: (searchLabel: string, index: number) => {
+        return this.edit.audio.moreGroups(searchLabel, index).element(by.id('dc-audio-download'));
       },
 
-      moreDelete(searchLabel: string, index: number) {
-        return this.moreGroups(searchLabel, index).element(by.id('dc-audio-delete'));
+      moreDelete: (searchLabel: string, index: number) => {
+        return this.edit.audio.moreGroups(searchLabel, index).element(by.id('dc-audio-delete'));
       },
 
-      moreUpload(searchLabel: string, index: number) {
-        return this.moreGroups(searchLabel, index).element(by.id('dc-audio-upload'));
+      moreUpload: (searchLabel: string, index: number) => {
+        return this.edit.audio.moreGroups(searchLabel, index).element(by.id('dc-audio-upload'));
       },
 
-      uploadButtons(searchLabel: string) {
-        return this.editorUtil.getOneField(searchLabel).all(by.css('.dc-audio button.buttonAppend'));
+      uploadButtons: (searchLabel: string) => {
+        return editorUtil.getOneField(searchLabel).all(by.css('.dc-audio button.buttonAppend'));
       },
 
-      uploadDropBoxes(searchLabel: string) {
-        return this.editorUtil.getOneField(searchLabel).all(by.css('.drop-box'));
+      uploadDropBoxes: (searchLabel: string) => {
+        return editorUtil.getOneField(searchLabel).all(by.css('.drop-box'));
       },
 
-      uploadCancelButtons(searchLabel: string) {
-        return this.editorUtil.getOneField(searchLabel).all(by.css('.dc-audio i.fa-times'));
+      uploadCancelButtons: (searchLabel: string) => {
+        return editorUtil.getOneField(searchLabel).all(by.css('.dc-audio i.fa-times'));
       },
 
-      downloadButtons(searchLabel: string) {
-        return this.editorUtil.getOneField(searchLabel).all(by.css('.dc-audio a.buttonAppend'));
+      downloadButtons: (searchLabel: string) => {
+        return editorUtil.getOneField(searchLabel).all(by.css('.dc-audio a.buttonAppend'));
       },
 
-      control(searchLabel: string, index: number) {
-        const mockUploadElement = this.editorUtil.getOneField(searchLabel).all(by.css('.dc-audio'))
+      control: (searchLabel: string, index: number) => {
+        const mockUploadElement = editorUtil.getOneField(searchLabel).all(by.css('.dc-audio'))
           .get(index);
-        mockUploadElement.mockUpload = this.mockUpload;
+        mockUploadElement.mockUpload = mockUpload;
         return mockUploadElement;
       }
     },
@@ -258,42 +259,42 @@ class EditorPage {
     senses: element.all(by.css('dc-sense')),
 
     pictures: {
-      list: this.editorUtil.getOneField('Pictures'),
-      images: this.editorUtil.getOneField('Pictures').all(by.css('img')),
-      captions: this.editorUtil.getOneField('Pictures')
+      list: editorUtil.getOneField('Pictures'),
+      images: editorUtil.getOneField('Pictures').all(by.css('img')),
+      captions: editorUtil.getOneField('Pictures')
         .all(by.css('.input-group > .dc-formattedtext .ta-bind')),
-      removeImages: this.editorUtil.getOneField('Pictures').all(by.className('fa-trash')),
-      getFileName(index: any) {
-        return this.editorUtil.getOneFieldValue('Pictures').then((pictures: any) =>
+      removeImages: editorUtil.getOneField('Pictures').all(by.className('fa-trash')),
+      getFileName: (index: number) => {
+        return editorUtil.getOneFieldValue('Pictures').then((pictures: any) =>
           pictures[index].fileName
         );
       },
 
-      getCaption(index: any) {
-        return this.editorUtil.getOneFieldValue('Pictures').then((pictures: any) =>
+      getCaption: (index: number) => {
+        return editorUtil.getOneFieldValue('Pictures').then((pictures: any) =>
           pictures[index].caption
         );
       },
 
       addPictureLink: element(by.id('dc-picture-add-btn')),
-      addDropBox: this.editorUtil.getOneField('Pictures').element(by.css('.drop-box')),
+      addDropBox: editorUtil.getOneField('Pictures').element(by.css('.drop-box')),
       addCancelButton: element(by.id('addCancel'))
     },
 
-    getMultiTextInputs(searchLabel: any) {
-      return this.editorUtil.getOneField(searchLabel)
+    getMultiTextInputs: (searchLabel: string) => {
+      return editorUtil.getOneField(searchLabel)
         .all(by.css('.input-group > .dc-formattedtext .ta-bind'));
     },
 
-    getMultiTextInputSystems(searchLabel: any) {
-      return this.editorUtil.getOneField(searchLabel).all(by.css('.input-group > span.wsid'));
+    getMultiTextInputSystems: (searchLabel: string) => {
+      return editorUtil.getOneField(searchLabel).all(by.css('.input-group > span.wsid'));
     },
 
-    selectElement: this.editorUtil.selectElement,
-    getFields: this.editorUtil.getFields,
-    getOneField: this.editorUtil.getOneField,
-    getFieldValues: this.editorUtil.getFieldValues,
-    getOneFieldValue: this.editorUtil.getOneFieldValue
+    selectElement: editorUtil.selectElement,
+    getFields: editorUtil.getFields,
+    getOneField: editorUtil.getOneField,
+    getFieldValues: editorUtil.getFieldValues,
+    getOneFieldValue: editorUtil.getOneFieldValue
   };
 
   // --- Comment view ---
@@ -306,25 +307,25 @@ class EditorPage {
       byTextElem: this.commentDiv.element(by.model('commentFilter.text')),
       byStatusElem: this.commentDiv.element(by.model('commentFilter.status')),
       clearElem: this.commentDiv.element(by.css('[title="Clear Filter] > i.fa-times')),
-      byText(textToFilterBy: string) {
-        this.byTextElem.sendKeys(textToFilterBy);
+      byText: (textToFilterBy: string) => {
+        this.comment.filter.byTextElem.sendKeys(textToFilterBy);
       },
 
-      byStatus(statusToFilterBy: string) {
-        this.util.clickDropdownByValue(this.byStatusElem, statusToFilterBy);
+      byStatus: (statusToFilterBy: string) => {
+        utils.clickDropdownByValue(this.comment.filter.byStatusElem, statusToFilterBy);
       },
 
-      clearByText() {
-        this.clearElem.click();
+      clearByText: () => {
+        this.comment.filter.clearElem.click();
       },
 
-      clearByStatus() {
-        this.byStatus('Show All');
+      clearByStatus: () => {
+        this.comment.filter.byStatus('Show All');
       }
     },
     commentCountElem: this.commentDiv.element(by.binding('currentEntryCommentCounts.total')),
-    getCommentCount() {
-      return this.commentCountElem.getText().then((s: string) =>
+    getCommentCount: () => {
+      return this.comment.commentCountElem.getText().then((s: string) =>
         parseInt(s, 10)
       );
     },
@@ -333,22 +334,22 @@ class EditorPage {
     entry: {
       // We can just reuse the functions from dbeUtil, since they default to
       // using element(by.css('dc-entry')) as their root element.
-      getFields: this.editorUtil.getFields,
-      getOneField: this.editorUtil.getOneField,
-      getFieldValues: this.editorUtil.getFieldValues,
-      getOneFieldValue: this.editorUtil.getOneFieldValue,
-      getOneFieldAllInputSystems(searchLabel: string, idx: number, rootElem: any) {
-        return this.editorUtil.getOneField(searchLabel, idx, rootElem).all(by.css('span.wsid'));
+      getFields: editorUtil.getFields,
+      getOneField: editorUtil.getOneField,
+      getFieldValues: editorUtil.getFieldValues,
+      getOneFieldValue: editorUtil.getOneFieldValue,
+      getOneFieldAllInputSystems: (searchLabel: string, idx: number, rootElem: ElementFinder) => {
+        return editorUtil.getOneField(searchLabel, idx, rootElem).all(by.css('span.wsid'));
       }
     },
 
     // Right half of page: comments
     newComment: {
       textarea: element(by.id('comment-panel-textarea')),
-      postBtn: element(by.id('comment-panel-post-btn')),
+      postBtn: element(by.id('comment-panel-post-btn'))
     },
     commentsList: this.commentDiv.all(by.repeater('comment in currentEntryCommentsFiltered')),
-    getComment(commentNum: number) {
+    getComment: (commentNum: number) => {
       return this.getComment(this.comment.commentsList, commentNum);
     }
   };
@@ -362,33 +363,29 @@ class EditorPage {
   // expect(this.comments.getComment(0).regarding.inputSystem).toBe("th")
   // commentNum can be -1 to get the last comment, any other number is a 0-based
   // index
-  getComment(commentsList: any, commentNum: number) {
-    if (typeof (commentNum) === 'undefined') {
-      commentNum = 0;
-    }
-
+  getComment(commentsList: ElementArrayFinder, commentNum: number = 0) {
     const comment = (commentNum === -1 ? commentsList.last() : commentsList.get(commentNum));
     return this.partsOfComment(comment);
-  };
+  }
 
   // Like getComment, gets a specific reply from the list and returns its parts
   // (via partsOfReply() below)
   // replyNum can be -1 to get the last reply, any other number is a 0-based
   // index
-  getReply(repliesList: any, replyNum: number) {
+  getReply(repliesList: ElementArrayFinder, replyNum: number) {
     if (typeof (replyNum) === 'undefined') {
       replyNum = 0;
     }
 
     const reply = (replyNum === -1 ? repliesList.last() : repliesList.get(replyNum));
     return this.partsOfReply(reply);
-  };
+  }
 
   // Returns a Javascript object that can be used to access the parts (avatar,
   // reply button, etc.) of a comment
   // Usage example:
   // expect(partsOfDcComment(commentDiv).regarding.inputSystem).toBe("th")
-  partsOfComment(div: any) {
+  partsOfComment(div: ElementFinder) {
     const replies = div.all(by.repeater('reply in model.replies')); // used in
     // getReply()
     // below
@@ -422,7 +419,7 @@ class EditorPage {
       },
 
       // Replies (below content but above bottom controls)
-      replies: replies,
+      replies,
       getReply(replyNum: number) {
         return this.getReply(replies, replyNum);
       },
@@ -434,11 +431,11 @@ class EditorPage {
       editBtn: div.element(by.buttonText('Edit')),
       replyBtn: div.element(by.buttonText('Reply'))
     };
-  };
+  }
 
   // Like partsOfComment, returns a Javascript object giving access to the parts
   // of a reply
-  partsOfReply(div: any) {
+  partsOfReply(div: ElementFinder) {
     return {
       wholeReply: div,
       content: div.element(by.model('reply.content')),
@@ -452,9 +449,8 @@ class EditorPage {
         cancel: div.element(by.css('form a i.fa-times'))
       }
     };
-  };
+  }
 
 }
-
 
 module.exports = new EditorPage();
