@@ -1,9 +1,12 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
+import { Utils } from '../../../bellows/pages/utils';
+import { MockUploadElement } from '../../../bellows/pages/mockUploadElement';
+import { EditorUtil } from './editorUtil';
 
 export class EditorPage {
-  private readonly mockUpload = require('../../../bellows/pages/mockUploadElement.js');
-  private readonly util = require('../../../bellows/pages/utils.js');
-  private readonly editorUtil = require('./editorUtil.js');
+  private mockUpload = new MockUploadElement();
+  private util = new Utils();
+  private editorUtil = new EditorUtil();
   private readonly CONDITION_TIMEOUT = 3000;
 
   get(projectId: string, entryId: string) {
