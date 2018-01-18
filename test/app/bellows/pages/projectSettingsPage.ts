@@ -1,11 +1,11 @@
 import {browser, element, by, ExpectedConditions} from 'protractor';
+import { ProjectsPage } from './projectsPage';
 //import {ProjectsPage} from './projectsPage'; - This will get updated along with the spec files - Mark W 2018-01-15
 const CONDITION_TIMEOUT = 3000;
 const util = require('./utils');
 
 export class BellowsProjectSettingsPage {
-  //projectsPage = new ProjectsPage(); - This will get updated along with the spec files - Mark W 2018-01-15
-  projectsPage = require('./projectsPage');
+  projectsPage = new ProjectsPage();
 
   settingsMenuLink = element(by.id('settingsDropdownButton'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
