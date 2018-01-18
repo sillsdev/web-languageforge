@@ -1,8 +1,10 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
+import { MockUploadElement } from '../../../bellows/pages/mockUploadElement';
+import { LexModals } from './lexModals';
 
 export class NewLexProjectPage {
-  private readonly mockUpload = require('../../../bellows/pages/mockUploadElement.js');
-  private readonly modal      = require('./lexModals.js');
+  private mockUpload = new MockUploadElement();
+  private modal = new LexModals();
 
   get() {
     browser.get(browser.baseUrl + '/app/lexicon/new-project');
