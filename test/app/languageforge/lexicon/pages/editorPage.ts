@@ -1,8 +1,12 @@
 import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
 import { ElementArrayFinder, ElementFinder } from 'protractor/built/element';
-const mockUpload = require('../../../bellows/pages/mockUploadElement.js');
-const utils = require('../../../bellows/pages/utils.js');
-const editorUtil = require('./editorUtil.js');
+import { Utils } from '../../../bellows/pages/utils';
+import { MockUploadElement } from '../../../bellows/pages/mockUploadElement';
+import { EditorUtil } from './editorUtil';
+
+const mockUpload = new MockUploadElement();
+const utils = new Utils();
+const editorUtil = new EditorUtil();
 const CONDITION_TIMEOUT = 3000;
 
 export class EditorPage {
@@ -450,5 +454,4 @@ export class EditorPage {
       }
     };
   }
-}
 }
