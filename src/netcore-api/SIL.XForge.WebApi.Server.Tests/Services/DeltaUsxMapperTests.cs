@@ -44,30 +44,6 @@ namespace SIL.XForge.WebApi.Server.Services
         }
 
         [Test]
-        public void UpdateUsx_StripVerseAlignmentParas()
-        {
-            var delta = Delta.New()
-                .InsertChapter("1")
-                .InsertVerse("1")
-                .Insert("Verse text.")
-                .InsertVerseAlignmentPara()
-                .InsertVerse("2")
-                .Insert("Second verse text.")
-                .InsertPara("p");
-
-            XElement newUsxElem = DeltaUsxMapper.ToUsx("PHM", null, delta);
-
-            XElement expected = Usx("PHM",
-                Chapter("1"),
-                Para("p",
-                    Verse("1"),
-                    "Verse text.",
-                    Verse("2"),
-                    "Second verse text."));
-            Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
-        }
-
-        [Test]
         public void UpdateUsx_CharText()
         {
             var delta = Delta.New()
