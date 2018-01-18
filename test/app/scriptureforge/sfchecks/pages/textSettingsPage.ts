@@ -1,12 +1,13 @@
 import { by, element } from 'protractor';
-const textPage = require('./textPage.js');
+import { SfTextPage } from './textPage';
 
 export class SfTextSettingsPage {
+  private textPage = new SfTextPage();
 
   // currently this page is called questions-settings.html but will be refactored. IJH 2014-06
   get(projectName: any, textTitle: any) {
-    textPage.get(projectName, textTitle);
-    textPage.clickTextSettingsButton();
+    this.textPage.get(projectName, textTitle);
+    this.textPage.clickTextSettingsButton();
   }
 
   tabs = {
