@@ -1,7 +1,7 @@
 import {browser, by, element} from 'protractor';
 
 export class BellowsResetPasswordPage {
-  get = (resetPasswordKey: string) => {
+  get(resetPasswordKey: string) {
     browser.get(browser.baseUrl + '/auth/reset_password/' + resetPasswordKey);
   }
 
