@@ -43,7 +43,7 @@
                 </th>
             </tr>
         </thead>
-        <tbody drag-to-reorder-bind="$ctrl.unifiedViewModel.inputSystems">
+        <tbody drag-to-reorder-bind="$ctrl.unifiedViewModel.inputSystems.settings">
             <tr class="table-secondary">
                 <td></td>
                 <th class="text-center align-middle">Input Systems</th>
@@ -51,76 +51,76 @@
                 <th class="text-center align-middle">Select All</th>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.inputSystems.observer"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems, $ctrl.unifiedViewModel.selectAllColumns.inputSystems, 'observer')"
+                           data-ng-model="$ctrl.unifiedViewModel.inputSystems.selectAllColumns.observer"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'observer')"
                            aria-label="..."  type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.inputSystems.commenter"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems, $ctrl.unifiedViewModel.selectAllColumns.inputSystems, 'commenter')"
+                           data-ng-model="$ctrl.unifiedViewModel.inputSystems.selectAllColumns.commenter"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'commenter')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.inputSystems.contributor"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems, $ctrl.unifiedViewModel.selectAllColumns.inputSystems, 'contributor')"
+                           data-ng-model="$ctrl.unifiedViewModel.inputSystems.selectAllColumns.contributor"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'contributor')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.inputSystems.manager"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems, $ctrl.unifiedViewModel.selectAllColumns.inputSystems, 'manager')"
+                           data-ng-model="$ctrl.unifiedViewModel.inputSystems.selectAllColumns.manager"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'manager')"
                            aria-label="..." type="checkbox">
                 </td>
                 <!--suppress JSUnusedLocalSymbols -->
-                <td class="text-center align-middle" data-ng-repeat="group in $ctrl.unifiedViewModel.selectAllColumns.inputSystems.groups">
+                <td class="text-center align-middle" data-ng-repeat="group in $ctrl.unifiedViewModel.inputSystems.selectAllColumns.groups">
                     <input class="form-check-input position-static"
                            data-ng-model="group.show"
-                           data-ng-click="$ctrl.selectAllGroupColumn($ctrl.unifiedViewModel.inputSystems, $ctrl.unifiedViewModel.selectAllColumns.inputSystems, $index)"
+                           data-ng-click="$ctrl.selectAllGroupColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $index)"
                            aria-label="..." type="checkbox">
                 </td>
                 <td></td>
             </tr>
-            <tr data-ng-repeat="inputSystem in $ctrl.unifiedViewModel.inputSystems" dtr-draggable>
+            <tr data-ng-repeat="inputSystem in $ctrl.unifiedViewModel.inputSystems.settings" dtr-draggable>
                 <td class="text-center align-middle" title="Drag the row to re-order fields"><i class="fa fa-arrows-v"></i></td>
                 <td class="text-center align-middle">{{inputSystem.name}}</td>
                 <td class="text-center align-middle"></td>
                 <th class="table-secondary text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="inputSystem.isAllRowSelected"
-                           data-ng-click="$ctrl.selectAllRow(inputSystem, $ctrl.unifiedViewModel.inputSystems, $ctrl.unifiedViewModel.selectAllColumns.inputSystems)"
+                           data-ng-click="$ctrl.selectAllRow(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns)"
                            aria-label="..." type="checkbox">
                 </th>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="inputSystem.observer"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems, $ctrl.unifiedViewModel.selectAllColumns.inputSystems, 'observer')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'observer')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="inputSystem.commenter"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems, $ctrl.unifiedViewModel.selectAllColumns.inputSystems, 'commenter')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'commenter')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="inputSystem.contributor"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems, $ctrl.unifiedViewModel.selectAllColumns.inputSystems, 'contributor')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'contributor')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="inputSystem.manager"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems, $ctrl.unifiedViewModel.selectAllColumns.inputSystems, 'manager')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'manager')"
                            aria-label="..." type="checkbox">
                 </td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td class="text-center align-middle" data-ng-repeat="group in inputSystem.groups">
                     <input class="form-check-input position-static"
                            data-ng-model="group.show"
-                           data-ng-click="$ctrl.checkIfAllGroupSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems, $ctrl.unifiedViewModel.selectAllColumns.inputSystems, $index)"
+                           data-ng-click="$ctrl.checkIfAllGroupSelected(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $index)"
                            aria-label="..." type="checkbox">
                 </td>
                 <td></td>
@@ -154,7 +154,7 @@
                 <td></td>
             </tr>
         </tbody>
-        <tbody drag-to-reorder-bind="$ctrl.unifiedViewModel.entryFields">
+        <tbody drag-to-reorder-bind="$ctrl.unifiedViewModel.entryFields.settings">
             <tr class="table-secondary">
                 <th class="text-center align-top"></th>
                 <th class="text-center align-top">Field</th>
@@ -179,37 +179,37 @@
                 <th class="text-center align-middle">Select All</th>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.entryFields.observer"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.entryFields, $ctrl.unifiedViewModel.selectAllColumns.entryFields, 'observer')"
+                           data-ng-model="$ctrl.unifiedViewModel.entryFields.selectAllColumns.observer"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.entryFields.settings, $ctrl.unifiedViewModel.entryFields.selectAllColumns, 'observer')"
                            aria-label="..."  type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.entryFields.commenter"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.entryFields, $ctrl.unifiedViewModel.selectAllColumns.entryFields, 'commenter')"
+                           data-ng-model="$ctrl.unifiedViewModel.entryFields.selectAllColumns.commenter"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.entryFields.settings, $ctrl.unifiedViewModel.entryFields.selectAllColumns, 'commenter')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.entryFields.contributor"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.entryFields, $ctrl.unifiedViewModel.selectAllColumns.entryFields, 'contributor')"
+                           data-ng-model="$ctrl.unifiedViewModel.entryFields.selectAllColumns.contributor"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.entryFields.settings, $ctrl.unifiedViewModel.entryFields.selectAllColumns, 'contributor')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.entryFields.manager"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.entryFields, $ctrl.unifiedViewModel.selectAllColumns.entryFields, 'manager')"
+                           data-ng-model="$ctrl.unifiedViewModel.entryFields.selectAllColumns.manager"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.entryFields.settings, $ctrl.unifiedViewModel.entryFields.selectAllColumns, 'manager')"
                            aria-label="..." type="checkbox">
                 </td>
                 <!--suppress JSUnusedLocalSymbols -->
-                <td class="text-center align-middle" data-ng-repeat="group in $ctrl.unifiedViewModel.selectAllColumns.entryFields.groups">
+                <td class="text-center align-middle" data-ng-repeat="group in $ctrl.unifiedViewModel.entryFields.selectAllColumns.groups">
                     <input class="form-check-input position-static" data-ng-model="group.show"
-                           data-ng-click="$ctrl.selectAllGroupColumn($ctrl.unifiedViewModel.entryFields, $ctrl.unifiedViewModel.selectAllColumns.entryFields, $index)"
+                           data-ng-click="$ctrl.selectAllGroupColumn($ctrl.unifiedViewModel.entryFields.settings, $ctrl.unifiedViewModel.entryFields.selectAllColumns, $index)"
                            aria-label="..." type="checkbox">
                 </td>
                 <td></td>
             </tr>
-            <tr data-ng-repeat="entryField in $ctrl.unifiedViewModel.entryFields" dtr-draggable>
+            <tr data-ng-repeat="entryField in $ctrl.unifiedViewModel.entryFields.settings" dtr-draggable>
                 <td class="text-center align-middle" title="Drag the row to re-order fields"><i class="fa fa-arrows-v"></i></td>
                 <td class="text-center align-middle" data-ng-if="!$ctrl.isCustomField(entryField.fieldName)">{{entryField.name}}</td>
                 <td class="text-center align-middle" data-ng-if="$ctrl.isCustomField(entryField.fieldName)">
@@ -225,38 +225,38 @@
                 <th class="table-secondary text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="entryField.isAllRowSelected"
-                           data-ng-click="$ctrl.selectAllRow(entryField, $ctrl.unifiedViewModel.entryFields, $ctrl.unifiedViewModel.selectAllColumns.entryFields)"
+                           data-ng-click="$ctrl.selectAllRow(entryField, $ctrl.unifiedViewModel.entryFields.settings, $ctrl.unifiedViewModel.entryFields.selectAllColumns)"
                            aria-label="..." type="checkbox">
                 </th>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="entryField.observer"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(entryField, $ctrl.unifiedViewModel.entryFields, $ctrl.unifiedViewModel.selectAllColumns.entryFields, 'observer')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(entryField, $ctrl.unifiedViewModel.entryFields.settings, $ctrl.unifiedViewModel.entryFields.selectAllColumns, 'observer')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="entryField.commenter"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(entryField, $ctrl.unifiedViewModel.entryFields, $ctrl.unifiedViewModel.selectAllColumns.entryFields, 'commenter')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(entryField, $ctrl.unifiedViewModel.entryFields.settings, $ctrl.unifiedViewModel.entryFields.selectAllColumns, 'commenter')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="entryField.contributor"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(entryField, $ctrl.unifiedViewModel.entryFields, $ctrl.unifiedViewModel.selectAllColumns.entryFields, 'contributor')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(entryField, $ctrl.unifiedViewModel.entryFields.settings, $ctrl.unifiedViewModel.entryFields.selectAllColumns, 'contributor')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="entryField.manager"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(entryField, $ctrl.unifiedViewModel.entryFields, $ctrl.unifiedViewModel.selectAllColumns.entryFields, 'manager')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(entryField, $ctrl.unifiedViewModel.entryFields.settings, $ctrl.unifiedViewModel.entryFields.selectAllColumns, 'manager')"
                            aria-label="..." type="checkbox">
                 </td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td class="text-center align-middle" data-ng-repeat="group in entryField.groups">
                     <input class="form-check-input position-static"
                            data-ng-model="group.show"
-                           data-ng-click="$ctrl.checkIfAllGroupSelected(entryField, $ctrl.unifiedViewModel.entryFields, $ctrl.unifiedViewModel.selectAllColumns.entryFields, $index)"
+                           data-ng-click="$ctrl.checkIfAllGroupSelected(entryField, $ctrl.unifiedViewModel.entryFields.settings, $ctrl.unifiedViewModel.entryFields.selectAllColumns, $index)"
                            aria-label="..." type="checkbox">
                 </td>
                 <td></td>
@@ -304,7 +304,7 @@
                 <td></td>
             </tr>
         </tbody>
-        <tbody drag-to-reorder-bind="$ctrl.unifiedViewModel.senseFields">
+        <tbody drag-to-reorder-bind="$ctrl.unifiedViewModel.senseFields.settings">
             <tr class="table-secondary">
                 <th class="text-center align-top"></th>
                 <th class="text-center align-top">Field</th>
@@ -329,38 +329,38 @@
                 <th class="text-center align-middle">Select All</th>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.senseFields.observer"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.senseFields, $ctrl.unifiedViewModel.selectAllColumns.senseFields, 'observer')"
+                           data-ng-model="$ctrl.unifiedViewModel.senseFields.selectAllColumns.observer"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.senseFields.settings, $ctrl.unifiedViewModel.senseFields.selectAllColumns, 'observer')"
                            aria-label="..."  type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.senseFields.commenter"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.senseFields, $ctrl.unifiedViewModel.selectAllColumns.senseFields, 'commenter')"
+                           data-ng-model="$ctrl.unifiedViewModel.senseFields.selectAllColumns.commenter"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.senseFields.settings, $ctrl.unifiedViewModel.senseFields.selectAllColumns, 'commenter')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.senseFields.contributor"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.senseFields, $ctrl.unifiedViewModel.selectAllColumns.senseFields, 'contributor')"
+                           data-ng-model="$ctrl.unifiedViewModel.senseFields.selectAllColumns.contributor"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.senseFields.settings, $ctrl.unifiedViewModel.senseFields.selectAllColumns, 'contributor')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.senseFields.manager"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.senseFields, $ctrl.unifiedViewModel.selectAllColumns.senseFields, 'manager')"
+                           data-ng-model="$ctrl.unifiedViewModel.senseFields.selectAllColumns.manager"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.senseFields.settings, $ctrl.unifiedViewModel.senseFields.selectAllColumns, 'manager')"
                            aria-label="..." type="checkbox">
                 </td>
                 <!--suppress JSUnusedLocalSymbols -->
-                <td class="text-center align-middle" data-ng-repeat="group in $ctrl.unifiedViewModel.selectAllColumns.senseFields.groups">
+                <td class="text-center align-middle" data-ng-repeat="group in $ctrl.unifiedViewModel.senseFields.selectAllColumns.groups">
                     <input class="form-check-input position-static"
                            data-ng-model="group.show"
-                           data-ng-click="$ctrl.selectAllGroupColumn($ctrl.unifiedViewModel.senseFields, $ctrl.unifiedViewModel.selectAllColumns.senseFields, $index)"
+                           data-ng-click="$ctrl.selectAllGroupColumn($ctrl.unifiedViewModel.senseFields.settings, $ctrl.unifiedViewModel.senseFields.selectAllColumns, $index)"
                            aria-label="..." type="checkbox">
                 </td>
                 <td></td>
             </tr>
-            <tr data-ng-repeat="senseField in $ctrl.unifiedViewModel.senseFields" dtr-draggable>
+            <tr data-ng-repeat="senseField in $ctrl.unifiedViewModel.senseFields.settings" dtr-draggable>
                 <td class="text-center align-middle" title="Drag the row to re-order fields"><i class="fa fa-arrows-v"></i></td>
                 <td class="text-center align-middle" data-ng-if="!$ctrl.isCustomField(senseField.fieldName)">{{senseField.name}}</td>
                 <td class="text-center align-middle" data-ng-if="$ctrl.isCustomField(senseField.fieldName)">
@@ -376,38 +376,38 @@
                 <th class="table-secondary text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="senseField.isAllRowSelected"
-                           data-ng-click="$ctrl.selectAllRow(senseField, $ctrl.unifiedViewModel.senseFields, $ctrl.unifiedViewModel.selectAllColumns.senseFields)"
+                           data-ng-click="$ctrl.selectAllRow(senseField, $ctrl.unifiedViewModel.senseFields.settings, $ctrl.unifiedViewModel.senseFields.selectAllColumns)"
                            aria-label="..." type="checkbox">
                 </th>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="senseField.observer"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(senseField, $ctrl.unifiedViewModel.senseFields, $ctrl.unifiedViewModel.selectAllColumns.senseFields, 'observer')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(senseField, $ctrl.unifiedViewModel.senseFields.settings, $ctrl.unifiedViewModel.senseFields.selectAllColumns, 'observer')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="senseField.commenter"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(senseField, $ctrl.unifiedViewModel.senseFields, $ctrl.unifiedViewModel.selectAllColumns.senseFields, 'commenter')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(senseField, $ctrl.unifiedViewModel.senseFields.settings, $ctrl.unifiedViewModel.senseFields.selectAllColumns, 'commenter')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="senseField.contributor"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(senseField, $ctrl.unifiedViewModel.senseFields, $ctrl.unifiedViewModel.selectAllColumns.senseFields, 'contributor')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(senseField, $ctrl.unifiedViewModel.senseFields.settings, $ctrl.unifiedViewModel.senseFields.selectAllColumns, 'contributor')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="senseField.manager"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(senseField, $ctrl.unifiedViewModel.senseFields, $ctrl.unifiedViewModel.selectAllColumns.senseFields, 'manager')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(senseField, $ctrl.unifiedViewModel.senseFields.settings, $ctrl.unifiedViewModel.senseFields.selectAllColumns, 'manager')"
                            aria-label="..." type="checkbox">
                 </td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td class="text-center align-middle" data-ng-repeat="group in senseField.groups">
                     <input class="form-check-input position-static"
                            data-ng-model="group.show"
-                           data-ng-click="$ctrl.checkIfAllGroupSelected(senseField, $ctrl.unifiedViewModel.senseFields, $ctrl.unifiedViewModel.selectAllColumns.senseFields, $index)"
+                           data-ng-click="$ctrl.checkIfAllGroupSelected(senseField, $ctrl.unifiedViewModel.senseFields.settings, $ctrl.unifiedViewModel.senseFields.selectAllColumns, $index)"
                            aria-label="..." type="checkbox">
                 </td>
                 <td></td>
@@ -455,7 +455,7 @@
                 <td></td>
             </tr>
         </tbody>
-        <tbody drag-to-reorder-bind="$ctrl.unifiedViewModel.exampleFields">
+        <tbody drag-to-reorder-bind="$ctrl.unifiedViewModel.exampleFields.settings">
             <tr class="table-secondary">
                 <th class="text-center align-top"></th>
                 <th class="text-center align-top">Field</th>
@@ -480,38 +480,38 @@
                 <th class="text-center align-middle">Select All</th>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.exampleFields.observer"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.exampleFields, $ctrl.unifiedViewModel.selectAllColumns.exampleFields, 'observer')"
+                           data-ng-model="$ctrl.unifiedViewModel.exampleFields.selectAllColumns.observer"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.exampleFields.settings, $ctrl.unifiedViewModel.exampleFields.selectAllColumns, 'observer')"
                            aria-label="..."  type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.exampleFields.commenter"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.exampleFields, $ctrl.unifiedViewModel.selectAllColumns.exampleFields, 'commenter')"
+                           data-ng-model="$ctrl.unifiedViewModel.exampleFields.selectAllColumns.commenter"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.exampleFields.settings, $ctrl.unifiedViewModel.exampleFields.selectAllColumns, 'commenter')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.exampleFields.contributor"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.exampleFields, $ctrl.unifiedViewModel.selectAllColumns.exampleFields, 'contributor')"
+                           data-ng-model="$ctrl.unifiedViewModel.exampleFields.selectAllColumns.contributor"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.exampleFields.settings, $ctrl.unifiedViewModel.exampleFields.selectAllColumns, 'contributor')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
-                           data-ng-model="$ctrl.unifiedViewModel.selectAllColumns.exampleFields.manager"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.exampleFields, $ctrl.unifiedViewModel.selectAllColumns.exampleFields, 'manager')"
+                           data-ng-model="$ctrl.unifiedViewModel.exampleFields.selectAllColumns.manager"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.exampleFields.settings, $ctrl.unifiedViewModel.exampleFields.selectAllColumns, 'manager')"
                            aria-label="..." type="checkbox">
                 </td>
                 <!--suppress JSUnusedLocalSymbols -->
-                <td class="text-center align-middle" data-ng-repeat="group in $ctrl.unifiedViewModel.selectAllColumns.exampleFields.groups">
+                <td class="text-center align-middle" data-ng-repeat="group in $ctrl.unifiedViewModel.exampleFields.selectAllColumns.groups">
                     <input class="form-check-input position-static"
                            data-ng-model="group.show"
-                           data-ng-click="$ctrl.selectAllGroupColumn($ctrl.unifiedViewModel.exampleFields, $ctrl.unifiedViewModel.selectAllColumns.exampleFields, $index)"
+                           data-ng-click="$ctrl.selectAllGroupColumn($ctrl.unifiedViewModel.exampleFields.settings, $ctrl.unifiedViewModel.exampleFields.selectAllColumns, $index)"
                            aria-label="..." type="checkbox">
                 </td>
                 <td></td>
             </tr>
-            <tr data-ng-repeat="exampleField in $ctrl.unifiedViewModel.exampleFields" dtr-draggable>
+            <tr data-ng-repeat="exampleField in $ctrl.unifiedViewModel.exampleFields.settings" dtr-draggable>
                 <td class="text-center align-middle" title="Drag the row to re-order fields"><i class="fa fa-arrows-v"></i></td>
                 <td class="text-center align-middle" data-ng-if="!$ctrl.isCustomField(exampleField.fieldName)">{{exampleField.name}}</td>
                 <td class="text-center align-middle" data-ng-if="$ctrl.isCustomField(exampleField.fieldName)">
@@ -527,38 +527,38 @@
                 <th class="table-secondary text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="exampleField.isAllRowSelected"
-                           data-ng-click="$ctrl.selectAllRow(exampleField, $ctrl.unifiedViewModel.exampleFields, $ctrl.unifiedViewModel.selectAllColumns.exampleFields)"
+                           data-ng-click="$ctrl.selectAllRow(exampleField, $ctrl.unifiedViewModel.exampleFields.settings, $ctrl.unifiedViewModel.exampleFields.selectAllColumns)"
                            aria-label="..." type="checkbox">
                 </th>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="exampleField.observer"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(exampleField, $ctrl.unifiedViewModel.exampleFields, $ctrl.unifiedViewModel.selectAllColumns.exampleFields, 'observer')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(exampleField, $ctrl.unifiedViewModel.exampleFields.settings, $ctrl.unifiedViewModel.exampleFields.selectAllColumns, 'observer')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="exampleField.commenter"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(exampleField, $ctrl.unifiedViewModel.exampleFields, $ctrl.unifiedViewModel.selectAllColumns.exampleFields, 'commenter')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(exampleField, $ctrl.unifiedViewModel.exampleFields.settings, $ctrl.unifiedViewModel.exampleFields.selectAllColumns, 'commenter')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="exampleField.contributor"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(exampleField, $ctrl.unifiedViewModel.exampleFields, $ctrl.unifiedViewModel.selectAllColumns.exampleFields, 'contributor')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(exampleField, $ctrl.unifiedViewModel.exampleFields.settings, $ctrl.unifiedViewModel.exampleFields.selectAllColumns, 'contributor')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="exampleField.manager"
-                           data-ng-click="$ctrl.checkIfAllRoleSelected(exampleField, $ctrl.unifiedViewModel.exampleFields, $ctrl.unifiedViewModel.selectAllColumns.exampleFields, 'manager')"
+                           data-ng-click="$ctrl.checkIfAllRoleSelected(exampleField, $ctrl.unifiedViewModel.exampleFields.settings, $ctrl.unifiedViewModel.exampleFields.selectAllColumns, 'manager')"
                            aria-label="..." type="checkbox">
                 </td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td data-ng-repeat="group in exampleField.groups" class="text-center align-middle">
                     <input class="form-check-input position-static"
                            data-ng-model="group.show"
-                           data-ng-click="$ctrl.checkIfAllGroupSelected(exampleField, $ctrl.unifiedViewModel.exampleFields, $ctrl.unifiedViewModel.selectAllColumns.exampleFields, $index)"
+                           data-ng-click="$ctrl.checkIfAllGroupSelected(exampleField, $ctrl.unifiedViewModel.exampleFields.settings, $ctrl.unifiedViewModel.exampleFields.selectAllColumns, $index)"
                            aria-label="..." type="checkbox">
                 </td>
                 <td></td>
