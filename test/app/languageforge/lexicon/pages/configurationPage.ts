@@ -1,8 +1,10 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
+import { LexModals } from './lexModals';
+import { Utils } from '../../../bellows/pages/utils';
 
 export class ConfigurationPage {
-  private readonly modal = require('./lexModals.js');
-  private readonly util = require('../../../bellows/pages/utils.js');
+  private modal = new LexModals();
+  private util = new Utils();
 
   noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   firstNoticeCloseButton = this.noticeList.first().element(by.className('close'));
@@ -19,9 +21,10 @@ export class ConfigurationPage {
   applyButton = element(by.id('configuration-apply-btn'));
 
   private readonly tabElements = element.all(by.tagName('pui-tab'));
+
   tab() {
     return this.tabElements.first();
-  };
+  }
 
   activePane = element(by.css('div.tab-pane.active'));
 
