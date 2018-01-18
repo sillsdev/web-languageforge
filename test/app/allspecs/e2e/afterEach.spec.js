@@ -1,9 +1,9 @@
 'use strict';
 
 afterEach(function () {
-  var appFrame = require('../../bellows/pages/appFrame.js');
-  var body     = require('../../bellows/pages/pageBody.js');
-  var util = require('../../bellows/pages/utils.js');
+  var appFrame = new (require('../../bellows/pages/appFrame.js').SfAppFrame)();
+  var body     = new (require('../../bellows/pages/pageBody.js').PageBody)();
+  var util = new (require('../../bellows/pages/utils.js').Utils)();
 
   appFrame.errorMessage.isPresent().then(function (isPresent) {
     if (isPresent) {
