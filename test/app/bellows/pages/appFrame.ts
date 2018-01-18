@@ -22,5 +22,3 @@ export class SfAppFrame {
   }
 
 }
-
-module.exports = new SfAppFrame();

@@ -106,6 +106,3 @@ export class SfUserProfilePage {
     }
   };
 }
-
-
-module.exports = new SfUserProfilePage();

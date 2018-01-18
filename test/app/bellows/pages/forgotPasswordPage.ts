@@ -12,5 +12,3 @@ export class BellowsForgotPasswordPage {
   usernameInput = element(by.id('username'));
   submitButton = element(by.id('forgot-password-submit-btn'));
 }
-
-module.exports = new BellowsForgotPasswordPage();
