@@ -10,73 +10,81 @@ import {OptionSelects} from './option-selects.model';
 
 export class ConfigurationUnifiedViewModel {
   groupLists: GroupList[];
-  inputSystems: InputSystemSettings[];
-  entryFields: FieldSettings[];
-  senseFields: FieldSettings[];
-  exampleFields: FieldSettings[];
-  selectAllColumns: SelectAllColumns;
+  inputSystems: InputSystemSettingsList;
+  entryFields: FieldSettingsList;
+  senseFields: FieldSettingsList;
+  exampleFields: FieldSettingsList;
 
   constructor(config: LexiconConfig, users: { [userId: string]: User }) {
+
+    this.inputSystems = new InputSystemSettingsList();
+    this.entryFields = new FieldSettingsList();
+    this.senseFields = new FieldSettingsList();
+    this.exampleFields = new FieldSettingsList();
+
     this.groupLists = ConfigurationUnifiedViewModel.setGroupLists(config, users);
 
-    this.inputSystems = ConfigurationUnifiedViewModel.setInputSystemsViewModel(config);
+    this.inputSystems.settings = ConfigurationUnifiedViewModel.setInputSystemsViewModel(config);
 
     const entryConfig = config.entry;
-    this.entryFields = ConfigurationUnifiedViewModel.setLevelViewModel(entryConfig, config);
+    this.entryFields.settings = ConfigurationUnifiedViewModel.setLevelViewModel(entryConfig, config);
     if ('senses' in entryConfig.fields) {
       const sensesConfig = entryConfig.fields.senses as LexConfigFieldList;
-      this.senseFields = ConfigurationUnifiedViewModel.setLevelViewModel(sensesConfig, config);
+      this.senseFields.settings = ConfigurationUnifiedViewModel.setLevelViewModel(sensesConfig, config);
       if ('examples' in sensesConfig.fields) {
         const examplesConfig = sensesConfig.fields.examples as LexConfigFieldList;
-        this.exampleFields = ConfigurationUnifiedViewModel.setLevelViewModel(examplesConfig, config);
+        this.exampleFields.settings = ConfigurationUnifiedViewModel.setLevelViewModel(examplesConfig, config);
       }
     }
 
-    this.selectAllColumns = new SelectAllColumns();
+    this.inputSystems.selectAllColumns = new InputSystemSettings;
+    this.entryFields.selectAllColumns = new FieldSettings;
+    this.senseFields.selectAllColumns = new FieldSettings;
+    this.exampleFields.selectAllColumns = new FieldSettings;
     const roles = RoleType.roles();
     for (const role of roles) {
-      this.selectAllColumns.inputSystems[role] = false;
-      this.selectAllColumns.entryFields[role] = false;
-      this.selectAllColumns.senseFields[role] = false;
-      this.selectAllColumns.exampleFields[role] = false;
-      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.inputSystems,
-        this.selectAllColumns.inputSystems, role);
-      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.entryFields,
-        this.selectAllColumns.entryFields, role);
-      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.senseFields,
-        this.selectAllColumns.senseFields, role);
-      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.exampleFields,
-        this.selectAllColumns.exampleFields, role);
+      this.inputSystems.selectAllColumns[role] = false;
+      this.entryFields.selectAllColumns[role] = false;
+      this.senseFields.selectAllColumns[role] = false;
+      this.exampleFields.selectAllColumns[role] = false;
+      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.inputSystems.settings,
+        this.inputSystems.selectAllColumns, role);
+      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.entryFields.settings,
+        this.entryFields.selectAllColumns, role);
+      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.senseFields.settings,
+        this.senseFields.selectAllColumns, role);
+      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.exampleFields.settings,
+        this.exampleFields.selectAllColumns, role);
     }
-    for (let i = 0; i < this.inputSystems[0].groups.length; i++) {
-      this.selectAllColumns.inputSystems.groups.push(new Group());
-      this.selectAllColumns.entryFields.groups.push(new Group());
-      this.selectAllColumns.senseFields.groups.push(new Group());
-      this.selectAllColumns.exampleFields.groups.push(new Group());
-      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.inputSystems,
-        this.selectAllColumns.inputSystems, i);
-      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.entryFields,
-        this.selectAllColumns.entryFields, i);
-      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.senseFields,
-        this.selectAllColumns.senseFields, i);
-      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.exampleFields,
-        this.selectAllColumns.exampleFields, i);
+    for (let i = 0; i < this.inputSystems.settings[0].groups.length; i++) {
+      this.inputSystems.selectAllColumns.groups.push(new Group());
+      this.entryFields.selectAllColumns.groups.push(new Group());
+      this.senseFields.selectAllColumns.groups.push(new Group());
+      this.exampleFields.selectAllColumns.groups.push(new Group());
+      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.inputSystems.settings,
+        this.inputSystems.selectAllColumns, i);
+      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.entryFields.settings,
+        this.entryFields.selectAllColumns, i);
+      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.senseFields.settings,
+        this.senseFields.selectAllColumns, i);
+      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.exampleFields.settings,
+        this.exampleFields.selectAllColumns, i);
     }
   }
 
   toConfig(config: LexiconConfig): void {
     // Config updates for Input Systems
-    ConfigurationUnifiedViewModel.inputSystemsToConfig(this.inputSystems, config, this.groupLists);
+    ConfigurationUnifiedViewModel.inputSystemsToConfig(this.inputSystems.settings, config, this.groupLists);
 
     // Config updates for fields
     const entryConfig = config.entry;
-    ConfigurationUnifiedViewModel.fieldsToConfig(this.entryFields, config, entryConfig, this.groupLists);
+    ConfigurationUnifiedViewModel.fieldsToConfig(this.entryFields.settings, config, entryConfig, this.groupLists);
     if ('senses' in entryConfig.fields) {
       const sensesConfig = entryConfig.fields.senses as LexConfigFieldList;
-      ConfigurationUnifiedViewModel.fieldsToConfig(this.senseFields, config, sensesConfig, this.groupLists);
+      ConfigurationUnifiedViewModel.fieldsToConfig(this.senseFields.settings, config, sensesConfig, this.groupLists);
       if ('examples' in sensesConfig.fields) {
         const examplesConfig = sensesConfig.fields.examples as LexConfigFieldList;
-        ConfigurationUnifiedViewModel.fieldsToConfig(this.exampleFields, config, examplesConfig, this.groupLists);
+        ConfigurationUnifiedViewModel.fieldsToConfig(this.exampleFields.settings, config, examplesConfig, this.groupLists);
       }
     }
   }
@@ -216,6 +224,7 @@ export class ConfigurationUnifiedViewModel {
         }
       }
     }
+
   }
 
   private static fieldsToConfig(fields: FieldSettings[], config: LexiconConfig, configFields: LexConfigFieldList,
@@ -401,13 +410,6 @@ export class ConfigurationUnifiedViewModel {
 
 }
 
-class SelectAllColumns {
-  inputSystems: InputSystemSettings = new InputSystemSettings();
-  entryFields: FieldSettings = new FieldSettings();
-  senseFields: FieldSettings = new FieldSettings();
-  exampleFields: FieldSettings = new FieldSettings();
-}
-
 export class Group {
   show: boolean = false;
 }
@@ -429,6 +431,16 @@ export class InputSystemSettings extends SettingsBase {
 export class FieldSettings extends SettingsBase {
   fieldName: string;
   hiddenIfEmpty: boolean;
+}
+
+export class InputSystemSettingsList {
+  settings: InputSystemSettings[];
+  selectAllColumns: InputSystemSettings;
+}
+
+export class FieldSettingsList {
+  settings: FieldSettings[];
+  selectAllColumns: FieldSettings;
 }
 
 export class RoleType {
