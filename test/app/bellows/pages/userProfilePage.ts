@@ -1,6 +1,7 @@
 import {browser, by, element, ExpectedConditions, protractor} from 'protractor';
-const util = require('./utils');
+import { Utils } from './utils';
 const CONDITION_TIMEOUT = 3000;
+const util = new Utils();
 /*
  * This object handles the user profile page and provides methods to access items in the activity
  * list
@@ -54,10 +55,10 @@ export class SfUserProfilePage {
     bothBtn:          element(by.id('BothButton')),
     saveBtn:          element(by.id('saveBtn')),
 
-    selectColor(newColor: string) {
+    selectColor(newColor: string|RegExp) {
       util.clickDropdownByValue(this.avatarColor, newColor);
     },
-    selectShape(newShape: string) {
+    selectShape(newShape: string|RegExp) {
       util.clickDropdownByValue(this.avatarShape, newShape);
     },
     updateEmail(newEmail: string) {
