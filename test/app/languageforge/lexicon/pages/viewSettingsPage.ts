@@ -57,14 +57,13 @@ export class ViewSettingsPage {
    * a regular expression that should not be touched. If false or unspecified, fieldName
    * will be considered an exact match (so "Etymology" should not match "Etymology Comment").
    */
-  getFieldByName(fieldName: string, treatAsRegex: boolean) {
-    const fieldRegex: string|RegExp = (treatAsRegex ? fieldName : new RegExp('^' + fieldName + '$'));
-    return element(By.css('div.tab-pane.active dl.picklists'))
-      .element(By.cssContainingText('div[data-ng-repeat]', fieldRegex));
+  getFieldByName(fieldName: string|RegExp) {
+    return element(by.css('div.tab-pane.active dl.picklists'))
+      .element(by.cssContainingText('div[data-ng-repeat]', fieldName));
   }
 
-  getFieldByNameIconClass(fieldName: string, treatAsRegex: boolean) {
-    return this.getFieldByName(fieldName, treatAsRegex).element(by.css('i')).getAttribute('class');
+  getFieldByNameIconClass(fieldName: string|RegExp) {
+    return this.getFieldByName(fieldName).element(by.css('i')).getAttribute('class');
   }
 
   showField = this.activePane.element(by.id('showFieldCheckbox'));

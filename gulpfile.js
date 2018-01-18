@@ -719,6 +719,12 @@ gulp.task('test-e2e-compile:watch', function(cb) {
   return execute('node_modules/typescript/bin/tsc -p test/app --watch', null, cb);
 });
 
+gulp.task('test-e2e-teardownForLocalDev', gulp.series(
+  'test-e2e-teardownTestEnvironment',
+  'test-e2e-useLiveConfig',
+  'test-restart-webserver')
+);
+
 // -------------------------------------
 //   Task: E2E Test: Do TestV2
 //   Forked from Task: E2E Test: Do Test by Ben Kastner 2018-01-11
