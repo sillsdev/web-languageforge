@@ -1,27 +1,28 @@
-'use strict';
+import { browser, element, by, ExpectedConditions } from 'protractor';
+import { BellowsLoginPage } from '../../pages/loginPage';
+import { ProjectsPage } from '../../pages/projectsPage';
+import { BellowsProjectSettingsPage } from '../../pages/projectSettingsPage';
+import { Utils } from '../../pages/utils';
 
-describe('Bellows E2E Project Settings App', function () {
-  var constants      = require('../../../testConstants.json');
-  var util           = require('../../pages/utils.js');
-  var loginPage      = require('../../pages/loginPage.js');
-  var projectsPage   = require('../../pages/projectsPage.js');
-  var siteAdminPage  = require('../../pages/siteAdminPage.js');
-  var settingsPage = require('../../pages/projectSettingsPage.js');
-  var expectedCondition = protractor.ExpectedConditions;
-  var CONDITION_TIMEOUT = 3000;
+const constants = require('../../../testConstants.json');
+const CONDITION_TIMEOUT = 3000;
+const loginPage    = new BellowsLoginPage();
+const projectsPage = new ProjectsPage();
+const settingsPage = new BellowsProjectSettingsPage();
+const util         = new Utils();
 
-  it('Normal user cannot access projectSettings to a project of which the user is a member',
-    function () {
+describe('Bellows E2E Project Settings App', () => {
+  it('Normal user cannot access projectSettings to a project of which the user is a member', () => {
     loginPage.loginAsMember();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
-    expect(settingsPage.settingsMenuLink.isDisplayed()).toBe(false);
+    expect<any>(settingsPage.settingsMenuLink.isDisplayed()).toBe(false);
   });
 
-  it('System Admin can manage project', function () {
+  it('System Admin can manage project', () => {
     loginPage.loginAsAdmin();
     settingsPage.get(constants.testProjectName);
-    expect(settingsPage.noticeList.count()).toBe(0);
+    expect<any>(settingsPage.noticeList.count()).toBe(0);
 
     // Archive tab currently disabled
     /*
@@ -29,20 +30,20 @@ describe('Bellows E2E Project Settings App', function () {
     expect(managementPage.archiveTab.archiveButton.isDisplayed()).toBe(true);
     expect(managementPage.archiveTab.archiveButton.isEnabled()).toBe(true);
     */
-    browser.wait(expectedCondition.elementToBeClickable(settingsPage.tabs.remove), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.elementToBeClickable(settingsPage.tabs.remove), CONDITION_TIMEOUT);
     browser.actions().mouseMove(settingsPage.tabs.remove).click().perform();
     //settingsPage.tabs.remove.click();
-    browser.wait(expectedCondition.visibilityOf(settingsPage.deleteTab.deleteButton),
+    browser.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton),
       CONDITION_TIMEOUT);
-    expect(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
-    expect(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
+    expect<any>(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
+    expect<any>(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
   });
 
-  it('confirm Manager is not owner of test project', function () {
+  it('confirm Manager is not owner of test project', () => {
     loginPage.loginAsManager();
     settingsPage.get(constants.testProjectName);
     settingsPage.tabs.project.click();
-    expect(settingsPage.projectTab.projectOwner.isDisplayed()).toBe(true);
+    expect<any>(settingsPage.projectTab.projectOwner.isDisplayed()).toBe(true);
     expect(settingsPage.projectTab.projectOwner.getText())
       .not.toContain(constants.managerUsername);
   });
@@ -54,39 +55,38 @@ describe('Bellows E2E Project Settings App', function () {
   });
   */
 
-  it('Manager cannot view delete tab if not owner', function () {
-    expect(settingsPage.tabs.remove.isPresent()).toBe(false);
+  it('Manager cannot view delete tab if not owner', () => {
+    expect<any>(settingsPage.tabs.remove.isPresent()).toBe(false);
   });
 
-  it('confirm Manager is owner of fourth project', function () {
+  it('confirm Manager is owner of fourth project', () => {
     loginPage.loginAsManager();
     settingsPage.get(constants.fourthProjectName);
     settingsPage.tabs.project.click();
-    expect(settingsPage.projectTab.projectOwner.isDisplayed()).toBe(true);
-    expect(settingsPage.projectTab.projectOwner.getText())
-      .toContain(constants.managerUsername);
+    expect<any>(settingsPage.projectTab.projectOwner.isDisplayed()).toBe(true);
+    expect(settingsPage.projectTab.projectOwner.getText()).toContain(constants.managerUsername);
   });
 
   // For Jamaican Psalms, only system admins can delete projects.
   // Project Manager is an ordinary user, so this test is ignored for Jamaican Psalms
-  it('Manager can delete if owner', function () {
+  it('Manager can delete if owner', () => {
     if (!browser.baseUrl.startsWith('http://jamaicanpsalms') &&
       !browser.baseUrl.startsWith('https://jamaicanpsalms')
     ) {
       loginPage.loginAsManager();
       settingsPage.get(constants.fourthProjectName);
-      expect(settingsPage.noticeList.count()).toBe(0);
+      expect<any>(settingsPage.noticeList.count()).toBe(0);
       settingsPage.tabs.remove.click();
-      browser.wait(expectedCondition.visibilityOf(settingsPage.deleteTab.deleteButton),
+      browser.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton),
         CONDITION_TIMEOUT);
-      expect(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
-      expect(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
+      expect<any>(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
+      expect<any>(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
       settingsPage.deleteTab.deleteBoxText.sendKeys('DELETE');
-      expect(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(true);
+      expect<any>(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(true);
       settingsPage.deleteTab.deleteButton.click();
       util.clickModalButton('Delete');
       projectsPage.get();
-      expect(projectsPage.projectsList.count()).toBe(3);
+      expect<any>(projectsPage.projectsList.count()).toBe(3);
     }
   });
 
