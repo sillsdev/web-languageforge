@@ -1,45 +1,43 @@
-'use strict';
+import { browser, by, element, protractor} from 'protractor';
 
-module.exports = new SfTextPage();
+const util = require('../../../bellows/pages/utils.js');
+const projectsPage = require('../../../bellows/pages/projectsPage.js');
+const projectPage  = require('../../sfchecks/pages/projectPage.js');
+const expectedCondition = protractor.ExpectedConditions;
+const CONDITION_TIMEOUT = 3000;
 
-function SfTextPage() {
+export class SfTextPage {
   // currently this page is called questions.html but will be refactored. IJH 2014-06
 
-  var util = require('../../../bellows/pages/utils.js');
-  var projectsPage = require('../../../bellows/pages/projectsPage.js');
-  var projectPage  = require('../../sfchecks/pages/projectPage.js');
-  var expectedCondition = protractor.ExpectedConditions;
-  var CONDITION_TIMEOUT = 3000;
+  notice = util.notice;
 
-  this.notice = util.notice;
-
-  this.get = function get(projectName, textTitle) {
+  get(projectName: any, textTitle: any) {
     projectsPage.get();
     projectsPage.clickOnProject(projectName);
     projectPage.textLink(textTitle).click();
   }
 
-  this.archiveButton = element(by.id('questions-archive-btn'));
-  this.makeTemplateBtn = element(by.id('questions-make-template-btn'));
-  this.addNewBtn = element(by.id('questions-add-new-btn'));
-  this.textSettingsBtn = element(by.id('questions-text-settings-btn'));
+  archiveButton = element(by.id('questions-archive-btn'));
+  makeTemplateBtn = element(by.id('questions-make-template-btn'));
+  addNewBtn = element(by.id('questions-add-new-btn'));
+  textSettingsBtn = element(by.id('questions-text-settings-btn'));
 
-  this.clickTextSettingsButton = function() {
-    element(by.id("questions-text-settings-btn")).click();
-    element(by.id("questions-text-settings-link")).click();
+  clickTextSettingsButton() {
+    element(by.id('questions-text-settings-btn')).click();
+    element(by.id('questions-text-settings-link')).click();
   }
 
-  this.questionLink = function questionLink(title) {
+  questionLink(title: any) {
     return element(by.linkText(title));
-  };
+  }
 
-  this.clickOnQuestion = function clickOnQuestion(questionTitle) {
+  clickOnQuestion(questionTitle: any) {
     element(by.linkText(questionTitle)).click();
-  };
+  }
 
-  this.questionNames = element.all(by.repeater('question in visibleQuestions')
+  questionNames = element.all(by.repeater('question in visibleQuestions')
     .column('{{question.calculatedTitle}}'));
-  this.questionRows  = element.all(by.repeater('question in visibleQuestions'));
+  questionRows  = element.all(by.repeater('question in visibleQuestions'));
 
   //noinspection JSUnusedGlobalSymbols
   //this.questionText = element(by.model('questionDescription'));
@@ -52,11 +50,11 @@ function SfTextPage() {
 
   // getFirstCheckbox has to be a function because the .first() method will actually resolve the
   // finder
-  this.getFirstCheckbox = function getFirstCheckbox() {
+  getFirstCheckbox() {
     return this.questionRows.first().element(by.css('input[type="checkbox"]'));
-  };
+  }
 
-  this.newQuestion = {
+  newQuestion = {
     showFormButton: element(by.id('questions-add-new-btn')),
     form: element(by.id('questions-new-question-form')),
     description: element(by.model('questionDescription')),
@@ -64,20 +62,22 @@ function SfTextPage() {
     saveButton: element(by.id('questions-save-question-btn'))
   };
 
-  this.addNewQuestion = function addNewQuestion(description, summary) {
+  addNewQuestion(description: any, summary: any) {
     this.newQuestion.showFormButton.click();
     browser.wait(expectedCondition.visibilityOf(this.newQuestion.description), CONDITION_TIMEOUT);
     this.newQuestion.description.sendKeys(description);
     this.newQuestion.summary.sendKeys(summary);
     this.newQuestion.saveButton.click();
-  };
+  }
 
   //noinspection JSUnusedGlobalSymbols
-  this.printQuestionNames = function printQuestionNames() {
-    this.questionNames.each(function (names) {
+  printQuestionNames() {
+    this.questionNames.each( (names: any) => {
       names.getText().then(console.log);
     });
-  };
+  }
 
-  this.textContent = element(by.id('textcontrol'));
+  textContent = element(by.id('textcontrol'));
 }
+
+module.exports = new SfTextPage();
