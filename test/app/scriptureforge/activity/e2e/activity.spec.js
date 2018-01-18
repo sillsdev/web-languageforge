@@ -93,7 +93,7 @@ describe('Activity E2E Test', function () {
       browser.navigate().back();
       browser.navigate().back();
       expect(projectPage.notice.list.count()).toBe(0);
-      projectPage.addNewText(constants.testText3Title, projectPage.testData);
+      projectPage.addNewText(constants.testText3Title, projectPage.testData.simpleUsx1);
       projectPage.notice.waitToInclude('The text \'' + constants.testText3Title +
         '\' was added successfully');
       projectPage.notice.firstCloseButton.click();

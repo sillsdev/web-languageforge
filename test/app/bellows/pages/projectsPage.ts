@@ -15,6 +15,8 @@ export class ProjectsPage {
   itemsPerPageCtrl = element(by.model('itemsPerPage'));
   projectsList = element.all(by.repeater('project in visibleProjects'));
   projectNames = element.all(by.repeater('project in visibleProjects').column('project.projectName'));
+  projectTypes = element.all(by.repeater('project in visibleProjects')
+      .column('$ctrl.projectTypeNames[project.appName]'));
 
   findProject(projectName: string) {
     let foundRow: any;

@@ -75,9 +75,9 @@ describe('Configuration Input Systems', function () {
       expect(configPage.modal.selectLanguage.languageRows.count()).toBe(0);
       configPage.modal.selectLanguage.searchLanguageInput
         .sendKeys(firstLanguage + protractor.Key.ENTER);
-      expect(configPage.modal.selectLanguage.firstLanguageRow.isPresent()).toBe(true);
+      expect(configPage.modal.selectLanguage.languageRows.first().isPresent()).toBe(true);
       expect(configPage.modal.selectLanguage.firstLanguageName.getText()).toEqual(firstLanguage);
-      expect(configPage.modal.selectLanguage.lastLanguageRow.isPresent()).toBe(true);
+      expect(configPage.modal.selectLanguage.languageRows.last().isPresent()).toBe(true);
       expect(configPage.modal.selectLanguage.lastLanguageName.getText()).toEqual(lastLanguage);
     });
 
@@ -94,10 +94,10 @@ describe('Configuration Input Systems', function () {
         .sendKeys(firstLanguage + protractor.Key.ENTER);
       expect(configPage.modal.selectLanguage.addButton.isPresent()).toBe(true);
       expect(configPage.modal.selectLanguage.addButton.isEnabled()).toBe(false);
-      configPage.modal.selectLanguage.lastLanguageRow.click();
+      configPage.modal.selectLanguage.languageRows.last().click();
       expect(configPage.modal.selectLanguage.addButton.isEnabled()).toBe(true);
       expect(configPage.modal.selectLanguage.addButton.getText()).toEqual('Add ' + lastLanguage);
-      configPage.modal.selectLanguage.firstLanguageRow.click();
+      configPage.modal.selectLanguage.languageRows.first().click();
       expect(configPage.modal.selectLanguage.addButton.isEnabled()).toBe(true);
       expect(configPage.modal.selectLanguage.addButton.getText()).toEqual('Add ' + firstLanguage);
     });

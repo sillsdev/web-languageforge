@@ -523,11 +523,11 @@ describe('E2E testing: New Lex Project wizard app', function () {
       it('can search, select and add language', function () {
         page.modal.selectLanguage.searchLanguageInput.sendKeys(
           constants.searchLanguage + protractor.Key.ENTER);
-        expect(page.modal.selectLanguage.firstLanguageRow.isPresent()).toBe(true);
+        expect(page.modal.selectLanguage.languageRows.first().isPresent()).toBe(true);
 
         expect(page.modal.selectLanguage.addButton.isPresent()).toBe(true);
         expect(page.modal.selectLanguage.addButton.isEnabled()).toBe(false);
-        page.modal.selectLanguage.firstLanguageRow.click();
+        page.modal.selectLanguage.languageRows.first().click();
         expect(page.modal.selectLanguage.addButton.isEnabled()).toBe(true);
         expect(page.modal.selectLanguage.addButton.getText()).toEqual(
           'Add ' + constants.foundLanguage);

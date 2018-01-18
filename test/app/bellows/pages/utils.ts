@@ -7,21 +7,22 @@ import { logging } from 'selenium-webdriver';
 /*
  * New locator to find elements that match a CSS selector, whose text (via elem.innerText in the
  *   browser) matches a regex
- * Call as by.elemMatches('a', /my regular expression/)
- * To get any element, call as by.elemMatches('*', /my regex/), but beware: parent elements
+ * Call as by.elemMatches('a', 'my regular expression')
+ * To get any element, call as by.elemMatches('*', 'my regex'), but beware: parent elements
  *   "contain" the text of their children.
  * So if your HTML is <div><span><a href="foo">xyzzy</a></span></div> and you call
- *   by.elemMatches('*', /xyzzy/), your locator will match three elements: the div, the span,
+ *   by.elemMatches('*', 'xyzzy'), your locator will match three elements: the div, the span,
  *   and the a.
  *
  * This function is added to Protractor's "by" namespace
- */
-By.addLocator('elemMatches', (selector: string, regex: RegExp) => {
+By.addLocator('elemMatches', (cssSelector: string, regexString: string) => {
   const allElems = document.querySelectorAll(selector);
   return Array.prototype.filter.call(allElems, (elem: Element) => {
+    const regex = new RegExp(regexString);
     return regex.test(elem.textContent);
   });
 });
+ */
 
 export class Utils {
   private readonly CONDITION_TIMEOUT = 3000;
@@ -36,12 +37,12 @@ export class Utils {
     });
   }
 
-  findDropdownByValue(dropdownElement: ElementFinder, value: string) {
+  findDropdownByValue(dropdownElement: ElementFinder, value: string|RegExp) {
     // Simpler (MUCH simpler) approach based on our custom elemMatches locator (defined below)
-    return dropdownElement.element(By.elemMatches('option', value));
+    return dropdownElement.element(By.cssContainingText('option', value));
   }
 
-  clickDropdownByValue(dropdownElement: ElementFinder, value: string) {
+  clickDropdownByValue(dropdownElement: ElementFinder, value: string|RegExp) {
     // Select an element of the dropdown based on its value (its text)
     this.findDropdownByValue(dropdownElement, value).click();
   }
