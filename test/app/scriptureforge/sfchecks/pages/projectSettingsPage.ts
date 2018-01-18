@@ -1,18 +1,18 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 import { ProjectsPage } from '../../../bellows/pages/projectsPage.js';
+const projectsPage = new ProjectsPage();
+const CONDITION_TIMEOUT = 3000;
 
 export class SfProjectSettingsPage {
-  private projectsPage = new ProjectsPage();
-  private readonly CONDITION_TIMEOUT = 3000;
 
   settingsMenuLink = element(by.id('settingsDropdownButton'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
   get(projectName: string) {
-    this.projectsPage.get();
-    this.projectsPage.clickOnProject(projectName);
-    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.CONDITION_TIMEOUT);
+    projectsPage.get();
+    projectsPage.clickOnProject(projectName);
+    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
     this.settingsMenuLink.click();
     this.projectSettingsLink.click();
   }
