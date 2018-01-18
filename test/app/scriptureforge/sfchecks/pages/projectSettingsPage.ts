@@ -1,45 +1,6 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 
-
-class MembersTab {
-  sfProjectSettingsPage: any;
-  constructor(sfProjectSettingsPage: any) {
-    this.sfProjectSettingsPage = sfProjectSettingsPage;
-  }
-
-  addButton = element(by.id('addMembersButton'));
-  removeButton = element(by.id('removeMembersBtn'));
-  messageButton = element(by.id('messageUsersButton'));
-  listFilter = element(by.model('userFilter'));
-  list = element.all(by.repeater('user in list.visibleUsers'));
-  newMember = {
-    input: element(by.model('term')),
-    button: element(by.model('addMode')),
-    warning: element(by.binding('warningText')),
-    results: element(by.id('typeaheadDiv')).element(by.css('ul li'))
-  };
-
-  addNewMember(name: string) {
-    this.sfProjectSettingsPage.tabs.members.click();
-    this.addButton.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.newMember.input),
-      this.sfProjectSettingsPage.CONDITION_TIMEOUT);
-    this.newMember.input.sendKeys(name);
-    browser.wait(ExpectedConditions.textToBePresentInElementValue(this.newMember.input,
-      name), this.sfProjectSettingsPage.CONDITION_TIMEOUT);
-    this.newMember.button.click();
-  }
-
-  waitForNewUserToLoad(memberCount: number) {
-    browser.wait(() => {
-      return this.list.count().then((count: number) => {
-        return count >= memberCount + 1;
-      });
-    });
-  }
-}
-
-class SfProjectSettingsPage {
+export class SfProjectSettingsPage {
   private readonly projectsPage = require('../../../bellows/pages/projectsPage.js');
   private readonly CONDITION_TIMEOUT = 3000;
 
@@ -142,4 +103,41 @@ class SfProjectSettingsPage {
   };
 }
 
-module.exports = new SfProjectSettingsPage();
+
+class MembersTab {
+  sfProjectSettingsPage: any;
+  constructor(sfProjectSettingsPage: any) {
+    this.sfProjectSettingsPage = sfProjectSettingsPage;
+  }
+
+  addButton = element(by.id('addMembersButton'));
+  removeButton = element(by.id('removeMembersBtn'));
+  messageButton = element(by.id('messageUsersButton'));
+  listFilter = element(by.model('userFilter'));
+  list = element.all(by.repeater('user in list.visibleUsers'));
+  newMember = {
+    input: element(by.model('term')),
+    button: element(by.model('addMode')),
+    warning: element(by.binding('warningText')),
+    results: element(by.id('typeaheadDiv')).element(by.css('ul li'))
+  };
+
+  addNewMember(name: string) {
+    this.sfProjectSettingsPage.tabs.members.click();
+    this.addButton.click();
+    browser.wait(ExpectedConditions.visibilityOf(this.newMember.input),
+      this.sfProjectSettingsPage.CONDITION_TIMEOUT);
+    this.newMember.input.sendKeys(name);
+    browser.wait(ExpectedConditions.textToBePresentInElementValue(this.newMember.input,
+      name), this.sfProjectSettingsPage.CONDITION_TIMEOUT);
+    this.newMember.button.click();
+  }
+
+  waitForNewUserToLoad(memberCount: number) {
+    browser.wait(() => {
+      return this.list.count().then((count: number) => {
+        return count >= memberCount + 1;
+      });
+    });
+  }
+}

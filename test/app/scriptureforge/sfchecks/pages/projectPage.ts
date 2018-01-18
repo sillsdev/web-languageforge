@@ -62,5 +62,3 @@ export class SfProjectPage {
   }
 
 }
-
-module.exports = new SfProjectPage();

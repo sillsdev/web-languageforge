@@ -53,5 +53,3 @@ export class SfTextSettingsPage {
   };
 
 }
-
-module.exports = new SfTextSettingsPage();
