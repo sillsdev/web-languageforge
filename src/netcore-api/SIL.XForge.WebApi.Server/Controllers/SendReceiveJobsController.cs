@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver.Linq;
 using SIL.XForge.WebApi.Server.DataAccess;
@@ -10,15 +11,15 @@ using System.Threading.Tasks;
 
 namespace SIL.XForge.WebApi.Server.Controllers
 {
-    [Route("sr_jobs", Name = RouteNames.SendReceiveJobs)]
+    [Route("sr_jobs")]
     public class SendReceiveJobsController : ProjectResourceController<Project>
     {
         private readonly IRepository<SendReceiveJob> _jobRepo;
         private readonly SendReceiveService _sendReceiveService;
 
-        public SendReceiveJobsController(IRepository<Project> projectRepo, IRepository<SendReceiveJob> jobRepo,
-            SendReceiveService sendReceiveService)
-            : base(projectRepo)
+        public SendReceiveJobsController(IMapper mapper, IRepository<Project> projectRepo,
+            IRepository<SendReceiveJob> jobRepo, SendReceiveService sendReceiveService)
+            : base(mapper, projectRepo)
         {
             _jobRepo = jobRepo;
             _sendReceiveService = sendReceiveService;
@@ -29,10 +30,10 @@ namespace SIL.XForge.WebApi.Server.Controllers
         public async Task<IEnumerable<SendReceiveJobDto>> GetAllAsync()
         {
             IReadOnlyList<SendReceiveJob> jobs = await _jobRepo.GetAllAsync();
-            return jobs.Select(CreateDto);
+            return jobs.Select(j => Map<SendReceiveJobDto>(j));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = RouteNames.SendReceiveJob)]
         public async Task<IActionResult> GetAsync(string id)
         {
             if ((await _jobRepo.TryGetAsync(id)).TryResult(out SendReceiveJob job))
@@ -40,7 +41,7 @@ namespace SIL.XForge.WebApi.Server.Controllers
                 switch (await AuthorizeAsync(job.ProjectRef, new Right(Domain.Projects, Operation.View)))
                 {
                     case AuthorizeResult.Success:
-                        return Ok(CreateDto(job));
+                        return Ok(Map<SendReceiveJobDto>(job));
 
                     case AuthorizeResult.Forbidden:
                         return Forbid();
@@ -53,9 +54,9 @@ namespace SIL.XForge.WebApi.Server.Controllers
         [ProjectAuthorize(Domain.Projects, Operation.Edit)]
         public async Task<IActionResult> CreateAsync([FromBody] string projectId)
         {
-            bool created = (await _sendReceiveService.TryCreateJobAsync(this.GetUserId(), projectId))
+            bool created = (await _sendReceiveService.TryCreateJobAsync(UserId, projectId))
                 .TryResult(out SendReceiveJob job);
-            SendReceiveJobDto dto = CreateDto(job);
+            SendReceiveJobDto dto = Map<SendReceiveJobDto>(job);
             if (created)
                 return Created(dto.Href, dto);
             return Ok(dto);
@@ -78,18 +79,6 @@ namespace SIL.XForge.WebApi.Server.Controllers
                 }
             }
             return NotFound();
-        }
-
-        private SendReceiveJobDto CreateDto(SendReceiveJob job)
-        {
-            return new SendReceiveJobDto()
-            {
-                Id = job.Id.ToString(),
-                Href = Url.RouteUrl(RouteNames.SendReceiveJobs) + "/" + job.Id,
-                Project = new ResourceDto { Id = job.ProjectRef },
-                PercentCompleted = job.PercentCompleted,
-                State = job.State
-            };
         }
     }
 }

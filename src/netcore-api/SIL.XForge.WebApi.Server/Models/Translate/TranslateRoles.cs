@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SIL.XForge.WebApi.Server.Models
+namespace SIL.XForge.WebApi.Server.Models.Translate
 {
     public class TranslateRoles : ProjectRoles
     {
