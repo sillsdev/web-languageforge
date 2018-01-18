@@ -1,6 +1,6 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 
-class ConfigurationPage {
+export class ConfigurationPage {
   private readonly modal = require('./lexModals.js');
   private readonly util = require('../../../bellows/pages/utils.js');
 
@@ -120,5 +120,3 @@ class ConfigurationPage {
     return this.activePane.element(by.id('captionHideIfEmpty'));
   }
 }
-
-module.exports = new ConfigurationPage();

@@ -1,6 +1,6 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 
-class EditorPage {
+export class EditorPage {
   private readonly mockUpload = require('../../../bellows/pages/mockUploadElement.js');
   private readonly util = require('../../../bellows/pages/utils.js');
   private readonly editorUtil = require('./editorUtil.js');
@@ -369,7 +369,7 @@ class EditorPage {
 
     const comment = (commentNum === -1 ? commentsList.last() : commentsList.get(commentNum));
     return this.partsOfComment(comment);
-  };
+  }
 
   // Like getComment, gets a specific reply from the list and returns its parts
   // (via partsOfReply() below)
@@ -382,7 +382,7 @@ class EditorPage {
 
     const reply = (replyNum === -1 ? repliesList.last() : repliesList.get(replyNum));
     return this.partsOfReply(reply);
-  };
+  }
 
   // Returns a Javascript object that can be used to access the parts (avatar,
   // reply button, etc.) of a comment
@@ -434,7 +434,7 @@ class EditorPage {
       editBtn: div.element(by.buttonText('Edit')),
       replyBtn: div.element(by.buttonText('Reply'))
     };
-  };
+  }
 
   // Like partsOfComment, returns a Javascript object giving access to the parts
   // of a reply
@@ -452,9 +452,5 @@ class EditorPage {
         cancel: div.element(by.css('form a i.fa-times'))
       }
     };
-  };
-
+  }
 }
-
-
-module.exports = new EditorPage();
