@@ -19,14 +19,14 @@ namespace SIL.XForge.WebApi.Server.Services
 {
     public class ParatextService : IDisposable
     {
-        private readonly ParatextOptions _options;
+        private readonly IOptions<ParatextOptions> _options;
         private readonly IRepository<User> _userRepo;
         private readonly HttpClient _dataAccessClient;
         private readonly HttpClient _registryClient;
 
         public ParatextService(IOptions<ParatextOptions> options, IRepository<User> userRepo)
         {
-            _options = options.Value;
+            _options = options;
             _userRepo = userRepo;
 
             _dataAccessClient = new HttpClient
@@ -117,10 +117,11 @@ namespace SIL.XForge.WebApi.Server.Services
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "api8/token");
 
+            ParatextOptions options = _options.Value;
             var requestObj = new JObject(
                 new JProperty("grant_type", "refresh_token"),
-                new JProperty("client_id", _options.ClientId),
-                new JProperty("client_secret", _options.ClientSecret),
+                new JProperty("client_id", options.ClientId),
+                new JProperty("client_secret", options.ClientSecret),
                 new JProperty("refresh_token", user.ParatextAccessToken.RefreshToken));
             request.Content = new StringContent(requestObj.ToString(), Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _registryClient.SendAsync(request);
