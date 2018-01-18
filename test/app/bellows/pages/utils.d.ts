@@ -1,7 +1,7 @@
 import {Locator} from 'protractor';
 declare namespace protractor {
   interface By {
-    elemMatches(selector: string, regex: RegExp): Locator;
+    elemMatches(selector: string, regexString: string): Locator;
   }
 }
 
