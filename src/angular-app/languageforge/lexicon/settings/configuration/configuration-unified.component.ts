@@ -278,6 +278,8 @@ export class UnifiedConfigurationController implements angular.IController {
     for (const field of this.unifiedViewModel.exampleFields) {
       field.groups.splice(index, 1);
     }
+
+    delete this.uccConfigDirty.userViews[userId];
   }
 
   removeFromUsersWithoutSettings(userId: string): void {
