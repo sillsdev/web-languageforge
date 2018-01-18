@@ -1,43 +1,47 @@
-'use strict';
+import {} from 'jasmine';
+import {browser, by, ExpectedConditions} from 'protractor';
+import { BellowsLoginPage } from '../../../bellows/pages/loginPage.js';
+import { Utils } from '../../../bellows/pages/utils.js';
+import { SfProjectSettingsPage } from '../pages/projectSettingsPage.js';
 
-describe('SFChecks project settings page - project manager', function () {
-  var constants       = require('../../../testConstants.json');
-  var loginPage       = require('../../../bellows/pages/loginPage.js');
-  var util            = require('../../../bellows/pages/utils.js');
-  var projectSettingsPage = require('../pages/projectSettingsPage.js');
-  var expectedCondition = protractor.ExpectedConditions;
-  var CONDITION_TIMEOUT = 3000;
+describe('SFChecks project settings page - project manager', () => {
+  const constants = require('../../../testConstants.json');
+  const loginPage = new BellowsLoginPage();
+  const util = new Utils();
+  const projectSettingsPage = new SfProjectSettingsPage();
+  const CONDITION_TIMEOUT = 3000;
 
-  it('setup: logout, login as project manager, go to project settings', function () {
+  it('setup: logout, login as project manager, go to project settings', () => {
     loginPage.logout();
     loginPage.loginAsManager();
     projectSettingsPage.get(constants.testProjectName);
   });
 
-  describe('members tab', function () {
-    var memberCount = 0;
+  describe('members tab', () => {
+    // memberCount needs to be a let because it is later reassigned. - Ben Kastner 2018-01-18
+    let memberCount = 0;
 
-    it('setup: click on tab', function () {
-      expect(projectSettingsPage.tabs.members.isPresent()).toBe(true);
+    it('setup: click on tab', () => {
+      expect<any>(projectSettingsPage.tabs.members.isPresent()).toBe(true);
       projectSettingsPage.tabs.members.click();
     });
 
-    it('can list project members', function () {
+    it('can list project members', () => {
       expect(projectSettingsPage.membersTab.list.count()).toBeGreaterThan(0);
-      projectSettingsPage.membersTab.list.count().then(function (val) { memberCount = val; });
+      projectSettingsPage.membersTab.list.count().then( val => { memberCount = val; });
     });
 
-    it('can filter the list of members', function () {
-      expect(projectSettingsPage.membersTab.list.count()).toBe(memberCount);
+    it('can filter the list of members', () => {
+      expect<any>(projectSettingsPage.membersTab.list.count()).toBe(memberCount);
       projectSettingsPage.membersTab.listFilter.sendKeys(constants.managerUsername);
-      expect(projectSettingsPage.membersTab.list.count()).toBe(1);
+      expect<any>(projectSettingsPage.membersTab.list.count()).toBe(1);
       projectSettingsPage.membersTab.listFilter.clear();
     });
 
-    it('can add a new user as a member', function () {
-      expect(projectSettingsPage.membersTab.list.count()).toBe(memberCount);
+    it('can add a new user as a member', () => {
+      expect<any>(projectSettingsPage.membersTab.list.count()).toBe(memberCount);
       projectSettingsPage.membersTab.addButton.click();
-      browser.wait(expectedCondition.visibilityOf(projectSettingsPage.membersTab.newMember.input),
+      browser.wait(ExpectedConditions.visibilityOf(projectSettingsPage.membersTab.newMember.input),
         CONDITION_TIMEOUT);
       projectSettingsPage.membersTab.newMember.input.sendKeys('du');
 
@@ -45,10 +49,10 @@ describe('SFChecks project settings page - project manager', function () {
       projectSettingsPage.membersTab.newMember.input.sendKeys('de');
       projectSettingsPage.membersTab.newMember.button.click();
       projectSettingsPage.membersTab.waitForNewUserToLoad(memberCount);
-      expect(projectSettingsPage.membersTab.list.count()).toBe(memberCount + 1);
+      expect<any>(projectSettingsPage.membersTab.list.count()).toBe(memberCount + 1);
     });
 
-    it('can not add the same user twice', function () {
+    it('can not add the same user twice', () => {
       projectSettingsPage.membersTab.newMember.input.clear();
       projectSettingsPage.membersTab.newMember.input.sendKeys('dude');
       expect(projectSettingsPage.membersTab.newMember.button.isEnabled()).toBeFalsy();
@@ -56,27 +60,28 @@ describe('SFChecks project settings page - project manager', function () {
       projectSettingsPage.membersTab.newMember.input.clear();
     });
 
-    it('can change the role of a member', function () {
+    it('can change the role of a member', () => {
       projectSettingsPage.membersTab.listFilter.sendKeys('dude');
-      browser.wait(expectedCondition.visibilityOf(projectSettingsPage.membersTab.list.first().element(by.model('user.role'))));
+      browser.wait(ExpectedConditions.visibilityOf(projectSettingsPage.membersTab.list.first()
+        .element(by.model('user.role'))));
       util.clickDropdownByValue(projectSettingsPage.membersTab.list.first().element(by.model('user.role')), 'Manager');
-      expect(projectSettingsPage.membersTab.list.first().element(by.model('user.role'))
+      expect<any>(projectSettingsPage.membersTab.list.first().element(by.model('user.role'))
         .element(by.css('option:checked')).getText()).toEqual('Manager');
       projectSettingsPage.membersTab.listFilter.clear();
     });
 
-    it('can remove a member', function () {
+    it('can remove a member', () => {
       projectSettingsPage.membersTab.listFilter.sendKeys('dude');
       projectSettingsPage.membersTab.list.first().element(by.css('input[type="checkbox"]')).click();
       projectSettingsPage.membersTab.removeButton.click();
       projectSettingsPage.membersTab.listFilter.clear();
       projectSettingsPage.membersTab.listFilter.sendKeys('dude');
-      expect(projectSettingsPage.membersTab.list.count()).toBe(0);
+      expect<any>(projectSettingsPage.membersTab.list.count()).toBe(0);
       projectSettingsPage.membersTab.listFilter.clear();
-      expect(projectSettingsPage.membersTab.list.count()).toBe(memberCount);
+      expect<any>(projectSettingsPage.membersTab.list.count()).toBe(memberCount);
     });
 
-    //it('can message selected user', function() {});  // how can we test this? - cjh
+    // it('can message selected user', function() {});  // how can we test this? - cjh
 
   });
 
