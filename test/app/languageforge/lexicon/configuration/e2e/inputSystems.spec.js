@@ -67,7 +67,7 @@ describe('Configuration Input Systems', function () {
 
     it('can open the new language modal', function () {
       expect(configPage.inputSystemsTab.newButton.isEnabled()).toBe(true);
-      configPage.inputSystemsTab.newButtonClick();
+      configPage.inputSystemsTab.newButton.click();
       expect(configPage.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(true);
     });
 
@@ -224,7 +224,7 @@ describe('Configuration Input Systems', function () {
 
   it('can change Script', function () {
     util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.scriptDropdown,
-      'Latin$');
+      new RegExp('Latin$'));
     expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Latn');
   });
 

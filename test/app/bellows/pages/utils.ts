@@ -132,8 +132,8 @@ export class Utils {
     button.click();
   }
 
-  clickBreadcrumb(breadcrumbText: string) {
-    element(by.elemMatches('.breadcrumb > li', breadcrumbText)).click();
+  clickBreadcrumb(breadcrumbTextOrRegex: string|RegExp) {
+    element(by.cssContainingText('.breadcrumb > li', breadcrumbTextOrRegex)).click();
   }
 
   parent(child: ElementFinder) {

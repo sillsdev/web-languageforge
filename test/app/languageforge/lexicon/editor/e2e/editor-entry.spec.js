@@ -483,7 +483,7 @@ describe('Editor List and Entry', function () {
     editorPage.edit.getMultiTextInputs('Word').first().sendKeys(word);
     editorPage.edit.getMultiTextInputs('Definition').first().sendKeys(definition);
     util.clickDropdownByValue(editorPage.edit.getOneField('Part of Speech').$('select'),
-      'Noun \\(n\\)');
+      new RegExp('Noun \\(n\\)'));
     util.scrollTop();
     editorPage.edit.saveBtn.click();
   });
