@@ -1,20 +1,21 @@
-import { browser, by, element, protractor} from 'protractor';
+import { browser, by, element, ExpectedConditions} from 'protractor';
+import { Utils } from '../../../bellows/pages/utils.js'
+import { ProjectsPage } from '../../../bellows/pages/projectsPage.js';
+import { SfProjectPage } from '../../sfchecks/pages/projectPage.js';
 
-const util = require('../../../bellows/pages/utils.js');
-const projectsPage = require('../../../bellows/pages/projectsPage.js');
-const projectPage  = require('../../sfchecks/pages/projectPage.js');
-const expectedCondition = protractor.ExpectedConditions;
 const CONDITION_TIMEOUT = 3000;
 
 export class SfTextPage {
-  // currently this page is called questions.html but will be refactored. IJH 2014-06
+  private utils = new Utils();
+  private projectsPage = new ProjectsPage();
+  private projectPage = new SfProjectPage();
 
-  notice = util.notice;
+  notice = this.utils.notice;
 
   get(projectName: any, textTitle: any) {
-    projectsPage.get();
-    projectsPage.clickOnProject(projectName);
-    projectPage.textLink(textTitle).click();
+    this.projectsPage.get();
+    this.projectsPage.clickOnProject(projectName);
+    this.projectPage.textLink(textTitle).click();
   }
 
   archiveButton = element(by.id('questions-archive-btn'));
@@ -64,7 +65,7 @@ export class SfTextPage {
 
   addNewQuestion(description: any, summary: any) {
     this.newQuestion.showFormButton.click();
-    browser.wait(expectedCondition.visibilityOf(this.newQuestion.description), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(this.newQuestion.description), CONDITION_TIMEOUT);
     this.newQuestion.description.sendKeys(description);
     this.newQuestion.summary.sendKeys(summary);
     this.newQuestion.saveButton.click();
