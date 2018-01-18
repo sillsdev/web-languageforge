@@ -210,24 +210,24 @@ export class UnifiedConfigurationController implements angular.IController {
     this.typeahead.userName = '';
     this.removeFromUsersWithoutSettings(user.id);
     this.unifiedViewModel.groupLists.push(new GroupList(user.username, user.id));
-    this.unifiedViewModel.selectAllColumns.inputSystems.groups.push(new Group());
-    this.unifiedViewModel.selectAllColumns.entryFields.groups.push(new Group());
-    this.unifiedViewModel.selectAllColumns.senseFields.groups.push(new Group());
-    this.unifiedViewModel.selectAllColumns.exampleFields.groups.push(new Group());
+    this.unifiedViewModel.inputSystems.selectAllColumns.groups.push(new Group());
+    this.unifiedViewModel.entryFields.selectAllColumns.groups.push(new Group());
+    this.unifiedViewModel.senseFields.selectAllColumns.groups.push(new Group());
+    this.unifiedViewModel.exampleFields.selectAllColumns.groups.push(new Group());
 
-    for (const field of this.unifiedViewModel.inputSystems) {
+    for (const field of this.unifiedViewModel.inputSystems.settings) {
       field.groups.push(new Group());
     }
 
-    for (const field of this.unifiedViewModel.entryFields) {
+    for (const field of this.unifiedViewModel.entryFields.settings) {
       field.groups.push(new Group());
     }
 
-    for (const field of this.unifiedViewModel.senseFields) {
+    for (const field of this.unifiedViewModel.senseFields.settings) {
       field.groups.push(new Group());
     }
 
-    for (const field of this.unifiedViewModel.exampleFields) {
+    for (const field of this.unifiedViewModel.exampleFields.settings) {
       field.groups.push(new Group());
     }
 
@@ -241,24 +241,24 @@ export class UnifiedConfigurationController implements angular.IController {
     const userId = this.unifiedViewModel.groupLists[index].userId;
     this.typeahead.usersWithoutSettings.push(this.uccUsers[userId]);
     this.unifiedViewModel.groupLists.splice(index, 1);
-    this.unifiedViewModel.selectAllColumns.inputSystems.groups.splice(index, 1);
-    this.unifiedViewModel.selectAllColumns.entryFields.groups.splice(index, 1);
-    this.unifiedViewModel.selectAllColumns.senseFields.groups.splice(index, 1);
-    this.unifiedViewModel.selectAllColumns.exampleFields.groups.splice(index, 1);
+    this.unifiedViewModel.inputSystems.selectAllColumns.groups.splice(index, 1);
+    this.unifiedViewModel.entryFields.selectAllColumns.groups.splice(index, 1);
+    this.unifiedViewModel.senseFields.selectAllColumns.groups.splice(index, 1);
+    this.unifiedViewModel.exampleFields.selectAllColumns.groups.splice(index, 1);
 
-    for (const field of this.unifiedViewModel.inputSystems) {
+    for (const field of this.unifiedViewModel.inputSystems.settings) {
       field.groups.splice(index, 1);
     }
 
-    for (const field of this.unifiedViewModel.entryFields) {
+    for (const field of this.unifiedViewModel.entryFields.settings) {
       field.groups.splice(index, 1);
     }
 
-    for (const field of this.unifiedViewModel.senseFields) {
+    for (const field of this.unifiedViewModel.senseFields.settings) {
       field.groups.splice(index, 1);
     }
 
-    for (const field of this.unifiedViewModel.exampleFields) {
+    for (const field of this.unifiedViewModel.exampleFields.settings) {
       field.groups.splice(index, 1);
     }
 
