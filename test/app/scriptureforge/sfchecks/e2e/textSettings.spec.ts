@@ -1,17 +1,16 @@
-'use strict';
+import {browser, ExpectedConditions} from 'protractor';
 
-describe('the questions settings page - project manager', function () {
-  var constants       = require('../../../testConstants.json');
-  var loginPage       = require('../../../bellows/pages/loginPage.js');
-  var util            = require('../../../bellows/pages/utils.js');
-  var projectListPage = require('../../../bellows/pages/projectsPage.js');
-  var projectPage = require('../pages/projectPage.js');
-  var textPage    = require('../pages/textPage.js');
-  var page        = require('../pages/textSettingsPage.js');
-  var expectedCondition = protractor.ExpectedConditions;
-  var CONDITION_TIMEOUT = 3000;
+describe('the questions settings page - project manager', () => {
+  const constants       = require('../../../testConstants.json');
+  const loginPage       = require('../../../bellows/pages/loginPage.js');
+  const util            = require('../../../bellows/pages/utils.js');
+  const projectListPage = require('../../../bellows/pages/projectsPage.js');
+  const projectPage = require('../pages/projectPage.js');
+  const textPage    = require('../pages/textPage.js');
+  const page        = require('../pages/textSettingsPage.js');
+  const CONDITION_TIMEOUT = 3000;
 
-  it('setup: logout, login as project manager, go to text settings', function () {
+  it('setup: logout, login as project manager, go to text settings', () => {
     loginPage.logout();
     loginPage.loginAsManager();
     projectListPage.get();
@@ -20,14 +19,14 @@ describe('the questions settings page - project manager', function () {
     textPage.clickTextSettingsButton();
   });
 
-  describe('edit text tab', function () {
+  describe('edit text tab', () => {
 
-    it('setup: click on tab', function () {
+    it('setup: click on tab', () => {
       expect(page.tabs.editText.isPresent()).toBe(true);
       page.tabs.editText.click();
     });
 
-    it('can edit text content', function () {
+    it('can edit text content', () => {
       // TODO: Use actual USX from projectPage.testData (maybe move it to testConstants) for this
       // test, then verify it shows up properly on the question page
       page.editTextTab.contentEditor.sendKeys('Hello, world!');
@@ -51,32 +50,32 @@ describe('the questions settings page - project manager', function () {
   // The Archived Questions tab is tested as part of a process in the Text (Questions) page tests.
   // IJH 2014-06
 
-  describe('audio file tab - NYI', function () {
+  describe('audio file tab - NYI', () => {
   });
 
-  describe('paratext export tab', function () {
+  describe('paratext export tab', () => {
 
-    it('setup: click on tab', function () {
+    it('setup: click on tab', () => {
       expect(page.tabs.paratextExport.isPresent()).toBe(true);
       page.tabs.paratextExport.click();
     });
 
-    it('get a message since there are not messages flagged for export', function () {
+    it('get a message since there are not messages flagged for export', () => {
       expect(page.paratextExportTab.exportAnswers.getAttribute('checked')).toBeTruthy();
       expect(page.paratextExportTab.exportComments.getAttribute('checked')).toBeFalsy();
       expect(page.paratextExportTab.exportFlagged.getAttribute('checked')).toBeTruthy();
       expect(page.paratextExportTab.downloadButton.isDisplayed()).toBe(false);
       expect(page.paratextExportTab.prepareButton.isPresent()).toBe(true);
       page.paratextExportTab.prepareButton.click();
-      browser.wait(expectedCondition.visibilityOf(page.paratextExportTab.noExportMsg),
+      browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.noExportMsg),
         CONDITION_TIMEOUT);
       expect(page.paratextExportTab.noExportMsg.isDisplayed()).toBe(true);
     });
 
-    it('can prepare export for all answers without comments', function () {
+    it('can prepare export for all answers without comments', () => {
       page.paratextExportTab.exportFlagged.click();
       page.paratextExportTab.prepareButton.click();
-      browser.wait(expectedCondition.visibilityOf(page.paratextExportTab.answerCount),
+      browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.answerCount),
         CONDITION_TIMEOUT);
       expect(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
       expect(page.paratextExportTab.answerCount.getText()).toEqual('2');
@@ -84,10 +83,10 @@ describe('the questions settings page - project manager', function () {
       expect(page.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
     });
 
-    it('can prepare export for all answers with comments', function () {
+    it('can prepare export for all answers with comments', () => {
       page.paratextExportTab.exportComments.click();
       page.paratextExportTab.prepareButton.click();
-      browser.wait(expectedCondition.visibilityOf(page.paratextExportTab.answerCount),
+      browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.answerCount),
         CONDITION_TIMEOUT);
       expect(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
       expect(page.paratextExportTab.answerCount.getText()).toEqual('2');
