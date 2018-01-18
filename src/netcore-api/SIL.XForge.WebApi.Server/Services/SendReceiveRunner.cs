@@ -26,14 +26,14 @@ namespace SIL.XForge.WebApi.Server.Services
         private readonly IRepository<SendReceiveJob> _jobRepo;
         private readonly IRepository<TranslateProject> _projectRepo;
         private readonly ParatextService _paratextService;
-        private readonly SendReceiveOptions _options;
+        private readonly IOptions<SendReceiveOptions> _options;
         private readonly IProjectRepositoryFactory<TranslateDocumentSet> _docSetRepoFactory;
 
         public SendReceiveRunner(IOptions<SendReceiveOptions> options, IRepository<User> userRepo,
             IRepository<SendReceiveJob> jobRepo, IRepository<TranslateProject> projectRepo,
             ParatextService paratextService, IProjectRepositoryFactory<TranslateDocumentSet> docSetRepoFactory)
         {
-            _options = options.Value;
+            _options = options;
             _userRepo = userRepo;
             _jobRepo = jobRepo;
             _projectRepo = projectRepo;
@@ -50,15 +50,16 @@ namespace SIL.XForge.WebApi.Server.Services
             if (job == null)
                 return;
 
+            SendReceiveOptions options = _options.Value;
             if ((await _userRepo.TryGetAsync(userId)).TryResult(out User user))
             {
                 if ((await _projectRepo.TryGetAsync(job.ProjectRef)).TryResult(out TranslateProject project))
                 {
-                    if (!Directory.Exists(_options.TranslateDir))
-                        Directory.CreateDirectory(_options.TranslateDir);
+                    if (!Directory.Exists(options.TranslateDir))
+                        Directory.CreateDirectory(options.TranslateDir);
 
                     IRepository<TranslateDocumentSet> docSetRepo = _docSetRepoFactory.Create(project);
-                    using (var conn = new Connection(new Uri(_options.ShareDBUrl)))
+                    using (var conn = new Connection(new Uri(options.ShareDBUrl)))
                     {
                         await conn.ConnectAsync();
 
@@ -177,7 +178,7 @@ namespace SIL.XForge.WebApi.Server.Services
 
         private string GetProjectPath(TranslateProject project, ParatextProject paratextProject)
         {
-            return Path.Combine(_options.TranslateDir, project.ProjectCode, paratextProject.Id);
+            return Path.Combine(_options.Value.TranslateDir, project.ProjectCode, paratextProject.Id);
         }
 
         private string GetBookTextFileName(string projectPath, string bookId)

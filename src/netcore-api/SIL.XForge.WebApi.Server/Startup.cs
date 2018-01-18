@@ -68,12 +68,14 @@ namespace SIL.XForge.WebApi.Server
                     = new CamelCasePropertyNamesContractResolver());
             services.AddRouting(options => options.LowercaseUrls = true);
 
+            services.Configure<AppOptions>(Configuration.GetSection("App"));
             services.Configure<ParatextOptions>(Configuration.GetSection("Paratext"));
             services.Configure<SendReceiveOptions>(Configuration.GetSection("SendReceive"));
 
             services.AddMongoDataAccess(Configuration);
             services.AddSingleton<SendReceiveService>();
             services.AddSingleton<ParatextService>();
+            services.AddSingleton<AssetService>();
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IUrlHelper>(sp =>
