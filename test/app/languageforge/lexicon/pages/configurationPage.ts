@@ -1,4 +1,4 @@
-import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
+import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
 import { LexModals } from './lexModals';
 import { Utils } from '../../../bellows/pages/utils';
 const modal = new LexModals();
@@ -48,13 +48,14 @@ export class ConfigurationPage {
       addVoice:   this.activePane.element(by.id('configuration-add-voice-btn')),
       addVariant: this.activePane.element(by.id('configuration-add-variant-btn')),
       remove:     this.activePane.element(by.id('configuration-remove-btn')),
+      // tslint:disable-next-line:max-line-length
       // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
       newButtonClick: () => {
         this.inputSystemsTab.newButton.click();
         browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
       }
     },
-    getLanguageByName: (languageName : string) =>
+    getLanguageByName: (languageName: string) =>
       element(by.css('div.tab-pane.active div.col-md-3 dl.picklists'))
         .element(by.cssContainingText('div[data-ng-repeat] span', languageName)),
 
@@ -76,8 +77,6 @@ export class ConfigurationPage {
     }
   };
 
-
-
   fieldsTab = {
     fieldSetupLabel: this.activePane.element(by.id('fieldSetupLabel')),
     hiddenIfEmptyCheckbox: this.activePane
@@ -94,14 +93,13 @@ export class ConfigurationPage {
     inputSystemDownButton: this.activePane.element(by.id('downButton')),
     newCustomFieldButton: this.activePane.element(by.id('configuration-new-field-btn')),
     removeCustomFieldButton: this.activePane.element(by.id('configuration-remove-field-btn')),
+    // tslint:disable-next-line:max-line-length
     // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
     newCustomFieldButtonClick: () => {
       this.fieldsTab.newCustomFieldButton.click();
       browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
     }
-  }
-
-
+  };
 
   showAllFieldsButton = element(by.id('configuration-show-fields-btn'));
 

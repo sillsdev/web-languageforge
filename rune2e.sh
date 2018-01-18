@@ -36,7 +36,5 @@ fi
 # Ensure Cleanup
 
 STATUS=$?
-gulp test-e2e-teardownTestEnvironment
-gulp test-e2e-useLiveConfig
-gulp test-restart-webserver
+gulp test-e2e-teardownForLocalDev
 exit $STATUS
