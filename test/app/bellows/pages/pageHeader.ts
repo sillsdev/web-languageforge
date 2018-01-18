@@ -8,5 +8,3 @@ export class PageHeader {
 
   loginButton = element(by.partialButtonText('Login'));
 }
-
-module.exports = new PageHeader();

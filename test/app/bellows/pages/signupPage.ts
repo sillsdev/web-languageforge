@@ -59,5 +59,3 @@ export class SignupPage {
   signupButton = element(by.id('submit'));
   noticeList  = element.all(by.repeater('notice in $ctrl.notices()'));
 };
-
-module.exports = new SignupPage();

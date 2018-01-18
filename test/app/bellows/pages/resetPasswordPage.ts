@@ -13,5 +13,3 @@ export class BellowsResetPasswordPage {
   confirmPasswordInput = element(by.model('$ctrl.confirmPassword'));
   resetButton = element(by.id('reset-password-btn'));
 }
-
-module.exports = new BellowsResetPasswordPage();
