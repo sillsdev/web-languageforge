@@ -1,5 +1,6 @@
 import { by, element } from 'protractor';
-const textPage = require('./textPage.js');
+import { SfTextPage } from './textPage';
+const textPage = new SfTextPage();
 
 export class SfTextSettingsPage {
 
@@ -53,5 +54,3 @@ export class SfTextSettingsPage {
   };
 
 }
-
-module.exports = new SfTextSettingsPage();

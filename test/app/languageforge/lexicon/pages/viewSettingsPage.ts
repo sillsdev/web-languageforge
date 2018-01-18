@@ -1,14 +1,15 @@
 import {$, $$, browser, by, By, element, ExpectedConditions, Key} from 'protractor';
 
-class ViewSettingsPage {
-  private readonly CONDITION_TIMEOUT = 3000;
+const CONDITION_TIMEOUT = 3000;
+
+export class ViewSettingsPage {
 
   settingsMenuLink = element(by.id('settingsDropdownButton'));
   viewSettingsLink = element(by.id('dropdown-view-settings'));
   get() {
-    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
     this.settingsMenuLink.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.viewSettingsLink), this.CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(this.viewSettingsLink), CONDITION_TIMEOUT);
     this.viewSettingsLink.click();
   }
 
@@ -92,5 +93,3 @@ class ViewSettingsPage {
   //noinspection JSUnusedGlobalSymbols
   removeMemberViewSettingsBtn = this.activePane.element(by.id('view-settings-remove-member-btn'));
 }
-
-module.exports = new ViewSettingsPage();

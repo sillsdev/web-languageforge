@@ -53,5 +53,3 @@ export class SiteAdminPage {
     // this.activeCheckbox.clear();
   }
 }
-
-module.exports = new SiteAdminPage();

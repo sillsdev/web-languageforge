@@ -1,19 +1,21 @@
 import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+import { ProjectsPage } from '../../../bellows/pages/projectsPage';
+
+const projectsPage = new ProjectsPage();
+const CONDITION_TIMEOUT = 3000;
 
 export class ProjectSettingsPage {
-  private readonly projectsPage = require('../../../bellows/pages/projectsPage.js');
-  private readonly CONDITION_TIMEOUT = 3000;
 
   settingsMenuLink = element(by.id('settingsDropdownButton'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
   get(projectName: string) {
-    this.projectsPage.get();
-    this.projectsPage.clickOnProject(projectName);
-    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink),this.CONDITION_TIMEOUT);
+    projectsPage.get();
+    projectsPage.clickOnProject(projectName);
+    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
     this.settingsMenuLink.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink),this.CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), CONDITION_TIMEOUT);
     this.projectSettingsLink.click();
   }
 
@@ -42,5 +44,3 @@ export class ProjectSettingsPage {
       .element(By.cssContainingText('div[data-ng-repeat]', fieldRegex));
   }
 }
-
-module.exports = new ProjectSettingsPage();
