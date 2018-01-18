@@ -4,18 +4,17 @@ import { ProjectsPage } from '../../../bellows/pages/projectsPage.js';
 import { SfProjectPage } from '../../sfchecks/pages/projectPage.js';
 
 const CONDITION_TIMEOUT = 3000;
+const utils = new Utils();
+const projectsPage = new ProjectsPage();
+const projectPage = new SfProjectPage();
 
 export class SfTextPage {
-  private utils = new Utils();
-  private projectsPage = new ProjectsPage();
-  private projectPage = new SfProjectPage();
-
-  notice = this.utils.notice;
+  notice = utils.notice;
 
   get(projectName: any, textTitle: any) {
-    this.projectsPage.get();
-    this.projectsPage.clickOnProject(projectName);
-    this.projectPage.textLink(textTitle).click();
+    projectsPage.get();
+    projectsPage.clickOnProject(projectName);
+    projectPage.textLink(textTitle).click();
   }
 
   archiveButton = element(by.id('questions-archive-btn'));
