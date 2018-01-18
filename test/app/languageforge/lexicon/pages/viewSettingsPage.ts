@@ -1,6 +1,6 @@
 import {$, $$, browser, by, By, element, ExpectedConditions, Key} from 'protractor';
 
-class ViewSettingsPage {
+export class ViewSettingsPage {
   private readonly CONDITION_TIMEOUT = 3000;
 
   settingsMenuLink = element(by.id('settingsDropdownButton'));
@@ -92,5 +92,3 @@ class ViewSettingsPage {
   //noinspection JSUnusedGlobalSymbols
   removeMemberViewSettingsBtn = this.activePane.element(by.id('view-settings-remove-member-btn'));
 }
-
-module.exports = new ViewSettingsPage();

@@ -1,6 +1,6 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 
-class NewLexProjectPage {
+export class NewLexProjectPage {
   private readonly mockUpload = require('../../../bellows/pages/mockUploadElement.js');
   private readonly modal      = require('./lexModals.js');
 
@@ -95,5 +95,3 @@ class NewLexProjectPage {
   }
 
 }
-
-module.exports = new NewLexProjectPage();

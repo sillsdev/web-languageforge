@@ -42,5 +42,3 @@ export class ProjectSettingsPage {
       .element(By.cssContainingText('div[data-ng-repeat]', fieldRegex));
   }
 }
-
-module.exports = new ProjectSettingsPage();

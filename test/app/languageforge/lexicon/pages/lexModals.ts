@@ -26,5 +26,3 @@ export class LexModals {
     addButton: element(by.id('addCustomFieldButton'))
   }
 }
-
-module.exports = new LexModals();
