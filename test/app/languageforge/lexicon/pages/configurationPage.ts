@@ -1,10 +1,10 @@
 import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
 import { LexModals } from './lexModals';
 import { Utils } from '../../../bellows/pages/utils';
+const modal = new LexModals();
+const utils = new Utils();
 
 export class ConfigurationPage {
-  private modal = new LexModals();
-  private util = new Utils();
 
   noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   firstNoticeCloseButton = this.noticeList.first().element(by.className('close'));
@@ -13,7 +13,7 @@ export class ConfigurationPage {
   configurationLink = element(by.id('dropdown-configuration'));
 
   get() {
-    this.util.scrollTop();
+    utils.scrollTop();
     this.settingsMenuLink.click();
     this.configurationLink.click();
   }
