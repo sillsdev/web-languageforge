@@ -1,5 +1,3 @@
-import * as angular from 'angular';
-
 import {User} from '../../../../bellows/shared/model/user.model';
 import {
   LexConfigFieldList, LexiconConfig, LexRoleViewConfig, LexUserViewConfig,
@@ -16,31 +14,25 @@ export class ConfigurationUnifiedViewModel {
   exampleFields: FieldSettingsList;
 
   constructor(config: LexiconConfig, users: { [userId: string]: User }) {
-
-    this.inputSystems = new InputSystemSettingsList();
-    this.entryFields = new FieldSettingsList();
-    this.senseFields = new FieldSettingsList();
-    this.exampleFields = new FieldSettingsList();
-
     this.groupLists = ConfigurationUnifiedViewModel.setGroupLists(config, users);
 
+    this.inputSystems = new InputSystemSettingsList();
     this.inputSystems.settings = ConfigurationUnifiedViewModel.setInputSystemsViewModel(config);
 
     const entryConfig = config.entry;
+    this.entryFields = new FieldSettingsList();
     this.entryFields.settings = ConfigurationUnifiedViewModel.setLevelViewModel(entryConfig, config);
     if ('senses' in entryConfig.fields) {
       const sensesConfig = entryConfig.fields.senses as LexConfigFieldList;
+      this.senseFields = new FieldSettingsList();
       this.senseFields.settings = ConfigurationUnifiedViewModel.setLevelViewModel(sensesConfig, config);
       if ('examples' in sensesConfig.fields) {
         const examplesConfig = sensesConfig.fields.examples as LexConfigFieldList;
+        this.exampleFields = new FieldSettingsList();
         this.exampleFields.settings = ConfigurationUnifiedViewModel.setLevelViewModel(examplesConfig, config);
       }
     }
 
-    this.inputSystems.selectAllColumns = new InputSystemSettings;
-    this.entryFields.selectAllColumns = new FieldSettings;
-    this.senseFields.selectAllColumns = new FieldSettings;
-    this.exampleFields.selectAllColumns = new FieldSettings;
     const roles = RoleType.roles();
     for (const role of roles) {
       this.inputSystems.selectAllColumns[role] = false;
@@ -84,7 +76,8 @@ export class ConfigurationUnifiedViewModel {
       ConfigurationUnifiedViewModel.fieldsToConfig(this.senseFields.settings, config, sensesConfig, this.groupLists);
       if ('examples' in sensesConfig.fields) {
         const examplesConfig = sensesConfig.fields.examples as LexConfigFieldList;
-        ConfigurationUnifiedViewModel.fieldsToConfig(this.exampleFields.settings, config, examplesConfig, this.groupLists);
+        ConfigurationUnifiedViewModel.fieldsToConfig(this.exampleFields.settings, config, examplesConfig,
+          this.groupLists);
       }
     }
   }
@@ -363,6 +356,13 @@ export class ConfigurationUnifiedViewModel {
         fieldSettings.hiddenIfEmpty = levelConfig.fields[fieldName].hideIfEmpty;
         ConfigurationUnifiedViewModel.setLevelRoleSettings(fieldName, config, fieldSettings);
         ConfigurationUnifiedViewModel.setLevelGroupSettings(fieldName, config, fieldSettings);
+        fieldSettings.inputSystems = new InputSystemSettingsList();
+        const inputSystemSettings = new InputSystemSettings();
+        inputSystemSettings.name = 'test IS 1'; // TODO: remove, mock data
+        fieldSettings.inputSystems.settings.push(inputSystemSettings); // TODO: remove, mock data
+        const inputSystemSettings2 = new InputSystemSettings(); // TODO: remove, mock data
+        inputSystemSettings2.name = 'test IS 2'; // TODO: remove, mock data
+        fieldSettings.inputSystems.settings.push(inputSystemSettings2); // TODO: remove, mock data
         fields[fieldIndex++] = fieldSettings;
 
         ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSettings);
@@ -416,12 +416,12 @@ export class Group {
 
 export class SettingsBase {
   name: string;
-  observer: boolean;
-  commenter: boolean;
-  contributor: boolean;
-  manager: boolean;
+  isAllRowSelected: boolean = false;
+  observer: boolean = false;
+  commenter: boolean = false;
+  contributor: boolean = false;
+  manager: boolean = false;
   groups: Group[] = [];
-  isAllRowSelected: boolean;
 }
 
 export class InputSystemSettings extends SettingsBase {
@@ -431,16 +431,19 @@ export class InputSystemSettings extends SettingsBase {
 export class FieldSettings extends SettingsBase {
   fieldName: string;
   hiddenIfEmpty: boolean;
+  isCustomInputSystemsCollapsed: boolean = true;
+  hasCustomInputSystemsOverride: boolean;
+  inputSystems: InputSystemSettingsList = new InputSystemSettingsList();
 }
 
 export class InputSystemSettingsList {
-  settings: InputSystemSettings[];
-  selectAllColumns: InputSystemSettings;
+  settings: InputSystemSettings[] = [];
+  selectAllColumns: InputSystemSettings = new InputSystemSettings();
 }
 
 export class FieldSettingsList {
-  settings: FieldSettings[];
-  selectAllColumns: FieldSettings;
+  settings: FieldSettings[] = [];
+  selectAllColumns: FieldSettings = new FieldSettings();
 }
 
 export class RoleType {
