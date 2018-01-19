@@ -66,54 +66,6 @@ export class UnifiedConfigurationController implements angular.IController {
   checkIfAllRoleSelected = ConfigurationUnifiedViewModel.checkIfAllRoleSelected;
   checkIfAllGroupSelected = ConfigurationUnifiedViewModel.checkIfAllGroupSelected;
 
-  openAddUserGroupModal(): void {
-    const modalInstance = this.$modal.open({
-      scope: this.$scope,
-      templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/add-user-group.html',
-      controller: ['$scope', '$uibModalInstance',
-        (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
-          scope.addGroup = function addGroup(typeahead: Typeahead): void {
-            $modalInstance.close(typeahead);
-          };
-        }
-      ]
-    });
-
-    modalInstance.result.then((typeahead: Typeahead) => {
-      const user = typeahead.user;
-      if (typeahead.usersWithoutSettings.indexOf(user) < 0) {
-        return;
-      }
-
-      typeahead.userName = '';
-      this.removeFromUsersWithoutSettings(user.id);
-      this.unifiedViewModel.groupLists.push(new GroupList(user.username, user.id));
-      this.unifiedViewModel.inputSystems.selectAllColumns.groups.push(new Group());
-      this.unifiedViewModel.entryFields.selectAllColumns.groups.push(new Group());
-      this.unifiedViewModel.senseFields.selectAllColumns.groups.push(new Group());
-      this.unifiedViewModel.exampleFields.selectAllColumns.groups.push(new Group());
-
-      for (const field of this.unifiedViewModel.inputSystems.settings) {
-        field.groups.push(new Group());
-      }
-
-      for (const field of this.unifiedViewModel.entryFields.settings) {
-        field.groups.push(new Group());
-      }
-
-      for (const field of this.unifiedViewModel.senseFields.settings) {
-        field.groups.push(new Group());
-      }
-
-      for (const field of this.unifiedViewModel.exampleFields.settings) {
-        field.groups.push(new Group());
-      }
-
-      this.uccConfigDirty.userViews[user.id] =
-        angular.copy(this.uccConfigDirty.roleViews[user.role]) as LexUserViewConfig;
-    }, angular.noop);
-  }
-
   openNewCustomFieldModal(fieldLevel: string): void {
     class NewCustomData {
       code: string;
@@ -245,6 +197,66 @@ export class UnifiedConfigurationController implements angular.IController {
       });
 
       this.uccOnUpdate({ $event: { configDirty: this.uccConfigDirty } });
+    }, angular.noop);
+  }
+
+  openAddUserGroupModal(): void {
+    const modalInstance = this.$modal.open({
+      scope: this.$scope,
+      templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/new-user-group.html',
+      controller: ['$scope', '$uibModalInstance',
+        (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
+          scope.addGroup = function addGroup(typeahead: Typeahead): void {
+            $modalInstance.close(typeahead);
+          };
+        }
+      ]
+    });
+
+    modalInstance.result.then((typeahead: Typeahead) => {
+      const user = typeahead.user;
+      if (typeahead.usersWithoutSettings.indexOf(user) < 0) {
+        return;
+      }
+
+      typeahead.userName = '';
+      this.removeFromUsersWithoutSettings(user.id);
+      this.unifiedViewModel.groupLists.push(new GroupList(user.username, user.id));
+      this.unifiedViewModel.inputSystems.selectAllColumns.groups.push(new Group());
+      this.unifiedViewModel.entryFields.selectAllColumns.groups.push(new Group());
+      this.unifiedViewModel.senseFields.selectAllColumns.groups.push(new Group());
+      this.unifiedViewModel.exampleFields.selectAllColumns.groups.push(new Group());
+
+      for (const inputSystemSetting of this.unifiedViewModel.inputSystems.settings) {
+        inputSystemSetting.groups.push(new Group());
+      }
+
+      for (const fieldSetting of this.unifiedViewModel.entryFields.settings) {
+        fieldSetting.groups.push(new Group());
+        fieldSetting.inputSystems.selectAllColumns.groups.push(new Group());
+        for (const inputSystemSetting of fieldSetting.inputSystems.settings) {
+          inputSystemSetting.groups.push(new Group());
+        }
+      }
+
+      for (const fieldSetting of this.unifiedViewModel.senseFields.settings) {
+        fieldSetting.groups.push(new Group());
+        fieldSetting.inputSystems.selectAllColumns.groups.push(new Group());
+        for (const inputSystemSetting of fieldSetting.inputSystems.settings) {
+          inputSystemSetting.groups.push(new Group());
+        }
+      }
+
+      for (const fieldSetting of this.unifiedViewModel.exampleFields.settings) {
+        fieldSetting.groups.push(new Group());
+        fieldSetting.inputSystems.selectAllColumns.groups.push(new Group());
+        for (const inputSystemSetting of fieldSetting.inputSystems.settings) {
+          inputSystemSetting.groups.push(new Group());
+        }
+      }
+
+      this.uccConfigDirty.userViews[user.id] =
+        angular.copy(this.uccConfigDirty.roleViews[user.role]) as LexUserViewConfig;
     }, angular.noop);
   }
 
