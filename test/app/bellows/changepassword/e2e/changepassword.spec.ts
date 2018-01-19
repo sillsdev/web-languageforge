@@ -1,11 +1,15 @@
 import {} from 'jasmine';
 import {browser, ExpectedConditions} from 'protractor';
+import { BellowsChangePasswordPage } from '../../pages/changePasswordPage';
+import { BellowsLoginPage } from '../../pages/loginPage';
+import { PageBody } from '../../pages/pageBody';
+import { PageHeader } from '../../pages/pageHeader';
 
 describe('E2E testing: Change password', () => {
   const constants          = require('../../../testConstants');
-  const loginPage          = require('../../pages/loginPage');
-  const header             = require('../../pages/pageHeader');
-  const changePasswordPage = require('../../pages/changePasswordPage');
+  const loginPage = new BellowsLoginPage();
+  const header = new PageHeader();
+  const changePasswordPage = new BellowsChangePasswordPage();
   const CONDITION_TIMEOUT = 3000;
   const newPassword = '12345678';
 
@@ -49,13 +53,13 @@ describe('E2E testing: Change password', () => {
     browser.wait(ExpectedConditions.elementToBeClickable(changePasswordPage.submitButton),
       CONDITION_TIMEOUT);
     changePasswordPage.submitButton.click();
-    expect(changePasswordPage.noticeList.count()).toBe(1);
+    expect<any>(changePasswordPage.noticeList.count()).toBe(1);
     expect(changePasswordPage.noticeList.first().getText()).toContain('Password updated');
     loginPage.logout();
 
     loginPage.login(constants.memberUsername, newPassword);
     browser.wait(ExpectedConditions.visibilityOf(header.myProjects.button), CONDITION_TIMEOUT);
-    expect(header.myProjects.button.isDisplayed()).toBe(true);
+    expect<any>(header.myProjects.button.isDisplayed()).toBe(true);
 
     // reset password back to original
     changePasswordPage.get();
