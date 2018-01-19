@@ -357,13 +357,38 @@ export class ConfigurationUnifiedViewModel {
         ConfigurationUnifiedViewModel.setLevelRoleSettings(fieldName, config, fieldSettings);
         ConfigurationUnifiedViewModel.setLevelGroupSettings(fieldName, config, fieldSettings);
         fieldSettings.inputSystems = new InputSystemSettingsList();
-        const inputSystemSettings = new InputSystemSettings();
-        inputSystemSettings.name = 'test IS 1'; // TODO: remove, mock data
-        fieldSettings.inputSystems.settings.push(inputSystemSettings); // TODO: remove, mock data
-        const inputSystemSettings2 = new InputSystemSettings(); // TODO: remove, mock data
-        inputSystemSettings2.name = 'test IS 2'; // TODO: remove, mock data
-        fieldSettings.inputSystems.settings.push(inputSystemSettings2); // TODO: remove, mock data
+        const roleType = new RoleType();
+        const roles = RoleType.roles();
+        for(const inputSystem in config.inputSystems) {
+
+          const inputSystemSettings = new InputSystemSettings();
+          const tag = config.inputSystems[inputSystem].tag;
+          const inputSystemViewModel =
+            new ConfigurationInputSystemsViewModel(new OptionSelects(), config.inputSystems[tag]);
+          inputSystemSettings.tag = tag;
+          inputSystemSettings.name = inputSystemViewModel.languageDisplayName();
+
+          for (const role of roles) {
+            inputSystemSettings[role] = config.roleViews[roleType[role]].fields[fieldName].show;
+          }
+
+          for (const userId in config.userViews) {
+            inputSystemSettings.groups[userId] = new Group();
+            // if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null
+            //   //&& config.userViews[userId].fields != null
+            // ) {
+            //inputSystemSettings.groups[userId].show = config.userViews[userId].fields[fieldName].show;
+            // }
+          }
+
+          fieldSettings.inputSystems.settings.push(inputSystemSettings);
+        }
         fields[fieldIndex++] = fieldSettings;
+
+        if( config.roleViews[roleType.manager].fields[fieldName].type === 'multitext') {
+          const fieldConfig = config.roleViews[roleType.manager].fields[fieldName] as LexViewMultiTextFieldConfig;
+          fieldSettings.hasCustomInputSystemsOverride = !fieldConfig.overrideInputSystems;
+        }
 
         ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSettings);
       }
