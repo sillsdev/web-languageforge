@@ -3,9 +3,9 @@ import { MockUploadElement } from '../../../bellows/pages/mockUploadElement';
 import { LexModals } from './lexModals';
 
 const mockUpload = new MockUploadElement();
-const modal = new LexModals();
 
 export class NewLexProjectPage {
+  modal = new LexModals();
 
   get() {
     browser.get(browser.baseUrl + '/app/lexicon/new-project');
