@@ -1,10 +1,10 @@
 import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
 import { LexModals } from './lexModals';
 import { Utils } from '../../../bellows/pages/utils';
-const modal = new LexModals();
 const utils = new Utils();
 
 export class ConfigurationPage {
+  modal = new LexModals();
 
   noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   firstNoticeCloseButton = this.noticeList.first().element(by.className('close'));
