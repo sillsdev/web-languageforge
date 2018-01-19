@@ -1,25 +1,30 @@
-'use strict';
+import {} from 'jasmine';
+import { BellowsLoginPage } from '../../../../bellows/pages/loginPage.js';
+import { ProjectsPage } from '../../../../bellows/pages/projectsPage.js';
+import { Utils } from '../../../../bellows/pages/utils.js';
+import { EditorPage } from '../../pages/editorPage.js';
+import { ViewSettingsPage } from '../../pages/viewSettingsPage.js';
 
-describe('View settings page', function () {
-  var constants    = require('../../../../testConstants');
-  var loginPage    = require('../../../../bellows/pages/loginPage.js');
-  var projectsPage = require('../../../../bellows/pages/projectsPage.js');
-  var util         = require('../../../../bellows/pages/utils.js');
-  var editorPage       = require('../../pages/editorPage.js');
-  var viewSettingsPage = require('../../pages/viewSettingsPage.js');
+describe('View settings page', () => {
+  const constants    = require('../../../../testConstants');
+  const loginPage = new BellowsLoginPage();
+  const projectsPage = new ProjectsPage();
+  const util = new Utils();
+  const editorPage = new EditorPage();
+  const viewSettingsPage = new ViewSettingsPage();
 
-  it('setup: login, click on test project, go to the View Settings page', function () {
+  it('setup: login, click on test project, go to the View Settings page', () => {
     loginPage.loginAsManager();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
     viewSettingsPage.get();
   });
 
-  it('setup: click Manager tab', function () {
+  it('setup: click Manager tab', () => {
     viewSettingsPage.goToManagerTab();
   });
 
-  it('Hide Semantic Domain field for Manager', function () {
+  it('Hide Semantic Domain field for Manager', () => {
     expect(viewSettingsPage.getFieldByNameIconClass('Semantic Domain')).toMatch('fa fa-eye');
     viewSettingsPage.getFieldByName('Semantic Domain').click();
     util.setCheckbox(viewSettingsPage.showField, false);
@@ -28,11 +33,11 @@ describe('View settings page', function () {
     viewSettingsPage.applyButton.click();
   });
 
-  it('Hide Semantic Domain field for specific username of admin user', function () {
+  it('Hide Semantic Domain field for specific username of admin user', () => {
     viewSettingsPage.getTabByName('Member Specific').click();
     viewSettingsPage.addViewSettingsForMember(constants.adminName);
     viewSettingsPage.pickMemberWithViewSettings(constants.adminName);
-    expect(viewSettingsPage.accordionEnabledFields.getText()).toEqual(
+    expect<any>(viewSettingsPage.accordionEnabledFields.getText()).toEqual(
         'Enabled Fields for ' + constants.adminName + ' (' + constants.adminUsername + ')'
     );
     viewSettingsPage.getFieldByName('Semantic Domain').click();
@@ -40,13 +45,13 @@ describe('View settings page', function () {
     viewSettingsPage.applyButton.click();
   });
 
-  it('Semantic Domain field is hidden for Manager', function () {
+  it('Semantic Domain field is hidden for Manager', () => {
     util.clickBreadcrumb(constants.testProjectName);
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
-    expect(editorPage.edit.getFields('Semantic Domain').count()).toBe(0);
+    expect<any>(editorPage.edit.getFields('Semantic Domain').count()).toBe(0);
   });
 
-  it('Semantic Domain field is visible for Member', function () {
+  it('Semantic Domain field is visible for Member', () => {
     loginPage.loginAsMember();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
@@ -54,19 +59,19 @@ describe('View settings page', function () {
     expect(editorPage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
   });
 
-  it('Semantic Domain field is hidden for admin user', function () {
+  it('Semantic Domain field is hidden for admin user', () => {
     loginPage.loginAsAdmin();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
-    expect(editorPage.edit.getFields('Semantic Domain').count()).toBe(0);
+    expect<any>(editorPage.edit.getFields('Semantic Domain').count()).toBe(0);
   });
 
-  it('Return view settings to normal before next test', function () {
+  it('Return view settings to normal before next test', () => {
     viewSettingsPage.get();
     viewSettingsPage.getTabByName('Member Specific').click();
     viewSettingsPage.pickMemberWithViewSettings(constants.adminUsername);
-    expect(viewSettingsPage.accordionEnabledFields.getText()).toEqual(
+    expect<any>(viewSettingsPage.accordionEnabledFields.getText()).toEqual(
         'Enabled Fields for ' + constants.adminName + ' (' + constants.adminUsername + ')'
     );
     viewSettingsPage.getFieldByName('Semantic Domain').click();
