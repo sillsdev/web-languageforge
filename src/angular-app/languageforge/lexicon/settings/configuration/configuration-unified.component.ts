@@ -30,7 +30,6 @@ export class UnifiedConfigurationController implements angular.IController {
 
   unifiedViewModel: ConfigurationUnifiedViewModel;
   typeahead: Typeahead;
-  newUserExpanded: boolean;
 
   static $inject: string[] = ['$scope', '$filter', '$uibModal'];
   constructor(private $scope: angular.IScope, private $filter: angular.IFilterService, private $modal: ModalService) {
@@ -66,6 +65,54 @@ export class UnifiedConfigurationController implements angular.IController {
   selectAllGroupColumn = ConfigurationUnifiedViewModel.selectAllGroupColumn;
   checkIfAllRoleSelected = ConfigurationUnifiedViewModel.checkIfAllRoleSelected;
   checkIfAllGroupSelected = ConfigurationUnifiedViewModel.checkIfAllGroupSelected;
+
+  openAddUserGroupModal(): void {
+    const modalInstance = this.$modal.open({
+      scope: this.$scope,
+      templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/add-user-group.html',
+      controller: ['$scope', '$uibModalInstance',
+        (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
+          scope.addGroup = function addGroup(typeahead: Typeahead): void {
+            $modalInstance.close(typeahead);
+          };
+        }
+      ]
+    });
+
+    modalInstance.result.then((typeahead: Typeahead) => {
+      const user = typeahead.user;
+      if (typeahead.usersWithoutSettings.indexOf(user) < 0) {
+        return;
+      }
+
+      typeahead.userName = '';
+      this.removeFromUsersWithoutSettings(user.id);
+      this.unifiedViewModel.groupLists.push(new GroupList(user.username, user.id));
+      this.unifiedViewModel.inputSystems.selectAllColumns.groups.push(new Group());
+      this.unifiedViewModel.entryFields.selectAllColumns.groups.push(new Group());
+      this.unifiedViewModel.senseFields.selectAllColumns.groups.push(new Group());
+      this.unifiedViewModel.exampleFields.selectAllColumns.groups.push(new Group());
+
+      for (const field of this.unifiedViewModel.inputSystems.settings) {
+        field.groups.push(new Group());
+      }
+
+      for (const field of this.unifiedViewModel.entryFields.settings) {
+        field.groups.push(new Group());
+      }
+
+      for (const field of this.unifiedViewModel.senseFields.settings) {
+        field.groups.push(new Group());
+      }
+
+      for (const field of this.unifiedViewModel.exampleFields.settings) {
+        field.groups.push(new Group());
+      }
+
+      this.uccConfigDirty.userViews[user.id] =
+        angular.copy(this.uccConfigDirty.roleViews[user.role]) as LexUserViewConfig;
+    }, angular.noop);
+  }
 
   openNewCustomFieldModal(fieldLevel: string): void {
     class NewCustomData {
@@ -199,42 +246,6 @@ export class UnifiedConfigurationController implements angular.IController {
 
       this.uccOnUpdate({ $event: { configDirty: this.uccConfigDirty } });
     }, angular.noop);
-  }
-
-  addGroup(): void {
-    const user = this.typeahead.user;
-    if (this.typeahead.usersWithoutSettings.indexOf(user) < 0) {
-      return;
-    }
-
-    this.typeahead.userName = '';
-    this.removeFromUsersWithoutSettings(user.id);
-    this.unifiedViewModel.groupLists.push(new GroupList(user.username, user.id));
-    this.unifiedViewModel.inputSystems.selectAllColumns.groups.push(new Group());
-    this.unifiedViewModel.entryFields.selectAllColumns.groups.push(new Group());
-    this.unifiedViewModel.senseFields.selectAllColumns.groups.push(new Group());
-    this.unifiedViewModel.exampleFields.selectAllColumns.groups.push(new Group());
-
-    for (const field of this.unifiedViewModel.inputSystems.settings) {
-      field.groups.push(new Group());
-    }
-
-    for (const field of this.unifiedViewModel.entryFields.settings) {
-      field.groups.push(new Group());
-    }
-
-    for (const field of this.unifiedViewModel.senseFields.settings) {
-      field.groups.push(new Group());
-    }
-
-    for (const field of this.unifiedViewModel.exampleFields.settings) {
-      field.groups.push(new Group());
-    }
-
-    this.uccConfigDirty.userViews[user.id] =
-      angular.copy(this.uccConfigDirty.roleViews[user.role]) as LexUserViewConfig;
-
-    this.newUserExpanded = false;
   }
 
   removeGroup(index: number): void {
