@@ -342,7 +342,7 @@ export class EditorPage {
       getOneField: editorUtil.getOneField,
       getFieldValues: editorUtil.getFieldValues,
       getOneFieldValue: editorUtil.getOneFieldValue,
-      getOneFieldAllInputSystems: (searchLabel: string, idx: number, rootElem: ElementFinder) => {
+      getOneFieldAllInputSystems: (searchLabel: string, idx: number = 0, rootElem: ElementFinder = element(by.className('dc-entry'))) => {
         return editorUtil.getOneField(searchLabel, idx, rootElem).all(by.css('span.wsid'));
       }
     },
@@ -375,7 +375,7 @@ export class EditorPage {
   // Like getComment, gets a specific reply from the list and returns its parts
   // (via partsOfReply() below)
   // replyNum can be -1 to get the last reply, any other number is a 0-based
-  // index
+  // indexgetO
   getReply(repliesList: ElementArrayFinder, replyNum: number) {
     if (typeof (replyNum) === 'undefined') {
       replyNum = 0;
