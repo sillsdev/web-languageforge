@@ -1,5 +1,5 @@
 import {browser, element, by, By, $, $$, ExpectedConditions, Key} from 'protractor';
-import { ElementFinder } from 'protractor/built/element';
+import { ElementFinder, ElementArrayFinder } from 'protractor/built/element';
 
 // Utility functions for parsing dc-* directives (dc-multitext, etc)
 export class EditorUtil {
@@ -7,11 +7,11 @@ export class EditorUtil {
 
   // Return the multitext's values as [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
   // NOTE: Returns a promise. Use .then() to access the actual data.
-  dcMultitextToArray(elem: any) {
-    var inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
+  dcMultitextToArray = (elem: ElementFinder|ElementArrayFinder) => {
+    let inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
     return inputSystemDivs.map((div: any) => {
-      var wsidSpan = div.element(by.css('.input-group > span.wsid'));
-      var wordInput = div.element(by.css('.input-group > .dc-formattedtext input'));
+      let wsidSpan = div.element(by.css('.input-group > span.wsid'));
+      let wordInput = div.element(by.css('.input-group > .dc-formattedtext input'));
       return wsidSpan.getText().then((wsid: any) => {
         return wordInput.isPresent().then((isWordPresent: boolean) => {
           if (isWordPresent) {
@@ -31,10 +31,10 @@ export class EditorUtil {
 
   // Return the multitext's values as {en: 'word', de: 'Wort'}
   // NOTE: Returns a promise. Use .then() to access the actual data.
-  dcMultitextToObject(elem: any) {
+  dcMultitextToObject = (elem: ElementFinder|ElementArrayFinder) => {
     return this.dcMultitextToArray(elem).then((values: any) => {
-      var result = {};
-      for (var i = 0, l = values.length; i < l; i++) {
+      let result = {};
+      for (let i = 0, l = values.length; i < l; i++) {
         result[values[i].wsid] = values[i].value;
       }
 
@@ -44,14 +44,14 @@ export class EditorUtil {
 
   // Returns the value of the multitext's first writing system, no matter what writing system is
   // first. NOTE: Returns a promise. Use .then() to access the actual data.
-  dcMultitextToFirstValue(elem: any) {
+  dcMultitextToFirstValue = (elem: ElementFinder|ElementArrayFinder) => {
     return this.dcMultitextToArray(elem).then((values: any) => {
       return values[0].value;
     });
   };
 
   dcOptionListToValue(elem: any) {
-    var select = elem.element(by.css('.controls select'));
+    let select = elem.element(by.css('.controls select'));
     return select.element(by.css('option:checked')).getText().then((text: string) => {
       return text;
     });
@@ -61,11 +61,11 @@ export class EditorUtil {
   // When they change, this function will need to be rewritten
   dcMultiOptionListToValue = this.dcOptionListToValue;
 
-  dcPicturesToObject(elem: any) {
-    var pictures = elem.all(by.repeater('picture in pictures'));
+  dcPicturesToObject = (elem: ElementFinder|ElementArrayFinder) => {
+    let pictures = elem.all(by.repeater('picture in pictures'));
     return pictures.map((div: any) => {
-      var img = div.element(by.css('img'));
-      var caption = div.element(by.css('dc-multitext'));
+      let img = div.element(by.css('img'));
+      let caption = div.element(by.css('dc-multitext'));
       return img.getAttribute('src').then((src: string) => {
         return {
           fileName: src.replace(/^.*[\\\/]/, ''),
@@ -89,9 +89,9 @@ export class EditorUtil {
 
   getParser(elem: any, multitextStrategy: any) {
     multitextStrategy = multitextStrategy || this.dcParsingFuncs.multitext.default_strategy;
-    var switchDiv = elem.element(by.css('[data-on="config.fields[fieldName].type"] > div'));
+    let switchDiv = elem.element(by.css('[data-on="config.fields[fieldName].type"] > div'));
     return switchDiv.getAttribute('data-ng-switch-when').then((fieldType: any) => {
-      var parser;
+      let parser;
       if (fieldType === 'multitext') {
         parser = this.dcParsingFuncs[fieldType][multitextStrategy];
       } else {
@@ -103,20 +103,15 @@ export class EditorUtil {
   }
 
   parseDcField(elem: any, multitextStrategy: any) {
-    return this.getParser(elem, multitextStrategy).then((parser: any) => {
-      return parser(elem);
-    });
+    return this.getParser(elem, multitextStrategy).then((parser: any) => parser(elem));
   }
 
   getFields(searchLabel: any, rootElem: ElementFinder = element(by.className('dc-entry'))) {
-    return rootElem.all(by.cssContainingText('div[data-ng-repeat="fieldName in config.fieldOrder"]',
-      searchLabel));
+    return rootElem.all(by.cssContainingText('div[data-ng-repeat="fieldName in config.fieldOrder"]', searchLabel));
   }
 
-  getFieldValues(searchLabel: any, multitextStrategy: any, rootElem: any) {
-    return this.getFields(searchLabel, rootElem).map((fieldElem: any) => {
-      return this.parseDcField(fieldElem, multitextStrategy);
-    });
+  getFieldValues(searchLabel: any, multitextStrategy: any = undefined, rootElem: ElementFinder = element(by.className('dc-entry'))) {
+    return this.getFields(searchLabel, rootElem).map((fieldElem: any) => this.parseDcField(fieldElem, multitextStrategy));
   }
 
   getOneField(searchLabel: any, idx: any = 0, rootElem: ElementFinder = element(by.className('dc-entry'))) {
@@ -124,7 +119,7 @@ export class EditorUtil {
   };
 
   getOneFieldValue(searchLabel: any, idx: any = 0, multitextStrategy: any = undefined, rootElem: any = element(by.className('dc-entry'))) {
-    var fieldElement = this.getOneField(searchLabel, idx, rootElem);
+    let fieldElement = this.getOneField(searchLabel, idx, rootElem);
     return this.parseDcField(fieldElement, multitextStrategy);
   }
 
@@ -160,8 +155,8 @@ export class EditorUtil {
     clear(element: any) {
       // fix problem with protractor not scrolling to element before click
       element.getLocation().then((navDivLocation: any) => {
-        var initTop = (navDivLocation.y - 150) > 0 ? navDivLocation.y - 150 : 1;
-        var initLeft = navDivLocation.x;
+        let initTop = (navDivLocation.y - 150) > 0 ? navDivLocation.y - 150 : 1;
+        let initLeft = navDivLocation.x;
         browser.executeScript('window.scrollTo(' + initLeft + ',' + initTop + ');');
       });
 
