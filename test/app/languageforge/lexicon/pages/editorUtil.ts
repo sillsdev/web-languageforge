@@ -27,7 +27,7 @@ export class EditorUtil {
         });
       });
     });
-  };
+  }
 
   // Return the multitext's values as {en: 'word', de: 'Wort'}
   // NOTE: Returns a promise. Use .then() to access the actual data.
@@ -48,14 +48,14 @@ export class EditorUtil {
     return this.dcMultitextToArray(elem).then((values: any) => {
       return values[0].value;
     });
-  };
+  }
 
   dcOptionListToValue(elem: any) {
     var select = elem.element(by.css('.controls select'));
     return select.element(by.css('option:checked')).getText().then((text: string) => {
       return text;
     });
-  };
+  }
 
   // At the moment these are identical to dc-optionlist directives.
   // When they change, this function will need to be rewritten
@@ -119,11 +119,11 @@ export class EditorUtil {
     });
   }
 
-  getOneField(searchLabel: any, idx: any = 0, rootElem: ElementFinder = element(by.className('dc-entry'))) {
+  getOneField(searchLabel: string, idx: number = 0, rootElem: ElementFinder = element(by.className('dc-entry'))) {
     return this.getFields(searchLabel, rootElem).get(idx);
-  };
+  }
 
-  getOneFieldValue(searchLabel: any, idx: any = 0, multitextStrategy: any = undefined, rootElem: any = element(by.className('dc-entry'))) {
+  getOneFieldValue(searchLabel: string, idx: number = 0, multitextStrategy: any = undefined, rootElem: any = element(by.className('dc-entry'))) {
     var fieldElement = this.getOneField(searchLabel, idx, rootElem);
     return this.parseDcField(fieldElement, multitextStrategy);
   }
@@ -148,7 +148,7 @@ export class EditorUtil {
   // appear in the Part of Speech dropdown (for convenience in E2E tests).
   expandPartOfSpeech(posAbbrev: any) {
     return this.partOfSpeechNames[posAbbrev] + ' (' + posAbbrev + ')';
-  };
+  }
 
   // designed for use with Text-Angular controls (i.e. that don't have ordinary input or textarea)
   selectElement = {
