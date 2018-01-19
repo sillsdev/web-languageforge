@@ -1,20 +1,32 @@
-'use strict';
+import {SfActivityPage} from '../pages/activityPage';
+import {BellowsChangePasswordPage} from '../pages/changePasswordPage';
+import {BellowsForgotPasswordPage} from '../pages/forgotPasswordPage';
+import {BellowsLoginPage} from '../pages/loginPage';
+import {BellowsProjectSettingsPage} from '../pages/projectSettingsPage';
+import {ProjectsPage} from '../pages/projectsPage';
+import {BellowsResetPasswordPage} from '../pages/resetPasswordPage';
+import {SignupPage} from '../pages/signupPage';
+import {SiteAdminPage} from '../pages/siteAdminPage';
+import {SfUserProfilePage} from '../pages/userProfilePage';
 
-describe('Bellows E2E Page Traversal', function () {
+
   // Better way to import all files from directory, might want node module like require-all?
-  var activityPage        = require('../pages/activityPage.js');
-  var changePasswordPage  = require('../pages/changePasswordPage.js');
-  var forgotPasswordPage  = require('../pages/forgotPasswordPage.js');
-  var loginPage           = require('../pages/loginPage.js');
-  var projectSettingsPage = require('../pages/projectSettingsPage.js');
-  var projectsPage        = require('../pages/projectsPage.js');
-  var resetPasswordPage   = require('../pages/resetPasswordPage.js');
-  var signupPage          = require('../pages/signupPage.js');
-  var siteAdminPage       = require('../pages/siteAdminPage.js');
-  var userProfilePage     = require('../pages/userProfilePage.js');
-  var constants           = require('../../testConstants.json');
+const activityPage = new SfActivityPage();
+const changePasswordPage = new BellowsChangePasswordPage();
+const forgotPasswordPage = new BellowsForgotPasswordPage();
+const loginPage = new BellowsLoginPage();
+const projectSettingsPage = new BellowsProjectSettingsPage();
+const projectsPage = new ProjectsPage();
+const resetPasswordPage = new BellowsResetPasswordPage();
+const signupPage = new SignupPage();
+const siteAdminPage = new SiteAdminPage();
+const userProfilePage = new SfUserProfilePage();
+const constants = require('../../testConstants.json');
 
-  it('Explore signup page' , function () {
+
+describe('Bellows E2E Page Traversal', () => {
+
+  it('Explore signup page' , () => {
     signupPage.get();
     signupPage.emailInput.clear();
     signupPage.nameInput.clear();
@@ -24,37 +36,37 @@ describe('Bellows E2E Page Traversal', function () {
     signupPage.captcha.redTriangleButton.click();
   });
 
-  it('Explore forgot password page', function () {
+  it('Explore forgot password page', () => {
     forgotPasswordPage.get();
     forgotPasswordPage.usernameInput.clear();
     forgotPasswordPage.submitButton.click();
   });
 
-  it('Explore reset password page', function () {
+  it('Explore reset password page', () => {
     resetPasswordPage.get(constants.resetPasswordKey);
     resetPasswordPage.passwordInput.clear();
     resetPasswordPage.confirmPasswordInput.clear();
     resetPasswordPage.resetButton.click();
   });
 
-  it('Explore login page', function () {
+  it('Explore login page', () => {
     loginPage.get();
     loginPage.loginAsAdmin();
   });
 
-  it('Explore change password page', function () {
+  it('Explore change password page', () => {
     changePasswordPage.get();
     changePasswordPage.password.clear();
     changePasswordPage.confirm.clear();
     changePasswordPage.submitButton.click();
   });
 
-  it('Explore activity page', function () {
+  it('Explore activity page', () => {
     activityPage.get();
     activityPage.activitiesList.count();
   });
 
-  it('Explore project page', function () {
+  it('Explore project page', () => {
     projectsPage.get();
     projectsPage.projectsList.count();
     projectsPage.projectNames.count();
@@ -63,7 +75,7 @@ describe('Bellows E2E Page Traversal', function () {
   });
 
   // TODO Not sure if we want to test project settings since they seem quite different in lf and sf
-  xit('Explore project settings page', function () {
+  xit('Explore project settings page', () => {
     projectSettingsPage.get(constants.testProjectName);
     projectSettingsPage.noticeList.count();
     projectSettingsPage.tabDivs.count();
@@ -71,7 +83,7 @@ describe('Bellows E2E Page Traversal', function () {
     projectSettingsPage.tabs.remove.click();
   });
 
-  it('Explore site admin page', function() {
+  it('Explore site admin page', () => {
     siteAdminPage.get();
     siteAdminPage.tabs.archivedProjects.click();
     siteAdminPage.archivedProjectsTab.republishButton.click();
@@ -79,7 +91,7 @@ describe('Bellows E2E Page Traversal', function () {
     siteAdminPage.archivedProjectsTab.projectsList.count();
   });
 
-  it('Explore user profile page', function () {
+  it('Explore user profile page', () => {
     userProfilePage.get();
     userProfilePage.activitiesList.count();
     userProfilePage.tabs.aboutMe.click();
@@ -87,8 +99,8 @@ describe('Bellows E2E Page Traversal', function () {
   });
 
   // TODO this seems to be a lf specific view
-  xit('Explore user management page', function() {
-    userManagementPage.get();
-    // TODO click on things
-  });
+  // xit('Explore user management page', function() {
+  //   userManagementPage.get();
+  //   // TODO click on things
+  // });
 });
