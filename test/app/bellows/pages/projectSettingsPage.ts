@@ -1,8 +1,7 @@
 import {browser, element, by, ExpectedConditions} from 'protractor';
 import { ProjectsPage } from './projectsPage';
-//import {ProjectsPage} from './projectsPage'; - This will get updated along with the spec files - Mark W 2018-01-15
+
 const CONDITION_TIMEOUT = 3000;
-const util = require('./utils');
 const projectsPage = new ProjectsPage();
 
 export class BellowsProjectSettingsPage {
