@@ -1,16 +1,22 @@
-'use strict';
+import { BellowsLoginPage } from '../../bellows/pages/loginPage';
+import { SfProjectPage } from '../sfchecks/pages/projectPage';
+import { ProjectsPage } from '../../bellows/pages/projectsPage';
+import { SfProjectSettingsPage } from '../sfchecks/pages/projectSettingsPage';
+import { SfQuestionPage } from '../sfchecks/pages/questionPage';
+import { SfTextPage } from '../sfchecks/pages/textPage';
+import { SfTextSettingsPage } from '../sfchecks/pages/textSettingsPage';
 
-describe('SFChecks E2E Page Traversal', function () {
-  var constants           = require('../../testConstants.json');
-  var loginPage           = require('../../bellows/pages/loginPage.js');
-  var projectPage         = require('../sfchecks/pages/projectPage.js');
-  var projectsPage        = require('../../bellows/pages/projectsPage.js');
-  var projectSettingsPage = require('../sfchecks/pages/projectSettingsPage.js');
-  var questionPage        = require('../sfchecks/pages/questionPage.js');
-  var textPage            = require('../sfchecks/pages/textPage.js');
-  var textSettingsPage    = require('../sfchecks/pages/textSettingsPage.js');
+const constants           = require('../../testConstants.json');
+const loginPage           = new BellowsLoginPage();
+const projectPage         = new SfProjectPage();
+const projectsPage        = new ProjectsPage();
+const projectSettingsPage = new SfProjectSettingsPage();
+const questionPage        = new SfQuestionPage();
+const textPage            = new SfTextPage();
+const textSettingsPage    = new SfTextSettingsPage();
 
-  it('Explore project page', function () {
+describe('SFChecks E2E Page Traversal', () => {
+  it('Explore project page', () => {
     loginPage.loginAsAdmin();
     projectPage.textNames.count();
     projectPage.textList.count();
@@ -22,9 +28,9 @@ describe('SFChecks E2E Page Traversal', function () {
     projectPage.newText.title.click();
   });
 
-  describe('Explore project settings page', function () {
-    it('Members tab', function () {
-      projectSettingsPage.get();
+  describe('Explore project settings page', () => {
+    it('Members tab', () => {
+      projectSettingsPage.get(constants.testProjectName);
       projectSettingsPage.tabs.members.click();
       projectSettingsPage.membersTab.addButton.click();
       projectSettingsPage.membersTab.removeButton.click();
@@ -33,7 +39,7 @@ describe('SFChecks E2E Page Traversal', function () {
       projectSettingsPage.membersTab.list.count();
     });
 
-    it('Templates tab', function () {
+    it('Templates tab', () => {
       projectSettingsPage.tabs.templates.click();
       projectSettingsPage.templatesTab.list.count();
       projectSettingsPage.templatesTab.addButton.click();
@@ -42,27 +48,27 @@ describe('SFChecks E2E Page Traversal', function () {
       projectSettingsPage.templatesTab.editor.description.click();
     });
 
-    it('Archive Text tab', function () {
+    it('Archive Text tab', () => {
       projectSettingsPage.tabs.archiveTexts.click();
       projectSettingsPage.archivedTextsTab.textNames.count();
       projectSettingsPage.archivedTextsTab.textList.count();
     });
 
-    it('Project tab', function () {
+    it('Project tab', () => {
       projectSettingsPage.tabs.project.click();
       projectSettingsPage.projectTab.name.click();
       projectSettingsPage.projectTab.allowAudioDownload.click();
       projectSettingsPage.projectTab.usersSeeEachOthersResponses.click();
     });
 
-    it('Options tab', function () {
+    it('Options tab', () => {
       projectSettingsPage.tabs.optionlists.click();
       projectSettingsPage.optionlistsTab.showList.count();
       projectSettingsPage.optionlistsTab.editList.count();
       projectSettingsPage.optionlistsTab.editContentsList.count();
     });
 
-    it('Communication tab', function () {
+    it('Communication tab', () => {
       projectSettingsPage.tabs.communication.click();
       projectSettingsPage.communicationTab.sms.accountId.click();
       projectSettingsPage.communicationTab.sms.authToken.click();
@@ -72,7 +78,7 @@ describe('SFChecks E2E Page Traversal', function () {
     });
   });
 
-  it('Explore text page', function () {
+  it('Explore text page', () => {
     textPage.get(constants.testProjectName, constants.testText1Title);
     textPage.archiveButton.click();
     textPage.makeTemplateBtn.click();
@@ -80,31 +86,31 @@ describe('SFChecks E2E Page Traversal', function () {
     textPage.textSettingsBtn.click();
   });
 
-  describe('Explore text settings page', function () {
-    it('Edit text tab', function () {
+  describe('Explore text settings page', () => {
+    it('Edit text tab', () => {
       textSettingsPage.get(constants.testProjectName, constants.testText1Title);
       textSettingsPage.tabs.editText.click();
       textSettingsPage.editTextTab.title.click();
       textSettingsPage.editTextTab.usxText.click();
     });
 
-    it('Archive questions tab', function () {
+    it('Archive questions tab', () => {
       textSettingsPage.tabs.archiveQuestions.click();
       textSettingsPage.archivedQuestionsTab.questionNames.count();
       textSettingsPage.archivedQuestionsTab.questionList.count();
     });
 
-    it('Audio file tab', function () {
+    it('Audio file tab', () => {
       textSettingsPage.tabs.audioFile.click();
     });
 
-    it('Paratex export tab', function () {
+    it('Paratex export tab', () => {
       textSettingsPage.tabs.paratextExport.click();
       textSettingsPage.paratextExportTab.prepareButton.click();
     });
   });
 
-  it('Explore question page', function () {
+  it('Explore question page', () => {
     questionPage.get(constants.testProjectName, constants.testText1Title, constants.testText1Question1Title);
     questionPage.answers.list.count();
     questionPage.comments.list.count();
