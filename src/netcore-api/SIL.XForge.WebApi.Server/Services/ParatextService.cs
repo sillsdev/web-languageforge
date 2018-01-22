@@ -14,6 +14,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Net;
 
 namespace SIL.XForge.WebApi.Server.Services
 {
@@ -164,10 +165,17 @@ namespace SIL.XForge.WebApi.Server.Services
                     request.Content = new StringContent(content);
                 HttpResponseMessage response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
+                {
                     return Attempt.Success(await response.Content.ReadAsStringAsync());
-
-                // assume that the token has expired if the call didn't succeed
-                expired = true;
+                }
+                else if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    expired = true;
+                }
+                else
+                {
+                    return Attempt.Failure(await response.Content.ReadAsStringAsync());
+                }
             }
 
             return Attempt<string>.Failure;

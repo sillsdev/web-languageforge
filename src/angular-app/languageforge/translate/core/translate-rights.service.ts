@@ -1,38 +1,49 @@
 import * as angular from 'angular';
 
-import {
-  Domains, Operations,
-  Session, SessionService,
-  RightsFunction
-} from '../../../bellows/core/session.service';
+import { Domains, Operations, RightsFunction, Session, SessionService } from '../../../bellows/core/session.service';
+import { TranslateSendReceiveService } from './translate-send-receive.service';
 
-export interface ConditionFunction { (): boolean }
+export class TranslateRights {
+  session: Session;
 
-export class Rights {
-  readonly canRemoveUsers: ConditionFunction;
-  readonly canCreateUsers: ConditionFunction;
-  readonly canEditUsers: ConditionFunction;
-  readonly canArchiveProject: ConditionFunction;
-  readonly canDeleteProject: ConditionFunction;
-  readonly canEditProject: ConditionFunction;
-  readonly canEditEntry: ConditionFunction;
-  readonly canDeleteEntry: ConditionFunction;
-  readonly canComment: ConditionFunction;
-  showSettingsDropdown?: ConditionFunction;
+  canRemoveUsers(): boolean {
+    return this.isPermitted(true, this.domain.USERS, this.operation.DELETE);
+  }
 
-  constructor(private domain: Domains, private operation: Operations,
-              private sendReceive: SendReceive, public session?: Session) {
-    this.canRemoveUsers = this.isPermitted(true, domain.USERS, operation.DELETE);
-    this.canCreateUsers = this.isPermitted(true, domain.USERS, operation.CREATE);
-    this.canEditUsers = this.isPermitted(false, domain.USERS, operation.EDIT);
-    this.canArchiveProject = this.isPermitted(true, domain.PROJECTS, operation.ARCHIVE,
-      true);
-    this.canDeleteProject = this.isPermitted(true, domain.PROJECTS, operation.DELETE,
-      true);
-    this.canEditProject = this.isPermitted(false, domain.PROJECTS, operation.EDIT);
-    this.canEditEntry = this.isPermitted(false, domain.ENTRIES, operation.EDIT);
-    this.canDeleteEntry = this.isPermitted(false, domain.ENTRIES, operation.DELETE);
-    this.canComment = this.isPermitted(false, domain.COMMENTS, operation.CREATE);
+  canCreateUsers(): boolean {
+    return this.isPermitted(true, this.domain.USERS, this.operation.CREATE);
+  }
+
+  canEditUsers(): boolean {
+    return this.isPermitted(false, this.domain.USERS, this.operation.EDIT);
+  }
+
+  canArchiveProject(): boolean {
+    return this.isPermitted(true, this.domain.PROJECTS, this.operation.ARCHIVE, true);
+  }
+
+  canDeleteProject(): boolean {
+    return this.isPermitted(true, this.domain.PROJECTS, this.operation.DELETE, true);
+  }
+
+  canEditProject(): boolean {
+    return this.isPermitted(false, this.domain.PROJECTS, this.operation.EDIT);
+  }
+
+  canEditEntry(): boolean {
+    return this.isPermitted(false, this.domain.ENTRIES, this.operation.EDIT);
+  }
+
+  canDeleteEntry(): boolean {
+    return this.isPermitted(false, this.domain.ENTRIES, this.operation.DELETE);
+  }
+
+  canComment(): boolean {
+    return this.isPermitted(false, this.domain.COMMENTS, this.operation.CREATE);
+  }
+
+  constructor(private readonly domain: Domains, private readonly operation: Operations,
+              private readonly sendReceiveService: TranslateSendReceiveService) {
   }
 
   /**
@@ -46,50 +57,35 @@ export class Rights {
    * operation for which the user's permissions should be checked.
    * @param {boolean} projectOwnerAllowed - When this is true and the current project is owned by
    * the current user, the user will be considered to always have permission.
-   * @return {Function<boolean>} - A function that will indicate whether the user is
-   * allowed to perform the given operation.
+   * @return {boolean} - indicates whether the user is allowed to perform the given operation.
    */
   private isPermitted(allowArchived: boolean, domain: RightsFunction, operation: RightsFunction,
-                      projectOwnerAllowed: boolean = false): ConditionFunction {
-    return () => {
-      if (this.sendReceive.isInProgress()) return false;
-      else if (!this.session.project()) return false;
-      else if (!allowArchived && this.session.project().isArchived) return false;
-      else {
-        let hasRight = this.session.hasProjectRight(domain, operation);
+                      projectOwnerAllowed: boolean = false): boolean {
+    if (this.sendReceiveService.isInProgress) return false;
+    else if (!this.session.project()) return false;
+    else if (!allowArchived && this.session.project().isArchived) return false;
+    else {
+      let hasRight = this.session.hasProjectRight(domain, operation);
 
-        // The case where user does not explicitly have a right, but does because user is owner
-        if (projectOwnerAllowed) hasRight = hasRight || this.session.project().userIsProjectOwner;
-        return hasRight;
-      }
-    };
-  }
-
-}
-
-// mock sendReceive service
-class SendReceive {
-  isInProgress () {
-    return false;
+      // The case where user does not explicitly have a right, but does because user is owner
+      if (projectOwnerAllowed) hasRight = hasRight || this.session.project().userIsProjectOwner;
+      return hasRight;
+    }
   }
 }
 
 export class TranslateRightsService {
-  private rights: Rights;
+  private rights: TranslateRights;
 
-  static $inject: string[] = ['sessionService'];
-  constructor(private sessionService: SessionService) {
-    // mock sendReceive service (TODO combine with lexRightsService)
-    const sendReceive = new SendReceive();
-
-    this.rights = new Rights(sessionService.domain, sessionService.operation, sendReceive);
+  static $inject: string[] = ['sessionService', 'translateSendReceiveService'];
+  constructor(private readonly sessionService: SessionService, sendReceiveService: TranslateSendReceiveService) {
+    this.rights = new TranslateRights(sessionService.domain, sessionService.operation, sendReceiveService);
   }
 
-  getRights(): angular.IPromise<Rights> {
-    return this.sessionService.getSession().then((session) => {
+  getRights(): angular.IPromise<TranslateRights> {
+    return this.sessionService.getSession().then(session => {
       this.rights.session = session;
       return this.rights;
     });
-  };
-
+  }
 }

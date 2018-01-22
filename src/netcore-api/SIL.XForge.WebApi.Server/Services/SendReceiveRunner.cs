@@ -44,71 +44,84 @@ namespace SIL.XForge.WebApi.Server.Services
         public async Task RunAsync(PerformContext context, IJobCancellationToken cancellationToken, string userId,
             string jobId)
         {
-            SendReceiveJob job = await _jobRepo.UpdateAsync(j => j.Id == jobId,
-                b => b.Set(j => j.BackgroundJobId, context.BackgroundJob.Id)
-                      .Set(j => j.State, SendReceiveJob.SyncingState));
+            SendReceiveJob job = await _jobRepo.UpdateAsync(j => j.Id == jobId, u => u
+                .Set(j => j.BackgroundJobId, context.BackgroundJob.Id)
+                .Set(j => j.State, SendReceiveJob.SyncingState));
             if (job == null)
                 return;
 
-            SendReceiveOptions options = _options.Value;
-            if ((await _userRepo.TryGetAsync(userId)).TryResult(out User user))
+            try
             {
-                if ((await _projectRepo.TryGetAsync(job.ProjectRef)).TryResult(out TranslateProject project))
+                SendReceiveOptions options = _options.Value;
+                if ((await _userRepo.TryGetAsync(userId)).TryResult(out User user))
                 {
-                    if (!Directory.Exists(options.TranslateDir))
-                        Directory.CreateDirectory(options.TranslateDir);
-
-                    IRepository<TranslateDocumentSet> docSetRepo = _docSetRepoFactory.Create(project);
-                    using (var conn = new Connection(new Uri(options.ShareDBUrl)))
+                    if ((await _projectRepo.TryGetAsync(job.ProjectRef)).TryResult(out TranslateProject project))
                     {
-                        await conn.ConnectAsync();
+                        if (!Directory.Exists(options.TranslateDir))
+                            Directory.CreateDirectory(options.TranslateDir);
 
-                        await SendReceiveAsync(user, conn, project, docSetRepo, project.Config.Source.ParatextProject,
-                            "source");
-                        await SendReceiveAsync(user, conn, project, docSetRepo, project.Config.Target.ParatextProject,
-                            "target");
+                        IRepository<TranslateDocumentSet> docSetRepo = _docSetRepoFactory.Create(project);
+                        using (var conn = new Connection(new Uri(options.ShareDBUrl)))
+                        {
+                            await conn.ConnectAsync();
 
-                        await conn.CloseAsync();
+                            ParatextProject sourceParatextProject = project.Config.Source.ParatextProject;
+                            IReadOnlyList<string> sourceBookIds = await GetBooksAsync(user, sourceParatextProject);
+
+                            ParatextProject targetParatextProject = project.Config.Target.ParatextProject;
+                            IReadOnlyList<string> targetBookIds = await GetBooksAsync(user, targetParatextProject);
+
+                            string[] bookIds = sourceBookIds.Intersect(targetBookIds).ToArray();
+                            int processedCount = 0;
+                            foreach (string bookId in bookIds)
+                            {
+                                await SendReceiveBookAsync(user, conn, project, docSetRepo, sourceParatextProject,
+                                    "source", bookId);
+                                await SendReceiveBookAsync(user, conn, project, docSetRepo, targetParatextProject,
+                                    "target", bookId);
+                                processedCount++;
+                                double percentCompleted = ((double) processedCount / bookIds.Length) * 100.0;
+                                job = await _jobRepo.UpdateAsync(job, u => u
+                                    .Set(j => j.PercentCompleted, percentCompleted));
+                            }
+
+                            DeleteBookTextFiles(project, sourceParatextProject, sourceBookIds);
+                            DeleteBookTextFiles(project, targetParatextProject, targetBookIds);
+
+                            await conn.CloseAsync();
+                        }
+
+                        job = await _jobRepo.UpdateAsync(job, u => u
+                            .Set(j => j.State, SendReceiveJob.IdleState)
+                            .Unset(j => j.BackgroundJobId));
+                        await _projectRepo.UpdateAsync(project,
+                            u => u.Set(p => p.LastSyncedDate, job.DateModified));
                     }
                 }
             }
-
-            await _jobRepo.UpdateAsync(j => j.Id == jobId,
-                b => b.Set(j => j.State, SendReceiveJob.IdleState)
-                      .Unset(j => j.BackgroundJobId));
+            catch (Exception)
+            {
+                await _jobRepo.UpdateAsync(job, u => u
+                    .Set(j => j.State, SendReceiveJob.HoldState)
+                    .Unset(j => j.BackgroundJobId));
+            }
         }
 
-        private async Task SendReceiveAsync(User user, Connection conn, TranslateProject project,
-            IRepository<TranslateDocumentSet> docSetRepo, ParatextProject paratextProject, string docType)
+        private async Task<IReadOnlyList<string>> GetBooksAsync(User user, ParatextProject paratextProject)
         {
-            if (!(await _paratextService.TryGetBooksAsync(user, paratextProject.Id))
+            if ((await _paratextService.TryGetBooksAsync(user, paratextProject.Id))
                 .TryResult(out IReadOnlyList<string> bookIds))
             {
-                return;
+                return bookIds;
             }
 
+            throw new InvalidOperationException("Error occurred while getting list of books from ParaTExt server.");
+        }
+
+        private void DeleteBookTextFiles(TranslateProject project, ParatextProject paratextProject,
+            IEnumerable<string> bookIds)
+        {
             string projectPath = GetProjectPath(project, paratextProject);
-            if (!Directory.Exists(projectPath))
-                Directory.CreateDirectory(projectPath);
-
-            foreach (string bookId in bookIds)
-            {
-                TranslateDocumentSet docSet = await docSetRepo.Query()
-                    .FirstOrDefaultAsync(ds => ds.BookId == bookId && !ds.IsDeleted);
-                if (docSet == null)
-                {
-                    // TODO: get book name from book id
-                    docSet = new TranslateDocumentSet { Name = bookId, BookId = bookId };
-                    await docSetRepo.InsertAsync(docSet);
-                }
-                Document<Delta> doc = GetShareDBDocument(conn, project, docSet, docType);
-                string fileName = GetBookTextFileName(projectPath, bookId);
-                if (File.Exists(fileName))
-                    await SendReceiveBookAsync(user, paratextProject, fileName, bookId, doc);
-                else
-                    await CloneBookAsync(user, paratextProject, fileName, bookId, doc);
-            }
-
             var booksToRemove = new HashSet<string>(Directory.EnumerateFiles(projectPath)
                 .Select(p => Path.GetFileNameWithoutExtension(p)));
             booksToRemove.ExceptWith(bookIds);
@@ -116,22 +129,56 @@ namespace SIL.XForge.WebApi.Server.Services
                 File.Delete(GetBookTextFileName(projectPath, bookId));
         }
 
-        private async Task SendReceiveBookAsync(User user, ParatextProject paratextProject, string fileName,
+        private async Task SendReceiveBookAsync(User user, Connection conn, TranslateProject project,
+            IRepository<TranslateDocumentSet> docSetRepo, ParatextProject paratextProject, string docType,
+            string bookId)
+        {
+            string projectPath = GetProjectPath(project, paratextProject);
+            if (!Directory.Exists(projectPath))
+                Directory.CreateDirectory(projectPath);
+
+            TranslateDocumentSet docSet = await docSetRepo.Query()
+                .FirstOrDefaultAsync(ds => ds.BookId == bookId && !ds.IsDeleted);
+            if (docSet == null)
+            {
+                // TODO: get book name from book id
+                docSet = new TranslateDocumentSet { Name = bookId, BookId = bookId };
+                await docSetRepo.InsertAsync(docSet);
+            }
+            Document<Delta> doc = GetShareDBDocument(conn, project, docSet, docType);
+            string fileName = GetBookTextFileName(projectPath, bookId);
+            if (File.Exists(fileName))
+                await SyncBookAsync(user, paratextProject, fileName, bookId, doc);
+            else
+                await CloneBookAsync(user, paratextProject, fileName, bookId, doc);
+        }
+
+        private async Task SyncBookAsync(User user, ParatextProject paratextProject, string fileName,
             string bookId, Document<Delta> doc)
         {
             await doc.FetchAsync();
             XElement bookTextElem = await LoadBookTextAsync(fileName);
 
-            XElement usxElem = bookTextElem.Element("usx");
-            XElement bookElem = usxElem.Element("book");
-            usxElem = DeltaUsxMapper.ToUsx((string) bookElem.Attribute("code"), (string) bookElem, doc.Data);
+            XElement oldUsxElem = bookTextElem.Element("usx");
+            XElement bookElem = oldUsxElem.Element("book");
+            XElement newUsxElem = DeltaUsxMapper.ToUsx((string) oldUsxElem.Attribute("version"),
+                (string) bookElem.Attribute("code"), (string) bookElem, doc.Data);
 
             var revision = (string) bookTextElem.Attribute("revision");
 
-            if (!(await _paratextService.TryUpdateBookTextAsync(user, paratextProject.Id, bookId, revision,
-                usxElem.ToString())).TryResult(out string bookText))
+            string bookText;
+            if (XNode.DeepEquals(oldUsxElem, newUsxElem))
             {
-                return;
+                if (!(await _paratextService.TryGetBookTextAsync(user, paratextProject.Id, bookId))
+                    .TryResult(out bookText))
+                {
+                    throw new InvalidOperationException("Error occurred while getting book text from ParaTExt server.");
+                }
+            }
+            else if (!(await _paratextService.TryUpdateBookTextAsync(user, paratextProject.Id, bookId, revision,
+                newUsxElem.ToString())).TryResult(out bookText))
+            {
+                throw new InvalidOperationException("Error occurred while updating book text on ParaTExt server.");
             }
 
             bookTextElem = XElement.Parse(bookText);
@@ -149,7 +196,7 @@ namespace SIL.XForge.WebApi.Server.Services
             if (!(await _paratextService.TryGetBookTextAsync(user, paratextProject.Id, bookId))
                 .TryResult(out string bookText))
             {
-                return;
+                throw new InvalidOperationException("Error occurred while getting book text from ParaTExt server.");
             }
 
             var bookTextElem = XElement.Parse(bookText);
