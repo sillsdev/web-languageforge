@@ -42,7 +42,7 @@ angular.module('lexicon',
       })
       .state('rapidWord', {
         url: '/rapidWord',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/rapid-word-collection.html'
+        templateUrl: '/angular-app/languageforge/lexicon/editor/rapid-word-collection.html'
       })
       .state('importExport', {
         url: '/importExport',
@@ -55,8 +55,7 @@ angular.module('lexicon',
       .state('sync', {
         url: '/sync',
         templateUrl: '/angular-app/languageforge/lexicon/settings/sync.html'
-      })
-      ;
+      });
 
     // configure interface language file path
     $translateProvider.useStaticFilesLoader({
@@ -198,6 +197,4 @@ angular.module('lexicon',
     $scope.$watch('idmap', function () {
       $scope.breadcrumbs = breadcrumbService.read();
     }, true);
-  }])
-
-  ;
+  }]);

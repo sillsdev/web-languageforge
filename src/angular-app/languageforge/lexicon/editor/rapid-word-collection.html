@@ -1,0 +1,77 @@
+<div class="container" data-ng-cloak data-ng-controller="RapidWordCollectionCtrl">
+    <br>
+    <form name="RapidWordCollectionForm" class="form-horizontal dc-semanticdomain">
+        <div class="lexAppToolbar">
+            <div class="pull-left">
+                <div class="form-inline"><label class="text-md-left">Semantic Domain</label>
+                    <select class="form-control" data-ng-model="newValue" data-ng-options="option.value as option.value for option in options | orderBy: 'value' | filter: filterSelectedOptions">
+                        <option value="">Pick an item</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-block">
+            <div class="form-group row ng-scope">
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="pull-left">
+                            <label class="control-label col-md-4 text-md-right">
+                                <span class="ng-binding">Word</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <span class="add-on wsid input-group-addon notranslate ng-binding" title="en English">en</span>
+                                </span>
+                                <input type="text" class="form-control" style="max-width: none; width: 305px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <label class="control-label col-md-4 text-md-right">
+                            <span class="ng-binding">Gloss</span>
+                        </label>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <span class="add-on wsid input-group-addon notranslate ng-binding" tabindex="-1" title="th Thai">th</span>
+                                <span class="add-on">
+                                    <input type="text" class="form-control" style="max-width: none; width: 305px;">
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pull-right">
+                <span data-ng-if="rights.canEditEntry()" class="ng-scope">
+                    <span class="text-muted ng-binding"></span>
+                    <button id="saveEntryBtn" class="btn btn-primary" data-ng-click="saveCurrentEntry(true)">
+                        <i class="fa fa-save"></i>
+                        <span class="hidden-sm-down ng-binding">Save Entry</span>
+                    </button>
+                </span>
+            </div>
+            <div class="list-group" style="padding-top: 5%;">
+
+                <!-- <div data-ng-repeat="entry in visibleEntries track by entry.id" >
+                   <div dir="auto" class="listItemPrimary" >{{entry}}</div>
+               </div> -->
+
+                <div class="lexiconListItem list-group-item list-group-item-action active">
+                    <small ng-hide="entryListModifiers.filterBy" id="totalNumberOfEntries" class="pull-right ng-binding">
+                        <span class="notranslate ng-binding"></span> {{'0 entries' | translate}}</small>
+                    <small ng-show="entryListModifiers.filterBy" class="pull-right notranslate ng-binding ng-hide">1 / 1</small>
+                    <span class="notranslate ng-binding">Words for: </span>
+                    <span class="ng-binding">{{newValue}}</span>
+                </div>
+                <div class="lexiconListItem list-group-item list-group-item-action" data-ng-click="editEntryAndScroll(entry.id)">
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
