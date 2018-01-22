@@ -33,11 +33,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
   .controller('EditorCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService', '$q',
     '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'lexRightsService',
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
-    'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService',
+    'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService', '$timeout',
   function ($scope, userService, sessionService, lexService, $q,
             $state, $window, $interval, $filter, linkService, utils, rightsService,
             notice, $rootScope, $location, lexConfig, commentService,
-            editorService, lexProjectService, sendReceive, modal) {
+            editorService, lexProjectService, sendReceive, modal, $timeout) {
 
     var pristineEntry = {};
     var warnOfUnsavedEditsId;
@@ -695,19 +695,24 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       };
 
       $scope.showCommentsPanel = function showCommentsPanel() {
-        $scope.commentPanelVisible = true;
-        angular.element('.comments-right-panel-container').addClass('panel-opening');
-        setTimeout(function () {
-          angular.element('.comments-right-panel-container').removeClass('panel-opening');
-        }, 500);
+        if ($scope.commentPanelVisible !== true) {
+          $scope.commentPanelVisible = true;
+          angular.element('.comments-right-panel-container').addClass('panel-opening');
+          $timeout(function () {
+            angular.element('.comments-right-panel-container').removeClass('panel-opening');
+          }, 500);
+        }
       };
 
       $scope.hideCommentsPanel = function hideCommentsPanel() {
         $scope.commentPanelVisible = -1;
-        setTimeout(function () {
+
+        // Delay relates to the CSS timer for mobile vs > tablet
+        var delay = (angular.element('#compactEntryListContainer').is(':visible')) ? 1500 : 500;
+        $timeout(function () {
           $scope.commentPanelVisible = false;
           $scope.setCommentContext('', '');
-        }, 500); // Delay relates to the CSS timer
+        }, delay);
       };
 
       sendReceive.setPollUpdateSuccessCallback(pollUpdateSuccess);
