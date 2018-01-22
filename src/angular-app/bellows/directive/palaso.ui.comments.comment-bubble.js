@@ -14,19 +14,22 @@ angular.module('palaso.ui.comments')
         multiOptionValue: '<',
         picture: '<'
       },
-      controller: ['$scope', 'lexCommentService', 'sessionService', '$element',
-        function ($scope, commentService, ss, $element) {
+      controller: ['$scope', 'lexCommentService', 'sessionService', '$element', 'lexConfigService',
+        function ($scope, commentService, ss, $element, lexConfig) {
         if (!angular.isDefined($scope.inputSystem)) {
           $scope.inputSystem = '';
         }
 
         $scope.pictureSrc = '';
-        if (angular.isDefined($scope.configType) && $scope.configType === 'picture') {
-          $scope.contextId = $scope.field + '_' + $scope.picture.guid;
-          $scope.pictureSrc = $scope.picture.filename;
-        } else {
-          $scope.contextId = $scope.field + '_' + $scope.inputSystem;
-        }
+        $scope.contextId = $scope.field + '_' + $scope.inputSystem;
+        lexConfig.getFieldConfig($scope.field).then(function (fieldConfig) {
+          if (fieldConfig.type === 'pictures' && angular.isDefined($scope.picture)) {
+            $scope.pictureSrc = $scope.$parent.getPictureUrl($scope.picture);
+            $scope.contextId += '_' + $scope.pictureSrc; // Would prefer to use the ID
+          } else if (fieldConfig.type === 'multioptionlist') {
+            $scope.contextId += '_' + $scope.multiOptionValue;
+          }
+        });
 
         $scope.element = $element;
 
@@ -52,16 +55,25 @@ angular.module('palaso.ui.comments')
             }
 
             if ($scope.control.commentContext.field === $scope.field &&
-              $scope.control.commentContext.abbreviation === $scope.inputSystem) {
+              $scope.control.commentContext.abbreviation === $scope.inputSystem &&
+              $scope.control.commentContext.multiOptionValue === $scope.multiOptionValue &&
+              $scope.control.commentContext.pictureSrc === $scope.pictureSrc) {
               $scope.control.hideCommentsPanel();
             } else {
-              $scope.control.setCommentContext($scope.field, $scope.inputSystem);
+              $scope.control.setCommentContext($scope.field,
+                $scope.inputSystem,
+                $scope.multiOptionValue,
+                $scope.pictureSrc);
               $scope.control.selectFieldForComment($scope.field,
                 $scope.model,
                 $scope.inputSystem,
                 $scope.multiOptionValue,
                 $scope.pictureSrc);
-              var bubbleOffset = $scope.element.offset().top;
+              if ($scope.multiOptionValue) {
+                var bubbleOffset = $scope.element.parents('.list-repeater').offset().top;
+              } else {
+                var bubbleOffset = $scope.element.offset().top;
+              }
               var rightPanel = angular.element('.comments-right-panel');
               var rightPanelOffset = rightPanel.offset().top;
               var offsetAuthor = 40;
