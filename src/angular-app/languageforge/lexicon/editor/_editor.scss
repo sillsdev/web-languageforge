@@ -326,43 +326,161 @@ dc-entry .card {
 }
 
 #lexAppEditView {
-    .lexiconItemListContainer {
-        max-height: 460px;
-        overflow: auto;
+  .lexiconItemListContainer {
+    max-height: 460px;
+    overflow: auto;
+  }
+  .word-definition-title {
+    margin-bottom: 5px;
+    padding: 8px 0 24px;
+  }
+  .card-body .addItem {
+    margin-right: 0;
+  }
+  .topAddMeaning {
+    margin-bottom: 14px;
+  }
+  .list-group-item:not(.list-group-item-action) {
+    cursor: pointer;
+  }
+  .listItemPrimary {
+    z-index: 2;
+    font-size: 1.0em;
+  }
+  .listItemSecondary {
+    z-index: 2;
+    font-size: 0.8em;
+    overflow: hidden;
+  }
+  .deleteX {
+    i {
+      cursor: pointer;
     }
-    .word-definition-title {
-        margin-bottom: 5px;
-        padding: 8px 0 24px;
+    i:hover {
+      color: map-get($theme-colors, danger);
     }
-    .card-body .addItem {
-        margin-right: 0;
-    }
-    .topAddMeaning {
-        margin-bottom: 14px;
-    }
-    .list-group-item:not(.list-group-item-action) {
-        cursor: pointer;
-    }
-    .listItemPrimary {
-        z-index: 2;
-        font-size: 1.0em;
-    }
-    .listItemSecondary {
-        z-index: 2;
-        font-size: 0.8em;
+  }
+  h5 {
+    margin: 0;
+  }
+  .entry-words-minimized {
+    position: absolute;
+    z-index: 1;
+    opacity: 0;
+    transition: all 0.5s;
+    transform: rotate(90deg);
+    transform-origin: left;
+    margin-left: 5px;
+  }
+  .entry-words-container {
+    opacity: 1;
+    display: block;
+  }
+  > .container,
+  .entries-list-container,
+  .entry-primary-container {
+    transition: all 0.5s;
+  }
+  .comments-right-panel-backdrop {
+    display: none;
+  }
+  @include media-breakpoint-between(md, lg) {
+    &.comments-panel-visible {
+      > .container {
+        max-width: 634px;
+      }
+      .entries-list-container {
+        flex: 0 0 50px;
         overflow: hidden;
-    }
-    .deleteX {
-        i {
-            cursor: pointer;
+        .entry-words-minimized {
+          opacity: 1;
         }
-        i:hover {
-            color: map-get($theme-colors, danger);
+        .entry-words-container {
+          opacity: 0;
+          overflow: hidden;
+          width: 0;
+          height: 0;
         }
+      }
+      .entry-primary-container {
+        flex: 0 0 calc(100% - 50px);
+        max-width: 100%;
+      }
     }
-    h5 {
-        margin: 0;
+    &.panel-closing {
+      > .container,
+      .entries-list-container,
+      .entry-primary-container {
+        transition-delay: 0.5s;
+      }
+      .entry-words-minimized {
+        margin-left: -50px;
+      }
+      .entry-words-container {
+        transition: opacity 0.5s ease-in-out 1s;
+      }
+      .entries-list-container {
+        overflow: hidden;
+      }
     }
+  }
+  @include media-breakpoint-down(sm) {
+    .comments-right-panel {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 1001;
+      padding-top: 0 !important;
+      .comments-right-panel-container {
+        width: 280px !important;
+        transition: opacity 0.5s;
+        background: #e6eff5;
+        &:before {
+          display: none;
+        }
+        .commentsListMainContainer {
+          height: calc(100% - 33px);
+          overflow: auto;
+        }
+      }
+      .context-mode {
+        .commentsListMainContainer {
+          height: 100%;
+        }
+      }
+    }
+    .comments-right-panel-backdrop {
+      display: block;
+      opacity: 0;
+      transition: opacity 0.5s;
+      position: absolute;
+      z-index: 1000;
+      height: 0;
+      width: 0;
+      left: 0;
+      top: 0;
+      background: rgba(192, 192, 192, 0.9);
+      content: "";
+      i {
+        cursor: pointer;
+        margin: 12px;
+        font-size: 24px;
+      }
+    }
+    &.comments-panel-visible {
+      .comments-right-panel {
+        height: 100%;
+        .comments-right-panel-container {
+          height: 100%;
+        }
+      }
+      .comments-right-panel-backdrop {
+        opacity: 1;
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
 }
 
 .lexiconListItemCompact {
@@ -392,6 +510,19 @@ dc-entry .card {
     position: relative;
     .comment-bubble-group {
       position: relative;
+    }
+  }
+  @include media-breakpoint-down(md) {
+    .dc-multitext,
+    .dc-multioptionlist,
+    .dc-pictures,
+    .dc-optionlist,
+    .dc-semanticdomain {
+      .comment-bubble-group:first-child {
+        .commentBubbleContainer {
+          top: 44px;
+        }
+      }
     }
   }
   .dc-example {
