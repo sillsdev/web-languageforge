@@ -21,23 +21,27 @@ angular.module('palaso.ui.comments')
          regarding: {}
          };
          */
-        $scope.panelVisible = false;
-        $scope.showNewComment = true;
+        $scope.showNewComment = false;
+        $scope.senseLabel = '';
         $scope.commentInteractiveStatus = {
           id: '',
           visible: false
         };
 
         $scope.initializeNewComment = function initializeNewComment() {
-          $scope.newComment =  {
-            id: '',
-            content: '',
-            entryRef: $scope.entry.id,
-            regarding: {
-              meaning: $scope.control.getMeaningForDisplay($scope.entry),
-              word: $scope.control.getWordForDisplay($scope.entry)
-            }
-          };
+          if($scope.showNewComment) {
+            $scope.newComment.content = '';
+          } else {
+            $scope.newComment = {
+              id: '',
+              content: '',
+              entryRef: $scope.entry.id,
+              regarding: {
+                meaning: $scope.control.getMeaningForDisplay($scope.entry),
+                word: $scope.control.getWordForDisplay($scope.entry)
+              }
+            };
+          }
         };
 
         $scope.currentEntryCommentsFiltered = commentService.comments.items.currentEntryFiltered;
@@ -168,7 +172,8 @@ angular.module('palaso.ui.comments')
           if ($scope.currentEntryCommentsFiltered.length === 0) {
             label = $filter('translate')('Your comment goes here.  Be the first to share!');
           } else if ($scope.currentEntryCommentsFiltered.length > 0) {
-            label = $filter('translate')('Start a new conversation thread.  Enter your comment here.');
+            label = $filter('translate')('Start a new conversation thread. ' +
+              'Enter your comment here.');
           } else {
             label = $filter('translate')('Join the discussion and type your comment here.');
           }
@@ -179,6 +184,12 @@ angular.module('palaso.ui.comments')
         $scope.showCommentsInContext = function showCommentsInContext(field, abbreviation) {
           $scope.commentFilter.regardingField = field;
           $scope.commentFilter.regardingInputSystemAbbreviation = abbreviation;
+          if (field !== '') {
+            $scope.showNewComment = true;
+          } else {
+            $scope.showNewComment = false;
+          }
+
           commentService.refreshFilteredComments($scope.commentFilter);
         };
 
@@ -198,23 +209,28 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.getSenseLabel = function getSenseLabel(regardingField) {
-            var configField = null;
-            if ($scope.control.config.entry.fields.hasOwnProperty(regardingField)) {
-              configField = $scope.control.config.entry.fields[regardingField];
-            } else if ($scope.control.config.entry.fields.senses.fields.hasOwnProperty(regardingField)) {
-              configField = $scope.control.config.entry.fields.senses.fields[regardingField];
-            } else if ($scope.control.config.entry.fields.senses.fields.examples.fields.hasOwnProperty(regardingField)) {
-              configField = $scope.control.config.entry.fields.senses.fields.examples.fields[regardingField];
-            }
-
-            if (configField !== null) {
-              if (configField.hasOwnProperty('senseLabel')) {
-                return configField.senseLabel;
-              }
-            }
-
+          if (!angular.isDefined(regardingField)) {
             return '';
-          };
+          }
+
+          var configField = null;
+          var fields = $scope.control.config.entry.fields;
+          if (fields.hasOwnProperty(regardingField)) {
+            configField = fields[regardingField];
+          } else if (fields.senses.fields.hasOwnProperty(regardingField)) {
+            configField = fields.senses.fields[regardingField];
+          } else if (fields.senses.fields.examples.fields.hasOwnProperty(regardingField)) {
+            configField = fields.senses.fields.examples.fields[regardingField];
+          }
+
+          if (configField !== null) {
+            if (configField.hasOwnProperty('senseLabel')) {
+              return configField.senseLabel;
+            }
+          }
+
+          return '';
+        };
 
         $scope.$watch('entry', function (newVal) {
           if (newVal && !angular.equals(newVal, {})) {
