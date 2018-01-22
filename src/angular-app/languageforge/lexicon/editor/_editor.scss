@@ -530,6 +530,16 @@ dc-entry .card {
       right: -41px;
     }
   }
+  .dc-pictures {
+    .commentBubbleContainer {
+      right: -35px;
+    }
+    .dc-multitext {
+      .commentBubbleContainer {
+        right: -20px;
+      }
+    }
+  }
 }
 
 .entryItemView {
