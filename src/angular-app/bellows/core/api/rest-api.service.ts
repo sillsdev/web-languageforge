@@ -23,15 +23,15 @@ export class RestApiService {
       .then(session => {
         const httpConfig = {
           method,
-          url,
+          url: '/api2' + url,
           data: JSON.stringify(data),
           headers: {
             'Content-type': 'application/json',
             'Authorization': 'Bearer ' + session.accessToken()
           }};
         return this.$http<T>(httpConfig);
-      }).then(arg => {
-        return arg.status === 204 ? null : arg.data;
+      }).then(response => {
+        return response.status === 204 ? null : response.data;
       });
   }
 }

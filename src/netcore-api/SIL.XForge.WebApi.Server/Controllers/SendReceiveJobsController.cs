@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Dtos;
@@ -26,11 +27,33 @@ namespace SIL.XForge.WebApi.Server.Controllers
         }
 
         [HttpGet]
-        [SiteAuthorize(Domain.Projects, Operation.View)]
-        public async Task<IEnumerable<SendReceiveJobDto>> GetAllAsync()
+        public async Task<IEnumerable<SendReceiveJobDto>> QueryAsync([FromQuery] string project,
+            [FromQuery] bool? active)
         {
-            IReadOnlyList<SendReceiveJob> jobs = await _jobRepo.GetAllAsync();
-            return jobs.Select(j => Map<SendReceiveJobDto>(j));
+            IMongoQueryable<SendReceiveJob> query = _jobRepo.Query();
+            if (project != null)
+                query = query.Where(j => j.ProjectRef == project);
+            if (active != null)
+            {
+                if (active.Value)
+                {
+                    query = query.Where(j => j.State == SendReceiveJob.PendingState
+                        || j.State == SendReceiveJob.SyncingState);
+                }
+                else
+                {
+                    query = query.Where(j => j.State == SendReceiveJob.IdleState
+                        || j.State == SendReceiveJob.HoldState);
+                }
+            }
+            var dtos = new List<SendReceiveJobDto>();
+            var right = new Right(Domain.Projects, Operation.View);
+            foreach (SendReceiveJob job in await query.ToListAsync())
+            {
+                if ((await AuthorizeAsync(job.ProjectRef, right)) == AuthorizeResult.Success)
+                    dtos.Add(Map<SendReceiveJobDto>(job));
+            }
+            return dtos;
         }
 
         [HttpGet("{id}", Name = RouteNames.SendReceiveJob)]
@@ -51,7 +74,7 @@ namespace SIL.XForge.WebApi.Server.Controllers
         }
 
         [HttpPost]
-        [ProjectAuthorize(Domain.Projects, Operation.Edit)]
+        [ProjectAuthorize(Domain.Projects, Operation.Edit, "projectId")]
         public async Task<IActionResult> CreateAsync([FromBody] string projectId)
         {
             bool created = (await _sendReceiveService.TryCreateJobAsync(UserId, projectId))

@@ -27,7 +27,7 @@ namespace SIL.XForge.WebApi.Server.Services
                 if (op.OpType() != Delta.InsertType)
                     throw new ArgumentException("The note delta is not a document.", nameof(noteDelta));
 
-                var attrs = (JObject) op[Delta.Attributes].DeepClone();
+                var attrs = op[Delta.Attributes] == null ? new JObject() : (JObject) op[Delta.Attributes].DeepClone();
                 attrs.Merge(JToken.FromObject(noteAttrs));
                 delta.Insert(op[Delta.InsertType], attrs);
             }

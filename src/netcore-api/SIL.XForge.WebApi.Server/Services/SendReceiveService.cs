@@ -19,8 +19,8 @@ namespace SIL.XForge.WebApi.Server.Services
         public async Task<Attempt<SendReceiveJob>> TryCreateJobAsync(string userId, string projectId)
         {
             SendReceiveJob job = await _jobRepo.UpdateAsync(j => j.ProjectRef == projectId
-                && j.State != SendReceiveJob.IdleState,
-                b => b
+                && (j.State == SendReceiveJob.PendingState || j.State == SendReceiveJob.SyncingState),
+                u => u
                     .SetOnInsert(j => j.ProjectRef, projectId)
                     .SetOnInsert(j => j.State, SendReceiveJob.PendingState)
                     .Inc(j => j.StartCount, 1),
@@ -39,7 +39,7 @@ namespace SIL.XForge.WebApi.Server.Services
         {
             if (await _jobRepo.DeleteAsync(job))
             {
-                if (job.State != SendReceiveJob.IdleState)
+                if (job.State == SendReceiveJob.PendingState || job.State == SendReceiveJob.SyncingState)
                     BackgroundJob.Delete(job.BackgroundJobId);
                 return true;
             }

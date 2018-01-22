@@ -8,6 +8,6 @@ export class UserRestApiService {
   constructor(private restApiService: RestApiService) { }
 
   getParatextInfo(userId: string): angular.IPromise<ParatextUserInfo> {
-    return this.restApiService.get('/api2/users/' + userId + '/paratext');
+    return this.restApiService.get('/users/' + userId + '/paratext');
   }
 }
