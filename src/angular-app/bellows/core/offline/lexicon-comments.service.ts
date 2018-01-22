@@ -3,6 +3,7 @@ import * as angular from 'angular';
 import {ApiService} from '../api/api.service';
 import {JsonRpcCallback, JsonRpcResult} from '../api/json-rpc.service';
 import {CommentsOfflineCacheService} from './comments-offline-cache.service';
+import {LexiconConfigService} from '../../../languageforge/lexicon/core/lexicon-config.service';
 
 class Comment {
   id: string;
@@ -58,38 +59,56 @@ export class Comments {
 export class LexiconCommentService {
   comments: Comments;
 
-  static $inject: string[] = ['apiService', 'commentsOfflineCache', '$filter'];
+  static $inject: string[] = ['apiService', 'commentsOfflineCache', '$filter', 'lexConfigService', '$q'];
   constructor(private api: ApiService, private offlineCache: CommentsOfflineCacheService,
-              private $filter: angular.IFilterService) {
+              private $filter: angular.IFilterService, private lexConfig: LexiconConfigService,
+              private $q: angular.IQService) {
     this.comments = new Comments();
   }
 
   /**
    * This should be called whenever the entry context changes (to update the comments and comment counts)
    */
-  loadEntryComments(entryId: string): void {
+  loadEntryComments(entryId: string): angular.IPromise<any> {
     this.comments.counts.currentEntry.total = 0;
     this.comments.counts.currentEntry.fields = {};
     this.comments.items.currentEntry.length = 0;
+    const defer = this.$q.defer();
+    const promises = [];
     for (const comment of this.comments.items.all) {
-      const contextId = comment.regarding.field  + '_' + comment.regarding.inputSystemAbbreviation;
       if (comment.entryRef === entryId) {
-        if (contextId && angular.isUndefined(this.comments.counts.currentEntry.fields[contextId])) {
-          this.comments.counts.currentEntry.fields[contextId] = 0;
-        }
+        promises.push(this.lexConfig.getFieldConfig(comment.regarding.field).then(fieldConfig => {
+          // As the promise runs when its ready the comments can double up if loadEntryComments is run multiple times
+          if (this.comments.items.currentEntry.indexOf(comment) === -1) {
+            let contextId = comment.regarding.field + '_' + comment.regarding.inputSystemAbbreviation;
+            if (fieldConfig.type === 'pictures' && comment.regarding.fieldValue.indexOf('/assets/') !== -1) {
+              contextId += '_' + comment.regarding.fieldValue; // Would prefer to use the picture ID
+            } else if (fieldConfig.type === 'multioptionlist') {
+              contextId += '_' + comment.regarding.fieldValue;
+            }
 
-        this.comments.items.currentEntry.push(comment);
+            if (contextId && angular.isUndefined(this.comments.counts.currentEntry.fields[contextId])) {
+              this.comments.counts.currentEntry.fields[contextId] = 0;
+            }
 
-        // update the appropriate count for this field and update the total count
-        if (comment.status !== 'resolved') {
-          if (contextId) {
-            this.comments.counts.currentEntry.fields[contextId]++;
+            this.comments.items.currentEntry.push(comment);
+
+            // update the appropriate count for this field and update the total count
+            if (comment.status !== 'resolved') {
+              if (contextId) {
+                this.comments.counts.currentEntry.fields[contextId]++;
+              }
+
+              this.comments.counts.currentEntry.total++;
+            }
           }
-
-          this.comments.counts.currentEntry.total++;
-        }
+        }));
       }
     }
+    this.$q.all(promises).then(response => {
+      defer.resolve();
+    });
+    return defer.promise;
   }
 
   /**
