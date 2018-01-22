@@ -9,14 +9,25 @@ angular.module('palaso.ui.comments')
         field: '=',
         control: '=',
         inputSystem: '<',
-        model: '='
+        model: '=',
+        configType: '<',
+        multiOptionValue: '<',
+        picture: '<'
       },
-      controller: ['$scope', 'lexCommentService', 'sessionService', '$element', function ($scope, commentService, ss, $element) {
+      controller: ['$scope', 'lexCommentService', 'sessionService', '$element',
+        function ($scope, commentService, ss, $element) {
         if (!angular.isDefined($scope.inputSystem)) {
           $scope.inputSystem = '';
         }
 
-        $scope.contextId = $scope.field + '_' + $scope.inputSystem;
+        $scope.pictureSrc = '';
+        if (angular.isDefined($scope.configType) && $scope.configType === 'picture') {
+          $scope.contextId = $scope.field + '_' + $scope.picture.guid;
+          $scope.pictureSrc = $scope.picture.filename;
+        } else {
+          $scope.contextId = $scope.field + '_' + $scope.inputSystem;
+        }
+
         $scope.element = $element;
 
         ss.getSession().then(function (session) {
@@ -45,7 +56,11 @@ angular.module('palaso.ui.comments')
               $scope.control.hideCommentsPanel();
             } else {
               $scope.control.setCommentContext($scope.field, $scope.inputSystem);
-              $scope.control.selectFieldForComment($scope.field, $scope.model, $scope.inputSystem);
+              $scope.control.selectFieldForComment($scope.field,
+                $scope.model,
+                $scope.inputSystem,
+                $scope.multiOptionValue,
+                $scope.pictureSrc);
               var bubbleOffset = $scope.element.offset().top;
               var rightPanel = angular.element('.comments-right-panel');
               var rightPanelOffset = rightPanel.offset().top;

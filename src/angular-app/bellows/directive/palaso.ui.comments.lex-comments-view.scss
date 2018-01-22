@@ -1,7 +1,10 @@
 /* Colours as defined in UxPin */
 $BlackSqueeze: #e6eff5;
+$BlueRibbon: #1d64f0;
 $Botticelli: #cddeeb;
 $Eden: #104060;
+$PastelGreen: #6edc6c;
+$Silver: #c0c0c0;
 $WildSand: #f6f6f6;
 
 #lexAppEditView {
@@ -130,6 +133,25 @@ $WildSand: #f6f6f6;
         .comment-body {
           color: #373a3d;
           margin: 10px 0 14px;
+          .btn {
+            padding: 0;
+            margin: 5px 0;
+            font-style: italic;
+          }
+          .commentRegarding {
+            .form-control {
+              border-radius: 0;
+              background: $WildSand;
+              border: 1px solid $Silver;
+              padding: 2px 6px;
+              font-size: 14px;
+              span {
+                background: transparent;
+                border: 0;
+                padding: 0;
+              }
+            }
+          }
         }
 
         .comment-interaction {
@@ -141,13 +163,14 @@ $WildSand: #f6f6f6;
 
         .comment-actions {
           margin: 4px -14px;
-          padding: 4px 14px;
+          padding: 0 14px;
           display: flex;
           justify-content: space-between;
           border: 1px solid $Botticelli;
           border-left: 0;
           border-right: 0;
-          > div {
+          .btn-action-icon {
+            padding: 4px 0;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -161,12 +184,40 @@ $WildSand: #f6f6f6;
               opacity: 0.75;
             }
           }
+          .btn-like {
+            .liked {
+              opacity: 0.5;
+              cursor: default;
+            }
+          }
+          .btn-todo {
+            .btn-action-icon {
+              width: 100px;
+              justify-content: center;
+            }
+            .resolve-todo,
+            .open-todo {
+              color: #fff;
+              span {
+                opacity: 1;
+              }
+            }
+            .resolve-todo {
+              background-color: $BlueRibbon;
+            }
+            .open-todo {
+              background-color: $PastelGreen;
+              &.open-todo-readonly {
+                cursor: default;
+              }
+            }
+            .mark-todo {
+              border: 1px solid $Botticelli;
+              border-top: 0;
+              border-bottom: 0;
+            }
+          }
         }
-        .commentRegarding {
-          /* TODO: Enable again */
-          display: none;
-        }
-
         .commentRepliesContainer {
           .comment-replies {
             margin: 13px 0;
@@ -174,6 +225,7 @@ $WildSand: #f6f6f6;
             border-left: 1px solid $Botticelli;
             .comment-reply {
               position: relative;
+              margin-bottom: 10px;
             }
             .reply-edit-form {
               margin: 5px;
@@ -223,11 +275,28 @@ $WildSand: #f6f6f6;
           border: 0;
           color: $Eden;
         }
-        .btn.ellipsis-menu {
-          min-width: 14px;
+        .dropdown[uib-dropdown] {
           height: 20px;
-          background: $Botticelli;
-          padding: 0;
+          .btn.ellipsis-menu {
+            min-width: 14px;
+            background: $Botticelli;
+            padding: 0;
+          }
+          .dropdown-menu {
+            background: $WildSand;
+            border: 1px solid $Silver;
+            border-radius: 0;
+            min-width: auto;
+            padding: 0;
+            a {
+              font-size: 12px;
+              color: $Eden;
+              padding: 6px 10px;
+              &:hover {
+                background: darken($WildSand, 10%);
+              }
+            }
+          }
         }
       }
     }
