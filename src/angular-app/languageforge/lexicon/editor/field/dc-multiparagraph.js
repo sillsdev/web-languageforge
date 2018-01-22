@@ -12,12 +12,13 @@ angular.module('palaso.ui.dc.multiparagraph', ['coreModule', 'palaso.ui.showOver
       config: '=',
       model: '=',
       control: '=',
-      selectField: '&'
+      selectField: '&',
+      fieldName: '='
     },
     controller: ['$scope', '$state', 'sessionService', function ($scope, $state, sessionService) {
       $scope.$state = $state;
 
-      sessionService.getSession().then(function(session) {
+      sessionService.getSession().then(function (session) {
         $scope.inputSystems = session.projectSettings().config.inputSystems;
 
         $scope.inputSystemDirection = function inputSystemDirection(tag) {
