@@ -8,8 +8,10 @@
                     <i data-ng-click="deletePicture($index)" title="Delete Picture"
                        class="fa fa-trash"></i>
                 </div>
-                <img class="img-fluid" data-ng-src="{{getPictureUrl(picture)}}" data-ng-attr-title="{{getPictureDescription(picture)}}"
-                     data-ng-click="control.selectFieldForComment('pictures', picture, '', '', getPictureUrl(picture))">
+                <div class="comment-bubble-group">
+                    <img class="img-fluid" data-ng-src="{{getPictureUrl(picture)}}" data-ng-attr-title="{{getPictureDescription(picture)}}">
+                    <comment-bubble control="control" field="fieldName" model="picture" picture="picture" config-type="config.type"></comment-bubble>
+                </div>
                 <div data-ng-if="!config.captionHideIfEmpty || control.show.emptyFields ||
                  (config.captionHideIfEmpty && fieldContainsData('multitext', picture.caption))">
                     <dc-multitext control="control"

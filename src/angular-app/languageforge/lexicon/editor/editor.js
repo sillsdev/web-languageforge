@@ -54,7 +54,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
     $scope.entryListModifiers = editorService.entryListModifiers;
     $scope.commentContext = {
       field: '',
-      abbreviation: ''
+      abbreviation: '',
+      multiOptionValue: '',
+      pictureSrc: ''
     };
     $scope.commentPanelVisible = false;
     $scope.sortEntries = function (args) {
@@ -934,9 +936,14 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         }
       };
 
-      $scope.setCommentContext = function setCommentContext(field, abbreviation) {
+      $scope.setCommentContext = function setCommentContext(field,
+                                                            abbreviation,
+                                                            multiOptionValue,
+                                                            pictureSrc) {
         $scope.commentContext.field = field;
         $scope.commentContext.abbreviation = abbreviation;
+        $scope.commentContext.multiOptionValue = multiOptionValue;
+        $scope.commentContext.pictureSrc = pictureSrc;
       };
 
       $scope.setCommentSenseLabel = function setCommentSenseLabel(fieldName, senseLabel) {

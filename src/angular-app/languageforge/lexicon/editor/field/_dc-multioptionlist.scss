@@ -1,55 +1,93 @@
-form.dc-multioptionlist {
+dc-multioptionlist {
+  form.dc-multioptionlist {
     margin: 0;
-}
+    .controls {
+      .dc-multioptionlist-values {
+        position: relative;
+        margin-bottom: 10px;
+        padding-right: 15px;
+        display: inline-flex;
+        > div {
+          display: flex;
+          .dc-multioptionlist-value {
+            border-right: 0;
+            border-radius: 3px 0 0 3px;
+            select {
+              margin-bottom: 20px;
+            }
+          }
+          .dropdown {
+            .btn {
+              border-radius: 0 3px 3px 0;
+              height: 100%;
+              padding: 0 7px;
+            }
+            .commentBubbleContainer {
+              position: relative;
+              top: 0;
+              right: 0;
+              a.commentBubble {
+                background: inherit;
+                color: inherit;
+                width: auto;
+                height: auto;
+                display: flex;
+                align-items: center;
+                i {
+                  color: inherit;
+                  font-size: 16px;
+                }
+                .commentCount {
+                  background: inherit;
+                  color: inherit;
+                  font-size: inherit;
+                  position: relative;
+                  top: 0;
+                  left: 0;
+                }
+                .commentLabel {
+                  display: inline-block;
+                }
+              }
+            }
+            .dropdown-comment-count {
+              .commentBubbleContainer {
+                position: absolute;
+                a.commentBubble {
+                  .commentCount {
+                    color: #fff;
+                    position: absolute;
+                    top: -9px;
+                    left: -9px;
+                    background: #1d64f0;
+                    font-size: 10px;
+                  }
+                  i,
+                  .commentLabel {
+                    display: none;
+                  }
+                }
+              }
+            }
+          }
+        }
 
-form.dc-multioptionlist .controls div {
-    display: inline-block;
-  &.dc-multioptionlist-values-list {
-    display: block;
+        .dc-multioptionlist-value {
+          border: 1px solid $lf-lines;
+          padding: $input-btn-padding-y $input-btn-padding-x;
+          border-radius: $border-radius;
+        }
+      }
+      .dc-multioptionlist-values-list {
+        display: block;
+      }
+    }
   }
-}
-
-form.dc-multioptionlist .controls > div {
-    margin-bottom: 10px;
-}
-
-.dc-multioptionlist-values {
-    position: relative;
-}
-
-.dc-multioptionlist-values > div {
-    padding-right: 9px;
-}
-
-.dc-multioptionlist-value {
-    border: 1px solid $lf-lines;
-    padding: $input-btn-padding-y $input-btn-padding-x;
-    border-radius: $border-radius;
-}
-
-form.dc-multioptionlist i.closeicon {
-  position: absolute;
-  top: -6px;
-  right: 0;
-  padding: 5px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid $lf-lines;
-  border-radius: 50%;
-  cursor: pointer;
-  width: 28px;
-  height: 28px;
-  text-align: center;
-}
-form.dc-multioptionlist i.closeicon:hover {
-  background: map-get($theme-colors, danger);
-  color: #fff;
-}
-
-.dc-multioptionlist-value select, dc-multioptionlist .addItem {
+  .addItem {
     margin-bottom: 20px;
-}
-
-dc-multioptionlist .spacing-after {
+  }
+  .spacing-after {
     line-height: 0;
     margin-bottom: 10px;
+  }
 }
