@@ -32,7 +32,7 @@
             </div>
             <div data-ng-switch-when="pictures">
                 <dc-picture class="dc-item" control="control"
-                    config="config.fields[fieldName]"
+                    config="config.fields[fieldName]" model="model[fieldName]"
                     pictures="model[fieldName]" field-name="fieldName"></dc-picture>
             </div>
             <div data-ng-switch-when="fields"></div>
