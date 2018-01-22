@@ -4,6 +4,9 @@ form.dc-multioptionlist {
 
 form.dc-multioptionlist .controls div {
     display: inline-block;
+  &.dc-multioptionlist-values-list {
+    display: block;
+  }
 }
 
 form.dc-multioptionlist .controls > div {

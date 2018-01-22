@@ -13,49 +13,27 @@
             </select>
         </div>
     </div>
-    <div class="commentListView">
-        <div class="commentListContainer">
-            <div ng-repeat="comment in currentEntryCommentsFiltered">
-                <dc-comment></dc-comment>
+    <div class="commentsListMainContainer">
+        <div class="commentListView">
+            <div class="commentListContainer">
+                <div ng-repeat="comment in currentEntryCommentsFiltered">
+                    <dc-comment></dc-comment>
+                </div>
             </div>
         </div>
-    </div>
-    <div ng-show="rights.canComment() && newComment.regarding.field && showNewComment" class="newCommentForm" ng-class="(showNewComment) ? 'show' : 'nope'">
-        <div class="card card-default">
-            <div class="card-title" ng-show="currentEntryCommentsFiltered.length === 0">
-                <span class="sense-label">{{getSenseLabel(newComment.regarding.field)}}</span> {{newComment.regarding.fieldNameForDisplay}}{{(newComment.regarding.inputSystemAbbreviation) ? ' - ' + newComment.regarding.inputSystemAbbreviation : ''}}
-            </div>
-            <div class="card-block">
-                <form ng-submit="postNewComment()">
-                    <div class="commentRegarding">
-                        <i class="fa fa-times" style="float:right; color:#808080; cursor: pointer" ng-click="newComment.regarding.field = ''" ng-show="newComment.regarding.field"></i>
-                        <div class="text-muted">This comment is regarding</div>
-                        <div ng-show="newComment.regarding.field">
-                            <div class="form-group">
-                                <span class="regardingContext">{{newComment.regarding.word}}</span>
-                                <em>{{newComment.regarding.meaning}}</em>
-                            </div>
-                            <div class="form-group row">
-                                <label class="regardingFieldName col-md-3 text-md-right">{{newComment.regarding.fieldNameForDisplay}}</label>
-                                <div class="col-md-9">
-                                    <div data-ng-class="(newComment.regarding.inputSystem) ? 'input-group' : ''"
-                                         data-ng-hide="newComment.isRegardingPicture">
-                                        <span data-ng-show="newComment.regarding.inputSystem" class="input-group-addon wsid regardingInputSystem" title="{{newComment.regarding.inputSystem}}">{{newComment.regarding.inputSystemAbbreviation}}</span>
-                                        <regarding-field class="form-control" content="newComment.regarding.fieldValue" field-config="newComment.regardingFieldConfig"> </regarding-field>
-                                    </div>
-                                    <div data-ng-if="newComment.isRegardingPicture">
-                                        <img data-ng-src="{{newComment.regarding.fieldValue}}">
-                                    </div>
-                                </div>
-                            </div>
+        <div ng-show="rights.canComment() && newComment.regarding.field && showNewComment" class="newCommentForm" ng-class="{'show': showNewComment, 'regard': newComment.regarding.field}">
+            <div class="card card-default">
+                <div class="card-title" ng-show="currentEntryCommentsFiltered.length === 0">
+                    <span class="sense-label">{{getSenseLabel(newComment.regarding.field)}}</span> {{newComment.regarding.fieldNameForDisplay}}{{(newComment.regarding.inputSystemAbbreviation) ? ' - ' + newComment.regarding.inputSystemAbbreviation : ''}}
+                </div>
+                <div class="card-block">
+                    <form ng-submit="postNewComment()">
+                        <textarea required data-ng-model="newComment.content" class="form-control" placeholder="{{getNewCommentPlaceholderText()}}"  ></textarea>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-sm btn-primary">Post</button>
                         </div>
-                        <div ng-hide="newComment.regarding.field" class="alert alert-warning"><span data-translate="Click on a field in the editor to give context to your comment"></span></div>
-                    </div>
-                    <textarea required data-ng-model="newComment.content" class="form-control" placeholder="{{getNewCommentPlaceholderText()}}"  ></textarea>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-sm btn-primary">Post</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
