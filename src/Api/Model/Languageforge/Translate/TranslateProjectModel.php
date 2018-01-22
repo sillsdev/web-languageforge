@@ -5,6 +5,7 @@ namespace Api\Model\Languageforge\Translate;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Languageforge\Translate\Command\TranslateProjectCommands;
 use Api\Model\Shared\Mapper\MongoStore;
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\FileUtilities;
 
 class TranslateProjectModel extends LfProjectModel
@@ -17,12 +18,18 @@ class TranslateProjectModel extends LfProjectModel
         $this->rolesClass = 'Api\Model\Languageforge\Translate\TranslateRoles';
         $this->config = new TranslateConfig();
 
+        $this->lastSyncedDate = UniversalTimestamp::fromSecondsTimestamp(0);
+        $this->setReadOnlyProp('lastSyncedDate');
+
         // This must be last, the constructor reads data in from the database which must overwrite the defaults above.
         parent::__construct($id);
     }
 
     /** @var TranslateConfig */
     public $config;
+
+    /** @var UniversalTimestamp */
+    public $lastSyncedDate;
 
     /**
      * @param string $userId
@@ -38,6 +45,7 @@ class TranslateProjectModel extends LfProjectModel
                 'optionsOrder' => ['en']
             ]
         ];
+        $settings['lastSyncedDate'] = $this->lastSyncedDate->asDateTimeInterface()->format(\DateTime::RFC2822);
 
         return $settings;
     }

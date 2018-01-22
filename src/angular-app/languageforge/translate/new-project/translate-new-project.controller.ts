@@ -9,7 +9,9 @@ import { InputSystem } from '../../../bellows/shared/model/input-system.model';
 import { ParatextProject, ParatextUserInfo } from '../../../bellows/shared/model/paratext-user-info.model';
 import { JsonRpcCallback, TranslateProjectService } from '../core/translate-project.service';
 import { TranslateSendReceiveService } from '../core/translate-send-receive.service';
-import { TranslateConfig, TranslateConfigDocType, TranslateProject } from '../shared/model/translate-project.model';
+import { TranslateConfig, TranslateConfigDocType } from '../shared/model/translate-config.model';
+import { TranslateProjectSettings } from '../shared/model/translate-project-settings.model';
+import { TranslateProject } from '../shared/model/translate-project.model';
 
 export class InterfaceConfig {
   direction = 'ltr';
@@ -78,8 +80,9 @@ export class TranslateNewProjectController implements angular.IController {
   $onInit() {
     this.interfaceConfig = new InterfaceConfig();
     this.sessionService.getSession().then(session => {
-      if (session.projectSettings() != null && session.projectSettings().interfaceConfig != null) {
-        angular.merge(this.interfaceConfig, session.projectSettings().interfaceConfig);
+      const projectSettings = session.projectSettings<TranslateProjectSettings>();
+      if (projectSettings != null && projectSettings.interfaceConfig != null) {
+        angular.merge(this.interfaceConfig, projectSettings.interfaceConfig);
         if (InputSystemsService.isRightToLeft(this.interfaceConfig.userLanguageCode)) {
           this.interfaceConfig.direction = 'rtl';
           this.interfaceConfig.pullToSide = 'float-left';
@@ -340,7 +343,7 @@ export class TranslateNewProjectController implements angular.IController {
 
         this.createProject()
           .then(() => this.updateConfig())
-          .then(() => this.translateSendReceiveService.startClone(this.newProject.id))
+          .then(() => this.translateSendReceiveService.startClone())
           .then(() => this.gotoEditor());
         break;
       case 'newProject.sendReceiveClone':

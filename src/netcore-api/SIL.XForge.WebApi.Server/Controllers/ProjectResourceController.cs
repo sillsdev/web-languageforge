@@ -18,15 +18,7 @@ namespace SIL.XForge.WebApi.Server.Controllers
 
         protected AuthorizeResult Authorize(Project project, Right right)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (project.HasRight(userId, new Right(Domain.Projects, Operation.Edit)))
-            {
-                return AuthorizeResult.Success;
-            }
-            else
-            {
-                return AuthorizeResult.Forbidden;
-            }
+            return project.HasRight(UserId, right) ? AuthorizeResult.Success : AuthorizeResult.Forbidden;
         }
 
         protected async Task<AuthorizeResult> AuthorizeAsync(string projectId, Right right)

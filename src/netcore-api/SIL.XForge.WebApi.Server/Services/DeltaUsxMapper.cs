@@ -60,7 +60,7 @@ namespace SIL.XForge.WebApi.Server.Services
                         break;
 
                     case XText text:
-                        newDelta.Insert(text.Value);
+                        newDelta.Insert(text.Value, parentAttrs?.DeepClone());
                         break;
                 }
             }
@@ -78,12 +78,12 @@ namespace SIL.XForge.WebApi.Server.Services
             return attrs;
         }
 
-        public static XElement ToUsx(string bookId, string desc, Delta delta)
+        public static XElement ToUsx(string usxVersion, string bookId, string desc, Delta delta)
         {
-            var newUsxElem = new XElement("usx", new XAttribute("version", "2.5"),
-                new XElement("book", new XAttribute("code", bookId), new XAttribute("style", "id"), desc));
-            var childNodes = new List<XNode>();
-            XElement noteElem = null;
+            var newUsxElem = new XElement("usx", new XAttribute("version", usxVersion),
+                new XElement("book", new XAttribute("code", bookId), new XAttribute("style", "id"),
+                    desc == "" ? null : desc));
+            var parentStack = new Stack<(JToken Attrs, List<XNode> Nodes)>();
             foreach (JToken op in delta.Ops)
             {
                 if (op.OpType() != Delta.InsertType)
@@ -92,12 +92,27 @@ namespace SIL.XForge.WebApi.Server.Services
                 var text = (string) op[Delta.InsertType];
                 var attrs = (JObject) op[Delta.Attributes];
 
-                if (attrs?["note"] == null && noteElem != null)
-                    noteElem = null;
+                if (parentStack.Count == 0)
+                {
+                    // start of a para or chapter block
+                    parentStack.Push((null, new List<XNode>()));
+                }
+                if (parentStack.Peek().Attrs != null && !JToken.DeepEquals(parentStack.Peek().Attrs, attrs?["note"]))
+                {
+                    // end of a note
+                    (JToken Attrs, List<XNode> Nodes) parent = parentStack.Pop();
+                    XElement noteElem = CreateContainerElement("note", parent.Attrs, parent.Nodes);
+                    parentStack.Peek().Nodes.Add(noteElem);
+                }
+                if (parentStack.Peek().Attrs == null && attrs?["note"] != null)
+                {
+                    // start of a note
+                    parentStack.Push((attrs["note"], new List<XNode>()));
+                }
 
                 if (attrs == null)
                 {
-                    childNodes.Add(new XText(text));
+                    parentStack.Peek().Nodes.Add(new XText(text));
                 }
                 else
                 {
@@ -106,14 +121,16 @@ namespace SIL.XForge.WebApi.Server.Services
                         switch (prop.Name)
                         {
                             case "para":
-                                newUsxElem.Add(CreateContainerElement("para", prop.Value, childNodes));
-                                childNodes.Clear();
+                                // end of a para block
+                                (JToken Attrs, List<XNode> Nodes) parentPara = parentStack.Pop();
+                                for (int i = 0; i < text.Length; i++)
+                                    newUsxElem.Add(CreateContainerElement("para", prop.Value, parentPara.Nodes));
                                 break;
 
                             case "chapter":
+                                // end of a chapter block
                                 var chapterElem = new XElement("chapter",
-                                    new XAttribute("number", childNodes.Single().ToString()));
-                                childNodes.Clear();
+                                    new XAttribute("number", parentStack.Pop().Nodes.Single().ToString()));
                                 AddAttributes(chapterElem, prop.Value);
                                 newUsxElem.Add(chapterElem);
                                 break;
@@ -121,24 +138,17 @@ namespace SIL.XForge.WebApi.Server.Services
                             case "verse":
                                 var verseElem = new XElement("verse", new XAttribute("number", text));
                                 AddAttributes(verseElem, prop.Value);
-                                childNodes.Add(verseElem);
+                                parentStack.Peek().Nodes.Add(verseElem);
                                 break;
 
                             case "char":
                                 XElement charElem = CreateContainerElement("char", prop.Value, text);
-                                if (attrs["note"] != null)
-                                {
-                                    if (noteElem == null)
-                                    {
-                                        noteElem = CreateContainerElement("note", attrs["note"]);
-                                        childNodes.Add(noteElem);
-                                    }
-                                    noteElem.Add(charElem);
-                                }
-                                else
-                                {
-                                    childNodes.Add(charElem);
-                                }
+                                parentStack.Peek().Nodes.Add(charElem);
+                                break;
+
+                            case "note":
+                                if (attrs.Count == 1)
+                                    parentStack.Peek().Nodes.Add(new XText(text));
                                 break;
                         }
                     }
@@ -161,7 +171,7 @@ namespace SIL.XForge.WebApi.Server.Services
             var attrsObj = (JObject) attributes;
             foreach (JProperty prop in attrsObj.Properties())
             {
-                if (prop.Name == "id")
+                if (prop.Name == "id" || prop.Name == "number")
                     continue;
                 elem.Add(new XAttribute(prop.Name, (string) prop.Value));
             }

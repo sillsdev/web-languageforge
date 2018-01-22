@@ -2,6 +2,7 @@ import * as angular from 'angular';
 
 import { SessionService } from '../../../bellows/core/session.service';
 import { LexConfigFieldList, LexConfigMultiText, LexiconConfig } from '../shared/model/lexicon-config.model';
+import { LexiconProjectSettings } from '../shared/model/lexicon-project-settings.model';
 
 export class LexiconConfigService {
   static $inject: string[] = ['sessionService'];
@@ -9,14 +10,14 @@ export class LexiconConfigService {
 
   refresh = (): any => {
     return this.sessionService.getSession().then((session => {
-      const config: LexiconConfig = angular.copy(session.projectSettings().config);
+      const config = angular.copy(session.projectSettings<LexiconProjectSettings>().config);
       const userId = session.userId();
-      const role = session.projectSettings().currentUserRole;
+      const role = session.projectSettings<LexiconProjectSettings>().currentUserRole;
       let fieldsConfig;
 
       // copy option lists to config object
       config.optionlists = {};
-      angular.forEach(session.projectSettings().optionlists, optionlist => {
+      angular.forEach(session.projectSettings<LexiconProjectSettings>().optionlists, optionlist => {
         config.optionlists[optionlist.code] = optionlist;
       });
 
@@ -40,8 +41,8 @@ export class LexiconConfigService {
 
   isTaskEnabled(taskName: string): angular.IPromise<boolean> {
     return this.sessionService.getSession().then(session => {
-      const config: LexiconConfig = session.projectSettings().config;
-      const role = session.projectSettings().currentUserRole;
+      const config = session.projectSettings<LexiconProjectSettings>().config;
+      const role = session.projectSettings<LexiconProjectSettings>().currentUserRole;
       const userId = session.userId();
 
       if (angular.isDefined(config.userViews[userId])) {
@@ -96,7 +97,7 @@ export class LexiconConfigService {
 
   getFieldConfig(fieldName: string): angular.IPromise<any> {
     return this.sessionService.getSession().then(session => {
-      const config: LexiconConfig = session.projectSettings().config;
+      const config = session.projectSettings<LexiconProjectSettings>().config;
       let search = config.entry.fields;
 
       if (angular.isDefined(search[fieldName])) {

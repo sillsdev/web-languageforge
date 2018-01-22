@@ -10,10 +10,9 @@ import { DocType, SaveState } from '../core/constants';
 import { MachineService } from '../core/machine.service';
 import { RealTimeService } from '../core/realtime.service';
 import { TranslateProjectService } from '../core/translate-project.service';
-import { Rights } from '../core/translate-rights.service';
-import {
-  TranslateConfigDocumentSets, TranslateProject, TranslateUserPreferences
-} from '../shared/model/translate-project.model';
+import { TranslateRights } from '../core/translate-rights.service';
+import { TranslateConfigDocumentSets, TranslateUserPreferences } from '../shared/model/translate-config.model';
+import { TranslateProject } from '../shared/model/translate-project.model';
 import { TranslateUtilities } from '../shared/translate-utilities';
 import { DocumentEditor, SourceDocumentEditor, TargetDocumentEditor } from './document-editor';
 import { Metrics, MetricService } from './metric.service';
@@ -21,7 +20,7 @@ import { QuillUsxConverter } from './quill/quill-usx.converter';
 
 export class TranslateEditorController implements angular.IController {
   tecProject: TranslateProject;
-  tecRights: Rights;
+  tecRights: TranslateRights;
   tecInterfaceConfig: any;
   tecOnUpdate: (params: { $event: { project: any } }) => void;
 
@@ -208,8 +207,12 @@ export class TranslateEditorController implements angular.IController {
 
       this.machine.initialise(this.tecProject.slug);
 
-      this.source.isScripture = this.tecProject.config.isTranslationDataScripture;
-      this.target.isScripture = this.tecProject.config.isTranslationDataScripture;
+      if (this.source != null) {
+        this.source.isScripture = this.tecProject.config.isTranslationDataScripture;
+      }
+      if (this.target != null) {
+        this.target.isScripture = this.tecProject.config.isTranslationDataScripture;
+      }
 
       this.listenForTrainingStatus();
     }

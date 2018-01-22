@@ -8,13 +8,13 @@ namespace SIL.XForge.WebApi.Server.Services
     public class DeltaUsxMapperTests
     {
         [Test]
-        public void UpdateUsx_HeaderPara()
+        public void ToUsx_HeaderPara()
         {
             var delta = Delta.New()
                 .Insert("Philemon")
                 .InsertPara("h");
 
-            XElement newUsxElem = DeltaUsxMapper.ToUsx("PHM", null, delta);
+            XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
 
             XElement expected = Usx("PHM",
                 Para("h", "Philemon"));
@@ -22,7 +22,7 @@ namespace SIL.XForge.WebApi.Server.Services
         }
 
         [Test]
-        public void UpdateUsx_VerseText()
+        public void ToUsx_VerseText()
         {
             var delta = Delta.New()
                 .InsertChapter("1")
@@ -30,7 +30,7 @@ namespace SIL.XForge.WebApi.Server.Services
                 .Insert("Verse text.")
                 .InsertPara("p");
 
-            XElement newUsxElem = DeltaUsxMapper.ToUsx("PHM", null, delta);
+            XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
 
             XElement expected = Usx("PHM",
                 Chapter("1"),
@@ -41,7 +41,7 @@ namespace SIL.XForge.WebApi.Server.Services
         }
 
         [Test]
-        public void UpdateUsx_CharText()
+        public void ToUsx_CharText()
         {
             var delta = Delta.New()
                 .InsertChapter("1")
@@ -51,7 +51,7 @@ namespace SIL.XForge.WebApi.Server.Services
                 .Insert(" text.")
                 .InsertPara("p");
 
-            XElement newUsxElem = DeltaUsxMapper.ToUsx("PHM", null, delta);
+            XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
 
             XElement expected = Usx("PHM",
                 Chapter("1"),
@@ -64,7 +64,7 @@ namespace SIL.XForge.WebApi.Server.Services
         }
 
         [Test]
-        public void UpdateUsx_Note()
+        public void ToUsx_Note()
         {
             var delta = Delta.New()
                 .InsertChapter("1")
@@ -73,11 +73,16 @@ namespace SIL.XForge.WebApi.Server.Services
                 .InsertNote("_note_1", "f", "+", Delta.New()
                     .InsertChar("fr", "1.1: ")
                     .InsertChar("ft", "Refers to ")
-                    .InsertChar("fq", "a footnote."))
+                    .InsertChar("fq", "a footnote")
+                    .Insert(". ")
+                    .InsertChar("xt", "John 1:1")
+                    .Insert(" and ")
+                    .InsertChar("xt", "Mark 1:1")
+                    .Insert("."))
                 .Insert(", so that we can test it.")
                 .InsertPara("p");
 
-            XElement newUsxElem = DeltaUsxMapper.ToUsx("PHM", null, delta);
+            XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
 
             XElement expected = Usx("PHM",
                 Chapter("1"),
@@ -87,8 +92,28 @@ namespace SIL.XForge.WebApi.Server.Services
                     Note("f", "+",
                         Char("fr", "1.1: "),
                         Char("ft", "Refers to "),
-                        Char("fq", "a footnote.")),
+                        Char("fq", "a footnote"),
+                        ". ",
+                        Char("xt", "John 1:1"),
+                        " and ",
+                        Char("xt", "Mark 1:1"),
+                        "."),
                     ", so that we can test it."));
+            Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
+        }
+
+        [Test]
+        public void ToUsx_ConsecutiveSameStyleEmptyParas()
+        {
+            var delta = Delta.New()
+                .InsertPara("p")
+                .InsertPara("p");
+
+            XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
+
+            XElement expected = Usx("PHM",
+                Para("p"),
+                Para("p"));
             Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
         }
 

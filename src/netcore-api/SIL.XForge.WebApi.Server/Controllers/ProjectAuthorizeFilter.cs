@@ -11,11 +11,13 @@ namespace SIL.XForge.WebApi.Server.Controllers
     {
         private readonly IRepository<Project> _projectRepo;
         private readonly Right _right;
+        private readonly string _argument;
 
-        public ProjectAuthorizeFilter(IRepository<Project> projectRepo, Right right)
+        public ProjectAuthorizeFilter(IRepository<Project> projectRepo, Right right, string argument = null)
         {
             _projectRepo = projectRepo;
             _right = right;
+            _argument = argument ?? "id";
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -27,7 +29,7 @@ namespace SIL.XForge.WebApi.Server.Controllers
                 return;
             }
 
-            if (context.ActionArguments.TryGetValue("projectId", out object obj))
+            if (context.ActionArguments.TryGetValue(_argument, out object obj))
             {
                 var projectId = (string) obj;
                 if ((await _projectRepo.TryGetAsync(projectId)).TryResult(out Project project))
