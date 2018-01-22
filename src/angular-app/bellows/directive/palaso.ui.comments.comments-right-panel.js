@@ -29,7 +29,7 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.initializeNewComment = function initializeNewComment() {
-          if($scope.showNewComment) {
+          if ($scope.showNewComment) {
             $scope.newComment.content = '';
           } else {
             $scope.newComment = {
@@ -55,6 +55,8 @@ angular.module('palaso.ui.comments')
           status: 'all',
           regardingField: '',
           regardingInputSystemAbbreviation: '',
+          multiOptionValue: '',
+          pictureSrc: '',
           byText: function byText(comment) {
             // Convert entire comment object to a big string and search for filter.
             // Note: This has a slight side effect of ID and avatar information
@@ -89,7 +91,21 @@ angular.module('palaso.ui.comments')
               return true;
             } else if (comment.regarding.field === $scope.commentFilter.regardingField &&
               comment.regarding.inputSystemAbbreviation === $scope.commentFilter.regardingInputSystemAbbreviation) {
-              return true;
+              if ($scope.commentFilter.multiOptionValue) {
+                if (comment.regarding.fieldValue === $scope.commentFilter.multiOptionValue) {
+                  return true;
+                } else {
+                  return false;
+                }
+              } else if ($scope.commentFilter.pictureSrc) {
+                if (comment.regarding.fieldValue === $scope.commentFilter.pictureSrc) {
+                  return true;
+                } else {
+                  return false;
+                }
+              } else {
+                return true;
+              }
             }
 
             return false;
@@ -136,15 +152,16 @@ angular.module('palaso.ui.comments')
         commentService.refreshFilteredComments($scope.commentFilter);
 
         $scope.loadComments = function loadComments() {
-          commentService.loadEntryComments($scope.entry.id);
-          commentService.refreshFilteredComments($scope.commentFilter);
-          if ($scope.commentInteractiveStatus.id) {
-            angular.forEach($scope.currentEntryCommentsFiltered, function (comment) {
-              if (comment.id === $scope.commentInteractiveStatus.id) {
-                comment.showRepliesContainer = $scope.commentInteractiveStatus.visible;
-              }
-            });
-          }
+          commentService.loadEntryComments($scope.entry.id).then(function () {
+            commentService.refreshFilteredComments($scope.commentFilter);
+            if ($scope.commentInteractiveStatus.id) {
+              angular.forEach($scope.currentEntryCommentsFiltered, function (comment) {
+                if (comment.id === $scope.commentInteractiveStatus.id) {
+                  comment.showRepliesContainer = $scope.commentInteractiveStatus.visible;
+                }
+              });
+            }
+          });
         };
 
         $scope.setCommentInteractiveStatus = function setCommentInteractiveStatus(id, visible) {
@@ -181,9 +198,14 @@ angular.module('palaso.ui.comments')
           return label;
         };
 
-        $scope.showCommentsInContext = function showCommentsInContext(field, abbreviation) {
+        $scope.showCommentsInContext = function showCommentsInContext(field,
+                                                                      abbreviation,
+                                                                      multiOptionValue,
+                                                                      pictureUrl) {
           $scope.commentFilter.regardingField = field;
           $scope.commentFilter.regardingInputSystemAbbreviation = abbreviation;
+          $scope.commentFilter.multiOptionValue = multiOptionValue;
+          $scope.commentFilter.pictureSrc = pictureUrl;
           if (field !== '') {
             $scope.showNewComment = true;
           } else {
@@ -255,7 +277,10 @@ angular.module('palaso.ui.comments')
 
         $scope.$watch('control.commentContext', function (newVal, oldVal) {
           if (newVal !== oldVal) {
-            $scope.showCommentsInContext(newVal.field, newVal.abbreviation);
+            $scope.showCommentsInContext(newVal.field,
+              newVal.abbreviation,
+              newVal.multiOptionValue,
+              newVal.pictureSrc);
           }
 
         }, true);
