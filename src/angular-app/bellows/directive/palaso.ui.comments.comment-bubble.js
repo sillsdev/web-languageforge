@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.comments')
+angular.module('palaso.ui.comments', ['angular-inview'])
   .directive('commentBubble', [function () {
     return {
       restrict: 'E',
@@ -15,12 +15,13 @@ angular.module('palaso.ui.comments')
         picture: '<'
       },
       controller: ['$scope', 'lexCommentService', 'sessionService', '$element', 'lexConfigService',
-        function ($scope, commentService, ss, $element, lexConfig) {
+        function ($scope, commentService, ss, $element, lexConfig, inview) {
         if (!angular.isDefined($scope.inputSystem)) {
           $scope.inputSystem = '';
         }
 
         $scope.pictureSrc = '';
+        $scope.inview = false;
         $scope.contextId = $scope.field + '_' + $scope.inputSystem;
         lexConfig.getFieldConfig($scope.field).then(function (fieldConfig) {
           if (fieldConfig.type === 'pictures' && angular.isDefined($scope.picture)) {
