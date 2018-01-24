@@ -17,12 +17,15 @@ angular.module('palaso.ui.comments', ['angular-inview'])
       controller: ['$scope', 'lexCommentService', 'sessionService', '$element', 'lexConfigService',
         function ($scope, commentService, ss, $element, lexConfig, inview) {
         if (!angular.isDefined($scope.inputSystem)) {
-          $scope.inputSystem = '';
+          $scope.inputSystem = {
+            abbreviation: '',
+            tag: ''
+          };
         }
 
         $scope.pictureSrc = '';
         $scope.inview = false;
-        $scope.contextId = $scope.field + '_' + $scope.inputSystem;
+        $scope.contextId = $scope.field + '_' + $scope.inputSystem.abbreviation;
         lexConfig.getFieldConfig($scope.field).then(function (fieldConfig) {
           if (fieldConfig.type === 'pictures' && angular.isDefined($scope.picture)) {
             $scope.pictureSrc = $scope.$parent.getPictureUrl($scope.picture);
@@ -52,22 +55,25 @@ angular.module('palaso.ui.comments', ['angular-inview'])
 
           $scope.getComments = function getComments() {
             if (!angular.isDefined($scope.inputSystem)) {
-              $scope.inputSystem = '';
+              $scope.inputSystem = {
+                abbreviation: '',
+                tag: ''
+              };
             }
 
             if ($scope.control.commentContext.field === $scope.field &&
-              $scope.control.commentContext.abbreviation === $scope.inputSystem &&
+              $scope.control.commentContext.abbreviation === $scope.inputSystem.abbreviation &&
               $scope.control.commentContext.multiOptionValue === $scope.multiOptionValue &&
               $scope.control.commentContext.pictureSrc === $scope.pictureSrc) {
               $scope.control.hideCommentsPanel();
             } else {
               $scope.control.setCommentContext($scope.field,
-                $scope.inputSystem,
+                $scope.inputSystem.abbreviation,
                 $scope.multiOptionValue,
                 $scope.pictureSrc);
               $scope.control.selectFieldForComment($scope.field,
                 $scope.model,
-                $scope.inputSystem,
+                $scope.inputSystem.tag,
                 $scope.multiOptionValue,
                 $scope.pictureSrc);
               if ($scope.multiOptionValue) {
@@ -75,6 +81,7 @@ angular.module('palaso.ui.comments', ['angular-inview'])
               } else {
                 var bubbleOffset = $scope.element.offset().top;
               }
+
               var rightPanel = angular.element('.comments-right-panel');
               var rightPanelOffset = rightPanel.offset().top;
               var offsetAuthor = 40;
