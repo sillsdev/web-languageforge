@@ -15,7 +15,7 @@ import {
   LexViewMultiTextFieldConfig
 } from '../../shared/model/lexicon-config.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
-import {ConfigurationUnifiedViewModel, Group, GroupList} from './configuration-unified-view.model';
+import {ConfigurationUnifiedViewModel, FieldSettings, Group, GroupList} from './configuration-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 
 export class UnifiedConfigurationController implements angular.IController {
@@ -32,8 +32,7 @@ export class UnifiedConfigurationController implements angular.IController {
   typeahead: Typeahead;
 
   static $inject: string[] = ['$scope', '$filter', '$uibModal'];
-  constructor(private $scope: angular.IScope, private $filter: angular.IFilterService, private $modal: ModalService) {
-  }
+  constructor(private $scope: angular.IScope, private $filter: angular.IFilterService, private $modal: ModalService) { }
 
   $onInit() {
     this.$scope.$watch(() => this.unifiedViewModel, () => {
@@ -229,30 +228,22 @@ export class UnifiedConfigurationController implements angular.IController {
 
       for (const inputSystemSetting of this.unifiedViewModel.inputSystems.settings) {
         inputSystemSetting.groups.push(new Group());
+        ConfigurationUnifiedViewModel.checkIfAllRowSelected(inputSystemSetting);
       }
 
       for (const fieldSetting of this.unifiedViewModel.entryFields.settings) {
         fieldSetting.groups.push(new Group());
-        fieldSetting.inputSystems.selectAllColumns.groups.push(new Group());
-        for (const inputSystemSetting of fieldSetting.inputSystems.settings) {
-          inputSystemSetting.groups.push(new Group());
-        }
+        ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
       }
 
       for (const fieldSetting of this.unifiedViewModel.senseFields.settings) {
         fieldSetting.groups.push(new Group());
-        fieldSetting.inputSystems.selectAllColumns.groups.push(new Group());
-        for (const inputSystemSetting of fieldSetting.inputSystems.settings) {
-          inputSystemSetting.groups.push(new Group());
-        }
+        ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
       }
 
       for (const fieldSetting of this.unifiedViewModel.exampleFields.settings) {
         fieldSetting.groups.push(new Group());
-        fieldSetting.inputSystems.selectAllColumns.groups.push(new Group());
-        for (const inputSystemSetting of fieldSetting.inputSystems.settings) {
-          inputSystemSetting.groups.push(new Group());
-        }
+        ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
       }
 
       this.uccConfigDirty.userViews[user.id] =
@@ -269,26 +260,50 @@ export class UnifiedConfigurationController implements angular.IController {
     this.unifiedViewModel.senseFields.selectAllColumns.groups.splice(index, 1);
     this.unifiedViewModel.exampleFields.selectAllColumns.groups.splice(index, 1);
 
-    for (const field of this.unifiedViewModel.inputSystems.settings) {
-      field.groups.splice(index, 1);
+    for (const inputSystemSetting of this.unifiedViewModel.inputSystems.settings) {
+      inputSystemSetting.groups.splice(index, 1);
+      ConfigurationUnifiedViewModel.checkIfAllRowSelected(inputSystemSetting);
     }
 
-    for (const field of this.unifiedViewModel.entryFields.settings) {
-      field.groups.splice(index, 1);
+    for (const fieldSetting of this.unifiedViewModel.entryFields.settings) {
+      fieldSetting.groups.splice(index, 1);
+      ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
     }
 
-    for (const field of this.unifiedViewModel.senseFields.settings) {
-      field.groups.splice(index, 1);
+    for (const fieldSetting of this.unifiedViewModel.senseFields.settings) {
+      fieldSetting.groups.splice(index, 1);
+      ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
     }
 
-    for (const field of this.unifiedViewModel.exampleFields.settings) {
-      field.groups.splice(index, 1);
+    for (const fieldSetting of this.unifiedViewModel.exampleFields.settings) {
+      fieldSetting.groups.splice(index, 1);
+      ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
     }
 
     delete this.uccConfigDirty.userViews[userId];
   }
 
-  removeFromUsersWithoutSettings(userId: string): void {
+  // noinspection JSMethodCanBeStatic
+  collapseIconClass(fieldSetting: FieldSettings): string {
+    if (fieldSetting.isCustomInputSystemsCollapsed) {
+      if (fieldSetting.hasCustomInputSystemsOverride) {
+        return 'fa fa-check-square-o';
+      } else {
+        return 'fa fa-chevron-down';
+      }
+    } else {
+      return 'fa fa-chevron-up';
+    }
+  }
+
+  // noinspection JSMethodCanBeStatic
+  collapseTitle(fieldSetting: FieldSettings): string {
+    return fieldSetting.isCustomInputSystemsCollapsed ?
+      'Show field-specific Input Systems' :
+      'Hide field-specific Input Systems';
+  }
+
+  private removeFromUsersWithoutSettings(userId: string): void {
     const user: User = this.uccUsers[userId];
     const removeIndex: number = this.typeahead.usersWithoutSettings.indexOf(user);
     if (removeIndex !== -1) {
