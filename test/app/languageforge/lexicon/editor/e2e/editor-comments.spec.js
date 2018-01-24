@@ -24,36 +24,34 @@ describe('Editor Comments', function () {
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
   });
 
-  it('switch to comments page, add one comment', function () {
-    editorPage.edit.toCommentsLink.click();
+  it('click first comment bubble, add one comment', function () {
+    editorPage.comment.bubbles.first.click();
+    browser.sleep(1000);
     editorPage.comment.newComment.textarea.sendKeys('First comment on this word.');
     editorPage.comment.newComment.postBtn.click();
   });
 
-  it('comments page: check that comment shows up', function () {
+  it('comments panel: check that comment shows up', function () {
     var comment = editorPage.comment.getComment(0);
     expect(comment.wholeComment.isPresent()).toBe(true);
 
     // Earlier tests modify the avatar and name of the manager user; don't check those
     //expect(comment.avatar.getAttribute('src')).toContain(constants.avatar);
     //expect(comment.author.getText()).toEqual(constants.managerName);
-    expect(comment.score.getText()).toEqual('0');
+    expect(comment.score.getText()).toEqual('0 Likes');
     expect(comment.plusOne.isPresent()).toBe(true);
     expect(comment.content.getText()).toEqual('First comment on this word.');
     expect(comment.date.getText()).toMatch(/ago|in a few seconds/);
-
-    // This comment should have no "regarding" section
-    expect(comment.regarding.fieldLabel.isDisplayed()).toBe(false);
   });
 
-  it('comments page: add comment about a specific part of the entry', function () {
+  it('comments panel: add comment to another part of the entry', function () {
+    editorPage.comment.bubbles.second.click();
     editorPage.comment.newComment.textarea.clear();
     editorPage.comment.newComment.textarea.sendKeys('Second comment.');
-    editorPage.comment.entry.getOneFieldAllInputSystems('Word').first().click();
     editorPage.comment.newComment.postBtn.click();
   });
 
-  it('comments page: check that second comment shows up', function () {
+  it('comments panel: check that second comment shows up', function () {
     var comment = editorPage.comment.getComment(-1);
     expect(comment.wholeComment.isPresent()).toBe(true);
 
@@ -61,41 +59,56 @@ describe('Editor Comments', function () {
     //expect(comment.avatar.getAttribute('src')).toContain(constants.avatar);
     //expect(comment.author.getText()).toEqual(constants.managerName);
 
-    expect(comment.score.getText()).toEqual('0');
+    expect(comment.score.getText()).toEqual('0 Likes');
     expect(comment.plusOne.isPresent()).toBe(true);
     expect(comment.content.getText()).toEqual('Second comment.');
     expect(comment.date.getText()).toMatch(/ago|in a few seconds/);
 
-    // This comment should have a "regarding" section
-    expect(comment.regarding.fieldLabel.isDisplayed()).toBe(true);
-    var word    = constants.testEntry1.lexeme.th.value;
-    var definition = constants.testEntry1.senses[0].definition.en.value;
-    expect(comment.regarding.word.getText()).toEqual(word);
-    expect(comment.regarding.definition.getText()).toEqual(definition);
-    expect(comment.regarding.fieldLabel.getText()).toEqual('Word');
-    expect(comment.regarding.fieldWsid .getText()).toEqual('th');
+    // Check the "regarding" section
+    comment.regarding.toggle.click();
+    expect(comment.regarding.container.isDisplayed()).toBe(true);
+    var word    = constants.testEntry1.senses[0].definition.en.value;
     expect(comment.regarding.fieldValue.getText()).toEqual(word);
   });
 
-  it('comments page: click +1 button on first comment', function () {
+  it('comments panel: click +1 button on first comment', function () {
     var comment = editorPage.comment.getComment(0);
-    expect(comment.plusOne.getAttribute('data-ng-click')).not.toBe(null); // Should be clickable
-    comment.plusOne.click();
-    expect(comment.score.getText()).toEqual('1');
+    editorPage.comment.bubbles.first.click();
+
+    // Should be clickable
+    expect(comment.plusOneActive.getAttribute('data-ng-click')).not.toBe(null);
+    comment.plusOneActive.click();
+    expect(comment.score.getText()).toEqual('1 Like');
   });
 
-  it('comments page: +1 button disabled after clicking', function () {
+  it('comments panel: +1 button disabled after clicking', function () {
     var comment = editorPage.comment.getComment(0);
-    expect(comment.plusOne.getAttribute('data-ng-click')).toBe(null); // Should NOT be clickable
-    comment.plusOne.click();
-    expect(comment.score.getText()).toEqual('1'); // Should not change from previous test
+    expect(comment.plusOneInactive.isDisplayed()).toBe(true);
+
+    // Should NOT be clickable
+    expect(comment.plusOneInactive.getAttribute('data-ng-click')).toBe(null);
+    expect(comment.score.getText()).toEqual('1 Like'); // Should not change from previous test
   });
 
-  it('comments page: refresh returns to comment', function () {
+  it('comments panel: refresh returns to comment', function () {
     var comment = editorPage.comment.getComment(0);
     browser.refresh();
-    browser.wait(expectedCondition.visibilityOf(comment.content), CONDITION_TIMEOUT);
+    browser.wait(expectedCondition.visibilityOf(editorPage.comment.bubbles.first), CONDITION_TIMEOUT);
+    editorPage.comment.bubbles.first.click();
+    browser.sleep(1000);
     expect(comment.content.getText()).toEqual('First comment on this word.');
+  });
+
+  it('comments panel: close comments panel clicking on bubble', function () {
+    editorPage.comment.bubbles.first.click();
+    browser.sleep(1000);
+    expect(editorPage.commentDiv.getAttribute('class')).not.toContain('panel-visible');
+  });
+
+  it('comments panel: show all comments', function () {
+    editorPage.edit.toCommentsLink.click();
+    browser.sleep(1000);
+    expect(editorPage.commentDiv.getAttribute('class')).toContain('panel-visible');
   });
 
 });
