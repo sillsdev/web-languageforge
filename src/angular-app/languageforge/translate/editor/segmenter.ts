@@ -3,13 +3,17 @@ import { MachineService } from '../core/machine.service';
 import { DocumentEditor } from './document-editor';
 
 export abstract class Segmenter {
-  protected readonly segments: Map<string, RangeStatic> = new Map<string, RangeStatic>();
+  protected readonly _segments: Map<string, RangeStatic> = new Map<string, RangeStatic>();
   protected _lastSegmentRef: string = '';
 
   constructor(protected readonly doc: DocumentEditor) { }
 
   get lastSegmentRef(): string {
     return this._lastSegmentRef;
+  }
+
+  get segments(): IterableIterator<[string, RangeStatic]> {
+    return this._segments.entries();
   }
 
   update(textChange: boolean): void {
@@ -19,7 +23,7 @@ export abstract class Segmenter {
   }
 
   reset(): void {
-    this.segments.clear();
+    this._segments.clear();
     this._lastSegmentRef = '';
   }
 
@@ -28,16 +32,25 @@ export abstract class Segmenter {
       return { index: 0, length: 0 };
     }
 
-    return this.segments.has(ref) ? this.segments.get(ref) : { index: this.doc.quill.getLength() - 1, length: 0 };
+    return this._segments.has(ref) ? this._segments.get(ref) : { index: this.doc.quill.getLength() - 1, length: 0 };
   }
 
   getSegmentRef(range: RangeStatic): string {
     let segmentRef: string;
-    if (range != null && range.length === 0) {
+    let maxOverlap = -1;
+    if (range != null) {
       for (const [ref, segmentRange] of this.segments) {
-        if (range.index <= segmentRange.index + segmentRange.length) {
-          segmentRef = ref;
-          break;
+        const segEnd = segmentRange.index + segmentRange.length;
+        if (range.index <= segEnd) {
+          const rangeEnd = range.index + range.length;
+          const overlap = Math.min(rangeEnd, segEnd) - Math.max(range.index, segmentRange.index);
+          if (overlap > maxOverlap) {
+            segmentRef = ref;
+            maxOverlap = overlap;
+          }
+          if (rangeEnd <= segEnd) {
+            break;
+          }
         }
       }
     }
@@ -66,7 +79,7 @@ export class MachineSegmenter extends Segmenter {
     }
     this.reset();
     for (let i = 0; i < segmentRanges.length; i++) {
-      this.segments.set(i.toString(), segmentRanges[i]);
+      this._segments.set(i.toString(), segmentRanges[i]);
     }
     this._lastSegmentRef = (segmentRanges.length - 1).toString();
   }
@@ -80,12 +93,12 @@ export class UsxSegmenter extends Segmenter {
   protected updateSegments(): void {
     const delta = this.doc.quill.getContents();
     this.reset();
-    const nextStyleIds = new Map<string, number>();
+    const nextIds = new Map<string, number>();
+    const paraVerses = new Map<string, RangeStatic>();
     let chapter = '';
-    let verse = '';
     let curIndex = 0;
     let curRangeLen = 0;
-    let lastParagraphLen = -1;
+    let curVerseRef = '';
     for (const op of delta.ops) {
       const len = typeof op.insert === 'string' ? op.insert.length : 1;
       if (op.attributes == null) {
@@ -94,57 +107,43 @@ export class UsxSegmenter extends Segmenter {
         if (op.attributes.para != null) {
           const style = op.attributes.para.style as string;
           if (UsxSegmenter.isParagraphStyle(style)) {
-            curRangeLen += len;
-            lastParagraphLen = curRangeLen;
+            if (curVerseRef !== '') {
+              paraVerses.set(curVerseRef, { index: curIndex, length: curRangeLen });
+              curIndex += curRangeLen;
+              curRangeLen = 0;
+            }
+
+            for (let [verseRef, verseRange] of paraVerses) {
+              if (this._segments.has(verseRef)) {
+                verseRef = UsxSegmenter.getParagraphRef(nextIds, verseRef + '/' + style);
+              }
+              this._segments.set(verseRef, verseRange);
+              this._lastSegmentRef = verseRef;
+            }
+            paraVerses.clear();
+            curIndex += len;
             continue;
           }
 
-          if (verse !== '') {
-            this.addVerse(chapter, verse, curIndex, lastParagraphLen === -1 ? curRangeLen : lastParagraphLen);
-            if (lastParagraphLen !== -1) {
-              curIndex += lastParagraphLen;
-              curRangeLen -= lastParagraphLen;
-            }
-            verse = '';
-          }
-          lastParagraphLen = -1;
-
-          let nextId = nextStyleIds.get(style);
-          if (nextId == null) {
-            nextId = 0;
-            nextStyleIds.set(style, nextId);
-          }
-
-          this._lastSegmentRef = style + '_' + nextId;
-          this.segments.set(this._lastSegmentRef, { index: curIndex, length: curRangeLen });
+          const ref = UsxSegmenter.getParagraphRef(nextIds, style);
+          this._segments.set(ref, { index: curIndex, length: curRangeLen });
+          this._lastSegmentRef = ref;
+          curVerseRef = '';
+          paraVerses.clear();
           curIndex += curRangeLen + len;
           curRangeLen = 0;
-          nextId++;
-          nextStyleIds.set(style, nextId);
         } else if (op.attributes.chapter != null) {
-          if (verse !== '') {
-            this.addVerse(chapter, verse, curIndex, lastParagraphLen === -1 ? curRangeLen : lastParagraphLen);
-            if (lastParagraphLen !== -1) {
-              curIndex += lastParagraphLen;
-              curRangeLen -= lastParagraphLen;
-            }
-            verse = '';
-          }
-          lastParagraphLen = -1;
-
-          chapter = op.attributes.chapter.number as string;
-          this._lastSegmentRef = 'chapter_' + chapter;
-          this.segments.set(this._lastSegmentRef, { index: curIndex, length: curRangeLen });
+          chapter = op.insert.chapter;
+          curVerseRef = '';
           curIndex += curRangeLen + len;
           curRangeLen = 0;
         } else if (op.attributes.verse != null) {
-          if (verse !== '') {
-            this.addVerse(chapter, verse, curIndex, curRangeLen);
+          if (curVerseRef !== '') {
+            paraVerses.set(curVerseRef, { index: curIndex, length: curRangeLen });
           }
-          lastParagraphLen = -1;
-          curIndex += curRangeLen;
-          curRangeLen = len;
-          verse = op.attributes.verse.number as string;
+          curVerseRef = 'verse_' + chapter + '_' + op.insert.verse;
+          curIndex += curRangeLen + len;
+          curRangeLen = 0;
         } else {
           curRangeLen += len;
         }
@@ -152,22 +151,18 @@ export class UsxSegmenter extends Segmenter {
     }
   }
 
-  private addVerse(chapter: string, verse: string, curIndex: number, curRangeLen: number): void {
-    const verseText = this.doc.quill.getText(curIndex, curRangeLen);
-    let verseRangeLen = curRangeLen;
-    if (UsxSegmenter.isWhitespace(verseText[verseText.length - 1])) {
-      verseRangeLen--;
+  private static getParagraphRef(nextIds: Map<string, number>, prefix: string): string {
+    let nextId = nextIds.get(prefix);
+    if (nextId == null) {
+      nextId = 1;
     }
-    this._lastSegmentRef = 'verse_' + chapter + ':' + verse;
-    this.segments.set(this._lastSegmentRef, { index: curIndex, length: verseRangeLen });
+    const id = nextId++;
+    nextIds.set(prefix, nextId);
+    return prefix + '_' + id;
   }
 
   private static isParagraphStyle(style: string): boolean {
     style = style.replace(/[0-9]/g, '');
     return UsxSegmenter.ParagraphStyles.has(style);
-  }
-
-  private static isWhitespace(char: string): boolean {
-    return /\s/.test(char);
   }
 }

@@ -5,22 +5,35 @@ import { UtilityService } from '../../../../bellows/core/utility.service';
 import { SourceDocumentEditor, TargetDocumentEditor } from '../document-editor';
 
 export class FormatUsxHtmlAttributes {
-  // must assign null value so properties can be iterated over
-  id: string = null;
-  title: string = null;
+  static createTemplate(): FormatUsxHtmlAttributes {
+    return {
+      id: null,
+      title: null
+    };
+  }
+
+  id?: string;
+  title?: string;
 }
 
 export class FormatUsx extends FormatUsxHtmlAttributes {
-  // must assign null value so properties can be iterated over
-  style: string = null;
-  number: string = null;
-  altnumber: string = null;
-  pubnumber: string = null;
-  caller: string = null;
-  closed: string = null;
+  static createTemplate(): FormatUsx {
+    return {
+      id: null,
+      title: null,
+      style: null,
+      altnumber: null,
+      pubnumber: null,
+      caller: null,
+      closed: null
+    };
+  }
 
-  // used to show verse-per-line alignment. Not in USX spec
-  'verse-alignment': string = null;
+  style?: string;
+  altnumber?: string;
+  pubnumber?: string;
+  caller?: string;
+  closed?: string;
 }
 
 export class UsxAttributesAndValuesToKeep {

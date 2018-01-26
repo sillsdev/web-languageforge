@@ -201,7 +201,15 @@ namespace ShareDB.RichText
 
         public bool DeepEquals(Delta other)
         {
-            return _ops.SequenceEqual(other._ops, JToken.EqualityComparer);
+            if (_ops.Count != other._ops.Count)
+                return false;
+
+            for (int i = 0; i < _ops.Count; i++)
+            {
+                if (!JToken.DeepEquals(_ops[i], other._ops[i]))
+                    return false;
+            }
+            return true;
         }
 
         private Delta Add(JToken newOp)

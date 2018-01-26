@@ -11,8 +11,9 @@ namespace SIL.XForge.WebApi.Server.Services
         public void ToUsx_HeaderPara()
         {
             var delta = Delta.New()
-                .Insert("Philemon")
-                .InsertPara("h");
+                .InsertText("Philemon", "h_1")
+                .InsertPara("h")
+                .Insert("\n");
 
             XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
 
@@ -27,8 +28,9 @@ namespace SIL.XForge.WebApi.Server.Services
             var delta = Delta.New()
                 .InsertChapter("1")
                 .InsertVerse("1")
-                .Insert("Verse text.")
-                .InsertPara("p");
+                .InsertText("Verse text.", "verse_1_1")
+                .InsertPara("p")
+                .Insert("\n");
 
             XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
 
@@ -41,15 +43,50 @@ namespace SIL.XForge.WebApi.Server.Services
         }
 
         [Test]
+        public void ToUsx_EmptySegments()
+        {
+            var delta = Delta.New()
+                .InsertChapter("1")
+                .InsertVerse("1")
+                .InsertEmptyText("verse_1_1")
+                .InsertVerse("2")
+                .InsertEmptyText("verse_1_2")
+                .InsertPara("p")
+                .InsertEmptyText("verse_1_2/li_1")
+                .InsertPara("li")
+                .InsertEmptyText("verse_1_2/li_2")
+                .InsertPara("li")
+                .InsertEmptyText("verse_1_2/p_1")
+                .InsertVerse("3")
+                .InsertEmptyText("verse_1_3")
+                .InsertPara("p")
+                .Insert("\n");
+
+            XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
+
+            XElement expected = Usx("PHM",
+                Chapter("1"),
+                Para("p",
+                    Verse("1"),
+                    Verse("2")),
+                Para("li"),
+                Para("li"),
+                Para("p",
+                    Verse("3")));
+            Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
+        }
+
+        [Test]
         public void ToUsx_CharText()
         {
             var delta = Delta.New()
                 .InsertChapter("1")
                 .InsertVerse("1")
-                .Insert("This is some ")
-                .InsertChar("bd", "bold")
-                .Insert(" text.")
-                .InsertPara("p");
+                .InsertText("This is some ", "verse_1_1")
+                .InsertChar("bd", "bold", "verse_1_1")
+                .InsertText(" text.", "verse_1_1")
+                .InsertPara("p")
+                .Insert("\n");
 
             XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
 
@@ -69,8 +106,8 @@ namespace SIL.XForge.WebApi.Server.Services
             var delta = Delta.New()
                 .InsertChapter("1")
                 .InsertVerse("1")
-                .Insert("This is a verse with a footnote")
-                .InsertNote("_note_1", "f", "+", Delta.New()
+                .InsertText("This is a verse with a footnote", "verse_1_1")
+                .InsertNote("_note_1", "f", "+", "verse_1_1", Delta.New()
                     .InsertChar("fr", "1.1: ")
                     .InsertChar("ft", "Refers to ")
                     .InsertChar("fq", "a footnote")
@@ -79,8 +116,9 @@ namespace SIL.XForge.WebApi.Server.Services
                     .Insert(" and ")
                     .InsertChar("xt", "Mark 1:1")
                     .Insert("."))
-                .Insert(", so that we can test it.")
-                .InsertPara("p");
+                .InsertText(", so that we can test it.", "verse_1_1")
+                .InsertPara("p")
+                .Insert("\n");
 
             XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
 
@@ -107,7 +145,8 @@ namespace SIL.XForge.WebApi.Server.Services
         {
             var delta = Delta.New()
                 .InsertPara("p")
-                .InsertPara("p");
+                .InsertPara("p")
+                .Insert("\n");
 
             XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
 
@@ -115,6 +154,72 @@ namespace SIL.XForge.WebApi.Server.Services
                 Para("p"),
                 Para("p"));
             Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
+        }
+
+        [Test]
+        public void ToDelta_EmptySegments()
+        {
+            XElement usxElem = Usx("PHM",
+                Chapter("1"),
+                Para("p",
+                    Verse("1"),
+                    Verse("2")),
+                Para("li"),
+                Para("li"),
+                Para("p",
+                    Verse("3")));
+
+            Delta newDelta = DeltaUsxMapper.ToDelta(usxElem);
+
+            var expected = Delta.New()
+                .InsertChapter("1")
+                .InsertVerse("1")
+                .InsertEmptyText("verse_1_1")
+                .InsertVerse("2")
+                .InsertEmptyText("verse_1_2")
+                .InsertPara("p")
+                .InsertEmptyText("verse_1_2/li_1")
+                .InsertPara("li")
+                .InsertEmptyText("verse_1_2/li_2")
+                .InsertPara("li")
+                .InsertEmptyText("verse_1_2/p_1")
+                .InsertVerse("3")
+                .InsertEmptyText("verse_1_3")
+                .InsertPara("p")
+                .Insert("\n");
+
+            Assert.IsTrue(newDelta.DeepEquals(expected));
+        }
+
+        [Test]
+        public void ToDelta_SectionHeader()
+        {
+            XElement usxElem = Usx("PHM",
+                Chapter("1"),
+                Para("p",
+                    Verse("1"),
+                    Verse("2")),
+                Para("s"),
+                Para("p",
+                    Verse("3")));
+
+            Delta newDelta = DeltaUsxMapper.ToDelta(usxElem);
+
+            var expected = Delta.New()
+                .InsertChapter("1")
+                .InsertVerse("1")
+                .InsertEmptyText("verse_1_1")
+                .InsertVerse("2")
+                .InsertEmptyText("verse_1_2")
+                .InsertPara("p")
+                .InsertEmptyText("s_1")
+                .InsertPara("s")
+                .InsertVerse("3")
+                .InsertEmptyText("verse_1_3")
+                .InsertPara("p")
+                .Insert("\n");
+
+            Assert.IsTrue(newDelta.DeepEquals(expected));
         }
 
         private XElement Usx(string code, params XElement[] elems)
