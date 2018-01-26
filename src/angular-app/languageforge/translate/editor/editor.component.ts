@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 import { SmtTrainProgress } from 'machine';
-import Quill from 'quill';
+import Quill, { DeltaStatic, RangeStatic } from 'quill';
 
 import { JsonRpcResult } from '../../../bellows/core/api/json-rpc.service';
 import { ModalService } from '../../../bellows/core/modal/modal.service';
@@ -68,7 +68,16 @@ export class TranslateEditorController implements angular.IController {
       },
 
       keyboard: {
-        bindings: { }
+        bindings: {
+          disableBackspace: {
+            key: 'backspace',
+            handler: (range: RangeStatic, context: any) => this.focusedEditor.isBackspaceAllowed(range, context)
+          },
+          disableDelete: {
+            key: 'delete',
+            handler: (range: RangeStatic, context: any) => this.focusedEditor.isDeleteAllowed(range, context)
+          }
+        }
       }
     };
 
@@ -409,8 +418,8 @@ export class TranslateEditorController implements angular.IController {
     return docName + editor.label + ((editor.inputSystem.tag) ? ' (' + editor.inputSystem.tag + ')' : '');
   }
 
-  onContentChanged(editor: DocumentEditor): void {
-    this.updateEditor(editor, true);
+  onContentChanged(editor: DocumentEditor, delta: DeltaStatic): void {
+    this.updateEditor(editor, delta);
   }
 
   onSelectionChanged(editor: DocumentEditor): void {
@@ -423,7 +432,7 @@ export class TranslateEditorController implements angular.IController {
         this.metricService.reset();
       }
     }
-    this.updateEditor(editor, false);
+    this.updateEditor(editor);
   }
 
   onQuillCreated(quill: Quill, editor: DocumentEditor): void {
@@ -481,15 +490,7 @@ export class TranslateEditorController implements angular.IController {
   }
 
   swapEditors(writePreferences: boolean = true): void {
-    let focusedEditor: DocumentEditor;
-    switch (this.currentDocType) {
-      case DocType.SOURCE:
-        focusedEditor = this.source;
-        break;
-      case DocType.TARGET:
-        focusedEditor = this.target;
-        break;
-    }
+    const focusedEditor = this.focusedEditor;
     const leftEditorElem = this.left.quill.container.parentElement.parentElement;
     const leftParentElem = leftEditorElem.parentElement;
     const rightEditorElem = this.right.quill.container.parentElement.parentElement;
@@ -510,6 +511,19 @@ export class TranslateEditorController implements angular.IController {
       this.projectApi.updateUserPreferences(userPreferences);
       this.tecOnUpdate({ $event: { project: this.tecProject } });
     }
+  }
+
+  private get focusedEditor(): DocumentEditor {
+    let focusedEditor: DocumentEditor;
+    switch (this.currentDocType) {
+      case DocType.SOURCE:
+        focusedEditor = this.source;
+        break;
+      case DocType.TARGET:
+        focusedEditor = this.target;
+        break;
+    }
+    return focusedEditor;
   }
 
   private listenForTrainingStatus(): void {
@@ -599,8 +613,8 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  private updateEditor(editor: DocumentEditor, textChange: boolean): void {
-    const segmentChanged = editor.update(textChange);
+  private updateEditor(editor: DocumentEditor, delta?: DeltaStatic): void {
+    const segmentChanged = editor.update(delta != null);
     switch (editor.docType) {
       case DocType.TARGET:
         if (this.target.hasFocus) {
@@ -645,6 +659,7 @@ export class TranslateEditorController implements angular.IController {
 
     if (editor.hasFocus) {
       this.currentDocType = editor.docType;
+      editor.adjustSelection();
     }
   }
 

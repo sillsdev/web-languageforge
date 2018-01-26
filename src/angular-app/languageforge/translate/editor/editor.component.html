@@ -138,9 +138,9 @@
                 <ng-quill-editor class="notranslate"
                     id="editorSource" spellcheck="false" data-modules="$ctrl.source.modulesConfig" data-theme="suggestions"
                     data-on-editor-created="$ctrl.onQuillCreated(editor, $ctrl.source)"
-                    data-on-content-changed="$ctrl.onContentChanged($ctrl.source)"
+                    data-on-content-changed="$ctrl.onContentChanged($ctrl.source, delta)"
                     data-on-selection-changed="$ctrl.onSelectionChanged($ctrl.source)"
-                    data-ng-model="$ctrl.source.html" data-read-only="!$ctrl.hasDocumentSets()"
+                    data-ng-model="$ctrl.source.html" data-read-only="!$ctrl.hasDocumentSets() || $ctrl.source.isScripture"
                     data-placeholder="&#8203;enter text here or drop a file"></ng-quill-editor>
             </div>
             <div class="col-sm-6 d-sm-none" data-ng-if="$ctrl.hasDocumentSets()">
@@ -154,7 +154,7 @@
                 <ng-quill-editor class="notranslate"
                     id="editorTarget" spellcheck="false" data-modules="$ctrl.target.modulesConfig" data-theme="suggestions"
                     data-on-editor-created="$ctrl.onQuillCreated(editor, $ctrl.target)"
-                    data-on-content-changed="$ctrl.onContentChanged($ctrl.target)"
+                    data-on-content-changed="$ctrl.onContentChanged($ctrl.target, delta)"
                     data-on-selection-changed="$ctrl.onSelectionChanged($ctrl.target)"
                     data-ng-model="$ctrl.target.html" data-read-only="!$ctrl.hasDocumentSets()"
                     data-placeholder="&#8203;enter text here or drop a file"></ng-quill-editor>

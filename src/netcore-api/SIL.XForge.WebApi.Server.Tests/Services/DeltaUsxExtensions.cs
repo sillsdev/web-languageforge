@@ -11,16 +11,14 @@ namespace SIL.XForge.WebApi.Server.Services
             return delta.Insert("\n", new { para = new { style = style } });
         }
 
-        public static Delta InsertVerseAlignmentPara(this Delta delta)
+        public static Delta InsertNote(this Delta delta, string id, string style, string caller, string segRef,
+            Delta noteDelta)
         {
-            return delta.Insert("\n", new JObject(
-                new JProperty("para", new JObject(
-                    new JProperty("verse-alignment", "")))));
-        }
-
-        public static Delta InsertNote(this Delta delta, string id, string style, string caller, Delta noteDelta)
-        {
-            var noteAttrs = new { note = new { id = id, caller = caller, style = style } };
+            var noteAttrs = new
+            {
+                note = new { id = id, caller = caller, style = style },
+                segment = segRef
+            };
 
             foreach (JToken op in noteDelta.Ops)
             {
@@ -34,31 +32,45 @@ namespace SIL.XForge.WebApi.Server.Services
             return delta;
         }
 
-        public static Delta InsertChar(this Delta delta, string style, string text)
+        public static Delta InsertChar(this Delta delta, string style, string text, string segRef = null)
         {
-            return delta.Insert(text, new JObject(
+            var attrs = new JObject(
                 new JProperty("char", new JObject(
-                    new JProperty("style", style)))));
+                    new JProperty("style", style))));
+            if (segRef != null)
+                attrs.Add(new JProperty("segment", segRef));
+            return delta.Insert(text, attrs);
         }
 
-        public static Delta InsertChar(this Delta delta, string style, bool closed, string text)
+        public static Delta InsertChar(this Delta delta, string style, bool closed, string text, string segRef = null)
         {
-            return delta.Insert(text, new JObject(
+            var attrs = new JObject(
                 new JProperty("char", new JObject(
                     new JProperty("style", style)),
-                    new JProperty("closed", closed.ToString()))));
+                    new JProperty("closed", closed.ToString())));
+            if (segRef != null)
+                attrs.Add(new JProperty("segment", segRef));
+            return delta.Insert(text, attrs);
         }
 
         public static Delta InsertChapter(this Delta delta, string number)
         {
-            return delta
-                .Insert(number)
-                .Insert("\n", new { chapter = new { style = "c" } });
+            return delta.Insert(new { chapter = number }, new { chapter = new { style = "c" } });
+        }
+
+        public static Delta InsertText(this Delta delta, object text, string segRef)
+        {
+            return delta.Insert(text, new { segment = segRef });
+        }
+
+        public static Delta InsertEmptyText(this Delta delta, string segRef)
+        {
+            return delta.InsertText(DeltaUsxMapper.EmptySegmentPlaceholder, segRef);
         }
 
         public static Delta InsertVerse(this Delta delta, string number)
         {
-            return delta.Insert(number, new { verse = new { style = "v" } });
+            return delta.Insert(new { verse = number }, new { verse = new { style = "v" } });
         }
     }
 }
