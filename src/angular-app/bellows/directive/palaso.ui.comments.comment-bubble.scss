@@ -3,11 +3,6 @@
   right: -20px;
   z-index: 20;
   top: 4px;
-  opacity: 0;
-  transition: opacity 0.5s;
-  &.inview {
-    opacity: 1;
-  }
   a.commentBubble {
     background: #104060;
     border-radius: 50%;
