@@ -69,11 +69,10 @@ export class LexiconCommentService {
   /**
    * This should be called whenever the entry context changes (to update the comments and comment counts)
    */
-  loadEntryComments(entryId: string): angular.IPromise<any> {
+  loadEntryComments(entryId: string): Promise<any> {
     this.comments.counts.currentEntry.total = 0;
     this.comments.counts.currentEntry.fields = {};
     this.comments.items.currentEntry.length = 0;
-    const defer = this.$q.defer();
     const promises = [];
     for (const comment of this.comments.items.all) {
       if (comment.entryRef === entryId) {
@@ -105,10 +104,7 @@ export class LexiconCommentService {
         }));
       }
     }
-    this.$q.all(promises).then(response => {
-      defer.resolve();
-    });
-    return defer.promise;
+    return Promise.all(promises);
   }
 
   /**
