@@ -484,6 +484,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
   function ($scope, textService, $routeParams) {
     $scope.exportConfig = {
       textId: $routeParams.textId,
+      commentFormat: "PT7",
       exportComments: false,
       exportFlagged: true,
       tags: []
@@ -502,7 +503,8 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
       return true;
     };
 
-    $scope.startExport = function () {
+    $scope.startExport = function (ptVersion = "PT7") {
+      $scope.exportConfig.commentFormat = ptVersion;
       $scope.download.inprogress = true;
       textService.exportComments($scope.exportConfig, function (result) {
         if (result.ok) {
