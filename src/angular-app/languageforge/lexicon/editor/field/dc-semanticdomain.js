@@ -18,6 +18,7 @@ angular.module('palaso.ui.dc.semanticdomain', [])
       $scope.$state = $state;
       $scope.isAdding = false;
       $scope.valueToBeDeleted = '';
+      $scope.contextGuid = $scope.$parent.contextGuid;
 
       function createOptions() {
         var options = [];

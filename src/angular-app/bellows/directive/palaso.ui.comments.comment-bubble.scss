@@ -3,6 +3,14 @@
   right: -20px;
   z-index: 20;
   top: 4px;
+  &.comment-inactivate {
+    a.commentBubble {
+      cursor: not-allowed;
+      i {
+        color: #1d64f0;
+      }
+    }
+  }
   a.commentBubble {
     background: #104060;
     border-radius: 50%;

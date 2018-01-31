@@ -39,7 +39,8 @@ angular.module('palaso.ui.comments')
               regarding: {
                 meaning: $scope.control.getMeaningForDisplay($scope.entry),
                 word: $scope.control.getWordForDisplay($scope.entry)
-              }
+              },
+              contextGuid: ''
             };
           }
         };
@@ -53,10 +54,7 @@ angular.module('palaso.ui.comments')
         $scope.commentFilter = {
           text: '',
           status: 'all',
-          regardingField: '',
-          regardingInputSystemAbbreviation: '',
-          multiOptionValue: '',
-          pictureSrc: '',
+          contextGuid: '',
           byText: function byText(comment) {
             // Convert entire comment object to a big string and search for filter.
             // Note: This has a slight side effect of ID and avatar information
@@ -86,26 +84,12 @@ angular.module('palaso.ui.comments')
           byContext: function byContext(comment) {
             if (!angular.isDefined(comment)) {
               return false;
-            } else if (!$scope.commentFilter.regardingField) {
+            } else if (!$scope.commentFilter.contextGuid) {
               // Return true as we're most likely not running a valid context search so return all
               return true;
-            } else if (comment.regarding.field === $scope.commentFilter.regardingField &&
-              comment.regarding.inputSystemAbbreviation === $scope.commentFilter.regardingInputSystemAbbreviation) {
-              if ($scope.commentFilter.multiOptionValue) {
-                if (comment.regarding.fieldValue === $scope.commentFilter.multiOptionValue) {
-                  return true;
-                } else {
-                  return false;
-                }
-              } else if ($scope.commentFilter.pictureSrc) {
-                if (comment.regarding.fieldValue === $scope.commentFilter.pictureSrc) {
-                  return true;
-                } else {
-                  return false;
-                }
-              } else {
-                return true;
-              }
+            } else if ($scope.commentFilter.contextGuid) {
+              // All new comments will have a context ID available
+              return (comment.contextGuid === $scope.commentFilter.contextGuid);
             }
 
             return false;
@@ -198,15 +182,9 @@ angular.module('palaso.ui.comments')
           return label;
         };
 
-        $scope.showCommentsInContext = function showCommentsInContext(field,
-                                                                      abbreviation,
-                                                                      multiOptionValue,
-                                                                      pictureUrl) {
-          $scope.commentFilter.regardingField = field;
-          $scope.commentFilter.regardingInputSystemAbbreviation = abbreviation;
-          $scope.commentFilter.multiOptionValue = multiOptionValue;
-          $scope.commentFilter.pictureSrc = pictureUrl;
-          if (field !== '') {
+        $scope.showCommentsInContext = function showCommentsInContext(contextGuid) {
+          $scope.commentFilter.contextGuid = contextGuid;
+          if (contextGuid !== '') {
             $scope.showNewComment = true;
           } else {
             $scope.showNewComment = false;
@@ -230,9 +208,38 @@ angular.module('palaso.ui.comments')
           commentService.refreshFilteredComments($scope.commentFilter); // for instant feedback
         };
 
-        $scope.getSenseLabel = function getSenseLabel(regardingField) {
+        $scope.getSenseLabel = function getSenseLabel(regardingField, contextGuid) {
           if (!angular.isDefined(regardingField)) {
             return '';
+          }
+
+          var index = null;
+          if (angular.isDefined(contextGuid)) {
+            var contextParts = contextGuid.split(' ');
+            var exampleGuid = '';
+            var senseGuid = '';
+            for (var i in contextParts) {
+              if (contextParts[i].indexOf('sense#') !== -1) {
+                senseGuid = contextParts[i].substr(6);
+              } else if (contextParts[i].indexOf('example#') !== -1) {
+                exampleGuid = contextParts[i].substr(8);
+              }
+            }
+
+            if (senseGuid) {
+              for (var a in $scope.$parent.entry.senses) {
+                if ($scope.$parent.entry.senses[a].guid === senseGuid) {
+                  index = a;
+                  if (exampleGuid) {
+                    for (var b in $scope.$parent.entry.senses[a].examples) {
+                      if ($scope.$parent.entry.senses[a].examples[b].guid === exampleGuid) {
+                        index = b;
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
 
           var configField = null;
@@ -247,11 +254,22 @@ angular.module('palaso.ui.comments')
 
           if (configField !== null) {
             if (configField.hasOwnProperty('senseLabel')) {
-              return configField.senseLabel;
+              if (angular.isDefined(index) && configField.senseLabel instanceof Array) {
+                return configField.senseLabel[index];
+              } else {
+                return configField.senseLabel;
+              }
             }
           }
 
           return '';
+        };
+
+        $scope.getNewCommentSenseLabel = function getNewCommentSenseLabel(regardingField) {
+          if (!angular.isDefined(regardingField)) {
+            return '';
+          }
+          return $scope.getSenseLabel(regardingField, $scope.newComment.contextGuid);
         };
 
         $scope.$watch('entry', function (newVal) {
@@ -277,10 +295,7 @@ angular.module('palaso.ui.comments')
 
         $scope.$watch('control.commentContext', function (newVal, oldVal) {
           if (newVal !== oldVal) {
-            $scope.showCommentsInContext(newVal.field,
-              newVal.abbreviation,
-              newVal.multiOptionValue,
-              newVal.pictureSrc);
+            $scope.showCommentsInContext(newVal.contextGuid);
           }
 
         }, true);
