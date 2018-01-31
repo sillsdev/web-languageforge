@@ -28,18 +28,26 @@ class ParatextExport
             'xml' => '<?xml version="1.0" encoding="utf-8"?>' . "\n<CommentList>\n"
         );
         $commentFormatter = "formatForPT7";
+        $filenamePrefix = "Comments";
         if (isset($params['commentFormat'])) {
             switch ($params['commentFormat'])
             {
             case "PT7":
                 $commentFormatter = "formatForPT7";
+                $filenamePrefix = "Comments";
                 break;
             case "PT8":
                 $commentFormatter = "formatForPT8";
+                $filenamePrefix = "Notes";
                 break;
             // No need for a default case since we've already set the default above
             }
         }
+
+        $dateForFilename = date('Ymd_Gi');
+        $dateTimeForFilename = \DateTime::createFromFormat('Ymd_Gi', $dateForFilename);
+        $dl['xml'] .= self::makeDummyComment($commentFormatter, $dateTimeForFilename, $dateForFilename);
+
         foreach ($questionlist->entries as $question) {
             if (! array_key_exists('isArchived', $question) || ! $question['isArchived']) {
                 foreach ($question['answers'] as $answerId => $answer) {
@@ -59,7 +67,7 @@ class ParatextExport
         $dl['totalCount'] = $dl['answerCount'] + $dl['commentCount'];
         $dl['xml'] .= "</CommentList>";
 
-        $dl['filename'] = 'Comments_sf_' . date('Ymd_Gi') . '.xml';
+        $dl['filename'] = $filenamePrefix . '_SF-' . $dateForFilename . '.xml';
         //$dl['filename'] = preg_replace("([^\w\d\-]|[\.]{2,})", '_', $filename) . '.xml';
         return $dl;
     }
@@ -112,9 +120,14 @@ class ParatextExport
         return call_user_func(["\Api\Library\Scriptureforge\Sfchecks\ParatextExport", $commentFormatter], $threadId, $username, $textInfo, "", $comment['dateEdited']->toDateTime(), $content);
     }
 
+    private static function makeDummyComment($commentFormatter, \DateTime $dateTime, string $dummyCommenterName)
+    {
+        return call_user_func(["\Api\Library\Scriptureforge\Sfchecks\ParatextExport", $commentFormatter], $dummyCommenterName, $dummyCommenterName, [], "", $dateTime, "");
+    }
+
     private static function formatVerseRef($textInfo) : string
     {
-        return $textInfo['bookCode'] . " " . $textInfo['startChapter'] . ":" . $textInfo['startVerse'];
+        return empty($textInfo) ? "" : ($textInfo['bookCode'] . " " . $textInfo['startChapter'] . ":" . $textInfo['startVerse']);
     }
 
     public static function commentHeaderForPT7(string $threadId, string $username, string $verseRef, string $language, \DateTime $dateTime) : string
@@ -134,16 +147,17 @@ class ParatextExport
 
     public static function formatForPT7(string $threadId, string $username, array $textInfo, string $language, \DateTime $dateTime, string $content) : string
     {
+        $verse = (isset($textInfo['startVerse'])) ? "\\v " . $textInfo['startVerse'] : "";
         $header = self::commentHeaderForPT7($threadId, $username, self::formatVerseRef($textInfo), $language, $dateTime);
         return $header . "
         <SelectedText />
         <StartPosition>0</StartPosition>
-        <ContextBefore>\\v " . $textInfo['startVerse'] . "</ContextBefore>
+        <ContextBefore>$verse</ContextBefore>
         <ContextAfter/>
         <Status>todo</Status>
         <Type/>
         <Language/>
-        <Verse>\\v " . $textInfo['startVerse'] . "</Verse>
+        <Verse>$verse</Verse>
         <Field Name=\"assigned\"></Field>
         <Contents>$content</Contents>
     </Comment>\n";
@@ -151,16 +165,17 @@ class ParatextExport
 
     public static function formatForPT8(string $threadId, string $username, array $textInfo, string $language, \DateTime $dateTime, string $content) : string
     {
+        $verse = (isset($textInfo) && isset($textInfo['startVerse'])) ? "\\v " . $textInfo['startVerse'] : "";
         $header = self::commentHeaderForPT8($threadId, $username, self::formatVerseRef($textInfo), $language, $dateTime);
         return $header . "
         <SelectedText />
         <StartPosition>0</StartPosition>
-        <ContextBefore>\\v " . $textInfo['startVerse'] . "</ContextBefore>
+        <ContextBefore>$verse</ContextBefore>
         <ContextAfter/>
         <Status>todo</Status>
         <Type/>
         <Language/>
-        <Verse>\\v " . $textInfo['startVerse'] . "</Verse>
+        <Verse>$verse</Verse>
         <Field Name=\"assigned\"></Field>
         <Contents>$content</Contents>
     </Comment>\n";
