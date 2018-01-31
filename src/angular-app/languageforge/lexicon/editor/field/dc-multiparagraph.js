@@ -17,6 +17,7 @@ angular.module('palaso.ui.dc.multiparagraph', ['coreModule', 'palaso.ui.showOver
     },
     controller: ['$scope', '$state', 'sessionService', function ($scope, $state, sessionService) {
       $scope.$state = $state;
+      $scope.contextGuid = $scope.$parent.contextGuid;
 
       sessionService.getSession().then(function (session) {
         $scope.inputSystems = session.projectSettings().config.inputSystems;

@@ -146,7 +146,7 @@ angular.module('palaso.ui.comments')
           }
 
           $scope.getSenseLabel = function getSenseLabel() {
-            return $scope.$parent.getSenseLabel($scope.comment.regarding.field);
+            return $scope.$parent.getSenseLabel($scope.comment.regarding.field, $scope.comment.contextGuid);
           };
 
         }],

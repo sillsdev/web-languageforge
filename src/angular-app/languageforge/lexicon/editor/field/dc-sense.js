@@ -16,11 +16,13 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
     },
     controller: ['$scope', '$state', function ($scope, $state) {
       $scope.$state = $state;
+      $scope.contextGuid = 'sense#' + $scope.model.guid;
 
       $scope.addExample = function addExample() {
         var newExample = {};
         $scope.control.makeValidModelRecursive($scope.config.fields.examples, newExample);
         $scope.model.examples.push(newExample);
+        $scope.control.hideCommentsPanel();
       };
 
       $scope.deleteExample = function deleteExample(index) {
@@ -30,12 +32,17 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
         modal.showModalSimple('Delete Example', deletemsg, 'Cancel', 'Delete Example')
           .then(function () {
             $scope.model.examples.splice(index, 1);
-            $scope.control.saveCurrentEntry();
+            $scope.control.hideCommentsPanel();
           }, angular.noop);
       };
 
       angular.forEach($scope.control.config.entry.fields.senses.fields, function (field) {
-        field.senseLabel = 'Meaning ' + ($scope.index + 1);
+        if (!angular.isDefined(field.senseLabel)) {
+          field.senseLabel = [];
+          field.senseLabel[-1] = 'Meaning';
+        }
+
+        field.senseLabel[$scope.index] = 'Meaning ' + ($scope.index + 1);
       });
     }]
   };
