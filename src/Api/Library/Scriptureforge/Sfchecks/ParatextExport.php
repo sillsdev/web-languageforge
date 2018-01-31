@@ -25,17 +25,30 @@ class ParatextExport
             'answerCount' => 0,
             'commentCount' => 0,
             'totalCount' => 0,
-            'xml' => "<CommentList>\n"
+            'xml' => '<?xml version="1.0" encoding="utf-8"?>' . "\n<CommentList>\n"
         );
+        $commentFormatter = "formatForPT7";
+        if (isset($params['commentFormat'])) {
+            switch ($params['commentFormat'])
+            {
+            case "PT7":
+                $commentFormatter = "formatForPT7";
+                break;
+            case "PT8":
+                $commentFormatter = "formatForPT8";
+                break;
+            // No need for a default case since we've already set the default above
+            }
+        }
         foreach ($questionlist->entries as $question) {
             if (! array_key_exists('isArchived', $question) || ! $question['isArchived']) {
                 foreach ($question['answers'] as $answerId => $answer) {
                     if (! $params['exportFlagged'] || (array_key_exists('isToBeExported', $answer) && $answer['isToBeExported'])) { // if the answer is tagged with an export tag
                         $dl['answerCount']++;
-                        $dl['xml'] .= self::makeCommentXml($answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
+                        $dl['xml'] .= self::makeCommentXml($commentFormatter, $answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
                         if ($params['exportComments']) {
                             foreach ($answer['comments'] as $commentId => $comment) {
-                                $dl['xml'] .= self::makeCommentXml(array(), 0, $textInfo, $answerId, $comment); // answerId, not commentId, so that Paratext will thread them together
+                                $dl['xml'] .= self::makeCommentXml($commentFormatter, array(), 0, $textInfo, $answerId, $comment); // answerId, not commentId, so that Paratext will thread them together
                                 $dl['commentCount']++;
                             }
                         }
@@ -77,7 +90,7 @@ class ParatextExport
      * @param string $threadId
      * @param array $comment
      */
-    private static function makeCommentXml($tags, $votes, $textInfo, $threadId, $comment)
+    private static function makeCommentXml($commentFormatter, $tags, $votes, $textInfo, $threadId, $comment)
     {
         $user = new UserModel((string) $comment['userRef']);
         $username = $user->username;
@@ -95,11 +108,51 @@ class ParatextExport
             $content .= " ($votes Votes)";
         }
 
+        // Is there a better way than specifying the function name *and* class name as "magic strings"? I'm unfamiliar with how to do this in PHP. - 2018-01 RM
+        return call_user_func(["\Api\Library\Scriptureforge\Sfchecks\ParatextExport", $commentFormatter], $threadId, $username, $textInfo, "", $comment['dateEdited']->toDateTime(), $content);
+    }
+
+    private static function formatVerseRef($textInfo) : string
+    {
+        return $textInfo['bookCode'] . " " . $textInfo['startChapter'] . ":" . $textInfo['startVerse'];
+    }
+
+    public static function commentHeaderForPT7(string $threadId, string $username, string $verseRef, string $language, \DateTime $dateTime) : string
+    {
         return "\t<Comment>
-        <Thread>" . $threadId . "</Thread>
+        <Thread>$threadId</Thread>
         <User>SF-$username</User>
-        <Date>" . $comment['dateEdited']->toDateTime()->format(\DateTime::ATOM) . "</Date>
-        <VerseRef>" . $textInfo['bookCode'] . " " . $textInfo['startChapter'] . ":" . $textInfo['startVerse'] . "</VerseRef>
+        <Date>" . $dateTime->format(\DateTime::ATOM) . "</Date>
+        <VerseRef>$verseRef</VerseRef>
+        <Language/>";
+    }
+
+    public static function commentHeaderForPT8(string $threadId, string $username, string $verseRef, string $language, \DateTime $dateTime) : string
+    {
+        return "\t<Comment Thread=\"$threadId\" User=\"SF-$username\" VerseRef=\"$verseRef\" Language=\"$language\" Date=\"" . $dateTime->format(\DateTime::ATOM) . "\">";
+    }
+
+    public static function formatForPT7(string $threadId, string $username, array $textInfo, string $language, \DateTime $dateTime, string $content) : string
+    {
+        $header = self::commentHeaderForPT7($threadId, $username, self::formatVerseRef($textInfo), $language, $dateTime);
+        return $header . "
+        <SelectedText />
+        <StartPosition>0</StartPosition>
+        <ContextBefore>\\v " . $textInfo['startVerse'] . "</ContextBefore>
+        <ContextAfter/>
+        <Status>todo</Status>
+        <Type/>
+        <Language/>
+        <Verse>\\v " . $textInfo['startVerse'] . "</Verse>
+        <Field Name=\"assigned\"></Field>
+        <Contents>$content</Contents>
+    </Comment>\n";
+    }
+
+    public static function formatForPT8(string $threadId, string $username, array $textInfo, string $language, \DateTime $dateTime, string $content) : string
+    {
+        $header = self::commentHeaderForPT8($threadId, $username, self::formatVerseRef($textInfo), $language, $dateTime);
+        return $header . "
         <SelectedText />
         <StartPosition>0</StartPosition>
         <ContextBefore>\\v " . $textInfo['startVerse'] . "</ContextBefore>
