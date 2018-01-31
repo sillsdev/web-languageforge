@@ -35,7 +35,7 @@ class ParatextExport
                         $dl['xml'] .= self::makeCommentXml($answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
                         if ($params['exportComments']) {
                             foreach ($answer['comments'] as $commentId => $comment) {
-                                $dl['xml'] .= self::makeCommentXml(array(), 0, $textInfo, $commentId, $comment);
+                                $dl['xml'] .= self::makeCommentXml(array(), 0, $textInfo, $answerId, $comment); // answerId, not commentId, so that Paratext will thread them together
                                 $dl['commentCount']++;
                             }
                         }
@@ -74,10 +74,10 @@ class ParatextExport
      * @param array $tags
      * @param int $votes
      * @param array $textInfo
-     * @param string $commentId
+     * @param string $threadId
      * @param array $comment
      */
-    private static function makeCommentXml($tags, $votes, $textInfo, $commentId, $comment)
+    private static function makeCommentXml($tags, $votes, $textInfo, $threadId, $comment)
     {
         $user = new UserModel((string) $comment['userRef']);
         $username = $user->username;
@@ -96,7 +96,7 @@ class ParatextExport
         }
 
         return "\t<Comment>
-        <Thread>" . $commentId . "</Thread>
+        <Thread>" . $threadId . "</Thread>
         <User>SF-$username</User>
         <Date>" . $comment['dateEdited']->toDateTime()->format(\DateTime::ATOM) . "</Date>
         <VerseRef>" . $textInfo['bookCode'] . " " . $textInfo['startChapter'] . ":" . $textInfo['startVerse'] . "</VerseRef>
