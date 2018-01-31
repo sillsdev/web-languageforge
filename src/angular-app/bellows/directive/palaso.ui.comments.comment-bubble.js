@@ -23,14 +23,23 @@ angular.module('palaso.ui.comments')
           };
         }
 
+        $scope.active = false;
         $scope.pictureSrc = '';
-        $scope.contextId = $scope.field + '_' + $scope.inputSystem.abbreviation;
+        $scope.contextGuid = $scope.$parent.contextGuid +
+          ($scope.$parent.contextGuid ? ' ' : '') +
+          $scope.field;
         lexConfig.getFieldConfig($scope.field).then(function (fieldConfig) {
           if (fieldConfig.type === 'pictures' && angular.isDefined($scope.picture)) {
             $scope.pictureSrc = $scope.$parent.getPictureUrl($scope.picture);
-            $scope.contextId += '_' + $scope.pictureSrc; // Would prefer to use the ID
+            $scope.contextGuid += '#' + $scope.picture.guid; // Would prefer to use the ID
           } else if (fieldConfig.type === 'multioptionlist') {
-            $scope.contextId += '_' + $scope.multiOptionValue;
+            $scope.contextGuid += '#' + $scope.multiOptionValue;
+          }
+
+          $scope.contextGuid += ($scope.inputSystem.abbreviation ? '.' +
+            $scope.inputSystem.abbreviation : '');
+          if ($scope.contextGuid.indexOf('undefined')  === -1) {
+            $scope.active = true;
           }
         });
 
@@ -39,7 +48,7 @@ angular.module('palaso.ui.comments')
         ss.getSession().then(function (session) {
           $scope.getCount = function getCount() {
             if (session.hasProjectRight(ss.domain.COMMENTS, ss.operation.CREATE)) {
-              return commentService.getFieldCommentCount($scope.contextId);
+              return commentService.getFieldCommentCount($scope.contextGuid);
             }
           };
 
@@ -53,6 +62,10 @@ angular.module('palaso.ui.comments')
           };
 
           $scope.getComments = function getComments() {
+            if (!$scope.active) {
+              return;
+            }
+
             if (!angular.isDefined($scope.inputSystem)) {
               $scope.inputSystem = {
                 abbreviation: '',
@@ -60,21 +73,16 @@ angular.module('palaso.ui.comments')
               };
             }
 
-            if ($scope.control.commentContext.field === $scope.field &&
-              $scope.control.commentContext.abbreviation === $scope.inputSystem.abbreviation &&
-              $scope.control.commentContext.multiOptionValue === $scope.multiOptionValue &&
-              $scope.control.commentContext.pictureSrc === $scope.pictureSrc) {
+            if ($scope.control.commentContext.contextGuid === $scope.contextGuid) {
               $scope.control.hideCommentsPanel();
             } else {
-              $scope.control.setCommentContext($scope.field,
-                $scope.inputSystem.abbreviation,
-                $scope.multiOptionValue,
-                $scope.pictureSrc);
+              $scope.control.setCommentContext($scope.contextGuid);
               $scope.control.selectFieldForComment($scope.field,
                 $scope.model,
                 $scope.inputSystem.tag,
                 $scope.multiOptionValue,
-                $scope.pictureSrc);
+                $scope.pictureSrc,
+                $scope.contextGuid);
               if ($scope.multiOptionValue) {
                 var bubbleOffset = $scope.element.parents('.list-repeater').offset().top;
               } else {

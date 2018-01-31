@@ -26,7 +26,7 @@ angular.module('palaso.ui.comments')
           $scope.config = config;
           $scope.control.selectFieldForComment =
           function selectFieldForComment(fieldName, model, inputSystem, multioptionValue,
-                                         pictureFilePath) {
+                                         pictureFilePath, contextGuid) {
             var canComment = session.hasProjectRight(ss.domain.COMMENTS, ss.operation.CREATE);
             if (!canComment) return;
 
@@ -38,6 +38,7 @@ angular.module('palaso.ui.comments')
               delete $scope.newComment.regarding.inputSystem;
               delete $scope.newComment.regarding.inputSystemAbbreviation;
               $scope.newComment.isRegardingPicture = false;
+              $scope.newComment.contextGuid = contextGuid;
               if (inputSystem) {
                 $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
                 $scope.newComment.regarding.inputSystem =

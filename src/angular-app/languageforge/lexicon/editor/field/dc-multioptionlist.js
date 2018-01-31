@@ -19,6 +19,7 @@ angular.module('palaso.ui.dc.multioptionlist', [])
       $scope.$state = $state;
       $scope.isAdding = false;
       $scope.valueToBeDeleted = '';
+      $scope.contextGuid = $scope.$parent.contextGuid;
 
       rightsService.getRights().then(function(rights) {
         $scope.rights = rights;

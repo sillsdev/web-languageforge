@@ -23,6 +23,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       $scope.upload = {};
       $scope.upload.progress = 0;
       $scope.upload.file = null;
+      $scope.contextGuid = $scope.$parent.contextGuid;
 
       $scope.fieldContainsData = lexConfigService.fieldContainsData;
 

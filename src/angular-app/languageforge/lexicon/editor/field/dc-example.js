@@ -14,10 +14,17 @@ angular.module('palaso.ui.dc.example', ['palaso.ui.dc.fieldrepeat'])
     },
     controller: ['$scope', '$state', function ($scope, $state) {
       $scope.$state = $state;
+      $scope.contextGuid = $scope.$parent.contextGuid + ' example#' + $scope.model.guid;
 
-      angular.forEach($scope.control.config.entry.fields.senses.fields.examples.fields, function (field) {
-        field.senseLabel = 'Example ' + ($scope.index + 1);
-      });
+      angular.forEach($scope.control.config.entry.fields.senses.fields.examples.fields,
+        function (field) {
+          if (!angular.isDefined(field.senseLabel)) {
+            field.senseLabel = [];
+            field.senseLabel[-1] = 'Example';
+          }
+
+          field.senseLabel[$scope.index] = 'Example ' + ($scope.index + 1);
+        });
     }],
 
     link: function (scope, element, attrs, controller) {

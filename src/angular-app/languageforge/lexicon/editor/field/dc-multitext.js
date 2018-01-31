@@ -13,12 +13,18 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.showOverflow', 'palaso.ui.d
       model: '=',
       control: '=',
       selectField: '&',
-      fieldName: '='
+      fieldName: '=',
+      picture: '<'
     },
     controller: ['$scope', '$state', 'sessionService', 'lexUtils',
     function ($scope, $state, sessionService, lexUtils) {
       $scope.$state = $state;
       $scope.isAudio = lexUtils.constructor.isAudio;
+      $scope.contextGuid = $scope.$parent.contextGuid;
+
+      if (angular.isDefined($scope.picture)) {
+        $scope.contextGuid += ' pictures#' + $scope.picture.guid;
+      }
 
       sessionService.getSession().then(function (session) {
         $scope.inputSystems = session.projectSettings().config.inputSystems;

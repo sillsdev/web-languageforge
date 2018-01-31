@@ -14,6 +14,7 @@ angular.module('palaso.ui.dc.optionlist', [])
       },
       controller: ['$scope', '$state', function ($scope, $state) {
         $scope.$state = $state;
+        $scope.contextGuid = $scope.$parent.contextGuid;
         $scope.getDisplayName = function getDisplayName(value) {
           var displayName = value;
           if (angular.isDefined($scope.items)) {

@@ -9,6 +9,7 @@ class Comment {
   id: string;
   entryRef: string;
   regarding: any;
+  contextGuid: string;
   replies: any[];
   score: number;
   status: string;
@@ -79,23 +80,28 @@ export class LexiconCommentService {
         promises.push(this.lexConfig.getFieldConfig(comment.regarding.field).then(fieldConfig => {
           // As the promise runs when its ready the comments can double up if loadEntryComments is run multiple times
           if (this.comments.items.currentEntry.indexOf(comment) === -1) {
-            let contextId = comment.regarding.field + '_' + comment.regarding.inputSystemAbbreviation;
-            if (fieldConfig.type === 'pictures' && comment.regarding.fieldValue.indexOf('/assets/') !== -1) {
-              contextId += '_' + comment.regarding.fieldValue; // Would prefer to use the picture ID
-            } else if (fieldConfig.type === 'multioptionlist') {
-              contextId += '_' + comment.regarding.fieldValue;
+            let contextGuid = '';
+            if (comment.contextGuid !== undefined) {
+              contextGuid = comment.contextGuid;
+            } else {
+              contextGuid = comment.regarding.field +
+                (comment.regarding.inputSystemAbbreviation ? '.' + comment.regarding.inputSystemAbbreviation : '');
+              if (fieldConfig.type === 'multioptionlist') {
+                contextGuid += '#' + comment.regarding.fieldValue;
+              }
+              comment.contextGuid = contextGuid;
             }
 
-            if (contextId && angular.isUndefined(this.comments.counts.currentEntry.fields[contextId])) {
-              this.comments.counts.currentEntry.fields[contextId] = 0;
+            if (contextGuid && angular.isUndefined(this.comments.counts.currentEntry.fields[contextGuid])) {
+              this.comments.counts.currentEntry.fields[contextGuid] = 0;
             }
 
             this.comments.items.currentEntry.push(comment);
 
             // update the appropriate count for this field and update the total count
             if (comment.status !== 'resolved') {
-              if (contextId) {
-                this.comments.counts.currentEntry.fields[contextId]++;
+              if (contextGuid) {
+                this.comments.counts.currentEntry.fields[contextGuid]++;
               }
 
               this.comments.counts.currentEntry.total++;
@@ -123,9 +129,9 @@ export class LexiconCommentService {
     }
   }
 
-  getFieldCommentCount(contextId: string): number {
-    if (angular.isDefined(this.comments.counts.currentEntry.fields[contextId])) {
-      return this.comments.counts.currentEntry.fields[contextId];
+  getFieldCommentCount(contextGuid: string): number {
+    if (angular.isDefined(this.comments.counts.currentEntry.fields[contextGuid])) {
+      return this.comments.counts.currentEntry.fields[contextGuid];
     }
 
     return 0;

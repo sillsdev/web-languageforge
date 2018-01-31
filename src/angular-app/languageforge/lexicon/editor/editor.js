@@ -53,10 +53,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
     $scope.filteredEntries = editorService.filteredEntries;
     $scope.entryListModifiers = editorService.entryListModifiers;
     $scope.commentContext = {
-      field: '',
-      abbreviation: '',
-      multiOptionValue: '',
-      pictureSrc: ''
+      contextGuid: ''
     };
     $scope.commentPanelVisible = false;
     $scope.sortEntries = function (args) {
@@ -463,6 +460,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         } else {
           $state.go('editor.entry', { entryId: id });
         }
+
+        $scope.hideCommentsPanel();
       };
 
       $scope.newEntry = function newEntry() {
@@ -484,6 +483,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
           } else {
             $state.go('editor.entry', { entryId: newEntry.id });
           }
+
+          $scope.hideCommentsPanel();
         });
       };
 
@@ -634,6 +635,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
                 editorService.refreshEditorData();
               });
             }
+
+            $scope.hideCommentsPanel();
           }, angular.noop);
       };
 
@@ -688,9 +691,12 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       $scope.showComments = function showComments() {
         if ($scope.commentPanelVisible === true && $scope.commentContext.field === '') {
           $scope.hideCommentsPanel();
-          $scope.setCommentContext('', '');
+
+          // Reset the comment context AFTER the panel starts hiding
+          $scope.setCommentContext('', '', '', '', '');
         } else {
-          $scope.setCommentContext('', '');
+          // Reset the comment context BEFORE we start showing the panel
+          $scope.setCommentContext('', '', '', '', '');
           angular.element('.comments-right-panel').css({ paddingTop: 0 });
           $scope.showCommentsPanel();
         }
@@ -936,27 +942,10 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         }
       };
 
-      $scope.setCommentContext = function setCommentContext(field,
-                                                            abbreviation,
-                                                            multiOptionValue,
-                                                            pictureSrc) {
-        $scope.commentContext.field = field;
-        $scope.commentContext.abbreviation = abbreviation;
-        $scope.commentContext.multiOptionValue = multiOptionValue;
-        $scope.commentContext.pictureSrc = pictureSrc;
+      $scope.setCommentContext = function setCommentContext(contextGuid) {
+        $scope.commentContext.contextGuid = contextGuid;
       };
 
-      $scope.setCommentSenseLabel = function setCommentSenseLabel(fieldName, senseLabel) {
-        var field = null;
-        if ($scope.config.entry.fields.hasOwnProperty(fieldName)) {
-          field = $scope.config.entry.fields[fieldName];
-        }
-
-        if (field !== null) {
-          console.log(fieldName + ' - ' + senseLabel);
-          field.senseLabel = senseLabel;
-        }
-      };
     });
 
   }])
