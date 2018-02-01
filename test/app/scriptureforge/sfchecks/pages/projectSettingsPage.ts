@@ -1,4 +1,4 @@
-import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
+import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
 import { ProjectsPage } from '../../../bellows/pages/projectsPage.js';
 const projectsPage = new ProjectsPage();
 const CONDITION_TIMEOUT = 3000;
@@ -13,6 +13,9 @@ export class SfProjectSettingsPage {
     projectsPage.get();
     projectsPage.clickOnProject(projectName);
     browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
+  }
+
+  clickOnSettingsLink() {
     this.settingsMenuLink.click();
     this.projectSettingsLink.click();
   }
@@ -69,7 +72,7 @@ export class SfProjectSettingsPage {
           checkboxElement.click();
         }
       });
-    },
+    }
   };
 
   optionlistsTab = {
@@ -103,7 +106,6 @@ export class SfProjectSettingsPage {
     button: element(by.id('communication_settings_save_button'))
   };
 }
-
 
 class MembersTab {
   sfProjectSettingsPage: any;

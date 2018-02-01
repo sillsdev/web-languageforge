@@ -1,3 +1,4 @@
+// tslint:disable-next-line:no-reference
 ///<reference path="utils.d.ts" />
 import 'jasmine';
 import {$, $$, browser, by, By, element, ExpectedConditions, promise} from 'protractor';
