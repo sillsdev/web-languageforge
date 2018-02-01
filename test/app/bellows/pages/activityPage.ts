@@ -1,4 +1,5 @@
 import {browser, element, by, By, $, $$, ExpectedConditions, Key} from 'protractor';
+import { ElementFinder } from 'protractor/built/element';
 
 /*
 // This object handles the activity page and provides methods to access items in the activity list
@@ -32,13 +33,13 @@ export class SfActivityPage {
   }
 
   getAllActivityTexts() {
-    return this.activitiesList.map((elem) => elem.getText());
+    return this.activitiesList.map((elem: ElementFinder) => elem.getText());
   }
 
   // Prints the entire activity list
   //noinspection JSUnusedGlobalSymbols
   printActivitiesNames() {
-    (this.activitiesList).each((names) => {
+    (this.activitiesList).each((names: ElementFinder) => {
       names.getText().then(console.log);
     });
   }

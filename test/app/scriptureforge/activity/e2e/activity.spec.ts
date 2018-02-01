@@ -1,12 +1,16 @@
-import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
-import {Utils} from '../../../bellows/pages/utils';
-import {BellowsLoginPage} from '../../../bellows/pages/loginPage';
+// tslint:disable-next-line:no-reference
+///<reference path="../../../bellows/pages/utils.d.ts" />
+import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+import { ElementFinder } from 'protractor/built/element';
 import {SfActivityPage} from '../../../bellows/pages/activityPage';
+import {BellowsLoginPage} from '../../../bellows/pages/loginPage';
 import {ProjectsPage} from '../../../bellows/pages/projectsPage';
+import {Utils} from '../../../bellows/pages/utils';
 import {SfProjectPage} from '../../sfchecks/pages/projectPage';
 import {SfProjectSettingsPage} from '../../sfchecks/pages/projectSettingsPage';
 import {SfQuestionPage} from '../../sfchecks/pages/questionPage';
 import {SfTextPage} from '../../sfchecks/pages/textPage';
+import { jasmine } from '../../../bellows/pages/utils';
 
 const util = new Utils();
 const loginPage = new BellowsLoginPage();
@@ -16,6 +20,7 @@ const projectPage = new SfProjectPage();
 const projectSettingsPage = new SfProjectSettingsPage();
 const questionPage = new SfQuestionPage();
 const textPage = new SfTextPage();
+// tslint:disable-next-line:no-var-requires
 const constants = require('../../../testConstants.json');
 
 describe('Activity E2E Test', () => {
@@ -97,7 +102,7 @@ describe('Activity E2E Test', () => {
 
     performCommonActions();
 
-    it("Performing action 'add' on 'texts'", () => {
+    it('Performing action "add" on "texts"', () => {
       // Navigate back to Project Page
       browser.navigate().back();
       browser.navigate().back();
@@ -108,7 +113,7 @@ describe('Activity E2E Test', () => {
       projectPage.notice.firstCloseButton.click();
     });
 
-    it("Performing action 'add' on 'questions'", () => {
+    it('Performing action \'add\' on \'questions\'', () => {
       browser.navigate().forward();
       expect<any>(textPage.notice.list.count()).toBe(0);
       textPage.addNewQuestion(constants.testText1Question3Title,
@@ -122,11 +127,11 @@ describe('Activity E2E Test', () => {
       // Navigate back to Project Page
       browser.navigate().back();
 
-      projectSettingsPage.get();
-      projectSettingsPage.membersTab.list.count().then(function (val) { memberCount = val; });
+      projectSettingsPage.clickOnSettingsLink();
+      projectSettingsPage.membersTab.list.count().then((val: number) => { memberCount = val; });
     });
 
-    it("Performing action 'add' on 'users'", () => {
+    it('Performing action \'add\' on \'users\'', () => {
       projectSettingsPage.membersTab.addNewMember('jimmycricket');
       projectSettingsPage.membersTab.waitForNewUserToLoad(memberCount);
       expect<any>(projectSettingsPage.membersTab.list.count()).toBe(memberCount + 1);
@@ -145,14 +150,14 @@ describe('Activity E2E Test', () => {
       // activityPage.printActivitiesNames();
     });
 
-    it("Verify action 'add' on 'users' appears on the activity feed", () => {
+    it('Verify action \'add\' on \'users\' appears on the activity feed', () => {
       activityIndex = 0;
       const activityText = activityPage.getActivityText(activityIndex);
       expect<any>(activityText).toContain('jimmycricket is now a member of ' +
         constants.testProjectName);
     });
 
-    it("Verify action 'add' on 'questions' appears on the activity feed", () => {
+    it('Verify action \'add\' on \'questions\' appears on the activity feed', () => {
       activityIndex += 1;
       const activityText = activityPage.getActivityText(activityIndex);
       expect<any>(activityText).toContain(constants.testText1Title);
@@ -160,7 +165,7 @@ describe('Activity E2E Test', () => {
       expect<any>(activityText).toContain(constants.testText1Question3Summary);
     });
 
-    it("Verify action 'add' on 'texts' appears on the activity feed", () => {
+    it('Verify action \'add\' on \'texts\' appears on the activity feed', () => {
       activityIndex += 1;
       const activityText = activityPage.getActivityText(activityIndex);
       expect<any>(activityText).toContain(constants.testProjectName);
@@ -176,7 +181,7 @@ describe('Activity E2E Test', () => {
 
   function setResponseVisibility(value: any) {
     loginPage.loginAsManager();
-    projectSettingsPage.get();
+    projectSettingsPage.get(constants.testProjectName);
     projectSettingsPage.tabs.project.click();
     projectSettingsPage.projectTab
       .setCheckbox(projectSettingsPage.projectTab.usersSeeEachOthersResponses, value);
@@ -184,9 +189,9 @@ describe('Activity E2E Test', () => {
   }
 
   function verifyResponseVisibility(valueShouldBeTrue: boolean) {
-    projectSettingsPage.get();
+    projectSettingsPage.get(constants.testProjectName);
     projectSettingsPage.tabs.project.click();
-    var isChecked = projectSettingsPage.projectTab.usersSeeEachOthersResponses
+    const isChecked = projectSettingsPage.projectTab.usersSeeEachOthersResponses
       .getAttribute('checked');
     if (valueShouldBeTrue) {
       expect<any>(isChecked).toBeTruthy();
@@ -330,20 +335,20 @@ describe('Activity E2E Test', () => {
   });
 
   function performUpvoteActions() {
-    it("Performing action 'upvote' on 'answers'", () => {
+    it('Performing action \'upvote\' on \'answers\'', () => {
       expect<any>(questionPage.answers.votes(0).getText()).toEqual('0');
       questionPage.answers.upvote(0);
       expect<any>(questionPage.answers.votes(0).getText()).toEqual('1');
     });
 
-    it("Performing action 'downvote' on 'answers'", () => {
+    it('Performing action \'downvote\' on \'answers\'', () => {
       questionPage.answers.downvote(0);
       expect<any>(questionPage.answers.votes(0).getText()).toEqual('0');
     });
   }
 
   function performAnswerActions() {
-    it("Performing action 'add' on 'answers'", () => {
+    it('Performing action \'add\' on \'answers\'', () => {
       expect<any>(questionPage.notice.list.count()).toBe(0);
       questionPage.answers.add(testData.answer.add);
       expect<any>(questionPage.answers.last().getText()).toContain(testData.answer.add);
@@ -351,7 +356,7 @@ describe('Activity E2E Test', () => {
       questionPage.notice.firstCloseButton.click();
     });
 
-    it("Performing action 'addToLastAnswer' on 'comments'", () => {
+    it('Performing action \'addToLastAnswer\' on \'comments\'', () => {
       expect<any>(questionPage.notice.list.count()).toBe(0);
       questionPage.comments.addToLastAnswer(testData.comment.add);
       expect<any>(questionPage.comments.last().getText()).toContain(testData.comment.add);
@@ -359,7 +364,7 @@ describe('Activity E2E Test', () => {
       questionPage.notice.firstCloseButton.click();
     });
 
-    it("Performing action 'edit' on 'comments'", () => {
+    it('Performing action \'edit\' on \'comments\'', () => {
       expect<any>(questionPage.notice.list.count()).toBe(0);
       questionPage.comments.edit(testData.comment.edit);
       expect<any>(questionPage.comments.last().getText()).toContain(testData.comment.edit);
@@ -367,7 +372,7 @@ describe('Activity E2E Test', () => {
       questionPage.notice.firstCloseButton.click();
     });
 
-    it("Performing action 'edit' on 'answers'", () => {
+    it('Performing action \'edit\' on \'answers\'', () => {
       expect<any>(questionPage.notice.list.count()).toBe(0);
       questionPage.answers.edit(testData.answer.edit);
       expect<any>(questionPage.answers.last().getText()).toContain(testData.answer.edit);
@@ -375,28 +380,28 @@ describe('Activity E2E Test', () => {
       questionPage.notice.firstCloseButton.click();
     });
 
-    it("Performing action 'delete' on 'comments'", () => {
+    it('Performing action \'delete\' on \'comments\'', () => {
       expect<any>(questionPage.notice.list.count()).toBe(0);
-      var oldCount = questionPage.comments.list.count();
+      const oldCount = questionPage.comments.list.count();
       questionPage.comments.archive('');
-      var newCount = questionPage.comments.list.count();
-      oldCount.then(function (oldCount) {
-        expect<any>(newCount).toEqual(oldCount - 1);
+      const newCount = questionPage.comments.list.count();
+      oldCount.then((count: number) => {
+        expect<any>(newCount).toEqual(count - 1);
       });
 
       questionPage.notice.waitToInclude('The comment was removed successfully');
       questionPage.notice.firstCloseButton.click();
     });
 
-    it("Performing action 'delete' on 'answers'", () => {
+    it('Performing action \'delete\' on \'answers\'', () => {
       expect<any>(questionPage.notice.list.count()).toBe(0);
-      questionPage.answers.list.count().then(function (oldCount) {
+      questionPage.answers.list.count().then((count: number) => {
         questionPage.answers.archive('');
-        var newCount = questionPage.answers.list.count();
-        expect<any>(newCount).toEqual(oldCount - 1);
+        const newCount = questionPage.answers.list.count();
+        expect<any>(newCount).toEqual(count - 1);
 
         // Which means newCount > 0 -- but oldCount is a real int, while newCount is still a promise
-        if (oldCount > 1) {
+        if (count > 1) {
           expect<any>(questionPage.answers.last().getText())
             .toContain(constants.testText1Question1Answer);
         }
@@ -413,88 +418,88 @@ describe('Activity E2E Test', () => {
     performAnswerActions();
   }
 
-  function verifyUpvoteActions(activityIndex: number, username: string) {
-    it("Verify action 'upvote' on 'answers' appears on the activity feed", () => {
-      activityIndex += 1;
-      var regex = new RegExp('.*' + util.escapeRegExp(username + ' +1\'d your answer') + '.*' +
+  function verifyUpvoteActions(aIndex: number, username: string) {
+    it('Verify action \'upvote\' on \'answers\' appears on the activity feed', () => {
+      aIndex += 1;
+      const regex = new RegExp('.*' + util.escapeRegExp(username + ' +1\'d your answer') + '.*' +
         util.escapeRegExp(constants.testText1Question1Title));
-      expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+      expect<jasmine>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
-    return activityIndex;
+    return aIndex;
   }
 
-  function verifyAnswerActions(activityIndex, username) {
-    it("Verify action 'edit' on 'answers' appears on the activity feed", () => {
-      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' updated their answer.*' +
+  function verifyAnswerActions(aIndex: number, username: string) {
+    it('Verify action \'edit\' on \'answers\' appears on the activity feed', () => {
+      const regex = new RegExp('.*' + util.escapeRegExp(username) + ' updated their answer.*' +
         util.escapeRegExp(testData.answer.edit));
       expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
-    it("Verify action 'edit' on 'comments' appears on the activity feed", () => {
-      activityIndex += 1;
+    it('Verify action \'edit\' on \'comments\' appears on the activity feed', () => {
+      aIndex += 1;
 
-      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' updated their comment.*' +
+      const regex = new RegExp('.*' + util.escapeRegExp(username) + ' updated their comment.*' +
         util.escapeRegExp(testData.answer.add) + '.*' + util.escapeRegExp(testData.comment.edit));
       expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
-    it("Verify action 'addToLastAnswer' on 'comments' appears on the activity feed", () => {
-      activityIndex += 1;
+    it('Verify action \'addToLastAnswer\' on \'comments\' appears on the activity feed', () => {
+      aIndex += 1;
 
-      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' commented.*' +
+      const regex = new RegExp('.*' + util.escapeRegExp(username) + ' commented.*' +
         util.escapeRegExp(testData.answer.add) + '.*' + util.escapeRegExp(testData.comment.add));
       expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
-    it("Verify action 'add' on 'answers' appears on the activity feed", () => {
-      activityIndex += 1;
-      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' answered.*' +
+    it('Verify action \'add\' on \'answers\' appears on the activity feed', () => {
+      aIndex += 1;
+      const regex = new RegExp('.*' + util.escapeRegExp(username) + ' answered.*' +
         util.escapeRegExp(testData.answer.add));
       expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
-    return activityIndex;
+    return aIndex;
   }
 
-  function verifyCommonActions(activityIndex: number, username: string) {
-    activityIndex = verifyAnswerActions(activityIndex, username);
-    return verifyUpvoteActions(activityIndex, username);
+  function verifyCommonActions(aIndex: number, username: string) {
+    aIndex = verifyAnswerActions(aIndex, username);
+    return verifyUpvoteActions(aIndex, username);
   }
 
   function verifyFilters(username: string) {
     it('Verify filters work on the activity page', () => {
       activityPage.get();
-      activityPage.activitiesList.filter(function (item) {
+      activityPage.activitiesList.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
-        return (item.getText().then(function (text) {
+        return (item.getText().then((text: string) => {
           return text.indexOf(username) === -1;
         }));
-      }).then(function (activityItems) {
+      }).then((activityItems: ElementFinder[]) => {
         // Currently in "All Activity" mode, so should see items without our username
         expect<any>(activityItems.length).toBeGreaterThan(0);
       });
 
       // Show only my activity
       activityPage.clickOnShowOnlyMyActivity();
-      activityPage.activitiesList.filter(function (item) {
+      activityPage.activitiesList.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
-        return (item.getText().then(function (text) {
+        return (item.getText().then((text: string) => {
           return text.indexOf(username) === -1;
         }));
-      }).then(function (activityItems) {
+      }).then((activityItems: ElementFinder[]) => {
         // Currently in "Only My Activity" mode, so should see NO items without our username
         expect<any>(activityItems.length).toEqual(0);
       });
 
       // Show all activity
       activityPage.clickOnAllActivity();
-      activityPage.activitiesList.filter(function (item) {
+      activityPage.activitiesList.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
-        return (item.getText().then(function (text) {
+        return (item.getText().then((text: string) => {
           return text.indexOf(username) === -1;
         }));
-      }).then(function (activityItems) {
+      }).then((activityItems: ElementFinder[]) => {
         // Currently in "All Activity" mode, so should see items without our username
         expect<any>(activityItems.length).toBeGreaterThan(0);
       });
