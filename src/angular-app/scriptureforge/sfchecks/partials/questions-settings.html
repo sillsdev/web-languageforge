@@ -137,10 +137,10 @@
                     <div>
                         <button class="btn btn-primary" data-ng-disabled="exportForm.$invalid || download.inprogress"
                                 data-ng-click="startExport('PT7')">
-                            Format for Paratext 7</button>
+                            Download for Paratext 7</button>
                         <button class="btn btn-primary" data-ng-disabled="exportForm.$invalid || download.inprogress"
                                 data-ng-click="startExport('PT8')">
-                            Format for Paratext 8</button>
+                            Download for Paratext 8</button>
                     <span data-ng-show="download.inprogress">
                             <i class="fa fa-spinner fa-spin" style="position: absolute; padding-left: 5px; padding-top: 8px;"></i></span>
                     </div>
@@ -152,18 +152,6 @@
                             answers/comments</p>
                     </div>
                 </form>
-                <div class="col-sm-6" data-ng-show="download.totalCount">
-                    <br class="d-sm-none">
-                    <p data-ng-show="download.totalCount > 0" class="text-success">
-                        Ready to Download: <span data-ng-show="download.answerCount > 0"
-                                                 class="label label-success"><span class="notranslate">{{download.answerCount}}</span>
-                    answer(s)</span> <span data-ng-show="download.commentCount > 0"
-                                           class="label label-info"><span class="notranslate">{{download.commentCount}}</span>
-                    comment(s)</span>
-                    </p>
-                    <button data-ng-click="downloadExport()" class="btn btn-primary">
-                        Download ParaTExt XML File</button>
-                </div>
             </div>
         </uib-tab>
     </uib-tabset>

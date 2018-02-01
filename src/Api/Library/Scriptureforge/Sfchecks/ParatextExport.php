@@ -44,9 +44,9 @@ class ParatextExport
             }
         }
 
-        $dateForFilename = date('Ymd_Gi');
-        $dateTimeForFilename = \DateTime::createFromFormat('Ymd_Gi', $dateForFilename);
-        $dl['xml'] .= self::makeDummyComment($commentFormatter, $dateTimeForFilename, $dateForFilename);
+        $now = new \DateTime();
+        $dateForFilename = date('Ymd_Gi', $now->getTimestamp());
+        $dl['xml'] .= self::makeDummyComment($commentFormatter, $now, $dateForFilename);
 
         foreach ($questionlist->entries as $question) {
             if (! array_key_exists('isArchived', $question) || ! $question['isArchived']) {
