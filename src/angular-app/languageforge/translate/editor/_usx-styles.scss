@@ -111,21 +111,6 @@ usx-para {
     }
 }
 
-usx-char {
-    &[data-style="fr"] {
-        // subscript
-        bottom: -.25em;
-        position: relative;
-        font-size: 75%;
-        line-height: 0;
-        vertical-align: baseline;
-    }
-
-    &:not([data-style="fr"]) {
-        display: none;
-    }
-}
-
 usx-chapter {
     font-weight: bold;
     font-size: 1.5em;
@@ -141,4 +126,13 @@ usx-verse {
     line-height: 0;
     vertical-align: baseline;
     padding-right: 0.12em;
+}
+
+usx-note {
+    // superscript
+    top: -.5em;
+    position: relative;
+    font-size: 75%;
+    line-height: 0;
+    vertical-align: baseline;
 }

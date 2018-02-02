@@ -20,7 +20,7 @@ namespace SIL.XForge.WebApi.Server.Services
         public static Delta ToDelta(XElement usxElem)
         {
             var newDelta = new Delta();
-            int nextNoteId = 1;
+            int nextNoteId = 0;
             var nextIds = new Dictionary<string, int>();
             string curRef = null;
             string curChapter = null;
@@ -64,7 +64,7 @@ namespace SIL.XForge.WebApi.Server.Services
         }
 
         private static void ProcessChildNodes(Delta newDelta, XElement elem, string curChapter, ref string curRef,
-            ref int nextNoteId, JObject parentAttrs = null)
+            ref int nextNoteId)
         {
             foreach (XNode node in elem.Nodes())
             {
@@ -81,14 +81,20 @@ namespace SIL.XForge.WebApi.Server.Services
                                 break;
 
                             case "char":
-                                newDelta.Insert(e.Value, OpAttributes("char", e, curRef, parentAttrs));
+                                newDelta.Insert(e.Value, OpAttributes("char", e, curRef));
                                 break;
 
                             case "note":
-                                string noteId = $"_note_{nextNoteId}";
+                                var noteDelta = new Delta();
+                                string tempRef = null;
+                                ProcessChildNodes(noteDelta, e, curChapter, ref tempRef, ref nextNoteId);
+                                var deltaObj = new JObject(new JProperty("ops", new JArray(noteDelta.Ops)));
+                                var noteObj = new JObject(
+                                    new JProperty("note", new JObject(
+                                        new JProperty("index", nextNoteId),
+                                        new JProperty("delta", deltaObj))));
+                                newDelta.Insert(noteObj, OpAttributes("note", e, curRef));
                                 nextNoteId++;
-                                JObject noteAttrs = OpAttributes("note", e, curRef, id: noteId);
-                                ProcessChildNodes(newDelta, e, curChapter, ref curRef, ref nextNoteId, noteAttrs);
                                 break;
                         }
                         break;
@@ -97,7 +103,6 @@ namespace SIL.XForge.WebApi.Server.Services
                         var attrs = new JObject();
                         if (curRef != null)
                             attrs.Add(new JProperty("segment", curRef));
-                        attrs.Merge(parentAttrs);
                         newDelta.Insert(text.Value, attrs);
                         break;
                 }
@@ -140,12 +145,9 @@ namespace SIL.XForge.WebApi.Server.Services
             return prefix + "_" + nextIds[prefix]++;
         }
 
-        private static JObject OpAttributes(string type, XElement elem, string curRef = null,
-            JObject parentAttrs = null, string id = null)
+        private static JObject OpAttributes(string type, XElement elem, string curRef = null)
         {
             var obj = new JObject();
-            if (id != null)
-                obj.Add(new JProperty("id", id));
             foreach (XAttribute attribute in elem.Attributes())
             {
                 if (attribute.Name.LocalName == "number")
@@ -155,7 +157,6 @@ namespace SIL.XForge.WebApi.Server.Services
             var attrs = new JObject(new JProperty(type, obj));
             if (curRef != null)
                 attrs.Add(new JProperty("segment", curRef));
-            attrs.Merge(parentAttrs);
             return attrs;
         }
 
@@ -164,7 +165,13 @@ namespace SIL.XForge.WebApi.Server.Services
             var newUsxElem = new XElement("usx", new XAttribute("version", usxVersion),
                 new XElement("book", new XAttribute("code", bookId), new XAttribute("style", "id"),
                     desc == "" ? null : desc));
-            var parentStack = new Stack<(JToken Attrs, List<XNode> Nodes)>();
+            ProcessDelta(newUsxElem, delta);
+            return newUsxElem;
+        }
+
+        private static void ProcessDelta(XElement rootElem, Delta delta)
+        {
+            var childNodes = new List<XNode>();
             for (int i = 0; i < delta.Ops.Count; i++)
             {
                 JToken op = delta.Ops[i];
@@ -173,32 +180,14 @@ namespace SIL.XForge.WebApi.Server.Services
 
                 var attrs = (JObject) op[Delta.Attributes];
 
-                if (parentStack.Count == 0)
-                {
-                    // start of a para or chapter block
-                    parentStack.Push((null, new List<XNode>()));
-                }
-                if (parentStack.Peek().Attrs != null && !JToken.DeepEquals(parentStack.Peek().Attrs, attrs?["note"]))
-                {
-                    // end of a note
-                    (JToken Attrs, List<XNode> Nodes) parent = parentStack.Pop();
-                    XElement noteElem = CreateContainerElement("note", parent.Attrs, parent.Nodes);
-                    parentStack.Peek().Nodes.Add(noteElem);
-                }
-                if (parentStack.Peek().Attrs == null && attrs?["note"] != null)
-                {
-                    // start of a note
-                    parentStack.Push((attrs["note"], new List<XNode>()));
-                }
-
                 if (op[Delta.InsertType].Type == JTokenType.String)
                 {
                     var text = (string) op[Delta.InsertType];
                     if (attrs == null)
                     {
-                        if (text == EmptySegmentPlaceholder)
+                        if (text == EmptySegmentPlaceholder || text == "\n")
                             continue;
-                        parentStack.Peek().Nodes.Add(new XText(text));
+                        childNodes.Add(new XText(text));
                     }
                     else
                     {
@@ -209,28 +198,21 @@ namespace SIL.XForge.WebApi.Server.Services
                             {
                                 case "para":
                                     // end of a para block
-                                    (JToken Attrs, List<XNode> Nodes) parentPara = parentStack.Pop();
                                     for (int j = 0; j < text.Length; j++)
-                                        newUsxElem.Add(CreateContainerElement("para", prop.Value, parentPara.Nodes));
+                                        rootElem.Add(CreateContainerElement("para", prop.Value, childNodes));
+                                    childNodes.Clear();
                                     break;
 
                                 case "char":
                                     XElement charElem = CreateContainerElement("char", prop.Value, text);
-                                    parentStack.Peek().Nodes.Add(charElem);
+                                    childNodes.Add(charElem);
                                     break;
 
                                 case "segment":
                                     if (text == EmptySegmentPlaceholder)
                                         continue;
-                                    if (attrs.Properties().Count(p => p.Name != "note") == 1)
-                                        parentStack.Peek().Nodes.Add(new XText(text));
-                                    break;
-
-                                case "note":
-                                    if (text == EmptySegmentPlaceholder)
-                                        continue;
                                     if (attrs.Count == 1)
-                                        parentStack.Peek().Nodes.Add(new XText(text));
+                                        childNodes.Add(new XText(text));
                                     break;
                             }
                         }
@@ -248,20 +230,29 @@ namespace SIL.XForge.WebApi.Server.Services
                                 var chapterNum = (string) prop.Value;
                                 var chapterElem = new XElement("chapter", new XAttribute("number", chapterNum));
                                 AddAttributes(chapterElem, attrs["chapter"]);
-                                newUsxElem.Add(chapterElem);
+                                rootElem.Add(chapterElem);
                                 break;
 
                             case "verse":
                                 var verseNum = (string) prop.Value;
                                 var verseElem = new XElement("verse", new XAttribute("number", verseNum));
                                 AddAttributes(verseElem, attrs["verse"]);
-                                parentStack.Peek().Nodes.Add(verseElem);
+                                childNodes.Add(verseElem);
+                                break;
+
+                            case "note":
+                                XElement noteElem = new XElement("note");
+                                AddAttributes(noteElem, attrs["note"]);
+                                var noteDelta = new Delta(prop.Value["delta"]["ops"].Children());
+                                ProcessDelta(noteElem, noteDelta);
+                                childNodes.Add(noteElem);
                                 break;
                         }
                     }
                 }
             }
-            return newUsxElem;
+
+            rootElem.Add(childNodes);
         }
 
         private static XElement CreateContainerElement(string name, JToken attributes, object content = null)
