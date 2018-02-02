@@ -1,10 +1,23 @@
 import * as angular from 'angular';
 import Parchment from 'parchment';
 import Quill, {
-  BoundsStatic, Module, Picker, QuillOptionsStatic, RangeStatic, SnowTheme, Theme, Toolbar, Tooltip
+  BoundsStatic, DeltaOperation, Module, Picker, QuillOptionsStatic, RangeStatic, SnowTheme, Theme, Toolbar, Tooltip
 } from 'quill';
 
-import { FormatUsx, FormatUsxHtmlAttributes } from './quill-usx.converter';
+class FormatUsx {
+  static readonly KEYS = new Set<string>(['style', 'altnumber', 'pubnumber', 'caller', 'closed']);
+
+  style?: string;
+  altnumber?: string;
+  pubnumber?: string;
+  caller?: string;
+  closed?: string;
+}
+
+class Note {
+  index: number;
+  delta: { ops: DeltaOperation[] };
+}
 
 export interface SuggestionsTheme extends Theme {
   suggestionsTooltip: Tooltip;
@@ -30,14 +43,9 @@ export function registerSuggestionsTheme(): void {
 
   function setFormatUsx(node: HTMLElement, format: FormatUsx): void {
     if (format) {
-      const htmlAttrsTemplate = FormatUsxHtmlAttributes.createTemplate();
       for (const key in format) {
-        if (format.hasOwnProperty(key) && format[key] != null) {
-          if (htmlAttrsTemplate.hasOwnProperty(key)) {
-            node.setAttribute(key, format[key]);
-          } else {
-            node.setAttribute(customAttributeName(key), format[key]);
-          }
+        if (format.hasOwnProperty(key) && format[key] != null && typeof format[key] === 'string') {
+          node.setAttribute(customAttributeName(key), format[key]);
         }
       }
     }
@@ -45,13 +53,8 @@ export function registerSuggestionsTheme(): void {
 
   function createFormatUsx(node: HTMLElement): FormatUsx {
     const format = new FormatUsx();
-    const htmlAttrsTemplate = FormatUsxHtmlAttributes.createTemplate();
-    for (const key in FormatUsx.createTemplate()) {
-      if (htmlAttrsTemplate.hasOwnProperty(key)) {
-        if (node.hasAttribute(key)) {
-          format[key] = node.getAttribute(key);
-        }
-      } else if (node.hasAttribute(customAttributeName(key))) {
+    for (const key of FormatUsx.KEYS) {
+      if (node.hasAttribute(customAttributeName(key))) {
         format[key] = node.getAttribute(customAttributeName(key));
       }
     }
@@ -128,38 +131,39 @@ export function registerSuggestionsTheme(): void {
     }
   }
 
-  class NoteInline extends Inline {
+  class NoteEmbed extends Embed {
+    private static readonly DELTA_KEY = '__note_delta';
+
     static blotName = 'note';
     static tagName = 'usx-note';
 
-    static create(value: FormatUsx): Node {
+    static create(value: Note): Node {
       const node = super.create(value) as HTMLElement;
-      node.contentEditable = 'false';
-      setFormatUsx(node, value);
+      node.innerText = String.fromCharCode(0x61 + value.index);
+      node.title = value.delta.ops.reduce((text, op) => text + op.insert, '');
+      node[NoteEmbed.DELTA_KEY] = value.delta;
       return node;
     }
 
-    static formats(node: HTMLElement): FormatUsx {
-      return createFormatUsx(node);
+    static formats(node: HTMLElement): any {
+      return { note: createFormatUsx(node) };
     }
 
-    static value(node: HTMLElement): FormatUsx {
-      return createFormatUsx(node);
+    static value(node: HTMLElement): Note {
+      const code = node.innerText.trim().charCodeAt(0);
+      return { index: code - 0x61, delta: node[NoteEmbed.DELTA_KEY] };
     }
 
-    // ensure sibling <note>s with the same id are combined into a single <note> element
-    optimize(context: { [key: string]: any; }): void {
-      super.optimize(context);
-      const id = this.domNode.getAttribute('id');
-      const next = this.next;
-      if (id != null && next instanceof NoteInline && next.prev === this && next.domNode.getAttribute('id') === id) {
-        next.moveChildren(this);
-        next.remove();
+    format(name: string, value: any): void {
+      if (name === 'note') {
+        const format = value as FormatUsx;
+        const elem = this.domNode as HTMLElement;
+        setFormatUsx(elem, format);
+      } else {
+        super.format(name, value);
       }
     }
   }
-
-  NoteInline.allowedChildren.push(CharInline);
 
   Block.allowedChildren.push(VerseEmbed);
   Block.allowedChildren.push(SegmentInline);
@@ -183,11 +187,7 @@ export function registerSuggestionsTheme(): void {
     }
 
     format(name: string, value: any): void {
-      const format = new FormatUsx();
-      const formatHtmlAttributes = new FormatUsxHtmlAttributes();
-      if (formatHtmlAttributes.hasOwnProperty(name)) {
-        this.domNode.setAttribute(name, value);
-      } else if (format.hasOwnProperty(name)) {
+      if (FormatUsx.KEYS.has(name)) {
         this.domNode.setAttribute(customAttributeName(name), value);
       } else {
         super.format(name, value);
@@ -483,7 +483,7 @@ export function registerSuggestionsTheme(): void {
   Quill.register('formats/highlight', HighlightClass);
   Quill.register('formats/segment', SegmentInline);
   Quill.register('blots/verse', VerseEmbed);
-  Quill.register('blots/note', NoteInline);
+  Quill.register('blots/note', NoteEmbed);
   Quill.register('blots/char', CharInline);
   Quill.register('blots/para', ParaBlock);
   Quill.register('blots/chapter', ChapterEmbed);

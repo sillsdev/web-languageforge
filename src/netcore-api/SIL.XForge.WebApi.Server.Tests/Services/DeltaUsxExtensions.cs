@@ -11,25 +11,21 @@ namespace SIL.XForge.WebApi.Server.Services
             return delta.Insert("\n", new { para = new { style = style } });
         }
 
-        public static Delta InsertNote(this Delta delta, string id, string style, string caller, string segRef,
+        public static Delta InsertNote(this Delta delta, int index, string style, string caller, string segRef,
             Delta noteDelta)
         {
+            var deltaObj = new JObject(new JProperty("ops", new JArray(noteDelta.Ops)));
+            var noteObj = new JObject(
+                new JProperty("note", new JObject(
+                    new JProperty("index", index),
+                    new JProperty("delta", deltaObj))));
+
             var noteAttrs = new
             {
-                note = new { id = id, caller = caller, style = style },
+                note = new { caller = caller, style = style },
                 segment = segRef
             };
-
-            foreach (JToken op in noteDelta.Ops)
-            {
-                if (op.OpType() != Delta.InsertType)
-                    throw new ArgumentException("The note delta is not a document.", nameof(noteDelta));
-
-                var attrs = op[Delta.Attributes] == null ? new JObject() : (JObject) op[Delta.Attributes].DeepClone();
-                attrs.Merge(JToken.FromObject(noteAttrs));
-                delta.Insert(op[Delta.InsertType], attrs);
-            }
-            return delta;
+            return delta.Insert(noteObj, noteAttrs);
         }
 
         public static Delta InsertChar(this Delta delta, string style, string text, string segRef = null)

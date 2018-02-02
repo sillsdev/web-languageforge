@@ -107,7 +107,7 @@ namespace SIL.XForge.WebApi.Server.Services
                 .InsertChapter("1")
                 .InsertVerse("1")
                 .InsertText("This is a verse with a footnote", "verse_1_1")
-                .InsertNote("_note_1", "f", "+", "verse_1_1", Delta.New()
+                .InsertNote(0, "f", "+", "verse_1_1", Delta.New()
                     .InsertChar("fr", "1.1: ")
                     .InsertChar("ft", "Refers to ")
                     .InsertChar("fq", "a footnote")
@@ -216,6 +216,47 @@ namespace SIL.XForge.WebApi.Server.Services
                 .InsertPara("s")
                 .InsertVerse("3")
                 .InsertEmptyText("verse_1_3")
+                .InsertPara("p")
+                .Insert("\n");
+
+            Assert.IsTrue(newDelta.DeepEquals(expected));
+        }
+
+        [Test]
+        public void ToDelta_Note()
+        {
+            XElement usxElem = Usx("PHM",
+                Chapter("1"),
+                Para("p",
+                    Verse("1"),
+                    "This is a verse with a footnote",
+                    Note("f", "+",
+                        Char("fr", "1.1: "),
+                        Char("ft", "Refers to "),
+                        Char("fq", "a footnote"),
+                        ". ",
+                        Char("xt", "John 1:1"),
+                        " and ",
+                        Char("xt", "Mark 1:1"),
+                        "."),
+                    ", so that we can test it."));
+
+            Delta newDelta = DeltaUsxMapper.ToDelta(usxElem);
+
+            var expected = Delta.New()
+                .InsertChapter("1")
+                .InsertVerse("1")
+                .InsertText("This is a verse with a footnote", "verse_1_1")
+                .InsertNote(0, "f", "+", "verse_1_1", Delta.New()
+                    .InsertChar("fr", "1.1: ")
+                    .InsertChar("ft", "Refers to ")
+                    .InsertChar("fq", "a footnote")
+                    .Insert(". ")
+                    .InsertChar("xt", "John 1:1")
+                    .Insert(" and ")
+                    .InsertChar("xt", "Mark 1:1")
+                    .Insert("."))
+                .InsertText(", so that we can test it.", "verse_1_1")
                 .InsertPara("p")
                 .Insert("\n");
 
