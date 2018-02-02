@@ -45,7 +45,7 @@ function EditorPage() {
   this.browseDiv = element(by.id('lexAppListView'));
   this.editDiv = element(by.id('lexAppEditView'));
   this.editToolbarDiv = element(by.className('lexAppToolbar'));
-  this.commentDiv = element(by.id('lexAppCommentView'));
+  this.commentDiv = element(by.className('comments-right-panel-container'));
 
   // --- Browse view ---
   this.browse = {
@@ -308,6 +308,11 @@ function EditorPage() {
   this.comment = {
     toEditLink: element(by.css('#toEditLink')),
 
+    bubbles: {
+      first: element.all(by.css('.dc-entry .commentBubble')).get(0),
+      second: element.all(by.css('.dc-entry .dc-sense .commentBubble')).get(0)
+    },
+
     // Top-row UI elements
     renderedDiv: this.commentDiv.element(by.css('dc-rendered')),
     filter: {
@@ -353,19 +358,7 @@ function EditorPage() {
     // Right half of page: comments
     newComment: {
       textarea: this.commentDiv.element(by.css('.newCommentForm')).element(by.css('textarea')),
-      postBtn: this.commentDiv.element(by.css('.newCommentForm')).element(by.buttonText('Post')),
-      regardingDiv: this.commentDiv.element(by.css('.newCommentForm'))
-        .element(by.css('.commentRegarding')),
-      regarding: {
-        clearBtn: this.commentDiv.element(by.css('.newCommentForm'))
-          .element(by.css('.commentRegarding')).element(by.css('i.fa-trash')),
-        fieldLabel: this.commentDiv.element(by.css('.newCommentForm'))
-          .element(by.css('.commentRegarding')).element(by.css('.regardingFieldName')),
-        fieldWsid: this.commentDiv.element(by.css('.newCommentForm'))
-          .element(by.css('.commentRegarding')).element(by.css('.regardingInputSystem')),
-        fieldValue: this.commentDiv.element(by.css('.newCommentForm'))
-          .element(by.css('.commentRegarding')).element(by.css('.regardingFieldValue'))
-      }
+      postBtn: this.commentDiv.element(by.css('.newCommentForm')).element(by.buttonText('Post'))
     },
     commentsList: this.commentDiv.all(by.repeater('comment in currentEntryCommentsFiltered')),
     getComment: function (commentNum) {
@@ -421,8 +414,10 @@ function EditorPage() {
       avatar: div.element(by.css('.comment-footer img')),
       author: div.element(by.binding('comment.authorInfo.createdByUserRef.name')),
       date: div.element(by.binding('comment.authorInfo.createdDate | relativetime')),
-      score: div.element(by.binding('comment.score')),
-      plusOne: div.element(by.css('.comment-footer i.fa-thumbs-o-up:not(.ng-hide)')),
+      score: div.element(by.css('.comment-interaction .likes')),
+      plusOneActive: div.element(by.css('.comment-actions .can-like')),
+      plusOneInactive: div.element(by.css('.comment-actions .liked')),
+      plusOne: div.element(by.css('.comment-actions i.fa-thumbs-o-up:not(.ng-hide)')),
 
       // Right side content
       content: div.element(by.binding('comment.content')),
@@ -434,6 +429,8 @@ function EditorPage() {
       regarding: {
         // NOTE: Any or all of these may be absent in a given comment. Use
         // isPresent() before calling expect().
+        toggle: div.element(by.css('.comment-body > button')),
+        container: div.element(by.css('.commentRegarding')),
         word: div.element(by.binding('comment.regarding.word')),
         definition: div.element(by.binding('comment.regarding.meaning')),
         fieldLabel: div.element(by.binding('comment.regarding.fieldNameForDisplay')),

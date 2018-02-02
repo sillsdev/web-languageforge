@@ -1,0 +1,304 @@
+/* Colours as defined in UxPin */
+$BlackSqueeze: #e6eff5;
+$BlueRibbon: #1d64f0;
+$Botticelli: #cddeeb;
+$Eden: #104060;
+$PastelGreen: #6edc6c;
+$Silver: #c0c0c0;
+$WildSand: #f6f6f6;
+
+#lexAppEditView {
+  display: flex;
+  justify-content: center;
+  .container {
+    margin: 0;
+  }
+}
+
+.comments-right-panel {
+  color: $Eden;
+  font-size: 14px;
+  display: block;
+  .comments-right-panel-container {
+    position: relative;
+    width: 280px;
+    transition: width 0.5s ease-in-out, margin-left 0.5s ease-in-out, opacity 0.5s linear 0.5s;
+    margin-left: 15px;
+    opacity: 1;
+    &.panel-closing {
+      transition: width 0.5s ease-in-out 0.5s, margin-left 0.5s ease-in-out 0.5s, opacity 0.5s;
+      overflow: visible;
+      height: auto !important;
+    }
+    &.panel-opening {
+      overflow: hidden;
+    }
+    &:not(.panel-visible) {
+      width: 0;
+      margin-left: 0;
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+    }
+    &.context-mode {
+      &:before {
+        position: absolute;
+        content: "";
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 12px 12px 12px 0;
+        border-color: transparent $BlackSqueeze transparent transparent;
+        top: 46px;
+        left: -12px;
+      }
+      .commentListContainer {
+        > div:nth-child(n+2) {
+          .card-title {
+            display: none;
+          }
+        }
+      }
+    }
+    .comments-search-container {
+      position: relative;
+      input, select {
+        background-color: $WildSand;
+        border-radius: 0;
+        color: $Eden;
+        font-size: 14px;
+        border: 0;
+      }
+      input {
+        padding-right: 140px;
+      }
+      select {
+        border-left: 1px solid $Eden;
+        max-width: 112px;
+        height: auto;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+      span {
+        position: absolute;
+        right: 123px;
+        top: 7px;
+        i {
+          cursor: pointer;
+        }
+      }
+    }
+    .commentContainer,
+    .newCommentForm .card {
+      border-radius: 0;
+      border: 0;
+      .card-title {
+        background: $Botticelli;
+        display: block;
+        font-weight: bold;
+        padding: 4px 14px;
+        margin: 0;
+        .sense-label {
+          font-weight: normal;
+          opacity: 0.75;
+          display: inline-block;
+          padding-right: 10px;
+        }
+      }
+
+      .card-block {
+        background: $BlackSqueeze;
+        padding: 7px 14px;
+        .comment-meta {
+          display: flex;
+          justify-content: space-between;
+          > div {
+            display: flex;
+          }
+
+          img {
+            width: 40px !important;
+            height: 40px;
+            margin-right: 5px;
+          }
+
+          .data-and-author {
+            line-height: 18px;
+            .comment-author {
+              font-weight: bold;
+            }
+          }
+        }
+        .comment-body {
+          color: #373a3d;
+          margin: 10px 0 14px;
+          .btn {
+            padding: 0;
+            margin: 5px 0;
+            font-style: italic;
+          }
+          .commentRegarding {
+            .form-control {
+              border-radius: 0;
+              background: $WildSand;
+              border: 1px solid $Silver;
+              padding: 2px 6px;
+              font-size: 14px;
+              span {
+                background: transparent;
+                border: 0;
+                padding: 0;
+              }
+            }
+          }
+        }
+
+        .comment-interaction {
+          display: flex;
+          justify-content: space-between;
+          font-size: 12px;
+          opacity: 0.75;
+        }
+
+        .comment-actions {
+          margin: 4px -14px;
+          padding: 0 14px;
+          display: flex;
+          justify-content: space-between;
+          border: 1px solid $Botticelli;
+          border-left: 0;
+          border-right: 0;
+          .btn-action-icon {
+            padding: 4px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            i {
+              font-size: 16px;
+              margin-right: 4px;
+            }
+
+            span {
+              font-size: 12px;
+              opacity: 0.75;
+            }
+          }
+          .btn-like {
+            .liked {
+              opacity: 0.5;
+              cursor: default;
+            }
+          }
+          .btn-todo {
+            .btn-action-icon {
+              width: 100px;
+              justify-content: center;
+            }
+            .resolve-todo,
+            .open-todo {
+              color: #fff;
+              span {
+                opacity: 1;
+              }
+            }
+            .resolve-todo {
+              background-color: $BlueRibbon;
+            }
+            .open-todo {
+              background-color: $PastelGreen;
+              &.open-todo-readonly {
+                cursor: default;
+              }
+            }
+            .mark-todo {
+              border: 1px solid $Botticelli;
+              border-top: 0;
+              border-bottom: 0;
+            }
+          }
+        }
+        .commentRepliesContainer {
+          .comment-replies {
+            margin: 13px 0;
+            padding-left: 8px;
+            border-left: 1px solid $Botticelli;
+            .comment-reply {
+              position: relative;
+              margin-bottom: 10px;
+            }
+            .reply-edit-form {
+              margin: 5px;
+              textarea {
+                margin-bottom: 5px;
+              }
+            }
+          }
+          > div {
+            margin-bottom: 10px;
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+          .reply-meta {
+            line-height: 18px;
+
+            .comment-author {
+              font-weight: bold;
+              display: block;
+            }
+
+            .comment-date {
+              display: block;
+            }
+          }
+          .reply-content {
+            color: #373a3d;
+          }
+        }
+        textarea {
+          border-radius: 2px;
+          border: 0;
+          font-size: 14px;
+          color: rgba(16, 64, 96, 0.5);
+        }
+        .btn-sm {
+          border-radius: 2px;
+          font-size: 12px;
+          padding: 0.15rem 0.5rem;
+          min-width: 60px;
+          cursor: pointer;
+          box-shadow: none;
+        }
+        .btn-std {
+          background: transparent;
+          border: 0;
+          color: $Eden;
+        }
+        .dropdown[uib-dropdown] {
+          height: 20px;
+          .btn.ellipsis-menu {
+            min-width: 14px;
+            background: $Botticelli;
+            padding: 0;
+          }
+          .dropdown-menu {
+            background: $WildSand;
+            border: 1px solid $Silver;
+            border-radius: 0;
+            min-width: auto;
+            padding: 0;
+            a {
+              font-size: 12px;
+              color: $Eden;
+              padding: 6px 10px;
+              &:hover {
+                background: darken($WildSand, 10%);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

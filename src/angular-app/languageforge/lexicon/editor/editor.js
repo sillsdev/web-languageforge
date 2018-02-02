@@ -33,11 +33,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
   .controller('EditorCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService', '$q',
     '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'lexRightsService',
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
-    'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService',
+    'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService', '$timeout',
   function ($scope, userService, sessionService, lexService, $q,
             $state, $window, $interval, $filter, linkService, utils, rightsService,
             notice, $rootScope, $location, lexConfig, commentService,
-            editorService, lexProjectService, sendReceive, modal) {
+            editorService, lexProjectService, sendReceive, modal, $timeout) {
 
     var pristineEntry = {};
     var warnOfUnsavedEditsId;
@@ -52,6 +52,10 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
     $scope.visibleEntries = editorService.visibleEntries;
     $scope.filteredEntries = editorService.filteredEntries;
     $scope.entryListModifiers = editorService.entryListModifiers;
+    $scope.commentContext = {
+      contextGuid: ''
+    };
+    $scope.commentPanelVisible = false;
     $scope.sortEntries = function (args) {
       editorService.sortEntries.apply(this, arguments).then(function () {
         $scope.typeahead.searchEntries($scope.typeahead.searchItemSelected);
@@ -456,6 +460,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         } else {
           $state.go('editor.entry', { entryId: id });
         }
+
+        $scope.hideCommentsPanel();
       };
 
       $scope.newEntry = function newEntry() {
@@ -477,6 +483,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
           } else {
             $state.go('editor.entry', { entryId: newEntry.id });
           }
+
+          $scope.hideCommentsPanel();
         });
       };
 
@@ -627,6 +635,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
                 editorService.refreshEditorData();
               });
             }
+
+            $scope.hideCommentsPanel();
           }, angular.noop);
       };
 
@@ -679,8 +689,38 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
 
       // Comments View
       $scope.showComments = function showComments() {
-        $scope.saveCurrentEntry(true);
-        $state.go('editor.comments', { entryId: $scope.currentEntry.id });
+        if ($scope.commentPanelVisible === true && $scope.commentContext.field === '') {
+          $scope.hideCommentsPanel();
+
+          // Reset the comment context AFTER the panel starts hiding
+          $scope.setCommentContext('', '', '', '', '');
+        } else {
+          // Reset the comment context BEFORE we start showing the panel
+          $scope.setCommentContext('', '', '', '', '');
+          angular.element('.comments-right-panel').css({ paddingTop: 0 });
+          $scope.showCommentsPanel();
+        }
+      };
+
+      $scope.showCommentsPanel = function showCommentsPanel() {
+        if ($scope.commentPanelVisible !== true) {
+          $scope.commentPanelVisible = true;
+          angular.element('.comments-right-panel-container').addClass('panel-opening');
+          $timeout(function () {
+            angular.element('.comments-right-panel-container').removeClass('panel-opening');
+          }, 500);
+        }
+      };
+
+      $scope.hideCommentsPanel = function hideCommentsPanel() {
+        $scope.commentPanelVisible = -1;
+
+        // Delay relates to the CSS timer for mobile vs > tablet
+        var delay = (angular.element('#compactEntryListContainer').is(':visible')) ? 1500 : 500;
+        $timeout(function () {
+          $scope.commentPanelVisible = false;
+          $scope.setCommentContext('', '');
+        }, delay);
       };
 
       sendReceive.setPollUpdateSuccessCallback(pollUpdateSuccess);
@@ -901,6 +941,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
           $scope.editEntryAndScroll(entry.id);
         }
       };
+
+      $scope.setCommentContext = function setCommentContext(contextGuid) {
+        $scope.commentContext.contextGuid = contextGuid;
+      };
+
     });
 
   }])
