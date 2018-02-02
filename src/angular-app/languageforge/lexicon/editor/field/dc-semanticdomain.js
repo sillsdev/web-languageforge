@@ -10,12 +10,15 @@ angular.module('palaso.ui.dc.semanticdomain', [])
     scope: {
       config: '=',
       model: '=',
-      selectField: '&'
+      control: '=',
+      selectField: '&',
+      fieldName: '='
     },
     controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rightsService) {
       $scope.$state = $state;
       $scope.isAdding = false;
       $scope.valueToBeDeleted = '';
+      $scope.contextGuid = $scope.$parent.contextGuid;
 
       function createOptions() {
         var options = [];

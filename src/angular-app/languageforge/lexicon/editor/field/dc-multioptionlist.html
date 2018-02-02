@@ -1,19 +1,29 @@
 <form class="form-horizontal dc-multioptionlist">
-    <div class="form-group row">
-        <label class="col-form-label col-md-4 text-md-right">{{config.label}}</label>
-        <div class="controls col-md-8">
-            <div class="dc-multioptionlist-values"
+    <div class="form-group row comment-bubble-group">
+        <label class="col-form-label col-lg-4 text-lg-right">{{config.label}}</label>
+        <div class="controls col-lg-8">
+            <div class="dc-multioptionlist-values list-repeater"
                  data-ng-repeat="value in model.values | orderBy: orderItemsByListOrder">
-                <div data-ng-mouseover="valueToBeDeleted = value" data-ng-mouseleave="valueToBeDeleted = ''">
+                <div>
                     <div class="dc-multioptionlist-value"
                          data-ng-click="selectValue(value)">
                         {{getDisplayName(value)}}
                     </div>
-                    <i class="closeicon fa fa-trash" title="Delete {{config.label}}"
-                       data-ng-show="showDeleteButton(valueToBeDeleted, value)" data-ng-click="deleteValue(value)"></i>
+                    <div class="dropdown" uib-dropdown>
+                        <button class="btn btn-sm btn-std ellipsis-menu pui-no-caret" uib-dropdown-toggle type="button">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-comment-count">
+                            <comment-bubble control="control" field="fieldName" multi-option-value="getDisplayName(value)" model="model"></comment-bubble>
+                        </div>
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+                            <a href class="dropdown-item" data-ng-click="deleteValue(value)"><i class="fa fa-trash"></i> Delete</a>
+                            <comment-bubble class="dropdown-item" control="control" field="fieldName" multi-option-value="getDisplayName(value)" model="model"></comment-bubble>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="dc-multioptionlist-values"
+            <div class="dc-multioptionlist-values-list"
                  data-ng-show="$state.is('editor.entry') && rights.canEditEntry() && isAdding">
                 <!--suppress HtmlFormInputWithoutLabel -->
                 <select class="form-control custom-select" data-ng-change="addValue()" data-ng-model="newValue"
