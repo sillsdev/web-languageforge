@@ -4,38 +4,6 @@ import { JsonRpcResult } from '../../../../bellows/core/api/json-rpc.service';
 import { UtilityService } from '../../../../bellows/core/utility.service';
 import { SourceDocumentEditor, TargetDocumentEditor } from '../document-editor';
 
-export class FormatUsxHtmlAttributes {
-  static createTemplate(): FormatUsxHtmlAttributes {
-    return {
-      id: null,
-      title: null
-    };
-  }
-
-  id?: string;
-  title?: string;
-}
-
-export class FormatUsx extends FormatUsxHtmlAttributes {
-  static createTemplate(): FormatUsx {
-    return {
-      id: null,
-      title: null,
-      style: null,
-      altnumber: null,
-      pubnumber: null,
-      caller: null,
-      closed: null
-    };
-  }
-
-  style?: string;
-  altnumber?: string;
-  pubnumber?: string;
-  caller?: string;
-  closed?: string;
-}
-
 export class UsxAttributesAndValuesToKeep {
   // use an empty array to keep any value
 
