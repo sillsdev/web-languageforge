@@ -4,11 +4,3 @@ declare namespace protractor {
     elemMatches(selector: string, regexString: string): Locator;
   }
 }
-
-declare namespace jasmine {
-  interface Matchers {
-    toContainMultilineMatch(text: string): boolean;
-    toContainMatch(text: string): boolean;
-
-  }
-}
