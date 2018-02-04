@@ -1,11 +1,12 @@
 import { BellowsLoginPage } from '../../bellows/pages/loginPage';
-import { SfProjectPage } from '../sfchecks/pages/projectPage';
 import { ProjectsPage } from '../../bellows/pages/projectsPage';
+import { SfProjectPage } from '../sfchecks/pages/projectPage';
 import { SfProjectSettingsPage } from '../sfchecks/pages/projectSettingsPage';
 import { SfQuestionPage } from '../sfchecks/pages/questionPage';
 import { SfTextPage } from '../sfchecks/pages/textPage';
 import { SfTextSettingsPage } from '../sfchecks/pages/textSettingsPage';
 
+// tslint:disable-next-line:no-var-requires
 const constants           = require('../../testConstants.json');
 const loginPage           = new BellowsLoginPage();
 const projectPage         = new SfProjectPage();
