@@ -10,7 +10,6 @@ import {SfProjectPage} from '../../sfchecks/pages/projectPage';
 import {SfProjectSettingsPage} from '../../sfchecks/pages/projectSettingsPage';
 import {SfQuestionPage} from '../../sfchecks/pages/questionPage';
 import {SfTextPage} from '../../sfchecks/pages/textPage';
-import { jasmine } from '../../../bellows/pages/utils';
 
 const util = new Utils();
 const loginPage = new BellowsLoginPage();
@@ -423,7 +422,7 @@ describe('Activity E2E Test', () => {
       aIndex += 1;
       const regex = new RegExp('.*' + util.escapeRegExp(username + ' +1\'d your answer') + '.*' +
         util.escapeRegExp(constants.testText1Question1Title));
-      expect<jasmine>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+      expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
     return aIndex;
