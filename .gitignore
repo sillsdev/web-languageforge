@@ -53,4 +53,8 @@ obj/
 _ReSharper*/
 *.user
 
+# E2E JS files generated from Typescript
 test/app/**/*.js.map
+test/app/scriptureforge/**/*.js
+test/app/languageforge/**/*.js
+test/app/bellows/**/*.js

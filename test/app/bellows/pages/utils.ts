@@ -146,51 +146,6 @@ export class Utils {
     return stringToEscape.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
   }
 
-  /*
-   * Jasmine custom matcher (https://jasmine.github.io/2.0/custom_matcher.html) to search a list
-   * for a string that matches a given regex. E.g., you have ['an apple', 'a banana'] and you want
-   * to know if the list contains a string that matches the regex /banana/.
-   *
-   * To use this matcher, call util.registerCustomJasmineMatchers() in your beforeEach() function.
-   * Then you'll be able to write tests like `expect(item).toContainMatch(regex)`.
-   * NOTE: If you want to be able to match across multiple lines with a `.*` component in your regex,
-   * you'll need to use .toContainMultilineMatch() instead.
-   */
-  registerCustomJasmineMatchers() {
-    const matcherFactoryFunction = (multiline: boolean) => {
-      return {
-        compare: (list: string[], regex: RegExp) => {
-          let index = list.findIndex((item: string) => {
-            // The dot in Javascript regexes CANNOT match newlines, so we deal with that here
-            if (multiline) {
-              return regex.test(item.replace(/\n/g, ' '));
-            }
-            return regex.test(item);
-          });
-
-          return {
-            pass: index >= 0,
-            get message() {
-              if (index >= 0) {
-                return 'Expected list not to contain a match for ' + regex.toString() + ' but it did.';
-              }
-              return 'Expected list to contain a match for ' + regex.toString() + ' but it did not.';
-            }
-          };
-        }
-      };
-    };
-
-    jasmine.addMatchers({
-      toContainMultilineMatch: () => {
-        return matcherFactoryFunction(true);
-      },
-      toContainMatch: () => {
-        return matcherFactoryFunction(false);
-      }
-    });
-  }
-
   // Errors we choose to ignore because they are typically not encountered by users, but only
   // in testing
   isMessageToIgnore(message: logging.Entry ) {
