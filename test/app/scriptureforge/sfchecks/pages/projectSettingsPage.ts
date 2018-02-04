@@ -13,6 +13,8 @@ export class SfProjectSettingsPage {
     projectsPage.get();
     projectsPage.clickOnProject(projectName);
     browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
+    this.settingsMenuLink.click();
+    this.projectSettingsLink.click();
   }
 
   clickOnSettingsLink() {
