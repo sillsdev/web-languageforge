@@ -1,5 +1,5 @@
 // tslint:disable-next-line:no-reference
-///<reference path="../../../bellows/pages/utils.d.ts" />
+///<reference path="activityCustomMatchers.d.ts" />
 import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
 import { ElementFinder } from 'protractor/built/element';
 import {SfActivityPage} from '../../../bellows/pages/activityPage';
@@ -36,7 +36,41 @@ describe('Activity E2E Test', () => {
     }
   };
 
-  beforeEach(util.registerCustomJasmineMatchers);
+  beforeEach(() => {
+    const matcherFactoryFunction = (multiline: boolean) => {
+      return {
+        compare: (list: string[], regex: RegExp) => {
+          const index = list.findIndex((item: string) => {
+            // The dot in Javascript regexes CANNOT match newlines, so we deal with that here
+            if (multiline) {
+              return regex.test(item.replace(/\n/g, ' '));
+            }
+            return regex.test(item);
+          });
+
+          return {
+            pass: index >= 0,
+            get message() {
+              if (index >= 0) {
+                return 'Expected list not to contain a match for ' + regex.toString() + ' but it did.';
+              }
+              return 'Expected list to contain a match for ' + regex.toString() + ' but it did not.';
+            }
+          };
+        }
+      };
+    };
+
+    jasmine.addMatchers({
+      toContainMultilineMatch: () => {
+        return matcherFactoryFunction(true);
+      },
+      toContainMatch: () => {
+        return matcherFactoryFunction(false);
+      }
+    });
+
+  });
 
   describe('Running as member: ', () => {
 
