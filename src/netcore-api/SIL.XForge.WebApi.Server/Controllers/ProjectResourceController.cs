@@ -1,7 +1,6 @@
 using AutoMapper;
 using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Models;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SIL.XForge.WebApi.Server.Controllers
