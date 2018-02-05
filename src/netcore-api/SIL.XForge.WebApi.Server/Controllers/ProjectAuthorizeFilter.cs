@@ -13,11 +13,11 @@ namespace SIL.XForge.WebApi.Server.Controllers
         private readonly Right _right;
         private readonly string _argument;
 
-        public ProjectAuthorizeFilter(IRepository<Project> projectRepo, Right right, string argument = null)
+        public ProjectAuthorizeFilter(IRepository<Project> projectRepo, Right right, string argument = "")
         {
             _projectRepo = projectRepo;
             _right = right;
-            _argument = argument ?? "id";
+            _argument = string.IsNullOrEmpty(argument) ? "id" : argument;
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
