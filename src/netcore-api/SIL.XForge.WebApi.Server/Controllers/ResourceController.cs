@@ -6,6 +6,8 @@ using SIL.XForge.WebApi.Server.Dtos;
 namespace SIL.XForge.WebApi.Server.Controllers
 {
     [Authorize]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public abstract class ResourceController : Controller
     {
         private readonly IMapper _mapper;
