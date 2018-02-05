@@ -503,7 +503,9 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
       return true;
     };
 
-    $scope.startExport = function (ptVersion = "PT7") {
+    $scope.startExport = function (ptVersion) {
+      ptVersion = (typeof ptVersion !== 'undefined') ? ptVersion : "PT7";
+      console.log("Downloading for", ptVersion);
       $scope.exportConfig.commentFormat = ptVersion;
       $scope.download.inprogress = true;
       textService.exportComments($scope.exportConfig, function (result) {
