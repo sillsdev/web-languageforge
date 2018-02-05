@@ -11,6 +11,7 @@ class UsxTrimHelper
 
     // States
     private $_stateDrop;
+    private $_currentBook;
     private $_currentChapter;
     private $_currentVerse;
 
@@ -66,6 +67,7 @@ class UsxTrimHelper
         array_push($this->_tagStack, $attrs);
         switch ($tag) {
             case 'USX':
+            case 'BOOK':
                 $this->outputStartTag($tag, $attrs);
                 array_pop($this->_tagStack); // Do not leave <usx> tag on stack
                 array_pop($this->_tagStack);
@@ -91,8 +93,8 @@ class UsxTrimHelper
     {
         switch ($tag) {
             case 'USX':
-                $this->outputEndTag('usx');
-
+            case 'BOOK':
+                $this->outputEndTag($tag);
                 return;
             case 'VERSE':
                 break;
@@ -227,6 +229,14 @@ class UsxTrimHelper
         }
 
                 // Boundary chapter; need to check verses
+    }
+
+    private function onBook($attrs)
+    {
+        // Always echo book start
+        $number = (int) $attrs['NUMBER'];
+        $this->_currentVerse = (int) $number;
+        $this->setDropStateByVerse();
     }
 
     private function onChapter($attrs)
