@@ -27,36 +27,27 @@ class ParatextExport
             'totalCount' => 0,
             'xml' => '<?xml version="1.0" encoding="utf-8"?>' . "\n<CommentList>\n"
         );
-        $commentFormatter = "formatForPT7";
-        $filenamePrefix = "Comments";
-        if (isset($params['commentFormat'])) {
-            switch ($params['commentFormat'])
-            {
-            case "PT7":
-                $commentFormatter = "formatForPT7";
-                $filenamePrefix = "Comments";
-                break;
-            case "PT8":
-                $commentFormatter = "formatForPT8";
-                $filenamePrefix = "Notes";
-                break;
-            // No need for a default case since we've already set the default above
-            }
+
+        $commentFormat = (isset($params['commentFormat'])) ? $params['commentFormat'] : "PT8"; // We'll default to PT8 style
+        if ($commentFormat === "PT7") {
+            $filenamePrefix = "Comments";
+        } else {
+            $filenamePrefix = "Notes";
         }
 
         $now = new \DateTime();
         $dateForFilename = date('Ymd_Gi', $now->getTimestamp());
-        $dl['xml'] .= self::makeDummyComment($commentFormatter, $now, $dateForFilename);
+        $dl['xml'] .= self::makeDummyComment($commentFormat, $now, $dateForFilename);
 
         foreach ($questionlist->entries as $question) {
             if (! array_key_exists('isArchived', $question) || ! $question['isArchived']) {
                 foreach ($question['answers'] as $answerId => $answer) {
                     if (! $params['exportFlagged'] || (array_key_exists('isToBeExported', $answer) && $answer['isToBeExported'])) { // if the answer is tagged with an export tag
                         $dl['answerCount']++;
-                        $dl['xml'] .= self::makeCommentXml($commentFormatter, $answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
+                        $dl['xml'] .= self::makeCommentXml($commentFormat, $answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
                         if ($params['exportComments']) {
                             foreach ($answer['comments'] as $commentId => $comment) {
-                                $dl['xml'] .= self::makeCommentXml($commentFormatter, array(), 0, $textInfo, $answerId, $comment); // answerId, not commentId, so that Paratext will thread them together
+                                $dl['xml'] .= self::makeCommentXml($commentFormat, array(), 0, $textInfo, $answerId, $comment); // answerId, not commentId, so that Paratext will thread them together
                                 $dl['commentCount']++;
                             }
                         }
@@ -98,7 +89,7 @@ class ParatextExport
      * @param string $threadId
      * @param array $comment
      */
-    private static function makeCommentXml($commentFormatter, $tags, $votes, $textInfo, $threadId, $comment)
+    private static function makeCommentXml($commentFormat, $tags, $votes, $textInfo, $threadId, $comment)
     {
         $user = new UserModel((string) $comment['userRef']);
         $username = $user->username;
@@ -116,13 +107,12 @@ class ParatextExport
             $content .= " ($votes Votes)";
         }
 
-        // Is there a better way than specifying the function name *and* class name as "magic strings"? I'm unfamiliar with how to do this in PHP. - 2018-01 RM
-        return call_user_func(["\Api\Library\Scriptureforge\Sfchecks\ParatextExport", $commentFormatter], $threadId, $username, $textInfo, "", $comment['dateEdited']->toDateTime(), $content);
+        return self::formatComment($commentFormat, $threadId, $username, $textInfo, "", $comment['dateEdited']->toDateTime(), $content);
     }
 
-    private static function makeDummyComment($commentFormatter, \DateTime $dateTime, string $dummyCommenterName)
+    private static function makeDummyComment($commentFormat, \DateTime $dateTime, string $dummyCommenterName)
     {
-        return call_user_func(["\Api\Library\Scriptureforge\Sfchecks\ParatextExport", $commentFormatter], $dummyCommenterName, $dummyCommenterName, [], "", $dateTime, "");
+        return self::formatComment($commentFormat, $dummyCommenterName, $dummyCommenterName, [], "", $dateTime, "");
     }
 
     private static function formatVerseRef($textInfo) : string
@@ -179,5 +169,14 @@ class ParatextExport
         <Field Name=\"assigned\"></Field>
         <Contents>$content</Contents>
     </Comment>\n";
+    }
+
+    public static function formatComment(string $commentFormat, string $threadId, string $username, array $textInfo, string $language, \DateTime $dateTime, string $content) : string
+    {
+        if ($commentFormat === "PT7") {
+            return self::formatForPT7($threadId, $username, $textInfo, $language, $dateTime, $content);
+        } else {
+            return self::formatForPT8($threadId, $username, $textInfo, $language, $dateTime, $content);
+        }
     }
 }

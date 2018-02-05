@@ -150,6 +150,12 @@
                             exported. Make sure you flagged answers for export and try
                             again, or uncheck "Only export flagged Answers" to export all
                             answers/comments</p>
+                        <br class="d-sm-none">
+                        <p data-ng-show="download.totalCount > 0">
+                            Downloading:
+                            <span data-ng-show="download.answerCount > 0" class="label text-success"><span class="notranslate">{{download.answerCount}}</span> answer(s)</span>
+                            <span data-ng-show="download.commentCount > 0" class="label text-info"><span class="notranslate">{{download.commentCount}}</span> comment(s)</span>
+                        </p>
                     </div>
                 </form>
             </div>
