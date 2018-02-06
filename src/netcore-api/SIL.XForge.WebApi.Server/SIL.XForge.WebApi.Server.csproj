@@ -20,7 +20,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.2.0" />
     <PackageReference Include="HangFire" Version="1.6.17" />
     <PackageReference Include="Hangfire.Mongo" Version="0.5.7" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.2.0-preview-0278" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI3" Version="1.2.0-preview-0278" />
