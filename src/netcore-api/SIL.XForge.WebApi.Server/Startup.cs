@@ -30,7 +30,14 @@ namespace SIL.XForge.WebApi.Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var issuers = new List<string> { "languageforge.org", "scriptureforge.org", "cat.languageforge.org" };
+            var issuers = new List<string>
+            {
+                "languageforge.org",
+                "scriptureforge.org",
+                "cat.languageforge.org",
+                "dev.languageforge.org",
+                "dev.scriptureforge.org"
+            };
             if (Environment.IsDevelopment())
             {
                 issuers.Add("languageforge.local");
