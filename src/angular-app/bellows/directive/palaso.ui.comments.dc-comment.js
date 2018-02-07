@@ -153,6 +153,14 @@ angular.module('palaso.ui.comments')
             return $scope.$parent.getSenseLabel($scope.comment.regarding.field, $scope.comment.contextGuid);
           };
 
+          $scope.isOriginalRelevant = function isOriginalRelevant() {
+            if ($scope.comment.regarding.fieldValue) {
+              return true;
+            } else {
+              return false;
+            }
+          };
+
         }],
 
       link: function (scope, element, attrs, controller) {
