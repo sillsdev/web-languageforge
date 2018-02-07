@@ -30,7 +30,7 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.initializeNewComment = function initializeNewComment() {
-          if ($scope.showNewComment) {
+          if ($scope.showNewComment && $scope.entry.id === $scope.newComment.entryRef) {
             $scope.newComment.content = '';
           } else {
             $scope.newComment = {
