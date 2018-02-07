@@ -481,23 +481,10 @@ export class SourceDocumentEditor extends DocumentEditor {
   }
 
   update(textChange: boolean): boolean {
-    if (this.hasFocus) {
-      this.isCurrentSegmentHighlighted = false;
-    }
+    this.isCurrentSegmentHighlighted = false;
     const segmentChanged = super.update(textChange);
     if (this.currentSegment != null && (segmentChanged || this.currentSegment.isChanged)) {
         this.translateCurrentSegment().catch(() => { });
-    }
-    return segmentChanged;
-  }
-
-  switchCurrentSegment(segmentRef: string): boolean {
-    if (!this.hasFocus) {
-      this.isCurrentSegmentHighlighted = false;
-    }
-    const segmentChanged = super.switchCurrentSegment(segmentRef);
-    if (!this.hasFocus) {
-      this.isCurrentSegmentHighlighted = true;
     }
     return segmentChanged;
   }

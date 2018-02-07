@@ -157,7 +157,8 @@
                     data-on-content-changed="$ctrl.onContentChanged($ctrl.target, delta)"
                     data-on-selection-changed="$ctrl.onSelectionChanged($ctrl.target)"
                     data-ng-model="$ctrl.target.html" data-read-only="!$ctrl.hasDocumentSets()"
-                    data-placeholder="&#8203;enter text here or drop a file"></ng-quill-editor>
+                    data-placeholder="&#8203;enter text here or drop a file"
+                    data-ng-class="{'template-editor': $ctrl.target.isScripture}"></ng-quill-editor>
                 <div class="ql-suggestions">
                     <ql-suggestion ql-suggestions="$ctrl.target.suggestions" ql-confidence="$ctrl.target.confidence"
                                 ql-insert-suggestion="$ctrl.target.insertSuggestion(suggestionIndex)"></ql-suggestion>

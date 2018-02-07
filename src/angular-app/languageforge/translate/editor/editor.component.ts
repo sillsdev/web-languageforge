@@ -623,6 +623,7 @@ export class TranslateEditorController implements angular.IController {
 
         if (segmentChanged) {
           // select the corresponding source segment
+          this.source.isCurrentSegmentHighlighted = false;
           this.source.switchCurrentSegment(this.target.currentSegmentRef);
 
           if (this.currentDocType) {
@@ -634,13 +635,14 @@ export class TranslateEditorController implements angular.IController {
           // update suggestions for new segment
           this.target.onStartTranslating();
           this.source.translateCurrentSegment()
+            .catch(() => { })
             .finally(() => this.target.onFinishTranslating());
+        }
+
+        if (this.target.hasFocus) {
+          this.source.isCurrentSegmentHighlighted = true;
         } else {
-          if (this.target.hasFocus) {
-            this.source.isCurrentSegmentHighlighted = true;
-          } else if (!this.source.hasFocus) {
-            this.source.isCurrentSegmentHighlighted = false;
-          }
+          this.source.isCurrentSegmentHighlighted = false;
         }
 
         this.source.syncScroll(this.target);
