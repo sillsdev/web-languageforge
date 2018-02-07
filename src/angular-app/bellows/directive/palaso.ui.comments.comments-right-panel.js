@@ -23,6 +23,7 @@ angular.module('palaso.ui.comments')
          */
         $scope.showNewComment = false;
         $scope.senseLabel = '';
+        $scope.posting = false;
         $scope.commentInteractiveStatus = {
           id: '',
           visible: false
@@ -194,6 +195,7 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.postNewComment = function postNewComment() {
+          $scope.posting = true;
           commentService.update($scope.newComment, function (result) {
             if (result.ok) {
               $scope.control.editorService.refreshEditorData().then(function () {
@@ -201,6 +203,7 @@ angular.module('palaso.ui.comments')
                 $scope.loadComments();
                 $scope.initializeNewComment();
                 $scope.newComment.regarding = previousComment.regarding;
+                $scope.posting = false;
               });
             }
           });
