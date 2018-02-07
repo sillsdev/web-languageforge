@@ -689,7 +689,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
 
       // Comments View
       $scope.showComments = function showComments() {
-        if ($scope.commentPanelVisible === true && $scope.commentContext.field === '') {
+        if ($scope.commentPanelVisible === true && $scope.commentContext.contextGuid === '') {
           $scope.hideCommentsPanel();
 
           // Reset the comment context AFTER the panel starts hiding
