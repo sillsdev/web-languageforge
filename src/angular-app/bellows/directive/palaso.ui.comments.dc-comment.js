@@ -17,6 +17,8 @@ angular.module('palaso.ui.comments')
 
           $scope.editingCommentContent = '';
 
+          $scope.posting = false;
+
           if ($scope.comment.regarding.field && angular.isDefined($scope.control.configService)) {
             $scope.control.configService.getFieldConfig($scope.comment.regarding.field)
               .then(function (config) {
@@ -55,6 +57,7 @@ angular.module('palaso.ui.comments')
 
           $scope.submitReply = function submitReply(reply) {
             hideInputFields();
+            $scope.posting = true;
             reply.content = angular.copy(reply.editingContent);
             delete reply.editingContent;
             updateReply($scope.comment.id, reply);
@@ -74,6 +77,7 @@ angular.module('palaso.ui.comments')
             commentService.updateStatus(commentId, status, function (result) {
               if (result.ok) {
                 $scope.control.editorService.refreshEditorData().then($scope.loadComments);
+                $scope.posting = false;
               }
             });
           };

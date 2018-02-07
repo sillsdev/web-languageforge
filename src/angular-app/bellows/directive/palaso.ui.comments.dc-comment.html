@@ -125,11 +125,11 @@
                 </div>
             </div>
             <form ng-show="showNewReplyForm && comment.status != 'resolved'" class="commentNewReplyForm" data-ng-submit="submitReply(newReply)">
-                <textarea class="form-control" placeholder="Reply here.  Press Enter when done."
+                <textarea class="form-control" required placeholder="Reply here.  Press Enter when done."
                           data-ng-model="newReply.editingContent" pui-auto-focus="isAutoFocusNewReply"></textarea>
                 <div class="d-flex justify-content-end">
                     <a href class="btn btn-sm btn-std" data-ng-click="showCommentReplies()">Hide</a>
-                    <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-reply"></i> Reply</button>
+                    <button type="submit" class="btn btn-sm btn-primary" data-ng-disabled="posting"><i class="fa fa-reply"></i> Reply</button>
                 </div>
             </form>
         </div>
