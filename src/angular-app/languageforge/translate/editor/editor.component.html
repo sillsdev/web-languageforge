@@ -29,12 +29,12 @@
         <button data-ng-click="$ctrl.resetConfidence()" title="Reset confidence threshold to project default value">
             <i class="fa fa-refresh"></i></button>
     </span>
-    <span class="ql-formats" data-ng-if="$ctrl.hasDocumentSets()">
+    <span class="ql-formats" data-ng-if="!$ctrl.isScripture && $ctrl.hasDocumentSets()">
         <button data-ng-click="$ctrl.toggleFormattingOptions()" title="Formatting options" style="font-family: FontAwesome">
             <span class="fo-fa-font fo-style-underline">&#xf031;</span><span class="fo-fa-chevron-down" data-ng-if="!$ctrl.showFormats">&#xf078;</span><span class="fo-fa-chevron-up" data-ng-if="$ctrl.showFormats">&#xf077;</span>
         </button>
     </span>
-    <div data-ng-show="$ctrl.showFormats && $ctrl.hasDocumentSets()">
+    <div data-ng-show="!$ctrl.isScripture && $ctrl.showFormats && $ctrl.hasDocumentSets()">
         <span class="ql-formats">
             <!--suppress HtmlFormInputWithoutLabel -->
             <select class="ql-header" title="Styles">
@@ -140,7 +140,7 @@
                     data-on-editor-created="$ctrl.onQuillCreated(editor, $ctrl.source)"
                     data-on-content-changed="$ctrl.onContentChanged($ctrl.source, delta)"
                     data-on-selection-changed="$ctrl.onSelectionChanged($ctrl.source)"
-                    data-ng-model="$ctrl.source.html" data-read-only="!$ctrl.hasDocumentSets() || $ctrl.source.isScripture"
+                    data-ng-model="$ctrl.source.html" data-read-only="!$ctrl.hasDocumentSets() || $ctrl.isScripture"
                     data-placeholder="&#8203;enter text here or drop a file"></ng-quill-editor>
             </div>
             <div class="col-sm-6 d-sm-none" data-ng-if="$ctrl.hasDocumentSets()">
@@ -158,7 +158,7 @@
                     data-on-selection-changed="$ctrl.onSelectionChanged($ctrl.target)"
                     data-ng-model="$ctrl.target.html" data-read-only="!$ctrl.hasDocumentSets()"
                     data-placeholder="&#8203;enter text here or drop a file"
-                    data-ng-class="{'template-editor': $ctrl.target.isScripture}"></ng-quill-editor>
+                    data-ng-class="{'template-editor': $ctrl.isScripture}"></ng-quill-editor>
                 <div class="ql-suggestions">
                     <ql-suggestion ql-suggestions="$ctrl.target.suggestions" ql-confidence="$ctrl.target.confidence"
                                 ql-insert-suggestion="$ctrl.target.insertSuggestion(suggestionIndex)"></ql-suggestion>

@@ -51,6 +51,10 @@ export class TranslateEditorController implements angular.IController {
               private readonly notice: NoticeService, private readonly realTime: RealTimeService,
               private readonly projectApi: TranslateProjectService, private readonly util: UtilityService) { }
 
+  get isScripture(): boolean {
+    return this.tecProject != null && this.tecProject.config.isTranslationDataScripture;
+  }
+
   $onInit(): void {
     this.source = new SourceDocumentEditor(this.$q, this.machine, this.realTime);
     this.target = new TargetDocumentEditor(this.$q, this.machine, this.realTime, this.metricService, this.$window);
