@@ -31,7 +31,9 @@ angular.module('palaso.ui.comments')
 
         $scope.initializeNewComment = function initializeNewComment() {
           if ($scope.showNewComment && $scope.entry.id === $scope.newComment.entryRef) {
-            $scope.newComment.content = '';
+            if ($scope.posting) {
+              $scope.newComment.content = '';
+            }
           } else {
             $scope.newComment = {
               id: '',
