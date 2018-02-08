@@ -17,6 +17,8 @@ angular.module('palaso.ui.soundplayer', [])
             if ($scope.playing) {
               $scope.togglePlayback();
             }
+
+            $scope.audioElement.currentTime = 0;
           });
         });
 
