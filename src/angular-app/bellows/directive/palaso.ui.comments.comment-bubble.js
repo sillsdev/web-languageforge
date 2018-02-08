@@ -29,6 +29,10 @@ angular.module('palaso.ui.comments')
           ($scope.$parent.contextGuid ? ' ' : '') +
           $scope.field;
         lexConfig.getFieldConfig($scope.field).then(function (fieldConfig) {
+          if (!angular.isDefined($scope.configType)) {
+            $scope.configType = fieldConfig.type;
+          }
+
           if (fieldConfig.type === 'pictures' && angular.isDefined($scope.picture)) {
             $scope.pictureSrc = $scope.$parent.getPictureUrl($scope.picture);
             $scope.contextGuid += '#' + $scope.picture.guid; // Would prefer to use the ID
@@ -102,8 +106,14 @@ angular.module('palaso.ui.comments')
             $scope.contextGuid);
         };
 
+        $scope.checkValidModelContextChange = function checkValidModelContextChange() {
+          if ($scope.configType === 'optionlist') {
+            $scope.selectFieldForComment();
+          }
+        };
+
         $scope.$watch('model', function (newContent) {
-          $scope.selectFieldForComment();
+          $scope.checkValidModelContextChange();
         }, true);
 
       }]
