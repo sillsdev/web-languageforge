@@ -40,7 +40,8 @@ function SfTextSettingsPage() {
     exportAnswers: element(by.id('exportAnswers')),
     exportComments: element(by.model('exportConfig.exportComments')),
     exportFlagged: element(by.model('exportConfig.exportFlagged')),
-    prepareButton: element(by.partialButtonText('Prepare')),
+    downloadPT7Button: element(by.partialButtonText('Download for Paratext 7')),
+    downloadPT8Button: element(by.partialButtonText('Download for Paratext 8')),
     noExportMsg: element(by.id('noExportMsg')),
 
     answerCount: element(by.binding('download.answerCount')),

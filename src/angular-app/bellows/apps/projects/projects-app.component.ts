@@ -13,7 +13,7 @@ class Rights {
 
 export class ProjectsAppController implements angular.IController {
   finishedLoading: boolean = false;
-  rights: Rights = new Rights;
+  rights: Rights = new Rights();
   newProjectCollapsed: boolean = true;
   selected: Project[] = [];
   projects: Project[] = [];
@@ -31,9 +31,11 @@ export class ProjectsAppController implements angular.IController {
     this.projectTypeNames = this.projectService.data.projectTypeNames;
     this.projectTypesBySite = this.projectService.data.projectTypesBySite;
 
-    this.sessionService.getSession().then((session) => {
-      this.rights.canEditProjects = session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.EDIT);
-      this.rights.canCreateProject = session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.CREATE);
+    this.sessionService.getSession().then(session => {
+      this.rights.canEditProjects =
+        session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.EDIT);
+      this.rights.canCreateProject =
+        session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.CREATE);
       this.rights.showControlBar = this.rights.canCreateProject;
       this.siteName = session.baseSite();
     });
@@ -42,10 +44,10 @@ export class ProjectsAppController implements angular.IController {
   isSelected(project: Project) {
     // noinspection EqualityComparisonWithCoercionJS
     return project != null && this.selected.indexOf(project) >= 0;
-  };
+  }
 
   queryProjectsForUser() {
-    this.projectService.list().then((projects) => {
+    this.projectService.list().then(projects => {
       this.projects = projects;
 
       // Is this perhaps wrong? Maybe not all projects are included in the JSONRPC response?
@@ -53,26 +55,26 @@ export class ProjectsAppController implements angular.IController {
       this.projectCount = projects.length;
       this.finishedLoading = true;
     }).catch(console.error);
-  };
+  }
 
   isInProject(project: Project) {
     return (project.role !== 'none');
-  };
+  }
 
   isManager(project: Project) {
     return (project.role === 'project_manager');
-  };
+  }
 
   // Add user as Manager of project
   addManagerToProject(project: Project) {
-    this.projectService.joinProject(project.id, 'project_manager', (result) => {
+    this.projectService.joinProject(project.id, 'project_manager', result => {
       if (result.ok) {
         this.notice.push(this.notice.SUCCESS, 'You are now a Manager of the \'' +
           project.projectName + '\' project.');
         this.queryProjectsForUser();
       }
     });
-  };
+  }
 
   startProject() {
     if (this.projectTypesBySite().length === 1) {
@@ -81,7 +83,7 @@ export class ProjectsAppController implements angular.IController {
     } else {
       this.newProjectCollapsed = !this.newProjectCollapsed;
     }
-  };
+  }
 
 }
 

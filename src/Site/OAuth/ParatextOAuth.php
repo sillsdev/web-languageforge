@@ -2,6 +2,9 @@
 
 namespace Site\OAuth;
 
+use Api\Library\Shared\SilexSessionHelper;
+use Api\Model\Shared\AccessTokenModel;
+use Api\Model\Shared\UserModel;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken as OAuthAccessToken;
 use Silex\Application;
@@ -27,22 +30,22 @@ class ParatextOAuth extends OAuthBase
     protected function getOAuthProvider($redirectUri): AbstractProvider
     {
         $provider = new ParatextOAuthProvider([
-            'clientId' => 'DbDDp7nAdPYtuJL9L', // TODO: Move to config.php
+            'clientId' => PARATEXT_CLIENT_ID,
             'clientSecret' => '',
             'redirectUri' => $redirectUri,
         ]);
         return $provider;
     }
 
-
     protected function handleOAuthToken(Application $app, AbstractProvider $provider, OAuthAccessToken $token)
     {
-        // TODO: Implement this once Paratext integration is desired
-        return new RedirectResponse("/auth/login");
-    }
-
-    public function chooseRedirectUrl(bool $tokenSuccess, Application $app) : string
-    {
-        return '/auth/show_paratext_projects';
+        $userId = SilexSessionHelper::getUserId($app);
+        $user = new UserModel($userId);
+        $user->paratextAccessToken->accessToken = $token->getToken();
+        $user->paratextAccessToken->refreshToken = $token->getRefreshToken();
+        $user->paratextAccessToken->idToken = $token->getValues()['id_token'];
+        $user->write();
+        OAuthBase::removeOAuthKeysFromSession($app['session']);
+        return '<!DOCTYPE html><html><script>window.close();</script></html>';
     }
 }

@@ -484,6 +484,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
   function ($scope, textService, $routeParams) {
     $scope.exportConfig = {
       textId: $routeParams.textId,
+      commentFormat: "PT7",
       exportComments: false,
       exportFlagged: true,
       tags: []
@@ -502,26 +503,28 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
       return true;
     };
 
-    $scope.startExport = function () {
+    $scope.startExport = function (ptVersion) {
+      ptVersion = (typeof ptVersion !== 'undefined') ? ptVersion : "PT7";
+      console.log("Downloading for", ptVersion);
+      $scope.exportConfig.commentFormat = ptVersion;
       $scope.download.inprogress = true;
       textService.exportComments($scope.exportConfig, function (result) {
         if (result.ok) {
           $scope.download = result.data;
           $scope.download.complete = true;
+          if ($scope.download.totalCount > 0) {
+            // for a reference on how to create a data-uri for use in downloading content see
+            // http://stackoverflow.com/questions/16514509/how-do-you-serve-a-file-for-download-with-angularjs-or-javascript
+            var uri = 'data:text/plain;charset=utf-8,' + encodeURIComponent($scope.download.xml);
+            var link = document.createElement('a');
+            link.download = $scope.download.filename;
+            link.href = uri;
+            link.click();
+          }
         }
 
         $scope.download.inprogress = false;
       });
-    };
-
-    $scope.downloadExport = function () {
-      // for a reference on how to create a data-uri for use in downloading content see
-      // http://stackoverflow.com/questions/16514509/how-do-you-serve-a-file-for-download-with-angularjs-or-javascript
-      var uri = 'data:text/plain;charset=utf-8,' + encodeURIComponent($scope.download.xml);
-      var link = document.createElement('a');
-      link.download = $scope.download.filename;
-      link.href = uri;
-      link.click();
     };
 
   }])

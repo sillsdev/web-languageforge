@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 translate="Select a New Input System Language"></h3>
+    <h3>Select a New Input System Language</h3>
     <i data-ng-click="close()" class="close-modal fa fa-times"></i>
 </div>
 <div class="modal-body">
@@ -8,17 +8,17 @@
         pui-suggested-language-codes="suggestedLanguageCodes">
     </pui-select-language>
 </div>
-<div class="modal-footer">
-    <button class="btn btn-primary pull-right"
+<div class="modal-footer d-block">
+    <button class="btn btn-primary float-right mt-2"
         data-ng-click="add()"
         data-ng-disabled="addDisabled">
-        <i class="fa fa-plus"></i> {{'Add' | translate}} <span class="notranslate">{{selected.language.name}}</span></button>
+        <i class="fa fa-plus"></i> Add <span class="notranslate">{{selected.language.name}}</span></button>
     <div>
         <a href="http://www.infoterm.info/standardization/iso_639_1_2002.php" target="_blank">
-            <small><i class="fa fa-globe" aria-hidden="true"></i> {{'About Language 639-1 Codes' | translate}}</small></a>
+            <small><i class="fa fa-globe" aria-hidden="true"></i> About Language 639-1 Codes</small></a>
     </div>
     <div>
         <a href="http://www.sil.org/iso639-3/" target="_blank">
-            <small><i class="fa fa-globe" aria-hidden="true"></i> {{'About Language 639-3 Codes' | translate}}</small></a>
+            <small><i class="fa fa-globe" aria-hidden="true"></i> About Language 639-3 Codes</small></a>
     </div>
 </div>

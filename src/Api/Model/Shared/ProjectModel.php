@@ -7,6 +7,7 @@ use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransRoles;
+use Api\Model\Languageforge\Translate\TranslateProjectModel;
 use Api\Model\Scriptureforge\Rapuma\RapumaProjectModel;
 use Api\Model\Scriptureforge\Rapuma\RapumaRoles;
 use Api\Model\Scriptureforge\Sfchecks\ProjectUserPropertiesSettings;
@@ -360,24 +361,43 @@ class ProjectModel extends MapperModel
     }
 
     /**
+     * @return bool
+     */
+    public function hasId() {
+        return $this->id->asString() != '';
+    }
+
+    /**
      * @param string $projectId
      * @return ProjectModel
      */
     public static function getById($projectId)
     {
-        $m = new ProjectModel($projectId);
-        switch ($m->appName) {
+        $project = new ProjectModel($projectId);
+        switch ($project->appName) {
             case 'sfchecks':
                 return new SfchecksProjectModel($projectId);
             case 'rapuma':
                 return new RapumaProjectModel($projectId);
             case 'lexicon':
                 return new LexProjectModel($projectId);
+            case 'translate':
+                return new TranslateProjectModel($projectId);
             case 'semdomtrans':
                 return new SemDomTransProjectModel($projectId);
             default:
                 throw new \Exception("projectId '$projectId' could not be found when calling ProjectModel::getById()");
         }
+    }
+
+    public static function getByProjectCode($projectCode)
+    {
+        $m = new ProjectModel();
+        $m->readByProperties(array('projectCode' => $projectCode));
+        if ($m->hasId()) {
+            return self::getById($m->id->asString());
+        }
+        return $m; // empty project
     }
 
     /**
