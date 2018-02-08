@@ -1,9 +1,12 @@
-{% extends isBootstrap4 ? app.website.base~'Bootstrap4.html.twig': app.website.base~'.html.twig' %}
+{% extends app.website.base~'.html.twig' %}
 
 {% block content %}
     <div id="app-container-for-bootstrap">
-        {% include bootstrapFolder~'/'~appName~'.html' %}
+        {% include appFolder~'/'~appName~'.html' %}
     </div>
 
-    <script>angular.bootstrap(document.getElementById('app-container-for-bootstrap'), ['{{ appName }}']);</script>
+    <script>
+      'use strict';
+       angular.bootstrap(document.getElementById('app-container-for-bootstrap'), ['{{ appName }}']);
+    </script>
 {% endblock %}

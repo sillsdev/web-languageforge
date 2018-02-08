@@ -7,8 +7,17 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Page extends Base
 {
-    public function view(Request $request, Application $app, $pageName) {
-
+    /**
+     * @param Request $request
+     * @param Application $app
+     * @param $pageName
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function view(
+        /** @noinspection PhpUnusedParameterInspection */ Request $request,
+        Application $app, $pageName
+    ) {
         $this->setupBaseVariables($app);
         $this->setupPageVariables($app);
 
@@ -32,6 +41,5 @@ class Page extends Base
     }
 
     private function setupPageVariables(Application $app) {
-        $this->data['isBootstrap4'] = true;
     }
 }

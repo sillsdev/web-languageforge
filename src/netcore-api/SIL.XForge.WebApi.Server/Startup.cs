@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Serialization;
+using SIL.XForge.WebApi.Server.Controllers;
 using SIL.XForge.WebApi.Server.DataAccess;
+using SIL.XForge.WebApi.Server.Documentation;
+using SIL.XForge.WebApi.Server.Dtos;
+using SIL.XForge.WebApi.Server.Options;
 using SIL.XForge.WebApi.Server.Services;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace SIL.XForge.WebApi.Server
@@ -28,17 +30,22 @@ namespace SIL.XForge.WebApi.Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var issuers = new List<string> { "languageforge.org", "scriptureforge.org" };
+            var issuers = new List<string>
+            {
+                "languageforge.org",
+                "scriptureforge.org",
+                "cat.languageforge.org",
+                "dev.languageforge.org",
+                "dev.scriptureforge.org"
+            };
             if (Environment.IsDevelopment())
             {
                 issuers.Add("languageforge.local");
                 issuers.Add("scriptureforge.local");
+                issuers.Add("cat.languageforge.local");
             }
             IConfigurationSection securityConfig = Configuration.GetSection("Security");
-            string keyFilePath = securityConfig.GetValue<string>("JwtKeyFile");
-            string key = "this_is_not_a_secret_dev_only";
-            if (!string.IsNullOrEmpty(keyFilePath) && File.Exists(keyFilePath))
-                key = File.ReadAllText(keyFilePath).Trim();
+            string jwtKey = securityConfig.GetValue<string>("JwtKey") ?? "this_is_not_a_secret_dev_only";
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -47,7 +54,7 @@ namespace SIL.XForge.WebApi.Server
                         ValidIssuers = issuers,
                         ValidAudiences = issuers,
                         RequireExpirationTime = false,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtKey))
                     };
                 });
 
@@ -61,12 +68,18 @@ namespace SIL.XForge.WebApi.Server
             });
 
             services.AddMvc()
-                .AddJsonOptions(a => a.SerializerSettings.ContractResolver
-                    = new CamelCasePropertyNamesContractResolver());
+                .AddJsonOptions(a => a.SerializerSettings.ContractResolver = DtoContractResolver.Instance);
             services.AddRouting(options => options.LowercaseUrls = true);
 
+            services.AddOptions(Configuration);
+
             services.AddMongoDataAccess(Configuration);
-            services.AddSingleton<SendReceiveService>();
+
+            services.AddServices();
+
+            services.AddModelToDtoMapper();
+
+            services.AddDocumentationGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +87,8 @@ namespace SIL.XForge.WebApi.Server
         {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
+
+            app.UseDocumentation();
 
             app.UseAuthentication();
 

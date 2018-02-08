@@ -2,6 +2,8 @@ namespace SIL.XForge.WebApi.Server.Controllers
 {
     internal static class RouteNames
     {
-        public const string SendReceiveJobs = "SendReceiveJobs";
+        public const string SendReceiveJob = "SendReceiveJob";
+        public const string Lexicon = "Lexicon";
+        public const string LexEntry = "LexEntry";
     }
 }

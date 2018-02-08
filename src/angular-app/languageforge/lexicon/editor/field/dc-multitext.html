@@ -1,10 +1,12 @@
 <form class="form-horizontal dc-multitext">
-    <div class="form-group row" data-ng-repeat="tag in config.inputSystems">
-        <label class="control-label col-md-4 text-md-right" data-ng-show="config.type != 'pictures'" ng-class="($first ? '' : 'hidden-sm-down')"><span data-ng-show="$first">{{config.label}}</span></label>
-        <div class="controls" ng-class="(config.type == 'pictures' ? 'col-md-12' : 'col-md-8')">
+    <div class="form-group row comment-bubble-group" data-ng-repeat="tag in config.inputSystems">
+        <label class="col-form-label col-lg-4 text-lg-right" data-ng-show="config.type != 'pictures'"
+               data-ng-class="$first ? '' : 'd-none d-lg-inline-block'">
+            <span data-ng-show="$first">{{config.label}}</span></label>
+        <div class="controls" data-ng-class="config.type == 'pictures' ? 'col' : 'col-lg-8'">
             <div class="input-group" data-ng-click="selectInputSystem(tag)"
-                data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
-                <span class="add-on wsid input-group-addon notranslate" tabindex="-1"
+                 data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
+                <span class="wsid input-group-addon notranslate" tabindex="-1"
                     title="{{tag}} {{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
                 <dc-formattedtext class="dc-formattedtext" data-ng-if="!isAudio(tag)"
                     fte-multiline="false"
@@ -16,5 +18,6 @@
                 </dc-audio>
             </div>
         </div>
+        <comment-bubble control="control" field="fieldName" input-system="inputSystems[tag]" model="model"></comment-bubble>
     </div>
 </form>

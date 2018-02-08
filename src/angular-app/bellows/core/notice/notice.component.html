@@ -10,13 +10,12 @@
                 <div style="float:left; margin-right:20px" data-ng-bind-html="notice.message"></div>
                 <a style="font-size: smaller;" data-ng-click="notice.toggleDetails()">Click for details</a>
                 <div style="clear:both" data-ng-show="notice.showDetails">
-                    <hr />
+                    <hr>
                     <pre style="max-height: 600px; overflow-y: auto;">{{notice.details}}</pre>
                     <div ng-if="notice.type == 'danger'">
-                        <a target="_blank" data-ng-href="https://github.com/sillsdev/{{$ctrl.gitHubRepo}}/issues/new">
-                            Report this bug to the developers</a>
-                        <br /><i>Please copy error above and include screenshot</i>
-                        <!-- TODO: automate this via https://developer.github.com/v3/issues/#create-an-issue -->
+                        <a target="_blank" data-ng-href="mailto:{{$ctrl.issueEmail}}?subject={{notice.message|encodeURI}}&body={{notice.details|encodeURI}}">
+                            Email a bug report to {{$ctrl.issueEmail}}</a>
+                        <br><i>Please copy error above and include screenshot</i>
                     </div>
                 </div>
             </div>
@@ -29,7 +28,7 @@
                 <i class="fa fa-spin fa-spinner"></i> <b>{{$ctrl.getLoadingMessage()}}</b>
             </div>
             <div data-ng-show="$ctrl.showProgressBar()">
-                <uib-progressbar type="'info'" value="$ctrl.getPercentComplete()" max="100">{{$ctrl.getPercentComplete()}}%</uib-progressbar>
+                <uib-progressbar class="mb-3" type="'info'" value="$ctrl.getPercentComplete()" max="100">{{$ctrl.getPercentComplete()}}%</uib-progressbar>
             </div>
         </div>
     </div>

@@ -1,13 +1,14 @@
+'use strict';
 
 angular.module('palaso.ui.listview', ['ui.bootstrap'])
 
   // Typeahead
-  .directive('listview', ['$filter', function($filter) {
+  .directive('listview', ['$filter', function ($filter) {
     return {
       restrict: 'EA',
       transclude: true,
       replace: true,
-      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/listview.html',
+      templateUrl: '/angular-app/bellows/directive/listview.html',
       scope: {
         search: '&',
         select: '&',
@@ -15,41 +16,43 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
         hideIfEmpty: '@',
         visibleItems: '=',
         filteredItems: '=?',
-        itemsFilter: '=?',
+        itemsFilter: '=?'
       },
-      controller: ['$scope', function($scope) {
+      controller: ['$scope', function ($scope) {
         $scope.noOfPages = 3;  // TODO: calculate this automatically
         $scope.currentPage = 1;
         $scope.maxSize = 5;
-        $scope.itemsPerPage = "10";  // This should match the default value for the selector above
-        $scope.filteredItems = []; // This prevents "cannot read property 'length' of undefined" errors on first page load
+        $scope.itemsPerPage = '10';  // This should match the default value for the selector above
+        // This prevents "cannot read property 'length' of undefined" errors on first page load
+        $scope.filteredItems = [];
 
-        this.activate = function(item) {
+        this.activate = function (item) {
           $scope.active = item;
           $scope.select({
-            item: item,
+            item: item
           });
         };
 
-        this.activateNextItem = function() {
+        this.activateNextItem = function () {
           var index = $scope.items.indexOf($scope.active);
           this.activate($scope.filteredItems[(index + 1) % $scope.filteredItems.length]);
         };
 
-        this.activatePreviousItem = function() {
+        this.activatePreviousItem = function () {
           var index = $scope.filteredItems.indexOf($scope.active);
-          this.activate($scope.filteredItems[index === 0 ? $scope.filteredItems.length - 1 : index - 1]);
+          this.activate($scope.filteredItems[index === 0 ? $scope.filteredItems.length - 1 :
+            index - 1]);
         };
 
-        this.isActive = function(item) {
+        this.isActive = function (item) {
           return $scope.active === item;
         };
 
-        this.selectActive = function() {
+        this.selectActive = function () {
           this.select($scope.active);
         };
 
-        this.updateVisibleItems = function() {
+        this.updateVisibleItems = function () {
           var sliceStart;
           var sliceEnd;
           if ($scope.currentPage) {
@@ -64,7 +67,7 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
           $scope.visibleItems = $scope.filteredItems.slice(sliceStart, sliceEnd);
         };
 
-        this.updatePages = function() {
+        this.updatePages = function () {
           $scope.noOfPages = Math.ceil($scope.filteredItems.length / $scope.itemsPerPage);
           if ($scope.currentPage > $scope.noOfPages) {
             // This can happen if items have been deleted, for example
@@ -76,7 +79,7 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
           }
         };
 
-        this.updateFilteredItems = function() {
+        this.updateFilteredItems = function () {
           var items = $scope.items || [];
           if ($scope.itemsFilter) {
             $scope.filteredItems = $filter('filter')(items, $scope.itemsFilter);
@@ -85,41 +88,41 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
           }
         };
 
-        this.query = function() {
+        this.query = function () {
           $scope.search();
           this.updateFilteredItems();
           this.updatePages();
         };
-      },],
+      }],
 
-      link: function(scope, element, attrs, controller) {
-        scope.$watch('currentPage', function() {
+      link: function (scope, element, attrs, controller) {
+        scope.$watch('currentPage', function () {
           controller.updateVisibleItems();
         });
 
-        scope.$watch('itemsPerPage', function() {
+        scope.$watch('itemsPerPage', function () {
           controller.updatePages();
           controller.updateVisibleItems();
         });
 
-        scope.$watch('items', function() {
+        scope.$watch('items', function () {
           controller.updateFilteredItems();
         }, true);
 
-        scope.$watch('filteredItems', function(items) {
+        scope.$watch('filteredItems', function (items) {
           if (items) {
             controller.updatePages();
             controller.updateVisibleItems();
           }
         }, true);
 
-        scope.$watch('itemsFilter', function() {
+        scope.$watch('itemsFilter', function () {
           controller.updateFilteredItems();
         });
 
         controller.query();
-      },
+      }
     };
-  },])
+  }])
 
   ;

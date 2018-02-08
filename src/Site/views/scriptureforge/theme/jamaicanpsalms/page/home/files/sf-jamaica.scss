@@ -34,7 +34,7 @@ h2, h3 {
 }
 
 .lifted-text {
-    text-shadow: 0px 1px 1px #fff;
+    text-shadow: 0 1px 1px #fff;
 }
 
 .sf-jamaican-yellow {
@@ -179,7 +179,6 @@ div#footer {
     width: 100%;
     height: auto;
     padding: 20px 0 24px 0;
-    background-color: #3a3a3a;
     background: #3a3a3a url(sf_sprite_jamaica.png) no-repeat center -139px;
 }
 
@@ -459,7 +458,7 @@ div.hdrnav {
 
 div#inviteAFriend .overlay {
     top: 52px;
-    right: 0px;
+    right: 0;
 }
 
 div.hdrnav img {
@@ -502,9 +501,9 @@ ul.topCrumbs {
     padding: 0 0;
     list-style: none;
     background-color: #fff;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    border-radius: 0px;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
 }
 
 ul.topCrumbs a {
@@ -526,7 +525,7 @@ ul.topCrumbs .active {
 
 .jqte_toolbar {
     visibility: hidden;
-    height: 0px;
+    height: 0;
 }
 
 /* Question Page */
@@ -549,11 +548,11 @@ div#text p, div.scripture-quote p {
 }
 
 div#text p.q1, div.scripture-quote p.q1 {
-    margin-bottom: 0em;
+    margin-bottom: 0;
 }
 
 div#text p.q2, div.scripture-quote p.q2 {
-    margin-bottom: 0em;
+    margin-bottom: 0;
     margin-left: 1.5em;
 }
 
@@ -571,7 +570,7 @@ div#answerControls .overlay {
 }
 
 div.overlay form {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .overlay-bg {
@@ -714,7 +713,7 @@ div.new-item.collapse.in {
 
 /* Table / Grid styles */
 table select {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 label {
@@ -745,8 +744,8 @@ label {
 }
 
 .alert .close {
-    top: 0px;
-    right: 0px;
+    top: 0;
+    right: 0;
 }
 
 .notification {

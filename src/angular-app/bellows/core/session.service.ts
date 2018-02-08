@@ -19,12 +19,12 @@ export class Session {
     return this.data.baseSite;
   }
 
-  projectSettings(): any {
-    return this.data.projectSettings;
+  projectSettings<T extends ProjectSettings>(): T {
+    return this.data.projectSettings as T;
   }
 
-  project(): any {
-    return this.data.project;
+  project<T extends Project>(): T {
+    return this.data.project as T;
   }
 
   username(): string {

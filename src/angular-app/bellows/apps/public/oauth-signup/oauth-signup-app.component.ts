@@ -5,19 +5,19 @@ import { SessionService } from '../../../core/session.service';
 import { User } from '../../../shared/model/user.model';
 
 export class OAuthSignupAppController implements angular.IController {
-  public oauthFullName: string;
-  public oauthEmail: string;
-  public oauthAvatar: string;
-  public oauthId: string;  // Not currently used
-  public loginPath: string;
-  public websiteName: string;
+  oauthFullName: string;
+  oauthEmail: string;
+  oauthAvatar: string;
+  oauthId: string;  // Not currently used
+  loginPath: string;
+  websiteName: string;
   dropdown = {
     avatarColors: {},
-    avatarShapes: {},
+    avatarShapes: {}
   };
   avatarChoice = {
     avatar_color: '',
-    avatar_shape: '',
+    avatar_shape: ''
   };
   submissionInProgress = false;
   emailExists = false;
@@ -50,7 +50,7 @@ export class OAuthSignupAppController implements angular.IController {
       this.record.avatar_ref = this.oauthAvatar;
     }
 
-    this.sessionService.getSession().then((session) => {
+    this.sessionService.getSession().then(session => {
       // signup app should only show when no user is present (not logged in)
       if (angular.isDefined(session.userId())) {
         this.$window.location.href = '/app/projects';
@@ -147,19 +147,11 @@ export class OAuthSignupAppController implements angular.IController {
       });
   }
 
-  public avatarHasColorAndShape(color?: string, shape?: string) {
+  avatarHasColorAndShape(color?: string, shape?: string) {
     return (color && shape);
   }
 
-  private getAvatarRef(color?: string, shape?: string): string {
-    if (!color || !shape) {
-      return (this.oauthAvatar) ? this.oauthAvatar : 'anonymoose.png';
-    }
-
-    return color + '-' + shape + '-128x128.png';
-  }
-
-  public getAvatarUrl(avatarRef: string, size?: string): string {
+  getAvatarUrl(avatarRef: string, size?: string): string {
     if (avatarRef) {
       if (avatarRef.startsWith('http')) {
         if (size) {
@@ -186,9 +178,17 @@ export class OAuthSignupAppController implements angular.IController {
     });
   }
 
+  private getAvatarRef(color?: string, shape?: string): string {
+    if (!color || !shape) {
+      return (this.oauthAvatar) ? this.oauthAvatar : 'anonymoose.png';
+    }
+
+    return color + '-' + shape + '-128x128.png';
+  }
+
   private registerUser(successCallback: (url: string) => void) {
     this.submissionInProgress = true;
-    this.userService.registerOAuthUser(this.record, (result) => {
+    this.userService.registerOAuthUser(this.record, result => {
       if (result.ok) {
         switch (result.data) {
           case 'usernameNotAvailable':

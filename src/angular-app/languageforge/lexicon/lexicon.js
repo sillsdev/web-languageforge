@@ -12,7 +12,7 @@ angular.module('lexicon',
     'sgw.ui.breadcrumb',
     'lexiconCoreModule',
     'lexicon.editor',
-    'lexicon.configuration',
+    'lexiconConfigurationModule',
     'lexicon.view.settings',
     'lexicon.import-export',
     'lexicon.settings',
@@ -33,7 +33,7 @@ angular.module('lexicon',
     $stateProvider
       .state('configuration', {
         url: '/configuration',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration.html'
+        template: '<lsc-config></lsc-config>'
       })
       .state('viewSettings', {
         url: '/viewSettings',
@@ -41,7 +41,7 @@ angular.module('lexicon',
       })
       .state('importExport', {
         url: '/importExport',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/import-export.html'
+        templateUrl: '/angular-app/languageforge/lexicon/settings/import.html'
       })
       .state('settings', {
         url: '/settings',
@@ -110,14 +110,14 @@ angular.module('lexicon',
 
         if (inputSystemsService.constructor.isRightToLeft(code)) {
           $scope.interfaceConfig.direction = 'rtl';
-          $scope.interfaceConfig.pullToSide = 'pull-left';
-          $scope.interfaceConfig.pullNormal = 'pull-right';
+          $scope.interfaceConfig.pullToSide = 'float-left';
+          $scope.interfaceConfig.pullNormal = 'float-right';
           $scope.interfaceConfig.placementToSide = 'right';
           $scope.interfaceConfig.placementNormal = 'left';
         } else {
           $scope.interfaceConfig.direction = 'ltr';
-          $scope.interfaceConfig.pullToSide = 'pull-right';
-          $scope.interfaceConfig.pullNormal = 'pull-left';
+          $scope.interfaceConfig.pullToSide = 'float-right';
+          $scope.interfaceConfig.pullNormal = 'float-left';
           $scope.interfaceConfig.placementToSide = 'left';
           $scope.interfaceConfig.placementNormal = 'right';
         }

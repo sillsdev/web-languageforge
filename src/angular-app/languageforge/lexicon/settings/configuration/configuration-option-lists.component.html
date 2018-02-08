@@ -1,0 +1,29 @@
+<div class="row outer-flex">
+
+    <!-- Left column: option lists -->
+    <div class="col-md-3 form-group">
+        <dl class="picklists">
+            <dt data-translate="Select a list" id="editListValuesFieldset"></dt>
+            <dd>
+                <div data-ng-repeat="optionList in $ctrl.olcOptionListsDirty"
+                     data-ng-class="{selected: $ctrl.currentListIndex == $index}" data-ng-click="$ctrl.selectList($index)">
+                    {{optionList.name}}
+                </div>
+            </dd>
+            <!-- future lists go here -->
+        </dl>
+    </div>
+
+    <!-- Right column: optionlist setup -->
+    <div class="col-md-9">
+        <div class="card card-body bg-light settings-panel" id="picklistEditorFieldset">
+            <h3 class="col-form-label">{{$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].name}}</h3>
+            <i>(At this time {{$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].name}} items cannot be deleted)</i>
+            <div class="controls">
+                <picklist-editor items="$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].items"
+                                 pristine-items="$ctrl.olcOptionListsPristine[$ctrl.currentListIndex].items"></picklist-editor>
+            </div>
+        </div>
+    </div>
+
+</div>
