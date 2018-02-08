@@ -178,8 +178,8 @@ angular.module('palaso.ui.comments')
           if ($scope.currentEntryCommentsFiltered.length === 0) {
             label = $filter('translate')('Your comment goes here.  Be the first to share!');
           } else if ($scope.currentEntryCommentsFiltered.length > 0) {
-            label = $filter('translate')('Start a new conversation thread. ' +
-              'Enter your comment here.');
+            label = $filter('translate')('Start a new conversation relating to the ' +
+              $scope.newComment.regarding.fieldNameForDisplay);
           } else {
             label = $filter('translate')('Join the discussion and type your comment here.');
           }
