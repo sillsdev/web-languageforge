@@ -111,4 +111,10 @@ describe('Editor Comments', function () {
     expect(editorPage.commentDiv.getAttribute('class')).toContain('panel-visible');
   });
 
+  it('comments panel: close all comments clicking on main comments button', function () {
+    editorPage.edit.toCommentsLink.click();
+    browser.sleep(1000);
+    expect(editorPage.commentDiv.getAttribute('class')).not.toContain('panel-visible');
+  });
+
 });

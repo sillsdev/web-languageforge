@@ -23,13 +23,14 @@ angular.module('palaso.ui.comments')
          */
         $scope.showNewComment = false;
         $scope.senseLabel = '';
+        $scope.posting = false;
         $scope.commentInteractiveStatus = {
           id: '',
           visible: false
         };
 
         $scope.initializeNewComment = function initializeNewComment() {
-          if ($scope.showNewComment) {
+          if ($scope.showNewComment && $scope.entry.id === $scope.newComment.entryRef) {
             $scope.newComment.content = '';
           } else {
             $scope.newComment = {
@@ -69,6 +70,10 @@ angular.module('palaso.ui.comments')
                 return true;
               } else if ($scope.commentFilter.status === 'todo') {
                 if (comment.status === 'todo') {
+                  return true;
+                }
+              } else if ($scope.commentFilter.status === 'resolved') {
+                if (comment.status === 'resolved') {
                   return true;
                 }
               } else { // show unresolved comments
@@ -173,8 +178,12 @@ angular.module('palaso.ui.comments')
           if ($scope.currentEntryCommentsFiltered.length === 0) {
             label = $filter('translate')('Your comment goes here.  Be the first to share!');
           } else if ($scope.currentEntryCommentsFiltered.length > 0) {
-            label = $filter('translate')('Start a new conversation thread. ' +
-              'Enter your comment here.');
+            if (angular.isDefined($scope.newComment)) {
+              label = $filter('translate')('Start a new conversation relating to the ' +
+                $scope.newComment.regarding.fieldNameForDisplay);
+            } else {
+              label = $filter('translate')('Start a new conversation');
+            }
           } else {
             label = $filter('translate')('Join the discussion and type your comment here.');
           }
@@ -194,6 +203,7 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.postNewComment = function postNewComment() {
+          $scope.posting = true;
           commentService.update($scope.newComment, function (result) {
             if (result.ok) {
               $scope.control.editorService.refreshEditorData().then(function () {
@@ -201,6 +211,7 @@ angular.module('palaso.ui.comments')
                 $scope.loadComments();
                 $scope.initializeNewComment();
                 $scope.newComment.regarding = previousComment.regarding;
+                $scope.posting = false;
               });
             }
           });

@@ -117,6 +117,7 @@ export class LexiconCommentService {
    * this should be called whenever new data is received
    */
   updateGlobalCommentCounts(): void {
+    this.comments.counts.byEntry = {};
     for (const comment of this.comments.items.all) {
       // add counts to global entry comment counts
       if (angular.isUndefined(this.comments.counts.byEntry[comment.entryRef])) {
