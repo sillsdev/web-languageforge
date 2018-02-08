@@ -107,12 +107,14 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.checkValidModelContextChange = function checkValidModelContextChange() {
-          if ($scope.configType === 'optionlist') {
+          var newComment = $scope.control.getNewComment();
+          if ($scope.configType === 'optionlist' &&
+              newComment.regarding.field === $scope.field) {
             $scope.selectFieldForComment();
           }
         };
 
-        $scope.$watch('model', function (newContent) {
+        $scope.$watch('model', function () {
           $scope.checkValidModelContextChange();
         }, true);
 
