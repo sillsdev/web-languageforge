@@ -421,6 +421,7 @@ function EditorPage() {
 
       // Right side content
       content: div.element(by.binding('comment.content')),
+      contextGuid: div.element(by.binding('comment.contextGuid')),
       edit: {
         textarea: div.element(by.model('editingCommentContent')),
         updateBtn: div.element(by.buttonText('Update')),
@@ -435,7 +436,7 @@ function EditorPage() {
         definition: div.element(by.binding('comment.regarding.meaning')),
         fieldLabel: div.element(by.binding('comment.regarding.fieldNameForDisplay')),
         fieldWsid: div.element(by.binding('comment.regarding.inputSystem')),
-        fieldValue: div.element(by.css('.regardingFieldValue'))
+        fieldValue: div.element(by.css('.regardingFieldValue')),
       },
 
       // Replies (below content but above bottom controls)

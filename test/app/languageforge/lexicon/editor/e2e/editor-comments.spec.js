@@ -24,16 +24,19 @@ describe('Editor Comments', function () {
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
   });
 
-  it('click first comment bubble, add one comment', function () {
+  it('click first comment bubble, type in a comment, add text to another part of the entry, ' +
+      'submit comment to appear on original field', function () {
     editorPage.comment.bubbles.first.click();
     browser.sleep(1000);
     editorPage.comment.newComment.textarea.sendKeys('First comment on this word.');
+    editorPage.edit.getMultiTextInputs('Definition').first().sendKeys('change value - ');
+    browser.sleep(500);
     editorPage.comment.newComment.postBtn.click();
   });
 
   it('comments panel: check that comment shows up', function () {
     var comment = editorPage.comment.getComment(0);
-    expect(comment.wholeComment.isPresent()).toBe(true);
+    expect(comment.contextGuid.getAttribute('textContent')).toEqual('lexeme.th');
 
     // Earlier tests modify the avatar and name of the manager user; don't check those
     //expect(comment.avatar.getAttribute('src')).toContain(constants.avatar);
@@ -45,6 +48,9 @@ describe('Editor Comments', function () {
   });
 
   it('comments panel: add comment to another part of the entry', function () {
+    editorPage.edit.getMultiTextInputs('Definition').first().clear().sendKeys(
+      constants.testEntry1.senses[0].definition.en.value
+    );
     editorPage.comment.bubbles.second.click();
     editorPage.comment.newComment.textarea.clear();
     editorPage.comment.newComment.textarea.sendKeys('Second comment.');
@@ -93,7 +99,8 @@ describe('Editor Comments', function () {
   it('comments panel: refresh returns to comment', function () {
     var comment = editorPage.comment.getComment(0);
     browser.refresh();
-    browser.wait(expectedCondition.visibilityOf(editorPage.comment.bubbles.first), CONDITION_TIMEOUT);
+    browser.wait(expectedCondition.visibilityOf(editorPage.comment.bubbles.first),
+      CONDITION_TIMEOUT);
     editorPage.comment.bubbles.first.click();
     browser.sleep(1000);
     expect(comment.content.getText()).toEqual('First comment on this word.');
