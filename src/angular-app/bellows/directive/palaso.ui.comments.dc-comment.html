@@ -4,6 +4,7 @@
     </div>
     <div class="card-block" data-ng-class="{resolvedComment: comment.status == 'resolved'}">
         <div class="commentContentContainer">
+            <div class="ng-hide" data-ng-bind="comment.contextGuid"></div>
             <div class="comment-meta">
                 <div>
                     <img class="rounded-circle"
