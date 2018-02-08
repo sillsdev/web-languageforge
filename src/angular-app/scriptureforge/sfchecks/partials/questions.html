@@ -62,9 +62,10 @@
     <div class="row">
         <div class="col-md-5" oncopy="return false;">
             <h2 class="pull-left audio-buttons" data-ng-show="text.audioFileName">
-                <pui-soundplayer data-url="audioPlayUrl" uib-tooltip="Play audio"></pui-soundplayer>
                 <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
-                    <i class="fa fa-arrow-circle-o-down" uib-tooltip="Download audio"></i></a>
+                    <i class="fa fa-arrow-circle-o-down" uib-tooltip="Download audio"></i>
+                </a>
+                <pui-soundplayer data-url="audioPlayUrl" uib-tooltip="Play audio"></pui-soundplayer>
             </h2>
             <h2>{{text.title}}</h2>
             <div id="textcontrol" style="font-family: {{text.fontfamily}}" data-ng-bind-html="text.content"></div>
