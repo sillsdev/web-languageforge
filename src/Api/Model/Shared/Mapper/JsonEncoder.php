@@ -83,7 +83,7 @@ class JsonEncoder
      */
     public function encodeIdReference(
         /** @noinspection PhpUnusedParameterInspection $key may be used in derived methods */
-        $key, $model)
+        &$key, $model)
     {
         $result = $model->id;
 

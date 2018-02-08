@@ -1,0 +1,15 @@
+<div class="container" data-ng-cloak>
+    <br>
+    <h2 style="font-weight:normal">Synchronize Project with ParaTExt</h2>
+    <div class="card card-body bg-light">
+        <div align="center">
+            <button class="btn btn-std" title="Send and Receive with ParaTExt"
+                    data-placement="bottom"
+                    data-ng-disabled="$ctrl.disableSyncButton"
+                    data-ng-click="$ctrl.syncProject()">
+                <i class="fa fa-cloud-upload fa-lg text-info"></i>Send/Receive</button>
+            <div class="text-muted">{{$ctrl.syncStateNotice}}</div>
+            <div class="text-muted">{{$ctrl.lastSyncNotice}}</div>
+        </div>
+    </div>
+</div>

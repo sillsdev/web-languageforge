@@ -4,7 +4,7 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
   .directive('puiSendReceiveCredentials', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/pui-send-receive-credentials.html',
+      templateUrl: '/angular-app/bellows/directive/pui-send-receive-credentials.html',
       scope: {
         puiProject: '=',
         puiValidate: '&',
@@ -20,10 +20,9 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
               $scope.puiProject.sendReceive.isUnchecked = false;
               $scope.puiProject.sendReceive.projects = result.data.projects;
               if (result.ok) {
-                if(result.data.hasValidCredentials) {
+                if (result.data.hasValidCredentials) {
                   $scope.puiProject.sendReceive.credentialsStatus = 'valid';
-                }
-                else {
+                } else {
                   $scope.puiProject.sendReceive.credentialsStatus = 'invalid';
                 }
               } else {
@@ -44,7 +43,7 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
 
           var option = project.name + ' (' + project.identifier;
           if (project.repoClarification) option += ', ' + project.repoClarification;
-          if (project.role != 'unknown') option += ', ' + project.role;
+          if (project.role !== 'unknown') option += ', ' + project.role;
           option +=  ')';
           return option;
         };
@@ -55,8 +54,8 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
             angular.isDefined($scope.puiProject.sendReceive.project.identifier) &&
             angular.isDefined($scope.puiProject.sendReceive.projects)) {
             angular.forEach($scope.puiProject.sendReceive.projects, function (project, index) {
-              if (project.identifier == $scope.puiProject.sendReceive.project.identifier &&
-                project.repository == $scope.puiProject.sendReceive.project.repository) {
+              if (project.identifier === $scope.puiProject.sendReceive.project.identifier &&
+                project.repository === $scope.puiProject.sendReceive.project.repository) {
                 $scope.projectsIndex = index;
               }
             });

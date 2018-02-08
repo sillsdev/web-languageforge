@@ -13,6 +13,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
       controller: ['$scope', '$state', 'lexRightsService',
       function ($scope, $state, rightsService) {
         $scope.$state = $state;
+        $scope.contextGuid = '';
 
         rightsService.getRights().then(function (rights) {
           $scope.rights = rights;
@@ -26,6 +27,8 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
           } else {
             $scope.model.senses.push(newSense);
           }
+
+          $scope.control.hideCommentsPanel();
         };
 
         $scope.deleteSense = function (index) {
@@ -36,6 +39,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
             .then(function () {
               $scope.model.senses.splice(index, 1);
               $scope.control.saveCurrentEntry();
+              $scope.control.hideCommentsPanel();
             }, angular.noop);
         };
 
@@ -43,6 +47,9 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
           $scope.control.deleteEntry($scope.control.currentEntry);
         };
 
+        angular.forEach($scope.control.config.entry.fields, function (field) {
+          field.senseLabel = 'Entry';
+        });
       }]
     };
   }])

@@ -1,9 +1,9 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="semDomAppContainer">
 		<div style="margin-top:100px; height: 500px;  width:100%; margin-right:0px; margin-left:0px" class="container-fluid">
 		    <div class="row" style="border-bottom:solid black 1px; width:100%; margin-right:0px; margin-left:0px" >		
-		    	<div class="span3" style="margin-left:0px; margin-right:0px"  >                    
-                    <input placeholder="Filter semantic domain items" style="margin-bottom:10px" ng-model="searchText" ng-change="reloadItems(selectedDepth, 100)" />
-                    <br />
+		    	<div class="col-md-3" style="margin-left:0px; margin-right:0px"  >
+                    <input placeholder="Filter semantic domain items" style="margin-bottom:10px" ng-model="searchText" ng-change="reloadItems(selectedDepth, 100)">
+                    <br>
                     <div>
                         <select style="margin-bottom:10px; margin-top:0px; float:left; font-size:small" 
                          ng-model="selectedWorkingSet"
@@ -13,44 +13,44 @@
                     </div>
                     <div style="white-space: nowrap;">
                         <span style="float:left"> Hide Translated</span>
-                        <input style="float:left; margin-top:5px; margin-left:5px;" ng-model="hideTranslated" type="checkbox" />
+                        <input style="float:left; margin-top:5px; margin-left:5px;" ng-model="hideTranslated" type="checkbox">
                     </div>
                 </div>	   
                  
-		    	<div class="span5" >
+		    	<div class="col-md-5" >
 					<tabset class="pull-center">
 					    <tab heading="Terms"  ng-click="setTab(0)">
                             <div style="white-space: nowrap;">
                                 <span style="float:left"> Hide Description</span>
-                                <input style="float:left; margin-top:5px; margin-left:5px" ng-model="$parent.hideDescription" type="checkbox" />
+                                <input style="float:left; margin-top:5px; margin-left:5px" ng-model="$parent.hideDescription" type="checkbox">
                             </div>                            
-                            <br />
+                            <br>
                             <div style="white-space: nowrap">
                                 <span style="float:left"> Hide Search Keys</span>
-                                <input style="float:left; margin-top:5px; margin-left:5px" ng-model="$parent.hideSearchKeys" type="checkbox" />
+                                <input style="float:left; margin-top:5px; margin-left:5px" ng-model="$parent.hideSearchKeys" type="checkbox">
                             </div>
                         </tab>     
 						<tab heading="Questions" ng-click="setTab(1)">
                              <div style="white-space: nowrap; width: 150px">
                                 <span style="width:80%; float:left"> Hide Question Terms</span>
-                                <input style="width:10%; float:left; margin-top:5px; margin-left:5px" ng-model="$parent.hideQuestionTerms" type="checkbox" />
+                                <input style="width:10%; float:left; margin-top:5px; margin-left:5px" ng-model="$parent.hideQuestionTerms" type="checkbox">
                             </div>
                         </tab>
                         <tab ng-if="rights.canEditProject()" heading="Filter" ng-click="setTab(2)"></tab>
 					</tabset>  
 				</div>
-				<div class="span4" style="margin-left:0px; margin-right:0px" ng-if="isItemSelected() && rights.canComment()">
+				<div class="col-md-4" style="margin-left:0px; margin-right:0px" ng-if="isItemSelected() && rights.canComment()">
 					<a ui-sref="comments({position:currentEntryIndex})"  style="float: right; margin-top:5px"> Comments &#8594;</a>                    
 				</div>
 			</div>
 			<div class="row" style='width:100%; margin-right:0px; margin-left:0px'>
-			  <div class="span3" style="border-right:solid black 1px; float:left; margin-left:-1px; margin-right:0px">
+			  <div class="col-md-3" style="border-right:solid black 1px; float:left; margin-left:-1px; margin-right:0px">
 			    <div style="display:inline-block">
                     <label style="float:left; margin-top:20px; width:30%">Tree Depth: <span class="notranslate">{{selectedDepth}}</span></label>
                     <input style="width:60%; float:right" class="progress-slider" type="range" min="1"
-                    max="{{maxDepth}}" data-ng-model="selectedDepth" />
+                    max="{{maxDepth}}" data-ng-model="selectedDepth">
                 </div>
-                <br/>
+                <br>
                 <div>
     			    <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%; margin-left:0px; margin-right:0px" >
     	                 <div ng-if="(!hideTranslated || !translatedItems[item.key])"
@@ -65,7 +65,7 @@
                 </div>
 				
 			  </div>
-			  <div style="text-align: center; float:right; margin-left:0px; margin-right:0px" class="span9">
+			  <div style="text-align: center; float:right; margin-left:0px; margin-right:0px" class="col-md-9">
 			  	   <div ui-view="editItem"></div>
                    <div ng-if="(selectedTab == 2)" ui-view="editFilter"></div>
 			  </div>

@@ -1,13 +1,15 @@
 import * as angular from 'angular';
 
-import { ApiService } from '../api/api.service';
-import { JsonRpcCallback } from '../api/json-rpc.service';
-import { CommentsOfflineCacheService } from './comments-offline-cache.service';
+import {ApiService} from '../api/api.service';
+import {JsonRpcCallback, JsonRpcResult} from '../api/json-rpc.service';
+import {CommentsOfflineCacheService} from './comments-offline-cache.service';
+import {LexiconConfigService} from '../../../languageforge/lexicon/core/lexicon-config.service';
 
 class Comment {
   id: string;
   entryRef: string;
   regarding: any;
+  contextGuid: string;
   replies: any[];
   score: number;
   status: string;
@@ -58,44 +60,64 @@ export class Comments {
 export class LexiconCommentService {
   comments: Comments;
 
-  static $inject: string[] = ['apiService', 'commentsOfflineCache', '$filter'];
+  static $inject: string[] = ['apiService', 'commentsOfflineCache', '$filter', 'lexConfigService', '$q'];
   constructor(private api: ApiService, private offlineCache: CommentsOfflineCacheService,
-              private $filter: angular.IFilterService) {
+              private $filter: angular.IFilterService, private lexConfig: LexiconConfigService,
+              private $q: angular.IQService) {
     this.comments = new Comments();
   }
 
   /**
    * This should be called whenever the entry context changes (to update the comments and comment counts)
    */
-  loadEntryComments(entryId: string): void {
+  loadEntryComments(entryId: string): Promise<any> {
     this.comments.counts.currentEntry.total = 0;
     this.comments.counts.currentEntry.fields = {};
     this.comments.items.currentEntry.length = 0;
+    const promises = [];
     for (const comment of this.comments.items.all) {
-      const fieldName = comment.regarding.field;
       if (comment.entryRef === entryId) {
-        if (fieldName && angular.isUndefined(this.comments.counts.currentEntry.fields[fieldName])) {
-          this.comments.counts.currentEntry.fields[fieldName] = 0;
-        }
+        promises.push(this.lexConfig.getFieldConfig(comment.regarding.field).then(fieldConfig => {
+          // As the promise runs when its ready the comments can double up if loadEntryComments is run multiple times
+          if (this.comments.items.currentEntry.indexOf(comment) === -1) {
+            let contextGuid = '';
+            if (comment.contextGuid !== undefined) {
+              contextGuid = comment.contextGuid;
+            } else {
+              contextGuid = comment.regarding.field +
+                (comment.regarding.inputSystemAbbreviation ? '.' + comment.regarding.inputSystemAbbreviation : '');
+              if (fieldConfig.type === 'multioptionlist') {
+                contextGuid += '#' + comment.regarding.fieldValue;
+              }
+              comment.contextGuid = contextGuid;
+            }
 
-        this.comments.items.currentEntry.push(comment);
+            if (contextGuid && angular.isUndefined(this.comments.counts.currentEntry.fields[contextGuid])) {
+              this.comments.counts.currentEntry.fields[contextGuid] = 0;
+            }
 
-        // update the appropriate count for this field and update the total count
-        if (comment.status !== 'resolved') {
-          if (fieldName) {
-            this.comments.counts.currentEntry.fields[fieldName]++;
+            this.comments.items.currentEntry.push(comment);
+
+            // update the appropriate count for this field and update the total count
+            if (comment.status !== 'resolved') {
+              if (contextGuid) {
+                this.comments.counts.currentEntry.fields[contextGuid]++;
+              }
+
+              this.comments.counts.currentEntry.total++;
+            }
           }
-
-          this.comments.counts.currentEntry.total++;
-        }
+        }));
       }
     }
+    return Promise.all(promises);
   }
 
   /**
    * this should be called whenever new data is received
    */
   updateGlobalCommentCounts(): void {
+    this.comments.counts.byEntry = {};
     for (const comment of this.comments.items.all) {
       // add counts to global entry comment counts
       if (angular.isUndefined(this.comments.counts.byEntry[comment.entryRef])) {
@@ -108,9 +130,9 @@ export class LexiconCommentService {
     }
   }
 
-  getFieldCommentCount(fieldName: string): number {
-    if (angular.isDefined(this.comments.counts.currentEntry.fields[fieldName])) {
-      return this.comments.counts.currentEntry.fields[fieldName];
+  getFieldCommentCount(contextGuid: string): number {
+    if (angular.isDefined(this.comments.counts.currentEntry.fields[contextGuid])) {
+      return this.comments.counts.currentEntry.fields[contextGuid];
     }
 
     return 0;
@@ -124,7 +146,7 @@ export class LexiconCommentService {
     return 0;
   }
 
-  removeCommentFromLists(commentId: string, replyId: string): void {
+  removeCommentFromLists = (commentId: string, replyId: string): void => {
     if (replyId) {
       // just delete the replyId but don't delete the entire comment
       LexiconCommentService.deleteCommentInList(commentId, replyId, this.comments.items.all);
@@ -144,40 +166,42 @@ export class LexiconCommentService {
 
   refreshFilteredComments(filter: any): void {
     this.comments.items.currentEntryFiltered.length = 0;
-    const comments = this.$filter('filter')(this.comments.items.currentEntry, filter.byText);
+    let comments = this.$filter('filter')(this.comments.items.currentEntry, filter.byText);
     const arr = this.comments.items.currentEntryFiltered;
-    arr.push.apply(arr, this.$filter('filter')(comments, filter.byStatus));
+    comments = this.$filter('filter')(comments, filter.byStatus);
+    comments = this.$filter('filter')(comments, filter.byContext);
+    arr.push.apply(arr, comments);
   }
 
-  update(commentData: any, callback: JsonRpcCallback): void {
-    this.api.call('lex_comment_update', [commentData], callback);
+  update(commentData: any, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+    return this.api.call('lex_comment_update', [commentData], callback);
   }
 
-  updateReply(commentId: string, reply: string, callback: JsonRpcCallback): void {
+  updateReply(commentId: string, reply: string, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
     const comment = this.getCurrentEntryComment(commentId);
     comment.replies.push(reply);
-    this.api.call('lex_commentReply_update', [commentId, reply], callback);
+    return this.api.call('lex_commentReply_update', [commentId, reply], callback);
   }
 
-  remove(commentId: string, callback: JsonRpcCallback): void {
-    this.api.call('lex_comment_delete', [commentId], callback);
+  remove(commentId: string, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+    return this.api.call('lex_comment_delete', [commentId], callback);
   }
 
-  deleteReply(commentId: string, replyId: string, callback: JsonRpcCallback): void {
-    this.api.call('lex_commentReply_delete', [commentId, replyId], callback);
+  deleteReply(commentId: string, replyId: string, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+    return this.api.call('lex_commentReply_delete', [commentId, replyId], callback);
   }
 
-  plusOne(commentId: string, callback: JsonRpcCallback): void {
+  plusOne(commentId: string, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
     const comment = this.getCurrentEntryComment(commentId);
     comment.score++;
     this.comments.counts.userPlusOne[commentId] = 1;
-    this.api.call('lex_comment_plusOne', [commentId], callback);
+    return this.api.call('lex_comment_plusOne', [commentId], callback);
   }
 
-  updateStatus(commentId: string, status: string, callback: JsonRpcCallback): void {
+  updateStatus(commentId: string, status: string, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
     const comment = this.getCurrentEntryComment(commentId);
     comment.status = status;
-    this.api.call('lex_comment_updateStatus', [commentId, status], callback);
+    return this.api.call('lex_comment_updateStatus', [commentId, status], callback);
   }
 
   private static deleteCommentInList(commentId: string, replyId: string, commentsList: any): void {

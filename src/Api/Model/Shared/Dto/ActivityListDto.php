@@ -8,14 +8,12 @@ use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\ActivityModel;
 use Api\Model\Shared\ActivityModelMongoMapper;
-use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\GlobalUnreadActivityModel;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\Mapper\MapperListModel;
 use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\ProjectList_UserModel;
 use Api\Model\Shared\ProjectModel;
-use Api\Model\Shared\UnreadItem;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UnreadActivityModel;
 
@@ -32,7 +30,7 @@ class ActivityListDto
         $dto = ActivityListDtoEncoder::encodeModel($activityList, $projectModel);
         self::prepareDto($dto);
 
-        return (is_array($dto['entries'])) ? $dto['entries'] : array();
+        return (is_array($dto['entries'])) ? $dto['entries'] : [];
     }
 
     // note: it could be argued that this is a migration method that is not necessary if we were to migrate the database of existing activity entries with no projectId cjh 2014-07
@@ -70,8 +68,8 @@ class ActivityListDto
     {
         $projectList = new ProjectList_UserModel($site);
         $projectList->readUserProjects($userId);
-        $activity = array();
-        $unreadItems = array();
+        $activity = [];
+        $unreadItems = [];
         foreach ($projectList->entries as $project) {
             $projectModel = new ProjectModel($project['id']);
             // Sfchecks projects need special handling of the "Users can see each others' responses" option
@@ -88,11 +86,11 @@ class ActivityListDto
             $unreadItems = array_merge($unreadItems, self::getUnreadActivityForUserInProject($userId, $project['id'], $activityFilter));
         }
         $unreadItems = array_merge($unreadItems, self::getGlobalUnreadActivityForUser($userId));
-        uasort($activity, array('self', 'sortActivity'));
-        $dto = array(
+        uasort($activity, ['self', 'sortActivity']);
+        $dto = [
             'activity' => $activity,
             'unread' => $unreadItems
-        );
+        ];
 
         return $dto;
     }
@@ -152,30 +150,28 @@ class ActivityListDtoEncoder extends JsonEncoder
 
     private $_project;
 
-    public function encodeIdReference($key, $model)
+    public function encodeIdReference(&$key, $model)
     {
         if ($model->asString() == '') {
             return '';
         }
         if ($key == 'userRef' || $key == 'userRef2') {
             $user = new UserModel();
-            if ($user->exists($model->asString())) {
-                $user->read($model->asString());
-
-                return array(
+            if ($user->readIfExists($model->asString())) {
+                return [
                     'id' => $user->id->asString(),
                     'avatar_ref' => $user->avatar_ref,
                     'username' => $user->username
-                );
+                ];
             } else {
                 return '';
             }
         } elseif ($key == 'projectRef') {
             $project = new ProjectModel($model->asString());
-            return array(
+            return [
                 'id' => $project->id->asString(),
                 'type' => $project->appName,
-            );
+            ];
         } elseif ($key == 'textRef') {
             $text = new TextModel($this->_project);
             if ($text->exists($model->asString())) {
@@ -231,7 +227,7 @@ class ActivityListModel extends MapperListModel
         $this->entries = new MapOf(function () use ($projectModel) { return new ActivityModel($projectModel); });
         parent::__construct(
             ActivityModelMongoMapper::connect($projectModel->databaseName()),
-            array('action' => array('$regex' => '')), array(), array('dateCreated' => -1), 100
+            ['action' => ['$regex' => '']], [], ['dateCreated' => -1], 100
         );
     }
 }

@@ -1,0 +1,7 @@
+<div class="commentBubbleContainer" ng-class="(!active ? 'comment-inactivate' : '')">
+    <a ng-click="getComments()" title="{{(active) ? 'Show Comments' : 'Please wait while comments are setup'}}" class="commentBubble" ng-class="(getCountForDisplay() < 1 ? 'noCount' : '')">
+        <i class="fa fa-spinner fa-spin" ng-hide="active"></i>
+        <i class="fa fa-comments" ng-show="active"></i><span class="commentCount" style="">{{getCountForDisplay()}}</span>
+        <span class="commentLabel">Comment{{(getCountForDisplay() !== 1) ? 's' : ''}}</span>
+    </a>
+</div>

@@ -32,9 +32,10 @@ angular.module('palaso.ui.tabset', [])
       },
 
       controllerAs: 'tabset',
-      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/palaso.ui.tabset.html'
+      templateUrl: '/angular-app/bellows/directive/palaso.ui.tabset.html'
     };
   }])
+
   .directive('puiTab', [function () {
     // Note: ng-if should not be used on a pui-tab directive if it will initially be false and
     // afterwards become true. Doing so causes the tab to be added last, and therefore shown as
@@ -62,4 +63,6 @@ angular.module('palaso.ui.tabset', [])
         $ctrl.addTab($scope.tab);
       }
     };
-  }]);
+  }])
+
+  ;

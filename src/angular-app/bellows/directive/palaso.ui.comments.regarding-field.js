@@ -1,29 +1,48 @@
 'use strict';
+
 angular.module('palaso.ui.comments')
 
-// Palaso UI Dictionary Control: Comments
+  // Palaso UI Dictionary Control: Comments
   .directive('regardingField', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/palaso.ui.comments.regarding-field.html',
+      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.regarding-field.html',
       scope: {
         content: '=',
         control: '=',
         fieldConfig: '='
       },
       controller: ['$scope', function ($scope) {
-        if (!angular.isUndefined($scope.content)) {
-          $scope.contentArr = $scope.content.split('#');
-        }
+        $scope.contentArr = [];
 
-        $scope.$watch('content', function (newContent) {
+        $scope.$watch('fieldConfig', function (newContent) {
           if (angular.isDefined(newContent)) {
-            $scope.contentArr = newContent.split('#');
+            $scope.setContent();
           }
         });
-      }],
 
-      link: function (scope, element, attrs, controller) {
-      }
+        $scope.setContent = function setContent() {
+          if (angular.isDefined($scope.fieldConfig)) {
+            if (!angular.isUndefined($scope.content)) {
+              if ($scope.fieldConfig.type === 'optionlist') {
+                var optionlists = $scope.control.config.optionlists;
+                for (var listCode in optionlists) {
+                  if (listCode === $scope.fieldConfig.listCode) {
+                    for (var i in optionlists[listCode].items) {
+                      if (optionlists[listCode].items[i].key === $scope.content) {
+                        $scope.contentArr[0] = optionlists[listCode].items[i].value;
+                      }
+                    }
+                  }
+                }
+              } else {
+                $scope.contentArr = $scope.content.split('#');
+              }
+            }
+          }
+        };
+
+        $scope.setContent();
+      }]
     };
   }]);

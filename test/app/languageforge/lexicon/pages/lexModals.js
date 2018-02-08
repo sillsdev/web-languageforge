@@ -8,8 +8,10 @@ function LexModals() {
   this.selectLanguage = {
     searchLanguageInput: this.modalBodyDiv.element(by.model('searchText')),
     languageRows: this.modalBodyDiv.all(by.repeater('language in languages')),
-    firstLanguageName: this.modalBodyDiv.all(by.repeater('language in languages').column('name')).first(),
-    lastLanguageName: this.modalBodyDiv.all(by.repeater('language in languages').column('name')).last(),
+    firstLanguageName: this.modalBodyDiv
+      .all(by.repeater('language in languages').column('name')).first(),
+    lastLanguageName: this.modalBodyDiv
+      .all(by.repeater('language in languages').column('name')).last(),
     clearSearchButton: this.modalBodyDiv.element(by.id('clearSearch')),
     addButton: this.modalFooterDiv.element(by.partialButtonText('Add'))
   };
@@ -18,11 +20,11 @@ function LexModals() {
 
   // custom field modal
   this.customField = {
-    displayNameInput: element(by.model('newCustomData.name')),
+    displayNameInput: element(by.id('name')),
     fieldCodeExists: element(by.id('fieldCodeExists')),
-    levelDropdown: element(by.model('newCustomData.level')),
-    typeDropdown: element(by.model('newCustomData.type')),
-    listCodeDropdown: element(by.model('newCustomData.listCode')),
+    levelDropdown: element(by.id('level')),
+    typeDropdown: element(by.id('type')),
+    listCodeDropdown: element(by.id('optionListCode')),
     addButton: element(by.css('.modal-footer')).element(by.partialButtonText('Add'))
   };
 

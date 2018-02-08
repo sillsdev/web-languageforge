@@ -8,18 +8,17 @@ use Api\Model\Shared\UserModel;
 
 class LexProjectDtoEncoder extends JsonEncoder
 {
-    public function encodeIdReference($key, $model)
+    public function encodeIdReference(&$key, $model)
     {
         // TODO ownerRef is declared in ProjectModel as an IdReference.  Here, it gets encoded as an Array 2014-08 DDW
         // Trello: https://trello.com/c/Zw0aLLYv
         if ($key == 'ownerRef') {
             $user = new UserModel();
-            if ($user->exists($model->asString())) {
-                $user->read($model->asString());
-
-                return array(
-                        'id' => $user->id->asString(),
-                        'username' => $user->username);
+            if ($user->readIfExists($model->asString())) {
+                return [
+                    'id' => $user->id->asString(),
+                    'username' => $user->username
+                ];
             } else {
                 return '';
             }

@@ -3,6 +3,7 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Library\Shared\LanguageData;
+use Api\Model\Languageforge\InputSystem;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
@@ -238,6 +239,7 @@ class LexProjectModel extends LfProjectModel
                     if (file_exists($path . DIRECTORY_SEPARATOR . $stateFilename)) {
                         unlink($path . DIRECTORY_SEPARATOR . $stateFilename);
                     }
+                    // cjh review 2017-12 Should we not also delete the file from the sync queue path?
                 }
             }
         }

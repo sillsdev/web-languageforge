@@ -3,14 +3,39 @@
 - name: Deploy development environment for xForge (languageforge.org and scriptureforge.org)
   hosts: all
   become: yes
+  vars_files:
+    - "vars_{{deploy}}.yml"
+    # conditional import
+    -
+      - "vars/{{ansible_distribution}}-{{ansible_distribution_major_version | int}}.yml"
+      - "vars/{{ansible_distribution}}.yml"
+      - "vars/{{ansible_os_family}}.yml"
+      - "vars/os_defaults.yml"
+  vars:
+    node_version: 8.9.4
   pre_tasks:
-    - include_vars: "vars_{{ deploy }}.yml"
+    - name: "Add .NET Core | add source"
+      apt_repository:
+        repo: "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-{{base_distribution_release}}-prod {{base_distribution_release}} main"
+        state: present
+      when: base_distribution == 'ubuntu'
+    - name: "Add .NET Core | add key"
+      apt_key:
+        id: BE1229CF
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        keyring: /etc/apt/trusted.gpg.d/microsoft.gpg
+      when: base_distribution == 'ubuntu'
+    - name: "Add GeoIP Update | add source"
+      apt_repository:
+        repo: "ppa:maxmind/ppa"
+        state: present
+      when: base_distribution == 'ubuntu'
     - name: Add PHP7.0 ppa for Trusty
-      apt_repository: repo='ppa:ondrej/php' state=present update_cache='yes'
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
+      apt_repository: repo='ppa:ondrej/php' state=present
+      when: base_distribution == 'ubuntu' and base_distribution_release == 'trusty'
     - name: Remove PHP5 for Trusty
       apt: name=php5-fpm state=absent
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
+      when: base_distribution == 'ubuntu' and base_distribution_release == 'trusty'
   roles:
     - fix
     # locale_install may be needed if locale has been changed away from defaults
@@ -19,12 +44,16 @@
     - apache_config
   tasks:
     - name: install packages
-      apt: name="{{item}}" state=present
+      apt: name="{{item}}" state=present update_cache='yes'
       with_items:
+        - dotnet-sdk-2.0.2
+        - geoipupdate
         - libapache2-mod-php
         - mongodb-server
+        - nodejs
         - p7zip-full
         - php7.0-cli
+        - php7.0-curl
         - php7.0-dev
         - php7.0-gd
         - php7.0-intl
@@ -42,6 +71,14 @@
     - name: symlink node to nodejs
       file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
       when: node_binary.stat.exists == False
+
+    - name: install n
+      shell: npm install -g n
+      args:
+        creates: /usr/local/bin/n
+
+    - name: change node version
+      shell: "n {{node_version}}"
 
     - name: install Composer
       shell: php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/local/bin --filename=composer
@@ -110,10 +147,10 @@
 
     - apt_key: url=http://linux.lsdev.sil.org/downloads/sil-testing.gpg state=present
 
-    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu {{ansible_distribution_release}} main' state=present
-      when: ansible_distribution == 'Ubuntu'
-    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu {{ansible_distribution_release}}-experimental main' state=present update_cache='yes'
-      when: ansible_distribution == 'Ubuntu'
+    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu {{base_distribution_release}} main' state=present
+      when: base_distribution == 'ubuntu'
+    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu {{base_distribution_release}}-experimental main' state=present update_cache='yes'
+      when: base_distribution == 'ubuntu'
 
     - name: install LfMerge package
       apt: name="{{item}}" state=present
@@ -221,6 +258,27 @@
     - name: ensure mongodb is running (and enable it at boot)
       service: name=mongodb state=started enabled=yes
 
+    - name: 'Add GeoLite2 configuration'
+      copy:
+        content: |
+          # The following UserId and LicenseKey are required placeholders:
+          UserId 999999
+          LicenseKey 000000000000
+
+          # Include one or more of the following ProductIds:
+          # * GeoLite2-City - GeoLite 2 City
+          # * GeoLite2-Country - GeoLite2 Country
+          # * GeoLite-Legacy-IPv6-City - GeoLite Legacy IPv6 City
+          # * GeoLite-Legacy-IPv6-Country - GeoLite Legacy IPv6 Country
+          # * 506 - GeoLite Legacy Country
+          # * 517 - GeoLite Legacy ASN
+          # * 533 - GeoLite Legacy City
+          ProductIds GeoLite2-City
+        dest: /etc/GeoIP.conf
+
+    - name: 'Fetch GeoLite2 database'
+      shell: /usr/bin/geoipupdate
+
     - name: add host aliases
       lineinfile:
         dest: /etc/hosts
@@ -234,18 +292,17 @@
         - "scriptureforge.local"
         - "jamaicanpsalms.scriptureforge.local"
         - "demo.scriptureforge.local"
+        - "cat.languageforge.local"
+        - "es_401"
       when: inventory_hostname == "localhost"
 
-    # node_modules are not a dependency for the product, rather it is a dependency
-    # for the developer to run the build tools, gulp, e2e, and so on.
-    # This does not install well across an NTFS share, so is not included
-    # here. CP 2016-11
-    #- name: install npm dependencies
-    #  become: no
-    #  shell: npm install
-    #  args:
-    #    chdir: "{{lf_path}}"
-    #    creates: "{{lf_path}}/node_modules/"
+    - name: install languageforge-web-api init script
+      copy: src=../scripts/server/init/languageforge-web-api dest=/etc/init.d/languageforge-web-api owner=root group=root mode=0755
+      when: is_build_agent is defined and is_build_agent == true
+
+    - name: enable languageforge-web-api service
+      service: name=languageforge-web-api enabled=yes
+      when: is_build_agent is defined and is_build_agent == true
 
   handlers:
     - name: restart mongodb

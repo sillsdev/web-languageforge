@@ -5,40 +5,43 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using SIL.XForge.WebApi.Server.Utils;
 
 namespace SIL.XForge.WebApi.Server.DataAccess
 {
     public class MongoRepository<T> : IRepository<T> where T : IEntity
     {
-        private readonly IMongoClient _client;
-        private readonly string _collectionName;
+        private readonly IMongoCollection<T> _collection;
 
-        public MongoRepository(IMongoClient client, string collectionName)
+        public MongoRepository(IMongoCollection<T> collection)
         {
-            _client = client;
-            _collectionName = collectionName;
+            _collection = collection;
         }
 
-        public async Task<IReadOnlyList<T>> GetAllAsync(string dbName)
+        public async Task<IReadOnlyList<T>> GetAllAsync()
         {
-            return await GetCollection(dbName).Find(Builders<T>.Filter.Empty).ToListAsync();
+            return await _collection.Find(Builders<T>.Filter.Empty).ToListAsync();
         }
 
-        public Task<T> GetAsync(string dbName, string id)
+        public async Task<Attempt<T>> TryGetAsync(string id)
         {
-            return GetCollection(dbName).Find(e => e.Id == id).FirstOrDefaultAsync();
+            T entity = await _collection.Find(e => e.Id == id).FirstOrDefaultAsync();
+            return new Attempt<T>(entity != null, entity);
         }
 
-        public IMongoQueryable<T> Query(string dbName)
+        public IMongoQueryable<T> Query()
         {
-            return GetCollection(dbName).AsQueryable();
+            return _collection.AsQueryable();
         }
 
-        public async Task<bool> InsertAsync(string dbName, T entity)
+        public async Task<bool> InsertAsync(T entity)
         {
             try
             {
-                await GetCollection(dbName).InsertOneAsync(entity);
+                var now = DateTime.UtcNow;
+                entity.DateModified = now;
+                entity.DateCreated = now;
+                await _collection.InsertOneAsync(entity);
                 return true;
             }
             catch (AggregateException ae)
@@ -54,19 +57,27 @@ namespace SIL.XForge.WebApi.Server.DataAccess
             }
         }
 
-        public async Task<bool> UpdateAsync(string dbName, T entity, bool upsert = false)
+        public async Task<bool> UpdateAsync(T entity, bool upsert = false)
         {
-            ReplaceOneResult result = await GetCollection(dbName).ReplaceOneAsync(e => e.Id == entity.Id, entity,
+            var now = DateTime.UtcNow;
+            entity.DateModified = now;
+            if (entity.Id == null)
+                entity.DateCreated = now;
+            ReplaceOneResult result = await _collection.ReplaceOneAsync(e => e.Id == entity.Id, entity,
                 new UpdateOptions { IsUpsert = upsert });
             if (result.IsAcknowledged)
                 return upsert || result.MatchedCount > 0;
             return false;
         }
 
-        public async Task<T> UpdateAsync(string dbName, Expression<Func<T, bool>> filter,
+        public async Task<T> UpdateAsync(Expression<Func<T, bool>> filter,
             Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update, bool upsert = false)
         {
-            return await GetCollection(dbName).FindOneAndUpdateAsync(filter, update(Builders<T>.Update),
+            var now = DateTime.UtcNow;
+            return await _collection.FindOneAndUpdateAsync(filter,
+                update(Builders<T>.Update)
+                    .Set(e => e.DateModified, now)
+                    .SetOnInsert(e => e.DateCreated, now),
                 new FindOneAndUpdateOptions<T>
                 {
                     IsUpsert = upsert,
@@ -74,22 +85,9 @@ namespace SIL.XForge.WebApi.Server.DataAccess
                 });
         }
 
-        public async Task<bool> DeleteAsync(string dbName, T entity)
+        public Task<T> DeleteAsync(Expression<Func<T, bool>> filter)
         {
-            DeleteResult result = await GetCollection(dbName).DeleteOneAsync(e => e.Id == entity.Id);
-            if (result.IsAcknowledged)
-                return result.DeletedCount > 0;
-            return false;
-        }
-
-        public Task<T> DeleteAsync(string dbName, Expression<Func<T, bool>> filter)
-        {
-            return GetCollection(dbName).FindOneAndDeleteAsync(filter);
-        }
-
-        protected IMongoCollection<T> GetCollection(string dbName)
-        {
-            return _client.GetDatabase(dbName).GetCollection<T>(_collectionName);
+            return _collection.FindOneAndDeleteAsync(filter);
         }
     }
 }

@@ -1,11 +1,21 @@
+@import '../../../../../../../node_modules/bootstrap/scss/functions';
+@import '../../../../../../../node_modules/bootstrap/scss/variables';
+@import '../../../../../../../node_modules/bootstrap/scss/mixins';
+
+$navbar-height: 50px;
+
 a {
   cursor: pointer;
 }
 
-body{
+html {
+  height: 100%;
+}
+
+body {
   background: white;
+  height: 100%;
   display: flex;
-  min-height: 100vh;
   flex-direction: column;
 }
 
@@ -19,8 +29,11 @@ h1.mobile-title {
 }
 
 #app-container-for-bootstrap {
-  margin-top: 60px;
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  @extend .flex-grow;
+  margin-top: $navbar-height + 10px;
 }
 .card .form-group-last {
   margin-bottom: 0;
@@ -66,8 +79,8 @@ dl.picklists dd {
 .footer{
   background-color: $sf-grey;
   color: white;
-  padding: 60px 0;
-  margin-top: 50px;
+  padding: 0.5em;
+  margin-top: 0.5em;
 
   .links{
     color: white;
@@ -132,8 +145,6 @@ dl.picklists dd {
     height: 75%;
     background-color: white;
     max-width: unset;
-    margin-top: auto;
-    margin-bottom: auto;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -164,7 +175,6 @@ dl.picklists dd {
     }
   }
 
-
   .modal-content {
     height: 100%;
   }
@@ -190,7 +200,7 @@ dl.picklists dd {
   left: 0;
   z-index: 1000;
   width: 100%;
-  height: 50px;
+  height: $navbar-height;
   background-color: $sf-grey;
 }
 
@@ -270,19 +280,6 @@ nav {
 @media (max-width: 500px) {
   .filter-list {
     float: left;
-  }
-}
-
-/* Taken from Bootstrap4-alpha6. TODO Remove after Bootstrap upgrade to alpha6 or later */
-.no-gutters {
-  // disabled because they conflict with a preexisting fix that used negative margins
-  // margin-right: 0;
-  // margin-left: 0;
-
-  > .col,
-  > [class*="col-"] {
-    padding-right: 0;
-    padding-left: 0;
   }
 }
 
@@ -382,4 +379,8 @@ $vote-width: 2em;
 
 label {
   display: block;
+}
+
+.btn-std {
+  @include button-variant(white, #ADADAD, #E6E6E6);
 }

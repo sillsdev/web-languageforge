@@ -169,14 +169,16 @@ describe('Activity E2E Test', function () {
     loginPage.loginAsManager();
     projectSettingsPage.get();
     projectSettingsPage.tabs.project.click();
-    projectSettingsPage.projectTab.setCheckbox(projectSettingsPage.projectTab.usersSeeEachOthersResponses, value);
+    projectSettingsPage.projectTab
+      .setCheckbox(projectSettingsPage.projectTab.usersSeeEachOthersResponses, value);
     projectSettingsPage.projectTab.saveButton.click();
-  };
+  }
 
   function verifyResponseVisibility(valueShouldBeTrue) {
     projectSettingsPage.get();
     projectSettingsPage.tabs.project.click();
-    var isChecked = projectSettingsPage.projectTab.usersSeeEachOthersResponses.getAttribute('checked');
+    var isChecked = projectSettingsPage.projectTab.usersSeeEachOthersResponses
+      .getAttribute('checked');
     if (valueShouldBeTrue) {
       expect(isChecked).toBeTruthy();
     } else {
@@ -184,7 +186,8 @@ describe('Activity E2E Test', function () {
     }
   }
 
-  describe('Testing activity-visibility settings: ', function () {  // TODO: That's not a great description
+  // TODO: That's not a great description
+  describe('Testing activity-visibility settings: ', function () {
     it('Set response visibility to TRUE', function () {
       setResponseVisibility(true);
       verifyResponseVisibility(true);
@@ -289,7 +292,8 @@ describe('Activity E2E Test', function () {
         // activityPage.printActivitiesNames();
       });
 
-      // We don't call verifyCommonActions here, because the activity list should be empty for user 2  // NOPE.
+      // We don't call verifyCommonActions here,
+      // because the activity list should be empty for user 2  // NOPE.
 
       verifyAnswerActions(activityIndex, constants.member2Username);
 
@@ -367,9 +371,10 @@ describe('Activity E2E Test', function () {
       var oldCount = questionPage.comments.list.count();
       questionPage.comments.archive('');
       var newCount = questionPage.comments.list.count();
-      oldCount.then(function(oldCount) {
+      oldCount.then(function (oldCount) {
         expect(newCount).toEqual(oldCount - 1);
       });
+
       questionPage.notice.waitToInclude('The comment was removed successfully');
       questionPage.notice.firstCloseButton.click();
     });
@@ -380,9 +385,13 @@ describe('Activity E2E Test', function () {
         questionPage.answers.archive('');
         var newCount = questionPage.answers.list.count();
         expect(newCount).toEqual(oldCount - 1);
-        if (oldCount > 1) {  // Which means newCount > 0 -- but oldCount is a real int, while newCount is still a promise
-          expect(questionPage.answers.last().getText()).toContain(constants.testText1Question1Answer);
+
+        // Which means newCount > 0 -- but oldCount is a real int, while newCount is still a promise
+        if (oldCount > 1) {
+          expect(questionPage.answers.last().getText())
+            .toContain(constants.testText1Question1Answer);
         }
+
         questionPage.notice.waitToInclude('The answer was removed successfully');
         questionPage.notice.firstCloseButton.click();
       });
@@ -398,43 +407,50 @@ describe('Activity E2E Test', function () {
   function verifyUpvoteActions(activityIndex, username) {
     it("Verify action 'upvote' on 'answers' appears on the activity feed", function () {
       activityIndex += 1;
-      var regex = new RegExp('.*' + util.escapeRegExp(username + ' +1\'d your answer') + '.*' + util.escapeRegExp(constants.testText1Question1Title));
+      var regex = new RegExp('.*' + util.escapeRegExp(username + ' +1\'d your answer') + '.*' +
+        util.escapeRegExp(constants.testText1Question1Title));
       expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
+
     return activityIndex;
   }
 
   function verifyAnswerActions(activityIndex, username) {
     it("Verify action 'edit' on 'answers' appears on the activity feed", function () {
-      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' updated their answer.*' + util.escapeRegExp(testData.answer.edit));
+      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' updated their answer.*' +
+        util.escapeRegExp(testData.answer.edit));
       expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
     it("Verify action 'edit' on 'comments' appears on the activity feed", function () {
       activityIndex += 1;
 
-      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' updated their comment.*' + util.escapeRegExp(testData.answer.add) + '.*' + util.escapeRegExp(testData.comment.edit));
+      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' updated their comment.*' +
+        util.escapeRegExp(testData.answer.add) + '.*' + util.escapeRegExp(testData.comment.edit));
       expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
     it("Verify action 'addToLastAnswer' on 'comments' appears on the activity feed", function () {
       activityIndex += 1;
 
-      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' commented.*' + util.escapeRegExp(testData.answer.add) + '.*' + util.escapeRegExp(testData.comment.add));
+      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' commented.*' +
+        util.escapeRegExp(testData.answer.add) + '.*' + util.escapeRegExp(testData.comment.add));
       expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
     it("Verify action 'add' on 'answers' appears on the activity feed", function () {
       activityIndex += 1;
-      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' answered.*' + util.escapeRegExp(testData.answer.add));
+      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' answered.*' +
+        util.escapeRegExp(testData.answer.add));
       expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
+
     return activityIndex;
   }
 
   function verifyCommonActions(activityIndex, username) {
     activityIndex = verifyAnswerActions(activityIndex, username);
-    activityIndex = verifyUpvoteActions(activityIndex, username);
+    verifyUpvoteActions(activityIndex, username);
   }
 
   function verifyFilters(username) {
@@ -443,7 +459,7 @@ describe('Activity E2E Test', function () {
       activityPage.activitiesList.filter(function (item) {
         // Look for activity items that do not contain our username
         return (item.getText().then(function (text) {
-          return text.indexOf(username) == -1;
+          return text.indexOf(username) === -1;
         }));
       }).then(function (activityItems) {
         // Currently in "All Activity" mode, so should see items without our username
@@ -455,7 +471,7 @@ describe('Activity E2E Test', function () {
       activityPage.activitiesList.filter(function (item) {
         // Look for activity items that do not contain our username
         return (item.getText().then(function (text) {
-          return text.indexOf(username) == -1;
+          return text.indexOf(username) === -1;
         }));
       }).then(function (activityItems) {
         // Currently in "Only My Activity" mode, so should see NO items without our username
@@ -467,7 +483,7 @@ describe('Activity E2E Test', function () {
       activityPage.activitiesList.filter(function (item) {
         // Look for activity items that do not contain our username
         return (item.getText().then(function (text) {
-          return text.indexOf(username) == -1;
+          return text.indexOf(username) === -1;
         }));
       }).then(function (activityItems) {
         // Currently in "All Activity" mode, so should see items without our username

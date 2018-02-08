@@ -1,10 +1,10 @@
 <form class="form-horizontal dc-multiparagraph">
-    <div class="form-group row">
-        <label class="control-label col-md-4 text-md-right">{{config.label}}</label>
-        <div class="controls col-md-8">
+    <div class="form-group row comment-bubble-group">
+        <label class="col-form-label col-lg-4 text-lg-right">{{config.label}}</label>
+        <div class="controls col-lg-8">
             <div class="input-group" data-ng-click="selectInputSystem(model.inputSystem)"
                 data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
-                <span class="add-on wsid input-group-addon notranslate"
+                <span class="wsid input-group-addon notranslate"
                     title="{{inputSystems[model.inputSystem].languageName}}">{{inputSystems[model.inputSystem].abbreviation}}</span>
                 <!--
                 <dc-formattedtext class="dc-formattedtext"
@@ -20,5 +20,6 @@
                     fte-dir="inputSystemDirection(model.inputSystem)"></dc-formattedtext>
             </div>
         </div>
+        <comment-bubble control="control" field="fieldName" input-system="" model="model"></comment-bubble>
     </div>
 </form>
