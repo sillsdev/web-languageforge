@@ -1,0 +1,44 @@
+<div class="comments-right-panel-container" ng-class="{'context-mode': commentFilter.contextGuid, 'panel-visible': control.commentPanelVisible > 0, 'panel-closing': control.commentPanelVisible === -1}">
+    <div ng-hide="commentFilter.contextGuid">
+        <div class="comments-search-container">
+            <input dir="auto" class="form-control" placeholder="Filter Comments" ng-model="commentFilter.text" type="text">
+            <span ng-show="commentFilter.text != ''" title="Clear Filter" ng-click="commentFilter.text = ''">
+                <i class="fa fa-times"></i>
+            </span>
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select ng-show="rights.canUpdateCommentStatus()" class="form-control custom-select" data-ng-model="commentFilter.status">
+                <option value="all">Show All</option>
+                <option value="resolved">Resolved</option>
+                <option value="unresolved">Unresolved</option>
+                <option ng-if="rights.canUpdateCommentStatus()" value="todo">Todo</option>
+            </select>
+        </div>
+    </div>
+    <div class="commentsListMainContainer">
+        <div class="commentListView">
+            <div class="commentListContainer">
+                <div ng-repeat="comment in currentEntryCommentsFiltered">
+                    <dc-comment></dc-comment>
+                </div>
+            </div>
+        </div>
+        <div ng-show="rights.canComment() && newComment.regarding.field && showNewComment" class="newCommentForm" ng-class="{'show': showNewComment, 'regard': newComment.regarding.field}">
+            <div class="card card-default">
+                <div class="card-title" ng-show="currentEntryCommentsFiltered.length === 0">
+                    <span class="sense-label">{{getNewCommentSenseLabel(newComment.regarding.field)}}</span> {{newComment.regarding.fieldNameForDisplay}}{{(newComment.regarding.inputSystemAbbreviation) ? ' - ' + newComment.regarding.inputSystemAbbreviation : ''}}
+                </div>
+                <div class="card-title" ng-show="currentEntryCommentsFiltered.length > 0">
+                    Start a new conversation thread
+                </div>
+                <div class="card-block">
+                    <form ng-submit="postNewComment()">
+                        <textarea required data-ng-model="newComment.content" class="form-control" placeholder="{{getNewCommentPlaceholderText()}}"  ></textarea>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-sm btn-primary" data-ng-disabled="posting">Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,7 +2,7 @@ import * as angular from 'angular';
 
 import { RelativeTimeFilterFunction } from '../../../bellows/core/filters';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
-import { SessionService } from '../../../bellows/core/session.service';
+import { Session, SessionService } from '../../../bellows/core/session.service';
 import { LexiconProjectSettings } from '../shared/model/lexicon-project-settings.model';
 import { SendReceiveState, SendReceiveStatus } from '../shared/model/send-receive-status.model';
 import { JsonRpcResult, LexiconSendReceiveApiService } from './lexicon-send-receive-api.service';
@@ -59,7 +59,8 @@ export class LexiconSendReceiveService {
   }
 
   isSendReceiveProject(): angular.IPromise<boolean> {
-    return this.sessionService.getSession().then(session => session.projectSettings().hasSendReceive);
+    return this.sessionService.getSession()
+      .then(session => session.projectSettings<LexiconProjectSettings>().hasSendReceive);
   }
 
   setSyncProjectStatusSuccessCallback(callback: SRTimerCallback): void {
@@ -173,8 +174,7 @@ export class LexiconSendReceiveService {
   }
 
   // UI strings corresponding to SRState in the LfMerge state file.
-  // SRStates with an "LF_" prefix are languageforge overrides
-  syncStateNotice(): string {
+  syncStateNotice = (): string => {
     if (angular.isUndefined(this.status)) return;
 
     switch (this.status.SRState) {
@@ -199,7 +199,7 @@ export class LexiconSendReceiveService {
     }
   }
 
-  lastSyncNotice(): string {
+  lastSyncNotice = (): string => {
     if (angular.isUndefined(this.status) || angular.isUndefined(this.projectSettings)) return;
 
     switch (this.status.SRState) {
@@ -213,7 +213,7 @@ export class LexiconSendReceiveService {
           if (Date.parse(this.projectSettings.lastSyncedDate) <= 0) {
             return 'Never been synced';
           } else {
-            const relativeTime = this.$filter('relativetime') as RelativeTimeFilterFunction;
+            const relativeTime = this.$filter<RelativeTimeFilterFunction>('relativetime');
             return 'Last sync was ' + relativeTime(this.projectSettings.lastSyncedDate);
           }
         } else {
@@ -337,8 +337,8 @@ export class LexiconSendReceiveService {
     this.cancelCloneStatusTimer();
   }
 
-  private updateSessionData = (session: any): void => {
-    this.projectSettings = session.projectSettings();
+  private updateSessionData = (session: Session): void => {
+    this.projectSettings = session.projectSettings<LexiconProjectSettings>();
 
     if (angular.isDefined(this.projectSettings) && angular.isDefined(this.projectSettings.sendReceive) &&
       angular.isDefined(this.projectSettings.sendReceive.status)

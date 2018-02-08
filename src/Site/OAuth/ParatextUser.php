@@ -84,4 +84,16 @@ class ParatextUser implements ResourceOwnerInterfaceWithMoreDetails
             return null;
         }
     }
+
+    public static function createFromIdToken(string $idToken)
+    {
+        $jwt_parts = explode(".", $idToken);
+        if (isset($jwt_parts[1])) {
+            $json_details = base64_decode($jwt_parts[1]);
+            $id_details = json_decode($json_details, true);
+            return new ParatextUser($id_details);
+        } else {
+            return null;
+        }
+    }
 }

@@ -4,7 +4,7 @@ import 'angular-sortable-view';
 import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import 'angular-truncate-2';
-import 'angular-ui-bootstrap';
+import 'angular-ui-bootstrap-4';
 import 'angular-ui-router';
 import 'angular-ui-validate';
 import 'angular-zxcvbn';
@@ -20,8 +20,8 @@ import './apps/projects/projects-app.module';
 import './apps/public/forgot_password/forgot-password-app.module';
 import './apps/public/login/login-app.module';
 import './apps/public/oauth-signup/oauth-signup-app.module';
-import './apps/public/reset_password/reset-password-app.module'
-import './apps/public/signup/signup-app.module'
+import './apps/public/reset_password/reset-password-app.module';
+import './apps/public/signup/signup-app.module';
 import './apps/siteadmin/site-admin-app.module';
 import './apps/usermanagement/user-management-app.module';
 import './apps/userprofile/user-profile-app.module';

@@ -23,6 +23,11 @@ use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransAppManagementDto;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
+use Api\Model\Languageforge\Translate\Command\TranslateDocumentSetCommands;
+use Api\Model\Languageforge\Translate\Command\TranslateMetricCommands;
+use Api\Model\Languageforge\Translate\Command\TranslateProjectCommands;
+use Api\Model\Languageforge\Translate\Dto\TranslateDocumentSetDto;
+use Api\Model\Languageforge\Translate\Dto\TranslateProjectDto;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksUploadCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
@@ -33,6 +38,7 @@ use Api\Model\Scriptureforge\Sfchecks\Dto\ProjectSettingsDto;
 use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionCommentDto;
 use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionListDto;
 use Api\Model\Scriptureforge\Sfchecks\Dto\TextSettingsDto;
+use Api\Model\Scriptureforge\Sfchecks\Dto\UsxHelper;
 use Api\Model\Shared\Command\MessageCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\SessionCommands;
@@ -824,6 +830,75 @@ class Sf
 
     public function xforge_frame_can_show_page_help_button($urlPath, $hashPath) {
         return HelpContentCommands::canShowPageHelpButton($this->website, $urlPath, $hashPath);
+    }
+
+
+    /*
+     * --------------------------------------------------------------- TRANSLATION MANAGER API ---------------------------------------------------------------
+     */
+    /**
+     * @param array $projectData
+     * @return string $projectId
+     */
+    public function translate_projectUpdate($projectData)
+    {
+        return TranslateProjectCommands::updateProject($this->projectId, $this->userId, $projectData);
+    }
+
+    /**
+     * @return array
+     */
+    public function translate_projectDto()
+    {
+        return TranslateProjectDto::encode($this->projectId, $this->userId);
+    }
+
+    /**
+     * @param array $configData
+     * @return string $projectId
+     */
+    public function translate_configUpdate($configData)
+    {
+        if (array_key_exists('userPreferences', $configData)) {
+            $this->translate_configUpdateUserPreferences($configData['userPreferences']);
+        }
+
+        return TranslateProjectCommands::updateConfig($this->projectId, $configData);
+    }
+
+    /**
+     * @param array $userPreferenceData
+     * @return string $projectId
+     */
+    public function translate_configUpdateUserPreferences($userPreferenceData)
+    {
+        return TranslateProjectCommands::updateUserPreferences($this->projectId, $this->userId, $userPreferenceData);
+    }
+
+    public function translate_documentSetUpdate($documentSetData)
+    {
+        return TranslateDocumentSetCommands::updateDocumentSet($this->projectId, $documentSetData);
+    }
+
+    public function translate_documentSetListDto()
+    {
+        return TranslateDocumentSetDto::encode($this->projectId, $this->userId);
+    }
+
+    public function translate_documentSetRemove($documentId)
+    {
+        return TranslateDocumentSetCommands::removeDocumentSet($this->projectId, $documentId);
+    }
+
+    public function translate_updateMetrics($metricData, $documentSetId, $metricId)
+    {
+        return TranslateMetricCommands::updateMetric($this->projectId, $metricId, $metricData, $documentSetId, $this->userId);
+    }
+
+    public function translate_usxToHtml($usx)
+    {
+        $usxHelper = new UsxHelper($usx, true);
+        return $usxHelper->toHtml();
     }
 
 

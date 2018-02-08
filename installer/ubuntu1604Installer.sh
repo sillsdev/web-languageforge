@@ -97,6 +97,14 @@ if [ $OS == "Windows" ]; then
     echo "Note: the Windows Bash window must be open in order for languageforge.local to work"
 fi
 
+cd ..
+if [ ! -L web-scriptureforge ]; then
+    echo "Fix scriptureforge.local symlink"
+    sudo rm -r web-scriptureforge
+    ln -s web-languageforge web-scriptureforge
+fi
+cd web-languageforge
+
 echo "Refresh xForge dependencies"
 ./refreshDeps.sh || exit
 
@@ -107,6 +115,7 @@ sudo php FactoryReset.php run || exit
 cd ../..
 
 echo "You should now be able to access Language Forge locally at http://languageforge.local"
+echo "You should now be able to access Scripture Forge locally at http://scriptureforge.local"
 echo "username: admin"
 echo "password: password"
 echo "Installation finished!"

@@ -130,7 +130,7 @@ export class UserProfileAppController implements angular.IController {
     if (this.user.username !== this.originalUsername) {
       // Confirmation for username change
       const message = 'Changing Username from <b>' + this.originalUsername + '</b> to <b>' +
-        this.user.username + '</b> will force you to login again.<br /><br />' +
+        this.user.username + '</b> will force you to login again.<br><br>' +
         'Do you want to save changes?';
       const modalOptions = {
         closeButtonText: 'Cancel',
