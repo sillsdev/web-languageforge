@@ -453,6 +453,10 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
           $scope.saveCurrentEntry();
           setCurrentEntry($scope.entries[editorService.getIndexInList(id, $scope.entries)]);
           commentService.loadEntryComments(id);
+          if ($scope.commentPanelVisible === true && $scope.commentContext.contextGuid !== '') {
+            $scope.showComments();
+            $scope.setCommentContext('', '');
+          }
         }
 
         if ($state.is('editor.entry')) {
@@ -461,7 +465,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
           $state.go('editor.entry', { entryId: id });
         }
 
-        $scope.hideCommentsPanel();
       };
 
       $scope.newEntry = function newEntry() {
