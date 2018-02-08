@@ -1,36 +1,46 @@
 <div data-ng-show="finishedLoading">
     <h2 style="font-weight: normal">Questions for <span class="notranslate">{{text.title}}</span></h2>
-    <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-        <button data-ng-show="rights.create" class="btn btn-primary"
-                data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">
-            <i class="fa fa-plus"></i> Add New Question
-        </button>
-        <button data-ng-show="rights.archive" class="btn btn-secondary"
-            data-ng-disabled="selected.length == 0"
-            data-ng-click="archiveQuestions()">
-            <i class="fa fa-archive fa-lg"></i> Archive Questions
-        </button>
-        <button data-ng-show="rights.createTemplate"
-            data-ng-disabled="selected.length == 0 || selected.length > 1"
-            class="btn btn-secondary" data-ng-click="makeQuestionIntoTemplate()">
-            <i class="fa fa-thumb-tack"></i> Make Template
-        </button>
-        <div id="text_settings_button" class="pull-right" uib-dropdown data-ng-show="rights.editOther">
-            <a class="btn btn-secondary" uib-dropdown-toggle tooltip-placement="left">
-                <i class="fa fa-cog"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
-                <a id="text_settings_link" class="dropdown-item" data-ng-href="#!/{{textId}}/settings">Text Settings</a>
+    <form data-ng-show="rights.showControlBar" class="control-bar form-inline d-block">
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <button data-ng-show="rights.create" class="btn btn-primary"
+                        data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">
+                    <i class="fa fa-plus"></i> Add New Question
+                </button>
+            </div>
+            <div class="col-auto">
+                <button data-ng-show="rights.archive" class="btn btn-std"
+                        data-ng-disabled="selected.length == 0"
+                        data-ng-click="archiveQuestions()">
+                    <i class="fa fa-archive fa-lg"></i> Archive Questions
+                </button>
+            </div>
+            <div class="col-auto">
+                <button data-ng-show="rights.createTemplate"
+                        data-ng-disabled="selected.length == 0 || selected.length > 1"
+                        class="btn btn-std" data-ng-click="makeQuestionIntoTemplate()">
+                    <i class="fa fa-thumb-tack"></i> Make Template
+                </button>
+            </div>
+            <div class="col">
+                <div id="text_settings_button" class="float-right" uib-dropdown data-ng-show="rights.editOther">
+                    <button class="btn btn-std" uib-dropdown-toggle tooltip-placement="left">
+                        <i class="fa fa-cog"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+                        <a id="text_settings_link" class="dropdown-item" data-ng-href="#!/{{textId}}/settings">Text Settings</a>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
     <div class="new-item" uib-collapse="newQuestionCollapsed">
-        <form class="card span11" name="newQuestionForm">
-            <div class="card-block">
+        <form class="card col-md-11" name="newQuestionForm">
+            <div class="card-body">
                 <fieldset class="col-md-4">
                     <label class="form-group">Title
                         <input type="text" data-ng-model="questionTitle" class="form-control" maxlength="70"
-                            placeholder="One-line Summary For Title" />
+                            placeholder="One-line Summary For Title">
                     </label>
                     <label class="form-group">Question
                         <textarea required data-ng-model="questionDescription" class="form-control" rows="4"
@@ -40,9 +50,9 @@
                         <input title="A summary title is required for templates"
                             data-ng-disabled="!questionTitle" type="checkbox"
                             data-ng-model="saveAsTemplate"
-                            data-ng-show="rights.createTemplate" />
+                            data-ng-show="rights.createTemplate">
                         Also save as template</label>
-                    <a href class="pull-right"
+                    <a href class="float-right"
                         data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">Cancel</a>
                     <button type="submit" class="btn btn-primary save-new-question"
                         data-ng-disabled="newQuestionForm.$invalid"
@@ -52,19 +62,19 @@
                 </fieldset>
                 <fieldset class="col-md-4">
                     <label for="templates">Templates</label>
-                    <select class="form-control" data-ng-model="template" id="templates"
+                    <select class="form-control custom-select" data-ng-model="template" id="templates"
                         data-ng-options="t.title for t in templates"></select>
                 </fieldset>
             </div>
         </form>
     </div>
-    <hr />
+    <hr>
     <div class="row">
         <div class="col-md-5" oncopy="return false;">
-            <h2 class="pull-left audio-buttons" data-ng-show="text.audioFileName">
-                <pui-soundplayer data-url="audioPlayUrl" uib-tooltip="Play audio"></pui-soundplayer>
+            <h2 class="float-left audio-buttons" data-ng-show="text.audioFileName">
+                <pui-soundplayer data-url="audioPlayUrl" title="Play audio"></pui-soundplayer>
                 <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
-                    <i class="fa fa-arrow-circle-o-down" uib-tooltip="Download audio"></i></a>
+                    <i class="fa fa-arrow-circle-o-down" title="Download audio"></i></a>
             </h2>
             <h2>{{text.title}}</h2>
             <div id="textcontrol" style="font-family: {{text.fontfamily}}" data-ng-bind-html="text.content"></div>
@@ -81,6 +91,7 @@
                     </tr>
                     <tr data-ng-repeat="question in visibleQuestions" data-ng-class="{active: isSelected(question)}">
                         <td>
+                            <!--suppress HtmlFormInputWithoutLabel -->
                             <input type="checkbox" data-ng-show="rights.archive" data-ng-checked="isSelected(question)" data-ng-click="updateSelection($event, question)">
                         </td>
                         <td>

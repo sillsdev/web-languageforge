@@ -5,12 +5,11 @@ $sf-disabled: #999999;
 $sf-lines: #ddd;
 
 // Overwrite variables - see node_modules/bootstrap/sass/_variables.scss
-$brand-primary: $sf-grey;
-$brand-warning: $sf-orange;
+$theme-colors: (
+        primary: $sf-grey,
+        warning: $sf-orange,
+);
+
 $headings-margin-bottom: 20px;
 $navbar-dark-color: white;
 $link-color: $lf-blue;
-
-// do we need these?
-//$link-hover-color: #005580;
-

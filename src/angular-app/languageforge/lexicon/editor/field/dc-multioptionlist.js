@@ -10,13 +10,16 @@ angular.module('palaso.ui.dc.multioptionlist', [])
     scope: {
       config: '=',
       model: '=',
+      control: '=',
       items: '=',
-      selectField: '&'
+      selectField: '&',
+      fieldName: '='
     },
     controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rightsService) {
       $scope.$state = $state;
       $scope.isAdding = false;
       $scope.valueToBeDeleted = '';
+      $scope.contextGuid = $scope.$parent.contextGuid;
 
       rightsService.getRights().then(function(rights) {
         $scope.rights = rights;

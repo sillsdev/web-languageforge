@@ -43,6 +43,7 @@ class UserModel extends MapperModel
         $this->googleOAuthIds = new ArrayOf();
         $this->facebookOAuthIds = new ArrayOf();
         $this->paratextOAuthIds = new ArrayOf();
+        $this->paratextAccessToken = new AccessTokenModel();
         $this->validationExpirationDate = new \DateTime();
         $this->resetPasswordExpirationDate = new \DateTime();
         $this->projectsProperties = new MapOf(function () {
@@ -116,6 +117,9 @@ class UserModel extends MapperModel
 
     /** @var ReferenceList */
     public $projects;
+
+    /** @var AccessTokenModel */
+    public $paratextAccessToken;
 
     /*
      * User Profile accessible

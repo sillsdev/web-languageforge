@@ -61,16 +61,15 @@ class ProjectSettingsDto
 
 class ProjectSettingsDtoEncoder extends JsonEncoder
 {
-    public function encodeIdReference($key, $model)
+    public function encodeIdReference(&$key, $model)
     {
         if ($key == 'ownerRef') {
             $user = new UserModel();
-            if ($user->exists($model->asString())) {
-                $user->read($model->asString());
-
-                return array(
-                        'id' => $user->id->asString(),
-                        'username' => $user->username);
+            if ($user->readIfExists($model->asString())) {
+                return [
+                    'id' => $user->id->asString(),
+                    'username' => $user->username
+                ];
             } else {
                 return '';
             }

@@ -1,12 +1,11 @@
 <div class="content container fluid" data-ng-cloak>
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div style="padding-top:10px">
                 <sil-notices></sil-notices>
                 <div data-ng-show="$ctrl.finishedLoading">
-
                     <h2 style="font-weight:normal">My Projects</h2>
-                    <form data-ng-show="$ctrl.rights.showControlBar" class="control-bar form-inline">
+                    <form data-ng-show="$ctrl.rights.showControlBar" class="control-bar form-inline mb-2">
                         <button type="button" data-ng-show="$ctrl.rights.canCreateProject" class="btn btn-primary"
                                 data-ng-click="$ctrl.startProject()">
                             <i class="fa fa-plus"></i> Start or Join a New Project</button>
@@ -16,7 +15,7 @@
                             <div data-ng-repeat="appName in $ctrl.projectTypesBySite()" class="col-xs-3">
                                 <a data-ng-href="/app/{{appName}}/new-project">
                                     <figure>
-                                        <img data-ng-src="/Site/views/{{$ctrl.siteName}}/image/{{appName}}-newProjectBadge.png" />
+                                        <img data-ng-src="/Site/views/{{$ctrl.siteName}}/image/{{appName}}-newProjectBadge.png">
                                         <figcaption>{{$ctrl.projectTypeNames[appName]}}</figcaption>
                                     </figure>
                                 </a>
@@ -28,36 +27,42 @@
             </div>
         </div>
     </div>
-    <div class="row" data-ng-show="$ctrl.rights.canEditProjects">
-        <div class="col-xs-8 col-md-4">
-            <input class="form-control" type="text" ng-model="projectFilter" placeholder="Project List Filter"/>
+    <div class="row align-items-center" data-ng-show="$ctrl.rights.canEditProjects">
+        <div class="col-8 col-md-4">
+            <input class="form-control" type="text" data-ng-model="projectFilter" placeholder="Project List Filter">
         </div>
-        <div class="col-xs-1">
-            <a ng-show="projectFilter.length > 0" title="Clear Filter" ng-click="projectFilter = ''"><i class="fa fa-times" style="color:gray"></i></a>
+        <div class="col-1">
+            <a data-ng-show="projectFilter.length > 0" title="Clear Filter" data-ng-click="projectFilter = ''">
+                <i class="fa fa-times" style="color:gray"></i></a>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12">
-            <div style="margin-top:20px;font-weight: bold" ng-show="$ctrl.rights.canEditProjects"><span ng-show="projectFilter.length > 0">Showing <span class="notranslate">{{filteredProjects.length}}</span> of </span><span class="notranslate">{{$ctrl.projects.length}}</span> Projects</div>
-            <hr />
-            <listview hide-if-empty="true" search="$ctrl.queryProjectsForUser()" items-filter="projectFilter" items="$ctrl.projects" filtered-items="filteredProjects" visible-items="visibleProjects" select="">
+        <div class="col-12">
+            <div class="mt-3" data-ng-show="$ctrl.rights.canEditProjects">
+                <b><span data-ng-show="projectFilter.length > 0">Showing
+                    <span class="notranslate">{{filteredProjects.length}}</span> of </span>
+                    <span class="notranslate">{{$ctrl.projects.length}}</span> Projects</b>
+            </div>
+            <hr>
+            <listview hide-if-empty="true" search="$ctrl.queryProjectsForUser()" items-filter="projectFilter"
+                      items="$ctrl.projects" filtered-items="filteredProjects" visible-items="visibleProjects" select="">
                 <div data-ng-repeat="project in visibleProjects">
-                    <div class="row" data-ng-class="{active: $ctrl.isSelected(project)}">
-                        <div class="col-xs-12 col-sm-6">
+                    <div class="row align-items-center mb-3" data-ng-class="{active: $ctrl.isSelected(project)}">
+                        <div class="col-md-4">
                             <a data-ng-show="$ctrl.isInProject(project)" data-ng-href="/app/{{project.appName}}/{{project.id}}">
-                                <span class="larger-text">{{project.projectName}}</span>
-                            </a>
+                                <span class="larger-text">{{project.projectName}}</span></a>
                             <span data-ng-show="!$ctrl.isInProject(project)" class="larger-text">{{project.projectName}}</span>
-                            <br />
+                        </div>
+                        <div class="col-7 col-md-5" data-ng-show="$ctrl.rights.canEditProjects">
                             <small class="text-muted">{{$ctrl.projectTypeNames[project.appName]}}</small>
                         </div>
-                        <div class="col-xs-12 col-sm-6" data-ng-show="$ctrl.rights.canEditProjects">
-                            <button class="btn btn-secondary" data-ng-show="!$ctrl.isManager(project)"
+                        <div class="col-5 col-md-3 text-right" data-ng-show="$ctrl.rights.canEditProjects">
+                            <button class="btn btn-std" data-ng-show="!$ctrl.isManager(project)"
                                     data-ng-click="$ctrl.addManagerToProject(project)">
                                 <i class="fa fa-plus"></i> Manager</button>
                         </div>
                     </div>
-                    <hr />
+                    <hr>
                 </div>
             </listview>
         </div>

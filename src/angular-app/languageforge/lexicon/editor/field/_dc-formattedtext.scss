@@ -1,3 +1,7 @@
+dc-formattedtext {
+    width: 100%;
+}
+
 .dc-formattedtext .ta-root {
     display: block;
 }
@@ -7,6 +11,7 @@
 
 .dc-formattedtext .ta-scroll-window > .ta-bind,
 .dc-formattedtext .ta-root textarea {
+    width: 100%;
 }
 
 .dc-formattedtext .ta-toolbar {
@@ -39,6 +44,7 @@
 
 .dc-formattedtext .ta-scroll-window.form-control {
     min-height: 38px;
+    width: 100%;
     border-radius: 0 $border-radius $border-radius 0 !important;
 }
 
@@ -79,5 +85,5 @@
     display: none;
 }
 .ta-root.focussed .ta-toolbar {
-    display: block;
+    /*display: block;*/
 }

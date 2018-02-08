@@ -24,9 +24,33 @@ namespace SIL.XForge.WebApi.Server.Controllers
             if (claimsPrincipal.Identity.IsAuthenticated)
             {
                 string userId = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
-                User user = await _userRepo.GetAsync(DbNames.Default, userId);
+                if (!(await _userRepo.TryGetAsync(userId)).TryResult(out User user))
+                {
+                    context.Result = new UnauthorizedResult();
+                    return;
+                }
                 string site = claimsPrincipal.FindFirstValue("aud");
-                if (user.HasRight(site, _right))
+                Right right = _right;
+                if (CheckOwnOperation(userId, context))
+                {
+                    Operation op = Operation.View;
+                    switch (right.Operation)
+                    {
+                        case Operation.DeleteOwn:
+                            op = Operation.Delete;
+                            break;
+                        case Operation.EditOwn:
+                            op = Operation.Edit;
+                            break;
+                        case Operation.ViewOwn:
+                            op = Operation.View;
+                            break;
+                    }
+
+                    right = new Right(right.Domain, op);
+                }
+
+                if (user.HasRight(site, right))
                 {
                     await next();
                 }
@@ -39,6 +63,30 @@ namespace SIL.XForge.WebApi.Server.Controllers
             {
                 context.Result = new UnauthorizedResult();
             }
+        }
+
+        private bool CheckOwnOperation(string userId, ActionExecutingContext context)
+        {
+            if (_right.Operation != Operation.DeleteOwn && _right.Operation != Operation.EditOwn
+                && _right.Operation != Operation.ViewOwn)
+            {
+                return false;
+            }
+
+            string argUserId;
+            if (context.ActionArguments.TryGetValue("userId", out object obj))
+            {
+                argUserId = (string) obj;
+                if (argUserId == "me" || argUserId == "my")
+                    argUserId = userId;
+            }
+            else
+            {
+                // assume that the API will only get the current user's data
+                argUserId = userId;
+            }
+
+            return userId != argUserId;
         }
     }
 }

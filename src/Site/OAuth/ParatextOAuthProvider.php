@@ -102,8 +102,11 @@ class ParatextOAuthProvider extends AbstractProvider
         return [
             'email',
             'openid',
-//            'oauth:authorization_code',
             'projects:read',
+            'data_access',
+            'offline_access',
+            'projects.members:read',
+            'projects.members:write'
         ];
     }
 
@@ -162,14 +165,7 @@ class ParatextOAuthProvider extends AbstractProvider
     {
         if (isset($token->getValues()['id_token'])) {
             $id_token = $token->getValues()['id_token'];
-            $jwt_parts = explode(".", $id_token);
-            if (isset($jwt_parts[1])) {
-                $json_details = base64_decode($jwt_parts[1]);
-                $id_details = json_decode($json_details, true);
-                return new ParatextUser($id_details);
-            } else {
-                return null;
-            }
+            return ParatextUser::createFromIdToken($id_token);
         } else {
             return null;
         }

@@ -1,15 +1,24 @@
 using System.Collections.Generic;
+using System.IO;
 
 namespace SIL.XForge.WebApi.Server.Models
 {
-    public abstract class Project : IEntity
+    public abstract class Project : EntityBase
     {
-        public string Id { get; set; }
-        public string ProjectName { get; set; }
-        public Dictionary<string, ProjectRole> Users { get; set; }
-        public string AppName { get; set; }
+        public const string LexiconApp = "lexicon";
+        public const string TranslateApp = "translate";
 
-        public Dictionary<string, object> ExtraElements { get; set; }
+        public string ProjectName { get; set; }
+        public Dictionary<string, ProjectRole> Users { get; protected set; } = new Dictionary<string, ProjectRole>();
+        public string AppName { get; protected set; }
+        public string ProjectCode { get; set; }
+
+        public string AssetsFolderPath
+        {
+            get { return Path.Combine("assets", AppName, "sf_" + ProjectCode); }
+        }
+
+        public Dictionary<string, object> ExtraElements { get; protected set; }
 
         public abstract ProjectRoles Roles { get; }
 
