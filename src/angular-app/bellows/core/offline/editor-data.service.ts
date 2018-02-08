@@ -1,5 +1,7 @@
 import * as angular from 'angular';
 
+import { LexConfigMultiText } from '../../../languageforge/lexicon/shared/model/lexicon-config.model';
+import { LexiconProjectSettings } from '../../../languageforge/lexicon/shared/model/lexicon-project-settings.model';
 import { JsonRpcResult } from '../api/api.service';
 import { NoticeService } from '../notice/notice.service';
 import { SessionService } from '../session.service';
@@ -246,7 +248,7 @@ export class EditorDataService {
   sortEntries = (shouldResetVisibleEntriesList: boolean): angular.IPromise<any> => {
     const startTime = performance.now();
     return this.sessionService.getSession().then(session => {
-      const config = session.projectSettings().config;
+      const config = session.projectSettings<LexiconProjectSettings>().config;
 
       // the length = 0 followed by Array.push.apply is a method of replacing the contents of an array without creating
       // a new array thereby keeping original references to the array
@@ -268,7 +270,7 @@ export class EditorDataService {
 
   filterEntries = (shouldResetVisibleEntriesList: boolean): angular.IPromise<any> => {
     return this.sessionService.getSession().then(session => {
-      const config = session.projectSettings().config;
+      const config = session.projectSettings<LexiconProjectSettings>().config;
       if (this.entryListModifiers.filterBy) {
         UtilityService.arrayCopyRetainingReferences(this.entries.filter((entry: any) => {
           return this.entryMeetsFilterCriteria(config, entry);
@@ -377,13 +379,13 @@ export class EditorDataService {
         }
 
         if (newOffset < totalCount) {
-          this.doFullRefresh(newOffset).then((newResult) => {
+          this.doFullRefresh(newOffset).then(newResult => {
             // TODO: Merge the old and new results so that we're returning the full array
             deferred.resolve(newResult);
           });
         } else {
           this.sortAndFilterEntries(false).then(() => {
-            deferred.resolve(result)
+            deferred.resolve(result);
           });
         }
       });
@@ -610,8 +612,8 @@ export class EditorDataService {
    */
   private printLexemesInList(entryList: any[]): void {
     this.sessionService.getSession().then(session => {
-      const config = session.projectSettings().config;
-      const ws = config.entry.fields.lexeme.inputSystems[1];
+      const config = session.projectSettings<LexiconProjectSettings>().config;
+      const ws = (config.entry.fields.lexeme as LexConfigMultiText).inputSystems[1];
       const arr = [];
       for (const entry of entryList) {
         if (angular.isDefined(entry.lexeme[ws])) {

@@ -11,6 +11,7 @@ class UsxHelperTest extends TestCase
 
         $usxHelper = new UsxHelper($usx);
         $result = $usxHelper->toHtml();
+
         $this->assertRegExp('/<sup>4<\\/sup>In him was life; and the life was the light of men\\./', $result);
         //echo $result;
     }
@@ -49,8 +50,21 @@ EOD;
 
         $usxHelper = new UsxHelper($usx);
         $result = $usxHelper->toHtml();
+
         $this->assertRegExp('/<sup>4<\\/sup>In him was life; and the life was the light of men\\./', $result);
         $this->assertNotRegExp('/could be evil/', $result);
+        $this->assertEquals(3, substr_count($result, '<p'));
+    }
+
+    public function testAsHtml_VerseNewLine_VersesOnNewLines()
+    {
+        $usx = self::usxJohn1WithScriptTag;
+
+        $usxHelper = new UsxHelper($usx, true);
+        $result = $usxHelper->toHtml();
+
+        $this->assertRegExp('/<\\/p><p><sup>4<\\/sup>In him was life; and the life was the light of men\\./', $result);
+        $this->assertEquals(9, substr_count($result, '<p'));
     }
 
     public function testGetMetadata_Ok()
@@ -59,6 +73,7 @@ EOD;
 
         $usxHelper = new UsxHelper($usx);
         $info = $usxHelper->getMetadata();
+
         $this->assertEquals('JHN', $info['bookCode']);
         $this->assertEquals(1, $info['startChapter']);
         $this->assertEquals(21, $info['endChapter']);

@@ -1,229 +1,201 @@
 {% extends 'container.html.twig' %}
 
-{% block meta %}
-    {{ parent() }}
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700" rel="stylesheet" type="text/css">
-{% endblock %}
+{% block header %}
 
-{% block headerBootstrap2 %}
-<!--[if lte IE 11]>
-<div style="text-align:center">Your browser may not work so well. Please consider <a href="learn_faq">upgrading</a> to a modern standards compliant browser.</div>
-<![endif]-->
-<div id="header">
-    <div class="container">
-        <div class="sf-logo-medium">
-            <img src="/Site/views/scriptureforge/theme/default/image/sf_logo_medium.png" alt="Scripture Forge" style="width:92px; height:114px" />
-        </div>
-        <div id="header-nav" class="pull-left">
-            <ul class="sf-menu">
-                {% if app.website.domain == "scriptureforge.local" %} <li><a>(Bootstrap 2)</a></li>{% endif %}
-                <li><a href="/">Home</a></li>
-                <!--
-                <li><a href="/explore">Explore</a>
-                    <ul>
-                    <?php foreach($featuredProjects as $project): ?>
-                        <li><a href="<?php echo "/projects/" . str_replace(" ", "_", strtolower($project['projectName'])); ?>"><?php echo $project['projectName']; ?></a></li>
-                    <?php endforeach; ?>
-                    </ul>
-                </li>
-                -->
-                <li><a href="/learn_scripture_forge">Learn</a>
-                    <ul>
-                        <li><a href="/learn_faq">Frequently Asked Questions</a></li>
-                        <li><a href="/learn_scripture_forge">About Scripture Forge</a></li>
-                        <li><a href="/learn_expand_your_team">Expand Your Team</a></li>
-                    </ul>
-                </li>
-                <li><a href="/discuss">Discuss</a></li>
-            </ul>
-        </div>
+    {% if isLoggedIn %}
 
-        {% if isLoggedIn %}
-            <div class="pull-right">
-                <ul id="header-nav" class="sf-menu">
-                    <li id="myProjects"><a href="/app/projects">My Projects</a>
-                        <ul>
-                            {% for project in projects %}
-                                <li><a href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><img src="{{ smallAvatarUrl }}" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid white; margin-right:10px" id="smallAvatarURL" />Hi, <span class="notranslate">{{ userName }}</span></a>
-                        <ul>
-                            {% if isAdmin %}
-                                <li><a href="/app/siteadmin">Site Administration</a></li>
+        <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch" data-ng-app="xforge.navbarApp" data-ng-controller="navbarController">
+            <span class="desktop-title navbar-brand d-none d-md-inline-block mr-auto">
+                <img class="navbar-logo" src="/Site/views/scriptureforge/theme/default/image/sf_logo_medium.png">
+                <a class="" href="/">{{ app.website.name }}</a>
+            </span>
+            <div class="d-md-none">
+                <ul id="mobileMenu" class="nav navbar-nav">
+                    <li uib-dropdown class="nav-item nav-projects">
+                        <a class="nav-link" uib-dropdown-toggle href id="mobileMyProjectDropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-bars"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-left" uib-dropdown-menu aria-labelledby="mobileMyProjectDropdown">
+                            <a class="dropdown-item" href="/app/activity">Activity</a>
+                            <div class="dropdown-divider"></div>
+                            {% verbatim %}
+                            <div data-ng-switch="projectTypesBySite().length" data-ng-show="rights.canCreateProject">
+                                <div data-ng-switch-when="1">
+                                    <a class="dropdown-item" data-ng-href="/app/{{projectTypesBySite()[0]}}/new-project">
+                                        <b>Start or Join a New Project</b></a>
+                                </div>
+                                <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
+                                    <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
+                                        <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
+                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endverbatim %}
+                            {% if projects|length > 10 %}
+                                <a class="dropdown-item" href="/app/projects"><b>List All Projects</b></a>
+                                <div class="dropdown-divider"></div>
                             {% endif %}
-                            <li><a href="/app/userprofile">My Profile</a></li>
-                            <li><a href="/app/activity">My Activity</a></li>
-                            <li><a href="/app/changepassword">Change Password</a></li>
-                            <li><a href="/auth/logout">Logout</a></li>
-                        </ul>
+                            {% if projects|length <= 10 %}
+                                {% verbatim %}
+                                <div class="dropdown-divider" data-ng-show="rights.canCreateProject"></div>
+                                {% endverbatim %}
+                            {% endif %}
+                            {% for project in projects %}
+                                <a class="dropdown-item"
+                                   href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <a class="navbar-brand" href="/"><span style="margin-left:20px">{{ app.website.name }}</span></a>
+                    <li uib-dropdown class="nav-item nav-user ml-auto">
+                        <a class="nav-link" uib-dropdown-toggle href id="mobileUserDropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            <img src="{{ smallAvatarUrl }}"
+                                 class="rounded-circle"
+                                 id="mobileSmallAvatarURL" /></a>
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="mobileUserDropdown">
+                            {% if isAdmin %}
+                                <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>
+                            {% endif %}
+                            <a class="dropdown-item" href="/app/userprofile">My Profile</a>
+                            <a class="dropdown-item" href="/app/changepassword">Change Password</a>
+                            <a class="dropdown-item" href="/auth/logout">Logout</a>
+                        </div>
                     </li>
                 </ul>
             </div>
-        {% else %}
-            <div id="account" class="pull-right">
-                <input type="button" value="Login" style="position:relative; top:-3px" class="login-btn left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/public/signup">Create an Account</a>
-            </div>
-        {% endif %}
 
-    </div>
-</div>
-{% endblock %}
+            <div class="d-none d-md-block">
+                <ul class="nav navbar-nav">
 
-{% block headerBootstrap4 %}
-    <!--[if lte IE 11]>
-    <div style="text-align:center">Your browser may not work so well. Please consider <a href="learn_faq">upgrading</a> to a modern standards compliant browser.</div>
-    <![endif]-->
-    <div id="header">
-        <div class="container">
-            <div class="sf-logo-medium">
-                <img src="/Site/views/scriptureforge/theme/default/image/sf_logo_medium.png" alt="Scripture Forge" style="width:92px; height:114px" />
-            </div>
-            <div id="header-nav" class="pull-left">
-                <ul class="sf-menu">
-                    {% if app.website.domain == "scriptureforge.local" %} <li><a>(Bootstrap 4)</a></li>{% endif %}
-                    <li><a href="/">Home</a></li>
-                    <!--
-                    <li><a href="/explore">Explore</a>
-                        <ul>
-                        <?php foreach($featuredProjects as $project): ?>
-                            <li><a href="<?php echo "/projects/" . str_replace(" ", "_", strtolower($project['projectName'])); ?>"><?php echo $project['projectName']; ?></a></li>
-                        <?php endforeach; ?>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/app/activity">Activity</a>
                     </li>
-                    -->
-                    <li><a href="/learn_scripture_forge">Learn</a>
-                        <ul>
-                            <li><a href="/learn_faq">Frequently Asked Questions</a></li>
-                            <li><a href="/learn_scripture_forge">About Scripture Forge</a></li>
-                            <li><a href="/learn_expand_your_team">Expand Your Team</a></li>
-                        </ul>
+                    <li class="nav-item" uib-dropdown>
+                        <a class="nav-link" uib-dropdown-toggle href id="helpDropdown" aria-haspopup="true" aria-expanded="false">Help</a>
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="helpDropdown">
+                            <a class="dropdown-item" target="_blank" href="https://community.scripture.software.sil.org/c/scripture-forge/how-to">Tutorials and How-Tos</a>
+                            <a class="dropdown-item" target="_blank" href="https://community.scripture.software.sil.org/c/scripture-forge">Community Support</a>
+                            <a class="dropdown-item" target="_blank" href="mailto:issues@scriptureforge.org">Report a Problem<br />(email issues@scriptureforge.org)</a>
+                            <a class="dropdown-item" href="/releasenotes">Release Notes</a>
+                        </div>
                     </li>
-                    <li><a href="/discuss">Discuss</a></li>
+                    <li class="nav-item dropdown" uib-dropdown>
+                        <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            My Projects</a>
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="myProjectDropdown">
+                            {% verbatim %}
+                            <div data-ng-switch="projectTypesBySite().length" data-ng-show="rights.canCreateProject">
+                                <div data-ng-switch-when="1">
+                                    <a class="dropdown-item" data-ng-href="/app/{{projectTypesBySite()[0]}}/new-project">
+                                        <b>Start or Join a New Project</b></a>
+                                </div>
+                                <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
+                                    <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
+                                        <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
+                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endverbatim %}
+                            {% if projects|length > 10 %}
+                                <a class="dropdown-item" href="/app/projects"><b>List All Projects</b></a>
+                                <div class="dropdown-divider"></div>
+                            {% endif %}
+                            {% if projects|length <= 10 %}
+                                {% verbatim %}
+                                <div class="dropdown-divider" data-ng-show="rights.canCreateProject"></div>
+                                {% endverbatim %}
+                            {% endif %}
+                            {% for project in projects %}
+                                <a class="dropdown-item"
+                                   href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <li class="nav-item" uib-dropdown>
+                        <a class="nav-link" uib-dropdown-toggle href id="userDropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            <img src="{{ smallAvatarUrl }}"
+                                 style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px"
+                                 class="rounded-circle"
+                                 id="smallAvatarURL" />Hi, <span class="notranslate">{{ userName }}</span></a>
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="userDropdown">
+                            {% if isAdmin %}
+                                <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>
+                            {% endif %}
+                            <a class="dropdown-item" href="/app/userprofile">My Profile</a>
+                            <a class="dropdown-item" href="/app/changepassword">Change Password</a>
+                            <a class="dropdown-item" href="/auth/logout">Logout</a>
+                        </div>
+                    </li>
                 </ul>
             </div>
+        </nav>
 
-            {% if isLoggedIn %}
-                <div class="pull-right">
-                    <ul id="header-nav" class="sf-menu">
-                        <li id="myProjects"><a href="/app/projects">My Projects</a>
-                            <ul>
-                                {% for project in projects %}
-                                    <li><a href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a></li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#"><img src="{{ smallAvatarUrl }}" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid white; margin-right:10px" id="smallAvatarURL" />Hi, <span class="notranslate">{{ userName }}</span></a>
-                            <ul>
-                                {% if isAdmin %}
-                                    <li><a href="/app/siteadmin">Site Administration</a></li>
-                                {% endif %}
-                                <li><a href="/app/userprofile">My Profile</a></li>
-                                <li><a href="/app/activity">My Activity</a></li>
-                                <li><a href="/app/changepassword">Change Password</a></li>
-                                <li><a href="/auth/logout">Logout</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            {% else %}
-                <div id="account" class="pull-right">
-                    <input type="button" value="Login" style="position:relative; top:-3px" class="login-btn left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/public/signup">Create an Account</a>
-                </div>
-            {% endif %}
+    {% else %}
+        <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch">
+            <span class="desktop-title navbar-brand d-none d-md-inline-block mr-auto">
+                <img class="navbar-logo" src="/Site/views/scriptureforge/theme/default/image/sf_logo_medium.png">
+                <a class="" href="/">{{ app.website.name }}</a>
+            </span>
+            <a class="navbar-brand d-md-none mr-auto" href="/"><span style="margin-left:20px">{{ app.website.name }}</span></a>
+            <ul class="nav navbar-nav">
+                <li class="nav-item header-button-rounded">
+                    <a class="nav-link" href="/public/signup">Sign Up</a>
+                </li>
+                <li class="nav-item header-button-rounded">
+                    <a class="nav-link" href="/auth/login">Login</a>
+                </li>
+            </ul>
+        </nav>
 
-        </div>
-    </div>
-{% endblock %}
-
-{% block script %}
-    <script src="/js/lib/jquery-ui-1.8.23.custom.min.js"></script>
-    <script src="/js/lib/superfish/superfish.js"></script>
-    <script src="/js/lib/superfish/hoverIntent.js"></script>
-    <script src="/js/lib/slides.min.jquery.js"></script>
-    <script>
-
-        $(document).ready(function () {
-            // Superfish menu delay
-            $("ul.sf-menu").superfish({
-                delay: 500
-            });
-
-            // Slideshow
-            $('#slides').slides({
-                preload: false,
-                preloadImage: 'Site/views/shared/image/loading.gif',
-                play: 5000,
-                pause: 2500,
-                hoverPause: true,
-                prependPagination: true,
-                paginationClass: 'slide_pagination'
-            });
-
-            /* Workaround for IE image loading with black edges */
-            if ($.browser.msie) {
-                if (parseInt($.browser.version, 10) != 6) {
-                    setTimeout(function () { $('.slides_container img').css('visibility','visible') }, 400);
-                }
-            } else {
-                $('.slides_container img').css('visibility','visible');
-            }
-
-        });
-
-    </script>
+    {% endif %}
 {% endblock %}
 
 {% block footer %}
-    <div id="footercontainer">
-
-        <div id="footer">
-            <div class="container">
-                <div class="row">
-
-                    <div class="span2">
-                        <h4>Contact</h4>
-                        <p class="small">Scripture Forge<br />SIL International<br />7500 W. Camp Wisdom Road<br />Dallas, TX 75236-5629 USA</p>
-                    </div>
-
-                    <div class="span2">
-                        <h4>Navigate</h4>
-                        <small>
-                            <a href="/">Home</a><br /><a href="/learn_scripture_forge">Learn</a><br /><a href="/discuss">Discuss</a>
-                        </small>
-                    </div>
-
-                    <div class="span1 offset4">
-                        <p><a href="http://www.sil.org"><img src="/Site/views/shared/image/SIL Logo 2014 TM.png" alt="SIL Logo" width="56" height="63" /></a></p>
-                        <p><a href="http://www.unitedbiblesocieties.org/"><img src="/Site/views/shared/image/ubs-logo.png" alt="ubs-logo" width="71" height="50" /></a></p>
-                    </div>
-
-                    <div class="span3">
-                        <p><a href="http://ic.payap.ac.th/"><img src="/Site/views/shared/image/payap_logo.png" alt="PAYAP Logo" width="170" height="50" /></a></p>
-                        <p><a href="http://www.theseedcompany.org/"><img src="/Site/views/shared/image/seed-company-logo.png" alt="Seed Company Logo" width="162" height="50" /></a></p>
-                    </div>
-
+    <footer class="footer">
+        <div class="d-flex">
+            <div class="d-none d-sm-flex align-items-end" style="margin-left: 120px">
+                <div>
+                    <a href="http://ic.payap.ac.th/"><img src="/Site/views/shared/image/payap_logo.png"
+                                                          alt="Payap University Logo" width="85" height="25" /></a>
+                    <a href="http://www.sil.org"><img src="/Site/views/shared/image/sil_logo_small.png"
+                                                      alt="SIL International Logo" width="25" height="30" /></a>
                 </div>
             </div>
-        </div>
-
-        <div id="footerBaseline">
-            <div class="container">
-                <div class="row">
-                    <div class="darkTextLogo span2"></div>
-                    <div class="span1" style="color: #404040"><small>v {{ version }}</small></div>
-                    <div class="span8">
-                        <small>Copyright <span class="notranslate">{{ "now"|date("Y") }}</span> <a href="http://www.sil.org">SIL International</a>. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</small>
-                    </div>
-                </div>
+            <div class="d-flex flex-grow justify-content-end align-items-end">
+                <small>
+                    v {{ version }}.
+                    Copyright <span class="notranslate">{{ "now"|date("Y") }}</span> <a href="http://www.sil.org" class="links">SIL International</a>.
+                    <a href="/terms_and_conditions" class="links">Terms and conditions</a>.
+                </small>
             </div>
         </div>
-
-    </div>
+    </footer>
 {% endblock %}
 
 {% block analytics %}
+    {% if 'scriptureforge.org' in http_host %}
+        <script>
+            (function (i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r;
+                i[r] = i[r] || function () {
+                            (i[r].q = i[r].q || []).push(arguments)
+                        }, i[r].l = 1 * new Date();
+                a = s.createElement(o),
+                        m = s.getElementsByTagName(o)[0];
+                a.async = 1;
+                a.src = g;
+                m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', 'UA-22170471-11', 'auto');
+            ga('send', 'pageview');
+
+        </script>
+    {% endif %}
 {% endblock %}

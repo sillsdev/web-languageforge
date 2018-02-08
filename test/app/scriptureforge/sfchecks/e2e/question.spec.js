@@ -103,26 +103,24 @@ describe('the question page', function () {
           .toBeFalsy();
         expect(textSettingsPage.paratextExportTab.exportFlagged.getAttribute('checked'))
           .toBeTruthy();
-        expect(textSettingsPage.paratextExportTab.prepareButton.isPresent()).toBe(true);
-        textSettingsPage.paratextExportTab.prepareButton.click();
+        expect(textSettingsPage.paratextExportTab.downloadPT7Button.isPresent()).toBe(true);
+        textSettingsPage.paratextExportTab.downloadPT7Button.click();
         browser.wait(expectedCondition.visibilityOf(textSettingsPage.paratextExportTab.answerCount),
           CONDITION_TIMEOUT);
         expect(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
         expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1');
         expect(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(false);
-        expect(textSettingsPage.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
       });
 
       it('can prepare export for answers flagged for export with comments', function () {
         textSettingsPage.paratextExportTab.exportComments.click();
-        textSettingsPage.paratextExportTab.prepareButton.click();
+        textSettingsPage.paratextExportTab.downloadPT7Button.click();
         browser.wait(expectedCondition.visibilityOf(textSettingsPage.paratextExportTab.answerCount),
           CONDITION_TIMEOUT);
         expect(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
         expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1');
         expect(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(true);
         expect(textSettingsPage.paratextExportTab.commentCount.getText()).toEqual('1');
-        expect(textSettingsPage.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
       });
 
     });

@@ -18,6 +18,7 @@ angular.module('palaso.ui.dc.fieldrepeat', ['palaso.ui.dc.multitext', 'palaso.ui
     function ($scope, $state, lexConfigService) {
       $scope.$state = $state;
       $scope.fieldContainsData = lexConfigService.fieldContainsData;
+      $scope.contextGuid = $scope.$parent.contextGuid;
 
       var unregister = $scope.$watch($scope.control.config, function () {
         if (angular.isDefined($scope.control.config)) {

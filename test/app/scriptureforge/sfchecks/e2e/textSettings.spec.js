@@ -65,9 +65,8 @@ describe('the questions settings page - project manager', function () {
       expect(page.paratextExportTab.exportAnswers.getAttribute('checked')).toBeTruthy();
       expect(page.paratextExportTab.exportComments.getAttribute('checked')).toBeFalsy();
       expect(page.paratextExportTab.exportFlagged.getAttribute('checked')).toBeTruthy();
-      expect(page.paratextExportTab.downloadButton.isDisplayed()).toBe(false);
-      expect(page.paratextExportTab.prepareButton.isPresent()).toBe(true);
-      page.paratextExportTab.prepareButton.click();
+      expect(page.paratextExportTab.downloadPT7Button.isPresent()).toBe(true);
+      page.paratextExportTab.downloadPT7Button.click();
       browser.wait(expectedCondition.visibilityOf(page.paratextExportTab.noExportMsg),
         CONDITION_TIMEOUT);
       expect(page.paratextExportTab.noExportMsg.isDisplayed()).toBe(true);
@@ -75,25 +74,23 @@ describe('the questions settings page - project manager', function () {
 
     it('can prepare export for all answers without comments', function () {
       page.paratextExportTab.exportFlagged.click();
-      page.paratextExportTab.prepareButton.click();
+      page.paratextExportTab.downloadPT7Button.click();
       browser.wait(expectedCondition.visibilityOf(page.paratextExportTab.answerCount),
         CONDITION_TIMEOUT);
       expect(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
       expect(page.paratextExportTab.answerCount.getText()).toEqual('2');
       expect(page.paratextExportTab.commentCount.isDisplayed()).toBe(false);
-      expect(page.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
     });
 
     it('can prepare export for all answers with comments', function () {
       page.paratextExportTab.exportComments.click();
-      page.paratextExportTab.prepareButton.click();
+      page.paratextExportTab.downloadPT7Button.click();
       browser.wait(expectedCondition.visibilityOf(page.paratextExportTab.answerCount),
         CONDITION_TIMEOUT);
       expect(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
       expect(page.paratextExportTab.answerCount.getText()).toEqual('2');
       expect(page.paratextExportTab.commentCount.isDisplayed()).toBe(true);
       expect(page.paratextExportTab.commentCount.getText()).toEqual('2');
-      expect(page.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
     });
 
   });

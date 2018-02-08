@@ -1,13 +1,21 @@
+@import '../../../../../../../node_modules/bootstrap/scss/functions';
+@import '../../../../../../../node_modules/bootstrap/scss/variables';
+@import '../../../../../../../node_modules/bootstrap/scss/mixins';
+
 $navbar-height: 50px;
 
 a {
   cursor: pointer;
 }
 
-body{
+html {
+  height: 100%;
+}
+
+body {
   background: white;
-    display: flex;
-  min-height: 100vh;
+  height: 100%;
+  display: flex;
   flex-direction: column;
 }
 
@@ -21,8 +29,11 @@ h1.mobile-title {
 }
 
 #app-container-for-bootstrap {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  @extend .flex-grow;
   margin-top: $navbar-height + 10px;
-  flex: 1;
 }
 .card .form-group-last {
   margin-bottom: 0;
@@ -68,8 +79,8 @@ dl.picklists dd {
 .footer{
   background-color: $lf-blue;
   color: white;
-  padding: 60px 0;
-  margin-top: 50px;
+  padding: 0.5em;
+  margin-top: 0.5em;
 
   .links{
     color: white;
@@ -110,8 +121,8 @@ dl.picklists dd {
 .nav.nav-tabs {
   margin-bottom: 20px;
 }
- .newline {
-    display: block;
+.newline {
+  display: block;
 }
 // TODO: Remove hack for modal box issue as a result of ui.bootstrap
 .modal-select-language {
@@ -167,6 +178,7 @@ dl.picklists dd {
 
         #clearSearch {
           position: absolute;
+          top: 0;
           right: 0.6em;
           z-index: 10;
           cursor: pointer;
@@ -175,7 +187,6 @@ dl.picklists dd {
       }
     }
   }
-
 
   .modal-content {
     height: 100%;
@@ -242,7 +253,7 @@ dl.picklists dd {
   padding: 6px 0 0;
   margin-bottom: 0;
   border-radius: 0;
-  }
+}
 
 .fixed-nav-bar {
   position: fixed;
@@ -328,21 +339,8 @@ nav {
 }
 
 @media (max-width: 500px) {
- .filter-list {
-  float: left;
-}
-}
-
-/* Taken from Bootstrap4-alpha6. TODO Remove after Bootstrap upgrade to alpha6 or later */
-.no-gutters {
-  // disabled because they conflict with a preexisting fix that used negative margins
-  // margin-right: 0;
-  // margin-left: 0;
-
-  > .col,
-  > [class*="col-"] {
-    padding-right: 0;
-    padding-left: 0;
+  .filter-list {
+    float: left;
   }
 }
 
@@ -386,6 +384,7 @@ nav {
 
 nav.navbar {
   transition: background-color 1s ease;
+  flex: 0 0 auto;
 
   .nav-user.nav-item {
     margin-left: 0;
@@ -396,15 +395,6 @@ nav.navbar {
   margin-right: 0.5em;
 }
 
-footer.footer {
-  margin-top: 0.5em;
-  padding: 1em;
-}
-
-.dropdown .pui-no-caret::after {
-  display: none;
-}
-
-pui-tab {
-  width: 100%;
+.btn-std {
+  @include button-variant(white, #ADADAD, #E6E6E6);
 }

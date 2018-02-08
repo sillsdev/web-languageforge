@@ -1,11 +1,9 @@
 import * as angular from 'angular';
 
+import { InputSystemsModule } from '../../bellows/core/input-systems/input-systems.service';
 import { LexiconCoreModule } from './core/lexicon-core.module';
-
-// these are imported here to ensure JS files can use them
-import '../../bellows/core/input-systems/input-systems.service';
-import './settings/configuration/configuration';
+import { LexiconConfigurationModule } from './settings/configuration/configuration.module';
 
 export const LexiconModule = angular
-  .module('lexiconModule', [LexiconCoreModule])
+  .module('lexiconModule', [InputSystemsModule, LexiconCoreModule, LexiconConfigurationModule])
   .name;

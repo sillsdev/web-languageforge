@@ -1,25 +1,49 @@
+using System.Threading.Tasks;
 using Hangfire;
+using MongoDB.Driver;
+using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Models;
+using SIL.XForge.WebApi.Server.Utils;
 
 namespace SIL.XForge.WebApi.Server.Services
 {
     public class SendReceiveService
     {
-        public void StartJob(SendReceiveJob job)
-        {
-            if (job.BackgroundJobId != null)
-                return;
+        private readonly IRepository<SendReceiveJob> _jobRepo;
 
-            string id = job.Id;
-            BackgroundJob.Enqueue<SendReceiveRunner>(r => r.RunAsync(null, null, id));
+        public SendReceiveService(IRepository<SendReceiveJob> jobRepo)
+        {
+            _jobRepo = jobRepo;
         }
 
-        public void CancelJob(SendReceiveJob job)
+        public async Task<Attempt<SendReceiveJob>> TryCreateJobAsync(string userId, string projectId)
         {
-            if (job.BackgroundJobId == null)
-                return;
+            SendReceiveJob job = await _jobRepo.UpdateAsync(j => j.ProjectRef == projectId
+                && (j.State == SendReceiveJob.PendingState || j.State == SendReceiveJob.SyncingState),
+                u => u
+                    .SetOnInsert(j => j.ProjectRef, projectId)
+                    .SetOnInsert(j => j.State, SendReceiveJob.PendingState)
+                    .Inc(j => j.StartCount, 1),
+                true);
+            if (job.StartCount == 1)
+            {
+                // new job, so enqueue the runner
+                string jobId = job.Id;
+                BackgroundJob.Enqueue<SendReceiveRunner>(r => r.RunAsync(null, null, userId, jobId));
+                return Attempt.Success(job);
+            }
+            return Attempt.Failure(job);
+        }
 
-            BackgroundJob.Delete(job.BackgroundJobId);
+        public async Task<bool> DeleteJobAsync(SendReceiveJob job)
+        {
+            if (await _jobRepo.DeleteAsync(job))
+            {
+                if (job.State == SendReceiveJob.PendingState || job.State == SendReceiveJob.SyncingState)
+                    BackgroundJob.Delete(job.BackgroundJobId);
+                return true;
+            }
+            return false;
         }
     }
 }

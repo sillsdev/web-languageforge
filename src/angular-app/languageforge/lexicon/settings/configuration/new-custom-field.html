@@ -1,55 +1,54 @@
 <div class="modal-header">
-    <h3 translate="Create a new Custom Field"></h3>
+    <h3>Create a new Custom Field</h3>
 </div>
 <div class="modal-body">
     <form class="form-horizontal" name="customFieldForm" novalidate>
         <div class="form-group">
-            <label class="control-label" for="name" translate="Display Name"></label>
+            <label class="col-form-label" for="name">Display Name</label>
             <div class="controls">
-                <input class="span3 form-control" id="name" autofocus
+                <input class="form-control" id="name" autofocus
                     required type="text" name="name"
-                    placeholder="{{'name' | translate}}"
-                    data-ng-model="newCustomData.name" />
+                    placeholder="name"
+                    data-ng-model="newCustomData.name">
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" for="code" translate="Field Code"></label>
+            <label class="col-form-label" for="code">Field Code</label>
             <div class="controls">
-                <input class="span3 form-control" id="code"
+                <input class="form-control" id="code"
                     disabled type="text" name="code"
-                    placeholder="{{'code' | translate}}"
-                    data-ng-model="newCustomData.code" />
+                    placeholder="code"
+                    data-ng-model="newCustomData.code">
                 <span data-ng-show="customFieldNameExists(newCustomData.level, newCustomData.code)">
-                    <i id="fieldCodeExists" class="fa fa-exclamation-circle"
-                        title="{{'Field Code already exists!' | translate }}"
+                    <i id="fieldCodeExists" class="fa fa-exclamation-circle" title="Field Code already exists!"
                        style="position: absolute; padding-left: 5px; padding-top: 8px;"></i></span>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" for="level" translate="Field Level"></label>
+            <label class="col-form-label" for="level">Field Level</label>
             <div class="controls">
-                <select class="form-control" id="level" name="level" required
+                <select class="form-control custom-select" id="level" name="level" required
                     data-ng-model="newCustomData.level"
                     data-ng-options="selects.level.options[key] for key in selects.level.optionsOrder">
-                    <option value="">-- {{'choose a field level' | translate }} --</option></select>
+                    <option value="">-- choose a field level --</option></select>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" for="type" translate="Field Type"></label>
+            <label class="col-form-label" for="type">Field Type</label>
             <div class="controls">
-                <select class="form-control" id="type" name="type" required
+                <select class="form-control custom-select" id="type" name="type" required
                     data-ng-model="newCustomData.type"
                     data-ng-options="selects.type.options[key] for key in selects.type.optionsOrder">
-                    <option value="">-- {{'choose a field type' | translate }} --</option></select>
+                    <option value="">-- choose a field type --</option></select>
             </div>
         </div>
         <div class="form-group" data-ng-if="(newCustomData.type == 'optionlist') || (newCustomData.type == 'multioptionlist')">
-            <label class="control-label" for="optionlistCode" translate="Option List"></label>
+            <label class="col-form-label" for="optionListCode">Option List</label>
             <div class="controls">
-                <select class="form-control" id="optionlistCode" name="optionlistCode" required
+                <select class="form-control custom-select" id="optionListCode" name="optionlistCode" required
                     data-ng-model="newCustomData.listCode"
                     data-ng-options="selects.listCode.options[code] for code in selects.listCode.optionsOrder">
-                    <option value="">-- {{'choose an option list' | translate }} --</option></select>
+                    <option value="">-- choose an option list --</option></select>
             </div>
         </div>
     </form>
@@ -58,5 +57,5 @@
     <button class="btn btn-primary" type="submit"
         data-ng-click="add()"
         data-ng-disabled="customFieldForm.$invalid || customFieldNameExists(newCustomData.level, newCustomData.code)">
-        <i class="fa fa-plus"></i> {{'Add' | translate}} <span class="notranslate">{{newCustomData.name}}</span></button>
+        <i class="fa fa-plus"></i> Add <span class="notranslate">{{newCustomData.name}}</span></button>
 </div>

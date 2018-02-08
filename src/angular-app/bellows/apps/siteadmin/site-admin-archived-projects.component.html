@@ -1,30 +1,34 @@
 <form data-ng-show="$ctrl.rights.showControlBar" class="control-bar form-inline">
-    <button data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.publish" class="btn"
-            data-ng-click="$ctrl.publishProjects()">
-        <i class="fa fa-globe fa-lg iconPadding" aria-hidden="true" style="color:black"></i>Re-publish Projects</button>
-    <button data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.remove" class="btn"
-            data-ng-click="$ctrl.deleteProjects()" style="color:black">Delete Projects</button>
+    <div class="row">
+        <div class="col-12">
+            <button data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.publish" class="btn btn-std"
+                    data-ng-click="$ctrl.publishProjects()">
+                <i class="fa fa-globe fa-lg iconPadding" aria-hidden="true" style="color:black"></i>Re-publish Projects</button>
+            <button data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.remove" class="btn btn-std"
+                    data-ng-click="$ctrl.deleteProjects()" style="color:black">Delete Projects</button>
+        </div>
+    </div>
 </form>
-<hr />
+<hr>
 <listview hide-if-empty="true" items="$ctrl.archivedProjects" visible-items="visibleProjects" select="">
     <div class="details-row" data-ng-repeat="project in visibleProjects">
         <ul class="list-inline" data-ng-class="{ active: $ctrl.isSelected(project) }">
             <li class="list-inline-item" data-ng-show="$ctrl.rights.publish">
                 <!--suppress HtmlFormInputWithoutLabel -->
                 <input type="checkbox" data-ng-checked="$ctrl.isSelected(project)"
-                       data-ng-click="$ctrl.updateSelection($event, project)" />
+                       data-ng-click="$ctrl.updateSelection($event, project)">
             </li>
             <li class="list-inline-item">
                 <span class="col-sm-4">
                     <a href="/app/{{project.appName}}/{{project.id}}/">
                         <span class="larger-text">{{project.projectName}}</span>
                     </a>
-                    <br />
+                    <br>
                     <small class="text-muted">{{$ctrl.projectTypeNames[project.appName]}}</small>
                 </span>
             </li>
             <li class="list-inline-item">Archived on <span class="notranslate">{{project.dateModified | date:'fullDate'}}</span></li>
         </ul>
-        <hr />
+        <hr>
     </div>
 </listview>

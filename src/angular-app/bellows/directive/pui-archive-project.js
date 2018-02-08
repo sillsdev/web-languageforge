@@ -4,8 +4,7 @@ angular.module('palaso.ui.archiveProject', ['coreModule'])
   .directive('puiArchiveProject', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion +
-        '/pui-archive-project.html',
+      templateUrl: '/angular-app/bellows/directive/pui-archive-project.html',
       scope: {
         puiActionInProgress: '='
       },
