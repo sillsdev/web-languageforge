@@ -72,6 +72,10 @@ angular.module('palaso.ui.comments')
                 if (comment.status === 'todo') {
                   return true;
                 }
+              } else if ($scope.commentFilter.status === 'resolved') {
+                if (comment.status === 'resolved') {
+                  return true;
+                }
               } else { // show unresolved comments
                 if (comment.status !== 'resolved') {
                   return true;
