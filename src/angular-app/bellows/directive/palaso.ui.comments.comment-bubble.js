@@ -77,12 +77,7 @@ angular.module('palaso.ui.comments')
               $scope.control.hideCommentsPanel();
             } else {
               $scope.control.setCommentContext($scope.contextGuid);
-              $scope.control.selectFieldForComment($scope.field,
-                $scope.model,
-                $scope.inputSystem.tag,
-                $scope.multiOptionValue,
-                $scope.pictureSrc,
-                $scope.contextGuid);
+              $scope.selectFieldForComment();
               if ($scope.multiOptionValue) {
                 var bubbleOffset = $scope.element.parents('.list-repeater').offset().top;
               } else {
@@ -97,6 +92,19 @@ angular.module('palaso.ui.comments')
             }
           };
         });
+
+        $scope.selectFieldForComment = function selectFieldForComment() {
+          $scope.control.selectFieldForComment($scope.field,
+            $scope.model,
+            $scope.inputSystem.tag,
+            $scope.multiOptionValue,
+            $scope.pictureSrc,
+            $scope.contextGuid);
+        };
+
+        $scope.$watch('model', function (newContent) {
+          $scope.selectFieldForComment();
+        }, true);
 
       }]
     };

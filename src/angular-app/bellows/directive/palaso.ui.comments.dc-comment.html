@@ -41,7 +41,7 @@
                 <button ng-show="!comment.editing && isOriginalRelevant()" class="btn btn-std btn-sm" ng-click="comment.regarding.visible = !comment.regarding.visible">
                     (<span ng-show="!comment.regarding.visible">view</span><span ng-show="comment.regarding.visible">hide</span> original meaning)</button>
                 <div class="commentRegarding" data-ng-show="comment.regarding.field && comment.regarding.visible === true && !comment.editing">
-                    <regarding-field class="form-control" content="comment.regarding.fieldValue"
+                    <regarding-field class="form-control" content="comment.regarding.fieldValue" control="control"
                          field-config="commentRegardingFieldConfig" ng-hide="isCommentRegardingPicture"></regarding-field>
                     <div data-ng-if="isCommentRegardingPicture">
                         <img data-ng-src="{{comment.regarding.fieldValue}}">
