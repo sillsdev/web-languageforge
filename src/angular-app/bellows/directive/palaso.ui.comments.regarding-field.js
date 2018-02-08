@@ -17,7 +17,6 @@ angular.module('palaso.ui.comments')
 
         $scope.$watch('fieldConfig', function (newContent) {
           if (angular.isDefined(newContent)) {
-            console.log(newContent);
             $scope.setContent();
           }
         });
