@@ -8,6 +8,7 @@
             <!--suppress HtmlFormInputWithoutLabel -->
             <select ng-show="rights.canUpdateCommentStatus()" class="form-control custom-select" data-ng-model="commentFilter.status">
                 <option value="all">Show All</option>
+                <option value="resolved">Resolved</option>
                 <option value="unresolved">Unresolved</option>
                 <option ng-if="rights.canUpdateCommentStatus()" value="todo">Todo</option>
             </select>
