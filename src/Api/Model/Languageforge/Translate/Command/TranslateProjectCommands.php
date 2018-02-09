@@ -128,16 +128,17 @@ class TranslateProjectCommands
 
         $client = new Client(['handler' => $handlerStack]);
         $url = 'http://localhost/machine/translation/projects';
-        $postData = [
-            'json' => [
-                'id' => $project->databaseName(),
-                'sourceLanguageTag' => $project->config->source->inputSystem->tag,
-                'targetLanguageTag' => $project->config->target->inputSystem->tag,
-                'sourceSegmentType' => $project->config->isTranslationDataScripture ? 'line' : 'latin',
-                'targetSegmentType' => $project->config->isTranslationDataScripture ? 'line' : 'latin',
-                'isShared' => !!$project->config->isTranslationDataShared
-            ]
+        $newProject = [
+            'id' => $project->id->asString(),
+            'sourceLanguageTag' => $project->config->source->inputSystem->tag,
+            'targetLanguageTag' => $project->config->target->inputSystem->tag,
+            'isShared' => !!$project->config->isTranslationDataShared
         ];
+        if (!$project->config->isTranslationDataScripture) {
+            $newProject['sourceSegmentType'] = 'latin';
+            $newProject['targetSegmentType'] = 'latin';
+        }
+        $postData = ['json' => $newProject];
         $client->post($url, $postData);
     }
 
@@ -154,7 +155,7 @@ class TranslateProjectCommands
         }
 
         $client = new Client(['handler' => $handlerStack]);
-        $url = 'http://localhost/machine/translation/projects/id:' . $project->databaseName();
+        $url = 'http://localhost/machine/translation/projects/id:' . $project->id->asString();
         try {
             $client->delete($url);
         } catch (RequestException $e) {

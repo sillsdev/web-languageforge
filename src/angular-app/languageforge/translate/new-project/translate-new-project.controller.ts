@@ -7,6 +7,7 @@ import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { SessionCallback, SessionService } from '../../../bellows/core/session.service';
 import { InputSystem } from '../../../bellows/shared/model/input-system.model';
 import { ParatextProject, ParatextUserInfo } from '../../../bellows/shared/model/paratext-user-info.model';
+import { MachineService } from '../core/machine.service';
 import { JsonRpcCallback, TranslateProjectService } from '../core/translate-project.service';
 import { TranslateSendReceiveService } from '../core/translate-send-receive.service';
 import { TranslateConfig, TranslateConfigDocType } from '../shared/model/translate-config.model';
@@ -66,16 +67,16 @@ export class TranslateNewProjectController implements angular.IController {
     '$state', 'sessionService',
     'silNoticeService', 'inputSystems',
     'translateProjectApi', 'linkService',
-    'userRestApiService',
+    'userRestApiService', 'machineService',
     'translateSendReceiveService'
   ];
-  constructor(private $scope: angular.IScope, private $q: angular.IQService,
-              private $filter: angular.IFilterService, private $window: angular.IWindowService,
-              private $state: angular.ui.IStateService, private sessionService: SessionService,
-              private notice: NoticeService, private inputSystems: InputSystemsService,
-              private projectApi: TranslateProjectService, private linkService: LinkService,
-              private userRestApiService: UserRestApiService,
-              private translateSendReceiveService: TranslateSendReceiveService) {}
+  constructor(private readonly $scope: angular.IScope, private readonly $q: angular.IQService,
+              private readonly $filter: angular.IFilterService, private readonly $window: angular.IWindowService,
+              private readonly $state: angular.ui.IStateService, private readonly sessionService: SessionService,
+              private readonly notice: NoticeService, private readonly inputSystems: InputSystemsService,
+              private readonly projectApi: TranslateProjectService, private readonly linkService: LinkService,
+              private readonly userRestApiService: UserRestApiService, private readonly machine: MachineService,
+              private readonly translateSendReceiveService: TranslateSendReceiveService) {}
 
   $onInit() {
     this.interfaceConfig = new InterfaceConfig();
@@ -344,7 +345,11 @@ export class TranslateNewProjectController implements angular.IController {
         this.createProject()
           .then(() => this.updateConfig())
           .then(() => this.translateSendReceiveService.startClone())
-          .then(() => this.gotoEditor());
+          .then(() => {
+            this.machine.initialise(this.newProject.id);
+            this.machine.startTraining();
+            this.gotoEditor();
+          });
         break;
       case 'newProject.sendReceiveClone':
         break;
