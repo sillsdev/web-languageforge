@@ -50,14 +50,6 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
           return url;
         };
 
-        $scope.formatTimestamp = function formatTimestamp(timestamp) {
-          var totalSeconds = timestamp / 1000;
-          var minutes = Math.floor(totalSeconds / 60);
-          var seconds = Math.floor(totalSeconds % 60);
-          seconds = (seconds < 10 ? '0' : '') + seconds;
-          return minutes + ':' + seconds;
-        };
-
         // strips the timestamp file prefix (returns everything after the '_')
         function originalFileName(filename) {
           if (angular.isUndefined(filename)) return '';
