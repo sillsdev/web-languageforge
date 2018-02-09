@@ -1,5 +1,13 @@
 # Language Forge Release Notes #
 
+### 1.4 Release (9-February-2018)
+- New "Login with Google" allows easier sign-up and login without having to remember another password
+- Redesigned commenting UI streamlines both reviewing and making comments for use on mobile, tablet or desktop
+- Better support for mobile browsers
+- Various aestetic improvements
+- Companion Android App (Beta) now available in the [Google Play Store](https://play.google.com/store/apps/details?id=org.sil.languageforgeweb&hl=en)
+- Numerous internal improvements and bugfixes
+
 ### 1.3 Release (31-August-2017)
 - New Help Menu shows how to contact the developers and where to go for help
 - Localization!  Help us get Language Forge localized into your national language
