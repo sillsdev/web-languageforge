@@ -16,7 +16,6 @@ import { TranslateProject } from '../shared/model/translate-project.model';
 import { TranslateUtilities } from '../shared/translate-utilities';
 import { DocumentEditor, SourceDocumentEditor, TargetDocumentEditor } from './document-editor';
 import { Metrics, MetricService } from './metric.service';
-import { QuillUsxConverter } from './quill/quill-usx.converter';
 
 export class TranslateEditorController implements angular.IController {
   tecProject: TranslateProject;
@@ -65,9 +64,6 @@ export class TranslateEditorController implements angular.IController {
       dragAndDrop: {
         onDrop: (file: File, quill: Quill, event: DragEvent) => {
           return this.onDrop(file, quill, event);
-        // },
-        // onPaste: (item: DataTransferItem, quill: Quill, event: ClipboardEvent) => {
-        //   return this.onPaste(item, quill, event);
         }
       },
 
@@ -687,35 +683,22 @@ export class TranslateEditorController implements angular.IController {
   }
 
   private onDrop(file: File, quill: Quill, event: DragEvent): void {
-    if (!file.name.toLowerCase().endsWith('.usx') && !file.name.toLowerCase().endsWith('.txt')) {
-      this.notice.push(this.notice.ERROR, 'Drag a USX file (*.usx) or text file (*.txt).');
+    if (this.isScripture) {
+      return;
+    }
+
+    if (!file.name.toLowerCase().endsWith('.txt')) {
+      this.notice.push(this.notice.ERROR, 'Drag a text file (*.txt).');
       return;
     }
 
     event.stopPropagation();
     event.preventDefault();
-    const isVerseOnNewLine = this.tecProject.config.isTranslationDataScripture;
-    if (file.name.toLowerCase().endsWith('.usx')) {
-      this.notice.setLoading('Reading USX file "' + file.name + '"...');
-      this.util.readUsxFile(file).then((usx: string) => {
-        this.notice.setLoading('Formatting USX file "' + file.name + '" data...');
-        this.usxToHtml(usx).then(result => {
-          if (result.ok) {
-            this.insertHtml(quill, result.data, isVerseOnNewLine, false);
-          }
-        }).catch(result => {
-          this.notice.push(this.notice.ERROR, '"' + file.name + '" does not appear to be valid USX. Try another file.',
-            result.data);
-        }).finally( () => this.notice.cancelLoading());
-      }).catch((errorMessage: string) => {
-        this.notice.cancelLoading();
-        this.notice.push(this.notice.ERROR, errorMessage);
-      });
-    } else if (file.name.toLowerCase().endsWith('.txt')) {
+    if (file.name.toLowerCase().endsWith('.txt')) {
       this.notice.setLoading('Reading text file "' + file.name + '"...');
       this.util.readTextFile(file).then((text: string) => {
         const html = '<p>' + text.replace(/\n/g, '</p><p>') + '</p>';
-        this.insertHtml(quill, html, isVerseOnNewLine, false);
+        this.insertHtml(quill, html, false);
         this.notice.cancelLoading();
       }).catch((errorMessage: string) => {
         this.notice.cancelLoading();
@@ -724,43 +707,10 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  private onPaste(item: DataTransferItem, quill: Quill, event: ClipboardEvent): void {
-    event.preventDefault();
-    this.notice.setLoading('Reading USX file...');
-    this.util.readUsxFile(item).then((usx: string) => {
-      this.notice.setLoading('Formatting USX file data...');
-      this.usxToHtml(usx).then(result => {
-        if (result.ok) {
-          this.insertHtml(quill, result.data);
-        }
-      }).catch(result => {
-        this.notice.push(this.notice.ERROR, 'This does not appear to be valid USX. Try another file.', result.data);
-      }).finally( () => this.notice.cancelLoading());
-    }).catch((errorMessage: string) => {
-      this.notice.cancelLoading();
-      this.notice.push(this.notice.ERROR, errorMessage);
-    });
-  }
-
-  private usxToHtml(usx: string): angular.IPromise<JsonRpcResult> {
-    const deferred = this.$q.defer();
-    const result: JsonRpcResult = QuillUsxConverter.convertFromStringToHtml(usx, 'application/xml');
-    if (result.ok) {
-      deferred.resolve(result);
-    } else {
-      deferred.reject(result);
-    }
-    return deferred.promise;
-  }
-
-  private insertHtml(quill: Quill, html: string, isVerseOnNewLine = false, isBlankLastLineRequired = true): void {
+  private insertHtml(quill: Quill, html: string, isBlankLastLineRequired = true): void {
     // ensure blank line at end - allows to complete the last segment
     if (isBlankLastLineRequired && !html.endsWith('<p><br></p>')) {
       html += '<p><br></p>';
-    }
-
-    if (isVerseOnNewLine) {
-      html = QuillUsxConverter.versesOnNewLine(html);
     }
 
     this.$scope.$applyAsync(() => {
@@ -770,10 +720,6 @@ export class TranslateEditorController implements angular.IController {
       }
 
       quill.clipboard.dangerouslyPasteHTML(index, html, Quill.sources.USER);
-
-      if (!this.source.isTextEmpty && !this.target.isTextEmpty) {
-        QuillUsxConverter.alignHtml(this.source, this.target);
-      }
     });
   }
 
