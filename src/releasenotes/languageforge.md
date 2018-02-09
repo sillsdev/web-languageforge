@@ -3,6 +3,7 @@
 ### 1.4 Release (9-February-2018)
 - New "Login with Google" allows easier sign-up and login without having to remember another password
 - Redesigned commenting UI streamlines both reviewing and making comments for use on mobile, tablet or desktop
+- Audio player now has a seek slider and time elapsed/remaining
 - Better support for mobile browsers
 - Various aestetic improvements
 - Companion Android App (Beta) now available in the [Google Play Store](https://play.google.com/store/apps/details?id=org.sil.languageforgeweb&hl=en)
