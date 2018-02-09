@@ -152,7 +152,7 @@ export class TranslateEditorController implements angular.IController {
             new TranslateUserPreferences();
           this.source.inputSystem = this.tecProject.config.source.inputSystem;
           this.target.inputSystem = this.tecProject.config.target.inputSystem;
-          this.machine.initialise(this.tecProject.slug);
+          this.machine.initialise(this.tecProject.id);
           this.showFormats =  this.tecProject.config.userPreferences.isFormattingOptionsShown;
 
           this.source.isScripture = this.tecProject.config.isTranslationDataScripture;
@@ -218,7 +218,7 @@ export class TranslateEditorController implements angular.IController {
         }
       });
 
-      this.machine.initialise(this.tecProject.slug);
+      this.machine.initialise(this.tecProject.id);
 
       if (this.source != null) {
         this.source.isScripture = this.tecProject.config.isTranslationDataScripture;

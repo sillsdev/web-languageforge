@@ -98,7 +98,7 @@
         <div class="d-flex flex-no-grow">
             <label class="editor-label flex-grow text-truncate" data-translate="Documents"></label>
             <button type="button" class="btn btn-std btn-sm mb-1" data-ng-click="$ctrl.modalUpdateDocumentSet()"
-                    data-ng-show="$ctrl.tecRights.canEditProject()">
+                    data-ng-show="$ctrl.tecRights.canEditProject() && !$ctrl.isScripture">
                 <i class="fa fa-plus"></i></button>
         </div>
         <div class="picklist">
@@ -113,8 +113,9 @@
                             <i class="fa fa-pencil iconPadding"></i>{{'Edit Name' | translate}}</a>
                         <a class="dropdown-item" data-ng-click="$ctrl.modalMoveDocumentSet($index)">
                             <i class="fa fa-arrows-v iconPadding"></i>{{'Move' | translate}}</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" data-ng-click="$ctrl.modalDeleteDocumentSet($index)">
+                        <div class="dropdown-divider" data-ng-show="!$ctrl.isScripture"></div>
+                        <a class="dropdown-item" data-ng-click="$ctrl.modalDeleteDocumentSet($index)"
+                           data-ng-show="!$ctrl.isScripture">
                             <i class="fa fa-times iconPadding"></i>{{'Delete' | translate}}</a>
                     </div>
                 </div>

@@ -323,7 +323,11 @@ export class TargetDocumentEditor extends DocumentEditor {
 
     if (!this.isTranslating && this.isSelectionAtSegmentEnd) {
       // only bother updating the suggestion if the cursor is at the end of the segment
-      this.suggestions = this.machine.updatePrefix(this.currentSegment.text);
+      let text = this.currentSegment.text;
+      if (text === DocumentEditor.EmptySegmentPlaceholder) {
+        text = '';
+      }
+      this.suggestions = this.machine.updatePrefix(text);
       if (this.hasSuggestionsChanged && this.hasSuggestions) {
         this.metricService.onSuggestionGiven();
       }
@@ -441,7 +445,10 @@ export class TargetDocumentEditor extends DocumentEditor {
       return false;
     }
     const selectionEndIndex = selection.index + selection.length;
-    const segmentEndIndex = this.currentSegment.range.index + this.currentSegment.range.length;
+    let segmentEndIndex = this.currentSegment.range.index + this.currentSegment.range.length;
+    if (this.currentSegment.text === DocumentEditor.EmptySegmentPlaceholder) {
+      segmentEndIndex--;
+    }
     return selectionEndIndex === segmentEndIndex;
   }
 
