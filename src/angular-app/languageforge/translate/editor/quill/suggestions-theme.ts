@@ -289,21 +289,26 @@ export function registerSuggestionsTheme(): void {
   // https://github.com/immense/quill-drag-and-drop-module
   class DragAndDrop extends QuillModule {
     options: DropOptions;
+    private dragTimer: number;
 
     constructor(quill: Quill, options: DropOptions) {
       super(quill, options);
       if (options.onDrop) {
         this.options.onDrop = options.onDrop;
-        this.quill.root.addEventListener('drop', this.handleDrop.bind(this));
+        this.quill.root.addEventListener('dragover', event => this.handleDragOver(event));
+        this.quill.root.addEventListener('dragleave', event => this.handleDragLeave(event));
+        this.quill.root.addEventListener('drop', event => this.handleDrop(event));
       }
 
       if (options.onPaste) {
         this.options.onPaste = options.onPaste;
-        this.quill.root.addEventListener('paste', this.handlePaste.bind(this));
+        this.quill.root.addEventListener('paste', event => this.handlePaste(event));
       }
     }
 
     handleDrop(event: DragEvent): void {
+      event.preventDefault();
+      this.quill.root.classList.remove('drop-box');
       if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length) {
         if (document.caretRangeFromPoint) {
           const selection = document.getSelection();
@@ -318,7 +323,19 @@ export function registerSuggestionsTheme(): void {
           if (this.options.onDrop) this.options.onDrop(file, this.quill, event);
         });
       }
-      DragAndDrop.clearDropElementClasses();
+    }
+
+    handleDragOver(event: DragEvent): void {
+      event.preventDefault();
+      const dt = event.dataTransfer;
+      if (dt.types && (dt.types.indexOf ? dt.types.indexOf('Files') !== -1 : dt.types.includes('Files'))) {
+        this.quill.root.classList.add('drop-box');
+        window.clearTimeout(this.dragTimer);
+      }
+    }
+
+    handleDragLeave(event: DragEvent): void {
+      this.dragTimer = window.setTimeout(() => this.quill.root.classList.remove('drop-box'), 25);
     }
 
     handlePaste(event: ClipboardEvent): void {
@@ -328,66 +345,6 @@ export function registerSuggestionsTheme(): void {
         });
       }
     }
-
-    static monitorFileDragEvents(): void {
-      let dragTimer: number;
-      document.addEventListener('dragover', (event: any) => {
-        event.preventDefault();
-        const dt = event.dataTransfer;
-        if (dt.types && (dt.types.indexOf ? dt.types.indexOf('Files') !== -1 : dt.types.includes('Files'))) {
-          const elements = document.getElementsByClassName('ql-editor');
-          [].forEach.call(elements, (element: HTMLElement, index: number) => {
-            element.classList.add('drop-box');
-            if (!element.id) element.id = 'ql-editor-' + index;
-            dropElements.push(element);
-          });
-          window.clearTimeout(dragTimer);
-        }
-      });
-
-      document.addEventListener('dragleave', (event: DragEvent) => {
-        const element = event.target as HTMLElement;
-        if (DragAndDrop.isInDropElements(element)) {
-          return;
-        }
-
-        dragTimer = window.setTimeout(() => {
-          DragAndDrop.clearDropElementClasses();
-        }, 25);
-      });
-
-      document.addEventListener('drop', (event: DragEvent) => {
-        event.preventDefault();
-        DragAndDrop.clearDropElementClasses();
-      });
-    }
-
-    private static isInDropElements(element: HTMLElement): boolean {
-      let result = false;
-      dropElements.forEach(dropElement => {
-        if (dropElement.id === element.id || DragAndDrop.isDescendant(dropElement, element)) {
-          result = true;
-        }
-      });
-      return result;
-    }
-
-    private static isDescendant(parent: HTMLElement, child: HTMLElement): boolean {
-      let node = child.parentNode;
-      while (node != null) {
-        if (node === parent) {
-          return true;
-        }
-        node = node.parentNode;
-      }
-      return false;
-    }
-
-    private static clearDropElementClasses(): void {
-      dropElements.forEach(element => element.classList.remove('drop-box'));
-      dropElements = [];
-    }
-
   }
 
   // Customize the Snow theme in Quill
@@ -493,6 +450,4 @@ export function registerSuggestionsTheme(): void {
   Quill.register('modules/dragAndDrop', DragAndDrop);
   Quill.register('modules/toolbar', MultiEditorToolbar, true);
   Quill.register('themes/suggestions', SuggestionsSnowTheme);
-
-  DragAndDrop.monitorFileDragEvents();
 }
