@@ -14,8 +14,8 @@ angular.module('palaso.ui.comments')
         multiOptionValue: '<',
         picture: '<'
       },
-      controller: ['$scope', 'lexCommentService', 'sessionService', '$element', 'lexConfigService',
-        function ($scope, commentService, ss, $element, lexConfig) {
+      controller: ['$scope', 'lexCommentService', 'sessionService', '$element', 'lexConfigService', '$timeout',
+        function ($scope, commentService, ss, $element, lexConfig, $timeout) {
         if (!angular.isDefined($scope.inputSystem)) {
           $scope.inputSystem = {
             abbreviation: '',
@@ -25,28 +25,6 @@ angular.module('palaso.ui.comments')
 
         $scope.active = false;
         $scope.pictureSrc = '';
-        $scope.contextGuid = $scope.$parent.contextGuid +
-          ($scope.$parent.contextGuid ? ' ' : '') +
-          $scope.field;
-        lexConfig.getFieldConfig($scope.field).then(function (fieldConfig) {
-          if (!angular.isDefined($scope.configType)) {
-            $scope.configType = fieldConfig.type;
-          }
-
-          if (fieldConfig.type === 'pictures' && angular.isDefined($scope.picture)) {
-            $scope.pictureSrc = $scope.$parent.getPictureUrl($scope.picture);
-            $scope.contextGuid += '#' + $scope.picture.guid; // Would prefer to use the ID
-          } else if (fieldConfig.type === 'multioptionlist') {
-            $scope.contextGuid += '#' + $scope.multiOptionValue;
-          }
-
-          $scope.contextGuid += ($scope.inputSystem.abbreviation ? '.' +
-            $scope.inputSystem.abbreviation : '');
-          if ($scope.contextGuid.indexOf('undefined')  === -1) {
-            $scope.active = true;
-          }
-        });
-
         $scope.element = $element;
 
         ss.getSession().then(function (session) {
@@ -70,11 +48,16 @@ angular.module('palaso.ui.comments')
               return;
             }
 
-            if (!angular.isDefined($scope.inputSystem)) {
-              $scope.inputSystem = {
-                abbreviation: '',
-                tag: ''
-              };
+            // Make sure there is an entry ID as you can't comment on a new entry until it is saved
+            if ($scope.control.currentEntry.id.indexOf('_new_') !== -1) {
+              $scope.control.saveCurrentEntry(true, function () {
+                // Need to also check against this promise as the callback above doesn't include it
+                $scope.control.editorService.refreshEditorData().then(function () {
+                  $scope.getComments();
+                });
+              });
+
+              return false;
             }
 
             if ($scope.control.commentContext.contextGuid === $scope.contextGuid) {
@@ -114,8 +97,37 @@ angular.module('palaso.ui.comments')
           }
         };
 
+        $scope.setContextGuid = function setContextGuid() {
+          $scope.contextGuid = $scope.$parent.contextGuid +
+          ($scope.$parent.contextGuid ? ' ' : '') + $scope.field;
+          lexConfig.getFieldConfig($scope.field).then(function (fieldConfig) {
+            if (!angular.isDefined($scope.configType)) {
+              $scope.configType = fieldConfig.type;
+            }
+
+            if (fieldConfig.type === 'pictures' && angular.isDefined($scope.picture)) {
+              $scope.pictureSrc = $scope.$parent.getPictureUrl($scope.picture);
+              $scope.contextGuid += '#' + $scope.picture.guid; // Would prefer to use the ID
+            } else if (fieldConfig.type === 'multioptionlist') {
+              $scope.contextGuid += '#' + $scope.multiOptionValue;
+            }
+
+            $scope.contextGuid += ($scope.inputSystem.abbreviation ? '.' +
+              $scope.inputSystem.abbreviation : '');
+            if ($scope.contextGuid.indexOf('undefined')  === -1) {
+              $scope.active = true;
+            }
+          });
+        };
+
+        $scope.setContextGuid();
+
         $scope.$watch('model', function () {
           $scope.checkValidModelContextChange();
+        }, true);
+
+        $scope.$watch('inputSystem', function () {
+          $scope.setContextGuid();
         }, true);
 
       }]
