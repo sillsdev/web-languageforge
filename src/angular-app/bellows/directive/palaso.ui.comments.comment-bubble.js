@@ -14,8 +14,8 @@ angular.module('palaso.ui.comments')
         multiOptionValue: '<',
         picture: '<'
       },
-      controller: ['$scope', 'lexCommentService', 'sessionService', '$element', 'lexConfigService', '$timeout',
-        function ($scope, commentService, ss, $element, lexConfig, $timeout) {
+      controller: ['$scope', 'lexCommentService', 'sessionService', '$element', 'lexConfigService',
+        function ($scope, commentService, ss, $element, lexConfig) {
         if (!angular.isDefined($scope.inputSystem)) {
           $scope.inputSystem = {
             abbreviation: '',
