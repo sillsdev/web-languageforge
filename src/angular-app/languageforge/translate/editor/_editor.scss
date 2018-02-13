@@ -95,6 +95,10 @@ ng-quill-editor .ql-editor.drop-box {
     background-color: lightgray;
 }
 
+.template-editor span[data-segment] {
+    background-color: white;
+}
+
 .ql-suggest-tooltip {
     background-color: #DEDEDE;
     border-radius: 12px;
@@ -153,18 +157,6 @@ ng-quill-editor .ql-editor.drop-box {
 
 .highlight-target {
     background-color: lightgray;
-}
-
-usx-segment {
-    background-color: white;
-}
-
-.empty-segment {
-    padding-right: 25px;
-}
-
-.empty-initial-segment {
-    padding-right: 4px;
 }
 
 #toolbar .ql-header {
