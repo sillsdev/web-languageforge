@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using SIL.XForge.WebApi.Server.DataAccess;
@@ -22,23 +23,30 @@ namespace SIL.XForge.WebApi.Server.Services
     {
         private readonly IOptions<ParatextOptions> _options;
         private readonly IRepository<User> _userRepo;
+        private readonly HttpClientHandler _httpClientHandler;
         private readonly HttpClient _dataAccessClient;
         private readonly HttpClient _registryClient;
 
-        public ParatextService(IOptions<ParatextOptions> options, IRepository<User> userRepo)
+        public ParatextService(IHostingEnvironment env, IOptions<ParatextOptions> options, IRepository<User> userRepo)
         {
             _options = options;
             _userRepo = userRepo;
 
-            _dataAccessClient = new HttpClient
+            _httpClientHandler = new HttpClientHandler();
+            _dataAccessClient = new HttpClient(_httpClientHandler);
+            _registryClient = new HttpClient(_httpClientHandler);
+            if (env.IsDevelopment())
             {
-                BaseAddress = new Uri("https://data-access-dev.paratext.org"),
-            };
-
-            _registryClient = new HttpClient
+                _httpClientHandler.ServerCertificateCustomValidationCallback
+                    = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                _dataAccessClient.BaseAddress = new Uri("https://data-access-dev.paratext.org");
+                _registryClient.BaseAddress = new Uri("https://registry-dev.paratext.org");
+            }
+            else
             {
-                BaseAddress = new Uri("https://registry-dev.paratext.org"),
-            };
+                _dataAccessClient.BaseAddress = new Uri("https://data-access.paratext.org");
+                _registryClient.BaseAddress = new Uri("https://registry.paratext.org");
+            }
             _registryClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
@@ -199,6 +207,7 @@ namespace SIL.XForge.WebApi.Server.Services
                 {
                     _dataAccessClient.Dispose();
                     _registryClient.Dispose();
+                    _httpClientHandler.Dispose();
                 }
 
                 disposedValue = true;

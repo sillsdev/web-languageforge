@@ -11,8 +11,6 @@ import { Segment } from './segment';
 import { MachineSegmenter, Segmenter, UsxSegmenter } from './segmenter';
 
 export abstract class DocumentEditor {
-  protected static readonly EmptySegmentPlaceholder: string = '\u200b';
-
   static isTextEmpty(text: string): boolean {
     text = text.endsWith('\n') ? text.substr(0, text.length - 1) : text;
     return text === '';
@@ -83,24 +81,33 @@ export abstract class DocumentEditor {
   }
 
   isBackspaceAllowed(range: RangeStatic, context: any): boolean {
-    if (!this.isScripture || range.length > 0 || range.index === 0) {
+    if (!this.isScripture) {
       return true;
+    }
+
+    if (range.length > 0) {
+      const text = this.quill.getText(range.index, range.length);
+      return text !== '';
     }
 
     return range.index !== this.currentSegment.range.index;
   }
 
   isDeleteAllowed(range: RangeStatic, context: any): boolean {
-    if (!this.isScripture || range.length > 0 || range.index === this.quill.getLength()) {
+    if (!this.isScripture) {
       return true;
     }
 
-    if (range.index === this.currentSegment.range.index + this.currentSegment.range.length) {
-      return false;
+    if (range.length > 0) {
+      const text = this.quill.getText(range.index, range.length);
+      return text !== '';
     }
 
-    const text = this.quill.getText(range.index, 1);
-    return text !== DocumentEditor.EmptySegmentPlaceholder;
+    return range.index !== this.currentSegment.range.index + this.currentSegment.range.length;
+  }
+
+  isEnterAllowed(range: RangeStatic, context: any): boolean {
+    return !this.isScripture;
   }
 
   openDocumentSet(collection: string, documentSetId: string): void {
@@ -176,19 +183,22 @@ export abstract class DocumentEditor {
       return;
     }
 
-    // ensure that selection does not extend across segments
     const sel = this.quill.getSelection();
-    let newStart = Math.max(sel.index, this.currentSegment.range.index);
-    const oldEnd = sel.index + sel.length;
-    let segEnd = this.currentSegment.range.index + this.currentSegment.range.length;
-    if (this.currentSegment.text === DocumentEditor.EmptySegmentPlaceholder) {
-      segEnd--;
-      if (newStart > segEnd) {
-        newStart = segEnd;
-      }
+    if (sel == null) {
+      return;
     }
-    const newEnd = Math.min(oldEnd, segEnd);
-    const newSel = { index: newStart, length: Math.max(0, newEnd - newStart) };
+    let newSel: RangeStatic;
+    if (this.currentSegment.text === '') {
+      // always select whole segment if blank
+      newSel = this.currentSegment.range;
+    } else {
+      // ensure that selection does not extend across segments
+      const newStart = Math.max(sel.index, this.currentSegment.range.index);
+      const oldEnd = sel.index + sel.length;
+      const segEnd = this.currentSegment.range.index + this.currentSegment.range.length;
+      const newEnd = Math.min(oldEnd, segEnd);
+      newSel = { index: newStart, length: Math.max(0, newEnd - newStart) };
+    }
     if (sel.index !== newSel.index || sel.length !== newSel.length) {
       this.quill.setSelection(newSel, Quill.sources.SILENT);
     }
@@ -323,10 +333,8 @@ export class TargetDocumentEditor extends DocumentEditor {
 
     if (!this.isTranslating && this.isSelectionAtSegmentEnd) {
       // only bother updating the suggestion if the cursor is at the end of the segment
-      let text = this.currentSegment.text;
-      if (text === DocumentEditor.EmptySegmentPlaceholder) {
-        text = '';
-      }
+      const range = this.skipInitialWhitespace(this.quill.getSelection());
+      const text = this.quill.getText(this.currentSegment.range.index, range.index - this.currentSegment.range.index);
       this.suggestions = this.machine.updatePrefix(text);
       if (this.hasSuggestionsChanged && this.hasSuggestions) {
         this.metricService.onSuggestionGiven();
@@ -351,10 +359,14 @@ export class TargetDocumentEditor extends DocumentEditor {
       return;
     }
 
-    const endIndex = this.currentSegment.range.index + this.currentSegment.range.length;
+    this.quill.focus();
+    const range = this.skipInitialWhitespace(this.quill.getSelection());
+    if (range.length > 0) {
+      this.quill.deleteText(range.index, range.length, Quill.sources.USER);
+    }
     const insertText = this.machine.getSuggestionText(suggestionIndex);
-    this.quill.insertText(endIndex, insertText + ' ', Quill.sources.USER);
-    this.quill.setSelection(endIndex + insertText.length, 1, Quill.sources.USER);
+    this.quill.insertText(range.index, insertText + ' ', Quill.sources.USER);
+    this.quill.setSelection(range.index + insertText.length, 1, Quill.sources.USER);
     this.metricService.onSuggestionTaken();
   }
 
@@ -376,25 +388,30 @@ export class TargetDocumentEditor extends DocumentEditor {
     return Math.min(super.getSaveState(), trainSaveState);
   }
 
-  private updateSegment(ref: string, range: RangeStatic): void {
-    const className = ref.indexOf('/p') === -1 ? 'empty-segment' : 'empty-initial-segment';
-    const text = this.quill.getText(range.index, range.length);
-    let elem = this.getSegmentElement(ref);
-    if (text === DocumentEditor.EmptySegmentPlaceholder) {
-      elem.classList.add(className);
-    } else if (text === '') {
-      this.quill.insertText(range.index, DocumentEditor.EmptySegmentPlaceholder, 'segment', ref, Quill.sources.USER);
-      elem = this.getSegmentElement(ref);
-      elem.classList.add(className);
-    } else if (elem.classList.contains(className)) {
-      elem.classList.remove(className);
-      this.quill.formatText(range.index, range.length, 'segment', ref, Quill.sources.USER);
-      this.quill.deleteText(range.index + range.length - 1, 1, Quill.sources.USER);
+  private skipInitialWhitespace(range: RangeStatic): RangeStatic {
+    let i: number;
+    for (i = range.index; i < range.index + range.length; i++) {
+      const ch = this.quill.getText(i, 1);
+      if (!/\s/.test(ch)) {
+        return { index: i, length: range.length - (i - range.index) };
+      }
     }
+    return { index: i, length: 0 };
   }
 
-  private getSegmentElement(ref: string): HTMLElement {
-    return this.quill.container.querySelector('usx-segment[data-ref="' + ref + '"]') as HTMLElement;
+  private updateSegment(ref: string, range: RangeStatic): void {
+    const text = this.quill.getText(range.index, range.length);
+    if (text === '' && range.length === 0) {
+      const value = ref.indexOf('/p') === -1 ? 'normal' : 'initial';
+      this.quill.insertEmbed(range.index, 'blank', value, Quill.sources.USER);
+      range = { index: range.index, length: 1 };
+    }
+
+    const formats = this.quill.getFormat(range.index, range.length);
+    if (formats.segment == null) {
+      // add segment format if missing
+      this.quill.formatText(range.index, range.length, { segment: ref, background: false }, Quill.sources.USER);
+    }
   }
 
   private showSuggestions(): void {
@@ -445,10 +462,7 @@ export class TargetDocumentEditor extends DocumentEditor {
       return false;
     }
     const selectionEndIndex = selection.index + selection.length;
-    let segmentEndIndex = this.currentSegment.range.index + this.currentSegment.range.length;
-    if (this.currentSegment.text === DocumentEditor.EmptySegmentPlaceholder) {
-      segmentEndIndex--;
-    }
+    const segmentEndIndex = this.currentSegment.range.index + this.currentSegment.range.length;
     return selectionEndIndex === segmentEndIndex;
   }
 
