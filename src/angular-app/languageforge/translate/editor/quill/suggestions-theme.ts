@@ -38,9 +38,6 @@ export function registerSuggestionsTheme(): void {
   const Embed = Quill.import('blots/embed') as typeof Parchment.Embed;
   const BlockEmbed = Quill.import('blots/block/embed') as typeof Parchment.Embed;
 
-  // noinspection JSUnusedLocalSymbols
-  let dropElements: HTMLElement[] = [];
-
   function setFormatUsx(node: HTMLElement, format: FormatUsx): void {
     if (format) {
       for (const key in format) {
@@ -90,25 +87,6 @@ export function registerSuggestionsTheme(): void {
       } else {
         super.format(name, value);
       }
-    }
-  }
-
-  class SegmentInline extends Inline {
-    static blotName = 'segment';
-    static tagName = 'usx-segment';
-
-    static create(value: string): Node {
-      const node = super.create(value) as HTMLElement;
-      node.setAttribute(customAttributeName('ref'), value);
-      return node;
-    }
-
-    static formats(node: HTMLElement): string {
-      return node.getAttribute(customAttributeName('ref'));
-    }
-
-    static value(node: HTMLElement): string {
-      return node.getAttribute(customAttributeName('ref'));
     }
   }
 
@@ -165,8 +143,34 @@ export function registerSuggestionsTheme(): void {
     }
   }
 
+  class BlankEmbed extends Embed {
+    static blotName = 'blank';
+    static tagName = 'usx-blank';
+
+    static create(value: string): Node {
+      const node = super.create(value) as HTMLElement;
+      switch (value) {
+        case 'normal':
+          node.innerHTML = '&emsp;&emsp;';
+          node.setAttribute(customAttributeName('blank-type'), 'normal');
+          break;
+
+        case 'initial':
+          node.innerHTML = '&nbsp;';
+          node.setAttribute(customAttributeName('blank-type'), 'initial');
+          break;
+      }
+      return node;
+    }
+
+    static value(node: HTMLElement): string {
+      return node.getAttribute(customAttributeName('blank-type'));
+    }
+  }
+
   Block.allowedChildren.push(VerseEmbed);
-  Block.allowedChildren.push(SegmentInline);
+  Block.allowedChildren.push(NoteEmbed);
+  Block.allowedChildren.push(BlankEmbed);
 
   class ParaBlock extends Block {
     static blotName = 'para';
@@ -229,6 +233,10 @@ export function registerSuggestionsTheme(): void {
   Scroll.allowedChildren.push(ChapterEmbed);
 
   const HighlightClass = new QuillParchment.Attributor.Class('highlight', 'highlight', {
+    scope: Parchment.Scope.INLINE
+  });
+
+  const SegmentClass = new QuillParchment.Attributor.Attribute('segment', 'data-segment', {
     scope: Parchment.Scope.INLINE
   });
 
@@ -437,10 +445,12 @@ export function registerSuggestionsTheme(): void {
   }
 
   Quill.register('attributors/class/highlight', HighlightClass);
+  Quill.register('attributors/attribute/segment', SegmentClass);
   Quill.register('formats/highlight', HighlightClass);
-  Quill.register('formats/segment', SegmentInline);
+  Quill.register('formats/segment', SegmentClass);
   Quill.register('blots/verse', VerseEmbed);
   Quill.register('blots/note', NoteEmbed);
+  Quill.register('blots/blank', BlankEmbed);
   Quill.register('blots/char', CharInline);
   Quill.register('blots/para', ParaBlock);
   Quill.register('blots/chapter', ChapterEmbed);

@@ -76,6 +76,10 @@ export class TranslateEditorController implements angular.IController {
           disableDelete: {
             key: 'delete',
             handler: (range: RangeStatic, context: any) => this.focusedEditor.isDeleteAllowed(range, context)
+          },
+          disableEnter: {
+            key: 'enter',
+            handler: (range: RangeStatic, context: any) => this.focusedEditor.isEnterAllowed(range, context)
           }
         }
       }
