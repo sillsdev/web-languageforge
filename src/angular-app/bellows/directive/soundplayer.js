@@ -69,7 +69,8 @@ angular.module('palaso.ui.soundplayer', [])
 
         var previousFormattedTime = null;
         $scope.audioElement.addEventListener('timeupdate', function () {
-          slider.value = $scope.audioElement.currentTime;
+          if (!$scope.userMovingSlider) slider.value = $scope.audioElement.currentTime;
+
           // If the time as shown the user has changed, only then run a digest
           if (previousFormattedTime !== $scope.currentTime()) $scope.$digest();
         });
@@ -80,6 +81,11 @@ angular.module('palaso.ui.soundplayer', [])
 
         slider.addEventListener('change', function (e) {
           $scope.audioElement.currentTime = e.target.value;
+          $scope.userMovingSlider = false;
+        });
+
+        slider.addEventListener('input', function(e) {
+          $scope.userMovingSlider = true;
         });
 
         $scope.formatTimestamp = function formatTimestamp(timestamp) {
