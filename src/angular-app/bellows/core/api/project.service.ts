@@ -40,18 +40,13 @@ export class ProjectService {
 
     this.sessionService.getSession().then((session: Session) => {
       const types = {
-        'scriptureforge': ['sfchecks'],
+        scriptureforge: ['sfchecks', 'translate'],
 
         // 'languageforge': ['lexicon', 'semdomtrans']
-        'languageforge': ['lexicon'],
-        'cat.languageforge': ['translate']
+        languageforge: ['lexicon']
       };
 
-      if (this.$location.host().startsWith('cat.') && session.baseSite() === 'languageforge') {
-        this.projectTypesBySite = types['cat.languageforge'];
-      } else {
-        this.projectTypesBySite = types[session.baseSite()];
-      }
+      this.projectTypesBySite = types[session.baseSite()];
     });
 
     this.data.projectTypesBySite = () => {

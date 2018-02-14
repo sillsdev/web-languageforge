@@ -10,11 +10,3 @@ ssl_items:
         webroot: /var/www/languageforge.org_qa/htdocs
         alt_names:
           - "-d qa.languageforge.org"
-  - name: languageforge_org_cat
-    vendor: letsencrypt
-    state: sign
-    sign:
-        webroot: /var/www/languageforge.org_cat/htdocs
-        alt_names:
-          - "-d cat.languageforge.org"
-          - "-d www.cat.languageforge.org"

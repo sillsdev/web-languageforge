@@ -8,7 +8,6 @@ class LfProjectModel extends ProjectModel
 {
     // define languageforge project types here
     const LEXICON_APP = 'lexicon';
-    const TRANSLATE_APP = 'translate';
     const SEMDOMTRANS_APP = 'semdomtrans';
 
     public function __construct($id = '')
