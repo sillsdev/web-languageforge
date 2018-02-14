@@ -23,6 +23,7 @@ import './apps/public/oauth-signup/oauth-signup-app.module';
 import './apps/public/reset_password/reset-password-app.module';
 import './apps/public/signup/signup-app.module';
 import './apps/siteadmin/site-admin-app.module';
+import './apps/translate/translate-app.module';
 import './apps/usermanagement/user-management-app.module';
 import './apps/userprofile/user-profile-app.module';
 import './core/core.module';

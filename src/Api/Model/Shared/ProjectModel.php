@@ -7,7 +7,6 @@ use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransRoles;
-use Api\Model\Languageforge\Translate\TranslateProjectModel;
 use Api\Model\Scriptureforge\Rapuma\RapumaProjectModel;
 use Api\Model\Scriptureforge\Rapuma\RapumaRoles;
 use Api\Model\Scriptureforge\Sfchecks\ProjectUserPropertiesSettings;
@@ -21,11 +20,15 @@ use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\Mapper\MapperModel;
 use Api\Model\Shared\Mapper\MapperUtils;
 use Api\Model\Shared\Rights\ProjectRoleModel;
+use Api\Model\Shared\Translate\TranslateProjectModel;
 use Palaso\Utilities\CodeGuard;
 use Palaso\Utilities\FileUtilities;
 
 class ProjectModel extends MapperModel
 {
+    // define shared project types here
+    const TRANSLATE_APP = 'translate';
+
     public function __construct($id = '')
     {
         $this->id = new Id();
