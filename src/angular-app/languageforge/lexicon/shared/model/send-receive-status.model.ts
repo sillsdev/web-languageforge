@@ -1,3 +1,5 @@
+import { SendReceiveState } from '../../../../bellows/shared/model/send-receive-state.model';
+
 export class SendReceiveStatus {
   SRState: SendReceiveState;
   LastStateChangeTicks: number;
@@ -13,17 +15,4 @@ export class SendReceiveStatus {
   ErrorCode: number;
   PreviousRunTotalMilliseconds: number;
   ProjectCode: string;
-}
-
-// SRStates with an "LF_" prefix are languageforge overrides
-export enum SendReceiveState {
-  Idle = 'IDLE',
-  Hold = 'HOLD',
-  Cloning = 'CLONING',
-  Syncing = 'SYNCING',
-  Pending = 'PENDING',
-  Synced = 'SYNCED',
-  CloneRequested = 'LF_CLONING',
-  Unsynced = 'LF_UNSYNCED',
-  Unknown = 'LF_CHECK'
 }

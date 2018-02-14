@@ -1,12 +1,12 @@
 <?php
 
-use Api\Model\Languageforge\InputSystem;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\Import\LiftImport;
 use Api\Model\Languageforge\Lexicon\Import\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListModel;
+use Api\Model\Shared\InputSystem;
 use PHPUnit\Framework\TestCase;
 
 class LiftImportTest extends TestCase
