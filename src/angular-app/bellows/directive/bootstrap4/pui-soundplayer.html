@@ -1,7 +1,7 @@
 <a ng-click="togglePlayback()">
     <i class="fa {{iconClass()}}"></i>
 </a>
-<span class="controls" ng-show="controlsVisible()">
+<span class="controls">
     <span data-ng-if="audioElement.duration" class="audioProgress text-muted">
         {{currentTime()}} / {{duration()}}
     </span>

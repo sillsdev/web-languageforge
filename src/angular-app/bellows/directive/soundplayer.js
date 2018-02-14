@@ -3,8 +3,7 @@
 angular.module('palaso.ui.soundplayer', [])
   .component('puiSoundplayer', {
       bindings: {
-        url: '<',
-        controlsAlwaysVisible: '<'
+        url: '<'
       },
       controller: ['$scope', function ($scope) {
         var ctrl = this;
@@ -74,10 +73,6 @@ angular.module('palaso.ui.soundplayer', [])
           // If the time as shown the user has changed, only then run a digest
           if (previousFormattedTime !== $scope.currentTime()) $scope.$digest();
         });
-
-        $scope.controlsVisible = function () {
-          return $scope.playing || ctrl.controlsAlwaysVisible;
-        };
 
         slider.addEventListener('change', function (e) {
           $scope.audioElement.currentTime = e.target.value;
