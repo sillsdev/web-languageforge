@@ -73,6 +73,7 @@ export class RealTimeService {
       if (err) throw err;
 
       quill.setContents(doc.data);
+      quill.getModule('history').clear();
 
       this.onTextChanges[id] = (delta: any, oldDelta: any, source: any) => {
         if (source !== Quill.sources.USER) return;
