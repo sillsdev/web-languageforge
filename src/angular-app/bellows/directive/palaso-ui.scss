@@ -218,17 +218,22 @@ pui-select-language div.scroll-table table {
   }
 }
 
+.audio-buttons a i.fa {
+    font-size: 2rem;
+}
+
 pui-soundplayer {
   display: flex;
+  width: 100%;
   .controls {
-      font-size: 1rem;
       display: flex;
+      width: 100%;
+      font-size: 1.05rem;
       align-items: center;
+      padding-left: 5pt;
       .seek-slider {
         flex-grow: 1;
-      }
-  }
-  .seek-slider {
-      height: auto;
+        height: auto;
+    }
   }
 }
