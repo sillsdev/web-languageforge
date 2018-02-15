@@ -80,6 +80,16 @@ export class TranslateEditorController implements angular.IController {
           disableEnter: {
             key: 'enter',
             handler: (range: RangeStatic, context: any) => this.focusedEditor.isEnterAllowed(range, context)
+          },
+          hideSuggestions: {
+            key: 'escape',
+            handler: (range: RangeStatic, context: any) => {
+              if (this.target.hasFocus) {
+                this.target.hideSuggestions();
+                return false;
+              }
+              return true;
+            }
           }
         }
       }
