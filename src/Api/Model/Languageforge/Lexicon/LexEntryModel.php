@@ -313,6 +313,29 @@ class LexEntryModel extends MapperModel
         return $differences;
     }
 
+    public function nameForActivityLog($preferredInputSystem = null)
+    {
+        if (isset($this->lexeme)) {
+            if (isset($preferredInputSystem) && $this->lexeme->hasForm($preferredInputSystem)) {
+                return $this->lexeme[$preferredInputSystem];
+            } elseif ($this->lexeme->count() > 0) {
+                foreach ($this->lexeme as $inputSystem => $content) {
+                    return (string)$content;
+                }
+            }
+        }
+        if (isset($this->citationForm)) {
+            if (isset($preferredInputSystem) && $this->citationForm->hasForm($preferredInputSystem)) {
+                return $this->citationForm[$preferredInputSystem];
+            } elseif ($this->citationForm->count() > 0) {
+                foreach ($this->citationForm as $inputSystem => $content) {
+                    return (string)$content;
+                }
+            }
+        }
+        return "";
+    }
+
     public function getPropertyDifference(LexEntryModel $otherModel, string $propertyName)
     {
         $type = $this->getPropertyType($propertyName);
