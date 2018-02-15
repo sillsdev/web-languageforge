@@ -366,7 +366,7 @@ export class TargetDocumentEditor extends DocumentEditor {
     }
     const insertText = this.machine.getSuggestionText(suggestionIndex);
     this.quill.insertText(range.index, insertText + ' ', Quill.sources.USER);
-    this.quill.setSelection(range.index + insertText.length, 1, Quill.sources.USER);
+    setTimeout(() => this.quill.setSelection(range.index + insertText.length, 1, Quill.sources.USER));
     this.metricService.onSuggestionTaken();
   }
 
@@ -421,8 +421,8 @@ export class TargetDocumentEditor extends DocumentEditor {
 
     const selection = this.quill.getSelection();
     const tooltip = (this.quill.theme as SuggestionsTheme).suggestionsTooltip;
-    tooltip.show();
     tooltip.position(this.quill.getBounds(selection.index, selection.length));
+    tooltip.show();
     this.isShowingSuggestions = true;
   }
 
