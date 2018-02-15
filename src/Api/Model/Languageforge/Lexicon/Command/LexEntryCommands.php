@@ -55,6 +55,7 @@ class LexEntryCommands
         $project->lastEntryModifiedDate = $now;
         if (array_key_exists('id', $params) && $params['id'] != '') {
             $entry = new LexEntryModel($project, $params['id']);
+            $oldEntry = new LexEntryModel($project, $params['id']); // NOT $entry = $oldEntry
             $action = 'update';
         } else {
             $entry = new LexEntryModel($project);
@@ -77,9 +78,15 @@ class LexEntryCommands
 
         LexEntryDecoder::decode($entry, $params);
 
+        if ($action === 'update') {
+            $differences = $oldEntry->calculateDifferences($entry);
+        } else {
+            $differences = null;
+        }
+
         $entry->write();
         $project->write();
-        ActivityCommands::writeEntry($project, $userId, $entry, $action);
+        ActivityCommands::writeEntry($project, $userId, $entry, $action, $differences);
 
 //        SendReceiveCommands::queueProjectForUpdate($project, $mergeQueuePath);
 //        SendReceiveCommands::startLFMergeIfRequired($projectId, 'merge', $pidFilePath, $command);
