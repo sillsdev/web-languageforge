@@ -28,7 +28,7 @@ class ActivityCommands
      * @param string $mode
      * @return string activity id
      */
-    public static function updateComment($projectModel, $questionId, $answerId, $commentModel, $mode = "update")
+    public static function updateCommentOnQuestion($projectModel, $questionId, $answerId, $commentModel, $mode = "update")
     {
         $activity = new ActivityModel($projectModel);
         $question = new QuestionModel($projectModel, $questionId);
@@ -54,9 +54,9 @@ class ActivityCommands
         return $activityId;
     }
 
-    public static function addComment($projectModel, $questionId, $answerId, $commentModel)
+    public static function addCommentOnQuestion($projectModel, $questionId, $answerId, $commentModel)
     {
-        return ActivityCommands::updateComment($projectModel, $questionId, $answerId, $commentModel, "add");
+        return ActivityCommands::updateCommentOnQuestion($projectModel, $questionId, $answerId, $commentModel, "add");
     }
 
     /**
