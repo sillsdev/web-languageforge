@@ -155,9 +155,24 @@ angular.module('palaso.ui.comments')
 
           $scope.isOriginalRelevant = function isOriginalRelevant() {
             if ($scope.comment.regarding.fieldValue) {
-              return true;
+              if ($scope.getCurrentContextValue() !== $scope.comment.regarding.fieldValue) {
+                return true;
+              }
+            }
+
+            return false;
+          };
+
+          $scope.getCurrentContextValue = function getCurrentContextValue() {
+            var contextParts = $scope.control.getContextParts($scope.comment.contextGuid);
+            if (contextParts.option.key !== '' &&
+              (contextParts.fieldConfig.type === 'multioptionlist' ||
+                (contextParts.fieldConfig.type === 'optionlist' &&
+                  $scope.control.commentContext.contextGuid === ''))
+              ) {
+              return contextParts.option.label;
             } else {
-              return false;
+              return contextParts.value;
             }
           };
 
