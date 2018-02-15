@@ -27,7 +27,6 @@ export type DropFunction = (file: File, editor: Quill, event: DragEvent | Clipbo
 export type PasteFunction = (item: DataTransferItem, editor: Quill, event: ClipboardEvent) => void;
 
 export function registerSuggestionsTheme(): void {
-  const QuillTooltip = Quill.import('ui/tooltip') as typeof Tooltip;
   const QuillModule = Quill.import('core/module') as typeof Module;
   const QuillSnowTheme = Quill.import('themes/snow') as typeof SnowTheme;
   const QuillToolbar = Quill.import('modules/toolbar') as typeof Toolbar;
@@ -241,30 +240,76 @@ export function registerSuggestionsTheme(): void {
   });
 
   // Add a suggest tooltip to Quill
-  class SuggestionsTooltip extends QuillTooltip {
-    static TEMPLATE = '<span class="ql-suggest-tooltip-arrow"></span>';
+  class SuggestionsTooltip implements Tooltip {
+    quill: Quill;
+    boundsContainer: HTMLElement;
+    root: HTMLElement;
 
-    constructor(quill: Quill, boundsContainer: BoundsStatic) {
-      super(quill, boundsContainer);
+    private top: number;
+
+    constructor(quill: Quill, boundsContainer: HTMLElement) {
+      this.quill = quill;
+      this.boundsContainer = boundsContainer || document.body;
       this.root = quill.addContainer('ql-suggest-tooltip');
-      this.root.innerHTML = SuggestionsTooltip.TEMPLATE;
-      const offset = parseInt(window.getComputedStyle(this.root).marginTop, 10);
-      this.quill.root.addEventListener('scroll', () => {
-        this.root.style.marginTop = (-1 * this.quill.root.scrollTop) + offset + 'px';
-      });
+      if (this.quill.root === this.quill.scrollingContainer) {
+        this.quill.root.addEventListener('scroll', () => {
+          this.updateVisibility();
+        });
+      }
       this.hide();
     }
 
+    hide(): void {
+      this.root.classList.add('ql-hidden');
+    }
+
     position(reference: any): number {
-      const shift = (super.position(reference) as number);
-      const top = reference.bottom + this.quill.root.scrollTop + 10;
-      this.root.style.top = top + 'px';
-      const arrow = this.root.querySelector('.ql-suggest-tooltip-arrow') as HTMLElement;
-      arrow.style.marginLeft = '';
-      if (shift === 0) {
-        return shift;
+      const left = reference.left;
+      // root.scrollTop should be 0 if scrollContainer !== root
+      this.top = reference.bottom + this.quill.root.scrollTop;
+      this.root.style.left = left + 'px';
+      this.root.style.top = this.top + 'px';
+      this.root.classList.remove('ql-flip');
+      const containerBounds = this.boundsContainer.getBoundingClientRect();
+      const rootBounds = this.root.getBoundingClientRect();
+      let shift = 0;
+      if (rootBounds.right > containerBounds.right) {
+        shift = containerBounds.right - rootBounds.right;
+        this.root.style.left = (left + shift) + 'px';
       }
-      arrow.style.marginLeft = (-1 * shift - arrow.offsetWidth / 2) + 'px';
+      if (rootBounds.left < containerBounds.left) {
+        shift = containerBounds.left - rootBounds.left;
+        this.root.style.left = (left + shift) + 'px';
+      }
+      if (rootBounds.bottom > containerBounds.bottom) {
+        const height = rootBounds.bottom - rootBounds.top;
+        const verticalShift = reference.bottom - reference.top + height;
+        this.top -= verticalShift;
+        this.root.style.top = this.top + 'px';
+        this.root.classList.add('ql-flip');
+      }
+      this.updateVisibility();
+      return shift;
+    }
+
+    show(): void {
+      this.root.classList.remove('ql-editing');
+      this.root.classList.remove('ql-hidden');
+    }
+
+    private updateVisibility(): void {
+      const marginTop = -this.quill.root.scrollTop;
+      const offsetTop = marginTop + this.top;
+      const offsetBottom = offsetTop + this.root.clientHeight;
+      if (offsetTop < 0 || offsetBottom > this.quill.scrollingContainer.clientHeight) {
+        if (this.root.style.visibility !== 'hidden') {
+          this.root.style.visibility = 'hidden';
+          this.root.style.marginTop = -this.top + 'px';
+        }
+      } else {
+        this.root.style.marginTop = marginTop + 'px';
+        this.root.style.visibility = '';
+      }
     }
   }
 
@@ -363,8 +408,7 @@ export function registerSuggestionsTheme(): void {
 
     constructor(quill: Quill, options: QuillOptionsStatic) {
       super(quill, options);
-      const QuillSuggestionsTooltip = Quill.import('ui/suggest-tooltip');
-      this.suggestionsTooltip = new QuillSuggestionsTooltip(this.quill, this.options.bounds);
+      this.suggestionsTooltip = new SuggestionsTooltip(this.quill, this.options.bounds as HTMLElement);
     }
 
     extendToolbar(toolbar: any): void {
@@ -455,7 +499,6 @@ export function registerSuggestionsTheme(): void {
   Quill.register('blots/para', ParaBlock);
   Quill.register('blots/chapter', ChapterEmbed);
   Quill.register('blots/scroll', Scroll, true);
-  Quill.register('ui/suggest-tooltip', SuggestionsTooltip);
   Quill.register('modules/suggestions', Suggestions);
   Quill.register('modules/dragAndDrop', DragAndDrop);
   Quill.register('modules/toolbar', MultiEditorToolbar, true);
