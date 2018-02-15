@@ -29,21 +29,112 @@ class LexExample extends ObjectForEncoding
         ], false);
     }
 
-    protected function createProperty($name) {
+    protected function getPropertyType(string $name) {
         switch ($name) {
             case 'authorInfo':
-                return new LexAuthorInfo();
+                return "LexAuthorInfo";
             case 'sentence':
             case 'translation':
             case 'reference':
-                return new LexMultiText();
+                return "LexMultiText";
             case 'translationGuid':
-                return Guid::create();
+                return "Guid";
             case 'customFields':
-                return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
+                return "MapOf(CustomField)";
+            default:
+                return "string";
+        }
+    }
+
+    protected function createProperty($name) {
+        switch ($this->getPropertyType($name)) {
+            case 'LexAuthorInfo': return new LexAuthorInfo();
+            case 'LexMultiText': return new LexMultiText();
+            case 'Guid': return Guid::create();
+            case 'MapOf(CustomField)': return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
+
+            case 'string':
             default:
                 return '';
         }
+    }
+
+    public function nameForActivityLog($preferredInputSystem = null)
+    {
+        if (isset($this->sentence)) {
+            if (isset($preferredInputSystem) && $this->sentence->hasForm($preferredInputSystem)) {
+                return $this->sentence[$preferredInputSystem];
+            } elseif ($this->sentence->count() > 0) {
+                foreach ($this->sentence as $inputSystem => $content) {
+                    return (string)$content;
+                }
+            }
+        }
+        return "";
+    }
+
+    protected function convertLexMultiTextDifferences(array $differences, string $propertyName)
+    {
+        // The LexMultiText->differences() function returns differences as an array looking like:
+        // [ ["inputSystem" => $key, "this" => $thisValue, "other" => $otherValue], ... ]
+        $result = [];
+        foreach ($differences as $difference) {
+            $inputSystem = $difference["inputSystem"];
+            $result["this."  . $propertyName . "." . $inputSystem] = $difference["this"];
+            $result["other." . $propertyName . "." . $inputSystem] = $difference["other"];
+        }
+        return $result;
+    }
+
+    public function getPropertyDifference(LexExample $otherExample, string $propertyName)
+    {
+        $type = $this->getPropertyType($propertyName);
+        switch ($type) {
+            case "LexMultiText":
+                /** @var LexMultiText $multiText */
+                $multiText = $this->$propertyName;
+                $difference = $multiText->differences($otherExample->$propertyName);
+                return $this->convertLexMultiTextDifferences($difference, $propertyName);
+            case "string":
+                $thisValue  = $this->$propertyName;
+                $otherValue = $otherExample->$propertyName;
+                if ($thisValue === $otherValue) {
+                    return [];
+                } else {
+                    return ["this." . $propertyName => $thisValue, "other." . $propertyName => $otherValue];
+                }
+            case 'MapOf(CustomField)':
+                // TODO: Implement this. Will probably have to refactor this function a bit to handle that one level of nesting
+                return [];
+            case 'LexAuthorInfo':
+                // We don't put authorInfo changes in the activity log
+                return [];
+            case 'Guid':
+                // We don't put translationGuid changes in the activity log either
+                return [];
+            default:
+                return [];
+        }
+    }
+
+    public function differences(LexExample $otherExample)
+    {
+        $properties = [
+            'authorInfo',
+            'sentence',
+            'translation',
+            'translationGuid',
+            'reference',
+            'customFields',
+        ];
+        $result = [];
+        foreach ($properties as $property)
+        {
+            foreach ($this->getPropertyDifference($otherExample, $property) as $key => $difference) {
+                $result[$key] = $difference;
+            }
+        }
+        return $result;
     }
 
     /**

@@ -195,9 +195,10 @@ class ActivityCommands
      * @param string $userId
      * @param LexEntryModel $entry
      * @param string $action
+     * @param array $actionContent
      * @return string activity id
      */
-    public static function writeEntry($projectModel, $userId, $entry, $action)
+    public static function writeEntry($projectModel, $userId, $entry, $action, $actionContent = null)
     {
         $activity = new ActivityModel($projectModel);
         $activity->entryRef->id = $entry->id->asString();
@@ -217,6 +218,12 @@ class ActivityCommands
 
         $activity->addContent(ActivityModel::ENTRY, $title);
         $activity->addContent(ActivityModel::USER, $user->username);
+
+        if (isset($actionContent)) {
+            foreach ($actionContent as $type => $content) {
+                $activity->addContent($type, $content);
+            }
+        }
 
         return $activity->write();
     }
