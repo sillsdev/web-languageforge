@@ -61,14 +61,14 @@ class LexSense extends ObjectForEncoding
 
     }
 
-    protected function createProperty($name) {
+    protected function getPropertyType(string $name) {
         switch ($name) {
-            case 'partOfSpeech': return new LexValue();
-            case 'semanticDomain': return new LexMultiValue();
-            case 'examples': return new ArrayOf('Api\Model\Languageforge\Lexicon\generateExample');
-            case 'customFields': return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
-            case 'authorInfo': return new LexAuthorInfo();
-            case 'pictures': return new ArrayOf('Api\Model\Languageforge\Lexicon\generatePicture');
+            case 'partOfSpeech': return "LexValue";
+            case 'semanticDomain': return "LexMultiValue";
+            case 'examples': return "ArrayOf(LexExample)";
+            case 'customFields': return "MapOf(CustomField)";
+            case 'authorInfo': return "LexAuthorInfo";
+            case 'pictures': return "ArrayOf(LexPicture)";
 
             case 'definition':
             case 'gloss':
@@ -85,16 +85,32 @@ class LexSense extends ObjectForEncoding
             case 'sociolinguisticsNote':
             case 'source':
             case 'senseImportResidue':
-                return new LexMultiText();
+                return "LexMultiText";
 
-            case 'usages': return new LexMultiValue();
+            case 'usages': return "LexMultiValue";
 
             // TODO reversalEntries needs to be a Taglist 07-2014 DDW
-            case 'reversalEntries': return new LexMultiValue();
-            case 'senseType': return new LexValue();
-            case 'academicDomains': return new LexMultiValue();
-            case 'anthropologyCategories': return new LexMultiValue();
-            case 'status': return new LexMultiValue();
+            case 'reversalEntries': return "LexMultiValue";
+            case 'senseType': return "LexValue";
+            case 'academicDomains': return "LexMultiValue";
+            case 'anthropologyCategories': return "LexMultiValue";
+            case 'status': return "LexMultiValue";
+            default:
+                return "string";
+        }
+    }
+
+    protected function createProperty($name) {
+        switch ($this->getPropertyType($name)) {
+            case 'LexValue': return new LexValue();
+            case 'LexMultiValue': return new LexMultiValue();
+            case 'ArrayOf(LexExample)': return new ArrayOf('Api\Model\Languageforge\Lexicon\generateExample');
+            case 'MapOf(CustomField)': return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
+            case 'LexAuthorInfo': return new LexAuthorInfo();
+            case 'ArrayOf(LexPicture)': return new ArrayOf('Api\Model\Languageforge\Lexicon\generatePicture');
+            case 'LexMultiText': return new LexMultiText();
+
+            case 'string':
             default:
                 return '';
         }
@@ -185,6 +201,204 @@ class LexSense extends ObjectForEncoding
             }
         }
         return -1;
+    }
+
+    public function nameForActivityLog($preferredInputSystem = null)
+    {
+        if (isset($this->definition)) {
+            if (isset($preferredInputSystem) && $this->definition->hasForm($preferredInputSystem)) {
+                return $this->definition[$preferredInputSystem];
+            } elseif ($this->definition->count() > 0) {
+                foreach ($this->definition as $inputSystem => $content) {
+                    return (string)$content;
+                }
+            }
+        }
+        if (isset($this->gloss)) {
+            if (isset($preferredInputSystem) && $this->gloss->hasForm($preferredInputSystem)) {
+                return $this->gloss[$preferredInputSystem];
+            } elseif ($this->gloss->count() > 0) {
+                foreach ($this->gloss as $inputSystem => $content) {
+                    return (string)$content;
+                }
+            }
+        }
+        return "";
+    }
+
+    protected function convertLexMultiTextDifferences(array $differences, string $propertyName)
+    {
+        // The LexMultiText->differences() function returns differences as an array looking like:
+        // [ ["inputSystem" => $key, "this" => $thisValue, "other" => $otherValue], ... ]
+        $result = [];
+        foreach ($differences as $difference) {
+            $inputSystem = $difference["inputSystem"];
+            $result["this."  . $propertyName . "." . $inputSystem] = $difference["this"];
+            $result["other." . $propertyName . "." . $inputSystem] = $difference["other"];
+        }
+        return $result;
+    }
+
+    protected function convertDifferences(array $difference, string $propertyName)
+    {
+        if (empty($difference)) {
+            return [];
+        }
+        return [ "this."  . $propertyName => $difference["this"],
+                 "other." . $propertyName => $difference["other"] ];
+    }
+
+    public function getPropertyDifference(LexSense $otherSense, string $propertyName)
+    {
+        $type = $this->getPropertyType($propertyName);
+        switch ($type) {
+            case "LexMultiText":
+                /** @var LexMultiText $multiText */
+                $multiText = $this->$propertyName;
+                $difference = $multiText->differences($otherSense->$propertyName);
+                return $this->convertLexMultiTextDifferences($difference, $propertyName);
+            case "LexMultiValue":
+                /** @var LexMultiValue $multiValue */
+                $multiValue = $this->$propertyName;
+                $difference = $multiValue->differences($otherSense->$propertyName);
+                return $this->convertDifferences($difference, $propertyName);
+            case "LexMultiParagraph":
+                /** @var LexMultiParagraph $multiParagraph */
+                $multiParagraph = $this->$propertyName;
+                $difference = $multiParagraph->differences($otherSense->$propertyName);
+                return $this->convertDifferences($difference, $propertyName);
+            case "LexValue":
+                $thisValue  = (string)$this->$propertyName;
+                $otherValue = (string)$otherSense->$propertyName;
+
+                if ($thisValue === $otherValue) {
+                    return [];
+                } else {
+                    return ["this." . $propertyName => $thisValue, "other." . $propertyName => $otherValue];
+                }
+            case "string":
+                $thisValue  = $this->$propertyName;
+                $otherValue = $otherSense->$propertyName;
+                if ($thisValue === $otherValue) {
+                    return [];
+                } else {
+                    return ["this." . $propertyName => $thisValue, "other." . $propertyName => $otherValue];
+                }
+            case 'ArrayOf(LexExample)':
+                $thisExamples  = $this->$propertyName;
+                $otherExamples = $otherSense->$propertyName;
+                return $this->getExampleDifferences($thisExamples, $otherExamples);
+            case 'MapOf(CustomField)':
+                // TODO: Implement this. Will probably have to refactor this function a bit to handle that one level of nesting
+                return [];
+            case 'ArrayOf(LexPicture)':
+                // TODO: Check if filename or caption has changed and do something appropriate
+                return [];
+            case 'LexAuthorInfo':
+                // We don't put authorInfo changes in the activity log, and we'll skip pictures as well
+                return [];
+            default:
+                return [];
+        }
+    }
+
+    protected function getExampleDifferences($thisExamples, $otherExamples)
+    {
+        $differences = [];
+
+        $thisGuids = [];
+        $thisExamplesByGuid = [];
+        foreach ($thisExamples as $example) {
+            /** @var LexExample $example */
+            $thisGuids[] = $example->guid;
+            $thisExamplesByGuid[$example->guid] = $example;
+        }
+        $otherGuids = [];
+        $otherExamplesByGuid = [];
+        foreach ($otherExamples as $example) {
+            /** @var LexExample $example */
+            $otherGuids[] = $example->guid;
+            $otherExamplesByGuid[$example->guid] = $example;
+        }
+
+        $seenGuids = [];
+        $thisPositions = array_flip($thisGuids);
+        $otherPositions = array_flip($otherGuids);
+        foreach ($thisExamplesByGuid as $guid => $thisExample) {
+            /** @var LexExample $thisExample */
+            $seenGuids[] = $guid;
+            $thisPosition  = $thisPositions[$guid];
+            $otherPosition = $otherPositions[$guid];
+            if ($otherPosition !== $thisPosition) {
+                $differences[] = ["movedFrom.examples#" . $guid => $thisPosition, "movedTo.examples#" . $guid => $otherPosition];
+            }
+            if (array_key_exists($guid, $otherExamplesByGuid)) {
+                /** @var LexExample $otherExample */
+                $otherExample = $otherExamplesByGuid[$guid];
+                $exampleDifferences = $thisExample->differences($otherExample);
+                foreach ($exampleDifferences as $key => $exampleDifference) {
+                    if (substr($key, 0, 5) === "this.") {
+                        $newKey = str_replace("this.",  "this.examples#" . $guid . "." . substr($key, 5), $key);
+                    } elseif (substr($key, 0, 6) === "other.") {
+                        $newKey = str_replace("other.", "other.examples#" . $guid . "." . substr($key, 6), $key);
+                    } else {
+                        $newKey = $key;
+                    }
+                    $differences[] = [$key => $exampleDifference];
+                }
+            } else {
+                $differences[] = ["deleted.examples#" . $guid => $thisExample->nameForActivityLog()];
+            }
+        }
+        $addedGuids = array_diff($otherGuids, $seenGuids);
+        foreach ($addedGuids as $guid) {
+            /** @var LexExample $otherExample */
+            $otherExample = $otherExamplesByGuid[$guid];
+            $differences[] = ["added.examples#" . $guid => $otherExample->nameForActivityLog()];
+        }
+
+        return $differences;
+    }
+
+    public function differences(LexSense $otherSense)
+    {
+        $properties = [
+            'partOfSpeech',
+            'semanticDomain',
+            'examples',
+            'customFields',
+            'authorInfo',
+            'definition',
+            'gloss',
+            'pictures',
+            'scientificName',
+            'anthropologyNote',
+            'senseBibliography',
+            'discourseNote',
+            'encyclopedicNote',
+            'generalNote',
+            'grammarNote',
+            'phonologyNote',
+            'senseRestrictions',
+            'semanticsNote',
+            'sociolinguisticsNote',
+            'source',
+            'senseImportResidue',
+            'usages',
+            'reversalEntries',
+            'senseType',
+            'academicDomains',
+            'anthropologyCategories',
+            'status'
+        ];
+        $result = [];
+        foreach ($properties as $property)
+        {
+            foreach ($this->getPropertyDifference($otherSense, $property) as $key => $difference) {
+                $result[$key] = $difference;
+            }
+        }
+        return $result;
     }
 
     // less common fields used in FLEx
