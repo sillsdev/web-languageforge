@@ -1,7 +1,6 @@
-@import '../../../../Site/views/languageforge/theme/default/sass/_variables';
-@import '../../../../../node_modules/bootstrap/scss/_functions';
-@import '../../../../../node_modules/bootstrap/scss/_variables';
-@import '../../../../../node_modules/bootstrap/scss/_mixins';
+@import '../../../../../../node_modules/bootstrap/scss/_functions';
+@import '../../../../../../node_modules/bootstrap/scss/_variables';
+@import '../../../../../../node_modules/bootstrap/scss/_mixins';
 
 .picklist {
     cursor: pointer;
@@ -88,7 +87,7 @@ ng-quill-editor .ql-container.ql-snow {
 
 ng-quill-editor .ql-editor.drop-box {
     opacity: 0.5;
-    border-color: $lf-lines;
+    border-color: #ddd;
 }
 
 .template-editor .ql-container.ql-snow {
