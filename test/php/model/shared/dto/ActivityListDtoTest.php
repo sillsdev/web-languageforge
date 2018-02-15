@@ -235,13 +235,13 @@ class ActivityListDtoTest extends TestCase
         $comment1->content = "first comment";
         $comment1->userRef->id = $user1Id;
         $comment1Id = QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment1);
-        $a7 = ActivityCommands::addComment($project, $questionId, $answerId, $comment1);
+        $a7 = ActivityCommands::addCommentOnQuestion($project, $questionId, $answerId, $comment1);
 
         $comment2 = new CommentModel();
         $comment2->content = "second comment";
         $comment2->userRef->id = $user2Id;
         QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment2);
-        $a8 = ActivityCommands::addComment($project, $questionId, $answerId, $comment2);
+        $a8 = ActivityCommands::addCommentOnQuestion($project, $questionId, $answerId, $comment2);
 
         // updated answer
         $question->read($questionId);
@@ -255,7 +255,7 @@ class ActivityListDtoTest extends TestCase
         $comment1_updated = $question->readComment($answerId, $comment1Id);
         $comment1_updated->content = "first comment revised";
         QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment1_updated);
-        $a10 = ActivityCommands::updateComment($project, $questionId, $answerId, $comment1_updated);
+        $a10 = ActivityCommands::updateCommentOnQuestion($project, $questionId, $answerId, $comment1_updated);
 
         $dto = ActivityListDto::getActivityForProject($project);
 
