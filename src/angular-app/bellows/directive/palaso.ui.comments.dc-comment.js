@@ -55,7 +55,19 @@ angular.module('palaso.ui.comments')
             $scope.showNewReplyForm = true;
           };
 
-          $scope.submitReply = function submitReply(reply) {
+          $scope.submitReply = function submitReply(reply, $event) {
+            if (angular.isDefined($event)) {
+              if ($event.keyCode === 13) {
+                // If there is no reply yet then cancel out
+                if (!reply.editingContent) {
+                  $event.preventDefault();
+                  return;
+                }
+              } else {
+                return;
+              }
+            }
+
             hideInputFields();
             $scope.posting = true;
             reply.content = angular.copy(reply.editingContent);
