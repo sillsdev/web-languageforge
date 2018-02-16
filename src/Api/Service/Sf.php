@@ -415,6 +415,18 @@ class Sf
         return ActivityListDto::getActivityForUser($this->website->domain, $this->userId);
     }
 
+    public function activity_list_dto_for_current_project()
+    {
+        $projectModel = new ProjectModel($this->projectId);
+        return ActivityListDto::getActivityForOneProject($projectModel, $this->userId);
+    }
+
+    public function activity_list_dto_for_lexical_entry($entryId)
+    {
+        $projectModel = new ProjectModel($this->projectId);
+        return ActivityListDto::getActivityForOneLexEntry($projectModel, $entryId);
+    }
+
     /*
      * --------------------------------------------------------------- SCRIPTUREFORGE ---------------------------------------------------------------
      */
