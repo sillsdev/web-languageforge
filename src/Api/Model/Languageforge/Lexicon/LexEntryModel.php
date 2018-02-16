@@ -280,10 +280,12 @@ class LexEntryModel extends MapperModel
             /** @var LexSense $thisSense */
             $seenGuids[] = $guid;
             $thisPosition  = $thisPositions[$guid];
-            $otherPosition = $otherPositions[$guid];
-            if ($otherPosition !== $thisPosition) {
-                $differences["movedFrom.senses#" . $guid] = $thisPosition;
-                $differences["movedTo.senses#" . $guid] = $otherPosition;
+            if (isset($otherPositions[$guid])) {
+                $otherPosition = $otherPositions[$guid];
+                if ($otherPosition !== $thisPosition) {
+                    $differences["movedFrom.senses#" . $guid] = $thisPosition;
+                    $differences["movedTo.senses#" . $guid] = $otherPosition;
+                }
             }
             if (array_key_exists($guid, $otherSensesByGuid)) {
                 /** @var LexSense $otherSense */
