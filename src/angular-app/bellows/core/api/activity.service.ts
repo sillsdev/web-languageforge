@@ -8,4 +8,11 @@ export class ActivityService {
     return this.api.call('activity_list_dto', [], callback);
   }
 
+  listActivityForCurrentProject(callback?: JsonRpcCallback) {
+    return this.api.call('activity_list_dto_for_current_project', [], callback);
+  }
+
+  listActivityForLexicalEntry(entryId: string, callback?: JsonRpcCallback) {
+    return this.api.call('activity_list_dto_for_lexical_entry', [entryId], callback);
+  }
 }
