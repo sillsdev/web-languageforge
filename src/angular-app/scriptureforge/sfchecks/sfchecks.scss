@@ -229,13 +229,3 @@ div.new-item.collapse.in {
   padding: 5px;
   border: #C1DBC1 2px solid;
 }
-
-.audio-buttons {
-  display: flex;
-  > * {
-    margin: 3pt;
-  }
-  pui-soundplayer .audioProgress {
-    margin: 3pt;
-  }
-}
