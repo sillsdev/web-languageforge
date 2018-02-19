@@ -410,21 +410,21 @@ class Sf
     // ---------------------------------------------------------------
     // Activity Log
     // ---------------------------------------------------------------
-    public function activity_list_dto()
+    public function activity_list_dto($filterParams = [])
     {
-        return ActivityListDto::getActivityForUser($this->website->domain, $this->userId);
+        return ActivityListDto::getActivityForUser($this->website->domain, $this->userId, $filterParams);
     }
 
-    public function activity_list_dto_for_current_project()
+    public function activity_list_dto_for_current_project($filterParams = [])
     {
         $projectModel = new ProjectModel($this->projectId);
-        return ActivityListDto::getActivityForOneProject($projectModel, $this->userId);
+        return ActivityListDto::getActivityForOneProject($projectModel, $this->userId, $filterParams);
     }
 
-    public function activity_list_dto_for_lexical_entry($entryId)
+    public function activity_list_dto_for_lexical_entry($entryId, $filterParams = [])
     {
         $projectModel = new ProjectModel($this->projectId);
-        return ActivityListDto::getActivityForOneLexEntry($projectModel, $entryId);
+        return ActivityListDto::getActivityForOneLexEntry($projectModel, $entryId, $filterParams);
     }
 
     /*
