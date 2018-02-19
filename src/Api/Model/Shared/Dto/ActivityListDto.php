@@ -17,16 +17,18 @@ use Api\Model\Shared\ProjectList_UserModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UnreadActivityModel;
+use MongoDB\BSON\UTCDateTime;
 
 class ActivityListDto
 {
     /**
      * @param ProjectModel $projectModel
+     * @param array $filterParams
      * @return array - the DTO array
      */
-    public static function getActivityForProject($projectModel)
+    public static function getActivityForProject($projectModel, $filterParams = [])
     {
-        $activityList = new ActivityListModelByProject($projectModel);
+        $activityList = new ActivityListModelByProject($projectModel, $filterParams);
         $activityList->readAsModels();
         $dto = ActivityListDtoEncoder::encodeModel($activityList, $projectModel);
         self::prepareDto($dto);
@@ -37,11 +39,12 @@ class ActivityListDto
     /**
      * @param ProjectModel $projectModel
      * @param string $entryId
+     * @param array $filterParams
      * @return array - the DTO array
      */
-    public static function getActivityForLexEntry($projectModel, $entryId)
+    public static function getActivityForLexEntry($projectModel, $entryId, $filterParams = [])
     {
-        $activityList = new ActivityListModelByLexEntry($projectModel, $entryId);
+        $activityList = new ActivityListModelByLexEntry($projectModel, $entryId, $filterParams);
         $activityList->readAsModels();
         $dto = ActivityListDtoEncoder::encodeModel($activityList, $projectModel);
         self::prepareDto($dto);
@@ -78,9 +81,10 @@ class ActivityListDto
     /**
      * @param string $site
      * @param string $userId
+     * @param array $filterParams
      * @return array - the DTO array
     */
-    public static function getActivityForUser($site, $userId)
+    public static function getActivityForUser($site, $userId, $filterParams = [])
     {
         $projectList = new ProjectList_UserModel($site);
         $projectList->readUserProjects($userId);
@@ -98,7 +102,8 @@ class ActivityListDto
                     };
                 }
             }
-            $activity = array_merge($activity, self::getActivityForProject($projectModel));
+            // TODO: Figure out how to handle limit and skip parameters when we're in the all-projects view: it's more complicated than just passing them on to each project's query. 2018-02 RM
+            $activity = array_merge($activity, self::getActivityForProject($projectModel, $filterParams));
             $unreadItems = array_merge($unreadItems, self::getUnreadActivityForUserInProject($userId, $project['id'], $activityFilter));
         }
         $unreadItems = array_merge($unreadItems, self::getGlobalUnreadActivityForUser($userId));
@@ -114,9 +119,10 @@ class ActivityListDto
     /**
      * @param ProjectModel $projectModel
      * @param string $userId
+     * @param array $filterParams
      * @return array - the DTO array
      */
-    public static function getActivityForOneProject($projectModel, $userId)
+    public static function getActivityForOneProject($projectModel, $userId, $filterParams = [])
     {
         // Sfchecks projects need special handling of the "Users can see each others' responses" option
         $activityFilter = null;
@@ -129,10 +135,10 @@ class ActivityListDto
             }
         }
         if (isset($activityFilter)) {
-            $activity = array_filter(self::getActivityForProject($projectModel), $activityFilter);
+            $activity = array_filter(self::getActivityForProject($projectModel, $filterParams), $activityFilter);
             $unreadItems = self::getUnreadActivityForUserInProject($userId, $projectModel->id->asString(), $activityFilter);
         } else {
-            $activity = self::getActivityForProject($projectModel);
+            $activity = self::getActivityForProject($projectModel, $filterParams);
             $unreadItems = self::getUnreadActivityForUserInProject($userId, $projectModel->id->asString());
         }
         uasort($activity, ['self', 'sortActivity']);
@@ -146,12 +152,13 @@ class ActivityListDto
 
     /**
      * @param ProjectModel $projectModel
-     * @param string $userId
+     * @param string $entryId
+     * @param array $filterParams
      * @return array - the DTO array
      */
-    public static function getActivityForOneLexEntry($projectModel, $entryId)
+    public static function getActivityForOneLexEntry($projectModel, $entryId, $filterParams = [])
     {
-        $activity = self::getActivityForProject($projectModel);
+        $activity = self::getActivityForLexEntry($projectModel, $entryId, $filterParams);
         // TODO: handle unread items for this activity log type (single-entry). Perhaps the getUnreadActivity() functions should just take a list of items? 2018-02 RM
 //        $unreadItems = self::getUnreadActivityForUserInProject($userId, $projectModel->id->asString());
         $unreadItems = [];
@@ -289,14 +296,30 @@ class ActivityListModel extends MapperListModel
     /**
      * ActivityListModel constructor.
      * @param ProjectModel $projectModel
-     * @param int $limit
-     * @param int $skip
+     * @param array $query
+     * @param array $filterParams
      */
-    public function __construct($projectModel, $query = null, $limit = 100, $skip = 0)
+    public function __construct($projectModel, $query = null, array $filterParams = [])
     {
         if (!isset($query)) {
             $query = ['action' => ['$regex' => '']];
         }
+        if (!isset($query)) {
+            $query = ['action' => ['$regex' => '']];
+        }
+        if (isset($filterParams['startDate']) || isset($filterParams['endDate'])) {
+            $query['dateCreated'] = [];
+        }
+        if (isset($filterParams['startDate'])) {
+            $startDate = new UTCDateTime(strtotime($filterParams['startDate']) * 1000);  // Seriously? There's GOT to be a better way to get Mongo to parse a date string... 2018-02 RM
+            $query['dateCreated']['$gte'] = $startDate;
+        }
+        if (isset($filterParams['endDate'])) {
+            $endDate = new UTCDateTime(strtotime($filterParams['endDate']) * 1000);  // Ditto 2018-02 RM
+            $query['dateCreated']['$lte'] = $endDate;
+        }
+        $limit = $filterParams['limit'] ?? 100;
+        $skip  = $filterParams['skip'] ?? 0;
         $this->entries = new MapOf(function () use ($projectModel) { return new ActivityModel($projectModel); });
         parent::__construct(
             ActivityModelMongoMapper::connect($projectModel->databaseName()),
@@ -312,17 +335,16 @@ class ActivityListModelByUser extends ActivityListModel
      * ActivityListModel constructor.
      * @param ProjectModel $projectModel
      * @param UserModel $userModel
-     * @param int $limit
-     * @param int $skip
+     * @param array $filterParams
      */
-    public function __construct($projectModel, $userModel, $limit = 100, $skip = 0)
+    public function __construct($projectModel, $userModel, array $filterParams = [])
     {
         $userId = $userModel->id->asString();
         parent::__construct($projectModel,
             ['action' => ['$regex' => ''],
                 '$or' => ['userRef'  => MongoMapper::mongoID($userId),
                     'userRef2' => MongoMapper::mongoID($userId)]],
-            $limit, $skip
+            $filterParams
         );
     }
 }
@@ -332,15 +354,14 @@ class ActivityListModelByProject extends ActivityListModel
     /**
      * ActivityListModel constructor.
      * @param ProjectModel $projectModel
-     * @param int $limit
-     * @param int $skip
+     * @param array $filterParams
      */
-    public function __construct($projectModel, $limit = 100, $skip = 0)
+    public function __construct($projectModel, array $filterParams = [])
     {
         parent::__construct($projectModel,
             ['action' => ['$regex' => ''],
              'projectRef' => MongoMapper::mongoID($projectModel->id->asString())],
-            $limit, $skip
+            $filterParams
         );
     }
 }
@@ -351,15 +372,14 @@ class ActivityListModelByLexEntry extends ActivityListModel
      * ActivityListModel constructor.
      * @param ProjectModel $projectModel
      * @param string $entryId
-     * @param int $limit
-     * @param int $skip
+     * @param array $filterParams
      */
-    public function __construct($projectModel, $entryId, $limit = 100, $skip = 0)
+    public function __construct($projectModel, $entryId, array $filterParams)
     {
         parent::__construct($projectModel,
             ['action' => ['$regex' => ''],
              'entryRef' => MongoMapper::mongoID($entryId)],
-            $limit, $skip
+            $filterParams
         );
     }
 }

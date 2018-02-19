@@ -49,7 +49,12 @@ export class ActivityAppController implements angular.IController {
       { label: 'Activity' }
     ]);
 
-    this.activityService.listActivity(result => {
+    // Example of showing all activities between two dates:
+    // var now = new Date();
+    // var lastWeek = new Date(now.valueOf() - 1000 * 60 * 60 * 24 * 7);    //  7 days in milliseconds
+    // var lastMonth = new Date(now.valueOf() - 1000 * 60 * 60 * 24 * 30);  // 30 days in milliseconds
+    // this.activityService.listActivity({startDate: lastMonth, endDate: lastWeek}, result => { ... });
+    this.activityService.listActivity({}, result => {
       if (result.ok) {
         this.activities = [];
         this.unread = result.data.unread;
