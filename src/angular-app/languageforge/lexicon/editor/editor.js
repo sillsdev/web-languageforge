@@ -964,7 +964,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         var exampleGuid = '';
         var senseGuid = '';
         var field = '';
-        var fieldConfig = null;
+        var fieldConfig = {
+          type: null
+        };
         var inputSystem = '';
         var optionKey = '';
         var optionLabel = '';
@@ -1009,12 +1011,12 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
           }
         }
 
-        if (exampleGuid) {
+        if (exampleGuid && exampleIndex) {
           if (currentEntry.senses[senseIndex].examples[exampleIndex].hasOwnProperty(field)) {
             currentField = currentEntry.senses[senseIndex].examples[exampleIndex][field];
             fieldConfig = $scope.config.entry.fields.senses.fields.examples.fields[field];
           }
-        } else if (senseGuid) {
+        } else if (senseGuid && senseIndex) {
           if (currentEntry.senses[senseIndex].hasOwnProperty(field)) {
             currentField = currentEntry.senses[senseIndex][field];
             fieldConfig = $scope.config.entry.fields.senses.fields[field];
