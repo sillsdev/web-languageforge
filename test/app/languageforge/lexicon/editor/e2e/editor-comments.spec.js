@@ -69,10 +69,19 @@ describe('Editor Comments', function () {
     expect(comment.plusOne.isPresent()).toBe(true);
     expect(comment.content.getText()).toEqual('Second comment.');
     expect(comment.date.getText()).toMatch(/ago|in a few seconds/);
+  });
 
-    // Check the "regarding" section
-    comment.regarding.toggle.click();
+  it('comments panel: check regarding value is hidden when the field value matches', function () {
+    var comment = editorPage.comment.getComment(-1);
+
+    // Make sure it is hidden
+    expect(comment.regarding.container.isDisplayed()).toBe(false);
+
+    // Change the field value and then make sure it appears
+    editorPage.edit.getMultiTextInputs('Definition').first().sendKeys('update - ');
     expect(comment.regarding.container.isDisplayed()).toBe(true);
+
+    // Make sure the regarding value matches what was originally there
     var word    = constants.testEntry1.senses[0].definition.en.value;
     expect(comment.regarding.fieldValue.getText()).toEqual(word);
   });

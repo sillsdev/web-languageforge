@@ -55,7 +55,19 @@ angular.module('palaso.ui.comments')
             $scope.showNewReplyForm = true;
           };
 
-          $scope.submitReply = function submitReply(reply) {
+          $scope.submitReply = function submitReply(reply, $event) {
+            if (angular.isDefined($event)) {
+              if ($event.keyCode === 13) {
+                // If there is no reply yet then cancel out
+                if (!reply.editingContent) {
+                  $event.preventDefault();
+                  return;
+                }
+              } else {
+                return;
+              }
+            }
+
             hideInputFields();
             $scope.posting = true;
             reply.content = angular.copy(reply.editingContent);
@@ -155,9 +167,24 @@ angular.module('palaso.ui.comments')
 
           $scope.isOriginalRelevant = function isOriginalRelevant() {
             if ($scope.comment.regarding.fieldValue) {
-              return true;
+              if ($scope.getCurrentContextValue() !== $scope.comment.regarding.fieldValue) {
+                return true;
+              }
+            }
+
+            return false;
+          };
+
+          $scope.getCurrentContextValue = function getCurrentContextValue() {
+            var contextParts = $scope.control.getContextParts($scope.comment.contextGuid);
+            if (contextParts.option.key !== '' &&
+              (contextParts.fieldConfig.type === 'multioptionlist' ||
+                (contextParts.fieldConfig.type === 'optionlist' &&
+                  $scope.control.commentContext.contextGuid === ''))
+              ) {
+              return contextParts.option.label;
             } else {
-              return false;
+              return contextParts.value;
             }
           };
 
