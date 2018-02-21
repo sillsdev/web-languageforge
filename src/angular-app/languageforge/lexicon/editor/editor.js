@@ -959,6 +959,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
           sense: { index: '', guid: '' },
           example: { index: '', guid: '' }
         };
+        if (!angular.isDefined(contextGuid)) return parts;
         var contextParts = contextGuid.split(/(sense#.+?\s)|(example#.+?\s)/);
         var exampleGuid = '';
         var senseGuid = '';
