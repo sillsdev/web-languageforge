@@ -111,7 +111,7 @@ angular.module('palaso.ui.comments')
         $scope.setContextGuid();
 
         $scope.isCommentingAvailable = function isCommentingAvailable() {
-          return ($scope.control.currentEntry.id.indexOf('_new_') !== -1);
+          return ($scope.control.currentEntry.id.indexOf('_new_') !== -1 || !$scope.control.rights.canComment());
         };
 
         $scope.$watch('model', function () {
