@@ -14,7 +14,7 @@ angular.module('palaso.ui.comments')
         fieldConfig: '='
       },
       controller: ['$scope', function ($scope) {
-        $scope.contentArr = [];
+        $scope.regarding = '';
         $scope.$watch('fieldConfig', function (newContent) {
           if (angular.isDefined(newContent)) {
             $scope.setContent();
@@ -31,7 +31,7 @@ angular.module('palaso.ui.comments')
                   // Will need to be updated once the system provides support for other languages
                   for (var i in semanticDomains_en) {
                     if (semanticDomains_en[i].key === $scope.content) {
-                      $scope.contentArr[0] = semanticDomains_en[i].value;
+                      $scope.regarding = semanticDomains_en[i].value;
                     }
                   }
                 } else {
@@ -40,14 +40,14 @@ angular.module('palaso.ui.comments')
                     if (listCode === $scope.fieldConfig.listCode) {
                       for (var i in optionlists[listCode].items) {
                         if (optionlists[listCode].items[i].key === $scope.content) {
-                          $scope.contentArr[0] = optionlists[listCode].items[i].value;
+                          $scope.regarding = optionlists[listCode].items[i].value;
                         }
                       }
                     }
                   }
                 }
               } else {
-                $scope.contentArr = $scope.content.split('#');
+                $scope.regarding = $scope.content;
               }
             }
           }
