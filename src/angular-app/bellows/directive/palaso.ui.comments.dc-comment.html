@@ -14,7 +14,7 @@
                         <div class="comment-date">{{comment.authorInfo.createdDate | relativetime}}</div>
                     </div>
                 </div>
-                <div class="dropdown" uib-dropdown data-ng-show="rights.canEditComment(comment.authorInfo.createdByUserRef.id) || rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && !comment.editing">
+                <div class="dropdown" uib-dropdown data-ng-show="rights.canComment() && rights.canEditComment(comment.authorInfo.createdByUserRef.id) || rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && !comment.editing">
                     <button class="btn btn-sm btn-std ellipsis-menu pui-no-caret" uib-dropdown-toggle type="button"><i
                             class="fa fa-ellipsis-v"></i></button>
                     <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
@@ -95,7 +95,7 @@
                             </div>
                             <span class="reply-content">{{reply.content}}</span>
                         </div>
-                        <div data-ng-show="comment.status != 'resolved' && rights.canEditComment(reply.authorInfo.createdByUserRef.id)" class="reply-actions">
+                        <div data-ng-show="comment.status != 'resolved' && rights.canComment() && rights.canEditComment(reply.authorInfo.createdByUserRef.id)" class="reply-actions">
                             <div class="dropdown float-right" uib-dropdown>
                                 <button class="btn btn-sm btn-std ellipsis-menu pui-no-caret" uib-dropdown-toggle
                                         type="button"><i class="fa fa-ellipsis-v"></i></button>
@@ -112,7 +112,7 @@
                             </div>
                         </div>
                     </div>
-                    <form data-ng-show="reply.editing" data-ng-submit="submitReply(reply)" class="reply-edit-form">
+                    <form data-ng-show="reply.editing && rights.canComment()" data-ng-submit="submitReply(reply)" class="reply-edit-form">
                         <!--suppress HtmlFormInputWithoutLabel -->
                         <textarea class="form-control" data-ng-model="reply.editingContent"
                                   pui-auto-focus="reply.isAutoFocusEditing"></textarea>
@@ -123,7 +123,7 @@
                     </form>
                 </div>
             </div>
-            <form ng-show="showNewReplyForm && comment.status != 'resolved'" class="commentNewReplyForm" data-ng-submit="submitReply(newReply)">
+            <form ng-show="showNewReplyForm && comment.status != 'resolved' && rights.canComment()" class="commentNewReplyForm" data-ng-submit="submitReply(newReply)">
                 <textarea class="form-control" required placeholder="Reply here.  Press Enter when done."
                           data-ng-model="newReply.editingContent" pui-auto-focus="isAutoFocusNewReply"
                           ng-keydown="submitReply(newReply, $event)"></textarea>
