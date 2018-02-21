@@ -205,6 +205,10 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.postNewComment = function postNewComment() {
+          // Get the latest value for the field before saving in case it has changed
+          // since the comment panel was first triggered and comment started getting entered
+          var contextParts = $scope.control.getContextParts($scope.newComment.contextGuid);
+          $scope.newComment.regarding.fieldValue = contextParts.value;
           $scope.posting = true;
           commentService.update($scope.newComment, function (result) {
             if (result.ok) {
