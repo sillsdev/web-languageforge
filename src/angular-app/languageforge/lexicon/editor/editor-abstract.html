@@ -36,7 +36,7 @@
                             </button>
                         </span>
                         <button id="toCommentsLink"
-                           class="btn btn-primary" data-ng-click="showComments()" title="Show Comments">
+                           class="btn btn-primary" data-ng-click="showComments()" data-ng-show="rights.canComment()" title="Show Comments">
                             <current-entry-comment-count></current-entry-comment-count>
                             <i class="fa fa-comments commentColor"></i>
                         </button>

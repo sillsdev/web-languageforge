@@ -1014,16 +1014,22 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         if (exampleGuid && exampleIndex) {
           if (currentEntry.senses[senseIndex].examples[exampleIndex].hasOwnProperty(field)) {
             currentField = currentEntry.senses[senseIndex].examples[exampleIndex][field];
-            fieldConfig = $scope.config.entry.fields.senses.fields.examples.fields[field];
+            if ($scope.config.entry.fields.senses.fields.examples.fields.hasOwnProperty(field)) {
+              fieldConfig = $scope.config.entry.fields.senses.fields.examples.fields[field];
+            }
           }
         } else if (senseGuid && senseIndex) {
           if (currentEntry.senses[senseIndex].hasOwnProperty(field)) {
             currentField = currentEntry.senses[senseIndex][field];
-            fieldConfig = $scope.config.entry.fields.senses.fields[field];
+            if ($scope.config.entry.fields.senses.fields.hasOwnProperty(field)) {
+              fieldConfig = $scope.config.entry.fields.senses.fields[field];
+            }
           }
         } else if (currentEntry.hasOwnProperty(field)) {
           currentField = currentEntry[field];
-          fieldConfig = $scope.config.entry.fields[field];
+          if ($scope.config.entry.fields.hasOwnProperty(field)) {
+            fieldConfig = $scope.config.entry.fields[field];
+          }
         }
 
         if (currentField !== null) {
