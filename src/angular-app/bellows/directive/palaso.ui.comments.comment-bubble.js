@@ -48,18 +48,6 @@ angular.module('palaso.ui.comments')
               return;
             }
 
-            // Make sure there is an entry ID as you can't comment on a new entry until it is saved
-            if ($scope.control.currentEntry.id.indexOf('_new_') !== -1) {
-              $scope.control.saveCurrentEntry(true, function () {
-                // Need to also check against this promise as the callback above doesn't include it
-                $scope.control.editorService.refreshEditorData().then(function () {
-                  $scope.getComments();
-                });
-              });
-
-              return false;
-            }
-
             if ($scope.control.commentContext.contextGuid === $scope.contextGuid) {
               $scope.control.hideCommentsPanel();
             } else {
@@ -121,6 +109,10 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.setContextGuid();
+
+        $scope.isCommentingAvailable = function isCommentingAvailable() {
+          return ($scope.control.currentEntry.id.indexOf('_new_') !== -1);
+        };
 
         $scope.$watch('model', function () {
           $scope.checkValidModelContextChange();
