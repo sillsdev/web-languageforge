@@ -105,6 +105,7 @@ class ActivityModel extends MapperModel
      */
     public function addContent($type, $content)
     {
+        if (is_null($content)) return;  // Just ignore null content instead of throwing an exception
         CodeGuard::checkTypeAndThrow($content, 'string');
         $this->actionContent[$type] = $content;
     }
