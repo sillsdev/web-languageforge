@@ -370,6 +370,66 @@ class MongoMapper
     }
 
     /**
+     * Since MongoEncoder::encode returns new \stdClass() instead of an empty array, but empty(new \stdClass()) returns false, we need a different way to detect if an encoded object is empty.
+     * See https://stackoverflow.com/questions/9412126/how-to-check-that-an-object-is-empty-in-php
+     */
+    public static function objectIsEmpty($object) {
+        if (is_null($object)) return true;
+        foreach ($object as $key) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function shouldPersist($value) {
+        if (is_null($value))
+            return false;
+        if (is_bool($value))
+            return true;
+        if (empty($value))
+            return false;
+        if (is_object($value) && self::objectIsEmpty($value))
+            return false;
+        return true;
+    }
+
+    public static function shouldKeepKey(string $key) {
+        // Some keys shouldn't be removed even if empty, at least as long as our code is still making assumptions that these keys exist
+        return ($key === "guid" || $key === "translation" || $key === "description" || $key === "answers");
+    }
+
+    public static function removeEmptyItems(array $array) {
+        foreach ($array as $key => &$value) {
+            if (is_array($value)) {
+                $value = self::removeEmptyItems($value);
+            }
+            if (self::shouldPersist($value) || self::shouldKeepKey($key)) {
+                $array[$key] = $value;
+            } else {
+                unset($array[$key]);
+            }
+        }
+        return $array;
+    }
+
+    protected function prepareUpdateCommand($data) {
+        // Returns two arrays: keysToSet and keysToUnset (both with key => value)
+        $keysToSet = [];
+        $keysToUnset = [];
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $value = self::removeEmptyItems($value);
+            }
+            if (self::shouldPersist($value) || self::shouldKeepKey($key)) {
+                $keysToSet[$key] = $value;
+            } else {
+                $keysToUnset[$key] = null;
+            }
+        }
+        return [$keysToSet, $keysToUnset];
+    }
+
+    /**
      * @param array $data
      * @param string $id
      * @param int $keyType
@@ -385,7 +445,11 @@ class MongoMapper
             if (empty($rootId)) {
                 $mongoid = self::mongoID($id);
                 $filter = array('_id' => $mongoid);
-                $updateCommand = array('$set' => $data);
+                list($keysToSet, $keysToUnset) = $this->prepareUpdateCommand($data);
+                $updateCommand = array('$set' => $keysToSet);
+                if (! empty($keysToUnset)) {
+                    $updateCommand['$unset'] = $keysToUnset;
+                }
                 $options = array('upsert' => true);
                 $this->_collection->updateOne($filter, $updateCommand, $options);
                 $id = $mongoid->__toString();
