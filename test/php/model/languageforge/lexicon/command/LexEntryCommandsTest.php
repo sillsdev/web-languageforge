@@ -186,7 +186,7 @@ class LexEntryCommandsTest extends TestCase
         LexEntryCommands::updateEntry($projectId, $params, $userId);
 
         $updatedEntry = LexEntryCommands::readEntry($projectId, $entryId);
-        $this->assertEquals('', $updatedEntry['lexeme']['th']['value']);
+        $this->assertEquals('', $updatedEntry['lexeme']['th']['value'] ?? "");
     }
 /* Ignore test for send receive v1.1 since dirtySR counter is not being incremented on edit. IJH 2015-02
     public function testUpdateEntry_ProjectHasSendReceive_EntryHasGuidAndDirtySRIncremented()
