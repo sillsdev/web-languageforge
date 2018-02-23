@@ -13,7 +13,7 @@ foreach ($projectCodeHandles as $handle) {
     $project = ProjectModel::getByProjectCode($constants[$handle]);
     if ($project->hasId()) {
         $project->remove();
-        echo "Removed '${ constants[$handle] }'";
+        echo "Removed '$constants[$handle]'";
     }
 }
 
