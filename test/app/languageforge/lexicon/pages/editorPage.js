@@ -169,7 +169,8 @@ function EditorPage() {
 
     // Top-row
     renderedDiv: this.editDiv.element(by.className('dc-rendered-entryContainer')),
-    deleteBtn: this.editDiv.element(by.id('deleteEntry')),
+    actionMenu: this.editDiv.element(by.css('.entry-card .card-header .ellipsis-menu-toggle')),
+    deleteMenuItem: this.editDiv.element(by.css('.entry-card .card-header .dropdown-menu .dropdown-item')),
 
     // Helper functions for retrieving various field values
     fields: this.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
