@@ -256,11 +256,9 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
 }])
 
 // Dictionary Control Formatted Text Editor
-.directive('dcFormattedtext', [function () {
-  return {
-    restrict: 'E',
+.component('dcFormattedtext', {
     templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-formattedtext.html',
-    scope: {
+    bindings: {
       fteModel: '=',
       fteToolbar: '=',
       fteDisabled: '=',
@@ -268,63 +266,30 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
       fteDir: '='
     },
     controller: ['$scope', 'sessionService', function ($scope, ss) {
-      $scope.fte = {};
-      $scope.disabledMsg = 'This field cannot be edited because it contains metadata that would '
+      var ctrl = this;
+      ctrl.fte = {};
+      ctrl.disabledMsg = 'This field cannot be edited because it contains metadata that would '
         + 'be lost by editing in Language Forge. Fields with metadata may be edited in '
         + 'Fieldworks Language Explorer.';
 
-      $scope.$watch('fteModel', function (newVal) {
-        $scope.textfieldValue = $scope.removeHTMLTags(newVal);
+      $scope.$watch('$ctrl.fteModel', function (newVal) {
+        ctrl.textFieldValue = ctrl.removeHTMLTags(newVal);
       });
 
-      $scope.$watch('textfieldValue', function (newVal) {
-        if (!$scope.fteDisabled) $scope.fteModel = $scope.escapeHTML(newVal);
+      $scope.$watch('$ctrl.textFieldValue', function (newVal) {
+        if (!ctrl.fteDisabled) ctrl.fteModel = ctrl.escapeHTML(newVal);
       });
 
-      if (angular.isDefined($scope.fteToolbar)) {
-        $scope.fte.toolbar = $scope.fteToolbar;
-      } else {
-        ss.getSession().then(function (session) {
-          if (session.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT)) {
-
-            // if site administrator enable development controls
-            //        $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan'], ['html']]";
-            // html toggle for development only
-            $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
-          } else {
-            //        $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
-            // disable unfinished link and language span controls
-            $scope.fte.toolbar = '[[]]';
-          }
-        });
-      }
-
-      // x gets sanitised so no default wrap
-      $scope.fte.defaultWrap = ($scope.fteMultiline) ? 'p' : 'x';
-      $scope.fte.classMultiline = ($scope.fteMultiline) ? 'dc-multiline' : '';
-
-      $scope.setupTaEditor = function setupTaEditor($element) {
-        if (!$scope.fteMultiline) {
-          $element.on('keydown', function (event) {
-            // ignore the enter key
-            var key = event.which || event.keyCode;
-            if (key === 13) {
-              event.preventDefault();
-            }
-          });
-        }
-      };
-
-      $scope.removeHTMLTags = function removeHTMLTags(str) {
+      ctrl.removeHTMLTags = function removeHTMLTags(str) {
         return new DOMParser().parseFromString(str, 'text/html').body.textContent;
       };
 
-      $scope.escapeHTML = function escapeHTML(str) {
+      ctrl.escapeHTML = function escapeHTML(str) {
         var div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML;
       };
 
     }]
-  };
-}]);
+  }
+);
