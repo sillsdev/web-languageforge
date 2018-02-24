@@ -1,7 +1,7 @@
 <div>
     <input type="text"
-    dir="{{fteDir}}"
-    ng-model="textfieldValue"
-    ng-disabled="fteDisabled"
-    title="{{fteDisabled ? disabledMsg : ''}}">
+    dir="{{$ctrl.fteDir}}"
+    ng-model="$ctrl.textFieldValue"
+    ng-disabled="$ctrl.fteDisabled"
+    title="{{$ctrl.fteDisabled ? $ctrl.disabledMsg : ''}}">
 </div>
