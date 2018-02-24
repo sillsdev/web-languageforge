@@ -266,7 +266,7 @@ export class EditorPage {
       list: editorUtil.getOneField('Pictures'),
       images: editorUtil.getOneField('Pictures').all(by.css('img')),
       captions: editorUtil.getOneField('Pictures')
-        .all(by.css('.input-group > .dc-formattedtext .ta-bind')),
+        .all(by.css('.input-group > .dc-formattedtext input')),
       removeImages: editorUtil.getOneField('Pictures').all(by.className('fa-trash')),
       getFileName: (index: number) => {
         return editorUtil.getOneFieldValue('Pictures').then((pictures: any) =>
@@ -287,7 +287,7 @@ export class EditorPage {
 
     getMultiTextInputs: (searchLabel: string) => {
       return editorUtil.getOneField(searchLabel)
-        .all(by.css('.input-group > .dc-formattedtext .ta-bind'));
+        .all(by.css('.input-group > .dc-formattedtext input'));
     },
 
     getMultiTextInputSystems: (searchLabel: string) => {

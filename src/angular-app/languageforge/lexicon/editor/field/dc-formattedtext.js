@@ -269,6 +269,18 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
     },
     controller: ['$scope', 'sessionService', function ($scope, ss) {
       $scope.fte = {};
+      $scope.disabledMsg = 'This field cannot be edited because it contains metadata that would '
+        + 'be lost by editing in Language Forge. Fields with metadata may be edited in '
+        + 'Fieldworks Language Explorer.';
+
+      $scope.$watch('fteModel', function (newVal) {
+        $scope.textfieldValue = $scope.removeHTMLTags(newVal);
+      });
+
+      $scope.$watch('textfieldValue', function (newVal) {
+        if (!$scope.fteDisabled) $scope.fteModel = $scope.escapeHTML(newVal);
+      });
+
       if (angular.isDefined($scope.fteToolbar)) {
         $scope.fte.toolbar = $scope.fteToolbar;
       } else {
@@ -302,6 +314,17 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
           });
         }
       };
+
+      $scope.removeHTMLTags = function removeHTMLTags(str) {
+        return new DOMParser().parseFromString(str, 'text/html').body.textContent;
+      };
+
+      $scope.escapeHTML = function escapeHTML(str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      };
+
     }]
   };
 }]);
