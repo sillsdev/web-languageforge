@@ -16,10 +16,7 @@ class SemDomTransItemCommands
      */
     public static function update($data, $projectId) {
         $projectModel = new SemDomTransProjectModel($projectId);
-        $previousItemModel = new SemDomTransItemModel($projectModel);
-        if ($data["id"] != '') {
-            $previousItemModel->read($data['id']);
-        }
+        $previousItemModel = new SemDomTransItemModel($projectModel, $data["id"] ?? "");
 
         $guid = $data["xmlGuid"];
         $s = new SemDomTransItemModel($projectModel);

@@ -54,11 +54,9 @@ class TextCommands
     {
         $projectModel = new ProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($projectModel);
-        $textModel = new TextModel($projectModel);
-        $isNewText = ($object['id'] == '');
-        if (!$isNewText) {
-            $textModel->read($object['id']);
-        }
+        $textId = $object['id'] ?? '';
+        $isNewText = ($textId == '');
+        $textModel = new TextModel($projectModel, $textId);
         JsonDecoder::decode($textModel, $object);
         TextCommands::makeValidRange($object);
         if (TextCommands::hasRange($object)) {

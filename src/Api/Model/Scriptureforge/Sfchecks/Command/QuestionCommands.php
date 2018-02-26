@@ -21,11 +21,9 @@ class QuestionCommands
     {
         $projectModel = new ProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($projectModel);
-        $questionModel = new QuestionModel($projectModel);
-        $isNewQuestion = ($object['id'] == '');
-        if (!$isNewQuestion) {
-            $questionModel->read($object['id']);
-        }
+        $questionId = $object['id'] ?? '';
+        $isNewQuestion = ($questionId == '');
+        $questionModel = new QuestionModel($projectModel, $questionId);
         JsonDecoder::decode($questionModel, $object);
         $questionId = $questionModel->write();
         if ($isNewQuestion) {

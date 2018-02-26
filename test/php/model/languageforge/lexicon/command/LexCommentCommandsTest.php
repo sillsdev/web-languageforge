@@ -124,7 +124,7 @@ class LexCommentCommandsTest extends TestCase
         $this->assertCount(0, $comment->replies);
 
         $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
 
         $reply = $comment->getReply($replyId);
 
@@ -164,7 +164,7 @@ class LexCommentCommandsTest extends TestCase
         LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
         $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
 
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
         $reply = $comment->getReply($replyId);
 
         $this->assertEquals($replyData['content'], $reply->content);
@@ -175,7 +175,7 @@ class LexCommentCommandsTest extends TestCase
         );
 
         LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
         $reply = $comment->getReply($replyId);
 
         $this->assertCount(2, $comment->replies);
@@ -214,7 +214,7 @@ class LexCommentCommandsTest extends TestCase
         LexCommentCommands::deleteComment($project->id->asString(), $userId, $environ->website, $commentId);
 
         $commentList->read();
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
 
         $this->assertEquals(0, $commentList->count);
         $this->assertTrue($comment->isDeleted);
@@ -252,13 +252,13 @@ class LexCommentCommandsTest extends TestCase
         LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
         $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
 
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
 
         $this->assertCount(2, $comment->replies);
 
         LexCommentCommands::deleteReply($project->id->asString(), $userId, $environ->website, $commentId, $replyId);
 
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
         $this->assertCount(1, $comment->replies);
     }
 
@@ -290,7 +290,7 @@ class LexCommentCommandsTest extends TestCase
 
         LexCommentCommands::updateCommentStatus($project->id->asString(), $commentId, LexCommentModel::STATUS_RESOLVED);
 
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
 
         $this->assertEquals(LexCommentModel::STATUS_RESOLVED, $comment->status);
     }
@@ -371,7 +371,7 @@ class LexCommentCommandsTest extends TestCase
         LexCommentCommands::plusOneComment($project->id->asString(), $user1Id, $commentId);
         LexCommentCommands::plusOneComment($project->id->asString(), $user2Id, $commentId);
 
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
         $this->assertEquals(2, $comment->score);
     }
 
@@ -403,7 +403,7 @@ class LexCommentCommandsTest extends TestCase
         LexCommentCommands::plusOneComment($project->id->asString(), $user1Id, $commentId);
         LexCommentCommands::plusOneComment($project->id->asString(), $user1Id, $commentId);
 
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
         $this->assertEquals(1, $comment->score);
     }
 }

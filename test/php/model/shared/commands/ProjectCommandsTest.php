@@ -73,7 +73,7 @@ class ProjectCommandsTest extends TestCase
 
         ProjectCommands::archiveProject($projectId, $ownerId);
 
-        $project->read($projectId);
+        $project = new ProjectModel($projectId);
         $this->assertTrue($project->isArchived);
     }
 
@@ -113,7 +113,7 @@ class ProjectCommandsTest extends TestCase
 
         $count = ProjectCommands::publishProjects(array($projectId));
 
-        $project->read($projectId);
+        $project = new ProjectModel($projectId);
         $this->assertEquals(1, $count);
         $this->assertFalse($project->isArchived);
     }
@@ -168,8 +168,8 @@ class ProjectCommandsTest extends TestCase
         $updatedUserId = ProjectCommands::updateUserRole($projectId, $userId);
 
         // read from disk again
-        $sameProject->read($projectId);
-        $sameUser->read($updatedUserId);
+        $sameProject = new ProjectModel($projectId);
+        $sameUser = new UserModel($updatedUserId);
 
         // user still in project once and project still has one user
         $this->assertEquals(1, $sameProject->listUsers()->count);

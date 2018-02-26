@@ -111,8 +111,9 @@ class QuestionCommandsTest extends TestCase
 
         $count = QuestionCommands::archiveQuestions($project->id->asString(), array($question1->id->asString()));
 
-        $question1->read($question1->id->asString());
-        $question2->read($question2->id->asString());
+        // Refresh questions from Mongo
+        $question1 = new QuestionModel($project, $question1->id->asString());
+        $question2 = new QuestionModel($project, $question2->id->asString());
         $this->assertEquals(1, $count);
         $this->assertTrue($question1->isArchived);
         $this->assertEquals(false, $question2->isArchived);
@@ -139,8 +140,9 @@ class QuestionCommandsTest extends TestCase
 
         $count = QuestionCommands::publishQuestions($project->id->asString(), array($question1->id->asString()));
 
-        $question1->read($question1->id->asString());
-        $question2->read($question2->id->asString());
+        // Refresh questions from Mongo
+        $question1 = new QuestionModel($project, $question1->id->asString());
+        $question2 = new QuestionModel($project, $question2->id->asString());
         $this->assertEquals(1, $count);
         $this->assertFalse($question1->isArchived);
         $this->assertTrue($question2->isArchived);
@@ -272,7 +274,7 @@ class QuestionCommandsTest extends TestCase
 
         QuestionCommands::updateAnswer($project->id->asString(), $questionId, $answerArray, $user2Id);
 
-        $question->read($questionId);
+        $question = new QuestionModel($project, $questionId);
         $newAnswer = $question->readAnswer($answerId);
         $this->assertEquals($user1Id, $newAnswer->userRef->asString());
     }
@@ -308,7 +310,7 @@ class QuestionCommandsTest extends TestCase
 
         QuestionCommands::updateAnswer($project->id->asString(), $questionId, $answerArray, $user1Id);
 
-        $question->read($questionId);
+        $question = new QuestionModel($project, $questionId);
         $newAnswer = $question->readAnswer($answerId);
         $this->assertEquals('updated answer', $newAnswer->content);
         $this->assertCount(1, $newAnswer->tags);
@@ -339,7 +341,7 @@ class QuestionCommandsTest extends TestCase
 
         $dto = QuestionCommands::updateAnswerExportFlag($project->id->asString(), $questionId, $answerId, $isToBeExported);
 
-        $question->read($questionId);
+        $question = new QuestionModel($project, $questionId);
         $newAnswer = $question->readAnswer($answerId);
         $this->assertTrue($newAnswer->isToBeExported);
         $this->assertTrue($dto[$answerId]['isToBeExported']);
@@ -368,7 +370,7 @@ class QuestionCommandsTest extends TestCase
 
         $dto = QuestionCommands::updateAnswerTags($project->id->asString(), $questionId, $answerId, $tagsArray);
 
-        $question->read($questionId);
+        $question = new QuestionModel($project, $questionId);
         $newAnswer = $question->readAnswer($answerId);
         $this->assertCount(1, $newAnswer->tags);
         $this->assertEquals('updatedTag', $newAnswer->tags[0]);
@@ -410,7 +412,7 @@ class QuestionCommandsTest extends TestCase
         );
 
         QuestionCommands::updateComment($project->id->asString(), $questionId, $answerId, $commentArray, $user2Id);
-        $question->read($questionId);
+        $question = new QuestionModel($project, $questionId);
         $newComment = $question->readComment($answerId, $commentId);
         $this->assertEquals($user1Id, $newComment->userRef->asString());
     }

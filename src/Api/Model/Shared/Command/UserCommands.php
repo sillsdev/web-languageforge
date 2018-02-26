@@ -569,8 +569,7 @@ class UserCommands
     public static function sendJoinRequest($projectId, $userId, $website, DeliveryInterface $delivery = null)
     {
         $newUser = new UserModel($userId);
-        $project = new ProjectModel();
-        $project->read($projectId);
+        $project = new ProjectModel($projectId);
 
         // Make sure the user exists on the site
         if (!$newUser->hasRoleOnSite($website)) {
@@ -606,8 +605,7 @@ class UserCommands
     public static function acceptJoinRequest($projectId, $userId, $website, $role, DeliveryInterface $delivery = null)
     {
         $newUser = new UserModel($userId);
-        $project = new ProjectModel();
-        $project->read($projectId);
+        $project = new ProjectModel($projectId);
 
         ProjectCommands::updateUserRole($projectId, $userId, $role);
 
