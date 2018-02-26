@@ -375,8 +375,7 @@ class UserModelTest extends TestCase
 
         // re-read the project
         $projectId = $project->id->asString();
-        $project = new \Api\Model\Shared\ProjectModel();
-        $project->read($projectId);
+        $project = new \Api\Model\Shared\ProjectModel($projectId);
 
         $this->assertFalse($project->userIsMember($userId));
 
