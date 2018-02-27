@@ -1,7 +1,7 @@
 import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
 import { ElementArrayFinder, ElementFinder } from 'protractor/built/element';
-import { Utils } from '../../../bellows/pages/utils';
 import { MockUploadElement } from '../../../bellows/pages/mockUploadElement';
+import { Utils } from '../../../bellows/pages/utils';
 import { EditorUtil } from './editorUtil';
 
 const mockUpload = new MockUploadElement();
@@ -347,7 +347,8 @@ export class EditorPage {
       getOneField: editorUtil.getOneField,
       getFieldValues: editorUtil.getFieldValues,
       getOneFieldValue: editorUtil.getOneFieldValue,
-      getOneFieldAllInputSystems: (searchLabel: string, idx: number = 0, rootElem: ElementFinder = element(by.className('dc-entry'))) => {
+      getOneFieldAllInputSystems: (searchLabel: string, idx: number = 0,
+                                   rootElem: ElementFinder = element(by.className('dc-entry'))) => {
         return editorUtil.getOneField(searchLabel, idx, rootElem).all(by.css('span.wsid'));
       }
     },
@@ -429,7 +430,7 @@ export class EditorPage {
         definition: div.element(by.binding('comment.regarding.meaning')),
         fieldLabel: div.element(by.binding('comment.regarding.fieldNameForDisplay')),
         fieldWsid: div.element(by.binding('comment.regarding.inputSystem')),
-        fieldValue: div.element(by.css('.regardingFieldValue')),
+        fieldValue: div.element(by.css('.regardingFieldValue'))
       },
 
       // Replies (below content but above bottom controls)
