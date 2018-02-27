@@ -305,6 +305,11 @@ export class EditorPage {
   comment = {
     toEditLink: element(by.id('toEditLink')),
 
+    bubbles: {
+      first: element.all(by.css('.dc-entry .commentBubble')).get(0),
+      second: element.all(by.css('.dc-entry .dc-sense .commentBubble')).get(0)
+    },
+
     // Top-row UI elements
     renderedDiv: this.commentDiv.element(by.css('dc-rendered')),
     filter: {
@@ -402,8 +407,10 @@ export class EditorPage {
       avatar: div.element(by.css('.comment-footer img')),
       author: div.element(by.binding('comment.authorInfo.createdByUserRef.name')),
       date: div.element(by.binding('comment.authorInfo.createdDate | relativetime')),
-      score: div.element(by.binding('comment.score')),
-      plusOne: div.element(by.css('.comment-footer i.fa-thumbs-o-up:not(.ng-hide)')),
+      score: div.element(by.css('.comment-interaction .likes')),
+      plusOneActive: div.element(by.css('.comment-actions .can-like')),
+      plusOneInactive: div.element(by.css('.comment-actions .liked')),
+      plusOne: div.element(by.css('.comment-actions i.fa-thumbs-o-up:not(.ng-hide)')),
 
       // Right side content
       content: div.element(by.binding('comment.content')),
@@ -415,6 +422,8 @@ export class EditorPage {
       regarding: {
         // NOTE: Any or all of these may be absent in a given comment. Use
         // isPresent() before calling expect().
+        toggle: div.element(by.css('.comment-body > button')),
+        container: div.element(by.css('.commentRegarding')),
         word: div.element(by.binding('comment.regarding.word')),
         definition: div.element(by.binding('comment.regarding.meaning')),
         fieldLabel: div.element(by.binding('comment.regarding.fieldNameForDisplay')),

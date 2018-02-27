@@ -3,17 +3,20 @@
         <div class="col-12">
             <div class="hdrnav-container">
                 <div class="btn-group" uib-dropdown data-ng-class="$ctrl.interfaceConfig.pullToSide"
-                     data-ng-show="$ctrl.rights.showSettingsDropdown()">
+                     data-ng-show="$ctrl.showSettingsDropdown">
                     <button class="btn btn-std pui-no-caret" uib-dropdown-toggle data-ng-class="$ctrl.interfaceConfig.pullToSide"
                        data-toggle="tooltip" data-placement="{{$ctrl.interfaceConfig.placementToSide}}"
                        title="Settings">
                         <i class="fa fa-ellipsis-v"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="$ctrl.interfaceConfig.pullToSide">
+                        <a id="userManagementLink" class="dropdown-item" data-ng-href="/app/usermanagement/{{$ctrl.project.id}}"
+                            data-ng-show="$ctrl.rights.canEditUsers()">User Management</a>
                         <a class="dropdown-item" ui-sref="settings" data-ng-show="$ctrl.rights.canEditProject()">
                             Project Settings</a>
-                        <a id="userManagementLink" class="dropdown-item" data-ng-href="/app/usermanagement/{{$ctrl.project.id}}"
-                           data-ng-show="$ctrl.rights.canEditUsers()">User Management</a>
+                        <div class="dropdown-divider" data-ng-show="$ctrl.showSync"></div>
+                        <a class="dropdown-item" ui-sref="sync" data-ng-show="$ctrl.showSync"
+                            data-translate="Synchronize"></a>
                     </div>
                 </div>
                 <div class="float-right return-button">

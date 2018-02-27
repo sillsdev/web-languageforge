@@ -1,10 +1,23 @@
 import * as angular from 'angular';
 import Parchment from 'parchment';
 import Quill, {
-  BoundsStatic, Module, Picker, QuillOptionsStatic, RangeStatic, SnowTheme, Theme, Toolbar, Tooltip
+  BoundsStatic, DeltaOperation, Module, Picker, QuillOptionsStatic, RangeStatic, SnowTheme, Theme, Toolbar, Tooltip
 } from 'quill';
 
-import { FormatUsx, FormatUsxHtmlAttributes } from './quill-usx.converter';
+class FormatUsx {
+  static readonly KEYS = new Set<string>(['style', 'altnumber', 'pubnumber', 'caller', 'closed']);
+
+  style?: string;
+  altnumber?: string;
+  pubnumber?: string;
+  caller?: string;
+  closed?: string;
+}
+
+class Note {
+  index: number;
+  delta: { ops: DeltaOperation[] };
+}
 
 export interface SuggestionsTheme extends Theme {
   suggestionsTooltip: Tooltip;
@@ -22,188 +35,198 @@ export function registerSuggestionsTheme(): void {
   const Inline = Quill.import('blots/inline') as typeof Parchment.Inline;
   const Block = Quill.import('blots/block') as typeof Parchment.Block;
   const Scroll = Quill.import('blots/scroll') as typeof Parchment.Scroll;
+  const Embed = Quill.import('blots/embed') as typeof Parchment.Embed;
+  const BlockEmbed = Quill.import('blots/block/embed') as typeof Parchment.Embed;
 
   // noinspection JSUnusedLocalSymbols
   let dropElements: HTMLElement[] = [];
 
-  const customAttributeName = (key: string) => 'data-' + key;
-
-  class VerseInline extends Inline {
-    // noinspection JSUnusedGlobalSymbols
-    static blotName = 'verse';
-    // static className = Inline.className;
-    static tagName = 'usx-verse';
-    static scope = Inline.scope;
-    static allowedChildren = Inline.allowedChildren;
-    // noinspection JSUnusedGlobalSymbols
-    static defaultChild = Inline.defaultChild;
-
-    static create(value: FormatUsx): Node {
-      const node = (super.create(value) as HTMLElement);
-      if (value) {
-        const formatHtmlAttributes = new FormatUsxHtmlAttributes();
-        for (const key in value) {
-          if (value.hasOwnProperty(key) && value[key] !== null) {
-            if (formatHtmlAttributes.hasOwnProperty(key)) {
-              node.setAttribute(key, value[key]);
-            } else {
-              node.setAttribute(customAttributeName(key), value[key]);
-            }
-          }
+  function setFormatUsx(node: HTMLElement, format: FormatUsx): void {
+    if (format) {
+      for (const key in format) {
+        if (format.hasOwnProperty(key) && format[key] != null && typeof format[key] === 'string') {
+          node.setAttribute(customAttributeName(key), format[key]);
         }
       }
+    }
+  }
 
+  function createFormatUsx(node: HTMLElement): FormatUsx {
+    const format = new FormatUsx();
+    for (const key of FormatUsx.KEYS) {
+      if (node.hasAttribute(customAttributeName(key))) {
+        format[key] = node.getAttribute(customAttributeName(key));
+      }
+    }
+
+    return format;
+  }
+
+  const customAttributeName = (key: string) => 'data-' + key;
+
+  class VerseEmbed extends Embed {
+    static blotName = 'verse';
+    static tagName = 'usx-verse';
+
+    static create(value: string): Node {
+      const node = super.create(value) as HTMLElement;
+      node.innerText = value;
+      return node;
+    }
+
+    static formats(node: HTMLElement): any {
+      return { verse: createFormatUsx(node) };
+    }
+
+    static value(node: HTMLElement): any {
+      return node.innerText.trim();
+    }
+
+    format(name: string, value: any): void {
+      if (name === 'verse') {
+        const format = value as FormatUsx;
+        const elem = this.domNode as HTMLElement;
+        setFormatUsx(elem, format);
+      } else {
+        super.format(name, value);
+      }
+    }
+  }
+
+  class SegmentInline extends Inline {
+    static blotName = 'segment';
+    static tagName = 'usx-segment';
+
+    static create(value: string): Node {
+      const node = super.create(value) as HTMLElement;
+      node.setAttribute(customAttributeName('ref'), value);
+      return node;
+    }
+
+    static formats(node: HTMLElement): string {
+      return node.getAttribute(customAttributeName('ref'));
+    }
+
+    static value(node: HTMLElement): string {
+      return node.getAttribute(customAttributeName('ref'));
+    }
+  }
+
+  class CharInline extends Inline {
+    static blotName = 'char';
+    static tagName = 'usx-char';
+
+    static create(value: FormatUsx): Node {
+      const node = super.create(value) as HTMLElement;
+      setFormatUsx(node, value);
       return node;
     }
 
     static formats(node: HTMLElement): FormatUsx {
-      const format = new FormatUsx();
-      const formatHtmlAttributes = new FormatUsxHtmlAttributes();
-      for (const key in format) {
-        if (formatHtmlAttributes.hasOwnProperty(key) && node.hasAttribute(key)) {
-          format[key] = node.getAttribute(key);
-        } else if (format.hasOwnProperty(key) && node.hasAttribute(customAttributeName(key))) {
-          format[key] = node.getAttribute(customAttributeName(key));
-        }
-      }
-
-      return format;
+      return createFormatUsx(node);
     }
 
     static value(node: HTMLElement): FormatUsx {
-      return VerseInline.formats(node);
+      return createFormatUsx(node);
+    }
+  }
+
+  class NoteEmbed extends Embed {
+    private static readonly DELTA_KEY = '__note_delta';
+
+    static blotName = 'note';
+    static tagName = 'usx-note';
+
+    static create(value: Note): Node {
+      const node = super.create(value) as HTMLElement;
+      node.innerText = String.fromCharCode(0x61 + value.index);
+      node.title = value.delta.ops.reduce((text, op) => text + op.insert, '');
+      node[NoteEmbed.DELTA_KEY] = value.delta;
+      return node;
+    }
+
+    static formats(node: HTMLElement): any {
+      return { note: createFormatUsx(node) };
+    }
+
+    static value(node: HTMLElement): Note {
+      const code = node.innerText.trim().charCodeAt(0);
+      return { index: code - 0x61, delta: node[NoteEmbed.DELTA_KEY] };
     }
 
     format(name: string, value: any): void {
-      const format = new FormatUsx();
-      const formatHtmlAttributes = new FormatUsxHtmlAttributes();
-      if (formatHtmlAttributes.hasOwnProperty(name)) {
-        this.domNode.setAttribute(name, value);
-      } else if (format.hasOwnProperty(name)) {
+      if (name === 'note') {
+        const format = value as FormatUsx;
+        const elem = this.domNode as HTMLElement;
+        setFormatUsx(elem, format);
+      } else {
+        super.format(name, value);
+      }
+    }
+  }
+
+  Block.allowedChildren.push(VerseEmbed);
+  Block.allowedChildren.push(SegmentInline);
+
+  class ParaBlock extends Block {
+    static blotName = 'para';
+    static tagName = 'usx-para';
+
+    static create(value: FormatUsx): Node {
+      const node = super.create(value) as HTMLElement;
+      setFormatUsx(node, value);
+      return node;
+    }
+
+    static formats(node: HTMLElement): FormatUsx {
+      return createFormatUsx(node);
+    }
+
+    static value(node: HTMLElement): FormatUsx {
+      return createFormatUsx(node);
+    }
+
+    format(name: string, value: any): void {
+      if (FormatUsx.KEYS.has(name)) {
         this.domNode.setAttribute(customAttributeName(name), value);
       } else {
         super.format(name, value);
       }
     }
-
-    // ensure sibling <verse>s with the same style attribute are combined into a single <verse> element
-    optimize(context: { [key: string]: any; }): void {
-      super.optimize(context);
-      const style = this.domNode.getAttribute('data-style');
-      const next = this.next;
-      if (style != null && next instanceof VerseInline && next.prev === this &&
-        next.domNode.getAttribute('data-style') === style
-      ) {
-        next.moveChildren(this);
-        next.remove();
-      }
-    }
   }
 
-  class CharInline extends VerseInline {
-    // noinspection JSUnusedGlobalSymbols
-    static blotName = 'char';
-    static tagName = 'usx-char';
-    static scope = VerseInline.scope;
-    static allowedChildren = angular.copy(VerseInline.allowedChildren);
-    // noinspection JSUnusedGlobalSymbols
-    static defaultChild = VerseInline.defaultChild;
-
-    static create = VerseInline.create;
-    // noinspection JSUnusedGlobalSymbols
-    static formats = VerseInline.formats;
-    static value = VerseInline.value;
-  }
-
-  class NoteInline extends VerseInline {
-    // noinspection JSUnusedGlobalSymbols
-    static blotName = 'note';
-    static tagName = 'usx-note';
-    static scope = VerseInline.scope;
-    static allowedChildren = angular.copy(VerseInline.allowedChildren);
-    // noinspection JSUnusedGlobalSymbols
-    static defaultChild = VerseInline.defaultChild;
-
-    static create = VerseInline.create;
-    // noinspection JSUnusedGlobalSymbols
-    static formats = VerseInline.formats;
-    static value = VerseInline.value;
-
-    // if the visible ref is deleted ensure the entire <note> is deleted
-    deleteAt(index: number, length: number): void {
-      const id = this.domNode.getAttribute('id');
-      if (id != null) {
-        this.remove();
-      } else {
-        super.deleteAt(index, length);
-      }
-    }
-
-    // ensure sibling <note>s with the same id are combined into a single <note> element
-    optimize(context: { [key: string]: any; }): void {
-      super.optimize(context);
-      const id = this.domNode.getAttribute('id');
-      const next = this.next;
-      if (id != null && next instanceof NoteInline && next.prev === this && next.domNode.getAttribute('id') === id) {
-        next.moveChildren(this);
-        next.remove();
-      }
-    }
-  }
-
-  NoteInline.allowedChildren.push(CharInline);
-  VerseInline.allowedChildren.push(NoteInline);
-  VerseInline.allowedChildren.push(CharInline);
-
-  const blockAllowedChildren = Block.allowedChildren;
-  blockAllowedChildren.push(VerseInline);
-
-  class ParaBlock extends Block {
-    // noinspection JSUnusedGlobalSymbols
-    static blotName = 'para';
-    static className = Block.className;
-    static tagName = 'usx-para';
-    static scope = Block.scope;
-    static allowedChildren = blockAllowedChildren;
-    // noinspection JSUnusedGlobalSymbols
-    static defaultChild = Block.defaultChild;
-
-    static create = VerseInline.create;
-    // noinspection JSUnusedGlobalSymbols
-    static formats = VerseInline.formats;
-    static value = VerseInline.value;
-
-    // noinspection JSUnusedGlobalSymbols
-    optimize(context: { [key: string]: any; }): void {
-      super.optimize(context);
-      const Break = Quill.import('blots/break');
-      if (this.children.length === 0 || (this.children.length === 1 && this.children.head instanceof Break)) {
-        this.formatAt(0, 1, 'block', true);
-      }
-    }
-  }
-
-  // inherit format method from VerseInline class
-  ParaBlock.prototype.format = VerseInline.prototype.format;
-
-  class ChapterBlock extends ParaBlock {
-    // noinspection JSUnusedGlobalSymbols
+  class ChapterEmbed extends BlockEmbed {
     static blotName = 'chapter';
-    static className = ParaBlock.className;
     static tagName = 'usx-chapter';
-    static scope = ParaBlock.scope;
-    static allowedChildren = ParaBlock.allowedChildren;
-    // noinspection JSUnusedGlobalSymbols
-    static defaultChild = ParaBlock.defaultChild;
 
-    static create = ParaBlock.create;
-    // noinspection JSUnusedGlobalSymbols
-    static formats = ParaBlock.formats;
-    static value = ParaBlock.value;
+    static create(value: string): Node {
+      const node = super.create(value) as HTMLElement;
+      node.innerText = value;
+      node.contentEditable = 'false';
+      return node;
+    }
+
+    static formats(node: HTMLElement): any {
+      return { chapter: createFormatUsx(node) };
+    }
+
+    static value(node: HTMLElement): string {
+      return node.innerText;
+    }
+
+    format(name: string, value: any): void {
+      if (name === 'chapter') {
+        const format = value as FormatUsx;
+        const elem = this.domNode as HTMLElement;
+        setFormatUsx(elem, format);
+      } else {
+        super.format(name, value);
+      }
+    }
   }
 
   Scroll.allowedChildren.push(ParaBlock);
-  Scroll.allowedChildren.push(ChapterBlock);
+  Scroll.allowedChildren.push(ChapterEmbed);
 
   const HighlightClass = new QuillParchment.Attributor.Class('highlight', 'highlight', {
     scope: Parchment.Scope.INLINE
@@ -458,11 +481,12 @@ export function registerSuggestionsTheme(): void {
 
   Quill.register('attributors/class/highlight', HighlightClass);
   Quill.register('formats/highlight', HighlightClass);
-  Quill.register('blots/verse', VerseInline);
-  Quill.register('blots/note', NoteInline);
+  Quill.register('formats/segment', SegmentInline);
+  Quill.register('blots/verse', VerseEmbed);
+  Quill.register('blots/note', NoteEmbed);
   Quill.register('blots/char', CharInline);
   Quill.register('blots/para', ParaBlock);
-  Quill.register('blots/chapter', ChapterBlock);
+  Quill.register('blots/chapter', ChapterEmbed);
   Quill.register('blots/scroll', Scroll, true);
   Quill.register('ui/suggest-tooltip', SuggestionsTooltip);
   Quill.register('modules/suggestions', Suggestions);

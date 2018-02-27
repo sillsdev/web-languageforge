@@ -32,6 +32,9 @@ class TranslateDocumentSetModel extends MapperModel
     /** @var boolean */
     public $isDeleted;
 
+    /** @var string */
+    public $bookId;
+
     public static function mapper($databaseName)
     {
         /** @var TranslateDocumentSetMongoMapper $instance */

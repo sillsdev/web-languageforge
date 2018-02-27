@@ -91,46 +91,8 @@ ng-quill-editor .ql-editor.drop-box {
     border-color: $lf-lines;
 }
 
-ng-quill-editor .ql-editor usx-para[data-style="h"],
-ng-quill-editor .ql-editor usx-para[data-style="s"],
-ng-quill-editor .ql-editor usx-para[data-style="s1"],
-ng-quill-editor .ql-editor usx-chapter[data-style="c"] {
-    // h1
-    font-weight: 500;
-    line-height: 1.1;
-    font-size: 2em;
-}
-
-ng-quill-editor .ql-editor usx-para[data-style="h"],
-ng-quill-editor .ql-editor usx-para[data-style="s"],
-ng-quill-editor .ql-editor usx-para[data-style="s1"] {
-    text-align: center;
-}
-
-ng-quill-editor .ql-editor usx-para[data-style="h"] {
-    font-size: 3em;
-}
-
-ng-quill-editor .ql-editor usx-verse[data-style="v"] {
-    // superscript
-    top: -.5em;
-    position: relative;
-    font-size: 75%;
-    line-height: 0;
-    vertical-align: baseline;
-}
-
-ng-quill-editor .ql-editor usx-char[data-style="fr"] {
-    // subscript
-    bottom: -.25em;
-    position: relative;
-    font-size: 75%;
-    line-height: 0;
-    vertical-align: baseline;
-}
-
-ng-quill-editor .ql-editor usx-char:not([data-style="fr"]) {
-    display: none;
+.template-editor .ql-container.ql-snow {
+    background-color: lightgray;
 }
 
 .ql-suggest-tooltip {
@@ -186,11 +148,23 @@ ng-quill-editor .ql-editor usx-char:not([data-style="fr"]) {
 }
 
 .highlight-source {
-    background-color: yellow;
+    background-color: #FFFFCE;
 }
 
 .highlight-target {
     background-color: lightgray;
+}
+
+usx-segment {
+    background-color: white;
+}
+
+.empty-segment {
+    padding-right: 25px;
+}
+
+.empty-initial-segment {
+    padding-right: 4px;
 }
 
 #toolbar .ql-header {

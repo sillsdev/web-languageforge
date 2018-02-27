@@ -53,6 +53,10 @@ class LexCommentModel extends MapperModel
     /** @var LexCommentFieldReference */
     public $regarding;
 
+    /** @var string
+     *  This is either a sense, example or pronunciation guid that references the location of this comment */
+    public $contextGuid;
+
     /** @var int */
     public $score;
 

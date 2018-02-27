@@ -66,6 +66,8 @@ class ParatextProject
     {
         $this->id = '';
         $this->name = '';
+        $this->languageTag = '';
+        $this->languageName = '';
     }
 
     /** @var string */
@@ -73,6 +75,12 @@ class ParatextProject
 
     /** @var string */
     public $name;
+
+    /** @var string */
+    public $languageTag;
+
+    /** @var string */
+    public $languageName;
 }
 
 class TranslateConfigDocumentSets

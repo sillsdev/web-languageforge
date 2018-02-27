@@ -1,16 +1,14 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Models;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SIL.XForge.WebApi.Server.Controllers
 {
-    [Authorize]
-    public class ProjectResourceController<T> : Controller where T : Project
+    public class ProjectResourceController<T> : ResourceController where T : Project
     {
-        protected ProjectResourceController(IRepository<T> projectRepo)
+        protected ProjectResourceController(IMapper mapper, IRepository<T> projectRepo)
+            : base(mapper)
         {
             ProjectRepo = projectRepo;
         }
@@ -19,15 +17,7 @@ namespace SIL.XForge.WebApi.Server.Controllers
 
         protected AuthorizeResult Authorize(Project project, Right right)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (project.HasRight(userId, new Right(Domain.Projects, Operation.Edit)))
-            {
-                return AuthorizeResult.Success;
-            }
-            else
-            {
-                return AuthorizeResult.Forbidden;
-            }
+            return project.HasRight(UserId, right) ? AuthorizeResult.Success : AuthorizeResult.Forbidden;
         }
 
         protected async Task<AuthorizeResult> AuthorizeAsync(string projectId, Right right)
