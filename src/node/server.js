@@ -28,8 +28,8 @@ share.use('apply', useUserData);
 share.connect();
 
 var config = (fs.existsSync('./config.js')) ? require('./config') : {};
-var defaultSslKey = '/etc/letsencrypt/live/cat.languageforge.org/privkey.pem';
-var defaultSslCert = '/etc/letsencrypt/live/cat.languageforge.org/cert.pem';
+var defaultSslKey = '/etc/letsencrypt/live/scriptureforge.org/privkey.pem';
+var defaultSslCert = '/etc/letsencrypt/live/scriptureforge.org/cert.pem';
 var sslKeyPath = config.sslKeyPath || defaultSslKey;
 var sslCertPath = config.sslCertPath || defaultSslCert;
 var hostname = '0.0.0.0';

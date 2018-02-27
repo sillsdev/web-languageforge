@@ -197,7 +197,7 @@ class ActivityCommandsTest extends TestCase
         $comment->content = $commentText;
         $comment->userRef->id = $userId;
         $commentId = QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment);
-        $activity = ActivityCommands::addComment($project, $questionId, $answerId, $comment);
+        $activity = ActivityCommands::addCommentOnQuestion($project, $questionId, $answerId, $comment);
         return [$comment, $commentId, $activity];
     }
 
@@ -217,7 +217,7 @@ class ActivityCommandsTest extends TestCase
         $comment1_updated = $question->readComment($answerId, $comment1Id);
         $comment1_updated->content = $newContent;
         QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment1_updated);
-        $a10 = ActivityCommands::updateComment($project, $questionId, $answerId, $comment1_updated);
+        $a10 = ActivityCommands::updateCommentOnQuestion($project, $questionId, $answerId, $comment1_updated);
         return [$comment1_updated, $a10];
     }
 

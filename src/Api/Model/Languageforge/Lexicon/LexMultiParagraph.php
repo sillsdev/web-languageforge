@@ -23,10 +23,22 @@ class LexMultiParagraph extends ObjectForEncoding
         $this->initLazyProperties(['paragraphs'], false);
     }
 
-    protected function createProperty($name) {
+    protected function getPropertyType(string $name)
+    {
         switch ($name) {
             case 'paragraphs':
+                return "ArrayOf(LexParagraph)";
+            default:
+                return "string";
+        }
+    }
+
+    protected function createProperty($name) {
+        switch ($this->getPropertyType($name)) {
+            case 'ArrayOf(LexParagraph)':
                 return new ArrayOf('Api\Model\Languageforge\Lexicon\generateParagraph');
+
+            case 'string':
             default:
                 return '';
         }
@@ -96,5 +108,30 @@ class LexMultiParagraph extends ObjectForEncoding
                 $this->paragraphs->append($paragraph);
             }
         }
+    }
+
+    protected function calculateDifferences(LexMultiParagraph $otherMultiParagraph)
+    {
+        // We won't try to diff the content; it's harder than it's worth since this is just for the activity feed.
+        $thisHtml  = $this->toHtml();
+        $otherHtml = $otherMultiParagraph->toHtml();
+        return [ "this" => $thisHtml, "other" => $otherHtml ];
+    }
+
+    public function differences(LexMultiParagraph $otherMultiParagraph)
+    {
+        $same = true;
+        $len = $this->paragraphs->count();
+        if ($otherMultiParagraph->paragraphs->count() !== $len) {
+            return $this->calculateDifferences($otherMultiParagraph);
+        }
+        for ($i = 0; $i < $len; $i++) {
+            // This is the simplest way to step through both arrays
+            if ($this->paragraphs[$i]->content !== $otherMultiParagraph->paragraphs[$i]->content)
+            {
+                return $this->calculateDifferences($otherMultiParagraph);
+            }
+        }
+        return [];
     }
 }

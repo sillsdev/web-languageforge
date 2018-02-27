@@ -34,7 +34,6 @@ namespace SIL.XForge.WebApi.Server
             {
                 "languageforge.org",
                 "scriptureforge.org",
-                "cat.languageforge.org",
                 "dev.languageforge.org",
                 "dev.scriptureforge.org"
             };
@@ -42,7 +41,6 @@ namespace SIL.XForge.WebApi.Server
             {
                 issuers.Add("languageforge.local");
                 issuers.Add("scriptureforge.local");
-                issuers.Add("cat.languageforge.local");
             }
             IConfigurationSection securityConfig = Configuration.GetSection("Security");
             string jwtKey = securityConfig.GetValue<string>("JwtKey") ?? "this_is_not_a_secret_dev_only";

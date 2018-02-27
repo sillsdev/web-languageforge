@@ -25,24 +25,6 @@ angular.module('palaso.ui.comments')
 
         $scope.active = false;
         $scope.pictureSrc = '';
-        $scope.contextGuid = $scope.$parent.contextGuid +
-          ($scope.$parent.contextGuid ? ' ' : '') +
-          $scope.field;
-        lexConfig.getFieldConfig($scope.field).then(function (fieldConfig) {
-          if (fieldConfig.type === 'pictures' && angular.isDefined($scope.picture)) {
-            $scope.pictureSrc = $scope.$parent.getPictureUrl($scope.picture);
-            $scope.contextGuid += '#' + $scope.picture.guid; // Would prefer to use the ID
-          } else if (fieldConfig.type === 'multioptionlist') {
-            $scope.contextGuid += '#' + $scope.multiOptionValue;
-          }
-
-          $scope.contextGuid += ($scope.inputSystem.abbreviation ? '.' +
-            $scope.inputSystem.abbreviation : '');
-          if ($scope.contextGuid.indexOf('undefined')  === -1) {
-            $scope.active = true;
-          }
-        });
-
         $scope.element = $element;
 
         ss.getSession().then(function (session) {
@@ -64,13 +46,6 @@ angular.module('palaso.ui.comments')
           $scope.getComments = function getComments() {
             if (!$scope.active) {
               return;
-            }
-
-            if (!angular.isDefined($scope.inputSystem)) {
-              $scope.inputSystem = {
-                abbreviation: '',
-                tag: ''
-              };
             }
 
             if ($scope.control.commentContext.contextGuid === $scope.contextGuid) {
@@ -102,8 +77,49 @@ angular.module('palaso.ui.comments')
             $scope.contextGuid);
         };
 
-        $scope.$watch('model', function (newContent) {
-          $scope.selectFieldForComment();
+        $scope.checkValidModelContextChange = function checkValidModelContextChange() {
+          var newComment = $scope.control.getNewComment();
+          if ($scope.configType === 'optionlist' &&
+              newComment.regarding.field === $scope.field) {
+            $scope.selectFieldForComment();
+          }
+        };
+
+        $scope.setContextGuid = function setContextGuid() {
+          $scope.contextGuid = $scope.$parent.contextGuid +
+          ($scope.$parent.contextGuid ? ' ' : '') + $scope.field;
+          lexConfig.getFieldConfig($scope.field).then(function (fieldConfig) {
+            if (!angular.isDefined($scope.configType)) {
+              $scope.configType = fieldConfig.type;
+            }
+
+            if (fieldConfig.type === 'pictures' && angular.isDefined($scope.picture)) {
+              $scope.pictureSrc = $scope.$parent.getPictureUrl($scope.picture);
+              $scope.contextGuid += '#' + $scope.picture.guid; // Would prefer to use the ID
+            } else if (fieldConfig.type === 'multioptionlist') {
+              $scope.contextGuid += '#' + $scope.multiOptionValue;
+            }
+
+            $scope.contextGuid += ($scope.inputSystem.abbreviation ? '.' +
+              $scope.inputSystem.abbreviation : '');
+            if ($scope.contextGuid.indexOf('undefined')  === -1) {
+              $scope.active = true;
+            }
+          });
+        };
+
+        $scope.setContextGuid();
+
+        $scope.isCommentingAvailable = function isCommentingAvailable() {
+          return ($scope.control.currentEntry.id.indexOf('_new_') !== -1 || !$scope.control.rights.canComment());
+        };
+
+        $scope.$watch('model', function () {
+          $scope.checkValidModelContextChange();
+        }, true);
+
+        $scope.$watch('inputSystem', function () {
+          $scope.setContextGuid();
         }, true);
 
       }]

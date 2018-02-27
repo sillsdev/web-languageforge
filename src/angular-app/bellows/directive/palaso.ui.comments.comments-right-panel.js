@@ -31,7 +31,9 @@ angular.module('palaso.ui.comments')
 
         $scope.initializeNewComment = function initializeNewComment() {
           if ($scope.showNewComment && $scope.entry.id === $scope.newComment.entryRef) {
-            $scope.newComment.content = '';
+            if ($scope.posting) {
+              $scope.newComment.content = '';
+            }
           } else {
             $scope.newComment = {
               id: '',
@@ -203,6 +205,10 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.postNewComment = function postNewComment() {
+          // Get the latest value for the field before saving in case it has changed
+          // since the comment panel was first triggered and comment started getting entered
+          var contextParts = $scope.control.getContextParts($scope.newComment.contextGuid);
+          $scope.newComment.regarding.fieldValue = contextParts.value;
           $scope.posting = true;
           commentService.update($scope.newComment, function (result) {
             if (result.ok) {
@@ -226,30 +232,11 @@ angular.module('palaso.ui.comments')
 
           var index = null;
           if (angular.isDefined(contextGuid)) {
-            var contextParts = contextGuid.split(' ');
-            var exampleGuid = '';
-            var senseGuid = '';
-            for (var i in contextParts) {
-              if (contextParts[i].indexOf('sense#') !== -1) {
-                senseGuid = contextParts[i].substr(6);
-              } else if (contextParts[i].indexOf('example#') !== -1) {
-                exampleGuid = contextParts[i].substr(8);
-              }
-            }
-
-            if (senseGuid) {
-              for (var a in $scope.$parent.entry.senses) {
-                if ($scope.$parent.entry.senses[a].guid === senseGuid) {
-                  index = a;
-                  if (exampleGuid) {
-                    for (var b in $scope.$parent.entry.senses[a].examples) {
-                      if ($scope.$parent.entry.senses[a].examples[b].guid === exampleGuid) {
-                        index = b;
-                      }
-                    }
-                  }
-                }
-              }
+            var contextParts = $scope.control.getContextParts(contextGuid);
+            if (contextParts.example.index) {
+              index = contextParts.example.index;
+            } else if (contextParts.sense.index) {
+              index = contextParts.sense.index;
             }
           }
 

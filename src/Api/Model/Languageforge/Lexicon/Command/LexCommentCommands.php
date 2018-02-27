@@ -2,6 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
+use Api\Model\Shared\Command\ActivityCommands;
 use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\CodeGuard;
 use Api\Model\Languageforge\Lexicon\LexCommentModel;
@@ -45,6 +46,9 @@ class LexCommentCommands
         $comment->authorInfo->modifiedByUserRef->id = $userId;
         $comment->authorInfo->modifiedDate = UniversalTimestamp::now();
 
+        $mode = $isNew ? "add" : "update";
+        ActivityCommands::updateCommentOnEntry($project, $comment->entryRef->asString(), $comment, $mode);
+
         return $comment->write();
     }
 
@@ -67,6 +71,7 @@ class LexCommentCommands
             }
             $reply->content = $params['content'];
             $comment->setReply($replyId, $reply);
+            $mode = 'update';
         } else {
             $reply = new LexCommentReply();
             $reply->content = $params['content'];
@@ -77,8 +82,10 @@ class LexCommentCommands
             $reply->authorInfo->modifiedDate = $now;
             $comment->replies->append($reply);
             $replyId = $reply->id;
+            $mode = 'add';
         }
         $comment->write();
+        ActivityCommands::updateReplyToEntryComment($project, $comment->entryRef->asString(), $comment, $reply, $mode);
 
         return $replyId;
     }
@@ -110,6 +117,7 @@ class LexCommentCommands
             $comment = new LexCommentModel($project, $commentId);
 
             $comment->status = $status;
+            ActivityCommands::updateEntryCommentStatus($project, $comment->entryRef->asString(), $comment);
             return $comment->write();
         } else {
             throw new \Exception("unknown status type: $status");

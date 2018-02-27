@@ -3,12 +3,12 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Library\Shared\LanguageData;
-use Api\Model\Languageforge\InputSystem;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\LfProjectModel;
+use Api\Model\Shared\InputSystem;
 use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\Mapper\MongoStore;
 use Litipk\Jiffy\UniversalTimestamp;

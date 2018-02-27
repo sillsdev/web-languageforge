@@ -4,6 +4,7 @@
     </div>
     <div class="card-block" data-ng-class="{resolvedComment: comment.status == 'resolved'}">
         <div class="commentContentContainer">
+            <div class="ng-hide" data-ng-bind="comment.contextGuid"></div>
             <div class="comment-meta">
                 <div>
                     <img class="rounded-circle"
@@ -13,7 +14,7 @@
                         <div class="comment-date">{{comment.authorInfo.createdDate | relativetime}}</div>
                     </div>
                 </div>
-                <div class="dropdown" uib-dropdown data-ng-show="rights.canEditComment(comment.authorInfo.createdByUserRef.id) || rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && !comment.editing">
+                <div class="dropdown" uib-dropdown data-ng-show="rights.canComment() && rights.canEditComment(comment.authorInfo.createdByUserRef.id) || rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && !comment.editing">
                     <button class="btn btn-sm btn-std ellipsis-menu pui-no-caret" uib-dropdown-toggle type="button"><i
                             class="fa fa-ellipsis-v"></i></button>
                     <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
@@ -27,6 +28,13 @@
                 </div>
             </div>
             <div class="comment-body">
+                <div class="commentRegarding" data-ng-show="comment.regarding.field && !comment.editing && isOriginalRelevant()">
+                    <regarding-field class="form-control" content="comment.regarding.fieldValue" control="control"
+                         field="comment.regarding.field" field-config="commentRegardingFieldConfig" ng-hide="isCommentRegardingPicture"></regarding-field>
+                    <div data-ng-if="isCommentRegardingPicture">
+                        <img data-ng-src="{{comment.regarding.fieldValue}}">
+                    </div>
+                </div>
                 <div class="commentContent" data-ng-hide="comment.editing" data-ng-bind="comment.content"></div>
                 <div data-ng-show="comment.editing" class="commentEditing">
                     <!--suppress HtmlFormInputWithoutLabel -->
@@ -36,15 +44,6 @@
                         <button data-ng-disabled="!comment.content" class="btn btn-sm btn-primary"
                                 data-ng-click="updateComment(comment)">Update
                         </button>
-                    </div>
-                </div>
-                <button ng-show="!comment.editing && isOriginalRelevant()" class="btn btn-std btn-sm" ng-click="comment.regarding.visible = !comment.regarding.visible">
-                    (<span ng-show="!comment.regarding.visible">view</span><span ng-show="comment.regarding.visible">hide</span> original meaning)</button>
-                <div class="commentRegarding" data-ng-show="comment.regarding.field && comment.regarding.visible === true && !comment.editing">
-                    <regarding-field class="form-control" content="comment.regarding.fieldValue" control="control"
-                         field-config="commentRegardingFieldConfig" ng-hide="isCommentRegardingPicture"></regarding-field>
-                    <div data-ng-if="isCommentRegardingPicture">
-                        <img data-ng-src="{{comment.regarding.fieldValue}}">
                     </div>
                 </div>
             </div>
@@ -96,7 +95,7 @@
                             </div>
                             <span class="reply-content">{{reply.content}}</span>
                         </div>
-                        <div data-ng-show="comment.status != 'resolved' && rights.canEditComment(reply.authorInfo.createdByUserRef.id)" class="reply-actions">
+                        <div data-ng-show="comment.status != 'resolved' && rights.canComment() && rights.canEditComment(reply.authorInfo.createdByUserRef.id)" class="reply-actions">
                             <div class="dropdown float-right" uib-dropdown>
                                 <button class="btn btn-sm btn-std ellipsis-menu pui-no-caret" uib-dropdown-toggle
                                         type="button"><i class="fa fa-ellipsis-v"></i></button>
@@ -113,7 +112,7 @@
                             </div>
                         </div>
                     </div>
-                    <form data-ng-show="reply.editing" data-ng-submit="submitReply(reply)" class="reply-edit-form">
+                    <form data-ng-show="reply.editing && rights.canComment()" data-ng-submit="submitReply(reply)" class="reply-edit-form">
                         <!--suppress HtmlFormInputWithoutLabel -->
                         <textarea class="form-control" data-ng-model="reply.editingContent"
                                   pui-auto-focus="reply.isAutoFocusEditing"></textarea>
@@ -124,9 +123,10 @@
                     </form>
                 </div>
             </div>
-            <form ng-show="showNewReplyForm && comment.status != 'resolved'" class="commentNewReplyForm" data-ng-submit="submitReply(newReply)">
+            <form ng-show="showNewReplyForm && comment.status != 'resolved' && rights.canComment()" class="commentNewReplyForm" data-ng-submit="submitReply(newReply)">
                 <textarea class="form-control" required placeholder="Reply here.  Press Enter when done."
-                          data-ng-model="newReply.editingContent" pui-auto-focus="isAutoFocusNewReply"></textarea>
+                          data-ng-model="newReply.editingContent" pui-auto-focus="isAutoFocusNewReply"
+                          ng-keydown="submitReply(newReply, $event)"></textarea>
                 <div class="d-flex justify-content-end">
                     <a href class="btn btn-sm btn-std" data-ng-click="showCommentReplies()">Hide</a>
                     <button type="submit" class="btn btn-sm btn-primary" data-ng-disabled="posting"><i class="fa fa-reply"></i> Reply</button>

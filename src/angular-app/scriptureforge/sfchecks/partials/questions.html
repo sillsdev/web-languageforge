@@ -71,12 +71,13 @@
     <hr>
     <div class="row">
         <div class="col-md-5" oncopy="return false;">
-            <h2 class="float-left audio-buttons" data-ng-show="text.audioFileName">
-                <pui-soundplayer data-url="audioPlayUrl" title="Play audio"></pui-soundplayer>
-                <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
-                    <i class="fa fa-arrow-circle-o-down" title="Download audio"></i></a>
-            </h2>
             <h2>{{text.title}}</h2>
+            <div class="audio-buttons" data-ng-show="text.audioFileName">
+                <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
+                    <i class="fa fa-arrow-circle-o-down" title="Download audio"></i>
+                </a>
+                <pui-soundplayer data-url="audioPlayUrl" title="Play audio"></pui-soundplayer>
+            </div>
             <div id="textcontrol" style="font-family: {{text.fontfamily}}" data-ng-bind-html="text.content"></div>
         </div>
         <div class="col-md-7">
