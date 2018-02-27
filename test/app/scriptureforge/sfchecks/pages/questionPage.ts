@@ -1,6 +1,6 @@
 import {$, $$, browser, by, By, element, ExpectedConditions, Key} from 'protractor';
+import { Utils } from '../../../bellows/pages/utils';
 import { SfTextPage } from './textPage';
-import { Utils } from '../../../bellows/pages/utils.js';
 
 const CONDITION_TIMEOUT = 3000;
 const textPage = new SfTextPage();
@@ -99,7 +99,7 @@ class Answers {
     // direction: 0=upvote, 1=downvote
     private vote(index: any, direction: any) {
       this.list.get(index).element(by.css('.vote')).all(by.css('a'))
-        .then(function (voteCtrls) {
+        .then(voteCtrls => {
           voteCtrls[direction].click();
         });
     }
