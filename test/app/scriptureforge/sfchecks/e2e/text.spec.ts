@@ -1,7 +1,7 @@
-import {browser, ExpectedConditions, by} from 'protractor';
+import {browser, by, ExpectedConditions} from 'protractor';
 import { BellowsLoginPage } from '../../../bellows/pages/loginPage';
-import { Utils} from '../../../bellows/pages/utils';
 import { ProjectsPage } from '../../../bellows/pages/projectsPage';
+import { Utils} from '../../../bellows/pages/utils';
 import { SfProjectPage } from '../pages/projectPage';
 import { SfTextPage} from '../pages/textPage';
 import { SfTextSettingsPage } from '../pages/textSettingsPage';
@@ -13,7 +13,8 @@ const projectPage = new SfProjectPage();
 const textPage = new SfTextPage();
 const textSettingsPage = new SfTextSettingsPage();
 
-const constants = require('../../../testConstants.json');
+// tslint:disable-next-line:no-var-requires
+const constants = require('../../../testConstants');
 const CONDITION_TIMEOUT = 3000;
 
 describe('the questions list page (AKA the text page)', () => {
@@ -98,7 +99,7 @@ describe('the questions list page (AKA the text page)', () => {
 
       // Wait for archive button to become disabled again
       browser.wait(() => {
-        return archiveButton.isEnabled().then(function (isEnabled) {
+        return archiveButton.isEnabled().then((isEnabled) => {
           return !isEnabled;
         });
       }, 1000);
