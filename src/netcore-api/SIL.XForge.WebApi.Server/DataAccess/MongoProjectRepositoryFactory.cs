@@ -14,7 +14,7 @@ namespace SIL.XForge.WebApi.Server.DataAccess
             _collectionName = collectionName;
         }
 
-        public IRepository<T> Get(string projectCode)
+        public IRepository<T> Create(string projectCode)
         {
             return new MongoRepository<T>(_mongoClient.GetDatabase("sf_" + projectCode)
                 .GetCollection<T>(_collectionName));

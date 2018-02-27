@@ -4,25 +4,6 @@ import { JsonRpcResult } from '../../../../bellows/core/api/json-rpc.service';
 import { UtilityService } from '../../../../bellows/core/utility.service';
 import { SourceDocumentEditor, TargetDocumentEditor } from '../document-editor';
 
-export class FormatUsxHtmlAttributes {
-  // must assign null value so properties can be iterated over
-  id: string = null;
-  title: string = null;
-}
-
-export class FormatUsx extends FormatUsxHtmlAttributes {
-  // must assign null value so properties can be iterated over
-  style: string = null;
-  number: string = null;
-  altnumber: string = null;
-  pubnumber: string = null;
-  caller: string = null;
-  closed: string = null;
-
-  // used to show verse-per-line alignment. Not in USX spec
-  'verse-alignment': string = null;
-}
-
 export class UsxAttributesAndValuesToKeep {
   // use an empty array to keep any value
 

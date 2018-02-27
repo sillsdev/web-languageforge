@@ -217,7 +217,17 @@ abstract class OAuthBase extends Base
     protected function loginWithOAuthToken(Application $app, AbstractProvider $provider, OAuthAccessToken $token)
     {
         try {
-            $userDetails = $provider->getResourceOwner($token);
+            try {
+                $userDetails = $provider->getResourceOwner($token);
+            } catch (\RuntimeException $e) {
+                $msg = $e->getMessage();
+                if (strpos($msg, "Connection timed out") !== false) {
+                    // Retry ONCE on a timeout
+                    $userDetails = $provider->getResourceOwner($token);
+                } else {
+                    throw $e;
+                }
+            }
 
             // Look up UserModel with incoming oauthId
             $googleOAuthId = $userDetails->getId();
@@ -251,8 +261,11 @@ abstract class OAuthBase extends Base
                 $redirectUrl = $this->chooseRedirectUrl($success, $app);
                 return new RedirectResponse($redirectUrl);
             }
-        } catch (Exception $e) {
-            return new Response('DEBUG: Failure getting user details', 200);  // TODO: determine how to handle this scenario
+        } catch (\Exception $e) {
+            // Any failures redirect back to the login page
+            $this->addErrorMessage($app, 'Sorry, we couldn\'t process the ' . ucwords($this->getProviderName()) . ' login data. This may be a temporary failure, so please try again. If the problem persists, try logging in with a username and password instead.');
+            $redirectUrl = $this->chooseRedirectUrl(false, $app);
+            return new RedirectResponse($redirectUrl);
         }
     }
 

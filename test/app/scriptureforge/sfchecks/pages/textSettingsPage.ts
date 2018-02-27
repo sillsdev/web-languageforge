@@ -45,12 +45,12 @@ export class SfTextSettingsPage {
     exportAnswers: element(by.id('exportAnswers')),
     exportComments: element(by.model('exportConfig.exportComments')),
     exportFlagged: element(by.model('exportConfig.exportFlagged')),
-    prepareButton: element(by.id('questions-settings-prepare-btn')),
+    downloadPT7Button: element(by.partialButtonText('Download for Paratext 7')),
+    downloadPT8Button: element(by.partialButtonText('Download for Paratext 8')),
     noExportMsg: element(by.id('noExportMsg')),
 
     answerCount: element(by.binding('download.answerCount')),
     commentCount: element(by.binding('download.commentCount')),
-    downloadButton: element(by.id('questions-settings-download-btn'))
   };
 
 }

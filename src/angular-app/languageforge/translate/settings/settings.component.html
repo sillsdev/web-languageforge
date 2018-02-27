@@ -3,7 +3,7 @@
     <uib-tabset>
         <uib-tab heading="Project Properties">
             <form class="card card-default ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="$ctrl.updateProject()">
-                <fieldset class="card-body" data-ng-disabled="!$ctrl.rights.canEditProject()">
+                <fieldset class="card-body" data-ng-disabled="!$ctrl.tscRights.canEditProject()">
                     <div class="form-group row">
                         <label class="col-form-label col-12" for="projName">Project Name</label>
                         <div class="controls col-12">
@@ -16,7 +16,7 @@
                         <div class="controls col-12">
                             <select class="form-control custom-select" id="language"
                                 data-ng-model="$ctrl.project.interfaceLanguageCode"
-                                data-ng-options="$ctrl.interfaceConfig.selectLanguages.options[code] for code in $ctrl.interfaceConfig.selectLanguages.optionsOrder">
+                                data-ng-options="$ctrl.tscInterfaceConfig.selectLanguages.options[code] for code in $ctrl.tscInterfaceConfig.selectLanguages.optionsOrder">
                                 <option value="">-- choose a language --</option>
                             </select>
                         </div>
@@ -49,7 +49,7 @@
         </uib-tab>
         <uib-tab heading="Languages">
             <form class="card card-default ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="$ctrl.updateProject()">
-                <fieldset class="card-body" data-ng-disabled="!$ctrl.rights.canEditProject()">
+                <fieldset class="card-body" data-ng-disabled="!$ctrl.tscRights.canEditProject()">
                     <languages-picker data-tlp-project="$ctrl.project"
                                       data-tlp-update-language="$ctrl.updateLanguage(docType, code, language)">
                     </languages-picker>
@@ -63,7 +63,7 @@
         </uib-tab>
         <uib-tab heading="Suggestions" select="$ctrl.redrawSlider()">
             <form class="card card-default ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="$ctrl.updateProject()">
-                <fieldset class="card-body" data-ng-disabled="!$ctrl.rights.canEditProject()">
+                <fieldset class="card-body" data-ng-disabled="!$ctrl.tscRights.canEditProject()">
                     <div class="form-group row">
                         <label class="col-form-label col-12">Default Project Confidence Threshold</label>
                         <div class="controls col-12">
@@ -89,7 +89,7 @@
                 </div>
             </form>
         </uib-tab>
-        <uib-tab heading="Delete" data-ng-show="$ctrl.rights.canDeleteProject()">
+        <uib-tab heading="Delete" data-ng-show="$ctrl.tscRights.canDeleteProject()">
             <form class="card card-default">
                 <div class="card-body">
                     <pui-delete-project></pui-delete-project>

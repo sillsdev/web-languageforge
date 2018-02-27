@@ -14,25 +14,6 @@ $small-text-size: 0.8em;
   padding: 6px 0;
 }
 
-.comments-search-container {
-    position: relative;
-    input {
-      padding-right: 174px;
-    }
-    select {
-      position: absolute;
-      right: 0;
-      top: 0;
-      width: 150px;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-    span {
-        position: absolute;
-        right: 156px;
-        top: 7px
-    }
-}
 .regardingFieldName {
     font-weight: bold;
 }
@@ -49,11 +30,6 @@ $small-text-size: 0.8em;
 
 .regardingFieldValue.uneditable-input {
     height: 15px;
-}
-
-.commentContainer {
-    margin: 5px 0 14px 0;
-    position: relative;
 }
 
 .comment-footer {
@@ -130,9 +106,6 @@ $small-text-size: 0.8em;
   .replyContent {
     font-size: 0.95em;
   }
-}
-.commentContent {
-  margin-bottom: 0.5em;
 }
 .commentContentContainer i.fa-times:hover, .commentRepliesContainer i.fa-times:hover {
     color: #ed364f;

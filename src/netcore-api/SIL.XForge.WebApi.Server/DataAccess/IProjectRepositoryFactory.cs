@@ -4,6 +4,6 @@ namespace SIL.XForge.WebApi.Server.DataAccess
 {
     public interface IProjectRepositoryFactory<T> where T : IEntity
     {
-        IRepository<T> Get(string projectCode);
+        IRepository<T> Create(string projectCode);
     }
 }

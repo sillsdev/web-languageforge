@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Serialization;
+using SIL.XForge.WebApi.Server.Controllers;
 using SIL.XForge.WebApi.Server.DataAccess;
+using SIL.XForge.WebApi.Server.Documentation;
+using SIL.XForge.WebApi.Server.Dtos;
 using SIL.XForge.WebApi.Server.Options;
 using SIL.XForge.WebApi.Server.Services;
 using System.Collections.Generic;
@@ -28,7 +30,14 @@ namespace SIL.XForge.WebApi.Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var issuers = new List<string> { "languageforge.org", "scriptureforge.org", "cat.languageforge.org" };
+            var issuers = new List<string>
+            {
+                "languageforge.org",
+                "scriptureforge.org",
+                "cat.languageforge.org",
+                "dev.languageforge.org",
+                "dev.scriptureforge.org"
+            };
             if (Environment.IsDevelopment())
             {
                 issuers.Add("languageforge.local");
@@ -59,15 +68,18 @@ namespace SIL.XForge.WebApi.Server
             });
 
             services.AddMvc()
-                .AddJsonOptions(a => a.SerializerSettings.ContractResolver
-                    = new CamelCasePropertyNamesContractResolver());
+                .AddJsonOptions(a => a.SerializerSettings.ContractResolver = DtoContractResolver.Instance);
             services.AddRouting(options => options.LowercaseUrls = true);
 
-            services.Configure<ParatextOptions>(Configuration.GetSection("Paratext"));
+            services.AddOptions(Configuration);
 
             services.AddMongoDataAccess(Configuration);
-            services.AddSingleton<SendReceiveService>();
-            services.AddSingleton<ParatextService>();
+
+            services.AddServices();
+
+            services.AddModelToDtoMapper();
+
+            services.AddDocumentationGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +87,8 @@ namespace SIL.XForge.WebApi.Server
         {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
+
+            app.UseDocumentation();
 
             app.UseAuthentication();
 

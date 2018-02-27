@@ -25,17 +25,29 @@ class ParatextExport
             'answerCount' => 0,
             'commentCount' => 0,
             'totalCount' => 0,
-            'xml' => "<CommentList>\n"
+            'xml' => '<?xml version="1.0" encoding="utf-8"?>' . "\n<CommentList>\n"
         );
+
+        $commentFormat = (isset($params['commentFormat'])) ? $params['commentFormat'] : "PT8"; // We'll default to PT8 style
+        if ($commentFormat === "PT7") {
+            $filenamePrefix = "Comments";
+        } else {
+            $filenamePrefix = "Notes";
+        }
+
+        $now = new \DateTime();
+        $dateForFilename = date('Ymd_Gi', $now->getTimestamp());
+        $dl['xml'] .= self::makeDummyComment($commentFormat, $now, $dateForFilename);
+
         foreach ($questionlist->entries as $question) {
             if (! array_key_exists('isArchived', $question) || ! $question['isArchived']) {
                 foreach ($question['answers'] as $answerId => $answer) {
                     if (! $params['exportFlagged'] || (array_key_exists('isToBeExported', $answer) && $answer['isToBeExported'])) { // if the answer is tagged with an export tag
                         $dl['answerCount']++;
-                        $dl['xml'] .= self::makeCommentXml($answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
+                        $dl['xml'] .= self::makeCommentXml($commentFormat, $answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
                         if ($params['exportComments']) {
                             foreach ($answer['comments'] as $commentId => $comment) {
-                                $dl['xml'] .= self::makeCommentXml(array(), 0, $textInfo, $commentId, $comment);
+                                $dl['xml'] .= self::makeCommentXml($commentFormat, array(), 0, $textInfo, $answerId, $comment); // answerId, not commentId, so that Paratext will thread them together
                                 $dl['commentCount']++;
                             }
                         }
@@ -46,7 +58,7 @@ class ParatextExport
         $dl['totalCount'] = $dl['answerCount'] + $dl['commentCount'];
         $dl['xml'] .= "</CommentList>";
 
-        $dl['filename'] = 'Comments_sf_' . date('Ymd_Gi') . '.xml';
+        $dl['filename'] = $filenamePrefix . '_SF-' . $dateForFilename . '.xml';
         //$dl['filename'] = preg_replace("([^\w\d\-]|[\.]{2,})", '_', $filename) . '.xml';
         return $dl;
     }
@@ -74,15 +86,15 @@ class ParatextExport
      * @param array $tags
      * @param int $votes
      * @param array $textInfo
-     * @param string $commentId
+     * @param string $threadId
      * @param array $comment
      */
-    private static function makeCommentXml($tags, $votes, $textInfo, $commentId, $comment)
+    private static function makeCommentXml($commentFormat, $tags, $votes, $textInfo, $threadId, $comment)
     {
         $user = new UserModel((string) $comment['userRef']);
         $username = $user->username;
 
-        $content = self::sanitizeComment($comment['content']) . " (by " . $user->username . " on " . $comment['dateEdited']->toDateTime()->format(\DateTime::RFC822) . ")";
+        $content = self::sanitizeComment($comment['content']) . " (by " . $user->username . ")";
         if (count($tags) > 0) {
             $content .= " (Tags: ";
             foreach ($tags as $tag) {
@@ -95,21 +107,76 @@ class ParatextExport
             $content .= " ($votes Votes)";
         }
 
+        return self::formatComment($commentFormat, $threadId, $username, $textInfo, "", $comment['dateEdited']->toDateTime(), $content);
+    }
+
+    private static function makeDummyComment($commentFormat, \DateTime $dateTime, string $dummyCommenterName)
+    {
+        return self::formatComment($commentFormat, $dummyCommenterName, $dummyCommenterName, [], "", $dateTime, "");
+    }
+
+    private static function formatVerseRef($textInfo) : string
+    {
+        return empty($textInfo) ? "" : ($textInfo['bookCode'] . " " . $textInfo['startChapter'] . ":" . $textInfo['startVerse']);
+    }
+
+    public static function commentHeaderForPT7(string $threadId, string $username, string $verseRef, string $language, \DateTime $dateTime) : string
+    {
         return "\t<Comment>
-        <Thread>" . $commentId . "</Thread>
+        <Thread>$threadId</Thread>
         <User>SF-$username</User>
-        <Date>" . $comment['dateEdited']->toDateTime()->format(\DateTime::RFC822) . "</Date>
-        <VerseRef>" . $textInfo['bookCode'] . " " . $textInfo['startChapter'] . ":" . $textInfo['startVerse'] . "</VerseRef>
+        <Date>" . $dateTime->format(\DateTime::ATOM) . "</Date>
+        <VerseRef>$verseRef</VerseRef>
+        <Language/>";
+    }
+
+    public static function commentHeaderForPT8(string $threadId, string $username, string $verseRef, string $language, \DateTime $dateTime) : string
+    {
+        return "\t<Comment Thread=\"$threadId\" User=\"SF-$username\" VerseRef=\"$verseRef\" Language=\"$language\" Date=\"" . $dateTime->format(\DateTime::ATOM) . "\">";
+    }
+
+    public static function formatForPT7(string $threadId, string $username, array $textInfo, string $language, \DateTime $dateTime, string $content) : string
+    {
+        $verse = (isset($textInfo['startVerse'])) ? "\\v " . $textInfo['startVerse'] : "";
+        $header = self::commentHeaderForPT7($threadId, $username, self::formatVerseRef($textInfo), $language, $dateTime);
+        return $header . "
         <SelectedText />
-        <StartPosition>" . $textInfo['startVerse'] . "</StartPosition>
-        <ContextBefore>\\v " . $textInfo['startVerse'] . "</ContextBefore>
+        <StartPosition>0</StartPosition>
+        <ContextBefore>$verse</ContextBefore>
         <ContextAfter/>
         <Status>todo</Status>
         <Type/>
         <Language/>
-        <Verse>\\v " . $textInfo['startVerse'] . "</Verse>
+        <Verse>$verse</Verse>
         <Field Name=\"assigned\"></Field>
         <Contents>$content</Contents>
     </Comment>\n";
+    }
+
+    public static function formatForPT8(string $threadId, string $username, array $textInfo, string $language, \DateTime $dateTime, string $content) : string
+    {
+        $verse = (isset($textInfo) && isset($textInfo['startVerse'])) ? "\\v " . $textInfo['startVerse'] : "";
+        $header = self::commentHeaderForPT8($threadId, $username, self::formatVerseRef($textInfo), $language, $dateTime);
+        return $header . "
+        <SelectedText />
+        <StartPosition>0</StartPosition>
+        <ContextBefore>$verse</ContextBefore>
+        <ContextAfter/>
+        <Status>todo</Status>
+        <Type/>
+        <Language/>
+        <Verse>$verse</Verse>
+        <Field Name=\"assigned\"></Field>
+        <Contents>$content</Contents>
+    </Comment>\n";
+    }
+
+    public static function formatComment(string $commentFormat, string $threadId, string $username, array $textInfo, string $language, \DateTime $dateTime, string $content) : string
+    {
+        if ($commentFormat === "PT7") {
+            return self::formatForPT7($threadId, $username, $textInfo, $language, $dateTime, $content);
+        } else {
+            return self::formatForPT8($threadId, $username, $textInfo, $language, $dateTime, $content);
+        }
     }
 }
