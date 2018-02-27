@@ -1,13 +1,13 @@
 import { browser, ExpectedConditions } from 'protractor';
-import { BellowsLoginPage } from '../../../bellows/pages/loginPage.js';
-import { ProjectsPage } from '../../../bellows/pages/projectsPage.js';
-import { Utils } from '../../../bellows/pages/utils.js';
-import { SfProjectPage } from '../pages/projectPage.js';
-import { SfTextPage } from '../pages/textPage.js';
-import { SfTextSettingsPage } from '../pages/textSettingsPage.js';
+import { BellowsLoginPage } from '../../../bellows/pages/loginPage';
+import { ProjectsPage } from '../../../bellows/pages/projectsPage';
+import { Utils } from '../../../bellows/pages/utils';
+import { SfProjectPage } from '../pages/projectPage';
+import { SfTextPage } from '../pages/textPage';
+import { SfTextSettingsPage } from '../pages/textSettingsPage';
 
 describe('the questions settings page - project manager', () => {
-  const constants       = require('../../../testConstants.json');
+  const constants       = require('../../../testConstants');
   const loginPage = new BellowsLoginPage();
   const util = new Utils();
   const projectListPage =  new ProjectsPage();
@@ -70,9 +70,8 @@ describe('the questions settings page - project manager', () => {
       expect(page.paratextExportTab.exportAnswers.getAttribute('checked')).toBeTruthy();
       expect(page.paratextExportTab.exportComments.getAttribute('checked')).toBeFalsy();
       expect(page.paratextExportTab.exportFlagged.getAttribute('checked')).toBeTruthy();
-      expect<any>(page.paratextExportTab.downloadButton.isDisplayed()).toBe(false);
-      expect<any>(page.paratextExportTab.prepareButton.isPresent()).toBe(true);
-      page.paratextExportTab.prepareButton.click();
+      expect<any>(page.paratextExportTab.downloadPT7Button.isPresent()).toBe(true);
+      page.paratextExportTab.downloadPT7Button.click();
       browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.noExportMsg),
         CONDITION_TIMEOUT);
       expect<any>(page.paratextExportTab.noExportMsg.isDisplayed()).toBe(true);
@@ -80,25 +79,23 @@ describe('the questions settings page - project manager', () => {
 
     it('can prepare export for all answers without comments', () => {
       page.paratextExportTab.exportFlagged.click();
-      page.paratextExportTab.prepareButton.click();
+      page.paratextExportTab.downloadPT7Button.click();
       browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.answerCount),
         CONDITION_TIMEOUT);
       expect<any>(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
       expect<any>(page.paratextExportTab.answerCount.getText()).toEqual('2');
       expect<any>(page.paratextExportTab.commentCount.isDisplayed()).toBe(false);
-      expect<any>(page.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
     });
 
     it('can prepare export for all answers with comments', () => {
       page.paratextExportTab.exportComments.click();
-      page.paratextExportTab.prepareButton.click();
+      page.paratextExportTab.downloadPT7Button.click();
       browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.answerCount),
         CONDITION_TIMEOUT);
       expect<any>(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
       expect<any>(page.paratextExportTab.answerCount.getText()).toEqual('2');
       expect<any>(page.paratextExportTab.commentCount.isDisplayed()).toBe(true);
       expect<any>(page.paratextExportTab.commentCount.getText()).toEqual('2');
-      expect<any>(page.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
     });
 
   });
