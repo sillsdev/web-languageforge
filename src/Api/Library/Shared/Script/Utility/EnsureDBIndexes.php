@@ -9,6 +9,7 @@ use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\ProjectListModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\ProjectModelMongoMapper;
+use Api\Model\Shared\UserRelationModelMongoMapper;
 
 define('SF_TEST_DATABASE', 'scriptureforge_test');
 
@@ -33,17 +34,29 @@ class EnsureDBIndexes
         $numberOfIndexesCreated += count($mainIndexesToCreate);
         $message .= count($mainIndexesToCreate) . " main indexes created.\n";
 
+        $userRelationCollectionName = UserRelationModelMongoMapper::instance()->getCollectionName();
+        $userRelationIndexes = UserRelationModelMongoMapper::instance()->INDEXES_REQUIRED;
+        $userRelationIndexesToCreate = MongoStore::getIndexesNotSetInCollection(SF_DATABASE, $userRelationCollectionName, $userRelationIndexes);
+        $numberOfIndexesCreated += count($userRelationIndexesToCreate);
+        $message .= count($userRelationIndexesToCreate) . " user relation indexes created.\n";
+
         if (($onDevMachine || $onLocalMachine) && MongoStore::hasDB(SF_TEST_DATABASE)) {
             $message .= "\n-------------  Test Database:\n";
             $mainIndexesToCreate = MongoStore::getIndexesNotSetInCollection(SF_TEST_DATABASE, $mainCollectionName, $mainIndexes);
             $numberOfIndexesCreated += count($mainIndexesToCreate);
-            $message .= count($mainIndexesToCreate) . " test indexes created.\n";
+            $message .= count($mainIndexesToCreate) . " test indexes created for main collection.\n";
+
+            $userRelationIndexesToCreate = MongoStore::getIndexesNotSetInCollection(SF_TEST_DATABASE, $userRelationCollectionName, $userRelationIndexes);
+            $numberOfIndexesCreated += count($userRelationIndexesToCreate);
+            $message .= count($userRelationIndexesToCreate) . " test indexes created for user relation collection.\n";
         }
 
         if (!$testMode) {
             MongoStore::ensureIndexesInCollection(SF_DATABASE, $mainCollectionName, $mainIndexes);
+            MongoStore::ensureIndexesInCollection(SF_DATABASE, $userRelationCollectionName, $userRelationIndexes);
             if (($onDevMachine || $onLocalMachine) && MongoStore::hasDB(SF_TEST_DATABASE)) {
                 MongoStore::ensureIndexesInCollection(SF_TEST_DATABASE, $mainCollectionName, $mainIndexes);
+                MongoStore::ensureIndexesInCollection(SF_TEST_DATABASE, $userRelationCollectionName, $userRelationIndexes);
             }
         }
 

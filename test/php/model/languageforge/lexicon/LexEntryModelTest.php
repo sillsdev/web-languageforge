@@ -4,6 +4,8 @@ use Api\Model\Languageforge\Lexicon\LexAuthorInfo;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexMultiText;
 use Api\Model\Languageforge\Lexicon\LexMultiValue;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Languageforge\Lexicon\LexSense;
 use Api\Model\Languageforge\Lexicon\LexValue;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\MapOf;
@@ -38,5 +40,153 @@ class LexEntryModelTest extends TestCase
         $this->assertInstanceOf(LexMultiText::class, $entry->tone);
         $this->assertInstanceOf(LexMultiValue::class, $entry->environments);
         $this->assertInstanceOf(LexValue::class, $entry->location);
+    }
+
+    public function createEntry(LexProjectModel $projectModel, array $params)
+    {
+        $vernacularWs = $params["vernacularWs"] ?? "fr";
+        $analysisWs   = $params["analysisWs"] ?? "en";
+        $entry = new LexEntryModel($projectModel);
+
+        if (isset($params["word"]))      $entry->lexeme->      form($vernacularWs, $params["word"]);
+        if (isset($params["cite"]))      $entry->citationForm->form($vernacularWs, $params["cite"]);
+        if (isset($params["tone"]))      $entry->tone->        form($analysisWs,   $params["tone"]);
+        if (isset($params["etymology"])) $entry->etymology->   form($vernacularWs, $params["etymology"]);
+
+        $sense = new LexSense();
+        if (isset($params["meaning"])) $sense->definition-> form($analysisWs, $params["meaning"]);
+        if (isset($params["gloss"]))   $sense->gloss->      form($analysisWs, $params["gloss"]);
+        if (isset($params["note"]))    $sense->generalNote->form($analysisWs, $params["note"]);
+        $entry->senses->append($sense);
+
+        if (isset($params["meaning2"]) || isset($params["gloss2"]) || isset($params["note2"])) {
+            $sense2 = new LexSense();
+            if (isset($params["meaning2"])) $sense2->definition-> form($analysisWs, $params["meaning2"]);
+            if (isset($params["gloss2"]))   $sense2->gloss->      form($analysisWs, $params["gloss2"]);
+            if (isset($params["note2"]))    $sense2->generalNote->form($analysisWs, $params["note2"]);
+            $entry->senses->append($sense2);
+        }
+        // string $vernacularWs, string $analysisWs, string $word, string $citationForm, string $definition, string $gloss
+        $entry->write();
+        return $entry;
+    }
+
+    public function testGetDifferences_OneFieldChanged_ContainsOnlyThatChange()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        $entry  = $this->createEntry($project, ["vernacularWs" => "fr", "anaylsisWs" => "en", "word" => "bonjour", "meaning" => "hello", "gloss" => "hello"]);
+        $entry2 = new LexEntryModel($project, $entry->id->asString());
+        /** @var LexSense $sense */
+        $sense = $entry2->senses[0];
+        $sense->definition->form("en", "hi there");
+        $guid = $sense->guid;
+
+        $differences = $entry->calculateDifferences($entry2);
+        $this->assertEquals([
+            "oldValue.senses#$guid.definition.en" => 'hello',
+            "newValue.senses#$guid.definition.en" => 'hi there'], $differences);
+    }
+
+    public function testGetDifferences_TwoFieldsChanged_ContainsBothChanges()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        $entry  = $this->createEntry($project, ["vernacularWs" => "fr", "anaylsisWs" => "en", "word" => "bonjour", "meaning" => "hello", "gloss" => "hello"]);
+        $entry2 = new LexEntryModel($project, $entry->id->asString());
+        /** @var LexSense $sense */
+        $sense = $entry2->senses[0];
+        $sense->definition->form("en", "hi there");
+        $sense->gloss->form("en", "hi");
+        $guid = $sense->guid;
+
+        $differences = $entry->calculateDifferences($entry2);
+        $this->assertEquals([
+            "oldValue.senses#$guid.definition.en" => 'hello',
+            "newValue.senses#$guid.definition.en" => 'hi there',
+            "oldValue.senses#$guid.gloss.en" => 'hello',
+            "newValue.senses#$guid.gloss.en" => 'hi'], $differences);
+    }
+
+    public function testGetDifferences_TwoFieldsChangedButOneChangedToTheOriginalValue_ContainsOnlyOneChange()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        $entry  = $this->createEntry($project, ["vernacularWs" => "fr", "anaylsisWs" => "en", "word" => "bonjour", "meaning" => "hello", "gloss" => "hello"]);
+        $entry2 = new LexEntryModel($project, $entry->id->asString());
+        /** @var LexSense $sense */
+        $sense = $entry2->senses[0];
+        $sense->definition->form("en", "hi there");
+        $sense->gloss->form("en", "hello");
+        $guid = $sense->guid;
+
+        $differences = $entry->calculateDifferences($entry2);
+        $this->assertEquals([
+            "oldValue.senses#$guid.definition.en" => 'hello',
+            "newValue.senses#$guid.definition.en" => 'hi there'], $differences);
+    }
+
+    public function testGetDifferences_DeletingSecondSense_DifferencesIncludeOnlyTheDeletionAsASingleChange()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        $entry  = $this->createEntry($project, ["vernacularWs" => "fr", "anaylsisWs" => "en", "word" => "bonjour", "meaning" => "hello", "meaning2" => "hi"]);
+        $entry2 = new LexEntryModel($project, $entry->id->asString());
+        /** @var LexSense $sense */
+        $sense1 = $entry2->senses[0];
+        $guid1  = $sense1->guid;
+        $sense2 = $entry2->senses[1];
+        $guid2  = $sense2->guid;
+        $entry2->senses = new ArrayOf('Api\Model\Languageforge\Lexicon\generateSense');
+        $entry2->senses->append($sense1);
+
+        $differences = $entry->calculateDifferences($entry2);
+        $this->assertEquals(["deleted.senses#$guid2" => 'hi'], $differences);
+    }
+
+    public function testGetDifferences_DeletingFirstSense_DifferencesIncludeTheDeletionAndPositionChanges()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        $entry  = $this->createEntry($project, ["vernacularWs" => "fr", "anaylsisWs" => "en", "word" => "bonjour", "meaning" => "hello", "meaning2" => "hi"]);
+        $entry2 = new LexEntryModel($project, $entry->id->asString());
+        /** @var LexSense $sense */
+        $sense1 = $entry2->senses[0];
+        $guid1  = $sense1->guid;
+        $sense2 = $entry2->senses[1];
+        $guid2  = $sense2->guid;
+        $entry2->senses = new ArrayOf('Api\Model\Languageforge\Lexicon\generateSense');
+        $entry2->senses->append($sense2);
+
+        $differences = $entry->calculateDifferences($entry2);
+        $this->assertEquals([
+            "deleted.senses#$guid1" => 'hello',
+            "movedFrom.senses#$guid2" => 1,
+            "movedTo.senses#$guid2" => 0], $differences);
+    }
+
+    public function testGetDifferences_DeletingBothSenses_DifferencesIncludeOnlyTheTwoDeletions()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        $entry  = $this->createEntry($project, ["vernacularWs" => "fr", "anaylsisWs" => "en", "word" => "bonjour", "meaning" => "hello", "meaning2" => "hi"]);
+        $entry2 = new LexEntryModel($project, $entry->id->asString());
+        /** @var LexSense $sense */
+        $sense1 = $entry2->senses[0];
+        $guid1  = $sense1->guid;
+        $sense2 = $entry2->senses[1];
+        $guid2  = $sense2->guid;
+        $entry2->senses = new ArrayOf('Api\Model\Languageforge\Lexicon\generateSense');
+
+        $differences = $entry->calculateDifferences($entry2);
+        $this->assertEquals([
+            "deleted.senses#$guid1" => 'hello',
+            "deleted.senses#$guid2" => 'hi'], $differences);
     }
 }

@@ -23,11 +23,6 @@ use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransAppManagementDto;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
-use Api\Model\Languageforge\Translate\Command\TranslateDocumentSetCommands;
-use Api\Model\Languageforge\Translate\Command\TranslateMetricCommands;
-use Api\Model\Languageforge\Translate\Command\TranslateProjectCommands;
-use Api\Model\Languageforge\Translate\Dto\TranslateDocumentSetDto;
-use Api\Model\Languageforge\Translate\Dto\TranslateProjectDto;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksUploadCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
@@ -52,6 +47,11 @@ use Api\Model\Shared\Dto\RightsHelper;
 use Api\Model\Shared\Dto\UserProfileDto;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\Translate\Command\TranslateDocumentSetCommands;
+use Api\Model\Shared\Translate\Command\TranslateMetricCommands;
+use Api\Model\Shared\Translate\Command\TranslateProjectCommands;
+use Api\Model\Shared\Translate\Dto\TranslateDocumentSetDto;
+use Api\Model\Shared\Translate\Dto\TranslateProjectDto;
 use Api\Model\Shared\UserListModel;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
@@ -410,9 +410,21 @@ class Sf
     // ---------------------------------------------------------------
     // Activity Log
     // ---------------------------------------------------------------
-    public function activity_list_dto()
+    public function activity_list_dto($filterParams = [])
     {
-        return ActivityListDto::getActivityForUser($this->website->domain, $this->userId);
+        return ActivityListDto::getActivityForUser($this->website->domain, $this->userId, $filterParams);
+    }
+
+    public function activity_list_dto_for_current_project($filterParams = [])
+    {
+        $projectModel = new ProjectModel($this->projectId);
+        return ActivityListDto::getActivityForOneProject($projectModel, $this->userId, $filterParams);
+    }
+
+    public function activity_list_dto_for_lexical_entry($entryId, $filterParams = [])
+    {
+        $projectModel = new ProjectModel($this->projectId);
+        return ActivityListDto::getActivityForOneLexEntry($projectModel, $entryId, $filterParams);
     }
 
     /*

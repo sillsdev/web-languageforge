@@ -949,6 +949,142 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         $scope.commentContext.contextGuid = contextGuid;
       };
 
+      $scope.getContextParts = function getContextParts(contextGuid) {
+        var parts = {
+          value: '',
+          option: { key: '', label: '' },
+          field: '',
+          fieldConfig: {},
+          inputSystem: '',
+          sense: { index: '', guid: '' },
+          example: { index: '', guid: '' }
+        };
+        if (!angular.isDefined(contextGuid)) return parts;
+        var contextParts = contextGuid.split(/(sense#.+?\s)|(example#.+?\s)/);
+        var exampleGuid = '';
+        var senseGuid = '';
+        var field = '';
+        var fieldConfig = {
+          type: null
+        };
+        var inputSystem = '';
+        var optionKey = '';
+        var optionLabel = '';
+        var senseIndex = null;
+        var exampleIndex = null;
+        var currentEntry = $scope.currentEntry;
+        var currentValue = '';
+        var currentField = null;
+        var contextPart = '';
+
+        for (var i in contextParts) {
+          if (angular.isDefined(contextParts[i]) && contextParts[i] !== '') {
+            contextPart = contextParts[i].trim();
+            if (contextPart.indexOf('sense#') !== -1) {
+              senseGuid = contextPart.substr(6);
+            } else if (contextPart.indexOf('example#') !== -1) {
+              exampleGuid = contextPart.substr(8);
+            } else if (contextPart.indexOf('#') !== -1) {
+              field = contextPart.substr(0, contextPart.indexOf('#'));
+              optionKey = contextPart.substr(contextPart.indexOf('#') + 1);
+            } else if (contextPart.indexOf('.') !== -1) {
+              field = contextPart.substr(0, contextPart.indexOf('.'));
+              inputSystem = contextPart.substr(contextPart.indexOf('.') + 1);
+            } else {
+              field = contextPart;
+            }
+          }
+        }
+
+        if (senseGuid) {
+          for (var a in currentEntry.senses) {
+            if (currentEntry.senses[a].guid === senseGuid) {
+              senseIndex = a;
+              if (exampleGuid) {
+                for (var b in currentEntry.senses[a].examples) {
+                  if (currentEntry.senses[a].examples[b].guid === exampleGuid) {
+                    exampleIndex = b;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        if (exampleGuid && exampleIndex) {
+          if (currentEntry.senses[senseIndex].examples[exampleIndex].hasOwnProperty(field)) {
+            currentField = currentEntry.senses[senseIndex].examples[exampleIndex][field];
+            if ($scope.config.entry.fields.senses.fields.examples.fields.hasOwnProperty(field)) {
+              fieldConfig = $scope.config.entry.fields.senses.fields.examples.fields[field];
+            }
+          }
+        } else if (senseGuid && senseIndex) {
+          if (currentEntry.senses[senseIndex].hasOwnProperty(field)) {
+            currentField = currentEntry.senses[senseIndex][field];
+            if ($scope.config.entry.fields.senses.fields.hasOwnProperty(field)) {
+              fieldConfig = $scope.config.entry.fields.senses.fields[field];
+            }
+          }
+        } else if (currentEntry.hasOwnProperty(field)) {
+          currentField = currentEntry[field];
+          if ($scope.config.entry.fields.hasOwnProperty(field)) {
+            fieldConfig = $scope.config.entry.fields[field];
+          }
+        }
+
+        if (currentField !== null) {
+          if (currentField.hasOwnProperty(inputSystem)) {
+            currentValue = currentField[inputSystem].value;
+          } else if (currentField.hasOwnProperty('value')) {
+            currentValue = currentField.value;
+          } else {
+            currentValue = optionKey;
+          }
+
+          // Option lists only get their key saved on the comment so we need to find the value
+          if (fieldConfig !== null &&
+            (fieldConfig.type === 'multioptionlist' || fieldConfig.type === 'optionlist')
+            ) {
+            if (field === 'semanticDomain') {
+              // Semantic domains are in the global scope and appear to be English only
+              // Will need to be updated once the system provides support for other languages
+              for (var i in semanticDomains_en) {
+                if (semanticDomains_en[i].key === optionKey) {
+                  optionLabel = semanticDomains_en[i].value;
+                }
+              }
+            } else {
+              var optionlists = $scope.config.optionlists;
+              for (var listCode in optionlists) {
+                if (listCode === fieldConfig.listCode) {
+                  for (var i in optionlists[listCode].items) {
+                    var item = optionlists[listCode].items[i];
+                    if (
+                      (item.key === optionKey && fieldConfig.type === 'multioptionlist') ||
+                      (item.key === currentValue && fieldConfig.type === 'optionlist')
+                    ) {
+                      optionKey = item.key;
+                      optionLabel = item.value;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        parts.value = currentValue;
+        parts.option.key = optionKey;
+        parts.option.label = optionLabel;
+        parts.field = field;
+        parts.fieldConfig = fieldConfig;
+        parts.inputSystem = inputSystem;
+        parts.sense.index = senseIndex;
+        parts.sense.guid = senseGuid;
+        parts.example.index = exampleIndex;
+        parts.example.guid = exampleGuid;
+        return parts;
+      };
     });
 
   }])

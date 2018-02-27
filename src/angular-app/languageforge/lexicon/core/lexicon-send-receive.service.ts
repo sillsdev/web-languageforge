@@ -3,8 +3,9 @@ import * as angular from 'angular';
 import { RelativeTimeFilterFunction } from '../../../bellows/core/filters';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { Session, SessionService } from '../../../bellows/core/session.service';
+import { SendReceiveState } from '../../../bellows/shared/model/send-receive-state.model';
 import { LexiconProjectSettings } from '../shared/model/lexicon-project-settings.model';
-import { SendReceiveState, SendReceiveStatus } from '../shared/model/send-receive-status.model';
+import { SendReceiveStatus } from '../shared/model/send-receive-status.model';
 import { JsonRpcResult, LexiconSendReceiveApiService } from './lexicon-send-receive-api.service';
 
 type SRTimerCallback = () => void;

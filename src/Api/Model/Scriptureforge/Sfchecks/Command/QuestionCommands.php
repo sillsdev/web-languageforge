@@ -243,9 +243,9 @@ class QuestionCommands
 
         if ($comment['id'] != '') {
             // TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
-            ActivityCommands::updateComment($projectModel, $questionId, $answerId, $newComment);
+            ActivityCommands::updateCommentOnQuestion($projectModel, $questionId, $answerId, $newComment);
         } else {
-            ActivityCommands::addComment($projectModel, $questionId, $answerId, $newComment);
+            ActivityCommands::addCommentOnQuestion($projectModel, $questionId, $answerId, $newComment);
         }
 
         $dto = array();

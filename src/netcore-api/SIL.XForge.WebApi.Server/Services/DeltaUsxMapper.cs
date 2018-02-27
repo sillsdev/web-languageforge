@@ -10,8 +10,6 @@ namespace SIL.XForge.WebApi.Server.Services
 {
     public class DeltaUsxMapper
     {
-        public const string EmptySegmentPlaceholder = "\u200b";
-
         private static readonly HashSet<string> ParagraphStyles = new HashSet<string>
         {
             "p", "m", "pmo", "pm", "pmc", "pmr", "pi", "mi", "cls", "li", "pc", "pr", "ph", "lit"
@@ -49,13 +47,13 @@ namespace SIL.XForge.WebApi.Server.Services
                         SegmentEnded(newDelta, curRef);
                         if (!paraStyle)
                             curRef = null;
-                        newDelta.Insert("\n", OpAttributes("para", elem));
+                        newDelta.InsertPara(GetAttributes(elem));
                         break;
 
                     case "chapter":
                         curRef = null;
                         curChapter = (string) elem.Attribute("number");
-                        newDelta.Insert(new { chapter = curChapter }, OpAttributes("chapter", elem));
+                        newDelta.InsertChapter(curChapter, GetAttributes(elem));
                         break;
                 }
             }
@@ -77,33 +75,25 @@ namespace SIL.XForge.WebApi.Server.Services
                                 string verse = (string) e.Attribute("number");
                                 SegmentEnded(newDelta, curRef);
                                 curRef = $"verse_{curChapter}_{verse}";
-                                newDelta.Insert(new { verse = verse }, OpAttributes("verse", e));
+                                newDelta.InsertVerse(verse, GetAttributes(e));
                                 break;
 
                             case "char":
-                                newDelta.Insert(e.Value, OpAttributes("char", e, curRef));
+                                newDelta.InsertChar(e.Value, GetAttributes(e), curRef);
                                 break;
 
                             case "note":
                                 var noteDelta = new Delta();
                                 string tempRef = null;
                                 ProcessChildNodes(noteDelta, e, curChapter, ref tempRef, ref nextNoteId);
-                                var deltaObj = new JObject(new JProperty("ops", new JArray(noteDelta.Ops)));
-                                var noteObj = new JObject(
-                                    new JProperty("note", new JObject(
-                                        new JProperty("index", nextNoteId),
-                                        new JProperty("delta", deltaObj))));
-                                newDelta.Insert(noteObj, OpAttributes("note", e, curRef));
+                                newDelta.InsertNote(nextNoteId, noteDelta, GetAttributes(e), curRef);
                                 nextNoteId++;
                                 break;
                         }
                         break;
 
                     case XText text:
-                        var attrs = new JObject();
-                        if (curRef != null)
-                            attrs.Add(new JProperty("segment", curRef));
-                        newDelta.Insert(text.Value, attrs);
+                        newDelta.InsertText(text.Value, curRef);
                         break;
                 }
             }
@@ -116,19 +106,15 @@ namespace SIL.XForge.WebApi.Server.Services
 
             if (newDelta.Ops.Count == 0)
             {
-                InsertEmptySegment(newDelta, segRef);
+                newDelta.InsertBlank(segRef);
             }
             else
             {
                 JToken lastOp = newDelta.Ops[newDelta.Ops.Count - 1];
                 var attrs = (JObject) lastOp[Delta.Attributes];
                 if (attrs != null && (attrs["verse"] != null || attrs["chapter"] != null || attrs["para"] != null))
-                    InsertEmptySegment(newDelta, segRef);
+                    newDelta.InsertBlank(segRef);
             }
-        }
-
-        private static void InsertEmptySegment(Delta newDelta, string segRef) {
-            newDelta.Insert(EmptySegmentPlaceholder, new { segment = segRef });
         }
 
         private static bool IsParagraphStyle(string style)
@@ -145,7 +131,7 @@ namespace SIL.XForge.WebApi.Server.Services
             return prefix + "_" + nextIds[prefix]++;
         }
 
-        private static JObject OpAttributes(string type, XElement elem, string curRef = null)
+        private static JObject GetAttributes(XElement elem)
         {
             var obj = new JObject();
             foreach (XAttribute attribute in elem.Attributes())
@@ -154,10 +140,7 @@ namespace SIL.XForge.WebApi.Server.Services
                     continue;
                 obj.Add(new JProperty(attribute.Name.LocalName, attribute.Value));
             }
-            var attrs = new JObject(new JProperty(type, obj));
-            if (curRef != null)
-                attrs.Add(new JProperty("segment", curRef));
-            return attrs;
+            return obj;
         }
 
         public static XElement ToUsx(string usxVersion, string bookId, string desc, Delta delta)
@@ -185,7 +168,7 @@ namespace SIL.XForge.WebApi.Server.Services
                     var text = (string) op[Delta.InsertType];
                     if (attrs == null)
                     {
-                        if (text == EmptySegmentPlaceholder || text == "\n")
+                        if (text == "\n")
                             continue;
                         childNodes.Add(new XText(text));
                     }
@@ -209,8 +192,6 @@ namespace SIL.XForge.WebApi.Server.Services
                                     break;
 
                                 case "segment":
-                                    if (text == EmptySegmentPlaceholder)
-                                        continue;
                                     if (attrs.Count == 1)
                                         childNodes.Add(new XText(text));
                                     break;
@@ -246,6 +227,10 @@ namespace SIL.XForge.WebApi.Server.Services
                                 var noteDelta = new Delta(prop.Value["delta"]["ops"].Children());
                                 ProcessDelta(noteElem, noteDelta);
                                 childNodes.Add(noteElem);
+                                break;
+
+                            case "blank":
+                                // skip blanks
                                 break;
                         }
                     }
