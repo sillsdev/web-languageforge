@@ -1,15 +1,15 @@
 import {} from 'jasmine';
 import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
-import { BellowsLoginPage } from '../../../bellows/pages/loginPage.js';
-import { ProjectsPage } from '../../../bellows/pages/projectsPage.js';
-import { SfProjectPage } from '../pages/projectPage.js';
-import { SfQuestionPage } from '../pages/questionPage.js';
-import { SfTextPage } from '../pages/textPage.js';
-import { SfTextSettingsPage } from '../pages/textSettingsPage.js';
-import { Utils } from '../../../bellows/pages/utils.js';
+import { BellowsLoginPage } from '../../../bellows/pages/loginPage';
+import { ProjectsPage } from '../../../bellows/pages/projectsPage';
+import { Utils } from '../../../bellows/pages/utils';
+import { SfProjectPage } from '../pages/projectPage';
+import { SfQuestionPage } from '../pages/questionPage';
+import { SfTextPage } from '../pages/textPage';
+import { SfTextSettingsPage } from '../pages/textSettingsPage';
 
 describe('the question page', () => {
-  const constants       = require('../../../testConstants.json');
+  const constants       = require('../../../testConstants');
   const loginPage = new BellowsLoginPage();
   const util = new Utils();
   const projectListPage = new ProjectsPage();
@@ -110,26 +110,25 @@ describe('the question page', () => {
           .toBeFalsy();
         expect(textSettingsPage.paratextExportTab.exportFlagged.getAttribute('checked'))
           .toBeTruthy();
-        expect<any>(textSettingsPage.paratextExportTab.prepareButton.isPresent()).toBe(true);
-        textSettingsPage.paratextExportTab.prepareButton.click();
+        expect<any>(textSettingsPage.paratextExportTab.downloadPT7Button.isPresent()).toBe(true);
+        expect<any>(textSettingsPage.paratextExportTab.downloadPT8Button.isPresent()).toBe(true);
+        textSettingsPage.paratextExportTab.downloadPT7Button.click();
         browser.wait(ExpectedConditions.visibilityOf(textSettingsPage.paratextExportTab.answerCount),
           CONDITION_TIMEOUT);
         expect<any>(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
         expect<any>(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1');
         expect<any>(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(false);
-        expect<any>(textSettingsPage.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
       });
 
       it('can prepare export for answers flagged for export with comments', () => {
         textSettingsPage.paratextExportTab.exportComments.click();
-        textSettingsPage.paratextExportTab.prepareButton.click();
+        textSettingsPage.paratextExportTab.downloadPT7Button.click();
         browser.wait(ExpectedConditions.visibilityOf(textSettingsPage.paratextExportTab.answerCount),
           CONDITION_TIMEOUT);
         expect<any>(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
         expect<any>(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1');
         expect<any>(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(true);
         expect<any>(textSettingsPage.paratextExportTab.commentCount.getText()).toEqual('1');
-        expect<any>(textSettingsPage.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
       });
 
     });
