@@ -19,8 +19,17 @@ class LexParagraph extends ObjectForEncoding
         }
     }
 
-    protected function createProperty($name) {
+    protected function getPropertyType(string $name)
+    {
         switch ($name) {
+            default:
+                return 'string';
+        }
+    }
+
+    protected function createProperty(string $name) {
+        switch ($this->getPropertyType($name)) {
+            case 'string':
             default:
                 return '';
         }

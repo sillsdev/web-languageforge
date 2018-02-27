@@ -38,9 +38,9 @@ declare module 'quill' {
 
   export class Tooltip {
     quill: Quill;
-    boundsContainer: BoundsStatic | Element;
+    boundsContainer: HTMLElement;
     root: HTMLElement;
-    constructor(quill: Quill, boundsContainer: BoundsStatic);
+    constructor(quill: Quill, boundsContainer: HTMLElement);
     hide(): void;
     position(reference: any): number;
     show(): void;

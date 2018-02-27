@@ -69,9 +69,21 @@ abstract class OAuthBase extends Base
                 if ($app['session']->has(OAuthBase::SESSION_KEY_OAUTH_ACCESS_TOKEN) && $app['session']->has(OauthBase::SESSION_KEY_OAUTH_PROVIDER) && $app['session']->get(OauthBase::SESSION_KEY_OAUTH_PROVIDER) == $this->getProviderName()) {
                     $token = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_ACCESS_TOKEN);
                 } else {
-                    $token = $provider->getAccessToken('authorization_code', [
-                        'code' => $code
-                    ]);
+                    try {
+                        $token = $provider->getAccessToken('authorization_code', [
+                            'code' => $code
+                        ]);
+                    } catch (\Exception $e) {
+                        $msg = $e->getMessage();
+                        if (strpos($msg, "Connection timed out") !== false) {
+                            // Retry ONCE on a timeout
+                            $token = $provider->getAccessToken('authorization_code', [
+                                'code' => $code
+                            ]);
+                        } else {
+                            throw $e;
+                        }
+                    }
                     $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_ACCESS_TOKEN, $token);
                     $app['session']->set(OauthBase::SESSION_KEY_OAUTH_PROVIDER, $this->getProviderName());
                 }

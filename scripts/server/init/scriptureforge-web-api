@@ -1,0 +1,60 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          scriptureforge-web-api
+# Required-Start:    mongodb networking
+# Required-Stop:     mongodb networking
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start daemon at boot time
+# Description:       Enable service provided by daemon.
+### END INIT INFO
+
+NAME=`basename $0`
+SOCKETFILE="/tmp/$NAME.sock"
+DIR="/var/www/scriptureforge.org_qa/api2"
+DAEMON="$DIR/SIL.XForge.WebApi.Server"
+EXTRA_OPTS="--urls http://unix:$SOCKETFILE"
+USER="www-data"
+
+PIDFILE="/var/run/$NAME.pid"
+STDOUTLOG="/var/log/$NAME/$NAME.log"
+STDERRLOG="/var/log/$NAME/$NAME.err"
+
+test -f $DAEMON || exit 0
+
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+    log_daemon_msg "Starting Scripture Forge Web API service" $NAME
+    if [ -z "$USER" ]; then
+        [ -e "$SOCKETFILE" ] && rm -f $SOCKETFILE
+        start-stop-daemon --start --quiet --chdir "$DIR" --make-pidfile --pidfile "$PIDFILE" --background \
+            --startas /bin/bash -- -c "exec $DAEMON $EXTRA_OPTS >> $STDOUTLOG 2>> $STDERRLOG"
+    else
+        [ -e "$SOCKETFILE" ] && sudo -u "$USER" rm -f $SOCKETFILE
+        start-stop-daemon --start --quiet --chdir "$DIR" --chuid $USER --make-pidfile --pidfile "$PIDFILE" \
+            --background --startas /bin/bash -- -c "exec $DAEMON $EXTRA_OPTS >> $STDOUTLOG 2>> $STDERRLOG"
+    fi
+    log_end_msg $?
+    ;;
+    stop)
+    log_daemon_msg "Stopping Scripture Forge Web API service" $NAME
+    start-stop-daemon --stop --quiet --remove-pidfile --pidfile "$PIDFILE"
+    log_end_msg $?
+    ;;
+    restart)
+    log_daemon_msg "Restarting Scripture Forge Web API service" $NAME
+    $0 stop
+    $0 start
+    ;;
+    status)
+    status_of_proc -p $PIDFILE $DAEMON $NAME && exit 0 || exit $?
+    ;;
+    *)
+    echo "Usage: $0 {start|stop|restart|status}"
+    exit 1
+    ;;
+esac
+
+exit 0

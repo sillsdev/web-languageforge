@@ -57,6 +57,10 @@ angular.module('palaso.ui.comments')
           };
         });
 
+        $scope.control.getNewComment = function getNewComment() {
+          return $scope.newComment;
+        };
+
         function getFieldValue(model, inputSystem) {
           // get value of option list
           if (angular.isDefined(model.value)) {

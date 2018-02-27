@@ -3,23 +3,26 @@
 angular.module('palaso.ui.soundplayer', [])
   .component('puiSoundplayer', {
       bindings: {
-        url: '<',
-        timeFormat: '<'
+        url: '<'
       },
       controller: ['$scope', function ($scope) {
         var ctrl = this;
-        var mostRecentlyPlayedAudioElement;
+        var slider = document.getElementById('puiSoundplayerSlider');
         $scope.audioElement = document.createElement('audio');
         $scope.playing = false;
 
         $scope.audioElement.addEventListener('ended', function () {
           $scope.$apply(function () {
-            if ($scope.playing) $scope.togglePlayback();
+            if ($scope.playing) {
+              $scope.togglePlayback();
+            }
+
+            $scope.audioElement.currentTime = 0;
           });
         });
 
         ctrl.$onChanges = function (changes) {
-          if (changes.url.currentValue) {
+          if (changes.url && changes.url.currentValue) {
             if ($scope.playing) $scope.togglePlayback();
             $scope.audioElement.src = changes.url.currentValue;
           }
@@ -38,31 +41,58 @@ angular.module('palaso.ui.soundplayer', [])
 
           if ($scope.playing) {
             $scope.audioElement.play();
-            mostRecentlyPlayedAudioElement = $scope.audioElement;
           } else {
             $scope.audioElement.pause();
           }
         };
 
+        $scope.currentTimeInSeconds = function () {
+          return $scope.audioElement.currentTime;
+        };
+
+        $scope.durationInSeconds = function () {
+          return $scope.audioElement.duration;
+        };
+
         $scope.duration = function () {
-          return ctrl.timeFormat($scope.audioElement.duration * 1000);
+          return $scope.formatTimestamp($scope.audioElement.duration * 1000);
         };
 
         $scope.currentTime = function () {
-          return ctrl.timeFormat($scope.audioElement.currentTime * 1000);
+          return $scope.formatTimestamp($scope.audioElement.currentTime * 1000);
         };
 
         $scope.audioElement.addEventListener('loadedmetadata', function () {
           $scope.$digest();
         });
 
+        var previousFormattedTime = null;
         $scope.audioElement.addEventListener('timeupdate', function () {
-          $scope.$digest();
+          if (!$scope.userMovingSlider) slider.value = $scope.audioElement.currentTime;
+
+          // If the time as shown the user has changed, only then run a digest
+          if (previousFormattedTime !== $scope.currentTime()) $scope.$digest();
         });
+
+        slider.addEventListener('change', function (e) {
+          $scope.audioElement.currentTime = e.target.value;
+          $scope.userMovingSlider = false;
+        });
+
+        slider.addEventListener('input', function(e) {
+          $scope.userMovingSlider = true;
+        });
+
+        $scope.formatTimestamp = function formatTimestamp(timestamp) {
+          var totalSeconds = timestamp / 1000;
+          var minutes = Math.floor(totalSeconds / 60);
+          var seconds = Math.floor(totalSeconds % 60);
+          seconds = (seconds < 10 ? '0' : '') + seconds;
+          return minutes + ':' + seconds;
+        };
       }],
 
-      template: '<a ng-click="togglePlayback()"><i class="fa {{iconClass()}}"></i></a>'
-        + '<span data-ng-if="audioElement.duration && $ctrl.timeFormat" ' +
-        'class="audioProgress text-muted">{{currentTime()}} / {{duration()}}</span>'
+                                          // FIXME why is bootstrapVersion not defined here?
+      templateUrl: '/angular-app/bellows/directive/' + 'bootstrap4' + '/pui-soundplayer.html'
     }
   );

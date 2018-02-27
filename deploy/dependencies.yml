@@ -292,7 +292,6 @@
         - "scriptureforge.local"
         - "jamaicanpsalms.scriptureforge.local"
         - "demo.scriptureforge.local"
-        - "cat.languageforge.local"
         - "es_401"
       when: inventory_hostname == "localhost"
 
