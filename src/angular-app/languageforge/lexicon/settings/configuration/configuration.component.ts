@@ -9,6 +9,7 @@ import {
   LexConfigField, LexConfigFieldList, LexConfigMultiText,
   LexiconConfig
 } from '../../shared/model/lexicon-config.model';
+import { LexiconProjectSettings } from '../../shared/model/lexicon-project-settings.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
 import {Field} from './configuration-fields.component';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
@@ -50,10 +51,10 @@ export class LexiconConfigurationController implements angular.IController {
 
     sessionService.getSession().then(session => {
       this.session = session;
-      this.configDirty = angular.copy(session.projectSettings().config);
-      this.configPristine = angular.copy(session.projectSettings().config);
-      this.optionListsDirty = angular.copy(session.projectSettings().optionlists);
-      this.optionListsPristine = angular.copy(session.projectSettings().optionlists);
+      this.configDirty = angular.copy(session.projectSettings<LexiconProjectSettings>().config);
+      this.configPristine = angular.copy(session.projectSettings<LexiconProjectSettings>().config);
+      this.optionListsDirty = angular.copy(session.projectSettings<LexiconProjectSettings>().optionlists);
+      this.optionListsPristine = angular.copy(session.projectSettings<LexiconProjectSettings>().optionlists);
       this.isSaving = false;
 
       this.setupView();
@@ -94,15 +95,15 @@ export class LexiconConfigurationController implements angular.IController {
         const isSuccess = result.data;
         if (isSuccess) {
           this.notice.push(this.notice.SUCCESS, 'Configuration updated successfully');
-          this.session.projectSettings().config = angular.copy(this.configDirty);
+          this.session.projectSettings<LexiconProjectSettings>().config = angular.copy(this.configDirty);
           this.configPristine = angular.copy(this.configDirty);
-          this.session.projectSettings().optionlist = angular.copy(this.optionListsDirty);
+          this.session.projectSettings<LexiconProjectSettings>().optionlists = angular.copy(this.optionListsDirty);
           this.optionListsPristine = angular.copy(this.optionListsDirty);
           this.lexConfig.refresh();
         } else {
           this.warnOfUnsavedEdits();
-          this.configDirty = angular.copy(this.session.projectSettings().config);
-          this.optionListsDirty = angular.copy(this.session.projectSettings().optionlists);
+          this.configDirty = angular.copy(this.session.projectSettings<LexiconProjectSettings>().config);
+          this.optionListsDirty = angular.copy(this.session.projectSettings<LexiconProjectSettings>().optionlists);
           this.setupView();
           this.selectField(this.currentField.name, true);
           this.sendReceive.startSyncStatusTimer();
@@ -235,8 +236,8 @@ export class LexiconConfigurationController implements angular.IController {
   private syncProjectStatusSuccess = () => {
     this.sessionService.getSession(true).then(session => {
       this.session = session;
-      this.configDirty = angular.copy(session.projectSettings().config);
-      this.optionListsDirty = angular.copy(session.projectSettings().optionlists);
+      this.configDirty = angular.copy(session.projectSettings<LexiconProjectSettings>().config);
+      this.optionListsDirty = angular.copy(session.projectSettings<LexiconProjectSettings>().optionlists);
       this.setupView();
       this.selectField(this.currentField.name, true);
       this.$scope.configForm.$setPristine();

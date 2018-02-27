@@ -2,12 +2,14 @@ import * as angular from 'angular';
 
 import { SessionService } from '../../bellows/core/session.service';
 import { TranslateProjectService } from './core/translate-project.service';
-import { Rights, TranslateRightsService } from './core/translate-rights.service';
-import { TranslateConfig, TranslateProject } from './shared/model/translate-project.model';
+import { TranslateRights, TranslateRightsService } from './core/translate-rights.service';
+import { TranslateSendReceiveService } from './core/translate-send-receive.service';
+import { TranslateConfig } from './shared/model/translate-config.model';
+import { TranslateProject } from './shared/model/translate-project.model';
 
 export class TranslateAppController implements angular.IController {
   project: TranslateProject;
-  rights: Rights;
+  rights: TranslateRights;
   interfaceConfig: any;
 
   static $inject = ['$state', 'sessionService',
@@ -23,11 +25,8 @@ export class TranslateAppController implements angular.IController {
       this.projectApi.readProject()
     ]).then(([rights, session, readProjectResult]) => {
       this.rights = rights;
-      this.rights.showSettingsDropdown = () => {
-        return this.rights.canEditProject() || this.rights.canEditUsers();
-      };
 
-      const project: TranslateProject = session.project();
+      const project = session.project<TranslateProject>();
       if (readProjectResult.ok) {
         angular.merge(project, readProjectResult.data.project);
       }
@@ -45,6 +44,19 @@ export class TranslateAppController implements angular.IController {
     });
   }
 
+  get showSync(): boolean {
+    if (this.project == null || this.rights == null || this.project.config == null ||
+        this.project.config.source == null || this.project.config.source.paratextProject == null) {
+      return false;
+    }
+    return this.project.config.source.paratextProject.id != null && !this.project.isArchived &&
+      this.rights.canEditUsers();
+  }
+
+  get showSettingsDropdown(): boolean {
+    return this.rights != null && (this.rights.canEditProject() || this.rights.canEditUsers());
+  }
+
   gotoTranslation() {
     this.$state.go('editor');
   }
@@ -57,7 +69,6 @@ export class TranslateAppController implements angular.IController {
   onUpdateProject($event: { project: any }) {
     this.project = $event.project;
   }
-
 }
 
 export const TranslateAppComponent: angular.IComponentOptions = {

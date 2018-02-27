@@ -46,6 +46,11 @@ export const TranslateAppModule = angular
             'tec-rights="$ctrl.rights" tec-on-update="$ctrl.onUpdateProject($event)" ' +
             'tec-interface-config="$ctrl.interfaceConfig"></translate-editor>'
         })
+        .state('sync', {
+          url: '/sync',
+          template: '<translate-sync tsyc-project="$ctrl.project" tsyc-rights="$ctrl.rights" ' +
+            'tsyc-on-update="$ctrl.onUpdateProject($event)"></translate-sync>'
+        })
         ;
 
       // configure interface language file path

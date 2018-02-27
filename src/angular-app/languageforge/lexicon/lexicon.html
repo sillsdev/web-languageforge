@@ -1,38 +1,40 @@
 {% verbatim %}
-<div class="content container"
+<div class="content container-fluid"
     data-ng-cloak data-ng-controller="LexiconCtrl" dir="{{interfaceConfig.direction}}">
-    <div class="hdrnav row">
-        <div class="col-12">
-            <div class="hdrnav-container">
-                <div class="btn-group" id="settingsDropdownButton" uib-dropdown data-ng-class="interfaceConfig.pullToSide" data-ng-show="rights.canEditUsers()">
-                    <a id="settingsBtn" class="btn btn-std" uib-dropdown-toggle data-ng-class="interfaceConfig.pullToSide"
-                       tooltip-placement="{{interfaceConfig.placementToSide}}"
-                       title="Settings" href="#">
-                        <i class="fa fa-cog"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="interfaceConfig.pullToSide">
-                        <a class="dropdown-item" id="dropdown-configuration" ui-sref="configuration" data-translate="Configuration"></a>
-                        <a class="dropdown-item" id="dropdown-view-settings" ui-sref="viewSettings" data-translate="View Settings"></a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" ui-sref="importExport" data-translate="Import Data"></a>
-                        <a id="userManagementLink" class="dropdown-item" data-ng-href="/app/usermanagement/{{project.id}}"
-                           data-translate="User Management"></a>
-                        <a class="dropdown-item" id="dropdown-project-settings" ui-sref="settings" data-translate="Project Settings"></a>
-                        <div class="dropdown-divider" data-ng-show="showSync()"></div>
-                        <a class="dropdown-item" ui-sref="sync" data-ng-show="showSync()"
-                           data-translate="Synchronize"></a>
+    <div class="hdrnav container">
+        <div class="row">
+            <div class="col">
+                <div class="hdrnav-container">
+                    <div class="btn-group" id="settingsDropdownButton" uib-dropdown data-ng-class="interfaceConfig.pullToSide" data-ng-show="rights.canEditUsers()">
+                        <a id="settingsBtn" class="btn btn-std" uib-dropdown-toggle data-ng-class="interfaceConfig.pullToSide"
+                           tooltip-placement="{{interfaceConfig.placementToSide}}"
+                           title="Settings" href="#">
+                            <i class="fa fa-cog"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="interfaceConfig.pullToSide">
+                            <a id="dropdown-configuration" class="dropdown-item" ui-sref="configuration" data-translate="Configuration"></a>
+                            <a id="dropdown-view-settings" class="dropdown-item" ui-sref="viewSettings" data-translate="View Settings"></a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" ui-sref="importExport" data-translate="Import Data"></a>
+                            <a id="userManagementLink" class="dropdown-item" data-ng-href="/app/usermanagement/{{project.id}}"
+                               data-translate="User Management"></a>
+                            <a id="dropdown-project-settings" class="dropdown-item" ui-sref="settings" data-translate="Project Settings"></a>
+                            <div class="dropdown-divider" data-ng-show="showSync()"></div>
+                            <a class="dropdown-item" ui-sref="sync" data-ng-show="showSync()"
+                               data-translate="Synchronize"></a>
+                        </div>
                     </div>
+                    <div class="float-right return-button">
+                        <button class="btn btn-std" title="View the dictionary"
+                                tooltip-placement="{{interfaceConfig.placementNormal}}"
+                                data-ng-show="showDictionaryButton()"
+                                data-ng-click="gotoDictionary()">
+                            <i class="fa fa-arrow-circle-left"></i> {{'Dictionary' | translate}}
+                        </button>
+                    </div>
+                    <breadcrumbs id="top" class="breadcrumb d-none d-md-block"></breadcrumbs>
+                    <ol id="projectName" class="d-md-none text-center">{{project.projectName}}</ol>
                 </div>
-                <div class="float-right return-button">
-                    <button class="btn btn-std" title="View the dictionary"
-                            tooltip-placement="{{interfaceConfig.placementNormal}}"
-                            data-ng-show="showDictionaryButton()"
-                            data-ng-click="gotoDictionary()">
-                        <i class="fa fa-arrow-circle-left"></i> {{'Dictionary' | translate}}
-                    </button>
-                </div>
-                <breadcrumbs id="top" class="breadcrumb d-none d-md-block"></breadcrumbs>
-                <ol id="projectName" class="d-md-none text-center">{{project.projectName}}</ol>
             </div>
         </div>
     </div>

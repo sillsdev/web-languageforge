@@ -29,12 +29,11 @@ export class MachineService {
     }
   }
 
-  initialise(projectId: string, isScripture: boolean): void {
+  initialise(projectId: string): void {
     this.engine = new TranslationEngine(this.$window.location.origin + '/machine', projectId);
     this.updateConfidence();
-    const segmentType = isScripture ? 'line' : 'latin';
-    this.sourceSegmentTokenizer = new SegmentTokenizer(segmentType);
-    this.targetSegmentTokenizer = new SegmentTokenizer(segmentType);
+    this.sourceSegmentTokenizer = new SegmentTokenizer('latin');
+    this.targetSegmentTokenizer = new SegmentTokenizer('latin');
   }
 
   translate(sourceSegment: string): angular.IPromise<void> {

@@ -10,8 +10,10 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
     templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-picture.html',
     scope: {
       config: '=',
+      model: '=',
       pictures: '=',
-      control: '='
+      control: '=',
+      fieldName: '='
     },
     controller: ['$scope', '$state', 'Upload', '$filter', 'sessionService', 'lexProjectService',
       'lexConfigService', 'silNoticeService', 'modalService',
@@ -21,6 +23,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       $scope.upload = {};
       $scope.upload.progress = 0;
       $scope.upload.file = null;
+      $scope.contextGuid = $scope.$parent.contextGuid;
 
       $scope.fieldContainsData = lexConfigService.fieldContainsData;
 

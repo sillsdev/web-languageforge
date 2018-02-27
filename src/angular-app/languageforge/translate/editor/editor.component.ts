@@ -1,7 +1,6 @@
 import * as angular from 'angular';
-import { setTimeout } from 'core-js/library/web/timers';
 import { SmtTrainProgress } from 'machine';
-import Quill from 'quill';
+import Quill, { DeltaStatic, RangeStatic } from 'quill';
 
 import { JsonRpcResult } from '../../../bellows/core/api/json-rpc.service';
 import { ModalService } from '../../../bellows/core/modal/modal.service';
@@ -11,10 +10,9 @@ import { DocType, SaveState } from '../core/constants';
 import { MachineService } from '../core/machine.service';
 import { RealTimeService } from '../core/realtime.service';
 import { TranslateProjectService } from '../core/translate-project.service';
-import { Rights } from '../core/translate-rights.service';
-import {
-  TranslateConfigDocumentSets, TranslateProject, TranslateUserPreferences
-} from '../shared/model/translate-project.model';
+import { TranslateRights } from '../core/translate-rights.service';
+import { TranslateConfigDocumentSets, TranslateUserPreferences } from '../shared/model/translate-config.model';
+import { TranslateProject } from '../shared/model/translate-project.model';
 import { TranslateUtilities } from '../shared/translate-utilities';
 import { DocumentEditor, SourceDocumentEditor, TargetDocumentEditor } from './document-editor';
 import { Metrics, MetricService } from './metric.service';
@@ -22,7 +20,7 @@ import { QuillUsxConverter } from './quill/quill-usx.converter';
 
 export class TranslateEditorController implements angular.IController {
   tecProject: TranslateProject;
-  tecRights: Rights;
+  tecRights: TranslateRights;
   tecInterfaceConfig: any;
   tecOnUpdate: (params: { $event: { project: any } }) => void;
 
@@ -53,6 +51,10 @@ export class TranslateEditorController implements angular.IController {
               private readonly notice: NoticeService, private readonly realTime: RealTimeService,
               private readonly projectApi: TranslateProjectService, private readonly util: UtilityService) { }
 
+  get isScripture(): boolean {
+    return this.tecProject != null && this.tecProject.config.isTranslationDataScripture;
+  }
+
   $onInit(): void {
     this.source = new SourceDocumentEditor(this.$q, this.machine, this.realTime);
     this.target = new TargetDocumentEditor(this.$q, this.machine, this.realTime, this.metricService, this.$window);
@@ -70,7 +72,16 @@ export class TranslateEditorController implements angular.IController {
       },
 
       keyboard: {
-        bindings: { }
+        bindings: {
+          disableBackspace: {
+            key: 'backspace',
+            handler: (range: RangeStatic, context: any) => this.focusedEditor.isBackspaceAllowed(range, context)
+          },
+          disableDelete: {
+            key: 'delete',
+            handler: (range: RangeStatic, context: any) => this.focusedEditor.isDeleteAllowed(range, context)
+          }
+        }
       }
     };
 
@@ -141,8 +152,11 @@ export class TranslateEditorController implements angular.IController {
             new TranslateUserPreferences();
           this.source.inputSystem = this.tecProject.config.source.inputSystem;
           this.target.inputSystem = this.tecProject.config.target.inputSystem;
-          this.machine.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
+          this.machine.initialise(this.tecProject.slug);
           this.showFormats =  this.tecProject.config.userPreferences.isFormattingOptionsShown;
+
+          this.source.isScripture = this.tecProject.config.isTranslationDataScripture;
+          this.target.isScripture = this.tecProject.config.isTranslationDataScripture;
 
           if (this.tecProject.config.documentSets.idsOrdered != null &&
             this.tecProject.config.documentSets.idsOrdered.length > 0
@@ -204,7 +218,15 @@ export class TranslateEditorController implements angular.IController {
         }
       });
 
-      this.machine.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
+      this.machine.initialise(this.tecProject.slug);
+
+      if (this.source != null) {
+        this.source.isScripture = this.tecProject.config.isTranslationDataScripture;
+      }
+      if (this.target != null) {
+        this.target.isScripture = this.tecProject.config.isTranslationDataScripture;
+      }
+
       this.listenForTrainingStatus();
     }
   }
@@ -400,8 +422,8 @@ export class TranslateEditorController implements angular.IController {
     return docName + editor.label + ((editor.inputSystem.tag) ? ' (' + editor.inputSystem.tag + ')' : '');
   }
 
-  onContentChanged(editor: DocumentEditor): void {
-    this.updateEditor(editor, true);
+  onContentChanged(editor: DocumentEditor, delta: DeltaStatic): void {
+    this.updateEditor(editor, delta);
   }
 
   onSelectionChanged(editor: DocumentEditor): void {
@@ -414,7 +436,7 @@ export class TranslateEditorController implements angular.IController {
         this.metricService.reset();
       }
     }
-    this.updateEditor(editor, false);
+    this.updateEditor(editor);
   }
 
   onQuillCreated(quill: Quill, editor: DocumentEditor): void {
@@ -472,15 +494,7 @@ export class TranslateEditorController implements angular.IController {
   }
 
   swapEditors(writePreferences: boolean = true): void {
-    let focusedEditor: DocumentEditor;
-    switch (this.currentDocType) {
-      case DocType.SOURCE:
-        focusedEditor = this.source;
-        break;
-      case DocType.TARGET:
-        focusedEditor = this.target;
-        break;
-    }
+    const focusedEditor = this.focusedEditor;
     const leftEditorElem = this.left.quill.container.parentElement.parentElement;
     const leftParentElem = leftEditorElem.parentElement;
     const rightEditorElem = this.right.quill.container.parentElement.parentElement;
@@ -501,6 +515,19 @@ export class TranslateEditorController implements angular.IController {
       this.projectApi.updateUserPreferences(userPreferences);
       this.tecOnUpdate({ $event: { project: this.tecProject } });
     }
+  }
+
+  private get focusedEditor(): DocumentEditor {
+    let focusedEditor: DocumentEditor;
+    switch (this.currentDocType) {
+      case DocType.SOURCE:
+        focusedEditor = this.source;
+        break;
+      case DocType.TARGET:
+        focusedEditor = this.target;
+        break;
+    }
+    return focusedEditor;
   }
 
   private listenForTrainingStatus(): void {
@@ -590,8 +617,8 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  private updateEditor(editor: DocumentEditor, textChange: boolean): void {
-    const segmentChanged = editor.update(textChange);
+  private updateEditor(editor: DocumentEditor, delta?: DeltaStatic): void {
+    const segmentChanged = editor.update(delta != null);
     switch (editor.docType) {
       case DocType.TARGET:
         if (this.target.hasFocus) {
@@ -600,7 +627,8 @@ export class TranslateEditorController implements angular.IController {
 
         if (segmentChanged) {
           // select the corresponding source segment
-          this.source.switchCurrentSegment(this.target.currentSegmentIndex);
+          this.source.isCurrentSegmentHighlighted = false;
+          this.source.switchCurrentSegment(this.target.currentSegmentRef);
 
           if (this.currentDocType) {
             this.metricService.sendMetrics(true, this.target.currentSegmentDocumentSetId);
@@ -611,13 +639,14 @@ export class TranslateEditorController implements angular.IController {
           // update suggestions for new segment
           this.target.onStartTranslating();
           this.source.translateCurrentSegment()
+            .catch(() => { })
             .finally(() => this.target.onFinishTranslating());
+        }
+
+        if (this.target.hasFocus) {
+          this.source.isCurrentSegmentHighlighted = true;
         } else {
-          if (this.target.hasFocus) {
-            this.source.isCurrentSegmentHighlighted = true;
-          } else if (!this.source.hasFocus) {
-            this.source.isCurrentSegmentHighlighted = false;
-          }
+          this.source.isCurrentSegmentHighlighted = false;
         }
 
         this.source.syncScroll(this.target);
@@ -625,7 +654,7 @@ export class TranslateEditorController implements angular.IController {
 
       case DocType.SOURCE:
         if (segmentChanged) {
-          this.target.switchCurrentSegment(this.source.currentSegmentIndex);
+          this.target.switchCurrentSegment(this.source.currentSegmentRef);
 
           if (!this.currentDocType && this.selectedDocumentSetIndex in this.documentSets) {
             this.metricService.currentDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
@@ -636,6 +665,7 @@ export class TranslateEditorController implements angular.IController {
 
     if (editor.hasFocus) {
       this.currentDocType = editor.docType;
+      editor.adjustSelection();
     }
   }
 

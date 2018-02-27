@@ -15,9 +15,13 @@ namespace SIL.XForge.WebApi.Server
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddCommandLine(args)
-                .AddJsonFile("secrets.json", true, true)
                 .Build();
             return WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    config.AddJsonFile("appsettings.user.json", true);
+                    config.AddJsonFile("secrets.json", true, true);
+                })
                 .UseConfiguration(configuration)
                 .UseStartup<Startup>()
                 .Build();

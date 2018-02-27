@@ -13,15 +13,37 @@ angular.module('palaso.ui.comments')
         fieldConfig: '='
       },
       controller: ['$scope', function ($scope) {
-        if (!angular.isUndefined($scope.content)) {
-          $scope.contentArr = $scope.content.split('#');
-        }
+        $scope.contentArr = [];
 
-        $scope.$watch('content', function (newContent) {
+        $scope.$watch('fieldConfig', function (newContent) {
           if (angular.isDefined(newContent)) {
-            $scope.contentArr = newContent.split('#');
+            console.log(newContent);
+            $scope.setContent();
           }
         });
+
+        $scope.setContent = function setContent() {
+          if (angular.isDefined($scope.fieldConfig)) {
+            if (!angular.isUndefined($scope.content)) {
+              if ($scope.fieldConfig.type === 'optionlist') {
+                var optionlists = $scope.control.config.optionlists;
+                for (var listCode in optionlists) {
+                  if (listCode === $scope.fieldConfig.listCode) {
+                    for (var i in optionlists[listCode].items) {
+                      if (optionlists[listCode].items[i].key === $scope.content) {
+                        $scope.contentArr[0] = optionlists[listCode].items[i].value;
+                      }
+                    }
+                  }
+                }
+              } else {
+                $scope.contentArr = $scope.content.split('#');
+              }
+            }
+          }
+        };
+
+        $scope.setContent();
       }]
     };
   }]);
