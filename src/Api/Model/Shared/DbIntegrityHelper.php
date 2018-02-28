@@ -3,6 +3,11 @@
 namespace Api\Model\Shared;
 
 use Api\Library\Shared\Palaso\DbScriptLogger;
+use Api\Model\Languageforge\Lexicon\LexCommentListModel;
+use Api\Model\Languageforge\Lexicon\LexCommentModel;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Shared\Command\ActivityCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Mapper\MongoStore;
@@ -21,6 +26,8 @@ class DbIntegrityHelper extends DbScriptLogger
         $this->usersChecked = 0;
         $this->usersFixed = 0;
         $this->inactiveUsers = 0;
+        $this->commentsAvailable = 0;
+        $this->commentsMissingContextGuid = 0;
         $this->emails = array();
         $this->usernames = array();
         $this->usersNeverValidated = array();
@@ -38,23 +45,25 @@ class DbIntegrityHelper extends DbScriptLogger
     private $usernames;
     private $usersNeverValidated;
     private $usersNoEmail;
+    private $commentsAvailable;
+    private $commentsMissingContextGuid;
 
     public function checkProject($projectId) {
         $project = new ProjectModel($projectId);
         $this->projectsChecked++;
         #$this->info("Checking {$project->projectName}");
 
-        
+
         if ($project->projectName == '') {
             $this->fix("$projectId has an empty projectName. Setting to 'Unknown Project'");
             $this->projectsFixed++;
             $project->projectName = "Unknown Project Name";
         }
-        
+
         if ($project->projectCode == '') {
             $this->warn("{$project->projectName} has an empty projectCode.  This will certainly cause failures");
         }
-        
+
         // check that a database exists for this project
         try {
             $databaseName = $project->databaseName();
@@ -73,7 +82,7 @@ class DbIntegrityHelper extends DbScriptLogger
                 $this->warn("{$project->projectName} has no corresponding database. (could indicate a brand new project with no data");
             }
         }
-        
+
         if ($project->siteName == '') {
             $this->warn("{$project->projectName} has no corresponding website (will not appear on any site)");
         }
@@ -115,8 +124,13 @@ class DbIntegrityHelper extends DbScriptLogger
                 $ownerUserModel->write();
             }
         }
+
+        // Lexicon projects need to update comments that don't contain the contextGuid field
+        if ($project->appName == 'lexicon') {
+            $this->checkLexiconComments($project);
+        }
     }
-    
+
     public function checkUser($userId) {
         $this->usersChecked++;
         $user = new UserModel($userId);
@@ -163,7 +177,7 @@ class DbIntegrityHelper extends DbScriptLogger
         if ($userFixed) {
             $this->usersFixed++;
         }
-        
+
         if (!empty($user->email)) {
             $this->emails[] = $user->email;
         }
@@ -173,7 +187,7 @@ class DbIntegrityHelper extends DbScriptLogger
             $user->write();
         }
     }
-    
+
     public function generateSummary() {
         $duplicateEmails = self::_getDuplicates($this->emails);
         $duplicateEmailsCount = count($duplicateEmails);
@@ -214,6 +228,13 @@ class DbIntegrityHelper extends DbScriptLogger
             $this->info(count($this->usersDeleted) . " users deleted");
         }
 
+        $this->info("\nCOMMENT REPORT\n");
+        $this->info("{$this->commentsAvailable } comments checked");
+        if ($this->commentsMissingContextGuid > 0) {
+            $this->info("{$this->commentsMissingContextGuid } comments fixed");
+        } else {
+            $this->info("No comments were found with the missing contextGuid field");
+        }
     }
 
     /**
@@ -228,14 +249,103 @@ class DbIntegrityHelper extends DbScriptLogger
         return $dups;
     }
 
+    /**
+     * @param $project ProjectModel
+     */
+    private function checkLexiconComments($project) {
+        $lexProject = new LexProjectModel($project->id->asString());
+        $commentList = new LexCommentListModel($lexProject);
+        $commentList->read();
+        // Loop through all comments on the project
+        foreach($commentList->entries as $comment) {
+            $this->commentsAvailable++;
+            // Only need to interact with comments that have no contextGuid
+            if(empty($comment['contextGuid'])) {
+                $lexComment = new LexCommentModel($project, $comment['id']);
+                $lexEntry = new LexEntryModel($project, $lexComment->entryRef->id);
+                $fieldName = $lexComment->regarding->field;
+                $fieldConfig = $this->getLexiconFieldConfig($lexProject, $fieldName);
+                // Construct the basics of the contextGuid
+                $contextGuid = $fieldName .
+                (!empty($lexComment->regarding->inputSystem) ? '.' . $lexComment->regarding->inputSystem : '');
+                if(isset($fieldConfig->type) && $fieldConfig->type === 'multioptionlist') {
+                    $contextGuid .= '#' . $lexComment->regarding->fieldValue;
+                }
+                // If there is only a single sense and example then we can also safely assume a comment
+                // belonging to that as well if required
+                if($this->isLexiconFieldSense($lexProject, $fieldName)) {
+                    if(count($lexEntry->senses) == 1) {
+                        $contextGuid = 'sense#' . $lexEntry->senses[0]->guid . ' ' . $contextGuid;
+                    } else {
+                        // If there is more than one we can try and guess based off the current value
+                        // compared to the value stored with the comment - this won't work if the value
+                        // has changed since the comment was made. If we can't find a match then
+                        // set the context to the entry itself so that it can be located still via the UI
+                        foreach($lexEntry->senses as $sense) {
+
+                        }
+                    }
+                } elseif($this->isLexiconFieldExample($lexProject, $fieldName)) {
+                    // Can only assume if there is also only a single sense
+                    if(count($lexEntry->senses) == 1) {
+                        if(count($lexEntry->senses[0]->examples) == 1) {
+                            $contextGuid = 'sense#' . $lexEntry->senses[0]->guid .
+                                          ' example#' . $lexEntry->senses[0]->examples[0]->guid .
+                                          ' ' . $contextGuid;
+                        }
+                    }
+                }
+                // Set the new contextGuid and update the comment
+                $lexComment->contextGuid = $contextGuid;
+//                ActivityCommands::updateCommentOnEntry($lexProject, $lexComment->entryRef->asString(), $lexComment);
+                $this->commentsMissingContextGuid++;
+            }
+        }
+    }
+
+    /**
+     * @param $lexProject LexProjectModel
+     * @param $fieldName string
+     * @return mixed|null
+     */
+    private function getLexiconFieldConfig($lexProject, $fieldName) {
+        $fieldConfig = null;
+        if(isset($lexProject->config->entry->fields[$fieldName])) {
+            $fieldConfig = $lexProject->config->entry->fields[$fieldName];
+        } elseif(isset($lexProject->config->entry->fields['senses']->fields[$fieldName])) {
+            $fieldConfig = $lexProject->config->entry->fields['senses']->fields[$fieldName];
+        } elseif(isset($lexProject->config->entry->fields['senses']->fields['examples']->fields[$fieldName])) {
+            $fieldConfig = $lexProject->config->entry->fields['senses']->fields[$fieldName];
+        }
+        return $fieldConfig;
+    }
+
+    /**
+     * @param $lexProject LexProjectModel
+     * @param $fieldName string
+     * @return bool
+     */
+    private function isLexiconFieldSense($lexProject, $fieldName) {
+        return isset($lexProject->config->entry->fields['senses']->fields[$fieldName]);
+    }
+
+    /**
+     * @param $lexProject LexProjectModel
+     * @param $fieldName string
+     * @return bool
+     */
+    private function isLexiconFieldExample($lexProject, $fieldName) {
+        return isset($lexProject->config->entry->fields['senses']->fields['examples']->fields[$fieldName]);
+    }
+
 }
 
 class DbIntegrityHelperResult
 {
     const OK = 'ok';
     const DEGRADED = 'degraded';
-    
+
     public $shouldDelete;
-    
+
     public $state;
 }
