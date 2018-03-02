@@ -360,7 +360,9 @@ class ActivityCommands
         $activity->addContent(ActivityModel::USER2, $user2->username);
         $activityId = $activity->write();
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
-        UnreadLexReplyModel::markUnreadForProjectMembers($replyModel->id, $projectModel, $entryId, $userId);
+        // Disabling the "mark replies as unread" feature until "unread items" system is revamped. - RM 2018-03
+        // (Can't mark things unread unless they have a MongoID, and LexCommentReplies just have a PHP "uniqid". But changing that would have knock-on effects in LfMerge.)
+        // UnreadLexReplyModel::markUnreadForProjectMembers($replyModel->id, $projectModel, $entryId, $userId);
 
         return $activityId;
     }
