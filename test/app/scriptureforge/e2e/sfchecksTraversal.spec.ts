@@ -107,7 +107,8 @@ describe('SFChecks E2E Page Traversal', () => {
 
     it('Paratex export tab', () => {
       textSettingsPage.tabs.paratextExport.click();
-      textSettingsPage.paratextExportTab.prepareButton.click();
+      textSettingsPage.paratextExportTab.downloadPT7Button.click();
+      textSettingsPage.paratextExportTab.downloadPT8Button.click();
     });
   });
 
