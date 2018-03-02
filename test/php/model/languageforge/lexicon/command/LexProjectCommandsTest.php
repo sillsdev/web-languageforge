@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class LexProjectCommandsTest extends TestCase
 {
-    public function testUpdateConfig_ConfigPersists()
+    public function testUpdateConfig_TasksEntryRoleViews_ConfigPersists()
     {
         $environ = new LexiconMongoTestEnvironment();
         $environ->clean();
@@ -34,9 +34,17 @@ class LexProjectCommandsTest extends TestCase
 
         $this->assertTrue($config['tasks']['addMeanings']['visible']);
         $this->assertEquals('th', $config['entry']['fields']['lexeme']['inputSystems'][0]);
+        $this->assertFalse($config['roleViews']['project_manager']['fields']['lexeme']['overrideInputSystems']);
+        $this->assertCount(0, $config['roleViews']['project_manager']['fields']['lexeme']['inputSystems']);
+        $this->assertFalse($config['roleViews']['contributor']['fields']['lexeme']['overrideInputSystems']);
+        $this->assertCount(0, $config['roleViews']['contributor']['fields']['lexeme']['inputSystems']);
 
         $config['tasks']['addMeanings']['visible'] = false;
-        $config['entry']['fields']['lexeme']['inputSystems'] = array('my', 'th');
+        $config['entry']['fields']['lexeme']['inputSystems'] = ['my', 'th'];
+        $config['roleViews']['project_manager']['fields']['lexeme']['overrideInputSystems'] = true;
+        $config['roleViews']['project_manager']['fields']['lexeme']['inputSystems'] = ['fr'];
+        $config['roleViews']['contributor']['fields']['lexeme']['overrideInputSystems'] = true;
+        $config['roleViews']['contributor']['fields']['lexeme']['inputSystems'] = ['en'];
 
         LexProjectCommands::updateConfig($projectId, $config);
 
@@ -46,11 +54,19 @@ class LexProjectCommandsTest extends TestCase
         $this->assertEquals('en', $project2->inputSystems['en']->tag);
         $this->assertTrue($project2->config->tasks['dbe']->visible);
         $this->assertEquals('Word', $project2->config->entry->fields['lexeme']->label);
+        $this->assertCount(0, $project2->config->roleViews['observer']->fields['lexeme']->inputSystems);
+        $this->assertCount(0, $project2->config->roleViews['observer_with_comment']->fields['lexeme']->inputSystems);
 
         // test for updated values
         $this->assertFalse($project2->config->tasks['addMeanings']->visible);
         $this->assertEquals('my', $project2->config->entry->fields['lexeme']->inputSystems[0]);
         $this->assertEquals('th', $project2->config->entry->fields['lexeme']->inputSystems[1]);
+        $this->assertTrue($project2->config->roleViews['project_manager']->fields['lexeme']->overrideInputSystems);
+        $this->assertCount(1, $project2->config->roleViews['project_manager']->fields['lexeme']->inputSystems);
+        $this->assertEquals('fr', $project2->config->roleViews['project_manager']->fields['lexeme']->inputSystems[0]);
+        $this->assertTrue($project2->config->roleViews['contributor']->fields['lexeme']->overrideInputSystems);
+        $this->assertCount(1, $project2->config->roleViews['contributor']->fields['lexeme']->inputSystems);
+        $this->assertEquals('en', $project2->config->roleViews['contributor']->fields['lexeme']->inputSystems[0]);
     }
 
     public function testUpdateProject_ReadOnlyProperties_PropertiesNotChanged()
@@ -86,6 +102,7 @@ class LexProjectCommandsTest extends TestCase
         $params['siteName'] = $hackedData;
         $params['appName'] = $hackedData;
         $params['userProperties']['userProfilePickLists']['city']['name'] = $hackedData;
+
         LexProjectCommands::updateProject($projectId, $userId, $params);
 
         $updatedProject = ProjectCommands::readProject($projectId);
@@ -119,16 +136,16 @@ class LexProjectCommandsTest extends TestCase
         $viewFieldConfig->show = false;
         $project->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameExisting] = $viewFieldConfig;
         $customFieldNameToCreate = 'customField_entry_testMultiText';
-        $customFieldSpecs = array(
-            array(
+        $customFieldSpecs = [
+            [
                 'fieldName' => $customFieldNameToCreate,
                 'fieldType' => 'MultiString'
-            ),
-            array(
+            ],
+            [
                 'fieldName' => $customFieldNameExisting,
                 'fieldType' => $viewFieldConfig->type
-            )
-        );
+            ]
+        ];
         $mangerRoleViewFieldCount = $project->config->roleViews[LexRoles::MANAGER]->fields->count();
         $customFieldNameToDelete = 'customField_senses_testOptionList';
         $viewFieldConfig = new LexViewFieldConfig();
@@ -165,27 +182,27 @@ class LexProjectCommandsTest extends TestCase
         $viewFieldConfig->type = 'ReferenceAtom';
         $project->config->roleViews[LexRoles::MANAGER]->fields[$customFieldName] = $viewFieldConfig;
         $projectId = $project->write();
-        $customFieldSpecs = array(
-            array(
+        $customFieldSpecs = [
+            [
                 'fieldName' => 'customField_entry_testMultiText',
                 'fieldType' => 'MultiString'
-            ),
-            array(
+            ],
+            [
                 'fieldName' => 'customField_examples_testOptionList',
                 'fieldType' => 'ReferenceAtom'
-            )
-        );
+            ]
+        ];
 
         // execute
-        $runClassParameters = array(
+        $runClassParameters = [
             'className' => 'Api\Model\Languageforge\Lexicon\Command\LexProjectCommands',
             'methodName' => 'updateCustomFieldViews',
-            'parameters' => array(
+            'parameters' => [
                 $project->projectCode,
                 $customFieldSpecs
-            ),
+            ],
             'isTest' => true
-        );
+        ];
         $runClassParameterFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'testCustomFieldsViews.json';
         file_put_contents($runClassParameterFilePath, json_encode($runClassParameters));
         $command = 'php ' . APPPATH . 'Api/Library/Shared/CLI/RunClass.php < ' . $runClassParameterFilePath;
