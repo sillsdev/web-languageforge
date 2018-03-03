@@ -272,15 +272,53 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
         + 'be lost by editing in Language Forge. Fields with metadata may be edited in '
         + 'Fieldworks Language Explorer.';
 
-      $scope.$watch('$ctrl.fteModel', function (newVal) {
-        ctrl.textFieldValue = ctrl.removeHTMLTags(newVal);
-      });
+      if (!ctrl.fteMultiline) {
 
-      $scope.$watch('$ctrl.textFieldValue', function (newVal) {
-        if (!ctrl.fteDisabled) ctrl.fteModel = ctrl.escapeHTML(newVal);
-      });
+        $scope.$watch('$ctrl.fteModel', function (newVal) {
+          ctrl.textFieldValue = ctrl.unescapeHTML(newVal);
+        });
 
-      ctrl.removeHTMLTags = function removeHTMLTags(str) {
+        ctrl.inputChanged = function inputChanged() {
+          ctrl.fteModel = ctrl.escapeHTML(ctrl.textFieldValue);
+        };
+
+      }
+
+      if (angular.isDefined(ctrl.fteToolbar)) {
+        ctrl.fte.toolbar = ctrl.fteToolbar;
+      } else {
+        ss.getSession().then(function (session) {
+          if (session.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT)) {
+
+            // if site administrator enable development controls
+            //        ctrl.fte.toolbar = "[['lexInsertLink', 'languageSpan'], ['html']]";
+            // html toggle for development only
+            ctrl.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
+          } else {
+            //        ctrl.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
+            // disable unfinished link and language span controls
+            ctrl.fte.toolbar = '[[]]';
+          }
+        });
+      }
+
+      // x gets sanitised so no default wrap
+      ctrl.fte.defaultWrap = (ctrl.fteMultiline) ? 'p' : 'x';
+      ctrl.fte.classMultiline = (ctrl.fteMultiline) ? 'dc-multiline' : '';
+
+      ctrl.setupTaEditor = function setupTaEditor($element) {
+        if (!ctrl.fteMultiline) {
+          $element.on('keydown', function (event) {
+            // ignore the enter key
+            var key = event.which || event.keyCode;
+            if (key === 13) {
+              event.preventDefault();
+            }
+          });
+        }
+      };
+
+      ctrl.unescapeHTML = function unescapeHTML(str) {
         return new DOMParser().parseFromString(str, 'text/html').body.textContent;
       };
 
