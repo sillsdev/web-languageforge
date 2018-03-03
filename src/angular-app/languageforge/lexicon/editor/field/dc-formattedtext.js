@@ -302,10 +302,6 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
         });
       }
 
-      // x gets sanitised so no default wrap
-      ctrl.fte.defaultWrap = (ctrl.fteMultiline) ? 'p' : 'x';
-      ctrl.fte.classMultiline = (ctrl.fteMultiline) ? 'dc-multiline' : '';
-
       ctrl.setupTaEditor = function setupTaEditor($element) {
         if (!ctrl.fteMultiline) {
           $element.on('keydown', function (event) {
