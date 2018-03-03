@@ -15,3 +15,80 @@
     }
   }
 }
+
+.dc-formattedtext .ta-root {
+  display: block;
+}
+
+.dc-formattedtext .ta-scroll-window > .ta-bind,
+.dc-formattedtext .ta-root textarea {
+  width: 100%;
+}
+
+.dc-formattedtext .ta-toolbar {
+  float: right;
+  margin-top: -1px;
+  margin-bottom: -1px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.dc-formattedtext .dc-multiline p {
+  margin: 0;
+}
+
+.dc-formattedtext .dc-multiline .ta-editor {
+  height: 112px;
+}
+
+.dc-formattedtext .ta-editor {
+  min-height: 38px;
+  height: auto;
+  overflow: auto;
+  white-space: normal;
+  border-radius: 0 4px 4px 0;
+}
+
+.dc-formattedtext .dc-multiline .ta-scroll-window.form-control {
+  min-height: 112px;
+}
+
+.dc-formattedtext .ta-scroll-window.form-control {
+  min-height: 38px;
+  width: 100%;
+  border-radius: 0 $border-radius $border-radius 0 !important;
+}
+
+.dc-formattedtext .ta-editor,
+.dc-formattedtext .ta-scroll-window > .ta-bind,
+.dc-formattedtext .ta-root textarea {
+  min-height: 38px;
+  padding: 8px 12px;
+}
+
+.dc-formattedtext .dc-multiline .ta-editor,
+.dc-formattedtext .dc-multiline .ta-scroll-window > .ta-bind,
+.dc-formattedtext .dc-multiline .ta-root textarea {
+  min-height: 100px;
+}
+
+.dc-formattedtext .ta-scroll-window > .ta-readonly:hover {
+  cursor: not-allowed;
+}
+
+/* language span highlight */
+.dc-formattedtext .ta-editor span {
+  /*border: 1px solid transparent;*/
+  border-radius: 9px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.dc-formattedtext .ta-editor span:hover {
+  /*border: 1px solid #ADDDDD;*/
+  background-color: #ADDDDD;
+}
+
+/* auto hide the toolbar when not selected (focused) */
+.ta-root .ta-toolbar {
+  display: none;
+}

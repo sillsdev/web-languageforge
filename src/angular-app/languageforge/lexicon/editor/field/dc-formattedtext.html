@@ -1,4 +1,4 @@
-<div ng-if="!$ctrl.fte.fteMultiline">
+<div ng-if="!$ctrl.fteMultiline">
     <input type="text"
     dir="{{$ctrl.fteDir}}"
     ng-model="$ctrl.textFieldValue"
@@ -7,13 +7,13 @@
     title="{{$ctrl.fteDisabled ? $ctrl.disabledMsg : ''}}">
 </div>
 
-<div ng-if="$ctrl.fte.fteMultiline"
+<div ng-if="$ctrl.fteMultiline"
+    class="dc-multiline"
     data-text-angular
     data-ta-text-editor-setup="$ctrl.setupTaEditor"
     data-ta-disabled="$ctrl.fteDisabled"
     data-ta-toolbar="{{$ctrl.fte.toolbar}}"
-    data-ta-default-wrap="{{$ctrl.fte.defaultWrap}}"
-    data-ng-class="$ctrl.fte.classMultiline"
+    data-ta-default-wrap="p"
     dir="{{$ctrl.fteDir}}"
     data-ng-model="$ctrl.fteModel">
 </div>
