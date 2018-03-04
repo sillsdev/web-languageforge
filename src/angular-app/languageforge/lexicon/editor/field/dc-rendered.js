@@ -12,7 +12,8 @@ angular.module('palaso.ui.dc.rendered', [])
       model: '=',
       hideIfEmpty: '=?'
     },
-    controller: ['$scope', 'sessionService', 'lexUtils', function ($scope, ss, utils) {
+    controller: ['$scope', 'sessionService', 'lexUtils', '$state',
+      function ($scope, ss, utils, $state) {
       $scope.render = function () {
         var sense;
         var lastPos;
@@ -21,6 +22,7 @@ angular.module('palaso.ui.dc.rendered', [])
           word: '',
           senses: []
         };
+        $scope.$state = $state;
         $scope.entry.word = utils.constructor.getCitationForms($scope.config, $scope.model);
         ss.getSession().then(function (session) {
           var optionlists = session.projectSettings().optionlists;
