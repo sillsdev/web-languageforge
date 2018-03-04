@@ -42,29 +42,43 @@ export class OfflineCacheService {
     const deferred = this.$q.defer();
     this.openDbIfNecessary().then(() => {
       const items: any[] = [];
+      let cursorRequest;
       const objectStore = this.db.transaction(storeName).objectStore(storeName);
       // console.log("open index projectId for storeName = " + storeName);
-      const index = objectStore.index('projectId');
       // console.log("open cursor for index on storeName = " + storeName);
-      const cursorRequest = index.openCursor(IDBKeyRange.only(projectId));
 
-      cursorRequest.onsuccess = (e: any) => {
-        const cursor = e.target.result;
-        if (cursor) {
-          if (angular.isDefined(cursor.value.projectId)) delete cursor.value.projectId;
-          items.push(cursor.value);
+      if (objectStore.indexNames.contains('projectId')) {
+        const index = objectStore.index('projectId');
+        cursorRequest = index.openCursor(IDBKeyRange.only(projectId));
+        cursorRequest.onsuccess = (e: any) => {
+          const cursor = e.target.result;
+          if (cursor) {
+            if (angular.isDefined(cursor.value.projectId)) delete cursor.value.projectId;
+            items.push(cursor.value);
 
-          // should be cursor.continue(); but needed a work around to work with the yui compressor - cjh 2015-03
-          cursor.continue();
-        } else {
-          deferred.resolve(items);
-        }
-      };
+            // should be cursor.continue(); but needed a work around to work with the yui compressor - cjh 2015-03
+            cursor.continue();
+          } else {
+            deferred.resolve(items);
+          }
+        };
 
-      cursorRequest.onerror = (e: any) => {
-        console.log(e.value);
-        deferred.reject('Error: cursor failed in getAll' + storeName);
-      };
+        cursorRequest.catch = (e: any) => {
+          console.log(e);
+          deferred.reject('Error: cursor failed in getAll' + storeName);
+        };
+
+        cursorRequest.onerror = (e: any) => {
+          console.log(e.value);
+          deferred.reject('Error: cursor failed in getAll' + storeName);
+        };
+
+      } else {
+          console.log('Error: no index named projectId in indexeddb');
+          deferred.reject('Error: no index named projectId in indexeddb store ' + storeName);
+
+      }
+
     }, error => {
       deferred.reject(error);
     });
