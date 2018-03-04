@@ -66,7 +66,7 @@ describe('Editor Comments', () => {
     expect<any>(comment.wholeComment.isPresent()).toBe(true);
 
     // Earlier tests modify the avatar and name of the manager user; don't check those
-    expect<any>(comment.score.getText()).toEqual('0');
+    expect<any>(comment.score.getText()).toEqual('0 Likes');
     expect<any>(comment.plusOne.isPresent()).toBe(true);
     expect<any>(comment.content.getText()).toEqual('Second comment.');
     expect<any>(comment.date.getText()).toMatch(/ago|in a few seconds/);
