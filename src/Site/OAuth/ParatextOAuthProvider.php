@@ -2,6 +2,8 @@
 
 namespace Site\OAuth;
 
+use Api\Library\Shared\Palaso\StringUtil;
+use Api\Library\Shared\Website;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
@@ -25,8 +27,12 @@ class ParatextOAuthProvider extends AbstractProvider
 
     public function getBaseUrl()
     {
-        return 'https://registry-dev.paratext.org';
-//        return 'https://registry.paratext.org';
+        $website = Website::get();
+        if (StringUtil::endsWith($website->domain, '.local')) {
+            return 'https://registry-dev.paratext.org';
+        } else {
+            return 'https://registry.paratext.org';
+        }
     }
 
     protected function getAccessTokenBody(array $params)

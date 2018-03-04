@@ -3,7 +3,7 @@
     <div id="sfchecks-hmenu" class="hdrnav">
         <div ng-controller="inviteAFriend" id="inviteAFriend" class="float-right" ng-show="showInviteDiv">
             <div class="overlay-bg" ng-show="showInviteForm">
-                <form class="form-inline" ng-submit="sendInvite();showInviteForm=false">
+                <form ng-submit="sendInvite();showInviteForm=false">
                     <div class="heading">
                         <span>Invite a friend to Scripture Forge</span>
                         <span><a href class="float-right" ng-click="showInviteForm=false"><i class="fa fa-times"></i></a></span>
