@@ -183,9 +183,41 @@ angular.module('palaso.ui.comments')
                   $scope.control.commentContext.contextGuid === ''))
               ) {
               return contextParts.option.label;
+            } else if (contextParts.fieldConfig.type === 'pictures' &&
+                  !contextParts.inputSystem &&
+                  $scope.control.commentContext.contextGuid === '') {
+              return 'Something different just to force it to display';
             } else {
               return contextParts.value;
             }
+          };
+
+          $scope.getCommentRegardingPictureSource = function getCommentRegardingPictureSource() {
+            if (!$scope.isCommentRegardingPicture) {
+              return '';
+            }
+
+            var contextParts = $scope.control.getContextParts($scope.comment.contextGuid);
+            var imageSrc = '';
+            var pictures = null;
+            if (contextParts.example.guid) {
+              pictures = $scope.control.currentEntry.senses[contextParts.sense.index]
+                .examples[contextParts.example.index].pictures;
+            } else if (contextParts.sense.guid) {
+              pictures = $scope.control.currentEntry.senses[contextParts.sense.index].pictures;
+            }
+
+            for (var i in pictures) {
+              if (pictures[i].guid === contextParts.value) {
+                imageSrc = pictures[i].fileName;
+              }
+            }
+
+            if (imageSrc) {
+              imageSrc = '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + imageSrc;
+            }
+
+            return imageSrc;
           };
 
         }],
