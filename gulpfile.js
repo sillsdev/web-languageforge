@@ -33,7 +33,6 @@
 //   'test-restart-webserver'
 //   'test-e2e-env'
 //   'test-e2e-doTest'
-//   'test-e2e-doTestV2'
 //   'test-e2e-run'
 //   'test-e2e-compile'
 //   'test-e2e-compile:watch'
@@ -726,134 +725,6 @@ gulp.task('test-e2e-teardownForLocalDev', gulp.series(
 );
 
 // -------------------------------------
-//   Task: E2E Test: Do TestV2
-//   Forked from Task: E2E Test: Do Test by Ben Kastner 2018-01-11
-// -------------------------------------
-gulp.task('test-e2e-doTestV2', function (cb) {
-  var params = require('yargs')
-    .usage(
-      'Usage: $0 test-e2e-doTest --webserverHost [hostname] --specs [testSpecs] ' +
-      '--seleniumAddress [address] --verbosity [bool] --conf [filename]')
-    .option('webserverHost', {
-      demand: true,
-      describe: 'hostname (without the protocol) for E2E testing',
-      type: 'string' })
-    .option('excludeBellows', {
-      demand: false,
-      describe: 'exclude the bellows specs.  Useful for the xf parameter in rune2e.sh',
-      type: 'boolean' })
-    .option('specs', {
-      demand: false,
-      describe: 'testSpecs are the names of the e2e test specs to run',
-      type: 'string' })
-    .option('seleniumAddress', {
-      demand: false,
-      describe: 'address of a running selenium server. default http://default.local:4444/wd/hub',
-      type: 'string' })
-    .option('verbosity', {
-      demand: false,
-      describe: 'bool for jasmine reporter verbosity.  true for more detail',
-      type: 'boolean' })
-    .option('conf', {
-      demand: false,
-      describe: 'filename of a protractor conf file.  default is protractorConf.js',
-      type: 'string' })
-    .option('browserStackUser', {
-      demand: false,
-      describe: 'BrowserStack API username',
-      type: 'string' })
-    .option('browserStackKey', {
-      demand: false,
-      describe: 'BrowserStack API key',
-      type: 'string' })
-    .help('?')
-    .alias('?', 'help')
-    .example('$0 test-e2e-run --webserverHost languageforge.local',
-      'Runs all the E2E tests for languageforge')
-    .example('$0 test-e2e-run --webserverHost scriptureforge.local --specs projectSettingsPage',
-      'Runs the scriptureforge E2E test for projectSettingsPage')
-    .argv;
-
-  var protocol =
-    (params.webserverHost === 'jamaicanpsalms.scriptureforge.local') ? 'https://' : 'http://';
-
-  var configFile;
-  var isBrowserStack = false;
-  var protractorOptions = {
-    debug: false,
-    args: []
-  };
-
-  // Get the browser stack user and password
-  if (params.browserStackUser && params.browserStackUser.length > 0) {
-    protractorOptions.args.push('--browserstackUser', params.browserStackUser);
-    isBrowserStack = true;
-  }
-
-  if (params.browserStackKey && params.browserStackKey.length > 0) {
-    protractorOptions.args.push('--browserstackKey', params.browserStackKey);
-  }
-
-  var webserverHost = params.webserverHost;
-  if (isBrowserStack) {
-    webserverHost = webserverHost.replace('.local', '.org');
-  }
-
-  if (params.conf && params.conf.length > 0) {
-    configFile = './test/app/' + params.conf;
-  } else {
-    if (isBrowserStack) {
-      configFile = './test/app/browserStackLFProtractorConf.js';
-    } else {
-      configFile = './test/app/protractorConf.js';
-    }
-  }
-
-  // vars for configuring protractor
-  protractorOptions.configFile = configFile;
-  protractorOptions.args.push('--baseUrl', protocol + webserverHost);
-
-  // Generate list of specs to test (glob format so protractor will test whatever files exist)
-  var specString = (params.specs) ? params.specs : '*';
-
-  var specs = [
-    'test/app/allspecs/e2e/*.spec.js',
-    'test/app/bellows/**/e2e/' + specString + '.spec.js'];
-
-  if (params.excludeBellows) {
-    specs.pop()
-  }
-
-  if (params.webserverHost.includes('languageforge')) {
-    specs.push('test/app/languageforge/**/e2e/' + specString + '.spec.js');
-  } else {
-    specs.push('test/app/scriptureforge/**/e2e/' + specString + '.spec.js');
-  }
-
-
-  // Get the selenium server address
-  if (params.seleniumAddress && params.seleniumAddress.length > 0) {
-    protractorOptions.args.push('--seleniumAddress', params.seleniumAddress);
-  }
-
-  if (params.verbosity) {
-    protractorOptions.args.push('--params.verbosity', 3);
-  } else {
-    protractorOptions.args.push('--params.verbosity', 0);
-  }
-
-  // It's better to pass the specs array of files to test, and not use the --exclude parameter
-  console.log('specs: ', specs);
-  return gulp.src(specs)
-    .pipe(protractor(protractorOptions))
-    .on('error', function (e) {
-      console.log(e);
-      throw e;
-    })
-    .on('end', cb);
-});
-
-// -------------------------------------
 //   Task: E2E Test: Run
 // -------------------------------------
 gulp.task('test-e2e-run',
@@ -862,7 +733,7 @@ gulp.task('test-e2e-run',
     'test-e2e-useTestConfig',
     'test-restart-webserver',
     'test-e2e-setupTestEnvironment',
-    'test-e2e-doTestV2')
+    'test-e2e-doTest')
 );
 gulp.task('test-e2e-run').description = 'Run the E2E test on local developer environment';
 
