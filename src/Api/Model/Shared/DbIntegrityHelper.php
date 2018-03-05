@@ -261,15 +261,34 @@ class DbIntegrityHelper extends DbScriptLogger
             $this->commentsAvailable++;
             // Only need to interact with comments that have no contextGuid
             if(empty($comment['contextGuid'])) {
+                $useEntryIdContext = false;
                 $lexComment = new LexCommentModel($project, $comment['id']);
                 $lexEntry = new LexEntryModel($project, $lexComment->entryRef->id);
                 $fieldName = $lexComment->regarding->field;
                 $fieldConfig = $this->getLexiconFieldConfig($lexProject, $fieldName);
                 // Construct the basics of the contextGuid
-                $contextGuid = $fieldName .
-                (!empty($lexComment->regarding->inputSystem) ? '.' . $lexComment->regarding->inputSystem : '');
-                if(isset($fieldConfig->type) && $fieldConfig->type === 'multioptionlist') {
-                    $contextGuid .= '#' . $lexComment->regarding->fieldValue;
+                $contextGuid = $fieldName;
+                if(!empty($lexComment->regarding->inputSystem)) {
+                    // The input system is a tricky one as there has been a bug where the language name
+                    // has been recorded against this field until a fix on 569d222 changed it to be the tag.
+                    // We need to identify if the inputSystem has been saved as the language name or the tag
+                    foreach($lexProject->inputSystems as $inputSystem) {
+                        if($inputSystem->languageName == $lexComment->regarding->inputSystem &&
+                            $inputSystem->abbreviation == $lexComment->regarding->inputSystemAbbreviation) {
+                            // Update the input system so that it is also updated in the DB
+                            $lexComment->regarding->inputSystem = $inputSystem->tag;
+                            break;
+                        }
+                    }
+                    // Now we can attach the input system knowing it is correct
+                    $contextGuid .= '.' . $lexComment->regarding->inputSystem;
+                }
+                if(isset($fieldConfig->type)) {
+                    if($fieldConfig->type === 'multioptionlist') {
+                        $contextGuid .= '#' . $lexComment->regarding->fieldValue;
+                    } elseif($fieldConfig->type === 'pictures') {
+                        $contextGuid = 'pictures#' . $lexComment->regarding->fieldValue;
+                    }
                 }
                 // If there is only a single sense and example then we can also safely assume a comment
                 // belonging to that as well if required
@@ -281,8 +300,13 @@ class DbIntegrityHelper extends DbScriptLogger
                         // compared to the value stored with the comment - this won't work if the value
                         // has changed since the comment was made. If we can't find a match then
                         // set the context to the entry itself so that it can be located still via the UI
+                        $useEntryIdContext = true;
                         foreach($lexEntry->senses as $sense) {
-
+                            if($this->checkLexiconFieldAgainstComment($sense, $fieldName, $fieldConfig, $lexComment)) {
+                                $contextGuid = 'sense#' . $sense->guid . ' ' . $contextGuid;
+                                $useEntryIdContext = false;
+                                break;
+                            }
                         }
                     }
                 } elseif($this->isLexiconFieldExample($lexProject, $fieldName)) {
@@ -293,11 +317,30 @@ class DbIntegrityHelper extends DbScriptLogger
                                           ' example#' . $lexEntry->senses[0]->examples[0]->guid .
                                           ' ' . $contextGuid;
                         }
+                    } else {
+                        // If there is more than one we can try and guess based off the current value
+                        // compared to the value stored with the comment - this won't work if the value
+                        // has changed since the comment was made. If we can't find a match then
+                        // set the context to the entry itself so that it can be located still via the UI
+                        $useEntryIdContext = true;
+                        foreach($lexEntry->senses as $sense) {
+                            foreach($sense->examples as $example) {
+                                if ($this->checkLexiconFieldAgainstComment($example, $fieldName, $fieldConfig, $lexComment)) {
+                                    $contextGuid = 'sense#' . $sense->guid . ' example#' . $example->guid . ' ' . $contextGuid;
+                                    $useEntryIdContext = false;
+                                    break;
+                                }
+                            }
+                        }
                     }
+                }
+                // Use the entry ID as context in cases where it can't be figured out
+                if($useEntryIdContext || empty($contextGuid)) {
+                    $contextGuid = 'entry#' . $lexEntry->guid;
                 }
                 // Set the new contextGuid and update the comment
                 $lexComment->contextGuid = $contextGuid;
-//                ActivityCommands::updateCommentOnEntry($lexProject, $lexComment->entryRef->asString(), $lexComment);
+                $lexComment->write();
                 $this->commentsMissingContextGuid++;
             }
         }
@@ -315,7 +358,7 @@ class DbIntegrityHelper extends DbScriptLogger
         } elseif(isset($lexProject->config->entry->fields['senses']->fields[$fieldName])) {
             $fieldConfig = $lexProject->config->entry->fields['senses']->fields[$fieldName];
         } elseif(isset($lexProject->config->entry->fields['senses']->fields['examples']->fields[$fieldName])) {
-            $fieldConfig = $lexProject->config->entry->fields['senses']->fields[$fieldName];
+            $fieldConfig = $lexProject->config->entry->fields['senses']->fields['examples']->fields[$fieldName];
         }
         return $fieldConfig;
     }
@@ -336,6 +379,54 @@ class DbIntegrityHelper extends DbScriptLogger
      */
     private function isLexiconFieldExample($lexProject, $fieldName) {
         return isset($lexProject->config->entry->fields['senses']->fields['examples']->fields[$fieldName]);
+    }
+
+    /**
+     * @param $context object
+     * @param $fieldName string
+     * @param $fieldConfig object
+     * @param $lexComment LexCommentModel
+     * @return bool
+     */
+    private function checkLexiconFieldAgainstComment($context, $fieldName, $fieldConfig, $lexComment) {
+        $contextValue = '';
+        $regardingValue = $lexComment->regarding->fieldValue;
+        if(isset($context->{$fieldName})) {
+            if($fieldConfig->type == 'pictures') {
+                foreach ($context->{$fieldName} as $picture) {
+                    if (empty($lexComment->regarding->inputSystem)) {
+                        // Some values, perhaps from an original bug when comments were first created with context
+                        // Have a # in the value i.e. value#value
+                        if ($picture->guid . '#' . $picture->guid == $regardingValue || $picture->guid == $regardingValue) {
+                            $contextValue = $regardingValue;
+                        }
+                    } else {
+                        if (isset($picture->caption[$lexComment->regarding->inputSystem])) {
+                            $contextValue = $picture->guid . ' ' . $fieldConfig->type . '.' . $lexComment->regarding->inputSystem;
+                        }
+                    }
+                }
+            } elseif(!empty($lexComment->regarding->inputSystem)) {
+                if(isset($context->{$fieldName}[$lexComment->regarding->inputSystem])) {
+                    $contextValue = $context->{$fieldName}[$lexComment->regarding->inputSystem]->value;
+                }
+            } elseif(isset($context->{$fieldName}->value)) {
+                $contextValue = $context->{$fieldName}->value;
+            } elseif(isset($context->{$fieldName}->values)) {
+                foreach($context->{$fieldName}->values as $fieldValue) {
+                    // Some values, perhaps from an original bug when comments were first created with context
+                    // Have a # in the value for multi list options and semantic domains i.e. value#value
+                    if ($fieldValue . '#' . $fieldValue == $regardingValue || $fieldValue == $regardingValue) {
+                        $contextValue = $regardingValue;
+                        break;
+                    }
+                }
+            }
+        }
+        if(!empty($contextValue) && $contextValue == $regardingValue) {
+            return true;
+        }
+        return false;
     }
 
 }
