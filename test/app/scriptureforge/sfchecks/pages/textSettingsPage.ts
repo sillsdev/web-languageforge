@@ -50,7 +50,7 @@ export class SfTextSettingsPage {
     noExportMsg: element(by.id('noExportMsg')),
 
     answerCount: element(by.binding('download.answerCount')),
-    commentCount: element(by.binding('download.commentCount')),
+    commentCount: element(by.binding('download.commentCount'))
   };
 
 }
