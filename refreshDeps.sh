@@ -14,7 +14,6 @@ else
     APP_NAME="languageforge"
 fi
 
-#rm -rf node_modules
 npm install
 cd src
 composer install
