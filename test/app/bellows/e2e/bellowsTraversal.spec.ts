@@ -9,7 +9,6 @@ import {SignupPage} from '../pages/signupPage';
 import {SiteAdminPage} from '../pages/siteAdminPage';
 import {SfUserProfilePage} from '../pages/userProfilePage';
 
-
   // Better way to import all files from directory, might want node module like require-all?
 const activityPage = new SfActivityPage();
 const changePasswordPage = new BellowsChangePasswordPage();
@@ -21,8 +20,7 @@ const resetPasswordPage = new BellowsResetPasswordPage();
 const signupPage = new SignupPage();
 const siteAdminPage = new SiteAdminPage();
 const userProfilePage = new SfUserProfilePage();
-const constants = require('../../testConstants.json');
-
+const constants = require('../../testConstants');
 
 describe('Bellows E2E Page Traversal', () => {
 
@@ -75,13 +73,13 @@ describe('Bellows E2E Page Traversal', () => {
   });
 
   // TODO Not sure if we want to test project settings since they seem quite different in lf and sf
-  xit('Explore project settings page', () => {
-    projectSettingsPage.get(constants.testProjectName);
-    projectSettingsPage.noticeList.count();
-    projectSettingsPage.tabDivs.count();
-    projectSettingsPage.tabs.project.click();
-    projectSettingsPage.tabs.remove.click();
-  });
+  // it('Explore project settings page', () => {
+  //  projectSettingsPage.get(constants.testProjectName);
+  //  projectSettingsPage.noticeList.count();
+  //  projectSettingsPage.tabDivs.count();
+  //  projectSettingsPage.tabs.project.click();
+  //  projectSettingsPage.tabs.remove.click();
+  // });
 
   it('Explore site admin page', () => {
     siteAdminPage.get();
