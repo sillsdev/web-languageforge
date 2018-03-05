@@ -49,7 +49,7 @@ export class EditorPage {
   editDiv = element(by.id('lexAppEditView'));
   editDivSearch = this.editDiv.element(by.id('editor-entry-search-entries'));
   editToolbarDiv = element(by.id('lexAppToolbar'));
-  commentDiv = element(by.id('lexAppCommentView'));
+  commentDiv = element(by.className('comments-right-panel-container'));
 
   // --- Browse view ---
   browse = {
@@ -357,7 +357,7 @@ export class EditorPage {
     // Right half of page: comments
     newComment: {
       textarea: element(by.id('comment-panel-textarea')),
-      postBtn: element(by.id('comment-panel-post-btn'))
+      postBtn: element(by.id('comment-panel-post-button'))
     },
     commentsList: this.commentDiv.all(by.repeater('comment in currentEntryCommentsFiltered')),
     getComment: (commentNum: number) => {
