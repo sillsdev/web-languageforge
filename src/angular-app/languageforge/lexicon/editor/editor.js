@@ -987,6 +987,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
             } else if (contextPart.indexOf('#') !== -1) {
               field = contextPart.substr(0, contextPart.indexOf('#'));
               optionKey = contextPart.substr(contextPart.indexOf('#') + 1);
+              if (optionKey.indexOf('.') !== -1) {
+                inputSystem = optionKey.substr(optionKey.indexOf('.') + 1);
+              }
             } else if (contextPart.indexOf('.') !== -1) {
               field = contextPart.substr(0, contextPart.indexOf('.'));
               inputSystem = contextPart.substr(contextPart.indexOf('.') + 1);
