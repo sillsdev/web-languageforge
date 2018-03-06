@@ -617,8 +617,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         var deletemsg = 'Are you sure you want to delete the entry <b>\' ' +
           utils.constructor.getLexeme($scope.config.entry, entry) + ' \'</b>';
 
-        // var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?",
-        // {lexeme:utils.getLexeme($scope.config.entry, entry)});
         modal.showModalSimple('Delete Entry', deletemsg, 'Cancel', 'Delete Entry').then(
           function () {
             var iShowList = editorService.getIndexInList(entry.id, $scope.visibleEntries);
