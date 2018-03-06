@@ -3,14 +3,12 @@ import { BellowsLoginPage } from '../../../../bellows/pages/loginPage';
 import { ProjectsPage } from '../../../../bellows/pages/projectsPage';
 import { EditorPage } from '../../pages/editorPage';
 
-const loginPage = new BellowsLoginPage();
-const projectsPage = new ProjectsPage();
-const editorPage = new EditorPage();
-// tslint:disable-next-line:no-var-requires
-const constants = require('../../../../testConstants');
-const CONDITION_TIMEOUT = 3000;
-
 describe('Editor Comments', () => {
+  const loginPage = new BellowsLoginPage();
+  const projectsPage = new ProjectsPage();
+  const editorPage = new EditorPage();
+  // tslint:disable-next-line:no-var-requires
+  const constants = require('../../../../testConstants');
 
   it('setup: login, click on test project', () => {
     loginPage.loginAsManager();
@@ -113,7 +111,7 @@ describe('Editor Comments', () => {
     const comment = editorPage.comment.getComment(0);
     browser.refresh();
     browser.wait(ExpectedConditions.visibilityOf(editorPage.comment.bubbles.first),
-      CONDITION_TIMEOUT);
+      constants.conditionTimeout);
     editorPage.comment.bubbles.first.click();
     browser.sleep(1000);
     expect<any>(comment.content.getText()).toEqual('First comment on this word.');

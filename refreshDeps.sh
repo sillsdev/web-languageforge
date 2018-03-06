@@ -21,4 +21,5 @@ gulp test-e2e-webdriver_update
 ../cleanup_css.sh
 gulp sass
 gulp build-webpack --applicationName $APP_NAME --doNoCompression true
+gulp test-e2e-compile
 echo -e "\n---------Finished refreshing npm, composer, webdriver, sass and webpack build----------"

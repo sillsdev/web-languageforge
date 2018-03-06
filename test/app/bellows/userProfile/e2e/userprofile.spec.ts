@@ -1,19 +1,20 @@
-import { browser, element, by, $, ExpectedConditions } from 'protractor';
+import { $, browser, by, element, ExpectedConditions } from 'protractor';
+
 import { BellowsLoginPage } from '../../pages/loginPage';
 import { SfUserProfilePage } from '../../pages/userProfilePage';
 import { Utils } from '../../pages/utils';
-const constants = require('../../../testConstants.json');
-const CONDITION_TIMEOUT = 3000;
-const loginPage     = new BellowsLoginPage();
-const userProfile   = new SfUserProfilePage();
-const util          = new Utils();
 
 describe('User Profile E2E Test', () => {
+  const constants = require('../../../testConstants.json');
+  const loginPage = new BellowsLoginPage();
+  const userProfile = new SfUserProfilePage();
+  const util = new Utils();
+
   // Array of test usernames to test Activity page with different roles
   const usernames = [constants.memberUsername, constants.managerUsername];
   const newUsername = 'newusername';
   // Run the Activity E2E as each test user
-  usernames.forEach((expectedUsername) => {
+  usernames.forEach(expectedUsername => {
 
     // Perform activity E2E tests according to the different roles
     describe('Running as: ' + expectedUsername, () => {
@@ -43,7 +44,9 @@ describe('User Profile E2E Test', () => {
       it('Verify initial "About Me" settings created from setupTestEnvironment.php', () => {
         userProfile.getAboutMe();
 
-        let expectedFullname, expectedAge, expectedGender: string;
+        let expectedFullname: string;
+        let expectedAge: string;
+        let expectedGender: string;
         expectedFullname = expectedAge = expectedGender = '';
 
         switch (expectedUsername) {
@@ -65,7 +68,11 @@ describe('User Profile E2E Test', () => {
 
         // Change profile except username
         const newEmail = 'newemail@example.com';
-        let newColor, newShape, newMobilePhone, expectedAvatar, originalEmail: string;
+        let newColor: string;
+        let newShape: string;
+        let newMobilePhone: string;
+        let expectedAvatar: string;
+        let originalEmail: string;
 
         switch (expectedUsername) {
           case constants.memberUsername:
@@ -100,7 +107,8 @@ describe('User Profile E2E Test', () => {
         // Submit updated profile
         userProfile.myAccountTab.saveBtn.click().then(() => {
           browser.refresh();
-          browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput), CONDITION_TIMEOUT);
+          browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
+          constants.conditionTimeout);
         });
 
         // Verify values.
@@ -115,7 +123,8 @@ describe('User Profile E2E Test', () => {
         userProfile.myAccountTab.updateEmail(originalEmail);
         userProfile.myAccountTab.saveBtn.click().then(() => {
           browser.refresh();
-          browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput), CONDITION_TIMEOUT);
+          browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
+          constants.conditionTimeout);
         });
 
         expect<any>(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(originalEmail);
@@ -144,7 +153,8 @@ describe('User Profile E2E Test', () => {
 
         // Change to taken username
         userProfile.myAccountTab.updateUsername(constants.observerUsername);
-        browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.usernameTaken), CONDITION_TIMEOUT);
+        browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.usernameTaken),
+        constants.conditionTimeout);
         expect<any>(userProfile.myAccountTab.usernameTaken.isDisplayed()).toBe(true);
         expect<any>(userProfile.myAccountTab.saveBtn.isEnabled()).toBe(false);
 
@@ -159,7 +169,7 @@ describe('User Profile E2E Test', () => {
         browser.refresh();
 
         // Confirm email not changed
-        browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput), CONDITION_TIMEOUT);
+        browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput), constants.conditionTimeout);
         util.scrollTop();
         expect<any>(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(originalEmail);
 
@@ -175,7 +185,7 @@ describe('User Profile E2E Test', () => {
 
       it('Login with new username and revert to original username', () => {
         // user is automatically logged out and taken to login page when username is changed
-        browser.wait(ExpectedConditions.visibilityOf(loginPage.username), CONDITION_TIMEOUT);
+        browser.wait(ExpectedConditions.visibilityOf(loginPage.username), constants.conditionTimeout);
         expect<any>(loginPage.infoMessages.count()).toBe(1);
         expect(loginPage.infoMessages.first().getText()).toContain('Username changed. Please login.');
 
@@ -208,7 +218,9 @@ describe('User Profile E2E Test', () => {
         userProfile.getAboutMe();
 
         // New user profile to put in
-        let newFullName, newAge, newGender: string;
+        let newFullName: string;
+        let newAge: string;
+        let newGender: string;
 
         switch (expectedUsername) {
           case constants.memberUsername:
