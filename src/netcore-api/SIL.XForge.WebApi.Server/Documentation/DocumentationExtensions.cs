@@ -1,8 +1,8 @@
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.AspNetCore.Swagger;
-using System.IO;
 
 namespace SIL.XForge.WebApi.Server.Documentation
 {
@@ -41,11 +41,10 @@ namespace SIL.XForge.WebApi.Server.Documentation
                 c.RouteTemplate = "docs/rest-{documentName}.json";
                 c.PreSerializeFilters.Add((doc, req) => doc.BasePath = "/api2");
             });
-            app.UseSwaggerUI3(c =>
+            app.UseSwaggerUI(c =>
             {
                 c.RoutePrefix = "docs";
                 c.SwaggerEndpoint("/api2/docs/rest-v1.json", "xForge REST API");
-                c.ValidatorUrl(null);
             });
             return app;
         }
