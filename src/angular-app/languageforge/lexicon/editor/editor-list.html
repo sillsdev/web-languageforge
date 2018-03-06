@@ -7,7 +7,7 @@
                         <div>
                             <h5>Words in dictionary</h5>
                             <small data-ng-hide="entryListModifiers.filterBy" id="totalNumberOfEntries">
-                                <span class="notranslate">{{entries.length}}</span> {{ (entries.length == 1 ? 'entry' : 'entries') | translate }}</small>
+                                <span class="notranslate">{{entries.length}}</span> {{ (entries.length == 1 ? 'entry' : 'entries') }}</small>
                             <small data-ng-show="entryListModifiers.filterBy" class="float-right notranslate">{{filteredEntries.length}} / {{entries.length}}</small>
                         </div>
                         <button id="newWord" type="button" class="btn btn-primary"
