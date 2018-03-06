@@ -321,6 +321,10 @@ dc-entry .card {
   .word-definition-title {
     margin-bottom: 5px;
     padding: 0 0 24px;
+    h3 {
+      margin: -7px 0 10px;
+      font-size: 24px;
+    }
   }
   .card-body .addItem {
     margin-right: 0;
