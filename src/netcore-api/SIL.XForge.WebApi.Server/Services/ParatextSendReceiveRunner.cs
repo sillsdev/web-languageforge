@@ -1,15 +1,3 @@
-using Hangfire;
-using Hangfire.Server;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
-using Newtonsoft.Json.Linq;
-using ShareDB;
-using ShareDB.RichText;
-using SIL.XForge.WebApi.Server.DataAccess;
-using SIL.XForge.WebApi.Server.Models;
-using SIL.XForge.WebApi.Server.Models.Translate;
-using SIL.XForge.WebApi.Server.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,10 +5,22 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Hangfire;
+using Hangfire.Server;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+using ShareDB;
+using ShareDB.RichText;
+using SIL.XForge.WebApi.Server.DataAccess;
+using SIL.XForge.WebApi.Server.Models;
+using SIL.XForge.WebApi.Server.Models.Translate;
+using SIL.XForge.WebApi.Server.Options;
 
 namespace SIL.XForge.WebApi.Server.Services
 {
-    public class SendReceiveRunner
+    public class ParatextSendReceiveRunner
     {
         private static readonly Dictionary<string, string> BookNames = new Dictionary<string, string>
         {
@@ -113,10 +113,13 @@ namespace SIL.XForge.WebApi.Server.Services
         private readonly ParatextService _paratextService;
         private readonly IOptions<SendReceiveOptions> _options;
         private readonly IProjectRepositoryFactory<TranslateDocumentSet> _docSetRepoFactory;
+        private readonly DeltaUsxMapper _deltaUsxMapper;
+        private readonly ILogger<ParatextSendReceiveRunner> _logger;
 
-        public SendReceiveRunner(IOptions<SendReceiveOptions> options, IRepository<User> userRepo,
+        public ParatextSendReceiveRunner(IOptions<SendReceiveOptions> options, IRepository<User> userRepo,
             IRepository<SendReceiveJob> jobRepo, IRepository<TranslateProject> projectRepo,
-            ParatextService paratextService, IProjectRepositoryFactory<TranslateDocumentSet> docSetRepoFactory)
+            ParatextService paratextService, IProjectRepositoryFactory<TranslateDocumentSet> docSetRepoFactory,
+            DeltaUsxMapper deltaUsxMapper, ILogger<ParatextSendReceiveRunner> logger)
         {
             _options = options;
             _userRepo = userRepo;
@@ -124,6 +127,8 @@ namespace SIL.XForge.WebApi.Server.Services
             _projectRepo = projectRepo;
             _paratextService = paratextService;
             _docSetRepoFactory = docSetRepoFactory;
+            _deltaUsxMapper = deltaUsxMapper;
+            _logger = logger;
         }
 
         public async Task RunAsync(PerformContext context, IJobCancellationToken cancellationToken, string userId,
@@ -184,8 +189,9 @@ namespace SIL.XForge.WebApi.Server.Services
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _logger.LogError(e, "Error occurred while executing Paratext S/R job '{Job}'", job.Id);
                 await _jobRepo.UpdateAsync(job, u => u
                     .Set(j => j.State, SendReceiveJob.HoldState)
                     .Unset(j => j.BackgroundJobId));
@@ -208,7 +214,7 @@ namespace SIL.XForge.WebApi.Server.Services
         {
             string projectPath = GetProjectPath(project, paratextProject);
             var booksToRemove = new HashSet<string>(Directory.EnumerateFiles(projectPath)
-                .Select(p => Path.GetFileNameWithoutExtension(p)));
+                .Select(Path.GetFileNameWithoutExtension));
             booksToRemove.ExceptWith(bookIds);
             foreach (string bookId in booksToRemove)
                 File.Delete(GetBookTextFileName(projectPath, bookId));
@@ -246,8 +252,12 @@ namespace SIL.XForge.WebApi.Server.Services
             XElement bookTextElem = await LoadBookTextAsync(fileName);
 
             XElement oldUsxElem = bookTextElem.Element("usx");
+            if (oldUsxElem == null)
+                throw new InvalidOperationException("Invalid USX data, missing 'usx' element.");
             XElement bookElem = oldUsxElem.Element("book");
-            XElement newUsxElem = DeltaUsxMapper.ToUsx((string) oldUsxElem.Attribute("version"),
+            if (bookElem == null)
+                throw new InvalidOperationException("Invalid USX data, missing 'book' element.");
+            XElement newUsxElem = _deltaUsxMapper.ToUsx((string) oldUsxElem.Attribute("version"),
                 (string) bookElem.Attribute("code"), (string) bookElem, doc.Data);
 
             var revision = (string) bookTextElem.Attribute("revision");
@@ -269,7 +279,7 @@ namespace SIL.XForge.WebApi.Server.Services
 
             bookTextElem = XElement.Parse(bookText);
 
-            Delta delta = DeltaUsxMapper.ToDelta(bookTextElem.Element("usx"));
+            Delta delta = _deltaUsxMapper.ToDelta(paratextProject.Id, bookTextElem.Element("usx"));
             Delta diffDelta = doc.Data.Diff(delta);
             await doc.SubmitOpAsync(diffDelta);
 
@@ -287,7 +297,7 @@ namespace SIL.XForge.WebApi.Server.Services
 
             var bookTextElem = XElement.Parse(bookText);
 
-            Delta delta = DeltaUsxMapper.ToDelta(bookTextElem.Element("usx"));
+            Delta delta = _deltaUsxMapper.ToDelta(paratextProject.Id, bookTextElem.Element("usx"));
             await doc.CreateAsync(delta);
 
             await SaveBookTextAsync(bookTextElem, fileName);

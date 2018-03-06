@@ -29,7 +29,7 @@ namespace SIL.XForge.WebApi.Server.Services
             {
                 // new job, so enqueue the runner
                 string jobId = job.Id;
-                BackgroundJob.Enqueue<SendReceiveRunner>(r => r.RunAsync(null, null, userId, jobId));
+                BackgroundJob.Enqueue<ParatextSendReceiveRunner>(r => r.RunAsync(null, null, userId, jobId));
                 return Attempt.Success(job);
             }
             return Attempt.Failure(job);

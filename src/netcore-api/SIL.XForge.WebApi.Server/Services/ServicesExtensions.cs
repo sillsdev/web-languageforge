@@ -9,6 +9,7 @@ namespace SIL.XForge.WebApi.Server.Services
             services.AddSingleton<SendReceiveService>();
             services.AddSingleton<ParatextService>();
             services.AddSingleton<AssetService>();
+            services.AddSingleton<DeltaUsxMapper>();
             return services;
         }
     }
