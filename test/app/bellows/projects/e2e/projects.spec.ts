@@ -1,13 +1,13 @@
-import { browser, element, by, ExpectedConditions } from 'protractor';
+import { browser, by, element, ExpectedConditions } from 'protractor';
 import { ElementFinder } from 'protractor/built/element';
+
 import { BellowsLoginPage } from '../../pages/loginPage';
 import { ProjectsPage } from '../../pages/projectsPage';
-const constants = require('../../../testConstants.json');
-const CONDITION_TIMEOUT = 3000;
-const loginPage = new BellowsLoginPage();
-const projectsPage = new ProjectsPage();
 
 describe('E2E Projects List App', () => {
+  const constants = require('../../../testConstants');
+  const loginPage = new BellowsLoginPage();
+  const projectsPage = new ProjectsPage();
 
   describe('for Normal User', () => {
 
@@ -25,11 +25,11 @@ describe('E2E Projects List App', () => {
     it('can list two projects of which the user is a member', () => {
       loginPage.loginAsAdmin();
       projectsPage.get();
-      browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
       projectsPage.addMemberToProject(constants.otherProjectName, constants.memberName);
       loginPage.loginAsMember();
       projectsPage.get();
-      browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
       expect<any>(projectsPage.projectsList.count()).toBe(2);
     });
   });

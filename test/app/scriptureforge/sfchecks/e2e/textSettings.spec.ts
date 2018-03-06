@@ -1,4 +1,5 @@
 import { browser, ExpectedConditions } from 'protractor';
+
 import { BellowsLoginPage } from '../../../bellows/pages/loginPage';
 import { ProjectsPage } from '../../../bellows/pages/projectsPage';
 import { Utils } from '../../../bellows/pages/utils';
@@ -14,7 +15,6 @@ describe('the questions settings page - project manager', () => {
   const projectPage = new SfProjectPage();
   const textPage = new SfTextPage();
   const page = new SfTextSettingsPage();
-  const CONDITION_TIMEOUT = 3000;
 
   it('setup: logout, login as project manager, go to text settings', () => {
     loginPage.logout();
@@ -73,7 +73,7 @@ describe('the questions settings page - project manager', () => {
       expect<any>(page.paratextExportTab.downloadPT7Button.isPresent()).toBe(true);
       page.paratextExportTab.downloadPT7Button.click();
       browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.noExportMsg),
-        CONDITION_TIMEOUT);
+        constants.conditionTimeout);
       expect<any>(page.paratextExportTab.noExportMsg.isDisplayed()).toBe(true);
     });
 
@@ -81,7 +81,7 @@ describe('the questions settings page - project manager', () => {
       page.paratextExportTab.exportFlagged.click();
       page.paratextExportTab.downloadPT7Button.click();
       browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.answerCount),
-        CONDITION_TIMEOUT);
+        constants.conditionTimeout);
       expect<any>(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
       expect<any>(page.paratextExportTab.answerCount.getText()).toEqual('2');
       expect<any>(page.paratextExportTab.commentCount.isDisplayed()).toBe(false);
@@ -91,7 +91,7 @@ describe('the questions settings page - project manager', () => {
       page.paratextExportTab.exportComments.click();
       page.paratextExportTab.downloadPT7Button.click();
       browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.answerCount),
-        CONDITION_TIMEOUT);
+        constants.conditionTimeout);
       expect<any>(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
       expect<any>(page.paratextExportTab.answerCount.getText()).toEqual('2');
       expect<any>(page.paratextExportTab.commentCount.isDisplayed()).toBe(true);

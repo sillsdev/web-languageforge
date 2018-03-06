@@ -1,11 +1,11 @@
 import {browser, ExpectedConditions} from 'protractor';
+import { SfAppFrame } from '../../../bellows/pages/appFrame.js';
 import { BellowsLoginPage } from '../../../bellows/pages/loginPage.js';
 import { ProjectsPage } from '../../../bellows/pages/projectsPage.js';
-import { SfAppFrame } from '../../../bellows/pages/appFrame.js';
+import { Utils } from '../../../bellows/pages/utils.js';
 import { SfProjectPage } from '../pages/projectPage.js';
 import { SfProjectSettingsPage } from '../pages/projectSettingsPage.js';
 import { SfTextPage } from '../pages/textPage.js';
-import { Utils } from '../../../bellows/pages/utils.js';
 
 describe('the project dashboard AKA text list page', () => {
   const constants       = require('../../../testConstants.json');
@@ -16,7 +16,6 @@ describe('the project dashboard AKA text list page', () => {
   const projectPage = new SfProjectPage();
   const projectSettingsPage = new SfProjectSettingsPage();
   const questionListPage = new SfTextPage();
-  const CONDITION_TIMEOUT = 3000;
 
   /*
   describe('project member/user', function() {
@@ -88,7 +87,7 @@ describe('the project dashboard AKA text list page', () => {
     it('can create a new text (input text area)', () => {
       expect<any>(projectPage.newText.showFormButton.isDisplayed()).toBe(true);
       projectPage.newText.showFormButton.click();
-      browser.wait(ExpectedConditions.visibilityOf(projectPage.newText.title), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(projectPage.newText.title), constants.conditionTimeout);
       projectPage.newText.title.sendKeys(sampleTitle);
       projectPage.newText.usx.sendKeys(projectPage.testData.simpleUsx1);
       projectPage.newText.saveButton.click();
@@ -148,12 +147,12 @@ describe('the project dashboard AKA text list page', () => {
       const newTextTitle = sampleTitle + '6789'; // Don't re-use title from an existing text
       expect<any>(projectPage.newText.showFormButton.isDisplayed()).toBe(true);
       projectPage.newText.showFormButton.click();
-      browser.wait(ExpectedConditions.visibilityOf(projectPage.newText.title), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(projectPage.newText.title), constants.conditionTimeout);
       projectPage.newText.title.sendKeys(newTextTitle);
       util.sendText(projectPage.newText.usx, projectPage.testData.longUsx1);
       projectPage.newText.verseRangeLink.click();
       browser.wait(ExpectedConditions.visibilityOf(projectPage.newText.fromChapter),
-        CONDITION_TIMEOUT);
+        constants.conditionTimeout);
       projectPage.newText.fromChapter.sendKeys('1');
       projectPage.newText.fromVerse.sendKeys('1');
       projectPage.newText.toChapter.sendKeys('1');

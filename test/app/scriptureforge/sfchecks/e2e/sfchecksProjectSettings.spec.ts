@@ -1,5 +1,6 @@
 import {} from 'jasmine';
 import {browser, by, ExpectedConditions} from 'protractor';
+
 import { BellowsLoginPage } from '../../../bellows/pages/loginPage.js';
 import { Utils } from '../../../bellows/pages/utils.js';
 import { SfProjectSettingsPage } from '../pages/projectSettingsPage.js';
@@ -9,7 +10,6 @@ describe('SFChecks project settings page - project manager', () => {
   const loginPage = new BellowsLoginPage();
   const util = new Utils();
   const projectSettingsPage = new SfProjectSettingsPage();
-  const CONDITION_TIMEOUT = 3000;
 
   it('setup: logout, login as project manager, go to project settings', () => {
     loginPage.logout();
@@ -42,7 +42,7 @@ describe('SFChecks project settings page - project manager', () => {
       expect<any>(projectSettingsPage.membersTab.list.count()).toBe(memberCount);
       projectSettingsPage.membersTab.addButton.click();
       browser.wait(ExpectedConditions.visibilityOf(projectSettingsPage.membersTab.newMember.input),
-        CONDITION_TIMEOUT);
+        constants.conditionTimeout);
       projectSettingsPage.membersTab.newMember.input.sendKeys('du');
 
       // sendKeys is split to force correct button behaviour. IJH 2015-10
@@ -99,7 +99,7 @@ describe('SFChecks project settings page - project manager', () => {
     it('can add a template', function () {
       projectSettingsPage.templatesTab.addButton.click();
       browser.wait(expectedCondition.visibilityOf(projectSettingsPage.templatesTab.editor.title),
-        CONDITION_TIMEOUT);
+        constants.conditionTimeout);
       projectSettingsPage.templatesTab.editor.title.sendKeys('sound check');
       projectSettingsPage.templatesTab.editor.description
         .sendKeys('What do you think of when I say the words... "boo"');
@@ -111,13 +111,13 @@ describe('SFChecks project settings page - project manager', () => {
     it('can update an existing template', function () {
       projectSettingsPage.templatesTab.list.last().element(by.linkText('sound check')).click();
       browser.wait(expectedCondition.visibilityOf(
-        projectSettingsPage.templatesTab.editor.saveButton), CONDITION_TIMEOUT);
+        projectSettingsPage.templatesTab.editor.saveButton), constants.conditionTimeout);
       expect(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(true);
       projectSettingsPage.templatesTab.editor.title.clear();
       projectSettingsPage.templatesTab.editor.title.sendKeys('test12');
       projectSettingsPage.templatesTab.editor.saveButton.click();
       browser.wait(expectedCondition.invisibilityOf(
-        projectSettingsPage.templatesTab.editor.saveButton), CONDITION_TIMEOUT);
+        projectSettingsPage.templatesTab.editor.saveButton), constants.conditionTimeout);
       expect(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
       expect(projectSettingsPage.templatesTab.list.count()).toBe(3);
     });
@@ -191,7 +191,7 @@ describe('SFChecks project settings page - project manager', () => {
       projectSettingsPage.optionlistsTab.addInput.sendKeys('foo');
       projectSettingsPage.optionlistsTab.addButton.click();
       browser.wait(expectedCondition.visibilityOf(projectSettingsPage.optionlistsTab.addInput),
-        CONDITION_TIMEOUT);
+        constants.conditionTimeout);
       expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(1);
       projectSettingsPage.optionlistsTab.addInput.sendKeys('bar');
       projectSettingsPage.optionlistsTab.addButton.click();

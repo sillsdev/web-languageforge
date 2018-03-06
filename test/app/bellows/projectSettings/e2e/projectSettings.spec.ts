@@ -1,17 +1,17 @@
-import { browser, element, by, ExpectedConditions } from 'protractor';
+import { browser, by, element, ExpectedConditions } from 'protractor';
+
 import { BellowsLoginPage } from '../../pages/loginPage';
-import { ProjectsPage } from '../../pages/projectsPage';
 import { BellowsProjectSettingsPage } from '../../pages/projectSettingsPage';
+import { ProjectsPage } from '../../pages/projectsPage';
 import { Utils } from '../../pages/utils';
 
-const constants = require('../../../testConstants.json');
-const CONDITION_TIMEOUT = 3000;
-const loginPage    = new BellowsLoginPage();
-const projectsPage = new ProjectsPage();
-const settingsPage = new BellowsProjectSettingsPage();
-const util         = new Utils();
-
 describe('Bellows E2E Project Settings App', () => {
+  const constants = require('../../../testConstants');
+  const loginPage = new BellowsLoginPage();
+  const projectsPage = new ProjectsPage();
+  const settingsPage = new BellowsProjectSettingsPage();
+  const util = new Utils();
+
   it('Normal user cannot access projectSettings to a project of which the user is a member', () => {
     loginPage.loginAsMember();
     projectsPage.get();
@@ -30,11 +30,11 @@ describe('Bellows E2E Project Settings App', () => {
     expect(managementPage.archiveTab.archiveButton.isDisplayed()).toBe(true);
     expect(managementPage.archiveTab.archiveButton.isEnabled()).toBe(true);
     */
-    browser.wait(ExpectedConditions.elementToBeClickable(settingsPage.tabs.remove), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.elementToBeClickable(settingsPage.tabs.remove), constants.conditionTimeout);
     browser.actions().mouseMove(settingsPage.tabs.remove).click().perform();
     //settingsPage.tabs.remove.click();
     browser.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton),
-      CONDITION_TIMEOUT);
+      constants.conditionTimeout);
     expect<any>(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
     expect<any>(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
   });
@@ -78,7 +78,7 @@ describe('Bellows E2E Project Settings App', () => {
       expect<any>(settingsPage.noticeList.count()).toBe(0);
       settingsPage.tabs.remove.click();
       browser.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton),
-        CONDITION_TIMEOUT);
+        constants.conditionTimeout);
       expect<any>(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
       expect<any>(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
       settingsPage.deleteTab.deleteBoxText.sendKeys('DELETE');

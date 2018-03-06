@@ -1,5 +1,6 @@
 import {} from 'jasmine';
 import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+
 import { BellowsLoginPage } from '../../../bellows/pages/loginPage';
 import { ProjectsPage } from '../../../bellows/pages/projectsPage';
 import { Utils } from '../../../bellows/pages/utils';
@@ -17,7 +18,6 @@ describe('the question page', () => {
   const textPage = new SfTextPage();
   const textSettingsPage = new SfTextSettingsPage();
   const questionPage = new SfQuestionPage();
-  const CONDITION_TIMEOUT = 3000;
 
   describe('a normal user', () => {
 
@@ -114,7 +114,7 @@ describe('the question page', () => {
         expect<any>(textSettingsPage.paratextExportTab.downloadPT8Button.isPresent()).toBe(true);
         textSettingsPage.paratextExportTab.downloadPT7Button.click();
         browser.wait(ExpectedConditions.visibilityOf(textSettingsPage.paratextExportTab.answerCount),
-          CONDITION_TIMEOUT);
+          constants.conditionTimeout);
         expect<any>(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
         expect<any>(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1');
         expect<any>(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(false);
@@ -124,7 +124,7 @@ describe('the question page', () => {
         textSettingsPage.paratextExportTab.exportComments.click();
         textSettingsPage.paratextExportTab.downloadPT7Button.click();
         browser.wait(ExpectedConditions.visibilityOf(textSettingsPage.paratextExportTab.answerCount),
-          CONDITION_TIMEOUT);
+          constants.conditionTimeout);
         expect<any>(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
         expect<any>(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1');
         expect<any>(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(true);

@@ -1,15 +1,15 @@
 import { browser, by, element, ExpectedConditions } from 'protractor';
-import { SignupPage } from '../../../pages/signupPage';
+
 import { BellowsLoginPage } from '../../../pages/loginPage';
 import { ProjectsPage } from '../../../pages/projectsPage';
-
-const constants = require('../../../../testConstants.json');
-const page = new SignupPage();
-const loginPage = new BellowsLoginPage();
-const projectsPage = new ProjectsPage();
-const CONDITION_TIMEOUT = 3000;
+import { SignupPage } from '../../../pages/signupPage';
 
 describe('E2E testing: Signup app', () => {
+  const constants = require('../../../../testConstants');
+  const page = new SignupPage();
+  const loginPage = new BellowsLoginPage();
+  const projectsPage = new ProjectsPage();
+
   it('setup and contains a user form', () => {
     loginPage.logout();
     page.get();
@@ -114,7 +114,7 @@ describe('E2E testing: Signup app', () => {
 
     // added to stop intermittent error
     // "Failed: javascript error: document unloaded while waiting for result"
-    browser.wait(ExpectedConditions.urlContains('projects'), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.urlContains('projects'), constants.conditionTimeout);
 
     // Verify new user logged in and redirected to projects page
     browser.getCurrentUrl().then(() => {
@@ -126,7 +126,7 @@ describe('E2E testing: Signup app', () => {
     loginPage.logout();
     loginPage.loginAsUser();
     page.get();
-    browser.wait(ExpectedConditions.urlContains('projects'), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.urlContains('projects'), constants.conditionTimeout);
     browser.getCurrentUrl().then(() => {
       expect(browser.getCurrentUrl()).toContain('/app/projects');
     });

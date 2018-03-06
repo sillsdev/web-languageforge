@@ -6,18 +6,16 @@ import { SfProjectPage } from '../pages/projectPage';
 import { SfTextPage} from '../pages/textPage';
 import { SfTextSettingsPage } from '../pages/textSettingsPage';
 
-const loginPage = new BellowsLoginPage();
-const util = new Utils();
-const projectListPage = new ProjectsPage();
-const projectPage = new SfProjectPage();
-const textPage = new SfTextPage();
-const textSettingsPage = new SfTextSettingsPage();
-
-// tslint:disable-next-line:no-var-requires
-const constants = require('../../../testConstants');
-const CONDITION_TIMEOUT = 3000;
-
 describe('the questions list page (AKA the text page)', () => {
+  const loginPage = new BellowsLoginPage();
+  const util = new Utils();
+  const projectListPage = new ProjectsPage();
+  const projectPage = new SfProjectPage();
+  const textPage = new SfTextPage();
+  const textSettingsPage = new SfTextSettingsPage();
+
+  // tslint:disable-next-line:no-var-requires
+  const constants = require('../../../testConstants');
 
   describe('a normal user', () => {
     it('setup: login as normal user', () => {
@@ -110,10 +108,10 @@ describe('the questions list page (AKA the text page)', () => {
     it('can re-publish the question that was just archived (Text Settings)', () => {
       textPage.clickTextSettingsButton();
       browser.wait(ExpectedConditions.visibilityOf(textSettingsPage.tabs.archiveQuestions),
-        CONDITION_TIMEOUT);
+        constants.conditionTimeout);
       textSettingsPage.tabs.archiveQuestions.click();
       browser.wait(ExpectedConditions.visibilityOf(textSettingsPage.archivedQuestionsTab
-          .questionLink(questionTitle)), CONDITION_TIMEOUT);
+          .questionLink(questionTitle)), constants.conditionTimeout);
       expect<any>(textSettingsPage.archivedQuestionsTab.questionLink(questionTitle).isDisplayed())
         .toBe(true);
       const publishButton = textSettingsPage.archivedQuestionsTab.publishButton.getWebElement();
