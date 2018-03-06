@@ -226,15 +226,15 @@ export class EditorPage {
       },
 
       moreDownload: (searchLabel: string, index: number) => {
-        return this.edit.audio.moreGroups(searchLabel, index).element(by.id('dc-audio-download'));
+        return this.edit.audio.moreGroups(searchLabel, index).element(by.className('dc-audio-download'));
       },
 
       moreDelete: (searchLabel: string, index: number) => {
-        return this.edit.audio.moreGroups(searchLabel, index).element(by.id('dc-audio-delete'));
+        return this.edit.audio.moreGroups(searchLabel, index).element(by.className('dc-audio-delete'));
       },
 
       moreUpload: (searchLabel: string, index: number) => {
-        return this.edit.audio.moreGroups(searchLabel, index).element(by.id('dc-audio-upload'));
+        return this.edit.audio.moreGroups(searchLabel, index).element(by.className('dc-audio-upload'));
       },
 
       uploadButtons: (searchLabel: string) => {

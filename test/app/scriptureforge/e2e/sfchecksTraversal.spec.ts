@@ -6,17 +6,18 @@ import { SfQuestionPage } from '../sfchecks/pages/questionPage';
 import { SfTextPage } from '../sfchecks/pages/textPage';
 import { SfTextSettingsPage } from '../sfchecks/pages/textSettingsPage';
 
-// tslint:disable-next-line:no-var-requires
-const constants           = require('../../testConstants.json');
-const loginPage           = new BellowsLoginPage();
-const projectPage         = new SfProjectPage();
-const projectsPage        = new ProjectsPage();
-const projectSettingsPage = new SfProjectSettingsPage();
-const questionPage        = new SfQuestionPage();
-const textPage            = new SfTextPage();
-const textSettingsPage    = new SfTextSettingsPage();
-
 describe('SFChecks E2E Page Traversal', () => {
+
+  // tslint:disable-next-line:no-var-requires
+  const constants = require('../../testConstants');
+  const loginPage = new BellowsLoginPage();
+  const projectPage = new SfProjectPage();
+  const projectsPage = new ProjectsPage();
+  const projectSettingsPage = new SfProjectSettingsPage();
+  const questionPage = new SfQuestionPage();
+  const textPage = new SfTextPage();
+  const textSettingsPage = new SfTextSettingsPage();
+
   it('Explore project page', () => {
     loginPage.loginAsAdmin();
     projectPage.textNames.count();
@@ -117,4 +118,13 @@ describe('SFChecks E2E Page Traversal', () => {
     questionPage.answers.list.count();
     questionPage.comments.list.count();
   });
+
+  // it('Explore project settings page', () => {
+  //  projectSettingsPage.get(constants.testProjectName);
+  //  projectSettingsPage.noticeList.count();
+  //  projectSettingsPage.tabDivs.count();
+  //  projectSettingsPage.tabs.project.click();
+  //  projectSettingsPage.tabs.remove.click();
+  // });
+
 });

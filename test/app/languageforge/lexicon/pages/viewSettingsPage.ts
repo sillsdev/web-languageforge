@@ -4,7 +4,7 @@ const CONDITION_TIMEOUT = 3000;
 
 export class ViewSettingsPage {
 
-  settingsMenuLink = element(by.id('settingsDropdownButton'));
+  settingsMenuLink = element(by.id('settings-dropdown-button'));
   viewSettingsLink = element(by.id('dropdown-view-settings'));
   get() {
     browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);

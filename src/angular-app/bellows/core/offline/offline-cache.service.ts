@@ -42,14 +42,13 @@ export class OfflineCacheService {
     const deferred = this.$q.defer();
     this.openDbIfNecessary().then(() => {
       const items: any[] = [];
-      let cursorRequest;
       const objectStore = this.db.transaction(storeName).objectStore(storeName);
       // console.log("open index projectId for storeName = " + storeName);
       // console.log("open cursor for index on storeName = " + storeName);
 
       if (objectStore.indexNames.contains('projectId')) {
         const index = objectStore.index('projectId');
-        cursorRequest = index.openCursor(IDBKeyRange.only(projectId));
+        const cursorRequest = index.openCursor(IDBKeyRange.only(projectId));
         cursorRequest.onsuccess = (e: any) => {
           const cursor = e.target.result;
           if (cursor) {

@@ -9,7 +9,7 @@ export class ConfigurationPage {
   noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   firstNoticeCloseButton = this.noticeList.first().element(by.className('close'));
 
-  settingsMenuLink = element(by.id('settingsDropdownButton'));
+  settingsMenuLink = element(by.id('settings-dropdown-button'));
   configurationLink = element(by.id('dropdown-configuration'));
 
   get() {

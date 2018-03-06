@@ -6,7 +6,7 @@ const CONDITION_TIMEOUT = 3000;
 
 export class ProjectSettingsPage {
 
-  settingsMenuLink = element(by.id('settingsDropdownButton'));
+  settingsMenuLink = element(by.id('settings-dropdown-button'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
