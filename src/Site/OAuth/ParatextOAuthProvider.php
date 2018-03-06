@@ -27,12 +27,12 @@ class ParatextOAuthProvider extends AbstractProvider
 
     public function getBaseUrl()
     {
-        $website = Website::get();
-        if (StringUtil::endsWith($website->domain, '.local')) {
-            return 'https://registry-dev.paratext.org';
-        } else {
-            return 'https://registry.paratext.org';
-        }
+        // $website = Website::get();
+        // if (StringUtil::endsWith($website->domain, '.local')) {
+        return 'https://registry-dev.paratext.org';
+        // } else {
+        //     return 'https://registry.paratext.org';
+        // }
     }
 
     protected function getAccessTokenBody(array $params)

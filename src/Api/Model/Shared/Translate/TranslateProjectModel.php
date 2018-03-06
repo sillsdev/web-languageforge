@@ -58,7 +58,7 @@ class TranslateProjectModel extends ProjectModel
         MongoStore::dropCollection('realtime', 'o_' . $this->databaseName());
         TranslateProjectCommands::removeMachineTranslationProject($this);
         $srPath = '/var/lib' . DIRECTORY_SEPARATOR . $this->siteName . DIRECTORY_SEPARATOR . 'translate/sendreceive';
-        $projectPath = $srPath . DIRECTORY_SEPARATOR . $this->projectCode;
+        $projectPath = $srPath . DIRECTORY_SEPARATOR . $this->id;
         FileUtilities::removeFolderAndAllContents($projectPath);
         parent::remove();
     }
