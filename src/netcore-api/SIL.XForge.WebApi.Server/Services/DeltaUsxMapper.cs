@@ -1,10 +1,9 @@
-using Newtonsoft.Json.Linq;
-using ShareDB.RichText;
+using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using System;
-using System.Linq;
-using System.Text;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
+using ShareDB.RichText;
 
 namespace SIL.XForge.WebApi.Server.Services
 {
@@ -15,17 +14,29 @@ namespace SIL.XForge.WebApi.Server.Services
             "p", "m", "pmo", "pm", "pmc", "pmr", "pi", "mi", "cls", "li", "pc", "pr", "ph", "lit"
         };
 
-        public static Delta ToDelta(XElement usxElem)
+        private readonly ILogger<DeltaUsxMapper> _logger;
+
+        public DeltaUsxMapper(ILogger<DeltaUsxMapper> logger)
+        {
+            _logger = logger;
+        }
+
+        public Delta ToDelta(string projectId, XElement usxElem)
         {
             var newDelta = new Delta();
             int nextNoteId = 0;
             var nextIds = new Dictionary<string, int>();
             string curRef = null;
             string curChapter = null;
+            string bookId = null;
             foreach (XElement elem in usxElem.Elements())
             {
                 switch (elem.Name.LocalName)
                 {
+                    case "book":
+                        bookId = (string) elem.Attribute("code");
+                        break;
+
                     case "para":
                         var style = (string) elem.Attribute("style");
                         bool paraStyle = IsParagraphStyle(style);
@@ -33,7 +44,7 @@ namespace SIL.XForge.WebApi.Server.Services
                         {
                             if (curRef != null)
                             {
-                                int slashIndex = curRef.IndexOf("/");
+                                int slashIndex = curRef.IndexOf("/", StringComparison.Ordinal);
                                 if (slashIndex != -1)
                                     curRef = curRef.Substring(0, slashIndex);
                                 curRef = GetParagraphRef(nextIds, curRef + "/" + style);
@@ -43,7 +54,7 @@ namespace SIL.XForge.WebApi.Server.Services
                         {
                             curRef = GetParagraphRef(nextIds, style);
                         }
-                        ProcessChildNodes(newDelta, elem, curChapter, ref curRef, ref nextNoteId);
+                        ProcessChildNodes(projectId, bookId, newDelta, elem, curChapter, ref curRef, ref nextNoteId);
                         SegmentEnded(newDelta, curRef);
                         if (!paraStyle)
                             curRef = null;
@@ -55,14 +66,18 @@ namespace SIL.XForge.WebApi.Server.Services
                         curChapter = (string) elem.Attribute("number");
                         newDelta.InsertChapter(curChapter, GetAttributes(elem));
                         break;
+
+                    default:
+                        LogUnknownElement(projectId, bookId, elem);
+                        break;
                 }
             }
             newDelta.Insert("\n");
             return newDelta;
         }
 
-        private static void ProcessChildNodes(Delta newDelta, XElement elem, string curChapter, ref string curRef,
-            ref int nextNoteId)
+        private void ProcessChildNodes(string projectId, string bookId, Delta newDelta, XElement elem,
+            string curChapter, ref string curRef, ref int nextNoteId)
         {
             foreach (XNode node in elem.Nodes())
             {
@@ -85,9 +100,14 @@ namespace SIL.XForge.WebApi.Server.Services
                             case "note":
                                 var noteDelta = new Delta();
                                 string tempRef = null;
-                                ProcessChildNodes(noteDelta, e, curChapter, ref tempRef, ref nextNoteId);
+                                ProcessChildNodes(projectId, bookId, noteDelta, e, curChapter, ref tempRef,
+                                    ref nextNoteId);
                                 newDelta.InsertNote(nextNoteId, noteDelta, GetAttributes(e), curRef);
                                 nextNoteId++;
+                                break;
+
+                            default:
+                                LogUnknownElement(projectId, bookId, e);
                                 break;
                         }
                         break;
@@ -97,6 +117,13 @@ namespace SIL.XForge.WebApi.Server.Services
                         break;
                 }
             }
+        }
+
+        private void LogUnknownElement(string projectId, string bookId, XElement elem)
+        {
+            _logger.LogWarning(
+                "Encountered unknown USX element '{Element}' in book '{Book}' of project '{Project}'",
+                elem.Name.LocalName, bookId, projectId);
         }
 
         private static void SegmentEnded(Delta newDelta, string segRef)
@@ -143,7 +170,7 @@ namespace SIL.XForge.WebApi.Server.Services
             return obj;
         }
 
-        public static XElement ToUsx(string usxVersion, string bookId, string desc, Delta delta)
+        public XElement ToUsx(string usxVersion, string bookId, string desc, Delta delta)
         {
             var newUsxElem = new XElement("usx", new XAttribute("version", usxVersion),
                 new XElement("book", new XAttribute("code", bookId), new XAttribute("style", "id"),
@@ -152,12 +179,11 @@ namespace SIL.XForge.WebApi.Server.Services
             return newUsxElem;
         }
 
-        private static void ProcessDelta(XElement rootElem, Delta delta)
+        private void ProcessDelta(XElement rootElem, Delta delta)
         {
             var childNodes = new List<XNode>();
-            for (int i = 0; i < delta.Ops.Count; i++)
+            foreach (JToken op in delta.Ops)
             {
-                JToken op = delta.Ops[i];
                 if (op.OpType() != Delta.InsertType)
                     throw new ArgumentException("The delta is not a document.", nameof(delta));
 

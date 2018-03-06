@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Text;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -11,8 +13,6 @@ using SIL.XForge.WebApi.Server.Documentation;
 using SIL.XForge.WebApi.Server.Dtos;
 using SIL.XForge.WebApi.Server.Options;
 using SIL.XForge.WebApi.Server.Services;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SIL.XForge.WebApi.Server
 {
