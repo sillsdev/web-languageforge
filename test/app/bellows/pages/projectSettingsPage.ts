@@ -1,4 +1,4 @@
-import {browser, element, by, ExpectedConditions} from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 import { ProjectsPage } from './projectsPage';
 
 const CONDITION_TIMEOUT = 3000;
@@ -6,7 +6,7 @@ const projectsPage = new ProjectsPage();
 
 export class BellowsProjectSettingsPage {
 
-  settingsMenuLink = element(by.id('settingsDropdownButton'));
+  settingsMenuLink = element(by.id('settings-dropdown-button'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
