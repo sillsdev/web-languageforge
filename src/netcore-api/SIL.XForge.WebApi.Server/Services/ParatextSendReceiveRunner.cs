@@ -321,7 +321,7 @@ namespace SIL.XForge.WebApi.Server.Services
 
         private string GetProjectPath(TranslateProject project, ParatextProject paratextProject)
         {
-            return Path.Combine(_options.Value.TranslateDir, project.ProjectCode, paratextProject.Id);
+            return Path.Combine(_options.Value.TranslateDir, project.Id, paratextProject.Id);
         }
 
         private string GetBookTextFileName(string projectPath, string bookId)
