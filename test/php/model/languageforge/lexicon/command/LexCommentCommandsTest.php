@@ -324,6 +324,7 @@ class LexCommentCommandsTest extends TestCase
         $this->assertEquals(LexCommentModel::STATUS_OPEN, $comment->status);
 
         // save data for rest of this test
+        self::$save['project'] = $project;
         self::$save['environ'] = $environ;
         self::$save['commentId'] = $commentId;
         self::$save['comment'] = $comment;
@@ -337,7 +338,7 @@ class LexCommentCommandsTest extends TestCase
      */
     public function testUpdateCommentStatus_InvalidStatus()
     {
-        self::$save['comment']->read(self::$save['commentId']);
+        self::$save['comment'] = new LexCommentModel(self::$save['project'], self::$save['commentId']);
 
         $this->assertEquals(LexCommentModel::STATUS_OPEN, self::$save['comment']->status);
     }
