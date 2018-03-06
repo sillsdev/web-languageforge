@@ -11,7 +11,6 @@ describe('E2E testing: Change password', () => {
   const loginPage = new BellowsLoginPage();
   const header = new PageHeader();
   const changePasswordPage = new BellowsChangePasswordPage();
-  const CONDITION_TIMEOUT = 3000;
   const newPassword = '12345678';
 
   it('setup: login as user, go to change password page', () => {
@@ -50,16 +49,16 @@ describe('E2E testing: Change password', () => {
     changePasswordPage.password.sendKeys(newPassword);
     changePasswordPage.confirm.sendKeys(newPassword);
     browser.wait(ExpectedConditions.visibilityOf(changePasswordPage.passwordMatchImage),
-      CONDITION_TIMEOUT);
+      constants.conditionTimeout);
     browser.wait(ExpectedConditions.elementToBeClickable(changePasswordPage.submitButton),
-      CONDITION_TIMEOUT);
+      constants.conditionTimeout);
     changePasswordPage.submitButton.click();
     expect<any>(changePasswordPage.noticeList.count()).toBe(1);
     expect(changePasswordPage.noticeList.first().getText()).toContain('Password updated');
     loginPage.logout();
 
     loginPage.login(constants.memberUsername, newPassword);
-    browser.wait(ExpectedConditions.visibilityOf(header.myProjects.button), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(header.myProjects.button), constants.conditionTimeout);
     expect<any>(header.myProjects.button.isDisplayed()).toBe(true);
 
     // reset password back to original
@@ -67,9 +66,9 @@ describe('E2E testing: Change password', () => {
     changePasswordPage.password.sendKeys(constants.memberPassword);
     changePasswordPage.confirm.sendKeys(constants.memberPassword);
     browser.wait(ExpectedConditions.visibilityOf(changePasswordPage.passwordMatchImage),
-      CONDITION_TIMEOUT);
+      constants.conditionTimeout);
     browser.wait(ExpectedConditions.elementToBeClickable(changePasswordPage.submitButton),
-      CONDITION_TIMEOUT);
+      constants.conditionTimeout);
     changePasswordPage.submitButton.click();
   });
 
