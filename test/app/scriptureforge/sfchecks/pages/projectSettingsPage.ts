@@ -5,7 +5,7 @@ const CONDITION_TIMEOUT = 3000;
 
 export class SfProjectSettingsPage {
 
-  settingsMenuLink = element(by.id('settingsDropdownButton'));
+  settingsMenuLink = element(by.id('settings-dropdown-button'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
@@ -116,7 +116,7 @@ class MembersTab {
   }
 
   addButton = element(by.id('addMembersButton'));
-  removeButton = element(by.id('removeMembersBtn'));
+  removeButton = element(by.id('remove-members-button'));
   messageButton = element(by.id('messageUsersButton'));
   listFilter = element(by.model('userFilter'));
   list = element.all(by.repeater('user in list.visibleUsers'));

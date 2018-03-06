@@ -5,12 +5,12 @@
             <div class="dropdown" uib-dropdown data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()">
                 <a class="btn btn-std dropdown-toggle pui-no-caret" uib-dropdown-toggle><i class="fa fa-ellipsis-v"></i></a>
                 <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="dcControl.interfaceConfig.pullToSide">
-                    <a class="dropdown-item" id="dc-audio-download" data-ng-href="{{audioDownloadUrl()}}">
+                    <a class="dropdown-item dc-audio-download" data-ng-href="{{audioDownloadUrl()}}">
                         <i class="fa fa-download"></i> {{'Download' | translate}} <span class="notranslate">'{{displayFilename()}}'</span></a>
-                    <a class="dropdown-item" id="dc-audio-delete"data-ng-click="deleteAudio()">
+                    <a class="dropdown-item dc-audio-delete"data-ng-click="deleteAudio()">
                         <i class="fa fa-trash"></i> {{'Delete' | translate}} <span class="notranslate">'{{displayFilename()}}'</span></a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" id="dc-audio-upload" data-ng-click="show.audioUpload = true">
+                    <a class="dropdown-item dc-audio-upload" data-ng-click="show.audioUpload = true">
                         <i class="fa fa-cloud-upload"></i> {{'Upload a replacement' | translate}}</a>
                 </div>
             </div>

@@ -1,27 +1,24 @@
-import {Utils} from '../../bellows/pages/utils';
-import {BellowsLoginPage} from '../../bellows/pages/loginPage'
-import {ConfigurationPage} from '../lexicon/pages/configurationPage';
+import {BellowsLoginPage} from '../../bellows/pages/loginPage';
 import {ProjectsPage} from '../../bellows/pages/projectsPage';
-import {ProjectSettingsPage} from '../lexicon/pages/projectSettingsPage';
-import {NewLexProjectPage} from '../lexicon/pages/newLexProjectPage';
+import {Utils} from '../../bellows/pages/utils';
+import {ConfigurationPage} from '../lexicon/pages/configurationPage';
 import {EditorPage} from '../lexicon/pages/editorPage';
-import {ViewSettingsPage} from '../lexicon/pages/viewSettingsPage';
 import {LexModals} from '../lexicon/pages/lexModals.js';
-
-
-const constants = require('../../testConstants.json');
-
-const util = new BellowsLoginPage();
-const loginPage = new BellowsLoginPage();
-const configurationPage = new ConfigurationPage();
-const projectsPage = new ProjectsPage();
-const projectSettingsPage = new ProjectSettingsPage();
-const newLexProjectPage = new NewLexProjectPage();
-const editorPage = new EditorPage();
-const viewSettingsPage = new ViewSettingsPage();
-const lexModals = new LexModals();
+import {NewLexProjectPage} from '../lexicon/pages/newLexProjectPage';
+import {ProjectSettingsPage} from '../lexicon/pages/projectSettingsPage';
+import {ViewSettingsPage} from '../lexicon/pages/viewSettingsPage';
 
 describe('Lexicon E2E Page Traversal', () => {
+  const constants = require('../../testConstants');
+  const util = new BellowsLoginPage();
+  const loginPage = new BellowsLoginPage();
+  const configurationPage = new ConfigurationPage();
+  const projectsPage = new ProjectsPage();
+  const projectSettingsPage = new ProjectSettingsPage();
+  const newLexProjectPage = new NewLexProjectPage();
+  const editorPage = new EditorPage();
+  const viewSettingsPage = new ViewSettingsPage();
+  const lexModals = new LexModals();
 
   describe('Explore configuration page', () => {
     it('Configuartion tab', () => {
@@ -66,7 +63,6 @@ describe('Lexicon E2E Page Traversal', () => {
   it('Explore new lex project page', () => {
     newLexProjectPage.get();
     newLexProjectPage.noticeList.count();
-    // Might want to go through the process of creating a project, but creating new test data might be bad - Mark W 2018-01-14
   });
 
   it('Explore project settings page', () => {
@@ -80,4 +76,18 @@ describe('Lexicon E2E Page Traversal', () => {
     viewSettingsPage.goToContributorTab();
     viewSettingsPage.goToManagerTab();
   });
+
+  // it('Explore project settings page', () => {
+  //  projectSettingsPage.get(constants.testProjectName);
+  //  projectSettingsPage.noticeList.count();
+  //  projectSettingsPage.tabDivs.count();
+  //  projectSettingsPage.tabs.project.click();
+  //  projectSettingsPage.tabs.remove.click();
+  // });
+
+  // TODO this is an lf-specific view
+  // xit('Explore user management page', function() {
+  //   userManagementPage.get();
+  //   // TODO click on things
+  // });
 });

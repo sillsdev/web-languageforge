@@ -133,7 +133,7 @@ export class ProjectsPage {
       const foundUserRow = projectMemberRows.first();
       const rowCheckbox = foundUserRow.element(by.css('input[type="checkbox"]'));
       util.setCheckbox(rowCheckbox, true);
-      const removeMembersBtn = element(by.id('removeMembersBtn'));
+      const removeMembersBtn = element(by.id('remove-members-button'));
       removeMembersBtn.click();
 
       this.get(); // After all is finished, reload projects page

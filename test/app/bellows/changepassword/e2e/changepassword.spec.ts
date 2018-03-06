@@ -1,5 +1,6 @@
 import {} from 'jasmine';
 import {browser, ExpectedConditions} from 'protractor';
+
 import { BellowsChangePasswordPage } from '../../pages/changePasswordPage';
 import { BellowsLoginPage } from '../../pages/loginPage';
 import { PageBody } from '../../pages/pageBody';
