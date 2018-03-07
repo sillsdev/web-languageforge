@@ -21,7 +21,7 @@ class AnswerModelTest extends TestCase
         $questionId = $question->write();
 
         // List
-        $question->read($questionId);
+        $question = new QuestionModel($project, $questionId);
         $this->assertCount(0, $question->answers);
 
         // Create
@@ -48,7 +48,8 @@ class AnswerModelTest extends TestCase
         // Note: Updates to the AnswerModel should not clobber child nodes such as comments. Hence this test.
         // See https://github.com/sillsdev/sfwebchecks/issues/39
         unset($otherAnswer->comments[$commentId]);
-        $otherQuestion->read($otherQuestion->id->asString());
+        // Re-read
+        $otherQuestion = new QuestionModel($project, $otherQuestion->id->asString());
         $otherId = $otherQuestion->writeAnswer($otherAnswer);
         $this->assertEquals($id, $otherId);
 
@@ -66,7 +67,7 @@ class AnswerModelTest extends TestCase
         QuestionModel::removeAnswer($project->databaseName(), $questionId, $id);
 
         // List
-        $otherQuestion->read($questionId);
+        $otherQuestion = new QuestionModel($project, $questionId);
         $this->assertCount(0, $otherQuestion->answers);
     }
 }

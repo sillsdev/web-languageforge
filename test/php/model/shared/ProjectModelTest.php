@@ -235,7 +235,7 @@ class ProjectModelTest extends TestCase
         $project->remove();
 
         // re-read the user
-        $user->read($userId);
+        $user = new UserModel($userId);
 
         $this->assertFalse($user->isMemberOfProject($projectId));
     }

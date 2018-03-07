@@ -244,14 +244,14 @@ class ActivityListDtoTest extends TestCase
         $a8 = ActivityCommands::addCommentOnQuestion($project, $questionId, $answerId, $comment2);
 
         // updated answer
-        $question->read($questionId);
+        $question = new QuestionModel($project, $questionId);
         $answer_updated = $question->readAnswer($answerId);
         $answer_updated->content = "first answer revised";
         $question->writeAnswer($answer_updated);
         $a9 = ActivityCommands::updateAnswer($project, $questionId, $answer_updated);
 
         // updated comment1
-        $question->read($questionId);
+        $question = new QuestionModel($project, $questionId);
         $comment1_updated = $question->readComment($answerId, $comment1Id);
         $comment1_updated->content = "first comment revised";
         QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment1_updated);
