@@ -2,7 +2,6 @@ import {$, $$, browser, by, By, element, ExpectedConditions, Key} from 'protract
 import { Utils } from '../../../bellows/pages/utils';
 import { SfTextPage } from './textPage';
 
-const CONDITION_TIMEOUT = 3000;
 const textPage = new SfTextPage();
 const utils = new Utils();
 /*
@@ -57,7 +56,7 @@ class Answers {
       const newAnswer = answerCtrl.element(by.id('question-new-answer'));
       newAnswer.sendKeys(answer);
       browser.wait(ExpectedConditions.textToBePresentInElementValue(newAnswer, answer),
-        CONDITION_TIMEOUT);
+        utils.conditionTimeout);
       answerCtrl.element(by.id('doneBtn')).click();
     }
 
@@ -74,7 +73,7 @@ class Answers {
       answersField.sendKeys(Key.chord(Key.CONTROL, 'a'));
       answersField.sendKeys(answer);
       browser.wait(ExpectedConditions.textToBePresentInElementValue(answersField, answer),
-        CONDITION_TIMEOUT);
+        utils.conditionTimeout);
       saveCtrl.click();
     }
 
@@ -140,10 +139,10 @@ class Comments {
 
     // Click "add comment" at the end of the Answers list to un-collapse the comment text area.
     addCommentCtrl.click();
-    browser.wait(ExpectedConditions.visibilityOf(commentField), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(commentField), utils.conditionTimeout);
     commentField.sendKeys(comment);
     browser.wait(ExpectedConditions.textToBePresentInElementValue(commentField,
-      comment), CONDITION_TIMEOUT);
+      comment), utils.conditionTimeout);
     submit.click();
   }
 
@@ -159,7 +158,7 @@ class Comments {
     commentsField.sendKeys(Key.chord(Key.CONTROL, 'a'));
     commentsField.sendKeys(comment);
     browser.wait(ExpectedConditions.textToBePresentInElementValue(commentsField, comment),
-      CONDITION_TIMEOUT);
+      utils.conditionTimeout);
     saveCtrl.click();
   }
 

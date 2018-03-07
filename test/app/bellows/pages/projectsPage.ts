@@ -1,7 +1,7 @@
 import {$, $$, browser, by, By, element, ExpectedConditions, protractor} from 'protractor';
+
 import { Utils } from './utils';
-const CONDITION_TIMEOUT = 3000;
-const util = new Utils();
+const utils = new Utils();
 
 export class ProjectsPage {
   url = '/app/projects';
@@ -57,23 +57,23 @@ export class ProjectsPage {
     this.findProject(projectName).then((projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
       projectLink.click();
-      browser.wait(ExpectedConditions.visibilityOf(this.settingsBtn), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(this.settingsBtn), utils.conditionTimeout);
       this.settingsBtn.click();
       browser.wait(ExpectedConditions.visibilityOf(this.userManagementLink),
-        CONDITION_TIMEOUT);
+        utils.conditionTimeout);
       this.userManagementLink.click();
 
       const addMembersBtn = element(by.id('addMembersButton'));
-      browser.wait(ExpectedConditions.visibilityOf(addMembersBtn), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(addMembersBtn), utils.conditionTimeout);
       addMembersBtn.click();
       const newMembersDiv = element(by.id('newMembersDiv'));
       const userNameInput = newMembersDiv.element(by.id('typeaheadInput'));
-      browser.wait(ExpectedConditions.visibilityOf(userNameInput), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(userNameInput), utils.conditionTimeout);
       userNameInput.sendKeys(usersName);
 
       const typeaheadDiv = element(by.id('typeaheadDiv'));
       const typeaheadItems = typeaheadDiv.all(by.css('ul li'));
-      util.findRowByText(typeaheadItems, usersName).then((item: any) => {
+      utils.findRowByText(typeaheadItems, usersName).then((item: any) => {
         item.click();
       });
 
@@ -93,7 +93,7 @@ export class ProjectsPage {
       }).then(() => {
         if (foundUserRow) {
           const select = foundUserRow.element(by.css('select:not([disabled])'));
-          util.clickDropdownByValue(select, roleText);
+          utils.clickDropdownByValue(select, roleText);
         }
       });
 
@@ -132,7 +132,7 @@ export class ProjectsPage {
 
       const foundUserRow = projectMemberRows.first();
       const rowCheckbox = foundUserRow.element(by.css('input[type="checkbox"]'));
-      util.setCheckbox(rowCheckbox, true);
+      utils.setCheckbox(rowCheckbox, true);
       const removeMembersBtn = element(by.id('remove-members-button'));
       removeMembersBtn.click();
 

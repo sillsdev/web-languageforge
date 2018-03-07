@@ -1,9 +1,9 @@
 import { browser, by, element, ExpectedConditions} from 'protractor';
-import { Utils } from '../../../bellows/pages/utils.js'
+
 import { ProjectsPage } from '../../../bellows/pages/projectsPage.js';
+import { Utils } from '../../../bellows/pages/utils.js'
 import { SfProjectPage } from '../../sfchecks/pages/projectPage.js';
 
-const CONDITION_TIMEOUT = 3000;
 const utils = new Utils();
 const projectsPage = new ProjectsPage();
 const projectPage = new SfProjectPage();
@@ -40,13 +40,13 @@ export class SfTextPage {
   questionRows  = element.all(by.repeater('question in visibleQuestions'));
 
   //noinspection JSUnusedGlobalSymbols
-  //this.questionText = element(by.model('questionDescription'));
+  // this.questionText = element(by.model('questionDescription'));
 
   //noinspection JSUnusedGlobalSymbols
-  //this.questionSummary = element(by.model('questionTitle'));
+  // this.questionSummary = element(by.model('questionTitle'));
 
   //noinspection JSUnusedGlobalSymbols
-  //this.saveQuestion = element(by.partialButtonText('Save'));
+  // this.saveQuestion = element(by.partialButtonText('Save'));
 
   // getFirstCheckbox has to be a function because the .first() method will actually resolve the
   // finder
@@ -64,7 +64,7 @@ export class SfTextPage {
 
   addNewQuestion(description: any, summary: any) {
     this.newQuestion.showFormButton.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.newQuestion.description), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(this.newQuestion.description), utils.conditionTimeout);
     this.newQuestion.description.sendKeys(description);
     this.newQuestion.summary.sendKeys(summary);
     this.newQuestion.saveButton.click();

@@ -1,7 +1,11 @@
 import {browser, by, element, ExpectedConditions, protractor} from 'protractor';
+
 import { Utils } from './utils';
-const CONDITION_TIMEOUT = 3000;
-const util = new Utils();
+
+// TODO This 'utils' should be moved inside the class somehow.
+// So far attempts at making this a member variable have resulted in runtime errors - cjh 2018-03-07
+const utils = new Utils();
+
 /*
  * This object handles the user profile page and provides methods to access items in the activity
  * list
@@ -24,7 +28,7 @@ export class SfUserProfilePage {
   getAboutMe() {
     this.get();
     this.tabs.aboutMe.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), utils.conditionTimeout);
   }
 
   tabs = {
@@ -56,13 +60,13 @@ export class SfUserProfilePage {
     saveBtn:          element(by.id('saveBtn')),
 
     selectColor(newColor: string|RegExp) {
-      util.clickDropdownByValue(this.avatarColor, newColor);
+      utils.clickDropdownByValue(this.avatarColor, newColor);
     },
     selectShape(newShape: string|RegExp) {
-      util.clickDropdownByValue(this.avatarShape, newShape);
+      utils.clickDropdownByValue(this.avatarShape, newShape);
     },
     updateEmail(newEmail: string) {
-      browser.wait(ExpectedConditions.visibilityOf(this.emailInput), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(this.emailInput), utils.conditionTimeout);
       this.emailInput.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
       this.emailInput.sendKeys(newEmail);
 
@@ -70,7 +74,7 @@ export class SfUserProfilePage {
       this.username.click();
     },
     updateUsername(newUsername: string) {
-      browser.wait(ExpectedConditions.visibilityOf(this.username), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(this.username), utils.conditionTimeout);
       this.username.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
       this.username.sendKeys(newUsername);
 
@@ -78,7 +82,7 @@ export class SfUserProfilePage {
       this.emailInput.click();
     },
     updateMobilePhone(newPhone: string) {
-      browser.wait(ExpectedConditions.visibilityOf(this.mobilePhoneInput), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(this.mobilePhoneInput), utils.conditionTimeout);
       this.mobilePhoneInput.sendKeys(newPhone);
     },
     updateContactPreference() {
@@ -93,17 +97,17 @@ export class SfUserProfilePage {
     saveBtn:  element(by.id('saveBtn')),
 
     updateFullName(newFullName: string) {
-      browser.wait(ExpectedConditions.visibilityOf(this.fullName), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(this.fullName), utils.conditionTimeout);
       this.fullName.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
       this.fullName.sendKeys(newFullName);
     },
     updateAge(newAge: string) {
-      browser.wait(ExpectedConditions.visibilityOf(this.age), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(this.age), utils.conditionTimeout);
       this.age.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
       this.age.sendKeys(newAge);
     },
     updateGender(newGender: string) {
-      util.clickDropdownByValue(this.gender, newGender);
+      utils.clickDropdownByValue(this.gender, newGender);
     }
   };
 }

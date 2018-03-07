@@ -26,7 +26,7 @@ By.addLocator('elemMatches', (cssSelector: string, regexString: string) => {
  */
 
 export class Utils {
-  private readonly CONDITION_TIMEOUT = 3000;
+  readonly conditionTimeout: number = 3000;
 
   setCheckbox(checkboxElement: ElementFinder, value: boolean) {
     // Ensure a checkbox element will be either checked (true) or unchecked (false), regardless of
@@ -111,25 +111,25 @@ export class Utils {
       browser.wait(() =>
         this.noticeList.count().then((count: any) =>
           count >= 1),
-          this.CONDITION_TIMEOUT);
+          this.conditionTimeout);
       browser.wait(() =>
         this.noticeList.first().getText().then((text: any) => text.includes(includedText)),
-        this.CONDITION_TIMEOUT);
+        this.conditionTimeout);
     }
   };
 
   checkModalTextMatches(expectedText: string) {
     const modalBody = element(by.css('.modal-body'));
 
-    browser.wait(ExpectedConditions.visibilityOf(modalBody), this.CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(modalBody), this.conditionTimeout);
     expect(modalBody.getText()).toMatch(expectedText);
   }
 
   clickModalButton(buttonText: string) {
     const button = element(by.css('.modal-footer')).element(by.partialButtonText(buttonText));
 
-    browser.wait(ExpectedConditions.visibilityOf(button), this.CONDITION_TIMEOUT);
-    browser.wait(ExpectedConditions.elementToBeClickable(button), this.CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(button), this.conditionTimeout);
+    browser.wait(ExpectedConditions.elementToBeClickable(button), this.conditionTimeout);
     button.click();
   }
 

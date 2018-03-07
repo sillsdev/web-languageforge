@@ -1,10 +1,10 @@
 import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+
 import { ProjectsPage } from '../../../bellows/pages/projectsPage.js';
 const projectsPage = new ProjectsPage();
-const CONDITION_TIMEOUT = 3000;
 
 export class SfProjectSettingsPage {
-
+  conditionTimeout = 3000;
   settingsMenuLink = element(by.id('settings-dropdown-button'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
@@ -12,7 +12,7 @@ export class SfProjectSettingsPage {
   get(projectName: string) {
     projectsPage.get();
     projectsPage.clickOnProject(projectName);
-    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
     this.settingsMenuLink.click();
     this.projectSettingsLink.click();
   }
@@ -131,10 +131,10 @@ class MembersTab {
     this.sfProjectSettingsPage.tabs.members.click();
     this.addButton.click();
     browser.wait(ExpectedConditions.visibilityOf(this.newMember.input),
-      this.sfProjectSettingsPage.CONDITION_TIMEOUT);
+      this.sfProjectSettingsPage.conditionTimeout);
     this.newMember.input.sendKeys(name);
     browser.wait(ExpectedConditions.textToBePresentInElementValue(this.newMember.input,
-      name), this.sfProjectSettingsPage.CONDITION_TIMEOUT);
+      name), this.sfProjectSettingsPage.conditionTimeout);
     this.newMember.button.click();
   }
 
