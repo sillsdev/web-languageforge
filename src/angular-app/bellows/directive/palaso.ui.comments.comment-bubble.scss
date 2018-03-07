@@ -1,3 +1,4 @@
+@import "../../../Site/views/languageforge/theme/default/sass/variables";
 .commentBubbleContainer {
   position: absolute;
   right: -20px;
@@ -7,7 +8,7 @@
     a.commentBubble {
       cursor: not-allowed;
       i {
-        color: #1d64f0;
+        color: $BlueRibbon;
       }
     }
   }
@@ -38,7 +39,7 @@
       position: absolute;
       top: -8px;
       right: -2px;
-      background: #1d64f0;
+      background: $BlueRibbon;
       border-radius: 50%;
       width: 18px;
       height: 18px;
