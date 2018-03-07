@@ -268,8 +268,8 @@ class LexSense extends ObjectForEncoding
                 $difference = $multiParagraph->differences($otherSense->$propertyName);
                 return $this->convertDifferences($difference, $propertyName);
             case "LexValue":
-                $thisValue  = (string)$this->$propertyName;
-                $otherValue = (string)$otherSense->$propertyName;
+                $thisValue  = is_null($this->$propertyName) ? "" : (string)$this->$propertyName;
+                $otherValue = is_null($otherSense->$propertyName) ? "" :(string)$otherSense->$propertyName;
 
                 if ($thisValue === $otherValue) {
                     return [];
@@ -330,7 +330,8 @@ class LexSense extends ObjectForEncoding
             $thisPosition  = $thisPositions[$guid];
             $otherPosition = $otherPositions[$guid];
             if ($otherPosition !== $thisPosition) {
-                $differences[] = ["movedFrom.examples#" . $guid => $thisPosition, "movedTo.examples#" . $guid => $otherPosition];
+                $differences["movedFrom.examples#" . $guid] = (string)$thisPosition;
+                $differences["movedTo.examples#" . $guid] = (string)$otherPosition;
             }
             if (array_key_exists($guid, $otherExamplesByGuid)) {
                 /** @var LexExample $otherExample */
@@ -344,17 +345,17 @@ class LexSense extends ObjectForEncoding
                     } else {
                         $newKey = $key;
                     }
-                    $differences[] = [$key => $exampleDifference];
+                    $differences[$key] = $exampleDifference;
                 }
             } else {
-                $differences[] = ["deleted.examples#" . $guid => $thisExample->nameForActivityLog()];
+                $differences["deleted.examples#" . $guid] = $thisExample->nameForActivityLog();
             }
         }
         $addedGuids = array_diff($otherGuids, $seenGuids);
         foreach ($addedGuids as $guid) {
             /** @var LexExample $otherExample */
             $otherExample = $otherExamplesByGuid[$guid];
-            $differences[] = ["added.examples#" . $guid => $otherExample->nameForActivityLog()];
+            $differences["added.examples#" . $guid] = $otherExample->nameForActivityLog();
         }
 
         return $differences;

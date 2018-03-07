@@ -44,8 +44,8 @@ class LexMultiText extends MapOf
         $allKeys = array_unique(array_merge($thisKeys, $otherKeys));
         foreach ($allKeys as $key)
         {
-            $thisValue  = isset($this[$key]) ? (string)$this[$key] : "";
-            $otherValue = isset($otherMultiText[$key]) ? (string)$otherMultiText[$key] : "";
+            $thisValue  = isset($this[$key]) && isset($this[$key]->value) ? (string)$this[$key] : "";
+            $otherValue = isset($otherMultiText[$key]) && isset($otherMultiText[$key]->value) ? (string)$otherMultiText[$key] : "";
             if ($thisValue == $otherValue) continue;
             $result[] = [
                 "inputSystem" => $key,
