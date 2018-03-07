@@ -1,11 +1,12 @@
 import {browser, by, element, ExpectedConditions} from 'protractor';
+
 import { ProjectsPage } from './projectsPage';
 
-const CONDITION_TIMEOUT = 3000;
 const projectsPage = new ProjectsPage();
 
 export class BellowsProjectSettingsPage {
 
+  conditionTimeout: number = 3000;
   settingsMenuLink = element(by.id('settings-dropdown-button'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
@@ -13,9 +14,9 @@ export class BellowsProjectSettingsPage {
   get(projectName: string) {
     projectsPage.get();
     projectsPage.clickOnProject(projectName);
-    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
     this.settingsMenuLink.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), CONDITION_TIMEOUT);
+    browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);
     this.projectSettingsLink.click();
   }
 
@@ -32,8 +33,8 @@ export class BellowsProjectSettingsPage {
   */
   tabs = {
     project: element(by.linkText('Project Properties')),
-    //reports: element(by.linkText('Reports')), // This feature is never tested
-    //archive: element(by.linkText('Archive')), // This is a disabled feature
+    // reports: element(by.linkText('Reports')), // This feature is never tested
+    // archive: element(by.linkText('Archive')), // This is a disabled feature
     remove: element(by.linkText('Delete'))
   };
 

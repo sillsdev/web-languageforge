@@ -173,7 +173,6 @@ describe('E2E testing: New Lex Project wizard app', () => {
   });
 
   describe('Send Receive Verify page', () => {
-    var CONDITION_TIMEOUT = 5000;
 
     it('can clone project', () => {
       page.nextButton.click();
@@ -224,6 +223,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
        * as I couldn't re-produce the problem manually,
        * however is likely symptomatic of some funkiness with promises. IJH 2014-12
        **/
+
       page.namePage.projectNameInput.sendKeys('a' + Key.TAB);
       page.namePage.projectNameInput.clear();
       page.namePage.projectNameInput.sendKeys(Key.TAB);
