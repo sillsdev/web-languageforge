@@ -9,7 +9,7 @@ export class SfProjectSettingsPage {
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
-  get(projectName: string) {
+  get(projectName: string = '') {
     projectsPage.get();
     projectsPage.clickOnProject(projectName);
     browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);

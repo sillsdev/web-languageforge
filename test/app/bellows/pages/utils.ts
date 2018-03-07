@@ -2,28 +2,9 @@
 ///<reference path="utils.d.ts" />
 import 'jasmine';
 import {$, $$, browser, by, By, element, ExpectedConditions, promise} from 'protractor';
+
 import { ElementArrayFinder, ElementFinder } from 'protractor/built/element';
 import { logging } from 'selenium-webdriver';
-
-/*
- * New locator to find elements that match a CSS selector, whose text (via elem.innerText in the
- *   browser) matches a regex
- * Call as by.elemMatches('a', 'my regular expression')
- * To get any element, call as by.elemMatches('*', 'my regex'), but beware: parent elements
- *   "contain" the text of their children.
- * So if your HTML is <div><span><a href="foo">xyzzy</a></span></div> and you call
- *   by.elemMatches('*', 'xyzzy'), your locator will match three elements: the div, the span,
- *   and the a.
- *
- * This function is added to Protractor's "by" namespace
-By.addLocator('elemMatches', (cssSelector: string, regexString: string) => {
-  const allElems = document.querySelectorAll(selector);
-  return Array.prototype.filter.call(allElems, (elem: Element) => {
-    const regex = new RegExp(regexString);
-    return regex.test(elem.textContent);
-  });
-});
- */
 
 export class Utils {
   readonly conditionTimeout: number = 3000;

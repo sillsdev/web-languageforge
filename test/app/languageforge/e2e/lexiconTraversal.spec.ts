@@ -10,7 +10,6 @@ import {ViewSettingsPage} from '../lexicon/pages/viewSettingsPage';
 
 describe('Lexicon E2E Page Traversal', () => {
   const constants = require('../../testConstants');
-  const util = new BellowsLoginPage();
   const loginPage = new BellowsLoginPage();
   const configurationPage = new ConfigurationPage();
   const projectsPage = new ProjectsPage();

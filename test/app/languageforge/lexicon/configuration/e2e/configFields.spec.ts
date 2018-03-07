@@ -1,6 +1,6 @@
 import {} from 'jasmine';
-// Importing protractor to make usages of protractor.Key work - Ben Kastner 2018-01-18
 import { protractor } from 'protractor';
+
 import { BellowsLoginPage } from '../../../../bellows/pages/loginPage.js';
 import { ProjectsPage } from '../../../../bellows/pages/projectsPage.js';
 import { Utils } from '../../../../bellows/pages/utils.js';

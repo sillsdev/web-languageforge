@@ -44,10 +44,9 @@ describe('User Profile E2E Test', () => {
       it('Verify initial "About Me" settings created from setupTestEnvironment.php', () => {
         userProfile.getAboutMe();
 
-        let expectedFullname: string;
-        let expectedAge: string;
-        let expectedGender: string;
-        expectedFullname = expectedAge = expectedGender = '';
+        let expectedFullname: string = '';
+        const expectedAge: string = '';
+        const expectedGender: string = '';
 
         switch (expectedUsername) {
           case constants.memberUsername:
