@@ -10,7 +10,7 @@
                         <i class="fa fa-ellipsis-v"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="$ctrl.interfaceConfig.pullToSide">
-                        <a class="dropdown-item" data-ng-href="/app/usermanagement/{{$ctrl.project.id}}"
+                        <a id="userManagementLink" class="dropdown-item" data-ng-href="/app/usermanagement/{{$ctrl.project.id}}"
                             data-ng-show="$ctrl.rights.canEditUsers()">User Management</a>
                         <a class="dropdown-item" ui-sref="settings" data-ng-show="$ctrl.rights.canEditProject()">
                             Project Settings</a>

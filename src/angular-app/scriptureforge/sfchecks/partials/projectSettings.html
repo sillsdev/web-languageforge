@@ -11,11 +11,11 @@
                         <i class="fa fa-plus"></i> Add Members</button>
                 </div>
                 <div class="col-auto">
-                    <button class="btn btn-std" data-ng-show="rights.create" data-ng-click="toggleMessageUsers()">
+                    <button id="messageUsersButton" class="btn btn-std" data-ng-show="rights.create" data-ng-click="toggleMessageUsers()">
                         <i class="fa fa-envelope"></i> Message Selected Users</button>
                 </div>
                 <div class="col-auto">
-                    <button class="btn btn-std" data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther"
+                    <button id="remove-members-button" class="btn btn-std" data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther"
                             data-ng-click="removeProjectUsers()"><i class="fa fa-trash"></i> Remove Members</button>
                 </div>
                 <div class="col-auto">
@@ -29,7 +29,7 @@
             <form class="card card-body bg-light">
                 <div class="form-row align-items-top">
                     <div class="col-auto">
-                        <pui-typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
+                        <pui-typeahead id="typeaheadDiv" class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
                             <ul ng-hide="users.length == 0">
                                 <li typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
                                     <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
@@ -113,11 +113,11 @@
         <form class="control-bar form-inline">
             <div class="form-row align-items-center">
                 <div class="col-auto">
-                    <button class="btn btn-primary" data-ng-click="toggleTemplateEditor()">
+                    <button class="btn btn-primary" id="project-settings-new-template-btn" data-ng-click="toggleTemplateEditor()">
                         <i class="fa fa-plus"></i> Add New Template</button>
                 </div>
                 <div class="col-auto">
-                    <button class="btn btn-std" data-ng-disabled="selected.length == 0" data-ng-click="removeTemplates()">
+                    <button class="btn btn-std" id="project-settings-remove-btn" data-ng-disabled="selected.length == 0" data-ng-click="removeTemplates()">
                         <i class="fa fa-trash"></i> Remove Templates</button>
                 </div>
             </div>
@@ -133,7 +133,7 @@
                            placeholder="One Line Summary for Title">
                 </label>
                 <div>
-                    <button id="question_templates_save_button" type="submit" class="btn btn-primary" data-ng-click="editTemplate()">
+                    <button id="project-settings-question-save-btn" type="submit" class="btn btn-primary" data-ng-click="editTemplate()">
                         <i class="fa fa-check"></i> Save</button>
                     <a href data-ng-click="hideTemplateEditor()">Cancel</a>
                 </div>
@@ -164,8 +164,8 @@
 <pui-tab heading="Archived Texts">
     <div data-ng-controller="ProjectSettingsArchiveTextsCtrl">
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-            <button class="btn btn-primary republish-texts" data-ng-disabled="selected.length == 0" data-ng-show="rights.archive"
-                    data-ng-click="publishTexts()"><i class="fa fa-globe fa-lg">
+            <button class="btn btn-primary republish-texts" id="project-settings-republish-btn" data-ng-disabled="selected.length == 0"
+                    data-ng-show="rights.archive" data-ng-click="publishTexts()"><i class="fa fa-globe fa-lg">
                 </i> Re-publish Selected Texts</button>
         </form>
         <hr>
@@ -223,7 +223,7 @@
                     Allow contributors to use "Invite a Friend" feature (managers can always use it)</label>
             </div>
             <div>
-                <button class="btn btn-primary" type="submit" id="project_properties_save_button">
+                <button class="btn btn-primary" type="submit" id="project-properties-save-button">
                     <i class="fa fa-check"></i> Save</button>
             </div>
         </form>
@@ -265,7 +265,7 @@
             <div class="col-12">
                 <br>
                 <button id="user_profile_lists_save_button" type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
-                <span data-ng-show="unsavedChanges" class="unsaved-warning" style="color: red">You have unsaved changes.</span> <!-- Remove the style="" attr once class has real CSS definition -->
+                <span data-ng-show="unsavedChanges" class="unsaved-warning" id="project-settings-unsaved" style="color: red">You have unsaved changes.</span> <!-- Remove the style="" attr once class has real CSS definition -->
             </div>
         </form>
     </div>

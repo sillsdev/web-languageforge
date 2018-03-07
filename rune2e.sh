@@ -20,11 +20,10 @@ elif [ "$1" = "jp" ]
 else
     E2EHOSTNAME="languageforge.local"
 fi
+
+# Ensure Cleanup
+
 gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 STATUS=$?
-
-# Ensure cleanup
-gulp test-e2e-teardownTestEnvironment
-gulp test-e2e-useLiveConfig
-gulp test-restart-webserver
+gulp test-e2e-teardownForLocalDev
 exit $STATUS
