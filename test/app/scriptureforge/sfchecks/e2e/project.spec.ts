@@ -70,7 +70,7 @@ describe('the project dashboard AKA text list page', () => {
     it('can click on settings button', () => {
       expect<any>(projectPage.settingsDropdownLink.isDisplayed()).toBe(true);
       // Not sure if passing an empty string is the best way, but it works. -Ben Kastner 2018-01-19
-      projectSettingsPage.get('');
+      projectSettingsPage.get();
       browser.navigate().back();
     });
 
@@ -141,7 +141,7 @@ describe('the project dashboard AKA text list page', () => {
     // http://stackoverflow.com/questions/8851051/selenium-webdriver-and-browsers-select-file-dialog
     // you can have selenium interact with the file dialog by sending keystrokes but this is highly
     // OS dependent
-    //it('can create a new text (file dialog)', function() {});
+    // it('can create a new text (file dialog)', function() {});
 
     it('can use the chapter trimmer to trim the USX when creating a new text', () => {
       const newTextTitle = sampleTitle + '6789'; // Don't re-use title from an existing text

@@ -1,4 +1,4 @@
-import {browser, element, by} from 'protractor';
+import {browser, by, element} from 'protractor';
 
 export class SignupPage {
   get() {
@@ -28,18 +28,18 @@ export class SignupPage {
     yellowCircleButton: this.captchaDiv.element(by.id('captcha1')),
     redTriangleButton: this.captchaDiv.element(by.id('captcha2')),
 
-    setInvalidCaptcha: function () {
-      this.blueSquareButton.click();
-      this.expectedItemName.getText().then((result: string) => {
+    setInvalidCaptcha: () => {
+      this.captcha.blueSquareButton.click();
+      this.captcha.expectedItemName.getText().then((result: string) => {
         if (result === 'Blue Square') {
           element(by.id('pui-captcha')).element(by.id('captcha1')).click();
         }
       });
     },
 
-    setValidCaptcha: function () {
-      this.expectedItemName.getText().then((result: string) => {
-        let captchaDiv = element(by.id('pui-captcha'));
+    setValidCaptcha: () => {
+      this.captcha.expectedItemName.getText().then((result: string) => {
+        const captchaDiv = element(by.id('pui-captcha'));
         switch (result) {
           case 'Blue Square' :
             captchaDiv.element(by.id('captcha0')).click();
@@ -58,4 +58,4 @@ export class SignupPage {
   captchaInvalid = element(by.id('captchaInvalid'));
   signupButton = element(by.id('submit'));
   noticeList  = element.all(by.repeater('notice in $ctrl.notices()'));
-};
+}
