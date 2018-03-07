@@ -7,7 +7,6 @@ import { EditorUtil } from './editorUtil';
 const mockUpload = new MockUploadElement();
 const utils = new Utils();
 const editorUtil = new EditorUtil();
-const CONDITION_TIMEOUT = 3000;
 
 export class EditorPage {
 
@@ -60,7 +59,7 @@ export class EditorPage {
     entryCountElem: this.browseDiv.element(by.id('totalNumberOfEntries')),
     getEntryCount: () => {
       // assumption is entry count > 0
-      browser.wait(ExpectedConditions.visibilityOf(this.browse.entryCountElem), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(this.browse.entryCountElem), utils.conditionTimeout);
       return this.browse.entryCountElem.getText().then((s: string) =>
         parseInt(s, 10)
       );
@@ -84,7 +83,7 @@ export class EditorPage {
     entriesList: this.browseDiv.all(by.repeater('entry in visibleEntries track by entry.id')),
     findEntryByLexeme: (lexeme: string) => {
       browser.wait(ExpectedConditions.visibilityOf(
-        element(by.id('lexAppListView'))), CONDITION_TIMEOUT);
+        element(by.id('lexAppListView'))), utils.conditionTimeout);
       return this.browse.entriesList.filter((row: ElementFinder) => {
         const elem = row.element(by.binding('entry.word'));
 
@@ -188,7 +187,7 @@ export class EditorPage {
     },
 
     getFirstLexeme: () => {
-      browser.wait(ExpectedConditions.visibilityOf(this.edit.fields.get(0)), CONDITION_TIMEOUT);
+      browser.wait(ExpectedConditions.visibilityOf(this.edit.fields.get(0)), utils.conditionTimeout);
 
       // Returns the first (topmost) lexeme regardless of its wsid
       const lexeme = this.edit.fields.get(0);
