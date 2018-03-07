@@ -283,8 +283,8 @@ class LexEntryModel extends MapperModel
             if (isset($otherPositions[$guid])) {
                 $otherPosition = $otherPositions[$guid];
                 if ($otherPosition !== $thisPosition) {
-                    $differences["movedFrom.senses#" . $guid] = $thisPosition;
-                    $differences["movedTo.senses#" . $guid] = $otherPosition;
+                    $differences["movedFrom.senses#" . $guid] = (string)$thisPosition;
+                    $differences["movedTo.senses#" . $guid] = (string)$otherPosition;
                 }
             }
             if (array_key_exists($guid, $otherSensesByGuid)) {
@@ -358,8 +358,8 @@ class LexEntryModel extends MapperModel
                 $difference = $multiParagraph->differences($otherModel->$propertyName);
                 return $this->convertDifferences($difference, $propertyName);
             case "LexValue":
-                $thisValue  = (string)$this->$propertyName;
-                $otherValue = (string)$otherModel->$propertyName;
+                $thisValue  = is_null($this->$propertyName) || is_null($this->$propertyName->value) ? "" : (string)$this->$propertyName;
+                $otherValue = is_null($otherModel->$propertyName) || is_null($otherModel->$propertyName->value) ? "" : (string)$otherModel->$propertyName;
 
                 if ($thisValue === $otherValue) {
                     return [];

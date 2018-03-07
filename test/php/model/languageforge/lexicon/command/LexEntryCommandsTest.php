@@ -188,41 +188,198 @@ class LexEntryCommandsTest extends TestCase
         $updatedEntry = LexEntryCommands::readEntry($projectId, $entryId);
         $this->assertFalse(isset($updatedEntry['lexeme']['th']['value']));
     }
-/* Ignore test for send receive v1.1 since dirtySR counter is not being incremented on edit. IJH 2015-02
-    public function testUpdateEntry_ProjectHasSendReceive_EntryHasGuidAndDirtySRIncremented()
+
+    public function testUpdateEntry_UpdateTwice_DifferencesAreCorrect()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
-        $projectId = $project->write();
-        $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
-        $command = 'php mockLFMergeExe.php';
-        $mockMergeQueuePath = sys_get_temp_dir() . '/mockLFMergeQueue';
-        FileUtilities::createAllFolders($mockMergeQueuePath);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $params['lexeme']['th']['value'] = 'first edit';
 
         $userId = self::$environ->createUser('john', 'john', 'john');
 
-        $params['id'] = '';
-        $params['lexeme']['th']['value'] = 'apple';
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
 
-        $newParams = LexEntryCommands::updateEntry($projectId, $params, $userId, $mockMergeQueuePath, $pidFilePath, $command);
+        $updatedEntry = new LexEntryModel($project, $entryId);
+        $differences = $entry->calculateDifferences($updatedEntry);
+        $this->assertEquals(['oldValue.lexeme.th' => 'apple', 'newValue.lexeme.th' => 'first edit'], $differences);
 
-        $newEntry = new LexEntryModel($project, $newParams['id']);
-        $this->assertTrue(Uuid::isValid($newEntry->guid));
-        $this->assertEquals('apple', $newEntry->lexeme['th']);
-        $this->assertEquals(1, $newEntry->dirtySR);
+        $params['lexeme']['th']['value'] = 'second edit';
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
 
-        $newParams['lexeme']['th']['value'] = 'rose apple';
-
-        $updatedParams = LexEntryCommands::updateEntry($projectId, $newParams, $userId, $mockMergeQueuePath, $pidFilePath, $command);
-
-        $updatedEntry = new LexEntryModel($project, $updatedParams['id']);
-        $this->assertTrue(Uuid::isValid($updatedEntry->guid));
-        $this->assertEqual($updatedEntry->guid, $newEntry->guid);
-        $this->assertEquals('rose apple', $updatedEntry->lexeme['th']);
-        $this->assertEquals(2, $updatedEntry->dirtySR);
-        FileUtilities::removeFolderAndAllContents($mockMergeQueuePath);
+        $secondUpdatedEntry = new LexEntryModel($project, $entryId);
+        $differences = $updatedEntry->calculateDifferences($secondUpdatedEntry);
+        $this->assertEquals(['oldValue.lexeme.th' => 'first edit', 'newValue.lexeme.th' => 'second edit'], $differences);
     }
-*/
+
+    public function testUpdateEntry_UpdateWithNull_DifferencesHasEmptyStringInsteadOfNull()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $params['lexeme']['th']['value'] = null;
+
+        $userId = self::$environ->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = new LexEntryModel($project, $entryId);
+        $differences = $entry->calculateDifferences($updatedEntry);
+        $this->assertEquals(['oldValue.lexeme.th' => 'apple', 'newValue.lexeme.th' => ''], $differences);
+    }
+
+    public function testUpdateEntry_DeleteOnlySense_ProducesOneDifference()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense = new LexSense();
+        $sense->definition->form('en', 'apple');
+        $entry->senses[] = $sense;
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $params['senses'] = [];
+
+        $userId = self::$environ->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = new LexEntryModel($project, $entryId);
+        $differences = $entry->calculateDifferences($updatedEntry);
+        $this->assertEquals(['deleted.senses#' . $sense->guid => 'apple'], $differences);
+    }
+
+    public function testUpdateEntry_DeleteTwoSensesOutOfTwoTotal_ProducesTwoDifferences()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense1 = new LexSense();
+        $sense1->definition->form('en', 'apple');
+        $entry->senses[] = $sense1;
+        $sense2 = new LexSense();
+        $sense2->definition->form('en', 'also an apple');
+        $entry->senses[] = $sense2;
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $params['senses'] = [];
+
+        $userId = self::$environ->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = new LexEntryModel($project, $entryId);
+        $differences = $entry->calculateDifferences($updatedEntry);
+        $this->assertEquals(['deleted.senses#' . $sense1->guid => 'apple', 'deleted.senses#' . $sense2->guid => 'also an apple'], $differences);
+    }
+
+    public function testUpdateEntry_DeleteFirstSenseOfTwo_ProducesThreeDifferences()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense1 = new LexSense();
+        $sense1->definition->form('en', 'apple');
+        $entry->senses[] = $sense1;
+        $sense2 = new LexSense();
+        $sense2->definition->form('en', 'also an apple');
+        $entry->senses[] = $sense2;
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        unset($params['senses'][0]);
+
+        $userId = self::$environ->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = new LexEntryModel($project, $entryId);
+        $differences = $entry->calculateDifferences($updatedEntry);
+        $this->assertEquals(['deleted.senses#' . $sense1->guid => 'apple',
+                             'movedFrom.senses#' . $sense2->guid => 1,
+                             'movedTo.senses#' . $sense2->guid => 0], $differences);
+    }
+
+    public function testUpdateEntry_DeleteSecondSenseOfTwo_ProducesOneDifference()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense1 = new LexSense();
+        $sense1->definition->form('en', 'apple');
+        $entry->senses[] = $sense1;
+        $sense2 = new LexSense();
+        $sense2->definition->form('en', 'also an apple');
+        $entry->senses[] = $sense2;
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        array_pop($params['senses']);  // Remove last element (in this case, second)
+
+        $userId = self::$environ->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = new LexEntryModel($project, $entryId);
+        $differences = $entry->calculateDifferences($updatedEntry);
+        $this->assertEquals(['deleted.senses#' . $sense2->guid => 'also an apple'], $differences);
+    }
+
+    /* Ignore test for send receive v1.1 since dirtySR counter is not being incremented on edit. IJH 2015-02
+        public function testUpdateEntry_ProjectHasSendReceive_EntryHasGuidAndDirtySRIncremented()
+        {
+            $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+            $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+            $projectId = $project->write();
+            $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
+            $command = 'php mockLFMergeExe.php';
+            $mockMergeQueuePath = sys_get_temp_dir() . '/mockLFMergeQueue';
+            FileUtilities::createAllFolders($mockMergeQueuePath);
+
+            $userId = self::$environ->createUser('john', 'john', 'john');
+
+            $params['id'] = '';
+            $params['lexeme']['th']['value'] = 'apple';
+
+            $newParams = LexEntryCommands::updateEntry($projectId, $params, $userId, $mockMergeQueuePath, $pidFilePath, $command);
+
+            $newEntry = new LexEntryModel($project, $newParams['id']);
+            $this->assertTrue(Uuid::isValid($newEntry->guid));
+            $this->assertEquals('apple', $newEntry->lexeme['th']);
+            $this->assertEquals(1, $newEntry->dirtySR);
+
+            $newParams['lexeme']['th']['value'] = 'rose apple';
+
+            $updatedParams = LexEntryCommands::updateEntry($projectId, $newParams, $userId, $mockMergeQueuePath, $pidFilePath, $command);
+
+            $updatedEntry = new LexEntryModel($project, $updatedParams['id']);
+            $this->assertTrue(Uuid::isValid($updatedEntry->guid));
+            $this->assertEqual($updatedEntry->guid, $newEntry->guid);
+            $this->assertEquals('rose apple', $updatedEntry->lexeme['th']);
+            $this->assertEquals(2, $updatedEntry->dirtySR);
+            FileUtilities::removeFolderAndAllContents($mockMergeQueuePath);
+        }
+    */
     public function testListEntries_allEntries()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
