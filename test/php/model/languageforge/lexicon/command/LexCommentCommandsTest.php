@@ -31,14 +31,13 @@ class LexCommentCommandsTest extends TestCase
             'fieldNameForDisplay' => 'Word',
             'inputSystemAbbreviation' => 'th',
             'inputSystem' => 'th',
-            'word' => '',
-            'meaning' => ''
         );
 
         $data = array(
             'id' => '',
             'content' => $commentContent,
-            'regarding' => $regarding
+            'regarding' => $regarding,
+            'contextGuid' => 'lexeme.th'
         );
 
         $commentList = new LexCommentListModel($project);
@@ -52,7 +51,7 @@ class LexCommentCommandsTest extends TestCase
         $commentArray = $commentList->entries[0];
         $this->assertEquals($commentContent, $commentArray['content']);
         $this->assertEquals($regarding, $commentArray['regarding']);
-        $this->assertEquals(0, $commentArray['score']);
+        $this->assertEquals(0, $commentArray['score'] ?? 0);
         $this->assertEquals('open', $commentArray['status']);
     }
 
@@ -74,7 +73,8 @@ class LexCommentCommandsTest extends TestCase
         $data = array(
             'id' => '',
             'content' => 'hi there!',
-            'regarding' => $regarding
+            'regarding' => $regarding,
+            'contextGuid' => 'lexeme.th'
         );
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
 
@@ -111,7 +111,8 @@ class LexCommentCommandsTest extends TestCase
         $data = array(
             'id' => '',
             'content' => 'hi there!',
-            'regarding' => $regarding
+            'regarding' => $regarding,
+            'contextGuid' => 'lexeme.th'
         );
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
@@ -123,7 +124,7 @@ class LexCommentCommandsTest extends TestCase
         $this->assertCount(0, $comment->replies);
 
         $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
 
         $reply = $comment->getReply($replyId);
 
@@ -149,7 +150,8 @@ class LexCommentCommandsTest extends TestCase
         $data = array(
             'id' => '',
             'content' => 'hi there!',
-            'regarding' => $regarding
+            'regarding' => $regarding,
+            'contextGuid' => 'lexeme.th'
         );
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
@@ -162,7 +164,7 @@ class LexCommentCommandsTest extends TestCase
         LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
         $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
 
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
         $reply = $comment->getReply($replyId);
 
         $this->assertEquals($replyData['content'], $reply->content);
@@ -173,7 +175,7 @@ class LexCommentCommandsTest extends TestCase
         );
 
         LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
         $reply = $comment->getReply($replyId);
 
         $this->assertCount(2, $comment->replies);
@@ -198,7 +200,8 @@ class LexCommentCommandsTest extends TestCase
         $data = array(
             'id' => '',
             'content' => 'hi there!',
-            'regarding' => $regarding
+            'regarding' => $regarding,
+            'contextGuid' => 'lexeme.th'
         );
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
@@ -211,7 +214,7 @@ class LexCommentCommandsTest extends TestCase
         LexCommentCommands::deleteComment($project->id->asString(), $userId, $environ->website, $commentId);
 
         $commentList->read();
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
 
         $this->assertEquals(0, $commentList->count);
         $this->assertTrue($comment->isDeleted);
@@ -235,7 +238,8 @@ class LexCommentCommandsTest extends TestCase
         $data = array(
             'id' => '',
             'content' => 'hi there!',
-            'regarding' => $regarding
+            'regarding' => $regarding,
+            'contextGuid' => 'lexeme.th'
         );
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
@@ -248,13 +252,13 @@ class LexCommentCommandsTest extends TestCase
         LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
         $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $environ->website, $commentId, $replyData);
 
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
 
         $this->assertCount(2, $comment->replies);
 
         LexCommentCommands::deleteReply($project->id->asString(), $userId, $environ->website, $commentId, $replyId);
 
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
         $this->assertCount(1, $comment->replies);
     }
 
@@ -276,7 +280,8 @@ class LexCommentCommandsTest extends TestCase
         $data = array(
             'id' => '',
             'content' => 'hi there!',
-            'regarding' => $regarding
+            'regarding' => $regarding,
+            'contextGuid' => 'lexeme.th'
         );
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
@@ -285,7 +290,7 @@ class LexCommentCommandsTest extends TestCase
 
         LexCommentCommands::updateCommentStatus($project->id->asString(), $commentId, LexCommentModel::STATUS_RESOLVED);
 
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
 
         $this->assertEquals(LexCommentModel::STATUS_RESOLVED, $comment->status);
     }
@@ -310,7 +315,8 @@ class LexCommentCommandsTest extends TestCase
         $data = array(
             'id' => '',
             'content' => 'hi there!',
-            'regarding' => $regarding
+            'regarding' => $regarding,
+            'contextGuid' => 'lexeme.th'
         );
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
@@ -318,6 +324,7 @@ class LexCommentCommandsTest extends TestCase
         $this->assertEquals(LexCommentModel::STATUS_OPEN, $comment->status);
 
         // save data for rest of this test
+        self::$save['project'] = $project;
         self::$save['environ'] = $environ;
         self::$save['commentId'] = $commentId;
         self::$save['comment'] = $comment;
@@ -331,7 +338,7 @@ class LexCommentCommandsTest extends TestCase
      */
     public function testUpdateCommentStatus_InvalidStatus()
     {
-        self::$save['comment']->read(self::$save['commentId']);
+        self::$save['comment'] = new LexCommentModel(self::$save['project'], self::$save['commentId']);
 
         $this->assertEquals(LexCommentModel::STATUS_OPEN, self::$save['comment']->status);
     }
@@ -355,7 +362,8 @@ class LexCommentCommandsTest extends TestCase
         $data = array(
             'id' => '',
             'content' => 'hi there!',
-            'regarding' => $regarding
+            'regarding' => $regarding,
+            'contextGuid' => 'lexeme.th'
         );
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $user1Id, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
@@ -364,7 +372,7 @@ class LexCommentCommandsTest extends TestCase
         LexCommentCommands::plusOneComment($project->id->asString(), $user1Id, $commentId);
         LexCommentCommands::plusOneComment($project->id->asString(), $user2Id, $commentId);
 
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
         $this->assertEquals(2, $comment->score);
     }
 
@@ -386,7 +394,8 @@ class LexCommentCommandsTest extends TestCase
         $data = array(
             'id' => '',
             'content' => 'hi there!',
-            'regarding' => $regarding
+            'regarding' => $regarding,
+            'contextGuid' => 'lexeme.th'
         );
         $commentId = LexCommentCommands::updateComment($project->id->asString(), $user1Id, $environ->website, $data);
         $comment = new LexCommentModel($project, $commentId);
@@ -395,7 +404,7 @@ class LexCommentCommandsTest extends TestCase
         LexCommentCommands::plusOneComment($project->id->asString(), $user1Id, $commentId);
         LexCommentCommands::plusOneComment($project->id->asString(), $user1Id, $commentId);
 
-        $comment->read($commentId);
+        $comment = new LexCommentModel($project, $commentId);
         $this->assertEquals(1, $comment->score);
     }
 }

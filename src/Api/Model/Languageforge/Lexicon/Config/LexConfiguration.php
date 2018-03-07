@@ -30,7 +30,7 @@ class LexConfiguration
     {
         $this->tasks = new MapOf(
             function ($data) {
-                switch ($data['type']) {
+                switch ($data['type'] ?? "") {
                     case LexTask::DASHBOARD:
                         return new LexTaskDashboard();
                     case LexTask::SEMDOM:
