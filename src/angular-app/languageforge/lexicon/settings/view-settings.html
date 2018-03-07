@@ -2,7 +2,7 @@
 <br><h2 style="font-weight:normal" >View Settings</h2>
 <form name="viewSettingForm" novalidate>
 <fieldset data-ng-disabled="isSaving">
-<button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="settingsApply()"
+<button class="btn btn-primary {{interfaceConfig.pullToSide}}" id="view-settings-apply-btn" data-ng-click="settingsApply()"
     data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense() || !allUsersHaveAtLeastOneSense() || isSaving">
     <i ng-class="{'fa fa-ok': !isSaving, 'fa fa-spinner fa-spin': isSaving}"></i> Apply</button>
 <uib-tabset>
@@ -36,7 +36,8 @@
                         </pui-typeahead>
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-sm btn-primary" data-ng-click="addUser()"><i class="fa fa-plus iconPadding"></i>Add Member Specific Settings</button>
+                        <button class="btn btn-sm btn-primary" id="view-settings-add-member-btn" data-ng-click="addUser()">
+                          <i class="fa fa-plus iconPadding"></i>Add Member Specific Settings</button>
                     </div>
                 </div>
             </form>
@@ -63,10 +64,11 @@
             <!-- control buttons for member-specific views -->
             <div class="row" data-ng-show="tab.byUser && state === 'userSettings'">
                 <div class="col-md-3">
-                    <button class="btn btn-std" data-ng-click="goSelectUser()"><i class="fa fa-arrow-circle-left"></i> Select Member</button>
+                    <button class="btn btn-std" id="view-settings-select-member-btn" data-ng-click="goSelectUser()">
+                      <i class="fa fa-arrow-circle-left"></i> Select Member</button>
                 </div>
                 <div class="col-md-9">
-                    <button class="btn btn-std" data-ng-click="removeSelectedMemberSettings()">
+                    <button class="btn btn-std" id="view-settings-remove-member-btn" data-ng-click="removeSelectedMemberSettings()">
                         <i class="fa fa-trash"></i> Remove Member Specific Settings </button>
                 </div>
             </div>
