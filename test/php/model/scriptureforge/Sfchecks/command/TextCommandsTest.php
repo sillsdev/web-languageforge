@@ -55,8 +55,9 @@ class TextCommandsTest extends TestCase
 
         $count = TextCommands::archiveTexts($project->id->asString(), array($text1->id->asString()));
 
-        $text1->read($text1->id->asString());
-        $text2->read($text2->id->asString());
+        // Refresh texts from Mongo
+        $text1 = new TextModel($project, $text1->id->asString());
+        $text2 = new TextModel($project, $text2->id->asString());
         $this->assertEquals(1, $count);
         $this->assertTrue($text1->isArchived);
         $this->assertNotTrue($text2->isArchived);
@@ -80,8 +81,9 @@ class TextCommandsTest extends TestCase
 
         $count = TextCommands::publishTexts($project->id->asString(), array($text1->id->asString()));
 
-        $text1->read($text1->id->asString());
-        $text2->read($text2->id->asString());
+        // Refresh texts from Mongo
+        $text1 = new TextModel($project, $text1->id->asString());
+        $text2 = new TextModel($project, $text2->id->asString());
         $this->assertEquals(1, $count);
         $this->assertNotTrue($text1->isArchived);
         $this->assertTrue($text2->isArchived);
