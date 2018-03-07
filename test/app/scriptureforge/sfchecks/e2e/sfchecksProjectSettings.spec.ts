@@ -18,7 +18,6 @@ describe('SFChecks project settings page - project manager', () => {
   });
 
   describe('members tab', () => {
-    // memberCount needs to be a let because it is later reassigned. - Ben Kastner 2018-01-18
     let memberCount = 0;
 
     it('setup: click on tab', () => {
@@ -85,154 +84,145 @@ describe('SFChecks project settings page - project manager', () => {
 
   });
 
-  /*
-  describe('question templates tab', function () {
-    it('setup: click on tab', function () {
-      expect(projectSettingsPage.tabs.templates.isPresent()).toBe(true);
+  describe('question templates tab', () => {
+    it('setup: click on tab', () => {
+      expect<any>(projectSettingsPage.tabs.templates.isPresent()).toBe(true);
       projectSettingsPage.tabs.templates.click();
     });
 
-    it('can list templates', function () {
-      expect(projectSettingsPage.templatesTab.list.count()).toBe(2);
+    it('can list templates', () => {
+      expect<any>(projectSettingsPage.templatesTab.list.count()).toBe(2);
     });
 
-    it('can add a template', function () {
+    it('can add a template', () => {
       projectSettingsPage.templatesTab.addButton.click();
-      browser.wait(expectedCondition.visibilityOf(projectSettingsPage.templatesTab.editor.title),
+      browser.wait(ExpectedConditions.visibilityOf(projectSettingsPage.templatesTab.editor.title),
         constants.conditionTimeout);
       projectSettingsPage.templatesTab.editor.title.sendKeys('sound check');
       projectSettingsPage.templatesTab.editor.description
         .sendKeys('What do you think of when I say the words... "boo"');
       projectSettingsPage.templatesTab.editor.saveButton.click();
-      expect(projectSettingsPage.templatesTab.list.count()).toBe(3);
-      expect(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
+      expect<any>(projectSettingsPage.templatesTab.list.count()).toBe(3);
+      expect<any>(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
     });
 
-    it('can update an existing template', function () {
+    it('can update an existing template', () => {
       projectSettingsPage.templatesTab.list.last().element(by.linkText('sound check')).click();
-      browser.wait(expectedCondition.visibilityOf(
+      browser.wait(ExpectedConditions.visibilityOf(
         projectSettingsPage.templatesTab.editor.saveButton), constants.conditionTimeout);
-      expect(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(true);
+      expect<any>(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(true);
       projectSettingsPage.templatesTab.editor.title.clear();
       projectSettingsPage.templatesTab.editor.title.sendKeys('test12');
       projectSettingsPage.templatesTab.editor.saveButton.click();
-      browser.wait(expectedCondition.invisibilityOf(
+      browser.wait(ExpectedConditions.invisibilityOf(
         projectSettingsPage.templatesTab.editor.saveButton), constants.conditionTimeout);
-      expect(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
-      expect(projectSettingsPage.templatesTab.list.count()).toBe(3);
+      expect<any>(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
+      expect<any>(projectSettingsPage.templatesTab.list.count()).toBe(3);
     });
 
-    it('can delete a template', function () {
+    it('can delete a template', () => {
       projectSettingsPage.templatesTab.list.last().element(by.css('input[type="checkbox"]'))
         .click();
       projectSettingsPage.templatesTab.removeButton.click();
-      expect(projectSettingsPage.templatesTab.list.count()).toBe(2);
+      expect<any>(projectSettingsPage.templatesTab.list.count()).toBe(2);
     });
 
   });
 
   // The Archived Texts tab is tested as part of a process in the Project page tests. IJH 2014-06
 
-  describe('project properties tab', function () {
-    var newName = constants.thirdProjectName;
+  describe('project properties tab', () => {
+    const newName = constants.thirdProjectName;
 
-    it('setup: click on tab', function () {
+    it('setup: click on tab', () => {
       loginPage.loginAsManager();
       projectSettingsPage.get(constants.testProjectName);
-      expect(projectSettingsPage.tabs.project.isPresent()).toBe(true);
+      expect<any>(projectSettingsPage.tabs.project.isPresent()).toBe(true);
       projectSettingsPage.tabs.project.click();
     });
 
-    it('can read properties', function () {
+    it('can read properties', () => {
       expect(projectSettingsPage.projectTab.name.getAttribute('value'))
         .toBe(constants.testProjectName);
-
-      //expect(projectSettingsPage.projectTab.featured.getAttribute('checked')).toBeFalsy();
       expect(projectSettingsPage.projectTab.allowAudioDownload.getAttribute('checked'))
         .toBeTruthy();
     });
 
-    it('can change properties and verify they persist', function () {
+    it('can change properties and verify they persist', () => {
       projectSettingsPage.projectTab.name.clear();
       projectSettingsPage.projectTab.name.sendKeys(newName);
-
-      //projectSettingsPage.projectTab.featured.click();
       projectSettingsPage.projectTab.allowAudioDownload.click();
       projectSettingsPage.projectTab.saveButton.click();
       browser.navigate().refresh();
       projectSettingsPage.tabs.project.click();
       expect(projectSettingsPage.projectTab.name.getAttribute('value')).toBe(newName);
-
-      //expect(projectSettingsPage.projectTab.featured.getAttribute('checked')).toBeTruthy();
       expect(projectSettingsPage.projectTab.allowAudioDownload.getAttribute('checked'))
         .toBeFalsy();
       projectSettingsPage.get(newName);
       projectSettingsPage.tabs.project.click();
       projectSettingsPage.projectTab.name.clear();
       projectSettingsPage.projectTab.name.sendKeys(constants.testProjectName);
-
-      //projectSettingsPage.projectTab.featured.click();
       projectSettingsPage.projectTab.saveButton.click();
     });
 
   });
 
-  describe('user profile lists', function () {
-    it('setup: click on tab and select the Location list for editing', function () {
+  describe('user profile lists', () => {
+    it('setup: click on tab and select the Location list for editing', () => {
       projectSettingsPage.tabs.optionlists.click();
       util.findRowByText(projectSettingsPage.optionlistsTab.editList, 'Study Group')
-        .then(function (row) {
+        .then(row => {
           row.click();
         });
     });
 
-    it('can add two values to a list', function () {
-      expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(0);
+    it('can add two values to a list', () => {
+      expect<any>(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(0);
       projectSettingsPage.optionlistsTab.addInput.sendKeys('foo');
       projectSettingsPage.optionlistsTab.addButton.click();
-      browser.wait(expectedCondition.visibilityOf(projectSettingsPage.optionlistsTab.addInput),
+      browser.wait(ExpectedConditions.visibilityOf(projectSettingsPage.optionlistsTab.addInput),
         constants.conditionTimeout);
-      expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(1);
+      expect<any>(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(1);
       projectSettingsPage.optionlistsTab.addInput.sendKeys('bar');
       projectSettingsPage.optionlistsTab.addButton.click();
-      expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(2);
+      expect<any>(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(2);
     });
 
-    it('can delete values from the list', function () {
-      var firstEditContentsList = projectSettingsPage.optionlistsTab.editContentsList.first();
-      expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(2);
+    it('can delete values from the list', () => {
+      const firstEditContentsList = projectSettingsPage.optionlistsTab.editContentsList.first();
+      expect<any>(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(2);
       projectSettingsPage.optionlistsTab.deleteButton(firstEditContentsList).click();
-      expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(1);
+      expect<any>(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(1);
       projectSettingsPage.optionlistsTab.deleteButton(firstEditContentsList).click();
-      expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(0);
+      expect<any>(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(0);
     });
   });
 
-  describe('communication settings tab', function () {
-    it('is not visible for project manager', function () {
-      expect(projectSettingsPage.tabs.communication.isPresent()).toBe(false);
+  describe('communication settings tab', () => {
+    it('is not visible for project manager', () => {
+      expect<any>(projectSettingsPage.tabs.communication.isPresent()).toBe(false);
     });
 
-    describe('as a system admin', function () {
-      it('setup: logout, login as system admin, go to project settings', function () {
+    describe('as a system admin', () => {
+      it('setup: logout, login as system admin, go to project settings', () => {
         loginPage.logout();
         loginPage.loginAsAdmin();
         projectSettingsPage.get(constants.testProjectName);
       });
 
-      it('the communication settings tab is visible', function () {
-        expect(projectSettingsPage.tabs.communication.isPresent()).toBe(true);
+      it('the communication settings tab is visible', () => {
+        expect<any>(projectSettingsPage.tabs.communication.isPresent()).toBe(true);
         projectSettingsPage.tabs.communication.click();
       });
 
-      it('can persist communication fields', function () {
-        expect(projectSettingsPage.communicationTab.sms.accountId.getAttribute('value')).toBe('');
-        expect(projectSettingsPage.communicationTab.sms.authToken.getAttribute('value')).toBe('');
-        expect(projectSettingsPage.communicationTab.sms.number.getAttribute('value')).toBe('');
-        expect(projectSettingsPage.communicationTab.email.address.getAttribute('value')).toBe('');
-        expect(projectSettingsPage.communicationTab.email.name.getAttribute('value')).toBe('');
+      it('can persist communication fields', () => {
+        expect<any>(projectSettingsPage.communicationTab.sms.accountId.getAttribute('value')).toBe('');
+        expect<any>(projectSettingsPage.communicationTab.sms.authToken.getAttribute('value')).toBe('');
+        expect<any>(projectSettingsPage.communicationTab.sms.number.getAttribute('value')).toBe('');
+        expect<any>(projectSettingsPage.communicationTab.email.address.getAttribute('value')).toBe('');
+        expect<any>(projectSettingsPage.communicationTab.email.name.getAttribute('value')).toBe('');
 
-        var sample = { a: '12345', b: '78', c: '90', d: 'email@me.com', e: 'John Smith' };
+        const sample = { a: '12345', b: '78', c: '90', d: 'email@me.com', e: 'John Smith' };
         projectSettingsPage.communicationTab.sms.accountId.sendKeys(sample.a);
         projectSettingsPage.communicationTab.sms.authToken.sendKeys(sample.b);
         projectSettingsPage.communicationTab.sms.number.sendKeys(sample.c);
@@ -243,19 +233,17 @@ describe('SFChecks project settings page - project manager', () => {
         browser.navigate().refresh();
         projectSettingsPage.tabs.communication.click();
 
-        expect(projectSettingsPage.communicationTab.sms.accountId.getAttribute('value'))
+        expect<any>(projectSettingsPage.communicationTab.sms.accountId.getAttribute('value'))
           .toBe(sample.a);
-        expect(projectSettingsPage.communicationTab.sms.authToken.getAttribute('value'))
+        expect<any>(projectSettingsPage.communicationTab.sms.authToken.getAttribute('value'))
           .toBe(sample.b);
-        expect(projectSettingsPage.communicationTab.sms.number.getAttribute('value'))
+        expect<any>(projectSettingsPage.communicationTab.sms.number.getAttribute('value'))
           .toBe(sample.c);
-        expect(projectSettingsPage.communicationTab.email.address.getAttribute('value'))
+        expect<any>(projectSettingsPage.communicationTab.email.address.getAttribute('value'))
           .toBe(sample.d);
-        expect(projectSettingsPage.communicationTab.email.name.getAttribute('value'))
+        expect<any>(projectSettingsPage.communicationTab.email.name.getAttribute('value'))
           .toBe(sample.e);
       });
     });
   });
-  */
-
 });
