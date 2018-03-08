@@ -32,7 +32,7 @@
                     <regarding-field class="form-control" content="comment.regarding.fieldValue" control="control"
                          field="comment.regarding.field" field-config="commentRegardingFieldConfig" ng-hide="isCommentRegardingPicture"></regarding-field>
                     <div data-ng-if="isCommentRegardingPicture">
-                        <img data-ng-src="{{comment.regarding.fieldValue}}">
+                        <img data-ng-src="{{getCommentRegardingPictureSource()}}">
                     </div>
                 </div>
                 <div class="commentContent" data-ng-hide="comment.editing" data-ng-bind="comment.content"></div>
