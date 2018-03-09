@@ -14,12 +14,5 @@ else
     APP_NAME="languageforge"
 fi
 
-npm install
-cd src
-composer install
-gulp test-e2e-webdriver_update
-../cleanup_css.sh
-gulp sass
-gulp build-webpack --applicationName $APP_NAME --doNoCompression true
-gulp test-e2e-compile
+gulp dev-dependencies-and-build --applicationName $APP_NAME --doNoCompression true
 echo -e "\n---------Finished refreshing npm, composer, webdriver, sass and webpack build----------"
