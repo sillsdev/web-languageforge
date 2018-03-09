@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
+angular.module('palaso.ui.dc.text', ['coreModule', 'textAngular'])
 
 // Custom textAngular tool for language spans
 .config(['$provide', function ($provide) {
@@ -255,9 +255,9 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
   }]);
 }])
 
-// Dictionary Control Formatted Text Editor
-.component('dcFormattedtext', {
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-formattedtext.html',
+// Dictionary Control Text Editor
+.component('dcText', {
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-text.html',
     bindings: {
       fteModel: '=',
       fteToolbar: '=',
