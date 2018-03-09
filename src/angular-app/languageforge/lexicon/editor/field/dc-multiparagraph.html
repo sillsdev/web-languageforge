@@ -7,17 +7,17 @@
                 <span class="wsid input-group-addon notranslate"
                     title="{{inputSystems[model.inputSystem].languageName}}">{{inputSystems[model.inputSystem].abbreviation}}</span>
                 <!--
-                <dc-formattedtext class="dc-formattedtext"
+                <dc-text class="dc-text"
                     fte-disabled="!($state.is('editor.entry') && control.rights.canEditEntry())"
                     fte-multiline="true"
                     fte-model="model.paragraphsHtml"
-                    fte-dir="inputSystemDirection(model.inputSystem)"></dc-formattedtext>
+                    fte-dir="inputSystemDirection(model.inputSystem)"></dc-text>
                     -->
-                <dc-formattedtext class="dc-formattedtext"
+                <dc-text class="dc-text"
                     fte-disabled="true"
                     fte-multiline="true"
                     fte-model="model.paragraphsHtml"
-                    fte-dir="inputSystemDirection(model.inputSystem)"></dc-formattedtext>
+                    fte-dir="inputSystemDirection(model.inputSystem)"></dc-text>
             </div>
         </div>
         <comment-bubble control="control" field="fieldName" input-system="" model="model"></comment-bubble>
