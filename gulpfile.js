@@ -1230,6 +1230,29 @@ gulp.task('build',
     'build-changeGroup')
 );
 
+gulp.task('get-dependencies',
+  gulp.parallel(
+    'build-composer',
+    'build-npm-front-end'
+  )
+);
+
+gulp.task('dev-build',
+  gulp.parallel(
+    'sass',
+    'test-e2e-webdriver_update',
+    'test-e2e-compile',
+    'build-webpack'
+  )
+);
+
+gulp.task('dev-dependencies-and-build',
+  gulp.series(
+    'get-dependencies',
+    'dev-build'
+  )
+);
+
 // -------------------------------------
 //   Task: Build and Upload to destination
 // -------------------------------------
