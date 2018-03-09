@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
+angular.module('palaso.ui.dc.text', ['coreModule', 'textAngular'])
 
 // Custom textAngular tool for language spans
 .config(['$provide', function ($provide) {
@@ -255,12 +255,10 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
   }]);
 }])
 
-// Dictionary Control Formatted Text Editor
-.directive('dcFormattedtext', [function () {
-  return {
-    restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-formattedtext.html',
-    scope: {
+// Dictionary Control Text Editor
+.component('dcText', {
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-text.html',
+    bindings: {
       fteModel: '=',
       fteToolbar: '=',
       fteDisabled: '=',
@@ -268,31 +266,44 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
       fteDir: '='
     },
     controller: ['$scope', 'sessionService', function ($scope, ss) {
-      $scope.fte = {};
-      if (angular.isDefined($scope.fteToolbar)) {
-        $scope.fte.toolbar = $scope.fteToolbar;
+      var ctrl = this;
+      ctrl.fte = {};
+      ctrl.disabledMsg = 'This field cannot be edited because it contains metadata that would '
+        + 'be lost by editing in Language Forge. Fields with metadata may be edited in '
+        + 'Fieldworks Language Explorer.';
+
+      if (!ctrl.fteMultiline) {
+
+        $scope.$watch('$ctrl.fteModel', function (newVal) {
+          ctrl.textFieldValue = ctrl.unescapeHTML(newVal);
+        });
+
+        ctrl.inputChanged = function inputChanged() {
+          ctrl.fteModel = ctrl.escapeHTML(ctrl.textFieldValue);
+        };
+
+      }
+
+      if (angular.isDefined(ctrl.fteToolbar)) {
+        ctrl.fte.toolbar = ctrl.fteToolbar;
       } else {
         ss.getSession().then(function (session) {
           if (session.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT)) {
 
             // if site administrator enable development controls
-            //        $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan'], ['html']]";
+            //        ctrl.fte.toolbar = "[['lexInsertLink', 'languageSpan'], ['html']]";
             // html toggle for development only
-            $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
+            ctrl.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
           } else {
-            //        $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
+            //        ctrl.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
             // disable unfinished link and language span controls
-            $scope.fte.toolbar = '[[]]';
+            ctrl.fte.toolbar = '[[]]';
           }
         });
       }
 
-      // x gets sanitised so no default wrap
-      $scope.fte.defaultWrap = ($scope.fteMultiline) ? 'p' : 'x';
-      $scope.fte.classMultiline = ($scope.fteMultiline) ? 'dc-multiline' : '';
-
-      $scope.setupTaEditor = function setupTaEditor($element) {
-        if (!$scope.fteMultiline) {
+      ctrl.setupTaEditor = function setupTaEditor($element) {
+        if (!ctrl.fteMultiline) {
           $element.on('keydown', function (event) {
             // ignore the enter key
             var key = event.which || event.keyCode;
@@ -302,6 +313,17 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
           });
         }
       };
+
+      ctrl.unescapeHTML = function unescapeHTML(str) {
+        return new DOMParser().parseFromString(str, 'text/html').body.textContent;
+      };
+
+      ctrl.escapeHTML = function escapeHTML(str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      };
+
     }]
-  };
-}]);
+  }
+);

@@ -35,15 +35,6 @@ form.dc-multitext .wsid {
     border: 0;
 }
 
-form.dc-multitext input[type="text"],
-form.dc-multitext textarea,
-form.dc-multitext .uneditable-input {
-    margin-top: -1px;
-    margin-bottom: -1px;
-    margin-left: 0;
-    margin-right: -1px;
-}
-
 /* language span highlight */
 form.dc-multitext .uneditable-input span {
     border-radius: 9px;
