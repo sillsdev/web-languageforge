@@ -528,6 +528,79 @@ class LexEntryCommandsTest extends TestCase
                              'newValue.senses#' . $sense->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'also eat an apple'], $differences);
     }
 
+    public function testUpdateEntry_UpdateTwoExamplesInTwoSenses_DifferenceHasCorrectSenseGuids()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense1 = new LexSense();
+        $sense1->definition->form('en', 'apple');
+        $entry->senses[] = $sense1;
+        $sense2 = new LexSense();
+        $sense2->definition->form('fr', 'pomme');
+        $entry->senses[] = $sense2;
+        $example1 = new LexExample();
+        $example1->sentence->form('en', 'eat an apple');
+        $sense1->examples[] = $example1;
+        $example2 = new LexExample();
+        $example2->sentence->form('fr', 'manger une pomme');
+        $sense2->examples[] = $example2;
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $params['senses'][0]['examples'][0]['sentence']['en']['value'] = 'also eat an apple';
+        $params['senses'][1]['examples'][0]['sentence']['fr']['value'] = 'aussi manger une pomme';
+
+        $userId = self::$environ->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = new LexEntryModel($project, $entryId);
+        $differences = $entry->calculateDifferences($updatedEntry);
+        $this->assertEquals(['oldValue.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'eat an apple',
+                             'newValue.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'also eat an apple',
+                             'oldValue.senses#' . $sense2->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'manger une pomme',
+                             'newValue.senses#' . $sense2->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'aussi manger une pomme'], $differences);
+    }
+
+    public function testUpdateEntry_UpdateExamplesInOneSenseAndDeleteExampleInTheOther_DifferenceHasCorrectSenseGuids()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense1 = new LexSense();
+        $sense1->definition->form('en', 'apple');
+        $entry->senses[] = $sense1;
+        $sense2 = new LexSense();
+        $sense2->definition->form('fr', 'pomme');
+        $entry->senses[] = $sense2;
+        $example1 = new LexExample();
+        $example1->sentence->form('en', 'eat an apple');
+        $sense1->examples[] = $example1;
+        $example2 = new LexExample();
+        $example2->sentence->form('fr', 'manger une pomme');
+        $sense2->examples[] = $example2;
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $params['senses'][0]['examples'][0]['sentence']['en']['value'] = 'also eat an apple';
+        $params['senses'][1]['examples'] = [];
+
+        $userId = self::$environ->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = new LexEntryModel($project, $entryId);
+        $differences = $entry->calculateDifferences($updatedEntry);
+        $this->assertEquals(['oldValue.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'eat an apple',
+                             'newValue.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'also eat an apple',
+                             'deleted.senses#' . $sense2->guid . '.examples#' . $example2->guid => 'manger une pomme'], $differences);
+    }
+
     /* Ignore test for send receive v1.1 since dirtySR counter is not being incremented on edit. IJH 2015-02
         public function testUpdateEntry_ProjectHasSendReceive_EntryHasGuidAndDirtySRIncremented()
         {
