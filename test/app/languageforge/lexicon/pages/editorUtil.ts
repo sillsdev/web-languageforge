@@ -11,7 +11,7 @@ export class EditorUtil {
     let inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
     return inputSystemDivs.map((div: any) => {
       let wsidSpan = div.element(by.css('.input-group > span.wsid'));
-      let wordInput = div.element(by.css('.input-group > .dc-formattedtext input'));
+      let wordInput = div.element(by.css('.input-group > .dc-text input'));
       return wsidSpan.getText().then((wsid: any) => {
         return wordInput.isPresent().then((isWordPresent: boolean) => {
           if (isWordPresent) {
