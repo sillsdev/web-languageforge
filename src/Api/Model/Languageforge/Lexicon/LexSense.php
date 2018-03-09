@@ -328,10 +328,12 @@ class LexSense extends ObjectForEncoding
             /** @var LexExample $thisExample */
             $seenGuids[] = $guid;
             $thisPosition  = $thisPositions[$guid];
-            $otherPosition = $otherPositions[$guid];
-            if ($otherPosition !== $thisPosition) {
-                $differences["movedFrom.examples#" . $guid] = (string)$thisPosition;
-                $differences["movedTo.examples#" . $guid] = (string)$otherPosition;
+            if (isset($otherPositions[$guid])) {
+                $otherPosition = $otherPositions[$guid];
+                if ($otherPosition !== $thisPosition) {
+                    $differences["movedFrom.examples#" . $guid] = (string)$thisPosition;
+                    $differences["movedTo.examples#" . $guid] = (string)$otherPosition;
+                }
             }
             if (array_key_exists($guid, $otherExamplesByGuid)) {
                 /** @var LexExample $otherExample */
