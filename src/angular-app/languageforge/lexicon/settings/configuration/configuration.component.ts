@@ -51,6 +51,7 @@ export class LexiconConfigurationController implements angular.IController {
   optionListsPristine: any;
 
   private session: Session;
+  private unifiedViewModelPristine: ConfigurationUnifiedViewModel;
   private warnOfUnsavedEditsId: string;
 
   static $inject: string[] = ['$scope', '$q',
@@ -170,12 +171,12 @@ export class LexiconConfigurationController implements angular.IController {
       inputSystemsList?: ConfigurationInputSystemsViewModel[],
       optionListsDirty?: LexOptionList[],
       unifiedViewModel?: ConfigurationUnifiedViewModel,
+      isInitialLoad?: boolean,
       addInputSystem?: boolean
     }
   ): void => {
     if ($event.configDirty) {
       this.configDirty = $event.configDirty;
-      this.$scope.configForm.$setDirty();
 
       // Force fire $onChanges: see https://github.com/angular/angular.js/issues/14572
       this.configDirty = angular.copy(this.configDirty);
@@ -183,23 +184,31 @@ export class LexiconConfigurationController implements angular.IController {
 
     if ($event.inputSystemViewModels) {
       this.inputSystemViewModels = $event.inputSystemViewModels;
-      this.$scope.configForm.$setDirty();
       this.inputSystemViewModelToConfig();
     }
 
     if ($event.inputSystemsList) {
       this.inputSystemsList = $event.inputSystemsList;
-      this.$scope.configForm.$setDirty();
     }
 
     if ($event.optionListsDirty) {
-        this.optionListsDirty = $event.optionListsDirty;
-        this.$scope.configForm.$setDirty();
+      this.optionListsDirty = $event.optionListsDirty;
     }
 
     if ($event.unifiedViewModel) {
-        this.unifiedViewModel = $event.unifiedViewModel;
-        this.$scope.configForm.$setDirty();
+      this.unifiedViewModel = $event.unifiedViewModel;
+      if ($event.isInitialLoad) {
+        this.unifiedViewModelPristine = angular.copy($event.unifiedViewModel);
+      }
+    }
+
+    const isPristine = angular.equals(this.unifiedViewModelPristine, this.unifiedViewModel)  &&
+      angular.equals(this.configPristine, this.configDirty)  &&
+      angular.equals(this.optionListsPristine, this.optionListsDirty);
+    if (isPristine) {
+      this.$scope.configForm.$setPristine();
+    } else {
+      this.$scope.configForm.$setDirty();
     }
 
     if ($event.addInputSystem != null) {

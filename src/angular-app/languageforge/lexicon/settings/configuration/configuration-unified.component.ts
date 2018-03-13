@@ -25,8 +25,11 @@ export class UnifiedConfigurationController implements angular.IController {
   uccUsers: { [userId: string]: User };
   readonly uccOptionLists: LexOptionList[];
   uccAddInputSystem: (params: {}) => void;
-  uccOnUpdate: (params: { $event: { unifiedViewModel?: ConfigurationUnifiedViewModel,
-    configDirty?: LexiconConfig } }) => void;
+  uccOnUpdate: (params: { $event: {
+    unifiedViewModel?: ConfigurationUnifiedViewModel,
+    configDirty?: LexiconConfig,
+    isInitialLoad?: boolean
+  } }) => void;
 
   unifiedViewModel: ConfigurationUnifiedViewModel;
   typeahead: Typeahead;
@@ -35,8 +38,8 @@ export class UnifiedConfigurationController implements angular.IController {
   constructor(private $scope: angular.IScope, private $filter: angular.IFilterService, private $modal: ModalService) { }
 
   $onInit() {
-    this.$scope.$watch(() => this.unifiedViewModel, () => {
-      this.uccOnUpdate({ $event: { unifiedViewModel: this.unifiedViewModel } });
+    this.$scope.$watch(() => this.unifiedViewModel, (newVal, oldVal) => {
+      this.uccOnUpdate({ $event: { unifiedViewModel: this.unifiedViewModel, isInitialLoad: (oldVal == null) } });
     }, true);
   }
 
@@ -52,7 +55,7 @@ export class UnifiedConfigurationController implements angular.IController {
           this.typeahead.usersWithoutSettings.push(this.uccUsers[userId]);
         }
       }
-      for (const groupList of this.unifiedViewModel.groupLists){
+      for (const groupList of this.unifiedViewModel.groupLists) {
         this.removeFromUsersWithoutSettings(groupList.userId);
       }
     }
