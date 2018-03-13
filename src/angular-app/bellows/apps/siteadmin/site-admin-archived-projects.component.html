@@ -2,9 +2,11 @@
     <div class="row">
         <div class="col-12">
             <button data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.publish" class="btn btn-std"
+                    id="site-admin-republish-btn"
                     data-ng-click="$ctrl.publishProjects()">
                 <i class="fa fa-globe fa-lg iconPadding" aria-hidden="true" style="color:black"></i>Re-publish Projects</button>
             <button data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.remove" class="btn btn-std"
+                    id="site-admin-delete-btn"
                     data-ng-click="$ctrl.deleteProjects()" style="color:black">Delete Projects</button>
         </div>
     </div>

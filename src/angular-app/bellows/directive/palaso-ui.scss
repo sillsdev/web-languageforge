@@ -27,10 +27,6 @@ div.typeahead ul {
 
   li {
     padding: 0.25rem;
-
-    &:hover {
-      background-color: $background-highlight;
-    }
   }
 }
 
@@ -236,4 +232,9 @@ pui-soundplayer {
         height: auto;
     }
   }
+}
+
+.ellipsis-menu-toggle {
+  padding-top: 0;
+  padding-bottom: 0;
 }

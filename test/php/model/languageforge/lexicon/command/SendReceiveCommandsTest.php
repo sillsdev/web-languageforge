@@ -332,6 +332,7 @@ class SendReceiveCommandsTest extends TestCase
 
         $status = SendReceiveCommands::getProjectStatus($projectId, $mockStatePath);
         $this->assertEquals('LF_UNSYNCED', $status['SRState']);
+        // TODO: The assert above is intermittently failing with "Undefined index: SRState", but not every time. Figure out why; I suspect a race condition of some kind. - RM 2018-03
     }
 
     public function testGetProjectStatus_HasSendReceiveAndStateFileNotJson_NoException()

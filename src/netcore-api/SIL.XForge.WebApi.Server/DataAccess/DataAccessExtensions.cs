@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.Mongo;
 using Microsoft.Extensions.Configuration;
@@ -12,9 +15,6 @@ using MongoDB.Driver;
 using SIL.XForge.WebApi.Server.Models;
 using SIL.XForge.WebApi.Server.Models.Lexicon;
 using SIL.XForge.WebApi.Server.Models.Translate;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SIL.XForge.WebApi.Server.DataAccess
 {
@@ -42,7 +42,14 @@ namespace SIL.XForge.WebApi.Server.DataAccess
         {
             IConfigurationSection dataAccessConfig = configuration.GetSection("DataAccess");
             string connectionString = dataAccessConfig.GetValue<string>("ConnectionString");
-            services.AddHangfire(x => x.UseMongoStorage(connectionString, "jobs"));
+            services.AddHangfire(x => x.UseMongoStorage(connectionString, "jobs",
+                new MongoStorageOptions
+                {
+                    MigrationOptions = new MongoMigrationOptions
+                    {
+                        Strategy = MongoMigrationStrategy.Migrate
+                    }
+                }));
 
             BsonSerializer.RegisterDiscriminatorConvention(typeof(Project),
                 new HierarchicalDiscriminatorConvention("appName"));
@@ -124,7 +131,7 @@ namespace SIL.XForge.WebApi.Server.DataAccess
         private static void AddMongoRepository<T>(this IServiceCollection services, string collectionName,
             Action<BsonClassMap<T>> setup = null) where T : IEntity
         {
-            RegisterClass<T>(setup);
+            RegisterClass(setup);
             services.AddSingleton<IRepository<T>>(sp =>
                 new MongoRepository<T>(sp.GetService<IMongoClient>().GetDatabase("scriptureforge")
                     .GetCollection<T>(collectionName)));
@@ -133,7 +140,7 @@ namespace SIL.XForge.WebApi.Server.DataAccess
         private static void AddMongoProjectRepositoryFactory<T>(this IServiceCollection services, string collectionName,
             Action<BsonClassMap<T>> setup = null) where T : IEntity
         {
-            RegisterClass<T>(setup);
+            RegisterClass(setup);
             services.AddSingleton<IProjectRepositoryFactory<T>>(sp =>
                 new MongoProjectRepositoryFactory<T>(sp.GetService<IMongoClient>(), collectionName));
         }

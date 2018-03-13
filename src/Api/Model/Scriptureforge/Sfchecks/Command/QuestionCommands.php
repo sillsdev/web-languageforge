@@ -21,11 +21,9 @@ class QuestionCommands
     {
         $projectModel = new ProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($projectModel);
-        $questionModel = new QuestionModel($projectModel);
-        $isNewQuestion = ($object['id'] == '');
-        if (!$isNewQuestion) {
-            $questionModel->read($object['id']);
-        }
+        $questionId = $object['id'] ?? '';
+        $isNewQuestion = ($questionId == '');
+        $questionModel = new QuestionModel($projectModel, $questionId);
         JsonDecoder::decode($questionModel, $object);
         $questionId = $questionModel->write();
         if ($isNewQuestion) {
@@ -143,7 +141,7 @@ class QuestionCommands
         $answerId = $question->writeAnswer($answer);
 
         // Re-read question model to pick up new answer
-        $question->read($questionId);
+        $question = new QuestionModel($project, $questionId);
         $newAnswer = $question->readAnswer($answerId);
         if ($answerJson['id'] != '') {
             // TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
@@ -237,7 +235,7 @@ class QuestionCommands
         JsonDecoder::decode($commentModel, $comment);
         $commentModel->userRef->id = $authorId;
         $commentId = QuestionModel::writeComment($projectModel->databaseName(), $questionId, $answerId, $commentModel);
-        $questionModel->read($questionId);
+        $questionModel = new QuestionModel($projectModel, $questionId);
         $newComment = $questionModel->readComment($answerId, $commentId);
         $commentDTO = QuestionCommentDto::encodeComment($newComment);
 

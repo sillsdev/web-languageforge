@@ -28,7 +28,7 @@ class SfchecksUploadCommandsTest extends TestCase
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
-        $text->read($textId);
+        $text = new TextModel($project, $textId);
         $assetsFolderPath = $project->getAssetsFolderPath();
         $filePath = SfchecksUploadCommands::mediaFilePath($assetsFolderPath, $textId, $fileName);
         $projectSlug = $project->databaseName();

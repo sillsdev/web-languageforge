@@ -3,39 +3,39 @@
     <form data-ng-show="rights.showControlBar" class="control-bar form-inline d-block">
         <div class="form-row align-items-center">
             <div class="col-auto">
-                <button data-ng-show="rights.create" class="btn btn-primary"
+                <button data-ng-show="rights.create" class="btn btn-primary" id="questions-add-new-btn"
                         data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">
                     <i class="fa fa-plus"></i> Add New Question
                 </button>
             </div>
             <div class="col-auto">
-                <button data-ng-show="rights.archive" class="btn btn-std"
+                <button data-ng-show="rights.archive" class="btn btn-std" id="questions-archive-btn"
                         data-ng-disabled="selected.length == 0"
                         data-ng-click="archiveQuestions()">
                     <i class="fa fa-archive fa-lg"></i> Archive Questions
                 </button>
             </div>
             <div class="col-auto">
-                <button data-ng-show="rights.createTemplate"
+                <button data-ng-show="rights.createTemplate"  id="questions-make-template-btn"
                         data-ng-disabled="selected.length == 0 || selected.length > 1"
                         class="btn btn-std" data-ng-click="makeQuestionIntoTemplate()">
                     <i class="fa fa-thumb-tack"></i> Make Template
                 </button>
             </div>
             <div class="col">
-                <div id="text_settings_button" class="float-right" uib-dropdown data-ng-show="rights.editOther">
+                <div id="questions-text-settings-btn" class="float-right" uib-dropdown data-ng-show="rights.editOther">
                     <button class="btn btn-std" uib-dropdown-toggle tooltip-placement="left">
                         <i class="fa fa-cog"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
-                        <a id="text_settings_link" class="dropdown-item" data-ng-href="#!/{{textId}}/settings">Text Settings</a>
+                        <a id="questions-text-settings-link" class="dropdown-item" data-ng-href="#!/{{textId}}/settings">Text Settings</a>
                     </div>
                 </div>
             </div>
         </div>
     </form>
     <div class="new-item" uib-collapse="newQuestionCollapsed">
-        <form class="card col-md-11" name="newQuestionForm">
+        <form class="card col-md-11" name="newQuestionForm" id="questions-new-question-form">
             <div class="card-body">
                 <fieldset class="col-md-4">
                     <label class="form-group">Title
@@ -54,7 +54,7 @@
                         Also save as template</label>
                     <a href class="float-right"
                         data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">Cancel</a>
-                    <button type="submit" class="btn btn-primary save-new-question"
+                    <button type="submit" class="btn btn-primary save-new-question" id="questions-save-question-btn"
                         data-ng-disabled="newQuestionForm.$invalid"
                         data-ng-click="addQuestion()">
                         <i class="fa fa-check"></i> Add Question
