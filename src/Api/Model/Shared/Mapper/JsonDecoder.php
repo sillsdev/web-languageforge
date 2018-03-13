@@ -21,6 +21,7 @@ class JsonDecoder
      * @param object $model
      * @param array $values A mixed array of JSON (like) data.
      * @param string $id
+     * @throws \Exception
      */
     public static function decode($model, $values, $id = '')
     {
@@ -30,7 +31,7 @@ class JsonDecoder
 
     /**
      * Sets the public properties of $model to values from $values[propertyName]
-     * @param object|MapOf $model
+     * @param object|MapOf|ArrayOf $model
      * @param array $values A mixed array of JSON (like) data.
      * @param string $id
      * @throws \Exception
@@ -116,10 +117,10 @@ class JsonDecoder
     public function decodeArrayOf($key, $model, $data)
     {
         if ($data == null) {
-            $data = array();
+            $data = [];
         }
         CodeGuard::checkTypeAndThrow($data, 'array');
-        $propertiesToKeep = array();
+        $propertiesToKeep = [];
 
         // check if array item class has any private, read-only or recursive properties
         if (get_class($this) != 'Api\Model\Shared\Mapper\MongoDecoder' && $model->hasGenerator()) {
@@ -128,15 +129,19 @@ class JsonDecoder
             $propertiesToKeep = $this->getRecursiveProperties($arrayItem, $propertiesToKeep);
         }
 
-        $oldModelArray = $model->exchangeArray(array());
+        $oldModelArray = $model->exchangeArray([]);
         foreach ($data as $index => $item) {
             if ($model->hasGenerator()) {
                 $object = $model->generate($item);
 
                 // put back private, read-only and recursive properties into new object that was just generated
                 foreach ($propertiesToKeep as $property) {
-                    if (array_key_exists($index, $oldModelArray)) {
-                        $object->{$property} = $oldModelArray[$index]->{$property};
+                    if (array_key_exists($index, $oldModelArray) && property_exists($oldModelArray[$index], $property)) {
+                        if (is_object($oldModelArray[$index]->{$property})) {
+                            $object->{$property} = clone $oldModelArray[$index]->{$property};
+                        } else {
+                            $object->{$property} = $oldModelArray[$index]->{$property};
+                        }
                     }
                 }
                 $this->_decode($object, $item, '');
@@ -159,10 +164,10 @@ class JsonDecoder
     public function decodeMapOf($key, $model, $data)
     {
         if (is_null($data) || !is_array($data) && get_class($data) == 'stdClass') {
-            $data = array();
+            $data = [];
         }
         CodeGuard::checkTypeAndThrow($data, 'array');
-        $propertiesToKeep = array();
+        $propertiesToKeep = [];
 
         // check if array item class has any private, read-only or recursive properties
         if (get_class($this) != 'Api\Model\Shared\Mapper\MongoDecoder' && $model->hasGenerator()) {
@@ -173,7 +178,7 @@ class JsonDecoder
             }
         }
 
-        $oldModelArray = $model->exchangeArray(array());
+        $oldModelArray = $model->exchangeArray([]);
         foreach ($data as $itemKey => $item) {
             if ($model->hasGenerator()) {
                 $object = $model->generate($item);
@@ -181,7 +186,11 @@ class JsonDecoder
                 // put back private, read-only and recursive properties into new object that was just generated
                 foreach ($propertiesToKeep as $property) {
                     if (array_key_exists($itemKey, $oldModelArray) && property_exists($oldModelArray[$itemKey], $property)) {
-                        $object->{$property} = $oldModelArray[$itemKey]->{$property};
+                        if (is_object($oldModelArray[$itemKey]->{$property})) {
+                            $object->{$property} = clone $oldModelArray[$itemKey]->{$property};
+                        } else {
+                            $object->{$property} = $oldModelArray[$itemKey]->{$property};
+                        }
                     }
                 }
                 $this->_decode($object, $item, $itemKey);
@@ -203,7 +212,7 @@ class JsonDecoder
      */
     public function decodeReferenceList($model, $data)
     {
-        $model->refs = array();
+        $model->refs = [];
         if (array_key_exists('refs', $data)) {
             // This likely came from an API client, who shouldn't be sending this.
             return;
@@ -240,7 +249,7 @@ class JsonDecoder
      * @param array $properties to merge
      * @return array
      */
-    private function getPrivateAndReadOnlyProperties($model, $properties = array())
+    private function getPrivateAndReadOnlyProperties($model, $properties = [])
     {
         if (get_class($this) != 'Api\Model\Shared\Mapper\MongoDecoder') {
             if (method_exists($model, 'getPrivateProperties')) {
@@ -259,7 +268,7 @@ class JsonDecoder
      * @param array $properties to merge
      * @return array
      */
-    private function getRecursiveProperties($model, $properties = array())
+    private function getRecursiveProperties($model, $properties = [])
     {
         if (get_class($this) != 'Api\Model\Shared\Mapper\MongoDecoder') {
             foreach ($this->getProperties($model) as $property => $value) {
