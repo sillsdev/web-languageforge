@@ -85,6 +85,8 @@ class UserUnreadModelTest extends TestCase
         $otherUnreadModel->markRead($activityId);
         $otherUnreadModel->write();
 
+        // Re-read the unread activity
+        $unreadModel = new UnreadActivityModel($userId1, $project->id->asString());
         $unreadModel->read();
         $this->assertFalse($unreadModel->isUnread($activityId));
 
@@ -109,6 +111,8 @@ class UserUnreadModelTest extends TestCase
         $otherUnreadModel->markAllRead();
         $otherUnreadModel->write();
 
+        // Re-read the unread activity
+        $unreadModel = new UnreadActivityModel($userId1, $project->id->asString());
         $unreadModel->read();
         $this->assertFalse($unreadModel->isUnread($activityId1));
         $this->assertFalse($unreadModel->isUnread($activityId2));
@@ -163,6 +167,8 @@ class UserUnreadModelTest extends TestCase
         $otherUnreadModel->markAllRead();
         $otherUnreadModel->write();
 
+        // Re-read the unread question model
+        $unreadModel = new UnreadQuestionModel($userId1, $project->id->asString());
         $unreadModel->read();
         $this->assertFalse($unreadModel->isUnread($qId1));
         $this->assertFalse($unreadModel->isUnread($qId2));

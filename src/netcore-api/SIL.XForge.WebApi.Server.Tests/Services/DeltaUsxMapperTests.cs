@@ -1,4 +1,6 @@
 using System.Xml.Linq;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using NUnit.Framework;
 using ShareDB.RichText;
 
@@ -15,7 +17,8 @@ namespace SIL.XForge.WebApi.Server.Services
                 .InsertPara("h")
                 .Insert("\n");
 
-            XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
+            DeltaUsxMapper mapper = CreateMapper();
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
 
             XElement expected = Usx("PHM",
                 Para("h", "Philemon"));
@@ -32,7 +35,8 @@ namespace SIL.XForge.WebApi.Server.Services
                 .InsertPara("p")
                 .Insert("\n");
 
-            XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
+            DeltaUsxMapper mapper = CreateMapper();
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
 
             XElement expected = Usx("PHM",
                 Chapter("1"),
@@ -62,7 +66,8 @@ namespace SIL.XForge.WebApi.Server.Services
                 .InsertPara("p")
                 .Insert("\n");
 
-            XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
+            DeltaUsxMapper mapper = CreateMapper();
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
 
             XElement expected = Usx("PHM",
                 Chapter("1"),
@@ -88,7 +93,8 @@ namespace SIL.XForge.WebApi.Server.Services
                 .InsertPara("p")
                 .Insert("\n");
 
-            XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
+            DeltaUsxMapper mapper = CreateMapper();
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
 
             XElement expected = Usx("PHM",
                 Chapter("1"),
@@ -120,7 +126,8 @@ namespace SIL.XForge.WebApi.Server.Services
                 .InsertPara("p")
                 .Insert("\n");
 
-            XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
+            DeltaUsxMapper mapper = CreateMapper();
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
 
             XElement expected = Usx("PHM",
                 Chapter("1"),
@@ -148,7 +155,8 @@ namespace SIL.XForge.WebApi.Server.Services
                 .InsertPara("p")
                 .Insert("\n");
 
-            XElement newUsxElem = DeltaUsxMapper.ToUsx("2.5", "PHM", null, delta);
+            DeltaUsxMapper mapper = CreateMapper();
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
 
             XElement expected = Usx("PHM",
                 Para("p"),
@@ -169,7 +177,8 @@ namespace SIL.XForge.WebApi.Server.Services
                 Para("p",
                     Verse("3")));
 
-            Delta newDelta = DeltaUsxMapper.ToDelta(usxElem);
+            DeltaUsxMapper mapper = CreateMapper();
+            Delta newDelta = mapper.ToDelta("12345", usxElem);
 
             var expected = Delta.New()
                 .InsertChapter("1")
@@ -203,7 +212,8 @@ namespace SIL.XForge.WebApi.Server.Services
                 Para("p",
                     Verse("3")));
 
-            Delta newDelta = DeltaUsxMapper.ToDelta(usxElem);
+            DeltaUsxMapper mapper = CreateMapper();
+            Delta newDelta = mapper.ToDelta("12345", usxElem);
 
             var expected = Delta.New()
                 .InsertChapter("1")
@@ -241,7 +251,8 @@ namespace SIL.XForge.WebApi.Server.Services
                         "."),
                     ", so that we can test it."));
 
-            Delta newDelta = DeltaUsxMapper.ToDelta(usxElem);
+            DeltaUsxMapper mapper = CreateMapper();
+            Delta newDelta = mapper.ToDelta("12345", usxElem);
 
             var expected = Delta.New()
                 .InsertChapter("1")
@@ -263,34 +274,39 @@ namespace SIL.XForge.WebApi.Server.Services
             Assert.IsTrue(newDelta.DeepEquals(expected));
         }
 
-        private XElement Usx(string code, params XElement[] elems)
+        private static DeltaUsxMapper CreateMapper()
+        {
+            return new DeltaUsxMapper(Substitute.For<ILogger<DeltaUsxMapper>>());
+        }
+
+        private static XElement Usx(string code, params XElement[] elems)
         {
             return new XElement("usx", new XAttribute("version", "2.5"),
                 new XElement("book", new XAttribute("code", code), new XAttribute("style", "id")),
                 elems);
         }
 
-        public XElement Para(string style, params object[] contents)
+        private static XElement Para(string style, params object[] contents)
         {
             return new XElement("para", new XAttribute("style", style), contents);
         }
 
-        private XElement Chapter(string number)
+        private static XElement Chapter(string number)
         {
             return new XElement("chapter", new XAttribute("number", number), new XAttribute("style", "c"));
         }
 
-        private XElement Verse(string number)
+        private static XElement Verse(string number)
         {
             return new XElement("verse", new XAttribute("number", number), new XAttribute("style", "v"));
         }
 
-        private XElement Char(string style, params object[] contents)
+        private static XElement Char(string style, params object[] contents)
         {
             return new XElement("char", new XAttribute("style", style), contents);
         }
 
-        private XElement Note(string style, string caller, params object[] contents)
+        private static XElement Note(string style, string caller, params object[] contents)
         {
             return new XElement("note", new XAttribute("caller", caller), new XAttribute("style", style), contents);
         }

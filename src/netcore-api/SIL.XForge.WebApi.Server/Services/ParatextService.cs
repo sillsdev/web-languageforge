@@ -1,3 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
@@ -5,17 +16,6 @@ using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Models;
 using SIL.XForge.WebApi.Server.Options;
 using SIL.XForge.WebApi.Server.Utils;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using System.Net;
 
 namespace SIL.XForge.WebApi.Server.Services
 {
@@ -35,18 +35,18 @@ namespace SIL.XForge.WebApi.Server.Services
             _httpClientHandler = new HttpClientHandler();
             _dataAccessClient = new HttpClient(_httpClientHandler);
             _registryClient = new HttpClient(_httpClientHandler);
-            if (env.IsDevelopment())
-            {
-                _httpClientHandler.ServerCertificateCustomValidationCallback
-                    = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-                _dataAccessClient.BaseAddress = new Uri("https://data-access-dev.paratext.org");
-                _registryClient.BaseAddress = new Uri("https://registry-dev.paratext.org");
-            }
-            else
-            {
-                _dataAccessClient.BaseAddress = new Uri("https://data-access.paratext.org");
-                _registryClient.BaseAddress = new Uri("https://registry.paratext.org");
-            }
+            //if (env.IsDevelopment())
+            //{
+            _httpClientHandler.ServerCertificateCustomValidationCallback
+                = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            _dataAccessClient.BaseAddress = new Uri("https://data-access-dev.paratext.org");
+            _registryClient.BaseAddress = new Uri("https://registry-dev.paratext.org");
+            //}
+            //else
+            //{
+            //    _dataAccessClient.BaseAddress = new Uri("https://data-access.paratext.org");
+            //    _registryClient.BaseAddress = new Uri("https://registry.paratext.org");
+            //}
             _registryClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
@@ -197,11 +197,11 @@ namespace SIL.XForge.WebApi.Server.Services
         }
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool _disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
@@ -210,7 +210,7 @@ namespace SIL.XForge.WebApi.Server.Services
                     _httpClientHandler.Dispose();
                 }
 
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 

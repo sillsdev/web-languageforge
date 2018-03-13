@@ -26,7 +26,7 @@ class CommentModelTest extends TestCase
         $answerId = $question->writeAnswer($answer);
 
         // List
-        $question->read($questionId);
+        $question = new QuestionModel($project, $questionId);
         $count = count($question->answers[$answerId]->comments);
         $this->assertEquals(0, $count);
 
@@ -64,7 +64,7 @@ class CommentModelTest extends TestCase
         QuestionModel::removeComment($project->databaseName(), $questionId, $answerId, $id);
 
         // List
-        $otherQuestion->read($questionId);
+        $otherQuestion = new QuestionModel($project, $questionId);
         $count = count($otherQuestion->answers[$answerId]->comments);
         $this->assertEquals(0, $count);
     }
