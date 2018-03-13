@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,10 +10,6 @@ using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Dtos;
 using SIL.XForge.WebApi.Server.Models;
 using SIL.XForge.WebApi.Server.Services;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SIL.XForge.WebApi.Server.Controllers
 {

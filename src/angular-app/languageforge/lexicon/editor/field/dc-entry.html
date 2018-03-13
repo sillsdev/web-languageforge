@@ -1,10 +1,14 @@
 <div class="dc-entry">
-    <div class="card card-outline-primary">
+    <div class="card card-outline-primary entry-card">
         <div class="card-header">
             <div data-ng-if="rights.canDeleteEntry() && $state.is('editor.entry')"
-                 class="deleteX float-right">
-                <i data-ng-click="deleteEntry()" id="deleteEntry" title="Delete this entry"
-                   class="fa fa-trash"></i>
+                class="dropdown float-right" uib-dropdown>
+                <a class="btn ellipsis-menu-toggle pui-no-caret" uib-dropdown-toggle>
+                    <span class="fa fa-ellipsis-v"></span>
+                </a>
+                <div class="dropdown-menu-right" uib-dropdown-menu>
+                    <a href data-ng-click="deleteEntry()" class="dropdown-item">Delete Entry</a>
+                </div>
             </div>
             &nbsp;{{'Entry' | translate}}
         </div>

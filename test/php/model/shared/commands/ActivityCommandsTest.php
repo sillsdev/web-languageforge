@@ -203,7 +203,7 @@ class ActivityCommandsTest extends TestCase
 
     private function updateAnswer($project, $question, $questionId, $answerId, $newContent): array
     {
-        $question->read($questionId);
+        $question = new QuestionModel($project, $questionId);
         $answer_updated = $question->readAnswer($answerId);
         $answer_updated->content = $newContent;
         $question->writeAnswer($answer_updated);
@@ -213,7 +213,7 @@ class ActivityCommandsTest extends TestCase
 
     private function updateComment($project, $question, $questionId, $answerId, $comment1Id, $newContent): array
     {
-        $question->read($questionId);
+        $question = new QuestionModel($project, $questionId);
         $comment1_updated = $question->readComment($answerId, $comment1Id);
         $comment1_updated->content = $newContent;
         QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment1_updated);

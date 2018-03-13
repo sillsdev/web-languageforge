@@ -1,10 +1,10 @@
 <div class="content container" data-ng-cloak>
     <sil-notices></sil-notices>
 
-    <div data-ng-show="$ctrl.activities.length > 0" style="margin-top:20px">
-        <button class="btn btn-secondary" data-ng-disabled="$ctrl.showAllActivity" data-ng-click="$ctrl.filterAllActivity()">
+    <div style="margin-top:20px">
+        <button id="activity-showAllActivityButton" class="btn btn-secondary" data-ng-disabled="$ctrl.showAllActivity" data-ng-click="$ctrl.filterAllActivity()">
             All Activity</button>
-        <button class="btn btn-secondary" data-ng-disabled="!$ctrl.showAllActivity" data-ng-click="$ctrl.filterMyActivity()">
+        <button id="activity-showOnlyMyActivityButton" class="btn btn-secondary" data-ng-disabled="!$ctrl.showAllActivity" data-ng-click="$ctrl.filterMyActivity()">
             Show Only My Activity</button>
     </div>
 
@@ -235,9 +235,6 @@
         <div class="col-sm-12"><hr></div>
         <div class="col-sm-12 activity-row mt-2 text-center" data-ng-show="$ctrl.filteredActivities.length > 0">
             <button disabled class="btn btn-secondary">Show More Activity</button>
-        </div>
-        <div class="activity-row mt-5" data-ng-show="$ctrl.filteredActivities.length === 0">
-            No activity to show :(
         </div>
     </div>
 

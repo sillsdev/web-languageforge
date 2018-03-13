@@ -32,9 +32,9 @@
                 </div>
                 <div class="card-block">
                     <form ng-submit="postNewComment()">
-                        <textarea required data-ng-model="newComment.content" class="form-control" placeholder="{{getNewCommentPlaceholderText()}}"  ></textarea>
+                        <textarea required id="comment-panel-textarea" data-ng-model="newComment.content" class="form-control" placeholder="{{getNewCommentPlaceholderText()}}"  ></textarea>
                         <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-sm btn-primary" data-ng-disabled="posting">Post</button>
+                            <button id="comment-panel-post-button" type="submit" class="btn btn-sm btn-primary" data-ng-disabled="posting">Post</button>
                         </div>
                     </form>
                 </div>
