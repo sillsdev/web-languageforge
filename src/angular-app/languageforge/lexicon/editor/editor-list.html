@@ -1,85 +1,103 @@
 <div id="lexAppListView" class="animate-switch">
     <div class="container">
         <div class="entry-words-container">
-            <div class="row">
-                <div class="col">
-                    <div class="words-container-title lexiconListItem list-group-item list-group-item-action active">
-                        <div>
-                            <h5>Words in dictionary</h5>
-                            <small data-ng-hide="entryListModifiers.filterBy" id="totalNumberOfEntries">
-                                <span class="notranslate">{{entries.length}}</span> {{ (entries.length == 1 ? 'entry' : 'entries') }}</small>
-                            <small data-ng-show="entryListModifiers.filterBy" class="float-right notranslate">{{filteredEntries.length}} / {{entries.length}}</small>
+            <div data-ng-show="entries.length > 0">
+                <div class="row">
+                    <div class="col">
+                        <div class="words-container-title lexiconListItem list-group-item list-group-item-action active">
+                            <div>
+                                <h5>Words in dictionary</h5>
+                                <small data-ng-hide="entryListModifiers.filterBy" id="totalNumberOfEntries">
+                                    <span class="notranslate">{{entries.length}}</span> {{ (entries.length == 1 ? 'entry' : 'entries') }}</small>
+                                <small data-ng-show="entryListModifiers.filterBy" class="float-right notranslate">{{filteredEntries.length}} / {{entries.length}}</small>
+                            </div>
+                            <button id="newWord" type="button" class="btn btn-primary"
+                                data-ng-if="rights.canEditEntry()"
+                                data-ng-click="newEntry()">
+                                <i class="fa fa-plus"></i>
+                            </button>
                         </div>
-                        <button id="newWord" type="button" class="btn btn-primary"
-                            data-ng-if="rights.canEditEntry()"
-                            data-ng-click="newEntry()">
-                            <i class="fa fa-plus"></i>
-                        </button>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div data-ng-hide="visibleEntries.length === 0" class="words-search">
-                        <pui-typeahead class="typeahead" placeholder="'Search Entries'"
-                                   items="typeahead.searchResults" term="typeahead.searchItemSelected"
-                                   search="typeahead.searchEntries" select="typeahead.searchSelect">
-                            <ul data-ng-if="typeahead.searchResults.length > 0" class="list-group">
-                                <li data-typeahead-item="e" class="typeahead-item list-group-item"
-                                    data-ng-repeat="e in typeahead.searchResults | limitTo: typeahead.limit">
-                                    <div class="listItemPrimary" data-ng-bind-html="getWordForDisplay(e)"></div>
-                                    <small class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(e)"></small>
-                                </li>
-                            </ul>
-                            <div style="text-align:center; background-color: #d3d3d3; color:black;"
-                                 data-ng-if="typeahead.searchResults.length > 0">
-                                <small><i>{{typeahead.matchCountCaption}}</i></small></div>
-                        </pui-typeahead>
-                        <button class="btn btn-sm" type="button" data-ng-click="show.entryListModifiers = !show.entryListModifiers">
-                            Options
-                            <i class="fa" data-ng-class="show.entryListModifiers ? 'fa-angle-up': 'fa-angle-down'"></i>
-                        </button>
+                <div class="row">
+                    <div class="col">
+                        <div data-ng-hide="visibleEntries.length === 0" class="words-search">
+                            <pui-typeahead class="typeahead" placeholder="'Search Entries'"
+                                       items="typeahead.searchResults" term="typeahead.searchItemSelected"
+                                       search="typeahead.searchEntries" select="typeahead.searchSelect">
+                                <ul data-ng-if="typeahead.searchResults.length > 0" class="list-group">
+                                    <li data-typeahead-item="e" class="typeahead-item list-group-item"
+                                        data-ng-repeat="e in typeahead.searchResults | limitTo: typeahead.limit">
+                                        <div class="listItemPrimary" data-ng-bind-html="getWordForDisplay(e)"></div>
+                                        <small class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(e)"></small>
+                                    </li>
+                                </ul>
+                                <div style="text-align:center; background-color: #d3d3d3; color:black;"
+                                     data-ng-if="typeahead.searchResults.length > 0">
+                                    <small><i>{{typeahead.matchCountCaption}}</i></small></div>
+                            </pui-typeahead>
+                            <button class="btn btn-sm" type="button" data-ng-click="show.entryListModifiers = !show.entryListModifiers">
+                                Options
+                                <i class="fa" data-ng-class="show.entryListModifiers ? 'fa-angle-up': 'fa-angle-down'"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row" data-ng-show="show.entryListModifiers">
-                <div class="col">
-                    <div class="word-form-filters">
-                        <div class="form-group sortfilter-form">
-                            <label class="font-weight-bold" for="sortEntriesBy">Sort Entries By</label>
-                            <div class="form-inline">
-                                <select id="sortEntriesBy" class="custom-select sortfilter-control"
-                                        data-ng-change="sortEntries(true)" data-ng-model="entryListModifiers.sortBy"
-                                        data-ng-options="item as item.label for item in entryListModifiers.sortOptions track by item.value">
-                                </select>
-                                <label style="margin: 7px">
-                                    <input type="checkbox" data-ng-change="sortEntries(true)" data-ng-model="entryListModifiers.sortReverse"> Reverse
-                                </label>
+                <div class="row" data-ng-show="show.entryListModifiers">
+                    <div class="col">
+                        <div class="word-form-filters">
+                            <div class="form-group sortfilter-form">
+                                <label class="font-weight-bold" for="sortEntriesBy">Sort Entries By</label>
+                                <div class="form-inline">
+                                    <select id="sortEntriesBy" class="custom-select sortfilter-control"
+                                            data-ng-change="sortEntries(true)" data-ng-model="entryListModifiers.sortBy"
+                                            data-ng-options="item as item.label for item in entryListModifiers.sortOptions track by item.value">
+                                    </select>
+                                    <label style="margin: 7px">
+                                        <input type="checkbox" data-ng-change="sortEntries(true)" data-ng-model="entryListModifiers.sortReverse"> Reverse
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group sortfilter-form">
+                                <label class="font-weight-bold" for="filterEntriesFor">Filter Entries</label>
+                                <div class="form-inline">
+                                    <select class="custom-select sortfilter-control" data-ng-show="entryListModifiers.filterBy"
+                                            data-ng-change="filterEntries(true)" data-ng-model="entryListModifiers.filterType">
+                                        <option value="isEmpty">Doesn't have</option>
+                                        <option value="isNotEmpty">Has</option>
+                                    </select>
+                                    <select class="custom-select sortfilter-control" id="filterEntriesFor"
+                                            data-ng-change="filterEntries(true)" data-ng-model="entryListModifiers.filterBy"
+                                            data-ng-options="item as item.label for item in entryListModifiers.filterOptions track by item.key">
+                                        <option value="">Show All</option>
+                                    </select>
+                                    <button data-ng-click="resetEntryListFilter()" data-ng-show="entryListModifiers.filterBy" class="btn btn-sm">Reset</button>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group sortfilter-form">
-                            <label class="font-weight-bold" for="filterEntriesFor">Filter Entries</label>
-                            <div class="form-inline">
-                                <select class="custom-select sortfilter-control" data-ng-show="entryListModifiers.filterBy"
-                                        data-ng-change="filterEntries(true)" data-ng-model="entryListModifiers.filterType">
-                                    <option value="isEmpty">Doesn't have</option>
-                                    <option value="isNotEmpty">Has</option>
-                                </select>
-                                <select class="custom-select sortfilter-control" id="filterEntriesFor"
-                                        data-ng-change="filterEntries(true)" data-ng-model="entryListModifiers.filterBy"
-                                        data-ng-options="item as item.label for item in entryListModifiers.filterOptions track by item.key">
-                                    <option value="">Show All</option>
-                                </select>
-                                <button data-ng-click="resetEntryListFilter()" data-ng-show="entryListModifiers.filterBy" class="btn btn-sm">Reset</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
+                            <div class="list-group" data-ng-show="entries.length > 0 && finishedLoading">
+                                <div class="lexiconListItem list-group-item list-group-item-action" data-ng-repeat="entry in visibleEntries track by entry.id"
+                                     data-ng-click="editEntryAndScroll(entry.id)">
+                                    <dc-rendered config="config.entry" model="entry"></dc-rendered>
+                                    <div data-ng-show="commentService.getEntryCommentCount(entry.id) > 0"
+                                         style="position:absolute; right:5px;top:3px">
+                                        <i class="fa fa-comment commentColor"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading">
                 <div class="col">
                     <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-                        <div class="text-center no-entries" data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading">
+                        <div class="text-center no-entries">
                             <h4>Looks like there are no entries yet.</h4>
                             <button class="btn btn-primary" data-ng-click="navigateToLiftImport()"
                                     data-ng-hide="projectSettings.hasSendReceive">
@@ -89,16 +107,6 @@
                             <button class="btn btn-primary" id="noEntriesNewWord" data-ng-if="rights.canEditEntry()"
                                     data-ng-click="newEntry()"><i class="fa fa-plus"></i> New Word
                             </button>
-                        </div>
-                        <div class="list-group" data-ng-show="entries.length > 0 && finishedLoading">
-                            <div class="lexiconListItem list-group-item list-group-item-action" data-ng-repeat="entry in visibleEntries track by entry.id"
-                                 data-ng-click="editEntryAndScroll(entry.id)">
-                                <dc-rendered config="config.entry" model="entry"></dc-rendered>
-                                <div data-ng-show="commentService.getEntryCommentCount(entry.id) > 0"
-                                     style="position:absolute; right:5px;top:3px">
-                                    <i class="fa fa-comment commentColor"></i>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
