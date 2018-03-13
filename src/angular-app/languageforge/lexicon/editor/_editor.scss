@@ -48,18 +48,6 @@ form .wsid {
     }
 }
 
-.sortfilter-control {
-    width: 150px;
-    margin:4px;
-}
-
-.sortfilter-form {
-    border: 1px solid $lf-lines;
-    padding: 10px;
-    margin: 5px;
-}
-
-
 fieldset.comment-filter {
     margin: 20px;
     border: 2px groove threedface;
@@ -332,7 +320,11 @@ dc-entry .card {
   }
   .word-definition-title {
     margin-bottom: 5px;
-    padding: 8px 0 24px;
+    padding: 0 0 24px;
+    h3 {
+      margin: -7px 0 10px;
+      font-size: 24px;
+    }
   }
   .card-body .addItem {
     margin-right: 0;
@@ -351,6 +343,8 @@ dc-entry .card {
     z-index: 2;
     font-size: 0.8em;
     overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   .deleteX {
     i {
@@ -371,10 +365,6 @@ dc-entry .card {
     transform: rotate(90deg);
     transform-origin: left;
     margin-left: 5px;
-  }
-  .entry-words-container {
-    opacity: 1;
-    display: block;
   }
   > .container,
   .entries-list-container,
@@ -483,6 +473,157 @@ dc-entry .card {
   }
 }
 
+.entry-words-container {
+  opacity: 1;
+  display: block;
+  .words-container-title {
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    border-radius: $border-radius $border-radius 0 0;
+    > div {
+        padding: 0.75rem 1.25rem;
+    }
+    button {
+      width: 65px;
+      background: $Downriver;
+      cursor: pointer;
+      &:hover {
+        background: darken($Downriver, 15%);
+      }
+      i {
+        font-size: 24px;
+      }
+      @include media-breakpoint-down(md) {
+        width: 48px;
+        i {
+          font-size: 20px;
+        }
+      }
+      @include media-breakpoint-down(xs) {
+        width: 38px;
+      }
+    }
+  }
+  .words-search {
+    background: $WildSand;
+    border: 1px solid $lf-lines;
+    border-top: 0;
+    width: 100%;
+    display: flex;
+    position: relative;
+    .typeahead {
+      flex: 1 1 100%;
+      border-right: 1px solid $Downriver;
+      border-radius: 0;
+      #typeaheadInput {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        border-radius: 0;
+        font-size: 14px;
+        line-height: 45px;
+        padding: 0 2.5em 0 1.5em;
+      }
+      .typeahead-clear {
+        position: absolute;
+        right: 13px;
+        top: 11px;
+        z-index: 10;
+        i {
+          cursor: pointer;
+          color: $Eden;
+        }
+      }
+      .typeahead-results {
+        ul {
+          border-radius: 0;
+          .typeahead-item {
+            border-radius: 0;
+            padding: 0.35rem 1.25rem;
+            line-height: 1.2em;
+            &:hover {
+              background: $Botticelli;
+              color: $Eden;
+            }
+            small {
+              text-overflow: ellipsis;
+              overflow: hidden;
+              display: block;
+              white-space: nowrap;
+            }
+          }
+        }
+      }
+    }
+    > .btn {
+      flex: 0 0 110px;
+      border-radius: 0;
+      cursor: pointer;
+      background: transparent;
+      color: $Eden;
+      font-size: 14px;
+      line-height: 45px;
+      padding: 0;
+      i {
+        font-size: 20px;
+        position: relative;
+        top: 2px;
+        padding-left: 5px;
+      }
+    }
+  }
+  .word-form-filters {
+    .sortfilter-form {
+      border: 1px solid $lf-lines;
+      padding: 0.7em 1.25em 1.2em;
+      margin: 0;
+      font-size: 14px;
+      background: #E5E5E5;
+      &:first-child {
+        border-bottom: 0;
+      }
+      .sortfilter-control {
+        width: 150px;
+        font-size: 14px;
+      }
+      .form-inline {
+        label {
+          cursor: pointer;
+          margin-left: 7px;
+        }
+        select {
+          margin: 0 5px 5px 0;
+        }
+        .btn {
+          cursor: pointer;
+        }
+      }
+      input[type=checkbox] {
+        margin-right: 5px;
+      }
+      @include media-breakpoint-down(lg) {
+        .sortfilter-control {
+          margin: 0 0 5px;
+          width: 100%;
+        }
+        .form-inline {
+          label {
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+  .lexiconItemListContainer {
+    .list-group-item:first-child {
+      border-top: 0;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+}
+
 .lexiconListItemCompact {
     position: relative;
     overflow-y: hidden;
@@ -490,7 +631,7 @@ dc-entry .card {
     height: 55px;
     border-bottom: solid 1px darkgrey;
     width: 100%;
-    line-height: 1.0em;
+    line-height: 1.2em;
 }
 
 .lexiconItemListContainer .selected {
