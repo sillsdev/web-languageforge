@@ -8,12 +8,10 @@ import {LexiconConfigService} from '../../core/lexicon-config.service';
 import {LexiconProjectService} from '../../core/lexicon-project.service';
 import {LexiconSendReceiveService} from '../../core/lexicon-send-receive.service';
 import {
-  LexConfigField, LexConfigFieldList, LexConfigMultiText,
-  LexiconConfig
+  LexConfigField, LexConfigFieldList, LexiconConfig
 } from '../../shared/model/lexicon-config.model';
 import { LexiconProjectSettings } from '../../shared/model/lexicon-project-settings.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
-import {Field} from './configuration-fields.component';
 import {ConfigurationUnifiedViewModel} from './configuration-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 import {OptionSelects} from './option-selects.model';
@@ -30,13 +28,6 @@ class LexiconConfigControllerApiResult {
 export class LexiconConfigurationController implements angular.IController {
   active = Tab.Unified;
   addInputSystem = false;
-  currentField: Field = {
-    name: '',
-    inputSystems: {
-      fieldOrder: [],
-      selecteds: {}
-    }
-  };
   isSaving = false;
   users: { [userId: string]: User } = {};
   readonly selects = new OptionSelects();
@@ -82,7 +73,6 @@ export class LexiconConfigurationController implements angular.IController {
       this.isSaving = false;
 
       this.setupView();
-      this.selectField('lexeme');
 
       sendReceive.setPollUpdateSuccessCallback(this.pollUpdateSuccess);
       sendReceive.setSyncProjectStatusSuccessCallback(this.syncProjectStatusSuccess);
@@ -121,7 +111,6 @@ export class LexiconConfigurationController implements angular.IController {
           this.configDirty = angular.copy(this.session.projectSettings<LexiconProjectSettings>().config);
           this.optionListsDirty = angular.copy(this.session.projectSettings<LexiconProjectSettings>().optionlists);
           this.setupView();
-          this.selectField(this.currentField.name, true);
           this.sendReceive.startSyncStatusTimer();
         }
 
@@ -131,30 +120,6 @@ export class LexiconConfigurationController implements angular.IController {
       this.isSaving = false;
     });
 
-  }
-
-  selectField = (fieldName: string, isReload: boolean = false) => {
-    if (this.currentField.name !== fieldName || isReload) {
-      const inputSystems = angular.copy((this.fieldConfig[fieldName] as LexConfigMultiText).inputSystems);
-      this.currentField.name = fieldName;
-      this.currentField.inputSystems.fieldOrder = [];
-      this.currentField.inputSystems.selecteds = {};
-      angular.forEach(inputSystems, tag => {
-        this.currentField.inputSystems.selecteds[tag] = true;
-      });
-
-      // if the field uses input systems, add the selected systems first then the unselected systems
-      if (inputSystems) {
-        this.currentField.inputSystems.fieldOrder = inputSystems;
-        angular.forEach(this.configDirty.inputSystems, (inputSystem, tag) => {
-          if (!(tag in this.currentField.inputSystems.selecteds) &&
-            this.currentField.inputSystems.fieldOrder.indexOf(tag) === -1
-          ) {
-            this.currentField.inputSystems.fieldOrder.push(tag);
-          }
-        });
-      }
-    }
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -274,7 +239,6 @@ export class LexiconConfigurationController implements angular.IController {
         this.configDirty = angular.copy(this.configPristine);
         this.optionListsDirty = angular.copy(this.optionListsPristine);
         this.setupView();
-        this.selectField(this.currentField.name, true);
         this.$scope.configForm.$setPristine();
       }
     }
@@ -286,7 +250,6 @@ export class LexiconConfigurationController implements angular.IController {
       this.configDirty = angular.copy(session.projectSettings<LexiconProjectSettings>().config);
       this.optionListsDirty = angular.copy(session.projectSettings<LexiconProjectSettings>().optionlists);
       this.setupView();
-      this.selectField(this.currentField.name, true);
       this.$scope.configForm.$setPristine();
       this.notice.removeById(this.warnOfUnsavedEditsId);
       this.warnOfUnsavedEditsId = undefined;
@@ -330,7 +293,6 @@ export const LexiconConfigurationComponent: angular.IComponentOptions = {
 
 export enum Tab {
   Unified = 0,
-  Fields,
   InputSystems,
   OptionLists
 }
