@@ -26,8 +26,7 @@ export class ConfigurationPage {
 
   // These will be updated once the pui-tab is updated to support unique id
   tabs = {
-    unified:      element(by.linkText('Unified')),
-    fields:       element(by.linkText('Fields')),
+    unified:      element(by.linkText('Fields')),
     inputSystems: element(by.linkText('Input Systems')),
     optionlists:  element(by.linkText('Option Lists'))
   };
@@ -255,50 +254,6 @@ export class ConfigurationPage {
       variantInput:   this.activePane.element(by.id('variant'))
     }
   };
-
-  fieldsTab = {
-    fieldSetupLabel: this.activePane.element(by.id('fieldSetupLabel')),
-    hiddenIfEmptyCheckbox: this.activePane
-      .element(by.model('$ctrl.fccFieldConfig[$ctrl.fccCurrentField.name].hideIfEmpty')),
-    widthInput: this.activePane
-      .element(by.model('$ctrl.fccFieldConfig[$ctrl.fccCurrentField.name].width')),
-    captionHiddenIfEmptyCheckbox: this.activePane
-      .element(by.model('$ctrl.fccFieldConfig[$ctrl.fccCurrentField.name].captionHideIfEmpty')),
-    inputSystemTags: this.activePane
-      .all(by.repeater('inputSystemTag in $ctrl.fccCurrentField.inputSystems.fieldOrder')),
-    inputSystemCheckboxes: this.activePane
-      .all(by.model('$ctrl.fccCurrentField.inputSystems.selecteds[inputSystemTag]')),
-    inputSystemUpButton: this.activePane.element(by.id('upButton')),
-    inputSystemDownButton: this.activePane.element(by.id('downButton')),
-    newCustomFieldButton: this.activePane.element(by.id('configuration-new-field-btn')),
-    removeCustomFieldButton: this.activePane.element(by.id('configuration-remove-field-btn')),
-    // tslint:disable-next-line:max-line-length
-    // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
-    newCustomFieldButtonClick: () => {
-      this.fieldsTab.newCustomFieldButton.click();
-      browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
-    }
-  };
-
-  showAllFieldsButton = element(by.id('configuration-show-fields-btn'));
-
-  entryFields = this.activePane
-    .all(by.repeater('fieldName in $ctrl.fccConfigDirty.entry.fieldOrder'));
-  senseFields = this.activePane
-    .all(by.repeater('fieldName in $ctrl.fccConfigDirty.entry.fields.senses.fieldOrder'));
-  exampleFields = this.activePane.all(by
-    .repeater('fieldName in $ctrl.fccConfigDirty.entry.fields.senses.fields.examples.fieldOrder'));
-
-  getFieldByName(fieldName: string) {
-    return element(by
-      .css('div.tab-pane.active > div > lsc-fields > div > div.col-md-3 dl.picklists'))
-      .element(by.cssContainingText('div[data-ng-repeat] > span', fieldName));
-  }
-
-  hiddenIfEmpty = this.activePane.element(by.id('hideIfEmpty'));
-  captionHiddenIfEmpty() {
-    return this.activePane.element(by.id('captionHideIfEmpty'));
-  }
 
   private getRowByLabel(label: string|RegExp) {
     return this.activePane.element(by.cssContainingText('td', label)).element(by.xpath('..'));

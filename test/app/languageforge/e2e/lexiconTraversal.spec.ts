@@ -7,7 +7,6 @@ import {ConfigurationPage} from '../lexicon/pages/configurationPage';
 import {EditorPage} from '../lexicon/pages/editorPage';
 import {NewLexProjectPage} from '../lexicon/pages/newLexProjectPage';
 import {ProjectSettingsPage} from '../lexicon/pages/projectSettingsPage';
-import {ViewSettingsPage} from '../lexicon/pages/viewSettingsPage';
 
 describe('Lexicon E2E Page Traversal', () => {
   const constants = require('../../testConstants');
@@ -17,7 +16,6 @@ describe('Lexicon E2E Page Traversal', () => {
   const projectSettingsPage = new ProjectSettingsPage();
   const newLexProjectPage = new NewLexProjectPage();
   const editorPage = new EditorPage();
-  const viewSettingsPage = new ViewSettingsPage();
 
   describe('Explore configuration page', () => {
     it('Unified tab', () => {
@@ -72,16 +70,6 @@ describe('Lexicon E2E Page Traversal', () => {
       configurationPage.unifiedPane.fieldSpecificButton('Translation').click();
     });
 
-    it('Fields tab', () => {
-      configurationPage.tabs.fields.click();
-      configurationPage.fieldsTab.hiddenIfEmptyCheckbox.click();
-      configurationPage.fieldsTab.widthInput.click();
-      configurationPage.fieldsTab.inputSystemTags.count();
-      configurationPage.fieldsTab.inputSystemCheckboxes.count();
-      configurationPage.fieldsTab.inputSystemUpButton.click();
-      configurationPage.fieldsTab.inputSystemDownButton.click();
-    });
-
     it('Input Systems tab', () => {
       configurationPage.tabs.inputSystems.click();
       configurationPage.inputSystemsPane.moreButton.click();
@@ -117,13 +105,6 @@ describe('Lexicon E2E Page Traversal', () => {
   it('Explore project settings page', () => {
     projectSettingsPage.get(constants.testProjectName);
     projectSettingsPage.tabs.project.click();
-  });
-
-  it('Explore view settings page', () => {
-    viewSettingsPage.get();
-    viewSettingsPage.goToObserverTab();
-    viewSettingsPage.goToContributorTab();
-    viewSettingsPage.goToManagerTab();
   });
 
   // it('Explore project settings page', () => {
