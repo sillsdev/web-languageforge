@@ -257,80 +257,83 @@ class DbIntegrityHelper extends DbScriptLogger
         // Loop through all comments on the project
         foreach($commentList->entries as $comment) {
             $this->commentsAvailable++;
+            $lexComment = new LexCommentModel($project, $comment['id']);
+            $fieldName = $lexComment->regarding->field;
+            $contextGuid = $fieldName;
             // Only need to interact with comments that have no contextGuid
             if(empty($comment['contextGuid'])) {
-                $useEntryIdContext = false;
-                $lexComment = new LexCommentModel($project, $comment['id']);
-                $lexEntry = new LexEntryModel($project, $lexComment->entryRef->id);
-                $fieldName = $lexComment->regarding->field;
-                $fieldConfig = $this->getLexiconFieldConfig($lexProject, $fieldName);
-                // Construct the basics of the contextGuid
-                $contextGuid = $fieldName;
-                if(!empty($lexComment->regarding->inputSystem)) {
-                    // The input system is a tricky one as there has been a bug where the language name
-                    // has been recorded against this field until a fix on 569d222 changed it to be the tag.
-                    // We need to identify if the inputSystem has been saved as the language name or the tag
-                    foreach($lexProject->inputSystems as $inputSystem) {
-                        if($inputSystem->languageName == $lexComment->regarding->inputSystem &&
-                            $inputSystem->abbreviation == $lexComment->regarding->inputSystemAbbreviation) {
-                            // Update the input system so that it is also updated in the DB
-                            $lexComment->regarding->inputSystem = $inputSystem->tag;
-                            break;
-                        }
-                    }
-                    // Now we can attach the input system knowing it is correct
-                    $contextGuid .= '.' . $lexComment->regarding->inputSystem;
-                }
-                if(isset($fieldConfig->type)) {
-                    if($fieldConfig->type === 'multioptionlist') {
-                        $contextGuid .= '#' . $lexComment->regarding->fieldValue;
-                    } elseif($fieldConfig->type === 'pictures') {
-                        $contextGuid = 'pictures#' . $lexComment->regarding->fieldValue;
-                    }
-                }
-                // If there is only a single sense and example then we can also safely assume a comment
-                // belonging to that as well if required
-                if($this->isLexiconFieldSense($lexProject, $fieldName)) {
-                    if(count($lexEntry->senses) == 1) {
-                        $contextGuid = 'sense#' . $lexEntry->senses[0]->guid . ' ' . $contextGuid;
-                    } else {
-                        // If there is more than one we can try and guess based off the current value
-                        // compared to the value stored with the comment - this won't work if the value
-                        // has changed since the comment was made. If we can't find a match then
-                        // set the context to the entry itself so that it can be located still via the UI
-                        $useEntryIdContext = true;
-                        foreach($lexEntry->senses as $sense) {
-                            if($this->checkLexiconFieldAgainstComment($sense, $fieldName, $fieldConfig, $lexComment)) {
-                                $contextGuid = 'sense#' . $sense->guid . ' ' . $contextGuid;
-                                $useEntryIdContext = false;
+                if ($fieldName) {
+                    $useEntryIdContext = false;
+                    $lexEntry = new LexEntryModel($project, $lexComment->entryRef->id);
+                    $fieldConfig = $this->getLexiconFieldConfig($lexProject, $fieldName);
+                    // Construct the basics of the contextGuid
+                    if(!empty($lexComment->regarding->inputSystem)) {
+                        // The input system is a tricky one as there has been a bug where the language name
+                        // has been recorded against this field until a fix on 569d222 changed it to be the tag.
+                        // We need to identify if the inputSystem has been saved as the language name or the tag
+                        foreach($lexProject->inputSystems as $inputSystem) {
+                            if($inputSystem->languageName == $lexComment->regarding->inputSystem &&
+                                $inputSystem->abbreviation == $lexComment->regarding->inputSystemAbbreviation) {
+                                // Update the input system so that it is also updated in the DB
+                                $lexComment->regarding->inputSystem = $inputSystem->tag;
                                 break;
                             }
                         }
+                        // Now we can attach the input system knowing it is correct
+                        $contextGuid .= '.' . $lexComment->regarding->inputSystem;
                     }
-                } elseif($this->isLexiconFieldExample($lexProject, $fieldName)) {
-                    // Can only assume if there is also only a single sense
-                    if(count($lexEntry->senses) == 1) {
-                        if(count($lexEntry->senses[0]->examples) == 1) {
-                            $contextGuid = 'sense#' . $lexEntry->senses[0]->guid .
-                                          ' example#' . $lexEntry->senses[0]->examples[0]->guid .
-                                          ' ' . $contextGuid;
+                    if(isset($fieldConfig->type)) {
+                        if($fieldConfig->type === 'multioptionlist') {
+                            $contextGuid .= '#' . $lexComment->regarding->fieldValue;
+                        } elseif($fieldConfig->type === 'pictures') {
+                            $contextGuid = 'pictures#' . $lexComment->regarding->fieldValue;
                         }
-                    } else {
-                        // If there is more than one we can try and guess based off the current value
-                        // compared to the value stored with the comment - this won't work if the value
-                        // has changed since the comment was made. If we can't find a match then
-                        // set the context to the entry itself so that it can be located still via the UI
-                        $useEntryIdContext = true;
-                        foreach($lexEntry->senses as $sense) {
-                            foreach($sense->examples as $example) {
-                                if ($this->checkLexiconFieldAgainstComment($example, $fieldName, $fieldConfig, $lexComment)) {
-                                    $contextGuid = 'sense#' . $sense->guid . ' example#' . $example->guid . ' ' . $contextGuid;
+                    }
+                    // If there is only a single sense and example then we can also safely assume a comment
+                    // belonging to that as well if required
+                    if($this->isLexiconFieldSense($lexProject, $fieldName)) {
+                        if(count($lexEntry->senses) == 1) {
+                            $contextGuid = 'sense#' . $lexEntry->senses[0]->guid . ' ' . $contextGuid;
+                        } else {
+                            // If there is more than one we can try and guess based off the current value
+                            // compared to the value stored with the comment - this won't work if the value
+                            // has changed since the comment was made. If we can't find a match then
+                            // set the context to the entry itself so that it can be located still via the UI
+                            $useEntryIdContext = true;
+                            foreach($lexEntry->senses as $sense) {
+                                if($this->checkLexiconFieldAgainstComment($sense, $fieldName, $fieldConfig, $lexComment)) {
+                                    $contextGuid = 'sense#' . $sense->guid . ' ' . $contextGuid;
                                     $useEntryIdContext = false;
                                     break;
                                 }
                             }
                         }
+                    } elseif($this->isLexiconFieldExample($lexProject, $fieldName)) {
+                        // Can only assume if there is also only a single sense
+                        if(count($lexEntry->senses) == 1) {
+                            if(count($lexEntry->senses[0]->examples) == 1) {
+                                $contextGuid = 'sense#' . $lexEntry->senses[0]->guid .
+                                    ' example#' . $lexEntry->senses[0]->examples[0]->guid .
+                                    ' ' . $contextGuid;
+                            }
+                        } else {
+                            // If there is more than one we can try and guess based off the current value
+                            // compared to the value stored with the comment - this won't work if the value
+                            // has changed since the comment was made. If we can't find a match then
+                            // set the context to the entry itself so that it can be located still via the UI
+                            $useEntryIdContext = true;
+                            foreach($lexEntry->senses as $sense) {
+                                foreach($sense->examples as $example) {
+                                    if ($this->checkLexiconFieldAgainstComment($example, $fieldName, $fieldConfig, $lexComment)) {
+                                        $contextGuid = 'sense#' . $sense->guid . ' example#' . $example->guid . ' ' . $contextGuid;
+                                        $useEntryIdContext = false;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
+
                 }
                 // Use the entry ID as context in cases where it can't be figured out
                 if($useEntryIdContext || empty($contextGuid)) {
@@ -338,7 +341,9 @@ class DbIntegrityHelper extends DbScriptLogger
                 }
                 // Set the new contextGuid and update the comment
                 $lexComment->contextGuid = $contextGuid;
-                $lexComment->write();
+                if ($this->makeChanges) {
+                    $lexComment->write();
+                }
                 $this->commentsMissingContextGuid++;
             }
         }
@@ -366,7 +371,7 @@ class DbIntegrityHelper extends DbScriptLogger
      * @param $fieldName string
      * @return bool
      */
-    private function isLexiconFieldSense($lexProject, $fieldName) {
+    private function isLexiconFieldSense($lexProject, string $fieldName) {
         return isset($lexProject->config->entry->fields['senses']->fields[$fieldName]);
     }
 
@@ -375,7 +380,7 @@ class DbIntegrityHelper extends DbScriptLogger
      * @param $fieldName string
      * @return bool
      */
-    private function isLexiconFieldExample($lexProject, $fieldName) {
+    private function isLexiconFieldExample($lexProject, string $fieldName) {
         return isset($lexProject->config->entry->fields['senses']->fields['examples']->fields[$fieldName]);
     }
 
