@@ -177,9 +177,11 @@ export class LexiconConfigurationController implements angular.IController {
   ): void => {
     if ($event.configDirty) {
       this.configDirty = $event.configDirty;
+      this.$scope.configForm.$setDirty();
 
       // Force fire $onChanges: see https://github.com/angular/angular.js/issues/14572
       this.configDirty = angular.copy(this.configDirty);
+      return;
     }
 
     if ($event.inputSystemViewModels) {
