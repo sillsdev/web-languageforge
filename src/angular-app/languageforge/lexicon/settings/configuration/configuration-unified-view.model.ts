@@ -76,9 +76,11 @@ export class ConfigurationUnifiedViewModel {
     const entryConfig = config.entry;
     ConfigurationUnifiedViewModel.fieldsToConfig(this.entryFields.settings, config, entryConfig, this.groupLists);
     if ('senses' in entryConfig.fields) {
+      entryConfig.fieldOrder.push('senses');
       const sensesConfig = entryConfig.fields.senses as LexConfigFieldList;
       ConfigurationUnifiedViewModel.fieldsToConfig(this.senseFields.settings, config, sensesConfig, this.groupLists);
       if ('examples' in sensesConfig.fields) {
+        sensesConfig.fieldOrder.push('examples');
         const examplesConfig = sensesConfig.fields.examples as LexConfigFieldList;
         ConfigurationUnifiedViewModel.fieldsToConfig(this.exampleFields.settings, config, examplesConfig,
           this.groupLists);
