@@ -45,10 +45,18 @@ angular.module('palaso.ui.dc.semanticdomain', [])
       };
 
       $scope.filterSelectedOptions = function filterSelectedOptions(item) {
-        return $scope.model.values.indexOf(item.key) == -1;
+        if ($scope.model == null) {
+          return false;
+        }
+
+        return $scope.model.values.indexOf(item.key) === -1;
       };
 
       $scope.showAddButton = function showAddButton() {
+        if ($scope.model == null) {
+          return false;
+        }
+
         return (angular.isDefined(semanticDomains_en) && !$scope.isAdding
           && $scope.model.values.length < Object.keys(semanticDomains_en).length);
       };
@@ -62,15 +70,16 @@ angular.module('palaso.ui.dc.semanticdomain', [])
         $scope.isAdding = false;
       };
 
-      rightsService.getRights().then(function(rights) {
-        $scope.rights = rights
+      rightsService.getRights().then(function (rights) {
+        $scope.rights = rights;
 
         $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted, value) {
           if (angular.isDefined(semanticDomains_en) && $state.is('editor.entry')
             && rights.canEditEntry()
           ) {
-            return valueToBeDeleted == value;
+            return valueToBeDeleted === value;
           }
+
           return false;
         };
       });

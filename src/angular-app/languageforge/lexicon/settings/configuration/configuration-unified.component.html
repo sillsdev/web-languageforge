@@ -17,7 +17,7 @@
                 </th>
                 <th class="text-center align-middle">
                     <button type="button" class="btn btn-std" data-ng-click="$ctrl.openAddUserGroupModal()"
-                        title="Add member-specific settings">
+                            id="add-group-input-system-btn" title="Add member-specific settings">
                         <i class="fa fa-plus"></i></button>
                 </th>
             </tr>
@@ -108,7 +108,7 @@
                 <td></td>
                 <th class="text-left align-middle">
                     <button type="button" class="btn btn-std" data-ng-click="$ctrl.uccAddInputSystem()"
-                            title="Add an Input System">
+                            id="add-input-system-btn" title="Add an Input System">
                         <i class="fa fa-plus"></i>
                     </button>
                 </th>
@@ -151,7 +151,7 @@
                 </th>
                 <th class="text-center align-middle">
                     <button type="button" class="btn btn-std" data-ng-click="$ctrl.openAddUserGroupModal()"
-                        title="Add member-specific settings">
+                            id="add-group-entry-btn" title="Add member-specific settings">
                         <i class="fa fa-plus"></i></button>
                 </th>
             </tr>
@@ -243,7 +243,7 @@
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
-                    <a data-ng-if="entryField.inputSystems.length > 0" data-ng-click="entryField.isCustomInputSystemsCollapsed = !entryField.isCustomInputSystemsCollapsed">
+                    <a data-ng-if="entryField.inputSystems.length > 0" data-ng-click="entryField.isCustomInputSystemsCollapsed = !entryField.isCustomInputSystemsCollapsed" class="member-specific-entry-btn">
                         <i data-ng-class="$ctrl.collapseIconClass(entryField)" title="{{$ctrl.collapseTitle(entryField)}}"></i>
                     </a>
                 </td>
@@ -259,7 +259,7 @@
                     </label>
                 </td>
             </tr>
-            <tr data-ng-repeat-end data-ng-if="!entryField.isCustomInputSystemsCollapsed">
+            <tr data-ng-repeat-end data-ng-if="!entryField.isCustomInputSystemsCollapsed" class="field-specific-input-systems">
                 <td class="p-0" colspan="4">
                     <table class="table table-sm mb-0">
                         <tbody drag-to-reorder-bind="entryField.inputSystems">
@@ -274,7 +274,7 @@
                                 <td class="text-center align-middle">{{$ctrl.unifiedViewModel.inputSystems.labels[inputSystemSettings.tag]}}</td>
                                 <td class="text-center align-middle"></td>
                                 <td class="text-center align-middle">
-                                    <input class="position-static"
+                                    <input class="position-static checkbox"
                                            data-ng-model="inputSystemSettings.isAllRowSelected"
                                            data-ng-disabled="!entryField.hasCustomInputSystemsOverride"
                                            aria-label="..." type="checkbox">
@@ -288,7 +288,7 @@
                 <td></td>
                 <th class="text-left align-middle">
                     <button type="button" class="btn btn-std" data-ng-click="$ctrl.openNewCustomFieldModal('entry')"
-                            title="Add a custom Entry Field">
+                            id="add-custom-entry-btn" title="Add a custom Entry Field">
                         <i class="fa fa-plus"></i>
                     </button>
                 </th>
@@ -333,7 +333,7 @@
                 </th>
                 <th class="text-center align-middle">
                     <button type="button" class="btn btn-std" data-ng-click="$ctrl.openAddUserGroupModal()"
-                        title="Add member-specific settings">
+                            id="add-group-sense-btn" title="Add member-specific settings">
                         <i class="fa fa-plus"></i></button>
                 </th>
             </tr>
@@ -426,7 +426,7 @@
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
-                    <a data-ng-if="senseField.inputSystems.length > 0" data-ng-click="senseField.isCustomInputSystemsCollapsed = !senseField.isCustomInputSystemsCollapsed">
+                    <a data-ng-if="senseField.inputSystems.length > 0" data-ng-click="senseField.isCustomInputSystemsCollapsed = !senseField.isCustomInputSystemsCollapsed" class="member-specific-entry-btn">
                         <i data-ng-class="$ctrl.collapseIconClass(senseField)" title="{{$ctrl.collapseTitle(senseField)}}"></i>
                     </a>
                 </td>
@@ -442,7 +442,7 @@
                     </label>
                 </td>
             </tr>
-            <tr data-ng-repeat-end data-ng-if="!senseField.isCustomInputSystemsCollapsed">
+            <tr data-ng-repeat-end data-ng-if="!senseField.isCustomInputSystemsCollapsed" class="field-specific-input-systems">
                 <td class="p-0" colspan="4">
                     <table class="table table-sm mb-0">
                         <tbody drag-to-reorder-bind="senseField.inputSystems">
@@ -457,7 +457,7 @@
                             <td class="text-center align-middle">{{$ctrl.unifiedViewModel.inputSystems.labels[inputSystemSettings.tag]}}</td>
                             <td class="text-center align-middle"></td>
                             <td class="text-center align-middle">
-                                <input class="position-static"
+                                <input class="position-static checkbox"
                                        data-ng-model="inputSystemSettings.isAllRowSelected"
                                        data-ng-disabled="!senseField.hasCustomInputSystemsOverride"
                                        aria-label="..." type="checkbox">
@@ -471,7 +471,7 @@
                 <td></td>
                 <th class="text-left align-middle">
                     <button type="button" class="btn btn-std" data-ng-click="$ctrl.openNewCustomFieldModal('senses')"
-                            title="Add a custom Meaning Field">
+                            id="add-custom-sense-btn" title="Add a custom Meaning Field">
                         <i class="fa fa-plus"></i>
                     </button>
                 </th>
@@ -516,7 +516,7 @@
                 </th>
                 <th class="text-center align-middle">
                     <button type="button" class="btn btn-std" data-ng-click="$ctrl.openAddUserGroupModal()"
-                        title="Add member-specific settings">
+                        id="add-group-example-btn" title="Add member-specific settings">
                         <i class="fa fa-plus"></i></button>
                 </th>
             </tr>
@@ -609,7 +609,7 @@
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
-                    <a data-ng-if="exampleField.inputSystems.length > 0" data-ng-click="exampleField.isCustomInputSystemsCollapsed = !exampleField.isCustomInputSystemsCollapsed">
+                    <a data-ng-if="exampleField.inputSystems.length > 0" data-ng-click="exampleField.isCustomInputSystemsCollapsed = !exampleField.isCustomInputSystemsCollapsed" class="member-specific-entry-btn">
                         <i data-ng-class="$ctrl.collapseIconClass(exampleField)" title="{{$ctrl.collapseTitle(exampleField)}}"></i>
                     </a>
                 </td>
@@ -625,7 +625,7 @@
                     </label>
                 </td>
             </tr>
-            <tr data-ng-repeat-end data-ng-if="!exampleField.isCustomInputSystemsCollapsed">
+            <tr data-ng-repeat-end data-ng-if="!exampleField.isCustomInputSystemsCollapsed" class="field-specific-input-systems">
                 <td class="p-0" colspan="4">
                     <table class="table table-sm mb-0">
                         <tbody drag-to-reorder-bind="exampleField.inputSystems">
@@ -640,7 +640,7 @@
                             <td class="text-center align-middle">{{$ctrl.unifiedViewModel.inputSystems.labels[inputSystemSettings.tag]}}</td>
                             <td class="text-center align-middle"></td>
                             <td class="text-center align-middle">
-                                <input class="position-static"
+                                <input class="position-static checkbox"
                                        data-ng-model="inputSystemSettings.isAllRowSelected"
                                        data-ng-disabled="!exampleField.hasCustomInputSystemsOverride"
                                        aria-label="..." type="checkbox">
@@ -654,7 +654,7 @@
                 <td></td>
                 <th class="text-left align-middle">
                     <button type="button" class="btn btn-std" data-ng-click="$ctrl.openNewCustomFieldModal('examples')"
-                            title="Add a custom Example Field">
+                            id="add-custom-example-btn" title="Add a custom Example Field">
                         <i class="fa fa-plus"></i>
                     </button>
                 </th>
