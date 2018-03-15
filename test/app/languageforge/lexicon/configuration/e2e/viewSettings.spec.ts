@@ -1,9 +1,8 @@
-import {} from 'jasmine';
-import { BellowsLoginPage } from '../../../../bellows/pages/loginPage.js';
-import { ProjectsPage } from '../../../../bellows/pages/projectsPage.js';
-import { Utils } from '../../../../bellows/pages/utils.js';
-import { EditorPage } from '../../pages/editorPage.js';
-import { ViewSettingsPage } from '../../pages/viewSettingsPage.js';
+import {BellowsLoginPage} from '../../../../bellows/pages/loginPage';
+import {ProjectsPage} from '../../../../bellows/pages/projectsPage';
+import {Utils} from '../../../../bellows/pages/utils';
+import {EditorPage} from '../../pages/editorPage';
+import {ViewSettingsPage} from '../../pages/viewSettingsPage';
 
 describe('View settings page', () => {
   const constants    = require('../../../../testConstants');

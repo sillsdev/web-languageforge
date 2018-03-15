@@ -1,14 +1,14 @@
-import { browser, ExpectedConditions } from 'protractor';
+import {browser, ExpectedConditions} from 'protractor';
 
-import { BellowsLoginPage } from '../../../bellows/pages/loginPage';
-import { ProjectsPage } from '../../../bellows/pages/projectsPage';
-import { Utils } from '../../../bellows/pages/utils';
-import { SfProjectPage } from '../pages/projectPage';
-import { SfTextPage } from '../pages/textPage';
-import { SfTextSettingsPage } from '../pages/textSettingsPage';
+import {BellowsLoginPage} from '../../../bellows/pages/loginPage';
+import {ProjectsPage} from '../../../bellows/pages/projectsPage';
+import {Utils} from '../../../bellows/pages/utils';
+import {SfProjectPage} from '../pages/projectPage';
+import {SfTextPage} from '../pages/textPage';
+import {SfTextSettingsPage} from '../pages/textSettingsPage';
 
 describe('the questions settings page - project manager', () => {
-  const constants       = require('../../../testConstants');
+  const constants = require('../../../testConstants');
   const loginPage = new BellowsLoginPage();
   const util = new Utils();
   const projectListPage =  new ProjectsPage();
@@ -72,16 +72,14 @@ describe('the questions settings page - project manager', () => {
       expect(page.paratextExportTab.exportFlagged.getAttribute('checked')).toBeTruthy();
       expect<any>(page.paratextExportTab.downloadPT7Button.isPresent()).toBe(true);
       page.paratextExportTab.downloadPT7Button.click();
-      browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.noExportMsg),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.noExportMsg), constants.conditionTimeout);
       expect<any>(page.paratextExportTab.noExportMsg.isDisplayed()).toBe(true);
     });
 
     it('can prepare export for all answers without comments', () => {
       page.paratextExportTab.exportFlagged.click();
       page.paratextExportTab.downloadPT7Button.click();
-      browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.answerCount),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.answerCount), constants.conditionTimeout);
       expect<any>(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
       expect<any>(page.paratextExportTab.answerCount.getText()).toEqual('2');
       expect<any>(page.paratextExportTab.commentCount.isDisplayed()).toBe(false);
@@ -90,8 +88,7 @@ describe('the questions settings page - project manager', () => {
     it('can prepare export for all answers with comments', () => {
       page.paratextExportTab.exportComments.click();
       page.paratextExportTab.downloadPT7Button.click();
-      browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.answerCount),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(page.paratextExportTab.answerCount), constants.conditionTimeout);
       expect<any>(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
       expect<any>(page.paratextExportTab.answerCount.getText()).toEqual('2');
       expect<any>(page.paratextExportTab.commentCount.isDisplayed()).toBe(true);
