@@ -1,7 +1,8 @@
 // tslint:disable-next-line:no-reference
 ///<reference path="activityCustomMatchers.d.ts" />
-import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
-import { ElementFinder } from 'protractor/built/element';
+import {browser} from 'protractor';
+import {ElementFinder} from 'protractor/built/element';
+
 import {SfActivityPage} from '../../../bellows/pages/activityPage';
 import {BellowsLoginPage} from '../../../bellows/pages/loginPage';
 import {ProjectsPage} from '../../../bellows/pages/projectsPage';
@@ -11,18 +12,16 @@ import {SfProjectSettingsPage} from '../../sfchecks/pages/projectSettingsPage';
 import {SfQuestionPage} from '../../sfchecks/pages/questionPage';
 import {SfTextPage} from '../../sfchecks/pages/textPage';
 
-const util = new Utils();
-const loginPage = new BellowsLoginPage();
-const activityPage = new SfActivityPage();
-const projectListPage = new ProjectsPage();
-const projectPage = new SfProjectPage();
-const projectSettingsPage = new SfProjectSettingsPage();
-const questionPage = new SfQuestionPage();
-const textPage = new SfTextPage();
-// tslint:disable-next-line:no-var-requires
-const constants = require('../../../testConstants.json');
-
 describe('Activity E2E Test', () => {
+  const constants = require('../../../testConstants.json');
+  const util = new Utils();
+  const loginPage = new BellowsLoginPage();
+  const activityPage = new SfActivityPage();
+  const projectListPage = new ProjectsPage();
+  const projectPage = new SfProjectPage();
+  const projectSettingsPage = new SfProjectSettingsPage();
+  const questionPage = new SfQuestionPage();
+  const textPage = new SfTextPage();
 
   let activityIndex = 0;
   const testData = {
@@ -141,18 +140,15 @@ describe('Activity E2E Test', () => {
       browser.navigate().back();
       expect<any>(projectPage.notice.list.count()).toBe(0);
       projectPage.addNewText(constants.testText3Title, projectPage.testData.simpleUsx1);
-      projectPage.notice.waitToInclude('The text \'' + constants.testText3Title +
-        '\' was added successfully');
+      projectPage.notice.waitToInclude('The text \'' + constants.testText3Title + '\' was added successfully');
       projectPage.notice.firstCloseButton.click();
     });
 
     it('Performing action \'add\' on \'questions\'', () => {
       browser.navigate().forward();
       expect<any>(textPage.notice.list.count()).toBe(0);
-      textPage.addNewQuestion(constants.testText1Question3Title,
-        constants.testText1Question3Summary);
-      textPage.notice.waitToInclude('\'' + constants.testText1Question3Summary +
-        '\' was added successfully');
+      textPage.addNewQuestion(constants.testText1Question3Title, constants.testText1Question3Summary);
+      textPage.notice.waitToInclude('\'' + constants.testText1Question3Summary + '\' was added successfully');
       textPage.notice.firstCloseButton.click();
     });
 
@@ -186,8 +182,7 @@ describe('Activity E2E Test', () => {
     it('Verify action \'add\' on \'users\' appears on the activity feed', () => {
       activityIndex = 0;
       const activityText = activityPage.getActivityText(activityIndex);
-      expect<any>(activityText).toContain('jimmycricket is now a member of ' +
-        constants.testProjectName);
+      expect<any>(activityText).toContain('jimmycricket is now a member of ' + constants.testProjectName);
     });
 
     it('Verify action \'add\' on \'questions\' appears on the activity feed', () => {
@@ -216,16 +211,14 @@ describe('Activity E2E Test', () => {
     loginPage.loginAsManager();
     projectSettingsPage.get(constants.testProjectName);
     projectSettingsPage.tabs.project.click();
-    projectSettingsPage.projectTab
-      .setCheckbox(projectSettingsPage.projectTab.usersSeeEachOthersResponses, value);
+    projectSettingsPage.projectTab.setCheckbox(projectSettingsPage.projectTab.usersSeeEachOthersResponses, value);
     projectSettingsPage.projectTab.saveButton.click();
   }
 
   function verifyResponseVisibility(valueShouldBeTrue: boolean) {
     projectSettingsPage.get(constants.testProjectName);
     projectSettingsPage.tabs.project.click();
-    const isChecked = projectSettingsPage.projectTab.usersSeeEachOthersResponses
-      .getAttribute('checked');
+    const isChecked = projectSettingsPage.projectTab.usersSeeEachOthersResponses.getAttribute('checked');
     if (valueShouldBeTrue) {
       expect<any>(isChecked).toBeTruthy();
     } else {
@@ -435,8 +428,7 @@ describe('Activity E2E Test', () => {
 
         // Which means newCount > 0 -- but oldCount is a real int, while newCount is still a promise
         if (count > 1) {
-          expect<any>(questionPage.answers.last().getText())
-            .toContain(constants.testText1Question1Answer);
+          expect<any>(questionPage.answers.last().getText()).toContain(constants.testText1Question1Answer);
         }
 
         questionPage.notice.waitToInclude('The answer was removed successfully');

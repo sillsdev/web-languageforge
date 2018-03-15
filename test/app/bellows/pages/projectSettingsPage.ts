@@ -2,9 +2,8 @@ import {browser, by, element, ExpectedConditions} from 'protractor';
 
 import { ProjectsPage } from './projectsPage';
 
-const projectsPage = new ProjectsPage();
-
 export class BellowsProjectSettingsPage {
+  private readonly projectsPage = new ProjectsPage();
 
   conditionTimeout: number = 3000;
   settingsMenuLink = element(by.id('settings-dropdown-button'));
@@ -12,8 +11,8 @@ export class BellowsProjectSettingsPage {
 
   // Get the projectSettings for project projectName
   get(projectName: string) {
-    projectsPage.get();
-    projectsPage.clickOnProject(projectName);
+    this.projectsPage.get();
+    this.projectsPage.clickOnProject(projectName);
     browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
     this.settingsMenuLink.click();
     browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);

@@ -1,4 +1,4 @@
-import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+import {by, element} from 'protractor';
 
 export class SfAppFrame {
 

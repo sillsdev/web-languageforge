@@ -1,18 +1,16 @@
-import { BellowsLoginPage } from '../../bellows/pages/loginPage';
-import { ProjectsPage } from '../../bellows/pages/projectsPage';
-import { SfProjectPage } from '../sfchecks/pages/projectPage';
-import { SfProjectSettingsPage } from '../sfchecks/pages/projectSettingsPage';
-import { SfQuestionPage } from '../sfchecks/pages/questionPage';
-import { SfTextPage } from '../sfchecks/pages/textPage';
-import { SfTextSettingsPage } from '../sfchecks/pages/textSettingsPage';
+import 'jasmine';
+
+import {BellowsLoginPage} from '../../bellows/pages/loginPage';
+import {SfProjectPage} from '../sfchecks/pages/projectPage';
+import {SfProjectSettingsPage} from '../sfchecks/pages/projectSettingsPage';
+import {SfQuestionPage} from '../sfchecks/pages/questionPage';
+import {SfTextPage} from '../sfchecks/pages/textPage';
+import {SfTextSettingsPage} from '../sfchecks/pages/textSettingsPage';
 
 describe('SFChecks E2E Page Traversal', () => {
-
-  // tslint:disable-next-line:no-var-requires
   const constants = require('../../testConstants');
   const loginPage = new BellowsLoginPage();
   const projectPage = new SfProjectPage();
-  const projectsPage = new ProjectsPage();
   const projectSettingsPage = new SfProjectSettingsPage();
   const questionPage = new SfQuestionPage();
   const textPage = new SfTextPage();

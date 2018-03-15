@@ -1,9 +1,7 @@
-import {browser, element, by, By, $, $$, ExpectedConditions, Key} from 'protractor';
-import { ElementFinder } from 'protractor/built/element';
+import {browser, by, element} from 'protractor';
+import {ElementFinder} from 'protractor/built/element';
 
-/*
 // This object handles the activity page and provides methods to access items in the activity list
- */
 export class SfActivityPage {
   activityURL = '/app/activity';
   activitiesList = element.all(by.repeater('item in $ctrl.filteredActivities'));

@@ -1,10 +1,10 @@
-import {$, $$, browser, by, By, element, ExpectedConditions, Key} from 'protractor';
+import {browser, by, element, ExpectedConditions, Key} from 'protractor';
 
 export class ViewSettingsPage {
-
   conditionTimeout = 3000;
   settingsMenuLink = element(by.id('settings-dropdown-button'));
   viewSettingsLink = element(by.id('dropdown-view-settings'));
+
   get() {
     browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
     this.settingsMenuLink.click();
