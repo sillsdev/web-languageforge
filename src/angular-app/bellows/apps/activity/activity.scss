@@ -1,0 +1,41 @@
+#activity-app {
+  .activity-group {
+    h2 {
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .activity-user-group {
+      font-size: 14px;
+      .activity-group-meta {
+        display: flex;
+        align-items: center;
+        .meta-summary {
+          flex: 1;
+          .activity-username {
+            font-weight: bold;
+          }
+        }
+        .meta-toggle {
+          flex: 0 0 50px;
+          font-size: 26px;
+        }
+        .meta-time {
+          flex: 0 1 150px;
+          color: #adadad;
+        }
+        .meta-avatar {
+          flex: 0 0 65px;
+          img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+          }
+        }
+      }
+      .activity-container {
+
+      }
+    }
+  }
+}
