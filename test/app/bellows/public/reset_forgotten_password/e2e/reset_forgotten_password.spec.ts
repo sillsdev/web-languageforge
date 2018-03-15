@@ -1,5 +1,4 @@
-import {} from 'jasmine';
-import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+import {browser, ExpectedConditions} from 'protractor';
 
 import {BellowsForgotPasswordPage} from '../../../pages/forgotPasswordPage';
 import {BellowsLoginPage} from '../../../pages/loginPage';
@@ -7,26 +6,22 @@ import {PageHeader} from '../../../pages/pageHeader';
 import {BellowsResetPasswordPage} from '../../../pages/resetPasswordPage';
 
 describe('E2E testing: Reset Forgotten Password', () => {
+  const constants = require('../../../../testConstants');
   const header = new PageHeader();
   const loginPage = new BellowsLoginPage();
-  const resetPasswordPage = new BellowsResetPasswordPage()
+  const resetPasswordPage = new BellowsResetPasswordPage();
   const forgotPasswordPage = new BellowsForgotPasswordPage();
-
-  // tslint:disable-next-line:no-var-requires
-  const constants = require('../../../../testConstants');
 
   it('with expired reset key routes to login with warning', () => {
     loginPage.logout();
     resetPasswordPage.get(constants.expiredPasswordKey);
-    browser.wait(ExpectedConditions.visibilityOf(loginPage.errors.get(0)),
-      constants.conditionTimeout);
+    browser.wait(ExpectedConditions.visibilityOf(loginPage.errors.get(0)), constants.conditionTimeout);
     expect<any>(loginPage.username.isDisplayed()).toBe(true);
     expect<any>(loginPage.infoMessages.count()).toBe(0);
     expect<any>(loginPage.errors.count()).toBe(1);
     expect<any>(loginPage.errors.first().getText()).toContain('expired');
 
-    // clear errors so that afterEach appFrame error check doesn't fail,
-    // see projectSettings.spec.js
+    // clear errors so that afterEach appFrame error check doesn't fail, see projectSettings.spec.js
     browser.refresh();
     expect<any>(loginPage.errors.count()).toBe(0);
   });
@@ -35,10 +30,8 @@ describe('E2E testing: Reset Forgotten Password', () => {
 
     it('can navigate to request page', () => {
       loginPage.forgotPasswordLink.click();
-      browser.wait(ExpectedConditions.stalenessOf(loginPage.forgotPasswordLink),
-        constants.conditionTimeout);
-      browser.wait(ExpectedConditions.visibilityOf(forgotPasswordPage.usernameInput),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.stalenessOf(loginPage.forgotPasswordLink), constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(forgotPasswordPage.usernameInput), constants.conditionTimeout);
       expect<any>(forgotPasswordPage.usernameInput.isDisplayed()).toBe(true);
     });
 
@@ -48,14 +41,12 @@ describe('E2E testing: Reset Forgotten Password', () => {
       expect<any>(forgotPasswordPage.errors.count()).toBe(0);
       forgotPasswordPage.usernameInput.sendKeys(constants.unusedUsername);
       forgotPasswordPage.submitButton.click();
-      browser.wait(ExpectedConditions.visibilityOf(forgotPasswordPage.errors.get(0)),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(forgotPasswordPage.errors.get(0)), constants.conditionTimeout);
       expect<any>(forgotPasswordPage.errors.count()).toBe(1);
       expect<any>(forgotPasswordPage.errors.first().getText()).toContain('User not found');
       forgotPasswordPage.usernameInput.clear();
 
-      // clear errors so that afterEach appFrame error check doesn't fail,
-      // see projectSettings.spec.js
+      // clear errors so that afterEach appFrame error check doesn't fail, see projectSettings.spec.js
       browser.refresh();
       expect<any>(forgotPasswordPage.errors.count()).toBe(0);
     });
@@ -64,10 +55,8 @@ describe('E2E testing: Reset Forgotten Password', () => {
       forgotPasswordPage.usernameInput.sendKeys(constants.expiredUsername);
       forgotPasswordPage.submitButton.click();
       expect<any>(forgotPasswordPage.errors.count()).toBe(0);
-      browser.wait(ExpectedConditions.stalenessOf(resetPasswordPage.confirmPasswordInput),
-        constants.conditionTimeout);
-      browser.wait(ExpectedConditions.visibilityOf(loginPage.infoMessages.get(0)),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.stalenessOf(resetPasswordPage.confirmPasswordInput), constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(loginPage.infoMessages.get(0)), constants.conditionTimeout);
       expect<any>(loginPage.username.isDisplayed()).toBe(true);
       expect<any>(loginPage.errors.count()).toBe(0);
       expect<any>(loginPage.infoMessages.count()).toBe(1);
@@ -120,8 +109,7 @@ describe('E2E testing: Reset Forgotten Password', () => {
       // 'stalenessOf' occasionally failed with
       // WebDriverError: javascript error: document unloaded while waiting for result
       browser.sleep(100);
-      browser.wait(ExpectedConditions.visibilityOf(loginPage.infoMessages.get(0)),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(loginPage.infoMessages.get(0)), constants.conditionTimeout);
       expect<any>(loginPage.username.isDisplayed()).toBe(true);
       expect<any>(loginPage.form.isPresent()).toBe(true);
       expect<any>(loginPage.infoMessages.count()).toBe(1);

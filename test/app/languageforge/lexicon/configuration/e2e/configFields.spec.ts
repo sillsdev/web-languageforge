@@ -1,4 +1,3 @@
-import {} from 'jasmine';
 import { protractor } from 'protractor';
 
 import { BellowsLoginPage } from '../../../../bellows/pages/loginPage.js';

@@ -1,8 +1,8 @@
-import { $, browser, by, element, ExpectedConditions } from 'protractor';
+import {browser, ExpectedConditions} from 'protractor';
 
-import { BellowsLoginPage } from '../../pages/loginPage';
-import { SfUserProfilePage } from '../../pages/userProfilePage';
-import { Utils } from '../../pages/utils';
+import {BellowsLoginPage} from '../../pages/loginPage';
+import {SfUserProfilePage} from '../../pages/userProfilePage';
+import {Utils} from '../../pages/utils';
 
 describe('User Profile E2E Test', () => {
   const constants = require('../../../testConstants.json');
@@ -35,8 +35,10 @@ describe('User Profile E2E Test', () => {
 
         expect(userProfile.myAccountTab.username.getAttribute('value')).toEqual(expectedUsername);
         expect(userProfile.myAccountTab.avatar.getAttribute('src')).toContain(constants.avatar);
-        expect<any>(userProfile.myAccountTab.avatarColor.$('option:checked').getText()).toBe('Select a Color...');
-        expect<any>(userProfile.myAccountTab.avatarShape.$('option:checked').getText()).toBe('Choose an animal...');
+        expect<any>(userProfile.myAccountTab.avatarColor.$('option:checked').getText())
+          .toBe('Select a Color...');
+        expect<any>(userProfile.myAccountTab.avatarShape.$('option:checked').getText())
+          .toBe('Choose an animal...');
         expect<any>(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value')).toEqual('');
         expect(userProfile.myAccountTab.emailBtn.isSelected());
       });
@@ -153,7 +155,7 @@ describe('User Profile E2E Test', () => {
         // Change to taken username
         userProfile.myAccountTab.updateUsername(constants.observerUsername);
         browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.usernameTaken),
-        constants.conditionTimeout);
+          constants.conditionTimeout);
         expect<any>(userProfile.myAccountTab.usernameTaken.isDisplayed()).toBe(true);
         expect<any>(userProfile.myAccountTab.saveBtn.isEnabled()).toBe(false);
 

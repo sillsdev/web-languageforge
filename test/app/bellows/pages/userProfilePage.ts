@@ -1,16 +1,10 @@
 import {browser, by, element, ExpectedConditions, protractor} from 'protractor';
 
-import { Utils } from './utils';
+import {Utils} from './utils';
 
-// TODO This 'utils' should be moved inside the class somehow.
-// So far attempts at making this a member variable have resulted in runtime errors - cjh 2018-03-07
-const utils = new Utils();
-
-/*
- * This object handles the user profile page and provides methods to access items in the activity
- * list
- */
 export class SfUserProfilePage {
+  private readonly utils = new Utils();
+
   userProfileURL = '/app/userprofile';
   activitiesList = element.all(by.repeater('item in filteredActivities'));
 
@@ -28,7 +22,7 @@ export class SfUserProfilePage {
   getAboutMe() {
     this.get();
     this.tabs.aboutMe.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), utils.conditionTimeout);
+    browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), this.utils.conditionTimeout);
   }
 
   tabs = {
@@ -59,31 +53,31 @@ export class SfUserProfilePage {
     bothBtn:          element(by.id('BothButton')),
     saveBtn:          element(by.id('saveBtn')),
 
-    selectColor(newColor: string|RegExp) {
-      utils.clickDropdownByValue(this.avatarColor, newColor);
+    selectColor: (newColor: string|RegExp) => {
+      this.utils.clickDropdownByValue(this.myAccountTab.avatarColor, newColor);
     },
-    selectShape(newShape: string|RegExp) {
-      utils.clickDropdownByValue(this.avatarShape, newShape);
+    selectShape: (newShape: string|RegExp) => {
+      this.utils.clickDropdownByValue(this.myAccountTab.avatarShape, newShape);
     },
-    updateEmail(newEmail: string) {
-      browser.wait(ExpectedConditions.visibilityOf(this.emailInput), utils.conditionTimeout);
-      this.emailInput.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
-      this.emailInput.sendKeys(newEmail);
+    updateEmail: (newEmail: string) => {
+      browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.emailInput), this.utils.conditionTimeout);
+      this.myAccountTab.emailInput.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
+      this.myAccountTab.emailInput.sendKeys(newEmail);
 
       // click another field to force validation
-      this.username.click();
+      this.myAccountTab.username.click();
     },
-    updateUsername(newUsername: string) {
-      browser.wait(ExpectedConditions.visibilityOf(this.username), utils.conditionTimeout);
-      this.username.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
-      this.username.sendKeys(newUsername);
+    updateUsername: (newUsername: string) => {
+      browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.username), this.utils.conditionTimeout);
+      this.myAccountTab.username.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
+      this.myAccountTab.username.sendKeys(newUsername);
 
       // click another field to force validation
-      this.emailInput.click();
+      this.myAccountTab.emailInput.click();
     },
-    updateMobilePhone(newPhone: string) {
-      browser.wait(ExpectedConditions.visibilityOf(this.mobilePhoneInput), utils.conditionTimeout);
-      this.mobilePhoneInput.sendKeys(newPhone);
+    updateMobilePhone: (newPhone: string) => {
+      browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.mobilePhoneInput), this.utils.conditionTimeout);
+      this.myAccountTab.mobilePhoneInput.sendKeys(newPhone);
     },
     updateContactPreference() {
       this.bothBtn.click();
@@ -96,18 +90,18 @@ export class SfUserProfilePage {
     gender:   element(by.id('gender')),
     saveBtn:  element(by.id('saveBtn')),
 
-    updateFullName(newFullName: string) {
-      browser.wait(ExpectedConditions.visibilityOf(this.fullName), utils.conditionTimeout);
-      this.fullName.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
-      this.fullName.sendKeys(newFullName);
+    updateFullName: (newFullName: string) => {
+      browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), this.utils.conditionTimeout);
+      this.aboutMeTab.fullName.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
+      this.aboutMeTab.fullName.sendKeys(newFullName);
     },
-    updateAge(newAge: string) {
-      browser.wait(ExpectedConditions.visibilityOf(this.age), utils.conditionTimeout);
-      this.age.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
-      this.age.sendKeys(newAge);
+    updateAge: (newAge: string) => {
+      browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.age), this.utils.conditionTimeout);
+      this.aboutMeTab.age.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
+      this.aboutMeTab.age.sendKeys(newAge);
     },
-    updateGender(newGender: string) {
-      utils.clickDropdownByValue(this.gender, newGender);
+    updateGender: (newGender: string) => {
+      this.utils.clickDropdownByValue(this.aboutMeTab.gender, newGender);
     }
   };
 }

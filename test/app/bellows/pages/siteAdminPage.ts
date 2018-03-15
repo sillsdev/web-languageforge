@@ -1,9 +1,8 @@
 import {browser, by, element} from 'protractor';
 import { Utils } from './utils';
 
-const util = new Utils();
-
 export class SiteAdminPage {
+  private readonly util = new Utils();
 
   url = browser.baseUrl + '/app/siteadmin';
   get() {
@@ -22,10 +21,10 @@ export class SiteAdminPage {
     republishButton: element(by.id('site-admin-republish-btn')),
     deleteButton: element(by.id('site-admin-delete-btn')),
     projectsList: element.all(by.repeater('project in visibleProjects')),
-    setCheckbox(row: number, value: boolean) {
+    setCheckbox: (row: number, value: boolean) => {
       const projectRow = this.archivedProjectsTab.projectsList.get(row);
       const rowCheckbox = projectRow.element(by.css('input[type="checkbox"]'));
-      util.setCheckbox(rowCheckbox, value);
+      this.util.setCheckbox(rowCheckbox, value);
     }
   };
 
