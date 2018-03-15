@@ -11,7 +11,7 @@ import { User } from '../../shared/model/user.model';
 class Activity {
   action: string;
   content: any;
-  date: string;
+  date: Date;
   dateCreated: string;
   dateModified: string;
   entryRef: any;
@@ -30,19 +30,46 @@ class Activity {
   userHref2: string;
 }
 
+export class ActivityGroup {
+  name: string;
+  date: Date;
+  dateFormat: string;
+  userGroups: ActivityUserGroup[];
+  constructor(private $name: string, private $date: Date, private $dateFormat: string = 'h:mma d/MM/yy') {
+    this.name = $name;
+    this.date = new Date($date);
+    this.dateFormat = $dateFormat;
+    this.userGroups = [];
+  }
+}
+
+export class ActivityUserGroup {
+  user: User;
+  date: Date;
+  activities: Activity[];
+  constructor(private activity: Activity) {
+    this.user = activity.userRef;
+    this.date = activity.date;
+    this.activities = [];
+  }
+}
+
 export class ActivityAppController implements angular.IController {
   getAvatarUrl = UtilityService.getAvatarUrl;
   unread: string[] = [];
   filteredActivities: Activity[] = [];
   activities: Activity[] = [];
+  activityGroups: ActivityGroup[];
   showAllActivity: boolean = true;
 
   static $inject = ['$sce', 'activityService',
     'breadcrumbService', 'linkService',
-    'sessionService'];
+    'sessionService', '$scope'];
   constructor(private $sce: angular.ISCEService, private activityService: ActivityService,
               private breadcrumbService: BreadcrumbService, private linkService: LinkService,
-              private sessionService: SessionService) { }
+              private sessionService: SessionService, private $scope: any) {
+    this.activityGroups = [];
+  }
 
   $onInit(): void {
     this.breadcrumbService.set('top', [
@@ -66,6 +93,44 @@ export class ActivityAppController implements angular.IController {
 
         this.decodeActivityList(this.activities);
         this.filteredActivities = this.activities;
+        // Set activity groups up
+        const today = new Date();
+        const newDate = new Date();
+        today.setHours(0, 0, 0, 0);
+        this.activityGroups.push(new ActivityGroup('Today', today, 'h:ma \'Today\''));
+        newDate.setDate(today.getDate() - 1);
+        this.activityGroups.push(new ActivityGroup('Yesterday', newDate, 'h:ma \'Yesterday\''));
+        newDate.setDate(today.getDate() - 7);
+        this.activityGroups.push(new ActivityGroup('Last week', newDate, 'h:ma EEEE'));
+        newDate.setDate(today.getDate() - 14);
+        this.activityGroups.push(new ActivityGroup('Two weeks ago', newDate));
+        newDate.setDate(today.getMonth() - 1);
+        this.activityGroups.push(new ActivityGroup('One month ago', newDate));
+        newDate.setDate(today.getFullYear() - 100);
+        this.activityGroups.push(new ActivityGroup('Older', newDate));
+      }
+    });
+
+    this.$scope.$watch(() => this.filteredActivities, () => {
+      let userGroupIndex;
+      let userGroup = new ActivityUserGroup(new Activity());
+      let previousDate = new Date();
+      for (const activityGroup of this.activityGroups) {
+        userGroupIndex = 0;
+        activityGroup.userGroups = [];
+        for (const activity of this.filteredActivities) {
+          if (activity.date > activityGroup.date && activity.date < previousDate) {
+            if (angular.isDefined(userGroup.user) && userGroup.user.id !== activity.userRef.id) {
+              userGroupIndex++;
+            }
+            if (!angular.isDefined(activityGroup.userGroups[userGroupIndex])) {
+              userGroup = new ActivityUserGroup(activity);
+              activityGroup.userGroups[userGroupIndex] = userGroup;
+            }
+            activityGroup.userGroups[userGroupIndex].activities.push(activity);
+          }
+        }
+        previousDate = activityGroup.date;
       }
     });
 
@@ -107,6 +172,10 @@ export class ActivityAppController implements angular.IController {
         if ('answer' in item.content) {
           item.content.answer = this.$sce.trustAsHtml(item.content.answer);
         }
+      }
+
+      if ('date' in item) {
+        item.date = new Date(item.date);
       }
     }
   }
