@@ -3,18 +3,17 @@
 
 [Unit]
 Description=Node.js CAT Real-time Doc Server
-#Requires=After=mysql.service       # Requires the mysql service to run first
 
 [Service]
 ExecStart=/usr/local/bin/node /var/www/scriptureforge.org_qa/htdocs/node/server.js
-#WorkingDirectory=/var/www/scriptureforge.org_qa/htdocs/node   # Required on some systems
+WorkingDirectory=/var/www/scriptureforge.org_qa/htdocs/node
 Restart=always
-RestartSec=10                       # Restart service after 10 seconds if node service crashes
-StandardOutput=syslog               # Output to syslog
-StandardError=syslog                # Output to syslog
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
 SyslogIdentifier=nodejs-rt-doc
-#User=<alternate user>
-#Group=<alternate group>
+User=root
+Group=www-data
 Environment=NODE_ENV=production PORT=8443
 
 [Install]
