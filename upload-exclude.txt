@@ -3,4 +3,3 @@
 /js/lib/languageforge.js
 /js/lib/scriptureforge.js
 /node/config.js
-/node/node_modules/
