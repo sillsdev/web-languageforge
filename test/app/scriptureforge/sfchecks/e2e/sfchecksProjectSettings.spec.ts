@@ -1,9 +1,8 @@
-import {} from 'jasmine';
 import {browser, by, ExpectedConditions} from 'protractor';
 
-import { BellowsLoginPage } from '../../../bellows/pages/loginPage.js';
-import { Utils } from '../../../bellows/pages/utils.js';
-import { SfProjectSettingsPage } from '../pages/projectSettingsPage.js';
+import {BellowsLoginPage} from '../../../bellows/pages/loginPage';
+import {Utils} from '../../../bellows/pages/utils';
+import {SfProjectSettingsPage} from '../pages/projectSettingsPage';
 
 describe('SFChecks project settings page - project manager', () => {
   const constants = require('../../../testConstants.json');
@@ -108,21 +107,20 @@ describe('SFChecks project settings page - project manager', () => {
 
     it('can update an existing template', () => {
       projectSettingsPage.templatesTab.list.last().element(by.linkText('sound check')).click();
-      browser.wait(ExpectedConditions.visibilityOf(
-        projectSettingsPage.templatesTab.editor.saveButton), constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(projectSettingsPage.templatesTab.editor.saveButton),
+        constants.conditionTimeout);
       expect<any>(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(true);
       projectSettingsPage.templatesTab.editor.title.clear();
       projectSettingsPage.templatesTab.editor.title.sendKeys('test12');
       projectSettingsPage.templatesTab.editor.saveButton.click();
-      browser.wait(ExpectedConditions.invisibilityOf(
-        projectSettingsPage.templatesTab.editor.saveButton), constants.conditionTimeout);
+      browser.wait(ExpectedConditions.invisibilityOf(projectSettingsPage.templatesTab.editor.saveButton),
+        constants.conditionTimeout);
       expect<any>(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
       expect<any>(projectSettingsPage.templatesTab.list.count()).toBe(3);
     });
 
     it('can delete a template', () => {
-      projectSettingsPage.templatesTab.list.last().element(by.css('input[type="checkbox"]'))
-        .click();
+      projectSettingsPage.templatesTab.list.last().element(by.css('input[type="checkbox"]')).click();
       projectSettingsPage.templatesTab.removeButton.click();
       expect<any>(projectSettingsPage.templatesTab.list.count()).toBe(2);
     });
@@ -142,10 +140,8 @@ describe('SFChecks project settings page - project manager', () => {
     });
 
     it('can read properties', () => {
-      expect(projectSettingsPage.projectTab.name.getAttribute('value'))
-        .toBe(constants.testProjectName);
-      expect(projectSettingsPage.projectTab.allowAudioDownload.getAttribute('checked'))
-        .toBeTruthy();
+      expect(projectSettingsPage.projectTab.name.getAttribute('value')).toBe(constants.testProjectName);
+      expect(projectSettingsPage.projectTab.allowAudioDownload.getAttribute('checked')).toBeTruthy();
     });
 
     it('can change properties and verify they persist', () => {
@@ -156,8 +152,7 @@ describe('SFChecks project settings page - project manager', () => {
       browser.navigate().refresh();
       projectSettingsPage.tabs.project.click();
       expect(projectSettingsPage.projectTab.name.getAttribute('value')).toBe(newName);
-      expect(projectSettingsPage.projectTab.allowAudioDownload.getAttribute('checked'))
-        .toBeFalsy();
+      expect(projectSettingsPage.projectTab.allowAudioDownload.getAttribute('checked')).toBeFalsy();
       projectSettingsPage.get(newName);
       projectSettingsPage.tabs.project.click();
       projectSettingsPage.projectTab.name.clear();
@@ -170,10 +165,9 @@ describe('SFChecks project settings page - project manager', () => {
   describe('user profile lists', () => {
     it('setup: click on tab and select the Location list for editing', () => {
       projectSettingsPage.tabs.optionlists.click();
-      util.findRowByText(projectSettingsPage.optionlistsTab.editList, 'Study Group')
-        .then(row => {
-          row.click();
-        });
+      util.findRowByText(projectSettingsPage.optionlistsTab.editList, 'Study Group').then(row => {
+        row.click();
+      });
     });
 
     it('can add two values to a list', () => {
@@ -233,16 +227,11 @@ describe('SFChecks project settings page - project manager', () => {
         browser.navigate().refresh();
         projectSettingsPage.tabs.communication.click();
 
-        expect<any>(projectSettingsPage.communicationTab.sms.accountId.getAttribute('value'))
-          .toBe(sample.a);
-        expect<any>(projectSettingsPage.communicationTab.sms.authToken.getAttribute('value'))
-          .toBe(sample.b);
-        expect<any>(projectSettingsPage.communicationTab.sms.number.getAttribute('value'))
-          .toBe(sample.c);
-        expect<any>(projectSettingsPage.communicationTab.email.address.getAttribute('value'))
-          .toBe(sample.d);
-        expect<any>(projectSettingsPage.communicationTab.email.name.getAttribute('value'))
-          .toBe(sample.e);
+        expect<any>(projectSettingsPage.communicationTab.sms.accountId.getAttribute('value')).toBe(sample.a);
+        expect<any>(projectSettingsPage.communicationTab.sms.authToken.getAttribute('value')).toBe(sample.b);
+        expect<any>(projectSettingsPage.communicationTab.sms.number.getAttribute('value')).toBe(sample.c);
+        expect<any>(projectSettingsPage.communicationTab.email.address.getAttribute('value')).toBe(sample.d);
+        expect<any>(projectSettingsPage.communicationTab.email.name.getAttribute('value')).toBe(sample.e);
       });
     });
   });

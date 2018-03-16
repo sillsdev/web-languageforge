@@ -1,10 +1,8 @@
 // tslint:disable-next-line:no-reference
 ///<reference path="utils.d.ts" />
-import 'jasmine';
-import {$, $$, browser, by, By, element, ExpectedConditions, promise} from 'protractor';
-
-import { ElementArrayFinder, ElementFinder } from 'protractor/built/element';
-import { logging } from 'selenium-webdriver';
+import {browser, by, By, element, ExpectedConditions} from 'protractor';
+import {ElementArrayFinder, ElementFinder} from 'protractor/built/element';
+import {logging} from 'selenium-webdriver';
 
 export class Utils {
   readonly conditionTimeout: number = 3000;

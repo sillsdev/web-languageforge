@@ -1,14 +1,12 @@
-import { browser, by, element, ExpectedConditions } from 'protractor';
+import {browser, ExpectedConditions} from 'protractor';
 
-import { BellowsLoginPage } from '../../../pages/loginPage';
-import { ProjectsPage } from '../../../pages/projectsPage';
-import { SignupPage } from '../../../pages/signupPage';
+import {BellowsLoginPage} from '../../../pages/loginPage';
+import {SignupPage} from '../../../pages/signupPage';
 
 describe('E2E testing: Signup app', () => {
   const constants = require('../../../../testConstants');
   const page = new SignupPage();
   const loginPage = new BellowsLoginPage();
-  const projectsPage = new ProjectsPage();
 
   it('setup and contains a user form', () => {
     loginPage.logout();

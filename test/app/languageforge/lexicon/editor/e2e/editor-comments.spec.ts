@@ -1,14 +1,14 @@
-import { browser, by, element, ExpectedConditions } from 'protractor';
-import { BellowsLoginPage } from '../../../../bellows/pages/loginPage';
-import { ProjectsPage } from '../../../../bellows/pages/projectsPage';
-import { EditorPage } from '../../pages/editorPage';
+import {browser, ExpectedConditions} from 'protractor';
+
+import {BellowsLoginPage} from '../../../../bellows/pages/loginPage';
+import {ProjectsPage} from '../../../../bellows/pages/projectsPage';
+import {EditorPage} from '../../pages/editorPage';
 
 describe('Editor Comments', () => {
+  const constants = require('../../../../testConstants');
   const loginPage = new BellowsLoginPage();
   const projectsPage = new ProjectsPage();
   const editorPage = new EditorPage();
-  // tslint:disable-next-line:no-var-requires
-  const constants = require('../../../../testConstants');
 
   it('setup: login, click on test project', () => {
     loginPage.loginAsManager();
@@ -29,10 +29,8 @@ describe('Editor Comments', () => {
   it('click first comment bubble, type in a comment, add text to another part of the entry, ' +
     'submit comment to appear on original field', () => {
       editorPage.comment.bubbles.first.click();
-      browser.sleep(1000);
       editorPage.comment.newComment.textarea.sendKeys('First comment on this word.');
       editorPage.edit.getMultiTextInputs('Definition').first().sendKeys('change value - ');
-      browser.sleep(500);
       editorPage.comment.newComment.postBtn.click();
     });
 
@@ -110,28 +108,23 @@ describe('Editor Comments', () => {
   it('comments panel: refresh returns to comment', () => {
     const comment = editorPage.comment.getComment(0);
     browser.refresh();
-    browser.wait(ExpectedConditions.visibilityOf(editorPage.comment.bubbles.first),
-      constants.conditionTimeout);
+    browser.wait(ExpectedConditions.visibilityOf(editorPage.comment.bubbles.first), constants.conditionTimeout);
     editorPage.comment.bubbles.first.click();
-    browser.sleep(1000);
     expect<any>(comment.content.getText()).toEqual('First comment on this word.');
   });
 
   it('comments panel: close comments panel clicking on bubble', () => {
     editorPage.comment.bubbles.first.click();
-    browser.sleep(1000);
     expect<any>(editorPage.commentDiv.getAttribute('class')).not.toContain('panel-visible');
   });
 
   it('comments panel: show all comments', () => {
     editorPage.edit.toCommentsLink.click();
-    browser.sleep(1000);
     expect<any>(editorPage.commentDiv.getAttribute('class')).toContain('panel-visible');
   });
 
   it('comments panel: close all comments clicking on main comments button', () => {
     editorPage.edit.toCommentsLink.click();
-    browser.sleep(1000);
     expect<any>(editorPage.commentDiv.getAttribute('class')).not.toContain('panel-visible');
   });
 });
