@@ -45,6 +45,7 @@
 //   'webpack-sf:watch
 //   'build-composer'
 //   'build-npm-front-end'
+//   'build-npm-back-end'
 //   'build-webpack'
 //   'build-remove-test-fixtures'
 //   'build-minify'
@@ -552,6 +553,69 @@ gulp.task('remote-restart-xforge-web-api', function (cb) {
 });
 
 // -------------------------------------
+//   Task: Local Restart Node Server
+// -------------------------------------
+gulp.task('local-restart-node-server', function (cb) {
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .option('dest', {
+      demand: true,
+      type: 'string' })
+    .argv;
+
+  if (params.applicationName === 'languageforge') {
+    return;
+  }
+  var suffix = '';
+  if (params.dest.includes('e2etest')) {
+    suffix = '_e2etest';
+  }
+
+  var options = {
+    applicationName: params.applicationName + suffix
+  };
+  execute(
+    'sudo systemctl restart <%= applicationName %>-nodeserver',
+    options,
+    cb
+  );
+});
+
+// -------------------------------------
+//   Task: Remote Restart Node Server
+// -------------------------------------
+gulp.task('remote-restart-node-server', function (cb) {
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .option('dest', {
+      demand: true,
+      type: 'string' })
+    .option('uploadCredentials', {
+      demand: true,
+      type: 'string' })
+    .argv;
+
+  if (params.applicationName === 'languageforge') {
+    return;
+  }
+  var options = {
+    applicationName: params.applicationName,
+    credentials: params.uploadCredentials,
+    destination: params.dest.slice(0, params.dest.indexOf(':'))
+  };
+
+  execute(
+    "ssh -i <%= credentials %> <%= destination %> 'systemctl restart <%= applicationName %>-nodeserver'",
+    options,
+    cb
+  );
+});
+
+// -------------------------------------
 //   Task: E2E Test: Modify Environment
 // -------------------------------------
 gulp.task('test-e2e-env', function () {
@@ -866,6 +930,22 @@ gulp.task('build-npm-front-end', function (cb) {
     dryRun: false,
     silent: false,
     cwd: '.'
+  };
+  execute(
+    'npm install',
+    options,
+    cb
+  );
+});
+
+// -------------------------------------
+//   Task: Build npm back-end
+// -------------------------------------
+gulp.task('build-npm-back-end', function (cb) {
+  var options = {
+    dryRun: false,
+    silent: false,
+    cwd: 'src/node'
   };
   execute(
     'npm install',
@@ -1219,6 +1299,7 @@ gulp.task('build',
     gulp.parallel(
       'build-composer',
       'build-npm-front-end',
+      'build-npm-back-end',
       'build-version',
       'build-productionConfig',
       'build-clearLocalCache',
@@ -1233,7 +1314,8 @@ gulp.task('build',
 gulp.task('get-dependencies',
   gulp.parallel(
     'build-composer',
-    'build-npm-front-end'
+    'build-npm-front-end',
+    'build-npm-back-end'
   )
 );
 
@@ -1261,7 +1343,8 @@ gulp.task('build-and-upload',
     'build',
     'build-upload',
     'remote-restart-php-fpm',
-    'remote-restart-xforge-web-api')
+    'remote-restart-xforge-web-api',
+    'remote-restart-node-server')
 );
 
 // -------------------------------------
@@ -1293,7 +1376,8 @@ gulp.task('build-php',
     'test-dotnet',
     'build-upload',
     'test-restart-webserver',
-    'local-restart-xforge-web-api')
+    'local-restart-xforge-web-api',
+    'local-restart-node-server')
 );
 gulp.task('build-php').description =
   'Build and Run PHP tests on CI server; Deploy to dev site';
