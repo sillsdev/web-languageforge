@@ -1,10 +1,11 @@
-import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
-import { MockUploadElement } from '../../../bellows/pages/mockUploadElement';
-import { LexModals } from './lexModals';
+import {browser, by, element} from 'protractor';
 
-const mockUpload = new MockUploadElement();
+import {MockUploadElement} from '../../../bellows/pages/mockUploadElement';
+import {LexModals} from './lexModals';
 
 export class NewLexProjectPage {
+  private readonly mockUpload = new MockUploadElement();
+
   modal = new LexModals();
 
   get() {
@@ -71,7 +72,7 @@ export class NewLexProjectPage {
   // step 2: initial data
   initialDataPage = {
     browseButton: element(by.id('browseButton')),
-    mockUpload: mockUpload
+    mockUpload: this.mockUpload
   };
   // step 3: verify data
   verifyDataPage = {
@@ -83,6 +84,7 @@ export class NewLexProjectPage {
   // step 3 alternate: primary language
   primaryLanguagePage = {
     selectButton: element(by.id('selectLanguageButton')),
+    // tslint:disable-next-line:max-line-length
     // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
     selectButtonClick() {
       element(by.id('selectLanguageButton')).click();

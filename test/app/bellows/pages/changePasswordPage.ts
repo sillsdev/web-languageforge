@@ -1,4 +1,4 @@
-import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 
 export class BellowsChangePasswordPage {
   conditionTimeout: number = 3000;

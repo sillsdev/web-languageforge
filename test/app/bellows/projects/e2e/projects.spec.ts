@@ -1,8 +1,8 @@
-import { browser, by, element, ExpectedConditions } from 'protractor';
-import { ElementFinder } from 'protractor/built/element';
+import {browser, by, ExpectedConditions} from 'protractor';
+import {ElementFinder} from 'protractor/built/element';
 
-import { BellowsLoginPage } from '../../pages/loginPage';
-import { ProjectsPage } from '../../pages/projectsPage';
+import {BellowsLoginPage} from '../../pages/loginPage';
+import {ProjectsPage} from '../../pages/projectsPage';
 
 describe('E2E Projects List App', () => {
   const constants = require('../../../testConstants');
@@ -40,7 +40,7 @@ describe('E2E Projects List App', () => {
   };
 
   const shouldProjectHaveButtons = (projectRow: ElementFinder, bool: boolean) => {
-    let addAsManagerBtn = projectRow.element(by.id('managerButton'));
+    const addAsManagerBtn = projectRow.element(by.id('managerButton'));
     expect<any>(addAsManagerBtn.isDisplayed()).toBe(bool);
   };
 

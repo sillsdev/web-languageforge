@@ -1,9 +1,7 @@
-import {} from 'jasmine';
 import {browser, ExpectedConditions} from 'protractor';
 
 import { BellowsChangePasswordPage } from '../../pages/changePasswordPage';
 import { BellowsLoginPage } from '../../pages/loginPage';
-import { PageBody } from '../../pages/pageBody';
 import { PageHeader } from '../../pages/pageHeader';
 
 describe('E2E testing: Change password', () => {
@@ -48,10 +46,8 @@ describe('E2E testing: Change password', () => {
   it('can successfully changes user\'s password after form submission', () => {
     changePasswordPage.password.sendKeys(newPassword);
     changePasswordPage.confirm.sendKeys(newPassword);
-    browser.wait(ExpectedConditions.visibilityOf(changePasswordPage.passwordMatchImage),
-      constants.conditionTimeout);
-    browser.wait(ExpectedConditions.elementToBeClickable(changePasswordPage.submitButton),
-      constants.conditionTimeout);
+    browser.wait(ExpectedConditions.visibilityOf(changePasswordPage.passwordMatchImage), constants.conditionTimeout);
+    browser.wait(ExpectedConditions.elementToBeClickable(changePasswordPage.submitButton), constants.conditionTimeout);
     changePasswordPage.submitButton.click();
     expect<any>(changePasswordPage.noticeList.count()).toBe(1);
     expect(changePasswordPage.noticeList.first().getText()).toContain('Password updated');
@@ -65,10 +61,8 @@ describe('E2E testing: Change password', () => {
     changePasswordPage.get();
     changePasswordPage.password.sendKeys(constants.memberPassword);
     changePasswordPage.confirm.sendKeys(constants.memberPassword);
-    browser.wait(ExpectedConditions.visibilityOf(changePasswordPage.passwordMatchImage),
-      constants.conditionTimeout);
-    browser.wait(ExpectedConditions.elementToBeClickable(changePasswordPage.submitButton),
-      constants.conditionTimeout);
+    browser.wait(ExpectedConditions.visibilityOf(changePasswordPage.passwordMatchImage), constants.conditionTimeout);
+    browser.wait(ExpectedConditions.elementToBeClickable(changePasswordPage.submitButton), constants.conditionTimeout);
     changePasswordPage.submitButton.click();
   });
 

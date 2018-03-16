@@ -1,8 +1,10 @@
 import {browser, by, element, ExpectedConditions} from 'protractor';
-import { Utils } from '../../../bellows/pages/utils.js';
+
+import {Utils} from '../../../bellows/pages/utils';
 
 export class SfProjectPage {
-  private utils = new Utils();
+  private readonly utils = new Utils();
+
   notice = this.utils.notice;
 
   testData = {
@@ -23,8 +25,7 @@ export class SfProjectPage {
   textNames = element.all(by.repeater('text in visibleTexts').column('title'));
   textList = element.all(by.repeater('text in visibleTexts'));
 
-  // getFirstCheckbox has to be a function because the .first() method will actually resolve the
-  // finder
+  // getFirstCheckbox has to be a function because the .first() method will actually resolve the finder
   getFirstCheckbox() {
     return this.textList.first().element(by.css('input[type="checkbox"]'));
   }
