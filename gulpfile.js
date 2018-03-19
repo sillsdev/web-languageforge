@@ -579,6 +579,7 @@ gulp.task('local-restart-node-server', function (cb) {
     .argv;
 
   if (params.applicationName === 'languageforge') {
+    cb();
     return;
   }
 
@@ -610,6 +611,7 @@ gulp.task('remote-restart-node-server', function (cb) {
     .argv;
 
   if (params.applicationName === 'languageforge') {
+    cb();
     return;
   }
 
