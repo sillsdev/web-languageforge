@@ -21,7 +21,7 @@ export class LexConfigOptionList extends LexConfig {
 
 class LexConfigMultiOptionList extends LexConfigOptionList { }
 
-class LexConfigPictures extends LexConfigMultiText {
+export class LexConfigPictures extends LexConfigMultiText {
   captionLabel: string;
   captionHideIfEmpty: boolean;
 }

@@ -73,10 +73,8 @@ describe('Editor List and Entry', () => {
 
   it('add citation form as visible field', () => {
     configPage.get();
-    configPage.getTabByName('Fields').click();
-    configPage.showAllFieldsButton.click();
-    configPage.getFieldByName('Citation Form').click();
-    util.setCheckbox(configPage.hiddenIfEmpty, false);
+    configPage.tabs.unified.click();
+    util.setCheckbox(configPage.unifiedTab.hiddenIfEmptyCheckbox('Citation Form'), false);
     configPage.applyButton.click();
     util.clickBreadcrumb(constants.testProjectName);
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
@@ -126,11 +124,10 @@ describe('Editor List and Entry', () => {
 
   it('change config to show Pictures and hide captions', () => {
     configPage.get();
-    configPage.getTabByName('Fields').click();
-    configPage.showAllFieldsButton.click();
-    configPage.getFieldByName('Pictures').click();
-    util.setCheckbox(configPage.hiddenIfEmpty, false);
-    util.setCheckbox(configPage.captionHiddenIfEmpty(), true);
+    configPage.tabs.unified.click();
+    util.setCheckbox(configPage.unifiedTab.hiddenIfEmptyCheckbox('Pictures'), false);
+    configPage.unifiedTab.fieldSpecificButton('Pictures').click();
+    util.setCheckbox(configPage.unifiedTab.sense.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures'), true);
     configPage.applyButton.click();
   });
 
@@ -145,11 +142,10 @@ describe('Editor List and Entry', () => {
 
   it('change config to show Pictures and show captions', () => {
     configPage.get();
-    configPage.getTabByName('Fields').click();
-    configPage.showAllFieldsButton.click();
-    configPage.getFieldByName('Pictures').click();
-    util.setCheckbox(configPage.hiddenIfEmpty, false);
-    util.setCheckbox(configPage.captionHiddenIfEmpty(), false);
+    configPage.tabs.unified.click();
+    util.setCheckbox(configPage.unifiedTab.hiddenIfEmptyCheckbox('Pictures'), false);
+    configPage.unifiedTab.fieldSpecificButton('Pictures').click();
+    util.setCheckbox(configPage.unifiedTab.sense.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures'), false);
     configPage.applyButton.click();
   });
 
@@ -169,11 +165,10 @@ describe('Editor List and Entry', () => {
 
   it('change config to hide Pictures and hide captions', () => {
     configPage.get();
-    configPage.getTabByName('Fields').click();
-    configPage.showAllFieldsButton.click();
-    configPage.getFieldByName('Pictures').click();
-    util.setCheckbox(configPage.hiddenIfEmpty, true);
-    util.setCheckbox(configPage.captionHiddenIfEmpty(), true);
+    configPage.tabs.unified.click();
+    util.setCheckbox(configPage.unifiedTab.hiddenIfEmptyCheckbox('Pictures'), true);
+    configPage.unifiedTab.fieldSpecificButton('Pictures').click();
+    util.setCheckbox(configPage.unifiedTab.sense.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures'), true);
     configPage.applyButton.click();
   });
 

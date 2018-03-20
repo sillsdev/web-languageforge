@@ -22,17 +22,7 @@ export class ConfigurationPage {
 
   applyButton = element(by.id('configuration-apply-btn'));
 
-  private readonly tabElements = element.all(by.tagName('pui-tab'));
-
-  tab() {
-    return this.tabElements.first();
-  }
-
-  activePane = element(by.css('div.tab-pane.active'));
-
-  getTabByName(tabName: string) {
-    return element(by.cssContainingText('pui-tabset .tab-links .tab-link', tabName));
-  }
+  private readonly activePane = element(by.css('div.tab-pane.active'));
 
   // These will be updated once the pui-tab is updated to support unique id
   tabs = {
@@ -63,6 +53,10 @@ export class ConfigurationPage {
           .all(by.repeater('inputSystemSettings in senseField.inputSystems'))
           .get(inputSystemIndex).element(by.className('checkbox'));
       },
+      fieldSpecificCaptionHiddenIfEmptyCheckbox: (label: string) => {
+        return this.getRowByLabel(label).element(by.xpath('..')).element(by.className('field-specific-settings'))
+          .element(by.className('caption-hidden-if-empty-checkbox'));
+      },
       addCustomSenseButton: this.activePane.element(by.id('add-custom-sense-btn'))
     },
     example: {
@@ -73,6 +67,9 @@ export class ConfigurationPage {
           .get(inputSystemIndex).element(by.className('checkbox'));
       },
       addCustomExampleButton: this.activePane.element(by.id('add-custom-example-btn'))
+    },
+    hiddenIfEmptyCheckbox: (label: string) => {
+      return this.getRowByLabel(label).element(by.className('hidden-if-empty-checkbox'));
     },
     fieldSpecificButton: (label: string) => {
       return this.getRowByLabel(label).element(by.className('member-specific-entry-btn'));
