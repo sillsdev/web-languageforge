@@ -22,24 +22,58 @@ export class ConfigurationPage {
 
   applyButton = element(by.id('configuration-apply-btn'));
 
-  private readonly tabElements = element.all(by.tagName('pui-tab'));
-
-  tab() {
-    return this.tabElements.first();
-  }
-
-  activePane = element(by.css('div.tab-pane.active'));
-
-  getTabByName(tabName: string) {
-    return element(by.cssContainingText('pui-tabset .tab-links .tab-link', tabName));
-  }
+  private readonly activePane = element(by.css('div.tab-pane.active'));
 
   // These will be updated once the pui-tab is updated to support unique id
   tabs = {
-    inputSystems: element(by.linkText('Input Systems')),
+    unified:      element(by.linkText('Unified')),
     fields:       element(by.linkText('Fields')),
-    tasks:        element(by.linkText('Tasks')),
+    inputSystems: element(by.linkText('Input Systems')),
     optionlists:  element(by.linkText('Option Lists'))
+  };
+
+  unifiedTab = {
+    inputSystem: {
+      addGroupButton: this.activePane.element(by.id('add-group-input-system-btn')),
+      addInputSystemButton: this.activePane.element(by.id('add-input-system-btn'))
+    },
+    entry: {
+      addGroupButton: this.activePane.element(by.id('add-group-entry-btn')),
+      fieldSpecificInputSystemCheckbox: (label: string, inputSystemIndex: number) => {
+        return this.getRowByLabel(label).element(by.xpath('..')).element(by.className('field-specific-input-systems'))
+          .all(by.repeater('inputSystemSettings in entryField.inputSystems'))
+          .get(inputSystemIndex).element(by.className('checkbox'));
+      },
+      addCustomEntryButton: this.activePane.element(by.id('add-custom-entry-btn'))
+    },
+    sense: {
+      addGroupButton: this.activePane.element(by.id('add-group-sense-btn')),
+      fieldSpecificInputSystemCheckbox: (label: string, inputSystemIndex: number) => {
+        return this.getRowByLabel(label).element(by.xpath('..')).element(by.className('field-specific-input-systems'))
+          .all(by.repeater('inputSystemSettings in senseField.inputSystems'))
+          .get(inputSystemIndex).element(by.className('checkbox'));
+      },
+      fieldSpecificCaptionHiddenIfEmptyCheckbox: (label: string) => {
+        return this.getRowByLabel(label).element(by.xpath('..')).element(by.className('field-specific-settings'))
+          .element(by.className('caption-hidden-if-empty-checkbox'));
+      },
+      addCustomSenseButton: this.activePane.element(by.id('add-custom-sense-btn'))
+    },
+    example: {
+      addGroupButton: this.activePane.element(by.id('add-group-example-btn')),
+      fieldSpecificInputSystemCheckbox: (label: string, inputSystemIndex: number) => {
+        return this.getRowByLabel(label).element(by.xpath('..')).element(by.className('field-specific-input-systems'))
+          .all(by.repeater('inputSystemSettings in exampleField.inputSystems'))
+          .get(inputSystemIndex).element(by.className('checkbox'));
+      },
+      addCustomExampleButton: this.activePane.element(by.id('add-custom-example-btn'))
+    },
+    hiddenIfEmptyCheckbox: (label: string) => {
+      return this.getRowByLabel(label).element(by.className('hidden-if-empty-checkbox'));
+    },
+    fieldSpecificButton: (label: string) => {
+      return this.getRowByLabel(label).element(by.className('member-specific-entry-btn'));
+    }
   };
 
   inputSystemsTab = {
@@ -121,5 +155,9 @@ export class ConfigurationPage {
   hiddenIfEmpty = this.activePane.element(by.id('hideIfEmpty'));
   captionHiddenIfEmpty() {
     return this.activePane.element(by.id('captionHideIfEmpty'));
+  }
+
+  private getRowByLabel(label: string) {
+    return this.activePane.element(by.cssContainingText('td', label)).element(by.xpath('..'));
   }
 }

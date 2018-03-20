@@ -83,6 +83,7 @@
                     <select class="form-control custom-select" id="special"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special"
                         data-ng-disabled="$ctrl.isInputSystemInUse()"
+                        data-ng-change="$ctrl.specialChanged($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special)"
                         data-ng-options="$ctrl.selects.special.options[key] for key in $ctrl.selects.special.optionsOrder"></select>
                 </div>
             </div>

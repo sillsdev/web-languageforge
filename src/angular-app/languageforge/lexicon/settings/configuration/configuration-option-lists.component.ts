@@ -14,7 +14,14 @@ export class OptionListConfigurationController implements angular.IController {
 
   static $inject: string[] = ['$scope'];
   constructor(private $scope: angular.IScope) {
-    $scope.$watch(() => this.olcOptionListsDirty[this.currentListIndex].items,
+    $scope.$watch(
+      () => {
+        if (this.olcOptionListsDirty == null) {
+          return null;
+        }
+
+        return this.olcOptionListsDirty[this.currentListIndex].items;
+      },
       (newVal: LexOptionListItem[], oldVal: LexOptionListItem[]) => {
         if (angular.isDefined(newVal) && newVal !== oldVal) {
           if (this.currentListIndex === this.oldListIndex) {
@@ -24,7 +31,8 @@ export class OptionListConfigurationController implements angular.IController {
           this.oldListIndex = this.currentListIndex;
         }
       },
-    true);
+      true
+    );
   }
 
   selectList($index: number): void {
