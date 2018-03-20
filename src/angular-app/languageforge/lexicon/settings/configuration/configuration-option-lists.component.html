@@ -3,7 +3,7 @@
     <!-- Left column: option lists -->
     <div class="col-md-3 form-group">
         <dl class="picklists">
-            <dt data-translate="Select a list" id="editListValuesFieldset"></dt>
+            <dt id="editListValuesFieldset">Select a list</dt>
             <dd>
                 <div data-ng-repeat="optionList in $ctrl.olcOptionListsDirty"
                      data-ng-class="{selected: $ctrl.currentListIndex == $index}" data-ng-click="$ctrl.selectList($index)">

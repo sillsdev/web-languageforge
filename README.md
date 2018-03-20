@@ -587,3 +587,10 @@ Before putting data into **ElasticSearch**, setup the index with settings and da
 ```
 ./scripts/server/elasticSearch/setupElasticSearchCATIndex.sh
 ```
+
+## Contributors ##
+
+* Elizabeth Koning
+* Ethan Clark
+* Ziqi Chen
+* Ye Joo Oh

@@ -1,11 +1,12 @@
-import { protractor} from 'protractor';
-import { BellowsLoginPage } from '../../../../bellows/pages/loginPage.js';
-import { ProjectsPage } from '../../../../bellows/pages/projectsPage.js';
-import { Utils } from '../../../../bellows/pages/utils.js';
-import { ConfigurationPage } from '../../pages/configurationPage.js';
+import {protractor} from 'protractor';
+
+import {BellowsLoginPage} from '../../../../bellows/pages/loginPage';
+import {ProjectsPage} from '../../../../bellows/pages/projectsPage';
+import {Utils} from '../../../../bellows/pages/utils';
+import {ConfigurationPage} from '../../pages/configurationPage';
 
 describe('Configuration Input Systems', () => {
-  const constants     = require('../../../../testConstants');
+  const constants = require('../../../../testConstants');
   const loginPage = new BellowsLoginPage();
   const projectsPage = new ProjectsPage();
   const util = new Utils();
@@ -55,10 +56,8 @@ describe('Configuration Input Systems', () => {
 
   it('cannot add another IPA variation, but can add Voice and Variant', () => {
     configPage.inputSystemsTab.moreButton.click();
-    expect(configPage.inputSystemsTab.moreButtonGroup.addIpa.getAttribute('class'))
-      .toContain('disabled');
-    expect(configPage.inputSystemsTab.moreButtonGroup.addVoice.getAttribute('class'))
-      .toContain('disabled');
+    expect(configPage.inputSystemsTab.moreButtonGroup.addIpa.getAttribute('class')).toContain('disabled');
+    expect(configPage.inputSystemsTab.moreButtonGroup.addVoice.getAttribute('class')).toContain('disabled');
     expect(configPage.inputSystemsTab.moreButtonGroup.addVariant.getAttribute('class'))
       .not.toContain('disabled');
   });
@@ -77,8 +76,7 @@ describe('Configuration Input Systems', () => {
 
     it('can search for a language', () => {
       expect<any>(configPage.modal.selectLanguage.languageRows.count()).toBe(0);
-      configPage.modal.selectLanguage.searchLanguageInput
-        .sendKeys(firstLanguage + protractor.Key.ENTER);
+      configPage.modal.selectLanguage.searchLanguageInput.sendKeys(firstLanguage + protractor.Key.ENTER);
       expect<any>(configPage.modal.selectLanguage.languageRows.first().isPresent()).toBe(true);
       expect<any>(configPage.modal.selectLanguage.firstLanguageName.getText()).toEqual(firstLanguage);
       expect<any>(configPage.modal.selectLanguage.languageRows.last().isPresent()).toBe(true);
@@ -86,16 +84,14 @@ describe('Configuration Input Systems', () => {
     });
 
     it('can clear language search', () => {
-      expect<any>(configPage.modal.selectLanguage.searchLanguageInput.getAttribute('value'))
-        .toEqual(firstLanguage);
+      expect<any>(configPage.modal.selectLanguage.searchLanguageInput.getAttribute('value')).toEqual(firstLanguage);
       configPage.modal.selectLanguage.clearSearchButton.click();
       expect<any>(configPage.modal.selectLanguage.searchLanguageInput.getAttribute('value')).toEqual('');
       expect<any>(configPage.modal.selectLanguage.languageRows.count()).toBe(0);
     });
 
     it('can select language', () => {
-      configPage.modal.selectLanguage.searchLanguageInput
-        .sendKeys(firstLanguage + protractor.Key.ENTER);
+      configPage.modal.selectLanguage.searchLanguageInput.sendKeys(firstLanguage + protractor.Key.ENTER);
       expect<any>(configPage.modal.selectLanguage.addButton.isPresent()).toBe(true);
       expect<any>(configPage.modal.selectLanguage.addButton.isEnabled()).toBe(false);
       configPage.modal.selectLanguage.languageRows.last().click();
@@ -115,92 +111,69 @@ describe('Configuration Input Systems', () => {
   });
 
   it('new Input System is selected', () => {
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.displayName.getText())
-      .toEqual(firstLanguage);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.displayName.getText()).toEqual(firstLanguage);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi');
   });
 
   it('can change Special to IPA', () => {
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isDisplayed())
-      .toBe(true);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isDisplayed())
-      .toBe(false);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.isDisplayed())
-      .toBe(false);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.isDisplayed())
-      .toBe(false);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isDisplayed()).toBe(true);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isDisplayed()).toBe(false);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.isDisplayed()).toBe(false);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.isDisplayed()).toBe(false);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.scriptDropdown.isDisplayed()).toBe(false);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.regionDropdown.isDisplayed()).toBe(false);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.variantInput.isDisplayed()).toBe(false);
-    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.specialDropdown,
-      'IPA transcription');
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.specialDropdown, 'IPA transcription');
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isDisplayed()).toBe(true);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.isDisplayed()).toBe(true);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa');
   });
 
   it('can change IPA Variant', () => {
-    configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput
-      .sendKeys('ngati' + protractor.Key.TAB);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText())
-      .toEqual('mi-fonipa-x-ngati');
+    configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.sendKeys('ngati' + protractor.Key.TAB);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa-x-ngati');
     configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.clear();
   });
 
   it('can change IPA Purpose to Etic', () => {
-    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown,
-      'Etic');
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText())
-      .toEqual('mi-fonipa-x-etic');
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown, 'Etic');
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa-x-etic');
   });
 
   it('can change IPA Variant', () => {
-    configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput
-      .sendKeys('ngati' + protractor.Key.TAB);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText())
-      .toEqual('mi-fonipa-x-etic-ngati');
+    configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.sendKeys('ngati' + protractor.Key.TAB);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa-x-etic-ngati');
     configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.clear();
   });
 
   it('can change IPA Purpose to Emic', () => {
-    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown,
-      'Emic');
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText())
-      .toEqual('mi-fonipa-x-emic');
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown, 'Emic');
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa-x-emic');
   });
 
   it('can change IPA Variant', () => {
-    configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput
-      .sendKeys('ngati' + protractor.Key.TAB);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText())
-      .toEqual('mi-fonipa-x-emic-ngati');
+    configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.sendKeys('ngati' + protractor.Key.TAB);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa-x-emic-ngati');
     configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.clear();
   });
 
   it('can change IPA Purpose to unspecified', () => {
-    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown,
-      'unspecified');
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown, 'unspecified');
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa');
   });
 
   it('can change Special to Voice', () => {
-    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.specialDropdown,
-      'Voice');
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.specialDropdown, 'Voice');
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isDisplayed()).toBe(true);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isDisplayed())
-      .toBe(false);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.isDisplayed())
-      .toBe(false);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.isDisplayed())
-      .toBe(true);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isDisplayed()).toBe(false);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.isDisplayed()).toBe(false);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.isDisplayed()).toBe(true);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Zxxx-x-audio');
   });
 
   it('can change Voice Variant', () => {
-    configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput
-      .sendKeys('ngati' + protractor.Key.TAB);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText())
-      .toEqual('mi-Zxxx-x-audio-ngati');
+    configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.sendKeys('ngati' + protractor.Key.TAB);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Zxxx-x-audio-ngati');
     configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.clear();
   });
 
@@ -208,8 +181,7 @@ describe('Configuration Input Systems', () => {
     util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.specialDropdown,
       'Script / Region / Variant');
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isDisplayed()).toBe(true);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.isDisplayed())
-      .toBe(false);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.isDisplayed()).toBe(false);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.scriptDropdown.isDisplayed()).toBe(true);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.regionDropdown.isDisplayed()).toBe(true);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.variantInput.isDisplayed()).toBe(true);
@@ -221,33 +193,27 @@ describe('Configuration Input Systems', () => {
     util.scrollTop();
     configPage.applyButton.click();
     expect<any>(configPage.noticeList.count()).toBe(1);
-    expect(configPage.noticeList.get(0).getText())
-      .toContain('Specify at least one Script, Region or Variant');
+    expect(configPage.noticeList.get(0).getText()).toContain('Specify at least one Script, Region or Variant');
     configPage.firstNoticeCloseButton.click();
   });
 
   it('can change Script', () => {
-    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.scriptDropdown,
-      new RegExp('Latin$'));
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.scriptDropdown, new RegExp('Latin$'));
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Latn');
   });
 
   it('can change Region', () => {
-    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.regionDropdown,
-      'Cook Islands');
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.regionDropdown, 'Cook Islands');
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Latn-CK');
   });
 
   it('can change Variant', () => {
-    configPage.inputSystemsTab.selectedInputSystem.variantInput
-      .sendKeys('ngati' + protractor.Key.TAB);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText())
-      .toEqual('mi-Latn-CK-x-ngati');
+    configPage.inputSystemsTab.selectedInputSystem.variantInput.sendKeys('ngati' + protractor.Key.TAB);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Latn-CK-x-ngati');
   });
 
   it('can change Special to none', () => {
-    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.specialDropdown,
-      'none');
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.specialDropdown, 'none');
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isDisplayed()).toBe(true);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.scriptDropdown.isDisplayed()).toBe(false);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.regionDropdown.isDisplayed()).toBe(false);
@@ -269,8 +235,7 @@ describe('Configuration Input Systems', () => {
 
   it('cannot add another IPA variation', () => {
     configPage.inputSystemsTab.moreButton.click();
-    expect(configPage.inputSystemsTab.moreButtonGroup.addIpa.getAttribute('class'))
-      .toContain('disabled');
+    expect(configPage.inputSystemsTab.moreButtonGroup.addIpa.getAttribute('class')).toContain('disabled');
   });
 
   it('can remove IPA variation', () => {
@@ -286,15 +251,13 @@ describe('Configuration Input Systems', () => {
     configPage.inputSystemsTab.moreButtonGroup.addVoice.click();
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isDisplayed()).toBe(true);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isEnabled()).toBe(true);
-    expect<any>(configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.isDisplayed())
-      .toBe(true);
+    expect<any>(configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.isDisplayed()).toBe(true);
     expect<any>(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Zxxx-x-audio');
   });
 
   it('cannot add another Voice variation', () => {
     configPage.inputSystemsTab.moreButton.click();
-    expect(configPage.inputSystemsTab.moreButtonGroup.addVoice.getAttribute('class'))
-      .toContain('disabled');
+    expect(configPage.inputSystemsTab.moreButtonGroup.addVoice.getAttribute('class')).toContain('disabled');
   });
 
   it('can remove Voice variation', () => {
@@ -322,8 +285,7 @@ describe('Configuration Input Systems', () => {
 
   it('can always add another Variant variation', () => {
     configPage.inputSystemsTab.moreButton.click();
-    expect(configPage.inputSystemsTab.moreButtonGroup.addVariant.getAttribute('class'))
-      .not.toContain('disabled');
+    expect(configPage.inputSystemsTab.moreButtonGroup.addVariant.getAttribute('class')).not.toContain('disabled');
   });
 
   it('can remove Variant variation', () => {

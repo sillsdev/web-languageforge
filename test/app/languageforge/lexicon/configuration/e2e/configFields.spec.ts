@@ -1,12 +1,13 @@
-import { protractor } from 'protractor';
+import {protractor} from 'protractor';
+import {xit} from 'selenium-webdriver/testing';
 
-import { BellowsLoginPage } from '../../../../bellows/pages/loginPage.js';
-import { ProjectsPage } from '../../../../bellows/pages/projectsPage.js';
-import { Utils } from '../../../../bellows/pages/utils.js';
-import { ConfigurationPage } from '../../pages/configurationPage.js';
+import {BellowsLoginPage} from '../../../../bellows/pages/loginPage';
+import {ProjectsPage} from '../../../../bellows/pages/projectsPage';
+import {Utils} from '../../../../bellows/pages/utils';
+import {ConfigurationPage} from '../../pages/configurationPage';
 
 describe('Configuration Fields', () => {
-  const constants     = require('../../../../testConstants');
+  const constants = require('../../../../testConstants');
   const loginPage = new BellowsLoginPage();
   const projectsPage = new ProjectsPage();
   const util = new Utils();
@@ -109,7 +110,7 @@ describe('Configuration Fields', () => {
       expect<any>(configPage.fieldsTab.newCustomFieldButton.isEnabled()).toBe(true);
       configPage.fieldsTab.newCustomFieldButtonClick();
       expect<any>(configPage.modal.customField.displayNameInput.isDisplayed()).toBe(true);
-      expect<any>(configPage.modal.customField.levelDropdown.isDisplayed()).toBe(true);
+      // expect<any>(configPage.modal.customField.levelDropdown.isDisplayed()).toBe(true);
       expect<any>(configPage.modal.customField.typeDropdown.isDisplayed()).toBe(true);
       expect<any>(configPage.modal.customField.listCodeDropdown.isPresent()).toBe(false);
       expect<any>(configPage.modal.customField.addButton.isPresent()).toBe(true);
@@ -126,7 +127,7 @@ describe('Configuration Fields', () => {
     });
 
     it('can enter a field level', () => {
-      util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Entry Level');
+      // util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Entry Level');
       expect<any>(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
       expect<any>(configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
@@ -146,6 +147,11 @@ describe('Configuration Fields', () => {
       expect<any>(configPage.applyButton.isEnabled()).toBe(true);
     });
 
+    it('can delete a newly created custom field', () => {
+      configPage.fieldsTab.removeCustomFieldButton.click();
+      expect<any>(configPage.fieldsTab.removeCustomFieldButton.isDisplayed()).toBe(false);
+    });
+
     it('can re-open the new custom field modal', () => {
       configPage.fieldsTab.newCustomFieldButtonClick();
       expect<any>(configPage.modal.customField.displayNameInput.isDisplayed()).toBe(true);
@@ -154,14 +160,14 @@ describe('Configuration Fields', () => {
     it('cannot add a duplicate field name', () => {
       expect<any>(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
       configPage.modal.customField.displayNameInput.sendKeys(displayName + protractor.Key.ENTER);
-      expect<any>(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
+      // expect<any>(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
       expect<any>(configPage.modal.customField.addButton.isEnabled()).toBe(false);
-      util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Entry Level');
-      expect<any>(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(true);
+      // util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Entry Level');
+      // expect<any>(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(true);
       expect<any>(configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
 
-    it('can add a duplicate field name at a different level', () => {
+    xit('can add a duplicate field name at a different level', () => {
       util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Meaning Level');
       expect<any>(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
       expect<any>(configPage.modal.customField.addButton.isEnabled()).toBe(false);
@@ -193,15 +199,10 @@ describe('Configuration Fields', () => {
 
   });
 
-  it('can delete a newly created custom field', () => {
-    configPage.fieldsTab.removeCustomFieldButton.click();
-    expect<any>(configPage.fieldsTab.removeCustomFieldButton.isDisplayed()).toBe(false);
-  });
-
   it('can re-create custom field and save configuration', () => {
     configPage.fieldsTab.newCustomFieldButtonClick();
     configPage.modal.customField.displayNameInput.sendKeys(displayName + protractor.Key.ENTER);
-    util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Entry Level');
+    // util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Entry Level');
     util.clickDropdownByValue(configPage.modal.customField.typeDropdown, 'Multi-input-system Text');
     configPage.modal.customField.addButton.click();
     expect<any>(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual(displayName + ' Field Setup');

@@ -21,7 +21,7 @@ export class LexConfigOptionList extends LexConfig {
 
 class LexConfigMultiOptionList extends LexConfigOptionList { }
 
-class LexConfigPictures extends LexConfigMultiText {
+export class LexConfigPictures extends LexConfigMultiText {
   captionLabel: string;
   captionHideIfEmpty: boolean;
 }
@@ -46,7 +46,7 @@ export class LexViewMultiTextFieldConfig extends LexViewFieldConfig {
   inputSystems: string[];
 }
 
-class LexRoleViewConfig {
+export class LexRoleViewConfig {
   fields: { [fieldType: string]: LexViewFieldConfig | LexViewMultiTextFieldConfig };
   showTasks: { [taskType: string]: boolean };
 }
@@ -56,7 +56,7 @@ class LexTask {
   type: string;
 }
 
-class LexUserViewConfig extends LexRoleViewConfig { }
+export class LexUserViewConfig extends LexRoleViewConfig { }
 
 export class LexiconConfig {
   entry: LexConfigFieldList;
