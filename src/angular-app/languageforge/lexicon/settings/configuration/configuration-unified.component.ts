@@ -333,10 +333,18 @@ class Typeahead {
 
   // noinspection JSUnusedGlobalSymbols
   searchUsers = (user: User): void => {
+    if (user == null) {
+      return;
+    }
+
     this.users = this.filter('filter')(this.usersWithoutSettings, user);
   }
 
   selectUser = (user: User): void => {
+    if (user == null) {
+      return;
+    }
+
     this.user = user;
     this.userName = user.name;
   }
