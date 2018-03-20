@@ -2,7 +2,7 @@
 ///<reference path="utils.d.ts" />
 import {browser, by, By, element, ExpectedConditions} from 'protractor';
 import {ElementArrayFinder, ElementFinder} from 'protractor/built/element';
-import {logging} from 'selenium-webdriver';
+import {logging, WebElementPromise} from 'selenium-webdriver';
 
 export class Utils {
   readonly conditionTimeout: number = 3000;
@@ -140,6 +140,65 @@ export class Utils {
 
   scrollTop() {
     browser.executeScript('window.scroll(0,0)');
+  }
+
+  static isAllCheckboxes(elementArray: ElementArrayFinder, state: boolean = true) {
+    const all: boolean[] = [];
+    return elementArray.map((checkboxElement: ElementFinder) => {
+      checkboxElement.isSelected().then((isSelected: boolean) => {
+        all.push(isSelected);
+      });
+    }).then(() => all.every((elem: boolean) => elem === state));
+  }
+
+  /**
+   * Usage:     browser.executeScript(Utils.simulateDragDrop, source.getWebElement(), destination.getWebElement());
+   * Adapted from https://gist.github.com/druska/624501b7209a74040175
+   * @param {WebElementPromise} sourceNode
+   * @param {WebElementPromise} destinationNode
+   */
+  static simulateDragDrop = (sourceNode: WebElementPromise, destinationNode: WebElementPromise) => {
+    const EVENT_TYPES = {
+      DRAG_END: 'dragend',
+      DRAG_START: 'dragstart',
+      DROP: 'drop'
+    };
+
+    function createCustomEvent(type: string): any {
+      const customEvent: any = new CustomEvent('CustomEvent');
+      customEvent.initCustomEvent(type, true, true, null);
+      customEvent.dataTransfer = {
+        data: {
+        },
+        setData(dataType: string, val: any) {
+          this.data[dataType] = val;
+        },
+        getData(dataType: string) {
+          return this.data[dataType];
+        }
+      };
+      return customEvent;
+    }
+
+    function dispatchEvent(node: any, type: string, customEvent: CustomEvent) {
+      if (node.dispatchEvent) {
+        return node.dispatchEvent(customEvent);
+      }
+      if (node.fireEvent) {
+        return node.fireEvent('on' + type, customEvent);
+      }
+    }
+
+    const event = createCustomEvent(EVENT_TYPES.DRAG_START);
+    dispatchEvent(sourceNode, EVENT_TYPES.DRAG_START, event);
+
+    const dropEvent = createCustomEvent(EVENT_TYPES.DROP);
+    dropEvent.dataTransfer = event.dataTransfer;
+    dispatchEvent(destinationNode, EVENT_TYPES.DROP, dropEvent);
+
+    const dragEndEvent = createCustomEvent(EVENT_TYPES.DRAG_END);
+    dragEndEvent.dataTransfer = event.dataTransfer;
+    dispatchEvent(sourceNode, EVENT_TYPES.DRAG_END, dragEndEvent);
   }
 
 }

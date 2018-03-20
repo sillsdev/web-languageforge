@@ -201,6 +201,10 @@ export class EditorPage {
       );
     },
 
+    getFieldLabel: (fieldIndex: number) => {
+      return this.edit.fields.get(fieldIndex).all(by.tagName('label')).get(0);
+    },
+
     audio: {
       players: (searchLabel: string) => {
         return this.editorUtil.getOneField(searchLabel).all(by.css('.player a'));
