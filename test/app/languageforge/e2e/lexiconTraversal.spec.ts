@@ -24,38 +24,52 @@ describe('Lexicon E2E Page Traversal', () => {
       loginPage.loginAsAdmin();
       configurationPage.get();
       configurationPage.tabs.unified.click();
-      configurationPage.unifiedTab.inputSystem.addGroupButton.click();
+      configurationPage.unifiedPane.inputSystem.addGroupButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
       browser.wait(
-        ExpectedConditions.elementToBeClickable(configurationPage.unifiedTab.inputSystem.addInputSystemButton),
+        ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.inputSystem.addInputSystemButton),
         constants.conditionTimeout);
-      configurationPage.unifiedTab.inputSystem.addInputSystemButton.click();
+      configurationPage.unifiedPane.inputSystem.addInputSystemButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
       browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.tabs.unified), constants.conditionTimeout);
       configurationPage.tabs.unified.click();
-      configurationPage.unifiedTab.entry.addGroupButton.click();
+      configurationPage.unifiedPane.entry.addGroupButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedTab.entry.addCustomEntryButton),
+      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.entry.addCustomEntryButton),
         constants.conditionTimeout);
-      configurationPage.unifiedTab.entry.addCustomEntryButton.click();
+      configurationPage.unifiedPane.entry.addCustomEntryButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedTab.sense.addGroupButton),
+      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.sense.addGroupButton),
         constants.conditionTimeout);
-      configurationPage.unifiedTab.sense.addGroupButton.click();
+      configurationPage.unifiedPane.hiddenIfEmptyCheckbox('Citation Form').click();
+      configurationPage.unifiedPane.fieldSpecificButton('Citation Form').click();
+      configurationPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox('Citation Form', 1).click();
+      configurationPage.unifiedPane.fieldSpecificButton('Citation Form').click();
+      configurationPage.unifiedPane.sense.addGroupButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedTab.sense.addCustomSenseButton),
+      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.sense.addCustomSenseButton),
         constants.conditionTimeout);
-      configurationPage.unifiedTab.sense.addCustomSenseButton.click();
+      configurationPage.unifiedPane.sense.addCustomSenseButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedTab.example.addGroupButton),
+      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.example.addGroupButton),
         constants.conditionTimeout);
-      configurationPage.unifiedTab.example.addGroupButton.click();
+      configurationPage.unifiedPane.hiddenIfEmptyCheckbox('Pictures').click();
+      configurationPage.unifiedPane.fieldSpecificButton('Pictures').click();
+      configurationPage.unifiedPane.sense.fieldSpecificInputSystemCheckbox('Pictures', 1).click();
+      configurationPage.unifiedPane.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures').click();
+      configurationPage.unifiedPane.fieldSpecificButton('Pictures').click();
+      configurationPage.unifiedPane.example.addGroupButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedTab.example.addCustomExampleButton),
+      browser.wait(
+        ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.example.addCustomExampleButton),
         constants.conditionTimeout);
-      configurationPage.unifiedTab.example.addCustomExampleButton.click();
+      configurationPage.unifiedPane.example.addCustomExampleButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
       browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.tabs.unified), constants.conditionTimeout);
+      configurationPage.unifiedPane.hiddenIfEmptyCheckbox('Translation').click();
+      configurationPage.unifiedPane.fieldSpecificButton('Translation').click();
+      configurationPage.unifiedPane.example.fieldSpecificInputSystemCheckbox('Translation', 0).click();
+      configurationPage.unifiedPane.fieldSpecificButton('Translation').click();
     });
 
     it('Fields tab', () => {
@@ -70,7 +84,7 @@ describe('Lexicon E2E Page Traversal', () => {
 
     it('Input Systems tab', () => {
       configurationPage.tabs.inputSystems.click();
-      configurationPage.inputSystemsTab.moreButton.click();
+      configurationPage.inputSystemsPane.moreButton.click();
     });
 
     it('Option List tab', () => {
