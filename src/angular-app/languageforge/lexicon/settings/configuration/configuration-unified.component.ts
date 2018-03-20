@@ -306,6 +306,11 @@ export class UnifiedConfigurationController implements angular.IController {
       'Hide field-specific Input Systems';
   }
 
+  // noinspection JSMethodCanBeStatic
+  propertyExists(property: string, object: any): boolean {
+    return property in object;
+  }
+
   private removeFromUsersWithoutSettings(userId: string): void {
     const user: User = this.uccUsers[userId];
     const removeIndex: number = this.typeahead.usersWithoutSettings.indexOf(user);
