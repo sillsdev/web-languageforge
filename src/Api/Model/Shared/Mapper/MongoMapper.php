@@ -395,7 +395,7 @@ class MongoMapper
 
     public static function shouldKeepKey(string $key) {
         // Some keys shouldn't be removed even if empty, at least as long as our code is still making assumptions that these keys exist
-        return ($key === "guid" || $key === "translation" || $key === "description" || $key === "answers");
+        return ($key === "guid" || $key === "translation" || $key === "description" || $key === "answers" || $key == "paragraphs");
     }
 
     public static function removeEmptyItems(array $array) {
