@@ -201,7 +201,7 @@
                            data-ng-model="entryField.label">
                 </td>
                 <td class="text-center align-middle">
-                    <input class="position-static"
+                    <input class="position-static hidden-if-empty-checkbox"
                            data-ng-model="entryField.hiddenIfEmpty"
                            aria-label="..." type="checkbox">
                 </td>
@@ -248,7 +248,7 @@
                     </a>
                 </td>
             </tr>
-            <tr class="table-dark" data-ng-if="!entryField.isCustomInputSystemsCollapsed">
+            <tr class="table-dark field-specific-settings" data-ng-if="!entryField.isCustomInputSystemsCollapsed">
                 <td></td>
                 <td class="text-left align-middle" colspan="3">
                     <label class="mb-0">
@@ -384,7 +384,7 @@
                            data-ng-model="senseField.label">
                 </td>
                 <td class="text-center align-middle">
-                    <input class="position-static"
+                    <input class="position-static hidden-if-empty-checkbox"
                            data-ng-model="senseField.hiddenIfEmpty"
                            aria-label="..." type="checkbox">
                 </td>
@@ -431,14 +431,22 @@
                     </a>
                 </td>
             </tr>
-            <tr class="table-dark" data-ng-if="!senseField.isCustomInputSystemsCollapsed">
+            <tr class="table-dark field-specific-settings" data-ng-if="!senseField.isCustomInputSystemsCollapsed">
                 <td></td>
-                <td class="text-left align-middle" colspan="3">
+                <td class="text-left align-middle">
                     <label class="mb-0">
                         <input class="position-static"
                                data-ng-model="senseField.hasCustomInputSystemsOverride"
                                aria-label="..." type="checkbox">
                         Use field-specific Input Systems
+                    </label>
+                </td>
+                <td class="text-center align-middle" colspan="2">
+                    <label class="mb-0" data-ng-if="$ctrl.propertyExists('captionHiddenIfEmpty', senseField)">
+                        <input class="position-static caption-hidden-if-empty-checkbox"
+                               data-ng-model="senseField.captionHiddenIfEmpty"
+                               aria-label="..." type="checkbox">
+                        Hide Caption If Empty
                     </label>
                 </td>
             </tr>
@@ -567,7 +575,7 @@
                            data-ng-model="exampleField.label">
                 </td>
                 <td class="text-center align-middle">
-                    <input class="position-static"
+                    <input class="position-static hidden-if-empty-checkbox"
                            data-ng-model="exampleField.hiddenIfEmpty"
                            aria-label="..."  type="checkbox">
                 </td>
@@ -614,7 +622,7 @@
                     </a>
                 </td>
             </tr>
-            <tr class="table-dark" data-ng-if="!exampleField.isCustomInputSystemsCollapsed">
+            <tr class="table-dark field-specific-settings" data-ng-if="!exampleField.isCustomInputSystemsCollapsed">
                 <td></td>
                 <td class="text-left align-middle" colspan="3">
                     <label class="mb-0">

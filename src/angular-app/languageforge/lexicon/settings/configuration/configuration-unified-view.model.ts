@@ -1,6 +1,6 @@
 import {User} from '../../../../bellows/shared/model/user.model';
 import {
-  LexConfigFieldList, LexConfigMultiText, LexiconConfig, LexRoleViewConfig, LexUserViewConfig,
+  LexConfigFieldList, LexConfigMultiText, LexConfigPictures, LexiconConfig, LexRoleViewConfig, LexUserViewConfig,
   LexViewMultiTextFieldConfig
 } from '../../shared/model/lexicon-config.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
@@ -225,6 +225,9 @@ export class ConfigurationUnifiedViewModel {
       const levelConfigField = levelConfig.fields[field.fieldName];
       levelConfigField.label = field.label;
       levelConfigField.hideIfEmpty = field.hiddenIfEmpty;
+      if (levelConfigField.type === 'pictures') {
+        (levelConfigField as LexConfigPictures).captionHideIfEmpty = field.captionHiddenIfEmpty;
+      }
 
       // from setLevelRoleSettings
       const roleType = new RoleType();
@@ -369,6 +372,9 @@ export class ConfigurationUnifiedViewModel {
         fieldSettings.fieldName = fieldName;
         fieldSettings.label = levelConfig.fields[fieldName].label;
         fieldSettings.hiddenIfEmpty = levelConfig.fields[fieldName].hideIfEmpty;
+        if (levelConfig.fields[fieldName].type === 'pictures') {
+          fieldSettings.captionHiddenIfEmpty = (levelConfig.fields[fieldName] as LexConfigPictures).captionHideIfEmpty;
+        }
         ConfigurationUnifiedViewModel.setLevelRoleSettings(fieldName, config, fieldSettings);
         ConfigurationUnifiedViewModel.setLevelGroupSettings(fieldName, config, fieldSettings);
 
@@ -460,6 +466,7 @@ export class FieldSettings extends SettingsBase {
   fieldName: string;
   label: string;
   hiddenIfEmpty: boolean;
+  captionHiddenIfEmpty?: boolean;
   isCustomInputSystemsCollapsed: boolean = true;
   hasCustomInputSystemsOverride: boolean;
   inputSystems: InputSystemSettings[] = [];
