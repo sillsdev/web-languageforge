@@ -3,7 +3,17 @@
     width: auto;
   }
 }
+
 h2 {
   display: inline-block;
   font-weight: normal;
+}
+
+// allow spacing in a table row but hide it
+.row-hidden {
+  padding: 0 !important;
+  margin: 0;
+  opacity: 0;
+  height: 0;
+  line-height: 0
 }

@@ -1,4 +1,4 @@
-import {browser} from 'protractor';
+import {browser, by} from 'protractor';
 
 import {BellowsLoginPage} from '../../../../bellows/pages/loginPage';
 import {ProjectsPage} from '../../../../bellows/pages/projectsPage';
@@ -15,6 +15,8 @@ describe('Editor List and Entry', () => {
   const editorPage   = new EditorPage();
   const editorUtil   = new EditorUtil();
   const configPage   = new ConfigurationPage();
+
+  const LEXEME_LABEL = 'Word';
 
   it('setup: login, click on test project', () => {
     loginPage.loginAsManager();
@@ -65,17 +67,14 @@ describe('Editor List and Entry', () => {
 
   it('dictionary citation reflects lexeme form', () => {
     expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
-    expect(editorPage.edit.renderedDiv.getText())
-      .toContain(constants.testEntry1.lexeme['th-fonipa'].value);
+    expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
     expect(editorPage.edit.renderedDiv.getText()).not.toContain('citation form');
   });
 
   it('add citation form as visible field', () => {
     configPage.get();
-    configPage.getTabByName('Fields').click();
-    configPage.showAllFieldsButton.click();
-    configPage.getFieldByName('Citation Form').click();
-    util.setCheckbox(configPage.hiddenIfEmpty, false);
+    configPage.tabs.unified.click();
+    util.setCheckbox(configPage.unifiedTab.hiddenIfEmptyCheckbox('Citation Form'), false);
     configPage.applyButton.click();
     util.clickBreadcrumb(constants.testProjectName);
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
@@ -86,15 +85,12 @@ describe('Editor List and Entry', () => {
     const citationFormMultiTextInputs = editorPage.edit.getMultiTextInputs('Citation Form');
     editorPage.edit.selectElement.sendKeys(citationFormMultiTextInputs.first(), 'citation form');
     expect(editorPage.edit.renderedDiv.getText()).toContain('citation form');
-    expect(editorPage.edit.renderedDiv.getText())
-      .not.toContain(constants.testEntry1.lexeme.th.value);
-    expect(editorPage.edit.renderedDiv.getText())
-      .toContain(constants.testEntry1.lexeme['th-fonipa'].value);
+    expect(editorPage.edit.renderedDiv.getText()).not.toContain(constants.testEntry1.lexeme.th.value);
+    expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
     editorPage.edit.selectElement.clear(citationFormMultiTextInputs.first());
     expect(editorPage.edit.renderedDiv.getText()).not.toContain('citation form');
     expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
-    expect(editorPage.edit.renderedDiv.getText())
-      .toContain(constants.testEntry1.lexeme['th-fonipa'].value);
+    expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
     editorPage.edit.hideHiddenFields();
   });
 
@@ -128,11 +124,10 @@ describe('Editor List and Entry', () => {
 
   it('change config to show Pictures and hide captions', () => {
     configPage.get();
-    configPage.getTabByName('Fields').click();
-    configPage.showAllFieldsButton.click();
-    configPage.getFieldByName('Pictures').click();
-    util.setCheckbox(configPage.hiddenIfEmpty, false);
-    util.setCheckbox(configPage.captionHiddenIfEmpty(), true);
+    configPage.tabs.unified.click();
+    util.setCheckbox(configPage.unifiedTab.hiddenIfEmptyCheckbox('Pictures'), false);
+    configPage.unifiedTab.fieldSpecificButton('Pictures').click();
+    util.setCheckbox(configPage.unifiedTab.sense.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures'), true);
     configPage.applyButton.click();
   });
 
@@ -147,11 +142,10 @@ describe('Editor List and Entry', () => {
 
   it('change config to show Pictures and show captions', () => {
     configPage.get();
-    configPage.getTabByName('Fields').click();
-    configPage.showAllFieldsButton.click();
-    configPage.getFieldByName('Pictures').click();
-    util.setCheckbox(configPage.hiddenIfEmpty, false);
-    util.setCheckbox(configPage.captionHiddenIfEmpty(), false);
+    configPage.tabs.unified.click();
+    util.setCheckbox(configPage.unifiedTab.hiddenIfEmptyCheckbox('Pictures'), false);
+    configPage.unifiedTab.fieldSpecificButton('Pictures').click();
+    util.setCheckbox(configPage.unifiedTab.sense.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures'), false);
     configPage.applyButton.click();
   });
 
@@ -171,11 +165,10 @@ describe('Editor List and Entry', () => {
 
   it('change config to hide Pictures and hide captions', () => {
     configPage.get();
-    configPage.getTabByName('Fields').click();
-    configPage.showAllFieldsButton.click();
-    configPage.getFieldByName('Pictures').click();
-    util.setCheckbox(configPage.hiddenIfEmpty, true);
-    util.setCheckbox(configPage.captionHiddenIfEmpty(), true);
+    configPage.tabs.unified.click();
+    util.setCheckbox(configPage.unifiedTab.hiddenIfEmptyCheckbox('Pictures'), true);
+    configPage.unifiedTab.fieldSpecificButton('Pictures').click();
+    util.setCheckbox(configPage.unifiedTab.sense.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures'), true);
     configPage.applyButton.click();
   });
 
@@ -190,34 +183,33 @@ describe('Editor List and Entry', () => {
   });
 
   it('audio Input System is present, playable and has "more" control (manager)', () => {
-    expect<any>(editorPage.edit.audio.playerIcons('Word').count()).toEqual(1);
-    expect<any>(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.playerIcons('Word').first().getAttribute('class'))
-      .toContain('fa-play');
-    expect<any>(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.players('Word').first().isEnabled()).toBe(true);
-    expect<any>(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.moreControls('Word').first().isEnabled()).toBe(true);
-    expect<any>(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.downloadButtons('Word').first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).count()).toEqual(1);
+    expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).first().getAttribute('class')).toContain('fa-play');
+    expect<any>(editorPage.edit.audio.players(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.players(LEXEME_LABEL).first().isEnabled()).toBe(true);
+    expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isEnabled()).toBe(true);
+    expect<any>(editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.downloadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
   });
 
   it('file upload drop box is displayed when Upload is clicked', () => {
-    expect<any>(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.uploadCancelButtons('Word').first().isDisplayed()).toBe(false);
-    editorPage.edit.audio.moreControls('Word').first().click();
-    editorPage.edit.audio.moreUpload('Word', 0).click();
-    expect<any>(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.uploadDropBoxes(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.uploadCancelButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    editorPage.edit.audio.moreControls(LEXEME_LABEL).first().click();
+    editorPage.edit.audio.moreUpload(LEXEME_LABEL, 0).click();
+    expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.uploadDropBoxes(LEXEME_LABEL).first().isDisplayed()).toBe(true);
   });
 
   it('file upload drop box is not displayed when Cancel Uploading Audio is clicked', () => {
-    expect<any>(editorPage.edit.audio.uploadCancelButtons('Word').first().isDisplayed()).toBe(true);
-    editorPage.edit.audio.uploadCancelButtons('Word').first().click();
-    expect<any>(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.uploadCancelButtons('Word').first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.uploadCancelButtons(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    editorPage.edit.audio.uploadCancelButtons(LEXEME_LABEL).first().click();
+    expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.uploadDropBoxes(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.uploadCancelButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
   });
 
   it('click on second word (found by definition)', () => {
@@ -225,12 +217,12 @@ describe('Editor List and Entry', () => {
   });
 
   it('word 2: audio Input System is not playable but has "upload" button (manager)', () => {
-    expect<any>(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.uploadButtons('Word').first().isEnabled()).toBe(true);
-    expect<any>(editorPage.edit.audio.downloadButtons('Word').first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.players(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().isEnabled()).toBe(true);
+    expect<any>(editorPage.edit.audio.downloadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
   });
 
   it('login as member, click on first word', () => {
@@ -241,16 +233,15 @@ describe('Editor List and Entry', () => {
   });
 
   it('audio Input System is present, playable and has "more" control (member)', () => {
-    expect<any>(editorPage.edit.audio.playerIcons('Word').count()).toEqual(1);
-    expect<any>(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.playerIcons('Word').first().getAttribute('class'))
-      .toContain('fa-play');
-    expect<any>(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.players('Word').first().isEnabled()).toBe(true);
-    expect<any>(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.moreControls('Word').first().isEnabled()).toBe(true);
-    expect<any>(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.downloadButtons('Word').first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).count()).toEqual(1);
+    expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).first().getAttribute('class')).toContain('fa-play');
+    expect<any>(editorPage.edit.audio.players(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.players(LEXEME_LABEL).first().isEnabled()).toBe(true);
+    expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isEnabled()).toBe(true);
+    expect<any>(editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.downloadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
   });
 
   it('click on second word (found by definition)', () => {
@@ -259,12 +250,12 @@ describe('Editor List and Entry', () => {
   });
 
   it('word 2: audio Input System is not playable but has "upload" button (member)', () => {
-    expect<any>(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.uploadButtons('Word').first().isEnabled()).toBe(true);
-    expect<any>(editorPage.edit.audio.downloadButtons('Word').first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.players(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().isEnabled()).toBe(true);
+    expect<any>(editorPage.edit.audio.downloadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
   });
 
   it('login as observer, click on first word', () => {
@@ -275,28 +266,27 @@ describe('Editor List and Entry', () => {
   });
 
   it('audio Input System is playable but does not have "more" control (observer)', () => {
-    expect<any>(editorPage.edit.audio.playerIcons('Word').count()).toEqual(1);
-    expect<any>(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.playerIcons('Word').first().getAttribute('class')).toContain('fa-play');
-    expect<any>(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.players('Word').first().isEnabled()).toBe(true);
-    expect<any>(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.downloadButtons('Word').first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).count()).toEqual(1);
+    expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).first().getAttribute('class')).toContain('fa-play');
+    expect<any>(editorPage.edit.audio.players(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.players(LEXEME_LABEL).first().isEnabled()).toBe(true);
+    expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.downloadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(true);
   });
 
   it('click on second word (found by definition)', () => {
-    editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value)
-      .click();
+    editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value).click();
   });
 
   it('word 2: audio Input System is not playable and does not have "upload" button (observer)',
     () => {
-      expect<any>(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(false);
-      expect<any>(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(false);
-      expect<any>(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(false);
-      expect<any>(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(false);
-      expect<any>(editorPage.edit.audio.downloadButtons('Word').first().isDisplayed()).toBe(false);
+      expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+      expect<any>(editorPage.edit.audio.players(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+      expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+      expect<any>(editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+      expect<any>(editorPage.edit.audio.downloadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
     });
 
   it('login as manager, click on first word', () => {
@@ -307,76 +297,72 @@ describe('Editor List and Entry', () => {
   });
 
   it('can delete audio Input System', () => {
-    expect<any>(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(true);
-    editorPage.edit.audio.moreControls('Word').first().click();
-    editorPage.edit.audio.moreDelete('Word', 0).click();
+    expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    editorPage.edit.audio.moreControls(LEXEME_LABEL).first().click();
+    editorPage.edit.audio.moreDelete(LEXEME_LABEL, 0).click();
     util.clickModalButton('Delete Audio');
-    expect<any>(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(true);
   });
 
   it('file upload drop box is displayed when Upload is clicked', () => {
-    expect<any>(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.uploadCancelButtons('Word').first().isDisplayed()).toBe(false);
-    editorPage.edit.audio.uploadButtons('Word').first().click();
-    expect<any>(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.uploadDropBoxes(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.uploadCancelButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().click();
+    expect<any>(editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.uploadDropBoxes(LEXEME_LABEL).first().isDisplayed()).toBe(true);
   });
 
   it('file upload drop box is not displayed when Cancel Uploading Audio is clicked', () => {
-    expect<any>(editorPage.edit.audio.uploadCancelButtons('Word').first().isDisplayed()).toBe(true);
-    editorPage.edit.audio.uploadCancelButtons('Word').first().click();
-    expect<any>(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(true);
-    expect<any>(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.uploadCancelButtons('Word').first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.uploadCancelButtons(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    editorPage.edit.audio.uploadCancelButtons(LEXEME_LABEL).first().click();
+    expect<any>(editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+    expect<any>(editorPage.edit.audio.uploadDropBoxes(LEXEME_LABEL).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.uploadCancelButtons(LEXEME_LABEL).first().isDisplayed()).toBe(false);
   });
 
   describe('Mock file upload', () => {
 
     it('can\'t upload a non-audio file', () => {
       expect<any>(editorPage.noticeList.count()).toBe(0);
-      editorPage.edit.audio.uploadButtons('Word').first().click();
-      editorPage.edit.audio.control('Word', 0).mockUpload.enableButton.click();
-      expect(editorPage.edit.audio.control('Word', 0).mockUpload.fileNameInput.isDisplayed())
-        .toBe(true);
-      editorPage.edit.audio.control('Word', 0).mockUpload.fileNameInput
+      editorPage.edit.audio.uploadButtons(LEXEME_LABEL).first().click();
+      editorPage.edit.audio.control(LEXEME_LABEL, 0).mockUpload.enableButton.click();
+      expect(editorPage.edit.audio.control(LEXEME_LABEL, 0).mockUpload.fileNameInput.isDisplayed()).toBe(true);
+      editorPage.edit.audio.control(LEXEME_LABEL, 0).mockUpload.fileNameInput
         .sendKeys(constants.testMockPngUploadFile.name);
-      editorPage.edit.audio.control('Word', 0).mockUpload.fileSizeInput
+      editorPage.edit.audio.control(LEXEME_LABEL, 0).mockUpload.fileSizeInput
         .sendKeys(constants.testMockPngUploadFile.size);
-      editorPage.edit.audio.control('Word', 0).mockUpload.uploadButton.click();
+      editorPage.edit.audio.control(LEXEME_LABEL, 0).mockUpload.uploadButton.click();
       expect<any>(editorPage.noticeList.count()).toBe(1);
-      expect<any>(editorPage.noticeList.first().getText())
-        .toContain(constants.testMockPngUploadFile.name +
+      expect<any>(editorPage.noticeList.first().getText()).toContain(constants.testMockPngUploadFile.name +
           ' is not an allowed audio file. Ensure the file is');
-      expect<any>(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(true);
-      editorPage.edit.audio.control('Word', 0).mockUpload.fileNameInput.clear();
-      editorPage.edit.audio.control('Word', 0).mockUpload.fileSizeInput.clear();
+      expect<any>(editorPage.edit.audio.uploadDropBoxes(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+      editorPage.edit.audio.control(LEXEME_LABEL, 0).mockUpload.fileNameInput.clear();
+      editorPage.edit.audio.control(LEXEME_LABEL, 0).mockUpload.fileSizeInput.clear();
       editorPage.firstNoticeCloseButton.click();
     });
 
     it('can upload an audio file', () => {
       expect<any>(editorPage.noticeList.count()).toBe(0);
-      editorPage.edit.audio.control('Word', 0).mockUpload.fileNameInput
+      editorPage.edit.audio.control(LEXEME_LABEL, 0).mockUpload.fileNameInput
         .sendKeys(constants.testMockMp3UploadFile.name);
-      editorPage.edit.audio.control('Word', 0).mockUpload.fileSizeInput
+      editorPage.edit.audio.control(LEXEME_LABEL, 0).mockUpload.fileSizeInput
         .sendKeys(constants.testMockMp3UploadFile.size);
-      editorPage.edit.audio.control('Word', 0).mockUpload.uploadButton.click();
-      editorPage.edit.audio.control('Word', 0).mockUpload.enableButton.click();
+      editorPage.edit.audio.control(LEXEME_LABEL, 0).mockUpload.uploadButton.click();
+      editorPage.edit.audio.control(LEXEME_LABEL, 0).mockUpload.enableButton.click();
       expect<any>(editorPage.noticeList.count()).toBe(1);
       expect<any>(editorPage.noticeList.first().getText()).toContain('File uploaded successfully');
-      expect<any>(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(true);
-      expect<any>(editorPage.edit.audio.playerIcons('Word').first().getAttribute('class'))
-        .toContain('fa-play');
-      expect<any>(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(true);
-      expect<any>(editorPage.edit.audio.players('Word').first().isEnabled()).toBe(true);
-      expect<any>(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(true);
+      expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+      expect<any>(editorPage.edit.audio.playerIcons(LEXEME_LABEL).first().getAttribute('class')).toContain('fa-play');
+      expect<any>(editorPage.edit.audio.players(LEXEME_LABEL).first().isDisplayed()).toBe(true);
+      expect<any>(editorPage.edit.audio.players(LEXEME_LABEL).first().isEnabled()).toBe(true);
+      expect<any>(editorPage.edit.audio.moreControls(LEXEME_LABEL).first().isDisplayed()).toBe(true);
     });
 
   });
 
   it('click on second word (found by definition)', () => {
-    editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value)
-      .click();
+    editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value).click();
   });
 
   it('word 2: edit page has correct definition, part of speech', () => {
@@ -423,16 +409,12 @@ describe('Editor List and Entry', () => {
       { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value }
     ]);
     expect<any>(editorUtil.getFieldValues('Part of Speech')).toEqual([
-      editorUtil
-        .expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[0].partOfSpeech.value),
-      editorUtil
-        .expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[1].partOfSpeech.value)
+      editorUtil.expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[0].partOfSpeech.value),
+      editorUtil.expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[1].partOfSpeech.value)
     ]);
   });
 
-  it('word with multiple meanings: edit page has correct example sentences, translations',
-  () => {
-
+  it('word with multiple meanings: edit page has correct example sentences, translations', () => {
     // Empty array elements are a work-around for getFieldValues after SemDom directive added. DDW
     expect<any>(editorUtil.getFieldValues('Sentence')).toEqual([
       '', { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
@@ -484,9 +466,9 @@ describe('Editor List and Entry', () => {
   it('modify new word', () => {
     const word = constants.testEntry3.lexeme.th.value;
     const definition = constants.testEntry3.senses[0].definition.en.value;
-    editorPage.edit.getMultiTextInputs('Word').first().sendKeys(word);
+    editorPage.edit.getMultiTextInputs(LEXEME_LABEL).first().sendKeys(word);
     editorPage.edit.getMultiTextInputs('Definition').first().sendKeys(definition);
-    util.clickDropdownByValue(editorPage.edit.getOneField('Part of Speech').$('select'),
+    util.clickDropdownByValue(editorPage.edit.getOneField('Part of Speech').element(by.css('select')),
       new RegExp('Noun \\(n\\)'));
     util.scrollTop();
     editorPage.edit.saveBtn.click();
@@ -503,49 +485,50 @@ describe('Editor List and Entry', () => {
     });
 
   describe('Configuration check', () => {
+    const ENGLISH_I_S_INDEX = 3;
 
     it('Word has only "th", "tipa" and "taud" visible', () => {
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(3);
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').get(2).getText()).toEqual('taud');
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).count()).toEqual(3);
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).get(0).getText()).toEqual('th');
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).get(1).getText()).toEqual('tipa');
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).get(2).getText()).toEqual('taud');
     });
 
     it('make "en" input system visible for "Word" field', () => {
       configPage.get();
-      configPage.getTabByName('Fields').click();
-      configPage.getFieldByName('Word').click();
-      expect<any>(configPage.fieldsTab.inputSystemTags.get(3).getText()).toEqual('en');
-      util.setCheckbox(configPage.fieldsTab.inputSystemCheckboxes.get(3), true);
+      configPage.tabs.unified.click();
+      configPage.unifiedTab.fieldSpecificButton(LEXEME_LABEL).click();
+      util.setCheckbox(
+        configPage.unifiedTab.entry.fieldSpecificInputSystemCheckbox(LEXEME_LABEL, ENGLISH_I_S_INDEX), true);
       configPage.applyButton.click();
       util.clickBreadcrumb(constants.testProjectName);
       editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     });
 
     it('Word has "th", "tipa", "taud" and "en" visible', () => {
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(4);
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').get(2).getText()).toEqual('taud');
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').get(3).getText()).toEqual('en');
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).count()).toEqual(4);
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).get(0).getText()).toEqual('th');
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).get(1).getText()).toEqual('tipa');
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).get(2).getText()).toEqual('taud');
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).get(3).getText()).toEqual('en');
     });
 
     it('make "en" input system invisible for "Word" field', () => {
       configPage.get();
-      configPage.getTabByName('Fields').click();
-      configPage.getFieldByName('Word').click();
-      expect<any>(configPage.fieldsTab.inputSystemTags.get(3).getText()).toEqual('en');
-      util.setCheckbox(configPage.fieldsTab.inputSystemCheckboxes.get(3), false);
+      configPage.tabs.unified.click();
+      configPage.unifiedTab.fieldSpecificButton(LEXEME_LABEL).click();
+      util.setCheckbox(
+        configPage.unifiedTab.entry.fieldSpecificInputSystemCheckbox(LEXEME_LABEL, ENGLISH_I_S_INDEX), false);
       configPage.applyButton.click();
       util.clickBreadcrumb(constants.testProjectName);
       editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     });
 
     it('Word has only "th", "tipa" and "taud" visible', () => {
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(3);
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
-      expect<any>(editorPage.edit.getMultiTextInputSystems('Word').get(2).getText()).toEqual('taud');
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).count()).toEqual(3);
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).get(0).getText()).toEqual('th');
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).get(1).getText()).toEqual('tipa');
+      expect<any>(editorPage.edit.getMultiTextInputSystems(LEXEME_LABEL).get(2).getText()).toEqual('taud');
     });
 
   });

@@ -1,4 +1,5 @@
 import 'jasmine';
+import {browser, protractor} from 'protractor';
 
 import {BellowsLoginPage} from '../../bellows/pages/loginPage';
 import {ProjectsPage} from '../../bellows/pages/projectsPage';
@@ -19,9 +20,30 @@ describe('Lexicon E2E Page Traversal', () => {
   const viewSettingsPage = new ViewSettingsPage();
 
   describe('Explore configuration page', () => {
-    it('Configuartion tab', () => {
+    it('Unified tab', () => {
       loginPage.loginAsAdmin();
       configurationPage.get();
+      configurationPage.tabs.unified.click();
+      configurationPage.unifiedTab.inputSystem.addGroupButton.click();
+      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      configurationPage.unifiedTab.inputSystem.addInputSystemButton.click();
+      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      configurationPage.tabs.unified.click();
+      configurationPage.unifiedTab.entry.addGroupButton.click();
+      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      configurationPage.unifiedTab.entry.addCustomEntryButton.click();
+      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      configurationPage.unifiedTab.sense.addGroupButton.click();
+      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      configurationPage.unifiedTab.sense.addCustomSenseButton.click();
+      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      configurationPage.unifiedTab.example.addGroupButton.click();
+      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      configurationPage.unifiedTab.example.addCustomExampleButton.click();
+      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+    });
+
+    it('Fields tab', () => {
       configurationPage.tabs.fields.click();
       configurationPage.fieldsTab.hiddenIfEmptyCheckbox.click();
       configurationPage.fieldsTab.widthInput.click();
@@ -31,12 +53,12 @@ describe('Lexicon E2E Page Traversal', () => {
       configurationPage.fieldsTab.inputSystemDownButton.click();
     });
 
-    it('Input systems tab', () => {
+    it('Input Systems tab', () => {
       configurationPage.tabs.inputSystems.click();
       configurationPage.inputSystemsTab.moreButton.click();
     });
 
-    it('Option list tab', () => {
+    it('Option List tab', () => {
       configurationPage.tabs.optionlists.click();
       // There is no model of option list tab - Mark W 2018-01-14
     });
