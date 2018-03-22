@@ -34,6 +34,8 @@ namespace SIL.XForge.WebApi.Server
             {
                 "languageforge.org",
                 "scriptureforge.org",
+                "qa.languageforge.org",
+                "qa.scriptureforge.org",
                 "dev.languageforge.org",
                 "dev.scriptureforge.org"
             };
