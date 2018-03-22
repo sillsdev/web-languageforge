@@ -20,6 +20,7 @@ class MongoDecoder extends JsonDecoder
      * @param object $model
      * @param array $values A mixed array of JSON (like) data.
      * @param string $id
+     * @throws \Exception
      */
     public static function decode($model, $values, $id = '')
     {
@@ -65,7 +66,7 @@ class MongoDecoder extends JsonDecoder
      */
     public function decodeReferenceList($model, $data)
     {
-        $model->refs = array();
+        $model->refs = [];
         if (array_key_exists('refs', $data)) {
             // This likely came from an API client, who shouldn't be sending this.
             return;
@@ -134,6 +135,7 @@ class MongoDecoder extends JsonDecoder
      * @param string $key
      * @param MapOf $model
      * @param array $data
+     * @throws \Exception
      */
     public function decodeMapOf($key, $model, $data)
     {

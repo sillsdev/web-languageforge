@@ -1,20 +1,21 @@
-import { browser, by, element, ExpectedConditions } from 'protractor';
-import { BellowsLoginPage } from '../../../../bellows/pages/loginPage';
-import { ProjectsPage } from '../../../../bellows/pages/projectsPage';
-import { Utils } from '../../../../bellows/pages/utils';
-import { EditorPage } from '../../pages/editorPage';
-import { EditorUtil } from '../../pages/editorUtil';
-import { ConfigurationPage } from '../../pages/configurationPage';
+import {browser} from 'protractor';
 
-const constants     = require('../../../../testConstants.json');
-const loginPage     = new BellowsLoginPage();
-const projectsPage  = new ProjectsPage();
-const util          = new Utils();
-const editorPage    = new EditorPage();
-const editorUtil    = new EditorUtil();
-const configPage    = new ConfigurationPage();
+import {BellowsLoginPage} from '../../../../bellows/pages/loginPage';
+import {ProjectsPage} from '../../../../bellows/pages/projectsPage';
+import {Utils} from '../../../../bellows/pages/utils';
+import {ConfigurationPage} from '../../pages/configurationPage';
+import {EditorPage} from '../../pages/editorPage';
+import {EditorUtil} from '../../pages/editorUtil';
 
 describe('Editor List and Entry', () => {
+  const constants = require('../../../../testConstants.json');
+  const loginPage    = new BellowsLoginPage();
+  const projectsPage = new ProjectsPage();
+  const util         = new Utils();
+  const editorPage   = new EditorPage();
+  const editorUtil   = new EditorUtil();
+  const configPage   = new ConfigurationPage();
+
   it('setup: login, click on test project', () => {
     loginPage.loginAsManager();
     projectsPage.get();
@@ -82,7 +83,7 @@ describe('Editor List and Entry', () => {
 
   it('citation form field overrides lexeme form in dictionary citation view', () => {
     editorPage.edit.showHiddenFields();
-    var citationFormMultiTextInputs = editorPage.edit.getMultiTextInputs('Citation Form');
+    const citationFormMultiTextInputs = editorPage.edit.getMultiTextInputs('Citation Form');
     editorPage.edit.selectElement.sendKeys(citationFormMultiTextInputs.first(), 'citation form');
     expect(editorPage.edit.renderedDiv.getText()).toContain('citation form');
     expect(editorPage.edit.renderedDiv.getText())
@@ -481,8 +482,8 @@ describe('Editor List and Entry', () => {
   });
 
   it('modify new word', () => {
-    var word    = constants.testEntry3.lexeme.th.value;
-    var definition = constants.testEntry3.senses[0].definition.en.value;
+    const word = constants.testEntry3.lexeme.th.value;
+    const definition = constants.testEntry3.senses[0].definition.en.value;
     editorPage.edit.getMultiTextInputs('Word').first().sendKeys(word);
     editorPage.edit.getMultiTextInputs('Definition').first().sendKeys(definition);
     util.clickDropdownByValue(editorPage.edit.getOneField('Part of Speech').$('select'),
@@ -551,7 +552,7 @@ describe('Editor List and Entry', () => {
 
   it('first entry is selected if entryId unknown', () => {
     editorPage.edit.findEntryByLexeme(constants.testEntry3.lexeme.th.value).click();
-    editorPage.getProjectIdFromUrl().then(function (projectId) {
+    editorPage.getProjectIdFromUrl().then(projectId => {
       editorPage.get(projectId, '_unknown_id_1234');
     });
 
@@ -559,11 +560,11 @@ describe('Editor List and Entry', () => {
   });
 
   it('URL entry id changes with entry', () => {
-    var entry1Id = editorPage.getEntryIdFromUrl();
+    const entry1Id = editorPage.getEntryIdFromUrl();
     expect(entry1Id).toMatch(/[0-9a-z_]{6,24}/);
     editorPage.edit.findEntryByLexeme(constants.testEntry3.lexeme.th.value).click();
     expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry3.lexeme.th.value);
-    var entry3Id = editorPage.getEntryIdFromUrl();
+    const entry3Id = editorPage.getEntryIdFromUrl();
     expect(entry3Id).toMatch(/[0-9a-z_]{6,24}/);
     expect(entry1Id).not.toEqual(entry3Id);
     editorPage.edit.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();

@@ -5,8 +5,8 @@ angular.module('palaso.ui.soundplayer', [])
       bindings: {
         url: '<'
       },
+      templateUrl: '/angular-app/bellows/directive/pui-soundplayer.html',
       controller: ['$scope', function ($scope) {
-        var ctrl = this;
         var slider = document.getElementById('puiSoundplayerSlider');
         $scope.audioElement = document.createElement('audio');
         $scope.playing = false;
@@ -21,14 +21,14 @@ angular.module('palaso.ui.soundplayer', [])
           });
         });
 
-        ctrl.$onChanges = function (changes) {
+        this.$onChanges = function (changes) {
           if (changes.url && changes.url.currentValue) {
             if ($scope.playing) $scope.togglePlayback();
             $scope.audioElement.src = changes.url.currentValue;
           }
         };
 
-        ctrl.$onDestroy = function () {
+        this.$onDestroy = function () {
           $scope.audioElement.pause();
         };
 
@@ -79,7 +79,7 @@ angular.module('palaso.ui.soundplayer', [])
           $scope.userMovingSlider = false;
         });
 
-        slider.addEventListener('input', function(e) {
+        slider.addEventListener('input', function () {
           $scope.userMovingSlider = true;
         });
 
@@ -90,9 +90,6 @@ angular.module('palaso.ui.soundplayer', [])
           seconds = (seconds < 10 ? '0' : '') + seconds;
           return minutes + ':' + seconds;
         };
-      }],
-
-                                          // FIXME why is bootstrapVersion not defined here?
-      templateUrl: '/angular-app/bellows/directive/' + 'bootstrap4' + '/pui-soundplayer.html'
+      }]
     }
   );
