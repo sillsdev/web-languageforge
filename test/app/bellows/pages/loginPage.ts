@@ -1,7 +1,8 @@
-import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
-const constants = require('../../testConstants');
+import {browser, by, element} from 'protractor';
 
 export class BellowsLoginPage {
+  private readonly constants = require('../../testConstants');
+
   get() {
     browser.get(browser.baseUrl + '/auth/login');
   }
@@ -14,7 +15,7 @@ export class BellowsLoginPage {
   forgotPasswordLink = element(by.id('forgot_password'));
   submit     = element(by.id('login-submit'));
 
-  login(username : string, password : string) {
+  login(username: string, password: string) {
     browser.get(browser.baseUrl + '/auth/logout');
 
     this.get();
@@ -24,27 +25,27 @@ export class BellowsLoginPage {
   }
 
   loginAsAdmin() {
-    this.login(constants.adminEmail, constants.adminPassword);
+    this.login(this.constants.adminEmail, this.constants.adminPassword);
   }
 
   loginAsManager() {
-    this.login(constants.managerEmail, constants.managerPassword);
+    this.login(this.constants.managerEmail, this.constants.managerPassword);
   }
 
   loginAsUser() {
-    this.login(constants.memberEmail, constants.memberPassword);
+    this.login(this.constants.memberEmail, this.constants.memberPassword);
   }
 
   loginAsMember = this.loginAsUser;
 
   loginAsSecondUser() {
-    this.login(constants.member2Email, constants.member2Password);
+    this.login(this.constants.member2Email, this.constants.member2Password);
   }
 
   loginAsSecondMember = this.loginAsSecondUser;
 
   loginAsObserver() {
-    this.login(constants.observerEmail, constants.observerPassword);
+    this.login(this.constants.observerEmail, this.constants.observerPassword);
   }
 
   logout() {

@@ -1,9 +1,9 @@
+import {browser, ExpectedConditions, Key} from 'protractor';
 
-import { browser, ExpectedConditions, Key } from 'protractor';
-import { BellowsLoginPage } from '../../../../bellows/pages/loginPage';
-import { Utils } from '../../../../bellows/pages/utils';
-import { EditorPage } from '../../pages/editorPage';
-import { NewLexProjectPage } from '../../pages/newLexProjectPage';
+import {BellowsLoginPage} from '../../../../bellows/pages/loginPage';
+import {Utils} from '../../../../bellows/pages/utils';
+import {EditorPage} from '../../pages/editorPage';
+import {NewLexProjectPage} from '../../pages/newLexProjectPage';
 
 describe('E2E testing: New Lex Project wizard app', () => {
   const constants = require('../../../../testConstants');
@@ -73,8 +73,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
     it('can get back to Send and Receive Credentials page', () => {
       page.chooserPage.sendReceiveButton.click();
       expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect<any>(page.srCredentialsPage.loginInput.getAttribute('value'))
-        .toEqual(constants.memberUsername);
+      expect<any>(page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
       expect<any>(page.srCredentialsPage.passwordInput.isDisplayed()).toBe(true);
       expect<any>(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
     });
@@ -99,8 +98,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
       page.nextButton.click();
       expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect<any>(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
-      page.formStatus.expectContainsError(
-        'The username or password isn\'t valid on LanguageDepot.org.');
+      page.formStatus.expectContainsError('The username or password isn\'t valid on LanguageDepot.org.');
     });
 
     it('can go back to Chooser page, user and pass preserved', () => {
@@ -109,10 +107,8 @@ describe('E2E testing: New Lex Project wizard app', () => {
       expect<any>(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
       page.chooserPage.sendReceiveButton.click();
       expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.loginInput.getAttribute('value'))
-        .toEqual(constants.memberUsername);
-      expect(page.srCredentialsPage.passwordInput.getAttribute('value'))
-        .toEqual(constants.passwordValid);
+      expect(page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
+      expect(page.srCredentialsPage.passwordInput.getAttribute('value')).toEqual(constants.passwordValid);
       page.srCredentialsPage.passwordInput.clear();
     });
 
@@ -141,8 +137,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
     it('can move on when the credentials are valid', () => {
       page.srCredentialsPage.passwordInput.clear();
       page.srCredentialsPage.passwordInput.sendKeys(constants.srPassword);
-      browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.passwordOk),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.passwordOk), constants.conditionTimeout);
       expect<any>(page.srCredentialsPage.loginOk.isDisplayed()).toBe(true);
       expect<any>(page.srCredentialsPage.passwordOk.isDisplayed()).toBe(true);
       expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
@@ -205,15 +200,13 @@ describe('E2E testing: New Lex Project wizard app', () => {
 
     it('finds the test project already exists', () => {
       page.namePage.projectNameInput.sendKeys(constants.testProjectName + Key.TAB);
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeExists),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeExists), constants.conditionTimeout);
       expect<any>(page.namePage.projectCodeExists.isDisplayed()).toBe(true);
       expect<any>(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
       expect<any>(page.namePage.projectCodeOk.isPresent()).toBe(false);
-      expect(page.namePage.projectCodeInput.getAttribute('value'))
-        .toEqual(constants.testProjectCode);
-      page.formStatus.expectContainsError('Another project with code \'' +
-        constants.testProjectCode + '\' already exists.');
+      expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.testProjectCode);
+      page.formStatus.expectContainsError('Another project with code \'' + constants.testProjectCode +
+        '\' already exists.');
     });
 
     it('with a cleared name does not show an error but is still invalid', () => {
@@ -222,7 +215,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
        * FIXME: added the following two lines so the test will work (previous error wasn't clearing)
        * as I couldn't re-produce the problem manually,
        * however is likely symptomatic of some funkiness with promises. IJH 2014-12
-       **/
+       */
 
       page.namePage.projectNameInput.sendKeys('a' + Key.TAB);
       page.namePage.projectNameInput.clear();
@@ -292,8 +285,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
     it('project code cannot be uppercase', () => {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('A' + Key.TAB);
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric), constants.conditionTimeout);
       expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect<any>(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect<any>(page.namePage.projectCodeOk.isPresent()).toBe(false);
@@ -302,8 +294,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
       page.formStatus.expectContainsError('Project Code must begin with a letter');
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('aB' + Key.TAB);
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric), constants.conditionTimeout);
       expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect<any>(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect<any>(page.namePage.projectCodeOk.isPresent()).toBe(false);
@@ -315,8 +306,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
     it('project code cannot start with a number', () => {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('1' + Key.TAB);
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric), constants.conditionTimeout);
       expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect<any>(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect<any>(page.namePage.projectCodeOk.isPresent()).toBe(false);
@@ -328,8 +318,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
     it('project code cannot use non-alphanumeric', () => {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('a?' + Key.TAB);
-      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeAlphanumeric), constants.conditionTimeout);
       expect<any>(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect<any>(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect<any>(page.namePage.projectCodeOk.isPresent()).toBe(false);
@@ -342,8 +331,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
       expect<any>(page.namePage.editProjectCodeCheckbox.isDisplayed()).toBe(true);
       util.setCheckbox(page.namePage.editProjectCodeCheckbox, false);
       expect<any>(page.namePage.projectCodeInput.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeInput.getAttribute('value'))
-        .toEqual(constants.newProjectCode);
+      expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.newProjectCode);
       page.formStatus.expectHasNoError();
     });
 
@@ -374,8 +362,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
         page.initialDataPage.mockUpload.enableButton.click();
         expect<any>(page.initialDataPage.mockUpload.fileNameInput.isPresent()).toBe(true);
         expect<any>(page.initialDataPage.mockUpload.fileNameInput.isDisplayed()).toBe(true);
-        page.initialDataPage.mockUpload.fileNameInput.sendKeys(
-          constants.testMockZipImportFile.name);
+        page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockZipImportFile.name);
         page.initialDataPage.mockUpload.fileSizeInput.sendKeys(134217728);
         expect<any>(page.noticeList.count()).toBe(0);
         page.initialDataPage.mockUpload.uploadButton.click();
@@ -390,10 +377,8 @@ describe('E2E testing: New Lex Project wizard app', () => {
       });
 
       it('cannot upload jpg', () => {
-        page.initialDataPage.mockUpload.fileNameInput.sendKeys(
-          constants.testMockJpgImportFile.name);
-        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(
-          constants.testMockJpgImportFile.size);
+        page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockJpgImportFile.name);
+        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(constants.testMockJpgImportFile.size);
         expect<any>(page.noticeList.count()).toBe(0);
         page.initialDataPage.mockUpload.uploadButton.click();
         expect<any>(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
@@ -408,10 +393,8 @@ describe('E2E testing: New Lex Project wizard app', () => {
       });
 
       it('can upload zip file', () => {
-        page.initialDataPage.mockUpload.fileNameInput.sendKeys(
-          constants.testMockZipImportFile.name);
-        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(
-          constants.testMockZipImportFile.size);
+        page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockZipImportFile.name);
+        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(constants.testMockZipImportFile.size);
         expect<any>(page.noticeList.count()).toBe(0);
         page.initialDataPage.mockUpload.uploadButton.click();
         expect<any>(page.verifyDataPage.entriesImported.isDisplayed()).toBe(true);
@@ -444,8 +427,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
       expect(page.verifyDataPage.importErrors.getText())
         .toContain('range file \'TestProj.lift-ranges\' was not found');
       page.verifyDataPage.nonCriticalErrorsButton.click();
-      browser.wait(ExpectedConditions.invisibilityOf(page.verifyDataPage.importErrors),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.invisibilityOf(page.verifyDataPage.importErrors), constants.conditionTimeout);
       expect<any>(page.verifyDataPage.importErrors.isDisplayed()).toBe(false);
     });
 
@@ -522,16 +504,14 @@ describe('E2E testing: New Lex Project wizard app', () => {
     describe('Select Language modal', () => {
 
       it('can search, select and add language', () => {
-        page.modal.selectLanguage.searchLanguageInput.sendKeys(
-          constants.searchLanguage + Key.ENTER);
+        page.modal.selectLanguage.searchLanguageInput.sendKeys(constants.searchLanguage + Key.ENTER);
         expect<any>(page.modal.selectLanguage.languageRows.first().isPresent()).toBe(true);
 
         expect<any>(page.modal.selectLanguage.addButton.isPresent()).toBe(true);
         expect<any>(page.modal.selectLanguage.addButton.isEnabled()).toBe(false);
         page.modal.selectLanguage.languageRows.first().click();
         expect<any>(page.modal.selectLanguage.addButton.isEnabled()).toBe(true);
-        expect<any>(page.modal.selectLanguage.addButton.getText()).toEqual(
-          'Add ' + constants.foundLanguage);
+        expect<any>(page.modal.selectLanguage.addButton.getText()).toEqual('Add ' + constants.foundLanguage);
 
         page.modal.selectLanguage.addButton.click();
         browser.wait(ExpectedConditions.stalenessOf(page.modal.selectLanguage.searchLanguageInput),
@@ -546,8 +526,7 @@ describe('E2E testing: New Lex Project wizard app', () => {
       expect<any>(page.nextButton.isEnabled()).toBe(true);
       page.expectFormIsValid();
       page.nextButton.click();
-      browser.wait(ExpectedConditions.visibilityOf(editorPage.browse.noEntriesElem),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(editorPage.browse.noEntriesElem), constants.conditionTimeout);
       expect<any>(editorPage.browse.noEntriesElem.isDisplayed()).toBe(true);
       editorPage.browse.noEntriesNewWordBtn.click();
       expect<any>(editorPage.edit.getEntryCount()).toBe(1);
