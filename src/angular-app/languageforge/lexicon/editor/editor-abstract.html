@@ -10,11 +10,6 @@
                             <i class="fa fa-arrow-circle-left"></i>
                             <span class="d-none d-md-inline-block">List</span></a>
 
-                        <button id="editorNewWordBtn" class="btn btn-primary"
-                                data-ng-show="$state.is('editor.entry')" data-ng-if="rights.canEditEntry()"
-                                data-ng-click="newEntry()">
-                            <i class="fa fa-plus"></i><span class="hidden-md-down"> New Word</span></button>
-
                         <a id="toEditLink" data-ng-show="$state.is('editor.comments')" class="btn btn-std"
                            data-ng-click="editEntry(currentEntry.id)" title="Return to Edit Entry">
                             <i class="fa fa-arrow-circle-left"></i>

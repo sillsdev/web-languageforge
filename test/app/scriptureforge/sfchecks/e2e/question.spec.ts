@@ -1,18 +1,15 @@
-import {} from 'jasmine';
-import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 
-import { BellowsLoginPage } from '../../../bellows/pages/loginPage';
-import { ProjectsPage } from '../../../bellows/pages/projectsPage';
-import { Utils } from '../../../bellows/pages/utils';
-import { SfProjectPage } from '../pages/projectPage';
-import { SfQuestionPage } from '../pages/questionPage';
-import { SfTextPage } from '../pages/textPage';
-import { SfTextSettingsPage } from '../pages/textSettingsPage';
+import {BellowsLoginPage} from '../../../bellows/pages/loginPage';
+import {ProjectsPage} from '../../../bellows/pages/projectsPage';
+import {SfProjectPage} from '../pages/projectPage';
+import {SfQuestionPage} from '../pages/questionPage';
+import {SfTextPage} from '../pages/textPage';
+import {SfTextSettingsPage} from '../pages/textSettingsPage';
 
 describe('the question page', () => {
-  const constants       = require('../../../testConstants');
+  const constants = require('../../../testConstants');
   const loginPage = new BellowsLoginPage();
-  const util = new Utils();
   const projectListPage = new ProjectsPage();
   const projectPage = new SfProjectPage();
   const textPage = new SfTextPage();
@@ -104,12 +101,9 @@ describe('the question page', () => {
       });
 
       it('can prepare export for answers flagged for export without comments', () => {
-        expect(textSettingsPage.paratextExportTab.exportAnswers.getAttribute('checked'))
-          .toBeTruthy();
-        expect(textSettingsPage.paratextExportTab.exportComments.getAttribute('checked'))
-          .toBeFalsy();
-        expect(textSettingsPage.paratextExportTab.exportFlagged.getAttribute('checked'))
-          .toBeTruthy();
+        expect(textSettingsPage.paratextExportTab.exportAnswers.getAttribute('checked')).toBeTruthy();
+        expect(textSettingsPage.paratextExportTab.exportComments.getAttribute('checked')).toBeFalsy();
+        expect(textSettingsPage.paratextExportTab.exportFlagged.getAttribute('checked')).toBeTruthy();
         expect<any>(textSettingsPage.paratextExportTab.downloadPT7Button.isPresent()).toBe(true);
         expect<any>(textSettingsPage.paratextExportTab.downloadPT8Button.isPresent()).toBe(true);
         textSettingsPage.paratextExportTab.downloadPT7Button.click();

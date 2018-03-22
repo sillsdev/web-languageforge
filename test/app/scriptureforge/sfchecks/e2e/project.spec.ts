@@ -1,11 +1,12 @@
 import {browser, ExpectedConditions} from 'protractor';
-import { SfAppFrame } from '../../../bellows/pages/appFrame.js';
-import { BellowsLoginPage } from '../../../bellows/pages/loginPage.js';
-import { ProjectsPage } from '../../../bellows/pages/projectsPage.js';
-import { Utils } from '../../../bellows/pages/utils.js';
-import { SfProjectPage } from '../pages/projectPage.js';
-import { SfProjectSettingsPage } from '../pages/projectSettingsPage.js';
-import { SfTextPage } from '../pages/textPage.js';
+
+import {SfAppFrame} from '../../../bellows/pages/appFrame';
+import {BellowsLoginPage} from '../../../bellows/pages/loginPage';
+import {ProjectsPage} from '../../../bellows/pages/projectsPage';
+import {Utils} from '../../../bellows/pages/utils';
+import {SfProjectPage} from '../pages/projectPage';
+import {SfProjectSettingsPage} from '../pages/projectSettingsPage';
+import {SfTextPage} from '../pages/textPage';
 
 describe('the project dashboard AKA text list page', () => {
   const constants       = require('../../../testConstants.json');
@@ -151,8 +152,7 @@ describe('the project dashboard AKA text list page', () => {
       projectPage.newText.title.sendKeys(newTextTitle);
       util.sendText(projectPage.newText.usx, projectPage.testData.longUsx1);
       projectPage.newText.verseRangeLink.click();
-      browser.wait(ExpectedConditions.visibilityOf(projectPage.newText.fromChapter),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(projectPage.newText.fromChapter), constants.conditionTimeout);
       projectPage.newText.fromChapter.sendKeys('1');
       projectPage.newText.fromVerse.sendKeys('1');
       projectPage.newText.toChapter.sendKeys('1');

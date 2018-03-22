@@ -1,9 +1,9 @@
-import { browser, by, element, ExpectedConditions } from 'protractor';
+import { browser, ExpectedConditions } from 'protractor';
 
-import { BellowsLoginPage } from '../../pages/loginPage';
-import { BellowsProjectSettingsPage } from '../../pages/projectSettingsPage';
-import { ProjectsPage } from '../../pages/projectsPage';
-import { Utils } from '../../pages/utils';
+import {BellowsLoginPage} from '../../pages/loginPage';
+import {BellowsProjectSettingsPage} from '../../pages/projectSettingsPage';
+import {ProjectsPage} from '../../pages/projectsPage';
+import {Utils} from '../../pages/utils';
 
 describe('Bellows E2E Project Settings App', () => {
   const constants = require('../../../testConstants');
@@ -32,9 +32,8 @@ describe('Bellows E2E Project Settings App', () => {
     */
     browser.wait(ExpectedConditions.elementToBeClickable(settingsPage.tabs.remove), constants.conditionTimeout);
     browser.actions().mouseMove(settingsPage.tabs.remove).click().perform();
-    //settingsPage.tabs.remove.click();
-    browser.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton),
-      constants.conditionTimeout);
+    // settingsPage.tabs.remove.click();
+    browser.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton), constants.conditionTimeout);
     expect<any>(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
     expect<any>(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
   });
@@ -70,15 +69,12 @@ describe('Bellows E2E Project Settings App', () => {
   // For Jamaican Psalms, only system admins can delete projects.
   // Project Manager is an ordinary user, so this test is ignored for Jamaican Psalms
   it('Manager can delete if owner', () => {
-    if (!browser.baseUrl.startsWith('http://jamaicanpsalms') &&
-      !browser.baseUrl.startsWith('https://jamaicanpsalms')
-    ) {
+    if (!browser.baseUrl.startsWith('http://jamaicanpsalms') && !browser.baseUrl.startsWith('https://jamaicanpsalms')) {
       loginPage.loginAsManager();
       settingsPage.get(constants.fourthProjectName);
       expect<any>(settingsPage.noticeList.count()).toBe(0);
       settingsPage.tabs.remove.click();
-      browser.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton), constants.conditionTimeout);
       expect<any>(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
       expect<any>(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
       settingsPage.deleteTab.deleteBoxText.sendKeys('DELETE');
