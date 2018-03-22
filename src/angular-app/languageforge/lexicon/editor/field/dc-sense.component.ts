@@ -47,6 +47,17 @@ export class FieldSenseController implements angular.IController {
     this.control.hideRightPanel();
   }
 
+  numExamples = () => this.model.examples.length;
+
+  moveExample = (index: number, distance: number) => {
+    const examples = this.model.examples;
+    const example = examples[index];
+    const newPosition = index + distance;
+    if (newPosition < 0 || newPosition >= examples.length) throw new Error();
+    examples.splice(index, 1); // remove 1 element starting from index
+    examples.splice(newPosition, 0, example); // insert example, overwriting 0 elements
+  }
+
   deleteExample = (index: number): void => {
     const deletemsg = 'Are you sure you want to delete the example <b>\' ' +
       LexiconUtilityService.getExample(this.control.config, this.config.fields.examples as LexConfigFieldList,
