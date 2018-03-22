@@ -25,6 +25,7 @@
             <!--suppress JSUnusedLocalSymbols -->
             <div data-ng-repeat="example in $ctrl.model.examples">
                 <dc-example model="example" config="$ctrl.config.fields.examples" control="$ctrl.control" index="$index"
+                            move="$ctrl.moveExample" num-examples="$ctrl.numExamples"
                             parent-context-guid="$ctrl.contextGuid" remove="$ctrl.deleteExample" ></dc-example>
             </div>
             <div data-ng-if="$ctrl.control.rights.canEditEntry() && $ctrl.isAtEditorEntry()" class="addItem">

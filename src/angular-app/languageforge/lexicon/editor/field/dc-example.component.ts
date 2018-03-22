@@ -46,6 +46,8 @@ export const FieldExampleComponent: angular.IComponentOptions = {
     config: '<',
     control: '<',
     index: '<',
+    move: '<',
+    numExamples: '<',
     parentContextGuid: '<',
     remove: '&'
   },

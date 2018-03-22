@@ -2,12 +2,20 @@
     <div class="card-header">
         <div data-ng-show="$ctrl.control.rights.canEditEntry() && $ctrl.isAtEditorEntry()"
              class="dropdown float-right" uib-dropdown>
-             <a class="btn ellipsis-menu-toggle pui-no-caret" uib-dropdown-toggle>
-                 <span class="fa fa-ellipsis-v"></span>
-             </a>
-             <div class="dropdown-menu-right" uib-dropdown-menu>
-                 <a href data-ng-click="$ctrl.remove($ctrl.index)" class="dropdown-item">Delete Example {{$ctrl.index+1}}</a>
-             </div>
+            <a class="btn ellipsis-menu-toggle pui-no-caret" uib-dropdown-toggle>
+                <span class="fa fa-ellipsis-v"></span>
+            </a>
+            <div class="dropdown-menu-right" uib-dropdown-menu>
+                <a href data-ng-click="$ctrl.remove($ctrl.index)" class="dropdown-item">
+                    <span class="fa fa-trash"></span> Delete Example {{$ctrl.index+1}}
+                </a>
+                <a href data-ng-show="$ctrl.index > 0" data-ng-click="$ctrl.move($ctrl.index, -1)" class="dropdown-item">
+                    <span class="fa fa-arrow-up"></span> Move Up
+                </a>
+                <a href data-ng-show="$ctrl.index+1 < $ctrl.numExamples()" data-ng-click="$ctrl.move($ctrl.index, 1)" class="dropdown-item">
+                    <span class="fa fa-arrow-down"></span> Move Down
+                </a>
+            </div>
         </div>
         Example <span class="notranslate">{{$ctrl.index+1}}</span>
     </div>
