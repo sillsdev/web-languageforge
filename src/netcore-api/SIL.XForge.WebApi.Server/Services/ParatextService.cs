@@ -35,18 +35,18 @@ namespace SIL.XForge.WebApi.Server.Services
             _httpClientHandler = new HttpClientHandler();
             _dataAccessClient = new HttpClient(_httpClientHandler);
             _registryClient = new HttpClient(_httpClientHandler);
-            //if (env.IsDevelopment())
-            //{
-            _httpClientHandler.ServerCertificateCustomValidationCallback
-                = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-            _dataAccessClient.BaseAddress = new Uri("https://data-access-dev.paratext.org");
-            _registryClient.BaseAddress = new Uri("https://registry-dev.paratext.org");
-            //}
-            //else
-            //{
-            //    _dataAccessClient.BaseAddress = new Uri("https://data-access.paratext.org");
-            //    _registryClient.BaseAddress = new Uri("https://registry.paratext.org");
-            //}
+            if (env.IsDevelopment())
+            {
+                _httpClientHandler.ServerCertificateCustomValidationCallback
+                    = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                _dataAccessClient.BaseAddress = new Uri("https://data-access-dev.paratext.org");
+                _registryClient.BaseAddress = new Uri("https://registry-dev.paratext.org");
+            }
+            else
+            {
+               _dataAccessClient.BaseAddress = new Uri("https://data-access.paratext.org");
+               _registryClient.BaseAddress = new Uri("https://registry.paratext.org");
+            }
             _registryClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
