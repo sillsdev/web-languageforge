@@ -262,15 +262,29 @@ angular.module('palaso.ui.dc.text', ['coreModule', 'textAngular'])
       fteModel: '=',
       fteToolbar: '=',
       fteDisabled: '=',
+      fteDisabledReason: '=',
       fteMultiline: '=',
       fteDir: '='
     },
     controller: ['$scope', 'sessionService', function ($scope, ss) {
       var ctrl = this;
       ctrl.fte = {};
-      ctrl.disabledMsg = 'This field cannot be edited because it contains metadata that would '
-        + 'be lost by editing in Language Forge. Fields with metadata may be edited in '
-        + 'Fieldworks Language Explorer.';
+      ctrl.disabledMsg = function disabledMsg() {
+        switch (ctrl.fteDisabledReason) {
+          case 'would-lose-metadata':
+            return 'This field cannot be edited because it contains metadata that would '
+              + 'be lost by editing in Language Forge. Fields with metadata may be edited in '
+              + 'Fieldworks Language Explorer.';
+          case 'sr-in-progress':
+            return 'A Send/Receive is in progress. Any edits made now would be lost. Please '
+              + 'wait until the Send/Receive has completed before making further edits.'
+          case 'editing-not-permitted':
+            return 'You do not have permission to edit the data in this project. If you '
+              + 'need to edit this project, please contact the project manager.'
+          default:
+            return 'This field cannot be edited.';
+        }
+      }
 
       if (!ctrl.fteMultiline) {
 
