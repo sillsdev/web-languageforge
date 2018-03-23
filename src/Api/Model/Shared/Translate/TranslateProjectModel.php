@@ -2,6 +2,7 @@
 
 namespace Api\Model\Shared\Translate;
 
+use Api\Library\Shared\Website;
 use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Translate\Command\TranslateProjectCommands;
@@ -57,7 +58,8 @@ class TranslateProjectModel extends ProjectModel
         MongoStore::dropCollection('realtime', $this->databaseName());
         MongoStore::dropCollection('realtime', 'o_' . $this->databaseName());
         TranslateProjectCommands::removeMachineTranslationProject($this);
-        $srPath = '/var/lib' . DIRECTORY_SEPARATOR . $this->siteName . DIRECTORY_SEPARATOR . 'translate/sendreceive';
+        $website = Website::get();
+        $srPath = '/var/lib' . DIRECTORY_SEPARATOR . $website->base . DIRECTORY_SEPARATOR . 'translate/sendreceive';
         $projectPath = $srPath . DIRECTORY_SEPARATOR . $this->id;
         FileUtilities::removeFolderAndAllContents($projectPath);
         parent::remove();
