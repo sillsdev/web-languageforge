@@ -23,6 +23,9 @@ class LexCommentReply extends ObjectForEncoding
     /** @var string */
     public $id;
 
+    /** @var string */
+    public $guid;
+
     /** @var boolean */
     public $isDeleted;
 }
