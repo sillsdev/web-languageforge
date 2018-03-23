@@ -77,3 +77,7 @@ define('BCRYPT_COST', 7);
 if (! defined('JWT_KEY')) {
     define('JWT_KEY', 'this_is_not_a_secret_dev_only');
 }
+
+if (! defined('SR_TRANSLATE_FOLDER')) {
+    define('SR_TRANSLATE_FOLDER', '/var/lib/scriptureforge/translate/sendreceive');
+}
