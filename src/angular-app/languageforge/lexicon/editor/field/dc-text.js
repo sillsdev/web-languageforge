@@ -279,8 +279,7 @@ angular.module('palaso.ui.dc.text', ['coreModule', 'textAngular'])
             return 'A Send/Receive is in progress. Any edits made now would be lost. Please '
               + 'wait until the Send/Receive has completed before making further edits.'
           case 'editing-not-permitted':
-            return 'You do not have permission to edit the data in this project. If you '
-              + 'need to edit this project, please contact the project manager.'
+            return '';  // When someone's just an observer on the project, we want NO explanation popup
           default:
             return 'This field cannot be edited.';
         }
