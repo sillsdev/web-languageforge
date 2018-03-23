@@ -347,9 +347,8 @@ export class TranslateNewProjectController implements angular.IController {
           .then(() => this.translateSendReceiveService.startClone())
           .then(() => {
             this.machine.initialise(this.newProject.id);
-            this.machine.startTraining();
-            this.gotoEditor();
-          });
+            return this.machine.startTraining();
+          }).then(() => this.gotoEditor());
         break;
       case 'newProject.sendReceiveClone':
         break;
