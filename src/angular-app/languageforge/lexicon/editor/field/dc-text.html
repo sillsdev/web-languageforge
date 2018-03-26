@@ -4,7 +4,7 @@
     ng-model="$ctrl.textFieldValue"
     ng-change="$ctrl.inputChanged()"
     ng-disabled="$ctrl.fteDisabled"
-    title="{{$ctrl.fteDisabled ? $ctrl.disabledMsg : ''}}">
+    title="{{$ctrl.fteDisabled ? $ctrl.disabledMsg() : ''}}">
 </div>
 
 <div ng-if="$ctrl.fteMultiline"
