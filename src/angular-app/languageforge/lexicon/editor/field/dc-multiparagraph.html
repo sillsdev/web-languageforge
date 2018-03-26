@@ -9,12 +9,14 @@
                 <!--
                 <dc-text class="dc-text"
                     fte-disabled="!($state.is('editor.entry') && control.rights.canEditEntry())"
+                    fte-disabled-reason="control.rights.sendReceive.isInProgress() ? 'sr-in-progress' : 'editing-not-permitted'"
                     fte-multiline="true"
                     fte-model="model.paragraphsHtml"
                     fte-dir="inputSystemDirection(model.inputSystem)"></dc-text>
                     -->
                 <dc-text class="dc-text"
                     fte-disabled="true"
+                    fte-disabled-reason="'would-lose-metadata'"
                     fte-multiline="true"
                     fte-model="model.paragraphsHtml"
                     fte-dir="inputSystemDirection(model.inputSystem)"></dc-text>
