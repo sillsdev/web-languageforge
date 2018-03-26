@@ -1,12 +1,4 @@
-/* Colours as defined in UxPin */
-$BlackSqueeze: #e6eff5;
-$BlueRibbon: #1d64f0;
-$Botticelli: #cddeeb;
-$Eden: #104060;
-$PastelGreen: #6edc6c;
-$Silver: #c0c0c0;
-$WildSand: #f6f6f6;
-
+@import "../../../Site/views/languageforge/theme/default/sass/variables";
 #lexAppEditView {
   display: flex;
   justify-content: center;

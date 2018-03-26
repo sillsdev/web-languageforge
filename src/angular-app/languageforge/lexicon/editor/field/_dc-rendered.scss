@@ -1,23 +1,27 @@
-.dc-rendered-word {
-  font-weight: bold;
+.dc-rendered-entryContainer {
+  .dc-rendered-word {
+    font-weight: bold;
 
-}
-.dc-rendered-senseContainer {
-  margin: 0 3px 0 3px;
-}
-.dc-rendered-partOfSpeech {
-  font-style: italic;
-}
-.dc-rendered-senseNumber {}
-.dc-rendered-definition {
-  margin: 0 3px 0 3px;
-}
-.dc-rendered-exampleContainer {}
-.dc-rendered-exampleSentence {
-  margin: 0 1px 0 1px;
-  font-style: italic;
-}
-.dc-rendered-exampleSentenceTranslation {
-  margin: 0 1px 0 1px;
-  font-style: normal;
+  }
+  .dc-rendered-senseContainer {
+    margin: 0 3px 0 3px;
+  }
+  .dc-rendered-partOfSpeech {
+    font-style: italic;
+  }
+  .dc-rendered-senseNumber {
+  }
+  .dc-rendered-definition {
+    margin: 0 3px 0 3px;
+  }
+  .dc-rendered-exampleContainer {
+  }
+  .dc-rendered-exampleSentence {
+    margin: 0 1px 0 1px;
+    font-style: italic;
+  }
+  .dc-rendered-exampleSentenceTranslation {
+    margin: 0 1px 0 1px;
+    font-style: normal;
+  }
 }

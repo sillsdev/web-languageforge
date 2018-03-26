@@ -1,9 +1,9 @@
+import 'jasmine';
+
 import {BellowsLoginPage} from '../../bellows/pages/loginPage';
 import {ProjectsPage} from '../../bellows/pages/projectsPage';
-import {Utils} from '../../bellows/pages/utils';
 import {ConfigurationPage} from '../lexicon/pages/configurationPage';
 import {EditorPage} from '../lexicon/pages/editorPage';
-import {LexModals} from '../lexicon/pages/lexModals.js';
 import {NewLexProjectPage} from '../lexicon/pages/newLexProjectPage';
 import {ProjectSettingsPage} from '../lexicon/pages/projectSettingsPage';
 import {ViewSettingsPage} from '../lexicon/pages/viewSettingsPage';
@@ -17,7 +17,6 @@ describe('Lexicon E2E Page Traversal', () => {
   const newLexProjectPage = new NewLexProjectPage();
   const editorPage = new EditorPage();
   const viewSettingsPage = new ViewSettingsPage();
-  const lexModals = new LexModals();
 
   describe('Explore configuration page', () => {
     it('Configuartion tab', () => {

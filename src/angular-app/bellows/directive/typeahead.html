@@ -1,7 +1,10 @@
-<div style="position:relative">
-    <input dir="auto" class="form-control" id="typeaheadInput" placeholder="{{placeholder}}" composition-input
-           data-ng-model="term" data-ng-change="query()" type="text" autocomplete="off">&nbsp;
-    <span style="position:absolute; right:13px; top:5px; z-index: 10;" title="Clear" data-ng-click="clearSearch()" data-ng-show="term && term != ''">
-        <i class="fa fa-times" style="color:#808080; cursor: pointer"></i></span>
+<div>
+    <div style="position:relative">
+        <input dir="auto" class="form-control" id="typeaheadInput" placeholder="{{placeholder}}" composition-input
+               data-ng-model="term" data-ng-change="query()" type="text" autocomplete="off">
+        <span class="typeahead-clear" title="Clear" data-ng-click="clearSearch()" data-ng-show="term && term != ''">
+            <i class="fa fa-times"></i>
+        </span>
+    </div>
     <div data-ng-transclude class="typeahead-results"></div>
 </div>

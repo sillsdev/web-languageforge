@@ -1,4 +1,4 @@
-import {browser, element, by, By, $, $$, ExpectedConditions} from 'protractor';
+import {by, element} from 'protractor';
 
 export class LexModals {
   modalBodyDiv = element(by.className('modal-body'));
@@ -10,11 +10,10 @@ export class LexModals {
     languageRows: this.modalBodyDiv.all(by.repeater('language in languages')),
     firstLanguageName: this.modalBodyDiv
       .all(by.repeater('language in languages').column('name')).first(),
-    lastLanguageName: this.modalBodyDiv
-      .all(by.repeater('language in languages').column('name')).last(),
+    lastLanguageName: this.modalBodyDiv.all(by.repeater('language in languages').column('name')).last(),
     clearSearchButton: this.modalBodyDiv.element(by.id('clearSearch')),
     addButton: this.modalFooterDiv.element(by.id('select-language-add-btn'))
-  }
+  };
 
   // custom field modal
   customField = {
@@ -24,5 +23,5 @@ export class LexModals {
     typeDropdown: element(by.id('type')),
     listCodeDropdown: element(by.id('optionListCode')),
     addButton: element(by.id('addCustomFieldButton'))
-  }
+  };
 }

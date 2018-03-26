@@ -1,8 +1,9 @@
+import 'jasmine';
+
 import {SfActivityPage} from '../pages/activityPage';
 import {BellowsChangePasswordPage} from '../pages/changePasswordPage';
 import {BellowsForgotPasswordPage} from '../pages/forgotPasswordPage';
 import {BellowsLoginPage} from '../pages/loginPage';
-import {BellowsProjectSettingsPage} from '../pages/projectSettingsPage';
 import {ProjectsPage} from '../pages/projectsPage';
 import {BellowsResetPasswordPage} from '../pages/resetPasswordPage';
 import {SignupPage} from '../pages/signupPage';
@@ -14,7 +15,6 @@ describe('Bellows E2E Page Traversal', () => {
   const changePasswordPage = new BellowsChangePasswordPage();
   const forgotPasswordPage = new BellowsForgotPasswordPage();
   const loginPage = new BellowsLoginPage();
-  const projectSettingsPage = new BellowsProjectSettingsPage();
   const projectsPage = new ProjectsPage();
   const resetPasswordPage = new BellowsResetPasswordPage();
   const signupPage = new SignupPage();
