@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.multitext', ['palaso.ui.showOverflow', 'palaso.ui.dc.formattedtext',
+angular.module('palaso.ui.dc.multitext', ['palaso.ui.showOverflow', 'palaso.ui.dc.text',
   'palaso.ui.dc.audio', 'palaso.ui.comments'])
 
 // Dictionary Control Multitext
@@ -49,8 +49,8 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.showOverflow', 'palaso.ui.d
           return false;
         }
 
-        var languageSpanPattern = /<span.* lang="/;
-        return languageSpanPattern.test($scope.model[tag].value);
+        var str = $scope.model[tag].value;
+        return (new DOMParser().parseFromString(str, 'text/html').body.children.length) > 0;
       };
 
     }]

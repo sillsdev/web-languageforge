@@ -8,12 +8,13 @@
                  data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
                 <span class="wsid input-group-addon notranslate" tabindex="-1"
                     title="{{tag}} {{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
-                <dc-formattedtext class="dc-formattedtext" data-ng-if="!isAudio(tag)"
+                <dc-text class="dc-text" data-ng-if="!isAudio(tag)"
                     fte-multiline="false"
                     fte-disabled="! ($state.is('editor.entry') && control.rights.canEditEntry()) || modelContainsSpan(tag)"
+                    fte-disabled-reason="modelContainsSpan(tag) ? 'would-lose-metadata' : control.rights.sendReceive.isInProgress() ? 'sr-in-progress' : 'editing-not-permitted'"
                     fte-toolbar="[[]]"
                     fte-model="model[tag].value"
-                    fte-dir="inputSystemDirection(tag)"></dc-formattedtext>
+                    fte-dir="inputSystemDirection(tag)"></dc-text>
                 <dc-audio data-ng-if="isAudio(tag)" dc-filename="model[tag].value" dc-control="control">
                 </dc-audio>
             </div>

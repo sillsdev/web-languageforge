@@ -65,8 +65,8 @@ angular.module('palaso.ui.typeahead', [])
       }],
 
       link: function (scope, element, attrs, controller) {
-        var $input = element.find('> input');
-        var $list = element.find('> div');
+        var $input = element.find('#typeaheadInput');
+        var $list = element.find('.typeahead-results');
         $input.bind('focus', function () {
           scope.$apply(function () {
             scope.focused = true;

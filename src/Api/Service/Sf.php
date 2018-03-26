@@ -243,7 +243,7 @@ class Sf
 
     public function user_register_oauth($params)
     {
-        $result = UserCommands::registerOAuthUser($params, $this->website, $this->app['session']->get('captcha_info'));
+        $result = UserCommands::registerOAuthUser($params, $this->website);
         if ($result == 'login') {
             Auth::loginWithoutPassword($this->app, UserCommands::sanitizeInput($params['username']));
         }
