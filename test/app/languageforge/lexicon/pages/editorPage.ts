@@ -1,14 +1,14 @@
-import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
-import { ElementArrayFinder, ElementFinder } from 'protractor/built/element';
-import { MockUploadElement } from '../../../bellows/pages/mockUploadElement';
-import { Utils } from '../../../bellows/pages/utils';
-import { EditorUtil } from './editorUtil';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 
-const mockUpload = new MockUploadElement();
-const utils = new Utils();
-const editorUtil = new EditorUtil();
+import {ElementArrayFinder, ElementFinder} from 'protractor/built/element';
+import {MockUploadElement} from '../../../bellows/pages/mockUploadElement';
+import {Utils} from '../../../bellows/pages/utils';
+import {EditorUtil} from './editorUtil';
 
 export class EditorPage {
+  private readonly mockUpload = new MockUploadElement();
+  private readonly utils = new Utils();
+  private readonly editorUtil = new EditorUtil();
 
   get(projectId: string, entryId: string) {
     let extra = projectId ? ('/' + projectId) : '';
@@ -59,7 +59,7 @@ export class EditorPage {
     entryCountElem: this.browseDiv.element(by.id('totalNumberOfEntries')),
     getEntryCount: () => {
       // assumption is entry count > 0
-      browser.wait(ExpectedConditions.visibilityOf(this.browse.entryCountElem), utils.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(this.browse.entryCountElem), this.utils.conditionTimeout);
       return this.browse.entryCountElem.getText().then((s: string) =>
         parseInt(s, 10)
       );
@@ -83,7 +83,7 @@ export class EditorPage {
     entriesList: this.browseDiv.all(by.repeater('entry in visibleEntries track by entry.id')),
     findEntryByLexeme: (lexeme: string) => {
       browser.wait(ExpectedConditions.visibilityOf(
-        element(by.id('lexAppListView'))), utils.conditionTimeout);
+        element(by.id('lexAppListView'))), this.utils.conditionTimeout);
       return this.browse.entriesList.filter((row: ElementFinder) => {
         const elem = row.element(by.binding('entry.word'));
 
@@ -113,7 +113,7 @@ export class EditorPage {
       // Only click the button if it will result in fields being shown
       this.edit.toggleHiddenFieldsBtn.getText().then((text: string) => {
         if (text === this.edit.toggleHiddenFieldsBtnText.show) {
-          utils.scrollTop();
+          this.utils.scrollTop();
           this.edit.toggleHiddenFieldsBtn.click();
         }
       });
@@ -123,7 +123,7 @@ export class EditorPage {
       // Only click the button if it will result in fields being hidden
       this.edit.toggleHiddenFieldsBtn.getText().then((text: string) => {
         if (text === this.edit.toggleHiddenFieldsBtnText.hide) {
-          utils.scrollTop();
+          this.utils.scrollTop();
           this.edit.toggleHiddenFieldsBtn.click();
         }
       });
@@ -176,46 +176,46 @@ export class EditorPage {
       // Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid:
       // 'de', value: 'Wort'}]
       const lexeme = this.edit.fields.get(0);
-      return editorUtil.dcMultitextToArray(lexeme);
+      return this.editorUtil.dcMultitextToArray(lexeme);
     },
 
     getLexemesAsObject: () => {
 
       // Returns lexemes in the format [{en: 'word', de: 'Wort'}]
       const lexeme = this.edit.fields.get(0);
-      return editorUtil.dcMultitextToObject(lexeme);
+      return this.editorUtil.dcMultitextToObject(lexeme);
     },
 
     getFirstLexeme: () => {
-      browser.wait(ExpectedConditions.visibilityOf(this.edit.fields.get(0)), utils.conditionTimeout);
+      browser.wait(ExpectedConditions.visibilityOf(this.edit.fields.get(0)), this.utils.conditionTimeout);
 
       // Returns the first (topmost) lexeme regardless of its wsid
       const lexeme = this.edit.fields.get(0);
-      return editorUtil.dcMultitextToFirstValue(lexeme);
+      return this.editorUtil.dcMultitextToFirstValue(lexeme);
     },
 
     getLexemeByWsid: (searchWsid: string) => {
       const lexeme = this.edit.fields.get(0);
-      return editorUtil.dcMultitextToObject(lexeme).then((lexemes: string) =>
+      return this.editorUtil.dcMultitextToObject(lexeme).then((lexemes: string) =>
         lexemes[searchWsid]
       );
     },
 
     audio: {
       players: (searchLabel: string) => {
-        return editorUtil.getOneField(searchLabel).all(by.css('.player a'));
+        return this.editorUtil.getOneField(searchLabel).all(by.css('.player a'));
       },
 
       playerIcons: (searchLabel: string) => {
-        return editorUtil.getOneField(searchLabel).all(by.css('.player a > i'));
+        return this.editorUtil.getOneField(searchLabel).all(by.css('.player a > i'));
       },
 
       moreControls: (searchLabel: string) => {
-        return editorUtil.getOneField(searchLabel).all(by.css('.dc-audio a.dropdown-toggle'));
+        return this.editorUtil.getOneField(searchLabel).all(by.css('.dc-audio a.dropdown-toggle'));
       },
 
       moreGroups: (searchLabel: string, index: number) => {
-        const allMoreGroups = editorUtil.getOneField(searchLabel).all(by.css('.dc-audio .dropdown'));
+        const allMoreGroups = this.editorUtil.getOneField(searchLabel).all(by.css('.dc-audio .dropdown'));
         if (index !== undefined) {
           if (index < 0) index = 0;
           return allMoreGroups.get(index);
@@ -237,25 +237,24 @@ export class EditorPage {
       },
 
       uploadButtons: (searchLabel: string) => {
-        return editorUtil.getOneField(searchLabel).all(by.css('.dc-audio button.buttonAppend'));
+        return this.editorUtil.getOneField(searchLabel).all(by.css('.dc-audio button.buttonAppend'));
       },
 
       uploadDropBoxes: (searchLabel: string) => {
-        return editorUtil.getOneField(searchLabel).all(by.css('.drop-box'));
+        return this.editorUtil.getOneField(searchLabel).all(by.css('.drop-box'));
       },
 
       uploadCancelButtons: (searchLabel: string) => {
-        return editorUtil.getOneField(searchLabel).all(by.css('.dc-audio i.fa-times'));
+        return this.editorUtil.getOneField(searchLabel).all(by.css('.dc-audio i.fa-times'));
       },
 
       downloadButtons: (searchLabel: string) => {
-        return editorUtil.getOneField(searchLabel).all(by.css('.dc-audio a.buttonAppend'));
+        return this.editorUtil.getOneField(searchLabel).all(by.css('.dc-audio a.buttonAppend'));
       },
 
       control: (searchLabel: string, index: number) => {
-        const mockUploadElement = editorUtil.getOneField(searchLabel).all(by.css('.dc-audio'))
-          .get(index);
-        mockUploadElement.mockUpload = mockUpload;
+        const mockUploadElement = this.editorUtil.getOneField(searchLabel).all(by.css('.dc-audio')).get(index);
+        mockUploadElement.mockUpload = this.mockUpload;
         return mockUploadElement;
       }
     },
@@ -263,42 +262,42 @@ export class EditorPage {
     senses: element.all(by.css('dc-sense')),
 
     pictures: {
-      list: editorUtil.getOneField('Pictures'),
-      images: editorUtil.getOneField('Pictures').all(by.css('img')),
-      captions: editorUtil.getOneField('Pictures')
-        .all(by.css('.input-group > .dc-formattedtext .ta-bind')),
-      removeImages: editorUtil.getOneField('Pictures').all(by.className('fa-trash')),
+      list: this.editorUtil.getOneField('Pictures'),
+      images: this.editorUtil.getOneField('Pictures').all(by.css('img')),
+      captions: this.editorUtil.getOneField('Pictures')
+        .all(by.css('.input-group > .dc-text input')),
+      removeImages: this.editorUtil.getOneField('Pictures').all(by.className('fa-trash')),
       getFileName: (index: number) => {
-        return editorUtil.getOneFieldValue('Pictures').then((pictures: any) =>
+        return this.editorUtil.getOneFieldValue('Pictures').then((pictures: any) =>
           pictures[index].fileName
         );
       },
 
       getCaption: (index: number) => {
-        return editorUtil.getOneFieldValue('Pictures').then((pictures: any) =>
+        return this.editorUtil.getOneFieldValue('Pictures').then((pictures: any) =>
           pictures[index].caption
         );
       },
 
       addPictureLink: element(by.id('dc-picture-add-btn')),
-      addDropBox: editorUtil.getOneField('Pictures').element(by.css('.drop-box')),
+      addDropBox: this.editorUtil.getOneField('Pictures').element(by.css('.drop-box')),
       addCancelButton: element(by.id('addCancel'))
     },
 
     getMultiTextInputs: (searchLabel: string) => {
-      return editorUtil.getOneField(searchLabel)
-        .all(by.css('.input-group > .dc-formattedtext .ta-bind'));
+      return this.editorUtil.getOneField(searchLabel)
+        .all(by.css('.input-group > .dc-text input'));
     },
 
     getMultiTextInputSystems: (searchLabel: string) => {
-      return editorUtil.getOneField(searchLabel).all(by.css('.input-group > span.wsid'));
+      return this.editorUtil.getOneField(searchLabel).all(by.css('.input-group > span.wsid'));
     },
 
-    selectElement: editorUtil.selectElement,
-    getFields: editorUtil.getFields,
-    getOneField: editorUtil.getOneField,
-    getFieldValues: editorUtil.getFieldValues,
-    getOneFieldValue: editorUtil.getOneFieldValue
+    selectElement: this.editorUtil.selectElement,
+    getFields: this.editorUtil.getFields,
+    getOneField: this.editorUtil.getOneField,
+    getFieldValues: this.editorUtil.getFieldValues,
+    getOneFieldValue: this.editorUtil.getOneFieldValue
   };
 
   // --- Comment view ---
@@ -321,7 +320,7 @@ export class EditorPage {
       },
 
       byStatus: (statusToFilterBy: string) => {
-        utils.clickDropdownByValue(this.comment.filter.byStatusElem, statusToFilterBy);
+        this.utils.clickDropdownByValue(this.comment.filter.byStatusElem, statusToFilterBy);
       },
 
       clearByText: () => {
@@ -343,13 +342,13 @@ export class EditorPage {
     entry: {
       // We can just reuse the functions from dbeUtil, since they default to
       // using element(by.css('dc-entry')) as their root element.
-      getFields: editorUtil.getFields,
-      getOneField: editorUtil.getOneField,
-      getFieldValues: editorUtil.getFieldValues,
-      getOneFieldValue: editorUtil.getOneFieldValue,
+      getFields: this.editorUtil.getFields,
+      getOneField: this.editorUtil.getOneField,
+      getFieldValues: this.editorUtil.getFieldValues,
+      getOneFieldValue: this.editorUtil.getOneFieldValue,
       getOneFieldAllInputSystems: (searchLabel: string, idx: number = 0,
                                    rootElem: ElementFinder = element(by.className('dc-entry'))) => {
-        return editorUtil.getOneField(searchLabel, idx, rootElem).all(by.css('span.wsid'));
+        return this.editorUtil.getOneField(searchLabel, idx, rootElem).all(by.css('span.wsid'));
       }
     },
 

@@ -1,9 +1,11 @@
-import {$, $$, browser, by, By, element, ExpectedConditions} from 'protractor';
-import { LexModals } from './lexModals';
-import { Utils } from '../../../bellows/pages/utils';
-const utils = new Utils();
+import {browser, by, element} from 'protractor';
+
+import {Utils} from '../../../bellows/pages/utils';
+import {LexModals} from './lexModals';
 
 export class ConfigurationPage {
+  private readonly utils = new Utils();
+
   modal = new LexModals();
 
   noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
@@ -13,7 +15,7 @@ export class ConfigurationPage {
   configurationLink = element(by.id('dropdown-configuration'));
 
   get() {
-    utils.scrollTop();
+    this.utils.scrollTop();
     this.settingsMenuLink.click();
     this.configurationLink.click();
   }

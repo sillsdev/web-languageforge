@@ -1,4 +1,4 @@
-import {browser, element, by, By, $, $$, ExpectedConditions, protractor} from 'protractor';
+import {by, element} from 'protractor';
 
 export class MockUploadElement {
   enableButton = element(by.id('showMockUploadButton'));

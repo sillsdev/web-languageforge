@@ -1,21 +1,20 @@
 import {browser, by, ExpectedConditions} from 'protractor';
-import { BellowsLoginPage } from '../../../bellows/pages/loginPage';
-import { ProjectsPage } from '../../../bellows/pages/projectsPage';
-import { Utils} from '../../../bellows/pages/utils';
-import { SfProjectPage } from '../pages/projectPage';
-import { SfTextPage} from '../pages/textPage';
-import { SfTextSettingsPage } from '../pages/textSettingsPage';
+
+import {BellowsLoginPage} from '../../../bellows/pages/loginPage';
+import {ProjectsPage} from '../../../bellows/pages/projectsPage';
+import {Utils} from '../../../bellows/pages/utils';
+import {SfProjectPage} from '../pages/projectPage';
+import {SfTextPage} from '../pages/textPage';
+import {SfTextSettingsPage} from '../pages/textSettingsPage';
 
 describe('the questions list page (AKA the text page)', () => {
+  const constants = require('../../../testConstants');
   const loginPage = new BellowsLoginPage();
   const util = new Utils();
   const projectListPage = new ProjectsPage();
   const projectPage = new SfProjectPage();
   const textPage = new SfTextPage();
   const textSettingsPage = new SfTextSettingsPage();
-
-  // tslint:disable-next-line:no-var-requires
-  const constants = require('../../../testConstants');
 
   describe('a normal user', () => {
     it('setup: login as normal user', () => {
@@ -29,7 +28,7 @@ describe('the questions list page (AKA the text page)', () => {
       // Setup script creates two questions. Since we can't count on them being in specific
       // positions as that might be modified by other tests that add questions, we'll search for
       // them.
-      util.findRowByText(textPage.questionRows, constants.testText1Question1Title).then((row) => {
+      util.findRowByText(textPage.questionRows, constants.testText1Question1Title).then(row => {
         expect<any>(typeof row === 'undefined').toBeFalsy();
         const answerCount = row.element(by.binding('question.answerCount'));
         const responseCount = row.element(by.binding('question.responseCount'));
@@ -37,7 +36,7 @@ describe('the questions list page (AKA the text page)', () => {
         expect<any>(responseCount.getText()).toBe('2');
       });
 
-      util.findRowByText(textPage.questionRows, constants.testText1Question2Title).then((row) => {
+      util.findRowByText(textPage.questionRows, constants.testText1Question2Title).then(row => {
         expect<any>(typeof row === 'undefined').toBeFalsy();
         const answerCount = row.element(by.binding('question.answerCount'));
         const responseCount = row.element(by.binding('question.responseCount'));
@@ -97,7 +96,7 @@ describe('the questions list page (AKA the text page)', () => {
 
       // Wait for archive button to become disabled again
       browser.wait(() => {
-        return archiveButton.isEnabled().then((isEnabled) => {
+        return archiveButton.isEnabled().then(isEnabled => {
           return !isEnabled;
         });
       }, 1000);
@@ -110,18 +109,16 @@ describe('the questions list page (AKA the text page)', () => {
       browser.wait(ExpectedConditions.visibilityOf(textSettingsPage.tabs.archiveQuestions),
         constants.conditionTimeout);
       textSettingsPage.tabs.archiveQuestions.click();
-      browser.wait(ExpectedConditions.visibilityOf(textSettingsPage.archivedQuestionsTab
-          .questionLink(questionTitle)), constants.conditionTimeout);
-      expect<any>(textSettingsPage.archivedQuestionsTab.questionLink(questionTitle).isDisplayed())
-        .toBe(true);
+      browser.wait(ExpectedConditions.visibilityOf(textSettingsPage.archivedQuestionsTab.questionLink(questionTitle)),
+        constants.conditionTimeout);
+      expect<any>(textSettingsPage.archivedQuestionsTab.questionLink(questionTitle).isDisplayed()).toBe(true);
       const publishButton = textSettingsPage.archivedQuestionsTab.publishButton.getWebElement();
       expect<any>(publishButton.isDisplayed()).toBe(true);
       expect<any>(publishButton.isEnabled()).toBe(false);
       util.setCheckbox(textSettingsPage.archivedQuestionsTabGetFirstCheckbox(), true);
       expect<any>(publishButton.isEnabled()).toBe(true);
       publishButton.click();
-      expect<any>(textSettingsPage.archivedQuestionsTab.questionLink(questionTitle).isPresent())
-        .toBe(false);
+      expect<any>(textSettingsPage.archivedQuestionsTab.questionLink(questionTitle).isPresent()).toBe(false);
       expect<any>(publishButton.isEnabled()).toBe(false);
       browser.navigate().back();
       expect<any>(textPage.questionLink(questionTitle).isDisplayed()).toBe(true);

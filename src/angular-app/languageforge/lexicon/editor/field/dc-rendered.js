@@ -12,7 +12,8 @@ angular.module('palaso.ui.dc.rendered', [])
       model: '=',
       hideIfEmpty: '=?'
     },
-    controller: ['$scope', 'sessionService', 'lexUtils', function ($scope, ss, utils) {
+    controller: ['$scope', 'sessionService', 'lexUtils',
+      function ($scope, ss, utils) {
       $scope.render = function () {
         var sense;
         var lastPos;
