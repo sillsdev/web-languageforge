@@ -202,7 +202,7 @@ export class InputSystemsConfigurationController implements angular.IController 
     modalInstance.result.then((selected: any) => {
       this.addInputSystem(selected.code, selected.language.name,
         this.selects.special.optionsOrder[0]);
-    });
+    }, () => { });
 
   }
 

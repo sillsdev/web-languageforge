@@ -60,7 +60,7 @@ angular.module('semdomtrans-new-project',
         $scope.languageCode = selected.code;
         $scope.languageName = selected.language.name;
         $scope.checkLanguageAvailability();
-      });
+      }, angular.noop);
     };
 
     $scope.checkLanguageAvailability = function checkLanguageAvailability() {
