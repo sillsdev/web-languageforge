@@ -199,7 +199,7 @@ export class UnifiedConfigurationController implements angular.IController {
       });
 
       this.uccOnUpdate({ $event: { configDirty: this.uccConfigDirty } });
-    }, angular.noop);
+    }, () => { });
   }
 
   openAddUserGroupModal(): void {
@@ -251,7 +251,7 @@ export class UnifiedConfigurationController implements angular.IController {
 
       this.uccConfigDirty.userViews[user.id] =
         angular.copy(this.uccConfigDirty.roleViews[user.role]) as LexUserViewConfig;
-    }, angular.noop);
+    }, () => { });
   }
 
   removeGroup(index: number): void {
