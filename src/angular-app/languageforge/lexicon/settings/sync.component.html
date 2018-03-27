@@ -1,0 +1,15 @@
+<div class="container">
+    <h2 style="font-weight:normal">Synchronize Project with LanguageDepot.org</h2>
+    <div class="card card-body bg-light">
+        <div align="center">
+            <button class="btn btn-std mb-2" title="Send and Receive with LanguageDepot.org"
+                    data-placement="bottom"
+                    data-ng-if="$ctrl.showSyncButton()"
+                    data-ng-disabled="$ctrl.disableSyncButton()"
+                    data-ng-click="$ctrl.syncProject()">
+                <i class="fa fa-cloud-upload fa-lg text-info mr-2"></i>Send/Receive</button>
+            <div class="text-muted">{{$ctrl.syncStateNotice()}}</div>
+            <div class="text-muted">{{$ctrl.lastSyncNotice()}}</div>
+        </div>
+    </div>
+</div>
