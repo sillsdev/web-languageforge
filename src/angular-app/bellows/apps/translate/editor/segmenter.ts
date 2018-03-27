@@ -107,21 +107,23 @@ export class UsxSegmenter extends Segmenter {
         if (op.attributes.para != null) {
           const style = op.attributes.para.style as string;
           if (UsxSegmenter.isParagraphStyle(style)) {
-            if (curVerseRef !== '') {
-              paraVerses.set(curVerseRef, { index: curIndex, length: curRangeLen });
-              curIndex += curRangeLen;
-              curRangeLen = 0;
-            }
-
-            for (let [verseRef, verseRange] of paraVerses) {
-              if (this._segments.has(verseRef)) {
-                verseRef = UsxSegmenter.getParagraphRef(nextIds, verseRef + '/' + style);
+            for (const ch of op.insert) {
+              if (curVerseRef !== '') {
+                paraVerses.set(curVerseRef, { index: curIndex, length: curRangeLen });
+                curIndex += curRangeLen;
+                curRangeLen = 0;
               }
-              this._segments.set(verseRef, verseRange);
-              this._lastSegmentRef = verseRef;
+
+              for (let [verseRef, verseRange] of paraVerses) {
+                if (this._segments.has(verseRef)) {
+                  verseRef = UsxSegmenter.getParagraphRef(nextIds, verseRef + '/' + style);
+                }
+                this._segments.set(verseRef, verseRange);
+                this._lastSegmentRef = verseRef;
+              }
+              paraVerses.clear();
+              curIndex++;
             }
-            paraVerses.clear();
-            curIndex += len;
             continue;
           }
 
