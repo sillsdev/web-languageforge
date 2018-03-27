@@ -259,7 +259,7 @@ export class FieldConfigurationController implements angular.IController {
 
       this.fccOnUpdate({ $event: { configDirty: this.fccConfigDirty } });
       this.selectField(customFieldName);
-    }, angular.noop);
+    }, () => { });
   }
 
   showRemoveCustomField(fieldName: string): boolean {
