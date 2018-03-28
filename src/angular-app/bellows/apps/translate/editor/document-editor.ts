@@ -188,7 +188,7 @@ export abstract class DocumentEditor {
       return;
     }
     let newSel: RangeStatic;
-    if (this.currentSegment.text === '') {
+    if (this.isBlank(this.currentSegment.text)) {
       // always select whole segment if blank
       newSel = this.currentSegment.range;
     } else {
@@ -216,6 +216,10 @@ export abstract class DocumentEditor {
           Quill.sources.SILENT);
       });
     }
+  }
+
+  protected isBlank(text: string): boolean {
+    return text === '\u2002' || text === '\u2003\u2003';
   }
 
   private get docId(): string {
@@ -295,11 +299,11 @@ export class TargetDocumentEditor extends DocumentEditor {
     if (this.isScripture && textChange) {
       if (!this.isTextEmpty && !this.initialSegmentUpdate) {
         for (const [ref, range] of this.segmenter.segments) {
-          this.updateSegment(ref, range);
+          this.updateSegmentFormat(ref, range);
         }
         this.initialSegmentUpdate = true;
       } else if (this.currentSegment != null) {
-        this.updateSegment(this.currentSegment.ref, this.currentSegment.range);
+        this.updateSegmentFormat(this.currentSegment.ref, this.currentSegment.range);
       }
     }
 
@@ -392,25 +396,32 @@ export class TargetDocumentEditor extends DocumentEditor {
     let i: number;
     for (i = range.index; i < range.index + range.length; i++) {
       const ch = this.quill.getText(i, 1);
-      if (!/\s/.test(ch)) {
+      if (ch === '\u2002' || ch === '\u2003' || !/\s/.test(ch)) {
         return { index: i, length: range.length - (i - range.index) };
       }
     }
     return { index: i, length: 0 };
   }
 
-  private updateSegment(ref: string, range: RangeStatic): void {
+  private updateSegmentFormat(ref: string, range: RangeStatic): void {
     const text = this.quill.getText(range.index, range.length);
+
     if (text === '' && range.length === 0) {
-      const value = ref.indexOf('/p') === -1 ? 'normal' : 'initial';
-      this.quill.insertEmbed(range.index, 'blank', value, Quill.sources.USER);
-      range = { index: range.index, length: 1 };
+      // insert blank
+      let blankText: string;
+      if (ref.indexOf('/p') !== -1) {
+        blankText = '\u2002';
+      } else {
+        blankText = '\u2003\u2003';
+      }
+      this.quill.insertText(range.index, blankText, Quill.sources.USER);
+      range = { index: range.index, length: blankText.length };
     }
 
     const formats = this.quill.getFormat(range.index, range.length);
     if (formats.segment == null) {
       // add segment format if missing
-      this.quill.formatText(range.index, range.length, { segment: ref, background: false }, Quill.sources.USER);
+      this.quill.formatText(range.index, range.length, 'segment', ref, Quill.sources.USER);
     }
   }
 
