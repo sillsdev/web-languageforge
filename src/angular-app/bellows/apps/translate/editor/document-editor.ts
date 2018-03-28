@@ -438,7 +438,8 @@ export class TargetDocumentEditor extends DocumentEditor {
   }
 
   private isSegmentUntrained(segment: Segment = this.currentSegment): boolean {
-    return segment != null && segment.range.length > 0 && this.isSegmentComplete(segment.range) && segment.isChanged;
+    return segment != null && segment.range.length > 0 && !this.isBlank(segment.text) &&
+      this.isSegmentComplete(segment.range) && segment.isChanged;
   }
 
   private trainSegment(segment: Segment = this.currentSegment): angular.IPromise<void> {
