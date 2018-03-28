@@ -1,5 +1,5 @@
 import 'jasmine';
-import {browser, protractor} from 'protractor';
+import {browser, ExpectedConditions, protractor} from 'protractor';
 
 import {BellowsLoginPage} from '../../bellows/pages/loginPage';
 import {ProjectsPage} from '../../bellows/pages/projectsPage';
@@ -26,21 +26,36 @@ describe('Lexicon E2E Page Traversal', () => {
       configurationPage.tabs.unified.click();
       configurationPage.unifiedTab.inputSystem.addGroupButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.wait(
+        ExpectedConditions.elementToBeClickable(configurationPage.unifiedTab.inputSystem.addInputSystemButton),
+        constants.conditionTimeout);
       configurationPage.unifiedTab.inputSystem.addInputSystemButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.tabs.unified), constants.conditionTimeout);
       configurationPage.tabs.unified.click();
       configurationPage.unifiedTab.entry.addGroupButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedTab.entry.addCustomEntryButton),
+        constants.conditionTimeout);
       configurationPage.unifiedTab.entry.addCustomEntryButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedTab.sense.addGroupButton),
+        constants.conditionTimeout);
       configurationPage.unifiedTab.sense.addGroupButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedTab.sense.addCustomSenseButton),
+        constants.conditionTimeout);
       configurationPage.unifiedTab.sense.addCustomSenseButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedTab.example.addGroupButton),
+        constants.conditionTimeout);
       configurationPage.unifiedTab.example.addGroupButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedTab.example.addCustomExampleButton),
+        constants.conditionTimeout);
       configurationPage.unifiedTab.example.addCustomExampleButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.tabs.unified), constants.conditionTimeout);
     });
 
     it('Fields tab', () => {
