@@ -79,7 +79,7 @@ export class UnifiedConfigurationController implements angular.IController {
 
     const modalInstance = this.$modal.open({
       scope: this.$scope,
-      templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/new-custom-field.html',
+      templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/new-custom-field.modal.html',
       controller: ['$scope', '$uibModalInstance',
         (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
           scope.fieldConfig = this.uccFieldConfig;
@@ -205,7 +205,7 @@ export class UnifiedConfigurationController implements angular.IController {
   openAddUserGroupModal(): void {
     const modalInstance = this.$modal.open({
       scope: this.$scope,
-      templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/new-user-group.html',
+      templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/new-user-group.modal.html',
       controller: ['$scope', '$uibModalInstance',
         (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
           scope.addGroup = function addGroup(typeahead: Typeahead): void {
@@ -333,10 +333,18 @@ class Typeahead {
 
   // noinspection JSUnusedGlobalSymbols
   searchUsers = (user: User): void => {
+    if (user == null) {
+      return;
+    }
+
     this.users = this.filter('filter')(this.usersWithoutSettings, user);
   }
 
   selectUser = (user: User): void => {
+    if (user == null) {
+      return;
+    }
+
     this.user = user;
     this.userName = user.name;
   }
