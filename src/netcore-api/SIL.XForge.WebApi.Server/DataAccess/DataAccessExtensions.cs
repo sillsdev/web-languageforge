@@ -41,8 +41,10 @@ namespace SIL.XForge.WebApi.Server.DataAccess
             IConfiguration configuration)
         {
             IConfigurationSection dataAccessConfig = configuration.GetSection("DataAccess");
-            string connectionString = dataAccessConfig.GetValue<string>("ConnectionString");
-            services.AddHangfire(x => x.UseMongoStorage(connectionString, "jobs",
+            string connectionString = dataAccessConfig.GetValue<string>("ConnectionString",
+                "mongodb://localhost:27017");
+            string jobDatabase = dataAccessConfig.GetValue<string>("JobDatabase", "jobs");
+            services.AddHangfire(x => x.UseMongoStorage(connectionString, jobDatabase,
                 new MongoStorageOptions
                 {
                     MigrationOptions = new MongoMigrationOptions

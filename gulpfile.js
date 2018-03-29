@@ -54,7 +54,7 @@
 //   'build-productionConfig'
 //   'build-clearLocalCache'
 //   'build-dotnet-publish'
-//   'build-dotnet-secrets'
+//   'build-dotnet-host-config'
 //   'build-dotnet'
 //   'build-upload'
 //   'build'
@@ -1209,9 +1209,9 @@ gulp.task('build-dotnet-publish', function () {
 });
 
 // -------------------------------------
-//   Task: Build .NET Core secrets config
+//   Task: Build .NET Core host config
 // -------------------------------------
-gulp.task('build-dotnet-secrets', function (cb) {
+gulp.task('build-dotnet-host-config', function (cb) {
   var paratextClientId = process.env.PARATEXT_CLIENT_ID;
   if (paratextClientId === undefined) {
     paratextClientId = 'paratextClientId';
@@ -1227,13 +1227,29 @@ gulp.task('build-dotnet-secrets', function (cb) {
     jwtKey = 'jwtKey';
   }
 
-  fs.writeFile('artifacts/netcore-api/secrets.json', JSON.stringify({
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .argv;
+
+  var jobDatabase;
+  if (params.applicationName === 'languageforge') {
+    jobDatabase = 'lf_jobs';
+  } else if (params.applicationName === 'scriptureforge') {
+    jobDatabase = 'sf_jobs';
+  }
+
+  fs.writeFile('artifacts/netcore-api/appsettings.host.json', JSON.stringify({
     Security: {
       JwtKey: jwtKey
     },
     Paratext: {
       ClientId: paratextClientId,
       ClientSecret: paratextApiToken
+    },
+    DataAccess: {
+      JobDatabase: jobDatabase
     }
   }), cb);
 });
@@ -1244,7 +1260,7 @@ gulp.task('build-dotnet-secrets', function (cb) {
 gulp.task('build-dotnet',
   gulp.series(
     'build-dotnet-publish',
-    'build-dotnet-secrets')
+    'build-dotnet-host-config')
 );
 
 // -------------------------------------
