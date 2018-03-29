@@ -154,9 +154,22 @@ function getServiceSuffix(dest) {
     if (suffix.endsWith('/')) {
       suffix = suffix.substr(0, suffix.length - 1);
     }
+
     suffix = '@' + suffix;
   }
+
   return suffix;
+}
+
+function yargFailure(msg, err, yargs) {
+  if (err) {
+    // preserve stack
+    throw err;
+  }
+
+  console.error(msg);
+  console.error('You should be doing', yargs.help());
+  process.exit(1);
 }
 
 // Globals
@@ -441,6 +454,7 @@ gulp.task('test-e2e-setupTestEnvironment', function (cb) {
       demand: false,
       describe: 'destination of test environment',
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var options = {
     dryRun: false,
@@ -463,6 +477,7 @@ gulp.task('test-e2e-teardownTestEnvironment', function (cb) {
       demand: false,
       describe: 'destination of test environment',
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var options = {
     dryRun: false,
@@ -498,6 +513,7 @@ gulp.task('remote-restart-php-fpm', function (cb) {
     .option('uploadCredentials', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var options = {
     credentials: params.uploadCredentials,
@@ -522,6 +538,7 @@ gulp.task('local-restart-xforge-web-api', function (cb) {
     .option('dest', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
 
   var options = {
@@ -549,6 +566,7 @@ gulp.task('remote-restart-xforge-web-api', function (cb) {
     .option('uploadCredentials', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
 
   var options = {
@@ -559,7 +577,8 @@ gulp.task('remote-restart-xforge-web-api', function (cb) {
   };
 
   execute(
-    "ssh -i <%= credentials %> <%= destination %> 'systemctl restart <%= applicationName %>-web-api<%= suffix %>'",
+    'ssh -i <%= credentials %> <%= destination %>' +
+      " 'systemctl restart <%= applicationName %>-web-api<%= suffix %>'",
     options,
     cb
   );
@@ -576,6 +595,7 @@ gulp.task('local-restart-node-server', function (cb) {
     .option('dest', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
 
   if (params.applicationName === 'languageforge') {
@@ -608,6 +628,7 @@ gulp.task('remote-restart-node-server', function (cb) {
     .option('uploadCredentials', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
 
   if (params.applicationName === 'languageforge') {
@@ -623,7 +644,8 @@ gulp.task('remote-restart-node-server', function (cb) {
   };
 
   execute(
-    "ssh -i <%= credentials %> <%= destination %> 'systemctl restart <%= applicationName %>-sharedb<%= suffix %>'",
+    'ssh -i <%= credentials %> <%= destination %>' +
+      " 'systemctl restart <%= applicationName %>-sharedb<%= suffix %>'",
     options,
     cb
   );
@@ -644,6 +666,7 @@ gulp.task('test-e2e-env', function () {
       demand: false,
       default: 'languageforge.local',
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var cwd = getTestCwd(params.dest);
   var src = [
@@ -652,6 +675,7 @@ gulp.task('test-e2e-env', function () {
     'e2eTestConfig.php',
     'testConstants.json'];
 
+  // noinspection RegExpRedundantEscape
   return gulp.src(src, { cwd: cwd })
 
     // e2eTestConfig.php
@@ -712,6 +736,7 @@ gulp.task('test-e2e-doTest', function (cb) {
       'Runs all the E2E tests for languageforge')
     .example('$0 test-e2e-run --webserverHost scriptureforge.local --specs projectSettingsPage',
       'Runs the scriptureforge E2E test for projectSettingsPage')
+    .fail(yargFailure)
     .argv;
 
   var protocol =
@@ -788,11 +813,11 @@ gulp.task('test-e2e-doTest', function (cb) {
     .on('end', cb);
 });
 
-gulp.task('test-e2e-compile', function(cb) {
+gulp.task('test-e2e-compile', function (cb) {
   return execute('node_modules/typescript/bin/tsc -p test/app', null, cb);
 });
 
-gulp.task('test-e2e-compile:watch', function(cb) {
+gulp.task('test-e2e-compile:watch', function (cb) {
   return execute('node_modules/typescript/bin/tsc -p test/app --watch', null, cb);
 });
 
@@ -977,6 +1002,7 @@ gulp.task('build-remove-test-fixtures', function (done) {
       demand: false,
       default: 'root@localhost:/var/www/virtual/languageforge.org',
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var base = './src/angular-app';
   var glob = path.join(base, '**/*.html');
@@ -1003,6 +1029,7 @@ gulp.task('build-webpack', function (cb) {
     .option('doNoCompression', {
       demand: false,
       type: 'boolean' })
+    .fail(yargFailure)
     .argv;
   webpack(params.applicationName, cb, !params.doNoCompression);
 });
@@ -1018,6 +1045,7 @@ gulp.task('build-minify', function () {
     .option('doNoCompression', {
       demand: false,
       type: 'boolean' })
+    .fail(yargFailure)
     .argv;
   var minifySrc = [
     'src/angular-app/bellows/**/*.js',
@@ -1049,6 +1077,7 @@ gulp.task('build-version', function () {
     .option('buildNumber', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   console.log('version =', params.buildNumber);
   return gulp.src('src/version.php')
@@ -1141,6 +1170,7 @@ gulp.task('build-productionConfig', function () {
       demand: false,
       default: jwtKey,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var configSrc = [
     './src/config.php',
@@ -1231,9 +1261,10 @@ gulp.task('build-dotnet-host-config', function (cb) {
     .option('applicationName', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
 
-  var jobDatabase = params.applicationName + "_jobs";
+  var jobDatabase = params.applicationName + '_jobs';
 
   fs.writeFile('artifacts/netcore-api/appsettings.host.json', JSON.stringify({
     Security: {
@@ -1269,6 +1300,7 @@ gulp.task('build-upload', function (cb) {
     .option('uploadCredentials', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var options = {
     dryRun: false,
