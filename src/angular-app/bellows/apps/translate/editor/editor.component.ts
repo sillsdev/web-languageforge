@@ -112,10 +112,12 @@ export class TranslateEditorController implements angular.IController {
     this.right = this.target;
     this.left = this.source;
 
-    this.$window.addEventListener('resize', this.onWindowResize);
+    this.$window.addEventListener('resize', () => this.onWindowResize());
     this.updateDropdownMenuClass();
 
-    this.$window.addEventListener('beforeunload', this.onBeforeUnload);
+    this.$window.addEventListener('beforeunload', ev => this.onBeforeUnload(ev));
+
+    this.$window.document.addEventListener('selectionchange', () => this.onNativeSelectionChanged());
   }
 
   $onChanges(changes: any): void {
@@ -528,16 +530,22 @@ export class TranslateEditorController implements angular.IController {
   }
 
   private get focusedEditor(): DocumentEditor {
-    let focusedEditor: DocumentEditor;
-    switch (this.currentDocType) {
-      case DocType.SOURCE:
-        focusedEditor = this.source;
-        break;
-      case DocType.TARGET:
-        focusedEditor = this.target;
-        break;
+    if (this.source.hasFocus) {
+      return this.source;
     }
-    return focusedEditor;
+    if (this.target.hasFocus) {
+      return this.target;
+    }
+    return null;
+  }
+
+  private onNativeSelectionChanged(): void {
+    // workaround for bug where Quill allows a selection inside of an embed
+    const sel = this.$window.document.getSelection();
+    const text = sel.getRangeAt(0).commonAncestorContainer.textContent;
+    if (sel.isCollapsed && text === '\ufeff') {
+      this.focusedEditor.quill.setSelection(this.focusedEditor.quill.getSelection(), Quill.sources.SILENT);
+    }
   }
 
   private listenForTrainingStatus(): void {
@@ -578,7 +586,7 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  private onBeforeUnload = (event: BeforeUnloadEvent) => {
+  private onBeforeUnload(event: BeforeUnloadEvent) {
     if (this.saveState < SaveState.Saved) {
       setTimeout(() => this.save(), 100);
       const message = 'There are unsaved changes.';
@@ -614,7 +622,7 @@ export class TranslateEditorController implements angular.IController {
     this.dropdownMenuClass = width < 576 ? 'dropdown-menu-right' : 'dropdown-menu-left';
   }
 
-  private onWindowResize = () => {
+  private onWindowResize() {
     this.$scope.$apply(() => {
       this.updateDropdownMenuClass();
     });
