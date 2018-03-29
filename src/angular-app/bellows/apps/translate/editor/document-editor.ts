@@ -46,7 +46,7 @@ export abstract class DocumentEditor {
   }
 
   get hasFocus(): boolean {
-    return this.quill.hasFocus();
+    return this.quill != null && this.quill.hasFocus();
   }
 
   get created(): angular.IPromise<boolean> {
