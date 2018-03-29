@@ -49,7 +49,7 @@ angular.module('palaso.ui.comments')
             }
 
             if ($scope.control.commentContext.contextGuid === $scope.contextGuid) {
-              $scope.control.hideCommentsPanel();
+              $scope.control.hideRightPanel();
             } else {
               $scope.control.setCommentContext($scope.contextGuid);
               $scope.selectFieldForComment();
@@ -59,7 +59,7 @@ angular.module('palaso.ui.comments')
                 var bubbleOffset = $scope.element.offset().top;
               }
 
-              var rightPanel = angular.element('.comments-right-panel');
+              var rightPanel = angular.element('.comments-right-panel-container');
               var rightPanelOffset = rightPanel.offset().top;
               var offsetAuthor = 40;
               rightPanel.css({ paddingTop: (bubbleOffset - rightPanelOffset - offsetAuthor) });

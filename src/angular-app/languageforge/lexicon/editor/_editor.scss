@@ -267,9 +267,6 @@ dc-entry .card {
     align-items: stretch;
 }
 
-#lexAppContainer {
-}
-
 .lexiconHeaderContainer {
     width: 100%;
     display: flex;
@@ -371,11 +368,8 @@ dc-entry .card {
   .entry-primary-container {
     transition: all 0.5s;
   }
-  .comments-right-panel-backdrop {
-    display: none;
-  }
   @include media-breakpoint-between(md, lg) {
-    &.comments-panel-visible {
+    &.right-panel-visible {
       > .container {
         max-width: 634px;
       }
@@ -402,6 +396,7 @@ dc-entry .card {
       .entries-list-container,
       .entry-primary-container {
         transition-delay: 0.5s;
+        overflow: hidden;
       }
       .entry-words-minimized {
         margin-left: -50px;
@@ -414,16 +409,53 @@ dc-entry .card {
       }
     }
   }
+  .right-panel {
+    position: relative;
+    width: 280px;
+    transition: width 0.5s ease-in-out, margin-left 0.5s ease-in-out, opacity 0.5s linear 0.5s;
+    margin-left: 15px;
+    opacity: 1;
+    overflow: hidden;
+    height: 100%;
+    & > * {
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+    &.panel-closing {
+      transition: width 0.5s ease-in-out 0.5s, margin-left 0.5s ease-in-out 0.5s, opacity 0.5s;
+      overflow: visible;
+      height: auto !important;
+    }
+    &.panel-opening {
+      overflow: hidden;
+    }
+    &.panel-switch {
+      transition: opacity 0.5s !important;
+      width: 280px !important;
+      margin-left: 15px !important;
+    }
+    &:not(.panel-visible) {
+      width: 0;
+      margin-left: 0;
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+    }
+  }
+  .right-panel-backdrop {
+    display: none;
+  }
+
   @include media-breakpoint-down(sm) {
-    .comments-right-panel {
+    .right-panel {
       position: absolute;
       top: 0;
       right: 0;
       z-index: 1001;
-      padding-top: 0 !important;
-      .comments-right-panel-container {
-        width: 280px !important;
-        transition: opacity 0.5s;
+      transition: opacity 0.5s;
+      width: 280px !important;
+      .right-panel-container {
         background: #e6eff5;
         &:before {
           display: none;
@@ -434,12 +466,13 @@ dc-entry .card {
         }
       }
       .context-mode {
+        padding-top: 0 !important;
         .commentsListMainContainer {
           height: 100%;
         }
       }
     }
-    .comments-right-panel-backdrop {
+    .right-panel-backdrop {
       display: block;
       opacity: 0;
       transition: opacity 0.5s;
@@ -457,22 +490,24 @@ dc-entry .card {
         font-size: 24px;
       }
     }
-    &.comments-panel-visible {
-      .comments-right-panel {
-        height: 100%;
-        .comments-right-panel-container {
-          height: 100%;
-        }
-      }
-      .comments-right-panel-backdrop {
+    &.right-panel-visible {
+      .right-panel-backdrop {
         opacity: 1;
         height: 100%;
         width: 100%;
       }
+      .right-panel {
+        height: 100%;
+        > * {
+          height: 100%;
+          .right-panel-container {
+            height: 100%;
+          }
+        }
+      }
     }
   }
 }
-
 .entry-words-container {
   opacity: 1;
   display: block;

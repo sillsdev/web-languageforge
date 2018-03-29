@@ -28,7 +28,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
             $scope.model.senses.push(newSense);
           }
 
-          $scope.control.hideCommentsPanel();
+          $scope.control.hideRightPanel();
         };
 
         $scope.deleteSense = function (index) {
@@ -39,7 +39,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
             .then(function () {
               $scope.model.senses.splice(index, 1);
               $scope.control.saveCurrentEntry();
-              $scope.control.hideCommentsPanel();
+              $scope.control.hideRightPanel();
             }, angular.noop);
         };
 
