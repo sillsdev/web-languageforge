@@ -1233,12 +1233,7 @@ gulp.task('build-dotnet-host-config', function (cb) {
       type: 'string' })
     .argv;
 
-  var jobDatabase;
-  if (params.applicationName === 'languageforge') {
-    jobDatabase = 'lf_jobs';
-  } else if (params.applicationName === 'scriptureforge') {
-    jobDatabase = 'sf_jobs';
-  }
+  var jobDatabase = params.applicationName + "_jobs";
 
   fs.writeFile('artifacts/netcore-api/appsettings.host.json', JSON.stringify({
     Security: {
