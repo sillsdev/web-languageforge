@@ -22,7 +22,7 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
         var newExample = {};
         $scope.control.makeValidModelRecursive($scope.config.fields.examples, newExample);
         $scope.model.examples.push(newExample);
-        $scope.control.hideCommentsPanel();
+        $scope.control.hideRightPanel();
       };
 
       $scope.deleteExample = function deleteExample(index) {
@@ -32,7 +32,7 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
         modal.showModalSimple('Delete Example', deletemsg, 'Cancel', 'Delete Example')
           .then(function () {
             $scope.model.examples.splice(index, 1);
-            $scope.control.hideCommentsPanel();
+            $scope.control.hideRightPanel();
           }, angular.noop);
       };
 

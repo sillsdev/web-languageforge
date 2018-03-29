@@ -12,26 +12,6 @@
   font-size: 14px;
   display: block;
   .comments-right-panel-container {
-    position: relative;
-    width: 280px;
-    transition: width 0.5s ease-in-out, margin-left 0.5s ease-in-out, opacity 0.5s linear 0.5s;
-    margin-left: 15px;
-    opacity: 1;
-    &.panel-closing {
-      transition: width 0.5s ease-in-out 0.5s, margin-left 0.5s ease-in-out 0.5s, opacity 0.5s;
-      overflow: visible;
-      height: auto !important;
-    }
-    &.panel-opening {
-      overflow: hidden;
-    }
-    &:not(.panel-visible) {
-      width: 0;
-      margin-left: 0;
-      opacity: 0;
-      height: 0;
-      overflow: hidden;
-    }
     &.context-mode {
       &:before {
         position: absolute;
