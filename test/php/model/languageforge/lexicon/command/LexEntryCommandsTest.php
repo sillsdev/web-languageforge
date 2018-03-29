@@ -1431,6 +1431,52 @@ class LexEntryCommandsTest extends TestCase
         ], $withLabels);
     }
 
+    public function testUpdateEntry_ReorderSensesAndExamples_ResultHasCorrectGuids()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('en', 'defer');
+        $sense1 = new LexSense();
+        $sense1->definition->form('en', 'put off to a later time');
+        $entry->senses[] = $sense1;
+        $sense2 = new LexSense();
+        $sense2->definition->form('en', 'submit humbly to');
+        $entry->senses[] = $sense2;
+
+        $example1 = new LexExample();
+        $example1->sentence->form('en', 'defer a task');
+        $sense1->examples[] = $example1;
+        $example2 = new LexExample();
+        $example2->sentence->form('en', 'defer an action');
+        $sense1->examples[] = $example2;
+
+        $entryId = $entry->write();
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $sense1 = $params['senses'][0];
+        $sense2 = $params['senses'][1];
+        $example1 = $sense1['examples'][0];
+        $example2 = $sense1['examples'][1];
+        $sense1['examples'][0] = $example2;
+        $sense1['examples'][1] = $example1;
+        $sense2['examples'] = array();
+        $params['senses'][0] = $sense2;
+        $params['senses'][1] = $sense1;
+
+        print_r($params);
+
+        $userId = self::$environ->createUser('john', 'john', 'john');
+
+        $params = json_decode(json_encode(LexEntryCommands::updateEntry($projectId, $params, $userId)));
+
+        print_r($params);
+        $this->assertEquals($sense1['guid'], $params->senses[1]->guid);
+        $this->assertEquals($sense2['guid'], $params->senses[0]->guid);
+        $this->assertEquals($example1['guid'], $params->senses[1]->examples[1]->guid);
+        $this->assertEquals($example2['guid'], $params->senses[1]->examples[0]->guid);
+    }
+
     /* Ignore test for send receive v1.1 since dirtySR counter is not being incremented on edit. IJH 2015-02
         public function testUpdateEntry_ProjectHasSendReceive_EntryHasGuidAndDirtySRIncremented()
         {
