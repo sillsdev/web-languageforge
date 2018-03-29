@@ -6,7 +6,7 @@
 <form name="configForm" novalidate>
     <fieldset data-ng-disabled="$ctrl.isSaving">
         <pui-tabset active="$ctrl.active">
-            <pui-tab heading="Unified">
+            <pui-tab heading="Fields">
                 <lsc-unified ucc-field-config="$ctrl.fieldConfig"
                              ucc-config-dirty="$ctrl.configDirty"
                              ucc-input-systems-list="$ctrl.inputSystemsList"
@@ -14,17 +14,6 @@
                              ucc-option-lists="$ctrl.optionListsDirty"
                              ucc-add-input-system="$ctrl.addNewInputSystem()"
                              ucc-on-update="$ctrl.onUpdate($event)"></lsc-unified>
-            </pui-tab>
-            <pui-tab heading="Fields">
-                <lsc-fields fcc-current-field="$ctrl.currentField"
-                            fcc-field-config="$ctrl.fieldConfig"
-                            fcc-config-dirty="$ctrl.configDirty"
-                            fcc-config-pristine="$ctrl.configPristine"
-                            fcc-input-system-view-models="$ctrl.inputSystemViewModels"
-                            fcc-input-systems-list="$ctrl.inputSystemsList"
-                            fcc-option-lists="$ctrl.optionListsDirty"
-                            fcc-select-field="$ctrl.selectField(fieldName)"
-                            fcc-on-update="$ctrl.onUpdate($event)"></lsc-fields>
             </pui-tab>
             <pui-tab heading="Input Systems">
                 <lsc-input-systems isc-input-system-view-models="$ctrl.inputSystemViewModels"

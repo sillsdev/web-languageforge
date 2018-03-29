@@ -180,7 +180,7 @@ export class InputSystemsConfigurationController implements angular.IController 
 
   openNewLanguageModal(suggestedLanguageCodes: any): void {
     const modalInstance = this.$modal.open({
-      templateUrl: '/angular-app/languageforge/lexicon/shared/select-new-language.html',
+      templateUrl: '/angular-app/languageforge/lexicon/shared/select-new-language.modal.html',
       windowTopClass: 'modal-select-language',
       controller: ['$scope', '$uibModalInstance',
         (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
