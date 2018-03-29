@@ -33,9 +33,10 @@
 //   'test-restart-webserver'
 //   'test-e2e-env'
 //   'test-e2e-doTest'
-//   'test-e2e-run'
+//   'test-e2e-clean'
 //   'test-e2e-compile'
 //   'test-e2e-compile:watch'
+//   'test-e2e-run'
 //   'test-dotnet'
 //   'sass'
 //   'sass:watch'
@@ -813,6 +814,19 @@ gulp.task('test-e2e-doTest', function (cb) {
     .on('end', cb);
 });
 
+// -------------------------------------
+//   Task: E2E Test: Clean compiled files
+// -------------------------------------
+gulp.task('test-e2e-clean', function () {
+  return del([
+    'test/app/**/*.js.map',
+    'test/app/scriptureforge/**/*.js',
+    '!test/app/scriptureforge/**/unit/*.js',
+    'test/app/languageforge/**/*.js',
+    'test/app/bellows/**/*.js'
+  ]);
+});
+
 gulp.task('test-e2e-compile', function (cb) {
   return execute('node_modules/typescript/bin/tsc -p test/app', null, cb);
 });
@@ -832,6 +846,7 @@ gulp.task('test-e2e-teardownForLocalDev', gulp.series(
 // -------------------------------------
 gulp.task('test-e2e-run',
   gulp.series(
+    'test-e2e-clean',
     'test-e2e-compile',
     'test-e2e-useTestConfig',
     'test-restart-webserver',
@@ -841,6 +856,7 @@ gulp.task('test-e2e-run',
 gulp.task('test-e2e-run').description = 'Run the E2E test on local developer environment';
 
 gulp.task('test-e2e-local-lf', gulp.series(
+    'test-e2e-clean',
     'test-e2e-compile',
     'test-e2e-useTestConfig',
     'test-restart-webserver',
@@ -1388,6 +1404,7 @@ gulp.task('dev-build',
 gulp.task('dev-dependencies-and-build',
   gulp.series(
     'get-dependencies',
+    'test-e2e-clean',
     'dev-build'
   )
 );
