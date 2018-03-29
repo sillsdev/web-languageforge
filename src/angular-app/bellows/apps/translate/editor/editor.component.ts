@@ -530,13 +530,22 @@ export class TranslateEditorController implements angular.IController {
   }
 
   private get focusedEditor(): DocumentEditor {
+    let focusedEditor: DocumentEditor;
     if (this.source.hasFocus) {
-      return this.source;
+      focusedEditor = this.source;
+    } else if (this.target.hasFocus) {
+      focusedEditor = this.target;
+    } else {
+      switch (this.currentDocType) {
+        case DocType.SOURCE:
+          focusedEditor = this.source;
+          break;
+        case DocType.TARGET:
+          focusedEditor = this.target;
+          break;
+      }
     }
-    if (this.target.hasFocus) {
-      return this.target;
-    }
-    return null;
+    return focusedEditor;
   }
 
   private onNativeSelectionChanged(): void {
@@ -544,7 +553,10 @@ export class TranslateEditorController implements angular.IController {
     const sel = this.$window.document.getSelection();
     const text = sel.getRangeAt(0).commonAncestorContainer.textContent;
     if (sel.isCollapsed && text === '\ufeff') {
-      this.focusedEditor.quill.setSelection(this.focusedEditor.quill.getSelection(), Quill.sources.SILENT);
+      const editor = this.focusedEditor;
+      if (editor != null) {
+        editor.quill.setSelection(editor.quill.getSelection(), Quill.sources.SILENT);
+      }
     }
   }
 
