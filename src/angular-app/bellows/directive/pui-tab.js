@@ -6,7 +6,7 @@ angular.module('palaso.ui.tabset', [])
     return {
       restrict: 'E',
       scope: {
-        active: '='
+        active: '=?'
       },
       transclude: true,
       controller: ['$scope', function ($scope) {
