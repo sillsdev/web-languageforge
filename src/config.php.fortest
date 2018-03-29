@@ -22,6 +22,10 @@ if (! defined('ENVIRONMENT')) {
     define('ENVIRONMENT', 'development');
 }
 
+if (file_exists('userConfig.php')) {
+    require_once('userConfig.php');
+}
+
 /*---------------------------------------------------------------
  * General xForge Configuration
  *---------------------------------------------------------------
