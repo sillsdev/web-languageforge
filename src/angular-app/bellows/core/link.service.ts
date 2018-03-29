@@ -59,7 +59,7 @@ export function LinkService() {
   this.entry = function entry(entryId: string, projectId?: string): string {
     if (angular.isDefined(projectId)) {
       // TODO: Replace hardcoded 'lexicon' below
-      return this.project(projectId, 'lexicon') + '/editor/entry/' + entryId;
+      return this.project(projectId, 'lexicon') + 'editor/entry/' + entryId;
     } else {
       return '#!/editor/entry/' + entryId;
     }
