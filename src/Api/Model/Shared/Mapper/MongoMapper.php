@@ -10,7 +10,7 @@
  * PHP MongoDB Client Library API Generated Docs       http://mongodb.github.io/mongo-php-library/api/
  * PHP MongoDB Client Library API Reference            http://mongodb.github.io/mongo-php-library/
  * MongoDB Documentation                               https://docs.mongodb.org/manual/reference/
- * 
+ *
  */
 
 namespace Api\Model\Shared\Mapper;
@@ -427,6 +427,61 @@ class MongoMapper
             }
         }
         return [$keysToSet, $keysToUnset];
+    }
+
+    /** Figure out if subdocuments have moved
+     * Structure expected for oldData and newData: array of documents that have a unique key
+     * Returns a keyed array (dict) with keys being ID values, and values being ["oldPos" => int, "newPos" => int].
+     * Only the key is examined; the other parts of the data are not compared
+     * E.g., if the input is as follows:
+     * $oldData = [ ["id" => "abc", "data" => "foo"], ["id" => "def", "data" => "bar"] ]
+     * $newData = [ ["id" => "def", "data" => "bar"], ["id" => "abc", "data" => "new foo"] ]
+     * $key = "id"
+     * then the result will be:
+     * [ "abc" => [ "oldPos" => 0, "newPos" => 1 ], "def" => [ "oldPos" => 1, "newPos" => 0 ] ]
+     * If any ID has appeared or disappeared, the oldPos or newPos for that ID will be null.
+     * E.g., ["oldPos" => 0, "newPos" => null] means that the item was deleted.
+     *
+     * WARNING: if keys are duplicated, this function's behavior will be undefined
+     *
+     * @param array $oldData
+     * @param array $newData
+     * @param array $keyName
+     * @return array
+     */
+    public static function detectMoved($oldData, $newData, $keyName)
+    {
+        // TODO: This might be useful in other situations; maybe move it to an ArrayUtils class or something
+        $oldPositionsById = [];
+        $newPositionsById = [];
+        foreach ($oldData as $pos => $value) {
+            if (array_key_exists($keyName, $value)) {
+                $oldPositionsById[$value[$keyName]] = $pos;
+            }
+        }
+        foreach ($newData as $pos => $value) {
+            if (array_key_exists($keyName, $value)) {
+                $newPositionsById[$value[$keyName]] = $pos;
+            }
+        }
+
+        // Most of the time there will be no motion, so check that first
+        if ($oldPositionsById === $newPositionsById) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($oldPositionsById as $id => $oldPos) {
+            $newPos = $newPositionsById[$id] ?? null;  // Without the "?? null", we'd get an error if the ID didn't exist
+            $result[$id] = ["oldPos" => $oldPos, "newPos" => $newPos];
+            // Keep track of which keys we've handled
+            unset($newPositionsById[$id]);
+        }
+        // Any remaining IDs in newData are items that were added
+        foreach ($newPositionsById as $id => $newPos) {
+            $result[$id] = ["oldPos" => null, "newPos" => $newPos];
+        }
+        return $result;
     }
 
     /**
