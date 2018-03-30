@@ -1,22 +1,21 @@
-<div class="container" data-ng-controller="SettingsCtrl" id="lexAppSettingsView">
-    <br>
-    <h2><span class="notranslate">{{project.projectName}}</span> Settings</h2>
+<div class="container" id="lexAppSettingsView">
+    <h2><span class="notranslate">{{$ctrl.project.projectName}}</span> Settings</h2>
     <uib-tabset>
         <uib-tab heading="Project Properties">
-            <form class="card card-body bg-light ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="updateProject()" style="">
-                <fieldset data-ng-disabled="!rights.remove">
+            <form class="card card-body bg-light ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="$ctrl.updateProject()" style="">
+                <fieldset data-ng-disabled="!$ctrl.lpsRights.canEditProject()">
                     <div class="form-group row">
                         <label class="col-form-label col-12" for="projName">Project Name</label>
                         <div class="controls col-12">
-                            <input id="projName" type="text" class="form-control" placeholder="project name" data-ng-model="project.projectName">
+                            <input id="projName" type="text" class="form-control" placeholder="project name" data-ng-model="$ctrl.project.projectName">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-form-label col-12" for="language">Default Interface Language</label>
                         <div class="controls col-12">
                             <select class="form-control custom-select" id="language"
-                                data-ng-model="project.interfaceLanguageCode"
-                                data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder">
+                                data-ng-model="$ctrl.project.interfaceLanguageCode"
+                                data-ng-options="$ctrl.lpsInterfaceConfig.selectLanguages.options[code] for code in $ctrl.lpsInterfaceConfig.selectLanguages.optionsOrder">
                                 <option value="">-- choose a language --</option>
                             </select>
                         </div>
@@ -24,19 +23,19 @@
                     <div class="form-group row">
                         <label class="col-form-label col-12">Project Code</label>
                         <div class="controls col-12 notranslate">
-                            {{project.projectCode}}
+                            {{$ctrl.project.projectCode}}
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-form-label col-12">Project Owner</label>
                         <div class="controls col-12 notranslate">
-                            {{project.ownerRef.username}}
+                            {{$ctrl.project.ownerRef.username}}
                         </div>
                     </div>
                     <!--
                     <div class="form-group row">
                         <div class="controls col-12">
-                            <label class="checkbox"><input type="checkbox" data-ng-model="project.featured"> Featured On Website></label>
+                            <label class="checkbox"><input type="checkbox" data-ng-model="$ctrl.project.featured"> Featured On Website></label>
                         </div>
                     </div>
                     -->
@@ -52,11 +51,10 @@
         <!-- Archive tab disabled now that project owners can delete their own projects -->
         <uib-tab heading="Archive" data-ng-show="false">
             <form class="card card-body bg-light">
-                <pui-archive-project pui-action-in-progress="actionInProgress">
-                </pui-archive-project>
+                <pui-archive-project pui-action-in-progress="$ctrl.actionInProgress"></pui-archive-project>
             </form>
         </uib-tab>
-        <uib-tab heading="Delete" data-ng-show="rights.remove">
+        <uib-tab heading="Delete" data-ng-show="$ctrl.lpsRights.canDeleteProject()">
             <form class="card card-body bg-light">
                 <pui-delete-project></pui-delete-project>
             </form>
