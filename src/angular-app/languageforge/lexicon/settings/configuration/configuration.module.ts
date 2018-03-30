@@ -7,13 +7,11 @@ import {NoticeModule} from '../../../../bellows/core/notice/notice.module';
 import {InputSystemsConfigurationComponent} from './configuration-input-systems.component';
 import {OptionListConfigurationComponent} from './configuration-option-lists.component';
 import {UnifiedConfigurationComponent} from './configuration-unified.component';
-import {LexiconConfigurationComponent} from './configuration.component';
 
 export const LexiconConfigurationModule = angular
   .module('lexiconConfigurationModule', ['ui.bootstrap', 'ngDragToReorder', CoreModule, NoticeModule,
     'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor', 'palaso.util.model.transform',
     InputSystemsModule])
-  .component('lexiconConfig', LexiconConfigurationComponent)
   .component('lscUnified', UnifiedConfigurationComponent)
   .component('lscInputSystems', InputSystemsConfigurationComponent)
   .component('lscOptionLists', OptionListConfigurationComponent)
