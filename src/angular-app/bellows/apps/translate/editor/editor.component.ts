@@ -551,6 +551,9 @@ export class TranslateEditorController implements angular.IController {
   private onNativeSelectionChanged(): void {
     // workaround for bug where Quill allows a selection inside of an embed
     const sel = this.$window.document.getSelection();
+    if (sel.rangeCount === 0) {
+      return;
+    }
     const text = sel.getRangeAt(0).commonAncestorContainer.textContent;
     if (sel.isCollapsed && text === '\ufeff') {
       const editor = this.focusedEditor;
