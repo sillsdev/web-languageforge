@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notice',
-  'ngFileUpload', 'palaso.ui.mockUpload', 'palaso.ui.soundplayer'])
+  'ngFileUpload', 'palaso.ui.mockUpload', 'soundModule'])
 
   // Palaso UI Dictionary Control: Audio
   .directive('dcAudio', [function () {
