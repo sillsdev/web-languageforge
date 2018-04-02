@@ -725,15 +725,21 @@ gulp.task('test-e2e-doTest', function (cb) {
 
   // Generate list of specs to test (glob format so protractor will test whatever files exist)
   var specString = (params.specs) ? params.specs : '*';
+  var specs = ['test/app/allspecs/**/*.e2e-spec.js'];
+  if (specString === '*') {
+    specs.push('test/app/bellows/**/*-traversal.e2e-spec.js');
+    if (params.webserverHost.includes('languageforge')) {
+      specs.push('test/app/languageforge/**/*-traversal.e2e-spec.js');
+    } else {
+      specs.push('test/app/scriptureforge/**/*-traversal.e2e-spec.js');
+    }
+  }
 
-  var specs = [
-    'test/app/allspecs/e2e/*.spec.js',
-    'test/app/bellows/**/e2e/' + specString + '.spec.js'];
-
+  specs.push('test/app/bellows/**/' + specString + '.e2e-spec.js');
   if (params.webserverHost.includes('languageforge')) {
-    specs.push('test/app/languageforge/**/e2e/' + specString + '.spec.js');
+    specs.push('test/app/languageforge/**/' + specString + '.e2e-spec.js');
   } else {
-    specs.push('test/app/scriptureforge/**/e2e/' + specString + '.spec.js');
+    specs.push('test/app/scriptureforge/**/' + specString + '.e2e-spec.js');
   }
 
   // Get the selenium server address
@@ -763,11 +769,10 @@ gulp.task('test-e2e-doTest', function (cb) {
 // -------------------------------------
 gulp.task('test-e2e-clean', function () {
   return del([
-    'test/app/**/*.js.map',
-    'test/app/scriptureforge/**/*.js',
-    '!test/app/scriptureforge/**/unit/*.js',
-    'test/app/languageforge/**/*.js',
-    'test/app/bellows/**/*.js'
+    'test/app/**/*.e2e-spec.js.map',
+    'test/app/**/*.e2e-spec.js',
+    'test/app/**/shared/*.js.map',
+    'test/app/**/shared/*.js'
   ]);
 });
 
