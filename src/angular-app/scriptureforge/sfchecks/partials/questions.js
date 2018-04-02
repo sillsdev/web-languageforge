@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.breadcrumb',
-  'sfchecks.services', 'ngFileUpload', 'ngSanitize', 'ngRoute', 'palaso.ui.soundplayer',
+  'sfchecks.services', 'ngFileUpload', 'ngSanitize', 'ngRoute', 'soundModule',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice'])
   .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService',
     '$routeParams', 'sessionService', 'linkService', 'breadcrumbService',
@@ -484,7 +484,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
   function ($scope, textService, $routeParams) {
     $scope.exportConfig = {
       textId: $routeParams.textId,
-      commentFormat: "PT7",
+      commentFormat: 'PT7',
       exportComments: false,
       exportFlagged: true,
       tags: []
@@ -504,8 +504,8 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
     };
 
     $scope.startExport = function (ptVersion) {
-      ptVersion = (typeof ptVersion !== 'undefined') ? ptVersion : "PT7";
-      console.log("Downloading for", ptVersion);
+      ptVersion = (typeof ptVersion !== 'undefined') ? ptVersion : 'PT7';
+      console.log('Downloading for', ptVersion);
       $scope.exportConfig.commentFormat = ptVersion;
       $scope.download.inprogress = true;
       textService.exportComments($scope.exportConfig, function (result) {
