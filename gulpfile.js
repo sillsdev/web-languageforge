@@ -6,93 +6,20 @@
 //
 // *************************************
 //
-// Available tasks:
-//   'gulp'
-//   'do-reload'
-//   'reload'
-//   'lint'
-//   'generate-language-picker-assets'
-//   'mongodb-backup-prod-db'
-//   'mongodb-copy-backup-to-local'
-//   'mongodb-cleanup-backup-prod-db'
-//   'mongodb-restore-local-db'
-//   'mongodb-copy-prod-db'
-//   'test-php'
-//   'test-php-debug'
-//   'test-php-coverage'
-//   'test-php:watch'
-//   'test-php-debug:watch'
-//   'test-js'
-//   'test-js:watch'
-//   'test-e2e-webdriver_update'
-//   'test-e2e-webdriver_standalone'
-//   'test-e2e-useTestConfig'
-//   'test-e2e-useLiveConfig'
-//   'test-e2e-setupTestEnvironment'
-//   'test-e2e-teardownTestEnvironment'
-//   'test-restart-webserver'
-//   'test-e2e-env'
-//   'test-e2e-doTest'
-//   'test-e2e-clean'
-//   'test-e2e-compile'
-//   'test-e2e-compile:watch'
-//   'test-e2e-run'
-//   'test-dotnet'
-//   'sass'
-//   'sass:watch'
-//   'webpack-lf'
-//   'webpack-lf:watch
-//   'webpack-sf'
-//   'webpack-sf:watch
-//   'build-composer'
-//   'build-npm-front-end'
-//   'build-npm-back-end'
-//   'build-webpack'
-//   'build-remove-test-fixtures'
-//   'build-minify'
-//   'build-changeGroup'
-//   'build-version'
-//   'build-productionConfig'
-//   'build-clearLocalCache'
-//   'build-dotnet-publish'
-//   'build-dotnet-host-config'
-//   'build-dotnet'
-//   'build-upload'
-//   'build'
-//   'build-and-upload'
-//   'build-e2e'
-//   'build-php'
-//   'markdown'
-//   'default'
-
+// -------------------------------------
+// To see available tasks use:
+// gulp -T                 Print the task dependency tree
+// gulp --tasks-simple     Print a list of gulp task names
+// -------------------------------------
+//
 // -------------------------------------
 //   Modules
 // -------------------------------------
-//
-// es6-shim          : ECMAScript 6 (Harmony) compatibility for legacy JavaScript engines
-// child_process     : Call a child process with the ease of exec and safety of spawn
-// gulp              : The streaming build system
-// gulp-concat       : Concatenates files
-// gulp-jshint       : JSHint plugin for gulp
-// gulp-livereload   : Gulp plugin for livereload
-// gulp-markdown     : Markdown to HTML
-// gulp-phpunit      : PHPUnit plugin for Gulp
-// gulp-protractor   : A helper for protactor and gulp
-// gulp-rename       : Rename files
-// gulp-replace      : A string replace plugin for gulp
-// gulp-uglify       : Minify files with UglifyJS
-// gulp-util         : Utility functions for gulp plugins
-// lodash.template   : The lodash method `_.template` exported as a module
-// karma             : Spectacular Test Runner for JavaScript
-// jshint-stylish    : Stylish reporter for JSHint
-// path              : Node.JS path module
-// yargs             : yargs the modern, pirate-themed, successor to optimist
 require('es6-shim');
 var _execute = require('child_process').exec;
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
-var livereload = require('gulp-livereload');
 var markdown = require('gulp-markdown');
 var phpunit = require('gulp-phpunit');
 var protractor = require('gulp-protractor').protractor;
@@ -111,69 +38,14 @@ var dotnetTest = require('gulp-dotnet-cli').test;
 var fs = require('fs');
 var del = require('del');
 
-var execute = function (command, options, callback) {
-  if (!options) {
-    options = {};
-  }
+// If using a JSON file for the Google API secrets, uncomment the following line and search for
+// "Google API" to find other lines to uncomment further below.
 
-  options.maxBuffer = 1024 * 1000; // byte
+// const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
 
-  var template = _template(command);
-  command = template(options);
-  if (!options.silent) {
-    gutil.log(gutil.colors.green(command));
-  }
-
-  if (!options.dryRun) {
-    var process = _execute(command, options, callback || undefined);
-
-    process.stdout.on('data', function (data) {
-      gutil.log(data.slice(0, -1)); // remove trailing \n
-    });
-
-    process.stderr.on('data', function (data) {
-      gutil.log(gutil.colors.yellow(data.slice(0, -1))); // remove trailing \n
-    });
-
-  } else {
-    callback(null);
-  }
-};
-
-// Determine the path to test/app from a given destination.
-// Truncate the remote prefix of the destination
-function getTestCwd(dest) {
-  return (dest) ? path.join(dest.replace(/^(.)*:/, ''), 'test/app') : './test/app';
-}
-
-// Get systemd service suffix from destination
-function getServiceSuffix(dest) {
-  var suffix = '';
-  var index = dest.indexOf('_');
-  if (index !== -1) {
-    suffix = dest.substr(index + 1);
-    if (suffix.endsWith('/')) {
-      suffix = suffix.substr(0, suffix.length - 1);
-    }
-
-    suffix = '@' + suffix;
-  }
-
-  return suffix;
-}
-
-function yargFailure(msg, err, yargs) {
-  if (err) {
-    // preserve stack
-    throw err;
-  }
-
-  console.error(msg);
-  console.error('You should be doing', yargs.help());
-  process.exit(1);
-}
-
-// Globals
+// -------------------------------------
+//   Global Variables
+// -------------------------------------
 var srcPatterns = [
   'src/angular-app/**',
   'src/Api/**',
@@ -188,26 +60,6 @@ var phpPatterns = [
   'test/**/*.php'
 ];
 
-// If using a JSON file for the Google API secrets, uncomment the following line and search for
-// "Google API" to find other lines to uncomment further below.
-
-// const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
-
-// -------------------------------------
-//   Task: Do Reload
-// -------------------------------------
-gulp.task('do-reload', function () {
-  return gulp.src('src/index.php').pipe(livereload());
-});
-
-// -------------------------------------
-//   Task: Reload
-// -------------------------------------
-gulp.task('reload', function () {
-  livereload.listen();
-  gulp.watch(srcPatterns, { delay: 500 }, gulp.series('do-reload'));
-});
-
 // -------------------------------------
 //   Task: Lint
 // -------------------------------------
@@ -221,11 +73,9 @@ gulp.task('lint', function () {
 //   Task: Auto-generate language picker asset files
 // -------------------------------------
 gulp.task('generate-language-picker-assets', function (cb) {
-
   // Manual prerequisite:
   // copy from libpalaso:palaso-trusty64-master/SIL.WritingSystems/Resources/*.txt
   // into scripts/language picker/
-
   var options = {
     dryRun: false,
     silent: false,
@@ -242,6 +92,100 @@ gulp.task('generate-language-picker-assets', function (cb) {
 
 gulp.task('generate-language-picker-assets').description =
   'Update asset files used for language picker';
+
+// -------------------------------------
+//   Task: Markdown
+// -------------------------------------
+gulp.task('markdown', function () {
+  return gulp.src('src/angular-app/**/helps/**/*.md')
+    .pipe(markdown())
+    .pipe(gulp.dest('src/angular-app'));
+});
+
+gulp.task('markdown').description = 'Generate helps markdown files';
+
+// region sass
+
+var sassCommand = './node_modules/.bin/node-sass';
+
+gulp.task('sass', gulp.parallel(
+  function buildSiteDir(done) {
+    execute(sassCommand + ' src/Site/ -o src/Site/ --output-style compressed', null, done);
+  },
+
+  function buildAngularAppDir(done) {
+    execute(sassCommand  + ' src/angular-app/ -o src/angular-app/ --output-style compressed',
+      null, done);
+  }
+));
+
+gulp.task('sass:watch', function () {
+  var debug = process.argv.indexOf('--debug') !== -1;
+  if (!debug) console.info('Tip: run with --debug to generate source comments and source maps.');
+
+  var watch = ' --watch --recursive';
+  var debugArgs = debug ? ' --source-comments --source-map-embed --source-map-contents' : '';
+
+  var a = sassCommand + ' src/Site -o src/Site' + debugArgs;
+  var b = sassCommand + ' src/angular-app -o src/angular-app' + debugArgs;
+
+  return new Promise(function (resolve, reject) {
+    execute(b, null, function () {
+      execute(b + watch, null, reject);
+    });
+
+    execute(a, null, function () {
+      execute(a + watch, null, reject);
+    });
+  });
+
+});
+
+// endregion
+
+//region webpack
+
+function webpack(applicationName, callback, isProduction, isWatch) {
+  var watch = isWatch ? ' --watch' : '';
+  var env = applicationName ? ' --env.applicationName=' + applicationName : '';
+  var prod = isProduction ? ' -p' : '';
+  execute('$(npm bin)/webpack' + watch + env + prod + ' --colors',
+    { cwd: '.' },
+    function (err) {
+      if (err) throw new gutil.PluginError('webpack', err);
+      callback();
+    });
+}
+
+// -------------------------------------
+//   Task: webpack-lf
+// -------------------------------------
+gulp.task('webpack-lf', function (cb) {
+  webpack('languageforge', cb);
+});
+
+// -------------------------------------
+//   Task: webpack-lf watch
+// -------------------------------------
+gulp.task('webpack-lf:watch', function (cb) {
+  webpack('languageforge', cb, false, true);
+});
+
+// -------------------------------------
+//   Task: webpack-sf
+// -------------------------------------
+gulp.task('webpack-sf', function (cb) {
+  webpack('scriptureforge', cb);
+});
+
+// -------------------------------------
+//   Task: webpack-sf watch
+// -------------------------------------
+gulp.task('webpack-sf:watch', function (cb) {
+  webpack('scriptureforge', cb, false, true);
+});
+
+// endregion
 
 //region MongoDB
 
@@ -827,14 +771,32 @@ gulp.task('test-e2e-clean', function () {
   ]);
 });
 
+// -------------------------------------
+//   Task: E2E Test: Compile TS files
+// -------------------------------------
 gulp.task('test-e2e-compile', function (cb) {
   return execute('node_modules/typescript/bin/tsc -p test/app', null, cb);
 });
 
+// -------------------------------------
+//   Task: E2E Test: Watch and Compile TS files
+// -------------------------------------
 gulp.task('test-e2e-compile:watch', function (cb) {
   return execute('node_modules/typescript/bin/tsc -p test/app --watch', null, cb);
 });
 
+// -------------------------------------
+//   Task: E2E Test: Run
+// -------------------------------------
+gulp.task('test-e2e-clean-compile',
+  gulp.series(
+    'test-e2e-clean',
+    'test-e2e-compile')
+);
+
+// -------------------------------------
+//   Task: E2E Test: Teardown for developer
+// -------------------------------------
 gulp.task('test-e2e-teardownForLocalDev', gulp.series(
   'test-e2e-teardownTestEnvironment',
   'test-e2e-useLiveConfig',
@@ -846,8 +808,7 @@ gulp.task('test-e2e-teardownForLocalDev', gulp.series(
 // -------------------------------------
 gulp.task('test-e2e-run',
   gulp.series(
-    'test-e2e-clean',
-    'test-e2e-compile',
+    'test-e2e-clean-compile',
     'test-e2e-useTestConfig',
     'test-restart-webserver',
     'test-e2e-setupTestEnvironment',
@@ -856,8 +817,7 @@ gulp.task('test-e2e-run',
 gulp.task('test-e2e-run').description = 'Run the E2E test on local developer environment';
 
 gulp.task('test-e2e-local-lf', gulp.series(
-    'test-e2e-clean',
-    'test-e2e-compile',
+    'test-e2e-clean-compile',
     'test-e2e-useTestConfig',
     'test-restart-webserver',
     'test-e2e-setupTestEnvironment',
@@ -875,89 +835,6 @@ gulp.task('test-dotnet', function () {
 });
 
 //endregion
-
-// region sass
-
-var sassCommand = './node_modules/.bin/node-sass';
-
-gulp.task('sass', gulp.parallel(
-  function buildSiteDir(done) {
-    execute(sassCommand + ' src/Site/ -o src/Site/ --output-style compressed', null, done);
-  },
-
-  function buildAngularAppDir(done) {
-    execute(sassCommand  + ' src/angular-app/ -o src/angular-app/ --output-style compressed',
-      null, done);
-  }
-));
-
-gulp.task('sass:watch', function () {
-  var debug = process.argv.indexOf('--debug') !== -1;
-  if (!debug) console.info('Tip: run with --debug to generate source comments and source maps.');
-
-  var watch = ' --watch --recursive';
-  var debugArgs = debug ? ' --source-comments --source-map-embed --source-map-contents' : '';
-
-  var a = sassCommand + ' src/Site -o src/Site' + debugArgs;
-  var b = sassCommand + ' src/angular-app -o src/angular-app' + debugArgs;
-
-  return new Promise(function (resolve, reject) {
-    execute(b, null, function () {
-      execute(b + watch, null, reject);
-    });
-
-    execute(a, null, function () {
-      execute(a + watch, null, reject);
-    });
-  });
-
-});
-
-// endregion
-
-//region webpack
-
-function webpack(applicationName, callback, isProduction, isWatch) {
-  var watch = isWatch ? ' --watch' : '';
-  var env = applicationName ? ' --env.applicationName=' + applicationName : '';
-  var prod = isProduction ? ' -p' : '';
-  execute('$(npm bin)/webpack' + watch + env + prod + ' --colors',
-    { cwd: '.' },
-    function (err) {
-      if (err) throw new gutil.PluginError('webpack', err);
-      callback();
-    });
-}
-
-// -------------------------------------
-//   Task: webpack-lf
-// -------------------------------------
-gulp.task('webpack-lf', function (cb) {
-  webpack('languageforge', cb);
-});
-
-// -------------------------------------
-//   Task: webpack-lf watch
-// -------------------------------------
-gulp.task('webpack-lf:watch', function (cb) {
-  webpack('languageforge', cb, false, true);
-});
-
-// -------------------------------------
-//   Task: webpack-sf
-// -------------------------------------
-gulp.task('webpack-sf', function (cb) {
-  webpack('scriptureforge', cb);
-});
-
-// -------------------------------------
-//   Task: webpack-sf watch
-// -------------------------------------
-gulp.task('webpack-sf:watch', function (cb) {
-  webpack('scriptureforge', cb, false, true);
-});
-
-// endregion
 
 //region build
 
@@ -1384,6 +1261,9 @@ gulp.task('build',
     'build-changeGroup')
 );
 
+// -------------------------------------
+//   Task: Build get dependencies
+// -------------------------------------
 gulp.task('get-dependencies',
   gulp.parallel(
     'build-composer',
@@ -1392,19 +1272,24 @@ gulp.task('get-dependencies',
   )
 );
 
+// -------------------------------------
+//   Task: Developer Build
+// -------------------------------------
 gulp.task('dev-build',
   gulp.parallel(
     'sass',
     'test-e2e-webdriver_update',
-    'test-e2e-compile',
+    'test-e2e-clean-compile',
     'build-webpack'
   )
 );
 
+// -------------------------------------
+//   Task: Developer Get Dependencies and Build
+// -------------------------------------
 gulp.task('dev-dependencies-and-build',
   gulp.series(
     'get-dependencies',
-    'test-e2e-clean',
     'dev-build'
   )
 );
@@ -1456,6 +1341,9 @@ gulp.task('build-php',
 gulp.task('build-php').description =
   'Build and Run PHP tests on CI server; Deploy to dev site';
 
+// -------------------------------------
+//   Task: Build PHP Coverage
+// -------------------------------------
 gulp.task('build-php-coverage',
   gulp.series(
     'build',
@@ -1465,20 +1353,71 @@ gulp.task('build-php-coverage',
 //endregion
 
 // -------------------------------------
-//   Task: Markdown
+//   Task: default (build)
 // -------------------------------------
-gulp.task('markdown', function () {
-  return gulp.src('src/angular-app/**/helps/**/*.md')
-    .pipe(markdown())
-    .pipe(gulp.dest('src/angular-app'));
-});
-
-gulp.task('markdown').description = 'Generate helps markdown files';
-
-// -------------------------------------
-//   Task: Display Tasks
-// gulp -T                 Print the task dependency tree
-// gulp --tasks-simple     Print a list of gulp task names
-// -------------------------------------
-
 gulp.task('default', gulp.series('build'));
+
+// -------------------------------------
+//   Functions
+// -------------------------------------
+function execute(command, options, callback) {
+  if (!options) {
+    options = {};
+  }
+
+  options.maxBuffer = 1024 * 1000; // byte
+
+  var template = _template(command);
+  command = template(options);
+  if (!options.silent) {
+    gutil.log(gutil.colors.green(command));
+  }
+
+  if (!options.dryRun) {
+    var process = _execute(command, options, callback || undefined);
+
+    process.stdout.on('data', function (data) {
+      gutil.log(data.slice(0, -1)); // remove trailing \n
+    });
+
+    process.stderr.on('data', function (data) {
+      gutil.log(gutil.colors.yellow(data.slice(0, -1))); // remove trailing \n
+    });
+
+  } else {
+    callback(null);
+  }
+}
+
+// Determine the path to test/app from a given destination.
+// Truncate the remote prefix of the destination
+function getTestCwd(dest) {
+  return (dest) ? path.join(dest.replace(/^(.)*:/, ''), 'test/app') : './test/app';
+}
+
+// Get systemd service suffix from destination
+function getServiceSuffix(dest) {
+  var suffix = '';
+  var index = dest.indexOf('_');
+  if (index !== -1) {
+    suffix = dest.substr(index + 1);
+    if (suffix.endsWith('/')) {
+      suffix = suffix.substr(0, suffix.length - 1);
+    }
+
+    suffix = '@' + suffix;
+  }
+
+  return suffix;
+}
+
+function yargFailure(msg, err, yargs) {
+  if (err) {
+    // preserve stack
+    throw err;
+  }
+
+  console.error(msg);
+  console.error('You should be doing', yargs.help());
+  process.exit(1);
+}
