@@ -22,9 +22,10 @@
                 <div class="row">
                     <div class="col">
                         <div data-ng-hide="visibleEntries.length === 0" class="words-search">
-                            <pui-typeahead class="typeahead" placeholder="'Search Entries'"
-                                       items="typeahead.searchResults" term="typeahead.searchItemSelected"
-                                       search="typeahead.searchEntries" select="typeahead.searchSelect">
+                            <pui-typeahead id="editor-list-search-entries"
+                                           class="typeahead" placeholder="'Search Entries'"
+                                           items="typeahead.searchResults" term="typeahead.searchItemSelected"
+                                           search="typeahead.searchEntries" select="typeahead.searchSelect">
                                 <ul data-ng-if="typeahead.searchResults.length > 0" class="list-group">
                                     <li data-typeahead-item="e" class="typeahead-item list-group-item"
                                         data-ng-repeat="e in typeahead.searchResults | limitTo: typeahead.limit">
@@ -97,7 +98,7 @@
             <div class="row" data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading">
                 <div class="col">
                     <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-                        <div class="text-center no-entries">
+                        <div class="text-center no-entries" id="noEntries">
                             <h4>Looks like there are no entries yet.</h4>
                             <button class="btn btn-primary" data-ng-click="navigateToLiftImport()"
                                     data-ng-hide="projectSettings.hasSendReceive">

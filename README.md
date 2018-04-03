@@ -468,9 +468,11 @@ Note: at least one test will fail if the LFMerge (send/receive) program is not i
 
 `gulp test-js` or `gulp test-js:watch`
 
-TypeScript unit test spec files live in the `src` folder next to the relevant source file. Only E2E test specs will be in the `test` folder (at least while they are still JS files).
+TypeScript unit test spec files live in the `src` folder next to the relevant source file and have the file extension `.spec.ts`. Only E2E test specs will be in the `test` folder.
 
 ### End-to-End (E2E) Tests ###
+
+E2E tests live in the `test` folder and have the file extension `.e2e-spec.ts`.
 
 #### Install/Update Webdriver ####
 
@@ -505,7 +507,7 @@ To test a certain test spec, add a parameter `--specs [spec name]`.  For example
 ```
 ./rune2e.sh lf --specs lexicon-new-project
 ```
-will run the  the *lexicon-new-project.spec.js* tests on **languageforge**.
+will run the  the *lexicon-new-project.e2e-spec.ts* tests on **languageforge**.
 
 To add more verbosity during E2E tests, add a parameter `--verbosity true`
 
@@ -587,3 +589,10 @@ Before putting data into **ElasticSearch**, setup the index with settings and da
 ```
 ./scripts/server/elasticSearch/setupElasticSearchCATIndex.sh
 ```
+
+## Contributors ##
+
+* Elizabeth Koning
+* Ethan Clark
+* Ziqi Chen
+* Ye Joo Oh

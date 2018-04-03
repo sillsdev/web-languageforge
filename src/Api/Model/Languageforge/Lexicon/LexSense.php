@@ -268,8 +268,8 @@ class LexSense extends ObjectForEncoding
                 $difference = $multiParagraph->differences($otherSense->$propertyName);
                 return $this->convertDifferences($difference, $propertyName);
             case "LexValue":
-                $thisValue  = is_null($this->$propertyName) ? "" : (string)$this->$propertyName;
-                $otherValue = is_null($otherSense->$propertyName) ? "" :(string)$otherSense->$propertyName;
+                $thisValue  = is_null($this->$propertyName) || is_null($this->$propertyName->value) ? "" : (string)$this->$propertyName;
+                $otherValue = is_null($otherSense->$propertyName) || is_null($otherSense->$propertyName->value) ? "" :(string)$otherSense->$propertyName;
 
                 if ($thisValue === $otherValue) {
                     return [];

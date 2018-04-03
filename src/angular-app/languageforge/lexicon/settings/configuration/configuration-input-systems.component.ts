@@ -10,19 +10,54 @@ export class InputSystemsConfigurationController implements angular.IController 
   iscInputSystemViewModels: { [inputSystemId: string]: ConfigurationInputSystemsViewModel };
   iscInputSystemsList: ConfigurationInputSystemsViewModel[];
   readonly iscConfigPristine: LexiconConfig;
+  iscAddInputSystem: boolean;
   iscOnUpdate: (params: { $event: {
     inputSystemViewModels?: { [inputSystemId: string]: ConfigurationInputSystemsViewModel },
-    inputSystemsList?: ConfigurationInputSystemsViewModel[]
+    inputSystemsList?: ConfigurationInputSystemsViewModel[],
+    addInputSystem?: boolean
   } }) => void;
 
   selectedInputSystemId: string = '';
   suggestedLanguageCodes = {};
   readonly selects = new OptionSelects();
 
-  private inputSystemSelected: boolean = true;
+  private specialPrevious = 'none';
+  private isInputSystemSelected: boolean = true;
+  private isScriptRegionVariantSelected: boolean = true;
 
   static $inject: string[] = ['$scope', '$uibModal', 'silNoticeService'];
   constructor(private $scope: angular.IScope, private $modal: ModalService, private notice: NoticeService) { }
+
+  $onInit(): void {
+    this.$scope.$watchCollection(
+      () => {
+        if (this.selectedInputSystemId === '') {
+          return;
+        }
+        return this.iscInputSystemViewModels[this.selectedInputSystemId];
+      },
+      (newValue: ConfigurationInputSystemsViewModel, oldValue: ConfigurationInputSystemsViewModel) => {
+        if (angular.isUndefined(newValue) || angular.isUndefined(oldValue) ||
+          angular.equals(oldValue, newValue)
+        ) {
+          return;
+        }
+
+        if (this.isInputSystemSelected) {
+          this.isInputSystemSelected = false;
+          return;
+        }
+
+        newValue.buildTag();
+        if (this.isScriptRegionVariantSelected) {
+          this.isScriptRegionVariantSelected = false;
+          return;
+        }
+
+        this.iscOnUpdate({ $event: { inputSystemViewModels: this.iscInputSystemViewModels } });
+      }
+    );
+  }
 
   $onChanges(changes: any): void {
     const listChange = changes.iscInputSystemsList as angular.IChangesObject<ConfigurationInputSystemsViewModel[]>;
@@ -30,30 +65,19 @@ export class InputSystemsConfigurationController implements angular.IController 
       listChange.currentValue != null
     ) {
       this.selectInputSystem(this.iscInputSystemsList[0].uuid);
-      if (listChange.isFirstChange()) {
-        this.$scope.$watchCollection(() => this.iscInputSystemViewModels[this.selectedInputSystemId],
-          (newValue: ConfigurationInputSystemsViewModel, oldValue: ConfigurationInputSystemsViewModel) => {
-            if (angular.isUndefined(newValue) || angular.isUndefined(oldValue) ||
-              angular.equals(oldValue, newValue)
-            ) {
-              return;
-            }
+    }
 
-            if (this.inputSystemSelected) {
-              this.inputSystemSelected = false;
-              return;
-            }
-
-            newValue.buildTag();
-            this.iscOnUpdate({ $event: { inputSystemViewModels: this.iscInputSystemViewModels } });
-          }
-        );
-      }
+    const addInputSystemChange = changes.iscAddInputSystem as angular.IChangesObject<boolean>;
+    if (addInputSystemChange != null && addInputSystemChange.currentValue) {
+      this.openNewLanguageModal(this.suggestedLanguageCodes);
+      this.iscOnUpdate({ $event: {
+        addInputSystem: false
+      } });
     }
   }
 
   isInputSystemInUse(): boolean {
-    if (!(this.selectedInputSystemId in this.iscInputSystemViewModels)) {
+    if (this.iscInputSystemViewModels == null || !(this.selectedInputSystemId in this.iscInputSystemViewModels)) {
       return true;
     }
 
@@ -62,7 +86,7 @@ export class InputSystemsConfigurationController implements angular.IController 
   }
 
   newExists(special: string): boolean {
-    if (!(this.selectedInputSystemId in this.iscInputSystemViewModels)) {
+    if (this.iscInputSystemViewModels == null || !(this.selectedInputSystemId in this.iscInputSystemViewModels)) {
       return false;
     }
 
@@ -104,15 +128,24 @@ export class InputSystemsConfigurationController implements angular.IController 
     this.iscInputSystemViewModels[viewModel.uuid] = viewModel;
     this.iscInputSystemsList.push(viewModel);
     this.selectedInputSystemId = viewModel.uuid;
-    this.iscOnUpdate({ $event: {
-        inputSystemViewModels: this.iscInputSystemViewModels,
-        inputSystemsList: this.iscInputSystemsList
-      } });
+    if (special === 'scriptRegionVariant') {
+      this.isScriptRegionVariantSelected = true;
+      this.iscOnUpdate({ $event: {
+          inputSystemsList: this.iscInputSystemsList
+        } });
+    } else {
+      this.iscOnUpdate({
+        $event: {
+          inputSystemViewModels: this.iscInputSystemViewModels,
+          inputSystemsList: this.iscInputSystemsList
+        }
+      });
+    }
   }
 
   selectInputSystem(id: string): void {
     this.selectedInputSystemId = id;
-    this.inputSystemSelected = true;
+    this.isInputSystemSelected = true;
   }
 
   removeInputSystem(selectedInputSystemId: string): void {
@@ -132,13 +165,22 @@ export class InputSystemsConfigurationController implements angular.IController 
     this.selectInputSystem(this.iscInputSystemsList[0].uuid);
   }
 
+  specialChanged(special: string): void {
+    if (special !== this.specialPrevious && special === 'scriptRegionVariant') {
+      this.isScriptRegionVariantSelected = true;
+    }
+
+    this.specialPrevious = special;
+  }
+
+  // noinspection JSMethodCanBeStatic
   isUnlistedLanguage(code: string): boolean {
     return (code === 'qaa');
   }
 
   openNewLanguageModal(suggestedLanguageCodes: any): void {
     const modalInstance = this.$modal.open({
-      templateUrl: '/angular-app/languageforge/lexicon/shared/select-new-language.html',
+      templateUrl: '/angular-app/languageforge/lexicon/shared/select-new-language.modal.html',
       windowTopClass: 'modal-select-language',
       controller: ['$scope', '$uibModalInstance',
         (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
@@ -160,7 +202,7 @@ export class InputSystemsConfigurationController implements angular.IController 
     modalInstance.result.then((selected: any) => {
       this.addInputSystem(selected.code, selected.language.name,
         this.selects.special.optionsOrder[0]);
-    });
+    }, () => { });
 
   }
 
@@ -171,6 +213,7 @@ export const InputSystemsConfigurationComponent: angular.IComponentOptions = {
     iscInputSystemViewModels: '<',
     iscInputSystemsList: '<',
     iscConfigPristine: '<',
+    iscAddInputSystem: '<',
     iscOnUpdate: '&'
   },
   controller: InputSystemsConfigurationController,

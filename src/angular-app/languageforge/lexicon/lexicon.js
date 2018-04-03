@@ -12,11 +12,7 @@ angular.module('lexicon',
     'sgw.ui.breadcrumb',
     'lexiconCoreModule',
     'lexicon.editor',
-    'lexiconConfigurationModule',
-    'lexicon.view.settings',
-    'lexicon.import-export',
-    'lexicon.settings',
-    'lexicon.sync',
+    'lexiconSettingsModule',
     'language.inputSystems',
     'pascalprecht.translate'
   ])
@@ -33,23 +29,22 @@ angular.module('lexicon',
     $stateProvider
       .state('configuration', {
         url: '/configuration',
-        template: '<lsc-config></lsc-config>'
-      })
-      .state('viewSettings', {
-        url: '/viewSettings',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/view-settings.html'
+        template: '<lexicon-config></lexicon-config>'
       })
       .state('importExport', {
         url: '/importExport',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/import.html'
+        template: '<lexicon-import></lexicon-import>'
       })
       .state('settings', {
         url: '/settings',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/project-settings.html'
+        template: '<lexicon-project-settings lps-project="project"' +
+          ' lps-rights="rights"' +
+          ' lps-interface-config="interfaceConfig"' +
+          ' lps-on-update="onUpdate($event)"></lexicon-project-settings>'
       })
       .state('sync', {
         url: '/sync',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/sync.html'
+        template: '<lexicon-sync></lexicon-sync>'
       })
       ;
 
@@ -102,6 +97,12 @@ angular.module('lexicon',
 
       $scope.showDictionaryButton = function showDictionaryButton() {
         return !($location.path().indexOf('/editor') === 0);
+      };
+
+      $scope.onUpdate = function onUpdate($event) {
+        if ($event.project) {
+          $scope.project = $event.project;
+        }
       };
 
       function changeInterfaceLanguage(code) {
