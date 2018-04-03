@@ -21,7 +21,6 @@ class Base
 {
     public function __construct() {
         $this->website = Website::get();
-        $this->_showHelp = false;
         $this->_appName = '';
         $this->data['isAdmin'] = false;
         $this->data['projects'] = [];
@@ -44,9 +43,6 @@ class Base
 
     /** @var Website */
     public $website;
-
-    /** @var boolean Variable used to control visibility of help button in header menu bar */
-    protected $_showHelp;
 
     /** @var boolean */
     protected $_isLoggedIn;
@@ -151,7 +147,6 @@ class Base
 
         // setup specific variables for header
         $this->data['isLoggedIn'] = $this->_isLoggedIn;
-        $this->data['showHelpButton'] = $this->_showHelp;
 
         $featuredProjectList = new FeaturedProjectListModel();
         $featuredProjectList->read();
