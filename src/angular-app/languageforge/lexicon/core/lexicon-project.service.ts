@@ -12,8 +12,8 @@ export class LexiconProjectService {
               private breadcrumbService: BreadcrumbService,
               private linkService: LexiconLinkService) { }
 
-  setBreadcrumbs(view: string, label: string) {
-    this.sessionService.getSession().then(session => {
+  setBreadcrumbs(view: string, label: string, forceRefresh: boolean = false): void {
+    this.sessionService.getSession(forceRefresh).then(session => {
       this.breadcrumbService.set('top', [{
         href: '/app/projects',
         label: 'My Projects'
@@ -69,7 +69,7 @@ export class LexiconProjectService {
     return this.api.call('lex_project_removeMediaFile', [mediaType, filename], callback);
   }
 
-  static isValidProjectCode(code: string) {
+  static isValidProjectCode(code: string): boolean {
     if (code == null) {
       return false;
     }

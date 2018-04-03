@@ -89,6 +89,25 @@ class LexEntryModelTest extends TestCase
             "newValue.senses#$guid.definition.en" => 'hi there'], $differences);
     }
 
+    public function testGetDifferences_NullField_DoesNotThrowException()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        $entry  = $this->createEntry($project, ["vernacularWs" => "fr", "anaylsisWs" => "en", "word" => "bonjour", "meaning" => "hello", "gloss" => "hello"]);
+        $entry2 = new LexEntryModel($project, $entry->id->asString());
+        /** @var LexSense $sense */
+        $sense = $entry2->senses[0];
+        $sense->definition->form("en", "hi there");
+        $sense->senseType->value = null;
+        $guid = $sense->guid;
+
+        $differences = $entry->calculateDifferences($entry2);
+        $this->assertEquals([
+            "oldValue.senses#$guid.definition.en" => 'hello',
+            "newValue.senses#$guid.definition.en" => 'hi there'], $differences);
+    }
+
     public function testGetDifferences_TwoFieldsChanged_ContainsBothChanges()
     {
         $environ = new LexiconMongoTestEnvironment();

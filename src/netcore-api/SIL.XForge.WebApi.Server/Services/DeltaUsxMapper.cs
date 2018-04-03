@@ -218,7 +218,7 @@ namespace SIL.XForge.WebApi.Server.Services
                                     break;
 
                                 case "segment":
-                                    if (attrs.Count == 1)
+                                    if (attrs.Count == 1 && !IsBlank(text))
                                         childNodes.Add(new XText(text));
                                     break;
                             }
@@ -254,16 +254,17 @@ namespace SIL.XForge.WebApi.Server.Services
                                 ProcessDelta(noteElem, noteDelta);
                                 childNodes.Add(noteElem);
                                 break;
-
-                            case "blank":
-                                // skip blanks
-                                break;
                         }
                     }
                 }
             }
 
             rootElem.Add(childNodes);
+        }
+
+        private static bool IsBlank(string text)
+        {
+            return text == "\u2002" || text == "\u2003\u2003";
         }
 
         private static XElement CreateContainerElement(string name, JToken attributes, object content = null)

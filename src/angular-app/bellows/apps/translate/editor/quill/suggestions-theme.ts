@@ -4,7 +4,7 @@ import Quill, {
   BoundsStatic, DeltaOperation, Module, Picker, QuillOptionsStatic, RangeStatic, SnowTheme, Theme, Toolbar, Tooltip
 } from 'quill';
 
-class FormatUsx {
+class UsxFormat {
   static readonly KEYS = new Set<string>(['style', 'altnumber', 'pubnumber', 'caller', 'closed']);
 
   style?: string;
@@ -37,7 +37,7 @@ export function registerSuggestionsTheme(): void {
   const Embed = Quill.import('blots/embed') as typeof Parchment.Embed;
   const BlockEmbed = Quill.import('blots/block/embed') as typeof Parchment.Embed;
 
-  function setFormatUsx(node: HTMLElement, format: FormatUsx): void {
+  function setFormatUsx(node: HTMLElement, format: UsxFormat): void {
     if (format) {
       for (const key in format) {
         if (format.hasOwnProperty(key) && format[key] != null && typeof format[key] === 'string') {
@@ -47,9 +47,9 @@ export function registerSuggestionsTheme(): void {
     }
   }
 
-  function createFormatUsx(node: HTMLElement): FormatUsx {
-    const format = new FormatUsx();
-    for (const key of FormatUsx.KEYS) {
+  function createFormatUsx(node: HTMLElement): UsxFormat {
+    const format = new UsxFormat();
+    for (const key of UsxFormat.KEYS) {
       if (node.hasAttribute(customAttributeName(key))) {
         format[key] = node.getAttribute(customAttributeName(key));
       }
@@ -80,7 +80,7 @@ export function registerSuggestionsTheme(): void {
 
     format(name: string, value: any): void {
       if (name === 'verse') {
-        const format = value as FormatUsx;
+        const format = value as UsxFormat;
         const elem = this.domNode as HTMLElement;
         setFormatUsx(elem, format);
       } else {
@@ -93,17 +93,17 @@ export function registerSuggestionsTheme(): void {
     static blotName = 'char';
     static tagName = 'usx-char';
 
-    static create(value: FormatUsx): Node {
+    static create(value: UsxFormat): Node {
       const node = super.create(value) as HTMLElement;
       setFormatUsx(node, value);
       return node;
     }
 
-    static formats(node: HTMLElement): FormatUsx {
+    static formats(node: HTMLElement): UsxFormat {
       return createFormatUsx(node);
     }
 
-    static value(node: HTMLElement): FormatUsx {
+    static value(node: HTMLElement): UsxFormat {
       return createFormatUsx(node);
     }
   }
@@ -133,7 +133,7 @@ export function registerSuggestionsTheme(): void {
 
     format(name: string, value: any): void {
       if (name === 'note') {
-        const format = value as FormatUsx;
+        const format = value as UsxFormat;
         const elem = this.domNode as HTMLElement;
         setFormatUsx(elem, format);
       } else {
@@ -142,55 +142,29 @@ export function registerSuggestionsTheme(): void {
     }
   }
 
-  class BlankEmbed extends Embed {
-    static blotName = 'blank';
-    static tagName = 'usx-blank';
-
-    static create(value: string): Node {
-      const node = super.create(value) as HTMLElement;
-      switch (value) {
-        case 'normal':
-          node.innerHTML = '&emsp;&emsp;';
-          node.setAttribute(customAttributeName('blank-type'), 'normal');
-          break;
-
-        case 'initial':
-          node.innerHTML = '&nbsp;';
-          node.setAttribute(customAttributeName('blank-type'), 'initial');
-          break;
-      }
-      return node;
-    }
-
-    static value(node: HTMLElement): string {
-      return node.getAttribute(customAttributeName('blank-type'));
-    }
-  }
-
   Block.allowedChildren.push(VerseEmbed);
   Block.allowedChildren.push(NoteEmbed);
-  Block.allowedChildren.push(BlankEmbed);
 
   class ParaBlock extends Block {
     static blotName = 'para';
     static tagName = 'usx-para';
 
-    static create(value: FormatUsx): Node {
+    static create(value: UsxFormat): Node {
       const node = super.create(value) as HTMLElement;
       setFormatUsx(node, value);
       return node;
     }
 
-    static formats(node: HTMLElement): FormatUsx {
+    static formats(node: HTMLElement): UsxFormat {
       return createFormatUsx(node);
     }
 
-    static value(node: HTMLElement): FormatUsx {
+    static value(node: HTMLElement): UsxFormat {
       return createFormatUsx(node);
     }
 
     format(name: string, value: any): void {
-      if (FormatUsx.KEYS.has(name)) {
+      if (UsxFormat.KEYS.has(name)) {
         this.domNode.setAttribute(customAttributeName(name), value);
       } else {
         super.format(name, value);
@@ -219,7 +193,7 @@ export function registerSuggestionsTheme(): void {
 
     format(name: string, value: any): void {
       if (name === 'chapter') {
-        const format = value as FormatUsx;
+        const format = value as UsxFormat;
         const elem = this.domNode as HTMLElement;
         setFormatUsx(elem, format);
       } else {
@@ -494,7 +468,6 @@ export function registerSuggestionsTheme(): void {
   Quill.register('formats/segment', SegmentClass);
   Quill.register('blots/verse', VerseEmbed);
   Quill.register('blots/note', NoteEmbed);
-  Quill.register('blots/blank', BlankEmbed);
   Quill.register('blots/char', CharInline);
   Quill.register('blots/para', ParaBlock);
   Quill.register('blots/chapter', ChapterEmbed);

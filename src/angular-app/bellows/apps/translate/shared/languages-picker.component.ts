@@ -21,6 +21,7 @@ export class LanguagesPickerController implements angular.IController {
     }
   }
 
+  // noinspection JSMethodCanBeStatic
   displayLanguage(tag: string, languageName: string) {
     if (languageName) {
       return languageName + ' (' + tag + ')';
@@ -56,7 +57,7 @@ export class LanguagesPickerController implements angular.IController {
           language: selected.language
         });
       }
-    });
+    }, () => { });
   }
 }
 

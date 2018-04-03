@@ -11,6 +11,7 @@
                 <dc-text class="dc-text" data-ng-if="!isAudio(tag)"
                     fte-multiline="false"
                     fte-disabled="! ($state.is('editor.entry') && control.rights.canEditEntry()) || modelContainsSpan(tag)"
+                    fte-disabled-reason="modelContainsSpan(tag) ? 'would-lose-metadata' : control.rights.sendReceive.isInProgress() ? 'sr-in-progress' : 'editing-not-permitted'"
                     fte-toolbar="[[]]"
                     fte-model="model[tag].value"
                     fte-dir="inputSystemDirection(tag)"></dc-text>
