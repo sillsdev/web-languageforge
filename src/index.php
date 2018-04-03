@@ -158,10 +158,18 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\SecurityServiceProvider());
 $app->register(new Silex\Provider\RememberMeServiceProvider());
+$app['site.oauth.jwt_token_authenticator'] = $app->share(function() {
+    return new \Site\OAuth\JWTTokenAuthenticator();
+});
 $app['security.firewalls'] = array(
     'site' => array(
         'pattern' => '^.*$',
         'anonymous' => true,
+        'guard' => array(
+            'authenticators' => array(
+                'site.oauth.jwt_token_authenticator'
+            ),
+        ),
         'form' => array('login_path' => '/auth/login', 'check_path' => '/app/login_check'),
         'remember_me' => array('key' => REMEMBER_ME_SECRET),
         'logout' => array('logout_path' => '/auth/logout', 'target_url' => '/auth/login', 'invalidate_session' => true),
