@@ -37,7 +37,9 @@
                         </button>
                         <button id="toggleActivityFeed"
                            class="btn btn-primary" data-ng-click="showActivityFeed()" title="Show Activity Feed">
-                            <i class="fa fa-wheelchair"></i>
+                            <span>Activity Feed</span>
+                            <img src="/angular-app/bellows/apps/activity/activity-icon.svg" width="22" height="22" />
+                            <span class="activity-count" ng-show="activityService.unreadCount > 0">{{activityService.unreadCount}}</span>
                         </button>
                     </div>
                     <div class="float-right" data-ng-show="$state.is('editor.comments')">

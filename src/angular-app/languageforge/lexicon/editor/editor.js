@@ -34,10 +34,12 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
     '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'lexRightsService',
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
     'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService', '$timeout',
+    'activityService',
   function ($scope, userService, sessionService, lexService, $q,
             $state, $window, $interval, $filter, linkService, utils, rightsService,
             notice, $rootScope, $location, lexConfig, commentService,
-            editorService, lexProjectService, sendReceive, modal, $timeout) {
+            editorService, lexProjectService, sendReceive, modal, $timeout,
+            activityService) {
 
     var pristineEntry = {};
     var warnOfUnsavedEditsId;
@@ -48,6 +50,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
     $scope.commentService = commentService;
     $scope.editorService = editorService;
     $scope.configService = lexConfig;
+    $scope.activityService = activityService;
     $scope.entries = editorService.entries;
     $scope.visibleEntries = editorService.visibleEntries;
     $scope.filteredEntries = editorService.filteredEntries;

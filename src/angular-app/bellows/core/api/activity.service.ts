@@ -5,9 +5,15 @@ export class FilterParams {
   endDate?: Date;
   limit?: number;
   skip?: number;
+  constructor() {
+      // TODO: Set the default value to something practical
+      this.limit = 1;
+      this.skip = 0;
+  }
 }
 
 export class ActivityService {
+  unreadCount: number;
   static $inject: string[] = ['apiService'];
   constructor(private api: ApiService) {}
 
@@ -21,5 +27,10 @@ export class ActivityService {
 
   listActivityForLexicalEntry(entryId: string, filterParams: FilterParams, callback?: JsonRpcCallback) {
     return this.api.call('activity_list_dto_for_lexical_entry', [entryId, filterParams], callback);
+  }
+
+  setUnreadCount(count: number) {
+    console.log(this.unreadCount + ' - ' + count);
+    this.unreadCount = count;
   }
 }
