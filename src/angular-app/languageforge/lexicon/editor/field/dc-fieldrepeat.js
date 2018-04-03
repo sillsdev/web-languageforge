@@ -2,7 +2,7 @@
 
 angular.module('palaso.ui.dc.fieldrepeat', ['palaso.ui.dc.multitext', 'palaso.ui.dc.optionlist',
   'palaso.ui.dc.multioptionlist', 'palaso.ui.dc.semanticdomain', 'palaso.ui.dc.example',
-  'palaso.ui.dc.multiparagraph', 'palaso.ui.dc.picture', 'palaso.ui.comments'])
+  'palaso.ui.dc.multiparagraph', 'palaso.ui.dc.picture'])
 
 // Palaso UI Dictionary Control: Sense
 .directive('dcFieldrepeat', [function () {
