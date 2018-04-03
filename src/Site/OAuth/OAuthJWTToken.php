@@ -3,10 +3,13 @@
 namespace Site\OAuth;
 
 use \Api\Library\Shared\JWTToken;
+use Api\Library\Shared\Website;
+use Api\Model\Shared\UserModel;
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
-class GoogleAndroidOauth extends GoogleOAuthProvider
+class GoogleAndroidOauth extends GoogleOAuth
 {
-
     // this function is an example that Micah provided me
     // the goal is to expose an OAuth API endpoint that, given an OAuth token generated from Android
     // can login and then return the JWT Token
@@ -14,13 +17,21 @@ class GoogleAndroidOauth extends GoogleOAuthProvider
     //   - login to session
     //   - return valid JWT token
     //   - hook up route to this controller  e.g. /oauth/jwt
-    function validateOAuthToken(string $oauthToken)
+    function validateOAuthToken(Request $request, Application $app)
     {
+        $website = Website::get();
+        $oauthToken = $request->get("oauthToken");
+
+        if (empty($oauthToken))
+        {
+            return false;
+        }
+
         $opts = [
             "method"  => "POST",
             "header"  => "Content-type: application/x-www-form-urlencoded",
             "content" => http_build_query([
-                "access_token" => $oauthToken,
+                "id_token" => $oauthToken,
             ]),
         ];
 
@@ -49,11 +60,13 @@ class GoogleAndroidOauth extends GoogleOAuthProvider
             return false;
         }
 
-        // login
-
         // return valid JWT token
-        JWTToken::getAccessToken();
 
+        // login
+        $userModel = new UserModel();
+        $userModel->readByPropertyArrayContains('googleOAuthIds', $access["sub"]);
+        $jwtToken = JWTToken::getAccessToken(30 * 24, $userModel->username, $website);
+        OAuthBase::setSilexAuthToken($userModel, $app);
 
         return $jwtToken;
     }
