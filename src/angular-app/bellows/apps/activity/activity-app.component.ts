@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 
-import {ActivityService} from '../../core/api/activity.service';
+import {ActivityService, FilterParams} from '../../core/api/activity.service';
 import {JsonRpcResult} from '../../core/api/json-rpc.service';
 import {BreadcrumbService} from '../../core/breadcrumbs/breadcrumb.service';
 import {LinkService} from '../../core/link.service';
@@ -53,11 +53,13 @@ class ActivityUserGroup {
   user: User;
   date: Date;
   activities: Activity[];
+  unread: number;
 
   constructor(private activity: Activity) {
     this.user = activity.userRef;
     this.date = activity.date;
     this.activities = [];
+    this.unread = 0;
   }
 }
 
@@ -89,6 +91,8 @@ export class ActivityAppController implements angular.IController {
   activityTypes: ActivityType[];
   filterUsers: FilterUsers[] = [];
   entryId: string;
+  filterParams: FilterParams;
+  loadingFeed: boolean;
 
   static $inject = ['$sce', 'activityService',
     'breadcrumbService', 'linkService',
@@ -100,6 +104,7 @@ export class ActivityAppController implements angular.IController {
     this.activityGroups = [];
     this.activityTypes = [];
     this.filterUsers = [];
+    this.filterParams = new FilterParams();
   }
 
   $onInit(): void {
@@ -112,21 +117,9 @@ export class ActivityAppController implements angular.IController {
     // var lastWeek = new Date(now.valueOf() - 1000 * 60 * 60 * 24 * 7);    //  7 days in milliseconds
     // var lastMonth = new Date(now.valueOf() - 1000 * 60 * 60 * 24 * 30);  // 30 days in milliseconds
     // this.activityService.listActivity({startDate: lastMonth, endDate: lastWeek}, result => { ... });
-    const filterParams = {};
-    if (angular.isDefined(this.entryId)) {
-      // Need to wait for entry promises to resolve before this becomes available
-      this.$scope.$watch(() => this.entryId, () => {
-        if (this.entryId) {
-          this.activityService.listActivityForLexicalEntry(this.entryId, filterParams, result => {
-            this.processActivityListFeed(result);
-          });
-        }
-      });
-    } else {
-      this.activityService.listActivity(filterParams, result => {
-        this.processActivityListFeed(result);
-      });
-    }
+
+    this.loadingFeed = false;
+    this.loadActivityFeed();
 
     this.$scope.$watch(() => this.filteredActivities, () => {
       let userGroupIndex;
@@ -145,15 +138,48 @@ export class ActivityAppController implements angular.IController {
               activityGroup.userGroups[userGroupIndex] = userGroup;
             }
             activityGroup.userGroups[userGroupIndex].activities.push(activity);
+            if (this.isUnread(activity.id)) {
+              userGroup.unread++;
+            }
           }
       }
         previousDate = activityGroup.date;
       }
-    });
+    }, true);
+  }
+
+  loadActivityFeed(reset: boolean = false) {
+    if (reset) {
+      this.activities = [];
+      this.filterParams.skip = 0;
+    }
+    if (angular.isDefined(this.entryId)) {
+      // Need to wait for entry promises to resolve before this becomes available
+      this.$scope.$watch(() => this.entryId, () => {
+        if (this.entryId) {
+          this.loadingFeed = true;
+          this.activityService.listActivityForLexicalEntry(this.entryId, this.filterParams, result => {
+            this.processActivityListFeed(result);
+          });
+        }
+      });
+    } else {
+      this.loadingFeed = true;
+      this.activityService.listActivity(this.filterParams, result => {
+        this.processActivityListFeed(result);
+      });
+    }
+  }
+
+  loadMoreActivities() {
+    this.filterParams.skip += this.filterParams.limit;
+    this.loadActivityFeed();
   }
 
   processActivityListFeed(result: JsonRpcResult) {
+    this.loadingFeed = false;
     if (result.ok) {
+      this.activityGroups = [];
       // Set activity groups up
       const today = new Date();
       let newDate = today;
@@ -249,7 +275,6 @@ export class ActivityAppController implements angular.IController {
         '+1\'d',
         'thumbs-up'));
       // Prepare the activities
-      this.activities = [];
       this.unread = result.data.unread;
       for (const key in result.data.activity) {
         if (result.data.activity.hasOwnProperty(key)) {
@@ -267,6 +292,7 @@ export class ActivityAppController implements angular.IController {
       this.decodeActivityList(this.activities);
       this.filteredActivities = this.activities;
       this.buildUsersList();
+      this.activityService.setUnreadCount(this.getUnreadCount());
     }
   }
 
@@ -329,6 +355,7 @@ export class ActivityAppController implements angular.IController {
     this.filteredActivities = this.activities;
     this.filterByUser();
     this.filterByType();
+    this.activityService.setUnreadCount(this.getUnreadCount());
   }
 
   filterByUser() {
@@ -375,6 +402,16 @@ export class ActivityAppController implements angular.IController {
         }
       }
     });
+  }
+
+  getUnreadCount() {
+    let unread = 0;
+    for (const activity of this.filteredActivities) {
+      if (this.isUnread(activity.id)) {
+        unread++;
+      }
+    }
+    return unread;
   }
 }
 

@@ -19,7 +19,7 @@
                 <div>
                     <div class="activity-user-group" data-ng-repeat="userGroup in activityGroup.userGroups">
                         <div data-ng-show="userGroup.activities.length > 0">
-                            <div class="activity-group-meta">
+                            <div class="activity-group-meta" data-ng-click="userGroup.showActivities = !userGroup.showActivities">
                                 <div class="meta-avatar">
                                     <img data-ng-src="{{$ctrl.getAvatarUrl(userGroup.user.avatar_ref)}}">
                                 </div>
@@ -28,8 +28,9 @@
                                         {{userGroup.date | date:activityGroup.dateFormat}}
                                     </div>
                                     <span class="activity-username">{{userGroup.user.username}}</span> added {{userGroup.activities.length}} item{{(userGroup.activities.length > 1 ? 's' : '')}} to the activity feed
+                                    <span class="activity-unread" ng-show="userGroup.unread > 0"> - {{userGroup.unread}} new activit{{userGroup.unread > 1 ? 'ies' : 'y'}}</span>
                                 </div>
-                                <div class="meta-toggle" data-ng-click="userGroup.showActivities = !userGroup.showActivities">
+                                <div class="meta-toggle">
                                     <i class="fa fa-angle-down" data-ng-class="{'fa-rotate-180': userGroup.showActivities}"></i>
                                 </div>
                                 <div class="meta-time">
@@ -195,5 +196,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div id="activity-show-more">
+        <span data-ng-click="$ctrl.loadMoreActivities()">Show More <i class="fa fa-spinner fa-spin" data-ng-show="$ctrl.loadingFeed"></i></span>
     </div>
 </div>
