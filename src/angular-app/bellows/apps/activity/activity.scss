@@ -86,10 +86,15 @@
         .activity-group-meta {
           display: flex;
           align-items: center;
+          cursor: pointer;
           .meta-summary {
             flex: 1;
             .activity-username {
               font-weight: bold;
+            }
+            .activity-unread {
+              font-weight: bold;
+              font-style: italic;
             }
             .meta-time {
               display: none;
@@ -101,7 +106,6 @@
             text-align: center;
             i {
               font-weight: bold;
-              cursor: pointer;
               transition: all 0.25s;
             }
           }
@@ -236,6 +240,12 @@
           }
         }
         .activity-container .activity-row > div {
+          &.unread {
+            margin-left: -15px;
+            margin-right: -15px;
+            padding-left: 15px;
+            padding-right: 15px;
+          }
           .activity-date {
             color: #104060;
             font-size: 12px;
@@ -251,6 +261,33 @@
   &:not(.entry-view) {
     @include media-breakpoint-down(sm) {
       @include activitySmallView;
+    }
+  }
+  #activity-show-more {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.25s;
+    opacity: 0.75;
+    span {
+      background: #fff;
+      padding: 5px 10px;
+      position: relative;
+      z-index: 2;
+      font-size: 13px;
+      color: #363636;
+    }
+    &:before {
+      z-index: 1;
+      position: absolute;
+      border-top: 1px solid #b2b2b2;
+      margin-top: 16px;
+      content: "";
+      width: 100%;
+    }
+    &:hover {
+      opacity: 1;
     }
   }
 }
