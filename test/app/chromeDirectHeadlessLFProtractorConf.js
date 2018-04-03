@@ -8,7 +8,7 @@ exports.config = {
     }
   },
   framework: 'jasmine2',
-  rootElement: '[id="app-container-for-bootstrap"]',
+  rootElement: '[id="app-container"]',
 
   onPrepare: function () {
     /* global angular: false, browser: false, jasmine: false */
@@ -27,7 +27,7 @@ exports.config = {
           browser.pause();
         }
       }
-    }
+    };
     jasmine.getEnv().addReporter(pauseOnFailure);
   }
 };
