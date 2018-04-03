@@ -1,6 +1,8 @@
 import * as angular from 'angular';
 
 export class SoundController implements angular.IController {
+  puiUrl: string;
+
   audioElement = document.createElement('audio');
   playing = false;
 
@@ -50,7 +52,7 @@ export class SoundController implements angular.IController {
   }
 
   $onChanges(changes: any): void {
-    const urlChange = changes.url as angular.IChangesObject<string>;
+    const urlChange = changes.puiUrl as angular.IChangesObject<string>;
     if (urlChange != null && urlChange.currentValue) {
       if (this.playing) {
         this.togglePlayback();
@@ -105,7 +107,7 @@ export class SoundController implements angular.IController {
 
 export const SoundComponent: angular.IComponentOptions = {
   bindings: {
-    url: '<'
+    puiUrl: '<'
   },
   controller: SoundController,
   templateUrl: '/angular-app/bellows/shared/sound-player.component.html'

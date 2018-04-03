@@ -15,7 +15,8 @@
                     fte-toolbar="[[]]"
                     fte-model="model[tag].value"
                     fte-dir="inputSystemDirection(tag)"></dc-text>
-                <dc-audio data-ng-if="isAudio(tag)" dc-filename="model[tag].value" dc-control="control">
+                <dc-audio data-ng-if="isAudio(tag)" dc-filename="model[tag].value" dc-rights="control.rights"
+                          dc-interface-config="control.interfaceConfig" dc-project-slug="control.project.slug">
                 </dc-audio>
             </div>
         </div>
