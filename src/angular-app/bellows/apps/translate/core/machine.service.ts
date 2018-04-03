@@ -2,6 +2,7 @@ import * as angular from 'angular';
 import { InteractiveTranslationSession, SegmentTokenizer, SmtTrainProgress, TranslationEngine } from 'machine';
 import { RangeStatic } from 'quill';
 
+import { NoticeService } from '../../../core/notice/notice.service';
 import { DocType } from './constants';
 
 export class MachineService {
@@ -14,9 +15,10 @@ export class MachineService {
   private targetSegmentTokenizer: SegmentTokenizer;
   private _engineConfidence: number = 0;
 
-  static $inject: string[] = ['$window', '$q', '$rootScope'];
+  static $inject: string[] = ['$window', '$q',
+    '$rootScope', 'silNoticeService'];
   constructor(private readonly $window: angular.IWindowService, private readonly $q: angular.IQService,
-              private readonly $rootScope: angular.IRootScopeService) { }
+              private readonly $rootScope: angular.IRootScopeService, private readonly notice: NoticeService) { }
 
   get confidenceThreshold(): number {
     return this._confidenceThreshold;
@@ -52,12 +54,22 @@ export class MachineService {
       return this.$q.resolve();
     }
 
+    const start = performance.now();
     const deferred = this.$q.defer<void>();
     this.engine.translateInteractively(sourceSegment, this.confidenceThreshold, newSession => {
       if (newSession != null) {
         if (this.sourceSegment === sourceSegment) {
           newSession.initialize();
+          const finish = performance.now();
           this.session = newSession;
+          if (this.session.isSourceSegmentValid) {
+            console.log('Translated segment, length: %d, time: %dms', this.session.sourceSegment.length,
+              finish - start);
+          } else {
+            this.notice.push(this.notice.WARN,
+              'This section of text is too long to generate suggestions.', '', false, 5000);
+            console.log('Segment too long to translate, length: %d', this.session.sourceSegment.length);
+          }
           deferred.resolve();
         } else {
           this.session = null;

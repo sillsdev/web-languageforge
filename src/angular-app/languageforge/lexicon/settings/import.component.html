@@ -1,0 +1,54 @@
+<div class="container">
+<h2 style="font-weight:normal">Import from LIFT</h2>
+<uib-tabset>
+    <uib-tab heading="LIFT or zip Import">
+        <div class="card">
+            <div class="card-header">
+                <label>Import a LIFT file or a compressed (zipped) folder of the whole project</label>
+                <div class="drop-box" data-ngf-drop="$ctrl.onFileSelect($file)" data-ngf-drag-over-class="'dragover'">
+                    <h4>Drop a LIFT file here<br> or drop a zipped folder here</h4>
+                    <br>
+                    <p>or if you prefer...</p>
+
+                    <div class="btn btn-std" id="browseButton" data-ngf-select="$ctrl.onFileSelect($file)">Browse...</div>
+                </div>
+                <div data-ngf-no-file-drop>
+                    <div class="btn btn-std" data-ngf-select="$ctrl.onFileSelect($file)">Browse...</div>
+                </div>
+                <br>
+                <form data-ng-show="$ctrl.upload.file != null">
+                    <p>Language Forge merges the incoming data with existing entries.
+                        If there is a conflict, Language Forge cannot guess what you would prefer.
+                        Therefore, choose the merge settings to use for this import.</p>
+                    <p>Whenever there is a conflict:</p>
+                    <div class="form-group">
+                        <div class="controls">
+                            <label class="radio">
+                                <input type="radio" value="importLoses" data-ng-model="$ctrl.upload.mergeRule">
+                                Do not import the conflicting data (keep Language Forge data).</label>
+                            <label class="radio">
+                                <input type="radio" value="importWins" data-ng-model="$ctrl.upload.mergeRule">
+                                Import the conflicting data and overwrite the current data (the importing data overrules the Language Forge data).</label>
+                            <label class="radio">
+                                <input type="radio" value="createDuplicates" data-ng-model="$ctrl.upload.mergeRule">
+                                Import the conflicting data into a new lexical entry or meaning and I will make decisions myself later.</label>
+                        </div>
+                        <div class="controls">
+                            <label class="checkbox">
+                                <input type="checkbox" data-ng-model="$ctrl.upload.skipSameModTime">
+                                Skip importing entries with identical modification times.</label><br>
+                            <label class="checkbox" data-ng-show="$ctrl.upload.mergeRule == 'importWins'">
+                                <input type="checkbox" data-ng-model="$ctrl.upload.deleteMatchingEntry">
+                               Delete matching entry if deleted in import.</label>
+                        </div>
+                    </div>
+                    <button data-ng-disabled="$ctrl.upload.importStarted" class="btn btn-primary" data-ng-click="$ctrl.importLift()">
+                        <i class="fa fa-upload" aria-hidden="true"></i> Import</button>
+                    <strong> {{$ctrl.upload.file.name}}</strong> ({{$ctrl.upload.file.size | bytes}})
+                </form>
+            </div>
+        </div>
+    </uib-tab>
+</uib-tabset>
+</div>
+

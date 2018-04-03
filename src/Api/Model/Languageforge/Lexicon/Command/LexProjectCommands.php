@@ -21,8 +21,9 @@ class LexProjectCommands
     /**
      * @param string $projectId
      * @param array $config
-     * @throws \Exception
      * @return bool|string $projectId
+     * @throws \Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException
+     * @throws \Exception
      */
     public static function updateConfig($projectId, $config)
     {
@@ -156,12 +157,12 @@ class LexProjectCommands
      */
     private static function removeDeletedCustomFieldView($customFieldSpecs, &$view)
     {
-        $customFieldNames = array();
+        $customFieldNames = [];
         foreach ($customFieldSpecs as $customFieldSpec) {
             $customFieldNames[] = $customFieldSpec['fieldName'];
         }
 
-        $customFieldNamesToRemove = array();
+        $customFieldNamesToRemove = [];
         foreach ($view->fields as $fieldName => $field) {
             if (self::isCustomField($fieldName) && array_search($fieldName, $customFieldNames) === false) {
                 $customFieldNamesToRemove[] = $fieldName;
