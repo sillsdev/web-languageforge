@@ -1,7 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.multiparagraph', ['coreModule', 'palaso.ui.showOverflow',
-  'palaso.ui.dc.text'])
+angular.module('palaso.ui.dc.multiparagraph', ['coreModule', 'editorFieldModule'])
 
 // Dictionary Control Multitext
 .directive('dcMultiparagraph', [function () {

@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 
-export const PuiIdleValidate = ($interval: angular.IIntervalService) => (<angular.IDirective> {
+export const PuiIdleValidate = ($interval: angular.IIntervalService) => ({
   restrict: 'A',
   scope: {
     idleValidate: '&',
@@ -14,7 +14,7 @@ export const PuiIdleValidate = ($interval: angular.IIntervalService) => (<angula
       milliseconds = 1000;
     }
 
-    $element.bind('keyup', function () {
+    $element.bind('keyup', () => {
       if (angular.isFunction($scope.idleValidateKeypress)) {
         $scope.$apply($scope.idleValidateKeypress);
       }
@@ -26,6 +26,6 @@ export const PuiIdleValidate = ($interval: angular.IIntervalService) => (<angula
       intervalTimer = $interval(() => $scope.idleValidate(), milliseconds, 1);
     });
   }
-});
+} as angular.IDirective);
 
 PuiIdleValidate.$inject = ['$interval'];

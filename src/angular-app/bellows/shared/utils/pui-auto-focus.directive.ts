@@ -1,7 +1,6 @@
 import * as angular from 'angular';
 
-// This directive's code is from
-// http://stackoverflow.com/questions/14833326/how-to-set-focus-in-angularjs
+// This directive's code is from http://stackoverflow.com/questions/14833326/how-to-set-focus-in-angularjs
 export const PuiAutoFocus = ($interval: angular.IIntervalService, $parse: angular.IParseService) => ({
   restrict: 'A',
   link($scope, $element, $attrs) {
