@@ -6,9 +6,10 @@ use \Api\Library\Shared\JWTToken;
 use Api\Library\Shared\Website;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class GoogleAndroidOauth extends GoogleOAuth
+class OAuthJWTToken extends GoogleOAuth
 {
     // this function is an example that Micah provided me
     // the goal is to expose an OAuth API endpoint that, given an OAuth token generated from Android
@@ -66,8 +67,7 @@ class GoogleAndroidOauth extends GoogleOAuth
         $userModel = new UserModel();
         $userModel->readByPropertyArrayContains('googleOAuthIds', $access["sub"]);
         $jwtToken = JWTToken::getAccessToken(30 * 24, $userModel->username, $website);
-        OAuthBase::setSilexAuthToken($userModel, $app);
 
-        return $jwtToken;
+        return new JsonResponse($jwtToken);  // TODO: Does the Android app need anything more than a bare token in the JSON response?
     }
 }
