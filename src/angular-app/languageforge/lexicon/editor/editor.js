@@ -891,7 +891,47 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
 
       $scope.typeahead.searchEntries = function searchEntries(query) {
 
-        var filteredEntries = $filter('filter')($scope.filteredEntries, query);
+        var blacklistKeys = [
+            'isDeleted',
+            'id',
+            'guid',
+            'translationGuid',
+            '$$hashKey',
+            'dateModified',
+            'dateCreated',
+            'projectId',
+            'authorInfo',
+            'fileName'
+          ];
+
+        var isBlacklisted = function (key) {
+          var audio = '-audio';
+          return (
+            blacklistKeys.includes(key) || key.indexOf(audio, key.length - audio.length) !== -1
+          );
+        };
+
+        // TODO consider whitelisting all properties under customFields
+
+        var filteredEntries = $scope.filteredEntries.filter(function isMatch(value) {
+          // toUpperCase is better than toLowerCase, but still has issues,
+          // e.g. 'ß'.toUpperCase() === 'SS'
+          var queryCapital = query.toUpperCase();
+          switch (value == null ? 'null' : typeof value) {
+            // Array.prototype.some tests whether some element satisfies the function
+            case 'object': return Object.keys(value).some(function (key) {
+                return !isBlacklisted(key) && isMatch(value[key]);
+              });
+
+            case 'string': return value.toUpperCase().indexOf(queryCapital) != -1;
+            case 'null': return false;
+            case 'boolean': return false;
+            default:
+              console.error('Unexpected type ' + (typeof value) + ' on entry.');
+              return false;
+          }
+        });
+
         var prioritizedEntries = {
           wordBeginning: [],
           word: [],
