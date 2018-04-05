@@ -252,6 +252,7 @@ export class TranslateEditorController implements angular.IController {
     this.$window.removeEventListener('resize', this.onWindowResize);
     this.$window.removeEventListener('beforeunload', this.onBeforeUnload);
     this.save();
+    this.machine.close();
   }
 
   selectDocumentSet(index: number, updateConfig: boolean = true): void {
@@ -564,6 +565,10 @@ export class TranslateEditorController implements angular.IController {
   }
 
   private listenForTrainingStatus(): void {
+    if (!this.machine.isInitialised) {
+      return;
+    }
+
     this.machine.listenForTrainingStatus(progress => this.onTrainStatusUpdate(progress))
       .then(() => this.onTrainSuccess())
       .catch(() => this.onTrainError())
