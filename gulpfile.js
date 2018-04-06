@@ -1025,6 +1025,11 @@ gulp.task('build-productionConfig', function () {
     jwtKey = 'jwtKey';
   }
 
+  var bugsnagApiKey = process.env.XFORGE_BUGSNAG_API_KEY;
+  if (bugsnagApiKey === undefined) {
+    bugsnagApiKey = 'missing-bugsnag-api-key';
+  }
+
   var params = require('yargs')
     .option('mongodbConnection', {
       demand: false,
@@ -1065,6 +1070,10 @@ gulp.task('build-productionConfig', function () {
       demand: false,
       default: jwtKey,
       type: 'string' })
+    .option('bugsnagApiKey', {
+      demand: false,
+      default: bugsnagApiKey,
+      type: 'string' })
     .fail(yargFailure)
     .argv;
   var configSrc = [
@@ -1100,6 +1109,9 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('JWT_KEY', ').*;$/m,
       '$1' + params.jwtKey + '\');'))
+    .pipe(replace(
+      /(define\('BUGSNAG_API_KEY', ').*;$/m,
+      '$1' + params.bugsnagApiKey + '\');'))
     .pipe(gulp.dest('./'));
 });
 
