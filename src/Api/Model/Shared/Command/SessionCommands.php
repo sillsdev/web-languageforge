@@ -24,6 +24,14 @@ class SessionCommands
 
         $sessionData['isProduction'] = $website->isProduction;
 
+        // BUGSNAG_API_KEY and VERSION are not defined when running tests
+        if (defined('BUGSNAG_API_KEY')) {
+            $sessionData['bugsnagApiKey'] = BUGSNAG_API_KEY;
+        }
+        if (defined('VERSION')) {
+            $sessionData['version'] = VERSION;
+        }
+
         if ($userId) {
             $sessionData['userId'] = (string) $userId;
             $user = new UserModel($userId);
