@@ -64,9 +64,9 @@ namespace SIL.XForge.WebApi.Server.Services
         {
             string blankText;
             if (segRef.Contains("/p"))
-                blankText = "\u2002";
+                blankText = DeltaUsxMapper.InitialBlankText;
             else
-                blankText = "\u2003\u2003";
+                blankText = DeltaUsxMapper.NormalBlankText;
             return delta.InsertText(blankText, segRef);
         }
 

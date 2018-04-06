@@ -11,6 +11,9 @@ import { Segment } from './segment';
 import { MachineSegmenter, Segmenter, UsxSegmenter } from './segmenter';
 
 export abstract class DocumentEditor {
+  protected static readonly INITIAL_BLANK_TEXT = '\u00a0';
+  protected static readonly NORMAL_BLANK_TEXT = '\u2003\u2003';
+
   static isTextEmpty(text: string): boolean {
     text = text.endsWith('\n') ? text.substr(0, text.length - 1) : text;
     return text === '';
@@ -219,7 +222,7 @@ export abstract class DocumentEditor {
   }
 
   protected isBlank(text: string): boolean {
-    return text === '\u2002' || text === '\u2003\u2003';
+    return text === DocumentEditor.INITIAL_BLANK_TEXT || text === DocumentEditor.NORMAL_BLANK_TEXT;
   }
 
   private get docId(): string {
@@ -396,7 +399,7 @@ export class TargetDocumentEditor extends DocumentEditor {
     let i: number;
     for (i = range.index; i < range.index + range.length; i++) {
       const ch = this.quill.getText(i, 1);
-      if (ch === '\u2002' || ch === '\u2003' || !/\s/.test(ch)) {
+      if (ch === DocumentEditor.INITIAL_BLANK_TEXT[0] || ch === DocumentEditor.NORMAL_BLANK_TEXT[0] || !/\s/.test(ch)) {
         return { index: i, length: range.length - (i - range.index) };
       }
     }
@@ -410,9 +413,9 @@ export class TargetDocumentEditor extends DocumentEditor {
       // insert blank
       let blankText: string;
       if (ref.indexOf('/p') !== -1) {
-        blankText = '\u2002';
+        blankText = DocumentEditor.INITIAL_BLANK_TEXT;
       } else {
-        blankText = '\u2003\u2003';
+        blankText = DocumentEditor.NORMAL_BLANK_TEXT;
       }
       this.quill.insertText(range.index, blankText, Quill.sources.USER);
       range = { index: range.index, length: blankText.length };
