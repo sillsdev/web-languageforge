@@ -9,7 +9,7 @@ RestartSec=10
 SyslogIdentifier=scriptureforge-sharedb
 User=root
 Group=www-data
-Environment=NODE_ENV=production PORT=8443
+Environment=NODE_ENV=production
 
 [Install]
 WantedBy=multi-user.target
