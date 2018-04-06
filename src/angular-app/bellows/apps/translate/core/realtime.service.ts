@@ -141,8 +141,16 @@ export class RealTimeService {
   }
 
   private getWebSocketDocUrl() {
-    const url = 'wss://' + this.$window.location.host;
-    return (url.endsWith(':8443')) ? url : url + ':8443';
+    let protocol: string;
+    switch (this.$window.location.protocol) {
+      case 'http:':
+        protocol = 'ws';
+        break;
+      case 'https:':
+        protocol = 'wss';
+        break;
+    }
+    return protocol + '://' + this.$window.location.host + '/sharedb/';
   }
 
 }
