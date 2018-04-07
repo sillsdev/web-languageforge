@@ -2,7 +2,6 @@
 
 namespace Api\Model\Shared\Command;
 
-use Api\Library\Shared\HelpContentCommands;
 use Api\Library\Shared\Website;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
@@ -50,10 +49,6 @@ class SessionCommands
                 $sessionData['userProjectRights'] = $project->getRightsArray($userId);
                 $sessionData['projectSettings'] = $project->getPublicSettings($userId);
             }
-        }
-
-        if ($appName) {
-            $sessionData['helps'] = HelpContentCommands::getSessionData($appName, $website);
         }
 
         // File Size
