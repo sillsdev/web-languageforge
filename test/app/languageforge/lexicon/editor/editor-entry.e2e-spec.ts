@@ -34,6 +34,9 @@ describe('Lexicon E2E Editor List and Entry', () => {
     editorPage.browse.search.input.sendKeys('asparagus');
     expect<any>(editorPage.browse.search.getMatchCount()).toBe(1);
     editorPage.browse.search.clearBtn.click();
+    editorPage.browse.search.input.sendKeys('Asparagus');
+    expect<any>(editorPage.browse.search.getMatchCount()).toBe(1);
+    editorPage.browse.search.clearBtn.click();
   });
 
   it('refresh returns to list view', () => {
