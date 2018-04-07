@@ -28,7 +28,7 @@ h1.mobile-title {
   }
 }
 
-#app-container-for-bootstrap {
+#app-container {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -366,7 +366,7 @@ nav {
     position: initial;
   }
 
-  #app-container-for-bootstrap {
+  #app-container {
     margin-top: 10px;
   }
 
