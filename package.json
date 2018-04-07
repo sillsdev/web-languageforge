@@ -81,7 +81,6 @@
     "gulp-dotnet-cli": "^0.8.0",
     "gulp-exec": "~2.1.0",
     "gulp-jshint": "^2.0.1",
-    "gulp-markdown": "^1.2.0",
     "gulp-phpunit": "^0.21.10",
     "gulp-protractor": "^4.1.0",
     "gulp-rename": "^1.2.2",
