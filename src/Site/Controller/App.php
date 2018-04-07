@@ -39,6 +39,7 @@ class App extends Base
      * @param string $appName
      * @param string $projectId
      * @throws UserUnauthorizedException
+     * @throws AppNotFoundException
      */
     public function setupAngularAppVariables(Application $app, $appName, $projectId = '')
     {
@@ -70,15 +71,6 @@ class App extends Base
 
         $app['session']->set('projectId', $projectId);
         $this->_projectId = $projectId;
-
-        // determine help menu button visibility
-        // placeholder for UI language 'en' to support translation of helps in the future
-        $helpsFolder = $appModel->appFolder . "/helps/en/page";
-        if (file_exists($helpsFolder) &&
-            iterator_count(new \FilesystemIterator($helpsFolder, \FilesystemIterator::SKIP_DOTS)) > 0
-        ) {
-            $this->_showHelp = true;
-        }
 
         $this->addJavascriptFiles($appModel->siteFolder . '/js', ['vendor', 'assets']);
 
