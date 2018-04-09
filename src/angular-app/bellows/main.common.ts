@@ -27,4 +27,4 @@ import './apps/translate/translate-app.module';
 import './apps/usermanagement/user-management-app.module';
 import './apps/userprofile/user-profile-app.module';
 import './core/core.module';
-import './shared/pui-utils.module';
+import './shared/utils/pui-utils.module';
