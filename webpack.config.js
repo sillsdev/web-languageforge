@@ -22,17 +22,19 @@ var webpackConfig = {
       { from: './node_modules/offline-js/offline.min.js', to: 'offline-js' },
       { from: './node_modules/rangy/lib/', to: 'rangy' },
       { from: './node_modules/textangular/dist/', to: 'textangular' },
-      { from: './node_modules/zxcvbn/dist/', to: 'zxcvbn' }
-    ]),
-    new webpack.ContextReplacementPlugin(
+      { from: './node_modules/zxcvbn/dist/', to: 'zxcvbn' },
+      { from: './node_modules/moment/min/', to: 'moment' },
+      { from: './node_modules/angular-moment-picker/dist/', to: 'angular-moment-picker' }
+  ]),
+new webpack.ContextReplacementPlugin(
 
-      // The ([\\/]) piece accounts for path separators in *nix and Windows
-      /angular([\\/])core([\\/])@angular/,
-      path.resolve(__dirname, './src'),
+    // The ([\\/]) piece accounts for path separators in *nix and Windows
+    /angular([\\/])core([\\/])@angular/,
+    path.resolve(__dirname, './src'),
 
-      // your Angular Async Route paths relative to this root directory
-      {}
-    ),
+    // your Angular Async Route paths relative to this root directory
+    {}
+),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: function (module) {

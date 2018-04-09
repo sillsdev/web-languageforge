@@ -6,9 +6,10 @@ export class FilterParams {
   limit?: number;
   skip?: number;
   constructor() {
-      // TODO: Set the default value to something practical
-      this.limit = 1;
+      this.limit = 100;
       this.skip = 0;
+      this.startDate = null;
+      this.endDate = null;
   }
 }
 
@@ -30,7 +31,6 @@ export class ActivityService {
   }
 
   setUnreadCount(count: number) {
-    console.log(this.unreadCount + ' - ' + count);
     this.unreadCount = count;
   }
 }

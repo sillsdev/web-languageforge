@@ -3,14 +3,58 @@
 
     <div class="activity-header">
         <h1>Activities</h1>
-        <select class="custom-select" data-ng-model="filterUser" data-ng-change="$ctrl.triggerFilter()"
-            data-ng-options="item as item.username for item in $ctrl.filterUsers">
-            <option value="">All Users</option>
-        </select>
-        <select class="custom-select" data-ng-model="filterType" data-ng-change="$ctrl.triggerFilter()"
-            data-ng-options="item as item.label for item in $ctrl.activityTypes">
-            <option value="">All Events</option>
-        </select>
+        <div class="activity-filter-options">
+            <select class="custom-select" data-ng-model="filterUser" data-ng-change="$ctrl.triggerFilter()"
+                data-ng-options="item as item.username for item in $ctrl.filterUsers">
+                <option value="">All Users</option>
+            </select>
+            <select class="custom-select" data-ng-model="filterType" data-ng-change="$ctrl.triggerFilter()"
+                data-ng-options="item as item.label for item in $ctrl.activityTypes">
+                <option value="">All Events</option>
+            </select>
+            <div id="activity-filter-calendar">
+                <button class="form-control" data-ng-click="$ctrl.filterDateOpen = !$ctrl.filterDateOpen">
+                    <span>{{$ctrl.filterDate}}</span>
+                    <i class="fa fa-calendar"></i></button>
+                <div id="activity-calendar-view" ng-class="{nigel : $ctrl.filterDateOpen}" data-ng-show="$ctrl.filterDateOpen">
+                    <div>
+                        <div>
+                            <label>Filter From</label>
+                            <input class="form-control"
+                                format="YYYY-MM-DD"
+                                min-view="year"
+                                max-view="month"
+                                start-view="month"
+                                set-on-select="true"
+                                ng-model="filterStartDate"
+                                change="$ctrl.filterByDate()"
+                                max-date="$ctrl.filterDateMax"
+                                autoclose="false"
+                                inline="true"
+                                today="true"
+                                moment-picker>
+                        </div>
+                        <div>
+                            <label>Filter To</label>
+                            <input class="form-control"
+                                format="YYYY-MM-DD"
+                                min-view="year"
+                                max-view="month"
+                                start-view="month"
+                                set-on-select="true"
+                                ng-model="filterEndDate"
+                                change="$ctrl.filterByDate()"
+                                min-date="$ctrl.filterDateMin"
+                                max-date="$ctrl.filterDateToday"
+                                inline="true"
+                                today="true"
+                                moment-picker>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm brn-default" data-ng-click="$ctrl.filterDateOpen = !$ctrl.filterDateOpen">Close <i class="fa fa-times"></i></button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="activity-groups right-panel-container">
         <div data-ng-show="$ctrl.activityGroups.length > 0" data-ng-repeat="activityGroup in $ctrl.activityGroups">
@@ -198,6 +242,10 @@
         </div>
     </div>
     <div id="activity-show-more">
-        <span data-ng-click="$ctrl.loadMoreActivities()">Show More <i class="fa fa-spinner fa-spin" data-ng-show="$ctrl.loadingFeed"></i></span>
+        <span data-ng-click="$ctrl.loadMoreActivities()">
+            Show More
+            <i class="fa fa-spinner fa-spin" data-ng-show="$ctrl.loadingFeed"></i>
+            <i class="fa fa-angle-down" data-ng-hide="$ctrl.loadingFeed"></i>
+        </span>
     </div>
 </div>

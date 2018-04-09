@@ -92,19 +92,118 @@ export class ActivityAppController implements angular.IController {
   filterUsers: FilterUsers[] = [];
   entryId: string;
   filterParams: FilterParams;
+  filterDateOpen: boolean = false;
+  filterDate: string;
+  filterDateMin: Date;
+  filterDateMax: Date;
+  filterDateToday: Date = new Date();
   loadingFeed: boolean;
 
   static $inject = ['$sce', 'activityService',
     'breadcrumbService', 'linkService',
-    'sessionService', '$scope'];
+    'sessionService', '$scope', '$window'];
 
   constructor(private $sce: angular.ISCEService, private activityService: ActivityService,
               private breadcrumbService: BreadcrumbService, private linkService: LinkService,
-              private sessionService: SessionService, private $scope: any) {
+              private sessionService: SessionService, private $scope: any, private $window: angular.IWindowService) {
     this.activityGroups = [];
     this.activityTypes = [];
     this.filterUsers = [];
     this.filterParams = new FilterParams();
+    // Set activity groups up
+    const today = new Date();
+    let newDate = today;
+    this.activityGroups.push(new ActivityGroup('Today', today, 'h:ma \'Today\''));
+    newDate.setDate(today.getDate() - 1);
+    this.activityGroups.push(new ActivityGroup('Yesterday', newDate, 'h:ma \'Yesterday\''));
+    newDate = new Date();
+    newDate.setDate(today.getDate() - 6);
+    this.activityGroups.push(new ActivityGroup('Last week', newDate, 'h:ma EEEE'));
+    newDate = new Date();
+    newDate.setDate(today.getDate() - 13);
+    this.activityGroups.push(new ActivityGroup('Two weeks ago', newDate));
+    newDate = new Date();
+    newDate.setMonth(today.getMonth() - 1);
+    this.activityGroups.push(new ActivityGroup('One month ago', newDate));
+    newDate = new Date();
+    newDate.setFullYear(today.getFullYear() - 10); // 10 years back should be enough to capture everything
+    this.activityGroups.push(new ActivityGroup('Older', newDate));
+    // Setup activity types
+    this.activityTypes.push(new ActivityType(
+      'message',
+      'global',
+      'Global Message',
+      'exclamation-triangle'));
+    this.activityTypes.push(new ActivityType(
+      'add_text',
+      'project',
+      'New Text',
+      'file-text'));
+    this.activityTypes.push(new ActivityType(
+      'add_user_to_project',
+      'project',
+      'User added to project',
+      'user-plus'));
+    this.activityTypes.push(new ActivityType(
+      'add_question',
+      'project',
+      'New question',
+      'question-circle'));
+    this.activityTypes.push(new ActivityType(
+      'add_lex_comment',
+      'project',
+      'New comment (lexicon)',
+      'comments'));
+    this.activityTypes.push(new ActivityType(
+      'add_entry',
+      'project',
+      'New Entry',
+      'file'));
+    this.activityTypes.push(new ActivityType(
+      'update_entry',
+      'project',
+      'Entry Updated',
+      'save'));
+    this.activityTypes.push(new ActivityType(
+      'delete_entry',
+      'project',
+      'Entry Deleted',
+      'trash'));
+    this.activityTypes.push(new ActivityType(
+      'add_lex_reply',
+      'project',
+      'Reply to comment',
+      'reply'));
+    this.activityTypes.push(new ActivityType(
+      'update_lex_comment_status',
+      'project',
+      'Comment status changed (lexicon)',
+      'pencil-square'));
+    this.activityTypes.push(new ActivityType(
+      'add_comment',
+      'project',
+      'New Comment (SF)',
+      'reply'));
+    this.activityTypes.push(new ActivityType(
+      'update_comment',
+      'project',
+      'Update Comment (SF)',
+      'comments-o'));
+    this.activityTypes.push(new ActivityType(
+      'add_answer',
+      'project',
+      'New Answer',
+      'comments'));
+    this.activityTypes.push(new ActivityType(
+      'update_answer',
+      'project',
+      'Update Answer',
+      'comments-o'));
+    this.activityTypes.push(new ActivityType(
+      'increase_score',
+      'project',
+      '+1\'d',
+      'thumbs-up'));
   }
 
   $onInit(): void {
@@ -153,6 +252,29 @@ export class ActivityAppController implements angular.IController {
       this.activities = [];
       this.filterParams.skip = 0;
     }
+    // Set date label
+    this.filterDate = '';
+    this.filterDateMin = new Date();
+    this.filterDateMin.setMonth(this.filterDateMin.getMonth() - 1);
+    this.filterDateMax = new Date();
+    if (this.filterParams.startDate === null && this.filterParams.endDate === null) {
+      this.filterDate = 'From Beginning';
+    } else {
+      if (this.filterParams.startDate !== null) {
+        this.filterDate += this.$scope.filterStartDate.format('MMM D, YYYY');
+        this.filterDateMin = this.filterParams.startDate;
+      } else {
+        this.filterDate += 'From Beginning';
+      }
+      this.filterDate += ' to ';
+      if (this.filterParams.endDate !== null) {
+        this.filterDate += this.$scope.filterEndDate.format('MMM D, YYYY');
+        this.filterDateMax = this.filterParams.endDate;
+      } else {
+        this.filterDate += 'Now';
+      }
+    }
+    // Choose appropriate API end point
     if (angular.isDefined(this.entryId)) {
       // Need to wait for entry promises to resolve before this becomes available
       this.$scope.$watch(() => this.entryId, () => {
@@ -179,101 +301,6 @@ export class ActivityAppController implements angular.IController {
   processActivityListFeed(result: JsonRpcResult) {
     this.loadingFeed = false;
     if (result.ok) {
-      this.activityGroups = [];
-      // Set activity groups up
-      const today = new Date();
-      let newDate = today;
-      this.activityGroups.push(new ActivityGroup('Today', today, 'h:ma \'Today\''));
-      newDate.setDate(today.getDate() - 1);
-      this.activityGroups.push(new ActivityGroup('Yesterday', newDate, 'h:ma \'Yesterday\''));
-      newDate = new Date();
-      newDate.setDate(today.getDate() - 6);
-      this.activityGroups.push(new ActivityGroup('Last week', newDate, 'h:ma EEEE'));
-      newDate = new Date();
-      newDate.setDate(today.getDate() - 13);
-      this.activityGroups.push(new ActivityGroup('Two weeks ago', newDate));
-      newDate = new Date();
-      newDate.setMonth(today.getMonth() - 1);
-      this.activityGroups.push(new ActivityGroup('One month ago', newDate));
-      newDate = new Date();
-      newDate.setFullYear(today.getFullYear() - 10); // 10 years back should be enough to capture everything
-      this.activityGroups.push(new ActivityGroup('Older', newDate));
-      // Setup activity types
-      this.activityTypes.push(new ActivityType(
-        'message',
-        'global',
-        'Global Message',
-        'exclamation-triangle'));
-      this.activityTypes.push(new ActivityType(
-        'add_text',
-        'project',
-        'New Text',
-        'file-text'));
-      this.activityTypes.push(new ActivityType(
-        'add_user_to_project',
-        'project',
-        'User added to project',
-        'user-plus'));
-      this.activityTypes.push(new ActivityType(
-        'add_question',
-        'project',
-        'New question',
-        'question-circle'));
-      this.activityTypes.push(new ActivityType(
-        'add_lex_comment',
-        'project',
-        'New comment (lexicon)',
-        'comments'));
-      this.activityTypes.push(new ActivityType(
-        'add_entry',
-        'project',
-        'New Entry',
-        'file'));
-      this.activityTypes.push(new ActivityType(
-        'update_entry',
-        'project',
-        'Entry Updated',
-        'save'));
-      this.activityTypes.push(new ActivityType(
-        'delete_entry',
-        'project',
-        'Entry Deleted',
-        'trash'));
-      this.activityTypes.push(new ActivityType(
-        'add_lex_reply',
-        'project',
-        'Reply to comment',
-        'reply'));
-      this.activityTypes.push(new ActivityType(
-        'update_lex_comment_status',
-        'project',
-        'Comment status changed (lexicon)',
-        'pencil-square'));
-      this.activityTypes.push(new ActivityType(
-        'add_comment',
-        'project',
-        'New Comment (SF)',
-        'reply'));
-      this.activityTypes.push(new ActivityType(
-        'update_comment',
-        'project',
-        'Update Comment (SF)',
-        'comments-o'));
-      this.activityTypes.push(new ActivityType(
-        'add_answer',
-        'project',
-        'New Answer',
-        'comments'));
-      this.activityTypes.push(new ActivityType(
-        'update_answer',
-        'project',
-        'Update Answer',
-        'comments-o'));
-      this.activityTypes.push(new ActivityType(
-        'increase_score',
-        'project',
-        '+1\'d',
-        'thumbs-up'));
       // Prepare the activities
       this.unread = result.data.unread;
       for (const key in result.data.activity) {
@@ -380,8 +407,23 @@ export class ActivityAppController implements angular.IController {
     this.filteredActivities = filteredActivities;
   }
 
+  filterByDate() {
+    if (angular.isDefined(this.$scope.filterStartDate) && this.$scope.filterStartDate !== true) {
+      this.filterParams.startDate = this.$scope.filterStartDate._d;
+    } else {
+      this.filterParams.startDate = null;
+    }
+    if (angular.isDefined(this.$scope.filterEndDate) && this.$scope.filterEndDate !== true) {
+      this.filterParams.endDate = this.$scope.filterEndDate._d;
+    } else {
+      this.filterParams.endDate = null;
+    }
+    this.loadActivityFeed(true);
+  }
+
   buildUsersList() {
     this.sessionService.getSession().then(session => {
+      this.filterUsers = [];
       this.filterUsers.push({
         id: session.userId(),
         username: 'Me (' + session.username() + ')'

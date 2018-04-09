@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "angular": "1.6.4",
+    "angular-moment-picker": "^0.10.2",
     "angular-route": "^1.6.5",
     "angular-sanitize": "^1.6.5",
     "angular-sortable-view": "0.0.15",

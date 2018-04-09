@@ -17,6 +17,7 @@
     {% endfor %}
 
     <link rel="icon" href="{{ faviconPath }}" type="image/x-icon" />
+    <link rel="stylesheet" href="/dist/angular-moment-picker/angular-moment-picker.css?v={{ version }}" />
 
     {% if manifestFilename %}
     <link rel="manifest" href="/appManifest/{{ manifestFilename }}">
@@ -28,6 +29,8 @@
         <script src="/dist/manifest.bundle.js?v={{ version }}"></script>
         <script src="/dist/vendor.bundle.js?v={{ version }}"></script>
         <script src="/dist/main.bundle.js?v={{ version }}"></script>
+        <script src="/dist/moment/moment.min.js?v={{ version }}"></script>
+        <script src="/dist/angular-moment-picker/angular-moment-picker.min.js?v={{ version }}"></script>
 
         {% for filename in vendorFilesMinJs %}
         <script src="/{{ filename }}?v={{ version }}"></script>
@@ -40,6 +43,8 @@
         <script src="/dist/manifest.bundle.js?v={{ version }}"></script>
         <script src="/dist/vendor.bundle.js?v={{ version }}"></script>
         <script src="/dist/main.bundle.js?v={{ version }}"></script>
+        <script src="/dist/moment/moment.min.js?v={{ version }}"></script>
+        <script src="/dist/angular-moment-picker/angular-moment-picker.js?v={{ version }}"></script>
 
         {% for filename in vendorFilesJs %}
         <script src="/{{ filename }}?v={{ version }}"></script>
