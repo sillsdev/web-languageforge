@@ -8,6 +8,7 @@ export const ActivityAppModule = angular
   .module('activity', [
     'ngRoute',
     'ui.bootstrap',
+    'moment-picker',
     CoreModule,
     BreadcrumbModule
   ])

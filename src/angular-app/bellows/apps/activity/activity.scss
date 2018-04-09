@@ -290,4 +290,87 @@
       opacity: 1;
     }
   }
+  .activity-filter-options {
+    display: flex;
+    justify-content: flex-end;
+    > * {
+      margin-left: 10px;
+      @include media-breakpoint-down(sm) {
+        font-size: 12px;
+        margin-left: 5px;
+        &:nth-child(1) {
+          width: 40%;
+        }
+        &:nth-child(2) {
+          width: 60%;
+        }
+        &:nth-child(3) {
+          flex: 1 1 40px;
+        }
+      }
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+  #activity-filter-calendar {
+    display: inline-block;
+    position: relative;
+    > button {
+      span {
+        @include media-breakpoint-down(sm) {
+          display: none;
+        }
+      }
+    }
+    #activity-calendar-view {
+      position: absolute;
+      z-index: 1;
+      border: 1px solid #b2b2b2;
+      background: #fff;
+      padding: 5px;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      @include media-breakpoint-down(xs) {
+        font-size: 16px;
+      }
+      .btn {
+        cursor: pointer;
+      }
+      > div {
+        > div label {
+          display: none;
+          @include media-breakpoint-down(xs) {
+            display: block;
+            background: #b2b2b2;
+            margin: -5px -5px 5px;
+            text-align: center;
+            font-weight: bold;
+          }
+        }
+        display: flex;
+        @include media-breakpoint-down(xs) {
+          flex-direction: column;
+        }
+        input {
+          visibility: hidden;
+          padding: 0;
+          height: 0;
+          + .moment-picker {
+            margin-right: 10px;
+          }
+        }
+        .moment-picker {
+          @include media-breakpoint-down(xs) {
+            margin-bottom: 5px;
+          }
+          .moment-picker-container {
+            border: 0;
+            box-shadow: none;
+          }
+        }
+      }
+    }
+  }
 }
