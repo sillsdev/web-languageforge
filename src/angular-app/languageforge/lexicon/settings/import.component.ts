@@ -5,10 +5,7 @@ import {ModalService} from '../../../bellows/core/modal/modal.service';
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
 import {SessionService} from '../../../bellows/core/session.service';
 import {LexiconProjectService} from '../core/lexicon-project.service';
-
-class UploadFile extends File {
-  $error?: any;
-}
+import {UploadFile, UploadResponse} from '../shared/model/upload.model';
 
 class UploadOptions {
   mergeRule: string = 'createDuplicates';
@@ -18,10 +15,6 @@ class UploadOptions {
   isLift: boolean = false;
   progress: number = 0;
   file: UploadFile;
-}
-
-class UploadResponse extends Response {
-  data?: any;
 }
 
 export class LexiconImportController implements angular.IController {
