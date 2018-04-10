@@ -61,11 +61,15 @@ class OAuthJWTToken extends GoogleOAuth
             return false;
         }
 
-        // return valid JWT token
-
         // login
         $userModel = new UserModel();
         $userModel->readByPropertyArrayContains('googleOAuthIds', $access["sub"]);
+        if (! OAuthBase::setSilexAuthToken($userModel, $app))
+        {
+            return false;  // Failed to set Silex auth token (should never happen, but check just in case)
+        }
+
+        // return valid JWT token
         $jwtToken = JWTToken::getAccessToken(30 * 24, $userModel->username, $website);
 
         return new JsonResponse($jwtToken);  // TODO: Does the Android app need anything more than a bare token in the JSON response?
