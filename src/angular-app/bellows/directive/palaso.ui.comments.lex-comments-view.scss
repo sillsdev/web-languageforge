@@ -12,6 +12,7 @@
   font-size: 14px;
   display: block;
   .comments-right-panel-container {
+    position: relative;
     &.context-mode {
       &:before {
         position: absolute;
