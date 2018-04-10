@@ -22,6 +22,7 @@
     <PackageReference Include="Hangfire.Mongo" Version="0.5.9" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
+    <PackageReference Include="SIL.WritingSystems" Version="4.2.0-776" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="2.2.0" />
   </ItemGroup>
 

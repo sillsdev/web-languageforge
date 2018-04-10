@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using SIL.WritingSystems;
 using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Models;
 using SIL.XForge.WebApi.Server.Options;
@@ -72,13 +73,16 @@ namespace SIL.XForge.WebApi.Server.Services
                         if (!repoIds.Contains(projectId))
                             continue;
 
+                        var langName = (string) projectObj["language_iso"];
+                        if (StandardSubtags.TryGetLanguageFromIso3Code(langName, out LanguageSubtag subtag))
+                            langName = subtag.Name;
+
                         projects.Add(new ParatextProject
                             {
                                 Id = projectId,
                                 Name = (string) identificationObj["fullname"],
                                 LanguageTag = (string) projectObj["language_ldml"],
-                                // TODO: use SIL.WritingSystems to get language name from ISO-3 code
-                                LanguageName = (string) projectObj["language_iso"]
+                                LanguageName = langName
                             });
                     }
                     return Attempt.Success(new ParatextUserInfo
