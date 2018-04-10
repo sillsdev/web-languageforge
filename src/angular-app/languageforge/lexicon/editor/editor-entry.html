@@ -111,11 +111,13 @@
         </div>
     </div>
     <div id="lexRightPanels">
-        <div id="lexAppCommentView" class="right-panel">
-            <lex-comments-view entry-config="config.entry" entry="currentEntry" control="control"></lex-comments-view>
-        </div>
-        <div id="lexAppActivityFeed" class="right-panel">
-            <activity-app entry-id="{{currentEntry.id}}"></activity-app>
+        <div class="right-panel-list">
+            <div id="lexAppCommentView" class="right-panel">
+                <lex-comments-view entry-config="config.entry" entry="currentEntry" control="control"></lex-comments-view>
+            </div>
+            <div id="lexAppActivityFeed" class="right-panel">
+                <activity-app entry-id="{{currentEntry.id}}"></activity-app>
+            </div>
         </div>
         <div class="right-panel-backdrop" ng-click="control.hideRightPanel()">
             <i class="fa fa-times"></i>

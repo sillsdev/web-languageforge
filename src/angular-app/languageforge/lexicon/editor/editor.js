@@ -701,8 +701,10 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         } else {
           // Reset the comment context BEFORE we start showing the panel
           $scope.setCommentContext('', '', '', '', '');
-          angular.element('.comments-right-panel-container').css({ paddingTop: 0 });
-          $scope.showCommentsPanel();
+          angular.element('.comments-right-panel').css({ paddingTop: 0 });
+          if ($scope.rightPanelVisible === false) {
+            $scope.showCommentsPanel();
+          }
         }
       };
 

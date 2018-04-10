@@ -59,11 +59,13 @@ angular.module('palaso.ui.comments')
                 var bubbleOffset = $scope.element.offset().top;
               }
 
-              var rightPanel = angular.element('.comments-right-panel-container');
+              var rightPanel = angular.element('.comments-right-panel');
               var rightPanelOffset = rightPanel.offset().top;
               var offsetAuthor = 40;
               rightPanel.css({ paddingTop: (bubbleOffset - rightPanelOffset - offsetAuthor) });
-              $scope.control.showCommentsPanel();
+              if ($scope.control.rightPanelVisible === false) {
+                $scope.control.showCommentsPanel();
+              }
             }
           };
         });
