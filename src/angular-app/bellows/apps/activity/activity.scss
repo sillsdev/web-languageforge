@@ -257,6 +257,15 @@
         }
       }
     }
+    #activity-show-more {
+      &:before {
+        display: none;
+      }
+      span {
+        background: #cddeeb;
+        margin: 10px 0;
+      }
+    }
   }
   &:not(.entry-view) {
     @include media-breakpoint-down(sm) {

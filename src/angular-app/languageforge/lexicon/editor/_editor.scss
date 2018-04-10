@@ -428,38 +428,50 @@ dc-entry .card {
       }
     }
   }
-  .right-panel {
+  .right-panel-list {
+    width: 0;
+    transition: width 0.5s ease-in-out, margin-left 0.5s ease-in-out;
+    margin-left: 0;
     position: relative;
-    width: 280px;
-    transition: width 0.5s ease-in-out, margin-left 0.5s ease-in-out, opacity 0.5s linear 0.5s;
-    margin-left: 15px;
-    opacity: 1;
-    overflow: hidden;
-    height: 100%;
-    & > * {
+    .right-panel {
       position: absolute;
+      transition: opacity 0.5s linear 0.5s;
+      opacity: 1;
+      height: 100%;
       top: 0;
       width: 100%;
+      &.panel-closing {
+        transition: width 0.5s ease-in-out 0.5s, margin-left 0.5s ease-in-out 0.5s, opacity 0.5s;
+        overflow: visible !important;
+        height: auto !important;
+      }
+      &.panel-opening {
+        overflow: hidden;
+      }
+      &.panel-switch {
+        transition: opacity 0.5s !important;
+        width: 280px !important;
+      }
+      &:not(.panel-visible) {
+        width: 0;
+        margin-left: 0;
+        opacity: 0;
+        height: 0;
+        overflow: hidden;
+      }
     }
-    &.panel-closing {
-      transition: width 0.5s ease-in-out 0.5s, margin-left 0.5s ease-in-out 0.5s, opacity 0.5s;
-      overflow: visible;
+  }
+  &.right-panel-visible {
+    .right-panel-list {
+      width: 280px;
+      margin-left: 15px;
+    }
+  }
+  &.panel-closing {
+    .right-panel-list {
+      transition: width 0.5s ease-in-out 0.5s, margin-left 0.5s ease-in-out 0.5s;
+      overflow: visible !important;
       height: auto !important;
-    }
-    &.panel-opening {
-      overflow: hidden;
-    }
-    &.panel-switch {
-      transition: opacity 0.5s !important;
-      width: 280px !important;
-      margin-left: 15px !important;
-    }
-    &:not(.panel-visible) {
-      width: 0;
-      margin-left: 0;
-      opacity: 0;
-      height: 0;
-      overflow: hidden;
     }
   }
   .right-panel-backdrop {
@@ -467,27 +479,30 @@ dc-entry .card {
   }
 
   @include media-breakpoint-down(sm) {
-    .right-panel {
+    .right-panel-list {
       position: absolute;
       top: 0;
       right: 0;
       z-index: 1001;
-      transition: opacity 0.5s;
-      width: 280px !important;
-      .right-panel-container {
-        background: #e6eff5;
-        &:before {
-          display: none;
+      height: 100%;
+      .right-panel {
+        transition: opacity 0.5s;
+        width: 280px !important;
+        .right-panel-container {
+          background: #e6eff5;
+          &:before {
+            display: none;
+          }
+          .commentsListMainContainer {
+            height: calc(100% - 33px);
+            overflow: auto;
+          }
         }
-        .commentsListMainContainer {
-          height: calc(100% - 33px);
-          overflow: auto;
-        }
-      }
-      .context-mode {
-        padding-top: 0 !important;
-        .commentsListMainContainer {
-          height: 100%;
+        .context-mode {
+          padding-top: 0 !important;
+          .commentsListMainContainer {
+            height: 100%;
+          }
         }
       }
     }
