@@ -3,7 +3,7 @@
 @import '../../../../../node_modules/bootstrap/scss/mixins';
 
 @import '../../../../Site/views/languageforge/theme/default/sass/variables';
-@import '../../../bellows/directive/palaso.ui.comments.dc-comment';
+@import 'comment/palaso.ui.comments.dc-comment';
 @import 'field/dc-audio';
 @import 'field/dc-text';
 @import 'field/dc-multioptionlist';
