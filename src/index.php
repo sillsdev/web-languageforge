@@ -158,10 +158,35 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\SecurityServiceProvider());
 $app->register(new Silex\Provider\RememberMeServiceProvider());
+
+$app['security.authentication_listener.factory.jwt'] = $app->protect(function ($name, $options) use ($app) {
+    // define the authentication provider object
+    $app['security.authentication_provider.'.$name.'.jwt'] = function () use ($app) {
+        return new \Site\Provider\JWTAuthenticationProvider($app['website']);
+    };
+
+    // define the authentication listener object
+    $app['security.authentication_listener.'.$name.'.jwt'] = function () use ($app, $name) {
+        return new \Site\Listener\JWTListener($app['security.token_storage'], $app['security.authentication_provider.'.$name.'.jwt'], $app['website']);
+    };
+
+    return array(
+        // the authentication provider id
+        'security.authentication_provider.'.$name.'.jwt',
+        // the authentication listener id
+        'security.authentication_listener.'.$name.'.jwt',
+        // the entry point id
+        null,
+        // the position of the listener in the stack
+        'pre_auth'
+    );
+});
+
 $app['security.firewalls'] = array(
     'site' => array(
         'pattern' => '^.*$',
         'anonymous' => true,
+        'jwt' => true,  // TODO: Determine if this is enough to enable the JWT authentication that we need, or not
         'form' => array('login_path' => '/auth/login', 'check_path' => '/app/login_check'),
         'remember_me' => array('key' => REMEMBER_ME_SECRET),
         'logout' => array('logout_path' => '/auth/logout', 'target_url' => '/auth/login', 'invalidate_session' => true),
@@ -238,6 +263,8 @@ $app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bin
 
 $app->get('/oauthcallback/google', 'Site\OAuth\GoogleOAuth::oauthCallback');
 $app->get('/oauthcallback/paratext', 'Site\OAuth\ParatextOAuth::oauthCallback');
+
+$app->get('/oauth/jwt', 'Site\OAuth\OAuthJWTToken::validateOAuthToken');
 
 $app->get('/download/assets/{appName}/{projectSlug}/audio/{filename}', 'Site\Controller\Download::assets');
 $app->get('/download/assets/{appName}/{projectSlug}/{filename}', 'Site\Controller\Download::assets');
