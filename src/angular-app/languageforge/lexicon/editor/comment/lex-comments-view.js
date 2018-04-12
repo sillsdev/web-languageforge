@@ -6,8 +6,7 @@ angular.module('lexCommentsModule')
   .directive('lexCommentsView', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/' +
-        'palaso.ui.comments.lex-comments-view.html',
+      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/lex-comments-view.html',
       scope: {
         entry: '=',
         entryConfig: '=',
