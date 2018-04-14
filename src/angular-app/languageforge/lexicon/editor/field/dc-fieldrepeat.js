@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.fieldrepeat', ['palaso.ui.dc.multitext', 'palaso.ui.dc.optionlist',
+angular.module('palaso.ui.dc.fieldrepeat', ['editorFieldModule', 'palaso.ui.dc.optionlist',
   'palaso.ui.dc.multioptionlist', 'palaso.ui.dc.semanticdomain', 'palaso.ui.dc.example',
   'palaso.ui.dc.multiparagraph', 'palaso.ui.dc.picture'])
 
