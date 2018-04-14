@@ -8,7 +8,7 @@ export class EditorUtil {
   // Return the multitext's values as [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
   // NOTE: Returns a promise. Use .then() to access the actual data.
   dcMultitextToArray = (elem: ElementFinder|ElementArrayFinder) => {
-    const inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
+    const inputSystemDivs = elem.all(by.repeater('tag in $ctrl.config.inputSystems'));
     return inputSystemDivs.map((div: any) => {
       const wsidSpan = div.element(by.css('.input-group > span.wsid'));
       const wordInput = div.element(by.css('.input-group > .dc-text input'));
