@@ -10,6 +10,6 @@
             <span class="uneditable-input" data-ng-hide="$state.is('editor.entry') && control.rights.canEditEntry()"
                   data-ng-bind="getDisplayName(model.value)"></span>
         </div>
-        <comment-bubble control="control" field="fieldName" input-system="" model="model"></comment-bubble>
+        <comment-bubble control="control" field="fieldName" input-system="" model="model" parent-context-guid="contextGuid"></comment-bubble>
     </div>
 </form>
