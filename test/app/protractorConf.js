@@ -76,7 +76,8 @@ exports.config = {
       // Uncomment to pause tests on first failure
       // jasmine.getEnv().addReporter(pauseOnFailure);
     }
-  }
+  },
+  SELENIUM_PROMISE_MANAGER: false
 };
 
 if (process.env.TEAMCITY_VERSION) {

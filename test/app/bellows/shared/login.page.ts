@@ -1,10 +1,10 @@
-import {browser, by, element} from 'protractor';
+import {browser, by, element, protractor} from 'protractor';
 
 export class BellowsLoginPage {
   private readonly constants = require('../../testConstants');
 
-  static get() {
-    browser.get(browser.baseUrl + '/auth/login');
+  static async get() {
+    await browser.driver.get(browser.baseUrl + '/auth/login');
   }
 
   form = element(by.id('login-loginForm'));
@@ -15,40 +15,41 @@ export class BellowsLoginPage {
   forgotPasswordLink = element(by.id('forgot_password'));
   submit     = element(by.id('login-submit'));
 
-  login(username: string, password: string) {
-    browser.get(browser.baseUrl + '/auth/logout');
 
-    BellowsLoginPage.get();
-    this.username.sendKeys(username);
-    this.password.sendKeys(password);
-    this.submit.click();
+  async login(username: string, password: string){
+    await browser.driver.get(browser.baseUrl + '/auth/logout');
+
+    await BellowsLoginPage.get();
+    await this.username.sendKeys(username);
+    await this.password.sendKeys(password);
+    await this.submit.click();
   }
 
-  loginAsAdmin() {
-    this.login(this.constants.adminEmail, this.constants.adminPassword);
+  async loginAsAdmin() {
+    await this.login(this.constants.adminEmail, this.constants.adminPassword);
   }
 
-  loginAsManager() {
-    this.login(this.constants.managerEmail, this.constants.managerPassword);
+  async loginAsManager() {
+    await this.login(this.constants.managerEmail, this.constants.managerPassword);
   }
 
-  loginAsUser() {
-    this.login(this.constants.memberEmail, this.constants.memberPassword);
+  async loginAsUser() {
+    await this.login(this.constants.memberEmail, this.constants.memberPassword);
   }
 
   loginAsMember = this.loginAsUser;
 
-  loginAsSecondUser() {
-    this.login(this.constants.member2Email, this.constants.member2Password);
+  async loginAsSecondUser() {
+    await this.login(this.constants.member2Email, this.constants.member2Password);
   }
 
   loginAsSecondMember = this.loginAsSecondUser;
 
-  loginAsObserver() {
-    this.login(this.constants.observerEmail, this.constants.observerPassword);
+  async loginAsObserver() {
+    await this.login(this.constants.observerEmail, this.constants.observerPassword);
   }
 
-  static logout() {
-    browser.get(browser.baseUrl + '/auth/logout');
+  static async logout() {
+    await browser.driver.get(browser.baseUrl + '/auth/logout');
   }
 }

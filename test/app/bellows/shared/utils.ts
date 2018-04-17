@@ -22,9 +22,9 @@ export class Utils {
     return dropdownElement.element(By.cssContainingText('option', value));
   }
 
-  static clickDropdownByValue(dropdownElement: ElementFinder, value: string|RegExp) {
+  static async clickDropdownByValue(dropdownElement: ElementFinder, value: string|RegExp) {
     // Select an element of the dropdown based on its value (its text)
-    Utils.findDropdownByValue(dropdownElement, value).click();
+   await Utils.findDropdownByValue(dropdownElement, value).click();
   }
 
   findRowByFunc(elementArray: ElementArrayFinder, searchFunc: (rowText: string) => boolean): Promise<ElementFinder> {
@@ -62,17 +62,17 @@ export class Utils {
    * @param textString - string of text to set the value to
    */
   static sendText(elem: ElementFinder, textString: string) {
-    browser.executeScript('arguments[0].value = arguments[1];', elem.getWebElement(), textString);
+    browser.driver.executeScript('arguments[0].value = arguments[1];', elem.getWebElement(), textString);
   }
 
   //noinspection JSUnusedGlobalSymbols
   waitForAlert(timeout: number) {
     if (!timeout) { timeout = 8000; }
 
-    browser.wait(() => {
+    browser.driver.wait(() => {
       let alertPresent = true;
       try {
-        browser.switchTo().alert();
+        browser.driver.switchTo().alert();
       } catch (NoSuchAlertError) {
         alertPresent = false;
       }
@@ -87,11 +87,11 @@ export class Utils {
     list: this.noticeList,
     firstCloseButton: this.noticeList.first().element(by.partialButtonText('×')),
     waitToInclude: (includedText: any): void => {
-      browser.wait(() =>
+      browser.driver.wait(() =>
         this.noticeList.count().then((count: any) =>
           count >= 1),
         Utils.conditionTimeout);
-      browser.wait(() =>
+      browser.driver.wait(() =>
         this.noticeList.first().getText().then((text: any) => text.includes(includedText)),
         Utils.conditionTimeout);
     }
@@ -100,16 +100,16 @@ export class Utils {
   static checkModalTextMatches(expectedText: string) {
     const modalBody = element(by.css('.modal-body'));
 
-    browser.wait(ExpectedConditions.visibilityOf(modalBody), Utils.conditionTimeout);
+    browser.driver.wait(ExpectedConditions.visibilityOf(modalBody), Utils.conditionTimeout);
     expect(modalBody.getText()).toMatch(expectedText);
   }
 
-  static clickModalButton(buttonText: string) {
-    const button = element(by.css('.modal-footer')).element(by.partialButtonText(buttonText));
+    static async clickModalButton(buttonText: string) {
+    const button = await element(by.css('.modal-footer')).element(by.partialButtonText(buttonText));
 
-    browser.wait(ExpectedConditions.visibilityOf(button), Utils.conditionTimeout);
-    browser.wait(ExpectedConditions.elementToBeClickable(button), Utils.conditionTimeout);
-    button.click();
+    await browser.driver.wait(ExpectedConditions.visibilityOf(button), Utils.conditionTimeout);
+    await browser.driver.wait(ExpectedConditions.elementToBeClickable(button), Utils.conditionTimeout);
+    await button.click();
   }
 
   static clickBreadcrumb(breadcrumbTextOrRegex: string|RegExp) {
@@ -138,8 +138,8 @@ export class Utils {
       text.includes('ERR_INTERNET_DISCONNECTED');
   }
 
-  static scrollTop() {
-    browser.executeScript('window.scroll(0,0)');
+  static async scrollTop() {
+    await browser.driver.executeScript('window.scroll(0,0)');
   }
 
   static isAllCheckboxes(elementArray: ElementArrayFinder, state: boolean = true) {

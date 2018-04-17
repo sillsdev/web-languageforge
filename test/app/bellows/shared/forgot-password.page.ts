@@ -1,8 +1,8 @@
 import {browser, by, element} from 'protractor';
 
 export class BellowsForgotPasswordPage {
-  static get() {
-    browser.get(browser.baseUrl + '/auth/forgot_password');
+  static async get() {
+    await browser.driver.get(browser.baseUrl + '/auth/forgot_password');
   }
 
   form = element(by.id('forgot-password-form'));
