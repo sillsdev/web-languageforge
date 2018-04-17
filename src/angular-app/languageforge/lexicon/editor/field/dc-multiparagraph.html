@@ -2,8 +2,7 @@
     <div class="form-group row comment-bubble-group">
         <label class="col-form-label col-lg-4 text-lg-right">{{config.label}}</label>
         <div class="controls col-lg-8">
-            <div class="input-group" data-ng-click="selectInputSystem(model.inputSystem)"
-                data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
+            <div class="input-group" data-ng-click="selectInputSystem(model.inputSystem)">
                 <span class="wsid input-group-addon notranslate"
                     title="{{inputSystems[model.inputSystem].languageName}}">{{inputSystems[model.inputSystem].abbreviation}}</span>
                 <!--

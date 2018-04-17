@@ -1,7 +1,6 @@
 <div data-ng-repeat="fieldName in config.fieldOrder">
     <div data-ng-if="!config.fields[fieldName].hideIfEmpty || control.show.emptyFields ||
-        (config.fields[fieldName].hideIfEmpty && fieldContainsData(config.fields[fieldName].type, model[fieldName]))"
-        data-ng-class="{selectableFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
+        (config.fields[fieldName].hideIfEmpty && fieldContainsData(config.fields[fieldName].type, model[fieldName]))">
         <div data-ng-switch data-on="config.fields[fieldName].type" class="field-container">
             <div data-ng-switch-when="optionlist">
                 <dc-optionlist class="dc-item" control="control"
