@@ -23,11 +23,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         templateUrl: '/angular-app/languageforge/lexicon/editor/editor-entry.html',
         controller: 'EditorEntryCtrl'
       })
-      .state('editor.comments', {
-        url: '/entry/{entryId:[0-9a-z_]{6,24}}/comments',
-        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-comments.html',
-        controller: 'EditorCommentsCtrl'
-      })
       ;
   }])
   .controller('EditorCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService', '$q',
@@ -664,11 +659,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
             }
           }
 
-          if ($state.is('editor.comments')) {
-            $scope.editEntryAndScroll(entryId);
-            $scope.showComments();
-          }
-
           if ($state.is('editor.entry')) {
             $scope.editEntryAndScroll(entryId);
           }
@@ -923,7 +913,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
                 return !isBlacklisted(key) && isMatch(value[key]);
               });
 
-            case 'string': return value.toUpperCase().indexOf(queryCapital) != -1;
+            case 'string': return value.toUpperCase().indexOf(queryCapital) !== -1;
             case 'null': return false;
             case 'boolean': return false;
             default:
@@ -1016,7 +1006,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         var contextPart = '';
 
         for (var i in contextParts) {
-          if (angular.isDefined(contextParts[i]) && contextParts[i] !== '') {
+          if (contextParts.hasOwnProperty(i) && angular.isDefined(contextParts[i]) &&
+            contextParts[i] !== ''
+          ) {
             contextPart = contextParts[i].trim();
             if (contextPart.indexOf('sense#') !== -1) {
               senseGuid = contextPart.substr(6);
@@ -1039,11 +1031,14 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
 
         if (senseGuid) {
           for (var a in currentEntry.senses) {
-            if (currentEntry.senses[a].guid === senseGuid) {
+            if (currentEntry.senses.hasOwnProperty(a) && currentEntry.senses[a].guid === senseGuid
+            ) {
               senseIndex = a;
               if (exampleGuid) {
                 for (var b in currentEntry.senses[a].examples) {
-                  if (currentEntry.senses[a].examples[b].guid === exampleGuid) {
+                  if (currentEntry.senses[a].examples.hasOwnProperty(b) &&
+                    currentEntry.senses[a].examples[b].guid === exampleGuid
+                  ) {
                     exampleIndex = b;
                   }
                 }
@@ -1090,7 +1085,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
               // Semantic domains are in the global scope and appear to be English only
               // Will need to be updated once the system provides support for other languages
               for (var i in semanticDomains_en) {
-                if (semanticDomains_en[i].key === optionKey) {
+                if (semanticDomains_en.hasOwnProperty(i) && semanticDomains_en[i].key === optionKey
+                ) {
                   optionLabel = semanticDomains_en[i].value;
                 }
               }
