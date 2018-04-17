@@ -4,8 +4,7 @@
                data-ng-class="$first ? '' : 'd-none d-lg-inline-block'">
             <span data-ng-show="$first">{{config.label}}</span></label>
         <div class="controls" data-ng-class="config.type == 'pictures' ? 'col' : 'col-lg-8'">
-            <div class="input-group" data-ng-click="selectInputSystem(tag)"
-                 data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
+            <div class="input-group" data-ng-click="selectInputSystem(tag)">
                 <span class="wsid input-group-addon notranslate" tabindex="-1"
                     title="{{tag}} {{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
                 <dc-text class="dc-text" data-ng-if="!isAudio(tag)"
