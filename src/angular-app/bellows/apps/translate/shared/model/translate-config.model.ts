@@ -22,11 +22,13 @@ export class TranslateConfigDocumentSets {
 }
 
 export class TranslateUserPreferences {
-  confidenceThreshold: number;
-  hasConfidenceOverride: boolean;
-  isDocumentOrientationTargetRight: boolean;
-  isFormattingOptionsShown: boolean;
-  selectedDocumentSetId: string;
+  confidenceThreshold?: number;
+  hasConfidenceOverride?: boolean;
+  isDocumentOrientationTargetRight?: boolean;
+  isFormattingOptionsShown?: boolean;
+  selectedDocumentSetId?: string;
+  selectedSegmentRef?: string;
+  selectedSegmentChecksum?: number;
 }
 
 export class TranslateConfigMetrics {

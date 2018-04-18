@@ -1,11 +1,15 @@
+import * as crc from 'crc-32';
 import { RangeStatic } from 'quill';
 
 export class Segment {
+  initialChecksum: number;
+
   private _text: string;
   private _range: RangeStatic;
-  private initialText: string;
+  private _checksum: number = null;
+  private initialTextLen: number = -1;
 
-  constructor(public readonly documentSetId: string, public readonly ref: string) { }
+  constructor(readonly documentSetId: string, readonly ref: string) { }
 
   get text(): string {
     return this._text;
@@ -15,24 +19,36 @@ export class Segment {
     return this._range;
   }
 
+  get checksum(): number {
+    if (this._checksum == null) {
+      this._checksum = crc.str(this._text);
+    }
+    return this._checksum;
+  }
+
   get isChanged(): boolean {
-    return this._text !== this.initialText;
+    return this.initialChecksum !== this.checksum;
   }
 
   acceptChanges(): void {
-    this.initialText = this._text;
+    this.initialTextLen = this._text.length;
+    this.initialChecksum = this.checksum;
   }
 
   update(text: string, range: RangeStatic): void {
     this._text = text;
     this._range = range;
-    if (this.initialText == null) {
-      this.initialText = text;
+    this._checksum = null;
+    if (this.initialTextLen === -1) {
+      this.initialTextLen = text.length;
+    }
+    if (this.initialChecksum == null) {
+      this.initialChecksum = this.checksum;
     }
   }
 
   get productiveCharacterCount(): number {
-    return this.text.length - this.initialText.length;
+    return this.text.length - this.initialTextLen;
   }
 
 }

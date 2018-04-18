@@ -236,7 +236,9 @@ class TranslateProjectCommands
             array_key_exists('isDocumentOrientationTargetRight', $data) ||
             array_key_exists('isFormattingOptionsShown', $data) ||
             array_key_exists('hasConfidenceOverride', $data) ||
-            array_key_exists('confidenceThreshold', $data)
+            array_key_exists('confidenceThreshold', $data) ||
+            array_key_exists('selectedSegmentRef', $data) ||
+            array_key_exists('selectedSegmentChecksum', $data)
         ) {
             if (!array_key_exists($userId, $usersPreferences)) {
                 $usersPreferences[$userId] = new TranslateUserPreferences();
@@ -258,8 +260,12 @@ class TranslateProjectCommands
                 $usersPreferences[$userId]->hasConfidenceOverride = $data['hasConfidenceOverride'];
             }
 
-            if (array_key_exists('confidenceThreshold', $data)) {
-                $usersPreferences[$userId]->confidenceThreshold = $data['confidenceThreshold'];
+            if (array_key_exists('selectedSegmentRef', $data)) {
+                $usersPreferences[$userId]->selectedSegmentRef = $data['selectedSegmentRef'];
+            }
+
+            if (array_key_exists('selectedSegmentChecksum', $data)) {
+                $usersPreferences[$userId]->selectedSegmentChecksum = $data['selectedSegmentChecksum'];
             }
         }
     }
