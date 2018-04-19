@@ -1,27 +1,19 @@
 import * as angular from 'angular';
 
-import { UserRestApiService } from '../../../core/api/user-rest-api.service';
-import { InputSystemsService } from '../../../core/input-systems/input-systems.service';
-import { LinkService } from '../../../core/link.service';
-import { NoticeService } from '../../../core/notice/notice.service';
-import { SessionCallback, SessionService } from '../../../core/session.service';
-import { InputSystem } from '../../../shared/model/input-system.model';
-import { ParatextProject, ParatextUserInfo } from '../../../shared/model/paratext-user-info.model';
-import { MachineService } from '../core/machine.service';
-import { JsonRpcCallback, TranslateProjectService } from '../core/translate-project.service';
-import { TranslateSendReceiveService } from '../core/translate-send-receive.service';
-import { TranslateConfig, TranslateConfigDocType } from '../shared/model/translate-config.model';
-import { TranslateProjectSettings } from '../shared/model/translate-project-settings.model';
-import { TranslateProject } from '../shared/model/translate-project.model';
-
-export class InterfaceConfig {
-  direction = 'ltr';
-  pullNormal = 'float-left';
-  pullToSide = 'float-right';
-  placementNormal = 'right';
-  placementToSide = 'left';
-  userLanguageCode = 'en';
-}
+import {UserRestApiService} from '../../../core/api/user-rest-api.service';
+import {InputSystemsService} from '../../../core/input-systems/input-systems.service';
+import {LinkService} from '../../../core/link.service';
+import {NoticeService} from '../../../core/notice/notice.service';
+import {SessionService} from '../../../core/session.service';
+import {InputSystem} from '../../../shared/model/input-system.model';
+import {InterfaceConfig} from '../../../shared/model/interface-config.model';
+import {ParatextProject, ParatextUserInfo} from '../../../shared/model/paratext-user-info.model';
+import {MachineService} from '../core/machine.service';
+import {TranslateProjectService} from '../core/translate-project.service';
+import {TranslateSendReceiveService} from '../core/translate-send-receive.service';
+import {TranslateConfig, TranslateConfigDocType} from '../shared/model/translate-config.model';
+import {TranslateProjectSettings} from '../shared/model/translate-project-settings.model';
+import {TranslateProject} from '../shared/model/translate-project.model';
 
 class NewProject extends TranslateProject {
   editProjectCode: boolean;
@@ -487,7 +479,7 @@ export class TranslateNewProjectController implements angular.IController {
     ).then(result => {
       if (result.ok) {
         this.newProject.id = result.data;
-        return this.sessionService.getSession(true).then(session => { });
+        return this.sessionService.getSession(true).then(() => { });
       } else {
         this.notice.push(this.notice.ERROR, 'The ' + this.newProject.projectName +
           ' project could not be created. Please try again.');

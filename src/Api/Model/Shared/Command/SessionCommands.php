@@ -2,11 +2,10 @@
 
 namespace Api\Model\Shared\Command;
 
-use Api\Library\Shared\HelpContentCommands;
 use Api\Library\Shared\Website;
+use Api\Library\Shared\JWTToken;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
-use Firebase\JWT\JWT;
 
 class SessionCommands
 {
@@ -52,28 +51,13 @@ class SessionCommands
             }
         }
 
-        if ($appName) {
-            $sessionData['helps'] = HelpContentCommands::getSessionData($appName, $website);
-        }
-
         // File Size
         $postMax = self::fromValueWithSuffix(ini_get("post_max_size"));
         $uploadMax = self::fromValueWithSuffix(ini_get("upload_max_filesize"));
         $fileSizeMax = min(array($postMax, $uploadMax));
         $sessionData['fileSizeMax'] = $fileSizeMax;
 
-        // JWT token
-        $issuedAt = time();
-        // 30 day expiration
-        $expiration = $issuedAt + (30 * 86400);
-        $token = array(
-            "iss" => $website->domain,
-            "aud" => $website->domain,
-            "iat" => $issuedAt,
-            "exp" => $expiration,
-            "sub" => (string) $userId
-        );
-        $sessionData['accessToken'] = JWT::encode($token, JWT_KEY);
+        $sessionData['accessToken'] = JWTToken::getAccessToken(720, $userId, $website);
 
         //return JsonEncoder::encode($sessionData);  // This is handled elsewhere
         self::write($sessionData, $mockFilename);
