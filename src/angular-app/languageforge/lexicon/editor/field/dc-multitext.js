@@ -1,7 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.multitext', ['palaso.ui.showOverflow', 'palaso.ui.dc.text',
-  'palaso.ui.dc.audio', 'palaso.ui.comments'])
+angular.module('palaso.ui.dc.multitext', ['editorFieldModule', 'palaso.ui.comments'])
 
 // Dictionary Control Multitext
 .directive('dcMultitext', [function () {

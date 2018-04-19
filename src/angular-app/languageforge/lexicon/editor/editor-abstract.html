@@ -9,11 +9,6 @@
                            title="Back to List">
                             <i class="fa fa-arrow-circle-left"></i>
                             <span class="d-none d-md-inline-block">List</span></a>
-
-                        <a id="toEditLink" data-ng-show="$state.is('editor.comments')" class="btn btn-std"
-                           data-ng-click="editEntry(currentEntry.id)" title="Return to Edit Entry">
-                            <i class="fa fa-arrow-circle-left"></i>
-                            Edit </a>
                     </div>
                     <div class="float-right" data-ng-show="$state.is('editor.entry')">
                         <span data-ng-if="rights.canEditEntry()">
@@ -41,12 +36,6 @@
                             <img src="/angular-app/bellows/apps/activity/activity-icon.svg" width="22" height="22" />
                             <span class="activity-count" ng-show="activityService.unreadCount > 0">{{activityService.unreadCount}}</span>
                         </button>
-                    </div>
-                    <div class="float-right" data-ng-show="$state.is('editor.comments')">
-                        <div id="commentsCount" class="btn btn-std">
-                            <current-entry-comment-count></current-entry-comment-count>
-                            <i class="fa fa-comments commentColor"></i>
-                        </div>
                     </div>
                 </div>
             </div>

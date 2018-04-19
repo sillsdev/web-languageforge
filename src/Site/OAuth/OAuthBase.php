@@ -158,7 +158,7 @@ abstract class OAuthBase extends Base
         return $userModel;
     }
 
-    public function setSilexAuthToken(UserModel $userModel, Application $app): string
+    public static function setSilexAuthToken(UserModel $userModel, Application $app): string
     {
         $roles = AuthUserProvider::getSiteRoles($userModel, $app['website']);
         $oauthUser = new UserWithId($userModel->username, '', $userModel->username, $roles);
@@ -169,7 +169,6 @@ abstract class OAuthBase extends Base
             return true;
         } else {
             // OAuth authentication succeeded, but we failed to set the Silex auth token.
-            $this->addErrorMessage($app, 'Sorry, we couldn\'t process the ' . ucwords($this->getProviderName()) . ' login data. This may be a temporary failure, so please try again. If the problem persists, try logging in with a username and password instead.');
             return false;
         }
     }
@@ -264,12 +263,18 @@ abstract class OAuthBase extends Base
                     $this->addOAuthIdToUserModel($userModel, $googleOAuthId);
                     $userModel->write();
                     $success = $this->setSilexAuthToken($userModel, $app);
+                    if (! $success) {
+                        $this->addErrorMessage($app, 'Sorry, we couldn\'t process the ' . ucwords($this->getProviderName()) . ' login data. This may be a temporary failure, so please try again. If the problem persists, try logging in with a username and password instead.');
+                    }
                     $redirectUrl = $this->chooseRedirectUrl($success, $app);
                     return new RedirectResponse($redirectUrl);
                 }
             } else {
                 // OAuth ID found in our user model
                 $success = $this->setSilexAuthToken($userModel, $app);
+                if (! $success) {
+                    $this->addErrorMessage($app, 'Sorry, we couldn\'t process the ' . ucwords($this->getProviderName()) . ' login data. This may be a temporary failure, so please try again. If the problem persists, try logging in with a username and password instead.');
+                }
                 $redirectUrl = $this->chooseRedirectUrl($success, $app);
                 return new RedirectResponse($redirectUrl);
             }

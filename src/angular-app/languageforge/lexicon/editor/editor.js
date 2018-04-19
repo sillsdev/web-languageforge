@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
-  'palaso.ui.dc.entry', 'palaso.ui.comments', 'palaso.ui.showOverflow', 'truncate',
-  'palaso.ui.scroll', 'palaso.ui.notice', 'activity'])
+  'palaso.ui.dc.entry', 'palaso.ui.comments', 'truncate',
+  'palaso.ui.scroll', 'palaso.ui.notice'])
   .config(['$stateProvider', function ($stateProvider) {
 
     // State machine from ui.router
@@ -22,11 +22,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         url: '/entry/{entryId:[0-9a-z_]{6,24}}',
         templateUrl: '/angular-app/languageforge/lexicon/editor/editor-entry.html',
         controller: 'EditorEntryCtrl'
-      })
-      .state('editor.comments', {
-        url: '/entry/{entryId:[0-9a-z_]{6,24}}/comments',
-        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-comments.html',
-        controller: 'EditorCommentsCtrl'
       })
       ;
   }])
@@ -667,11 +662,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
             }
           }
 
-          if ($state.is('editor.comments')) {
-            $scope.editEntryAndScroll(entryId);
-            $scope.showComments();
-          }
-
           if ($state.is('editor.entry')) {
             $scope.editEntryAndScroll(entryId);
           }
@@ -920,7 +910,47 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
 
       $scope.typeahead.searchEntries = function searchEntries(query) {
 
-        var filteredEntries = $filter('filter')($scope.filteredEntries, query);
+        var blacklistKeys = [
+            'isDeleted',
+            'id',
+            'guid',
+            'translationGuid',
+            '$$hashKey',
+            'dateModified',
+            'dateCreated',
+            'projectId',
+            'authorInfo',
+            'fileName'
+          ];
+
+        var isBlacklisted = function (key) {
+          var audio = '-audio';
+          return (
+            blacklistKeys.includes(key) || key.indexOf(audio, key.length - audio.length) !== -1
+          );
+        };
+
+        // TODO consider whitelisting all properties under customFields
+
+        var filteredEntries = $scope.filteredEntries.filter(function isMatch(value) {
+          // toUpperCase is better than toLowerCase, but still has issues,
+          // e.g. 'ß'.toUpperCase() === 'SS'
+          var queryCapital = query.toUpperCase();
+          switch (value == null ? 'null' : typeof value) {
+            // Array.prototype.some tests whether some element satisfies the function
+            case 'object': return Object.keys(value).some(function (key) {
+                return !isBlacklisted(key) && isMatch(value[key]);
+              });
+
+            case 'string': return value.toUpperCase().indexOf(queryCapital) !== -1;
+            case 'null': return false;
+            case 'boolean': return false;
+            default:
+              console.error('Unexpected type ' + (typeof value) + ' on entry.');
+              return false;
+          }
+        });
+
         var prioritizedEntries = {
           wordBeginning: [],
           word: [],
@@ -1005,7 +1035,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         var contextPart = '';
 
         for (var i in contextParts) {
-          if (angular.isDefined(contextParts[i]) && contextParts[i] !== '') {
+          if (contextParts.hasOwnProperty(i) && angular.isDefined(contextParts[i]) &&
+            contextParts[i] !== ''
+          ) {
             contextPart = contextParts[i].trim();
             if (contextPart.indexOf('sense#') !== -1) {
               senseGuid = contextPart.substr(6);
@@ -1028,11 +1060,14 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
 
         if (senseGuid) {
           for (var a in currentEntry.senses) {
-            if (currentEntry.senses[a].guid === senseGuid) {
+            if (currentEntry.senses.hasOwnProperty(a) && currentEntry.senses[a].guid === senseGuid
+            ) {
               senseIndex = a;
               if (exampleGuid) {
                 for (var b in currentEntry.senses[a].examples) {
-                  if (currentEntry.senses[a].examples[b].guid === exampleGuid) {
+                  if (currentEntry.senses[a].examples.hasOwnProperty(b) &&
+                    currentEntry.senses[a].examples[b].guid === exampleGuid
+                  ) {
                     exampleIndex = b;
                   }
                 }
@@ -1079,7 +1114,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
               // Semantic domains are in the global scope and appear to be English only
               // Will need to be updated once the system provides support for other languages
               for (var i in semanticDomains_en) {
-                if (semanticDomains_en[i].key === optionKey) {
+                if (semanticDomains_en.hasOwnProperty(i) && semanticDomains_en[i].key === optionKey
+                ) {
                   optionLabel = semanticDomains_en[i].value;
                 }
               }

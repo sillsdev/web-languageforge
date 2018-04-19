@@ -1,8 +1,8 @@
 import * as angular from 'angular';
 
-import { OfflineCacheService } from '../offline/offline-cache.service';
-import { Session, SessionService } from '../session.service';
-import { ApiService, JsonRpcCallback } from './api.service';
+import {OfflineCacheService} from '../offline/offline-cache.service';
+import {Session, SessionService} from '../session.service';
+import {ApiService, JsonRpcCallback} from './api.service';
 
 export class ProjectData {
   projectTypeNames: any;
@@ -18,7 +18,8 @@ export class ProjectService {
   private $location: angular.ILocationService;
   private $q: angular.IQService;
 
-  private projectTypesBySite: string[];
+  // noinspection TypeScriptFieldCanBeMadeReadonly
+  private projectTypesBySite: string[] = [];
 
   static $inject: string[] = ['$injector'];
   constructor(protected $injector: angular.auto.IInjectorService) {
@@ -37,21 +38,19 @@ export class ProjectService {
       lexicon: 'Dictionary',
       translate: 'Translation'
     };
+    this.data.projectTypesBySite = () => {
+      return this.projectTypesBySite;
+    };
 
     this.sessionService.getSession().then((session: Session) => {
       const types = {
-        scriptureforge: ['sfchecks', 'translate'],
-
-        // 'languageforge': ['lexicon', 'semdomtrans']
-        languageforge: ['lexicon']
+        // 'languageforge': ['lexicon', 'semdomtrans'],
+        languageforge: ['lexicon'],
+        scriptureforge: ['sfchecks', 'translate']
       };
 
       this.projectTypesBySite = types[session.baseSite()];
     });
-
-    this.data.projectTypesBySite = () => {
-      return this.projectTypesBySite;
-    };
 
   }
 

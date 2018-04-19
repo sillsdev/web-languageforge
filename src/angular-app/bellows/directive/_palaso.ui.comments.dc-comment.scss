@@ -235,12 +235,7 @@ div.commentListContainer {
   }
 }
 
-.selectableFieldForComment:hover {
-    background-color: #eee;
-    border: 1px solid $lf-lines;
-    border-radius: $border-radius;
-}
-.selectableFieldForComment, .selectableInputSystemFieldForComment {
+.selectableInputSystemFieldForComment {
     cursor: pointer;
     border: 1px solid transparent;
 }
@@ -252,7 +247,7 @@ div.commentListContainer {
 .selectableInputSystemFieldForComment:hover .input-group-addon {
     background-color: hsla(80, 100%, 50%, 0.1);
 }
-.selectableInputSystemFieldForComment .uneditable-input, .selectableFieldForComment .uneditable-input {
+.selectableInputSystemFieldForComment .uneditable-input {
     cursor: pointer;
 }
 

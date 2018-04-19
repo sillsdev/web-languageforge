@@ -20,7 +20,6 @@ var _execute = require('child_process').exec;
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
-var markdown = require('gulp-markdown');
 var phpunit = require('gulp-phpunit');
 var protractor = require('gulp-protractor').protractor;
 var webdriverStandalone = require('gulp-protractor').webdriver_standalone;
@@ -92,17 +91,6 @@ gulp.task('generate-language-picker-assets', function (cb) {
 
 gulp.task('generate-language-picker-assets').description =
   'Update asset files used for language picker';
-
-// -------------------------------------
-//   Task: Markdown
-// -------------------------------------
-gulp.task('markdown', function () {
-  return gulp.src('src/angular-app/**/helps/**/*.md')
-    .pipe(markdown())
-    .pipe(gulp.dest('src/angular-app'));
-});
-
-gulp.task('markdown').description = 'Generate helps markdown files';
 
 // region sass
 

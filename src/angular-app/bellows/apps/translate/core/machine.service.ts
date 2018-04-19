@@ -14,6 +14,7 @@ export class MachineService {
   private sourceSegmentTokenizer: SegmentTokenizer;
   private targetSegmentTokenizer: SegmentTokenizer;
   private _engineConfidence: number = 0;
+  private projectId: string = '';
 
   static $inject: string[] = ['$window', '$q',
     '$rootScope', 'silNoticeService'];
@@ -31,15 +32,28 @@ export class MachineService {
     }
   }
 
+  get isInitialised(): boolean {
+    return this.engine != null;
+  }
+
+  get isTranslating(): boolean {
+    return this.session != null;
+  }
+
   initialise(projectId: string): void {
-    this.engine = new TranslationEngine(this.$window.location.origin + '/machine', projectId);
+    if (this.projectId === projectId) {
+      return;
+    }
+
+    this.projectId = projectId;
+    this.engine = new TranslationEngine(this.$window.location.origin + '/machine', this.projectId);
     this.updateConfidence();
     this.sourceSegmentTokenizer = new SegmentTokenizer('latin');
     this.targetSegmentTokenizer = new SegmentTokenizer('latin');
   }
 
   translate(sourceSegment: string): angular.IPromise<void> {
-    if (this.engine == null) {
+    if (!this.isInitialised) {
       return this.$q.resolve();
     }
 
@@ -87,10 +101,11 @@ export class MachineService {
   resetTranslation(): void {
     this.sourceSegment = '';
     this.prefix = '';
+    this.session = null;
   }
 
   updatePrefix(prefix: string): string[] {
-    if (this.engine == null || this.session == null) {
+    if (!this.isInitialised || !this.isTranslating) {
       return [];
     }
 
@@ -103,7 +118,7 @@ export class MachineService {
   }
 
   getCurrentSuggestion(): string[] {
-    if (this.engine == null || this.session == null) {
+    if (!this.isInitialised || !this.isTranslating) {
       return [];
     }
 
@@ -111,7 +126,7 @@ export class MachineService {
   }
 
   get suggestionConfidence(): number {
-    if (this.engine == null || this.session == null) {
+    if (!this.isInitialised || !this.isTranslating) {
       return 0;
     }
 
@@ -123,7 +138,7 @@ export class MachineService {
   }
 
   trainSegment(): angular.IPromise<void> {
-    if (this.engine == null || this.session == null) {
+    if (!this.isInitialised || !this.isTranslating) {
       return this.$q.resolve();
     }
 
@@ -139,7 +154,7 @@ export class MachineService {
   }
 
   getSuggestionText(suggestionIndex?: number): string {
-    if (this.engine == null || this.session == null) {
+    if (!this.isInitialised || !this.isTranslating) {
       return '';
     }
 
@@ -165,7 +180,7 @@ export class MachineService {
   }
 
   startTraining(): angular.IPromise<void> {
-    if (this.engine == null) {
+    if (!this.isInitialised) {
       return this.$q.resolve();
     }
 
@@ -182,7 +197,7 @@ export class MachineService {
   }
 
   listenForTrainingStatus(onStatusUpdate: (progress: SmtTrainProgress) => void): angular.IPromise<void> {
-    if (this.engine == null) {
+    if (!this.isInitialised) {
       return this.$q.resolve();
     }
 
@@ -199,6 +214,13 @@ export class MachineService {
     });
 
     return deferred.promise;
+  }
+
+  close(): void {
+    this.resetTranslation();
+    this.engine.close();
+    this.engine = null;
+    this.projectId = '';
   }
 
   private updateConfidence(): void {

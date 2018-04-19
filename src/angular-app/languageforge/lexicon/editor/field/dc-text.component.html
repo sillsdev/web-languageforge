@@ -1,0 +1,20 @@
+<div data-ng-if="!$ctrl.fteMultiline">
+    <input type="text"
+           dir="{{$ctrl.fteDir}}"
+           data-ng-model="$ctrl.textFieldValue"
+           data-ng-change="$ctrl.inputChanged()"
+           data-ng-disabled="$ctrl.fteDisabled"
+           title="{{$ctrl.fteDisabled ? $ctrl.disabledMsg() : ''}}">
+</div>
+
+<div data-ng-if="$ctrl.fteMultiline"
+     class="dc-multiline"
+     data-text-angular
+     data-ta-text-editor-setup="$ctrl.setupTaEditor"
+     data-ta-disabled="$ctrl.fteDisabled"
+     data-ta-toolbar="{{$ctrl.fte.toolbar}}"
+     data-ta-default-wrap="p"
+     dir="{{$ctrl.fteDir}}"
+     data-ng-model="$ctrl.fteModel">
+</div>
+
