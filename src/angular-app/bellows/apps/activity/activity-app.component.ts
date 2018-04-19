@@ -279,6 +279,8 @@ export class ActivityAppController implements angular.IController {
       // Need to wait for entry promises to resolve before this becomes available
       this.$scope.$watch(() => this.entryId, () => {
         if (this.entryId) {
+          this.activities = [];
+          this.filterParams.skip = 0;
           this.loadingFeed = true;
           this.activityService.listActivityForLexicalEntry(this.entryId, this.filterParams, result => {
             this.processActivityListFeed(result);
