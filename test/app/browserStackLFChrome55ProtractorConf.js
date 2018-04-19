@@ -1,14 +1,14 @@
 exports.config = {
-  'baseUrl': 'http://e2etest.languageforge.org',
-  'framework': 'jasmine2',
-  'rootElement': '[id="app-container-for-bootstrap"]',
+  baseUrl: 'http://e2etest.languageforge.org',
+  framework: 'jasmine2',
+  rootElement: '[id="app-container"]',
 
-  'capabilities': {
-    'browserName': 'Chrome',
-    'browser_version': '55.0',
-    'os': 'Windows',
-    'os_version': '10',
-    'resolution': '1600x1200',
+  capabilities: {
+    browserName: 'Chrome',
+    browser_version: '55.0',
+    os: 'Windows',
+    os_version: '10',
+    resolution: '1600x1200',
     chromeOptions: {
       args: ['--start-maximized']
     },
@@ -20,8 +20,7 @@ exports.config = {
     if (process.env.TEAMCITY_VERSION) {
       var jasmineReporters = require('jasmine-reporters');
       jasmine.getEnv().addReporter(new jasmineReporters.TeamCityReporter());
-    }
-    else {
+    } else {
       var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
       jasmine.getEnv().addReporter(new SpecReporter({
         spec: {
@@ -34,7 +33,7 @@ exports.config = {
             browser.pause();
           }
         }
-      }
+      };
     }
   }
 };

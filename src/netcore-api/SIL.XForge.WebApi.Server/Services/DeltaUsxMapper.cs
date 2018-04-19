@@ -9,6 +9,9 @@ namespace SIL.XForge.WebApi.Server.Services
 {
     public class DeltaUsxMapper
     {
+        internal const string InitialBlankText = "\u00a0";
+        internal const string NormalBlankText = "\u2003\u2003";
+
         private static readonly HashSet<string> ParagraphStyles = new HashSet<string>
         {
             "p", "m", "pmo", "pm", "pmc", "pmr", "pi", "mi", "cls", "li", "pc", "pr", "ph", "lit"
@@ -264,7 +267,7 @@ namespace SIL.XForge.WebApi.Server.Services
 
         private static bool IsBlank(string text)
         {
-            return text == "\u2002" || text == "\u2003\u2003";
+            return text == InitialBlankText || text == NormalBlankText;
         }
 
         private static XElement CreateContainerElement(string name, JToken attributes, object content = null)
