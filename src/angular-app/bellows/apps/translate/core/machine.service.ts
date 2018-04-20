@@ -86,11 +86,12 @@ export class MachineService {
           }
           deferred.resolve();
         } else {
-          this.session = null;
           deferred.reject('Translation result is no longer valid.');
         }
       } else {
-        this.session = null;
+        if (this.sourceSegment === sourceSegment) {
+          this.session = null;
+        }
         deferred.reject('Error occurred while retrieving translation result.');
       }
     });
