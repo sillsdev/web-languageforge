@@ -29,6 +29,8 @@ export abstract class DocumentEditor {
   private documentSetId: string = '';
   private readonly _created: angular.IDeferred<boolean>;
   private _quill: Quill;
+  private initialSegmentRef: string = '';
+  private initialSegmentChecksum: number;
 
   constructor(private readonly $q: angular.IQService, protected readonly machine: MachineService,
               private readonly realTime: RealTimeService) {
@@ -64,6 +66,10 @@ export abstract class DocumentEditor {
     return this.currentSegment == null ? '' : this.currentSegment.ref;
   }
 
+  get currentSegmentChecksum(): number {
+    return this.currentSegment == null ? null : this.currentSegment.checksum;
+  }
+
   get saveState(): SaveState {
     return this.getSaveState();
   }
@@ -81,6 +87,11 @@ export abstract class DocumentEditor {
       this._isScripture = value;
       this.segmenter = value ? new UsxSegmenter(this) : new MachineSegmenter(this, this.machine);
     }
+  }
+
+  setInitialSegment(segmentRef: string, checksum: number): void {
+    this.initialSegmentRef = segmentRef;
+    this.initialSegmentChecksum = checksum;
   }
 
   isBackspaceAllowed(range: RangeStatic, context: any): boolean {
@@ -132,6 +143,13 @@ export abstract class DocumentEditor {
   update(textChange: boolean): boolean {
     this.segmenter.update(textChange);
 
+    if (textChange && !this.isTextEmpty && this.initialSegmentRef !== '') {
+      // navigate to initial segment after document has been loaded
+      const range = this.segmenter.getSegmentRange(this.initialSegmentRef);
+      setTimeout(() => this.quill.setSelection(range.index + range.length, 0, Quill.sources.USER));
+      return false;
+    }
+
     const selection = this.quill.getSelection();
     if (selection == null) {
       return false;
@@ -160,12 +178,13 @@ export abstract class DocumentEditor {
     }
 
     this.currentSegment = new Segment(this.documentSetId, segmentRef);
+    if (this.initialSegmentRef !== '' && this.initialSegmentRef === segmentRef) {
+      // set the checksum for the initial segment
+      this.currentSegment.initialChecksum = this.initialSegmentChecksum;
+      this.initialSegmentRef = '';
+    }
     this.updateCurrentSegment();
     return true;
-  }
-
-  save(): angular.IPromise<void> {
-    return this.$q.resolve();
   }
 
   syncScroll(otherEditor: DocumentEditor): void {
@@ -274,10 +293,6 @@ export class TargetDocumentEditor extends DocumentEditor {
     return this.machine.suggestionConfidence;
   }
 
-  save(): angular.IPromise<void> {
-    return this.trainSegment();
-  }
-
   closeDocumentSet(): void {
     this.hideSuggestions();
     super.closeDocumentSet();
@@ -302,11 +317,11 @@ export class TargetDocumentEditor extends DocumentEditor {
     if (this.isScripture && textChange) {
       if (!this.isTextEmpty && !this.initialSegmentUpdate) {
         for (const [ref, range] of this.segmenter.segments) {
-          this.updateSegmentFormat(ref, range);
+          this.updateUsxSegmentFormat(ref, range);
         }
         this.initialSegmentUpdate = true;
       } else if (this.currentSegment != null) {
-        this.updateSegmentFormat(this.currentSegment.ref, this.currentSegment.range);
+        this.updateUsxSegmentFormat(this.currentSegment.ref, this.currentSegment.range);
       }
     }
 
@@ -316,7 +331,7 @@ export class TargetDocumentEditor extends DocumentEditor {
   switchCurrentSegment(segmentRef: string): boolean {
     const previousSegment = this.currentSegment;
     const segmentChanged = super.switchCurrentSegment(segmentRef);
-    if (segmentChanged) {
+    if (previousSegment != null && segmentChanged) {
       this.trainSegment(previousSegment);
     }
     return segmentChanged;
@@ -383,9 +398,7 @@ export class TargetDocumentEditor extends DocumentEditor {
 
   protected getSaveState(): SaveState {
     let trainSaveState: SaveState;
-    if (this.isSegmentUntrained()) {
-      trainSaveState = SaveState.Unsaved;
-    } else if (this.pendingTrainCount == null) {
+    if (this.pendingTrainCount == null) {
       trainSaveState = SaveState.Unedited;
     } else if (this.pendingTrainCount > 0) {
       trainSaveState = SaveState.Saving;
@@ -406,7 +419,7 @@ export class TargetDocumentEditor extends DocumentEditor {
     return { index: i, length: 0 };
   }
 
-  private updateSegmentFormat(ref: string, range: RangeStatic): void {
+  private updateUsxSegmentFormat(ref: string, range: RangeStatic): void {
     const text = this.quill.getText(range.index, range.length);
 
     if (text === '' && range.length === 0) {
