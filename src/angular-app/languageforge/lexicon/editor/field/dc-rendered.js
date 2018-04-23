@@ -9,6 +9,7 @@ angular.module('palaso.ui.dc.rendered', [])
     templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-rendered.html',
     scope: {
       config: '=',
+      control: '=',
       model: '=',
       hideIfEmpty: '=?'
     },
@@ -22,7 +23,7 @@ angular.module('palaso.ui.dc.rendered', [])
           word: '',
           senses: []
         };
-        $scope.entry.word = utils.constructor.getCitationForms($scope.config, $scope.model);
+        $scope.entry.word = utils.constructor.getCitationForms($scope.control.config, $scope.config, $scope.model);
         ss.getSession().then(function (session) {
           var optionlists = session.projectSettings().optionlists;
           angular.forEach($scope.model.senses, function (senseModel) {
@@ -37,17 +38,17 @@ angular.module('palaso.ui.dc.rendered', [])
             }
 
             sense = {
-              meaning: utils.constructor.getMeanings($scope.config.fields.senses, senseModel),
+              meaning: utils.constructor.getMeanings($scope.control.config, $scope.config.fields.senses, senseModel),
               partOfSpeech: pos,
               examples: []
             };
             angular.forEach(senseModel.examples, function (exampleModel) {
               sense.examples.push({
                 sentence:
-                  utils.constructor.getExample($scope.config.fields.senses.fields.examples,
+                  utils.constructor.getExample($scope.control.config, $scope.config.fields.senses.fields.examples,
                     exampleModel, 'sentence') }, {
                 sentenceTranslation:
-                  utils.constructor.getExample($scope.config.fields.senses.fields.examples,
+                  utils.constructor.getExample($scope.control.config, $scope.config.fields.senses.fields.examples,
                     exampleModel, 'translation') });
             });
 
