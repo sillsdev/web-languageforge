@@ -14,9 +14,9 @@
     "alternate-url": "https://github.com/sillsdev/web-scriptureforge.git"
   },
   "dependencies": {
-    "angular": "1.6.4",
+    "angular": "1.6.10",
     "angular-route": "^1.6.5",
-    "angular-sanitize": "^1.6.5",
+    "angular-sanitize": "^1.6.10",
     "angular-sortable-view": "0.0.15",
     "angular-translate": "^2.15.2",
     "angular-translate-loader-static-files": "^2.15.2",
@@ -43,7 +43,6 @@
     "rangy": "^1.3.0",
     "rich-text": "^3.0.1",
     "sharedb": "^1.0.0-beta",
-    "textangular": "1.5.12",
     "zone.js": "^0.8.16",
     "zxcvbn": "^4.4.2"
   },

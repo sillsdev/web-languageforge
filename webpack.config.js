@@ -21,7 +21,7 @@ var webpackConfig = {
       { from: './node_modules/jquery/dist/', to: 'jquery' },
       { from: './node_modules/offline-js/offline.min.js', to: 'offline-js' },
       { from: './node_modules/rangy/lib/', to: 'rangy' },
-      { from: './node_modules/textangular/dist/', to: 'textangular' },
+      { from: './node_modules/angular-sanitize/', to: 'angular-sanitize' },
       { from: './node_modules/zxcvbn/dist/', to: 'zxcvbn' }
     ]),
     new webpack.ContextReplacementPlugin(
