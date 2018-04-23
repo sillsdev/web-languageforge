@@ -7,7 +7,7 @@
             <div class="input-group" data-ng-click="selectInputSystem(tag)">
                 <span class="wsid input-group-addon notranslate" tabindex="-1"
                     title="{{tag}} {{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
-                <dc-text class="dc-text" data-ng-if="!isAudio(tag)"
+                <dc-text style="font-family: {{inputSystems[tag].cssFontFamily}}" class="dc-text" data-ng-if="!isAudio(tag)"
                     fte-multiline="false"
                     fte-disabled="! ($state.is('editor.entry') && control.rights.canEditEntry()) || modelContainsSpan(tag)"
                     fte-disabled-reason="modelContainsSpan(tag) ? 'would-lose-metadata' : control.rights.sendReceive.isInProgress() ? 'sr-in-progress' : 'editing-not-permitted'"
