@@ -1,4 +1,6 @@
 import * as angular from 'angular';
+import 'angular-moment-picker/dist/angular-moment-picker.css';
+import 'angular-moment-picker/dist/angular-moment-picker.js';
 
 import { BreadcrumbModule } from '../../core/breadcrumbs/breadcrumb.module';
 import { CoreModule } from '../../core/core.module';
