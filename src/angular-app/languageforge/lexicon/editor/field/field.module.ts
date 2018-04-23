@@ -9,7 +9,6 @@ import {FieldTextComponent} from './dc-text.component';
 export const EditorFieldModule = angular
   .module('editorFieldModule', [
     'ngFileUpload',
-    'textAngular',
     MockModule,
     NoticeModule,
     SoundModule
