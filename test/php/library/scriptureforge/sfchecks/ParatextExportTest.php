@@ -67,7 +67,7 @@ class ParatextExportTest extends TestCase
         );
         $download = ParatextExport::exportCommentsForText($project->id->asString(), $textId, $params);
 
-        $this->assertRegExp('/<Contents>first comment \(by user1/', $download['xml']);
+        $this->assertRegExp('/<Contents>\(user1 commented in reply to user3\) first comment/', $download['xml']);
         $this->assertRegExp('/\(Tags: export, to review\) \(10 Votes\)<\/Contents>/', $download['xml']);
     }
 
@@ -127,9 +127,9 @@ class ParatextExportTest extends TestCase
         $download = ParatextExport::exportCommentsForText($project->id->asString(), $textId, $params);
         //echo '<pre>' . print_r($download) . '</pre>';
 
-        $this->assertRegExp('/<Contents>third answer - very very very very long \(by user3/', $download['xml']);
-        $this->assertNotRegExp('/<Contents>second answer/', $download['xml']);
-        $this->assertRegExp('/<Contents>first answer/', $download['xml']);
+        $this->assertRegExp('/<Contents>\(Question\) the question \(Answered by user3\) third answer - very very very very long/', $download['xml']);
+        $this->assertNotRegExp('/second answer/', $download['xml']);
+        $this->assertRegExp('/first answer/', $download['xml']);
     }
 
     public function testExportCommentsForText_QuestionArchived_NoneExported()
