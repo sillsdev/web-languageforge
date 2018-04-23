@@ -2,7 +2,7 @@
 
 angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
   'palaso.ui.dc.entry', 'palaso.ui.comments', 'truncate',
-  'palaso.ui.scroll', 'palaso.ui.notice'])
+  'palaso.ui.scroll', 'palaso.ui.notice', 'activity'])
   .config(['$stateProvider', function ($stateProvider) {
 
     // State machine from ui.router
