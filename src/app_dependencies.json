@@ -3,7 +3,5 @@
   "intl-tel-input": { "path": "dist/intl-tel-input", "jsFile": "js/intlTelInput", "cssFile": "css/intlTelInput" },
   "offline-js": { "path": "dist/offline-js", "jsFile": "offline.min.js" },
   "rangy": { "path": "dist/rangy", "jsFile": ["rangy-core.js", "rangy-selectionsaverestore.js", "rangy-highlighter.js", "rangy-classapplier.js", "rangy-serializer.js", "rangy-textrange.js"] },
-  "textAngular": { "path": "dist/textangular", "jsFile": ["textAngular-sanitize", "textAngularSetup", "textAngular"], "jsMinFile": ["textAngular-sanitize", "textAngular"], "cssFile": "textAngular" },
-  "moment": { "path": "dist/moment", "jsFile": "moment.min.js", "jsMinFile": "moment" },
-  "angular-moment-picker": { "path": "dist/angular-moment-picker", "cssFile": "angular-moment-picker", "jsFile": "angular-moment-picker.js", "jsMinFile": "angular-moment-picker" }
+  "textAngular": { "path": "dist/textangular", "jsFile": ["textAngular-sanitize", "textAngularSetup", "textAngular"], "jsMinFile": ["textAngular-sanitize", "textAngular"], "cssFile": "textAngular" }
 }
