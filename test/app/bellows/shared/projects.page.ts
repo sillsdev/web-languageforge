@@ -6,8 +6,8 @@ export class ProjectsPage {
   private readonly utils = new Utils();
 
   url = '/app/projects';
-  get() {
-    browser.get(browser.baseUrl + this.url);
+  async get() {
+    await browser.driver.get(browser.baseUrl + this.url);
   }
 
   testProjectName = 'Test Project';
@@ -20,11 +20,11 @@ export class ProjectsPage {
   projectTypes = element.all(by.repeater('project in visibleProjects')
       .column('$ctrl.projectTypeNames[project.appName]'));
 
-  findProject(projectName: string) {
+  async findProject(projectName: string) {
     let foundRow: any;
     const result = protractor.promise.defer();
     const searchName = new RegExp(projectName);
-    this.projectsList.map((row: any) => {
+    this.projectsList.map(async(row: any) => {
       row.getText().then((text: string) => {
         if (searchName.test(text)) {
           foundRow = row;
@@ -41,36 +41,38 @@ export class ProjectsPage {
     return result.promise;
   }
 
-  clickOnProject(projectName: string) {
-    this.findProject(projectName).then((projectRow: any) => {
+  async clickOnProject(projectName: string) {
+    
+    this.findProject(projectName).then(async(projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
-      projectLink.getAttribute('href').then((url: string) => {
-        browser.get(url);
+      projectLink.getAttribute('href').then(async(url: string) => {
+      browser.driver.get(url);
       });
-    });
+    }); 
+    
   }
 
   settingsBtn = element(by.id('settingsBtn'));
   userManagementLink = (browser.baseUrl.includes('languageforge')) ?
     element(by.id('userManagementLink')) : element(by.id('dropdown-project-settings'));
 
-  addUserToProject(projectName: any, usersName: string, roleText: string) {
-    this.findProject(projectName).then((projectRow: any) => {
+   addUserToProject(projectName: any, usersName: string, roleText: string) {
+     this.findProject(projectName).then((projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
-      projectLink.click();
-      browser.wait(ExpectedConditions.visibilityOf(this.settingsBtn), Utils.conditionTimeout);
-      this.settingsBtn.click();
-      browser.wait(ExpectedConditions.visibilityOf(this.userManagementLink), Utils.conditionTimeout);
-      this.userManagementLink.click();
+       projectLink.click();
+       browser.driver.wait(ExpectedConditions.visibilityOf(this.settingsBtn), Utils.conditionTimeout);
+       this.settingsBtn.click();
+       browser.driver.wait(ExpectedConditions.visibilityOf(this.userManagementLink), Utils.conditionTimeout);
+       this.userManagementLink.click();
 
       const addMembersBtn = element(by.id('addMembersButton'));
-      browser.wait(ExpectedConditions.visibilityOf(addMembersBtn), Utils.conditionTimeout);
+      browser.driver.wait(ExpectedConditions.visibilityOf(addMembersBtn), Utils.conditionTimeout);
       addMembersBtn.click();
       const newMembersDiv = element(by.id('newMembersDiv'));
       const userNameInput = newMembersDiv.element(by.id('typeaheadInput'));
-      browser.wait(ExpectedConditions.visibilityOf(userNameInput), Utils.conditionTimeout);
+      browser.driver.wait(ExpectedConditions.visibilityOf(userNameInput), Utils.conditionTimeout);
       userNameInput.sendKeys(usersName);
-
+ 
       const typeaheadDiv = element(by.id('typeaheadDiv'));
       const typeaheadItems = typeaheadDiv.all(by.css('ul li'));
       this.utils.findRowByText(typeaheadItems, usersName).then((item: any) => {

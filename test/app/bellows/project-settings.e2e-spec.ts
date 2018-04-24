@@ -1,26 +1,27 @@
-import { browser, ExpectedConditions } from 'protractor';
+import { browser, ExpectedConditions, promise } from 'protractor';
 
 import {BellowsLoginPage} from './shared/login.page';
 import {BellowsProjectSettingsPage} from './shared/project-settings.page';
 import {ProjectsPage} from './shared/projects.page';
 import {Utils} from './shared/utils';
+import { protractor } from 'protractor/built/ptor';
 
-describe('Bellows E2E Project Settings app', () => {
+describe('Bellows E2E Project Settings app', async function()  {
   const constants = require('../testConstants.json');
   const loginPage = new BellowsLoginPage();
   const projectsPage = new ProjectsPage();
   const settingsPage = new BellowsProjectSettingsPage();
 
-  it('Normal user cannot access projectSettings to a project of which the user is a member', () => {
-    loginPage.loginAsMember();
-    projectsPage.get();
+  it('Normal user cannot access projectSettings to a project of which the user is a member', async function()  {
+    await loginPage.loginAsMember();
+    await projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
     expect<any>(settingsPage.settingsMenuLink.isDisplayed()).toBe(false);
   });
 
-  it('System Admin can manage project', () => {
-    loginPage.loginAsAdmin();
-    settingsPage.get(constants.testProjectName);
+  it('System Admin can manage project', async function()  {
+    await loginPage.loginAsAdmin();
+    await settingsPage.get(constants.testProjectName);
     expect<any>(settingsPage.noticeList.count()).toBe(0);
 
     // Archive tab currently disabled
@@ -29,21 +30,21 @@ describe('Bellows E2E Project Settings app', () => {
     expect(managementPage.archiveTab.archiveButton.isDisplayed()).toBe(true);
     expect(managementPage.archiveTab.archiveButton.isEnabled()).toBe(true);
     */
-    browser.wait(ExpectedConditions.elementToBeClickable(settingsPage.tabs.remove), constants.conditionTimeout);
-    browser.actions().mouseMove(settingsPage.tabs.remove).click().perform();
+    browser.driver.wait(ExpectedConditions.elementToBeClickable(settingsPage.tabs.remove), constants.conditionTimeout);
+    browser.driver.actions().mouseMove(settingsPage.tabs.remove).click().perform();
     // settingsPage.tabs.remove.click();
-    browser.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton), constants.conditionTimeout);
+    browser.driver.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton), constants.conditionTimeout);
     expect<any>(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
     expect<any>(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
   });
 
-  it('confirm Manager is not owner of test project', () => {
-    loginPage.loginAsManager();
-    settingsPage.get(constants.testProjectName);
+  it('confirm Manager is not owner of test project', async function()  {
+    await loginPage.loginAsManager();
+    await settingsPage.get(constants.testProjectName);
     settingsPage.tabs.project.click();
     expect<any>(settingsPage.projectTab.projectOwner.isDisplayed()).toBe(true);
     expect(settingsPage.projectTab.projectOwner.getText())
-      .not.toContain(constants.managerUsername);
+      .not.toContain(constants.managerUsername); 
   });
 
   // Archive tab is a disabled/hidden feature
@@ -53,13 +54,13 @@ describe('Bellows E2E Project Settings app', () => {
   });
   */
 
-  it('Manager cannot view delete tab if not owner', () => {
-    expect<any>(settingsPage.tabs.remove.isPresent()).toBe(false);
+   it('Manager cannot view delete tab if not owner', async function()  {
+    await expect<any>(settingsPage.tabs.remove.isPresent()).toBe(false);
   });
 
-  it('confirm Manager is owner of fourth project', () => {
-    loginPage.loginAsManager();
-    settingsPage.get(constants.fourthProjectName);
+  it('confirm Manager is owner of fourth project', async function()  {
+    await loginPage.loginAsManager();
+    await settingsPage.get(constants.fourthProjectName);
     settingsPage.tabs.project.click();
     expect<any>(settingsPage.projectTab.projectOwner.isDisplayed()).toBe(true);
     expect(settingsPage.projectTab.projectOwner.getText()).toContain(constants.managerUsername);
@@ -67,13 +68,13 @@ describe('Bellows E2E Project Settings app', () => {
 
   // For Jamaican Psalms, only system admins can delete projects.
   // Project Manager is an ordinary user, so this test is ignored for Jamaican Psalms
-  it('Manager can delete if owner', () => {
-    if (!browser.baseUrl.startsWith('http://jamaicanpsalms') && !browser.baseUrl.startsWith('https://jamaicanpsalms')) {
-      loginPage.loginAsManager();
-      settingsPage.get(constants.fourthProjectName);
+  it('Manager can delete if owner', async function()  {
+    if (await !browser.baseUrl.startsWith('http://jamaicanpsalms') && !browser.baseUrl.startsWith('https://jamaicanpsalms')) {
+      await loginPage.loginAsManager();
+      await settingsPage.get(constants.fourthProjectName);
       expect<any>(settingsPage.noticeList.count()).toBe(0);
       settingsPage.tabs.remove.click();
-      browser.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton), constants.conditionTimeout);
+      browser.driver.wait(ExpectedConditions.visibilityOf(settingsPage.deleteTab.deleteButton), constants.conditionTimeout);
       expect<any>(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
       expect<any>(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
       settingsPage.deleteTab.deleteBoxText.sendKeys('DELETE');

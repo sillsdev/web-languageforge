@@ -1,21 +1,27 @@
-import {browser, by, element, ExpectedConditions} from 'protractor';
+import {browser, by, element, ExpectedConditions, promise} from 'protractor';
 
 import { ProjectsPage } from './projects.page';
+import { protractor } from 'protractor/built/ptor';
 
 export class BellowsProjectSettingsPage {
   private readonly projectsPage = new ProjectsPage();
 
   conditionTimeout: number = 3000;
+
+  async settingsMenuLink1(){
+    var settingsMenuLink2= element(by.id('settings-dropdown-button'));  
+  }
+  
   settingsMenuLink = element(by.id('settings-dropdown-button'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
-  get(projectName: string) {
-    this.projectsPage.get();
+  async get(projectName: string) {
+    await this.projectsPage.get();
     this.projectsPage.clickOnProject(projectName);
-    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
+    browser.driver.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
     this.settingsMenuLink.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);
+    browser.driver.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);
     this.projectSettingsLink.click();
   }
 
@@ -56,5 +62,5 @@ export class BellowsProjectSettingsPage {
   deleteTab = {
     deleteBoxText: this.activePane.element(by.id('deletebox')),
     deleteButton: this.activePane.element(by.id('deleteProject'))
-  };
+   };
 }
