@@ -204,10 +204,8 @@ export class TranslateEditorController implements angular.IController {
             this.machine.confidenceThreshold = userPreferences.confidenceThreshold;
           }
 
-          if (userPreferences.selectedDocumentSetId == null) {
-            if (this.selectedDocumentSetIndex in this.documentSets) {
-              userPreferences.selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
-            }
+          if (userPreferences.selectedDocumentSetId == null || userPreferences.selectedDocumentSetId === '') {
+            userPreferences.selectedDocumentSetId = this.selectedDocumentSetId;
           } else {
             this.selectedDocumentSetIndex = this.getDocumentSetIndexById(userPreferences.selectedDocumentSetId);
           }
@@ -265,13 +263,15 @@ export class TranslateEditorController implements angular.IController {
   selectDocumentSet(index: number): void {
     if (this.selectedDocumentSetIndex !== index) {
       this.selectedDocumentSetIndex = index;
+      const userPreferences = this.tecProject.config.userPreferences;
+      if (userPreferences.selectedDocumentSetId === this.selectedDocumentSetId &&
+        userPreferences.selectedSegmentRef != null && userPreferences.selectedSegmentRef !== ''
+      ) {
+        // the user switched back from another document without selecting anything, so set the initial segment
+        this.target.setInitialSegment(userPreferences.selectedSegmentRef, userPreferences.selectedSegmentChecksum);
+      }
       this.switchCurrentDocumentSet(this.source);
       this.switchCurrentDocumentSet(this.target);
-
-      if (this.selectedDocumentSetIndex in this.documentSets) {
-        const userPreferences = this.tecProject.config.userPreferences;
-        userPreferences.selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
-      }
     }
   }
 
@@ -520,6 +520,13 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
+  private get selectedDocumentSetId(): string {
+    if (this.selectedDocumentSetIndex in this.documentSets) {
+      return this.documentSets[this.selectedDocumentSetIndex].id;
+    }
+    return '';
+  }
+
   private get focusedEditor(): DocumentEditor {
     let focusedEditor: DocumentEditor;
     if (this.source.hasFocus) {
@@ -639,8 +646,8 @@ export class TranslateEditorController implements angular.IController {
 
   private switchCurrentDocumentSet(editor: DocumentEditor): void {
     editor.closeDocumentSet();
-    if (this.selectedDocumentSetIndex in this.documentSets) {
-      editor.openDocumentSet(this.tecProject.slug, this.documentSets[this.selectedDocumentSetIndex].id);
+    if (this.selectedDocumentSetId !== '') {
+      editor.openDocumentSet(this.tecProject.slug, this.selectedDocumentSetId);
     }
   }
 
@@ -659,12 +666,15 @@ export class TranslateEditorController implements angular.IController {
 
           if (this.currentDocType) {
             this.metricService.sendMetrics(true, this.target.currentSegmentDocumentSetId);
-          } else if (this.selectedDocumentSetIndex in this.documentSets) {
-            this.metricService.currentDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
+          } else if (this.selectedDocumentSetId !== '') {
+            this.metricService.currentDocumentSetId = this.selectedDocumentSetId;
           }
 
           const userPreferences = this.tecProject.config.userPreferences;
-          if (userPreferences.selectedSegmentRef !== this.target.currentSegmentRef) {
+          if (userPreferences.selectedDocumentSetId !== this.target.currentSegmentDocumentSetId ||
+            userPreferences.selectedSegmentRef !== this.target.currentSegmentRef
+          ) {
+            userPreferences.selectedDocumentSetId = this.target.currentSegmentDocumentSetId;
             userPreferences.selectedSegmentRef = this.target.currentSegmentRef;
             userPreferences.selectedSegmentChecksum = this.target.currentSegmentChecksum;
             this.updateUserPreferences();
@@ -690,8 +700,8 @@ export class TranslateEditorController implements angular.IController {
         if (segmentChanged) {
           this.target.switchCurrentSegment(this.source.currentSegmentRef);
 
-          if (!this.currentDocType && this.selectedDocumentSetIndex in this.documentSets) {
-            this.metricService.currentDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
+          if (!this.currentDocType && this.selectedDocumentSetId !== '') {
+            this.metricService.currentDocumentSetId = this.selectedDocumentSetId;
           }
         }
         break;

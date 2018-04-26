@@ -57,7 +57,6 @@ export class MachineService {
       return this.$q.resolve();
     }
 
-    this.prefix = '';
     if (this.sourceSegment === sourceSegment) {
       return this.$q.resolve();
     }
@@ -68,6 +67,7 @@ export class MachineService {
       return this.$q.resolve();
     }
 
+    this.prefix = '';
     const start = performance.now();
     const deferred = this.$q.defer<void>();
     this.engine.translateInteractively(sourceSegment, this.confidenceThreshold, newSession => {
