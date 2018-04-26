@@ -1005,6 +1005,11 @@ gulp.task('build-productionConfig', function () {
     googleClientSecret = 'googleClientSecret';
   }
 
+  var gatherWordsClientId = process.env.GATHERWORDS_CLIENT_ID;
+  if (gatherWordsClientId === undefined) {
+    gatherWordsClientId = 'gatherWordsClientId';
+  }
+
   var paratextClientId = process.env.PARATEXT_CLIENT_ID;
   if (paratextClientId === undefined) {
     paratextClientId = 'paratextClientId';
@@ -1044,6 +1049,10 @@ gulp.task('build-productionConfig', function () {
       // default: secrets_google_api_client_id.web.client_secret,
       default: googleClientSecret,
       type: 'string' })
+    .option('gatherWordsClientId', {
+      demand: false,
+      default: gatherWordsClientId,
+      type: 'string' })
     .option('paratextClientId', {
       demand: false,
       default: paratextClientId,
@@ -1079,6 +1088,9 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('GOOGLE_CLIENT_SECRET', ').*;$/m,
       '$1' + params.googleClientSecret + '\');'))
+    .pipe(replace(
+      /(define\('GATHERWORDS_CLIENT_ID', ').*;$/m,
+      '$1' + params.gatherWordsClientId + '\');'))
     .pipe(replace(
       /(define\('PARATEXT_CLIENT_ID', ').*;$/m,
       '$1' + params.paratextClientId + '\');'))
