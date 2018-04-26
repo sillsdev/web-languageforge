@@ -3,6 +3,9 @@ import Bugsnag from 'bugsnag-js';
 import { Client } from 'bugsnag-js/types/client';
 
 export class Metadata {
+  isProduction: boolean;
+  bugsnagApiKey: string;
+  version: string;
   userId: string;
   userName: string;
   projectCode?: string;
@@ -16,7 +19,9 @@ export class ExceptionHandlingService {
 
   static $inject: string[] = ['$log'];
   constructor(private $log: angular.ILogService) {
-    this.bugsnagClient = Bugsnag({ apiKey: '0ac621681992952c356d54bc01d529b1' });
+    // leave that API key as default in case we don't have a session object yet that would have set the metadata.
+    // Exceptions end up on the `xforge-angular-startup` bugsnag project.
+    this.bugsnagClient = Bugsnag({apiKey: 'bb2f00c7648b31ce2d215081adf52959'});
   }
 
   updateInformation(metaData: Metadata) {
@@ -51,14 +56,17 @@ export class ExceptionHandlingService {
     this.bugsnagClient.notify(exception, {
       beforeSend: report => {
         if (this.metadata != null) {
+          report.apiKey = this.metadata.bugsnagApiKey;
           report.user = {
             id: this.metadata.userId,
             name: this.metadata.userName
           };
           report.updateMetaData('App', {
             projectCode: this.metadata.projectCode,
-            projectName: this.metadata.projectName
+            projectName: this.metadata.projectName,
+            version: this.metadata.version
           });
+          report.app.releaseStage = this.metadata.isProduction ? 'production' : 'development';
         }
         if (cause != null) {
           report.updateMetaData('angular', 'cause', {cause});
