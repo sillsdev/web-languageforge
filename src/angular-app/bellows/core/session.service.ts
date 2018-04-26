@@ -53,6 +53,18 @@ export class Session {
   getProjectSetting(setting: string) {
     return this.data.projectSettings[setting];
   }
+
+  isProduction(): boolean {
+    return this.data.isProduction;
+  }
+
+  getBugsnagApiKey(): string {
+    return this.data.bugsnagApiKey;
+  }
+
+  getVersion(): string {
+    return this.data.version;
+  }
 }
 
 export type SessionCallback = (session: Session) => void;
@@ -67,6 +79,9 @@ class SessionData {
   userSiteRights: any;
   userProjectRights: any;
   accessToken: string;
+  isProduction: boolean;
+  bugsnagApiKey: string;
+  version: string;
 }
 
 export type RightsFunction = () => number;
@@ -154,6 +169,9 @@ export class SessionService {
     return this.fetchSessionData(forceRefresh).then((data: SessionData) => {
       this.session.data = data;
       this.exceptionHandler.updateInformation({
+        isProduction: data.isProduction,
+        bugsnagApiKey: data.bugsnagApiKey,
+        version: data.version,
         userId: data.userId,
         userName: data.username,
         projectCode: data.project.projectCode,
