@@ -1,6 +1,8 @@
 import * as angular from 'angular';
 
+import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
+import {SessionService} from '../../../bellows/core/session.service';
 import {LexiconProjectService} from '../core/lexicon-project.service';
 import {Rights} from '../core/lexicon-rights.service';
 import {LexiconProject} from '../shared/model/lexicon-project.model';
@@ -14,8 +16,10 @@ export class LexiconProjectSettingsController implements angular.IController {
   project: any = {};
   actionInProgress: boolean = false;
 
-  static $inject = ['silNoticeService', 'lexProjectService'];
-  constructor(private notice: NoticeService, private lexProjectService: LexiconProjectService) { }
+  static $inject = ['silNoticeService', 'lexProjectService',
+                    'sessionService', 'applicationHeaderService'];
+  constructor(private notice: NoticeService, private lexProjectService: LexiconProjectService,
+              private sessionService: SessionService, private applicationHeaderService: ApplicationHeaderService) { }
 
   $onInit() {
     this.lexProjectService.setBreadcrumbs('settings', 'Project Settings');
@@ -27,6 +31,7 @@ export class LexiconProjectSettingsController implements angular.IController {
       this.lexProjectService.readProject(result => {
         if (result.ok) {
           angular.merge(this.project, result.data.project);
+          this.applicationHeaderService.setPageName(this.project.projectName + ' Settings');
         }
       });
     }

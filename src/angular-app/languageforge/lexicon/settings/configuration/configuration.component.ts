@@ -15,6 +15,7 @@ import {LexOptionList} from '../../shared/model/option-list.model';
 import {ConfigurationUnifiedViewModel} from './configuration-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 import {OptionSelects} from './option-selects.model';
+import {ApplicationHeaderService} from "../../../../bellows/core/application-header.service";
 
 interface LexiconConfigControllerScope extends angular.IScope {
   configForm: angular.IFormController;
@@ -48,12 +49,15 @@ export class LexiconConfigurationController implements angular.IController {
   static $inject: string[] = ['$scope', '$q',
     'silNoticeService', 'sessionService',
     'lexProjectService', 'lexConfigService',
-    'lexSendReceive'];
+    'lexSendReceive',
+    'applicationHeaderService'];
   constructor(private $scope: LexiconConfigControllerScope, private $q: angular.IQService,
               private notice: NoticeService, private sessionService: SessionService,
               private lexProjectService: LexiconProjectService, private lexConfig: LexiconConfigService,
-              private sendReceive: LexiconSendReceiveService) {
+              private sendReceive: LexiconSendReceiveService,
+              private applicationHeaderService: ApplicationHeaderService) {
     lexProjectService.setBreadcrumbs('configuration', 'Configuration');
+    this.applicationHeaderService.setPageName('Configuration');
 
     $q.all({
       users: lexProjectService.users(),

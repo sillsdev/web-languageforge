@@ -9,7 +9,7 @@ import { UserManagementJoinRequestsComponent } from './join-requests.component';
 
 export const UserManagementAppModule = angular
   .module('usermanagement',['ui.router', 'ui.bootstrap', CoreModule,
-    NoticeModule, 'palaso.ui.listview', 'palaso.ui.typeahead'
+    NoticeModule, 'palaso.ui.listview', 'palaso.ui.typeahead', 'sgw.ui.breadcrumb'
   ])
   .component('userManagementApp', UserManagementAppComponent)
   .component('userManagementMembers', UserManagementMembersComponent)
