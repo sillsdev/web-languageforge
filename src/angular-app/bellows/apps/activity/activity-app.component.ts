@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import { ActivityService } from '../../core/api/activity.service';
+import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
 import { LinkService } from '../../core/link.service';
 import { SessionService } from '../../core/session.service';
@@ -39,15 +40,16 @@ export class ActivityAppController implements angular.IController {
 
   static $inject = ['$sce', 'activityService',
     'breadcrumbService', 'linkService',
-    'sessionService'];
+    'sessionService', 'applicationHeaderService'];
   constructor(private $sce: angular.ISCEService, private activityService: ActivityService,
               private breadcrumbService: BreadcrumbService, private linkService: LinkService,
-              private sessionService: SessionService) { }
+              private sessionService: SessionService, private applicationHeaderService: ApplicationHeaderService) { }
 
   $onInit(): void {
     this.breadcrumbService.set('top', [
       { label: 'Activity' }
     ]);
+    this.applicationHeaderService.setPageName('Activity');
 
     // Example of showing all activities between two dates:
     // var now = new Date();

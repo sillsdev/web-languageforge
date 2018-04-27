@@ -7,7 +7,7 @@ import {ChangePasswordAppComponent} from './change-password-app.component';
 
 export const ChangePasswordAppModule = angular
   .module('changepassword', ['ui.bootstrap', 'ui.validate', 'zxcvbn', CoreModule,
-    NoticeModule, PuiUtilityModule
+    NoticeModule, PuiUtilityModule, 'sgw.ui.breadcrumb'
   ])
   .component('changePasswordApp', ChangePasswordAppComponent)
   .name;

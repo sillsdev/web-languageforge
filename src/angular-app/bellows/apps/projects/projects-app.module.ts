@@ -7,7 +7,7 @@ import {ProjectsAppComponent} from './projects-app.component';
 
 export const ProjectsAppModule = angular
   .module('projects', ['ui.bootstrap', CoreModule,
-    'palaso.ui.listview', NoticeModule, PuiUtilityModule
+    'palaso.ui.listview', NoticeModule, PuiUtilityModule, 'sgw.ui.breadcrumb'
   ])
   .component('projectsApp', ProjectsAppComponent)
   .name;

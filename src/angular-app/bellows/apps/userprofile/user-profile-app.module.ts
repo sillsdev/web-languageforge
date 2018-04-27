@@ -6,7 +6,7 @@ import { UserProfileAppComponent } from './user-profile-app.component';
 
 export const UserProfileAppModule = angular
   .module('userprofile', ['ui.bootstrap', 'pascalprecht.translate', CoreModule,
-    'palaso.ui.intlTelInput', NoticeModule
+    'palaso.ui.intlTelInput', NoticeModule, 'sgw.ui.breadcrumb'
   ])
   .component('userProfileApp', UserProfileAppComponent)
   .config(['$translateProvider', ($translateProvider: angular.translate.ITranslateProvider) => {
