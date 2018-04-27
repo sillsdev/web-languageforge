@@ -1,4 +1,5 @@
 import { ApiService, JsonRpcCallback } from '../../../bellows/core/api/api.service';
+import { ApplicationHeaderService } from '../../../bellows/core/application-header.service';
 import { BreadcrumbService } from '../../../bellows/core/breadcrumbs/breadcrumb.service';
 import { SessionService } from '../../../bellows/core/session.service';
 import { LexiconLinkService } from './lexicon-link.service';
@@ -6,11 +7,13 @@ import { LexiconLinkService } from './lexicon-link.service';
 export class LexiconProjectService {
   static $inject: string[] = ['apiService', 'sessionService',
     'breadcrumbService',
-    'lexLinkService'
+    'lexLinkService',
+    'applicationHeaderService'
   ];
   constructor(private api: ApiService, private sessionService: SessionService,
               private breadcrumbService: BreadcrumbService,
-              private linkService: LexiconLinkService) { }
+              private linkService: LexiconLinkService,
+              private applicationHeaderService: ApplicationHeaderService) { }
 
   setBreadcrumbs(view: string, label: string, forceRefresh: boolean = false): void {
     this.sessionService.getSession(forceRefresh).then(session => {
