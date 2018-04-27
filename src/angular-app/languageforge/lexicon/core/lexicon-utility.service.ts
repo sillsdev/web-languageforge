@@ -1,21 +1,22 @@
-import { UtilityService } from '../../../bellows/core/utility.service';
+import {UtilityService} from '../../../bellows/core/utility.service';
+import {LexConfigFieldList, LexConfigMultiText, LexiconConfig} from '../shared/model/lexicon-config.model';
 
 export class LexiconUtilityService extends UtilityService {
-  static getLexeme(globalConfig: any, config: any, entry: any): string {
+  static getLexeme(globalConfig: LexiconConfig, config: LexConfigFieldList, entry: any): string {
     return LexiconUtilityService.getFirstField(globalConfig, config, entry, 'lexeme');
   }
 
-  static getWords(globalConfig: any, config: any, entry: any): string {
+  static getWords(globalConfig: LexiconConfig, config: LexConfigFieldList, entry: any): string {
     return LexiconUtilityService.getFields(globalConfig, config, entry, 'lexeme');
   }
 
-  static getCitationForms(globalConfig: any, config: any, entry: any): string {
+  static getCitationForms(globalConfig: LexiconConfig, config: LexConfigFieldList, entry: any): string {
     let inputSystems: string[] = [];
     if (config != null && config.fields.citationForm != null) {
-      inputSystems = [...config.fields.citationForm.inputSystems];
+      inputSystems = [...(config.fields.citationForm as LexConfigMultiText).inputSystems];
     }
     if (config != null && config.fields.lexeme != null) {
-      inputSystems = [...config.fields.lexeme.inputSystems];
+      inputSystems = [...(config.fields.lexeme as LexConfigMultiText).inputSystems];
     }
     let citation = '';
     new Set(inputSystems).forEach((inputSystemTag: string) => {
@@ -43,7 +44,7 @@ export class LexiconUtilityService extends UtilityService {
     return citation;
   }
 
-  static getMeaning(globalConfig: any, config: any, sense: any): string {
+  static getMeaning(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: any): string {
     let meaning = LexiconUtilityService.getDefinition(globalConfig, config, sense);
     if (!meaning) {
       meaning = LexiconUtilityService.getGloss(globalConfig, config, sense);
@@ -52,7 +53,7 @@ export class LexiconUtilityService extends UtilityService {
     return meaning;
   }
 
-  static getMeanings(globalConfig: any, config: any, sense: any): string {
+  static getMeanings(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: any): string {
     let meaning = LexiconUtilityService.getFields(globalConfig, config, sense, 'definition');
     if (!meaning) {
       meaning = LexiconUtilityService.getFields(globalConfig, config, sense, 'gloss');
@@ -61,7 +62,7 @@ export class LexiconUtilityService extends UtilityService {
     return meaning;
   }
 
-  static getExample(globalConfig: any, config: any, example: any, field: string): string {
+  static getExample(globalConfig: LexiconConfig, config: LexConfigFieldList, example: any, field: string): string {
     if (field === 'sentence' || field === 'translation') {
       return LexiconUtilityService.getFields(globalConfig, config, example, field);
     }
@@ -101,12 +102,13 @@ export class LexiconUtilityService extends UtilityService {
     return '';
   }
 
-  private static getFields(globalConfig: any, config: any, node: any, fieldName: string,
+  private static getFields(globalConfig: LexiconConfig, config: LexConfigFieldList, node: any, fieldName: string,
                            delimiter: string = ' '): string {
     let result = '';
-    if (node[fieldName] && config && config.fields && config.fields[fieldName] && config.fields[fieldName].inputSystems
+    const multiTextConfigField = config.fields[fieldName] as LexConfigMultiText;
+    if (node[fieldName] && config && config.fields && multiTextConfigField && multiTextConfigField.inputSystems
     ) {
-      for (const languageTag of config.fields[fieldName].inputSystems ) {
+      for (const languageTag of multiTextConfigField.inputSystems ) {
         const fieldResult = LexiconUtilityService.getField(globalConfig, node, fieldName, languageTag);
         if (result) {
           result += delimiter + fieldResult;
@@ -119,7 +121,7 @@ export class LexiconUtilityService extends UtilityService {
     return result;
   }
 
-  private static getField(globalConfig: any, node: any, fieldName: string, languageTag: string): string {
+  private static getField(globalConfig: LexiconConfig, node: any, fieldName: string, languageTag: string): string {
     let result = '';
     let field;
     if (node[fieldName]) {
@@ -136,19 +138,21 @@ export class LexiconUtilityService extends UtilityService {
     return result;
   }
 
-  private static getDefinition(globalConfig: any, config: any, sense: any): string {
+  private static getDefinition(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: any): string {
     return LexiconUtilityService.getFirstField(globalConfig, config, sense, 'definition');
   }
 
-  private static getGloss(globalConfig: any, config: any, sense: any): string {
+  private static getGloss(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: any): string {
     return LexiconUtilityService.getFirstField(globalConfig, config, sense, 'gloss');
   }
 
-  private static getFirstField(globalConfig: any, config: any, node: any, fieldName: string): string {
+  private static getFirstField(globalConfig: LexiconConfig, config: LexConfigFieldList, node: any,
+                               fieldName: string): string {
     let result = '';
-    if (node[fieldName] && config && config.fields && config.fields[fieldName] &&
-      config.fields[fieldName].inputSystems) {
-      const inputSystems = config.fields[fieldName].inputSystems;
+    const multiTextConfigField = config.fields[fieldName] as LexConfigMultiText;
+    if (node[fieldName] && config && config.fields && multiTextConfigField &&
+      multiTextConfigField.inputSystems) {
+      const inputSystems = multiTextConfigField.inputSystems;
       for (const languageTag of inputSystems) {
         result = LexiconUtilityService.getField(globalConfig, node, fieldName, languageTag);
         if (result !== '') {
