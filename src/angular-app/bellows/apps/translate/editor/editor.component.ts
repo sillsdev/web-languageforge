@@ -8,7 +8,6 @@ import { NoticeService } from '../../../core/notice/notice.service';
 import { UtilityService } from '../../../core/utility.service';
 import { DocType, SaveState } from '../core/constants';
 import { MachineService } from '../core/machine.service';
-import { RealTimeService } from '../core/realtime.service';
 import { TranslateProjectService } from '../core/translate-project.service';
 import { TranslateRights } from '../core/translate-rights.service';
 import { TranslateConfigDocumentSets, TranslateUserPreferences } from '../shared/model/translate-config.model';
@@ -16,6 +15,7 @@ import { TranslateProject } from '../shared/model/translate-project.model';
 import { TranslateUtilities } from '../shared/translate-utilities';
 import { DocumentEditor, SourceDocumentEditor, TargetDocumentEditor } from './document-editor';
 import { Metrics, MetricService } from './metric.service';
+import { RealTimeService } from './realtime.service';
 
 export class TranslateEditorController implements angular.IController {
   tecProject: TranslateProject;
@@ -257,6 +257,8 @@ export class TranslateEditorController implements angular.IController {
     this.$window.removeEventListener('resize', this.onWindowResize);
     this.$window.removeEventListener('beforeunload', this.onBeforeUnload);
     this.saveMetrics();
+    this.source.closeDocumentSet();
+    this.target.closeDocumentSet();
     this.machine.close();
   }
 
