@@ -10,6 +10,7 @@ class InputSystem
         $this->abbreviation = $abbr;
         $this->languageName = $name;
         $this->isRightToLeft = false;
+        $this->cssFontFamily = '';
     }
 
     /** @var string */
@@ -23,4 +24,7 @@ class InputSystem
 
     /** @var boolean */
     public $isRightToLeft;
+
+    /** @var string */
+    public $cssFontFamily;
 }

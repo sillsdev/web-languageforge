@@ -62,6 +62,7 @@
                             <div class="form-group sortfilter-form">
                                 <label class="font-weight-bold" for="filterEntriesFor">Filter Entries</label>
                                 <div class="form-inline">
+                                    <!--suppress HtmlFormInputWithoutLabel -->
                                     <select class="custom-select sortfilter-control" data-ng-show="entryListModifiers.filterBy"
                                             data-ng-change="filterEntries(true)" data-ng-model="entryListModifiers.filterType">
                                         <option value="isEmpty">Doesn't have</option>
@@ -84,7 +85,7 @@
                             <div class="list-group" data-ng-show="entries.length > 0 && finishedLoading">
                                 <div class="lexiconListItem list-group-item list-group-item-action" data-ng-repeat="entry in visibleEntries track by entry.id"
                                      data-ng-click="editEntryAndScroll(entry.id)">
-                                    <dc-rendered config="config.entry" model="entry"></dc-rendered>
+                                    <dc-rendered global-config="config" config="config.entry" model="entry"></dc-rendered>
                                     <div data-ng-show="commentService.getEntryCommentCount(entry.id) > 0"
                                          style="position:absolute; right:5px;top:3px">
                                         <i class="fa fa-comment commentColor"></i>

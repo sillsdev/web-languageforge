@@ -17,11 +17,13 @@ angular.module('lexicon',
     'pascalprecht.translate'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$compileProvider',
-    'apiServiceProvider',
+    '$sanitizeProvider', 'apiServiceProvider',
     function ($stateProvider, $urlRouterProvider, $translateProvider, $compileProvider,
-      apiService) {
+      $sanitizeProvider, apiService) {
     $compileProvider.debugInfoEnabled(apiService.isProduction);
     $compileProvider.commentDirectivesEnabled(apiService.isProduction);
+
+    $sanitizeProvider.addValidAttrs(['style']); // this is needed to allow style="font-family" on ng-bind-html elements
 
     $urlRouterProvider.otherwise('/editor/list');
 

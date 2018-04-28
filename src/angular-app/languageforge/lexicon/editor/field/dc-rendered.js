@@ -9,11 +9,12 @@ angular.module('palaso.ui.dc.rendered', [])
     templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-rendered.html',
     scope: {
       config: '=',
+      globalConfig: '=',
       model: '=',
       hideIfEmpty: '=?'
     },
     controller: ['$scope', 'sessionService', 'lexUtils',
-      function ($scope, ss, utils) {
+      function ($scope, sessionService, utils) {
       $scope.render = function () {
         var sense;
         var lastPos;
@@ -22,8 +23,9 @@ angular.module('palaso.ui.dc.rendered', [])
           word: '',
           senses: []
         };
-        $scope.entry.word = utils.constructor.getCitationForms($scope.config, $scope.model);
-        ss.getSession().then(function (session) {
+        $scope.entry.word = utils.constructor.getCitationForms($scope.globalConfig, $scope.config,
+          $scope.model);
+        sessionService.getSession().then(function (session) {
           var optionlists = session.projectSettings().optionlists;
           angular.forEach($scope.model.senses, function (senseModel) {
             pos = utils.constructor.getPartOfSpeechAbbreviation(senseModel.partOfSpeech,
@@ -37,18 +39,19 @@ angular.module('palaso.ui.dc.rendered', [])
             }
 
             sense = {
-              meaning: utils.constructor.getMeanings($scope.config.fields.senses, senseModel),
+              meaning: utils.constructor.getMeanings($scope.globalConfig,
+                $scope.config.fields.senses, senseModel),
               partOfSpeech: pos,
               examples: []
             };
             angular.forEach(senseModel.examples, function (exampleModel) {
               sense.examples.push({
-                sentence:
-                  utils.constructor.getExample($scope.config.fields.senses.fields.examples,
-                    exampleModel, 'sentence') }, {
-                sentenceTranslation:
-                  utils.constructor.getExample($scope.config.fields.senses.fields.examples,
-                    exampleModel, 'translation') });
+                sentence: utils.constructor.getExample($scope.globalConfig,
+                  $scope.config.fields.senses.fields.examples, exampleModel, 'sentence')
+              }, {
+                sentenceTranslation: utils.constructor.getExample($scope.globalConfig,
+                  $scope.config.fields.senses.fields.examples, exampleModel, 'translation')
+              });
             });
 
             $scope.entry.senses.push(sense);
