@@ -428,8 +428,6 @@ export class EditorPage {
         // isPresent() before calling expect().
         toggle: div.element(by.css('.comment-body > button')),
         container: div.element(by.css('.commentRegarding')),
-        word: div.element(by.binding('comment.regarding.word')),
-        definition: div.element(by.binding('comment.regarding.meaning')),
         fieldLabel: div.element(by.binding('comment.regarding.fieldNameForDisplay')),
         fieldWsid: div.element(by.binding('comment.regarding.inputSystem')),
         fieldValue: div.element(by.css('.regardingFieldValue'))

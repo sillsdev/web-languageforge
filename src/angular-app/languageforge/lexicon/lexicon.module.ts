@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+import 'angular-sanitize';
 
 import {InputSystemsModule} from '../../bellows/core/input-systems/input-systems.service';
 import {SoundModule} from '../../bellows/shared/sound.module';
