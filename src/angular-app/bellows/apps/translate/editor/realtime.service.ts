@@ -1,6 +1,6 @@
 import Quill, { TextChangeHandler } from 'quill';
 
-import { SaveState } from './constants';
+import { SaveState } from '../core/constants';
 
 type DocCallback = (error: any) => void;
 type OnOpsFunction = (op: any, source: any) => void;
