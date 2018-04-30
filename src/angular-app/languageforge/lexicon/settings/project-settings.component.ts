@@ -23,6 +23,7 @@ export class LexiconProjectSettingsController implements angular.IController {
 
   $onInit() {
     this.lexProjectService.setBreadcrumbs('settings', 'Project Settings');
+    this.lexProjectService.setupSettings();
   }
 
   $onChanges(changes: any) {
@@ -48,6 +49,7 @@ export class LexiconProjectSettingsController implements angular.IController {
       if (result.ok) {
         this.lpsOnUpdate({ $event: { project: this.project } });
         this.lexProjectService.setBreadcrumbs('settings', 'Project Settings', true);
+        this.lexProjectService.setupSettings();
         this.notice.push(this.notice.SUCCESS, this.project.projectName + ' settings updated successfully.');
       }
     });

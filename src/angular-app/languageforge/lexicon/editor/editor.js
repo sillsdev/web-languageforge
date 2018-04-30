@@ -1135,16 +1135,19 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
   .controller('EditorListCtrl', ['$scope', 'lexProjectService',
     function ($scope, lexProjectService) {
       lexProjectService.setBreadcrumbs('editor/list', 'List');
+      lexProjectService.setupSettings();
     }
   ])
   .controller('EditorEntryCtrl', ['$scope', 'lexProjectService',
     function ($scope, lexProjectService) {
       lexProjectService.setBreadcrumbs('editor/entry', 'Edit');
+      lexProjectService.setupSettings();
     }
   ])
   .controller('EditorCommentsCtrl', ['$scope', 'lexProjectService',
     function ($scope, lexProjectService) {
       lexProjectService.setBreadcrumbs('editor/entry', 'Comments');
+      lexProjectService.setupSettings();
     }
   ])
 
