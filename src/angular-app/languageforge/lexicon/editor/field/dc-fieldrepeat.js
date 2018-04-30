@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('palaso.ui.dc.fieldrepeat', ['editorFieldModule',
-  'palaso.ui.dc.multioptionlist', 'palaso.ui.dc.semanticdomain', 'palaso.ui.dc.example',
+  'palaso.ui.dc.semanticdomain', 'palaso.ui.dc.example',
   'palaso.ui.dc.multiparagraph', 'palaso.ui.dc.picture'])
 
 // Palaso UI Dictionary Control: Sense

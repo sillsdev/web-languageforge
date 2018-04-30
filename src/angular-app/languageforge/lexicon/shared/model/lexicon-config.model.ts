@@ -19,7 +19,7 @@ export class LexConfigOptionList extends LexConfig {
   listCode: string;
 }
 
-class LexConfigMultiOptionList extends LexConfigOptionList { }
+export class LexConfigMultiOptionList extends LexConfigOptionList { }
 
 export class LexConfigPictures extends LexConfigMultiText {
   captionLabel: string;

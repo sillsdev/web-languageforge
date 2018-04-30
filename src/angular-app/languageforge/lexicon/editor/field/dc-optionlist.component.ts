@@ -1,12 +1,13 @@
 import * as angular from 'angular';
 
 import {LexiconUtilityService} from '../../core/lexicon-utility.service';
+import {LexMultiValue} from '../../shared/model/lex-mulit-value.model';
 import {LexConfigOptionList} from '../../shared/model/lexicon-config.model';
-import {LexOptionList, LexOptionListItem} from '../../shared/model/option-list.model';
+import {LexOptionListItem} from '../../shared/model/option-list.model';
 import {FieldControl} from './field-control.model';
 
 export class FieldOptionListController implements angular.IController {
-  model: LexOptionList;
+  model: LexOptionListItem | LexMultiValue;
   config: LexConfigOptionList;
   control: FieldControl;
   items: LexOptionListItem[];
