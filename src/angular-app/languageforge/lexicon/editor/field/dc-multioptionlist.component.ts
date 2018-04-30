@@ -1,10 +1,13 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.dc.multioptionlist', [])
+import {LexiconRightsService} from '../../core/lexicon-rights.service';
+import {LexOptionListItem} from '../../shared/model/option-list.model';
 
-// Palaso UI Multioptionlist
-.directive('dcMultioptionlist', [function () {
-  return {
+export const MultiOptionListModule = angular
+  .module('palaso.ui.dc.multioptionlist', [])
+
+  // Palaso UI Multioptionlist
+  .directive('dcMultioptionlist', [() => ({
     restrict: 'E',
     templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-multioptionlist.component.html',
     scope: {
@@ -15,30 +18,30 @@ angular.module('palaso.ui.dc.multioptionlist', [])
       selectField: '&',
       fieldName: '='
     },
-    controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rightsService) {
+    controller: ['$scope', '$state', 'lexRightsService', ($scope, $state, rightsService: LexiconRightsService) => {
       $scope.$state = $state;
       $scope.isAdding = false;
       $scope.valueToBeDeleted = '';
       $scope.contextGuid = $scope.$parent.contextGuid;
 
-      rightsService.getRights().then(function(rights) {
+      rightsService.getRights().then(rights => {
         $scope.rights = rights;
 
-        $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted, value) {
+        $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted: string, value: string): boolean {
           if (angular.isDefined($scope.items) && $state.is('editor.entry') && rights.canEditEntry()) {
-            return valueToBeDeleted == value;
+            return valueToBeDeleted === value;
           }
 
           return false;
         };
       });
 
-      $scope.getDisplayName = function getDisplayName(value) {
-        var displayName = value;
+      $scope.getDisplayName = function getDisplayName(value: string): string {
+        let displayName = value;
         if (angular.isDefined($scope.items)) {
-          for (var i = 0; i < $scope.items.length; i++) {
-            if ($scope.items[i].key == value) {
-              displayName = $scope.items[i].value;
+          for (const item of $scope.items) {
+            if (item.key === value) {
+              displayName = item.value;
               break;
             }
           }
@@ -47,24 +50,24 @@ angular.module('palaso.ui.dc.multioptionlist', [])
         return displayName;
       };
 
-      $scope.orderItemsByListOrder = function orderItemsByListOrder(value) {
+      $scope.orderItemsByListOrder = (value: string): number => {
         if (angular.isDefined($scope.items)) {
-          return $scope.items.map(function (i) {return i.value;}).indexOf(value);
+          return $scope.items.map((item: LexOptionListItem) => item.value).indexOf(value);
         }
 
         return -1;
       };
 
-      $scope.filterSelectedItems = function filterSelectedItems(item) {
-        return $scope.model.values.indexOf(item.value) == -1;
+      $scope.filterSelectedItems = (item: LexOptionListItem): boolean => {
+        return $scope.model.values.indexOf(item.value) === -1;
       };
 
-      $scope.showAddButton = function showAddButton() {
+      $scope.showAddButton = function showAddButton(): boolean {
         return angular.isDefined($scope.items) && !$scope.isAdding &&
           $scope.model.values.length < $scope.items.length;
       };
 
-      $scope.addValue = function addValue() {
+      $scope.addValue = function addValue(): void {
         if (angular.isDefined($scope.newValue)) {
           $scope.model.values.push($scope.newValue);
         }
@@ -73,12 +76,12 @@ angular.module('palaso.ui.dc.multioptionlist', [])
         $scope.isAdding = false;
       };
 
-      $scope.deleteValue = function deleteValue(value) {
-        var index = $scope.model.values.indexOf(value);
+      $scope.deleteValue = function deleteValue(value: string): void {
+        const index = $scope.model.values.indexOf(value);
         $scope.model.values.splice(index, 1);
       };
 
-      $scope.selectValue = function selectValue(value) {
+      $scope.selectValue = function selectValue(value: string): void {
         $scope.selectField({
           inputSystem: '',
           multioptionValue: $scope.getDisplayName(value)
@@ -86,5 +89,5 @@ angular.module('palaso.ui.dc.multioptionlist', [])
       };
 
     }]
-  };
-}]);
+  })])
+  .name;
