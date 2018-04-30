@@ -1,15 +1,15 @@
 <form class="form-horizontal dc-optionlist">
     <div class="form-group row comment-bubble-group">
-        <label class="col-form-label col-lg-4 text-lg-right">{{config.label}}</label>
+        <label class="col-form-label col-lg-4 text-lg-right">{{$ctrl.config.label}}</label>
         <div class="controls col-lg-8">
             <!--suppress HtmlFormInputWithoutLabel -->
-            <select class="form-control custom-select" data-ng-show="$state.is('editor.entry') && control.rights.canEditEntry()"
-                    data-ng-model="model.value" data-ng-options="item.key as item.value for item in items">
+            <select class="form-control custom-select" data-ng-show="$ctrl.isAtEditorEntry() && $ctrl.control.rights.canEditEntry()"
+                    data-ng-model="$ctrl.model.value" data-ng-options="item.key as item.value for item in $ctrl.items">
                 <option value="">Unknown</option>
             </select>
-            <span class="uneditable-input" data-ng-hide="$state.is('editor.entry') && control.rights.canEditEntry()"
-                  data-ng-bind="getDisplayName(model.value)"></span>
+            <span class="uneditable-input" data-ng-hide="$ctrl.isAtEditorEntry() && $ctrl.control.rights.canEditEntry()"
+                  data-ng-bind="$ctrl.getDisplayName($ctrl.model.value)"></span>
         </div>
-        <comment-bubble control="control" field="fieldName" input-system="" model="model" parent-context-guid="contextGuid"></comment-bubble>
+        <comment-bubble control="$ctrl.control" field="$ctrl.fieldName" input-system="" model="$ctrl.model" parent-context-guid="$ctrl.contextGuid"></comment-bubble>
     </div>
 </form>

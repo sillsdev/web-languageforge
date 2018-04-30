@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 import {UtilityService} from '../../../bellows/core/utility.service';
 import {LexConfigFieldList, LexConfigMultiText, LexiconConfig} from '../shared/model/lexicon-config.model';
 
@@ -100,6 +102,10 @@ export class LexiconUtilityService extends UtilityService {
     }
 
     return '';
+  }
+
+  static isAtEditorEntry($state: angular.ui.IStateService): boolean {
+    return $state.is('editor.entry');
   }
 
   private static getFields(globalConfig: LexiconConfig, config: LexConfigFieldList, node: any, fieldName: string,
