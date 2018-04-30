@@ -35,6 +35,7 @@ export class LexiconImportController implements angular.IController {
 
   $onInit() {
     this.lexProjectService.setBreadcrumbs('importExport',  'LIFT Import');
+    this.lexProjectService.setupSettings();
     this.applicationHeaderService.setPageName('Import from LIFT');
   }
 

@@ -256,43 +256,13 @@ dl.picklists dd {
   width: 100%;
   height: $navbar-height;
   background-color: #104060;
+  @include media-breakpoint-down(sm) {
+    height: 84px;
+  }
 }
 
 nav {
   border-radius: 0 !important;
-}
-#mobileMenu {
-  float: left;
-  width: 100%;
-  .nav-projects {
-    float: left;
-  }
-  .nav-user {
-    float: right;
-  }
-  .nav-link {
-    border: 1px solid white;
-    border-radius: 3px;
-    padding: 5px;
-    width: 40px;
-    height: 40px;
-    text-align: center;
-    line-height: 40px;
-    margin-top: -3px;
-    i {
-      vertical-align: top;
-      margin-top: 7px;
-    }
-    img {
-      width: 28px;
-      height: 28px;
-      border: 1px solid #39537c;
-      vertical-align: top;
-    }
-  }
-  .dropdown-toggle::after {
-    display: none;
-  }
 }
 
 .formspacing{
@@ -360,7 +330,7 @@ nav {
   }
 
   #app-container {
-    margin-top: 10px;
+    margin-top: 94px;
   }
 
   .alert {
@@ -380,6 +350,9 @@ nav {
     transition: background-color 1s ease;
     flex: 0 0 auto;
     padding: 0 $grid-gutter-width;
+    @include media-breakpoint-down(sm) {
+      padding: 0 ($grid-gutter-width / 2);
+    }
     a {
       font-size: 14px;
       line-height: 18px;
@@ -403,48 +376,129 @@ nav {
         font-weight: bold;
       }
     }
+    .nav-item.dropdown {
+      a {
+        i {
+          display: none;
+        }
+        @include media-breakpoint-down(sm) {
+          i {
+            display: block;
+            font-size: 20px;
+          }
+          &:after, span {
+            display: none;
+          }
+        }
+        &#helpDropdown {
+          i {
+            display: inline-block !important;
+            font-size: 16px;
+            margin-top: 2px;
+          }
+        }
+      }
+    }
   }
   > nav:last-child {
     background-color: theme-color(primary);
-    padding: 0 $grid-gutter-width;
     height: 86px;
+    @include media-breakpoint-down(sm) {
+      height: 48px;
+    }
     .page-header-detail {
-      color: #fff;
-      font-size: 25px;
-      line-height: 25px;
-      font-weight: bold;
+      .page-name-settings {
+        display: flex;
+        align-items: center;
+        #settings-dropdown-button {
+          position: relative;
+          .dropdown-toggle {
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            color: #fff;
+            font-size: 16px;
+            box-shadow: none;
+            &:after {
+              display: none;
+            }
+          }
+          &:not(.app-settings-available) {
+            &:before {
+              position: absolute;
+              z-index: 1;
+              content: "";
+              width: 100%;
+              left: 0;
+              top: 0;
+              height: 100%;
+              background: transparent;
+              cursor: not-allowed;
+            }
+            .dropdown-toggle {
+              opacity: 0.4;
+            }
+          }
+        }
+      }
+      .page-name {
+        color: #fff;
+        font-size: 25px;
+        line-height: 25px;
+        font-weight: bold;
+        @include media-breakpoint-down(sm) {
+          font-size: 18px;
+          line-height: 18px;
+        }
+      }
     }
   }
-  .breadcrumb {
-    background-color: transparent;
-    padding: 0;
-    margin: 0;
-    border-radius: 0;
-    color: #fff;
-    font-size: 12px;
-    opacity: 0.7;
-    a {
+  .breadcrumbs {
+    margin: 0 0 0 39px;
+    ol {
+      background-color: transparent;
+      padding: 0;
+      margin: 0;
+      border-radius: 0;
       color: #fff;
       font-size: 12px;
-    }
-    .breadcrumb-item {
-      color: #fff;
-      font-weight: normal;
-      &+ .breadcrumb-item::before {
+      opacity: 0.7;
+      a {
         color: #fff;
+        font-size: 12px;
+      }
+      .breadcrumb-item {
+        color: #fff;
+        font-weight: normal;
+        & + .breadcrumb-item::before {
+          color: #fff;
+        }
       }
     }
   }
   #userDropdown {
     display: flex;
     align-items: center;
+    @include media-breakpoint-down(sm) {
+      &:after {
+        display: none;
+      }
+    }
     #smallAvatarURL {
       width: 44px;
       height: 44px;
       margin-right: 13px;
+      @include media-breakpoint-down(sm) {
+        width: 30px;
+        height: 30px;
+        margin-right: 0;
+      }
     }
     span {
       font-size: 16px;
+      @include media-breakpoint-down(sm) {
+        display: none;
+      }
     }
   }
 }
