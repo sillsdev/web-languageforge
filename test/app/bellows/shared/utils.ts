@@ -24,7 +24,7 @@ export class Utils {
 
   static async clickDropdownByValue(dropdownElement: ElementFinder, value: string|RegExp) {
     // Select an element of the dropdown based on its value (its text)
-   await Utils.findDropdownByValue(dropdownElement, value).click();
+    await Utils.findDropdownByValue(dropdownElement, value).click();
   }
 
   findRowByFunc(elementArray: ElementArrayFinder, searchFunc: (rowText: string) => boolean): Promise<ElementFinder> {
@@ -90,21 +90,23 @@ export class Utils {
       browser.wait(() =>
         this.noticeList.count().then((count: any) =>
           count >= 1),
-         Utils.conditionTimeout);
+        Utils.conditionTimeout);
+
       browser.wait(() =>
         this.noticeList.first().getText().then((text: any) => text.includes(includedText)),
          Utils.conditionTimeout);
     }
   };
 
-  static checkModalTextMatches(expectedText: string) {
+  static async checkModalTextMatches(expectedText: string) {
     const modalBody = element(by.css('.modal-body'));
 
-    browser.wait(ExpectedConditions.visibilityOf(modalBody), Utils.conditionTimeout);
-    expect(modalBody.getText()).toMatch(expectedText);
+    await browser.wait(ExpectedConditions.visibilityOf(modalBody), Utils.conditionTimeout);
+    await expect(modalBody.getText()).toMatch(expectedText);
+
   }
 
-    static async clickModalButton(buttonText: string) {
+  static async clickModalButton(buttonText: string) {
     const button = await element(by.css('.modal-footer')).element(by.partialButtonText(buttonText));
 
     await browser.wait(ExpectedConditions.visibilityOf(button), Utils.conditionTimeout);
@@ -112,33 +114,34 @@ export class Utils {
     await button.click();
   }
 
-  static clickBreadcrumb(breadcrumbTextOrRegex: string|RegExp) {
-    element(by.cssContainingText('.breadcrumb > li', breadcrumbTextOrRegex)).click();
+  static async clickBreadcrumb(breadcrumbTextOrRegex: string|RegExp) {
+    await element(by.cssContainingText('.breadcrumb > li', breadcrumbTextOrRegex)).click();
   }
 
-  static parent(child: ElementFinder) {
-    return child.element(by.xpath('..'));
+  static async parent(child: ElementFinder) {
+    return await child.element(by.xpath('..'));
   }
 
   // This handy function comes from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-  static escapeRegExp(stringToEscape: string) {
-    return stringToEscape.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+  static async escapeRegExp(stringToEscape: string) {
+    return await stringToEscape.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
   }
 
   // Errors we choose to ignore because they are typically not encountered by users, but only
   // in testing
-  static isMessageToIgnore(message: logging.Entry ) {
+  static async isMessageToIgnore(message: logging.Entry ) {
     if (message.level.name === 'WARNING') return true;
 
     const text = message.message;
 
-    return /angular.*\.js .* TypeError: undefined is not a function/.test(text) ||
+    return await /angular.*\.js .* TypeError: undefined is not a function/.test(text) ||
       /\[\$compile:tpload] .* HTTP status: -1/.test(text) ||
       text.includes('password or credit card input in a non-secure context.') ||
       text.includes('ERR_INTERNET_DISCONNECTED');
   }
 
   static async scrollTop() {
+
     await browser.executeScript('window.scroll(0,0)');
   }
 

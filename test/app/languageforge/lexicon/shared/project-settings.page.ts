@@ -10,13 +10,14 @@ export class ProjectSettingsPage {
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
-  get(projectName: string) {
-    this.projectsPage.get();
-    this.projectsPage.clickOnProject(projectName);
-    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
-    this.settingsMenuLink.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);
-    this.projectSettingsLink.click();
+  async get(projectName: string) {
+    await this.projectsPage.get();
+    // this.projectsPage.clickOnProject(projectName);
+    await this.projectsPage.clickOnProjectName(projectName);
+    await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
+    await this.settingsMenuLink.click();
+    await browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);
+    await this.projectSettingsLink.click();
   }
 
   tabDivs = element.all(by.className('tab-pane'));
@@ -38,9 +39,9 @@ export class ProjectSettingsPage {
    * a regular expression that should not be touched. If false or unspecified, fieldName
    * will be considered an exact match (so "Etymology" should not match "Etymology Comment").
    */
-  static getFieldByName(fieldName: string, treatAsRegex: boolean) {
+  static async getFieldByName(fieldName: string, treatAsRegex: boolean) {
     const fieldRegex: string|RegExp = (treatAsRegex ? fieldName : new RegExp('^' + fieldName + '$'));
-    return element(By.css('div.tab-pane.active dl.picklists'))
+    return await element(By.css('div.tab-pane.active dl.picklists'))
       .element(By.cssContainingText('div[data-ng-repeat]', fieldRegex));
   }
 }

@@ -4,6 +4,7 @@ export class BellowsLoginPage {
   private readonly constants = require('../../testConstants');
 
   static async get() {
+
     // Driver needs to be added with browser to avoid warning messages
      await browser.driver.get(browser.baseUrl + '/auth/login');
   }
@@ -17,8 +18,10 @@ export class BellowsLoginPage {
   submit     = element(by.id('login-submit'));
 
   async login(username: string, password: string) {
+
     // Driver needs to be added with browser to avoid warning messages
     await browser.driver.get(browser.baseUrl + '/auth/logout');
+
     await BellowsLoginPage.get();
     await this.username.sendKeys(username);
     await this.password.sendKeys(password);

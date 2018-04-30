@@ -107,12 +107,12 @@ export class ProjectsPage {
   }
 
   //noinspection JSUnusedGlobalSymbols
-    addManagerToProject(projectName: string, usersName: string) {
-       this.addUserToProject(projectName, usersName, 'Manager');
+  async addManagerToProject(projectName: string, usersName: string) {
+    await this.addUserToProject(projectName, usersName, 'Manager');
   }
 
-  addMemberToProject(projectName: string, usersName: string) {
-    this.addUserToProject(projectName, usersName, 'Contributor');
+  async addMemberToProject(projectName: string, usersName: string) {
+    await this.addUserToProject(projectName, usersName, 'Contributor');
   }
 
   async removeUserFromProject(projectName: string, userName: string) {

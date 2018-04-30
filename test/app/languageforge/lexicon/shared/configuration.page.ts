@@ -12,10 +12,10 @@ export class ConfigurationPage {
   settingsMenuLink = element(by.id('settings-dropdown-button'));
   configurationLink = element(by.id('dropdown-configuration'));
 
-  get() {
-    Utils.scrollTop();
-    this.settingsMenuLink.click();
-    this.configurationLink.click();
+  async get() {
+    await Utils.scrollTop();
+    await this.settingsMenuLink.click();
+    await this.configurationLink.click();
   }
 
   applyButton = element(by.id('configuration-apply-btn'));
@@ -109,7 +109,7 @@ export class ConfigurationPage {
           return this.activePane.all(by.className('sense-select-all-group-checkbox'));
         }
       },
-      rows: () => {
+      rows: () =>  {
         return this.activePane.all(by.repeater('senseField in $ctrl.unifiedViewModel.senseFields.settings'));
       },
       rowLabel: (rowIndex: number) => {
@@ -125,8 +125,8 @@ export class ConfigurationPage {
       groupColumnCheckboxes: (groupIndex: number) => {
         return this.unifiedPane.sense.rows().all(by.className('checkbox-group-' + groupIndex));
       },
-      removeGroupButton: (groupIndex: number) => {
-        return this.activePane.element(by.id('sense-header'))
+      removeGroupButton: async (groupIndex: number) => {
+        return await this.activePane.element(by.id('sense-header'))
           .element(by.className('remove-button-group-' + groupIndex));
       },
       fieldSpecificInputSystemCheckbox: (label: string|RegExp, inputSystemIndex: number) => {
@@ -163,8 +163,8 @@ export class ConfigurationPage {
       groupColumnCheckboxes: (groupIndex: number) => {
         return this.unifiedPane.example.rows().all(by.className('checkbox-group-' + groupIndex));
       },
-      removeGroupButton: (groupIndex: number) => {
-        return this.activePane.element(by.id('example-header'))
+      removeGroupButton: async (groupIndex: number) => {
+        return await this.activePane.element(by.id('example-header'))
           .element(by.className('remove-button-group-' + groupIndex));
       },
       fieldSpecificInputSystemCheckbox: (label: string|RegExp, inputSystemIndex: number) => {

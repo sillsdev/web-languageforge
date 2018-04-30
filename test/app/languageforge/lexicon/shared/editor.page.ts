@@ -9,14 +9,14 @@ export class EditorPage {
   private readonly mockUpload = new MockUploadElement();
   private readonly editorUtil = new EditorUtil();
 
-  static get(projectId: string, entryId: string) {
+  static async get(projectId: string, entryId: string) {
     let extra = projectId ? ('/' + projectId) : '';
     extra += (projectId && entryId) ? ('#!/editor/entry/' + entryId) : '';
-    browser.get(browser.baseUrl + '/app/lexicon' + extra);
+    await browser.get(browser.baseUrl + '/app/lexicon' + extra);
   }
 
-  static getProjectIdFromUrl() {
-    return browser.getCurrentUrl().then(url => {
+  static async getProjectIdFromUrl() {
+    return await browser.getCurrentUrl().then(url => {
       const match = url.match(/\/app\/lexicon\/([0-9a-z]{24})/);
       let projectId = '';
       if (match) {
@@ -27,8 +27,8 @@ export class EditorPage {
     });
   }
 
-  static getEntryIdFromUrl() {
-    return browser.getCurrentUrl().then(url => {
+  static async getEntryIdFromUrl() {
+    return await browser.getCurrentUrl().then(url => {
       const match = url.match(/\/editor\/entry\/([0-9a-z_]{6,24})/);
       let entryId = '';
       if (match) {
@@ -70,9 +70,9 @@ export class EditorPage {
       clearBtn: this.browseDivSearch.element(by.className('fa-times')),
       results: this.browseDivSearch.all(by.repeater('e in typeahead.searchResults')),
       matchCountElem: this.browseDivSearch.element(by.binding('typeahead.matchCountCaption')),
-      getMatchCount: () => {
+      getMatchCount: async () => {
         // Inside this function, "this" ==  EditorPage.browse.search
-        return this.browse.search.matchCountElem.getText().then((s: string) =>
+        return await this.browse.search.matchCountElem.getText().then((s: string) =>
           parseInt(s, 10)
         );
       }
@@ -87,7 +87,7 @@ export class EditorPage {
         const elem = row.element(by.binding('entry.word'));
 
         // fix problem with protractor not scrolling to element before click
-        browser.driver.executeScript('arguments[0].scrollIntoView();', elem.getWebElement());
+        browser.executeScript('arguments[0].scrollIntoView();', elem.getWebElement());
         return elem.getText().then((word: string) =>
           (word.indexOf(lexeme) > -1)
         );
@@ -108,22 +108,22 @@ export class EditorPage {
       show: 'Show Extra Fields',
       hide: 'Hide Extra Fields'
     },
-    showHiddenFields: () => {
+    showHiddenFields: async () => {
       // Only click the button if it will result in fields being shown
-      this.edit.toggleHiddenFieldsBtn.getText().then((text: string) => {
+      await this.edit.toggleHiddenFieldsBtn.getText().then(async (text: string) => {
         if (text === this.edit.toggleHiddenFieldsBtnText.show) {
-          Utils.scrollTop();
-          this.edit.toggleHiddenFieldsBtn.click();
+          await Utils.scrollTop();
+          await this.edit.toggleHiddenFieldsBtn.click();
         }
       });
     },
 
-    hideHiddenFields: () => {
+    hideHiddenFields: async () => {
       // Only click the button if it will result in fields being hidden
-      this.edit.toggleHiddenFieldsBtn.getText().then((text: string) => {
+      await this.edit.toggleHiddenFieldsBtn.getText().then(async (text: string) => {
         if (text === this.edit.toggleHiddenFieldsBtnText.hide) {
-          Utils.scrollTop();
-          this.edit.toggleHiddenFieldsBtn.click();
+          await Utils.scrollTop();
+          await this.edit.toggleHiddenFieldsBtn.click();
         }
       });
     },
@@ -146,7 +146,7 @@ export class EditorPage {
 
     findEntryByDefinition: (definition: string) => {
       const div = this.editDiv.element(by.id('compactEntryListContainer'));
-      return div.element(by.cssContainingText('.listItemSecondary',
+      return  div.element(by.cssContainingText('.listItemSecondary',
         definition));
     },
 
@@ -155,9 +155,9 @@ export class EditorPage {
       clearBtn: this.editDivSearch.element(by.className('fa-times')),
       results: this.editDivSearch.all(by.repeater('e in typeahead.searchResults')),
       matchCountElem: this.editDivSearch.element(by.binding('typeahead.matchCountCaption')),
-      getMatchCount: () => {
+      getMatchCount: async () => {
         // Inside this function, "this" == EditorPage.edit.search
-        return this.edit.search.matchCountElem.getText().then((s: string) =>
+        return await this.edit.search.matchCountElem.getText().then((s: string) =>
           parseInt(s, 10)
         );
       }
@@ -170,32 +170,32 @@ export class EditorPage {
 
     // Helper functions for retrieving various field values
     fields: this.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
-    getLexemes: () => {
+    getLexemes: async () => {
 
       // Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid:
       // 'de', value: 'Wort'}]
       const lexeme = this.edit.fields.get(0);
-      return this.editorUtil.dcMultitextToArray(lexeme);
+      return await this.editorUtil.dcMultitextToArray(lexeme);
     },
 
-    getLexemesAsObject: () => {
+    getLexemesAsObject: async () => {
 
       // Returns lexemes in the format [{en: 'word', de: 'Wort'}]
       const lexeme = this.edit.fields.get(0);
-      return this.editorUtil.dcMultitextToObject(lexeme);
+      return await this.editorUtil.dcMultitextToObject(lexeme);
     },
 
-    getFirstLexeme: () => {
-      browser.wait(ExpectedConditions.visibilityOf(this.edit.fields.get(0)), Utils.conditionTimeout);
+    getFirstLexeme: async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(this.edit.fields.get(0)), Utils.conditionTimeout);
 
       // Returns the first (topmost) lexeme regardless of its wsid
       const lexeme = this.edit.fields.get(0);
-      return this.editorUtil.dcMultitextToFirstValue(lexeme);
+      return await this.editorUtil.dcMultitextToFirstValue(lexeme);
     },
 
-    getLexemeByWsid: (searchWsid: string) => {
+    getLexemeByWsid: async (searchWsid: string) => {
       const lexeme = this.edit.fields.get(0);
-      return this.editorUtil.dcMultitextToObject(lexeme).then((lexemes: string) =>
+      return await this.editorUtil.dcMultitextToObject(lexeme).then((lexemes: string) =>
         lexemes[searchWsid]
       );
     },
@@ -313,6 +313,7 @@ export class EditorPage {
     },
 
     // Top-row UI elements
+    // renderedDiv: this.commentDiv.element(by.css('dc-rendered')),
     renderedDiv: this.commentDiv.element(by.css('dc-rendered')),
     filter: {
       byTextElem: this.commentDiv.element(by.model('commentFilter.text')),
@@ -349,9 +350,9 @@ export class EditorPage {
       getOneField: EditorUtil.getOneField,
       getFieldValues: this.editorUtil.getFieldValues,
       getOneFieldValue: this.editorUtil.getOneFieldValue,
-      getOneFieldAllInputSystems: (searchLabel: string, idx: number = 0,
-                                   rootElem: ElementFinder = element(by.className('dc-entry'))) => {
-        return EditorUtil.getOneField(searchLabel, idx, rootElem).all(by.css('span.wsid'));
+      getOneFieldAllInputSystems: async (searchLabel: string, idx: number = 0,
+                                         rootElem: ElementFinder = element(by.className('dc-entry')) ) => {
+        return await EditorUtil.getOneField(searchLabel, idx, rootElem).all(by.css('span.wsid'));
       }
     },
 
@@ -384,13 +385,13 @@ export class EditorPage {
   // (via partsOfReply() below)
   // replyNum can be -1 to get the last reply, any other number is a 0-based
   // indexgetO
-  static getReply(repliesList: ElementArrayFinder, replyNum: number) {
+  static async getReply(repliesList: ElementArrayFinder, replyNum: number) {
     if (typeof (replyNum) === 'undefined') {
       replyNum = 0;
     }
 
     const reply = (replyNum === -1 ? repliesList.last() : repliesList.get(replyNum));
-    return EditorPage.partsOfReply(reply);
+    return await EditorPage.partsOfReply(reply);
   }
 
   // Returns a Javascript object that can be used to access the parts (avatar,
@@ -437,8 +438,8 @@ export class EditorPage {
 
       // Replies (below content but above bottom controls)
       replies,
-      getReply(replyNum: number) {
-        return EditorPage.getReply(replies, replyNum);
+      async getReply(replyNum: number) {
+        return await EditorPage.getReply(replies, replyNum);
       },
 
       // Bottom controls (below replies)
