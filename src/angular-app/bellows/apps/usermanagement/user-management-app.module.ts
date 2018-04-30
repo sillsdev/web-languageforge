@@ -9,13 +9,15 @@ import { UserManagementJoinRequestsComponent } from './join-requests.component';
 
 export const UserManagementAppModule = angular
   .module('usermanagement',['ui.router', 'ui.bootstrap', CoreModule,
-    NoticeModule, 'palaso.ui.listview', 'palaso.ui.typeahead', 'sgw.ui.breadcrumb'
+    NoticeModule, 'palaso.ui.listview', 'palaso.ui.typeahead', 'sgw.ui.breadcrumb', 'lexiconCoreModule',
+    'pascalprecht.translate'
   ])
   .component('userManagementApp', UserManagementAppComponent)
   .component('userManagementMembers', UserManagementMembersComponent)
   .component('userManagementJoinRequests', UserManagementJoinRequestsComponent)
-  .config(['$stateProvider', '$urlRouterProvider',
-    ($stateProvider: angular.ui.IStateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider) => {
+  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
+    ($stateProvider: angular.ui.IStateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider,
+     $translateProvider: angular.translate.ITranslateProvider) => {
       console.log('config uiRouter:', uiRouter);
       $urlRouterProvider.otherwise('/members');
 
@@ -40,6 +42,13 @@ export const UserManagementAppModule = angular
           }
         })
       ;
+      // configure interface language filepath
+      $translateProvider.useStaticFilesLoader({
+        prefix: '/angular-app/bellows/lang/',
+        suffix: '.json'
+      });
+      $translateProvider.preferredLanguage('en');
+      $translateProvider.useSanitizeValueStrategy('escape');
     }
   ])
   .name;

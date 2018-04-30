@@ -57,6 +57,7 @@ export class LexiconConfigurationController implements angular.IController {
               private sendReceive: LexiconSendReceiveService,
               private applicationHeaderService: ApplicationHeaderService) {
     lexProjectService.setBreadcrumbs('configuration', 'Configuration');
+    lexProjectService.setupSettings();
     this.applicationHeaderService.setPageName('Configuration');
 
     $q.all({

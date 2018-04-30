@@ -1,22 +1,27 @@
+import * as angular from 'angular';
+
 import { ApiService, JsonRpcCallback } from '../../../bellows/core/api/api.service';
-import { ApplicationHeaderService } from '../../../bellows/core/application-header.service';
+import { ApplicationHeaderService, HeaderSetting } from '../../../bellows/core/application-header.service';
 import { BreadcrumbService } from '../../../bellows/core/breadcrumbs/breadcrumb.service';
 import { SessionService } from '../../../bellows/core/session.service';
 import { LexiconLinkService } from './lexicon-link.service';
+import { LexiconRightsService } from './lexicon-rights.service';
 
 export class LexiconProjectService {
-  static $inject: string[] = ['apiService', 'sessionService',
+  static $inject: string[] = ['$q', 'apiService', 'sessionService',
     'breadcrumbService',
     'lexLinkService',
-    'applicationHeaderService'
+    'applicationHeaderService',
+    'lexRightsService'
   ];
-  constructor(private api: ApiService, private sessionService: SessionService,
+  constructor(private $q: angular.IQService, private api: ApiService, private sessionService: SessionService,
               private breadcrumbService: BreadcrumbService,
               private linkService: LexiconLinkService,
-              private applicationHeaderService: ApplicationHeaderService) { }
+              private applicationHeaderService: ApplicationHeaderService,
+              private rightsService: LexiconRightsService) { }
 
   setBreadcrumbs(view: string, label: string, forceRefresh: boolean = false): void {
-    this.sessionService.getSession(forceRefresh).then(session => {
+    this.$q.all([this.sessionService.getSession()]).then(([session]) => {
       this.breadcrumbService.set('top', [{
         href: '/app/projects',
         label: 'My Projects'
@@ -30,10 +35,46 @@ export class LexiconProjectService {
     });
   }
 
+  setupSettings(): void {
+    this.$q.all([this.sessionService.getSession(), this.rightsService.getRights()]).then(([session, rights]) => {
+      const settings = [];
+      // TODO: This should be excluded for users without permission
+      // - Didn't appear to be anything in the rights to do this though - an error is returned though
+      settings.push(new HeaderSetting(
+        'dropdown-configuration',
+        'Configuration',
+        session.project().appLink + '#!/configuration'
+      ));
+      settings.push(new HeaderSetting(
+        'dropdown-import-data',
+        'Import Data',
+        session.project().appLink + '#!/importExport'
+      ));
+      if (rights.canEditUsers()) {
+        settings.push(new HeaderSetting(
+          'userManagementLink',
+          'User Management',
+          '/app/usermanagement/' + session.project().id,
+        ));
+      }
+      if (session.project().isArchived && rights.canEditUsers() &&
+        session.projectSettings().hasSendReceive) {
+        settings[settings.length - 1].divider = true;
+        settings.push(new HeaderSetting(
+          'dropdown-synchronize',
+          'Synchronize',
+          session.project().appLink + '#!/sync'
+        ));
+      }
+      this.applicationHeaderService.setSettings(settings);
+    });
+  }
+
   baseViewDto(view: string, label: string, callback: JsonRpcCallback) {
     this.api.call('lex_baseViewDto', [], result => {
       if (result.ok) {
         this.setBreadcrumbs(view, label);
+        this.setupSettings();
       }
 
       callback(result);

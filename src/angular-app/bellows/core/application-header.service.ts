@@ -1,5 +1,13 @@
 export class HeaderData {
   pageName: string;
+  settings: HeaderSetting[];
+}
+
+export class HeaderSetting {
+  constructor(private id: string,
+              private label: string,
+              private href: string = '',
+              public divider: boolean = false) { }
 }
 
 export class ApplicationHeaderService {
@@ -10,7 +18,10 @@ export class ApplicationHeaderService {
   }
 
   setPageName($name: string) {
-    console.log($name);
     this.data.pageName = $name;
+  }
+
+  setSettings($settings: HeaderSetting[]) {
+    this.data.settings = $settings;
   }
 }
