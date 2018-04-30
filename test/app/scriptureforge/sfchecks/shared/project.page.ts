@@ -38,7 +38,7 @@ export class SfProjectPage {
   };
 
   archiveTextButton = element(by.id('project-archive-text-btn'));
-  
+
   newText = {
     showFormButton: element(by.id('project-add-new-btn')),
     form: element(by.id('project-new-text-form')),

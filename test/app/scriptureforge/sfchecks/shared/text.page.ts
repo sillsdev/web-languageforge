@@ -53,7 +53,7 @@ export class SfTextPage {
 
   async addNewQuestion(description: any, summary: any) {
     await this.newQuestion.showFormButton.click();
-    await browser.driver.wait(ExpectedConditions.visibilityOf(this.newQuestion.description), Utils.conditionTimeout);
+    await browser.wait(ExpectedConditions.visibilityOf(this.newQuestion.description), Utils.conditionTimeout);
     await this.newQuestion.description.sendKeys(description);
     await this.newQuestion.summary.sendKeys(summary);
     await this.newQuestion.saveButton.click();
@@ -61,7 +61,7 @@ export class SfTextPage {
 
   //noinspection JSUnusedGlobalSymbols
   async printQuestionNames() {
-    await this.questionNames.each(async(names: any) => {
+    await this.questionNames.each(async (names: any) => {
       await names.getText().then(console.log);
     });
   }

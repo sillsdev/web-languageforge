@@ -13,7 +13,7 @@ export class SfProjectSettingsPage {
   async get(projectName: string = '') {
     await this.projectsPage.get();
     await this.projectsPage.clickOnProjectName(projectName);
-    //await this.projectsPage.clickOnProject(projectName);
+    // await this.projectsPage.clickOnProject(projectName);
     await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
     await this.settingsMenuLink.click();
     await this.projectSettingsLink.click();
@@ -45,13 +45,13 @@ export class SfProjectSettingsPage {
       saveButton: element(by.id('project-settings-question-save-btn'))
     }
   };
-  publishButton= element(by.id('project-settings-republish-btn'));
+  publishButton = element(by.id('project-settings-republish-btn'));
 
   archivedTextsTab = {
     textNames: element.all(by.repeater('text in visibleTexts').column('title')),
     textList: element.all(by.repeater('text in visibleTexts')),
     publishButton: element(by.id('project-settings-republish-btn')),
-    textLink (title: string) {
+    textLink(title: string) {
       return element(by.linkText(title));
     }
   };
@@ -72,7 +72,7 @@ export class SfProjectSettingsPage {
     // Set a checkbox to either true or false no matter what its current value is
     // TODO: Move this function to a general utilities library somewhere
     async setCheckbox(checkboxElement: any, value: any) {
-      await checkboxElement.isSelected().then(async(selected: any) => {
+      await checkboxElement.isSelected().then(async (selected: any) => {
         if (value !== selected) {
           await checkboxElement.click();
         }
@@ -142,7 +142,7 @@ class MembersTab {
   }
 
   async waitForNewUserToLoad(memberCount: number) {
-    await browser.wait(async() => {
+    await browser.wait(async () => {
       return await this.list.count().then((count: number) => {
         return count >= memberCount + 1;
       });

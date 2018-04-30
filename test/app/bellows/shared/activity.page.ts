@@ -37,7 +37,7 @@ export class SfActivityPage {
   // Prints the entire activity list
   //noinspection JSUnusedGlobalSymbols
   async printActivitiesNames() {
-    (this.activitiesList).each(async(names: ElementFinder) => {
+    (this.activitiesList).each(async (names: ElementFinder) => {
       await names.getText().then(console.log);
     });
   }

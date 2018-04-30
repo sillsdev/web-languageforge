@@ -33,7 +33,7 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
     it('can click through to a questions page', () => {
       projectPage.textLink(constants.testText1Title).click();
       expect(questionListPage.questionNames.count()).toBeGreaterThan(0);
-      browser.navigate().back();
+      browser.driver.navigate().back();
     });
     it('cannot click on settings', () => {
       expect(projectPage.settingsDropdownLink.isDisplayed()).toBe(false);
@@ -49,51 +49,43 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
     const sampleTitle = '111textTitle12345';
 
     it('setup: logout, login as project manager, go to project dashboard', async () => {
-   
       await BellowsLoginPage.logout();
       await loginPage.loginAsManager();
       await projectListPage.get();
      // await projectListPage.clickOnProject(constants.testProjectName);
       await projectListPage.clickOnProjectName(constants.testProjectName);
-    
     });
-
-    
-     it('has access to the invite-a-friend button', async () => {
-      
+    it('has access to the invite-a-friend button', async () => {
       await expect<any>(projectPage.invite.showFormButton.isDisplayed()).toBe(true);
-    
     });
 
-   it('can invite a friend to join the project', async () => {
+    it('can invite a friend to join the project', async () => {
     await projectPage.invite.showFormButton.click();
     await projectPage.invite.emailInput.sendKeys('nobody@example.com');
     await projectPage.invite.sendButton.click();
 
       // TODO: Should we expect a success message to show up? Or an error message to *not* show up?
-      await appFrame.checkMsg('An invitation email has been sent to nobody@example.com', 'success');
+    await appFrame.checkMsg('An invitation email has been sent to nobody@example.com', 'success');
     });
 
     it('can click on settings button', async () => {
-     
       expect<any>(await projectPage.settingsDropdownLink.isDisplayed()).toBe(true);
       // Not sure if passing an empty string is the best way, but it works. -Ben Kastner 2018-01-19
       await projectSettingsPage.get(constants.testProjectName);
-      await browser.navigate().back();
-      
+      await browser.driver.navigate().back();
     });
 
     it('lists existing texts', async () => {
       await expect(projectPage.textNames.count()).toBeGreaterThan(1);
     });
 
-     it('can click through to a questions page', async () => {
+    it('can click through to a questions page', async () => {
       await SfProjectPage.textLink(constants.testText1Title).click();
       await expect(questionListPage.questionRows.count()).toBeGreaterThan(0);
-      await browser.navigate().back();
+      await browser.driver.navigate().back();
     });
 
-     it('can create a new text (input text area)', async () => {
+    it('can create a new text (input text area)', async () => {
       await expect<any>(projectPage.newText.showFormButton.isDisplayed()).toBe(true);
       await projectPage.newText.showFormButton.click();
       await browser.wait(ExpectedConditions.visibilityOf(projectPage.newText.title), constants.conditionTimeout);
@@ -105,10 +97,10 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
 
     it('can click through to newly created text', async () => {
       await SfProjectPage.textLink(sampleTitle).click();
-      await browser.navigate().back();
+      await browser.driver.navigate().back();
     });
 
-     it('can archive the text that was just created', async () => {
+    it('can archive the text that was just created', async () => {
       const archiveButton = await projectPage.archiveTextButton.getWebElement();
       await expect<any>(archiveButton.isDisplayed()).toBe(true);
       await expect<any>(archiveButton.isEnabled()).toBe(false);
@@ -118,7 +110,7 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
       await Utils.clickModalButton('Archive');
 
       // Wait for archive button to become disabled again
-      await browser.wait(async() => {
+      await browser.wait(async () => {
         return await archiveButton.isEnabled().then( bool => {
           return !bool;
         });
@@ -127,7 +119,7 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
       await expect<any>(archiveButton.isEnabled()).toBe(false);
       await expect<any>(SfProjectPage.textLink(sampleTitle).isPresent()).toBe(false);
     });
-   
+
     it('can re-publish the text that was just archived (Project Settings)', async () => {
       // Not sure if passing an empty string is the best way, but it works. -Ben Kastner 2018-01-19
       await projectSettingsPage.get(constants.testProjectName);
@@ -141,7 +133,7 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
       await publishButton.click();
       await expect<any>(projectSettingsPage.archivedTextsTab.textLink(sampleTitle).isPresent()).toBe(false);
       await expect<any>(publishButton.isEnabled()).toBe(false);
-      await browser.navigate().back();
+      await browser.driver.navigate().back();
       await expect<any>(SfProjectPage.textLink(sampleTitle).isDisplayed()).toBe(true);
     });
 
@@ -169,15 +161,15 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
       await expect<any>(SfProjectPage.textLink(newTextTitle).isDisplayed()).toBe(true);
       await SfProjectPage.textLink(newTextTitle).click();
       await expect(questionListPage.textContent.getText()).not.toMatch('/Cana of Galilee/');
-      await browser.navigate().back();
+      await browser.driver.navigate().back();
 
       // clean up the text
       await util.setCheckbox(projectPage.getFirstCheckbox(), true);
       const archiveButton = await projectPage.archiveTextButton.getWebElement();
       await archiveButton.click();
       await Utils.clickModalButton('Archive');
-    });    
+    });
 
-  }); 
+  });
 
 });

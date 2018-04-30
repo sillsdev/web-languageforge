@@ -10,7 +10,7 @@ export class Utils {
   async setCheckbox(checkboxElement: ElementFinder, value: boolean) {
     // Ensure a checkbox element will be either checked (true) or unchecked (false), regardless of
     // what its current value is
-    await checkboxElement.isSelected().then(async(checked: boolean) => {
+    await checkboxElement.isSelected().then(async (checked: boolean) => {
       if (checked !== value) {
         await checkboxElement.click();
       }
@@ -62,17 +62,17 @@ export class Utils {
    * @param textString - string of text to set the value to
    */
   static sendText(elem: ElementFinder, textString: string) {
-    browser.driver.executeScript('arguments[0].value = arguments[1];', elem.getWebElement(), textString);
+    browser.executeScript('arguments[0].value = arguments[1];', elem.getWebElement(), textString);
   }
 
   //noinspection JSUnusedGlobalSymbols
   waitForAlert(timeout: number) {
     if (!timeout) { timeout = 8000; }
 
-    browser.driver.wait(() => {
+    browser.wait(() => {
       let alertPresent = true;
       try {
-        browser.driver.switchTo().alert();
+        browser.switchTo().alert();
       } catch (NoSuchAlertError) {
         alertPresent = false;
       }
@@ -83,7 +83,7 @@ export class Utils {
 
   private noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
 
-  notice : any = {
+  notice: any = {
     list: this.noticeList,
     firstCloseButton: this.noticeList.first().element(by.partialButtonText('×')),
     waitToInclude: (includedText: any): void => {
@@ -91,24 +91,24 @@ export class Utils {
         this.noticeList.count().then((count: any) =>
           count >= 1),
          Utils.conditionTimeout);
-        browser.wait(() =>
+      browser.wait(() =>
         this.noticeList.first().getText().then((text: any) => text.includes(includedText)),
-        Utils.conditionTimeout);
+         Utils.conditionTimeout);
     }
   };
 
   static checkModalTextMatches(expectedText: string) {
     const modalBody = element(by.css('.modal-body'));
 
-    browser.driver.wait(ExpectedConditions.visibilityOf(modalBody), Utils.conditionTimeout);
+    browser.wait(ExpectedConditions.visibilityOf(modalBody), Utils.conditionTimeout);
     expect(modalBody.getText()).toMatch(expectedText);
   }
 
     static async clickModalButton(buttonText: string) {
     const button = await element(by.css('.modal-footer')).element(by.partialButtonText(buttonText));
 
-    await browser.driver.wait(ExpectedConditions.visibilityOf(button), Utils.conditionTimeout);
-    await browser.driver.wait(ExpectedConditions.elementToBeClickable(button), Utils.conditionTimeout);
+    await browser.wait(ExpectedConditions.visibilityOf(button), Utils.conditionTimeout);
+    await browser.wait(ExpectedConditions.elementToBeClickable(button), Utils.conditionTimeout);
     await button.click();
   }
 
@@ -139,7 +139,7 @@ export class Utils {
   }
 
   static async scrollTop() {
-    await browser.driver.executeScript('window.scroll(0,0)');
+    await browser.executeScript('window.scroll(0,0)');
   }
 
   static isAllCheckboxes(elementArray: ElementArrayFinder, state: boolean = true) {

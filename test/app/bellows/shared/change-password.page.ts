@@ -5,8 +5,8 @@ export class BellowsChangePasswordPage {
 
   // TODO: this will likely change when we refactor the display of notifications - cjh 2014-06
   async get() {
-   await browser.driver.get(browser.baseUrl + '/app/changepassword');
-   await browser.driver.wait(ExpectedConditions.visibilityOf(this.password), this.conditionTimeout);
+   await browser.get(browser.baseUrl + '/app/changepassword');
+   await browser.wait(ExpectedConditions.visibilityOf(this.password), this.conditionTimeout);
   }
 
   password = element(by.id('change-password-input'));

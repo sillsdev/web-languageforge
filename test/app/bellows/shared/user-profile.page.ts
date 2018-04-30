@@ -20,7 +20,7 @@ export class SfUserProfilePage {
   async getAboutMe() {
     await this.get();
     await this.tabs.aboutMe.click();
-    await browser.driver.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), Utils.conditionTimeout);
+    await browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), Utils.conditionTimeout);
    }
 
   tabs = {
@@ -58,7 +58,7 @@ export class SfUserProfilePage {
      await Utils.clickDropdownByValue(this.myAccountTab.avatarShape, newShape);
     },
     updateEmail: async (newEmail: string) => {
-      await browser.driver.wait(ExpectedConditions.visibilityOf(this.myAccountTab.emailInput), Utils.conditionTimeout);
+      await browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.emailInput), Utils.conditionTimeout);
       await this.myAccountTab.emailInput.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
       await this.myAccountTab.emailInput.sendKeys(newEmail);
 
@@ -66,7 +66,7 @@ export class SfUserProfilePage {
       await this.myAccountTab.username.click();
     },
     updateUsername: async (newUsername: string) => {
-      await browser.driver.wait(ExpectedConditions.visibilityOf(this.myAccountTab.username), Utils.conditionTimeout);
+      await browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.username), Utils.conditionTimeout);
       await this.myAccountTab.username.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
       await this.myAccountTab.username.sendKeys(newUsername);
 
@@ -74,7 +74,8 @@ export class SfUserProfilePage {
       await this.myAccountTab.emailInput.click();
     },
     updateMobilePhone: async (newPhone: string) => {
-      await browser.driver.wait(ExpectedConditions.visibilityOf(this.myAccountTab.mobilePhoneInput), Utils.conditionTimeout);
+      await browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.mobilePhoneInput),
+       Utils.conditionTimeout);
       await this.myAccountTab.mobilePhoneInput.sendKeys(newPhone);
     },
     async updateContactPreference() {
@@ -89,12 +90,12 @@ export class SfUserProfilePage {
     saveBtn:  element(by.id('saveBtn')),
 
     updateFullName: async (newFullName: string) => {
-      await browser.driver.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), Utils.conditionTimeout);
+      await browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), Utils.conditionTimeout);
       await this.aboutMeTab.fullName.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
       await this.aboutMeTab.fullName.sendKeys(newFullName);
     },
     updateAge: async (newAge: string) => {
-      await browser.driver.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.age), Utils.conditionTimeout);
+      await browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.age), Utils.conditionTimeout);
       await this.aboutMeTab.age.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
       await this.aboutMeTab.age.sendKeys(newAge);
     },

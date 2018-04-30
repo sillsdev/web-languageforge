@@ -9,9 +9,9 @@ describe('Bellows E2E Projects List app', async () => {
   const loginPage = new BellowsLoginPage();
   const projectsPage = new ProjectsPage();
 
-   describe('for Normal User', async () => {
+  describe('for Normal User', async () => {
 
-     it('should list the project of which the user is a member', async () => {
+    it('should list the project of which the user is a member', async () => {
       await loginPage.loginAsMember();
       await projectsPage.get();
       await expect(projectsPage.projectNames.get(0).getText()).toBe(constants.testProjectName);
@@ -20,7 +20,7 @@ describe('Bellows E2E Projects List app', async () => {
     it('should not list projects the user is not a member of', async () => {
       await projectsPage.get();
       await expect<any>(projectsPage.projectsList.count()).toBe(1);
-    }); 
+    });
 
     it('can list two projects of which the user is a member', async () => {
       await loginPage.loginAsAdmin();
@@ -30,9 +30,9 @@ describe('Bellows E2E Projects List app', async () => {
       await loginPage.loginAsMember();
       await projectsPage.get();
       await browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
-      await expect<any>(projectsPage.projectsList.count()).toBe(1); 
+      await expect<any>(projectsPage.projectsList.count()).toBe(1);
     });
-  }); 
+  });
 
   // Two helper functions to avoid duplicating the same checks in admin test below
   const shouldProjectBeLinked = async (projectName: string, projectRow: ElementFinder, bool: boolean) => {
@@ -43,7 +43,7 @@ describe('Bellows E2E Projects List app', async () => {
     const addAsManagerBtn = await projectRow.element(by.id('managerButton'));
     await expect<any>(addAsManagerBtn.isDisplayed()).toBe(bool);
   };
- 
+
   describe('for System Admin User', () => {
 
     it('should list all projects', async () => {
@@ -52,9 +52,9 @@ describe('Bellows E2E Projects List app', async () => {
       await expect(projectsPage.projectsList.count()).toBeGreaterThan(0);
 
       // Check that the test project is around
-       projectsPage.findProject(constants.testProjectName).then(async(projectRow: ElementFinder) => {
+      projectsPage.findProject(constants.testProjectName).then(async (projectRow: ElementFinder) => {
       await shouldProjectBeLinked(constants.testProjectName, projectRow, true);
-      }); 
+      });
     });
 
     it('should show add and delete buttons', async () => {
@@ -70,7 +70,7 @@ describe('Bellows E2E Projects List app', async () => {
 
       // The admin should not see "Add myself to project" buttons when he's already a project member
       // or manager, and the project name should be a clickable link
-       projectsPage.findProject(constants.otherProjectName).then(async(projectRow: ElementFinder) => {
+      projectsPage.findProject(constants.otherProjectName).then(async (projectRow: ElementFinder) => {
         await shouldProjectBeLinked(constants.otherProjectName, projectRow, true);
         await shouldProjectHaveButtons(projectRow, false);
       });
@@ -81,7 +81,7 @@ describe('Bellows E2E Projects List app', async () => {
 
       // Now the admin should have "Add myself to project" buttons
       // And the project name should NOT be a clickable link
-      projectsPage.findProject(constants.otherProjectName).then(async(projectRow: ElementFinder) => {
+      projectsPage.findProject(constants.otherProjectName).then(async (projectRow: ElementFinder) => {
         await shouldProjectBeLinked(constants.otherProjectName, projectRow, false);
         await shouldProjectHaveButtons(projectRow, true);
 
@@ -90,12 +90,12 @@ describe('Bellows E2E Projects List app', async () => {
       });
 
       // And the buttons should go away after one of them is clicked
-      projectsPage.findProject(constants.otherProjectName).then(async(projectRow: ElementFinder) => {
+      projectsPage.findProject(constants.otherProjectName).then(async (projectRow: ElementFinder) => {
         await shouldProjectBeLinked(constants.otherProjectName, projectRow, true);
-        await shouldProjectHaveButtons(projectRow, false); 
+        await shouldProjectHaveButtons(projectRow, false);
       });
     });
 
-  }); 
+  });
 
 });

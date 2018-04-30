@@ -58,22 +58,24 @@ class Answers {
     // Using ID "Comments" contains Answers and Comments
     const newAnswer = answerCtrl.element(by.id('question-new-answer'));
     await newAnswer.sendKeys(answer);
-    await browser.driver.wait(ExpectedConditions.textToBePresentInElementValue(newAnswer, answer), Utils.conditionTimeout);
+    await browser.wait(ExpectedConditions.textToBePresentInElementValue(newAnswer, answer),
+     Utils.conditionTimeout);
     await answerCtrl.element(by.id('doneBtn')).click();
   }
 
   // Edit last answer
   async edit(answer: any) {
     const editCtrl = this.last().element(by.css('.answer .answer-footer'))
-      .element(by.linkText('edit'));
-      await editCtrl.click();
+    .element(by.linkText('edit'));
+    await editCtrl.click();
     // Clicking 'edit' changes the DOM so these handles are updated here
     const answersField = this.last().element(by.css('.answer')).element(by.css('textarea.editAnswer'));
     const saveCtrl = this.last().element(by.css('.answerBtn'));
 
     await answersField.sendKeys(Key.chord(Key.CONTROL, 'a'));
     await answersField.sendKeys(answer);
-    await browser.driver.wait(ExpectedConditions.textToBePresentInElementValue(answersField, answer), Utils.conditionTimeout);
+    await browser.wait(ExpectedConditions.textToBePresentInElementValue(answersField, answer),
+     Utils.conditionTimeout);
     await saveCtrl.click();
   }
 
@@ -140,9 +142,10 @@ class Comments {
 
     // Click "add comment" at the end of the Answers list to un-collapse the comment text area.
     await addCommentCtrl.click();
-    await browser.driver.wait(ExpectedConditions.visibilityOf(commentField), Utils.conditionTimeout);
+    await browser.wait(ExpectedConditions.visibilityOf(commentField), Utils.conditionTimeout);
     await commentField.sendKeys(comment);
-    await browser.driver.wait(ExpectedConditions.textToBePresentInElementValue(commentField, comment), Utils.conditionTimeout);
+    await browser.wait(ExpectedConditions.textToBePresentInElementValue(commentField, comment),
+     Utils.conditionTimeout);
     await submit.click();
   }
 
@@ -157,7 +160,8 @@ class Comments {
 
     await commentsField.sendKeys(Key.chord(Key.CONTROL, 'a'));
     await commentsField.sendKeys(comment);
-    await browser.driver.wait(ExpectedConditions.textToBePresentInElementValue(commentsField, comment), Utils.conditionTimeout);
+    await browser.wait(ExpectedConditions.textToBePresentInElementValue(commentsField, comment),
+     Utils.conditionTimeout);
     await saveCtrl.click();
   }
 

@@ -7,17 +7,13 @@ export class BellowsProjectSettingsPage {
 
   conditionTimeout: number = 3000;
 
-  async settingsMenuLink1(){
-    var settingsMenuLink2 = element(by.id('settings-dropdown-button'));  
-  }
-  
   settingsMenuLink = element(by.id('settings-dropdown-button'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
   async get(projectName: string) {
     await this.projectsPage.get();
-    //this.projectsPage.clickOnProject(projectName);
+    // this.projectsPage.clickOnProject(projectName);
     await this.projectsPage.clickOnProjectName(projectName);
     await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
     await this.settingsMenuLink.click();

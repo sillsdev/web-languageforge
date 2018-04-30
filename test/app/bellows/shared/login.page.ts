@@ -16,8 +16,7 @@ export class BellowsLoginPage {
   forgotPasswordLink = element(by.id('forgot_password'));
   submit     = element(by.id('login-submit'));
 
-
-  async login(username: string, password: string){
+  async login(username: string, password: string) {
     // Driver needs to be added with browser to avoid warning messages
     await browser.driver.get(browser.baseUrl + '/auth/logout');
     await BellowsLoginPage.get();

@@ -4,7 +4,6 @@ import { BellowsChangePasswordPage } from './shared/change-password.page';
 import { BellowsLoginPage } from './shared/login.page';
 import { PageHeader } from './shared/page-header.element';
 
-
 describe('Bellows E2E Change Password app', () => {
   const constants = require('../testConstants.json');
   const loginPage = new BellowsLoginPage();
@@ -42,13 +41,14 @@ describe('Bellows E2E Change Password app', () => {
     changePasswordPage.password.clear();
     changePasswordPage.confirm.clear();
   }); */
-  
 
   it('can successfully changes user\'s password after form submission', async () => {
     await changePasswordPage.password.sendKeys(newPassword);
     await changePasswordPage.confirm.sendKeys(newPassword);
-    await browser.wait(ExpectedConditions.visibilityOf(changePasswordPage.passwordMatchImage), constants.conditionTimeout);
-    await browser.wait(ExpectedConditions.elementToBeClickable(changePasswordPage.submitButton), constants.conditionTimeout);
+    await browser.wait(ExpectedConditions.visibilityOf(changePasswordPage.passwordMatchImage),
+     constants.conditionTimeout);
+    await browser.wait(ExpectedConditions.elementToBeClickable(changePasswordPage.submitButton),
+     constants.conditionTimeout);
     await changePasswordPage.submitButton.click();
     await expect<any>(await changePasswordPage.noticeList.count()).toBe(1);
     await expect(await changePasswordPage.noticeList.first().getText()).toContain('Password updated');
@@ -62,10 +62,10 @@ describe('Bellows E2E Change Password app', () => {
     await changePasswordPage.get();
     await changePasswordPage.password.sendKeys(constants.memberPassword);
     await changePasswordPage.confirm.sendKeys(constants.memberPassword);
-    await browser.wait(ExpectedConditions.visibilityOf(changePasswordPage.passwordMatchImage), constants.conditionTimeout);
-    await browser.wait(ExpectedConditions.elementToBeClickable(changePasswordPage.submitButton), constants.conditionTimeout);
+    await browser.wait(ExpectedConditions.visibilityOf(changePasswordPage.passwordMatchImage),
+     constants.conditionTimeout);
+    await browser.wait(ExpectedConditions.elementToBeClickable(changePasswordPage.submitButton),
+     constants.conditionTimeout);
     await changePasswordPage.submitButton.click();
-  }); 
-  
-
+  });
 });
