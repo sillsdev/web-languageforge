@@ -1,5 +1,5 @@
-import { InputSystem } from '../../../../bellows/shared/model/input-system.model';
-import { LexOptionList } from './option-list.model';
+import {InputSystem} from '../../../../bellows/shared/model/input-system.model';
+import {LexOptionList} from './option-list.model';
 
 export class LexConfig {
   hideIfEmpty: boolean;
@@ -58,9 +58,13 @@ class LexTask {
 
 export class LexUserViewConfig extends LexRoleViewConfig { }
 
+export interface LexConfigInputSystems {
+  [tag: string]: InputSystem;
+}
+
 export class LexiconConfig {
   entry: LexConfigFieldList;
-  inputSystems?: { [tag: string]: InputSystem };
+  inputSystems?: LexConfigInputSystems;
   optionlists?: { [listCode: string]: LexOptionList };
   roleViews: { [role: string]: LexRoleViewConfig };
   tasks: { [taskType: string]: LexTask };
