@@ -16,9 +16,9 @@ export class SfAppFrame {
   warnMessage    = this.message.warn;
   errorMessage   = this.message.error;
 
-  checkMsg(expected: string, msgType: string) {
+  async checkMsg(expected: string, msgType: string) {
     msgType = msgType || 'success';
-    expect(this.message[msgType].getText()).toMatch(expected);
+    await expect(this.message[msgType].getText()).toMatch(expected);
   }
 
 }

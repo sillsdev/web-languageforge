@@ -15,9 +15,9 @@ export class SfQuestionPage {
 
   notice = this.utils.notice;
 
-  get(projectName: string, textTitle: string, questionTitle: string) {
-    this.textPage.get(projectName, textTitle);
-    SfTextPage.questionLink(questionTitle).click();
+  async get(projectName: string, textTitle: string, questionTitle: string) {
+    await this.textPage.get(projectName, textTitle);
+    await SfTextPage.questionLink(questionTitle).click();
   }
   answers = new Answers();
 
@@ -53,52 +53,52 @@ class Answers {
 
   // Add new answer to the end of the answers list
   // noinspection JSMethodCanBeStatic
-  add(answer: any) {
+  async add(answer: any) {
     const answerCtrl = browser.element(by.id('comments'));
     // Using ID "Comments" contains Answers and Comments
     const newAnswer = answerCtrl.element(by.id('question-new-answer'));
-    newAnswer.sendKeys(answer);
-    browser.wait(ExpectedConditions.textToBePresentInElementValue(newAnswer, answer), Utils.conditionTimeout);
-    answerCtrl.element(by.id('doneBtn')).click();
+    await newAnswer.sendKeys(answer);
+    await browser.driver.wait(ExpectedConditions.textToBePresentInElementValue(newAnswer, answer), Utils.conditionTimeout);
+    await answerCtrl.element(by.id('doneBtn')).click();
   }
 
   // Edit last answer
-  edit(answer: any) {
+  async edit(answer: any) {
     const editCtrl = this.last().element(by.css('.answer .answer-footer'))
       .element(by.linkText('edit'));
-    editCtrl.click();
+      await editCtrl.click();
     // Clicking 'edit' changes the DOM so these handles are updated here
     const answersField = this.last().element(by.css('.answer')).element(by.css('textarea.editAnswer'));
     const saveCtrl = this.last().element(by.css('.answerBtn'));
 
-    answersField.sendKeys(Key.chord(Key.CONTROL, 'a'));
-    answersField.sendKeys(answer);
-    browser.wait(ExpectedConditions.textToBePresentInElementValue(answersField, answer), Utils.conditionTimeout);
-    saveCtrl.click();
+    await answersField.sendKeys(Key.chord(Key.CONTROL, 'a'));
+    await answersField.sendKeys(answer);
+    await browser.driver.wait(ExpectedConditions.textToBePresentInElementValue(answersField, answer), Utils.conditionTimeout);
+    await saveCtrl.click();
   }
 
   // Delete the answer at index.  If no index given, delete the last answer.
   // Note: "delete" is a reserved word, and
   // the functionality will be moved to "archive" at a later time
   // TODO make the index actually a number. Right now it could be a string or number.
-  archive(index: any) {
+  async archive(index: any) {
     if (index === '') {
-      this.last().element(by.css('.answer')).element(by.linkText('delete')).click();
+      await this.last().element(by.css('.answer')).element(by.linkText('delete')).click();
     } else {
       // console.log('should delete answer at index ' + index);
-      this.list.get(index).element(by.css('.answer')).element(by.linkText('delete')).click();
+      await this.list.get(index).element(by.css('.answer')).element(by.linkText('delete')).click();
     }
 
-    Utils.clickModalButton('Delete');
+    await Utils.clickModalButton('Delete');
   }
 
   // Private method to handle the upvote or downvote of an answer.
   // index: index of the answers.list to vote
   // direction: 0=upvote, 1=downvote
-  private vote(index: any, direction: any) {
-    this.list.get(index).element(by.css('.vote')).all(by.css('a'))
-      .then(voteCtrls => {
-        voteCtrls[direction].click();
+  private async vote(index: any, direction: any) {
+    await this.list.get(index).element(by.css('.vote')).all(by.css('a'))
+      .then(async voteCtrls => {
+       await voteCtrls[direction].click();
       });
   }
 
@@ -132,47 +132,47 @@ class Comments {
   }
 
   // Add a comment to the last (most recent) Answer on the page
-  addToLastAnswer(comment: any) {
+  async addToLastAnswer(comment: any) {
     const addCommentCtrl = this.sfQuestionPage.answers.last().element(by.css('.comments'))
       .element(by.css('a.addCommentLink'));
     const commentField = this.sfQuestionPage.answers.last().element(by.model('newComment.content'));
     const submit = this.sfQuestionPage.answers.last().element(by.css('.save-new-comment'));
 
     // Click "add comment" at the end of the Answers list to un-collapse the comment text area.
-    addCommentCtrl.click();
-    browser.wait(ExpectedConditions.visibilityOf(commentField), Utils.conditionTimeout);
-    commentField.sendKeys(comment);
-    browser.wait(ExpectedConditions.textToBePresentInElementValue(commentField, comment), Utils.conditionTimeout);
-    submit.click();
+    await addCommentCtrl.click();
+    await browser.driver.wait(ExpectedConditions.visibilityOf(commentField), Utils.conditionTimeout);
+    await commentField.sendKeys(comment);
+    await browser.driver.wait(ExpectedConditions.textToBePresentInElementValue(commentField, comment), Utils.conditionTimeout);
+    await submit.click();
   }
 
   // Edit the last comment.  Comments are interspersed with the answers
-  edit(comment: any) {
+  async edit(comment: any) {
     const editCtrl = this.last().element(by.linkText('edit'));
-    editCtrl.click();
+    await editCtrl.click();
 
     // Clicking 'edit' changes the DOM so these handles are updated here
     const commentsField = this.last().element(by.css('textarea'));
     const saveCtrl = this.last().element(by.partialButtonText('Save'));
 
-    commentsField.sendKeys(Key.chord(Key.CONTROL, 'a'));
-    commentsField.sendKeys(comment);
-    browser.wait(ExpectedConditions.textToBePresentInElementValue(commentsField, comment), Utils.conditionTimeout);
-    saveCtrl.click();
+    await commentsField.sendKeys(Key.chord(Key.CONTROL, 'a'));
+    await commentsField.sendKeys(comment);
+    await browser.driver.wait(ExpectedConditions.textToBePresentInElementValue(commentsField, comment), Utils.conditionTimeout);
+    await saveCtrl.click();
   }
 
   // Delete the comment at index.  If no index given, delete the last comment.
   // Note: "delete" is a reserved word, and
   // the functionality will be moved to "archive" at a later time
   // TODO
-  archive(index: any) {
+  async archive(index: any) {
     if (index === '') {
-      this.last().element(by.linkText('delete')).click();
+      await this.last().element(by.linkText('delete')).click();
     } else {
       // console.log('should delete comment at index ' + index);
-      this.list.get(index).element(by.linkText('delete')).click();
+      await this.list.get(index).element(by.linkText('delete')).click();
     }
 
-    Utils.clickModalButton('Delete');
+    await Utils.clickModalButton('Delete');
   }
 }

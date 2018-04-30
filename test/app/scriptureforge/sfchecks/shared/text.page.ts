@@ -10,10 +10,10 @@ export class SfTextPage {
 
   notice = this.utils.notice;
 
-  get(projectName: any, textTitle: any) {
-    this.projectsPage.get();
-    this.projectsPage.clickOnProject(projectName);
-    SfProjectPage.textLink(textTitle).click();
+  async get(projectName: any, textTitle: any) {
+    await this.projectsPage.get();
+    await this.projectsPage.clickOnProject(projectName);
+    await SfProjectPage.textLink(textTitle).click();
   }
 
   archiveButton = element(by.id('questions-archive-btn'));
@@ -21,9 +21,9 @@ export class SfTextPage {
   addNewBtn = element(by.id('questions-add-new-btn'));
   textSettingsBtn = element(by.id('questions-text-settings-btn'));
 
-  static clickTextSettingsButton() {
-    element(by.id('questions-text-settings-btn')).click();
-    element(by.id('questions-text-settings-link')).click();
+  static async clickTextSettingsButton() {
+    await element(by.id('questions-text-settings-btn')).click();
+    await element(by.id('questions-text-settings-link')).click();
   }
 
   static questionLink(title: any) {
@@ -51,18 +51,18 @@ export class SfTextPage {
     saveButton: element(by.id('questions-save-question-btn'))
   };
 
-  addNewQuestion(description: any, summary: any) {
-    this.newQuestion.showFormButton.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.newQuestion.description), Utils.conditionTimeout);
-    this.newQuestion.description.sendKeys(description);
-    this.newQuestion.summary.sendKeys(summary);
-    this.newQuestion.saveButton.click();
+  async addNewQuestion(description: any, summary: any) {
+    await this.newQuestion.showFormButton.click();
+    await browser.driver.wait(ExpectedConditions.visibilityOf(this.newQuestion.description), Utils.conditionTimeout);
+    await this.newQuestion.description.sendKeys(description);
+    await this.newQuestion.summary.sendKeys(summary);
+    await this.newQuestion.saveButton.click();
   }
 
   //noinspection JSUnusedGlobalSymbols
-  printQuestionNames() {
-    this.questionNames.each( (names: any) => {
-      names.getText().then(console.log);
+  async printQuestionNames() {
+    await this.questionNames.each(async(names: any) => {
+      await names.getText().then(console.log);
     });
   }
 

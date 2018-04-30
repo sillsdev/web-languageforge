@@ -19,7 +19,7 @@ export class SfProjectPage {
   settingsDropdownLink = element(by.id('settings-dropdown-button'));
 
   static textLink(title: any) {
-    return element(by.linkText(title));
+    return element (by.linkText(title));
   }
 
   textNames = element.all(by.repeater('text in visibleTexts').column('title'));
@@ -38,7 +38,7 @@ export class SfProjectPage {
   };
 
   archiveTextButton = element(by.id('project-archive-text-btn'));
-
+  
   newText = {
     showFormButton: element(by.id('project-add-new-btn')),
     form: element(by.id('project-new-text-form')),
@@ -52,13 +52,13 @@ export class SfProjectPage {
     toVerse: element(by.model('endVs'))
   };
 
-  addNewText(title: any, usx: string) {
-    expect<any>(this.newText.showFormButton.isDisplayed()).toBe(true);
-    this.newText.showFormButton.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.newText.title), Utils.conditionTimeout);
-    this.newText.title.sendKeys(title);
-    this.newText.usx.sendKeys(usx);
-    this.newText.saveButton.click();
+  async addNewText(title: any, usx: string) {
+    await expect<any>(this.newText.showFormButton.isDisplayed()).toBe(true);
+    await this.newText.showFormButton.click();
+    await browser.wait(ExpectedConditions.visibilityOf(this.newText.title), Utils.conditionTimeout);
+    await this.newText.title.sendKeys(title);
+    await this.newText.usx.sendKeys(usx);
+    await this.newText.saveButton.click();
   }
 
 }

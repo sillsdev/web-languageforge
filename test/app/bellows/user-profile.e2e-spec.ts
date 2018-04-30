@@ -4,7 +4,7 @@ import {BellowsLoginPage} from './shared/login.page';
 import {SfUserProfilePage} from './shared/user-profile.page';
 import {Utils} from './shared/utils';
 
-describe('Bellows E2E User Profile app', async function() {
+describe('Bellows E2E User Profile app', async () => {
   const constants = require('../testConstants.json');
   const loginPage = new BellowsLoginPage();
   const userProfile = new SfUserProfilePage();
@@ -17,8 +17,8 @@ describe('Bellows E2E User Profile app', async function() {
   await usernames.forEach(expectedUsername => {
 
     // Perform activity E2E tests according to the different roles
-    describe('Running as: ' + expectedUsername, async function() {
-      it('Logging in', async function() {
+    describe('Running as: ' + expectedUsername, async () => {
+      it('Logging in', async () => {
         // Login before test to ensure proper role
         switch (expectedUsername) {
           case constants.memberUsername:
@@ -30,7 +30,7 @@ describe('Bellows E2E User Profile app', async function() {
         }
       });
 
-      it('Verify initial "My Account" settings created from setupTestEnvironment.php', async function() {
+      it('Verify initial "My Account" settings created from setupTestEnvironment.php', async () => {
         await userProfile.getMyAccount();
 
         expect(await userProfile.myAccountTab.username.getAttribute('value')).toEqual(expectedUsername);
@@ -43,7 +43,7 @@ describe('Bellows E2E User Profile app', async function() {
         expect(await userProfile.myAccountTab.emailBtn.isSelected());
       });
 
-      it('Verify initial "About Me" settings created from setupTestEnvironment.php', async function() {
+      it('Verify initial "About Me" settings created from setupTestEnvironment.php', async () => {
         await userProfile.getAboutMe();
         let expectedFullname: string = '';
         const expectedAge: string = '';
@@ -63,7 +63,7 @@ describe('Bellows E2E User Profile app', async function() {
         expect<any>(await userProfile.aboutMeTab.gender.$('option:checked').getText()).toBe(expectedGender);
       });
 
-      it('Update and store "My Account" settings', async function() {
+      it('Update and store "My Account" settings', async () => {
         await userProfile.getMyAccount();
 
         // Change profile except username
@@ -105,9 +105,9 @@ describe('Bellows E2E User Profile app', async function() {
         // Change Password tested in changepassword e2e
 
         // Submit updated profile
-        userProfile.myAccountTab.saveBtn.click().then(async function() {
+        userProfile.myAccountTab.saveBtn.click().then(async () => {
          await browser.driver.navigate().refresh();
-         await browser.driver.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput), constants.conditionTimeout);
+         await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput), constants.conditionTimeout);
         });
 
         // Verify values.
@@ -120,16 +120,16 @@ describe('Bellows E2E User Profile app', async function() {
 
         // Restore email address
         await userProfile.myAccountTab.updateEmail(originalEmail);
-        userProfile.myAccountTab.saveBtn.click().then(async function() {
+        userProfile.myAccountTab.saveBtn.click().then(async () => {
          await browser.driver.navigate().refresh();
-         await browser.driver.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
+         await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
          constants.conditionTimeout);
         });
 
         expect<any>(await userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(originalEmail);
       });
 
-      it('Update and store different username. Login with new credentials', async function() {
+      it('Update and store different username. Login with new credentials', async () => {
         const newEmail = 'newemail@example.com';
         let originalEmail: string;
 
@@ -152,7 +152,7 @@ describe('Bellows E2E User Profile app', async function() {
 
         // Change to taken username
         await userProfile.myAccountTab.updateUsername(constants.observerUsername);
-        await browser.driver.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.usernameTaken),
+        await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.usernameTaken),
           constants.conditionTimeout);
         expect<any>(await userProfile.myAccountTab.usernameTaken.isDisplayed()).toBe(true);
         expect<any>(await userProfile.myAccountTab.saveBtn.isEnabled()).toBe(false);
@@ -167,7 +167,7 @@ describe('Bellows E2E User Profile app', async function() {
         await Utils.clickModalButton('Cancel');
         await browser.driver.navigate().refresh();
         // Confirm email not changed
-        await browser.driver.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput), constants.conditionTimeout);
+        await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput), constants.conditionTimeout);
         await Utils.scrollTop();
         expect<any>(await userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(originalEmail);
 
@@ -181,9 +181,9 @@ describe('Bellows E2E User Profile app', async function() {
         await Utils.clickModalButton('Save changes');
       });
 
-      it('Login with new username and revert to original username', async function() {
+      it('Login with new username and revert to original username', async () => {
         // user is automatically logged out and taken to login page when username is changed
-        await browser.driver.wait(ExpectedConditions.visibilityOf(loginPage.username), constants.conditionTimeout);
+        await browser.wait(ExpectedConditions.visibilityOf(loginPage.username), constants.conditionTimeout);
         expect<any>(await loginPage.infoMessages.count()).toBe(1);
         expect(await loginPage.infoMessages.first().getText()).toContain('Username changed. Please login.');
 
@@ -203,7 +203,7 @@ describe('Bellows E2E User Profile app', async function() {
         await BellowsLoginPage.get();
       });
 
-      it('Update and store "About Me" settings', async function() {
+      it('Update and store "About Me" settings', async () => {
         switch (expectedUsername) {
           case constants.memberUsername:
             await loginPage.loginAsUser();

@@ -1,10 +1,11 @@
-import {browser, by, element, protractor} from 'protractor';
+import {browser, by, element} from 'protractor';
 
 export class BellowsLoginPage {
   private readonly constants = require('../../testConstants');
 
   static async get() {
-    await browser.driver.get(browser.baseUrl + '/auth/login');
+    // Driver needs to be added with browser to avoid warning messages
+     await browser.driver.get(browser.baseUrl + '/auth/login');
   }
 
   form = element(by.id('login-loginForm'));
@@ -17,8 +18,8 @@ export class BellowsLoginPage {
 
 
   async login(username: string, password: string){
+    // Driver needs to be added with browser to avoid warning messages
     await browser.driver.get(browser.baseUrl + '/auth/logout');
-
     await BellowsLoginPage.get();
     await this.username.sendKeys(username);
     await this.password.sendKeys(password);

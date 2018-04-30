@@ -1,7 +1,6 @@
-import {browser, by, element, ExpectedConditions, promise} from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 
 import { ProjectsPage } from './projects.page';
-import { protractor } from 'protractor/built/ptor';
 
 export class BellowsProjectSettingsPage {
   private readonly projectsPage = new ProjectsPage();
@@ -9,7 +8,7 @@ export class BellowsProjectSettingsPage {
   conditionTimeout: number = 3000;
 
   async settingsMenuLink1(){
-    var settingsMenuLink2= element(by.id('settings-dropdown-button'));  
+    var settingsMenuLink2 = element(by.id('settings-dropdown-button'));  
   }
   
   settingsMenuLink = element(by.id('settings-dropdown-button'));
@@ -18,15 +17,16 @@ export class BellowsProjectSettingsPage {
   // Get the projectSettings for project projectName
   async get(projectName: string) {
     await this.projectsPage.get();
-    this.projectsPage.clickOnProject(projectName);
-    browser.driver.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
-    this.settingsMenuLink.click();
-    browser.driver.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);
-    this.projectSettingsLink.click();
+    //this.projectsPage.clickOnProject(projectName);
+    await this.projectsPage.clickOnProjectName(projectName);
+    await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
+    await this.settingsMenuLink.click();
+    await browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);
+    await this.projectSettingsLink.click();
   }
 
   noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
-  firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
+  awaitfirstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
 
   tabDivs = element.all(by.className('tab-pane'));
   activePane = element(by.css('div.tab-pane.active'));

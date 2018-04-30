@@ -7,12 +7,12 @@ import {logging, WebElementPromise} from 'selenium-webdriver';
 export class Utils {
   static readonly conditionTimeout: number = 3000;
 
-  setCheckbox(checkboxElement: ElementFinder, value: boolean) {
+  async setCheckbox(checkboxElement: ElementFinder, value: boolean) {
     // Ensure a checkbox element will be either checked (true) or unchecked (false), regardless of
     // what its current value is
-    checkboxElement.isSelected().then((checked: boolean) => {
+    await checkboxElement.isSelected().then(async(checked: boolean) => {
       if (checked !== value) {
-        checkboxElement.click();
+        await checkboxElement.click();
       }
     });
   }
@@ -47,8 +47,8 @@ export class Utils {
     });
   }
 
-  findRowByText(elementArray: ElementArrayFinder, searchString: string): Promise<ElementFinder> {
-    return this.findRowByFunc(elementArray, (rowText: string) => {
+  async findRowByText(elementArray: ElementArrayFinder, searchString: string): Promise<ElementFinder> {
+    return await this.findRowByFunc(elementArray, (rowText: string) => {
       return rowText.includes(searchString);
     }
   );
@@ -83,15 +83,15 @@ export class Utils {
 
   private noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
 
-  notice: any = {
+  notice : any = {
     list: this.noticeList,
     firstCloseButton: this.noticeList.first().element(by.partialButtonText('×')),
     waitToInclude: (includedText: any): void => {
-      browser.driver.wait(() =>
+      browser.wait(() =>
         this.noticeList.count().then((count: any) =>
           count >= 1),
-        Utils.conditionTimeout);
-      browser.driver.wait(() =>
+         Utils.conditionTimeout);
+        browser.wait(() =>
         this.noticeList.first().getText().then((text: any) => text.includes(includedText)),
         Utils.conditionTimeout);
     }

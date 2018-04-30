@@ -10,17 +10,18 @@ export class SfProjectSettingsPage {
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
-  get(projectName: string = '') {
-    this.projectsPage.get();
-    this.projectsPage.clickOnProject(projectName);
-    browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
-    this.settingsMenuLink.click();
-    this.projectSettingsLink.click();
+  async get(projectName: string = '') {
+    await this.projectsPage.get();
+    await this.projectsPage.clickOnProjectName(projectName);
+    //await this.projectsPage.clickOnProject(projectName);
+    await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
+    await this.settingsMenuLink.click();
+    await this.projectSettingsLink.click();
   }
 
-  clickOnSettingsLink() {
-    this.settingsMenuLink.click();
-    this.projectSettingsLink.click();
+  async clickOnSettingsLink() {
+    await this.settingsMenuLink.click();
+    await this.projectSettingsLink.click();
   }
 
   tabs = {
@@ -44,12 +45,13 @@ export class SfProjectSettingsPage {
       saveButton: element(by.id('project-settings-question-save-btn'))
     }
   };
+  publishButton= element(by.id('project-settings-republish-btn'));
 
   archivedTextsTab = {
     textNames: element.all(by.repeater('text in visibleTexts').column('title')),
     textList: element.all(by.repeater('text in visibleTexts')),
     publishButton: element(by.id('project-settings-republish-btn')),
-    textLink(title: string) {
+    textLink (title: string) {
       return element(by.linkText(title));
     }
   };
@@ -69,10 +71,10 @@ export class SfProjectSettingsPage {
     saveButton: element(by.id('project-properties-save-button')),
     // Set a checkbox to either true or false no matter what its current value is
     // TODO: Move this function to a general utilities library somewhere
-    setCheckbox(checkboxElement: any, value: any) {
-      checkboxElement.isSelected().then((selected: any) => {
+    async setCheckbox(checkboxElement: any, value: any) {
+      await checkboxElement.isSelected().then(async(selected: any) => {
         if (value !== selected) {
-          checkboxElement.click();
+          await checkboxElement.click();
         }
       });
     }
@@ -128,20 +130,20 @@ class MembersTab {
     results: element(by.id('typeaheadDiv')).element(by.css('ul li'))
   };
 
-  addNewMember(name: string) {
-    this.sfProjectSettingsPage.tabs.members.click();
-    this.addButton.click();
-    browser.wait(ExpectedConditions.visibilityOf(this.newMember.input),
-      this.sfProjectSettingsPage.conditionTimeout);
-    this.newMember.input.sendKeys(name);
-    browser.wait(ExpectedConditions.textToBePresentInElementValue(this.newMember.input,
+  async addNewMember(name: string) {
+    await this.sfProjectSettingsPage.tabs.members.click();
+    await this.addButton.click();
+    await browser.wait(ExpectedConditions.visibilityOf(this.newMember.input),
+    await this.sfProjectSettingsPage.conditionTimeout);
+    await this.newMember.input.sendKeys(name);
+    await browser.wait(ExpectedConditions.textToBePresentInElementValue(this.newMember.input,
       name), this.sfProjectSettingsPage.conditionTimeout);
-    this.newMember.button.click();
+    await this.newMember.button.click();
   }
 
-  waitForNewUserToLoad(memberCount: number) {
-    browser.wait(() => {
-      return this.list.count().then((count: number) => {
+  async waitForNewUserToLoad(memberCount: number) {
+    await browser.wait(async() => {
+      return await this.list.count().then((count: number) => {
         return count >= memberCount + 1;
       });
     });
