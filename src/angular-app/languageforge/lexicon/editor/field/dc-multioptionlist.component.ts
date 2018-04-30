@@ -1,93 +1,91 @@
 import * as angular from 'angular';
 
-import {LexiconRightsService} from '../../core/lexicon-rights.service';
+import {Rights} from '../../core/lexicon-rights.service';
+import {LexMultiValue} from '../../shared/model/lex-mulit-value.model';
+import {LexConfigMultiOptionList} from '../../shared/model/lexicon-config.model';
 import {LexOptionListItem} from '../../shared/model/option-list.model';
+import {FieldOptionListController} from './dc-optionlist.component';
+import {FieldControl} from './field-control.model';
 
-export const MultiOptionListModule = angular
-  .module('palaso.ui.dc.multioptionlist', [])
+export class FieldMultiOptionListController extends FieldOptionListController implements angular.IController {
+  model: LexMultiValue;
+  config: LexConfigMultiOptionList;
+  selectField: (params: { inputSystem: string, multioptionValue: string }) => void;
 
-  // Palaso UI Multioptionlist
-  .directive('dcMultioptionlist', [() => ({
-    restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-multioptionlist.component.html',
-    scope: {
-      config: '=',
-      model: '=',
-      control: '=',
-      items: '=',
-      selectField: '&',
-      fieldName: '='
-    },
-    controller: ['$scope', '$state', 'lexRightsService', ($scope, $state, rightsService: LexiconRightsService) => {
-      $scope.$state = $state;
-      $scope.isAdding = false;
-      $scope.valueToBeDeleted = '';
-      $scope.contextGuid = $scope.$parent.contextGuid;
+  isAdding = false;
+  newKey: string;
+  rights: Rights;
 
-      rightsService.getRights().then(rights => {
-        $scope.rights = rights;
+  $onChanges(changes: any): void {
+    const controlChange = changes.control as angular.IChangesObject<FieldControl>;
+    if (controlChange != null && controlChange.currentValue &&
+      controlChange.currentValue.rights != null
+    ) {
+      this.rights = this.control.rights;
+    }
+  }
 
-        $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted: string, value: string): boolean {
-          if (angular.isDefined($scope.items) && $state.is('editor.entry') && rights.canEditEntry()) {
-            return valueToBeDeleted === value;
-          }
+  showDeleteButton(valueToBeDeleted: string, value: string): boolean {
+    if (this.items != null && this.isAtEditorEntry() && this.rights.canEditEntry()) {
+      return valueToBeDeleted === value;
+    }
 
-          return false;
-        };
-      });
+    return false;
+  }
 
-      $scope.getDisplayName = function getDisplayName(value: string): string {
-        let displayName = value;
-        if (angular.isDefined($scope.items)) {
-          for (const item of $scope.items) {
-            if (item.key === value) {
-              displayName = item.value;
-              break;
-            }
-          }
-        }
+  orderItemsByListOrder = (key: string): number => {
+    if (this.items == null) {
+      return -1;
+    }
 
-        return displayName;
-      };
+    return this.items.map(item => item.key).indexOf(key);
+  }
 
-      $scope.orderItemsByListOrder = (value: string): number => {
-        if (angular.isDefined($scope.items)) {
-          return $scope.items.map((item: LexOptionListItem) => item.value).indexOf(value);
-        }
+  filterSelectedItems = (item: LexOptionListItem): boolean => {
+    return !this.model.values.includes(item.key);
+  }
 
-        return -1;
-      };
+  showAddButton(): boolean {
+    return !this.isAdding && this.items != null && this.model.values.length < this.items.length;
+  }
 
-      $scope.filterSelectedItems = (item: LexOptionListItem): boolean => {
-        return $scope.model.values.indexOf(item.value) === -1;
-      };
+  addValue(): void {
+    if (this.newKey != null && !this.model.values.includes(this.newKey)) {
+      this.model.values.push(this.newKey);
+    }
 
-      $scope.showAddButton = function showAddButton(): boolean {
-        return angular.isDefined($scope.items) && !$scope.isAdding &&
-          $scope.model.values.length < $scope.items.length;
-      };
+    this.newKey = null;
+    this.isAdding = false;
+  }
 
-      $scope.addValue = function addValue(): void {
-        if (angular.isDefined($scope.newValue)) {
-          $scope.model.values.push($scope.newValue);
-        }
+  deleteValue(key: string): void {
+    const index = this.model.values.indexOf(key);
+    this.model.values.splice(index, 1);
+  }
 
-        $scope.newValue = '';
-        $scope.isAdding = false;
-      };
+  selectValue(key: string): void {
+    if (this.selectField == null) {
+      return;
+    }
 
-      $scope.deleteValue = function deleteValue(value: string): void {
-        const index = $scope.model.values.indexOf(value);
-        $scope.model.values.splice(index, 1);
-      };
+    this.selectField({
+      inputSystem: '',
+      multioptionValue: this.getDisplayName(key)
+    });
+  }
 
-      $scope.selectValue = function selectValue(value: string): void {
-        $scope.selectField({
-          inputSystem: '',
-          multioptionValue: $scope.getDisplayName(value)
-        });
-      };
+}
 
-    }]
-  })])
-  .name;
+export const FieldMultiOptionListComponent: angular.IComponentOptions = {
+  bindings: {
+    model: '=',
+    config: '<',
+    control: '<',
+    items: '<',
+    fieldName: '<',
+    parentContextGuid: '<',
+    selectField: '&?'
+  },
+  controller: FieldMultiOptionListController,
+  templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-multioptionlist.component.html'
+};
