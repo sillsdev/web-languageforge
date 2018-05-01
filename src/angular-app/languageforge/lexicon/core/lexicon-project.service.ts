@@ -42,12 +42,12 @@ export class LexiconProjectService {
         settings.push(new HeaderSetting(
           'dropdown-configuration',
           'Configuration',
-          session.project().appLink + '#!/configuration'
+          this.linkService.projectUrl() + 'configuration'
         ));
         settings.push(new HeaderSetting(
           'dropdown-import-data',
           'Import Data',
-          session.project().appLink + '#!/importExport'
+          this.linkService.projectUrl() + 'importExport'
         ));
         settings.push(new HeaderSetting(
           'userManagementLink',
@@ -57,14 +57,14 @@ export class LexiconProjectService {
         settings.push(new HeaderSetting(
           'dropdown-project-settings',
           'Project Settings',
-          session.project().appLink + '#!/settings'
+          this.linkService.projectUrl() + 'settings'
         ));
         if (session.project().isArchived && session.projectSettings().hasSendReceive) {
           settings[settings.length - 1].divider = true;
           settings.push(new HeaderSetting(
             'dropdown-synchronize',
             'Synchronize',
-            session.project().appLink + '#!/sync'
+            this.linkService.projectUrl() + 'sync'
           ));
         }
       }
