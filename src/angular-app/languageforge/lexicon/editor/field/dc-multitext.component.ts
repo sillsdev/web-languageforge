@@ -6,7 +6,7 @@ import {LexPicture} from '../../shared/model/lex-picture.model';
 import {LexConfigInputSystems, LexConfigMultiText} from '../../shared/model/lexicon-config.model';
 import {FieldControl} from './field-control.model';
 
-export class LexiconMultiTextController implements angular.IController {
+export class FieldMultiTextController implements angular.IController {
   model: LexMultiText;
   config: LexConfigMultiText;
   control: FieldControl;
@@ -31,7 +31,7 @@ export class LexiconMultiTextController implements angular.IController {
   }
 
   isAtEditorEntry(): boolean {
-    return this.$state.is('editor.entry');
+    return LexiconUtilityService.isAtEditorEntry(this.$state);
   }
 
   inputSystemDirection(tag: string): string {
@@ -63,7 +63,7 @@ export class LexiconMultiTextController implements angular.IController {
 
 }
 
-export const LexiconMultiTextComponent: angular.IComponentOptions = {
+export const FieldMultiTextComponent: angular.IComponentOptions = {
   bindings: {
     model: '=',
     config: '<',
@@ -73,6 +73,6 @@ export const LexiconMultiTextComponent: angular.IComponentOptions = {
     picture: '<?',
     selectField: '&?'
   },
-  controller: LexiconMultiTextController,
+  controller: FieldMultiTextController,
   templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-multitext.component.html'
 };
