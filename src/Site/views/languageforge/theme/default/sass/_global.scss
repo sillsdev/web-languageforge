@@ -259,6 +259,12 @@ dl.picklists dd {
   @include media-breakpoint-down(sm) {
     height: 84px;
   }
+  &.logged-out {
+    height: 35px;
+    @include media-breakpoint-down(sm) {
+      height: 35px;
+    }
+  }
 }
 
 nav {
@@ -328,9 +334,12 @@ nav {
   nav.navbar {
     position: initial;
   }
-
   #app-container {
     margin-top: 94px;
+  }
+
+  .logged-out + #app-container {
+    margin-top: 10px;
   }
 
   .alert {
@@ -400,7 +409,7 @@ nav {
       }
     }
   }
-  > nav:last-child {
+  > nav:not(.logged-out):last-child {
     background-color: theme-color(primary);
     height: 86px;
     @include media-breakpoint-down(sm) {

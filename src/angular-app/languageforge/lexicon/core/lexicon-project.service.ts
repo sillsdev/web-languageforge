@@ -38,33 +38,35 @@ export class LexiconProjectService {
   setupSettings(): void {
     this.$q.all([this.sessionService.getSession(), this.rightsService.getRights()]).then(([session, rights]) => {
       const settings = [];
-      // TODO: This should be excluded for users without permission
-      // - Didn't appear to be anything in the rights to do this though - an error is returned though
-      settings.push(new HeaderSetting(
-        'dropdown-configuration',
-        'Configuration',
-        session.project().appLink + '#!/configuration'
-      ));
-      settings.push(new HeaderSetting(
-        'dropdown-import-data',
-        'Import Data',
-        session.project().appLink + '#!/importExport'
-      ));
       if (rights.canEditUsers()) {
+        settings.push(new HeaderSetting(
+          'dropdown-configuration',
+          'Configuration',
+          session.project().appLink + '#!/configuration'
+        ));
+        settings.push(new HeaderSetting(
+          'dropdown-import-data',
+          'Import Data',
+          session.project().appLink + '#!/importExport'
+        ));
         settings.push(new HeaderSetting(
           'userManagementLink',
           'User Management',
-          '/app/usermanagement/' + session.project().id,
+          '/app/usermanagement/' + session.project().id
         ));
-      }
-      if (session.project().isArchived && rights.canEditUsers() &&
-        session.projectSettings().hasSendReceive) {
-        settings[settings.length - 1].divider = true;
         settings.push(new HeaderSetting(
-          'dropdown-synchronize',
-          'Synchronize',
-          session.project().appLink + '#!/sync'
+          'dropdown-project-settings',
+          'Project Settings',
+          session.project().appLink + '#!/settings'
         ));
+        if (session.project().isArchived && session.projectSettings().hasSendReceive) {
+          settings[settings.length - 1].divider = true;
+          settings.push(new HeaderSetting(
+            'dropdown-synchronize',
+            'Synchronize',
+            session.project().appLink + '#!/sync'
+          ));
+        }
       }
       this.applicationHeaderService.setSettings(settings);
     });
