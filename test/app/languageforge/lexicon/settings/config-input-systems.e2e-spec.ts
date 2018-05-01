@@ -17,7 +17,7 @@ describe('Lexicon E2E Configuration Input Systems', () => {
     loginPage.loginAsUser();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
-    expect<any>(configPage.settingsMenuLink.isDisplayed()).toBe(false);
+    expect<any>(configPage.settingsMenuLink.getAttribute('class')).not.toContain('app-settings-available');
   });
 
   it('setup: login as manager, select test project, goto configuration', () => {
