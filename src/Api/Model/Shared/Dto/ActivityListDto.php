@@ -2,6 +2,7 @@
 
 namespace Api\Model\Shared\Dto;
 
+use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
@@ -21,6 +22,15 @@ use MongoDB\BSON\UTCDateTime;
 
 class ActivityListDto
 {
+    /**
+     * @param Website $site
+     * @return array
+     */
+    public static function getActivityTypes($site)
+    {
+        return ActivityModel::getActivityTypesForSiteBase($site->base);
+    }
+
     /**
      * @param ProjectModel $projectModel
      * @param array $filterParams
