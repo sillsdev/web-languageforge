@@ -34,6 +34,7 @@ class Base
         $this->data['jsNotMinifiedFiles'] = [];
         $this->data['cssFiles'] = [];
         $this->data['vendorFilesJs'] = [];
+        $this->data['vendorFilesCss'] = [];
         $this->data['vendorFilesMinJs'] = [];
         $this->data['isAngular2'] = false;
     }

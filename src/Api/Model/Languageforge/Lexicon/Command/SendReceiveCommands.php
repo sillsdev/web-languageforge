@@ -10,7 +10,6 @@ use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -43,8 +42,9 @@ class SendReceiveCommands
 
     /**
      * @param string $projectId
-     * @param string $srProject
+     * @param array $srProject
      * @return string $projectId
+     * @throws ResourceNotAvailableException
      */
     public static function updateSRProject($projectId, $srProject)
     {
@@ -64,8 +64,8 @@ class SendReceiveCommands
     /**
      * @param string $username
      * @param string $password
-     * @param ClientInterface|null $client
-     * @return SendReceiveGetUserProjectResult
+     * @param array $mockResponses
+     * @return array
      */
     public static function getUserProjects($username, $password, array $mockResponses = [])
     {
@@ -82,7 +82,7 @@ class SendReceiveCommands
             $mockHandler = new MockHandler($mockResponses);
             $handler = HandlerStack::create($mockHandler);
         }
-        $client = new Client(["handler" => $handler]);
+        $client = new Client(['handler' => $handler]);
 
         $url = 'https://admin.languagedepot.org/api/user/'.$username.'/projects';
         $postData = ['json' => ['password' => $password]];
@@ -104,7 +104,7 @@ class SendReceiveCommands
             }
         }
 
-        if ($response->getStatusCode() == 200) {
+        if (isset($response) && $response->getStatusCode() == 200) {
             $result->hasValidCredentials = true;
             $json = \GuzzleHttp\json_decode($response->getBody(), true);
             foreach ($json as $index => $srProject) {
@@ -223,8 +223,8 @@ class SendReceiveCommands
 
         $projectStatePath = $statePath . DIRECTORY_SEPARATOR . strtolower($project->projectCode) . '.state';
         if (!file_exists($projectStatePath) || !is_file($projectStatePath)) {
-            // Generate default state file of "IDLE" if it doesn't exist.
-            $status['SRState'] = "IDLE";
+            // Generate default state file of 'IDLE' if it doesn't exist.
+            $status['SRState'] = 'IDLE';
             $status['ProjectCode'] = $project->projectCode;
             if (!is_writeable($statePath)) return false;
 
@@ -237,11 +237,11 @@ class SendReceiveCommands
         if (!$status) return false;
 
         // If the project is in a queue and the state is IDLE, override the state to PENDING
-        if (array_key_exists('SRState', $status) && $status['SRState'] == "IDLE" &&
+        if (array_key_exists('SRState', $status) && $status['SRState'] == 'IDLE' &&
             (file_exists(self::getLFMergePaths()->editQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
             file_exists(self::getLFMergePaths()->syncQueuePath . DIRECTORY_SEPARATOR . $project->projectCode))
         ) {
-            $status['SRState'] = "PENDING";
+            $status['SRState'] = 'PENDING';
         }
 
         // If the previousRunTotalMilliseconds is set, estimate percentComplete
@@ -256,7 +256,7 @@ class SendReceiveCommands
         }
 
         // if project is modified since last sync, set state as un-synced
-        if (array_key_exists('SRState', $status) && $status['SRState'] == "IDLE" &&
+        if (array_key_exists('SRState', $status) && $status['SRState'] == 'IDLE' &&
             $project->lastEntryModifiedDate && $project->lastSyncedDate &&
             ($project->lastEntryModifiedDate > $project->lastSyncedDate)
         ) {
@@ -439,7 +439,7 @@ class SendReceiveCommands
         $confStr = "";
         $lines = explode("\n", file_get_contents($filePath));
         foreach($lines as $line) {
-            if(!$line || $line[0] == "#" || $line[0] == ";") continue;
+            if(!$line || $line[0] == '#' || $line[0] == ';') continue;
 
             $confStr .= $line . "\n";
         }
@@ -449,7 +449,7 @@ class SendReceiveCommands
     /**
      * @param string $username
      * @param string $password
-     * @param ClientInterface $client
+     * @return Response|null
      */
     private static function mockE2ETestingData($username, $password)
     {

@@ -7,7 +7,8 @@ use Silex\Application;
 
 class Validate extends Base
 {
-    public function check(Application $app, $validateKey = '') {
+    public static function check(Application $app, $validateKey = '')
+    {
         $userActivated = false;
         $userModel = new UserModel();
         if ($userModel->readByProperty('validationKey', $validateKey)) {
@@ -17,9 +18,12 @@ class Validate extends Base
                 $userActivated = true;
             }
         }
+        return $userActivated;
+    }
 
-        if ($userActivated) {
-            $app['session']->getFlashBag()->add('infoMessage', 'Congratulations!  You email has been validated and you\'re ready to login.');
+    public function checkAndRedirect(Application $app, $validateKey = '') {
+        if (self::check($app, $validateKey)) {
+            $app['session']->getFlashBag()->add('infoMessage', 'Congratulations!  Your email has been validated and you\'re ready to login.');
         }
         return $app->redirect('/auth/login');
     }

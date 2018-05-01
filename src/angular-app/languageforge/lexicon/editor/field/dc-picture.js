@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.notice',
+angular.module('palaso.ui.dc.picture', ['editorFieldModule', 'palaso.ui.notice',
   'ngFileUpload'])
 
 // Palaso UI Dictionary Control: Picture
