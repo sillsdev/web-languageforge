@@ -107,22 +107,22 @@
         </div>
 
     {% else %}
-        <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch" style="background-color: #104060">
-            <span class="desktop-title navbar-brand d-none d-md-inline-block mr-auto">
-                <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
-                <a class="" href="/">{{ app.website.name }}</a>
-            </span>
-            <a class="navbar-brand d-md-none mr-auto" href="/"><span style="margin-left:20px">{{ app.website.name }}</span></a>
-            <ul class="nav navbar-nav">
-                <li class="nav-item header-button-rounded">
-                    <a class="nav-link" href="/public/signup">Sign Up</a>
-                </li>
-                <li class="nav-item header-button-rounded">
-                    <a class="nav-link" href="/auth/login">Login</a>
-                </li>
-            </ul>
-        </nav>
-
+        <div id="primary-navigation" class="logged-out">
+            <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch logged-out">
+                <span class="navbar-brand d-md-inline-block mr-auto">
+                    <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
+                    <a class="" href="/">{{ app.website.name }}</a>
+                </span>
+                <ul class="nav navbar-nav">
+                    <li class="nav-item header-button-rounded">
+                        <a class="nav-link" href="/public/signup">Sign Up</a>
+                    </li>
+                    <li class="nav-item header-button-rounded">
+                        <a class="nav-link" href="/auth/login">Login</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     {% endif %}
 {% endblock %}
 
