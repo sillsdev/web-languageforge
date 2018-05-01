@@ -45,10 +45,16 @@ export class UserProfileAppController implements angular.IController {
 
     this.$scope.$watch(() => this.user.avatar_color, () => {
       this.user.avatar_ref = UserProfileAppController.getAvatarRef(this.user.avatar_color, this.user.avatar_shape);
+      if (this.user.avatar_color === '') {
+        this.user.avatar_color = null;
+      }
     });
 
     this.$scope.$watch(() => this.user.avatar_shape, () => {
       this.user.avatar_ref = UserProfileAppController.getAvatarRef(this.user.avatar_color, this.user.avatar_shape);
+      if (this.user.avatar_shape === '') {
+        this.user.avatar_shape = null;
+      }
     });
 
     this.loadUser(); // load the user data right away

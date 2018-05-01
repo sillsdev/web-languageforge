@@ -170,6 +170,12 @@ export abstract class DocumentEditor {
   }
 
   switchCurrentSegment(segmentRef: string): boolean {
+    let isInitialSegment = false;
+    if (this.initialSegmentRef !== '' && this.initialSegmentRef === segmentRef) {
+      isInitialSegment = true;
+      this.initialSegmentRef = '';
+    }
+
     if (this.currentSegment != null && this.documentSetId === this.currentSegment.documentSetId
       && segmentRef === this.currentSegment.ref
     ) {
@@ -178,10 +184,9 @@ export abstract class DocumentEditor {
     }
 
     this.currentSegment = new Segment(this.documentSetId, segmentRef);
-    if (this.initialSegmentRef !== '' && this.initialSegmentRef === segmentRef) {
+    if (isInitialSegment) {
       // set the checksum for the initial segment
       this.currentSegment.initialChecksum = this.initialSegmentChecksum;
-      this.initialSegmentRef = '';
     }
     this.updateCurrentSegment();
     return true;
@@ -531,6 +536,11 @@ export class SourceDocumentEditor extends DocumentEditor {
 
   update(textChange: boolean): boolean {
     this.isCurrentSegmentHighlighted = false;
+    if (this.isScripture) {
+      // the source editor is readonly, so don't change segment if the user selects anything
+      this.segmenter.update(textChange);
+      return false;
+    }
     const segmentChanged = super.update(textChange);
     if (this.currentSegment != null && (segmentChanged || this.currentSegment.isChanged)) {
         this.translateCurrentSegment().catch(() => { });

@@ -11,6 +11,10 @@ export class ActivityService {
   static $inject: string[] = ['apiService'];
   constructor(private api: ApiService) {}
 
+  validActivityTypes(callback?: JsonRpcCallback) {
+    return this.api.call('valid_activity_types_dto', [], callback);
+  }
+
   listActivity(filterParams: FilterParams, callback?: JsonRpcCallback) {
     return this.api.call('activity_list_dto', [filterParams], callback);
   }

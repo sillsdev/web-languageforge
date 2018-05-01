@@ -14,9 +14,9 @@
     "alternate-url": "https://github.com/sillsdev/web-scriptureforge.git"
   },
   "dependencies": {
-    "angular": "1.6.4",
+    "angular": "1.6.10",
     "angular-route": "^1.6.5",
-    "angular-sanitize": "^1.6.5",
+    "angular-sanitize": "^1.6.10",
     "angular-sortable-view": "0.0.15",
     "angular-translate": "^2.15.2",
     "angular-translate-loader-static-files": "^2.15.2",
@@ -32,7 +32,7 @@
     "font-awesome": "^4.7.0",
     "intl-tel-input": "9.2.7",
     "jquery": "3.1.1",
-    "machine": "https://build.palaso.org/guestAuth/repository/download/Machine_MachineTranslation/2.0.0-222/machine.tgz",
+    "machine": "https://build.palaso.org/guestAuth/repository/download/Machine_MachineTranslation/2.0.0-234/machine.tgz",
     "moment": "^2.18.1",
     "ng-drag-to-reorder": "^1.0.8",
     "ng-file-upload": "12.0.4",
@@ -43,7 +43,6 @@
     "rangy": "^1.3.0",
     "rich-text": "^3.0.1",
     "sharedb": "^1.0.0-beta",
-    "textangular": "1.5.12",
     "zone.js": "^0.8.16",
     "zxcvbn": "^4.4.2"
   },

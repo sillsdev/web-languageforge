@@ -279,6 +279,9 @@ class RightsHelper
             case 'session_getSessionData':
                 return true;
 
+            case 'valid_activity_types_dto':
+                return true;
+
 
 
             // LanguageForge (lexicon)
