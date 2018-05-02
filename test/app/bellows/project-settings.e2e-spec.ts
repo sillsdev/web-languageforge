@@ -15,7 +15,7 @@ describe('Bellows E2E Project Settings app', () => {
     loginPage.loginAsMember();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
-    expect<any>(settingsPage.settingsMenuLink.isDisplayed()).toBe(false);
+    expect<any>(settingsPage.settingsMenuLink.getAttribute('class')).not.toContain('app-settings-available');
   });
 
   it('System Admin can manage project', () => {

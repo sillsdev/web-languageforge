@@ -7,6 +7,7 @@ import {ProjectService} from './api/project.service';
 import {RestApiService} from './api/rest-api.service';
 import {UserRestApiService} from './api/user-rest-api.service';
 import {UserService} from './api/user.service';
+import {ApplicationHeaderService} from './application-header.service';
 import {BytesFilter, EncodeURIFilter, RelativeTimeFilter} from './filters';
 import {LinkService} from './link.service';
 import {ModalService} from './modal/modal.service';
@@ -25,6 +26,7 @@ export const CoreModule = angular
   .service('sessionService', SessionService)
   .service('modalService', ['$uibModal', ModalService])
   .service('linkService', LinkService)
+  .service('applicationHeaderService', ApplicationHeaderService)
   .service('utilService', UtilityService)
   .service('restApiService', RestApiService)
   .service('noticeService', NoticeService)

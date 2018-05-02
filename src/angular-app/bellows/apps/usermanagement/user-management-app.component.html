@@ -1,14 +1,6 @@
 <div class="content container" ng-cloak>
     <sil-notices></sil-notices>
 
-    <div>
-        <a class="btn btn-std" ng-href="{{$ctrl.project.appLink}}" title="Back to the project"
-           data-placement="right">
-            <i class="fa fa-arrow-circle-left iconPadding"></i>Back
-        </a>
-    </div>
-    <h2 style="font-weight:normal"><span class="notranslate">{{$ctrl.project.projectName}}</span> User Management</h2>
-
     <!-- this is a hack - for some reason active can only bind to a variable,
      so we create this variable using ng-init -->
     <div ng-init="isMembers = $ctrl.isActive('/members')"></div>
