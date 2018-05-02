@@ -1,15 +1,16 @@
 import * as angular from 'angular';
 import uiRouter from 'angular-ui-router';
 
-import { CoreModule } from '../../core/core.module';
-import { NoticeModule } from '../../core/notice/notice.module';
-import { UserManagementAppComponent } from './user-management-app.component';
-import { UserManagementMembersComponent } from './members.component';
-import { UserManagementJoinRequestsComponent } from './join-requests.component';
+import {BreadcrumbModule} from '../../core/breadcrumbs/breadcrumb.module';
+import {CoreModule} from '../../core/core.module';
+import {NoticeModule} from '../../core/notice/notice.module';
+import {UserManagementJoinRequestsComponent} from './join-requests.component';
+import {UserManagementMembersComponent} from './members.component';
+import {UserManagementAppComponent} from './user-management-app.component';
 
 export const UserManagementAppModule = angular
   .module('usermanagement',['ui.router', 'ui.bootstrap', CoreModule,
-    NoticeModule, 'palaso.ui.listview', 'palaso.ui.typeahead', 'sgw.ui.breadcrumb', 'lexiconCoreModule',
+    NoticeModule, 'palaso.ui.listview', 'palaso.ui.typeahead', BreadcrumbModule, 'lexiconCoreModule',
     'pascalprecht.translate'
   ])
   .component('userManagementApp', UserManagementAppComponent)
