@@ -14,8 +14,8 @@ export class BreadcrumbService {
 
   updateCrumb(id: string, index: number, update: Crumb): void {
     this.ensureIdIsRegistered(id);
-    let crumb = this.crumbStore[id][index];
-    for (let property in update) {
+    const crumb = this.crumbStore[id][index];
+    for (const property in update) {
       if (update.hasOwnProperty(property)) {
         crumb[property] = update[property];
       }
