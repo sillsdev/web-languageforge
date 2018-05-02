@@ -7,7 +7,7 @@ import {ProjectService} from './api/project.service';
 import {RestApiService} from './api/rest-api.service';
 import {UserRestApiService} from './api/user-rest-api.service';
 import {UserService} from './api/user.service';
-import { ApplicationHeaderService } from './application-header.service';
+import {ApplicationHeaderService} from './application-header.service';
 import {BytesFilter, EncodeURIFilter, RelativeTimeFilter} from './filters';
 import {LinkService} from './link.service';
 import {ModalService} from './modal/modal.service';

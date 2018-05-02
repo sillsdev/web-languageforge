@@ -1,12 +1,12 @@
 import * as angular from 'angular';
 
-import { UserService } from '../../core/api/user.service';
-import { ApplicationHeaderService } from '../../core/application-header.service';
-import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
-import { ModalService } from '../../core/modal/modal.service';
-import { NoticeService } from '../../core/notice/notice.service';
-import { UtilityService } from '../../core/utility.service';
-import { UserProfile } from '../../shared/model/user-profile.model';
+import {UserService} from '../../core/api/user.service';
+import {ApplicationHeaderService} from '../../core/application-header.service';
+import {BreadcrumbService} from '../../core/breadcrumbs/breadcrumb.service';
+import {ModalService} from '../../core/modal/modal.service';
+import {NoticeService} from '../../core/notice/notice.service';
+import {UtilityService} from '../../core/utility.service';
+import {UserProfile} from '../../shared/model/user-profile.model';
 
 interface UserProfileAppControllerScope extends angular.IScope {
   userprofileForm: angular.IFormController;
