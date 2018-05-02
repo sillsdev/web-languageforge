@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 import uiRouter from 'angular-ui-router';
 
+import {LexiconCoreModule} from '../../../languageforge/lexicon/core/lexicon-core.module';
 import {BreadcrumbModule} from '../../core/breadcrumbs/breadcrumb.module';
 import {CoreModule} from '../../core/core.module';
 import {NoticeModule} from '../../core/notice/notice.module';
@@ -9,8 +10,8 @@ import {UserManagementMembersComponent} from './members.component';
 import {UserManagementAppComponent} from './user-management-app.component';
 
 export const UserManagementAppModule = angular
-  .module('usermanagement',['ui.router', 'ui.bootstrap', CoreModule,
-    NoticeModule, 'palaso.ui.listview', 'palaso.ui.typeahead', BreadcrumbModule, 'lexiconCoreModule'
+  .module('usermanagement', ['ui.router', 'ui.bootstrap', CoreModule,
+    NoticeModule, 'palaso.ui.listview', 'palaso.ui.typeahead', BreadcrumbModule, LexiconCoreModule
   ])
   .component('userManagementApp', UserManagementAppComponent)
   .component('userManagementMembers', UserManagementMembersComponent)
