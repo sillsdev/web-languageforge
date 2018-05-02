@@ -38,6 +38,6 @@ class AnswerModel extends CommentModel
     /** @var ArrayOf<string> */
     public $tags;
 
-    /** @var Boolean Flag to be exported for ParaTExt Export */
+    /** @var Boolean Flag to be exported for Paratext Export */
     public $isToBeExported;
 }
