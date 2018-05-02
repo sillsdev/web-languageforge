@@ -35,15 +35,15 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="myProjectDropdown">
                             {% verbatim %}
-                            <div data-ng-switch="projectTypesBySite().length" data-ng-show="rights.canCreateProject">
+                            <div data-ng-switch="$ctrl.projectTypesBySite().length" data-ng-show="$ctrl.rights.canCreateProject">
                                 <div data-ng-switch-when="1">
-                                    <a class="dropdown-item" data-ng-href="/app/{{projectTypesBySite()[0]}}/new-project">
+                                    <a class="dropdown-item" data-ng-href="/app/{{$ctrl.projectTypesBySite()[0]}}/new-project">
                                         <b>Start or Join a New Project</b></a>
                                 </div>
-                                <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
+                                <div data-ng-switch-default data-ng-repeat="appName in $ctrl.projectTypesBySite()">
                                     <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
-                                        <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
+                                        <img height="24px" data-ng-src="/Site/views/{{$ctrl.siteName}}/image/{{appName}}-newProjectBadge.png" />
+                                        <b>Start a <span class="notranslate">{{$ctrl.projectTypeNames[appName]}}</span> project</b>
                                     </a>
                                 </div>
                             </div>
@@ -54,7 +54,7 @@
                             {% endif %}
                             {% if projects|length <= 10 %}
                                 {% verbatim %}
-                                <div class="dropdown-divider" data-ng-show="rights.canCreateProject"></div>
+                                <div class="dropdown-divider" data-ng-show="$ctrl.rights.canCreateProject"></div>
                                 {% endverbatim %}
                             {% endif %}
                             {% for project in projects %}
@@ -76,7 +76,7 @@
                             <div class="dropdown-menu dropdown-menu-left" uib-dropdown-menu>
                                 {% verbatim %}
                                 <div data-ng-repeat="setting in $ctrl.header.settings">
-                                    <a id="{{ setting.id }}" class="dropdown-item" data-ng-href="{{ setting.href }}" data-translate="{{ setting.label }}"></a>
+                                    <a id="{{ setting.id }}" class="dropdown-item" data-ng-href="{{ setting.href }}">{{ setting.label }}</a>
                                     <div class="dropdown-divider" data-ng-show="{{ setting.divider }}"></div>
                                 </div>
                                 {% endverbatim %}
