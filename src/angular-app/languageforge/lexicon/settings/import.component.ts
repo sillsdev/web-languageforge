@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
 import {BytesFilterFunction} from '../../../bellows/core/filters';
 import {ModalService} from '../../../bellows/core/modal/modal.service';
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
@@ -23,15 +24,19 @@ export class LexiconImportController implements angular.IController {
   static $inject = ['$filter', '$state',
     '$uibModal', 'Upload',
     'silNoticeService', 'sessionService',
-    'lexProjectService'
+    'lexProjectService',
+    'applicationHeaderService'
   ];
   constructor(private $filter: angular.IFilterService, private $state: angular.ui.IStateService,
               private $modal: ModalService, private Upload: any,
               private notice: NoticeService, private sessionService: SessionService,
-              private lexProjectService: LexiconProjectService) { }
+              private lexProjectService: LexiconProjectService,
+              private applicationHeaderService: ApplicationHeaderService) { }
 
   $onInit() {
     this.lexProjectService.setBreadcrumbs('importExport',  'LIFT Import');
+    this.lexProjectService.setupSettings();
+    this.applicationHeaderService.setPageName('Import from LIFT');
   }
 
   onFileSelect($file: File) {
