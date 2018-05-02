@@ -4,7 +4,7 @@
 - Support for translating Scripture! (Beta)
     - Simple UI for translating from a source text
     - Automatically learns as you translate and provides suggested translations for words and phrases
-    - Send/receive support with ParaTExt
+    - Send/receive support with Paratext
 - Localization!  Help us get Scripture Forge localized into your national language
     - [See this post for instructions](https://community.scripture.software.sil.org/t/how-to-localize-scripture-forge-into-your-language/372)
 - Numerous internal improvements and bugfixes

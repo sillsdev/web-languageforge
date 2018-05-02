@@ -206,7 +206,7 @@ namespace SIL.XForge.WebApi.Server.Services
                 return bookIds;
             }
 
-            throw new InvalidOperationException("Error occurred while getting list of books from ParaTExt server.");
+            throw new InvalidOperationException("Error occurred while getting list of books from Paratext server.");
         }
 
         private void DeleteBookTextFiles(TranslateProject project, ParatextProject paratextProject,
@@ -268,13 +268,13 @@ namespace SIL.XForge.WebApi.Server.Services
                 if (!(await _paratextService.TryGetBookTextAsync(user, paratextProject.Id, bookId))
                     .TryResult(out bookText))
                 {
-                    throw new InvalidOperationException("Error occurred while getting book text from ParaTExt server.");
+                    throw new InvalidOperationException("Error occurred while getting book text from Paratext server.");
                 }
             }
             else if (!(await _paratextService.TryUpdateBookTextAsync(user, paratextProject.Id, bookId, revision,
                 newUsxElem.ToString())).TryResult(out bookText))
             {
-                throw new InvalidOperationException("Error occurred while updating book text on ParaTExt server.");
+                throw new InvalidOperationException("Error occurred while updating book text on Paratext server.");
             }
 
             bookTextElem = XElement.Parse(bookText);
@@ -292,7 +292,7 @@ namespace SIL.XForge.WebApi.Server.Services
             if (!(await _paratextService.TryGetBookTextAsync(user, paratextProject.Id, bookId))
                 .TryResult(out string bookText))
             {
-                throw new InvalidOperationException("Error occurred while getting book text from ParaTExt server.");
+                throw new InvalidOperationException("Error occurred while getting book text from Paratext server.");
             }
 
             var bookTextElem = XElement.Parse(bookText);
