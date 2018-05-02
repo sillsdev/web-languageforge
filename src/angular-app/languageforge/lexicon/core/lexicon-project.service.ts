@@ -1,11 +1,11 @@
 import * as angular from 'angular';
 
-import { ApiService, JsonRpcCallback } from '../../../bellows/core/api/api.service';
-import { ApplicationHeaderService, HeaderSetting } from '../../../bellows/core/application-header.service';
-import { BreadcrumbService } from '../../../bellows/core/breadcrumbs/breadcrumb.service';
-import { SessionService } from '../../../bellows/core/session.service';
-import { LexiconLinkService } from './lexicon-link.service';
-import { LexiconRightsService } from './lexicon-rights.service';
+import {ApiService, JsonRpcCallback} from '../../../bellows/core/api/api.service';
+import {ApplicationHeaderService, HeaderSetting} from '../../../bellows/core/application-header.service';
+import {BreadcrumbService} from '../../../bellows/core/breadcrumbs/breadcrumb.service';
+import {SessionService} from '../../../bellows/core/session.service';
+import {LexiconLinkService} from './lexicon-link.service';
+import {LexiconRightsService} from './lexicon-rights.service';
 
 export class LexiconProjectService {
   static $inject: string[] = ['$q', 'apiService', 'sessionService',
@@ -21,7 +21,7 @@ export class LexiconProjectService {
               private rightsService: LexiconRightsService) { }
 
   setBreadcrumbs(view: string, label: string, forceRefresh: boolean = false): void {
-    this.$q.all([this.sessionService.getSession()]).then(([session]) => {
+    this.sessionService.getSession(forceRefresh).then(session => {
       this.breadcrumbService.set('top', [{
         href: '/app/projects',
         label: 'My Projects'
