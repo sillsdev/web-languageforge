@@ -12,6 +12,7 @@ angular.module('palaso.ui.comments')
         model: '=',
         configType: '<',
         multiOptionValue: '<',
+        parentContextGuid: '<',
         picture: '<'
       },
       controller: ['$scope', 'lexCommentService', 'sessionService', '$element', 'lexConfigService',
@@ -53,16 +54,17 @@ angular.module('palaso.ui.comments')
             } else {
               $scope.control.setCommentContext($scope.contextGuid);
               $scope.selectFieldForComment();
+              var bubbleOffset;
               if ($scope.multiOptionValue) {
-                var bubbleOffset = $scope.element.parents('.list-repeater').offset().top;
+                bubbleOffset = $scope.element.parents('.list-repeater').offset().top;
               } else {
-                var bubbleOffset = $scope.element.offset().top;
+                bubbleOffset = $scope.element.offset().top;
               }
 
               var rightPanel = angular.element('.comments-right-panel');
-              var rightPanelOffset = rightPanel.offset().top;
+              var rightPanelOffsetTop = rightPanel.offset().top;
               var offsetAuthor = 40;
-              rightPanel.css({ paddingTop: (bubbleOffset - rightPanelOffset - offsetAuthor) });
+              rightPanel.css({ paddingTop: (bubbleOffset - rightPanelOffsetTop - offsetAuthor) });
               if ($scope.control.rightPanelVisible === false) {
                 $scope.control.showCommentsPanel();
               }
@@ -88,8 +90,8 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.setContextGuid = function setContextGuid() {
-          $scope.contextGuid = $scope.$parent.contextGuid +
-          ($scope.$parent.contextGuid ? ' ' : '') + $scope.field;
+          $scope.contextGuid = $scope.parentContextGuid +
+          ($scope.parentContextGuid ? ' ' : '') + $scope.field;
           lexConfig.getFieldConfig($scope.field).then(function (fieldConfig) {
             if (!angular.isDefined($scope.configType)) {
               $scope.configType = fieldConfig.type;
@@ -113,7 +115,8 @@ angular.module('palaso.ui.comments')
         $scope.setContextGuid();
 
         $scope.isCommentingAvailable = function isCommentingAvailable() {
-          return ($scope.control.currentEntry.id.indexOf('_new_') !== -1 || !$scope.control.rights.canComment());
+          return ($scope.control.currentEntry.id.indexOf('_new_') !== -1 ||
+            !$scope.control.rights.canComment());
         };
 
         $scope.$watch('model', function () {

@@ -70,6 +70,10 @@ if (! defined('GOOGLE_CLIENT_SECRET')) {
     define('GOOGLE_CLIENT_SECRET', 'googleClientSecret');
 }
 
+if (! defined('GATHERWORDS_CLIENT_ID')) {
+    define('GATHERWORDS_CLIENT_ID', 'gatherWordsClientId');
+}
+
 if (! defined('PARATEXT_CLIENT_ID')) {
     define('PARATEXT_CLIENT_ID', 'paratextClientId');
 }
