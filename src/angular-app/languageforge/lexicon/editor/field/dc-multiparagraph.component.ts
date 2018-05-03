@@ -1,10 +1,13 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.dc.multiparagraph', ['coreModule', 'editorFieldModule'])
+import {SessionService} from '../../../../bellows/core/session.service';
+import {LexiconProjectSettings} from '../../shared/model/lexicon-project-settings.model';
 
-// Dictionary Control Multitext
-.directive('dcMultiparagraph', [function () {
-  return {
+export const FieldMultiParagraphModule = angular
+  .module('palaso.ui.dc.multiparagraph', [])
+
+  // Dictionary Control Multitext
+  .directive('dcMultiparagraph', [() => ({
     restrict: 'E',
     templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-multiparagraph.component.html',
     scope: {
@@ -14,14 +17,14 @@ angular.module('palaso.ui.dc.multiparagraph', ['coreModule', 'editorFieldModule'
       selectField: '&',
       fieldName: '='
     },
-    controller: ['$scope', '$state', 'sessionService', function ($scope, $state, sessionService) {
+    controller: ['$scope', '$state', 'sessionService', ($scope, $state, sessionService: SessionService) => {
       $scope.$state = $state;
       $scope.contextGuid = $scope.$parent.contextGuid;
 
-      sessionService.getSession().then(function (session) {
-        $scope.inputSystems = session.projectSettings().config.inputSystems;
+      sessionService.getSession().then(session => {
+        $scope.inputSystems = session.projectSettings<LexiconProjectSettings>().config.inputSystems;
 
-        $scope.inputSystemDirection = function inputSystemDirection(tag) {
+        $scope.inputSystemDirection = function inputSystemDirection(tag: string): string {
           if (!(tag in $scope.inputSystems)) {
             return 'ltr';
           }
@@ -39,5 +42,5 @@ angular.module('palaso.ui.dc.multiparagraph', ['coreModule', 'editorFieldModule'
       };
 
     }]
-  };
-}]);
+  })])
+  .name;
