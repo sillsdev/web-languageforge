@@ -1,10 +1,17 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.dc.semanticdomain', [])
+import {LexiconRightsService} from '../../core/lexicon-rights.service';
+import {LexOptionListItem} from '../../shared/model/option-list.model';
 
-// Palaso UI Semanticdomain
-.directive('dcSemanticdomain', [function () {
-  return {
+interface WindowService extends angular.IWindowService {
+  semanticDomains_en?: any;
+}
+
+export const FieldSemanticDomainModule = angular
+  .module('palaso.ui.dc.semanticdomain', [])
+
+  // Palaso UI Semanticdomain
+  .directive('dcSemanticdomain', [() => ({
     restrict: 'E',
     templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-semanticdomain.component.html',
     scope: {
@@ -14,15 +21,16 @@ angular.module('palaso.ui.dc.semanticdomain', [])
       selectField: '&',
       fieldName: '='
     },
-    controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rightsService) {
+    controller: ['$scope', '$state', '$window', 'lexRightsService',
+    ($scope, $state, $window: WindowService, rightsService: LexiconRightsService) => {
       $scope.$state = $state;
       $scope.isAdding = false;
       $scope.valueToBeDeleted = '';
       $scope.contextGuid = $scope.$parent.contextGuid;
 
       function createOptions() {
-        var options = [];
-        angular.forEach(semanticDomains_en, function (item) {
+        const options: any[] = [];
+        angular.forEach($window.semanticDomains_en, item => {
           options.push(item);
         });
 
@@ -31,20 +39,20 @@ angular.module('palaso.ui.dc.semanticdomain', [])
 
       $scope.options = createOptions();
 
-      $scope.getDisplayName = function getDisplayName(key) {
-        var displayName = key;
-        if (angular.isDefined(semanticDomains_en) && key in semanticDomains_en) {
-          displayName = semanticDomains_en[key].value;
+      $scope.getDisplayName = function getDisplayName(key: string): string {
+        let displayName = key;
+        if (angular.isDefined($window.semanticDomains_en) && key in $window.semanticDomains_en) {
+          displayName = $window.semanticDomains_en[key].value;
         }
 
         return displayName;
       };
 
-      $scope.orderItemsByListOrder = function orderItemsByListOrder(value) {
+      $scope.orderItemsByListOrder = function orderItemsByListOrder(value: string): string {
         return value;
       };
 
-      $scope.filterSelectedOptions = function filterSelectedOptions(item) {
+      $scope.filterSelectedOptions = function filterSelectedOptions(item: LexOptionListItem): boolean {
         if ($scope.model == null) {
           return false;
         }
@@ -52,16 +60,16 @@ angular.module('palaso.ui.dc.semanticdomain', [])
         return $scope.model.values.indexOf(item.key) === -1;
       };
 
-      $scope.showAddButton = function showAddButton() {
+      $scope.showAddButton = function showAddButton(): boolean {
         if ($scope.model == null) {
           return false;
         }
 
-        return (angular.isDefined(semanticDomains_en) && !$scope.isAdding
-          && $scope.model.values.length < Object.keys(semanticDomains_en).length);
+        return (angular.isDefined($window.semanticDomains_en) && !$scope.isAdding
+          && $scope.model.values.length < Object.keys($window.semanticDomains_en).length);
       };
 
-      $scope.addValue = function addValue() {
+      $scope.addValue = function addValue(): void {
         if (angular.isDefined($scope.newValue)) {
           $scope.model.values.push($scope.newValue);
         }
@@ -70,11 +78,11 @@ angular.module('palaso.ui.dc.semanticdomain', [])
         $scope.isAdding = false;
       };
 
-      rightsService.getRights().then(function (rights) {
+      rightsService.getRights().then(rights => {
         $scope.rights = rights;
 
-        $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted, value) {
-          if (angular.isDefined(semanticDomains_en) && $state.is('editor.entry')
+        $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted: string, value: string): boolean {
+          if (angular.isDefined($window.semanticDomains_en) && $state.is('editor.entry')
             && rights.canEditEntry()
           ) {
             return valueToBeDeleted === value;
@@ -84,12 +92,12 @@ angular.module('palaso.ui.dc.semanticdomain', [])
         };
       });
 
-      $scope.deleteValue = function deleteValue(value) {
-        var index = $scope.model.values.indexOf(value);
+      $scope.deleteValue = function deleteValue(value: string): void {
+        const index = $scope.model.values.indexOf(value);
         $scope.model.values.splice(index, 1);
       };
 
-      $scope.selectValue = function selectValue(value) {
+      $scope.selectValue = function selectValue(value: string): void {
         $scope.selectField({
           inputSystem: '',
           multioptionValue: $scope.getDisplayName(value)
@@ -97,5 +105,5 @@ angular.module('palaso.ui.dc.semanticdomain', [])
       };
 
     }]
-  };
-}]);
+  })])
+  .name;
