@@ -6,7 +6,7 @@ angular.module('palaso.ui.dc.multiparagraph', ['coreModule', 'editorFieldModule'
 .directive('dcMultiparagraph', [function () {
   return {
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-multiparagraph.html',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-multiparagraph.component.html',
     scope: {
       config: '=',
       model: '=',
