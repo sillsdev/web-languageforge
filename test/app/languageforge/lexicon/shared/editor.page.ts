@@ -47,7 +47,7 @@ export class EditorPage {
   editDiv = element(by.id('lexAppEditView'));
   editDivSearch = this.editDiv.element(by.id('editor-entry-search-entries'));
   editToolbarDiv = element(by.id('lexAppToolbar'));
-  commentDiv = element(by.className('comments-right-panel-container'));
+  commentDiv = element(by.id('lexAppCommentView'));
 
   // --- Browse view ---
   browse = {
