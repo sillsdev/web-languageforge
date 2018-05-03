@@ -1,10 +1,10 @@
 import * as angular from 'angular';
 
-import { UserService } from '../../core/api/user.service';
-import { ModalService } from '../../core/modal/modal.service';
-import { NoticeService } from '../../core/notice/notice.service';
-import { UtilityService } from '../../core/utility.service';
-import { UserProfile } from '../../shared/model/user-profile.model';
+import {UserService} from '../../core/api/user.service';
+import {ModalService} from '../../core/modal/modal.service';
+import {NoticeService} from '../../core/notice/notice.service';
+import {UtilityService} from '../../core/utility.service';
+import {UserProfile} from '../../shared/model/user-profile.model';
 
 interface UserProfileAppControllerScope extends angular.IScope {
   userprofileForm: angular.IFormController;
@@ -39,10 +39,16 @@ export class UserProfileAppController implements angular.IController {
 
     this.$scope.$watch(() => this.user.avatar_color, () => {
       this.user.avatar_ref = UserProfileAppController.getAvatarRef(this.user.avatar_color, this.user.avatar_shape);
+      if (this.user.avatar_color === '') {
+        this.user.avatar_color = null;
+      }
     });
 
     this.$scope.$watch(() => this.user.avatar_shape, () => {
       this.user.avatar_ref = UserProfileAppController.getAvatarRef(this.user.avatar_color, this.user.avatar_shape);
+      if (this.user.avatar_shape === '') {
+        this.user.avatar_shape = null;
+      }
     });
 
     this.loadUser(); // load the user data right away

@@ -38,6 +38,7 @@ export class TranslateEditorController implements angular.IController {
 
   private failedConnectionCount: number = 0;
   private currentDocType: string;
+  private pendingUpdateUserPrefsCount: number;
 
   static $inject = ['$window', '$scope',
     '$q', 'machineService',
@@ -136,7 +137,7 @@ export class TranslateEditorController implements angular.IController {
             return TranslateUtilities.sliderColor(value);
           },
           onEnd: () => {
-            this.updateConfig();
+            this.updateConfidence();
           },
           translate: (value: number) => {
             switch (value) {
@@ -190,12 +191,10 @@ export class TranslateEditorController implements angular.IController {
 
           this.machine.confidenceThreshold = this.tecProject.config.confidenceThreshold;
           const userPreferences = this.tecProject.config.userPreferences;
-          if (angular.isDefined(userPreferences)) {
-            if (angular.isUndefined(userPreferences.confidenceThreshold) || !userPreferences.hasConfidenceOverride ||
-              !(isFinite(userPreferences.confidenceThreshold) && angular.isNumber(userPreferences.confidenceThreshold))
-            ) {
-              userPreferences.confidenceThreshold = this.tecProject.config.confidenceThreshold;
-            }
+          if (userPreferences.confidenceThreshold == null || !userPreferences.hasConfidenceOverride ||
+            !(isFinite(userPreferences.confidenceThreshold) && angular.isNumber(userPreferences.confidenceThreshold))
+          ) {
+            userPreferences.confidenceThreshold = this.tecProject.config.confidenceThreshold;
           }
           this.confidence.value = userPreferences.confidenceThreshold;
 
@@ -205,8 +204,14 @@ export class TranslateEditorController implements angular.IController {
             this.machine.confidenceThreshold = userPreferences.confidenceThreshold;
           }
 
-          if (userPreferences.selectedDocumentSetId != null) {
+          if (userPreferences.selectedDocumentSetId == null || userPreferences.selectedDocumentSetId === '') {
+            userPreferences.selectedDocumentSetId = this.selectedDocumentSetId;
+          } else {
             this.selectedDocumentSetIndex = this.getDocumentSetIndexById(userPreferences.selectedDocumentSetId);
+          }
+
+          if (userPreferences.selectedSegmentRef != null && userPreferences.selectedSegmentRef !== '') {
+            this.target.setInitialSegment(userPreferences.selectedSegmentRef, userPreferences.selectedSegmentChecksum);
           }
 
           this.$q.all([this.source.created, this.target.created]).then(() => {
@@ -251,23 +256,22 @@ export class TranslateEditorController implements angular.IController {
     this.$window.document.removeEventListener('mousedown', this.metricService.onMouseDown);
     this.$window.removeEventListener('resize', this.onWindowResize);
     this.$window.removeEventListener('beforeunload', this.onBeforeUnload);
-    this.save();
+    this.saveMetrics();
     this.machine.close();
   }
 
-  selectDocumentSet(index: number, updateConfig: boolean = true): void {
+  selectDocumentSet(index: number): void {
     if (this.selectedDocumentSetIndex !== index) {
       this.selectedDocumentSetIndex = index;
+      const userPreferences = this.tecProject.config.userPreferences;
+      if (userPreferences.selectedDocumentSetId === this.selectedDocumentSetId &&
+        userPreferences.selectedSegmentRef != null && userPreferences.selectedSegmentRef !== ''
+      ) {
+        // the user switched back from another document without selecting anything, so set the initial segment
+        this.target.setInitialSegment(userPreferences.selectedSegmentRef, userPreferences.selectedSegmentChecksum);
+      }
       this.switchCurrentDocumentSet(this.source);
       this.switchCurrentDocumentSet(this.target);
-
-      if (this.selectedDocumentSetIndex in this.documentSets) {
-        const userPreferences = this.tecProject.config.userPreferences;
-        userPreferences.selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
-        if (updateConfig) {
-          this.projectApi.updateUserPreferences(userPreferences);
-        }
-      }
     }
   }
 
@@ -288,8 +292,10 @@ export class TranslateEditorController implements angular.IController {
             this.documentSets.splice(index, 1);
             this.tecProject.config.documentSets.idsOrdered.splice(index, 1);
             if (this.selectedDocumentSetIndex >= index) {
-              this.selectDocumentSet(this.selectedDocumentSetIndex - 1, false);
+              this.selectDocumentSet(this.selectedDocumentSetIndex - 1);
             }
+            this.tecProject.config.userPreferences.selectedSegmentRef = '';
+            this.tecProject.config.userPreferences.selectedSegmentChecksum = 0;
             this.projectApi.updateConfig(this.tecProject.config);
             this.notice.push(this.notice.SUCCESS, noticeMessage);
             this.tecOnUpdate({ $event: { project: this.tecProject } });
@@ -330,7 +336,9 @@ export class TranslateEditorController implements angular.IController {
           if (isCreate) {
             this.documentSets.push(docSet);
             this.tecProject.config.documentSets.idsOrdered.push(docSet.id);
-            this.selectDocumentSet(this.documentSets.length - 1, false);
+            this.selectDocumentSet(this.documentSets.length - 1);
+            this.tecProject.config.userPreferences.selectedSegmentRef = '';
+            this.tecProject.config.userPreferences.selectedSegmentChecksum = 0;
             this.projectApi.updateConfig(this.tecProject.config);
             noticeMessage += 'added.';
             this.notice.push(this.notice.SUCCESS, noticeMessage);
@@ -389,7 +397,7 @@ export class TranslateEditorController implements angular.IController {
       }
 
       this.tecProject.config.documentSets.idsOrdered = this.documentSets.map(docSet => docSet.id);
-      this.selectDocumentSet(selectedIndex, false);
+      this.selectDocumentSet(selectedIndex);
       this.projectApi.updateConfig(this.tecProject.config, result => {
         if (result.ok) {
           this.notice.push(this.notice.SUCCESS,
@@ -400,10 +408,6 @@ export class TranslateEditorController implements angular.IController {
         this.tecOnUpdate({ $event: { project: this.tecProject } });
       });
     }, () => { });
-  }
-
-  gotoProjects(): void {
-    this.save().then(() => this.$window.location.href = '/app/projects');
   }
 
   train(): void {
@@ -473,16 +477,14 @@ export class TranslateEditorController implements angular.IController {
   toggleFormattingOptions(): void {
     this.showFormats = !this.showFormats;
     this.tecProject.config.userPreferences.isFormattingOptionsShown = this.showFormats;
-    this.projectApi.updateUserPreferences(this.tecProject.config.userPreferences, () => {
-      this.tecOnUpdate({ $event: { project: this.tecProject } });
-    });
+    this.updateUserPreferences();
   }
 
   resetConfidence(): void {
     this.tecProject.config.userPreferences.hasConfidenceOverride = false;
     this.tecProject.config.userPreferences.confidenceThreshold = this.tecProject.config.confidenceThreshold;
     this.confidence.value = this.tecProject.config.confidenceThreshold;
-    this.updateConfig();
+    this.updateConfidence();
   }
 
   get engineConfidence(): string {
@@ -493,17 +495,6 @@ export class TranslateEditorController implements angular.IController {
     const rescaledConfidence = Math.min(1.0, this.machine.engineConfidence / 0.6);
     const rating = rescaledConfidence * 3;
     return (Math.round(rating * 2) / 2).toFixed(1);
-  }
-
-  updateConfig(): void {
-    if (this.tecRights.canEditEntry()) {
-      this.updateConfigConfidenceValues();
-      this.projectApi.updateUserPreferences(this.tecProject.config.userPreferences).then(result => {
-        if (result.ok && this.tecOnUpdate) {
-          this.tecOnUpdate({ $event: { project: this.tecProject } });
-        }
-      });
-    }
   }
 
   swapEditors(writePreferences: boolean = true): void {
@@ -525,9 +516,15 @@ export class TranslateEditorController implements angular.IController {
     if (writePreferences) {
       const userPreferences = this.tecProject.config.userPreferences;
       userPreferences.isDocumentOrientationTargetRight = this.right.docType === this.target.docType;
-      this.projectApi.updateUserPreferences(userPreferences);
-      this.tecOnUpdate({ $event: { project: this.tecProject } });
+      this.updateUserPreferences();
     }
+  }
+
+  private get selectedDocumentSetId(): string {
+    if (this.selectedDocumentSetIndex in this.documentSets) {
+      return this.documentSets[this.selectedDocumentSetIndex].id;
+    }
+    return '';
   }
 
   private get focusedEditor(): DocumentEditor {
@@ -608,19 +605,10 @@ export class TranslateEditorController implements angular.IController {
 
   private onBeforeUnload(event: BeforeUnloadEvent) {
     if (this.saveState < SaveState.Saved) {
-      setTimeout(() => this.save(), 100);
       const message = 'There are unsaved changes.';
       event.returnValue = message;
       return message;
     }
-  }
-
-  private save(): angular.IPromise<{}> {
-    return this.$q.all([
-      this.source.save(),
-      this.target.save(),
-      this.saveMetrics()
-    ]);
   }
 
   private saveMetrics(): angular.IPromise<any> {
@@ -633,7 +621,15 @@ export class TranslateEditorController implements angular.IController {
   }
 
   private get saveState(): SaveState {
-    return Math.min(this.source.saveState, this.target.saveState);
+    let updateUserPrefsSaveState: SaveState;
+    if (this.pendingUpdateUserPrefsCount == null) {
+      updateUserPrefsSaveState = SaveState.Unedited;
+    } else if (this.pendingUpdateUserPrefsCount > 0) {
+      updateUserPrefsSaveState = SaveState.Saving;
+    } else {
+      updateUserPrefsSaveState = SaveState.Saved;
+    }
+    return Math.min(this.source.saveState, this.target.saveState, updateUserPrefsSaveState);
   }
 
   private updateDropdownMenuClass(): void {
@@ -650,8 +646,8 @@ export class TranslateEditorController implements angular.IController {
 
   private switchCurrentDocumentSet(editor: DocumentEditor): void {
     editor.closeDocumentSet();
-    if (this.selectedDocumentSetIndex in this.documentSets) {
-      editor.openDocumentSet(this.tecProject.slug, this.documentSets[this.selectedDocumentSetIndex].id);
+    if (this.selectedDocumentSetId !== '') {
+      editor.openDocumentSet(this.tecProject.slug, this.selectedDocumentSetId);
     }
   }
 
@@ -670,8 +666,18 @@ export class TranslateEditorController implements angular.IController {
 
           if (this.currentDocType) {
             this.metricService.sendMetrics(true, this.target.currentSegmentDocumentSetId);
-          } else if (this.selectedDocumentSetIndex in this.documentSets) {
-            this.metricService.currentDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
+          } else if (this.selectedDocumentSetId !== '') {
+            this.metricService.currentDocumentSetId = this.selectedDocumentSetId;
+          }
+
+          const userPreferences = this.tecProject.config.userPreferences;
+          if (userPreferences.selectedDocumentSetId !== this.target.currentSegmentDocumentSetId ||
+            userPreferences.selectedSegmentRef !== this.target.currentSegmentRef
+          ) {
+            userPreferences.selectedDocumentSetId = this.target.currentSegmentDocumentSetId;
+            userPreferences.selectedSegmentRef = this.target.currentSegmentRef;
+            userPreferences.selectedSegmentChecksum = this.target.currentSegmentChecksum;
+            this.updateUserPreferences();
           }
 
           // update suggestions for new segment
@@ -694,8 +700,8 @@ export class TranslateEditorController implements angular.IController {
         if (segmentChanged) {
           this.target.switchCurrentSegment(this.source.currentSegmentRef);
 
-          if (!this.currentDocType && this.selectedDocumentSetIndex in this.documentSets) {
-            this.metricService.currentDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
+          if (!this.currentDocType && this.selectedDocumentSetId !== '') {
+            this.metricService.currentDocumentSetId = this.selectedDocumentSetId;
           }
         }
         break;
@@ -705,6 +711,16 @@ export class TranslateEditorController implements angular.IController {
       this.currentDocType = editor.docType;
       editor.adjustSelection();
     }
+  }
+
+  private updateUserPreferences(): void {
+    if (this.pendingUpdateUserPrefsCount == null) {
+      this.pendingUpdateUserPrefsCount = 0;
+    }
+    this.pendingUpdateUserPrefsCount++;
+    this.projectApi.updateUserPreferences(this.tecProject.config.userPreferences,
+      () => this.pendingUpdateUserPrefsCount--);
+    this.tecOnUpdate({ $event: { project: this.tecProject } });
   }
 
   private getDocumentSetIndexById(documentSetId: string): number {
@@ -722,6 +738,13 @@ export class TranslateEditorController implements angular.IController {
 
     this.machine.confidenceThreshold = this.confidence.value;
     this.target.updateSuggestions();
+  }
+
+  private updateConfidence(): void {
+    if (this.tecRights.canEditEntry()) {
+      this.updateConfigConfidenceValues();
+      this.updateUserPreferences();
+    }
   }
 
   private onDrop(file: File, quill: Quill, event: DragEvent): void {

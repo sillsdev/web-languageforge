@@ -256,7 +256,7 @@ $app->get('/public/{appName}/{projectId}', 'Site\Controller\App::view');
 $app->get('/public/{appName}/', 'Site\Controller\App::view');
 $app->get('/public/{appName}', 'Site\Controller\App::view');
 
-$app->get('/validate/{validateKey}', 'Site\Controller\Validate::check');
+$app->get('/validate/{validateKey}', 'Site\Controller\Validate::checkAndRedirect');
 $app->get('/auth/reset_password/{resetPasswordKey}', 'Site\Controller\Auth::view')->value('appName', 'reset_password');
 $app->get('/auth/{appName}',    'Site\Controller\Auth::view')->value('appName', 'login');
 $app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bind('auth_forgot_password');

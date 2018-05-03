@@ -3,26 +3,33 @@
         (config.fields[fieldName].hideIfEmpty && fieldContainsData(config.fields[fieldName].type, model[fieldName]))">
         <div data-ng-switch data-on="config.fields[fieldName].type" class="field-container">
             <div data-ng-switch-when="optionlist">
-                <dc-optionlist class="dc-item" control="control"
-                    config="config.fields[fieldName]"
-                    model="model[fieldName]"
-                    items="optionlists[config.fields[fieldName].listCode].items"
-                    field-name="fieldName"></dc-optionlist>
+                <dc-optionlist class="dc-item"
+                               control="control"
+                               config="config.fields[fieldName]"
+                               model="model[fieldName]"
+                               items="optionlists[config.fields[fieldName].listCode].items"
+                               field-name="fieldName"
+                               parent-context-guid="contextGuid"></dc-optionlist>
             </div>
             <div data-ng-switch-when="multioptionlist">
                 <dc-multioptionlist data-ng-if="fieldName != 'semanticDomain'" class="dc-item"
-                    control="control" config="config.fields[fieldName]" model="model[fieldName]"
-                    items="optionlists[config.fields[fieldName].listCode].items"
-                    field-name="fieldName"></dc-multioptionlist>
+                                    control="control"
+                                    config="config.fields[fieldName]"
+                                    model="model[fieldName]"
+                                    items="optionlists[config.fields[fieldName].listCode].items"
+                                    field-name="fieldName"
+                                    parent-context-guid="contextGuid"></dc-multioptionlist>
                 <dc-semanticdomain data-ng-if="fieldName == 'semanticDomain'" class="dc-item"
                     control="control" config="config.fields[fieldName]" model="model[fieldName]"
                     field-name="fieldName"></dc-semanticdomain>
             </div>
             <div data-ng-switch-when="multitext">
-                <dc-multitext class="dc-item" control="control"
-                    config="config.fields[fieldName]"
-                    model="model[fieldName]"
-                    field-name="fieldName"></dc-multitext>
+                <dc-multitext class="dc-item"
+                              control="control"
+                              config="config.fields[fieldName]"
+                              model="model[fieldName]"
+                              field-name="fieldName"
+                              parent-context-guid="contextGuid"></dc-multitext>
             </div>
             <div data-ng-switch-when="multiparagraph">
                 <dc-multiparagraph class="dc-item" control="control"

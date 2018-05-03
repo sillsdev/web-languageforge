@@ -266,7 +266,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       $scope.getPrimaryListItemForDisplay = editorService.getSortableValue;
 
       $scope.getWordForDisplay = function getWordForDisplay(entry) {
-        var lexeme = utils.constructor.getLexeme($scope.config.entry, entry);
+        var lexeme = utils.constructor.getLexeme($scope.config, $scope.config.entry, entry);
         if (!lexeme) {
           return '[Empty]';
         }
@@ -287,7 +287,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         var meaning = '';
         if (entry.senses && entry.senses[0]) {
           meaning =
-            utils.constructor.getMeaning($scope.config.entry.fields.senses, entry.senses[0]);
+            utils.constructor.getMeaning($scope.config, $scope.config.entry.fields.senses, entry.senses[0]);
         }
 
         if (!meaning) {
@@ -613,7 +613,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
 
       $scope.deleteEntry = function deleteEntry(entry) {
         var deletemsg = 'Are you sure you want to delete the entry <b>\' ' +
-          utils.constructor.getLexeme($scope.config.entry, entry) + ' \'</b>';
+          utils.constructor.getLexeme($scope.config, $scope.config.entry, entry) + ' \'</b>';
 
         modal.showModalSimple('Delete Entry', deletemsg, 'Cancel', 'Delete Entry').then(
           function () {

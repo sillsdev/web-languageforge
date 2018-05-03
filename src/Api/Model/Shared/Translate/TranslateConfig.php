@@ -104,6 +104,8 @@ class TranslateUserPreferences
         $this->isDocumentOrientationTargetRight = true;
         $this->isFormattingOptionsShown = false;
         $this->selectedDocumentSetId = '';
+        $this->selectedSegmentRef = '';
+        $this->selectedSegmentChecksum = 0;
     }
 
     /** @var float */
@@ -120,6 +122,12 @@ class TranslateUserPreferences
 
     /** @var string */
     public $selectedDocumentSetId;
+
+    /** @var string */
+    public $selectedSegmentRef;
+
+    /** @var int [s] */
+    public $selectedSegmentChecksum;
 }
 
 class TranslateConfigMetrics

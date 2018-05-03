@@ -4,7 +4,6 @@
 </label>
 <div id="toolbar" class="row flex-no-grow align-items-center">
     <span class="ql-formats">
-        <a class="btn btn-primary" href="#" data-ng-click="$ctrl.gotoProjects()">Save &amp; Close</a>
         <a class="btn btn-secondary" href="#" data-ng-click="$ctrl.train()"
            data-ng-if="!$ctrl.isTraining && $ctrl.hasDocumentSets() && $ctrl.tecRights.canEditProject()">Train</a>
         <uib-progress class="training" data-ng-if="$ctrl.isTraining" title="Training">
