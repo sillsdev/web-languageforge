@@ -65,7 +65,8 @@ angular.module('palaso.ui.comments')
               var rightPanelOffsetTop = rightPanel.offset().top;
               var offsetAuthor = 40;
               rightPanel.css({ paddingTop: (bubbleOffset - rightPanelOffsetTop - offsetAuthor) });
-              if ($scope.control.rightPanelVisible === false) {
+              if ($scope.control.rightPanelVisible === false ||
+                !angular.element('#lexAppCommentView').hasClass('panel-visible')) {
                 $scope.control.showCommentsPanel();
               }
             }
