@@ -1,26 +1,26 @@
 <form class="form-horizontal dc-multiparagraph">
     <div class="form-group row comment-bubble-group">
-        <label class="col-form-label col-lg-4 text-lg-right">{{config.label}}</label>
+        <label class="col-form-label col-lg-4 text-lg-right">{{$ctrl.config.label}}</label>
         <div class="controls col-lg-8">
-            <div class="input-group" data-ng-click="selectInputSystem(model.inputSystem)">
+            <div class="input-group">
                 <span class="wsid input-group-addon notranslate"
-                    title="{{inputSystems[model.inputSystem].languageName}}">{{inputSystems[model.inputSystem].abbreviation}}</span>
+                      title="{{$ctrl.inputSystems[$ctrl.model.inputSystem].languageName}}">{{$ctrl.inputSystems[$ctrl.model.inputSystem].abbreviation}}</span>
                 <!--
                 <dc-text class="dc-text"
-                    fte-disabled="!($state.is('editor.entry') && control.rights.canEditEntry())"
-                    fte-disabled-reason="control.rights.sendReceive.isInProgress() ? 'sr-in-progress' : 'editing-not-permitted'"
+                    fte-disabled="!($ctrl.isAtEditorEntry() && $ctrl.control.rights.canEditEntry())"
+                    fte-disabled-reason="$ctrl.control.rights.sendReceive.isInProgress() ? 'sr-in-progress' : 'editing-not-permitted'"
                     fte-multiline="true"
-                    fte-model="model.paragraphsHtml"
-                    fte-dir="inputSystemDirection(model.inputSystem)"></dc-text>
+                    fte-model="$ctrl.model.paragraphsHtml"
+                    fte-dir="$ctrl.inputSystemDirection($ctrl.model.inputSystem)"></dc-text>
                     -->
                 <dc-text class="dc-text"
-                    fte-disabled="true"
-                    fte-disabled-reason="'would-lose-metadata'"
-                    fte-multiline="true"
-                    fte-model="model.paragraphsHtml"
-                    fte-dir="inputSystemDirection(model.inputSystem)"></dc-text>
+                         fte-disabled="true"
+                         fte-disabled-reason="'would-lose-metadata'"
+                         fte-multiline="true"
+                         fte-model="$ctrl.model.paragraphsHtml"
+                         fte-dir="$ctrl.inputSystemDirection($ctrl.model.inputSystem)"></dc-text>
             </div>
         </div>
-        <comment-bubble control="control" field="fieldName" input-system="" model="model" parent-context-guid="contextGuid"></comment-bubble>
+        <comment-bubble control="$ctrl.control" field="$ctrl.fieldName" input-system="" model="$ctrl.model" parent-context-guid="$ctrl.contextGuid"></comment-bubble>
     </div>
 </form>

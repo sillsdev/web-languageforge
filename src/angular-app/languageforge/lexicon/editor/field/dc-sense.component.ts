@@ -1,10 +1,9 @@
 import * as angular from 'angular';
 
 import {FieldExampleModule} from './dc-example.component';
-import {FieldRepeatModule} from './dc-fieldrepeat.component';
 
 export const FieldSenseModule = angular
-  .module('palaso.ui.dc.sense', [FieldExampleModule, FieldRepeatModule])
+  .module('palaso.ui.dc.sense', [FieldExampleModule])
 
   // Palaso UI Dictionary Control: Sense
   .directive('dcSense', [() => ({

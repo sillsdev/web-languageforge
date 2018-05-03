@@ -1,9 +1,7 @@
 import * as angular from 'angular';
 
-import {FieldRepeatModule} from './dc-fieldrepeat.component';
-
 export const FieldExampleModule = angular
-  .module('palaso.ui.dc.example', [FieldRepeatModule])
+  .module('palaso.ui.dc.example', [])
 
   // Palaso UI Dictionary Control: Example Sentence
   .directive('dcExample', [() => ({
