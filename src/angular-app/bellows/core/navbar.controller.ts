@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import {ProjectService} from './api/project.service';
+import {ApplicationHeaderService, HeaderData} from './application-header.service';
 import {SessionService} from './session.service';
 
 class Rights {
@@ -12,13 +13,16 @@ export class NavbarController implements angular.IController {
   projectTypeNames: any;
   projectTypesBySite: () => string[];
   siteName: string;
+  header: HeaderData;
 
-  static $inject = ['projectService', 'sessionService'];
-  constructor(private projectService: ProjectService, private sessionService: SessionService) { }
+  static $inject = ['projectService', 'sessionService', 'applicationHeaderService'];
+  constructor(private projectService: ProjectService, private sessionService: SessionService,
+              private applicationHeaderService: ApplicationHeaderService) { }
 
   $onInit() {
     this.projectTypeNames = this.projectService.data.projectTypeNames;
     this.projectTypesBySite = this.projectService.data.projectTypesBySite;
+    this.header = this.applicationHeaderService.data;
     this.sessionService.getSession().then(session => {
       this.rights.canCreateProject =
         session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.CREATE);
