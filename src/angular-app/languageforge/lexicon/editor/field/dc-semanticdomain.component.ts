@@ -6,7 +6,7 @@ angular.module('palaso.ui.dc.semanticdomain', [])
 .directive('dcSemanticdomain', [function () {
   return {
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-semanticdomain.html',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-semanticdomain.component.html',
     scope: {
       config: '=',
       model: '=',

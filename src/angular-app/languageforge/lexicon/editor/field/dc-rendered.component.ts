@@ -6,7 +6,7 @@ angular.module('palaso.ui.dc.rendered', [])
 .directive('dcRendered', [function () {
   return {
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-rendered.html',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-rendered.component.html',
     scope: {
       config: '=',
       globalConfig: '=',

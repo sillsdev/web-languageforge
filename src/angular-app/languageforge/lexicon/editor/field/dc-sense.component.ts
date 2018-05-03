@@ -6,7 +6,7 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
 .directive('dcSense', ['lexUtils', 'modalService', function (utils, modal) {
   return {
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-sense.html',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-sense.component.html',
     scope: {
       config: '=',
       model: '=',
