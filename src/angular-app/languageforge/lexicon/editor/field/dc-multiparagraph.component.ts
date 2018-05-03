@@ -1,46 +1,58 @@
 import * as angular from 'angular';
 
-import {SessionService} from '../../../../bellows/core/session.service';
-import {LexiconProjectSettings} from '../../shared/model/lexicon-project-settings.model';
+import {LexiconUtilityService} from '../../core/lexicon-utility.service';
+import {LexMultiParagraph} from '../../shared/model/lex-multi-paragraph.model';
+import {LexConfigInputSystems, LexConfigMultiParagraph} from '../../shared/model/lexicon-config.model';
+import {FieldControl} from './field-control.model';
 
-export const FieldMultiParagraphModule = angular
-  .module('palaso.ui.dc.multiparagraph', [])
+export class FieldMultiParagraphController implements angular.IController {
+  model: LexMultiParagraph;
+  config: LexConfigMultiParagraph;
+  control: FieldControl;
+  fieldName: string;
+  parentContextGuid: string;
 
-  // Dictionary Control Multitext
-  .directive('dcMultiparagraph', [() => ({
-    restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-multiparagraph.component.html',
-    scope: {
-      config: '=',
-      model: '=',
-      control: '=',
-      selectField: '&',
-      fieldName: '='
-    },
-    controller: ['$scope', '$state', 'sessionService', ($scope, $state, sessionService: SessionService) => {
-      $scope.$state = $state;
-      $scope.contextGuid = $scope.$parent.contextGuid;
+  contextGuid: string;
+  inputSystems: LexConfigInputSystems;
 
-      sessionService.getSession().then(session => {
-        $scope.inputSystems = session.projectSettings<LexiconProjectSettings>().config.inputSystems;
+  static $inject = ['$state'];
+  constructor(private $state: angular.ui.IStateService) { }
 
-        $scope.inputSystemDirection = function inputSystemDirection(tag: string): string {
-          if (!(tag in $scope.inputSystems)) {
-            return 'ltr';
-          }
+  $onInit(): void {
+    this.inputSystems = this.control.config.inputSystems;
+    this.contextGuid = this.parentContextGuid;
+  }
 
-          return ($scope.inputSystems[tag].isRightToLeft) ? 'rtl' : 'ltr';
-        };
-      });
+  isAtEditorEntry(): boolean {
+    return LexiconUtilityService.isAtEditorEntry(this.$state);
+  }
 
-      $scope.modelContainsSpan = function modelContainsSpan() {
-        if (angular.isUndefined($scope.model)) {
-          return false;
-        }
+  inputSystemDirection(tag: string): string {
+    if (this.inputSystems == null || !(tag in this.inputSystems)) {
+      return 'ltr';
+    }
 
-        return $scope.model.paragraphsHtml.indexOf('</span>') > -1;
-      };
+    return (this.inputSystems[tag].isRightToLeft) ? 'rtl' : 'ltr';
+  }
 
-    }]
-  })])
-  .name;
+  modelContainsSpan(tag: string): boolean {
+    if (this.model == null || !(tag in this.model)) {
+      return false;
+    }
+
+    return this.model.paragraphsHtml.includes('</span>');
+  }
+
+}
+
+export const FieldMultiParagraphComponent: angular.IComponentOptions = {
+  bindings: {
+    model: '=',
+    config: '<',
+    control: '<',
+    fieldName: '<',
+    parentContextGuid: '<'
+  },
+  controller: FieldMultiParagraphController,
+  templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-multiparagraph.component.html'
+};

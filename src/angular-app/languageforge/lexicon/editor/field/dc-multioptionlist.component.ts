@@ -1,7 +1,7 @@
 import * as angular from 'angular';
 
 import {Rights} from '../../core/lexicon-rights.service';
-import {LexMultiValue} from '../../shared/model/lex-mulit-value.model';
+import {LexMultiValue} from '../../shared/model/lex-multi-value.model';
 import {LexConfigMultiOptionList} from '../../shared/model/lexicon-config.model';
 import {LexOptionListItem} from '../../shared/model/option-list.model';
 import {FieldOptionListController} from './dc-optionlist.component';
@@ -18,9 +18,7 @@ export class FieldMultiOptionListController extends FieldOptionListController im
 
   $onChanges(changes: any): void {
     const controlChange = changes.control as angular.IChangesObject<FieldControl>;
-    if (controlChange != null && controlChange.currentValue &&
-      controlChange.currentValue.rights != null
-    ) {
+    if (controlChange != null && controlChange.currentValue && controlChange.currentValue.rights != null) {
       this.rights = this.control.rights;
     }
   }
@@ -33,7 +31,7 @@ export class FieldMultiOptionListController extends FieldOptionListController im
     return false;
   }
 
-  orderItemsByListOrder = (key: string): number => {
+  orderItemsByListOrder = (key: string): string | number => {
     if (this.items == null) {
       return -1;
     }
@@ -42,6 +40,10 @@ export class FieldMultiOptionListController extends FieldOptionListController im
   }
 
   filterSelectedItems = (item: LexOptionListItem): boolean => {
+    if (this.model == null) {
+      return false;
+    }
+
     return !this.model.values.includes(item.key);
   }
 

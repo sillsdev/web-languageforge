@@ -1,33 +1,45 @@
 import * as angular from 'angular';
 
-import {FieldMultiParagraphModule} from './dc-multiparagraph.component';
-import {FieldPictureModule} from './dc-picture.component';
-import {FieldSemanticDomainModule} from './dc-semanticdomain.component';
+import {LexiconConfigService} from '../../core/lexicon-config.service';
+import {LexMultiValue} from '../../shared/model/lex-multi-value.model';
+import {LexConfigField, LexConfigOptionLists} from '../../shared/model/lexicon-config.model';
+import {LexOptionListItem} from '../../shared/model/option-list.model';
+import {FieldControl} from './field-control.model';
 
-export const FieldRepeatModule = angular
-  .module('palaso.ui.dc.fieldrepeat', [FieldSemanticDomainModule, FieldPictureModule, FieldMultiParagraphModule])
+export class FieldRepeatController implements angular.IController {
+  model: LexOptionListItem | LexMultiValue;
+  config: LexConfigField;
+  control: FieldControl;
+  parentContextGuid: string;
 
-  // Palaso UI Dictionary Control: Sense
-  .directive('dcFieldrepeat', [() => ({
-    restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-fieldrepeat.component.html',
-    scope: {
-      config: '=',
-      model: '=',
-      control: '='
-    },
-    controller: ['$scope', '$state', 'lexConfigService',
-      ($scope, $state, lexConfigService) => {
-        $scope.$state = $state;
-        $scope.fieldContainsData = lexConfigService.fieldContainsData;
-        $scope.contextGuid = $scope.$parent.contextGuid;
+  contextGuid: string;
+  optionlists: LexConfigOptionLists;
 
-        const unregister = $scope.$watch($scope.control.config, () => {
-          if (angular.isDefined($scope.control.config)) {
-            $scope.optionlists = $scope.control.config.optionlists;
-            unregister();
-          }
-        });
-      }]
-  })])
-  .name;
+  fieldContainsData = this.lexConfigService.fieldContainsData;
+
+  static $inject = ['lexConfigService'];
+  constructor(protected lexConfigService: LexiconConfigService) { }
+
+  $onInit(): void {
+    this.contextGuid = this.parentContextGuid;
+  }
+
+  $onChanges(changes: any): void {
+    const controlChange = changes.control as angular.IChangesObject<FieldControl>;
+    if (controlChange != null && controlChange.currentValue && controlChange.currentValue.config != null) {
+      this.optionlists = this.control.config.optionlists;
+    }
+  }
+
+}
+
+export const FieldRepeatComponent: angular.IComponentOptions = {
+  bindings: {
+    model: '=',
+    config: '<',
+    control: '<',
+    parentContextGuid: '<'
+  },
+  controller: FieldRepeatController,
+  templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-fieldrepeat.component.html'
+};

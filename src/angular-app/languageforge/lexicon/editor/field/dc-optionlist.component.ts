@@ -1,7 +1,7 @@
 import * as angular from 'angular';
 
 import {LexiconUtilityService} from '../../core/lexicon-utility.service';
-import {LexMultiValue} from '../../shared/model/lex-mulit-value.model';
+import {LexMultiValue} from '../../shared/model/lex-multi-value.model';
 import {LexConfigOptionList} from '../../shared/model/lexicon-config.model';
 import {LexOptionListItem} from '../../shared/model/option-list.model';
 import {FieldControl} from './field-control.model';
@@ -17,7 +17,7 @@ export class FieldOptionListController implements angular.IController {
   contextGuid: string;
 
   static $inject = ['$state'];
-  constructor(private $state: angular.ui.IStateService) { }
+  constructor(protected $state: angular.ui.IStateService) { }
 
   $onInit(): void {
     this.contextGuid = this.parentContextGuid;
