@@ -2,6 +2,7 @@ import * as angular from 'angular';
 
 import {ActivityService, FilterParams} from '../../core/api/activity.service';
 import {JsonRpcResult} from '../../core/api/json-rpc.service';
+import {ApplicationHeaderService} from '../../core/application-header.service';
 import {BreadcrumbService} from '../../core/breadcrumbs/breadcrumb.service';
 import {LinkService} from '../../core/link.service';
 import {SessionService} from '../../core/session.service';
@@ -83,6 +84,18 @@ class FilterUsers {
 }
 
 export class ActivityAppController implements angular.IController {
+  static $inject = ['breadcrumbService',
+    'applicationHeaderService'];
+  constructor(private breadcrumbService: BreadcrumbService,
+              private applicationHeaderService: ApplicationHeaderService) { }
+  $onInit(): void {
+    this.breadcrumbService.set('top', [
+      {label: 'Activity'}
+    ]);
+    this.applicationHeaderService.setPageName('Activity');
+  }
+}
+export class ActivityAppContainerController implements angular.IController {
   getAvatarUrl = UtilityService.getAvatarUrl;
   unread: string[] = [];
   filteredActivities: Activity[] = [];
@@ -100,11 +113,11 @@ export class ActivityAppController implements angular.IController {
   loadingFeed: boolean;
 
   static $inject = ['$sce', 'activityService',
-    'breadcrumbService', 'linkService',
+    'linkService',
     'sessionService', '$scope', '$window'];
 
   constructor(private $sce: angular.ISCEService, private activityService: ActivityService,
-              private breadcrumbService: BreadcrumbService, private linkService: LinkService,
+              private linkService: LinkService,
               private sessionService: SessionService, private $scope: any, private $window: angular.IWindowService) {
     this.activityGroups = [];
     this.activityTypes = [];
@@ -227,10 +240,6 @@ export class ActivityAppController implements angular.IController {
   }
 
   $onInit(): void {
-    this.breadcrumbService.set('top', [
-      {label: 'Activity'}
-    ]);
-
     // Example of showing all activities between two dates:
     // var now = new Date();
     // var lastWeek = new Date(now.valueOf() - 1000 * 60 * 60 * 24 * 7);    //  7 days in milliseconds
@@ -481,6 +490,11 @@ export class ActivityAppController implements angular.IController {
 
 export const ActivityAppComponent: angular.IComponentOptions = {
   controller: ActivityAppController,
+  template: '<activity-app-container></activity-app-container>',
+};
+
+export const ActivityAppContainerComponent: angular.IComponentOptions = {
+  controller: ActivityAppContainerController,
   templateUrl: '/angular-app/bellows/apps/activity/activity-app.component.html',
   bindings: {
     entryId: '@'

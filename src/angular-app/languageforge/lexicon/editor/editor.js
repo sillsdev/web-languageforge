@@ -35,9 +35,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
             $state, $window, $interval, $filter, linkService, utils, rightsService,
             notice, $rootScope, $location, lexConfig, commentService,
             editorService, lexProjectService, sendReceive, modal, $timeout,
-            activityService) {
-            editorService, lexProjectService, sendReceive, modal, $timeout,
-            applicationHeaderService) {
+            activityService, applicationHeaderService) {
 
     var pristineEntry = {};
     var warnOfUnsavedEditsId;
@@ -265,8 +263,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       });
 
       function prepEntryForUpdate(entry) {
-        var entryForUpdate = recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha',
-          'authorInfo', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+        var entryForUpdate = recursiveRemoveProperties(angular.copy(entry), ['guid',
+          'mercurialSha', 'authorInfo', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
         entryForUpdate = prepCustomFieldsForUpdate(entryForUpdate);
         return entryForUpdate;
       }
@@ -295,7 +293,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         var meaning = '';
         if (entry.senses && entry.senses[0]) {
           meaning =
-            utils.constructor.getMeaning($scope.config, $scope.config.entry.fields.senses, entry.senses[0]);
+            utils.constructor.getMeaning(
+              $scope.config,
+              $scope.config.entry.fields.senses,
+              entry.senses[0]
+            );
         }
 
         if (!meaning) {
