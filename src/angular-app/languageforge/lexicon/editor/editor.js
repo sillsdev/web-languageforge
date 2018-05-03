@@ -30,11 +30,14 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
     'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService', '$timeout',
     'activityService',
+    'applicationHeaderService',
   function ($scope, userService, sessionService, lexService, $q,
             $state, $window, $interval, $filter, linkService, utils, rightsService,
             notice, $rootScope, $location, lexConfig, commentService,
             editorService, lexProjectService, sendReceive, modal, $timeout,
             activityService) {
+            editorService, lexProjectService, sendReceive, modal, $timeout,
+            applicationHeaderService) {
 
     var pristineEntry = {};
     var warnOfUnsavedEditsId;
@@ -50,6 +53,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
     $scope.visibleEntries = editorService.visibleEntries;
     $scope.filteredEntries = editorService.filteredEntries;
     $scope.entryListModifiers = editorService.entryListModifiers;
+    $scope.applicationHeaderService = applicationHeaderService;
     $scope.commentContext = {
       contextGuid: ''
     };
@@ -65,6 +69,10 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         $scope.typeahead.searchEntries($scope.typeahead.searchItemSelected);
       });
     };
+
+    sessionService.getSession(true).then(function (session) {
+      $scope.applicationHeaderService.setPageName(session.project().projectName);
+    });
 
     $scope.show = {
       more: editorService.showMoreEntries,
@@ -1157,16 +1165,19 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
   .controller('EditorListCtrl', ['$scope', 'lexProjectService',
     function ($scope, lexProjectService) {
       lexProjectService.setBreadcrumbs('editor/list', 'List');
+      lexProjectService.setupSettings();
     }
   ])
   .controller('EditorEntryCtrl', ['$scope', 'lexProjectService',
     function ($scope, lexProjectService) {
       lexProjectService.setBreadcrumbs('editor/entry', 'Edit');
+      lexProjectService.setupSettings();
     }
   ])
   .controller('EditorCommentsCtrl', ['$scope', 'lexProjectService',
     function ($scope, lexProjectService) {
       lexProjectService.setBreadcrumbs('editor/entry', 'Comments');
+      lexProjectService.setupSettings();
     }
   ])
 

@@ -25,6 +25,7 @@ export class LexiconSyncController implements angular.IController {
 
   $onInit() {
     this.lexProjectService.setBreadcrumbs('sync', 'Synchronize');
+    this.lexProjectService.setupSettings();
     this.$q.all([this.rightsService.getRights(), this.sessionService.getSession()]).then(([rights, session]) => {
       this.rights = rights;
       this.session = session;
