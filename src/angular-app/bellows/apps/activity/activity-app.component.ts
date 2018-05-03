@@ -152,7 +152,7 @@ export class ActivityAppController implements angular.IController {
     this.activityTypes.push(new ActivityType(
       'add_lex_comment',
       'project',
-      'New comment (lexicon)',
+      'New comment',
       'comments'));
     this.activityTypes.push(new ActivityType(
       'add_entry',
@@ -177,17 +177,17 @@ export class ActivityAppController implements angular.IController {
     this.activityTypes.push(new ActivityType(
       'update_lex_comment_status',
       'project',
-      'Comment status changed (lexicon)',
+      'Comment status changed',
       'pencil-square'));
     this.activityTypes.push(new ActivityType(
       'add_comment',
       'project',
-      'New Comment (SF)',
+      'New Comment',
       'reply'));
     this.activityTypes.push(new ActivityType(
       'update_comment',
       'project',
-      'Update Comment (SF)',
+      'Update Comment',
       'comments-o'));
     this.activityTypes.push(new ActivityType(
       'add_answer',
@@ -204,6 +204,26 @@ export class ActivityAppController implements angular.IController {
       'project',
       '+1\'d',
       'thumbs-up'));
+    // TODO: Move all definitions into the API so we get everything we need returned
+    this.activityService.validActivityTypes().then(result => {
+      if (result.ok) {
+        // Loop through valid activity types and remove what isn't needed
+        for (const index in this.activityTypes) {
+          if (this.activityTypes.hasOwnProperty(index)) {
+            let activityFound = false;
+            for (const activityType of result.data) {
+              if (activityType === this.activityTypes[index].type) {
+                activityFound = true;
+                break;
+              }
+            }
+            if (!activityFound) {
+              this.activityTypes.splice(parseInt(index, 10), 1);
+            }
+          }
+        }
+      }
+    });
   }
 
   $onInit(): void {
