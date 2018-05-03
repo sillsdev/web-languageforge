@@ -7,7 +7,7 @@ angular.module('palaso.ui.dc.picture', ['editorFieldModule', 'palaso.ui.notice',
 .directive('dcPicture', [function () {
   return {
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-picture.html',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-picture.component.html',
     scope: {
       config: '=',
       model: '=',

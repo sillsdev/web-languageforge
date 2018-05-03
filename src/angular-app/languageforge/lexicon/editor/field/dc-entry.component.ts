@@ -4,7 +4,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
   .directive('dcEntry', ['lexUtils', 'modalService', function (utils, modal) {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-entry.html',
+      templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-entry.component.html',
       scope: {
         config: '=',
         model: '=',
