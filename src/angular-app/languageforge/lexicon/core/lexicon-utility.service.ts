@@ -1,21 +1,24 @@
-import { UtilityService } from '../../../bellows/core/utility.service';
+import * as angular from 'angular';
+
+import {UtilityService} from '../../../bellows/core/utility.service';
+import {LexConfigFieldList, LexConfigMultiText, LexiconConfig} from '../shared/model/lexicon-config.model';
 
 export class LexiconUtilityService extends UtilityService {
-  static getLexeme(config: any, entry: any): string {
-    return LexiconUtilityService.getFirstField(config, entry, 'lexeme');
+  static getLexeme(globalConfig: LexiconConfig, config: LexConfigFieldList, entry: any): string {
+    return LexiconUtilityService.getFirstField(globalConfig, config, entry, 'lexeme');
   }
 
-  static getWords(config: any, entry: any): string {
-    return LexiconUtilityService.getFields(config, entry, 'lexeme');
+  static getWords(globalConfig: LexiconConfig, config: LexConfigFieldList, entry: any): string {
+    return LexiconUtilityService.getFields(globalConfig, config, entry, 'lexeme');
   }
 
-  static getCitationForms(config: any, entry: any): string {
+  static getCitationForms(globalConfig: LexiconConfig, config: LexConfigFieldList, entry: any): string {
     let inputSystems: string[] = [];
     if (config != null && config.fields.citationForm != null) {
-      inputSystems = [...config.fields.citationForm.inputSystems];
+      inputSystems = [...(config.fields.citationForm as LexConfigMultiText).inputSystems];
     }
     if (config != null && config.fields.lexeme != null) {
-      inputSystems = [...config.fields.lexeme.inputSystems];
+      inputSystems = [...(config.fields.lexeme as LexConfigMultiText).inputSystems];
     }
     let citation = '';
     new Set(inputSystems).forEach((inputSystemTag: string) => {
@@ -43,27 +46,27 @@ export class LexiconUtilityService extends UtilityService {
     return citation;
   }
 
-  static getMeaning(config: any, sense: any): string {
-    let meaning = LexiconUtilityService.getDefinition(config, sense);
+  static getMeaning(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: any): string {
+    let meaning = LexiconUtilityService.getDefinition(globalConfig, config, sense);
     if (!meaning) {
-      meaning = LexiconUtilityService.getGloss(config, sense);
+      meaning = LexiconUtilityService.getGloss(globalConfig, config, sense);
     }
 
     return meaning;
   }
 
-  static getMeanings(config: any, sense: any): string {
-    let meaning = LexiconUtilityService.getFields(config, sense, 'definition');
+  static getMeanings(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: any): string {
+    let meaning = LexiconUtilityService.getFields(globalConfig, config, sense, 'definition');
     if (!meaning) {
-      meaning = LexiconUtilityService.getFields(config, sense, 'gloss');
+      meaning = LexiconUtilityService.getFields(globalConfig, config, sense, 'gloss');
     }
 
     return meaning;
   }
 
-  static getExample(config: any, example: any, field: string): string {
+  static getExample(globalConfig: LexiconConfig, config: LexConfigFieldList, example: any, field: string): string {
     if (field === 'sentence' || field === 'translation') {
-      return LexiconUtilityService.getFields(config, example, field);
+      return LexiconUtilityService.getFields(globalConfig, config, example, field);
     }
   }
 
@@ -101,19 +104,22 @@ export class LexiconUtilityService extends UtilityService {
     return '';
   }
 
-  private static getFields(config: any, node: any, fieldName: string, delimiter: string = ' '): string {
+  static isAtEditorEntry($state: angular.ui.IStateService): boolean {
+    return $state.is('editor.entry');
+  }
+
+  private static getFields(globalConfig: LexiconConfig, config: LexConfigFieldList, node: any, fieldName: string,
+                           delimiter: string = ' '): string {
     let result = '';
-    if (node[fieldName] && config && config.fields && config.fields[fieldName] && config.fields[fieldName].inputSystems
+    const multiTextConfigField = config.fields[fieldName] as LexConfigMultiText;
+    if (node[fieldName] && config && config.fields && multiTextConfigField && multiTextConfigField.inputSystems
     ) {
-      for (const languageTag of config.fields[fieldName].inputSystems ) {
-        const field = node[fieldName][languageTag];
-        if (!LexiconUtilityService.isAudio(languageTag) && field != null && field.value != null && field.value !== ''
-        ) {
-          if (result) {
-            result += delimiter + field.value;
-          } else {
-            result = field.value;
-          }
+      for (const languageTag of multiTextConfigField.inputSystems ) {
+        const fieldResult = LexiconUtilityService.getField(globalConfig, node, fieldName, languageTag);
+        if (result) {
+          result += delimiter + fieldResult;
+        } else {
+          result = fieldResult;
         }
       }
     }
@@ -121,23 +127,41 @@ export class LexiconUtilityService extends UtilityService {
     return result;
   }
 
-  private static getDefinition(config: any, sense: any): string {
-    return LexiconUtilityService.getFirstField(config, sense, 'definition');
-  }
-
-  private static getGloss(config: any, sense: any): string {
-    return LexiconUtilityService.getFirstField(config, sense, 'gloss');
-  }
-
-  private static getFirstField(config: any, node: any, fieldName: string): string {
+  private static getField(globalConfig: LexiconConfig, node: any, fieldName: string, languageTag: string): string {
     let result = '';
     let field;
-    if (node[fieldName] && config && config.fields && config.fields[fieldName] &&
-      config.fields[fieldName].inputSystems) {
-      for (const languageTag of config.fields[fieldName].inputSystems) {
-        field = node[fieldName][languageTag];
-        if (field != null && field.value != null && field.value !== '') {
+    if (node[fieldName]) {
+      const inputSystem = globalConfig.inputSystems[languageTag];
+      field = node[fieldName][languageTag];
+      if (!LexiconUtilityService.isAudio(languageTag) && field != null && field.value != null && field.value !== '') {
+        if (inputSystem.cssFontFamily && inputSystem.cssFontFamily !== '') {
+          result = '<span style="font-family: ' + inputSystem.cssFontFamily + '">' + field.value + '</span>';
+        } else {
           result = field.value;
+        }
+      }
+    }
+    return result;
+  }
+
+  private static getDefinition(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: any): string {
+    return LexiconUtilityService.getFirstField(globalConfig, config, sense, 'definition');
+  }
+
+  private static getGloss(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: any): string {
+    return LexiconUtilityService.getFirstField(globalConfig, config, sense, 'gloss');
+  }
+
+  private static getFirstField(globalConfig: LexiconConfig, config: LexConfigFieldList, node: any,
+                               fieldName: string): string {
+    let result = '';
+    const multiTextConfigField = config.fields[fieldName] as LexConfigMultiText;
+    if (node[fieldName] && config && config.fields && multiTextConfigField &&
+      multiTextConfigField.inputSystems) {
+      const inputSystems = multiTextConfigField.inputSystems;
+      for (const languageTag of inputSystems) {
+        result = LexiconUtilityService.getField(globalConfig, node, fieldName, languageTag);
+        if (result !== '') {
           break;
         }
       }

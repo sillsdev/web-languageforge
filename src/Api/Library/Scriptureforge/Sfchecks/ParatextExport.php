@@ -4,6 +4,7 @@ namespace Api\Library\Scriptureforge\Sfchecks;
 
 use Api\Model\Scriptureforge\Sfchecks\Dto\UsxHelper;
 use Api\Model\Scriptureforge\Sfchecks\QuestionAnswersListModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
@@ -11,6 +12,7 @@ use Api\Model\Shared\UserModel;
 class ParatextExport
 {
 
+    // Review: cjh 2018-04 This static method should be inside of a "Commands" class and the rest of the methods be refactored as a proper class (not static everywhere)
     public static function exportCommentsForText($projectId, $textId, $params)
     {
         $project = new ProjectModel($projectId);
@@ -44,10 +46,17 @@ class ParatextExport
                 foreach ($question['answers'] as $answerId => $answer) {
                     if (! $params['exportFlagged'] || (array_key_exists('isToBeExported', $answer) && $answer['isToBeExported'])) { // if the answer is tagged with an export tag
                         $dl['answerCount']++;
-                        $dl['xml'] .= self::makeCommentXml($commentFormat, $answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
+
+                        $questionModel = new QuestionModel($project, $question['id']);
+                        $questionTitle = "(Question) " . $questionModel->getTitleForDisplay() . " ";
+                        $answerUser = new UserModel((string) $answer['userRef']);
+                        $answerContent = self::sanitizeComment("(Answered by {$answerUser->username}) {$answer['content']}");
+                        $dl['xml'] .= self::makeCommentXml($commentFormat, $answer['tags'], $answer['score'], $textInfo, $answerId, $answer, $questionTitle . $answerContent);
                         if ($params['exportComments']) {
                             foreach ($answer['comments'] as $commentId => $comment) {
-                                $dl['xml'] .= self::makeCommentXml($commentFormat, array(), 0, $textInfo, $answerId, $comment); // answerId, not commentId, so that Paratext will thread them together
+                                $commentUser = new UserModel((string) $comment['userRef']);
+                                $commentContent = self::sanitizeComment("({$commentUser->username} commented in reply to {$answerUser->username}) {$comment['content']}");
+                                $dl['xml'] .= self::makeCommentXml($commentFormat, array(), 0, $textInfo, $answerId, $comment, $commentContent); // answerId, not commentId, so that Paratext will thread them together
                                 $dl['commentCount']++;
                             }
                         }
@@ -83,18 +92,19 @@ class ParatextExport
 
     /**
      *
+     * @param string $commentFormat - either PT7 or PT8
      * @param array $tags
      * @param int $votes
      * @param array $textInfo
      * @param string $threadId
      * @param array $comment
+     * @param string $content
+     * @return string
      */
-    private static function makeCommentXml($commentFormat, $tags, $votes, $textInfo, $threadId, $comment)
+    private static function makeCommentXml($commentFormat, $tags, $votes, $textInfo, $threadId, $comment, $content)
     {
         $user = new UserModel((string) $comment['userRef']);
-        $username = $user->username;
 
-        $content = self::sanitizeComment($comment['content']) . " (by " . $user->username . ")";
         if (count($tags) > 0) {
             $content .= " (Tags: ";
             foreach ($tags as $tag) {
@@ -107,7 +117,7 @@ class ParatextExport
             $content .= " ($votes Votes)";
         }
 
-        return self::formatComment($commentFormat, $threadId, $username, $textInfo, "", $comment['dateEdited']->toDateTime(), $content);
+        return self::formatComment($commentFormat, $threadId, $user->username, $textInfo, "", $comment['dateEdited']->toDateTime(), $content);
     }
 
     private static function makeDummyComment($commentFormat, \DateTime $dateTime, string $dummyCommenterName)

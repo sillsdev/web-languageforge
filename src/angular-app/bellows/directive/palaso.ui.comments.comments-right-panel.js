@@ -39,10 +39,7 @@ angular.module('palaso.ui.comments')
               id: '',
               content: '',
               entryRef: $scope.entry.id,
-              regarding: {
-                meaning: $scope.control.getMeaningForDisplay($scope.entry),
-                word: $scope.control.getWordForDisplay($scope.entry)
-              },
+              regarding: {},
               contextGuid: ''
             };
           }

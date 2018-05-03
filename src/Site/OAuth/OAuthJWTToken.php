@@ -56,7 +56,8 @@ class OAuthJWTToken extends GoogleOAuth
             return false;
         }
 
-        if ($access["aud"] != ANDROID_CLIENT_ID)
+        // Currently only the Gather Words Android app should be using JWT tokens. 2018-04 RM
+        if ($access["aud"] != GATHERWORDS_CLIENT_ID)
         {
             return false;
         }

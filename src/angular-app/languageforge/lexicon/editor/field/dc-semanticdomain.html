@@ -14,11 +14,11 @@
                             <i class="fa fa-ellipsis-v"></i>
                         </button>
                         <div class="dropdown-comment-count">
-                            <comment-bubble control="control" field="fieldName" multi-option-value="value" model="model"></comment-bubble>
+                            <comment-bubble control="control" field="fieldName" multi-option-value="value" model="model" parent-context-guid="contextGuid"></comment-bubble>
                         </div>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
                             <a href class="dropdown-item" data-ng-click="deleteValue(value)"><i class="fa fa-trash"></i> Delete</a>
-                            <comment-bubble class="dropdown-item" control="control" field="fieldName" multi-option-value="value" model="model"></comment-bubble>
+                            <comment-bubble class="dropdown-item" control="control" field="fieldName" multi-option-value="value" model="model" parent-context-guid="contextGuid"></comment-bubble>
                         </div>
                     </div>
                 </div>
