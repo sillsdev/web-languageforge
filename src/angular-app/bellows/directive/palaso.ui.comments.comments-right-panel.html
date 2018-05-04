@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        <div ng-show="rights.canComment() && newComment.regarding.field && showNewComment" class="newCommentForm" ng-class="{'show': showNewComment, 'regard': newComment.regarding.field}">
+        <div ng-show="rights.canComment() && newComment.regarding.field && showNewComment && newComment.regarding.field != 'entry'" class="newCommentForm" ng-class="{'show': showNewComment, 'regard': newComment.regarding.field}">
             <div class="card card-default">
                 <div class="card-title" ng-show="currentEntryCommentsFiltered.length === 0">
                     <span class="sense-label">{{getNewCommentSenseLabel(newComment.regarding.field)}}</span> {{newComment.regarding.fieldNameForDisplay}}{{(newComment.regarding.inputSystemAbbreviation) ? ' - ' + newComment.regarding.inputSystemAbbreviation : ''}}
