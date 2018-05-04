@@ -25,14 +25,14 @@ class OAuthJWTToken extends GoogleOAuth
 
         if (empty($oauthToken))
         {
-            return false;
+            return "failed 1";
         }
 
         $opts = [
             "method"  => "POST",
             "header"  => "Content-type: application/x-www-form-urlencoded",
             "content" => http_build_query([
-                "id_token" => $oauthToken,
+                "access_token" => $oauthToken,
             ]),
         ];
 
@@ -46,20 +46,20 @@ class OAuthJWTToken extends GoogleOAuth
 
         if ($accessReply === false)
         {
-            return false;
+            return "failed 2";
         }
 
         $access = json_decode($accessReply, true);
 
         if (!isset($access["aud"], $access["sub"], $access["email"]))
         {
-            return false;
+            return "failed 3";
         }
 
         // Currently only the Gather Words Android app should be using JWT tokens. 2018-04 RM
         if ($access["aud"] != GATHERWORDS_CLIENT_ID)
         {
-            return false;
+            return "failed 4";
         }
 
         // login
@@ -67,7 +67,7 @@ class OAuthJWTToken extends GoogleOAuth
         $userModel->readByPropertyArrayContains('googleOAuthIds', $access["sub"]);
         if (! OAuthBase::setSilexAuthToken($userModel, $app))
         {
-            return false;  // Failed to set Silex auth token (should never happen, but check just in case)
+            return "failed 5";  // Failed to set Silex auth token (should never happen, but check just in case)
         }
 
         // return valid JWT token
