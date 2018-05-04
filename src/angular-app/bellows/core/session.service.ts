@@ -174,8 +174,8 @@ export class SessionService {
         version: data.version,
         userId: data.userId,
         userName: data.username,
-        projectCode: data.project.projectCode,
-        projectName: data.project.projectName
+        projectCode: data.project != null ? data.project.projectCode : null,
+        projectName: data.project != null ? data.project.projectName : null
       });
       if (callback) callback(this.session);
       return this.session;
