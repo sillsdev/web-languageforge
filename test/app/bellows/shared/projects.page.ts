@@ -1,4 +1,5 @@
 import {browser, by, element, ExpectedConditions, protractor} from 'protractor';
+import {ElementArrayFinder, ElementFinder} from 'protractor/built/element';
 import {Utils} from './utils';
 
 export class ProjectsPage {
@@ -20,11 +21,14 @@ export class ProjectsPage {
       .column('$ctrl.projectTypeNames[project.appName]'));
   showFormButton = element(by.id('sfchecks-invite-friend-btn'));
    async findProject(projectName: string) {
+  try {
     let foundRow: any;
     const result = protractor.promise.defer();
     const searchName = new RegExp(projectName);
-    this.projectsList.map((row: any) => {
+    await this.projectsList.map((row: any) => {
+    browser.sleep(2000);
     row.getText().then(async (text: string) => {
+    browser.sleep(2000);
     if (await searchName.test(text)) {
           foundRow = row;
         }
@@ -38,6 +42,7 @@ export class ProjectsPage {
       }
     });
     return await result.promise;
+  } catch (err) {  }
   }
   async clickOnProjectName(projectName: string) {
     const projectLink = await element(by.xpath('//span[text()="' + projectName + '"]/../a'));
@@ -46,6 +51,7 @@ export class ProjectsPage {
       }
     );
   }
+
   clickOnProject(projectName: string) {
       this.findProject(projectName).then(async (projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
@@ -59,10 +65,11 @@ export class ProjectsPage {
   settingsBtn = element(by.id('settingsBtn'));
   userManagementLink = (browser.baseUrl.includes('languageforge')) ?
     element(by.id('userManagementLink')) : element(by.id('dropdown-project-settings'));
-
     async addUserToProject(projectName: any, usersName: string, roleText: string) {
-     this.findProject(projectName).then(async (projectRow: any) => {
-      const projectLink = projectRow.element(by.css('a'));
+      try {
+      // this.findProject(projectName).then(async (projectRow: any) => {
+      // const projectLink = projectRow.element(by.css('a'));
+      const projectLink = element(by.xpath('//span[text()="' + projectName + '"]/../a'));
       await projectLink.click();
       await browser.wait(ExpectedConditions.visibilityOf(this.settingsBtn), Utils.conditionTimeout);
       await this.settingsBtn.click();
@@ -72,38 +79,39 @@ export class ProjectsPage {
       const addMembersBtn = element(by.id('addMembersButton'));
       await browser.wait(ExpectedConditions.visibilityOf(addMembersBtn), Utils.conditionTimeout);
       await addMembersBtn.click();
-      const newMembersDiv = element(by.id('newMembersDiv'));
-      const userNameInput = newMembersDiv.element(by.id('typeaheadInput'));
+      const newMembersDiv = await element(by.id('newMembersDiv'));
+      const userNameInput = await newMembersDiv.element(by.id('typeaheadInput'));
       await browser.wait(ExpectedConditions.visibilityOf(userNameInput), Utils.conditionTimeout);
       await userNameInput.sendKeys(usersName);
       const typeaheadDiv = element(by.id('typeaheadDiv'));
       const typeaheadItems = typeaheadDiv.all(by.css('ul li'));
-      await this.utils.findRowByText(typeaheadItems, usersName).then(async (item: any) => {
+      browser.sleep(2000);
+      this.utils.findRowByText(typeaheadItems, usersName).then(async (item: any) => {
       await item.click();
       });
-
       // This should be unique no matter what
       await newMembersDiv.element(by.id('addUserButton')).click();
 
       // Now set the user to member or manager, as needed
       const projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
       let foundUserRow: any;
-      await projectMemberRows.map(async (row: any) => {
-        const nameColumn = await row.element(by.binding('user.username'));
-        await nameColumn.getText().then((text: string) => {
+      projectMemberRows.map((row: any) => {
+        const nameColumn = row.element(by.binding('user.username'));
+        nameColumn.getText().then((text: string) => {
           if (text === usersName) {
             foundUserRow = row;
           }
         });
-      }).then(async () => {
+      }).then(() => {
         if (foundUserRow) {
-          const select = await foundUserRow.element(by.css('select:not([disabled])'));
-          await Utils.clickDropdownByValue(select, roleText);
+          const select = foundUserRow.element(by.css('select:not([disabled])'));
+          Utils.clickDropdownByValue(select, roleText);
         }
       });
 
       await this.get(); // After all is finished, reload projects page
-    });
+    // });
+    } catch (err) {}
   }
 
   //noinspection JSUnusedGlobalSymbols
@@ -116,7 +124,8 @@ export class ProjectsPage {
   }
 
   async removeUserFromProject(projectName: string, userName: string) {
-    await this.findProject(projectName).then(async (projectRow: any) => {
+    this.findProject(projectName).then(async (projectRow: any) => {
+      try {
       const projectLink = projectRow.element(by.css('a'));
       await projectLink.click();
 
@@ -142,6 +151,7 @@ export class ProjectsPage {
       await removeMembersBtn.click();
 
       await this.get(); // After all is finished, reload projects page
-    });
+    } catch (err) {}
+});
   }
 }

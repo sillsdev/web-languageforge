@@ -27,19 +27,20 @@ export class Utils {
     await Utils.findDropdownByValue(dropdownElement, value).click();
   }
 
-  findRowByFunc(elementArray: ElementArrayFinder, searchFunc: (rowText: string) => boolean): Promise<ElementFinder> {
+  async findRowByFunc(elementArray: ElementArrayFinder, searchFunc: (rowText: string) => boolean):
+   Promise<ElementFinder> {
     // Repeater can be either a string or an already-created by.repeater() object
     let foundRow: ElementFinder;
-    return new Promise<ElementFinder>((resolve, reject) => {
-      elementArray.map((row: ElementFinder) => {
-        row.getText().then((rowText: string) => {
-          if (searchFunc(rowText)) {
+    return new Promise<ElementFinder>(async (resolve, reject) => {
+      await elementArray.map(async (row: ElementFinder) => {
+        await row.getText().then(async (rowText: string) => {
+          if (await searchFunc(rowText)) {
             foundRow = row;
           }
         });
-      }).then(() => {
-        if (foundRow) {
-          resolve(foundRow);
+      }).then(async () => {
+        if (await foundRow) {
+          resolve(await foundRow);
         } else {
           reject('Row not found');
         }
