@@ -3,9 +3,11 @@
 use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Api\Library\Shared\Website;
+use Api\Library\Shared\Palaso\Exception\BugsnagExceptionHandler;
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once 'config.php';
+require_once 'version.php';
 
 // The name of THIS file
 define('SELF', basename(__FILE__));
@@ -22,7 +24,7 @@ $app = new Silex\Application();
  *---------------------------------------------------------------
  *
  * Different environments will require different levels of error reporting and debugging.
- * By default development will show errors but testing and live will hide them.
+ * By default development will show errors but testing and live will hide them and instead report errors to bugsnag.com.
  * By default development will have debugging on but testing and live will turn it off.
  */
 
@@ -35,6 +37,7 @@ if (defined('ENVIRONMENT')) {
 
         case 'testing':
         case 'production':
+            BugsnagExceptionHandler::setup($app, BUGSNAG_API_KEY);
             error_reporting(0);
             $app['debug'] = false;
             break;
