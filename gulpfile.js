@@ -40,6 +40,9 @@ var data = require('gulp-data');
 var ejs = require('gulp-ejs');
 var dest = require('gulp-dest');
 
+// Define release stages that will send errors to bugsnag
+var notifyReleaseStages = "['live', 'qa']";
+
 // If using a JSON file for the Google API secrets, uncomment the following line and search for
 // "Google API" to find other lines to uncomment further below.
 
@@ -140,6 +143,8 @@ function webpack(applicationName, callback, isProduction, isWatch) {
   var watch = isWatch ? ' --watch' : '';
   var envApplication = applicationName ? ' --env.applicationName=' + applicationName : '';
   var prod = isProduction ? ' -p' : '';
+  if (!process.env.NOTIFY_RELEASE_STAGES)
+    process.env.NOTIFY_RELEASE_STAGES = notifyReleaseStages;
   execute('$(npm bin)/webpack' + watch + envApplication + prod + ' --colors',
     { cwd: '.', env: process.env },
     function (err) {
@@ -1115,6 +1120,9 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('BUGSNAG_API_KEY', ').*;$/m,
       '$1' + params.bugsnagApiKey + '\');'))
+    .pipe(replace(
+      /^(define\('BUGSNAG_NOTIFY_RELEASE_STAGES', ).*;$/m,
+      '$1' + notifyReleaseStages + ');'))
     .pipe(gulp.dest('./'));
 });
 
