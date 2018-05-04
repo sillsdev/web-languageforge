@@ -22,6 +22,7 @@ export class ExceptionHandlingService {
     // leave that API key as default in case we don't have a session object yet that would have set the metadata.
     // Exceptions end up on the `xforge-angular-startup` bugsnag project.
     this.bugsnagClient = Bugsnag({apiKey: 'bb2f00c7648b31ce2d215081adf52959'});
+    this.metadata = null;
   }
 
   updateInformation(metaData: Metadata) {
@@ -48,7 +49,7 @@ export class ExceptionHandlingService {
   }
 
   private notifyBugsnag(exception: Error, cause?: string) {
-    if (this.metadata.userName.startsWith('test_runner_')) {
+    if (this.metadata != null && this.metadata.userName.startsWith('test_runner_')) {
       // running unit tests
       return;
     }
