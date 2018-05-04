@@ -503,6 +503,8 @@ To run **scriptureforge** tests:
 ./rune2e.sh sf
 ```
 
+(If you get an error messages like `Error: ECONNREFUSED connect ECONNREFUSED 127.0.0.1:4444` you probably forgot to start the **webdriver**, see above)
+
 To test a certain test spec, add a parameter `--specs [spec name]`.  For example,
 ```
 ./rune2e.sh lf --specs lexicon-new-project
