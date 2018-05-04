@@ -9,9 +9,15 @@ export class ErrorService {
 
   error(title: string, message: string = '') {
     this.$log.error('Error: ' + title + ' - ' + message);
-    let errorTitle = '<b>Oh. ' + title + '</b>';
+    const errorTitle = '<b>Oh. ' + title + '</b>';
     this.noticeService.push(this.noticeService.ERROR, errorTitle, message);
-  };
+  }
+
+  notify(title: string, message: string, details: string = '') {
+    this.$log.warn('Error: ' + title + ' - ' + message + ' (' + details + ')');
+    const errorTitle = '<b>Oh. ' + title + '</b>';
+    this.noticeService.push(this.noticeService.WARN, errorTitle, message);
+  }
 }
 
 export const ErrorModule = angular
