@@ -653,6 +653,11 @@ dc-entry .card {
       position: relative;
     }
   }
+  .comment-bubble-entry {
+    position: absolute;
+    right: 5px;
+    top: 6px;
+  }
   @include media-breakpoint-down(md) {
     .dc-multitext,
     .dc-multioptionlist,
