@@ -14,6 +14,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
       function ($scope, $state, rightsService) {
         $scope.$state = $state;
         $scope.contextGuid = '';
+        $scope.fieldName = 'entry';
 
         rightsService.getRights().then(function (rights) {
           $scope.rights = rights;
