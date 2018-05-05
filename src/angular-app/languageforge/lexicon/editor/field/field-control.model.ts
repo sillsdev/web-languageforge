@@ -1,5 +1,6 @@
 import {InterfaceConfig} from '../../../../bellows/shared/model/interface-config.model';
 import {Rights} from '../../core/lexicon-rights.service';
+import {LexEntry} from '../../shared/model/lex-entry.model';
 import {LexConfig, LexiconConfig} from '../../shared/model/lexicon-config.model';
 import {LexiconProject} from '../../shared/model/lexicon-project.model';
 
@@ -9,8 +10,12 @@ import {LexiconProject} from '../../shared/model/lexicon-project.model';
 export class FieldControl {
   interfaceConfig: InterfaceConfig;
   config: LexiconConfig;
+  currentEntry: LexEntry;
+  deleteEntry: (currentEntry: LexEntry) => void;
+  hideRightPanel: () => void;
   makeValidModelRecursive: (config: LexConfig, data?: any, stopAtNodes?: string | string[]) => any;
   project: LexiconProject;
+  saveCurrentEntry: () => void;
   show: {
     emptyFields: boolean
   };

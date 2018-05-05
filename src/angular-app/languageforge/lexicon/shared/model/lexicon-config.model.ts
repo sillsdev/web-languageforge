@@ -5,6 +5,7 @@ export class LexConfig {
   hideIfEmpty: boolean;
   label: string;
   type: string;
+  senseLabel?: string[];
 }
 
 export class LexConfigMultiText extends LexConfig {

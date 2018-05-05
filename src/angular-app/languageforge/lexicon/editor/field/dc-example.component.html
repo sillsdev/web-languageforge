@@ -1,17 +1,17 @@
 <div class="dc-example card">
     <div class="card-header">
-        <div ng-show="control.rights.canEditEntry() && $state.is('editor.entry')"
+        <div data-ng-show="$ctrl.control.rights.canEditEntry() && $ctrl.isAtEditorEntry()"
              class="dropdown float-right" uib-dropdown>
              <a class="btn ellipsis-menu-toggle pui-no-caret" uib-dropdown-toggle>
                  <span class="fa fa-ellipsis-v"></span>
              </a>
              <div class="dropdown-menu-right" uib-dropdown-menu>
-                 <a href data-ng-click="remove(index)" class="dropdown-item">Delete Example {{index+1}}</a>
+                 <a href data-ng-click="$ctrl.remove($ctrl.index)" class="dropdown-item">Delete Example {{$ctrl.index+1}}</a>
              </div>
         </div>
-        Example <span class="notranslate">{{index+1}}</span>
+        Example <span class="notranslate">{{$ctrl.index+1}}</span>
     </div>
     <div class="card-body">
-        <dc-fieldrepeat config="config" model="model" control="control" parent-context-guid="contextGuid"></dc-fieldrepeat>
+        <dc-fieldrepeat config="$ctrl.config" model="$ctrl.model" control="$ctrl.control" parent-context-guid="$ctrl.contextGuid"></dc-fieldrepeat>
     </div>
 </div>
