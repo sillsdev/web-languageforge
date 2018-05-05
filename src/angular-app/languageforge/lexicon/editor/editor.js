@@ -1,8 +1,15 @@
 'use strict';
 
-angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
-  'palaso.ui.dc.entry', 'palaso.ui.comments', 'truncate',
-  'palaso.ui.scroll', 'palaso.ui.notice'])
+angular.module('lexicon.editor', [
+  'ui.router',
+  'ui.bootstrap',
+  'coreModule',
+  'editorFieldModule',
+  'palaso.ui.comments',
+  'truncate',
+  'palaso.ui.scroll',
+  'palaso.ui.notice'
+])
   .config(['$stateProvider', function ($stateProvider) {
 
     // State machine from ui.router
@@ -290,8 +297,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       $scope.getMeaningForDisplay = function getMeaningForDisplay(entry) {
         var meaning = '';
         if (entry.senses && entry.senses[0]) {
-          meaning =
-            utils.constructor.getMeaning($scope.config, $scope.config.entry.fields.senses, entry.senses[0]);
+          meaning = utils.constructor.getMeaning($scope.config, $scope.config.entry.fields.senses,
+            entry.senses[0]);
         }
 
         if (!meaning) {

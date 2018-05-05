@@ -1,12 +1,15 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.dc.rendered', [])
+import {SessionService} from '../../../../bellows/core/session.service';
+import {LexiconProjectSettings} from '../../shared/model/lexicon-project-settings.model';
 
-// Palaso UI Rendered Definition
-.directive('dcRendered', [function () {
-  return {
+export const FieldRenderedModule = angular
+  .module('palaso.ui.dc.rendered', [])
+
+  // Palaso UI Rendered Definition
+  .directive('dcRendered', [() => ({
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-rendered.html',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-rendered.component.html',
     scope: {
       config: '=',
       globalConfig: '=',
@@ -14,20 +17,20 @@ angular.module('palaso.ui.dc.rendered', [])
       hideIfEmpty: '=?'
     },
     controller: ['$scope', 'sessionService', 'lexUtils',
-      function ($scope, sessionService, utils) {
-      $scope.render = function () {
-        var sense;
-        var lastPos;
-        var pos;
+    ($scope, sessionService: SessionService, utils) => {
+      $scope.render = () => {
+        let sense: any;
+        let lastPos: string;
+        let pos: string;
         $scope.entry = {
           word: '',
           senses: []
         };
         $scope.entry.word = utils.constructor.getCitationForms($scope.globalConfig, $scope.config,
           $scope.model);
-        sessionService.getSession().then(function (session) {
-          var optionlists = session.projectSettings().optionlists;
-          angular.forEach($scope.model.senses, function (senseModel) {
+        sessionService.getSession().then(session => {
+          const optionlists = session.projectSettings<LexiconProjectSettings>().optionlists;
+          angular.forEach($scope.model.senses, senseModel => {
             pos = utils.constructor.getPartOfSpeechAbbreviation(senseModel.partOfSpeech,
               optionlists);
 
@@ -44,7 +47,7 @@ angular.module('palaso.ui.dc.rendered', [])
               partOfSpeech: pos,
               examples: []
             };
-            angular.forEach(senseModel.examples, function (exampleModel) {
+            angular.forEach(senseModel.examples, exampleModel => {
               sense.examples.push({
                 sentence: utils.constructor.getExample($scope.globalConfig,
                   $scope.config.fields.senses.fields.examples, exampleModel, 'sentence')
@@ -59,7 +62,7 @@ angular.module('palaso.ui.dc.rendered', [])
         });
       };
 
-      $scope.makeValidModel = function () {
+      $scope.makeValidModel = () => {
         // if the model doesn't exist, create an object for it based upon the
         // definition
         if (!$scope.model) {
@@ -70,15 +73,15 @@ angular.module('palaso.ui.dc.rendered', [])
       };
     }],
 
-    link: function (scope) {
+    link(scope: any) {
       if (angular.isUndefined(scope.hideIfEmpty)) {
         scope.hideIfEmpty = false;
       }
 
-      scope.$watch('model', function () {
+      scope.$watch('model', () => {
         scope.makeValidModel();
         scope.render();
       }, true); // deep watch
     }
-  };
-}]);
+  })])
+  .name;
