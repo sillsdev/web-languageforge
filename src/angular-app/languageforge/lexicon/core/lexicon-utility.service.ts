@@ -1,18 +1,23 @@
 import * as angular from 'angular';
 
 import {UtilityService} from '../../../bellows/core/utility.service';
+import {LexEntry} from '../shared/model/lex-entry.model';
+import {LexExample} from '../shared/model/lex-example.model';
+import {LexSense} from '../shared/model/lex-sense.model';
+import {LexValue} from '../shared/model/lex-value.model';
 import {LexConfigFieldList, LexConfigMultiText, LexiconConfig} from '../shared/model/lexicon-config.model';
+import {LexOptionList} from '../shared/model/option-list.model';
 
 export class LexiconUtilityService extends UtilityService {
-  static getLexeme(globalConfig: LexiconConfig, config: LexConfigFieldList, entry: any): string {
+  static getLexeme(globalConfig: LexiconConfig, config: LexConfigFieldList, entry: LexEntry): string {
     return LexiconUtilityService.getFirstField(globalConfig, config, entry, 'lexeme');
   }
 
-  static getWords(globalConfig: LexiconConfig, config: LexConfigFieldList, entry: any): string {
+  static getWords(globalConfig: LexiconConfig, config: LexConfigFieldList, entry: LexEntry): string {
     return LexiconUtilityService.getFields(globalConfig, config, entry, 'lexeme');
   }
 
-  static getCitationForms(globalConfig: LexiconConfig, config: LexConfigFieldList, entry: any): string {
+  static getCitationForms(globalConfig: LexiconConfig, config: LexConfigFieldList, entry: LexEntry): string {
     let inputSystems: string[] = [];
     if (config != null && config.fields.citationForm != null) {
       inputSystems = [...(config.fields.citationForm as LexConfigMultiText).inputSystems];
@@ -46,7 +51,7 @@ export class LexiconUtilityService extends UtilityService {
     return citation;
   }
 
-  static getMeaning(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: any): string {
+  static getMeaning(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: LexSense): string {
     let meaning = LexiconUtilityService.getDefinition(globalConfig, config, sense);
     if (!meaning) {
       meaning = LexiconUtilityService.getGloss(globalConfig, config, sense);
@@ -55,7 +60,7 @@ export class LexiconUtilityService extends UtilityService {
     return meaning;
   }
 
-  static getMeanings(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: any): string {
+  static getMeanings(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: LexSense): string {
     let meaning = LexiconUtilityService.getFields(globalConfig, config, sense, 'definition');
     if (!meaning) {
       meaning = LexiconUtilityService.getFields(globalConfig, config, sense, 'gloss');
@@ -64,13 +69,14 @@ export class LexiconUtilityService extends UtilityService {
     return meaning;
   }
 
-  static getExample(globalConfig: LexiconConfig, config: LexConfigFieldList, example: any, field: string): string {
+  static getExample(globalConfig: LexiconConfig, config: LexConfigFieldList, example: LexExample,
+                    field: string): string {
     if (field === 'sentence' || field === 'translation') {
       return LexiconUtilityService.getFields(globalConfig, config, example, field);
     }
   }
 
-  static getPartOfSpeechAbbreviation(posModel: any, optionlists: any[]): string {
+  static getPartOfSpeechAbbreviation(posModel: LexValue, optionlists: LexOptionList[]): string {
     if (posModel) {
       if (optionlists) {
         let abbreviation = '';
@@ -144,11 +150,11 @@ export class LexiconUtilityService extends UtilityService {
     return result;
   }
 
-  private static getDefinition(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: any): string {
+  private static getDefinition(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: LexSense): string {
     return LexiconUtilityService.getFirstField(globalConfig, config, sense, 'definition');
   }
 
-  private static getGloss(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: any): string {
+  private static getGloss(globalConfig: LexiconConfig, config: LexConfigFieldList, sense: LexSense): string {
     return LexiconUtilityService.getFirstField(globalConfig, config, sense, 'gloss');
   }
 

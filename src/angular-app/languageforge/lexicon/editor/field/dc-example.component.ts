@@ -1,31 +1,54 @@
 import * as angular from 'angular';
 
-export const FieldExampleModule = angular
-  .module('palaso.ui.dc.example', [])
+import {LexiconUtilityService} from '../../core/lexicon-utility.service';
+import {LexExample} from '../../shared/model/lex-example.model';
+import {LexConfigFieldList} from '../../shared/model/lexicon-config.model';
+import {FieldControl} from './field-control.model';
 
-  // Palaso UI Dictionary Control: Example Sentence
-  .directive('dcExample', [() => ({
-    restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-example.component.html',
-    scope: {
-      config: '=',
-      model: '=',
-      index: '=',
-      remove: '=',
-      control: '='
-    },
-    controller: ['$scope', '$state', ($scope, $state) => {
-      $scope.$state = $state;
-      $scope.contextGuid = $scope.$parent.contextGuid + ' example#' + $scope.model.guid;
+export class FieldExampleController implements angular.IController {
+  model: LexExample;
+  config: LexConfigFieldList;
+  control: FieldControl;
+  index: number;
+  parentContextGuid: string;
+  remove: (index: number) => void;
 
-      angular.forEach($scope.control.config.entry.fields.senses.fields.examples.fields, field => {
-        if (!angular.isDefined(field.senseLabel)) {
+  contextGuid: string;
+
+  static $inject = ['$state'];
+  constructor(private $state: angular.ui.IStateService) { }
+
+  $onInit(): void {
+    this.contextGuid = this.parentContextGuid + ' example#' + this.model.guid;
+
+    for (const fieldName in this.config.fields) {
+      if (this.config.fields.hasOwnProperty(fieldName)) {
+        const field = this.config.fields[fieldName];
+        if (field.senseLabel == null) {
           field.senseLabel = [];
           field.senseLabel[-1] = 'Example';
         }
 
-        field.senseLabel[$scope.index] = 'Example ' + ($scope.index + 1);
-      });
-    }]
-  })])
-  .name;
+        field.senseLabel[this.index] = 'Example ' + (this.index + 1);
+      }
+    }
+  }
+
+  isAtEditorEntry(): boolean {
+    return LexiconUtilityService.isAtEditorEntry(this.$state);
+  }
+
+}
+
+export const FieldExampleComponent: angular.IComponentOptions = {
+  bindings: {
+    model: '=',
+    config: '<',
+    control: '<',
+    index: '<',
+    parentContextGuid: '<',
+    remove: '&'
+  },
+  controller: FieldExampleController,
+  templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-example.component.html'
+};
