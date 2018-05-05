@@ -6,7 +6,6 @@ angular.module('lexicon',
     'ui.router',
     'ui.bootstrap',
     'ngSanitize',
-    'palaso.ui.dc.rendered',
     'palaso.ui.typeahead',
     'coreModule',
     'sgw.ui.breadcrumb',
@@ -23,7 +22,8 @@ angular.module('lexicon',
     $compileProvider.debugInfoEnabled(apiService.isProduction);
     $compileProvider.commentDirectivesEnabled(apiService.isProduction);
 
-    $sanitizeProvider.addValidAttrs(['style']); // this is needed to allow style="font-family" on ng-bind-html elements
+    // this is needed to allow style="font-family" on ng-bind-html elements
+    $sanitizeProvider.addValidAttrs(['style']);
 
     $urlRouterProvider.otherwise('/editor/list');
 
