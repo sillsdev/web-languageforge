@@ -8,6 +8,9 @@ export class OfflineCacheService {
   static readonly version = 6;
 
   static $inject: string[] = ['$q'];
+
+  private stores: { [storeName: string]: LocalForage } = {};
+
   constructor(private $q: angular.IQService) { }
 
   static canCache(): boolean {
@@ -46,7 +49,6 @@ export class OfflineCacheService {
     }));
   }
 
-  private stores = {};
   private getStore(storeName: string): LocalForage {
     if (!this.stores[storeName]) {
       this.stores[storeName] = localforage.createInstance({
