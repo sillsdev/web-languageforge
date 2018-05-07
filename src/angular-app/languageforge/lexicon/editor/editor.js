@@ -701,7 +701,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         } else {
           // Reset the comment context BEFORE we start showing the panel
           $scope.setCommentContext('', '', '', '', '');
-          angular.element('.comments-right-panel').css({ paddingTop: 0 });
+          document.querySelector('.comments-right-panel').style.paddingTop = 0;
           if ($scope.rightPanelVisible === false) {
             $scope.showCommentsPanel();
           }
@@ -717,22 +717,21 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       };
 
       $scope.showRightPanel = function showRightPanel(element) {
+        var currentElement = document.querySelector(element);
         if ($scope.rightPanelVisible === false) {
           $scope.rightPanelVisible = true;
-          angular.element(element).addClass('panel-visible');
+          currentElement.classList.add('panel-visible');
         } else if ($scope.rightPanelVisible === true) {
-          if (angular.element(element).hasClass('panel-visible')) {
+          if (currentElement.classList.contains('panel-visible')) {
             $scope.hideRightPanel();
           } else {
-            angular.element('.panel-visible')
-              .removeClass('panel-visible')
-              .addClass('panel-closing')
-              .addClass('panel-switch');
-            angular.element(element).addClass('panel-visible');
+            var visibleElement = document.querySelector('.panel-visible');
+            visibleElement.classList.remove('panel-visible');
+            visibleElement.classList.add('panel-closing', 'panel-switch');
+            currentElement.classList.add('panel-visible');
             $timeout(function () {
-              angular.element('.panel-closing')
-                .removeClass('panel-closing')
-                .removeClass('panel-switch');
+              document.querySelector('.panel-closing').classList
+                .remove('panel-closing', 'panel-switch');
             }, 500);
           }
         }
@@ -743,10 +742,18 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
           $scope.rightPanelVisible = -1;
 
           // Delay relates to the CSS timer for mobile vs > tablet
-          var delay = (angular.element('#compactEntryListContainer').is(':visible')) ? 1500 : 500;
-          angular.element('.panel-visible').addClass('panel-closing').removeClass('panel-visible');
+          var delay = (screen.availWidth >= 768) ? 1500 : 500;
+          var visibleElement = document.querySelector('.panel-visible');
+          visibleElement.classList.add('panel-closing');
+          visibleElement.classList.remove('panel-visible');
           $timeout(function () {
-            angular.element('.panel-closing').removeClass('panel-closing');
+            var closingPanels = document.querySelectorAll('.panel-closing');
+            for (var index in closingPanels) {
+              if (typeof (closingPanels[index]) === 'object') {
+                closingPanels[index].classList.remove('panel-closing');
+              }
+            }
+
             $scope.rightPanelVisible = false;
             $scope.setCommentContext('', '');
           }, delay);

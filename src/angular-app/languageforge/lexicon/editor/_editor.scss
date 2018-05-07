@@ -490,6 +490,7 @@ dc-entry .card {
         width: 280px !important;
         .right-panel-container {
           background: #e6eff5;
+          padding-top: 0 !important;
           &:before {
             display: none;
           }
