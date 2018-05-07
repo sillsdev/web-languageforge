@@ -78,7 +78,7 @@ class ActivityType {
   }
 }
 
-class FilterUsers {
+class FilterUser {
   id: string;
   username: string;
 }
@@ -102,7 +102,7 @@ export class ActivityAppContainerController implements angular.IController {
   activities: Activity[] = [];
   activityGroups: ActivityGroup[];
   activityTypes: ActivityType[];
-  filterUsers: FilterUsers[] = [];
+  filterUsers: FilterUser[] = [];
   entryId: string;
   filterParams: FilterParams;
   filterDateOpen: boolean = false;
@@ -111,14 +111,17 @@ export class ActivityAppContainerController implements angular.IController {
   filterDateMax: Date;
   filterDateToday: Date = new Date();
   loadingFeed: boolean;
+  filterStartDate: any;
+  filterUser: FilterUser;
+  filterEndDate: any;
+  filterType: ActivityType;
 
-  static $inject = ['$sce', 'activityService',
-    'linkService',
-    'sessionService', '$scope', '$window'];
-
-  constructor(private $sce: angular.ISCEService, private activityService: ActivityService,
-              private linkService: LinkService,
-              private sessionService: SessionService, private $scope: any, private $window: angular.IWindowService) {
+  static $inject = ['$sce', '$scope',
+    'activityService', 'linkService',
+    'sessionService'];
+  constructor(private $sce: angular.ISCEService, private $scope: angular.IScope,
+              private activityService: ActivityService, private linkService: LinkService,
+              private sessionService: SessionService) {
     this.activityGroups = [];
     this.activityTypes = [];
     this.filterUsers = [];
@@ -290,14 +293,14 @@ export class ActivityAppContainerController implements angular.IController {
       this.filterDate = 'From Beginning';
     } else {
       if (this.filterParams.startDate !== null) {
-        this.filterDate += this.$scope.filterStartDate.format('MMM D, YYYY');
+        this.filterDate += this.filterStartDate.format('MMM D, YYYY');
         this.filterDateMin = this.filterParams.startDate;
       } else {
         this.filterDate += 'From Beginning';
       }
       this.filterDate += ' to ';
       if (this.filterParams.endDate !== null) {
-        this.filterDate += this.$scope.filterEndDate.format('MMM D, YYYY');
+        this.filterDate += this.filterEndDate.format('MMM D, YYYY');
         this.filterDateMax = this.filterParams.endDate;
       } else {
         this.filterDate += 'Now';
@@ -417,10 +420,10 @@ export class ActivityAppContainerController implements angular.IController {
   }
 
   filterByUser() {
-    if (!this.$scope.filterUser) return;
+    if (!this.filterUser) return;
     const filteredActivities = [];
     for (const activity of this.activities) {
-      if (activity.userRef && activity.userRef.id === this.$scope.filterUser.id) {
+      if (activity.userRef && activity.userRef.id === this.filterUser.id) {
         filteredActivities.push(activity);
       }
     }
@@ -428,10 +431,10 @@ export class ActivityAppContainerController implements angular.IController {
   }
 
   filterByType() {
-    if (!this.$scope.filterType) return;
+    if (!this.filterType) return;
     const filteredActivities = [];
     for (const activity of this.filteredActivities) {
-      if (activity.action === this.$scope.filterType.action && activity.type === this.$scope.filterType.type) {
+      if (activity.action === this.filterType.action && activity.type === this.filterType.type) {
         filteredActivities.push(activity);
       }
     }
@@ -439,13 +442,13 @@ export class ActivityAppContainerController implements angular.IController {
   }
 
   filterByDate() {
-    if (angular.isDefined(this.$scope.filterStartDate) && this.$scope.filterStartDate !== true) {
-      this.filterParams.startDate = this.$scope.filterStartDate._d;
+    if (angular.isDefined(this.filterStartDate) && this.filterStartDate !== true) {
+      this.filterParams.startDate = this.filterStartDate._d;
     } else {
       this.filterParams.startDate = null;
     }
-    if (angular.isDefined(this.$scope.filterEndDate) && this.$scope.filterEndDate !== true) {
-      this.filterParams.endDate = this.$scope.filterEndDate._d;
+    if (angular.isDefined(this.filterEndDate) && this.filterEndDate !== true) {
+      this.filterParams.endDate = this.filterEndDate._d;
     } else {
       this.filterParams.endDate = null;
     }
@@ -490,7 +493,7 @@ export class ActivityAppContainerController implements angular.IController {
 
 export const ActivityAppComponent: angular.IComponentOptions = {
   controller: ActivityAppController,
-  template: '<activity-app-container></activity-app-container>',
+  template: '<activity-app-container></activity-app-container>'
 };
 
 export const ActivityAppContainerComponent: angular.IComponentOptions = {
