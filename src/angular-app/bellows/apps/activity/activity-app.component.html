@@ -3,11 +3,11 @@
 
     <div class="activity-header">
         <div class="activity-filter-options">
-            <select class="custom-select" data-ng-model="filterUser" data-ng-change="$ctrl.triggerFilter()"
+            <select class="custom-select" data-ng-model="$ctrl.filterUser" data-ng-change="$ctrl.triggerFilter()"
                 data-ng-options="item as item.username for item in $ctrl.filterUsers">
                 <option value="">All Users</option>
             </select>
-            <select class="custom-select" data-ng-model="filterType" data-ng-change="$ctrl.triggerFilter()"
+            <select class="custom-select" data-ng-model="$ctrl.filterType" data-ng-change="$ctrl.triggerFilter()"
                 data-ng-options="item as item.label for item in $ctrl.activityTypes">
                 <option value="">All Events</option>
             </select>
@@ -25,7 +25,7 @@
                                 max-view="month"
                                 start-view="month"
                                 set-on-select="true"
-                                ng-model="filterStartDate"
+                                ng-model="$ctrl.filterStartDate"
                                 change="$ctrl.filterByDate()"
                                 max-date="$ctrl.filterDateMax"
                                 autoclose="false"
@@ -41,7 +41,7 @@
                                 max-view="month"
                                 start-view="month"
                                 set-on-select="true"
-                                ng-model="filterEndDate"
+                                ng-model="$ctrl.filterEndDate"
                                 change="$ctrl.filterByDate()"
                                 min-date="$ctrl.filterDateMin"
                                 max-date="$ctrl.filterDateToday"
