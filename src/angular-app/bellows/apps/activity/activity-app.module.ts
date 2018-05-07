@@ -4,7 +4,8 @@ import 'angular-moment-picker/dist/angular-moment-picker.js';
 
 import {BreadcrumbModule} from '../../core/breadcrumbs/breadcrumb.module';
 import {CoreModule} from '../../core/core.module';
-import {ActivityAppComponent, ActivityAppContainerComponent} from './activity-app.component';
+import {ActivityAppComponent} from './activity-app.component';
+import {ActivityContainerComponent} from './activity-container.compontent';
 
 export const ActivityAppModule = angular
   .module('activity', [
@@ -15,5 +16,5 @@ export const ActivityAppModule = angular
     BreadcrumbModule
   ])
   .component('activityApp', ActivityAppComponent)
-  .component('activityAppContainer', ActivityAppContainerComponent)
+  .component('activityContainer', ActivityContainerComponent)
   .name;
