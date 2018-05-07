@@ -1,20 +1,15 @@
 import { ApiService, JsonRpcCallback } from './api.service';
 
 export class FilterParams {
-  startDate?: Date;
-  endDate?: Date;
-  limit?: number;
-  skip?: number;
-  constructor() {
-      this.limit = 100;
-      this.skip = 0;
-      this.startDate = null;
-      this.endDate = null;
-  }
+  startDate: Date = null;
+  endDate: Date = null;
+  limit: number = 100;
+  skip: number = 0;
 }
 
 export class ActivityService {
   unreadCount: number;
+
   static $inject: string[] = ['apiService'];
   constructor(private api: ApiService) {}
 
