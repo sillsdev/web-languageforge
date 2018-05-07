@@ -24,16 +24,16 @@ var webpackConfig = {
       { from: './node_modules/offline-js/offline.min.js', to: 'offline-js' },
       { from: './node_modules/rangy/lib/', to: 'rangy' },
       { from: './node_modules/zxcvbn/dist/', to: 'zxcvbn' }
-  ]),
-new webpack.ContextReplacementPlugin(
+    ]),
+    new webpack.ContextReplacementPlugin(
 
-    // The ([\\/]) piece accounts for path separators in *nix and Windows
-    /angular([\\/])core([\\/])@angular/,
-    path.resolve(__dirname, './src'),
+      // The ([\\/]) piece accounts for path separators in *nix and Windows
+      /angular([\\/])core([\\/])@angular/,
+      path.resolve(__dirname, './src'),
 
-    // your Angular Async Route paths relative to this root directory
-    {}
-),
+      // your Angular Async Route paths relative to this root directory
+      {}
+    ),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: function (module) {
