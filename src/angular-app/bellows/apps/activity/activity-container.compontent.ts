@@ -36,18 +36,16 @@ class ActivityGroup {
   showActivities: boolean = false;
 
   constructor(public name: string, public date: Date, public dateFormat: string = 'h:mma d/MM/yy') {
-    this.name = name;
     date.setHours(0, 0, 0, 0);
     this.date = new Date(date);
-    this.dateFormat = dateFormat;
   }
 }
 
 class ActivityUserGroup {
-  user: User;
-  date: Date;
   activities: Activity[] = [];
   unread: number = 0;
+  user: User;
+  date: Date;
 
   constructor(private activity: Activity) {
     this.user = activity.userRef;
