@@ -458,6 +458,6 @@ export const ActivityContainerComponent: angular.IComponentOptions = {
   controller: ActivityContainerController,
   templateUrl: '/angular-app/bellows/apps/activity/activity-container.component.html',
   bindings: {
-    entryId: '@'
+    entryId: '@?'
   }
 };
