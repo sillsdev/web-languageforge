@@ -92,12 +92,12 @@ export class ActivityContainerController implements angular.IController {
     // Set activity groups up
     const today = new Date();
     let newDate = today;
-    this.activityGroups.push(new ActivityGroup('Today', today, 'h:ma \'Today\''));
+    this.activityGroups.push(new ActivityGroup('Today', today, 'h:mma \'Today\''));
     newDate.setDate(today.getDate() - 1);
-    this.activityGroups.push(new ActivityGroup('Yesterday', newDate, 'h:ma \'Yesterday\''));
+    this.activityGroups.push(new ActivityGroup('Yesterday', newDate, 'h:mma \'Yesterday\''));
     newDate = new Date();
     newDate.setDate(today.getDate() - 6);
-    this.activityGroups.push(new ActivityGroup('Last week', newDate, 'h:ma EEEE'));
+    this.activityGroups.push(new ActivityGroup('Last week', newDate, 'h:mma EEEE'));
     newDate = new Date();
     newDate.setDate(today.getDate() - 13);
     this.activityGroups.push(new ActivityGroup('Two weeks ago', newDate));
