@@ -7,7 +7,6 @@ import {SessionService} from '../../core/session.service';
 import {UtilityService} from '../../core/utility.service';
 import {Project} from '../../shared/model/project.model';
 import {User} from '../../shared/model/user.model';
-import {FieldControl} from "../../../languageforge/lexicon/editor/field/field-control.model";
 
 class Activity {
   action: string;
