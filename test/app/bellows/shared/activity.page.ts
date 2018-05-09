@@ -11,12 +11,12 @@ export class SfActivityPage {
     await browser.driver.get(browser.baseUrl + this.activityURL);
   }
 
-  static async clickOnAllActivity() {
-    await element(by.id('activity-showAllActivityButton')).click();
+  static clickOnAllActivity() {
+    element(by.id('activity-showAllActivityButton')).click();
   }
 
-  static async clickOnShowOnlyMyActivity() {
-    await element(by.id('activity-showOnlyMyActivityButton')).click();
+  static clickOnShowOnlyMyActivity() {
+    element(by.id('activity-showOnlyMyActivityButton')).click();
   }
 
   // Returns the number of items in the activity list
@@ -31,13 +31,13 @@ export class SfActivityPage {
   }
 
   async getAllActivityTexts() {
-    return await this.activitiesList.map((elem: ElementFinder) => elem.getText());
+    return await this.activitiesList.map(async (elem: ElementFinder) => await elem.getText());
   }
 
   // Prints the entire activity list
   //noinspection JSUnusedGlobalSymbols
   async printActivitiesNames() {
-    (this.activitiesList).each(async (names: ElementFinder) => {
+    await (this.activitiesList).each(async (names: ElementFinder) => {
       await names.getText().then(console.log);
     });
   }

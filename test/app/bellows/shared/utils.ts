@@ -124,8 +124,8 @@ export class Utils {
   }
 
   // This handy function comes from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-  static async escapeRegExp(stringToEscape: string) {
-    return await stringToEscape.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+  static escapeRegExp(stringToEscape: string) {
+    return stringToEscape.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
   }
 
   // Errors we choose to ignore because they are typically not encountered by users, but only

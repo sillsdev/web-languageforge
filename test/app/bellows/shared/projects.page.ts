@@ -1,5 +1,5 @@
 import {browser, by, element, ExpectedConditions, protractor} from 'protractor';
-import {ElementArrayFinder, ElementFinder} from 'protractor/built/element';
+
 import {Utils} from './utils';
 
 export class ProjectsPage {
@@ -7,6 +7,7 @@ export class ProjectsPage {
 
   url = '/app/projects';
   async get() {
+    // Driver needs to be added with browser to avoid Warnings inforamtion
     await browser.driver.get(browser.baseUrl + this.url);
   }
 
@@ -21,16 +22,15 @@ export class ProjectsPage {
       .column('$ctrl.projectTypeNames[project.appName]'));
   showFormButton = element(by.id('sfchecks-invite-friend-btn'));
    async findProject(projectName: string) {
-  try {
+
     let foundRow: any;
     const result = protractor.promise.defer();
     const searchName = new RegExp(projectName);
-    await this.projectsList.map((row: any) => {
-    browser.sleep(2000);
+    await this.projectsList.map(async (row: any) => {
     row.getText().then(async (text: string) => {
-    browser.sleep(2000);
+
     if (await searchName.test(text)) {
-          foundRow = row;
+        foundRow = row;
         }
       });
     }).then(async () => {
@@ -42,14 +42,12 @@ export class ProjectsPage {
       }
     });
     return await result.promise;
-  } catch (err) {  }
+
   }
+  // Calling this method instead of "clickOnProject(projectName: string)" to avoid Promise Errors.
   async clickOnProjectName(projectName: string) {
-    const projectLink = await element(by.xpath('//span[text()="' + projectName + '"]/../a'));
-    await projectLink.getAttribute('href').then(async (url: string) => {
-    await browser.driver.get(url);
-      }
-    );
+     const projectLink = await element.all(by.cssContainingText('span', projectName)).first();
+     await projectLink.click();
   }
 
   clickOnProject(projectName: string) {
@@ -66,10 +64,10 @@ export class ProjectsPage {
   userManagementLink = (browser.baseUrl.includes('languageforge')) ?
     element(by.id('userManagementLink')) : element(by.id('dropdown-project-settings'));
     async addUserToProject(projectName: any, usersName: string, roleText: string) {
-      try {
+
       // this.findProject(projectName).then(async (projectRow: any) => {
       // const projectLink = projectRow.element(by.css('a'));
-      const projectLink = element(by.xpath('//span[text()="' + projectName + '"]/../a'));
+      const projectLink = await element.all(by.cssContainingText('span', projectName)).first();
       await projectLink.click();
       await browser.wait(ExpectedConditions.visibilityOf(this.settingsBtn), Utils.conditionTimeout);
       await this.settingsBtn.click();
@@ -85,8 +83,9 @@ export class ProjectsPage {
       await userNameInput.sendKeys(usersName);
       const typeaheadDiv = element(by.id('typeaheadDiv'));
       const typeaheadItems = typeaheadDiv.all(by.css('ul li'));
-      browser.sleep(2000);
+
       this.utils.findRowByText(typeaheadItems, usersName).then(async (item: any) => {
+      await browser.wait(ExpectedConditions.visibilityOf(item), Utils.conditionTimeout);
       await item.click();
       });
       // This should be unique no matter what
@@ -111,7 +110,7 @@ export class ProjectsPage {
 
       await this.get(); // After all is finished, reload projects page
     // });
-    } catch (err) {}
+
   }
 
   //noinspection JSUnusedGlobalSymbols
@@ -125,7 +124,7 @@ export class ProjectsPage {
 
   async removeUserFromProject(projectName: string, userName: string) {
     this.findProject(projectName).then(async (projectRow: any) => {
-      try {
+
       const projectLink = projectRow.element(by.css('a'));
       await projectLink.click();
 
@@ -151,7 +150,7 @@ export class ProjectsPage {
       await removeMembersBtn.click();
 
       await this.get(); // After all is finished, reload projects page
-    } catch (err) {}
-});
+
+    });
   }
 }

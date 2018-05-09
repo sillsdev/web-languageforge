@@ -1,6 +1,6 @@
 // tslint:disable-next-line:no-reference
 ///<reference path="activityCustomMatchers.d.ts" />
-import {browser} from 'protractor';
+import {browser, ExpectedConditions} from 'protractor';
 import {ElementFinder} from 'protractor/built/element';
 
 import {SfActivityPage} from '../../bellows/shared/activity.page';
@@ -12,7 +12,7 @@ import {SfProjectPage} from '../sfchecks/shared/project.page';
 import {SfQuestionPage} from '../sfchecks/shared/question.page';
 import {SfTextPage} from '../sfchecks/shared/text.page';
 
-describe('Activity E2E Test', async function() {
+describe('Activity E2E Test', async () => {
   const constants = require('../../testConstants.json');
   const loginPage = new BellowsLoginPage();
   const activityPage = new SfActivityPage();
@@ -70,70 +70,73 @@ describe('Activity E2E Test', async function() {
 
   });
 
-  describe('Running as member: ', async function() {
+  describe('Running as member: ', async () => {
 
-    it('Login and navigate to the first test Question page', async function() {
+    it('Login and navigate to the first test Question page', async () => {
       await loginPage.loginAsUser();
       await projectListPage.get();
-      await projectListPage.clickOnProject(constants.testProjectName);
-      SfProjectPage.textLink(constants.testText1Title).click();
+      // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
+      await projectListPage.clickOnProjectName(constants.testProjectName);
+      await SfProjectPage.textLink(constants.testText1Title).click();
       await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
     });
 
-    await performCommonActions();
+    performCommonActions();
 
-    it('Navigate to Activity Page to verify actions', async function() {
+    it('Navigate to Activity Page to verify actions', async () => {
       await activityPage.get();
 
       // Print everything in the activity list for debugging purposes
       // activityPage.printActivitiesNames();
     });
 
-    activityIndex = await verifyCommonActions(activityIndex, constants.memberUsername);
+    activityIndex = verifyCommonActions(activityIndex, constants.memberUsername);
 
-    await verifyFilters(constants.memberUsername);
+    verifyFilters(constants.memberUsername);
 
   });
 
-  describe('Running as second member: ', async function() {
+  describe('Running as second member: ', async () => {
 
-    it('Login and navigate to the first test Question page', async function() {
+    it('Login and navigate to the first test Question page', async () => {
       await loginPage.loginAsSecondUser();
       await projectListPage.get();
-      await projectListPage.clickOnProject(constants.testProjectName);
-      SfProjectPage.textLink(constants.testText1Title).click();
+      // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
+      await projectListPage.clickOnProjectName(constants.testProjectName);
+      await SfProjectPage.textLink(constants.testText1Title).click();
       await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
     });
 
-    await performCommonActions();
+    performCommonActions();
 
-    it('Navigate to Activity Page to verify actions', async function() {
+    it('Navigate to Activity Page to verify actions', async () => {
       await activityPage.get();
 
       // Print everything in the activity list for debugging purposes
       // activityPage.printActivitiesNames();
     });
 
-    activityIndex = await verifyCommonActions(activityIndex, constants.member2Username);
+    activityIndex = verifyCommonActions(activityIndex, constants.member2Username);
 
-    await verifyFilters(constants.member2Username);
+    verifyFilters(constants.member2Username);
 
   });
 
-  describe('Running as manager: ', async function() {
+  describe('Running as manager: ', async () => {
     let memberCount = 0;
 
-    it('Login and navigate to the first test Question page', async function() {
+    it('Login and navigate to the first test Question page', async () => {
       await loginPage.loginAsManager();
       await projectListPage.get();
-      await projectListPage.clickOnProject(constants.testProjectName);
-      SfProjectPage.textLink(constants.testText1Title).click();
+      // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
+      await projectListPage.clickOnProjectName(constants.testProjectName);
+      await SfProjectPage.textLink(constants.testText1Title).click();
       await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
     });
 
-    await performCommonActions();
+    performCommonActions();
 
-    it('Performing action "add" on "texts"', async function() {
+    it('Performing action "add" on "texts"', async () => {
       // Navigate back to Project Page
       await browser.driver.navigate().back();
       await browser.driver.navigate().back();
@@ -143,15 +146,15 @@ describe('Activity E2E Test', async function() {
       await projectPage.notice.firstCloseButton.click();
     });
 
-    it('Performing action \'add\' on \'questions\'', async function() {
+    it('Performing action \'add\' on \'questions\'', async () => {
       await browser.driver.navigate().forward();
-      expect<any>(await textPage.notice.list.count()).toBe(0);
+      await expect<any>(textPage.notice.list.count()).toBe(0);
       await textPage.addNewQuestion(constants.testText1Question3Title, constants.testText1Question3Summary);
       await textPage.notice.waitToInclude('\'' + constants.testText1Question3Summary + '\' was added successfully');
       await textPage.notice.firstCloseButton.click();
     });
 
-    it('Get existing user count', async function() {
+    it('Get existing user count', async () => {
       // Navigate back to Project Page
       await browser.driver.navigate().back();
 
@@ -159,50 +162,51 @@ describe('Activity E2E Test', async function() {
       await projectSettingsPage.membersTab.list.count().then((val: number) => { memberCount = val; });
     });
 
-    it('Performing action \'add\' on \'users\'', async function() {
+    it('Performing action \'add\' on \'users\'', async () => {
       await projectSettingsPage.membersTab.addNewMember('jimmycricket');
       await projectSettingsPage.membersTab.waitForNewUserToLoad(memberCount);
-      expect<any>(await projectSettingsPage.membersTab.list.count()).toBe(memberCount + 1);
+      await expect<any>(projectSettingsPage.membersTab.list.count()).toBe(memberCount + 1);
 
       // Return back to Question Page for rest of test.
       await projectListPage.get();
-      await projectListPage.clickOnProject(constants.testProjectName);
+      // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
+      await projectListPage.clickOnProjectName(constants.testProjectName);
       await SfProjectPage.textLink(constants.testText1Title).click();
       await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
     });
 
-    it('Navigate to Activity Page to verify actions', async function() {
+    it('Navigate to Activity Page to verify actions', async () => {
       await activityPage.get();
 
       // Print everything in the activity list for debugging purposes
       // activityPage.printActivitiesNames();
     });
 
-    it('Verify action \'add\' on \'users\' appears on the activity feed', async function() {
+    it('Verify action \'add\' on \'users\' appears on the activity feed', async () => {
       activityIndex = 0;
       const activityText = await activityPage.getActivityText(activityIndex);
-      expect<any>(activityText).toContain('jimmycricket is now a member of ' + constants.testProjectName);
+      await expect<any>(activityText).toContain('jimmycricket is now a member of ' + constants.testProjectName);
     });
 
-    it('Verify action \'add\' on \'questions\' appears on the activity feed', async function() {
+    it('Verify action \'add\' on \'questions\' appears on the activity feed', async () => {
       activityIndex += 1;
       const activityText = await activityPage.getActivityText(activityIndex);
-      expect<any>(activityText).toContain(constants.testText1Title);
-      expect<any>(activityText).toContain('new question');
-      expect<any>(activityText).toContain(constants.testText1Question3Summary);
+      await expect<any>(activityText).toContain(constants.testText1Title);
+      await expect<any>(activityText).toContain('new question');
+      await expect<any>(activityText).toContain(constants.testText1Question3Summary);
     });
 
-    it('Verify action \'add\' on \'texts\' appears on the activity feed', async function() {
+    it('Verify action \'add\' on \'texts\' appears on the activity feed', async () => {
       activityIndex += 1;
       const activityText = await activityPage.getActivityText(activityIndex);
-      expect<any>(activityText).toContain(constants.testProjectName);
-      expect<any>(activityText).toContain('added');
-      expect<any>(activityText).toContain(constants.testText3Title);
+      await expect<any>(activityText).toContain(constants.testProjectName);
+      await expect<any>(activityText).toContain('added');
+      await expect<any>(activityText).toContain(constants.testText3Title);
     });
 
-    await verifyCommonActions(3, constants.managerUsername);
+    verifyCommonActions(3, constants.managerUsername);
 
-    await verifyFilters(constants.managerUsername);
+    verifyFilters(constants.managerUsername);
 
   });
 
@@ -217,114 +221,118 @@ describe('Activity E2E Test', async function() {
   async function verifyResponseVisibility(valueShouldBeTrue: boolean) {
     await projectSettingsPage.get(constants.testProjectName);
     await projectSettingsPage.tabs.project.click();
-    const isChecked = await projectSettingsPage.projectTab.usersSeeEachOthersResponses.getAttribute('checked');
+    const isChecked = projectSettingsPage.projectTab.usersSeeEachOthersResponses.getAttribute('checked');
     if (valueShouldBeTrue) {
-      expect<any>(isChecked).toBeTruthy();
+      await expect<any>(isChecked).toBeTruthy();
     } else {
-      expect<any>(isChecked).toBeFalsy();
+      await expect<any>(isChecked).toBeFalsy();
     }
   }
 
   // TODO: That's not a great description
-  describe('Testing activity-visibility settings: ', function() {
-    it('Set response visibility to TRUE', function() {
-      setResponseVisibility(true);
-      verifyResponseVisibility(true);
+  describe('Testing activity-visibility settings: ', async () => {
+    it('Set response visibility to TRUE', async () => {
+      await setResponseVisibility(true);
+      await verifyResponseVisibility(true);
     });
 
-    describe('Running as first member: ', async function() {
+    describe('Running as first member: ', async () => {
 
-      it('Login and navigate to the first test Question page', async function() {
+      it('Login and navigate to the first test Question page', async () => {
         await loginPage.loginAsUser();
         await projectListPage.get();
-        await projectListPage.clickOnProject(constants.testProjectName);
-        SfProjectPage.textLink(constants.testText1Title).click();
+        // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
+        await projectListPage.clickOnProjectName(constants.testProjectName);
+        await SfProjectPage.textLink(constants.testText1Title).click();
         await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
       });
 
-      await performCommonActions();
+      performCommonActions();
 
-      it('Navigate to Activity Page to verify actions', async function() {
+      it('Navigate to Activity Page to verify actions', async () => {
         await activityPage.get();
 
         // Print everything in the activity list for debugging purposes
         // activityPage.printActivitiesNames();
       });
 
-      activityIndex = await verifyCommonActions(activityIndex, constants.memberUsername);
+      activityIndex = verifyCommonActions(activityIndex, constants.memberUsername);
 
-      await verifyFilters(constants.memberUsername);
+      verifyFilters(constants.memberUsername);
 
     });
 
-    describe('Running as second member: ', async function() {
+    describe('Running as second member: ', async () => {
 
-      it('Login and navigate to the first test Question page', async function() {
+      it('Login and navigate to the first test Question page', async () => {
         await loginPage.loginAsSecondUser();
         await projectListPage.get();
-        await projectListPage.clickOnProject(constants.testProjectName);
-        SfProjectPage.textLink(constants.testText1Title).click();
+        // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
+        await projectListPage.clickOnProjectName(constants.testProjectName);
+        await SfProjectPage.textLink(constants.testText1Title).click();
         await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
       });
 
-      await performCommonActions();
+      performCommonActions();
 
-      it('Navigate to Activity Page to verify actions', async function() {
+      it('Navigate to Activity Page to verify actions', async () => {
         await activityPage.get();
 
         // Print everything in the activity list for debugging purposes
         // activityPage.printActivitiesNames();
       });
 
-      activityIndex = await verifyCommonActions(activityIndex, constants.member2Username);
+      activityIndex = verifyCommonActions(activityIndex, constants.member2Username);
 
-      await verifyFilters(constants.member2Username);
+      verifyFilters(constants.member2Username);
 
     });
 
-    it('Set response visibility to FALSE', async function() {
-      setResponseVisibility(false);
-      verifyResponseVisibility(false);
+    it('Set response visibility to FALSE', async () => {
+      await setResponseVisibility(false);
+      await verifyResponseVisibility(false);
     });
 
-    describe('Running as first member with visibility false: ', async function() {
+    describe('Running as first member with visibility false: ', async () => {
 
-      it('Login and navigate to the first test Question page', async function() {
+      it('Login and navigate to the first test Question page', async () => {
         await loginPage.loginAsUser();
         await projectListPage.get();
-        await projectListPage.clickOnProject(constants.testProjectName);
-        SfProjectPage.textLink(constants.testText1Title).click();
+        // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
+        await projectListPage.clickOnProjectName(constants.testProjectName);
+        await SfProjectPage.textLink(constants.testText1Title).click();
         await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
       });
 
-      await performAnswerActions();
+      performAnswerActions();
 
-      it('Navigate to Activity Page to verify actions', async function() {
+      it('Navigate to Activity Page to verify actions', async () => {
         await activityPage.get();
 
         // Print everything in the activity list for debugging purposes
         // activityPage.printActivitiesNames();
       });
 
-      await verifyAnswerActions(activityIndex, constants.memberUsername);
+      verifyAnswerActions(activityIndex, constants.memberUsername);
 
-      await verifyFilters(constants.memberUsername);
+      verifyFilters(constants.memberUsername);
 
     });
 
-    describe('Running as second member with visibility false: ', async function() {
+    describe('Running as second member with visibility false: ', async () => {
 
-      it('Login and navigate to the first test Question page', async function() {
+      it('Login and navigate to the first test Question page', async () => {
         await loginPage.loginAsSecondUser();
         await projectListPage.get();
-        await projectListPage.clickOnProject(constants.testProjectName);
-        SfProjectPage.textLink(constants.testText1Title).click();
+        // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
+        await projectListPage.clickOnProjectName(constants.testProjectName);
+        await SfProjectPage.textLink(constants.testText1Title).click();
         await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
       });
 
-      await performAnswerActions();
+      performAnswerActions();
 
-      it('Navigate to Activity Page to verify actions', async function() {
+      it('Navigate to Activity Page to verify actions', async () => {
         await activityPage.get();
 
         // Print everything in the activity list for debugging purposes
@@ -334,9 +342,9 @@ describe('Activity E2E Test', async function() {
       // We don't call verifyCommonActions here,
       // because the activity list should be empty for user 2  // NOPE.
 
-      await verifyAnswerActions(activityIndex, constants.member2Username);
+      verifyAnswerActions(activityIndex, constants.member2Username);
 
-      await verifyFilters(constants.member2Username);
+      verifyFilters(constants.member2Username);
 
       // TODO: Also check that the performCommonActions() function can't see others' responses
 
@@ -353,77 +361,81 @@ describe('Activity E2E Test', async function() {
 
     });
 
-    it('Set response visibility to TRUE for other tests', async function() {
-      setResponseVisibility(true);
-      verifyResponseVisibility(true);
+    it('Set response visibility to TRUE for other tests', async () => {
+      await setResponseVisibility(true);
+      await verifyResponseVisibility(true);
     });
   });
 
-  async function performUpvoteActions() {
-    it('Performing action \'upvote\' on \'answers\'', async function() {
-      expect<any>(questionPage.answers.votes(0).getText()).toEqual('0');
+  function performUpvoteActions() {
+    it('Performing action \'upvote\' on \'answers\'', async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(questionPage.answers.votes(0)),
+          constants.conditionTimeout);
+      expect<any>(await questionPage.answers.votes(0).getText()).toEqual('0');
       await questionPage.answers.upvote(0);
-      expect<any>(questionPage.answers.votes(0).getText()).toEqual('1');
+      await browser.wait(ExpectedConditions.visibilityOf(questionPage.answers.votes(0)),
+          constants.conditionTimeout);
+      await expect<any>(questionPage.answers.votes(0).getText()).toEqual('1');
     });
 
-    it('Performing action \'downvote\' on \'answers\'', async function() {
+    it('Performing action \'downvote\' on \'answers\'', async () => {
       await questionPage.answers.downvote(0);
-      expect<any>(questionPage.answers.votes(0).getText()).toEqual('0');
+      await expect<any>(questionPage.answers.votes(0).getText()).toEqual('0');
     });
   }
 
   function performAnswerActions() {
-    it('Performing action \'add\' on \'answers\'', async function() {
-      expect<any>(questionPage.notice.list.count()).toBe(0);
-      questionPage.answers.add(testData.answer.add);
-      expect<any>(questionPage.answers.last().getText()).toContain(testData.answer.add);
+    it('Performing action \'add\' on \'answers\'', async () => {
+      await expect<any>(questionPage.notice.list.count()).toBe(0);
+      await questionPage.answers.add(testData.answer.add);
+      await expect<any>(questionPage.answers.last().getText()).toContain(testData.answer.add);
       await questionPage.notice.waitToInclude('The answer was submitted successfully');
-      questionPage.notice.firstCloseButton.click();
+      await questionPage.notice.firstCloseButton.click();
     });
 
-    it('Performing action \'addToLastAnswer\' on \'comments\'', async function() {
-      expect<any>(questionPage.notice.list.count()).toBe(0);
-      questionPage.comments.addToLastAnswer(testData.comment.add);
-      expect<any>(questionPage.comments.last().getText()).toContain(testData.comment.add);
+    it('Performing action \'addToLastAnswer\' on \'comments\'', async () => {
+      await expect<any>(questionPage.notice.list.count()).toBe(0);
+      await questionPage.comments.addToLastAnswer(testData.comment.add);
+      await expect<any>(questionPage.comments.last().getText()).toContain(testData.comment.add);
       await questionPage.notice.waitToInclude('The comment was submitted successfully');
-      questionPage.notice.firstCloseButton.click();
+      await questionPage.notice.firstCloseButton.click();
     });
 
-    it('Performing action \'edit\' on \'comments\'', async function() {
-      expect<any>(questionPage.notice.list.count()).toBe(0);
-      questionPage.comments.edit(testData.comment.edit);
-      expect<any>(questionPage.comments.last().getText()).toContain(testData.comment.edit);
+    it('Performing action \'edit\' on \'comments\'', async () => {
+      await expect<any>(questionPage.notice.list.count()).toBe(0);
+      await questionPage.comments.edit(testData.comment.edit);
+      await expect<any>(questionPage.comments.last().getText()).toContain(testData.comment.edit);
       await questionPage.notice.waitToInclude('The comment was updated successfully');
-      questionPage.notice.firstCloseButton.click();
+      await questionPage.notice.firstCloseButton.click();
     });
 
-    it('Performing action \'edit\' on \'answers\'', async function() {
-      expect<any>(questionPage.notice.list.count()).toBe(0);
-      questionPage.answers.edit(testData.answer.edit);
-      expect<any>(questionPage.answers.last().getText()).toContain(testData.answer.edit);
+    it('Performing action \'edit\' on \'answers\'', async () => {
+      await expect<any>(questionPage.notice.list.count()).toBe(0);
+      await questionPage.answers.edit(testData.answer.edit);
+      await expect<any>(questionPage.answers.last().getText()).toContain(testData.answer.edit);
       await questionPage.notice.waitToInclude('The answer was updated successfully');
-      questionPage.notice.firstCloseButton.click();
+      await questionPage.notice.firstCloseButton.click();
     });
 
-    it('Performing action \'delete\' on \'comments\'', async function() {
-      expect<any>(questionPage.notice.list.count()).toBe(0);
+    it('Performing action \'delete\' on \'comments\'', async () => {
+      await expect<any>(questionPage.notice.list.count()).toBe(0);
       const oldCount = questionPage.comments.list.count();
-      questionPage.comments.archive('');
-      const newCount = await questionPage.comments.list.count();
-      await oldCount.then((count: number) => {
-      expect<any>(newCount).toEqual(count - 1);
+      await questionPage.comments.archive('');
+      const newCount = questionPage.comments.list.count();
+      await oldCount.then(async (count: number) => {
+        await expect<any>(newCount).toEqual(count - 1);
       });
 
       await questionPage.notice.waitToInclude('The comment was removed successfully');
-      questionPage.notice.firstCloseButton.click();
+      await questionPage.notice.firstCloseButton.click();
     });
 
-    it('Performing action \'delete\' on \'answers\'', async function() {
-      expect<any>(questionPage.notice.list.count()).toBe(0);
-      await questionPage.answers.list.count().then(async(count: number) => {
-      questionPage.answers.archive('');
-      const newCount = questionPage.answers.list.count();
-      expect<any>(newCount).toEqual(count - 1);
+    it('Performing action \'delete\' on \'answers\'', async () => {
+      await expect<any>(questionPage.notice.list.count()).toBe(0);
+      await questionPage.answers.list.count().then(async (count: number) => {
+        await questionPage.answers.archive('');
+        const newCount = questionPage.answers.list.count();
+        await expect<any>(newCount).toEqual(count - 1);
 
         // Which means newCount > 0 -- but oldCount is a real int, while newCount is still a promise
         if (count > 1) {
@@ -431,77 +443,77 @@ describe('Activity E2E Test', async function() {
         }
 
         await questionPage.notice.waitToInclude('The answer was removed successfully');
-        questionPage.notice.firstCloseButton.click();
+        await questionPage.notice.firstCloseButton.click();
       });
     });
   }
 
-  async function performCommonActions() {
+  function performCommonActions() {
     // perform up vote first because it occasionally posts activity before a task started after it
-    await performUpvoteActions();
-    await performAnswerActions();
+    performUpvoteActions();
+    performAnswerActions();
   }
 
-  async function verifyUpvoteActions(aIndex: number, username: string) {
-    it('Verify action \'upvote\' on \'answers\' appears on the activity feed', async function() {
+  function verifyUpvoteActions(aIndex: number, username: string) {
+    it('Verify action \'upvote\' on \'answers\' appears on the activity feed', async () => {
       aIndex += 1;
-      const regex = new RegExp('.*' + Utils.escapeRegExp(username + ' +1\'d your answer') + '.*' +
-      await Utils.escapeRegExp(constants.testText1Question1Title));
-      expect<any>(await activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+      const regex = await new RegExp('.*' + Utils.escapeRegExp(username + ' +1\'d your answer') + '.*' +
+        Utils.escapeRegExp(constants.testText1Question1Title));
+      await expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
     return aIndex;
   }
 
   function verifyAnswerActions(aIndex: number, username: string) {
-    it('Verify action \'edit\' on \'answers\' appears on the activity feed', async function() {
-      const regex = new RegExp('.*' + Utils.escapeRegExp(username) + ' updated their answer.*' +
-      await Utils.escapeRegExp(testData.answer.edit));
-      expect<any>(await activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+    it('Verify action \'edit\' on \'answers\' appears on the activity feed', async () => {
+      const regex = await new RegExp('.*' + Utils.escapeRegExp(username) + ' updated their answer.*' +
+      Utils.escapeRegExp(testData.answer.edit));
+      await expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
-    it('Verify action \'edit\' on \'comments\' appears on the activity feed', async function() {
+    it('Verify action \'edit\' on \'comments\' appears on the activity feed', async () => {
       aIndex += 1;
 
-      const regex = new RegExp('.*' + Utils.escapeRegExp(username) + ' updated their comment.*' +
-      await Utils.escapeRegExp(testData.answer.add) + '.*' + Utils.escapeRegExp(testData.comment.edit));
-      expect<any>(await activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+      const regex = await new RegExp('.*' + Utils.escapeRegExp(username) + ' updated their comment.*' +
+      Utils.escapeRegExp(testData.answer.add) + '.*' + Utils.escapeRegExp(testData.comment.edit));
+      await expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
-    it('Verify action \'addToLastAnswer\' on \'comments\' appears on the activity feed', async function() {
+    it('Verify action \'addToLastAnswer\' on \'comments\' appears on the activity feed', async () => {
       aIndex += 1;
 
-      const regex = new RegExp('.*' + Utils.escapeRegExp(username) + ' commented.*' +
-      await Utils.escapeRegExp(testData.answer.add) + '.*' + Utils.escapeRegExp(testData.comment.add));
-      expect<any>(await activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+      const regex = await new RegExp('.*' + Utils.escapeRegExp(username) + ' commented.*' +
+      Utils.escapeRegExp(testData.answer.add) + '.*' + Utils.escapeRegExp(testData.comment.add));
+      await expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
-    it('Verify action \'add\' on \'answers\' appears on the activity feed', async function() {
+    it('Verify action \'add\' on \'answers\' appears on the activity feed', async () => {
       aIndex += 1;
-      const regex = new RegExp('.*' + Utils.escapeRegExp(username) + ' answered.*' +
-      await Utils.escapeRegExp(testData.answer.add));
-      expect<any>(await activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+      const regex = await new RegExp('.*' + Utils.escapeRegExp(username) + ' answered.*' +
+      Utils.escapeRegExp(testData.answer.add));
+      await expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
     return aIndex;
   }
 
-  async function verifyCommonActions(aIndex: number, username: string) {
-    aIndex = await verifyAnswerActions(aIndex, username);
-    return await verifyUpvoteActions(aIndex, username);
+  function verifyCommonActions(aIndex: number, username: string) {
+    aIndex = verifyAnswerActions(aIndex, username);
+    return verifyUpvoteActions(aIndex, username);
   }
 
-  async function verifyFilters(username: string) {
-    it('Verify filters work on the activity page', async function() {
+  function verifyFilters(username: string) {
+    it('Verify filters work on the activity page', async () => {
       await activityPage.get();
       await activityPage.activitiesList.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
         return (item.getText().then((text: string) => {
           return text.indexOf(username) === -1;
         }));
-      }).then(async(activityItems: ElementFinder[]) => {
+      }).then(async (activityItems: ElementFinder[]) => {
         // Currently in "All Activity" mode, so should see items without our username
-        expect<any>(await activityItems.length).toBeGreaterThan(0);
+        await expect<any>(activityItems.length).toBeGreaterThan(0);
       });
 
       // Show only my activity
@@ -511,7 +523,7 @@ describe('Activity E2E Test', async function() {
         return (item.getText().then((text: string) => {
           return text.indexOf(username) === -1;
         }));
-      }).then(async(activityItems: ElementFinder[]) => {
+      }).then(async (activityItems: ElementFinder[]) => {
         // Currently in "Only My Activity" mode, so should see NO items without our username
         await expect<any>(activityItems.length).toEqual(0);
       });
@@ -523,9 +535,9 @@ describe('Activity E2E Test', async function() {
         return (item.getText().then((text: string) => {
           return text.indexOf(username) === -1;
         }));
-      }).then(async(activityItems: ElementFinder[]) => {
+      }).then(async (activityItems: ElementFinder[]) => {
         // Currently in "All Activity" mode, so should see items without our username
-        expect<any>(await activityItems.length).toBeGreaterThan(0);
+        await expect<any>(activityItems.length).toBeGreaterThan(0);
       });
     });
   }

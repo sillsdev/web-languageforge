@@ -56,7 +56,7 @@ class Answers {
   async add(answer: any) {
     const answerCtrl = browser.element(by.id('comments'));
     // Using ID "Comments" contains Answers and Comments
-    const newAnswer = answerCtrl.element(by.id('question-new-answer'));
+    const newAnswer = await answerCtrl.element(by.id('question-new-answer'));
     await newAnswer.sendKeys(answer);
     await browser.wait(ExpectedConditions.textToBePresentInElementValue(newAnswer, answer),
      Utils.conditionTimeout);
@@ -105,13 +105,13 @@ class Answers {
   }
 
   // Upvote the answer at the index of answers.list
-  upvote(index: number) {
-    this.vote(index, 0);
+  async upvote(index: number) {
+    await this.vote(index, 0);
   }
 
   // Downvote the answer at the index of the answers.list
-  downvote(index: number) {
-    this.vote(index, 1);
+  async downvote(index: number) {
+    await this.vote(index, 1);
   }
 
   votes(index: number) {
@@ -135,10 +135,10 @@ class Comments {
 
   // Add a comment to the last (most recent) Answer on the page
   async addToLastAnswer(comment: any) {
-    const addCommentCtrl = this.sfQuestionPage.answers.last().element(by.css('.comments'))
+    const addCommentCtrl = await this.sfQuestionPage.answers.last().element(by.css('.comments'))
       .element(by.css('a.addCommentLink'));
-    const commentField = this.sfQuestionPage.answers.last().element(by.model('newComment.content'));
-    const submit = this.sfQuestionPage.answers.last().element(by.css('.save-new-comment'));
+    const commentField = await this.sfQuestionPage.answers.last().element(by.model('newComment.content'));
+    const submit = await this.sfQuestionPage.answers.last().element(by.css('.save-new-comment'));
 
     // Click "add comment" at the end of the Answers list to un-collapse the comment text area.
     await addCommentCtrl.click();
@@ -151,12 +151,12 @@ class Comments {
 
   // Edit the last comment.  Comments are interspersed with the answers
   async edit(comment: any) {
-    const editCtrl = this.last().element(by.linkText('edit'));
+    const editCtrl = await this.last().element(by.linkText('edit'));
     await editCtrl.click();
 
     // Clicking 'edit' changes the DOM so these handles are updated here
-    const commentsField = this.last().element(by.css('textarea'));
-    const saveCtrl = this.last().element(by.partialButtonText('Save'));
+    const commentsField = await this.last().element(by.css('textarea'));
+    const saveCtrl = await this.last().element(by.partialButtonText('Save'));
 
     await commentsField.sendKeys(Key.chord(Key.CONTROL, 'a'));
     await commentsField.sendKeys(comment);
