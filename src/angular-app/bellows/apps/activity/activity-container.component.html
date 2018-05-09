@@ -1,12 +1,12 @@
 <div id="activity-app" class="content container right-panel-container" data-ng-cloak data-ng-class="{'entry-view': $ctrl.entryId}">
-    <sil-notices></sil-notices>
-
     <div class="activity-header">
         <div class="activity-filter-options">
+            <!--suppress HtmlFormInputWithoutLabel -->
             <select class="custom-select" data-ng-model="$ctrl.filterUser" data-ng-change="$ctrl.triggerFilter()"
                 data-ng-options="item as item.username for item in $ctrl.filterUsers">
                 <option value="">All Users</option>
             </select>
+            <!--suppress HtmlFormInputWithoutLabel -->
             <select class="custom-select" data-ng-model="$ctrl.filterType" data-ng-change="$ctrl.triggerFilter()"
                 data-ng-options="item as item.label for item in $ctrl.activityTypes">
                 <option value="">All Events</option>
@@ -18,36 +18,36 @@
                 <div id="activity-calendar-view" ng-class="{nigel : $ctrl.filterDateOpen}" data-ng-show="$ctrl.filterDateOpen">
                     <div>
                         <div>
-                            <label>Filter From</label>
-                            <input class="form-control"
-                                format="YYYY-MM-DD"
-                                min-view="year"
-                                max-view="month"
-                                start-view="month"
-                                set-on-select="true"
-                                ng-model="$ctrl.filterStartDate"
-                                change="$ctrl.filterByDate()"
-                                max-date="$ctrl.filterDateMax"
-                                autoclose="false"
-                                inline="true"
-                                today="true"
-                                moment-picker>
+                            <label for="filterStartDate">Filter From</label>
+                            <input class="form-control" id="filterStartDate"
+                                   data-moment-picker
+                                   data-format="YYYY-MM-DD"
+                                   data-min-view="year"
+                                   data-max-view="month"
+                                   data-start-view="month"
+                                   data-set-on-select="true"
+                                   data-ng-model="$ctrl.filterStartDate"
+                                   data-change="$ctrl.filterByDate()"
+                                   data-max-date="$ctrl.filterDateMax"
+                                   data-autoclose="false"
+                                   data-inline="true"
+                                   data-today="true">
                         </div>
                         <div>
-                            <label>Filter To</label>
-                            <input class="form-control"
-                                format="YYYY-MM-DD"
-                                min-view="year"
-                                max-view="month"
-                                start-view="month"
-                                set-on-select="true"
-                                ng-model="$ctrl.filterEndDate"
-                                change="$ctrl.filterByDate()"
-                                min-date="$ctrl.filterDateMin"
-                                max-date="$ctrl.filterDateToday"
-                                inline="true"
-                                today="true"
-                                moment-picker>
+                            <label for="filterEndDate">Filter To</label>
+                            <input class="form-control" id="filterEndDate"
+                                   data-moment-picker
+                                   data-format="YYYY-MM-DD"
+                                   data-min-view="year"
+                                   data-max-view="month"
+                                   data-start-view="month"
+                                   data-set-on-select="true"
+                                   data-ng-model="$ctrl.filterEndDate"
+                                   data-change="$ctrl.filterByDate()"
+                                   data-min-date="$ctrl.filterDateMin"
+                                   data-max-date="$ctrl.filterDateToday"
+                                   data-inline="true"
+                                   data-today="true">
                         </div>
                     </div>
                     <button class="btn btn-sm brn-default" data-ng-click="$ctrl.filterDateOpen = !$ctrl.filterDateOpen">Close <i class="fa fa-times"></i></button>
@@ -127,7 +127,7 @@
 
                                                 <div data-ng-switch-when="add_question-project">
                                                     Has a new question in the
-                                                    <a href="{{item.projectHref}}">{{item.content.project}}</a> project</span>
+                                                    <a href="{{item.projectHref}}">{{item.content.project}}</a> project
                                                     <p class="indented">&ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;</p>
                                                 </div>
 
@@ -145,7 +145,7 @@
                                                     Answered
                                                     &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
                                                     on <a href="{{item.textHref}}">{{item.content.text}}</a>
-                                                    in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+                                                    in <a href="{{item.projectHref}}">{{item.content.project}}</a>
                                                     <p class="indented" data-ng-bind-html="item.content.answer"></p>
                                                 </div>
 

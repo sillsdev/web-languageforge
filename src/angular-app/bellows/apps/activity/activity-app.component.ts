@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+
 import {ApplicationHeaderService} from '../../core/application-header.service';
 import {BreadcrumbService} from '../../core/breadcrumbs/breadcrumb.service';
 
@@ -18,5 +19,8 @@ export class ActivityAppController implements angular.IController {
 
 export const ActivityAppComponent: angular.IComponentOptions = {
   controller: ActivityAppController,
-  template: '<activity-container></activity-container>'
+  template: `
+    <sil-notices></sil-notices>
+    <activity-container></activity-container>
+    `
 };
