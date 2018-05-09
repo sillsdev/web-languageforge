@@ -171,6 +171,7 @@ describe('Lexicon E2E New Project wizard app', async () => {
   describe('Send Receive Verify page', async () => {
 
     it('can clone project', async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(page.nextButton), constants.conditionTimeout);
       await page.nextButton.click();
       await browser.wait(ExpectedConditions.visibilityOf(page.srClonePage.cloning), constants.conditionTimeout);
       await expect<any>(page.srClonePage.cloning.isDisplayed()).toBe(true);
@@ -528,7 +529,6 @@ describe('Lexicon E2E New Project wizard app', async () => {
     });
 
     it('can go to lexicon and primary language has changed', async () => {
-      await browser.sleep(500);
       await page.formStatus.expectHasNoError();
       await expect<any>(page.nextButton.isEnabled()).toBe(true);
       await page.expectFormIsValid();

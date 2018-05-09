@@ -1,9 +1,10 @@
-import {browser, by, element} from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 
 import {Utils} from '../../../bellows/shared/utils';
 import {LexModals} from './lex-modals.util';
 
 export class ConfigurationPage {
+
   modal = new LexModals();
 
   noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
@@ -83,6 +84,7 @@ export class ConfigurationPage {
       columnCheckboxes: (column: string) => {
         // column values: 'select-row', 'observer', 'commenter', 'contributor', 'manager'.
         return this.unifiedPane.entry.rows().all(by.className(column + '-checkbox'));
+
       },
       groupColumnCheckboxes: (groupIndex: number) => {
         return this.unifiedPane.entry.rows().all(by.className('checkbox-group-' + groupIndex));
@@ -178,6 +180,8 @@ export class ConfigurationPage {
       return this.getRowByLabel(label).element(by.className('hidden-if-empty-checkbox'));
     },
     selectRowCheckbox: (label: string|RegExp) => {
+      // browser.wait(ExpectedConditions.visibilityOf(this.getRowByLabel(label)
+        // .element(by.className('select-row-checkbox'))), 3000);
       return this.getRowByLabel(label).element(by.className('select-row-checkbox'));
     },
     observerCheckbox: (label: string|RegExp) => {
@@ -254,6 +258,8 @@ export class ConfigurationPage {
   };
 
   private getRowByLabel(label: string|RegExp) {
+    browser.wait(ExpectedConditions.visibilityOf(this.activePane.element(by.cssContainingText('td', label))
+      .element(by.xpath('..'))), 3000);
     return this.activePane.element(by.cssContainingText('td', label)).element(by.xpath('..'));
   }
 }

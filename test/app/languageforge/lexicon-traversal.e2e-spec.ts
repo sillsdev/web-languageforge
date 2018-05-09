@@ -8,7 +8,7 @@ import {EditorPage} from './lexicon/shared/editor.page';
 import {NewLexProjectPage} from './lexicon/shared/new-lex-project.page';
 import {ProjectSettingsPage} from './lexicon/shared/project-settings.page';
 
-describe('Lexicon E2E Page Traversal', () => {
+describe('Lexicon E2E Page  Traversal', () => {
   const constants = require('../testConstants.json');
   const loginPage = new BellowsLoginPage();
   const configurationPage = new ConfigurationPage();
@@ -25,7 +25,7 @@ describe('Lexicon E2E Page Traversal', () => {
       await configurationPage.unifiedPane.inputSystem.addGroupButton.click();
       await browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
       await browser.wait(
-        ExpectedConditions.elementToBeClickable(await configurationPage.unifiedPane.inputSystem.addInputSystemButton),
+        ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.inputSystem.addInputSystemButton),
         constants.conditionTimeout);
       await configurationPage.unifiedPane.inputSystem.addInputSystemButton.click();
       await browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
@@ -60,7 +60,6 @@ describe('Lexicon E2E Page Traversal', () => {
       await configurationPage.unifiedPane.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures').click();
       await configurationPage.unifiedPane.fieldSpecificButton('Pictures').click();
       await configurationPage.unifiedPane.example.addGroupButton.click();
-      await browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
       await browser.wait(
         ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.example.addCustomExampleButton),
         constants.conditionTimeout);
@@ -88,7 +87,7 @@ describe('Lexicon E2E Page Traversal', () => {
   describe('Explore editor page', async () => {
     it('Edit view', async () => {
       await projectsPage.get();
-      await projectsPage.clickOnProject(constants.testProjectName);
+      await projectsPage.clickOnProjectName(constants.testProjectName);
       await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
       await editorPage.noticeList.count();
       await editorPage.edit.entriesList.count();
@@ -96,11 +95,8 @@ describe('Lexicon E2E Page Traversal', () => {
     });
 
     it('Comments view', async () => {
-      let store1 = await editorPage.edit.toCommentsLink;
-      store1.click();
+      await editorPage.edit.toCommentsLink.click();
       await editorPage.comment.commentsList.count();
-      // editorPage.edit.toCommentsLink.click();
-      // editorPage.comment.commentsList.count();
     });
   });
 

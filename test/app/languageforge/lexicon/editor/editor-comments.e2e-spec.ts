@@ -13,7 +13,6 @@ describe('Lexicon E2E Editor Comments', async () => {
   it('setup: login, click on test project', async () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
-    // await projectsPage.clickOnProject(constants.testProjectName);
     await projectsPage.clickOnProjectName(constants.testProjectName);
   });
 

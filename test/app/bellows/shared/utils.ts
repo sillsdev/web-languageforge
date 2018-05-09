@@ -146,11 +146,11 @@ export class Utils {
     await browser.executeScript('window.scroll(0,0)');
   }
 
-  static isAllCheckboxes(elementArray: ElementArrayFinder, state: boolean = true) {
+  static async isAllCheckboxes(elementArray: ElementArrayFinder, state: boolean = true) {
     const all: boolean[] = [];
-    return elementArray.map((checkboxElement: ElementFinder) => {
-      checkboxElement.isSelected().then((isSelected: boolean) => {
-        all.push(isSelected);
+    return await elementArray.map(async (checkboxElement: ElementFinder) => {
+      await checkboxElement.isSelected().then(async (isSelected: boolean) => {
+        await all.push(isSelected);
       });
     }).then(() => all.every((elem: boolean) => elem === state));
   }

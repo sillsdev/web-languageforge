@@ -16,26 +16,26 @@ export class EditorPage {
   }
 
   static async getProjectIdFromUrl() {
-    return await browser.getCurrentUrl().then(url => {
+    return await browser.getCurrentUrl().then(async url => {
       const match = url.match(/\/app\/lexicon\/([0-9a-z]{24})/);
       let projectId = '';
-      if (match) {
+      if (await match) {
         projectId = match[1];
       }
 
-      return projectId;
+      return await projectId;
     });
   }
 
   static async getEntryIdFromUrl() {
-    return await browser.getCurrentUrl().then(url => {
+    return await browser.getCurrentUrl().then(async url => {
       const match = url.match(/\/editor\/entry\/([0-9a-z_]{6,24})/);
       let entryId = '';
-      if (match) {
+      if (await match) {
         entryId = match[1];
       }
 
-      return entryId;
+      return await entryId;
     });
   }
 
@@ -174,27 +174,27 @@ export class EditorPage {
 
       // Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid:
       // 'de', value: 'Wort'}]
-      const lexeme = this.edit.fields.get(0);
+      const lexeme = await this.edit.fields.get(0);
       return await this.editorUtil.dcMultitextToArray(lexeme);
     },
 
     getLexemesAsObject: async () => {
 
       // Returns lexemes in the format [{en: 'word', de: 'Wort'}]
-      const lexeme = this.edit.fields.get(0);
+      const lexeme = await this.edit.fields.get(0);
       return await this.editorUtil.dcMultitextToObject(lexeme);
     },
 
     getFirstLexeme: async () => {
-      await browser.wait(ExpectedConditions.visibilityOf(this.edit.fields.get(0)), Utils.conditionTimeout);
+      await browser.wait(ExpectedConditions.visibilityOf(await this.edit.fields.get(0)), Utils.conditionTimeout);
 
       // Returns the first (topmost) lexeme regardless of its wsid
-      const lexeme = this.edit.fields.get(0);
+      const lexeme = await this.edit.fields.get(0);
       return await this.editorUtil.dcMultitextToFirstValue(lexeme);
     },
 
     getLexemeByWsid: async (searchWsid: string) => {
-      const lexeme = this.edit.fields.get(0);
+      const lexeme = await this.edit.fields.get(0);
       return await this.editorUtil.dcMultitextToObject(lexeme).then((lexemes: string) =>
         lexemes[searchWsid]
       );
@@ -313,7 +313,7 @@ export class EditorPage {
     },
 
     // Top-row UI elements
-    // renderedDiv: this.commentDiv.element(by.css('dc-rendered')),
+
     renderedDiv: this.commentDiv.element(by.css('dc-rendered')),
     filter: {
       byTextElem: this.commentDiv.element(by.model('commentFilter.text')),

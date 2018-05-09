@@ -151,23 +151,27 @@ export class EditorUtil {
 
   // designed for use with Text-Angular controls (i.e. that don't have ordinary input or textarea)
   selectElement = {
-    sendKeys(elem: any, keys: string) {
-      elem.click();
-      browser.actions().sendKeys(keys).perform();
+    async sendKeys(elem: any, keys: string) {
+      await elem.click();
+      await browser.actions().sendKeys(keys).perform();
     },
 
-    clear(elem: any) {
+    async clear(elem: any) {
       // fix problem with protractor not scrolling to element before click
-      elem.getLocation().then((navDivLocation: any) => {
+      /*await elem.getLocation().then(async (navDivLocation: any) => {
         const initTop = (navDivLocation.y - 150) > 0 ? navDivLocation.y - 150 : 1;
         const initLeft = navDivLocation.x;
-        browser.executeScript('window.scrollTo(' + initLeft + ',' + initTop + ');');
-      });
+        await browser.executeScript('window.scrollTo(' + initLeft + ',' + initTop + ');');
+      });*/
 
-      elem.click();
-      const ctrlA = Key.chord(Key.CONTROL, 'a');
-      browser.actions().sendKeys(ctrlA).perform();
-      browser.actions().sendKeys(Key.DELETE).perform();
+      await elem.click();
+      // await browser.sleep(300);
+      // "elem.clear()" added to clear the 'Citation' text box content beacuse CTRL+A does not work in 'Citation' box.
+      await elem.clear();
+
+      /* const ctrlA = Key.chord(Key.CONTROL, 'a');
+      await browser.actions().sendKeys(ctrlA).perform();
+      await browser.actions().sendKeys(Key.DELETE).perform(); */
     }
   };
 }
