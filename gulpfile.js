@@ -36,6 +36,9 @@ var dotnetPublish = require('gulp-dotnet-cli').publish;
 var dotnetTest = require('gulp-dotnet-cli').test;
 var fs = require('fs');
 var del = require('del');
+var data = require('gulp-data');
+var ejs = require('gulp-ejs');
+var dest = require('gulp-dest');
 
 // If using a JSON file for the Google API secrets, uncomment the following line and search for
 // "Google API" to find other lines to uncomment further below.
@@ -135,10 +138,10 @@ gulp.task('sass:watch', function () {
 
 function webpack(applicationName, callback, isProduction, isWatch) {
   var watch = isWatch ? ' --watch' : '';
-  var env = applicationName ? ' --env.applicationName=' + applicationName : '';
+  var envApplication = applicationName ? ' --env.applicationName=' + applicationName : '';
   var prod = isProduction ? ' -p' : '';
-  execute('$(npm bin)/webpack' + watch + env + prod + ' --colors',
-    { cwd: '.' },
+  execute('$(npm bin)/webpack' + watch + envApplication + prod + ' --colors',
+    { cwd: '.', env: process.env },
     function (err) {
       if (err) throw new gutil.PluginError('webpack', err);
       callback();
@@ -1258,6 +1261,41 @@ gulp.task('build-upload', function (cb) {
   );
 });
 
+// ------------------------------------------
+// Create WebsiteInstances.php from template
+// ------------------------------------------
+gulp.task('build-createWebsiteDefsPhp', function () {
+  return gulp.src('src/Api/Library/Shared/WebsiteInstances.ejs')
+    .pipe(data(function () {
+      return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
+    }))
+    .pipe(ejs())
+    .pipe(dest('src/Api/Library/Shared/:name.php'))
+    .pipe(gulp.dest('src/Api/Library/Shared/'));
+});
+
+// ------------------------------------------
+// Create website-instances.ts from template
+// ------------------------------------------
+gulp.task('build-createWebsiteDefsTs', function () {
+  return gulp.src('src/angular-app/bellows/core/website-instances.ejs')
+    .pipe(data(function () {
+      return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
+    }))
+    .pipe(ejs())
+    .pipe(dest('src/angular-app/bellows/core/:name.generated-data.ts'))
+    .pipe(gulp.dest('src/angular-app/bellows/core/'));
+});
+
+// ------------------------------------------
+// Create files from templates
+// ------------------------------------------
+gulp.task('build-createWebsiteDefs',
+  gulp.parallel(
+    'build-createWebsiteDefsPhp',
+    'build-createWebsiteDefsTs')
+);
+
 // -------------------------------------
 //   Task: Build (General)
 // -------------------------------------
@@ -1271,7 +1309,8 @@ gulp.task('build',
       'build-productionConfig',
       'build-clearLocalCache',
       'build-remove-test-fixtures',
-      'build-dotnet'),
+      'build-dotnet',
+      'build-createWebsiteDefs'),
     'sass',
     'build-webpack',
     'build-minify',
@@ -1307,6 +1346,7 @@ gulp.task('dev-build',
 gulp.task('dev-dependencies-and-build',
   gulp.series(
     'get-dependencies',
+    'build-createWebsiteDefs',
     'dev-build'
   )
 );
