@@ -7,6 +7,7 @@ import {SessionService} from '../../core/session.service';
 import {UtilityService} from '../../core/utility.service';
 import {Project} from '../../shared/model/project.model';
 import {User} from '../../shared/model/user.model';
+import {FieldControl} from "../../../languageforge/lexicon/editor/field/field-control.model";
 
 class Activity {
   action: string;
@@ -242,6 +243,13 @@ export class ActivityContainerController implements angular.IController {
     }, true);
   }
 
+  $onChanges(changes: any): void {
+    if (changes.entryId.currentValue) {
+      this.entryId = changes.entryId.currentValue;
+      this.loadActivityFeed(true);
+    }
+  }
+
   loadActivityFeed(reset: boolean = false) {
     if (reset) {
       this.activities = [];
@@ -271,17 +279,14 @@ export class ActivityContainerController implements angular.IController {
     }
     // Choose appropriate API end point
     if (angular.isDefined(this.entryId)) {
-      // Need to wait for entry promises to resolve before this becomes available
-      this.$scope.$watch(() => this.entryId, () => {
-        if (this.entryId) {
-          this.activities = [];
-          this.filterParams.skip = 0;
-          this.loadingFeed = true;
-          this.activityService.listActivityForLexicalEntry(this.entryId, this.filterParams, result => {
-            this.processActivityListFeed(result);
-          });
-        }
-      });
+      if (this.entryId && !this.entryId.startsWith('_new_')) {
+        this.activities = [];
+        this.filterParams.skip = 0;
+        this.loadingFeed = true;
+        this.activityService.listActivityForLexicalEntry(this.entryId, this.filterParams, result => {
+          this.processActivityListFeed(result);
+        });
+      }
     } else {
       this.loadingFeed = true;
       this.activityService.listActivity(this.filterParams, result => {
