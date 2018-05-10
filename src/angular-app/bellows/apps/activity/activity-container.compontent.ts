@@ -224,10 +224,10 @@ export class ActivityContainerController implements angular.IController {
         activityGroup.userGroups = [];
         for (const activity of this.filteredActivities) {
           if (activity.date > activityGroup.date && activity.date < previousDate) {
-            if (angular.isDefined(userGroup.user) && userGroup.user.id !== activity.userRef.id) {
+            if (userGroup.user != null && userGroup.user.id !== activity.userRef.id) {
               userGroupIndex++;
             }
-            if (!angular.isDefined(activityGroup.userGroups[userGroupIndex])) {
+            if (activityGroup.userGroups[userGroupIndex] == null) {
               userGroup = new ActivityUserGroup(activity);
               activityGroup.userGroups[userGroupIndex] = userGroup;
             }
@@ -243,13 +243,13 @@ export class ActivityContainerController implements angular.IController {
   }
 
   $onChanges(changes: any): void {
-    if (changes.entryId.currentValue) {
-      this.entryId = changes.entryId.currentValue;
+    const entryIdChange = changes.entryId as angular.IChangesObject<string>;
+    if (entryIdChange != null && entryIdChange.currentValue) {
       this.loadActivityFeed(true);
     }
   }
 
-  loadActivityFeed(reset: boolean = false) {
+  loadActivityFeed(reset: boolean = false): void {
     if (reset) {
       this.activities = [];
       this.filterParams.skip = 0;
@@ -277,7 +277,7 @@ export class ActivityContainerController implements angular.IController {
       }
     }
     // Choose appropriate API end point
-    if (angular.isDefined(this.entryId)) {
+    if (this.entryId != null) {
       if (this.entryId && !this.entryId.startsWith('_new_')) {
         this.activities = [];
         this.filterParams.skip = 0;
@@ -294,12 +294,12 @@ export class ActivityContainerController implements angular.IController {
     }
   }
 
-  loadMoreActivities() {
+  loadMoreActivities(): void {
     this.filterParams.skip += this.filterParams.limit;
     this.loadActivityFeed();
   }
 
-  processActivityListFeed(result: JsonRpcResult) {
+  processActivityListFeed(result: JsonRpcResult): void {
     this.loadingFeed = false;
     if (result.ok) {
       // Prepare the activities
@@ -324,11 +324,11 @@ export class ActivityContainerController implements angular.IController {
     }
   }
 
-  isUnread(id: string) {
+  isUnread(id: string): boolean {
     return (this.unread.findIndex(value => value === id) > -1);
   }
 
-  decodeActivityList(items: Activity[]) {
+  decodeActivityList(items: Activity[]): void {
     for (const item of items) {
       if ('userRef' in item) {
         item.userHref = this.linkService.user(item.userRef.id);
@@ -378,7 +378,7 @@ export class ActivityContainerController implements angular.IController {
     }
   }
 
-  triggerFilter() {
+  triggerFilter(): void {
     // Reset the filter
     this.filteredActivities = this.activities;
     this.filterByUser();
@@ -386,7 +386,7 @@ export class ActivityContainerController implements angular.IController {
     this.activityService.setUnreadCount(this.getUnreadCount());
   }
 
-  filterByUser() {
+  filterByUser(): void {
     if (!this.filterUser) return;
     const filteredActivities = [];
     for (const activity of this.activities) {
@@ -397,7 +397,7 @@ export class ActivityContainerController implements angular.IController {
     this.filteredActivities = filteredActivities;
   }
 
-  filterByType() {
+  filterByType(): void {
     if (!this.filterType) return;
     const filteredActivities = [];
     for (const activity of this.filteredActivities) {
@@ -408,13 +408,13 @@ export class ActivityContainerController implements angular.IController {
     this.filteredActivities = filteredActivities;
   }
 
-  filterByDate() {
-    if (angular.isDefined(this.filterStartDate) && this.filterStartDate !== true) {
+  filterByDate(): void {
+    if (this.filterStartDate != null && this.filterStartDate !== true) {
       this.filterParams.startDate = this.filterStartDate._d;
     } else {
       this.filterParams.startDate = null;
     }
-    if (angular.isDefined(this.filterEndDate) && this.filterEndDate !== true) {
+    if (this.filterEndDate != null && this.filterEndDate !== true) {
       this.filterParams.endDate = this.filterEndDate._d;
     } else {
       this.filterParams.endDate = null;
@@ -422,7 +422,7 @@ export class ActivityContainerController implements angular.IController {
     this.loadActivityFeed(true);
   }
 
-  buildUsersList() {
+  buildUsersList(): void {
     this.sessionService.getSession().then(session => {
       this.filterUsers = [];
       this.filterUsers.push({
@@ -447,7 +447,7 @@ export class ActivityContainerController implements angular.IController {
     });
   }
 
-  getUnreadCount() {
+  getUnreadCount(): number {
     let unread = 0;
     for (const activity of this.filteredActivities) {
       if (this.isUnread(activity.id)) {
@@ -456,12 +456,13 @@ export class ActivityContainerController implements angular.IController {
     }
     return unread;
   }
+
 }
 
 export const ActivityContainerComponent: angular.IComponentOptions = {
-  controller: ActivityContainerController,
-  templateUrl: '/angular-app/bellows/apps/activity/activity-container.component.html',
   bindings: {
     entryId: '@?'
-  }
+  },
+  controller: ActivityContainerController,
+  templateUrl: '/angular-app/bellows/apps/activity/activity-container.component.html'
 };
