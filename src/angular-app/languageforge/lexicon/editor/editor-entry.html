@@ -1,8 +1,8 @@
-<div id="lexAppEditView" class="animate-switch" ng-class="{'panel-closing': control.commentPanelVisible === -1, 'comments-panel-visible': commentPanelVisible === true}">
+<div id="lexAppEditView" class="animate-switch" ng-class="{'panel-closing': control.rightPanelVisible === -1, 'right-panel-visible': rightPanelVisible === true}">
     <div class="container">
         <div class="row">
             <div class="col-md-5 col-lg-4 entries-list-container d-none d-md-block">
-                <div class="entry-words-minimized"><button class="btn btn-primary" ng-click="control.hideCommentsPanel()">Show words in dictionary</button></div>
+                <div class="entry-words-minimized"><button class="btn btn-primary" ng-click="control.hideRightPanel()">Show words in dictionary</button></div>
                 <div class="entry-words-container">
                     <div class="row">
                         <div class="col">
@@ -110,6 +110,17 @@
             </div>
         </div>
     </div>
-    <lex-comments-view id="lexAppCommentView" class="animate-switch" entry-config="config.entry" entry="currentEntry"
-                       control="control"></lex-comments-view>
+    <div id="lexRightPanels">
+        <div class="right-panel-list">
+            <div id="lexAppCommentView" class="right-panel">
+                <lex-comments-view entry-config="config.entry" entry="currentEntry" control="control"></lex-comments-view>
+            </div>
+            <div id="lexAppActivityFeed" class="right-panel">
+                <activity-container entry-id="{{currentEntry.id}}"></activity-container>
+            </div>
+        </div>
+        <div class="right-panel-backdrop" ng-click="control.hideRightPanel()">
+            <i class="fa fa-times"></i>
+        </div>
+    </div>
 </div>
