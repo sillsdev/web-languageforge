@@ -3,9 +3,11 @@
 use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Api\Library\Shared\Website;
+use Api\Library\Shared\Palaso\Exception\BugsnagExceptionHandler;
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once 'config.php';
+require_once 'version.php';
 
 // The name of THIS file
 define('SELF', basename(__FILE__));
@@ -22,7 +24,7 @@ $app = new Silex\Application();
  *---------------------------------------------------------------
  *
  * Different environments will require different levels of error reporting and debugging.
- * By default development will show errors but testing and live will hide them.
+ * By default development will show errors but testing and live will hide them and instead report errors to bugsnag.com.
  * By default development will have debugging on but testing and live will turn it off.
  */
 
@@ -35,6 +37,7 @@ if (defined('ENVIRONMENT')) {
 
         case 'testing':
         case 'production':
+            BugsnagExceptionHandler::setup($app, BUGSNAG_API_KEY);
             error_reporting(0);
             $app['debug'] = false;
             break;
@@ -264,7 +267,7 @@ $app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bin
 $app->get('/oauthcallback/google', 'Site\OAuth\GoogleOAuth::oauthCallback');
 $app->get('/oauthcallback/paratext', 'Site\OAuth\ParatextOAuth::oauthCallback');
 
-$app->get('/oauth/jwt', 'Site\OAuth\OAuthJWTToken::validateOAuthToken');
+$app->post('/oauth/jwt', 'Site\OAuth\OAuthJWTToken::validateOAuthToken');
 
 $app->get('/download/assets/{appName}/{projectSlug}/audio/{filename}', 'Site\Controller\Download::assets');
 $app->get('/download/assets/{appName}/{projectSlug}/{filename}', 'Site\Controller\Download::assets');

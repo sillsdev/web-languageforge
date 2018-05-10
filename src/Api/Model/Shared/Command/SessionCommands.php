@@ -24,6 +24,14 @@ class SessionCommands
 
         $sessionData['isProduction'] = $website->isProduction;
 
+        // BUGSNAG_API_KEY and VERSION are not defined when running tests
+        if (defined('BUGSNAG_API_KEY')) {
+            $sessionData['bugsnagApiKey'] = BUGSNAG_API_KEY;
+        }
+        if (defined('VERSION')) {
+            $sessionData['version'] = VERSION;
+        }
+
         if ($userId) {
             $sessionData['userId'] = (string) $userId;
             $user = new UserModel($userId);
@@ -75,15 +83,26 @@ class SessionCommands
             return false;
         }
 
-        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . "jsonSessionData" . DIRECTORY_SEPARATOR . $sessionId . ".json";
+        return self::getSessionDirectory($mockFilename) . DIRECTORY_SEPARATOR . $sessionId . ".json";
+    }
+
+    private static function getSessionDirectory($mockFilename = null)
+    {
+        if(is_null($mockFilename)) {
+            $subdir = "jsonSessionData";
+        } else {
+            $subdir = "jsonSessionData4tests";
+        }
+
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $subdir;
     }
 
     private static function write($data, $mockFilename = null)
     {
         $jsonData = json_encode($data);
 
-        if(!file_exists(sys_get_temp_dir() . DIRECTORY_SEPARATOR . "jsonSessionData")){
-            mkdir(sys_get_temp_dir() . DIRECTORY_SEPARATOR . "jsonSessionData");
+        if(!file_exists(self::getSessionDirectory($mockFilename))){
+            mkdir(self::getSessionDirectory($mockFilename));
         }
 
         //May pose a possible security risk to save with ID as filename.

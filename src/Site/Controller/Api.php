@@ -24,7 +24,7 @@ class Api
         require_once $filePath;
         $service = new $serviceClassName($app);
 
-        return $app->json(JsonRpcServer::handle($request, $service), 200);
+        return $app->json(JsonRpcServer::handle($request, $app, $service), 200);
     }
 
 }
