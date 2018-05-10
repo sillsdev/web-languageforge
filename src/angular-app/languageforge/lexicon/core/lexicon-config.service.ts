@@ -114,6 +114,14 @@ export class LexiconConfigService {
         return search[fieldName];
       }
 
+      // Check if this is the main entry and setup some basic configuration
+      if (fieldName === 'entry') {
+        const entryConfig = new LexConfigMultiText();
+        entryConfig.type = 'multitext';
+        entryConfig.label = 'Entry';
+        return entryConfig;
+      }
+
       return undefined;
     });
   }

@@ -117,7 +117,8 @@ angular.module('palaso.ui.comments')
 
         $scope.isCommentingAvailable = function isCommentingAvailable() {
           return ($scope.control.currentEntry.id.indexOf('_new_') !== -1 ||
-            !$scope.control.rights.canComment());
+            !$scope.control.rights.canComment() ||
+            ($scope.field == 'entry' && !$scope.getCount()));
         };
 
         $scope.$watch('model', function () {
