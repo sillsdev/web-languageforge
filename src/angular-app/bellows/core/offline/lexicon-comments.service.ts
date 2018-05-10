@@ -81,7 +81,7 @@ export class LexiconCommentService {
           // As the promise runs when its ready the comments can double up if loadEntryComments is run multiple times
           if (this.comments.items.currentEntry.indexOf(comment) === -1) {
             let contextGuid = '';
-            if (comment.contextGuid !== undefined) {
+            if (comment.contextGuid !== undefined && comment.contextGuid !== '') {
               contextGuid = comment.contextGuid;
             } else {
               contextGuid = comment.regarding.field +

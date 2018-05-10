@@ -1,8 +1,16 @@
 'use strict';
 
-angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
-  'palaso.ui.dc.entry', 'palaso.ui.comments', 'truncate',
-  'palaso.ui.scroll', 'palaso.ui.notice', 'activity'])
+angular.module('lexicon.editor', [
+  'ui.router',
+  'ui.bootstrap',
+  'coreModule',
+  'activity',
+  'editorFieldModule',
+  'palaso.ui.comments',
+  'truncate',
+  'palaso.ui.scroll',
+  'palaso.ui.notice'
+])
   .config(['$stateProvider', function ($stateProvider) {
 
     // State machine from ui.router
@@ -29,8 +37,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
     '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'lexRightsService',
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
     'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService', '$timeout',
-    'activityService',
-    'applicationHeaderService',
+    'activityService', 'applicationHeaderService',
   function ($scope, userService, sessionService, lexService, $q,
             $state, $window, $interval, $filter, linkService, utils, rightsService,
             notice, $rootScope, $location, lexConfig, commentService,
@@ -263,8 +270,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       });
 
       function prepEntryForUpdate(entry) {
-        var entryForUpdate = recursiveRemoveProperties(angular.copy(entry), ['guid',
-          'mercurialSha', 'authorInfo', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+        var entryForUpdate = recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha',
+          'authorInfo', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
         entryForUpdate = prepCustomFieldsForUpdate(entryForUpdate);
         return entryForUpdate;
       }
@@ -292,12 +299,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       $scope.getMeaningForDisplay = function getMeaningForDisplay(entry) {
         var meaning = '';
         if (entry.senses && entry.senses[0]) {
-          meaning =
-            utils.constructor.getMeaning(
-              $scope.config,
-              $scope.config.entry.fields.senses,
-              entry.senses[0]
-            );
+          meaning = utils.constructor.getMeaning($scope.config, $scope.config.entry.fields.senses,
+            entry.senses[0]);
         }
 
         if (!meaning) {

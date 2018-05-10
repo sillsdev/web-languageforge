@@ -23,11 +23,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 namespace Api\Library\Shared\Palaso;
 
+use Api\Library\Shared\Palaso\Exception\BugsnagExceptionHandler;
 use Api\Library\Shared\Palaso\Exception\ErrorHandler;
 use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Library\Shared\Palaso\Exception\UserNotAuthenticatedException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Palaso\Utilities\CodeGuard;
+use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -44,11 +46,12 @@ class JsonRpcServer
      * This function handle a request binding it to a given object
      *
      * @param Request $request
+     * @param Application $app
      * @param object $api
      * @return array|null
      * @throws \Exception
      */
-    public static function handle(Request $request, $api) {
+    public static function handle(Request $request, Application $app, $api) {
         // user-defined error handler to catch annoying php errors and throw them as exceptions
         set_error_handler(function ($errno, $errstr, $errfile, $errline) {
             throw new ErrorHandler($errstr, 0, $errno, $errfile, $errline);
@@ -107,6 +110,9 @@ class JsonRpcServer
             } elseif ($e instanceof UserUnauthorizedException) {
                 $response['error']['type'] = 'UserUnauthorizedException';
                 $response['error']['message'] = $e->getMessage();
+            }
+            else {
+                BugsnagExceptionHandler::getBugsnag($app)->notifyException($e);
             }
             $message = '';
             $message .= $e->getMessage() . "\n";

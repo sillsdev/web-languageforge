@@ -92,3 +92,7 @@ if (! defined('JWT_KEY')) {
 if (! defined('SR_TRANSLATE_FOLDER')) {
     define('SR_TRANSLATE_FOLDER', '/var/lib/scriptureforge/translate/sendreceive');
 }
+
+if (!defined('BUGSNAG_API_KEY')) {
+    define('BUGSNAG_API_KEY', 'missing-bugsnag-api-key');
+}
