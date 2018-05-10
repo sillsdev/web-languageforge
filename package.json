@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "angular": "1.6.10",
+    "angular-moment-picker": "git+https://github.com/sillsdev/angular-moment-picker.git",
     "angular-route": "^1.6.5",
     "angular-sanitize": "^1.6.10",
     "angular-sortable-view": "0.0.15",
