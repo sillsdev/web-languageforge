@@ -25,7 +25,7 @@ export const FieldSenseModule = angular
         const newExample = {};
         $scope.control.makeValidModelRecursive($scope.config.fields.examples, newExample);
         $scope.model.examples.push(newExample);
-        $scope.control.hideCommentsPanel();
+        $scope.control.hideRightPanel();
       };
 
       $scope.deleteExample = function deleteExample(index: number): void {
@@ -36,7 +36,7 @@ export const FieldSenseModule = angular
         modal.showModalSimple('Delete Example', deletemsg, 'Cancel', 'Delete Example')
           .then(() => {
             $scope.model.examples.splice(index, 1);
-            $scope.control.hideCommentsPanel();
+            $scope.control.hideRightPanel();
           }, angular.noop);
       };
 

@@ -1,13 +1,15 @@
 import { ApiService, JsonRpcCallback } from './api.service';
 
 export class FilterParams {
-  startDate?: Date;
-  endDate?: Date;
-  limit?: number;
-  skip?: number;
+  startDate: Date = null;
+  endDate: Date = null;
+  limit: number = 100;
+  skip: number = 0;
 }
 
 export class ActivityService {
+  unreadCount: number;
+
   static $inject: string[] = ['apiService'];
   constructor(private api: ApiService) {}
 
@@ -25,5 +27,9 @@ export class ActivityService {
 
   listActivityForLexicalEntry(entryId: string, filterParams: FilterParams, callback?: JsonRpcCallback) {
     return this.api.call('activity_list_dto_for_lexical_entry', [entryId, filterParams], callback);
+  }
+
+  setUnreadCount(count: number) {
+    this.unreadCount = count;
   }
 }

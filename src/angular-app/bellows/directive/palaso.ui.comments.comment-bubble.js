@@ -50,7 +50,7 @@ angular.module('palaso.ui.comments')
             }
 
             if ($scope.control.commentContext.contextGuid === $scope.contextGuid) {
-              $scope.control.hideCommentsPanel();
+              $scope.control.hideRightPanel();
             } else {
               $scope.control.setCommentContext($scope.contextGuid);
               $scope.selectFieldForComment();
@@ -65,7 +65,10 @@ angular.module('palaso.ui.comments')
               var rightPanelOffsetTop = rightPanel.offset().top;
               var offsetAuthor = 40;
               rightPanel.css({ paddingTop: (bubbleOffset - rightPanelOffsetTop - offsetAuthor) });
-              $scope.control.showCommentsPanel();
+              if ($scope.control.rightPanelVisible === false ||
+                !angular.element('#lexAppCommentView').hasClass('panel-visible')) {
+                $scope.control.showCommentsPanel();
+              }
             }
           };
         });

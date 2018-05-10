@@ -4,6 +4,7 @@ angular.module('lexicon.editor', [
   'ui.router',
   'ui.bootstrap',
   'coreModule',
+  'activity',
   'editorFieldModule',
   'palaso.ui.comments',
   'truncate',
@@ -36,12 +37,12 @@ angular.module('lexicon.editor', [
     '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'lexRightsService',
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
     'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService', '$timeout',
-    'applicationHeaderService',
+    'activityService', 'applicationHeaderService',
   function ($scope, userService, sessionService, lexService, $q,
             $state, $window, $interval, $filter, linkService, utils, rightsService,
             notice, $rootScope, $location, lexConfig, commentService,
             editorService, lexProjectService, sendReceive, modal, $timeout,
-            applicationHeaderService) {
+            activityService, applicationHeaderService) {
 
     var pristineEntry = {};
     var warnOfUnsavedEditsId;
@@ -52,6 +53,7 @@ angular.module('lexicon.editor', [
     $scope.commentService = commentService;
     $scope.editorService = editorService;
     $scope.configService = lexConfig;
+    $scope.activityService = activityService;
     $scope.entries = editorService.entries;
     $scope.visibleEntries = editorService.visibleEntries;
     $scope.filteredEntries = editorService.filteredEntries;
@@ -60,7 +62,7 @@ angular.module('lexicon.editor', [
     $scope.commentContext = {
       contextGuid: ''
     };
-    $scope.commentPanelVisible = false;
+    $scope.rightPanelVisible = false;
     $scope.sortEntries = function (args) {
       editorService.sortEntries.apply(this, arguments).then(function () {
         $scope.typeahead.searchEntries($scope.typeahead.searchItemSelected);
@@ -462,7 +464,7 @@ angular.module('lexicon.editor', [
           $scope.saveCurrentEntry();
           setCurrentEntry($scope.entries[editorService.getIndexInList(id, $scope.entries)]);
           commentService.loadEntryComments(id);
-          if ($scope.commentPanelVisible === true && $scope.commentContext.contextGuid !== '') {
+          if ($scope.rightPanelVisible === true && $scope.commentContext.contextGuid !== '') {
             $scope.showComments();
             $scope.setCommentContext('', '');
           }
@@ -496,7 +498,7 @@ angular.module('lexicon.editor', [
             $state.go('editor.entry', { entryId: newEntry.id });
           }
 
-          $scope.hideCommentsPanel();
+          $scope.hideRightPanel();
         });
       };
 
@@ -646,7 +648,7 @@ angular.module('lexicon.editor', [
               });
             }
 
-            $scope.hideCommentsPanel();
+            $scope.hideRightPanel();
           }, angular.noop);
       };
 
@@ -694,38 +696,71 @@ angular.module('lexicon.editor', [
 
       // Comments View
       $scope.showComments = function showComments() {
-        if ($scope.commentPanelVisible === true && $scope.commentContext.contextGuid === '') {
-          $scope.hideCommentsPanel();
+        if ($scope.rightPanelVisible === true && $scope.commentContext.contextGuid === '') {
+          $scope.showCommentsPanel();
 
           // Reset the comment context AFTER the panel starts hiding
           $scope.setCommentContext('', '', '', '', '');
         } else {
           // Reset the comment context BEFORE we start showing the panel
           $scope.setCommentContext('', '', '', '', '');
-          angular.element('.comments-right-panel').css({ paddingTop: 0 });
-          $scope.showCommentsPanel();
+          document.querySelector('.comments-right-panel').style.paddingTop = 0;
+          if ($scope.rightPanelVisible === false) {
+            $scope.showCommentsPanel();
+          }
         }
       };
 
       $scope.showCommentsPanel = function showCommentsPanel() {
-        if ($scope.commentPanelVisible !== true) {
-          $scope.commentPanelVisible = true;
-          angular.element('.comments-right-panel-container').addClass('panel-opening');
-          $timeout(function () {
-            angular.element('.comments-right-panel-container').removeClass('panel-opening');
-          }, 500);
+        $scope.showRightPanel('#lexAppCommentView');
+      };
+
+      $scope.showActivityFeed = function showCommentsPanel() {
+        $scope.showRightPanel('#lexAppActivityFeed');
+      };
+
+      $scope.showRightPanel = function showRightPanel(element) {
+        var currentElement = document.querySelector(element);
+        if ($scope.rightPanelVisible === false) {
+          $scope.rightPanelVisible = true;
+          currentElement.classList.add('panel-visible');
+        } else if ($scope.rightPanelVisible === true) {
+          if (currentElement.classList.contains('panel-visible')) {
+            $scope.hideRightPanel();
+          } else {
+            var visibleElement = document.querySelector('.panel-visible');
+            visibleElement.classList.remove('panel-visible');
+            visibleElement.classList.add('panel-closing', 'panel-switch');
+            currentElement.classList.add('panel-visible');
+            $timeout(function () {
+              document.querySelector('.panel-closing').classList
+                .remove('panel-closing', 'panel-switch');
+            }, 500);
+          }
         }
       };
 
-      $scope.hideCommentsPanel = function hideCommentsPanel() {
-        $scope.commentPanelVisible = -1;
+      $scope.hideRightPanel = function hideRightPanel() {
+        if ($scope.rightPanelVisible === true) {
+          $scope.rightPanelVisible = -1;
 
-        // Delay relates to the CSS timer for mobile vs > tablet
-        var delay = (angular.element('#compactEntryListContainer').is(':visible')) ? 1500 : 500;
-        $timeout(function () {
-          $scope.commentPanelVisible = false;
-          $scope.setCommentContext('', '');
-        }, delay);
+          // Delay relates to the CSS timer for mobile vs > tablet
+          var delay = (screen.availWidth >= 768) ? 1500 : 500;
+          var visibleElement = document.querySelector('.panel-visible');
+          visibleElement.classList.add('panel-closing');
+          visibleElement.classList.remove('panel-visible');
+          $timeout(function () {
+            var closingPanels = document.querySelectorAll('.panel-closing');
+            for (var index in closingPanels) {
+              if (typeof (closingPanels[index]) === 'object') {
+                closingPanels[index].classList.remove('panel-closing');
+              }
+            }
+
+            $scope.rightPanelVisible = false;
+            $scope.setCommentContext('', '');
+          }, delay);
+        }
       };
 
       sendReceive.setPollUpdateSuccessCallback(pollUpdateSuccess);
