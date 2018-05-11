@@ -4,9 +4,9 @@ import Quill, { RangeStatic } from 'quill';
 import { InputSystem } from '../../../shared/model/input-system.model';
 import { DocType, SaveState } from '../core/constants';
 import { MachineService } from '../core/machine.service';
-import { RealTimeService } from '../core/realtime.service';
 import { MetricService } from './metric.service';
 import { SuggestionsTheme } from './quill/suggestions-theme';
+import { RealTimeService } from './realtime.service';
 import { Segment } from './segment';
 import { MachineSegmenter, Segmenter, UsxSegmenter } from './segmenter';
 
