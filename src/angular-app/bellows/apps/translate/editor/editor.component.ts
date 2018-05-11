@@ -171,22 +171,23 @@ export class TranslateEditorController implements angular.IController {
           this.source.isScripture = this.tecProject.config.isTranslationDataScripture;
           this.target.isScripture = this.tecProject.config.isTranslationDataScripture;
 
-          if (this.tecProject.config.documentSets.idsOrdered != null &&
-            this.tecProject.config.documentSets.idsOrdered.length > 0
-          ) {
-            for (const id of this.tecProject.config.documentSets.idsOrdered) {
-              if (result.data.documentSetList[id] != null) {
-                this.documentSets.push(result.data.documentSetList[id]);
-              }
-            }
-          } else {
+          if (this.tecProject.config.documentSets.idsOrdered == null) {
             this.tecProject.config.documentSets.idsOrdered = [];
-            angular.forEach(result.data.documentSetList, documentSet => {
-              if (angular.isDefined(documentSet)) {
+          }
+          for (const id of this.tecProject.config.documentSets.idsOrdered) {
+            if (result.data.documentSetList[id] != null) {
+              this.documentSets.push(result.data.documentSetList[id]);
+              delete result.data.documentSetList[id];
+            }
+          }
+          for (const documentSetId in result.data.documentSetList) {
+            if (result.data.documentSetList.hasOwnProperty(documentSetId)) {
+              const documentSet = result.data.documentSetList[documentSetId];
+              if (documentSet != null) {
                 this.documentSets.push(documentSet);
                 this.tecProject.config.documentSets.idsOrdered.push(documentSet.id);
               }
-            });
+            }
           }
 
           this.machine.confidenceThreshold = this.tecProject.config.confidenceThreshold;
