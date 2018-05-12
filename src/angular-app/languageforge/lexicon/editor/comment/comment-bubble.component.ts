@@ -4,7 +4,7 @@ angular.module('lexCommentsModule')
   .directive('commentBubble', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/comment-bubble.html',
+      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/comment-bubble.component.html',
       scope: {
         field: '=',
         control: '=',

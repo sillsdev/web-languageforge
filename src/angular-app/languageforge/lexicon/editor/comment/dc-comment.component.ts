@@ -6,7 +6,7 @@ angular.module('lexCommentsModule')
   .directive('dcComment', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/dc-comment.html',
+      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/dc-comment.component.html',
       controller: ['$scope', 'lexCommentService', 'sessionService', 'utilService', 'modalService',
         function ($scope, commentService, sessionService, util, modal) {
           $scope.getAvatarUrl = util.constructor.getAvatarUrl;
