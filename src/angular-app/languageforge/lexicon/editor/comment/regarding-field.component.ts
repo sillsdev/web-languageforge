@@ -6,7 +6,7 @@ angular.module('lexCommentsModule')
   .directive('regardingField', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/regarding-field.html',
+      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/regarding-field.component.html',
       scope: {
         content: '=',
         control: '=',
