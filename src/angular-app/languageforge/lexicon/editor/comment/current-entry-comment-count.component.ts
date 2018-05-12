@@ -1,17 +1,11 @@
-'use strict';
+import {LexiconCommentService} from '../../../../bellows/core/offline/lexicon-comments.service';
 
-angular.module('lexCommentsModule')
-
-  // Palaso UI Dictionary Control: Comments
-  .directive('currentEntryCommentCount', [function () {
-    return {
-      restrict: 'E',
-      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/' +
-        'current-entry-comment-count.component.html',
-      controller: ['$scope', 'lexCommentService', function ($scope, commentService) {
-        $scope.count = commentService.comments.counts.currentEntry;
-      }]
-    };
-  }])
-
-;
+export function CurrentEntryCommentCountComponent() {
+  return {
+    restrict: 'E',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/comment/current-entry-comment-count.component.html',
+    controller: ['$scope', 'lexCommentService', ($scope: any, commentService: LexiconCommentService) => {
+      $scope.count = commentService.comments.counts.currentEntry;
+    }]
+  };
+}
