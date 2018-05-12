@@ -7,7 +7,7 @@ angular.module('lexCommentsModule')
     return {
       restrict: 'E',
       templateUrl: '/angular-app/languageforge/lexicon/editor/comment/' +
-        'current-entry-comment-count.html',
+        'current-entry-comment-count.component.html',
       controller: ['$scope', 'lexCommentService', function ($scope, commentService) {
         $scope.count = commentService.comments.counts.currentEntry;
       }]

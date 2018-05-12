@@ -5,7 +5,7 @@ angular.module('lexCommentsModule')
   .directive('commentsRightPanel', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/comments-right-panel.html',
+      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/comments-right-panel.component.html',
       scope: {
         entry: '=',
         control: '=',
