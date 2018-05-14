@@ -98,18 +98,22 @@ class ActivityCommands
         return ActivityCommands::updateAnswer($projectModel, $questionId, $answerModel, 'add');
     }
 
-    /**
-     *
-     * @param ProjectModel $projectModel
-     * @param string $textId
-     * @param TextModel $textModel
-     * @return string activity id
-     */
-    public static function addText($projectModel, $textId, $textModel)
+	/**
+	 *
+	 * @param ProjectModel $projectModel
+	 * @param string $textId
+	 * @param TextModel $textModel
+	 * @param string $userId
+	 *
+	 * @return string activity id
+	 * @throws \Exception
+	 */
+    public static function addText($projectModel, $textId, $textModel, $userId)
     {
         $activity = new ActivityModel($projectModel);
         $activity->action = ActivityModel::ADD_TEXT;
         $activity->textRef->id = $textId;
+        $activity->userRef = $userId;
         $activity->addContent(ActivityModel::TEXT, $textModel->title);
         $activityId = $activity->write();
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
@@ -118,17 +122,21 @@ class ActivityCommands
         return $activityId;
     }
 
-    /**
-     * @param ProjectModel $projectModel
-     * @param string $questionId
-     * @param QuestionModel $questionModel
-     * @return string activity id
-     */
-    public static function addQuestion($projectModel, $questionId, $questionModel)
+	/**
+	 * @param ProjectModel $projectModel
+	 * @param string $questionId
+	 * @param QuestionModel $questionModel
+	 * @param string $userId
+	 *
+	 * @return string activity id
+	 * @throws \Exception
+	 */
+    public static function addQuestion($projectModel, $questionId, $questionModel, $userId)
     {
         $activity = new ActivityModel($projectModel);
         $text = new TextModel($projectModel, $questionModel->textRef->asString());
         $activity->action = ActivityModel::ADD_QUESTION;
+        $activity->userRef = $userId;
         $activity->textRef->id = $questionModel->textRef->asString();
         $activity->questionRef->id = $questionId;
         $activity->addContent(ActivityModel::TEXT, $text->title);
