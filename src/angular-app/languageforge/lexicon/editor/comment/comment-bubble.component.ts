@@ -1,140 +1,153 @@
 import * as angular from 'angular';
 
 import {LexiconCommentService} from '../../../../bellows/core/offline/lexicon-comments.service';
-import {SessionService} from '../../../../bellows/core/session.service';
+import {InputSystem} from '../../../../bellows/shared/model/input-system.model';
 import {LexiconConfigService} from '../../core/lexicon-config.service';
+import {LexField} from '../../shared/model/lex-field.model';
+import {LexPicture} from '../../shared/model/lex-picture.model';
+import {FieldControl} from '../field/field-control.model';
 
-export function CommentBubbleComponent() {
-  return {
-    restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/comment/comment-bubble.component.html',
-    scope: {
-      field: '=',
-      control: '=',
-      model: '=',
-      parentContextGuid: '<',
-      configType: '<?',
-      inputSystem: '<?',
-      multiOptionValue: '<?',
-      picture: '<?',
-      getPictureUrl: '&?'
-    },
-    controller: ['$scope', '$element', 'lexCommentService', 'sessionService', 'lexConfigService',
-    ($scope: any, $element: angular.IRootElementService, commentService: LexiconCommentService,
-     sessionService: SessionService, lexConfig: LexiconConfigService) => {
-      if ($scope.inputSystem == null) {
-        $scope.inputSystem = {
-          abbreviation: '',
-          tag: ''
-        };
+export class CommentBubbleController implements angular.IController {
+  field: string;
+  control: FieldControl;
+  model: LexField;
+  parentContextGuid: string;
+  configType: string;
+  inputSystem: InputSystem;
+  multiOptionValue: string;
+  picture: LexPicture;
+  getPictureUrl: (picture: LexPicture) => string;
+
+  active: boolean = false;
+  pictureSrc: string = '';
+  contextGuid: string;
+
+  static $inject = ['$element', '$scope',
+    'lexCommentService', 'lexConfigService'];
+  constructor(private $element: angular.IRootElementService, private $scope: angular.IScope,
+              private commentService: LexiconCommentService, private lexConfig: LexiconConfigService) { }
+
+  $onInit(): void {
+    if (this.inputSystem == null) {
+      this.inputSystem = new InputSystem();
+      this.inputSystem.abbreviation = '';
+      this.inputSystem.tag = '';
+    }
+
+    this.setContextGuid();
+
+    this.$scope.$watch(() => this.model, () => {
+      this.checkValidModelContextChange();
+    }, true);
+
+    this.$scope.$watch(() => this.inputSystem, () => {
+      this.setContextGuid();
+    }, true);
+
+  }
+
+  getCountForDisplay(): number | string {
+    const count = this.getCount();
+    if (count) {
+      return count;
+    } else {
+      return '';
+    }
+  }
+
+  getComments(): void {
+    if (!this.active) {
+      return;
+    }
+
+    if (this.control.commentContext.contextGuid === this.contextGuid) {
+      this.control.hideRightPanel();
+    } else {
+      this.control.setCommentContext(this.contextGuid);
+      this.selectFieldForComment();
+      let bubbleOffsetTop;
+      if (this.multiOptionValue) {
+        bubbleOffsetTop = this.$element.parents('.list-repeater').offset().top;
+      } else {
+        bubbleOffsetTop = this.$element.offset().top;
       }
 
-      $scope.active = false;
-      $scope.pictureSrc = '';
-      $scope.element = $element;
+      const rightPanel = document.querySelector('.comments-right-panel') as HTMLElement;
+      const offsetAuthor = 40;
+      rightPanel.style.paddingTop = (bubbleOffsetTop - rightPanel.getBoundingClientRect().top - offsetAuthor) + 'px';
+      if (this.control.rightPanelVisible === false ||
+        !document.querySelector('#lexAppCommentView').classList.contains('panel-visible')
+      ) {
+        this.control.showCommentsPanel();
+      }
+    }
+  }
 
-      sessionService.getSession().then(session => {
-        $scope.getCount = function getCount(): number {
-          if (session.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.CREATE)) {
-            return commentService.getFieldCommentCount($scope.contextGuid);
-          }
-        };
+  isCommentingAvailable(): boolean {
+    return (this.control.currentEntry.id.indexOf('_new_') !== -1 || !this.control.rights.canComment() ||
+      (this.field === 'entry' && !this.getCount()));
+  }
 
-        $scope.getCountForDisplay = function getCountForDisplay(): number | string {
-          const count = $scope.getCount();
-          if (count) {
-            return count;
-          } else {
-            return '';
-          }
-        };
+  private getCount(): number {
+    if (this.control.rights.canComment()) {
+      return this.commentService.getFieldCommentCount(this.contextGuid);
+    }
+  }
 
-        $scope.getComments = function getComments(): void {
-          if (!$scope.active) {
-            return;
-          }
+  private checkValidModelContextChange(): void {
+    const newComment = this.control.getNewComment();
+    if (this.configType === 'optionlist' && newComment.regarding != null &&
+      newComment.regarding.field === this.field
+    ) {
+      this.selectFieldForComment();
+    }
+  }
 
-          if ($scope.control.commentContext.contextGuid === $scope.contextGuid) {
-            $scope.control.hideRightPanel();
-          } else {
-            $scope.control.setCommentContext($scope.contextGuid);
-            $scope.selectFieldForComment();
-            let bubbleOffset;
-            if ($scope.multiOptionValue) {
-              bubbleOffset = $scope.element.parents('.list-repeater').offset().top;
-            } else {
-              bubbleOffset = $scope.element.offset().top;
-            }
+  private selectFieldForComment(): void {
+    this.control.selectFieldForComment(this.field,
+      this.model,
+      this.inputSystem.tag,
+      this.multiOptionValue,
+      this.pictureSrc,
+      this.contextGuid);
+  }
 
-            const rightPanel = angular.element('.comments-right-panel');
-            const rightPanelOffsetTop = rightPanel.offset().top;
-            const offsetAuthor = 40;
-            rightPanel.css({ paddingTop: (bubbleOffset - rightPanelOffsetTop - offsetAuthor) });
-            if ($scope.control.rightPanelVisible === false ||
-              !angular.element('#lexAppCommentView').hasClass('panel-visible')
-            ) {
-              $scope.control.showCommentsPanel();
-            }
-          }
-        };
-      });
+  private setContextGuid(): void {
+    this.contextGuid = this.parentContextGuid + (this.parentContextGuid ? ' ' : '') + this.field;
+    this.lexConfig.getFieldConfig(this.field).then(fieldConfig => {
+      if (this.configType == null) {
+        this.configType = fieldConfig.type;
+      }
 
-      $scope.selectFieldForComment = function selectFieldForComment(): void {
-        $scope.control.selectFieldForComment($scope.field,
-          $scope.model,
-          $scope.inputSystem.tag,
-          $scope.multiOptionValue,
-          $scope.pictureSrc,
-          $scope.contextGuid);
-      };
+      if (fieldConfig.type === 'pictures' && this.picture != null) {
+        this.pictureSrc = this.getPictureUrl(this.picture);
+        this.contextGuid += '#' + this.picture.guid; // Would prefer to use the ID
+      } else if (fieldConfig.type === 'multioptionlist') {
+        this.contextGuid += '#' + this.multiOptionValue;
+      }
 
-      $scope.checkValidModelContextChange = function checkValidModelContextChange(): void {
-        const newComment = $scope.control.getNewComment();
-        if ($scope.configType === 'optionlist' &&
-            newComment.regarding.field === $scope.field) {
-          $scope.selectFieldForComment();
-        }
-      };
+      this.contextGuid += (this.inputSystem.abbreviation ? '.' +
+        this.inputSystem.abbreviation : '');
+      if (this.contextGuid.indexOf('undefined')  === -1) {
+        this.active = true;
+      }
+    });
+  }
 
-      $scope.setContextGuid = function setContextGuid(): void {
-        $scope.contextGuid = $scope.parentContextGuid +
-        ($scope.parentContextGuid ? ' ' : '') + $scope.field;
-        lexConfig.getFieldConfig($scope.field).then(fieldConfig => {
-          if ($scope.configType == null) {
-            $scope.configType = fieldConfig.type;
-          }
-
-          if (fieldConfig.type === 'pictures' && $scope.picture != null) {
-            $scope.pictureSrc = $scope.getPictureUrl($scope.picture);
-            $scope.contextGuid += '#' + $scope.picture.guid; // Would prefer to use the ID
-          } else if (fieldConfig.type === 'multioptionlist') {
-            $scope.contextGuid += '#' + $scope.multiOptionValue;
-          }
-
-          $scope.contextGuid += ($scope.inputSystem.abbreviation ? '.' +
-            $scope.inputSystem.abbreviation : '');
-          if ($scope.contextGuid.indexOf('undefined')  === -1) {
-            $scope.active = true;
-          }
-        });
-      };
-
-      $scope.setContextGuid();
-
-      $scope.isCommentingAvailable = function isCommentingAvailable(): boolean {
-        return ($scope.control.currentEntry.id.indexOf('_new_') !== -1 ||
-          !$scope.control.rights.canComment() ||
-          ($scope.field === 'entry' && !$scope.getCount()));
-      };
-
-      $scope.$watch('model', () => {
-        $scope.checkValidModelContextChange();
-      }, true);
-
-      $scope.$watch('inputSystem', () => {
-        $scope.setContextGuid();
-      }, true);
-
-    }]
-  };
 }
+
+export const CommentBubbleComponent: angular.IComponentOptions = {
+  bindings: {
+    field: '<',
+    control: '<',
+    model: '<',
+    parentContextGuid: '<',
+    configType: '<?',
+    inputSystem: '<?',
+    multiOptionValue: '<?',
+    picture: '<?',
+    getPictureUrl: '&?'
+  },
+  controller: CommentBubbleController,
+  templateUrl: '/angular-app/languageforge/lexicon/editor/comment/comment-bubble.component.html'
+};

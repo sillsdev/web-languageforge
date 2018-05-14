@@ -1,6 +1,8 @@
 import {InterfaceConfig} from '../../../../bellows/shared/model/interface-config.model';
 import {Rights} from '../../core/lexicon-rights.service';
+import {LexComment} from '../../shared/model/lex-comment.model';
 import {LexEntry} from '../../shared/model/lex-entry.model';
+import {LexField} from '../../shared/model/lex-field.model';
 import {LexConfig, LexiconConfig} from '../../shared/model/lexicon-config.model';
 import {LexiconProject} from '../../shared/model/lexicon-project.model';
 
@@ -9,15 +11,23 @@ import {LexiconProject} from '../../shared/model/lexicon-project.model';
 // entire editor controller.
 export class FieldControl {
   interfaceConfig: InterfaceConfig;
+  commentContext: { contextGuid: string };
   config: LexiconConfig;
   currentEntry: LexEntry;
   deleteEntry: (currentEntry: LexEntry) => void;
+  getContextParts: (contextGuid: string) => any;
+  getNewComment: () => LexComment;
   hideRightPanel: () => void;
   makeValidModelRecursive: (config: LexConfig, data?: any, stopAtNodes?: string | string[]) => any;
   project: LexiconProject;
   saveCurrentEntry: () => void;
+  selectFieldForComment: (fieldName: string, model: LexField, inputSystemTag: string, multioptionValue: string,
+                          pictureFilePath: string, contextGuid: string) => void;
+  setCommentContext: (contextGuid: string) => void;
   show: {
     emptyFields: boolean
   };
+  showCommentsPanel: () => void;
+  rightPanelVisible: boolean;
   rights: Rights;
 }
