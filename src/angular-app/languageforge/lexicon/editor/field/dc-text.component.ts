@@ -9,7 +9,7 @@ export class FieldTextController implements angular.IController {
   fteDir: string;
 
   fte: any = {};
-  textFieldValue: string;
+  textFieldValue: string = '';
 
   static $inject = ['$scope'];
   constructor(private $scope: angular.IScope) { }
@@ -50,19 +50,11 @@ export class FieldTextController implements angular.IController {
     this.fteModel = FieldTextController.escapeHTML(this.textFieldValue);
   }
 
-  setupTaEditor($element: HTMLElement): void {
-    if (!this.fteMultiline) {
-      $element.onkeydown = (event: KeyboardEvent) => {
-        // ignore the enter key
-        const key = event.which || event.keyCode;
-        if (key === 13) {
-          event.preventDefault();
-        }
-      };
-    }
-  }
-
   private static unescapeHTML(str: string): string {
+    if (str == null) {
+      return '';
+    }
+
     return new DOMParser().parseFromString(str, 'text/html').body.textContent;
   }
 
