@@ -45,12 +45,15 @@ class TextCommands
         return ((int) $object['startCh'] || (int) $object['startVs'] || (int) $object['endCh'] || (int) $object['endVs']);
     }
 
-    /**
-     * @param string $projectId
-     * @param array $object (json encoded)
-     * @return string Id of text updated/added
-     */
-    public static function updateText($projectId, $object)
+	/**
+	 * @param string $projectId
+	 * @param array $object (json encoded)
+	 * @param $userId
+	 *
+	 * @return string Id of text updated/added
+	 * @throws \Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException
+	 */
+    public static function updateText($projectId, $object, $userId)
     {
         $projectModel = new ProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($projectModel);
@@ -71,7 +74,7 @@ class TextCommands
         }
         $textId = $textModel->write();
         if ($isNewText) {
-            ActivityCommands::addText($projectModel, $textId, $textModel);
+            ActivityCommands::addText($projectModel, $textId, $textModel, $userId);
         }
 
         return $textId;
