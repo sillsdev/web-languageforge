@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="dc-multioptionlist-values-list"
-                 data-ng-show="$ctrl.isAtEditorEntry() && $ctrl.rights.canEditEntry() && $ctrl.isAdding">
+                 data-ng-show="$ctrl.isAtEditorEntry() && $ctrl.control.rights.canEditEntry() && $ctrl.isAdding">
                 <!--suppress HtmlFormInputWithoutLabel -->
                 <select class="form-control custom-select" data-ng-change="$ctrl.addValue()" data-ng-model="$ctrl.newKey"
                         data-ng-options="item.key as item.value for item in $ctrl.items | filter: $ctrl.filterSelectedItems">
@@ -37,9 +37,7 @@
         </div>
     </div>
 </form>
-<div class="addItem"
-     data-ng-show="$ctrl.rights.canEditEntry() && $ctrl.isAtEditorEntry() && $ctrl.showAddButton()">
+<div class="addItem" data-ng-show="$ctrl.showAddButton()">
     <a class="btn btn-sm btn-std" data-ng-click="$ctrl.isAdding = true"><i class="fa fa-plus"></i> Add {{$ctrl.config.label}}</a>
 </div>
-<div class="spacing-after"
-     data-ng-hide="$ctrl.rights.canEditEntry() && $ctrl.isAtEditorEntry() && $ctrl.showAddButton()">&nbsp;</div>
+<div class="spacing-after" data-ng-hide="$ctrl.showAddButton()">&nbsp;</div>
