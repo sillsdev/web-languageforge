@@ -17,7 +17,7 @@ use Palaso\Utilities\CodeGuard;
 
 class QuestionCommands
 {
-    public static function updateQuestion($projectId, $object)
+    public static function updateQuestion($projectId, $object, $userId)
     {
         $projectModel = new ProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($projectModel);
@@ -27,7 +27,7 @@ class QuestionCommands
         JsonDecoder::decode($questionModel, $object);
         $questionId = $questionModel->write();
         if ($isNewQuestion) {
-            ActivityCommands::addQuestion($projectModel, $questionId, $questionModel);
+            ActivityCommands::addQuestion($projectModel, $questionId, $questionModel, $userId);
         }
 
         return $questionId;

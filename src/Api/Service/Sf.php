@@ -526,7 +526,7 @@ class Sf
     // ---------------------------------------------------------------
     public function text_update($object)
     {
-        return TextCommands::updateText($this->projectId, $object);
+        return TextCommands::updateText($this->projectId, $object, $this->userId);
     }
 
     public function text_read($textId)
@@ -560,7 +560,7 @@ class Sf
     // ---------------------------------------------------------------
     public function question_update($object)
     {
-        return QuestionCommands::updateQuestion($this->projectId, $object);
+        return QuestionCommands::updateQuestion($this->projectId, $object, $this->userId);
     }
 
     public function question_read($questionId)

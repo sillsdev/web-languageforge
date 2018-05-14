@@ -258,25 +258,25 @@ if ($site == 'scriptureforge') {
         'id' => '',
         'title' => $constants['testText1Title'],
         'content' => $constants['testText1Content']
-    ));
+    ), $adminUserId);
     $text2 = TextCommands::updateText($testProjectId, array(
         'id' => '',
         'title' => $constants['testText2Title'],
         'content' => $constants['testText2Content']
-    ));
+    ), $adminUserId);
 
     $question1 = QuestionCommands::updateQuestion($testProjectId, array(
         'id' => '',
         'textRef' => $text1,
         'title' => $constants['testText1Question1Title'],
         'description' => $constants['testText1Question1Content']
-    ));
+    ), $adminUserId);
     $question2 = QuestionCommands::updateQuestion($testProjectId, array(
         'id' => '',
         'textRef' => $text1,
         'title' => $constants['testText1Question2Title'],
         'description' => $constants['testText1Question2Content']
-    ));
+    ), $adminUserId);
 
     $template1 = QuestionTemplateCommands::updateTemplate($testProjectId, array(
         'id' => '',
