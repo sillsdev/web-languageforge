@@ -8,12 +8,13 @@ angular.module('lexCommentsModule')
       scope: {
         field: '=',
         control: '=',
-        inputSystem: '<',
         model: '=',
-        configType: '<',
-        multiOptionValue: '<',
         parentContextGuid: '<',
-        picture: '<'
+        configType: '<?',
+        inputSystem: '<?',
+        multiOptionValue: '<?',
+        picture: '<?',
+        getPictureUrl: '&?'
       },
       controller: ['$scope', 'lexCommentService', 'sessionService', '$element', 'lexConfigService',
         function ($scope, commentService, ss, $element, lexConfig) {
@@ -99,7 +100,7 @@ angular.module('lexCommentsModule')
             }
 
             if (fieldConfig.type === 'pictures' && angular.isDefined($scope.picture)) {
-              $scope.pictureSrc = $scope.$parent.getPictureUrl($scope.picture);
+              $scope.pictureSrc = $scope.getPictureUrl($scope.picture);
               $scope.contextGuid += '#' + $scope.picture.guid; // Would prefer to use the ID
             } else if (fieldConfig.type === 'multioptionlist') {
               $scope.contextGuid += '#' + $scope.multiOptionValue;
