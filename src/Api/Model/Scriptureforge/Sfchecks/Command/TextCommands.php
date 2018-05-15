@@ -45,14 +45,14 @@ class TextCommands
         return ((int) $object['startCh'] || (int) $object['startVs'] || (int) $object['endCh'] || (int) $object['endVs']);
     }
 
-	/**
-	 * @param string $projectId
-	 * @param array $object (json encoded)
-	 * @param $userId
-	 *
-	 * @return string Id of text updated/added
-	 * @throws \Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException
-	 */
+    /**
+     * @param string $projectId
+     * @param array $object (json encoded)
+     * @param $userId
+     *
+     * @return string Id of text updated/added
+     * @throws \Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException
+     */
     public static function updateText($projectId, $object, $userId)
     {
         $projectModel = new ProjectModel($projectId);
