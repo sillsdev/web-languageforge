@@ -6,7 +6,7 @@ angular.module('lexicon.editor', [
   'coreModule',
   'activity',
   'editorFieldModule',
-  'palaso.ui.comments',
+  'lexCommentsModule',
   'truncate',
   'palaso.ui.scroll',
   'palaso.ui.notice'
@@ -1183,12 +1183,6 @@ angular.module('lexicon.editor', [
   .controller('EditorEntryCtrl', ['$scope', 'lexProjectService',
     function ($scope, lexProjectService) {
       lexProjectService.setBreadcrumbs('editor/entry', 'Edit');
-      lexProjectService.setupSettings();
-    }
-  ])
-  .controller('EditorCommentsCtrl', ['$scope', 'lexProjectService',
-    function ($scope, lexProjectService) {
-      lexProjectService.setBreadcrumbs('editor/entry', 'Comments');
       lexProjectService.setupSettings();
     }
   ])
