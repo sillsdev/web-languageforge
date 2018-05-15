@@ -320,6 +320,10 @@
       service: name=languageforge-web-api enabled=yes
       when: is_build_agent is defined and is_build_agent == true
 
+    - name: 'create generated files'
+      shell: gulp build-createWebsiteDefs
+
+
   handlers:
     - name: restart mongodb
       service: name=mongod state=restarted
