@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('palaso.ui.comments')
+angular.module('lexCommentsModule')
 
   // Palaso UI Dictionary Control: Comments
   .directive('lexCommentsView', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.lex-comments-view.html',
+      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/lex-comments-view.html',
       scope: {
         entry: '=',
         entryConfig: '=',

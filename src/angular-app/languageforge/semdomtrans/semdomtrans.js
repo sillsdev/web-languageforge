@@ -4,7 +4,6 @@ angular.module('semdomtrans',
   [
     'ui.router',
     'coreModule',
-    'bellows.services.comments',
     'semdomtrans.edit',
     'semdomtrans.comments',
     'semdomtrans.services',
@@ -54,10 +53,10 @@ angular.module('semdomtrans',
     $scope.workingSets = editorDataService.workingSets;
     $scope.itemsTree = editorDataService.itemsTree;
 
-    if ($scope.items.length == 0 && !$scope.loadingDto) {
+    if ($scope.items.length === 0 && !$scope.loadingDto) {
       editorDataService.loadEditorData().then(function (result) {
-       editorDataService.processEditorDto(result);
-     });
+        editorDataService.processEditorDto(result);
+      });
     }
 
     $scope.exportProject = function exportProject() {
@@ -74,47 +73,47 @@ angular.module('semdomtrans',
     $scope.loadingDto = false;
 
     // permissions stuff
-    ss.getSession().then(function(session) {
-      $scope.rights = {
-        canEditProject: function canEditProject() {
-          return session.hasProjectRight(ss.domain.PROJECTS, ss.operation.EDIT);
-        },
+    ss.getSession().then(function (session) {
+        $scope.rights = {
+          canEditProject: function canEditProject() {
+            return session.hasProjectRight(ss.domain.PROJECTS, ss.operation.EDIT);
+          },
 
-        canEditEntry: function canEditEntry() {
-          return session.hasProjectRight(ss.domain.ENTRIES, ss.operation.EDIT);
-        },
+          canEditEntry: function canEditEntry() {
+            return session.hasProjectRight(ss.domain.ENTRIES, ss.operation.EDIT);
+          },
 
-        canDeleteEntry: function canDeleteEntry() {
-          return session.hasProjectRight(ss.domain.ENTRIES, ss.operation.DELETE);
-        },
+          canDeleteEntry: function canDeleteEntry() {
+            return session.hasProjectRight(ss.domain.ENTRIES, ss.operation.DELETE);
+          },
 
-        canComment: function canComment() {
-          return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.CREATE);
-        },
+          canComment: function canComment() {
+            return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.CREATE);
+          },
 
-        canDeleteComment: function canDeleteComment(commentAuthorId) {
-          if (session.userId() == commentAuthorId) {
-            return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.DELETE_OWN);
-          } else {
-            return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.DELETE);
+          canDeleteComment: function canDeleteComment(commentAuthorId) {
+            if (session.userId() === commentAuthorId) {
+              return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.DELETE_OWN);
+            } else {
+              return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.DELETE);
+            }
+          },
+
+          canEditComment: function canEditComment(commentAuthorId) {
+            if (session.userId() === commentAuthorId) {
+              return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.EDIT_OWN);
+            } else {
+              return false;
+            }
+          },
+
+          canUpdateCommentStatus: function canUpdateCommentStatus() {
+            return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.EDIT);
           }
-        },
-
-        canEditComment: function canEditComment(commentAuthorId) {
-          if (session.userId() == commentAuthorId) {
-            return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.EDIT_OWN);
-          } else {
-            return false;
-          }
-        },
-
-        canUpdateCommentStatus: function canUpdateCommentStatus() {
-          return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.EDIT);
-        }
-      };
-      $scope.project = session.project();
-      $scope.projectSettings = session.projectSettings();
-      $scope.currentUserRole = session.projectSettings().currentUserRole;
+        };
+        $scope.project = session.project();
+        $scope.projectSettings = session.projectSettings();
+        $scope.currentUserRole = session.projectSettings().currentUserRole;
       });
   }])
 

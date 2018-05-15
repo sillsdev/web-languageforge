@@ -1,62 +1,72 @@
 import * as angular from 'angular';
 
-import {LexiconRightsService} from '../../core/lexicon-rights.service';
-import {FieldRenderedModule} from './dc-rendered.component';
-import {FieldSenseModule} from './dc-sense.component';
+import {ModalService} from '../../../../bellows/core/modal/modal.service';
+import {LexiconUtilityService} from '../../core/lexicon-utility.service';
+import {LexEntry} from '../../shared/model/lex-entry.model';
+import {LexSense} from '../../shared/model/lex-sense.model';
+import {LexConfigFieldList} from '../../shared/model/lexicon-config.model';
+import {FieldControl} from './field-control.model';
 
-export const FieldEntryModule = angular
-  .module('palaso.ui.dc.entry', [FieldRenderedModule, FieldSenseModule])
+export class FieldEntryController implements angular.IController {
+  model: LexEntry;
+  config: LexConfigFieldList;
+  control: FieldControl;
 
-  // Palaso UI Dictionary Control: Entry
-  .directive('dcEntry', [() => ({
-    restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-entry.component.html',
-    scope: {
-      config: '=',
-      model: '=',
-      control: '='
-    },
-    controller: ['$scope', '$state', 'modalService', 'lexRightsService', 'lexUtils',
-      ($scope, $state, modal, rightsService: LexiconRightsService, utils) => {
-        $scope.$state = $state;
-        $scope.contextGuid = '';
-        $scope.fieldName = 'entry';
+  contextGuid: string = '';
+  fieldName: string = 'entry';
 
-        rightsService.getRights().then(rights => {
-          $scope.rights = rights;
-        });
+  static $inject = ['$state', 'modalService'];
+  constructor(private $state: angular.ui.IStateService, private modal: ModalService) {
+  }
 
-        $scope.addSense = function addSense($position: number): void {
-          const newSense = {};
-          $scope.control.makeValidModelRecursive($scope.config.fields.senses, newSense, 'examples');
-          if ($position === 0) {
-            $scope.model.senses.unshift(newSense);
-          } else {
-            $scope.model.senses.push(newSense);
-          }
+  $onInit(): void {
+    for (const fieldName in this.config.fields) {
+      if (this.config.fields.hasOwnProperty(fieldName)) {
+        this.config.fields[fieldName].senseLabel = ['Entry'];
+      }
+    }
+  }
 
-          $scope.control.hideRightPanel();
-        };
+  isAtEditorEntry(): boolean {
+    return LexiconUtilityService.isAtEditorEntry(this.$state);
+  }
 
-        $scope.deleteSense = function deleteSense(index: number): void {
-          const deletemsg = 'Are you sure you want to delete the meaning <b>\' ' +
-            utils.constructor.getMeaning($scope.config, $scope.config.fields.senses, $scope.model.senses[index]) +
-            ' \'</b>';
-          modal.showModalSimple('Delete Meaning', deletemsg, 'Cancel', 'Delete Meaning')
-            .then(() => {
-              $scope.model.senses.splice(index, 1);
-              $scope.control.saveCurrentEntry();
-              $scope.control.hideRightPanel();
-            }, angular.noop);
-        };
+  deleteEntry(): void {
+    this.control.deleteEntry(this.control.currentEntry);
+  }
 
-        $scope.deleteEntry = function deleteEntry(): void {
-          $scope.control.deleteEntry($scope.control.currentEntry);
-        };
+  addSense($position: number): void {
+    const newSense = {};
+    this.control.makeValidModelRecursive(this.config.fields.senses, newSense, 'examples');
+    if ($position === 0) {
+      this.model.senses.unshift(newSense as LexSense);
+    } else {
+      this.model.senses.push(newSense as LexSense);
+    }
 
-        angular.forEach($scope.control.config.entry.fields, field => {
-          field.senseLabel = 'Entry';
-        });
-      }]
-  })])
-  .name;
+    this.control.hideRightPanel();
+  }
+
+  deleteSense = (index: number): void => {
+    const deletemsg = 'Are you sure you want to delete the meaning <b>\' ' +
+      LexiconUtilityService.getMeaning(this.control.config, this.config.fields.senses as LexConfigFieldList,
+        this.model.senses[index]) + ' \'</b>';
+    this.modal.showModalSimple('Delete Meaning', deletemsg, 'Cancel', 'Delete Meaning')
+      .then(() => {
+        this.model.senses.splice(index, 1);
+        this.control.saveCurrentEntry();
+        this.control.hideRightPanel();
+      }, () => {});
+  }
+
+}
+
+export const FieldEntryComponent: angular.IComponentOptions = {
+  bindings: {
+    model: '=',
+    config: '<',
+    control: '<'
+  },
+  controller: FieldEntryController,
+  templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-entry.component.html'
+};

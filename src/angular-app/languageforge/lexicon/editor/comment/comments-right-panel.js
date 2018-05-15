@@ -1,11 +1,11 @@
 'use strict';
-angular.module('palaso.ui.comments')
+angular.module('lexCommentsModule')
 
   // Palaso UI Dictionary Control: Comments
   .directive('commentsRightPanel', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.comments-right-panel.html',
+      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/comments-right-panel.html',
       scope: {
         entry: '=',
         control: '=',
@@ -192,11 +192,7 @@ angular.module('palaso.ui.comments')
 
         $scope.showCommentsInContext = function showCommentsInContext(contextGuid) {
           $scope.commentFilter.contextGuid = contextGuid;
-          if (contextGuid !== '') {
-            $scope.showNewComment = true;
-          } else {
-            $scope.showNewComment = false;
-          }
+          $scope.showNewComment = (contextGuid !== '');
 
           commentService.refreshFilteredComments($scope.commentFilter);
         };
@@ -264,6 +260,7 @@ angular.module('palaso.ui.comments')
           if (!angular.isDefined(regardingField)) {
             return '';
           }
+
           return $scope.getSenseLabel(regardingField, $scope.newComment.contextGuid);
         };
 

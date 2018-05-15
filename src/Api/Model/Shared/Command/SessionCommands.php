@@ -22,12 +22,7 @@ class SessionCommands
         $sessionData = array();
         $sessionData['baseSite'] = $website->base;
 
-        $sessionData['isProduction'] = $website->isProduction;
-
-        // BUGSNAG_API_KEY and VERSION are not defined when running tests
-        if (defined('BUGSNAG_API_KEY')) {
-            $sessionData['bugsnagApiKey'] = BUGSNAG_API_KEY;
-        }
+        // VERSION is not defined when running tests
         if (defined('VERSION')) {
             $sessionData['version'] = VERSION;
         }

@@ -3,7 +3,7 @@ import * as angular from 'angular';
 import { ProjectSettings } from '../shared/model/project-settings.model';
 import { Project } from '../shared/model/project.model';
 import { ApiService, JsonRpcCallback } from './api/api.service';
-import {ExceptionHandlingService, Metadata} from './exception-handling.service';
+import {ExceptionHandlingService} from './exception-handling.service';
 
 export class Session {
   constructor(public data?: SessionData) { }
@@ -53,18 +53,6 @@ export class Session {
   getProjectSetting(setting: string) {
     return this.data.projectSettings[setting];
   }
-
-  isProduction(): boolean {
-    return this.data.isProduction;
-  }
-
-  getBugsnagApiKey(): string {
-    return this.data.bugsnagApiKey;
-  }
-
-  getVersion(): string {
-    return this.data.version;
-  }
 }
 
 export type SessionCallback = (session: Session) => void;
@@ -79,8 +67,6 @@ class SessionData {
   userSiteRights: any;
   userProjectRights: any;
   accessToken: string;
-  isProduction: boolean;
-  bugsnagApiKey: string;
   version: string;
 }
 
@@ -169,8 +155,6 @@ export class SessionService {
     return this.fetchSessionData(forceRefresh).then((data: SessionData) => {
       this.session.data = data;
       this.exceptionHandler.updateInformation({
-        isProduction: data.isProduction,
-        bugsnagApiKey: data.bugsnagApiKey,
         version: data.version,
         userId: data.userId,
         userName: data.username,
