@@ -589,15 +589,13 @@ From the **web-languageforge** repo root folder...
 ```` bash
 cd ..
 git clone git@github.com:sillsdev/machine.git
-cd machine
-git checkout -b Translation origin/Translation
 ````
 
 To deploy the machine server...
 
 ```` bash
-cd build
-./deploy-developer.sh
+cd machine/build
+./deploy-local.sh
 ````
 
 ### Running ###
