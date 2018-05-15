@@ -1,4 +1,4 @@
-import {browser, by, element, ExpectedConditions} from 'protractor';
+import {browser, ExpectedConditions} from 'protractor';
 
 import { BellowsChangePasswordPage } from './shared/change-password.page';
 import { BellowsLoginPage } from './shared/login.page';
@@ -19,7 +19,7 @@ describe('Bellows E2E Change Password app', () => {
   it('refuses to allow form submission if the confirm input does not match', async () => {
     await changePasswordPage.password.sendKeys(newPassword);
     await changePasswordPage.confirm.sendKeys('blah12345');
-    expect(await changePasswordPage.submitButton.isEnabled()).toBeFalsy();
+    await expect(changePasswordPage.submitButton.isEnabled()).toBeFalsy();
     await changePasswordPage.password.clear();
     await changePasswordPage.confirm.clear();
   });
@@ -27,7 +27,7 @@ describe('Bellows E2E Change Password app', () => {
   it('allows form submission if the confirm input matches', async () => {
    await changePasswordPage.password.sendKeys(newPassword);
    await changePasswordPage.confirm.sendKeys(newPassword);
-   expect(await changePasswordPage.submitButton.isEnabled()).toBeTruthy();
+   await expect(changePasswordPage.submitButton.isEnabled()).toBeTruthy();
    await changePasswordPage.password.clear();
    await changePasswordPage.confirm.clear();
   });
@@ -50,13 +50,13 @@ describe('Bellows E2E Change Password app', () => {
     await browser.wait(ExpectedConditions.elementToBeClickable(changePasswordPage.submitButton),
      constants.conditionTimeout);
     await changePasswordPage.submitButton.click();
-    await expect<any>(await changePasswordPage.noticeList.count()).toBe(1);
-    await expect(await changePasswordPage.noticeList.first().getText()).toContain('Password updated');
+    await expect<any>(changePasswordPage.noticeList.count()).toBe(1);
+    await expect(changePasswordPage.noticeList.first().getText()).toContain('Password updated');
     await BellowsLoginPage.logout();
 
     await loginPage.login(constants.memberUsername, newPassword);
     await browser.wait(ExpectedConditions.visibilityOf(header.myProjects.button), constants.conditionTimeout);
-    expect<any>(await header.myProjects.button.isDisplayed()).toBe(true);
+    await expect<any>(header.myProjects.button.isDisplayed()).toBe(true);
 
     // reset password back to original
     await changePasswordPage.get();
@@ -68,4 +68,5 @@ describe('Bellows E2E Change Password app', () => {
      constants.conditionTimeout);
     await changePasswordPage.submitButton.click();
   });
+
 });

@@ -11,7 +11,7 @@ export class Utils {
     // Ensure a checkbox element will be either checked (true) or unchecked (false), regardless of
     // what its current value is
     await checkboxElement.isSelected().then(async (checked: boolean) => {
-      if (checked !== value) {
+      if (await checked !== value) {
         await checkboxElement.click();
       }
     });
@@ -40,9 +40,9 @@ export class Utils {
         });
       }).then(async () => {
         if (await foundRow) {
-          resolve(await foundRow);
+          await resolve(foundRow);
         } else {
-          reject('Row not found');
+          await reject('Row not found');
         }
       });
     });
@@ -50,7 +50,7 @@ export class Utils {
 
   async findRowByText(elementArray: ElementArrayFinder, searchString: string): Promise<ElementFinder> {
     return await this.findRowByFunc(elementArray, (rowText: string) => {
-      return rowText.includes(searchString);
+    return rowText.includes(searchString);
     }
   );
   }

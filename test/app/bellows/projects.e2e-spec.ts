@@ -1,4 +1,4 @@
-import {browser, by, ExpectedConditions} from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 import {ElementFinder} from 'protractor/built/element';
 
 import {BellowsLoginPage} from './shared/login.page';
@@ -35,7 +35,7 @@ describe('Bellows E2E Projects List app', async () => {
 
   // Two helper functions to avoid duplicating the same checks in admin test below
     const shouldProjectBeLinked = async (projectName: string, projectRow: ElementFinder, bool: boolean) => {
-    await expect<any>(projectRow.element(by.cssContainingText('span', projectName)).isDisplayed()).toBe(bool);
+      await expect<any>(projectRow.element(by.cssContainingText('span', projectName)).isDisplayed()).toBe(bool);
   };
 
     const shouldProjectHaveButtons = async (projectRow: ElementFinder, bool: boolean) => {
@@ -43,7 +43,7 @@ describe('Bellows E2E Projects List app', async () => {
     await expect<any>(addAsManagerBtn.isDisplayed()).toBe(bool);
   };
 
-    describe('for System Admin User', () => {
+    describe('for System Admin User', async () => {
 
     it('should list all projects', async () => {
       await loginPage.loginAsAdmin();
@@ -52,11 +52,11 @@ describe('Bellows E2E Projects List app', async () => {
 
       // Check that the test project is around
       projectsPage.findProject(constants.testProjectName).then(async (projectRow: ElementFinder) => {
-      try {
-      await shouldProjectBeLinked(constants.testProjectName, projectRow, true);
-      } catch (err) {}
+
+        await shouldProjectBeLinked(constants.testProjectName, projectRow, true);
+
       });
-    });
+   });
 
     it('should show add and delete buttons', async () => {
       // projectsPage.createBtn.getOuterHtml().then(console.log);
@@ -71,13 +71,12 @@ describe('Bellows E2E Projects List app', async () => {
       // The admin should not see "Add myself to project" buttons when he's already a project member
       // or manager, and the project name should be a clickable link
       projectsPage.findProject(constants.otherProjectName).then(async (projectRow: ElementFinder) => {
-        try {
         await shouldProjectBeLinked(constants.otherProjectName, projectRow, true);
         await shouldProjectHaveButtons(projectRow, false);
-      } catch (err) {}
+
       });
 
-      projectsPage.removeUserFromProject(constants.otherProjectName, constants.adminUsername);
+      await projectsPage.removeUserFromProject(constants.otherProjectName, constants.adminUsername);
       loginPage.loginAsAdmin();
       projectsPage.get();
 

@@ -6,7 +6,7 @@ export class BellowsLoginPage {
   static async get() {
 
     // Driver needs to be added with browser to avoid warning messages
-     await browser.driver.get(browser.baseUrl + '/auth/login');
+      await browser.driver.get(browser.baseUrl + '/auth/login');
   }
 
   form = element(by.id('login-loginForm'));

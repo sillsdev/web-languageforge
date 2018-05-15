@@ -12,7 +12,7 @@ export class SfTextPage {
 
   async get(projectName: any, textTitle: any) {
     await this.projectsPage.get();
-    await this.projectsPage.clickOnProject(projectName);
+    await this.projectsPage.clickOnProjectName(projectName);
     await SfProjectPage.textLink(textTitle).click();
   }
 
