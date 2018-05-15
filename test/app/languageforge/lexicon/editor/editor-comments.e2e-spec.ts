@@ -36,7 +36,7 @@ describe('Lexicon E2E Editor Comments', () => {
 
   it('comments panel: check that comment shows up', () => {
     const comment = editorPage.comment.getComment(0);
-    expect<any>(comment.contextGuid.getAttribute('textContent')).toEqual('lexeme.th');
+    expect<any>(comment.contextGuid.getAttribute('textContent')).toEqual('lexeme.th'); // flaky
 
     // Earlier tests modify the avatar and name of the manager user; don't check those
     expect<any>(comment.score.getText()).toEqual('0 Likes');
