@@ -18,14 +18,16 @@ class BugsnagExceptionHandler
             'api_key' => $apiKey,
         ];
 
+        // only send errors to bugsnag if we're running on live or qa
+        $application['bugsnag']->setNotifyReleaseStages(BUGSNAG_NOTIFY_RELEASE_STAGES);
         $application['bugsnag']->setAppVersion(VERSION);
+        $application['bugsnag']->setAppType('PHP');
 
         $application['bugsnag']->registerCallback(function ($report) use ($application) {
             if ($application['security.token_storage']->getToken() != NULL) {
                 $userId = SilexSessionHelper::getUserId($application);
                 $user = new UserModel($userId);
                 $report->setUser([
-                    'id' => $userId,
                     'username' => $user->username,
                     'name' => $user->name,
                     'email' => $user->email,
@@ -41,10 +43,13 @@ class BugsnagExceptionHandler
                 ]);
             }
         });
+    }
 
-        if (defined('ENVIRONMENT')) {
-            $application['bugsnag']->setReleaseStage(ENVIRONMENT);
-        }
+    public static function finishInitialization(Application $application) {
+        if ($application['bugsnag'] == null)
+            return;
+
+        $application['bugsnag']->setReleaseStage($application['website']->releaseStage);
     }
 
     public static function getBugsnag(Application $application)
