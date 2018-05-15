@@ -90,8 +90,8 @@ class LexConfiguration
         $this->entry->fields[LexConfig::LEXEME]->inputSystems[] = 'th';
 
         $this->entry->fields[LexConfig::SENSES_LIST] = new LexConfigFieldList();
-        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::DEFINITION;
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::GLOSS;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::DEFINITION;
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::PICTURES;
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::POS;
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SEMDOM;
@@ -235,7 +235,7 @@ class LexConfiguration
 
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GLOSS] = new LexConfigMultiText();
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GLOSS]->label = 'Gloss';
-        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GLOSS]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GLOSS]->hideIfEmpty = false;
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GLOSS]->inputSystems[] = 'en';
 
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::PICTURES] = new LexConfigPictures();
