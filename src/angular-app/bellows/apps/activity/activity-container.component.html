@@ -2,12 +2,12 @@
     <div class="activity-header">
         <div class="activity-filter-options">
             <!--suppress HtmlFormInputWithoutLabel -->
-            <select class="custom-select" data-ng-model="$ctrl.filterUser" data-ng-change="$ctrl.triggerFilter()"
+            <select id="filter_by_user" class="custom-select" data-ng-model="$ctrl.filterUser" data-ng-change="$ctrl.triggerFilter()"
                 data-ng-options="item as item.username for item in $ctrl.filterUsers">
                 <option value="">All Users</option>
             </select>
             <!--suppress HtmlFormInputWithoutLabel -->
-            <select class="custom-select" data-ng-model="$ctrl.filterType" data-ng-change="$ctrl.triggerFilter()"
+            <select id="filter_by_type" class="custom-select" data-ng-model="$ctrl.filterType" data-ng-change="$ctrl.triggerFilter()"
                 data-ng-options="item as item.label for item in $ctrl.activityTypes">
                 <option value="">All Events</option>
             </select>
@@ -120,14 +120,18 @@
                                                     answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
                                                     on <a href="{{item.textHref}}">{{item.content.text}}</a>
                                                     in <a href="{{item.projectHref}}">{{item.content.project}}</a>
-                                                    <p class="indented" data-ng-bind-html="item.content.answer"></p>
-                                                    <hr>
-                                                    <p class="indented">{{item.content.comment}} - {{item.userRef.username}}</p>
+                                                   <div class="activity-comment">
+                                                        <i class="fa fa-quote-left"></i>
+                                                        <div data-ng-bind-html="item.content.answer"></div>
+                                                        <i class="fa fa-quote-right"></i>
+                                                    </div>
+                                                    <p class="indented notranslate">{{item.content.comment}}</p>
                                                 </div>
 
                                                 <div data-ng-switch-when="add_question-project">
-                                                    Has a new question in the
-                                                    <a href="{{item.projectHref}}">{{item.content.project}}</a> project
+                                                    Has a new question
+                                                    on <a href="{{item.textHref}}">{{item.content.text}}</a>
+                                                    in <a href="{{item.projectHref}}">{{item.content.project}}</a> project
                                                     <p class="indented">&ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;</p>
                                                 </div>
 
