@@ -1,6 +1,6 @@
 // tslint:disable-next-line:no-reference
 ///<reference path="activityCustomMatchers.d.ts" />
-import {browser} from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 import {ElementFinder} from 'protractor/built/element';
 
 import {SfActivityPage} from '../../bellows/shared/activity.page';
@@ -22,7 +22,6 @@ describe('Activity E2E Test', () => {
   const questionPage = new SfQuestionPage();
   const textPage = new SfTextPage();
 
-  let activityIndex = 0;
   const testData = {
     answer: {
       add: 'Beethoven was the speaker.',
@@ -89,7 +88,7 @@ describe('Activity E2E Test', () => {
       // activityPage.printActivitiesNames();
     });
 
-    activityIndex = verifyCommonActions(activityIndex, constants.memberUsername);
+    verifyCommonActions(0, constants.memberUsername);
 
     verifyFilters(constants.memberUsername);
 
@@ -114,7 +113,7 @@ describe('Activity E2E Test', () => {
       // activityPage.printActivitiesNames();
     });
 
-    activityIndex = verifyCommonActions(activityIndex, constants.member2Username);
+    verifyCommonActions(0, constants.member2Username);
 
     verifyFilters(constants.member2Username);
 
@@ -174,33 +173,40 @@ describe('Activity E2E Test', () => {
     it('Navigate to Activity Page to verify actions', () => {
       activityPage.get();
 
+      // Open all activities
+      element.all(by.className('activity-group-meta')).click();
+      browser.wait(ExpectedConditions.visibilityOf(activityPage.activitiesList.get(0)), constants.conditionTimeout);
+      expect<any>(activityPage.activitiesList.get(0).isDisplayed()).toBe(true);
+
       // Print everything in the activity list for debugging purposes
       // activityPage.printActivitiesNames();
     });
 
     it('Verify action \'add\' on \'users\' appears on the activity feed', () => {
-      activityIndex = 0;
-      const activityText = activityPage.getActivityText(activityIndex);
-      expect<any>(activityText).toContain('jimmycricket is now a member of ' + constants.testProjectName);
+      const regex = new RegExp('.*Is now a member of.*' + Utils.escapeRegExp(constants.testProjectName) + '.*');
+      const activityGroup = activityPage.getActivityGroup(0);
+      expect<any>(activityGroup.user).toEqual('jimmycricket');
+      expect<any>(activityGroup.activities).toContainMultilineMatch(regex);
     });
 
     it('Verify action \'add\' on \'questions\' appears on the activity feed', () => {
-      activityIndex += 1;
-      const activityText = activityPage.getActivityText(activityIndex);
-      expect<any>(activityText).toContain(constants.testText1Title);
-      expect<any>(activityText).toContain('new question');
-      expect<any>(activityText).toContain(constants.testText1Question3Summary);
+      const regex = new RegExp('.*new question.*' +
+        Utils.escapeRegExp(constants.testText1Title) + '.*' +
+        Utils.escapeRegExp(constants.testText1Question3Summary) + '.*');
+      const activityGroup = activityPage.getActivityGroup(1);
+      expect<any>(activityGroup.activities).toContainMultilineMatch(regex);
     });
 
     it('Verify action \'add\' on \'texts\' appears on the activity feed', () => {
-      activityIndex += 1;
-      const activityText = activityPage.getActivityText(activityIndex);
-      expect<any>(activityText).toContain(constants.testProjectName);
-      expect<any>(activityText).toContain('added');
-      expect<any>(activityText).toContain(constants.testText3Title);
+      const regex = new RegExp('.*' +
+        Utils.escapeRegExp(constants.testProjectName) + '.*' +
+        '.*added.*' +
+        Utils.escapeRegExp(constants.testText3Title) + '.*');
+      const activityGroup = activityPage.getActivityGroup(1);
+      expect<any>(activityGroup.activities).toContainMultilineMatch(regex);
     });
 
-    verifyCommonActions(3, constants.managerUsername);
+    verifyCommonActions(1, constants.managerUsername);
 
     verifyFilters(constants.managerUsername);
 
@@ -251,7 +257,7 @@ describe('Activity E2E Test', () => {
         // activityPage.printActivitiesNames();
       });
 
-      activityIndex = verifyCommonActions(activityIndex, constants.memberUsername);
+      verifyCommonActions(0, constants.memberUsername);
 
       verifyFilters(constants.memberUsername);
 
@@ -276,7 +282,7 @@ describe('Activity E2E Test', () => {
         // activityPage.printActivitiesNames();
       });
 
-      activityIndex = verifyCommonActions(activityIndex, constants.member2Username);
+      verifyCommonActions(0, constants.member2Username);
 
       verifyFilters(constants.member2Username);
 
@@ -306,7 +312,7 @@ describe('Activity E2E Test', () => {
         // activityPage.printActivitiesNames();
       });
 
-      verifyAnswerActions(activityIndex, constants.memberUsername);
+      verifyAnswerActions(0, constants.memberUsername);
 
       verifyFilters(constants.memberUsername);
 
@@ -334,7 +340,7 @@ describe('Activity E2E Test', () => {
       // We don't call verifyCommonActions here,
       // because the activity list should be empty for user 2  // NOPE.
 
-      verifyAnswerActions(activityIndex, constants.member2Username);
+      verifyAnswerActions(0, constants.member2Username);
 
       verifyFilters(constants.member2Username);
 
@@ -444,59 +450,66 @@ describe('Activity E2E Test', () => {
 
   function verifyUpvoteActions(aIndex: number, username: string) {
     it('Verify action \'upvote\' on \'answers\' appears on the activity feed', () => {
-      aIndex += 1;
-      const regex = new RegExp('.*' + Utils.escapeRegExp(username + ' +1\'d your answer') + '.*' +
+      const regex = new RegExp('.*' + Utils.escapeRegExp('+1\'d your answer') + '.*' +
         Utils.escapeRegExp(constants.testText1Question1Title));
-      expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+      const activityGroup = activityPage.getActivityGroup(aIndex);
+      expect<any>(activityGroup.user).toEqual(username);
+      expect<any>(activityGroup.activities).toContainMultilineMatch(regex);
     });
-
-    return aIndex;
   }
 
   function verifyAnswerActions(aIndex: number, username: string) {
+    it('Open all activity groups', () => {
+      activityPage.get();
+      element.all(by.className('activity-group-meta')).click();
+      browser.wait(ExpectedConditions.visibilityOf(
+        activityPage.activitiesList.get(aIndex)), constants.conditionTimeout);
+      expect<any>(activityPage.activitiesList.get(aIndex).isDisplayed()).toBe(true);
+    });
+
     it('Verify action \'edit\' on \'answers\' appears on the activity feed', () => {
-      const regex = new RegExp('.*' + Utils.escapeRegExp(username) + ' updated their answer.*' +
-        Utils.escapeRegExp(testData.answer.edit));
-      expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+      const regex = new RegExp('.*Updated their answer.* ' + Utils.escapeRegExp(testData.answer.edit));
+      const activityGroup = activityPage.getActivityGroup(aIndex);
+      expect<any>(activityGroup.user).toEqual(username);
+      expect<any>(activityGroup.activities).toContainMultilineMatch(regex);
     });
 
     it('Verify action \'edit\' on \'comments\' appears on the activity feed', () => {
-      aIndex += 1;
-
-      const regex = new RegExp('.*' + Utils.escapeRegExp(username) + ' updated their comment.*' +
+      const regex = new RegExp('.*Updated their comment.*' +
         Utils.escapeRegExp(testData.answer.add) + '.*' + Utils.escapeRegExp(testData.comment.edit));
-      expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+      const activityGroup = activityPage.getActivityGroup(aIndex);
+      expect<any>(activityGroup.user).toEqual(username);
+      expect<any>(activityGroup.activities).toContainMultilineMatch(regex);
     });
 
     it('Verify action \'addToLastAnswer\' on \'comments\' appears on the activity feed', () => {
-      aIndex += 1;
-
-      const regex = new RegExp('.*' + Utils.escapeRegExp(username) + ' commented.*' +
+      const regex = new RegExp('.*Responded.*' +
         Utils.escapeRegExp(testData.answer.add) + '.*' + Utils.escapeRegExp(testData.comment.add));
-      expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+      const activityGroup = activityPage.getActivityGroup(aIndex);
+      expect<any>(activityGroup.user).toEqual(username);
+      expect<any>(activityGroup.activities).toContainMultilineMatch(regex);
     });
 
     it('Verify action \'add\' on \'answers\' appears on the activity feed', () => {
-      aIndex += 1;
-      const regex = new RegExp('.*' + Utils.escapeRegExp(username) + ' answered.*' +
+      const regex = new RegExp('.*Answered.*' +
         Utils.escapeRegExp(testData.answer.add));
-      expect<any>(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+      const activityGroup = activityPage.getActivityGroup(aIndex);
+      expect<any>(activityGroup.user).toEqual(username);
+      expect<any>(activityGroup.activities).toContainMultilineMatch(regex);
     });
-
-    return aIndex;
   }
 
   function verifyCommonActions(aIndex: number, username: string) {
-    aIndex = verifyAnswerActions(aIndex, username);
-    return verifyUpvoteActions(aIndex, username);
+    verifyAnswerActions(aIndex, username);
+    verifyUpvoteActions(aIndex, username);
   }
 
   function verifyFilters(username: string) {
     it('Verify filters work on the activity page', () => {
       activityPage.get();
-      activityPage.activitiesList.filter((item: ElementFinder) => {
+      activityPage.activityGroups.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
-        return (item.getText().then((text: string) => {
+        return (item.element(by.className('activity-username')).getText().then((text: string) => {
           return text.indexOf(username) === -1;
         }));
       }).then((activityItems: ElementFinder[]) => {
@@ -505,10 +518,10 @@ describe('Activity E2E Test', () => {
       });
 
       // Show only my activity
-      SfActivityPage.clickOnShowOnlyMyActivity();
-      activityPage.activitiesList.filter((item: ElementFinder) => {
+      activityPage.clickOnShowOnlyMyActivity();
+      activityPage.activityGroups.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
-        return (item.getText().then((text: string) => {
+        return (item.element(by.className('activity-username')).getText().then((text: string) => {
           return text.indexOf(username) === -1;
         }));
       }).then((activityItems: ElementFinder[]) => {
@@ -517,10 +530,10 @@ describe('Activity E2E Test', () => {
       });
 
       // Show all activity
-      SfActivityPage.clickOnAllActivity();
-      activityPage.activitiesList.filter((item: ElementFinder) => {
+      activityPage.clickOnAllActivity();
+      activityPage.activityGroups.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
-        return (item.getText().then((text: string) => {
+        return (item.element(by.className('activity-username')).getText().then((text: string) => {
           return text.indexOf(username) === -1;
         }));
       }).then((activityItems: ElementFinder[]) => {
