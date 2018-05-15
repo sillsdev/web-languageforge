@@ -509,7 +509,8 @@ describe('Activity E2E Test', () => {
       activityPage.get();
       activityPage.activityGroups.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
-        return (item.element(by.className('activity-username')).getText().then((text: string) => {
+        const activityGroup = SfActivityPage.getPartsOfActivity(item);
+        return (activityGroup.user.then((text: string) => {
           return text.indexOf(username) === -1;
         }));
       }).then((activityItems: ElementFinder[]) => {
@@ -521,7 +522,8 @@ describe('Activity E2E Test', () => {
       activityPage.clickOnShowOnlyMyActivity();
       activityPage.activityGroups.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
-        return (item.element(by.className('activity-username')).getText().then((text: string) => {
+        const activityGroup = SfActivityPage.getPartsOfActivity(item);
+        return (activityGroup.user.then((text: string) => {
           return text.indexOf(username) === -1;
         }));
       }).then((activityItems: ElementFinder[]) => {
@@ -533,7 +535,8 @@ describe('Activity E2E Test', () => {
       activityPage.clickOnAllActivity();
       activityPage.activityGroups.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
-        return (item.element(by.className('activity-username')).getText().then((text: string) => {
+        const activityGroup = SfActivityPage.getPartsOfActivity(item);
+        return (activityGroup.user.then((text: string) => {
           return text.indexOf(username) === -1;
         }));
       }).then((activityItems: ElementFinder[]) => {
