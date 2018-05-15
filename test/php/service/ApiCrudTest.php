@@ -40,18 +40,18 @@ class ApiCrudTestEnvironment extends MongoTestEnvironment
         return UserCommands::updateUser($params, $this->website);
     }
 
-    public function makeText($projectId, $textName)
+    public function makeText($projectId, $textName, $userId)
     {
         $model = array('id' => '', 'title' => $textName);
 
-        return TextCommands::updateText($projectId, $model);
+        return TextCommands::updateText($projectId, $model, $userId);
     }
 
-    public function makeQuestion($projectId)
+    public function makeQuestion($projectId, $userId)
     {
         $model = array('id' => '');
 
-        return QuestionCommands::updateQuestion($projectId, $model);
+        return QuestionCommands::updateQuestion($projectId, $model, $userId);
     }
 
     public function getProjectMember($projectId, $userName)
@@ -112,7 +112,7 @@ class ApiCrudTest extends TestCase
         $userId = self::$environ->getProjectMember($projectId, 'user1');
 
         // create text
-        $textId = self::$environ->makeText($projectId, "test text 1");
+        $textId = self::$environ->makeText($projectId, "test text 1", $userId);
 
         // List
         $dto = self::$environ->fixJson(QuestionListDto::encode($projectId, $textId, $userId));
@@ -125,7 +125,7 @@ class ApiCrudTest extends TestCase
             'description' =>'SomeDescription',
             'textRef' => $textId
         );
-        $questionId = QuestionCommands::updateQuestion($projectId, $model);
+        $questionId = QuestionCommands::updateQuestion($projectId, $model, $userId);
         $this->assertNotNull($questionId);
         $this->assertEquals(24, strlen($questionId));
 
@@ -136,7 +136,7 @@ class ApiCrudTest extends TestCase
 
         // Update
         $result['title'] = 'OtherQuestion';
-        $id = QuestionCommands::updateQuestion($projectId, $result);
+        $id = QuestionCommands::updateQuestion($projectId, $result, $userId);
         $this->assertNotNull($id);
         $this->assertEquals($result['id'], $id);
 
@@ -221,7 +221,7 @@ class ApiCrudTest extends TestCase
             'id' => '',
             'title' =>'SomeText'
         );
-        $id = TextCommands::updateText($projectId, $model);
+        $id = TextCommands::updateText($projectId, $model, $userId);
         $this->assertNotNull($id);
         $this->assertEquals(24, strlen($id));
 
@@ -232,7 +232,7 @@ class ApiCrudTest extends TestCase
 
         // Update
         $result['title'] = 'OtherText';
-        $id = TextCommands::updateText($projectId, $result);
+        $id = TextCommands::updateText($projectId, $result, $userId);
         $this->assertNotNull($id);
         $this->assertEquals($result['id'], $id);
 
