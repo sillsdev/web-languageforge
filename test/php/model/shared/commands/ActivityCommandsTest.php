@@ -96,9 +96,9 @@ class ActivityCommandsTest extends TestCase
 
         // We create a text, a question, and an answer, with two comments. Then we update the answer and the first comment.
         // All activity-log entries are also captured so that calling code can check them.
-        list($text, $textId, $a1) = $this->createSampleText($project, "Text 1", "text content");
+        list($text, $textId, $a1) = $this->createSampleText($project, "Text 1", "text content", $user1Id);
 
-        list($question, $questionId, $a5) = $this->createSampleQuestion($project, $textId, "the question", "question description");
+        list($question, $questionId, $a5) = $this->createSampleQuestion($project, $textId, "the question", "question description", $user1Id);
         list($answer, $answerId, $a6) = $this->createSampleAnswer($project, $user3Id, $question, $questionId, "first answer", "text highlight");
         list($comment1, $comment1Id, $a7) = $this->addComment($project, $user1Id, $questionId, $answerId, "first comment");
         list($comment2, $comment2Id, $a8) = $this->addComment($project, $user2Id, $questionId, $answerId, "second comment");
@@ -138,13 +138,13 @@ class ActivityCommandsTest extends TestCase
         ];
     }
 
-    private function createSampleText($project, $title, $content): array
+    private function createSampleText($project, $title, $content, $userId): array
     {
         $text = new TextModel($project);
         $text->title = $title;
         $text->content = $content;
         $textId = $text->write();
-        $a1 = ActivityCommands::addText($project, $textId, $text);
+        $a1 = ActivityCommands::addText($project, $textId, $text, $userId);
         return [$text, $textId, $a1];
     }
 
@@ -166,14 +166,14 @@ class ActivityCommandsTest extends TestCase
         return [$user1Id, $user2Id, $user3Id, $a2, $a3, $a4];
     }
 
-    private function createSampleQuestion($project, $textId, $title, $description): array
+    private function createSampleQuestion($project, $textId, $title, $description, $userId): array
     {
         $question = new QuestionModel($project);
         $question->title = $title;
         $question->description = $description;
         $question->textRef->id = $textId;
         $questionId = $question->write();
-        $a5 = ActivityCommands::addQuestion($project, $questionId, $question);
+        $a5 = ActivityCommands::addQuestion($project, $questionId, $question, $userId);
         return [$question, $questionId, $a5];
     }
 
