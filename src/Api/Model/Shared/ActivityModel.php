@@ -2,6 +2,7 @@
 
 namespace Api\Model\Shared;
 
+use Api\Library\Shared\Website;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\IdReference;
 use Api\Model\Shared\Mapper\MapperModel;
@@ -64,6 +65,78 @@ class ActivityModel extends MapperModel
         $this->addContent($this::PROJECT, $projectModel->projectName);
         $databaseName = $projectModel->databaseName();
         parent::__construct(ActivityModelMongoMapper::connect($databaseName), $id);
+    }
+
+    /**
+     * @param string $siteBase
+     * @return array
+     */
+    public static function getActivityTypesForSiteBase($siteBase)
+    {
+        switch ($siteBase) {
+            case Website::SCRIPTUREFORGE:
+                return [
+                    self::ADD_COMMENT,
+                    self::UPDATE_COMMENT,
+                    self::ADD_ANSWER,
+                    self::UPDATE_ANSWER,
+                    self::ADD_TEXT,
+                    self::ADD_QUESTION,
+                    self::CHANGE_STATE_OF_QUESTION,
+                    self::INCREASE_SCORE,
+                    self::DECREASE_SCORE,
+                    self::ADD_USER_TO_PROJECT,
+                    self::UNKNOWN,
+                ];
+            case Website::LANGUAGEFORGE:
+                return [
+                    self::ADD_USER_TO_PROJECT,
+                    self::ADD_ENTRY,
+                    self::UPDATE_ENTRY,
+                    self::DELETE_ENTRY,
+                    self::ADD_LEX_COMMENT,
+                    self::UPDATE_LEX_COMMENT,
+                    self::UPDATE_LEX_COMMENT_STATUS,
+                    self::ADD_LEX_REPLY,
+                    self::UPDATE_LEX_REPLY,
+                    self::UNKNOWN,
+                ];
+            default:
+                return [];
+        }
+    }
+
+    /**
+     * @param string $siteBase
+     * @return array
+     */
+    public static function getContentTypesForSiteBase($siteBase)
+    {
+        switch ($siteBase) {
+            case Website::SCRIPTUREFORGE:
+                return [
+                    self::PROJECT,
+                    self::TEXT,
+                    self::QUESTION,
+                    self::ANSWER,
+                    self::COMMENT,
+                    self::USER,
+                    self::USER2,
+                ];
+            case Website::LANGUAGEFORGE:
+                return [
+                    self::PROJECT,
+                    self::LEX_COMMENT,
+                    self::LEX_COMMENT_CONTEXT,
+                    self::LEX_COMMENT_STATUS,
+                    self::LEX_REPLY,
+                    self::USER,
+                    self::USER2,
+                    self::ENTRY,
+                ];
+            default:
+                return [];
+        }
     }
 
     // TODO add a userFilter ArrayOf type that we can use to query Mongo for activities that only apply to specific users

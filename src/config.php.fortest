@@ -70,6 +70,10 @@ if (! defined('GOOGLE_CLIENT_SECRET')) {
     define('GOOGLE_CLIENT_SECRET', 'googleClientSecret');
 }
 
+if (! defined('GATHERWORDS_CLIENT_ID')) {
+    define('GATHERWORDS_CLIENT_ID', 'gatherWordsClientId');
+}
+
 if (! defined('PARATEXT_CLIENT_ID')) {
     define('PARATEXT_CLIENT_ID', 'paratextClientId');
 }
@@ -87,4 +91,13 @@ if (! defined('JWT_KEY')) {
 
 if (! defined('SR_TRANSLATE_FOLDER')) {
     define('SR_TRANSLATE_FOLDER', '/var/lib/scriptureforge/translate/sendreceive');
+}
+
+if (!defined('BUGSNAG_API_KEY')) {
+    define('BUGSNAG_API_KEY', 'missing-bugsnag-api-key');
+}
+
+if (!defined('BUGSNAG_NOTIFY_RELEASE_STAGES')) {
+    // The real values will be set by gulp
+    define('BUGSNAG_NOTIFY_RELEASE_STAGES', 'not-set' );
 }
