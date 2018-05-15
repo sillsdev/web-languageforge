@@ -7,7 +7,9 @@ import {ProjectService} from './api/project.service';
 import {RestApiService} from './api/rest-api.service';
 import {UserRestApiService} from './api/user-rest-api.service';
 import {UserService} from './api/user.service';
+import {ApplicationHeaderService} from './application-header.service';
 import {BytesFilter, EncodeURIFilter, RelativeTimeFilter} from './filters';
+import {ExceptionOverrideModule} from './exception-handling.service';
 import {LinkService} from './link.service';
 import {ModalService} from './modal/modal.service';
 import {NavbarController} from './navbar.controller';
@@ -17,7 +19,7 @@ import {SessionService} from './session.service';
 import {UtilityService} from './utility.service';
 
 export const CoreModule = angular
-  .module('coreModule', [JsonRpcModule, OfflineModule])
+  .module('coreModule', [JsonRpcModule, OfflineModule, ExceptionOverrideModule])
   .service('projectService', ProjectService)
   .service('userService', UserService)
   .service('activityService', ActivityService)
@@ -25,6 +27,7 @@ export const CoreModule = angular
   .service('sessionService', SessionService)
   .service('modalService', ['$uibModal', ModalService])
   .service('linkService', LinkService)
+  .service('applicationHeaderService', ApplicationHeaderService)
   .service('utilService', UtilityService)
   .service('restApiService', RestApiService)
   .service('noticeService', NoticeService)

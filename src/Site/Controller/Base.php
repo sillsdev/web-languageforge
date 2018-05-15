@@ -15,8 +15,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Acl\Exception\Exception;
 
-require_once APPPATH."version.php";
-
 class Base
 {
     public function __construct() {
@@ -34,6 +32,7 @@ class Base
         $this->data['jsNotMinifiedFiles'] = [];
         $this->data['cssFiles'] = [];
         $this->data['vendorFilesJs'] = [];
+        $this->data['vendorFilesCss'] = [];
         $this->data['vendorFilesMinJs'] = [];
         $this->data['isAngular2'] = false;
     }

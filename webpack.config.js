@@ -1,3 +1,5 @@
+'use strict';
+
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
@@ -21,7 +23,6 @@ var webpackConfig = {
       { from: './node_modules/jquery/dist/', to: 'jquery' },
       { from: './node_modules/offline-js/offline.min.js', to: 'offline-js' },
       { from: './node_modules/rangy/lib/', to: 'rangy' },
-      { from: './node_modules/textangular/dist/', to: 'textangular' },
       { from: './node_modules/zxcvbn/dist/', to: 'zxcvbn' }
     ]),
     new webpack.ContextReplacementPlugin(
@@ -50,7 +51,13 @@ var webpackConfig = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest'
     }),
-    new LiveReloadPlugin()
+    new LiveReloadPlugin(),
+
+    new webpack.DefinePlugin({
+      'process.env.XFORGE_BUGSNAG_API_KEY': JSON.stringify(process.env.XFORGE_BUGSNAG_API_KEY
+        || 'missing-bugsnag-api-key'),
+      'process.env.NOTIFY_RELEASE_STAGES': process.env.NOTIFY_RELEASE_STAGES,
+    })
   ],
 
   module: {

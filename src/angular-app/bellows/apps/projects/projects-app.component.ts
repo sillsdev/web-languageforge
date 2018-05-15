@@ -1,6 +1,8 @@
 import * as angular from 'angular';
 
 import { ProjectService } from '../../core/api/project.service';
+import { ApplicationHeaderService } from '../../core/application-header.service';
+import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
 import { Project } from '../../shared/model/project.model';
@@ -22,14 +24,24 @@ export class ProjectsAppController implements angular.IController {
   siteName: string;
   projectCount: number;
 
-  static $inject = ['$window', 'projectService', 'sessionService', 'silNoticeService'];
+  static $inject = ['$window', 'projectService',
+                    'sessionService', 'silNoticeService',
+                    'breadcrumbService',
+                    'applicationHeaderService'];
   constructor(private $window: angular.IWindowService, private projectService: ProjectService,
-              private sessionService: SessionService, private notice: NoticeService) {
+              private sessionService: SessionService, private notice: NoticeService,
+              private breadcrumbService: BreadcrumbService,
+              private applicationHeaderService: ApplicationHeaderService) {
   }
 
   $onInit() {
     this.projectTypeNames = this.projectService.data.projectTypeNames;
     this.projectTypesBySite = this.projectService.data.projectTypesBySite;
+    this.applicationHeaderService.setPageName('My Projects');
+    this.breadcrumbService.set('top', [{
+          href: '/app/projects',
+          label: 'My Projects'
+        }]);
 
     this.sessionService.getSession().then(session => {
       this.rights.canEditProjects =

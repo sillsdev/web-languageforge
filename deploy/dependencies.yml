@@ -33,6 +33,12 @@
     - name: Add PHP7.0 ppa for Trusty
       apt_repository: repo='ppa:ondrej/php' state=present
       when: base_distribution == 'ubuntu' and base_distribution_release == 'trusty'
+    - name: add Mongo 3.6 repository
+      # TODO: use ansible system variable instead of hardcoding "xenial" in repo line -- except that it can only be from a restricted list of distros (e.g. xenial & bionic only)
+      apt_repository:
+        repo: "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse"
+        filename: mongodb-org-3.6
+        update_cache: yes
     - name: Remove PHP5 for Trusty
       apt: name=php5-fpm state=absent
       when: base_distribution == 'ubuntu' and base_distribution_release == 'trusty'
@@ -49,7 +55,7 @@
         - dotnet-sdk-2.0.2
         - geoipupdate
         - libapache2-mod-php
-        - mongodb-server
+        - mongodb-org
         - nodejs
         - p7zip-full
         - php7.0-cli
@@ -251,12 +257,23 @@
     - name: update the mongo config file
       lineinfile:
         dest: /etc/mongodb.conf
-        regexp: '^(dbpath=).*$'
+        regexp: '^(\s*dbPath: ).*$'
         line: '\1{{mongo_path}}'
         backrefs: yes
       notify: restart mongodb
-    - name: ensure mongodb is running (and enable it at boot)
-      service: name=mongodb state=started enabled=yes
+    - name: ensure mongod service is running (and enable it at boot)
+      # Note that the mongodb-org packages install a service named "mongod", not "mongodb"
+      service:
+        name: "{{item.name}}"
+        state: "{{item.state}}"
+        enabled: "{{item.enabled}}"
+      with_items:
+        - name: mongodb
+          state: stopped
+          enabled: no
+        - name: mongod
+          state: started
+          enabled: yes
 
     - name: 'Add GeoLite2 configuration'
       copy:
@@ -303,9 +320,13 @@
       service: name=languageforge-web-api enabled=yes
       when: is_build_agent is defined and is_build_agent == true
 
+    - name: 'create generated files'
+      shell: gulp build-createWebsiteDefs
+
+
   handlers:
     - name: restart mongodb
-      service: name=mongodb state=restarted
+      service: name=mongod state=restarted
 
     - name: restart postfix
       service: name=postfix state=restarted
