@@ -169,7 +169,7 @@ export class EditorPage {
     deleteMenuItem: this.editDiv.element(by.css('.entry-card .card-header .dropdown-menu .dropdown-item')),
 
     // Helper functions for retrieving various field values
-    fields: this.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
+    fields: this.editDiv.all(by.repeater('fieldName in $ctrl.config.fieldOrder')),
     getLexemes: () => {
 
       // Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid:

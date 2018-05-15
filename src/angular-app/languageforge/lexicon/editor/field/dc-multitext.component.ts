@@ -25,7 +25,7 @@ export class FieldMultiTextController implements angular.IController {
   $onInit(): void {
     this.inputSystems = this.control.config.inputSystems;
     this.contextGuid = this.parentContextGuid;
-    if (angular.isDefined(this.picture)) {
+    if (this.picture != null) {
       this.contextGuid += ' pictures#' + this.picture.guid;
     }
   }
