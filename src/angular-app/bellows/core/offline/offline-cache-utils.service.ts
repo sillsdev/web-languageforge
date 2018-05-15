@@ -9,8 +9,6 @@ export class OfflineCacheUtilsService {
   static $inject: string[] = ['sessionService', 'offlineCache'];
   constructor(private sessionService: SessionService, private offlineCache: OfflineCacheService) { }
 
-  canCache = this.offlineCache.canCache;
-
   getProjectData(): angular.IPromise<any> {
     return this.offlineCache.getOneFromStore('projects', this.sessionService.projectId());
   }

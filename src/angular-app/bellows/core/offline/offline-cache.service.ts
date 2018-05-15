@@ -1,216 +1,69 @@
 import * as angular from 'angular';
+import * as localforage from 'localforage';
 
 /**
  * implements an offline cache storage system
  */
 export class OfflineCacheService {
-  readonly dbName = 'xforgeCache';
-  readonly version = 6;
-  readonly indexedDB: any = this.$window.indexedDB;
+  static readonly version = 6;
 
-  db: any = null;
+  private stores: { [storeName: string]: LocalForage } = {};
 
-  static $inject: string[] = ['$q', '$window'];
-  constructor(private $q: angular.IQService, private $window: angular.IWindowService) { }
+  static $inject: string[] = ['$q'];
+  constructor(private $q: angular.IQService) { }
 
-  canCache = (): boolean => {
-    return Boolean(this.indexedDB);
+  static canCache(): boolean {
+    return localforage.supports(localforage.INDEXEDDB) || localforage.supports(localforage.WEBSQL);
   }
 
-  deleteObjectInStore = (storeName: string, key: string): angular.IPromise<any> => {
-    // cjh 2015-03 it seems to me from the spec that we can call "delete" without first checking if the id exists
-    // http://www.w3.org/TR/IndexedDB/#dfn-steps-for-deleting-records-from-an-object-store
-    const deferred = this.$q.defer();
-    this.openDbIfNecessary().then(() => {
-      // we write ['delete'] to satisfy the yui compressor - arg! - time to get a new compressor - cjh 2015-03
-      const request = this.db.transaction(storeName, 'readwrite').objectStore(storeName).delete(key);
-      request.onsuccess = () => {
-        deferred.resolve(true);
-      };
-
-      request.onerror = (e: any) => {
-        deferred.reject(e.value);
-      };
-    }, error => {
-      deferred.reject(error);
-    });
-
-    return deferred.promise;
+  deleteObjectInStore(storeName: string, key: string): angular.IPromise<any> {
+    return this.$q.when(this.getStore(storeName).removeItem(key));
   }
 
-  getAllFromStore = (storeName: string, projectId?: string): angular.IPromise<any> => {
-    const deferred = this.$q.defer();
-    this.openDbIfNecessary().then(() => {
-      const items: any[] = [];
-      const objectStore = this.db.transaction(storeName).objectStore(storeName);
-      // console.log("open index projectId for storeName = " + storeName);
-      // console.log("open cursor for index on storeName = " + storeName);
-
-      if (objectStore.indexNames.contains('projectId')) {
-        const index = objectStore.index('projectId');
-        const cursorRequest = index.openCursor(IDBKeyRange.only(projectId));
-        cursorRequest.onsuccess = (e: any) => {
-          const cursor = e.target.result;
-          if (cursor) {
-            if (angular.isDefined(cursor.value.projectId)) delete cursor.value.projectId;
-            items.push(cursor.value);
-
-            // should be cursor.continue(); but needed a work around to work with the yui compressor - cjh 2015-03
-            cursor.continue();
-          } else {
-            deferred.resolve(items);
-          }
-        };
-
-        cursorRequest.catch = (e: any) => {
-          console.log(e);
-          deferred.reject('Error: cursor failed in getAll' + storeName);
-        };
-
-        cursorRequest.onerror = (e: any) => {
-          console.log(e.value);
-          deferred.reject('Error: cursor failed in getAll' + storeName);
-        };
-
-      } else {
-          console.log('Error: no index named projectId in indexeddb');
-          deferred.reject('Error: no index named projectId in indexeddb store ' + storeName);
-
+  getAllFromStore(storeName: string, projectId?: string): angular.IPromise<any> {
+    const results: any[] = [];
+    return this.$q.when(this.getStore(storeName).iterate<any, any>(value => {
+      if (projectId == null || value.projectId === projectId) {
+        results.push(OfflineCacheService.removeProjectId(value));
       }
-
-    }, error => {
-      deferred.reject(error);
-    });
-
-    return deferred.promise;
+    }).then(() => {
+      return results;
+    }));
   }
 
-  getOneFromStore = (storeName: string, key: string): angular.IPromise<any> => {
-    const deferred = this.$q.defer();
-    this.openDbIfNecessary().then(() => {
-      const request = this.db.transaction(storeName).objectStore(storeName).get(key);
-      request.onsuccess = (e: any) => {
-        if (e.target.result) {
-          if (angular.isDefined(e.target.result.projectId)) delete e.target.result.projectId;
-          deferred.resolve(e.target.result);
-        } else {
-          deferred.reject();
-        }
-      };
-
-      request.onerror = (e: any) => {
-        deferred.reject(e.value);
-      };
-    }, error => {
-      deferred.reject(error);
-    });
-
-    return deferred.promise;
+  getOneFromStore(storeName: string, key: string): angular.IPromise<any> {
+    return this.$q.when(this.getStore(storeName).getItem(key).then(item => {
+      return OfflineCacheService.removeProjectId(item);
+    }));
   }
 
-  setObjectsInStore = (storeName: string, projectId: string, items: any[],
-                       isAdd: boolean = false): angular.IPromise<any> => {
-    const deferred = this.$q.defer();
-    this.openDbIfNecessary().then(() => {
-      let request;
-      const trans = this.db.transaction([storeName], 'readwrite');
-      const store = trans.objectStore(storeName);
-
-      // http://stackoverflow.com/questions/10471759/inserting-large-quantities-in-indexeddbs-objectstore-blocks-ui
-      let i = 0;
-      function insertNext() {
-        if (i < items.length) {
-          const item = angular.copy(items[i]);
-          item.projectId = projectId;
-          store.put(items[i]).onsuccess = insertNext;
-          if (isAdd) {
-            request = store.add(item);
-          } else {
-            request = store.put(item);
-          }
-
-          request.onsuccess = insertNext;
-          request.onerror = () => {
-            deferred.reject('Could not persist object in ' + storeName);
-          };
-
-          ++i;
-        } else {   // complete
-          deferred.resolve(true);
-        }
-      }
-
-      insertNext();
-    }, error => {
-      deferred.reject(error);
-    });
-
-    return deferred.promise;
+  setObjectsInStore(storeName: string, projectId: string, items: any[]): angular.IPromise<any> {
+    const store: LocalForage = this.getStore(storeName);
+    return this.$q.all(items.map(item => {
+      return store.setItem(item.id, OfflineCacheService.addProjectId(item, projectId));
+    }));
   }
 
-  private openDbIfNecessary(): angular.IPromise<any> {
-    const deferred = this.$q.defer();
-    if (this.db === null) {
-      const request = this.indexedDB.open(this.dbName, this.version);
-
-      // migration and database setup
-      request.onupgradeneeded = (e: any) => {
-        this.db = e.target.result;
-
-        e.target.transaction.onerror = this.indexedDB.onerror;
-
-        // get rid of old stores - no longer used - cjh 2015-03
-        if (this.db.objectStoreNames.contains('cached')) {
-          this.db.deleteObjectStore('cached');
-        }
-
-        if (this.db.objectStoreNames.contains('offlineActions')) {
-          this.db.deleteObjectStore('offlineActions');
-        }
-
-        if (this.db.objectStoreNames.contains('entries')) {
-          this.db.deleteObjectStore('entries');
-        }
-
-        const entriesStore = this.db.createObjectStore('entries', { keyPath: 'id' });
-        entriesStore.createIndex('projectId', 'projectId', { unique: false });
-
-        if (this.db.objectStoreNames.contains('comments')) {
-          this.db.deleteObjectStore('comments');
-        }
-
-        const commentsStore = this.db.createObjectStore('comments', { keyPath: 'id' });
-        commentsStore.createIndex('projectId', 'projectId', { unique: false });
-
-        if (this.db.objectStoreNames.contains('workingsets')) {
-          this.db.deleteObjectStore('workingsets');
-        }
-
-        const workingsetStore = this.db.createObjectStore('workingsets', { keyPath: 'id' });
-        workingsetStore.createIndex('projectId', 'projectId', { unique: false });
-
-        if (this.db.objectStoreNames.contains('projects')) {
-          this.db.deleteObjectStore('projects');
-        }
-
-        const projectsStore = this.db.createObjectStore('projects', { keyPath: 'id' });
-        projectsStore.createIndex('projectId', 'projectId', { unique: true });
-      };
-
-      request.onsuccess = (e: any) => {
-        this.db = e.target.result;
-        deferred.resolve();
-      };
-
-      request.onerror = (e: any) => {
-        deferred.reject('Error: opening database. ' + e.value);
-      };
-
-    } else {
-      deferred.resolve();
+  private getStore(storeName: string): LocalForage {
+    if (!this.stores[storeName]) {
+      this.stores[storeName] = localforage.createInstance({
+        name: storeName
+      });
     }
+    return this.stores[storeName];
+  }
 
-    return deferred.promise;
+  private static addProjectId(object: any, projectId: string) {
+    if (object.projectId !== projectId) {
+      object = angular.copy(object);
+      object.projectId = projectId;
+    }
+    return object;
+  }
+
+  private static removeProjectId(object: any) {
+    delete object.projectId;
+    return object;
   }
 
 }
