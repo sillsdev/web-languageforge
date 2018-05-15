@@ -85,9 +85,11 @@ angular.module('lexicon-new-project',
   .controller('NewLexProjectCtrl', ['$scope', '$filter', '$uibModal', '$q', '$state', '$window',
     'sessionService', 'silNoticeService', 'projectService', 'linkService',
     'Upload', 'inputSystems', 'lexProjectService', 'lexSendReceiveApi',  'lexSendReceive',
+    'applicationHeaderService', 'breadcrumbService',
   function ($scope, $filter, $modal, $q, $state, $window,
             sessionService, notice, projectService, linkService,
-            Upload, inputSystemsService, lexProjectService, sendReceiveApi, sendReceive) {
+            Upload, inputSystemsService, lexProjectService, sendReceiveApi, sendReceive,
+            applicationHeaderService, breadcrumbService) {
     $scope.interfaceConfig = {};
     $scope.interfaceConfig.userLanguageCode = 'en';
     sessionService.getSession().then(function (session) {
@@ -130,6 +132,14 @@ angular.module('lexicon-new-project',
     $scope.progressIndicatorStep2Label = 'Initial Data';
     $scope.progressIndicatorStep3Label = 'Verify';
     resetValidateProjectForm();
+
+    breadcrumbService.set('top', [{
+        href: '/app/projects',
+        label: 'My Projects'
+      }, {
+        label: 'New Project'
+      }]);
+    applicationHeaderService.setPageName('Start or join a Web Dictionary Project');
 
     function makeFormValid(msg) {
       if (!msg) msg = '';

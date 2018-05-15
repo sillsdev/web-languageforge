@@ -8,77 +8,18 @@
 
     {% if isLoggedIn %}
 
-        <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch" style="background-color: #104060" data-ng-controller="navbarController as $ctrl">
-            <span class="desktop-title navbar-brand d-none d-md-inline-block mr-auto">
-                <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
-                <a class="" href="/">{{ app.website.name }}</a>
-            </span>
-            <div class="d-md-none flex-grow">
-                <ul id="mobileMenu" class="nav navbar-nav">
-                    <li uib-dropdown class="nav-item nav-projects">
-                        <a class="nav-link" uib-dropdown-toggle href id="mobileMyProjectDropdown"
-                           aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-bars"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-left" uib-dropdown-menu aria-labelledby="mobileMyProjectDropdown">
-                            <!-- <a class="dropdown-item" href="/app/activity">Activity</a>
-                            <div class="dropdown-divider"></div> -->
-                            {% verbatim %}
-                            <div data-ng-switch="$ctrl.projectTypesBySite().length" data-ng-show="$ctrl.rights.canCreateProject">
-                                <div data-ng-switch-when="1">
-                                    <a class="dropdown-item" data-ng-href="/app/{{$ctrl.projectTypesBySite()[0]}}/new-project">
-                                        <b>Start or Join a New Project</b></a>
-                                </div>
-                                <div data-ng-switch-default data-ng-repeat="appName in $ctrl.projectTypesBySite()">
-                                    <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
-                                        <img height="24px" data-ng-src="/Site/views/{{$ctrl.siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a <span class="notranslate">{{$ctrl.projectTypeNames[appName]}}</span> project</b>
-                                    </a>
-                                </div>
-                            </div>
-                            {% endverbatim %}
-                            {% if projects|length > 10 %}
-                                <a class="dropdown-item" href="/app/projects"><b>List All Projects</b></a>
-                                <div class="dropdown-divider"></div>
-                            {% endif %}
-                            {% if projects|length <= 10 %}
-                                {% verbatim %}
-                                <div class="dropdown-divider" data-ng-show="$ctrl.rights.canCreateProject"></div>
-                                {% endverbatim %}
-                            {% endif %}
-                            {% for project in projects %}
-                                <a class="dropdown-item"
-                                   href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
-                            {% endfor %}
-                        </div>
-                    </li>
-                    <a class="navbar-brand" href="/"><span style="margin-left:20px">{{ app.website.name }}</span></a>
-                    <li uib-dropdown class="nav-item nav-user ml-auto">
-                        <a class="nav-link" uib-dropdown-toggle href id="mobileUserDropdown"
-                           aria-haspopup="true" aria-expanded="false">
-                            <img src="{{ smallAvatarUrl }}"
-                                 class="rounded-circle"
-                                 id="mobileSmallAvatarURL" /></a>
-                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="mobileUserDropdown">
-                            {% if isAdmin %}
-                                <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>
-                            {% endif %}
-                            <a class="dropdown-item" href="/app/userprofile">My Profile</a>
-                            <a class="dropdown-item" href="/app/changepassword">Change Password</a>
-                            <a class="dropdown-item" href="/auth/logout">Logout</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="d-none d-md-block">
+        <div id="primary-navigation" class="fixed-nav-bar" data-ng-controller="navbarController as $ctrl">
+            <nav class="navbar navbar-expand navbar-dark align-items-stretch">
+                <span class="navbar-brand d-md-inline-block mr-auto">
+                    <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
+                    <a class="" href="/">{{ app.website.name }}</a>
+                </span>
                 <ul class="nav navbar-nav">
-
                     <!-- <li class="nav-item">
                         <a class="nav-link " href="/app/activity">Activity</a>
                     </li> -->
                     <li class="nav-item" uib-dropdown>
-                        <a class="nav-link" uib-dropdown-toggle href id="helpDropdown" aria-haspopup="true" aria-expanded="false">Help</a>
+                        <a class="nav-link" uib-dropdown-toggle href id="helpDropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-life-ring"></i> <span>Help</span></a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="helpDropdown">
                             <a class="dropdown-item" target="_blank" href="https://community.software.sil.org/c/language-forge/how-to">Tutorials and How-Tos</a>
                             <a class="dropdown-item" target="_blank" href="https://community.software.sil.org/c/language-forge">Community Support</a>
@@ -89,7 +30,9 @@
                     <li class="nav-item dropdown" uib-dropdown>
                         <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdown"
                            aria-haspopup="true" aria-expanded="false">
-                            My Projects</a>
+                            <span>My Projects</span>
+                            <i class="fa fa-bars"></i>
+                        </a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="myProjectDropdown">
                             {% verbatim %}
                             <div data-ng-switch="$ctrl.projectTypesBySite().length" data-ng-show="$ctrl.rights.canCreateProject">
@@ -120,13 +63,36 @@
                             {% endfor %}
                         </div>
                     </li>
+                </ul>
+            </nav>
+            <nav class="navbar navbar-expand navbar-dark align-items-center justify-content-between">
+                <div class="page-header-detail">
+                    <div class="page-name-settings">
+                        <div class="btn-group" id="settings-dropdown-button" uib-dropdown data-ng-class="{'app-settings-available': $ctrl.header.settings.length > 0}">
+                            <a id="settingsBtn" class="btn btn-std" uib-dropdown-toggle
+                               title="Settings" href="#">
+                                <i class="fa fa-cog"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-left" uib-dropdown-menu>
+                                {% verbatim %}
+                                <div data-ng-repeat="setting in $ctrl.header.settings">
+                                    <a id="{{ setting.id }}" class="dropdown-item" data-ng-href="{{ setting.href }}">{{ setting.label }}</a>
+                                    <div class="dropdown-divider" data-ng-show="{{ setting.divider }}"></div>
+                                </div>
+                                {% endverbatim %}
+                            </div>
+                        </div>
+                        <div class="page-name" ng-bind="$ctrl.header.pageName"></div>
+                    </div>
+                    <breadcrumbs id="top" class="breadcrumbs d-none d-md-block"></breadcrumbs>
+                </div>
+                <ul class="nav navbar-nav">
                     <li class="nav-item" uib-dropdown>
                         <a class="nav-link" uib-dropdown-toggle href id="userDropdown"
                             aria-haspopup="true" aria-expanded="false">
                             <img src="{{ smallAvatarUrl }}"
-                                 style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px"
                                  class="rounded-circle"
-                                 id="smallAvatarURL" />Hi, <span class="notranslate">{{ userName }}</span></a>
+                                 id="smallAvatarURL" /><span class="notranslate">{{ userName }}</span></a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="userDropdown">
                             {% if isAdmin %}
                                 <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>
@@ -137,26 +103,26 @@
                         </div>
                     </li>
                 </ul>
-            </div>
-        </nav>
+            </nav>
+        </div>
 
     {% else %}
-        <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch" style="background-color: #104060">
-            <span class="desktop-title navbar-brand d-none d-md-inline-block mr-auto">
-                <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
-                <a class="" href="/">{{ app.website.name }}</a>
-            </span>
-            <a class="navbar-brand d-md-none mr-auto" href="/"><span style="margin-left:20px">{{ app.website.name }}</span></a>
-            <ul class="nav navbar-nav">
-                <li class="nav-item header-button-rounded">
-                    <a class="nav-link" href="/public/signup">Sign Up</a>
-                </li>
-                <li class="nav-item header-button-rounded">
-                    <a class="nav-link" href="/auth/login">Login</a>
-                </li>
-            </ul>
-        </nav>
-
+        <div id="primary-navigation" class="logged-out">
+            <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch logged-out">
+                <span class="navbar-brand d-md-inline-block mr-auto">
+                    <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
+                    <a class="" href="/">{{ app.website.name }}</a>
+                </span>
+                <ul class="nav navbar-nav">
+                    <li class="nav-item header-button-rounded">
+                        <a class="nav-link" href="/public/signup">Sign Up</a>
+                    </li>
+                    <li class="nav-item header-button-rounded">
+                        <a class="nav-link" href="/auth/login">Login</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     {% endif %}
 {% endblock %}
 

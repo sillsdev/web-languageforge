@@ -110,21 +110,25 @@ describe('Lexicon E2E Editor Comments', () => {
     browser.refresh();
     browser.wait(ExpectedConditions.visibilityOf(editorPage.comment.bubbles.first), constants.conditionTimeout);
     editorPage.comment.bubbles.first.click();
+    browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     expect<any>(comment.content.getText()).toEqual('First comment on this word.');
   });
 
   it('comments panel: close comments panel clicking on bubble', () => {
     editorPage.comment.bubbles.first.click();
+    browser.wait(ExpectedConditions.invisibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     expect<any>(editorPage.commentDiv.getAttribute('class')).not.toContain('panel-visible');
   });
 
   it('comments panel: show all comments', () => {
     editorPage.edit.toCommentsLink.click();
+    browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     expect<any>(editorPage.commentDiv.getAttribute('class')).toContain('panel-visible');
   });
 
   it('comments panel: close all comments clicking on main comments button', () => {
     editorPage.edit.toCommentsLink.click();
+    browser.wait(ExpectedConditions.invisibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     expect<any>(editorPage.commentDiv.getAttribute('class')).not.toContain('panel-visible');
   });
 });

@@ -6,7 +6,6 @@ angular.module('lexicon',
     'ui.router',
     'ui.bootstrap',
     'ngSanitize',
-    'palaso.ui.dc.rendered',
     'palaso.ui.typeahead',
     'coreModule',
     'sgw.ui.breadcrumb',
@@ -17,11 +16,14 @@ angular.module('lexicon',
     'pascalprecht.translate'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$compileProvider',
-    'apiServiceProvider',
+    '$sanitizeProvider', 'apiServiceProvider',
     function ($stateProvider, $urlRouterProvider, $translateProvider, $compileProvider,
-      apiService) {
+      $sanitizeProvider, apiService) {
     $compileProvider.debugInfoEnabled(apiService.isProduction);
     $compileProvider.commentDirectivesEnabled(apiService.isProduction);
+
+    // this is needed to allow style="font-family" on ng-bind-html elements
+    $sanitizeProvider.addValidAttrs(['style']);
 
     $urlRouterProvider.otherwise('/editor/list');
 
@@ -86,6 +88,7 @@ angular.module('lexicon',
           session.projectSettings().hasSendReceive;
       };
 
+      $scope.optionLists = session.projectSettings().optionlists;
       $scope.currentUserRole = session.projectSettings().currentUserRole;
       $scope.interfaceConfig = session.projectSettings().interfaceConfig;
       pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
