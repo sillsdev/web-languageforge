@@ -14,7 +14,7 @@ import {FieldTextComponent} from './dc-text.component';
 export const EditorFieldModule = angular
   .module('editorFieldModule', [
     'ngFileUpload',
-    'palaso.ui.comments',
+    'lexCommentsModule',
     FieldRenderedModule,
     FieldEntryModule,
     MockModule,
