@@ -1,13 +1,13 @@
 'use strict';
 
-angular.module('palaso.ui.comments')
+angular.module('semdomtransCommentsViewModule', ['lexCommentsModule'])
 
   // Palaso UI Dictionary Control: Comments
   .directive('semdomtransCommentsView', [function () {
     return {
       restrict: 'E',
-      templateUrl:
-        '/angular-app/bellows/directive/palaso.ui.comments.semdomtrans-comments-view.html',
+      templateUrl: '/angular-app/languageforge/semdomtrans/directive/' +
+        'palaso.ui.comments.semdomtrans-comments-view.html',
       scope: {
         control: '=',
         entry: '='
