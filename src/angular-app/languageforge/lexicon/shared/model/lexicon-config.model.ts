@@ -5,6 +5,7 @@ export class LexConfig {
   hideIfEmpty: boolean;
   label: string;
   type: string;
+  senseLabel?: string[];
 }
 
 export class LexConfigMultiText extends LexConfig {
@@ -62,10 +63,14 @@ export interface LexConfigInputSystems {
   [tag: string]: InputSystem;
 }
 
+export interface LexConfigOptionLists {
+  [listCode: string]: LexOptionList;
+}
+
 export class LexiconConfig {
   entry: LexConfigFieldList;
   inputSystems?: LexConfigInputSystems;
-  optionlists?: { [listCode: string]: LexOptionList };
+  optionlists?: LexConfigOptionLists;
   roleViews: { [role: string]: LexRoleViewConfig };
   tasks: { [taskType: string]: LexTask };
   userViews: { [userId: string]: LexUserViewConfig };

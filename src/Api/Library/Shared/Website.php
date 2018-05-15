@@ -23,6 +23,7 @@ class Website
         $this->defaultProjectCode = '';
         $this->userDefaultSiteRole = SiteRoles::USER;
         $this->allowSignupFromOtherSites = true;
+        $this->releaseStage = 'local';
     }
 
     /** @var string - the domain / hostname of the website */
@@ -51,6 +52,9 @@ class Website
 
     /** @var boolean */
     public $isProduction;
+
+    /** @var string - the release stage - live, qa, development, local */
+    public $releaseStage;
 
     /** @var array<Website> */
     private static $_sites;

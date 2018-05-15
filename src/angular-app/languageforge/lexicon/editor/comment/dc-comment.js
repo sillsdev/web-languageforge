@@ -1,22 +1,18 @@
 'use strict';
 
-angular.module('palaso.ui.comments')
+angular.module('lexCommentsModule')
 
-// Palaso UI Dictionary Control: Comments
+  // Palaso UI Dictionary Control: Comments
   .directive('dcComment', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.dc-comment.html',
+      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/dc-comment.html',
       controller: ['$scope', 'lexCommentService', 'sessionService', 'utilService', 'modalService',
         function ($scope, commentService, sessionService, util, modal) {
           $scope.getAvatarUrl = util.constructor.getAvatarUrl;
-
           $scope.showNewReplyForm = true;
-
           $scope.newReply = { id: '', editingContent: '' };
-
           $scope.editingCommentContent = '';
-
           $scope.posting = false;
 
           if ($scope.comment.regarding.field && angular.isDefined($scope.control.configService)) {
@@ -32,7 +28,8 @@ angular.module('palaso.ui.comments')
           $scope.showCommentReplies = function showCommentReplies() {
             $scope.$parent.showNewComment = !$scope.$parent.showNewComment;
             $scope.comment.showRepliesContainer = !$scope.comment.showRepliesContainer;
-            $scope.setCommentInteractiveStatus($scope.comment.id, $scope.comment.showRepliesContainer);
+            $scope.setCommentInteractiveStatus($scope.comment.id,
+              $scope.comment.showRepliesContainer);
             $scope.getSenseLabel();
           };
 
@@ -162,7 +159,8 @@ angular.module('palaso.ui.comments')
           }
 
           $scope.getSenseLabel = function getSenseLabel() {
-            return $scope.$parent.getSenseLabel($scope.comment.regarding.field, $scope.comment.contextGuid);
+            return $scope.$parent.getSenseLabel($scope.comment.regarding.field,
+              $scope.comment.contextGuid);
           };
 
           $scope.isOriginalRelevant = function isOriginalRelevant() {
@@ -208,7 +206,7 @@ angular.module('palaso.ui.comments')
             }
 
             for (var i in pictures) {
-              if (pictures[i].guid === contextParts.value) {
+              if (pictures.hasOwnProperty(i) && pictures[i].guid === contextParts.value) {
                 imageSrc = pictures[i].fileName;
               }
             }
@@ -220,9 +218,7 @@ angular.module('palaso.ui.comments')
             return imageSrc;
           };
 
-        }],
+        }]
 
-      link: function (scope, element, attrs, controller) {
-      }
     };
   }]);

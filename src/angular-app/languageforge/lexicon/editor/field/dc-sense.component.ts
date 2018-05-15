@@ -1,53 +1,75 @@
 import * as angular from 'angular';
 
-import {FieldExampleModule} from './dc-example.component';
-import {FieldRepeatModule} from './dc-fieldrepeat.component';
+import {ModalService} from '../../../../bellows/core/modal/modal.service';
+import {LexiconUtilityService} from '../../core/lexicon-utility.service';
+import {LexExample} from '../../shared/model/lex-example.model';
+import {LexSense} from '../../shared/model/lex-sense.model';
+import {LexConfigFieldList} from '../../shared/model/lexicon-config.model';
+import {FieldControl} from './field-control.model';
 
-export const FieldSenseModule = angular
-  .module('palaso.ui.dc.sense', [FieldExampleModule, FieldRepeatModule])
+export class FieldSenseController implements angular.IController {
+  model: LexSense;
+  config: LexConfigFieldList;
+  control: FieldControl;
+  index: number;
+  parentContextGuid: string;
+  remove: (index: number) => void;
 
-  // Palaso UI Dictionary Control: Sense
-  .directive('dcSense', [() => ({
-    restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-sense.component.html',
-    scope: {
-      config: '=',
-      model: '=',
-      index: '=',
-      remove: '=',
-      control: '='
-    },
-    controller: ['$scope', '$state', 'modalService', 'lexUtils', ($scope, $state, utils, modal) => {
-      $scope.$state = $state;
-      $scope.contextGuid = 'sense#' + $scope.model.guid;
+  contextGuid: string;
 
-      $scope.addExample = function addExample(): void {
-        const newExample = {};
-        $scope.control.makeValidModelRecursive($scope.config.fields.examples, newExample);
-        $scope.model.examples.push(newExample);
-        $scope.control.hideRightPanel();
-      };
+  static $inject = ['$state', 'modalService'];
+  constructor(private $state: angular.ui.IStateService, private modal: ModalService) { }
 
-      $scope.deleteExample = function deleteExample(index: number): void {
-        const deletemsg = 'Are you sure you want to delete the example <b>\' ' +
-          utils.constructor.getExample($scope.control.config, $scope.config.fields.examples,
-            $scope.model.examples[index], 'sentence')
-          + ' \'</b>';
-        modal.showModalSimple('Delete Example', deletemsg, 'Cancel', 'Delete Example')
-          .then(() => {
-            $scope.model.examples.splice(index, 1);
-            $scope.control.hideRightPanel();
-          }, angular.noop);
-      };
+  $onInit(): void {
+    this.contextGuid = this.parentContextGuid + ' sense#' + this.model.guid;
 
-      angular.forEach($scope.control.config.entry.fields.senses.fields, field => {
-        if (!angular.isDefined(field.senseLabel)) {
+    for (const fieldName in this.config.fields) {
+      if (this.config.fields.hasOwnProperty(fieldName)) {
+        const field = this.config.fields[fieldName];
+        if (field.senseLabel == null) {
           field.senseLabel = [];
           field.senseLabel[-1] = 'Meaning';
         }
 
-        field.senseLabel[$scope.index] = 'Meaning ' + ($scope.index + 1);
-      });
-    }]
-  })])
-  .name;
+        field.senseLabel[this.index] = 'Meaning ' + (this.index + 1);
+      }
+    }
+  }
+
+  isAtEditorEntry(): boolean {
+    return LexiconUtilityService.isAtEditorEntry(this.$state);
+  }
+
+  addExample = (): void => {
+    const newExample: LexExample = new LexExample();
+    this.control.makeValidModelRecursive(this.config.fields.examples, newExample);
+    this.model.examples.push(newExample);
+    this.control.hideRightPanel();
+  }
+
+  deleteExample = (index: number): void => {
+    const deletemsg = 'Are you sure you want to delete the example <b>\' ' +
+      LexiconUtilityService.getExample(this.control.config, this.config.fields.examples as LexConfigFieldList,
+        this.model.examples[index], 'sentence')
+      + ' \'</b>';
+    this.modal.showModalSimple('Delete Example', deletemsg, 'Cancel', 'Delete Example')
+      .then(() => {
+        this.model.examples.splice(index, 1);
+        this.control.hideRightPanel();
+      }, () => {});
+  }
+
+}
+
+export const FieldSenseComponent: angular.IComponentOptions = {
+  bindings: {
+    model: '=',
+    config: '<',
+    control: '<',
+    index: '<',
+    parentContextGuid: '<',
+    remove: '&'
+  },
+  controller: FieldSenseController,
+  templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-sense.component.html'
+};

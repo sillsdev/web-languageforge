@@ -1,7 +1,7 @@
 <div class="comments-right-panel-container right-panel-container" ng-class="{'context-mode': commentFilter.contextGuid}">
     <div ng-hide="commentFilter.contextGuid">
         <div class="comments-search-container">
-            <input dir="auto" class="form-control" placeholder="Filter Comments" ng-model="commentFilter.text" type="text">
+            <input dir="auto" class="form-control" placeholder="Filter Comments" data-ng-model="commentFilter.text" type="text">
             <span ng-show="commentFilter.text != ''" title="Clear Filter" ng-click="commentFilter.text = ''">
                 <i class="fa fa-times"></i>
             </span>
@@ -17,6 +17,7 @@
     <div class="commentsListMainContainer">
         <div class="commentListView">
             <div class="commentListContainer">
+                <!--suppress JSUnusedLocalSymbols -->
                 <div ng-repeat="comment in currentEntryCommentsFiltered">
                     <dc-comment></dc-comment>
                 </div>

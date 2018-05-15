@@ -1,45 +1,44 @@
 <form class="form-horizontal dc-semanticdomain">
     <div class="form-group row comment-bubble-group">
-        <label class="col-form-label col-lg-4 text-lg-right">{{config.label}}</label>
+        <label class="col-form-label col-lg-4 text-lg-right">{{$ctrl.config.label}}</label>
         <div class="controls col-lg-8">
             <div class="notranslate dc-semanticdomain-values list-repeater"
-                 data-ng-repeat="value in model.values | orderBy: orderItemsByListOrder">
-                <div data-ng-mouseover="valueToBeDeleted = value" data-ng-mouseleave="valueToBeDeleted = ''">
-                    <div class="dc-semanticdomain-value"
-                         data-ng-click="selectValue(value)">
-                        {{getDisplayName(value)}}
+                 data-ng-repeat="key in $ctrl.model.values | orderBy: $ctrl.orderItemsByListOrder">
+                <div>
+                    <div class="dc-semanticdomain-value" data-ng-click="$ctrl.selectValue(key)">
+                        {{$ctrl.getDisplayName(key)}}
                     </div>
                     <div class="dropdown" uib-dropdown>
                         <button class="btn btn-sm btn-std ellipsis-menu pui-no-caret" uib-dropdown-toggle type="button">
                             <i class="fa fa-ellipsis-v"></i>
                         </button>
                         <div class="dropdown-comment-count">
-                            <comment-bubble control="control" field="fieldName" multi-option-value="value" model="model" parent-context-guid="contextGuid"></comment-bubble>
+                            <comment-bubble control="$ctrl.control" field="$ctrl.fieldName" multi-option-value="key" model="$ctrl.model" parent-context-guid="$ctrl.contextGuid"></comment-bubble>
                         </div>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
-                            <a href class="dropdown-item" data-ng-click="deleteValue(value)"><i class="fa fa-trash"></i> Delete</a>
-                            <comment-bubble class="dropdown-item" control="control" field="fieldName" multi-option-value="value" model="model" parent-context-guid="contextGuid"></comment-bubble>
+                            <a href class="dropdown-item" data-ng-click="$ctrl.deleteValue(key)"><i class="fa fa-trash"></i> Delete</a>
+                            <comment-bubble class="dropdown-item" control="$ctrl.control" field="$ctrl.fieldName" multi-option-value="key" model="$ctrl.model" parent-context-guid="$ctrl.contextGuid"></comment-bubble>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="notranslate dc-semanticdomain-values-list"
-                 data-ng-show="$state.is('editor.entry') && rights.canEditEntry() && isAdding">
+                 data-ng-show="$ctrl.isAtEditorEntry() && $ctrl.rights.canEditEntry() && $ctrl.isAdding">
                 <!--suppress HtmlFormInputWithoutLabel -->
-                <select class="form-control custom-select" data-ng-change="addValue()" data-ng-model="newValue"
-                        data-ng-options="option.key as option.value for option in options | orderBy: 'key' | filter: filterSelectedOptions">
+                <select class="form-control custom-select" data-ng-change="$ctrl.addValue()" data-ng-model="$ctrl.newKey"
+                        data-ng-options="option.key as option.value for option in $ctrl.options | orderBy: 'key' | filter: $ctrl.filterSelectedItems">
                     <option value="">Pick an item</option>
                 </select>
                 <div class="deleteX">
-                    <i class="fa fa-times" data-ng-click="isAdding = false" title="Cancel adding {{config.label}}"></i>
+                    <i class="fa fa-times" data-ng-click="$ctrl.isAdding = false" title="Cancel adding {{$ctrl.config.label}}"></i>
                 </div>
             </div>
         </div>
     </div>
 </form>
 <div class="addItem"
-     data-ng-show="rights.canEditEntry() && $state.is('editor.entry') && showAddButton()">
-    <a class="btn btn-sm btn-std" data-ng-click="isAdding = true"><i class="fa fa-plus"></i> Add {{config.label}}</a>
+     data-ng-show="$ctrl.rights.canEditEntry() && $ctrl.isAtEditorEntry() && $ctrl.showAddButton()">
+    <a class="btn btn-sm btn-std" data-ng-click="$ctrl.isAdding = true"><i class="fa fa-plus"></i> Add {{$ctrl.config.label}}</a>
 </div>
 <div class="spacing-after"
-     data-ng-hide="rights.canEditEntry() && $state.is('editor.entry') && showAddButton()">&nbsp;</div>
+     data-ng-hide="$ctrl.rights.canEditEntry() && $ctrl.isAtEditorEntry() && $ctrl.showAddButton()">&nbsp;</div>

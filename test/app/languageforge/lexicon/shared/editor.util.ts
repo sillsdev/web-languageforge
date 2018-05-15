@@ -62,7 +62,7 @@ export class EditorUtil {
   dcMultiOptionListToValue = EditorUtil.dcOptionListToValue;
 
   dcPicturesToObject = (elem: ElementFinder|ElementArrayFinder) => {
-    const pictures = elem.all(by.repeater('picture in pictures'));
+    const pictures = elem.all(by.repeater('picture in $ctrl.pictures'));
     return pictures.map((div: any) => {
       const img = div.element(by.css('img'));
       const caption = div.element(by.css('dc-multitext'));
@@ -88,7 +88,7 @@ export class EditorUtil {
   };
 
   getParser(elem: any, multitextStrategy: string = this.dcParsingFuncs.multitext.default_strategy) {
-    const switchDiv = elem.element(by.css('[data-on="config.fields[fieldName].type"] > div'));
+    const switchDiv = elem.element(by.css('[data-on="$ctrl.config.fields[fieldName].type"] > div'));
     return switchDiv.getAttribute('data-ng-switch-when').then((fieldType: any) => {
       let parser;
       if (fieldType === 'multitext') {
@@ -106,7 +106,8 @@ export class EditorUtil {
   }
 
   static getFields(searchLabel: string, rootElem: ElementFinder = element(by.className('dc-entry'))) {
-    return rootElem.all(by.cssContainingText('div[data-ng-repeat="fieldName in config.fieldOrder"]', searchLabel));
+    return rootElem.all(by.cssContainingText('div[data-ng-repeat="fieldName in $ctrl.config.fieldOrder"]',
+      searchLabel));
   }
 
   getFieldValues(searchLabel: string, rootElem: ElementFinder = element(by.className('dc-entry')),
