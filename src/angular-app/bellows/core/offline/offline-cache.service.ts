@@ -7,10 +7,9 @@ import * as localforage from 'localforage';
 export class OfflineCacheService {
   static readonly version = 6;
 
-  static $inject: string[] = ['$q'];
-
   private stores: { [storeName: string]: LocalForage } = {};
 
+  static $inject: string[] = ['$q'];
   constructor(private $q: angular.IQService) { }
 
   static canCache(): boolean {
@@ -23,12 +22,9 @@ export class OfflineCacheService {
 
   getAllFromStore(storeName: string, projectId?: string): angular.IPromise<any> {
     const results: any[] = [];
-    return this.$q.when(this.getStore(storeName).iterate((value, key, iterationNumber) => {
-      if (value.hasOwnProperty('projectId')) {
-        const obj = value as {projectId: string; };
-        if (obj.projectId === projectId) {
-          results.push(OfflineCacheService.removeProjectId(value));
-        }
+    return this.$q.when(this.getStore(storeName).iterate<any, any>(value => {
+      if (projectId == null || value.projectId === projectId) {
+        results.push(OfflineCacheService.removeProjectId(value));
       }
     }).then(() => {
       return results;
@@ -41,8 +37,7 @@ export class OfflineCacheService {
     }));
   }
 
-  setObjectsInStore(storeName: string, projectId: string, items: any[], isAdd: boolean = false): angular.IPromise<any> {
-
+  setObjectsInStore(storeName: string, projectId: string, items: any[]): angular.IPromise<any> {
     const store: LocalForage = this.getStore(storeName);
     return this.$q.all(items.map(item => {
       return store.setItem(item.id, OfflineCacheService.addProjectId(item, projectId));
