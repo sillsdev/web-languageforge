@@ -93,3 +93,8 @@ if (! defined('SR_TRANSLATE_FOLDER')) {
 if (!defined('BUGSNAG_API_KEY')) {
     define('BUGSNAG_API_KEY', 'missing-bugsnag-api-key');
 }
+
+if (!defined('BUGSNAG_NOTIFY_RELEASE_STAGES')) {
+    // The real values will be set by gulp
+    define('BUGSNAG_NOTIFY_RELEASE_STAGES', 'not-set' );
+}
