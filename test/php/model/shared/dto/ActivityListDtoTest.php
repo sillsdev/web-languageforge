@@ -23,9 +23,8 @@ class ActivityListDtoTest extends TestCase
         $text->title = "Text 1";
         $text->content = "text content";
         $textId = $text->write();
-        ActivityCommands::addText($project, $textId, $text);
-
         $userId = $environ->createUser("user1", "user1", "user1@email.com");
+        ActivityCommands::addText($project, $textId, $text, $userId);
         ActivityCommands::addUserToProject($project, $userId);
 
         // Workflow is first to create a question
@@ -34,7 +33,7 @@ class ActivityListDtoTest extends TestCase
         $question->description = "question description";
         $question->textRef->id = $textId;
         $questionId = $question->write();
-        ActivityCommands::addQuestion($project, $questionId, $question);
+        ActivityCommands::addQuestion($project, $questionId, $question, $userId);
 
         // Then to add an answer to a question
         $answer = new AnswerModel();
@@ -86,13 +85,13 @@ class ActivityListDtoTest extends TestCase
         $text1->title = "Text 1";
         $text1->content = "text content";
         $text1Id = $text1->write();
-        $a1 = ActivityCommands::addText($project1, $text1Id, $text1);
+        $a1 = ActivityCommands::addText($project1, $text1Id, $text1, $userId);
 
         $text2 = new TextModel($project2);
         $text2->title = "Text 2";
         $text2->content = "text content";
         $text2Id = $text2->write();
-        $a2 = ActivityCommands::addText($project2, $text2Id, $text2);
+        $a2 = ActivityCommands::addText($project2, $text2Id, $text2, $userId);
 
         $dto = ActivityListDto::getActivityForUser($project1->siteName, $userId);
         $dto = $dto['activity'];
@@ -141,13 +140,13 @@ class ActivityListDtoTest extends TestCase
         $text->title = "Text 1";
         $text->content = "text content";
         $textId = $text->write();
-        $a1 = ActivityCommands::addText($project1, $textId, $text);
+        $a1 = ActivityCommands::addText($project1, $textId, $text, $userId);
 
         $text = new TextModel($project2);
         $text->title = "Text 2";
         $text->content = "text content";
         $textId = $text->write();
-        $a2 = ActivityCommands::addText($project2, $textId, $text);
+        $a2 = ActivityCommands::addText($project2, $textId, $text, $userId);
 
         $dto = ActivityListDto::getActivityForUser($project1->siteName, $userId);
 
@@ -180,13 +179,13 @@ class ActivityListDtoTest extends TestCase
         $text->title = "Text 1";
         $text->content = "text content";
         $textId = $text->write();
-        ActivityCommands::addText($project1, $textId, $text);
+        ActivityCommands::addText($project1, $textId, $text, $userId);
 
         $text = new TextModel($project2);
         $text->title = "Text 2";
         $text->content = "text content";
         $textId = $text->write();
-        ActivityCommands::addText($project2, $textId, $text);
+        ActivityCommands::addText($project2, $textId, $text, $userId);
 
         $dto = ActivityListDto::getActivityForUser($project1->siteName, $userId);
 
@@ -204,11 +203,10 @@ class ActivityListDtoTest extends TestCase
         $text->title = "Text 1";
         $text->content = "text content";
         $textId = $text->write();
-        $a1 = ActivityCommands::addText($project, $textId, $text);
-
         $user1Id = $environ->createUser("user1", "user1", "user1@email.com");
         $user2Id = $environ->createUser("user2", "user2", "user2@email.com");
         $user3Id = $environ->createUser("user3", "user3", "user3@email.com");
+        $a1 = ActivityCommands::addText($project, $textId, $text, $user1Id);
         $a2 = ActivityCommands::addUserToProject($project, $user1Id);
         $a3 = ActivityCommands::addUserToProject($project, $user2Id);
         $a4 = ActivityCommands::addUserToProject($project, $user3Id);
@@ -219,7 +217,7 @@ class ActivityListDtoTest extends TestCase
         $question->description = "question description";
         $question->textRef->id = $textId;
         $questionId = $question->write();
-        $a5 = ActivityCommands::addQuestion($project, $questionId, $question);
+        $a5 = ActivityCommands::addQuestion($project, $questionId, $question, $user1Id);
 
         // Then to add an answer to a question
         $answer = new AnswerModel();
