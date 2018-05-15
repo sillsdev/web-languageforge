@@ -1,6 +1,5 @@
 import {browser, by, element} from 'protractor';
 import {ElementFinder} from 'protractor/built/element';
-import {Utils} from "./utils";
 
 // This object handles the activity page and provides methods to access items in the activity list
 export class SfActivityPage {
