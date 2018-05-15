@@ -1,19 +1,20 @@
 'use strict';
 
-angular.module('palaso.ui.comments')
+angular.module('lexCommentsModule')
   .directive('commentBubble', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.comment-bubble.html',
+      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/comment-bubble.html',
       scope: {
         field: '=',
         control: '=',
-        inputSystem: '<',
         model: '=',
-        configType: '<',
-        multiOptionValue: '<',
         parentContextGuid: '<',
-        picture: '<'
+        configType: '<?',
+        inputSystem: '<?',
+        multiOptionValue: '<?',
+        picture: '<?',
+        getPictureUrl: '&?'
       },
       controller: ['$scope', 'lexCommentService', 'sessionService', '$element', 'lexConfigService',
         function ($scope, commentService, ss, $element, lexConfig) {
@@ -99,7 +100,7 @@ angular.module('palaso.ui.comments')
             }
 
             if (fieldConfig.type === 'pictures' && angular.isDefined($scope.picture)) {
-              $scope.pictureSrc = $scope.$parent.getPictureUrl($scope.picture);
+              $scope.pictureSrc = $scope.getPictureUrl($scope.picture);
               $scope.contextGuid += '#' + $scope.picture.guid; // Would prefer to use the ID
             } else if (fieldConfig.type === 'multioptionlist') {
               $scope.contextGuid += '#' + $scope.multiOptionValue;

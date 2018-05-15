@@ -31,6 +31,7 @@ $app = new Silex\Application();
 if (defined('ENVIRONMENT')) {
     switch (ENVIRONMENT) {
         case 'development':
+            $app['bugsnag'] = null;
             error_reporting(E_ALL);
             $app['debug'] = true;
             break;
@@ -273,6 +274,8 @@ $app->get('/download/assets/{appName}/{projectSlug}/audio/{filename}', 'Site\Con
 $app->get('/download/assets/{appName}/{projectSlug}/{filename}', 'Site\Controller\Download::assets');
 $app->get('/{pageName}/',       'Site\Controller\Page::view')->value('pageName', 'home');
 $app->get('/{pageName}',        'Site\Controller\Page::view')->value('pageName', 'home');
+
+BugsnagExceptionHandler::finishInitialization($app);
 
 /*--------------------------------------------------------------------
  * And away we go...

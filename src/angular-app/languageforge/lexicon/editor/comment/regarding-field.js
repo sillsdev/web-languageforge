@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('palaso.ui.comments')
+angular.module('lexCommentsModule')
 
   // Palaso UI Dictionary Control: Comments
   .directive('regardingField', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.regarding-field.html',
+      templateUrl: '/angular-app/languageforge/lexicon/editor/comment/regarding-field.html',
       scope: {
         content: '=',
         control: '=',
@@ -30,7 +30,9 @@ angular.module('palaso.ui.comments')
                   // Semantic domains are in the global scope and appear to be English only
                   // Will need to be updated once the system provides support for other languages
                   for (var i in semanticDomains_en) {
-                    if (semanticDomains_en[i].key === $scope.content) {
+                    if (semanticDomains_en.hasOwnProperty(i) &&
+                      semanticDomains_en[i].key === $scope.content
+                    ) {
                       $scope.regarding = semanticDomains_en[i].value;
                     }
                   }

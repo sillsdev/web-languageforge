@@ -1,155 +1,180 @@
 import * as angular from 'angular';
 
+import {BytesFilterFunction} from '../../../../bellows/core/filters';
+import {ModalService} from '../../../../bellows/core/modal/modal.service';
+import {NoticeService} from '../../../../bellows/core/notice/notice.service';
 import {SessionService} from '../../../../bellows/core/session.service';
+import {LexiconConfigService} from '../../core/lexicon-config.service';
 import {LexiconProjectService} from '../../core/lexicon-project.service';
+import {LexiconUtilityService} from '../../core/lexicon-utility.service';
+import {LexPicture} from '../../shared/model/lex-picture.model';
+import {LexConfigInputSystems, LexConfigPictures} from '../../shared/model/lexicon-config.model';
 import {UploadFile, UploadResponse} from '../../shared/model/upload.model';
+import {FieldControl} from './field-control.model';
 
-class Picture {
-  fileName: string;
-  caption: string;
+class FileUpload {
+  file: File = null;
+  progress: number = 0;
+  showAddPicture: boolean = false;
 }
 
-export const FieldPictureModule = angular
-  .module('palaso.ui.dc.picture', ['ngFileUpload'])
+export class FieldPictureController implements angular.IController {
+  pictures: LexPicture[];
+  config: LexConfigPictures;
+  control: FieldControl;
+  fieldName: string;
+  parentContextGuid: string;
 
-  // Palaso UI Dictionary Control: Picture
-  .directive('dcPicture', [() => ({
-    restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-picture.component.html',
-    scope: {
-      config: '=',
-      model: '=',
-      pictures: '=',
-      control: '=',
-      fieldName: '='
-    },
-    controller: ['$scope', '$state', 'Upload', '$filter', 'sessionService', 'lexProjectService',
-      'lexConfigService', 'silNoticeService', 'modalService',
-      ($scope, $state, Upload, $filter, sessionService: SessionService, lexProjectService: LexiconProjectService,
-       lexConfigService, notice, modalService) => {
+  upload: FileUpload = new FileUpload();
+  contextGuid: string;
+  inputSystems: LexConfigInputSystems;
 
-        $scope.$state = $state;
-        $scope.upload = {};
-        $scope.upload.progress = 0;
-        $scope.upload.file = null;
-        $scope.contextGuid = $scope.$parent.contextGuid;
+  fieldContainsData = this.lexConfigService.fieldContainsData;
 
-        $scope.fieldContainsData = lexConfigService.fieldContainsData;
+  static $inject = ['$filter', '$state',
+    'Upload', 'modalService',
+    'silNoticeService', 'sessionService',
+    'lexConfigService', 'lexProjectService'
+  ];
+  constructor(private $filter: angular.IFilterService, private $state: angular.ui.IStateService,
+              private Upload: any, private modalService: ModalService,
+              private notice: NoticeService, private sessionService: SessionService,
+              private lexConfigService: LexiconConfigService, private lexProjectService: LexiconProjectService) { }
 
-        $scope.getPictureUrl = function getPictureUrl(picture: Picture): string {
-          if (isExternalReference(picture.fileName)) {
-            return '/Site/views/shared/image/placeholder.png';
+  $onInit(): void {
+    this.inputSystems = this.control.config.inputSystems;
+    this.contextGuid = this.parentContextGuid;
+  }
+
+  isAtEditorEntry(): boolean {
+    return LexiconUtilityService.isAtEditorEntry(this.$state);
+  }
+
+  getPictureUrl(picture: LexPicture): string {
+    if (FieldPictureController.isExternalReference(picture.fileName)) {
+      return '/Site/views/shared/image/placeholder.png';
+    }
+    return '/assets/lexicon/' + this.control.project.slug + '/pictures/' + picture.fileName;
+  }
+
+  // noinspection JSMethodCanBeStatic
+  getPictureDescription(picture: LexPicture): string {
+    if (!FieldPictureController.isExternalReference(picture.fileName)) return picture.fileName;
+
+    return 'This picture references an external file (' +
+      picture.fileName +
+      ') and therefore cannot be synchronized. ' +
+      'To see the picture, link it to an internally referenced file. ' +
+      'Replace the file here or in FLEx, move or copy the file to the Linked Files folder.';
+  }
+
+  deletePicture(index: number): void {
+    const fileName: string = this.pictures[index].fileName;
+    if (fileName) {
+      const deleteMsg: string = 'Are you sure you want to delete the picture <b>\'' +
+        FieldPictureController.originalFileName(fileName) + '\'</b>';
+      this.modalService.showModalSimple('Delete Picture', deleteMsg, 'Cancel', 'Delete Picture').then(() => {
+        this.pictures.splice(index, 1);
+        this.lexProjectService.removeMediaFile('sense-image', fileName, result => {
+          if (result.ok) {
+            if (!result.data.result) {
+              this.notice.push(this.notice.ERROR, result.data.errorMessage);
+            }
           }
-          return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + picture.fileName;
-        };
+        });
+      }, () => { });
+    } else {
+      this.pictures.splice(index, 1);
+    }
+  }
 
-        $scope.getPictureDescription = function getPictureDescription(picture: Picture): string {
-          if (!isExternalReference(picture.fileName)) return picture.fileName;
+  uploadFile(file: UploadFile): void {
+    if (!file || file.$error) {
+      return;
+    }
 
-          return 'This picture references an external file (' +
-            picture.fileName +
-            ') and therefore cannot be synchronized. ' +
-            'To see the picture, link it to an internally referenced file. ' +
-            'Replace the file here or in FLEx, move or copy the file to the Linked Files folder.';
-        };
+    this.sessionService.getSession().then(session => {
+      if (file.size > session.fileSizeMax()) {
+        this.upload.progress = 0;
+        this.upload.file = null;
+        this.notice.push(this.notice.ERROR, '<b>' + file.name + '</b> (' +
+          this.$filter<BytesFilterFunction>('bytes')(file.size) + ') is too large. It must be smaller than ' +
+          this.$filter<BytesFilterFunction>('bytes')(session.fileSizeMax()) + '.');
+        return;
+      }
 
-        function isExternalReference(fileName: string): boolean {
-          const isWindowsLink = (fileName.indexOf(':\\') >= 0);
-          const isLinuxLink = (fileName.indexOf('//') >= 0);
-          return isWindowsLink || isLinuxLink;
-        }
-
-        // strips the timestamp file prefix (returns everything after the '_')
-        function originalFileName(fileName: string): string {
-          return fileName.substr(fileName.indexOf('_') + 1);
-        }
-
-        function addPicture(fileName: string): void {
-          const newPicture: Picture = new Picture();
-          const captionConfig = angular.copy($scope.config);
-          captionConfig.type = 'multitext';
-          newPicture.fileName = fileName;
-          newPicture.caption = $scope.control.makeValidModelRecursive(captionConfig, {});
-          $scope.pictures.push(newPicture);
-        }
-
-        $scope.deletePicture = function deletePicture(index: number): void {
-          const fileName = $scope.pictures[index].fileName;
-          if (fileName) {
-            const deleteMsg = 'Are you sure you want to delete the picture <b>\'' +
-              originalFileName(fileName) + '\'</b>';
-            modalService.showModalSimple('Delete Picture', deleteMsg, 'Cancel', 'Delete Picture').then(() => {
-              $scope.pictures.splice(index, 1);
-              lexProjectService.removeMediaFile('sense-image', fileName, result => {
-                if (result.ok) {
-                  if (!result.data.result) {
-                    notice.push(notice.ERROR, result.data.errorMessage);
-                  }
-                }
-              });
-            }, angular.noop);
+      this.upload.file = file;
+      this.upload.progress = 0;
+      this.Upload.upload({
+        url: '/upload/lf-lexicon/sense-image',
+        data: {file}
+      }).then((response: UploadResponse) => {
+          const isUploadSuccess = response.data.result;
+          if (isUploadSuccess) {
+            this.upload.progress = 100.0;
+            this.addPicture(response.data.data.fileName);
+            this.upload.showAddPicture = false;
           } else {
-            $scope.pictures.splice(index, 1);
-          }
-        };
-
-        $scope.uploadFile = function uploadFile(file: UploadFile): void {
-          if (!file || file.$error) {
-            return;
+            this.upload.progress = 0;
+            this.notice.push(this.notice.ERROR, response.data.data.errorMessage);
           }
 
-          sessionService.getSession().then(session => {
-            if (file.size > session.fileSizeMax()) {
-              $scope.upload.progress = 0;
-              $scope.upload.file = null;
-              notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
-                $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
-                $filter('bytes')(session.fileSizeMax()) + '.');
-              return;
+          this.upload.file = null;
+        },
+
+        (response: UploadResponse) => {
+          let errorMessage = 'Upload failed.';
+          if (response.status > 0) {
+            errorMessage += ' Status: ' + response.status;
+            if (response.statusText) {
+              errorMessage += ' ' + response.statusText;
             }
 
-            $scope.upload.file = file;
-            $scope.upload.progress = 0;
-            Upload.upload({
-              url: '/upload/lf-lexicon/sense-image',
-              data: {file}
-            }).then((response: UploadResponse) => {
-                const isUploadSuccess = response.data.result;
-                if (isUploadSuccess) {
-                  $scope.upload.progress = 100.0;
-                  addPicture(response.data.data.fileName);
-                  $scope.upload.showAddPicture = false;
-                } else {
-                  $scope.upload.progress = 0;
-                  notice.push(notice.ERROR, response.data.data.errorMessage);
-                }
+            if (response.data) {
+              errorMessage += '- ' + response.data;
+            }
+          }
 
-                $scope.upload.file = null;
-              },
+          this.upload.file = null;
+          this.notice.push(this.notice.ERROR, errorMessage);
+        },
 
-              (response: UploadResponse) => {
-                let errorMessage = 'Upload failed.';
-                if (response.status > 0) {
-                  errorMessage += ' Status: ' + response.status;
-                  if (response.statusText) {
-                    errorMessage += ' ' + response.statusText;
-                  }
+        (evt: ProgressEvent) => {
+          this.upload.progress = Math.floor(100.0 * evt.loaded / evt.total);
+        });
+    });
+  }
 
-                  if (response.data) {
-                    errorMessage += '- ' + response.data;
-                  }
-                }
+  private addPicture(fileName: string): void {
+    const newPicture: LexPicture = new LexPicture();
+    const captionConfig = angular.copy(this.config);
+    captionConfig.type = 'multitext';
+    newPicture.fileName = fileName;
+    newPicture.caption = this.control.makeValidModelRecursive(captionConfig, {});
+    this.pictures.push(newPicture);
+  }
 
-                $scope.upload.file = null;
-                notice.push(notice.ERROR, errorMessage);
-              },
+  private static isExternalReference(fileName: string): boolean {
+    const isWindowsLink = (fileName.indexOf(':\\') >= 0);
+    const isLinuxLink = (fileName.indexOf('//') >= 0);
+    return isWindowsLink || isLinuxLink;
+  }
 
-              (evt: ProgressEvent) => {
-                $scope.upload.progress = Math.floor(100.0 * evt.loaded / evt.total);
-              });
-          });
-        };
+  // strips the timestamp file prefix (returns everything after the '_')
+  private static originalFileName(fileName: string): string {
+    return fileName.substr(fileName.indexOf('_') + 1);
+  }
 
-      }]
-  })])
-  .name;
+}
+
+export const FieldPictureComponent: angular.IComponentOptions = {
+  bindings: {
+    pictures: '=',
+    config: '<',
+    control: '<',
+    fieldName: '<',
+    parentContextGuid: '<'
+  },
+  controller: FieldPictureController,
+  templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-picture.component.html'
+};

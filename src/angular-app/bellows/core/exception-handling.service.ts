@@ -2,9 +2,9 @@ import * as angular from 'angular';
 import Bugsnag from 'bugsnag-js';
 import { Client } from 'bugsnag-js/types/client';
 
+import {websiteInstances} from './website-instances.generated-data';
+
 export class Metadata {
-  isProduction: boolean;
-  bugsnagApiKey: string;
   version: string;
   userId: string;
   userName: string;
@@ -14,15 +14,17 @@ export class Metadata {
 
 export class ExceptionHandlingService {
 
+  private metadata: Metadata = null;
   private bugsnagClient: Client;
-  private metadata: Metadata;
 
   static $inject: string[] = ['$log'];
   constructor(private $log: angular.ILogService) {
-    // leave that API key as default in case we don't have a session object yet that would have set the metadata.
-    // Exceptions end up on the `xforge-angular-startup` bugsnag project.
-    this.bugsnagClient = Bugsnag({apiKey: 'bb2f00c7648b31ce2d215081adf52959'});
-    this.metadata = null;
+    // process.env.* are set in webpack.config.js
+    this.bugsnagClient = Bugsnag({
+      apiKey: process.env.XFORGE_BUGSNAG_API_KEY,
+      notifyReleaseStages: process.env.NOTIFY_RELEASE_STAGES,
+      releaseStage: this.getReleaseStage()
+    });
   }
 
   updateInformation(metaData: Metadata) {
@@ -57,7 +59,6 @@ export class ExceptionHandlingService {
     this.bugsnagClient.notify(exception, {
       beforeSend: report => {
         if (this.metadata != null) {
-          report.apiKey = this.metadata.bugsnagApiKey;
           report.user = {
             id: this.metadata.userId,
             name: this.metadata.userName
@@ -65,15 +66,19 @@ export class ExceptionHandlingService {
           report.updateMetaData('App', {
             projectCode: this.metadata.projectCode,
             projectName: this.metadata.projectName,
-            version: this.metadata.version
+            version: this.metadata.version,
+            type: 'angular'
           });
-          report.app.releaseStage = this.metadata.isProduction ? 'production' : 'development';
         }
         if (cause != null) {
           report.updateMetaData('angular', 'cause', {cause});
         }
       }
     });
+  }
+
+  private getReleaseStage(): string {
+    return websiteInstances[location.hostname] ? websiteInstances[location.hostname] : 'local';
   }
 }
 
