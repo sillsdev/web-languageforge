@@ -594,7 +594,7 @@ git clone git@github.com:sillsdev/machine.git
 To deploy the machine server...
 
 ```` bash
-cd build
+cd machine/build
 ./deploy-local.sh
 ````
 
