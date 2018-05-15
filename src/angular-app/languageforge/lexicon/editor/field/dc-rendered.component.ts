@@ -1,87 +1,97 @@
 import * as angular from 'angular';
 
-import {SessionService} from '../../../../bellows/core/session.service';
-import {LexiconProjectSettings} from '../../shared/model/lexicon-project-settings.model';
+import {LexiconUtilityService} from '../../core/lexicon-utility.service';
+import {LexEntry} from '../../shared/model/lex-entry.model';
+import {LexConfigFieldList, LexiconConfig} from '../../shared/model/lexicon-config.model';
+import {LexOptionList} from '../../shared/model/option-list.model';
 
-export const FieldRenderedModule = angular
-  .module('palaso.ui.dc.rendered', [])
+class Example {
+  sentence: string;
+  translation: string;
+}
 
-  // Palaso UI Rendered Definition
-  .directive('dcRendered', [() => ({
-    restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-rendered.component.html',
-    scope: {
-      config: '=',
-      globalConfig: '=',
-      model: '=',
-      hideIfEmpty: '=?'
-    },
-    controller: ['$scope', 'sessionService', 'lexUtils',
-    ($scope, sessionService: SessionService, utils) => {
-      $scope.render = () => {
-        let sense: any;
-        let lastPos: string;
-        let pos: string;
-        $scope.entry = {
-          word: '',
-          senses: []
-        };
-        $scope.entry.word = utils.constructor.getCitationForms($scope.globalConfig, $scope.config,
-          $scope.model);
-        sessionService.getSession().then(session => {
-          const optionlists = session.projectSettings<LexiconProjectSettings>().optionlists;
-          angular.forEach($scope.model.senses, senseModel => {
-            pos = utils.constructor.getPartOfSpeechAbbreviation(senseModel.partOfSpeech,
-              optionlists);
+class Sense {
+  meaning: string;
+  partOfSpeech: string;
+  examples: Example[] = [];
+}
 
-            // do not repeat parts of speech
-            if (lastPos === pos) {
-              pos = '';
-            } else {
-              lastPos = pos;
-            }
+class Entry {
+  word: string = '';
+  senses: Sense[] = [];
+}
 
-            sense = {
-              meaning: utils.constructor.getMeanings($scope.globalConfig,
-                $scope.config.fields.senses, senseModel),
-              partOfSpeech: pos,
-              examples: []
-            };
-            angular.forEach(senseModel.examples, exampleModel => {
-              sense.examples.push({
-                sentence: utils.constructor.getExample($scope.globalConfig,
-                  $scope.config.fields.senses.fields.examples, exampleModel, 'sentence')
-              }, {
-                sentenceTranslation: utils.constructor.getExample($scope.globalConfig,
-                  $scope.config.fields.senses.fields.examples, exampleModel, 'translation')
-              });
-            });
+export class FieldRenderedController implements angular.IController {
+  config: LexConfigFieldList;
+  globalConfig: LexiconConfig;
+  model: LexEntry;
+  optionLists: LexOptionList[];
+  hideIfEmpty: boolean;
 
-            $scope.entry.senses.push(sense);
-          });
-        });
-      };
+  entry: Entry = new Entry();
 
-      $scope.makeValidModel = () => {
-        // if the model doesn't exist, create an object for it based upon the
-        // definition
-        if (!$scope.model) {
-          $scope.model = {
-            senses: []
-          };
-        }
-      };
-    }],
+  static $inject = ['$scope'];
+  constructor(private $scope: angular.IScope) { }
 
-    link(scope: any) {
-      if (angular.isUndefined(scope.hideIfEmpty)) {
-        scope.hideIfEmpty = false;
-      }
-
-      scope.$watch('model', () => {
-        scope.makeValidModel();
-        scope.render();
-      }, true); // deep watch
+  $onInit(): void {
+    if (this.hideIfEmpty == null) {
+      this.hideIfEmpty = false;
     }
-  })])
-  .name;
+
+    this.$scope.$watch(() => this.model, this.render, true);
+  }
+
+  private render = () => {
+    if (this.config == null || this.model == null) {
+      return;
+    }
+
+    let lastPos: string = null;
+    let pos: string;
+    this.entry = new Entry();
+    this.entry.word = LexiconUtilityService.getCitationForms(this.globalConfig, this.config, this.model);
+    const sensesConfig = this.config.fields.senses as LexConfigFieldList;
+    const examplesConfig = sensesConfig.fields.examples as LexConfigFieldList;
+    if (this.model.senses != null) {
+      for (const senseModel of this.model.senses) {
+        const sense: Sense = new Sense();
+        pos = LexiconUtilityService.getPartOfSpeechAbbreviation(senseModel.partOfSpeech, this.optionLists);
+
+        // do not repeat parts of speech
+        if (lastPos === pos) {
+          pos = '';
+        } else {
+          lastPos = pos;
+        }
+
+        sense.meaning = LexiconUtilityService.getMeanings(this.globalConfig, sensesConfig, senseModel);
+        sense.partOfSpeech = pos;
+        if (senseModel.examples != null) {
+          for (const exampleModel of senseModel.examples) {
+            const example: Example = new Example();
+            example.sentence = LexiconUtilityService.getExample(this.globalConfig, examplesConfig, exampleModel,
+              'sentence');
+            example.translation = LexiconUtilityService.getExample(this.globalConfig, examplesConfig, exampleModel,
+              'translation');
+            sense.examples.push(example);
+          }
+        }
+
+        this.entry.senses.push(sense);
+      }
+    }
+  }
+
+}
+
+export const FieldRenderedComponent: angular.IComponentOptions = {
+  bindings: {
+    config: '<',
+    globalConfig: '<',
+    model: '<',
+    optionLists: '<',
+    hideIfEmpty: '<?'
+  },
+  controller: FieldRenderedController,
+  templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-rendered.component.html'
+};
