@@ -309,7 +309,7 @@ export class EditorPage {
 
     bubbles: {
       first: element.all(by.css('.dc-entry .commentBubble')).get(1),
-      second: element.all(by.css('.dc-entry .dc-sense .commentBubble')).get(0)
+      second: element.all(by.css('.dc-entry .dc-sense .commentBubble')).get(1)
     },
 
     // Top-row UI elements
