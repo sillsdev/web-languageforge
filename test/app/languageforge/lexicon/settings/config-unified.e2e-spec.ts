@@ -162,14 +162,14 @@ describe('Lexicon E2E Configuration Fields', () => {
     });
 
     it('can reorder Sense rows', () => {
-      expect<any>(configPage.unifiedPane.sense.rowLabel(0).getText()).toEqual('Definition');
-      expect<any>(configPage.unifiedPane.sense.rowLabel(1).getText()).toEqual('Gloss');
+      expect<any>(configPage.unifiedPane.sense.rowLabel(0).getText()).toEqual('Gloss');
+      expect<any>(configPage.unifiedPane.sense.rowLabel(1).getText()).toEqual('Definition');
       expect<any>(configPage.unifiedPane.sense.rowLabel(2).getText()).toEqual('Pictures');
       browser.executeScript(Utils.simulateDragDrop, configPage.unifiedPane.sense.rows().get(2).getWebElement(),
         configPage.unifiedPane.sense.rows().get(0).getWebElement());
-      expect<any>(configPage.unifiedPane.sense.rowLabel(0).getText()).toEqual('Definition');
+      expect<any>(configPage.unifiedPane.sense.rowLabel(0).getText()).toEqual('Gloss');
       expect<any>(configPage.unifiedPane.sense.rowLabel(1).getText()).toEqual('Pictures');
-      expect<any>(configPage.unifiedPane.sense.rowLabel(2).getText()).toEqual('Gloss');
+      expect<any>(configPage.unifiedPane.sense.rowLabel(2).getText()).toEqual('Definition');
     });
 
     it('can reorder Example rows', () => {
