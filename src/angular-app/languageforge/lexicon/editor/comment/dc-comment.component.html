@@ -85,9 +85,9 @@
         </div>
         <div class="commentRepliesContainer" data-ng-show="comment.showRepliesContainer" ng-class="(comment.showRepliesContainer) ? 'on' : 'off'">
             <div class="comment-replies" ng-show="comment.replies.length">
-                <div data-ng-repeat="reply in comment.replies" data-ng-mouseenter="reply.hover = true"
-                     data-ng-mouseleave="reply.hover = false">
-                    <div data-ng-hide="reply.editing" class="comment-reply">
+                <div data-ng-repeat="reply in comment.replies" data-ng-mouseenter="reply.isHover = true"
+                     data-ng-mouseleave="reply.isHover = false">
+                    <div data-ng-hide="reply.isEditing" class="comment-reply">
                         <div class="reply-body">
                             <div class="reply-meta">
                                 <div class="comment-author">{{reply.authorInfo.createdByUserRef.name}}</div>
@@ -112,7 +112,7 @@
                             </div>
                         </div>
                     </div>
-                    <form data-ng-show="reply.editing && rights.canComment()" data-ng-submit="submitReply(reply)" class="reply-edit-form">
+                    <form data-ng-show="reply.isEditing && rights.canComment()" data-ng-submit="submitReply(reply)" class="reply-edit-form">
                         <!--suppress HtmlFormInputWithoutLabel -->
                         <textarea class="form-control" data-ng-model="reply.editingContent"
                                   pui-auto-focus="reply.isAutoFocusEditing"></textarea>

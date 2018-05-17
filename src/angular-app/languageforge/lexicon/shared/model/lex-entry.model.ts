@@ -1,5 +1,5 @@
 import {LexAuthorInfo} from './lex-author-info.model';
-import {LexMultiParagraph} from './lex-multi-paragraph.model';
+import {LexField} from './lex-field.model';
 import {LexMultiText} from './lex-multi-text.model';
 import {LexMultiValue} from './lex-multi-value.model';
 import {LexSense} from './lex-sense.model';
@@ -14,7 +14,7 @@ export class LexEntry {
   senses: LexSense[] = [];
   authorInfo?: LexAuthorInfo;
   citationForm?: LexMultiText;
-  customFields?: { [fieldName: string]: LexMultiText | LexMultiParagraph | LexValue | LexMultiValue };
+  customFields?: { [fieldName: string]: LexField };
   entryBibliography?: LexMultiText;
   entryRestrictions?: LexMultiText;
   environments?: LexMultiValue;

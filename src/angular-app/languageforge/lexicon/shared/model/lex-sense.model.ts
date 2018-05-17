@@ -1,6 +1,6 @@
 import {LexAuthorInfo} from './lex-author-info.model';
 import {LexExample} from './lex-example.model';
-import {LexMultiParagraph} from './lex-multi-paragraph.model';
+import {LexField} from './lex-field.model';
 import {LexMultiText} from './lex-multi-text.model';
 import {LexMultiValue} from './lex-multi-value.model';
 import {LexPicture} from './lex-picture.model';
@@ -15,7 +15,7 @@ export class LexSense {
   partOfSpeech: LexValue;
   semanticDomain: LexMultiValue;
   examples: LexExample[];
-  customFields: { [fieldName: string]: LexMultiText | LexMultiParagraph | LexValue | LexMultiValue };
+  customFields: { [fieldName: string]: LexField };
   authorInfo: LexAuthorInfo;
 
   // less common fields used in FLEx
