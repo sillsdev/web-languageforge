@@ -37,12 +37,12 @@ angular.module('lexicon.editor', [
     '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'lexRightsService',
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
     'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService', '$timeout',
-    'activityService', 'applicationHeaderService',
+    'activityService', 'applicationHeaderService','$anchorScroll',
   function ($scope, userService, sessionService, lexService, $q,
             $state, $window, $interval, $filter, linkService, utils, rightsService,
             notice, $rootScope, $location, lexConfig, commentService,
             editorService, lexProjectService, sendReceive, modal, $timeout,
-            activityService, applicationHeaderService) {
+            activityService, applicationHeaderService,$anchorScroll) {
 
     var pristineEntry = {};
     var warnOfUnsavedEditsId;
@@ -404,7 +404,8 @@ angular.module('lexicon.editor', [
 
       $scope.editEntryAndScroll = function editEntryAndScroll(id) {
         $scope.editEntry(id);
-        scrollListToEntry(id, 'middle');
+        var sId = 'entryId_' + id;
+        $anchorScroll(sId);
       };
 
       function setCurrentEntry(entry) {
