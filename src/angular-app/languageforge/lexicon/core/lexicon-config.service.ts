@@ -1,8 +1,8 @@
 import * as angular from 'angular';
 
-import { SessionService } from '../../../bellows/core/session.service';
-import { LexConfigFieldList, LexConfigMultiText, LexiconConfig } from '../shared/model/lexicon-config.model';
-import { LexiconProjectSettings } from '../shared/model/lexicon-project-settings.model';
+import {SessionService} from '../../../bellows/core/session.service';
+import {LexConfigField, LexConfigFieldList, LexConfigMultiText} from '../shared/model/lexicon-config.model';
+import {LexiconProjectSettings} from '../shared/model/lexicon-project-settings.model';
 
 export class LexiconConfigService {
   static $inject: string[] = ['sessionService'];
@@ -95,7 +95,7 @@ export class LexiconConfigService {
     return containsData;
   }
 
-  getFieldConfig(fieldName: string): angular.IPromise<any> {
+  getFieldConfig(fieldName: string): angular.IPromise<LexConfigField> {
     return this.sessionService.getSession().then(session => {
       const config = session.projectSettings<LexiconProjectSettings>().config;
       let search = config.entry.fields;

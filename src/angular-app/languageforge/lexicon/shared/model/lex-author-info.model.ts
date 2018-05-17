@@ -1,6 +1,13 @@
+class UserRef {
+  // noinspection TsLint
+  avatar_ref: string;
+  id: string;
+  name: string;
+}
+
 export class LexAuthorInfo {
-  createdByUserRef: string;
+  createdByUserRef: UserRef;
   createdDate: string;
-  modifiedByUserRef: string;
+  modifiedByUserRef: UserRef;
   modifiedDate: string;
 }
