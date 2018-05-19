@@ -1,70 +1,86 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.sendReceiveCredentials', [])
-  .directive('puiSendReceiveCredentials', [function () {
-    return {
-      restrict: 'E',
-      templateUrl: '/angular-app/languageforge/lexicon/new-project/send-receive-credentials.component.html',
-      scope: {
-        puiProject: '=',
-        puiValidate: '&',
-        puiReset: '&',
-        puiInitialCheck: '='
-      },
-      controller: ['$scope', 'lexSendReceiveApi', function ($scope, sendReceiveApi) {
-        $scope.checkSRProject = function checkSRProject() {
-          $scope.puiProject.sendReceive.credentialsStatus = 'loading';
-          sendReceiveApi.getUserProjects($scope.puiProject.sendReceive.username,
-            $scope.puiProject.sendReceive.password,
-            function (result) {
-              $scope.puiProject.sendReceive.isUnchecked = false;
-              $scope.puiProject.sendReceive.projects = result.data.projects;
-              if (result.ok) {
-                if (result.data.hasValidCredentials) {
-                  $scope.puiProject.sendReceive.credentialsStatus = 'valid';
-                } else {
-                  $scope.puiProject.sendReceive.credentialsStatus = 'invalid';
-                }
-              } else {
-                $scope.puiProject.sendReceive.credentialsStatus = 'failed';
-              }
-            }
-          );
-        };
+import {LexiconSendReceiveApiService} from '../core/lexicon-send-receive-api.service';
+import {LexiconProject, SendReceiveProject} from '../shared/model/lexicon-project.model';
 
-        if (angular.isDefined($scope.puiInitialCheck) && $scope.puiInitialCheck) {
-          $scope.checkSRProject();
+export class SendReceiveCredentialsController implements angular.IController {
+  srcProject: LexiconProject;
+  srcValidate: () => void;
+  srcReset: () => void;
+
+  projectsIndex: number;
+  showPassword: boolean;
+
+  static $inject = ['lexSendReceiveApi'];
+  constructor(private sendReceiveApi: LexiconSendReceiveApiService) {
+  }
+
+  $onInit(): void {
+    this.checkSRProject();
+  }
+
+  checkSRProject() {
+    this.srcProject.sendReceive.credentialsStatus = 'loading';
+    this.sendReceiveApi.getUserProjects(this.srcProject.sendReceive.username, this.srcProject.sendReceive.password)
+      .then(result => {
+        this.srcProject.sendReceive.isUnchecked = false;
+        this.srcProject.sendReceive.projects = result.data.projects;
+        if (result.ok) {
+          if (result.data.hasValidCredentials) {
+            this.srcProject.sendReceive.credentialsStatus = 'valid';
+          } else {
+            this.srcProject.sendReceive.credentialsStatus = 'invalid';
+          }
+        } else {
+          this.srcProject.sendReceive.credentialsStatus = 'failed';
         }
+      }
+    );
+  }
 
-        $scope.projectOption = function projectOption(project) {
-          if (!project) {
-            return '';
-          }
+  // noinspection JSMethodCanBeStatic
+  projectOption(project: SendReceiveProject) {
+    if (!project) {
+      return '';
+    }
 
-          var option = project.name + ' (' + project.identifier;
-          if (project.repoClarification) option += ', ' + project.repoClarification;
-          if (project.role !== 'unknown') option += ', ' + project.role;
-          option +=  ')';
-          return option;
-        };
+    let option = project.name + ' (' + project.identifier;
+    if (project.repoClarification) {
+      option += ', ' + project.repoClarification;
+    }
+    if (project.role !== 'unknown') {
+      option += ', ' + project.role;
+    }
+    option += ')';
+    return option;
+  }
 
-        $scope.showProjectSelect = function showProjectSelect() {
-          var show = $scope.puiProject.sendReceive.credentialsStatus === 'valid';
-          if (show && angular.isDefined($scope.puiProject.sendReceive.project) &&
-            angular.isDefined($scope.puiProject.sendReceive.project.identifier) &&
-            angular.isDefined($scope.puiProject.sendReceive.projects)) {
-            angular.forEach($scope.puiProject.sendReceive.projects, function (project, index) {
-              if (project.identifier === $scope.puiProject.sendReceive.project.identifier &&
-                project.repository === $scope.puiProject.sendReceive.project.repository) {
-                $scope.projectsIndex = index;
-              }
-            });
-          }
+  showProjectSelect() {
+    const show = this.srcProject.sendReceive.credentialsStatus === 'valid';
+    if (show && this.srcProject.sendReceive.project != null && this.srcProject.sendReceive.project.identifier != null &&
+      this.srcProject.sendReceive.projects != null
+    ) {
+      for (let index = 0; index < this.srcProject.sendReceive.projects.length; index++) {
+        const project = this.srcProject.sendReceive.projects[index];
+        if (project.identifier === this.srcProject.sendReceive.project.identifier &&
+          project.repository === this.srcProject.sendReceive.project.repository
+        ) {
+          this.projectsIndex = index;
+        }
+      }
+    }
 
-          return show;
-        };
-      }]
-    };
-  }])
+    return show;
+  }
 
-  ;
+}
+
+export const SendReceiveCredentialsComponent: angular.IComponentOptions = {
+  bindings: {
+    srcProject: '=',
+    srcValidate: '&',
+    srcReset: '&'
+  },
+  controller: SendReceiveCredentialsController,
+  templateUrl: '/angular-app/languageforge/lexicon/new-project/send-receive-credentials.component.html'
+};
