@@ -1,88 +1,90 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.language', ['language.inputSystems'])
+import {InputSystemsModule, InputSystemsService} from '../core/input-systems/input-systems.service';
+import {InputSystemLanguage} from './model/input-system-language.model';
 
-  // Palaso UI Select Language
-  .directive('puiSelectLanguage', [function () {
-    return {
-      restrict: 'E',
-      transclude: true,
-      templateUrl: '/angular-app/bellows/shared/select-language.component.html',
-      scope: {
-        puiCode: '=',
-        puiLanguage: '=',
-        puiAddDisabled: '=',
-        puiSuggestedLanguageCodes: '=',
-        puiShowLinks: '='
-      },
-      controller: ['$scope', 'inputSystems', function ($scope, inputSystems) {
+export class SelectLanguageController implements angular.IController {
+  puiCode: string;
+  puiLanguage: InputSystemLanguage;
+  puiAddDisabled: boolean;
+  puiSuggestedLanguageCodes: string[];
 
-        // TODO Enhance. Could use infinite scrolling since search can return large results.
-        // See example here http://jsfiddle.net/W6wJ2/. IJH 2014-02
-        $scope.currentCode = '';
-        $scope.puiAddDisabled = true;
-        $scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
-        $scope.allLanguages = inputSystems.constructor.languages();
+  private readonly LANGUAGE_DOESNT_EXIST = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
 
-        // Sort languages with two-letter codes first, then three-letter codes
-        $scope.buildLanguageList = function () {
-          var result = [];
-          angular.forEach($scope.allLanguages, function (language) {
-            if (angular.isDefined(language.code.two)) {
-              result.push(language);
-            }
-          });
+  currentCode = '';
+  filterText = this.LANGUAGE_DOESNT_EXIST;
+  languages: InputSystemLanguage[];
+  searchText: string = '';
+  showSuggestions: boolean = false;
 
-          angular.forEach($scope.allLanguages, function (language) {
-            if (angular.isUndefined(language.code.two)) {
-              result.push(language);
-            }
-          });
+  private allLanguages: InputSystemLanguage[] = InputSystemsService.languages();
 
-          return result;
-        };
+  $onInit(): void {
+    this.languages = this.buildLanguageList();
+    this.puiAddDisabled = true;
+  }
 
-        $scope.languages = $scope.buildLanguageList();
-        $scope.suggestedLanguages = [];
-        angular.forEach($scope.puiSuggestedLanguageCodes, function (code) {
-          angular.forEach($scope.allLanguages, function (language) {
-            if (language.code.two === code || language.code.three === code) {
-              $scope.suggestedLanguages.push(language);
-            }
-          });
-        });
+  search(): void {
+    this.filterText = this.searchText;
+    if (this.searchText === '*') {
+      this.filterText = '';
+    }
+  }
 
-        $scope.search = function search() {
-          $scope.filterText = $scope.searchText;
-          if ($scope.searchText === '*') {
-            $scope.filterText = '';
-          }
-        };
+  clearSearch(): void {
+    this.searchText = '';
+    this.filterText = this.LANGUAGE_DOESNT_EXIST;
+    delete this.languages;
+    this.languages = this.buildLanguageList();
+    this.showSuggestions = false;
+  }
 
-        $scope.clearSearch = function clearSearch() {
-          $scope.searchText = '';
-          $scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
-          delete $scope.languages;
-          $scope.languages = $scope.buildLanguageList();
-          $scope.showSuggestions = false;
-        };
+  selectLanguage(language: InputSystemLanguage): void {
+    this.currentCode = language.code.three;
+    this.puiCode = (language.code.two) ? language.code.two : language.code.three;
+    this.puiLanguage = language;
+    this.puiAddDisabled = false;
+  }
 
-        $scope.selectLanguage = function (language) {
-          $scope.currentCode = language.code.three;
-          $scope.puiCode = (language.code.two) ? language.code.two : language.code.three;
-          $scope.puiLanguage = language;
-          $scope.puiAddDisabled = false;
-        };
+  suggest(): void {
+    delete this.languages;
+    this.languages = this.buildLanguageList();
+    this.filterText = '';
+    this.showSuggestions = true;
+  }
 
-        $scope.suggest = function suggest() {
-          delete $scope.languages;
-          $scope.languages = $scope.buildLanguageList();
-          $scope.filterText = '';
-          $scope.showSuggestions = true;
-        };
+  // Sort languages with two-letter codes first, then three-letter codes
+  private buildLanguageList(): InputSystemLanguage[] {
+    const result: InputSystemLanguage[] = [];
+    for (const language of this.allLanguages) {
+      if (language.code.two != null) {
+        result.push(language);
+      }
+    }
 
-      }]
-    };
-  }])
+    for (const language of this.allLanguages) {
+      if (language.code.two == null) {
+        result.push(language);
+      }
+    }
 
-  ;
+    return result;
+  }
+
+}
+
+export const SelectLanguageComponent: angular.IComponentOptions = {
+  bindings: {
+    puiCode: '=',
+    puiLanguage: '=',
+    puiAddDisabled: '=',
+    puiSuggestedLanguageCodes: '<?'
+  },
+  controller: SelectLanguageController,
+  templateUrl: '/angular-app/bellows/shared/select-language.component.html'
+};
+
+export const SelectLanguageModule = angular
+  .module('palasoUILanguageModule', [InputSystemsModule])
+  .component('puiSelectLanguage', SelectLanguageComponent)
+  .name;
