@@ -7,7 +7,7 @@ angular.module('palaso.ui.language', ['language.inputSystems'])
     return {
       restrict: 'E',
       transclude: true,
-      templateUrl: '/angular-app/bellows/directive/pui-language.html',
+      templateUrl: '/angular-app/bellows/shared/select-language.component.html',
       scope: {
         puiCode: '=',
         puiLanguage: '=',
