@@ -315,8 +315,8 @@ export class EditorPage {
     // Top-row UI elements
     renderedDiv: this.commentDiv.element(by.css('dc-rendered')),
     filter: {
-      byTextElem: this.commentDiv.element(by.model('commentFilter.text')),
-      byStatusElem: this.commentDiv.element(by.model('commentFilter.status')),
+      byTextElem: this.commentDiv.element(by.model('$ctrl.commentFilter.text')),
+      byStatusElem: this.commentDiv.element(by.model('$ctrl.commentFilter.status')),
       clearElem: this.commentDiv.element(by.css('[title="Clear Filter] > i.fa-times')),
       byText: (textToFilterBy: string) => {
         this.comment.filter.byTextElem.sendKeys(textToFilterBy);
@@ -333,12 +333,6 @@ export class EditorPage {
       clearByStatus: () => {
         this.comment.filter.byStatus('Show All');
       }
-    },
-    commentCountElem: this.commentDiv.element(by.binding('currentEntryCommentCounts.total')),
-    getCommentCount: () => {
-      return this.comment.commentCountElem.getText().then((s: string) =>
-        parseInt(s, 10)
-      );
     },
 
     // Left half of page: entry (with clickable elements)
@@ -360,7 +354,7 @@ export class EditorPage {
       textarea: element(by.id('comment-panel-textarea')),
       postBtn: element(by.id('comment-panel-post-button'))
     },
-    commentsList: this.commentDiv.all(by.repeater('comment in currentEntryCommentsFiltered')),
+    commentsList: this.commentDiv.all(by.repeater('comment in $ctrl.currentEntryCommentsFiltered')),
     getComment: (commentNum: number) => {
       return EditorPage.getComment(this.comment.commentsList, commentNum);
     }
@@ -398,7 +392,7 @@ export class EditorPage {
   // Usage example:
   // expect(partsOfDcComment(commentDiv).regarding.inputSystem).toBe("th")
   static partsOfComment(div: ElementFinder) {
-    const replies = div.all(by.repeater('reply in model.replies')); // used in
+    const replies = div.all(by.repeater('reply in $ctrl.comment.replies')); // used in
     // getReply()
     // below
     return {
@@ -408,18 +402,18 @@ export class EditorPage {
       // avatar:
       // div.element(by.binding('model.authorInfo.createdByUserRef.avatar_ref')),
       avatar: div.element(by.css('.comment-footer img')),
-      author: div.element(by.binding('comment.authorInfo.createdByUserRef.name')),
-      date: div.element(by.binding('comment.authorInfo.createdDate | relativetime')),
+      author: div.element(by.binding('$ctrl.comment.authorInfo.createdByUserRef.name')),
+      date: div.element(by.binding('$ctrl.comment.authorInfo.createdDate | relativetime')),
       score: div.element(by.css('.comment-interaction .likes')),
       plusOneActive: div.element(by.css('.comment-actions .can-like')),
       plusOneInactive: div.element(by.css('.comment-actions .liked')),
       plusOne: div.element(by.css('.comment-actions i.fa-thumbs-o-up:not(.ng-hide)')),
 
       // Right side content
-      content: div.element(by.binding('comment.content')),
-      contextGuid: div.element(by.binding('comment.contextGuid')),
+      content: div.element(by.binding('$ctrl.comment.content')),
+      contextGuid: div.element(by.binding('$ctrl.comment.contextGuid')),
       edit: {
-        textarea: div.element(by.model('editingCommentContent')),
+        textarea: div.element(by.model('$ctrl.editingCommentContent')),
         updateBtn: div.element(by.buttonText('Update')),
         cancelLink: div.element(by.linkText('Cancel'))
       },
@@ -428,8 +422,6 @@ export class EditorPage {
         // isPresent() before calling expect().
         toggle: div.element(by.css('.comment-body > button')),
         container: div.element(by.css('.commentRegarding')),
-        fieldLabel: div.element(by.binding('comment.regarding.fieldNameForDisplay')),
-        fieldWsid: div.element(by.binding('comment.regarding.inputSystem')),
         fieldValue: div.element(by.css('.regardingFieldValue'))
       },
 
