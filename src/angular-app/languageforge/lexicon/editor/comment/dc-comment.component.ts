@@ -4,224 +4,261 @@ import {ModalService} from '../../../../bellows/core/modal/modal.service';
 import {LexiconCommentService} from '../../../../bellows/core/offline/lexicon-comments.service';
 import {SessionService} from '../../../../bellows/core/session.service';
 import {UtilityService} from '../../../../bellows/core/utility.service';
-import {LexComment, LexCommentReply} from '../../shared/model/lex-comment.model';
+import {LexiconConfigService} from '../../core/lexicon-config.service';
+import {LexiconEditorDataService} from '../../core/lexicon-editor-data.service';
+import {LexComment, LexCommentChange, LexCommentReply} from '../../shared/model/lex-comment.model';
 import {LexConfigField} from '../../shared/model/lexicon-config.model';
+import {FieldControl} from '../field/field-control.model';
 
 class Reply extends LexCommentReply {
-  editingContent?: string;
+  editingContent: string = '';
+  id: string = ''; // inherited but initialized here
   isHover?: boolean;
   isAutoFocusEditing?: boolean;
   isEditing?: boolean;
 }
 
-export function CommentComponent() {
-  return {
-    restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/comment/dc-comment.component.html',
-    controller: ['$scope', 'lexCommentService', 'sessionService', 'modalService',
-      ($scope: any, commentService: LexiconCommentService, sessionService: SessionService, modal: ModalService) => {
-        $scope.getAvatarUrl = UtilityService.getAvatarUrl;
-        $scope.showNewReplyForm = true;
-        $scope.newReply = { id: '', editingContent: '' };
-        $scope.editingCommentContent = '';
-        $scope.posting = false;
+export class CommentController implements angular.IController {
+  comment: LexCommentChange;
+  control: FieldControl;
+  canPlusOneComment: (params: { commentId: string }) => boolean;
+  loadComments: () => void;
+  parentGetSenseLabel: (params: { regardingField: string, contextGuid: string }) => string;
+  plusOneComment: (params: { commentId: string }) => void;
+  setCommentInteractiveStatus: (params: { id: string, visible: boolean }) => void;
+  toggleShowNewComment: () => void;
 
-        if ($scope.comment.regarding.field && $scope.control.configService != null) {
-          $scope.control.configService.getFieldConfig($scope.comment.regarding.field).then((config: LexConfigField) => {
-            $scope.commentRegardingFieldConfig = config;
-            $scope.isCommentRegardingPicture =
-              (($scope.commentRegardingFieldConfig.type === 'pictures') && !($scope.comment.regarding.inputSystem));
-          });
+  getAvatarUrl = UtilityService.getAvatarUrl;
+  showNewReplyForm = true;
+  newReply: Reply = new Reply();
+  editingCommentContent = '';
+  isPosting = false;
+  isAutoFocusNewReply: boolean = false;
+  commentRegardingFieldConfig: LexConfigField;
+  isCommentRegardingPicture: boolean;
+
+  static $inject = ['sessionService', 'modalService',
+    'lexCommentService', 'lexConfigService',
+    'lexEditorDataService'
+  ];
+  constructor(private sessionService: SessionService, private modal: ModalService,
+              private commentService: LexiconCommentService, private configService: LexiconConfigService,
+              private editorService: LexiconEditorDataService) { }
+
+  $onInit(): void {
+    if (this.comment.regarding.field) {
+      this.configService.getFieldConfig(this.comment.regarding.field).then((config: LexConfigField) => {
+        this.commentRegardingFieldConfig = config;
+        this.isCommentRegardingPicture =
+          ((this.commentRegardingFieldConfig.type === 'pictures') && !(this.comment.regarding.inputSystem));
+      });
+    }
+  }
+
+  showCommentReplies(): void {
+    this.toggleShowNewComment();
+    this.comment.showRepliesContainer = !this.comment.showRepliesContainer;
+    this.setCommentInteractiveStatus({ id: this.comment.id, visible: this.comment.showRepliesContainer });
+    this.getSenseLabel();
+  }
+
+  canLike(): boolean {
+    return this.canPlusOneComment({ commentId: this.comment.id }) && this.control.rights.canComment() &&
+      this.comment.status !== 'resolved';
+  }
+
+  doReply(): void {
+    this.hideInputFields();
+    this.showNewReplyForm = true;
+    this.isAutoFocusNewReply = true;
+  }
+
+  editReply(reply: Reply): void {
+    this.hideInputFields();
+    reply.isEditing = true;
+    reply.editingContent = angular.copy(reply.content);
+    reply.isAutoFocusEditing = true;
+    this.showNewReplyForm = false;
+  }
+
+  cancelReply(reply: Reply): void {
+    reply.isEditing = false;
+    this.showNewReplyForm = true;
+  }
+
+  submitReply(reply: Reply, $event?: KeyboardEvent): void {
+    if ($event != null) {
+      if ($event.keyCode === 13) {
+        // If there is no reply yet then cancel out
+        if (!reply.editingContent) {
+          $event.preventDefault();
+          return;
         }
+      } else {
+        return;
+      }
+    }
 
-        $scope.showCommentReplies = function showCommentReplies(): void {
-          $scope.$parent.showNewComment = !$scope.$parent.showNewComment;
-          $scope.comment.showRepliesContainer = !$scope.comment.showRepliesContainer;
-          $scope.setCommentInteractiveStatus($scope.comment.id, $scope.comment.showRepliesContainer);
-          $scope.getSenseLabel();
-        };
+    this.hideInputFields();
+    this.isPosting = true;
+    reply.content = angular.copy(reply.editingContent);
+    delete reply.editingContent;
+    this.updateReply(this.comment.id, reply);
+    this.newReply = new Reply();
+  }
 
-        $scope.doReply = function doReply(): void {
-          hideInputFields();
-          $scope.showNewReplyForm = true;
-          $scope.isAutoFocusNewReply = true;
-        };
+  updateCommentStatus(commentId: string, status: string): void {
+    this.commentService.updateStatus(commentId, status).then(result => {
+      if (result.ok) {
+        this.editorService.refreshEditorData().then(this.loadComments);
+      }
+    }).finally(() => {
+      this.isPosting = false;
+    });
+  }
 
-        $scope.editReply = function editReply(reply: Reply): void {
-          hideInputFields();
-          reply.isEditing = true;
-          reply.editingContent = angular.copy(reply.content);
-          reply.isAutoFocusEditing = true;
-          $scope.showNewReplyForm = false;
-        };
+  deleteComment(comment: LexComment): void {
+    let deletemsg;
+    this.sessionService.getSession().then(session => {
+      if (session.userId() === comment.authorInfo.createdByUserRef.id) {
+        deletemsg = 'Are you sure you want to delete your own comment?';
+      } else {
+        deletemsg = 'Are you sure you want to delete ' +
+          comment.authorInfo.createdByUserRef.name + '\'s comment?';
+      }
 
-        $scope.cancelReply = function cancelReply(reply: Reply): void {
-          reply.isEditing = false;
-          $scope.showNewReplyForm = true;
-        };
+      this.modal.showModalSimple('Delete Comment', deletemsg, 'Cancel', 'Delete Comment') .then(() => {
+        this.commentService.remove(comment.id).then(() => {
+          this.editorService.refreshEditorData().then(this.loadComments);
+        });
 
-        $scope.submitReply = function submitReply(reply: Reply, $event?: KeyboardEvent): void {
-          if ($event != null) {
-            if ($event.keyCode === 13) {
-              // If there is no reply yet then cancel out
-              if (!reply.editingContent) {
-                $event.preventDefault();
-                return;
-              }
-            } else {
-              return;
-            }
-          }
+        this.commentService.removeCommentFromLists(comment.id);
+      }, () => {});
+    });
+  }
 
-          hideInputFields();
-          $scope.posting = true;
-          reply.content = angular.copy(reply.editingContent);
-          delete reply.editingContent;
-          updateReply($scope.comment.id, reply);
-          $scope.newReply = { id: '', editingContent: '' };
-        };
+  deleteCommentReply(commentId: string, reply: LexCommentReply): void {
+    let deletemsg;
+    this.sessionService.getSession().then(session => {
+      if (session.userId() === reply.authorInfo.createdByUserRef.id) {
+        deletemsg = 'Are you sure you want to delete your own comment reply?';
+      } else {
+        deletemsg = 'Are you sure you want to delete ' +
+          reply.authorInfo.createdByUserRef.name + '\'s comment reply?';
+      }
 
-        function updateReply(commentId: string, reply: LexCommentReply): void {
-          commentService.updateReply(commentId, reply, result => {
-            if (result.ok) {
-              $scope.control.editorService.refreshEditorData().then($scope.loadComments);
-              $scope.showNewReplyForm = true;
-            }
-          });
-        }
+      this.modal.showModalSimple('Delete Reply', deletemsg, 'Cancel', 'Delete Reply').then(() => {
+        this.commentService.deleteReply(commentId, reply.id).then(() => {
+          this.editorService.refreshEditorData().then(this.loadComments);
+        });
 
-        $scope.updateCommentStatus = function updateCommentStatus(commentId: string, status: string): void {
-          commentService.updateStatus(commentId, status, result => {
-            if (result.ok) {
-              $scope.control.editorService.refreshEditorData().then($scope.loadComments);
-              $scope.posting = false;
-            }
-          });
-        };
+        this.commentService.removeCommentFromLists(commentId, reply.id);
+      }, () => {});
+    });
+  }
 
-        $scope.deleteComment = function deleteComment(comment: LexComment): void {
-          let deletemsg;
-          sessionService.getSession().then(session => {
-            if (session.userId() === comment.authorInfo.createdByUserRef.id) {
-              deletemsg = 'Are you sure you want to delete your own comment?';
-            } else {
-              deletemsg = 'Are you sure you want to delete ' +
-                comment.authorInfo.createdByUserRef.name + '\'s comment?';
-            }
+  editComment(): void {
+    this.hideInputFields();
+    this.comment.isEditing = true;
+    this.editingCommentContent = angular.copy(this.comment.content);
+  }
 
-            modal.showModalSimple('Delete Comment', deletemsg, 'Cancel', 'Delete Comment') .then(() => {
-              commentService.remove(comment.id).then(() => {
-                $scope.control.editorService.refreshEditorData().then($scope.loadComments);
-              });
+  updateComment(): void {
+    this.hideInputFields();
+    this.comment.content = angular.copy(this.editingCommentContent);
+    this.editingCommentContent = '';
+    this.commentService.update(this.comment).then(() => {
+      this.editorService.refreshEditorData().then(this.loadComments);
+    });
+  }
 
-              commentService.removeCommentFromLists(comment.id);
-            }, () => {});
-          });
-        };
+  getSenseLabel(): string {
+    return this.parentGetSenseLabel(
+      { regardingField: this.comment.regarding.field, contextGuid: this.comment.contextGuid });
+  }
 
-        $scope.deleteCommentReply = function deleteCommentReply(commentId: string, reply: LexCommentReply): void {
-          let deletemsg;
-          sessionService.getSession().then(session => {
-            if (session.userId() === reply.authorInfo.createdByUserRef.id) {
-              deletemsg = 'Are you sure you want to delete your own comment reply?';
-            } else {
-              deletemsg = 'Are you sure you want to delete ' +
-                reply.authorInfo.createdByUserRef.name + '\'s comment reply?';
-            }
+  isOriginalRelevant(): boolean {
+    if (this.comment.regarding.fieldValue) {
+      if (this.getCurrentContextValue() !== this.comment.regarding.fieldValue) {
+        return true;
+      }
+    }
 
-            modal.showModalSimple('Delete Reply', deletemsg, 'Cancel', 'Delete Reply').then(() => {
-              commentService.deleteReply(commentId, reply.id).then(() => {
-                $scope.control.editorService.refreshEditorData().then($scope.loadComments);
-              });
+    return false;
+  }
 
-              commentService.removeCommentFromLists(commentId, reply.id);
-            }, () => {});
-          });
-        };
+  getCurrentContextValue(): string {
+    const contextParts = this.control.getContextParts(this.comment.contextGuid);
+    if (contextParts.option.key !== '' && (contextParts.fieldConfig.type === 'multioptionlist' ||
+        (contextParts.fieldConfig.type === 'optionlist' && this.control.commentContext.contextGuid === ''))
+    ) {
+      return contextParts.option.label;
+    } else if (contextParts.fieldConfig.type === 'pictures' && !contextParts.inputSystem &&
+      this.control.commentContext.contextGuid === ''
+    ) {
+      return 'Something different just to force it to display';
+    } else {
+      return contextParts.value;
+    }
+  }
 
-        $scope.editComment = function editComment(): void {
-          hideInputFields();
-          $scope.comment.editing = true;
-          $scope.editingCommentContent = angular.copy($scope.comment.content);
-        };
+  getCommentRegardingPictureSource(): string {
+    if (!this.isCommentRegardingPicture) {
+      return '';
+    }
 
-        $scope.updateComment = function updateComment(): void {
-          hideInputFields();
-          $scope.comment.content = angular.copy($scope.editingCommentContent);
+    const contextParts = this.control.getContextParts(this.comment.contextGuid);
+    let imageSrc = '';
+    let pictures = null;
+    if (contextParts.sense.guid) {
+      pictures = this.control.currentEntry.senses[contextParts.sense.index].pictures;
+    }
 
-          commentService.update($scope.comment).then(() => {
-            $scope.control.editorService.refreshEditorData().then($scope.loadComments);
-          });
+    for (const i in pictures) {
+      if (pictures.hasOwnProperty(i) && pictures[i].guid === contextParts.value) {
+        imageSrc = pictures[i].fileName;
+      }
+    }
 
-          $scope.editingCommentContent = '';
-        };
+    if (imageSrc) {
+      imageSrc = '/assets/lexicon/' + this.control.project.slug + '/pictures/' + imageSrc;
+    }
 
-        function hideInputFields(): void {
-          for (const reply of $scope.comment.replies) {
-            reply.isEditing = false;
-          }
+    return imageSrc;
+  }
 
-          $scope.comment.editing = false;
-        }
+  private updateReply(commentId: string, reply: LexCommentReply): void {
+    this.commentService.updateReply(commentId, reply).then(result => {
+      if (result.ok) {
+        this.editorService.refreshEditorData().then(this.loadComments);
+        this.showNewReplyForm = true;
+      }
+    }).finally(() => {
+      this.isPosting = false;
+    });
+  }
 
-        $scope.getSenseLabel = function getSenseLabel(): string {
-          return $scope.$parent.getSenseLabel($scope.comment.regarding.field, $scope.comment.contextGuid);
-        };
+  private hideInputFields(): void {
+    for (const reply of this.comment.replies) {
+      (reply as Reply).isEditing = false;
+    }
 
-        $scope.isOriginalRelevant = function isOriginalRelevant(): boolean {
-          if ($scope.comment.regarding.fieldValue) {
-            if ($scope.getCurrentContextValue() !== $scope.comment.regarding.fieldValue) {
-              return true;
-            }
-          }
+    this.comment.isEditing = false;
+  }
 
-          return false;
-        };
-
-        $scope.getCurrentContextValue = function getCurrentContextValue(): string {
-          const contextParts = $scope.control.getContextParts($scope.comment.contextGuid);
-          if (contextParts.option.key !== '' && (contextParts.fieldConfig.type === 'multioptionlist' ||
-              (contextParts.fieldConfig.type === 'optionlist' && $scope.control.commentContext.contextGuid === ''))
-          ) {
-            return contextParts.option.label;
-          } else if (contextParts.fieldConfig.type === 'pictures' && !contextParts.inputSystem &&
-            $scope.control.commentContext.contextGuid === ''
-          ) {
-            return 'Something different just to force it to display';
-          } else {
-            return contextParts.value;
-          }
-        };
-
-        $scope.getCommentRegardingPictureSource = function getCommentRegardingPictureSource(): string {
-          if (!$scope.isCommentRegardingPicture) {
-            return '';
-          }
-
-          const contextParts = $scope.control.getContextParts($scope.comment.contextGuid);
-          let imageSrc = '';
-          let pictures = null;
-          if (contextParts.example.guid) {
-            pictures = $scope.control.currentEntry.senses[contextParts.sense.index]
-              .examples[contextParts.example.index].pictures;
-          } else if (contextParts.sense.guid) {
-            pictures = $scope.control.currentEntry.senses[contextParts.sense.index].pictures;
-          }
-
-          for (const i in pictures) {
-            if (pictures.hasOwnProperty(i) && pictures[i].guid === contextParts.value) {
-              imageSrc = pictures[i].fileName;
-            }
-          }
-
-          if (imageSrc) {
-            imageSrc = '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + imageSrc;
-          }
-
-          return imageSrc;
-        };
-
-      }]
-
-  };
 }
+
+export const CommentComponent: angular.IComponentOptions = {
+  bindings: {
+    comment: '<',
+    control: '<',
+    canPlusOneComment: '&',
+    loadComments: '&',
+    parentGetSenseLabel: '&',
+    plusOneComment: '&',
+    setCommentInteractiveStatus: '&',
+    toggleShowNewComment: '&'
+  },
+  controller: CommentController,
+  templateUrl: '/angular-app/languageforge/lexicon/editor/comment/dc-comment.component.html'
+};

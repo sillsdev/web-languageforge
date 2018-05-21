@@ -1,98 +1,103 @@
 import * as angular from 'angular';
 
-import {SessionService} from '../../../../bellows/core/session.service';
 import {LexiconConfigService} from '../../core/lexicon-config.service';
+import {LexCommentChange} from '../../shared/model/lex-comment.model';
+import {LexEntry} from '../../shared/model/lex-entry.model';
 import {LexField} from '../../shared/model/lex-field.model';
+import {LexMultiText} from '../../shared/model/lex-multi-text.model';
 import {LexMultiValue} from '../../shared/model/lex-multi-value.model';
 import {LexValue} from '../../shared/model/lex-value.model';
+import {FieldControl} from '../field/field-control.model';
 
-export function LexCommentsViewComponent() {
-  return {
-    restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/editor/comment/lex-comments-view.component.html',
-    scope: {
-      entry: '=',
-      entryConfig: '=',
-      control: '='
-    },
-    controller: ['$scope', '$q', 'sessionService', 'lexConfigService',
-    ($scope: any, $q: angular.IQService, sessionService: SessionService, lexConfig: LexiconConfigService) => {
-      // notes by cjh 2015-03
-      // define this method on the control (which happens to be an ancestor scope) because it is
-      // used by a sibling directive (dc-entry)
-      // an alternative implementation to this would be to use the commentService to contain this
-      // method (but then the comment service would become lex specific which is a downside
-      $q.all([lexConfig.refresh(), sessionService.getSession()]).then(([config, session]) => {
-        $scope.config = config;
-        $scope.control.selectFieldForComment =
-        function selectFieldForComment(fieldName: string, model: LexField, inputSystemTag: string,
-                                       multioptionValue: string, pictureFilePath: string, contextGuid: string): void {
-          const canComment = session.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.CREATE);
-          if (!canComment) return;
+export class LexCommentsViewController implements angular.IController {
+  newComment: LexCommentChange;
+  entry: LexEntry;
+  control: FieldControl;
 
-          lexConfig.getFieldConfig(fieldName).then(fieldConfig => {
-            $scope.newComment.regardingFieldConfig = fieldConfig;
-            $scope.newComment.regarding.field = fieldName;
-            $scope.newComment.regarding.fieldNameForDisplay =
-              $scope.newComment.regardingFieldConfig.label;
-            delete $scope.newComment.regarding.inputSystem;
-            delete $scope.newComment.regarding.inputSystemAbbreviation;
-            $scope.newComment.isRegardingPicture = false;
-            $scope.newComment.contextGuid = contextGuid;
-            if (inputSystemTag) {
-              $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystemTag);
-              $scope.newComment.regarding.inputSystem =
-                $scope.config.inputSystems[inputSystemTag].languageName;
-              $scope.newComment.regarding.inputSystemAbbreviation =
-                $scope.config.inputSystems[inputSystemTag].abbreviation;
-            } else if (multioptionValue) {
-              $scope.newComment.regarding.fieldValue = multioptionValue;
-            } else if (pictureFilePath) {
-              $scope.newComment.regarding.fieldValue = pictureFilePath;
-              $scope.newComment.isRegardingPicture = true;
-            } else {
-              $scope.newComment.regarding.fieldValue = getFieldValue(model);
-            }
-          });
-        };
-      });
+  static $inject = ['lexConfigService'];
+  constructor(private lexConfig: LexiconConfigService) { }
 
-      $scope.control.getNewComment = function getNewComment() {
-        return $scope.newComment;
-      };
+  $onInit(): void {
+    if (this.newComment == null) {
+      this.newComment = new LexCommentChange();
+    }
 
-      function getFieldValue(model: LexField, inputSystem?: string): string {
-        // get value of option list
-        if ((model as LexValue).value != null) {
+    this.control.getNewComment = this.getNewComment;
+    this.control.selectFieldForComment = this.selectFieldForComment;
+  }
 
-          // todo return display value
-          return (model as LexValue).value;
-        }
+  getNewComment = () => {
+    return this.newComment;
+  }
 
-        // get value of multi-option list
-        if ((model as LexMultiValue).values != null) {
+  selectFieldForComment = (fieldName: string, model: LexField, inputSystemTag: string,
+                           multioptionValue: string, pictureFilePath: string, contextGuid: string): void => {
+    if (!this.control.rights.canComment() || model == null) {
+      return;
+    }
 
-          // todo return display values
-          return (model as LexMultiValue).values.join(' ');
-        }
-
-        // get value of multi-text with specified inputSystem
-        if (inputSystem != null && model[inputSystem] != null) {
-          return model[inputSystem].value;
-        }
-
-        // get first inputSystem of a multi-text (no inputSystem specified)
-        let valueToReturn: string = null;
-        angular.forEach(model, prop => {
-          if (valueToReturn == null) {
-            valueToReturn = prop.value;
-            return;
-          }
-        });
-
-        return valueToReturn;
+    this.lexConfig.getFieldConfig(fieldName).then(fieldConfig => {
+      this.newComment.regardingFieldConfig = fieldConfig;
+      this.newComment.regarding.field = fieldName;
+      this.newComment.regarding.fieldNameForDisplay = this.newComment.regardingFieldConfig.label;
+      delete this.newComment.regarding.inputSystem;
+      delete this.newComment.regarding.inputSystemAbbreviation;
+      this.newComment.isRegardingPicture = false;
+      this.newComment.contextGuid = contextGuid;
+      if (inputSystemTag) {
+        this.newComment.regarding.fieldValue = LexCommentsViewController.getFieldValue(model, inputSystemTag);
+        this.newComment.regarding.inputSystem = this.control.config.inputSystems[inputSystemTag].languageName;
+        this.newComment.regarding.inputSystemAbbreviation =
+          this.control.config.inputSystems[inputSystemTag].abbreviation;
+      } else if (multioptionValue) {
+        this.newComment.regarding.fieldValue = multioptionValue;
+      } else if (pictureFilePath) {
+        this.newComment.regarding.fieldValue = pictureFilePath;
+        this.newComment.isRegardingPicture = true;
+      } else {
+        this.newComment.regarding.fieldValue = LexCommentsViewController.getFieldValue(model);
       }
+    });
+  }
 
-    }]
-  };
+  private static getFieldValue(model: LexField, inputSystemTag?: string): string {
+    // get value of option list
+    if ((model as LexValue).value != null) {
+      // todo return display value
+      return (model as LexValue).value;
+    }
+
+    // get value of multi-option list
+    if ((model as LexMultiValue).values != null) {
+      // todo return display values
+      return (model as LexMultiValue).values.join(' ');
+    }
+
+    // get value of multi-text with specified inputSystemTag
+    if (inputSystemTag != null && model[inputSystemTag] != null) {
+      return model[inputSystemTag].value;
+    }
+
+    // get first inputSystemTag of a multi-text (no inputSystemTag specified)
+    let fieldValue: string = null;
+    for (const languageTag in model as LexMultiText) {
+      if (fieldValue == null) {
+        fieldValue = model[languageTag].value;
+        break;
+      }
+    }
+
+    return fieldValue;
+  }
+
 }
+
+export const LexCommentsViewComponent: angular.IComponentOptions = {
+  bindings: {
+    newComment: '=?',
+    entry: '<',
+    control: '<'
+  },
+  controller: LexCommentsViewController,
+  templateUrl: '/angular-app/languageforge/lexicon/editor/comment/lex-comments-view.component.html'
+};

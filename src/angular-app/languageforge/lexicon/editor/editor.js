@@ -466,7 +466,7 @@ angular.module('lexicon.editor', [
           commentService.loadEntryComments(id);
           if ($scope.rightPanelVisible === true && $scope.commentContext.contextGuid !== '') {
             $scope.showComments();
-            $scope.setCommentContext('', '');
+            $scope.setCommentContext('');
           }
         }
 
@@ -700,10 +700,10 @@ angular.module('lexicon.editor', [
           $scope.showCommentsPanel();
 
           // Reset the comment context AFTER the panel starts hiding
-          $scope.setCommentContext('', '', '', '', '');
+          $scope.setCommentContext('');
         } else {
           // Reset the comment context BEFORE we start showing the panel
-          $scope.setCommentContext('', '', '', '', '');
+          $scope.setCommentContext('');
           document.querySelector('.comments-right-panel').style.paddingTop = 0;
           if ($scope.rightPanelVisible === false) {
             $scope.showCommentsPanel();
@@ -715,7 +715,7 @@ angular.module('lexicon.editor', [
         $scope.showRightPanel('#lexAppCommentView');
       };
 
-      $scope.showActivityFeed = function showCommentsPanel() {
+      $scope.showActivityFeed = function showActivityFeed() {
         $scope.showRightPanel('#lexAppActivityFeed');
       };
 
@@ -758,7 +758,7 @@ angular.module('lexicon.editor', [
             }
 
             $scope.rightPanelVisible = false;
-            $scope.setCommentContext('', '');
+            $scope.setCommentContext('');
           }, delay);
         }
       };

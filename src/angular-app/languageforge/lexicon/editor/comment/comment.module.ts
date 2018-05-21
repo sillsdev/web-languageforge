@@ -9,10 +9,10 @@ import {RegardingFieldComponent} from './regarding-field.component';
 
 export const EditorCommentsModule = angular
   .module('lexCommentsModule', [])
-  .directive('commentBubble', CommentBubbleComponent)
-  .directive('commentsRightPanel', CommentsRightPanelComponent)
-  .directive('currentEntryCommentCount', CurrentEntryCommentCountComponent)
-  .directive('dcComment', CommentComponent)
-  .directive('lexCommentsView', LexCommentsViewComponent)
-  .directive('regardingField', RegardingFieldComponent)
+  .component('commentBubble', CommentBubbleComponent)
+  .component('commentsRightPanel', CommentsRightPanelComponent)
+  .component('currentEntryCommentCount', CurrentEntryCommentCountComponent)
+  .component('dcComment', CommentComponent)
+  .component('lexCommentsView', LexCommentsViewComponent)
+  .component('regardingField', RegardingFieldComponent)
   .name;
