@@ -1,4 +1,4 @@
-import {browser, by, element, ExpectedConditions} from 'protractor';
+import {browser, by, ExpectedConditions} from 'protractor';
 import {ElementFinder} from 'protractor/built/element';
 
 import {BellowsLoginPage} from './shared/login.page';
@@ -30,20 +30,21 @@ describe('Bellows E2E Projects List app', async () => {
       await loginPage.loginAsMember();
       await projectsPage.get();
       await browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
-      await expect<any>(projectsPage.projectsList.count()).toBe(1);
+      await expect<any>(projectsPage.projectsList.count()).toBe(2);
     });
+  });
 
   // Two helper functions to avoid duplicating the same checks in admin test below
-    const shouldProjectBeLinked = async (projectName: string, projectRow: ElementFinder, bool: boolean) => {
-      await expect<any>(projectRow.element(by.cssContainingText('span', projectName)).isDisplayed()).toBe(bool);
+  const shouldProjectBeLinked = async (projectName: string, projectRow: ElementFinder, bool: boolean) => {
+    await expect<any>(projectRow.element(by.cssContainingText('a', projectName)).isDisplayed()).toBe(bool);
   };
 
-    const shouldProjectHaveButtons = async (projectRow: ElementFinder, bool: boolean) => {
-    const addAsManagerBtn = await projectRow.element(by.id('managerButton'));
+  const shouldProjectHaveButtons = async (projectRow: ElementFinder, bool: boolean) => {
+    const addAsManagerBtn = projectRow.element(by.id('managerButton'));
     await expect<any>(addAsManagerBtn.isDisplayed()).toBe(bool);
   };
 
-    describe('for System Admin User', async () => {
+  describe('for System Admin User', async () => {
 
     it('should list all projects', async () => {
       await loginPage.loginAsAdmin();
@@ -52,14 +53,13 @@ describe('Bellows E2E Projects List app', async () => {
 
       // Check that the test project is around
       projectsPage.findProject(constants.testProjectName).then(async (projectRow: ElementFinder) => {
-
         await shouldProjectBeLinked(constants.testProjectName, projectRow, true);
-
       });
-   });
+    });
 
     it('should show add and delete buttons', async () => {
       // projectsPage.createBtn.getOuterHtml().then(console.log);
+      await browser.wait(() => projectsPage.createBtn, constants.conditionTimeout);
       await expect(projectsPage.createBtn.isDisplayed()).toBeTruthy();
     });
 
@@ -73,7 +73,6 @@ describe('Bellows E2E Projects List app', async () => {
       projectsPage.findProject(constants.otherProjectName).then(async (projectRow: ElementFinder) => {
         await shouldProjectBeLinked(constants.otherProjectName, projectRow, true);
         await shouldProjectHaveButtons(projectRow, false);
-
       });
 
       await projectsPage.removeUserFromProject(constants.otherProjectName, constants.adminUsername);
@@ -99,5 +98,4 @@ describe('Bellows E2E Projects List app', async () => {
 
   });
 
-});
 });

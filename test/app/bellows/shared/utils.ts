@@ -50,7 +50,7 @@ export class Utils {
 
   async findRowByText(elementArray: ElementArrayFinder, searchString: string): Promise<ElementFinder> {
     return await this.findRowByFunc(elementArray, (rowText: string) => {
-    return rowText.includes(searchString);
+      return rowText.includes(searchString);
     }
   );
   }
@@ -95,7 +95,7 @@ export class Utils {
 
       browser.wait(() =>
         this.noticeList.first().getText().then((text: any) => text.includes(includedText)),
-         Utils.conditionTimeout);
+        Utils.conditionTimeout);
     }
   };
 
@@ -142,7 +142,6 @@ export class Utils {
   }
 
   static async scrollTop() {
-
     await browser.executeScript('window.scroll(0,0)');
   }
 

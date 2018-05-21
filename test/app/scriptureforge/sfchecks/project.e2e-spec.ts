@@ -1,4 +1,4 @@
-import {browser, by, element, ExpectedConditions} from 'protractor';
+import {browser, ExpectedConditions} from 'protractor';
 
 import {SfAppFrame} from '../../bellows/shared/app.frame';
 import {BellowsLoginPage} from '../../bellows/shared/login.page';
@@ -33,7 +33,7 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
     it('can click through to a questions page', () => {
       projectPage.textLink(constants.testText1Title).click();
       expect(questionListPage.questionNames.count()).toBeGreaterThan(0);
-      browser.driver.navigate().back();
+      browser.navigate().back();
     });
     it('cannot click on settings', () => {
       expect(projectPage.settingsDropdownLink.isDisplayed()).toBe(false);
@@ -52,27 +52,28 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
       await BellowsLoginPage.logout();
       await loginPage.loginAsManager();
       await projectListPage.get();
-     // await projectListPage.clickOnProject(constants.testProjectName);
       await projectListPage.clickOnProjectName(constants.testProjectName);
     });
+
     it('has access to the invite-a-friend button', async () => {
       await expect<any>(projectPage.invite.showFormButton.isDisplayed()).toBe(true);
     });
 
     it('can invite a friend to join the project', async () => {
-    await projectPage.invite.showFormButton.click();
-    await projectPage.invite.emailInput.sendKeys('nobody@example.com');
-    await projectPage.invite.sendButton.click();
+      await projectPage.invite.showFormButton.click();
+      await projectPage.invite.emailInput.sendKeys('nobody@example.com');
+      await projectPage.invite.sendButton.click();
 
       // TODO: Should we expect a success message to show up? Or an error message to *not* show up?
-    await appFrame.checkMsg('An invitation email has been sent to nobody@example.com', 'success');
+      await appFrame.checkMsg('An invitation email has been sent to nobody@example.com', 'success');
     });
 
     it('can click on settings button', async () => {
-      expect<any>(await projectPage.settingsDropdownLink.isDisplayed()).toBe(true);
+      await expect<any>(projectPage.settingsDropdownLink.isDisplayed()).toBe(true);
+
       // Not sure if passing an empty string is the best way, but it works. -Ben Kastner 2018-01-19
       await projectSettingsPage.get(constants.testProjectName);
-      await browser.driver.navigate().back();
+      await browser.navigate().back();
     });
 
     it('lists existing texts', async () => {
@@ -82,7 +83,7 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
     it('can click through to a questions page', async () => {
       await SfProjectPage.textLink(constants.testText1Title).click();
       await expect(questionListPage.questionRows.count()).toBeGreaterThan(0);
-      await browser.driver.navigate().back();
+      await browser.navigate().back();
     });
 
     it('can create a new text (input text area)', async () => {
@@ -97,11 +98,11 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
 
     it('can click through to newly created text', async () => {
       await SfProjectPage.textLink(sampleTitle).click();
-      await browser.driver.navigate().back();
+      await browser.navigate().back();
     });
 
     it('can archive the text that was just created', async () => {
-      const archiveButton = await projectPage.archiveTextButton.getWebElement();
+      const archiveButton = projectPage.archiveTextButton.getWebElement();
       await expect<any>(archiveButton.isDisplayed()).toBe(true);
       await expect<any>(archiveButton.isEnabled()).toBe(false);
       await util.setCheckbox(projectPage.getFirstCheckbox(), true);
@@ -125,7 +126,7 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
       await projectSettingsPage.get(constants.testProjectName);
       await projectSettingsPage.tabs.archiveTexts.click();
       await expect<any>(projectSettingsPage.archivedTextsTab.textLink(sampleTitle).isDisplayed()).toBe(true);
-      const publishButton = await projectSettingsPage.archivedTextsTab.publishButton.getWebElement();
+      const publishButton = projectSettingsPage.archivedTextsTab.publishButton.getWebElement();
       await expect<any>(publishButton.isDisplayed()).toBe(true);
       await expect<any>(publishButton.isEnabled()).toBe(false);
       await util.setCheckbox(projectSettingsPage.archivedTextsTabGetFirstCheckbox(), true);
@@ -133,7 +134,7 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
       await publishButton.click();
       await expect<any>(projectSettingsPage.archivedTextsTab.textLink(sampleTitle).isPresent()).toBe(false);
       await expect<any>(publishButton.isEnabled()).toBe(false);
-      await browser.driver.navigate().back();
+      await browser.navigate().back();
       await expect<any>(SfProjectPage.textLink(sampleTitle).isDisplayed()).toBe(true);
     });
 
@@ -161,11 +162,11 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
       await expect<any>(SfProjectPage.textLink(newTextTitle).isDisplayed()).toBe(true);
       await SfProjectPage.textLink(newTextTitle).click();
       await expect(questionListPage.textContent.getText()).not.toMatch('/Cana of Galilee/');
-      await browser.driver.navigate().back();
+      await browser.navigate().back();
 
       // clean up the text
       await util.setCheckbox(projectPage.getFirstCheckbox(), true);
-      const archiveButton = await projectPage.archiveTextButton.getWebElement();
+      const archiveButton = projectPage.archiveTextButton.getWebElement();
       await archiveButton.click();
       await Utils.clickModalButton('Archive');
     });

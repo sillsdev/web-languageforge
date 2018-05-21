@@ -16,14 +16,14 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
     await BellowsLoginPage.logout();
     await BellowsResetPasswordPage.get(constants.expiredPasswordKey);
     await browser.wait(ExpectedConditions.visibilityOf(loginPage.errors.get(0)), constants.conditionTimeout);
-    expect<any>(await loginPage.username.isDisplayed()).toBe(true);
-    expect<any>(await loginPage.infoMessages.count()).toBe(0);
-    expect<any>(await loginPage.errors.count()).toBe(1);
-    expect<any>(await loginPage.errors.first().getText()).toContain('expired');
+    await expect<any>(loginPage.username.isDisplayed()).toBe(true);
+    await expect<any>(loginPage.infoMessages.count()).toBe(0);
+    await expect<any>(loginPage.errors.count()).toBe(1);
+    await expect<any>(loginPage.errors.first().getText()).toContain('expired');
 
     // clear errors so that afterEach appFrame error check doesn't fail, see project-settings.e2e-spec.js
-    await browser.navigate().refresh();
-    expect<any>(await loginPage.errors.count()).toBe(0);
+    await browser.refresh();
+    await expect<any>(loginPage.errors.count()).toBe(0);
   });
 
   describe('for Forgot Password request', async () => {
@@ -32,36 +32,36 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
       await loginPage.forgotPasswordLink.click();
       await browser.wait(ExpectedConditions.stalenessOf(loginPage.forgotPasswordLink), constants.conditionTimeout);
       await browser.wait(ExpectedConditions.visibilityOf(forgotPasswordPage.usernameInput), constants.conditionTimeout);
-      expect<any>(await forgotPasswordPage.usernameInput.isDisplayed()).toBe(true);
+      await expect<any>(forgotPasswordPage.usernameInput.isDisplayed()).toBe(true);
     });
 
     it('cannot request for non-existent user', async () => {
       await BellowsForgotPasswordPage.get();
-      expect<any>(await forgotPasswordPage.infoMessages.count()).toBe(0);
-      expect<any>(await forgotPasswordPage.errors.count()).toBe(0);
+      await expect<any>(forgotPasswordPage.infoMessages.count()).toBe(0);
+      await expect<any>(forgotPasswordPage.errors.count()).toBe(0);
       await forgotPasswordPage.usernameInput.sendKeys(constants.unusedUsername);
       await forgotPasswordPage.submitButton.click();
       await browser.wait(ExpectedConditions.visibilityOf(forgotPasswordPage.errors.get(0)), constants.conditionTimeout);
-      expect<any>(await forgotPasswordPage.errors.count()).toBe(1);
-      expect<any>(await forgotPasswordPage.errors.first().getText()).toContain('User not found');
+      await expect<any>(forgotPasswordPage.errors.count()).toBe(1);
+      await expect<any>(forgotPasswordPage.errors.first().getText()).toContain('User not found');
       await forgotPasswordPage.usernameInput.clear();
 
       // clear errors so that afterEach appFrame error check doesn't fail, see project-settings.e2e-spec.js
       await browser.refresh();
-      expect<any>(await forgotPasswordPage.errors.count()).toBe(0);
+      await expect<any>(forgotPasswordPage.errors.count()).toBe(0);
     });
 
     it('can submit request', async () => {
       await forgotPasswordPage.usernameInput.sendKeys(constants.expiredUsername);
       await forgotPasswordPage.submitButton.click();
-      expect<any>(await forgotPasswordPage.errors.count()).toBe(0);
+      await expect<any>(forgotPasswordPage.errors.count()).toBe(0);
       await browser.wait(ExpectedConditions.stalenessOf(resetPasswordPage.confirmPasswordInput),
-       constants.conditionTimeout);
+        constants.conditionTimeout);
       await browser.wait(ExpectedConditions.visibilityOf(loginPage.infoMessages.get(0)), constants.conditionTimeout);
-      expect<any>(await loginPage.username.isDisplayed()).toBe(true);
-      expect<any>(await loginPage.errors.count()).toBe(0);
-      expect<any>(await loginPage.infoMessages.count()).toBe(1);
-      expect<any>(await loginPage.infoMessages.first().getText()).toContain('email sent');
+      await expect<any>(loginPage.username.isDisplayed()).toBe(true);
+      await expect<any>(loginPage.errors.count()).toBe(0);
+      await expect<any>(loginPage.infoMessages.count()).toBe(1);
+      await expect<any>(loginPage.infoMessages.first().getText()).toContain('email sent');
     });
 
   });
@@ -70,15 +70,15 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
 
     it('with valid reset key routes reset page', async () => {
       await BellowsResetPasswordPage.get(constants.resetPasswordKey);
-      expect<any>(await resetPasswordPage.confirmPasswordInput.isDisplayed()).toBe(true);
-      expect<any>(await resetPasswordPage.errors.count()).toBe(0);
-      expect<any>(await loginPage.infoMessages.count()).toBe(0);
+      await expect<any>(resetPasswordPage.confirmPasswordInput.isDisplayed()).toBe(true);
+      await expect<any>(resetPasswordPage.errors.count()).toBe(0);
+      await expect<any>(loginPage.infoMessages.count()).toBe(0);
     });
 
     it('refuses to allow form submission if the confirm input does not match', async () => {
       await resetPasswordPage.passwordInput.sendKeys(constants.passwordValid);
       await resetPasswordPage.confirmPasswordInput.sendKeys(constants.passwordTooShort);
-      expect<any>(await resetPasswordPage.resetButton.isEnabled()).toBe(false);
+      await expect<any>(resetPasswordPage.resetButton.isEnabled()).toBe(false);
       await resetPasswordPage.passwordInput.clear();
       await resetPasswordPage.confirmPasswordInput.clear();
     });
@@ -86,7 +86,7 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
     it('allows form submission if the confirm input matches', async () => {
       await resetPasswordPage.passwordInput.sendKeys(constants.passwordValid);
       await resetPasswordPage.confirmPasswordInput.sendKeys(constants.passwordValid);
-      expect<any>(await resetPasswordPage.resetButton.isEnabled()).toBe(true);
+      await expect<any>(resetPasswordPage.resetButton.isEnabled()).toBe(true);
       await resetPasswordPage.passwordInput.clear();
       await resetPasswordPage.confirmPasswordInput.clear();
     });
@@ -94,7 +94,7 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
     it('should not allow a password less than 7 characters', async () => {
       await resetPasswordPage.passwordInput.sendKeys(constants.passwordTooShort);
       await resetPasswordPage.confirmPasswordInput.sendKeys(constants.passwordTooShort);
-      expect<any>(await resetPasswordPage.resetButton.isEnabled()).toBe(false);
+      await expect<any>(resetPasswordPage.resetButton.isEnabled()).toBe(false);
       await resetPasswordPage.passwordInput.clear();
       await resetPasswordPage.confirmPasswordInput.clear();
     });
@@ -110,18 +110,18 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
       // 'stalenessOf' occasionally failed with
       // WebDriverError: javascript error: document unloaded while waiting for result
       await browser.wait(ExpectedConditions.visibilityOf(loginPage.infoMessages.get(0)), constants.conditionTimeout);
-      expect<any>(await loginPage.username.isDisplayed()).toBe(true);
-      expect<any>(await loginPage.form.isPresent()).toBe(true);
-      expect<any>(await loginPage.infoMessages.count()).toBe(1);
-      expect<any>(await loginPage.infoMessages.first().getText()).toContain('password has been reset');
-      expect<any>(await loginPage.errors.count()).toBe(0);
+      await expect<any>(loginPage.username.isDisplayed()).toBe(true);
+      await expect<any>(loginPage.form.isPresent()).toBe(true);
+      await expect<any>(loginPage.infoMessages.count()).toBe(1);
+      await expect<any>(loginPage.infoMessages.first().getText()).toContain('password has been reset');
+      await expect<any>(loginPage.errors.count()).toBe(0);
     });
 
     it('successfully login after password change', async () => {
       await BellowsLoginPage.get();
       await loginPage.login(constants.resetUsername, constants.resetPassword);
-      expect<any>(await header.loginButton.isPresent()).toBe(false);
-      expect<any>(await header.myProjects.button.isDisplayed()).toBe(true);
+      await expect<any>(header.loginButton.isPresent()).toBe(false);
+      await expect<any>(header.myProjects.button.isDisplayed()).toBe(true);
     });
 
   });

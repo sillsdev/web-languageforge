@@ -12,8 +12,8 @@ export class SfUserProfilePage {
   }
 
   // Navigate to the MyProfile -> My Account page
-   async getMyAccount() {
-   await this.get();
+  async getMyAccount() {
+    await this.get();
   }
 
   // Navigate to the MyProfile -> About Me page
@@ -21,7 +21,7 @@ export class SfUserProfilePage {
     await this.get();
     await this.tabs.aboutMe.click();
     await browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), Utils.conditionTimeout);
-   }
+  }
 
   tabs = {
     myAccount:  element(by.id('myAccountTab')),
@@ -52,10 +52,10 @@ export class SfUserProfilePage {
     saveBtn:          element(by.id('saveBtn')),
 
     selectColor: async (newColor: string|RegExp) => {
-     await Utils.clickDropdownByValue(this.myAccountTab.avatarColor, newColor);
+      await Utils.clickDropdownByValue(this.myAccountTab.avatarColor, newColor);
     },
     selectShape: async (newShape: string|RegExp) => {
-     await Utils.clickDropdownByValue(this.myAccountTab.avatarShape, newShape);
+      await Utils.clickDropdownByValue(this.myAccountTab.avatarShape, newShape);
     },
     updateEmail: async (newEmail: string) => {
       await browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.emailInput), Utils.conditionTimeout);
@@ -75,11 +75,11 @@ export class SfUserProfilePage {
     },
     updateMobilePhone: async (newPhone: string) => {
       await browser.wait(ExpectedConditions.visibilityOf(this.myAccountTab.mobilePhoneInput),
-       Utils.conditionTimeout);
+        Utils.conditionTimeout);
       await this.myAccountTab.mobilePhoneInput.sendKeys(newPhone);
     },
     async updateContactPreference() {
-     await this.bothBtn.click();
+      await this.bothBtn.click();
     }
   };
 

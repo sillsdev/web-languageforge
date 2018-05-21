@@ -50,7 +50,6 @@ describe('Bellows E2E User Profile app', async () => {
         const expectedGender: string = '';
         switch (expectedUsername) {
           case constants.memberUsername:
-
             expectedFullname = constants.memberName;
             break;
           case constants.managerUsername:
@@ -106,9 +105,9 @@ describe('Bellows E2E User Profile app', async () => {
 
         // Submit updated profile
         userProfile.myAccountTab.saveBtn.click().then(async () => {
-         await browser.driver.navigate().refresh();
-         await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
-          constants.conditionTimeout);
+          await browser.driver.navigate().refresh();
+          await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
+            constants.conditionTimeout);
         });
 
         // Verify values.
@@ -122,9 +121,9 @@ describe('Bellows E2E User Profile app', async () => {
         // Restore email address
         await userProfile.myAccountTab.updateEmail(originalEmail);
         userProfile.myAccountTab.saveBtn.click().then(async () => {
-         await browser.driver.navigate().refresh();
-         await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
-         constants.conditionTimeout);
+          await browser.driver.navigate().refresh();
+          await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
+            constants.conditionTimeout);
         });
 
         await expect<any>(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(originalEmail);
@@ -167,9 +166,10 @@ describe('Bellows E2E User Profile app', async () => {
         await userProfile.myAccountTab.saveBtn.click();
         await Utils.clickModalButton('Cancel');
         await browser.driver.navigate().refresh();
+
         // Confirm email not changed
         await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
-         constants.conditionTimeout);
+          constants.conditionTimeout);
         await Utils.scrollTop();
         await expect<any>(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(originalEmail);
 
@@ -243,7 +243,7 @@ describe('Bellows E2E User Profile app', async () => {
 
         // Submit updated profile
         await userProfile.aboutMeTab.saveBtn.click();
-        // expect<any>(await userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(newFullName);
+        await expect<any>(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(newFullName);
 
         // Verify values.  Browse to different URL first to force new page load
         await userProfile.getAboutMe();
