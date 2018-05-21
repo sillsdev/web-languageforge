@@ -1,11 +1,9 @@
 import * as angular from 'angular';
 
-import {Rights} from '../../core/lexicon-rights.service';
 import {LexMultiValue} from '../../shared/model/lex-multi-value.model';
 import {LexConfigMultiOptionList} from '../../shared/model/lexicon-config.model';
 import {LexOptionListItem} from '../../shared/model/option-list.model';
 import {FieldOptionListController} from './dc-optionlist.component';
-import {FieldControl} from './field-control.model';
 
 export class FieldMultiOptionListController extends FieldOptionListController implements angular.IController {
   model: LexMultiValue;
@@ -14,17 +12,9 @@ export class FieldMultiOptionListController extends FieldOptionListController im
 
   isAdding = false;
   newKey: string;
-  rights: Rights;
-
-  $onChanges(changes: any): void {
-    const controlChange = changes.control as angular.IChangesObject<FieldControl>;
-    if (controlChange != null && controlChange.currentValue && controlChange.currentValue.rights != null) {
-      this.rights = this.control.rights;
-    }
-  }
 
   showDeleteButton(valueToBeDeleted: string, value: string): boolean {
-    if (this.items != null && this.isAtEditorEntry() && this.rights.canEditEntry()) {
+    if (this.items != null && this.isAtEditorEntry() && this.control.rights.canEditEntry()) {
       return valueToBeDeleted === value;
     }
 
@@ -48,7 +38,8 @@ export class FieldMultiOptionListController extends FieldOptionListController im
   }
 
   showAddButton(): boolean {
-    return !this.isAdding && this.items != null && this.model.values.length < this.items.length;
+    return this.control.rights.canEditEntry() && this.isAtEditorEntry() && !this.isAdding && this.model != null &&
+      this.items != null && this.model.values.length < this.items.length;
   }
 
   addValue(): void {

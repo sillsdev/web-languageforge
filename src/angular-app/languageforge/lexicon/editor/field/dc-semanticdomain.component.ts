@@ -15,7 +15,7 @@ export class FieldSemanticDomainController extends FieldMultiOptionListControlle
   }
 
   $onInit(): void {
-    super.$onInit();
+    this.contextGuid = this.parentContextGuid;
     this.createOptions();
   }
 
@@ -29,7 +29,7 @@ export class FieldSemanticDomainController extends FieldMultiOptionListControlle
   }
 
   showDeleteButton(valueToBeDeleted: string, value: string): boolean {
-    if (this.$window.semanticDomains_en != null && this.isAtEditorEntry() && this.rights.canEditEntry()) {
+    if (this.$window.semanticDomains_en != null && this.isAtEditorEntry() && this.control.rights.canEditEntry()) {
       return valueToBeDeleted === value;
     }
 
@@ -41,12 +41,9 @@ export class FieldSemanticDomainController extends FieldMultiOptionListControlle
   }
 
   showAddButton(): boolean {
-    if (this.model == null) {
-      return false;
-    }
-
-    return (this.$window.semanticDomains_en != null && !this.isAdding
-      && this.model.values.length < Object.keys(this.$window.semanticDomains_en).length);
+    return this.control.rights.canEditEntry() && this.isAtEditorEntry() && !this.isAdding && this.model != null &&
+      this.$window.semanticDomains_en != null &&
+      this.model.values.length < Object.keys(this.$window.semanticDomains_en).length;
   }
 
   private createOptions(): void {

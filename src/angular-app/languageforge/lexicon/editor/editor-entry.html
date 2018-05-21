@@ -53,28 +53,29 @@
                                     <label class="font-weight-bold" for="sortEntriesBy">Sort Entries By</label>
                                     <div class="form-inline">
                                         <select id="sortEntriesBy" class="custom-select sortfilter-control"
-                                                ng-change="sortEntries(true)" ng-model="entryListModifiers.sortBy"
-                                                ng-options="item as item.label for item in entryListModifiers.sortOptions track by item.value">
+                                                data-ng-change="sortEntries(true)" data-ng-model="entryListModifiers.sortBy"
+                                                data-ng-options="item as item.label for item in entryListModifiers.sortOptions track by item.value">
                                         </select>
                                         <label>
-                                            <input type="checkbox" ng-change="sortEntries(true)" ng-model="entryListModifiers.sortReverse"> Reverse
+                                            <input type="checkbox" data-ng-change="sortEntries(true)" data-ng-model="entryListModifiers.sortReverse"> Reverse
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group sortfilter-form">
                                     <label class="font-weight-bold" for="filterEntriesFor">Filter Entries</label>
                                     <div class="form-inline">
-                                        <select class="custom-select sortfilter-control" ng-show="entryListModifiers.filterBy"
-                                                ng-change="filterEntries(true)" ng-model="entryListModifiers.filterType">
+                                        <!--suppress HtmlFormInputWithoutLabel -->
+                                        <select class="custom-select sortfilter-control" data-ng-show="entryListModifiers.filterBy"
+                                                data-ng-change="filterEntries(true)" data-ng-model="entryListModifiers.filterType">
                                             <option value="isEmpty">Doesn't have</option>
                                             <option value="isNotEmpty">Has</option>
                                         </select>
                                         <select class="custom-select sortfilter-control" id="filterEntriesFor"
-                                                ng-change="filterEntries(true)" ng-model="entryListModifiers.filterBy"
-                                                ng-options="item as item.label for item in entryListModifiers.filterOptions track by item.key">
+                                                data-ng-change="filterEntries(true)" data-ng-model="entryListModifiers.filterBy"
+                                                data-ng-options="item as item.label for item in entryListModifiers.filterOptions track by item.key">
                                             <option value="">Show All</option>
                                         </select>
-                                        <button ng-click="resetEntryListFilter()" ng-show="entryListModifiers.filterBy" class="btn btn-sm">Reset</button>
+                                        <button data-ng-click="resetEntryListFilter()" data-ng-show="entryListModifiers.filterBy" class="btn btn-sm">Reset</button>
                                     </div>
                                 </div>
                             </div>
@@ -113,13 +114,13 @@
     <div id="lexRightPanels">
         <div class="right-panel-list">
             <div id="lexAppCommentView" class="right-panel">
-                <lex-comments-view entry-config="config.entry" entry="currentEntry" control="control"></lex-comments-view>
+                <lex-comments-view entry="currentEntry" control="control"></lex-comments-view>
             </div>
             <div id="lexAppActivityFeed" class="right-panel">
                 <activity-container entry-id="{{currentEntry.id}}"></activity-container>
             </div>
         </div>
-        <div class="right-panel-backdrop" ng-click="control.hideRightPanel()">
+        <div class="right-panel-backdrop" data-ng-click="control.hideRightPanel()">
             <i class="fa fa-times"></i>
         </div>
     </div>
