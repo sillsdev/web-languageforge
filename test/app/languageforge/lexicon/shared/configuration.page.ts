@@ -1,4 +1,4 @@
-import {browser, by, element, ExpectedConditions} from 'protractor';
+import {browser, by, element, ExpectedConditions, utils} from 'protractor';
 
 import {Utils} from '../../../bellows/shared/utils';
 import {LexModals} from './lex-modals.util';
@@ -73,6 +73,8 @@ export class ConfigurationPage {
         }
       },
       rows: () => {
+        browser.wait(() =>
+          ExpectedConditions.visibilityOf(this.activePane), 3000);
         return this.activePane.all(by.repeater('entryField in $ctrl.unifiedViewModel.entryFields.settings'));
       },
       rowLabel: (rowIndex: number) => {
@@ -83,10 +85,12 @@ export class ConfigurationPage {
       },
       columnCheckboxes: (column: string) => {
         // column values: 'select-row', 'observer', 'commenter', 'contributor', 'manager'.
+        browser.wait(() => this.unifiedPane.entry.rows(), Utils.conditionTimeout);
         return this.unifiedPane.entry.rows().all(by.className(column + '-checkbox'));
-
       },
       groupColumnCheckboxes: (groupIndex: number) => {
+        browser.wait(() => this.unifiedPane.entry.rows(),
+          Utils.conditionTimeout);
         return this.unifiedPane.entry.rows().all(by.className('checkbox-group-' + groupIndex));
       },
       removeGroupButton: (groupIndex: number) => {
@@ -112,6 +116,8 @@ export class ConfigurationPage {
         }
       },
       rows: () =>  {
+        browser.wait(() =>
+          ExpectedConditions.visibilityOf(this.activePane), 3000);
         return this.activePane.all(by.repeater('senseField in $ctrl.unifiedViewModel.senseFields.settings'));
       },
       rowLabel: (rowIndex: number) => {
@@ -122,9 +128,12 @@ export class ConfigurationPage {
       },
       columnCheckboxes: (column: string) => {
         // column values: 'select-row', 'observer', 'commenter', 'contributor', 'manager'.
+        browser.wait(() => this.unifiedPane.sense.rows(), Utils.conditionTimeout);
         return this.unifiedPane.sense.rows().all(by.className(column + '-checkbox'));
       },
       groupColumnCheckboxes: (groupIndex: number) => {
+        browser.wait(() =>
+          this.unifiedPane.sense.rows(), Utils.conditionTimeout);
         return this.unifiedPane.sense.rows().all(by.className('checkbox-group-' + groupIndex));
       },
       removeGroupButton: async (groupIndex: number) => {
@@ -180,8 +189,6 @@ export class ConfigurationPage {
       return this.getRowByLabel(label).element(by.className('hidden-if-empty-checkbox'));
     },
     selectRowCheckbox: (label: string|RegExp) => {
-      // browser.wait(ExpectedConditions.visibilityOf(this.getRowByLabel(label)
-        // .element(by.className('select-row-checkbox'))), 3000);
       return this.getRowByLabel(label).element(by.className('select-row-checkbox'));
     },
     observerCheckbox: (label: string|RegExp) => {

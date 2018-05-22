@@ -1,12 +1,12 @@
 import {browser, by, element} from 'protractor';
 
 export class SignupPage {
-  static get() {
-    browser.get(browser.baseUrl + '/public/signup');
+  static async get() {
+    await browser.get(browser.baseUrl + '/public/signup');
   }
 
-  static getPrefilledEmail(email: string) {
-    browser.get(browser.baseUrl + '/public/signup#!/?e=' + encodeURIComponent(email));
+  static async getPrefilledEmail(email: string) {
+    await browser.get(browser.baseUrl + '/public/signup#!/?e=' + encodeURIComponent(email));
   }
 
   signupForm = element(by.id('signupForm'));
@@ -28,27 +28,27 @@ export class SignupPage {
     yellowCircleButton: this.captchaDiv.element(by.id('captcha1')),
     redTriangleButton: this.captchaDiv.element(by.id('captcha2')),
 
-    setInvalidCaptcha: () => {
-      this.captcha.blueSquareButton.click();
-      this.captcha.expectedItemName.getText().then((result: string) => {
+    setInvalidCaptcha: async () => {
+      await this.captcha.blueSquareButton.click();
+      await this.captcha.expectedItemName.getText().then(async (result: string) => {
         if (result === 'Blue Square') {
-          element(by.id('pui-captcha')).element(by.id('captcha1')).click();
+          await element(by.id('pui-captcha')).element(by.id('captcha1')).click();
         }
       });
     },
 
-    setValidCaptcha: () => {
-      this.captcha.expectedItemName.getText().then((result: string) => {
+    setValidCaptcha: async () => {
+      await this.captcha.expectedItemName.getText().then(async (result: string) => {
         const captchaDiv = element(by.id('pui-captcha'));
         switch (result) {
           case 'Blue Square' :
-            captchaDiv.element(by.id('captcha0')).click();
+            await captchaDiv.element(by.id('captcha0')).click();
             break;
           case 'Yellow Circle' :
-            captchaDiv.element(by.id('captcha1')).click();
+            await captchaDiv.element(by.id('captcha1')).click();
             break;
           case 'Red Triangle' :
-            captchaDiv.element(by.id('captcha2')).click();
+            await captchaDiv.element(by.id('captcha2')).click();
             break;
         }
       });

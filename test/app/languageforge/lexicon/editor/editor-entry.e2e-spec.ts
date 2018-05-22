@@ -1,4 +1,4 @@
-import {browser, by} from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 
 import {BellowsLoginPage} from '../../../bellows/shared/login.page';
 import {ProjectsPage} from '../../../bellows/shared/projects.page';
@@ -40,7 +40,6 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('refresh returns to list view', async () => {
-    await browser.refresh();
     await expect<any>(editorPage.browse.getEntryCount()).toBe(3);
   });
 
@@ -49,6 +48,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('refresh returns to entry view', async () => {
+    // Here, This sleep needs to avoid warning messages.
+    await browser.wait(ExpectedConditions.visibilityOf(await editorPage.edit.fields.get(0)), Utils.conditionTimeout);
     await expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
     await browser.refresh();
     await expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
@@ -84,9 +85,14 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('citation form field overrides lexeme form in dictionary citation view', async () => {
+    // browser.sleep needs to avoid warning informations.
+    await browser.sleep(1000);
     await editorPage.edit.showHiddenFields();
     const citationFormMultiTextInputs = editorPage.edit.getMultiTextInputs('Citation Form');
     await editorPage.edit.selectElement.sendKeys(citationFormMultiTextInputs.first(), 'citation form');
+    await browser.wait(() =>
+      ExpectedConditions.visibilityOf(editorPage.edit.renderedDiv),
+      constants.conditionTimeout);
     await expect(editorPage.edit.renderedDiv.getText()).toContain('citation form');
     await expect(editorPage.edit.renderedDiv.getText()).not.toContain(constants.testEntry1.lexeme.th.value);
     await expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
@@ -127,6 +133,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
 
   it('change config to show Pictures and hide captions', async () => {
     await configPage.get();
+    await browser.wait(ExpectedConditions.visibilityOf(configPage.tabs.unified), constants.conditionTimeout);
     await configPage.tabs.unified.click();
     await util.setCheckbox(configPage.unifiedPane.hiddenIfEmptyCheckbox('Pictures'), false);
     await configPage.unifiedPane.fieldSpecificButton('Pictures').click();
@@ -145,6 +152,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
 
   it('change config to show Pictures and show captions', async () => {
     await configPage.get();
+    await browser.wait(ExpectedConditions.visibilityOf(configPage.tabs.unified), constants.conditionTimeout);
     await configPage.tabs.unified.click();
     await util.setCheckbox(configPage.unifiedPane.hiddenIfEmptyCheckbox('Pictures'), false);
     await configPage.unifiedPane.fieldSpecificButton('Pictures').click();
@@ -159,6 +167,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('picture is removed when Delete is clicked', async () => {
+    await browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.pictures.images.first()),
+      constants.conditionTimeout);
     await expect<any>(editorPage.edit.pictures.images.first().isPresent()).toBe(true);
     await expect<any>(editorPage.edit.pictures.removeImages.first().isPresent()).toBe(true);
     await editorPage.edit.pictures.removeImages.first().click();
@@ -176,6 +186,11 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('while Show Hidden Fields has not been clicked, Pictures field is hidden', async () => {
+    // browser.sleep needs to avoid warning informations.
+    await browser.sleep(500);
+    await browser.wait(() =>
+      ExpectedConditions.visibilityOf(element(by.cssContainingText('.breadcrumb > li', constants.testProjectName))),
+      constants.conditionTimeout);
     await Utils.clickBreadcrumb(constants.testProjectName);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     await expect<any>(editorPage.edit.getFields('Pictures').count()).toBe(0);
@@ -186,6 +201,9 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('audio Input System is present, playable and has "more" control (manager)', async () => {
+    await browser.wait(() =>
+      ExpectedConditions.visibilityOf(EditorUtil.getOneField(lexemeLabel)),
+      constants.conditionTimeout);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).count()).toEqual(1);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(true);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().getAttribute('class'))
@@ -230,13 +248,19 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('login as member, click on first word', async () => {
+    await browser.wait(() =>
+      ExpectedConditions.visibilityOf(loginPage.submit), constants.conditionTimeout);
     await loginPage.loginAsMember();
     await projectsPage.get();
     await projectsPage.clickOnProjectName(constants.testProjectName);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+    await browser.wait(() =>
+      ExpectedConditions.visibilityOf(EditorUtil.getOneField(lexemeLabel)), constants.conditionTimeout);
   });
 
   it('audio Input System is present, playable and has "more" control (member)', async () => {
+    await browser.wait(() =>
+      ExpectedConditions.visibilityOf(EditorUtil.getOneField(lexemeLabel)), constants.conditionTimeout);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).count()).toEqual(1);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(true);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().getAttribute('class'))
@@ -255,6 +279,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('word 2: audio Input System is not playable but has "upload" button (member)', async () => {
+    await browser.wait(() =>
+      ExpectedConditions.visibilityOf(EditorUtil.getOneField(lexemeLabel)), constants.conditionTimeout);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
     await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
     await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
@@ -271,6 +297,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('audio Input System is playable but does not have "more" control (observer)', async () => {
+    await browser.wait(() =>
+      ExpectedConditions.visibilityOf(EditorUtil.getOneField(lexemeLabel)), 4000);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).count()).toEqual(1);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(true);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first()
@@ -288,6 +316,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
 
   it('word 2: audio Input System is not playable and does not have "upload" button (observer)',
     async () => {
+      await browser.wait(() =>
+        ExpectedConditions.visibilityOf(EditorUtil.getOneField(lexemeLabel)), constants.conditionTimeout);
       await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
       await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
       await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
@@ -303,10 +333,16 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('can delete audio Input System', async () => {
+    await browser.wait(() =>
+      ExpectedConditions.visibilityOf(EditorUtil.getOneField(lexemeLabel)),
+      constants.conditionTimeout);
     await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(true);
     await editorPage.edit.audio.moreControls(lexemeLabel).first().click();
     await editorPage.edit.audio.moreDelete(lexemeLabel, 0).click();
     await Utils.clickModalButton('Delete Audio');
+    await browser.wait(() =>
+    ExpectedConditions.visibilityOf(editorPage.edit.audio.uploadButtons(lexemeLabel).first()),
+    constants.conditionTimeout);
     await expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
   });
 
@@ -495,6 +531,9 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     const englishISIndex = 3;
 
     it('Word has only "th", "tipa" and "taud" visible', async () => {
+      await browser.wait(() =>
+        ExpectedConditions.visibilityOf(EditorUtil.getOneField(lexemeLabel)),
+        constants.conditionTimeout);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(3);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
       await expect<any>(editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('tipa');
@@ -503,6 +542,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
 
     it('make "en" input system visible for "Word" field', async () => {
       await configPage.get();
+      await browser.wait(ExpectedConditions.visibilityOf(configPage.tabs.unified), constants.conditionTimeout);
       await configPage.tabs.unified.click();
       await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
       await util.setCheckbox(
@@ -510,9 +550,15 @@ describe('Lexicon E2E Editor List and Entry', async () => {
       await configPage.applyButton.click();
       await Utils.clickBreadcrumb(constants.testProjectName);
       await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+      await browser.wait(() =>
+        ExpectedConditions.visibilityOf(EditorUtil.getOneField(lexemeLabel)),
+        constants.conditionTimeout);
     });
 
     it('Word has "th", "tipa", "taud" and "en" visible', async () => {
+      await browser.wait(() =>
+        ExpectedConditions.visibilityOf(EditorUtil.getOneField(lexemeLabel)),
+        constants.conditionTimeout);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(4);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
       await expect<any>(editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('tipa');
@@ -522,6 +568,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
 
     it('make "en" input system invisible for "Word" field', async () => {
       await configPage.get();
+      await browser.wait(ExpectedConditions.visibilityOf(configPage.tabs.unified), constants.conditionTimeout);
       await configPage.tabs.unified.click();
       await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
       await util.setCheckbox(
@@ -532,6 +579,9 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     });
 
     it('Word has only "th", "tipa" and "taud" visible', async () => {
+      await browser.wait(() =>
+      ExpectedConditions.visibilityOf(EditorUtil.getOneField(lexemeLabel)),
+        constants.conditionTimeout);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(lexemeLabel).count()).toEqual(3);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(0).getText()).toEqual('th');
       await expect<any>(editorPage.edit.getMultiTextInputSystems(lexemeLabel).get(1).getText()).toEqual('tipa');
@@ -541,7 +591,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('first entry is selected if entryId unknown', async () => {
-    await browser.refresh();
+    await browser.wait(ExpectedConditions.visibilityOf(editorPage.editDiv), constants.conditionTimeout);
     await editorPage.edit.findEntryByLexeme(constants.testEntry3.lexeme.th.value).click();
     await EditorPage.getProjectIdFromUrl().then(async projectId => {
       await EditorPage.get(projectId, '_unknown_id_1234');
@@ -577,6 +627,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
 
   it('remove new word to restore original word count', async () => {
     await editorPage.browse.findEntryByLexeme(constants.testEntry3.lexeme.th.value).click();
+    await browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.actionMenu), constants.conditionTimeout);
     await editorPage.edit.actionMenu.click();
     await editorPage.edit.deleteMenuItem.click();
     await Utils.clickModalButton('Delete Entry');

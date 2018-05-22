@@ -639,6 +639,8 @@ describe('Lexicon E2E Configuration Fields', async () => {
     it('cannot add the same member-specific user settings', async () => {
       await expect<any>(configPage.unifiedPane.inputSystem.selectAll.groups().count()).toEqual(1);
       await configPage.unifiedPane.entry.addGroupButton.click();
+      await browser.wait(ExpectedConditions.visibilityOf(configPage.unifiedPane.addGroupModal.usernameTypeaheadInput),
+        constants.conditionTimeout);
       await expect<any>(configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.isDisplayed()).toBe(true);
       await configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.sendKeys('a');
       await expect<any>(configPage.unifiedPane.addGroupModal.usernameTypeaheadResults.count()).toEqual(5);
@@ -655,6 +657,8 @@ describe('Lexicon E2E Configuration Fields', async () => {
       await browser.wait(ExpectedConditions.visibilityOf(configPage.unifiedPane.entry.addGroupButton),
         constants.conditionTimeout);
       await configPage.unifiedPane.entry.addGroupButton.click();
+      await browser.wait(ExpectedConditions.visibilityOf(configPage.unifiedPane.addGroupModal.usernameTypeaheadInput),
+        constants.conditionTimeout);
       await expect<any>(configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.isDisplayed()).toBe(true);
       await configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.clear();
       await configPage.unifiedPane.addGroupModal.usernameTypeaheadInput

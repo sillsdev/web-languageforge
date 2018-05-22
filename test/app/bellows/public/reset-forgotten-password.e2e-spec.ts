@@ -53,7 +53,9 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
 
     it('can submit request', async () => {
       await forgotPasswordPage.usernameInput.sendKeys(constants.expiredUsername);
+      await browser.wait(ExpectedConditions.visibilityOf(forgotPasswordPage.submitButton), constants.conditionTimeout);
       await forgotPasswordPage.submitButton.click();
+      await browser.wait(() => forgotPasswordPage.errors, constants.conditionTimeout);
       await expect<any>(forgotPasswordPage.errors.count()).toBe(0);
       await browser.wait(ExpectedConditions.stalenessOf(resetPasswordPage.confirmPasswordInput),
         constants.conditionTimeout);
@@ -70,6 +72,8 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
 
     it('with valid reset key routes reset page', async () => {
       await BellowsResetPasswordPage.get(constants.resetPasswordKey);
+      await browser.wait(ExpectedConditions.visibilityOf(resetPasswordPage.confirmPasswordInput),
+       constants.conditionTimeout);
       await expect<any>(resetPasswordPage.confirmPasswordInput.isDisplayed()).toBe(true);
       await expect<any>(resetPasswordPage.errors.count()).toBe(0);
       await expect<any>(loginPage.infoMessages.count()).toBe(0);
@@ -106,7 +110,7 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
       await resetPasswordPage.resetButton.click();
 
       // browser.wait(ExpectedConditions.stalenessOf(resetPasswordPage.confirmPasswordInput),
-      //   constants.conditionTimeout);
+      // constants.conditionTimeout);
       // 'stalenessOf' occasionally failed with
       // WebDriverError: javascript error: document unloaded while waiting for result
       await browser.wait(ExpectedConditions.visibilityOf(loginPage.infoMessages.get(0)), constants.conditionTimeout);
@@ -120,6 +124,8 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
     it('successfully login after password change', async () => {
       await BellowsLoginPage.get();
       await loginPage.login(constants.resetUsername, constants.resetPassword);
+      // await browser.wait(ExpectedConditions.visibilityOf(header.loginButton), constants.conditionTimeout);
+      await browser.wait(() => ExpectedConditions.visibilityOf(header.loginButton), constants.conditionTimeout);
       await expect<any>(header.loginButton.isPresent()).toBe(false);
       await expect<any>(header.myProjects.button.isDisplayed()).toBe(true);
     });

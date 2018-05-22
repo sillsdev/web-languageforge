@@ -5,9 +5,9 @@ export class SiteAdminPage {
   private readonly util = new Utils();
 
   url = browser.baseUrl + '/app/siteadmin';
-  get() {
+  async get() {
     // todo: refactor this to be a click recipe (as a user would click on the menu to navigate)
-    browser.get(this.url);
+    await browser.get(this.url);
   }
 
   activePane = element(by.css('div.tab-pane.active'));
@@ -45,11 +45,11 @@ export class SiteAdminPage {
   passwordInput = element(by.model('record.password'));
 
   //noinspection JSUnusedGlobalSymbols
-  clearForm() {
-    this.usernameInput.clear();
-    this.nameInput.clear();
-    this.emailInput.clear();
-    this.passwordInput.clear();
+  async clearForm() {
+    await this.usernameInput.clear();
+    await this.nameInput.clear();
+    await this.emailInput.clear();
+    await this.passwordInput.clear();
 
     // this.activeCheckbox.clear();
   }

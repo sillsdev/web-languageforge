@@ -17,11 +17,12 @@ describe('Bellows E2E User Profile app', async () => {
   await usernames.forEach(expectedUsername => {
 
     // Perform activity E2E tests according to the different roles
-    describe('Running as: ' + expectedUsername, async () => {
+    describe('Running as: ' + expectedUsername, () => {
       it('Logging in', async () => {
         // Login before test to ensure proper role
         switch (expectedUsername) {
           case constants.memberUsername:
+            await browser.refresh();
             await loginPage.loginAsUser();
             break;
           case constants.managerUsername:
@@ -32,7 +33,6 @@ describe('Bellows E2E User Profile app', async () => {
 
       it('Verify initial "My Account" settings created from setupTestEnvironment.php', async () => {
         await userProfile.getMyAccount();
-
         await expect(userProfile.myAccountTab.username.getAttribute('value')).toEqual(expectedUsername);
         await expect(userProfile.myAccountTab.avatar.getAttribute('src')).toContain(constants.avatar);
         await expect<any>(userProfile.myAccountTab.avatarColor.$('option:checked').getText())
