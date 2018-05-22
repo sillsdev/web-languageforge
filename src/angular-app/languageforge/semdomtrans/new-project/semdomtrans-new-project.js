@@ -6,7 +6,7 @@ angular.module('semdomtrans-new-project',
     'coreModule',
     'ui.bootstrap',
     'semdomtrans.services',
-    'palaso.ui.language',
+    'palasoUILanguageModule',
     'pascalprecht.translate'
   ])
   .config(['$stateProvider', '$urlRouterProvider',

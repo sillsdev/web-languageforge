@@ -1,13 +1,14 @@
 import * as angular from 'angular';
 
-import { inputSystemsLanguages } from './input-systems.languages';
-import { inputSystemsLanguagesSmall } from './input-systems.languages-small';
-import { inputSystemsRegions } from './input-systems.regions';
-import { inputSystemsScripts } from './input-systems.scripts';
+import {InputSystemLanguage} from '../../shared/model/input-system-language.model';
+import {inputSystemsLanguages} from './input-systems.languages';
+import {inputSystemsLanguagesSmall} from './input-systems.languages-small';
+import {inputSystemsRegions} from './input-systems.regions';
+import {inputSystemsScripts} from './input-systems.scripts';
 
 export class InputSystemsService {
-  static languages(dataType: string = '') {
-    const unlisted = {
+  static languages(dataType: string = ''): InputSystemLanguage[] {
+    const unlisted: InputSystemLanguage = {
       name: 'Unlisted Language',
       code: {
         three: 'qaa'
@@ -16,7 +17,7 @@ export class InputSystemsService {
       altNames: [] as string[]
     };
 
-    let languages = [];
+    let languages: InputSystemLanguage[] = [];
     switch (dataType) {
       case 'debug':
         languages = inputSystemsLanguagesSmall;
