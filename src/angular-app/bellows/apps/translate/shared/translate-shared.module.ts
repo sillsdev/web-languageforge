@@ -1,8 +1,9 @@
 import * as angular from 'angular';
 
-import { LanguagesPickerComponent } from './languages-picker.component';
+import {SelectLanguageModule} from '../../../shared/select-language.component';
+import {LanguagesPickerComponent} from './languages-picker.component';
 
 export const TranslateSharedModule = angular
-  .module('translateSharedModule', ['palaso.ui.language'])
+  .module('translateSharedModule', [SelectLanguageModule])
   .component('languagesPicker', LanguagesPickerComponent)
   .name;
