@@ -598,6 +598,13 @@ cd machine/build
 ./deploy-local.sh
 ````
 
+On a development machine call `build.sh` instead of `deploy-local.sh`:
+
+``` bash
+cd machine/build
+./build.sh
+```
+
 ### Running ###
 
 To run the machine server...
