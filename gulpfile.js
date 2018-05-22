@@ -1121,7 +1121,7 @@ gulp.task('build-productionConfig', function () {
       /(define\('BUGSNAG_API_KEY', ').*;$/m,
       '$1' + params.bugsnagApiKey + '\');'))
     .pipe(replace(
-      /^(define\('BUGSNAG_NOTIFY_RELEASE_STAGES', ).*;$/m,
+      /(define\('BUGSNAG_NOTIFY_RELEASE_STAGES', ).*;$/m,
       '$1' + notifyReleaseStages + ');'))
     .pipe(gulp.dest('./'));
 });
