@@ -3,16 +3,13 @@
 // Declare app level module which depends on filters, and services
 angular.module('lexicon',
   [
-    'ui.router',
     'ui.bootstrap',
+    'ui.router',
     'ngSanitize',
     'palaso.ui.typeahead',
     'coreModule',
     'sgw.ui.breadcrumb',
-    'lexiconCoreModule',
-    'lexicon.editor',
-    'lexiconSettingsModule',
-    'language.inputSystems',
+    'lexiconModule',
     'pascalprecht.translate'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$compileProvider',
