@@ -115,7 +115,7 @@ export class TranslateSendReceiveService {
     this.translateSendReceiveApiService.getJob(this.job.id).then(job => {
       if (!clone) {
         if (job.percentCompleted > 0) {
-          this.notice.setPercentComplete(job.percentCompleted);
+          this.notice.setPercentComplete(Math.round(job.percentCompleted * 100));
         } else {
           this.notice.cancelProgressBar();
         }
