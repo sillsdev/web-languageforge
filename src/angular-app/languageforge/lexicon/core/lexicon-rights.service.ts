@@ -92,8 +92,8 @@ export class LexiconRightsService {
     this.rights = new Rights(sessionService.domain, sessionService.operation, sendReceive);
   }
 
-  getRights(): angular.IPromise<Rights> {
-    return this.sessionService.getSession().then(session => {
+  getRights(forceRefresh?: boolean): angular.IPromise<Rights> {
+    return this.sessionService.getSession(forceRefresh).then(session => {
       this.rights.session = session;
       return this.rights;
     });

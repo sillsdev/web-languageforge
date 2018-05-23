@@ -1,18 +1,17 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.scroll', [])
+angular.module('palaso.ui.scroll', []);
 
-  // Palaso UI Infinite Scroll
-  .directive('puiWhenScrolled', [function () {
-    return function (scope, elm, attr) {
-      var raw = elm[0];
-
-      elm.bind('scroll', function () {
+export function PuiInfiniteScroll(): angular.IDirective {
+  return {
+    restrict: 'A',
+    link($scope, $element, $attrs) {
+      const raw = $element[0];
+      $element.bind('scroll', () => {
         if (raw.scrollTop + raw.offsetHeight + 1000 >= raw.scrollHeight) {
-          scope.$apply(attr.puiWhenScrolled);
+          $scope.$apply($attrs.puiWhenScrolled);
         }
       });
-    };
-  }])
-
-  ;
+    }
+  };
+}

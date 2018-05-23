@@ -4,10 +4,13 @@ import {ElementArrayFinder, ElementFinder} from 'protractor/built/element';
 import {MockUploadElement} from '../../../bellows/shared/mock-upload.element';
 import {Utils} from '../../../bellows/shared/utils';
 import {EditorUtil} from './editor.util';
+import {LexModals} from './lex-modals.util';
 
 export class EditorPage {
   private readonly mockUpload = new MockUploadElement();
   private readonly editorUtil = new EditorUtil();
+
+  modal = new LexModals();
 
   static get(projectId: string, entryId: string) {
     let extra = projectId ? ('/' + projectId) : '';
@@ -68,8 +71,8 @@ export class EditorPage {
     search: {
       input: this.browseDivSearch.element(by.css('input')),
       clearBtn: this.browseDivSearch.element(by.className('fa-times')),
-      results: this.browseDivSearch.all(by.repeater('e in typeahead.searchResults')),
-      matchCountElem: this.browseDivSearch.element(by.binding('typeahead.matchCountCaption')),
+      results: this.browseDivSearch.all(by.repeater('e in $ctrl.typeahead.searchResults')),
+      matchCountElem: this.browseDivSearch.element(by.binding('$ctrl.typeahead.matchCountCaption')),
       getMatchCount: () => {
         // Inside this function, "this" ==  EditorPage.browse.search
         return this.browse.search.matchCountElem.getText().then((s: string) =>
@@ -79,7 +82,7 @@ export class EditorPage {
     },
 
     // Entries list (main body of view)
-    entriesList: this.browseDiv.all(by.repeater('entry in visibleEntries track by entry.id')),
+    entriesList: this.browseDiv.all(by.repeater('entry in $ctrl.visibleEntries track by entry.id')),
     findEntryByLexeme: (lexeme: string) => {
       browser.wait(ExpectedConditions.visibilityOf(
         element(by.id('lexAppListView'))), Utils.conditionTimeout);
@@ -137,7 +140,7 @@ export class EditorPage {
       );
     },
 
-    entriesList: this.editDiv.all(by.repeater('entry in visibleEntries')),
+    entriesList: this.editDiv.all(by.repeater('entry in $ctrl.visibleEntries')),
     findEntryByLexeme: (lexeme: string) => {
       const div = this.editDiv.element(by.id('compactEntryListContainer'));
       return div.element(by.cssContainingText('.listItemPrimary',
@@ -153,8 +156,8 @@ export class EditorPage {
     search: {
       input: this.editDivSearch.element(by.css('input')),
       clearBtn: this.editDivSearch.element(by.className('fa-times')),
-      results: this.editDivSearch.all(by.repeater('e in typeahead.searchResults')),
-      matchCountElem: this.editDivSearch.element(by.binding('typeahead.matchCountCaption')),
+      results: this.editDivSearch.all(by.repeater('e in $ctrl.typeahead.searchResults')),
+      matchCountElem: this.editDivSearch.element(by.binding('$ctrl.typeahead.matchCountCaption')),
       getMatchCount: () => {
         // Inside this function, "this" == EditorPage.edit.search
         return this.edit.search.matchCountElem.getText().then((s: string) =>

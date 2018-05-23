@@ -1,14 +1,14 @@
 import * as angular from 'angular';
 
-import { LexConfigMultiText } from '../../../languageforge/lexicon/shared/model/lexicon-config.model';
-import { LexiconProjectSettings } from '../../../languageforge/lexicon/shared/model/lexicon-project-settings.model';
-import { JsonRpcResult } from '../api/api.service';
-import { NoticeService } from '../notice/notice.service';
-import { SessionService } from '../session.service';
-import { UtilityService } from '../utility.service';
-import { CommentsOfflineCacheService } from './comments-offline-cache.service';
-import { EditorOfflineCacheService } from './editor-offline-cache.service';
-import { LexiconCommentService } from './lexicon-comments.service';
+import {LexConfigMultiText} from '../../../languageforge/lexicon/shared/model/lexicon-config.model';
+import {LexiconProjectSettings} from '../../../languageforge/lexicon/shared/model/lexicon-project-settings.model';
+import {JsonRpcResult} from '../api/api.service';
+import {NoticeService} from '../notice/notice.service';
+import {SessionService} from '../session.service';
+import {UtilityService} from '../utility.service';
+import {CommentsOfflineCacheService} from './comments-offline-cache.service';
+import {EditorOfflineCacheService} from './editor-offline-cache.service';
+import {LexiconCommentService} from './lexicon-comments.service';
 
 interface WindowService extends angular.IWindowService {
   semanticDomains_en?: any;
@@ -80,7 +80,7 @@ export class EditorDataService {
   /**
    * Called when loading the controller
    */
-  loadEditorData = (lexiconScope: any): angular.IPromise<any> => {
+  loadEditorData = (lexiconScope?: any): angular.IPromise<any> => {
     const deferred = this.$q.defer();
     if (this.entries.length === 0) { // first page load
       if (this.cache.canCache()) {

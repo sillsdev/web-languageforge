@@ -110,6 +110,10 @@ export class LexiconUtilityService extends UtilityService {
     return '';
   }
 
+  static isAtEditorList($state: angular.ui.IStateService): boolean {
+    return $state.is('editor.list');
+  }
+
   static isAtEditorEntry($state: angular.ui.IStateService): boolean {
     return $state.is('editor.entry');
   }

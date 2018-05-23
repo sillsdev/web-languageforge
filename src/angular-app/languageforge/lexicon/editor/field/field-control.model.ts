@@ -16,13 +16,13 @@ export class FieldControl {
   currentEntry: LexEntry;
   deleteEntry: (currentEntry: LexEntry) => void;
   getContextParts: (contextGuid: string) => any;
-  getNewComment: () => LexComment;
+  getNewComment?: () => LexComment;
   hideRightPanel: () => void;
   makeValidModelRecursive: (config: LexConfig, data?: any, stopAtNodes?: string | string[]) => any;
   project: LexiconProject;
   saveCurrentEntry: () => void;
-  selectFieldForComment: (fieldName: string, model: LexField, inputSystemTag: string, multioptionValue: string,
-                          pictureFilePath: string, contextGuid: string) => void;
+  selectFieldForComment?: (fieldName: string, model: LexField, inputSystemTag: string, multioptionValue: string,
+                           pictureFilePath: string, contextGuid: string) => void;
   setCommentContext: (contextGuid: string) => void;
   show: {
     emptyFields: boolean
