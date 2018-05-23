@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-import { SmtTrainProgress } from 'machine';
+import { ProgressStatus } from 'machine';
 import Quill, { DeltaStatic, RangeStatic } from 'quill';
 
 import { JsonRpcResult } from '../../../core/api/json-rpc.service';
@@ -575,12 +575,10 @@ export class TranslateEditorController implements angular.IController {
       .finally(() => this.onTrainFinished());
   }
 
-  private onTrainStatusUpdate(progress: SmtTrainProgress): void {
+  private onTrainStatusUpdate(progress: ProgressStatus): void {
     this.failedConnectionCount = 0;
     this.isTraining = true;
-    if (progress.stepCount > 0) {
-      this.trainingPercent = progress.percentCompleted;
-    }
+    this.trainingPercent = Math.round(progress.percentCompleted * 100);
   }
 
   private onTrainSuccess(): void {
