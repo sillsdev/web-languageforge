@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-import { InteractiveTranslationSession, SegmentTokenizer, SmtTrainProgress, TranslationEngine } from 'machine';
+import { InteractiveTranslationSession, ProgressStatus, SegmentTokenizer, TranslationEngine } from 'machine';
 import { RangeStatic } from 'quill';
 
 import { NoticeService } from '../../../core/notice/notice.service';
@@ -197,7 +197,7 @@ export class MachineService {
     return deferred.promise;
   }
 
-  listenForTrainingStatus(onStatusUpdate: (progress: SmtTrainProgress) => void): angular.IPromise<void> {
+  listenForTrainingStatus(onStatusUpdate: (progress: ProgressStatus) => void): angular.IPromise<void> {
     if (!this.isInitialised) {
       return this.$q.resolve();
     }
