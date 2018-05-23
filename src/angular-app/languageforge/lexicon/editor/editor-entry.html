@@ -1,20 +1,20 @@
-<div id="lexAppEditView" class="animate-switch" ng-class="{'panel-closing': control.rightPanelVisible === -1, 'right-panel-visible': rightPanelVisible === true}">
+<div id="lexAppEditView" class="animate-switch" data-ng-class="{'panel-closing': $ctrl.rightPanelVisible === null, 'right-panel-visible': $ctrl.rightPanelVisible === true}" data-ng-if="$ctrl.finishedLoading">
     <div class="container">
         <div class="row">
             <div class="col-md-5 col-lg-4 entries-list-container d-none d-md-block">
-                <div class="entry-words-minimized"><button class="btn btn-primary" ng-click="control.hideRightPanel()">Show words in dictionary</button></div>
+                <div class="entry-words-minimized"><button class="btn btn-primary" data-ng-click="$ctrl.hideRightPanel()">Show words in dictionary</button></div>
                 <div class="entry-words-container">
                     <div class="row">
                         <div class="col">
                             <div class="words-container-title list-group-item list-group-item-action active">
                                 <div>
                                     <h5>Words in dictionary</h5>
-                                    <small ng-hide="entryListModifiers.filterBy" id="totalNumberOfEntries"><span class="notranslate">{{entries.length}}</span> {{ (entries.length == 1 ? 'entry' : 'entries') }}</small>
-                                    <small ng-show="entryListModifiers.filterBy" class="notranslate">{{filteredEntries.length}} / {{entries.length}}</small>
+                                    <small data-ng-hide="$ctrl.entryListModifiers.filterBy" id="totalNumberOfEntries"><span class="notranslate">{{$ctrl.entries.length}}</span> {{ ($ctrl.entries.length == 1 ? 'entry' : 'entries') }}</small>
+                                    <small data-ng-show="$ctrl.entryListModifiers.filterBy" class="notranslate">{{$ctrl.filteredEntries.length}} / {{$ctrl.entries.length}}</small>
                                 </div>
                                 <button id="editorNewWordBtn" class="btn btn-primary"
-                                    data-ng-show="$state.is('editor.entry')" data-ng-if="rights.canEditEntry()"
-                                    data-ng-click="newEntry()">
+                                    data-ng-show="$ctrl.isAtEditorEntry()" data-ng-if="$ctrl.rights.canEditEntry()"
+                                    data-ng-click="$ctrl.newEntry()">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
@@ -25,39 +25,39 @@
                             <div class="words-search">
                                 <pui-typeahead id="editor-entry-search-entries"
                                                class="typeahead" placeholder="'Search Entries'"
-                                               items="typeahead.searchResults" term="typeahead.searchItemSelected"
-                                               search="typeahead.searchEntries" select="typeahead.searchSelect">
-                                    <ul data-ng-if="typeahead.searchResults.length > 0" class="list-group">
+                                               items="$ctrl.typeahead.searchResults" term="$ctrl.typeahead.searchItemSelected"
+                                               search="$ctrl.typeahead.searchEntries" select="$ctrl.typeahead.searchSelect">
+                                    <ul data-ng-if="$ctrl.typeahead.searchResults.length > 0" class="list-group">
                                         <li data-typeahead-item="e" class="typeahead-item list-group-item"
-                                            data-ng-repeat="e in typeahead.searchResults | limitTo: typeahead.limit">
-                                            <div class="listItemPrimary" data-ng-bind-html="getPrimaryListItemForDisplay(config, e)"></div>
-                                            <small class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(e)"></small>
+                                            data-ng-repeat="e in $ctrl.typeahead.searchResults | limitTo: $ctrl.typeahead.limit">
+                                            <div class="listItemPrimary" data-ng-bind-html="$ctrl.getPrimaryListItemForDisplay($ctrl.config, e)"></div>
+                                            <small class="listItemSecondary" data-ng-bind-html="$ctrl.getMeaningForDisplay(e)"></small>
                                         </li>
                                     </ul>
                                     <div style="text-align:center; background-color: #d3d3d3; color:black;"
-                                         data-ng-if="typeahead.searchResults.length > 0">
-                                        <small><i>{{typeahead.matchCountCaption}}</i></small>
+                                         data-ng-if="$ctrl.typeahead.searchResults.length > 0">
+                                        <small><i>{{$ctrl.typeahead.matchCountCaption}}</i></small>
                                     </div>
                                 </pui-typeahead>
-                                <button ng-click="show.entryListModifiers = !show.entryListModifiers" class="btn btn-sm">
+                                <button data-ng-click="$ctrl.show.entryListModifiers = !$ctrl.show.entryListModifiers" class="btn btn-sm">
                                     Options
-                                    <i class="fa" data-ng-class="show.entryListModifiers ? 'fa-angle-up': 'fa-angle-down'"></i>
+                                    <i class="fa" data-ng-class="$ctrl.show.entryListModifiers ? 'fa-angle-up': 'fa-angle-down'"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="row" ng-show="show.entryListModifiers">
+                    <div class="row" data-ng-show="$ctrl.show.entryListModifiers">
                         <div class="col">
                             <div class="d-none d-md-block word-form-filters">
                                 <div class="form-group sortfilter-form">
                                     <label class="font-weight-bold" for="sortEntriesBy">Sort Entries By</label>
                                     <div class="form-inline">
                                         <select id="sortEntriesBy" class="custom-select sortfilter-control"
-                                                data-ng-change="sortEntries(true)" data-ng-model="entryListModifiers.sortBy"
-                                                data-ng-options="item as item.label for item in entryListModifiers.sortOptions track by item.value">
+                                                data-ng-change="$ctrl.sortEntries(true)" data-ng-model="$ctrl.entryListModifiers.sortBy"
+                                                data-ng-options="item as item.label for item in $ctrl.entryListModifiers.sortOptions track by item.value">
                                         </select>
                                         <label>
-                                            <input type="checkbox" data-ng-change="sortEntries(true)" data-ng-model="entryListModifiers.sortReverse"> Reverse
+                                            <input type="checkbox" data-ng-change="$ctrl.sortEntries(true)" data-ng-model="$ctrl.entryListModifiers.sortReverse"> Reverse
                                         </label>
                                     </div>
                                 </div>
@@ -65,17 +65,17 @@
                                     <label class="font-weight-bold" for="filterEntriesFor">Filter Entries</label>
                                     <div class="form-inline">
                                         <!--suppress HtmlFormInputWithoutLabel -->
-                                        <select class="custom-select sortfilter-control" data-ng-show="entryListModifiers.filterBy"
-                                                data-ng-change="filterEntries(true)" data-ng-model="entryListModifiers.filterType">
+                                        <select class="custom-select sortfilter-control" data-ng-show="$ctrl.entryListModifiers.filterBy"
+                                                data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterType">
                                             <option value="isEmpty">Doesn't have</option>
                                             <option value="isNotEmpty">Has</option>
                                         </select>
                                         <select class="custom-select sortfilter-control" id="filterEntriesFor"
-                                                data-ng-change="filterEntries(true)" data-ng-model="entryListModifiers.filterBy"
-                                                data-ng-options="item as item.label for item in entryListModifiers.filterOptions track by item.key">
+                                                data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterBy"
+                                                data-ng-options="item as item.label for item in $ctrl.entryListModifiers.filterOptions track by item.key">
                                             <option value="">Show All</option>
                                         </select>
-                                        <button data-ng-click="resetEntryListFilter()" data-ng-show="entryListModifiers.filterBy" class="btn btn-sm">Reset</button>
+                                        <button data-ng-click="$ctrl.resetEntryListFilter()" data-ng-show="$ctrl.entryListModifiers.filterBy" class="btn btn-sm">Reset</button>
                                     </div>
                                 </div>
                             </div>
@@ -83,14 +83,14 @@
                     </div>
                     <div class="row">
                         <div class="col d-none d-md-block">
-                            <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
+                            <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="$ctrl.show.more()">
                                 <div class="list-group">
                                     <div id="entryId_{{entry.id}}" class="list-group-item lexiconListItemCompact"
-                                         data-ng-class="{selected: entry.id == currentEntry.id, listItemHasComment: commentService.getEntryCommentCount(entry.id) > 0}"
-                                         title="{{getCompactItemListOverlay(entry)}}"
-                                         data-ng-repeat="entry in visibleEntries track by entry.id" data-ng-click="editEntry(entry.id)">
-                                        <div dir="auto" class="listItemPrimary" data-ng-bind-html="getPrimaryListItemForDisplay(config, entry)"></div>
-                                        <div dir="auto" class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(entry)"></div>
+                                         data-ng-class="{selected: entry.id == $ctrl.currentEntry.id, listItemHasComment: $ctrl.getEntryCommentCount(entry.id) > 0}"
+                                         title="{{$ctrl.getCompactItemListOverlay(entry)}}"
+                                         data-ng-repeat="entry in $ctrl.visibleEntries track by entry.id" data-ng-click="$ctrl.editEntry(entry.id)">
+                                        <div dir="auto" class="listItemPrimary" data-ng-bind-html="$ctrl.getPrimaryListItemForDisplay($ctrl.config, entry)"></div>
+                                        <div dir="auto" class="listItemSecondary" data-ng-bind-html="$ctrl.getMeaningForDisplay(entry)"></div>
                                     </div>
                                 </div>
                             </div>
@@ -101,11 +101,11 @@
             <div class="col-md-7 col-lg-8 entry-primary-container">
                 <div class="word-definition-title">
                     <h3>Entry Preview</h3>
-                    <dc-rendered global-config="config" config="config.entry" model="currentEntry" option-lists="optionLists"></dc-rendered>
+                    <dc-rendered global-config="$ctrl.config" config="$ctrl.config.entry" model="$ctrl.currentEntry" option-lists="$ctrl.optionLists"></dc-rendered>
                 </div>
                 <div>
-                    <div class="entryItemView" data-ng-if="entryLoaded()">
-                        <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
+                    <div class="entryItemView" data-ng-if="$ctrl.entryLoaded()">
+                        <dc-entry config="$ctrl.config.entry" model="$ctrl.currentEntry" control="$ctrl.control"></dc-entry>
                     </div>
                 </div>
             </div>
@@ -114,13 +114,13 @@
     <div id="lexRightPanels">
         <div class="right-panel-list">
             <div id="lexAppCommentView" class="right-panel">
-                <lex-comments-view entry="currentEntry" control="control"></lex-comments-view>
+                <lex-comments-view entry="$ctrl.currentEntry" control="$ctrl.control"></lex-comments-view>
             </div>
             <div id="lexAppActivityFeed" class="right-panel">
-                <activity-container entry-id="{{currentEntry.id}}"></activity-container>
+                <activity-container entry-id="{{$ctrl.currentEntry.id}}"></activity-container>
             </div>
         </div>
-        <div class="right-panel-backdrop" data-ng-click="control.hideRightPanel()">
+        <div class="right-panel-backdrop" data-ng-click="$ctrl.hideRightPanel()">
             <i class="fa fa-times"></i>
         </div>
     </div>

@@ -3,6 +3,7 @@ import {by, element} from 'protractor';
 export class LexModals {
   modalBodyDiv = element(by.className('modal-body'));
   modalFooterDiv = element(by.className('modal-footer'));
+  modalBodyText = element(by.id('modal-body-text'));
 
   // select language modal
   selectLanguage = {

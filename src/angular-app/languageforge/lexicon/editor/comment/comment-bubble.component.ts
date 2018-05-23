@@ -84,8 +84,8 @@ export class CommentBubbleController implements angular.IController {
   }
 
   isCommentingAvailable(): boolean {
-    return (this.control.currentEntry.id.indexOf('_new_') !== -1 || !this.control.rights.canComment() ||
-      (this.field === 'entry' && !this.getCount()));
+    return ((this.control.currentEntry.id != null && this.control.currentEntry.id.includes('_new_')) ||
+      !this.control.rights.canComment() || (this.field === 'entry' && !this.getCount()));
   }
 
   private getCount(): number {
