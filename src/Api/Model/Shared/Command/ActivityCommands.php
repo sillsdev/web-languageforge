@@ -332,6 +332,35 @@ class ActivityCommands
     }
 
     /**
+     *
+     * @param ProjectModel $projectModel
+     * @param string $entryId
+     * @param LexCommentModel $commentModel
+     * @param string $mode
+     * @return string activity id
+     */
+    public static function updateEntryCommentScore($projectModel, $entryId, $commentModel, $mode)
+    {
+        $activity = new ActivityModel($projectModel);
+        $entry = new LexEntryModel($projectModel, $entryId);
+        $userId = $commentModel->authorInfo->modifiedByUserRef->asString();
+        // We do NOT record who clicked the "Like" button in the activity log, so the only user ID here is the author of the comment.
+        $user = new UserModel($userId);
+        $activity->action = ($mode == 'increase') ? ActivityModel::LEX_COMMENT_INCREASE_SCORE : ActivityModel::LEX_COMMENT_DECREASE_SCORE;
+        $activity->userRef->id = $userId;
+        $activity->entryRef->id = $entryId;
+        $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
+        $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
+        $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
+        $activity->addContent(ActivityModel::USER, $user->username);
+        $activityId = $activity->write();
+        UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
+
+        return $activityId;
+
+    }
+
+    /**
      * @param ProjectModel $projectModel
      * @param string $entryId
      * @param LexCommentModel $commentModel
