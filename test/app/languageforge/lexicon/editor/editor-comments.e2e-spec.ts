@@ -35,7 +35,7 @@ describe('Lexicon E2E Editor Comments', async () => {
     });
 
   it('comments panel: check that comment shows up', async () => {
-    const comment = await editorPage.comment.getComment(0);
+    const comment = editorPage.comment.getComment(0);
     await expect<any>(comment.contextGuid.getAttribute('textContent')).toEqual('lexeme.th');
 
     // Earlier tests modify the avatar and name of the manager user; don't check those
@@ -46,7 +46,7 @@ describe('Lexicon E2E Editor Comments', async () => {
   });
 
   it('comments panel: add comment to another part of the entry', async () => {
-    const definitionField = await editorPage.edit.getMultiTextInputs('Definition').first();
+    const definitionField = editorPage.edit.getMultiTextInputs('Definition').first();
     await definitionField.clear();
     await definitionField.sendKeys(
       constants.testEntry1.senses[0].definition.en.value
@@ -58,7 +58,7 @@ describe('Lexicon E2E Editor Comments', async () => {
   });
 
   it('comments panel: check that second comment shows up', async () => {
-    const comment = await editorPage.comment.getComment(-1);
+    const comment = editorPage.comment.getComment(-1);
     await expect<any>(comment.wholeComment.isPresent()).toBe(true);
 
     // Earlier tests modify the avatar and name of the manager user; don't check those
@@ -69,7 +69,7 @@ describe('Lexicon E2E Editor Comments', async () => {
   });
 
   it('comments panel: check regarding value is hidden when the field value matches', async () => {
-    const comment = await editorPage.comment.getComment(-1);
+    const comment = editorPage.comment.getComment(-1);
 
     // Make sure it is hidden
     await expect<any>(comment.regarding.container.isDisplayed()).toBe(false);
@@ -87,7 +87,7 @@ describe('Lexicon E2E Editor Comments', async () => {
   });
 
   it('comments panel: click +1 button on first comment', async () => {
-    const comment = await editorPage.comment.getComment(0);
+    const comment = editorPage.comment.getComment(0);
     await editorPage.comment.bubbles.first.click();
 
     // Should be clickable
@@ -97,7 +97,7 @@ describe('Lexicon E2E Editor Comments', async () => {
     });
 
   it('comments panel: +1 button disabled after clicking', async () => {
-    const comment = await editorPage.comment.getComment(0);
+    const comment = editorPage.comment.getComment(0);
     await expect<any>(comment.plusOneInactive.isDisplayed()).toBe(true);
 
     // Should NOT be clickable
@@ -106,7 +106,7 @@ describe('Lexicon E2E Editor Comments', async () => {
   });
 
   it('comments panel: refresh returns to comment', async () => {
-    const comment = await editorPage.comment.getComment(0);
+    const comment = editorPage.comment.getComment(0);
     await browser.refresh();
     await browser.wait(ExpectedConditions.visibilityOf(editorPage.comment.bubbles.first), constants.conditionTimeout);
     await editorPage.comment.bubbles.first.click();

@@ -27,7 +27,7 @@ export class ProjectsPage {
     const searchName = new RegExp(projectName);
     await this.projectsList.map(async (row: any) => {
       // Using "browser.sleep" to avoid the Warning information
-      await browser.sleep(6000);
+      // await browser.sleep(6000);
       await row.getText().then(async (text: string) => {
       if (searchName.test(text)) {
         await browser.wait(() => row, Utils.conditionTimeout);

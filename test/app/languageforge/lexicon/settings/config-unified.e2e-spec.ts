@@ -622,6 +622,8 @@ describe('Lexicon E2E Configuration Fields', async () => {
     it('can add a member-specific user settings', async () => {
       await expect<any>(configPage.unifiedPane.inputSystem.selectAll.groups().count()).toEqual(0);
       await configPage.unifiedPane.entry.addGroupButton.click();
+      await browser.wait(ExpectedConditions.visibilityOf(configPage.unifiedPane.addGroupModal.usernameTypeaheadInput),
+        constants.conditionTimeout);
       await expect<any>(configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.isDisplayed()).toBe(true);
       await expect<any>(configPage.unifiedPane.addGroupModal.usernameTypeaheadResults.count()).toEqual(0);
       await expect<any>(configPage.unifiedPane.addGroupModal.addMemberSpecificSettingsButton.isDisplayed()).toBe(true);

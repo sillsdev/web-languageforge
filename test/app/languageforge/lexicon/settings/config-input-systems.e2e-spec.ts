@@ -167,7 +167,7 @@ describe('Lexicon E2E Configuration Input Systems', async () => {
 
   it('can change IPA Purpose to unspecified', async () => {
     await Utils.clickDropdownByValue(
-      await configPage.inputSystemsPane.selectedInputSystem.purposeDropdown, 'unspecified');
+      configPage.inputSystemsPane.selectedInputSystem.purposeDropdown, 'unspecified');
     await expect<any>(configPage.inputSystemsPane.selectedInputSystem.tag.getText()).toEqual('mi-fonipa');
   });
 

@@ -105,8 +105,14 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
 
     it('successfully change user\'s password', async () => {
       await BellowsResetPasswordPage.get(constants.resetPasswordKey);
+      await browser.wait(() => ExpectedConditions.visibilityOf(resetPasswordPage.passwordInput),
+        constants.conditionTimeout);
       await resetPasswordPage.passwordInput.sendKeys(constants.resetPassword);
+      await browser.wait(() => ExpectedConditions.visibilityOf(resetPasswordPage.confirmPasswordInput),
+        constants.conditionTimeout);
       await resetPasswordPage.confirmPasswordInput.sendKeys(constants.resetPassword);
+      await browser.wait(() => ExpectedConditions.visibilityOf(resetPasswordPage.resetButton),
+        constants.conditionTimeout);
       await resetPasswordPage.resetButton.click();
 
       // browser.wait(ExpectedConditions.stalenessOf(resetPasswordPage.confirmPasswordInput),
