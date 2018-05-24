@@ -3,10 +3,13 @@
 namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
+use Api\Model\Languageforge\Lexicon\Config\LexConfigFieldList;
+use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Shared\ActivityModel;
 use Api\Model\Shared\Command\ActivityCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Mapper\JsonEncoder;
@@ -35,6 +38,52 @@ class LexEntryCommands
         return $entry->write();
     }
     */
+
+    private static function lookupFieldLabel(LexConfigFieldList $fieldList, array $parts) {
+        $currentList = $fieldList;
+        $result = '';
+        foreach ($parts as $part) {
+            // Strip away anything after a # character
+            $fieldId = explode('#', $part, 2)[0];
+            if (array_key_exists($fieldId, $currentList->fields)) {
+                /** @var LexConfig $fieldConfig */
+                $fieldConfig = $currentList->fields[$fieldId];
+                $result = $fieldConfig->label;
+                if ($fieldConfig instanceof LexConfigFieldList) {
+                    $currentList = $fieldConfig;
+                }
+            } else {
+                // If we can't find a label, use the field ID as that's better than nothing
+                if (empty($result)) {
+                    $result = $fieldId;
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param LexConfiguration $projectConfig
+     * @param array $differences
+     * @return array
+     */
+    public static function addFieldLabelsToDifferences(LexConfiguration $projectConfig, array $differences)
+    {
+        $result = $differences;
+        foreach ($differences as $key => $value) {
+            // Key will look like "newValue.senses#482f60da-b32a-45b9-9450-ee8f24791557.definition.en"
+            $parts = explode('.', $key);
+            if (empty($parts)) continue;
+            $restOfKeyParts = array_slice($parts, 1);
+            $restOfKey = implode('.', $restOfKeyParts);
+            if (array_key_exists(ActivityModel::FIELD_LABEL . '.' . $restOfKey, $result)) {
+                continue;  // Only need to look up labels once
+            }
+            $fieldLabel = static::lookupFieldLabel($projectConfig->entry, $restOfKeyParts);
+            $result[ActivityModel::FIELD_LABEL . '.' . $restOfKey] = $fieldLabel;
+        }
+        return $result;
+    }
 
     /**
      * Updates the given LexEntry in $projectId
@@ -80,6 +129,7 @@ class LexEntryCommands
 
         if ($action === 'update') {
             $differences = $oldEntry->calculateDifferences($entry);
+            $differences = static::addFieldLabelsToDifferences($project->config, $differences);
         } else {
             $differences = null;
         }
