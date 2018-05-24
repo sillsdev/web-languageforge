@@ -201,6 +201,16 @@ export class LexiconEditorController implements angular.IController {
     this.saveCurrentEntry();
   }
 
+  navigateToLiftImport(): void {
+    this.$state.go('importExport');
+  }
+
+  returnToList(): void {
+    this.saveCurrentEntry();
+    this.setCurrentEntry();
+    this.$state.go('editor.list');
+  }
+
   isAtEditorList(): boolean {
     return LexiconUtilityService.isAtEditorList(this.$state);
   }
@@ -221,16 +231,9 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
-  currentEntryIsDirty(): boolean {
-    if (!this.entryLoaded()) {
-      return false;
-    }
-
-    return !angular.equals(this.currentEntry, this.pristineEntry);
-  }
-
-  private static entryIsNew(entry: LexEntry): boolean {
-    return (entry.id && entry.id.includes('_new_'));
+  resetEntryListFilter(): void {
+    this.entryListModifiers.filterBy = null;
+    this.filterEntries(true);
   }
 
   saveNotice(): string {
@@ -254,25 +257,16 @@ export class LexiconEditorController implements angular.IController {
     }
   }
 
-  private resetEntryLists(id: string, pristineEntry: LexEntry): void {
-    const entryIndex = this.editorService.getIndexInList(id, this.entries);
-    const entry = this.prepCustomFieldsForUpdate(pristineEntry);
-    if (entryIndex != null) {
-      this.entries[entryIndex] = entry;
-      this.currentEntry = pristineEntry;
-      this.control.currentEntry = this.currentEntry;
+  currentEntryIsDirty(): boolean {
+    if (!this.entryLoaded()) {
+      return false;
     }
 
-    const visibleEntryIndex = this.editorService.getIndexInList(id, this.visibleEntries);
-    if (visibleEntryIndex != null) {
-      this.visibleEntries[visibleEntryIndex] = entry;
-    }
+    return !angular.equals(this.currentEntry, this.pristineEntry);
   }
 
-  private warnOfUnsavedEdits(entry: LexEntry): void {
-    this.warnOfUnsavedEditsId = this.notice.push(this.notice.WARN, 'A synchronize has been started by ' +
-      'another user. When the synchronize has finished, please check your recent edits in entry "' +
-      this.getWordForDisplay(entry) + '".');
+  entryLoaded(): boolean {
+    return this.currentEntry.id != null;
   }
 
   saveCurrentEntry = (doSetEntry: boolean = false, successCallback: () => void = () => {},
@@ -361,170 +355,9 @@ export class LexiconEditorController implements angular.IController {
     }
   }
 
-  private static normalizeStrings(data: any): any {
-    return JSON.parse(JSON.stringify(data).normalize());
-  }
-
-  private prepEntryForUpdate(entry: LexEntry): LexEntry {
-    const entryForUpdate: LexEntry = this.recursiveRemoveProperties(angular.copy(entry),
-      ['guid', 'mercurialSha', 'authorInfo', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
-    return this.prepCustomFieldsForUpdate(entryForUpdate);
-  }
-
-  getWordForDisplay(entry: LexEntry): string {
-    const lexeme: string = LexiconUtilityService.getLexeme(this.config, this.config.entry, entry);
-    if (!lexeme) {
-      return '[Empty]';
-    }
-
-    return lexeme;
-  }
-
-  getMeaningForDisplay(entry: LexEntry): string {
-    let meaning = '';
-    if (entry.senses && entry.senses[0]) {
-      meaning = LexiconUtilityService.getMeaning(this.config, this.config.entry.fields.senses as LexConfigFieldList,
-        entry.senses[0]);
-    }
-
-    if (!meaning) {
-      return '[Empty]';
-    }
-
-    return meaning;
-  }
-
-  navigateToLiftImport(): void {
-    this.$state.go('importExport');
-  }
-
-  private static scrollDivToId(containerId: string, divId: string, posOffset: number = 0): void {
-    const $containerDiv: any = $(containerId);
-    let $div: any = $(divId);
-    let foundDiv: boolean = false;
-    let offsetTop: number = 0;
-
-    // todo: refactor this spaghetti logic
-    if ($div && $containerDiv) {
-      if ($div.offsetTop == null) {
-        if ($div[0] != null) {
-          $div = $div[0];
-          foundDiv = true;
-        } else {
-          console.log('Error: unable to scroll to div with div id ' + divId);
-        }
-      }
-
-      if (foundDiv) {
-        if ($div.offsetTop == null) {
-          offsetTop = $div.offset().top - posOffset;
-        } else {
-          offsetTop = $div.offsetTop - posOffset;
-        }
-
-        if (offsetTop < 0) {
-          offsetTop = 0;
-        }
-        $containerDiv.scrollTop(offsetTop);
-      }
-    }
-  }
-
-  private scrollListToEntry(id: string, position: string): void {
-    const posOffset = (position === 'top') ? 274 : 487;
-    const entryDivId = '#entryId_' + id;
-    const listDivId = '#compactEntryListContainer';
-    let index;
-
-    // make sure the item is visible in the list
-    // todo implement lazy "up" scrolling to make this more efficient
-
-    // only expand the "show window" if we know that the entry is actually in
-    // the entry list - a safe guard
-    if (this.editorService.getIndexInList(id, this.filteredEntries) != null) {
-      while (this.visibleEntries.length < this.filteredEntries.length) {
-        index = this.editorService.getIndexInList(id, this.visibleEntries);
-        if (index != null) {
-          break;
-        }
-
-        this.editorService.showMoreEntries();
-      }
-    } else {
-      console.warn('Error: tried to scroll to an entry that is not in the entry list!');
-    }
-
-    // note: ':visible' is a JQuery invention that means 'it takes up space on
-    // the page'.
-    // It may actually not be visible at the moment because it may down inside a
-    // scrolling div or scrolled off the view of the page
-    if ($(listDivId).is(':visible') && $(entryDivId).is(':visible')) {
-      LexiconEditorController.scrollDivToId(listDivId, entryDivId, posOffset);
-    } else {
-      // wait then try to scroll
-      this.$interval(() => {
-        LexiconEditorController.scrollDivToId(listDivId, entryDivId, posOffset);
-      }, 200, 1);
-    }
-  }
-
   editEntryAndScroll(id: string): void {
     this.editEntry(id);
     this.scrollListToEntry(id, 'middle');
-  }
-
-  private setCurrentEntry(entry: LexEntry = new LexEntry()): void {
-    // align custom fields into model
-    entry = this.alignCustomFieldsInData(entry);
-
-    // auto-make a valid model but stop at the examples array
-    entry = this.makeValidModelRecursive(this.config.entry, entry, 'examples');
-
-    this.currentEntry = entry;
-    this.control.currentEntry = this.currentEntry;
-    this.pristineEntry = angular.copy(entry);
-    this.saveStatus = 'unsaved';
-  }
-
-  private alignCustomFieldsInData(data: any): any {
-    if (data.customFields != null) {
-      for (const key in data.customFields) {
-        if (data.customFields.hasOwnProperty(key)) {
-          data[key] = data.customFields[key];
-        }
-      }
-    }
-
-    if (data.senses != null) {
-      for (const sense of data.senses) {
-        this.alignCustomFieldsInData(sense);
-      }
-    }
-
-    if (data.examples != null) {
-      for (const example of data.examples) {
-        this.alignCustomFieldsInData(example);
-      }
-    }
-
-    return data;
-  }
-
-  private prepCustomFieldsForUpdate(data: any): any {
-    data.customFields = {};
-    for (const fieldName in data) {
-      if (data.hasOwnProperty(fieldName)) {
-        if (/^customField_/.test(fieldName)) {
-          data.customFields[fieldName] = data[fieldName];
-        }
-
-        if (fieldName === 'senses' || fieldName === 'examples') {
-          data[fieldName] = this.prepCustomFieldsForUpdate(data[fieldName]);
-        }
-      }
-    }
-
-    return data;
   }
 
   editEntry(id: string): void {
@@ -559,22 +392,31 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
-  private goToEntry(entryId: string): void {
-    if (this.$state.is('editor.entry')) {
-      this.$state.go('.', { entryId }, { notify: false });
-    } else {
-      this.$state.go('editor.entry', { entryId });
-    }
-  }
+  deleteEntry = (entry: LexEntry): void => {
+    const deleteMsg = 'Are you sure you want to delete the entry <b>\'' +
+      LexiconUtilityService.getLexeme(this.config, this.config.entry, entry) + '\'</b>';
+    this.modal.showModalSimple('Delete Entry', deleteMsg, 'Cancel', 'Delete Entry').then(() => {
+      let iShowList = this.editorService.getIndexInList(entry.id, this.visibleEntries);
+      this.editorService.removeEntryFromLists(entry.id);
+      if (this.entries.length > 0) {
+        if (iShowList !== 0) {
+          iShowList--;
+        }
+        this.setCurrentEntry(this.visibleEntries[iShowList]);
+        this.$state.go('.', { entryId: this.visibleEntries[iShowList].id }, { notify: false });
+      } else {
+        this.returnToList();
+      }
 
-  entryLoaded(): boolean {
-    return this.currentEntry.id != null;
-  }
+      if (!LexiconEditorController.entryIsNew(entry)) {
+        this.sendReceive.setStateUnsynced();
+        this.lexService.remove(entry.id, () => {
+          this.editorService.refreshEditorData();
+        });
+      }
 
-  returnToList(): void {
-    this.saveCurrentEntry();
-    this.setCurrentEntry();
-    this.$state.go('editor.list');
+      this.hideRightPanel();
+    }, () => {});
   }
 
   makeValidModelRecursive = (config: LexConfigField, data: any = {}, stopAtNodes: string | string[] = []): any => {
@@ -679,31 +521,27 @@ export class LexiconEditorController implements angular.IController {
     return data;
   }
 
-  deleteEntry = (entry: LexEntry): void => {
-    const deleteMsg = 'Are you sure you want to delete the entry <b>\'' +
-      LexiconUtilityService.getLexeme(this.config, this.config.entry, entry) + '\'</b>';
-    this.modal.showModalSimple('Delete Entry', deleteMsg, 'Cancel', 'Delete Entry').then(() => {
-      let iShowList = this.editorService.getIndexInList(entry.id, this.visibleEntries);
-      this.editorService.removeEntryFromLists(entry.id);
-      if (this.entries.length > 0) {
-        if (iShowList !== 0) {
-          iShowList--;
-        }
-        this.setCurrentEntry(this.visibleEntries[iShowList]);
-        this.$state.go('.', { entryId: this.visibleEntries[iShowList].id }, { notify: false });
-      } else {
-        this.returnToList();
-      }
+  getWordForDisplay(entry: LexEntry): string {
+    const lexeme: string = LexiconUtilityService.getLexeme(this.config, this.config.entry, entry);
+    if (!lexeme) {
+      return '[Empty]';
+    }
 
-      if (!LexiconEditorController.entryIsNew(entry)) {
-        this.sendReceive.setStateUnsynced();
-        this.lexService.remove(entry.id, () => {
-          this.editorService.refreshEditorData();
-        });
-      }
+    return lexeme;
+  }
 
-      this.hideRightPanel();
-    }, () => {});
+  getMeaningForDisplay(entry: LexEntry): string {
+    let meaning = '';
+    if (entry.senses && entry.senses[0]) {
+      meaning = LexiconUtilityService.getMeaning(this.config, this.config.entry.fields.senses as LexConfigFieldList,
+        entry.senses[0]);
+    }
+
+    if (!meaning) {
+      return '[Empty]';
+    }
+
+    return meaning;
   }
 
   getCompactItemListOverlay(entry: LexEntry): string {
@@ -716,23 +554,6 @@ export class LexiconEditorController implements angular.IController {
     } else {
       return '';
     }
-  }
-
-  private evaluateState(): void {
-    this.editorService.loadEditorData().then(() => {
-      // if entry not found go to first visible entry
-      let entryId = this.$state.params.entryId;
-      if (this.editorService.getIndexInList(entryId, this.entries) == null) {
-        entryId = '';
-        if (this.visibleEntries[0] != null) {
-          entryId = this.visibleEntries[0].id;
-        }
-      }
-
-      if (this.$state.is('editor.entry')) {
-        this.editEntryAndScroll(entryId);
-      }
-    });
   }
 
     // Comments View
@@ -805,249 +626,6 @@ export class LexiconEditorController implements angular.IController {
         this.setCommentContext('');
       }, delay, 1);
     }
-  }
-
-  private pollUpdateSuccess = (): void => {
-    if (this.currentEntryIsDirty()) {
-      if (this.sendReceive.isInProgress()) {
-        this.cancelAutoSaveTimer();
-        this.warnOfUnsavedEdits(this.currentEntry);
-        this.resetEntryLists(this.currentEntry.id, angular.copy(this.pristineEntry));
-      }
-    } else {
-      this.setCurrentEntry(this.entries[this.editorService.getIndexInList(this.currentEntry.id, this.entries)]);
-    }
-  }
-
-  private syncProjectStatusSuccess = (): void => {
-    this.editorService.refreshEditorData().then(() => {
-      this.setCurrentEntry(this.entries[this.editorService.getIndexInList(this.currentEntry.id, this.entries)]);
-      this.sessionService.getSession(true).then(this.configService.refresh);
-      this.notice.removeById(this.warnOfUnsavedEditsId);
-    });
-  }
-
-  private startAutoSaveTimer(): void {
-    if (this.autoSaveTimer != null) {
-      return;
-    }
-
-    this.autoSaveTimer = this.$interval(() => {
-      this.saveCurrentEntry(true);
-    }, 5000, 1);
-  }
-
-  private cancelAutoSaveTimer(): void {
-    if (this.autoSaveTimer != null) {
-      this.$interval.cancel(this.autoSaveTimer);
-      this.autoSaveTimer = undefined;
-    }
-  }
-
-  resetEntryListFilter(): void {
-    this.entryListModifiers.filterBy = null;
-    this.filterEntries(true);
-  }
-
-  private getInputSystemAbbreviation(inputSystemTag: string): string {
-    if (this.config == null || this.config.inputSystems == null || !(inputSystemTag in this.config.inputSystems)) {
-      return inputSystemTag;
-    }
-
-    return this.config.inputSystems[inputSystemTag].abbreviation;
-  }
-
-  private setSortAndFilterOptionsFromConfig(): void {
-    if (this.config == null) {
-      return;
-    }
-
-    const sortOptions: SortOption[] = [];
-    const filterOptions: FilterOption[] = [];
-    for (const entryFieldName of this.config.entry.fieldOrder) {
-      const entryField = this.config.entry.fields[entryFieldName];
-
-      // TODO: do I need to check if user can see field (view settings).
-      // Is this handled somewhere else? - cjh 2017-07-20
-      if (entryField.hideIfEmpty) {
-        return;
-      }
-      if (entryFieldName === 'senses') {
-        const configSenses = this.config.entry.fields.senses as LexConfigFieldList;
-        for (const senseFieldName of configSenses.fieldOrder) {
-          const senseField = configSenses.fields[senseFieldName];
-          if (senseField.hideIfEmpty || senseField.type === 'fields') {
-            return;
-          }
-          sortOptions.push({ label: senseField.label, value: senseFieldName });
-          if (senseField.type === 'multitext') {
-            for (const inputSystemTag of (senseField as LexConfigMultiText).inputSystems) {
-              const abbreviation = this.getInputSystemAbbreviation(inputSystemTag);
-              filterOptions.push({ label: senseField.label + ' [' + abbreviation + ']',
-                level: 'sense', value: senseFieldName, type: 'multitext',
-                inputSystem: inputSystemTag, key: senseFieldName + '-' + inputSystemTag });
-            }
-          } else {
-            filterOptions.push({ label: senseField.label, level: 'sense', value: senseFieldName,
-              type: senseField.type, key: senseFieldName });
-          }
-        }
-      } else {
-        sortOptions.push({ label: entryField.label, value: entryFieldName });
-        if (entryField.type === 'multitext') {
-          for (const inputSystemTag of (entryField as LexConfigMultiText).inputSystems) {
-            const abbreviation = this.getInputSystemAbbreviation(inputSystemTag);
-            filterOptions.push({ label: entryField.label + ' [' + abbreviation + ']',
-              level: 'entry', value: entryFieldName, type: 'multitext',
-              inputSystem: inputSystemTag, key: entryFieldName + '-' + inputSystemTag });
-          }
-        } else {
-          filterOptions.push({ label: entryField.label, level: 'entry', value: entryFieldName,
-            type: entryField.type, key: entryFieldName });
-        }
-      }
-    }
-
-    filterOptions.push({ label: 'Comments', value: 'comments', type: 'comments', key: 'comments' });
-    filterOptions.push({ label: 'Example Sentences', value: 'exampleSentences', type: 'exampleSentences',
-      key: 'exampleSentences' });
-    filterOptions.push({ label: 'Pictures', value: 'pictures', type: 'pictures', key: 'pictures' });
-    let hasAudioInputSystem = false;
-    for (const inputSystemsTag in this.config.inputSystems) {
-      if (this.config.inputSystems.hasOwnProperty(inputSystemsTag) && LexiconUtilityService.isAudio(inputSystemsTag)) {
-        hasAudioInputSystem = true;
-        break;
-      }
-    }
-
-    if (hasAudioInputSystem) {
-      filterOptions.push({ label: 'Audio', value: 'audio', type: 'audio', key: 'audio' });
-    }
-
-    LexiconUtilityService.arrayCopyRetainingReferences(sortOptions, this.entryListModifiers.sortOptions);
-    LexiconUtilityService.arrayCopyRetainingReferences(filterOptions, this.entryListModifiers.filterOptions);
-  }
-
-  private recursiveRemoveProperties(startAt: any, properties: string[]): any {
-    for (const fieldName in startAt) {
-      if (startAt.hasOwnProperty(fieldName)) {
-        let isPropertyDeleted = false;
-        for (const property of properties) {
-          if (fieldName === property) {
-            delete startAt[fieldName];
-            isPropertyDeleted = true;
-            break;
-          }
-        }
-
-        if (!isPropertyDeleted && angular.isObject(startAt[fieldName])) {
-          this.recursiveRemoveProperties(startAt[fieldName], properties);
-        }
-      }
-    }
-
-    return startAt;
-  }
-
-  private setupTypeAheadSearch(): void {
-    this.typeahead = {
-      searchItemSelected: '',
-      searchResults: [],
-      limit: 50,
-      matchCountCaption: ''
-    };
-
-    this.typeahead.searchEntries = (query = '') => {
-      const blacklistKeys = [
-        'isDeleted',
-        'id',
-        'guid',
-        'translationGuid',
-        '$$hashKey',
-        'dateModified',
-        'dateCreated',
-        'projectId',
-        'authorInfo',
-        'fileName'
-      ];
-
-      const isBlacklisted = (key: string): boolean => {
-        const audio = '-audio';
-        return blacklistKeys.includes(key) || key.includes(audio, key.length - audio.length);
-      };
-
-      // TODO consider whitelisting all properties under customFields
-
-      const isMatch = (value: any): boolean => {
-        // toUpperCase is better than toLowerCase, but still has issues,
-        // e.g. 'ß'.toUpperCase() === 'SS'
-        const queryCapital = query.toUpperCase();
-        switch (value == null ? 'null' : typeof value) {
-          // Array.prototype.some tests whether some element satisfies the function
-          case 'object':
-            return Object.keys(value).some(key => !isBlacklisted(key) && isMatch(value[key]));
-          case 'string':
-            return value.toUpperCase().includes(queryCapital);
-          case 'null':
-            return false;
-          case 'boolean':
-            return false;
-          default:
-            console.error('Unexpected type ' + (typeof value) + ' on entry.');
-            return false;
-        }
-      };
-      const filteredEntries = this.filteredEntries.filter(isMatch);
-
-      const prioritizedEntries = {
-        wordBeginning: [] as LexEntry[],
-        word: [] as LexEntry[],
-        meaningBeginning: [] as LexEntry[],
-        meaning: [] as LexEntry[],
-        everythingElse: [] as LexEntry[]
-      };
-
-      for (const entry of filteredEntries) {
-        const word = this.getPrimaryListItemForDisplay(this.config, entry);
-        const meaning = this.getMeaningForDisplay(entry);
-        if (word.startsWith(query)) {
-          prioritizedEntries.wordBeginning.push(entry);
-        } else if (word.includes(query)) {
-          prioritizedEntries.word.push(entry);
-        } else if (meaning.startsWith(query)) {
-          prioritizedEntries.meaningBeginning.push(entry);
-        } else if (meaning.includes(query)) {
-          prioritizedEntries.meaning.push(entry);
-        } else {
-          prioritizedEntries.everythingElse.push(entry);
-        }
-      }
-
-      this.typeahead.searchResults = [].concat(
-        prioritizedEntries.wordBeginning,
-        prioritizedEntries.word,
-        prioritizedEntries.meaningBeginning,
-        prioritizedEntries.meaning,
-        prioritizedEntries.everythingElse
-      );
-      this.typeahead.matchCountCaption = '';
-      const numMatches = this.typeahead.searchResults.length;
-      if (numMatches > this.typeahead.limit) {
-        this.typeahead.matchCountCaption = this.typeahead.limit + ' of ' + numMatches + ' matches';
-      } else if (numMatches > 1) {
-        this.typeahead.matchCountCaption = numMatches + ' matches';
-      } else if (numMatches === 1) {
-        this.typeahead.matchCountCaption = numMatches + ' match';
-      }
-    };
-
-    this.typeahead.searchSelect = (entry: LexEntry) => {
-      this.typeahead.searchItemSelected = '';
-      this.typeahead.searchResults = [];
-      if (entry.id) {
-        this.editEntryAndScroll(entry.id);
-      }
-    };
   }
 
   setCommentContext = (contextGuid: string): void => {
@@ -1157,7 +735,7 @@ export class LexiconEditorController implements angular.IController {
       // Option lists only get their key saved on the comment so we need to find the value
       if (fieldConfig !== null &&
         (fieldConfig.type === 'multioptionlist' || fieldConfig.type === 'optionlist')
-        ) {
+      ) {
         if (field === 'semanticDomain') {
           // Semantic domains are in the global scope and appear to be English only
           // Will need to be updated once the system provides support for other languages
@@ -1201,6 +779,428 @@ export class LexiconEditorController implements angular.IController {
     parts.example.index = exampleIndex;
     parts.example.guid = exampleGuid;
     return parts;
+  }
+
+  private setupTypeAheadSearch(): void {
+    this.typeahead = {
+      searchItemSelected: '',
+      searchResults: [],
+      limit: 50,
+      matchCountCaption: ''
+    };
+
+    this.typeahead.searchEntries = (query = '') => {
+      const blacklistKeys = [
+        'isDeleted',
+        'id',
+        'guid',
+        'translationGuid',
+        '$$hashKey',
+        'dateModified',
+        'dateCreated',
+        'projectId',
+        'authorInfo',
+        'fileName'
+      ];
+
+      const isBlacklisted = (key: string): boolean => {
+        const audio = '-audio';
+        return blacklistKeys.includes(key) || key.includes(audio, key.length - audio.length);
+      };
+
+      // TODO consider whitelisting all properties under customFields
+
+      const isMatch = (value: any): boolean => {
+        // toUpperCase is better than toLowerCase, but still has issues,
+        // e.g. 'ß'.toUpperCase() === 'SS'
+        const queryCapital = query.toUpperCase();
+        switch (value == null ? 'null' : typeof value) {
+          // Array.prototype.some tests whether some element satisfies the function
+          case 'object':
+            return Object.keys(value).some(key => !isBlacklisted(key) && isMatch(value[key]));
+          case 'string':
+            return value.toUpperCase().includes(queryCapital);
+          case 'null':
+            return false;
+          case 'boolean':
+            return false;
+          default:
+            console.error('Unexpected type ' + (typeof value) + ' on entry.');
+            return false;
+        }
+      };
+      const filteredEntries = this.filteredEntries.filter(isMatch);
+
+      const prioritizedEntries = {
+        wordBeginning: [] as LexEntry[],
+        word: [] as LexEntry[],
+        meaningBeginning: [] as LexEntry[],
+        meaning: [] as LexEntry[],
+        everythingElse: [] as LexEntry[]
+      };
+
+      for (const entry of filteredEntries) {
+        const word = this.getPrimaryListItemForDisplay(this.config, entry);
+        const meaning = this.getMeaningForDisplay(entry);
+        if (word.startsWith(query)) {
+          prioritizedEntries.wordBeginning.push(entry);
+        } else if (word.includes(query)) {
+          prioritizedEntries.word.push(entry);
+        } else if (meaning.startsWith(query)) {
+          prioritizedEntries.meaningBeginning.push(entry);
+        } else if (meaning.includes(query)) {
+          prioritizedEntries.meaning.push(entry);
+        } else {
+          prioritizedEntries.everythingElse.push(entry);
+        }
+      }
+
+      this.typeahead.searchResults = [].concat(
+        prioritizedEntries.wordBeginning,
+        prioritizedEntries.word,
+        prioritizedEntries.meaningBeginning,
+        prioritizedEntries.meaning,
+        prioritizedEntries.everythingElse
+      );
+      this.typeahead.matchCountCaption = '';
+      const numMatches = this.typeahead.searchResults.length;
+      if (numMatches > this.typeahead.limit) {
+        this.typeahead.matchCountCaption = this.typeahead.limit + ' of ' + numMatches + ' matches';
+      } else if (numMatches > 1) {
+        this.typeahead.matchCountCaption = numMatches + ' matches';
+      } else if (numMatches === 1) {
+        this.typeahead.matchCountCaption = numMatches + ' match';
+      }
+    };
+
+    this.typeahead.searchSelect = (entry: LexEntry) => {
+      this.typeahead.searchItemSelected = '';
+      this.typeahead.searchResults = [];
+      if (entry.id) {
+        this.editEntryAndScroll(entry.id);
+      }
+    };
+  }
+
+  private goToEntry(entryId: string): void {
+    if (this.$state.is('editor.entry')) {
+      this.$state.go('.', { entryId }, { notify: false });
+    } else {
+      this.$state.go('editor.entry', { entryId });
+    }
+  }
+
+  private evaluateState(): void {
+    this.editorService.loadEditorData().then(() => {
+      // if entry not found go to first visible entry
+      let entryId = this.$state.params.entryId;
+      if (this.editorService.getIndexInList(entryId, this.entries) == null) {
+        entryId = '';
+        if (this.visibleEntries[0] != null) {
+          entryId = this.visibleEntries[0].id;
+        }
+      }
+
+      if (this.$state.is('editor.entry')) {
+        this.editEntryAndScroll(entryId);
+      }
+    });
+  }
+
+  private setSortAndFilterOptionsFromConfig(): void {
+    if (this.config == null) {
+      return;
+    }
+
+    const sortOptions: SortOption[] = [];
+    const filterOptions: FilterOption[] = [];
+    for (const entryFieldName of this.config.entry.fieldOrder) {
+      const entryField = this.config.entry.fields[entryFieldName];
+
+      // TODO: do I need to check if user can see field (view settings).
+      // Is this handled somewhere else? - cjh 2017-07-20
+      if (entryField.hideIfEmpty) {
+        return;
+      }
+      if (entryFieldName === 'senses') {
+        const configSenses = this.config.entry.fields.senses as LexConfigFieldList;
+        for (const senseFieldName of configSenses.fieldOrder) {
+          const senseField = configSenses.fields[senseFieldName];
+          if (senseField.hideIfEmpty || senseField.type === 'fields') {
+            return;
+          }
+          sortOptions.push({ label: senseField.label, value: senseFieldName });
+          if (senseField.type === 'multitext') {
+            for (const inputSystemTag of (senseField as LexConfigMultiText).inputSystems) {
+              const abbreviation = this.getInputSystemAbbreviation(inputSystemTag);
+              filterOptions.push({ label: senseField.label + ' [' + abbreviation + ']',
+                level: 'sense', value: senseFieldName, type: 'multitext',
+                inputSystem: inputSystemTag, key: senseFieldName + '-' + inputSystemTag });
+            }
+          } else {
+            filterOptions.push({ label: senseField.label, level: 'sense', value: senseFieldName,
+              type: senseField.type, key: senseFieldName });
+          }
+        }
+      } else {
+        sortOptions.push({ label: entryField.label, value: entryFieldName });
+        if (entryField.type === 'multitext') {
+          for (const inputSystemTag of (entryField as LexConfigMultiText).inputSystems) {
+            const abbreviation = this.getInputSystemAbbreviation(inputSystemTag);
+            filterOptions.push({ label: entryField.label + ' [' + abbreviation + ']',
+              level: 'entry', value: entryFieldName, type: 'multitext',
+              inputSystem: inputSystemTag, key: entryFieldName + '-' + inputSystemTag });
+          }
+        } else {
+          filterOptions.push({ label: entryField.label, level: 'entry', value: entryFieldName,
+            type: entryField.type, key: entryFieldName });
+        }
+      }
+    }
+
+    filterOptions.push({ label: 'Comments', value: 'comments', type: 'comments', key: 'comments' });
+    filterOptions.push({ label: 'Example Sentences', value: 'exampleSentences', type: 'exampleSentences',
+      key: 'exampleSentences' });
+    filterOptions.push({ label: 'Pictures', value: 'pictures', type: 'pictures', key: 'pictures' });
+    let hasAudioInputSystem = false;
+    for (const inputSystemsTag in this.config.inputSystems) {
+      if (this.config.inputSystems.hasOwnProperty(inputSystemsTag) && LexiconUtilityService.isAudio(inputSystemsTag)) {
+        hasAudioInputSystem = true;
+        break;
+      }
+    }
+
+    if (hasAudioInputSystem) {
+      filterOptions.push({ label: 'Audio', value: 'audio', type: 'audio', key: 'audio' });
+    }
+
+    LexiconUtilityService.arrayCopyRetainingReferences(sortOptions, this.entryListModifiers.sortOptions);
+    LexiconUtilityService.arrayCopyRetainingReferences(filterOptions, this.entryListModifiers.filterOptions);
+  }
+
+  private resetEntryLists(id: string, pristineEntry: LexEntry): void {
+    const entryIndex = this.editorService.getIndexInList(id, this.entries);
+    const entry = this.prepCustomFieldsForUpdate(pristineEntry);
+    if (entryIndex != null) {
+      this.entries[entryIndex] = entry;
+      this.currentEntry = pristineEntry;
+      this.control.currentEntry = this.currentEntry;
+    }
+
+    const visibleEntryIndex = this.editorService.getIndexInList(id, this.visibleEntries);
+    if (visibleEntryIndex != null) {
+      this.visibleEntries[visibleEntryIndex] = entry;
+    }
+  }
+
+  private getInputSystemAbbreviation(inputSystemTag: string): string {
+    if (this.config == null || this.config.inputSystems == null || !(inputSystemTag in this.config.inputSystems)) {
+      return inputSystemTag;
+    }
+
+    return this.config.inputSystems[inputSystemTag].abbreviation;
+  }
+
+  private setCurrentEntry(entry: LexEntry = new LexEntry()): void {
+    // align custom fields into model
+    entry = this.alignCustomFieldsInData(entry);
+
+    // auto-make a valid model but stop at the examples array
+    entry = this.makeValidModelRecursive(this.config.entry, entry, 'examples');
+
+    this.currentEntry = entry;
+    this.control.currentEntry = this.currentEntry;
+    this.pristineEntry = angular.copy(entry);
+    this.saveStatus = 'unsaved';
+  }
+
+  private prepEntryForUpdate(entry: LexEntry): LexEntry {
+    const entryForUpdate: LexEntry = this.recursiveRemoveProperties(angular.copy(entry),
+      ['guid', 'mercurialSha', 'authorInfo', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+    return this.prepCustomFieldsForUpdate(entryForUpdate);
+  }
+
+  private alignCustomFieldsInData(data: any): any {
+    if (data.customFields != null) {
+      for (const key in data.customFields) {
+        if (data.customFields.hasOwnProperty(key)) {
+          data[key] = data.customFields[key];
+        }
+      }
+    }
+
+    if (data.senses != null) {
+      for (const sense of data.senses) {
+        this.alignCustomFieldsInData(sense);
+      }
+    }
+
+    if (data.examples != null) {
+      for (const example of data.examples) {
+        this.alignCustomFieldsInData(example);
+      }
+    }
+
+    return data;
+  }
+
+  private prepCustomFieldsForUpdate(data: any): any {
+    data.customFields = {};
+    for (const fieldName in data) {
+      if (data.hasOwnProperty(fieldName)) {
+        if (/^customField_/.test(fieldName)) {
+          data.customFields[fieldName] = data[fieldName];
+        }
+
+        if (fieldName === 'senses' || fieldName === 'examples') {
+          data[fieldName] = this.prepCustomFieldsForUpdate(data[fieldName]);
+        }
+      }
+    }
+
+    return data;
+  }
+
+  private recursiveRemoveProperties(startAt: any, properties: string[]): any {
+    for (const fieldName in startAt) {
+      if (startAt.hasOwnProperty(fieldName)) {
+        let isPropertyDeleted = false;
+        for (const property of properties) {
+          if (fieldName === property) {
+            delete startAt[fieldName];
+            isPropertyDeleted = true;
+            break;
+          }
+        }
+
+        if (!isPropertyDeleted && angular.isObject(startAt[fieldName])) {
+          this.recursiveRemoveProperties(startAt[fieldName], properties);
+        }
+      }
+    }
+
+    return startAt;
+  }
+
+  private startAutoSaveTimer(): void {
+    if (this.autoSaveTimer != null) {
+      return;
+    }
+
+    this.autoSaveTimer = this.$interval(() => {
+      this.saveCurrentEntry(true);
+    }, 5000, 1);
+  }
+
+  private cancelAutoSaveTimer(): void {
+    if (this.autoSaveTimer != null) {
+      this.$interval.cancel(this.autoSaveTimer);
+      this.autoSaveTimer = undefined;
+    }
+  }
+
+  private warnOfUnsavedEdits(entry: LexEntry): void {
+    this.warnOfUnsavedEditsId = this.notice.push(this.notice.WARN, 'A synchronize has been started by ' +
+      'another user. When the synchronize has finished, please check your recent edits in entry "' +
+      this.getWordForDisplay(entry) + '".');
+  }
+
+  private pollUpdateSuccess = (): void => {
+    if (this.currentEntryIsDirty()) {
+      if (this.sendReceive.isInProgress()) {
+        this.cancelAutoSaveTimer();
+        this.warnOfUnsavedEdits(this.currentEntry);
+        this.resetEntryLists(this.currentEntry.id, angular.copy(this.pristineEntry));
+      }
+    } else {
+      this.setCurrentEntry(this.entries[this.editorService.getIndexInList(this.currentEntry.id, this.entries)]);
+    }
+  }
+
+  private syncProjectStatusSuccess = (): void => {
+    this.editorService.refreshEditorData().then(() => {
+      this.setCurrentEntry(this.entries[this.editorService.getIndexInList(this.currentEntry.id, this.entries)]);
+      this.sessionService.getSession(true).then(this.configService.refresh);
+      this.notice.removeById(this.warnOfUnsavedEditsId);
+    });
+  }
+
+  private scrollListToEntry(id: string, position: string): void {
+    const posOffset = (position === 'top') ? 274 : 487;
+    const entryDivId = '#entryId_' + id;
+    const listDivId = '#compactEntryListContainer';
+    let index;
+
+    // make sure the item is visible in the list
+    // todo implement lazy "up" scrolling to make this more efficient
+
+    // only expand the "show window" if we know that the entry is actually in
+    // the entry list - a safe guard
+    if (this.editorService.getIndexInList(id, this.filteredEntries) != null) {
+      while (this.visibleEntries.length < this.filteredEntries.length) {
+        index = this.editorService.getIndexInList(id, this.visibleEntries);
+        if (index != null) {
+          break;
+        }
+
+        this.editorService.showMoreEntries();
+      }
+    } else {
+      console.warn('Error: tried to scroll to an entry that is not in the entry list!');
+    }
+
+    // note: ':visible' is a JQuery invention that means 'it takes up space on
+    // the page'.
+    // It may actually not be visible at the moment because it may down inside a
+    // scrolling div or scrolled off the view of the page
+    if ($(listDivId).is(':visible') && $(entryDivId).is(':visible')) {
+      LexiconEditorController.scrollDivToId(listDivId, entryDivId, posOffset);
+    } else {
+      // wait then try to scroll
+      this.$interval(() => {
+        LexiconEditorController.scrollDivToId(listDivId, entryDivId, posOffset);
+      }, 200, 1);
+    }
+  }
+
+  private static scrollDivToId(containerId: string, divId: string, posOffset: number = 0): void {
+    const $containerDiv: any = $(containerId);
+    let $div: any = $(divId);
+    let foundDiv: boolean = false;
+    let offsetTop: number = 0;
+
+    // todo: refactor this spaghetti logic
+    if ($div && $containerDiv) {
+      if ($div.offsetTop == null) {
+        if ($div[0] != null) {
+          $div = $div[0];
+          foundDiv = true;
+        } else {
+          console.log('Error: unable to scroll to div with div id ' + divId);
+        }
+      }
+
+      if (foundDiv) {
+        if ($div.offsetTop == null) {
+          offsetTop = $div.offset().top - posOffset;
+        } else {
+          offsetTop = $div.offsetTop - posOffset;
+        }
+
+        if (offsetTop < 0) {
+          offsetTop = 0;
+        }
+        $containerDiv.scrollTop(offsetTop);
+      }
+    }
+  }
+
+  private static entryIsNew(entry: LexEntry): boolean {
+    return (entry.id && entry.id.includes('_new_'));
+  }
+
+  private static normalizeStrings(data: any): any {
+    return JSON.parse(JSON.stringify(data).normalize());
   }
 
 }
