@@ -8,7 +8,6 @@ import {EditorDataService} from '../../../bellows/core/offline/editor-data.servi
 import {LexiconCommentService} from '../../../bellows/core/offline/lexicon-comments.service';
 import {SessionService} from '../../../bellows/core/session.service';
 import {InterfaceConfig} from '../../../bellows/shared/model/interface-config.model';
-import {LexiconConfigService} from '../core/lexicon-config.service';
 import {LexiconEntryApiService} from '../core/lexicon-entry-api.service';
 import {LexiconProjectService} from '../core/lexicon-project.service';
 import {LexiconRightsService, Rights} from '../core/lexicon-rights.service';
@@ -60,11 +59,11 @@ class TypeAhead {
 }
 
 export class LexiconEditorController implements angular.IController {
-  // inherited from parent (convert to component attributes)
-  interfaceConfig: InterfaceConfig;
-  finishedLoading: boolean;
-  project: LexiconProject;
-  rights: Rights;
+  lecConfig: LexiconConfig;
+  lecInterfaceConfig: InterfaceConfig;
+  lecFinishedLoading: boolean;
+  lecProject: LexiconProject;
+  lecRights: Rights;
 
   lastSavedDate = new Date();
   currentEntry: LexEntry = new LexEntry();
@@ -77,7 +76,6 @@ export class LexiconEditorController implements angular.IController {
   saveStatus = 'unsaved';
 
   autoSaveTimer: angular.IPromise<void>;
-  config: LexiconConfig;
   control: FieldControl = new FieldControl();
   typeahead: TypeAhead;
 
@@ -98,8 +96,7 @@ export class LexiconEditorController implements angular.IController {
     'applicationHeaderService',
     'modalService', 'silNoticeService',
     'sessionService', 'lexCommentService',
-    'lexConfigService', 'lexEditorDataService',
-    'lexEntryApiService',
+    'lexEditorDataService', 'lexEntryApiService',
     'lexProjectService',
     'lexRightsService',
     'lexSendReceive'
@@ -110,77 +107,16 @@ export class LexiconEditorController implements angular.IController {
               private readonly applicationHeaderService: ApplicationHeaderService,
               private readonly modal: ModalService, private readonly notice: NoticeService,
               private readonly sessionService: SessionService, private readonly commentService: LexiconCommentService,
-              private readonly configService: LexiconConfigService, private readonly editorService: EditorDataService,
-              private readonly lexService: LexiconEntryApiService,
+              private readonly editorService: EditorDataService, private readonly lexService: LexiconEntryApiService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly rightsService: LexiconRightsService,
               private readonly sendReceive: LexiconSendReceiveService) {}
 
   $onInit(): void {
-    // hack until lexicon.js and this are components
-    const deregisterWatchFinishedLoading = this.$scope.$watch(() => (this.$scope as any).finishedLoading, () => {
-      this.finishedLoading = (this.$scope as any).finishedLoading;
-      this.interfaceConfig = (this.$scope as any).interfaceConfig;
-      if (this.finishedLoading) {
-        deregisterWatchFinishedLoading();
-        this.control = {
-          interfaceConfig: this.interfaceConfig,
-          commentContext: this.commentContext,
-          config: this.config,
-          currentEntry: this.currentEntry,
-          deleteEntry: this.deleteEntry,
-          getContextParts: this.getContextParts,
-          hideRightPanel: this.hideRightPanel,
-          makeValidModelRecursive: this.makeValidModelRecursive,
-          project: this.project,
-          saveCurrentEntry: this.saveCurrentEntry,
-          setCommentContext: this.setCommentContext,
-          show: this.show,
-          showCommentsPanel: this.showCommentsPanel,
-          rightPanelVisible: this.rightPanelVisible,
-          rights: this.rights
-        } as FieldControl;
-      }
-    });
-
     this.show.more = this.editorService.showMoreEntries;
 
-    this.configService.refresh().then(config => {
-      this.config = config;
-      // hack until lexicon.js and this are components
-      this.control.config = this.config;
-    });
-
-    this.$scope.$watch(() => this.config, () => {
+    this.$scope.$watch(() => this.lecConfig, () => {
       this.setSortAndFilterOptionsFromConfig();
-    });
-
-    this.rightsService.getRights(true).then(rights => {
-      this.rights = rights;
-      this.project = rights.session.project<LexiconProject>();
-      this.applicationHeaderService.setPageName(this.project.projectName);
-      // hack until lexicon.js and this are components
-      this.control.rights = this.rights;
-      this.control.project = this.project;
-
-      // conditionally register watch
-      if (this.rights.canEditEntry()) {
-        this.$scope.$watch(() => this.currentEntry, newValue => {
-          if (newValue !== undefined) {
-            this.cancelAutoSaveTimer();
-            if (this.currentEntryIsDirty()) {
-              this.startAutoSaveTimer();
-            }
-          }
-        }, true);
-      }
-    });
-
-    // watch for when data has been loaded completely, then evaluate state
-    this.$scope.$watch(() => this.finishedLoading, newVal => {
-      if (newVal) {
-        this.evaluateState();
-      }
     });
 
     this.sendReceive.setPollUpdateSuccessCallback(this.pollUpdateSuccess);
@@ -194,6 +130,63 @@ export class LexiconEditorController implements angular.IController {
     });
 
     this.setupTypeAheadSearch();
+  }
+
+  $onChanges(changes: any): void {
+    const finishedLoadingChange = changes.lecFinishedLoading as angular.IChangesObject<boolean>;
+    if (finishedLoadingChange != null && this.lecFinishedLoading) {
+      this.control = {
+        interfaceConfig: this.lecInterfaceConfig,
+        commentContext: this.commentContext,
+        config: this.lecConfig,
+        currentEntry: this.currentEntry,
+        deleteEntry: this.deleteEntry,
+        getContextParts: this.getContextParts,
+        hideRightPanel: this.hideRightPanel,
+        makeValidModelRecursive: this.makeValidModelRecursive,
+        project: this.lecProject,
+        saveCurrentEntry: this.saveCurrentEntry,
+        setCommentContext: this.setCommentContext,
+        show: this.show,
+        showCommentsPanel: this.showCommentsPanel,
+        rightPanelVisible: this.rightPanelVisible,
+        rights: this.lecRights
+      } as FieldControl;
+      this.evaluateState();
+    }
+
+    const configChange = changes.lecConfig as angular.IChangesObject<LexiconConfig>;
+    if (configChange != null && configChange.currentValue != null) {
+      this.control.config = this.lecConfig;
+    }
+
+    const interfaceConfigChange = changes.lecInterfaceConfig as angular.IChangesObject<InterfaceConfig>;
+    if (interfaceConfigChange != null && interfaceConfigChange.currentValue != null) {
+      this.control.interfaceConfig = this.lecInterfaceConfig;
+    }
+
+    const projectChange = changes.lecProject as angular.IChangesObject<LexiconProject>;
+    if (projectChange != null && projectChange.currentValue != null) {
+      this.control.project = this.lecProject;
+      this.applicationHeaderService.setPageName(this.lecProject.projectName);
+    }
+
+    const rightsChange = changes.lecRights as angular.IChangesObject<Rights>;
+    if (rightsChange != null && rightsChange.currentValue != null) {
+      this.control.rights = this.lecRights;
+
+      // conditionally register watch
+      if (this.lecRights.canEditEntry()) {
+        this.$scope.$watch(() => this.currentEntry, newValue => {
+          if (newValue !== undefined) {
+            this.cancelAutoSaveTimer();
+            if (this.currentEntryIsDirty()) {
+              this.startAutoSaveTimer();
+            }
+          }
+        }, true);
+      }
+    }
   }
 
   $onDestroy(): void {
@@ -276,7 +269,7 @@ export class LexiconEditorController implements angular.IController {
     let isNewEntry = false;
     let newEntryTempId: string;
 
-    if (this.currentEntryIsDirty() && this.rights.canEditEntry()) {
+    if (this.currentEntryIsDirty() && this.lecRights.canEditEntry()) {
       this.cancelAutoSaveTimer();
       this.sendReceive.setStateUnsynced();
       this.saveStatus = 'saving';
@@ -364,6 +357,7 @@ export class LexiconEditorController implements angular.IController {
     if (this.currentEntry.id !== id) {
       this.saveCurrentEntry();
       this.setCurrentEntry(this.entries[this.editorService.getIndexInList(id, this.entries)]);
+      // noinspection JSIgnoredPromiseFromCall - comments will load in the background
       this.commentService.loadEntryComments(id);
       if (this.rightPanelVisible === true && this.commentContext.contextGuid !== '') {
         this.showComments();
@@ -381,6 +375,7 @@ export class LexiconEditorController implements angular.IController {
       const newEntry = new LexEntry();
       newEntry.id = uniqueId;
       this.setCurrentEntry(newEntry);
+      // noinspection JSIgnoredPromiseFromCall - comments will load in the background
       this.commentService.loadEntryComments(newEntry.id);
       this.editorService.addEntryToEntryList(newEntry);
       this.editorService.showInitialEntries().then(() => {
@@ -394,7 +389,7 @@ export class LexiconEditorController implements angular.IController {
 
   deleteEntry = (entry: LexEntry): void => {
     const deleteMsg = 'Are you sure you want to delete the entry <b>\'' +
-      LexiconUtilityService.getLexeme(this.config, this.config.entry, entry) + '\'</b>';
+      LexiconUtilityService.getLexeme(this.lecConfig, this.lecConfig.entry, entry) + '\'</b>';
     this.modal.showModalSimple('Delete Entry', deleteMsg, 'Cancel', 'Delete Entry').then(() => {
       let iShowList = this.editorService.getIndexInList(entry.id, this.visibleEntries);
       this.editorService.removeEntryFromLists(entry.id);
@@ -475,11 +470,11 @@ export class LexiconEditorController implements angular.IController {
         if (data.value == null || data.value === null) {
           data.value = '';
           const configOptionList = config as LexConfigOptionList;
-          if (this.config.optionlists != null && configOptionList.listCode != null &&
-            (configOptionList.listCode in this.config.optionlists) &&
-            this.config.optionlists[configOptionList.listCode].defaultItemKey != null
+          if (this.lecConfig.optionlists != null && configOptionList.listCode != null &&
+            (configOptionList.listCode in this.lecConfig.optionlists) &&
+            this.lecConfig.optionlists[configOptionList.listCode].defaultItemKey != null
           ) {
-            data.value = this.config.optionlists[configOptionList.listCode].defaultItemKey;
+            data.value = this.lecConfig.optionlists[configOptionList.listCode].defaultItemKey;
           }
         }
 
@@ -522,7 +517,7 @@ export class LexiconEditorController implements angular.IController {
   }
 
   getWordForDisplay(entry: LexEntry): string {
-    const lexeme: string = LexiconUtilityService.getLexeme(this.config, this.config.entry, entry);
+    const lexeme: string = LexiconUtilityService.getLexeme(this.lecConfig, this.lecConfig.entry, entry);
     if (!lexeme) {
       return '[Empty]';
     }
@@ -533,8 +528,8 @@ export class LexiconEditorController implements angular.IController {
   getMeaningForDisplay(entry: LexEntry): string {
     let meaning = '';
     if (entry.senses && entry.senses[0]) {
-      meaning = LexiconUtilityService.getMeaning(this.config, this.config.entry.fields.senses as LexConfigFieldList,
-        entry.senses[0]);
+      meaning = LexiconUtilityService.getMeaning(this.lecConfig,
+        this.lecConfig.entry.fields.senses as LexConfigFieldList, entry.senses[0]);
     }
 
     if (!meaning) {
@@ -642,7 +637,7 @@ export class LexiconEditorController implements angular.IController {
       sense: { index: '', guid: '' },
       example: { index: '', guid: '' }
     };
-    if (contextGuid == null || this.config == null) {
+    if (contextGuid == null || this.lecConfig == null) {
       return parts;
     }
 
@@ -700,7 +695,7 @@ export class LexiconEditorController implements angular.IController {
       }
     }
 
-    const senses = this.config.entry.fields.senses as LexConfigFieldList;
+    const senses = this.lecConfig.entry.fields.senses as LexConfigFieldList;
     const examples = senses.fields.examples as LexConfigFieldList;
     if (exampleGuid && exampleIndex) {
       if (currentEntry.senses[senseIndex].examples[exampleIndex].hasOwnProperty(field)) {
@@ -718,8 +713,8 @@ export class LexiconEditorController implements angular.IController {
       }
     } else if (currentEntry.hasOwnProperty(field)) {
       currentField = currentEntry[field];
-      if (this.config.entry.fields.hasOwnProperty(field)) {
-        fieldConfig = this.config.entry.fields[field];
+      if (this.lecConfig.entry.fields.hasOwnProperty(field)) {
+        fieldConfig = this.lecConfig.entry.fields[field];
       }
     }
 
@@ -747,7 +742,7 @@ export class LexiconEditorController implements angular.IController {
             }
           }
         } else {
-          const optionlists = this.config.optionlists;
+          const optionlists = this.lecConfig.optionlists;
           for (const listCode in optionlists) {
             if (optionlists.hasOwnProperty(listCode) && listCode === (fieldConfig as LexConfigOptionList).listCode) {
               for (const i in optionlists[listCode].items) {
@@ -840,7 +835,7 @@ export class LexiconEditorController implements angular.IController {
       };
 
       for (const entry of filteredEntries) {
-        const word = this.getPrimaryListItemForDisplay(this.config, entry);
+        const word = this.getPrimaryListItemForDisplay(this.lecConfig, entry);
         const meaning = this.getMeaningForDisplay(entry);
         if (word.startsWith(query)) {
           prioritizedEntries.wordBeginning.push(entry);
@@ -908,14 +903,14 @@ export class LexiconEditorController implements angular.IController {
   }
 
   private setSortAndFilterOptionsFromConfig(): void {
-    if (this.config == null) {
+    if (this.lecConfig == null) {
       return;
     }
 
     const sortOptions: SortOption[] = [];
     const filterOptions: FilterOption[] = [];
-    for (const entryFieldName of this.config.entry.fieldOrder) {
-      const entryField = this.config.entry.fields[entryFieldName];
+    for (const entryFieldName of this.lecConfig.entry.fieldOrder) {
+      const entryField = this.lecConfig.entry.fields[entryFieldName];
 
       // TODO: do I need to check if user can see field (view settings).
       // Is this handled somewhere else? - cjh 2017-07-20
@@ -923,7 +918,7 @@ export class LexiconEditorController implements angular.IController {
         return;
       }
       if (entryFieldName === 'senses') {
-        const configSenses = this.config.entry.fields.senses as LexConfigFieldList;
+        const configSenses = this.lecConfig.entry.fields.senses as LexConfigFieldList;
         for (const senseFieldName of configSenses.fieldOrder) {
           const senseField = configSenses.fields[senseFieldName];
           if (senseField.hideIfEmpty || senseField.type === 'fields') {
@@ -963,8 +958,9 @@ export class LexiconEditorController implements angular.IController {
       key: 'exampleSentences' });
     filterOptions.push({ label: 'Pictures', value: 'pictures', type: 'pictures', key: 'pictures' });
     let hasAudioInputSystem = false;
-    for (const inputSystemsTag in this.config.inputSystems) {
-      if (this.config.inputSystems.hasOwnProperty(inputSystemsTag) && LexiconUtilityService.isAudio(inputSystemsTag)) {
+    for (const inputSystemsTag in this.lecConfig.inputSystems) {
+      if (this.lecConfig.inputSystems.hasOwnProperty(inputSystemsTag) && LexiconUtilityService.isAudio(inputSystemsTag)
+      ) {
         hasAudioInputSystem = true;
         break;
       }
@@ -994,11 +990,13 @@ export class LexiconEditorController implements angular.IController {
   }
 
   private getInputSystemAbbreviation(inputSystemTag: string): string {
-    if (this.config == null || this.config.inputSystems == null || !(inputSystemTag in this.config.inputSystems)) {
+    if (this.lecConfig == null || this.lecConfig.inputSystems == null ||
+      !(inputSystemTag in this.lecConfig.inputSystems)
+    ) {
       return inputSystemTag;
     }
 
-    return this.config.inputSystems[inputSystemTag].abbreviation;
+    return this.lecConfig.inputSystems[inputSystemTag].abbreviation;
   }
 
   private setCurrentEntry(entry: LexEntry = new LexEntry()): void {
@@ -1006,7 +1004,7 @@ export class LexiconEditorController implements angular.IController {
     entry = this.alignCustomFieldsInData(entry);
 
     // auto-make a valid model but stop at the examples array
-    entry = this.makeValidModelRecursive(this.config.entry, entry, 'examples');
+    entry = this.makeValidModelRecursive(this.lecConfig.entry, entry, 'examples');
 
     this.currentEntry = entry;
     this.control.currentEntry = this.currentEntry;
@@ -1120,8 +1118,8 @@ export class LexiconEditorController implements angular.IController {
   private syncProjectStatusSuccess = (): void => {
     this.editorService.refreshEditorData().then(() => {
       this.setCurrentEntry(this.entries[this.editorService.getIndexInList(this.currentEntry.id, this.entries)]);
-      this.sessionService.getSession(true).then(this.configService.refresh);
       this.notice.removeById(this.warnOfUnsavedEditsId);
+      this.warnOfUnsavedEditsId = undefined;
     });
   }
 
@@ -1226,3 +1224,15 @@ export class LexiconEditorEntryController implements angular.IController {
   }
 
 }
+
+export const LexiconEditorComponent: angular.IComponentOptions = {
+  bindings: {
+    lecConfig: '<',
+    lecInterfaceConfig: '<',
+    lecFinishedLoading: '<',
+    lecProject: '<',
+    lecRights: '<'
+},
+  controller: LexiconEditorController,
+  templateUrl: '/angular-app/languageforge/lexicon/editor/editor.component.html'
+};
