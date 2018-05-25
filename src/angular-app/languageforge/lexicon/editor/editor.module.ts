@@ -6,7 +6,7 @@ import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
 import {PuiUtilityModule} from '../../../bellows/shared/utils/pui-utils.module';
 import {EditorCommentsModule} from './comment/comment.module';
-import {LexiconEditorController, LexiconEditorEntryController, LexiconEditorListController} from './editor.controller';
+import {LexiconEditorController, LexiconEditorEntryController, LexiconEditorListController} from './editor.component';
 import {EditorFieldModule} from './field/field.module';
 
 export const LexiconEditorModule = angular
@@ -30,18 +30,18 @@ export const LexiconEditorModule = angular
       .state('editor', {
         abstract: true,
         url: '/editor',
-        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-abstract.html',
+        templateUrl: '/angular-app/languageforge/lexicon/editor/editor.component.html',
         controller: 'EditorCtrl',
         controllerAs: '$ctrl'
       })
       .state('editor.list', {
         url: '/list',
-        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-list.html',
+        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-list.view.html',
         controller: 'EditorListCtrl'
       })
       .state('editor.entry', {
         url: '/entry/{entryId:[0-9a-z_]{6,24}}',
-        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-entry.html',
+        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-entry.view.html',
         controller: 'EditorEntryCtrl'
       })
     ;
