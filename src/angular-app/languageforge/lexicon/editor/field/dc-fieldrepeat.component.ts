@@ -15,10 +15,7 @@ export class FieldRepeatController implements angular.IController {
   contextGuid: string;
   optionlists: LexConfigOptionLists;
 
-  fieldContainsData = this.lexConfigService.fieldContainsData;
-
-  static $inject = ['lexConfigService'];
-  constructor(protected lexConfigService: LexiconConfigService) { }
+  fieldContainsData = LexiconConfigService.fieldContainsData;
 
   $onInit(): void {
     this.contextGuid = this.parentContextGuid;

@@ -12,7 +12,7 @@
                                 <small data-ng-show="$ctrl.entryListModifiers.filterBy" class="float-right notranslate">{{$ctrl.filteredEntries.length}} / {{$ctrl.entries.length}}</small>
                             </div>
                             <button id="newWord" type="button" class="btn btn-primary"
-                                data-ng-if="$ctrl.rights.canEditEntry()"
+                                data-ng-if="$ctrl.lecRights.canEditEntry()"
                                 data-ng-click="$ctrl.newEntry()">
                                 <i class="fa fa-plus"></i>
                             </button>
@@ -81,10 +81,10 @@
                 <div class="row">
                     <div class="col">
                         <div class="lexiconItemListContainer" data-pui-when-scrolled="$ctrl.show.more()">
-                            <div class="list-group" data-ng-show="$ctrl.entries.length > 0 && $ctrl.finishedLoading">
+                            <div class="list-group" data-ng-show="$ctrl.entries.length > 0 && $ctrl.lecFinishedLoading">
                                 <div class="lexiconListItem list-group-item list-group-item-action" data-ng-repeat="entry in $ctrl.visibleEntries track by entry.id"
                                      data-ng-click="$ctrl.editEntryAndScroll(entry.id)">
-                                    <dc-rendered global-config="$ctrl.config" config="$ctrl.config.entry" model="entry" option-lists="$ctrl.optionLists"></dc-rendered>
+                                    <dc-rendered global-config="$ctrl.lecConfig" config="$ctrl.lecConfig.entry" model="entry" option-lists="$ctrl.optionLists"></dc-rendered>
                                     <div data-ng-show="$ctrl.getEntryCommentCount(entry.id) > 0"
                                          style="position:absolute; right:5px;top:3px">
                                         <i class="fa fa-comment commentColor"></i>
@@ -95,7 +95,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" data-ng-show="$ctrl.entries.length == 0 && $ctrl.rights.canEditProject() && $ctrl.finishedLoading">
+            <div class="row" data-ng-show="$ctrl.entries.length == 0 && $ctrl.lecRights.canEditProject() && $ctrl.lecFinishedLoading">
                 <div class="col">
                     <div class="lexiconItemListContainer" data-pui-when-scrolled="$ctrl.show.more()">
                         <div class="text-center no-entries" id="noEntries">
@@ -105,7 +105,7 @@
                                 <i class="fa fa-upload"></i> Import entries from LIFT</button>
                             <button class="btn btn-primary" data-ng-click="$ctrl.syncProject()" data-ng-show="$ctrl.projectSettings.hasSendReceive">
                                 <i class="fa fa-refresh"></i> Synchronize project with LanguageDepot.org</button>
-                            <button class="btn btn-primary" id="noEntriesNewWord" data-ng-if="$ctrl.rights.canEditEntry()"
+                            <button class="btn btn-primary" id="noEntriesNewWord" data-ng-if="$ctrl.lecRights.canEditEntry()"
                                     data-ng-click="$ctrl.newEntry()"><i class="fa fa-plus"></i> New Word
                             </button>
                         </div>

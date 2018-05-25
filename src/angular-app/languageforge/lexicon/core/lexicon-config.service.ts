@@ -1,6 +1,8 @@
 import * as angular from 'angular';
 
 import {SessionService} from '../../../bellows/core/session.service';
+import {LexMultiText} from '../shared/model/lex-multi-text.model';
+import {LexValue} from '../shared/model/lex-value.model';
 import {
   LexConfigField,
   LexConfigFieldList,
@@ -8,13 +10,23 @@ import {
   LexiconConfig
 } from '../shared/model/lexicon-config.model';
 import {LexiconProjectSettings} from '../shared/model/lexicon-project-settings.model';
+import {LexOptionList} from '../shared/model/option-list.model';
 
 export class LexiconConfigService {
   static $inject: string[] = ['sessionService'];
   constructor(private sessionService: SessionService) { }
 
-  refresh = (): angular.IPromise<LexiconConfig> => {
+  getEditorConfig(updatedConfig?: LexiconConfig, updatedOptionLists?: LexOptionList[]
+  ): angular.IPromise<LexiconConfig> {
     return this.sessionService.getSession().then((session => {
+      if (updatedConfig != null) {
+        session.projectSettings<LexiconProjectSettings>().config = updatedConfig;
+      }
+
+      if (updatedOptionLists != null) {
+        session.projectSettings<LexiconProjectSettings>().optionlists = updatedOptionLists;
+      }
+
       const config = angular.copy(session.projectSettings<LexiconProjectSettings>().config);
       const userId = session.userId();
       const role = session.projectSettings<LexiconProjectSettings>().currentUserRole;
@@ -22,15 +34,14 @@ export class LexiconConfigService {
 
       // copy option lists to config object
       config.optionlists = {};
-      angular.forEach(session.projectSettings<LexiconProjectSettings>().optionlists, optionlist => {
-        config.optionlists[optionlist.code] = optionlist;
-      });
+      for (const optionList of session.projectSettings<LexiconProjectSettings>().optionlists) {
+        config.optionlists[optionList.code] = optionList;
+      }
 
-      // use an user-based field config if defined
+      // use a user-based field config if defined
       if (config.userViews[userId] != null) {
         fieldsConfig = config.userViews[userId];
       } else {
-
         // fallback to role-based field config
         fieldsConfig = config.roleViews[role];
       }
@@ -59,7 +70,7 @@ export class LexiconConfigService {
     });
   }
 
-  fieldContainsData(type: string, model: any): boolean {
+  static fieldContainsData(type: string, model: any): boolean {
     let containsData = false;
     if (model == null) {
       return false;
@@ -71,11 +82,14 @@ export class LexiconConfigService {
 
     switch (type) {
       case 'multitext':
-        angular.forEach(model, field => {
-          if (field.value && field.value !== '') {
-            containsData = true;
+        for (const inputSystemTag in model as LexMultiText) {
+          if (model.hasOwnProperty(inputSystemTag)) {
+            const field: LexValue = model[inputSystemTag];
+            if (field.value && field.value !== '') {
+              containsData = true;
+            }
           }
-        });
+        }
 
         break;
       case 'optionlist':
