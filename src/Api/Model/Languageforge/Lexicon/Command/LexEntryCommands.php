@@ -41,21 +41,23 @@ class LexEntryCommands
 
     private static function lookupFieldLabel(LexConfigFieldList $fieldList, array $parts) {
         $currentList = $fieldList;
+        // Overwritten at each step of the foreach loop, except when that step isn't a field name (i.e., for language codes)
+        // So "newValue.lexeme.en" will set $result for the "lexeme" field but not for "en", since that's not a field
         $result = '';
         foreach ($parts as $part) {
             // Strip away anything after a # character
-            $fieldId = explode('#', $part, 2)[0];
-            if (array_key_exists($fieldId, $currentList->fields)) {
+            $fieldName = explode('#', $part, 2)[0];
+            if (array_key_exists($fieldName, $currentList->fields)) {
                 /** @var LexConfig $fieldConfig */
-                $fieldConfig = $currentList->fields[$fieldId];
+                $fieldConfig = $currentList->fields[$fieldName];
                 $result = $fieldConfig->label;
-                if ($fieldConfig instanceof LexConfigFieldList) {
+                if ($fieldConfig->type === LexConfig::FIELDLIST) {
                     $currentList = $fieldConfig;
                 }
             } else {
-                // If we can't find a label, use the field ID as that's better than nothing
+                // If we can't find a label, use the field name as that's better than nothing
                 if (empty($result)) {
-                    $result = $fieldId;
+                    $result = $fieldName;
                 }
             }
         }
@@ -73,7 +75,9 @@ class LexEntryCommands
         foreach ($differences as $key => $value) {
             // Key will look like "newValue.senses#482f60da-b32a-45b9-9450-ee8f24791557.definition.en"
             $parts = explode('.', $key);
-            if (empty($parts)) continue;
+            if (empty($parts)) {
+                continue;
+            }
             $restOfKeyParts = array_slice($parts, 1);
             $restOfKey = implode('.', $restOfKeyParts);
             if (array_key_exists(ActivityModel::FIELD_LABEL . '.' . $restOfKey, $result)) {
