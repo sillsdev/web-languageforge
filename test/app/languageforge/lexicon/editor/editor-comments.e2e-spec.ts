@@ -121,6 +121,8 @@ describe('Lexicon E2E Editor Comments', () => {
   });
 
   it('comments panel: show all comments', () => {
+    // ToDo: investigate why this was needed to be added after editor.js changed to TS - IJH 2018-05
+    browser.sleep(1000);
     editorPage.edit.toCommentsLink.click();
     browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     expect<any>(editorPage.commentDiv.getAttribute('class')).toContain('panel-visible');
