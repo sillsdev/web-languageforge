@@ -100,19 +100,19 @@ export class LexiconCommentService {
   }
 
   getFieldCommentCount(contextGuid: string): number {
-    if (this.comments.counts.currentEntry.fields[contextGuid] != null) {
-      return this.comments.counts.currentEntry.fields[contextGuid];
+    if (this.comments == null || this.comments.counts.currentEntry.fields[contextGuid] == null) {
+      return 0;
     }
 
-    return 0;
+    return this.comments.counts.currentEntry.fields[contextGuid];
   }
 
   getEntryCommentCount(entryId: string): number {
-    if (this.comments.counts.byEntry[entryId] != null) {
-      return this.comments.counts.byEntry[entryId];
+    if (this.comments == null || this.comments.counts.byEntry[entryId] == null) {
+      return 0;
     }
 
-    return 0;
+    return this.comments.counts.byEntry[entryId];
   }
 
   removeCommentFromLists = (commentId: string, replyId?: string): void => {

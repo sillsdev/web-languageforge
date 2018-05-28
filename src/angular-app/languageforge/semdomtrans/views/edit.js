@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('semdomtrans.edit', ['ui.bootstrap', 'coreModule',  'palaso.ui.notice',
-  'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.scroll',
+  'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.utils',
   'palaso.ui.typeahead', 'palaso.ui.sd.ws'])
 
 // DBE controller

@@ -1,14 +1,19 @@
 import * as angular from 'angular';
 
 import {SessionService} from '../../../bellows/core/session.service';
-import {LexConfigField, LexConfigFieldList, LexConfigMultiText} from '../shared/model/lexicon-config.model';
+import {
+  LexConfigField,
+  LexConfigFieldList,
+  LexConfigMultiText,
+  LexiconConfig
+} from '../shared/model/lexicon-config.model';
 import {LexiconProjectSettings} from '../shared/model/lexicon-project-settings.model';
 
 export class LexiconConfigService {
   static $inject: string[] = ['sessionService'];
   constructor(private sessionService: SessionService) { }
 
-  refresh = (): any => {
+  refresh = (): angular.IPromise<LexiconConfig> => {
     return this.sessionService.getSession().then((session => {
       const config = angular.copy(session.projectSettings<LexiconProjectSettings>().config);
       const userId = session.userId();
@@ -22,7 +27,7 @@ export class LexiconConfigService {
       });
 
       // use an user-based field config if defined
-      if (angular.isDefined(config.userViews[userId])) {
+      if (config.userViews[userId] != null) {
         fieldsConfig = config.userViews[userId];
       } else {
 
@@ -45,7 +50,7 @@ export class LexiconConfigService {
       const role = session.projectSettings<LexiconProjectSettings>().currentUserRole;
       const userId = session.userId();
 
-      if (angular.isDefined(config.userViews[userId])) {
+      if (config.userViews[userId] != null) {
         return config.userViews[userId].showTasks[taskName];
       } else {
         // fallback to role-based field config
@@ -56,7 +61,7 @@ export class LexiconConfigService {
 
   fieldContainsData(type: string, model: any): boolean {
     let containsData = false;
-    if (angular.isUndefined(model)) {
+    if (model == null) {
       return false;
     }
 
@@ -100,17 +105,17 @@ export class LexiconConfigService {
       const config = session.projectSettings<LexiconProjectSettings>().config;
       let search = config.entry.fields;
 
-      if (angular.isDefined(search[fieldName])) {
+      if (search[fieldName] != null) {
         return search[fieldName];
       }
 
       search = (config.entry.fields.senses as LexConfigFieldList).fields;
-      if (angular.isDefined(search[fieldName])) {
+      if (search[fieldName] != null) {
         return search[fieldName];
       }
 
       search = ((config.entry.fields.senses as LexConfigFieldList).fields.examples as LexConfigFieldList).fields;
-      if (angular.isDefined(search[fieldName])) {
+      if (search[fieldName] != null) {
         return search[fieldName];
       }
 

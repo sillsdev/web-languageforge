@@ -2,7 +2,7 @@
 
 angular.module('semdomtrans.comments', ['ui.bootstrap', 'coreModule',
   'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term',
-  'palaso.ui.scroll', 'lexCommentsModule', 'semdomtransCommentsViewModule'])
+  'palaso.ui.utils', 'lexCommentsModule', 'semdomtransCommentsViewModule'])
 
 // DBE controller
 .controller('commentsCtrl', ['$scope', 'semdomtransEditorDataService', '$stateParams',
