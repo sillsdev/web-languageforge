@@ -549,7 +549,7 @@ export class SourceDocumentEditor extends DocumentEditor {
   }
 
   translateCurrentSegment(): angular.IPromise<void> {
-    return this.machine.translate(this.currentSegment.text);
+    return this.machine.translate(this.currentSegment == null ? '' : this.currentSegment.text);
   }
 
   resetTranslation(): angular.IPromise<void> {
