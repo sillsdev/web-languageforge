@@ -55,8 +55,12 @@ class LexEntryCommands
                     $currentList = $fieldConfig;
                 }
             } else {
-                // If we can't find a label, use the field name as that's better than nothing
-                if (empty($result)) {
+                if ($fieldName == LexConfig::SENSES_LIST) {
+                    $result = "Meaning";  // Hack - remove once FixSenseAndExampleLabels data migration has been run
+                } else if ($fieldName == LexConfig::EXAMPLES_LIST) {
+                    $result = "Example";  // Hack - remove once FixSenseAndExampleLabels data migration has been run
+                } else if (empty($result)) {
+                    // If we can't find a label, use the field name as that's better than nothing
                     $result = $fieldName;
                 }
             }
