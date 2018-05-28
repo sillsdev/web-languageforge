@@ -23,6 +23,10 @@ use Api\Model\Shared\UnreadQuestionModel;
 
 class ActivityCommands
 {
+    // constants used in updateScore and updateEntryCommentScore
+    const INCREASE_SCORE = 'increase';
+    const DECREASE_SCORE = 'decrease';
+
     /**
      *
      * @param ProjectModel $projectModel
@@ -178,7 +182,7 @@ class ActivityCommands
      * @param string $mode
      * @return string activity id
      */
-    public static function updateScore($projectModel, $questionId, $answerId, $userId, $mode = 'increase')
+    public static function updateScore($projectModel, $questionId, $answerId, $userId, $mode = ActivityCommands::INCREASE_SCORE)
     {
         $question = new QuestionModel($projectModel, $questionId);
         $text = new TextModel($projectModel, $question->textRef->asString());
@@ -186,7 +190,7 @@ class ActivityCommands
         $user = new UserModel($userId);
         $user2 = new UserModel($answer->userRef->asString());
         $activity = new ActivityModel($projectModel);
-        $activity->action = ($mode == 'increase') ? ActivityModel::INCREASE_SCORE : ActivityModel::DECREASE_SCORE;
+        $activity->action = ($mode == ActivityCommands::INCREASE_SCORE) ? ActivityModel::INCREASE_SCORE : ActivityModel::DECREASE_SCORE;
         $activity->userRef->id = $userId;
         $activity->textRef->id = $text->id->asString();
         $activity->questionRef->id = $questionId;
@@ -336,17 +340,17 @@ class ActivityCommands
      * @param ProjectModel $projectModel
      * @param string $entryId
      * @param LexCommentModel $commentModel
-     * @param string $mode
+     * @param string $mode either ActivityCommands::INCREASE_SCORE or ActivityCommands::DECREASE_SCORE
      * @return string activity id
      */
-    public static function updateEntryCommentScore($projectModel, $entryId, $commentModel, $mode)
+    public static function updateEntryCommentScore($projectModel, $entryId, $commentModel, $mode = ActivityCommands::INCREASE_SCORE)
     {
         $activity = new ActivityModel($projectModel);
         $entry = new LexEntryModel($projectModel, $entryId);
-        $userId = $commentModel->authorInfo->modifiedByUserRef->asString();
+        $userId = $commentModel->authorInfo->createdByUserRef->asString();
         // We do NOT record who clicked the "Like" button in the activity log, so the only user ID here is the author of the comment.
         $user = new UserModel($userId);
-        $activity->action = ($mode == 'increase') ? ActivityModel::LEX_COMMENT_INCREASE_SCORE : ActivityModel::LEX_COMMENT_DECREASE_SCORE;
+        $activity->action = ($mode == ActivityCommands::INCREASE_SCORE) ? ActivityModel::LEX_COMMENT_INCREASE_SCORE : ActivityModel::LEX_COMMENT_DECREASE_SCORE;
         $activity->userRef->id = $userId;
         $activity->entryRef->id = $entryId;
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
