@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9f194190247588f6e9bde47239d9de43",
+    "content-hash": "a1bb4dde4ec27a56b7e33af96e04fbe5",
     "packages": [
         {
             "name": "aptoma/twig-markdown",
@@ -62,6 +62,122 @@
                 "twig"
             ],
             "time": "2017-06-23T14:35:41+00:00"
+        },
+        {
+            "name": "bugsnag/bugsnag",
+            "version": "v3.12.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bugsnag/bugsnag-php.git",
+                "reference": "b1cd36a49a5a780824d9b3f369ad89275013b19f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bugsnag/bugsnag-php/zipball/b1cd36a49a5a780824d9b3f369ad89275013b19f",
+                "reference": "b1cd36a49a5a780824d9b3f369ad89275013b19f",
+                "shasum": ""
+            },
+            "require": {
+                "composer/ca-bundle": "^1.0",
+                "guzzlehttp/guzzle": "^5.0|^6.0",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "graham-campbell/testbench-core": "^1.1",
+                "mockery/mockery": "^0.9.4|^1.0",
+                "mtdowling/burgomaster": "dev-master#72151eddf5f0cf101502b94bf5031f9c53501a04",
+                "php-mock/php-mock-phpunit": "^1.1",
+                "phpunit/phpunit": "^4.8|^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.13-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Bugsnag\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Smith",
+                    "email": "notifiers@bugsnag.com",
+                    "homepage": "https://bugsnag.com"
+                }
+            ],
+            "description": "Official Bugsnag notifier for PHP applications.",
+            "homepage": "https://github.com/bugsnag/bugsnag-php",
+            "keywords": [
+                "bugsnag",
+                "errors",
+                "exceptions",
+                "logging",
+                "tracking"
+            ],
+            "time": "2018-02-28T12:14:17+00:00"
+        },
+        {
+            "name": "bugsnag/bugsnag-silex",
+            "version": "v2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bugsnag/bugsnag-silex.git",
+                "reference": "83be88aa2307dd0871e7d5d8334d74ceffda494d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bugsnag/bugsnag-silex/zipball/83be88aa2307dd0871e7d5d8334d74ceffda494d",
+                "reference": "83be88aa2307dd0871e7d5d8334d74ceffda494d",
+                "shasum": ""
+            },
+            "require": {
+                "bugsnag/bugsnag": "^3.10",
+                "php": ">=5.5",
+                "silex/silex": "^1.2|^2.0"
+            },
+            "require-dev": {
+                "graham-campbell/testbench-core": "^1.1",
+                "mockery/mockery": "^0.9.4",
+                "phpunit/phpunit": "^4.8|^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Bugsnag\\Silex\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Smith",
+                    "email": "notifiers@bugsnag.com",
+                    "homepage": "https://bugsnag.com"
+                }
+            ],
+            "description": "The Bugsnag middleware for Silex",
+            "homepage": "http://github.com/bugsnag/bugsnag-silex",
+            "keywords": [
+                "bugsnag",
+                "errors",
+                "exceptions",
+                "logging",
+                "tracking"
+            ],
+            "time": "2017-12-21T16:45:57+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -1026,7 +1142,7 @@
             "support": {
                 "source": "https://github.com/sillsdev/LazyProperty/tree/feature/factory"
             },
-            "time": "2016-10-03T09:06:50+00:00"
+            "time": "2016-10-03 09:06:50"
         },
         {
             "name": "paragonie/random_compat",
@@ -1453,7 +1569,7 @@
                 "source": "https://github.com/sillsdev/web-php-utilities/tree/master",
                 "issues": "https://github.com/sillsdev/web-php-utilities/issues"
             },
-            "time": "2017-06-15T06:27:56+00:00"
+            "time": "2017-06-15 06:27:56"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -2556,7 +2672,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2017-03-22T23:28:45+00:00"
+            "time": "2017-03-22 23:28:45"
         }
     ],
     "packages-dev": [

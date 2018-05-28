@@ -115,7 +115,7 @@ export class TranslateSendReceiveService {
     this.translateSendReceiveApiService.getJob(this.job.id).then(job => {
       if (!clone) {
         if (job.percentCompleted > 0) {
-          this.notice.setPercentComplete(job.percentCompleted);
+          this.notice.setPercentComplete(Math.round(job.percentCompleted * 100));
         } else {
           this.notice.cancelProgressBar();
         }
@@ -135,7 +135,7 @@ export class TranslateSendReceiveService {
           case SendReceiveState.Syncing:
             this.notice.removeById(this.pendingMessageId);
             this.pendingMessageId = '';
-            this.notice.setLoading('Synchronizing with ParaTExt...');
+            this.notice.setLoading('Synchronizing with Paratext...');
             break;
           case SendReceiveState.Hold:
             this.notice.push(this.notice.ERROR, 'Well this is embarrassing. Something went ' +

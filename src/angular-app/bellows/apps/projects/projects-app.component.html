@@ -4,7 +4,6 @@
             <div style="padding-top:10px">
                 <sil-notices></sil-notices>
                 <div data-ng-show="$ctrl.finishedLoading">
-                    <h2 style="font-weight:normal">My Projects</h2>
                     <form data-ng-show="$ctrl.rights.showControlBar" class="control-bar form-inline mb-2">
                         <button id="startJoinProjectButton" type="button" data-ng-show="$ctrl.rights.canCreateProject" class="btn btn-primary"
                                 data-ng-click="$ctrl.startProject()">
@@ -49,7 +48,7 @@
                 <div data-ng-repeat="project in visibleProjects">
                     <div class="row align-items-center mb-3" data-ng-class="{active: $ctrl.isSelected(project)}">
                         <div class="col-md-4">
-                            <a data-ng-show="$ctrl.isInProject(project)" data-ng-href="/app/{{project.appName}}/{{project.id}}">
+                            <a data-ng-show="$ctrl.isInProject(project)" data-ng-href="/app/{{project.appName}}/{{project.id}}/">
                                 <span class="larger-text">{{project.projectName}}</span></a>
                             <span data-ng-show="!$ctrl.isInProject(project)" class="larger-text">{{project.projectName}}</span>
                         </div>

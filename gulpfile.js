@@ -36,6 +36,12 @@ var dotnetPublish = require('gulp-dotnet-cli').publish;
 var dotnetTest = require('gulp-dotnet-cli').test;
 var fs = require('fs');
 var del = require('del');
+var data = require('gulp-data');
+var ejs = require('gulp-ejs');
+var dest = require('gulp-dest');
+
+// Define release stages that will send errors to bugsnag
+var notifyReleaseStages = "['live', 'qa']";
 
 // If using a JSON file for the Google API secrets, uncomment the following line and search for
 // "Google API" to find other lines to uncomment further below.
@@ -135,10 +141,12 @@ gulp.task('sass:watch', function () {
 
 function webpack(applicationName, callback, isProduction, isWatch) {
   var watch = isWatch ? ' --watch' : '';
-  var env = applicationName ? ' --env.applicationName=' + applicationName : '';
+  var envApplication = applicationName ? ' --env.applicationName=' + applicationName : '';
   var prod = isProduction ? ' -p' : '';
-  execute('$(npm bin)/webpack' + watch + env + prod + ' --colors',
-    { cwd: '.' },
+  if (!process.env.NOTIFY_RELEASE_STAGES)
+    process.env.NOTIFY_RELEASE_STAGES = notifyReleaseStages;
+  execute('$(npm bin)/webpack' + watch + envApplication + prod + ' --colors',
+    { cwd: '.', env: process.env },
     function (err) {
       if (err) throw new gutil.PluginError('webpack', err);
       callback();
@@ -1005,6 +1013,11 @@ gulp.task('build-productionConfig', function () {
     googleClientSecret = 'googleClientSecret';
   }
 
+  var gatherWordsClientId = process.env.GATHERWORDS_CLIENT_ID;
+  if (gatherWordsClientId === undefined) {
+    gatherWordsClientId = 'gatherWordsClientId';
+  }
+
   var paratextClientId = process.env.PARATEXT_CLIENT_ID;
   if (paratextClientId === undefined) {
     paratextClientId = 'paratextClientId';
@@ -1018,6 +1031,11 @@ gulp.task('build-productionConfig', function () {
   var jwtKey = process.env.JWT_KEY;
   if (jwtKey === undefined) {
     jwtKey = 'jwtKey';
+  }
+
+  var bugsnagApiKey = process.env.XFORGE_BUGSNAG_API_KEY;
+  if (bugsnagApiKey === undefined) {
+    bugsnagApiKey = 'missing-bugsnag-api-key';
   }
 
   var params = require('yargs')
@@ -1044,6 +1062,10 @@ gulp.task('build-productionConfig', function () {
       // default: secrets_google_api_client_id.web.client_secret,
       default: googleClientSecret,
       type: 'string' })
+    .option('gatherWordsClientId', {
+      demand: false,
+      default: gatherWordsClientId,
+      type: 'string' })
     .option('paratextClientId', {
       demand: false,
       default: paratextClientId,
@@ -1055,6 +1077,10 @@ gulp.task('build-productionConfig', function () {
     .option('jwtKey', {
       demand: false,
       default: jwtKey,
+      type: 'string' })
+    .option('bugsnagApiKey', {
+      demand: false,
+      default: bugsnagApiKey,
       type: 'string' })
     .fail(yargFailure)
     .argv;
@@ -1080,6 +1106,9 @@ gulp.task('build-productionConfig', function () {
       /(define\('GOOGLE_CLIENT_SECRET', ').*;$/m,
       '$1' + params.googleClientSecret + '\');'))
     .pipe(replace(
+      /(define\('GATHERWORDS_CLIENT_ID', ').*;$/m,
+      '$1' + params.gatherWordsClientId + '\');'))
+    .pipe(replace(
       /(define\('PARATEXT_CLIENT_ID', ').*;$/m,
       '$1' + params.paratextClientId + '\');'))
     .pipe(replace(
@@ -1088,6 +1117,12 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('JWT_KEY', ').*;$/m,
       '$1' + params.jwtKey + '\');'))
+    .pipe(replace(
+      /(define\('BUGSNAG_API_KEY', ').*;$/m,
+      '$1' + params.bugsnagApiKey + '\');'))
+    .pipe(replace(
+      /(define\('BUGSNAG_NOTIFY_RELEASE_STAGES', ).*;$/m,
+      '$1' + notifyReleaseStages + ');'))
     .pipe(gulp.dest('./'));
 });
 
@@ -1234,6 +1269,41 @@ gulp.task('build-upload', function (cb) {
   );
 });
 
+// ------------------------------------------
+// Create WebsiteInstances.php from template
+// ------------------------------------------
+gulp.task('build-createWebsiteDefsPhp', function () {
+  return gulp.src('src/Api/Library/Shared/WebsiteInstances.ejs')
+    .pipe(data(function () {
+      return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
+    }))
+    .pipe(ejs())
+    .pipe(dest('src/Api/Library/Shared/:name.php'))
+    .pipe(gulp.dest('src/Api/Library/Shared/'));
+});
+
+// ------------------------------------------
+// Create website-instances.ts from template
+// ------------------------------------------
+gulp.task('build-createWebsiteDefsTs', function () {
+  return gulp.src('src/angular-app/bellows/core/website-instances.ejs')
+    .pipe(data(function () {
+      return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
+    }))
+    .pipe(ejs())
+    .pipe(dest('src/angular-app/bellows/core/:name.generated-data.ts'))
+    .pipe(gulp.dest('src/angular-app/bellows/core/'));
+});
+
+// ------------------------------------------
+// Create files from templates
+// ------------------------------------------
+gulp.task('build-createWebsiteDefs',
+  gulp.parallel(
+    'build-createWebsiteDefsPhp',
+    'build-createWebsiteDefsTs')
+);
+
 // -------------------------------------
 //   Task: Build (General)
 // -------------------------------------
@@ -1247,7 +1317,8 @@ gulp.task('build',
       'build-productionConfig',
       'build-clearLocalCache',
       'build-remove-test-fixtures',
-      'build-dotnet'),
+      'build-dotnet',
+      'build-createWebsiteDefs'),
     'sass',
     'build-webpack',
     'build-minify',
@@ -1283,6 +1354,7 @@ gulp.task('dev-build',
 gulp.task('dev-dependencies-and-build',
   gulp.series(
     'get-dependencies',
+    'build-createWebsiteDefs',
     'dev-build'
   )
 );
@@ -1319,19 +1391,18 @@ gulp.task('build-e2e').description =
 // -------------------------------------
 //   Task: Build, PHP Tests, Upload
 // -------------------------------------
-gulp.task('build-php',
+gulp.task('build-and-test',
   gulp.series(
     'build',
     'test-php',
 
     // 'test-js',
     'test-dotnet',
-    'build-upload',
     'test-restart-webserver',
     'local-restart-xforge-web-api',
     'local-restart-node-server')
 );
-gulp.task('build-php').description =
+gulp.task('build-and-test').description =
   'Build and Run PHP tests on CI server; Deploy to dev site';
 
 // -------------------------------------

@@ -409,6 +409,11 @@ class Sf
     // ---------------------------------------------------------------
     // Activity Log
     // ---------------------------------------------------------------
+    public function valid_activity_types_dto()
+    {
+        return ActivityListDto::getActivityTypes($this->website);
+    }
+
     public function activity_list_dto($filterParams = [])
     {
         return ActivityListDto::getActivityForUser($this->website->domain, $this->userId, $filterParams);
@@ -521,7 +526,7 @@ class Sf
     // ---------------------------------------------------------------
     public function text_update($object)
     {
-        return TextCommands::updateText($this->projectId, $object);
+        return TextCommands::updateText($this->projectId, $object, $this->userId);
     }
 
     public function text_read($textId)
@@ -555,7 +560,7 @@ class Sf
     // ---------------------------------------------------------------
     public function question_update($object)
     {
-        return QuestionCommands::updateQuestion($this->projectId, $object);
+        return QuestionCommands::updateQuestion($this->projectId, $object, $this->userId);
     }
 
     public function question_read($questionId)

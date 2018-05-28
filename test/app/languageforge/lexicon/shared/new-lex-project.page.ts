@@ -15,10 +15,10 @@ export class NewLexProjectPage {
   // form controls
   noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   firstNoticeCloseButton = this.noticeList.first().element(by.partialButtonText('×'));
-  newLexProjectForm = element(by.id('newLexProjectForm'));
-  progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
-  backButton = element(by.id('backButton'));
-  nextButton = element(by.id('nextButton'));
+  newLexProjectForm = element(by.id('new-lex-project-form'));
+  progressIndicatorStep3Label = element(by.id('progress-indicator-step3-label'));
+  backButton = element(by.id('back-button'));
+  nextButton = element(by.id('next-button'));
 
   async expectFormIsValid() {
     await expect(this.nextButton.getAttribute('class')).toMatch(/btn-primary(?:\s|$)/);
@@ -41,49 +41,49 @@ export class NewLexProjectPage {
 
   // step 0: chooser
   chooserPage = {
-    sendReceiveButton: element(by.id('sendReceiveButton')),
-    createButton: element(by.id('createButton'))
+    sendReceiveButton: element(by.id('send-receive-button')),
+    createButton: element(by.id('create-button'))
   };
   // step 1: send receive credentials
   srCredentialsPage = {
-    loginInput: element(by.id('srUsername')),
-    loginOk: element(by.id('usernameOk')),
-    passwordInput: element(by.id('srPassword')),
-    credentialsInvalid: element(by.id('credentialsInvalid')),
-    passwordOk: element(by.id('passwordOk')),
-    projectNoAccess: element(by.id('projectNoAccess')),
-    projectOk: element(by.id('projectOk')),
+    loginInput: element(by.id('sr-username')),
+    loginOk: element(by.id('username-ok')),
+    passwordInput: element(by.id('sr-password')),
+    credentialsInvalid: element(by.id('credentials-invalid')),
+    passwordOk: element(by.id('password-ok')),
+    projectNoAccess: element(by.id('project-no-access')),
+    projectOk: element(by.id('project-ok')),
     projectSelect() {
-      return element(by.id('srProjectSelect'));
+      return element(by.id('sr-project-select'));
     }
   };
 
   // step 1: project name
   namePage = {
-    projectNameInput: element(by.model('newProject.projectName')),
-    projectCodeInput: element(by.model('newProject.projectCode')),
-    projectCodeUneditableInput: element(by.binding('newProject.projectCode')),
-    projectCodeLoading: element(by.id('projectCodeLoading')),
-    projectCodeExists: element(by.id('projectCodeExists')),
-    projectCodeAlphanumeric: element(by.id('projectCodeAlphanumeric')),
-    projectCodeOk: element(by.id('projectCodeOk')),
-    editProjectCodeCheckbox: element(by.model('newProject.editProjectCode'))
+    projectNameInput: element(by.id('project-name')),
+    projectCodeInput: element(by.id('project-code')),
+    projectCodeUneditableInput: element(by.id('project-code-uneditable')),
+    projectCodeLoading: element(by.id('project-code-loading')),
+    projectCodeExists: element(by.id('project-code-exists')),
+    projectCodeAlphanumeric: element(by.id('project-code-alphanumeric')),
+    projectCodeOk: element(by.id('project-code-ok')),
+    editProjectCodeCheckbox: element(by.id('edit-project-code'))
   };
   // step 2: initial data
   initialDataPage = {
-    browseButton: element(by.id('browseButton')),
+    browseButton: element(by.id('browse-button')),
     mockUpload: this.mockUpload
   };
   // step 3: verify data
   verifyDataPage = {
     title: element(by.id('new-project-verify')),
-    nonCriticalErrorsButton: element(by.id('nonCriticalErrorsButton')),
-    entriesImported: element(by.binding('newProject.entriesImported')),
-    importErrors: element(by.binding('newProject.importErrors'))
+    nonCriticalErrorsButton: element(by.id('non-critical-errors-button')),
+    entriesImported: element(by.id('entries-imported')),
+    importErrors: element(by.id('import-errors'))
   };
   // step 3 alternate: primary language
   primaryLanguagePage = {
-    selectButton: element(by.id('selectLanguageButton')),
+    selectButton: element(by.id('select-language-button')),
     // tslint:disable-next-line:max-line-length
     // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
     async selectButtonClick() {

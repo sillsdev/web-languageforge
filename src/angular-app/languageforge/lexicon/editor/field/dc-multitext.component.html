@@ -1,0 +1,24 @@
+<form class="form-horizontal dc-multitext">
+    <div class="form-group row comment-bubble-group" data-ng-repeat="tag in $ctrl.config.inputSystems">
+        <label class="col-form-label col-lg-4 text-lg-right" data-ng-show="$ctrl.config.type != 'pictures'"
+               data-ng-class="$first ? '' : 'd-none d-lg-inline-block'">
+            <span data-ng-show="$first">{{$ctrl.config.label}}</span></label>
+        <div class="controls" data-ng-class="$ctrl.config.type === 'pictures' ? 'col' : 'col-lg-8'">
+            <div class="input-group" data-ng-click="$ctrl.selectInputSystem(tag)">
+                <span class="wsid input-group-addon notranslate" tabindex="-1"
+                    title="{{tag}} {{$ctrl.inputSystems[tag].languageName}}">{{$ctrl.inputSystems[tag].abbreviation}}</span>
+                <dc-text class="dc-text" data-ng-style="{ 'font-family': $ctrl.inputSystems[tag].cssFontFamily }" data-ng-if="!$ctrl.isAudio(tag)"
+                    fte-multiline="false"
+                    fte-disabled="! ($ctrl.isAtEditorEntry() && $ctrl.control.rights.canEditEntry()) || $ctrl.modelContainsSpan(tag)"
+                    fte-disabled-reason="$ctrl.modelContainsSpan(tag) ? 'would-lose-metadata' : $ctrl.control.rights.sendReceive.isInProgress() ? 'sr-in-progress' : 'editing-not-permitted'"
+                    fte-toolbar="[[]]"
+                    fte-model="$ctrl.model[tag].value"
+                    fte-dir="$ctrl.inputSystemDirection(tag)"></dc-text>
+                <dc-audio data-ng-if="$ctrl.isAudio(tag)" dc-filename="$ctrl.model[tag].value" dc-rights="$ctrl.control.rights"
+                          dc-interface-config="$ctrl.control.interfaceConfig" dc-project-slug="$ctrl.control.project.slug">
+                </dc-audio>
+            </div>
+        </div>
+        <comment-bubble control="$ctrl.control" field="$ctrl.fieldName" input-system="$ctrl.inputSystems[tag]" model="$ctrl.model" parent-context-guid="$ctrl.contextGuid"></comment-bubble>
+    </div>
+</form>

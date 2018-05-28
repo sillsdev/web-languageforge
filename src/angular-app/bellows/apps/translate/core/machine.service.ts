@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-import { InteractiveTranslationSession, SegmentTokenizer, SmtTrainProgress, TranslationEngine } from 'machine';
+import { InteractiveTranslationSession, ProgressStatus, SegmentTokenizer, TranslationEngine } from 'machine';
 import { RangeStatic } from 'quill';
 
 import { NoticeService } from '../../../core/notice/notice.service';
@@ -57,7 +57,6 @@ export class MachineService {
       return this.$q.resolve();
     }
 
-    this.prefix = '';
     if (this.sourceSegment === sourceSegment) {
       return this.$q.resolve();
     }
@@ -68,6 +67,7 @@ export class MachineService {
       return this.$q.resolve();
     }
 
+    this.prefix = '';
     const start = performance.now();
     const deferred = this.$q.defer<void>();
     this.engine.translateInteractively(sourceSegment, this.confidenceThreshold, newSession => {
@@ -86,11 +86,12 @@ export class MachineService {
           }
           deferred.resolve();
         } else {
-          this.session = null;
           deferred.reject('Translation result is no longer valid.');
         }
       } else {
-        this.session = null;
+        if (this.sourceSegment === sourceSegment) {
+          this.session = null;
+        }
         deferred.reject('Error occurred while retrieving translation result.');
       }
     });
@@ -196,7 +197,7 @@ export class MachineService {
     return deferred.promise;
   }
 
-  listenForTrainingStatus(onStatusUpdate: (progress: SmtTrainProgress) => void): angular.IPromise<void> {
+  listenForTrainingStatus(onStatusUpdate: (progress: ProgressStatus) => void): angular.IPromise<void> {
     if (!this.isInitialised) {
       return this.$q.resolve();
     }

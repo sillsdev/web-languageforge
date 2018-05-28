@@ -1,8 +1,16 @@
 'use strict';
 
-angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
-  'palaso.ui.dc.entry', 'palaso.ui.comments', 'truncate',
-  'palaso.ui.scroll', 'palaso.ui.notice'])
+angular.module('lexicon.editor', [
+  'ui.router',
+  'ui.bootstrap',
+  'coreModule',
+  'activity',
+  'editorFieldModule',
+  'lexCommentsModule',
+  'truncate',
+  'palaso.ui.scroll',
+  'palaso.ui.notice'
+])
   .config(['$stateProvider', function ($stateProvider) {
 
     // State machine from ui.router
@@ -23,21 +31,18 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         templateUrl: '/angular-app/languageforge/lexicon/editor/editor-entry.html',
         controller: 'EditorEntryCtrl'
       })
-      .state('editor.comments', {
-        url: '/entry/{entryId:[0-9a-z_]{6,24}}/comments',
-        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-comments.html',
-        controller: 'EditorCommentsCtrl'
-      })
       ;
   }])
   .controller('EditorCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService', '$q',
     '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'lexRightsService',
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
     'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService', '$timeout',
+    'activityService', 'applicationHeaderService',
   function ($scope, userService, sessionService, lexService, $q,
             $state, $window, $interval, $filter, linkService, utils, rightsService,
             notice, $rootScope, $location, lexConfig, commentService,
-            editorService, lexProjectService, sendReceive, modal, $timeout) {
+            editorService, lexProjectService, sendReceive, modal, $timeout,
+            activityService, applicationHeaderService) {
 
     var pristineEntry = {};
     var warnOfUnsavedEditsId;
@@ -48,14 +53,16 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
     $scope.commentService = commentService;
     $scope.editorService = editorService;
     $scope.configService = lexConfig;
+    $scope.activityService = activityService;
     $scope.entries = editorService.entries;
     $scope.visibleEntries = editorService.visibleEntries;
     $scope.filteredEntries = editorService.filteredEntries;
     $scope.entryListModifiers = editorService.entryListModifiers;
+    $scope.applicationHeaderService = applicationHeaderService;
     $scope.commentContext = {
       contextGuid: ''
     };
-    $scope.commentPanelVisible = false;
+    $scope.rightPanelVisible = false;
     $scope.sortEntries = function (args) {
       editorService.sortEntries.apply(this, arguments).then(function () {
         $scope.typeahead.searchEntries($scope.typeahead.searchItemSelected);
@@ -67,6 +74,10 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         $scope.typeahead.searchEntries($scope.typeahead.searchItemSelected);
       });
     };
+
+    sessionService.getSession(true).then(function (session) {
+      $scope.applicationHeaderService.setPageName(session.project().projectName);
+    });
 
     $scope.show = {
       more: editorService.showMoreEntries,
@@ -268,7 +279,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       $scope.getPrimaryListItemForDisplay = editorService.getSortableValue;
 
       $scope.getWordForDisplay = function getWordForDisplay(entry) {
-        var lexeme = utils.constructor.getLexeme($scope.config.entry, entry);
+        var lexeme = utils.constructor.getLexeme($scope.config, $scope.config.entry, entry);
         if (!lexeme) {
           return '[Empty]';
         }
@@ -288,8 +299,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       $scope.getMeaningForDisplay = function getMeaningForDisplay(entry) {
         var meaning = '';
         if (entry.senses && entry.senses[0]) {
-          meaning =
-            utils.constructor.getMeaning($scope.config.entry.fields.senses, entry.senses[0]);
+          meaning = utils.constructor.getMeaning($scope.config, $scope.config.entry.fields.senses,
+            entry.senses[0]);
         }
 
         if (!meaning) {
@@ -453,9 +464,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
           $scope.saveCurrentEntry();
           setCurrentEntry($scope.entries[editorService.getIndexInList(id, $scope.entries)]);
           commentService.loadEntryComments(id);
-          if ($scope.commentPanelVisible === true && $scope.commentContext.contextGuid !== '') {
+          if ($scope.rightPanelVisible === true && $scope.commentContext.contextGuid !== '') {
             $scope.showComments();
-            $scope.setCommentContext('', '');
+            $scope.setCommentContext('');
           }
         }
 
@@ -487,7 +498,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
             $state.go('editor.entry', { entryId: newEntry.id });
           }
 
-          $scope.hideCommentsPanel();
+          $scope.hideRightPanel();
         });
       };
 
@@ -615,7 +626,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
 
       $scope.deleteEntry = function deleteEntry(entry) {
         var deletemsg = 'Are you sure you want to delete the entry <b>\' ' +
-          utils.constructor.getLexeme($scope.config.entry, entry) + ' \'</b>';
+          utils.constructor.getLexeme($scope.config, $scope.config.entry, entry) + ' \'</b>';
 
         modal.showModalSimple('Delete Entry', deletemsg, 'Cancel', 'Delete Entry').then(
           function () {
@@ -637,7 +648,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
               });
             }
 
-            $scope.hideCommentsPanel();
+            $scope.hideRightPanel();
           }, angular.noop);
       };
 
@@ -664,11 +675,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
             }
           }
 
-          if ($state.is('editor.comments')) {
-            $scope.editEntryAndScroll(entryId);
-            $scope.showComments();
-          }
-
           if ($state.is('editor.entry')) {
             $scope.editEntryAndScroll(entryId);
           }
@@ -690,38 +696,71 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
 
       // Comments View
       $scope.showComments = function showComments() {
-        if ($scope.commentPanelVisible === true && $scope.commentContext.contextGuid === '') {
-          $scope.hideCommentsPanel();
+        if ($scope.rightPanelVisible === true && $scope.commentContext.contextGuid === '') {
+          $scope.showCommentsPanel();
 
           // Reset the comment context AFTER the panel starts hiding
-          $scope.setCommentContext('', '', '', '', '');
+          $scope.setCommentContext('');
         } else {
           // Reset the comment context BEFORE we start showing the panel
-          $scope.setCommentContext('', '', '', '', '');
-          angular.element('.comments-right-panel').css({ paddingTop: 0 });
-          $scope.showCommentsPanel();
+          $scope.setCommentContext('');
+          document.querySelector('.comments-right-panel').style.paddingTop = 0;
+          if ($scope.rightPanelVisible === false) {
+            $scope.showCommentsPanel();
+          }
         }
       };
 
       $scope.showCommentsPanel = function showCommentsPanel() {
-        if ($scope.commentPanelVisible !== true) {
-          $scope.commentPanelVisible = true;
-          angular.element('.comments-right-panel-container').addClass('panel-opening');
-          $timeout(function () {
-            angular.element('.comments-right-panel-container').removeClass('panel-opening');
-          }, 500);
+        $scope.showRightPanel('#lexAppCommentView');
+      };
+
+      $scope.showActivityFeed = function showActivityFeed() {
+        $scope.showRightPanel('#lexAppActivityFeed');
+      };
+
+      $scope.showRightPanel = function showRightPanel(element) {
+        var currentElement = document.querySelector(element);
+        if ($scope.rightPanelVisible === false) {
+          $scope.rightPanelVisible = true;
+          currentElement.classList.add('panel-visible');
+        } else if ($scope.rightPanelVisible === true) {
+          if (currentElement.classList.contains('panel-visible')) {
+            $scope.hideRightPanel();
+          } else {
+            var visibleElement = document.querySelector('.panel-visible');
+            visibleElement.classList.remove('panel-visible');
+            visibleElement.classList.add('panel-closing', 'panel-switch');
+            currentElement.classList.add('panel-visible');
+            $timeout(function () {
+              document.querySelector('.panel-closing').classList
+                .remove('panel-closing', 'panel-switch');
+            }, 500);
+          }
         }
       };
 
-      $scope.hideCommentsPanel = function hideCommentsPanel() {
-        $scope.commentPanelVisible = -1;
+      $scope.hideRightPanel = function hideRightPanel() {
+        if ($scope.rightPanelVisible === true) {
+          $scope.rightPanelVisible = -1;
 
-        // Delay relates to the CSS timer for mobile vs > tablet
-        var delay = (angular.element('#compactEntryListContainer').is(':visible')) ? 1500 : 500;
-        $timeout(function () {
-          $scope.commentPanelVisible = false;
-          $scope.setCommentContext('', '');
-        }, delay);
+          // Delay relates to the CSS timer for mobile vs > tablet
+          var delay = (screen.availWidth >= 768) ? 1500 : 500;
+          var visibleElement = document.querySelector('.panel-visible');
+          visibleElement.classList.add('panel-closing');
+          visibleElement.classList.remove('panel-visible');
+          $timeout(function () {
+            var closingPanels = document.querySelectorAll('.panel-closing');
+            for (var index in closingPanels) {
+              if (typeof (closingPanels[index]) === 'object') {
+                closingPanels[index].classList.remove('panel-closing');
+              }
+            }
+
+            $scope.rightPanelVisible = false;
+            $scope.setCommentContext('');
+          }, delay);
+        }
       };
 
       sendReceive.setPollUpdateSuccessCallback(pollUpdateSuccess);
@@ -923,7 +962,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
                 return !isBlacklisted(key) && isMatch(value[key]);
               });
 
-            case 'string': return value.toUpperCase().indexOf(queryCapital) != -1;
+            case 'string': return value.toUpperCase().indexOf(queryCapital) !== -1;
             case 'null': return false;
             case 'boolean': return false;
             default:
@@ -1016,7 +1055,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         var contextPart = '';
 
         for (var i in contextParts) {
-          if (angular.isDefined(contextParts[i]) && contextParts[i] !== '') {
+          if (contextParts.hasOwnProperty(i) && angular.isDefined(contextParts[i]) &&
+            contextParts[i] !== ''
+          ) {
             contextPart = contextParts[i].trim();
             if (contextPart.indexOf('sense#') !== -1) {
               senseGuid = contextPart.substr(6);
@@ -1039,11 +1080,14 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
 
         if (senseGuid) {
           for (var a in currentEntry.senses) {
-            if (currentEntry.senses[a].guid === senseGuid) {
+            if (currentEntry.senses.hasOwnProperty(a) && currentEntry.senses[a].guid === senseGuid
+            ) {
               senseIndex = a;
               if (exampleGuid) {
                 for (var b in currentEntry.senses[a].examples) {
-                  if (currentEntry.senses[a].examples[b].guid === exampleGuid) {
+                  if (currentEntry.senses[a].examples.hasOwnProperty(b) &&
+                    currentEntry.senses[a].examples[b].guid === exampleGuid
+                  ) {
                     exampleIndex = b;
                   }
                 }
@@ -1090,7 +1134,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
               // Semantic domains are in the global scope and appear to be English only
               // Will need to be updated once the system provides support for other languages
               for (var i in semanticDomains_en) {
-                if (semanticDomains_en[i].key === optionKey) {
+                if (semanticDomains_en.hasOwnProperty(i) && semanticDomains_en[i].key === optionKey
+                ) {
                   optionLabel = semanticDomains_en[i].value;
                 }
               }
@@ -1132,16 +1177,13 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
   .controller('EditorListCtrl', ['$scope', 'lexProjectService',
     function ($scope, lexProjectService) {
       lexProjectService.setBreadcrumbs('editor/list', 'List');
+      lexProjectService.setupSettings();
     }
   ])
   .controller('EditorEntryCtrl', ['$scope', 'lexProjectService',
     function ($scope, lexProjectService) {
       lexProjectService.setBreadcrumbs('editor/entry', 'Edit');
-    }
-  ])
-  .controller('EditorCommentsCtrl', ['$scope', 'lexProjectService',
-    function ($scope, lexProjectService) {
-      lexProjectService.setBreadcrumbs('editor/entry', 'Comments');
+      lexProjectService.setupSettings();
     }
   ])
 

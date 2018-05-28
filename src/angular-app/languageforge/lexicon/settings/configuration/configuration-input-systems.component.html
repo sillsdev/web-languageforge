@@ -60,7 +60,6 @@
             <input type="text" id="languageName" style="font-size: 1.35em; color: black; font-weight: 700; border: 0; height: 32px; width: 365px"
                 data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName"
                 data-ng-show="$ctrl.isUnlistedLanguage($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].language)">
-            <br><br>
             <div class="form-group">
                 <label class="col-form-label" for="abbrev">Display Abbreviation (limited to 4 lowercase characters)</label>
                 <div class="controls">
@@ -72,6 +71,12 @@
                 <label class="checkbox">
                     <input type="checkbox" data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.isRightToLeft">
                     Right to left language </label>
+            </div>
+            <div class="form-group">
+                <label class="col-form-label" for="abbrev">Font Name</label>
+                <div class="controls">
+                    <input type="text" class="form-control" id="fontfamilycss" data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.cssFontFamily">
+                </div>
             </div>
             <br>
             <p class="text-warning" data-ng-show="$ctrl.isInputSystemInUse()">

@@ -1,8 +1,8 @@
 import * as angular from 'angular';
 
-import { SessionService } from '../../../bellows/core/session.service';
-import { LexConfigFieldList, LexConfigMultiText, LexiconConfig } from '../shared/model/lexicon-config.model';
-import { LexiconProjectSettings } from '../shared/model/lexicon-project-settings.model';
+import {SessionService} from '../../../bellows/core/session.service';
+import {LexConfigField, LexConfigFieldList, LexConfigMultiText} from '../shared/model/lexicon-config.model';
+import {LexiconProjectSettings} from '../shared/model/lexicon-project-settings.model';
 
 export class LexiconConfigService {
   static $inject: string[] = ['sessionService'];
@@ -95,7 +95,7 @@ export class LexiconConfigService {
     return containsData;
   }
 
-  getFieldConfig(fieldName: string): angular.IPromise<any> {
+  getFieldConfig(fieldName: string): angular.IPromise<LexConfigField> {
     return this.sessionService.getSession().then(session => {
       const config = session.projectSettings<LexiconProjectSettings>().config;
       let search = config.entry.fields;
@@ -112,6 +112,14 @@ export class LexiconConfigService {
       search = ((config.entry.fields.senses as LexConfigFieldList).fields.examples as LexConfigFieldList).fields;
       if (angular.isDefined(search[fieldName])) {
         return search[fieldName];
+      }
+
+      // Check if this is the main entry and setup some basic configuration
+      if (fieldName === 'entry') {
+        const entryConfig = new LexConfigMultiText();
+        entryConfig.type = 'multitext';
+        entryConfig.label = 'Entry';
+        return entryConfig;
       }
 
       return undefined;
