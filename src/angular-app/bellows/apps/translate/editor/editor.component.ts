@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-import { ProgressStatus } from 'machine';
+import { ProgressStatus, TrainResultCode } from 'machine';
 import Quill, { DeltaStatic, RangeStatic } from 'quill';
 
 import { JsonRpcResult } from '../../../core/api/json-rpc.service';
@@ -26,7 +26,7 @@ export class TranslateEditorController implements angular.IController {
   documentSets: any[] = [];
   dropdownMenuClass: string = 'dropdown-menu-left';
   isTraining: boolean = false;
-  selectedDocumentSetIndex: number = 0;
+  selectedDocumentSetIndex: number = -1;
   showFormats: boolean = false;
   trainingPercent: number = 0;
   confidence: any;
@@ -206,6 +206,9 @@ export class TranslateEditorController implements angular.IController {
           }
 
           if (userPreferences.selectedDocumentSetId == null || userPreferences.selectedDocumentSetId === '') {
+            if (this.documentSets.length > 0) {
+              this.selectedDocumentSetIndex = 0;
+            }
             userPreferences.selectedDocumentSetId = this.selectedDocumentSetId;
           } else {
             this.selectedDocumentSetIndex = this.getDocumentSetIndexById(userPreferences.selectedDocumentSetId);
@@ -571,7 +574,7 @@ export class TranslateEditorController implements angular.IController {
 
     this.machine.listenForTrainingStatus(progress => this.onTrainStatusUpdate(progress))
       .then(() => this.onTrainSuccess())
-      .catch(() => this.onTrainError())
+      .catch((resultCode: TrainResultCode) => this.onTrainError(resultCode))
       .finally(() => this.onTrainFinished());
   }
 
@@ -590,8 +593,12 @@ export class TranslateEditorController implements angular.IController {
     this.notice.push(this.notice.SUCCESS, 'Finished training the translation engine');
   }
 
-  private onTrainError(): void {
-    this.failedConnectionCount++;
+  private onTrainError(resultCode: TrainResultCode): void {
+    if (resultCode === TrainResultCode.httpError) {
+      this.failedConnectionCount++;
+    } else {
+      this.notice.push(this.notice.ERROR, 'Error occurred while training the translation engine');
+    }
   }
 
   private onTrainFinished(): void {

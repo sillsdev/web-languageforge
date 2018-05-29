@@ -1,5 +1,7 @@
 import * as angular from 'angular';
-import { InteractiveTranslationSession, ProgressStatus, SegmentTokenizer, TranslationEngine } from 'machine';
+import {
+  InteractiveTranslationSession, ProgressStatus, SegmentTokenizer, TrainResultCode, TranslationEngine
+} from 'machine';
 import { RangeStatic } from 'quill';
 
 import { NoticeService } from '../../../core/notice/notice.service';
@@ -86,13 +88,13 @@ export class MachineService {
           }
           deferred.resolve();
         } else {
-          deferred.reject('Translation result is no longer valid.');
+          deferred.reject();
         }
       } else {
         if (this.sourceSegment === sourceSegment) {
           this.session = null;
         }
-        deferred.reject('Error occurred while retrieving translation result.');
+        deferred.reject();
       }
     });
 
@@ -148,7 +150,7 @@ export class MachineService {
       if (success) {
         deferred.resolve();
       } else {
-        deferred.reject('Error occurred while training the segment.');
+        deferred.reject();
       }
     });
     return deferred.promise;
@@ -190,7 +192,7 @@ export class MachineService {
       if (success) {
         deferred.resolve();
       } else {
-        deferred.reject('Error occurred while starting the training process.');
+        deferred.reject();
       }
     });
 
@@ -203,16 +205,15 @@ export class MachineService {
     }
 
     const deferred = this.$q.defer<void>();
-    this.engine.listenForTrainingStatus(progress => {
-      this.$rootScope.$apply(scope => onStatusUpdate(progress));
-    }, success => {
-      if (success) {
-        this.updateConfidence();
-        deferred.resolve();
-      } else {
-        deferred.reject('Error occurred while listening for training status.');
-      }
-    });
+    this.engine.listenForTrainingStatus(progress => this.$rootScope.$apply(scope => onStatusUpdate(progress)),
+      resultCode => {
+        if (resultCode === TrainResultCode.noError) {
+          this.updateConfidence();
+          deferred.resolve();
+        } else {
+          deferred.reject(resultCode);
+        }
+      });
 
     return deferred.promise;
   }
