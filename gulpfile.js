@@ -1251,12 +1251,25 @@ gulp.task('build-dotnet-host-config', function (cb) {
     jwtKey = 'jwtKey';
   }
 
+  var bugsnagApiKey = process.env.XFORGE_BUGSNAG_API_KEY;
+  if (bugsnagApiKey === undefined) {
+    bugsnagApiKey = 'missing-bugsnag-api-key';
+  }
+
   var params = require('yargs')
     .option('applicationName', {
       demand: true,
       type: 'string' })
+    .option('bugsnagApiKey', {
+      demand: false,
+      default: bugsnagApiKey,
+      type: 'string' })
+    .option('buildNumber', {
+      demand: true,
+      type: 'string' })
     .fail(yargFailure)
     .argv;
+  console.log('version =', params.buildNumber);
 
   var jobDatabase = params.applicationName + '_jobs';
 
@@ -1270,6 +1283,10 @@ gulp.task('build-dotnet-host-config', function (cb) {
     },
     DataAccess: {
       JobDatabase: jobDatabase
+    },
+    Bugsnag: {
+      ApiKey: bugsnagApiKey,
+      Version: params.buildNumber
     }
   }), cb);
 });
@@ -1356,7 +1373,7 @@ gulp.task('build-createWebsiteDefsPhp', function () {
 });
 
 // ------------------------------------------
-// Create website-instances.ts from template
+// Create website-instances.generated-data.ts from template
 // ------------------------------------------
 gulp.task('build-createWebsiteDefsTs', function () {
   return gulp.src('src/angular-app/bellows/core/website-instances.ejs')
