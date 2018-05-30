@@ -80,4 +80,9 @@ class FixSenseAndExampleLabels
     }
 }
 
-FixSenseAndExampleLabels::run('test');
+$mode = 'test';
+if (isset($argv[1])) {
+    $mode = $argv[1];
+}
+print "Running in $mode mode\n";
+FixSenseAndExampleLabels::run($mode);
