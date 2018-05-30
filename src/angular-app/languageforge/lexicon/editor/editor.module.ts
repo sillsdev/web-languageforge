@@ -6,7 +6,7 @@ import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
 import {PuiUtilityModule} from '../../../bellows/shared/utils/pui-utils.module';
 import {EditorCommentsModule} from './comment/comment.module';
-import {LexiconEditorController, LexiconEditorEntryController, LexiconEditorListController} from './editor.controller';
+import {LexiconEditorComponent, LexiconEditorEntryController, LexiconEditorListController} from './editor.component';
 import {EditorFieldModule} from './field/field.module';
 
 export const LexiconEditorModule = angular
@@ -20,7 +20,7 @@ export const LexiconEditorModule = angular
     EditorCommentsModule,
     EditorFieldModule
   ])
-  .controller('EditorCtrl', LexiconEditorController)
+  .component('lexiconEditor', LexiconEditorComponent)
   .controller('EditorListCtrl', LexiconEditorListController)
   .controller('EditorEntryCtrl', LexiconEditorEntryController)
   .config(['$stateProvider', ($stateProvider: angular.ui.IStateProvider) => {
@@ -30,18 +30,21 @@ export const LexiconEditorModule = angular
       .state('editor', {
         abstract: true,
         url: '/editor',
-        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-abstract.html',
-        controller: 'EditorCtrl',
-        controllerAs: '$ctrl'
+        template: `
+            <lexicon-editor lec-config="editorConfig"
+                            lec-interface-config="interfaceConfig"
+                            lec-finished-loading="finishedLoading"
+                            lec-project="project"
+                            lec-rights="rights"></lexicon-editor>`
       })
       .state('editor.list', {
         url: '/list',
-        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-list.html',
+        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-list.view.html',
         controller: 'EditorListCtrl'
       })
       .state('editor.entry', {
         url: '/entry/{entryId:[0-9a-z_]{6,24}}',
-        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-entry.html',
+        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-entry.view.html',
         controller: 'EditorEntryCtrl'
       })
     ;
