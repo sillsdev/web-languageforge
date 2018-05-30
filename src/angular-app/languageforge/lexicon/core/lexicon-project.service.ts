@@ -4,6 +4,8 @@ import {ApiService, JsonRpcCallback} from '../../../bellows/core/api/api.service
 import {ApplicationHeaderService, HeaderSetting} from '../../../bellows/core/application-header.service';
 import {BreadcrumbService} from '../../../bellows/core/breadcrumbs/breadcrumb.service';
 import {SessionService} from '../../../bellows/core/session.service';
+import {LexiconProjectSettings} from '../shared/model/lexicon-project-settings.model';
+import {LexiconProject} from '../shared/model/lexicon-project.model';
 import {LexiconLinkService} from './lexicon-link.service';
 import {LexiconRightsService} from './lexicon-rights.service';
 
@@ -27,7 +29,7 @@ export class LexiconProjectService {
         label: 'My Projects'
       }, {
         href: this.linkService.projectUrl(),
-        label: session.project().projectName
+        label: session.project<LexiconProject>().projectName
       }, {
         href: this.linkService.projectView(view),
         label
@@ -36,9 +38,9 @@ export class LexiconProjectService {
   }
 
   setupSettings(): void {
-    this.$q.all([this.sessionService.getSession(), this.rightsService.getRights()]).then(([session, rights]) => {
+    this.rightsService.getRights().then(rights => {
       const settings = [];
-      if (rights.canEditUsers()) {
+      if (rights.canEditProject()) {
         settings.push(new HeaderSetting(
           'dropdown-configuration',
           'Configuration',
@@ -52,19 +54,21 @@ export class LexiconProjectService {
         settings.push(new HeaderSetting(
           'userManagementLink',
           'User Management',
-          '/app/usermanagement/' + session.project().id
+          '/app/usermanagement/' + rights.session.project<LexiconProject>().id
         ));
         settings.push(new HeaderSetting(
           'dropdown-project-settings',
           'Project Settings',
           this.linkService.projectUrl() + 'settings'
         ));
-        if (session.project().isArchived && session.projectSettings().hasSendReceive) {
-          settings[settings.length - 1].divider = true;
+        if (!rights.session.project<LexiconProject>().isArchived &&
+          rights.session.projectSettings<LexiconProjectSettings>().hasSendReceive
+        ) {
           settings.push(new HeaderSetting(
             'dropdown-synchronize',
             'Synchronize',
-            this.linkService.projectUrl() + 'sync'
+            this.linkService.projectUrl() + 'sync',
+            true
           ));
         }
       }

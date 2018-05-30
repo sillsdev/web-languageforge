@@ -1,52 +1,45 @@
 import * as angular from 'angular';
 
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
-import {Session, SessionService} from '../../../bellows/core/session.service';
 import {LexiconProjectService} from '../core/lexicon-project.service';
-import {LexiconRightsService, Rights} from '../core/lexicon-rights.service';
+import {Rights} from '../core/lexicon-rights.service';
 import {LexiconSendReceiveApiService} from '../core/lexicon-send-receive-api.service';
 import {LexiconSendReceiveService} from '../core/lexicon-send-receive.service';
 import {LexiconProjectSettings} from '../shared/model/lexicon-project-settings.model';
+import {LexiconProject} from '../shared/model/lexicon-project.model';
 
 export class LexiconSyncController implements angular.IController {
+  lsyRights: Rights;
+
   syncStateNotice = this.sendReceive.syncStateNotice;
   lastSyncNotice = this.sendReceive.lastSyncNotice;
 
-  private rights: Rights;
-  private session: Session;
-
-  static $inject = ['$q', 'silNoticeService', 'sessionService',
-    'lexProjectService', 'lexRightsService',
+  static $inject = ['silNoticeService', 'lexProjectService',
     'lexSendReceiveApi', 'lexSendReceive'
   ];
-  constructor(private $q: angular.IQService, private notice: NoticeService, private sessionService: SessionService,
-              private lexProjectService: LexiconProjectService, private rightsService: LexiconRightsService,
+  constructor(private notice: NoticeService, private lexProjectService: LexiconProjectService,
               private sendReceiveApi: LexiconSendReceiveApiService, private sendReceive: LexiconSendReceiveService) { }
 
-  $onInit() {
+  $onInit(): void {
     this.lexProjectService.setBreadcrumbs('sync', 'Synchronize');
     this.lexProjectService.setupSettings();
-    this.$q.all([this.rightsService.getRights(), this.sessionService.getSession()]).then(([rights, session]) => {
-      this.rights = rights;
-      this.session = session;
-    });
   }
 
-  showSyncButton() {
-    if (this.rights == null || this.session == null) {
+  showSyncButton(): boolean {
+    if (this.lsyRights == null || this.lsyRights.session == null) {
       return false;
     }
 
-    return !this.session.project().isArchived && this.rights.canEditUsers() &&
-      this.session.projectSettings<LexiconProjectSettings>().hasSendReceive;
+    return !this.lsyRights.session.project<LexiconProject>().isArchived && this.lsyRights.canEditUsers() &&
+      this.lsyRights.session.projectSettings<LexiconProjectSettings>().hasSendReceive;
   }
 
-  disableSyncButton() {
+  disableSyncButton(): boolean {
     return this.sendReceive.isStarted();
   }
 
   // Called when Send/Receive button clicked
-  syncProject() {
+  syncProject(): void {
     if (!this.showSyncButton()) return;
 
     this.sendReceiveApi.receiveProject(result => {
@@ -63,6 +56,7 @@ export class LexiconSyncController implements angular.IController {
 
 export const LexiconSyncComponent: angular.IComponentOptions = {
   bindings: {
+    lsyRights: '<'
   },
   controller: LexiconSyncController,
   templateUrl: '/angular-app/languageforge/lexicon/settings/sync.component.html'
