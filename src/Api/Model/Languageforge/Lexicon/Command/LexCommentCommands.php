@@ -106,7 +106,7 @@ class LexCommentCommands
         $vote->addVote($commentId);
         $vote->write();
 
-        ActivityCommands::updateEntryCommentScore($project, $comment->entryRef->asString(), $comment, 'increase');
+        ActivityCommands::updateEntryCommentScore($project, $comment->entryRef->asString(), $comment, ActivityCommands::INCREASE_SCORE);
 
         return $id;
     }
