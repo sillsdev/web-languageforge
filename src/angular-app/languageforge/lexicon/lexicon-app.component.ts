@@ -1,21 +1,45 @@
-'use strict';
+import * as angular from 'angular';
+import uiRouter from 'angular-ui-router';
+
+import {ApiService} from '../../bellows/core/api/api.service';
+import {BreadcrumbModule} from '../../bellows/core/breadcrumbs/breadcrumb.module';
+import {CoreModule} from '../../bellows/core/core.module';
+import {InputSystemsService} from '../../bellows/core/input-systems/input-systems.service';
+import {NoticeService} from '../../bellows/core/notice/notice.service';
+import {SessionService} from '../../bellows/core/session.service';
+import {User} from '../../bellows/shared/model/user.model';
+import {LexiconConfigService} from './core/lexicon-config.service';
+import {LexiconCoreModule} from './core/lexicon-core.module';
+import {LexiconEditorDataService} from './core/lexicon-editor-data.service';
+import {LexiconProjectService} from './core/lexicon-project.service';
+import {LexiconRightsService} from './core/lexicon-rights.service';
+import {LexiconSendReceiveApiService} from './core/lexicon-send-receive-api.service';
+import {LexiconSendReceiveService} from './core/lexicon-send-receive.service';
+import {LexiconEditorModule} from './editor/editor.module';
+import {LexiconSettingsModule} from './settings/settings.module';
+import {LexiconConfig} from './shared/model/lexicon-config.model';
+import {LexiconProjectSettings} from './shared/model/lexicon-project-settings.model';
+import {LexiconProject} from './shared/model/lexicon-project.model';
+import {LexOptionList} from './shared/model/option-list.model';
 
 // Declare app level module which depends on filters, and services
-angular.module('lexicon',
-  [
+export const LexiconAppComponentModule = angular
+  .module('lexicon', [
     'ui.bootstrap',
-    'ui.router',
+    uiRouter,
     'ngSanitize',
     'palaso.ui.typeahead',
-    'coreModule',
-    'sgw.ui.breadcrumb',
-    'lexiconModule',
-    'pascalprecht.translate'
+    CoreModule,
+    BreadcrumbModule,
+    LexiconCoreModule,
+    LexiconEditorModule,
+    LexiconSettingsModule
   ])
-  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$compileProvider',
-    '$sanitizeProvider', 'apiServiceProvider',
-    function ($stateProvider, $urlRouterProvider, $translateProvider, $compileProvider,
-      $sanitizeProvider, apiService) {
+  .config(['$stateProvider', '$urlRouterProvider',
+    '$compileProvider', '$sanitizeProvider', 'apiServiceProvider',
+    ($stateProvider: angular.ui.IStateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider,
+     $compileProvider: angular.ICompileProvider, $sanitizeProvider: any, apiService: ApiService) => {
+
     $compileProvider.debugInfoEnabled(apiService.isProduction);
     $compileProvider.commentDirectivesEnabled(apiService.isProduction);
 
@@ -50,41 +74,34 @@ angular.module('lexicon',
       })
       ;
 
-    // configure interface language file path
-    $translateProvider.useStaticFilesLoader({
-      prefix: '/angular-app/languageforge/lexicon/lang/',
-      suffix: '.json'
-    });
-    $translateProvider.preferredLanguage('en');
-    $translateProvider.useSanitizeValueStrategy('escape');
   }])
-  .controller('LexiconCtrl', ['$scope', '$interval', '$location', '$q', '$translate',
-    'inputSystems', 'silNoticeService', 'sessionService', 'lexConfigService', 'lexProjectService',
-    'lexEditorDataService', 'lexRightsService', 'lexSendReceiveApi', 'lexSendReceive',
-  function ($scope, $interval, $location, $q, $translate,
-            inputSystemsService, notice, sessionService, configService, lexProjectService,
-            editorService, rightsService, sendReceiveApi, sendReceive) {
-    var pristineLanguageCode;
+  .controller('LexiconCtrl', ['$scope', '$interval', '$location', '$q',
+    'silNoticeService', 'sessionService', 'lexConfigService',
+    'lexProjectService', 'lexEditorDataService',
+    'lexRightsService', 'lexSendReceiveApi',
+    'lexSendReceive',
+    ($scope: any, $interval: angular.IIntervalService, $location: angular.ILocationService, $q: angular.IQService,
+     notice: NoticeService, sessionService: SessionService, configService: LexiconConfigService,
+     lexProjectService: LexiconProjectService, editorService: LexiconEditorDataService,
+     rightsService: LexiconRightsService, sendReceiveApi: LexiconSendReceiveApiService,
+     sendReceive: LexiconSendReceiveService) => {
+
+    let pristineLanguageCode: string;
 
     $scope.finishedLoading = false;
-    editorService.loadEditorData($scope).then(function () {
+    editorService.loadEditorData($scope).then(() => {
       $scope.finishedLoading = true;
       sendReceive.checkInitialState();
     });
 
-    $q.all([rightsService.getRights(), configService.getEditorConfig()]).then(function (data) {
-      var rights = data[0];
-      var editorConfig = data[1];
-
+    $q.all([rightsService.getRights(), configService.getEditorConfig()]).then(([rights, editorConfig]) => {
       if (rights.canEditProject()) {
-        lexProjectService.users().then(function (result) {
+        lexProjectService.users().then(result => {
           if (result.ok) {
-            var users = {};
-
-            // for (const user of (users.data.users as User[])) { // use when TS
-            angular.forEach(result.data.users, function (user) {
+            const users = {};
+            for (const user of (result.data.users as User[])) {
               users[user.id] = user;
-            });
+            }
 
             $scope.users = users;
           }
@@ -93,22 +110,22 @@ angular.module('lexicon',
 
       $scope.editorConfig = editorConfig;
       $scope.project = rights.session.project();
-      $scope.config = rights.session.projectSettings().config;
-      $scope.optionLists = rights.session.projectSettings().optionlists;
+      $scope.config = rights.session.projectSettings<LexiconProjectSettings>().config;
+      $scope.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
       $scope.rights = rights;
       $scope.rights.showControlBar = function showControlBar() {
         return $scope.rights.canRemoveUsers() || $scope.rights.canCreateUsers() ||
           $scope.rights.canEditUsers();
       };
 
-      $scope.currentUserRole = rights.session.projectSettings().currentUserRole;
-      $scope.interfaceConfig = rights.session.projectSettings().interfaceConfig;
+      $scope.currentUserRole = rights.session.projectSettings<LexiconProjectSettings>().currentUserRole;
+      $scope.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
       pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
       changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
 
       $scope.showSync = function showSync() {
         return !$scope.project.isArchived && rights.canEditUsers() &&
-          rights.session.projectSettings().hasSendReceive;
+          rights.session.projectSettings<LexiconProjectSettings>().hasSendReceive;
       };
 
       $scope.gotoDictionary = function gotoDictionary() {
@@ -119,7 +136,13 @@ angular.module('lexicon',
         return !($location.path().indexOf('/editor') === 0);
       };
 
-      $scope.onUpdate = function onUpdate($event) {
+      $scope.onUpdate = function onUpdate(
+        $event: {
+          project?: LexiconProject,
+          config?: LexiconConfig,
+          optionLists?: LexOptionList[]
+        }
+      ): void {
         if ($event.project) {
           $scope.project = $event.project;
         }
@@ -133,18 +156,15 @@ angular.module('lexicon',
         }
 
         if ($event.config || $event.optionLists) {
-          configService.getEditorConfig($scope.config, $scope.optionLists)
-            .then(function (editorConfig) {
-              $scope.editorConfig = editorConfig;
-            });
+          configService.getEditorConfig($scope.config, $scope.optionLists).then(configEditor => {
+            $scope.editorConfig = configEditor;
+          });
         }
       };
 
-      function changeInterfaceLanguage(code) {
-        $translate.use(code);
+      function changeInterfaceLanguage(code: string): void {
         pristineLanguageCode = angular.copy(code);
-
-        if (inputSystemsService.constructor.isRightToLeft(code)) {
+        if (InputSystemsService.isRightToLeft(code)) {
           $scope.interfaceConfig.direction = 'rtl';
           $scope.interfaceConfig.pullToSide = 'float-left';
           $scope.interfaceConfig.pullNormal = 'float-right';
@@ -159,9 +179,9 @@ angular.module('lexicon',
         }
       }
 
-      $scope.$watch('interfaceConfig.userLanguageCode', function (newVal) {
+      $scope.$watch('interfaceConfig.userLanguageCode', (newVal: string) => {
         if (newVal && newVal !== pristineLanguageCode) {
-          var user = {};
+          const user = { interfaceLanguageCode: '' };
           user.interfaceLanguageCode = newVal;
 
           lexProjectService.updateUserProfile(user);
@@ -180,18 +200,17 @@ angular.module('lexicon',
       Offline.options.checks = { xhr: { url: '/offlineCheck.txt' } };
 
       // Set the page's Language Forge title, font size, and nav's background color
-      function setTitle(text, fontSize, backgroundColor) {
-        var title = document.querySelector('nav .mobile-title a');
+      function setTitle(text: string, fontSize: string, backgroundColor: string): void {
+        const title = document.querySelector('nav .mobile-title a') as HTMLElement;
         title.textContent = text;
         title.style.fontSize = fontSize;
 
         document.querySelector('nav a.navbar-brand').textContent = text;
-
-        document.querySelector('nav.navbar').style.backgroundColor = backgroundColor;
+        (document.querySelector('nav.navbar') as HTMLElement).style.backgroundColor = backgroundColor;
       }
 
-      var offlineMessageId;
-      Offline.on('up', function () {
+      let offlineMessageId: string;
+      Offline.on('up', () => {
         setTitle('Language Forge', '', '');
 
         if ($scope.online === false) {
@@ -203,10 +222,10 @@ angular.module('lexicon',
         $scope.$digest();
       });
 
-      Offline.on('down', function () {
+      Offline.on('down', () => {
         setTitle('Language Forge Offline', '0.8em', '#555');
-        offlineMessageId = notice.push(notice.ERROR,
-          'You are offline. Some features are not available', null, true, 5 * 1000);
+        offlineMessageId = notice.push(notice.ERROR, 'You are offline. Some features are not available', null, true,
+          5 * 1000);
         $scope.online = false;
         if (!/^\/editor\//.test($location.path())) {
           // redirect to the editor
@@ -220,15 +239,14 @@ angular.module('lexicon',
     });
   }])
   .controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService',
-  function ($scope, $rootScope, breadcrumbService) {
+    ($scope, $rootScope, breadcrumbService) => {
     $scope.idmap = breadcrumbService.idmap;
-    $rootScope.$on('$routeChangeSuccess', function () {
+    $rootScope.$on('$routeChangeSuccess', () => {
       $scope.breadcrumbs = breadcrumbService.read();
     });
 
-    $scope.$watch('idmap', function () {
+    $scope.$watch('idmap', () => {
       $scope.breadcrumbs = breadcrumbService.read();
     }, true);
   }])
-
-  ;
+  .name;
