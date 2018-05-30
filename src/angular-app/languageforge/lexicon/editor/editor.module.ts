@@ -31,11 +31,11 @@ export const LexiconEditorModule = angular
         abstract: true,
         url: '/editor',
         template: `
-            <lexicon-editor lec-config="editorConfig"
-                            lec-interface-config="interfaceConfig"
-                            lec-finished-loading="finishedLoading"
-                            lec-project="project"
-                            lec-rights="rights"></lexicon-editor>`
+            <lexicon-editor lec-config="$ctrl.editorConfig"
+                            lec-interface-config="$ctrl.interfaceConfig"
+                            lec-finished-loading="$ctrl.finishedLoading"
+                            lec-project="$ctrl.project"
+                            lec-rights="$ctrl.rights"></lexicon-editor>`
       })
       .state('editor.list', {
         url: '/list',
