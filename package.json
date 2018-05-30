@@ -34,7 +34,7 @@
     "intl-tel-input": "9.2.7",
     "jquery": "3.1.1",
     "localforage": "^1.7.1",
-    "machine": "https://build.palaso.org/guestAuth/repository/download/Machine_MachineTranslation/2.0.0-273/machine.tgz",
+    "machine": "https://build.palaso.org/guestAuth/repository/download/Machine_MachineTranslation/2.0.0-277/machine.tgz",
     "moment": "^2.18.1",
     "ng-drag-to-reorder": "^1.0.8",
     "ng-file-upload": "12.0.4",
