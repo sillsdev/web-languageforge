@@ -11,7 +11,7 @@
                             <span class="d-none d-md-inline-block">List</span></a>
                     </div>
                     <div class="float-right" data-ng-show="$ctrl.isAtEditorEntry()">
-                        <span data-ng-if="$ctrl.rights.canEditEntry()">
+                        <span data-ng-if="$ctrl.lecRights.canEditEntry()">
                             <span class="text-muted">{{$ctrl.saveNotice()}}</span>
                             <button id="saveEntryBtn" class="btn btn-primary" data-ng-click="$ctrl.saveCurrentEntry(true)"
                                     data-ng-disabled="!$ctrl.currentEntryIsDirty()">
@@ -26,7 +26,7 @@
                             </button>
                         </span>
                         <button id="toCommentsLink"
-                           class="btn btn-primary" data-ng-click="$ctrl.showComments()" data-ng-show="$ctrl.rights.canComment()" title="Show Comments">
+                           class="btn btn-primary" data-ng-click="$ctrl.showComments()" data-ng-show="$ctrl.lecRights.canComment()" title="Show Comments">
                             <current-entry-comment-count></current-entry-comment-count>
                             <i class="fa fa-comments commentColor"></i>
                         </button>
