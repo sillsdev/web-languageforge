@@ -5,6 +5,7 @@ import {ActivityAppModule} from '../../../bellows/apps/activity/activity-app.mod
 import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
 import {PuiUtilityModule} from '../../../bellows/shared/utils/pui-utils.module';
+import {LexiconCoreModule} from '../core/lexicon-core.module';
 import {EditorCommentsModule} from './comment/comment.module';
 import {LexiconEditorComponent, LexiconEditorEntryController, LexiconEditorListController} from './editor.component';
 import {EditorFieldModule} from './field/field.module';
@@ -17,6 +18,8 @@ export const LexiconEditorModule = angular
     CoreModule,
     NoticeModule,
     PuiUtilityModule,
+    'palaso.ui.typeahead',
+    LexiconCoreModule,
     EditorCommentsModule,
     EditorFieldModule
   ])
