@@ -45,6 +45,7 @@ class ActivityModel extends MapperModel
     const USER = 'user';
     const USER2 = 'user2';
     const ENTRY = 'entry';
+    const FIELD_LABEL = 'fieldLabel';
 
     /**
      * @param ProjectModel $projectModel
