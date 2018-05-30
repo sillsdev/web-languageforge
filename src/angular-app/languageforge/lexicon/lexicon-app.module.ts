@@ -3,7 +3,6 @@ import 'angular-sanitize';
 import uiRouter from 'angular-ui-router';
 
 import {ApiService} from '../../bellows/core/api/api.service';
-import {BreadcrumbModule} from '../../bellows/core/breadcrumbs/breadcrumb.module';
 import {CoreModule} from '../../bellows/core/core.module';
 import {LexiconCoreModule} from './core/lexicon-core.module';
 import {LexiconEditorModule} from './editor/editor.module';
@@ -16,9 +15,7 @@ export const LexiconAppModule = angular
     'ui.bootstrap',
     uiRouter,
     'ngSanitize',
-    'palaso.ui.typeahead',
     CoreModule,
-    BreadcrumbModule,
     LexiconCoreModule,
     LexiconEditorModule,
     LexiconSettingsModule
