@@ -6,7 +6,7 @@ import {LexiconEditorModule} from './editor/editor.module';
 import './new-project/lexicon-new-project.module';
 import {LexiconSettingsModule} from './settings/settings.module';
 
-export const LexiconModule = angular
+export const LexiconAppModule = angular
   .module('lexiconModule', [
     LexiconCoreModule,
     LexiconEditorModule,
