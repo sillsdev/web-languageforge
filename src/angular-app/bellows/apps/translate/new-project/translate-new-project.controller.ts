@@ -405,6 +405,7 @@ export class TranslateNewProjectController implements angular.IController {
     this.sessionService.getSession()
       .then(session => this.userRestApiService.getParatextInfo(session.userId()))
       .then(paratextUserInfo => this.paratextUserInfo = paratextUserInfo)
+      .catch(() => { })
       .finally(() => this.isRetrievingParatextUserInfo = false);
   }
 
