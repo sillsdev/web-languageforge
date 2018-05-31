@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('semdomtrans.review', ['ui.bootstrap', 'coreModule',  'palaso.ui.notice',
-  'semdomtrans.services', 'palaso.ui.scroll', 'palaso.ui.typeahead'])
+  'semdomtrans.services', 'palaso.ui.utils', 'palaso.ui.typeahead'])
 
 .controller('reviewCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditorDataService',
   'semdomtransEditService',

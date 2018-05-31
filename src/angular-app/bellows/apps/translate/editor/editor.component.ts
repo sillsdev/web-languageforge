@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-import { SmtTrainProgress } from 'machine';
+import { ProgressStatus, TrainResultCode } from 'machine';
 import Quill, { DeltaStatic, RangeStatic } from 'quill';
 
 import { JsonRpcResult } from '../../../core/api/json-rpc.service';
@@ -26,7 +26,7 @@ export class TranslateEditorController implements angular.IController {
   documentSets: any[] = [];
   dropdownMenuClass: string = 'dropdown-menu-left';
   isTraining: boolean = false;
-  selectedDocumentSetIndex: number = 0;
+  selectedDocumentSetIndex: number = -1;
   showFormats: boolean = false;
   trainingPercent: number = 0;
   confidence: any;
@@ -171,22 +171,23 @@ export class TranslateEditorController implements angular.IController {
           this.source.isScripture = this.tecProject.config.isTranslationDataScripture;
           this.target.isScripture = this.tecProject.config.isTranslationDataScripture;
 
-          if (this.tecProject.config.documentSets.idsOrdered != null &&
-            this.tecProject.config.documentSets.idsOrdered.length > 0
-          ) {
-            for (const id of this.tecProject.config.documentSets.idsOrdered) {
-              if (result.data.documentSetList[id] != null) {
-                this.documentSets.push(result.data.documentSetList[id]);
-              }
-            }
-          } else {
+          if (this.tecProject.config.documentSets.idsOrdered == null) {
             this.tecProject.config.documentSets.idsOrdered = [];
-            angular.forEach(result.data.documentSetList, documentSet => {
-              if (angular.isDefined(documentSet)) {
+          }
+          for (const id of this.tecProject.config.documentSets.idsOrdered) {
+            if (result.data.documentSetList[id] != null) {
+              this.documentSets.push(result.data.documentSetList[id]);
+              delete result.data.documentSetList[id];
+            }
+          }
+          for (const documentSetId in result.data.documentSetList) {
+            if (result.data.documentSetList.hasOwnProperty(documentSetId)) {
+              const documentSet = result.data.documentSetList[documentSetId];
+              if (documentSet != null) {
                 this.documentSets.push(documentSet);
                 this.tecProject.config.documentSets.idsOrdered.push(documentSet.id);
               }
-            });
+            }
           }
 
           this.machine.confidenceThreshold = this.tecProject.config.confidenceThreshold;
@@ -205,6 +206,9 @@ export class TranslateEditorController implements angular.IController {
           }
 
           if (userPreferences.selectedDocumentSetId == null || userPreferences.selectedDocumentSetId === '') {
+            if (this.documentSets.length > 0) {
+              this.selectedDocumentSetIndex = 0;
+            }
             userPreferences.selectedDocumentSetId = this.selectedDocumentSetId;
           } else {
             this.selectedDocumentSetIndex = this.getDocumentSetIndexById(userPreferences.selectedDocumentSetId);
@@ -570,16 +574,14 @@ export class TranslateEditorController implements angular.IController {
 
     this.machine.listenForTrainingStatus(progress => this.onTrainStatusUpdate(progress))
       .then(() => this.onTrainSuccess())
-      .catch(() => this.onTrainError())
+      .catch((resultCode: TrainResultCode) => this.onTrainError(resultCode))
       .finally(() => this.onTrainFinished());
   }
 
-  private onTrainStatusUpdate(progress: SmtTrainProgress): void {
+  private onTrainStatusUpdate(progress: ProgressStatus): void {
     this.failedConnectionCount = 0;
     this.isTraining = true;
-    if (progress.stepCount > 0) {
-      this.trainingPercent = progress.percentCompleted;
-    }
+    this.trainingPercent = Math.round(progress.percentCompleted * 100);
   }
 
   private onTrainSuccess(): void {
@@ -591,8 +593,12 @@ export class TranslateEditorController implements angular.IController {
     this.notice.push(this.notice.SUCCESS, 'Finished training the translation engine');
   }
 
-  private onTrainError(): void {
-    this.failedConnectionCount++;
+  private onTrainError(resultCode: TrainResultCode): void {
+    if (resultCode === TrainResultCode.httpError) {
+      this.failedConnectionCount++;
+    } else {
+      this.notice.push(this.notice.ERROR, 'Error occurred while training the translation engine');
+    }
   }
 
   private onTrainFinished(): void {
