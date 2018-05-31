@@ -323,25 +323,91 @@ gulp.task('test-php-debug:watch', function () {
   gulp.watch(phpPatterns, ['test-php-debug']);
 });
 
+function runKarmaTests(applicationName, cb, type) {
+  var config = {
+    configFile: __dirname + '/karma.conf.js',
+    applicationName: applicationName
+  };
+
+  switch (type) {
+    case 'ci':
+      config.reporters = 'teamcity';
+      break;
+
+    case 'watch':
+      config.autoWatch = true;
+      config.singleRun = false;
+      break;
+
+    case 'debug':
+      config.autoWatch = true;
+      config.singleRun = false;
+      config.browsers = [];
+      break;
+  }
+
+  new Server(config, function(err) {
+    if (err === 0) {
+      cb();
+    } else {
+      cb(new gutil.PluginError('karma', { message: 'Karma Tests failed' }));
+    }
+  }).start();
+}
+
 // -------------------------------------
-//   Task: test-js
+//   Task: test-ts
 // -------------------------------------
-gulp.task('test-js', function (cb) {
-  new Server({
-    configFile: __dirname + '/test/app/karma.conf.js',
-    reporters: 'teamcity'
-  }, cb).start();
+gulp.task('test-ts', function (cb) {
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .fail(yargFailure)
+    .argv;
+  runKarmaTests(params.applicationName, cb, 'ci');
 });
 
 // -------------------------------------
-//   Task: test-js:watch
+//   Task: test-ts-lf
 // -------------------------------------
-gulp.task('test-js:watch', function (cb) {
-  new Server({
-    configFile: __dirname + '/test/app/karma.conf.js',
-    autoWatch: true,
-    singleRun: false
-  }, cb).start();
+gulp.task('test-ts-lf', function (cb) {
+  runKarmaTests('languageforge', cb);
+});
+
+// -------------------------------------
+//   Task: test-ts-lf:watch
+// -------------------------------------
+gulp.task('test-ts-lf:watch', function (cb) {
+  runKarmaTests('languageforge', cb, 'watch');
+});
+
+// -------------------------------------
+//   Task: test-ts-lf:debug
+// -------------------------------------
+gulp.task('test-ts-lf:debug', function (cb) {
+  runKarmaTests('languageforge', cb, 'debug');
+});
+
+// -------------------------------------
+//   Task: test-ts-sf
+// -------------------------------------
+gulp.task('test-ts-sf', function (cb) {
+  runKarmaTests('scriptureforge', cb);
+});
+
+// -------------------------------------
+//   Task: test-ts-sf:watch
+// -------------------------------------
+gulp.task('test-ts-sf:watch', function (cb) {
+  runKarmaTests('scriptureforge', cb, 'watch');
+});
+
+// -------------------------------------
+//   Task: test-ts-sf:debug
+// -------------------------------------
+gulp.task('test-ts-sf:debug', function (cb) {
+  runKarmaTests('scriptureforge', cb, 'debug');
 });
 
 // -------------------------------------
@@ -1396,7 +1462,7 @@ gulp.task('build-and-test',
     'build',
     'test-php',
 
-    // 'test-js',
+    'test-ts',
     'test-dotnet',
     'test-restart-webserver',
     'local-restart-xforge-web-api',
