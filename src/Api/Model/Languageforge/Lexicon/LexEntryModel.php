@@ -280,36 +280,43 @@ class LexEntryModel extends MapperModel
             /** @var LexSense $thisSense */
             $seenGuids[] = $guid;
             $thisPosition  = $thisPositions[$guid];
+            $thisSenseId = "senses@" . $thisPosition . "#" . $guid;
             if (isset($otherPositions[$guid])) {
                 $otherPosition = $otherPositions[$guid];
                 if ($otherPosition !== $thisPosition) {
-                    $differences["movedFrom.senses#" . $guid] = (string)$thisPosition;
-                    $differences["movedTo.senses#" . $guid] = (string)$otherPosition;
+                    // The `moved` difference has the *old* position in the field ID and the *new* position in the value.
+                    // This ensures that if a value is edited *and* moved in the same update, the field IDs for the edit
+                    // and for the move will be identical.
+                    $differences["moved." . $thisSenseId] = (string)$otherPosition;
                 }
             }
             if (array_key_exists($guid, $otherSensesByGuid)) {
                 /** @var LexSense $otherSense */
                 $otherSense = $otherSensesByGuid[$guid];
-                $senseDifferences = $thisSense->differences($otherSense);
+                $otherPosition = $otherPositions[$guid] ?? 0;  // Default to 0 just in case, though this *should* never be necessary
+                $otherSenseId = "senses@" . $otherPosition . "#" . $guid;
+                $senseDifferences = $thisSense->differences($otherSense, $thisSenseId, $otherSenseId);
                 foreach ($senseDifferences as $key => $senseDifference) {
                     if (substr($key, 0, 5) === "this.") {
-                        $newKey = str_replace("this.",  "oldValue.senses#" . $guid . ".", $key);
+                        $newKey = str_replace("this.",  "oldValue." . $thisSenseId . ".", $key);
                     } elseif (substr($key, 0, 6) === "other.") {
-                        $newKey = str_replace("other.", "newValue.senses#" . $guid . ".", $key);
+                        $newKey = str_replace("other.", "newValue." . $thisSenseId . ".", $key);
                     } else {
                         $newKey = $key;
                     }
                     $differences[$newKey] = $senseDifference;
                 }
             } else {
-                $differences["deleted.senses#" . $guid] = $thisSense->nameForActivityLog();
+                $differences["deleted." . $thisSenseId] = $thisSense->nameForActivityLog();
             }
         }
         $addedGuids = array_diff($otherGuids, $seenGuids);
         foreach ($addedGuids as $guid) {
             /** @var LexSense $otherSense */
             $otherSense = $otherSensesByGuid[$guid];
-            $differences["added.senses#" . $guid] = $otherSense->nameForActivityLog();
+            $otherPosition  = $otherPositions[$guid];
+            $otherSenseId = "senses@" . $otherPosition . "#" . $guid;
+            $differences["added." . $otherSenseId] = $otherSense->nameForActivityLog();
         }
 
         return $differences;
