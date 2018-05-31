@@ -9,8 +9,17 @@ import {Project} from '../../shared/model/project.model';
 import {User} from '../../shared/model/user.model';
 
 class Activity {
+  summary: string = '';
   action: string;
-  content: any;
+  content: {
+    project: string,
+    entry: string,
+    user: string,
+    answer: string,
+    lexComment: string,
+    lexCommentContext: string,
+    label: string
+  };
   date: Date;
   dateCreated: string;
   dateModified: string;
@@ -24,11 +33,34 @@ class Activity {
   textRef: any;
   textHref: string;
   type: string;
+  typeRef: ActivityType;
   userRef: User;
   userHref: string;
   userRef2: User;
   userHref2: string;
   icon: string;
+
+  getOldValue() {
+    for (const index in this.content) {
+      if (this.content.hasOwnProperty(index)) {
+        if (index.substring(0, 8) === 'oldValue') {
+          return this.content[index];
+        }
+      }
+    }
+    return '';
+  }
+
+  getNewValue() {
+    for (const index in this.content) {
+      if (this.content.hasOwnProperty(index)) {
+        if (index.substring(0, 8) === 'newValue') {
+          return this.content[index];
+        }
+      }
+    }
+    return '';
+  }
 }
 
 class ActivityGroup {
@@ -44,6 +76,7 @@ class ActivityGroup {
 class ActivityUserGroup {
   activities: Activity[] = [];
   unread: number = 0;
+  showActivities: boolean = false;
   user: User;
   date: Date;
 
@@ -51,10 +84,51 @@ class ActivityUserGroup {
     this.user = activity.userRef;
     this.date = activity.date;
   }
+
+  getSummaryDescription() {
+    let summary = '';
+    let totalActivityTypes = 0;
+    const summaryTypes = {};
+    for (const activity of this.activities) {
+      if (!summaryTypes.hasOwnProperty(activity.action)) {
+        summaryTypes[activity.action] = {
+          total: 0,
+          type: activity.typeRef
+        };
+        totalActivityTypes++;
+      }
+      summaryTypes[activity.action].total++;
+    }
+    let count = 1;
+    for (const activityAction in summaryTypes) {
+      if (summaryTypes.hasOwnProperty(activityAction)) {
+        const total = summaryTypes[activityAction].total;
+        const type =  summaryTypes[activityAction].type;
+        const summaryActivity = (total === 1 ? type.summary : type.summaryPlural);
+        summary += summaryActivity.replace('{x}', total);
+        if (count === (totalActivityTypes - 1)) {
+          summary += ' and ';
+        } else if (count < totalActivityTypes) {
+          summary += ', ';
+        }
+      }
+      count++;
+    }
+    return summary;
+  }
 }
 
-class ActivityType {
-  constructor(public action: string, public type: string, public label: string, public icon: string) { }
+export class ActivityType {
+  constructor(public action: string,
+              public type: string,
+              public label: string,
+              public icon: string,
+              public summary: string,
+              public summaryPlural: string = '') {
+    if (this.summaryPlural === '') {
+      this.summaryPlural = this.summary + 's';
+    }
+  }
 }
 
 class FilterUser {
@@ -72,6 +146,9 @@ export class ActivityContainerController implements angular.IController {
   filteredActivities: Activity[] = [];
   filterUsers: FilterUser[] = [];
   unread: string[] = [];
+  openUserGroups: Activity[] = [];
+  showProjectName: boolean = true;
+  showEntryName: boolean = true;
   entryId: string;
   filterParams: FilterParams = new FilterParams();
   filterDate: string;
@@ -89,6 +166,13 @@ export class ActivityContainerController implements angular.IController {
   constructor(private $sce: angular.ISCEService, private $scope: angular.IScope,
               private activityService: ActivityService, private linkService: LinkService,
               private sessionService: SessionService) {
+    // Watch to see if a refresh is required
+    $scope.$watch(() => activityService.refreshRequired, (refreshRequired: boolean) => {
+      if (refreshRequired === true) {
+        this.loadActivityFeed(true);
+        activityService.markRefreshRequired(false);
+      }
+    });
     // Set activity groups up
     const today = new Date();
     let newDate = today;
@@ -112,77 +196,108 @@ export class ActivityContainerController implements angular.IController {
       'message',
       'global',
       'Global Message',
-      'exclamation-triangle'));
+      'exclamation-triangle',
+      'added {x} global message'));
     this.activityTypes.push(new ActivityType(
       'add_text',
       'project',
       'New Text',
-      'file-text'));
+      'file-text',
+      'added {x} new text'));
     this.activityTypes.push(new ActivityType(
       'add_user_to_project',
       'project',
       'User added to project',
-      'user-plus'));
+      'user-plus',
+      'added {x} user'));
     this.activityTypes.push(new ActivityType(
       'add_question',
       'project',
       'New question',
-      'question-circle'));
+      'question-circle',
+      'added {x} new question'));
     this.activityTypes.push(new ActivityType(
       'add_lex_comment',
       'project',
       'New comment',
-      'comments'));
+      'comments',
+      'added {x} new comment'));
     this.activityTypes.push(new ActivityType(
       'add_entry',
       'project',
       'New Entry',
-      'file'));
+      'file',
+      'added {x} new entry',
+      'added {x} new entries'));
     this.activityTypes.push(new ActivityType(
       'update_entry',
       'project',
       'Entry Updated',
-      'save'));
+      'save',
+      'updated {x} entry',
+      'updated {x} new entries'));
     this.activityTypes.push(new ActivityType(
       'delete_entry',
       'project',
       'Entry Deleted',
-      'trash'));
+      'trash',
+      'deleted {x} entry',
+      'deleted {x} entries'));
     this.activityTypes.push(new ActivityType(
       'add_lex_reply',
       'project',
       'Reply to comment',
-      'reply'));
+      'reply',
+      'replied to {x} comment'));
+    this.activityTypes.push(new ActivityType(
+      'update_lex_reply',
+      'project',
+      'Update Reply',
+      'reply',
+      'updated {x} reply'));
     this.activityTypes.push(new ActivityType(
       'update_lex_comment_status',
       'project',
       'Comment status changed',
-      'pencil-square'));
+      'pencil-square',
+      'changed {x} comment status',
+      'changed {x} comment statuses'));
     this.activityTypes.push(new ActivityType(
       'add_comment',
       'project',
       'New Comment',
-      'reply'));
+      'reply',
+      'added {x} comment'));
     this.activityTypes.push(new ActivityType(
       'update_comment',
       'project',
       'Update Comment',
-      'comments-o'));
+      'comments-o',
+      'updated {x} comment'));
+    this.activityTypes.push(new ActivityType(
+      'update_lex_comment',
+      'project',
+      'Update Comment',
+      'comments-o',
+      'updated {x} comment'));
     this.activityTypes.push(new ActivityType(
       'add_answer',
       'project',
       'New Answer',
-      'comments'));
+      'comments',
+      'added {x} answer'));
     this.activityTypes.push(new ActivityType(
       'update_answer',
       'project',
       'Update Answer',
-      'comments-o'));
+      'comments-o',
+      'updated {x} answer'));
     this.activityTypes.push(new ActivityType(
       'increase_score',
       'project',
       '+1\'d',
-      'thumbs-up'));
+      'thumbs-up',
+      '+`\'d {x} comment'));
     // TODO: Move all definitions into the API so we get everything we need returned
     this.activityService.validActivityTypes().then(result => {
       if (result.ok) {
@@ -191,7 +306,7 @@ export class ActivityContainerController implements angular.IController {
           if (this.activityTypes.hasOwnProperty(index)) {
             let activityFound = false;
             for (const activityType of result.data) {
-              if (activityType === this.activityTypes[index].type) {
+              if (activityType === this.activityTypes[index].action) {
                 activityFound = true;
                 break;
               }
@@ -235,8 +350,14 @@ export class ActivityContainerController implements angular.IController {
             if (this.isUnread(activity.id)) {
               userGroup.unread++;
             }
+            // Open up user group if it was already open
+            for (const openActivity of this.openUserGroups) {
+              if (openActivity.id === activity.id) {
+                activityGroup.userGroups[userGroupIndex].showActivities = true;
+              }
+            }
           }
-      }
+        }
         previousDate = activityGroup.date;
       }
     }, true);
@@ -250,6 +371,7 @@ export class ActivityContainerController implements angular.IController {
   }
 
   loadActivityFeed(reset: boolean = false): void {
+    // Reset all activities
     if (reset) {
       this.activities = [];
       this.filterParams.skip = 0;
@@ -279,6 +401,8 @@ export class ActivityContainerController implements angular.IController {
     // Choose appropriate API end point
     if (this.entryId != null) {
       if (this.entryId && !this.entryId.startsWith('_new_')) {
+        this.showProjectName = false;
+        this.showEntryName = false;
         this.activities = [];
         this.filterParams.skip = 0;
         this.loadingFeed = true;
@@ -306,14 +430,21 @@ export class ActivityContainerController implements angular.IController {
       this.unread = result.data.unread;
       for (const key in result.data.activity) {
         if (result.data.activity.hasOwnProperty(key)) {
-          // TODO: Update the PHP script to save these in the correct order
-          if (result.data.activity[key].userRef2) {
-            let tmp;
-            tmp = result.data.activity[key].userRef;
-            result.data.activity[key].userRef = result.data.activity[key].userRef2;
-            result.data.activity[key].userRef2 = tmp;
+          // Cast into our Activity class - may be there is already a built in method for this?
+          const activity = new Activity();
+          for (const i in result.data.activity[key]) {
+            if (result.data.activity[key].hasOwnProperty(i)) {
+              activity[i] = result.data.activity[key][i];
+            }
           }
-          this.activities.push(result.data.activity[key]);
+          // TODO: Update the PHP script to save these in the correct order
+          if (activity.userRef2) {
+            let tmp;
+            tmp = activity.userRef;
+            activity.userRef = activity.userRef2;
+            activity.userRef2 = tmp;
+          }
+          this.activities.push(activity);
         }
       }
 
@@ -360,6 +491,9 @@ export class ActivityContainerController implements angular.IController {
         if ('answer' in item.content) {
           item.content.answer = this.$sce.trustAsHtml(item.content.answer);
         }
+        if (!item.content.label) {
+          item.content.label = '{field label}';
+        }
       }
 
       if ('date' in item) {
@@ -368,6 +502,7 @@ export class ActivityContainerController implements angular.IController {
 
       for (const activityType of this.activityTypes) {
         if (activityType.action === item.action && activityType.type === item.type) {
+          item.typeRef = activityType;
           item.icon = activityType.icon;
         }
       }
@@ -457,6 +592,25 @@ export class ActivityContainerController implements angular.IController {
     return unread;
   }
 
+  clickUserGroup(userGroup: ActivityUserGroup) {
+    // Show/hide the activities in this user group
+    userGroup.showActivities = !userGroup.showActivities;
+    // Track the first activity as a way of knowing which user groups are open
+    // Need to do it this way as the user group could move around but the activity itself won't
+    const firstActivity = userGroup.activities[0];
+    if (userGroup.showActivities) {
+      this.openUserGroups.push(userGroup.activities[0]);
+    } else {
+      let index = 0;
+      for (const activity of this.openUserGroups) {
+        if (activity.id === firstActivity.id) {
+          this.openUserGroups.splice(index, 1);
+          break;
+        }
+        index++;
+      }
+    }
+  }
 }
 
 export const ActivityContainerComponent: angular.IComponentOptions = {
