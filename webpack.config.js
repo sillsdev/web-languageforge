@@ -34,25 +34,6 @@ var webpackConfig = {
       // your Angular Async Route paths relative to this root directory
       {}
     ),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: function (module) {
-        // this assumes your vendor imports exist in the node_modules or js/assets directories
-        return module.context && (
-          module.context.indexOf('node_modules') !== -1 ||
-          module.context.indexOf('js/assets') !== -1 ||
-          module.context.indexOf('js/vendor') !== -1 ||
-          module.context.indexOf('core/input-systems') !== -1
-        );
-      }
-    }),
-
-    // CommonChunksPlugin will now extract all the common modules from vendor and main bundles
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest'
-    }),
-    new LiveReloadPlugin(),
-
     new webpack.DefinePlugin({
       'process.env.XFORGE_BUGSNAG_API_KEY': JSON.stringify(process.env.XFORGE_BUGSNAG_API_KEY
         || 'missing-bugsnag-api-key'),
@@ -130,11 +111,46 @@ var defaultConfig = {
 };
 
 module.exports = function (env) {
-  var mainPath =  './src/angular-app/languageforge/main.ts';
-  if (env && env.applicationName) {
-    mainPath = './src/angular-app/' + env.applicationName + '/main.ts';
+  if (env == null) {
+    env = {
+      applicationName: 'languageforge',
+      isTest: false
+    };
   }
 
+  var mainPath = './src/angular-app/' + env.applicationName + '/main' + (env.isTest ? '.specs' : '') + '.ts';
   webpackConfig.entry.main = mainPath;
+
+  if (env.isTest) {
+    webpackConfig.devtool = false;
+    var plugins = [
+      new webpack.SourceMapDevToolPlugin({
+        filename: null, // if no value is provided the sourcemap is inlined
+        test: /\.(ts|js)($|\?)/i // process .js and .ts files only
+      })
+    ];
+    webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
+  } else {
+    var plugins = [
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendor',
+        minChunks: function (module) {
+          // this assumes your vendor imports exist in the node_modules or js/assets directories
+          return module.context && (
+            module.context.indexOf('node_modules') !== -1 ||
+            module.context.indexOf('js/assets') !== -1 ||
+            module.context.indexOf('js/vendor') !== -1 ||
+            module.context.indexOf('core/input-systems') !== -1
+          );
+        }
+      }),
+      // CommonChunksPlugin will now extract all the common modules from vendor and main bundles
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'manifest'
+      }),
+      new LiveReloadPlugin()
+    ];
+    webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
+  }
   return webpackMerge(defaultConfig, webpackConfig);
 };
