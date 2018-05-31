@@ -3,7 +3,7 @@
         <div id="form-container">
             <div class="text-center">
 
-                <h2 data-translate="Start or join a Translation Project"></h2>
+                <h2>Start or join a Translation Project</h2>
                 <div class="row justify-content-center" data-ng-show="$ctrl.show.nextButton">
                     <div class="col-md-10">
                         <ul class="list-inline" id="progress-indicator">
@@ -28,7 +28,7 @@
             <form class="form" id="newLexProjectForm" name="newLexProjectForm" data-ng-pristine data-ng-valid
                   data-ng-scope data-ng-submit="$ctrl.nextStep()">
                 <div class="row justify-content-center">
-                    <div class="col-md-10" id="form-status" data-ng-class="$ctrl.formStatusClass">{{$ctrl.formStatus | translate}}&nbsp;</div>
+                    <div class="col-md-10" id="form-status" data-ng-class="$ctrl.formStatusClass">{{$ctrl.formStatus}}&nbsp;</div>
                 </div>
 
                 <!-- our nested state views will be injected here -->
@@ -40,7 +40,7 @@
                         <a class="btn btn-std" data-ng-class="$ctrl.interfaceConfig.pullNormal"
                            id="backButton" data-ng-click="$ctrl.prevStep()" data-ng-show="$ctrl.show.backButton">
                             <i class="fa fa-arrow-circle-left"></i>
-                            {{'Back' | translate}}
+                            Back
                         </a>
 
                         <button type="submit" class="btn btn-std" data-ng-class="[$ctrl.interfaceConfig.pullToSide, $ctrl.forwardBtnClass]" href="#"
