@@ -1121,7 +1121,7 @@ gulp.task('build-productionConfig', function () {
       /(define\('BUGSNAG_API_KEY', ').*;$/m,
       '$1' + params.bugsnagApiKey + '\');'))
     .pipe(replace(
-      /^(define\('BUGSNAG_NOTIFY_RELEASE_STAGES', ).*;$/m,
+      /(define\('BUGSNAG_NOTIFY_RELEASE_STAGES', ).*;$/m,
       '$1' + notifyReleaseStages + ');'))
     .pipe(gulp.dest('./'));
 });
@@ -1391,19 +1391,18 @@ gulp.task('build-e2e').description =
 // -------------------------------------
 //   Task: Build, PHP Tests, Upload
 // -------------------------------------
-gulp.task('build-php',
+gulp.task('build-and-test',
   gulp.series(
     'build',
     'test-php',
 
     // 'test-js',
     'test-dotnet',
-    'build-upload',
     'test-restart-webserver',
     'local-restart-xforge-web-api',
     'local-restart-node-server')
 );
-gulp.task('build-php').description =
+gulp.task('build-and-test').description =
   'Build and Run PHP tests on CI server; Deploy to dev site';
 
 // -------------------------------------

@@ -3,17 +3,20 @@
         <div id="form-container">
             <div class="text-center">
                 <br>
-                <div class="row justify-content-center" data-ng-show="show.nextButton">
+                <div class="row justify-content-center" data-ng-show="$ctrl.show.nextButton">
                     <div class="col-12 col-lg-8">
                         <ul id="progress-indicator">
-                            <li><i data-ng-class="iconForStep(1)"></i>
-                                <span data-ng-bind="progressIndicatorStep1Label"></span></li>
+                            <li>
+                                <i data-ng-class="$ctrl.iconForStep(1)"></i>
+                                <span data-ng-bind="$ctrl.progressIndicatorStep1Label"></span></li>
                             <li>&gt;</li>
-                            <li><i data-ng-class="iconForStep(2)"></i>
-                                <span data-ng-bind="progressIndicatorStep2Label"></span></li>
-                            <li data-ng-show="show.step3">&gt;</li>
-                            <li data-ng-show="show.step3"><i data-ng-class="iconForStep(3)"></i>
-                                <span data-ng-bind="progressIndicatorStep3Label"></span>
+                            <li>
+                                <i data-ng-class="$ctrl.iconForStep(2)"></i>
+                                <span data-ng-bind="$ctrl.progressIndicatorStep2Label"></span></li>
+                            <li data-ng-show="$ctrl.show.step3">&gt;</li>
+                            <li data-ng-show="$ctrl.show.step3">
+                                <i data-ng-class="$ctrl.iconForStep(3)"></i>
+                                <span data-ng-bind="$ctrl.progressIndicatorStep3Label" id="progress-indicator-step3-label"></span>
                             </li>
                         </ul>
                     </div>
@@ -21,9 +24,9 @@
             </div>
 
             <!-- use ng-submit to catch the form submission and use our Angular function -->
-            <form class="form" id="newLexProjectForm" name="newLexProjectForm" novalidate>
+            <form class="form" id="new-lex-project-form" name="newLexProjectForm" novalidate>
                 <div class="row justify-content-center">
-                    <div class="col-12 col-lg-8" id="form-status" data-ng-class="formStatusClass">{{formStatus}}&nbsp;</div>
+                    <div class="col-12 col-lg-8" id="form-status" data-ng-class="$ctrl.formStatusClass">{{$ctrl.formStatus}}&nbsp;</div>
                 </div>
 
                 <!-- our nested state views are injected here -->
@@ -31,16 +34,16 @@
             </form>
 
             <br>
-            <div class="row justify-content-center" data-ng-show="show.nextButton">
+            <div class="row justify-content-center" data-ng-show="$ctrl.show.nextButton">
                 <div class="col-12 col-lg-8">
-                    <a class="btn btn-std" data-ng-class="interfaceConfig.pullNormal"
-                       id="backButton" data-ng-click="prevStep()" data-ng-show="show.backButton">
+                    <a class="btn btn-std" data-ng-class="$ctrl.interfaceConfig.pullNormal"
+                       id="back-button" data-ng-click="$ctrl.prevStep()" data-ng-show="$ctrl.show.backButton">
                         <i class="fa fa-arrow-circle-left"></i>
                         Back
                     </a>
-                    <button class="btn" data-ng-class="[interfaceConfig.pullToSide, forwardBtnClass]"
-                            id="nextButton" data-ng-click="nextStep()" data-ng-disabled="!show.nextButton">
-                        {{nextButtonLabel}}&nbsp;
+                    <button class="btn" data-ng-class="[$ctrl.interfaceConfig.pullToSide, $ctrl.forwardBtnClass]"
+                            id="next-button" data-ng-click="$ctrl.nextStep()" data-ng-disabled="!$ctrl.show.nextButton">
+                        {{$ctrl.nextButtonLabel}}&nbsp;
                         <i class="fa fa-arrow-circle-right"></i>
                     </button>
                 </div>

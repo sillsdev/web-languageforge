@@ -127,7 +127,9 @@ describe('Lexicon E2E New Project wizard app', () => {
       browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.credentialsInvalid),
         constants.conditionTimeout);
       expect<any>(page.srCredentialsPage.loginOk.isPresent()).toBe(false);
-      expect<any>(page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true); // flaky assertion
+      browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.credentialsInvalid),
+        constants.conditionTimeout);
+      expect<any>(page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true);
       page.formStatus.expectHasNoError();
       page.nextButton.click();
       expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
