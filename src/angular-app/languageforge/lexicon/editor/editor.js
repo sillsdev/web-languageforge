@@ -241,6 +241,9 @@ angular.module('lexicon.editor', [
                 }
               });
 
+              // Mark the activity feed as requiring a refresh
+              activityService.markRefreshRequired();
+
               saveStatus = 'saved';
               (successCallback || angular.noop)(data.result);
             }).catch(function (reason) {
@@ -716,6 +719,8 @@ angular.module('lexicon.editor', [
       };
 
       $scope.showActivityFeed = function showActivityFeed() {
+        // Ideally this would automatically happen when activity is added but not possible yet
+        activityService.markRefreshRequired();
         $scope.showRightPanel('#lexAppActivityFeed');
       };
 
