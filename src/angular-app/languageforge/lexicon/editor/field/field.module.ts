@@ -3,6 +3,7 @@ import * as angular from 'angular';
 import {NoticeModule} from '../../../../bellows/core/notice/notice.module';
 import {MockModule} from '../../../../bellows/shared/mock.module';
 import {SoundModule} from '../../../../bellows/shared/sound.module';
+import {LexiconCoreModule} from '../../core/lexicon-core.module';
 import {EditorCommentsModule} from '../comment/comment.module';
 import {FieldAudioComponent} from './dc-audio.component';
 import {FieldEntryComponent} from './dc-entry.component';
@@ -21,10 +22,11 @@ import {FieldTextComponent} from './dc-text.component';
 export const EditorFieldModule = angular
   .module('editorFieldModule', [
     'ngFileUpload',
-    EditorCommentsModule,
     MockModule,
     NoticeModule,
-    SoundModule
+    SoundModule,
+    LexiconCoreModule,
+    EditorCommentsModule
   ])
   .component('dcAudio', FieldAudioComponent)
   .component('dcEntry', FieldEntryComponent)

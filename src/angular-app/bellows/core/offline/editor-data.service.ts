@@ -34,7 +34,7 @@ class EntryListModifiers {
 }
 
 export class EditorDataService {
-  readonly browserInstanceId = Math.floor(Math.random() * 1000000);
+  readonly browserInstanceId: string = Math.floor(Math.random() * 1000000).toString();
 
   entries: any[] = [];
   visibleEntries: any[] = [];
@@ -80,7 +80,7 @@ export class EditorDataService {
   /**
    * Called when loading the controller
    */
-  loadEditorData = (lexiconScope?: any): angular.IPromise<any> => {
+  loadEditorData = (): angular.IPromise<any> => {
     const deferred = this.$q.defer();
     if (this.entries.length === 0) { // first page load
       if (this.cache.canCache()) {
@@ -88,7 +88,6 @@ export class EditorDataService {
         this.loadDataFromOfflineCache().then((projectObj: any) => {
           if (projectObj.isComplete) {
             this.showInitialEntries().then(() => {
-              lexiconScope.finishedLoading = true;
               this.notice.cancelLoading();
               this.refreshEditorData(projectObj.timestamp).then((result: any) => {
                 deferred.resolve(result);
@@ -256,7 +255,7 @@ export class EditorDataService {
       UtilityService.arrayCopyRetainingReferences(entriesSorted, this.entries);
       const filteredEntriesSorted = this.sortList(config, this.filteredEntries);
       UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted, this.filteredEntries);
-      const visibleEntriesSorted = this.sortList(config, this.visibleEntries);
+      this.sortList(config, this.visibleEntries);
       if (shouldResetVisibleEntriesList) {
         // TODO: Magic number "50" below should become a constant somewhere
         UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, 50), this.visibleEntries);
