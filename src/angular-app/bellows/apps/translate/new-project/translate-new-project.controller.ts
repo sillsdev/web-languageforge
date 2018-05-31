@@ -54,18 +54,16 @@ export class TranslateNewProjectController implements angular.IController {
   private readonly error = this.makeFormInvalid;
   private paratextSignInWindow: Window;
 
-  static $inject = ['$scope', '$q',
-    '$filter', '$window',
-    '$state', 'sessionService',
-    'silNoticeService', 'inputSystems',
+  static $inject = ['$scope', '$state',
+    '$q', '$window',
+    'sessionService', 'silNoticeService',
     'translateProjectApi', 'linkService',
     'userRestApiService', 'machineService',
     'translateSendReceiveService'
   ];
-  constructor(private readonly $scope: angular.IScope, private readonly $q: angular.IQService,
-              private readonly $filter: angular.IFilterService, private readonly $window: angular.IWindowService,
-              private readonly $state: angular.ui.IStateService, private readonly sessionService: SessionService,
-              private readonly notice: NoticeService, private readonly inputSystems: InputSystemsService,
+  constructor(private readonly $scope: angular.IScope, private readonly $state: angular.ui.IStateService,
+              private readonly $q: angular.IQService, private readonly $window: angular.IWindowService,
+              private readonly sessionService: SessionService, private readonly notice: NoticeService,
               private readonly projectApi: TranslateProjectService, private readonly linkService: LinkService,
               private readonly userRestApiService: UserRestApiService, private readonly machine: MachineService,
               private readonly translateSendReceiveService: TranslateSendReceiveService) {}

@@ -45,7 +45,7 @@ COUNTRY_CODES_FNAME   = "CountryCodes.txt"
 LANGUAGE_CODES_FNAME  = "LanguageCodes.txt"
 LANGUAGE_INDEX_FNAME  = "LanguageIndex.txt"
 CONVERT_2_TO_3_FNAME  = "TwoToThreeCodes.txt"
-OUTPUT_FNAME = "../../src/angular-app/bellows/core/input-systems/input-systems.languages.ts"
+OUTPUT_FNAME = "../../src/angular-app/bellows/core/input-systems/input-systems-languages.generated-data.ts"
 OUTPUT_KEY_ORDER = ['name', 'code', 'country', 'altNames']
 
 # OUTPUT_PREFIX is the text to write *before* the JSON output
