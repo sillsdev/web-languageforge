@@ -1,18 +1,20 @@
 'use strict';
 
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
 var webpack = require('webpack');
 var webpackMerge = require('webpack-merge');
-var UglifyJsPlugin = require("./node_modules/webpack/lib/optimize/UglifyJsPlugin");
-var LoaderOptionsPlugin = require("./node_modules/webpack/lib/LoaderOptionsPlugin");
+var UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
+var LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 
 module.exports = function (env) {
   if (env == null) {
     env = {
       applicationName: 'languageforge',
       isProduction: false,
+      isAnalyze: false,
       isTest: false
     };
   }
@@ -48,7 +50,7 @@ module.exports = function (env) {
       new webpack.DefinePlugin({
         'process.env.XFORGE_BUGSNAG_API_KEY': JSON.stringify(process.env.XFORGE_BUGSNAG_API_KEY
           || 'missing-bugsnag-api-key'),
-        'process.env.NOTIFY_RELEASE_STAGES': process.env.NOTIFY_RELEASE_STAGES,
+        'process.env.NOTIFY_RELEASE_STAGES': process.env.NOTIFY_RELEASE_STAGES
       })
     ],
 
@@ -123,8 +125,8 @@ module.exports = function (env) {
 
   // Set up and return a customized Webpack config according to the environment we're in
 
-  var mainPath = './src/angular-app/' + env.applicationName + '/main' + (env.isTest ? '.specs' : '') + '.ts';
-  webpackConfig.entry.main = mainPath;
+  webpackConfig.entry.main = './src/angular-app/' + env.applicationName + '/main' +
+    (env.isTest ? '.specs' : '') + '.ts';
 
   if (env.isProduction) {
     webpackConfig.plugins.push(new webpack.DefinePlugin({
@@ -136,6 +138,10 @@ module.exports = function (env) {
     webpackConfig.plugins.push(new LoaderOptionsPlugin({
       minimize: true
     }));
+  }
+
+  if (env.isAnalyze) {
+    webpackConfig.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'static' }));
   }
 
   if (env.isTest) {
@@ -161,6 +167,7 @@ module.exports = function (env) {
           );
         }
       }),
+
       // CommonChunksPlugin will now extract all the common modules from vendor and main bundles
       new webpack.optimize.CommonsChunkPlugin({
         name: 'manifest'
@@ -169,5 +176,6 @@ module.exports = function (env) {
     ];
     webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
   }
+
   return webpackMerge(defaultConfig, webpackConfig);
 };
