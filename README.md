@@ -136,21 +136,24 @@ After Ubuntu Xenial Bash has finished installing, close the Windows Command Prom
 
 ### Vagrant VM Setup <a id="VagrantSetup"></a> ###
 
-Clone this repository to your host machine and `vagrant up` the Xenial box. We intentionally postpone provisioning on initial boot so the `Virtualbox guest additions` updates don't interfere with the provisioning process.
+- Download the file https://github.com/sillsdev/web-languageforge/blob/master/deploy/xenial/Vagrantfile and save it as Vagrantfile.
+- Open the command line to the directory where the Vagrantfile is and run `vagrantup --no-provision` (this delays provisioning so the VirtualBox guest additions updates don't interfere with the provisioning process.)
+- Shut down the box with `vagrant halt`
+- Run `vagrant up --provision`
 
 ``` bash
-git clone https://github.com/sillsdev/web-languageforge web-languageforge --recurse-submodules
-cd deploy/xenial
+wget https://raw.githubusercontent.com/sillsdev/web-languageforge/master/deploy/xenial/Vagrantfile
 vagrant up --no-provision
-```
-
-Once the shell notifies the Virtualbox guest additions have been updated, power down the Xenial box.
-
-Now, vagrant up with provision to install and deploy
-
-``` bash
+vagrant halt
 vagrant up --provision
 ```
+
+Edit your hosts file (On Linux, `/etc/hosts`, on Windows, `C:\windows\system32\drivers\etc\hosts`. You will have to use sudo on Linux and edit as Administrator on Windows). Add the following lines:
+```
+192.168.33.10     languageforge.local
+192.168.33.10     scriptureforge.local
+```
+Then open languageforge.local and scriptureforge.local ensure they load correctly.
 
 Proceed to [Language Forge Configuration File](#LFConfig) and follow the rest of the steps in this README.
 
