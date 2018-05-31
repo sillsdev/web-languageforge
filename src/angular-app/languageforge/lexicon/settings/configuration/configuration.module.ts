@@ -2,7 +2,6 @@ import * as angular from 'angular';
 import 'ng-drag-to-reorder';
 
 import {CoreModule} from '../../../../bellows/core/core.module';
-import {InputSystemsModule} from '../../../../bellows/core/input-systems/input-systems.service';
 import {NoticeModule} from '../../../../bellows/core/notice/notice.module';
 import {SelectLanguageModule} from '../../../../bellows/shared/select-language.component';
 import {LexiconCoreModule} from '../../core/lexicon-core.module';
@@ -15,7 +14,6 @@ export const LexiconConfigurationModule = angular
     'ui.bootstrap',
     'ngDragToReorder',
     CoreModule,
-    InputSystemsModule,
     NoticeModule,
     SelectLanguageModule,
     'palaso.ui.tabset',
