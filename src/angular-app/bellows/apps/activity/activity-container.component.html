@@ -168,8 +168,19 @@
                                                     <span ng-show="$ctrl.showProjectName">in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                                                 </div>
 
+                                                <div data-ng-switch-when="lexCommentIncreaseScore-project">
+                                                    <span class="activity-action">Liked a comment on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                    <div class="activity-comment">
+                                                        <i class="fa fa-quote-left"></i>
+                                                        <div data-ng-bind-html="item.content.lexComment"></div>
+                                                        <i class="fa fa-quote-right"></i>
+                                                    </div>
+                                                </div>
+
                                                 <div data-ng-switch-when="update_lex_comment-project">
-                                                   <span class="activity-action">Updated the comment on</span> <span class="activity-label notranslate">{{item.content.label}}</span>
+                                                   <span class="activity-action">Updated the comment on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
                                                     <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
                                                     <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
                                                     <div class="activity-comment">
@@ -190,12 +201,12 @@
                                                         <div data-ng-switch-when="">
                                                             <span class="activity-action">Added</span>
                                                             <span class="activity-values"><span class="activity-value activity-value-new notranslate">{{item.getNewValue()}}</span> to </span>
-                                                            <span class="activity-label notranslate">{{item.content.label}}</span>
+                                                            <span class="activity-label notranslate">{{item.getLabel()}}</span>
                                                             <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
                                                             <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
                                                         </div>
                                                         <div data-ng-switch-default>
-                                                            <span class="activity-action">Updated</span> <span class="activity-label notranslate">{{item.content.label}}</span>
+                                                            <span class="activity-action">Updated</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
                                                             <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
                                                             <span class="activity-values">from <span class="activity-value activity-values-old notranslate">{{item.getOldValue()}}</span> to <span class="activity-value activity-value-new notranslate">{{item.getNewValue()}}</span></span>
                                                             <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
@@ -209,7 +220,7 @@
                                                 </div>
 
                                                 <div data-ng-switch-when="add_lex_comment-project">
-                                                    <span class="activity-action">Commented on</span> <span class="activity-label notranslate">{{item.content.label}}</span>
+                                                    <span class="activity-action">Commented on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
                                                     <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
                                                     <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
                                                     <div class="activity-comment">
@@ -220,7 +231,7 @@
                                                 </div>
 
                                                 <div data-ng-switch-when="add_lex_reply-project">
-                                                    <span class="activity-action">Replied to a comment on</span> <span class="activity-label notranslate">{{item.content.label}}</span>
+                                                    <span class="activity-action">Replied to a comment on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
                                                     <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
                                                     <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
                                                     <div class="activity-reply">
@@ -238,7 +249,7 @@
                                                 </div>
 
                                                 <div data-ng-switch-when="update_lex_reply-project">
-                                                   <span class="activity-action">Updated a reply comment on</span> <span class="activity-label notranslate">{{item.content.label}}</span>
+                                                   <span class="activity-action">Updated a reply comment on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
                                                     <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
                                                     <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
                                                     <div class="activity-reply">
@@ -256,7 +267,7 @@
                                                 </div>
 
                                                 <div data-ng-switch-when="update_lex_comment_status-project">
-                                                    <span class="activity-action">Comment status on</span> <span class="activity-label notranslate">{{item.content.label}}</span>
+                                                    <span class="activity-action">Comment status on</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
                                                     <span class="activity-values">changed to <span class="activity-value activity-value-new notranslate">{{item.content.lexCommentStatus}}</span></span>
                                                     <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
                                                     <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
