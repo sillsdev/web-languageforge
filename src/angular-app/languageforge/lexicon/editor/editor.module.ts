@@ -5,6 +5,7 @@ import {ActivityAppModule} from '../../../bellows/apps/activity/activity-app.mod
 import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
 import {PuiUtilityModule} from '../../../bellows/shared/utils/pui-utils.module';
+import {LexiconCoreModule} from '../core/lexicon-core.module';
 import {EditorCommentsModule} from './comment/comment.module';
 import {LexiconEditorComponent, LexiconEditorEntryController, LexiconEditorListController} from './editor.component';
 import {EditorFieldModule} from './field/field.module';
@@ -17,6 +18,8 @@ export const LexiconEditorModule = angular
     CoreModule,
     NoticeModule,
     PuiUtilityModule,
+    'palaso.ui.typeahead',
+    LexiconCoreModule,
     EditorCommentsModule,
     EditorFieldModule
   ])
@@ -31,11 +34,11 @@ export const LexiconEditorModule = angular
         abstract: true,
         url: '/editor',
         template: `
-            <lexicon-editor lec-config="editorConfig"
-                            lec-interface-config="interfaceConfig"
-                            lec-finished-loading="finishedLoading"
-                            lec-project="project"
-                            lec-rights="rights"></lexicon-editor>`
+            <lexicon-editor lec-config="$ctrl.editorConfig"
+                            lec-interface-config="$ctrl.interfaceConfig"
+                            lec-finished-loading="$ctrl.finishedLoading"
+                            lec-project="$ctrl.project"
+                            lec-rights="$ctrl.rights"></lexicon-editor>`
       })
       .state('editor.list', {
         url: '/list',
