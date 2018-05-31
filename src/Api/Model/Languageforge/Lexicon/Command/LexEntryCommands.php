@@ -45,8 +45,8 @@ class LexEntryCommands
         // So "newValue.lexeme.en" will set $result for the "lexeme" field but not for "en", since that's not a field
         $result = '';
         foreach ($parts as $part) {
-            // Strip away anything after a # character
-            $fieldName = explode('#', $part, 2)[0];
+            // Strip away anything after a @ character
+            $fieldName = explode('@', $part, 2)[0];
             if (array_key_exists($fieldName, $currentList->fields)) {
                 /** @var LexConfig $fieldConfig */
                 $fieldConfig = $currentList->fields[$fieldName];
