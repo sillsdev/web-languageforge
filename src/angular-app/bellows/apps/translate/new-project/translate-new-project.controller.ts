@@ -98,10 +98,10 @@ export class TranslateNewProjectController implements angular.IController {
     this.show.flexHelp = false;
     this.show.cloning = true;
     this.show.step3 = true;
-    this.nextButtonLabel = this.$filter('translate')('Next');
-    this.progressIndicatorStep1Label = this.$filter('translate')('Name');
-    this.progressIndicatorStep2Label = this.$filter('translate')('Languages');
-    this.progressIndicatorStep3Label = this.$filter('translate')('Verify');
+    this.nextButtonLabel = 'Next';
+    this.progressIndicatorStep1Label = 'Name';
+    this.progressIndicatorStep2Label = 'Languages';
+    this.progressIndicatorStep3Label = 'Verify';
     this.resetValidateProjectForm();
 
     this.$scope.$watch(() => {
@@ -185,8 +185,8 @@ export class TranslateNewProjectController implements angular.IController {
     this.isSRProject = true;
     this.show.nextButton = true;
     this.show.backButton = true;
-    this.nextButtonLabel = this.$filter('translate')('Next');
-    this.progressIndicatorStep2Label = this.$filter('translate')('Connect');
+    this.nextButtonLabel = 'Next';
+    this.progressIndicatorStep2Label = 'Connect';
     this.resetValidateProjectForm();
   }
 
@@ -195,8 +195,8 @@ export class TranslateNewProjectController implements angular.IController {
     this.isSRProject = false;
     this.show.nextButton = true;
     this.show.backButton = true;
-    this.nextButtonLabel = this.$filter('translate')('Next');
-    this.progressIndicatorStep2Label = this.$filter('translate')('Languages');
+    this.nextButtonLabel = 'Next';
+    this.progressIndicatorStep2Label = 'Languages';
   }
 
   iconForStep(step: number) {
@@ -219,7 +219,7 @@ export class TranslateNewProjectController implements angular.IController {
     switch (this.$state.current.name) {
       case 'newProject.sendReceiveCredentials':
         this.$state.go('newProject.name');
-        this.nextButtonLabel = this.$filter('translate')('Next');
+        this.nextButtonLabel = 'Next';
         break;
       case 'newProject.name':
         this.$state.go('newProject.chooser');
@@ -349,7 +349,7 @@ export class TranslateNewProjectController implements angular.IController {
         this.projectCodeState = 'empty';
         this.projectCodeStateDefer = this.$q.defer();
         this.projectCodeStateDefer.resolve('empty');
-        this.nextButtonLabel = this.$filter('translate')(this.isSRProject ? 'Get Started' : 'Next');
+        this.nextButtonLabel = this.isSRProject ? 'Get Started' : 'Next';
         this.makeFormNeutral();
         if (this.isSRProject) {
           this.getParatextUserInfo();
