@@ -1,13 +1,25 @@
 import * as angular from 'angular';
 
 import {InputSystemLanguage} from '../../shared/model/input-system-language.model';
-import {inputSystemsLanguages} from './input-systems.languages';
-import {inputSystemsLanguagesSmall} from './input-systems.languages-small';
-import {inputSystemsRegions} from './input-systems.regions';
-import {inputSystemsScripts} from './input-systems.scripts';
+import {inputSystemsLanguagesSmall} from './input-systems-languages-small.generated-data';
+import {inputSystemsLanguages} from './input-systems-languages.generated-data';
+import {inputSystemsRegions} from './input-systems-regions.generated-data';
+import {inputSystemsScripts} from './input-systems-scripts.generated-data';
 
 export class InputSystemsService {
-  static languages(dataType: string = ''): InputSystemLanguage[] {
+  private languages: InputSystemLanguage[];
+  private dataType: string;
+
+  allLanguages(dataType?: string): InputSystemLanguage[] {
+    if (this.languages == null || dataType !== this.dataType) {
+      this.languages = InputSystemsService.getLanguages(dataType);
+      this.dataType = dataType;
+    }
+
+    return this.languages;
+  }
+
+  private static getLanguages(dataType: string = ''): InputSystemLanguage[] {
     const unlisted: InputSystemLanguage = {
       name: 'Unlisted Language',
       code: {
@@ -58,6 +70,6 @@ export class InputSystemsService {
 }
 
 export const InputSystemsModule = angular
-  .module('language.inputSystems', [])
+  .module('inputSystemsModule', [])
   .service('inputSystems', InputSystemsService)
   .name;
