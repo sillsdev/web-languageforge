@@ -20,6 +20,9 @@
       when: inventory_hostname == "localhost"
       with_items: "{{lf_path}}"
 
+    - name: 'generate website definitions'
+      shell: gulp build-createWebsiteDefs
+
     - name: factory reset mongodb to empty with admin user
       shell: php FactoryReset.php run
       become: true
