@@ -10,6 +10,7 @@ import { DocType, SaveState } from '../core/constants';
 import { MachineService } from '../core/machine.service';
 import { TranslateProjectService } from '../core/translate-project.service';
 import { TranslateRights } from '../core/translate-rights.service';
+import { TranslateSendReceiveService } from '../core/translate-send-receive.service';
 import { TranslateConfigDocumentSets, TranslateUserPreferences } from '../shared/model/translate-config.model';
 import { TranslateProject } from '../shared/model/translate-project.model';
 import { TranslateUtilities } from '../shared/translate-utilities';
@@ -44,12 +45,14 @@ export class TranslateEditorController implements angular.IController {
     '$q', 'machineService',
     'metricService', 'modalService',
     'silNoticeService', 'realTimeService',
-    'translateProjectApi', 'utilService'];
+    'translateProjectApi', 'utilService',
+    'translateSendReceiveService'];
   constructor(private readonly $window: angular.IWindowService, private readonly $scope: angular.IScope,
               private readonly $q: angular.IQService, private readonly machine: MachineService,
               private readonly metricService: MetricService, private readonly modal: ModalService,
               private readonly notice: NoticeService, private readonly realTime: RealTimeService,
-              private readonly projectApi: TranslateProjectService, private readonly util: UtilityService) { }
+              private readonly projectApi: TranslateProjectService, private readonly util: UtilityService,
+              private readonly sendReceiveService: TranslateSendReceiveService) { }
 
   get isScripture(): boolean {
     return this.tecProject != null && this.tecProject.config.isTranslationDataScripture;
@@ -113,12 +116,14 @@ export class TranslateEditorController implements angular.IController {
     this.right = this.target;
     this.left = this.source;
 
-    this.$window.addEventListener('resize', () => this.onWindowResize());
+    this.$window.addEventListener('resize', this.onWindowResize);
     this.updateDropdownMenuClass();
 
-    this.$window.addEventListener('beforeunload', ev => this.onBeforeUnload(ev));
+    this.$window.addEventListener('beforeunload', this.onBeforeUnload);
 
-    this.$window.document.addEventListener('selectionchange', () => this.onNativeSelectionChanged());
+    this.$window.document.addEventListener('selectionchange', this.onNativeSelectionChanged);
+
+    this.sendReceiveService.addSyncCompleteListener(this.onSendReceiveCompleted);
   }
 
   $onChanges(changes: any): void {
@@ -174,21 +179,7 @@ export class TranslateEditorController implements angular.IController {
           if (this.tecProject.config.documentSets.idsOrdered == null) {
             this.tecProject.config.documentSets.idsOrdered = [];
           }
-          for (const id of this.tecProject.config.documentSets.idsOrdered) {
-            if (result.data.documentSetList[id] != null) {
-              this.documentSets.push(result.data.documentSetList[id]);
-              delete result.data.documentSetList[id];
-            }
-          }
-          for (const documentSetId in result.data.documentSetList) {
-            if (result.data.documentSetList.hasOwnProperty(documentSetId)) {
-              const documentSet = result.data.documentSetList[documentSetId];
-              if (documentSet != null) {
-                this.documentSets.push(documentSet);
-                this.tecProject.config.documentSets.idsOrdered.push(documentSet.id);
-              }
-            }
-          }
+          this.resetDocumentSets(result.data.documentSetList);
 
           this.machine.confidenceThreshold = this.tecProject.config.confidenceThreshold;
           const userPreferences = this.tecProject.config.userPreferences;
@@ -260,6 +251,8 @@ export class TranslateEditorController implements angular.IController {
     this.$window.document.removeEventListener('mousedown', this.metricService.onMouseDown);
     this.$window.removeEventListener('resize', this.onWindowResize);
     this.$window.removeEventListener('beforeunload', this.onBeforeUnload);
+    this.$window.document.removeEventListener('selectionchange', this.onNativeSelectionChanged);
+    this.sendReceiveService.removeSyncCompleteListener(this.onSendReceiveCompleted);
     this.saveMetrics();
     this.source.closeDocumentSet();
     this.target.closeDocumentSet();
@@ -552,7 +545,34 @@ export class TranslateEditorController implements angular.IController {
     return focusedEditor;
   }
 
-  private onNativeSelectionChanged(): void {
+  private onSendReceiveCompleted = (): void => {
+    this.projectApi.listDocumentSetsDto(result => {
+      if (result.ok) {
+        this.resetDocumentSets(result.data.documentSetList);
+      }
+    });
+  }
+
+  private resetDocumentSets(documentSetList: any): void {
+    this.documentSets = [];
+    for (const id of this.tecProject.config.documentSets.idsOrdered) {
+      if (documentSetList[id] != null) {
+        this.documentSets.push(documentSetList[id]);
+        delete documentSetList[id];
+      }
+    }
+    for (const documentSetId in documentSetList) {
+      if (documentSetList.hasOwnProperty(documentSetId)) {
+        const documentSet = documentSetList[documentSetId];
+        if (documentSet != null) {
+          this.documentSets.push(documentSet);
+          this.tecProject.config.documentSets.idsOrdered.push(documentSet.id);
+        }
+      }
+    }
+  }
+
+  private onNativeSelectionChanged = (): void => {
     // workaround for bug where Quill allows a selection inside of an embed
     const sel = this.$window.document.getSelection();
     if (sel.rangeCount === 0) {
@@ -611,7 +631,7 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  private onBeforeUnload(event: BeforeUnloadEvent) {
+  private onBeforeUnload = (event: BeforeUnloadEvent) => {
     if (this.saveState < SaveState.Saved) {
       const message = 'There are unsaved changes.';
       event.returnValue = message;
@@ -646,7 +666,7 @@ export class TranslateEditorController implements angular.IController {
     this.dropdownMenuClass = width < 576 ? 'dropdown-menu-right' : 'dropdown-menu-left';
   }
 
-  private onWindowResize() {
+  private onWindowResize = () => {
     this.$scope.$apply(() => {
       this.updateDropdownMenuClass();
     });
