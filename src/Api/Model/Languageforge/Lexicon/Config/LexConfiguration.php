@@ -90,6 +90,7 @@ class LexConfiguration
         $this->entry->fields[LexConfig::LEXEME]->inputSystems[] = 'th';
 
         $this->entry->fields[LexConfig::SENSES_LIST] = new LexConfigFieldList();
+        $this->entry->fields[LexConfig::SENSES_LIST]->label = 'Meaning';
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::GLOSS;
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::DEFINITION;
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::PICTURES;
@@ -131,6 +132,7 @@ class LexConfiguration
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SEMDOM]->listCode = $listCode;
 
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST] = new LexConfigFieldList();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->label = 'Example';
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fieldOrder[] = LexConfig::EXAMPLE_SENTENCE;
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fieldOrder[] = LexConfig::EXAMPLE_TRANSLATION;
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fieldOrder[] = LexConfig::REFERENCE;

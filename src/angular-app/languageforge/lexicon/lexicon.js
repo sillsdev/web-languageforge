@@ -3,16 +3,13 @@
 // Declare app level module which depends on filters, and services
 angular.module('lexicon',
   [
-    'ui.router',
     'ui.bootstrap',
+    'ui.router',
     'ngSanitize',
     'palaso.ui.typeahead',
     'coreModule',
     'sgw.ui.breadcrumb',
-    'lexiconCoreModule',
-    'lexicon.editor',
-    'lexiconSettingsModule',
-    'language.inputSystems',
+    'lexiconModule',
     'pascalprecht.translate'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$compileProvider',
@@ -31,7 +28,10 @@ angular.module('lexicon',
     $stateProvider
       .state('configuration', {
         url: '/configuration',
-        template: '<lexicon-config></lexicon-config>'
+        template: '<lexicon-config lsc-config="config"' +
+          ' lsc-option-lists="optionLists"' +
+          ' lsc-users="users"' +
+          ' lsc-on-update="onUpdate($event)"></lexicon-config>'
       })
       .state('importExport', {
         url: '/importExport',
@@ -46,7 +46,7 @@ angular.module('lexicon',
       })
       .state('sync', {
         url: '/sync',
-        template: '<lexicon-sync></lexicon-sync>'
+        template: '<lexicon-sync lsy-rights="rights"></lexicon-sync>'
       })
       ;
 
@@ -58,12 +58,12 @@ angular.module('lexicon',
     $translateProvider.preferredLanguage('en');
     $translateProvider.useSanitizeValueStrategy('escape');
   }])
-  .controller('LexiconCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService',
-    '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService',
-    'lexSendReceiveApi', 'lexSendReceive', 'lexRightsService', '$q', 'inputSystems',
-  function ($scope, sessionService, lexConfig, lexProjectService,
-            $translate, $location, $interval, notice, editorService,
-            sendReceiveApi, sendReceive, rightsService, $q, inputSystemsService) {
+  .controller('LexiconCtrl', ['$scope', '$interval', '$location', '$q', '$translate',
+    'inputSystems', 'silNoticeService', 'sessionService', 'lexConfigService', 'lexProjectService',
+    'lexEditorDataService', 'lexRightsService', 'lexSendReceiveApi', 'lexSendReceive',
+  function ($scope, $interval, $location, $q, $translate,
+            inputSystemsService, notice, sessionService, configService, lexProjectService,
+            editorService, rightsService, sendReceiveApi, sendReceive) {
     var pristineLanguageCode;
 
     $scope.finishedLoading = false;
@@ -72,27 +72,44 @@ angular.module('lexicon',
       sendReceive.checkInitialState();
     });
 
-    $q.all([sessionService.getSession(), rightsService.getRights()]).then(function (data) {
-      var session = data[0];
-      var rights = data[1];
+    $q.all([rightsService.getRights(), configService.getEditorConfig()]).then(function (data) {
+      var rights = data[0];
+      var editorConfig = data[1];
 
-      $scope.project = session.project();
+      if (rights.canEditProject()) {
+        lexProjectService.users().then(function (result) {
+          if (result.ok) {
+            var users = {};
+
+            // for (const user of (users.data.users as User[])) { // use when TS
+            angular.forEach(result.data.users, function (user) {
+              users[user.id] = user;
+            });
+
+            $scope.users = users;
+          }
+        });
+      }
+
+      $scope.editorConfig = editorConfig;
+      $scope.project = rights.session.project();
+      $scope.config = rights.session.projectSettings().config;
+      $scope.optionLists = rights.session.projectSettings().optionlists;
       $scope.rights = rights;
       $scope.rights.showControlBar = function showControlBar() {
         return $scope.rights.canRemoveUsers() || $scope.rights.canCreateUsers() ||
           $scope.rights.canEditUsers();
       };
 
-      $scope.showSync = function showSync() {
-        return !$scope.project.isArchived && rights.canEditUsers() &&
-          session.projectSettings().hasSendReceive;
-      };
-
-      $scope.optionLists = session.projectSettings().optionlists;
-      $scope.currentUserRole = session.projectSettings().currentUserRole;
-      $scope.interfaceConfig = session.projectSettings().interfaceConfig;
+      $scope.currentUserRole = rights.session.projectSettings().currentUserRole;
+      $scope.interfaceConfig = rights.session.projectSettings().interfaceConfig;
       pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
       changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
+
+      $scope.showSync = function showSync() {
+        return !$scope.project.isArchived && rights.canEditUsers() &&
+          rights.session.projectSettings().hasSendReceive;
+      };
 
       $scope.gotoDictionary = function gotoDictionary() {
         $location.path('/editor/list');
@@ -105,6 +122,21 @@ angular.module('lexicon',
       $scope.onUpdate = function onUpdate($event) {
         if ($event.project) {
           $scope.project = $event.project;
+        }
+
+        if ($event.config) {
+          $scope.config = $event.config;
+        }
+
+        if ($event.optionLists) {
+          $scope.optionLists = $event.optionLists;
+        }
+
+        if ($event.config || $event.optionLists) {
+          configService.getEditorConfig($scope.config, $scope.optionLists)
+            .then(function (editorConfig) {
+              $scope.editorConfig = editorConfig;
+            });
         }
       };
 

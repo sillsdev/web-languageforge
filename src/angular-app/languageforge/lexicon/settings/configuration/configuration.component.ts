@@ -1,36 +1,33 @@
 import * as angular from 'angular';
 
-import {JsonRpcResult} from '../../../../bellows/core/api/json-rpc.service';
+import {ApplicationHeaderService} from '../../../../bellows/core/application-header.service';
 import {NoticeService} from '../../../../bellows/core/notice/notice.service';
-import {Session, SessionService} from '../../../../bellows/core/session.service';
+import {SessionService} from '../../../../bellows/core/session.service';
 import {User} from '../../../../bellows/shared/model/user.model';
-import {LexiconConfigService} from '../../core/lexicon-config.service';
 import {LexiconProjectService} from '../../core/lexicon-project.service';
 import {LexiconSendReceiveService} from '../../core/lexicon-send-receive.service';
 import {
   LexConfigField, LexConfigFieldList, LexiconConfig
 } from '../../shared/model/lexicon-config.model';
-import { LexiconProjectSettings } from '../../shared/model/lexicon-project-settings.model';
+import {LexiconProjectSettings} from '../../shared/model/lexicon-project-settings.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
 import {ConfigurationUnifiedViewModel} from './configuration-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 import {OptionSelects} from './option-selects.model';
-import {ApplicationHeaderService} from "../../../../bellows/core/application-header.service";
 
 interface LexiconConfigControllerScope extends angular.IScope {
   configForm: angular.IFormController;
 }
 
-class LexiconConfigControllerApiResult {
-  users: JsonRpcResult;
-  session: Session;
-}
-
 export class LexiconConfigurationController implements angular.IController {
+  lscConfig: LexiconConfig;
+  lscOptionLists: LexOptionList[];
+  lscUsers: { [userId: string]: User } = {};
+  lscOnUpdate: (params: { $event: { config?: LexiconConfig, optionLists?: LexOptionList[] } }) => void;
+
   active = Tab.Unified;
   addInputSystem = false;
   isSaving = false;
-  users: { [userId: string]: User } = {};
   readonly selects = new OptionSelects();
 
   configDirty: LexiconConfig;
@@ -39,56 +36,52 @@ export class LexiconConfigurationController implements angular.IController {
   inputSystemViewModels: { [inputSystemId: string]: ConfigurationInputSystemsViewModel };
   inputSystemsList: ConfigurationInputSystemsViewModel[];
   unifiedViewModel: ConfigurationUnifiedViewModel;
-  optionListsDirty: any;
-  optionListsPristine: any;
+  optionListsDirty: LexOptionList[];
+  optionListsPristine: LexOptionList[];
 
-  private session: Session;
   private unifiedViewModelPristine: ConfigurationUnifiedViewModel;
   private warnOfUnsavedEditsId: string;
 
   static $inject: string[] = ['$scope', '$q',
     'silNoticeService', 'sessionService',
-    'lexProjectService', 'lexConfigService',
-    'lexSendReceive',
+    'lexProjectService', 'lexSendReceive',
     'applicationHeaderService'];
   constructor(private $scope: LexiconConfigControllerScope, private $q: angular.IQService,
               private notice: NoticeService, private sessionService: SessionService,
-              private lexProjectService: LexiconProjectService, private lexConfig: LexiconConfigService,
-              private sendReceive: LexiconSendReceiveService,
-              private applicationHeaderService: ApplicationHeaderService) {
-    lexProjectService.setBreadcrumbs('configuration', 'Configuration');
-    lexProjectService.setupSettings();
+              private lexProjectService: LexiconProjectService, private sendReceive: LexiconSendReceiveService,
+              private applicationHeaderService: ApplicationHeaderService) { }
+
+  $onInit(): void {
+    this.lexProjectService.setBreadcrumbs('configuration', 'Configuration');
+    this.lexProjectService.setupSettings();
     this.applicationHeaderService.setPageName('Configuration');
 
-    $q.all({
-      users: lexProjectService.users(),
-      session: sessionService.getSession()
-    }).then((result: LexiconConfigControllerApiResult) => {
-      if (result.users.ok) {
-        for (const user of (result.users.data.users as User[])) {
-          this.users[user.id] = user;
-        }
-      }
-
-      this.session = result.session;
-      this.configDirty = angular.copy(result.session.projectSettings<LexiconProjectSettings>().config);
-      this.configPristine = angular.copy(result.session.projectSettings<LexiconProjectSettings>().config);
-      this.optionListsDirty = angular.copy(result.session.projectSettings<LexiconProjectSettings>().optionlists);
-      this.optionListsPristine = angular.copy(result.session.projectSettings<LexiconProjectSettings>().optionlists);
-      this.isSaving = false;
-
-      this.setupView();
-
-      sendReceive.setPollUpdateSuccessCallback(this.pollUpdateSuccess);
-      sendReceive.setSyncProjectStatusSuccessCallback(this.syncProjectStatusSuccess);
-    });
+    this.sendReceive.setPollUpdateSuccessCallback(this.pollUpdateSuccess);
+    this.sendReceive.setSyncProjectStatusSuccessCallback(this.syncProjectStatusSuccess);
   }
 
-  $onDestroy() {
+  $onChanges(changes: any): void {
+    const configChange = changes.lscConfig as angular.IChangesObject<LexiconConfig>;
+    if (configChange != null && configChange.currentValue != null) {
+      this.configDirty = angular.copy(this.lscConfig);
+      this.configPristine = angular.copy(this.lscConfig);
+      this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.configDirty, this.lscUsers);
+      this.unifiedViewModelPristine = angular.copy(this.unifiedViewModel);
+      this.setupView();
+    }
+
+    const optionListsChange = changes.lscOptionLists as angular.IChangesObject<LexOptionList[]>;
+    if (optionListsChange != null && optionListsChange.currentValue != null) {
+      this.optionListsDirty = angular.copy(this.lscOptionLists);
+      this.optionListsPristine = angular.copy(this.lscOptionLists);
+    }
+  }
+
+  $onDestroy(): void {
     this.sendReceive.cancelAllStatusTimers();
   }
 
-  configurationApply() {
+  configurationApply(): void {
     this.isSaving = true;
 
     // Publish updates in configDirty to send to server
@@ -106,15 +99,16 @@ export class LexiconConfigurationController implements angular.IController {
         const isSuccess = result.data;
         if (isSuccess) {
           this.notice.push(this.notice.SUCCESS, 'Configuration updated successfully');
-          this.session.projectSettings<LexiconProjectSettings>().config = angular.copy(this.configDirty);
           this.configPristine = angular.copy(this.configDirty);
-          this.session.projectSettings<LexiconProjectSettings>().optionlists = angular.copy(this.optionListsDirty);
           this.optionListsPristine = angular.copy(this.optionListsDirty);
-          this.lexConfig.refresh();
+          this.sessionService.getSession().then(session => {
+            session.projectSettings<LexiconProjectSettings>().config = angular.copy(this.configPristine);
+            session.projectSettings<LexiconProjectSettings>().optionlists = angular.copy(this.optionListsPristine);
+          });
         } else {
           this.warnOfUnsavedEdits();
-          this.configDirty = angular.copy(this.session.projectSettings<LexiconProjectSettings>().config);
-          this.optionListsDirty = angular.copy(this.session.projectSettings<LexiconProjectSettings>().optionlists);
+          this.configDirty = angular.copy(this.lscConfig);
+          this.optionListsDirty = angular.copy(this.lscOptionLists);
           this.setupView();
           this.sendReceive.startSyncStatusTimer();
         }
@@ -125,10 +119,11 @@ export class LexiconConfigurationController implements angular.IController {
       this.isSaving = false;
     });
 
+    this.lscOnUpdate({ $event: { config: this.configDirty, optionLists: this.optionListsDirty } });
   }
 
   // noinspection JSUnusedGlobalSymbols
-  addNewInputSystem() {
+  addNewInputSystem(): void {
     this.active = Tab.InputSystems; // Switch to Input System tab
     this.addInputSystem = true; // Show New Input System window
   }
@@ -174,10 +169,7 @@ export class LexiconConfigurationController implements angular.IController {
       }
     }
 
-    const isPristine = angular.equals(this.unifiedViewModelPristine, this.unifiedViewModel)  &&
-      angular.equals(this.configPristine, this.configDirty)  &&
-      angular.equals(this.optionListsPristine, this.optionListsDirty);
-    if (isPristine) {
+    if (this.isPristine()) {
       this.$scope.configForm.$setPristine();
     } else {
       this.$scope.configForm.$setDirty();
@@ -189,71 +181,73 @@ export class LexiconConfigurationController implements angular.IController {
   }
 
   private setupView(): void {
-    if (!angular.isDefined(this.configDirty.inputSystems)) {
+    if (this.configDirty.inputSystems == null) {
       return;
     }
 
     // InputSystemsViewModels
     this.inputSystemViewModels = {};
     this.inputSystemsList = [];
-    angular.forEach(this.configDirty.inputSystems, inputSystem => {
-      const viewModel = new ConfigurationInputSystemsViewModel(this.selects, inputSystem);
-      this.inputSystemViewModels[viewModel.uuid] = viewModel;
-      this.inputSystemsList.push(viewModel);
-    });
+    for (const inputSystemTag in this.configDirty.inputSystems) {
+      if (this.configDirty.inputSystems.hasOwnProperty(inputSystemTag)) {
+        const inputSystem = this.configDirty.inputSystems[inputSystemTag];
+        const viewModel = new ConfigurationInputSystemsViewModel(this.selects, inputSystem);
+        this.inputSystemViewModels[viewModel.uuid] = viewModel;
+        this.inputSystemsList.push(viewModel);
+      }
+    }
 
     // for FieldConfigCtrl
     this.fieldConfig = {};
-    angular.forEach(this.configDirty.entry.fieldOrder, fieldName => {
-      if (angular.isDefined(this.configDirty.entry.fields[fieldName])) {
+    for (const fieldName of this.configDirty.entry.fieldOrder) {
+      if (this.configDirty.entry.fields[fieldName] != null) {
         if (this.configDirty.entry.fields[fieldName].type !== 'fields') {
           this.fieldConfig[fieldName] = this.configDirty.entry.fields[fieldName];
         }
       }
-    });
+    }
 
-    angular.forEach((this.configDirty.entry.fields.senses as LexConfigFieldList).fieldOrder, fieldName => {
-      if (angular.isDefined((this.configDirty.entry.fields.senses as LexConfigFieldList).fields[fieldName])) {
-        if ((this.configDirty.entry.fields.senses as LexConfigFieldList).fields[fieldName].type !== 'fields') {
-          this.fieldConfig[fieldName] = (this.configDirty.entry.fields.senses as LexConfigFieldList).fields[fieldName];
+    const configSenses = this.configDirty.entry.fields.senses as LexConfigFieldList;
+    for (const fieldName of configSenses.fieldOrder) {
+      if (configSenses.fields[fieldName] != null) {
+        if (configSenses.fields[fieldName].type !== 'fields') {
+          this.fieldConfig[fieldName] = configSenses.fields[fieldName];
         }
 
       }
-    });
+    }
 
-    angular.forEach(((this.configDirty.entry.fields.senses as LexConfigFieldList).fields.examples as LexConfigFieldList)
-        .fieldOrder, fieldName => {
-        if (angular.isDefined(((this.configDirty.entry.fields.senses as LexConfigFieldList).fields
-            .examples as LexConfigFieldList).fields[fieldName])
-        ) {
-          if (((this.configDirty.entry.fields.senses as LexConfigFieldList).fields.examples as LexConfigFieldList)
-              .fields[fieldName].type !== 'fields'
-          ) {
-            this.fieldConfig[fieldName] = ((this.configDirty.entry.fields.senses as LexConfigFieldList).fields
-              .examples as LexConfigFieldList).fields[fieldName];
-          }
+    const configExamples = configSenses.fields.examples as LexConfigFieldList;
+    for (const fieldName of configExamples.fieldOrder) {
+      if (configExamples.fields[fieldName] != null) {
+        if (configExamples.fields[fieldName].type !== 'fields') {
+          this.fieldConfig[fieldName] = configExamples.fields[fieldName];
         }
-      }
-    );
-  }
-
-  private pollUpdateSuccess = () => {
-    if (this.$scope.configForm.$dirty) {
-      if (this.sendReceive.isInProgress()) {
-        this.warnOfUnsavedEdits();
-        this.configDirty = angular.copy(this.configPristine);
-        this.optionListsDirty = angular.copy(this.optionListsPristine);
-        this.setupView();
-        this.$scope.configForm.$setPristine();
       }
     }
   }
 
-  private syncProjectStatusSuccess = () => {
+  private pollUpdateSuccess = (): void => {
+    if (this.$scope.configForm.$dirty && this.sendReceive.isInProgress()) {
+      this.warnOfUnsavedEdits();
+      this.configDirty = angular.copy(this.configPristine);
+      this.optionListsDirty = angular.copy(this.optionListsPristine);
+      this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.configDirty, this.lscUsers);
+      this.unifiedViewModelPristine = angular.copy(this.unifiedViewModel);
+      this.setupView();
+      this.$scope.configForm.$setPristine();
+    }
+  }
+
+  private syncProjectStatusSuccess = (): void => {
     this.sessionService.getSession(true).then(session => {
-      this.session = session;
       this.configDirty = angular.copy(session.projectSettings<LexiconProjectSettings>().config);
       this.optionListsDirty = angular.copy(session.projectSettings<LexiconProjectSettings>().optionlists);
+      this.lscOnUpdate({ $event: { config: this.configDirty, optionLists: this.optionListsDirty } });
+      this.configPristine = angular.copy(this.configDirty);
+      this.optionListsPristine = angular.copy(this.optionListsDirty);
+      this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.configDirty, this.lscUsers);
+      this.unifiedViewModelPristine = angular.copy(this.unifiedViewModel);
       this.setupView();
       this.$scope.configForm.$setPristine();
       this.notice.removeById(this.warnOfUnsavedEditsId);
@@ -261,8 +255,8 @@ export class LexiconConfigurationController implements angular.IController {
     });
   }
 
-  private warnOfUnsavedEdits = () => {
-    if (angular.isUndefined(this.warnOfUnsavedEditsId)) {
+  private warnOfUnsavedEdits = (): void => {
+    if (this.warnOfUnsavedEditsId == null) {
       this.warnOfUnsavedEditsId = this.notice.push(this.notice.WARN, 'A synchronize has been started by ' +
         'another user. Please make your configuration changes when the synchronize has finished.');
     }
@@ -271,15 +265,18 @@ export class LexiconConfigurationController implements angular.IController {
   private inputSystemViewModelToConfig(): boolean {
     let isAnyTagUnspecified = false;
     this.configDirty.inputSystems = {};
-    angular.forEach(this.inputSystemViewModels, viewModel => {
-      if (viewModel.inputSystem.tag.indexOf('-unspecified') > -1) {
-        isAnyTagUnspecified = true;
-        this.notice.push(this.notice.ERROR, 'Specify at least one Script, Region or Variant for ' +
-          viewModel.languageDisplayName());
-      }
+    for (const inputSystemTag in this.inputSystemViewModels) {
+      if (this.inputSystemViewModels.hasOwnProperty(inputSystemTag)) {
+        const viewModel = this.inputSystemViewModels[inputSystemTag];
+        if (viewModel.inputSystem.tag.includes('-unspecified')) {
+          isAnyTagUnspecified = true;
+          this.notice.push(this.notice.ERROR, 'Specify at least one Script, Region or Variant for ' +
+            viewModel.languageDisplayName());
+        }
 
-      this.configDirty.inputSystems[viewModel.inputSystem.tag] = viewModel.inputSystem;
-    });
+        this.configDirty.inputSystems[viewModel.inputSystem.tag] = viewModel.inputSystem;
+      }
+    }
 
     // Force fire $onChanges: see https://github.com/angular/angular.js/issues/14572
     this.configDirty = angular.copy(this.configDirty);
@@ -287,10 +284,20 @@ export class LexiconConfigurationController implements angular.IController {
     return isAnyTagUnspecified;
   }
 
+  private isPristine(): boolean {
+    return angular.equals(this.unifiedViewModelPristine, this.unifiedViewModel)  &&
+      angular.equals(this.configPristine, this.configDirty)  &&
+      angular.equals(this.optionListsPristine, this.optionListsDirty);
+  }
+
 }
 
 export const LexiconConfigurationComponent: angular.IComponentOptions = {
   bindings: {
+    lscConfig: '<',
+    lscOptionLists: '<',
+    lscUsers: '<',
+    lscOnUpdate: '&'
   },
   controller: LexiconConfigurationController,
   templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration.component.html'
