@@ -158,11 +158,9 @@ module.exports = function (env) {
       new webpack.optimize.CommonsChunkPlugin({
         name: 'vendor',
         minChunks: function (module) {
-          // this assumes your vendor imports exist in the node_modules or js/assets directories
+          // this assumes your vendor imports exist in the following directories
           return module.context && (
             module.context.indexOf('node_modules') !== -1 ||
-            module.context.indexOf('js/assets') !== -1 ||
-            module.context.indexOf('js/vendor') !== -1 ||
             module.context.indexOf('core/input-systems') !== -1
           );
         }

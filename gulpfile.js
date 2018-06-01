@@ -91,7 +91,7 @@ gulp.task('generate-language-picker-assets', function (cb) {
     cwd: './scripts/language picker/'
   };
 
-  // auto-generated files written to src/angular-app/bellows/js/assets/
+  // auto-generated files written to src/angular-app/bellows/core/input-systems/
   execute(
     './build-json-language-data.py',
     options,
@@ -1035,7 +1035,7 @@ gulp.task('build-minify', function () {
     'src/angular-app/container/**/*.js',
     'src/angular-app/' + params.applicationName + '/**/*.js',
     '!src/angular-app/**/*.min.js',
-    '!src/angular-app/**/assets/**',
+    '!src/angular-app/**/core/semantic-domains/**',
     '!src/angular-app/**/excluded/**',
     '!src/angular-app/**/vendor/**'];
   var minJsFile = params.applicationName + '.min.js';

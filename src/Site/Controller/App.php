@@ -92,6 +92,13 @@ class App extends Base
 
         $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive');
         $this->addCssFiles($appModel->appFolder, ['node_modules']);
+
+        $interfaceLanguageCode = 'en';
+        $semDomFilePath = $appModel->siteFolder . '/core/semantic-domains/semantic-domains.' . $interfaceLanguageCode .
+            '.generated-data.js';
+        if (file_exists($semDomFilePath)) {
+            $this->data['jsNotMinifiedFiles'][] = $semDomFilePath;
+        }
     }
 }
 
