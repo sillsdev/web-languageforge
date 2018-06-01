@@ -136,8 +136,10 @@ After Ubuntu Xenial Bash has finished installing, close the Windows Command Prom
 
 ### Vagrant VM Setup <a id="VagrantSetup"></a> ###
 
+If you are on Windows, begin by giving your user account [permission to create symlinks.](https://gist.github.com/Nateowami/504b7d4c63b53f8e6d21822ddc648e14) This is necessary or `npm install` will not run properly.
+
 - Download the file https://github.com/sillsdev/web-languageforge/blob/master/deploy/xenial/Vagrantfile and save it as Vagrantfile.
-- Open the command line to the directory where the Vagrantfile is and run `vagrantup --no-provision` (this delays provisioning so the VirtualBox guest additions updates don't interfere with the provisioning process.)
+- Open the command line to the directory where the Vagrantfile is and run `vagrant up --no-provision` (this delays provisioning so the VirtualBox guest additions updates don't interfere with the provisioning process.)
 - Shut down the box with `vagrant halt`
 - Run `vagrant up --provision`
 
