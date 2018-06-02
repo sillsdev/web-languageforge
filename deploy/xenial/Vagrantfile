@@ -17,7 +17,7 @@ apt-get -y install git ansible
 
 echo Install NodeJS 8.X and latest npm
 wget -O- https://deb.nodesource.com/setup_8.x | sudo -E bash -
-apt-get install -y nodejs || exit
+apt-get install -y nodejs
 
 # Runs the rest of the script as vagrant
 sudo -i -u vagrant bash << VAGRANT_USER
@@ -26,17 +26,19 @@ set -eux
 
 cd ~/src
 if [ ! -d "web-languageforge" ]; then
-  git clone --depth 100 --recurse-submodules https://github.com/sillsdev/web-languageforge.git
+  git clone --depth 1 --recurse-submodules https://github.com/sillsdev/web-languageforge.git
 else
   cd web-languageforge
-  # commented out because it crashes the script if git user.email and user.name are not set, and it is non-critical
-  # git pull --ff-only --recurse-submodules
+  git pull --ff-only --recurse-submodules
 fi
+
+[ -d web-scriptureforge ] || ln -s web-languageforge web-scriptureforge
 
 cd ~/src/web-languageforge/deploy/
 git checkout master
 
 echo '***You may be asked for a password. The password is vagrant***'
+
 ansible-playbook -i hosts playbook_create_config.yml --limit localhost
 chown vagrant.vagrant ansible.cfg # TODO: what is this here for?
 ansible-playbook -i hosts playbook_xenial_server_vagrant.yml --limit localhost
@@ -87,6 +89,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["modifyvm", :id, "--memory", "4096"]
     vb.customize ["modifyvm", :id, "--vram", 64]
     vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
+
+    # Allows symlinks in the synced folder (disabled by default because of security issues that don't apply to us)
+    # See https://github.com/hashicorp/vagrant/issues/713
+    vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
   end
 
   # configure Vagrant's ssh shell to be a non-login one (avoids error "stdin: is not a tty error")
