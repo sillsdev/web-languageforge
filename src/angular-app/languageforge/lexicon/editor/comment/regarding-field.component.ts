@@ -1,11 +1,8 @@
 import * as angular from 'angular';
 
+import {SemanticDomainsService} from '../../../core/semantic-domains/semantic-domains.service';
 import {LexConfigField, LexConfigOptionList} from '../../shared/model/lexicon-config.model';
 import {FieldControl} from '../field/field-control.model';
-
-interface WindowService extends angular.IWindowService {
-  semanticDomains_en?: any;
-}
 
 export class RegardingFieldController implements angular.IController {
   content: string;
@@ -15,8 +12,8 @@ export class RegardingFieldController implements angular.IController {
 
   regarding: string = '';
 
-  static $inject = ['$window'];
-  constructor(private $window: WindowService) { }
+  static $inject = ['semanticDomainsService'];
+  constructor(private readonly semanticDomains: SemanticDomainsService) { }
 
   $onInit(): void {
     this.setContent();
@@ -36,24 +33,25 @@ export class RegardingFieldController implements angular.IController {
           if (this.field === 'semanticDomain') {
             // Semantic domains are in the global scope and appear to be English only
             // Will need to be updated once the system provides support for other languages
-            for (const i in this.$window.semanticDomains_en) {
-              if (this.$window.semanticDomains_en.hasOwnProperty(i) &&
-                this.$window.semanticDomains_en[i].key === this.content
-              ) {
-                this.regarding = this.$window.semanticDomains_en[i].value;
+            for (const key in this.semanticDomains.data) {
+              if (this.semanticDomains.data.hasOwnProperty(key) && key === this.content) {
+                this.regarding = this.semanticDomains.data[key].value;
+                break;
               }
             }
           } else {
-            const optionlists = this.control.config.optionlists;
-            for (const listCode in optionlists) {
-              if (optionlists.hasOwnProperty(listCode) &&
+            const optionLists = this.control.config.optionlists;
+            outerFor:
+            for (const listCode in optionLists) {
+              if (optionLists.hasOwnProperty(listCode) &&
                 listCode === (this.fieldConfig as LexConfigOptionList).listCode
               ) {
-                for (const i in optionlists[listCode].items) {
-                  if (optionlists[listCode].items.hasOwnProperty(i) &&
-                    optionlists[listCode].items[i].key === this.content
+                for (const i in optionLists[listCode].items) {
+                  if (optionLists[listCode].items.hasOwnProperty(i) &&
+                    optionLists[listCode].items[i].key === this.content
                   ) {
-                    this.regarding = optionlists[listCode].items[i].value;
+                    this.regarding = optionLists[listCode].items[i].value;
+                    break outerFor;
                   }
                 }
               }
