@@ -32,7 +32,7 @@ else
   git pull --ff-only --recurse-submodules
 fi
 
-[ -d web-scriptureforge ] || ln -s web-languageforge web-scriptureforge
+[ -d ~/src/web-scriptureforge ] || ln -s web-languageforge ~/src/web-scriptureforge
 
 cd ~/src/web-languageforge/deploy/
 git checkout master
