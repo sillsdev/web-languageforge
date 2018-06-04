@@ -59,7 +59,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-  config.vm.box_url = "https://atlas.hashicorp.com/kaorimatz/ubuntu-16.04-amd64"
+  config.vm.box_url = "kaorimatz/ubuntu-16.04-amd64"
 
   config.vm.define "xenial_server"
 
