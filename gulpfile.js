@@ -39,6 +39,12 @@ var del = require('del');
 var data = require('gulp-data');
 var ejs = require('gulp-ejs');
 var dest = require('gulp-dest');
+var webpackConfig = require('./webpack.config.js');
+var webpack = require('webpack');
+
+// -------------------------------------
+//   Global Variables
+// -------------------------------------
 
 // Define release stages that will send errors to bugsnag
 var notifyReleaseStages = "['live', 'qa']";
@@ -48,9 +54,6 @@ var notifyReleaseStages = "['live', 'qa']";
 
 // const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
 
-// -------------------------------------
-//   Global Variables
-// -------------------------------------
 var srcPatterns = [
   'src/angular-app/**',
   'src/Api/**',
@@ -139,46 +142,50 @@ gulp.task('sass:watch', function () {
 
 //region webpack
 
-function webpack(applicationName, callback, isProduction, isWatch) {
-  var watch = isWatch ? ' --watch' : '';
-  var envApplication = applicationName ? ' --env.applicationName=' + applicationName : '';
-  var prod = isProduction ? ' -p' : '';
-  if (!process.env.NOTIFY_RELEASE_STAGES)
-    process.env.NOTIFY_RELEASE_STAGES = notifyReleaseStages;
-  execute('$(npm bin)/webpack' + watch + envApplication + prod + ' --colors',
-    { cwd: '.', env: process.env },
-    function (err) {
-      if (err) throw new gutil.PluginError('webpack', err);
-      callback();
-    });
+function runWebpack(applicationName, callback, isWatch, isProduction) {
+  var config = webpackConfig({
+    applicationName: applicationName,
+    isProduction: isProduction,
+    isTest: false
+  });
+
+  var compiler = webpack(config);
+
+  var log = function (err, stats) {
+    if (err) console.error(err);
+    if (stats) console.log(stats.toString({ chunks: false, colors: true }));
+    if (!isWatch) callback();
+  };
+
+  isWatch ? compiler.watch({}, log) : compiler.run(log);
 }
 
 // -------------------------------------
 //   Task: webpack-lf
 // -------------------------------------
 gulp.task('webpack-lf', function (cb) {
-  webpack('languageforge', cb);
+  runWebpack('languageforge', cb);
 });
 
 // -------------------------------------
 //   Task: webpack-lf watch
 // -------------------------------------
 gulp.task('webpack-lf:watch', function (cb) {
-  webpack('languageforge', cb, false, true);
+  runWebpack('languageforge', cb, true);
 });
 
 // -------------------------------------
 //   Task: webpack-sf
 // -------------------------------------
 gulp.task('webpack-sf', function (cb) {
-  webpack('scriptureforge', cb);
+  runWebpack('scriptureforge', cb);
 });
 
 // -------------------------------------
 //   Task: webpack-sf watch
 // -------------------------------------
 gulp.task('webpack-sf:watch', function (cb) {
-  webpack('scriptureforge', cb, false, true);
+  runWebpack('scriptureforge', cb, true);
 });
 
 // endregion
@@ -346,11 +353,11 @@ function runKarmaTests(applicationName, cb, type) {
       break;
   }
 
-  new Server(config, function(err) {
+  new Server(config, function (err) {
     if (err === 0) {
       cb();
     } else {
-      cb(new gutil.PluginError('karma', { message: 'Karma Tests failed' }));
+      cb(new gutil.PluginError('karma', { message: 'Karma Tests failed. Error: ' + err }));
     }
   }).start();
 }
@@ -991,7 +998,7 @@ gulp.task('build-webpack', function (cb) {
       type: 'boolean' })
     .fail(yargFailure)
     .argv;
-  webpack(params.applicationName, cb, !params.doNoCompression);
+  runWebpack(params.applicationName, cb, false, !params.doNoCompression);
 });
 
 // -------------------------------------
@@ -1461,7 +1468,6 @@ gulp.task('build-and-test',
   gulp.series(
     'build',
     'test-php',
-
     'test-ts',
     'test-dotnet',
     'test-restart-webserver',
