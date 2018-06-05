@@ -5,6 +5,8 @@ var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
 var webpack = require('webpack');
 var webpackMerge = require('webpack-merge');
+var UglifyJsPlugin = require("./node_modules/webpack/lib/optimize/UglifyJsPlugin");
+var LoaderOptionsPlugin = require("./node_modules/webpack/lib/LoaderOptionsPlugin");
 
 // Webpack Config
 var webpackConfig = {
@@ -114,12 +116,25 @@ module.exports = function (env) {
   if (env == null) {
     env = {
       applicationName: 'languageforge',
+      isProduction: false,
       isTest: false
     };
   }
 
   var mainPath = './src/angular-app/' + env.applicationName + '/main' + (env.isTest ? '.specs' : '') + '.ts';
   webpackConfig.entry.main = mainPath;
+
+  if (env.isProduction) {
+    webpackConfig.plugins.push(new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    }));
+    webpackConfig.plugins.push(new UglifyJsPlugin({
+      sourceMap: webpackConfig.devtool === 'source-map'
+    }));
+    webpackConfig.plugins.push(new LoaderOptionsPlugin({
+      minimize: true
+    }));
+  }
 
   if (env.isTest) {
     webpackConfig.devtool = false;
