@@ -8,110 +8,6 @@ var webpackMerge = require('webpack-merge');
 var UglifyJsPlugin = require("./node_modules/webpack/lib/optimize/UglifyJsPlugin");
 var LoaderOptionsPlugin = require("./node_modules/webpack/lib/LoaderOptionsPlugin");
 
-// Webpack Config
-var webpackConfig = {
-  entry: {},
-
-  output: {
-    publicPath: '',
-    path: path.resolve(__dirname, 'src', 'dist')
-  },
-
-  plugins: [
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // to not to load all locales
-    new CopyWebpackPlugin([
-      { from: './node_modules/font-awesome/', to: 'font-awesome' },
-      { from: './node_modules/intl-tel-input/build/', to: 'intl-tel-input' },
-      { from: './node_modules/jquery/dist/', to: 'jquery' },
-      { from: './node_modules/offline-js/offline.min.js', to: 'offline-js' },
-      { from: './node_modules/rangy/lib/', to: 'rangy' },
-      { from: './node_modules/zxcvbn/dist/', to: 'zxcvbn' }
-    ]),
-    new webpack.ContextReplacementPlugin(
-
-      // The ([\\/]) piece accounts for path separators in *nix and Windows
-      /angular([\\/])core([\\/])@angular/,
-      path.resolve(__dirname, './src'),
-
-      // your Angular Async Route paths relative to this root directory
-      {}
-    ),
-    new webpack.DefinePlugin({
-      'process.env.XFORGE_BUGSNAG_API_KEY': JSON.stringify(process.env.XFORGE_BUGSNAG_API_KEY
-        || 'missing-bugsnag-api-key'),
-      'process.env.NOTIFY_RELEASE_STAGES': process.env.NOTIFY_RELEASE_STAGES,
-    })
-  ],
-
-  module: {
-    rules: [
-      { test: /\.ts$/, use: 'awesome-typescript-loader' },
-      { test: /\.s?css$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
-      {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        use: 'url-loader?limit=10000'
-      },
-      { test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/, use: 'file-loader' },
-      { test: /\.(png|jpg)$/, use: 'url-loader?limit=8192' },
-      {
-        // fix critical dependency warning by removing reference to require() in Bridge
-        test: /bridge\.js/,
-        use: {
-          loader: 'string-replace-loader',
-          query: {
-            search: ' || require(name)',
-            replace: ''
-          }
-        }
-      },
-      {
-        // fix conflict between System namespace in Bridge and System variable injection
-        test: /(newtonsoft\.json|machine|bridge)\.js/,
-        parser: { system: false }
-      }
-    ]
-  }
-
-};
-
-// Our Webpack Defaults
-var defaultConfig = {
-  devtool: 'source-map',
-
-  output: {
-    filename: '[name].bundle.js',
-    sourceMapFilename: '[name].map',
-    chunkFilename: '[id].chunk.js'
-  },
-
-  resolve: {
-    extensions: ['.ts', '.js'],
-    modules: [path.resolve(__dirname, 'node_modules')]
-  },
-
-  devServer: {
-    historyApiFallback: true,
-    watchOptions: { aggregateTimeout: 300, poll: 1000 },
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
-    }
-  },
-
-  node: {
-    global: true,
-    crypto: 'empty',
-    __dirname: true,
-    __filename: true,
-    process: true,
-    Buffer: false,
-    clearImmediate: false,
-    setImmediate: false,
-    fs: 'empty'
-  }
-};
-
 module.exports = function (env) {
   if (env == null) {
     env = {
@@ -120,6 +16,112 @@ module.exports = function (env) {
       isTest: false
     };
   }
+
+  // Webpack Config
+  var webpackConfig = {
+    entry: {},
+
+    output: {
+      publicPath: '',
+      path: path.resolve(__dirname, 'src', 'dist')
+    },
+
+    plugins: [
+      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // to not to load all locales
+      new CopyWebpackPlugin([
+        { from: './node_modules/font-awesome/', to: 'font-awesome' },
+        { from: './node_modules/intl-tel-input/build/', to: 'intl-tel-input' },
+        { from: './node_modules/jquery/dist/', to: 'jquery' },
+        { from: './node_modules/offline-js/offline.min.js', to: 'offline-js' },
+        { from: './node_modules/rangy/lib/', to: 'rangy' },
+        { from: './node_modules/zxcvbn/dist/', to: 'zxcvbn' }
+      ]),
+      new webpack.ContextReplacementPlugin(
+
+        // The ([\\/]) piece accounts for path separators in *nix and Windows
+        /angular([\\/])core([\\/])@angular/,
+        path.resolve(__dirname, './src'),
+
+        // your Angular Async Route paths relative to this root directory
+        {}
+      ),
+      new webpack.DefinePlugin({
+        'process.env.XFORGE_BUGSNAG_API_KEY': JSON.stringify(process.env.XFORGE_BUGSNAG_API_KEY
+          || 'missing-bugsnag-api-key'),
+        'process.env.NOTIFY_RELEASE_STAGES': process.env.NOTIFY_RELEASE_STAGES,
+      })
+    ],
+
+    module: {
+      rules: [
+        { test: /\.ts$/, use: 'awesome-typescript-loader' },
+        { test: /\.s?css$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
+        {
+          test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          use: 'url-loader?limit=10000'
+        },
+        { test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/, use: 'file-loader' },
+        { test: /\.(png|jpg)$/, use: 'url-loader?limit=8192' },
+        {
+          // fix critical dependency warning by removing reference to require() in Bridge
+          test: /bridge\.js/,
+          use: {
+            loader: 'string-replace-loader',
+            query: {
+              search: ' || require(name)',
+              replace: ''
+            }
+          }
+        },
+        {
+          // fix conflict between System namespace in Bridge and System variable injection
+          test: /(newtonsoft\.json|machine|bridge)\.js/,
+          parser: { system: false }
+        }
+      ]
+    }
+
+  };
+
+  // Our Webpack Defaults
+  var defaultConfig = {
+    devtool: 'source-map',
+
+    output: {
+      filename: '[name].bundle.js',
+      sourceMapFilename: '[name].map',
+      chunkFilename: '[id].chunk.js'
+    },
+
+    resolve: {
+      extensions: ['.ts', '.js'],
+      modules: [path.resolve(__dirname, 'node_modules')]
+    },
+
+    devServer: {
+      historyApiFallback: true,
+      watchOptions: { aggregateTimeout: 300, poll: 1000 },
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+        'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
+      }
+    },
+
+    node: {
+      global: true,
+      crypto: 'empty',
+      __dirname: true,
+      __filename: true,
+      process: true,
+      Buffer: false,
+      clearImmediate: false,
+      setImmediate: false,
+      fs: 'empty'
+    }
+  };
+
+  // Set up and return a customized Webpack config according to the environment we're in
 
   var mainPath = './src/angular-app/' + env.applicationName + '/main' + (env.isTest ? '.specs' : '') + '.ts';
   webpackConfig.entry.main = mainPath;
