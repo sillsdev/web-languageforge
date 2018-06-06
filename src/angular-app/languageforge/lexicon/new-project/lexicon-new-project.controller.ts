@@ -25,7 +25,7 @@ import {LexiconProject, SendReceive} from '../shared/model/lexicon-project.model
 import {LexOptionList} from '../shared/model/option-list.model';
 import {UploadFile, UploadResponse} from '../shared/model/upload.model';
 
-class NewProject extends LexiconProject {
+interface NewProject extends LexiconProject {
   editProjectCode?: boolean;
   emptyProjectDesired?: boolean;
   entriesImported: number;
@@ -46,8 +46,8 @@ class Show {
 
 export class LexiconNewProjectController implements angular.IController {
   cloneNotice = this.sendReceive.cloneNotice;
-  newProject: NewProject = new NewProject();
-  project: LexiconProject = new LexiconProject();
+  newProject: NewProject = {} as NewProject;
+  project: LexiconProject = {} as LexiconProject;
   state = this.$state;
   formStatus: string;
   formStatusClass: string;
