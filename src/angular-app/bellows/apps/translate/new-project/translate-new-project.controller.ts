@@ -15,7 +15,7 @@ import {TranslateConfig, TranslateConfigDocType} from '../shared/model/translate
 import {TranslateProjectSettings} from '../shared/model/translate-project-settings.model';
 import {TranslateProject} from '../shared/model/translate-project.model';
 
-class NewProject extends TranslateProject {
+interface NewProject extends TranslateProject {
   editProjectCode: boolean;
 }
 
@@ -84,7 +84,7 @@ export class TranslateNewProjectController implements angular.IController {
       }
     });
 
-    this.newProject = new NewProject();
+    this.newProject = {} as NewProject;
     this.newProject.config = new TranslateConfig();
     this.newProject.appName = 'translate';
     this.newProject.config.isTranslationDataShared = false;
