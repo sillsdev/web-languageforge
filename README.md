@@ -148,13 +148,11 @@ See [the screenshot.](readme_images/windows_allow_symlinks.png)
 
 - Download the file https://github.com/sillsdev/web-languageforge/blob/master/deploy/xenial/Vagrantfile and save it as Vagrantfile.
 - Open the command line to the directory where the Vagrantfile is and run `vagrant up --no-provision` (this delays provisioning so the VirtualBox guest additions updates don't interfere with the provisioning process.)
-- Shut down the box with `vagrant halt`
 - Run `vagrant up --provision`
 
 ``` bash
 wget https://raw.githubusercontent.com/sillsdev/web-languageforge/master/deploy/xenial/Vagrantfile
 vagrant up --no-provision
-vagrant halt
 vagrant up --provision
 ```
 
@@ -162,6 +160,7 @@ Edit your hosts file (On Linux, `/etc/hosts`, on Windows, `C:\windows\system32\d
 ```
 192.168.33.10     languageforge.local
 192.168.33.10     scriptureforge.local
+192.168.33.10     jamaicanpsalms.scriptureforge.local
 ```
 Then open languageforge.local and scriptureforge.local ensure they load correctly.
 
