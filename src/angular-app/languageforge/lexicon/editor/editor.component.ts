@@ -8,6 +8,7 @@ import {EditorDataService} from '../../../bellows/core/offline/editor-data.servi
 import {LexiconCommentService} from '../../../bellows/core/offline/lexicon-comments.service';
 import {SessionService} from '../../../bellows/core/session.service';
 import {InterfaceConfig} from '../../../bellows/shared/model/interface-config.model';
+import {SemanticDomainsService} from '../../core/semantic-domains/semantic-domains.service';
 import {LexiconEntryApiService} from '../core/lexicon-entry-api.service';
 import {LexiconProjectService} from '../core/lexicon-project.service';
 import {LexiconRightsService, Rights} from '../core/lexicon-rights.service';
@@ -24,10 +25,6 @@ import {
 } from '../shared/model/lexicon-config.model';
 import {LexiconProject} from '../shared/model/lexicon-project.model';
 import {FieldControl} from './field/field-control.model';
-
-interface WindowService extends angular.IWindowService {
-  semanticDomains_en?: any;
-}
 
 class SortOption {
   label: string;
@@ -92,22 +89,24 @@ export class LexiconEditorController implements angular.IController {
 
   static $inject = ['$interval', '$q',
     '$scope', '$state',
-    '$window', 'activityService',
+    'activityService',
     'applicationHeaderService',
     'modalService', 'silNoticeService',
-    'sessionService', 'lexCommentService',
-    'lexEditorDataService', 'lexEntryApiService',
+    'sessionService', 'semanticDomainsService',
+    'lexCommentService', 'lexEditorDataService',
+    'lexEntryApiService',
     'lexProjectService',
     'lexRightsService',
     'lexSendReceive'
   ];
   constructor(private readonly $interval: angular.IIntervalService, private readonly $q: angular.IQService,
               private readonly $scope: angular.IScope, private readonly $state: angular.ui.IStateService,
-              private readonly $window: WindowService, private readonly activityService: ActivityService,
+              private readonly activityService: ActivityService,
               private readonly applicationHeaderService: ApplicationHeaderService,
               private readonly modal: ModalService, private readonly notice: NoticeService,
-              private readonly sessionService: SessionService, private readonly commentService: LexiconCommentService,
-              private readonly editorService: EditorDataService, private readonly lexService: LexiconEntryApiService,
+              private readonly sessionService: SessionService, private readonly semanticDomains: SemanticDomainsService,
+              private readonly commentService: LexiconCommentService, private readonly editorService: EditorDataService,
+              private readonly lexService: LexiconEntryApiService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly rightsService: LexiconRightsService,
               private readonly sendReceive: LexiconSendReceiveService) {}
@@ -734,26 +733,27 @@ export class LexiconEditorController implements angular.IController {
         if (field === 'semanticDomain') {
           // Semantic domains are in the global scope and appear to be English only
           // Will need to be updated once the system provides support for other languages
-          for (const i in this.$window.semanticDomains_en) {
-            if (this.$window.semanticDomains_en.hasOwnProperty(i) &&
-              this.$window.semanticDomains_en[i].key === optionKey
-            ) {
-              optionLabel = this.$window.semanticDomains_en[i].value;
+          for (const key in this.semanticDomains.data) {
+            if (this.semanticDomains.data.hasOwnProperty(key) && key === optionKey) {
+              optionLabel = this.semanticDomains.data[key].value;
+              break;
             }
           }
         } else {
-          const optionlists = this.lecConfig.optionlists;
-          for (const listCode in optionlists) {
-            if (optionlists.hasOwnProperty(listCode) && listCode === (fieldConfig as LexConfigOptionList).listCode) {
-              for (const i in optionlists[listCode].items) {
-                if (optionlists[listCode].items.hasOwnProperty(i)) {
-                  const item = optionlists[listCode].items[i];
+          const optionLists = this.lecConfig.optionlists;
+          outerFor:
+          for (const listCode in optionLists) {
+            if (optionLists.hasOwnProperty(listCode) && listCode === (fieldConfig as LexConfigOptionList).listCode) {
+              for (const i in optionLists[listCode].items) {
+                if (optionLists[listCode].items.hasOwnProperty(i)) {
+                  const item = optionLists[listCode].items[i];
                   if (
                     (item.key === optionKey && fieldConfig.type === 'multioptionlist') ||
                     (item.key === currentValue && fieldConfig.type === 'optionlist')
                   ) {
                     optionKey = item.key;
                     optionLabel = item.value;
+                    break outerFor;
                   }
                 }
               }
