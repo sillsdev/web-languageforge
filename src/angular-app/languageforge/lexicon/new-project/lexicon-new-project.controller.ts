@@ -97,7 +97,7 @@ export class LexiconNewProjectController implements angular.IController {
       const projectSettings = session.projectSettings<LexiconProjectSettings>();
       if (projectSettings != null && projectSettings.interfaceConfig != null) {
         angular.merge(this.interfaceConfig, projectSettings.interfaceConfig);
-        if (InputSystemsService.isRightToLeft(this.interfaceConfig.userLanguageCode)) {
+        if (InputSystemsService.isRightToLeft(this.interfaceConfig.languageCode)) {
           this.interfaceConfig.direction = 'rtl';
           this.interfaceConfig.pullToSide = 'float-left';
           this.interfaceConfig.pullNormal = 'float-right';

@@ -17,7 +17,7 @@ class LexBaseViewDto
      */
     public static function encode($projectId, $userId)
     {
-        $data = array();
+        $data = [];
         $user = new UserModel($userId);
         $project = new LexProjectModel($projectId);
 
@@ -25,30 +25,66 @@ class LexBaseViewDto
         $config['inputSystems'] = JsonEncoder::encode($project->inputSystems);
         $data['config'] = $config;
 
-        // comment out at the moment until a refactor can be done that is more efficient (language data in the database?)
-        /*
         $interfaceLanguageCode = $project->interfaceLanguageCode;
+        $isUserLanguageCode = false;
         if ($user->interfaceLanguageCode) {
             $interfaceLanguageCode = $user->interfaceLanguageCode;
+            $isUserLanguageCode = true;
         }
-        $options = self::getInterfaceLanguages(APPPATH . 'angular-app/languageforge/lexicon/lang');
+
+        $data['interfaceConfig'] = [
+            'languageCode' => $interfaceLanguageCode,
+            'isUserLanguageCode' => $isUserLanguageCode
+        ];
+
+        // comment out at the moment until a refactor can be done that is more efficient (language data in the database?)
+        /*
+        $codes = ['bn', 'en', 'es', 'fa', 'fr', 'hi', 'id', 'km', 'ko', 'ms', 'my', 'ne', 'pt', 'ru', 'swh', 'te', 'th',
+         'ur', 'zh'];
+        $options = self::getLanguages($codes);
         asort($options);    // sort by language name
-        $selectInterfaceLanguages = array(
+        $selectSemanticDomainLanguages = [
             'optionsOrder' => array_keys($options),
             'options' => $options
-        );
-        $data['interfaceConfig'] = array('userLanguageCode' => $interfaceLanguageCode);
-        $data['interfaceConfig']['selectLanguages'] = $selectInterfaceLanguages;
+        ];
+        var_dump($selectSemanticDomainLanguages);
         */
-        // a stand in for the code above
-        $data['interfaceConfig'] = array('userLanguageCode' => 'en', 'selectLanguages' => array('options' => array('en' => 'English'), 'optionsOrder' => array('en')));
+
+        // a stand in for the code above - all Semantic Domain languages
+        $selectSemanticDomainLanguages =  [
+            'optionsOrder' => ['id', 'my', 'km', 'en', 'ko', 'ms', 'ne', 'fa', 'pt', 'ru', 'swh', 'es', 'fr', 'ur',
+                'hi', 'bn', 'te', 'th', 'zh-CN'],
+            'options' => [
+                'id' => 'Bahasa Indonesia',
+                'my' => 'Burmese',
+                'km' => 'Central Khmer',
+                'en' => 'English',
+                'ko' => 'Korean',
+                'ms' => 'Malay (macrolanguage)',
+                'ne' => 'Nepali (macrolanguage)',
+                'fa' => 'Persian',
+                'pt' => 'Portuguese',
+                'ru' => 'Russian',
+                'swh' => 'Swahili',
+                'es' => 'español',
+                'fr' => 'français',
+                'ur' => 'اُردُو',
+                'hi' => 'हिन्दी',
+                'bn' => 'বাংলা',
+                'te' => 'తెలుగు',
+                'th' => 'ภาษาไทย',
+                'zh-CN' => '中文'
+            ]
+        ];
+        $data['interfaceConfig']['selectLanguages'] = $selectSemanticDomainLanguages;
+        $data['interfaceConfig']['selectSemanticDomainLanguages'] = $selectSemanticDomainLanguages;
 
         $optionlistListModel = new LexOptionListListModel($project);
         $optionlistListModel->read();
         $data['optionlists'] = $optionlistListModel->entries;
 
         if ($project->hasSendReceive()) {
-            $data['sendReceive'] = array();
+            $data['sendReceive'] = [];
             $data['sendReceive']['status'] = SendReceiveCommands::getProjectStatus($projectId);
         }
 
@@ -57,22 +93,12 @@ class LexBaseViewDto
 
     // comment out at the moment until a refactor can be done that is more efficient (language data in the database?)
     /*
-    private static function getInterfaceLanguages($dir)
+    private static function getLanguages($codes)
     {
-        $result = array();
+        $result = [];
         $languageData = new LanguageData();
-        if (is_dir($dir) && ($handle = opendir($dir))) {
-            while ($filename = readdir($handle)) {
-                $filepath = $dir . '/' . $filename;
-                if (is_file($filepath)) {
-                    if (pathinfo($filename, PATHINFO_EXTENSION) == 'json') {
-                        $code = pathinfo($filename, PATHINFO_FILENAME);
-                        $languageName = $languageData[$code]->name;
-                        $result[$code] = $languageName;
-                    }
-                }
-            }
-            closedir($handle);
+        foreach ($codes as $code) {
+            $result[$code] = $languageData[$code]->name;
         }
 
         return  $result;
