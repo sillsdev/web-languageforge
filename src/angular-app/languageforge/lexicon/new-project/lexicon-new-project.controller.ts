@@ -72,24 +72,24 @@ export class LexiconNewProjectController implements angular.IController {
   static $inject = ['$scope', '$q',
     '$filter', '$window',
     '$state', '$uibModal',
+    'Upload', 'applicationHeaderService',
     'breadcrumbService', 'sessionService',
-    'silNoticeService', 'inputSystems',
-    'linkService', 'projectService',
-    'Upload', 'lexProjectService',
+    'silNoticeService', 'linkService',
+    'projectService',
+    'lexProjectService',
     'lexSendReceiveApi',
-    'lexSendReceive',
-    'applicationHeaderService'
+    'lexSendReceive'
   ];
   constructor(private readonly $scope: angular.IScope, private readonly $q: angular.IQService,
               private readonly $filter: angular.IFilterService, private readonly $window: angular.IWindowService,
               private readonly $state: angular.ui.IStateService, private readonly $modal: ModalService,
+              private readonly Upload: any, private readonly applicationHeaderService: ApplicationHeaderService,
               private readonly breadcrumbService: BreadcrumbService, private readonly sessionService: SessionService,
-              private readonly notice: NoticeService, private readonly inputSystemsService: InputSystemsService,
-              private readonly linkService: LinkService, private readonly projectService: ProjectService,
-              private readonly Upload: any, private readonly lexProjectService: LexiconProjectService,
+              private readonly notice: NoticeService, private readonly linkService: LinkService,
+              private readonly projectService: ProjectService,
+              private readonly lexProjectService: LexiconProjectService,
               private readonly sendReceiveApi: LexiconSendReceiveApiService,
-              private readonly sendReceive: LexiconSendReceiveService,
-              private readonly applicationHeaderService: ApplicationHeaderService) {}
+              private readonly sendReceive: LexiconSendReceiveService) {}
 
   $onInit() {
     this.interfaceConfig = new InterfaceConfig();
