@@ -1,12 +1,5 @@
 import {InputSystemsService} from '../../../../bellows/core/input-systems/input-systems.service';
-
-class Options {
-  options: any;
-}
-
-class OrderedOptions extends Options {
-  optionsOrder: string[];
-}
+import {Options, OrderedOptions} from '../../../../bellows/shared/model/options.model';
 
 export class OptionSelects {
   special: OrderedOptions;
