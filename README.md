@@ -136,17 +136,23 @@ After Ubuntu Xenial Bash has finished installing, close the Windows Command Prom
 
 ### Vagrant VM Setup <a id="VagrantSetup"></a> ###
 
-If you are on Windows, begin by giving your user account [permission to create symlinks.](https://gist.github.com/Nateowami/504b7d4c63b53f8e6d21822ddc648e14) This is necessary or `npm install` will not run properly.
+If you are on Windows, begin by giving your user account permission to create symlinks. This is necessary or `npm install` will not run properly.
+
+- Run `secpol.msc`. This ([reportendly](https://www.virtualbox.org/ticket/10085#comment:32)) does not exist on some versions of Windows and you will have to use [a workaround](https://stackoverflow.com/questions/815472/how-do-i-grant-secreatesymboliclink-on-windows-vista-home-edition).
+- Go to Local Policies -> User Rights Assignment -> Create symbolic links -> Add User or Group...
+- Type your username in the text field and click "Check Names".
+- Click OK, then click OK, and close the Local Security Policy window.
+- You might have to log out of your user account and log back in for the change to take effect.
+
+See [the screenshot.](readme_images/windows_allow_symlinks.png)
 
 - Download the file https://github.com/sillsdev/web-languageforge/blob/master/deploy/xenial/Vagrantfile and save it as Vagrantfile.
 - Open the command line to the directory where the Vagrantfile is and run `vagrant up --no-provision` (this delays provisioning so the VirtualBox guest additions updates don't interfere with the provisioning process.)
-- Shut down the box with `vagrant halt`
 - Run `vagrant up --provision`
 
 ``` bash
 wget https://raw.githubusercontent.com/sillsdev/web-languageforge/master/deploy/xenial/Vagrantfile
 vagrant up --no-provision
-vagrant halt
 vagrant up --provision
 ```
 
@@ -154,6 +160,7 @@ Edit your hosts file (On Linux, `/etc/hosts`, on Windows, `C:\windows\system32\d
 ```
 192.168.33.10     languageforge.local
 192.168.33.10     scriptureforge.local
+192.168.33.10     jamaicanpsalms.scriptureforge.local
 ```
 Then open languageforge.local and scriptureforge.local ensure they load correctly.
 
