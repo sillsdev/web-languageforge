@@ -39,8 +39,9 @@ var del = require('del');
 var data = require('gulp-data');
 var ejs = require('gulp-ejs');
 var dest = require('gulp-dest');
-var webpackConfig = require('./webpack.config.js');
 var webpack = require('webpack');
+
+var webpackConfig = require('./webpack.config.js');
 
 // -------------------------------------
 //   Global Variables
@@ -90,7 +91,7 @@ gulp.task('generate-language-picker-assets', function (cb) {
     cwd: './scripts/language picker/'
   };
 
-  // auto-generated files written to src/angular-app/bellows/js/assets/
+  // auto-generated files written to src/angular-app/bellows/core/input-systems/
   execute(
     './build-json-language-data.py',
     options,
@@ -142,10 +143,11 @@ gulp.task('sass:watch', function () {
 
 //region webpack
 
-function runWebpack(applicationName, callback, isWatch, isProduction) {
+function runWebpack(applicationName, callback, isWatch, isAnalyze, isProduction) {
   var config = webpackConfig({
     applicationName: applicationName,
     isProduction: isProduction,
+    isAnalyze: isAnalyze,
     isTest: false
   });
 
@@ -175,6 +177,13 @@ gulp.task('webpack-lf:watch', function (cb) {
 });
 
 // -------------------------------------
+//   Task: webpack-lf analyze
+// -------------------------------------
+gulp.task('webpack-lf:analyze', function (cb) {
+  runWebpack('languageforge', cb, false, true);
+});
+
+// -------------------------------------
 //   Task: webpack-sf
 // -------------------------------------
 gulp.task('webpack-sf', function (cb) {
@@ -186,6 +195,13 @@ gulp.task('webpack-sf', function (cb) {
 // -------------------------------------
 gulp.task('webpack-sf:watch', function (cb) {
   runWebpack('scriptureforge', cb, true);
+});
+
+// -------------------------------------
+//   Task: webpack-sf analyze
+// -------------------------------------
+gulp.task('webpack-sf:analyze', function (cb) {
+  runWebpack('scriptureforge', cb, false, true);
 });
 
 // endregion
@@ -357,7 +373,7 @@ function runKarmaTests(applicationName, cb, type) {
     if (err === 0) {
       cb();
     } else {
-      cb(new gutil.PluginError('karma', { message: 'Karma Tests failed. Error: ' + err }));
+      cb(new gutil.PluginError('karma', { message: 'Karma Tests failed' }));
     }
   }).start();
 }
@@ -998,7 +1014,7 @@ gulp.task('build-webpack', function (cb) {
       type: 'boolean' })
     .fail(yargFailure)
     .argv;
-  runWebpack(params.applicationName, cb, false, !params.doNoCompression);
+  runWebpack(params.applicationName, cb, false, false, !params.doNoCompression);
 });
 
 // -------------------------------------
@@ -1019,7 +1035,7 @@ gulp.task('build-minify', function () {
     'src/angular-app/container/**/*.js',
     'src/angular-app/' + params.applicationName + '/**/*.js',
     '!src/angular-app/**/*.min.js',
-    '!src/angular-app/**/assets/**',
+    '!src/angular-app/**/core/semantic-domains/**',
     '!src/angular-app/**/excluded/**',
     '!src/angular-app/**/vendor/**'];
   var minJsFile = params.applicationName + '.min.js';
