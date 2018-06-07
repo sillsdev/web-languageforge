@@ -37,7 +37,7 @@ class TranslateProjectModel extends ProjectModel
     {
         $settings = parent::getPublicSettings($userId);
         $settings['interfaceConfig'] = [
-            'userLanguageCode' => 'en',
+            'languageCode' => 'en',
             'selectLanguages' => [
                 'options' => ['en' => 'English'],
                 'optionsOrder' => ['en']

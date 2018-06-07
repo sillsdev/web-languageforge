@@ -70,17 +70,16 @@ export class LexiconAppController implements angular.IController {
         this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
         this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
         this.rights = rights;
-        this.pristineLanguageCode = angular.copy(this.interfaceConfig.userLanguageCode);
-        this.changeInterfaceLanguage(this.interfaceConfig.userLanguageCode);
-
-        this.$scope.$watch(() => this.interfaceConfig.userLanguageCode, (newVal: string) => {
+        this.changeInterfaceLanguage(this.interfaceConfig.languageCode);
+/*
+        this.$scope.$watch(() => this.interfaceConfig.languageCode, (newVal: string) => {
           if (newVal && newVal !== this.pristineLanguageCode) {
             const user = { interfaceLanguageCode: '' };
             user.interfaceLanguageCode = newVal;
             this.lexProjectService.updateUserProfile(user);
             this.changeInterfaceLanguage(newVal);
           }
-        });
+        });*/
       }
     );
 
@@ -100,6 +99,9 @@ export class LexiconAppController implements angular.IController {
   ): void => {
     if ($event.project) {
       this.project = $event.project;
+      if (!this.interfaceConfig.isUserLanguageCode) {
+        this.interfaceConfig.languageCode = angular.copy(this.project.interfaceLanguageCode);
+      }
     }
 
     if ($event.config) {
