@@ -4,8 +4,12 @@ import {OfflineCacheService} from '../offline/offline-cache.service';
 import {Session, SessionService} from '../session.service';
 import {ApiService, JsonRpcCallback} from './api.service';
 
-export class ProjectData {
-  projectTypeNames: any;
+export interface ProjectTypeNames {
+  [projectType: string]: string;
+}
+
+export interface ProjectData {
+  projectTypeNames: ProjectTypeNames;
   projectTypesBySite: () => string[];
 }
 
@@ -30,17 +34,18 @@ export class ProjectService {
     this.$q = $injector.get('$q');
 
     // data constants
-    this.data = new ProjectData();
-    this.data.projectTypeNames = {
-      sfchecks: 'Community Scripture Checking',
-      webtypesetting: 'Typesetting',
-      semdomtrans: 'Semantic Domain Translation',
-      lexicon: 'Dictionary',
-      translate: 'Translation'
-    };
-    this.data.projectTypesBySite = () => {
-      return this.projectTypesBySite;
-    };
+    this.data = {
+      projectTypeNames: {
+        sfchecks: 'Community Scripture Checking',
+        webtypesetting: 'Typesetting',
+        semdomtrans: 'Semantic Domain Translation',
+        lexicon: 'Dictionary',
+        translate: 'Translation'
+      },
+      projectTypesBySite: () => {
+        return this.projectTypesBySite;
+      }
+    } as ProjectData;
 
     this.sessionService.getSession().then((session: Session) => {
       const types = {
