@@ -546,6 +546,16 @@ will run the the *lexicon-new-project.e2e-spec.ts* tests on **languageforge**.
 
 To add more verbosity during E2E tests, add a parameter `--verbosity true`
 
+To debug the tests:
+- Place breakpoints in your code (`debugger;` statements).
+- Open Chrome to `chrome://inspect/#devices`.
+- Run `./debuge2e.sh`. It will wait for a Protractor process to appear so it can signal the process.
+- Start the e2e tests. The `./debuge2e.sh` script will exit and the debugger should start listening (The e2e tests will say `Debugger listening on <some url>`).
+- Go back the the Chrome window. It should list under "Remote Target" the Node process that is running the tests.
+- Click inspect. When a breakpoint is reached the process will pause and you can step through it in the Chrome developer tools (This does not work very well though because of the asynchronous nature of Webdriver).
+
+Alternatively, to pause the debugger on the first test failure, go to `test/app/protractorConf.js` and uncomment the line that adds the `pauseOnFailure` reporter. All the debugging steps above are still necessary, except for adding breakpoints to your code.
+
 ## Get a copy of the live database ##
 
 (For installation of npm see https://github.com/nodesource/distributions)
