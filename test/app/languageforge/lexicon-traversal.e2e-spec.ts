@@ -24,33 +24,27 @@ describe('Lexicon E2E Page Traversal', () => {
       configurationPage.tabs.unified.click();
       configurationPage.unifiedPane.inputSystem.addGroupButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(
-        ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.inputSystem.addInputSystemButton),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.invisibilityOf(configurationPage.modal.modalBodyDiv), constants.conditionTimeout);
       configurationPage.unifiedPane.inputSystem.addInputSystemButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.tabs.unified), constants.conditionTimeout);
+      browser.wait(ExpectedConditions.invisibilityOf(configurationPage.modal.modalBodyDiv), constants.conditionTimeout);
       configurationPage.tabs.unified.click();
       configurationPage.unifiedPane.entry.addGroupButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.entry.addCustomEntryButton),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.invisibilityOf(configurationPage.modal.modalBodyDiv), constants.conditionTimeout);
       configurationPage.unifiedPane.entry.addCustomEntryButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.sense.addGroupButton),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.invisibilityOf(configurationPage.modal.modalBodyDiv), constants.conditionTimeout);
       configurationPage.unifiedPane.hiddenIfEmptyCheckbox('Citation Form').click();
       configurationPage.unifiedPane.fieldSpecificButton('Citation Form').click();
       configurationPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox('Citation Form', 1).click();
       configurationPage.unifiedPane.fieldSpecificButton('Citation Form').click();
       configurationPage.unifiedPane.sense.addGroupButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.sense.addCustomSenseButton),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.invisibilityOf(configurationPage.modal.modalBodyDiv), constants.conditionTimeout);
       configurationPage.unifiedPane.sense.addCustomSenseButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.example.addGroupButton),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.invisibilityOf(configurationPage.modal.modalBodyDiv), constants.conditionTimeout);
       configurationPage.unifiedPane.hiddenIfEmptyCheckbox('Pictures').click();
       configurationPage.unifiedPane.fieldSpecificButton('Pictures').click();
       configurationPage.unifiedPane.sense.fieldSpecificInputSystemCheckbox('Pictures', 1).click();
@@ -58,12 +52,10 @@ describe('Lexicon E2E Page Traversal', () => {
       configurationPage.unifiedPane.fieldSpecificButton('Pictures').click();
       configurationPage.unifiedPane.example.addGroupButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(
-        ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.example.addCustomExampleButton),
-        constants.conditionTimeout);
+      browser.wait(ExpectedConditions.invisibilityOf(configurationPage.modal.modalBodyDiv), constants.conditionTimeout);
       configurationPage.unifiedPane.example.addCustomExampleButton.click();
       browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-      browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.tabs.unified), constants.conditionTimeout);
+      browser.wait(ExpectedConditions.invisibilityOf(configurationPage.modal.modalBodyDiv), constants.conditionTimeout);
       configurationPage.unifiedPane.hiddenIfEmptyCheckbox('Translation').click();
       configurationPage.unifiedPane.fieldSpecificButton('Translation').click();
       configurationPage.unifiedPane.example.fieldSpecificInputSystemCheckbox('Translation', 0).click();
