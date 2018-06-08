@@ -97,6 +97,10 @@ dl.picklists dd {
   .footerimages {
     padding-bottom: 10px;
   }
+
+  img {
+   margin-right: 5px;
+  }
 }
 
 .progress-bar {
@@ -371,6 +375,9 @@ nav {
     a {
       font-size: 14px;
       line-height: 18px;
+    }
+    .dropdown-item.selected {
+      background-color: $lf-highlight;
     }
   }
   > nav:first-child {

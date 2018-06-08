@@ -1,6 +1,7 @@
 import {browser, ExpectedConditions} from 'protractor';
 
 import {BellowsLoginPage} from '../../../bellows/shared/login.page';
+import {PageHeader} from '../../../bellows/shared/page-header.element';
 import {ProjectsPage} from '../../../bellows/shared/projects.page';
 import {Utils} from '../../../bellows/shared/utils';
 import {EditorPage} from '../shared/editor.page';
@@ -8,9 +9,10 @@ import {ProjectSettingsPage} from '../shared/project-settings.page';
 
 describe('Lexicon E2E Semantic Domains Lazy Load', () => {
   const constants = require('../../../testConstants.json');
+  const editorPage   = new EditorPage();
+  const header = new PageHeader();
   const loginPage = new BellowsLoginPage();
   const projectsPage = new ProjectsPage();
-  const editorPage   = new EditorPage();
   const projectSettingsPage = new ProjectSettingsPage();
 
   const semanticDomain1dot1English = constants.testEntry1.senses[0].semanticDomain.values[0] + ' Sky';
@@ -23,6 +25,7 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     expect<any>(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
     expect<any>(editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1English);
+    expect<any>(header.language.button.getText()).toEqual('English');
   });
 
   it('can change Project default language to Thai', () => {
@@ -70,9 +73,38 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     expect<any>(editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1Thai);
     expect<any>(editorPage.edit.entryCountElem.isDisplayed()).toBe(true);
     browser.refresh();
-    browser.wait(ExpectedConditions.invisibilityOf(editorPage.edit.entryCountElem), Utils.conditionTimeout);
     browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.entryCountElem), Utils.conditionTimeout);
     expect<any>(editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1Thai);
+  });
+
+  it('can change user interface language', () => {
+    expect<any>(header.language.button.getText()).toEqual('ภาษาไทย');
+    header.language.button.click();
+    header.language.findItem('English').click();
+    expect<any>(header.language.button.getText()).toEqual('English');
+  });
+
+  it('should still have Thai for Project default language', () => {
+    projectSettingsPage.getByLink();
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toEqual('ภาษาไทย');
+  });
+
+  it('should be using English Semantic Domain', () => {
+    Utils.clickBreadcrumb(constants.testProjectName);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+    expect<any>(editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1English);
+  });
+
+  it('should be using English Semantic Domain after refresh', () => {
+    expect<any>(editorPage.edit.entryCountElem.isDisplayed()).toBe(true);
+    browser.refresh();
+    browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.entryCountElem), Utils.conditionTimeout);
+    expect<any>(editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1English);
+  });
+
+  it('should still have Thai for Project default language', () => {
+    projectSettingsPage.getByLink();
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toEqual('ภาษาไทย');
   });
 
 });
