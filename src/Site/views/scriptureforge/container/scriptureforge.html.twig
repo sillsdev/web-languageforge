@@ -83,10 +83,10 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown" uib-dropdown>
-                        <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdown"
+                        <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdownButton"
                            aria-haspopup="true" aria-expanded="false">
                             My Projects</a>
-                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="myProjectDropdown">
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu id="myProjectDropdownMenu" aria-labelledby="myProjectDropdown">
                             {% verbatim %}
                             <div data-ng-switch="$ctrl.projectTypesBySite().length" data-ng-show="$ctrl.rights.canCreateProject">
                                 <div data-ng-switch-when="1">
