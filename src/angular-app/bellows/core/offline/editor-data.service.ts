@@ -15,6 +15,7 @@ interface WindowService extends angular.IWindowService {
 }
 
 class FilterBy {
+  label?: string;
   level?: string;
   type?: string;
   value?: string;
