@@ -2,7 +2,7 @@
   "name": "xForge",
   "version": "0.1.0",
   "description": "xForge - Language Forge and Scripture Forge",
-  "main": "src/index.php",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -114,6 +114,7 @@
     "typescript": "^2.5.3",
     "url-loader": "^0.5.9",
     "webpack": "^3.4.1",
+    "webpack-bundle-analyzer": "^2.13.1",
     "webpack-livereload-plugin": "^0.11.0",
     "webpack-merge": "^4.1.0",
     "yargs": "^6.3.0"
