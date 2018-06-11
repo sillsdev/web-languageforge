@@ -11,6 +11,7 @@ using SIL.XForge.WebApi.Server.Controllers;
 using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Documentation;
 using SIL.XForge.WebApi.Server.Dtos;
+using SIL.XForge.WebApi.Server.ExceptionLogging;
 using SIL.XForge.WebApi.Server.Options;
 using SIL.XForge.WebApi.Server.Services;
 
@@ -30,6 +31,8 @@ namespace SIL.XForge.WebApi.Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddExceptionLogging();
+
             var issuers = new List<string>
             {
                 "languageforge.org",
@@ -85,6 +88,8 @@ namespace SIL.XForge.WebApi.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseBugsnag();
+
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 

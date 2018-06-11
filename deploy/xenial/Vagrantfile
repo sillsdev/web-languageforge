@@ -32,6 +32,7 @@ else
   git pull --ff-only --recurse-submodules
 fi
 
+cd ~/src
 [ -d web-scriptureforge ] || ln -s web-languageforge web-scriptureforge
 
 cd ~/src/web-languageforge/deploy/
@@ -59,7 +60,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-  config.vm.box_url = "https://atlas.hashicorp.com/kaorimatz/ubuntu-16.04-amd64"
+  config.vm.box_url = "kaorimatz/ubuntu-16.04-amd64"
 
   config.vm.define "xenial_server"
 
@@ -74,20 +75,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.synced_folder ".", "/home/vagrant/src",
     id: "vagrant-root",
     owner: "vagrant",
-    group: "www-data",
-    mount_options: ["dmode=775,fmode=664"]
+    group: "www-data"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
   config.vm.provider :virtualbox do |vb|
-    # Don't boot with headless mode
-    vb.gui = true
-
     # Use VBoxManage to customize the VM. For example to change memory:
-    vb.customize ["modifyvm", :id, "--memory", "4096"]
-    vb.customize ["modifyvm", :id, "--vram", 64]
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
     vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
 
     # Allows symlinks in the synced folder (disabled by default because of security issues that don't apply to us)
