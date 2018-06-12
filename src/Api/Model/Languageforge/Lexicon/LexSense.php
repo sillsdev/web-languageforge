@@ -248,7 +248,7 @@ class LexSense extends ObjectForEncoding
                  "other." . $propertyName => $difference["other"] ];
     }
 
-    public function getPropertyDifference(LexSense $otherSense, string $propertyName)
+    public function getPropertyDifference(LexSense $otherSense, string $propertyName, string $thisSenseId, string $otherSenseId)
     {
         $type = $this->getPropertyType($propertyName);
         switch ($type) {
@@ -287,7 +287,7 @@ class LexSense extends ObjectForEncoding
             case 'ArrayOf(LexExample)':
                 $thisExamples  = $this->$propertyName;
                 $otherExamples = $otherSense->$propertyName;
-                return $this->getExampleDifferences($thisExamples, $otherExamples, $this->guid, $otherSense->guid);
+                return $this->getExampleDifferences($thisExamples, $otherExamples, $thisSenseId, $otherSenseId);
             case 'MapOf(CustomField)':
                 // TODO: Implement this. Will probably have to refactor this function a bit to handle that one level of nesting
                 return [];
@@ -302,7 +302,7 @@ class LexSense extends ObjectForEncoding
         }
     }
 
-    protected function getExampleDifferences($thisExamples, $otherExamples, $thisSenseGuid, $otherSenseGuid)
+    protected function getExampleDifferences($thisExamples, $otherExamples, $thisSenseId, $otherSenseId)
     {
         $differences = [];
 
@@ -328,43 +328,48 @@ class LexSense extends ObjectForEncoding
             /** @var LexExample $thisExample */
             $seenGuids[] = $guid;
             $thisPosition  = $thisPositions[$guid];
+            $thisExampleId = 'examples@' . $thisPosition . '#' . $guid;
             if (isset($otherPositions[$guid])) {
                 $otherPosition = $otherPositions[$guid];
                 if ($otherPosition !== $thisPosition) {
-                    $differences["movedFrom.senses#" .$thisSenseGuid . ".examples#" . $guid] = (string)$thisPosition;
-                    $differences["movedTo.senses#" . $otherSenseGuid . ".examples#" . $guid] = (string)$otherPosition;
+                    $differences['moved.' . $thisSenseId . '.' . $thisExampleId] = (string)$otherPosition;
                 }
+            } else {
+                $otherPosition = $thisPosition;
             }
             if (array_key_exists($guid, $otherExamplesByGuid)) {
                 /** @var LexExample $otherExample */
                 $otherExample = $otherExamplesByGuid[$guid];
+                $otherExampleId = 'examples@' . $otherPosition . '#' . $guid;
                 $exampleDifferences = $thisExample->differences($otherExample);
                 foreach ($exampleDifferences as $key => $exampleDifference) {
-                    if (substr($key, 0, 5) === "this.") {
-                        // We don't use $thisSenseGuid or $otherSenseGuid here since those will be handled in the LexEntryModel differences() function
-                        $newKey = str_replace("this.",  "this.examples#" . $guid . ".", $key);
+                    if (substr($key, 0, 5) === 'this.') {
+                        // We don't use $thisSenseId or $otherSenseId here since those will be handled in the LexEntryModel differences() function
+                        $newKey = str_replace('this.',  'this.' . $thisExampleId . '.', $key);
                     } elseif (substr($key, 0, 6) === "other.") {
-                        $newKey = str_replace("other.", "other.examples#" . $guid . ".", $key);
+                        $newKey = str_replace('other.', 'other.' . $otherExampleId . '.', $key);
                     } else {
                         $newKey = $key;
                     }
                     $differences[$newKey] = $exampleDifference;
                 }
             } else {
-                $differences["deleted.senses#" . $thisSenseGuid . ".examples#" . $guid] = $thisExample->nameForActivityLog();
+                $differences['deleted.' . $thisSenseId . '.' . $thisExampleId] = $thisExample->nameForActivityLog();
             }
         }
         $addedGuids = array_diff($otherGuids, $seenGuids);
         foreach ($addedGuids as $guid) {
             /** @var LexExample $otherExample */
             $otherExample = $otherExamplesByGuid[$guid];
-            $differences["added.senses#" . $otherSenseGuid . "examples#" . $guid] = $otherExample->nameForActivityLog();
+            $otherPosition  = $otherPositions[$guid];
+            $otherExampleId = 'examples@' . $otherPosition . '#' . $guid;
+            $differences['added.' . $otherSenseId . '.' . $otherExampleId] = $otherExample->nameForActivityLog();
         }
 
         return $differences;
     }
 
-    public function differences(LexSense $otherSense)
+    public function differences(LexSense $otherSense, string $thisSenseId, string $otherSenseId)
     {
         $properties = [
             'partOfSpeech',
@@ -398,7 +403,7 @@ class LexSense extends ObjectForEncoding
         $result = [];
         foreach ($properties as $property)
         {
-            foreach ($this->getPropertyDifference($otherSense, $property) as $key => $difference) {
+            foreach ($this->getPropertyDifference($otherSense, $property, $thisSenseId, $otherSenseId) as $key => $difference) {
                 $result[$key] = $difference;
             }
         }
