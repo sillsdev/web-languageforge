@@ -185,11 +185,11 @@ class LexEntryModel extends MapperModel
     {
         switch ($name) {
             case 'senses':
-                return "ArrayOf(LexSense)";
+                return 'ArrayOf(LexSense)';
             case 'customFields':
-                return "MapOf(CustomField)";
+                return 'MapOf(CustomField)';
             case 'authorInfo':
-                return "LexAuthorInfo";
+                return 'LexAuthorInfo';
 
             case 'lexeme':
             case 'citationForm':
@@ -205,14 +205,14 @@ class LexEntryModel extends MapperModel
             case 'literalMeaning':
             case 'note':  // TODO Notes need to be an array, and more capable than a multi-text. Notes have types. CP 2014-10
             case 'summaryDefinition':
-                return "LexMultiText";
+                return 'LexMultiText';
             case 'environments':
-                return "LexMultiValue";
+                return 'LexMultiValue';
             case 'location':
-                return "LexValue";
+                return 'LexValue';
             case 'morphologyType':
             default:
-                return "string";
+                return 'string';
         }
     }
 
@@ -235,12 +235,12 @@ class LexEntryModel extends MapperModel
     protected function convertLexMultiTextDifferences(array $differences, string $propertyName)
     {
         // The LexMultiText->differences() function returns differences as an array looking like:
-        // [ ["inputSystem" => $key, "this" => $thisValue, "other" => $otherValue], ... ]
+        // [ ['inputSystem' => $key, 'this' => $thisValue, 'other' => $otherValue], ... ]
         $result = [];
         foreach ($differences as $difference) {
-            $inputSystem = $difference["inputSystem"];
-            $result["oldValue." . $propertyName . "." . $inputSystem] = $difference["this"];
-            $result["newValue." . $propertyName . "." . $inputSystem] = $difference["other"];
+            $inputSystem = $difference['inputSystem'];
+            $result['oldValue.' . $propertyName . '.' . $inputSystem] = $difference['this'];
+            $result['newValue.' . $propertyName . '.' . $inputSystem] = $difference['other'];
         }
         return $result;
     }
@@ -250,8 +250,8 @@ class LexEntryModel extends MapperModel
         if (empty($difference)) {
             return [];
         }
-        return [ "oldValue." . $propertyName => $difference["this"],
-                 "newValue." . $propertyName => $difference["other"] ];
+        return [ 'oldValue.' . $propertyName => $difference['this'],
+                 'newValue.' . $propertyName => $difference['other'] ];
     }
 
     protected function getSenseDifferences($thisSenses, $otherSenses)
@@ -280,34 +280,34 @@ class LexEntryModel extends MapperModel
             /** @var LexSense $thisSense */
             $seenGuids[] = $guid;
             $thisPosition  = $thisPositions[$guid];
-            $thisSenseId = "senses@" . $thisPosition . "#" . $guid;
+            $thisSenseId = 'senses@' . $thisPosition . '#' . $guid;
             if (isset($otherPositions[$guid])) {
                 $otherPosition = $otherPositions[$guid];
                 if ($otherPosition !== $thisPosition) {
                     // The `moved` difference has the *old* position in the field ID and the *new* position in the value.
                     // This ensures that if a value is edited *and* moved in the same update, the field IDs for the edit
                     // and for the move will be identical.
-                    $differences["moved." . $thisSenseId] = (string)$otherPosition;
+                    $differences['moved.' . $thisSenseId] = (string)$otherPosition;
                 }
             }
             if (array_key_exists($guid, $otherSensesByGuid)) {
                 /** @var LexSense $otherSense */
                 $otherSense = $otherSensesByGuid[$guid];
                 $otherPosition = $otherPositions[$guid] ?? 0;  // Default to 0 just in case, though this *should* never be necessary
-                $otherSenseId = "senses@" . $otherPosition . "#" . $guid;
+                $otherSenseId = 'senses@' . $otherPosition . '#' . $guid;
                 $senseDifferences = $thisSense->differences($otherSense, $thisSenseId, $otherSenseId);
                 foreach ($senseDifferences as $key => $senseDifference) {
-                    if (substr($key, 0, 5) === "this.") {
-                        $newKey = str_replace("this.",  "oldValue." . $thisSenseId . ".", $key);
-                    } elseif (substr($key, 0, 6) === "other.") {
-                        $newKey = str_replace("other.", "newValue." . $thisSenseId . ".", $key);
+                    if (substr($key, 0, 5) === 'this.') {
+                        $newKey = str_replace('this.',  'oldValue.' . $thisSenseId . '.', $key);
+                    } elseif (substr($key, 0, 6) === 'other.') {
+                        $newKey = str_replace('other.', 'newValue.' . $thisSenseId . '.', $key);
                     } else {
                         $newKey = $key;
                     }
                     $differences[$newKey] = $senseDifference;
                 }
             } else {
-                $differences["deleted." . $thisSenseId] = $thisSense->nameForActivityLog();
+                $differences['deleted.' . $thisSenseId] = $thisSense->nameForActivityLog();
             }
         }
         $addedGuids = array_diff($otherGuids, $seenGuids);
@@ -315,8 +315,8 @@ class LexEntryModel extends MapperModel
             /** @var LexSense $otherSense */
             $otherSense = $otherSensesByGuid[$guid];
             $otherPosition  = $otherPositions[$guid];
-            $otherSenseId = "senses@" . $otherPosition . "#" . $guid;
-            $differences["added." . $otherSenseId] = $otherSense->nameForActivityLog();
+            $otherSenseId = 'senses@' . $otherPosition . '#' . $guid;
+            $differences['added.' . $otherSenseId] = $otherSense->nameForActivityLog();
         }
 
         return $differences;
@@ -342,44 +342,44 @@ class LexEntryModel extends MapperModel
                 }
             }
         }
-        return "";
+        return '';
     }
 
     public function getPropertyDifference(LexEntryModel $otherModel, string $propertyName)
     {
         $type = $this->getPropertyType($propertyName);
         switch ($type) {
-            case "LexMultiText":
+            case 'LexMultiText':
                 /** @var LexMultiText $multiText */
                 $multiText = $this->$propertyName;
                 $difference = $multiText->differences($otherModel->$propertyName);
                 return $this->convertLexMultiTextDifferences($difference, $propertyName);
-            case "LexMultiValue":
+            case 'LexMultiValue':
                 /** @var LexMultiValue $multiValue */
                 $multiValue = $this->$propertyName;
                 $difference = $multiValue->differences($otherModel->$propertyName);
                 return $this->convertDifferences($difference, $propertyName);
-            case "LexMultiParagraph":
+            case 'LexMultiParagraph':
                 /** @var LexMultiParagraph $multiParagraph */
                 $multiParagraph = $this->$propertyName;
                 $difference = $multiParagraph->differences($otherModel->$propertyName);
                 return $this->convertDifferences($difference, $propertyName);
-            case "LexValue":
-                $thisValue  = is_null($this->$propertyName) || is_null($this->$propertyName->value) ? "" : (string)$this->$propertyName;
-                $otherValue = is_null($otherModel->$propertyName) || is_null($otherModel->$propertyName->value) ? "" : (string)$otherModel->$propertyName;
+            case 'LexValue':
+                $thisValue  = is_null($this->$propertyName) || is_null($this->$propertyName->value) ? '' : (string)$this->$propertyName;
+                $otherValue = is_null($otherModel->$propertyName) || is_null($otherModel->$propertyName->value) ? '' : (string)$otherModel->$propertyName;
 
                 if ($thisValue === $otherValue) {
                     return [];
                 } else {
-                    return ["oldValue." . $propertyName => $thisValue, "newValue." . $propertyName => $otherValue];
+                    return ['oldValue.' . $propertyName => $thisValue, 'newValue.' . $propertyName => $otherValue];
                 }
-            case "string":
+            case 'string':
                 $thisValue  = $this->$propertyName;
                 $otherValue = $otherModel->$propertyName;
                 if ($thisValue === $otherValue) {
                     return [];
                 } else {
-                    return ["oldValue." . $propertyName => $thisValue, "newValue." . $propertyName => $otherValue];
+                    return ['oldValue.' . $propertyName => $thisValue, 'newValue.' . $propertyName => $otherValue];
                 }
             case 'ArrayOf(LexSense)':
                 $thisSenses  = $this->$propertyName;

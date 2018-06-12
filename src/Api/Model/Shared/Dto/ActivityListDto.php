@@ -297,12 +297,12 @@ class ActivityListDto
                 continue;
             }
             switch ($parts[0]) {
-                case "oldValue":
-                case "newValue":
-                case "added":
-                case "moved":
-                case "deleted":
-                case "fieldLabel":
+                case 'oldValue':
+                case 'newValue':
+                case 'added':
+                case 'moved':
+                case 'deleted':
+                case 'fieldLabel':
                     // Collect change records keyed by field identifier (e.g., "senses@1#GUID.definition.en")
                     if (!array_key_exists($parts[1], $changesInInput)) {
                         $changesInInput[$parts[1]] = [];
@@ -320,15 +320,15 @@ class ActivityListDto
 
         foreach ($changesInInput as $fieldId => $change) {
             $changeType = '';
-            if (array_key_exists("oldValue", $change)) {
+            if (array_key_exists('oldValue', $change)) {
                 $changeType = ActivityListDto::EDITED_FIELD;
-            } else if (array_key_exists("newValue", $change)) {
+            } else if (array_key_exists('newValue', $change)) {
                 $changeType = ActivityListDto::EDITED_FIELD;
-            } else if (array_key_exists("added", $change)) {
+            } else if (array_key_exists('added', $change)) {
                 $changeType = ActivityListDto::ADDED_FIELD;
-            } else if (array_key_exists("moved", $change)) {
+            } else if (array_key_exists('moved', $change)) {
                 $changeType = ActivityListDto::MOVED_FIELD;
-            } else if (array_key_exists("deleted", $change)) {
+            } else if (array_key_exists('deleted', $change)) {
                 $changeType = ActivityListDto::DELETED_FIELD;
             }
 
@@ -343,7 +343,7 @@ class ActivityListDto
             $sensePosition = null;
             $examplePosition = null;
 
-            $mostRecentName = "";
+            $mostRecentName = '';
             $mostRecentPosition = 0;
             $fieldWs = "";
             foreach ($fieldIdParts as $part) {
