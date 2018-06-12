@@ -44,7 +44,7 @@ class Activity {
     for (const index in this.content) {
       if (this.content.hasOwnProperty(index)) {
         if (index.substring(0, 8) === 'oldValue') {
-          return this.content[index];
+          return this.parseValue(this.content[index]);
         }
       }
     }
@@ -55,11 +55,36 @@ class Activity {
     for (const index in this.content) {
       if (this.content.hasOwnProperty(index)) {
         if (index.substring(0, 8) === 'newValue') {
-          return this.content[index];
+          return this.parseValue(this.content[index]);
         }
       }
     }
     return '';
+  }
+
+  parseValue(value: string) {
+    if (value.substring(0, 1) === '[' && value.substring(value.length - 1) === ']') {
+      const json = JSON.parse(value);
+      value = json.join(', ');
+    }
+    return value;
+  }
+
+  getLabel() {
+    for (const index in this.content) {
+      if (this.content.hasOwnProperty(index)) {
+        if (index.substring(0, 10) === 'fieldLabel') {
+          let label = this.content[index];
+          if (index.indexOf('#examples')) {
+            label = 'Example - ' + label;
+          } else if (index.indexOf('#examples')) {
+            label = 'Meaning - ' + label;
+          }
+          return label;
+        }
+      }
+    }
+    return 'unknown';
   }
 }
 
@@ -111,8 +136,8 @@ class ActivityUserGroup {
         } else if (count < totalActivityTypes) {
           summary += ', ';
         }
+        count++;
       }
-      count++;
     }
     return summary;
   }
@@ -292,6 +317,12 @@ export class ActivityContainerController implements angular.IController {
       'Update Answer',
       'comments-o',
       'updated {x} answer'));
+    this.activityTypes.push(new ActivityType(
+      'lexCommentIncreaseScore',
+      'project',
+      'Liked',
+      'thumbs-up',
+      'liked {x} comment'));
     this.activityTypes.push(new ActivityType(
       'increase_score',
       'project',
