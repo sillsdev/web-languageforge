@@ -2,7 +2,7 @@
 
 - include: dependencies.yml
   vars:
-    deploy: lf_only
+    deploy: palaso
 - include: code.yml
   vars:
     site_src_paths:

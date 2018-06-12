@@ -625,13 +625,13 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     await expect<any>(editorPage.browse.getEntryCount()).toBe(4);
   });
 
-  it('remove new word to restore original word count', async () => {
-    await editorPage.browse.findEntryByLexeme(constants.testEntry3.lexeme.th.value).click();
-    await browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.actionMenu), constants.conditionTimeout);
-    await editorPage.edit.actionMenu.click();
-    await editorPage.edit.deleteMenuItem.click();
-    await Utils.clickModalButton('Delete Entry');
-    await expect<any>(editorPage.edit.getEntryCount()).toBe(3);
+  it('remove new word to restore original word count', () => {
+    editorPage.browse.findEntryByLexeme(constants.testEntry3.lexeme.th.value).click();
+    editorPage.edit.actionMenu.click();
+    editorPage.edit.deleteMenuItem.click();
+    expect<any>(editorPage.modal.modalBodyText.getText()).toContain(constants.testEntry3.lexeme.th.value);
+    Utils.clickModalButton('Delete Entry');
+    expect<any>(editorPage.edit.getEntryCount()).toBe(3);
   });
 
   it('previous entry is selected after delete', async () => {

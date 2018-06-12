@@ -29,17 +29,17 @@ export class FieldPictureController implements angular.IController {
   contextGuid: string;
   inputSystems: LexConfigInputSystems;
 
-  fieldContainsData = this.lexConfigService.fieldContainsData;
+  fieldContainsData = LexiconConfigService.fieldContainsData;
 
   static $inject = ['$filter', '$state',
     'Upload', 'modalService',
     'silNoticeService', 'sessionService',
-    'lexConfigService', 'lexProjectService'
+    'lexProjectService'
   ];
   constructor(private $filter: angular.IFilterService, private $state: angular.ui.IStateService,
               private Upload: any, private modalService: ModalService,
               private notice: NoticeService, private sessionService: SessionService,
-              private lexConfigService: LexiconConfigService, private lexProjectService: LexiconProjectService) { }
+              private lexProjectService: LexiconProjectService) { }
 
   $onInit(): void {
     this.inputSystems = this.control.config.inputSystems;

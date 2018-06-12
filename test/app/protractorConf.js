@@ -68,7 +68,7 @@ exports.config = {
       var pauseOnFailure = {
         specDone: function (spec) {
           if (spec.status === 'failed') {
-            browser.pause();
+            debugger;
           }
         }
       };

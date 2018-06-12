@@ -4,9 +4,9 @@ export class HeaderData {
 }
 
 export class HeaderSetting {
-  constructor(private id: string,
-              private label: string,
-              private href: string = '',
+  constructor(public id: string,
+              public label: string,
+              public href: string = '',
               public divider: boolean = false) { }
 }
 
@@ -17,11 +17,11 @@ export class ApplicationHeaderService {
     this.data = new HeaderData();
   }
 
-  setPageName($name: string) {
-    this.data.pageName = $name;
+  setPageName(name: string): void {
+    this.data.pageName = name;
   }
 
-  setSettings($settings: HeaderSetting[]) {
-    this.data.settings = $settings;
+  setSettings(settings: HeaderSetting[]): void {
+    this.data.settings = settings;
   }
 }

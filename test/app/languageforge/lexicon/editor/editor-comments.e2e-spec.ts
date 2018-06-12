@@ -118,9 +118,12 @@ describe('Lexicon E2E Editor Comments', async () => {
     await expect<any>(editorPage.commentDiv.getAttribute('class')).not.toContain('panel-visible');
   });
 
-  it('comments panel: show all comments', async () => {
-    await editorPage.edit.toCommentsLink.click();
-    await expect<any>(editorPage.commentDiv.getAttribute('class')).toContain('panel-visible');
+  it('comments panel: show all comments', () => {
+    // ToDo: investigate why this was needed to be added after editor.js changed to TS - IJH 2018-05
+    browser.sleep(1000);
+    editorPage.edit.toCommentsLink.click();
+    browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);
+    expect<any>(editorPage.commentDiv.getAttribute('class')).toContain('panel-visible');
   });
 
   it('comments panel: close all comments clicking on main comments button', async () => {
