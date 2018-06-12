@@ -3,7 +3,6 @@ import uiRouter from 'angular-ui-router';
 
 import {BreadcrumbModule} from '../../../bellows/core/breadcrumbs/breadcrumb.module';
 import {CoreModule} from '../../../bellows/core/core.module';
-import {InputSystemsModule} from '../../../bellows/core/input-systems/input-systems.service';
 import {MockModule} from '../../../bellows/shared/mock.module';
 import {SelectLanguageModule} from '../../../bellows/shared/select-language.component';
 import {PuiUtilityModule} from '../../../bellows/shared/utils/pui-utils.module';
@@ -21,7 +20,6 @@ export const LexiconNewProjectModule = angular
     PuiUtilityModule,
     SelectLanguageModule,
     MockModule,
-    InputSystemsModule,
     LexiconCoreModule
   ])
   .component('sendReceiveCredentials', SendReceiveCredentialsComponent)

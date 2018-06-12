@@ -1,35 +1,35 @@
 import * as angular from 'angular';
 
+import {SemanticDomain, SemanticDomainsService} from '../../../core/semantic-domains/semantic-domains.service';
 import {FieldMultiOptionListController} from './dc-multioptionlist.component';
 
-interface WindowService extends angular.IWindowService {
-  semanticDomains_en?: any;
-}
-
 export class FieldSemanticDomainController extends FieldMultiOptionListController implements angular.IController {
-  options: any[] = [];
+  options: SemanticDomain[] = [];
 
-  static $inject = ['$state', '$window'];
-  constructor(protected $state: angular.ui.IStateService, private $window: WindowService) {
+  static $inject = ['$state', 'semanticDomainsService'];
+  constructor(protected $state: angular.ui.IStateService, private readonly semanticDomains: SemanticDomainsService) {
     super($state);
   }
 
   $onInit(): void {
     this.contextGuid = this.parentContextGuid;
+    this.semanticDomains.languageCode = this.control.interfaceConfig.userLanguageCode;
     this.createOptions();
   }
 
   getDisplayName(key: string): string {
     let displayName = key;
-    if (this.$window.semanticDomains_en != null && key in this.$window.semanticDomains_en) {
-      displayName = this.$window.semanticDomains_en[key].value;
+    if (this.semanticDomains.data != null && key in this.semanticDomains.data) {
+      displayName = this.semanticDomains.data[key].value;
     }
 
     return displayName;
   }
 
   showDeleteButton(valueToBeDeleted: string, value: string): boolean {
-    if (this.$window.semanticDomains_en != null && this.isAtEditorEntry() && this.control.rights.canEditEntry()) {
+    if (this.semanticDomains.data != null && this.isAtEditorEntry() &&
+      this.control.rights.canEditEntry()
+    ) {
       return valueToBeDeleted === value;
     }
 
@@ -42,15 +42,15 @@ export class FieldSemanticDomainController extends FieldMultiOptionListControlle
 
   showAddButton(): boolean {
     return this.control.rights.canEditEntry() && this.isAtEditorEntry() && !this.isAdding && this.model != null &&
-      this.$window.semanticDomains_en != null &&
-      this.model.values.length < Object.keys(this.$window.semanticDomains_en).length;
+      this.semanticDomains.data != null &&
+      this.model.values.length < Object.keys(this.semanticDomains.data).length;
   }
 
   private createOptions(): void {
     this.options = [];
-    for (const key in this.$window.semanticDomains_en) {
-      if (this.$window.semanticDomains_en.hasOwnProperty(key)) {
-        this.options.push(this.$window.semanticDomains_en[key]);
+    for (const key in this.semanticDomains.data) {
+      if (this.semanticDomains.data.hasOwnProperty(key)) {
+        this.options.push(this.semanticDomains.data[key]);
       }
     }
   }

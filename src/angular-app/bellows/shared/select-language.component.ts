@@ -17,7 +17,10 @@ export class SelectLanguageController implements angular.IController {
   searchText: string = '';
   showSuggestions: boolean = false;
 
-  private allLanguages: InputSystemLanguage[] = InputSystemsService.languages();
+  private allLanguages: InputSystemLanguage[] = this.inputSystems.allLanguages();
+
+  static $inject: string[] = ['inputSystems'];
+  constructor(private readonly inputSystems: InputSystemsService) { }
 
   $onInit(): void {
     this.languages = this.buildLanguageList();

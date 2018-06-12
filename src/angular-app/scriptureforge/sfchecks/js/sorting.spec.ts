@@ -1,6 +1,4 @@
 import * as angular from 'angular';
-import 'angular-mocks';
-import 'angular-sanitize';
 
 import '../../../bellows/core/core.module';
 import '../../../bellows/core/error.service';
