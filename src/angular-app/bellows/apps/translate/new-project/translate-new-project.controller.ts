@@ -54,18 +54,16 @@ export class TranslateNewProjectController implements angular.IController {
   private readonly error = this.makeFormInvalid;
   private paratextSignInWindow: Window;
 
-  static $inject = ['$scope', '$q',
-    '$filter', '$window',
-    '$state', 'sessionService',
-    'silNoticeService', 'inputSystems',
+  static $inject = ['$scope', '$state',
+    '$q', '$window',
+    'sessionService', 'silNoticeService',
     'translateProjectApi', 'linkService',
     'userRestApiService', 'machineService',
     'translateSendReceiveService'
   ];
-  constructor(private readonly $scope: angular.IScope, private readonly $q: angular.IQService,
-              private readonly $filter: angular.IFilterService, private readonly $window: angular.IWindowService,
-              private readonly $state: angular.ui.IStateService, private readonly sessionService: SessionService,
-              private readonly notice: NoticeService, private readonly inputSystems: InputSystemsService,
+  constructor(private readonly $scope: angular.IScope, private readonly $state: angular.ui.IStateService,
+              private readonly $q: angular.IQService, private readonly $window: angular.IWindowService,
+              private readonly sessionService: SessionService, private readonly notice: NoticeService,
               private readonly projectApi: TranslateProjectService, private readonly linkService: LinkService,
               private readonly userRestApiService: UserRestApiService, private readonly machine: MachineService,
               private readonly translateSendReceiveService: TranslateSendReceiveService) {}
@@ -98,10 +96,10 @@ export class TranslateNewProjectController implements angular.IController {
     this.show.flexHelp = false;
     this.show.cloning = true;
     this.show.step3 = true;
-    this.nextButtonLabel = this.$filter('translate')('Next');
-    this.progressIndicatorStep1Label = this.$filter('translate')('Name');
-    this.progressIndicatorStep2Label = this.$filter('translate')('Languages');
-    this.progressIndicatorStep3Label = this.$filter('translate')('Verify');
+    this.nextButtonLabel = 'Next';
+    this.progressIndicatorStep1Label = 'Name';
+    this.progressIndicatorStep2Label = 'Languages';
+    this.progressIndicatorStep3Label = 'Verify';
     this.resetValidateProjectForm();
 
     this.$scope.$watch(() => {
@@ -185,8 +183,8 @@ export class TranslateNewProjectController implements angular.IController {
     this.isSRProject = true;
     this.show.nextButton = true;
     this.show.backButton = true;
-    this.nextButtonLabel = this.$filter('translate')('Next');
-    this.progressIndicatorStep2Label = this.$filter('translate')('Connect');
+    this.nextButtonLabel = 'Next';
+    this.progressIndicatorStep2Label = 'Connect';
     this.resetValidateProjectForm();
   }
 
@@ -195,8 +193,8 @@ export class TranslateNewProjectController implements angular.IController {
     this.isSRProject = false;
     this.show.nextButton = true;
     this.show.backButton = true;
-    this.nextButtonLabel = this.$filter('translate')('Next');
-    this.progressIndicatorStep2Label = this.$filter('translate')('Languages');
+    this.nextButtonLabel = 'Next';
+    this.progressIndicatorStep2Label = 'Languages';
   }
 
   iconForStep(step: number) {
@@ -219,7 +217,7 @@ export class TranslateNewProjectController implements angular.IController {
     switch (this.$state.current.name) {
       case 'newProject.sendReceiveCredentials':
         this.$state.go('newProject.name');
-        this.nextButtonLabel = this.$filter('translate')('Next');
+        this.nextButtonLabel = 'Next';
         break;
       case 'newProject.name':
         this.$state.go('newProject.chooser');
@@ -349,7 +347,7 @@ export class TranslateNewProjectController implements angular.IController {
         this.projectCodeState = 'empty';
         this.projectCodeStateDefer = this.$q.defer();
         this.projectCodeStateDefer.resolve('empty');
-        this.nextButtonLabel = this.$filter('translate')(this.isSRProject ? 'Get Started' : 'Next');
+        this.nextButtonLabel = this.isSRProject ? 'Get Started' : 'Next';
         this.makeFormNeutral();
         if (this.isSRProject) {
           this.getParatextUserInfo();
@@ -405,6 +403,7 @@ export class TranslateNewProjectController implements angular.IController {
     this.sessionService.getSession()
       .then(session => this.userRestApiService.getParatextInfo(session.userId()))
       .then(paratextUserInfo => this.paratextUserInfo = paratextUserInfo)
+      .catch(() => { })
       .finally(() => this.isRetrievingParatextUserInfo = false);
   }
 

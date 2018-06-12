@@ -14,7 +14,6 @@ export const TranslateAppModule = angular
     uiRouter,
     'ui.bootstrap',
     'ngSanitize',
-    'pascalprecht.translate',
     CoreModule,
     TranslateCoreModule,
     TranslateEditorModule,
@@ -22,11 +21,10 @@ export const TranslateAppModule = angular
   ])
   .component('translateApp', TranslateAppComponent)
   .config(['$stateProvider', '$urlRouterProvider',
-    '$translateProvider', '$compileProvider',
-    'apiServiceProvider',
+    '$compileProvider', 'apiServiceProvider',
     ($stateProvider: angular.ui.IStateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider,
-     $translateProvider: angular.translate.ITranslateProvider, $compileProvider: angular.ICompileProvider,
-     apiService: ApiService) => {
+     $compileProvider: angular.ICompileProvider, apiService: ApiService) => {
+
       $compileProvider.debugInfoEnabled(apiService.isProduction);
       $compileProvider.commentDirectivesEnabled(apiService.isProduction);
 
@@ -53,23 +51,5 @@ export const TranslateAppModule = angular
         })
         ;
 
-      // configure interface language file path
-      $translateProvider.useStaticFilesLoader({
-        prefix: '/angular-app/languageforge/lexicon/lang/',
-        suffix: '.json'
-      });
-      $translateProvider.preferredLanguage('en');
-      $translateProvider.useSanitizeValueStrategy('escape');
-    }])
-  .controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService',
-    ($scope: any, $rootScope: angular.IRootScopeService, breadcrumbService: any) => {
-      $scope.idmap = breadcrumbService.idmap;
-      $rootScope.$on('$routeChangeSuccess', () => {
-        $scope.breadcrumbs = breadcrumbService.read();
-      });
-
-      $scope.$watch('idmap', () => {
-        $scope.breadcrumbs = breadcrumbService.read();
-      }, true);
     }])
   .name;

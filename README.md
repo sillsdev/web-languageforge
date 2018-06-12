@@ -136,21 +136,33 @@ After Ubuntu Xenial Bash has finished installing, close the Windows Command Prom
 
 ### Vagrant VM Setup <a id="VagrantSetup"></a> ###
 
-Clone this repository to your host machine and `vagrant up` the Xenial box. We intentionally postpone provisioning on initial boot so the `Virtualbox guest additions` updates don't interfere with the provisioning process.
+If you are on Windows, begin by giving your user account permission to create symlinks. This is necessary or `npm install` will not run properly.
+
+- Run `secpol.msc`. This ([reportendly](https://www.virtualbox.org/ticket/10085#comment:32)) does not exist on some versions of Windows and you will have to use [a workaround](https://stackoverflow.com/questions/815472/how-do-i-grant-secreatesymboliclink-on-windows-vista-home-edition).
+- Go to Local Policies -> User Rights Assignment -> Create symbolic links -> Add User or Group...
+- Type your username in the text field and click "Check Names".
+- Click OK, then click OK, and close the Local Security Policy window.
+- You might have to log out of your user account and log back in for the change to take effect.
+
+See [the screenshot.](readme_images/windows_allow_symlinks.png)
+
+- Download the file https://github.com/sillsdev/web-languageforge/blob/master/deploy/xenial/Vagrantfile and save it as Vagrantfile.
+- Open the command line to the directory where the Vagrantfile is and run `vagrant up --no-provision` (this delays provisioning so the VirtualBox guest additions updates don't interfere with the provisioning process.)
+- Run `vagrant up --provision`
 
 ``` bash
-git clone https://github.com/sillsdev/web-languageforge web-languageforge --recurse-submodules
-cd deploy/xenial
+wget https://raw.githubusercontent.com/sillsdev/web-languageforge/master/deploy/xenial/Vagrantfile
 vagrant up --no-provision
-```
-
-Once the shell notifies the Virtualbox guest additions have been updated, power down the Xenial box.
-
-Now, vagrant up with provision to install and deploy
-
-``` bash
 vagrant up --provision
 ```
+
+Edit your hosts file (On Linux, `/etc/hosts`, on Windows, `C:\windows\system32\drivers\etc\hosts`. You will have to use sudo on Linux and edit as Administrator on Windows). Add the following lines:
+```
+192.168.33.10     languageforge.local
+192.168.33.10     scriptureforge.local
+192.168.33.10     jamaicanpsalms.scriptureforge.local
+```
+Then open languageforge.local and scriptureforge.local ensure they load correctly.
 
 Proceed to [Language Forge Configuration File](#LFConfig) and follow the rest of the steps in this README.
 
@@ -533,6 +545,16 @@ To test a certain test spec, add a parameter `--specs [spec name]`.  For example
 will run the the *lexicon-new-project.e2e-spec.ts* tests on **languageforge**.
 
 To add more verbosity during E2E tests, add a parameter `--verbosity true`
+
+To debug the tests:
+- Place breakpoints in your code (`debugger;` statements).
+- Open Chrome to `chrome://inspect/#devices`.
+- Run `./debuge2e.sh`. It will wait for a Protractor process to appear so it can signal the process.
+- Start the e2e tests. The `./debuge2e.sh` script will exit and the debugger should start listening (The e2e tests will say `Debugger listening on <some url>`).
+- Go back the the Chrome window. It should list under "Remote Target" the Node process that is running the tests.
+- Click inspect. When a breakpoint is reached the process will pause and you can step through it in the Chrome developer tools (This does not work very well though because of the asynchronous nature of Webdriver).
+
+Alternatively, to pause the debugger on the first test failure, go to `test/app/protractorConf.js` and uncomment the line that adds the `pauseOnFailure` reporter. All the debugging steps above are still necessary, except for adding breakpoints to your code.
 
 ## Get a copy of the live database ##
 
