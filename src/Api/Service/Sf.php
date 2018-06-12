@@ -421,13 +421,13 @@ class Sf
 
     public function activity_list_dto_for_current_project($filterParams = [])
     {
-        $projectModel = new ProjectModel($this->projectId);
+        $projectModel = ProjectModel::getById($this->projectId);
         return ActivityListDto::getActivityForOneProject($projectModel, $this->userId, $filterParams);
     }
 
     public function activity_list_dto_for_lexical_entry($entryId, $filterParams = [])
     {
-        $projectModel = new ProjectModel($this->projectId);
+        $projectModel = ProjectModel::getById($this->projectId);
         return ActivityListDto::getActivityForOneLexEntry($projectModel, $entryId, $filterParams);
     }
 
