@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import {SemanticDomainsService} from '../../../languageforge/core/semantic-domains/semantic-domains.service';
 import {LexConfigMultiText} from '../../../languageforge/lexicon/shared/model/lexicon-config.model';
 import {LexiconProjectSettings} from '../../../languageforge/lexicon/shared/model/lexicon-project-settings.model';
 import {JsonRpcResult} from '../api/api.service';
@@ -9,10 +10,6 @@ import {UtilityService} from '../utility.service';
 import {CommentsOfflineCacheService} from './comments-offline-cache.service';
 import {EditorOfflineCacheService} from './editor-offline-cache.service';
 import {LexiconCommentService} from './lexicon-comments.service';
-
-interface WindowService extends angular.IWindowService {
-  semanticDomains_en?: any;
-}
 
 class FilterBy {
   level?: string;
@@ -34,7 +31,7 @@ class EntryListModifiers {
 }
 
 export class EditorDataService {
-  readonly browserInstanceId = Math.floor(Math.random() * 1000000);
+  readonly browserInstanceId: string = Math.floor(Math.random() * 1000000).toString();
 
   entries: any[] = [];
   visibleEntries: any[] = [];
@@ -53,13 +50,17 @@ export class EditorDataService {
 
   private api: any;
 
-  static $inject: string[] = ['$q', '$window', 'silNoticeService',
+  static $inject: string[] = ['$q', 'silNoticeService',
     'sessionService', 'editorOfflineCache',
-    'commentsOfflineCache', 'lexCommentService'
+    'commentsOfflineCache',
+    'semanticDomainsService',
+    'lexCommentService'
   ];
-  constructor(private $q: angular.IQService, private $window: WindowService, private notice: NoticeService,
-              private sessionService: SessionService, private cache: EditorOfflineCacheService,
-              private commentsCache: CommentsOfflineCacheService, private commentService: LexiconCommentService) { }
+  constructor(private readonly $q: angular.IQService, private readonly notice: NoticeService,
+              private readonly sessionService: SessionService, private readonly cache: EditorOfflineCacheService,
+              private readonly commentsCache: CommentsOfflineCacheService,
+              private readonly semanticDomains: SemanticDomainsService,
+              private readonly commentService: LexiconCommentService) { }
 
   showInitialEntries = (): angular.IPromise<any> => {
     return this.sortAndFilterEntries(true);
@@ -80,7 +81,7 @@ export class EditorDataService {
   /**
    * Called when loading the controller
    */
-  loadEditorData = (lexiconScope?: any): angular.IPromise<any> => {
+  loadEditorData = (): angular.IPromise<any> => {
     const deferred = this.$q.defer();
     if (this.entries.length === 0) { // first page load
       if (this.cache.canCache()) {
@@ -88,7 +89,6 @@ export class EditorDataService {
         this.loadDataFromOfflineCache().then((projectObj: any) => {
           if (projectObj.isComplete) {
             this.showInitialEntries().then(() => {
-              lexiconScope.finishedLoading = true;
               this.notice.cancelLoading();
               this.refreshEditorData(projectObj.timestamp).then((result: any) => {
                 deferred.resolve(result);
@@ -256,7 +256,7 @@ export class EditorDataService {
       UtilityService.arrayCopyRetainingReferences(entriesSorted, this.entries);
       const filteredEntriesSorted = this.sortList(config, this.filteredEntries);
       UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted, this.filteredEntries);
-      const visibleEntriesSorted = this.sortList(config, this.visibleEntries);
+      this.sortList(config, this.visibleEntries);
       if (shouldResetVisibleEntriesList) {
         // TODO: Magic number "50" below should become a constant somewhere
         UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, 50), this.visibleEntries);
@@ -337,10 +337,8 @@ export class EditorDataService {
         }
       } else if (field.type === 'multioptionlist' && dataNode.values.length > 0) {
         if (field.listCode === 'semantic-domain-ddp4') {
-          if (this.$window.semanticDomains_en // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
-              [dataNode.values[0]]) {
-            sortableValue = this.$window.semanticDomains_en // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
-              [dataNode.values[0]].value;
+          if (this.semanticDomains.data[dataNode.values[0]]) {
+            sortableValue = this.semanticDomains.data[dataNode.values[0]].value;
           } else {
             sortableValue = dataNode.values[0];
           }

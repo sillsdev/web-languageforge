@@ -39,6 +39,13 @@ var del = require('del');
 var data = require('gulp-data');
 var ejs = require('gulp-ejs');
 var dest = require('gulp-dest');
+var webpack = require('webpack');
+
+var webpackConfig = require('./webpack.config.js');
+
+// -------------------------------------
+//   Global Variables
+// -------------------------------------
 
 // Define release stages that will send errors to bugsnag
 var notifyReleaseStages = "['live', 'qa']";
@@ -48,9 +55,6 @@ var notifyReleaseStages = "['live', 'qa']";
 
 // const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
 
-// -------------------------------------
-//   Global Variables
-// -------------------------------------
 var srcPatterns = [
   'src/angular-app/**',
   'src/Api/**',
@@ -87,7 +91,7 @@ gulp.task('generate-language-picker-assets', function (cb) {
     cwd: './scripts/language picker/'
   };
 
-  // auto-generated files written to src/angular-app/bellows/js/assets/
+  // auto-generated files written to src/angular-app/bellows/core/input-systems/
   execute(
     './build-json-language-data.py',
     options,
@@ -139,46 +143,65 @@ gulp.task('sass:watch', function () {
 
 //region webpack
 
-function webpack(applicationName, callback, isProduction, isWatch) {
-  var watch = isWatch ? ' --watch' : '';
-  var envApplication = applicationName ? ' --env.applicationName=' + applicationName : '';
-  var prod = isProduction ? ' -p' : '';
-  if (!process.env.NOTIFY_RELEASE_STAGES)
-    process.env.NOTIFY_RELEASE_STAGES = notifyReleaseStages;
-  execute('$(npm bin)/webpack' + watch + envApplication + prod + ' --colors',
-    { cwd: '.', env: process.env },
-    function (err) {
-      if (err) throw new gutil.PluginError('webpack', err);
-      callback();
-    });
+function runWebpack(applicationName, callback, isWatch, isAnalyze, isProduction) {
+  var config = webpackConfig({
+    applicationName: applicationName,
+    isProduction: isProduction,
+    isAnalyze: isAnalyze,
+    isTest: false
+  });
+
+  var compiler = webpack(config);
+
+  var log = function (err, stats) {
+    if (err) console.error(err);
+    if (stats) console.log(stats.toString({ chunks: false, colors: true }));
+    if (!isWatch) callback();
+  };
+
+  isWatch ? compiler.watch({}, log) : compiler.run(log);
 }
 
 // -------------------------------------
 //   Task: webpack-lf
 // -------------------------------------
 gulp.task('webpack-lf', function (cb) {
-  webpack('languageforge', cb);
+  runWebpack('languageforge', cb);
 });
 
 // -------------------------------------
 //   Task: webpack-lf watch
 // -------------------------------------
 gulp.task('webpack-lf:watch', function (cb) {
-  webpack('languageforge', cb, false, true);
+  runWebpack('languageforge', cb, true);
+});
+
+// -------------------------------------
+//   Task: webpack-lf analyze
+// -------------------------------------
+gulp.task('webpack-lf:analyze', function (cb) {
+  runWebpack('languageforge', cb, false, true);
 });
 
 // -------------------------------------
 //   Task: webpack-sf
 // -------------------------------------
 gulp.task('webpack-sf', function (cb) {
-  webpack('scriptureforge', cb);
+  runWebpack('scriptureforge', cb);
 });
 
 // -------------------------------------
 //   Task: webpack-sf watch
 // -------------------------------------
 gulp.task('webpack-sf:watch', function (cb) {
-  webpack('scriptureforge', cb, false, true);
+  runWebpack('scriptureforge', cb, true);
+});
+
+// -------------------------------------
+//   Task: webpack-sf analyze
+// -------------------------------------
+gulp.task('webpack-sf:analyze', function (cb) {
+  runWebpack('scriptureforge', cb, false, true);
 });
 
 // endregion
@@ -323,25 +346,91 @@ gulp.task('test-php-debug:watch', function () {
   gulp.watch(phpPatterns, ['test-php-debug']);
 });
 
+function runKarmaTests(applicationName, cb, type) {
+  var config = {
+    configFile: __dirname + '/karma.conf.js',
+    applicationName: applicationName
+  };
+
+  switch (type) {
+    case 'ci':
+      config.reporters = 'teamcity';
+      break;
+
+    case 'watch':
+      config.autoWatch = true;
+      config.singleRun = false;
+      break;
+
+    case 'debug':
+      config.autoWatch = true;
+      config.singleRun = false;
+      config.browsers = [];
+      break;
+  }
+
+  new Server(config, function (err) {
+    if (err === 0) {
+      cb();
+    } else {
+      cb(new gutil.PluginError('karma', { message: 'Karma Tests failed' }));
+    }
+  }).start();
+}
+
 // -------------------------------------
-//   Task: test-js
+//   Task: test-ts
 // -------------------------------------
-gulp.task('test-js', function (cb) {
-  new Server({
-    configFile: __dirname + '/test/app/karma.conf.js',
-    reporters: 'teamcity'
-  }, cb).start();
+gulp.task('test-ts', function (cb) {
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .fail(yargFailure)
+    .argv;
+  runKarmaTests(params.applicationName, cb, 'ci');
 });
 
 // -------------------------------------
-//   Task: test-js:watch
+//   Task: test-ts-lf
 // -------------------------------------
-gulp.task('test-js:watch', function (cb) {
-  new Server({
-    configFile: __dirname + '/test/app/karma.conf.js',
-    autoWatch: true,
-    singleRun: false
-  }, cb).start();
+gulp.task('test-ts-lf', function (cb) {
+  runKarmaTests('languageforge', cb);
+});
+
+// -------------------------------------
+//   Task: test-ts-lf:watch
+// -------------------------------------
+gulp.task('test-ts-lf:watch', function (cb) {
+  runKarmaTests('languageforge', cb, 'watch');
+});
+
+// -------------------------------------
+//   Task: test-ts-lf:debug
+// -------------------------------------
+gulp.task('test-ts-lf:debug', function (cb) {
+  runKarmaTests('languageforge', cb, 'debug');
+});
+
+// -------------------------------------
+//   Task: test-ts-sf
+// -------------------------------------
+gulp.task('test-ts-sf', function (cb) {
+  runKarmaTests('scriptureforge', cb);
+});
+
+// -------------------------------------
+//   Task: test-ts-sf:watch
+// -------------------------------------
+gulp.task('test-ts-sf:watch', function (cb) {
+  runKarmaTests('scriptureforge', cb, 'watch');
+});
+
+// -------------------------------------
+//   Task: test-ts-sf:debug
+// -------------------------------------
+gulp.task('test-ts-sf:debug', function (cb) {
+  runKarmaTests('scriptureforge', cb, 'debug');
 });
 
 // -------------------------------------
@@ -925,7 +1014,7 @@ gulp.task('build-webpack', function (cb) {
       type: 'boolean' })
     .fail(yargFailure)
     .argv;
-  webpack(params.applicationName, cb, !params.doNoCompression);
+  runWebpack(params.applicationName, cb, false, false, !params.doNoCompression);
 });
 
 // -------------------------------------
@@ -946,7 +1035,7 @@ gulp.task('build-minify', function () {
     'src/angular-app/container/**/*.js',
     'src/angular-app/' + params.applicationName + '/**/*.js',
     '!src/angular-app/**/*.min.js',
-    '!src/angular-app/**/assets/**',
+    '!src/angular-app/**/core/semantic-domains/**',
     '!src/angular-app/**/excluded/**',
     '!src/angular-app/**/vendor/**'];
   var minJsFile = params.applicationName + '.min.js';
@@ -1178,12 +1267,25 @@ gulp.task('build-dotnet-host-config', function (cb) {
     jwtKey = 'jwtKey';
   }
 
+  var bugsnagApiKey = process.env.XFORGE_BUGSNAG_API_KEY;
+  if (bugsnagApiKey === undefined) {
+    bugsnagApiKey = 'missing-bugsnag-api-key';
+  }
+
   var params = require('yargs')
     .option('applicationName', {
       demand: true,
       type: 'string' })
+    .option('bugsnagApiKey', {
+      demand: false,
+      default: bugsnagApiKey,
+      type: 'string' })
+    .option('buildNumber', {
+      demand: true,
+      type: 'string' })
     .fail(yargFailure)
     .argv;
+  console.log('version =', params.buildNumber);
 
   var jobDatabase = params.applicationName + '_jobs';
 
@@ -1197,6 +1299,10 @@ gulp.task('build-dotnet-host-config', function (cb) {
     },
     DataAccess: {
       JobDatabase: jobDatabase
+    },
+    Bugsnag: {
+      ApiKey: bugsnagApiKey,
+      Version: params.buildNumber
     }
   }), cb);
 });
@@ -1283,7 +1389,7 @@ gulp.task('build-createWebsiteDefsPhp', function () {
 });
 
 // ------------------------------------------
-// Create website-instances.ts from template
+// Create website-instances.generated-data.ts from template
 // ------------------------------------------
 gulp.task('build-createWebsiteDefsTs', function () {
   return gulp.src('src/angular-app/bellows/core/website-instances.ejs')
@@ -1395,8 +1501,7 @@ gulp.task('build-and-test',
   gulp.series(
     'build',
     'test-php',
-
-    // 'test-js',
+    'test-ts',
     'test-dotnet',
     'test-restart-webserver',
     'local-restart-xforge-web-api',
