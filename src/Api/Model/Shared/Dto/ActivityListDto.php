@@ -276,7 +276,7 @@ class ActivityListDto
 //  newValue: "Example translation edited"
 //  changeType: "edited_field"
 //  fieldName: "translation"
-//  fieldWs: "en"
+//  inputSystemTag: "en"
 //  sense: 1
 //  example: 2
 //  fieldLabel: "Translation"
@@ -345,7 +345,7 @@ class ActivityListDto
 
             $mostRecentName = '';
             $mostRecentPosition = 0;
-            $fieldWs = "";
+            $inputSystemTag = '';
             foreach ($fieldIdParts as $part) {
                 list ($name, $position, $guid) = self::splitFieldIdPart($part);
                 $position = $position + 1;  // Mongo stores 0-based indices, but DTO wants 1-based
@@ -363,7 +363,7 @@ class ActivityListDto
                         $currentConfig = $currentConfig->fields[$name];
                     }
                 } else {
-                    $fieldWs = $name;  // There will only be one
+                    $inputSystemTag = $name;  // There will only be one
                 }
             }
 
@@ -382,8 +382,8 @@ class ActivityListDto
             if ($examplePosition !== null) {
                 $changeForDto['fieldLabel']['example'] = $examplePosition;
             }
-            if (! empty($fieldWs)) {
-                $changeForDto['fieldWs'] = $fieldWs;
+            if (! empty($inputSystemTag)) {
+                $changeForDto['inputSystemTag'] = $inputSystemTag;
             }
             switch ($changeType) {
                 case ActivityListDto::EDITED_FIELD:
