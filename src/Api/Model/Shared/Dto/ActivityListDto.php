@@ -243,14 +243,15 @@ class ActivityListDto
         return ((new \DateTime($a['date'])) < (new \DateTime($b['date']))) ? 1 : -1;
     }
 
-    private static function prepareDto(&$dto, $projectModel)
+    private static function prepareDto(&$dto, ProjectModel $projectModel)
     {
         foreach ($dto['entries'] as &$item) {
             $item['content'] = $item['actionContent'];
             $item['type'] = 'project';  // FIXME: Should this always be "project"? Should it sometimes be "entry"? 2018-02 RM
             unset($item['actionContent']);
-            if ($item['action'] === ActivityModel::UPDATE_ENTRY && $projectModel instanceof LexProjectModel) {
-                $item['content'] = static::prepareActivityContentForEntryDifferences($item, $projectModel);
+            if ($item['action'] === ActivityModel::UPDATE_ENTRY && $projectModel->appName === 'lexicon') {
+                $lexProjectModel = new LexProjectModel($projectModel->id->asString());
+                $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
             }
         }
     }
