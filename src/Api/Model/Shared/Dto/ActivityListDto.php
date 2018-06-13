@@ -249,7 +249,7 @@ class ActivityListDto
             $item['content'] = $item['actionContent'];
             $item['type'] = 'project';  // FIXME: Should this always be "project"? Should it sometimes be "entry"? 2018-02 RM
             unset($item['actionContent']);
-            if ($item['action'] === ActivityModel::UPDATE_ENTRY && $projectModel->appName === 'lexicon') {
+            if ($item['action'] === ActivityModel::UPDATE_ENTRY && $projectModel->appName === LfProjectModel::LEXICON_APP) {
                 $lexProjectModel = new LexProjectModel($projectModel->id->asString());
                 $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
             }
