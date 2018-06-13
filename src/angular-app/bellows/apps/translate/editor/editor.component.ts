@@ -608,7 +608,7 @@ export class TranslateEditorController implements angular.IController {
     this.failedConnectionCount = 0;
 
     this.target.onStartTranslating();
-    this.source.resetTranslation()
+    this.source.translateCurrentSegment()
       .finally(() => this.target.onFinishTranslating());
     this.notice.push(this.notice.SUCCESS, 'Finished training the translation engine');
   }
@@ -680,6 +680,7 @@ export class TranslateEditorController implements angular.IController {
   }
 
   private updateEditor(editor: DocumentEditor, delta?: DeltaStatic): void {
+    const previousSegment = editor.currentSegment;
     const segmentChanged = editor.update(delta != null);
     switch (editor.docType) {
       case DocType.TARGET:
@@ -710,7 +711,8 @@ export class TranslateEditorController implements angular.IController {
 
           // update suggestions for new segment
           this.target.onStartTranslating();
-          this.source.translateCurrentSegment()
+          this.target.trainSegment(previousSegment)
+            .then(() => this.source.translateCurrentSegment())
             .catch(() => { })
             .finally(() => this.target.onFinishTranslating());
         }
