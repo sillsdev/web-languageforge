@@ -12,17 +12,15 @@ describe('Bellows E2E User Profile app', async () => {
   // Array of test usernames to test Activity page with different roles
   const usernames = [constants.memberUsername, constants.managerUsername];
   const newUsername = 'newusername';
-
   // Run the Activity E2E as each test user
   await usernames.forEach(expectedUsername => {
 
     // Perform activity E2E tests according to the different roles
-    describe('Running as: ' + expectedUsername, () => {
+    describe('Running as: ' + expectedUsername, async () => {
       it('Logging in', async () => {
         // Login before test to ensure proper role
         switch (expectedUsername) {
           case constants.memberUsername:
-            await browser.refresh();
             await loginPage.loginAsUser();
             break;
           case constants.managerUsername:
@@ -33,6 +31,7 @@ describe('Bellows E2E User Profile app', async () => {
 
       it('Verify initial "My Account" settings created from setupTestEnvironment.php', async () => {
         await userProfile.getMyAccount();
+
         await expect(userProfile.myAccountTab.username.getAttribute('value')).toEqual(expectedUsername);
         await expect(userProfile.myAccountTab.avatar.getAttribute('src')).toContain(constants.avatar);
         await expect<any>(userProfile.myAccountTab.avatarColor.$('option:checked').getText())
@@ -45,9 +44,11 @@ describe('Bellows E2E User Profile app', async () => {
 
       it('Verify initial "About Me" settings created from setupTestEnvironment.php', async () => {
         await userProfile.getAboutMe();
+
         let expectedFullname: string = '';
         const expectedAge: string = '';
         const expectedGender: string = '';
+
         switch (expectedUsername) {
           case constants.memberUsername:
             expectedFullname = constants.memberName;
@@ -102,12 +103,11 @@ describe('Bellows E2E User Profile app', async () => {
         await userProfile.myAccountTab.bothBtn.click();
 
         // Change Password tested in changepassword e2e
-
         // Submit updated profile
-        userProfile.myAccountTab.saveBtn.click().then(async () => {
-          await browser.driver.navigate().refresh();
+        await userProfile.myAccountTab.saveBtn.click().then(async () => {
+          await browser.refresh();
           await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
-            constants.conditionTimeout);
+          constants.conditionTimeout);
         });
 
         // Verify values.
@@ -120,10 +120,10 @@ describe('Bellows E2E User Profile app', async () => {
 
         // Restore email address
         await userProfile.myAccountTab.updateEmail(originalEmail);
-        userProfile.myAccountTab.saveBtn.click().then(async () => {
-          await browser.driver.navigate().refresh();
+        await userProfile.myAccountTab.saveBtn.click().then(async () => {
+          await browser.refresh();
           await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
-            constants.conditionTimeout);
+          constants.conditionTimeout);
         });
 
         await expect<any>(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(originalEmail);
@@ -165,7 +165,7 @@ describe('Bellows E2E User Profile app', async () => {
         await expect<any>(userProfile.myAccountTab.saveBtn.isEnabled()).toBe(true);
         await userProfile.myAccountTab.saveBtn.click();
         await Utils.clickModalButton('Cancel');
-        await browser.driver.navigate().refresh();
+        await browser.refresh();
 
         // Confirm email not changed
         await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
@@ -228,7 +228,7 @@ describe('Bellows E2E User Profile app', async () => {
             newAge = '3.1415';
             newGender = 'Female';
             break;
-          case constants.managerUsername:
+        case constants.managerUsername:
             newFullName = 'MrAdmin';
             newAge = '33.33';
             newGender = 'Male';

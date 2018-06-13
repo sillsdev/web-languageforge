@@ -16,7 +16,7 @@ describe('Bellows E2E Project Settings app', async () =>  {
     await projectsPage.get();
     // await projectsPage.clickOnProject(constants.testProjectName);
     await projectsPage.clickOnProjectName(constants.testProjectName);
-    await expect<any>(settingsPage.settingsMenuLink.isDisplayed()).toBe(false);
+    await expect<any>(settingsPage.settingsMenuLink.getAttribute('class')).not.toContain('app-settings-available');
   });
 
   it('System Admin can manage project', async () =>  {
