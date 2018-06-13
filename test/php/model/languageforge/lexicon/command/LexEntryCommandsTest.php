@@ -265,9 +265,9 @@ class LexEntryCommandsTest extends TestCase
 
         $updatedEntry = new LexEntryModel($project, $entryId);
         $differences = $entry->calculateDifferences($updatedEntry);
-        $this->assertEquals(['deleted.senses#' . $sense->guid => 'apple'], $differences);
+        $this->assertEquals(['deleted.senses@0#' . $sense->guid => 'apple'], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
-        $this->assertEquals(['deleted.senses#' . $sense->guid => 'apple', 'fieldLabel.senses#' . $sense->guid => 'Meaning'], $withLabels);
+        $this->assertEquals(['deleted.senses@0#' . $sense->guid => 'apple', 'fieldLabel.senses@0#' . $sense->guid => 'Meaning'], $withLabels);
     }
 
     public function testUpdateEntry_DeleteTwoSensesOutOfTwoTotal_ProducesTwoDifferences()
@@ -294,9 +294,10 @@ class LexEntryCommandsTest extends TestCase
 
         $updatedEntry = new LexEntryModel($project, $entryId);
         $differences = $entry->calculateDifferences($updatedEntry);
-        $this->assertEquals(['deleted.senses#' . $sense1->guid => 'apple', 'deleted.senses#' . $sense2->guid => 'also an apple'], $differences);
+        $this->assertEquals(['deleted.senses@0#' . $sense1->guid => 'apple', 'deleted.senses@1#' . $sense2->guid => 'also an apple'], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
-        $this->assertEquals(['deleted.senses#' . $sense1->guid => 'apple', 'fieldLabel.senses#' . $sense1->guid => 'Meaning', 'deleted.senses#' . $sense2->guid => 'also an apple', 'fieldLabel.senses#' . $sense2->guid => 'Meaning'], $withLabels);
+        $this->assertEquals(['deleted.senses@0#' . $sense1->guid => 'apple', 'fieldLabel.senses@0#' . $sense1->guid => 'Meaning',
+                             'deleted.senses@1#' . $sense2->guid => 'also an apple', 'fieldLabel.senses@1#' . $sense2->guid => 'Meaning'], $withLabels);
     }
 
     public function testUpdateEntry_DeleteFirstSenseOfTwo_ProducesThreeDifferences()
@@ -323,15 +324,13 @@ class LexEntryCommandsTest extends TestCase
 
         $updatedEntry = new LexEntryModel($project, $entryId);
         $differences = $entry->calculateDifferences($updatedEntry);
-        $this->assertEquals(['deleted.senses#' . $sense1->guid => 'apple',
-                             'movedFrom.senses#' . $sense2->guid => 1,
-                             'movedTo.senses#' . $sense2->guid => 0], $differences);
+        $this->assertEquals(['deleted.senses@0#' . $sense1->guid => 'apple',
+                             'moved.senses@1#' . $sense2->guid => 0], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
-        $this->assertEquals(['deleted.senses#' . $sense1->guid => 'apple',
-                             'fieldLabel.senses#' . $sense1->guid => 'Meaning',
-                             'movedFrom.senses#' . $sense2->guid => 1,
-                             'movedTo.senses#' . $sense2->guid => 0,
-                             'fieldLabel.senses#' . $sense2->guid => 'Meaning'], $withLabels);
+        $this->assertEquals(['deleted.senses@0#' . $sense1->guid => 'apple',
+                             'fieldLabel.senses@0#' . $sense1->guid => 'Meaning',
+                             'moved.senses@1#' . $sense2->guid => 0,
+                             'fieldLabel.senses@1#' . $sense2->guid => 'Meaning'], $withLabels);
     }
 
     public function testUpdateEntry_DeleteSecondSenseOfTwo_ProducesOneDifference()
@@ -358,9 +357,9 @@ class LexEntryCommandsTest extends TestCase
 
         $updatedEntry = new LexEntryModel($project, $entryId);
         $differences = $entry->calculateDifferences($updatedEntry);
-        $this->assertEquals(['deleted.senses#' . $sense2->guid => 'also an apple'], $differences);
+        $this->assertEquals(['deleted.senses@1#' . $sense2->guid => 'also an apple'], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
-        $this->assertEquals(['deleted.senses#' . $sense2->guid => 'also an apple', 'fieldLabel.senses#' . $sense2->guid => 'Meaning'], $withLabels);
+        $this->assertEquals(['deleted.senses@1#' . $sense2->guid => 'also an apple', 'fieldLabel.senses@1#' . $sense2->guid => 'Meaning'], $withLabels);
     }
 
     // marker
@@ -389,10 +388,10 @@ class LexEntryCommandsTest extends TestCase
 
         $updatedEntry = new LexEntryModel($project, $entryId);
         $differences = $entry->calculateDifferences($updatedEntry);
-        $this->assertEquals(['deleted.senses#' . $sense->guid . '.examples#' . $example->guid => 'eat an apple'], $differences);
+        $this->assertEquals(['deleted.senses@0#' . $sense->guid . '.examples@0#' . $example->guid => 'eat an apple'], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
-        $this->assertEquals(['deleted.senses#' . $sense->guid . '.examples#' . $example->guid => 'eat an apple',
-                             'fieldLabel.senses#' . $sense->guid . '.examples#' . $example->guid => 'Example'], $withLabels);
+        $this->assertEquals(['deleted.senses@0#' . $sense->guid . '.examples@0#' . $example->guid => 'eat an apple',
+                             'fieldLabel.senses@0#' . $sense->guid . '.examples@0#' . $example->guid => 'Example'], $withLabels);
     }
 
     public function testUpdateEntry_DeleteTwoExamplesOutOfTwoTotal_ProducesTwoDifferences()
@@ -422,12 +421,13 @@ class LexEntryCommandsTest extends TestCase
 
         $updatedEntry = new LexEntryModel($project, $entryId);
         $differences = $entry->calculateDifferences($updatedEntry);
-        $this->assertEquals(['deleted.senses#' . $sense->guid . '.examples#' . $example1->guid => 'eat an apple', 'deleted.senses#' . $sense->guid . ".examples#" . $example2->guid => 'manger une pomme'], $differences);
+        $this->assertEquals(['deleted.senses@0#' . $sense->guid . '.examples@0#' . $example1->guid => 'eat an apple',
+                             'deleted.senses@0#' . $sense->guid . '.examples@1#' . $example2->guid => 'manger une pomme'], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
-        $this->assertEquals(['deleted.senses#' . $sense->guid . '.examples#' . $example1->guid => 'eat an apple',
-                             'fieldLabel.senses#' . $sense->guid . '.examples#' . $example1->guid => 'Example',
-                             'deleted.senses#' . $sense->guid . ".examples#" . $example2->guid => 'manger une pomme',
-                             'fieldLabel.senses#' . $sense->guid . '.examples#' . $example2->guid => 'Example'], $withLabels);
+        $this->assertEquals(['deleted.senses@0#' . $sense->guid . '.examples@0#' . $example1->guid => 'eat an apple',
+                             'fieldLabel.senses@0#' . $sense->guid . '.examples@0#' . $example1->guid => 'Example',
+                             'deleted.senses@0#' . $sense->guid . ".examples@1#" . $example2->guid => 'manger une pomme',
+                             'fieldLabel.senses@0#' . $sense->guid . '.examples@1#' . $example2->guid => 'Example'], $withLabels);
     }
 
     public function testUpdateEntry_DeleteFirstExampleOfTwo_ProducesThreeDifferences()
@@ -457,15 +457,13 @@ class LexEntryCommandsTest extends TestCase
 
         $updatedEntry = new LexEntryModel($project, $entryId);
         $differences = $entry->calculateDifferences($updatedEntry);
-        $this->assertEquals(['deleted.senses#' . $sense->guid . '.examples#' . $example1->guid => 'eat an apple',
-                             'movedFrom.senses#' . $sense->guid . '.examples#' . $example2->guid => '1',
-                             'movedTo.senses#' . $sense->guid . '.examples#' . $example2->guid => '0'], $differences);
+        $this->assertEquals(['deleted.senses@0#' . $sense->guid . '.examples@0#' . $example1->guid => 'eat an apple',
+                             'moved.senses@0#' . $sense->guid . '.examples@1#' . $example2->guid => '0'], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
-        $this->assertEquals(['deleted.senses#' . $sense->guid . '.examples#' . $example1->guid => 'eat an apple',
-                             'fieldLabel.senses#' . $sense->guid . '.examples#' . $example1->guid => 'Example',
-                             'movedFrom.senses#' . $sense->guid . '.examples#' . $example2->guid => '1',
-                             'movedTo.senses#' . $sense->guid . '.examples#' . $example2->guid => '0',
-                             'fieldLabel.senses#' . $sense->guid . '.examples#' . $example2->guid => 'Example'], $withLabels);
+        $this->assertEquals(['deleted.senses@0#' . $sense->guid . '.examples@0#' . $example1->guid => 'eat an apple',
+                             'fieldLabel.senses@0#' . $sense->guid . '.examples@0#' . $example1->guid => 'Example',
+                             'moved.senses@0#' . $sense->guid . '.examples@1#' . $example2->guid => '0',
+                             'fieldLabel.senses@0#' . $sense->guid . '.examples@1#' . $example2->guid => 'Example'], $withLabels);
     }
 
     public function testUpdateEntry_DeleteSecondExampleOfTwo_ProducesOneDifference()
@@ -495,9 +493,10 @@ class LexEntryCommandsTest extends TestCase
 
         $updatedEntry = new LexEntryModel($project, $entryId);
         $differences = $entry->calculateDifferences($updatedEntry);
-        $this->assertEquals(['deleted.senses#' . $sense->guid . '.examples#' . $example2->guid => 'manger une pomme'], $differences);
+        $this->assertEquals(['deleted.senses@0#' . $sense->guid . '.examples@1#' . $example2->guid => 'manger une pomme'], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
-        $this->assertEquals(['deleted.senses#' . $sense->guid . '.examples#' . $example2->guid => 'manger une pomme', 'fieldLabel.senses#' . $sense->guid . '.examples#' . $example2->guid => 'Example'], $withLabels);
+        $this->assertEquals(['deleted.senses@0#' . $sense->guid . '.examples@1#' . $example2->guid => 'manger une pomme',
+                             'fieldLabel.senses@0#' . $sense->guid . '.examples@1#' . $example2->guid => 'Example'], $withLabels);
     }
 
     public function testUpdateEntry_UpdateFirstExampleOfTwo_ProducesOneDifference()
@@ -527,12 +526,12 @@ class LexEntryCommandsTest extends TestCase
 
         $updatedEntry = new LexEntryModel($project, $entryId);
         $differences = $entry->calculateDifferences($updatedEntry);
-        $this->assertEquals(['oldValue.senses#' . $sense->guid . '.examples#' . $example1->guid . '.sentence.en' => 'eat an apple',
-                             'newValue.senses#' . $sense->guid . '.examples#' . $example1->guid . '.sentence.en' => 'also eat an apple'], $differences);
+        $this->assertEquals(['oldValue.senses@0#'   . $sense->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'eat an apple',
+                             'newValue.senses@0#'   . $sense->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'also eat an apple'], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
-        $this->assertEquals(['oldValue.senses#' . $sense->guid . '.examples#' . $example1->guid . '.sentence.en' => 'eat an apple',
-                             'newValue.senses#' . $sense->guid . '.examples#' . $example1->guid . '.sentence.en' => 'also eat an apple',
-                             'fieldLabel.senses#' . $sense->guid . '.examples#' . $example1->guid . '.sentence.en' => 'Sentence'], $withLabels);
+        $this->assertEquals(['oldValue.senses@0#'   . $sense->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'eat an apple',
+                             'newValue.senses@0#'   . $sense->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'also eat an apple',
+                             'fieldLabel.senses@0#' . $sense->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'Sentence'], $withLabels);
     }
 
     public function testUpdateEntry_UpdateSecondExampleOfTwo_ProducesOneDifference()
@@ -562,12 +561,12 @@ class LexEntryCommandsTest extends TestCase
 
         $updatedEntry = new LexEntryModel($project, $entryId);
         $differences = $entry->calculateDifferences($updatedEntry);
-        $this->assertEquals(['oldValue.senses#' . $sense->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'manger une pomme',
-                             'newValue.senses#' . $sense->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'also eat an apple'], $differences);
+        $this->assertEquals(['oldValue.senses@0#'   . $sense->guid . '.examples@1#' . $example2->guid . '.sentence.fr' => 'manger une pomme',
+                             'newValue.senses@0#'   . $sense->guid . '.examples@1#' . $example2->guid . '.sentence.fr' => 'also eat an apple'], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
-        $this->assertEquals(['oldValue.senses#' . $sense->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'manger une pomme',
-                             'newValue.senses#' . $sense->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'also eat an apple',
-                             'fieldLabel.senses#' . $sense->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'Sentence'], $withLabels);
+        $this->assertEquals(['oldValue.senses@0#'   . $sense->guid . '.examples@1#' . $example2->guid . '.sentence.fr' => 'manger une pomme',
+                             'newValue.senses@0#'   . $sense->guid . '.examples@1#' . $example2->guid . '.sentence.fr' => 'also eat an apple',
+                             'fieldLabel.senses@0#' . $sense->guid . '.examples@1#' . $example2->guid . '.sentence.fr' => 'Sentence'], $withLabels);
     }
 
     public function testUpdateEntry_UpdateTwoExamplesInTwoSenses_DifferenceHasCorrectSenseGuids()
@@ -601,17 +600,17 @@ class LexEntryCommandsTest extends TestCase
 
         $updatedEntry = new LexEntryModel($project, $entryId);
         $differences = $entry->calculateDifferences($updatedEntry);
-        $this->assertEquals(['oldValue.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'eat an apple',
-                             'newValue.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'also eat an apple',
-                             'oldValue.senses#' . $sense2->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'manger une pomme',
-                             'newValue.senses#' . $sense2->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'aussi manger une pomme'], $differences);
+        $this->assertEquals(['oldValue.senses@0#'   . $sense1->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'eat an apple',
+                             'newValue.senses@0#'   . $sense1->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'also eat an apple',
+                             'oldValue.senses@1#'   . $sense2->guid . '.examples@0#' . $example2->guid . '.sentence.fr' => 'manger une pomme',
+                             'newValue.senses@1#'   . $sense2->guid . '.examples@0#' . $example2->guid . '.sentence.fr' => 'aussi manger une pomme'], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
-        $this->assertEquals(['oldValue.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'eat an apple',
-                             'newValue.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'also eat an apple',
-                             'fieldLabel.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'Sentence',
-                             'oldValue.senses#' . $sense2->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'manger une pomme',
-                             'newValue.senses#' . $sense2->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'aussi manger une pomme',
-                             'fieldLabel.senses#' . $sense2->guid . '.examples#' . $example2->guid . '.sentence.fr' => 'Sentence'], $withLabels);
+        $this->assertEquals(['oldValue.senses@0#'   . $sense1->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'eat an apple',
+                             'newValue.senses@0#'   . $sense1->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'also eat an apple',
+                             'fieldLabel.senses@0#' . $sense1->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'Sentence',
+                             'oldValue.senses@1#'   . $sense2->guid . '.examples@0#' . $example2->guid . '.sentence.fr' => 'manger une pomme',
+                             'newValue.senses@1#'   . $sense2->guid . '.examples@0#' . $example2->guid . '.sentence.fr' => 'aussi manger une pomme',
+                             'fieldLabel.senses@1#' . $sense2->guid . '.examples@0#' . $example2->guid . '.sentence.fr' => 'Sentence'], $withLabels);
     }
 
     public function testUpdateEntry_UpdateExamplesInOneSenseAndDeleteExampleInTheOther_DifferenceHasCorrectSenseGuids()
@@ -645,15 +644,15 @@ class LexEntryCommandsTest extends TestCase
 
         $updatedEntry = new LexEntryModel($project, $entryId);
         $differences = $entry->calculateDifferences($updatedEntry);
-        $this->assertEquals(['oldValue.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'eat an apple',
-                             'newValue.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'also eat an apple',
-                             'deleted.senses#' . $sense2->guid . '.examples#' . $example2->guid => 'manger une pomme'], $differences);
+        $this->assertEquals(['oldValue.senses@0#'   . $sense1->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'eat an apple',
+                             'newValue.senses@0#'   . $sense1->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'also eat an apple',
+                             'deleted.senses@1#'    . $sense2->guid . '.examples@0#' . $example2->guid => 'manger une pomme'], $differences);
         $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
-        $this->assertEquals(['oldValue.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'eat an apple',
-                             'newValue.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'also eat an apple',
-                             'fieldLabel.senses#' . $sense1->guid . '.examples#' . $example1->guid . '.sentence.en' => 'Sentence',
-                             'deleted.senses#' . $sense2->guid . '.examples#' . $example2->guid => 'manger une pomme',
-                             'fieldLabel.senses#' . $sense2->guid . '.examples#' . $example2->guid => 'Example'], $withLabels);
+        $this->assertEquals(['oldValue.senses@0#'   . $sense1->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'eat an apple',
+                             'newValue.senses@0#'   . $sense1->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'also eat an apple',
+                             'fieldLabel.senses@0#' . $sense1->guid . '.examples@0#' . $example1->guid . '.sentence.en' => 'Sentence',
+                             'deleted.senses@1#'    . $sense2->guid . '.examples@0#' . $example2->guid => 'manger une pomme',
+                             'fieldLabel.senses@1#' . $sense2->guid . '.examples@0#' . $example2->guid => 'Example'], $withLabels);
     }
 
     /* Ignore test for send receive v1.1 since dirtySR counter is not being incremented on edit. IJH 2015-02
