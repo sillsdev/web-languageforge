@@ -5,9 +5,9 @@ import {CoreModule} from '../../../../bellows/core/core.module';
 import {NoticeModule} from '../../../../bellows/core/notice/notice.module';
 import {SelectLanguageModule} from '../../../../bellows/shared/select-language.component';
 import {LexiconCoreModule} from '../../core/lexicon-core.module';
+import {UnifiedConfigurationComponent} from './configuration-fields.component';
 import {InputSystemsConfigurationComponent} from './configuration-input-systems.component';
 import {OptionListConfigurationComponent} from './configuration-option-lists.component';
-import {UnifiedConfigurationComponent} from './configuration-unified.component';
 
 export const LexiconConfigurationModule = angular
   .module('lexiconConfigurationModule', [

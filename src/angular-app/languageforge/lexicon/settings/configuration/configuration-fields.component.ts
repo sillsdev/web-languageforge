@@ -15,7 +15,7 @@ import {
   LexViewMultiTextFieldConfig
 } from '../../shared/model/lexicon-config.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
-import {ConfigurationUnifiedViewModel, FieldSettings, Group, GroupList} from './configuration-unified-view.model';
+import {ConfigurationUnifiedViewModel, FieldSettings, Group, GroupList} from './field-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 
 export class UnifiedConfigurationController implements angular.IController {
@@ -367,5 +367,5 @@ export const UnifiedConfigurationComponent: angular.IComponentOptions = {
     uccOnUpdate: '&'
   },
   controller: UnifiedConfigurationController,
-  templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration-unified.component.html'
+  templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration-fields.component.html'
 };
