@@ -11,7 +11,7 @@ import {
 } from '../../shared/model/lexicon-config.model';
 import {LexiconProjectSettings} from '../../shared/model/lexicon-project-settings.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
-import {ConfigurationUnifiedViewModel} from './configuration-unified-view.model';
+import {ConfigurationUnifiedViewModel} from './field-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 import {OptionSelects} from './option-selects.model';
 
