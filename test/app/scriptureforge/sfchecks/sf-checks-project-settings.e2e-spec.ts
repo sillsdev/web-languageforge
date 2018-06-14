@@ -3,12 +3,14 @@ import {browser, by, ExpectedConditions} from 'protractor';
 import {BellowsLoginPage} from '../../bellows/shared/login.page';
 import {Utils} from '../../bellows/shared/utils';
 import {SfProjectSettingsPage} from './shared/project-settings.page';
+import {SfProjectPage} from './shared/project.page';
 
 describe('SFChecks E2E project settings page - project manager', () => {
   const constants = require('../../testConstants.json');
   const loginPage = new BellowsLoginPage();
-  const util = new Utils();
+  const projectPage = new SfProjectPage();
   const projectSettingsPage = new SfProjectSettingsPage();
+  const util = new Utils();
 
   it('setup: logout, login as project manager, go to project settings', () => {
     BellowsLoginPage.logout();
@@ -40,7 +42,7 @@ describe('SFChecks E2E project settings page - project manager', () => {
       expect<any>(projectSettingsPage.membersTab.list.count()).toBe(memberCount);
       projectSettingsPage.membersTab.addButton.click();
       browser.wait(ExpectedConditions.visibilityOf(projectSettingsPage.membersTab.newMember.input),
-        constants.conditionTimeout);
+        Utils.conditionTimeout);
       projectSettingsPage.membersTab.newMember.input.sendKeys('du');
 
       // sendKeys is split to force correct button behaviour. IJH 2015-10
@@ -84,6 +86,7 @@ describe('SFChecks E2E project settings page - project manager', () => {
   });
 
   describe('question templates tab', () => {
+
     it('setup: click on tab', () => {
       expect<any>(projectSettingsPage.tabs.templates.isPresent()).toBe(true);
       projectSettingsPage.tabs.templates.click();
@@ -96,7 +99,7 @@ describe('SFChecks E2E project settings page - project manager', () => {
     it('can add a template', () => {
       projectSettingsPage.templatesTab.addButton.click();
       browser.wait(ExpectedConditions.visibilityOf(projectSettingsPage.templatesTab.editor.title),
-        constants.conditionTimeout);
+        Utils.conditionTimeout);
       projectSettingsPage.templatesTab.editor.title.sendKeys('sound check');
       projectSettingsPage.templatesTab.editor.description
         .sendKeys('What do you think of when I say the words... "boo"');
@@ -108,13 +111,13 @@ describe('SFChecks E2E project settings page - project manager', () => {
     it('can update an existing template', () => {
       projectSettingsPage.templatesTab.list.last().element(by.linkText('sound check')).click();
       browser.wait(ExpectedConditions.visibilityOf(projectSettingsPage.templatesTab.editor.saveButton),
-        constants.conditionTimeout);
+        Utils.conditionTimeout);
       expect<any>(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(true);
       projectSettingsPage.templatesTab.editor.title.clear();
       projectSettingsPage.templatesTab.editor.title.sendKeys('test12');
       projectSettingsPage.templatesTab.editor.saveButton.click();
       browser.wait(ExpectedConditions.invisibilityOf(projectSettingsPage.templatesTab.editor.saveButton),
-        constants.conditionTimeout);
+        Utils.conditionTimeout);
       expect<any>(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
       expect<any>(projectSettingsPage.templatesTab.list.count()).toBe(3);
     });
@@ -157,16 +160,25 @@ describe('SFChecks E2E project settings page - project manager', () => {
       projectSettingsPage.tabs.project.click();
       projectSettingsPage.projectTab.name.clear();
       projectSettingsPage.projectTab.name.sendKeys(constants.testProjectName);
+      expect<any>(projectSettingsPage.noticeList.count()).toBe(0);
       projectSettingsPage.projectTab.saveButton.click();
+      expect<any>(projectSettingsPage.noticeList.count()).toBe(1);
+      projectSettingsPage.lastNoticeCloseButton.click();
     });
 
   });
 
   describe('user profile lists', () => {
-    it('setup: click on tab and select the Location list for editing', () => {
+
+    it('setup: click on tab and select the Study Group list for editing and display', () => {
       projectSettingsPage.tabs.optionlists.click();
       util.findRowByText(projectSettingsPage.optionlistsTab.editList, 'Study Group').then(row => {
         row.click();
+      });
+      expect<any>(projectSettingsPage.optionlistsTab.editContentsLabel.getText()).toEqual('Study Group');
+      util.findRowByText(projectSettingsPage.optionlistsTab.showList, 'Study Group').then(row => {
+        row.click();
+        expect<any>(row.element(by.tagName('input')).isSelected()).toBe(true);
       });
     });
 
@@ -175,24 +187,43 @@ describe('SFChecks E2E project settings page - project manager', () => {
       projectSettingsPage.optionlistsTab.addInput.sendKeys('foo');
       projectSettingsPage.optionlistsTab.addButton.click();
       browser.wait(ExpectedConditions.visibilityOf(projectSettingsPage.optionlistsTab.addInput),
-        constants.conditionTimeout);
+        Utils.conditionTimeout);
       expect<any>(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(1);
       projectSettingsPage.optionlistsTab.addInput.sendKeys('bar');
       projectSettingsPage.optionlistsTab.addButton.click();
       expect<any>(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(2);
     });
 
-    it('can delete values from the list', () => {
+    it('can delete a value from the list', () => {
       const firstEditContentsList = projectSettingsPage.optionlistsTab.editContentsList.first();
       expect<any>(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(2);
       projectSettingsPage.optionlistsTab.deleteButton(firstEditContentsList).click();
       expect<any>(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(1);
-      projectSettingsPage.optionlistsTab.deleteButton(firstEditContentsList).click();
-      expect<any>(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(0);
     });
+
+    it('should persist data', () => {
+      expect<any>(projectSettingsPage.noticeList.count()).toBe(0);
+      projectSettingsPage.optionlistsTab.saveButton.click();
+      expect<any>(projectSettingsPage.noticeList.count()).toBe(1);
+      projectSettingsPage.lastNoticeCloseButton.click();
+      Utils.clickBreadcrumb(constants.thirdProjectName);
+      expect<any>(projectPage.newText.showFormButton.isDisplayed()).toBe(true);
+      projectSettingsPage.clickOnSettingsLink();
+      expect<any>(projectSettingsPage.tabs.optionlists.isDisplayed()).toBe(true);
+      projectSettingsPage.tabs.optionlists.click();
+      util.findRowByText(projectSettingsPage.optionlistsTab.editList, 'Study Group').then(row => {
+        row.click();
+      });
+      util.findRowByText(projectSettingsPage.optionlistsTab.showList, 'Study Group').then(row => {
+        expect<any>(row.element(by.tagName('input')).isSelected()).toBe(true);
+      });
+      expect<any>(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(1);
+    });
+
   });
 
   describe('communication settings tab', () => {
+
     it('is not visible for project manager', () => {
       expect<any>(projectSettingsPage.tabs.communication.isPresent()).toBe(false);
     });
@@ -233,6 +264,9 @@ describe('SFChecks E2E project settings page - project manager', () => {
         expect<any>(projectSettingsPage.communicationTab.email.address.getAttribute('value')).toBe(sample.d);
         expect<any>(projectSettingsPage.communicationTab.email.name.getAttribute('value')).toBe(sample.e);
       });
+
     });
+
   });
+
 });
