@@ -194,6 +194,39 @@ class UserCommandsTest extends TestCase
         $this->assertEquals($newUserId, $userId);
     }
 
+    public function testUpdateUserProfile_SetLangCodeOnly_LangCodeSet()
+    {
+        // setup parameters
+        $userId = self::$environ->createUser('username', 'name', 'name@example.com');
+        $params = [
+            'interfaceLanguageCode' => 'th'
+        ];
+
+        $newUserId = UserCommands::updateUserProfile($params, $userId, self::$environ->website);
+
+        // user profile updated
+        $user = new UserModel($newUserId);
+        $this->assertEquals('th', $user->interfaceLanguageCode);
+        $this->assertEquals($newUserId, $userId);
+    }
+
+    public function testUpdateUser_SetLangCodeOnly_LangCodeSet()
+    {
+        // setup parameters
+        $userId = self::$environ->createUser('username', 'name', 'name@example.com');
+        $params = [
+            'id' => $userId,
+            'interfaceLanguageCode' => 'th'
+        ];
+
+        $newUserId = UserCommands::updateUser($params, self::$environ->website);
+
+        // user updated
+        $user = new UserModel($newUserId);
+        $this->assertEquals('th', $user->interfaceLanguageCode);
+        $this->assertEquals($newUserId, $userId);
+    }
+
     public function testCheckUniqueIdentity_selfUsername_OK()
     {
         $userId = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');

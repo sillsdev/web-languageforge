@@ -62,14 +62,18 @@ class UserCommands
     {
         $user = new UserModel($params['id']);
 
+        $checkUsername = '';
+        $checkEmail = '';
         if (array_key_exists('username', $params)) {
-            $params['username'] = UserCommands::sanitizeInput($params['username']);
+            $checkUsername = UserCommands::sanitizeInput($params['username']);
+            $params['username'] = $checkUsername;
         }
         if (array_key_exists('email', $params)) {
-            $params['email'] = UserCommands::sanitizeInput($params['email']);
+            $checkEmail = UserCommands::sanitizeInput($params['email']);
+            $params['email'] = $checkEmail;
         }
 
-        if (UserCommands::checkUniqueIdentity($user, $params['username'], $params['email']) != 'ok') {
+        if (UserCommands::checkUniqueIdentity($user, $checkUsername, $checkEmail) != 'ok') {
             return null;
         }
 
@@ -95,30 +99,36 @@ class UserCommands
     public static function updateUserProfile($params, $userId, $website, DeliveryInterface $delivery = null)
     {
         $params['id'] = $userId;
+        $user = new UserModel($userId);
+
+        $checkUsername = '';
+        $checkEmail = '';
+        $isNewUsername = false;
+        $isNewEmail = false;
         if (array_key_exists('username', $params)) {
-            $params['username'] = UserCommands::sanitizeInput($params['username']);
+            $checkUsername = UserCommands::sanitizeInput($params['username']);
+            $params['username'] = $checkUsername;
+            $isNewUsername = $user->username != $params['username'];
         }
         if (array_key_exists('email', $params)) {
-            $params['email'] = UserCommands::sanitizeInput($params['email']);
+            $checkEmail = UserCommands::sanitizeInput($params['email']);
+            $params['email'] = $checkEmail;
+            $isNewEmail = $user->email != $params['email'];
         }
-
-        $user = new UserModel($userId);
 
         // don't allow the following keys to be persisted
         if (array_key_exists('role', $params)) {
             unset($params['role']);
         }
 
-        $result =  UserCommands::checkUniqueIdentity($user, $params['username'], $params['email']);
+        $result =  UserCommands::checkUniqueIdentity($user, $checkUsername, $checkEmail);
         if ($result == 'ok') {
-            $newUsername = $user->username != $params['username'];
-            $newEmail = $user->email != $params['email'];
             $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
             $userId = $user->write();
-            if ($newEmail) {
+            if ($isNewEmail) {
                 Communicate::sendVerifyEmail($user, $website, $delivery);
             }
-            if ($newUsername) {
+            if ($isNewUsername) {
                 return 'login';
             }
             return $userId;
@@ -273,6 +283,7 @@ class UserCommands
      * @param array $params
      * @param Website $website
      * @return bool|string userId of the new user
+     * @throws \Exception
      */
     public static function createUser($params, $website)
     {
@@ -461,6 +472,7 @@ class UserCommands
     /**
      * @param string $userId
      * @param Website $website
+     * @throws \Exception
      */
     public static function addUserToDefaultProject($userId, Website $website) {
         $user = new UserModel($userId);
@@ -601,6 +613,7 @@ class UserCommands
      * @param ProjectRoles $role
      * @param DeliveryInterface $delivery
      * @return IdReference|UserModel
+     * @throws \Exception
      */
     public static function acceptJoinRequest($projectId, $userId, $website, $role, DeliveryInterface $delivery = null)
     {
