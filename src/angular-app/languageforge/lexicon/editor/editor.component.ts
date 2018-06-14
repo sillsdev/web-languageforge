@@ -262,14 +262,24 @@ export class LexiconEditorController implements angular.IController {
   }
 
   sortEntries(args: any): void {
-    this.$state.go('editor.entry', { sortBy: this.entryListModifiers.sortBy.label, sortReverse: this.entryListModifiers.sortReverse, filterType: this.entryListModifiers.filterType, filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null' }, { notify: false });
+    this.$state.go('editor.entry', {
+      sortBy: this.entryListModifiers.sortBy.label,
+      sortReverse: this.entryListModifiers.sortReverse,
+      filterType: this.entryListModifiers.filterType,
+      filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null' },
+       { notify: false });
     this.editorService.sortEntries.apply(this, arguments).then(() => {
       this.typeahead.searchEntries(this.typeahead.searchItemSelected);
     });
   }
 
   filterEntries(args: any): void {
-    this.$state.go('editor.entry', { sortBy: this.entryListModifiers.sortBy.label, sortReverse: this.entryListModifiers.sortReverse, filterType: this.entryListModifiers.filterType, filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null' }, { notify: false });
+    this.$state.go('editor.entry', {
+      sortBy: this.entryListModifiers.sortBy.label,
+      sortReverse: this.entryListModifiers.sortReverse,
+      filterType: this.entryListModifiers.filterType,
+      filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null' },
+       { notify: false });
     this.editorService.filterEntries.apply(this, arguments).then(() => {
       this.typeahead.searchEntries(this.typeahead.searchItemSelected);
     });
@@ -314,7 +324,7 @@ export class LexiconEditorController implements angular.IController {
   }
 
   saveCurrentEntry = (doSetEntry: boolean = false, successCallback: () => void = () => { },
-    failCallback: (reason?: any) => void = () => { }) => {
+                      failCallback: (reason?: any) => void = () => { }) => {
     // `doSetEntry` is mainly used for when the save button is pressed, that is when the user is saving the current
     // entry and is NOT going to a different entry (as is the case with editing another entry.
     let isNewEntry = false;
