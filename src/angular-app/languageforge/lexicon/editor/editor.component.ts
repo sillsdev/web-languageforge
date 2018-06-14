@@ -88,9 +88,9 @@ export class LexiconEditorController implements angular.IController {
   private pristineEntry: LexEntry = new LexEntry();
   private warnOfUnsavedEditsId: string;
 
-  static $inject = ['$interval', '$q',
+  static $inject = ['$filter', '$interval', '$q',
     '$scope', '$state',
-     '$anchorScroll', '$filter', 'activityService',
+    'activityService',
     'applicationHeaderService',
     'modalService', 'silNoticeService',
     'sessionService', 'semanticDomainsService',
@@ -98,14 +98,12 @@ export class LexiconEditorController implements angular.IController {
     'lexEntryApiService',
     'lexProjectService',
     'lexRightsService',
-    'lexSendReceive',
+    'lexSendReceive'
   ];
-
   constructor(private readonly $interval: angular.IIntervalService, private readonly $q: angular.IQService,
-              private readonly $scope: angular.IScope, 
+              private readonly $scope: angular.IScope,
               private readonly $state: angular.ui.IStateService,
-              private readonly $anchorScroll: angular.IAnchorScrollService,
-              private readonly $filter: angular.IFilterService, 
+              private readonly $filter: angular.IFilterService,
               private readonly activityService: ActivityService,
               private readonly applicationHeaderService: ApplicationHeaderService,
               private readonly modal: ModalService, private readonly notice: NoticeService,
@@ -115,7 +113,7 @@ export class LexiconEditorController implements angular.IController {
               private readonly lexProjectService: LexiconProjectService,
               private readonly rightsService: LexiconRightsService,
               private readonly sendReceive: LexiconSendReceiveService) {}
-              
+
   $onInit(): void {
     this.show.more = this.editorService.showMoreEntries;
     this.$scope.$watch(() => this.lecConfig, () => {
@@ -135,33 +133,39 @@ export class LexiconEditorController implements angular.IController {
   }
 
   setUrlParams(): void {
+    const sortBy = 'sortBy';
+    const sortReverse = 'sortReverse';
+    const filterType = 'filterType';
+    const filterBy = 'filterBy';
     this.$state.go('editor.entry', {
-      'sortBy': this.entryListModifiers.sortBy.label,
-      'sortReverse': this.entryListModifiers.sortReverse,
-      'filterType': this.entryListModifiers.filterType,
-      'filterBy': this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+      sortBy: this.entryListModifiers.sortBy.label,
+      sortReverse: this.entryListModifiers.sortReverse,
+      filterType: this.entryListModifiers.filterType,
+      filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
     }, { notify: false });
 
-    if (this.$state.params["sortBy"]) {
-      this.entryListModifiers.sortBy = this.setSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params["sortBy"])[0];
+    if (this.$state.params[sortBy]) {
+      this.entryListModifiers.sortBy =
+      this.setSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params[sortBy])[0];
       this.sortEntries(true);
       this.show.entryListModifiers = true;
     }
 
-    if (this.$state.params["sortReverse"] == "true") {
+    if (this.$state.params[sortReverse] === 'true') {
       this.entryListModifiers.sortReverse = true;
       this.sortEntries(true);
       this.show.entryListModifiers = true;
     }
 
-    if (this.$state.params["filterType"]) {
-      this.entryListModifiers.filterType = this.$state.params["filterType"];
+    if (this.$state.params[filterType]) {
+      this.entryListModifiers.filterType = this.$state.params[filterType];
       this.filterEntries(true);
       this.show.entryListModifiers = true;
     }
 
-    if (this.$state.params["filterBy"]) {
-      this.entryListModifiers.filterBy = this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params["filterBy"])[0];
+    if (this.$state.params[filterBy]) {
+      this.entryListModifiers.filterBy =
+      this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params[filterBy])[0];
       this.filterEntries(true);
       this.show.entryListModifiers = true;
     }
@@ -169,8 +173,8 @@ export class LexiconEditorController implements angular.IController {
 
   setSelectedFilter(collections: any[], params: string) {
     if (collections && params) {
-      return this.$filter('filter')(collections, (item) => {
-        if (item.label == params) {
+      return this.$filter('filter')(collections, (item: any) => {
+        if (item.label === params) {
           return item;
         }
       });
@@ -397,7 +401,7 @@ export class LexiconEditorController implements angular.IController {
 
   editEntryAndScroll(id: string): void {
     this.editEntry(id);
-    this.$anchorScroll('entryId_' + id);
+    this.scrollListToEntry(id, 'middle');
   }
 
   editEntry(id: string): void {
@@ -964,7 +968,6 @@ export class LexiconEditorController implements angular.IController {
         const configSenses = this.lecConfig.entry.fields.senses as LexConfigFieldList;
         for (const senseFieldName of configSenses.fieldOrder) {
           const senseField = configSenses.fields[senseFieldName];
-       
           sortOptions.push({ label: senseField.label, value: senseFieldName });
           if (senseField.type === 'multitext') {
             for (const inputSystemTag of (senseField as LexConfigMultiText).inputSystems) {
