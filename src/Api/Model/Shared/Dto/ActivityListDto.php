@@ -256,11 +256,39 @@ class ActivityListDto
             $item['content'] = $item['actionContent'];
             $item['type'] = 'project';  // FIXME: Should this always be "project"? Should it sometimes be "entry"? 2018-02 RM
             unset($item['actionContent']);
-            if ($item['action'] === ActivityModel::UPDATE_ENTRY && $projectModel->appName === LfProjectModel::LEXICON_APP) {
-                $lexProjectModel = new LexProjectModel($projectModel->id->asString());
-                $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
+            if ($projectModel->appName === LfProjectModel::LEXICON_APP) {
+                if ($item['action'] === ActivityModel::UPDATE_ENTRY) {
+                    $lexProjectModel = new LexProjectModel($projectModel->id->asString());
+                    $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
+                }
+                if ($item['action'] === ActivityModel::ADD_LEX_COMMENT ||
+                    $item['action'] === ActivityModel::UPDATE_LEX_COMMENT) {
+                    $labelFromMongo = $item['content'][ActivityModel::LEX_COMMENT_LABEL] ?? '';
+                    unset($item['content'][ActivityModel::LEX_COMMENT_LABEL]);
+                    if (! empty($labelFromMongo)) {
+                        $item['content'][ActivityModel::FIELD_LABEL] = static::prepareActivityContentForCommentLabel($labelFromMongo);
+                    }
+                }
             }
         }
+    }
+
+    private static function prepareActivityContentForCommentLabel($labelFromMongo)
+    {
+        $result = [];
+        $parts = explode('|', $labelFromMongo);
+        foreach ($parts as $part) {
+            if (substr($part, 0, 6) === 'sense@') {
+                $pos = substr($part, 6);
+                $result['sense'] = intval($pos);
+            } else if (substr($part, 0, 8) === 'example@') {
+                $pos = substr($part, 8);
+                $result['example'] = intval($pos);
+            } else {
+                $result['label'] = $part;
+            }
+        }
+        return $result;
     }
 
     /**
