@@ -50,10 +50,8 @@ export class FieldsConfigurationController implements angular.IController {
     ) {
       this.unifiedViewModel = new ConfigurationFieldUnifiedViewModel(this.fccConfigDirty, this.fccUsers);
       this.typeahead = new Typeahead(this.$filter);
-      for (const userId in this.fccUsers) {
-        if (this.fccUsers.hasOwnProperty(userId)) {
-          this.typeahead.usersWithoutSettings.push(this.fccUsers[userId]);
-        }
+      for (const userId of Object.keys(this.fccUsers)) {
+        this.typeahead.usersWithoutSettings.push(this.fccUsers[userId]);
       }
       for (const groupList of this.unifiedViewModel.groupLists) {
         this.removeFromUsersWithoutSettings(groupList.userId);
@@ -69,7 +67,7 @@ export class FieldsConfigurationController implements angular.IController {
   checkIfAllGroupSelected = ConfigurationFieldUnifiedViewModel.checkIfAllGroupSelected;
 
   openNewCustomFieldModal(fieldLevel: string): void {
-    class NewCustomData {
+    interface NewCustomData {
       code: string;
       level: string;
       listCode?: string;
@@ -100,14 +98,15 @@ export class FieldsConfigurationController implements angular.IController {
             optionsOrder: [],
             options: {}
           };
-          angular.forEach(this.fccOptionLists, optionList => {
+          for (const optionList of this.fccOptionLists) {
             scope.selects.listCode.optionsOrder.push(optionList.code);
             scope.selects.listCode.options[optionList.code] = optionList.name;
-          });
+          }
 
-          scope.newCustomData = new NewCustomData();
-          scope.newCustomData.name = '';
-          scope.newCustomData.level = fieldLevel;
+          scope.newCustomData = {
+            name: '',
+            level: fieldLevel
+          } as NewCustomData;
           scope.customFieldNameExists = function customFieldNameExists(level: string, code: string) {
             const customFieldName = 'customField_' + level + '_' + code;
             return customFieldName in scope.fieldConfig;
@@ -118,8 +117,7 @@ export class FieldsConfigurationController implements angular.IController {
           };
 
           scope.$watch('newCustomData.name', (newValue: string, oldValue: string) => {
-            if (angular.isDefined(newValue) && newValue !== oldValue) {
-
+            if (newValue != null && newValue !== oldValue) {
               // replace spaces with underscore
               scope.newCustomData.code = newValue.replace(/ /g, '_');
             }
@@ -188,15 +186,15 @@ export class FieldsConfigurationController implements angular.IController {
           }
       }
 
-      angular.forEach(this.fccConfigDirty.roleViews, roleView => {
-        roleView.fields[customFieldName] = angular.copy(customViewField);
-      });
+      for (const role of Object.keys(this.fccConfigDirty.roleViews)) {
+        this.fccConfigDirty.roleViews[role].fields[customFieldName] = angular.copy(customViewField);
+      }
 
-      const role = 'project_manager';
-      this.fccConfigDirty.roleViews[role].fields[customFieldName].show = true;
-      angular.forEach(this.fccConfigDirty.userViews, userView => {
-        userView.fields[customFieldName] = angular.copy(customViewField);
-      });
+      const managerRole = 'project_manager';
+      this.fccConfigDirty.roleViews[managerRole].fields[customFieldName].show = true;
+      for (const userId of Object.keys(this.fccConfigDirty.userViews)) {
+        this.fccConfigDirty.userViews[userId].fields[customFieldName] = angular.copy(customViewField);
+      }
 
       this.fccOnUpdate({ $event: { configDirty: this.fccConfigDirty } });
     }, () => { });
@@ -223,7 +221,7 @@ export class FieldsConfigurationController implements angular.IController {
 
       typeahead.userName = '';
       this.removeFromUsersWithoutSettings(user.id);
-      this.unifiedViewModel.groupLists.push(new GroupList(user.username, user.id));
+      this.unifiedViewModel.groupLists.push({ label: user.username, userId: user.id } as GroupList);
       this.unifiedViewModel.inputSystems.selectAllColumns.groups.push(new Group());
       this.unifiedViewModel.entryFields.selectAllColumns.groups.push(new Group());
       this.unifiedViewModel.senseFields.selectAllColumns.groups.push(new Group());
