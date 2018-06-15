@@ -438,7 +438,7 @@ export class ConfigurationFieldUnifiedViewModel {
     let groupIndex = 0;
     for (const userId in config.userViews) {
       if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null && (userId in users)) {
-        groupLists[groupIndex++] = new GroupList(users[userId].username, userId);
+        groupLists[groupIndex++] = { label: users[userId].username, userId } as GroupList;
       }
     }
 
@@ -496,12 +496,7 @@ export class RoleType {
   }
 }
 
-export class GroupList {
+export interface GroupList {
   label: string;
   userId: string;
-
-  constructor(label: string, userId: string) {
-    this.label = label;
-    this.userId = userId;
-  }
 }
