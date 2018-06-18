@@ -1038,10 +1038,6 @@ export class LexiconEditorController implements angular.IController {
     if (hasAudioInputSystem) {
       filterOptions.push({ label: 'Audio', value: 'audio', type: 'audio', key: 'audio' });
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> b28f0f0e99540be082f897f9771a9fc7d5992bd9
     LexiconUtilityService.arrayCopyRetainingReferences(sortOptions, this.entryListModifiers.sortOptions);
     LexiconUtilityService.arrayCopyRetainingReferences(filterOptions, this.entryListModifiers.filterOptions);
   }
