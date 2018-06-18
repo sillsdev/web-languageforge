@@ -100,15 +100,19 @@ export class LexiconEditorController implements angular.IController {
     'lexRightsService',
     'lexSendReceive'
   ];
-  constructor(private readonly $interval: angular.IIntervalService, private readonly $q: angular.IQService,
+  constructor(private readonly $filter: angular.IFilterService,
+              private readonly $interval: angular.IIntervalService,
+              private readonly $q: angular.IQService,
               private readonly $scope: angular.IScope,
               private readonly $state: angular.ui.IStateService,
-              private readonly $filter: angular.IFilterService,
               private readonly activityService: ActivityService,
               private readonly applicationHeaderService: ApplicationHeaderService,
-              private readonly modal: ModalService, private readonly notice: NoticeService,
-              private readonly sessionService: SessionService, private readonly semanticDomains: SemanticDomainsService,
-              private readonly commentService: LexiconCommentService, private readonly editorService: EditorDataService,
+              private readonly modal: ModalService,
+              private readonly notice: NoticeService,
+              private readonly sessionService: SessionService,
+              private readonly semanticDomains: SemanticDomainsService,
+              private readonly commentService: LexiconCommentService,
+              private readonly editorService: EditorDataService,
               private readonly lexService: LexiconEntryApiService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly rightsService: LexiconRightsService,
@@ -1032,8 +1036,6 @@ export class LexiconEditorController implements angular.IController {
     if (hasAudioInputSystem) {
       filterOptions.push({ label: 'Audio', value: 'audio', type: 'audio', key: 'audio' });
     }
-
-
     LexiconUtilityService.arrayCopyRetainingReferences(sortOptions, this.entryListModifiers.sortOptions);
     LexiconUtilityService.arrayCopyRetainingReferences(filterOptions, this.entryListModifiers.filterOptions);
   }
