@@ -101,8 +101,10 @@ export class LexiconEditorController implements angular.IController {
     'lexSendReceive'
   ];
 
-  constructor(private readonly $filter: angular.IFilterService, private readonly $interval: angular.IIntervalService,
-              private readonly $q: angular.IQService, private readonly $scope: angular.IScope,
+  constructor(private readonly $filter: angular.IFilterService,
+              private readonly $interval: angular.IIntervalService,
+              private readonly $q: angular.IQService,
+              private readonly $scope: angular.IScope,
               private readonly $state: angular.ui.IStateService,
               private readonly activityService: ActivityService,
               private readonly applicationHeaderService: ApplicationHeaderService,
