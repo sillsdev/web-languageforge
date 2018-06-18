@@ -53,7 +53,6 @@ class ProjectModel extends MapperModel
         $this->setReadOnlyProp('projectCode');
         $this->setReadOnlyProp('siteName');
         $this->setReadOnlyProp('appName');
-        $this->setReadOnlyProp('userProperties');
 
         // There's separate API calls to get/set $userJoinRequests
         // TODO: Add API calls for $usersRequestingAccess DDW 2016-09

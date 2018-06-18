@@ -1,7 +1,8 @@
-import {browser, by, element, ExpectedConditions} from 'protractor';
+import {browser, ExpectedConditions} from 'protractor';
 
 import {BellowsLoginPage} from '../../bellows/shared/login.page';
 import {ProjectsPage} from '../../bellows/shared/projects.page';
+import {Utils} from '../../bellows/shared/utils';
 import {SfProjectPage} from './shared/project.page';
 import {SfQuestionPage} from './shared/question.page';
 import {SfTextSettingsPage} from './shared/text-settings.page';
@@ -88,13 +89,8 @@ describe('SFChecks E2E the question page', () => {
     describe('paratext export of flagged answer', () => {
 
       it('setup: back to Text, click settings, click on tab', () => {
-
-        // click on breadcrumb text title to go back one
-        element(by.linkText(constants.testText1Title)).click();
-
-        // click on text settings
+        Utils.clickBreadcrumb(constants.testText1Title);
         SfTextPage.clickTextSettingsButton();
-
         textSettingsPage.tabs.paratextExport.click();
       });
 
@@ -106,7 +102,7 @@ describe('SFChecks E2E the question page', () => {
         expect<any>(textSettingsPage.paratextExportTab.downloadPT8Button.isPresent()).toBe(true);
         textSettingsPage.paratextExportTab.downloadPT7Button.click();
         browser.wait(ExpectedConditions.visibilityOf(textSettingsPage.paratextExportTab.answerCount),
-          constants.conditionTimeout);
+          Utils.conditionTimeout);
         expect<any>(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
         expect<any>(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1');
         expect<any>(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(false);
@@ -116,7 +112,7 @@ describe('SFChecks E2E the question page', () => {
         textSettingsPage.paratextExportTab.exportComments.click();
         textSettingsPage.paratextExportTab.downloadPT7Button.click();
         browser.wait(ExpectedConditions.visibilityOf(textSettingsPage.paratextExportTab.answerCount),
-          constants.conditionTimeout);
+          Utils.conditionTimeout);
         expect<any>(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
         expect<any>(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1');
         expect<any>(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(true);
