@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+import {TransifexLanguage, TransifexLive} from '../../../../typings/transifex';
 
 import {InputSystemsService} from '../../bellows/core/input-systems/input-systems.service';
 import {NoticeService} from '../../bellows/core/notice/notice.service';
@@ -14,6 +15,12 @@ import {LexiconProjectSettings} from './shared/model/lexicon-project-settings.mo
 import {LexiconProject} from './shared/model/lexicon-project.model';
 import {LexOptionList} from './shared/model/option-list.model';
 
+interface WindowService extends angular.IWindowService {
+  Transifex?: {
+    live: TransifexLive
+  };
+}
+
 export class LexiconAppController implements angular.IController {
   finishedLoading: boolean = false;
   config: LexiconConfig;
@@ -28,16 +35,16 @@ export class LexiconAppController implements angular.IController {
   private pristineLanguageCode: string;
 
   static $inject = ['$scope', '$location',
-    '$q', 'silNoticeService',
-    'lexConfigService',
+    '$q', '$window',
+    'silNoticeService', 'lexConfigService',
     'lexProjectService',
     'lexEditorDataService',
     'lexRightsService',
     'lexSendReceive'
   ];
   constructor(private readonly $scope: angular.IScope, private readonly $location: angular.ILocationService,
-              private readonly $q: angular.IQService, private readonly notice: NoticeService,
-              private readonly configService: LexiconConfigService,
+              private readonly $q: angular.IQService, private readonly $window: WindowService,
+              private readonly notice: NoticeService, private readonly configService: LexiconConfigService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly editorService: LexiconEditorDataService,
               private readonly rightsService: LexiconRightsService,
@@ -71,6 +78,9 @@ export class LexiconAppController implements angular.IController {
         this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
         this.rights = rights;
         this.changeInterfaceLanguage(this.interfaceConfig.languageCode);
+        if (this.$window.Transifex != null) {
+          this.$window.Transifex.live.onFetchLanguages(this.onFetchTransifexLanguages);
+        }
 
         this.$scope.$watch(() => this.interfaceConfig.languageCode, (newVal: string) => {
           if (newVal && newVal !== this.pristineLanguageCode) {
@@ -126,6 +136,10 @@ export class LexiconAppController implements angular.IController {
 
   private changeInterfaceLanguage(code: string): void {
     this.pristineLanguageCode = angular.copy(code);
+    if (this.$window.Transifex != null && code in this.$window.Transifex.live.getAllLanguages()) {
+      this.$window.Transifex.live.translateTo(code);
+    }
+
     if (InputSystemsService.isRightToLeft(code)) {
       this.interfaceConfig.direction = 'rtl';
       this.interfaceConfig.pullToSide = 'float-left';
@@ -138,6 +152,18 @@ export class LexiconAppController implements angular.IController {
       this.interfaceConfig.pullNormal = 'float-left';
       this.interfaceConfig.placementToSide = 'left';
       this.interfaceConfig.placementNormal = 'right';
+    }
+  }
+
+  private onFetchTransifexLanguages = (languages: TransifexLanguage[]) => {
+    for (const language of languages) {
+      if (language.code in this.interfaceConfig.selectLanguages.options) {
+        this.interfaceConfig.selectLanguages.options[language.code].name = language.name;
+      } else {
+        this.interfaceConfig.selectLanguages.options[language.code].name = language.name;
+        this.interfaceConfig.selectLanguages.options[language.code].option = language.name;
+        this.interfaceConfig.selectLanguages.optionsOrder.push(language.code);
+      }
     }
   }
 
