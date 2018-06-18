@@ -1,7 +1,8 @@
-export interface Options {
-  options: any;
+export interface Options<T> {
+  options: { [key: string]: T };
 }
 
-export interface OrderedOptions extends Options {
+export interface OrderedOptions<T> extends Options<T> {
+  // array of keys to options
   optionsOrder: string[];
 }

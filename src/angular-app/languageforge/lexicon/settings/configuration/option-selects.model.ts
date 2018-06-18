@@ -1,11 +1,15 @@
-import {InputSystemsService} from '../../../../bellows/core/input-systems/input-systems.service';
+import {
+  InputSystemsRegion,
+  InputSystemsScript,
+  InputSystemsService
+} from '../../../../bellows/core/input-systems/input-systems.service';
 import {Options, OrderedOptions} from '../../../../bellows/shared/model/options.model';
 
 export class OptionSelects {
-  special: OrderedOptions;
-  purpose: OrderedOptions;
-  script: Options;
-  region: Options;
+  special: OrderedOptions<string>;
+  purpose: OrderedOptions<string>;
+  script: Options<InputSystemsScript>;
+  region: Options<InputSystemsRegion>;
 
   constructor() {
     this.special = {

@@ -33,10 +33,10 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     expect<any>(projectSettingsPage.tabs.project.isDisplayed()).toBe(true);
     expect<any>(projectSettingsPage.projectTab.saveButton.isDisplayed()).toBe(true);
     expect<any>(projectSettingsPage.projectTab.defaultLanguageSelect.isDisplayed()).toBe(true);
-    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toEqual('English');
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('English');
     projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('ภาษาไทย');
     projectSettingsPage.projectTab.saveButton.click();
-    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toEqual('ภาษาไทย');
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
   });
 
   it('should be using Thai Semantic Domain', () => {
@@ -47,10 +47,10 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
 
   it('can change Project default language back to English', () => {
     projectSettingsPage.getByLink();
-    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toEqual('ภาษาไทย');
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
     projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('English');
     projectSettingsPage.projectTab.saveButton.click();
-    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toEqual('English');
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('English');
   });
 
   it('should be using English Semantic Domain', () => {
@@ -61,10 +61,10 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
 
   it('can change Project default language back to Thai', () => {
     projectSettingsPage.getByLink();
-    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toEqual('English');
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('English');
     projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('ภาษาไทย');
     projectSettingsPage.projectTab.saveButton.click();
-    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toEqual('ภาษาไทย');
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
   });
 
   it('should be using Thai Semantic Domain after refresh', () => {
@@ -78,15 +78,15 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
   });
 
   it('can change user interface language', () => {
-    expect<any>(header.language.button.getText()).toEqual('ภาษาไทย');
+    expect<any>(header.language.button.getText()).toContain('ภาษาไทย');
     header.language.button.click();
-    header.language.findItem('English').click();
-    expect<any>(header.language.button.getText()).toEqual('English');
+    header.language.findItem('English - semantic domain only').click();
+    expect<any>(header.language.button.getText()).toContain('English');
   });
 
   it('should still have Thai for Project default language', () => {
     projectSettingsPage.getByLink();
-    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toEqual('ภาษาไทย');
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
   });
 
   it('should be using English Semantic Domain', () => {
@@ -104,7 +104,7 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
 
   it('should still have Thai for Project default language', () => {
     projectSettingsPage.getByLink();
-    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toEqual('ภาษาไทย');
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
   });
 
 });

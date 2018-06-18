@@ -8,6 +8,11 @@ export class InterfaceConfig {
   placementToSide = 'left';
   languageCode = 'en';
   isUserLanguageCode?: boolean;
-  selectLanguages?: OrderedOptions;
-  selectSemanticDomainLanguages?: OrderedOptions;
+  selectLanguages?: OrderedOptions<SelectLanguage>;
+}
+
+export interface SelectLanguage {
+  name: string;
+  option: string;
+  hasSemanticDomain?: boolean;
 }

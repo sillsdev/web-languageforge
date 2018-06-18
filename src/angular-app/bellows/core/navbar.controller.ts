@@ -29,11 +29,16 @@ export class NavbarController implements angular.IController {
     this.sessionService.getSession().then(session => {
       this.interfaceConfig = session.projectSettings<LexiconProjectSettings>().interfaceConfig ||
         {
+          direction: 'ltr',
+          pullNormal: 'float-left',
+          pullToSide: 'float-right',
+          placementNormal: 'right',
+          placementToSide: 'left',
           languageCode: 'en',
           isUserLanguageCode: true,
           selectLanguages: {
             optionsOrder: ['en'],
-            options: { en: 'English' }
+            options: { en: { name: 'English', option: 'English' } }
           }
         } as InterfaceConfig;
       this.rights.canCreateProject =
