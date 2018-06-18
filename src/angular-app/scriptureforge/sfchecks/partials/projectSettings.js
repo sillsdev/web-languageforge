@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngRoute', 'coreModule',
-  'palaso.ui.deleteProject', 'palaso.ui.jqte', 'palaso.ui.listview', 'palaso.ui.picklistEditor',
-  'palaso.ui.notice', 'palaso.ui.runReport', 'palaso.ui.tabset', 'palaso.ui.textdrop',
-  'palaso.ui.typeahead', 'sgw.ui.breadcrumb', 'sfchecks.services'])
+    'palaso.ui.deleteProject', 'palaso.ui.jqte', 'palaso.ui.listview', 'palaso.ui.picklistEditor',
+    'palaso.ui.notice', 'palaso.ui.runReport', 'palaso.ui.tabset', 'palaso.ui.textdrop',
+    'palaso.ui.typeahead', 'sgw.ui.breadcrumb', 'sfchecks.services'
+  ])
   .controller('ProjectSettingsCtrl', ['$scope', 'breadcrumbService', 'userService',
     'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
     'linkService', '$q',
@@ -31,8 +32,7 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
         $scope.list.userCount = result.data.count;
         $scope.list.archivedTexts = result.data.archivedTexts;
         for (var i = 0; i < $scope.list.archivedTexts.length; i++) {
-          $scope.list.archivedTexts[i].url =
-            linkService.text($scope.list.archivedTexts[i].id);
+          $scope.list.archivedTexts[i].url = linkService.text($scope.list.archivedTexts[i].id);
           $scope.list.archivedTexts[i].dateModified =
             new Date($scope.list.archivedTexts[i].dateModified);
         }
@@ -50,13 +50,11 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
           session.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
 
         // Breadcrumb
-        breadcrumbService.set('top',
-            [
-             { href: '/app/projects', label: 'My Projects' },
-             { href: linkService.project(), label: result.data.bcs.project.crumb },
-             { href: linkService.project() + '/settings', label: 'Settings' }
-            ]
-        );
+        breadcrumbService.set('top', [
+          { href: '/app/projects', label: 'My Projects' },
+          { href: linkService.project(), label: result.data.bcs.project.crumb },
+          { href: linkService.project() + '/settings', label: 'Settings' }
+        ]);
         $scope.finishedLoading = true;
       });
     };
@@ -78,7 +76,8 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
 
   }])
   .controller('ProjectSettingsQTemplateCtrl', ['$scope', 'silNoticeService',
-    'questionTemplateService', function ($scope, notice, qts) {
+    'questionTemplateService',
+  function ($scope, notice, qts) {
     $scope.selected = [];
     $scope.vars = {
       selectedIndex: -1
@@ -264,7 +263,10 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
     // TODO This can be moved to the page level controller, it is common with the Setup tab.
     $scope.updateProject = function () {
       var project = angular.copy($scope.project);
-      delete project.ownerRef; // ownerRef is expected as string id not array of id and username
+      if (project.hasOwnProperty('ownerRef')) {
+        delete project.ownerRef; // ownerRef is expected as string id not array of id and username
+      }
+
       sfchecksProjectService.update(project, function (result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, $scope.project.projectName +
@@ -277,6 +279,7 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
   .controller('ProjectSettingsSetupCtrl', ['$scope', 'userService', 'sfchecksProjectService',
     'silNoticeService',
   function ($scope, userService, sfchecksProjectService, notice) {
+    var deregisterPickListWatcher;
 
     // TODO This can be moved to the page level controller, it is common with the Setup tab.
     $scope.currentListsEnabled = [];
@@ -284,23 +287,25 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       // populate the list of enabled user profile properties
       $scope.project.userProperties.userProfilePropertiesEnabled = [];
       for (var listId in $scope.currentListsEnabled) {
-        if ($scope.currentListsEnabled.hasOwnProperty(listId) &&
-            $scope.currentListsEnabled[listId]) {
+        if ($scope.currentListsEnabled.hasOwnProperty(listId) && $scope.currentListsEnabled[listId]
+        ) {
           $scope.project.userProperties.userProfilePropertiesEnabled.push(listId);
         }
       }
 
       var project = angular.copy($scope.project);
-      delete project.ownerRef; // ownerRef is expected as string id not array of id and username
+      if (project.hasOwnProperty('ownerRef')) {
+        delete project.ownerRef; // ownerRef is expected as string id not array of id and username
+      }
+
       sfchecksProjectService.update(project, function (result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, $scope.project.projectName +
-            ' settings updated successfully');
+          notice.push(notice.SUCCESS, project.projectName + ' settings updated successfully');
         }
       });
 
       $scope.unsavedChanges = false;
-      $scope.startWatchingPicklists();
+      startWatchingPickLists();
     };
 
     $scope.currentListId = '';
@@ -308,30 +313,31 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       $scope.currentListId = listId;
     };
 
-    $scope.picklistWatcher = function (newval, oldval) {
+    function pickListWatcher(newval, oldval) {
       if (angular.isDefined(newval) && newval !== oldval) {
         $scope.unsavedChanges = true;
 
         // Since a values watch is expensive, stop watching after first time data changes
-        $scope.stopWatchingPicklists();
+        stopWatchingPickLists();
       }
-    };
+    }
 
-    $scope.stopWatchingPicklists = function () {
-      if ($scope.deregisterPicklistWatcher) {
-        $scope.deregisterPicklistWatcher();
-        $scope.deregisterPicklistWatcher = undefined;
+    function stopWatchingPickLists() {
+      if (deregisterPickListWatcher) {
+        deregisterPickListWatcher();
+        deregisterPickListWatcher = undefined;
       }
-    };
+    }
 
-    $scope.startWatchingPicklists = function () {
-      $scope.stopWatchingPicklists(); // Ensure we never register two expensive watches at once
-      $scope.deregisterPicklistWatcher =
-        $scope.$watch('project.userProperties.userProfilePickLists', $scope.picklistWatcher, true);
-    };
+    function startWatchingPickLists() {
+      stopWatchingPickLists(); // Ensure we never register two expensive watches at once
+      deregisterPickListWatcher =
+        $scope.$watch('project.userProperties.userProfilePickLists', pickListWatcher, true);
+    }
 
     $scope.$watch('project.userProperties', function (newValue) {
       if (newValue !== undefined) {
+        // noinspection LoopStatementThatDoesntLoopJS
         for (var key in newValue.userProfilePickLists) {
           $scope.currentListId = key;
           break;
@@ -345,7 +351,7 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
         }
       }
 
-      $scope.startWatchingPicklists();
+      startWatchingPickLists();
     });
 
   }])
@@ -493,10 +499,10 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
     // ----------------------------------------------------------
     $scope.users = [];
     $scope.addModes = {
-        addNew: { en: 'Create New User', icon: 'icon-user' },
-        addExisting: { en: 'Add Existing User', icon: 'icon-user' },
-        invite: { en: 'Send Email Invite', icon: 'icon-envelope' }
-      };
+      addNew: { en: 'Create New User', icon: 'icon-user' },
+      addExisting: { en: 'Add Existing User', icon: 'icon-user' },
+      invite: { en: 'Send Email Invite', icon: 'icon-envelope' }
+    };
     $scope.addMode = 'addNew';
     $scope.disableAddButton = true;
     $scope.typeahead = {};
@@ -565,10 +571,8 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
         var excludedUser = $scope.isExcludedUser($scope.typeahead.userName);
         $scope.addMode = 'addExisting';
         $scope.disableAddButton = true;
-        $scope.warningText = excludedUser.name +
-                             ' (username \'' + excludedUser.username +
-                             '\', email ' + excludedUser.email +
-                             ') is already a member.';
+        $scope.warningText = excludedUser.name + ' (username \'' + excludedUser.username +
+          '\', email ' + excludedUser.email + ') is already a member.';
       } else if ($scope.typeahead.userName.indexOf('@') !== -1) {
         $scope.addMode = 'invite';
         $scope.disableAddButton = false;
