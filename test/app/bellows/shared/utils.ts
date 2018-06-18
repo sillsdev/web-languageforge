@@ -148,6 +148,7 @@ export class Utils {
   static async isAllCheckboxes(elementArray: ElementArrayFinder, state: boolean = true) {
     const all: boolean[] = [];
     return await elementArray.map(async (checkboxElement: ElementFinder) => {
+      browser.sleep(2000);
       await checkboxElement.isSelected().then(async (isSelected: boolean) => {
         await all.push(isSelected);
       });

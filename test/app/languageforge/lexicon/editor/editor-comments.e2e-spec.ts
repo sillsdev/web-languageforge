@@ -110,24 +110,27 @@ describe('Lexicon E2E Editor Comments', async () => {
     await browser.refresh();
     await browser.wait(ExpectedConditions.visibilityOf(editorPage.comment.bubbles.first), constants.conditionTimeout);
     await editorPage.comment.bubbles.first.click();
+    await browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     await expect<any>(comment.content.getText()).toEqual('First comment on this word.');
   });
 
   it('comments panel: close comments panel clicking on bubble', async () => {
     await editorPage.comment.bubbles.first.click();
+    await browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     await expect<any>(editorPage.commentDiv.getAttribute('class')).not.toContain('panel-visible');
   });
 
-  it('comments panel: show all comments', () => {
+  it('comments panel: show all comments', async () => {
     // ToDo: investigate why this was needed to be added after editor.js changed to TS - IJH 2018-05
-    browser.sleep(1000);
-    editorPage.edit.toCommentsLink.click();
-    browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);
-    expect<any>(editorPage.commentDiv.getAttribute('class')).toContain('panel-visible');
+    await browser.sleep(2000);
+    await editorPage.edit.toCommentsLink.click();
+    await browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);    
+    await expect<any>(editorPage.commentDiv.getAttribute('class')).toContain('panel-visible');
   });
 
   it('comments panel: close all comments clicking on main comments button', async () => {
     await editorPage.edit.toCommentsLink.click();
+    await browser.wait(ExpectedConditions.invisibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     await expect<any>(editorPage.commentDiv.getAttribute('class')).not.toContain('panel-visible');
   });
 });

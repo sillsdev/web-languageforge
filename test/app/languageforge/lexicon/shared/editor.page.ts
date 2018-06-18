@@ -73,10 +73,10 @@ export class EditorPage {
       clearBtn: this.browseDivSearch.element(by.className('fa-times')),
       results: this.browseDivSearch.all(by.repeater('e in $ctrl.typeahead.searchResults')),
       matchCountElem: this.browseDivSearch.element(by.binding('$ctrl.typeahead.matchCountCaption')),
-      getMatchCount: () => {
+      getMatchCount: async () => {
         // Inside this function, "this" ==  EditorPage.browse.search
-        return this.browse.search.matchCountElem.getText().then((s: string) =>
-          parseInt(s, 10)
+        return await this.browse.search.matchCountElem.getText().then(async (s: string) =>
+          await parseInt(s, 10)
         );
       }
     },
@@ -148,6 +148,7 @@ export class EditorPage {
     },
 
     findEntryByDefinition: (definition: string) => {
+      browser.wait(ExpectedConditions.visibilityOf(this.editDiv), Utils.conditionTimeout);
       const div = this.editDiv.element(by.id('compactEntryListContainer'));
       return  div.element(by.cssContainingText('.listItemSecondary',
         definition));
@@ -158,10 +159,10 @@ export class EditorPage {
       clearBtn: this.editDivSearch.element(by.className('fa-times')),
       results: this.editDivSearch.all(by.repeater('e in $ctrl.typeahead.searchResults')),
       matchCountElem: this.editDivSearch.element(by.binding('$ctrl.typeahead.matchCountCaption')),
-      getMatchCount: () => {
+      getMatchCount: async () => {
         // Inside this function, "this" == EditorPage.edit.search
-        return this.edit.search.matchCountElem.getText().then((s: string) =>
-          parseInt(s, 10)
+        return await this.edit.search.matchCountElem.getText().then(async (s: string) =>
+          await parseInt(s, 10)
         );
       }
     },
@@ -172,7 +173,7 @@ export class EditorPage {
     deleteMenuItem: this.editDiv.element(by.css('.entry-card .card-header .dropdown-menu .dropdown-item')),
 
     // Helper functions for retrieving various field values
-    fields: this.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
+    fields: this.editDiv.all(by.repeater('fieldName in $ctrl.config.fieldOrder')),
     getLexemes: async () => {
 
       // Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid:
@@ -189,10 +190,11 @@ export class EditorPage {
     },
 
     getFirstLexeme: async () => {
-      await browser.wait(ExpectedConditions.visibilityOf(await this.edit.fields.get(0)), Utils.conditionTimeout);
+      await browser.wait(ExpectedConditions.visibilityOf(this.edit.fields.get(0)), Utils.conditionTimeout);
 
       // Returns the first (topmost) lexeme regardless of its wsid
-      const lexeme = await this.edit.fields.get(0);
+      const lexeme = this.edit.fields.get(0);
+      // await console.log("Print lexeme variable" + lexeme);
       return await this.editorUtil.dcMultitextToFirstValue(lexeme);
     },
 
