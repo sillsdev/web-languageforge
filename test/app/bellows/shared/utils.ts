@@ -116,6 +116,8 @@ export class Utils {
   }
 
   static async clickBreadcrumb(breadcrumbTextOrRegex: string|RegExp) {
+    browser.wait(ExpectedConditions.visibilityOf
+      (element(by.cssContainingText('.breadcrumb > li', breadcrumbTextOrRegex))), Utils.conditionTimeout);
     await element(by.cssContainingText('.breadcrumb > li', breadcrumbTextOrRegex)).click();
   }
 

@@ -90,6 +90,9 @@ export class ProjectsPage {
       const typeaheadItems = typeaheadDiv.all(by.css('ul li'));
       await browser.wait(() => typeaheadItems, Utils.conditionTimeout);
       await typeaheadItems.click();
+      this.utils.findRowByText(typeaheadItems, usersName).then((item: any) => {
+      item.click();
+      });
       /* this.utils.findRowByText(typeaheadItems, usersName).then(async (item: any) => {
         await browser.wait(ExpectedConditions.visibilityOf(item), Utils.conditionTimeout);
         await item.click();

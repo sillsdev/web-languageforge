@@ -58,6 +58,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('edit page has correct word count', async () => {
+    await browser.wait(() => ExpectedConditions.visibilityOf(editorPage.editDiv),
+      constants.conditionTimeout);
     await expect(editorPage.edit.entriesList.count()).toEqual(editorPage.edit.getEntryCount());
     await expect<any>(editorPage.edit.getEntryCount()).toBe(3);
   });
@@ -145,6 +147,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('caption is hidden when empty if "Hidden if empty" is set in config', async () => {
+    await browser.sleep(500);
     await Utils.clickBreadcrumb(constants.testProjectName);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     await editorPage.edit.hideHiddenFields();
@@ -164,6 +167,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
 
   it('when caption is empty, it is visible if "Hidden if empty" is cleared in config', async () => {
     await Utils.clickBreadcrumb(constants.testProjectName);
+    await browser.wait(ExpectedConditions.visibilityOf(
+      element(by.id('lexAppListView'))), Utils.conditionTimeout);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     await expect<any>(editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
   });
@@ -300,6 +305,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
 
   it('word 2: audio Input System is not playable and does not have "upload" button (observer)',
   async () => {
+      await browser.wait(() => editorPage.edit.audio.playerIcons(lexemeLabel), constants.conditionTimeout);
       await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
       await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
       await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
@@ -590,6 +596,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('remove new word to restore original word count', async () => {
+    await browser.wait(ExpectedConditions.visibilityOf(
+      element(by.id('lexAppListView'))), Utils.conditionTimeout);
     await editorPage.browse.findEntryByLexeme(constants.testEntry3.lexeme.th.value).click();
     await editorPage.edit.actionMenu.click();
     await editorPage.edit.deleteMenuItem.click();

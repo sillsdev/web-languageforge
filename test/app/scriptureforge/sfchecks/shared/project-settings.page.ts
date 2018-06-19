@@ -1,28 +1,33 @@
 import {browser, by, element, ExpectedConditions} from 'protractor';
 
 import {ProjectsPage} from '../../../bellows/shared/projects.page';
+import {Utils} from '../../../bellows/shared/utils';
 
 export class SfProjectSettingsPage {
   private readonly projectsPage = new ProjectsPage();
+  private readonly utils = new Utils();
 
-  conditionTimeout = 3000;
+  conditionTimeout = Utils.conditionTimeout;
   settingsMenuLink = element(by.id('settings-dropdown-button'));
   projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
+
   async get(projectName: string = '') {
     await this.projectsPage.get();
-    await this.projectsPage.clickOnProjectName(projectName);
-    // await this.projectsPage.clickOnProject(projectName);
+    await this.projectsPage.clickOnProject(projectName);
     await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
-    await this.settingsMenuLink.click();
-    await this.projectSettingsLink.click();
+    await this.clickOnSettingsLink();
+
   }
 
   async clickOnSettingsLink() {
     await this.settingsMenuLink.click();
     await this.projectSettingsLink.click();
   }
+
+  noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
+  lastNoticeCloseButton = this.noticeList.last().element(by.partialButtonText('×'));
 
   tabs = {
     members: element(by.linkText('Members')),
@@ -69,15 +74,7 @@ export class SfProjectSettingsPage {
     allowAudioDownload: element(by.model('project.allowAudioDownload')),
     usersSeeEachOthersResponses: element(by.model('project.usersSeeEachOthersResponses')),
     saveButton: element(by.id('project-properties-save-button')),
-    // Set a checkbox to either true or false no matter what its current value is
-    // TODO: Move this function to a general utilities library somewhere
-    async setCheckbox(checkboxElement: any, value: any) {
-      await checkboxElement.isSelected().then(async (selected: any) => {
-        if (value !== selected) {
-          await checkboxElement.click();
-        }
-      });
-    }
+    setCheckbox: this.utils.setCheckbox
   };
 
   optionlistsTab = {
@@ -86,6 +83,7 @@ export class SfProjectSettingsPage {
       .all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
     editList: element(by.id('editListValuesFieldset'))
       .all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
+    editContentsLabel: element(by.id('picklistEditorFieldset')).element(by.tagName('legend')),
     editContentsList: element(by.id('picklistEditorFieldset')).all(by.repeater('item in items')),
     defaultValue: element(by.id('picklistEditorFieldset')).element(by.model('defaultKey')),
     addInput: element(by.id('picklistEditorFieldset')).element(by.model('newValue')),
@@ -96,7 +94,7 @@ export class SfProjectSettingsPage {
       // Given a single repeater row in the picklist, return the delete button for that row
       return repeaterRow.element(by.css('a:first-of-type'));
     }
-  }; // NYI - wait for refactor
+  };
 
   communicationTab = {
     sms: {
@@ -113,10 +111,7 @@ export class SfProjectSettingsPage {
 }
 
 class MembersTab {
-  sfProjectSettingsPage: any;
-  constructor(sfProjectSettingsPage: any) {
-    this.sfProjectSettingsPage = sfProjectSettingsPage;
-  }
+  constructor(private sfProjectSettingsPage: SfProjectSettingsPage) { }
 
   addButton = element(by.id('addMembersButton'));
   removeButton = element(by.id('remove-members-button'));
@@ -134,10 +129,10 @@ class MembersTab {
     await this.sfProjectSettingsPage.tabs.members.click();
     await this.addButton.click();
     await browser.wait(ExpectedConditions.visibilityOf(this.newMember.input),
-    await this.sfProjectSettingsPage.conditionTimeout);
+      this.sfProjectSettingsPage.conditionTimeout);
     await this.newMember.input.sendKeys(name);
-    await browser.wait(ExpectedConditions.textToBePresentInElementValue(this.newMember.input,
-      name), this.sfProjectSettingsPage.conditionTimeout);
+    await browser.wait(ExpectedConditions.textToBePresentInElementValue(this.newMember.input, name),
+      this.sfProjectSettingsPage.conditionTimeout);
     await this.newMember.button.click();
   }
 
@@ -148,4 +143,5 @@ class MembersTab {
       });
     });
   }
+
 }
