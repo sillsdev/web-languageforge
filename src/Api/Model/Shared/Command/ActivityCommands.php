@@ -2,10 +2,13 @@
 
 namespace Api\Model\Shared\Command;
 
+use Api\Library\Shared\Palaso\StringUtil;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\LexCommentModel;
 use Api\Model\Languageforge\Lexicon\LexCommentReply;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\LexExample;
+use Api\Model\Languageforge\Lexicon\LexSense;
 use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
@@ -287,6 +290,11 @@ class ActivityCommands
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
         $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
+        $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
+        $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
+        if (! empty($label)) {
+            $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
+        }
         $activity->addContent(ActivityModel::USER, $user->username);
         $activityId = $activity->write();
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
@@ -419,5 +427,53 @@ class ActivityCommands
     public static function addReplyToEntryComment($projectModel, $entryId, $commentModel, $replyModel)
     {
         return ActivityCommands::updateReplyToEntryComment($projectModel, $entryId, $commentModel, $replyModel, "add");
+    }
+
+    /**
+     * @param string $contextGuid The "context GUID" as recorded by the frontend comment code
+     * @param string $fieldLabel The human-readable label of the field commented on
+     * @param LexEntryModel $entry
+     * @return string
+     *
+     * Return a string like "sense@1|example@2|Translation" for putting into the activity log as a field label
+     * Indexes in this one will be 1-based since there's no need for them to be 0-based: we're only ever using this for human display
+     */
+    private static function prepareActivityLabel($contextGuid, $fieldLabel, LexEntryModel $entry)
+    {
+        if (empty($contextGuid) || empty($fieldLabel)) {
+            return $fieldLabel ?? '';
+        }
+        $senseGuid = '';
+        $exampleGuid = '';
+        $parts = explode(' ', trim($contextGuid));
+        $resultParts = [];
+        foreach ($parts as $part) {
+            if (StringUtil::startsWith($part, 'sense#')) {
+                $senseGuid = substr($part, strlen('sense#'));
+            } else if (StringUtil::startsWith($part, 'example#')) {
+                $exampleGuid = substr($part, strlen('example#'));
+            }
+        }
+        // Find 1-based position of sense and example, if needed for this field
+        if (! empty($senseGuid)) {
+            $sensePosition = 0;
+            foreach ($entry->senses as $sense) {
+                /** @var LexSense $sense */
+                $sensePosition++;
+                if ($sense->guid === $senseGuid) {
+                    $resultParts[] = "sense@$sensePosition";
+                    $examplePosition = 0;
+                    foreach ($sense->examples as $example) {
+                        /** @var LexExample $example */
+                        $examplePosition++;
+                        if ($example->guid === $exampleGuid) {
+                            $resultParts[] = "example@$examplePosition";
+                        }
+                    }
+                }
+            }
+        }
+        $resultParts[] = $fieldLabel;
+        return implode('|', $resultParts);
     }
 }
