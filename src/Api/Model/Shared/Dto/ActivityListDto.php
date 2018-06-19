@@ -277,11 +277,11 @@ class ActivityListDto
         $result = [];
         $parts = explode('|', $labelFromMongo);
         foreach ($parts as $part) {
-            if (StringUtil::startsWith($part, 'sense#')) {
-                $pos = substr($part, strlen('sense#'));
+            if (StringUtil::startsWith($part, 'sense@')) {
+                $pos = substr($part, strlen('sense@'));
                 $result['sense'] = intval($pos);
-            } else if (StringUtil::startsWith($part, 'example#')) {
-                $pos = substr($part, strlen('example#'));
+            } else if (StringUtil::startsWith($part, 'example@')) {
+                $pos = substr($part, strlen('example@'));
                 $result['example'] = intval($pos);
             } else {
                 $result['label'] = $part;
