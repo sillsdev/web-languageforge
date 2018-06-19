@@ -2,6 +2,7 @@
 
 namespace Api\Model\Shared\Dto;
 
+use Api\Library\Shared\Palaso\StringUtil;
 use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
@@ -260,9 +261,7 @@ class ActivityListDto
                 if ($item['action'] === ActivityModel::UPDATE_ENTRY) {
                     $lexProjectModel = new LexProjectModel($projectModel->id->asString());
                     $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
-                }
-                if ($item['action'] === ActivityModel::ADD_LEX_COMMENT ||
-                    $item['action'] === ActivityModel::UPDATE_LEX_COMMENT) {
+                } else if ($item['action'] === ActivityModel::ADD_LEX_COMMENT || $item['action'] === ActivityModel::UPDATE_LEX_COMMENT) {
                     $labelFromMongo = $item['content'][ActivityModel::LEX_COMMENT_LABEL] ?? '';
                     unset($item['content'][ActivityModel::LEX_COMMENT_LABEL]);
                     if (! empty($labelFromMongo)) {
@@ -278,11 +277,11 @@ class ActivityListDto
         $result = [];
         $parts = explode('|', $labelFromMongo);
         foreach ($parts as $part) {
-            if (substr($part, 0, 6) === 'sense@') {
-                $pos = substr($part, 6);
+            if (StringUtil::startsWith($part, 'sense#')) {
+                $pos = substr($part, strlen('sense#'));
                 $result['sense'] = intval($pos);
-            } else if (substr($part, 0, 8) === 'example@') {
-                $pos = substr($part, 8);
+            } else if (StringUtil::startsWith($part, 'example#')) {
+                $pos = substr($part, strlen('example#'));
                 $result['example'] = intval($pos);
             } else {
                 $result['label'] = $part;
