@@ -40,6 +40,8 @@ class ActivityModel extends MapperModel
     const COMMENT = 'comment';
     const LEX_COMMENT = 'lexComment';
     const LEX_COMMENT_CONTEXT = 'lexCommentContext';
+    const LEX_COMMENT_LABEL = 'lexCommentLabel';
+    const LEX_COMMENT_FIELD_VALUE = 'lexCommentFieldValue';
     const LEX_COMMENT_STATUS = 'lexCommentStatus';
     const LEX_COMMENT_INCREASE_SCORE = 'lexCommentIncreaseScore';
     const LEX_COMMENT_DECREASE_SCORE = 'lexCommentDecreaseScore';
