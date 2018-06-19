@@ -1,8 +1,16 @@
 <?php
 
+use Api\Model\Languageforge\Lexicon\Command\LexCommentCommands;
+use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\LexExample;
+use Api\Model\Languageforge\Lexicon\LexSense;
+use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\ActivityModel;
 use Api\Model\Shared\Command\ActivityCommands;
 use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\Dto\ActivityListDto;
@@ -115,6 +123,7 @@ class ActivityListDtoTest extends TestCase
 
         $environ->clean();
     }
+
     public function testGetActivityForUser_TwoProjectsTwoDomains_DtoHasOneProject()
     {
         $environ = new MongoTestEnvironment('scriptureforge.org');
@@ -378,5 +387,286 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals('user3', $dto[$a10]['content']['user2']);
         $this->assertEquals($answer_updated->content, $dto[$a10]['content']['answer']);
         $this->assertEquals($comment1_updated->content, $dto[$a10]['content']['comment']);
+    }
+
+    // Tests for Language Forge-specific activities
+
+    public function testGetActivityForUser_UpdateEntry_DtoAsExpected()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
+
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $this->assertEquals($project->appName, LfProjectModel::LEXICON_APP);
+
+
+        $userId = $environ->createUser('user1', 'User One', 'user1@email.com');
+        $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
+        $project->write();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense1 = new LexSense();
+        $sense1->definition->form('en', 'apple');
+        $entry->senses[] = $sense1;
+        $sense2 = new LexSense();
+        $sense2->definition->form('fr', 'pomme');
+        $entry->senses[] = $sense2;
+        $example1 = new LexExample();
+        $example1->sentence->form('en', 'eat an apple');
+        $sense1->examples[] = $example1;
+        $example2 = new LexExample();
+        $example2->sentence->form('fr', 'manger une pomme');
+        $sense2->examples[] = $example2;
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $params['senses'][0]['examples'][0]['sentence']['en']['value'] = 'also eat an apple';
+        $params['senses'][1]['examples'] = [];
+
+        LexEntryCommands::updateEntry($project->id->asString(), $params, $userId);
+
+        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $activity = $dto['activity'];
+        $this->assertEquals(1, count($activity));
+        $activityRecord = array_shift($activity);
+        $this->assertEquals($projectId, $activityRecord['projectRef']['id']);
+        $this->assertEquals(LfProjectModel::LEXICON_APP, $activityRecord['projectRef']['type']);
+        $this->assertEquals($entryId, $activityRecord['entryRef']);
+        $this->assertEquals(ActivityModel::UPDATE_ENTRY, $activityRecord['action']);
+        // "Content" field should contain human-readable strings for use in activity log
+        $this->assertArrayHasKey('content', $activityRecord);
+        $content = $activityRecord['content'];
+        $this->assertEquals(SF_TESTPROJECT, $content['project']);
+        $this->assertEquals('apple', $content['entry']);
+        $this->assertEquals('user1', $content['user']);  // TODO: Shouldn't this be "User One" instead? E.g., human-readable name here rather than username?
+        $this->assertArrayHasKey('changes', $content);
+        $changes = $content['changes'];
+        $this->assertEquals(2, count($changes));
+
+        // Changes could be in any order, but they should both be there
+        foreach ($changes as $change) {
+            $this->assertTrue($change['changeType'] === ActivityListDto::EDITED_FIELD || $change['changeType'] === ActivityListDto::DELETED_FIELD);
+            if ($change['changeType'] === ActivityListDto::EDITED_FIELD) {
+                $this->assertEquals(LexConfig::EXAMPLE_SENTENCE, $change['fieldName']);
+                $this->assertEquals(['label' => 'Sentence', 'sense' => 1, 'example' => 1], $change['fieldLabel']);
+                $this->assertEquals('en', $change['inputSystemTag']);
+                $this->assertEquals('eat an apple', $change['oldValue']);
+                $this->assertEquals('also eat an apple', $change['newValue']);
+            } else if ($change['changeType'] === ActivityListDto::DELETED_FIELD) {
+                $this->assertEquals(LexConfig::EXAMPLES_LIST, $change['fieldName']);
+                $this->assertEquals(['label' => 'Example', 'sense' => 2, 'example' => 1], $change['fieldLabel']);
+            }
+        }
+
+        $environ->clean();
+    }
+
+    public function testGetActivityForUser_AddExample_DtoAsExpected()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
+
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $this->assertEquals($project->appName, LfProjectModel::LEXICON_APP);
+
+
+        $userId = $environ->createUser('user1', 'User One', 'user1@email.com');
+        $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
+        $project->write();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense1 = new LexSense();
+        $sense1->definition->form('en', 'apple');
+        $entry->senses[] = $sense1;
+        $sense2 = new LexSense();
+        $sense2->definition->form('fr', 'pomme');
+        $entry->senses[] = $sense2;
+        $example1 = new LexExample();
+        $example1->sentence->form('en', 'eat an apple');
+        $sense1->examples[] = $example1;
+        $entryId = $entry->write();
+
+        $example2Guid = \Api\Model\Languageforge\Lexicon\Guid::create();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $params['senses'][1]['examples'] = [['guid' => $example2Guid, 'sentence' => ['fr' => ['value' => 'manger une pomme']]]];
+
+        LexEntryCommands::updateEntry($project->id->asString(), $params, $userId);
+
+        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $activity = $dto['activity'];
+        $this->assertEquals(1, count($activity));
+        $activityRecord = array_shift($activity);
+        $this->assertEquals($projectId, $activityRecord['projectRef']['id']);
+        $this->assertEquals(LfProjectModel::LEXICON_APP, $activityRecord['projectRef']['type']);
+        $this->assertEquals($entryId, $activityRecord['entryRef']);
+        $this->assertEquals(ActivityModel::UPDATE_ENTRY, $activityRecord['action']);
+        // "Content" field should contain human-readable strings for use in activity log
+        $this->assertArrayHasKey('content', $activityRecord);
+        $content = $activityRecord['content'];
+        $this->assertEquals(SF_TESTPROJECT, $content['project']);
+        $this->assertEquals('apple', $content['entry']);
+        $this->assertEquals('user1', $content['user']);  // TODO: Shouldn't this be "User One" instead? E.g., human-readable name here rather than username?
+        $this->assertArrayHasKey('changes', $content);
+        $changes = $content['changes'];
+        $this->assertEquals(1, count($changes));
+        $change = $changes[0];
+
+        $this->assertEquals(ActivityListDto::ADDED_FIELD, $change['changeType']);
+        $this->assertEquals(LexConfig::EXAMPLES_LIST, $change['fieldName']);
+        $this->assertEquals(['label' => 'Example', 'sense' => 2, 'example' => 1], $change['fieldLabel']);
+        // Adding a whole example doesn't store its contents in the activity log
+        // TODO: Decide whether it should do so
+        $this->assertArrayNotHasKey('inputSystemTag', $change);
+        $this->assertEquals('', $change['oldValue']);
+        $this->assertEquals('', $change['newValue']);
+
+        $environ->clean();
+    }
+
+    public function testGetActivityForUser_AddExampleSentence_DtoAsExpected()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
+
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $this->assertEquals($project->appName, LfProjectModel::LEXICON_APP);
+
+
+        $userId = $environ->createUser('user1', 'User One', 'user1@email.com');
+        $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
+        $project->write();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense1 = new LexSense();
+        $sense1->definition->form('en', 'apple');
+        $entry->senses[] = $sense1;
+        $sense2 = new LexSense();
+        $sense2->definition->form('fr', 'pomme');
+        $entry->senses[] = $sense2;
+        $example1 = new LexExample();
+        $example1->sentence->form('en', 'eat an apple');
+        $sense1->examples[] = $example1;
+        $entryId = $entry->write();
+        $example2 = new LexExample();
+        $sense2->examples[] = $example2;
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $params['senses'][1]['examples'] = [['guid' => $example2->guid, 'sentence' => ['fr' => ['value' => 'manger une pomme']]]];
+
+        LexEntryCommands::updateEntry($project->id->asString(), $params, $userId);
+
+        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $activity = $dto['activity'];
+        $this->assertEquals(1, count($activity));
+        $activityRecord = array_shift($activity);
+        $this->assertEquals($projectId, $activityRecord['projectRef']['id']);
+        $this->assertEquals(LfProjectModel::LEXICON_APP, $activityRecord['projectRef']['type']);
+        $this->assertEquals($entryId, $activityRecord['entryRef']);
+        $this->assertEquals(ActivityModel::UPDATE_ENTRY, $activityRecord['action']);
+        // "Content" field should contain human-readable strings for use in activity log
+        $this->assertArrayHasKey('content', $activityRecord);
+        $content = $activityRecord['content'];
+        $this->assertEquals(SF_TESTPROJECT, $content['project']);
+        $this->assertEquals('apple', $content['entry']);
+        $this->assertEquals('user1', $content['user']);  // TODO: Shouldn't this be "User One" instead? E.g., human-readable name here rather than username?
+        $this->assertArrayHasKey('changes', $content);
+        $changes = $content['changes'];
+        $this->assertEquals(1, count($changes));
+        $change = $changes[0];
+
+        $this->assertEquals(ActivityListDto::EDITED_FIELD, $change['changeType']);
+        $this->assertEquals(LexConfig::EXAMPLE_SENTENCE, $change['fieldName']);
+        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $change['fieldLabel']);
+        // Adding a single MultiText field in an example does store its contents in the activity log
+        // TODO: Decide whether it should do so
+        $this->assertEquals('fr', $change['inputSystemTag']);
+        $this->assertEquals('', $change['oldValue']);
+        $this->assertEquals('manger une pomme', $change['newValue']);
+
+        $environ->clean();
+    }
+
+    public function testGetActivityForUser_AddEntryComment_DtoAsExpected()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
+
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $this->assertEquals($project->appName, LfProjectModel::LEXICON_APP);
+
+
+        $userId = $environ->createUser('user1', 'User One', 'user1@email.com');
+        $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
+        $project->write();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('en', 'bank');
+        $sense1 = new LexSense();
+        $sense1->definition->form('en', 'the sides of a river');
+        $entry->senses[] = $sense1;
+        $sense2 = new LexSense();
+        $sense2->definition->form('en', 'a place to store money');
+        $entry->senses[] = $sense2;
+        $example1 = new LexExample();
+        $example1->sentence->form('en', 'money in the bank');
+        $sense2->examples[] = $example1;
+        $example2 = new LexExample();
+        $example2->sentence->form('en', 'a run on the bank');
+        $sense2->examples[] = $example2;
+        $entryId = $entry->write();
+
+        $regarding = array(
+            'field' => 'sentence',
+            'fieldNameForDisplay' => 'Sentence',
+            'fieldValue' => 'a run on the bank',
+            'inputSystem' => 'en',
+            'word' => 'bank',
+            'meaning' => 'a place to store money'
+        );
+        $data = array(
+            'id' => '',
+            'entryRef' => $entryId,
+            'content' => 'Comment on the sentence',
+            'regarding' => $regarding,
+            'contextGuid' => ' sense#' . $sense2->guid . ' example#' . $example1->guid . ' sentence.en',
+            'isRegardingPicture' => false
+        );
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $environ->website, $data);
+        $replyData = array(
+            'id' => '',
+            'content' => 'my first reply'
+        );
+
+        $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
+        $activity = $dto['activity'];
+        $this->assertEquals(1, count($activity));
+        $activityRecord = array_shift($activity);
+        $this->assertEquals($projectId, $activityRecord['projectRef']['id']);
+        $this->assertEquals(LfProjectModel::LEXICON_APP, $activityRecord['projectRef']['type']);
+        $this->assertEquals($entryId, $activityRecord['entryRef']);
+        $this->assertEquals(ActivityModel::ADD_LEX_COMMENT, $activityRecord['action']);
+        // "Content" field should contain human-readable strings for use in activity log
+        $this->assertArrayHasKey('content', $activityRecord);
+        $content = $activityRecord['content'];
+        $this->assertEquals(SF_TESTPROJECT, $content['project']);
+        $this->assertEquals('user1', $content['user']);  // TODO: Shouldn't this be "User One" instead? E.g., human-readable name here rather than username?
+        $this->assertEquals($data['content'], $content[ActivityModel::LEX_COMMENT]);
+        $this->assertEquals($data['contextGuid'], $content[ActivityModel::LEX_COMMENT_CONTEXT]);
+        $this->assertEquals($data['regarding']['fieldValue'], $content[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
+        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $content['fieldLabel']);
+        $environ->clean();
     }
 }
