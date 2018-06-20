@@ -18,7 +18,11 @@ class Activity {
     answer: string,
     lexComment: string,
     lexCommentContext: string,
-    label: string,
+    fieldLabel: {
+      label: string,
+      sense: number,
+      example: number
+    },
     changes: ActivityChanges[]
   };
   changes: ActivityChanges;
@@ -99,14 +103,9 @@ class Activity {
 
   getLabel() {
     if (this.changes) {
-      let label = this.changes.fieldLabel.label;
-      if (this.changes.fieldLabel.example) {
-        label = 'Example ' + this.changes.fieldLabel.example + ' ' + label;
-      }
-      if (this.changes.fieldLabel.sense) {
-        label = 'Meaning ' + this.changes.fieldLabel.sense + ' ' + label;
-      }
-      return label;
+      return this.formatLabel(this.changes.fieldLabel);
+    } else if (this.content.fieldLabel) {
+      return this.formatLabel(this.content.fieldLabel);
     } else {
       for (const index in this.content) {
         if (this.content.hasOwnProperty(index)) {
@@ -123,6 +122,17 @@ class Activity {
       }
     }
     return 'unknown';
+  }
+
+  private formatLabel(fieldLabel: any) {
+    let label = fieldLabel.label;
+    if (fieldLabel.example) {
+      label = 'Example ' + fieldLabel.example + ' ' + label;
+    }
+    if (fieldLabel.sense) {
+      label = 'Meaning ' + fieldLabel.sense + ' ' + label;
+    }
+    return label;
   }
 }
 
@@ -570,9 +580,6 @@ export class ActivityContainerController implements angular.IController {
       if ('content' in item) {
         if ('answer' in item.content) {
           item.content.answer = this.$sce.trustAsHtml(item.content.answer);
-        }
-        if (!item.content.label) {
-          item.content.label = '{field label}';
         }
       }
 
