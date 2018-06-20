@@ -101,7 +101,6 @@ class LexProjectCommandsTest extends TestCase
         $params['projectCode'] = $hackedData;
         $params['siteName'] = $hackedData;
         $params['appName'] = $hackedData;
-        $params['userProperties']['userProfilePickLists']['city']['name'] = $hackedData;
 
         LexProjectCommands::updateProject($projectId, $userId, $params);
 
@@ -113,7 +112,6 @@ class LexProjectCommandsTest extends TestCase
         $this->assertNotEquals($hackedData, $updatedProject['projectCode']);
         $this->assertNotEquals($hackedData, $updatedProject['siteName']);
         $this->assertNotEquals($hackedData, $updatedProject['appName']);
-        $this->assertNotEquals($hackedData, $updatedProject['userProperties']['userProfilePickLists']['city']['name']);
     }
 
     public function testCreateCustomFieldsViews_ProjectDoesNotExist_NoAction()

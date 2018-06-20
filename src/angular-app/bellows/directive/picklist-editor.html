@@ -9,9 +9,11 @@
     <div class="row">
         <div class="col-12 clearfix">
             <div class="input-group">
-               <input class="form-control" data-ng-model="newValue" data-on-enter="pickAddItem()" name="newValue" type="text" placeholder="new value" no-dirty-check>
+               <input class="form-control" data-ng-model="newValue" data-on-enter="pickAddItem()" name="newValue"
+                      type="text" placeholder="new value" no-dirty-check>
                 <span class="input-group-btn">
-                    <button class="btn btn-primary add-item-to-list" data-ng-click="pickAddItem()"><i class="fa fa-plus iconPadding" aria-hidden="true"></i>Add to List</button>
+                    <a class="btn btn-primary add-item-to-list" href data-ng-click="pickAddItem()">
+                        <i class="fa fa-plus iconPadding" aria-hidden="true"></i>Add to List</a>
                 </span>
             </div>
         </div>
@@ -19,6 +21,7 @@
     <br>
     <div class="row clearfix">
         <div sv-root sv-part="items" sv-on-sort="onSort($indexFrom, $indexTo)">
+            <!--suppress JSUnusedLocalSymbols -->
             <div data-ng-repeat="item in items" class="picklist-group" sv-element>
                 <a data-ng-show="showRemove($index)" data-ng-click="pickRemoveItem($index)"><i class="fa fa-trash"></i></a>
                 <span data-ng-hide="showRemove($index)" style="padding-left: 17px"></span>
