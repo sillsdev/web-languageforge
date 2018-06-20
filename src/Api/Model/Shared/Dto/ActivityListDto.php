@@ -2,6 +2,7 @@
 
 namespace Api\Model\Shared\Dto;
 
+use Api\Library\Shared\Palaso\StringUtil;
 use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
@@ -44,6 +45,7 @@ class ActivityListDto
      * @param ProjectModel $projectModel
      * @param array $filterParams
      * @return array - the DTO array
+     * @throws \Exception
      */
     public static function getActivityForProject($projectModel, $filterParams = [])
     {
@@ -60,6 +62,7 @@ class ActivityListDto
      * @param string $entryId
      * @param array $filterParams
      * @return array - the DTO array
+     * @throws \Exception
      */
     public static function getActivityForLexEntry($projectModel, $entryId, $filterParams = [])
     {
@@ -69,17 +72,6 @@ class ActivityListDto
         self::prepareDto($dto, $projectModel);
 
         return (is_array($dto['entries'])) ? $dto['entries'] : [];
-    }
-
-    // note: it could be argued that this is a migration method that is not necessary if we were to migrate the database of existing activity entries with no projectId cjh 2014-07
-    public static function getGlobalUnreadActivityForUser($userId, $activityFilter = null)
-    {
-        $unreadActivity = new GlobalUnreadActivityModel($userId);
-        $items = $unreadActivity->unreadItems();
-        $unreadActivity->markAllRead();
-        $unreadActivity->write();
-
-        return $items;
     }
 
     public static function getUnreadActivityForUserInProject($userId, $projectId, $activityFilter = null)
@@ -102,7 +94,8 @@ class ActivityListDto
      * @param string $userId
      * @param array $filterParams
      * @return array - the DTO array
-    */
+     * @throws \Exception
+     */
     public static function getActivityForUser($site, $userId, $filterParams = [])
     {
         $projectList = new ProjectList_UserModel($site);
@@ -140,6 +133,7 @@ class ActivityListDto
      * @param string $userId
      * @param array $filterParams
      * @return array - the DTO array
+     * @throws \Exception
      */
     public static function getActivityForOneProject($projectModel, $userId, $filterParams = [])
     {
@@ -174,6 +168,7 @@ class ActivityListDto
      * @param string $entryId
      * @param array $filterParams
      * @return array - the DTO array
+     * @throws \Exception
      */
     public static function getActivityForOneLexEntry($projectModel, $entryId, $filterParams = [])
     {
@@ -188,6 +183,17 @@ class ActivityListDto
         ];
 
         return $dto;
+    }
+
+    // note: it could be argued that this is a migration method that is not necessary if we were to migrate the database of existing activity entries with no projectId cjh 2014-07
+    private static function getGlobalUnreadActivityForUser($userId)
+    {
+        $unreadActivity = new GlobalUnreadActivityModel($userId);
+        $items = $unreadActivity->unreadItems();
+        $unreadActivity->markAllRead();
+        $unreadActivity->write();
+
+        return $items;
     }
 
     // Helper function for getActivityForUser()
@@ -219,7 +225,8 @@ class ActivityListDto
     }
 
     /**
-     * @param $fieldId
+     * @param string $fieldIdPart
+     * @return array
      */
     public static function splitFieldIdPart($fieldIdPart)
     {
@@ -250,11 +257,37 @@ class ActivityListDto
             $item['content'] = $item['actionContent'];
             $item['type'] = 'project';  // FIXME: Should this always be "project"? Should it sometimes be "entry"? 2018-02 RM
             unset($item['actionContent']);
-            if ($item['action'] === ActivityModel::UPDATE_ENTRY && $projectModel->appName === LfProjectModel::LEXICON_APP) {
-                $lexProjectModel = new LexProjectModel($projectModel->id->asString());
-                $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
+            if ($projectModel->appName === LfProjectModel::LEXICON_APP) {
+                if ($item['action'] === ActivityModel::UPDATE_ENTRY) {
+                    $lexProjectModel = new LexProjectModel($projectModel->id->asString());
+                    $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
+                } else if ($item['action'] === ActivityModel::ADD_LEX_COMMENT || $item['action'] === ActivityModel::UPDATE_LEX_COMMENT) {
+                    $labelFromMongo = $item['content'][ActivityModel::LEX_COMMENT_LABEL] ?? '';
+                    unset($item['content'][ActivityModel::LEX_COMMENT_LABEL]);
+                    if (! empty($labelFromMongo)) {
+                        $item['content'][ActivityModel::FIELD_LABEL] = static::prepareActivityContentForCommentLabel($labelFromMongo);
+                    }
+                }
             }
         }
+    }
+
+    private static function prepareActivityContentForCommentLabel($labelFromMongo)
+    {
+        $result = [];
+        $parts = explode('|', $labelFromMongo);
+        foreach ($parts as $part) {
+            if (StringUtil::startsWith($part, 'sense@')) {
+                $pos = substr($part, strlen('sense@'));
+                $result['sense'] = intval($pos);
+            } else if (StringUtil::startsWith($part, 'example@')) {
+                $pos = substr($part, strlen('example@'));
+                $result['example'] = intval($pos);
+            } else {
+                $result['label'] = $part;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -312,6 +345,7 @@ class ActivityListDto
                     $changeKey = $parts[0];
                     $fieldId = $parts[1];
                     $changesInInput[$fieldId][$changeKey] = $value;
+                    break;
                 default:
                     // Action content that *isn't* part of a change record gets passed through unchanged
                     $result[$key] = $value;
@@ -349,7 +383,7 @@ class ActivityListDto
             $mostRecentPosition = 0;
             $inputSystemTag = '';
             foreach ($fieldIdParts as $part) {
-                list ($name, $position, $guid) = self::splitFieldIdPart($part);
+                list ($name, $position) = self::splitFieldIdPart($part);
                 $position = $position + 1;  // Mongo stores 0-based indices, but DTO wants 1-based
                 // $guid not used in this DTO
                 if (array_key_exists($name, $currentConfig->fields)) {
@@ -476,6 +510,7 @@ class ActivityListDtoEncoder extends JsonEncoder
      * @param ActivityListModel $model - the model to encode
      * @param ProjectModel $projectModel
      * @return array
+     * @throws \Exception
      */
     public static function encodeModel($model, $projectModel)
     {
@@ -487,6 +522,7 @@ class ActivityListDtoEncoder extends JsonEncoder
 
         return $e->_encode($model);
     }
+
 }
 
 class ActivityListModel extends MapperListModel
