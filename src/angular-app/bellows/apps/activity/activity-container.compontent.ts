@@ -18,8 +18,10 @@ class Activity {
     answer: string,
     lexComment: string,
     lexCommentContext: string,
-    label: string
+    label: string,
+    changes: ActivityChanges[]
   };
+  changes: ActivityChanges;
   date: Date;
   dateCreated: string;
   dateModified: string;
@@ -40,11 +42,32 @@ class Activity {
   userHref2: string;
   icon: string;
 
+  constructor(data: object = {}) {
+    if (data !== {}) {
+      for (const i in data) {
+        if (data.hasOwnProperty(i)) {
+          this[i] = data[i];
+        }
+      }
+      // TODO: Update the PHP script to save these in the correct order
+      if (this.userRef2) {
+        let tmp;
+        tmp = this.userRef;
+        this.userRef = this.userRef2;
+        this.userRef2 = tmp;
+      }
+    }
+  }
+
   getOldValue() {
-    for (const index in this.content) {
-      if (this.content.hasOwnProperty(index)) {
-        if (index.substring(0, 8) === 'oldValue') {
-          return this.parseValue(this.content[index]);
+    if (this.changes) {
+      return this.parseValue(this.changes.oldValue);
+    } else {
+      for (const index in this.content) {
+        if (this.content.hasOwnProperty(index)) {
+          if (index.substring(0, 8) === 'oldValue') {
+            return this.parseValue(this.content[index]);
+          }
         }
       }
     }
@@ -52,10 +75,14 @@ class Activity {
   }
 
   getNewValue() {
-    for (const index in this.content) {
-      if (this.content.hasOwnProperty(index)) {
-        if (index.substring(0, 8) === 'newValue') {
-          return this.parseValue(this.content[index]);
+    if (this.changes) {
+      return this.parseValue(this.changes.newValue);
+    } else {
+      for (const index in this.content) {
+        if (this.content.hasOwnProperty(index)) {
+          if (index.substring(0, 8) === 'newValue') {
+            return this.parseValue(this.content[index]);
+          }
         }
       }
     }
@@ -71,21 +98,44 @@ class Activity {
   }
 
   getLabel() {
-    for (const index in this.content) {
-      if (this.content.hasOwnProperty(index)) {
-        if (index.substring(0, 10) === 'fieldLabel') {
-          let label = this.content[index];
-          if (index.indexOf('#examples')) {
-            label = 'Example - ' + label;
-          } else if (index.indexOf('#examples')) {
-            label = 'Meaning - ' + label;
+    if (this.changes) {
+      let label = this.changes.fieldLabel.label;
+      if (this.changes.fieldLabel.example) {
+        label = 'Example ' + this.changes.fieldLabel.example + ' ' + label;
+      }
+      if (this.changes.fieldLabel.sense) {
+        label = 'Meaning ' + this.changes.fieldLabel.sense + ' ' + label;
+      }
+      return label;
+    } else {
+      for (const index in this.content) {
+        if (this.content.hasOwnProperty(index)) {
+          if (index.substring(0, 10) === 'fieldLabel') {
+            let label = this.content[index];
+            if (index.indexOf('#examples')) {
+              label = 'Example - ' + label;
+            } else if (index.indexOf('#examples')) {
+              label = 'Meaning - ' + label;
+            }
+            return label;
           }
-          return label;
         }
       }
     }
     return 'unknown';
   }
+}
+
+class ActivityChanges {
+  changeType: string;
+  fieldLabel: {
+    label: string,
+    sense: number,
+    example: number
+  };
+  fieldName: string;
+  newValue: string;
+  oldValue: string;
 }
 
 class ActivityGroup {
@@ -260,7 +310,7 @@ export class ActivityContainerController implements angular.IController {
       'Entry Updated',
       'save',
       'updated {x} entry',
-      'updated {x} new entries'));
+      'updated {x} entries'));
     this.activityTypes.push(new ActivityType(
       'delete_entry',
       'project',
@@ -462,20 +512,19 @@ export class ActivityContainerController implements angular.IController {
       for (const key in result.data.activity) {
         if (result.data.activity.hasOwnProperty(key)) {
           // Cast into our Activity class - may be there is already a built in method for this?
-          const activity = new Activity();
-          for (const i in result.data.activity[key]) {
-            if (result.data.activity[key].hasOwnProperty(i)) {
-              activity[i] = result.data.activity[key][i];
+          const activity = new Activity(result.data.activity[key]);
+          // Check if the activity as an array of changes as we want each one split out
+          if (activity.content.changes) {
+            for (const changeKey in activity.content.changes) {
+              if (activity.content.changes.hasOwnProperty(changeKey)) {
+                const changedActivity = new Activity(result.data.activity[key]);
+                changedActivity.changes = activity.content.changes[changeKey];
+                this.activities.push(changedActivity);
+              }
             }
+          } else {
+            this.activities.push(activity);
           }
-          // TODO: Update the PHP script to save these in the correct order
-          if (activity.userRef2) {
-            let tmp;
-            tmp = activity.userRef;
-            activity.userRef = activity.userRef2;
-            activity.userRef2 = tmp;
-          }
-          this.activities.push(activity);
         }
       }
 
