@@ -214,42 +214,48 @@ export class LexiconEditorController implements angular.IController {
   }
 
   setUrlParams(): void {
-    const sortBy = 'sortBy';
-    const sortReverse = 'sortReverse';
-    const filterType = 'filterType';
-    const filterBy = 'filterBy';
-    this.$state.go('editor.entry', {
-      sortBy: this.entryListModifiers.sortBy.label,
-      sortReverse: this.entryListModifiers.sortReverse,
-      filterType: this.entryListModifiers.filterType,
-      filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
-    }, { notify: false });
+    const clear = this.$scope.$watch(() => this.entryListModifiers.sortOptions.length > 0, (ready: boolean) => {
 
-    if (this.$state.params[sortBy]) {
-      this.entryListModifiers.sortBy =
+      if (!ready) return;
+      clear(); // remove the watcher
+
+      const sortBy = 'sortBy';
+      const sortReverse = 'sortReverse';
+      const filterType = 'filterType';
+      const filterBy = 'filterBy';
+      this.$state.go(this.$state.current.name, {
+        sortBy: this.entryListModifiers.sortBy.label,
+        sortReverse: this.entryListModifiers.sortReverse,
+        filterType: this.entryListModifiers.filterType,
+        filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+      }, { notify: false });
+
+      if (this.$state.params[sortBy]) {
+        this.entryListModifiers.sortBy =
         this.setSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params[sortBy])[0];
-      this.sortEntries(true);
-      this.show.entryListModifiers = true;
-    }
+        this.sortEntries(true);
+        this.show.entryListModifiers = true;
+      }
 
-    if (this.$state.params[sortReverse] === 'true') {
-      this.entryListModifiers.sortReverse = true;
-      this.sortEntries(true);
-      this.show.entryListModifiers = true;
-    }
+      if (this.$state.params[sortReverse] === 'true') {
+        this.entryListModifiers.sortReverse = true;
+        this.sortEntries(true);
+        this.show.entryListModifiers = true;
+      }
 
-    if (this.$state.params[filterType]) {
-      this.entryListModifiers.filterType = this.$state.params[filterType];
-      this.filterEntries(true);
-      this.show.entryListModifiers = true;
-    }
+      if (this.$state.params[filterType]) {
+        this.entryListModifiers.filterType = this.$state.params[filterType];
+        this.filterEntries(true);
+        this.show.entryListModifiers = true;
+      }
 
-    if (this.$state.params[filterBy]) {
-      this.entryListModifiers.filterBy =
+      if (this.$state.params[filterBy]) {
+        this.entryListModifiers.filterBy =
         this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params[filterBy])[0];
-      this.filterEntries(true);
-      this.show.entryListModifiers = true;
-    }
+        this.filterEntries(true);
+        this.show.entryListModifiers = true;
+      }
+    });
   }
 
   sortEntries(args: any): void {
