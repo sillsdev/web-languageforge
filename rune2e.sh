@@ -21,8 +21,22 @@ else
     E2EHOSTNAME="languageforge.local"
 fi
 
-# Ensure Cleanup
+attach_debugger () {
+  # Searches for the Node process running Protractor tests, then signals for it to attach the debugger
+  echo "Waiting for a Protractor process to appear so the debugger can be attached..."
 
+  PID=""
+  while [ "$PID" = "" ]; do
+    PID=$(pgrep -f protractor/built/cli.js)
+    sleep 0.25;
+  done
+
+  # See https://nodejs.org/en/docs/guides/debugging-getting-started/
+  kill -s SIGUSR1 "$PID"
+  echo "Protractor process signaled to have debugger listen."
+}
+
+attach_debugger &
 gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 STATUS=$?
 gulp test-e2e-teardownForLocalDev

@@ -547,14 +547,15 @@ will run the the *lexicon-new-project.e2e-spec.ts* tests on **languageforge**.
 To add more verbosity during E2E tests, add a parameter `--verbosity true`
 
 To debug the tests:
-- Place breakpoints in your code (`debugger;` statements).
-- Open Chrome to `chrome://inspect/#devices`.
-- Run `./debuge2e.sh`. It will wait for a Protractor process to appear so it can signal the process.
-- Start the e2e tests. The `./debuge2e.sh` script will exit and the debugger should start listening (The e2e tests will say `Debugger listening on <some url>`).
-- Go back the the Chrome window. It should list under "Remote Target" the Node process that is running the tests.
-- Click inspect. When a breakpoint is reached the process will pause and you can step through it in the Chrome developer tools (This does not work very well though because of the asynchronous nature of Webdriver).
+- Do at least one of the following:
+  * If you are going to debug in VSCode, place breakpoints in the tests.
+  * Place breakpoints in your code (`debugger;` statements).
+  * To pause the debugger on the first test failure, go to `test/app/protractorConf.js` and uncomment the line that adds the `pauseOnFailure` reporter.
+- Start the tests with `./rune2e.sh`. Wait for the tests to actually start running before moving to the next steps.
+- To debug in Chrome, go to `chrome://inspect/#devices`. Under "Remote Target" click to inspect the Node.js process.
+- To debug in VSCode, select the "Node debugger" debug configuration and run it.
 
-Alternatively, to pause the debugger on the first test failure, go to `test/app/protractorConf.js` and uncomment the line that adds the `pauseOnFailure` reporter. All the debugging steps above are still necessary, except for adding breakpoints to your code.
+Unfortunately, debugging the e2e tests does not currently work very well because of the way WebDriver handles control flow.
 
 ## Get a copy of the live database ##
 
