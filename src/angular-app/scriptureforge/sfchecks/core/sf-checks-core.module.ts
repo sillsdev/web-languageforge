@@ -6,6 +6,7 @@ import {CoreModule} from '../../../bellows/core/core.module';
 export interface SortData {
   sortColumn: string;
   direction: string;
+  sort?: (cb: (objA: any, objB: any) => number) => void;
 }
 
 export const SfChecksCoreModule = angular
@@ -74,9 +75,9 @@ export const SfChecksCoreModule = angular
     this.list = api.method('questionTemplate_list');
   }])
   .service('listviewSortingService', function listviewSortingService() {
-    this.sortDataByColumn = function sortDataByColumn(data: any, columnName: string, direction: string) {
+    this.sortDataByColumn = function sortDataByColumn(data: SortData, columnName: string, direction: string): SortData {
       // This function is as generic as possible, so that it could be reused easily in other code
-      data.sort((objA: any, objB: any) => {
+      data.sort((objA: any, objB: any): number => {
         const a = objA[columnName];
         const b = objB[columnName];
         const aUndefined = (typeof a === 'undefined');
@@ -107,14 +108,14 @@ export const SfChecksCoreModule = angular
       return data;
     };
 
-    this.flipDirection = function flipDirection(direction: string) {
+    this.flipDirection = function flipDirection(direction: string): string {
       return (direction === 'up') ? 'down' : 'up';
     };
 
     // TODO: The sortdata parameter here should probably turn into some kind of class with
     // setSortColumn and sortIconClass methods
 
-    this.setSortColumn = function setSortColumn(sortData: SortData, columnName: string) {
+    this.setSortColumn = function setSortColumn(sortData: SortData, columnName: string): void {
       if (columnName === sortData.sortColumn) {
         sortData.direction = this.flipDirection(sortData.direction);
       } else {
@@ -123,7 +124,7 @@ export const SfChecksCoreModule = angular
       }
     };
 
-    this.sortIconClass = function sortIconClass(sortData: SortData, columnName: string) {
+    this.sortIconClass = function sortIconClass(sortData: SortData, columnName: string): string {
       if (columnName === sortData.sortColumn && (sortData.direction === 'up' || sortData.direction === 'down')) {
         return 'fa fa-sort-' + sortData.direction;
       } else {

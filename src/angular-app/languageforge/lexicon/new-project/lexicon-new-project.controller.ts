@@ -11,6 +11,7 @@ import {NoticeService} from '../../../bellows/core/notice/notice.service';
 import {SessionService} from '../../../bellows/core/session.service';
 import {InputSystem} from '../../../bellows/shared/model/input-system.model';
 import {InterfaceConfig} from '../../../bellows/shared/model/interface-config.model';
+import {UploadFile, UploadResponse} from '../../../bellows/shared/model/upload.model';
 import {LexiconProjectService} from '../core/lexicon-project.service';
 import {LexiconSendReceiveApiService} from '../core/lexicon-send-receive-api.service';
 import {LexiconSendReceiveService} from '../core/lexicon-send-receive.service';
@@ -23,7 +24,6 @@ import {
 import {LexiconProjectSettings} from '../shared/model/lexicon-project-settings.model';
 import {LexiconProject, SendReceive} from '../shared/model/lexicon-project.model';
 import {LexOptionList} from '../shared/model/option-list.model';
-import {UploadFile, UploadResponse} from '../shared/model/upload.model';
 
 interface NewProject extends LexiconProject {
   editProjectCode?: boolean;

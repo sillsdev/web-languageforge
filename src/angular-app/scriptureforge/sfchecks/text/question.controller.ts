@@ -1,37 +1,52 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
-  'sfchecks.services', 'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte',
-  'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice'])
+import {JsonRpcResult} from '../../../bellows/core/api/json-rpc.service';
+import {CoreModule} from '../../../bellows/core/core.module';
+import {NoticeModule} from '../../../bellows/core/notice/notice.module';
+import {SessionService} from '../../../bellows/core/session.service';
+import {SfChecksCoreModule} from '../core/sf-checks-core.module';
+import {Answer, Comment, Question} from '../shared/model/text.model';
+
+export const SfChecksQuestionModule = angular
+  .module('sfchecks.question', [
+    CoreModule,
+    NoticeModule,
+    'palaso.ui.listview',
+    'palaso.ui.tagging',
+    SfChecksCoreModule,
+    'palaso.ui.jqte',
+    'palaso.ui.selection'
+  ])
   .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService',
     'utilService', 'breadcrumbService', 'silNoticeService', 'linkService', 'modalService',
-  function ($scope, $routeParams, questionService, ss,
-            util, breadcrumbService, notice, linkService, modalService) {
-    var Q_TITLE_LIMIT = 30;
+  ($scope, $routeParams, questionService, sessionService: SessionService,
+   util, breadcrumbService, notice, linkService, modalService) => {
+
+    const Q_TITLE_LIMIT = 30;
     $scope.getAvatarUrl = util.constructor.getAvatarUrl;
     $scope.finishedLoading = false;
     $scope.state = 'stop';
 
-    var questionId = $routeParams.questionId;
+    const questionId = $routeParams.questionId;
 
     $scope.votes = {};
     $scope.unreadComments = [];
     $scope.unreadAnswers = [];
     $scope.myResponses = [];
 
-    $scope.unreadResponseCount = function () {
+    $scope.unreadResponseCount = function unreadResponseCount(): number {
       return $scope.unreadComments.length + $scope.unreadAnswers.length;
     };
 
-    $scope.isUnreadComment = function (id) {
-      return ($.inArray(id, $scope.unreadComments) > -1 || $.inArray(id, $scope.myResponses) > -1);
+    $scope.isUnreadComment = function isUnreadComment(id: string): boolean {
+      return ($scope.unreadComments.includes(id) || $scope.myResponses.includes(id));
     };
 
-    $scope.isUnreadAnswer = function (id) {
-      return ($.inArray(id, $scope.unreadAnswers) > -1 || $.inArray(id, $scope.myResponses) > -1);
+    $scope.isUnreadAnswer = function isUnreadAnswer(id: string): boolean {
+      return ($scope.unreadAnswers.includes(id) || $scope.myResponses.includes(id));
     };
 
-    questionService.read(questionId, function (result) {
+    questionService.read(questionId).then((result: JsonRpcResult) => {
       if (result.ok) {
         $scope.project = result.data.project;
         $scope.text = result.data.text;
@@ -46,22 +61,13 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
         $scope.unreadComments = result.data.unreadComments;
         $scope.unreadAnswers = result.data.unreadAnswers;
 
-        // console.log(result.data);
-
         // Breadcrumb
-        breadcrumbService.set('top', [{
-          href: '/app/projects',
-          label: 'My Projects'
-        }, {
-          href: linkService.project(),
-          label: $scope.project.projectName
-        }, {
-          href: linkService.text($routeParams.textId),
-          label: $scope.text.title
-        }, {
-          href: linkService.question($routeParams.textId, $routeParams.questionId),
-          label: $scope.question.title
-        }]);
+        breadcrumbService.set('top', [
+          { href: '/app/projects', label: 'My Projects' },
+          { href: linkService.project(), label: $scope.project.projectName },
+          { href: linkService.text($routeParams.textId), label: $scope.text.title },
+          { href: linkService.question($routeParams.textId, $routeParams.questionId), label: $scope.question.title }
+        ]);
 
         // Keep track of answer count so we can show or hide "There are no
         // answers" as appropriate
@@ -71,48 +77,65 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
       }
     });
 
-    ss.getSession().then(function (session) {
-
+    sessionService.getSession().then(session => {
       // Rights: Answers
-      $scope.rightsEditResponse = function (userId) {
-        if (session.project().isArchived) return false;
-        return session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT) ||
+      $scope.rightsEditResponse = function rightsEditResponse(userId: string): boolean {
+        if (session.project().isArchived) {
+          return false;
+        }
+
+        return session.hasRight($scope.rights, sessionService.domain.ANSWERS, sessionService.operation.EDIT) ||
           ((userId === session.userId()) &&
-          session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
+          session.hasRight($scope.rights, sessionService.domain.ANSWERS, sessionService.operation.EDIT_OWN));
       };
 
-      $scope.rightsDeleteResponse = function (userId) {
-        if (session.project().isArchived) return false;
-        return session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE) ||
+      $scope.rightsDeleteResponse = function rightsDeleteResponse(userId: string): boolean {
+        if (session.project().isArchived) {
+          return false;
+        }
+
+        return session.hasRight($scope.rights, sessionService.domain.ANSWERS, sessionService.operation.DELETE) ||
           ((userId === session.userId()) &&
-          session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN));
+          session.hasRight($scope.rights, sessionService.domain.ANSWERS, sessionService.operation.DELETE_OWN));
       };
 
       // Rights: Question
-      $scope.rightsCloseQuestion = function () {
-        if (session.project().isArchived) return false;
-        return session.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
+      $scope.rightsCloseQuestion = function rightsCloseQuestion(): boolean {
+        if (session.project().isArchived) {
+          return false;
+        }
+
+        return session.hasRight($scope.rights, sessionService.domain.QUESTIONS, sessionService.operation.EDIT);
       };
 
-      $scope.rightsEditQuestion = function () {
-        if (session.project().isArchived) return false;
-        return session.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
+      $scope.rightsEditQuestion = function rightsEditQuestion(): boolean {
+        if (session.project().isArchived) {
+          return false;
+        }
+
+        return session.hasRight($scope.rights, sessionService.domain.QUESTIONS, sessionService.operation.EDIT);
       };
 
       // Rights: Tags
-      $scope.rightsCreateTag = function () {
-        if (session.project().isArchived) return false;
-        return session.hasRight($scope.rights, ss.domain.TAGS, ss.operation.CREATE);
+      $scope.rightsCreateTag = function rightsCreateTag(): boolean {
+        if (session.project().isArchived) {
+          return false;
+        }
+
+        return session.hasRight($scope.rights, sessionService.domain.TAGS, sessionService.operation.CREATE);
       };
 
-      $scope.rightsDeleteTag = function () {
-        if (session.project().isArchived) return false;
-        return session.hasRight($scope.rights, ss.domain.TAGS, ss.operation.DELETE);
+      $scope.rightsDeleteTag = function rightsDeleteTag(): boolean {
+        if (session.project().isArchived) {
+          return false;
+        }
+
+        return session.hasRight($scope.rights, sessionService.domain.TAGS, sessionService.operation.DELETE);
       };
 
       // Rights: Export
-      $scope.rightsExport = function () {
-        return session.hasRight($scope.rights, ss.domain.TEXTS, ss.operation.EDIT);
+      $scope.rightsExport = function rightsExport(): boolean {
+        return session.hasRight($scope.rights, sessionService.domain.TEXTS, sessionService.operation.EDIT);
       };
 
     });
@@ -128,27 +151,27 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
       label: 'Closed'
     }];
 
-    $scope.questionIsClosed = function () {
+    $scope.questionIsClosed = function questionIsClosed(): boolean {
       if ($scope.question) {
         return ($scope.question.workflowState === 'closed');
       }
     };
 
     $scope.editQuestionCollapsed = true;
-    $scope.showQuestionEditor = function () {
+    $scope.showQuestionEditor = function showQuestionEditor(): void {
       $scope.editQuestionCollapsed = false;
     };
 
-    $scope.hideQuestionEditor = function () {
+    $scope.hideQuestionEditor = function hideQuestionEditor(): void {
       $scope.editQuestionCollapsed = true;
     };
 
-    $scope.toggleQuestionEditor = function () {
+    $scope.toggleQuestionEditor = function toggleQuestionEditor(): void {
       $scope.editQuestionCollapsed = !$scope.editQuestionCollapsed;
     };
 
-    $scope.$watch('editQuestionCollapsed', function (newval) {
-      if (newval) {
+    $scope.$watch('editQuestionCollapsed', (newVal: boolean) => {
+      if (newVal) {
         return;
       }
 
@@ -168,7 +191,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
     });
 
     $scope.questionTitleCalculated = '';
-    $scope.$watch('question.title', function () {
+    $scope.$watch('question.title', () => {
       if ($scope.question) {
         $scope.questionTitleCalculated = questionService.util
           .calculateTitle($scope.question.title, $scope.question.description, Q_TITLE_LIMIT);
@@ -178,7 +201,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
       }
     });
 
-    $scope.$watch('question.description', function () {
+    $scope.$watch('question.description', () => {
       if ($scope.question) {
         $scope.questionTitleCalculated = questionService.util
           .calculateTitle($scope.question.title, $scope.question.description, Q_TITLE_LIMIT);
@@ -188,13 +211,13 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
       }
     });
 
-    $scope.updateQuestion = function (newQuestion) {
-      questionService.update(newQuestion, function (result) {
-        if (result.ok) {
+    $scope.updateQuestion = function updateQuestion(newQuestion: Question): void {
+      questionService.update(newQuestion).then((updateResult: JsonRpcResult) => {
+        if (updateResult.ok) {
           notice.push(notice.SUCCESS, 'The question was updated successfully');
-          questionService.read(newQuestion.id, function (result) {
-            if (result.ok) {
-              $scope.question = result.data.question;
+          questionService.read(newQuestion.id).then((readResult: JsonRpcResult) => {
+            if (readResult.ok) {
+              $scope.question = readResult.data.question;
 
               // Recalculate answer count since the DB doesn't store it
               $scope.question.answerCount = Object.keys($scope.question.answers).length;
@@ -209,107 +232,96 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
       commentId: null
     };
 
-    $scope.showAnswerEditor = function (answerId) {
+    $scope.showAnswerEditor = function showAnswerEditor(answerId: string): void {
       $scope.openEditors.answerId = answerId;
     };
 
-    $scope.hideAnswerEditor = function () {
+    $scope.hideAnswerEditor = function hideAnswerEditor(): void {
       $scope.openEditors.answerId = null;
     };
 
-    $scope.$watch('openEditors.answerId', function (newval) {
-      if (newval === null || newval === undefined) {
-        // Skip; we're being called during initialization
+    $scope.$watch('openEditors.answerId', (newVal: string) => {
+      if (newVal == null) {
         return;
       }
 
       // Set up the values needed by the new editor
-      var answer = $scope.question.answers[newval];
-      if (angular.isUndefined(answer)) {
-        // console.log('Failed to find', newval, 'in', $scope.question.answers);
+      const answer = $scope.question.answers[newVal];
+      if (answer == null) {
         return;
       }
 
       $scope.editedAnswer = {
-        id: newval,
+        id: newVal,
         comments: {},
         content: answer.content,
 
-        // dateEdited: Date.now(), // Commented out for now because the model
-        // wasn't happy with a Javascript date. TODO: Figure out what format I
-        // should be passing this in. RM 2013-08
+        // TODO: Figure out what format I should be passing this in. RM 2013-08
+        // dateEdited: Date.now(), // Commented out for now because the model wasn't happy with a Javascript date.
         score: answer.score,
         textHighlight: answer.textHighlight,
         userRef: answer.userRef
       };
-      for (var id in answer.comments) {
-        if (answer.comments.hasOwnProperty(id)) {
-          var strippedComment = {};
-          var comment = answer.comments[id];
-          strippedComment.id = comment.id;
-          strippedComment.content = comment.content;
-          strippedComment.dateCreated = comment.dateCreated;
-          strippedComment.dateEdited = comment.dateEdited;
-          strippedComment.userRef = comment.userRef.userid;
-          $scope.editedAnswer.comments[id] = strippedComment;
-        }
+      for (const id of Object.keys(answer.comments)) {
+        const comment = answer.comments[id];
+        $scope.editedAnswer.comments[id] = {
+          id: comment.id,
+          content: comment.content,
+          dateCreated: comment.dateCreated,
+          dateEdited: comment.dateEdited,
+          userRef: comment.userRef.userid
+        } as Comment;
       }
     });
 
-    $scope.answerEditorVisible = function (answerId) {
+    $scope.answerEditorVisible = function answerEditorVisible(answerId: string): boolean {
       return (answerId === $scope.openEditors.answerId);
     };
 
-    $scope.showCommentEditor = function (commentId) {
+    $scope.showCommentEditor = function showCommentEditor(commentId: string): void {
       $scope.openEditors.commentId = commentId;
     };
 
-    $scope.hideCommentEditor = function () {
+    $scope.hideCommentEditor = function hideCommentEditor(): void {
       $scope.openEditors.commentId = null;
     };
 
-    $scope.$watch('openEditors.commentId', function (newval) {
-      if (newval === null || newval === undefined) {
-        // Skip; we're being called during initialization
+    $scope.$watch('openEditors.commentId', (newVal: string) => {
+      if (newVal == null) {
         return;
       }
 
-      // We're in the question-level scope, and we need to find a
-      // specific commentId without knowing which answer it belongs
-      // to, because all we have to work with is the new value of
-      // the commentId (the old value won't help us).
-      var comment = undefined;
-      searchLoop: for (var aid in $scope.question.answers) {
-        if ($scope.question.answers.hasOwnProperty(aid)) {
-          var answer = $scope.question.answers[aid];
-          for (var cid in answer.comments) {
-            if (answer.comments.hasOwnProperty(cid) && cid === newval) {
-              comment = answer.comments[cid];
-              break searchLoop;
-            }
+      // We're in the question-level scope, and we need to find a specific commentId without knowing which answer it
+      // belongs to, because all we have to work with is the new value of the commentId (the old value won't help us).
+      let comment: Comment;
+      searchLoop: for (const answerId of Object.keys($scope.question.answers)) {
+        const answer = $scope.question.answers[answerId];
+        for (const commentId of Object.keys(answer.comments)) {
+          if (commentId === newVal) {
+            comment = answer.comments[commentId];
+            break searchLoop;
           }
         }
       }
 
       // Set up the values needed by the new editor
-      if (angular.isUndefined(comment)) {
-        // console.log('Failed to find', newval, 'in', $scope.question.comments);
+      if (comment == null) {
         return;
       }
 
       $scope.editedComment = {
-        id: newval,
+        id: newVal,
         content: comment.content,
 
-        // dateEdited: Date.now(), // Commented out for now because the model
-        // wasn't happy with a Javascript date. TODO: Figure out what format I
-        // should be passing this in. RM 2013-08
-        userRef: comment.userRef // Do we really need to copy this over? Or will
-        // the PHP model code take care of that for us?
+        // TODO: Figure out what format I should be passing this in. RM 2013-08
+        // dateEdited: Date.now(), // Commented out for now because the model wasn't happy with a Javascript date.
+
+        // Do we really need to copy this over? Or will the PHP model code take care of that for us?
+        userRef: comment.userRef
       };
     });
 
-    $scope.commentEditorVisible = function (commentId) {
+    $scope.commentEditorVisible = function commentEditorVisible(commentId: string): boolean {
       return (commentId === $scope.openEditors.commentId);
     };
 
@@ -322,8 +334,8 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
       textHighlight: ''
     };
 
-    $scope.updateComment = function (answerId, answer, newComment) {
-      questionService.updateComment(questionId, answerId, newComment, function (result) {
+    $scope.updateComment = function updateComment(answerId: string, answer: Answer, newComment: Comment): void {
+      questionService.updateComment(questionId, answerId, newComment).then((result: JsonRpcResult) => {
         if (result.ok) {
           if (newComment.id === '') {
             notice.push(notice.SUCCESS, 'The comment was submitted successfully');
@@ -331,11 +343,9 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
             notice.push(notice.SUCCESS, 'The comment was updated successfully');
           }
 
-          for (var id in result.data) {
-            if (result.data.hasOwnProperty(id)) {
-              // There should be one, and only one, record in result.data
-              newComment = result.data[id];
-            }
+          for (const id of Object.keys(result.data)) {
+            // There should be one, and only one, record in result.data
+            newComment = result.data[id];
           }
 
           $scope.question.answers[answerId].comments[newComment.id] = newComment;
@@ -344,17 +354,17 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
       });
     };
 
-    $scope.submitComment = function (answerId, answer) {
-      var newComment = {
+    $scope.submitComment = function submitComment(answerId: string, answer: Answer): void {
+      const newComment = {
         id: '',
         content: $scope.newComment.content
-      };
+      } as Comment;
       $scope.updateComment(answerId, answer, newComment);
       $scope.newComment.content = '';
       $scope.newComment.textHighlight = '';
     };
 
-    $scope.editComment = function (answerId, answer, comment) {
+    $scope.editComment = function editComment(answerId: string, answer: Answer, comment: Comment): void {
       if ($scope.rightsEditResponse(comment.userRef.userid)) {
         $scope.updateComment(answerId, answer, comment);
       }
@@ -362,16 +372,16 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
       $scope.hideCommentEditor();
     };
 
-    $scope.commentDelete = function (answer, commentId) {
-      var message = 'Are you sure you want to delete this Comment?';
-      var modalOptions = {
+    $scope.commentDelete = function commentDelete(answer: Answer, commentId: string): void {
+      const message = 'Are you sure you want to delete this Comment?';
+      const modalOptions = {
         closeButtonText: 'Cancel',
         actionButtonText: 'Delete',
         headerText: 'Delete Comment?',
         bodyText: message
       };
-      modalService.showModal({}, modalOptions).then(function () {
-        questionService.removeComment(questionId, answer.id, commentId, function (result) {
+      modalService.showModal({}, modalOptions).then(() => {
+        questionService.removeComment(questionId, answer.id, commentId).then((result: JsonRpcResult) => {
           if (result.ok) {
             notice.push(notice.SUCCESS, 'The comment was removed successfully');
 
@@ -379,51 +389,47 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
             delete answer.comments[commentId];
           }
         });
-      }, angular.noop);
+      }, () => {});
     };
 
-    var afterUpdateAnswer = function (answersDto) {
-      for (var id in answersDto) {
-        if (answersDto.hasOwnProperty(id)) {
-          $scope.question.answers[id] = answersDto[id];
-          $scope.myResponses.push(id);
-        }
+    function afterUpdateAnswer(answersDto: Answer): void {
+      for (const id of Object.keys(answersDto)) {
+        $scope.question.answers[id] = answersDto[id];
+        $scope.myResponses.push(id);
       }
 
       // Recalculate answer count as it might have changed
       $scope.question.answerCount = Object.keys($scope.question.answers).length;
-    };
+    }
 
-    $scope.voteUp = function (answerId) {
+    $scope.voteUp = function voteUp(answerId: string): void {
       if ($scope.votes[answerId] === true || $scope.questionIsClosed()) {
         return;
       }
 
-      questionService.answerVoteUp(questionId, answerId, function (result) {
+      questionService.answerVoteUp(questionId, answerId).then((result: JsonRpcResult) => {
         if (result.ok) {
-          // console.log('vote up ok');
           $scope.votes[answerId] = true;
           afterUpdateAnswer(result.data);
         }
       });
     };
 
-    $scope.voteDown = function (answerId) {
+    $scope.voteDown = function voteDown(answerId: string): void {
       if ($scope.votes[answerId] !== true || $scope.questionIsClosed()) {
         return;
       }
 
-      questionService.answerVoteDown(questionId, answerId, function (result) {
+      questionService.answerVoteDown(questionId, answerId).then((result: JsonRpcResult) => {
         if (result.ok) {
-          // console.log('vote down ok');
           delete $scope.votes[answerId];
           afterUpdateAnswer(result.data);
         }
       });
     };
 
-    var updateAnswer = function (questionId, answer) {
-      questionService.updateAnswer(questionId, answer, function (result) {
+    function updateAnswer(answer: Answer): void {
+      questionService.updateAnswer(questionId, answer).then((result: JsonRpcResult) => {
         if (result.ok) {
           if (answer.id === '') {
             notice.push(notice.SUCCESS, 'The answer was submitted successfully');
@@ -434,38 +440,38 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
           afterUpdateAnswer(result.data);
         }
       });
-    };
+    }
 
-    $scope.submitAnswer = function () {
-      var answer = {
+    $scope.submitAnswer = function submitAnswer(): void {
+      const answer = {
         id: '',
         content: $scope.newAnswer.content,
         textHighlight: $scope.newAnswer.textHighlight
       };
-      updateAnswer(questionId, answer);
+      updateAnswer(answer);
       $scope.newAnswer.content = '';
       $scope.newAnswer.textHighlight = '';
       $scope.selectedText = '';
     };
 
-    $scope.editAnswer = function (answer) {
+    $scope.editAnswer = function editAnswer(answer: Answer): void {
       if ($scope.rightsEditResponse(answer.userRef.userid)) {
-        updateAnswer(questionId, answer);
+        updateAnswer(answer);
       }
 
       $scope.hideAnswerEditor();
     };
 
-    $scope.answerDelete = function (answerId) {
-      var message = 'Are you sure you want to delete this Answer?';
-      var modalOptions = {
+    $scope.answerDelete = function answerDelete(answerId: string): void {
+      const message = 'Are you sure you want to delete this Answer?';
+      const modalOptions = {
         closeButtonText: 'Cancel',
         actionButtonText: 'Delete',
         headerText: 'Delete Answer?',
         bodyText: message
       };
-      modalService.showModal({}, modalOptions).then(function () {
-        questionService.removeAnswer(questionId, answerId, function (result) {
+      modalService.showModal({}, modalOptions).then(() => {
+        questionService.removeAnswer(questionId, answerId).then((result: JsonRpcResult) => {
           if (result.ok) {
             notice.push(notice.SUCCESS, 'The answer was removed successfully');
 
@@ -476,33 +482,28 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
             $scope.question.answerCount = Object.keys($scope.question.answers).length;
           }
         });
-      }, angular.noop);
+      }, () => {});
     };
 
     $scope.selectedText = '';
-    $scope.$watch('selectedText', function (newval) {
-      $scope.newAnswer.textHighlight = newval;
+    $scope.$watch('selectedText', (newVal: string) => {
+      $scope.newAnswer.textHighlight = newVal;
     });
 
     // TAGS
-    var mergeArrays = function (a, b) {
+    function mergeArrays(a: string[], b: string[]) {
       // From http://stackoverflow.com/a/13847481/2314532
-      var set = {};
-      var result = [];
-      var item;
-      var i;
+      const set: { [item: string]: boolean; } = {};
+      const result = [];
 
-      // Can't count on forEach being available; loop the manual way
-      for (i = 0; i < a.length; i++) {
-        item = a[i];
+      for (const item of a) {
         if (!set[item]) { // O(1) lookup
           set[item] = true;
           result.push(item);
         }
       }
 
-      for (i = 0; i < b.length; i++) {
-        item = b[i];
+      for (const item of b) {
         if (!set[item]) { // O(1) lookup
           set[item] = true;
           result.push(item);
@@ -510,29 +511,29 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
       }
 
       return result;
-    };
+    }
 
-    $scope.addTags = function (tags, answer) {
+    $scope.addTags = function addTags(tags: string[], answer: Answer): void {
       answer.tags = mergeArrays(tags, answer.tags);
-      questionService.updateAnswerTags(questionId, answer.id, answer.tags, function (result) {
+      questionService.updateAnswerTags(questionId, answer.id, answer.tags).then((result: JsonRpcResult) => {
         if (result.ok) {
           notice.push(notice.SUCCESS, 'The answer tag was added successfully');
         }
       });
     };
 
-    $scope.deletedTags = function (answer) {
-      questionService.updateAnswerTags(questionId, answer.id, answer.tags, function (result) {
+    $scope.deletedTags = function deletedTags(answer: Answer): void {
+      questionService.updateAnswerTags(questionId, answer.id, answer.tags).then((result: JsonRpcResult) => {
         if (result.ok) {
           notice.push(notice.SUCCESS, 'The answer tags were deleted successfully');
         }
       });
     };
 
-    $scope.flagForExport = function (answer) {
+    $scope.flagForExport = function flagForExport(answer: Answer): void {
       answer.isToBeExported = !answer.isToBeExported;
-      questionService.updateAnswerExportFlag(questionId, answer.id, answer.isToBeExported,
-        function (result) {
+      questionService.updateAnswerExportFlag(questionId, answer.id, answer.isToBeExported)
+        .then((result: JsonRpcResult) => {
           if (result.ok) {
             if (answer.isToBeExported) {
               notice.push(notice.SUCCESS, 'The answer was flagged for export successfully');
@@ -544,4 +545,5 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
       );
     };
 
-  }]);
+  }])
+  .name;
