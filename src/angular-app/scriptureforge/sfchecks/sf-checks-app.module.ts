@@ -41,21 +41,21 @@ export const SfChecksAppModule = angular
     $routeProvider.when(
       '/:textId',
       {
-        templateUrl: '/angular-app/scriptureforge/sfchecks/partials/questions.html',
+        templateUrl: '/angular-app/scriptureforge/sfchecks/text/text.html',
         controller: 'QuestionsCtrl'
       }
     );
     $routeProvider.when(
       '/:textId/settings',
       {
-        templateUrl: '/angular-app/scriptureforge/sfchecks/partials/questions-settings.html',
+        templateUrl: '/angular-app/scriptureforge/sfchecks/text/text-settings.html',
         controller: 'QuestionsSettingsCtrl'
       }
     );
     $routeProvider.when(
       '/:textId/:questionId',
       {
-        templateUrl: '/angular-app/scriptureforge/sfchecks/partials/question.html',
+        templateUrl: '/angular-app/scriptureforge/sfchecks/text/question.html',
         controller: 'QuestionCtrl'
       }
     );
