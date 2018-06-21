@@ -1,16 +1,36 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.breadcrumb',
-  'sfchecks.services', 'ngFileUpload', 'ngSanitize', 'ngRoute', 'soundModule',
-  'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice'])
-  .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService',
+import {JsonRpcResult} from '../../../bellows/core/api/json-rpc.service';
+import {BreadcrumbModule} from '../../../bellows/core/breadcrumbs/breadcrumb.module';
+import {CoreModule} from '../../../bellows/core/core.module';
+import {NoticeModule} from '../../../bellows/core/notice/notice.module';
+import {Session, SessionService} from '../../../bellows/core/session.service';
+import {UtilityService} from '../../../bellows/core/utility.service';
+import {UploadFile, UploadResponse} from '../../../bellows/shared/model/upload.model';
+import {SoundModule} from '../../../bellows/shared/sound.module';
+import {SfChecksCoreModule} from '../core/sf-checks-core.module';
+import {Question, QuestionTemplate, Text} from '../shared/model/text.model';
+
+export const SfChecksTextModule = angular
+  .module('sfchecks.questions', [
+    'ngFileUpload',
+    CoreModule,
+    BreadcrumbModule,
+    SoundModule,
+    'palaso.ui.listview',
+    'palaso.ui.typeahead',
+    NoticeModule,
+    SfChecksCoreModule
+  ])
+  .controller('TextCtrl', ['$scope', '$q', 'questionService', 'questionTemplateService',
     '$routeParams', 'sessionService', 'linkService', 'breadcrumbService',
-    'listviewSortingService', 'silNoticeService', 'modalService', '$q',
-  function ($scope, questionService, qts,
-            $routeParams, ss, linkService, breadcrumbService,
-            sorting, notice, modalService, $q) {
-    var Q_TITLE_LIMIT = 70;
-    var textId = $routeParams.textId;
+    'listviewSortingService', 'silNoticeService', 'modalService',
+  ($scope, $q, questionService, qts,
+   $routeParams, sessionService: SessionService, linkService, breadcrumbService,
+   sorting, notice, modalService) => {
+
+    const Q_TITLE_LIMIT = 70;
+    const textId = $routeParams.textId;
     $scope.textId = textId;
 
     // Rights
@@ -18,32 +38,35 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
     $scope.rights.archive = false;
     $scope.rights.create = false;
     $scope.rights.createTemplate = false;
-    $scope.rights.editOther = false; //ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-    $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create ||
-      $scope.rights.createTemplate || $scope.rights.editOther;
+    // $scope.rights.editOther =
+    //    sessionService.hasSiteRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
+    $scope.rights.editOther = false;
+    $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.createTemplate ||
+      $scope.rights.editOther;
 
     // Question templates
     $scope.emptyTemplate = {
       title: '(Select a template)',
       description: undefined
-    };
+    } as QuestionTemplate;
     $scope.templates = [$scope.emptyTemplate];
-    $scope.queryTemplates = function () {
-      qts.list(function (result) {
+
+    $scope.queryTemplates = function queryTemplates(): void {
+      qts.list((result: JsonRpcResult) => {
         if (result.ok) {
           $scope.templates = result.data.entries;
 
           // Add "(Select a template)" as default value
           $scope.templates.unshift($scope.emptyTemplate);
-          if (angular.isUndefined($scope.template)) {
+          if ($scope.template == null) {
             $scope.template = $scope.emptyTemplate;
           }
         }
       });
     };
 
-    $scope.$watch('template', function (template) {
-      if (template && !angular.isUndefined(template.description)) {
+    $scope.$watch('template', (template: QuestionTemplate) => {
+      if (template && template.description != null) {
         $scope.questionTitle = template.title;
         $scope.questionDescription = template.description;
       }
@@ -52,24 +75,24 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
     // Listview Selection
     $scope.newQuestionCollapsed = true;
     $scope.selected = [];
-    $scope.updateSelection = function (event, item) {
-      var selectedIndex = $scope.selected.indexOf(item);
-      var checkbox = event.target;
+    $scope.updateSelection = function updateSelection(event: Event, question: Question): void {
+      const selectedIndex = $scope.selected.indexOf(question);
+      const checkbox = event.target as HTMLInputElement;
       if (checkbox.checked && selectedIndex === -1) {
-        $scope.selected.push(item);
+        $scope.selected.push(question);
       } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
-    $scope.isSelected = function (item) {
-      if (item === null) {
+    $scope.isSelected = function isSelected(question: Question): boolean {
+      if (question == null) {
         return false;
       }
 
-      var i = $scope.selected.length;
+      let i = $scope.selected.length;
       while (i--) {
-        if ($scope.selected[i].id === item.id) {
+        if ($scope.selected[i].id === question.id) {
           return true;
         }
       }
@@ -81,31 +104,30 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
 
     $scope.sortdata = { sortColumn: '', direction: '' };
 
-    $scope.sortIconClass = function (columnName) {
+    $scope.sortIconClass = function sortIconClass(columnName: string): string {
       return sorting.sortIconClass($scope.sortdata, columnName);
     };
 
-    $scope.setSortColumn = function (columnName) {
-      return sorting.setSortColumn($scope.sortdata, columnName);
+    $scope.setSortColumn = function setSortColumn(columnName: string): void {
+      sorting.setSortColumn($scope.sortdata, columnName);
     };
 
-    $scope.doSort = function () {
+    $scope.doSort = function doSort(): void {
       sorting.sortDataByColumn($scope.questions, $scope.sortdata.sortColumn,
         $scope.sortdata.direction);
     };
 
-    $scope.doSortByColumn = function (columnName) {
+    $scope.doSortByColumn = function doSortByColumn(columnName: string): void {
       $scope.setSortColumn(columnName);
       $scope.doSort();
     };
 
     // Listview Data
-    $scope.questions = [];
-    $scope.queryQuestions = function () {
-      //console.log("queryQuestions()");
-      $q.all([ss.getSession(), questionService.list(textId)]).then(function (data) {
-        var session = data[0];
-        var result = data[1];
+    $scope.questions = [] as Question[];
+    $scope.queryQuestions = function queryQuestions(): void {
+      $q.all([sessionService.getSession(), questionService.list(textId)]).then((data: any[]) => {
+        const session = data[0] as Session;
+        const result = data[1] as JsonRpcResult;
         $scope.selected = [];
         $scope.questions = result.data.entries;
         $scope.questionsCount = result.data.count;
@@ -121,31 +143,27 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
 
         $scope.text.url = linkService.text(textId);
 
-        //console.log($scope.project.name);
-        //console.log($scope.text.title);
+        breadcrumbService.set('top', [
+          { href: '/app/projects', label: 'My Projects' },
+          { href: linkService.project(), label: $scope.project.name },
+          { href: linkService.text($routeParams.textId), label: $scope.text.title }
+        ]);
 
-        // Breadcrumb
-        breadcrumbService.set('top',
-          [
-            { href: '/app/projects', label: 'My Projects' },
-            { href: linkService.project(), label: $scope.project.name },
-            { href: linkService.text($routeParams.textId), label: $scope.text.title }
-          ]
-        );
-
-        var rights = result.data.rights;
+        const rights = result.data.rights;
         $scope.rights.archive =
-          session.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE) &&
+          session.hasRight(rights, sessionService.domain.QUESTIONS, sessionService.operation.ARCHIVE) &&
           !session.project().isArchived;
-        $scope.rights.create = session.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE) &&
+        $scope.rights.create =
+          session.hasRight(rights, sessionService.domain.QUESTIONS, sessionService.operation.CREATE) &&
           !session.project().isArchived;
         $scope.rights.createTemplate =
-          session.hasRight(rights, ss.domain.TEMPLATES, ss.operation.CREATE) &&
+          session.hasRight(rights, sessionService.domain.TEMPLATES, sessionService.operation.CREATE) &&
           !session.project().isArchived;
-        $scope.rights.editOther = session.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) &&
+        $scope.rights.editOther =
+          session.hasRight(rights, sessionService.domain.TEXTS, sessionService.operation.EDIT) &&
           !session.project().isArchived;
-        $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create ||
-          $scope.rights.createTemplate || $scope.rights.editOther;
+        $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.createTemplate ||
+          $scope.rights.editOther;
         if ($scope.rights.create) {
           $scope.queryTemplates();
         }
@@ -155,12 +173,11 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
     };
 
     // Archive questions
-    $scope.archiveQuestions = function () {
-      //console.log("archiveQuestions()");
-      var questionIds = [];
-      var message = '';
-      for (var i = 0, l = $scope.selected.length; i < l; i++) {
-        questionIds.push($scope.selected[i].id);
+    $scope.archiveQuestions = function archiveQuestions(): void {
+      const questionIds: string[] = [];
+      let message = '';
+      for (const selectedQuestion of $scope.selected) {
+        questionIds.push(selectedQuestion.id);
       }
 
       if (questionIds.length === 1) {
@@ -170,14 +187,14 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
           ' selected questions?';
       }
 
-      var modalOptions = {
+      const modalOptions = {
         closeButtonText: 'Cancel',
         actionButtonText: 'Archive',
         headerText: 'Archive Questions?',
         bodyText: message
       };
-      modalService.showModal({}, modalOptions).then(function () {
-        questionService.archive(questionIds, function (result) {
+      modalService.showModal({}, modalOptions).then(() => {
+        questionService.archive(questionIds).then((result: JsonRpcResult) => {
           if (result.ok) {
             $scope.selected = []; // Reset the selection
             $scope.queryQuestions();
@@ -188,28 +205,27 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
             }
           }
         });
-      }, angular.noop);
+      }, () => {});
     };
 
     // Add question
-    $scope.addQuestion = function () {
-      //console.log("addQuestion()");
-      var model = {};
-      model.id = '';
-      model.textRef = textId;
-      model.title = $scope.questionTitle;
-      model.description = $scope.questionDescription;
-      questionService.update(model, function (result) {
-        if (result.ok) {
+    $scope.addQuestion = function addQuestion(): void {
+      const question: Question = {
+        id: '',
+        textRef: textId,
+        title: $scope.questionTitle,
+        description: $scope.questionDescription
+      } as Question;
+      questionService.update(question).then((questionUpdateResult: JsonRpcResult) => {
+        if (questionUpdateResult.ok) {
           $scope.queryQuestions();
-          notice.push(notice.SUCCESS, '\'' + questionService.util
-              .calculateTitle(model.title, model.description, Q_TITLE_LIMIT) +
+          notice.push(notice.SUCCESS,
+            '\'' + questionService.util.calculateTitle(question.title, question.description, Q_TITLE_LIMIT) +
             '\' was added successfully');
           if ($scope.saveAsTemplate) {
-            qts.update(model, function (result) {
-              if (result.ok) {
-                notice.push(notice.SUCCESS, '\'' + model.title +
-                  '\' was added as a template question');
+            qts.update(question).then((templateUpdateResult: JsonRpcResult) => {
+              if (templateUpdateResult.ok) {
+                notice.push(notice.SUCCESS, '\'' + question.title + '\' was added as a template question');
               }
             });
           }
@@ -224,43 +240,44 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
       });
     };
 
-    $scope.makeQuestionIntoTemplate = function () {
+    $scope.makeQuestionIntoTemplate = function makeQuestionIntoTemplate(): void {
       // Expects one, and only one, question to be selected (checked)
-      var l = $scope.selected.length;
-      if (l !== 1) {
+      if ($scope.selected.length !== 1) {
         return;
       }
 
-      var model = {};
-      model.id = '';
-      model.title = $scope.selected[0].title;
-      model.description = $scope.selected[0].description;
-      qts.update(model, function (result) {
+      const questionTemplate: QuestionTemplate = {
+        id: '',
+        title: $scope.selected[0].title,
+        description: $scope.selected[0].description
+      } as QuestionTemplate;
+      qts.update(questionTemplate).then((result: JsonRpcResult) => {
         if (result.ok) {
           $scope.queryTemplates();
-          notice.push(notice.SUCCESS, '\'' + model.title + '\' was added as a template question');
+          notice.push(notice.SUCCESS, '\'' + questionTemplate.title + '\' was added as a template question');
           $scope.selected = [];
         }
       });
     };
 
-    $scope.enhanceDto = function (items) {
-      angular.forEach(items, function (item) {
-        item.url = linkService.question(textId, item.id);
-        item.calculatedTitle = questionService.util.calculateTitle(item.title, item.description,
-          Q_TITLE_LIMIT);
-      });
+    $scope.enhanceDto = function enhanceDto(questions: Question[]): void {
+      for (const question of questions) {
+        question.url = linkService.question(textId, question.id);
+        question.calculatedTitle =
+          questionService.util.calculateTitle(question.title, question.description, Q_TITLE_LIMIT);
+      }
     };
 
   }])
-  .controller('QuestionsSettingsCtrl', ['$scope', 'Upload', 'sessionService', '$routeParams',
+  .controller('TextSettingsCtrl', ['$filter', '$scope', '$q', 'Upload', 'sessionService', '$routeParams',
     'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'utilService',
-    'linkService', 'modalService', '$q',
-  function ($scope, Upload, ss, $routeParams,
-            breadcrumbService, notice, textService, questionService, util,
-            linkService, modalService, $q) {
-    var Q_TITLE_LIMIT = 50;
-    var textId = $routeParams.textId;
+    'linkService', 'modalService',
+  ($filter, $scope, $q, Upload, sessionService: SessionService, $routeParams,
+   breadcrumbService, notice, textService, questionService, util: UtilityService,
+   linkService, modalService) => {
+
+    const Q_TITLE_LIMIT = 50;
+    const textId = $routeParams.textId;
     $scope.textId = textId;
     $scope.editedText = {
       id: textId
@@ -273,51 +290,45 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
     $scope.file = null;
     $scope.uploadResult = '';
 
-    $scope.queryTextSettings = function () {
-      $q.all([ss.getSession(), textService.settingsDto($scope.textId)]).then(function (data) {
-        var session = data[0];
-        var result = data[1];
+    $scope.queryTextSettings = function queryTextSettings() {
+      $q.all([sessionService.getSession(), textService.settingsDto($scope.textId)]).then((data: any[]) => {
+        const session = data[0] as Session;
+        const result = data[1] as JsonRpcResult;
         $scope.dto = result.data;
         $scope.textTitle = $scope.dto.text.title;
         $scope.editedText.title = $scope.dto.text.title;
         $scope.editedText.fontfamily = $scope.dto.text.fontfamily;
         $scope.settings.archivedQuestions = result.data.archivedQuestions;
-        for (var i = 0; i < $scope.settings.archivedQuestions.length; i++) {
-          $scope.settings.archivedQuestions[i].url = linkService.question($scope.textId,
-            $scope.settings.archivedQuestions[i].id);
-          $scope.settings.archivedQuestions[i].calculatedTitle =
-            questionService.util.calculateTitle($scope.settings.archivedQuestions[i].title,
-              $scope.settings.archivedQuestions[i].description, Q_TITLE_LIMIT);
-          $scope.settings.archivedQuestions[i].dateModified =
-            new Date($scope.settings.archivedQuestions[i].dateModified);
+        for (const archivedQuestion of $scope.settings.archivedQuestions) {
+          archivedQuestion.url = linkService.question($scope.textId, archivedQuestion.id);
+          archivedQuestion.calculatedTitle = questionService.util.calculateTitle(archivedQuestion.title,
+              archivedQuestion.description, Q_TITLE_LIMIT);
+          archivedQuestion.dateModified = new Date(archivedQuestion.dateModified);
         }
 
         // Rights
-        var rights = result.data.rights;
+        const rights = result.data.rights;
         $scope.rights = {};
-        $scope.rights.archive = session.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE);
-        $scope.rights.editOther = session.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT);
+        $scope.rights.archive =
+          session.hasRight(rights, sessionService.domain.QUESTIONS, sessionService.operation.ARCHIVE);
+        $scope.rights.editOther = session.hasRight(rights, sessionService.domain.TEXTS, sessionService.operation.EDIT);
         $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.editOther;
 
-        // Breadcrumb
-        breadcrumbService.set('top',
-          [
-            { href: '/app/projects', label: 'My Projects' },
-            { href: linkService.project(), label: $scope.dto.bcs.project.crumb },
-            { href: linkService.text($routeParams.textId), label: $scope.dto.text.title },
-            { href: linkService.text($routeParams.textId) + '/Settings',
-              label: 'Settings' }
-          ]
-        );
+        breadcrumbService.set('top', [
+          { href: '/app/projects', label: 'My Projects' },
+          { href: linkService.project(), label: $scope.dto.bcs.project.crumb },
+          { href: linkService.text($routeParams.textId), label: $scope.dto.text.title },
+          { href: linkService.text($routeParams.textId) + '/Settings', label: 'Settings' }
+        ]);
       });
     };
 
-    $scope.updateText = function (newText) {
+    $scope.updateText = function updateText(newText: Text): void {
       if (!newText.content) {
         delete newText.content;
       }
 
-      textService.update(newText, function (result) {
+      textService.update(newText).then((result: JsonRpcResult) => {
         if (result.ok) {
           notice.push(notice.SUCCESS, newText.title + ' settings successfully updated');
           $scope.textTitle = newText.title;
@@ -325,57 +336,58 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
       });
     };
 
-    $scope.toggleRangeSelector = function () {
+    $scope.toggleRangeSelector = function toggleRangeSelector(): void {
       $scope.rangeSelectorCollapsed = !$scope.rangeSelectorCollapsed;
     };
 
-    $scope.editPreviousText = function () {
-      var msg;
-      msg = 'Caution: Editing the USX text can be dangerous. You can easily mess up your text ' +
-        'with a typo. Are you really sure you want to do this?';
-      var modalOptions = {
+    $scope.editPreviousText = function editPreviousText(): void {
+      let msg = 'Caution: Editing the USX text can be dangerous. You can easily mess up your text with a typo. ' +
+        'Are you really sure you want to do this?';
+      const editModalOptions = {
         closeButtonText: 'Cancel',
         actionButtonText: 'Edit',
         headerText: 'Edit USX text?',
         bodyText: msg
       };
-      modalService.showModal({}, modalOptions).then(function () {
+      modalService.showModal({}, editModalOptions).then(() => {
         if ($scope.editedText.content && $scope.editedText.content !== $scope.dto.text.content) {
           // Wait; the user had already entered text. Pop up ANOTHER confirm box.
           msg = 'Caution: You had previous edits in the USX text box, which will be replaced if ' +
             'you proceed. Are you really sure you want to throw away your previous edits?';
-          var modalOptions = {
+          const replaceModalOptions = {
             closeButtonText: 'Cancel',
             actionButtonText: 'Replace',
             headerText: 'Replace previous edits?',
             bodyText: msg
           };
-          modalService.showModal({}, modalOptions).then(function () {
+          modalService.showModal({}, replaceModalOptions).then(() => {
             $scope.editedText.content = $scope.dto.text.content;
-          });
+          }, () => {});
         } else {
           $scope.editedText.content = $scope.dto.text.content;
         }
-      }, angular.noop);
+      }, () => {});
     };
 
-    $scope.readUsx = function readUsx(file) {
-      util.readUsxFile(file).then(function (usx) {
-        $scope.$applyAsync(function () {
+    $scope.readUsx = function readUsx(file: UploadFile) {
+      util.readUsxFile(file).then((usx: string) => {
+        $scope.$applyAsync(() => {
           $scope.editedText.content = usx;
         });
-      }).catch(function (errorMessage) {
-        $scope.$applyAsync(function () {
+      }).catch((errorMessage: string) => {
+        $scope.$applyAsync(() => {
           notice.push(notice.ERROR, errorMessage);
           $scope.editedText.content = '';
         });
       });
     };
 
-    $scope.uploadAudio = function uploadAudio(file) {
-      if (!file || file.$error) return;
+    $scope.uploadAudio = function uploadAudio(file: UploadFile) {
+      if (!file || file.$error) {
+        return;
+      }
 
-      ss.getSession().then(function (session) {
+      sessionService.getSession().then(session => {
         if (file.size > session.fileSizeMax()) {
           notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
             $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
@@ -388,12 +400,12 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
         Upload.upload({
           url: '/upload/sf-checks/audio',
           data: {
-            file: file,
-            textId: textId
+            file,
+            textId
           }
-        }).then(function (response) {
+        }).then((response: UploadResponse) => {
             notice.cancelLoading();
-            var isUploadSuccess = response.data.result;
+            const isUploadSuccess = response.data.result;
             if (isUploadSuccess) {
               $scope.uploadResult = 'File uploaded successfully.';
               notice.push(notice.SUCCESS, $scope.uploadResult);
@@ -405,9 +417,9 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
             }
           },
 
-          function (response) {
+          (response: UploadResponse) => {
             notice.cancelLoading();
-            var errorMessage = 'Import failed.';
+            let errorMessage = 'Import failed.';
             if (response.status > 0) {
               errorMessage += ' Status: ' + response.status;
               if (response.statusText) {
@@ -422,8 +434,8 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
             notice.push(notice.ERROR, errorMessage);
           },
 
-          function (evt) {
-            notice.setPercentComplete(100.0 * evt.loaded / evt.total);
+          (evt: ProgressEvent) => {
+            notice.setPercentComplete(Math.floor(100.0 * evt.loaded / evt.total));
           }
         );
       });
@@ -431,27 +443,27 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
 
   }])
   .controller('TextSettingsArchivedQuestionsCtrl', ['$scope', 'questionService', 'silNoticeService',
-  function ($scope, questionService, notice) {
+  ($scope, questionService, notice) => {
     // Listview Selection
     $scope.selected = [];
-    $scope.updateSelection = function (event, item) {
-      var selectedIndex = $scope.selected.indexOf(item);
-      var checkbox = event.target;
+    $scope.updateSelection = function updateSelection(event: Event, question: Question): void {
+      const selectedIndex = $scope.selected.indexOf(question);
+      const checkbox = event.target as HTMLInputElement;
       if (checkbox.checked && selectedIndex === -1) {
-        $scope.selected.push(item);
+        $scope.selected.push(question);
       } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
-    $scope.isSelected = function (item) {
-      if (item === null) {
+    $scope.isSelected = function isSelected(question: Question): boolean {
+      if (question == null) {
         return false;
       }
 
-      var i = $scope.selected.length;
+      let i = $scope.selected.length;
       while (i--) {
-        if ($scope.selected[i].id === item.id) {
+        if ($scope.selected[i].id === question.id) {
           return true;
         }
       }
@@ -460,13 +472,13 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
     };
 
     // Publish Questions
-    $scope.publishQuestions = function () {
-      var questionIds = [];
-      for (var i = 0, l = $scope.selected.length; i < l; i++) {
-        questionIds.push($scope.selected[i].id);
+    $scope.publishQuestions = function publishQuestions() {
+      const questionIds: string[] = [];
+      for (const selectedQuestion of $scope.selected) {
+        questionIds.push(selectedQuestion.id);
       }
 
-      questionService.publish(questionIds, function (result) {
+      questionService.publish(questionIds).then((result: JsonRpcResult) => {
         if (result.ok) {
           $scope.selected = []; // Reset the selection
           $scope.queryTextSettings();
@@ -481,7 +493,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
 
   }])
   .controller('ParatextExportTextCtrl', ['$scope', 'textService', '$routeParams',
-  function ($scope, textService, $routeParams) {
+  ($scope, textService, $routeParams) => {
     $scope.exportConfig = {
       textId: $routeParams.textId,
       commentFormat: 'PT7',
@@ -499,24 +511,23 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
       inprogress: false
     };
 
-    $scope.returnTrue = function () {
+    $scope.returnTrue = function returnTrue(): boolean {
       return true;
     };
 
-    $scope.startExport = function (ptVersion) {
-      ptVersion = (typeof ptVersion !== 'undefined') ? ptVersion : 'PT7';
+    $scope.startExport = function startExport(ptVersion: string = 'PT7'): void {
       console.log('Downloading for', ptVersion);
       $scope.exportConfig.commentFormat = ptVersion;
       $scope.download.inprogress = true;
-      textService.exportComments($scope.exportConfig, function (result) {
+      textService.exportComments($scope.exportConfig).then((result: JsonRpcResult) => {
         if (result.ok) {
           $scope.download = result.data;
           $scope.download.complete = true;
           if ($scope.download.totalCount > 0) {
             // for a reference on how to create a data-uri for use in downloading content see
-            // http://stackoverflow.com/questions/16514509/how-do-you-serve-a-file-for-download-with-angularjs-or-javascript
-            var uri = 'data:text/plain;charset=utf-8,' + encodeURIComponent($scope.download.xml);
-            var link = document.createElement('a');
+  // http://stackoverflow.com/questions/16514509/how-do-you-serve-a-file-for-download-with-angularjs-or-javascript
+            const uri = 'data:text/plain;charset=utf-8,' + encodeURIComponent($scope.download.xml);
+            const link = document.createElement('a');
             link.download = $scope.download.filename;
             link.href = uri;
             link.click();
@@ -528,5 +539,4 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
     };
 
   }])
-
-  ;
+  .name;
