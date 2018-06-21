@@ -5,10 +5,10 @@ import {ModalService} from '../../../../bellows/core/modal/modal.service';
 import {NoticeService} from '../../../../bellows/core/notice/notice.service';
 import {SessionService} from '../../../../bellows/core/session.service';
 import {InterfaceConfig} from '../../../../bellows/shared/model/interface-config.model';
+import {UploadFile, UploadResponse} from '../../../../bellows/shared/model/upload.model';
 import {LexiconProjectService} from '../../core/lexicon-project.service';
 import {Rights} from '../../core/lexicon-rights.service';
 import {LexiconUtilityService} from '../../core/lexicon-utility.service';
-import {UploadFile, UploadResponse} from '../../shared/model/upload.model';
 
 export class FieldAudioController implements angular.IController {
   dcFilename: string;
