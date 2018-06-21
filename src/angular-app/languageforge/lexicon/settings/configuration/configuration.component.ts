@@ -11,7 +11,7 @@ import {
 } from '../../shared/model/lexicon-config.model';
 import {LexiconProjectSettings} from '../../shared/model/lexicon-project-settings.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
-import {ConfigurationUnifiedViewModel} from './configuration-unified-view.model';
+import {ConfigurationFieldUnifiedViewModel} from './field-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 import {OptionSelects} from './option-selects.model';
 
@@ -25,7 +25,7 @@ export class LexiconConfigurationController implements angular.IController {
   lscUsers: { [userId: string]: User } = {};
   lscOnUpdate: (params: { $event: { config?: LexiconConfig, optionLists?: LexOptionList[] } }) => void;
 
-  active = Tab.Unified;
+  activeTab = ConfigurationTab.Fields;
   addInputSystem = false;
   isSaving = false;
   readonly selects = new OptionSelects();
@@ -35,11 +35,11 @@ export class LexiconConfigurationController implements angular.IController {
   fieldConfig: { [fieldName: string]: LexConfigField };
   inputSystemViewModels: { [inputSystemId: string]: ConfigurationInputSystemsViewModel };
   inputSystemsList: ConfigurationInputSystemsViewModel[];
-  unifiedViewModel: ConfigurationUnifiedViewModel;
+  unifiedViewModel: ConfigurationFieldUnifiedViewModel;
   optionListsDirty: LexOptionList[];
   optionListsPristine: LexOptionList[];
 
-  private unifiedViewModelPristine: ConfigurationUnifiedViewModel;
+  private unifiedViewModelPristine: ConfigurationFieldUnifiedViewModel;
   private warnOfUnsavedEditsId: string;
 
   static $inject: string[] = ['$scope', '$q',
@@ -65,7 +65,7 @@ export class LexiconConfigurationController implements angular.IController {
     if (configChange != null && configChange.currentValue != null) {
       this.configDirty = angular.copy(this.lscConfig);
       this.configPristine = angular.copy(this.lscConfig);
-      this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.configDirty, this.lscUsers);
+      this.unifiedViewModel = new ConfigurationFieldUnifiedViewModel(this.configDirty, this.lscUsers);
       this.unifiedViewModelPristine = angular.copy(this.unifiedViewModel);
       this.setupView();
     }
@@ -124,7 +124,7 @@ export class LexiconConfigurationController implements angular.IController {
 
   // noinspection JSUnusedGlobalSymbols
   addNewInputSystem(): void {
-    this.active = Tab.InputSystems; // Switch to Input System tab
+    this.activeTab = ConfigurationTab.InputSystems; // Switch to Input System tab
     this.addInputSystem = true; // Show New Input System window
   }
 
@@ -135,7 +135,7 @@ export class LexiconConfigurationController implements angular.IController {
       inputSystemViewModels?: { [inputSystemId: string]: ConfigurationInputSystemsViewModel },
       inputSystemsList?: ConfigurationInputSystemsViewModel[],
       optionListsDirty?: LexOptionList[],
-      unifiedViewModel?: ConfigurationUnifiedViewModel,
+      unifiedViewModel?: ConfigurationFieldUnifiedViewModel,
       isInitialLoad?: boolean,
       addInputSystem?: boolean
     }
@@ -232,7 +232,7 @@ export class LexiconConfigurationController implements angular.IController {
       this.warnOfUnsavedEdits();
       this.configDirty = angular.copy(this.configPristine);
       this.optionListsDirty = angular.copy(this.optionListsPristine);
-      this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.configDirty, this.lscUsers);
+      this.unifiedViewModel = new ConfigurationFieldUnifiedViewModel(this.configDirty, this.lscUsers);
       this.unifiedViewModelPristine = angular.copy(this.unifiedViewModel);
       this.setupView();
       this.$scope.configForm.$setPristine();
@@ -246,7 +246,7 @@ export class LexiconConfigurationController implements angular.IController {
       this.lscOnUpdate({ $event: { config: this.configDirty, optionLists: this.optionListsDirty } });
       this.configPristine = angular.copy(this.configDirty);
       this.optionListsPristine = angular.copy(this.optionListsDirty);
-      this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.configDirty, this.lscUsers);
+      this.unifiedViewModel = new ConfigurationFieldUnifiedViewModel(this.configDirty, this.lscUsers);
       this.unifiedViewModelPristine = angular.copy(this.unifiedViewModel);
       this.setupView();
       this.$scope.configForm.$setPristine();
@@ -303,8 +303,8 @@ export const LexiconConfigurationComponent: angular.IComponentOptions = {
   templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration.component.html'
 };
 
-export enum Tab {
-  Unified = 0,
+export enum ConfigurationTab {
+  Fields = 0,
   InputSystems,
   OptionLists
 }

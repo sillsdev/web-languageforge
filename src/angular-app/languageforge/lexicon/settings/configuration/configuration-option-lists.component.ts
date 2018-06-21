@@ -23,7 +23,7 @@ export class OptionListConfigurationController implements angular.IController {
         return this.olcOptionListsDirty[this.currentListIndex].items;
       },
       (newVal: LexOptionListItem[], oldVal: LexOptionListItem[]) => {
-        if (angular.isDefined(newVal) && newVal !== oldVal) {
+        if (newVal != null && newVal !== oldVal) {
           if (this.currentListIndex === this.oldListIndex) {
             this.olcOnUpdate({ $event: { optionListsDirty: this.olcOptionListsDirty } });
           }
