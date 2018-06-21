@@ -10,7 +10,6 @@ angular.module('sfchecks',
       'sfchecks.projectSettings',
       'sfchecks.questions',
       'sfchecks.question',
-      'sfchecks.filters',
       'palaso.ui.notice',
       'sf.ui.invitefriend'
     ])
