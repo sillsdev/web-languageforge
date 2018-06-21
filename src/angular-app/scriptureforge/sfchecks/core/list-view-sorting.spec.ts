@@ -3,18 +3,14 @@ import * as angular from 'angular';
 import '../../../bellows/core/core.module';
 import '../../../bellows/core/error.service';
 import '../../../bellows/core/notice/notice.service';
-import './services';
+import {SfChecksCoreModule} from './sf-checks-core.module';
 
 describe('Sorting: ', () => {
   let sorting: any;
 
   beforeEach(() => {
-      angular.mock.module('sfchecks.services');
+      angular.mock.module(SfChecksCoreModule);
   });
-
-  // beforeEach(() => {
-  //     module('sfchecks.services');
-  // });
 
   // noinspection TsLint
   beforeEach(angular.mock.inject((_listviewSortingService_: any) => {

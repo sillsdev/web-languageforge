@@ -1,23 +1,28 @@
-'use strict';
+import * as angular from 'angular';
 
-// Declare app level module which depends on filters, and services
-angular.module('sfchecks',
-    [
-      'ngRoute',
-      'ngSanitize',
-      'coreModule',
-      'sfchecks.project',
-      'sfchecks.projectSettings',
-      'sfchecks.questions',
-      'sfchecks.question',
-      'palaso.ui.notice',
-      'sf.ui.invitefriend'
-    ])
-  .config(['$routeProvider', function ($routeProvider) {
+import {CoreModule} from '../../bellows/core/core.module';
+import {SfChecksCoreModule} from './core/sf-checks-core.module';
+
+export const SfChecksAppModule = angular
+  .module('sfchecks', [
+    'ui.bootstrap',
+    'ngRoute',
+    'ngSanitize',
+    CoreModule,
+    SfChecksCoreModule,
+    'sfchecks.project',
+    'sfchecks.projectSettings',
+    'sfchecks.questions',
+    'sfchecks.question',
+    'palaso.ui.notice',
+    'sf.ui.invitefriend'
+  ])
+  .config(['$routeProvider', ($routeProvider: angular.route.IRouteProvider) => {
     // the "projects" route is a hack to redirect to the /app/projects URL.
     // See "otherwise" route below
     $routeProvider.when('/projects', { template: ' ',
-      controller: function () { window.location.replace('/app/projects'); } }
+      controller: () => { window.location.replace('/app/projects'); }
+      }
     );
     $routeProvider.when(
       '/',
@@ -56,11 +61,10 @@ angular.module('sfchecks',
     );
     $routeProvider.otherwise({ redirectTo: '/projects' });
   }])
-  .controller('MainCtrl', ['$scope', 'silNoticeService', '$route', '$routeParams', '$location',
-                           function ($scope, noticeService, $route, $routeParams, $location) {
+  .controller('MainCtrl', ['$scope', '$route', '$routeParams', '$location',
+  ($scope, $route, $routeParams, $location) => {
     $scope.route = $route;
     $scope.location = $location;
     $scope.routeParams = $routeParams;
   }])
-
-  ;
+  .name;
