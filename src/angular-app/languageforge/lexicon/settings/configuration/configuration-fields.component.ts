@@ -15,23 +15,23 @@ import {
   LexViewMultiTextFieldConfig
 } from '../../shared/model/lexicon-config.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
-import {ConfigurationUnifiedViewModel, FieldSettings, Group, GroupList} from './configuration-unified-view.model';
+import {ConfigurationFieldUnifiedViewModel, FieldSettings, Group, GroupList} from './field-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 
-export class UnifiedConfigurationController implements angular.IController {
-  uccFieldConfig: { [fieldName: string]: LexConfigField };
-  uccConfigDirty: LexiconConfig;
-  uccInputSystemsList: ConfigurationInputSystemsViewModel[];
-  uccUsers: { [userId: string]: User };
-  readonly uccOptionLists: LexOptionList[];
-  uccAddInputSystem: (params: {}) => void;
-  uccOnUpdate: (params: { $event: {
-    unifiedViewModel?: ConfigurationUnifiedViewModel,
+export class FieldsConfigurationController implements angular.IController {
+  fccFieldConfig: { [fieldName: string]: LexConfigField };
+  fccConfigDirty: LexiconConfig;
+  fccInputSystemsList: ConfigurationInputSystemsViewModel[];
+  fccUsers: { [userId: string]: User };
+  readonly fccOptionLists: LexOptionList[];
+  fccAddInputSystem: (params: {}) => void;
+  fccOnUpdate: (params: { $event: {
+    unifiedViewModel?: ConfigurationFieldUnifiedViewModel,
     configDirty?: LexiconConfig,
     isInitialLoad?: boolean
   } }) => void;
 
-  unifiedViewModel: ConfigurationUnifiedViewModel;
+  unifiedViewModel: ConfigurationFieldUnifiedViewModel;
   typeahead: Typeahead;
 
   static $inject: string[] = ['$scope', '$filter', '$uibModal'];
@@ -39,21 +39,19 @@ export class UnifiedConfigurationController implements angular.IController {
 
   $onInit() {
     this.$scope.$watch(() => this.unifiedViewModel, (newVal, oldVal) => {
-      this.uccOnUpdate({ $event: { unifiedViewModel: this.unifiedViewModel, isInitialLoad: (oldVal == null) } });
+      this.fccOnUpdate({ $event: { unifiedViewModel: this.unifiedViewModel, isInitialLoad: (oldVal == null) } });
     }, true);
   }
 
   $onChanges(changes: any) {
-    const configChange = changes.uccConfigDirty as angular.IChangesObject<LexiconConfig>;
+    const configChange = changes.fccConfigDirty as angular.IChangesObject<LexiconConfig>;
     if (configChange != null && configChange.previousValue !== configChange.currentValue &&
       configChange.currentValue != null
     ) {
-      this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.uccConfigDirty, this.uccUsers);
+      this.unifiedViewModel = new ConfigurationFieldUnifiedViewModel(this.fccConfigDirty, this.fccUsers);
       this.typeahead = new Typeahead(this.$filter);
-      for (const userId in this.uccUsers) {
-        if (this.uccUsers.hasOwnProperty(userId)) {
-          this.typeahead.usersWithoutSettings.push(this.uccUsers[userId]);
-        }
+      for (const userId of Object.keys(this.fccUsers)) {
+        this.typeahead.usersWithoutSettings.push(this.fccUsers[userId]);
       }
       for (const groupList of this.unifiedViewModel.groupLists) {
         this.removeFromUsersWithoutSettings(groupList.userId);
@@ -62,14 +60,14 @@ export class UnifiedConfigurationController implements angular.IController {
   }
 
   isCustomField = LexiconConfigService.isCustomField;
-  selectAllRow = ConfigurationUnifiedViewModel.selectAllRow;
-  selectAllRoleColumn = ConfigurationUnifiedViewModel.selectAllRoleColumn;
-  selectAllGroupColumn = ConfigurationUnifiedViewModel.selectAllGroupColumn;
-  checkIfAllRoleSelected = ConfigurationUnifiedViewModel.checkIfAllRoleSelected;
-  checkIfAllGroupSelected = ConfigurationUnifiedViewModel.checkIfAllGroupSelected;
+  selectAllRow = ConfigurationFieldUnifiedViewModel.selectAllRow;
+  selectAllRoleColumn = ConfigurationFieldUnifiedViewModel.selectAllRoleColumn;
+  selectAllGroupColumn = ConfigurationFieldUnifiedViewModel.selectAllGroupColumn;
+  checkIfAllRoleSelected = ConfigurationFieldUnifiedViewModel.checkIfAllRoleSelected;
+  checkIfAllGroupSelected = ConfigurationFieldUnifiedViewModel.checkIfAllGroupSelected;
 
   openNewCustomFieldModal(fieldLevel: string): void {
-    class NewCustomData {
+    interface NewCustomData {
       code: string;
       level: string;
       listCode?: string;
@@ -82,7 +80,7 @@ export class UnifiedConfigurationController implements angular.IController {
       templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/new-custom-field.modal.html',
       controller: ['$scope', '$uibModalInstance',
         (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
-          scope.fieldConfig = this.uccFieldConfig;
+          scope.fieldConfig = this.fccFieldConfig;
           scope.selects = {};
           scope.selects.type = {
             optionsOrder: ['multitext', 'optionlist', 'multioptionlist'],
@@ -100,14 +98,15 @@ export class UnifiedConfigurationController implements angular.IController {
             optionsOrder: [],
             options: {}
           };
-          angular.forEach(this.uccOptionLists, optionList => {
+          for (const optionList of this.fccOptionLists) {
             scope.selects.listCode.optionsOrder.push(optionList.code);
             scope.selects.listCode.options[optionList.code] = optionList.name;
-          });
+          }
 
-          scope.newCustomData = new NewCustomData();
-          scope.newCustomData.name = '';
-          scope.newCustomData.level = fieldLevel;
+          scope.newCustomData = {
+            name: '',
+            level: fieldLevel
+          } as NewCustomData;
           scope.customFieldNameExists = function customFieldNameExists(level: string, code: string) {
             const customFieldName = 'customField_' + level + '_' + code;
             return customFieldName in scope.fieldConfig;
@@ -118,8 +117,7 @@ export class UnifiedConfigurationController implements angular.IController {
           };
 
           scope.$watch('newCustomData.name', (newValue: string, oldValue: string) => {
-            if (angular.isDefined(newValue) && newValue !== oldValue) {
-
+            if (newValue != null && newValue !== oldValue) {
               // replace spaces with underscore
               scope.newCustomData.code = newValue.replace(/ /g, '_');
             }
@@ -144,7 +142,7 @@ export class UnifiedConfigurationController implements angular.IController {
           const customMultiTextViewField = (customViewField as LexViewMultiTextFieldConfig);
           customMutliTextField.displayMultiline = false;
           customMutliTextField.width = 20;
-          customMutliTextField.inputSystems = [this.uccInputSystemsList[0].inputSystem.tag];
+          customMutliTextField.inputSystems = [this.fccInputSystemsList[0].inputSystem.tag];
           customMultiTextViewField.type = 'multitext';
           customMultiTextViewField.overrideInputSystems = false;
           customMultiTextViewField.inputSystems = [];
@@ -158,47 +156,47 @@ export class UnifiedConfigurationController implements angular.IController {
 
       switch (newCustomData.level) {
         case 'examples':
-          ((this.uccConfigDirty.entry.fields.senses as LexConfigFieldList).fields.examples as LexConfigFieldList)
+          ((this.fccConfigDirty.entry.fields.senses as LexConfigFieldList).fields.examples as LexConfigFieldList)
             .fields[customFieldName] = customField;
-          this.uccFieldConfig[customFieldName] = ((this.uccConfigDirty.entry.fields.senses as LexConfigFieldList).fields
+          this.fccFieldConfig[customFieldName] = ((this.fccConfigDirty.entry.fields.senses as LexConfigFieldList).fields
             .examples as LexConfigFieldList).fields[customFieldName];
-          if (!(customFieldName in ((this.uccConfigDirty.entry.fields.senses as LexConfigFieldList).fields
+          if (!(customFieldName in ((this.fccConfigDirty.entry.fields.senses as LexConfigFieldList).fields
               .examples as LexConfigFieldList).fieldOrder)
           ) {
-            ((this.uccConfigDirty.entry.fields.senses as LexConfigFieldList).fields.examples as LexConfigFieldList)
+            ((this.fccConfigDirty.entry.fields.senses as LexConfigFieldList).fields.examples as LexConfigFieldList)
               .fieldOrder.push(customFieldName);
           }
 
           break;
         case 'senses':
-          (this.uccConfigDirty.entry.fields.senses as LexConfigFieldList).fields[customFieldName] = customField;
-          this.uccFieldConfig[customFieldName] = (this.uccConfigDirty.entry.fields.senses as LexConfigFieldList)
+          (this.fccConfigDirty.entry.fields.senses as LexConfigFieldList).fields[customFieldName] = customField;
+          this.fccFieldConfig[customFieldName] = (this.fccConfigDirty.entry.fields.senses as LexConfigFieldList)
             .fields[customFieldName];
-          if (!(customFieldName in (this.uccConfigDirty.entry.fields.senses as LexConfigFieldList).fieldOrder)) {
-            (this.uccConfigDirty.entry.fields.senses as LexConfigFieldList).fieldOrder.push(customFieldName);
+          if (!(customFieldName in (this.fccConfigDirty.entry.fields.senses as LexConfigFieldList).fieldOrder)) {
+            (this.fccConfigDirty.entry.fields.senses as LexConfigFieldList).fieldOrder.push(customFieldName);
           }
 
           break;
         case 'entry':
         default:
-          this.uccConfigDirty.entry.fields[customFieldName] = customField;
-          this.uccFieldConfig[customFieldName] = this.uccConfigDirty.entry.fields[customFieldName];
-          if (!(customFieldName in this.uccConfigDirty.entry.fieldOrder)) {
-            this.uccConfigDirty.entry.fieldOrder.push(customFieldName);
+          this.fccConfigDirty.entry.fields[customFieldName] = customField;
+          this.fccFieldConfig[customFieldName] = this.fccConfigDirty.entry.fields[customFieldName];
+          if (!(customFieldName in this.fccConfigDirty.entry.fieldOrder)) {
+            this.fccConfigDirty.entry.fieldOrder.push(customFieldName);
           }
       }
 
-      angular.forEach(this.uccConfigDirty.roleViews, roleView => {
-        roleView.fields[customFieldName] = angular.copy(customViewField);
-      });
+      for (const role of Object.keys(this.fccConfigDirty.roleViews)) {
+        this.fccConfigDirty.roleViews[role].fields[customFieldName] = angular.copy(customViewField);
+      }
 
-      const role = 'project_manager';
-      this.uccConfigDirty.roleViews[role].fields[customFieldName].show = true;
-      angular.forEach(this.uccConfigDirty.userViews, userView => {
-        userView.fields[customFieldName] = angular.copy(customViewField);
-      });
+      const managerRole = 'project_manager';
+      this.fccConfigDirty.roleViews[managerRole].fields[customFieldName].show = true;
+      for (const userId of Object.keys(this.fccConfigDirty.userViews)) {
+        this.fccConfigDirty.userViews[userId].fields[customFieldName] = angular.copy(customViewField);
+      }
 
-      this.uccOnUpdate({ $event: { configDirty: this.uccConfigDirty } });
+      this.fccOnUpdate({ $event: { configDirty: this.fccConfigDirty } });
     }, () => { });
   }
 
@@ -223,7 +221,7 @@ export class UnifiedConfigurationController implements angular.IController {
 
       typeahead.userName = '';
       this.removeFromUsersWithoutSettings(user.id);
-      this.unifiedViewModel.groupLists.push(new GroupList(user.username, user.id));
+      this.unifiedViewModel.groupLists.push({ label: user.username, userId: user.id } as GroupList);
       this.unifiedViewModel.inputSystems.selectAllColumns.groups.push(new Group());
       this.unifiedViewModel.entryFields.selectAllColumns.groups.push(new Group());
       this.unifiedViewModel.senseFields.selectAllColumns.groups.push(new Group());
@@ -231,32 +229,32 @@ export class UnifiedConfigurationController implements angular.IController {
 
       for (const inputSystemSetting of this.unifiedViewModel.inputSystems.settings) {
         inputSystemSetting.groups.push(new Group());
-        ConfigurationUnifiedViewModel.checkIfAllRowSelected(inputSystemSetting);
+        ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(inputSystemSetting);
       }
 
       for (const fieldSetting of this.unifiedViewModel.entryFields.settings) {
         fieldSetting.groups.push(new Group());
-        ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
+        ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
       }
 
       for (const fieldSetting of this.unifiedViewModel.senseFields.settings) {
         fieldSetting.groups.push(new Group());
-        ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
+        ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
       }
 
       for (const fieldSetting of this.unifiedViewModel.exampleFields.settings) {
         fieldSetting.groups.push(new Group());
-        ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
+        ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
       }
 
-      this.uccConfigDirty.userViews[user.id] =
-        angular.copy(this.uccConfigDirty.roleViews[user.role]) as LexUserViewConfig;
+      this.fccConfigDirty.userViews[user.id] =
+        angular.copy(this.fccConfigDirty.roleViews[user.role]) as LexUserViewConfig;
     }, () => { });
   }
 
   removeGroup(index: number): void {
     const userId = this.unifiedViewModel.groupLists[index].userId;
-    this.typeahead.usersWithoutSettings.push(this.uccUsers[userId]);
+    this.typeahead.usersWithoutSettings.push(this.fccUsers[userId]);
     this.unifiedViewModel.groupLists.splice(index, 1);
     this.unifiedViewModel.inputSystems.selectAllColumns.groups.splice(index, 1);
     this.unifiedViewModel.entryFields.selectAllColumns.groups.splice(index, 1);
@@ -265,25 +263,25 @@ export class UnifiedConfigurationController implements angular.IController {
 
     for (const inputSystemSetting of this.unifiedViewModel.inputSystems.settings) {
       inputSystemSetting.groups.splice(index, 1);
-      ConfigurationUnifiedViewModel.checkIfAllRowSelected(inputSystemSetting);
+      ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(inputSystemSetting);
     }
 
     for (const fieldSetting of this.unifiedViewModel.entryFields.settings) {
       fieldSetting.groups.splice(index, 1);
-      ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
+      ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
     }
 
     for (const fieldSetting of this.unifiedViewModel.senseFields.settings) {
       fieldSetting.groups.splice(index, 1);
-      ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
+      ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
     }
 
     for (const fieldSetting of this.unifiedViewModel.exampleFields.settings) {
       fieldSetting.groups.splice(index, 1);
-      ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
+      ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
     }
 
-    delete this.uccConfigDirty.userViews[userId];
+    delete this.fccConfigDirty.userViews[userId];
   }
 
   // noinspection JSMethodCanBeStatic
@@ -312,7 +310,7 @@ export class UnifiedConfigurationController implements angular.IController {
   }
 
   private removeFromUsersWithoutSettings(userId: string): void {
-    const user: User = this.uccUsers[userId];
+    const user: User = this.fccUsers[userId];
     const removeIndex: number = this.typeahead.usersWithoutSettings.indexOf(user);
     if (removeIndex !== -1) {
       this.typeahead.usersWithoutSettings.splice(removeIndex, 1);
@@ -356,16 +354,16 @@ class Typeahead {
   }
 }
 
-export const UnifiedConfigurationComponent: angular.IComponentOptions = {
+export const FieldsConfigurationComponent: angular.IComponentOptions = {
   bindings: {
-    uccFieldConfig: '<',
-    uccConfigDirty: '<',
-    uccInputSystemsList: '<',
-    uccUsers: '<',
-    uccOptionLists: '<',
-    uccAddInputSystem: '&',
-    uccOnUpdate: '&'
+    fccFieldConfig: '<',
+    fccConfigDirty: '<',
+    fccInputSystemsList: '<',
+    fccUsers: '<',
+    fccOptionLists: '<',
+    fccAddInputSystem: '&',
+    fccOnUpdate: '&'
   },
-  controller: UnifiedConfigurationController,
-  templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration-unified.component.html'
+  controller: FieldsConfigurationController,
+  templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration-fields.component.html'
 };
