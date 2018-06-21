@@ -33,6 +33,10 @@
     - name: Add PHP7.0 ppa for Trusty
       apt_repository: repo='ppa:ondrej/php' state=present
       when: base_distribution == 'ubuntu' and base_distribution_release == 'trusty'
+    - name: add Mongo apt key
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
     - name: add Mongo 3.6 repository
       # TODO: use ansible system variable instead of hardcoding "xenial" in repo line -- except that it can only be from a restricted list of distros (e.g. xenial & bionic only)
       apt_repository:
@@ -69,6 +73,7 @@
         - postfix
         - unzip
         - chromium-browser
+        - default-jre-headless
 
     - name: check for node binary
       stat: path=/usr/local/bin/node
