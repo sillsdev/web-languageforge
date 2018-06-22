@@ -2,10 +2,15 @@ export interface Text {
   id: string;
   audioFileName?: string;
   content?: string;
+  endCh?: number;
+  endVs?: number;
   // noinspection SpellCheckingInspection
   fontfamily?: string;
   isArchived?: boolean;
   title?: string;
+  startCh?: number;
+  startVs?: number;
+  url?: string;
 }
 
 export interface Question {
