@@ -44,7 +44,7 @@ if (strpos(SF_DATABASE, '_test') === false ) {
 MongoStore::dropAllCollections(SF_DATABASE);
 
 // Also empty out databases for the test projects
-$projectArrays = array(
+$projectArrays = [
     $constants['testProjectName']   => $constants['testProjectCode'],
     $constants['otherProjectName']  => $constants['otherProjectCode'],
     $constants['thirdProjectName']  => $constants['thirdProjectCode'],
@@ -52,7 +52,7 @@ $projectArrays = array(
     $constants['newProjectName']    => $constants['newProjectCode'],
     $constants['emptyProjectName']  => $constants['emptyProjectCode'],
     $constants['srProjectName']     => $constants['srProjectCode']
-);
+];
 
 foreach ($projectArrays as $projectName => $projectCode) {
     $projectModel = new ProjectModel();
@@ -62,116 +62,130 @@ foreach ($projectArrays as $projectName => $projectCode) {
     MongoStore::dropDB($projectModel->databaseName());
 }
 
-$adminUserId = UserCommands::createUser(array(
+$adminUserId = UserCommands::createUser([
     'name' => $constants['adminName'],
     'email' => $constants['adminEmail'],
-    'password' => $constants['adminPassword']),
+    'password' => $constants['adminPassword']
+],
     $website
 );
-$adminUserId = UserCommands::updateUser(array(
+$adminUserId = UserCommands::updateUser([
     'id' => $adminUserId,
     'name' => $constants['adminName'],
     'email' => $constants['adminEmail'],
     'username' => $constants['adminUsername'],
     'password' => $constants['adminPassword'],
     'active' => true,
-    'role' => SystemRoles::SYSTEM_ADMIN),
+    'role' => SystemRoles::SYSTEM_ADMIN
+],
     $website
 );
-$managerUserId = UserCommands::createUser(array(
+$managerUserId = UserCommands::createUser([
     'name' => $constants['managerName'],
     'email' => $constants['managerEmail'],
-    'password' => $constants['managerPassword']),
+    'password' => $constants['managerPassword']
+],
     $website
 );
-$managerUserId = UserCommands::updateUser(array(
+$managerUserId = UserCommands::updateUser([
     'id' => $managerUserId,
     'name' => $constants['managerName'],
     'email' => $constants['managerEmail'],
     'username' => $constants['managerUsername'],
     'password' => $constants['managerPassword'],
     'active' => true,
-    'role' => SystemRoles::USER),
+    'role' => SystemRoles::USER
+],
     $website
 );
-$memberUserId = UserCommands::createUser(array(
+$memberUserId = UserCommands::createUser([
     'name' => $constants['memberName'],
     'email' => $constants['memberEmail'],
-    'password' => $constants['memberPassword']),
+    'password' => $constants['memberPassword']
+],
     $website
 );
-$memberUserId = UserCommands::updateUser(array(
+$memberUserId = UserCommands::updateUser([
     'id' => $memberUserId,
     'name' => $constants['memberName'],
     'email' => $constants['memberEmail'],
     'username' => $constants['memberUsername'],
     'password' => $constants['memberPassword'],
     'active' => true,
-    'role' => SystemRoles::USER),
+    'role' => SystemRoles::USER
+],
     $website
 );
-$member2UserId = UserCommands::createUser(array(
+$member2UserId = UserCommands::createUser([
     'name' => $constants['member2Name'],
     'email' => $constants['member2Email'],
-    'password' => $constants['member2Password']),
+    'password' => $constants['member2Password']
+],
     $website
 );
-$member2UserId = UserCommands::updateUser(array(
+$member2UserId = UserCommands::updateUser([
     'id' => $member2UserId,
     'name' => $constants['member2Name'],
     'email' => $constants['member2Email'],
     'username' => $constants['member2Username'],
     'password' => $constants['member2Password'],
     'active' => true,
-    'role' => SystemRoles::USER),
+    'role' => SystemRoles::USER
+],
     $website
 );
-$expiredUserId = UserCommands::createUser(array(
+$expiredUserId = UserCommands::createUser([
     'name' => $constants['expiredName'],
     'email' => $constants['expiredEmail'],
-    'password' => $constants['memberPassword']), // intentionally set wrong password
+    'password' => $constants['memberPassword']
+], // intentionally set wrong password
     $website
 );
-$expiredUserId = UserCommands::updateUser(array(
+$expiredUserId = UserCommands::updateUser([
     'id' => $expiredUserId,
     'name' => $constants['expiredName'],
     'email' => $constants['expiredEmail'],
     'username' => $constants['expiredUsername'],
     'password' => $constants['memberPassword'], // intentionally set wrong password
     'active' => true,
-    'role' => SystemRoles::USER),
+    'role' => SystemRoles::USER
+],
     $website
 );
-$resetUserId = UserCommands::createUser(array(
+$resetUserId = UserCommands::createUser([
     'name' => $constants['resetName'],
     'email' => $constants['resetEmail'],
-    'password' => $constants['memberPassword']), // intentionally set wrong password
+    'password' => $constants['memberPassword']
+], // intentionally set wrong password
     $website
 );
-$resetUserId = UserCommands::updateUser(array(
+$resetUserId = UserCommands::updateUser([
     'id' => $resetUserId,
     'name' => $constants['resetName'],
     'email' => $constants['resetEmail'],
     'username' => $constants['resetUsername'],
     'password' => $constants['memberPassword'], // intentionally set wrong password
     'active' => true,
-    'role' => SystemRoles::USER),
+    'role' => SystemRoles::USER
+],
     $website
 );
-$observerUserId = UserCommands::createUser(array(
+$observerUserId = UserCommands::createUser([
     'name' => $constants['observerName'],
     'email' => $constants['observerEmail'],
-    'password' => $constants['observerPassword']),
+    'password' => $constants['observerPassword']
+],
     $website
 );
-$observerUserId = UserCommands::updateUser(array(
+$observerUserId = UserCommands::updateUser([
     'id' => $observerUserId,
     'name' => $constants['observerName'],
     'email' => $constants['observerEmail'],
     'username' => $constants['observerUsername'],
     'password' => $constants['observerPassword'],
     'active' => true,
-    'role' => SystemRoles::USER),
+    'role' => SystemRoles::USER
+],
     $website
 );
 
@@ -230,12 +244,12 @@ $fourthProjectModel->projectCode = $constants['fourthProjectCode'];
 $fourthProjectModel->allowInviteAFriend = $constants['fourthProjectAllowInvites'];
 $fourthProjectModel->write();
 
-$srProject = array(
+$srProject = [
     'identifier' => $constants['srIdentifier'],
     'name' => $constants['srName'],
     'repository' => 'https://public.languagedepot.org',
     'role' => 'manager'
-);
+];
 $srTestProjectId = ProjectCommands::createProject(
     $constants['srProjectName'],
     $constants['srProjectCode'],
@@ -254,60 +268,64 @@ ProjectCommands::updateUserRole($fourthProjectId, $adminUserId, ProjectRoles::MA
 ProjectCommands::updateUserRole($srTestProjectId, $adminUserId, ProjectRoles::MANAGER);
 
 if ($site == 'scriptureforge') {
-    $text1 = TextCommands::updateText($testProjectId, array(
+    $text1 = TextCommands::updateText($testProjectId, [
         'id' => '',
         'title' => $constants['testText1Title'],
         'content' => $constants['testText1Content']
-    ), $adminUserId);
-    $text2 = TextCommands::updateText($testProjectId, array(
+    ], $adminUserId);
+    $text2 = TextCommands::updateText($testProjectId, [
         'id' => '',
         'title' => $constants['testText2Title'],
         'content' => $constants['testText2Content']
-    ), $adminUserId);
+    ], $adminUserId);
 
-    $question1 = QuestionCommands::updateQuestion($testProjectId, array(
+    $question1 = QuestionCommands::updateQuestion($testProjectId, [
         'id' => '',
         'textRef' => $text1,
         'title' => $constants['testText1Question1Title'],
         'description' => $constants['testText1Question1Content']
-    ), $adminUserId);
-    $question2 = QuestionCommands::updateQuestion($testProjectId, array(
+    ], $adminUserId);
+    $question2 = QuestionCommands::updateQuestion($testProjectId, [
         'id' => '',
         'textRef' => $text1,
         'title' => $constants['testText1Question2Title'],
         'description' => $constants['testText1Question2Content']
-    ), $adminUserId);
+    ], $adminUserId);
 
-    $template1 = QuestionTemplateCommands::updateTemplate($testProjectId, array(
+    $template1 = QuestionTemplateCommands::updateTemplate($testProjectId, [
         'id' => '',
         'title' => 'first template',
         'description' => 'not particularly interesting'
-            ));
+    ]);
 
-    $template2 = QuestionTemplateCommands::updateTemplate($testProjectId, array(
+    $template2 = QuestionTemplateCommands::updateTemplate($testProjectId, [
         'id' => '',
         'title' => 'second template',
         'description' => 'not entirely interesting'
-            ));
+    ]);
 
-    $answer1 = QuestionCommands::updateAnswer($testProjectId, $question1, array(
+    $answer1 = QuestionCommands::updateAnswer($testProjectId, $question1, [
         'id' => '',
-        'content' => $constants['testText1Question1Answer']),
+        'content' => $constants['testText1Question1Answer']
+    ],
         $managerUserId);
     $answer1Id = array_keys($answer1)[0];
-    $answer2 = QuestionCommands::updateAnswer($testProjectId, $question2, array(
+    $answer2 = QuestionCommands::updateAnswer($testProjectId, $question2, [
         'id' => '',
-        'content' => $constants['testText1Question2Answer']),
+        'content' => $constants['testText1Question2Answer']
+    ],
         $managerUserId);
     $answer2Id = array_keys($answer2)[0];
 
-    $comment1 = QuestionCommands::updateComment($testProjectId, $question1, $answer1Id, array(
+    $comment1 = QuestionCommands::updateComment($testProjectId, $question1, $answer1Id, [
         'id' => '',
-        'content' => $constants['testText1Question1Answer1Comment']),
+        'content' => $constants['testText1Question1Answer1Comment']
+    ],
         $managerUserId);
-    $comment2 = QuestionCommands::updateComment($testProjectId, $question2, $answer2Id, array(
+    $comment2 = QuestionCommands::updateComment($testProjectId, $question2, $answer2Id, [
         'id' => '',
-        'content' => $constants['testText1Question2Answer2Comment']),
+        'content' => $constants['testText1Question2Answer2Comment']
+    ],
         $managerUserId);
 } elseif ($site == 'languageforge') {
     // Set up LanguageForge E2E test envrionment here
@@ -321,7 +339,7 @@ if ($site == 'scriptureforge') {
 
     // setup to mimic file upload
     $fileName = $constants['testEntry1']['lexeme']['th-Zxxx-x-audio']['value'];
-    $file = array();
+    $file = [];
     $file['name'] = $fileName;
     $_FILES['file'] = $file;
 
@@ -332,7 +350,7 @@ if ($site == 'scriptureforge') {
     $response = LexUploadCommands::uploadAudioFile($testProjectId, 'audio', $tmpFilePath);
 
     // cleanup tmp file if it still exists
-    if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
+    if (file_exists($tmpFilePath) && ! is_dir($tmpFilePath)) {
         @unlink($tmpFilePath);
     }
 
@@ -341,7 +359,7 @@ if ($site == 'scriptureforge') {
 
     // setup to mimic file upload
     $fileName = $constants['testEntry1']['senses'][0]['pictures'][0]['fileName'];
-    $file = array();
+    $file = [];
     $file['name'] = $fileName;
     $_FILES['file'] = $file;
 
@@ -352,7 +370,7 @@ if ($site == 'scriptureforge') {
     $response = LexUploadCommands::uploadImageFile($testProjectId, 'sense-image', $tmpFilePath);
 
     // cleanup tmp file if it still exists
-    if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
+    if (file_exists($tmpFilePath) && ! is_dir($tmpFilePath)) {
         @unlink($tmpFilePath);
     }
 
@@ -360,23 +378,23 @@ if ($site == 'scriptureforge') {
     $constants['testEntry1']['senses'][0]['pictures'][0]['fileName'] = $response->data->fileName;
 
     $entry1 = LexEntryCommands::updateEntry($testProjectId,
-        array(
+        [
             'id' => '',
             'lexeme' => $constants['testEntry1']['lexeme'],
             'senses' => $constants['testEntry1']['senses']
-        ), $managerUserId);
+        ], $managerUserId);
     $entry2 = LexEntryCommands::updateEntry($testProjectId,
-        array(
+        [
             'id' => '',
             'lexeme' => $constants['testEntry2']['lexeme'],
             'senses' => $constants['testEntry2']['senses']
-        ), $managerUserId);
+        ], $managerUserId);
     $multipleMeaningEntry1 = LexEntryCommands::updateEntry($testProjectId,
-        array(
+        [
             'id' => '',
             'lexeme' => $constants['testMultipleMeaningEntry1']['lexeme'],
             'senses' => $constants['testMultipleMeaningEntry1']['senses']
-        ), $managerUserId);
+        ], $managerUserId);
 
     // put mock uploaded zip import (jpg file)
     $fileName = $constants['testMockJpgImportFile']['name'];
