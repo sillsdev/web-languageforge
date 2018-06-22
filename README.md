@@ -170,35 +170,33 @@ Proceed to [Language Forge Configuration File](#LFConfig) and follow the rest of
 
 ### Local Linux Development Setup <a id="LocalSetup"></a> ###
 
-Start with the Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure a basic development environment.
+Start by installing Git and Ansible:
+``` shell
+sudo add-apt-repository ppa:ansible/ansible
+sudo apt-get update
+sudo apt-get install -y git ansible
+```
 
-#### Installation and Deployment ####
-
-After creating your Ansible-assisted setup, clone this repository from your *home* folder...
-
-```` bash
-mkdir src
-cd src
-mkdir xForge
-cd xForge
-git clone https://github.com/sillsdev/web-languageforge web-languageforge --recurse-submodules
-````
+Now create a directory for installation and clone the repo:
+``` shell
+mkdir -p src/xForge
+cd src/xForge
+git clone https://github.com/sillsdev/web-languageforge --recurse-submodules
+```
 
 The `--recurse-submodules` is used to fetch many of the Ansible roles used by the Ansible playbooks in the deploy folder. If you've already cloned the repo without `--recurse-submodules`, run `git submodule update --init --recursive` to pull and initialize them.
 
-If you want to run an independant repo for scriptureforge, clone its repo also...
-
+If you want to run an independent repo for Scripture Forge, clone its repo also:
 ``` bash
-git clone https://github.com/sillsdev/web-scriptureforge web-scriptureforge --recurse-submodules
+git clone https://github.com/sillsdev/web-scriptureforge --recurse-submodules
 ```
 
-Otherwise just create a symbolic link between languageforge and scriptureforge...
-
+Otherwise just create a symbolic link between languageforge and scriptureforge:
 ``` bash
 ln -s web-languageforge web-scriptureforge
 ```
 
-Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`. Set it to a location where MongoDB should store its databases.
+Change the variable `mongo_path: /var/lib/mongodb` in `deploy/vars_palaso.yml`. Set it to a location where MongoDB should store its databases.
 
 - **Vagrant VM Setup**: uncomment line 6 and comment line 5
 - **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have Mongo store databases on your HDD rather than SSD). Make sure the `mongodb` user has permission to read and write to the path you specify.
@@ -211,22 +209,17 @@ ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
 ansible-playbook playbook_xenial.yml --limit localhost -K
 ````
 
-If you run into an error on the `ssl_config : LetsEncrypt: Install packages` task, run the playbook again and that task should succeed the second time it is run.
+To build the JavaScript and CSS, run `refreshDeps.sh lf` if you are working on Language Forge, or `refreshDeps.sh sf` if you are working on Scripture Forge. Running `refreshDeps.sh` without arguments defaults to Language Forge.
 
-Install dependencies used to build Sass files and run E2E tests
+That's it; you should now be able to open your browser to languageforge.local and scriptureforge.local and log in with the credentials "admin" and "password".
 
-``` bash
-cd web-languageforge
-npm install
-gulp sass
-gulp webpack-lf
-```
+#### Building TypeScript and Sass
 
-or use `gulp webpack-sf` if you are working in **Scripture Forge**.
+`refreshDeps.sh` builds the TypeScript and Sass, but it does a lot of other things as well.
 
-To watch Sass files for changes, run `gulp sass:watch`. The output will also be in a more readable format (rather than compressed as it is with `gulp sass`). You can also pass the `--debug` flag to enable source comments and source maps in comments in the output files.
+To build Sass, run `gulp sass`. To watch the Sass for changes, run `gulp sass:watch`. Pass the `--debug` flag to enable sourcemaps and source comments.
 
-To watch TypeScript files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#LiveReloadInstall)).
+To build TypeScript, run `gulp webpack-lf` or `gulp webpack-sf` to build for Language Forge or Scripture Forge respectively. To watch the files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#LiveReloadInstall)).
 
 #### Language Forge Configuration File <a id="LFConfig"></a> ####
 
