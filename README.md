@@ -1,6 +1,6 @@
 # web-languageforge / web-scriptureforge #
 
-[Language Forge](https://github.com/sillsdev/web-languageforge) and [Scripture Forge](https://github.com/sillsdev/web-scriptureforge) represent different websites, but have the same code base stored in seperate repositories for the purpose of  version control and issue tracking. Since they are related repos it is easy to merge from one to the other.
+[Language Forge](https://github.com/sillsdev/web-languageforge) and [Scripture Forge](https://github.com/sillsdev/web-scriptureforge) represent different websites, but have the same code base stored in separate repositories for the purpose of version control. Since they are related repos it is easy to merge from one to the other.
 
 ## Users ##
 
@@ -12,7 +12,7 @@ To use **Scripture Forge** go to [scriptureforge.org](https://scriptureforge.org
 
 To report an user issue with the **Language Forge** application, email "issues @ languageforge dot org".
 
-To report an user issue with the **Scripture Forge** application email "issues @ scriptureforge dot org".
+To report an user issue with the **Scripture Forge** application, email "issues @ scriptureforge dot org".
 
 ## Special Thanks To ##
 
@@ -89,7 +89,11 @@ The below sections go into detail on how to manually set up the developer enviro
 
 ### Linux Ubuntu Gnome ###
 
-Our recommended development environment for web development is Linux Ubuntu GNOME.  Choose either the [Vagrant VM Setup](#VagrantSetup) or the [Local Linux Development Setup](#LocalSetup).  Even though the Vagrant VM Setup is definitely easier because it always installs from a clean slate on a new virtual box, we recommend doing development on your local development machine.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
+Our recommended development environment for web development is Linux Ubuntu GNOME.
+There are three main installation methods:
+- [Local Linux Development Setup](#local-linux-development-setup). Everything is installed directly on your machine, which needs to be running Ubuntu 16.04. This is the best method because everything runs at full speed.
+- [Vagrant GUI setup](#vagrant-gui-setup). This is the simplest setup method. A Vagrant box with xForge already installed is downloaded and set up on your machine. The main drawback is speed. In some tests the e2e tests took approximately 10 minutes, rather than the 5 minutes they normally take.
+- [Vagrant headless setup](#vagrant-headless-setup). A small base box is downloaded and xForge is then installed into it. The source code is kept in a shared folder between the host and guest operating systems. This has a number of drawbacks, one of which is that page loads are much slower (50 times slower in some tests; 5000 ms rather than 100 ms). The reason for this is that Virtualbox gives access to the PHP files via the VirtualBox shared folder feature.  This is notoriously slow.
 
 ### Ubuntu Xenial on Windows 10 WSL ###
 
@@ -134,11 +138,17 @@ After Ubuntu Xenial Bash has finished installing, close the Windows Command Prom
 
 -------------------------------
 
-### Vagrant VM Setup <a id="VagrantSetup"></a> ###
+### Vagrant GUI Setup ###
+
+Install [VirtualBox](https://www.virtualbox.org/) and [Vagrant](https://www.vagrantup.com/). Make sure virtualization is enabled in your BIOS.
+
+Create a directory for the installation, such as `src/xForge`. Download the file [deploy/vagrant_xenial_gui/Vagrantfile](https://raw.githubusercontent.com/sillsdev/web-languageforge/master/deploy/vagrant_xenial_gui/Vagrantfile) to the directory where you want to install. Then open the command line to that directory and run `vagrant up`. This will download a box (it's about 5GB, so expect it to take a while) and run a few setup steps. When it is complete the virtual machine should be open. Launch the web browser and try navigating to languageforge.local or scriptureforge.local. The default login credentials are "admin" and "password".
+
+### Vagrant Headless Setup ###
 
 If you are on Windows, begin by giving your user account permission to create symlinks. This is necessary or `npm install` will not run properly.
 
-- Run `secpol.msc`. This ([reportendly](https://www.virtualbox.org/ticket/10085#comment:32)) does not exist on some versions of Windows and you will have to use [a workaround](https://stackoverflow.com/questions/815472/how-do-i-grant-secreatesymboliclink-on-windows-vista-home-edition).
+- Run `secpol.msc`. This ([reportedly](https://www.virtualbox.org/ticket/10085#comment:32)) does not exist on some versions of Windows and you will have to use [a workaround](https://stackoverflow.com/questions/815472/how-do-i-grant-secreatesymboliclink-on-windows-vista-home-edition).
 - Go to Local Policies -> User Rights Assignment -> Create symbolic links -> Add User or Group...
 - Type your username in the text field and click "Check Names".
 - Click OK, then click OK, and close the Local Security Policy window.
@@ -168,7 +178,7 @@ Proceed to [Language Forge Configuration File](#LFConfig) and follow the rest of
 
 -------------------------------
 
-### Local Linux Development Setup <a id="LocalSetup"></a> ###
+### Local Linux Development Setup ###
 
 Start by installing Git and Ansible:
 ``` shell
