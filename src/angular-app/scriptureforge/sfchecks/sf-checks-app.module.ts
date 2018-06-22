@@ -23,11 +23,11 @@ export const SfChecksAppModule = angular
   .config(['$routeProvider', ($routeProvider: angular.route.IRouteProvider) => {
     $routeProvider
       .when('/', {
-        templateUrl: '/angular-app/scriptureforge/sfchecks/partials/project.html',
+        templateUrl: '/angular-app/scriptureforge/sfchecks/project/project.html',
         controller: 'ProjectCtrl'
       })
       .when('/settings', {
-        templateUrl: '/angular-app/scriptureforge/sfchecks/partials/projectSettings.html',
+        templateUrl: '/angular-app/scriptureforge/sfchecks/project/project-settings.html',
         controller: 'ProjectSettingsCtrl'
       })
       .when('/:textId', {
