@@ -1,38 +1,51 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'coreModule',
-  'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice',
-  'palaso.ui.textdrop', 'palaso.ui.jqte', 'ngFileUpload', 'ngRoute'])
+import {JsonRpcResult} from '../../../bellows/core/api/json-rpc.service';
+import {BreadcrumbModule} from '../../../bellows/core/breadcrumbs/breadcrumb.module';
+import {CoreModule} from '../../../bellows/core/core.module';
+import {NoticeModule} from '../../../bellows/core/notice/notice.module';
+import {Session, SessionService} from '../../../bellows/core/session.service';
+import {UploadFile} from '../../../bellows/shared/model/upload.model';
+import {SfChecksCoreModule} from '../core/sf-checks-core.module';
+import {Text} from '../shared/model/text.model';
+
+export const SfChecksProjectModule = angular
+  .module('sfchecks.project', [
+    'ngFileUpload',
+    BreadcrumbModule,
+    CoreModule,
+    SfChecksCoreModule,
+    'palaso.ui.listview',
+    'palaso.ui.typeahead',
+    NoticeModule,
+    'palaso.ui.textdrop',
+    'palaso.ui.jqte'
+  ])
   .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService',
     'linkService', 'listviewSortingService', 'silNoticeService', 'sfchecksProjectService',
     'messageService', 'utilService', 'modalService', '$q',
-  function ($scope, textService, ss, breadcrumbService,
-            linkService, sorting, notice, sfchecksProjectService,
-            messageService, util, modalService, $q) {
+  ($scope, textService, sessionService: SessionService, breadcrumbService,
+   linkService, sorting, notice, sfchecksProjectService,
+   messageService, util, modalService, $q) => {
+
     $scope.finishedLoading = false;
 
     // Rights
     $scope.rights = {};
     $scope.rights.archive = false;
     $scope.rights.create = false;
-    $scope.rights.edit = false; //ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-    $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create ||
-      $scope.rights.edit;
+    // $scope.rights.edit = sessionService.hasSiteRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
+    $scope.rights.edit = false;
+    $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.edit;
 
     // Broadcast Messages
     // items are in the format of {id: id, subject: subject, content: content}
     $scope.messages = [];
 
-    /*
-    function addMessage(id, message) {
-      messages.push({id: id, message: message});
-    };
-    */
-
-    $scope.markMessageRead = function (id) {
-      for (var i = 0; i < $scope.messages.length; ++i) {
-        var m = $scope.messages[i];
-        if (m.id === id) {
+    $scope.markMessageRead = function markMessageRead(id: string): void {
+      for (let i = 0; i < $scope.messages.length; ++i) {
+        const message = $scope.messages[i];
+        if (message.id === id) {
           $scope.messages.splice(i, 1);
           messageService.markRead(id);
           break;
@@ -43,18 +56,18 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'coreMo
     // Listview Selection
     $scope.newTextCollapsed = true;
     $scope.selected = [];
-    $scope.updateSelection = function (event, item) {
-      var selectedIndex = $scope.selected.indexOf(item);
-      var checkbox = event.target;
+    $scope.updateSelection = function updateSelection(event: Event, text: Text): void {
+      const selectedIndex = $scope.selected.indexOf(text);
+      const checkbox = event.target as HTMLInputElement;
       if (checkbox.checked && selectedIndex === -1) {
-        $scope.selected.push(item);
+        $scope.selected.push(text);
       } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
-    $scope.isSelected = function (item) {
-      return item !== null && $scope.selected.indexOf(item) >= 0;
+    $scope.isSelected = function isSelected(text: Text): boolean {
+      return text !== null && $scope.selected.includes(text);
     };
 
     $scope.texts = [];
@@ -63,29 +76,27 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'coreMo
 
     $scope.sortdata = { sortColumn: '', direction: '' };
 
-    $scope.sortIconClass = function (columnName) {
+    $scope.sortIconClass = function sortIconClass(columnName: string): string {
       return sorting.sortIconClass($scope.sortdata, columnName);
     };
 
-    $scope.setSortColumn = function (columnName) {
+    $scope.setSortColumn = function setSortColumn(columnName: string): void {
       return sorting.setSortColumn($scope.sortdata, columnName);
     };
 
-    $scope.doSort = function () {
+    $scope.doSort = function doSort(): void {
       sorting.sortDataByColumn($scope.texts, $scope.sortdata.sortColumn, $scope.sortdata.direction);
     };
 
-    $scope.doSortByColumn = function (columnName) {
+    $scope.doSortByColumn = function doSortByColumn(columnName: string): void {
       $scope.setSortColumn(columnName);
       $scope.doSort();
     };
 
-    // Page Dto
-    // Page Dto
-    $scope.getPageDto = function () {
-      $q.all([ss.getSession(), sfchecksProjectService.pageDto()]).then(function (data) {
-        var session = data[0];
-        var result = data[1];
+    $scope.getPageDto = function getPageDto(): void {
+      $q.all([sessionService.getSession(), sfchecksProjectService.pageDto()]).then((data: any[]) => {
+        const session = data[0] as Session;
+        const result = data[1] as JsonRpcResult;
         $scope.texts = result.data.texts;
         $scope.textsCount = $scope.texts.length;
         $scope.enhanceDto($scope.texts);
@@ -101,19 +112,18 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'coreMo
         $scope.project.url = linkService.project();
 
         // Breadcrumb
-        breadcrumbService.set('top',
-        [
-        { href: '/app/projects', label: 'My Projects' },
-        { href: linkService.project(), label: $scope.project.name }
-        ]
-        );
+        breadcrumbService.set('top', [
+          { href: '/app/projects', label: 'My Projects' },
+          { href: linkService.project(), label: $scope.project.name }
+        ]);
 
-        var rights = result.data.rights;
-        $scope.rights.archive = session.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE) &&
+        const rights = result.data.rights;
+        $scope.rights.archive =
+          session.hasRight(rights, sessionService.domain.TEXTS, sessionService.operation.ARCHIVE) &&
           !session.project().isArchived;
-        $scope.rights.create = session.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE) &&
+        $scope.rights.create = session.hasRight(rights, sessionService.domain.TEXTS, sessionService.operation.CREATE) &&
           !session.project().isArchived;
-        $scope.rights.edit = session.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) &&
+        $scope.rights.edit = session.hasRight(rights, sessionService.domain.TEXTS, sessionService.operation.EDIT) &&
           !session.project().isArchived;
         $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create ||
           $scope.rights.edit;
@@ -123,12 +133,11 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'coreMo
     };
 
     // Archive Texts
-    $scope.archiveTexts = function () {
-      //console.log("archiveTexts()");
-      var textIds = [];
-      var message = '';
-      for (var i = 0, l = $scope.selected.length; i < l; i++) {
-        textIds.push($scope.selected[i].id);
+    $scope.archiveTexts = function archiveTexts(): void {
+      const textIds: string[] = [];
+      let message = '';
+      for (const text of $scope.selected) {
+        textIds.push(text.id);
       }
 
       if (textIds.length === 1) {
@@ -137,14 +146,14 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'coreMo
         message = 'Are you sure you want to archive the ' + textIds.length + ' selected texts?';
       }
 
-      var modalOptions = {
+      const modalOptions = {
         closeButtonText: 'Cancel',
         actionButtonText: 'Archive',
         headerText: 'Archive Texts?',
         bodyText: message
       };
-      modalService.showModal({}, modalOptions).then(function () {
-        textService.archive(textIds, function (result) {
+      modalService.showModal({}, modalOptions).then(() => {
+        textService.archive(textIds).then((result: JsonRpcResult) => {
           if (result.ok) {
             $scope.selected = []; // Reset the selection
             $scope.getPageDto();
@@ -155,24 +164,25 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'coreMo
             }
           }
         });
-      }, angular.noop);
+      }, () => {});
     };
 
     // Add Text
-    $scope.addText = function () {
+    $scope.addText = function addText(): void {
       //    console.log("addText()");
-      var model = {};
-      model.id = '';
-      model.title = $scope.title;
-      model.content = $scope.content;
-      model.startCh = $scope.startCh;
-      model.startVs = $scope.startVs;
-      model.endCh = $scope.endCh;
-      model.endVs = $scope.endVs;
-      model.fontfamily = $scope.fontfamily;
-      textService.update(model, function (result) {
+      const text = {
+        id: '',
+        title: $scope.title,
+        content: $scope.content,
+        startCh: $scope.startCh,
+        startVs: $scope.startVs,
+        endCh: $scope.endCh,
+        endVs: $scope.endVs,
+        fontfamily: $scope.fontfamily
+      } as Text;
+      textService.update(text).then((result: JsonRpcResult) => {
         if (result.ok) {
-          notice.push(notice.SUCCESS, 'The text \'' + model.title + '\' was added successfully');
+          notice.push(notice.SUCCESS, 'The text \'' + text.title + '\' was added successfully');
         }
 
         $scope.getPageDto();
@@ -180,25 +190,23 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'coreMo
     };
 
     $scope.rangeSelectorCollapsed = true;
-    $scope.toggleRangeSelector = function () {
+    $scope.toggleRangeSelector = function toggleRangeSelector(): void {
       $scope.rangeSelectorCollapsed = !$scope.rangeSelectorCollapsed;
     };
 
-    $scope.enhanceDto = function (items) {
-      for (var i in items) {
-        if (items.hasOwnProperty(i)) {
-          items[i].url = linkService.text(items[i].id);
-        }
+    $scope.enhanceDto = function enhanceDto(texts: Text[]): void {
+      for (const text of texts) {
+        text.url = linkService.text(text.id);
       }
     };
 
-    $scope.readUsx = function readUsx(file) {
-      util.readUsxFile(file).then(function (usx) {
-        $scope.$applyAsync(function () {
+    $scope.readUsx = function readUsx(file: UploadFile): void {
+      util.readUsxFile(file).then((usx: string) => {
+        $scope.$applyAsync(() => {
           $scope.content = usx;
         });
-      }).catch(function (errorMessage) {
-        $scope.$applyAsync(function () {
+      }).catch((errorMessage: string) => {
+        $scope.$applyAsync(() => {
           notice.push(notice.ERROR, errorMessage);
           $scope.content = '';
         });
@@ -208,5 +216,4 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'coreMo
     $scope.getPageDto();
 
   }])
-
-  ;
+  .name;
