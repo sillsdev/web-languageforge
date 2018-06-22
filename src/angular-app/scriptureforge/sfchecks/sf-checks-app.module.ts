@@ -3,6 +3,9 @@ import * as angular from 'angular';
 import {CoreModule} from '../../bellows/core/core.module';
 import {NoticeModule} from '../../bellows/core/notice/notice.module';
 import {SfChecksCoreModule} from './core/sf-checks-core.module';
+import './new-project/sfchecks-new-project.controller';
+import {SfChecksProjectSettingsModule} from './project/project-settings.controller';
+import {SfChecksProjectModule} from './project/project.controller';
 import {SfChecksQuestionModule} from './text/question.controller';
 import {SfChecksTextModule} from './text/text.controller';
 
@@ -14,8 +17,8 @@ export const SfChecksAppModule = angular
     CoreModule,
     NoticeModule,
     SfChecksCoreModule,
-    'sfchecks.project',
-    'sfchecks.projectSettings',
+    SfChecksProjectModule,
+    SfChecksProjectSettingsModule,
     SfChecksTextModule,
     SfChecksQuestionModule,
     'sf.ui.invitefriend'
