@@ -3,12 +3,12 @@
     margin: 0 !important;
 }
 
-span.fk { /* TODO: Find a better place for this (partials/questions.css, perhaps?) */
+span.fk { /* TODO: Find a better place for this (text/text.css, perhaps?) */
     /* Used in footnote popups in text display of question page */
     font-weight: bold;
 }
 
-/* TODO: Find a better place for this as well (perhaps in partials/question.css) */
+/* TODO: Find a better place for this as well (perhaps in text/question.css) */
 textarea.newAnswer, textarea.editAnswer {
     padding: 10px;
     background: #ffffff;
