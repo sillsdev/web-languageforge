@@ -1,7 +1,7 @@
+@import '../../../../shared/_variables';
+
 $theme-primary: #3a3a3a;
 $sf-orange: #D89D49;
-$sf-disabled: #999999;
-$sf-lines: #ddd;
 
 // Overwrite variables - see node_modules/bootstrap/sass/_variables.scss
 $theme-colors: (
@@ -9,7 +9,5 @@ $theme-colors: (
   warning: $sf-orange,
 );
 
-$headings-margin-bottom: 20px;
-$navbar-dark-color: white;
 $link-color: #104060;
 $navbar-height: 50px;
