@@ -170,6 +170,112 @@ nav {
   @include button-variant(white, #ADADAD, #E6E6E6);
 }
 
+.footer{
+  background-color: $theme-primary;
+  color: white;
+  padding: 0.5em;
+  margin-top: 0.5em;
+
+  .links{
+    color: white;
+    border-bottom: 1px dotted white;
+    text-decoration: none;
+  }
+
+  .footerimages {
+    padding-bottom: 10px;
+  }
+
+  img {
+   margin-right: 5px;
+  }
+}
+
+// TODO: Remove hack for modal box issue as a result of ui.bootstrap
+.modal-select-language {
+
+  .modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    display: block;
+    margin: auto;
+    overflow: hidden;
+    outline: 0;
+  }
+
+  .modal-dialog {
+    width: 80%;
+    height: 75%;
+    background-color: white;
+    max-width: unset;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .modal-content {
+
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+
+    pui-select-language {
+      table tr {
+        cursor: pointer;
+      }
+
+      td div {
+        height: 1.5rem;
+        overflow: hidden;
+      }
+    }
+
+    .modal-body {
+      max-height: initial;
+      flex: 2;
+
+      .search-wrapper {
+        position: relative;
+
+        #clear-search-button {
+          position: absolute;
+          top: 0;
+          right: 0.6em;
+          z-index: 10;
+          cursor: pointer;
+          line-height: 28pt;
+        }
+      }
+    }
+  }
+
+  .modal-content {
+    height: 100%;
+  }
+
+  .modal-body {
+    position: relative;
+    max-height: 400px;
+    padding: 15px;
+    overflow-y: auto;
+  }
+}
+
+.fixed-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: $navbar-height;
+}
+
 .desktop-title {
     position: relative;
     bottom: 11px;
