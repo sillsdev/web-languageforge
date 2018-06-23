@@ -3,7 +3,7 @@
 @import '../../../../../../../node_modules/bootstrap/scss/mixins';
 
 .footer{
-  background-color: $sf-grey;
+  background-color: $theme-primary;
   color: white;
   padding: 0.5em;
   margin-top: 0.5em;
@@ -96,7 +96,7 @@
   z-index: 1000;
   width: 100%;
   height: $navbar-height;
-  background-color: $sf-grey;
+  background-color: $theme-primary;
 }
 
 #mobileMenu {
