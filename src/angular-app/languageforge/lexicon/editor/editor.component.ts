@@ -139,9 +139,26 @@ export class LexiconEditorController implements angular.IController {
     });
 
     this.setupTypeAheadSearch();
-
-    this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
-      this.$window.localStorage.getItem('viewFilter') === 'false');
+    if (this.$window.localStorage.getItem('viewFilter') == null ||
+    this.$window.localStorage.getItem('viewFilter') === 'false') {
+    this.show.entryListModifiers = false;
+    } else {
+    this.show.entryListModifiers = true;
+    }
+    if (this.$state.is('editor.list')) {
+      if (JSON.parse(this.$window.localStorage.getItem('newEntry')) !== null) {
+        this.$window.localStorage.removeItem('newEntry');
+      }
+    }
+    if (this.$state.is('editor.entry')) {
+      if (JSON.parse(this.$window.localStorage.getItem('newEntry')) !== null) {
+        this.currentEntry = JSON.parse(this.$window.localStorage.getItem('newEntry'));
+        if (this.$state.params.entryId === this.currentEntry.id) {
+            this.editorService.addEntryToEntryList(this.currentEntry);
+            this.visibleEntries.unshift(this.currentEntry);
+        }
+      }
+    }
   }
 
   $onChanges(changes: any): void {
@@ -191,10 +208,16 @@ export class LexiconEditorController implements angular.IController {
       if (this.lecRights.canEditEntry()) {
         this.$scope.$watch(() => this.currentEntry, newValue => {
           if (newValue !== undefined) {
-            this.cancelAutoSaveTimer();
-            if (this.currentEntryIsDirty()) {
-              this.startAutoSaveTimer();
+            if (Object.keys(newValue).length > 1 && newValue.constructor.name === 'LexEntry') {
+              this.$window.localStorage.setItem('newEntry', JSON.stringify(newValue));
+            } else {
+              if (!angular.isUndefined(newValue.id)) {
+                if (newValue.id.substring(0, 5).toString() === '_new_') {
+                  this.$window.localStorage.setItem('newEntry', JSON.stringify(newValue));
+                }
+              }
             }
+            this.cancelAutoSaveTimer();
           }
         }, true);
       }
@@ -410,6 +433,9 @@ export class LexiconEditorController implements angular.IController {
         });
 
         this.saveStatus = 'saved';
+        if (this.$window.localStorage.getItem('newEntry') !== null) {
+          this.$window.localStorage.removeItem('newEntry');
+        }
         successCallback();
       }).catch(reason => {
         this.saveStatus = 'unsaved';
@@ -441,21 +467,31 @@ export class LexiconEditorController implements angular.IController {
   }
 
   newEntry(): void {
+    let hasNewEntry: boolean;
+    let index: any;
     this.saveCurrentEntry(false, () => {
-      const d = new Date();
-      const uniqueId = '_new_' + d.getSeconds() + d.getMilliseconds();
-      const newEntry = new LexEntry();
-      newEntry.id = uniqueId;
-      this.setCurrentEntry(newEntry);
-      // noinspection JSIgnoredPromiseFromCall - comments will load in the background
-      this.commentService.loadEntryComments(newEntry.id);
-      this.editorService.addEntryToEntryList(newEntry);
-      this.editorService.showInitialEntries().then(() => {
-        this.scrollListToEntry(newEntry.id, 'top');
-      });
-
-      this.goToEntry(newEntry.id);
-      this.hideRightPanel();
+      for (let iteration = 0; iteration < this.entries.length; iteration++) {
+        if (this.entries[iteration].constructor.name === 'LexEntry') {
+          index = this.entries[iteration].id;
+          hasNewEntry = true;
+          break;
+        }
+      }
+      if (!hasNewEntry) {
+        const d = new Date();
+        const uniqueId = '_new_' + d.getSeconds() + d.getMilliseconds();
+        const newEntry = new LexEntry();
+        newEntry.id = uniqueId;
+        this.setCurrentEntry(newEntry);
+        // noinspection JSIgnoredPromiseFromCall - comments will load in the background
+        this.commentService.loadEntryComments(newEntry.id);
+        this.editorService.addEntryToEntryList(newEntry);
+        this.goToEntry(newEntry.id);
+        this.hideRightPanel();
+        this.editorService.showInitialEntries().then(() => {
+          this.scrollListToEntry(newEntry.id, 'top');
+        });
+       }
     });
   }
 
@@ -464,6 +500,13 @@ export class LexiconEditorController implements angular.IController {
       LexiconUtilityService.getLexeme(this.lecConfig, this.lecConfig.entry, entry) + '\'</b>';
     this.modal.showModalSimple('Delete Entry', deleteMsg, 'Cancel', 'Delete Entry').then(() => {
       let iShowList = this.editorService.getIndexInList(entry.id, this.visibleEntries);
+      if (this.entries[iShowList] !== null) {
+        if (!angular.isUndefined(this.entries[iShowList].id)) {
+          if (this.entries[iShowList].id.substring(0, 5).toString() === '_new_') {
+            this.$window.localStorage.removeItem('newEntry');
+          }
+        }
+      }
       this.editorService.removeEntryFromLists(entry.id);
       if (this.entries.length > 0) {
         if (iShowList !== 0) {
@@ -962,13 +1005,19 @@ export class LexiconEditorController implements angular.IController {
     this.editorService.loadEditorData().then(() => {
       // if entry not found go to first visible entry
       let entryId = this.$state.params.entryId;
-      if (this.editorService.getIndexInList(entryId, this.entries) == null) {
-        entryId = '';
-        if (this.visibleEntries[0] != null) {
-          entryId = this.visibleEntries[0].id;
+      let isNewEntry = JSON.parse(this.$window.localStorage.getItem('newEntry'));
+      if (isNewEntry) {
+        if (entryId === isNewEntry.id) {
+          entryId = isNewEntry.id;
+        }
+      } else {
+        if (this.editorService.getIndexInList(entryId, this.entries) == null) {
+          entryId = '';
+          if (this.visibleEntries[0] != null) {
+            entryId = this.visibleEntries[0].id;
+          }
         }
       }
-
       if (this.$state.is('editor.entry')) {
         this.editEntryAndScroll(entryId);
       }
