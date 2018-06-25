@@ -87,8 +87,10 @@ export class LexiconEditorController implements angular.IController {
   private pristineEntry: LexEntry = new LexEntry();
   private warnOfUnsavedEditsId: string;
 
-  static $inject = ['$interval', '$q',
-    '$scope', '$state',
+  static $inject = ['$filter', '$interval',
+    '$q', '$scope',
+    '$state',
+    '$window',
     'activityService',
     'applicationHeaderService',
     'modalService', 'silNoticeService',
@@ -99,13 +101,21 @@ export class LexiconEditorController implements angular.IController {
     'lexRightsService',
     'lexSendReceive'
   ];
-  constructor(private readonly $interval: angular.IIntervalService, private readonly $q: angular.IQService,
-              private readonly $scope: angular.IScope, private readonly $state: angular.ui.IStateService,
+
+  constructor(private readonly $filter: angular.IFilterService,
+              private readonly $interval: angular.IIntervalService,
+              private readonly $q: angular.IQService,
+              private readonly $scope: angular.IScope,
+              private readonly $state: angular.ui.IStateService,
+              private readonly $window: angular.IWindowService,
               private readonly activityService: ActivityService,
               private readonly applicationHeaderService: ApplicationHeaderService,
-              private readonly modal: ModalService, private readonly notice: NoticeService,
-              private readonly sessionService: SessionService, private readonly semanticDomains: SemanticDomainsService,
-              private readonly commentService: LexiconCommentService, private readonly editorService: EditorDataService,
+              private readonly modal: ModalService,
+              private readonly notice: NoticeService,
+              private readonly sessionService: SessionService,
+              private readonly semanticDomains: SemanticDomainsService,
+              private readonly commentService: LexiconCommentService,
+              private readonly editorService: EditorDataService,
               private readonly lexService: LexiconEntryApiService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly rightsService: LexiconRightsService,
@@ -129,6 +139,9 @@ export class LexiconEditorController implements angular.IController {
     });
 
     this.setupTypeAheadSearch();
+
+    this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
+      this.$window.localStorage.getItem('viewFilter') === 'false');
   }
 
   $onChanges(changes: any): void {
@@ -211,13 +224,73 @@ export class LexiconEditorController implements angular.IController {
     return LexiconUtilityService.isAtEditorEntry(this.$state);
   }
 
+  toggleFilterOptions() {
+    if (this.$window.localStorage.getItem('viewFilter') == null ||
+      this.$window.localStorage.getItem('viewFilter') === 'false'
+    ) {
+      this.$window.localStorage.setItem('viewFilter', 'true');
+      this.show.entryListModifiers = true;
+    } else {
+      this.$window.localStorage.setItem('viewFilter', 'false');
+      this.show.entryListModifiers = false;
+    }
+  }
+
+  setUrlParams(): void {
+    const clear = this.$scope.$watch(() => this.entryListModifiers.sortOptions.length > 0, (ready: boolean) => {
+      if (!ready) return;
+      clear(); // remove the watcher
+      const sortBy = 'sortBy';
+      const sortReverse = 'sortReverse';
+      const filterType = 'filterType';
+      const filterBy = 'filterBy';
+      this.$state.go(this.$state.current.name, {
+        sortBy: this.entryListModifiers.sortBy.label,
+        sortReverse: this.entryListModifiers.sortReverse,
+        filterType: this.entryListModifiers.filterType,
+        filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+      }, { notify: false });
+      if (this.$state.params[sortBy]) {
+        this.entryListModifiers.sortBy =
+        this.setSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params[sortBy])[0];
+        this.sortEntries(true);
+      }
+
+      if (this.$state.params[sortReverse] === 'true') {
+        this.entryListModifiers.sortReverse = true;
+        this.sortEntries(true);
+      }
+      if (this.$state.params[filterType]) {
+        this.entryListModifiers.filterType = this.$state.params[filterType];
+        this.filterEntries(true);
+      }
+      if (this.$state.params[filterBy]) {
+        this.entryListModifiers.filterBy =
+        this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params[filterBy])[0];
+        this.filterEntries(true);
+      }
+    });
+  }
+
   sortEntries(args: any): void {
+    this.$state.go('editor.entry', {
+      sortBy: this.entryListModifiers.sortBy.label,
+      sortReverse: this.entryListModifiers.sortReverse,
+      filterType: this.entryListModifiers.filterType,
+      filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+    }, { notify: false });
     this.editorService.sortEntries.apply(this, arguments).then(() => {
       this.typeahead.searchEntries(this.typeahead.searchItemSelected);
     });
   }
 
   filterEntries(args: any): void {
+    this.$state.go('editor.entry', {
+      sortBy: this.entryListModifiers.sortBy.label,
+      sortReverse: this.entryListModifiers.sortReverse,
+      filterType: this.entryListModifiers.filterType,
+      filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+    }, { notify: false });
     this.editorService.filterEntries.apply(this, arguments).then(() => {
       this.typeahead.searchEntries(this.typeahead.searchItemSelected);
     });
@@ -261,8 +334,8 @@ export class LexiconEditorController implements angular.IController {
     return this.currentEntry.id != null;
   }
 
-  saveCurrentEntry = (doSetEntry: boolean = false, successCallback: () => void = () => {},
-                      failCallback: (reason?: any) => void = () => {}) => {
+  saveCurrentEntry = (doSetEntry: boolean = false, successCallback: () => void = () => { },
+                      failCallback: (reason?: any) => void = () => { }) => {
     // `doSetEntry` is mainly used for when the save button is pressed, that is when the user is saving the current
     // entry and is NOT going to a different entry (as is the case with editing another entry.
     let isNewEntry = false;
@@ -410,7 +483,7 @@ export class LexiconEditorController implements angular.IController {
       }
 
       this.hideRightPanel();
-    }, () => {});
+    }, () => { });
   }
 
   makeValidModelRecursive = (config: LexConfigField, data: any = {}, stopAtNodes: string | string[] = []): any => {
@@ -550,7 +623,7 @@ export class LexiconEditorController implements angular.IController {
     }
   }
 
-    // Comments View
+  // Comments View
   showComments(): void {
     if (this.rightPanelVisible === true && this.commentContext.contextGuid === '') {
       this.showCommentsPanel();
@@ -902,6 +975,16 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
+  private setSelectedFilter(collections: any[], params: string) {
+    if (collections && params) {
+      return this.$filter('filter')(collections, (item: any) => {
+        if (item.label === params) {
+          return item;
+        }
+      });
+    }
+  }
+
   private setSortAndFilterOptionsFromConfig(): void {
     if (this.lecConfig == null) {
       return;
@@ -911,30 +994,33 @@ export class LexiconEditorController implements angular.IController {
     const filterOptions: FilterOption[] = [];
     for (const entryFieldName of this.lecConfig.entry.fieldOrder) {
       const entryField = this.lecConfig.entry.fields[entryFieldName];
-
-      // TODO: do I need to check if user can see field (view settings).
-      // Is this handled somewhere else? - cjh 2017-07-20
       if (entryField.hideIfEmpty) {
-        return;
+        break;
       }
+
       if (entryFieldName === 'senses') {
         const configSenses = this.lecConfig.entry.fields.senses as LexConfigFieldList;
         for (const senseFieldName of configSenses.fieldOrder) {
           const senseField = configSenses.fields[senseFieldName];
           if (senseField.hideIfEmpty || senseField.type === 'fields') {
-            return;
+            break;
           }
+
           sortOptions.push({ label: senseField.label, value: senseFieldName });
           if (senseField.type === 'multitext') {
             for (const inputSystemTag of (senseField as LexConfigMultiText).inputSystems) {
               const abbreviation = this.getInputSystemAbbreviation(inputSystemTag);
-              filterOptions.push({ label: senseField.label + ' [' + abbreviation + ']',
+              filterOptions.push({
+                label: senseField.label + ' [' + abbreviation + ']',
                 level: 'sense', value: senseFieldName, type: 'multitext',
-                inputSystem: inputSystemTag, key: senseFieldName + '-' + inputSystemTag });
+                inputSystem: inputSystemTag, key: senseFieldName + '-' + inputSystemTag
+              });
             }
           } else {
-            filterOptions.push({ label: senseField.label, level: 'sense', value: senseFieldName,
-              type: senseField.type, key: senseFieldName });
+            filterOptions.push({
+              label: senseField.label, level: 'sense', value: senseFieldName,
+              type: senseField.type, key: senseFieldName
+            });
           }
         }
       } else {
@@ -942,20 +1028,24 @@ export class LexiconEditorController implements angular.IController {
         if (entryField.type === 'multitext') {
           for (const inputSystemTag of (entryField as LexConfigMultiText).inputSystems) {
             const abbreviation = this.getInputSystemAbbreviation(inputSystemTag);
-            filterOptions.push({ label: entryField.label + ' [' + abbreviation + ']',
+            filterOptions.push({
+              label: entryField.label + ' [' + abbreviation + ']',
               level: 'entry', value: entryFieldName, type: 'multitext',
-              inputSystem: inputSystemTag, key: entryFieldName + '-' + inputSystemTag });
+              inputSystem: inputSystemTag, key: entryFieldName + '-' + inputSystemTag
+            });
           }
         } else {
-          filterOptions.push({ label: entryField.label, level: 'entry', value: entryFieldName,
-            type: entryField.type, key: entryFieldName });
+          filterOptions.push({
+            label: entryField.label, level: 'entry', value: entryFieldName,
+            type: entryField.type, key: entryFieldName
+          });
         }
       }
     }
-
     filterOptions.push({ label: 'Comments', value: 'comments', type: 'comments', key: 'comments' });
-    filterOptions.push({ label: 'Example Sentences', value: 'exampleSentences', type: 'exampleSentences',
-      key: 'exampleSentences' });
+    filterOptions.push({
+      label: 'Example Sentences', value: 'exampleSentences', type: 'exampleSentences', key: 'exampleSentences'
+    });
     filterOptions.push({ label: 'Pictures', value: 'pictures', type: 'pictures', key: 'pictures' });
     let hasAudioInputSystem = false;
     for (const inputSystemsTag in this.lecConfig.inputSystems) {
@@ -1205,7 +1295,7 @@ export class LexiconEditorController implements angular.IController {
 
 export class LexiconEditorListController implements angular.IController {
   static $inject = ['lexProjectService'];
-  constructor(private readonly lexProjectService: LexiconProjectService) {}
+  constructor(private readonly lexProjectService: LexiconProjectService) { }
 
   $onInit(): void {
     this.lexProjectService.setBreadcrumbs('editor/list', 'List');
@@ -1216,7 +1306,7 @@ export class LexiconEditorListController implements angular.IController {
 
 export class LexiconEditorEntryController implements angular.IController {
   static $inject = ['lexProjectService'];
-  constructor(private readonly lexProjectService: LexiconProjectService) {}
+  constructor(private readonly lexProjectService: LexiconProjectService) { }
 
   $onInit(): void {
     this.lexProjectService.setBreadcrumbs('editor/entry', 'Edit');
@@ -1232,7 +1322,7 @@ export const LexiconEditorComponent: angular.IComponentOptions = {
     lecFinishedLoading: '<',
     lecProject: '<',
     lecRights: '<'
-},
+  },
   controller: LexiconEditorController,
   templateUrl: '/angular-app/languageforge/lexicon/editor/editor.component.html'
 };
