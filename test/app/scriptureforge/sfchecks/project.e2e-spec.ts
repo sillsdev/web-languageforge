@@ -70,7 +70,6 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
 
     it('can click on settings button', async () => {
       await expect<any>(projectPage.settingsDropdownLink.isDisplayed()).toBe(true);
-
       // Not sure if passing an empty string is the best way, but it works. -Ben Kastner 2018-01-19
       await projectSettingsPage.get(constants.testProjectName);
       await browser.navigate().back();

@@ -144,7 +144,7 @@ export class Utils {
   }
 
   static async scrollTop() {
-    await browser.executeScript('window.scroll(0,0)');
+    await browser.driver.executeScript('window.scroll(0,0)');
   }
 
   static async isAllCheckboxes(elementArray: ElementArrayFinder, state: boolean = true) {

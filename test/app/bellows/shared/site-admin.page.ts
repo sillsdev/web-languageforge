@@ -7,7 +7,7 @@ export class SiteAdminPage {
   url = browser.baseUrl + '/app/siteadmin';
   async get() {
     // todo: refactor this to be a click recipe (as a user would click on the menu to navigate)
-    await browser.get(this.url);
+    await browser.driver.get(this.url);
   }
 
   activePane = element(by.css('div.tab-pane.active'));

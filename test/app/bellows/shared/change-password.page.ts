@@ -5,7 +5,7 @@ export class BellowsChangePasswordPage {
 
   // TODO: this will likely change when we refactor the display of notifications - cjh 2014-06
   async get() {
-   await browser.get(browser.baseUrl + '/app/changepassword');
+   await browser.driver.get(browser.baseUrl + '/app/changepassword');
    await browser.wait(ExpectedConditions.visibilityOf(this.password), this.conditionTimeout);
   }
 

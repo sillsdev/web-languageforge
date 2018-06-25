@@ -88,11 +88,15 @@ describe('Bellows E2E Signup app', async () => {
   });
 
   it('can prefill email address that can\'t be changed', async () => {
+    // browser.sleep needs to avoid warnings.
+    await browser.sleep(500);
     await SignupPage.getPrefilledEmail(constants.unusedEmail);
     await expect<any>(page.emailInput.isEnabled()).toBe(false);
   });
 
   it('can prefill email address that already exists', async () => {
+    // browser.sleep needs to avoid warnings.
+    await browser.sleep(500);
     await SignupPage.getPrefilledEmail(constants.adminEmail);
     await page.nameInput.sendKeys(constants.unusedName);
     await page.passwordInput.sendKeys(constants.passwordValid);

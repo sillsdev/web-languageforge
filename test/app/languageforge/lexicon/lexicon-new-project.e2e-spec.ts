@@ -49,8 +49,12 @@ describe('Lexicon E2E New Project wizard app', async () => {
     });
 
     it('can go back to Chooser page', async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(page.backButton),
+        constants.conditionTimeout);
       await expect<any>(page.backButton.isDisplayed()).toBe(true);
       await page.backButton.click();
+      await browser.wait(ExpectedConditions.visibilityOf(page.chooserPage.sendReceiveButton),
+        constants.conditionTimeout);
       await expect<any>(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
     });
 
@@ -61,8 +65,12 @@ describe('Lexicon E2E New Project wizard app', async () => {
     });
 
     it('can go back to Chooser page', async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(page.backButton),
+        constants.conditionTimeout);
       await expect<any>(page.backButton.isDisplayed()).toBe(true);
       await page.backButton.click();
+      await browser.wait(ExpectedConditions.visibilityOf(page.chooserPage.sendReceiveButton),
+        constants.conditionTimeout);
       await expect<any>(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
     });
 
@@ -71,6 +79,8 @@ describe('Lexicon E2E New Project wizard app', async () => {
   describe('Send Receive Credentials page', async () => {
 
     it('can get back to Send and Receive Credentials page', async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(page.chooserPage.sendReceiveButton),
+        constants.conditionTimeout);
       await page.chooserPage.sendReceiveButton.click();
       await expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       await expect<any>(page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
@@ -105,6 +115,8 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await expect<any>(page.backButton.isDisplayed()).toBe(true);
       await page.backButton.click();
       await expect<any>(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
+      await browser.wait(ExpectedConditions.visibilityOf(page.chooserPage.sendReceiveButton),
+        constants.conditionTimeout);
       await page.chooserPage.sendReceiveButton.click();
       await expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       await expect(page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
@@ -452,6 +464,8 @@ describe('Lexicon E2E New Project wizard app', async () => {
 
     it('create: new empty project', async () => {
       await NewLexProjectPage.get();
+      await browser.wait(ExpectedConditions.visibilityOf(page.chooserPage.createButton),
+        constants.conditionTimeout);
       await page.chooserPage.createButton.click();
       await page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + Key.TAB);
       await browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeOk), constants.conditionTimeout);
@@ -483,6 +497,8 @@ describe('Lexicon E2E New Project wizard app', async () => {
   describe('Primary Language page', async () => {
 
     it('can go back to initial data page (then forward again)', async () => {
+      await browser.wait(ExpectedConditions.visibilityOf(page.backButton),
+        constants.conditionTimeout);
       await expect<any>(page.backButton.isDisplayed()).toBe(true);
       await expect<any>(page.backButton.isEnabled()).toBe(true);
       await page.backButton.click();
@@ -498,6 +514,8 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await expect<any>(page.nextButton.isEnabled()).toBe(true);
       await page.expectFormIsNotValid();
       await page.nextButton.click();
+      await browser.wait(ExpectedConditions.visibilityOf(page.primaryLanguagePage.selectButton),
+        constants.conditionTimeout);
       await expect<any>(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
       await page.formStatus.expectContainsError('Please select a primary language for the project.');
     });

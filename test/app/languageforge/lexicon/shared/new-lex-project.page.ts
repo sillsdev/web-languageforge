@@ -9,7 +9,7 @@ export class NewLexProjectPage {
   modal = new LexModals();
 
   static async get() {
-    await browser.get(browser.baseUrl + '/app/lexicon/new-project');
+    await browser.driver.get(browser.baseUrl + '/app/lexicon/new-project');
   }
 
   // form controls
@@ -86,7 +86,7 @@ export class NewLexProjectPage {
     selectButton: element(by.id('select-language-button')),
     // tslint:disable-next-line:max-line-length
     // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
-    async selectButtonClick() {      
+    async selectButtonClick() {
       await element(by.id('select-language-button')).click();
       await browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
     }

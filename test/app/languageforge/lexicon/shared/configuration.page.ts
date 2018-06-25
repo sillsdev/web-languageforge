@@ -265,8 +265,6 @@ export class ConfigurationPage {
   };
 
   private getRowByLabel(label: string|RegExp) {
-    browser.wait(ExpectedConditions.visibilityOf(this.activePane.element(by.cssContainingText('td', label))
-      .element(by.xpath('..'))), 3000);
     return this.activePane.element(by.cssContainingText('td', label)).element(by.xpath('..'));
   }
 }

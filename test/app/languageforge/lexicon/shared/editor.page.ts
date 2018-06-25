@@ -142,8 +142,8 @@ export class EditorPage {
 
     entriesList: this.editDiv.all(by.repeater('entry in $ctrl.visibleEntries')),
     findEntryByLexeme: (lexeme: string) => {
-      browser.wait(ExpectedConditions.visibilityOf(this.editDiv.element(by.id('compactEntryListContainer'))),
-        Utils.conditionTimeout);
+      /* browser.wait(ExpectedConditions.visibilityOf(this.editDiv.element(by.id('compactEntryListContainer'))),
+        Utils.conditionTimeout); */
       const div = this.editDiv.element(by.id('compactEntryListContainer'));
       return div.element(by.cssContainingText('.listItemPrimary',
         lexeme));

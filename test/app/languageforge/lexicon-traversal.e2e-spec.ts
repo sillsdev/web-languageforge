@@ -1,5 +1,5 @@
 import 'jasmine';
-import {browser, ExpectedConditions, protractor} from 'protractor';
+import {browser, by, element, ExpectedConditions, protractor} from 'protractor';
 
 import {BellowsLoginPage} from '../bellows/shared/login.page';
 import {ProjectsPage} from '../bellows/shared/projects.page';
@@ -60,6 +60,7 @@ describe('Lexicon E2E Page  Traversal', () => {
       await configurationPage.unifiedPane.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures').click();
       await configurationPage.unifiedPane.fieldSpecificButton('Pictures').click();
       await configurationPage.unifiedPane.example.addGroupButton.click();
+      await browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
       await browser.wait(
         ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.example.addCustomExampleButton),
         constants.conditionTimeout);

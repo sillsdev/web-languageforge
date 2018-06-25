@@ -2,7 +2,7 @@ import {browser, by, element} from 'protractor';
 
 export class SignupPage {
   static async get() {
-    await browser.get(browser.baseUrl + '/public/signup');
+    await browser.driver.get(browser.baseUrl + '/public/signup');
   }
 
   static async getPrefilledEmail(email: string) {

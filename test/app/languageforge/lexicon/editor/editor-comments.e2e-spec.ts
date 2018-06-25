@@ -31,11 +31,15 @@ describe('Lexicon E2E Editor Comments', async () => {
       await editorPage.comment.bubbles.first.click();
       await editorPage.comment.newComment.textarea.sendKeys('First comment on this word.');
       await editorPage.edit.getMultiTextInputs('Definition').first().sendKeys('change value - ');
+      await browser.wait(ExpectedConditions.visibilityOf(editorPage.comment.newComment.postBtn),
+        constants.conditionTimeout);
       await editorPage.comment.newComment.postBtn.click();
     });
 
   it('comments panel: check that comment shows up', async () => {
     const comment = editorPage.comment.getComment(0);
+    /* await browser.wait(ExpectedConditions.visibilityOf(comment.contextGuid),
+        constants.conditionTimeout); */
     await expect<any>(comment.contextGuid.getAttribute('textContent')).toEqual('lexeme.th');
 
     // Earlier tests modify the avatar and name of the manager user; don't check those
@@ -124,7 +128,7 @@ describe('Lexicon E2E Editor Comments', async () => {
     // ToDo: investigate why this was needed to be added after editor.js changed to TS - IJH 2018-05
     await browser.sleep(2000);
     await editorPage.edit.toCommentsLink.click();
-    await browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);    
+    await browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     await expect<any>(editorPage.commentDiv.getAttribute('class')).toContain('panel-visible');
   });
 

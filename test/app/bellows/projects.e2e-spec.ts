@@ -76,8 +76,8 @@ describe('Bellows E2E Projects List app', async () => {
       });
 
       await projectsPage.removeUserFromProject(constants.otherProjectName, constants.adminUsername);
-      loginPage.loginAsAdmin();
-      projectsPage.get();
+      await loginPage.loginAsAdmin();
+      await projectsPage.get();
 
       // Now the admin should have "Add myself to project" buttons
       // And the project name should NOT be a clickable link

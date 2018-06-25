@@ -15,7 +15,7 @@ export class SfProjectSettingsPage {
 
   async get(projectName: string = '') {
     await this.projectsPage.get();
-    await this.projectsPage.clickOnProject(projectName);
+    await this.projectsPage.clickOnProjectName(projectName);
     await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
     await this.clickOnSettingsLink();
 
