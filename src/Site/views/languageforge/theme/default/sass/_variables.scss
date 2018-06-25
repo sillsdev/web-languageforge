@@ -1,10 +1,10 @@
-$lf-blue: #104060;
+@import '../../../../shared/_variables';
+
+$theme-primary: #104060;
 $lf-blue-dark: #0a2440;
 $lf-highlight: #CDDEEB;
 // TODO: Check if we need to change the font to the new design or stick to the default one
 $lf-font: "PT Sans",sans-serif;
-$lf-disabled: #999999;
-$lf-lines: #ddd;
 $lf-comments: #D89D49;
 
 /* Colours as defined in UxPin */
@@ -19,10 +19,9 @@ $WildSand: #f6f6f6;
 
 // Overwrite variables - see node_modules/bootstrap/sass/_variables.scss
 $theme-colors: (
-    primary: $lf-blue,
-    secondary: $lf-blue-dark,
-    warning: $lf-comments,
+  primary: $theme-primary,
+  secondary: $lf-blue-dark,
+  warning: $lf-comments,
 );
 
-$headings-margin-bottom: 20px;
-$navbar-dark-color: white;
+$navbar-height: 120px;

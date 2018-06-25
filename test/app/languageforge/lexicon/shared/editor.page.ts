@@ -290,6 +290,10 @@ export class EditorPage {
       addCancelButton: element(by.id('addCancel'))
     },
 
+    semanticDomain: {
+      values: EditorUtil.getOneField('Semantic Domain').all(by.className('dc-semanticdomain-value'))
+    },
+
     getMultiTextInputs: (searchLabel: string) => {
       return EditorUtil.getOneField(searchLabel)
         .all(by.css('.input-group > .dc-text input'));

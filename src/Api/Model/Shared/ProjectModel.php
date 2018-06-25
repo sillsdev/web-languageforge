@@ -53,7 +53,6 @@ class ProjectModel extends MapperModel
         $this->setReadOnlyProp('projectCode');
         $this->setReadOnlyProp('siteName');
         $this->setReadOnlyProp('appName');
-        $this->setReadOnlyProp('userProperties');
 
         // There's separate API calls to get/set $userJoinRequests
         // TODO: Add API calls for $usersRequestingAccess DDW 2016-09
@@ -124,6 +123,7 @@ class ProjectModel extends MapperModel
     /**
      * @param Website $website
      * @return ProjectModel
+     * @throws \Exception
      */
     public static function getDefaultProject($website)
     {
@@ -139,6 +139,7 @@ class ProjectModel extends MapperModel
      * @param string $projectId
      * @param Website $website
      * @return bool
+     * @throws \Exception
      */
     public static function projectExistsOnWebsite($projectId, $website) {
         $projectExists = false;
@@ -154,6 +155,7 @@ class ProjectModel extends MapperModel
      * Reads the model from the mongo collection
      * Ensures that the required pick lists exist even if not present in the database
      * @param string $id
+     * @throws \Exception
      * @see MapperModel::read()
      */
     public function read($id)
@@ -373,6 +375,7 @@ class ProjectModel extends MapperModel
     /**
      * @param string $projectId
      * @return ProjectModel
+     * @throws \Exception
      */
     public static function getById($projectId)
     {
@@ -393,6 +396,11 @@ class ProjectModel extends MapperModel
         }
     }
 
+    /**
+     * @param $projectCode
+     * @return ProjectModel
+     * @throws \Exception
+     */
     public static function getByProjectCode($projectCode)
     {
         $m = new ProjectModel();

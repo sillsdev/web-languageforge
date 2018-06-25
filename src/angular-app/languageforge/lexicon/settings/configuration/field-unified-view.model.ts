@@ -6,7 +6,7 @@ import {
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 import {OptionSelects} from './option-selects.model';
 
-export class ConfigurationUnifiedViewModel {
+export class ConfigurationFieldUnifiedViewModel {
   groupLists: GroupList[];
   inputSystems: InputSystemSettingsList;
   entryFields: FieldSettingsList;
@@ -14,10 +14,10 @@ export class ConfigurationUnifiedViewModel {
   exampleFields: FieldSettingsList;
 
   constructor(config: LexiconConfig, users: { [userId: string]: User }) {
-    this.groupLists = ConfigurationUnifiedViewModel.setGroupLists(config, users);
+    this.groupLists = ConfigurationFieldUnifiedViewModel.setGroupLists(config, users);
 
     this.inputSystems = new InputSystemSettingsList();
-    this.inputSystems.settings = ConfigurationUnifiedViewModel.setInputSystemsViewModel(config);
+    this.inputSystems.settings = ConfigurationFieldUnifiedViewModel.setInputSystemsViewModel(config);
     const optionSelects = new OptionSelects();
     for (const tag in config.inputSystems) {
       if (config.inputSystems.hasOwnProperty(tag)) {
@@ -29,26 +29,26 @@ export class ConfigurationUnifiedViewModel {
 
     const entryConfig = config.entry;
     this.entryFields = new FieldSettingsList();
-    this.entryFields.settings = ConfigurationUnifiedViewModel.setLevelViewModel(entryConfig, config);
+    this.entryFields.settings = ConfigurationFieldUnifiedViewModel.setLevelViewModel(entryConfig, config);
     if ('senses' in entryConfig.fields) {
       const sensesConfig = entryConfig.fields.senses as LexConfigFieldList;
       this.senseFields = new FieldSettingsList();
-      this.senseFields.settings = ConfigurationUnifiedViewModel.setLevelViewModel(sensesConfig, config);
+      this.senseFields.settings = ConfigurationFieldUnifiedViewModel.setLevelViewModel(sensesConfig, config);
       if ('examples' in sensesConfig.fields) {
         const examplesConfig = sensesConfig.fields.examples as LexConfigFieldList;
         this.exampleFields = new FieldSettingsList();
-        this.exampleFields.settings = ConfigurationUnifiedViewModel.setLevelViewModel(examplesConfig, config);
+        this.exampleFields.settings = ConfigurationFieldUnifiedViewModel.setLevelViewModel(examplesConfig, config);
       }
     }
 
     for (const role of RoleType.roles()) {
-      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.inputSystems.settings,
+      ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(this.inputSystems.settings,
         this.inputSystems.selectAllColumns, role);
-      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.entryFields.settings,
+      ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(this.entryFields.settings,
         this.entryFields.selectAllColumns, role);
-      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.senseFields.settings,
+      ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(this.senseFields.settings,
         this.senseFields.selectAllColumns, role);
-      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(this.exampleFields.settings,
+      ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(this.exampleFields.settings,
         this.exampleFields.selectAllColumns, role);
     }
 
@@ -57,32 +57,33 @@ export class ConfigurationUnifiedViewModel {
       this.entryFields.selectAllColumns.groups.push(new Group());
       this.senseFields.selectAllColumns.groups.push(new Group());
       this.exampleFields.selectAllColumns.groups.push(new Group());
-      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.inputSystems.settings,
+      ConfigurationFieldUnifiedViewModel.checkIfAllGroupColumnSelected(this.inputSystems.settings,
         this.inputSystems.selectAllColumns, i);
-      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.entryFields.settings,
+      ConfigurationFieldUnifiedViewModel.checkIfAllGroupColumnSelected(this.entryFields.settings,
         this.entryFields.selectAllColumns, i);
-      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.senseFields.settings,
+      ConfigurationFieldUnifiedViewModel.checkIfAllGroupColumnSelected(this.senseFields.settings,
         this.senseFields.selectAllColumns, i);
-      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(this.exampleFields.settings,
+      ConfigurationFieldUnifiedViewModel.checkIfAllGroupColumnSelected(this.exampleFields.settings,
         this.exampleFields.selectAllColumns, i);
     }
   }
 
   toConfig(config: LexiconConfig): void {
     // Config updates for Input Systems
-    ConfigurationUnifiedViewModel.inputSystemsToConfig(this.inputSystems.settings, config, this.groupLists);
+    ConfigurationFieldUnifiedViewModel.inputSystemsToConfig(this.inputSystems.settings, config, this.groupLists);
 
     // Config updates for fields
     const entryConfig = config.entry;
-    ConfigurationUnifiedViewModel.fieldsToConfig(this.entryFields.settings, config, entryConfig, this.groupLists);
+    ConfigurationFieldUnifiedViewModel.fieldsToConfig(this.entryFields.settings, config, entryConfig, this.groupLists);
     if ('senses' in entryConfig.fields) {
       entryConfig.fieldOrder.push('senses');
       const sensesConfig = entryConfig.fields.senses as LexConfigFieldList;
-      ConfigurationUnifiedViewModel.fieldsToConfig(this.senseFields.settings, config, sensesConfig, this.groupLists);
+      ConfigurationFieldUnifiedViewModel
+        .fieldsToConfig(this.senseFields.settings, config, sensesConfig, this.groupLists);
       if ('examples' in sensesConfig.fields) {
         sensesConfig.fieldOrder.push('examples');
         const examplesConfig = sensesConfig.fields.examples as LexConfigFieldList;
-        ConfigurationUnifiedViewModel.fieldsToConfig(this.exampleFields.settings, config, examplesConfig,
+        ConfigurationFieldUnifiedViewModel.fieldsToConfig(this.exampleFields.settings, config, examplesConfig,
           this.groupLists);
       }
     }
@@ -92,11 +93,12 @@ export class ConfigurationUnifiedViewModel {
     const roles = RoleType.roles();
     for (const role of roles) {
       setting[role] = setting.isAllRowSelected;
-      ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
+      ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
     }
     for (const group of setting.groups) {
       group.show = setting.isAllRowSelected;
-      ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(settings, selectAll, setting.groups.indexOf(group));
+      ConfigurationFieldUnifiedViewModel
+        .checkIfAllGroupColumnSelected(settings, selectAll, setting.groups.indexOf(group));
     }
   }
 
@@ -122,14 +124,14 @@ export class ConfigurationUnifiedViewModel {
   static selectAllRoleColumn(settings: SettingsBase[], selectAll: SettingsBase, role: string): void {
     for (const setting of settings) {
       setting[role] = selectAll[role];
-      ConfigurationUnifiedViewModel.checkIfAllRowSelected(setting);
+      ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(setting);
     }
   }
 
   static selectAllGroupColumn(settings: SettingsBase[], selectAll: SettingsBase, groupIndex: number): void {
     for (const setting of settings) {
       setting.groups[groupIndex].show = selectAll.groups[groupIndex].show;
-      ConfigurationUnifiedViewModel.checkIfAllRowSelected(setting);
+      ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(setting);
     }
   }
 
@@ -156,14 +158,14 @@ export class ConfigurationUnifiedViewModel {
 
   static checkIfAllRoleSelected(setting: SettingsBase, settings: SettingsBase[], selectAll: SettingsBase,
                                 role: string): void {
-    ConfigurationUnifiedViewModel.checkIfAllRowSelected(setting);
-    ConfigurationUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
+    ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(setting);
+    ConfigurationFieldUnifiedViewModel.checkIfAllRoleColumnSelected(settings, selectAll, role);
   }
 
   static checkIfAllGroupSelected(setting: SettingsBase, settings: SettingsBase[], selectAll: SettingsBase,
                                  groupIndex: number): void {
-    ConfigurationUnifiedViewModel.checkIfAllRowSelected(setting);
-    ConfigurationUnifiedViewModel.checkIfAllGroupColumnSelected(settings, selectAll, groupIndex);
+    ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(setting);
+    ConfigurationFieldUnifiedViewModel.checkIfAllGroupColumnSelected(settings, selectAll, groupIndex);
   }
 
   private static inputSystemsToConfig(inputSystems: InputSystemSettings[], config: LexiconConfig,
@@ -273,15 +275,15 @@ export class ConfigurationUnifiedViewModel {
 
   private static setInputSystemsViewModel(config: LexiconConfig): InputSystemSettings[] {
     const inputSystems: InputSystemSettings[] = [];
-    const selectedManagerTags = ConfigurationUnifiedViewModel.getSelectedInputSystemsManagerTags(config);
+    const selectedManagerTags = ConfigurationFieldUnifiedViewModel.getSelectedInputSystemsManagerTags(config);
     let i = 0;
     for (const tag of selectedManagerTags) {
-      ConfigurationUnifiedViewModel.setInputSystemViewModel(config, inputSystems, tag, i);
+      ConfigurationFieldUnifiedViewModel.setInputSystemViewModel(config, inputSystems, tag, i);
       i++;
     }
     for (const tag in config.inputSystems) {
       if (config.inputSystems.hasOwnProperty(tag) && !selectedManagerTags.includes(tag)) {
-        ConfigurationUnifiedViewModel.setInputSystemViewModel(config, inputSystems, tag, i);
+        ConfigurationFieldUnifiedViewModel.setInputSystemViewModel(config, inputSystems, tag, i);
         i++;
       }
     }
@@ -293,11 +295,11 @@ export class ConfigurationUnifiedViewModel {
                                          index: number): void {
     const inputSystemSettings = new InputSystemSettings();
     inputSystemSettings.tag = tag;
-    ConfigurationUnifiedViewModel.setInputSystemRoleSettings(tag, config, inputSystemSettings);
-    ConfigurationUnifiedViewModel.setInputSystemGroupSettings(tag, config, inputSystemSettings);
+    ConfigurationFieldUnifiedViewModel.setInputSystemRoleSettings(tag, config, inputSystemSettings);
+    ConfigurationFieldUnifiedViewModel.setInputSystemGroupSettings(tag, config, inputSystemSettings);
     inputSystems[index] = inputSystemSettings;
 
-    ConfigurationUnifiedViewModel.checkIfAllRowSelected(inputSystemSettings);
+    ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(inputSystemSettings);
   }
 
   private static getSelectedInputSystemsManagerTags(config: LexiconConfig): string[] {
@@ -375,8 +377,8 @@ export class ConfigurationUnifiedViewModel {
         if (levelConfig.fields[fieldName].type === 'pictures') {
           fieldSettings.captionHiddenIfEmpty = (levelConfig.fields[fieldName] as LexConfigPictures).captionHideIfEmpty;
         }
-        ConfigurationUnifiedViewModel.setLevelRoleSettings(fieldName, config, fieldSettings);
-        ConfigurationUnifiedViewModel.setLevelGroupSettings(fieldName, config, fieldSettings);
+        ConfigurationFieldUnifiedViewModel.setLevelRoleSettings(fieldName, config, fieldSettings);
+        ConfigurationFieldUnifiedViewModel.setLevelGroupSettings(fieldName, config, fieldSettings);
 
         const roleType = new RoleType();
         const managerRoleViewField = config.roleViews[roleType.manager].fields[fieldName];
@@ -400,7 +402,7 @@ export class ConfigurationUnifiedViewModel {
           }
         }
 
-        ConfigurationUnifiedViewModel.checkIfAllRowSelected(fieldSettings);
+        ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSettings);
         fields[fieldIndex++] = fieldSettings;
       }
     }
@@ -436,7 +438,7 @@ export class ConfigurationUnifiedViewModel {
     let groupIndex = 0;
     for (const userId in config.userViews) {
       if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null && (userId in users)) {
-        groupLists[groupIndex++] = new GroupList(users[userId].username, userId);
+        groupLists[groupIndex++] = { label: users[userId].username, userId } as GroupList;
       }
     }
 
@@ -494,12 +496,7 @@ export class RoleType {
   }
 }
 
-export class GroupList {
+export interface GroupList {
   label: string;
   userId: string;
-
-  constructor(label: string, userId: string) {
-    this.label = label;
-    this.userId = userId;
-  }
 }

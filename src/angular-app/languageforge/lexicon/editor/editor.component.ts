@@ -1,22 +1,21 @@
 import * as angular from 'angular';
 
-import { ActivityService } from '../../../bellows/core/api/activity.service';
-import { ApplicationHeaderService } from '../../../bellows/core/application-header.service';
-import { ModalService } from '../../../bellows/core/modal/modal.service';
-import { NoticeService } from '../../../bellows/core/notice/notice.service';
-import { EditorDataService } from '../../../bellows/core/offline/editor-data.service';
-import { LexiconCommentService } from '../../../bellows/core/offline/lexicon-comments.service';
-import { SessionService } from '../../../bellows/core/session.service';
-import { InterfaceConfig } from '../../../bellows/shared/model/interface-config.model';
-import { SemanticDomainsService } from '../../core/semantic-domains/semantic-domains.service';
-import { LexiconEntryApiService } from '../core/lexicon-entry-api.service';
-import { LexiconProjectService } from '../core/lexicon-project.service';
-import { LexiconRightsService, Rights } from '../core/lexicon-rights.service';
-import { LexiconSendReceiveService } from '../core/lexicon-send-receive.service';
-import { LexiconUtilityService } from '../core/lexicon-utility.service';
-import { LexEntry } from '../shared/model/lex-entry.model';
-import { LexPicture } from '../shared/model/lex-picture.model';
-
+import {ActivityService} from '../../../bellows/core/api/activity.service';
+import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
+import {ModalService} from '../../../bellows/core/modal/modal.service';
+import {NoticeService} from '../../../bellows/core/notice/notice.service';
+import {EditorDataService} from '../../../bellows/core/offline/editor-data.service';
+import {LexiconCommentService} from '../../../bellows/core/offline/lexicon-comments.service';
+import {SessionService} from '../../../bellows/core/session.service';
+import {InterfaceConfig} from '../../../bellows/shared/model/interface-config.model';
+import {SemanticDomainsService} from '../../core/semantic-domains/semantic-domains.service';
+import {LexiconEntryApiService} from '../core/lexicon-entry-api.service';
+import {LexiconProjectService} from '../core/lexicon-project.service';
+import {LexiconRightsService, Rights} from '../core/lexicon-rights.service';
+import {LexiconSendReceiveService} from '../core/lexicon-send-receive.service';
+import {LexiconUtilityService} from '../core/lexicon-utility.service';
+import {LexEntry} from '../shared/model/lex-entry.model';
+import {LexPicture} from '../shared/model/lex-picture.model';
 import {
   LexConfig,
   LexConfigField,
@@ -24,8 +23,8 @@ import {
   LexConfigMultiText, LexConfigOptionList,
   LexiconConfig
 } from '../shared/model/lexicon-config.model';
-import { LexiconProject } from '../shared/model/lexicon-project.model';
-import { FieldControl } from './field/field-control.model';
+import {LexiconProject} from '../shared/model/lexicon-project.model';
+import {FieldControl} from './field/field-control.model';
 
 class SortOption {
   label: string;
@@ -88,9 +87,11 @@ export class LexiconEditorController implements angular.IController {
   private pristineEntry: LexEntry = new LexEntry();
   private warnOfUnsavedEditsId: string;
 
-  static $inject = ['$interval', '$q',
-    '$scope', '$state',
-     '$anchorScroll', '$filter', 'activityService',
+  static $inject = ['$filter', '$interval',
+    '$q', '$scope',
+    '$state',
+    '$window',
+    'activityService',
     'applicationHeaderService',
     'modalService', 'silNoticeService',
     'sessionService', 'semanticDomainsService',
@@ -98,26 +99,31 @@ export class LexiconEditorController implements angular.IController {
     'lexEntryApiService',
     'lexProjectService',
     'lexRightsService',
-    'lexSendReceive',
+    'lexSendReceive'
   ];
 
-  constructor(private readonly $interval: angular.IIntervalService, private readonly $q: angular.IQService,
-              private readonly $scope: angular.IScope, 
+  constructor(private readonly $filter: angular.IFilterService,
+              private readonly $interval: angular.IIntervalService,
+              private readonly $q: angular.IQService,
+              private readonly $scope: angular.IScope,
               private readonly $state: angular.ui.IStateService,
-              private readonly $anchorScroll: angular.IAnchorScrollService,
-              private readonly $filter: angular.IFilterService, 
+              private readonly $window: angular.IWindowService,
               private readonly activityService: ActivityService,
               private readonly applicationHeaderService: ApplicationHeaderService,
-              private readonly modal: ModalService, private readonly notice: NoticeService,
-              private readonly sessionService: SessionService, private readonly semanticDomains: SemanticDomainsService,
-              private readonly commentService: LexiconCommentService, private readonly editorService: EditorDataService,
+              private readonly modal: ModalService,
+              private readonly notice: NoticeService,
+              private readonly sessionService: SessionService,
+              private readonly semanticDomains: SemanticDomainsService,
+              private readonly commentService: LexiconCommentService,
+              private readonly editorService: EditorDataService,
               private readonly lexService: LexiconEntryApiService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly rightsService: LexiconRightsService,
               private readonly sendReceive: LexiconSendReceiveService) {}
-              
+
   $onInit(): void {
     this.show.more = this.editorService.showMoreEntries;
+
     this.$scope.$watch(() => this.lecConfig, () => {
       this.setSortAndFilterOptionsFromConfig();
     });
@@ -131,50 +137,11 @@ export class LexiconEditorController implements angular.IController {
         this.saveCurrentEntry();
       }
     });
+
     this.setupTypeAheadSearch();
-  }
 
-  setUrlParams(): void {
-    this.$state.go('editor.entry', {
-      'sortBy': this.entryListModifiers.sortBy.label,
-      'sortReverse': this.entryListModifiers.sortReverse,
-      'filterType': this.entryListModifiers.filterType,
-      'filterBy': this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
-    }, { notify: false });
-
-    if (this.$state.params["sortBy"]) {
-      this.entryListModifiers.sortBy = this.setSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params["sortBy"])[0];
-      this.sortEntries(true);
-      this.show.entryListModifiers = true;
-    }
-
-    if (this.$state.params["sortReverse"] == "true") {
-      this.entryListModifiers.sortReverse = true;
-      this.sortEntries(true);
-      this.show.entryListModifiers = true;
-    }
-
-    if (this.$state.params["filterType"]) {
-      this.entryListModifiers.filterType = this.$state.params["filterType"];
-      this.filterEntries(true);
-      this.show.entryListModifiers = true;
-    }
-
-    if (this.$state.params["filterBy"]) {
-      this.entryListModifiers.filterBy = this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params["filterBy"])[0];
-      this.filterEntries(true);
-      this.show.entryListModifiers = true;
-    }
-  }
-
-  setSelectedFilter(collections: any[], params: string) {
-    if (collections && params) {
-      return this.$filter('filter')(collections, (item) => {
-        if (item.label == params) {
-          return item;
-        }
-      });
-    }
+    this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
+      this.$window.localStorage.getItem('viewFilter') === 'false');
   }
 
   $onChanges(changes: any): void {
@@ -257,15 +224,73 @@ export class LexiconEditorController implements angular.IController {
     return LexiconUtilityService.isAtEditorEntry(this.$state);
   }
 
+  toggleFilterOptions() {
+    if (this.$window.localStorage.getItem('viewFilter') == null ||
+      this.$window.localStorage.getItem('viewFilter') === 'false'
+    ) {
+      this.$window.localStorage.setItem('viewFilter', 'true');
+      this.show.entryListModifiers = true;
+    } else {
+      this.$window.localStorage.setItem('viewFilter', 'false');
+      this.show.entryListModifiers = false;
+    }
+  }
+
+  setUrlParams(): void {
+    const clear = this.$scope.$watch(() => this.entryListModifiers.sortOptions.length > 0, (ready: boolean) => {
+      if (!ready) return;
+      clear(); // remove the watcher
+      const sortBy = 'sortBy';
+      const sortReverse = 'sortReverse';
+      const filterType = 'filterType';
+      const filterBy = 'filterBy';
+      this.$state.go(this.$state.current.name, {
+        sortBy: this.entryListModifiers.sortBy.label,
+        sortReverse: this.entryListModifiers.sortReverse,
+        filterType: this.entryListModifiers.filterType,
+        filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+      }, { notify: false });
+      if (this.$state.params[sortBy]) {
+        this.entryListModifiers.sortBy =
+        this.setSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params[sortBy])[0];
+        this.sortEntries(true);
+      }
+
+      if (this.$state.params[sortReverse] === 'true') {
+        this.entryListModifiers.sortReverse = true;
+        this.sortEntries(true);
+      }
+      if (this.$state.params[filterType]) {
+        this.entryListModifiers.filterType = this.$state.params[filterType];
+        this.filterEntries(true);
+      }
+      if (this.$state.params[filterBy]) {
+        this.entryListModifiers.filterBy =
+        this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params[filterBy])[0];
+        this.filterEntries(true);
+      }
+    });
+  }
+
   sortEntries(args: any): void {
-    this.$state.go('editor.entry', { sortBy: this.entryListModifiers.sortBy.label, sortReverse: this.entryListModifiers.sortReverse, filterType: this.entryListModifiers.filterType, filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null' }, { notify: false });
+    this.$state.go('editor.entry', {
+      sortBy: this.entryListModifiers.sortBy.label,
+      sortReverse: this.entryListModifiers.sortReverse,
+      filterType: this.entryListModifiers.filterType,
+      filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+    }, { notify: false });
     this.editorService.sortEntries.apply(this, arguments).then(() => {
       this.typeahead.searchEntries(this.typeahead.searchItemSelected);
     });
   }
 
   filterEntries(args: any): void {
-    this.$state.go('editor.entry', { sortBy: this.entryListModifiers.sortBy.label, sortReverse: this.entryListModifiers.sortReverse, filterType: this.entryListModifiers.filterType, filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null' }, { notify: false });
+    this.$state.go('editor.entry', {
+      sortBy: this.entryListModifiers.sortBy.label,
+      sortReverse: this.entryListModifiers.sortReverse,
+      filterType: this.entryListModifiers.filterType,
+      filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+    }, { notify: false });
     this.editorService.filterEntries.apply(this, arguments).then(() => {
       this.typeahead.searchEntries(this.typeahead.searchItemSelected);
     });
@@ -310,7 +335,7 @@ export class LexiconEditorController implements angular.IController {
   }
 
   saveCurrentEntry = (doSetEntry: boolean = false, successCallback: () => void = () => { },
-    failCallback: (reason?: any) => void = () => { }) => {
+                      failCallback: (reason?: any) => void = () => { }) => {
     // `doSetEntry` is mainly used for when the save button is pressed, that is when the user is saving the current
     // entry and is NOT going to a different entry (as is the case with editing another entry.
     let isNewEntry = false;
@@ -397,7 +422,7 @@ export class LexiconEditorController implements angular.IController {
 
   editEntryAndScroll(id: string): void {
     this.editEntry(id);
-    this.$anchorScroll('entryId_' + id);
+    this.scrollListToEntry(id, 'middle');
   }
 
   editEntry(id: string): void {
@@ -950,21 +975,37 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
+  private setSelectedFilter(collections: any[], params: string) {
+    if (collections && params) {
+      return this.$filter('filter')(collections, (item: any) => {
+        if (item.label === params) {
+          return item;
+        }
+      });
+    }
+  }
+
   private setSortAndFilterOptionsFromConfig(): void {
     if (this.lecConfig == null) {
       return;
     }
+
     const sortOptions: SortOption[] = [];
     const filterOptions: FilterOption[] = [];
     for (const entryFieldName of this.lecConfig.entry.fieldOrder) {
       const entryField = this.lecConfig.entry.fields[entryFieldName];
-      // TODO: do I need to check if user can see field (view settings).
-      // Is this handled somewhere else? - cjh 2017-07-20
+      if (entryField.hideIfEmpty) {
+        break;
+      }
+
       if (entryFieldName === 'senses') {
         const configSenses = this.lecConfig.entry.fields.senses as LexConfigFieldList;
         for (const senseFieldName of configSenses.fieldOrder) {
           const senseField = configSenses.fields[senseFieldName];
-       
+          if (senseField.hideIfEmpty || senseField.type === 'fields') {
+            break;
+          }
+
           sortOptions.push({ label: senseField.label, value: senseFieldName });
           if (senseField.type === 'multitext') {
             for (const inputSystemTag of (senseField as LexConfigMultiText).inputSystems) {
@@ -1003,8 +1044,7 @@ export class LexiconEditorController implements angular.IController {
     }
     filterOptions.push({ label: 'Comments', value: 'comments', type: 'comments', key: 'comments' });
     filterOptions.push({
-      label: 'Example Sentences', value: 'exampleSentences', type: 'exampleSentences',
-      key: 'exampleSentences'
+      label: 'Example Sentences', value: 'exampleSentences', type: 'exampleSentences', key: 'exampleSentences'
     });
     filterOptions.push({ label: 'Pictures', value: 'pictures', type: 'pictures', key: 'pictures' });
     let hasAudioInputSystem = false;
@@ -1019,7 +1059,6 @@ export class LexiconEditorController implements angular.IController {
     if (hasAudioInputSystem) {
       filterOptions.push({ label: 'Audio', value: 'audio', type: 'audio', key: 'audio' });
     }
-
 
     LexiconUtilityService.arrayCopyRetainingReferences(sortOptions, this.entryListModifiers.sortOptions);
     LexiconUtilityService.arrayCopyRetainingReferences(filterOptions, this.entryListModifiers.filterOptions);

@@ -22,8 +22,8 @@ export abstract class DocumentEditor {
   modulesConfig: any = {};
   inputSystem: InputSystem = new InputSystem();
 
-  protected currentSegment: Segment;
   protected segmenter: Segmenter;
+  private _currentSegment: Segment;
   private _isScripture: boolean = false;
 
   private documentSetId: string = '';
@@ -32,7 +32,7 @@ export abstract class DocumentEditor {
   private initialSegmentRef: string = '';
   private initialSegmentChecksum: number;
 
-  constructor(private readonly $q: angular.IQService, protected readonly machine: MachineService,
+  constructor(protected readonly $q: angular.IQService, protected readonly machine: MachineService,
               private readonly realTime: RealTimeService) {
     this._created = this.$q.defer();
     this.segmenter = new MachineSegmenter(this, machine);
@@ -56,6 +56,10 @@ export abstract class DocumentEditor {
 
   get created(): angular.IPromise<boolean> {
     return this._created.promise;
+  }
+
+  get currentSegment(): Segment {
+    return this._currentSegment;
   }
 
   get currentSegmentDocumentSetId(): string {
@@ -183,7 +187,7 @@ export abstract class DocumentEditor {
       return false;
     }
 
-    this.currentSegment = new Segment(this.documentSetId, segmentRef);
+    this._currentSegment = new Segment(this.documentSetId, segmentRef);
     if (isInitialSegment) {
       // set the checksum for the initial segment
       this.currentSegment.initialChecksum = this.initialSegmentChecksum;
@@ -264,7 +268,6 @@ export abstract class DocumentEditor {
 }
 
 export class TargetDocumentEditor extends DocumentEditor {
-  private isShowingSuggestions: boolean = false;
   private _suggestions: string[] = [];
   private previousSuggestions: string[] = [];
   private pendingTrainCount: number;
@@ -333,15 +336,6 @@ export class TargetDocumentEditor extends DocumentEditor {
     return segmentChanged;
   }
 
-  switchCurrentSegment(segmentRef: string): boolean {
-    const previousSegment = this.currentSegment;
-    const segmentChanged = super.switchCurrentSegment(segmentRef);
-    if (previousSegment != null && segmentChanged) {
-      this.trainSegment(previousSegment);
-    }
-    return segmentChanged;
-  }
-
   onStartTranslating(): void {
     this.isTranslating = true;
     this.suggestions = [];
@@ -378,7 +372,6 @@ export class TargetDocumentEditor extends DocumentEditor {
 
   hideSuggestions(): void {
     (this.quill.theme as SuggestionsTheme).suggestionsTooltip.hide();
-    this.isShowingSuggestions = false;
   }
 
   insertSuggestion(suggestionIndex: number = -1): void {
@@ -399,6 +392,24 @@ export class TargetDocumentEditor extends DocumentEditor {
 
   get productiveCharacterCount(): number {
     return this.currentSegment.productiveCharacterCount;
+  }
+
+  trainSegment(segment: Segment): angular.IPromise<void> {
+    if (!this.isSegmentUntrained(segment)) {
+      return this.$q.resolve();
+    }
+
+    if (this.pendingTrainCount == null) {
+      this.pendingTrainCount = 0;
+    }
+    this.pendingTrainCount++;
+    return this.machine.trainSegment()
+      .then(() => {
+        segment.acceptChanges();
+        this.$window.console.log('Segment ' + segment.ref + ' of document ' + segment.documentSetId
+          + ' was trained successfully.');
+      })
+      .finally(() => this.pendingTrainCount--);
   }
 
   protected getSaveState(): SaveState {
@@ -455,30 +466,11 @@ export class TargetDocumentEditor extends DocumentEditor {
     const tooltip = (this.quill.theme as SuggestionsTheme).suggestionsTooltip;
     tooltip.position(this.quill.getBounds(selection.index, selection.length));
     tooltip.show();
-    this.isShowingSuggestions = true;
   }
 
   private isSegmentUntrained(segment: Segment = this.currentSegment): boolean {
     return segment != null && segment.range.length > 0 && !this.isBlank(segment.text) &&
       this.isSegmentComplete(segment.range) && segment.isChanged;
-  }
-
-  private trainSegment(segment: Segment = this.currentSegment): angular.IPromise<void> {
-    if (!this.isSegmentUntrained(segment)) {
-      return;
-    }
-
-    if (this.pendingTrainCount == null) {
-      this.pendingTrainCount = 0;
-    }
-    this.pendingTrainCount++;
-    return this.machine.trainSegment()
-      .then(() => {
-        segment.acceptChanges();
-        this.$window.console.log('Segment ' + segment.ref + ' of document ' + segment.documentSetId
-          + ' was trained successfully.');
-      })
-      .finally(() => this.pendingTrainCount--);
   }
 
   private get hasSuggestions(): boolean {
@@ -549,11 +541,7 @@ export class SourceDocumentEditor extends DocumentEditor {
   }
 
   translateCurrentSegment(): angular.IPromise<void> {
-    return this.machine.translate(this.currentSegment == null ? '' : this.currentSegment.text);
-  }
-
-  resetTranslation(): angular.IPromise<void> {
     this.machine.resetTranslation();
-    return this.translateCurrentSegment();
+    return this.machine.translate(this.currentSegment == null ? '' : this.currentSegment.text);
   }
 }
