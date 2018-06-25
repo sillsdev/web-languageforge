@@ -12,6 +12,7 @@ import {EditorOfflineCacheService} from './editor-offline-cache.service';
 import {LexiconCommentService} from './lexicon-comments.service';
 
 class FilterBy {
+  label?: string;
   level?: string;
   type?: string;
   value?: string;
