@@ -29,7 +29,7 @@
                                                search="$ctrl.typeahead.searchEntries" select="$ctrl.typeahead.searchSelect">
                                     <ul data-ng-if="$ctrl.typeahead.searchResults.length > 0" class="list-group">
                                         <li data-typeahead-item="e" class="typeahead-item list-group-item"
-                                            data-ng-repeat="e in $ctrl.typeahead.searchResults | limitTo: $ctrl.typeahead.limit">
+                                            data-ng-repeat="e in $ctrl.typeahead.searchResults track by $index | limitTo: $ctrl.typeahead.limit">
                                             <div class="listItemPrimary" data-ng-bind-html="$ctrl.getPrimaryListItemForDisplay($ctrl.lecConfig, e)"></div>
                                             <small class="listItemSecondary" data-ng-bind-html="$ctrl.getMeaningForDisplay(e)"></small>
                                         </li>
