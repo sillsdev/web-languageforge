@@ -1,4 +1,4 @@
-@import '../../../../../Site/views/languageforge/theme/default/sass/variables';
+@import '../../../../../Site/views/shared/_variables';
 
 #form-container h1 {
   font-size: 20pt;
@@ -32,7 +32,7 @@
       height: 56px;
     }
     i.text-muted {
-      color: $lf-disabled;
+      color: $theme-disabled;
     }
   }
   a:hover {
