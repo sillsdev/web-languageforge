@@ -1,6 +1,6 @@
 # web-languageforge / web-scriptureforge #
 
-[Language Forge](https://github.com/sillsdev/web-languageforge) and [Scripture Forge](https://github.com/sillsdev/web-scriptureforge) represent different websites, but have the same code base stored in seperate repositories for the purpose of  version control and issue tracking. Since they are related repos it is easy to merge from one to the other.
+[Language Forge](https://github.com/sillsdev/web-languageforge) and [Scripture Forge](https://github.com/sillsdev/web-scriptureforge) represent different websites, but have the same code base stored in separate repositories for the purpose of version control. Since they are related repos it is easy to merge from one to the other.
 
 ## Users ##
 
@@ -12,7 +12,7 @@ To use **Scripture Forge** go to [scriptureforge.org](https://scriptureforge.org
 
 To report an user issue with the **Language Forge** application, email "issues @ languageforge dot org".
 
-To report an user issue with the **Scripture Forge** application email "issues @ scriptureforge dot org".
+To report an user issue with the **Scripture Forge** application, email "issues @ scriptureforge dot org".
 
 ## Special Thanks To ##
 
@@ -89,7 +89,11 @@ The below sections go into detail on how to manually set up the developer enviro
 
 ### Linux Ubuntu Gnome ###
 
-Our recommended development environment for web development is Linux Ubuntu GNOME.  Choose either the [Vagrant VM Setup](#VagrantSetup) or the [Local Linux Development Setup](#LocalSetup).  Even though the Vagrant VM Setup is definitely easier because it always installs from a clean slate on a new virtual box, we recommend doing development on your local development machine.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
+Our recommended development environment for web development is Linux Ubuntu GNOME.
+There are three main installation methods:
+- [Local Linux Development Setup](#local-linux-development-setup). Everything is installed directly on your machine, which needs to be running Ubuntu 16.04. This is the best method because everything runs at full speed.
+- [Vagrant GUI setup](#vagrant-gui-setup). This is the simplest setup method. A Vagrant box with xForge already installed is downloaded and set up on your machine. The main drawback is speed. In some tests the e2e tests took approximately 10 minutes, rather than the 5 minutes they normally take.
+- [Vagrant headless setup](#vagrant-headless-setup). A small base box is downloaded and xForge is then installed into it. The source code is kept in a shared folder between the host and guest operating systems. This has a number of drawbacks, one of which is that page loads are much slower (50 times slower in some tests; 5000 ms rather than 100 ms). The reason for this is that Virtualbox gives access to the PHP files via the VirtualBox shared folder feature.  This is notoriously slow.
 
 ### Ubuntu Xenial on Windows 10 WSL ###
 
@@ -134,11 +138,17 @@ After Ubuntu Xenial Bash has finished installing, close the Windows Command Prom
 
 -------------------------------
 
-### Vagrant VM Setup <a id="VagrantSetup"></a> ###
+### Vagrant GUI Setup ###
+
+Install [VirtualBox](https://www.virtualbox.org/) and [Vagrant](https://www.vagrantup.com/). Make sure virtualization is enabled in your BIOS.
+
+Create a directory for the installation, such as `src/xForge`. Download the file [deploy/vagrant_xenial_gui/Vagrantfile](https://raw.githubusercontent.com/sillsdev/web-languageforge/master/deploy/vagrant_xenial_gui/Vagrantfile) to the directory where you want to install. Then open the command line to that directory and run `vagrant up`. This will download a box (it's about 5GB, so expect it to take a while) and run a few setup steps. When it is complete the virtual machine should be open. Launch the web browser and try navigating to languageforge.local or scriptureforge.local. The default login credentials are "admin" and "password".
+
+### Vagrant Headless Setup ###
 
 If you are on Windows, begin by giving your user account permission to create symlinks. This is necessary or `npm install` will not run properly.
 
-- Run `secpol.msc`. This ([reportendly](https://www.virtualbox.org/ticket/10085#comment:32)) does not exist on some versions of Windows and you will have to use [a workaround](https://stackoverflow.com/questions/815472/how-do-i-grant-secreatesymboliclink-on-windows-vista-home-edition).
+- Run `secpol.msc`. This ([reportedly](https://www.virtualbox.org/ticket/10085#comment:32)) does not exist on some versions of Windows and you will have to use [a workaround](https://stackoverflow.com/questions/815472/how-do-i-grant-secreatesymboliclink-on-windows-vista-home-edition).
 - Go to Local Policies -> User Rights Assignment -> Create symbolic links -> Add User or Group...
 - Type your username in the text field and click "Check Names".
 - Click OK, then click OK, and close the Local Security Policy window.
@@ -168,37 +178,35 @@ Proceed to [Language Forge Configuration File](#LFConfig) and follow the rest of
 
 -------------------------------
 
-### Local Linux Development Setup <a id="LocalSetup"></a> ###
+### Local Linux Development Setup ###
 
-Start with the Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure a basic development environment.
+Start by installing Git and Ansible:
+``` shell
+sudo add-apt-repository ppa:ansible/ansible
+sudo apt-get update
+sudo apt-get install -y git ansible
+```
 
-#### Installation and Deployment ####
-
-After creating your Ansible-assisted setup, clone this repository from your *home* folder...
-
-```` bash
-mkdir src
-cd src
-mkdir xForge
-cd xForge
-git clone https://github.com/sillsdev/web-languageforge web-languageforge --recurse-submodules
-````
+Now create a directory for installation and clone the repo:
+``` shell
+mkdir -p src/xForge
+cd src/xForge
+git clone https://github.com/sillsdev/web-languageforge --recurse-submodules
+```
 
 The `--recurse-submodules` is used to fetch many of the Ansible roles used by the Ansible playbooks in the deploy folder. If you've already cloned the repo without `--recurse-submodules`, run `git submodule update --init --recursive` to pull and initialize them.
 
-If you want to run an independant repo for scriptureforge, clone its repo also...
-
+If you want to run an independent repo for Scripture Forge, clone its repo also:
 ``` bash
-git clone https://github.com/sillsdev/web-scriptureforge web-scriptureforge --recurse-submodules
+git clone https://github.com/sillsdev/web-scriptureforge --recurse-submodules
 ```
 
-Otherwise just create a symbolic link between languageforge and scriptureforge...
-
+Otherwise just create a symbolic link between languageforge and scriptureforge:
 ``` bash
 ln -s web-languageforge web-scriptureforge
 ```
 
-Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`. Set it to a location where MongoDB should store its databases.
+Change the variable `mongo_path: /var/lib/mongodb` in `deploy/vars_palaso.yml`. Set it to a location where MongoDB should store its databases.
 
 - **Vagrant VM Setup**: uncomment line 6 and comment line 5
 - **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have Mongo store databases on your HDD rather than SSD). Make sure the `mongodb` user has permission to read and write to the path you specify.
@@ -211,22 +219,17 @@ ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
 ansible-playbook playbook_xenial.yml --limit localhost -K
 ````
 
-If you run into an error on the `ssl_config : LetsEncrypt: Install packages` task, run the playbook again and that task should succeed the second time it is run.
+To build the JavaScript and CSS, run `refreshDeps.sh lf` if you are working on Language Forge, or `refreshDeps.sh sf` if you are working on Scripture Forge. Running `refreshDeps.sh` without arguments defaults to Language Forge.
 
-Install dependencies used to build Sass files and run E2E tests
+That's it; you should now be able to open your browser to languageforge.local and scriptureforge.local and log in with the credentials "admin" and "password".
 
-``` bash
-cd web-languageforge
-npm install
-gulp sass
-gulp webpack-lf
-```
+#### Building TypeScript and Sass
 
-or use `gulp webpack-sf` if you are working in **Scripture Forge**.
+`refreshDeps.sh` builds the TypeScript and Sass, but it does a lot of other things as well.
 
-To watch Sass files for changes, run `gulp sass:watch`. The output will also be in a more readable format (rather than compressed as it is with `gulp sass`). You can also pass the `--debug` flag to enable source comments and source maps in comments in the output files.
+To build Sass, run `gulp sass`. To watch the Sass for changes, run `gulp sass:watch`. Pass the `--debug` flag to enable sourcemaps and source comments.
 
-To watch TypeScript files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#LiveReloadInstall)).
+To build TypeScript, run `gulp webpack-lf` or `gulp webpack-sf` to build for Language Forge or Scripture Forge respectively. To watch the files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#LiveReloadInstall)).
 
 #### Language Forge Configuration File <a id="LFConfig"></a> ####
 
