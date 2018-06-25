@@ -60,7 +60,7 @@
         - geoipupdate
         - libapache2-mod-php
         - mongodb-org
-        - nodejs
+        - npm
         - p7zip-full
         - php7.0-cli
         - php7.0-curl
