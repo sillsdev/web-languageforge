@@ -218,6 +218,11 @@ export class LexiconEditorController implements angular.IController {
               }
             }
             this.cancelAutoSaveTimer();
+            if (this.currentEntryIsDirty()) {
+              if (newValue.lexeme.en.value) {
+                this.startAutoSaveTimer();
+              }
+            }
           }
         }, true);
       }
