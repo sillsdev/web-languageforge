@@ -2,6 +2,10 @@
 @import '../../../../../../../node_modules/bootstrap/scss/variables';
 @import '../../../../../../../node_modules/bootstrap/scss/mixins';
 
+.fixed-nav-bar {
+  background-color: $theme-primary;
+}
+
 .breadcrumb {
   background-color: #fff;
   padding: 6px 0 0;
