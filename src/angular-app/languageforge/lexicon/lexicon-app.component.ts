@@ -157,13 +157,12 @@ export class LexiconAppController implements angular.IController {
 
   private onFetchTransifexLanguages = (languages: TransifexLanguage[]) => {
     for (const language of languages) {
-      if (language.code in this.interfaceConfig.selectLanguages.options) {
-        this.interfaceConfig.selectLanguages.options[language.code].name = language.name;
-      } else {
-        this.interfaceConfig.selectLanguages.options[language.code].name = language.name;
-        this.interfaceConfig.selectLanguages.options[language.code].option = language.name;
+      if (!(language.code in this.interfaceConfig.selectLanguages.options)) {
         this.interfaceConfig.selectLanguages.optionsOrder.push(language.code);
       }
+
+      this.interfaceConfig.selectLanguages.options[language.code].name = language.name;
+      this.interfaceConfig.selectLanguages.options[language.code].option = language.name;
     }
   }
 
