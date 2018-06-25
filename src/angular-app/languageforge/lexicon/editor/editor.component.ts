@@ -139,24 +139,9 @@ export class LexiconEditorController implements angular.IController {
     });
 
     this.setupTypeAheadSearch();
-    if (this.$window.localStorage.getItem('viewFilter') == null ||
-    this.$window.localStorage.getItem('viewFilter') === 'false') {
-    this.show.entryListModifiers = false;
-  } else {
-    this.show.entryListModifiers = true;
-  }
 
-  }
-  hasFilter() {
-    if (this.$window.localStorage.getItem('viewFilter') == null ||
-     this.$window.localStorage.getItem('viewFilter') === 'false') {
-      this.$window.localStorage.setItem('viewFilter', 'true');
-      this.show.entryListModifiers = true;
-  } else {
-    this.$window.localStorage.setItem('viewFilter', 'false');
-    this.show.entryListModifiers = false;
-
-  }
+    this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
+      this.$window.localStorage.getItem('viewFilter') === 'false');
   }
 
   $onChanges(changes: any): void {
@@ -239,64 +224,78 @@ export class LexiconEditorController implements angular.IController {
     return LexiconUtilityService.isAtEditorEntry(this.$state);
   }
 
+  toggleFilterOptions() {
+    if (this.$window.localStorage.getItem('viewFilter') == null ||
+      this.$window.localStorage.getItem('viewFilter') === 'false'
+    ) {
+      this.$window.localStorage.setItem('viewFilter', 'true');
+      this.show.entryListModifiers = true;
+    } else {
+      this.$window.localStorage.setItem('viewFilter', 'false');
+      this.show.entryListModifiers = false;
+    }
+  }
+
   setUrlParams(): void {
-        const clear = this.$scope.$watch(() => this.entryListModifiers.sortOptions.length > 0, (ready: boolean) => {
-          if (!ready) return;
-          clear(); // remove the watcher
-          const sortBy = 'sortBy';
-          const sortReverse = 'sortReverse';
-          const filterType = 'filterType';
-          const filterBy = 'filterBy';
-          this.$state.go(this.$state.current.name, {
-            sortBy: this.entryListModifiers.sortBy.label,
-            sortReverse: this.entryListModifiers.sortReverse,
-            filterType: this.entryListModifiers.filterType,
-            filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
-          }, { notify: false });
-          if (this.$state.params[sortBy]) {
-            this.entryListModifiers.sortBy =
-            this.setSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params[sortBy])[0];
-            this.sortEntries(true);
-          }
-
-          if (this.$state.params[sortReverse] === 'true') {
-            this.entryListModifiers.sortReverse = true;
-            this.sortEntries(true);
-          }
-          if (this.$state.params[filterType]) {
-            this.entryListModifiers.filterType = this.$state.params[filterType];
-            this.filterEntries(true);
-          }
-          if (this.$state.params[filterBy]) {
-            this.entryListModifiers.filterBy =
-            this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params[filterBy])[0];
-            this.filterEntries(true);
-          }
-        });
+    const clear = this.$scope.$watch(() => this.entryListModifiers.sortOptions.length > 0, (ready: boolean) => {
+      if (!ready) return;
+      clear(); // remove the watcher
+      const sortBy = 'sortBy';
+      const sortReverse = 'sortReverse';
+      const filterType = 'filterType';
+      const filterBy = 'filterBy';
+      this.$state.go(this.$state.current.name, {
+        sortBy: this.entryListModifiers.sortBy.label,
+        sortReverse: this.entryListModifiers.sortReverse,
+        filterType: this.entryListModifiers.filterType,
+        filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+      }, { notify: false });
+      if (this.$state.params[sortBy]) {
+        this.entryListModifiers.sortBy =
+        this.setSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params[sortBy])[0];
+        this.sortEntries(true);
       }
-       sortEntries(args: any): void {
-        this.$state.go('editor.entry', {
-            sortBy: this.entryListModifiers.sortBy.label,
-            sortReverse: this.entryListModifiers.sortReverse,
-            filterType: this.entryListModifiers.filterType,
-            filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
-          }, { notify: false });
-        this.editorService.sortEntries.apply(this, arguments).then(() => {
-                            this.typeahead.searchEntries(this.typeahead.searchItemSelected);
-         });
-       }
 
-      filterEntries(args: any): void {
-        this.$state.go('editor.entry', {
-            sortBy: this.entryListModifiers.sortBy.label,
-            sortReverse: this.entryListModifiers.sortReverse,
-            filterType: this.entryListModifiers.filterType,
-            filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
-         }, { notify: false });
-        this.editorService.filterEntries.apply(this, arguments).then(() => {
-           this.typeahead.searchEntries(this.typeahead.searchItemSelected);
-         });
-        }
+      if (this.$state.params[sortReverse] === 'true') {
+        this.entryListModifiers.sortReverse = true;
+        this.sortEntries(true);
+      }
+      if (this.$state.params[filterType]) {
+        this.entryListModifiers.filterType = this.$state.params[filterType];
+        this.filterEntries(true);
+      }
+      if (this.$state.params[filterBy]) {
+        this.entryListModifiers.filterBy =
+        this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params[filterBy])[0];
+        this.filterEntries(true);
+      }
+    });
+  }
+
+  sortEntries(args: any): void {
+    this.$state.go('editor.entry', {
+      sortBy: this.entryListModifiers.sortBy.label,
+      sortReverse: this.entryListModifiers.sortReverse,
+      filterType: this.entryListModifiers.filterType,
+      filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+    }, { notify: false });
+    this.editorService.sortEntries.apply(this, arguments).then(() => {
+      this.typeahead.searchEntries(this.typeahead.searchItemSelected);
+    });
+  }
+
+  filterEntries(args: any): void {
+    this.$state.go('editor.entry', {
+      sortBy: this.entryListModifiers.sortBy.label,
+      sortReverse: this.entryListModifiers.sortReverse,
+      filterType: this.entryListModifiers.filterType,
+      filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+    }, { notify: false });
+    this.editorService.filterEntries.apply(this, arguments).then(() => {
+      this.typeahead.searchEntries(this.typeahead.searchItemSelected);
+    });
+  }
+
   resetEntryListFilter(): void {
     this.entryListModifiers.filterBy = null;
     this.filterEntries(true);
@@ -995,10 +994,18 @@ export class LexiconEditorController implements angular.IController {
     const filterOptions: FilterOption[] = [];
     for (const entryFieldName of this.lecConfig.entry.fieldOrder) {
       const entryField = this.lecConfig.entry.fields[entryFieldName];
+      if (entryField.hideIfEmpty) {
+        break;
+      }
+
       if (entryFieldName === 'senses') {
         const configSenses = this.lecConfig.entry.fields.senses as LexConfigFieldList;
         for (const senseFieldName of configSenses.fieldOrder) {
           const senseField = configSenses.fields[senseFieldName];
+          if (senseField.hideIfEmpty || senseField.type === 'fields') {
+            break;
+          }
+
           sortOptions.push({ label: senseField.label, value: senseFieldName });
           if (senseField.type === 'multitext') {
             for (const inputSystemTag of (senseField as LexConfigMultiText).inputSystems) {
@@ -1037,8 +1044,7 @@ export class LexiconEditorController implements angular.IController {
     }
     filterOptions.push({ label: 'Comments', value: 'comments', type: 'comments', key: 'comments' });
     filterOptions.push({
-      label: 'Example Sentences', value: 'exampleSentences', type: 'exampleSentences',
-      key: 'exampleSentences'
+      label: 'Example Sentences', value: 'exampleSentences', type: 'exampleSentences', key: 'exampleSentences'
     });
     filterOptions.push({ label: 'Pictures', value: 'pictures', type: 'pictures', key: 'pictures' });
     let hasAudioInputSystem = false;
@@ -1053,6 +1059,7 @@ export class LexiconEditorController implements angular.IController {
     if (hasAudioInputSystem) {
       filterOptions.push({ label: 'Audio', value: 'audio', type: 'audio', key: 'audio' });
     }
+
     LexiconUtilityService.arrayCopyRetainingReferences(sortOptions, this.entryListModifiers.sortOptions);
     LexiconUtilityService.arrayCopyRetainingReferences(filterOptions, this.entryListModifiers.filterOptions);
   }
@@ -1287,10 +1294,8 @@ export class LexiconEditorController implements angular.IController {
 }
 
 export class LexiconEditorListController implements angular.IController {
-  static $inject = ['lexProjectService', '$state'];
-  constructor(private readonly lexProjectService: LexiconProjectService,
-              private readonly $state: angular.ui.IStateService
-  ) { }
+  static $inject = ['lexProjectService'];
+  constructor(private readonly lexProjectService: LexiconProjectService) { }
 
   $onInit(): void {
     this.lexProjectService.setBreadcrumbs('editor/list', 'List');
