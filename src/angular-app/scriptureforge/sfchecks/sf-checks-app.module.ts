@@ -6,6 +6,7 @@ import {SfChecksCoreModule} from './core/sf-checks-core.module';
 import './new-project/sfchecks-new-project.controller';
 import {SfChecksProjectSettingsModule} from './project/project-settings.controller';
 import {SfChecksProjectModule} from './project/project.controller';
+import {SfChecksInviteFriendModule} from './shared/invite-friend.controller';
 import {SfChecksQuestionModule} from './text/question.controller';
 import {SfChecksTextModule} from './text/text.controller';
 
@@ -21,7 +22,7 @@ export const SfChecksAppModule = angular
     SfChecksProjectSettingsModule,
     SfChecksTextModule,
     SfChecksQuestionModule,
-    'sf.ui.invitefriend'
+    SfChecksInviteFriendModule
   ])
   .config(['$routeProvider', ($routeProvider: angular.route.IRouteProvider) => {
     $routeProvider
