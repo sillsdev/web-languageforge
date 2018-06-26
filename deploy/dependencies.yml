@@ -33,10 +33,14 @@
     - name: Add PHP7.0 ppa for Trusty
       apt_repository: repo='ppa:ondrej/php' state=present
       when: base_distribution == 'ubuntu' and base_distribution_release == 'trusty'
+    - name: add Mongo apt key
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
     - name: add Mongo 3.6 repository
       # TODO: use ansible system variable instead of hardcoding "xenial" in repo line -- except that it can only be from a restricted list of distros (e.g. xenial & bionic only)
       apt_repository:
-        repo: "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse"
+        repo: "deb [arch=amd64] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse"
         filename: mongodb-org-3.6
         update_cache: yes
     - name: Remove PHP5 for Trusty
@@ -56,7 +60,7 @@
         - geoipupdate
         - libapache2-mod-php
         - mongodb-org
-        - nodejs
+        - npm
         - p7zip-full
         - php7.0-cli
         - php7.0-curl
@@ -69,6 +73,7 @@
         - postfix
         - unzip
         - chromium-browser
+        - default-jre-headless
 
     - name: check for node binary
       stat: path=/usr/local/bin/node
@@ -313,7 +318,7 @@
     - name: enable languageforge-web-api service
       service: name=languageforge-web-api enabled=yes
       when: is_build_agent is defined and is_build_agent == true
-      
+
   handlers:
     - name: restart mongod
       service: name=mongod state=restarted

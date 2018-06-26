@@ -2,6 +2,7 @@
 
 namespace Api\Model\Shared\Dto;
 
+use Api\Library\Shared\Palaso\StringUtil;
 use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
@@ -256,11 +257,37 @@ class ActivityListDto
             $item['content'] = $item['actionContent'];
             $item['type'] = 'project';  // FIXME: Should this always be "project"? Should it sometimes be "entry"? 2018-02 RM
             unset($item['actionContent']);
-            if ($item['action'] === ActivityModel::UPDATE_ENTRY && $projectModel->appName === LfProjectModel::LEXICON_APP) {
-                $lexProjectModel = new LexProjectModel($projectModel->id->asString());
-                $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
+            if ($projectModel->appName === LfProjectModel::LEXICON_APP) {
+                if ($item['action'] === ActivityModel::UPDATE_ENTRY) {
+                    $lexProjectModel = new LexProjectModel($projectModel->id->asString());
+                    $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
+                } else if ($item['action'] === ActivityModel::ADD_LEX_COMMENT || $item['action'] === ActivityModel::UPDATE_LEX_COMMENT) {
+                    $labelFromMongo = $item['content'][ActivityModel::LEX_COMMENT_LABEL] ?? '';
+                    unset($item['content'][ActivityModel::LEX_COMMENT_LABEL]);
+                    if (! empty($labelFromMongo)) {
+                        $item['content'][ActivityModel::FIELD_LABEL] = static::prepareActivityContentForCommentLabel($labelFromMongo);
+                    }
+                }
             }
         }
+    }
+
+    private static function prepareActivityContentForCommentLabel($labelFromMongo)
+    {
+        $result = [];
+        $parts = explode('|', $labelFromMongo);
+        foreach ($parts as $part) {
+            if (StringUtil::startsWith($part, 'sense@')) {
+                $pos = substr($part, strlen('sense@'));
+                $result['sense'] = intval($pos);
+            } else if (StringUtil::startsWith($part, 'example@')) {
+                $pos = substr($part, strlen('example@'));
+                $result['example'] = intval($pos);
+            } else {
+                $result['label'] = $part;
+            }
+        }
+        return $result;
     }
 
     /**

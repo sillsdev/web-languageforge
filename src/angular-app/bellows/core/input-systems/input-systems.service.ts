@@ -53,21 +53,27 @@ export class InputSystemsService {
     return languages;
   }
 
-  static scripts() {
+  static scripts(): InputSystemsScripts {
     return inputSystemsScripts;
   }
 
-  static regions() {
+  static regions(): InputSystemsRegions {
     return inputSystemsRegions;
   }
 
   static isRightToLeft(code: string) {
     // TODO. Enhance. find a source for this list; manually update for now. IJH 2014-04
     const rtlCodes = ['fa', 'fas'];
-    return (rtlCodes.indexOf(code) >= 0);
+    return (rtlCodes.includes(code));
   }
 
 }
+
+export type InputSystemsScript = string[];
+export type InputSystemsRegion = string;
+
+interface InputSystemsScripts { [scriptCode: string]: InputSystemsScript; }
+interface InputSystemsRegions { [regionCode: string]: InputSystemsRegion; }
 
 export const InputSystemsModule = angular
   .module('inputSystemsModule', [])

@@ -65,7 +65,7 @@ export class FieldPictureController implements angular.IController {
       picture.fileName +
       ') and therefore cannot be synchronized. ' +
       'To see the picture, link it to an internally referenced file. ' +
-      'Replace the file here or in FLEx, move or copy the file to the Linked Files folder.';
+      'Replace the file here or in FieldWorks, move or copy the file to the Linked Files folder.';
   }
 
   deletePicture(index: number): void {

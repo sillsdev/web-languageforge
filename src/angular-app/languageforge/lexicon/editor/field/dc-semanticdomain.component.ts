@@ -6,15 +6,21 @@ import {FieldMultiOptionListController} from './dc-multioptionlist.component';
 export class FieldSemanticDomainController extends FieldMultiOptionListController implements angular.IController {
   options: SemanticDomain[] = [];
 
-  static $inject = ['$state', 'semanticDomainsService'];
-  constructor(protected $state: angular.ui.IStateService, private readonly semanticDomains: SemanticDomainsService) {
+  static $inject = ['$scope', '$state', 'semanticDomainsService'];
+  constructor(private readonly $scope: angular.IScope, protected $state: angular.ui.IStateService,
+              private readonly semanticDomains: SemanticDomainsService) {
     super($state);
   }
 
   $onInit(): void {
     this.contextGuid = this.parentContextGuid;
-    this.semanticDomains.languageCode = this.control.interfaceConfig.userLanguageCode;
-    this.createOptions();
+    this.semanticDomains.setLanguageCode(this.control.interfaceConfig.languageCode).then(this.createOptions);
+
+    this.$scope.$watch(() => this.control.interfaceConfig.languageCode, (newVal: string) => {
+      if (newVal != null) {
+        this.semanticDomains.setLanguageCode(this.control.interfaceConfig.languageCode).then(this.createOptions);
+      }
+    });
   }
 
   getDisplayName(key: string): string {
@@ -46,7 +52,7 @@ export class FieldSemanticDomainController extends FieldMultiOptionListControlle
       this.model.values.length < Object.keys(this.semanticDomains.data).length;
   }
 
-  private createOptions(): void {
+  private createOptions = (): void => {
     this.options = [];
     for (const key in this.semanticDomains.data) {
       if (this.semanticDomains.data.hasOwnProperty(key)) {

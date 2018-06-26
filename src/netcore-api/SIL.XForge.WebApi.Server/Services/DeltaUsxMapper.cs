@@ -50,12 +50,12 @@ namespace SIL.XForge.WebApi.Server.Services
                                 int slashIndex = curRef.IndexOf("/", StringComparison.Ordinal);
                                 if (slashIndex != -1)
                                     curRef = curRef.Substring(0, slashIndex);
-                                curRef = GetParagraphRef(nextIds, curRef + "/" + style);
+                                curRef = GetParagraphRef(nextIds, curRef, curRef + "/" + style);
                             }
                         }
                         else
                         {
-                            curRef = GetParagraphRef(nextIds, style);
+                            curRef = GetParagraphRef(nextIds, style, style);
                         }
                         ProcessChildNodes(projectId, bookId, newDelta, elem, curChapter, ref curRef, ref nextNoteId);
                         SegmentEnded(newDelta, curRef);
@@ -154,11 +154,11 @@ namespace SIL.XForge.WebApi.Server.Services
             return ParagraphStyles.Contains(style);
         }
 
-        private static string GetParagraphRef(Dictionary<string, int> nextIds, string prefix)
+        private static string GetParagraphRef(Dictionary<string, int> nextIds, string key, string prefix)
         {
-            if (!nextIds.ContainsKey(prefix))
-                nextIds[prefix] = 1;
-            return prefix + "_" + nextIds[prefix]++;
+            if (!nextIds.ContainsKey(key))
+                nextIds[key] = 1;
+            return prefix + "_" + nextIds[key]++;
         }
 
         private static JObject GetAttributes(XElement elem)

@@ -8,7 +8,7 @@
 
     {% if isLoggedIn %}
 
-        <div id="primary-navigation" class="fixed-nav-bar" data-ng-controller="navbarController as $ctrl">
+        <div id="primary-navigation" class="fixed-nav-bar" data-ng-cloak data-ng-controller="navbarController as $ctrl">
             <nav class="navbar navbar-expand navbar-dark align-items-stretch">
                 <span class="navbar-brand d-md-inline-block mr-auto">
                     <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
@@ -28,12 +28,12 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown" uib-dropdown>
-                        <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdown"
+                        <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdownButton"
                            aria-haspopup="true" aria-expanded="false">
                             <span>My Projects</span>
                             <i class="fa fa-bars"></i>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="myProjectDropdown">
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu id="myProjectDropdownMenu" aria-labelledby="myProjectDropdown">
                             {% verbatim %}
                             <div data-ng-switch="$ctrl.projectTypesBySite().length" data-ng-show="$ctrl.rights.canCreateProject">
                                 <div data-ng-switch-when="1">
@@ -63,6 +63,18 @@
                             {% endfor %}
                         </div>
                     </li>
+                    {% verbatim %}
+                    <li class="nav-item notranslate" uib-dropdown>
+                        <a class="nav-link" uib-dropdown-toggle href id="languageDropdownButton" aria-haspopup="true" aria-expanded="false" data-ng-model="$ctrl.interfaceConfig.languageCode">
+                            <i class="fa fa-language"></i> <span>{{ $ctrl.interfaceConfig.selectLanguages.options[$ctrl.interfaceConfig.languageCode].name }}</span></a>
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu id="languageDropdownMenu" aria-labelledby="languageDropdown">
+                            <a class="dropdown-item" data-ng-repeat="languageCode in $ctrl.interfaceConfig.selectLanguages.optionsOrder"
+                               target="_blank" href data-ng-click="$ctrl.interfaceConfig.languageCode = languageCode"
+                               data-ng-class="{ selected: $ctrl.interfaceConfig.languageCode === languageCode }">
+                                {{ $ctrl.interfaceConfig.selectLanguages.options[languageCode].option }}</a>
+                        </div>
+                    </li>
+                    {% endverbatim %}
                 </ul>
             </nav>
             <nav class="navbar navbar-expand navbar-dark align-items-center justify-content-between">
@@ -129,7 +141,7 @@
 {% block footer %}
     <footer class="footer">
         <div class="d-flex">
-            <div class="d-none d-sm-flex align-items-end" style="margin-left: 120px">
+            <div class="d-none d-sm-flex align-items-end">
                 <div>
                     <a href="http://ic.payap.ac.th/"><img src="/Site/views/shared/image/payap_logo.png"
                                                           alt="Payap University Logo" width="85" height="25" /></a>
