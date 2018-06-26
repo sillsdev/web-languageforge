@@ -14,7 +14,6 @@ export const SfChecksQuestionModule = angular
     'palaso.ui.listview',
     'palaso.ui.tagging',
     SfChecksCoreModule,
-    'palaso.ui.jqte',
     'palaso.ui.selection'
   ])
   .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService',

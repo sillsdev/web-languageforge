@@ -22,8 +22,7 @@ export const SfChecksProjectSettingsModule = angular
     'palaso.ui.tabset',
     'palaso.ui.textdrop',
     'palaso.ui.typeahead',
-    SfChecksCoreModule,
-    'palaso.ui.jqte'
+    SfChecksCoreModule
   ])
   .controller('ProjectSettingsCtrl', ['$scope', '$q', 'breadcrumbService', 'userService',
     'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService', 'linkService',
