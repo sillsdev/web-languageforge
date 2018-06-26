@@ -6,6 +6,7 @@ import {NoticeModule} from '../../../bellows/core/notice/notice.module';
 import {SessionService} from '../../../bellows/core/session.service';
 import {SfChecksCoreModule} from '../core/sf-checks-core.module';
 import {Answer, Comment, Question} from '../shared/model/text.model';
+import {SfChecksSelectionModule} from '../shared/sil-selection.directive';
 
 export const SfChecksQuestionModule = angular
   .module('sfchecks.question', [
@@ -14,7 +15,7 @@ export const SfChecksQuestionModule = angular
     'palaso.ui.listview',
     'palaso.ui.tagging',
     SfChecksCoreModule,
-    'palaso.ui.selection'
+    SfChecksSelectionModule
   ])
   .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService',
     'utilService', 'breadcrumbService', 'silNoticeService', 'linkService', 'modalService',
