@@ -47,8 +47,7 @@ export class SfActivityPage {
       await names.getText().then(console.log);
     });
   }
-
-  static getPartsOfActivity(div: ElementFinder) {
+   static getPartsOfActivity(div: ElementFinder) {
     return {
       activity: div,
       user: div.element(by.className('activity-username')).getText(),
