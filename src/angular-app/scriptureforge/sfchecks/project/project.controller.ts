@@ -18,8 +18,7 @@ export const SfChecksProjectModule = angular
     'palaso.ui.listview',
     'palaso.ui.typeahead',
     NoticeModule,
-    'palaso.ui.textdrop',
-    'palaso.ui.jqte'
+    'palaso.ui.textdrop'
   ])
   .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService',
     'linkService', 'listviewSortingService', 'silNoticeService', 'sfchecksProjectService',
