@@ -444,22 +444,33 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals('user1', $content['user']);  // TODO: Shouldn't this be "User One" instead? E.g., human-readable name here rather than username?
         $this->assertArrayHasKey('changes', $content);
         $changes = $content['changes'];
-        $this->assertEquals(2, count($changes));
+        $this->assertCount(3, $changes);
 
-        // Changes could be in any order, but they should both be there
-        foreach ($changes as $change) {
-            $this->assertTrue($change['changeType'] === ActivityListDto::EDITED_FIELD || $change['changeType'] === ActivityListDto::DELETED_FIELD);
-            if ($change['changeType'] === ActivityListDto::EDITED_FIELD) {
-                $this->assertEquals(LexConfig::EXAMPLE_SENTENCE, $change['fieldName']);
-                $this->assertEquals(['label' => 'Sentence', 'sense' => 1, 'example' => 1], $change['fieldLabel']);
-                $this->assertEquals('en', $change['inputSystemTag']);
-                $this->assertEquals('eat an apple', $change['oldValue']);
-                $this->assertEquals('also eat an apple', $change['newValue']);
-            } else if ($change['changeType'] === ActivityListDto::DELETED_FIELD) {
-                $this->assertEquals(LexConfig::EXAMPLES_LIST, $change['fieldName']);
-                $this->assertEquals(['label' => 'Example', 'sense' => 2, 'example' => 1], $change['fieldLabel']);
-            }
-        }
+        $this->assertContains([
+            'changeType' => ActivityListDto::EDITED_FIELD,
+            'fieldName' => LexConfig::EXAMPLE_SENTENCE,
+            'fieldLabel' => ['label' => 'Sentence', 'sense' => 1, 'example' => 1],
+            'inputSystemTag' => 'en',
+            'oldValue' => 'eat an apple',
+            'newValue' => 'also eat an apple',
+        ], $changes);
+
+        $this->assertContains([
+            'changeType' => ActivityListDto::EDITED_FIELD,  // TODO: Should this become "deleted_field" instead?
+            'fieldName' => LexConfig::EXAMPLE_SENTENCE,
+            'fieldLabel' => ['label' => 'Sentence', 'sense' => 2, 'example' => 1],
+            'inputSystemTag' => 'fr',
+            'oldValue' => 'manger une pomme',
+            'newValue' => '',
+        ], $changes);
+
+        $this->assertContains([
+            'changeType' => ActivityListDto::DELETED_FIELD,
+            'fieldName' => LexConfig::EXAMPLES_LIST,
+            'fieldLabel' => ['label' => 'Example', 'sense' => 2, 'example' => 1],
+            'oldValue' => '',
+            'newValue' => '',
+        ], $changes);
 
         $environ->clean();
     }
@@ -515,7 +526,7 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals('user1', $content['user']);  // TODO: Shouldn't this be "User One" instead? E.g., human-readable name here rather than username?
         $this->assertArrayHasKey('changes', $content);
         $changes = $content['changes'];
-        $this->assertEquals(1, count($changes));
+        $this->assertEquals(2, count($changes));
         $change = $changes[0];
 
         $this->assertEquals(ActivityListDto::ADDED_FIELD, $change['changeType']);
