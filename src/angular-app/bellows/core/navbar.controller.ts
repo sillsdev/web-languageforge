@@ -27,7 +27,7 @@ export class NavbarController implements angular.IController {
     this.projectTypesBySite = this.projectService.data.projectTypesBySite;
     this.header = this.applicationHeaderService.data;
     this.sessionService.getSession().then(session => {
-      this.interfaceConfig = session.projectSettings<LexiconProjectSettings>().interfaceConfig ||
+      var defaultInterfaceConfig =
         {
           direction: 'ltr',
           pullNormal: 'float-left',
@@ -41,6 +41,12 @@ export class NavbarController implements angular.IController {
             options: { en: { name: 'English', option: 'English' } }
           }
         } as InterfaceConfig;
+      var projectSettings = session.projectSettings<LexiconProjectSettings>();
+      if (projectSettings == null || projectSettings.interfaceConfig == null) {
+        this.interfaceConfig = defaultInterfaceConfig;
+      } else {
+        this.interfaceConfig = projectSettings.interfaceConfig;
+      }
       this.rights.canCreateProject =
         session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.CREATE);
       this.siteName = session.baseSite();
