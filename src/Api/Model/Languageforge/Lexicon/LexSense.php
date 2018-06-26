@@ -366,9 +366,9 @@ class LexSense extends ObjectForEncoding
         $exampleDifferences = $thisExample->differences($otherExample, $thisExampleId, $otherExampleId);
         foreach ($exampleDifferences as $key => $exampleDifference) {
             if (StringUtil::startsWith($key, 'this.')) {
-                $newKey = 'this.' . $thisExampleId . '.' . substr($key, 5);
+                $newKey = 'this.' . $thisExampleId . '.' . substr($key, strlen('this.'));
             } elseif (StringUtil::startsWith($key, 'other.')) {
-                $newKey = 'other.' . $thisExampleId . '.' . substr($key, 6);
+                $newKey = 'other.' . $thisExampleId . '.' . substr($key, strlen('other.'));
             } else {
                 $newKey = $key;
             }

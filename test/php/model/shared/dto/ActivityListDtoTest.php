@@ -444,7 +444,7 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals('user1', $content['user']);  // TODO: Shouldn't this be "User One" instead? E.g., human-readable name here rather than username?
         $this->assertArrayHasKey('changes', $content);
         $changes = $content['changes'];
-        $this->assertEquals(3, count($changes));
+        $this->assertCount(3, $changes);
 
         $this->assertContains([
             'changeType' => ActivityListDto::EDITED_FIELD,

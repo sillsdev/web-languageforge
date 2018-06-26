@@ -322,9 +322,9 @@ class LexEntryModel extends MapperModel
         $senseDifferences = $thisSense->differences($otherSense, $thisSenseId, $otherSenseId);
         foreach ($senseDifferences as $key => $senseDifference) {
             if (StringUtil::startsWith($key, 'this.')) {
-                $newKey = 'oldValue.' . $thisSenseId . '.' . substr($key, 5);
+                $newKey = 'oldValue.' . $thisSenseId . '.' . substr($key, strlen('this.'));
             } elseif (StringUtil::startsWith($key, 'other.')) {
-                $newKey = 'newValue.' . $thisSenseId . '.' . substr($key, 6);
+                $newKey = 'newValue.' . $thisSenseId . '.' . substr($key, strlen('other.'));
             } else {
                 $newKey = $key;
             }
