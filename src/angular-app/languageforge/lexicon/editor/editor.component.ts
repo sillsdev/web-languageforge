@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import {Object} from 'core-js';
 import {ActivityService} from '../../../bellows/core/api/activity.service';
 import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
 import {ModalService} from '../../../bellows/core/modal/modal.service';
@@ -219,9 +220,10 @@ export class LexiconEditorController implements angular.IController {
             }
             this.cancelAutoSaveTimer();
             if (this.currentEntryIsDirty()) {
-              if (newValue.lexeme.en.value) {
-                this.startAutoSaveTimer();
-              }
+              let lexemeValue = Object.values(newValue.lexeme);
+              if (lexemeValue[0].value !== '') {
+                  this.startAutoSaveTimer();
+               }
             }
           }
         }, true);
