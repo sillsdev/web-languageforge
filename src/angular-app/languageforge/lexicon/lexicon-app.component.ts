@@ -31,9 +31,9 @@ export class LexiconAppController implements angular.IController {
   rights: Rights;
   users: { [userId: string]: User };
 
+  private transifexLanguageCodes: string[] = [];
   private online: boolean;
   private pristineLanguageCode: string;
-  private transifexLanguageCodes: string[];
 
   static $inject = ['$scope', '$location',
     '$q', '$window',
@@ -167,6 +167,8 @@ export class LexiconAppController implements angular.IController {
       this.interfaceConfig.selectLanguages.options[language.code].option = language.name;
       this.transifexLanguageCodes.push(language.code);
     }
+
+    this.changeInterfaceLanguage(this.interfaceConfig.languageCode);
   }
 
   private setupOffline(): void {
