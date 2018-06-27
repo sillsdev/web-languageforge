@@ -33,6 +33,7 @@ export class LexiconAppController implements angular.IController {
 
   private online: boolean;
   private pristineLanguageCode: string;
+  private transifexLanguageCodes: string[];
 
   static $inject = ['$scope', '$location',
     '$q', '$window',
@@ -136,7 +137,7 @@ export class LexiconAppController implements angular.IController {
 
   private changeInterfaceLanguage(code: string): void {
     this.pristineLanguageCode = angular.copy(code);
-    if (this.$window.Transifex != null && code in this.$window.Transifex.live.getAllLanguages()) {
+    if (this.$window.Transifex != null && this.transifexLanguageCodes.includes(code)) {
       this.$window.Transifex.live.translateTo(code);
     }
 
@@ -156,6 +157,7 @@ export class LexiconAppController implements angular.IController {
   }
 
   private onFetchTransifexLanguages = (languages: TransifexLanguage[]) => {
+    this.transifexLanguageCodes = [];
     for (const language of languages) {
       if (!(language.code in this.interfaceConfig.selectLanguages.options)) {
         this.interfaceConfig.selectLanguages.optionsOrder.push(language.code);
@@ -163,6 +165,7 @@ export class LexiconAppController implements angular.IController {
 
       this.interfaceConfig.selectLanguages.options[language.code].name = language.name;
       this.interfaceConfig.selectLanguages.options[language.code].option = language.name;
+      this.transifexLanguageCodes.push(language.code);
     }
   }
 
