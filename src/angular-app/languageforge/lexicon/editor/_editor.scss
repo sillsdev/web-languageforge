@@ -595,16 +595,6 @@ dc-entry .card {
         line-height: 45px;
         padding: 0 2.5em 0 1.5em;
       }
-      .typeahead-clear {
-        position: absolute;
-        right: 13px;
-        top: 11px;
-        z-index: 10;
-        i {
-          cursor: pointer;
-          color: $Eden;
-        }
-      }
       .typeahead-results {
         ul {
           border-radius: 0;
