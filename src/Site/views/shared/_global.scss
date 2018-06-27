@@ -242,15 +242,6 @@ nav {
 
       .search-wrapper {
         position: relative;
-
-        #clear-search-button {
-          position: absolute;
-          top: 0;
-          right: 0.6em;
-          z-index: 10;
-          cursor: pointer;
-          line-height: 28pt;
-        }
       }
     }
   }
@@ -265,6 +256,15 @@ nav {
     padding: 15px;
     overflow-y: auto;
   }
+}
+
+.clear-search-button {
+  position: absolute;
+  top: 0;
+  right: 0.6em;
+  z-index: 10;
+  cursor: pointer;
+  line-height: 28pt;
 }
 
 .fixed-nav-bar {
