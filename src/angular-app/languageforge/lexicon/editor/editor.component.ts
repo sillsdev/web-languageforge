@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-
+import {Object} from 'core-js';
 import {ActivityService} from '../../../bellows/core/api/activity.service';
 import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
 import {ModalService} from '../../../bellows/core/modal/modal.service';
@@ -191,9 +191,15 @@ export class LexiconEditorController implements angular.IController {
       if (this.lecRights.canEditEntry()) {
         this.$scope.$watch(() => this.currentEntry, newValue => {
           if (newValue !== undefined) {
+            if (LexiconEditorController.entryIsNew(newValue)) {
+              this.$window.localStorage.setItem('newEntry', JSON.stringify(newValue));
+            }
             this.cancelAutoSaveTimer();
             if (this.currentEntryIsDirty()) {
-              this.startAutoSaveTimer();
+              let lexemeValue = Object.values(newValue.lexeme);
+              if (lexemeValue[0].value !== '') {
+                this.startAutoSaveTimer();
+              }
             }
           }
         }, true);
@@ -441,21 +447,29 @@ export class LexiconEditorController implements angular.IController {
   }
 
   newEntry(): void {
+    let hasNewEmptyEntry: boolean;
     this.saveCurrentEntry(false, () => {
-      const d = new Date();
-      const uniqueId = '_new_' + d.getSeconds() + d.getMilliseconds();
-      const newEntry = new LexEntry();
-      newEntry.id = uniqueId;
-      this.setCurrentEntry(newEntry);
-      // noinspection JSIgnoredPromiseFromCall - comments will load in the background
-      this.commentService.loadEntryComments(newEntry.id);
-      this.editorService.addEntryToEntryList(newEntry);
-      this.editorService.showInitialEntries().then(() => {
-        this.scrollListToEntry(newEntry.id, 'top');
-      });
-
-      this.goToEntry(newEntry.id);
-      this.hideRightPanel();
+      for (let entry of this.entries) {
+        if (LexiconEditorController.entryIsNew(entry)) {
+          hasNewEmptyEntry = true;
+          break;
+        }
+      }
+      if (!hasNewEmptyEntry) {
+        const d = new Date();
+        const uniqueId = '_new_' + d.getSeconds() + d.getMilliseconds();
+        const newEntry = new LexEntry();
+        newEntry.id = uniqueId;
+        this.setCurrentEntry(newEntry);
+        // noinspection JSIgnoredPromiseFromCall - comments will load in the background
+        this.commentService.loadEntryComments(newEntry.id);
+        this.editorService.addEntryToEntryList(newEntry);
+        this.goToEntry(newEntry.id);
+        this.hideRightPanel();
+        this.editorService.showInitialEntries().then(() => {
+          this.scrollListToEntry(newEntry.id, 'top');
+        });
+       }
     });
   }
 
@@ -464,6 +478,11 @@ export class LexiconEditorController implements angular.IController {
       LexiconUtilityService.getLexeme(this.lecConfig, this.lecConfig.entry, entry) + '\'</b>';
     this.modal.showModalSimple('Delete Entry', deleteMsg, 'Cancel', 'Delete Entry').then(() => {
       let iShowList = this.editorService.getIndexInList(entry.id, this.visibleEntries);
+      if (this.entries[iShowList] !== null) {
+        if (LexiconEditorController.entryIsNew(this.entries[iShowList])) {
+          this.$window.localStorage.removeItem('newEntry');
+        }
+      }
       this.editorService.removeEntryFromLists(entry.id);
       if (this.entries.length > 0) {
         if (iShowList !== 0) {
