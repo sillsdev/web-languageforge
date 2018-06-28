@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-
+import {Object} from 'core-js';
 import {ActivityService} from '../../../bellows/core/api/activity.service';
 import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
 import {ModalService} from '../../../bellows/core/modal/modal.service';
@@ -211,8 +211,16 @@ export class LexiconEditorController implements angular.IController {
   }
 
   returnToList(): void {
-    this.saveCurrentEntry();
-    this.setCurrentEntry();
+    let lexemeValue = Object.values(this.currentEntry.lexeme);
+    if (lexemeValue[0].value !== '') {
+      this.saveCurrentEntry();
+      this.setCurrentEntry();
+    }
+    for (let entry of this.entries) {
+      if (LexiconEditorController.entryIsNew(entry)) {
+       this.editorService.removeEntryFromLists(entry.id);
+      }
+    }
     this.$state.go('editor.list');
   }
 
