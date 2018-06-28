@@ -27,7 +27,7 @@ class LexBaseViewDto
 
         $interfaceLanguageCode = $project->interfaceLanguageCode;
         $isUserLanguageCode = false;
-        if ($user->interfaceLanguageCode) {
+        if ($user->interfaceLanguageCode && $user->interfaceLanguageCode != $project->interfaceLanguageCode) {
             $interfaceLanguageCode = $user->interfaceLanguageCode;
             $isUserLanguageCode = true;
         }
@@ -59,7 +59,7 @@ class LexBaseViewDto
                 'id' => ['name' => 'Bahasa Indonesia', 'option' => 'Bahasa Indonesia - semantic domain only', 'hasSemanticDomain' => true],
                 'my' => ['name' => 'Burmese', 'option' => 'Burmese - semantic domain only', 'hasSemanticDomain' => true],
                 'km' => ['name' => 'Central Khmer', 'option' => 'Central Khmer - semantic domain only', 'hasSemanticDomain' => true],
-                'en' => ['name' => 'English', 'option' => 'English - semantic domain only', 'hasSemanticDomain' => true],
+                'en' => ['name' => 'English', 'option' => 'English', 'hasSemanticDomain' => true],
                 'ko' => ['name' => 'Korean', 'option' => 'Korean - semantic domain only', 'hasSemanticDomain' => true],
                 'ms' => ['name' => 'Malay', 'option' => 'Malay (macrolanguage) - semantic domain only', 'hasSemanticDomain' => true],
                 'ne' => ['name' => 'Nepali', 'option' => 'Nepali (macrolanguage) - semantic domain only', 'hasSemanticDomain' => true],
