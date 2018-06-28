@@ -126,26 +126,31 @@
         font-weight: bold;
       }
     }
-    .nav-item.dropdown {
-      a {
+    a.nav-link.dropdown-toggle {
+      i {
+        display: none;
+      }
+      @include media-breakpoint-down(sm) {
         i {
+          display: block;
+          font-size: 20px;
+        }
+        &:after, span {
           display: none;
         }
-        @include media-breakpoint-down(sm) {
-          i {
-            display: block;
-            font-size: 20px;
-          }
-          &:after, span {
-            display: none;
-          }
+      }
+      &#helpDropdown {
+        i {
+          display: inline-block !important;
+          font-size: 16px;
+          margin-top: 2px;
         }
-        &#helpDropdown {
-          i {
-            display: inline-block !important;
-            font-size: 16px;
-            margin-top: 2px;
-          }
+      }
+      &#languageDropdownButton {
+        i {
+          display: inline-block !important;
+          font-size: 16px;
+          margin-top: 2px;
         }
       }
     }

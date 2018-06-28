@@ -64,15 +64,10 @@
                         </div>
                     </li>
                     {% verbatim %}
-                    <li class="nav-item notranslate" uib-dropdown>
-                        <a class="nav-link" uib-dropdown-toggle href id="languageDropdownButton" aria-haspopup="true" aria-expanded="false" data-ng-model="$ctrl.interfaceConfig.languageCode">
-                            <i class="fa fa-language"></i> <span>{{ $ctrl.interfaceConfig.selectLanguages.options[$ctrl.interfaceConfig.languageCode].name }}</span></a>
-                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu id="languageDropdownMenu" aria-labelledby="languageDropdown">
-                            <a class="dropdown-item" data-ng-repeat="languageCode in $ctrl.interfaceConfig.selectLanguages.optionsOrder"
-                               target="_blank" href data-ng-click="$ctrl.interfaceConfig.languageCode = languageCode"
-                               data-ng-class="{ selected: $ctrl.interfaceConfig.languageCode === languageCode }">
-                                {{ $ctrl.interfaceConfig.selectLanguages.options[languageCode].option }}</a>
-                        </div>
+                    <li class="nav-item notranslate">
+                        <pui-interface-language pui-interface-config="$ctrl.interfaceConfig"
+                                                pui-on-update="$ctrl.onUpdate($event)">
+                        </pui-interface-language>
                     </li>
                     {% endverbatim %}
                 </ul>
@@ -119,7 +114,7 @@
         </div>
 
     {% else %}
-        <div id="primary-navigation" class="logged-out">
+        <div id="primary-navigation" class="logged-out" data-ng-cloak data-ng-controller="navbarController as $ctrl">
             <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch logged-out">
                 <span class="navbar-brand d-md-inline-block mr-auto">
                     <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
@@ -132,6 +127,13 @@
                     <li class="nav-item header-button-rounded">
                         <a class="nav-link" href="/auth/login">Login</a>
                     </li>
+                    {% verbatim %}
+                    <li class="nav-item notranslate">
+                        <pui-interface-language pui-interface-config="$ctrl.interfaceConfig"
+                                                pui-on-update="$ctrl.onUpdate($event)">
+                        </pui-interface-language>
+                    </li>
+                    {% endverbatim %}
                 </ul>
             </nav>
         </div>
