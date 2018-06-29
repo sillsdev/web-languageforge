@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import {AudioRecorder} from '../../../../bellows/shared/audio-recorder/audio-recorder.module'
 import {NoticeModule} from '../../../../bellows/core/notice/notice.module';
 import {MockModule} from '../../../../bellows/shared/mock.module';
 import {SoundModule} from '../../../../bellows/shared/sound.module';
@@ -26,7 +27,8 @@ export const EditorFieldModule = angular
     NoticeModule,
     SoundModule,
     LexiconCoreModule,
-    EditorCommentsModule
+    EditorCommentsModule,
+    AudioRecorder
   ])
   .component('dcAudio', FieldAudioComponent)
   .component('dcEntry', FieldEntryComponent)
