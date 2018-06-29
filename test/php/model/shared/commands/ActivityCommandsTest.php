@@ -1,9 +1,15 @@
 <?php
 
+use Api\Model\Languageforge\Lexicon\Command\LexCommentCommands;
+use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\LexExample;
+use Api\Model\Languageforge\Lexicon\LexSense;
 use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\ActivityModel;
 use Api\Model\Shared\Command\ActivityCommands;
 use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\Dto\ActivityListDto;

@@ -369,6 +369,7 @@ class ActivityCommands
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
         $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
+        $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
         $activity->addContent(ActivityModel::LEX_COMMENT_STATUS, $commentModel->status);
         $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
         if (! empty($label)) {
@@ -403,6 +404,7 @@ class ActivityCommands
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
         $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
+        $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
         $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
         if (! empty($label)) {
             $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
@@ -450,6 +452,7 @@ class ActivityCommands
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
         $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
+        $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
         $activity->addContent(ActivityModel::LEX_REPLY, $replyModel->content);
         $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
         if (! empty($label)) {
@@ -489,6 +492,7 @@ class ActivityCommands
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
         $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
+        $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
         $activity->addContent(ActivityModel::LEX_REPLY, $replyModel->content);
         $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
         if (! empty($label)) {
