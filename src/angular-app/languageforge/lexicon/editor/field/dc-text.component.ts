@@ -33,7 +33,7 @@ export class FieldTextController implements angular.IController {
       case 'would-lose-metadata':
         return 'This field cannot be edited because it contains metadata that would '
           + 'be lost by editing in Language Forge. Fields with metadata may be edited in '
-          + 'Fieldworks Language Explorer.';
+          + 'FieldWorks Language Explorer.';
       case 'sr-in-progress':
         return 'A Send/Receive is in progress. Any edits made now would be lost. Please '
           + 'wait until the Send/Receive has completed before making further edits.';
