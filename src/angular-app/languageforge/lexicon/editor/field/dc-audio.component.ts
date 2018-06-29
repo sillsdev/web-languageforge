@@ -17,6 +17,7 @@ export class FieldAudioController implements angular.IController {
   dcProjectSlug: string;
 
   showAudioUpload: boolean = false;
+  showAudioRecorder: boolean = false;
 
   static $inject = ['$filter', '$state',
     'Upload', 'modalService',
@@ -135,6 +136,14 @@ export class FieldAudioController implements angular.IController {
           this.notice.setPercentComplete(Math.floor(100.0 * evt.loaded / evt.total));
         });
     });
+  }
+
+  audioRecorderCallback = (blob: Blob) => {
+    if (blob) {
+      const file = new File([blob], 'test_file_name.mp3');
+      this.uploadAudio(file);
+    }
+    this.showAudioRecorder = false;
   }
 
   // strips the timestamp file prefix (returns everything after the '_')
