@@ -6,8 +6,10 @@ use Api\Library\Shared\Communicate\Communicate;
 use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Library\Shared\Website;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
+use Api\Model\Scriptureforge\Sfchecks\SfchecksUserProfile;
 use Api\Model\Shared\Dto\CreateSimpleDto;
 use Api\Model\Shared\Mapper\IdReference;
+use Api\Model\Shared\Mapper\JsonDecoder;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\PasswordModel;
 use Api\Model\Shared\ProjectListModel;
@@ -95,6 +97,7 @@ class UserCommands
      * @param Website $website
      * @param DeliveryInterface $delivery
      * @return bool|string False if update failed; $userId on update; 'login' on username change
+     * @throws \Exception
      */
     public static function updateUserProfile($params, $userId, $website, DeliveryInterface $delivery = null)
     {
@@ -124,6 +127,7 @@ class UserCommands
         $result =  UserCommands::checkUniqueIdentity($user, $checkUsername, $checkEmail);
         if ($result == 'ok') {
             $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
+            self::setProjectUserProfile($user, $params);
             $userId = $user->write();
             if ($isNewEmail) {
                 Communicate::sendVerifyEmail($user, $website, $delivery);
@@ -639,4 +643,23 @@ class UserCommands
 
         return $admin;
     }
+
+    /**
+     * @param UserModel $user
+     * @param array $params
+     * @throws \Exception
+     */
+    private static function setProjectUserProfile($user, $params)
+    {
+        if (array_key_exists('projectUserProfiles', $params)) {
+            foreach ($params['projectUserProfiles'] as $projectId => $sfchecksUserProfile) {
+                $project = ProjectModel::getById($projectId);
+                if ($project->userIsMember($user->id->asString())) {
+                    $user->projectUserProfiles[$projectId] = new SfchecksUserProfile();
+                    JsonDecoder::decode($user->projectUserProfiles[$projectId], $params['projectUserProfiles'][$projectId]);
+                }
+            }
+        }
+    }
+
 }
