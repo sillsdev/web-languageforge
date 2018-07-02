@@ -660,13 +660,14 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals(ActivityModel::ADD_LEX_COMMENT, $activityRecord['action']);
         // "Content" field should contain human-readable strings for use in activity log
         $this->assertArrayHasKey('content', $activityRecord);
-        $content = $activityRecord['content'];
-        $this->assertEquals(SF_TESTPROJECT, $content['project']);
-        $this->assertEquals('user1', $content['user']);
-        $this->assertEquals($data['content'], $content[ActivityModel::LEX_COMMENT]);
-        $this->assertEquals($data['contextGuid'], $content[ActivityModel::LEX_COMMENT_CONTEXT]);
-        $this->assertEquals($data['regarding']['fieldValue'], $content[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
-        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $content['fieldLabel']);
+        $actual = $activityRecord['content'];
+        $expected = $data;
+        $this->assertEquals(SF_TESTPROJECT, $actual['project']);
+        $this->assertEquals('user1', $actual['user']);
+        $this->assertEquals($expected['content'], $actual[ActivityModel::LEX_COMMENT]);
+        $this->assertEquals($expected['contextGuid'], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
+        $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
+        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
         $environ->clean();
     }
 
@@ -735,13 +736,14 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($entryId, $activityRecord['entryRef']);
         // "Content" field should contain human-readable strings for use in activity log
         $this->assertArrayHasKey('content', $activityRecord);
-        $content = $activityRecord['content'];
-        $this->assertEquals(SF_TESTPROJECT, $content['project']);
-        $this->assertEquals('user1', $content['user']);
-        $this->assertEquals($data['content'], $content[ActivityModel::LEX_COMMENT]);
-        $this->assertEquals($data['contextGuid'], $content[ActivityModel::LEX_COMMENT_CONTEXT]);
-        $this->assertEquals($data['regarding']['fieldValue'], $content[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
-        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $content['fieldLabel']);
+        $actual = $activityRecord['content'];
+        $expected = $data;
+        $this->assertEquals(SF_TESTPROJECT, $actual['project']);
+        $this->assertEquals('user1', $actual['user']);
+        $this->assertEquals($expected['content'], $actual[ActivityModel::LEX_COMMENT]);
+        $this->assertEquals($expected['contextGuid'], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
+        $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
+        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
         $environ->clean();
     }
 
@@ -810,14 +812,15 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($entryId, $activityRecord['entryRef']);
         // "Content" field should contain human-readable strings for use in activity log
         $this->assertArrayHasKey('content', $activityRecord);
-        $content = $activityRecord['content'];
-        $this->assertEquals(SF_TESTPROJECT, $content['project']);
-        $this->assertEquals('user1', $content['user']);
-        $this->assertEquals($data['content'], $content[ActivityModel::LEX_COMMENT]);
-        $this->assertEquals($data['contextGuid'], $content[ActivityModel::LEX_COMMENT_CONTEXT]);
-        $this->assertEquals(LexCommentModel::STATUS_TODO, $content[ActivityModel::LEX_COMMENT_STATUS]);
-        $this->assertEquals($data['regarding']['fieldValue'], $content[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
-        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $content['fieldLabel']);
+        $actual = $activityRecord['content'];
+        $expected = $data;
+        $this->assertEquals(SF_TESTPROJECT, $actual['project']);
+        $this->assertEquals('user1', $actual['user']);
+        $this->assertEquals($expected['content'], $actual[ActivityModel::LEX_COMMENT]);
+        $this->assertEquals($expected['contextGuid'], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
+        $this->assertEquals(LexCommentModel::STATUS_TODO, $actual[ActivityModel::LEX_COMMENT_STATUS]);
+        $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
+        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
         $environ->clean();
     }
 
@@ -886,13 +889,14 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($entryId, $activityRecord['entryRef']);
         // "Content" field should contain human-readable strings for use in activity log
         $this->assertArrayHasKey('content', $activityRecord);
-        $content = $activityRecord['content'];
-        $this->assertEquals(SF_TESTPROJECT, $content['project']);
-        $this->assertEquals('user1', $content['user']);
-        $this->assertEquals($data['content'], $content[ActivityModel::LEX_COMMENT]);
-        $this->assertEquals($data['contextGuid'], $content[ActivityModel::LEX_COMMENT_CONTEXT]);
-        $this->assertEquals($data['regarding']['fieldValue'], $content[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
-        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $content['fieldLabel']);
+        $actual = $activityRecord['content'];
+        $expected = $data;
+        $this->assertEquals(SF_TESTPROJECT, $actual['project']);
+        $this->assertEquals('user1', $actual['user']);
+        $this->assertEquals($expected['content'], $actual[ActivityModel::LEX_COMMENT]);
+        $this->assertEquals($expected['contextGuid'], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
+        $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
+        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
         $environ->clean();
     }
 
@@ -966,14 +970,16 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($entryId, $activityRecord['entryRef']);
         // "Content" field should contain human-readable strings for use in activity log
         $this->assertArrayHasKey('content', $activityRecord);
-        $content = $activityRecord['content'];
-        $this->assertEquals(SF_TESTPROJECT, $content['project']);
-        $this->assertEquals('user1', $content['user']);
-        $this->assertEquals($data['content'], $content[ActivityModel::LEX_COMMENT]);
-        $this->assertEquals($replyData['content'], $content[ActivityModel::LEX_REPLY]);
-        $this->assertEquals($data['contextGuid'], $content[ActivityModel::LEX_COMMENT_CONTEXT]);
-        $this->assertEquals($data['regarding']['fieldValue'], $content[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
-        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $content['fieldLabel']);
+        $actual = $activityRecord['content'];
+        $expected = $data;
+        $expected['replyContent'] = $replyData['content'];
+        $this->assertEquals(SF_TESTPROJECT, $actual['project']);
+        $this->assertEquals('user1', $actual['user']);
+        $this->assertEquals($expected['content'], $actual[ActivityModel::LEX_COMMENT]);
+        $this->assertEquals($expected['replyContent'], $actual[ActivityModel::LEX_REPLY]);
+        $this->assertEquals($expected['contextGuid'], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
+        $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
+        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
         $environ->clean();
     }
 
@@ -1054,14 +1060,16 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($entryId, $activityRecord['entryRef']);
         // "Content" field should contain human-readable strings for use in activity log
         $this->assertArrayHasKey('content', $activityRecord);
-        $content = $activityRecord['content'];
-        $this->assertEquals(SF_TESTPROJECT, $content['project']);
-        $this->assertEquals('user1', $content['user']);
-        $this->assertEquals($data['content'], $content[ActivityModel::LEX_COMMENT]);
-        $this->assertEquals($updatedReplyData['content'], $content[ActivityModel::LEX_REPLY]);
-        $this->assertEquals($data['contextGuid'], $content[ActivityModel::LEX_COMMENT_CONTEXT]);
-        $this->assertEquals($data['regarding']['fieldValue'], $content[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
-        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $content['fieldLabel']);
+        $actual = $activityRecord['content'];
+        $expected = $data;
+        $expected['replyContent'] = $updatedReplyData['content'];
+        $this->assertEquals(SF_TESTPROJECT, $actual['project']);
+        $this->assertEquals('user1', $actual['user']);
+        $this->assertEquals($expected['content'], $actual[ActivityModel::LEX_COMMENT]);
+        $this->assertEquals($expected['replyContent'], $actual[ActivityModel::LEX_REPLY]);
+        $this->assertEquals($expected['contextGuid'], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
+        $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
+        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
         $environ->clean();
     }
 
@@ -1136,13 +1144,15 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($entryId, $activityRecord['entryRef']);
         // "Content" field should contain human-readable strings for use in activity log
         $this->assertArrayHasKey('content', $activityRecord);
-        $content = $activityRecord['content'];
-        $this->assertEquals(SF_TESTPROJECT, $content['project']);
-        $this->assertEquals('user1', $content['user']);
-        $this->assertEquals($data['content'], $content[ActivityModel::LEX_COMMENT]);
-        $this->assertEquals($replyData['content'], $content[ActivityModel::LEX_REPLY]);
-        $this->assertEquals($data['contextGuid'], $content[ActivityModel::LEX_COMMENT_CONTEXT]);
-        $this->assertEquals($data['regarding']['fieldValue'], $content[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
-        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $content['fieldLabel']);
+        $actual = $activityRecord['content'];
+        $expected = $data;
+        $expected['replyContent'] = $replyData['content'];
+        $this->assertEquals(SF_TESTPROJECT, $actual['project']);
+        $this->assertEquals('user1', $actual['user']);
+        $this->assertEquals($expected['content'], $actual[ActivityModel::LEX_COMMENT]);
+        $this->assertEquals($expected['replyContent'], $actual[ActivityModel::LEX_REPLY]);
+        $this->assertEquals($expected['contextGuid'], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
+        $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
+        $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
     }
 }
