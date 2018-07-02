@@ -1,11 +1,13 @@
 import * as angular from 'angular';
 import {Object} from 'core-js';
+import * as localforage from 'localforage';
 import {ActivityService} from '../../../bellows/core/api/activity.service';
 import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
 import {ModalService} from '../../../bellows/core/modal/modal.service';
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
 import {EditorDataService} from '../../../bellows/core/offline/editor-data.service';
 import {LexiconCommentService} from '../../../bellows/core/offline/lexicon-comments.service';
+import {OfflineCacheService} from '../../../bellows/core/offline/offline-cache.service';
 import {SessionService} from '../../../bellows/core/session.service';
 import {InterfaceConfig} from '../../../bellows/shared/model/interface-config.model';
 import {SemanticDomainsService} from '../../core/semantic-domains/semantic-domains.service';
@@ -99,7 +101,8 @@ export class LexiconEditorController implements angular.IController {
     'lexEntryApiService',
     'lexProjectService',
     'lexRightsService',
-    'lexSendReceive'
+    'lexSendReceive',
+    'offlineCacheService'
   ];
 
   constructor(private readonly $filter: angular.IFilterService,
@@ -119,7 +122,8 @@ export class LexiconEditorController implements angular.IController {
               private readonly lexService: LexiconEntryApiService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly rightsService: LexiconRightsService,
-              private readonly sendReceive: LexiconSendReceiveService) {}
+              private readonly sendReceive: LexiconSendReceiveService,
+              private readonly offlineCacheService: OfflineCacheService) {}
 
   $onInit(): void {
     this.show.more = this.editorService.showMoreEntries;
@@ -139,7 +143,18 @@ export class LexiconEditorController implements angular.IController {
     });
 
     this.setupTypeAheadSearch();
-
+    if (this.$state.is('editor.list')) {
+       this.offlineCacheService.deleteNewEntryFromStore('newEntry', 'storeNewEntry');
+    }
+    if (this.$state.is('editor.entry')) {
+        this.offlineCacheService.getNewEntryFromStore('newEntry', 'storeNewEntry').then((result: any) => {
+      if (result != null) {
+         this.currentEntry = JSON.parse(result);
+         this.editorService.addEntryToEntryList(this.currentEntry);
+         this.visibleEntries.unshift(this.currentEntry);
+      }
+      });
+    }
     this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
       this.$window.localStorage.getItem('viewFilter') === 'false');
   }
@@ -192,7 +207,7 @@ export class LexiconEditorController implements angular.IController {
         this.$scope.$watch(() => this.currentEntry, newValue => {
           if (newValue !== undefined) {
             if (LexiconEditorController.entryIsNew(newValue)) {
-              this.$window.localStorage.setItem('newEntry', JSON.stringify(newValue));
+              this.offlineCacheService.setNewEntryInStore('newEntry', 'storeNewEntry', JSON.stringify(newValue));
             }
             this.cancelAutoSaveTimer();
             if (this.currentEntryIsDirty()) {
@@ -358,6 +373,7 @@ export class LexiconEditorController implements angular.IController {
         isNewEntry = true;
         newEntryTempId = entryToSave.id;
         entryToSave.id = ''; // send empty id to indicate "create new"
+        this.offlineCacheService.deleteNewEntryFromStore('newEntry', 'storeNewEntry');
       }
 
       return this.$q.all({
@@ -480,7 +496,7 @@ export class LexiconEditorController implements angular.IController {
       let iShowList = this.editorService.getIndexInList(entry.id, this.visibleEntries);
       if (this.entries[iShowList] !== null) {
         if (LexiconEditorController.entryIsNew(this.entries[iShowList])) {
-          this.$window.localStorage.removeItem('newEntry');
+          this.offlineCacheService.deleteNewEntryFromStore('newEntry', 'storeNewEntry');
         }
       }
       this.editorService.removeEntryFromLists(entry.id);

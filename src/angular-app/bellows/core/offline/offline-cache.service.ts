@@ -66,4 +66,18 @@ export class OfflineCacheService {
     return object;
   }
 
+  setNewEntryInStore(storeName: string, key: string, value: string): any {
+    const store: LocalForage = this.getStore(storeName);
+    store.setItem(key, value);
+  }
+
+  getNewEntryFromStore(storeName: string, key: string): angular.IPromise<any> {
+    return this.$q.when(this.getStore(storeName).getItem(key).then(item => {
+      return item;
+    }));
+  }
+
+  deleteNewEntryFromStore(storeName: string, key: string) {
+    return this.getStore(storeName).removeItem(key);
+  }
 }

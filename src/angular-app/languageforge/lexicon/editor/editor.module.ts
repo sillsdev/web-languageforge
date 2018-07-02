@@ -4,6 +4,7 @@ import uiRouter from 'angular-ui-router';
 import {ActivityAppModule} from '../../../bellows/apps/activity/activity-app.module';
 import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
+import {OfflineCacheService} from '../../../bellows/core/offline/offline-cache.service';
 import {PuiUtilityModule} from '../../../bellows/shared/utils/pui-utils.module';
 import {LexiconCoreModule} from '../core/lexicon-core.module';
 import {EditorCommentsModule} from './comment/comment.module';
@@ -26,6 +27,7 @@ export const LexiconEditorModule = angular
   .component('lexiconEditor', LexiconEditorComponent)
   .controller('EditorListCtrl', LexiconEditorListController)
   .controller('EditorEntryCtrl', LexiconEditorEntryController)
+  .service('offlineCacheService', OfflineCacheService)
   .config(['$stateProvider', ($stateProvider: angular.ui.IStateProvider) => {
 
     // State machine from ui.router
