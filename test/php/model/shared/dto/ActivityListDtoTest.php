@@ -121,8 +121,6 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($project2->projectName, $dto[$a2]['content']['project']);
         $this->assertEquals($text2Id, $dto[$a2]['textRef']);
         $this->assertEquals($text2->title, $dto[$a2]['content']['text']);
-
-        $environ->clean();
     }
 
     public function testGetActivityForUser_TwoProjectsTwoDomains_DtoHasOneProject()
@@ -199,7 +197,7 @@ class ActivityListDtoTest extends TestCase
 
         $dto = ActivityListDto::getActivityForUser($project1->siteName, $userId);
 
-        $this->assertEquals(1, count($dto['unread']));
+        $this->assertCount(1, $dto['unread']);
     }
 
     public function testGetActivityForProject_ProjectWithTextQuestionAnswerAndComments_DtoAsExpected()
@@ -431,7 +429,7 @@ class ActivityListDtoTest extends TestCase
 
         $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
         $activity = $dto['activity'];
-        $this->assertEquals(1, count($activity));
+        $this->assertCount(1, $activity);
         $activityRecord = array_shift($activity);
         $this->assertEquals($projectId, $activityRecord['projectRef']['id']);
         $this->assertEquals(LfProjectModel::LEXICON_APP, $activityRecord['projectRef']['type']);
@@ -472,8 +470,6 @@ class ActivityListDtoTest extends TestCase
             'oldValue' => '',
             'newValue' => '',
         ], $changes);
-
-        $environ->clean();
     }
 
     public function testGetActivityForUser_AddExample_DtoAsExpected()
@@ -513,7 +509,7 @@ class ActivityListDtoTest extends TestCase
 
         $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
         $activity = $dto['activity'];
-        $this->assertEquals(1, count($activity));
+        $this->assertCount(1, $activity);
         $activityRecord = array_shift($activity);
         $this->assertEquals($projectId, $activityRecord['projectRef']['id']);
         $this->assertEquals(LfProjectModel::LEXICON_APP, $activityRecord['projectRef']['type']);
@@ -527,7 +523,7 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals('user1', $content['user']);
         $this->assertArrayHasKey('changes', $content);
         $changes = $content['changes'];
-        $this->assertEquals(2, count($changes));
+        $this->assertCount(2, $changes);
         $change = $changes[0];
 
         $this->assertEquals(ActivityListDto::ADDED_FIELD, $change['changeType']);
@@ -538,8 +534,6 @@ class ActivityListDtoTest extends TestCase
         $this->assertArrayNotHasKey('inputSystemTag', $change);
         $this->assertEquals('', $change['oldValue']);
         $this->assertEquals('', $change['newValue']);
-
-        $environ->clean();
     }
 
     public function testGetActivityForUser_AddExampleSentence_DtoAsExpected()
@@ -580,7 +574,7 @@ class ActivityListDtoTest extends TestCase
 
         $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
         $activity = $dto['activity'];
-        $this->assertEquals(1, count($activity));
+        $this->assertCount(1, $activity);
         $activityRecord = array_shift($activity);
         $this->assertEquals($projectId, $activityRecord['projectRef']['id']);
         $this->assertEquals(LfProjectModel::LEXICON_APP, $activityRecord['projectRef']['type']);
@@ -594,7 +588,7 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals('user1', $content['user']);
         $this->assertArrayHasKey('changes', $content);
         $changes = $content['changes'];
-        $this->assertEquals(1, count($changes));
+        $this->assertCount(1, $changes);
         $change = $changes[0];
 
         $this->assertEquals(ActivityListDto::EDITED_FIELD, $change['changeType']);
@@ -605,8 +599,6 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals('fr', $change['inputSystemTag']);
         $this->assertEquals('', $change['oldValue']);
         $this->assertEquals('manger une pomme', $change['newValue']);
-
-        $environ->clean();
     }
 
     public function testGetActivityForUser_AddEntryComment_DtoAsExpected()
@@ -1152,6 +1144,5 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($data['contextGuid'], $content[ActivityModel::LEX_COMMENT_CONTEXT]);
         $this->assertEquals($data['regarding']['fieldValue'], $content[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
         $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $content['fieldLabel']);
-        $environ->clean();
     }
 }
