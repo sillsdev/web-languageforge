@@ -652,7 +652,7 @@ class ActivityListDtoTest extends TestCase
 
         $dto = ActivityListDto::getActivityForUser($project->siteName, $userId);
         $activity = $dto['activity'];
-        $this->assertEquals(1, count($activity));
+        $this->assertCount(1, $activity);
         $activityRecord = array_shift($activity);
         $this->assertEquals($projectId, $activityRecord['projectRef']['id']);
         $this->assertEquals(LfProjectModel::LEXICON_APP, $activityRecord['projectRef']['type']);
@@ -668,7 +668,6 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($expected['contextGuid'], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
         $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
         $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
-        $environ->clean();
     }
 
     public function testGetActivityForUser_PlusOneEntryComment_DtoAsExpected()
@@ -744,7 +743,6 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($expected['contextGuid'], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
         $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
         $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
-        $environ->clean();
     }
 
     public function testGetActivityForUser_UpdateEntryCommentStatus_DtoAsExpected()
@@ -821,7 +819,6 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals(LexCommentModel::STATUS_TODO, $actual[ActivityModel::LEX_COMMENT_STATUS]);
         $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
         $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
-        $environ->clean();
     }
 
     public function testGetActivityForUser_DeleteEntryComment_DtoAsExpected()
@@ -897,7 +894,6 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($expected['contextGuid'], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
         $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
         $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
-        $environ->clean();
     }
 
     public function testGetActivityForUser_AddReplyToEntryComment_DtoAsExpected()
@@ -980,7 +976,6 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($expected['contextGuid'], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
         $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
         $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
-        $environ->clean();
     }
 
     public function testGetActivityForUser_UpdateReplyToEntryComment_DtoAsExpected()
@@ -1070,7 +1065,6 @@ class ActivityListDtoTest extends TestCase
         $this->assertEquals($expected['contextGuid'], $actual[ActivityModel::LEX_COMMENT_CONTEXT]);
         $this->assertEquals($expected['regarding']['fieldValue'], $actual[ActivityModel::LEX_COMMENT_FIELD_VALUE]);
         $this->assertEquals(['label' => 'Sentence', 'sense' => 2, 'example' => 1], $actual['fieldLabel']);
-        $environ->clean();
     }
 
     public function testGetActivityForUser_DeleteReplyToEntryComment_DtoAsExpected()
