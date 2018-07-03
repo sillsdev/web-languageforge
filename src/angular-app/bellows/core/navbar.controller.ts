@@ -1,7 +1,7 @@
 import * as angular from 'angular';
 
-import {LexiconProjectSettings} from '../../languageforge/lexicon/shared/model/lexicon-project-settings.model';
 import {InterfaceConfig} from '../shared/model/interface-config.model';
+import {ProjectSettings} from '../shared/model/project-settings.model';
 import {ProjectService, ProjectTypeNames} from './api/project.service';
 import {ApplicationHeaderService, HeaderData} from './application-header.service';
 import {SessionService} from './session.service';
@@ -18,9 +18,10 @@ export class NavbarController implements angular.IController {
   projectTypeNames: ProjectTypeNames;
   siteName: string;
 
-  static $inject = ['projectService', 'sessionService', 'applicationHeaderService'];
-  constructor(private projectService: ProjectService, private sessionService: SessionService,
-              private applicationHeaderService: ApplicationHeaderService) { }
+  static $inject = ['projectService', 'sessionService',
+    'applicationHeaderService'];
+  constructor(private readonly projectService: ProjectService, private readonly sessionService: SessionService,
+              private readonly applicationHeaderService: ApplicationHeaderService) { }
 
   $onInit() {
     this.projectTypeNames = this.projectService.data.projectTypeNames;
@@ -41,7 +42,7 @@ export class NavbarController implements angular.IController {
             options: { en: { name: 'English', option: 'English' } }
           }
         } as InterfaceConfig;
-      const projectSettings = session.projectSettings<LexiconProjectSettings>();
+      const projectSettings = session.projectSettings<ProjectSettings>();
       if (projectSettings == null || projectSettings.interfaceConfig == null) {
         this.interfaceConfig = defaultInterfaceConfig;
       } else {
@@ -51,6 +52,12 @@ export class NavbarController implements angular.IController {
         session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.CREATE);
       this.siteName = session.baseSite();
     });
+  }
+
+  onUpdate = ($event: { interfaceConfig: InterfaceConfig}) => {
+    if ($event.interfaceConfig) {
+      this.interfaceConfig = $event.interfaceConfig;
+    }
   }
 
 }
