@@ -38,6 +38,6 @@ class LexBaseViewDtoTest extends TestCase
         $this->assertTrue($dto['config']['roleViews']['contributor']['fields']['lexeme']['show']);
         $this->assertTrue($dto['config']['roleViews']['contributor']['showTasks']['dbe']);
         $this->assertEquals('th', $dto['interfaceConfig']['languageCode']);
-        $this->assertEquals('English - semantic domain only', $dto['interfaceConfig']['selectLanguages']['options']['en']['option']);
+        $this->assertEquals('English', $dto['interfaceConfig']['selectLanguages']['options']['en']['option']);
     }
 }
