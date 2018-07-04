@@ -20,17 +20,14 @@ export class InterfaceLanguageController implements angular.IController {
   static $inject = ['$window'];
   constructor(private readonly $window: WindowService) { }
 
-  $onInit() {
-    if (this.$window.Transifex != null) {
-      this.$window.Transifex.live.onFetchLanguages(this.onFetchTransifexLanguages);
-    }
-  }
-
   $onChanges(changes: any): void {
     const interfaceConfigChange = changes.puiInterfaceConfig as angular.IChangesObject<InterfaceConfig>;
     if (interfaceConfigChange != null && interfaceConfigChange.currentValue != null) {
       this.interfaceConfig = this.puiInterfaceConfig;
       this.changeInterfaceLanguage(this.interfaceConfig.languageCode);
+      if (this.$window.Transifex != null) {
+        this.$window.Transifex.live.onFetchLanguages(this.onFetchTransifexLanguages);
+      }
     }
   }
 
