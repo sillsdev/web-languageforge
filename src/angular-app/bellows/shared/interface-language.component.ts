@@ -2,7 +2,7 @@ import * as angular from 'angular';
 
 import {TransifexLanguage, TransifexLive} from '../../../../typings/transifex';
 import {InputSystemsService} from '../core/input-systems/input-systems.service';
-import {InterfaceConfig} from './model/interface-config.model';
+import {InterfaceConfig, SelectLanguage} from './model/interface-config.model';
 
 interface WindowService extends angular.IWindowService {
   Transifex?: {
@@ -65,6 +65,10 @@ export class InterfaceLanguageController implements angular.IController {
     for (const language of languages) {
       if (!(language.code in this.interfaceConfig.selectLanguages.options)) {
         this.interfaceConfig.selectLanguages.optionsOrder.push(language.code);
+      }
+
+      if (!(language.code in this.interfaceConfig.selectLanguages.options)) {
+        this.interfaceConfig.selectLanguages.options[language.code] = {} as SelectLanguage;
       }
 
       this.interfaceConfig.selectLanguages.options[language.code].name = language.name;
