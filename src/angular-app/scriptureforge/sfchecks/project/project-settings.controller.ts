@@ -1,55 +1,71 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngRoute', 'coreModule',
-    'palaso.ui.deleteProject', 'palaso.ui.jqte', 'palaso.ui.listview', 'palaso.ui.picklistEditor',
-    'palaso.ui.notice', 'palaso.ui.runReport', 'palaso.ui.tabset', 'palaso.ui.textdrop',
-    'palaso.ui.typeahead', 'sgw.ui.breadcrumb', 'sfchecks.services'
+import {JsonRpcResult} from '../../../bellows/core/api/json-rpc.service';
+import {BreadcrumbModule} from '../../../bellows/core/breadcrumbs/breadcrumb.module';
+import {CoreModule} from '../../../bellows/core/core.module';
+import {NoticeModule} from '../../../bellows/core/notice/notice.module';
+import {Session, SessionService} from '../../../bellows/core/session.service';
+import {User} from '../../../bellows/shared/model/user.model';
+import {SfChecksCoreModule} from '../core/sf-checks-core.module';
+import {QuestionTemplate} from '../shared/model/text.model';
+import {UserProfilePickLists, UserProperties} from '../shared/model/user-properties.model';
+
+export const SfChecksProjectSettingsModule = angular
+  .module('sfchecks.projectSettings', [
+    BreadcrumbModule,
+    CoreModule,
+    'palaso.ui.deleteProject',
+    'palaso.ui.listview',
+    NoticeModule,
+    'palaso.ui.picklistEditor',
+    'palaso.ui.runReport',
+    'palaso.ui.tabset',
+    'palaso.ui.textdrop',
+    'palaso.ui.typeahead',
+    SfChecksCoreModule
   ])
-  .controller('ProjectSettingsCtrl', ['$scope', 'breadcrumbService', 'userService',
-    'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
-    'linkService', '$q',
-  function ($scope, breadcrumbService, userService,
-            sfchecksProjectService, ss, notice, messageService,
-            linkService, $q) {
+  .controller('ProjectSettingsCtrl', ['$scope', '$q', 'breadcrumbService', 'userService',
+    'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService', 'linkService',
+  ($scope, $q, breadcrumbService, userService,
+   sfchecksProjectService, sessionService: SessionService, notice, messageService, linkService) => {
+
     $scope.project = {};
     $scope.finishedLoading = false;
     $scope.show = {};
     $scope.list = {};
     $scope.list.archivedTexts = [];
 
-    ss.getSession().then(function (session) {
-      $scope.canEditCommunicationSettings = function () {
-        return session.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
+    sessionService.getSession().then((session: Session) => {
+      $scope.canEditCommunicationSettings = function canEditCommunicationSettings(): boolean {
+        return session.hasSiteRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
       };
     });
 
-    $scope.queryProjectSettings = function () {
-      $q.all([ss.getSession(), sfchecksProjectService.projectSettings()]).then(function (data) {
-        var session = data[0];
-        var result = data[1];
+    $scope.queryProjectSettings = function queryProjectSettings() {
+      $q.all([sessionService.getSession(), sfchecksProjectService.projectSettings()]).then((data: any[]) => {
+        const session = data[0] as Session;
+        const result = data[1] as JsonRpcResult;
         $scope.project = result.data.project;
         $scope.list.users = result.data.entries;
         $scope.list.userCount = result.data.count;
         $scope.list.archivedTexts = result.data.archivedTexts;
-        for (var i = 0; i < $scope.list.archivedTexts.length; i++) {
-          $scope.list.archivedTexts[i].url = linkService.text($scope.list.archivedTexts[i].id);
-          $scope.list.archivedTexts[i].dateModified =
-            new Date($scope.list.archivedTexts[i].dateModified);
+        for (const archivedText of $scope.list.archivedTexts) {
+          archivedText.url = linkService.text(archivedText.id);
+          archivedText.dateModified = new Date(archivedText.dateModified);
         }
 
         // Rights
-        var rights = result.data.rights;
+        const rights = result.data.rights;
         $scope.rights = {};
-        $scope.rights.archive = session.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE);
-        $scope.rights.deleteOther = session.hasRight(rights, ss.domain.USERS, ss.operation.DELETE);
-        $scope.rights.create = session.hasRight(rights, ss.domain.USERS, ss.operation.CREATE);
-        $scope.rights.editOther = session.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
-        $scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create ||
-          $scope.rights.editOther;
+        $scope.rights.archive = session.hasRight(rights, sessionService.domain.TEXTS, sessionService.operation.ARCHIVE);
+        $scope.rights.deleteOther =
+          session.hasRight(rights, sessionService.domain.USERS, sessionService.operation.DELETE);
+        $scope.rights.create = session.hasRight(rights, sessionService.domain.USERS, sessionService.operation.CREATE);
+        $scope.rights.editOther = session.hasRight(rights, sessionService.domain.USERS, sessionService.operation.EDIT);
+        $scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
         $scope.rights.remove = session.project().userIsProjectOwner ||
-          session.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
+          session.hasSiteRight(sessionService.domain.PROJECTS, sessionService.operation.DELETE);
 
-        // Breadcrumb
         breadcrumbService.set('top', [
           { href: '/app/projects', label: 'My Projects' },
           { href: linkService.project(), label: result.data.bcs.project.crumb },
@@ -65,7 +81,7 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
     };
 
     $scope.readCommunicationSettings = function readCommunicationSettings() {
-      sfchecksProjectService.readSettings(function (result) {
+      sfchecksProjectService.readSettings().then((result: JsonRpcResult) => {
         if (result.ok) {
           $scope.settings.sms = result.data.sms;
           $scope.settings.email = result.data.email;
@@ -75,18 +91,18 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
     };
 
   }])
-  .controller('ProjectSettingsQTemplateCtrl', ['$scope', 'silNoticeService',
-    'questionTemplateService',
-  function ($scope, notice, qts) {
+  .controller('ProjectSettingsQTemplateCtrl', ['$scope', 'silNoticeService', 'questionTemplateService',
+  ($scope, notice, qts) => {
+
     $scope.selected = [];
     $scope.vars = {
       selectedIndex: -1
     };
-    $scope.updateSelection = function (event, item) {
-      var selectedIndex = $scope.selected.indexOf(item);
-      var checkbox = event.target;
+    $scope.updateSelection = function updateSelection(event: Event, questionTemplate: QuestionTemplate): void {
+      const selectedIndex = $scope.selected.indexOf(questionTemplate);
+      const checkbox = event.target as HTMLInputElement;
       if (checkbox.checked && selectedIndex === -1) {
-        $scope.selected.push(item);
+        $scope.selected.push(questionTemplate);
       } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
@@ -94,14 +110,14 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       $scope.vars.selectedIndex = selectedIndex; // Needed?
     };
 
-    $scope.isSelected = function (item) {
-      return item !== null && $scope.selected.indexOf(item) >= 0;
+    $scope.isSelected = function isSelected(questionTemplate: QuestionTemplate): boolean {
+      return questionTemplate !== null && $scope.selected.includes(questionTemplate);
     };
 
     $scope.editTemplateButtonText = 'Add New Template';
     $scope.editTemplateButtonIcon = 'plus';
-    $scope.$watch('selected.length', function (newval) {
-      if (newval >= 1) {
+    $scope.$watch('selected.length', (newVal: number) => {
+      if (newVal >= 1) {
         $scope.editTemplateButtonText = 'Edit Template';
         $scope.editTemplateButtonIcon = 'pencil';
       } else {
@@ -116,7 +132,7 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       description: ''
     };
     $scope.templateEditorVisible = false;
-    $scope.showTemplateEditor = function (template) {
+    $scope.showTemplateEditor = function showTemplateEditor(template: QuestionTemplate): void {
       $scope.templateEditorVisible = true;
       if (template) {
         $scope.editedTemplate = template;
@@ -127,11 +143,11 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       }
     };
 
-    $scope.hideTemplateEditor = function () {
+    $scope.hideTemplateEditor = function hideTemplateEditor(): void {
       $scope.templateEditorVisible = false;
     };
 
-    $scope.toggleTemplateEditor = function () {
+    $scope.toggleTemplateEditor = function toggleTemplateEditor(): void {
       // Can't just do "visible = !visible" because show() has logic we need to run
       if ($scope.templateEditorVisible) {
         $scope.hideTemplateEditor();
@@ -140,9 +156,9 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       }
     };
 
-    $scope.editTemplate = function () {
+    $scope.editTemplate = function editTemplate(): void {
       if ($scope.editedTemplate.title && $scope.editedTemplate.description) {
-        qts.update($scope.editedTemplate, function (result) {
+        qts.update($scope.editedTemplate).then((result: JsonRpcResult) => {
           if (result.ok) {
             if ($scope.editedTemplate.id) {
               notice.push(notice.SUCCESS, 'The template \'' + $scope.editedTemplate.title +
@@ -162,10 +178,10 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
     };
 
     $scope.templates = [];
-    $scope.queryTemplates = function (invalidateCache) {
-      var forceReload = (invalidateCache || (!$scope.templates) || ($scope.templates.length === 0));
+    $scope.queryTemplates = function queryTemplates(invalidateCache: boolean): void {
+      const forceReload = (invalidateCache || (!$scope.templates) || ($scope.templates.length === 0));
       if (forceReload) {
-        qts.list(function (result) {
+        qts.list().then((result: JsonRpcResult) => {
           if (result.ok) {
             $scope.templates = result.data.entries;
             $scope.finishedLoading = true;
@@ -176,17 +192,17 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       }
     };
 
-    $scope.removeTemplates = function () {
-      var templateIds = [];
-      for (var i = 0, l = $scope.selected.length; i < l; i++) {
-        templateIds.push($scope.selected[i].id);
-      }
-
-      if (l === 0) {
+    $scope.removeTemplates = function removeTemplates(): void {
+      const templateIds: string[] = [];
+      if ($scope.selected.length === 0) {
         return;
       }
 
-      qts.remove(templateIds, function (result) {
+      for (const user of $scope.selected) {
+        templateIds.push(user.id);
+      }
+
+      qts.remove(templateIds).then((result: JsonRpcResult) => {
         if (result.ok) {
           if (templateIds.length === 1) {
             notice.push(notice.SUCCESS, 'The template was removed successfully');
@@ -203,32 +219,32 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
 
   }])
   .controller('ProjectSettingsArchiveTextsCtrl', ['$scope', 'textService', 'silNoticeService',
-  function ($scope, textService, notice) {
+  ($scope, textService, notice) => {
+
     // Listview Selection
     $scope.selected = [];
-    $scope.updateSelection = function (event, item) {
-      var selectedIndex = $scope.selected.indexOf(item);
-      var checkbox = event.target;
+    $scope.updateSelection = function updateSelection(event: Event, text: Text): void {
+      const selectedIndex = $scope.selected.indexOf(text);
+      const checkbox = event.target as HTMLInputElement;
       if (checkbox.checked && selectedIndex === -1) {
-        $scope.selected.push(item);
+        $scope.selected.push(text);
       } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
-    $scope.isSelected = function (item) {
-      // noinspection EqualityComparisonWithCoercionJS
-      return item != null && $scope.selected.indexOf(item) >= 0;
+    $scope.isSelected = function isSelected(text: Text): boolean {
+      return text != null && $scope.selected.includes(text);
     };
 
     // Publish Texts
-    $scope.publishTexts = function () {
-      var textIds = [];
-      for (var i = 0, l = $scope.selected.length; i < l; i++) {
-        textIds.push($scope.selected[i].id);
+    $scope.publishTexts = function publishTexts(): void {
+      const textIds: string[] = [];
+      for (const user of $scope.selected) {
+        textIds.push(user.id);
       }
 
-      textService.publish(textIds, function (result) {
+      textService.publish(textIds).then((result: JsonRpcResult) => {
         if (result.ok) {
           $scope.selected = []; // Reset the selection
           $scope.queryProjectSettings();
@@ -242,63 +258,59 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
     };
 
   }])
-  .controller('ProjectSettingsCommunicationCtrl', ['$scope', 'userService',
-    'sfchecksProjectService', 'silNoticeService',
-  function ($scope, userService,
-            sfchecksProjectService, notice) {
-    $scope.updateCommunicationSettings = function () {
-      sfchecksProjectService.updateSettings($scope.settings.sms, $scope.settings.email,
-      function (result) {
-        if (result.ok) {
-          notice.push(notice.SUCCESS, $scope.project.projectName +
-            ' SMS settings updated successfully');
-        }
-      });
+  .controller('ProjectSettingsCommunicationCtrl', ['$scope', 'sfchecksProjectService', 'silNoticeService',
+  ($scope, sfchecksProjectService, notice) => {
+
+    $scope.updateCommunicationSettings = function updateCommunicationSettings(): void {
+      sfchecksProjectService.updateSettings($scope.settings.sms, $scope.settings.email)
+        .then((result: JsonRpcResult) => {
+          if (result.ok) {
+            notice.push(notice.SUCCESS, $scope.project.projectName + ' SMS settings updated successfully');
+          }
+        });
     };
 
   }])
-  .controller('ProjectSettingsPropertiesCtrl', ['$scope', 'sfchecksProjectService',
-    'silNoticeService',
-  function ($scope, sfchecksProjectService, notice) {
+  .controller('ProjectSettingsPropertiesCtrl', ['$scope', 'sfchecksProjectService', 'silNoticeService',
+  ($scope, sfchecksProjectService, notice) => {
+
     // TODO This can be moved to the page level controller, it is common with the Setup tab.
-    $scope.updateProject = function () {
-      var project = angular.copy($scope.project);
+    $scope.updateProject = function updateProject(): void {
+      const project = angular.copy($scope.project);
       if (project.hasOwnProperty('ownerRef')) {
         delete project.ownerRef; // ownerRef is expected as string id not array of id and username
       }
 
-      sfchecksProjectService.update(project, function (result) {
+      sfchecksProjectService.update(project).then((result: JsonRpcResult) => {
         if (result.ok) {
-          notice.push(notice.SUCCESS, $scope.project.projectName +
-            ' settings updated successfully');
+          notice.push(notice.SUCCESS, $scope.project.projectName + ' settings updated successfully');
         }
       });
     };
 
   }])
-  .controller('ProjectSettingsSetupCtrl', ['$scope', 'userService', 'sfchecksProjectService',
-    'silNoticeService',
-  function ($scope, userService, sfchecksProjectService, notice) {
-    var deregisterPickListWatcher;
+  .controller('ProjectSettingsSetupCtrl', ['$scope', 'sfchecksProjectService', 'silNoticeService',
+  ($scope, sfchecksProjectService, notice) => {
+
+    let deregisterPickListWatcher: () => void;
 
     // TODO This can be moved to the page level controller, it is common with the Setup tab.
     $scope.currentListsEnabled = [];
-    $scope.updateProject = function () {
+    $scope.updateProject = function updateProject(): void {
       // populate the list of enabled user profile properties
       $scope.project.userProperties.userProfilePropertiesEnabled = [];
-      for (var listId in $scope.currentListsEnabled) {
-        if ($scope.currentListsEnabled.hasOwnProperty(listId) && $scope.currentListsEnabled[listId]
-        ) {
+      for (const listId of Object.keys($scope.currentListsEnabled)) {
+        if ($scope.currentListsEnabled[listId] ) {
           $scope.project.userProperties.userProfilePropertiesEnabled.push(listId);
         }
       }
 
-      var project = angular.copy($scope.project);
+      const project = angular.copy($scope.project);
       if (project.hasOwnProperty('ownerRef')) {
         delete project.ownerRef; // ownerRef is expected as string id not array of id and username
       }
 
-      sfchecksProjectService.update(project, function (result) {
+      sfchecksProjectService.update(project).then((result: JsonRpcResult) => {
         if (result.ok) {
           notice.push(notice.SUCCESS, project.projectName + ' settings updated successfully');
         }
@@ -309,12 +321,12 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
     };
 
     $scope.currentListId = '';
-    $scope.selectList = function (listId) {
+    $scope.selectList = function selectList(listId: string): void {
       $scope.currentListId = listId;
     };
 
-    function pickListWatcher(newval, oldval) {
-      if (angular.isDefined(newval) && newval !== oldval) {
+    function pickListWatcher(newVal: UserProfilePickLists, oldVal: UserProfilePickLists): void {
+      if (newVal != null && newVal !== oldVal) {
         $scope.unsavedChanges = true;
 
         // Since a values watch is expensive, stop watching after first time data changes
@@ -322,32 +334,29 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       }
     }
 
-    function stopWatchingPickLists() {
+    function stopWatchingPickLists(): void {
       if (deregisterPickListWatcher) {
         deregisterPickListWatcher();
         deregisterPickListWatcher = undefined;
       }
     }
 
-    function startWatchingPickLists() {
+    function startWatchingPickLists(): void {
       stopWatchingPickLists(); // Ensure we never register two expensive watches at once
-      deregisterPickListWatcher =
-        $scope.$watch('project.userProperties.userProfilePickLists', pickListWatcher, true);
+      deregisterPickListWatcher = $scope.$watch('project.userProperties.userProfilePickLists', pickListWatcher, true);
     }
 
-    $scope.$watch('project.userProperties', function (newValue) {
+    $scope.$watch('project.userProperties', (newValue: UserProperties) => {
       if (newValue !== undefined) {
         // noinspection LoopStatementThatDoesntLoopJS
-        for (var key in newValue.userProfilePickLists) {
+        for (const key of Object.keys(newValue.userProfilePickLists)) {
           $scope.currentListId = key;
           break;
         }
 
         $scope.currentListsEnabled = {};
-        var userProfilePropertiesEnabled =
-          $scope.project.userProperties.userProfilePropertiesEnabled;
-        for (var i = 0; i < userProfilePropertiesEnabled.length; i++) {
-          $scope.currentListsEnabled[userProfilePropertiesEnabled[i]] = true;
+        for (const userProfilePropertyEnabled of $scope.project.userProperties.userProfilePropertiesEnabled) {
+          $scope.currentListsEnabled[userProfilePropertyEnabled] = true;
         }
       }
 
@@ -357,7 +366,8 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
   }])
   .controller('ProjectSettingsUsersCtrl', ['$scope', 'userService', 'projectService',
     'silNoticeService', 'messageService',
-  function ($scope, userService, projectService, notice, messageService) {
+  ($scope, userService, projectService, notice, messageService) => {
+
     $scope.userFilter = '';
     $scope.message = {};
     $scope.addMembersCollapsed = true;
@@ -388,12 +398,12 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       ]
     };
 
-    $scope.toggleAddMembers = function () {
+    $scope.toggleAddMembers = function toggleAddMembers(): void {
       $scope.addMembersCollapsed = !$scope.addMembersCollapsed;
       $scope.newMessageCollapsed = true;
     };
 
-    $scope.toggleMessageUsers = function () {
+    $scope.toggleMessageUsers = function toggleMessageUsers(): void {
       $scope.newMessageCollapsed = !$scope.newMessageCollapsed;
       $scope.addMembersCollapsed = true;
     };
@@ -402,19 +412,19 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       return !!($scope.settings.email.fromAddress);
     };
 
-    $scope.sendMessageToSelectedUsers = function () {
+    $scope.sendMessageToSelectedUsers = function sendMessageToSelectedUsers(): void {
       if ($scope.selected.length === 0) {
         $scope.messagingWarning = 'Select at least one member to message';
         return;
       }
 
-      var userIds = [];
-      for (var i = 0, l = $scope.selected.length; i < l; i++) {
-        userIds.push($scope.selected[i].id);
+      const userIds = [];
+      for (const user of $scope.selected) {
+        userIds.push(user.id);
       }
 
       messageService.send(userIds, $scope.message.subject, $scope.message.emailTemplate,
-        $scope.message.smsTemplate, function (result) {
+        $scope.message.smsTemplate).then((result: JsonRpcResult) => {
         if (result.ok) {
           $scope.message.subject = '';
           $scope.message.emailTemplate = '';
@@ -430,44 +440,42 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
     // List
     // ----------------------------------------------------------
     $scope.selected = [];
-    $scope.updateSelection = function (event, item) {
-      var selectedIndex = $scope.selected.indexOf(item);
-      var checkbox = event.target;
+    $scope.updateSelection = function updateSelection(event: Event, user: User): void {
+      const selectedIndex = $scope.selected.indexOf(user);
+      const checkbox = event.target as HTMLInputElement;
       if (checkbox.checked) {
         $scope.messagingWarning = '';
       }
 
       if (checkbox.checked && selectedIndex === -1) {
-        $scope.selected.push(item);
+        $scope.selected.push(user);
       } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
-    $scope.isSelected = function (item) {
+    $scope.isSelected = function isSelected(user: User): boolean {
       // noinspection EqualityComparisonWithCoercionJS
-      return item != null && $scope.selected.indexOf(item) >= 0;
+      return user != null && $scope.selected.includes(user);
     };
 
-    $scope.removeProjectUsers = function () {
-      var userIds = [];
-      for (var i = 0, l = $scope.selected.length; i < l; i++) {
+    $scope.removeProjectUsers = function removeProjectUsers(): void {
+      const userIds: string[] = [];
+      if ($scope.selected.length === 0) {
+        // TODO ERROR
+        return;
+      }
 
+      for (const user of $scope.selected) {
         // Guard against project owner being removed
-        if ($scope.selected[i].id !== $scope.project.ownerRef.id) {
-          userIds.push($scope.selected[i].id);
+        if (user.id !== $scope.project.ownerRef.id) {
+          userIds.push(user.id);
         } else {
           notice.push(notice.WARN, 'Project owner cannot be removed');
         }
       }
 
-      if (l === 0) {
-
-        // TODO ERROR
-        return;
-      }
-
-      projectService.removeUsers(userIds, function (result) {
+      projectService.removeUsers(userIds).then((result: JsonRpcResult) => {
         if (result.ok) {
           $scope.queryProjectSettings();
           $scope.selected = [];
@@ -486,8 +494,8 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
           { key: 'project_manager', name: 'Manager' }
       ];
 
-    $scope.onRoleChange = function (user) {
-      projectService.updateUserRole(user.id, user.role, function (result) {
+    $scope.onRoleChange = function onRoleChange(user: User): void {
+      projectService.updateUserRole(user.id, user.role).then((result: JsonRpcResult) => {
         if (result.ok) {
           notice.push(notice.SUCCESS, user.username + '\'s role was changed to ' + user.role);
         }
@@ -508,8 +516,8 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
     $scope.typeahead = {};
     $scope.typeahead.userName = '';
 
-    $scope.queryUser = function (userName) {
-      userService.typeaheadExclusive(userName, $scope.project.id, function (result) {
+    $scope.queryUser = function queryUser(userName: string): void {
+      userService.typeaheadExclusive(userName, $scope.project.id).then((result: JsonRpcResult) => {
         // TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
         if (result.ok) {
           $scope.users = result.data.entries;
@@ -524,15 +532,15 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       });
     };
 
-    $scope.addModeText = function (addMode) {
+    $scope.addModeText = function addModeText(addMode: string): string {
       return $scope.addModes[addMode].en;
     };
 
-    $scope.addModeIcon = function (addMode) {
+    $scope.addModeIcon = function addModeIcon(addMode: string): string {
       return $scope.addModes[addMode].icon;
     };
 
-    $scope.updateAddMode = function (newMode) {
+    $scope.updateAddMode = function updateAddMode(newMode: string): void {
       if (newMode in $scope.addModes) {
         $scope.addMode = newMode;
       } else {
@@ -541,26 +549,26 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       }
     };
 
-    $scope.isExcludedUser = function (userName) {
+    $scope.isExcludedUser = function isExcludedUser(userName: string): boolean {
       // Is this userName in the "excluded users" list? (I.e., users already in current project)
       // Note that it's not enough to check whether the "excluded users" list is non-empty,
       // as the "excluded users" list might include some users that had a partial match on
       // the given username. E.g. when creating a new user Bob Jones with username "bjones",
       // after typing "bjo" the "excluded users" list will include Bob Johnson (bjohnson).
-      if (!$scope.excludedUsers) { return false; }
+      if (!$scope.excludedUsers) {
+        return false;
+      }
 
-      for (var i = 0, l = $scope.excludedUsers.length; i < l; i++) {
-        if (userName === $scope.excludedUsers[i].username ||
-          userName === $scope.excludedUsers[i].name     ||
-          userName === $scope.excludedUsers[i].email) {
-          return $scope.excludedUsers[i];
+      for (const excludedUser of $scope.excludedUsers) {
+        if (userName === excludedUser.username || userName === excludedUser.name || userName === excludedUser.email) {
+          return excludedUser;
         }
       }
 
       return false;
     };
 
-    $scope.calculateAddMode = function () {
+    $scope.calculateAddMode = function calculateAddMode(): void {
       // TODO This isn't adequate. Need to watch the 'typeahead.userName' and 'selection' also.
       // CP 2013-07
       if (!$scope.typeahead.userName) {
@@ -568,7 +576,7 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
         $scope.disableAddButton = true;
         $scope.warningText = '';
       } else if ($scope.isExcludedUser($scope.typeahead.userName)) {
-        var excludedUser = $scope.isExcludedUser($scope.typeahead.userName);
+        const excludedUser = $scope.isExcludedUser($scope.typeahead.userName);
         $scope.addMode = 'addExisting';
         $scope.disableAddButton = true;
         $scope.warningText = excludedUser.name + ' (username \'' + excludedUser.username +
@@ -588,9 +596,9 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
       }
     };
 
-    $scope.addProjectUser = function () {
+    $scope.addProjectUser = function addProjectUser(): void {
       if ($scope.addMode === 'addNew') {
-        userService.createSimple($scope.typeahead.userName, function (result) {
+        userService.createSimple($scope.typeahead.userName).then((result: JsonRpcResult) => {
           if (result.ok) {
             notice.push(notice.INFO, 'User created.  Username: ' + $scope.typeahead.userName +
               '    Password: ' + result.data.password);
@@ -598,27 +606,26 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
           }
         });
       } else if ($scope.addMode === 'addExisting') {
-        var model = {};
-        model.id = $scope.user.id;
+        const existingUser = {
+          id: $scope.user.id
+        } as User;
 
         // Check existing users to see if we're adding someone that already exists in the project
-        projectService.users(function (result) {
+        projectService.listUsers().then((result: JsonRpcResult) => {
           if (result.ok) {
-            for (var i = 0, l = result.data.users.length; i < l; i++) {
-              // This approach works, but is unnecessarily slow. We should have an "is user in
-              // project?" API, rather than returning all users then searching through them in
-              // O(N) time.
+            for (const user of result.data.users) {
+              // This approach works, but is unnecessarily slow. We should have an "is user in  project?" API, rather
+              // than returning all users then searching through them in O(N) time.
               // TODO: Make an "is user in project?" query API. 2014-06 RM
-              var thisUser = result.data.users[i];
-              if (thisUser.id === model.id) {
+              if (user.id === existingUser.id) {
                 notice.push(notice.WARN, '\'' + $scope.user.name + '\' is already a member of ' +
                   $scope.project.projectName + '.');
                 return;
               }
             }
 
-            projectService.updateUserRole($scope.user.id, 'contributor', function (result) {
-              if (result.ok) {
+            projectService.updateUserRole($scope.user.id, 'contributor').then((updateUserRoleResult: JsonRpcResult) => {
+              if (updateUserRoleResult.ok) {
                 notice.push(notice.SUCCESS, '\'' + $scope.user.name + '\' was added to ' +
                   $scope.project.projectName + ' successfully');
                 $scope.queryProjectSettings();
@@ -627,29 +634,28 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
           }
         });
       } else if ($scope.addMode === 'invite') {
-        userService.sendInvite($scope.typeahead.userName, function (result) {
+        userService.sendInvite($scope.typeahead.userName).then((result: JsonRpcResult) => {
           if (result.ok) {
-            notice.push(notice.SUCCESS, '\'' + $scope.typeahead.userName +
-              '\' was invited to join the project ' + $scope.project.projectName);
+            notice.push(notice.SUCCESS, '\'' + $scope.typeahead.userName + '\' was invited to join the project ' +
+              $scope.project.projectName);
             $scope.queryProjectSettings();
           }
         });
       }
     };
 
-    $scope.selectUser = function (item) {
-      if (item) {
-        $scope.user = item;
-        $scope.typeahead.userName = item.name;
+    $scope.selectUser = function selectUser(user: User): void {
+      if (user) {
+        $scope.user = user;
+        $scope.typeahead.userName = user.name;
         $scope.updateAddMode('addExisting');
       }
     };
 
-    $scope.imageSource = function (avatarRef) {
+    $scope.imageSource = function imageSource(avatarRef: string): string {
       return avatarRef ? '/Site/views/shared/image/avatar/' + avatarRef :
         '/Site/views/shared/image/avatar/anonymous02.png';
     };
 
   }])
-
-  ;
+  .name;
