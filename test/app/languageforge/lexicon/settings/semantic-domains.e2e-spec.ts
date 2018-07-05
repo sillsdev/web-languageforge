@@ -128,4 +128,10 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     expect<any>(header.language.button.getText()).toEqual('ภาษาไทย');
   });
 
+  it('can change user interface language to back English', () => {
+    header.language.button.click();
+    header.language.findItem('English').click();
+    expect<any>(header.language.button.getText()).toEqual('English');
+  });
+
 });
