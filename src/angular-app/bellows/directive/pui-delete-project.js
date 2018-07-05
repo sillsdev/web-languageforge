@@ -25,7 +25,7 @@ angular.module('palaso.ui.deleteProject', ['coreModule'])
               ss.getSession().then(function (session) {
                 var projectIds = [session.project().id];
                 $scope.actionInProgress = true;
-                projectService.remove(projectIds).then(function () {
+                projectService.deleteProject(projectIds).then(function () {
                   notice.push(notice.SUCCESS, 'The project was permanently deleted');
                   $window.location.href = '/app/projects';
                 }).catch(function () {

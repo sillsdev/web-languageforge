@@ -1,9 +1,17 @@
-'use strict';
+import * as angular from 'angular';
 
-// Services
-// ScriptureForge common services
-angular.module('sfchecks.services', ['coreModule'])
-  .service('sfchecksProjectService', ['apiService', function (api) {
+import {ApiService} from '../../../bellows/core/api/api.service';
+import {CoreModule} from '../../../bellows/core/core.module';
+
+export interface SortData {
+  sortColumn: string;
+  direction: string;
+  sort?: (cb: (objA: any, objB: any) => number) => void;
+}
+
+export const SfChecksCoreModule = angular
+  .module('sfchecks.services', [CoreModule])
+  .service('sfchecksProjectService', ['apiService', function sfchecksProjectService(api: ApiService) {
     this.read = api.method('project_read');
     this.update = api.method('project_update');
     this.projectSettings = api.method('project_settings');
@@ -11,11 +19,11 @@ angular.module('sfchecks.services', ['coreModule'])
     this.readSettings = api.method('project_readSettings');
     this.pageDto = api.method('project_pageDto');
   }])
-  .service('messageService', ['apiService', function (api) {
+  .service('messageService', ['apiService', function messageService(api: ApiService) {
     this.markRead = api.method('message_markRead');
     this.send = api.method('message_send');
   }])
-  .service('textService', ['apiService', function (api) {
+  .service('textService', ['apiService', function questionService(api: ApiService) {
     this.read = api.method('text_read');
     this.update = api.method('text_update');
     this.archive = api.method('text_archive');
@@ -23,7 +31,7 @@ angular.module('sfchecks.services', ['coreModule'])
     this.settingsDto = api.method('text_settings_dto');
     this.exportComments = api.method('text_exportComments');
   }])
-  .service('questionService', ['apiService', function (api) {
+  .service('questionService', ['apiService', function questionService(api: ApiService) {
     this.read = api.method('question_comment_dto');
     this.update = api.method('question_update');
     this.archive = api.method('question_archive');
@@ -40,12 +48,11 @@ angular.module('sfchecks.services', ['coreModule'])
 
     // Utility functions
     this.util = {};
-    this.util.calculateTitle = function (title, description, charLimit) {
-      charLimit = charLimit || 50;
-      var questionTitleCalculated;
+    this.util.calculateTitle = function calculateTitle(title: string, description: string, charLimit: number = 50) {
+      let questionTitleCalculated;
       if (!title || title === '') {
-        var spaceIndex = description.indexOf(' ', charLimit);
-        var shortTitle;
+        const spaceIndex = description.indexOf(' ', charLimit);
+        let shortTitle;
         if (spaceIndex > -1) {
           shortTitle = description.slice(0, spaceIndex) + '...';
         } else {
@@ -59,21 +66,22 @@ angular.module('sfchecks.services', ['coreModule'])
 
       return questionTitleCalculated;
     };
+
   }])
-  .service('questionTemplateService', ['apiService', function (api) {
+  .service('questionTemplateService', ['apiService', function questionTemplateService(api: ApiService) {
     this.read = api.method('questionTemplate_read');
     this.update = api.method('questionTemplate_update');
     this.remove = api.method('questionTemplate_delete');
     this.list = api.method('questionTemplate_list');
   }])
-  .service('listviewSortingService', function () {
-    this.sortDataByColumn = function (data, columnName, direction) {
+  .service('listviewSortingService', function listviewSortingService() {
+    this.sortDataByColumn = function sortDataByColumn(data: SortData, columnName: string, direction: string): SortData {
       // This function is as generic as possible, so that it could be reused easily in other code
-      data.sort(function (objA, objB) {
-        var a = objA[columnName];
-        var b = objB[columnName];
-        var aUndefined = (typeof a === 'undefined');
-        var bUndefined = (typeof b === 'undefined');
+      data.sort((objA: any, objB: any): number => {
+        const a = objA[columnName];
+        const b = objB[columnName];
+        const aUndefined = (typeof a === 'undefined');
+        const bUndefined = (typeof b === 'undefined');
         if (aUndefined && bUndefined) {
           return 0;
         } else if (aUndefined) {
@@ -82,7 +90,7 @@ angular.module('sfchecks.services', ['coreModule'])
           return (direction === 'up') ? +1 : -1;
         } else {
           if (typeof a === 'string' && typeof b === 'string') {
-            var sign = (direction === 'up') ? +1 : -1;
+            const sign = (direction === 'up') ? +1 : -1;
             return a.toLowerCase().localeCompare(b.toLowerCase()) * sign;
           } else {
             // number type
@@ -100,29 +108,29 @@ angular.module('sfchecks.services', ['coreModule'])
       return data;
     };
 
-    this.flipDirection = function (direction) {
+    this.flipDirection = function flipDirection(direction: string): string {
       return (direction === 'up') ? 'down' : 'up';
     };
 
     // TODO: The sortdata parameter here should probably turn into some kind of class with
     // setSortColumn and sortIconClass methods
 
-    this.setSortColumn = function (sortdata, columnName) {
-      if (columnName === sortdata.sortColumn) {
-        sortdata.direction = this.flipDirection(sortdata.direction);
+    this.setSortColumn = function setSortColumn(sortData: SortData, columnName: string): void {
+      if (columnName === sortData.sortColumn) {
+        sortData.direction = this.flipDirection(sortData.direction);
       } else {
-        sortdata.sortColumn = columnName;
-        sortdata.direction = 'up';
+        sortData.sortColumn = columnName;
+        sortData.direction = 'up';
       }
     };
 
-    this.sortIconClass = function (sortdata, columnName) {
-      if (columnName === sortdata.sortColumn &&
-        (sortdata.direction === 'up' || sortdata.direction === 'down')
-      ) {
-        return 'fa fa-sort-' + sortdata.direction;
+    this.sortIconClass = function sortIconClass(sortData: SortData, columnName: string): string {
+      if (columnName === sortData.sortColumn && (sortData.direction === 'up' || sortData.direction === 'down')) {
+        return 'fa fa-sort-' + sortData.direction;
       } else {
         return 'fa fa-sort';
       }
     };
-  });
+
+  })
+  .name;
