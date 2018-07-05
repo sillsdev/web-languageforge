@@ -2,6 +2,7 @@ import * as angular from 'angular';
 
 import {TransifexLanguage, TransifexLive} from '../../../../typings/transifex';
 import {InputSystemsService} from '../core/input-systems/input-systems.service';
+import {OfflineCacheUtilsService} from '../core/offline/offline-cache-utils.service';
 import {InterfaceConfig, SelectLanguage} from './model/interface-config.model';
 
 interface WindowService extends angular.IWindowService {
@@ -12,13 +13,14 @@ interface WindowService extends angular.IWindowService {
 
 export class InterfaceLanguageController implements angular.IController {
   puiInterfaceConfig: InterfaceConfig;
+  puiLanguageCode: string;
   puiOnUpdate: (params: { $event: { interfaceConfig: InterfaceConfig } }) => void;
 
   private transifexLanguageCodes: string[] = [];
   private interfaceConfig: InterfaceConfig;
 
-  static $inject = ['$window'];
-  constructor(private readonly $window: WindowService) { }
+  static $inject = ['$window', 'offlineCacheUtils'];
+  constructor(private readonly $window: WindowService, private readonly offlineCacheUtils: OfflineCacheUtilsService) { }
 
   $onChanges(changes: any): void {
     const interfaceConfigChange = changes.puiInterfaceConfig as angular.IChangesObject<InterfaceConfig>;
@@ -27,13 +29,22 @@ export class InterfaceLanguageController implements angular.IController {
       this.changeInterfaceLanguage(this.interfaceConfig.languageCode);
       if (this.$window.Transifex != null) {
         this.$window.Transifex.live.onFetchLanguages(this.onFetchTransifexLanguages);
+      } else {
+        // Mock a second language for testing locally - no Transifex available
+        this.onFetchTransifexLanguages([{ name: 'English', code: 'en' }, { name: 'Français', code: 'fr' }]);
       }
+    }
+
+    const languageCodeChange = changes.puiLanguageCode as angular.IChangesObject<string>;
+    if (languageCodeChange != null && languageCodeChange.currentValue != null) {
+      this.changeInterfaceLanguage(this.interfaceConfig.languageCode);
     }
   }
 
-  onCodeChange(languageCode: string) {
+  onCodeChange(languageCode: string): void {
     if (this.interfaceConfig.languageCode !== languageCode) {
       this.changeInterfaceLanguage(languageCode);
+      this.updateLocalStore(languageCode);
     }
   }
 
@@ -60,7 +71,13 @@ export class InterfaceLanguageController implements angular.IController {
     this.puiOnUpdate({ $event: { interfaceConfig: this.interfaceConfig } });
   }
 
-  private onFetchTransifexLanguages = (languages: TransifexLanguage[]) => {
+  private updateLocalStore(code: string): void {
+    if (this.transifexLanguageCodes.includes(code)) {
+      this.offlineCacheUtils.updateInterfaceLanguageCode(code);
+    }
+  }
+
+  private onFetchTransifexLanguages = (languages: TransifexLanguage[]): void => {
     this.transifexLanguageCodes = [];
     for (const language of languages) {
       if (!(language.code in this.interfaceConfig.selectLanguages.options)) {
@@ -84,6 +101,7 @@ export class InterfaceLanguageController implements angular.IController {
 export const InterfaceLanguageComponent: angular.IComponentOptions = {
   bindings: {
     puiInterfaceConfig: '<',
+    puiLanguageCode: '<',
     puiOnUpdate: '&'
   },
   controller: InterfaceLanguageController,
