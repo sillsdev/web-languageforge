@@ -37,6 +37,7 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('ภาษาไทย');
     projectSettingsPage.projectTab.saveButton.click();
     expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
+    expect<any>(header.language.button.getText()).toEqual('ภาษาไทย');
   });
 
   it('should be using Thai Semantic Domain', () => {
@@ -51,6 +52,7 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('English');
     projectSettingsPage.projectTab.saveButton.click();
     expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('English');
+    expect<any>(header.language.button.getText()).toEqual('English');
   });
 
   it('should be using English Semantic Domain', () => {
@@ -78,10 +80,10 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
   });
 
   it('can change user interface language', () => {
-    expect<any>(header.language.button.getText()).toContain('ภาษาไทย');
+    expect<any>(header.language.button.getText()).toEqual('ภาษาไทย');
     header.language.button.click();
-    header.language.findItem('English - semantic domain only').click();
-    expect<any>(header.language.button.getText()).toContain('English');
+    header.language.findItem('English').click();
+    expect<any>(header.language.button.getText()).toEqual('English');
   });
 
   it('should still have Thai for Project default language', () => {
@@ -105,6 +107,25 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
   it('should still have Thai for Project default language', () => {
     projectSettingsPage.getByLink();
     expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
+  });
+
+  it('can change user interface language to English', () => {
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
+    header.language.button.click();
+    header.language.findItem('English').click();
+    expect<any>(header.language.button.getText()).toEqual('English');
+  });
+
+  it('can change Project default language to match interface language twice', () => {
+    projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('English');
+    projectSettingsPage.projectTab.saveButton.click();
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('English');
+    expect<any>(header.language.button.getText()).toEqual('English');
+
+    projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('ภาษาไทย');
+    projectSettingsPage.projectTab.saveButton.click();
+    expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
+    expect<any>(header.language.button.getText()).toEqual('ภาษาไทย');
   });
 
 });
