@@ -17,7 +17,7 @@
                                 <input class="form-control" type="text" id="project-name"
                                        data-ng-model="$ctrl.newProject.projectName"
                                        data-ng-blur="$ctrl.checkProjectCode()"
-                                       data-pui-auto-focus="{{$ctrl.isSRProject ? '' : true}}"
+                                       data-pui-auto-focus="true"
                                        maxlength="50"
                                        required placeholder="eg: My Dictionary"
                                        data-idle-validate="$ctrl.checkProjectCode()"
@@ -56,7 +56,7 @@
                             </div>
                         </div>
                         <div class="col-md-8 offset-md-4">
-                            <div class="input-group" data-ng-hide="$ctrl.isSRProject">
+                            <div class="input-group">
                                 <label class="checkbox">
                                     <input type="checkbox" id="edit-project-code" data-ng-model="$ctrl.newProject.editProjectCode">
                                     Edit project code
