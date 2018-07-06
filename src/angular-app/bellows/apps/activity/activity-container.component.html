@@ -197,20 +197,30 @@
                                                 </div>
 
                                                 <div data-ng-switch-when="update_entry-project">
-                                                    <ng-switch on="item.getOldValue()">
-                                                        <div data-ng-switch-when="">
-                                                            <span class="activity-action">Added</span>
-                                                            <span class="activity-values"><span class="activity-value activity-value-new notranslate">{{item.getNewValue()}}</span> to </span>
-                                                            <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                    <ng-switch on="item.changes.changeType">
+                                                        <div data-ng-switch-when="added_field">
+                                                            <span class="activity-action">Added</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
                                                             <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
                                                             <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
                                                         </div>
                                                         <div data-ng-switch-default>
-                                                            <span class="activity-action">Updated</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
-                                                            <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
-                                                            <span class="activity-values">from <span class="activity-value activity-values-old notranslate">{{item.getOldValue()}}</span> to <span class="activity-value activity-value-new notranslate">{{item.getNewValue()}}</span></span>
-                                                            <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                            <ng-switch on="item.getOldValue()">
+                                                                <div data-ng-switch-when="">
+                                                                    <span class="activity-action">Added</span>
+                                                                    <span class="activity-values"><span class="activity-value activity-value-new notranslate">{{item.getNewValue()}}</span> to </span>
+                                                                    <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                                </div>
+                                                                <div data-ng-switch-default>
+                                                                    <span class="activity-action">Updated</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                                    <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                                    <span class="activity-values">from <span class="activity-value activity-values-old notranslate">{{item.getOldValue()}}</span> to <span class="activity-value activity-value-new notranslate">{{item.getNewValue()}}</span></span>
+                                                                    <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                                </div>
+                                                            </ng-switch>
                                                         </div>
+                                                    </ng-switch>
                                                 </div>
 
                                                 <div data-ng-switch-when="delete_entry-project">
