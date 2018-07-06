@@ -10,7 +10,7 @@ angular.module('palaso.ui.runReport', ['coreModule'])
         function ($scope, projectService) {
           $scope.report = {
             output: '',
-            currentId: ''
+            currentId: null
           };
           $scope.reportOutput = '';
 

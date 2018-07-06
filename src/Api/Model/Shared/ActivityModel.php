@@ -28,9 +28,11 @@ class ActivityModel extends MapperModel
     const DELETE_ENTRY = 'delete_entry';
     const ADD_LEX_COMMENT = 'add_lex_comment';
     const UPDATE_LEX_COMMENT = 'update_lex_comment';
+    const DELETE_LEX_COMMENT = 'delete_lex_comment';
     const UPDATE_LEX_COMMENT_STATUS = 'update_lex_comment_status';
     const ADD_LEX_REPLY = 'add_lex_reply';
     const UPDATE_LEX_REPLY = 'update_lex_reply';
+    const DELETE_LEX_REPLY = 'delete_lex_reply';
 
     // content types for use with the addContent method
     const PROJECT = 'project';
@@ -46,6 +48,9 @@ class ActivityModel extends MapperModel
     const LEX_COMMENT_INCREASE_SCORE = 'lexCommentIncreaseScore';
     const LEX_COMMENT_DECREASE_SCORE = 'lexCommentDecreaseScore';
     const LEX_REPLY = 'lexReply';
+    // USER and USER2 usage: USER is the one doing the current activity. USER2, if present, is the one whose previous activity is being acted on.
+    // E.g., when replying to someone else's comment on a lexical entry, USER2 is the one who made the original comment, and USER is the one making the reply.
+    // TODO: Fix this in ActivityCommands::updateReplyToEntryComment, then remove this TODO line
     const USER = 'user';
     const USER2 = 'user2';
     const ENTRY = 'entry';

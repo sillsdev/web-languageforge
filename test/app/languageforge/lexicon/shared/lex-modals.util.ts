@@ -12,7 +12,7 @@ export class LexModals {
     firstLanguageName: this.modalBodyDiv
       .all(by.repeater('language in $ctrl.languages').column('name')).first(),
     lastLanguageName: this.modalBodyDiv.all(by.repeater('language in $ctrl.languages').column('name')).last(),
-    clearSearchButton: this.modalBodyDiv.element(by.id('clear-search-button')),
+    clearSearchButton: this.modalBodyDiv.element(by.className('clear-search-button')),
     addButton: this.modalFooterDiv.element(by.id('select-language-add-btn'))
   };
 
