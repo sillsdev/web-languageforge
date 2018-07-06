@@ -1,11 +1,14 @@
 {
     "short_name": "Language Forge",
     "name": "Language Forge",
+    "start_url": "/app/projects",
     "background_color": "#104060",
-    "display": "standalone",
+    "theme_color": "#0a2440",
+    "display": "fullscreen",
+    "description": "Collaborative web-based dictionary building that syncs with FLEx",
     "icons": [
       {
-        "src": "images/lf-logo-48-mhdpi.png",
+        "src": "images/lf-logo-48-mdpi.png",
         "type": "image/png",
         "sizes": "48x48"
       },
@@ -23,7 +26,11 @@
         "src": "images/lf-logo-circle-192-xxxhdpi.png",
         "type": "image/png",
         "sizes": "192x192"
+      },
+      {
+        "src": "images/lf-logo-circle-512-xxxxxhdpi.png",
+        "type": "image/png",
+        "sizes": "512x512"
       }
-    ],
-    "start_url": "https://languageforge.org"
+    ]
 }
