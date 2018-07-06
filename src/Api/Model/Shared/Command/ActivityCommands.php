@@ -307,6 +307,41 @@ class ActivityCommands
      * @param ProjectModel $projectModel
      * @param string $entryId
      * @param LexCommentModel $commentModel
+     * @param string $userId The user who deleted the comment (usually the author, but could be project manager)
+     * @return string activity id
+     * @throws \Exception
+     */
+    public static function deleteCommentOnEntry($projectModel, $entryId, $commentModel, $userId)
+    {
+        $activity = new ActivityModel($projectModel);
+        $entry = new LexEntryModel($projectModel, $entryId);
+        $userId2 = $commentModel->authorInfo->createdByUserRef->asString();
+        $user = new UserModel($userId);
+        $user2 = new UserModel($userId2);
+        $activity->action = ActivityModel::DELETE_LEX_COMMENT;
+        $activity->userRef->id = $userId;
+        $activity->entryRef->id = $entryId;
+        $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
+        $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
+        $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
+        $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
+        $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
+        if (! empty($label)) {
+            $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
+        }
+        $activity->addContent(ActivityModel::USER, $user->username);
+        $activity->addContent(ActivityModel::USER2, $user2->username);
+        $activityId = $activity->write();
+        UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
+        UnreadLexCommentModel::markUnreadForProjectMembers($commentModel->id->asString(), $projectModel, $entryId, $userId);
+
+        return $activityId;
+    }
+
+    /**
+     * @param ProjectModel $projectModel
+     * @param string $entryId
+     * @param LexCommentModel $commentModel
      * @return string activity id
      * @throws \Exception
      */
@@ -334,7 +369,12 @@ class ActivityCommands
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
         $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
+        $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
         $activity->addContent(ActivityModel::LEX_COMMENT_STATUS, $commentModel->status);
+        $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
+        if (! empty($label)) {
+            $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
+        }
         $activity->addContent(ActivityModel::USER, $user->username);
         $activityId = $activity->write();
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
@@ -364,6 +404,11 @@ class ActivityCommands
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
         $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
+        $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
+        $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
+        if (! empty($label)) {
+            $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
+        }
         $activity->addContent(ActivityModel::USER, $user->username);
         $activityId = $activity->write();
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
@@ -393,6 +438,9 @@ class ActivityCommands
         } else {
             $user2Id = $replyModel->authorInfo->createdByUserRef->asString();
         }
+        // TODO: Swap "user" and "user2" here (will need a migration).
+        // "User" should always be the one doing the current activity, and "user2" the one whose previous activity is being responded to.
+
         $user = new UserModel($userId);
         $user2 = new UserModel($user2Id);
         $activity = new ActivityModel($projectModel);
@@ -404,7 +452,52 @@ class ActivityCommands
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
         $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
         $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
+        $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
         $activity->addContent(ActivityModel::LEX_REPLY, $replyModel->content);
+        $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
+        if (! empty($label)) {
+            $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
+        }
+        $activity->addContent(ActivityModel::USER, $user->username);
+        $activity->addContent(ActivityModel::USER2, $user2->username);
+        $activityId = $activity->write();
+        UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
+        // Disabling the "mark replies as unread" feature until "unread items" system is revamped. - RM 2018-03
+        // (Can't mark things unread unless they have a MongoID, and LexCommentReplies just have a PHP "uniqid". But changing that would have knock-on effects in LfMerge.)
+        // UnreadLexReplyModel::markUnreadForProjectMembers($replyModel->id, $projectModel, $entryId, $userId);
+
+        return $activityId;
+    }
+
+    /**
+     * @param ProjectModel $projectModel
+     * @param string $entryId
+     * @param LexCommentModel $commentModel
+     * @param LexCommentReply $replyModel
+     * @param string $userId The user who deleted the reply (usually the author, but could be project manager)
+     * @return string activity id
+     * @throws \Exception
+     */
+    public static function deleteReplyToEntryComment($projectModel, $entryId, $commentModel, $replyModel, $userId)
+    {
+        $user2Id = $commentModel->authorInfo->createdByUserRef->asString();
+        $user = new UserModel($userId);
+        $user2 = new UserModel($user2Id);
+        $activity = new ActivityModel($projectModel);
+        $activity->action = ActivityModel::DELETE_LEX_REPLY;
+        $activity->userRef->id = $userId;
+        $activity->userRef2->id = $user2Id;
+        $activity->entryRef->id = $entryId;
+        $entry = new LexEntryModel($projectModel, $entryId);
+        $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
+        $activity->addContent(ActivityModel::LEX_COMMENT, $commentModel->content);
+        $activity->addContent(ActivityModel::LEX_COMMENT_CONTEXT, $commentModel->contextGuid);
+        $activity->addContent(ActivityModel::LEX_COMMENT_FIELD_VALUE, $commentModel->regarding->fieldValue);
+        $activity->addContent(ActivityModel::LEX_REPLY, $replyModel->content);
+        $label = self::prepareActivityLabel($commentModel->contextGuid, $commentModel->regarding->fieldNameForDisplay, $entry);
+        if (! empty($label)) {
+            $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
+        }
         $activity->addContent(ActivityModel::USER, $user->username);
         $activity->addContent(ActivityModel::USER2, $user2->username);
         $activityId = $activity->write();
