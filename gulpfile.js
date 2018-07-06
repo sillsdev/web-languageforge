@@ -1590,3 +1590,10 @@ function yargFailure(msg, err, yargs) {
   console.error('You should be doing', yargs.help());
   process.exit(1);
 }
+// Run the Selenium server on 3.2.0 version
+gulp.task('selenium-server-standalone-3.2.0', function (cb) {
+  execute(
+   './run-selenium-server-3.2.0.sh', 
+   cb
+  );
+});
