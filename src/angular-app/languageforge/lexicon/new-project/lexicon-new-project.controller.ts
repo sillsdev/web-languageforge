@@ -23,6 +23,10 @@ import {
 import {LexiconProjectSettings} from '../shared/model/lexicon-project-settings.model';
 import {LexiconProject, SendReceive} from '../shared/model/lexicon-project.model';
 import {LexOptionList} from '../shared/model/option-list.model';
+import {
+  LexiconNewProjectInitialDataState,
+  LexiconNewProjectNameState, LexiconNewProjectSendReceiveCloneState, LexiconNewProjectSendReceiveCredentialsState
+} from './lexicon-new-project-state.model';
 
 interface NewProject extends LexiconProject {
   editProjectCode?: boolean;
@@ -36,11 +40,8 @@ interface NewProject extends LexiconProject {
 
 interface Show {
   importErrors: boolean;
-  backButton: boolean;
   cloning: boolean;
   flexHelp: boolean;
-  nextButton: boolean;
-  step3: boolean;
 }
 
 export class LexiconNewProjectController implements angular.IController {
@@ -48,25 +49,19 @@ export class LexiconNewProjectController implements angular.IController {
   interfaceConfig: InterfaceConfig = {} as InterfaceConfig;
   newProject: NewProject = {} as NewProject;
   project: LexiconProject = {} as LexiconProject;
-  state = this.$state;
   formStatus: string;
   formStatusClass: string;
   formValidated: boolean;
   formValidationDefer: angular.IDeferred<boolean>;
   forwardBtnClass: string;
-  isSRProject: boolean;
-  nextButtonLabel: string;
-  progressIndicatorStep1Label: string;
-  progressIndicatorStep2Label: string;
-  progressIndicatorStep3Label: string;
   projectCodeState: string;
   projectCodeStateDefer: angular.IDeferred<string>;
   show: Show;
 
   // Shorthand to make things look a touch nicer
-  private readonly ok = this.makeFormValid;
-  private readonly neutral = this.makeFormNeutral;
-  private readonly error = this.makeFormInvalid;
+  readonly ok = this.makeFormValid;
+  readonly neutral = this.makeFormNeutral;
+  readonly error = this.makeFormInvalid;
 
   static $inject = ['$scope', '$q',
     '$filter', '$window',
@@ -78,18 +73,18 @@ export class LexiconNewProjectController implements angular.IController {
     'lexProjectService',
     'lexSendReceiveApi',
     'lexSendReceive'];
-  constructor(private readonly $scope: angular.IScope, private readonly $q: angular.IQService,
+  constructor(private readonly $scope: angular.IScope, readonly $q: angular.IQService,
               private readonly $filter: angular.IFilterService, private readonly $window: angular.IWindowService,
-              private readonly $state: angular.ui.IStateService, private readonly $modal: ModalService,
+              readonly $state: angular.ui.IStateService, private readonly $modal: ModalService,
               private readonly Upload: any, private readonly applicationHeaderService: ApplicationHeaderService,
-              private readonly breadcrumbService: BreadcrumbService, private readonly sessionService: SessionService,
-              private readonly notice: NoticeService, private readonly linkService: LinkService,
-              private readonly projectService: ProjectService,
+              private readonly breadcrumbService: BreadcrumbService, readonly sessionService: SessionService,
+              readonly notice: NoticeService, private readonly linkService: LinkService,
+              readonly projectService: ProjectService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly sendReceiveApi: LexiconSendReceiveApiService,
-              private readonly sendReceive: LexiconSendReceiveService) {}
+              readonly sendReceive: LexiconSendReceiveService) { }
 
-  $onInit() {
+  $onInit(): void {
     this.sessionService.getSession().then(session => {
       const projectSettings = session.projectSettings<LexiconProjectSettings>();
       if (projectSettings != null && projectSettings.interfaceConfig != null) {
@@ -101,19 +96,11 @@ export class LexiconNewProjectController implements angular.IController {
     this.newProject.config = new LexiconConfig();
     this.newProject.appName = 'lexicon';
 
-    this.isSRProject = false;
     this.show = {
       importErrors: false,
-      nextButton: this.$state.current.name !== 'newProject.chooser',
-      backButton: false,
       flexHelp: false,
-      cloning: true,
-      step3: true
+      cloning: true
     } as Show;
-    this.nextButtonLabel = 'Next';
-    this.progressIndicatorStep1Label = 'Name';
-    this.progressIndicatorStep2Label = 'Initial Data';
-    this.progressIndicatorStep3Label = 'Verify';
     this.resetValidateProjectForm();
 
     this.breadcrumbService.set('top', [{
@@ -152,12 +139,10 @@ export class LexiconNewProjectController implements angular.IController {
     });
 
     this.$scope.$watch(() => this.newProject.projectName, (newVal: string, oldVal: string) => {
-      if (!this.isSRProject) {
-        if (newVal == null) {
-          this.newProject.projectCode = '';
-        } else if (newVal !== oldVal) {
-          this.newProject.projectCode = newVal.toLowerCase().replace(/ /g, '_');
-        }
+      if (newVal == null) {
+        this.newProject.projectCode = '';
+      } else if (newVal !== oldVal) {
+        this.newProject.projectCode = newVal.toLowerCase().replace(/ /g, '_');
       }
     });
 
@@ -182,7 +167,7 @@ export class LexiconNewProjectController implements angular.IController {
     this.sendReceive.cancelCloneStatusTimer();
   }
 
-  private makeFormValid(msg: string = '') {
+  private makeFormValid(msg: string = ''): angular.IPromise<boolean> {
     this.formValidated = true;
     this.formStatus = msg;
     this.formStatusClass = 'alert alert-info';
@@ -194,7 +179,7 @@ export class LexiconNewProjectController implements angular.IController {
     return this.formValidationDefer.promise;
   }
 
-  private makeFormNeutral(msg: string = '') {
+  private makeFormNeutral(msg: string = ''): angular.IPromise<boolean> {
     this.formValidated = false;
     this.formStatus = msg;
     this.formStatusClass = '';
@@ -204,7 +189,7 @@ export class LexiconNewProjectController implements angular.IController {
     return this.formValidationDefer.promise;
   }
 
-  private makeFormInvalid(msg: string = '') {
+  private makeFormInvalid(msg: string = ''): angular.IPromise<boolean> {
     this.formValidated = false;
     this.formStatus = msg;
     this.formStatusClass = 'alert alert-danger';
@@ -216,7 +201,7 @@ export class LexiconNewProjectController implements angular.IController {
     return this.formValidationDefer.promise;
   }
 
-  resetValidateProjectForm = () => {
+  resetValidateProjectForm = (): void => {
     this.makeFormNeutral();
     this.projectCodeState = 'unchecked';
     this.projectCodeStateDefer = this.$q.defer();
@@ -225,15 +210,8 @@ export class LexiconNewProjectController implements angular.IController {
     this.project.sendReceive.credentialsStatus = 'unchecked';
   }
 
-  getProjectFromInternet() {
-    this.$state.go('newProject.sendReceiveCredentials');
-    this.isSRProject = true;
-    this.show.nextButton = true;
-    this.show.backButton = true;
-    this.show.step3 = false;
-    this.nextButtonLabel = 'Get Started';
-    this.progressIndicatorStep1Label = 'Connect';
-    this.progressIndicatorStep2Label = 'Verify';
+  getProjectFromInternet(): void {
+    this.$state.go(LexiconNewProjectSendReceiveCredentialsState.name);
     this.resetValidateProjectForm();
     this.sessionService.getSession().then(session => {
       if (!this.project.sendReceive.username) {
@@ -244,19 +222,12 @@ export class LexiconNewProjectController implements angular.IController {
     });
   }
 
-  createNew() {
-    this.$state.go('newProject.name');
-    this.isSRProject = false;
-    this.show.nextButton = true;
-    this.show.backButton = true;
-    this.show.step3 = true;
-    this.nextButtonLabel = 'Next';
-    this.progressIndicatorStep1Label = 'Name';
-    this.progressIndicatorStep2Label = 'Initial Data';
+  createNew(): void {
+    this.$state.go(LexiconNewProjectNameState.name);
   }
 
-  iconForStep(step: number) {
-    const classes = [];
+  iconForStep(step: number): string[] {
+    const classes: string[] = [];
     if (this.$state.current.data.step > step) {
       classes.push('fa fa-check-square');
     }
@@ -270,34 +241,14 @@ export class LexiconNewProjectController implements angular.IController {
     return classes;
   }
 
-  prevStep() {
-    this.show.backButton = false;
+  previousStep(): void {
     this.resetValidateProjectForm();
-    switch (this.$state.current.name) {
-      case 'newProject.sendReceiveCredentials':
-        this.$state.go('newProject.chooser');
-        this.show.nextButton = false;
-        break;
-      case 'newProject.name':
-        this.$state.go('newProject.chooser');
-        this.show.nextButton = false;
-        break;
-      case 'newProject.initialData':
-      case 'newProject.verifyData':
-        break;
-      case 'newProject.selectPrimaryLanguage':
-        this.$state.go('newProject.initialData');
-        this.nextButtonLabel = 'Skip';
-        this.newProject.emptyProjectDesired = false;
-        this.progressIndicatorStep3Label = 'Verify';
-        break;
-    }
+    this.$state.current.data.goPreviousState(this);
   }
 
-  nextStep() {
-    if (this.$state.current.name === 'newProject.initialData') {
+  nextStep(): void {
+    if (this.$state.current.name === LexiconNewProjectInitialDataState.name) {
       this.newProject.emptyProjectDesired = true;
-      this.progressIndicatorStep3Label = 'Language';
     }
 
     this.validateForm().then(isValid => {
@@ -308,159 +259,16 @@ export class LexiconNewProjectController implements angular.IController {
   }
 
   // Form validation requires API calls, so it return a promise rather than a value.
-  validateForm = () => {
+  validateForm = (): angular.IPromise<boolean> => {
     this.formValidationDefer = this.$q.defer();
-
-    switch (this.$state.current.name) {
-      case 'newProject.chooser':
-        return this.error();
-      case 'newProject.sendReceiveCredentials':
-        return this.validateSendReceiveCredentialsForm();
-      case 'newProject.sendReceiveClone':
-        if (this.sendReceive.isInProgress()) {
-          return this.error();
-        }
-
-        break;
-      case 'newProject.name':
-        if (!this.newProject.projectName) {
-          return this.error('Project Name cannot be empty. Please enter a project name.');
-        }
-
-        if (!this.newProject.projectCode) {
-          return this.error('Project Code cannot be empty. ' +
-            'Please enter a project code or uncheck "Edit project code".');
-        }
-
-        if (!this.newProject.appName) {
-          return this.error('Please select a project type.');
-        }
-
-        if (this.projectCodeState === 'unchecked') {
-          this.checkProjectCode();
-        }
-
-        return this.projectCodeStateDefer.promise.then(() => {
-          switch (this.projectCodeState) {
-            case 'ok':
-              return this.ok();
-            case 'exists':
-              return this.error('Another project with code \'' + this.newProject.projectCode +
-                '\' already exists.');
-            case 'invalid':
-              return this.error('Project Code must begin with a letter, ' +
-                'and only contain lower-case letters, numbers, dashes and underscores.');
-            case 'loading':
-              return this.error();
-            case 'empty':
-              return this.neutral();
-            default:
-
-              // Project code state is unknown. Give a generic message,
-              // adapted based on whether the user checked "Edit project code" or not.
-              if (this.newProject.editProjectCode) {
-                return this.error('Project code \'' + this.newProject.projectCode +
-                  '\' cannot be used. Please choose a new project code.');
-              } else {
-                return this.error('Project code \'' + this.newProject.projectCode +
-                  '\' cannot be used. Either change the project name, ' +
-                  'or check the "Edit project code" box and choose a new code.');
-              }
-          }
-        });
-
-      case 'newProject.initialData':
-        return this.neutral();
-      case 'newProject.verifyData':
-        return this.neutral();
-      case 'newProject.selectPrimaryLanguage':
-        if (!this.newProject.languageCode) {
-          return this.error('Please select a primary language for the project.');
-        }
-
-        break;
-    }
-    return this.ok();
+    return this.$state.current.data.isFormValid(this);
   }
 
-  private gotoNextState() {
-    switch (this.$state.current.name) {
-      case 'newProject.sendReceiveCredentials':
-
-        // For now, this is the point of no return.  We can't cancel an LfMerge clone, and we
-        // don't want the user to go to the project and start editing before the clone has
-        // completed.
-        this.show.backButton = false;
-        this.show.cloning = true;
-        this.show.nextButton = false;
-        this.resetValidateProjectForm();
-        if (this.project.sendReceive.project.isLinked) {
-          let role = 'contributor';
-          if (this.project.sendReceive.project.role === 'manager') {
-            role = 'project_manager';
-          }
-
-          this.projectService.joinSwitchSession(this.project.sendReceive.project.identifier, role).then(result => {
-            if (result.ok) {
-              this.newProject.id = result.data;
-              this.sessionService.getSession(true).then(this.gotoEditor);
-            } else {
-              this.notice.push(this.notice.ERROR, 'Well this is embarrassing. ' +
-                'We couldn\'t join you to the project. Sorry about that.');
-            }
-          });
-        } else {
-          this.newProject.projectName = this.project.sendReceive.project.name;
-          this.newProject.projectCode = this.project.sendReceive.project.identifier;
-          this.projectService.projectCodeExists(this.newProject.projectCode).then(result => {
-            if (result.ok && result.data) {
-              this.newProject.projectCode += '_lf';
-            }
-
-            this.createProject().then(this.getProject);
-            this.makeFormNeutral();
-          });
-        }
-
-        break;
-      case 'newProject.sendReceiveClone':
-        if (!this.sendReceive.isInProgress()) {
-          this.gotoEditor();
-        }
-
-        break;
-      case 'newProject.name':
-        this.createProject();
-        this.$state.go('newProject.initialData');
-        this.nextButtonLabel = 'Skip';
-        this.show.backButton = false;
-        this.projectCodeState = 'empty';
-        this.projectCodeStateDefer = this.$q.defer();
-        this.projectCodeStateDefer.resolve('empty');
-        this.makeFormNeutral();
-        break;
-      case 'newProject.initialData':
-        this.nextButtonLabel = 'Dictionary';
-        if (this.newProject.emptyProjectDesired) {
-          this.$state.go('newProject.selectPrimaryLanguage');
-          this.show.backButton = true;
-          this.makeFormNeutral();
-        } else {
-          this.$state.go('newProject.verifyData');
-          this.makeFormValid();
-        }
-
-        break;
-      case 'newProject.verifyData':
-        this.gotoEditor();
-        break;
-      case 'newProject.selectPrimaryLanguage':
-        this.savePrimaryLanguage(this.gotoEditor);
-        break;
-    }
+  private gotoNextState(): void {
+    this.$state.current.data.goNextState(this);
   }
 
-  private gotoEditor = () => {
+  gotoEditor = (): void => {
     let url;
     this.makeFormValid();
     url = this.linkService.project(this.newProject.id, this.newProject.appName);
@@ -476,7 +284,7 @@ export class LexiconNewProjectController implements angular.IController {
     return name.toLowerCase().replace(/ /g, '_');
   }
 
-  checkProjectCode() {
+  checkProjectCode(): angular.IPromise<string> {
     this.projectCodeStateDefer = this.$q.defer();
     if (!LexiconProjectService.isValidProjectCode(this.newProject.projectCode)) {
       this.projectCodeState = 'invalid';
@@ -503,7 +311,7 @@ export class LexiconNewProjectController implements angular.IController {
     return this.projectCodeStateDefer.promise;
   }
 
-  private createProject(): angular.IPromise < void > {
+  createProject(): angular.IPromise<void> {
     if (!this.newProject.projectName || !this.newProject.projectCode || !this.newProject.appName) {
       // This function sometimes gets called during setup, when this.newProject is still empty.
       return this.$q.resolve();
@@ -525,7 +333,7 @@ export class LexiconNewProjectController implements angular.IController {
 
   // ----- Step 2: Initial data upload -----
 
-  uploadFile(file: UploadFile) {
+  uploadFile(file: UploadFile): void {
     if (!file || file.$error) {
       return;
     }
@@ -580,11 +388,11 @@ export class LexiconNewProjectController implements angular.IController {
     });
   }
 
-  hasImportErrors() {
-    return (this.newProject.importErrors !== '');
+  hasImportErrors(): boolean {
+    return this.newProject.importErrors !== '';
   }
 
-  showImportErrorsButtonLabel() {
+  showImportErrorsButtonLabel(): string {
     if (this.show.importErrors) {
       return 'Hide non-critical import errors';
     }
@@ -594,48 +402,10 @@ export class LexiconNewProjectController implements angular.IController {
 
   // ----- Step 1: Send Receive Credentials -----
 
-  private validateSendReceiveCredentialsForm() {
-    if (this.project.sendReceive.project != null && this.project.sendReceive.project.isLinked) {
-      this.nextButtonLabel = 'Join Project';
-    } else {
-      this.nextButtonLabel = 'Get Started';
-    }
-
-    this.project.sendReceive.projectStatus = 'unchecked';
-    if (!this.project.sendReceive.username) {
-      return this.error('Login cannot be empty. Please enter your LanguageDepot.org login username.');
-    }
-
-    if (!this.project.sendReceive.password) {
-      return this.error('Password cannot be empty. Please enter your LanguageDepot.org password.');
-    }
-
-    if (this.project.sendReceive.isUnchecked) {
-      return this.neutral();
-    }
-
-    if (this.project.sendReceive.credentialsStatus === 'invalid') {
-      return this.error('The username or password isn\'t valid on LanguageDepot.org.');
-    }
-
-    this.project.sendReceive.projectStatus = 'no_access';
-    if (!this.project.sendReceive.project) {
-      return this.error('Please select a Project.');
-    }
-
-    if (!this.project.sendReceive.project.isLinked &&
-      this.project.sendReceive.project.role !== 'manager') {
-      return this.error('Please select a Project that you are the Manager of on LanguageDepot.org.');
-    }
-
-    this.project.sendReceive.projectStatus = 'ok';
-    return this.ok();
-  }
-
-  private getProject = () => {
+  getProject = (): void => {
     this.sendReceiveApi.receiveProject(result => {
       if (result.ok) {
-        this.$state.go('newProject.sendReceiveClone');
+        this.$state.go(LexiconNewProjectSendReceiveCloneState.name);
         this.sendReceive.startCloneStatusTimer();
       } else {
         this.notice.push(this.notice.ERROR, 'The project could not be synchronized with' +
@@ -647,7 +417,7 @@ export class LexiconNewProjectController implements angular.IController {
 
   // ----- Step 3: Verify initial data -OR- select primary language -----
 
-  primaryLanguage() {
+  primaryLanguage(): string {
     if (this.newProject.languageCode) {
       return this.newProject.language.name + ' (' + this.newProject.languageCode + ')';
     }
@@ -655,7 +425,7 @@ export class LexiconNewProjectController implements angular.IController {
     return '';
   }
 
-  openNewLanguageModal() {
+  openNewLanguageModal(): void {
     const modalInstance = this.$modal.open({
       templateUrl: '/angular-app/languageforge/lexicon/shared/select-new-language.modal.html',
       controller: ['$scope', '$uibModalInstance',
@@ -679,7 +449,7 @@ export class LexiconNewProjectController implements angular.IController {
     }, () => {});
   }
 
-  private savePrimaryLanguage(callback?: () => void) {
+  savePrimaryLanguage(callback?: () => void): void {
     let config: LexiconConfig = new LexiconConfig();
     let optionlist: LexOptionList[] = [];
     const inputSystem: InputSystem = new InputSystem();
@@ -713,7 +483,7 @@ export class LexiconNewProjectController implements angular.IController {
     });
   }
 
-  private replaceFieldInputSystem(config: LexConfigField, existingTag: string, replacementTag: string) {
+  private replaceFieldInputSystem(config: LexConfigField, existingTag: string, replacementTag: string): void {
     if (config.type === 'fields') {
       const configFieldList = config as LexConfigFieldList;
       for (const fieldName in configFieldList.fields) {
