@@ -48,15 +48,12 @@ class Activity {
 
   constructor(data: object = {}) {
     if (data !== {}) {
-      for (const i in data) {
-        if (data.hasOwnProperty(i)) {
-          this[i] = data[i];
-        }
+      for (const property of Object.keys(data)) {
+        this[property] = data[property];
       }
       // TODO: Update the PHP script to save these in the correct order
       if (this.userRef2) {
-        let tmp;
-        tmp = this.userRef;
+        const tmp = this.userRef;
         this.userRef = this.userRef2;
         this.userRef2 = tmp;
       }
@@ -69,7 +66,7 @@ class Activity {
     } else {
       for (const index in this.content) {
         if (this.content.hasOwnProperty(index)) {
-          if (index.substring(0, 8) === 'oldValue') {
+          if (index.startsWith('oldValue')) {
             return this.parseValue(this.content[index]);
           }
         }
@@ -84,7 +81,7 @@ class Activity {
     } else {
       for (const index in this.content) {
         if (this.content.hasOwnProperty(index)) {
-          if (index.substring(0, 8) === 'newValue') {
+          if (index.startsWith('newValue')) {
             return this.parseValue(this.content[index]);
           }
         }
@@ -94,7 +91,7 @@ class Activity {
   }
 
   parseValue(value: string) {
-    if (value.substring(0, 1) === '[' && value.substring(value.length - 1) === ']') {
+    if (value.startsWith('[') && value.endsWith(']')) {
       const json = JSON.parse(value);
       value = json.join(', ');
     }
@@ -111,7 +108,7 @@ class Activity {
         if (this.content.hasOwnProperty(index)) {
           if (index.substring(0, 10) === 'fieldLabel') {
             let label = this.content[index];
-            if (index.indexOf('#examples')) {
+            if (index.includes('#examples')) {
               label = 'Example - ' + label;
             } else if (index.indexOf('#examples')) {
               label = 'Meaning - ' + label;
@@ -124,7 +121,7 @@ class Activity {
     return 'unknown';
   }
 
-  private formatLabel(fieldLabel: any) {
+  private formatLabel(fieldLabel: FieldLabel) {
     let label = fieldLabel.label;
     if (fieldLabel.example) {
       label = 'Example ' + fieldLabel.example + (label !== 'examples' ? ' ' + label : '');
@@ -136,7 +133,13 @@ class Activity {
   }
 }
 
-class ActivityChanges {
+interface FieldLabel {
+  label: string;
+  sense?: number;
+  example?: number;
+}
+
+interface ActivityChanges {
   changeType: string;
   fieldLabel: {
     label: string,
