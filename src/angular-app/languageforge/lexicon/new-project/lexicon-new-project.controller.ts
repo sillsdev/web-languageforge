@@ -4,7 +4,6 @@ import {ProjectService} from '../../../bellows/core/api/project.service';
 import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
 import {BreadcrumbService} from '../../../bellows/core/breadcrumbs/breadcrumb.service';
 import {BytesFilterFunction} from '../../../bellows/core/filters';
-import {InputSystemsService} from '../../../bellows/core/input-systems/input-systems.service';
 import {LinkService} from '../../../bellows/core/link.service';
 import {ModalService} from '../../../bellows/core/modal/modal.service';
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
@@ -35,8 +34,8 @@ interface NewProject extends LexiconProject {
   };
 }
 
-class Show {
-  importErrors: boolean = false;
+interface Show {
+  importErrors: boolean;
   backButton: boolean;
   cloning: boolean;
   flexHelp: boolean;
@@ -46,6 +45,7 @@ class Show {
 
 export class LexiconNewProjectController implements angular.IController {
   cloneNotice = this.sendReceive.cloneNotice;
+  interfaceConfig: InterfaceConfig = {} as InterfaceConfig;
   newProject: NewProject = {} as NewProject;
   project: LexiconProject = {} as LexiconProject;
   state = this.$state;
@@ -54,7 +54,6 @@ export class LexiconNewProjectController implements angular.IController {
   formValidated: boolean;
   formValidationDefer: angular.IDeferred<boolean>;
   forwardBtnClass: string;
-  interfaceConfig: InterfaceConfig;
   isSRProject: boolean;
   nextButtonLabel: string;
   progressIndicatorStep1Label: string;
@@ -78,8 +77,7 @@ export class LexiconNewProjectController implements angular.IController {
     'projectService',
     'lexProjectService',
     'lexSendReceiveApi',
-    'lexSendReceive'
-  ];
+    'lexSendReceive'];
   constructor(private readonly $scope: angular.IScope, private readonly $q: angular.IQService,
               private readonly $filter: angular.IFilterService, private readonly $window: angular.IWindowService,
               private readonly $state: angular.ui.IStateService, private readonly $modal: ModalService,
@@ -92,18 +90,10 @@ export class LexiconNewProjectController implements angular.IController {
               private readonly sendReceive: LexiconSendReceiveService) {}
 
   $onInit() {
-    this.interfaceConfig = new InterfaceConfig();
     this.sessionService.getSession().then(session => {
       const projectSettings = session.projectSettings<LexiconProjectSettings>();
       if (projectSettings != null && projectSettings.interfaceConfig != null) {
-        angular.merge(this.interfaceConfig, projectSettings.interfaceConfig);
-        if (InputSystemsService.isRightToLeft(this.interfaceConfig.languageCode)) {
-          this.interfaceConfig.direction = 'rtl';
-          this.interfaceConfig.pullToSide = 'float-left';
-          this.interfaceConfig.pullNormal = 'float-right';
-          this.interfaceConfig.placementToSide = 'right';
-          this.interfaceConfig.placementNormal = 'left';
-        }
+        this.interfaceConfig = projectSettings.interfaceConfig;
       }
     });
 
@@ -112,12 +102,14 @@ export class LexiconNewProjectController implements angular.IController {
     this.newProject.appName = 'lexicon';
 
     this.isSRProject = false;
-    this.show = new Show();
-    this.show.nextButton = this.$state.current.name !== 'newProject.chooser';
-    this.show.backButton = false;
-    this.show.flexHelp = false;
-    this.show.cloning = true;
-    this.show.step3 = true;
+    this.show = {
+      importErrors: false,
+      nextButton: this.$state.current.name !== 'newProject.chooser',
+      backButton: false,
+      flexHelp: false,
+      cloning: true,
+      step3: true
+    } as Show;
     this.nextButtonLabel = 'Next';
     this.progressIndicatorStep1Label = 'Name';
     this.progressIndicatorStep2Label = 'Initial Data';
