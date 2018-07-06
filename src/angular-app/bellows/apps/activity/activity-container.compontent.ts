@@ -127,10 +127,10 @@ class Activity {
   private formatLabel(fieldLabel: any) {
     let label = fieldLabel.label;
     if (fieldLabel.example) {
-      label = 'Example ' + fieldLabel.example + ' ' + label;
+      label = 'Example ' + fieldLabel.example + (label !== 'examples' ? ' ' + label : '');
     }
     if (fieldLabel.sense) {
-      label = 'Meaning ' + fieldLabel.sense + ' ' + label;
+      label = 'Meaning ' + fieldLabel.sense + (label !== 'senses' ? ' ' + label : '');
     }
     return label;
   }
