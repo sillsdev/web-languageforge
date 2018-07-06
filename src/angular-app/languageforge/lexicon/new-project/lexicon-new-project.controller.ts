@@ -11,6 +11,7 @@ import {NoticeService} from '../../../bellows/core/notice/notice.service';
 import {SessionService} from '../../../bellows/core/session.service';
 import {InputSystem} from '../../../bellows/shared/model/input-system.model';
 import {InterfaceConfig} from '../../../bellows/shared/model/interface-config.model';
+import {UploadFile, UploadResponse} from '../../../bellows/shared/model/upload.model';
 import {LexiconProjectService} from '../core/lexicon-project.service';
 import {LexiconSendReceiveApiService} from '../core/lexicon-send-receive-api.service';
 import {LexiconSendReceiveService} from '../core/lexicon-send-receive.service';
@@ -23,9 +24,8 @@ import {
 import {LexiconProjectSettings} from '../shared/model/lexicon-project-settings.model';
 import {LexiconProject, SendReceive} from '../shared/model/lexicon-project.model';
 import {LexOptionList} from '../shared/model/option-list.model';
-import {UploadFile, UploadResponse} from '../shared/model/upload.model';
 
-class NewProject extends LexiconProject {
+interface NewProject extends LexiconProject {
   editProjectCode?: boolean;
   emptyProjectDesired?: boolean;
   entriesImported: number;
@@ -46,8 +46,8 @@ class Show {
 
 export class LexiconNewProjectController implements angular.IController {
   cloneNotice = this.sendReceive.cloneNotice;
-  newProject: NewProject = new NewProject();
-  project: LexiconProject = new LexiconProject();
+  newProject: NewProject = {} as NewProject;
+  project: LexiconProject = {} as LexiconProject;
   state = this.$state;
   formStatus: string;
   formStatusClass: string;
@@ -97,7 +97,7 @@ export class LexiconNewProjectController implements angular.IController {
       const projectSettings = session.projectSettings<LexiconProjectSettings>();
       if (projectSettings != null && projectSettings.interfaceConfig != null) {
         angular.merge(this.interfaceConfig, projectSettings.interfaceConfig);
-        if (InputSystemsService.isRightToLeft(this.interfaceConfig.userLanguageCode)) {
+        if (InputSystemsService.isRightToLeft(this.interfaceConfig.languageCode)) {
           this.interfaceConfig.direction = 'rtl';
           this.interfaceConfig.pullToSide = 'float-left';
           this.interfaceConfig.pullNormal = 'float-right';

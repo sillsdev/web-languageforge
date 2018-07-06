@@ -1,4 +1,5 @@
 import '../bellows/main.common';
 
-// temporarily imported here so JavaScript files can use them
-import '../bellows/shared/sound.module';
+import '../bellows/apps/translate/translate-app.module';
+
+import './sfchecks/sf-checks-app.module';

@@ -14,7 +14,7 @@
                         <div class="controls col-12">
                             <select class="form-control custom-select" id="language"
                                 data-ng-model="$ctrl.project.interfaceLanguageCode"
-                                data-ng-options="$ctrl.lpsInterfaceConfig.selectLanguages.options[code] for code in $ctrl.lpsInterfaceConfig.selectLanguages.optionsOrder">
+                                data-ng-options="$ctrl.lpsInterfaceConfig.selectLanguages.options[code].option for code in $ctrl.lpsInterfaceConfig.selectLanguages.optionsOrder">
                                 <option value="">-- choose a language --</option>
                             </select>
                         </div>

@@ -13,11 +13,11 @@ class SessionCommands
      * @param string $projectId
      * @param string $userId
      * @param Website $website
-     * @param string $appName - refers to the application being used by the user
      * @param string $mockFilename
      * @return array
+     * @throws \Exception
      */
-    public static function getSessionData($projectId, $userId, $website, $appName = '', $mockFilename = null)
+    public static function getSessionData($projectId, $userId, $website, $mockFilename = null)
     {
         $sessionData = array();
         $sessionData['baseSite'] = $website->base;
@@ -25,6 +25,25 @@ class SessionCommands
         // VERSION is not defined when running tests
         if (defined('VERSION')) {
             $sessionData['version'] = VERSION;
+        }
+
+        // ensure interfaceConfig if user is not logged in
+        // (LF only at this stage, SF using Transifex default language picker) - IJH 2018-06
+        if ($website->base == Website::LANGUAGEFORGE) {
+            $sessionData['projectSettings'] = [
+                'interfaceConfig' => [
+                    'languageCode' => 'en',
+                    'selectLanguages' => [
+                        'options' => [
+                            'en' => [
+                                'name' => 'English',
+                                'option' => 'English'
+                            ]
+                        ],
+                        'optionsOrder' => ['en']
+                    ]
+                ]
+            ];
         }
 
         if ($userId) {
@@ -49,6 +68,7 @@ class SessionCommands
                 $sessionData['project']['userIsProjectOwner'] = $project->isOwner($userId);
                 $sessionData['project']['slug'] = $project->databaseName();
                 $sessionData['project']['isArchived'] = $project->isArchived;
+                $sessionData['project']['interfaceLanguageCode'] = $project->interfaceLanguageCode;
                 $sessionData['userProjectRights'] = $project->getRightsArray($userId);
                 $sessionData['projectSettings'] = $project->getPublicSettings($userId);
             }

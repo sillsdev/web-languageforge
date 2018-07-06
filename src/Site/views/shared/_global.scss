@@ -1,3 +1,281 @@
+a {
+  cursor: pointer;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background: white;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+@include media-breakpoint-up(lg) {
+  body {
+    height: 100%;
+  }
+}
+
+h1.mobile-title {
+  font-size: 16pt;
+  padding-top: 0.3em;
+  text-align: center;
+  a {
+    color: white;
+  }
+}
+
+#app-container {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  @extend .flex-grow;
+  margin-top: $navbar-height + 10px;
+}
+.card .form-group-last {
+  margin-bottom: 0;
+}
+.card.card-default {
+  background: #f5f5f5;
+  border: 1px solid #e3e3e3;
+}
+
+div.picklists li {
+  cursor: pointer;
+  padding-left: 5px;
+}
+
+div.picklists li:hover {
+  background-color: #EEE;
+}
+
+div.picklists li.selected {
+  background-color: #DDD;
+}
+
+dl.picklists {
+  margin-top: 0;
+}
+
+dl.picklists div {
+  cursor: pointer;
+}
+
+dl.picklists div div:hover {
+  background-color: #EEE;
+}
+
+dl.picklists div.selected {
+  background-color: #DDD;
+}
+
+dl.picklists dd {
+  padding-left: 5px;
+}
+
+.progress-bar {
+  height: auto;
+  background-color: #0275d8;
+  text-align: center;
+  color: #fff;
+}
+
+.nav, .pagination, .carousel, .panel-title {
+  a {
+    cursor: pointer;
+  }
+}
+
+.uib-tab a {
+  color: #e67345;
+}
+
+.uib-tab.active a {
+  color: #555555;
+  cursor: default;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+}
+
+.nav.nav-tabs {
+  margin-bottom: 20px;
+}
+.newline {
+  display: block;
+}
+
+nav {
+  border-radius: 0 !important;
+}
+
+.formspacing{
+  line-height: 25px;
+}
+
+.form-styling{
+  padding-left: 80px;
+}
+
+.form-group-styling{
+  display: block;
+  background-color: #f5f5f5;
+}
+
+.form-pre-styling{
+  display: block;
+  background-color: #f5f5f5;
+}
+
+.indent1{
+  padding-left: 20px;
+}
+
+.iconPadding{
+  padding-right: 15px;
+}
+
+.username-styling{
+  font-weight: bold;
+  color: #e67345;
+}
+
+.username-styling:hover{
+  color: #0088cc;
+  text-decoration: underline;
+}
+
+@media (max-width: 500px) {
+  .filter-list {
+    float: left;
+  }
+}
+
+.gutter-fix {
+  margin: 0;
+}
+
+.typeahead input {
+  padding-right: 25pt;
+}
+
+.typeahead-item {
+  cursor: pointer;
+}
+
+.btn-std {
+  @include button-variant(white, #ADADAD, #E6E6E6);
+}
+
+.footer{
+  background-color: $theme-primary;
+  color: white;
+  padding: 0.5em;
+  margin-top: 0.5em;
+
+  .links{
+    color: white;
+    border-bottom: 1px dotted white;
+    text-decoration: none;
+  }
+
+  .footerimages {
+    padding-bottom: 10px;
+  }
+
+  img {
+   margin-right: 5px;
+  }
+}
+
+// TODO: Remove hack for modal box issue as a result of ui.bootstrap
+.modal-select-language {
+
+  .modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    display: block;
+    margin: auto;
+    overflow: hidden;
+    outline: 0;
+  }
+
+  .modal-dialog {
+    width: 80%;
+    height: 75%;
+    background-color: white;
+    max-width: unset;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .modal-content {
+
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+
+    pui-select-language {
+      table tr {
+        cursor: pointer;
+      }
+
+      td div {
+        height: 1.5rem;
+        overflow: hidden;
+      }
+    }
+
+    .modal-body {
+      max-height: initial;
+      flex: 2;
+
+      .search-wrapper {
+        position: relative;
+      }
+    }
+  }
+
+  .modal-content {
+    height: 100%;
+  }
+
+  .modal-body {
+    position: relative;
+    max-height: 400px;
+    padding: 15px;
+    overflow-y: auto;
+  }
+}
+
+.clear-search-button {
+  position: absolute;
+  top: 0;
+  right: 0.6em;
+  z-index: 10;
+  cursor: pointer;
+  line-height: 28pt;
+}
+
+.fixed-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: $navbar-height;
+}
+
 .desktop-title {
     position: relative;
     bottom: 11px;

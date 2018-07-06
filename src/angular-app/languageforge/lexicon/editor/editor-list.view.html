@@ -1,4 +1,4 @@
-<div id="lexAppListView" class="animate-switch">
+<div ng-init="$ctrl.setUrlParams()" id="lexAppListView" class="animate-switch">
     <div class="container">
         <div class="entry-words-container">
             <div data-ng-show="$ctrl.entries.length > 0">
@@ -36,7 +36,7 @@
                                      data-ng-if="$ctrl.typeahead.searchResults.length > 0">
                                     <small><i>{{$ctrl.typeahead.matchCountCaption}}</i></small></div>
                             </pui-typeahead>
-                            <button class="btn btn-sm" type="button" data-ng-click="$ctrl.show.entryListModifiers = !$ctrl.show.entryListModifiers">
+                            <button class="btn btn-sm" type="button" data-ng-click="$ctrl.toggleFilterOptions()">
                                 Options
                                 <i class="fa" data-ng-class="$ctrl.show.entryListModifiers ? 'fa-angle-up': 'fa-angle-down'"></i>
                             </button>
