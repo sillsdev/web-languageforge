@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 
-import {LexiconNewProjectController} from './lexicon-new-project.controller';
+import {LexiconNewProjectController} from './lexicon-new-project.component';
 
 export interface LexiconNewProjectState extends angular.ui.IState {
   data: LexiconNewProjectStateData;
@@ -28,14 +28,14 @@ export interface LexiconNewProjectStateDataShow {
 export const LexiconNewProjectAbstractState = {
   name: 'newProject',
   abstract: true,
-  templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-abstract.html',
+  templateUrl: '/angular-app/languageforge/lexicon/new-project/lexicon-new-project.component.html',
   controller: 'NewLexiconProjectCtrl',
   controllerAs: '$ctrl'
 } as angular.ui.IState;
 
 export const LexiconNewProjectChooserState = {
   name: 'newProject.chooser',
-  templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-chooser.html',
+  templateUrl: '/angular-app/languageforge/lexicon/new-project/new-project-chooser.component.html',
   data: {
     step: 0,
     isSRProject: false,
@@ -58,7 +58,7 @@ export const LexiconNewProjectChooserState = {
 
 export const LexiconNewProjectNameState = {
   name: 'newProject.name',
-  templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-name.html',
+  templateUrl: '/angular-app/languageforge/lexicon/new-project/non-send-receive/new-project-name.controller.html',
   data: {
     step: 1,
     isSRProject: false,
@@ -226,7 +226,8 @@ export const LexiconNewProjectSendReceiveCredentialsState = {
 
 export const LexiconNewProjectInitialDataState = {
   name: 'newProject.initialData',
-  templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-initial-data.html',
+  templateUrl:
+    '/angular-app/languageforge/lexicon/new-project/non-send-receive/new-project-initial-data.component.html',
   data: {
     step: 2,
     isSRProject: false,
@@ -257,7 +258,7 @@ export const LexiconNewProjectInitialDataState = {
 
 export const LexiconNewProjectSendReceiveCloneState = {
   name: 'newProject.sendReceiveClone',
-  templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-sr-clone.html',
+  templateUrl: '/angular-app/languageforge/lexicon/new-project/send-receive/new-project-clone.component.html',
   data: {
     step: 2,
     isSRProject: true,
@@ -287,7 +288,7 @@ export const LexiconNewProjectSendReceiveCloneState = {
 
 export const LexiconNewProjectVerifyDataState = {
   name: 'newProject.verifyData',
-  templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-verify-data.html',
+  templateUrl: '/angular-app/languageforge/lexicon/new-project/non-send-receive/new-project-verify-data.component.html',
   data: {
     step: 3,
     isSRProject: false,
@@ -312,7 +313,8 @@ export const LexiconNewProjectVerifyDataState = {
 
 export const LexiconNewProjectSelectPrimaryLanguageState = {
   name: 'newProject.selectPrimaryLanguage',
-  templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-select-primary-language.html',
+  templateUrl:
+   '/angular-app/languageforge/lexicon/new-project/non-send-receive/new-project-select-primary-language.component.html',
   data: {
     step: 3,
     isSRProject: false,
