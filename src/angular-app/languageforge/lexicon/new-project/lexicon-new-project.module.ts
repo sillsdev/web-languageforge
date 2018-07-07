@@ -13,8 +13,8 @@ import {
   LexiconNewProjectNameState, LexiconNewProjectSelectPrimaryLanguageState, LexiconNewProjectSendReceiveCloneState,
   LexiconNewProjectSendReceiveCredentialsState, LexiconNewProjectVerifyDataState
 } from './lexicon-new-project-state.model';
-import {LexiconNewProjectController} from './lexicon-new-project.controller';
-import {SendReceiveCredentialsComponent} from './send-receive-credentials.component';
+import {LexiconNewProjectController} from './lexicon-new-project.component';
+import {SendReceiveCredentialsComponent} from './send-receive/new-project-credentials.component';
 
 export const LexiconNewProjectModule = angular
   .module('lexicon-new-project', [

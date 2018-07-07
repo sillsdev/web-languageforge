@@ -1,7 +1,7 @@
 import * as angular from 'angular';
 
-import {LexiconSendReceiveApiService} from '../core/lexicon-send-receive-api.service';
-import {LexiconProject, SendReceiveProject} from '../shared/model/lexicon-project.model';
+import {LexiconSendReceiveApiService} from '../../core/lexicon-send-receive-api.service';
+import {LexiconProject, SendReceiveProject} from '../../shared/model/lexicon-project.model';
 
 export class SendReceiveCredentialsController implements angular.IController {
   srcProject: LexiconProject;
@@ -82,5 +82,6 @@ export const SendReceiveCredentialsComponent: angular.IComponentOptions = {
     srcReset: '&'
   },
   controller: SendReceiveCredentialsController,
-  templateUrl: '/angular-app/languageforge/lexicon/new-project/send-receive-credentials.component.html'
+  templateUrl:
+    '/angular-app/languageforge/lexicon/new-project/send-receive/new-project-credentials.component.html'
 };
