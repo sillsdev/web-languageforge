@@ -103,12 +103,8 @@ export class UserManagementMembersController implements angular.IController {
     });
   }
 
-  onNewUserRoleChange(user: User): void {
-    // this.projectService.updateUserRole(user.id, user.role, result => {
-    //   if (result.ok) {
-    //  //   this.notice.push(this.notice.SUCCESS, user.username + '\'s role was changed to ' + user.role);
-    //   }
-    // });
+  onNewUserRoleChange(role: string): void {
+    this.user.role = role;
   }
   /* ----------------------------------------------------------
    * Typeahead
@@ -213,6 +209,7 @@ export class UserManagementMembersController implements angular.IController {
   }
 
   addProjectUser(): void {
+    let selectedRole: string;
     if (this.addMode === 'addExisting') {
       const model = new User();
       model.id = this.user.id;
@@ -234,8 +231,12 @@ export class UserManagementMembersController implements angular.IController {
               return;
             }
           }
-
-          this.projectService.updateUserRole(this.user.id, 'Observer with comment', updateResult => {
+          if (this.user.role !== 'user') {
+            selectedRole = this.user.role;
+         } else {
+           selectedRole = 'observer_with_comment';
+         }
+          this.projectService.updateUserRole(this.user.id, selectedRole, updateResult => {
             if (updateResult.ok) {
               this.notice.push(this.notice.SUCCESS, '\'' + this.user.name + '\' was added to ' +
                 this.project.projectName + ' successfully');
