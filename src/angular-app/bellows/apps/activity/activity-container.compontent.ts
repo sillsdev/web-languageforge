@@ -43,7 +43,7 @@ class Activity {
   icon: string;
 
   constructor(data: object = {}) {
-    if (data !== null) {
+    if (data != null) {
       for (const property of Object.keys(data)) {
         this[property] = data[property];
       }
