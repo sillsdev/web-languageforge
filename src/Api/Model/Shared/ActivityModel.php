@@ -109,6 +109,8 @@ class ActivityModel extends MapperModel
                     self::UPDATE_LEX_COMMENT_STATUS,
                     self::ADD_LEX_REPLY,
                     self::UPDATE_LEX_REPLY,
+                    self::LEX_COMMENT_INCREASE_SCORE,
+                    self::LEX_COMMENT_DECREASE_SCORE,
                     self::UNKNOWN,
                 ];
             default:
