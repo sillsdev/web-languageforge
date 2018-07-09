@@ -18,11 +18,7 @@ class Activity {
     answer: string,
     lexComment: string,
     lexCommentContext: string,
-    fieldLabel: {
-      label: string,
-      sense: number,
-      example: number
-    },
+    fieldLabel: FieldLabel,
     changes: ActivityChanges[]
   };
   changes: ActivityChanges;
@@ -47,7 +43,7 @@ class Activity {
   icon: string;
 
   constructor(data: object = {}) {
-    if (data !== {}) {
+    if (data !== null) {
       for (const property of Object.keys(data)) {
         this[property] = data[property];
       }
@@ -106,7 +102,7 @@ class Activity {
     } else {
       for (const index in this.content) {
         if (this.content.hasOwnProperty(index)) {
-          if (index.substring(0, 10) === 'fieldLabel') {
+          if (index.startsWith('fieldLabel')) {
             let label = this.content[index];
             if (index.includes('#examples')) {
               label = 'Example - ' + label;
@@ -141,11 +137,7 @@ interface FieldLabel {
 
 interface ActivityChanges {
   changeType: string;
-  fieldLabel: {
-    label: string,
-    sense: number,
-    example: number
-  };
+  fieldLabel: FieldLabel;
   fieldName: string;
   newValue: string;
   oldValue: string;
@@ -176,16 +168,44 @@ class ActivityUserGroup {
   getSummaryDescription() {
     let summary = '';
     let totalActivityTypes = 0;
+    const entryActivities = {};
     const summaryTypes = {};
     for (const activity of this.activities) {
-      if (!summaryTypes.hasOwnProperty(activity.action)) {
-        summaryTypes[activity.action] = {
-          total: 0,
-          type: activity.typeRef
-        };
-        totalActivityTypes++;
+      // Entries are different as multiple updates can be reflected in a single activity
+      if (activity.action === 'update_entry') {
+        if (!entryActivities.hasOwnProperty(activity.entryRef)) {
+          entryActivities[activity.entryRef] = 0;
+        }
+        entryActivities[activity.entryRef]++;
+      } else {
+        if (!summaryTypes.hasOwnProperty(activity.action)) {
+          summaryTypes[activity.action] = {
+            total: 0,
+            type: activity.typeRef
+          };
+          totalActivityTypes++;
+        }
+        summaryTypes[activity.action].total++;
       }
-      summaryTypes[activity.action].total++;
+    }
+    if (entryActivities) {
+      let entryActivityCount = 0;
+      let entryActivityItems = 0;
+      for (const entryRef of Object.keys(entryActivities)) {
+        entryActivityItems += entryActivities[entryRef];
+        entryActivityCount++;
+      }
+      summary += 'updated ' + entryActivityItems + ' field' + (entryActivityItems !== 1 ? 's' : '');
+      if (entryActivityCount === 1) {
+        summary += ' in ' + entryActivityCount + ' entry';
+      } else {
+        summary += ' across ' + entryActivityCount + ' entries';
+      }
+      if (totalActivityTypes === 1) {
+          summary += ' and ';
+        } else if (totalActivityTypes > 1) {
+          summary += ', ';
+        }
     }
     let count = 1;
     for (const activityAction in summaryTypes) {
@@ -219,7 +239,7 @@ export class ActivityType {
   }
 }
 
-class FilterUser {
+interface FilterUser {
   id: string;
   username: string;
 }
