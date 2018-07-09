@@ -25,6 +25,7 @@ export class UserManagementMembersController implements angular.IController {
   };
   addMode = 'addExisting';
   disableAddButton = true;
+  iRole = false;
   typeahead = {
     userName: ''
   };
@@ -102,6 +103,9 @@ export class UserManagementMembersController implements angular.IController {
     });
   }
 
+  onNewUserRoleChange(role: string): void {
+    this.user.role = role;
+  }
   /* ----------------------------------------------------------
    * Typeahead
    * ---------------------------------------------------------- */
@@ -180,27 +184,32 @@ export class UserManagementMembersController implements angular.IController {
     if (!this.typeahead.userName) {
       this.addMode = 'addExisting';
       this.disableAddButton = true;
+      this.iRole = false;
       this.warningText = '';
     } else if (this.isExcludedUser(this.typeahead.userName)) {
       const excludedUser = this.isExcludedUser(this.typeahead.userName);
       this.addMode = 'addExisting';
       this.disableAddButton = true;
+      this.iRole = false;
       this.warningText = excludedUser.name +
         ' (username \'' + excludedUser.username +
         '\', email ' + excludedUser.email +
         ') is already a member.';
     } else if (this.typeahead.userName.indexOf('@') !== -1) {
       this.addMode = 'invite';
+      this.iRole = true;
       this.disableAddButton = false;
       this.warningText = '';
     } else {
       this.addMode = 'addExisting';
       this.disableAddButton = true;
+      this.iRole = false;
       this.warningText = '';
     }
   }
 
   addProjectUser(): void {
+    let selectedRole: string;
     if (this.addMode === 'addExisting') {
       const model = new User();
       model.id = this.user.id;
@@ -222,8 +231,12 @@ export class UserManagementMembersController implements angular.IController {
               return;
             }
           }
-
-          this.projectService.updateUserRole(this.user.id, 'contributor', updateResult => {
+          if (this.user.role !== 'user') {
+            selectedRole = this.user.role;
+         } else {
+           selectedRole = 'observer_with_comment';
+         }
+          this.projectService.updateUserRole(this.user.id, selectedRole, updateResult => {
             if (updateResult.ok) {
               this.notice.push(this.notice.SUCCESS, '\'' + this.user.name + '\' was added to ' +
                 this.project.projectName + ' successfully');
