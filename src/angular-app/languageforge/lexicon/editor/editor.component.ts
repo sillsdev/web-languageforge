@@ -406,6 +406,9 @@ export class LexiconEditorController implements angular.IController {
               this.$state.go('.', { entryId: entry.id }, { notify: false });
               this.scrollListToEntry(entry.id, 'top');
             }
+            // Mark the activity feed as requiring a refresh
+            this.activityService.markRefreshRequired();
+
           }
         });
 
@@ -646,6 +649,8 @@ export class LexiconEditorController implements angular.IController {
   }
 
   showActivityFeed = (): void => {
+    // Ideally this would automatically happen when activity is added but not possible yet
+    this.activityService.markRefreshRequired();
     this.showRightPanel('#lexAppActivityFeed');
   }
 
