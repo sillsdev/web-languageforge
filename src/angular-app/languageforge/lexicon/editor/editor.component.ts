@@ -212,7 +212,7 @@ export class LexiconEditorController implements angular.IController {
 
   returnToList(): void {
     let lexemeValue = Object.values(this.currentEntry.lexeme);
-    if (lexemeValue[0].value !== '') {
+    if (lexemeValue[0].value) {
       this.saveCurrentEntry();
       this.setCurrentEntry();
     }
