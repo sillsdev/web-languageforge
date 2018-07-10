@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-import {Object} from 'core-js';
+
 import {ActivityService} from '../../../bellows/core/api/activity.service';
 import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
 import {ModalService} from '../../../bellows/core/modal/modal.service';
@@ -133,8 +133,12 @@ export class LexiconEditorController implements angular.IController {
 
     this.$scope.$on('$locationChangeStart', (event, next, current) => {
       if (current.includes('#!/editor/entry') && !next.includes('#!/editor/entry')) {
-        this.cancelAutoSaveTimer();
-        this.saveCurrentEntry();
+        for (let key in this.currentEntry.lexeme) {
+          if (this.currentEntry.lexeme[key].value) {
+            this.saveCurrentEntry();
+            this.setCurrentEntry();
+          }
+      }
       }
     });
 
@@ -211,11 +215,12 @@ export class LexiconEditorController implements angular.IController {
   }
 
   returnToList(): void {
-    let lexemeValue = Object.values(this.currentEntry.lexeme);
-    if (lexemeValue[0].value) {
-      this.saveCurrentEntry();
-      this.setCurrentEntry();
-    }
+    for (let key in this.currentEntry.lexeme) {
+      if (this.currentEntry.lexeme[key].value) {
+        this.saveCurrentEntry();
+        this.setCurrentEntry();
+      }
+  }
     for (let entry of this.entries) {
       if (LexiconEditorController.entryIsNew(entry)) {
        this.editorService.removeEntryFromLists(entry.id);
