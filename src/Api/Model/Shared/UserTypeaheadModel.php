@@ -21,7 +21,7 @@ class UserTypeaheadModel extends MapperListModel
                         array('name' => array('$regex' => $term, '$options' => '-i')),
                         array('username' => array('$regex' => $term, '$options' => '-i')),
                         array('email' => array('$regex' => $term, '$options' => '-i')),
-                        array('user' => array('$regex' => $term, '$options' => '-i')),
+                        array('role' => array('$regex' => $term, '$options' => '-i')),
                 ));
         if (!empty($projectIdOrIds)) {
             // Allow $projectIdOrIds to be either an array or a single ID

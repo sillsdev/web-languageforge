@@ -14,7 +14,7 @@ class LexRoles extends ProjectRoles
     public static function getRolesList() {
         $roles = ProjectRoles::getRolesList();
         $roles[self::OBSERVER] = 'Observer';
-        $roles[self::OBSERVER_WITH_COMMENT] = 'Observer with comment';
+        $roles[self::OBSERVER_WITH_COMMENT] = 'Commenter';
         return $roles;
     }
 
