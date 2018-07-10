@@ -48,7 +48,7 @@ class UserTypeaheadModel extends MapperListModel
         parent::__construct(
                 UserModelMongoMapper::instance(),
                 $query,
-                array('username', 'name', 'avatarRef')
+                array('username', 'name', 'email', 'avatarRef')
         );
         // If we were called with a project filter that excluded certain users, also
         // return a list of specifically which users were excluded. Which happens to

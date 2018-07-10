@@ -59,6 +59,34 @@ class UserModelTest extends TestCase
         $this->assertEquals('Some User', $model->entries[0]['name']);
     }
 
+    public function testUserTypeahead_PartialEmailHasNoMatchingEntries()
+    {
+
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+
+        $environ->createUser('testuser1', 'Test User1','testuser1@example.com');
+        $environ->createUser('testuser2', 'Test User2','testuser2@example.com');
+        $environ->createUser('testuser3', 'Test User3','testuser2@example.com');
+
+        $model = new UserTypeaheadModel('', '', $environ->website);
+        $model->read();
+        $this->assertEquals(3, $model->count);
+        $this->assertNotNull($model->entries);
+        $this->assertEquals('Test User1', $model->entries[0]['name']);
+
+        $model = new UserTypeaheadModel('testuser1@example.com', '', $environ->website);
+        $model->read();
+        $this->assertEquals(1, $model->count);
+        $this->assertNotNull($model->entries);
+        $this->assertEquals('testuser1@example.com', $model->entries[0]['email']);
+
+        $model = new UserTypeaheadModel('testuser2@exa', '', $environ->website);
+        $model->read();
+        $this->assertEquals(0, $model->count);
+        $this->assertNotNull($model->entries);
+    }
+
     public function testUserTypeahead_HasNoMatchingEntries()
     {
         $environ = new MongoTestEnvironment();
