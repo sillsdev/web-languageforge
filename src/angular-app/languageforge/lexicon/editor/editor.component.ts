@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-import {Object} from 'core-js';
+
 import {ActivityService} from '../../../bellows/core/api/activity.service';
 import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
 import {ModalService} from '../../../bellows/core/modal/modal.service';
@@ -211,16 +211,8 @@ export class LexiconEditorController implements angular.IController {
   }
 
   returnToList(): void {
-    let lexemeValue = Object.values(this.currentEntry.lexeme);
-    if (lexemeValue[0].value) {
-      this.saveCurrentEntry();
-      this.setCurrentEntry();
-    }
-    for (let entry of this.entries) {
-      if (LexiconEditorController.entryIsNew(entry)) {
-       this.editorService.removeEntryFromLists(entry.id);
-      }
-    }
+    this.saveCurrentEntry();
+    this.setCurrentEntry();
     this.$state.go('editor.list');
   }
 
@@ -414,6 +406,9 @@ export class LexiconEditorController implements angular.IController {
               this.$state.go('.', { entryId: entry.id }, { notify: false });
               this.scrollListToEntry(entry.id, 'top');
             }
+            // Mark the activity feed as requiring a refresh
+            this.activityService.markRefreshRequired();
+
           }
         });
 
@@ -654,6 +649,8 @@ export class LexiconEditorController implements angular.IController {
   }
 
   showActivityFeed = (): void => {
+    // Ideally this would automatically happen when activity is added but not possible yet
+    this.activityService.markRefreshRequired();
     this.showRightPanel('#lexAppActivityFeed');
   }
 
@@ -885,7 +882,6 @@ export class LexiconEditorController implements angular.IController {
       };
 
       // TODO consider whitelisting all properties under customFields
-
       const isMatch = (value: any): boolean => {
         // toUpperCase is better than toLowerCase, but still has issues,
         // e.g. 'ß'.toUpperCase() === 'SS'
@@ -1229,7 +1225,6 @@ export class LexiconEditorController implements angular.IController {
 
     // make sure the item is visible in the list
     // todo implement lazy "up" scrolling to make this more efficient
-
     // only expand the "show window" if we know that the entry is actually in
     // the entry list - a safe guard
     if (this.editorService.getIndexInList(id, this.filteredEntries) != null) {
