@@ -165,7 +165,7 @@ class ActivityUserGroup {
     this.date = activity.date;
   }
 
-  getSummaryDescription() {
+  getSummaryDescription(entryId: string) {
     let summary = '';
     let totalActivityTypes = 0;
     const entryActivities = {};
@@ -188,7 +188,7 @@ class ActivityUserGroup {
         summaryTypes[activity.action].total++;
       }
     }
-    if (entryActivities) {
+    if (Object.keys(entryActivities).length) {
       let entryActivityCount = 0;
       let entryActivityItems = 0;
       for (const entryRef of Object.keys(entryActivities)) {
@@ -196,16 +196,18 @@ class ActivityUserGroup {
         entryActivityCount++;
       }
       summary += 'updated ' + entryActivityItems + ' field' + (entryActivityItems !== 1 ? 's' : '');
-      if (entryActivityCount === 1) {
-        summary += ' in ' + entryActivityCount + ' entry';
-      } else {
-        summary += ' across ' + entryActivityCount + ' entries';
+      if (entryId == null) {
+        if (entryActivityCount === 1) {
+          summary += ' in ' + entryActivityCount + ' entry';
+        } else {
+          summary += ' across ' + entryActivityCount + ' entries';
+        }
       }
       if (totalActivityTypes === 1) {
-          summary += ' and ';
-        } else if (totalActivityTypes > 1) {
-          summary += ', ';
-        }
+        summary += ' and ';
+      } else if (totalActivityTypes > 1) {
+        summary += ', ';
+      }
     }
     let count = 1;
     for (const activityAction in summaryTypes) {
