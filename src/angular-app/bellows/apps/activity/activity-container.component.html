@@ -70,7 +70,7 @@
                                     <div class="meta-time">
                                         {{userGroup.date | date:activityGroup.dateFormat}}
                                     </div>
-                                    <span class="activity-username">{{userGroup.user.username}}</span> <span class="activity-summary">{{userGroup.getSummaryDescription()}}</span>
+                                    <span class="activity-username">{{userGroup.user.username}}</span> <span class="activity-summary">{{userGroup.getSummaryDescription($ctrl.entryId)}}</span>
                                     <span class="activity-unread" ng-show="userGroup.unread > 0"> - {{userGroup.unread}} new activit{{userGroup.unread > 1 ? 'ies' : 'y'}}</span>
                                 </div>
                                 <div class="meta-toggle">
