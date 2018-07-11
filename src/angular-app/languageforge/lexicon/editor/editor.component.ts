@@ -133,8 +133,12 @@ export class LexiconEditorController implements angular.IController {
 
     this.$scope.$on('$locationChangeStart', (event, next, current) => {
       if (current.includes('#!/editor/entry') && !next.includes('#!/editor/entry')) {
-        this.cancelAutoSaveTimer();
-        this.saveCurrentEntry();
+        for (let key in this.currentEntry.lexeme) {
+          if (this.currentEntry.lexeme[key].value) {
+            this.saveCurrentEntry();
+            this.setCurrentEntry();
+          }
+      }
       }
     });
 
@@ -211,8 +215,17 @@ export class LexiconEditorController implements angular.IController {
   }
 
   returnToList(): void {
-    this.saveCurrentEntry();
-    this.setCurrentEntry();
+    for (let key in this.currentEntry.lexeme) {
+      if (this.currentEntry.lexeme[key].value) {
+        this.saveCurrentEntry();
+        this.setCurrentEntry();
+      }
+  }
+    for (let entry of this.entries) {
+      if (LexiconEditorController.entryIsNew(entry)) {
+       this.editorService.removeEntryFromLists(entry.id);
+      }
+    }
     this.$state.go('editor.list');
   }
 
