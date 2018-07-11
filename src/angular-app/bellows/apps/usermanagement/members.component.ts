@@ -103,9 +103,6 @@ export class UserManagementMembersController implements angular.IController {
     });
   }
 
-  onNewUserRoleChange(role: string): void {
-    this.user.role = role;
-  }
   /* ----------------------------------------------------------
    * Typeahead
    * ---------------------------------------------------------- */
