@@ -137,6 +137,7 @@ export class LexiconEditorController implements angular.IController {
           if (this.currentEntry.lexeme[key].value) {
             this.saveCurrentEntry();
             this.setCurrentEntry();
+            break;
           }
       }
       }
@@ -219,6 +220,7 @@ export class LexiconEditorController implements angular.IController {
       if (this.currentEntry.lexeme[key].value) {
         this.saveCurrentEntry();
         this.setCurrentEntry();
+        break;
       }
   }
     for (let entry of this.entries) {
