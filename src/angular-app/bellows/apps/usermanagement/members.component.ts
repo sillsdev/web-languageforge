@@ -30,7 +30,7 @@ export class UserManagementMembersController implements angular.IController {
     userName: ''
   };
   warningText = '';
-
+  selectedRole = 'observer_with_comment';
   private user: User;
 
   static $inject = ['$window', 'userService', 'projectService', 'sessionService', 'silNoticeService'];
@@ -231,12 +231,7 @@ export class UserManagementMembersController implements angular.IController {
               return;
             }
           }
-          if (this.user.role !== 'user') {
-            selectedRole = this.user.role;
-         } else {
-           selectedRole = 'observer_with_comment';
-         }
-          this.projectService.updateUserRole(this.user.id, selectedRole, updateResult => {
+          this.projectService.updateUserRole(this.user.id, this.selectedRole, updateResult => {
             if (updateResult.ok) {
               this.notice.push(this.notice.SUCCESS, '\'' + this.user.name + '\' was added to ' +
                 this.project.projectName + ' successfully');
@@ -256,6 +251,7 @@ export class UserManagementMembersController implements angular.IController {
         }
       });
     }
+    this.typeahead.userName = '';
   }
 
   // noinspection JSMethodCanBeStatic

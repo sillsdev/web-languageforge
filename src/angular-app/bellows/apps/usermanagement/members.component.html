@@ -28,9 +28,8 @@
                 </ul>
             </pui-typeahead>
 
-            <select class="form-control custom-select col-12" ng-init="user.role='observer_with_comment'" data-ng-model="user.role" data-ng-disabled="!$ctrl.rights.changeRole"
-            data-ng-change="$ctrl.onNewUserRoleChange(user.role)"
-            data-ng-options="roleKey as roleName for (roleKey, roleName) in $ctrl.roles"></select>
+            <select class="form-control custom-select col-12"  data-ng-model="$ctrl.selectedRole" data-ng-disabled="!$ctrl.rights.changeRole"
+                    data-ng-options="roleKey as roleName for (roleKey, roleName) in $ctrl.roles"></select>
 
             <button data-ng-model="$ctrl.addMode" id="addUserButton" class="btn btn-primary"
                     data-ng-disabled="disableAddButton" data-ng-click="$ctrl.addProjectUser()">
