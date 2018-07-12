@@ -4,7 +4,7 @@ angular.module('palaso.ui.deleteProject', ['coreModule'])
   .directive('puiDeleteProject', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/pui-delete-project.html',
+      templateUrl: '/angular-app/bellows/shared/delete-project.component.html',
       controller: ['$scope', 'projectService', 'sessionService',
         'silNoticeService', 'modalService', '$window',
         function ($scope, projectService, ss, notice, modalService, $window) {
