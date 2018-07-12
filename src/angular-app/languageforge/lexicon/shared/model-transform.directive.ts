@@ -1,23 +1,19 @@
-'use strict';
-
-angular.module('palaso.util.model.transform', [])
+import * as angular from 'angular';
 
 // from: http://stackoverflow.com/questions/14419651/angularjs-filters-on-ng-model-in-an-input
-.directive('modelTransformLimit', function () {
+export function ModelTransformLimit(): angular.IDirective {
   return {
     restrict: 'A',
     require: 'ngModel',
     scope: {
-      'model-transform-limit': '@'
+      modelTransformLimit: '@'
     },
-    link: function (scope, element, attrs, modelCtrl) {
-
-      modelCtrl.$parsers.push(function (inputValue) {
-        var transformedInput = '';
+    link(scope, element, attrs, modelCtrl: angular.INgModelController) {
+      modelCtrl.$parsers.push((inputValue: string): string => {
+        let transformedInput = '';
         if (inputValue) {
-          transformedInput = inputValue.toLowerCase()
-            .substring(0, parseInt(attrs.modelTransformLimit));
-
+          transformedInput =
+            inputValue.toLowerCase().substring(0, parseInt(attrs.modelTransformLimit, 10));
           if (transformedInput !== inputValue) {
             modelCtrl.$setViewValue(transformedInput);
             modelCtrl.$render();
@@ -28,17 +24,16 @@ angular.module('palaso.util.model.transform', [])
       });
     }
   };
-})
+}
 
 // Truncate whitespace
-.directive('modelTransformNoSpace', function () {
+export function ModelTransformNoSpace(): angular.IDirective {
   return {
     restrict: 'A',
     require: 'ngModel',
-    link: function (scope, element, attrs, modelCtrl) {
-
-      modelCtrl.$parsers.push(function (inputValue) {
-        var transformedInput = '';
+    link(scope, element, attrs, modelCtrl: angular.INgModelController) {
+      modelCtrl.$parsers.push((inputValue: string): string => {
+        let transformedInput = '';
         if (inputValue) {
           transformedInput = inputValue.replace(/\s+/g, '');
           if (transformedInput !== inputValue) {
@@ -51,6 +46,10 @@ angular.module('palaso.util.model.transform', [])
       });
     }
   };
-})
+}
 
-;
+export const ModelTransformModule = angular
+  .module('palaso.util.model.transform', [])
+  .directive('modelTransformLimit', ModelTransformLimit)
+  .directive('modelTransformNoSpace', ModelTransformNoSpace)
+  .name;

@@ -1,41 +1,55 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.deleteProject', ['coreModule'])
-  .directive('puiDeleteProject', [function () {
-    return {
-      restrict: 'E',
-      templateUrl: '/angular-app/bellows/shared/delete-project.component.html',
-      controller: ['$scope', 'projectService', 'sessionService',
-        'silNoticeService', 'modalService', '$window',
-        function ($scope, projectService, ss, notice, modalService, $window) {
+import {ProjectService} from '../core/api/project.service';
+import {CoreModule} from '../core/core.module';
+import {ModalService} from '../core/modal/modal.service';
+import {NoticeService} from '../core/notice/notice.service';
+import {SessionService} from '../core/session.service';
 
-          $scope.actionInProgress = false;
+export class DeleteProjectController implements angular.IController {
+  actionInProgress: boolean = false;
 
-          // Delete the project
-          $scope.deleteProject = function () {
-            var message = 'Are you sure you want to delete this project?\n' +
-              'This is a permanent action and cannot be restored.';
-            var modalOptions = {
-              closeButtonText: 'Cancel',
-              actionButtonText: 'Delete',
-              headerText: 'Permanently delete project?',
-              bodyText: message
-            };
-            modalService.showModal({}, modalOptions).then(function () {
-              ss.getSession().then(function (session) {
-                var projectIds = [session.project().id];
-                $scope.actionInProgress = true;
-                projectService.deleteProject(projectIds).then(function () {
-                  notice.push(notice.SUCCESS, 'The project was permanently deleted');
-                  $window.location.href = '/app/projects';
-                }).catch(function () {
-                  $scope.actionInProgress = false;
-                });
-              });
-            }, angular.noop);
-          };
-        }]
+  static $inject: string[] = ['$scope', '$window',
+    'modalService', 'silNoticeService',
+    'projectService', 'sessionService'];
+  constructor(private readonly $scope: angular.IScope, private readonly $window: angular.IWindowService,
+              private readonly modalService: ModalService, private readonly notice: NoticeService,
+              private readonly projectService: ProjectService, private readonly sessionService: SessionService) { }
+
+  deleteProject() {
+    const modalOptions = {
+      closeButtonText: 'Cancel',
+      actionButtonText: 'Delete',
+      headerText: 'Permanently delete project?',
+      bodyText: 'Are you sure you want to delete this project?\n' +
+      'This is a permanent action and cannot be restored.'
     };
-  }])
+    this.modalService.showModal({}, modalOptions).then(() => {
+      this.sessionService.getSession().then(session => {
+        const projectIds = [session.project().id];
+        this.actionInProgress = true;
+        this.projectService.deleteProject(projectIds).then(() => {
+          this.notice.push(this.notice.SUCCESS, 'The project was permanently deleted');
+          this.$window.location.href = '/app/projects';
+        }).catch(() => {
+          this.actionInProgress = false;
+        });
+      });
+    }, () => {});
+  }
 
-  ;
+}
+
+export const DeleteProjectComponent: angular.IComponentOptions = {
+  bindings: {
+  },
+  controller: DeleteProjectController,
+  templateUrl: '/angular-app/bellows/shared/delete-project.component.html'
+};
+
+export const DeleteProjectModule = angular
+  .module('palaso.ui.deleteProject', [
+    CoreModule
+  ])
+  .component('puiDeleteProject', DeleteProjectComponent)
+  .name;
