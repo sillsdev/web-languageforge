@@ -1,48 +1,68 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.runReport', ['coreModule'])
-  .directive('puiRunReport', [function () {
-    return {
-      restrict: 'E',
-      templateUrl: '/angular-app/scriptureforge/sfchecks/project/run-report.component.html',
-      scope: {},
-      controller: ['$scope', 'projectService',
-        function ($scope, projectService) {
-          $scope.report = {
-            output: '',
-            currentId: null
-          };
-          $scope.reportOutput = '';
+import {ProjectService} from '../../../bellows/core/api/project.service';
+import {CoreModule} from '../../../bellows/core/core.module';
 
-          $scope.loadDto = function loadDto() {
-            projectService.getDto(function (result) {
-              if (result.ok) {
-                $scope.reports = result.data.reports;
-                $scope.dtoLoaded = true;
-              }
-            });
-          };
+interface CurrentReport {
+  output: string;
+  currentId: string;
+}
 
-          $scope.loadDto();
+interface Report {
+  id: string;
+  name: string;
+}
 
-          $scope.$watch('report.currentId', function () {
-            $scope.runReport();
-          });
+export class RunReportController implements angular.IController {
+  report: CurrentReport = {
+    output: '',
+    currentId: null
+  };
+  reports: Report[] = [];
 
-          $scope.runReport = function runReport() {
-            if ($scope.report.currentId) {
-              $scope.report.output = 'Running Report...';
-              projectService.runReport($scope.report.currentId, [], function (result) {
-                if (result.ok) {
-                  $scope.report.output = result.data.output.replace(/\\n/g, "\n"); // jscs:ignore
-                }
-              });
-            } else {
-              $scope.report.output = '';
-            }
-          };
-        }]
-    };
-  }])
+  static $inject: string[] = ['$scope', 'projectService'];
+  constructor(private readonly $scope: angular.IScope, private readonly projectService: ProjectService) { }
 
-;
+  $onInit(): void {
+    this.loadDto();
+    this.$scope.$watch(() => this.report.currentId, () => {
+      this.runReport();
+    });
+  }
+
+  runReport(): void {
+    if (this.report.currentId) {
+      this.report.output = 'Running Report...';
+      this.projectService.runReport(this.report.currentId, []).then(result => {
+        if (result.ok) {
+          this.report.output = result.data.output.replace(/\\n/g, '\n');
+        }
+      });
+    } else {
+      this.report.output = '';
+    }
+  }
+
+  private loadDto(): void {
+    this.projectService.getDto().then(result => {
+      if (result.ok) {
+        this.reports = result.data.reports;
+      }
+    });
+  }
+
+}
+
+export const RunReportComponent: angular.IComponentOptions = {
+  bindings: {
+  },
+  controller: RunReportController,
+  templateUrl: '/angular-app/scriptureforge/sfchecks/project/run-report.component.html'
+};
+
+export const RunReportModule = angular
+  .module('palaso.ui.runReport', [
+    CoreModule
+  ])
+  .component('puiRunReport', RunReportComponent)
+  .name;

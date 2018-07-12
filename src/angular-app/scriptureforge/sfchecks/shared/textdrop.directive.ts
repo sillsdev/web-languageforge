@@ -1,52 +1,44 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.textdrop', [])
-.directive('textdrop', function () {
+export function TextDrop(): angular.IDirective {
   return {
     restrict: 'A',
     require: '?ngModel',
-    link: function (scope, element, attrs, ngModelCtrl) {
-          var processDragOverOrEnter = function (event) {
-            if (event != null) {
-              event.preventDefault();
-            }
-
-            return false;
-          };
-
-          element.bind('dragover', processDragOverOrEnter);
-          element.bind('dragenter', processDragOverOrEnter);
-          element.bind('drop', function (event) {
-            var file;
-            var reader;
-
-            if (event != null) {
-              event.preventDefault();
-            }
-
-            reader = new FileReader();
-            event.originalEvent.dataTransfer.effectAllowed = 'copy';
-            file = event.originalEvent.dataTransfer.files[0];
-            reader.onloadend = function (evt) {
-              if (evt.target.readyState === FileReader.DONE) {
-                /*
-                if (scope.$$phase == '$digest') {
-                  return;
-                }
-                */
-                scope.$apply(function () {
-                  //scope.dropTarget = evt.target.result;
-                  ngModelCtrl.$setViewValue(evt.target.result);
-
-                  // this is a hack, but I cannot figure out how to get scope.$apply to update the
-                  // view, so I will update it myself
-                  element[0].value = evt.target.result;
-                });
-              }
-            };
-
-            reader.readAsText(file);
-          });
+    link(scope, element, attrs, ngModelCtrl: angular.INgModelController) {
+      element.bind('dragover', processDragOverOrEnter);
+      element.bind('dragenter', processDragOverOrEnter);
+      element.bind('drop', (event: Event | any) => {
+        if (event != null) {
+          event.preventDefault();
         }
+
+        const reader = new FileReader();
+        const file = event.originalEvent.dataTransfer.files[0];
+        event.originalEvent.dataTransfer.effectAllowed = 'copy';
+        reader.onloadend = (evt: ProgressEvent) => {
+          const target = evt.target as FileReader;
+          if (target.readyState === (FileReader as any).DONE) {
+            ngModelCtrl.$setViewValue(target.result);
+            ngModelCtrl.$render();
+          }
+        };
+
+        reader.readAsText(file);
+      });
+
+      function processDragOverOrEnter(event: Event): boolean {
+        if (event != null) {
+          event.preventDefault();
+        }
+
+        return false;
+      }
+
+    }
   };
-});
+}
+
+export const TextDropModule = angular
+  .module('palaso.ui.textdrop', [])
+  .directive('textdrop', TextDrop)
+  .name;

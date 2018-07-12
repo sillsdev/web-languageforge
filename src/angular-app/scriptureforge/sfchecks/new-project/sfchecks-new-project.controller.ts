@@ -4,6 +4,7 @@ import uiRouter from 'angular-ui-router';
 import {JsonRpcResult} from '../../../bellows/core/api/json-rpc.service';
 import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
+import {ListViewModule} from '../../../bellows/shared/list-view.component';
 import {PuiUtilityModule} from '../../../bellows/shared/utils/pui-utils.module';
 
 export const SfChecksNewProjectModule = angular
@@ -11,7 +12,7 @@ export const SfChecksNewProjectModule = angular
     'ui.bootstrap',
     uiRouter,
     CoreModule,
-    'palaso.ui.listview',
+    ListViewModule,
     NoticeModule,
     PuiUtilityModule
   ])

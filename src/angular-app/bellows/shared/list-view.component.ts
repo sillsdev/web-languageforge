@@ -1,128 +1,112 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.listview', ['ui.bootstrap'])
+export class ListViewController implements angular.IController {
+  search: () => void;
+  select: (item: any) => void;
+  items: any[];
+  hideIfEmpty: boolean;
+  visibleItems: any[];
+  // This prevents "cannot read property 'length' of undefined" errors on first page load
+  filteredItems: any[] = [];
+  itemsFilter: any[];
 
-  // Typeahead
-  .directive('listview', ['$filter', function ($filter) {
-    return {
-      restrict: 'EA',
-      transclude: true,
-      replace: true,
-      templateUrl: '/angular-app/bellows/shared/list-view.component.html',
-      scope: {
-        search: '&',
-        select: '&',
-        items: '=',
-        hideIfEmpty: '@',
-        visibleItems: '=',
-        filteredItems: '=?',
-        itemsFilter: '=?'
-      },
-      controller: ['$scope', function ($scope) {
-        $scope.noOfPages = 3;  // TODO: calculate this automatically
-        $scope.currentPage = 1;
-        $scope.maxSize = 5;
-        $scope.itemsPerPage = '10';  // This should match the default value for the selector above
-        // This prevents "cannot read property 'length' of undefined" errors on first page load
-        $scope.filteredItems = [];
+  itemsPerPage: string = '10';  // This should match the default value for the selector above
+  currentPage: number = 1;
 
-        this.activate = function (item) {
-          $scope.active = item;
-          $scope.select({
-            item: item
-          });
-        };
+  private noOfPages: number = 3;  // TODO: calculate this automatically
 
-        this.activateNextItem = function () {
-          var index = $scope.items.indexOf($scope.active);
-          this.activate($scope.filteredItems[(index + 1) % $scope.filteredItems.length]);
-        };
+  static $inject: string[] = ['$scope',
+    '$filter'];
+  constructor(private readonly $scope: angular.IScope,
+              private readonly $filter: angular.IFilterService) { }
 
-        this.activatePreviousItem = function () {
-          var index = $scope.filteredItems.indexOf($scope.active);
-          this.activate($scope.filteredItems[index === 0 ? $scope.filteredItems.length - 1 :
-            index - 1]);
-        };
+  $onInit(): void {
+    this.query();
 
-        this.isActive = function (item) {
-          return $scope.active === item;
-        };
+    this.$scope.$watch(() => this.items, () => {
+      this.updateFilteredItems();
+    }, true);
 
-        this.selectActive = function () {
-          this.select($scope.active);
-        };
-
-        this.updateVisibleItems = function () {
-          var sliceStart;
-          var sliceEnd;
-          if ($scope.currentPage) {
-            sliceStart = ($scope.currentPage - 1) * $scope.itemsPerPage; // currentPage is 1-based
-            sliceEnd = $scope.currentPage * $scope.itemsPerPage;
-          } else {
-            // Default to page 1 if undefined
-            sliceStart = 0;
-            sliceEnd = $scope.itemsPerPage;
-          }
-
-          $scope.visibleItems = $scope.filteredItems.slice(sliceStart, sliceEnd);
-        };
-
-        this.updatePages = function () {
-          $scope.noOfPages = Math.ceil($scope.filteredItems.length / $scope.itemsPerPage);
-          if ($scope.currentPage > $scope.noOfPages) {
-            // This can happen if items have been deleted, for example
-            $scope.currentPage = $scope.noOfPages;
-          }
-
-          if ($scope.currentPage < 1) {
-            $scope.currentPage = 1;
-          }
-        };
-
-        this.updateFilteredItems = function () {
-          var items = $scope.items || [];
-          if ($scope.itemsFilter) {
-            $scope.filteredItems = $filter('filter')(items, $scope.itemsFilter);
-          } else {
-            $scope.filteredItems = items;
-          }
-        };
-
-        this.query = function () {
-          $scope.search();
-          this.updateFilteredItems();
-          this.updatePages();
-        };
-      }],
-
-      link: function (scope, element, attrs, controller) {
-        scope.$watch('currentPage', function () {
-          controller.updateVisibleItems();
-        });
-
-        scope.$watch('itemsPerPage', function () {
-          controller.updatePages();
-          controller.updateVisibleItems();
-        });
-
-        scope.$watch('items', function () {
-          controller.updateFilteredItems();
-        }, true);
-
-        scope.$watch('filteredItems', function (items) {
-          if (items) {
-            controller.updatePages();
-            controller.updateVisibleItems();
-          }
-        }, true);
-
-        scope.$watch('itemsFilter', function () {
-          controller.updateFilteredItems();
-        });
-
-        controller.query();
+    this.$scope.$watch(() => this.filteredItems, (items: any[]) => {
+      if (items) {
+        this.updatePages();
+        this.updateVisibleItems();
       }
-    };
-  }])
+    }, true);
 
-  ;
+    this.$scope.$watch(() => this.itemsFilter, () => {
+      this.updateFilteredItems();
+    });
+
+  }
+
+  changeItemsPerPage(): void {
+    this.updatePages();
+    this.updateVisibleItems();
+  }
+
+  updateVisibleItems(): void {
+    let sliceStart;
+    let sliceEnd;
+    if (this.currentPage) {
+      sliceStart = (this.currentPage - 1) * parseInt(this.itemsPerPage, 10); // currentPage is 1-based
+      sliceEnd = this.currentPage * parseInt(this.itemsPerPage, 10);
+    } else {
+      // Default to page 1 if undefined
+      sliceStart = 0;
+      sliceEnd = parseInt(this.itemsPerPage, 10);
+    }
+
+    this.visibleItems = this.filteredItems.slice(sliceStart, sliceEnd);
+  }
+
+  private updatePages(): void {
+    this.noOfPages = Math.ceil(this.filteredItems.length / parseInt(this.itemsPerPage, 10));
+    if (this.currentPage > this.noOfPages) {
+      // This can happen if items have been deleted, for example
+      this.currentPage = this.noOfPages;
+      this.updateVisibleItems();
+    }
+
+    if (this.currentPage < 1) {
+      this.currentPage = 1;
+      this.updateVisibleItems();
+    }
+  }
+
+  private updateFilteredItems(): void {
+    const items = this.items || [];
+    if (this.itemsFilter) {
+      this.filteredItems = this.$filter('filter')(items, this.itemsFilter);
+    } else {
+      this.filteredItems = items;
+    }
+  }
+
+  private query(): void {
+    this.search();
+    this.updateFilteredItems();
+    this.updatePages();
+  }
+
+}
+
+export const ListViewComponent: angular.IComponentOptions = {
+  bindings: {
+    search: '&',
+    select: '&',
+    items: '=',
+    hideIfEmpty: '@',
+    visibleItems: '=',
+    filteredItems: '=?',
+    itemsFilter: '=?'
+  },
+  controller: ListViewController,
+  transclude: true,
+  templateUrl: '/angular-app/bellows/shared/list-view.component.html'
+};
+
+export const ListViewModule = angular
+  .module('palaso.ui.listview', ['ui.bootstrap'])
+  .component('listview', ListViewComponent)
+  .name;
