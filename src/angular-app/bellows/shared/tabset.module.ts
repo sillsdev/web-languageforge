@@ -41,7 +41,7 @@ angular.module('palaso.ui.tabset', [])
       },
 
       controllerAs: 'tabset',
-      templateUrl: '/angular-app/bellows/directive/palaso.ui.tabset.html'
+      templateUrl: '/angular-app/bellows/shared/tabset.html'
     };
   }])
 
