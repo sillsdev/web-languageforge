@@ -1,21 +1,23 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.intlTelInput', [])
+export function PuiIntlTelInput(): angular.IDirective {
+  return {
+    restrict: 'A',
+    link(scope, element, attrs) {
+      // Create the mobile phone field
+      $(element).intlTelInput();
 
-  // Palaso UI International Telephone Input
-  .directive('puiIntlTelInput', [function () {
-    return {
-      restrict: 'A',
-      link: function (scope, element, attrs) {
-        // Create the mobile phone field
-        $(element).intlTelInput();
+      // Watch the phone number to refresh the country flag
+      scope.$watch(attrs.ngModel, (value: string) => {
+        if (value != null) {
+          $(element).intlTelInput('setNumber', value);
+        }
+      });
+    }
+  };
+}
 
-        // Watch the phone number to refresh the country flag
-        scope.$watch(attrs.ngModel, function (value) {
-          if (angular.isDefined(value)) {
-            $(element).intlTelInput('setNumber', value);
-          }
-        });
-      }
-    };
-  }]);
+export const InternationalTelephoneInputModule = angular
+  .module('palaso.ui.intlTelInput', [])
+  .directive('puiIntlTelInput', PuiIntlTelInput)
+  .name;

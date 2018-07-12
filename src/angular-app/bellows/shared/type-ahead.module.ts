@@ -1,192 +1,193 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.typeahead', [])
-  .directive('puiTypeahead', ['$timeout', function ($timeout) {
-    return {
-      restrict: 'E',
-      transclude: true,
-      replace: true,
-      templateUrl: '/angular-app/bellows/shared/type-ahead.component.html',
-      scope: {
-        search: '=',
-        select: '=',
-        items: '=',
-        term: '=term',
-        placeholder: '='
-      },
-      controller: ['$scope', function ($scope) {
-        $scope.hide = false;
-        this.activate = function (item) {
-          $scope.active = item;
-        };
+export function PuiTypeahead($interval: angular.IIntervalService): angular.IDirective {
+  return {
+    restrict: 'E',
+    transclude: true,
+    replace: true,
+    templateUrl: '/angular-app/bellows/shared/type-ahead.component.html',
+    scope: {
+      search: '=',
+      select: '=',
+      items: '=',
+      term: '=term',
+      placeholder: '='
+    },
+    controller: ['$scope', function TypeAheadController($scope: any) {
+      $scope.hide = false;
 
-        this.activateNextItem = function () {
-          var index = $scope.items.indexOf($scope.active);
-          this.activate($scope.items[(index + 1) % $scope.items.length]);
-        };
+      this.activate = function activate(item: any): void {
+        $scope.active = item;
+      };
 
-        this.activatePreviousItem = function () {
-          var index = $scope.items.indexOf($scope.active);
-          this.activate($scope.items[index === 0 ? $scope.items.length - 1 : index - 1]);
-        };
+      this.activateNextItem = function activateNextItem(): void {
+        const index = $scope.items.indexOf($scope.active);
+        this.activate($scope.items[(index + 1) % $scope.items.length]);
+      }.bind(this);
 
-        this.isActive = function (item) {
-          return $scope.active === item;
-        };
+      this.activatePreviousItem = function activatePreviousItem(): void {
+        const index = $scope.items.indexOf($scope.active);
+        this.activate($scope.items[index === 0 ? $scope.items.length - 1 : index - 1]);
+      }.bind(this);
 
-        this.selectActive = function () {
-          this.select($scope.active);
-        };
+      this.isActive = function isActive(item: any): boolean {
+        return $scope.active === item;
+      };
 
-        this.select = function (item) {
+      this.selectActive = function selectActive(): void {
+        this.select($scope.active);
+      }.bind(this);
+
+      this.select = function select(item: any): void {
+        $scope.hide = true;
+        $scope.focused = true;
+        $scope.select(item);
+      };
+
+      $scope.isVisible = function isVisible(): void {
+        return !$scope.hide && ($scope.focused || $scope.mousedOver);
+      };
+
+      $scope.query = function query(): void {
+        if ($scope.term) {
+          $scope.hide = false;
+          $scope.search($scope.term.normalize());
+        } else {
+          // Hide when no search term
           $scope.hide = true;
-          $scope.focused = true;
-          $scope.select(item);
-        };
+        }
+      };
 
-        $scope.isVisible = function () {
-          return !$scope.hide && ($scope.focused || $scope.mousedOver);
-        };
+      $scope.clearSearch = function clearSearch(): void {
+        $scope.term = '';
+        $scope.items = [];
+      };
+    }],
 
-        $scope.query = function () {
-          if ($scope.term) {
-            $scope.hide = false;
-            $scope.search($scope.term.normalize());
-          } else {
-            // Hide when no search term
-            $scope.hide = true;
-          }
-        };
+    link(scope: any, element, attrs, controller: any) {
+      const $input = element.find('#typeaheadInput');
+      const $list = element.find('.typeahead-results');
+      $input.bind('focus', () => {
+        scope.$apply(() => {
+          scope.focused = true;
+        });
+      });
 
-        $scope.clearSearch = function clearSearch() {
-          $scope.term = '';
-          $scope.items = [];
-        };
-      }],
+      $input.bind('blur', () => {
+        scope.$apply(() => {
+          scope.focused = false;
+        });
+      });
 
-      link: function (scope, element, attrs, controller) {
-        var $input = element.find('#typeaheadInput');
-        var $list = element.find('.typeahead-results');
-        $input.bind('focus', function () {
-          scope.$apply(function () {
-            scope.focused = true;
+      $list.bind('mouseover', () => {
+        scope.$apply(() => {
+          scope.mousedOver = true;
+        });
+      });
+
+      $list.bind('mouseleave', () => {
+        scope.$apply(() => {
+          scope.mousedOver = false;
+        });
+      });
+
+      $input.bind('keyup', (e: Event) => {
+        if ((e as KeyboardEvent).keyCode === 9 || (e as KeyboardEvent).keyCode === 13) {
+          scope.$apply(() => {
+            controller.selectActive();
           });
-        });
+        }
 
-        $input.bind('blur', function () {
-          scope.$apply(function () {
-            scope.focused = false;
+        if ((e as KeyboardEvent).keyCode === 27) {
+          scope.$apply(() => {
+            scope.hide = true;
           });
-        });
+        }
+      });
 
-        $list.bind('mouseover', function () {
-          scope.$apply(function () {
-            scope.mousedOver = true;
+      $input.bind('keydown', e => {
+        if (e.keyCode === 9 || e.keyCode === 13 || e.keyCode === 27) {
+          e.preventDefault();
+        }
+
+        if (e.keyCode === 40) {
+          e.preventDefault();
+          scope.$apply(() => {
+            controller.activateNextItem();
           });
-        });
+        }
 
-        $list.bind('mouseleave', function () {
-          scope.$apply(function () {
-            scope.mousedOver = false;
+        if (e.keyCode === 38) {
+          e.preventDefault();
+          scope.$apply(() => {
+            controller.activatePreviousItem();
           });
-        });
+        }
+      });
 
-        $input.bind('keyup', function (e) {
-          if (e.keyCode === 9 || e.keyCode === 13) {
-            scope.$apply(function () {
-              controller.selectActive();
-            });
-          }
+      scope.$watch('items', (items: any[]) => {
+        if (!items) return;
+        controller.activate(items.length ? items[0] : null);
+      });
 
-          if (e.keyCode === 27) {
-            scope.$apply(function () {
-              scope.hide = true;
-            });
-          }
-        });
+      scope.$watch('focused', (focused: boolean) => {
+        if (focused) {
+          $interval(() => {
+            $input.focus();
+          }, 0, 1, false);
+        }
+      });
 
-        $input.bind('keydown', function (e) {
-          if (e.keyCode === 9 || e.keyCode === 13 || e.keyCode === 27) {
-            e.preventDefault();
-          }
-
-          if (e.keyCode === 40) {
-            e.preventDefault();
-            scope.$apply(function () {
-              controller.activateNextItem();
-            });
-          }
-
-          if (e.keyCode === 38) {
-            e.preventDefault();
-            scope.$apply(function () {
-              controller.activatePreviousItem();
-            });
-          }
-        });
-
-        scope.$watch('items', function (items) {
-          if (!items) return;
-          controller.activate(items.length ? items[0] : null);
-        });
-
-        scope.$watch('focused', function (focused) {
-          if (focused) {
-            $timeout(function () {
-              $input.focus();
-            }, 0, false);
-          }
-        });
-
-        scope.$watch('isVisible()', function (visible) {
-          if (visible) {
-            var pos = $input.position();
-            var height = $input[0].offsetHeight;
-            $list.css({
-              top: pos.top + height,
-              left: pos.left,
-              position: 'absolute',
-              display: 'block'
-            });
-          } else {
-            $list.css('display', 'none');
-          }
-        });
-      }
-    };
-  }])
-
-  .directive('typeaheadItem', function () {
-    return {
-      require: '^puiTypeahead',
-      link: function (scope, element, attrs, controller) {
-
-        var item = scope.$eval(attrs.typeaheadItem);
-
-        scope.$watch(function () {
-          return controller.isActive(item);
-        }, function (active) {
-
-          if (active) {
-            element.addClass('active');
-          } else {
-            element.removeClass('active');
-          }
-        });
-
-        element.bind('mouseenter', function () {
-          scope.$apply(function () {
-            controller.activate(item);
+      scope.$watch('isVisible()', (visible: boolean) => {
+        if (visible) {
+          const pos = $input.position();
+          const height = $input[0].offsetHeight;
+          $list.css({
+            top: pos.top + height,
+            left: pos.left,
+            position: 'absolute',
+            display: 'block'
           });
-        });
+        } else {
+          $list.css('display', 'none');
+        }
+      });
+    }
+  };
+}
+PuiTypeahead.$inject = ['$interval'];
 
-        element.bind('click', function () {
-          scope.$apply(function () {
-            controller.select(item);
-          });
-        });
-      }
-    };
-  })
+export function TypeaheadItem(): angular.IDirective {
+  return {
+    require: '^puiTypeahead',
+    link(scope, element, attrs, controller: any) {
+      const item = scope.$eval(attrs.typeaheadItem);
 
-  ;
+      scope.$watch(() => controller.isActive(item), active => {
+        if (active) {
+          element.addClass('active');
+        } else {
+          element.removeClass('active');
+        }
+      });
+
+      element.bind('mouseenter', () => {
+        scope.$apply(() => {
+          controller.activate(item);
+        });
+      });
+
+      element.bind('click', () => {
+        scope.$apply(() => {
+          controller.select(item);
+        });
+      });
+    }
+  };
+}
+
+export const TypeAheadModule = angular
+  .module('palaso.ui.typeahead', [])
+  .directive('puiTypeahead', PuiTypeahead)
+  .directive('typeaheadItem', TypeaheadItem)
+  .name;

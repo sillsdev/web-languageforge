@@ -1,40 +1,52 @@
-'use strict';
+import * as angular from 'angular';
 
-angular.module('palaso.ui.archiveProject', ['coreModule'])
-  .directive('puiArchiveProject', [function () {
-    return {
-      restrict: 'E',
-      templateUrl: '/angular-app/bellows/shared/archive-project.component.html',
-      scope: {
-        puiActionInProgress: '='
-      },
-      controller: ['$scope', 'projectService',
-        'silNoticeService', 'modalService', '$window',
-        function ($scope, projectService, notice, modalService, $window) {
+import {ProjectService} from '../core/api/project.service';
+import {CoreModule} from '../core/core.module';
+import {ModalService} from '../core/modal/modal.service';
+import {NoticeService} from '../core/notice/notice.service';
 
-          // Archive the project
-          $scope.archiveProject = function () {
-            var message = 'Are you sure you want to archive this project?';
-            var modalOptions = {
-              closeButtonText: 'Cancel',
-              actionButtonText: 'Archive',
-              headerText: 'Archive Project?',
-              bodyText: message
-            };
-            modalService.showModal({}, modalOptions).then(function () {
-              $scope.puiActionInProgress = true;
-              projectService.archiveProject(function (result) {
-                if (result.ok) {
-                  notice.push(notice.SUCCESS, 'The project was archived successfully');
-                  $window.location.href = '/app/projects';
-                } else {
-                  $scope.puiActionInProgress = false;
-                }
-              });
-            }, angular.noop);
-          };
-        }]
+export class ArchiveProjectController implements angular.IController {
+  puiActionInProgress: boolean;
+
+  static $inject: string[] = ['$scope', '$window', 'projectService',
+    'silNoticeService', 'modalService'];
+  constructor(private readonly $scope: angular.IScope, private readonly $window: angular.IWindowService,
+              private readonly projectService: ProjectService, private readonly notice: NoticeService,
+              private readonly modalService: ModalService) { }
+
+  archiveProject() {
+    const modalOptions = {
+      closeButtonText: 'Cancel',
+      actionButtonText: 'Archive',
+      headerText: 'Archive Project?',
+      bodyText: 'Are you sure you want to archive this project?'
     };
-  }])
+    this.modalService.showModal({}, modalOptions).then(() => {
+      this.puiActionInProgress = true;
+      this.projectService.archiveProject().then(result => {
+        if (result.ok) {
+          this.notice.push(this.notice.SUCCESS, 'The project was archived successfully');
+          this.$window.location.href = '/app/projects';
+        } else {
+          this.puiActionInProgress = false;
+        }
+      });
+    }, () => {});
+  }
 
-;
+}
+
+export const ArchiveProjectComponent: angular.IComponentOptions = {
+  bindings: {
+    puiActionInProgress: '<'
+  },
+  controller: ArchiveProjectController,
+  templateUrl: '/angular-app/bellows/shared/archive-project.component.html'
+};
+
+export const ArchiveProjectModule = angular
+  .module('palaso.ui.archiveProject', [
+    CoreModule
+  ])
+  .component('puiArchiveProject', ArchiveProjectComponent)
+  .name;
