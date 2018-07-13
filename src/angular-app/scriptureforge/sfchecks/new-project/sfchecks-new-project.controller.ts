@@ -6,7 +6,7 @@ import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
 import {PuiUtilityModule} from '../../../bellows/shared/utils/pui-utils.module';
 
-export const LexiconNewProjectModule = angular
+export const SfChecksNewProjectModule = angular
   .module('sfchecks-new-project', [
     'ui.bootstrap',
     uiRouter,
