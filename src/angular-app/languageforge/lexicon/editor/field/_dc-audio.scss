@@ -9,9 +9,14 @@ dc-audio {
   background-color: #f6f6f6;
   border: 1px solid #ccc;
   border-radius: 0 4px 4px 0;
+  display: flex;
 
   .uploadCtl {
     width: 100%;
+  }
+
+  .player, pui-audio-recorder {
+    flex-grow: 1;
   }
 
   .player {
@@ -25,8 +30,9 @@ dc-audio {
     }
   }
 
-  .audioProgress {
+  .audio-progress {
     font-weight: normal;
+    min-width: 5em;
   }
 
   .upload-controls {
@@ -68,8 +74,9 @@ dc-audio {
     margin-left: 5px;
   }
 
-  /* mock upload */
-  input {
+  .seek-slider {
     display: block;
+    width: 100%;
+    margin-right: 0.1em;
   }
 }
