@@ -519,7 +519,7 @@ describe('Activity E2E Test', async () => {
 
   function verifyFilters(username: string) {
     it('Verify filters work on the activity page', async () => {
-      await activityPage.get();
+      await activityPage.get().then(async () =>
       await activityPage.activityGroups.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
         const activityGroup = SfActivityPage.getPartsOfActivity(item);
@@ -529,10 +529,11 @@ describe('Activity E2E Test', async () => {
       }).then(async (activityItems: ElementFinder[]) => {
         // Currently in "All Activity" mode, so should see items without our username
         await expect<any>(activityItems.length).toBeGreaterThan(0);
-      });
-
+      }));
       // Show only my activity
       await activityPage.clickOnShowOnlyMyActivity();
+      await browser.wait(ExpectedConditions.elementToBeClickable(activityPage.filterByUser),
+          constants.conditionTimeout).then(async () =>
       await activityPage.activityGroups.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
         const activityGroup = SfActivityPage.getPartsOfActivity(item);
@@ -542,10 +543,11 @@ describe('Activity E2E Test', async () => {
       }).then(async (activityItems: ElementFinder[]) => {
         // Currently in "Only My Activity" mode, so should see NO items without our username
         await expect<any>(activityItems.length).toEqual(0);
-      });
-
+      }));
       // Show all activity
       await activityPage.clickOnAllActivity();
+      await browser.wait(ExpectedConditions.elementToBeClickable(activityPage.filterByUser),
+        constants.conditionTimeout).then(async () =>
       await activityPage.activityGroups.filter((item: ElementFinder) => {
         // Look for activity items that do not contain our username
         const activityGroup = SfActivityPage.getPartsOfActivity(item);
@@ -555,7 +557,7 @@ describe('Activity E2E Test', async () => {
       }).then(async (activityItems: ElementFinder[]) => {
         // Currently in "All Activity" mode, so should see items without our username
         await expect<any>(activityItems.length).toBeGreaterThan(0);
-      });
+      }));
     });
   }
 
