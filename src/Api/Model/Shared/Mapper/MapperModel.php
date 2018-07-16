@@ -95,7 +95,24 @@ class MapperModel extends ObjectForEncoding
         if (Id::isEmpty($this->id)) {
             $this->dateCreated = $now;
         }
-        $this->id->id = $this->_mapper->write($this, $this->id->id);
+        $sensitiveProperties = $this->getSensitiveProperties();
+        $sensitiveSubproperties = [];
+        foreach ($sensitiveProperties as $property) {
+            $value = $this->$property;
+            if (is_a($value, 'Api\Model\Shared\Mapper\ArrayOf')) {
+                foreach ($value as $item) {
+                    if (is_a($item, 'Api\Model\Shared\Mapper\ObjectForEncoding')) {
+                        foreach ($item->getSensitiveProperties() as $subProperty) {
+                            if (! array_key_exists($property, $sensitiveSubproperties)) {
+                                $sensitiveSubproperties[$property] = [];
+                            }
+                            $sensitiveSubproperties[$property][] = $subProperty;
+                        }
+                    }
+                }
+            }
+        }
+        $this->id->id = $this->_mapper->write($this, $this->id->id, $sensitiveProperties, $sensitiveSubproperties);
 
         return $this->id->id;
     }
