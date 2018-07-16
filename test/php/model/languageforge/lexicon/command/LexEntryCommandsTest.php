@@ -327,6 +327,44 @@ class LexEntryCommandsTest extends TestCase
         ], $withLabels);
     }
 
+    public function testUpdateEntry_RearrangeTwoSensesOutOfTwoTotal_ProducesTwoMovedDifferences()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense1 = new LexSense();
+        $sense1->definition->form('en', 'apple');
+        $entry->senses[] = $sense1;
+        $sense2 = new LexSense();
+        $sense2->definition->form('en', 'also an apple');
+        $entry->senses[] = $sense2;
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $sense1Json = array_shift($params['senses']);
+        $params['senses'][] = $sense1Json;
+
+        $userId = self::$environ->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = new LexEntryModel($project, $entryId);
+        $differences = $entry->calculateDifferences($updatedEntry);
+        $this->assertEquals([
+            'moved.senses@0#'  . $sense1->guid => '1',
+            'moved.senses@1#'  . $sense2->guid => '0',
+        ], $differences);
+        $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
+        $this->assertEquals([
+            'moved.senses@0#'  . $sense1->guid => '1',
+            'moved.senses@1#'  . $sense2->guid => '0',
+            'fieldLabel.senses@0#' . $sense1->guid => 'Meaning',
+            'fieldLabel.senses@1#' . $sense2->guid => 'Meaning',
+        ], $withLabels);
+    }
+
     public function testUpdateEntry_DeleteFirstSenseOfTwo_ProducesBothDeletedAndMovedDifferences()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -343,7 +381,7 @@ class LexEntryCommandsTest extends TestCase
         $entryId = $entry->write();
 
         $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
-        unset($params['senses'][0]);
+        array_shift($params['senses']);
 
         $userId = self::$environ->createUser('john', 'john', 'john');
 
@@ -463,7 +501,6 @@ class LexEntryCommandsTest extends TestCase
         ], $withLabels);
     }
 
-    /* Re-enable this test once the "rearrange senses" feature is working - 2018-06 RM
     public function testUpdateEntry_AddSenseInFirstPosition_ProducesAddedDifferenceAndMovedDifference()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -522,9 +559,175 @@ class LexEntryCommandsTest extends TestCase
             'fieldLabel.senses@0#' . $newSenseGuid . '.generalNote.en' => 'General Note'
         ], $withLabels);
     }
-    */
 
-    // marker
+    public function testUpdateEntry_AddOneSenseDeleteOneSenseUpdateOneSenseAndRearrange_ProducesAddedDifferenceAndDeletedDifferenceAndMovedDifference()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $senseA = new LexSense();
+        $senseA->definition->form('en', 'A');
+        $entry->senses[] = $senseA;
+        $senseB = new LexSense();
+        $senseB->definition->form('en', 'B');
+        $entry->senses[] = $senseB;
+        $senseC = new LexSense();
+        $senseC->definition->form('en', 'C');
+        $entry->senses[] = $senseC;
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+
+        // Set up senses for
+        // Original senses: A, B, C
+        // New senses: D, C, A (where D is a new sense)
+        list($jsonSenseA, $jsonSenseB, $jsonSenseC) = $params['senses'];
+        $jsonSenseD = [
+            'definition' => [
+                'en' => ['value' => 'D'],
+            ],
+        ];
+        $jsonSenseC['definition']['en']['value'] = 'C2';
+        $params['senses'] = [$jsonSenseD, $jsonSenseC, $jsonSenseA];
+
+        $userId = self::$environ->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = new LexEntryModel($project, $entryId);
+        $newSenseGuid = $updatedEntry->senses[0]->guid;
+
+        // Updated entry should have GUIDs for D, C and A in that order, and definitions that line up
+        $this->assertEquals('D',  $updatedEntry->senses[0]->definition['en']->value);
+        $this->assertEquals('C2', $updatedEntry->senses[1]->definition['en']->value);
+        $this->assertEquals('A',  $updatedEntry->senses[2]->definition['en']->value);
+        $this->assertEquals($newSenseGuid, $updatedEntry->senses[0]->guid);
+        $this->assertEquals($senseC->guid, $updatedEntry->senses[1]->guid);
+        $this->assertEquals($senseA->guid, $updatedEntry->senses[2]->guid);
+
+        $differences = $entry->calculateDifferences($updatedEntry);
+        $this->assertEquals([
+            'moved.senses@0#'   . $senseA->guid => 2,
+            'deleted.senses@1#' . $senseB->guid => 'B',
+            'moved.senses@2#'   . $senseC->guid => 1,
+            'added.senses@0#'   . $newSenseGuid => 'D',
+            'oldValue.senses@0#' . $newSenseGuid . '.definition.en' => '',
+            'newValue.senses@0#' . $newSenseGuid . '.definition.en' => 'D',
+            'oldValue.senses@1#' . $senseB->guid . '.definition.en' => 'B',
+            'newValue.senses@1#' . $senseB->guid . '.definition.en' => '',
+            'oldValue.senses@2#' . $senseC->guid . '.definition.en' => 'C',
+            'newValue.senses@2#' . $senseC->guid . '.definition.en' => 'C2',
+        ], $differences);
+        $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
+        $this->assertEquals([
+            'moved.senses@0#'   . $senseA->guid => 2,
+            'deleted.senses@1#' . $senseB->guid => 'B',
+            'moved.senses@2#'   . $senseC->guid => 1,
+            'added.senses@0#'   . $newSenseGuid => 'D',
+            'oldValue.senses@0#' . $newSenseGuid . '.definition.en' => '',
+            'newValue.senses@0#' . $newSenseGuid . '.definition.en' => 'D',
+            'oldValue.senses@1#' . $senseB->guid . '.definition.en' => 'B',
+            'newValue.senses@1#' . $senseB->guid . '.definition.en' => '',
+            'oldValue.senses@2#' . $senseC->guid . '.definition.en' => 'C',
+            'newValue.senses@2#' . $senseC->guid . '.definition.en' => 'C2',
+            'fieldLabel.senses@0#' . $senseA->guid => 'Meaning',
+            'fieldLabel.senses@1#' . $senseB->guid => 'Meaning',
+            'fieldLabel.senses@1#' . $senseB->guid . '.definition.en' => 'Definition',
+            'fieldLabel.senses@2#' . $senseC->guid => 'Meaning',
+            'fieldLabel.senses@2#' . $senseC->guid . '.definition.en' => 'Definition',
+            'fieldLabel.senses@0#' . $newSenseGuid => 'Meaning',
+            'fieldLabel.senses@0#' . $newSenseGuid . '.definition.en' => 'Definition',
+        ], $withLabels);
+    }
+
+    public function testUpdateEntry_AddOneExampleDeleteOneExampleUpdateOneExampleAndRearrange_ProducesAddedDifferenceAndDeletedDifferenceAndMovedDifference()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $sense = new LexSense();
+        $sense->definition->form('en', 'apple');
+        $entry->senses[] = $sense;
+        $exampleA = new LexExample();
+        $exampleA->sentence->form('en', 'A');
+        $sense->examples[] = $exampleA;
+        $exampleB = new LexExample();
+        $exampleB->sentence->form('en', 'B');
+        $sense->examples[] = $exampleB;
+        $exampleC = new LexExample();
+        $exampleC->sentence->form('en', 'C');
+        $sense->examples[] = $exampleC;
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+
+        // Set up senses for
+        // Original senses: A, B, C
+        // New senses: D, C, A (where D is a new sense)
+        list($jsonExampleA, $jsonExampleB, $jsonExampleC) = $params['senses'][0]['examples'];
+        $jsonExampleD = [
+            'sentence' => [
+                'en' => ['value' => 'D'],
+            ],
+        ];
+        $jsonExampleC['sentence']['en']['value'] = 'C2';
+        $params['senses'][0]['examples'] = [$jsonExampleD, $jsonExampleC, $jsonExampleA];
+
+        $userId = self::$environ->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = new LexEntryModel($project, $entryId);
+        $newExampleGuid = $updatedEntry->senses[0]->examples[0]->guid;
+
+        // Updated entry should have GUIDs for D, C and A in that order, and sentences that line up
+        $this->assertEquals('D',  $updatedEntry->senses[0]->examples[0]->sentence['en']->value);
+        $this->assertEquals('C2', $updatedEntry->senses[0]->examples[1]->sentence['en']->value);
+        $this->assertEquals('A',  $updatedEntry->senses[0]->examples[2]->sentence['en']->value);
+        $this->assertEquals($newExampleGuid, $updatedEntry->senses[0]->examples[0]->guid);
+        $this->assertEquals($exampleC->guid, $updatedEntry->senses[0]->examples[1]->guid);
+        $this->assertEquals($exampleA->guid, $updatedEntry->senses[0]->examples[2]->guid);
+
+        $differences = $entry->calculateDifferences($updatedEntry);
+        $this->assertEquals([
+            'moved.senses@0#' . $sense->guid . '.examples@0#'   . $exampleA->guid => 2,
+            'deleted.senses@0#' . $sense->guid . '.examples@1#' . $exampleB->guid => 'B',
+            'moved.senses@0#' . $sense->guid . '.examples@2#'   . $exampleC->guid => 1,
+            'added.senses@0#' . $sense->guid . '.examples@0#'   . $newExampleGuid => 'D',
+            'oldValue.senses@0#' . $sense->guid . '.examples@0#' . $newExampleGuid . '.sentence.en' => '',
+            'newValue.senses@0#' . $sense->guid . '.examples@0#' . $newExampleGuid . '.sentence.en' => 'D',
+            'oldValue.senses@0#' . $sense->guid . '.examples@1#' . $exampleB->guid . '.sentence.en' => 'B',
+            'newValue.senses@0#' . $sense->guid . '.examples@1#' . $exampleB->guid . '.sentence.en' => '',
+            'oldValue.senses@0#' . $sense->guid . '.examples@2#' . $exampleC->guid . '.sentence.en' => 'C',
+            'newValue.senses@0#' . $sense->guid . '.examples@2#' . $exampleC->guid . '.sentence.en' => 'C2',
+        ], $differences);
+        $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
+        $this->assertEquals([
+            'moved.senses@0#' . $sense->guid . '.examples@0#'   . $exampleA->guid => 2,
+            'deleted.senses@0#' . $sense->guid . '.examples@1#' . $exampleB->guid => 'B',
+            'moved.senses@0#' . $sense->guid . '.examples@2#'   . $exampleC->guid => 1,
+            'added.senses@0#' . $sense->guid . '.examples@0#'   . $newExampleGuid => 'D',
+            'oldValue.senses@0#' . $sense->guid . '.examples@0#' . $newExampleGuid . '.sentence.en' => '',
+            'newValue.senses@0#' . $sense->guid . '.examples@0#' . $newExampleGuid . '.sentence.en' => 'D',
+            'oldValue.senses@0#' . $sense->guid . '.examples@1#' . $exampleB->guid . '.sentence.en' => 'B',
+            'newValue.senses@0#' . $sense->guid . '.examples@1#' . $exampleB->guid . '.sentence.en' => '',
+            'oldValue.senses@0#' . $sense->guid . '.examples@2#' . $exampleC->guid . '.sentence.en' => 'C',
+            'newValue.senses@0#' . $sense->guid . '.examples@2#' . $exampleC->guid . '.sentence.en' => 'C2',
+            'fieldLabel.senses@0#' . $sense->guid . '.examples@0#' . $exampleA->guid => 'Example',
+            'fieldLabel.senses@0#' . $sense->guid . '.examples@1#' . $exampleB->guid => 'Example',
+            'fieldLabel.senses@0#' . $sense->guid . '.examples@1#' . $exampleB->guid . '.sentence.en' => 'Sentence',
+            'fieldLabel.senses@0#' . $sense->guid . '.examples@2#' . $exampleC->guid => 'Example',
+            'fieldLabel.senses@0#' . $sense->guid . '.examples@2#' . $exampleC->guid . '.sentence.en' => 'Sentence',
+            'fieldLabel.senses@0#' . $sense->guid . '.examples@0#' . $newExampleGuid => 'Example',
+            'fieldLabel.senses@0#' . $sense->guid . '.examples@0#' . $newExampleGuid . '.sentence.en' => 'Sentence',
+        ], $withLabels);
+    }
+
+    // TODO: Write one more test, that rearranges both senses *and* examples at the same time
 
     public function testUpdateEntry_DeleteOnlyExample_ProducesOneDeletedDifferenceForTheExampleAndOldValueDifferencesForAllFields()
     {
@@ -917,7 +1120,6 @@ class LexEntryCommandsTest extends TestCase
         ], $withLabels);
     }
 
-    /* Re-enable this test once the "rearrange senses" feature is working - 2018-06 RM
     public function testUpdateEntry_AddNewExampleInFirstPosition_ProducesNewValuesForExampleFields()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -960,11 +1162,11 @@ class LexEntryCommandsTest extends TestCase
             'added.senses@0#' . $sense->guid . '.examples@0#' . $newExampleGuid => 'manger une pomme',
             'oldValue.senses@0#' . $sense->guid . '.examples@0#' . $newExampleGuid . '.sentence.fr' => '',
             'newValue.senses@0#' . $sense->guid . '.examples@0#' . $newExampleGuid . '.sentence.fr' => 'manger une pomme',
+            'fieldLabel.senses@0#' . $sense->guid . '.examples@0#' . $example2->guid => 'Example',
             'fieldLabel.senses@0#' . $sense->guid . '.examples@0#' . $newExampleGuid => 'Example',
             'fieldLabel.senses@0#' . $sense->guid . '.examples@0#' . $newExampleGuid . '.sentence.fr' => 'Sentence',
         ], $withLabels);
     }
-    */
 
     /* Ignore test for send receive v1.1 since dirtySR counter is not being incremented on edit. IJH 2015-02
         public function testUpdateEntry_ProjectHasSendReceive_EntryHasGuidAndDirtySRIncremented()
