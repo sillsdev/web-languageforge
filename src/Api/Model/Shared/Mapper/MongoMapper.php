@@ -503,11 +503,19 @@ class MongoMapper
         foreach ($sensitiveSubproperties as $property => $subProperties) {
             foreach ($data[$property] as $index => $propData) {
                 foreach ($subProperties as $subProperty) {
-                    if (array_key_exists($property, $oldMongoData)) {
+                    if (!array_key_exists($subProperty, $propData)) {
+                        // No rearranging needed if we're deleting the entire property
+                        continue;
+                    }
+                    if (! array_key_exists($property, $oldMongoData) || empty($oldMongoData[$property] || empty($oldMongoData[$property][$index]))) {
+                        // No need to rearrange an empty array
+                        continue;
+                    } else {
                         // We can now count on the indices matching up
                         $oldPropData = $oldMongoData[$property][$index];
-                    } else {
-                        // No need to rearrange an empty array
+                    }
+                    if (!array_key_exists($subProperty, $oldPropData)) {
+                        // No rearranging needed if the property didn't exist before
                         continue;
                     }
                     $this->rearrangeOne($oldPropData, $propData, $id, $property, $index, $subProperty);
@@ -639,12 +647,7 @@ class MongoMapper
     }
 
     protected function reorderData($orderMapping, $data) {
-        if (count($orderMapping) != count($data)) {
-            // TODO: Move this check to where it belongs, or delete it if we can guarantee that it won't be needed (I think we can guarantee that)
-            throw new \LengthException("Each index in data needs to be mapped");
-        }
-
-        // Ensure that indices will be returned in order
+        // Ensure that indices will be returned in order by pre-allocating the indices of the array
         $result = array_fill(0, count($orderMapping), null);
 
         foreach ($orderMapping as $oldIndex => $newIndex) {
