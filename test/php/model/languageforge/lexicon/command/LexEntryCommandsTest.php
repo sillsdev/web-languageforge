@@ -727,7 +727,270 @@ class LexEntryCommandsTest extends TestCase
         ], $withLabels);
     }
 
-    // TODO: Write one more test, that rearranges both senses *and* examples at the same time
+    public function testUpdateEntry_AddDeleteAndRearrangeBothSensesAndExamples_EverythingIsUpdatedCorrectly()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        // Initial setup: senses A, B, C, each with three examples (A1, A2 & A3, etc)
+        // We will delete sense C, add sense D (with one example D1) between A & B,
+        // and swap B & A so that they become B, D, A. We will also edit A by deleting A1, adding A4 after A2, modifying A2, and rearranging to form A3, A2b, A4.
+        // And we will edit B by swapping B2 and B1, inserting B4 before B3 and modifying B1, so you get B2, B1b, B4, B3.
+        // All of that in a single update.
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $senseA = new LexSense();
+        $senseA->definition->form('en', 'A');
+        $entry->senses[] = $senseA;
+        $senseB = new LexSense();
+        $senseB->definition->form('en', 'B');
+        $entry->senses[] = $senseB;
+        $senseC = new LexSense();
+        $senseC->definition->form('en', 'C');
+        $entry->senses[] = $senseC;
+
+        $exampleA1 = new LexExample();
+        $exampleA1->sentence->form('en', 'A1');
+        $senseA->examples[] = $exampleA1;
+        $exampleA2 = new LexExample();
+        $exampleA2->sentence->form('en', 'A2');
+        $senseA->examples[] = $exampleA2;
+        $exampleA3 = new LexExample();
+        $exampleA3->sentence->form('en', 'A3');
+        $senseA->examples[] = $exampleA3;
+
+        $exampleB1 = new LexExample();
+        $exampleB1->sentence->form('en', 'B1');
+        $senseB->examples[] = $exampleB1;
+        $exampleB2 = new LexExample();
+        $exampleB2->sentence->form('en', 'B2');
+        $senseB->examples[] = $exampleB2;
+        $exampleB3 = new LexExample();
+        $exampleB3->sentence->form('en', 'B3');
+        $senseB->examples[] = $exampleB3;
+
+        $exampleC1 = new LexExample();
+        $exampleC1->sentence->form('en', 'C1');
+        $senseC->examples[] = $exampleC1;
+        $exampleC2 = new LexExample();
+        $exampleC2->sentence->form('en', 'C2');
+        $senseC->examples[] = $exampleC2;
+        $exampleC3 = new LexExample();
+        $exampleC3->sentence->form('en', 'C3');
+        $senseC->examples[] = $exampleC3;
+
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+
+        // Original senses: A, B, C
+        list($jsonSenseA, $jsonSenseB, $jsonSenseC) = $params['senses'];
+
+        // New sense D has just one example
+        $jsonSenseD = [
+            'definition' => [
+                'en' => ['value' => 'D'],
+            ],
+            'examples' => [
+                ['sentence' => ['en' => ['value' => 'D1']] ]
+            ]
+        ];
+
+        // Sense C will be deleted
+
+        // Sense B has definition and first example modified, then examples rearranged from B1, B2, B3 into B2, B1b, B4, B3
+        list($jsonExampleB1, $jsonExampleB2, $jsonExampleB3) = $jsonSenseB['examples'];
+        $jsonExampleB1['sentence']['en']['value'] = 'B1b';
+        $jsonExampleB4 = [ 'sentence' => ['en' => ['value' => 'B4']] ];
+        $jsonSenseB['definition']['en']['value'] = 'B modified';
+        $jsonSenseB['examples'] = [$jsonExampleB2, $jsonExampleB1, $jsonExampleB4, $jsonExampleB3];
+
+        // Sense A will have first example deleted, second example modified, a fourth example added, and rearranging to form A4, A3, A2b.
+        list($jsonExampleA1, $jsonExampleA2, $jsonExampleA3) = $jsonSenseA['examples'];
+        $jsonExampleA2['sentence']['en']['value'] = 'A2b';
+        $jsonExampleA4 = [ 'sentence' => ['en' => ['value' => 'A4']] ];
+
+        $jsonSenseA['examples'] = [$jsonExampleA4, $jsonExampleA3, $jsonExampleA2];
+
+        // Finally, senses are rearranged from A, B, C into B, D, A (one added, one removed, rest reordered)
+        $params['senses'] = [$jsonSenseB, $jsonSenseD, $jsonSenseA];
+
+        $userId = self::$environ->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = new LexEntryModel($project, $entryId);
+        $senseD = $updatedEntry->senses[1];
+
+        // Updated entry should have GUIDs for B, D and A in that order, and definitions that line up
+        $this->assertEquals('B modified', $updatedEntry->senses[0]->definition['en']->value);
+        $this->assertEquals('D', $updatedEntry->senses[1]->definition['en']->value);
+        $this->assertEquals('A', $updatedEntry->senses[2]->definition['en']->value);
+        $this->assertEquals($senseB->guid, $updatedEntry->senses[0]->guid);
+        $this->assertEquals($senseD->guid, $updatedEntry->senses[1]->guid);
+        $this->assertEquals($senseA->guid, $updatedEntry->senses[2]->guid);
+
+        // Updated entry should also have examples in right order: B2, B1b, B4, B3, then D1, then A4, A3, A2b, with GUIDs still corresponding to original examples.
+        $exampleA4 = $updatedEntry->senses[2]->examples[0];
+        $exampleB4 = $updatedEntry->senses[0]->examples[2];
+        $exampleD1 = $senseD->examples[0];
+
+        $this->assertEquals('B2', $updatedEntry->senses[0]->examples[0]->sentence['en']->value);
+        $this->assertEquals('B1b',$updatedEntry->senses[0]->examples[1]->sentence['en']->value);
+        $this->assertEquals('B4', $updatedEntry->senses[0]->examples[2]->sentence['en']->value);
+        $this->assertEquals('B3', $updatedEntry->senses[0]->examples[3]->sentence['en']->value);
+        $this->assertEquals('D1', $updatedEntry->senses[1]->examples[0]->sentence['en']->value);
+        $this->assertEquals('A4', $updatedEntry->senses[2]->examples[0]->sentence['en']->value);
+        $this->assertEquals('A3', $updatedEntry->senses[2]->examples[1]->sentence['en']->value);
+        $this->assertEquals('A2b',$updatedEntry->senses[2]->examples[2]->sentence['en']->value);
+
+        $this->assertEquals($exampleB2->guid, $updatedEntry->senses[0]->examples[0]->guid);
+        $this->assertEquals($exampleB1->guid, $updatedEntry->senses[0]->examples[1]->guid);
+        $this->assertEquals($exampleB4->guid, $updatedEntry->senses[0]->examples[2]->guid);
+        $this->assertEquals($exampleB3->guid, $updatedEntry->senses[0]->examples[3]->guid);
+        $this->assertEquals($exampleD1->guid, $updatedEntry->senses[1]->examples[0]->guid);
+        $this->assertEquals($exampleA4->guid, $updatedEntry->senses[2]->examples[0]->guid);
+        $this->assertEquals($exampleA3->guid, $updatedEntry->senses[2]->examples[1]->guid);
+        $this->assertEquals($exampleA2->guid, $updatedEntry->senses[2]->examples[2]->guid);
+
+        $differences = $entry->calculateDifferences($updatedEntry);
+        $this->assertEquals([
+            'moved.senses@0#'   . $senseA->guid => 2,
+            'moved.senses@1#'   . $senseB->guid => 0,
+            'deleted.senses@2#' . $senseC->guid => 'C',
+            'added.senses@1#'   . $senseD->guid => 'D',
+            'oldValue.senses@1#' . $senseB->guid . '.definition.en' => 'B',
+            'newValue.senses@1#' . $senseB->guid . '.definition.en' => 'B modified',
+            'oldValue.senses@2#' . $senseC->guid . '.definition.en' => 'C',
+            'newValue.senses@2#' . $senseC->guid . '.definition.en' => '',
+            'oldValue.senses@1#' . $senseD->guid . '.definition.en' => '',
+            'newValue.senses@1#' . $senseD->guid . '.definition.en' => 'D',
+            // Sense A: examples go from A1, A2, A3 to A4, A3, A2b.
+            'deleted.senses@0#' . $senseA->guid . '.examples@0#'   . $exampleA1->guid => 'A1',
+            'moved.senses@0#'   . $senseA->guid . '.examples@1#'   . $exampleA2->guid => 2,
+            'moved.senses@0#'   . $senseA->guid . '.examples@2#'   . $exampleA3->guid => 1,
+            'added.senses@2#'   . $senseA->guid . '.examples@0#'   . $exampleA4->guid => 'A4',
+            'oldValue.senses@0#'   . $senseA->guid . '.examples@0#'   . $exampleA1->guid . '.sentence.en' => 'A1',
+            'newValue.senses@0#'   . $senseA->guid . '.examples@0#'   . $exampleA1->guid . '.sentence.en' => '',
+            'oldValue.senses@0#'   . $senseA->guid . '.examples@1#'   . $exampleA2->guid . '.sentence.en' => 'A2',
+            'newValue.senses@0#'   . $senseA->guid . '.examples@1#'   . $exampleA2->guid . '.sentence.en' => 'A2b',
+            'oldValue.senses@0#'   . $senseA->guid . '.examples@0#'   . $exampleA4->guid . '.sentence.en' => '',
+            'newValue.senses@0#'   . $senseA->guid . '.examples@0#'   . $exampleA4->guid . '.sentence.en' => 'A4',
+            // From B1, B2, B3 to B2, B1b, B4, B3
+            'moved.senses@1#' . $senseB->guid . '.examples@0#'   . $exampleB1->guid => 1,
+            'moved.senses@1#' . $senseB->guid . '.examples@1#'   . $exampleB2->guid => 0,
+            'moved.senses@1#' . $senseB->guid . '.examples@2#'   . $exampleB3->guid => 3,
+            'added.senses@0#' . $senseB->guid . '.examples@2#'   . $exampleB4->guid => 'B4',
+            'oldValue.senses@1#' . $senseB->guid . '.examples@0#'   . $exampleB1->guid . '.sentence.en' => 'B1',
+            'newValue.senses@1#' . $senseB->guid . '.examples@0#'   . $exampleB1->guid . '.sentence.en' => 'B1b',
+            'oldValue.senses@1#' . $senseB->guid . '.examples@2#'   . $exampleB4->guid . '.sentence.en' => '',
+            'newValue.senses@1#' . $senseB->guid . '.examples@2#'   . $exampleB4->guid . '.sentence.en' => 'B4',
+            // Sense C was deleted, which produces oldValue and newValue results for all its fields (including example fields)
+            'deleted.senses@2#'  . $senseC->guid . '.examples@0#'   . $exampleC1->guid => 'C1',
+            'deleted.senses@2#'  . $senseC->guid . '.examples@1#'   . $exampleC2->guid => 'C2',
+            'deleted.senses@2#'  . $senseC->guid . '.examples@2#'   . $exampleC3->guid => 'C3',
+            'oldValue.senses@2#' . $senseC->guid . '.definition.en' => 'C',
+            'newValue.senses@2#' . $senseC->guid . '.definition.en' => '',
+            'oldValue.senses@2#' . $senseC->guid . '.examples@0#'   . $exampleC1->guid . '.sentence.en' => 'C1',
+            'newValue.senses@2#' . $senseC->guid . '.examples@0#'   . $exampleC1->guid . '.sentence.en' => '',
+            'oldValue.senses@2#' . $senseC->guid . '.examples@1#'   . $exampleC2->guid . '.sentence.en' => 'C2',
+            'newValue.senses@2#' . $senseC->guid . '.examples@1#'   . $exampleC2->guid . '.sentence.en' => '',
+            'oldValue.senses@2#' . $senseC->guid . '.examples@2#'   . $exampleC3->guid . '.sentence.en' => 'C3',
+            'newValue.senses@2#' . $senseC->guid . '.examples@2#'   . $exampleC3->guid . '.sentence.en' => '',
+            // Sense D was added, which produces oldValue and newValue results for all its fields (including example fields)
+            'oldValue.senses@1#' . $senseD->guid . '.definition.en' => '',
+            'newValue.senses@1#' . $senseD->guid . '.definition.en' => 'D',
+            'added.senses@1#'    . $senseD->guid . '.examples@0#'   . $exampleD1->guid => 'D1',
+            'oldValue.senses@1#' . $senseD->guid . '.examples@0#'   . $exampleD1->guid . '.sentence.en' => '',
+            'newValue.senses@1#' . $senseD->guid . '.examples@0#'   . $exampleD1->guid . '.sentence.en' => 'D1',
+        ], $differences);
+        $withLabels = LexEntryCommands::addFieldLabelsToDifferences($project->config, $differences);
+        $this->assertEquals([
+            'moved.senses@0#'   . $senseA->guid => 2,
+            'moved.senses@1#'   . $senseB->guid => 0,
+            'deleted.senses@2#' . $senseC->guid => 'C',
+            'added.senses@1#'   . $senseD->guid => 'D',
+            'oldValue.senses@1#' . $senseB->guid . '.definition.en' => 'B',
+            'newValue.senses@1#' . $senseB->guid . '.definition.en' => 'B modified',
+            'oldValue.senses@2#' . $senseC->guid . '.definition.en' => 'C',
+            'newValue.senses@2#' . $senseC->guid . '.definition.en' => '',
+            'oldValue.senses@1#' . $senseD->guid . '.definition.en' => '',
+            'newValue.senses@1#' . $senseD->guid . '.definition.en' => 'D',
+            // Sense A: examples go from A1, A2, A3 to A4, A3, A2b.
+            'deleted.senses@0#' . $senseA->guid . '.examples@0#'   . $exampleA1->guid => 'A1',
+            'moved.senses@0#'   . $senseA->guid . '.examples@1#'   . $exampleA2->guid => 2,
+            'moved.senses@0#'   . $senseA->guid . '.examples@2#'   . $exampleA3->guid => 1,
+            'added.senses@2#'   . $senseA->guid . '.examples@0#'   . $exampleA4->guid => 'A4',
+            'oldValue.senses@0#'   . $senseA->guid . '.examples@0#'   . $exampleA1->guid . '.sentence.en' => 'A1',
+            'newValue.senses@0#'   . $senseA->guid . '.examples@0#'   . $exampleA1->guid . '.sentence.en' => '',
+            'oldValue.senses@0#'   . $senseA->guid . '.examples@1#'   . $exampleA2->guid . '.sentence.en' => 'A2',
+            'newValue.senses@0#'   . $senseA->guid . '.examples@1#'   . $exampleA2->guid . '.sentence.en' => 'A2b',
+            'oldValue.senses@0#'   . $senseA->guid . '.examples@0#'   . $exampleA4->guid . '.sentence.en' => '',
+            'newValue.senses@0#'   . $senseA->guid . '.examples@0#'   . $exampleA4->guid . '.sentence.en' => 'A4',
+            // From B1, B2, B3 to B2, B1b, B4, B3
+            'moved.senses@1#' . $senseB->guid . '.examples@0#'   . $exampleB1->guid => 1,
+            'moved.senses@1#' . $senseB->guid . '.examples@1#'   . $exampleB2->guid => 0,
+            'moved.senses@1#' . $senseB->guid . '.examples@2#'   . $exampleB3->guid => 3,
+            'added.senses@0#' . $senseB->guid . '.examples@2#'   . $exampleB4->guid => 'B4',
+            'oldValue.senses@1#' . $senseB->guid . '.examples@0#'   . $exampleB1->guid . '.sentence.en' => 'B1',
+            'newValue.senses@1#' . $senseB->guid . '.examples@0#'   . $exampleB1->guid . '.sentence.en' => 'B1b',
+            'oldValue.senses@1#' . $senseB->guid . '.examples@2#'   . $exampleB4->guid . '.sentence.en' => '',
+            'newValue.senses@1#' . $senseB->guid . '.examples@2#'   . $exampleB4->guid . '.sentence.en' => 'B4',
+            // Sense C was deleted, which produces oldValue and newValue results for all its fields (including example fields)
+            'deleted.senses@2#'  . $senseC->guid . '.examples@0#'   . $exampleC1->guid => 'C1',
+            'deleted.senses@2#'  . $senseC->guid . '.examples@1#'   . $exampleC2->guid => 'C2',
+            'deleted.senses@2#'  . $senseC->guid . '.examples@2#'   . $exampleC3->guid => 'C3',
+            'oldValue.senses@2#' . $senseC->guid . '.definition.en' => 'C',
+            'newValue.senses@2#' . $senseC->guid . '.definition.en' => '',
+            'oldValue.senses@2#' . $senseC->guid . '.examples@0#'   . $exampleC1->guid . '.sentence.en' => 'C1',
+            'newValue.senses@2#' . $senseC->guid . '.examples@0#'   . $exampleC1->guid . '.sentence.en' => '',
+            'oldValue.senses@2#' . $senseC->guid . '.examples@1#'   . $exampleC2->guid . '.sentence.en' => 'C2',
+            'newValue.senses@2#' . $senseC->guid . '.examples@1#'   . $exampleC2->guid . '.sentence.en' => '',
+            'oldValue.senses@2#' . $senseC->guid . '.examples@2#'   . $exampleC3->guid . '.sentence.en' => 'C3',
+            'newValue.senses@2#' . $senseC->guid . '.examples@2#'   . $exampleC3->guid . '.sentence.en' => '',
+            // Sense D was added, which produces oldValue and newValue results for all its fields (including example fields)
+            'oldValue.senses@1#' . $senseD->guid . '.definition.en' => '',
+            'newValue.senses@1#' . $senseD->guid . '.definition.en' => 'D',
+            'added.senses@1#'    . $senseD->guid . '.examples@0#'   . $exampleD1->guid => 'D1',
+            'oldValue.senses@1#' . $senseD->guid . '.examples@0#'   . $exampleD1->guid . '.sentence.en' => '',
+            'newValue.senses@1#' . $senseD->guid . '.examples@0#'   . $exampleD1->guid . '.sentence.en' => 'D1',
+
+            // All added, deleted, moved, oldValue and newValue entries also have corresponding fieldLabel entries
+            'fieldLabel.senses@0#' . $senseA->guid => 'Meaning',
+            'fieldLabel.senses@1#' . $senseB->guid => 'Meaning',
+            'fieldLabel.senses@2#' . $senseC->guid => 'Meaning',
+            'fieldLabel.senses@1#' . $senseD->guid => 'Meaning',
+
+            'fieldLabel.senses@1#' . $senseB->guid . '.definition.en' => 'Definition',
+            'fieldLabel.senses@2#' . $senseC->guid . '.definition.en' => 'Definition',
+            'fieldLabel.senses@1#' . $senseD->guid . '.definition.en' => 'Definition',
+
+            'fieldLabel.senses@0#' . $senseA->guid . '.examples@0#' . $exampleA1->guid . '.sentence.en' => 'Sentence',
+            'fieldLabel.senses@0#' . $senseA->guid . '.examples@1#' . $exampleA2->guid . '.sentence.en' => 'Sentence',
+            'fieldLabel.senses@0#' . $senseA->guid . '.examples@0#' . $exampleA4->guid . '.sentence.en' => 'Sentence',
+            'fieldLabel.senses@1#' . $senseB->guid . '.examples@0#' . $exampleB1->guid . '.sentence.en' => 'Sentence',
+            'fieldLabel.senses@1#' . $senseB->guid . '.examples@2#' . $exampleB4->guid . '.sentence.en' => 'Sentence',
+            'fieldLabel.senses@2#' . $senseC->guid . '.examples@0#' . $exampleC1->guid . '.sentence.en' => 'Sentence',
+            'fieldLabel.senses@2#' . $senseC->guid . '.examples@1#' . $exampleC2->guid . '.sentence.en' => 'Sentence',
+            'fieldLabel.senses@2#' . $senseC->guid . '.examples@2#' . $exampleC3->guid . '.sentence.en' => 'Sentence',
+            'fieldLabel.senses@1#' . $senseD->guid . '.examples@0#' . $exampleD1->guid . '.sentence.en' => 'Sentence',
+
+            'fieldLabel.senses@0#' . $senseA->guid . '.examples@0#' . $exampleA1->guid => 'Example',
+            'fieldLabel.senses@0#' . $senseA->guid . '.examples@1#' . $exampleA2->guid => 'Example',
+            'fieldLabel.senses@0#' . $senseA->guid . '.examples@2#' . $exampleA3->guid => 'Example',
+            'fieldLabel.senses@2#' . $senseA->guid . '.examples@0#' . $exampleA4->guid => 'Example',
+
+            'fieldLabel.senses@1#' . $senseB->guid . '.examples@0#' . $exampleB1->guid => 'Example',
+            'fieldLabel.senses@1#' . $senseB->guid . '.examples@1#' . $exampleB2->guid => 'Example',
+            'fieldLabel.senses@1#' . $senseB->guid . '.examples@2#' . $exampleB3->guid => 'Example',
+            'fieldLabel.senses@0#' . $senseB->guid . '.examples@2#' . $exampleB4->guid => 'Example',
+            'fieldLabel.senses@2#' . $senseC->guid . '.examples@0#' . $exampleC1->guid => 'Example',
+            'fieldLabel.senses@2#' . $senseC->guid . '.examples@1#' . $exampleC2->guid => 'Example',
+            'fieldLabel.senses@2#' . $senseC->guid . '.examples@2#' . $exampleC3->guid => 'Example',
+            'fieldLabel.senses@1#' . $senseD->guid . '.examples@0#' . $exampleD1->guid => 'Example',
+        ], $withLabels);
+    }
 
     public function testUpdateEntry_DeleteOnlyExample_ProducesOneDeletedDifferenceForTheExampleAndOldValueDifferencesForAllFields()
     {
