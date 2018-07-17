@@ -258,10 +258,18 @@ class ActivityListDto
             $item['type'] = 'project';  // FIXME: Should this always be "project"? Should it sometimes be "entry"? 2018-02 RM
             unset($item['actionContent']);
             if ($projectModel->appName === LfProjectModel::LEXICON_APP) {
-                if ($item['action'] === ActivityModel::UPDATE_ENTRY) {
+                if ($item['action'] === ActivityModel::UPDATE_ENTRY || $item['action'] === ActivityModel::ADD_ENTRY) {
                     $lexProjectModel = new LexProjectModel($projectModel->id->asString());
                     $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
-                } else if ($item['action'] === ActivityModel::ADD_LEX_COMMENT || $item['action'] === ActivityModel::UPDATE_LEX_COMMENT) {
+                } else if ($item['action'] === ActivityModel::ADD_LEX_COMMENT ||
+                           $item['action'] === ActivityModel::UPDATE_LEX_COMMENT ||
+                           $item['action'] === ActivityModel::DELETE_LEX_COMMENT ||
+                           $item['action'] === ActivityModel::UPDATE_LEX_COMMENT_STATUS ||
+                           $item['action'] === ActivityModel::LEX_COMMENT_INCREASE_SCORE ||
+                           $item['action'] === ActivityModel::LEX_COMMENT_DECREASE_SCORE ||
+                           $item['action'] === ActivityModel::ADD_LEX_REPLY ||
+                           $item['action'] === ActivityModel::UPDATE_LEX_REPLY ||
+                           $item['action'] === ActivityModel::DELETE_LEX_REPLY) {
                     $labelFromMongo = $item['content'][ActivityModel::LEX_COMMENT_LABEL] ?? '';
                     unset($item['content'][ActivityModel::LEX_COMMENT_LABEL]);
                     if (! empty($labelFromMongo)) {

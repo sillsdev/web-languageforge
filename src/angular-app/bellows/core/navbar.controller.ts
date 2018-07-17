@@ -1,9 +1,10 @@
 import * as angular from 'angular';
 
-import {LexiconProjectSettings} from '../../languageforge/lexicon/shared/model/lexicon-project-settings.model';
 import {InterfaceConfig} from '../shared/model/interface-config.model';
+import {ProjectSettings} from '../shared/model/project-settings.model';
 import {ProjectService, ProjectTypeNames} from './api/project.service';
 import {ApplicationHeaderService, HeaderData} from './application-header.service';
+import {OfflineCacheUtilsService} from './offline/offline-cache-utils.service';
 import {SessionService} from './session.service';
 
 interface Rights {
@@ -18,11 +19,14 @@ export class NavbarController implements angular.IController {
   projectTypeNames: ProjectTypeNames;
   siteName: string;
 
-  static $inject = ['projectService', 'sessionService', 'applicationHeaderService'];
-  constructor(private projectService: ProjectService, private sessionService: SessionService,
-              private applicationHeaderService: ApplicationHeaderService) { }
+  static $inject = ['projectService', 'sessionService',
+    'offlineCacheUtils',
+    'applicationHeaderService'];
+  constructor(private readonly projectService: ProjectService, private readonly sessionService: SessionService,
+              private readonly offlineCacheUtils: OfflineCacheUtilsService,
+              private readonly applicationHeaderService: ApplicationHeaderService) { }
 
-  $onInit() {
+  $onInit(): void {
     this.projectTypeNames = this.projectService.data.projectTypeNames;
     this.projectTypesBySite = this.projectService.data.projectTypesBySite;
     this.header = this.applicationHeaderService.data;
@@ -41,16 +45,39 @@ export class NavbarController implements angular.IController {
             options: { en: { name: 'English', option: 'English' } }
           }
         } as InterfaceConfig;
-      const projectSettings = session.projectSettings<LexiconProjectSettings>();
+      const projectSettings = session.projectSettings<ProjectSettings>();
       if (projectSettings == null || projectSettings.interfaceConfig == null) {
         this.interfaceConfig = defaultInterfaceConfig;
+        this.useLocallyStoredLanguageCode();
       } else {
         this.interfaceConfig = projectSettings.interfaceConfig;
+        if (this.isNotInProject()) {
+          this.useLocallyStoredLanguageCode();
+        }
       }
       this.rights.canCreateProject =
         session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.CREATE);
       this.siteName = session.baseSite();
     });
+  }
+
+  onUpdate = ($event: { interfaceConfig: InterfaceConfig}): void => {
+    if ($event.interfaceConfig) {
+      this.interfaceConfig = $event.interfaceConfig;
+    }
+  }
+
+  private isNotInProject(): boolean {
+    // ToDo: slightly tenuous way to check if we are not in a project - will do for now - IJH 2018-07
+    return this.interfaceConfig.selectLanguages.optionsOrder.length <= 1;
+  }
+
+  private useLocallyStoredLanguageCode(): void {
+    this.offlineCacheUtils.getInterfaceLanguageCode().then(localLanguageCode => {
+      if (localLanguageCode != null) {
+        this.interfaceConfig.languageCode = localLanguageCode;
+      }
+    }).catch(() => {});
   }
 
 }
