@@ -2,6 +2,7 @@
 
 use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Library\Shared\Website;
+use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\PasswordModel;
 use Api\Model\Shared\ProjectModel;
@@ -207,6 +208,37 @@ class UserCommandsTest extends TestCase
         // user profile updated
         $user = new UserModel($newUserId);
         $this->assertEquals('th', $user->interfaceLanguageCode);
+        $this->assertEquals($newUserId, $userId);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testUpdateUserProfile_SetProjectUserProfiles_ProjectUserProfilesSet()
+    {
+        // setup parameters
+        $userId = self::$environ->createUser('username', 'name', 'name@example.com');
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        ProjectCommands::updateUserRole($projectId, $userId);
+        $params = [
+            'projectUserProfiles' => [
+                $projectId => [
+                    'city' => '',
+                    'preferredBibleVersion' => '',
+                    'religiousAffiliation' => '',
+                    'studyGroup' => 'group1',
+                    'feedbackGroup' => ''
+                ]
+            ]
+        ];
+
+        $newUserId = UserCommands::updateUserProfile($params, $userId, self::$environ->website);
+
+        // user profile updated
+        $user = new UserModel($newUserId);
+        $this->assertCount(1, $user->projectUserProfiles);
+        $this->assertEquals('group1', $user->projectUserProfiles[$projectId]->studyGroup);
         $this->assertEquals($newUserId, $userId);
     }
 

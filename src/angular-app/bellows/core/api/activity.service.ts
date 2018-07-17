@@ -8,6 +8,7 @@ export class FilterParams {
 }
 
 export class ActivityService {
+  refreshRequired: boolean = false;
   unreadCount: number;
 
   static $inject: string[] = ['apiService'];
@@ -31,5 +32,9 @@ export class ActivityService {
 
   setUnreadCount(count: number) {
     this.unreadCount = count;
+  }
+
+  markRefreshRequired(required: boolean = true) {
+    this.refreshRequired = required;
   }
 }
