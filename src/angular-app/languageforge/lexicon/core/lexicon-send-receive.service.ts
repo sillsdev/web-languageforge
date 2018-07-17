@@ -3,6 +3,7 @@ import * as angular from 'angular';
 import { RelativeTimeFilterFunction } from '../../../bellows/core/filters';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { Session, SessionService } from '../../../bellows/core/session.service';
+import { SendReceiveErrorCodes } from '../../../bellows/shared/model/send-receive-errorcodes.model';
 import { SendReceiveState } from '../../../bellows/shared/model/send-receive-state.model';
 import { LexiconProjectSettings } from '../shared/model/lexicon-project-settings.model';
 import { SendReceiveStatus } from '../shared/model/send-receive-status.model';
@@ -141,6 +142,30 @@ export class LexiconSendReceiveService {
           this.notice.removeById(this.pendingMessageId);
           this.notice.setLoading('Synchronizing with LanguageDepot.org...');
           break;
+        case SendReceiveState.Error:
+          let errorMessage = '';
+          switch (this.status.ErrorCode) {
+            case SendReceiveErrorCodes.EmptyProject:
+              errorMessage = 'The project has no data in LanguageDepot.org. Please do a ' +
+                'Send / Receive in FLEx first, then try again.';
+              break;
+            case SendReceiveErrorCodes.NoFlexProject:
+              errorMessage = 'Can only synchronize with FLEx projects.';
+              break;
+            case SendReceiveErrorCodes.ProjectTooOld:
+              errorMessage = 'The project is from an unsupported version of FLEx. The oldest ' +
+                'supported FLEx version is 8.2';
+              break;
+            case SendReceiveErrorCodes.ProjectTooNew:
+              errorMessage = 'The project is from a version of FLEx that is too new. We don\'t ' +
+                'yet support that version.';
+              break;
+            default:
+              errorMessage = 'Something went wrong. Contact an administrator.';
+              break;
+          }
+          this.notice.push(this.notice.ERROR, errorMessage);
+          break;
         case SendReceiveState.Hold:
           this.notice.push(this.notice.ERROR, 'Well this is embarrassing. Something went ' +
               'wrong and your project is now on hold. Contact an administrator.');
@@ -193,6 +218,16 @@ export class LexiconSendReceiveService {
         return 'Un-synced';
       case SendReceiveState.Hold:
         return 'On hold';
+      case SendReceiveState.Error:
+        switch (this.status.ErrorCode) {
+          case SendReceiveErrorCodes.EmptyProject:
+            return 'Synced';
+          case SendReceiveErrorCodes.NoFlexProject:
+          case SendReceiveErrorCodes.ProjectTooOld:
+          case SendReceiveErrorCodes.ProjectTooNew:
+          default:
+            return 'Error';
+        }
 
       // Undefined initial state
       default:
@@ -210,6 +245,7 @@ export class LexiconSendReceiveService {
       case SendReceiveState.Synced:
       case SendReceiveState.Unsynced:
       case SendReceiveState.Hold:
+      case SendReceiveState.Error:
         if (angular.isDefined(this.projectSettings) && angular.isDefined(this.projectSettings.lastSyncedDate)) {
           if (Date.parse(this.projectSettings.lastSyncedDate) <= 0) {
             return 'Never been synced';
@@ -301,7 +337,9 @@ export class LexiconSendReceiveService {
 
         // console.log(this.status);
 
-        if (this.status.SRState === SendReceiveState.Idle || this.status.SRState === SendReceiveState.Hold) {
+        if (this.status.SRState === SendReceiveState.Idle
+          || this.status.SRState === SendReceiveState.Hold
+          || this.status.SRState === SendReceiveState.Error) {
           this.cancelCloneStatusTimer();
           if (this.cloneProjectStatusSuccessCallback) this.cloneProjectStatusSuccessCallback();
         }
