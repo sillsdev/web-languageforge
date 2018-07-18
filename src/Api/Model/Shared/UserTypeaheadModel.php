@@ -20,7 +20,7 @@ class UserTypeaheadModel extends MapperListModel
         $query = array('$or' => array(
                         array('name' => array('$regex' => $term, '$options' => '-i')),
                         array('username' => array('$regex' => $term, '$options' => '-i')),
-                        array('email' => array('$regex' => $term, '$options' => '-i')),
+                        array('email' => strtolower($term)),
                 ));
         if (!empty($projectIdOrIds)) {
             // Allow $projectIdOrIds to be either an array or a single ID
@@ -48,7 +48,7 @@ class UserTypeaheadModel extends MapperListModel
         parent::__construct(
                 UserModelMongoMapper::instance(),
                 $query,
-                array('username', 'email', 'name', 'avatarRef')
+                array('username', 'name', 'avatarRef')
         );
         // If we were called with a project filter that excluded certain users, also
         // return a list of specifically which users were excluded. Which happens to
