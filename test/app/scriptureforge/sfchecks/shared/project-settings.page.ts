@@ -75,15 +75,14 @@ export class SfProjectSettingsPage {
   };
 
   optionlistsTab = {
-    // TODO: Find better names for these
     showList: element(by.id('showInProfileFieldset'))
       .all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
     editList: element(by.id('editListValuesFieldset'))
       .all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
     editContentsLabel: element(by.id('picklistEditorFieldset')).element(by.tagName('legend')),
-    editContentsList: element(by.id('picklistEditorFieldset')).all(by.repeater('item in items')),
-    defaultValue: element(by.id('picklistEditorFieldset')).element(by.model('defaultKey')),
-    addInput: element(by.id('picklistEditorFieldset')).element(by.model('newValue')),
+    editContentsList: element(by.id('picklistEditorFieldset')).all(by.repeater('item in $ctrl.items')),
+    defaultValue: element(by.id('picklistEditorFieldset')).element(by.id('default-key')),
+    addInput: element(by.id('picklistEditorFieldset')).element(by.id('new-value')),
     addButton: element(by.id('picklistEditorFieldset')).element(by.css('.add-item-to-list')),
     saveButton: element(by.id('user_profile_lists_save_button')),
     unsavedWarning: element(by.id('project-settings-unsaved')),
