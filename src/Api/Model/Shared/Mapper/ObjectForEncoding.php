@@ -11,7 +11,7 @@ class ObjectForEncoding
     private $_readOnlyProperties;
 
     /** @var array */
-    protected $_sensitiveProperties;  // E.g., "senses" for a LexEntry, and "pictures" or "examples" for a LexSense
+    protected $_rearrangeableProperties;  // E.g., "senses" for a LexEntry, and "pictures" or "examples" for a LexSense
     // TODO: would a name like "guidKeyedProperties" be better? - 2018-07-13 RM
 
     protected function setReadOnlyProp($propertyName)
@@ -23,6 +23,7 @@ class ObjectForEncoding
             $this->_readOnlyProperties[] = $propertyName;
         }
     }
+
     protected function setPrivateProp($propertyName)
     {
         if (!is_array($this->_privateProperties)) {
@@ -32,13 +33,14 @@ class ObjectForEncoding
             $this->_privateProperties[] = $propertyName;
         }
     }
-    protected function setSensitiveProp($propertyName)
+
+    protected function setRearrangeableProp($propertyName)
     {
-        if (!is_array($this->_sensitiveProperties)) {
-            $this->_sensitiveProperties = [];
+        if (!is_array($this->_rearrangeableProperties)) {
+            $this->_rearrangeableProperties = [];
         }
-        if (!in_array($propertyName, $this->_sensitiveProperties)) {
-            $this->_sensitiveProperties[] = $propertyName;
+        if (!in_array($propertyName, $this->_rearrangeableProperties)) {
+            $this->_rearrangeableProperties[] = $propertyName;
         }
     }
 
@@ -51,11 +53,12 @@ class ObjectForEncoding
     {
         return $this->_privateProperties;
     }
-    public function getSensitiveProperties()
+
+    public function getRearrangeableProperties()
     {
-        if (!is_array($this->_sensitiveProperties)) {
-            $this->_sensitiveProperties = [];
+        if (!is_array($this->_rearrangeableProperties)) {
+            $this->_rearrangeableProperties = [];
         }
-        return $this->_sensitiveProperties;
+        return $this->_rearrangeableProperties;
     }
 }

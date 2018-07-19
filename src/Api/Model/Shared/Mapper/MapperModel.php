@@ -95,24 +95,24 @@ class MapperModel extends ObjectForEncoding
         if (Id::isEmpty($this->id)) {
             $this->dateCreated = $now;
         }
-        $sensitiveProperties = $this->getSensitiveProperties();
-        $sensitiveSubproperties = [];
-        foreach ($sensitiveProperties as $property) {
+        $rearrangeableProperties = $this->getRearrangeableProperties();
+        $rearrangeableSubproperties = [];
+        foreach ($rearrangeableProperties as $property) {
             $value = $this->$property;
             if (is_a($value, 'Api\Model\Shared\Mapper\ArrayOf')) {
                 foreach ($value as $item) {
                     if (is_a($item, 'Api\Model\Shared\Mapper\ObjectForEncoding')) {
-                        foreach ($item->getSensitiveProperties() as $subProperty) {
-                            if (! array_key_exists($property, $sensitiveSubproperties)) {
-                                $sensitiveSubproperties[$property] = [];
+                        foreach ($item->getRearrangeableProperties() as $subProperty) {
+                            if (! array_key_exists($property, $rearrangeableSubproperties)) {
+                                $rearrangeableSubproperties[$property] = [];
                             }
-                            $sensitiveSubproperties[$property][] = $subProperty;
+                            $rearrangeableSubproperties[$property][] = $subProperty;
                         }
                     }
                 }
             }
         }
-        $this->id->id = $this->_mapper->write($this, $this->id->id, $sensitiveProperties, $sensitiveSubproperties);
+        $this->id->id = $this->_mapper->write($this, $this->id->id, $rearrangeableProperties, $rearrangeableSubproperties);
 
         return $this->id->id;
     }
