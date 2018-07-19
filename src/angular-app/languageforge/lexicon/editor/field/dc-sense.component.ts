@@ -47,9 +47,9 @@ export class FieldSenseController implements angular.IController {
     this.control.hideRightPanel();
   }
 
-  numExamples = () => this.model.examples.length;
+  numExamples = (): number => this.model.examples.length;
 
-  moveExample = (index: number, distance: number) => {
+  moveExample = (index: number, distance: number): void => {
     const examples = this.model.examples;
     const example = examples[index];
     const newPosition = index + distance;
@@ -78,8 +78,8 @@ export const FieldSenseComponent: angular.IComponentOptions = {
     config: '<',
     control: '<',
     index: '<',
-    numSenses: '<',
-    move: '<',
+    numSenses: '&',
+    move: '&',
     parentContextGuid: '<',
     remove: '&'
   },

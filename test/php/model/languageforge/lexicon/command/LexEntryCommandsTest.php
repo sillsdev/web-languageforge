@@ -1460,17 +1460,14 @@ class LexEntryCommandsTest extends TestCase
         $example2 = $sense1['examples'][1];
         $sense1['examples'][0] = $example2;
         $sense1['examples'][1] = $example1;
-        $sense2['examples'] = array();
+        $sense2['examples'] = [];
         $params['senses'][0] = $sense2;
         $params['senses'][1] = $sense1;
-
-        print_r($params);
 
         $userId = self::$environ->createUser('john', 'john', 'john');
 
         $params = json_decode(json_encode(LexEntryCommands::updateEntry($projectId, $params, $userId)));
 
-        print_r($params);
         $this->assertEquals($sense1['guid'], $params->senses[1]->guid);
         $this->assertEquals($sense2['guid'], $params->senses[0]->guid);
         $this->assertEquals($example1['guid'], $params->senses[1]->examples[1]->guid);
