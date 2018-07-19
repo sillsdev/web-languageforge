@@ -418,7 +418,6 @@ describe('Lexicon E2E Editor List and Entry', () => {
   });
 
   it('word with multiple meanings: edit page has correct example sentences, translations', () => {
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. DDW
     expect<any>(editorUtil.getFieldValues('Sentence')).toEqual([
       { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value },
@@ -448,7 +447,6 @@ describe('Lexicon E2E Editor List and Entry', () => {
     ]);
 
     // First item is empty Etymology Source, now that View Settings all default to visible. IJH
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
     expect<any>(editorUtil.getFieldValues('Source')).toEqual([
       { en: constants.testMultipleMeaningEntry1.senses[0].source.en.value },
       { en: constants.testMultipleMeaningEntry1.senses[1].source.en.value }
