@@ -8,6 +8,8 @@ import {NoticeService} from '../../../bellows/core/notice/notice.service';
 import {SessionService} from '../../../bellows/core/session.service';
 import {InputSystem} from '../../../bellows/shared/model/input-system.model';
 import {InterfaceConfig} from '../../../bellows/shared/model/interface-config.model';
+import {SendReceiveErrorCodes} from '../../../bellows/shared/model/send-receive-errorcodes.model';
+import {SendReceiveState} from '../../../bellows/shared/model/send-receive-state.model';
 import {LexiconProjectService} from '../core/lexicon-project.service';
 import {LexiconSendReceiveApiService} from '../core/lexicon-send-receive-api.service';
 import {LexiconSendReceiveService} from '../core/lexicon-send-receive.service';
@@ -20,6 +22,8 @@ import {
 import {LexiconProjectSettings} from '../shared/model/lexicon-project-settings.model';
 import {LexiconProject, SendReceive} from '../shared/model/lexicon-project.model';
 import {LexOptionList} from '../shared/model/option-list.model';
+import {SendReceiveStatus} from '../shared/model/send-receive-status.model';
+import {NewProjectChooserState} from './new-project-chooser.component';
 import {NewProjectInitialDataState} from './non-send-receive/new-project-initial-data.component';
 import {NewProjectSendReceiveCloneState} from './send-receive/new-project-clone.component';
 import {NewProjectSendReceiveCredentialsState} from './send-receive/new-project-credentials.component';
@@ -96,6 +100,7 @@ export class LexiconNewProjectController implements angular.IController {
 
     this.sendReceive.clearState();
     this.sendReceive.setCloneProjectStatusSuccessCallback(this.gotoEditor);
+    this.sendReceive.setCloneProjectStatusFailedCallback(this.cloneFailed);
     this.$scope.$on('$locationChangeStart', this.sendReceive.cancelCloneStatusTimer);
   }
 
@@ -205,6 +210,24 @@ export class LexiconNewProjectController implements angular.IController {
     this.makeFormValid();
     url = this.linkService.project(this.newProject.id, this.newProject.appName);
     this.$window.location.href = url;
+  }
+
+  private cloneFailed = (status: SendReceiveStatus): void => {
+    switch (status.SRState) {
+      case SendReceiveState.Error:
+        switch (status.ErrorCode) {
+          case SendReceiveErrorCodes.NoFlexProject:
+          case SendReceiveErrorCodes.Unauthorized:
+            this.projectService.deleteProject([this.newProject.id]);
+            break;
+        }
+        this.$state.go(NewProjectChooserState.name);
+        break;
+      case SendReceiveState.Hold:
+        this.gotoEditor();
+        break;
+    }
+    this.sendReceive.showProjectStatusNotice(status);
   }
 
   // ----- Step 1: Project name -----
