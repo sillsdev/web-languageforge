@@ -96,6 +96,8 @@ class QuestionModel extends MapperModel
         $this->_mapper->write(
             $answerToWrite,
             $id,
+            [],
+            [],
             MongoMapper::ID_IN_KEY,
             $this->id->asString(),
             'answers'
@@ -157,6 +159,8 @@ class QuestionModel extends MapperModel
         $mapper->write(
             $comment,
             $id,
+            [],
+            [],
             MongoMapper::ID_IN_KEY,
             $questionId,
             "answers.$answerId.comments"

@@ -55,6 +55,7 @@ class LexEntryModel extends MapperModel
         $this->setPrivateProp('dirtySR');
         $this->setPrivateProp('mercurialSha');
         $this->setReadOnlyProp('authorInfo');
+        $this->setRearrangeableProp('senses');
 
         $this->initLazyProperties([
             'lexeme',
