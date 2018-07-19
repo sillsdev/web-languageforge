@@ -78,8 +78,8 @@ export const FieldSenseComponent: angular.IComponentOptions = {
     config: '<',
     control: '<',
     index: '<',
-    numSenses: '&',
-    move: '&',
+    numSenses: '<',
+    move: '<',
     parentContextGuid: '<',
     remove: '&'
   },
