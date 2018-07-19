@@ -13,7 +13,6 @@ class LexExample extends ObjectForEncoding
     public function __construct($liftId = '', $guid = '')
     {
         $this->setPrivateProp('liftId');
-//        $this->setReadOnlyProp('guid');  // No longer readonly - 2018-07 RM
         $this->setReadOnlyProp('translationGuid');
         $this->setReadOnlyProp('authorInfo');
         if ($liftId) $this->liftId = $liftId;

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rmunn
- * Date: 7/12/18
- * Time: 5:06 PM
- */
 
 use Api\Model\Shared\Mapper\MapperUtils;
 use PHPUnit\Framework\TestCase;
