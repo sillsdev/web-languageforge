@@ -38,8 +38,8 @@ class Activity {
   typeRef: ActivityType;
   userRef: User;
   userHref: string;
-  userRef2: User;
-  userHref2: string;
+  userRefRelated: User;
+  userHrefRelated: string;
   icon: string;
 
   constructor(data: object = {}) {
@@ -47,23 +47,17 @@ class Activity {
       for (const property of Object.keys(data)) {
         this[property] = data[property];
       }
-      // TODO: Update the PHP script to save these in the correct order
-      if (this.userRef2) {
-        const tmp = this.userRef;
-        this.userRef = this.userRef2;
-        this.userRef2 = tmp;
-      }
     }
   }
 
   getOldValue() {
     if (this.changes) {
-      return this.parseValue(this.changes.oldValue);
+      return Activity.parseValue(this.changes.oldValue);
     } else {
       for (const index in this.content) {
         if (this.content.hasOwnProperty(index)) {
           if (index.startsWith('oldValue')) {
-            return this.parseValue(this.content[index]);
+            return Activity.parseValue(this.content[index]);
           }
         }
       }
@@ -73,12 +67,12 @@ class Activity {
 
   getNewValue() {
     if (this.changes) {
-      return this.parseValue(this.changes.newValue);
+      return Activity.parseValue(this.changes.newValue);
     } else {
       for (const index in this.content) {
         if (this.content.hasOwnProperty(index)) {
           if (index.startsWith('newValue')) {
-            return this.parseValue(this.content[index]);
+            return Activity.parseValue(this.content[index]);
           }
         }
       }
@@ -86,19 +80,11 @@ class Activity {
     return '';
   }
 
-  parseValue(value: string) {
-    if (value.startsWith('[') && value.endsWith(']')) {
-      const json = JSON.parse(value);
-      value = json.join(', ');
-    }
-    return value;
-  }
-
   getLabel() {
     if (this.changes) {
-      return this.formatLabel(this.changes.fieldLabel);
+      return Activity.formatLabel(this.changes.fieldLabel);
     } else if (this.content.fieldLabel) {
-      return this.formatLabel(this.content.fieldLabel);
+      return Activity.formatLabel(this.content.fieldLabel);
     } else {
       for (const index in this.content) {
         if (this.content.hasOwnProperty(index)) {
@@ -117,7 +103,7 @@ class Activity {
     return 'unknown';
   }
 
-  private formatLabel(fieldLabel: FieldLabel) {
+  private static formatLabel(fieldLabel: FieldLabel) {
     let label = fieldLabel.label;
     if (fieldLabel.example) {
       label = 'Example ' + fieldLabel.example + (label !== 'examples' ? ' ' + label : '');
@@ -127,6 +113,15 @@ class Activity {
     }
     return label;
   }
+
+  private static parseValue(value: string) {
+    if (value.startsWith('[') && value.endsWith(']')) {
+      const json = JSON.parse(value);
+      value = json.join(', ');
+    }
+    return value;
+  }
+
 }
 
 interface FieldLabel {
@@ -252,6 +247,7 @@ export class ActivityContainerController implements angular.IController {
   activityGroups: ActivityGroup[] = [];
   activityTypes: ActivityType[] = [];
   filterDateOpen: boolean = false;
+  // noinspection JSUnusedGlobalSymbols
   filterDateToday: Date = new Date();
   filteredActivities: Activity[] = [];
   filterUsers: FilterUser[] = [];
@@ -580,8 +576,8 @@ export class ActivityContainerController implements angular.IController {
         item.userHref = this.linkService.user(item.userRef.id);
       }
 
-      if ('userRef2' in item) {
-        item.userHref2 = this.linkService.user(item.userRef2.id);
+      if ('userRefRelated' in item) {
+        item.userHrefRelated = this.linkService.user(item.userRefRelated.id);
       }
 
       if ('projectRef' in item) {
@@ -625,6 +621,7 @@ export class ActivityContainerController implements angular.IController {
     }
   }
 
+  // noinspection JSUnusedGlobalSymbols
   triggerFilter(): void {
     // Reset the filter
     this.filteredActivities = this.activities;
@@ -655,6 +652,7 @@ export class ActivityContainerController implements angular.IController {
     this.filteredActivities = filteredActivities;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   filterByDate(): void {
     if (this.filterStartDate != null && this.filterStartDate !== true) {
       this.filterParams.startDate = this.filterStartDate._d;
