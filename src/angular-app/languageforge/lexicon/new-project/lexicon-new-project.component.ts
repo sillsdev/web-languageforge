@@ -216,6 +216,7 @@ export class LexiconNewProjectController implements angular.IController {
     switch (status.SRState) {
       case SendReceiveState.Error:
         switch (status.ErrorCode) {
+          case SendReceiveErrorCodes.EmptyProject:
           case SendReceiveErrorCodes.NoFlexProject:
           case SendReceiveErrorCodes.Unauthorized:
             this.projectService.deleteProject([this.newProject.id]);
