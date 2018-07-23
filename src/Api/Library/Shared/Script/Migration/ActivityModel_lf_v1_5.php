@@ -1,15 +1,17 @@
 <?php
 
-namespace Api\Model\Shared;
+namespace Api\Library\Shared\Script\Migration;
 
 use Api\Library\Shared\Website;
+use Api\Model\Shared\ActivityModelMongoMapper;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\IdReference;
-use Api\Model\Shared\Mapper\MapperModel;
 use Api\Model\Shared\Mapper\MapOf;
+use Api\Model\Shared\Mapper\MapperModel;
+use Api\Model\Shared\ProjectModel;
 use Palaso\Utilities\CodeGuard;
 
-class ActivityModel extends MapperModel
+class ActivityModel_lf_v1_5 extends MapperModel
 {
     // constants describing Actions
     const ADD_COMMENT = 'add_comment';
@@ -48,10 +50,11 @@ class ActivityModel extends MapperModel
     const LEX_COMMENT_INCREASE_SCORE = 'lexCommentIncreaseScore';
     const LEX_COMMENT_DECREASE_SCORE = 'lexCommentDecreaseScore';
     const LEX_REPLY = 'lexReply';
-    // USER and USER_RELATED usage: USER is the one doing the current activity. USER_RELATED, if present, is the one whose previous activity is being acted on.
-    // E.g., when replying to someone else's comment on a lexical entry, USER_RELATED is the one who made the original comment, and USER is the one making the reply.
+    // USER and USER2 usage: USER is the one doing the current activity. USER2, if present, is the one whose previous activity is being acted on.
+    // E.g., when replying to someone else's comment on a lexical entry, USER2 is the one who made the original comment, and USER is the one making the reply.
+    // TODO: Fix this in ActivityCommands::updateReplyToEntryComment, then remove this TODO line
     const USER = 'user';
-    const USER_RELATED = 'userRelated';
+    const USER2 = 'user2';
     const ENTRY = 'entry';
     const FIELD_LABEL = 'fieldLabel';
 
@@ -66,7 +69,7 @@ class ActivityModel extends MapperModel
         $this->textRef = new IdReference();
         $this->questionRef = new IdReference();
         $this->userRef = new IdReference();
-        $this->userRefRelated = new IdReference();
+        $this->userRef2 = new IdReference();
         $this->entryRef = new IdReference();
         $this->action = $this::UNKNOWN;
         $this->date = new \DateTime(); // set the timestamp to now
@@ -74,50 +77,6 @@ class ActivityModel extends MapperModel
         $this->addContent($this::PROJECT, $projectModel->projectName);
         $databaseName = $projectModel->databaseName();
         parent::__construct(ActivityModelMongoMapper::connect($databaseName), $id);
-    }
-
-    // TODO add a userFilter ArrayOf type that we can use to query Mongo for activities that only apply to specific users
-
-    /** @var Id */
-    public $id;
-
-    /** @var IdReference */
-    public $projectRef;
-
-    /** @var IdReference */
-    public $textRef;
-
-    /** @var IdReference */
-    public $questionRef;
-
-    /** @var IdReference */
-    public $userRef;
-
-    /** @var IdReference */
-    public $userRefRelated;
-
-    /** @var IdReference */
-    public $entryRef;
-
-    /** @var string */
-    // TODO add broadcast_message as an action on a GlobalActivityModel class cjh 2013-08
-    public $action;
-
-    /** @var MapOf<string> */
-    public $actionContent;
-
-    /** @var \DateTime */
-    public $date;
-
-    /**
-     * @param string $type - this is one of
-     * @param string $content
-     */
-    public function addContent($type, $content)
-    {
-        if (is_null($content)) return;  // Just ignore null content instead of throwing an exception
-        CodeGuard::checkTypeAndThrow($content, 'string');
-        $this->actionContent[$type] = $content;
     }
 
     /**
@@ -176,7 +135,7 @@ class ActivityModel extends MapperModel
                     self::ANSWER,
                     self::COMMENT,
                     self::USER,
-                    self::USER_RELATED,
+                    self::USER2,
                 ];
             case Website::LANGUAGEFORGE:
                 return [
@@ -186,7 +145,7 @@ class ActivityModel extends MapperModel
                     self::LEX_COMMENT_STATUS,
                     self::LEX_REPLY,
                     self::USER,
-                    self::USER_RELATED,
+                    self::USER2,
                     self::ENTRY,
                 ];
             default:
@@ -194,4 +153,47 @@ class ActivityModel extends MapperModel
         }
     }
 
+    // TODO add a userFilter ArrayOf type that we can use to query Mongo for activities that only apply to specific users
+
+    /** @var Id */
+    public $id;
+
+    /** @var IdReference */
+    public $projectRef;
+
+    /** @var IdReference */
+    public $textRef;
+
+    /** @var IdReference */
+    public $questionRef;
+
+    /** @var IdReference */
+    public $userRef;
+
+    /** @var IdReference */
+    public $userRef2;
+
+    /** @var IdReference */
+    public $entryRef;
+
+    /** @var string */
+    // TODO add broadcast_message as an action on a GlobalActivityModel class cjh 2013-08
+    public $action;
+
+    /** @var MapOf<string> */
+    public $actionContent;
+
+    /** @var \DateTime */
+    public $date;
+
+    /**
+     * @param string $type - this is one of
+     * @param string $content
+     */
+    public function addContent($type, $content)
+    {
+        if (is_null($content)) return;  // Just ignore null content instead of throwing an exception
+        CodeGuard::checkTypeAndThrow($content, 'string');
+        $this->actionContent[$type] = $content;
+    }
 }

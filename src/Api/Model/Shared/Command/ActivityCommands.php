@@ -21,7 +21,6 @@ use Api\Model\Shared\UnreadActivityModel;
 use Api\Model\Shared\UnreadAnswerModel;
 use Api\Model\Shared\UnreadCommentModel;
 use Api\Model\Shared\UnreadLexCommentModel;
-use Api\Model\Shared\UnreadLexReplyModel;
 use Api\Model\Shared\UnreadQuestionModel;
 
 class ActivityCommands
@@ -31,13 +30,13 @@ class ActivityCommands
     const DECREASE_SCORE = 'decrease';
 
     /**
-     *
      * @param ProjectModel $projectModel
      * @param string $questionId
      * @param string $answerId
      * @param CommentModel $commentModel
      * @param string $mode
      * @return string activity id
+     * @throws \Exception
      */
     public static function updateCommentOnQuestion($projectModel, $questionId, $answerId, $commentModel, $mode = "update")
     {
@@ -46,10 +45,10 @@ class ActivityCommands
         $answer = $question->readAnswer($answerId);
         $text = new TextModel($projectModel, $question->textRef->asString());
         $user = new UserModel($commentModel->userRef->asString());
-        $user2 = new UserModel($answer->userRef->asString());
+        $userRelated = new UserModel($answer->userRef->asString());
         $activity->action = ($mode == 'update') ? ActivityModel::UPDATE_COMMENT : ActivityModel::ADD_COMMENT;
         $activity->userRef->id = $commentModel->userRef->asString();
-        $activity->userRef2->id = $answer->userRef->asString();
+        $activity->userRefRelated->id = $answer->userRef->asString();
         $activity->textRef->id = $text->id->asString();
         $activity->questionRef->id = $questionId;
         $activity->addContent(ActivityModel::TEXT, $text->title);
@@ -57,7 +56,7 @@ class ActivityCommands
         $activity->addContent(ActivityModel::QUESTION, $question->getTitleForDisplay());
         $activity->addContent(ActivityModel::COMMENT, $commentModel->content);
         $activity->addContent(ActivityModel::USER, $user->username);
-        $activity->addContent(ActivityModel::USER2, $user2->username);
+        $activity->addContent(ActivityModel::USER_RELATED, $userRelated->username);
         $activityId = $activity->write();
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
         UnreadCommentModel::markUnreadForProjectMembers($commentModel->id->asString(), $projectModel, $questionId, $commentModel->userRef->asString());
@@ -65,18 +64,26 @@ class ActivityCommands
         return $activityId;
     }
 
+    /**
+     * @param ProjectModel $projectModel
+     * @param string $questionId
+     * @param string $answerId
+     * @param CommentModel $commentModel
+     * @return string
+     * @throws \Exception
+     */
     public static function addCommentOnQuestion($projectModel, $questionId, $answerId, $commentModel)
     {
         return ActivityCommands::updateCommentOnQuestion($projectModel, $questionId, $answerId, $commentModel, "add");
     }
 
     /**
-     *
      * @param ProjectModel $projectModel
      * @param string $questionId
      * @param AnswerModel $answerModel
      * @param string $mode
      * @return string activity id
+     * @throws \Exception
      */
     public static function updateAnswer($projectModel, $questionId, $answerModel, $mode = "update")
     {
@@ -100,18 +107,23 @@ class ActivityCommands
         return $activityId;
     }
 
+    /**
+     * @param ProjectModel $projectModel
+     * @param string $questionId
+     * @param AnswerModel $answerModel
+     * @return string
+     * @throws \Exception
+     */
     public static function addAnswer($projectModel, $questionId, $answerModel)
     {
         return ActivityCommands::updateAnswer($projectModel, $questionId, $answerModel, 'add');
     }
 
     /**
-     *
      * @param ProjectModel $projectModel
      * @param string $textId
      * @param TextModel $textModel
      * @param string $userId
-     *
      * @return string activity id
      * @throws \Exception
      */
@@ -134,7 +146,6 @@ class ActivityCommands
      * @param string $questionId
      * @param QuestionModel $questionModel
      * @param string $userId
-     *
      * @return string activity id
      * @throws \Exception
      */
@@ -156,10 +167,10 @@ class ActivityCommands
     }
 
     /**
-     *
      * @param ProjectModel $projectModel
      * @param string $userId
      * @return string activity id
+     * @throws \Exception
      */
     public static function addUserToProject($projectModel, $userId)
     {
@@ -177,13 +188,13 @@ class ActivityCommands
     // this may only be useful to log this activity for answers on which the user has commented on or has answered him/herself
     // TODO: how do we implement this?
     /**
-     *
      * @param ProjectModel $projectModel
      * @param string $questionId
      * @param string $answerId
      * @param string $userId
      * @param string $mode
      * @return string activity id
+     * @throws \Exception
      */
     public static function updateScore($projectModel, $questionId, $answerId, $userId, $mode = ActivityCommands::INCREASE_SCORE)
     {
@@ -209,7 +220,6 @@ class ActivityCommands
     }
 
     /**
-     *
      * @param ProjectModel $projectModel
      * @param string $userId
      * @param LexEntryModel $entry
@@ -248,7 +258,6 @@ class ActivityCommands
     }
 
     /**
-     *
      * @param ProjectModel $projectModel
      * @param string $userId
      * @param string $id entry id
@@ -315,9 +324,9 @@ class ActivityCommands
     {
         $activity = new ActivityModel($projectModel);
         $entry = new LexEntryModel($projectModel, $entryId);
-        $userId2 = $commentModel->authorInfo->createdByUserRef->asString();
+        $authorId = $commentModel->authorInfo->createdByUserRef->asString();
         $user = new UserModel($userId);
-        $user2 = new UserModel($userId2);
+        $author = new UserModel($authorId);
         $activity->action = ActivityModel::DELETE_LEX_COMMENT;
         $activity->userRef->id = $userId;
         $activity->entryRef->id = $entryId;
@@ -330,7 +339,7 @@ class ActivityCommands
             $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
         }
         $activity->addContent(ActivityModel::USER, $user->username);
-        $activity->addContent(ActivityModel::USER2, $user2->username);
+        $activity->addContent(ActivityModel::USER_RELATED, $author->username);
         $activityId = $activity->write();
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
         UnreadLexCommentModel::markUnreadForProjectMembers($commentModel->id->asString(), $projectModel, $entryId, $userId);
@@ -384,12 +393,12 @@ class ActivityCommands
     }
 
     /**
-     *
      * @param ProjectModel $projectModel
      * @param string $entryId
      * @param LexCommentModel $commentModel
      * @param string $mode either ActivityCommands::INCREASE_SCORE or ActivityCommands::DECREASE_SCORE
      * @return string activity id
+     * @throws \Exception
      */
     public static function updateEntryCommentScore($projectModel, $entryId, $commentModel, $mode = ActivityCommands::INCREASE_SCORE)
     {
@@ -414,7 +423,6 @@ class ActivityCommands
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
 
         return $activityId;
-
     }
 
     /**
@@ -428,25 +436,21 @@ class ActivityCommands
      */
     public static function updateReplyToEntryComment($projectModel, $entryId, $commentModel, $replyModel, $mode = "update")
     {
+        // "user" is the one doing the current activity, and "userRelated" the one whose previous activity is being responded to.
         if ($mode === 'update') {
-            $userId = $commentModel->authorInfo->modifiedByUserRef->asString();
+            $userId = $replyModel->authorInfo->modifiedByUserRef->asString();
+            $userRelatedId = $commentModel->authorInfo->modifiedByUserRef->asString();
         } else {
-            $userId = $commentModel->authorInfo->createdByUserRef->asString();
+            $userId = $replyModel->authorInfo->createdByUserRef->asString();
+            $userRelatedId = $commentModel->authorInfo->createdByUserRef->asString();
         }
-        if ($mode === 'update') {
-            $user2Id = $replyModel->authorInfo->modifiedByUserRef->asString();
-        } else {
-            $user2Id = $replyModel->authorInfo->createdByUserRef->asString();
-        }
-        // TODO: Swap "user" and "user2" here (will need a migration).
-        // "User" should always be the one doing the current activity, and "user2" the one whose previous activity is being responded to.
 
         $user = new UserModel($userId);
-        $user2 = new UserModel($user2Id);
+        $userRelated = new UserModel($userRelatedId);
         $activity = new ActivityModel($projectModel);
         $activity->action = ($mode == 'update') ? ActivityModel::UPDATE_LEX_REPLY : ActivityModel::ADD_LEX_REPLY;
         $activity->userRef->id = $userId;
-        $activity->userRef2->id = $user2Id;
+        $activity->userRefRelated->id = $userRelatedId;
         $activity->entryRef->id = $entryId;
         $entry = new LexEntryModel($projectModel, $entryId);
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
@@ -459,7 +463,7 @@ class ActivityCommands
             $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
         }
         $activity->addContent(ActivityModel::USER, $user->username);
-        $activity->addContent(ActivityModel::USER2, $user2->username);
+        $activity->addContent(ActivityModel::USER_RELATED, $userRelated->username);
         $activityId = $activity->write();
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
         // Disabling the "mark replies as unread" feature until "unread items" system is revamped. - RM 2018-03
@@ -480,13 +484,13 @@ class ActivityCommands
      */
     public static function deleteReplyToEntryComment($projectModel, $entryId, $commentModel, $replyModel, $userId)
     {
-        $user2Id = $commentModel->authorInfo->createdByUserRef->asString();
+        $authorId = $commentModel->authorInfo->createdByUserRef->asString();
         $user = new UserModel($userId);
-        $user2 = new UserModel($user2Id);
+        $author = new UserModel($authorId);
         $activity = new ActivityModel($projectModel);
         $activity->action = ActivityModel::DELETE_LEX_REPLY;
         $activity->userRef->id = $userId;
-        $activity->userRef2->id = $user2Id;
+        $activity->userRefRelated->id = $authorId;
         $activity->entryRef->id = $entryId;
         $entry = new LexEntryModel($projectModel, $entryId);
         $activity->addContent(ActivityModel::ENTRY, $entry->nameForActivityLog());
@@ -499,7 +503,7 @@ class ActivityCommands
             $activity->addContent(ActivityModel::LEX_COMMENT_LABEL, $label);
         }
         $activity->addContent(ActivityModel::USER, $user->username);
-        $activity->addContent(ActivityModel::USER2, $user2->username);
+        $activity->addContent(ActivityModel::USER_RELATED, $author->username);
         $activityId = $activity->write();
         UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
         // Disabling the "mark replies as unread" feature until "unread items" system is revamped. - RM 2018-03
@@ -569,4 +573,5 @@ class ActivityCommands
         $resultParts[] = $fieldLabel;
         return implode('|', $resultParts);
     }
+
 }
