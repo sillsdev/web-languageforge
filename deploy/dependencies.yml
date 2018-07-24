@@ -228,6 +228,14 @@
     - name: Ensure /var/www/.local directory is writeable (for LfMerge)
       file: path="/var/www/.local" state=directory owner=www-data group=www-data mode=0755
 
+    - name: Install cron job to regularly run lfmerge queue
+      cron:
+        name: "run lfmergeqm"
+        cron_file: /etc/cron.d/lfmergeqm
+        minute: "13,33,57"
+        user: www-data
+        job: lfmergeqm
+
     - name: install PECL mongo extension
       # yes types empty line over and over to accept defaults
       shell: yes '' | /usr/bin/pecl install mongodb
