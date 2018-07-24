@@ -24,7 +24,6 @@ class LexSense extends ObjectForEncoding
 
     public function __construct($liftId = '', $guid = '')
     {
-        $this->setPrivateProp('liftId');
         $this->setReadOnlyProp('authorInfo');
         $this->setRearrangeableProp('examples');
         $this->setRearrangeableProp('pictures');
