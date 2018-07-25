@@ -298,13 +298,13 @@ class SendReceiveCommandsTest extends TestCase
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $projectId = $project->write();
         $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
-        $runSeconds = 2;
+        $runSeconds = 10;
         $mockCommand = 'php ' . __DIR__ . '/mockLFMergeExe.php ' . $runSeconds;
 
         $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $mockPidFilePath, $mockCommand);
 
         $this->assertTrue($isRunning);
-        sleep(1);
+        sleep(5);
         $this->assertTrue(SendReceiveCommands::isProcessRunningByPidFile($mockPidFilePath));
 
         $isStillRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $mockPidFilePath, $mockCommand);
