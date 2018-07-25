@@ -1,6 +1,7 @@
 <?php
 
 use Api\Library\Shared\Website;
+use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
@@ -280,6 +281,14 @@ class MongoTestEnvironment
     }
 }
 
+class TestableLexProjectModel extends LexProjectModel
+{
+    public function callCleanup()
+    {
+        $this->cleanup();
+    }
+}
+
 class LexiconMongoTestEnvironment extends MongoTestEnvironment
 {
     public function __construct()
@@ -298,7 +307,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
      */
     public function createProject($name, $code , $appName = '')
     {
-        $projectModel = new LexProjectModel();
+        $projectModel = new TestableLexProjectModel();
         $projectModel->projectName = $name;
         $projectModel->projectCode = $code;
         $projectModel->siteName = $this->website->domain;
@@ -361,6 +370,16 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         }
 
         return $liftFilePath;
+    }
+
+    public function setupSendReceiveEnvironment()
+    {
+        $baseDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid(rand(), true);
+        SendReceiveCommands::getLFMergePaths(true, $baseDir);
+        mkdir($baseDir . DIRECTORY_SEPARATOR . "state", 0777, true);
+        mkdir($baseDir . DIRECTORY_SEPARATOR . "webwork", 0777, true);
+
+        return $baseDir;
     }
 }
 
