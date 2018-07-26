@@ -157,14 +157,12 @@ class LexEntryCommandsTest extends TestCase
 
         $this->assertEquals('rose apple', $newEntry['lexeme']['th']['value']);
         $this->assertEquals($senseGuid, $newEntry['senses'][0]['guid']);
-        $this->assertArrayNotHasKey('liftId', $newEntry['senses'][0], 'sense liftId should be private');
         $this->assertEquals('red fruit', $newEntry['senses'][0]['definition']['en']['value']);
         $this->assertEquals('rose fruit', $newEntry['senses'][0]['gloss']['en']['value']);
         $this->assertEquals('noun', $newEntry['senses'][0]['partOfSpeech']['value']);
         $this->assertEquals($exampleGuid, $newEntry['senses'][0]['examples'][0]['guid']);
         $this->assertEquals($pictureGuid, $newEntry['senses'][0]['pictures'][0]['guid']);
         // $this->assertArrayNotHasKey('scientificName', $newEntry['senses'][0], 'should be no empty fields');  // Commented out 2018-02 by RM until the Mongo changes are merged into master
-        $this->assertArrayNotHasKey('liftId', $newEntry['senses'][0]['examples'][0], 'example liftId should be private');
         $this->assertEquals('example1', $newEntry['senses'][0]['examples'][0]['sentence']['th']['value']);
         $this->assertEquals('trans1', $newEntry['senses'][0]['examples'][0]['translation']['en']['value']);
     }
