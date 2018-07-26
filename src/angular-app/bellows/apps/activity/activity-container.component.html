@@ -97,14 +97,14 @@
                                                 </div>
 
                                                 <div data-ng-switch-when="add_comment-project">
-                                                    Responded to <span class="notranslate">{{item.userRef2.username}}</span>'s answer to
+                                                    Responded to <span class="notranslate">{{item.userRefRelated.username}}</span>'s answer to
                                                     &ldquo;<a class="notranslate" href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
                                                     on <a class="notranslate" href="{{item.textHref}}">{{item.content.text}}</a>
                                                     <span ng-show="$ctrl.showProjectName">in <a class="notranslate" href="{{item.projectHref}}">{{item.content.project}}</a></span>
                                                     <div class="activity-reply">
                                                         <div class="activity-reply-meta">
-                                                            <img data-ng-src="{{$ctrl.getAvatarUrl(item.userRef2.avatar_ref)}}">
-                                                            <span>{{item.userRef2.username}}</span>
+                                                            <img data-ng-src="{{$ctrl.getAvatarUrl(item.userRefRelated.avatar_ref)}}">
+                                                            <span>{{item.userRefRelated.username}}</span>
                                                         </div>
                                                         <div class="activity-reply-content">
                                                             <i class="fa fa-quote-left"></i>
@@ -116,7 +116,7 @@
                                                 </div>
 
                                                 <div data-ng-switch-when="update_comment-project">
-                                                    Updated their comment on <span class="notranslate">{{item.userRef2.username}}</span>'s
+                                                    Updated their comment on <span class="notranslate">{{item.userRefRelated.username}}</span>'s
                                                     answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
                                                     on <a href="{{item.textHref}}">{{item.content.text}}</a>
                                                     <span ng-show="$ctrl.showProjectName">in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
@@ -246,8 +246,8 @@
                                                     <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
                                                     <div class="activity-reply">
                                                         <div class="activity-reply-meta">
-                                                            <img data-ng-src="{{$ctrl.getAvatarUrl(item.userRef2.avatar_ref)}}">
-                                                            <span>{{item.userRef2.username}}</span>
+                                                            <img data-ng-src="{{$ctrl.getAvatarUrl(item.userRefRelated.avatar_ref)}}">
+                                                            <span>{{item.userRefRelated.username}}</span>
                                                         </div>
                                                         <div class="activity-reply-content">
                                                             <i class="fa fa-quote-left"></i>
@@ -264,8 +264,8 @@
                                                     <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
                                                     <div class="activity-reply">
                                                         <div class="activity-reply-meta">
-                                                            <img data-ng-src="{{$ctrl.getAvatarUrl(item.userRef2.avatar_ref)}}">
-                                                            <span>{{item.userRef2.username}}</span>
+                                                            <img data-ng-src="{{$ctrl.getAvatarUrl(item.userRefRelated.avatar_ref)}}">
+                                                            <span>{{item.userRefRelated.username}}</span>
                                                         </div>
                                                         <div class="activity-reply-content">
                                                             <i class="fa fa-quote-left"></i>
