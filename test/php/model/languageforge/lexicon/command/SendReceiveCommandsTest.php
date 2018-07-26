@@ -294,8 +294,9 @@ class SendReceiveCommandsTest extends TestCase
     private function WaitForFileExist($file, $timeoutSeconds)
     {
         $tenMicroSeconds = 10;
+        $timeoutMicroSeconds = $timeoutSeconds * 1000000;
         for ($waitMicroSeconds = 0;
-             $waitMicroSeconds < $timeoutSeconds * 1000;
+             $waitMicroSeconds < $timeoutMicroSeconds;
              $waitMicroSeconds += $tenMicroSeconds) {
             if (file_exists($file)) {
                 break;
