@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Model\Shared\Dto;
+namespace Api\Library\Shared\Script\Migration;
 
 use Api\Library\Shared\Palaso\StringUtil;
 use Api\Library\Shared\Website;
@@ -11,7 +11,6 @@ use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
-use Api\Model\Shared\ActivityModel;
 use Api\Model\Shared\ActivityModelMongoMapper;
 use Api\Model\Shared\GlobalUnreadActivityModel;
 use Api\Model\Shared\Mapper\JsonEncoder;
@@ -24,7 +23,7 @@ use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UnreadActivityModel;
 use MongoDB\BSON\UTCDateTime;
 
-class ActivityListDto
+class ActivityListDto_lf_v1_5
 {
     // Constants used in update_entry activity content
     const EDITED_FIELD = 'edited_field';
@@ -38,7 +37,7 @@ class ActivityListDto
      */
     public static function getActivityTypes($site)
     {
-        return ActivityModel::getActivityTypesForSiteBase($site->base);
+        return ActivityModel_lf_v1_5::getActivityTypesForSiteBase($site->base);
     }
 
     /**
@@ -199,21 +198,21 @@ class ActivityListDto
     // Helper function for getActivityForUser()
     private static function filterActivityByUserId($projectModel, $userId, $itemId)
     {
-        $activity = new ActivityModel($projectModel, $itemId);
+        $activity = new ActivityModel_lf_v1_5($projectModel, $itemId);
         switch ($activity->action) {
-            case ActivityModel::ADD_ANSWER:
-            case ActivityModel::UPDATE_ANSWER:
+            case ActivityModel_lf_v1_5::ADD_ANSWER:
+            case ActivityModel_lf_v1_5::UPDATE_ANSWER:
                 $authorId = $activity->userRef->id;
                 return ($authorId == $userId);
                 break;
-            case ActivityModel::ADD_COMMENT:
-            case ActivityModel::UPDATE_COMMENT:
+            case ActivityModel_lf_v1_5::ADD_COMMENT:
+            case ActivityModel_lf_v1_5::UPDATE_COMMENT:
                 $commentAuthorId = $activity->userRef->id;
-                $answerAuthorId = $activity->userRefRelated->id;
+                $answerAuthorId = $activity->userRef2->id;
                 return ($answerAuthorId == $userId && $commentAuthorId == $userId);
                 break;
-            case ActivityModel::INCREASE_SCORE:
-            case ActivityModel::DECREASE_SCORE:
+            case ActivityModel_lf_v1_5::INCREASE_SCORE:
+            case ActivityModel_lf_v1_5::DECREASE_SCORE:
                 // These activities actually do not preserve enough information for us to tell whose answer was voted on!
                 // So we can only filter by "You yourself voted an answer up or down", and can't tell whose answer it was.
                 $voterId = $activity->userRef->id;
@@ -258,22 +257,22 @@ class ActivityListDto
             $item['type'] = 'project';  // FIXME: Should this always be "project"? Should it sometimes be "entry"? 2018-02 RM
             unset($item['actionContent']);
             if ($projectModel->appName === LfProjectModel::LEXICON_APP) {
-                if ($item['action'] === ActivityModel::UPDATE_ENTRY || $item['action'] === ActivityModel::ADD_ENTRY) {
+                if ($item['action'] === ActivityModel_lf_v1_5::UPDATE_ENTRY || $item['action'] === ActivityModel_lf_v1_5::ADD_ENTRY) {
                     $lexProjectModel = new LexProjectModel($projectModel->id->asString());
                     $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
-                } else if ($item['action'] === ActivityModel::ADD_LEX_COMMENT ||
-                           $item['action'] === ActivityModel::UPDATE_LEX_COMMENT ||
-                           $item['action'] === ActivityModel::DELETE_LEX_COMMENT ||
-                           $item['action'] === ActivityModel::UPDATE_LEX_COMMENT_STATUS ||
-                           $item['action'] === ActivityModel::LEX_COMMENT_INCREASE_SCORE ||
-                           $item['action'] === ActivityModel::LEX_COMMENT_DECREASE_SCORE ||
-                           $item['action'] === ActivityModel::ADD_LEX_REPLY ||
-                           $item['action'] === ActivityModel::UPDATE_LEX_REPLY ||
-                           $item['action'] === ActivityModel::DELETE_LEX_REPLY) {
-                    $labelFromMongo = $item['content'][ActivityModel::LEX_COMMENT_LABEL] ?? '';
-                    unset($item['content'][ActivityModel::LEX_COMMENT_LABEL]);
+                } else if ($item['action'] === ActivityModel_lf_v1_5::ADD_LEX_COMMENT ||
+                    $item['action'] === ActivityModel_lf_v1_5::UPDATE_LEX_COMMENT ||
+                    $item['action'] === ActivityModel_lf_v1_5::DELETE_LEX_COMMENT ||
+                    $item['action'] === ActivityModel_lf_v1_5::UPDATE_LEX_COMMENT_STATUS ||
+                    $item['action'] === ActivityModel_lf_v1_5::LEX_COMMENT_INCREASE_SCORE ||
+                    $item['action'] === ActivityModel_lf_v1_5::LEX_COMMENT_DECREASE_SCORE ||
+                    $item['action'] === ActivityModel_lf_v1_5::ADD_LEX_REPLY ||
+                    $item['action'] === ActivityModel_lf_v1_5::UPDATE_LEX_REPLY ||
+                    $item['action'] === ActivityModel_lf_v1_5::DELETE_LEX_REPLY) {
+                    $labelFromMongo = $item['content'][ActivityModel_lf_v1_5::LEX_COMMENT_LABEL] ?? '';
+                    unset($item['content'][ActivityModel_lf_v1_5::LEX_COMMENT_LABEL]);
                     if (! empty($labelFromMongo)) {
-                        $item['content'][ActivityModel::FIELD_LABEL] = static::prepareActivityContentForCommentLabel($labelFromMongo);
+                        $item['content'][ActivityModel_lf_v1_5::FIELD_LABEL] = static::prepareActivityContentForCommentLabel($labelFromMongo);
                     }
                 }
             }
@@ -365,15 +364,15 @@ class ActivityListDto
         foreach ($changesInInput as $fieldId => $change) {
             $changeType = '';
             if (array_key_exists('oldValue', $change)) {
-                $changeType = ActivityListDto::EDITED_FIELD;
+                $changeType = ActivityListDto_lf_v1_5::EDITED_FIELD;
             } else if (array_key_exists('newValue', $change)) {
-                $changeType = ActivityListDto::EDITED_FIELD;
+                $changeType = ActivityListDto_lf_v1_5::EDITED_FIELD;
             } else if (array_key_exists('added', $change)) {
-                $changeType = ActivityListDto::ADDED_FIELD;
+                $changeType = ActivityListDto_lf_v1_5::ADDED_FIELD;
             } else if (array_key_exists('moved', $change)) {
-                $changeType = ActivityListDto::MOVED_FIELD;
+                $changeType = ActivityListDto_lf_v1_5::MOVED_FIELD;
             } else if (array_key_exists('deleted', $change)) {
-                $changeType = ActivityListDto::DELETED_FIELD;
+                $changeType = ActivityListDto_lf_v1_5::DELETED_FIELD;
             }
 
             // Instead of hardcoding sense and example positions, we could instead return a structure like:
@@ -430,19 +429,19 @@ class ActivityListDto
                 $changeForDto['inputSystemTag'] = $inputSystemTag;
             }
             switch ($changeType) {
-                case ActivityListDto::EDITED_FIELD:
+                case ActivityListDto_lf_v1_5::EDITED_FIELD:
                     $changeForDto['oldValue'] = $change['oldValue'] ?? '';
                     $changeForDto['newValue'] = $change['newValue'] ?? '';
                     break;
-                case ActivityListDto::ADDED_FIELD:
+                case ActivityListDto_lf_v1_5::ADDED_FIELD:
                     $changeForDto['oldValue'] = '';
                     $changeForDto['newValue'] = $change['newValue'] ?? '';
                     break;
-                case ActivityListDto::DELETED_FIELD:
+                case ActivityListDto_lf_v1_5::DELETED_FIELD:
                     $changeForDto['oldValue'] = $change['oldValue'] ?? '';
                     $changeForDto['newValue'] = '';
                     break;
-                case ActivityListDto::MOVED_FIELD:
+                case ActivityListDto_lf_v1_5::MOVED_FIELD:
                     $changeForDto['movedFrom'] = $mostRecentPosition;
                     $changeForDto['movedTo'] = $change['moved'];
                     break;
@@ -471,7 +470,7 @@ class ActivityListDtoEncoder extends JsonEncoder
         if ($model->asString() == '') {
             return '';
         }
-        if ($key == 'userRef' || $key == 'userRefRelated') {
+        if ($key == 'userRef' || $key == 'userRef2') {
             $user = new UserModel();
             if ($user->readIfExists($model->asString())) {
                 return [
@@ -562,7 +561,7 @@ class ActivityListModel extends MapperListModel
         }
         $limit = $filterParams['limit'] ?? 100;
         $skip  = $filterParams['skip'] ?? 0;
-        $this->entries = new MapOf(function () use ($projectModel) { return new ActivityModel($projectModel); });
+        $this->entries = new MapOf(function () use ($projectModel) { return new ActivityModel_lf_v1_5($projectModel); });
         parent::__construct(
             ActivityModelMongoMapper::connect($projectModel->databaseName()),
             $query, [], ['dateCreated' => -1], $limit, $skip
@@ -585,7 +584,7 @@ class ActivityListModelByUser extends ActivityListModel
         parent::__construct($projectModel,
             ['action' => ['$regex' => ''],
                 '$or' => ['userRef'  => MongoMapper::mongoID($userId),
-                    'userRefRelated' => MongoMapper::mongoID($userId)]],
+                    'userRef2' => MongoMapper::mongoID($userId)]],
             $filterParams
         );
     }
@@ -602,7 +601,7 @@ class ActivityListModelByProject extends ActivityListModel
     {
         parent::__construct($projectModel,
             ['action' => ['$regex' => ''],
-             'projectRef' => MongoMapper::mongoID($projectModel->id->asString())],
+                'projectRef' => MongoMapper::mongoID($projectModel->id->asString())],
             $filterParams
         );
     }
@@ -620,7 +619,7 @@ class ActivityListModelByLexEntry extends ActivityListModel
     {
         parent::__construct($projectModel,
             ['action' => ['$regex' => ''],
-             'entryRef' => MongoMapper::mongoID($entryId)],
+                'entryRef' => MongoMapper::mongoID($entryId)],
             $filterParams
         );
     }
