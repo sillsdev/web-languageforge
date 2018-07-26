@@ -1109,7 +1109,7 @@ export class LexiconEditorController implements angular.IController {
 
   private prepEntryForUpdate(entry: LexEntry): LexEntry {
     const entryForUpdate: LexEntry = this.recursiveRemoveProperties(angular.copy(entry),
-      ['guid', 'mercurialSha', 'authorInfo', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+      ['mercurialSha', 'authorInfo', 'dateCreated', 'dateModified', '$$hashKey']);
     return this.prepCustomFieldsForUpdate(entryForUpdate);
   }
 
