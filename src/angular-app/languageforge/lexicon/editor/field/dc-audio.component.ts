@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+import * as moment from 'moment';
 
 import {BytesFilterFunction} from '../../../../bellows/core/filters';
 import {ModalService} from '../../../../bellows/core/modal/modal.service';
@@ -140,7 +141,8 @@ export class FieldAudioController implements angular.IController {
 
   audioRecorderCallback = (blob: Blob) => {
     if (blob) {
-      const file = new File([blob], 'test_file_name.mp3');
+      const fileName = 'recording_' + moment.utc().format('YYYY_MM_DD_HH_mm_ss') + '.mp3';
+      const file = new File([blob], fileName);
       this.uploadAudio(file);
     }
     this.showAudioRecorder = false;
