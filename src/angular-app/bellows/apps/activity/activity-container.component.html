@@ -203,6 +203,11 @@
                                                             <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
                                                             <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
                                                         </div>
+                                                        <div data-ng-switch-when="moved_field">
+                                                            <span class="activity-action">Moved</span> <span class="activity-label notranslate">{{item.getLabel()}}</span>
+                                                            <span class="activity-entry" ng-show="$ctrl.showEntryName">in entry <a href="{{item.entryHref}}" class="notranslate">{{item.content.entry}}</a></span>
+                                                            <span class="activity-project" ng-show="$ctrl.showProjectName">for project <a href="{{item.projectHref}}" class="notranslate">{{item.content.project}}</a></span>
+                                                        </div>
                                                         <div data-ng-switch-default>
                                                             <ng-switch on="item.getOldValue()">
                                                                 <div data-ng-switch-when="">

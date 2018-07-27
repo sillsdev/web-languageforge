@@ -115,6 +115,7 @@ class Activity {
   }
 
   private static parseValue(value: string) {
+    if (value == null) return '';
     if (value.startsWith('[') && value.endsWith(']')) {
       const json = JSON.parse(value);
       value = json.join(', ');
