@@ -316,7 +316,7 @@ export class ActivityContainerController implements angular.IController {
       'project',
       'User added to project',
       'user-plus',
-      'added {x} user'));
+      'was added to {x} project'));
     this.activityTypes.push(new ActivityType(
       'add_question',
       'project',

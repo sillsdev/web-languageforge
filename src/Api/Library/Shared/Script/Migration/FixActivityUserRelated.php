@@ -35,6 +35,7 @@ class FixActivityUserRelated
         foreach ($projectList->entries as $projectParams) { // foreach existing project
             $projectId = $projectParams['id'];
             $project = new ProjectModel($projectId);
+            print("\n-------------  $project->projectName.\n");
             $activityEntries = ActivityListDto_lf_v1_5::getActivityForProject($project);
             foreach ($activityEntries as $activityEntry) {
                 $activityId = $activityEntry['id'];
