@@ -35,12 +35,6 @@ export const SfChecksProjectSettingsModule = angular
     $scope.list = {};
     $scope.list.archivedTexts = [];
 
-    sessionService.getSession().then((session: Session) => {
-      $scope.canEditCommunicationSettings = function canEditCommunicationSettings(): boolean {
-        return session.hasSiteRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
-      };
-    });
-
     $scope.queryProjectSettings = function queryProjectSettings() {
       $q.all([sessionService.getSession(), sfchecksProjectService.projectSettings()]).then((data: any[]) => {
         const session = data[0] as Session;
