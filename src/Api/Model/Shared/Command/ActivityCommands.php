@@ -254,7 +254,9 @@ class ActivityCommands
             }
         }
 
-        return $activity->write();
+        $activityId = $activity->write();
+        UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
+        return $activityId;
     }
 
     /**
@@ -272,7 +274,9 @@ class ActivityCommands
         $lexeme = LexEntryCommands::getEntryLexeme($projectModel->id->asString(), $id);
         $activity->addContent(ActivityModel::ENTRY, $lexeme);
 
-        return $activity->write();
+        $activityId = $activity->write();
+        UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
+        return $activityId;
     }
 
     /**
