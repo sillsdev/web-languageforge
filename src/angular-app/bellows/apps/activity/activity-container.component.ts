@@ -546,7 +546,7 @@ export class ActivityContainerController implements angular.IController {
           // Cast into our Activity class - may be there is already a built in method for this?
           const activity = new Activity(result.data.activity[key]);
           // Check if the activity as an array of changes as we want each one split out
-          if (activity.content.changes) {
+          if (activity.content.changes && activity.content.changes.length > 0) {
             for (const changeKey in activity.content.changes) {
               if (activity.content.changes.hasOwnProperty(changeKey)) {
                 const changedActivity = new Activity(result.data.activity[key]);
