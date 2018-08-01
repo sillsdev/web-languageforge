@@ -17,12 +17,6 @@ angular.module('sfchecks.projectSettings', ['ui.bootstrap', 'ngFileUpload', 'ngR
     $scope.list = {};
     $scope.list.archivedTexts = [];
 
-    ss.getSession().then(function (session) {
-      $scope.canEditCommunicationSettings = function () {
-        return session.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-      };
-    });
-
     $scope.queryProjectSettings = function () {
       $q.all([ss.getSession(), sfchecksProjectService.projectSettings()]).then(function (data) {
         var session = data[0];
