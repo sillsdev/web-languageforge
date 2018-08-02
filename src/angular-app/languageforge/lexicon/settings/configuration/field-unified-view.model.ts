@@ -369,7 +369,7 @@ export class ConfigurationFieldUnifiedViewModel {
     const fields: FieldSettings[] = [];
     let fieldIndex = 0;
     for (const fieldName of levelConfig.fieldOrder) {
-      if (levelConfig.fields[fieldName].type !== 'fields') {
+      if (fieldName in levelConfig.fields && levelConfig.fields[fieldName].type !== 'fields') {
         const fieldSettings = new FieldSettings();
         fieldSettings.fieldName = fieldName;
         fieldSettings.label = levelConfig.fields[fieldName].label;
