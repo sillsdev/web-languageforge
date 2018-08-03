@@ -30,6 +30,8 @@ class ActivityModel extends MapperModel
     const UPDATE_LEX_COMMENT = 'update_lex_comment';
     const DELETE_LEX_COMMENT = 'delete_lex_comment';
     const UPDATE_LEX_COMMENT_STATUS = 'update_lex_comment_status';
+    const LEX_COMMENT_INCREASE_SCORE = 'lexCommentIncreaseScore';
+    const LEX_COMMENT_DECREASE_SCORE = 'lexCommentDecreaseScore';
     const ADD_LEX_REPLY = 'add_lex_reply';
     const UPDATE_LEX_REPLY = 'update_lex_reply';
     const DELETE_LEX_REPLY = 'delete_lex_reply';
@@ -45,8 +47,6 @@ class ActivityModel extends MapperModel
     const LEX_COMMENT_LABEL = 'lexCommentLabel';
     const LEX_COMMENT_FIELD_VALUE = 'lexCommentFieldValue';
     const LEX_COMMENT_STATUS = 'lexCommentStatus';
-    const LEX_COMMENT_INCREASE_SCORE = 'lexCommentIncreaseScore';
-    const LEX_COMMENT_DECREASE_SCORE = 'lexCommentDecreaseScore';
     const LEX_REPLY = 'lexReply';
     // USER and USER_RELATED usage: USER is the one doing the current activity. USER_RELATED, if present, is the one whose previous activity is being acted on.
     // E.g., when replying to someone else's comment on a lexical entry, USER_RELATED is the one who made the original comment, and USER is the one making the reply.
@@ -149,9 +149,11 @@ class ActivityModel extends MapperModel
                     self::DELETE_ENTRY,
                     self::ADD_LEX_COMMENT,
                     self::UPDATE_LEX_COMMENT,
+                    self::DELETE_LEX_COMMENT,
                     self::UPDATE_LEX_COMMENT_STATUS,
                     self::ADD_LEX_REPLY,
                     self::UPDATE_LEX_REPLY,
+                    self::DELETE_LEX_REPLY,
                     self::LEX_COMMENT_INCREASE_SCORE,
                     self::LEX_COMMENT_DECREASE_SCORE,
                     self::UNKNOWN,
