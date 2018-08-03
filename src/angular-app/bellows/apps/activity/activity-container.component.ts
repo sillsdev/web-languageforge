@@ -363,6 +363,13 @@ export class ActivityContainerController implements angular.IController {
       'reply',
       'updated {x} reply'));
     this.activityTypes.push(new ActivityType(
+      'delete_lex_reply',
+      'project',
+      'Delete Reply',
+      'trash',
+      'deleted {x} reply',
+      'deleted {x} replies'));
+    this.activityTypes.push(new ActivityType(
       'update_lex_comment_status',
       'project',
       'Comment status changed',
@@ -387,6 +394,12 @@ export class ActivityContainerController implements angular.IController {
       'Update Comment',
       'comments-o',
       'updated {x} comment'));
+    this.activityTypes.push(new ActivityType(
+      'delete_lex_comment',
+      'project',
+      'Delete Comment',
+      'trash',
+      'deleted {x} comment'));
     this.activityTypes.push(new ActivityType(
       'add_answer',
       'project',
