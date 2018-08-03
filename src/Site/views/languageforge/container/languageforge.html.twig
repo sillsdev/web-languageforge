@@ -52,7 +52,7 @@
                                 <a class="dropdown-item" href="/app/projects"><b>List All Projects</b></a>
                                 <div class="dropdown-divider"></div>
                             {% endif %}
-                            {% if projects|length <= 10 %}
+                            {% if projects|length > 0 and projects|length <= 10 %}
                                 {% verbatim %}
                                 <div class="dropdown-divider" data-ng-show="$ctrl.rights.canCreateProject"></div>
                                 {% endverbatim %}
@@ -61,6 +61,8 @@
                                 <a class="dropdown-item"
                                    href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
                             {% endfor %}
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/app/activity"><b>Activity for All Projects</b></a>
                         </div>
                     </li>
                     {% verbatim %}
