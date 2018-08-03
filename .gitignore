@@ -50,6 +50,7 @@ secrets/
 [Dd]ebug*/
 obj/
 [Rr]elease*/
+!/src/releasenotes
 _ReSharper*/
 *.user
 
