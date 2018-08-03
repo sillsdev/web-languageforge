@@ -399,6 +399,7 @@ export class LexiconEditorController implements angular.IController {
 
         // refresh data will add the new entry to the entries list
         this.editorService.refreshEditorData().then(() => {
+          this.activityService.markRefreshRequired();
           if (entry && isNewEntry) {
             this.setCurrentEntry(this.entries[this.editorService.getIndexInList(entry.id, this.entries)]);
             this.editorService.removeEntryFromLists(newEntryTempId);
@@ -406,9 +407,6 @@ export class LexiconEditorController implements angular.IController {
               this.$state.go('.', { entryId: entry.id }, { notify: false });
               this.scrollListToEntry(entry.id, 'top');
             }
-            // Mark the activity feed as requiring a refresh
-            this.activityService.markRefreshRequired();
-
           }
         });
 
