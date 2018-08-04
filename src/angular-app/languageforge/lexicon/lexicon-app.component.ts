@@ -15,13 +15,13 @@ import {LexOptionList} from './shared/model/option-list.model';
 
 export class LexiconAppController implements angular.IController {
   finishedLoading: boolean = false;
+  interfaceConfig: InterfaceConfig = {} as InterfaceConfig;
+  users: { [userId: string]: User } = {};
   config: LexiconConfig;
   editorConfig: LexiconConfig;
-  interfaceConfig: InterfaceConfig;
   optionLists: LexOptionList[];
   project: LexiconProject;
   rights: Rights;
-  users: { [userId: string]: User };
 
   private online: boolean;
   private pristineLanguageCode: string;
@@ -59,16 +59,24 @@ export class LexiconAppController implements angular.IController {
 
               this.users = users;
             }
-          });
-        }
 
-        this.editorConfig = editorConfig;
-        this.project = rights.session.project<LexiconProject>();
-        this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
-        this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
-        this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
-        this.pristineLanguageCode = this.interfaceConfig.languageCode;
-        this.rights = rights;
+            this.editorConfig = editorConfig;
+            this.project = rights.session.project<LexiconProject>();
+            this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
+            this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
+            this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
+            this.pristineLanguageCode = this.interfaceConfig.languageCode;
+            this.rights = rights;
+          });
+        } else {
+          this.editorConfig = editorConfig;
+          this.project = rights.session.project<LexiconProject>();
+          this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
+          this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
+          this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
+          this.pristineLanguageCode = this.interfaceConfig.languageCode;
+          this.rights = rights;
+        }
 
         this.$scope.$watch(() => this.interfaceConfig.languageCode, (newVal: string) => {
           if (newVal && this.pristineLanguageCode && newVal !== this.pristineLanguageCode) {
