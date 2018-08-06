@@ -106,6 +106,8 @@ class LexCommentCommands
         $vote->addVote($commentId);
         $vote->write();
 
+        ActivityCommands::updateEntryCommentScore($project, $comment->entryRef->asString(), $comment, ActivityCommands::INCREASE_SCORE);
+
         return $id;
     }
 
@@ -147,6 +149,11 @@ class LexCommentCommands
                 throw new \Exception("No permission to delete other people's comments!");
             }
         }
+        $entryRef = '';
+        if (! is_null($comment->entryRef)) {
+            $entryRef = $comment->entryRef->asString();
+        }
+        ActivityCommands::deleteCommentOnEntry($project, $entryRef, $comment, $userId);
         return LexCommentModel::remove($project, $commentId);
     }
 
@@ -174,6 +181,11 @@ class LexCommentCommands
                 throw new \Exception("No permission to delete other people's comment replies!");
             }
         }
+        $entryRef = '';
+        if (! is_null($comment->entryRef)) {
+            $entryRef = $comment->entryRef->asString();
+        }
+        ActivityCommands::deleteReplyToEntryComment($project, $entryRef, $comment, $reply, $userId);
         $comment->deleteReply($replyId);
         return $comment->write();
     }

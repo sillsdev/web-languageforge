@@ -1,8 +1,8 @@
-import { inputSystemsRegions } from '../../../../bellows/core/input-systems/input-systems.regions';
-import { inputSystemsScripts } from '../../../../bellows/core/input-systems/input-systems.scripts';
-import { UtilityService } from '../../../../bellows/core/utility.service';
-import { InputSystem } from '../../../../bellows/shared/model/input-system.model';
-import { OptionSelects } from './option-selects.model';
+import {inputSystemsRegions} from '../../../../bellows/core/input-systems/input-systems-regions.generated-data';
+import {inputSystemsScripts} from '../../../../bellows/core/input-systems/input-systems-scripts.generated-data';
+import {UtilityService} from '../../../../bellows/core/utility.service';
+import {InputSystem} from '../../../../bellows/shared/model/input-system.model';
+import {OptionSelects} from './option-selects.model';
 
 /**
  * ConfigurationInputSystemsViewModel class (based on BCP 47)

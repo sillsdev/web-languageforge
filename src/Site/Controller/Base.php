@@ -15,13 +15,10 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Acl\Exception\Exception;
 
-require_once APPPATH."version.php";
-
 class Base
 {
     public function __construct() {
         $this->website = Website::get();
-        $this->_showHelp = false;
         $this->_appName = '';
         $this->data['isAdmin'] = false;
         $this->data['projects'] = [];
@@ -35,6 +32,7 @@ class Base
         $this->data['jsNotMinifiedFiles'] = [];
         $this->data['cssFiles'] = [];
         $this->data['vendorFilesJs'] = [];
+        $this->data['vendorFilesCss'] = [];
         $this->data['vendorFilesMinJs'] = [];
         $this->data['isAngular2'] = false;
     }
@@ -44,9 +42,6 @@ class Base
 
     /** @var Website */
     public $website;
-
-    /** @var boolean Variable used to control visibility of help button in header menu bar */
-    protected $_showHelp;
 
     /** @var boolean */
     protected $_isLoggedIn;
@@ -151,7 +146,6 @@ class Base
 
         // setup specific variables for header
         $this->data['isLoggedIn'] = $this->_isLoggedIn;
-        $this->data['showHelpButton'] = $this->_showHelp;
 
         $featuredProjectList = new FeaturedProjectListModel();
         $featuredProjectList->read();

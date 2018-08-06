@@ -1,29 +1,21 @@
 import * as angular from 'angular';
 
-import { UserRestApiService } from '../../../core/api/user-rest-api.service';
-import { InputSystemsService } from '../../../core/input-systems/input-systems.service';
-import { LinkService } from '../../../core/link.service';
-import { NoticeService } from '../../../core/notice/notice.service';
-import { SessionCallback, SessionService } from '../../../core/session.service';
-import { InputSystem } from '../../../shared/model/input-system.model';
-import { ParatextProject, ParatextUserInfo } from '../../../shared/model/paratext-user-info.model';
-import { MachineService } from '../core/machine.service';
-import { JsonRpcCallback, TranslateProjectService } from '../core/translate-project.service';
-import { TranslateSendReceiveService } from '../core/translate-send-receive.service';
-import { TranslateConfig, TranslateConfigDocType } from '../shared/model/translate-config.model';
-import { TranslateProjectSettings } from '../shared/model/translate-project-settings.model';
-import { TranslateProject } from '../shared/model/translate-project.model';
+import {UserRestApiService} from '../../../core/api/user-rest-api.service';
+import {InputSystemsService} from '../../../core/input-systems/input-systems.service';
+import {LinkService} from '../../../core/link.service';
+import {NoticeService} from '../../../core/notice/notice.service';
+import {SessionService} from '../../../core/session.service';
+import {InputSystem} from '../../../shared/model/input-system.model';
+import {InterfaceConfig} from '../../../shared/model/interface-config.model';
+import {ParatextProject, ParatextUserInfo} from '../../../shared/model/paratext-user-info.model';
+import {MachineService} from '../core/machine.service';
+import {TranslateProjectService} from '../core/translate-project.service';
+import {TranslateSendReceiveService} from '../core/translate-send-receive.service';
+import {TranslateConfig, TranslateConfigDocType} from '../shared/model/translate-config.model';
+import {TranslateProjectSettings} from '../shared/model/translate-project-settings.model';
+import {TranslateProject} from '../shared/model/translate-project.model';
 
-export class InterfaceConfig {
-  direction = 'ltr';
-  pullNormal = 'float-left';
-  pullToSide = 'float-right';
-  placementNormal = 'right';
-  placementToSide = 'left';
-  userLanguageCode = 'en';
-}
-
-class NewProject extends TranslateProject {
+interface NewProject extends TranslateProject {
   editProjectCode: boolean;
 }
 
@@ -62,18 +54,16 @@ export class TranslateNewProjectController implements angular.IController {
   private readonly error = this.makeFormInvalid;
   private paratextSignInWindow: Window;
 
-  static $inject = ['$scope', '$q',
-    '$filter', '$window',
-    '$state', 'sessionService',
-    'silNoticeService', 'inputSystems',
+  static $inject = ['$scope', '$state',
+    '$q', '$window',
+    'sessionService', 'silNoticeService',
     'translateProjectApi', 'linkService',
     'userRestApiService', 'machineService',
     'translateSendReceiveService'
   ];
-  constructor(private readonly $scope: angular.IScope, private readonly $q: angular.IQService,
-              private readonly $filter: angular.IFilterService, private readonly $window: angular.IWindowService,
-              private readonly $state: angular.ui.IStateService, private readonly sessionService: SessionService,
-              private readonly notice: NoticeService, private readonly inputSystems: InputSystemsService,
+  constructor(private readonly $scope: angular.IScope, private readonly $state: angular.ui.IStateService,
+              private readonly $q: angular.IQService, private readonly $window: angular.IWindowService,
+              private readonly sessionService: SessionService, private readonly notice: NoticeService,
               private readonly projectApi: TranslateProjectService, private readonly linkService: LinkService,
               private readonly userRestApiService: UserRestApiService, private readonly machine: MachineService,
               private readonly translateSendReceiveService: TranslateSendReceiveService) {}
@@ -84,7 +74,7 @@ export class TranslateNewProjectController implements angular.IController {
       const projectSettings = session.projectSettings<TranslateProjectSettings>();
       if (projectSettings != null && projectSettings.interfaceConfig != null) {
         angular.merge(this.interfaceConfig, projectSettings.interfaceConfig);
-        if (InputSystemsService.isRightToLeft(this.interfaceConfig.userLanguageCode)) {
+        if (InputSystemsService.isRightToLeft(this.interfaceConfig.languageCode)) {
           this.interfaceConfig.direction = 'rtl';
           this.interfaceConfig.pullToSide = 'float-left';
           this.interfaceConfig.pullNormal = 'float-right';
@@ -94,7 +84,7 @@ export class TranslateNewProjectController implements angular.IController {
       }
     });
 
-    this.newProject = new NewProject();
+    this.newProject = {} as NewProject;
     this.newProject.config = new TranslateConfig();
     this.newProject.appName = 'translate';
     this.newProject.config.isTranslationDataShared = false;
@@ -106,10 +96,10 @@ export class TranslateNewProjectController implements angular.IController {
     this.show.flexHelp = false;
     this.show.cloning = true;
     this.show.step3 = true;
-    this.nextButtonLabel = this.$filter('translate')('Next');
-    this.progressIndicatorStep1Label = this.$filter('translate')('Name');
-    this.progressIndicatorStep2Label = this.$filter('translate')('Languages');
-    this.progressIndicatorStep3Label = this.$filter('translate')('Verify');
+    this.nextButtonLabel = 'Next';
+    this.progressIndicatorStep1Label = 'Name';
+    this.progressIndicatorStep2Label = 'Languages';
+    this.progressIndicatorStep3Label = 'Verify';
     this.resetValidateProjectForm();
 
     this.$scope.$watch(() => {
@@ -193,8 +183,8 @@ export class TranslateNewProjectController implements angular.IController {
     this.isSRProject = true;
     this.show.nextButton = true;
     this.show.backButton = true;
-    this.nextButtonLabel = this.$filter('translate')('Next');
-    this.progressIndicatorStep2Label = this.$filter('translate')('Connect');
+    this.nextButtonLabel = 'Next';
+    this.progressIndicatorStep2Label = 'Connect';
     this.resetValidateProjectForm();
   }
 
@@ -203,8 +193,8 @@ export class TranslateNewProjectController implements angular.IController {
     this.isSRProject = false;
     this.show.nextButton = true;
     this.show.backButton = true;
-    this.nextButtonLabel = this.$filter('translate')('Next');
-    this.progressIndicatorStep2Label = this.$filter('translate')('Languages');
+    this.nextButtonLabel = 'Next';
+    this.progressIndicatorStep2Label = 'Languages';
   }
 
   iconForStep(step: number) {
@@ -227,7 +217,7 @@ export class TranslateNewProjectController implements angular.IController {
     switch (this.$state.current.name) {
       case 'newProject.sendReceiveCredentials':
         this.$state.go('newProject.name');
-        this.nextButtonLabel = this.$filter('translate')('Next');
+        this.nextButtonLabel = 'Next';
         break;
       case 'newProject.name':
         this.$state.go('newProject.chooser');
@@ -347,9 +337,8 @@ export class TranslateNewProjectController implements angular.IController {
           .then(() => this.translateSendReceiveService.startClone())
           .then(() => {
             this.machine.initialise(this.newProject.id);
-            this.machine.startTraining();
-            this.gotoEditor();
-          });
+            return this.machine.startTraining();
+          }).then(() => this.gotoEditor());
         break;
       case 'newProject.sendReceiveClone':
         break;
@@ -358,7 +347,7 @@ export class TranslateNewProjectController implements angular.IController {
         this.projectCodeState = 'empty';
         this.projectCodeStateDefer = this.$q.defer();
         this.projectCodeStateDefer.resolve('empty');
-        this.nextButtonLabel = this.$filter('translate')(this.isSRProject ? 'Get Started' : 'Next');
+        this.nextButtonLabel = this.isSRProject ? 'Get Started' : 'Next';
         this.makeFormNeutral();
         if (this.isSRProject) {
           this.getParatextUserInfo();
@@ -414,6 +403,7 @@ export class TranslateNewProjectController implements angular.IController {
     this.sessionService.getSession()
       .then(session => this.userRestApiService.getParatextInfo(session.userId()))
       .then(paratextUserInfo => this.paratextUserInfo = paratextUserInfo)
+      .catch(() => { })
       .finally(() => this.isRetrievingParatextUserInfo = false);
   }
 
@@ -488,7 +478,7 @@ export class TranslateNewProjectController implements angular.IController {
     ).then(result => {
       if (result.ok) {
         this.newProject.id = result.data;
-        return this.sessionService.getSession(true).then(session => { });
+        return this.sessionService.getSession(true).then(() => { });
       } else {
         this.notice.push(this.notice.ERROR, 'The ' + this.newProject.projectName +
           ' project could not be created. Please try again.');

@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import {ModalService} from '../../../../bellows/core/modal/modal.service';
+import {User} from '../../../../bellows/shared/model/user.model';
 import {LexiconConfigService} from '../../core/lexicon-config.service';
 import {
   LexConfig,
@@ -9,118 +10,64 @@ import {
   LexConfigMultiText,
   LexConfigOptionList,
   LexiconConfig,
+  LexUserViewConfig,
   LexViewFieldConfig,
   LexViewMultiTextFieldConfig
 } from '../../shared/model/lexicon-config.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
+import {ConfigurationFieldUnifiedViewModel, FieldSettings, Group, GroupList} from './field-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 
-class FieldInputSystems {
-  fieldOrder: string[];
-  selecteds: any;
-}
-
-export class Field {
-  name: string;
-  inputSystems: FieldInputSystems;
-}
-
-export class FieldConfigurationController implements angular.IController {
-  fccCurrentField: Field;
+export class FieldsConfigurationController implements angular.IController {
   fccFieldConfig: { [fieldName: string]: LexConfigField };
   fccConfigDirty: LexiconConfig;
-  // noinspection JSUnusedGlobalSymbols
-  fccInputSystemViewModels: { [inputSystemId: string]: ConfigurationInputSystemsViewModel };
-  // noinspection JSUnusedGlobalSymbols
   fccInputSystemsList: ConfigurationInputSystemsViewModel[];
-  readonly fccConfigPristine: LexiconConfig;
+  fccUsers: { [userId: string]: User };
   readonly fccOptionLists: LexOptionList[];
-  fccSelectField: (params: { fieldName: string }) => void;
-  fccOnUpdate: (params: { $event: { configDirty: LexiconConfig } }) => void;
+  fccAddInputSystem: (params: {}) => void;
+  fccOnUpdate: (params: { $event: {
+    unifiedViewModel?: ConfigurationFieldUnifiedViewModel,
+    configDirty?: LexiconConfig,
+    isInitialLoad?: boolean
+  } }) => void;
+
+  unifiedViewModel: ConfigurationFieldUnifiedViewModel;
+  typeahead: Typeahead;
+
+  static $inject: string[] = ['$scope', '$filter', '$uibModal'];
+  constructor(private $scope: angular.IScope, private $filter: angular.IFilterService, private $modal: ModalService) { }
+
+  $onInit() {
+    this.$scope.$watch(() => this.unifiedViewModel, (newVal, oldVal) => {
+      this.fccOnUpdate({ $event: { unifiedViewModel: this.unifiedViewModel, isInitialLoad: (oldVal == null) } });
+    }, true);
+  }
+
+  $onChanges(changes: any) {
+    const configChange = changes.fccConfigDirty as angular.IChangesObject<LexiconConfig>;
+    if (configChange != null && configChange.previousValue !== configChange.currentValue &&
+      configChange.currentValue != null
+    ) {
+      this.unifiedViewModel = new ConfigurationFieldUnifiedViewModel(this.fccConfigDirty, this.fccUsers);
+      this.typeahead = new Typeahead(this.$filter);
+      for (const userId of Object.keys(this.fccUsers)) {
+        this.typeahead.usersWithoutSettings.push(this.fccUsers[userId]);
+      }
+      for (const groupList of this.unifiedViewModel.groupLists) {
+        this.removeFromUsersWithoutSettings(groupList.userId);
+      }
+    }
+  }
 
   isCustomField = LexiconConfigService.isCustomField;
+  selectAllRow = ConfigurationFieldUnifiedViewModel.selectAllRow;
+  selectAllRoleColumn = ConfigurationFieldUnifiedViewModel.selectAllRoleColumn;
+  selectAllGroupColumn = ConfigurationFieldUnifiedViewModel.selectAllGroupColumn;
+  checkIfAllRoleSelected = ConfigurationFieldUnifiedViewModel.checkIfAllRoleSelected;
+  checkIfAllGroupSelected = ConfigurationFieldUnifiedViewModel.checkIfAllGroupSelected;
 
-  editInputSystems = {
-    collapsed: true,
-    done() {
-      this.collapsed = true;
-    }
-  };
-  showAllFields = false;
-
-  static $inject: string[] = ['$scope', '$uibModal'];
-  constructor(private $scope: angular.IScope, private $modal: ModalService) {
-    $scope.$watchCollection(() => this.fccCurrentField.inputSystems.selecteds,
-      (newValue: { [languageTag: string]: boolean }) => {
-        if (angular.isDefined(newValue)) {
-          const currentFieldConfigMultiText = this.fccFieldConfig[this.fccCurrentField.name] as LexConfigMultiText;
-          if (angular.isDefined(currentFieldConfigMultiText.inputSystems)) {
-            currentFieldConfigMultiText.inputSystems = [];
-            angular.forEach(this.fccCurrentField.inputSystems.fieldOrder, tag => {
-              if (this.fccCurrentField.inputSystems.selecteds[tag]) {
-                currentFieldConfigMultiText.inputSystems.push(tag);
-              }
-            });
-          }
-        }
-      }
-    );
-  }
-
-  selectField(fieldName: string) {
-    this.fccSelectField({ fieldName });
-  }
-
-  moveUp(currentTag: string): void {
-    const currentTagIndex = this.fccCurrentField.inputSystems.fieldOrder.indexOf(currentTag);
-    this.fccCurrentField.inputSystems.fieldOrder[currentTagIndex] =
-      this.fccCurrentField.inputSystems.fieldOrder[currentTagIndex - 1];
-    this.fccCurrentField.inputSystems.fieldOrder[currentTagIndex - 1] = currentTag;
-    const currentFieldConfigMultiText = this.fccFieldConfig[this.fccCurrentField.name] as LexConfigMultiText;
-    currentFieldConfigMultiText.inputSystems = [];
-    angular.forEach(this.fccCurrentField.inputSystems.fieldOrder, tag => {
-      if (this.fccCurrentField.inputSystems.selecteds[tag]) {
-        currentFieldConfigMultiText.inputSystems.push(tag);
-      }
-    });
-
-    this.fccOnUpdate({ $event: { configDirty: this.fccConfigDirty } });
-  }
-
-  moveDown(currentTag: string): void {
-    const currentTagIndex = this.fccCurrentField.inputSystems.fieldOrder.indexOf(currentTag);
-    this.fccCurrentField.inputSystems.fieldOrder[currentTagIndex] =
-      this.fccCurrentField.inputSystems.fieldOrder[currentTagIndex + 1];
-    this.fccCurrentField.inputSystems.fieldOrder[currentTagIndex + 1] = currentTag;
-    const currentFieldConfigMultiText = this.fccFieldConfig[this.fccCurrentField.name] as LexConfigMultiText;
-    currentFieldConfigMultiText.inputSystems = [];
-    angular.forEach(this.fccCurrentField.inputSystems.fieldOrder, tag => {
-      if (this.fccCurrentField.inputSystems.selecteds[tag]) {
-        currentFieldConfigMultiText.inputSystems.push(tag);
-      }
-    });
-
-    this.fccOnUpdate({ $event: { configDirty: this.fccConfigDirty } });
-  }
-
-  fieldIsHidden(fieldName: string): boolean {
-    if (angular.isUndefined(this.fccFieldConfig[fieldName]) ||
-      !('hideIfEmpty' in this.fccFieldConfig[fieldName])) {
-      return true;
-    }
-
-    return !this.showAllFields && this.fccFieldConfig[fieldName].hideIfEmpty;
-  }
-
-  fieldConfigItemExists(itemName: string): boolean {
-    if (angular.isUndefined(this.fccCurrentField)) {
-      return false;
-    }
-    return itemName in this.fccFieldConfig[this.fccCurrentField.name];
-  }
-
-  openNewCustomFieldModal(): void {
-    class NewCustomData {
+  openNewCustomFieldModal(fieldLevel: string): void {
+    interface NewCustomData {
       code: string;
       level: string;
       listCode?: string;
@@ -130,19 +77,11 @@ export class FieldConfigurationController implements angular.IController {
 
     const modalInstance = this.$modal.open({
       scope: this.$scope,
-      templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/new-custom-field.html',
+      templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/new-custom-field.modal.html',
       controller: ['$scope', '$uibModalInstance',
         (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
           scope.fieldConfig = this.fccFieldConfig;
           scope.selects = {};
-          scope.selects.level = {
-            optionsOrder: ['entry', 'senses', 'examples'],
-            options: {
-              entry: 'Entry Level',
-              senses: 'Meaning Level',
-              examples: 'Example Level'
-            }
-          };
           scope.selects.type = {
             optionsOrder: ['multitext', 'optionlist', 'multioptionlist'],
             options: {
@@ -159,13 +98,15 @@ export class FieldConfigurationController implements angular.IController {
             optionsOrder: [],
             options: {}
           };
-          angular.forEach(this.fccOptionLists, optionList => {
+          for (const optionList of this.fccOptionLists) {
             scope.selects.listCode.optionsOrder.push(optionList.code);
             scope.selects.listCode.options[optionList.code] = optionList.name;
-          });
+          }
 
-          scope.newCustomData = new NewCustomData();
-          scope.newCustomData.name = '';
+          scope.newCustomData = {
+            name: '',
+            level: fieldLevel
+          } as NewCustomData;
           scope.customFieldNameExists = function customFieldNameExists(level: string, code: string) {
             const customFieldName = 'customField_' + level + '_' + code;
             return customFieldName in scope.fieldConfig;
@@ -176,8 +117,7 @@ export class FieldConfigurationController implements angular.IController {
           };
 
           scope.$watch('newCustomData.name', (newValue: string, oldValue: string) => {
-            if (angular.isDefined(newValue) && newValue !== oldValue) {
-
+            if (newValue != null && newValue !== oldValue) {
               // replace spaces with underscore
               scope.newCustomData.code = newValue.replace(/ /g, '_');
             }
@@ -246,72 +186,184 @@ export class FieldConfigurationController implements angular.IController {
           }
       }
 
-      angular.forEach(this.fccConfigDirty.roleViews, roleView => {
-        roleView.fields[customFieldName] = angular.copy(customViewField);
-      });
-
-      const role = 'project_manager';
-      this.fccConfigDirty.roleViews[role].fields[customFieldName].show = true;
-      angular.forEach(this.fccConfigDirty.userViews, userView => {
-        userView.fields[customFieldName] = angular.copy(customViewField);
-      });
-
-      this.fccOnUpdate({ $event: { configDirty: this.fccConfigDirty } });
-      this.selectField(customFieldName);
-    }, angular.noop);
-  }
-
-  showRemoveCustomField(fieldName: string): boolean {
-    return LexiconConfigService.isCustomField(fieldName) &&
-      !(fieldName in this.fccConfigPristine.entry.fields) &&
-      !(fieldName in (this.fccConfigPristine.entry.fields.senses as LexConfigFieldList).fields) &&
-      !(fieldName in ((this.fccConfigPristine.entry.fields.senses as LexConfigFieldList).fields
-        .examples as LexConfigFieldList).fields);
-  }
-
-  removeSelectedCustomField(): void {
-    const fieldName = this.fccCurrentField.name;
-    let i: number;
-    if (LexiconConfigService.isCustomField(fieldName)) {
-      delete this.fccFieldConfig[fieldName];
-
-      // remove field name from fieldOrder
-      i = ((this.fccConfigDirty.entry.fields.senses as LexConfigFieldList).fields.examples as LexConfigFieldList)
-        .fieldOrder.indexOf(fieldName);
-      if (i > -1) {
-        ((this.fccConfigDirty.entry.fields.senses as LexConfigFieldList).fields.examples as LexConfigFieldList)
-          .fieldOrder.splice(i, 1);
+      for (const role of Object.keys(this.fccConfigDirty.roleViews)) {
+        this.fccConfigDirty.roleViews[role].fields[customFieldName] = angular.copy(customViewField);
       }
 
-      i = (this.fccConfigDirty.entry.fields.senses as LexConfigFieldList).fieldOrder.indexOf(fieldName);
-      if (i > -1) {
-        (this.fccConfigDirty.entry.fields.senses as LexConfigFieldList).fieldOrder.splice(i, 1);
-      }
-
-      i = this.fccConfigDirty.entry.fieldOrder.indexOf(fieldName);
-      if (i > -1) {
-        this.fccConfigDirty.entry.fieldOrder.splice(i, 1);
+      const managerRole = 'project_manager';
+      this.fccConfigDirty.roleViews[managerRole].fields[customFieldName].show = true;
+      for (const userId of Object.keys(this.fccConfigDirty.userViews)) {
+        this.fccConfigDirty.userViews[userId].fields[customFieldName] = angular.copy(customViewField);
       }
 
       this.fccOnUpdate({ $event: { configDirty: this.fccConfigDirty } });
-      this.selectField('lexeme');
+    }, () => { });
+  }
+
+  openAddUserGroupModal(): void {
+    const modalInstance = this.$modal.open({
+      scope: this.$scope,
+      templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/new-user-group.modal.html',
+      controller: ['$scope', '$uibModalInstance',
+        (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
+          scope.addGroup = function addGroup(typeahead: Typeahead): void {
+            $modalInstance.close(typeahead);
+          };
+        }
+      ]
+    });
+
+    modalInstance.result.then((typeahead: Typeahead) => {
+      const user = typeahead.user;
+      if (typeahead.usersWithoutSettings.indexOf(user) < 0) {
+        return;
+      }
+
+      typeahead.userName = '';
+      this.removeFromUsersWithoutSettings(user.id);
+      this.unifiedViewModel.groupLists.push({ label: user.username, userId: user.id } as GroupList);
+      this.unifiedViewModel.inputSystems.selectAllColumns.groups.push(new Group());
+      this.unifiedViewModel.entryFields.selectAllColumns.groups.push(new Group());
+      this.unifiedViewModel.senseFields.selectAllColumns.groups.push(new Group());
+      this.unifiedViewModel.exampleFields.selectAllColumns.groups.push(new Group());
+
+      for (const inputSystemSetting of this.unifiedViewModel.inputSystems.settings) {
+        inputSystemSetting.groups.push(new Group());
+        ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(inputSystemSetting);
+      }
+
+      for (const fieldSetting of this.unifiedViewModel.entryFields.settings) {
+        fieldSetting.groups.push(new Group());
+        ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
+      }
+
+      for (const fieldSetting of this.unifiedViewModel.senseFields.settings) {
+        fieldSetting.groups.push(new Group());
+        ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
+      }
+
+      for (const fieldSetting of this.unifiedViewModel.exampleFields.settings) {
+        fieldSetting.groups.push(new Group());
+        ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
+      }
+
+      this.fccConfigDirty.userViews[user.id] =
+        angular.copy(this.fccConfigDirty.roleViews[user.role]) as LexUserViewConfig;
+    }, () => { });
+  }
+
+  removeGroup(index: number): void {
+    const userId = this.unifiedViewModel.groupLists[index].userId;
+    this.typeahead.usersWithoutSettings.push(this.fccUsers[userId]);
+    this.unifiedViewModel.groupLists.splice(index, 1);
+    this.unifiedViewModel.inputSystems.selectAllColumns.groups.splice(index, 1);
+    this.unifiedViewModel.entryFields.selectAllColumns.groups.splice(index, 1);
+    this.unifiedViewModel.senseFields.selectAllColumns.groups.splice(index, 1);
+    this.unifiedViewModel.exampleFields.selectAllColumns.groups.splice(index, 1);
+
+    for (const inputSystemSetting of this.unifiedViewModel.inputSystems.settings) {
+      inputSystemSetting.groups.splice(index, 1);
+      ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(inputSystemSetting);
+    }
+
+    for (const fieldSetting of this.unifiedViewModel.entryFields.settings) {
+      fieldSetting.groups.splice(index, 1);
+      ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
+    }
+
+    for (const fieldSetting of this.unifiedViewModel.senseFields.settings) {
+      fieldSetting.groups.splice(index, 1);
+      ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
+    }
+
+    for (const fieldSetting of this.unifiedViewModel.exampleFields.settings) {
+      fieldSetting.groups.splice(index, 1);
+      ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(fieldSetting);
+    }
+
+    delete this.fccConfigDirty.userViews[userId];
+  }
+
+  // noinspection JSMethodCanBeStatic
+  collapseIconClass(fieldSetting: FieldSettings): string {
+    if (fieldSetting.isCustomInputSystemsCollapsed) {
+      if (fieldSetting.hasCustomInputSystemsOverride) {
+        return 'fa fa-check-square-o';
+      } else {
+        return 'fa fa-chevron-down';
+      }
+    } else {
+      return 'fa fa-chevron-up';
     }
   }
 
+  // noinspection JSMethodCanBeStatic
+  collapseTitle(fieldSetting: FieldSettings): string {
+    return fieldSetting.isCustomInputSystemsCollapsed ?
+      'Show field-specific Input Systems' :
+      'Hide field-specific Input Systems';
+  }
+
+  // noinspection JSMethodCanBeStatic
+  propertyExists(property: string, object: any): boolean {
+    return property in object;
+  }
+
+  private removeFromUsersWithoutSettings(userId: string): void {
+    const user: User = this.fccUsers[userId];
+    const removeIndex: number = this.typeahead.usersWithoutSettings.indexOf(user);
+    if (removeIndex !== -1) {
+      this.typeahead.usersWithoutSettings.splice(removeIndex, 1);
+    }
+  }
 }
 
-export const FieldConfigurationComponent: angular.IComponentOptions = {
+class Typeahead {
+  user: User;
+  userName: string;
+  users: User[] = [];
+  usersWithoutSettings: User[] = [];
+  filter: angular.IFilterService;
+
+  constructor(filter: angular.IFilterService) {
+    this.filter = filter;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  searchUsers = (user: User): void => {
+    if (user == null) {
+      return;
+    }
+
+    this.users = this.filter('filter')(this.usersWithoutSettings, user);
+  }
+
+  selectUser = (user: User): void => {
+    if (user == null) {
+      return;
+    }
+
+    this.user = user;
+    this.userName = user.name;
+  }
+
+  // noinspection JSMethodCanBeStatic
+  imageSource(avatarRef: string): string {
+    return avatarRef ? '/Site/views/shared/image/avatar/' + avatarRef :
+      '/Site/views/shared/image/avatar/anonymous02.png';
+  }
+}
+
+export const FieldsConfigurationComponent: angular.IComponentOptions = {
   bindings: {
-    fccCurrentField: '<',
     fccFieldConfig: '<',
     fccConfigDirty: '<',
-    fccConfigPristine: '<',
-    fccInputSystemViewModels: '<',
     fccInputSystemsList: '<',
+    fccUsers: '<',
     fccOptionLists: '<',
-    fccSelectField: '&',
+    fccAddInputSystem: '&',
     fccOnUpdate: '&'
   },
-  controller: FieldConfigurationController,
+  controller: FieldsConfigurationController,
   templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration-fields.component.html'
 };

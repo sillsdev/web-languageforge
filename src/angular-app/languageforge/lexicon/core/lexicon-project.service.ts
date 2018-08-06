@@ -1,25 +1,35 @@
-import { ApiService, JsonRpcCallback } from '../../../bellows/core/api/api.service';
-import { BreadcrumbService } from '../../../bellows/core/breadcrumbs/breadcrumb.service';
-import { SessionService } from '../../../bellows/core/session.service';
-import { LexiconLinkService } from './lexicon-link.service';
+import * as angular from 'angular';
+
+import {ApiService, JsonRpcCallback} from '../../../bellows/core/api/api.service';
+import {ApplicationHeaderService, HeaderSetting} from '../../../bellows/core/application-header.service';
+import {BreadcrumbService} from '../../../bellows/core/breadcrumbs/breadcrumb.service';
+import {SessionService} from '../../../bellows/core/session.service';
+import {LexiconProjectSettings} from '../shared/model/lexicon-project-settings.model';
+import {LexiconProject} from '../shared/model/lexicon-project.model';
+import {LexiconLinkService} from './lexicon-link.service';
+import {LexiconRightsService} from './lexicon-rights.service';
 
 export class LexiconProjectService {
-  static $inject: string[] = ['apiService', 'sessionService',
+  static $inject: string[] = ['$q', 'apiService', 'sessionService',
     'breadcrumbService',
-    'lexLinkService'
+    'lexLinkService',
+    'applicationHeaderService',
+    'lexRightsService'
   ];
-  constructor(private api: ApiService, private sessionService: SessionService,
+  constructor(private $q: angular.IQService, private api: ApiService, private sessionService: SessionService,
               private breadcrumbService: BreadcrumbService,
-              private linkService: LexiconLinkService) { }
+              private linkService: LexiconLinkService,
+              private applicationHeaderService: ApplicationHeaderService,
+              private rightsService: LexiconRightsService) { }
 
-  setBreadcrumbs(view: string, label: string) {
-    this.sessionService.getSession().then(session => {
+  setBreadcrumbs(view: string, label: string, forceRefresh: boolean = false): void {
+    this.sessionService.getSession(forceRefresh).then(session => {
       this.breadcrumbService.set('top', [{
         href: '/app/projects',
         label: 'My Projects'
       }, {
         href: this.linkService.projectUrl(),
-        label: session.project().projectName
+        label: session.project<LexiconProject>().projectName
       }, {
         href: this.linkService.projectView(view),
         label
@@ -27,10 +37,50 @@ export class LexiconProjectService {
     });
   }
 
+  setupSettings(): void {
+    this.rightsService.getRights().then(rights => {
+      const settings = [];
+      if (rights.canEditProject()) {
+        settings.push(new HeaderSetting(
+          'dropdown-configuration',
+          'Configuration',
+          this.linkService.projectUrl() + 'configuration'
+        ));
+        settings.push(new HeaderSetting(
+          'dropdown-import-data',
+          'Import Data',
+          this.linkService.projectUrl() + 'importExport'
+        ));
+        settings.push(new HeaderSetting(
+          'userManagementLink',
+          'User Management',
+          '/app/usermanagement/' + rights.session.project<LexiconProject>().id
+        ));
+        settings.push(new HeaderSetting(
+          'dropdown-project-settings',
+          'Project Settings',
+          this.linkService.projectUrl() + 'settings'
+        ));
+        if (!rights.session.project<LexiconProject>().isArchived &&
+          rights.session.projectSettings<LexiconProjectSettings>().hasSendReceive
+        ) {
+          settings.push(new HeaderSetting(
+            'dropdown-synchronize',
+            'Synchronize',
+            this.linkService.projectUrl() + 'sync',
+            true
+          ));
+        }
+      }
+      this.applicationHeaderService.setSettings(settings);
+    });
+  }
+
   baseViewDto(view: string, label: string, callback: JsonRpcCallback) {
     this.api.call('lex_baseViewDto', [], result => {
       if (result.ok) {
         this.setBreadcrumbs(view, label);
+        this.setupSettings();
       }
 
       callback(result);
@@ -69,7 +119,7 @@ export class LexiconProjectService {
     return this.api.call('lex_project_removeMediaFile', [mediaType, filename], callback);
   }
 
-  static isValidProjectCode(code: string) {
+  static isValidProjectCode(code: string): boolean {
     if (code == null) {
       return false;
     }

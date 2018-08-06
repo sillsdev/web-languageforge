@@ -7,5 +7,7 @@ namespace SIL.XForge.WebApi.Server.Models.Translate
         public bool IsDocumentOrientationTargetRight { get; set; } = true;
         public bool IsFormattingOptionsShown { get; set; }
         public string SelectedDocumentSetId { get; set; } = "";
+        public string SelectedSegmentRef { get; set; } = "";
+        public int SelectedSegmentChecksum { get; set; }
     }
 }

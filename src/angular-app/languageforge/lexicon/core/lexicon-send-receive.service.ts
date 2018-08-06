@@ -3,6 +3,7 @@ import * as angular from 'angular';
 import { RelativeTimeFilterFunction } from '../../../bellows/core/filters';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { Session, SessionService } from '../../../bellows/core/session.service';
+import { SendReceiveErrorCodes } from '../../../bellows/shared/model/send-receive-errorcodes.model';
 import { SendReceiveState } from '../../../bellows/shared/model/send-receive-state.model';
 import { LexiconProjectSettings } from '../shared/model/lexicon-project-settings.model';
 import { SendReceiveStatus } from '../shared/model/send-receive-status.model';
@@ -10,15 +11,18 @@ import { JsonRpcResult, LexiconSendReceiveApiService } from './lexicon-send-rece
 
 type SRTimerCallback = () => void;
 
+type SRFailedCallback = (status: SendReceiveStatus) => void;
+
 export class LexiconSendReceiveService {
   readonly SYNC_STATUS_INTERVAL = 3000; // ms
   readonly POLL_UPDATE_INTERVAL = 32000; // ms
   readonly CLONE_STATUS_INTERVAL = 3000; // ms
 
   previousSRState: SendReceiveState = SendReceiveState.Unknown;
-  syncProjectStatusSuccessCallback: SRTimerCallback = angular.noop;
-  pollUpdateSuccessCallback: SRTimerCallback = angular.noop;
-  cloneProjectStatusSuccessCallback: SRTimerCallback = angular.noop;
+  syncProjectStatusSuccessCallback: SRTimerCallback = () => {};
+  pollUpdateSuccessCallback: SRTimerCallback = () => {};
+  cloneProjectStatusSuccessCallback: SRTimerCallback = () => {};
+  cloneProjectStatusFailedCallback: SRFailedCallback = () => {};
   syncStatusTimer: angular.IPromise<void>;
   pollUpdateTimer: angular.IPromise<void>;
   cloneStatusTimer: angular.IPromise<void>;
@@ -37,7 +41,7 @@ export class LexiconSendReceiveService {
   }
 
   clearState(): void {
-    if (!this.status || angular.isUndefined(this.status)) {
+    if (!this.status || this.status == null) {
       this.status = new SendReceiveStatus();
     }
 
@@ -48,14 +52,14 @@ export class LexiconSendReceiveService {
   // SRState is CLONING or SYNCING
   // logic should match PHP SendReceiveCommands::isInProgress
   isInProgress(): boolean {
-    return angular.isDefined(this.status) && angular.isDefined(this.status.SRState) &&
+    return this.status != null && this.status.SRState != null &&
       (this.status.SRState === SendReceiveState.CloneRequested || this.status.SRState === SendReceiveState.Cloning ||
         this.status.SRState === SendReceiveState.Syncing);
   }
 
   // S/R isInProgress(), SRState is unknown, or SRState is PENDING
   isStarted(): boolean {
-    return this.isInProgress() || (angular.isDefined(this.status) && angular.isDefined(this.status.SRState) &&
+    return this.isInProgress() || (this.status != null && this.status.SRState != null &&
       (this.status.SRState === SendReceiveState.Unknown || this.status.SRState === SendReceiveState.Pending));
   }
 
@@ -72,7 +76,7 @@ export class LexiconSendReceiveService {
   checkInitialState = (): void => {
     this.isSendReceiveProject().then((isSR: boolean) => {
       if (isSR) {
-        if (!this.status || angular.isUndefined(this.status)) {
+        if (!this.status || this.status == null) {
           this.clearState();
           this.getSyncProjectStatus();
           this.startSyncStatusTimer();
@@ -106,6 +110,64 @@ export class LexiconSendReceiveService {
     });
   }
 
+  showProjectStatusNotice(status: SendReceiveStatus): void {
+    switch (status.SRState) {
+      case SendReceiveState.Pending:
+        this.pendingMessageId = this.notice.push(this.notice.INFO,
+          'Please wait while other projects are being synchronized. ' +
+          'You may continue to edit this project until it starts to synchronize.');
+        break;
+      case SendReceiveState.Syncing:
+        this.notice.removeById(this.pendingMessageId);
+        this.notice.setLoading('Synchronizing with LanguageDepot.org...');
+        break;
+      case SendReceiveState.Error:
+        let errorMessage = '';
+        switch (status.ErrorCode) {
+          case SendReceiveErrorCodes.EmptyProject:
+            errorMessage = 'The project \'' + this.status.ProjectCode + '\' has no data in ' +
+              'LanguageDepot.org. Please do a Send / Receive in FLEx first, then try again.';
+            break;
+          case SendReceiveErrorCodes.NoFlexProject:
+            errorMessage = '\'' + this.status.ProjectCode + '\' is not a FLEx project. Can ' +
+              'only synchronize with FLEx projects.';
+            break;
+          case SendReceiveErrorCodes.ProjectTooOld:
+            errorMessage = 'The project \'' + this.status.ProjectCode + '\' is from an ' +
+              'unsupported version of FLEx. The oldest supported FLEx version is 8.2';
+            break;
+          case SendReceiveErrorCodes.ProjectTooNew:
+            errorMessage = 'The project \'' + this.status.ProjectCode + '\' is from a version ' +
+              'of FLEx that is too new. We don\'t yet support that version.';
+            break;
+          case SendReceiveErrorCodes.Unauthorized:
+            errorMessage = 'You\'re not authorized to access project \'' +
+              this.status.ProjectCode + '\' on LanguageDepot.org. Contact the project manager, ' +
+              'then try again.';
+            break;
+          default:
+            this.notice.push(this.notice.ERROR, 'Something went wrong with project \'' +
+              this.status.ProjectCode + '\'. Contact an administrator.',
+              this.status.ErrorMessage);
+            break;
+        }
+        if (errorMessage !== '') {
+          this.notice.push(this.notice.ERROR, errorMessage);
+        }
+        break;
+      case SendReceiveState.Hold:
+        this.notice.push(this.notice.ERROR, 'Well this is embarrassing. Something went ' +
+          'wrong and your project \'' + this.status.ProjectCode + '\'is now on hold. ' +
+          'Contact an administrator.');
+        break;
+      case SendReceiveState.Idle:
+        if (this.previousSRState === SendReceiveState.Syncing) {
+          this.notice.push(this.notice.SUCCESS, 'The project was successfully synchronized.');
+        }
+        break;
+    }
+  }
+
   getSyncProjectStatus = (): void => {
     this.sendReceiveApi.getProjectStatus().then((result: JsonRpcResult) => {
       if (!result.data) {
@@ -131,28 +193,11 @@ export class LexiconSendReceiveService {
 
       // console.log(this.status);
 
-      switch (this.status.SRState) {
-        case SendReceiveState.Pending:
-          this.pendingMessageId = this.notice.push(this.notice.INFO,
-            'Please wait while other projects are being synchronized. ' +
-            'You may continue to edit this project until it starts to synchronize.');
-          break;
-        case SendReceiveState.Syncing:
-          this.notice.removeById(this.pendingMessageId);
-          this.notice.setLoading('Synchronizing with LanguageDepot.org...');
-          break;
-        case SendReceiveState.Hold:
-          this.notice.push(this.notice.ERROR, 'Well this is embarrassing. Something went ' +
-              'wrong and your project is now on hold. Contact an administrator.');
-          break;
-        case SendReceiveState.Idle:
-          if (this.previousSRState === SendReceiveState.Syncing) {
-            this.notice.push(this.notice.SUCCESS, 'The project was successfully synchronized.');
-          }
+      this.showProjectStatusNotice(this.status);
 
+      if (this.status.SRState === SendReceiveState.Idle) {
           this.sessionService.getSession(true).then(this.updateSessionData);
           if (this.syncProjectStatusSuccessCallback) this.syncProjectStatusSuccessCallback();
-          break;
       }
     });
   }
@@ -160,7 +205,7 @@ export class LexiconSendReceiveService {
   startSyncStatusTimer(): void {
     this.cancelPollUpdateTimer();
     this.cancelCloneStatusTimer();
-    if (angular.isDefined(this.syncStatusTimer)) {
+    if (this.syncStatusTimer != null) {
       return;
     }
 
@@ -168,7 +213,7 @@ export class LexiconSendReceiveService {
   }
 
   cancelSyncStatusTimer(): void {
-    if (angular.isDefined(this.syncStatusTimer)) {
+    if (this.syncStatusTimer != null) {
       this.$interval.cancel(this.syncStatusTimer);
       this.syncStatusTimer = undefined;
     }
@@ -176,7 +221,7 @@ export class LexiconSendReceiveService {
 
   // UI strings corresponding to SRState in the LfMerge state file.
   syncStateNotice = (): string => {
-    if (angular.isUndefined(this.status)) return;
+    if (this.status == null) return;
 
     switch (this.status.SRState) {
       case SendReceiveState.CloneRequested:
@@ -193,6 +238,16 @@ export class LexiconSendReceiveService {
         return 'Un-synced';
       case SendReceiveState.Hold:
         return 'On hold';
+      case SendReceiveState.Error:
+        switch (this.status.ErrorCode) {
+          case SendReceiveErrorCodes.EmptyProject:
+            return 'Synced';
+          case SendReceiveErrorCodes.NoFlexProject:
+          case SendReceiveErrorCodes.ProjectTooOld:
+          case SendReceiveErrorCodes.ProjectTooNew:
+          default:
+            return 'Error';
+        }
 
       // Undefined initial state
       default:
@@ -201,7 +256,9 @@ export class LexiconSendReceiveService {
   }
 
   lastSyncNotice = (): string => {
-    if (angular.isUndefined(this.status) || angular.isUndefined(this.projectSettings)) return;
+    if (this.status == null || this.projectSettings == null) {
+      return;
+    }
 
     switch (this.status.SRState) {
       case SendReceiveState.Syncing:
@@ -210,7 +267,8 @@ export class LexiconSendReceiveService {
       case SendReceiveState.Synced:
       case SendReceiveState.Unsynced:
       case SendReceiveState.Hold:
-        if (angular.isDefined(this.projectSettings) && angular.isDefined(this.projectSettings.lastSyncedDate)) {
+      case SendReceiveState.Error:
+        if (this.projectSettings != null && this.projectSettings.lastSyncedDate != null) {
           if (Date.parse(this.projectSettings.lastSyncedDate) <= 0) {
             return 'Never been synced';
           } else {
@@ -241,9 +299,7 @@ export class LexiconSendReceiveService {
     }).then((data: any) => {
       if (data.isSR) {
         const editorData = data.editorData.data;
-        if (angular.isUndefined(editorData) || angular.isUndefined(editorData.sendReceive) ||
-          angular.isUndefined(editorData.sendReceive.status)
-        ) {
+        if (editorData == null || editorData.sendReceive == null || editorData.sendReceive.status == null) {
           this.clearState();
           return;
         }
@@ -270,7 +326,7 @@ export class LexiconSendReceiveService {
   startPollUpdateTimer(): void {
     this.cancelSyncStatusTimer();
     this.cancelCloneStatusTimer();
-    if (angular.isDefined(this.pollUpdateTimer)) {
+    if (this.pollUpdateTimer != null) {
       return;
     }
 
@@ -278,7 +334,7 @@ export class LexiconSendReceiveService {
   }
 
   cancelPollUpdateTimer(): void {
-    if (angular.isDefined(this.pollUpdateTimer)) {
+    if (this.pollUpdateTimer != null) {
       this.$interval.cancel(this.pollUpdateTimer);
       this.pollUpdateTimer = undefined;
     }
@@ -286,6 +342,10 @@ export class LexiconSendReceiveService {
 
   setCloneProjectStatusSuccessCallback(callback: SRTimerCallback): void {
     this.cloneProjectStatusSuccessCallback = callback;
+  }
+
+  setCloneProjectStatusFailedCallback(callback: SRFailedCallback): void {
+    this.cloneProjectStatusFailedCallback = callback;
   }
 
   getCloneProjectStatus = (): void => {
@@ -301,9 +361,14 @@ export class LexiconSendReceiveService {
 
         // console.log(this.status);
 
-        if (this.status.SRState === SendReceiveState.Idle || this.status.SRState === SendReceiveState.Hold) {
+        if (this.status.SRState === SendReceiveState.Idle) {
           this.cancelCloneStatusTimer();
           if (this.cloneProjectStatusSuccessCallback) this.cloneProjectStatusSuccessCallback();
+        } else if (this.status.SRState === SendReceiveState.Hold || this.status.SRState === SendReceiveState.Error) {
+          this.cancelCloneStatusTimer();
+          if (this.cloneProjectStatusFailedCallback) {
+            this.cloneProjectStatusFailedCallback(this.status);
+          }
         }
       }
     });
@@ -315,13 +380,13 @@ export class LexiconSendReceiveService {
 
     // Whether the true SRState is CLONING or PENDING, the user is going to have to wait for CLONING anyway
     this.status.SRState = SendReceiveState.CloneRequested;
-    if (angular.isDefined(this.cloneStatusTimer)) return;
+    if (this.cloneStatusTimer != null) return;
 
     this.cloneStatusTimer = this.$interval(this.getCloneProjectStatus, this.CLONE_STATUS_INTERVAL);
   }
 
   cancelCloneStatusTimer = (): void => {
-    if (angular.isDefined(this.cloneStatusTimer)) {
+    if (this.cloneStatusTimer != null) {
       this.$interval.cancel(this.cloneStatusTimer);
       this.cloneStatusTimer = undefined;
     }
@@ -341,8 +406,8 @@ export class LexiconSendReceiveService {
   private updateSessionData = (session: Session): void => {
     this.projectSettings = session.projectSettings<LexiconProjectSettings>();
 
-    if (angular.isDefined(this.projectSettings) && angular.isDefined(this.projectSettings.sendReceive) &&
-      angular.isDefined(this.projectSettings.sendReceive.status)
+    if (this.projectSettings != null && this.projectSettings.sendReceive != null &&
+      this.projectSettings.sendReceive.status != null
     ) {
       this.status = this.projectSettings.sendReceive.status;
       this.previousSRState = this.status.SRState;

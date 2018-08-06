@@ -4,7 +4,6 @@ namespace Api\Service;
 
 use Api\Library\Scriptureforge\Sfchecks\ParatextExport;
 use Api\Library\Scriptureforge\Sfchecks\SfchecksReports;
-use Api\Library\Shared\HelpContentCommands;
 use Api\Library\Shared\Palaso\Exception\UserNotAuthenticatedException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\SilexSessionHelper;
@@ -410,6 +409,11 @@ class Sf
     // ---------------------------------------------------------------
     // Activity Log
     // ---------------------------------------------------------------
+    public function valid_activity_types_dto()
+    {
+        return ActivityListDto::getActivityTypes($this->website);
+    }
+
     public function activity_list_dto($filterParams = [])
     {
         return ActivityListDto::getActivityForUser($this->website->domain, $this->userId, $filterParams);
@@ -417,13 +421,13 @@ class Sf
 
     public function activity_list_dto_for_current_project($filterParams = [])
     {
-        $projectModel = new ProjectModel($this->projectId);
+        $projectModel = ProjectModel::getById($this->projectId);
         return ActivityListDto::getActivityForOneProject($projectModel, $this->userId, $filterParams);
     }
 
     public function activity_list_dto_for_lexical_entry($entryId, $filterParams = [])
     {
-        $projectModel = new ProjectModel($this->projectId);
+        $projectModel = ProjectModel::getById($this->projectId);
         return ActivityListDto::getActivityForOneLexEntry($projectModel, $entryId, $filterParams);
     }
 
@@ -522,7 +526,7 @@ class Sf
     // ---------------------------------------------------------------
     public function text_update($object)
     {
-        return TextCommands::updateText($this->projectId, $object);
+        return TextCommands::updateText($this->projectId, $object, $this->userId);
     }
 
     public function text_read($textId)
@@ -556,7 +560,7 @@ class Sf
     // ---------------------------------------------------------------
     public function question_update($object)
     {
-        return QuestionCommands::updateQuestion($this->projectId, $object);
+        return QuestionCommands::updateQuestion($this->projectId, $object, $this->userId);
     }
 
     public function question_read($questionId)
@@ -833,15 +837,6 @@ class Sf
     public function sendReceive_notification_sendRequest($projectCode)
     {
         return SendReceiveCommands::notificationSendRequest($projectCode);
-    }
-
-
-    /*
-     * --------------------------------------------------------------- XFORGE FRAME API ---------------------------------------------------------------
-     */
-
-    public function xforge_frame_can_show_page_help_button($urlPath, $hashPath) {
-        return HelpContentCommands::canShowPageHelpButton($this->website, $urlPath, $hashPath);
     }
 
 

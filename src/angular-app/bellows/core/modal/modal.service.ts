@@ -15,7 +15,7 @@ export class ModalOptions {
   actionButtonText?: string;
   headerText?: string;
   bodyText?: string;
-  ok?: (result: any) => void;
+  ok?: (result?: any) => void;
   close?: () => void;
 }
 
@@ -45,7 +45,7 @@ export function ModalService($uibModal: angular.ui.bootstrap.IModalProvider) {
                                                   closeButtonText?: string,
                                                   actionButtonText?: string): angular.IPromise<any> {
     const options: ModalOptions = {
-      headerText: headerText,
+      headerText,
       bodyText: messageText
     };
     if (closeButtonText) options.closeButtonText = closeButtonText;
@@ -63,7 +63,7 @@ export function ModalService($uibModal: angular.ui.bootstrap.IModalProvider) {
   this.showModalSimpleWithCustomTemplate =
     function showModalSimpleWithCustomTemplate(customTemplateUrl: string): angular.IPromise<any> {
       const opts = {
-        customTemplateUrl: customTemplateUrl
+        customTemplateUrl
       };
       return this.show({
           templateUrl: '/angular-app/bellows/core/modal/modal-custom-template.html',
@@ -71,11 +71,11 @@ export function ModalService($uibModal: angular.ui.bootstrap.IModalProvider) {
         }, opts);
     };
 
-  this.show = function (customModalDefaults: angular.ui.bootstrap.IModalSettings,
-                        customModalOptions: ModalOptions): angular.IPromise<any> {
+  this.show = function show(customModalDefaults: angular.ui.bootstrap.IModalSettings,
+                            customModalOptions: ModalOptions): angular.IPromise<any> {
     // Create temp objects to work with since we're in a singleton service
-    let tempModalDefaults: angular.ui.bootstrap.IModalSettings = {};
-    let tempModalOptions: ModalOptions = {};
+    const tempModalDefaults: angular.ui.bootstrap.IModalSettings = {};
+    const tempModalOptions: ModalOptions = {};
 
     // Map angular-ui modal custom defaults to modal defaults defined in service
     angular.extend(tempModalDefaults, modalDefaults, customModalDefaults);
@@ -85,14 +85,13 @@ export function ModalService($uibModal: angular.ui.bootstrap.IModalProvider) {
 
     if (!tempModalDefaults.controller) {
       tempModalDefaults.controller = ['$scope', '$uibModalInstance',
-        function ($scope: ShowControllerScope,
-                  $modalInstance: angular.ui.bootstrap.IModalInstanceService) {
+        ($scope: ShowControllerScope, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
           $scope.modalOptions = tempModalOptions;
-          $scope.modalOptions.ok = function (result: any) {
+          $scope.modalOptions.ok = (result: any) => {
             $modalInstance.close(result);
           };
 
-          $scope.modalOptions.close = function () {
+          $scope.modalOptions.close = () => {
             $modalInstance.dismiss('cancel');
           };
         }

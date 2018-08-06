@@ -9,6 +9,7 @@ use League\OAuth2\Client\Token\AccessToken as OAuthAccessToken;
 use Silex\Application;
 use Site\Controller\Base;
 use Site\Controller\Exception;
+use Site\Controller\Validate;
 use Site\Model\UserWithId;
 use Site\Provider\AuthUserProvider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -158,7 +159,7 @@ abstract class OAuthBase extends Base
         return $userModel;
     }
 
-    public function setSilexAuthToken(UserModel $userModel, Application $app): string
+    public static function setSilexAuthToken(UserModel $userModel, Application $app): string
     {
         $roles = AuthUserProvider::getSiteRoles($userModel, $app['website']);
         $oauthUser = new UserWithId($userModel->username, '', $userModel->username, $roles);
@@ -169,7 +170,6 @@ abstract class OAuthBase extends Base
             return true;
         } else {
             // OAuth authentication succeeded, but we failed to set the Silex auth token.
-            $this->addErrorMessage($app, 'Sorry, we couldn\'t process the ' . ucwords($this->getProviderName()) . ' login data. This may be a temporary failure, so please try again. If the problem persists, try logging in with a username and password instead.');
             return false;
         }
     }
@@ -262,14 +262,31 @@ abstract class OAuthBase extends Base
                 } else {
                     // Found an email address matching this OAuth token, so add the token
                     $this->addOAuthIdToUserModel($userModel, $googleOAuthId);
+                    if (empty($userModel->username) && ! empty($userModel->email)) {
+                        // This can happen when someone is invited to join a project: they initially have an email address but no username
+                        // Since they logged in via OAuth, they don't care about their username, so just pick one for them
+                        $userModel->setUniqueUsernameFromString($userModel->email);
+                    }
                     $userModel->write();
+                    if (! empty($userModel->validationKey)) {
+                        // We'll consider that an OAuth login is equivalent to validating your email address.
+                        // NOTE: This needs to happen *after* the user model has been written above,
+                        // so that any changes made by Validate::check won't be overwritten by our write() call
+                        Validate::check($app, $userModel->validationKey);
+                    }
                     $success = $this->setSilexAuthToken($userModel, $app);
+                    if (! $success) {
+                        $this->addErrorMessage($app, 'Sorry, we couldn\'t process the ' . ucwords($this->getProviderName()) . ' login data. This may be a temporary failure, so please try again. If the problem persists, try logging in with a username and password instead.');
+                    }
                     $redirectUrl = $this->chooseRedirectUrl($success, $app);
                     return new RedirectResponse($redirectUrl);
                 }
             } else {
                 // OAuth ID found in our user model
                 $success = $this->setSilexAuthToken($userModel, $app);
+                if (! $success) {
+                    $this->addErrorMessage($app, 'Sorry, we couldn\'t process the ' . ucwords($this->getProviderName()) . ' login data. This may be a temporary failure, so please try again. If the problem persists, try logging in with a username and password instead.');
+                }
                 $redirectUrl = $this->chooseRedirectUrl($success, $app);
                 return new RedirectResponse($redirectUrl);
             }

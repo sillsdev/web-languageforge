@@ -6,93 +6,20 @@
 //
 // *************************************
 //
-// Available tasks:
-//   'gulp'
-//   'do-reload'
-//   'reload'
-//   'lint'
-//   'generate-language-picker-assets'
-//   'mongodb-backup-prod-db'
-//   'mongodb-copy-backup-to-local'
-//   'mongodb-cleanup-backup-prod-db'
-//   'mongodb-restore-local-db'
-//   'mongodb-copy-prod-db'
-//   'test-php'
-//   'test-php-debug'
-//   'test-php-coverage'
-//   'test-php:watch'
-//   'test-php-debug:watch'
-//   'test-js'
-//   'test-js:watch'
-//   'test-e2e-webdriver_update'
-//   'test-e2e-webdriver_standalone'
-//   'test-e2e-useTestConfig'
-//   'test-e2e-useLiveConfig'
-//   'test-e2e-setupTestEnvironment'
-//   'test-e2e-teardownTestEnvironment'
-//   'test-restart-webserver'
-//   'test-e2e-env'
-//   'test-e2e-doTest'
-//   'test-e2e-run'
-//   'test-e2e-compile'
-//   'test-e2e-compile:watch'
-//   'test-dotnet'
-//   'sass'
-//   'sass:watch'
-//   'webpack-lf'
-//   'webpack-lf:watch
-//   'webpack-sf'
-//   'webpack-sf:watch
-//   'build-composer'
-//   'build-npm-front-end'
-//   'build-npm-back-end'
-//   'build-webpack'
-//   'build-remove-test-fixtures'
-//   'build-minify'
-//   'build-changeGroup'
-//   'build-version'
-//   'build-productionConfig'
-//   'build-clearLocalCache'
-//   'build-dotnet-publish'
-//   'build-dotnet-secrets'
-//   'build-dotnet'
-//   'build-upload'
-//   'build'
-//   'build-and-upload'
-//   'build-e2e'
-//   'build-php'
-//   'markdown'
-//   'default'
-
+// -------------------------------------
+// To see available tasks use:
+// gulp -T                 Print the task dependency tree
+// gulp --tasks-simple     Print a list of gulp task names
+// -------------------------------------
+//
 // -------------------------------------
 //   Modules
 // -------------------------------------
-//
-// es6-shim          : ECMAScript 6 (Harmony) compatibility for legacy JavaScript engines
-// child_process     : Call a child process with the ease of exec and safety of spawn
-// gulp              : The streaming build system
-// gulp-concat       : Concatenates files
-// gulp-jshint       : JSHint plugin for gulp
-// gulp-livereload   : Gulp plugin for livereload
-// gulp-markdown     : Markdown to HTML
-// gulp-phpunit      : PHPUnit plugin for Gulp
-// gulp-protractor   : A helper for protactor and gulp
-// gulp-rename       : Rename files
-// gulp-replace      : A string replace plugin for gulp
-// gulp-uglify       : Minify files with UglifyJS
-// gulp-util         : Utility functions for gulp plugins
-// lodash.template   : The lodash method `_.template` exported as a module
-// karma             : Spectacular Test Runner for JavaScript
-// jshint-stylish    : Stylish reporter for JSHint
-// path              : Node.JS path module
-// yargs             : yargs the modern, pirate-themed, successor to optimist
 require('es6-shim');
 var _execute = require('child_process').exec;
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
-var livereload = require('gulp-livereload');
-var markdown = require('gulp-markdown');
 var phpunit = require('gulp-phpunit');
 var protractor = require('gulp-protractor').protractor;
 var webdriverStandalone = require('gulp-protractor').webdriver_standalone;
@@ -109,57 +36,25 @@ var dotnetPublish = require('gulp-dotnet-cli').publish;
 var dotnetTest = require('gulp-dotnet-cli').test;
 var fs = require('fs');
 var del = require('del');
+var data = require('gulp-data');
+var ejs = require('gulp-ejs');
+var dest = require('gulp-dest');
+var webpack = require('webpack');
 
-var execute = function (command, options, callback) {
-  if (!options) {
-    options = {};
-  }
+var webpackConfig = require('./webpack.config.js');
 
-  options.maxBuffer = 1024 * 1000; // byte
+// -------------------------------------
+//   Global Variables
+// -------------------------------------
 
-  var template = _template(command);
-  command = template(options);
-  if (!options.silent) {
-    gutil.log(gutil.colors.green(command));
-  }
+// Define release stages that will send errors to bugsnag
+var notifyReleaseStages = "['live', 'qa']";
 
-  if (!options.dryRun) {
-    var process = _execute(command, options, callback || undefined);
+// If using a JSON file for the Google API secrets, uncomment the following line and search for
+// "Google API" to find other lines to uncomment further below.
 
-    process.stdout.on('data', function (data) {
-      gutil.log(data.slice(0, -1)); // remove trailing \n
-    });
+// const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
 
-    process.stderr.on('data', function (data) {
-      gutil.log(gutil.colors.yellow(data.slice(0, -1))); // remove trailing \n
-    });
-
-  } else {
-    callback(null);
-  }
-};
-
-// Determine the path to test/app from a given destination.
-// Truncate the remote prefix of the destination
-function getTestCwd(dest) {
-  return (dest) ? path.join(dest.replace(/^(.)*:/, ''), 'test/app') : './test/app';
-}
-
-// Get systemd service suffix from destination
-function getServiceSuffix(dest) {
-  var suffix = '';
-  var index = dest.indexOf('_');
-  if (index !== -1) {
-    suffix = dest.substr(index + 1);
-    if (suffix.endsWith('/')) {
-      suffix = suffix.substr(0, suffix.length - 1);
-    }
-    suffix = '@' + suffix;
-  }
-  return suffix;
-}
-
-// Globals
 var srcPatterns = [
   'src/angular-app/**',
   'src/Api/**',
@@ -174,26 +69,6 @@ var phpPatterns = [
   'test/**/*.php'
 ];
 
-// If using a JSON file for the Google API secrets, uncomment the following line and search for
-// "Google API" to find other lines to uncomment further below.
-
-// const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
-
-// -------------------------------------
-//   Task: Do Reload
-// -------------------------------------
-gulp.task('do-reload', function () {
-  return gulp.src('src/index.php').pipe(livereload());
-});
-
-// -------------------------------------
-//   Task: Reload
-// -------------------------------------
-gulp.task('reload', function () {
-  livereload.listen();
-  gulp.watch(srcPatterns, { delay: 500 }, gulp.series('do-reload'));
-});
-
 // -------------------------------------
 //   Task: Lint
 // -------------------------------------
@@ -207,18 +82,16 @@ gulp.task('lint', function () {
 //   Task: Auto-generate language picker asset files
 // -------------------------------------
 gulp.task('generate-language-picker-assets', function (cb) {
-
   // Manual prerequisite:
   // copy from libpalaso:palaso-trusty64-master/SIL.WritingSystems/Resources/*.txt
   // into scripts/language picker/
-
   var options = {
     dryRun: false,
     silent: false,
     cwd: './scripts/language picker/'
   };
 
-  // auto-generated files written to src/angular-app/bellows/js/assets/
+  // auto-generated files written to src/angular-app/bellows/core/input-systems/
   execute(
     './build-json-language-data.py',
     options,
@@ -228,6 +101,110 @@ gulp.task('generate-language-picker-assets', function (cb) {
 
 gulp.task('generate-language-picker-assets').description =
   'Update asset files used for language picker';
+
+// region sass
+
+var sassCommand = './node_modules/.bin/node-sass';
+
+gulp.task('sass', gulp.parallel(
+  function buildSiteDir(done) {
+    execute(sassCommand + ' src/Site/ -o src/Site/ --output-style compressed', null, done);
+  },
+
+  function buildAngularAppDir(done) {
+    execute(sassCommand  + ' src/angular-app/ -o src/angular-app/ --output-style compressed',
+      null, done);
+  }
+));
+
+gulp.task('sass:watch', function () {
+  var debug = process.argv.indexOf('--debug') !== -1;
+  if (!debug) console.info('Tip: run with --debug to generate source comments and source maps.');
+
+  var watch = ' --watch --recursive';
+  var debugArgs = debug ? ' --source-comments --source-map-embed --source-map-contents' : '';
+
+  var a = sassCommand + ' src/Site -o src/Site' + debugArgs;
+  var b = sassCommand + ' src/angular-app -o src/angular-app' + debugArgs;
+
+  return new Promise(function (resolve, reject) {
+    execute(b, null, function () {
+      execute(b + watch, null, reject);
+    });
+
+    execute(a, null, function () {
+      execute(a + watch, null, reject);
+    });
+  });
+
+});
+
+// endregion
+
+//region webpack
+
+function runWebpack(applicationName, callback, isWatch, isAnalyze, isProduction) {
+  var config = webpackConfig({
+    applicationName: applicationName,
+    isProduction: isProduction,
+    isAnalyze: isAnalyze,
+    isTest: false
+  });
+
+  var compiler = webpack(config);
+
+  var log = function (err, stats) {
+    if (err) console.error(err);
+    if (stats) console.log(stats.toString({ chunks: false, colors: true }));
+    if (!isWatch) callback();
+  };
+
+  isWatch ? compiler.watch({}, log) : compiler.run(log);
+}
+
+// -------------------------------------
+//   Task: webpack-lf
+// -------------------------------------
+gulp.task('webpack-lf', function (cb) {
+  runWebpack('languageforge', cb);
+});
+
+// -------------------------------------
+//   Task: webpack-lf watch
+// -------------------------------------
+gulp.task('webpack-lf:watch', function (cb) {
+  runWebpack('languageforge', cb, true);
+});
+
+// -------------------------------------
+//   Task: webpack-lf analyze
+// -------------------------------------
+gulp.task('webpack-lf:analyze', function (cb) {
+  runWebpack('languageforge', cb, false, true);
+});
+
+// -------------------------------------
+//   Task: webpack-sf
+// -------------------------------------
+gulp.task('webpack-sf', function (cb) {
+  runWebpack('scriptureforge', cb);
+});
+
+// -------------------------------------
+//   Task: webpack-sf watch
+// -------------------------------------
+gulp.task('webpack-sf:watch', function (cb) {
+  runWebpack('scriptureforge', cb, true);
+});
+
+// -------------------------------------
+//   Task: webpack-sf analyze
+// -------------------------------------
+gulp.task('webpack-sf:analyze', function (cb) {
+  runWebpack('scriptureforge', cb, false, true);
+});
+
+// endregion
 
 //region MongoDB
 
@@ -369,25 +346,91 @@ gulp.task('test-php-debug:watch', function () {
   gulp.watch(phpPatterns, ['test-php-debug']);
 });
 
+function runKarmaTests(applicationName, cb, type) {
+  var config = {
+    configFile: __dirname + '/karma.conf.js',
+    applicationName: applicationName
+  };
+
+  switch (type) {
+    case 'ci':
+      config.reporters = 'teamcity';
+      break;
+
+    case 'watch':
+      config.autoWatch = true;
+      config.singleRun = false;
+      break;
+
+    case 'debug':
+      config.autoWatch = true;
+      config.singleRun = false;
+      config.browsers = [];
+      break;
+  }
+
+  new Server(config, function (err) {
+    if (err === 0) {
+      cb();
+    } else {
+      cb(new gutil.PluginError('karma', { message: 'Karma Tests failed' }));
+    }
+  }).start();
+}
+
 // -------------------------------------
-//   Task: test-js
+//   Task: test-ts
 // -------------------------------------
-gulp.task('test-js', function (cb) {
-  new Server({
-    configFile: __dirname + '/test/app/karma.conf.js',
-    reporters: 'teamcity'
-  }, cb).start();
+gulp.task('test-ts', function (cb) {
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .fail(yargFailure)
+    .argv;
+  runKarmaTests(params.applicationName, cb, 'ci');
 });
 
 // -------------------------------------
-//   Task: test-js:watch
+//   Task: test-ts-lf
 // -------------------------------------
-gulp.task('test-js:watch', function (cb) {
-  new Server({
-    configFile: __dirname + '/test/app/karma.conf.js',
-    autoWatch: true,
-    singleRun: false
-  }, cb).start();
+gulp.task('test-ts-lf', function (cb) {
+  runKarmaTests('languageforge', cb);
+});
+
+// -------------------------------------
+//   Task: test-ts-lf:watch
+// -------------------------------------
+gulp.task('test-ts-lf:watch', function (cb) {
+  runKarmaTests('languageforge', cb, 'watch');
+});
+
+// -------------------------------------
+//   Task: test-ts-lf:debug
+// -------------------------------------
+gulp.task('test-ts-lf:debug', function (cb) {
+  runKarmaTests('languageforge', cb, 'debug');
+});
+
+// -------------------------------------
+//   Task: test-ts-sf
+// -------------------------------------
+gulp.task('test-ts-sf', function (cb) {
+  runKarmaTests('scriptureforge', cb);
+});
+
+// -------------------------------------
+//   Task: test-ts-sf:watch
+// -------------------------------------
+gulp.task('test-ts-sf:watch', function (cb) {
+  runKarmaTests('scriptureforge', cb, 'watch');
+});
+
+// -------------------------------------
+//   Task: test-ts-sf:debug
+// -------------------------------------
+gulp.task('test-ts-sf:debug', function (cb) {
+  runKarmaTests('scriptureforge', cb, 'debug');
 });
 
 // -------------------------------------
@@ -441,6 +484,7 @@ gulp.task('test-e2e-setupTestEnvironment', function (cb) {
       demand: false,
       describe: 'destination of test environment',
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var options = {
     dryRun: false,
@@ -463,6 +507,7 @@ gulp.task('test-e2e-teardownTestEnvironment', function (cb) {
       demand: false,
       describe: 'destination of test environment',
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var options = {
     dryRun: false,
@@ -498,6 +543,7 @@ gulp.task('remote-restart-php-fpm', function (cb) {
     .option('uploadCredentials', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var options = {
     credentials: params.uploadCredentials,
@@ -522,6 +568,7 @@ gulp.task('local-restart-xforge-web-api', function (cb) {
     .option('dest', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
 
   var options = {
@@ -549,6 +596,7 @@ gulp.task('remote-restart-xforge-web-api', function (cb) {
     .option('uploadCredentials', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
 
   var options = {
@@ -559,7 +607,8 @@ gulp.task('remote-restart-xforge-web-api', function (cb) {
   };
 
   execute(
-    "ssh -i <%= credentials %> <%= destination %> 'systemctl restart <%= applicationName %>-web-api<%= suffix %>'",
+    'ssh -i <%= credentials %> <%= destination %>' +
+      " 'systemctl restart <%= applicationName %>-web-api<%= suffix %>'",
     options,
     cb
   );
@@ -576,6 +625,7 @@ gulp.task('local-restart-node-server', function (cb) {
     .option('dest', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
 
   if (params.applicationName === 'languageforge') {
@@ -608,6 +658,7 @@ gulp.task('remote-restart-node-server', function (cb) {
     .option('uploadCredentials', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
 
   if (params.applicationName === 'languageforge') {
@@ -623,7 +674,8 @@ gulp.task('remote-restart-node-server', function (cb) {
   };
 
   execute(
-    "ssh -i <%= credentials %> <%= destination %> 'systemctl restart <%= applicationName %>-sharedb<%= suffix %>'",
+    'ssh -i <%= credentials %> <%= destination %>' +
+      " 'systemctl restart <%= applicationName %>-sharedb<%= suffix %>'",
     options,
     cb
   );
@@ -644,6 +696,7 @@ gulp.task('test-e2e-env', function () {
       demand: false,
       default: 'languageforge.local',
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var cwd = getTestCwd(params.dest);
   var src = [
@@ -652,6 +705,7 @@ gulp.task('test-e2e-env', function () {
     'e2eTestConfig.php',
     'testConstants.json'];
 
+  // noinspection RegExpRedundantEscape
   return gulp.src(src, { cwd: cwd })
 
     // e2eTestConfig.php
@@ -712,6 +766,7 @@ gulp.task('test-e2e-doTest', function (cb) {
       'Runs all the E2E tests for languageforge')
     .example('$0 test-e2e-run --webserverHost scriptureforge.local --specs projectSettingsPage',
       'Runs the scriptureforge E2E test for projectSettingsPage')
+    .fail(yargFailure)
     .argv;
 
   var protocol =
@@ -755,15 +810,21 @@ gulp.task('test-e2e-doTest', function (cb) {
 
   // Generate list of specs to test (glob format so protractor will test whatever files exist)
   var specString = (params.specs) ? params.specs : '*';
+  var specs = ['test/app/allspecs/**/*.e2e-spec.js'];
+  if (specString === '*') {
+    specs.push('test/app/bellows/**/*-traversal.e2e-spec.js');
+    if (params.webserverHost.includes('languageforge')) {
+      specs.push('test/app/languageforge/**/*-traversal.e2e-spec.js');
+    } else {
+      specs.push('test/app/scriptureforge/**/*-traversal.e2e-spec.js');
+    }
+  }
 
-  var specs = [
-    'test/app/allspecs/e2e/*.spec.js',
-    'test/app/bellows/**/e2e/' + specString + '.spec.js'];
-
+  specs.push('test/app/bellows/**/' + specString + '.e2e-spec.js');
   if (params.webserverHost.includes('languageforge')) {
-    specs.push('test/app/languageforge/**/e2e/' + specString + '.spec.js');
+    specs.push('test/app/languageforge/**/' + specString + '.e2e-spec.js');
   } else {
-    specs.push('test/app/scriptureforge/**/e2e/' + specString + '.spec.js');
+    specs.push('test/app/scriptureforge/**/' + specString + '.e2e-spec.js');
   }
 
   // Get the selenium server address
@@ -788,14 +849,44 @@ gulp.task('test-e2e-doTest', function (cb) {
     .on('end', cb);
 });
 
-gulp.task('test-e2e-compile', function(cb) {
+// -------------------------------------
+//   Task: E2E Test: Clean compiled files
+// -------------------------------------
+gulp.task('test-e2e-clean', function () {
+  return del([
+    'test/app/**/*.e2e-spec.js.map',
+    'test/app/**/*.e2e-spec.js',
+    'test/app/**/shared/*.js.map',
+    'test/app/**/shared/*.js'
+  ]);
+});
+
+// -------------------------------------
+//   Task: E2E Test: Compile TS files
+// -------------------------------------
+gulp.task('test-e2e-compile', function (cb) {
   return execute('node_modules/typescript/bin/tsc -p test/app', null, cb);
 });
 
-gulp.task('test-e2e-compile:watch', function(cb) {
+// -------------------------------------
+//   Task: E2E Test: Watch and Compile TS files
+// -------------------------------------
+gulp.task('test-e2e-compile:watch', function (cb) {
   return execute('node_modules/typescript/bin/tsc -p test/app --watch', null, cb);
 });
 
+// -------------------------------------
+//   Task: E2E Test: Run
+// -------------------------------------
+gulp.task('test-e2e-clean-compile',
+  gulp.series(
+    'test-e2e-clean',
+    'test-e2e-compile')
+);
+
+// -------------------------------------
+//   Task: E2E Test: Teardown for developer
+// -------------------------------------
 gulp.task('test-e2e-teardownForLocalDev', gulp.series(
   'test-e2e-teardownTestEnvironment',
   'test-e2e-useLiveConfig',
@@ -807,7 +898,7 @@ gulp.task('test-e2e-teardownForLocalDev', gulp.series(
 // -------------------------------------
 gulp.task('test-e2e-run',
   gulp.series(
-    'test-e2e-compile',
+    'test-e2e-clean-compile',
     'test-e2e-useTestConfig',
     'test-restart-webserver',
     'test-e2e-setupTestEnvironment',
@@ -816,7 +907,7 @@ gulp.task('test-e2e-run',
 gulp.task('test-e2e-run').description = 'Run the E2E test on local developer environment';
 
 gulp.task('test-e2e-local-lf', gulp.series(
-    'test-e2e-compile',
+    'test-e2e-clean-compile',
     'test-e2e-useTestConfig',
     'test-restart-webserver',
     'test-e2e-setupTestEnvironment',
@@ -834,89 +925,6 @@ gulp.task('test-dotnet', function () {
 });
 
 //endregion
-
-// region sass
-
-var sassCommand = './node_modules/.bin/node-sass';
-
-gulp.task('sass', gulp.parallel(
-  function buildSiteDir(done) {
-    execute(sassCommand + ' src/Site/ -o src/Site/ --output-style compressed', null, done);
-  },
-
-  function buildAngularAppDir(done) {
-    execute(sassCommand  + ' src/angular-app/ -o src/angular-app/ --output-style compressed',
-      null, done);
-  }
-));
-
-gulp.task('sass:watch', function () {
-  var debug = process.argv.indexOf('--debug') !== -1;
-  if (!debug) console.info('Tip: run with --debug to generate source comments and source maps.');
-
-  var watch = ' --watch --recursive';
-  var debugArgs = debug ? ' --source-comments --source-map-embed --source-map-contents' : '';
-
-  var a = sassCommand + ' src/Site -o src/Site' + debugArgs;
-  var b = sassCommand + ' src/angular-app -o src/angular-app' + debugArgs;
-
-  return new Promise(function (resolve, reject) {
-    execute(b, null, function () {
-      execute(b + watch, null, reject);
-    });
-
-    execute(a, null, function () {
-      execute(a + watch, null, reject);
-    });
-  });
-
-});
-
-// endregion
-
-//region webpack
-
-function webpack(applicationName, callback, isProduction, isWatch) {
-  var watch = isWatch ? ' --watch' : '';
-  var env = applicationName ? ' --env.applicationName=' + applicationName : '';
-  var prod = isProduction ? ' -p' : '';
-  execute('$(npm bin)/webpack' + watch + env + prod + ' --colors',
-    { cwd: '.' },
-    function (err) {
-      if (err) throw new gutil.PluginError('webpack', err);
-      callback();
-    });
-}
-
-// -------------------------------------
-//   Task: webpack-lf
-// -------------------------------------
-gulp.task('webpack-lf', function (cb) {
-  webpack('languageforge', cb);
-});
-
-// -------------------------------------
-//   Task: webpack-lf watch
-// -------------------------------------
-gulp.task('webpack-lf:watch', function (cb) {
-  webpack('languageforge', cb, false, true);
-});
-
-// -------------------------------------
-//   Task: webpack-sf
-// -------------------------------------
-gulp.task('webpack-sf', function (cb) {
-  webpack('scriptureforge', cb);
-});
-
-// -------------------------------------
-//   Task: webpack-sf watch
-// -------------------------------------
-gulp.task('webpack-sf:watch', function (cb) {
-  webpack('scriptureforge', cb, false, true);
-});
-
-// endregion
 
 //region build
 
@@ -977,6 +985,7 @@ gulp.task('build-remove-test-fixtures', function (done) {
       demand: false,
       default: 'root@localhost:/var/www/virtual/languageforge.org',
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var base = './src/angular-app';
   var glob = path.join(base, '**/*.html');
@@ -1003,8 +1012,9 @@ gulp.task('build-webpack', function (cb) {
     .option('doNoCompression', {
       demand: false,
       type: 'boolean' })
+    .fail(yargFailure)
     .argv;
-  webpack(params.applicationName, cb, !params.doNoCompression);
+  runWebpack(params.applicationName, cb, false, false, !params.doNoCompression);
 });
 
 // -------------------------------------
@@ -1018,13 +1028,14 @@ gulp.task('build-minify', function () {
     .option('doNoCompression', {
       demand: false,
       type: 'boolean' })
+    .fail(yargFailure)
     .argv;
   var minifySrc = [
     'src/angular-app/bellows/**/*.js',
     'src/angular-app/container/**/*.js',
     'src/angular-app/' + params.applicationName + '/**/*.js',
     '!src/angular-app/**/*.min.js',
-    '!src/angular-app/**/assets/**',
+    '!src/angular-app/**/core/semantic-domains/**',
     '!src/angular-app/**/excluded/**',
     '!src/angular-app/**/vendor/**'];
   var minJsFile = params.applicationName + '.min.js';
@@ -1049,6 +1060,7 @@ gulp.task('build-version', function () {
     .option('buildNumber', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   console.log('version =', params.buildNumber);
   return gulp.src('src/version.php')
@@ -1090,6 +1102,11 @@ gulp.task('build-productionConfig', function () {
     googleClientSecret = 'googleClientSecret';
   }
 
+  var gatherWordsClientId = process.env.GATHERWORDS_CLIENT_ID;
+  if (gatherWordsClientId === undefined) {
+    gatherWordsClientId = 'gatherWordsClientId';
+  }
+
   var paratextClientId = process.env.PARATEXT_CLIENT_ID;
   if (paratextClientId === undefined) {
     paratextClientId = 'paratextClientId';
@@ -1103,6 +1120,11 @@ gulp.task('build-productionConfig', function () {
   var jwtKey = process.env.JWT_KEY;
   if (jwtKey === undefined) {
     jwtKey = 'jwtKey';
+  }
+
+  var bugsnagApiKey = process.env.XFORGE_BUGSNAG_API_KEY;
+  if (bugsnagApiKey === undefined) {
+    bugsnagApiKey = 'missing-bugsnag-api-key';
   }
 
   var params = require('yargs')
@@ -1129,6 +1151,10 @@ gulp.task('build-productionConfig', function () {
       // default: secrets_google_api_client_id.web.client_secret,
       default: googleClientSecret,
       type: 'string' })
+    .option('gatherWordsClientId', {
+      demand: false,
+      default: gatherWordsClientId,
+      type: 'string' })
     .option('paratextClientId', {
       demand: false,
       default: paratextClientId,
@@ -1141,6 +1167,11 @@ gulp.task('build-productionConfig', function () {
       demand: false,
       default: jwtKey,
       type: 'string' })
+    .option('bugsnagApiKey', {
+      demand: false,
+      default: bugsnagApiKey,
+      type: 'string' })
+    .fail(yargFailure)
     .argv;
   var configSrc = [
     './src/config.php',
@@ -1164,6 +1195,9 @@ gulp.task('build-productionConfig', function () {
       /(define\('GOOGLE_CLIENT_SECRET', ').*;$/m,
       '$1' + params.googleClientSecret + '\');'))
     .pipe(replace(
+      /(define\('GATHERWORDS_CLIENT_ID', ').*;$/m,
+      '$1' + params.gatherWordsClientId + '\');'))
+    .pipe(replace(
       /(define\('PARATEXT_CLIENT_ID', ').*;$/m,
       '$1' + params.paratextClientId + '\');'))
     .pipe(replace(
@@ -1172,6 +1206,12 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('JWT_KEY', ').*;$/m,
       '$1' + params.jwtKey + '\');'))
+    .pipe(replace(
+      /(define\('BUGSNAG_API_KEY', ').*;$/m,
+      '$1' + params.bugsnagApiKey + '\');'))
+    .pipe(replace(
+      /(define\('BUGSNAG_NOTIFY_RELEASE_STAGES', ).*;$/m,
+      '$1' + notifyReleaseStages + ');'))
     .pipe(gulp.dest('./'));
 });
 
@@ -1209,9 +1249,9 @@ gulp.task('build-dotnet-publish', function () {
 });
 
 // -------------------------------------
-//   Task: Build .NET Core secrets config
+//   Task: Build .NET Core host config
 // -------------------------------------
-gulp.task('build-dotnet-secrets', function (cb) {
+gulp.task('build-dotnet-host-config', function (cb) {
   var paratextClientId = process.env.PARATEXT_CLIENT_ID;
   if (paratextClientId === undefined) {
     paratextClientId = 'paratextClientId';
@@ -1227,13 +1267,42 @@ gulp.task('build-dotnet-secrets', function (cb) {
     jwtKey = 'jwtKey';
   }
 
-  fs.writeFile('artifacts/netcore-api/secrets.json', JSON.stringify({
+  var bugsnagApiKey = process.env.XFORGE_BUGSNAG_API_KEY;
+  if (bugsnagApiKey === undefined) {
+    bugsnagApiKey = 'missing-bugsnag-api-key';
+  }
+
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .option('bugsnagApiKey', {
+      demand: false,
+      default: bugsnagApiKey,
+      type: 'string' })
+    .option('buildNumber', {
+      demand: true,
+      type: 'string' })
+    .fail(yargFailure)
+    .argv;
+  console.log('version =', params.buildNumber);
+
+  var jobDatabase = params.applicationName + '_jobs';
+
+  fs.writeFile('artifacts/netcore-api/appsettings.host.json', JSON.stringify({
     Security: {
       JwtKey: jwtKey
     },
     Paratext: {
       ClientId: paratextClientId,
       ClientSecret: paratextApiToken
+    },
+    DataAccess: {
+      JobDatabase: jobDatabase
+    },
+    Bugsnag: {
+      ApiKey: bugsnagApiKey,
+      Version: params.buildNumber
     }
   }), cb);
 });
@@ -1244,7 +1313,7 @@ gulp.task('build-dotnet-secrets', function (cb) {
 gulp.task('build-dotnet',
   gulp.series(
     'build-dotnet-publish',
-    'build-dotnet-secrets')
+    'build-dotnet-host-config')
 );
 
 // -------------------------------------
@@ -1258,6 +1327,7 @@ gulp.task('build-upload', function (cb) {
     .option('uploadCredentials', {
       demand: true,
       type: 'string' })
+    .fail(yargFailure)
     .argv;
   var options = {
     dryRun: false,
@@ -1305,6 +1375,41 @@ gulp.task('build-upload', function (cb) {
   );
 });
 
+// ------------------------------------------
+// Create WebsiteInstances.php from template
+// ------------------------------------------
+gulp.task('build-createWebsiteDefsPhp', function () {
+  return gulp.src('src/Api/Library/Shared/WebsiteInstances.ejs')
+    .pipe(data(function () {
+      return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
+    }))
+    .pipe(ejs())
+    .pipe(dest('src/Api/Library/Shared/:name.php'))
+    .pipe(gulp.dest('src/Api/Library/Shared/'));
+});
+
+// ------------------------------------------
+// Create website-instances.generated-data.ts from template
+// ------------------------------------------
+gulp.task('build-createWebsiteDefsTs', function () {
+  return gulp.src('src/angular-app/bellows/core/website-instances.ejs')
+    .pipe(data(function () {
+      return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
+    }))
+    .pipe(ejs())
+    .pipe(dest('src/angular-app/bellows/core/:name.generated-data.ts'))
+    .pipe(gulp.dest('src/angular-app/bellows/core/'));
+});
+
+// ------------------------------------------
+// Create files from templates
+// ------------------------------------------
+gulp.task('build-createWebsiteDefs',
+  gulp.parallel(
+    'build-createWebsiteDefsPhp',
+    'build-createWebsiteDefsTs')
+);
+
 // -------------------------------------
 //   Task: Build (General)
 // -------------------------------------
@@ -1318,13 +1423,17 @@ gulp.task('build',
       'build-productionConfig',
       'build-clearLocalCache',
       'build-remove-test-fixtures',
-      'build-dotnet'),
+      'build-dotnet',
+      'build-createWebsiteDefs'),
     'sass',
     'build-webpack',
     'build-minify',
     'build-changeGroup')
 );
 
+// -------------------------------------
+//   Task: Build get dependencies
+// -------------------------------------
 gulp.task('get-dependencies',
   gulp.parallel(
     'build-composer',
@@ -1333,18 +1442,25 @@ gulp.task('get-dependencies',
   )
 );
 
+// -------------------------------------
+//   Task: Developer Build
+// -------------------------------------
 gulp.task('dev-build',
   gulp.parallel(
     'sass',
     'test-e2e-webdriver_update',
-    'test-e2e-compile',
+    'test-e2e-clean-compile',
     'build-webpack'
   )
 );
 
+// -------------------------------------
+//   Task: Developer Get Dependencies and Build
+// -------------------------------------
 gulp.task('dev-dependencies-and-build',
   gulp.series(
     'get-dependencies',
+    'build-createWebsiteDefs',
     'dev-build'
   )
 );
@@ -1381,21 +1497,22 @@ gulp.task('build-e2e').description =
 // -------------------------------------
 //   Task: Build, PHP Tests, Upload
 // -------------------------------------
-gulp.task('build-php',
+gulp.task('build-and-test',
   gulp.series(
     'build',
     'test-php',
-
-    // 'test-js',
+    'test-ts',
     'test-dotnet',
-    'build-upload',
     'test-restart-webserver',
     'local-restart-xforge-web-api',
     'local-restart-node-server')
 );
-gulp.task('build-php').description =
+gulp.task('build-and-test').description =
   'Build and Run PHP tests on CI server; Deploy to dev site';
 
+// -------------------------------------
+//   Task: Build PHP Coverage
+// -------------------------------------
 gulp.task('build-php-coverage',
   gulp.series(
     'build',
@@ -1405,20 +1522,71 @@ gulp.task('build-php-coverage',
 //endregion
 
 // -------------------------------------
-//   Task: Markdown
+//   Task: default (build)
 // -------------------------------------
-gulp.task('markdown', function () {
-  return gulp.src('src/angular-app/**/helps/**/*.md')
-    .pipe(markdown())
-    .pipe(gulp.dest('src/angular-app'));
-});
-
-gulp.task('markdown').description = 'Generate helps markdown files';
-
-// -------------------------------------
-//   Task: Display Tasks
-// gulp -T                 Print the task dependency tree
-// gulp --tasks-simple     Print a list of gulp task names
-// -------------------------------------
-
 gulp.task('default', gulp.series('build'));
+
+// -------------------------------------
+//   Functions
+// -------------------------------------
+function execute(command, options, callback) {
+  if (!options) {
+    options = {};
+  }
+
+  options.maxBuffer = 1024 * 1000; // byte
+
+  var template = _template(command);
+  command = template(options);
+  if (!options.silent) {
+    gutil.log(gutil.colors.green(command));
+  }
+
+  if (!options.dryRun) {
+    var process = _execute(command, options, callback || undefined);
+
+    process.stdout.on('data', function (data) {
+      gutil.log(data.slice(0, -1)); // remove trailing \n
+    });
+
+    process.stderr.on('data', function (data) {
+      gutil.log(gutil.colors.yellow(data.slice(0, -1))); // remove trailing \n
+    });
+
+  } else {
+    callback(null);
+  }
+}
+
+// Determine the path to test/app from a given destination.
+// Truncate the remote prefix of the destination
+function getTestCwd(dest) {
+  return (dest) ? path.join(dest.replace(/^(.)*:/, ''), 'test/app') : './test/app';
+}
+
+// Get systemd service suffix from destination
+function getServiceSuffix(dest) {
+  var suffix = '';
+  var index = dest.indexOf('_');
+  if (index !== -1) {
+    suffix = dest.substr(index + 1);
+    if (suffix.endsWith('/')) {
+      suffix = suffix.substr(0, suffix.length - 1);
+    }
+
+    suffix = '@' + suffix;
+  }
+
+  return suffix;
+}
+
+function yargFailure(msg, err, yargs) {
+  if (err) {
+    // preserve stack
+    throw err;
+  }
+
+  console.error(msg);
+  console.error('You should be doing', yargs.help());
+  process.exit(1);
+}

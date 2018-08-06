@@ -85,8 +85,8 @@ class LexEntryModelTest extends TestCase
 
         $differences = $entry->calculateDifferences($entry2);
         $this->assertEquals([
-            "oldValue.senses#$guid.definition.en" => 'hello',
-            "newValue.senses#$guid.definition.en" => 'hi there'], $differences);
+            "oldValue.senses@0#$guid.definition.en" => 'hello',
+            "newValue.senses@0#$guid.definition.en" => 'hi there'], $differences);
     }
 
     public function testGetDifferences_NullField_DoesNotThrowException()
@@ -104,8 +104,8 @@ class LexEntryModelTest extends TestCase
 
         $differences = $entry->calculateDifferences($entry2);
         $this->assertEquals([
-            "oldValue.senses#$guid.definition.en" => 'hello',
-            "newValue.senses#$guid.definition.en" => 'hi there'], $differences);
+            "oldValue.senses@0#$guid.definition.en" => 'hello',
+            "newValue.senses@0#$guid.definition.en" => 'hi there'], $differences);
     }
 
     public function testGetDifferences_TwoFieldsChanged_ContainsBothChanges()
@@ -123,10 +123,10 @@ class LexEntryModelTest extends TestCase
 
         $differences = $entry->calculateDifferences($entry2);
         $this->assertEquals([
-            "oldValue.senses#$guid.definition.en" => 'hello',
-            "newValue.senses#$guid.definition.en" => 'hi there',
-            "oldValue.senses#$guid.gloss.en" => 'hello',
-            "newValue.senses#$guid.gloss.en" => 'hi'], $differences);
+            "oldValue.senses@0#$guid.definition.en" => 'hello',
+            "newValue.senses@0#$guid.definition.en" => 'hi there',
+            "oldValue.senses@0#$guid.gloss.en" => 'hello',
+            "newValue.senses@0#$guid.gloss.en" => 'hi'], $differences);
     }
 
     public function testGetDifferences_TwoFieldsChangedButOneChangedToTheOriginalValue_ContainsOnlyOneChange()
@@ -144,8 +144,8 @@ class LexEntryModelTest extends TestCase
 
         $differences = $entry->calculateDifferences($entry2);
         $this->assertEquals([
-            "oldValue.senses#$guid.definition.en" => 'hello',
-            "newValue.senses#$guid.definition.en" => 'hi there'], $differences);
+            "oldValue.senses@0#$guid.definition.en" => 'hello',
+            "newValue.senses@0#$guid.definition.en" => 'hi there'], $differences);
     }
 
     public function testGetDifferences_DeletingSecondSense_DifferencesIncludeOnlyTheDeletionAsASingleChange()
@@ -164,7 +164,11 @@ class LexEntryModelTest extends TestCase
         $entry2->senses->append($sense1);
 
         $differences = $entry->calculateDifferences($entry2);
-        $this->assertEquals(["deleted.senses#$guid2" => 'hi'], $differences);
+        $this->assertEquals([
+            "deleted.senses@1#$guid2"  => 'hi',
+            "oldValue.senses@1#$guid2.definition.en" => 'hi',
+            "newValue.senses@1#$guid2.definition.en" => '',
+        ], $differences);
     }
 
     public function testGetDifferences_DeletingFirstSense_DifferencesIncludeTheDeletionAndPositionChanges()
@@ -184,9 +188,10 @@ class LexEntryModelTest extends TestCase
 
         $differences = $entry->calculateDifferences($entry2);
         $this->assertEquals([
-            "deleted.senses#$guid1" => 'hello',
-            "movedFrom.senses#$guid2" => 1,
-            "movedTo.senses#$guid2" => 0], $differences);
+            "deleted.senses@0#$guid1" => 'hello',
+            "oldValue.senses@0#$guid1.definition.en" => 'hello',
+            "newValue.senses@0#$guid1.definition.en" => '',
+            "moved.senses@1#$guid2" => 0], $differences);
     }
 
     public function testGetDifferences_DeletingBothSenses_DifferencesIncludeOnlyTheTwoDeletions()
@@ -205,7 +210,12 @@ class LexEntryModelTest extends TestCase
 
         $differences = $entry->calculateDifferences($entry2);
         $this->assertEquals([
-            "deleted.senses#$guid1" => 'hello',
-            "deleted.senses#$guid2" => 'hi'], $differences);
+            "deleted.senses@0#$guid1"  => 'hello',
+            "oldValue.senses@0#$guid1.definition.en" => 'hello',
+            "newValue.senses@0#$guid1.definition.en" => '',
+            "deleted.senses@1#$guid2"  => 'hi',
+            "oldValue.senses@1#$guid2.definition.en" => 'hi',
+            "newValue.senses@1#$guid2.definition.en" => '',
+        ], $differences);
     }
 }

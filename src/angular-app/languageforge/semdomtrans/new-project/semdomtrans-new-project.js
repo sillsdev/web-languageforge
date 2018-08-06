@@ -6,7 +6,7 @@ angular.module('semdomtrans-new-project',
     'coreModule',
     'ui.bootstrap',
     'semdomtrans.services',
-    'palaso.ui.language',
+    'palasoUILanguageModule',
     'pascalprecht.translate'
   ])
   .config(['$stateProvider', '$urlRouterProvider',
@@ -45,7 +45,7 @@ angular.module('semdomtrans-new-project',
 
     $scope.openNewLanguageModal = function openNewLanguageModal() {
       var modalInstance = $modal.open({
-        templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
+        templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.modal.html',
         controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
           $scope.selected = {
             code: '',
@@ -60,7 +60,7 @@ angular.module('semdomtrans-new-project',
         $scope.languageCode = selected.code;
         $scope.languageName = selected.language.name;
         $scope.checkLanguageAvailability();
-      });
+      }, angular.noop);
     };
 
     $scope.checkLanguageAvailability = function checkLanguageAvailability() {
