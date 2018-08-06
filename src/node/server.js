@@ -1,7 +1,7 @@
 var cookie = require('cookie');
 var express = require('express');
 var fs = require('fs');
-var https = require('https');
+var http = require('http');
 var MongoClient = require('mongodb').MongoClient;
 var os = require('os');
 var path = require('path');
@@ -27,13 +27,8 @@ share.use('connect', function (request, done) {
 share.use('apply', useUserData);
 share.connect();
 
-var config = (fs.existsSync('./config.js')) ? require('./config') : {};
-var defaultSslKey = '/etc/letsencrypt/live/scriptureforge.org/privkey.pem';
-var defaultSslCert = '/etc/letsencrypt/live/scriptureforge.org/cert.pem';
-var sslKeyPath = config.sslKeyPath || defaultSslKey;
-var sslCertPath = config.sslCertPath || defaultSslCert;
 var hostname = '0.0.0.0';
-var webSocketDocServerPort = 8443;
+var webSocketDocServerPort = 5002;
 
 // Client connection time allowed without editing in minutes
 var connectionTime = 20;
@@ -53,16 +48,13 @@ MongoClient.connect('mongodb://localhost:27017/realtime', function (err, db) {
 
 function startServer() {
   // Create web servers to serve files and listen to WebSocket connections
-  var privateKey  = fs.readFileSync(sslKeyPath, 'utf8');
-  var certificate = fs.readFileSync(sslCertPath, 'utf8');
-  var options = { key: privateKey, cert: certificate };
   var app = express();
   app.use(express.static('static'));
-  var docServer = https.createServer(options, app);
+  var docServer = http.createServer(app);
 
   // Connect any incoming WebSocket connection to ShareDB
-  var docWss = new WebSocket.Server({ server: docServer });
-  docWss.on('connection', function (ws) {
+  var docWs = new WebSocket.Server({ server: docServer });
+  docWs.on('connection', function (ws) {
     getSession(ws, function (err, session) {
       if (err) return console.log(err);
 
@@ -88,7 +80,7 @@ function startServer() {
   });
 
   docServer.listen(webSocketDocServerPort, hostname, function () {
-    console.log('Doc Server is listening at https://' + hostname + ':' + webSocketDocServerPort);
+    console.log('Doc Server is listening at ws://' + hostname + ':' + webSocketDocServerPort);
   });
 }
 

@@ -2,6 +2,7 @@
 
 namespace Api\Model\Shared;
 
+use Api\Library\Shared\Website;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\IdReference;
 use Api\Model\Shared\Mapper\MapperModel;
@@ -27,9 +28,13 @@ class ActivityModel extends MapperModel
     const DELETE_ENTRY = 'delete_entry';
     const ADD_LEX_COMMENT = 'add_lex_comment';
     const UPDATE_LEX_COMMENT = 'update_lex_comment';
+    const DELETE_LEX_COMMENT = 'delete_lex_comment';
     const UPDATE_LEX_COMMENT_STATUS = 'update_lex_comment_status';
+    const LEX_COMMENT_INCREASE_SCORE = 'lexCommentIncreaseScore';
+    const LEX_COMMENT_DECREASE_SCORE = 'lexCommentDecreaseScore';
     const ADD_LEX_REPLY = 'add_lex_reply';
     const UPDATE_LEX_REPLY = 'update_lex_reply';
+    const DELETE_LEX_REPLY = 'delete_lex_reply';
 
     // content types for use with the addContent method
     const PROJECT = 'project';
@@ -39,11 +44,16 @@ class ActivityModel extends MapperModel
     const COMMENT = 'comment';
     const LEX_COMMENT = 'lexComment';
     const LEX_COMMENT_CONTEXT = 'lexCommentContext';
+    const LEX_COMMENT_LABEL = 'lexCommentLabel';
+    const LEX_COMMENT_FIELD_VALUE = 'lexCommentFieldValue';
     const LEX_COMMENT_STATUS = 'lexCommentStatus';
     const LEX_REPLY = 'lexReply';
+    // USER and USER_RELATED usage: USER is the one doing the current activity. USER_RELATED, if present, is the one whose previous activity is being acted on.
+    // E.g., when replying to someone else's comment on a lexical entry, USER_RELATED is the one who made the original comment, and USER is the one making the reply.
     const USER = 'user';
-    const USER2 = 'user2';
+    const USER_RELATED = 'userRelated';
     const ENTRY = 'entry';
+    const FIELD_LABEL = 'fieldLabel';
 
     /**
      * @param ProjectModel $projectModel
@@ -56,7 +66,7 @@ class ActivityModel extends MapperModel
         $this->textRef = new IdReference();
         $this->questionRef = new IdReference();
         $this->userRef = new IdReference();
-        $this->userRef2 = new IdReference();
+        $this->userRefRelated = new IdReference();
         $this->entryRef = new IdReference();
         $this->action = $this::UNKNOWN;
         $this->date = new \DateTime(); // set the timestamp to now
@@ -84,7 +94,7 @@ class ActivityModel extends MapperModel
     public $userRef;
 
     /** @var IdReference */
-    public $userRef2;
+    public $userRefRelated;
 
     /** @var IdReference */
     public $entryRef;
@@ -109,4 +119,81 @@ class ActivityModel extends MapperModel
         CodeGuard::checkTypeAndThrow($content, 'string');
         $this->actionContent[$type] = $content;
     }
+
+    /**
+     * @param string $siteBase
+     * @return array
+     */
+    public static function getActivityTypesForSiteBase($siteBase)
+    {
+        switch ($siteBase) {
+            case Website::SCRIPTUREFORGE:
+                return [
+                    self::ADD_COMMENT,
+                    self::UPDATE_COMMENT,
+                    self::ADD_ANSWER,
+                    self::UPDATE_ANSWER,
+                    self::ADD_TEXT,
+                    self::ADD_QUESTION,
+                    self::CHANGE_STATE_OF_QUESTION,
+                    self::INCREASE_SCORE,
+                    self::DECREASE_SCORE,
+                    self::ADD_USER_TO_PROJECT,
+                    self::UNKNOWN,
+                ];
+            case Website::LANGUAGEFORGE:
+                return [
+                    self::ADD_USER_TO_PROJECT,
+                    self::ADD_ENTRY,
+                    self::UPDATE_ENTRY,
+                    self::DELETE_ENTRY,
+                    self::ADD_LEX_COMMENT,
+                    self::UPDATE_LEX_COMMENT,
+                    self::DELETE_LEX_COMMENT,
+                    self::UPDATE_LEX_COMMENT_STATUS,
+                    self::ADD_LEX_REPLY,
+                    self::UPDATE_LEX_REPLY,
+                    self::DELETE_LEX_REPLY,
+                    self::LEX_COMMENT_INCREASE_SCORE,
+                    self::LEX_COMMENT_DECREASE_SCORE,
+                    self::UNKNOWN,
+                ];
+            default:
+                return [];
+        }
+    }
+
+    /**
+     * @param string $siteBase
+     * @return array
+     */
+    public static function getContentTypesForSiteBase($siteBase)
+    {
+        switch ($siteBase) {
+            case Website::SCRIPTUREFORGE:
+                return [
+                    self::PROJECT,
+                    self::TEXT,
+                    self::QUESTION,
+                    self::ANSWER,
+                    self::COMMENT,
+                    self::USER,
+                    self::USER_RELATED,
+                ];
+            case Website::LANGUAGEFORGE:
+                return [
+                    self::PROJECT,
+                    self::LEX_COMMENT,
+                    self::LEX_COMMENT_CONTEXT,
+                    self::LEX_COMMENT_STATUS,
+                    self::LEX_REPLY,
+                    self::USER,
+                    self::USER_RELATED,
+                    self::ENTRY,
+                ];
+            default:
+                return [];
+        }
+    }
+
 }

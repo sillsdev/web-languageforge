@@ -156,27 +156,50 @@ namespace SIL.XForge.WebApi.Server.Services
                             await conn.ConnectAsync();
 
                             ParatextProject sourceParatextProject = project.Config.Source.ParatextProject;
-                            IReadOnlyList<string> sourceBookIds = await GetBooksAsync(user, sourceParatextProject);
+                            IReadOnlyList<string> sourceBooks = await _paratextService.GetBooksAsync(user,
+                                sourceParatextProject.Id);
 
                             ParatextProject targetParatextProject = project.Config.Target.ParatextProject;
-                            IReadOnlyList<string> targetBookIds = await GetBooksAsync(user, targetParatextProject);
+                            IReadOnlyList<string> targetBooks = await _paratextService.GetBooksAsync(user,
+                                targetParatextProject.Id);
 
-                            string[] bookIds = sourceBookIds.Intersect(targetBookIds).ToArray();
-                            int processedCount = 0;
-                            foreach (string bookId in bookIds)
+                            var booksToSendReceive = new HashSet<string>();
+                            booksToSendReceive.UnionWith(sourceBooks);
+                            booksToSendReceive.IntersectWith(targetBooks);
+
+                            var booksToDelete = new HashSet<string>();
+                            booksToDelete.UnionWith(GetBooksToDelete(project, sourceParatextProject, sourceBooks));
+                            booksToDelete.UnionWith(GetBooksToDelete(project, targetParatextProject, targetBooks));
+
+                            int step = 0;
+                            int stepCount = booksToSendReceive.Count + booksToDelete.Count;
+                            foreach (string bookId in booksToSendReceive)
                             {
-                                await SendReceiveBookAsync(user, conn, project, docSetRepo, sourceParatextProject,
-                                    "source", bookId);
-                                await SendReceiveBookAsync(user, conn, project, docSetRepo, targetParatextProject,
-                                    "target", bookId);
-                                processedCount++;
-                                double percentCompleted = ((double) processedCount / bookIds.Length) * 100.0;
-                                job = await _jobRepo.UpdateAsync(job, u => u
-                                    .Set(j => j.PercentCompleted, percentCompleted));
+                                if (!BookNames.TryGetValue(bookId, out string name))
+                                    name = bookId;
+                                TranslateDocumentSet docSet = await docSetRepo.UpdateAsync(ds => ds.BookId == bookId,
+                                    u => u.SetOnInsert(ds => ds.Name, name)
+                                          .SetOnInsert(ds => ds.BookId, bookId)
+                                          .Set(ds => ds.IsDeleted, false), true);
+
+                                await SendReceiveBookAsync(user, conn, project, docSet, sourceParatextProject, "source",
+                                    bookId);
+                                await SendReceiveBookAsync(user, conn, project, docSet, targetParatextProject, "target",
+                                    bookId);
+                                step++;
+                                job = await UpdateProgress(job, step, stepCount);
                             }
 
-                            DeleteBookTextFiles(project, sourceParatextProject, sourceBookIds);
-                            DeleteBookTextFiles(project, targetParatextProject, targetBookIds);
+                            foreach (string bookId in booksToDelete)
+                            {
+                                TranslateDocumentSet docSet = await docSetRepo.UpdateAsync(ds => ds.BookId == bookId,
+                                    u => u.Set(ds => ds.IsDeleted, true));
+
+                                await DeleteBookAsync(conn, project, docSet, sourceParatextProject, "source", bookId);
+                                await DeleteBookAsync(conn, project, docSet, targetParatextProject, "target", bookId);
+                                step++;
+                                job = await UpdateProgress(job, step, stepCount);
+                            }
 
                             await conn.CloseAsync();
                         }
@@ -198,45 +221,41 @@ namespace SIL.XForge.WebApi.Server.Services
             }
         }
 
-        private async Task<IReadOnlyList<string>> GetBooksAsync(User user, ParatextProject paratextProject)
+        private async Task<SendReceiveJob> UpdateProgress(SendReceiveJob job, int step, int stepCount)
         {
-            if ((await _paratextService.TryGetBooksAsync(user, paratextProject.Id))
-                .TryResult(out IReadOnlyList<string> bookIds))
-            {
-                return bookIds;
-            }
-
-            throw new InvalidOperationException("Error occurred while getting list of books from ParaTExt server.");
+            double percentCompleted = (double) step / stepCount;
+            return await _jobRepo.UpdateAsync(job, u => u
+                .Set(j => j.PercentCompleted, percentCompleted));
         }
 
-        private void DeleteBookTextFiles(TranslateProject project, ParatextProject paratextProject,
-            IEnumerable<string> bookIds)
+        private IEnumerable<string> GetBooksToDelete(TranslateProject project, ParatextProject paratextProject,
+            IEnumerable<string> books)
         {
             string projectPath = GetProjectPath(project, paratextProject);
-            var booksToRemove = new HashSet<string>(Directory.EnumerateFiles(projectPath)
-                .Select(Path.GetFileNameWithoutExtension));
-            booksToRemove.ExceptWith(bookIds);
-            foreach (string bookId in booksToRemove)
-                File.Delete(GetBookTextFileName(projectPath, bookId));
+            var booksToDelete = new HashSet<string>(Directory.Exists(projectPath)
+                ? Directory.EnumerateFiles(projectPath).Select(Path.GetFileNameWithoutExtension)
+                : Enumerable.Empty<string>());
+            booksToDelete.ExceptWith(books);
+            return booksToDelete;
+        }
+
+        private async Task DeleteBookAsync(Connection conn, TranslateProject project, TranslateDocumentSet docSet,
+            ParatextProject paratextProject, string docType, string bookId)
+        {
+            string projectPath = GetProjectPath(project, paratextProject);
+            File.Delete(GetBookTextFileName(projectPath, bookId));
+            Document<Delta> doc = GetShareDBDocument(conn, project, docSet, docType);
+            await doc.FetchAsync();
+            await doc.DeleteAsync();
         }
 
         private async Task SendReceiveBookAsync(User user, Connection conn, TranslateProject project,
-            IRepository<TranslateDocumentSet> docSetRepo, ParatextProject paratextProject, string docType,
-            string bookId)
+            TranslateDocumentSet docSet, ParatextProject paratextProject, string docType, string bookId)
         {
             string projectPath = GetProjectPath(project, paratextProject);
             if (!Directory.Exists(projectPath))
                 Directory.CreateDirectory(projectPath);
 
-            TranslateDocumentSet docSet = await docSetRepo.Query()
-                .FirstOrDefaultAsync(ds => ds.BookId == bookId && !ds.IsDeleted);
-            if (docSet == null)
-            {
-                if (!BookNames.TryGetValue(bookId, out string name))
-                    name = bookId;
-                docSet = new TranslateDocumentSet { Name = name, BookId = bookId };
-                await docSetRepo.InsertAsync(docSet);
-            }
             Document<Delta> doc = GetShareDBDocument(conn, project, docSet, docType);
             string fileName = GetBookTextFileName(projectPath, bookId);
             if (File.Exists(fileName))
@@ -265,16 +284,12 @@ namespace SIL.XForge.WebApi.Server.Services
             string bookText;
             if (XNode.DeepEquals(oldUsxElem, newUsxElem))
             {
-                if (!(await _paratextService.TryGetBookTextAsync(user, paratextProject.Id, bookId))
-                    .TryResult(out bookText))
-                {
-                    throw new InvalidOperationException("Error occurred while getting book text from ParaTExt server.");
-                }
+                bookText = await _paratextService.GetBookTextAsync(user, paratextProject.Id, bookId);
             }
-            else if (!(await _paratextService.TryUpdateBookTextAsync(user, paratextProject.Id, bookId, revision,
-                newUsxElem.ToString())).TryResult(out bookText))
+            else
             {
-                throw new InvalidOperationException("Error occurred while updating book text on ParaTExt server.");
+                bookText = await _paratextService.UpdateBookTextAsync(user, paratextProject.Id, bookId, revision,
+                    newUsxElem.ToString());
             }
 
             bookTextElem = XElement.Parse(bookText);
@@ -289,11 +304,7 @@ namespace SIL.XForge.WebApi.Server.Services
         private async Task CloneBookAsync(User user, ParatextProject paratextProject, string fileName,
             string bookId, Document<Delta> doc)
         {
-            if (!(await _paratextService.TryGetBookTextAsync(user, paratextProject.Id, bookId))
-                .TryResult(out string bookText))
-            {
-                throw new InvalidOperationException("Error occurred while getting book text from ParaTExt server.");
-            }
+            string bookText = await _paratextService.GetBookTextAsync(user, paratextProject.Id, bookId);
 
             var bookTextElem = XElement.Parse(bookText);
 

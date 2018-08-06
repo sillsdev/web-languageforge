@@ -3,9 +3,11 @@
 use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Api\Library\Shared\Website;
+use Api\Library\Shared\Palaso\Exception\BugsnagExceptionHandler;
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once 'config.php';
+require_once 'version.php';
 
 // The name of THIS file
 define('SELF', basename(__FILE__));
@@ -22,19 +24,21 @@ $app = new Silex\Application();
  *---------------------------------------------------------------
  *
  * Different environments will require different levels of error reporting and debugging.
- * By default development will show errors but testing and live will hide them.
+ * By default development will show errors but testing and live will hide them and instead report errors to bugsnag.com.
  * By default development will have debugging on but testing and live will turn it off.
  */
 
 if (defined('ENVIRONMENT')) {
     switch (ENVIRONMENT) {
         case 'development':
+            $app['bugsnag'] = null;
             error_reporting(E_ALL);
             $app['debug'] = true;
             break;
 
         case 'testing':
         case 'production':
+            BugsnagExceptionHandler::setup($app, BUGSNAG_API_KEY);
             error_reporting(0);
             $app['debug'] = false;
             break;
@@ -158,10 +162,35 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\SecurityServiceProvider());
 $app->register(new Silex\Provider\RememberMeServiceProvider());
+
+$app['security.authentication_listener.factory.jwt'] = $app->protect(function ($name, $options) use ($app) {
+    // define the authentication provider object
+    $app['security.authentication_provider.'.$name.'.jwt'] = function () use ($app) {
+        return new \Site\Provider\JWTAuthenticationProvider($app['website']);
+    };
+
+    // define the authentication listener object
+    $app['security.authentication_listener.'.$name.'.jwt'] = function () use ($app, $name) {
+        return new \Site\Listener\JWTListener($app['security.token_storage'], $app['security.authentication_provider.'.$name.'.jwt'], $app['website']);
+    };
+
+    return array(
+        // the authentication provider id
+        'security.authentication_provider.'.$name.'.jwt',
+        // the authentication listener id
+        'security.authentication_listener.'.$name.'.jwt',
+        // the entry point id
+        null,
+        // the position of the listener in the stack
+        'pre_auth'
+    );
+});
+
 $app['security.firewalls'] = array(
     'site' => array(
         'pattern' => '^.*$',
         'anonymous' => true,
+        'jwt' => true,  // TODO: Determine if this is enough to enable the JWT authentication that we need, or not
         'form' => array('login_path' => '/auth/login', 'check_path' => '/app/login_check'),
         'remember_me' => array('key' => REMEMBER_ME_SECRET),
         'logout' => array('logout_path' => '/auth/logout', 'target_url' => '/auth/login', 'invalidate_session' => true),
@@ -231,7 +260,7 @@ $app->get('/public/{appName}/{projectId}', 'Site\Controller\App::view');
 $app->get('/public/{appName}/', 'Site\Controller\App::view');
 $app->get('/public/{appName}', 'Site\Controller\App::view');
 
-$app->get('/validate/{validateKey}', 'Site\Controller\Validate::check');
+$app->get('/validate/{validateKey}', 'Site\Controller\Validate::checkAndRedirect');
 $app->get('/auth/reset_password/{resetPasswordKey}', 'Site\Controller\Auth::view')->value('appName', 'reset_password');
 $app->get('/auth/{appName}',    'Site\Controller\Auth::view')->value('appName', 'login');
 $app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bind('auth_forgot_password');
@@ -239,10 +268,14 @@ $app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bin
 $app->get('/oauthcallback/google', 'Site\OAuth\GoogleOAuth::oauthCallback');
 $app->get('/oauthcallback/paratext', 'Site\OAuth\ParatextOAuth::oauthCallback');
 
+$app->post('/oauth/jwt', 'Site\OAuth\OAuthJWTToken::validateOAuthToken');
+
 $app->get('/download/assets/{appName}/{projectSlug}/audio/{filename}', 'Site\Controller\Download::assets');
 $app->get('/download/assets/{appName}/{projectSlug}/{filename}', 'Site\Controller\Download::assets');
 $app->get('/{pageName}/',       'Site\Controller\Page::view')->value('pageName', 'home');
 $app->get('/{pageName}',        'Site\Controller\Page::view')->value('pageName', 'home');
+
+BugsnagExceptionHandler::finishInitialization($app);
 
 /*--------------------------------------------------------------------
  * And away we go...

@@ -10,11 +10,12 @@
  * PHP MongoDB Client Library API Generated Docs       http://mongodb.github.io/mongo-php-library/api/
  * PHP MongoDB Client Library API Reference            http://mongodb.github.io/mongo-php-library/
  * MongoDB Documentation                               https://docs.mongodb.org/manual/reference/
- * 
+ *
  */
 
 namespace Api\Model\Shared\Mapper;
 
+use MongoDB\UpdateResult;
 use Palaso\Utilities\CodeGuard;
 
 class MongoMapper
@@ -309,7 +310,7 @@ class MongoMapper
      * @return string
      * @throws \Exception
      */
-    public function write($model, $id, $keyStyle = MongoMapper::ID_IN_KEY, $rootId = '', $property = '')
+    public function write($model, $id, $rearrangeableProperties = [], $rearrangeableSubproperties = [], $keyStyle = MongoMapper::ID_IN_KEY, $rootId = '', $property = '')
     {
         CodeGuard::checkTypeAndThrow($rootId, 'string');
         CodeGuard::checkTypeAndThrow($property, 'string');
@@ -317,10 +318,12 @@ class MongoMapper
         $data = MongoEncoder::encode($model); // TODO Take into account key style for stripping key out of the model if needs be
         if (empty($rootId)) {
             // We're doing a root level update, only $model, $id are relevant
+            $this->rearrangeIfNeeded($data, $id, $rearrangeableProperties, $rearrangeableSubproperties);
             $id = $this->update($data, $id, self::ID_IN_KEY, '', '');
         } else {
             if ($keyStyle == self::ID_IN_KEY) {
                 CodeGuard::checkNullAndThrow($id, 'id');
+                $this->rearrangeIfNeeded($model, $id, $rearrangeableProperties, $rearrangeableSubproperties);
                 $id = $this->update($data, $id, self::ID_IN_KEY, $rootId, $property);
             } else {
                 if (empty($id)) {
@@ -328,6 +331,7 @@ class MongoMapper
                     throw new \Exception("Method appendSubDocument() is not implemented");
                     //$this->appendSubDocument($data, $rootId, $property);
                 } else {
+                    $this->rearrangeIfNeeded($model, $id, $rearrangeableProperties, $rearrangeableSubproperties);
                     $id = $this->update($data, $id, self::ID_IN_DOC, $rootId, $property);
                 }
             }
@@ -395,6 +399,7 @@ class MongoMapper
 
     public static function shouldKeepKey(string $key) {
         // Some keys shouldn't be removed even if empty, at least as long as our code is still making assumptions that these keys exist
+        // TODO: Transfer this knowledge to the ObjectForEncoding base class, so that it can pass down a list of keys to keep on a per-model basis. That will avoid this hardcoded list.
         return ($key === "guid" || $key === "translation" || $key === "description" || $key === "answers" || $key == "paragraphs");
     }
 
@@ -468,5 +473,190 @@ class MongoMapper
             $this->_collection->updateOne($filter, $updateCommand);
         }
         return $id;
+    }
+
+    protected function rearrangeIfNeeded($data, $id, $rearrangeableProperties = [], $rearrangeableSubproperties = [])
+    {
+        if (empty($rearrangeableProperties) && empty($rearrangeableSubproperties)) {
+            // Most models don't need this, so exit early in most scenarios
+            return;
+        }
+
+        $filter = ['_id' => self::mongoID($id)];
+        $oldMongoData = $this->_collection->find($filter)->toArray();
+
+        foreach ($rearrangeableProperties as $property) {
+            if (!array_key_exists($property, $data)) {
+                // No rearranging needed if we're deleting the entire property
+                continue;
+            }
+            if (!array_key_exists($property, $oldMongoData)) {
+                // No rearranging needed if the property didn't exist before
+                continue;
+            }
+            $this->rearrangeOne($oldMongoData, $data, $id, $property);
+        }
+
+        // Re-read data now that first-level property arrays have been rearranged, so that indices will match up when rearranging subproperties
+        $oldMongoData = $this->_collection->find($filter)->toArray();
+
+        foreach ($rearrangeableSubproperties as $property => $subProperties) {
+            foreach ($data[$property] as $index => $propData) {
+                foreach ($subProperties as $subProperty) {
+                    if (!array_key_exists($subProperty, $propData)) {
+                        // No rearranging needed if we're deleting the entire property
+                        continue;
+                    }
+                    if (!array_key_exists($property, $oldMongoData) || empty($oldMongoData[$property] || empty($oldMongoData[$property][$index]))) {
+                        // No need to rearrange an empty array
+                        continue;
+                    } else {
+                        // We can now count on the indices matching up
+                        $oldPropData = $oldMongoData[$property][$index];
+                    }
+                    if (!array_key_exists($subProperty, $oldPropData)) {
+                        // No rearranging needed if the property didn't exist before
+                        continue;
+                    }
+                    $this->rearrangeOne($oldPropData, $propData, $id, $property, $index, $subProperty);
+                }
+            }
+        }
+    }
+
+    protected function rearrangeOne($oldData, $newData, $rootId, $property, $subIndex = 0, $subProperty = '', $idFieldName = 'guid')
+    {
+        // First get the old data
+        $filter = ['_id' => self::mongoID($rootId)];
+        if (empty($subProperty)) {
+            // Property rearranging: data is entire object.
+            $newItems = $newData[$property];
+            $oldItems = $oldData[$property];
+        } else {
+            // Subproperty rearranging: data is one item in the root property
+            // E.g., if $property = 'senses' and $subProperty = 'examples', then data is *one* sense, not the whole array of senses
+            $newItems = $newData[$subProperty];
+            $oldItems = $oldData[$subProperty];
+        }
+        $oldGuids = [];
+        foreach ($oldItems as $item) {
+            $oldGuids[] = $item[$idFieldName];
+        }
+        $newGuids = [];
+        $newItemsByGuid = [];
+        foreach ($newItems as $item) {
+            $newGuids[] = $item[$idFieldName];
+            $newItemsByGuid[$item[$idFieldName]] = $item;
+        }
+        $changes = MapperUtils::calculateChanges($oldGuids, $newGuids);
+        if (empty($changes)) {
+            return; // Nothing to do!
+        }
+        $dataToAdd = [];
+        foreach ($changes['added'] as $changeGuid) {
+            $dataToAdd[] = $newItemsByGuid[$changeGuid];
+        }
+        $this->addAndRemoveInProperty($dataToAdd, $changes['removed'], $rootId, $property, $subIndex, $subProperty, $idFieldName);
+        $this->reorderInPseudoTransaction($filter, $changes['moved'], $property, $subIndex, $subProperty);
+    }
+
+    /**
+     * @param array $dataToAdd - An array of "objects" to add (if you're only adding one item, call as [$itemToAdd])
+     * @param string[] $guidsToRemove
+     * @param string $rootId
+     * @param string $property
+     * @return string
+     */
+    protected function addAndRemoveInProperty($dataToAdd, $guidsToRemove, $rootId, $property, $subIndex = 0, $subProperty = '', $idFieldName = 'guid') {
+        // Besides the update() parameters, we also need to take one more: the order mapping.
+        // This will be an array from old to new: [0 => 1, 1 => 2, 2 => 0] means to rearrange ABC into CAB.
+
+        // This needs to handle two cases:
+        // 1. "senses", where it's a property of the root object and we're replacing that property
+        // 2. "senses.examples", where it's a sub-property and the property we're replacing is something like "senses.0.examples"
+        // This should probably build the update, but the root one does the update.
+        $filter = ['_id' => self::mongoID($rootId)];
+        if (empty($subProperty)) {
+            $key = $property;
+        } else {
+            $key = $property . '.' . $subIndex . '.' . $subProperty;
+        }
+        $removeUpdateCommand = $this->createRemoveUpdate($key, $guidsToRemove, $idFieldName);
+        $addUpdateCommand = $this->createAddUpdate($key, $dataToAdd);
+        $this->_collection->updateOne($filter, $removeUpdateCommand);
+        $this->_collection->updateOne($filter, $addUpdateCommand);
+    }
+
+    protected function createRemoveUpdate($key, $guidsToRemove, $idFieldName = 'guid')
+    {
+        // db.samples.update({'guid': '456'}, {'$pull': {'senses.0.examples': {'guid': {'$in': ['A1']}}}})
+        return [
+            '$pull' => [
+                $key => [
+                    $idFieldName => [
+                        '$in' => $guidsToRemove
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @param $key string The Mongo key to push items into (e.g., 'senses.0.examples')
+     * @param $dataToAdd array (NOTE: Needs to be a *real* array, not a hashtable. PHP's type system can't distinguish these)
+     * @return array
+     */
+    protected function createAddUpdate($key, $dataToAdd)
+    {
+        // E.g., db.collection.update({'guid': '456'}, {'$push': {'senses.0.examples': {'$each': [{'guid': 'A3', 'sentence': 'Ex-A3'}]}}})
+        return [
+            '$push' => [
+                $key => [
+                    '$each' => $dataToAdd
+                ]
+            ]
+        ];
+    }
+
+    protected function reorderInPseudoTransaction($baseFilter, $orderMapping, $property, $subIndex = 0, $subProperty = '', $timeoutInSeconds = 0.5) {
+        $startTime = microtime(true);
+        $filter = $baseFilter;
+        while (true) {
+            $data = $this->_collection->find($baseFilter)->toArray();
+            if (empty($data)) {
+                return true;
+            }
+            if (empty($subProperty)) {
+                $dataBeforeReordering = $data[$property];
+                $key = $property;
+            } else {
+                $dataBeforeReordering = $data[$property][$subIndex][$subProperty];
+                $key = $property . '.' . $subIndex . '.' . $subProperty;
+            }
+            $filter[$key] = $dataBeforeReordering;
+            $reorderedData = $this->reorderData($orderMapping, $dataBeforeReordering);
+            $update = [
+                '$set' => [ $key => $reorderedData ]
+            ];
+            /** @var UpdateResult $result */
+            $result = $this->_collection->updateOne($filter, $update);
+            if ($result->isAcknowledged() && $result->getModifiedCount() > 0) {
+                return true;
+            }
+            $now = microtime(true);
+            if (($now - $startTime) > $timeoutInSeconds) {
+                return false;
+            }
+        }
+    }
+
+    protected function reorderData($orderMapping, $data) {
+        // Ensure that indices will be returned in order by pre-allocating the indices of the array
+        $result = array_fill(0, count($orderMapping), null);
+
+        foreach ($orderMapping as $oldIndex => $newIndex) {
+            $result[$newIndex] = $data($oldIndex);
+        }
+        return $result;
     }
 }

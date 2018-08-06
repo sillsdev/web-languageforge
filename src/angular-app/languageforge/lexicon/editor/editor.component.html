@@ -1,0 +1,46 @@
+<div data-ng-cloak id="lexAppContainer">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="lexAppToolbar" id="lexAppToolbar" data-ng-show="!$ctrl.isAtEditorList()">
+                    <div class="float-left">
+                        <a id="toListLink" data-ng-show="$ctrl.isAtEditorEntry()" class="btn btn-std"
+                           data-ng-click="$ctrl.returnToList()"
+                           title="Back to List">
+                            <i class="fa fa-arrow-circle-left"></i>
+                            <span class="d-none d-md-inline-block">List</span></a>
+                    </div>
+                    <div class="float-right" data-ng-show="$ctrl.isAtEditorEntry()">
+                        <span data-ng-if="$ctrl.lecRights.canEditEntry()">
+                            <span class="text-muted">{{$ctrl.saveNotice()}}</span>
+                            <button id="saveEntryBtn" class="btn btn-primary" data-ng-click="$ctrl.saveCurrentEntry(true)"
+                                    data-ng-disabled="!$ctrl.currentEntryIsDirty()">
+                                <i class="fa fa-save"></i> <span class="d-none d-md-inline-block">{{$ctrl.saveButtonTitle()}}</span>
+                            </button>
+                        </span>
+                        <span data-ng-if="$ctrl.entryLoaded()">
+                            <button id="toggleHiddenFieldsBtn" class="btn btn-std"
+                                    data-ng-click="$ctrl.show.emptyFields = !$ctrl.show.emptyFields">
+                                <i class="fa" data-ng-class="$ctrl.show.emptyFields ? 'fa-minus-square-o' : 'fa-plus-square-o'"></i>
+                                <span class="d-none d-md-inline-block">{{$ctrl.show.emptyFields ? 'Hide Extra Fields' : 'Show Extra Fields'}}</span>
+                            </button>
+                        </span>
+                        <button id="toCommentsLink"
+                           class="btn btn-primary" data-ng-click="$ctrl.showComments()" data-ng-show="$ctrl.lecRights.canComment()" title="Show Comments">
+                            <current-entry-comment-count></current-entry-comment-count>
+                            <i class="fa fa-comments commentColor"></i>
+                        </button>
+                        <button id="toggleActivityFeed"
+                           class="btn btn-primary" data-ng-click="$ctrl.showActivityFeed()" title="Show Activity Feed">
+                            <span class="d-none d-md-inline-block">Activity Feed</span>
+                            <img src="/angular-app/bellows/apps/activity/activity-icon.svg" width="22" height="22" />
+                            <span class="activity-count" data-ng-show="$ctrl.unreadCount > 0">{{$ctrl.unreadCount}}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div data-ui-view></div>
+</div>

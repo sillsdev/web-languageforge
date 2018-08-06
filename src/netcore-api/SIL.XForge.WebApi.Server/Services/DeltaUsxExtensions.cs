@@ -62,8 +62,12 @@ namespace SIL.XForge.WebApi.Server.Services
 
         public static Delta InsertBlank(this Delta delta, string segRef)
         {
-            var value = segRef.Contains("/p") ? "initial" : "normal";
-            return delta.InsertText(new { blank = value }, segRef);
+            string blankText;
+            if (segRef.Contains("/p"))
+                blankText = DeltaUsxMapper.InitialBlankText;
+            else
+                blankText = DeltaUsxMapper.NormalBlankText;
+            return delta.InsertText(blankText, segRef);
         }
 
         public static Delta InsertVerse(this Delta delta, string number)

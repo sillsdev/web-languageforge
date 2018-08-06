@@ -1,2 +1,5 @@
 import '../bellows/main.common';
-import './lexicon/lexicon.module';
+
+import '../bellows/apps/usermanagement/user-management-app.module';
+
+import './lexicon/lexicon-app.module';

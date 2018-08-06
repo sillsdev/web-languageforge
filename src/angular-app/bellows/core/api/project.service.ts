@@ -1,11 +1,15 @@
 import * as angular from 'angular';
 
-import { OfflineCacheService } from '../offline/offline-cache.service';
-import { Session, SessionService } from '../session.service';
-import { ApiService, JsonRpcCallback } from './api.service';
+import {OfflineCacheService} from '../offline/offline-cache.service';
+import {Session, SessionService} from '../session.service';
+import {ApiService, JsonRpcCallback} from './api.service';
 
-export class ProjectData {
-  projectTypeNames: any;
+export interface ProjectTypeNames {
+  [projectType: string]: string;
+}
+
+export interface ProjectData {
+  projectTypeNames: ProjectTypeNames;
   projectTypesBySite: () => string[];
 }
 
@@ -18,7 +22,8 @@ export class ProjectService {
   private $location: angular.ILocationService;
   private $q: angular.IQService;
 
-  private projectTypesBySite: string[];
+  // noinspection TypeScriptFieldCanBeMadeReadonly
+  private projectTypesBySite: string[] = [];
 
   static $inject: string[] = ['$injector'];
   constructor(protected $injector: angular.auto.IInjectorService) {
@@ -29,29 +34,28 @@ export class ProjectService {
     this.$q = $injector.get('$q');
 
     // data constants
-    this.data = new ProjectData();
-    this.data.projectTypeNames = {
-      sfchecks: 'Community Scripture Checking',
-      webtypesetting: 'Typesetting',
-      semdomtrans: 'Semantic Domain Translation',
-      lexicon: 'Dictionary',
-      translate: 'Translation'
-    };
+    this.data = {
+      projectTypeNames: {
+        sfchecks: 'Community Scripture Checking',
+        webtypesetting: 'Typesetting',
+        semdomtrans: 'Semantic Domain Translation',
+        lexicon: 'Dictionary',
+        translate: 'Translation'
+      },
+      projectTypesBySite: () => {
+        return this.projectTypesBySite;
+      }
+    } as ProjectData;
 
     this.sessionService.getSession().then((session: Session) => {
       const types = {
-        scriptureforge: ['sfchecks', 'translate'],
-
-        // 'languageforge': ['lexicon', 'semdomtrans']
-        languageforge: ['lexicon']
+        // 'languageforge': ['lexicon', 'semdomtrans'],
+        languageforge: ['lexicon'],
+        scriptureforge: ['sfchecks', 'translate']
       };
 
       this.projectTypesBySite = types[session.baseSite()];
     });
-
-    this.data.projectTypesBySite = () => {
-      return this.projectTypesBySite;
-    };
 
   }
 
@@ -103,15 +107,6 @@ export class ProjectService {
     return this.api.call('project_usersDto', [], callback);
   }
 
-  /**
-   * @deprecated use listUsers instead
-   * @param {JsonRpcCallback} callback
-   * @returns {angular.IPromise<any>}
-   */
-  users(callback?: JsonRpcCallback) {
-    return this.api.call('project_usersDto', [], callback);
-  }
-
   getJoinRequests(callback?: JsonRpcCallback) {
     return this.api.call('project_getJoinRequests', [], callback);
   }
@@ -121,16 +116,6 @@ export class ProjectService {
   }
 
   deleteProject(projectIds: string[], callback?: JsonRpcCallback) {
-    return this.api.call('project_delete', [projectIds], callback);
-  }
-
-  /**
-   * @deprecated use deleteProject instead
-   * @param {string[]} projectIds
-   * @param {JsonRpcCallback} callback
-   * @returns {angular.IPromise<any>}
-   */
-  remove(projectIds: string[], callback?: JsonRpcCallback) {
     return this.api.call('project_delete', [projectIds], callback);
   }
 

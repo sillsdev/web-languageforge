@@ -1,5 +1,6 @@
 <?php
 
+use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Shared\ProjectModel;
@@ -90,5 +91,74 @@ class LexProjectModelTest extends TestCase
 
         FileUtilities::removeFolderAndAllContents($project->getAssetsFolderPath());
         FileUtilities::removeFolderAndAllContents($projectWorkPath);
+    }
+
+    private function assertNoException()
+    {
+        $this->assertTrue(true); // verify that we didn't get an exception
+    }
+
+    public function testCleanup_NonExistentState_ReturnsTrue()
+    {
+        // Setup
+        $baseDirForSendReceive = self::$environ->setupSendReceiveEnvironment();
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
+
+        // Execute
+        $project->callCleanup();
+
+        // Verify
+        $this->assertNoException();
+        FileUtilities::removeFolderAndAllContents($baseDirForSendReceive);
+    }
+
+    public function testCleanup_Existent_DeletesStateAndDir()
+    {
+        // Setup
+        $baseDirForSendReceive = self::$environ->setupSendReceiveEnvironment();
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
+
+        $projectStatePath = SendReceiveCommands::getLFMergePaths()->statePath . DIRECTORY_SEPARATOR . $project->projectCode . '.state';
+        $projectWorkPath = SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . $project->projectCode;
+        mkdir($projectWorkPath);
+        file_put_contents($projectStatePath, '{ SRState: IDLE }');
+        file_put_contents($projectWorkPath . DIRECTORY_SEPARATOR . 'dummy-file', 'Just a dummy file');
+
+        // Execute
+        $project->callCleanup();
+
+        // Verify
+        $this->assertNoException();
+        $this->assertFileNotExists($projectStatePath);
+        $this->assertDirectoryNotExists($projectWorkPath);
+        FileUtilities::removeFolderAndAllContents($baseDirForSendReceive);
+    }
+
+    public function testCleanup_FileInsteadOfDir_DeletesStateAndFile()
+    {
+        // Setup
+        $baseDirForSendReceive = self::$environ->setupSendReceiveEnvironment();
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
+
+        $projectStatePath = SendReceiveCommands::getLFMergePaths()->statePath . DIRECTORY_SEPARATOR . $project->projectCode . '.state';
+        $projectWorkPath = SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . $project->projectCode;
+        file_put_contents($projectStatePath, '{ SRState: IDLE }');
+        file_put_contents($projectWorkPath, 'Just a dummy file');
+
+        // Execute
+        $project->callCleanup();
+
+        // Verify
+        $this->assertNoException();
+        $this->assertFileNotExists($projectStatePath);
+        $this->assertDirectoryNotExists($projectWorkPath);
+        $this->assertFileNotExists($projectWorkPath);
+        FileUtilities::removeFolderAndAllContents($baseDirForSendReceive);
     }
 }

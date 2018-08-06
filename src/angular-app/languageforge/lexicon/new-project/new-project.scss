@@ -21,7 +21,7 @@
       height: 56px;
     }
     i.text-muted {
-      color: $lf-disabled;
+      color: $theme-disabled;
     }
   }
   a:hover {
@@ -29,7 +29,7 @@
   }
 }
 
-#sendReceiveButton{
+#send-receive-button{
     margin-top: 60px;
     margin-bottom: 20px;
     font-size: 1em;
@@ -37,18 +37,18 @@
 
 }
 
-#createButton{
+#create-button{
     margin-bottom: 20px;
     font-size: 1em;
     white-space: normal;
 }
 
-a#flexHelpLink {
+a#flex-help-link {
    text-decoration: none;
    color: #e67345
 }
 
-#flexHelpLink:hover {
+#flex-help-link:hover {
     color: #0088cc !important;
 }
 
@@ -56,7 +56,7 @@ a#flexHelpLink {
   margin: auto;
 }
 
-#importErrors {
+#import-errors {
   height: 300px;
   overflow-y: scroll;
 }

@@ -25,7 +25,6 @@ src/cache/
 src/dist/
 src/js/lib/languageforge.min.js
 src/js/lib/scriptureforge.min.js
-src/node/config.js
 src/node_modules/
 !src/vendor/lift/
 src/vendor/
@@ -33,6 +32,7 @@ test/CodeCoverage/
 vagrant_ansible_inventory_*
 test/app/protractorConfBrowserStack.js
 artifacts/
+src/userConfig.php
 
 # CSS files generated from Sass
 src/angular-app/bellows/apps/**/*.css
@@ -50,13 +50,18 @@ secrets/
 [Dd]ebug*/
 obj/
 [Rr]elease*/
+!/src/releasenotes
 _ReSharper*/
 *.user
 
 appsettings.user.json
 
 # E2E JS files generated from Typescript
-test/app/**/*.js.map
-test/app/scriptureforge/**/*.js
-test/app/languageforge/**/*.js
-test/app/bellows/**/*.js
+test/app/**/*.e2e-spec.js.map
+test/app/**/*.e2e-spec.js
+test/app/**/shared/*.js.map
+test/app/**/shared/*.js
+
+# Generated files
+src/Api/Library/Shared/WebsiteInstances.php
+src/angular-app/bellows/core/website-instances.generated-data.ts

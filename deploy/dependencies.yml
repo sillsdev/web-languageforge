@@ -33,6 +33,16 @@
     - name: Add PHP7.0 ppa for Trusty
       apt_repository: repo='ppa:ondrej/php' state=present
       when: base_distribution == 'ubuntu' and base_distribution_release == 'trusty'
+    - name: add Mongo apt key
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+    - name: add Mongo 3.6 repository
+      # TODO: use ansible system variable instead of hardcoding "xenial" in repo line -- except that it can only be from a restricted list of distros (e.g. xenial & bionic only)
+      apt_repository:
+        repo: "deb [arch=amd64] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse"
+        filename: mongodb-org-3.6
+        update_cache: yes
     - name: Remove PHP5 for Trusty
       apt: name=php5-fpm state=absent
       when: base_distribution == 'ubuntu' and base_distribution_release == 'trusty'
@@ -49,8 +59,8 @@
         - dotnet-sdk-2.0.2
         - geoipupdate
         - libapache2-mod-php
-        - mongodb-server
-        - nodejs
+        - mongodb-org
+        - npm
         - p7zip-full
         - php7.0-cli
         - php7.0-curl
@@ -63,6 +73,7 @@
         - postfix
         - unzip
         - chromium-browser
+        - default-jre-headless
 
     - name: check for node binary
       stat: path=/usr/local/bin/node
@@ -250,13 +261,18 @@
 
     - name: update the mongo config file
       lineinfile:
-        dest: /etc/mongodb.conf
-        regexp: '^(dbpath=).*$'
+        dest: /etc/mongod.conf
+        regexp: '^(\s*dbPath: ).*$'
         line: '\1{{mongo_path}}'
         backrefs: yes
-      notify: restart mongodb
-    - name: ensure mongodb is running (and enable it at boot)
-      service: name=mongodb state=started enabled=yes
+      notify: restart mongod
+    - name: ensure mongod service is running (and enable it at boot)
+
+      # Note that the mongodb-org packages install a service named "mongod", not "mongodb"
+      service:
+        name: mongod
+        state: started
+        enabled: yes
 
     - name: 'Add GeoLite2 configuration'
       copy:
@@ -304,8 +320,8 @@
       when: is_build_agent is defined and is_build_agent == true
 
   handlers:
-    - name: restart mongodb
-      service: name=mongodb state=restarted
+    - name: restart mongod
+      service: name=mongod state=restarted
 
     - name: restart postfix
       service: name=postfix state=restarted

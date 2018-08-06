@@ -9,8 +9,6 @@ export class CommentsOfflineCacheService {
   constructor(private sessionService: SessionService, private offlineCache: OfflineCacheService,
               private offlineCacheUtils: OfflineCacheUtilsService) { }
 
-  canCache = this.offlineCache.canCache;
-
   deleteComment(id: string): angular.IPromise<any> {
     return this.offlineCache.deleteObjectInStore('comments', id);
   }

@@ -1,7 +1,10 @@
 import * as angular from 'angular';
-import { InteractiveTranslationSession, SegmentTokenizer, SmtTrainProgress, TranslationEngine } from 'machine';
+import {
+  InteractiveTranslationSession, ProgressStatus, SegmentTokenizer, TrainResultCode, TranslationEngine
+} from 'machine';
 import { RangeStatic } from 'quill';
 
+import { NoticeService } from '../../../core/notice/notice.service';
 import { DocType } from './constants';
 
 export class MachineService {
@@ -13,10 +16,12 @@ export class MachineService {
   private sourceSegmentTokenizer: SegmentTokenizer;
   private targetSegmentTokenizer: SegmentTokenizer;
   private _engineConfidence: number = 0;
+  private projectId: string = '';
 
-  static $inject: string[] = ['$window', '$q', '$rootScope'];
+  static $inject: string[] = ['$window', '$q',
+    '$rootScope', 'silNoticeService'];
   constructor(private readonly $window: angular.IWindowService, private readonly $q: angular.IQService,
-              private readonly $rootScope: angular.IRootScopeService) { }
+              private readonly $rootScope: angular.IRootScopeService, private readonly notice: NoticeService) { }
 
   get confidenceThreshold(): number {
     return this._confidenceThreshold;
@@ -29,19 +34,31 @@ export class MachineService {
     }
   }
 
+  get isInitialised(): boolean {
+    return this.engine != null;
+  }
+
+  get isTranslating(): boolean {
+    return this.session != null;
+  }
+
   initialise(projectId: string): void {
-    this.engine = new TranslationEngine(this.$window.location.origin + '/machine', projectId);
+    if (this.projectId === projectId) {
+      return;
+    }
+
+    this.projectId = projectId;
+    this.engine = new TranslationEngine(this.$window.location.origin + '/machine', this.projectId);
     this.updateConfidence();
     this.sourceSegmentTokenizer = new SegmentTokenizer('latin');
     this.targetSegmentTokenizer = new SegmentTokenizer('latin');
   }
 
   translate(sourceSegment: string): angular.IPromise<void> {
-    if (this.engine == null) {
+    if (!this.isInitialised) {
       return this.$q.resolve();
     }
 
-    this.prefix = '';
     if (this.sourceSegment === sourceSegment) {
       return this.$q.resolve();
     }
@@ -52,20 +69,32 @@ export class MachineService {
       return this.$q.resolve();
     }
 
+    this.prefix = '';
+    const start = performance.now();
     const deferred = this.$q.defer<void>();
     this.engine.translateInteractively(sourceSegment, this.confidenceThreshold, newSession => {
       if (newSession != null) {
         if (this.sourceSegment === sourceSegment) {
           newSession.initialize();
+          const finish = performance.now();
           this.session = newSession;
+          if (this.session.isSourceSegmentValid) {
+            console.log('Translated segment, length: %d, time: %dms', this.session.sourceSegment.length,
+              finish - start);
+          } else {
+            this.notice.push(this.notice.WARN,
+              'This section of text is too long to generate suggestions.', '', false, 5000);
+            console.log('Segment too long to translate, length: %d', this.session.sourceSegment.length);
+          }
           deferred.resolve();
         } else {
-          this.session = null;
-          deferred.reject('Translation result is no longer valid.');
+          deferred.reject();
         }
       } else {
-        this.session = null;
-        deferred.reject('Error occurred while retrieving translation result.');
+        if (this.sourceSegment === sourceSegment) {
+          this.session = null;
+        }
+        deferred.reject();
       }
     });
 
@@ -75,10 +104,11 @@ export class MachineService {
   resetTranslation(): void {
     this.sourceSegment = '';
     this.prefix = '';
+    this.session = null;
   }
 
   updatePrefix(prefix: string): string[] {
-    if (this.engine == null || this.session == null) {
+    if (!this.isInitialised || !this.isTranslating) {
       return [];
     }
 
@@ -91,7 +121,7 @@ export class MachineService {
   }
 
   getCurrentSuggestion(): string[] {
-    if (this.engine == null || this.session == null) {
+    if (!this.isInitialised || !this.isTranslating) {
       return [];
     }
 
@@ -99,7 +129,7 @@ export class MachineService {
   }
 
   get suggestionConfidence(): number {
-    if (this.engine == null || this.session == null) {
+    if (!this.isInitialised || !this.isTranslating) {
       return 0;
     }
 
@@ -111,7 +141,7 @@ export class MachineService {
   }
 
   trainSegment(): angular.IPromise<void> {
-    if (this.engine == null || this.session == null) {
+    if (!this.isInitialised || !this.isTranslating) {
       return this.$q.resolve();
     }
 
@@ -120,14 +150,14 @@ export class MachineService {
       if (success) {
         deferred.resolve();
       } else {
-        deferred.reject('Error occurred while training the segment.');
+        deferred.reject();
       }
     });
     return deferred.promise;
   }
 
   getSuggestionText(suggestionIndex?: number): string {
-    if (this.engine == null || this.session == null) {
+    if (!this.isInitialised || !this.isTranslating) {
       return '';
     }
 
@@ -153,7 +183,7 @@ export class MachineService {
   }
 
   startTraining(): angular.IPromise<void> {
-    if (this.engine == null) {
+    if (!this.isInitialised) {
       return this.$q.resolve();
     }
 
@@ -162,31 +192,37 @@ export class MachineService {
       if (success) {
         deferred.resolve();
       } else {
-        deferred.reject('Error occurred while starting the training process.');
+        deferred.reject();
       }
     });
 
     return deferred.promise;
   }
 
-  listenForTrainingStatus(onStatusUpdate: (progress: SmtTrainProgress) => void): angular.IPromise<void> {
-    if (this.engine == null) {
+  listenForTrainingStatus(onStatusUpdate: (progress: ProgressStatus) => void): angular.IPromise<void> {
+    if (!this.isInitialised) {
       return this.$q.resolve();
     }
 
     const deferred = this.$q.defer<void>();
-    this.engine.listenForTrainingStatus(progress => {
-      this.$rootScope.$apply(scope => onStatusUpdate(progress));
-    }, success => {
-      if (success) {
-        this.updateConfidence();
-        deferred.resolve();
-      } else {
-        deferred.reject('Error occurred while listening for training status.');
-      }
-    });
+    this.engine.listenForTrainingStatus(progress => this.$rootScope.$apply(scope => onStatusUpdate(progress)),
+      resultCode => {
+        if (resultCode === TrainResultCode.noError) {
+          this.updateConfidence();
+          deferred.resolve();
+        } else {
+          deferred.reject(resultCode);
+        }
+      });
 
     return deferred.promise;
+  }
+
+  close(): void {
+    this.resetTranslation();
+    this.engine.close();
+    this.engine = null;
+    this.projectId = '';
   }
 
   private updateConfidence(): void {

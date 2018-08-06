@@ -291,6 +291,21 @@ class SendReceiveCommandsTest extends TestCase
         // nothing runs in the current test function after an exception. IJH 2015-12
     }
 
+    private function WaitForFileExist($file, $timeoutSeconds)
+    {
+        $tenMicroSeconds = 10;
+        $timeoutMicroSeconds = $timeoutSeconds * 1000000;
+        for ($waitMicroSeconds = 0;
+             $waitMicroSeconds < $timeoutMicroSeconds;
+             $waitMicroSeconds += $tenMicroSeconds) {
+            if (file_exists($file)) {
+                break;
+            }
+            usleep($tenMicroSeconds);
+        }
+        return file_exists($file);
+    }
+
     public function testStartLFMergeIfRequired_HasSendReceiveButNoPidFile_Started()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -298,18 +313,25 @@ class SendReceiveCommandsTest extends TestCase
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $projectId = $project->write();
         $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
-        $runSeconds = 2;
+        $runSeconds = 10;
+        $timeoutSeconds = 30;
         $mockCommand = 'php ' . __DIR__ . '/mockLFMergeExe.php ' . $runSeconds;
 
         $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $mockPidFilePath, $mockCommand);
 
         $this->assertTrue($isRunning);
-        sleep(1);
+
+        if (!$this->WaitForFileExist($mockPidFilePath, $timeoutSeconds)) {
+            $this->fail('Waiting for PID file creation timed out - machine too busy?');
+        }
+
         $this->assertTrue(SendReceiveCommands::isProcessRunningByPidFile($mockPidFilePath));
+        $pidOne = file_get_contents($mockPidFilePath);
 
         $isStillRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $mockPidFilePath, $mockCommand);
 
         $this->assertTrue($isStillRunning);
+        $this->assertEquals($pidOne, file_get_contents($mockPidFilePath));
     }
 
     public function testGetProjectStatus_NoSendReceive_NoState()
