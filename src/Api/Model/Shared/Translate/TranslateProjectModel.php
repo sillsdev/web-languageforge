@@ -37,7 +37,7 @@ class TranslateProjectModel extends ProjectModel
     {
         $settings = parent::getPublicSettings($userId);
         $settings['interfaceConfig'] = [
-            'userLanguageCode' => 'en',
+            'languageCode' => 'en',
             'selectLanguages' => [
                 'options' => ['en' => 'English'],
                 'optionsOrder' => ['en']
@@ -57,8 +57,7 @@ class TranslateProjectModel extends ProjectModel
         MongoStore::dropCollection('realtime', $this->databaseName());
         MongoStore::dropCollection('realtime', 'o_' . $this->databaseName());
         TranslateProjectCommands::removeMachineTranslationProject($this);
-        $srPath = '/var/lib' . DIRECTORY_SEPARATOR . $this->siteName . DIRECTORY_SEPARATOR . 'translate/sendreceive';
-        $projectPath = $srPath . DIRECTORY_SEPARATOR . $this->id;
+        $projectPath = SR_TRANSLATE_FOLDER . DIRECTORY_SEPARATOR . $this->id;
         FileUtilities::removeFolderAndAllContents($projectPath);
         parent::remove();
     }

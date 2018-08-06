@@ -1,13 +1,26 @@
 import * as angular from 'angular';
 
-import { inputSystemsLanguages } from './input-systems.languages';
-import { inputSystemsLanguagesSmall } from './input-systems.languages-small';
-import { inputSystemsRegions } from './input-systems.regions';
-import { inputSystemsScripts } from './input-systems.scripts';
+import {InputSystemLanguage} from '../../shared/model/input-system-language.model';
+import {inputSystemsLanguagesSmall} from './input-systems-languages-small.generated-data';
+import {inputSystemsLanguages} from './input-systems-languages.generated-data';
+import {inputSystemsRegions} from './input-systems-regions.generated-data';
+import {inputSystemsScripts} from './input-systems-scripts.generated-data';
 
 export class InputSystemsService {
-  static languages(dataType: string = '') {
-    const unlisted = {
+  private languages: InputSystemLanguage[];
+  private dataType: string;
+
+  allLanguages(dataType?: string): InputSystemLanguage[] {
+    if (this.languages == null || dataType !== this.dataType) {
+      this.languages = InputSystemsService.getLanguages(dataType);
+      this.dataType = dataType;
+    }
+
+    return this.languages;
+  }
+
+  private static getLanguages(dataType: string = ''): InputSystemLanguage[] {
+    const unlisted: InputSystemLanguage = {
       name: 'Unlisted Language',
       code: {
         three: 'qaa'
@@ -16,7 +29,7 @@ export class InputSystemsService {
       altNames: [] as string[]
     };
 
-    let languages = [];
+    let languages: InputSystemLanguage[] = [];
     switch (dataType) {
       case 'debug':
         languages = inputSystemsLanguagesSmall;
@@ -40,23 +53,29 @@ export class InputSystemsService {
     return languages;
   }
 
-  static scripts() {
+  static scripts(): InputSystemsScripts {
     return inputSystemsScripts;
   }
 
-  static regions() {
+  static regions(): InputSystemsRegions {
     return inputSystemsRegions;
   }
 
   static isRightToLeft(code: string) {
     // TODO. Enhance. find a source for this list; manually update for now. IJH 2014-04
     const rtlCodes = ['fa', 'fas'];
-    return (rtlCodes.indexOf(code) >= 0);
+    return (rtlCodes.includes(code));
   }
 
 }
 
+export type InputSystemsScript = string[];
+export type InputSystemsRegion = string;
+
+interface InputSystemsScripts { [scriptCode: string]: InputSystemsScript; }
+interface InputSystemsRegions { [regionCode: string]: InputSystemsRegion; }
+
 export const InputSystemsModule = angular
-  .module('language.inputSystems', [])
+  .module('inputSystemsModule', [])
   .service('inputSystems', InputSystemsService)
   .name;

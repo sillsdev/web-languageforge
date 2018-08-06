@@ -9,7 +9,7 @@ export class EditorOfflineCacheService {
   constructor(private sessionService: SessionService, private offlineCache: OfflineCacheService,
               private offlineCacheUtils: OfflineCacheUtilsService) { }
 
-  canCache = this.offlineCache.canCache;
+  canCache = OfflineCacheService.canCache;
 
   deleteEntry(id: string): angular.IPromise<any> {
     return this.offlineCache.deleteObjectInStore('entries', id);

@@ -4,7 +4,7 @@
 
     {% if isLoggedIn %}
 
-        <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch" data-ng-app="xforge.navbarApp" data-ng-controller="navbarController">
+        <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch" data-ng-controller="navbarController as $ctrl">
             <span class="desktop-title navbar-brand d-none d-md-inline-block mr-auto">
                 <img class="navbar-logo" src="/Site/views/scriptureforge/theme/default/image/sf_logo_medium.png">
                 <a class="" href="/">{{ app.website.name }}</a>
@@ -20,15 +20,15 @@
                             <a class="dropdown-item" href="/app/activity">Activity</a>
                             <div class="dropdown-divider"></div>
                             {% verbatim %}
-                            <div data-ng-switch="projectTypesBySite().length" data-ng-show="rights.canCreateProject">
+                            <div data-ng-switch="$ctrl.projectTypesBySite().length" data-ng-show="$ctrl.rights.canCreateProject">
                                 <div data-ng-switch-when="1">
-                                    <a class="dropdown-item" data-ng-href="/app/{{projectTypesBySite()[0]}}/new-project">
+                                    <a class="dropdown-item" data-ng-href="/app/{{$ctrl.projectTypesBySite()[0]}}/new-project">
                                         <b>Start or Join a New Project</b></a>
                                 </div>
-                                <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
+                                <div data-ng-switch-default data-ng-repeat="appName in $ctrl.projectTypesBySite()">
                                     <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
-                                        <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
+                                        <img height="24px" data-ng-src="/Site/views/{{$ctrl.siteName}}/image/{{appName}}-newProjectBadge.png" />
+                                        <b>Start a <span class="notranslate">{{$ctrl.projectTypeNames[appName]}}</span> project</b>
                                     </a>
                                 </div>
                             </div>
@@ -39,7 +39,7 @@
                             {% endif %}
                             {% if projects|length <= 10 %}
                                 {% verbatim %}
-                                <div class="dropdown-divider" data-ng-show="rights.canCreateProject"></div>
+                                <div class="dropdown-divider" data-ng-show="$ctrl.rights.canCreateProject"></div>
                                 {% endverbatim %}
                             {% endif %}
                             {% for project in projects %}
@@ -83,20 +83,20 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown" uib-dropdown>
-                        <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdown"
+                        <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdownButton"
                            aria-haspopup="true" aria-expanded="false">
                             My Projects</a>
-                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="myProjectDropdown">
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu id="myProjectDropdownMenu" aria-labelledby="myProjectDropdown">
                             {% verbatim %}
-                            <div data-ng-switch="projectTypesBySite().length" data-ng-show="rights.canCreateProject">
+                            <div data-ng-switch="$ctrl.projectTypesBySite().length" data-ng-show="$ctrl.rights.canCreateProject">
                                 <div data-ng-switch-when="1">
-                                    <a class="dropdown-item" data-ng-href="/app/{{projectTypesBySite()[0]}}/new-project">
+                                    <a class="dropdown-item" data-ng-href="/app/{{$ctrl.projectTypesBySite()[0]}}/new-project">
                                         <b>Start or Join a New Project</b></a>
                                 </div>
-                                <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
+                                <div data-ng-switch-default data-ng-repeat="appName in $ctrl.projectTypesBySite()">
                                     <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
-                                        <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
+                                        <img height="24px" data-ng-src="/Site/views/{{$ctrl.siteName}}/image/{{appName}}-newProjectBadge.png" />
+                                        <b>Start a <span class="notranslate">{{$ctrl.projectTypeNames[appName]}}</span> project</b>
                                     </a>
                                 </div>
                             </div>
@@ -107,7 +107,7 @@
                             {% endif %}
                             {% if projects|length <= 10 %}
                                 {% verbatim %}
-                                <div class="dropdown-divider" data-ng-show="rights.canCreateProject"></div>
+                                <div class="dropdown-divider" data-ng-show="$ctrl.rights.canCreateProject"></div>
                                 {% endverbatim %}
                             {% endif %}
                             {% for project in projects %}

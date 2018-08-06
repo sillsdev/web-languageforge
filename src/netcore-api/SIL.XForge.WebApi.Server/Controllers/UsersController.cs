@@ -25,10 +25,10 @@ namespace SIL.XForge.WebApi.Server.Controllers
         }
 
         /// <summary>
-        /// Gets ParaTExt information.
+        /// Gets Paratext information.
         /// </summary>
         /// <param name="id">The user id.</param>
-        /// <response code="204">The user has not logged into ParaTExt.</response>
+        /// <response code="204">The user has not logged into Paratext.</response>
         [HttpGet("{id}/paratext")]
         [SiteAuthorize(Domain.Users, Operation.ViewOwn)]
         [ProducesResponseType(typeof(ParatextUserInfoDto), StatusCodes.Status200OK)]

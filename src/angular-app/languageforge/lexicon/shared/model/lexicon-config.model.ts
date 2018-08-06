@@ -1,10 +1,11 @@
-import { InputSystem } from '../../../../bellows/shared/model/input-system.model';
-import { LexOptionList } from './option-list.model';
+import {InputSystem} from '../../../../bellows/shared/model/input-system.model';
+import {LexOptionList} from './option-list.model';
 
 export class LexConfig {
   hideIfEmpty: boolean;
   label: string;
   type: string;
+  senseLabel?: string[];
 }
 
 export class LexConfigMultiText extends LexConfig {
@@ -19,9 +20,9 @@ export class LexConfigOptionList extends LexConfig {
   listCode: string;
 }
 
-class LexConfigMultiOptionList extends LexConfigOptionList { }
+export class LexConfigMultiOptionList extends LexConfigOptionList { }
 
-class LexConfigPictures extends LexConfigMultiText {
+export class LexConfigPictures extends LexConfigMultiText {
   captionLabel: string;
   captionHideIfEmpty: boolean;
 }
@@ -46,7 +47,7 @@ export class LexViewMultiTextFieldConfig extends LexViewFieldConfig {
   inputSystems: string[];
 }
 
-class LexRoleViewConfig {
+export class LexRoleViewConfig {
   fields: { [fieldType: string]: LexViewFieldConfig | LexViewMultiTextFieldConfig };
   showTasks: { [taskType: string]: boolean };
 }
@@ -56,12 +57,20 @@ class LexTask {
   type: string;
 }
 
-class LexUserViewConfig extends LexRoleViewConfig { }
+export class LexUserViewConfig extends LexRoleViewConfig { }
+
+export interface LexConfigInputSystems {
+  [tag: string]: InputSystem;
+}
+
+export interface LexConfigOptionLists {
+  [listCode: string]: LexOptionList;
+}
 
 export class LexiconConfig {
   entry: LexConfigFieldList;
-  inputSystems?: { [tag: string]: InputSystem };
-  optionlists?: { [listCode: string]: LexOptionList };
+  inputSystems?: LexConfigInputSystems;
+  optionlists?: LexConfigOptionLists;
   roleViews: { [role: string]: LexRoleViewConfig };
   tasks: { [taskType: string]: LexTask };
   userViews: { [userId: string]: LexUserViewConfig };

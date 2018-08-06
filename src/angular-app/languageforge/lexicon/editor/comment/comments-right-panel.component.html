@@ -1,0 +1,55 @@
+<div class="comments-right-panel-container right-panel-container" data-ng-class="{'context-mode': $ctrl.commentFilter.contextGuid}">
+    <div data-ng-hide="$ctrl.commentFilter.contextGuid">
+        <div class="comments-search-container">
+            <input dir="auto" class="form-control" placeholder="Filter Comments" data-ng-model="$ctrl.commentFilter.text" type="text">
+            <span data-ng-show="$ctrl.commentFilter.text != ''" title="Clear Filter" data-ng-click="$ctrl.commentFilter.text = ''">
+                <i class="fa fa-times"></i>
+            </span>
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select data-ng-show="$ctrl.control.rights.canUpdateCommentStatus()" class="form-control custom-select" data-ng-model="$ctrl.commentFilter.status">
+                <option value="all">Show All</option>
+                <option value="resolved">Resolved</option>
+                <option value="unresolved">Unresolved</option>
+                <option data-ng-if="$ctrl.control.rights.canUpdateCommentStatus()" value="todo">Todo</option>
+            </select>
+        </div>
+    </div>
+    <div class="commentsListMainContainer">
+        <div class="commentListView">
+            <div class="commentListContainer">
+                <!--suppress JSUnusedLocalSymbols -->
+                <div data-ng-repeat="comment in $ctrl.currentEntryCommentsFiltered">
+                    <dc-comment comment="comment"
+                                control="$ctrl.control"
+                                can-plus-one-comment="$ctrl.canPlusOneComment(commentId)"
+                                load-comments="$ctrl.loadComments()"
+                                parent-get-sense-label="$ctrl.getSenseLabel(regardingField, contextGuid)"
+                                plus-one-comment="$ctrl.plusOneComment(commentId)"
+                                set-comment-interactive-status="$ctrl.setCommentInteractiveStatus(id, visible)"
+                                toggle-show-new-comment="$ctrl.toggleShowNewComment()"></dc-comment>
+                </div>
+            </div>
+        </div>
+        <div class="newCommentForm"
+             data-ng-show="$ctrl.control.rights.canComment() && $ctrl.newComment.regarding.field && $ctrl.showNewComment && $ctrl.newComment.regarding.field != 'entry'"
+             data-ng-class="{'show': $ctrl.showNewComment, 'regard': $ctrl.newComment.regarding.field}">
+            <div class="card card-default">
+                <div class="card-title" data-ng-show="$ctrl.currentEntryCommentsFiltered.length === 0">
+                    <span class="sense-label">{{$ctrl.getNewCommentSenseLabel($ctrl.newComment.regarding.field)}}</span>
+                    {{$ctrl.newComment.regarding.fieldNameForDisplay}}{{($ctrl.newComment.regarding.inputSystemAbbreviation) ? ' - ' + $ctrl.newComment.regarding.inputSystemAbbreviation : ''}}
+                </div>
+                <div class="card-title" data-ng-show="$ctrl.currentEntryCommentsFiltered.length > 0">
+                    Start a new conversation thread
+                </div>
+                <div class="card-block">
+                    <form data-ng-submit="$ctrl.postNewComment()">
+                        <textarea required id="comment-panel-textarea" data-ng-model="$ctrl.newComment.content" class="form-control" placeholder="{{$ctrl.getNewCommentPlaceholderText()}}"></textarea>
+                        <div class="d-flex justify-content-end">
+                            <button id="comment-panel-post-button" type="submit" class="btn btn-sm btn-primary" data-ng-disabled="$ctrl.isPosting">Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

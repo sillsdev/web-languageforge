@@ -2,7 +2,12 @@
 
 namespace Api\Model\Shared\Dto;
 
+use Api\Library\Shared\Palaso\StringUtil;
+use Api\Library\Shared\Website;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
@@ -21,17 +26,33 @@ use MongoDB\BSON\UTCDateTime;
 
 class ActivityListDto
 {
+    // Constants used in update_entry activity content
+    const EDITED_FIELD = 'edited_field';
+    const ADDED_FIELD = 'added_field';
+    const MOVED_FIELD = 'moved_field';
+    const DELETED_FIELD = 'deleted_field';
+
+    /**
+     * @param Website $site
+     * @return array
+     */
+    public static function getActivityTypes($site)
+    {
+        return ActivityModel::getActivityTypesForSiteBase($site->base);
+    }
+
     /**
      * @param ProjectModel $projectModel
      * @param array $filterParams
      * @return array - the DTO array
+     * @throws \Exception
      */
     public static function getActivityForProject($projectModel, $filterParams = [])
     {
         $activityList = new ActivityListModelByProject($projectModel, $filterParams);
         $activityList->readAsModels();
         $dto = ActivityListDtoEncoder::encodeModel($activityList, $projectModel);
-        self::prepareDto($dto);
+        self::prepareDto($dto, $projectModel);
 
         return (is_array($dto['entries'])) ? $dto['entries'] : [];
     }
@@ -41,26 +62,16 @@ class ActivityListDto
      * @param string $entryId
      * @param array $filterParams
      * @return array - the DTO array
+     * @throws \Exception
      */
     public static function getActivityForLexEntry($projectModel, $entryId, $filterParams = [])
     {
         $activityList = new ActivityListModelByLexEntry($projectModel, $entryId, $filterParams);
         $activityList->readAsModels();
         $dto = ActivityListDtoEncoder::encodeModel($activityList, $projectModel);
-        self::prepareDto($dto);
+        self::prepareDto($dto, $projectModel);
 
         return (is_array($dto['entries'])) ? $dto['entries'] : [];
-    }
-
-    // note: it could be argued that this is a migration method that is not necessary if we were to migrate the database of existing activity entries with no projectId cjh 2014-07
-    public static function getGlobalUnreadActivityForUser($userId, $activityFilter = null)
-    {
-        $unreadActivity = new GlobalUnreadActivityModel($userId);
-        $items = $unreadActivity->unreadItems();
-        $unreadActivity->markAllRead();
-        $unreadActivity->write();
-
-        return $items;
     }
 
     public static function getUnreadActivityForUserInProject($userId, $projectId, $activityFilter = null)
@@ -83,7 +94,8 @@ class ActivityListDto
      * @param string $userId
      * @param array $filterParams
      * @return array - the DTO array
-    */
+     * @throws \Exception
+     */
     public static function getActivityForUser($site, $userId, $filterParams = [])
     {
         $projectList = new ProjectList_UserModel($site);
@@ -121,6 +133,7 @@ class ActivityListDto
      * @param string $userId
      * @param array $filterParams
      * @return array - the DTO array
+     * @throws \Exception
      */
     public static function getActivityForOneProject($projectModel, $userId, $filterParams = [])
     {
@@ -155,6 +168,7 @@ class ActivityListDto
      * @param string $entryId
      * @param array $filterParams
      * @return array - the DTO array
+     * @throws \Exception
      */
     public static function getActivityForOneLexEntry($projectModel, $entryId, $filterParams = [])
     {
@@ -171,6 +185,17 @@ class ActivityListDto
         return $dto;
     }
 
+    // note: it could be argued that this is a migration method that is not necessary if we were to migrate the database of existing activity entries with no projectId cjh 2014-07
+    private static function getGlobalUnreadActivityForUser($userId)
+    {
+        $unreadActivity = new GlobalUnreadActivityModel($userId);
+        $items = $unreadActivity->unreadItems();
+        $unreadActivity->markAllRead();
+        $unreadActivity->write();
+
+        return $items;
+    }
+
     // Helper function for getActivityForUser()
     private static function filterActivityByUserId($projectModel, $userId, $itemId)
     {
@@ -184,7 +209,7 @@ class ActivityListDto
             case ActivityModel::ADD_COMMENT:
             case ActivityModel::UPDATE_COMMENT:
                 $commentAuthorId = $activity->userRef->id;
-                $answerAuthorId = $activity->userRef2->id;
+                $answerAuthorId = $activity->userRefRelated->id;
                 return ($answerAuthorId == $userId && $commentAuthorId == $userId);
                 break;
             case ActivityModel::INCREASE_SCORE:
@@ -199,18 +224,233 @@ class ActivityListDto
         }
     }
 
+    /**
+     * @param string $fieldIdPart
+     * @return array
+     */
+    public static function splitFieldIdPart($fieldIdPart)
+    {
+        $nameAndOtherParts = explode('@', $fieldIdPart, 2);
+        if (empty($nameAndOtherParts[1])) {
+            // No @ means no position in the field ID, but is there a GUID?
+            $nameAndGuid = explode('#', $nameAndOtherParts[0], 2);
+            $name = $nameAndGuid[0] ?? '';
+            $guid = $nameAndGuid[1] ?? '';
+            $position = -1;
+        } else {
+            $name = $nameAndOtherParts[0];
+            $positionAndGuid = explode('#', $nameAndOtherParts[1], 2);
+            $position = $positionAndGuid[0] ?? -1;
+            $guid = $positionAndGuid[1] ?? '';
+        }
+        return [$name, intval($position), $guid];
+    }
+
     private static function sortActivity($a, $b)
     {
         return ((new \DateTime($a['date'])) < (new \DateTime($b['date']))) ? 1 : -1;
     }
 
-    private static function prepareDto(&$dto)
+    private static function prepareDto(&$dto, ProjectModel $projectModel)
     {
         foreach ($dto['entries'] as &$item) {
             $item['content'] = $item['actionContent'];
             $item['type'] = 'project';  // FIXME: Should this always be "project"? Should it sometimes be "entry"? 2018-02 RM
             unset($item['actionContent']);
+            if ($projectModel->appName === LfProjectModel::LEXICON_APP) {
+                if ($item['action'] === ActivityModel::UPDATE_ENTRY || $item['action'] === ActivityModel::ADD_ENTRY) {
+                    $lexProjectModel = new LexProjectModel($projectModel->id->asString());
+                    $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
+                } else if ($item['action'] === ActivityModel::ADD_LEX_COMMENT ||
+                           $item['action'] === ActivityModel::UPDATE_LEX_COMMENT ||
+                           $item['action'] === ActivityModel::DELETE_LEX_COMMENT ||
+                           $item['action'] === ActivityModel::UPDATE_LEX_COMMENT_STATUS ||
+                           $item['action'] === ActivityModel::LEX_COMMENT_INCREASE_SCORE ||
+                           $item['action'] === ActivityModel::LEX_COMMENT_DECREASE_SCORE ||
+                           $item['action'] === ActivityModel::ADD_LEX_REPLY ||
+                           $item['action'] === ActivityModel::UPDATE_LEX_REPLY ||
+                           $item['action'] === ActivityModel::DELETE_LEX_REPLY) {
+                    $labelFromMongo = $item['content'][ActivityModel::LEX_COMMENT_LABEL] ?? '';
+                    unset($item['content'][ActivityModel::LEX_COMMENT_LABEL]);
+                    if (! empty($labelFromMongo)) {
+                        $item['content'][ActivityModel::FIELD_LABEL] = static::prepareActivityContentForCommentLabel($labelFromMongo);
+                    }
+                }
+            }
         }
+    }
+
+    private static function prepareActivityContentForCommentLabel($labelFromMongo)
+    {
+        $result = [];
+        $parts = explode('|', $labelFromMongo);
+        foreach ($parts as $part) {
+            if (StringUtil::startsWith($part, 'sense@')) {
+                $pos = substr($part, strlen('sense@'));
+                $result['sense'] = intval($pos);
+            } else if (StringUtil::startsWith($part, 'example@')) {
+                $pos = substr($part, strlen('example@'));
+                $result['example'] = intval($pos);
+            } else {
+                $result['label'] = $part;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $item
+     * @param LexProjectModel $projectModel
+     * @return array
+     */
+    private static function prepareActivityContentForEntryDifferences($item, $projectModel)
+    {
+
+// Goal:
+//
+//    "oldValue.senses@0#GUID.examples@0#GUID.translation.en": "Example translation",
+//    "newValue.senses@0#GUID.examples@0#GUID.translation.en": "Example translation edited",
+//    "fieldLabel.senses@0#GUID.examples@0#GUID.translation.en": "Translation"
+//
+// becomes:
+//
+//{
+//  oldValue: "Example translation"
+//  newValue: "Example translation edited"
+//  changeType: "edited_field"
+//  fieldName: "translation"
+//  inputSystemTag: "en"
+//  sense: 1
+//  example: 2
+//  fieldLabel: "Translation"
+//}
+
+        $entryConfig = $projectModel->config->entry;
+        $result = [];
+        $changesInInput = [];
+        $changesForDto = [];
+
+        foreach ($item['content'] as $key => $value) {
+            $parts = explode('.', $key, 2);
+            if (empty($parts[0])) {
+                continue;
+            }
+            if (empty($parts[1])) {
+                $result[$key] = $value;
+                continue;
+            }
+            switch ($parts[0]) {
+                case 'oldValue':
+                case 'newValue':
+                case 'added':
+                case 'moved':
+                case 'deleted':
+                case 'fieldLabel':
+                    // Collect change records keyed by field identifier (e.g., "senses@1#GUID.definition.en")
+                    if (!array_key_exists($parts[1], $changesInInput)) {
+                        $changesInInput[$parts[1]] = [];
+                    }
+                    $changeKey = $parts[0];
+                    $fieldId = $parts[1];
+                    $changesInInput[$fieldId][$changeKey] = $value;
+                    break;
+                default:
+                    // Action content that *isn't* part of a change record gets passed through unchanged
+                    $result[$key] = $value;
+            }
+        }
+
+        // Now go through each change record and turn it into something the frontend can handle easily
+
+        foreach ($changesInInput as $fieldId => $change) {
+            $changeType = '';
+            if (array_key_exists('oldValue', $change)) {
+                $changeType = ActivityListDto::EDITED_FIELD;
+            } else if (array_key_exists('newValue', $change)) {
+                $changeType = ActivityListDto::EDITED_FIELD;
+            } else if (array_key_exists('added', $change)) {
+                $changeType = ActivityListDto::ADDED_FIELD;
+            } else if (array_key_exists('moved', $change)) {
+                $changeType = ActivityListDto::MOVED_FIELD;
+            } else if (array_key_exists('deleted', $change)) {
+                $changeType = ActivityListDto::DELETED_FIELD;
+            }
+
+            // Instead of hardcoding sense and example positions, we could instead return a structure like:
+            // "fieldHierarchy": ["senses", "examples", "translation"]
+            // "positionHierarchy": [1, 2]
+            // But it's probably best to just hardcode "sense" and "example" in the label
+//            $fieldNameHierarchy = [];
+//            $fieldPositionHierarchy = [];
+            $fieldIdParts = explode('.', $fieldId);
+            $currentConfig = $entryConfig;
+            $sensePosition = null;
+            $examplePosition = null;
+
+            $mostRecentName = '';
+            $mostRecentPosition = 0;
+            $inputSystemTag = '';
+            foreach ($fieldIdParts as $part) {
+                list ($name, $position) = self::splitFieldIdPart($part);
+                $position = $position + 1;  // Mongo stores 0-based indices, but DTO wants 1-based
+                // $guid not used in this DTO
+                if (array_key_exists($name, $currentConfig->fields)) {
+                    $mostRecentName = $name;
+                    $mostRecentPosition = $position;
+//                    $fieldNameHierarchy[] = $name;
+//                    $fieldPositionHierarchy[] = $position;
+                    if ($name === LexConfig::SENSES_LIST) {
+                        $sensePosition = $position;
+                        $currentConfig = $currentConfig->fields[$name];
+                    } else if ($name === LexConfig::EXAMPLES_LIST) {
+                        $examplePosition = $position;
+                        $currentConfig = $currentConfig->fields[$name];
+                    }
+                } else {
+                    $inputSystemTag = $name;  // There will only be one
+                }
+            }
+
+            $changeForDto = [];
+            $changeForDto['changeType'] = $changeType;
+            $changeForDto['fieldName'] = $mostRecentName;
+            $changeForDto['fieldLabel'] = [];
+            if (array_key_exists('fieldLabel', $change)) {
+                $changeForDto['fieldLabel']['label'] = $change['fieldLabel'];
+            } else {
+                $changeForDto['fieldLabel']['label'] = $mostRecentName;  // Better than nothing
+            }
+            if ($sensePosition !== null) {
+                $changeForDto['fieldLabel']['sense'] = $sensePosition;
+            }
+            if ($examplePosition !== null) {
+                $changeForDto['fieldLabel']['example'] = $examplePosition;
+            }
+            if (! empty($inputSystemTag)) {
+                $changeForDto['inputSystemTag'] = $inputSystemTag;
+            }
+            switch ($changeType) {
+                case ActivityListDto::EDITED_FIELD:
+                    $changeForDto['oldValue'] = $change['oldValue'] ?? '';
+                    $changeForDto['newValue'] = $change['newValue'] ?? '';
+                    break;
+                case ActivityListDto::ADDED_FIELD:
+                    $changeForDto['oldValue'] = '';
+                    $changeForDto['newValue'] = $change['newValue'] ?? '';
+                    break;
+                case ActivityListDto::DELETED_FIELD:
+                    $changeForDto['oldValue'] = $change['oldValue'] ?? '';
+                    $changeForDto['newValue'] = '';
+                    break;
+                case ActivityListDto::MOVED_FIELD:
+                    $changeForDto['movedFrom'] = $mostRecentPosition;
+                    $changeForDto['movedTo'] = $change['moved'];
+                    break;
+            }
+            $changesForDto[] = $changeForDto;
+        }
+        $result['changes'] = $changesForDto;
+        return $result;
     }
 }
 
@@ -231,7 +471,7 @@ class ActivityListDtoEncoder extends JsonEncoder
         if ($model->asString() == '') {
             return '';
         }
-        if ($key == 'userRef' || $key == 'userRef2') {
+        if ($key == 'userRef' || $key == 'userRefRelated') {
             $user = new UserModel();
             if ($user->readIfExists($model->asString())) {
                 return [
@@ -278,6 +518,7 @@ class ActivityListDtoEncoder extends JsonEncoder
      * @param ActivityListModel $model - the model to encode
      * @param ProjectModel $projectModel
      * @return array
+     * @throws \Exception
      */
     public static function encodeModel($model, $projectModel)
     {
@@ -289,6 +530,7 @@ class ActivityListDtoEncoder extends JsonEncoder
 
         return $e->_encode($model);
     }
+
 }
 
 class ActivityListModel extends MapperListModel
@@ -343,7 +585,7 @@ class ActivityListModelByUser extends ActivityListModel
         parent::__construct($projectModel,
             ['action' => ['$regex' => ''],
                 '$or' => ['userRef'  => MongoMapper::mongoID($userId),
-                    'userRef2' => MongoMapper::mongoID($userId)]],
+                    'userRefRelated' => MongoMapper::mongoID($userId)]],
             $filterParams
         );
     }

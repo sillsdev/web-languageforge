@@ -1,26 +1,28 @@
-<br>
-<h2>Configuration</h2>
-<button class="btn btn-primary float-right" id="configuration-apply-btn" data-ng-click="$ctrl.configurationApply()"
-    data-ng-disabled="configForm.$pristine || $ctrl.isSaving">
-    <i class="fa fa-check"></i>Apply</button>
+<div class="row">
+    <div class="col">
+        <button class="btn btn-primary float-right" id="configuration-apply-btn" data-ng-click="$ctrl.configurationApply()"
+                data-ng-disabled="configForm.$pristine || $ctrl.isSaving">
+                <i class="fa fa-check"></i>Apply
+        </button>
+    </div>
+</div>
 <form name="configForm" novalidate>
     <fieldset data-ng-disabled="$ctrl.isSaving">
-        <pui-tabset>
+        <pui-tabset active="$ctrl.activeTab">
             <pui-tab heading="Fields">
-                <lsc-fields fcc-current-field="$ctrl.currentField"
-                            fcc-field-config="$ctrl.fieldConfig"
+                <lsc-fields fcc-field-config="$ctrl.fieldConfig"
                             fcc-config-dirty="$ctrl.configDirty"
-                            fcc-config-pristine="$ctrl.configPristine"
-                            fcc-input-system-view-models="$ctrl.inputSystemViewModels"
                             fcc-input-systems-list="$ctrl.inputSystemsList"
+                            fcc-users="$ctrl.lscUsers"
                             fcc-option-lists="$ctrl.optionListsDirty"
-                            fcc-select-field="$ctrl.selectField(fieldName)"
+                            fcc-add-input-system="$ctrl.addNewInputSystem()"
                             fcc-on-update="$ctrl.onUpdate($event)"></lsc-fields>
             </pui-tab>
             <pui-tab heading="Input Systems">
                 <lsc-input-systems isc-input-system-view-models="$ctrl.inputSystemViewModels"
                                    isc-input-systems-list="$ctrl.inputSystemsList"
                                    isc-config-pristine="$ctrl.configPristine"
+                                   isc-add-input-system="$ctrl.addInputSystem"
                                    isc-on-update="$ctrl.onUpdate($event)"></lsc-input-systems>
             </pui-tab>
             <pui-tab heading="Option Lists">

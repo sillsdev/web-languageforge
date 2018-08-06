@@ -2,11 +2,10 @@
 
 namespace Api\Model\Shared\Command;
 
-use Api\Library\Shared\HelpContentCommands;
 use Api\Library\Shared\Website;
+use Api\Library\Shared\JWTToken;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
-use Firebase\JWT\JWT;
 
 class SessionCommands
 {
@@ -14,16 +13,38 @@ class SessionCommands
      * @param string $projectId
      * @param string $userId
      * @param Website $website
-     * @param string $appName - refers to the application being used by the user
      * @param string $mockFilename
      * @return array
+     * @throws \Exception
      */
-    public static function getSessionData($projectId, $userId, $website, $appName = '', $mockFilename = null)
+    public static function getSessionData($projectId, $userId, $website, $mockFilename = null)
     {
         $sessionData = array();
         $sessionData['baseSite'] = $website->base;
 
-        $sessionData['isProduction'] = $website->isProduction;
+        // VERSION is not defined when running tests
+        if (defined('VERSION')) {
+            $sessionData['version'] = VERSION;
+        }
+
+        // ensure interfaceConfig if user is not logged in
+        // (LF only at this stage, SF using Transifex default language picker) - IJH 2018-06
+        if ($website->base == Website::LANGUAGEFORGE) {
+            $sessionData['projectSettings'] = [
+                'interfaceConfig' => [
+                    'languageCode' => 'en',
+                    'selectLanguages' => [
+                        'options' => [
+                            'en' => [
+                                'name' => 'English',
+                                'option' => 'English'
+                            ]
+                        ],
+                        'optionsOrder' => ['en']
+                    ]
+                ]
+            ];
+        }
 
         if ($userId) {
             $sessionData['userId'] = (string) $userId;
@@ -47,13 +68,10 @@ class SessionCommands
                 $sessionData['project']['userIsProjectOwner'] = $project->isOwner($userId);
                 $sessionData['project']['slug'] = $project->databaseName();
                 $sessionData['project']['isArchived'] = $project->isArchived;
+                $sessionData['project']['interfaceLanguageCode'] = $project->interfaceLanguageCode;
                 $sessionData['userProjectRights'] = $project->getRightsArray($userId);
                 $sessionData['projectSettings'] = $project->getPublicSettings($userId);
             }
-        }
-
-        if ($appName) {
-            $sessionData['helps'] = HelpContentCommands::getSessionData($appName, $website);
         }
 
         // File Size
@@ -62,18 +80,7 @@ class SessionCommands
         $fileSizeMax = min(array($postMax, $uploadMax));
         $sessionData['fileSizeMax'] = $fileSizeMax;
 
-        // JWT token
-        $issuedAt = time();
-        // 30 day expiration
-        $expiration = $issuedAt + (30 * 86400);
-        $token = array(
-            "iss" => $website->domain,
-            "aud" => $website->domain,
-            "iat" => $issuedAt,
-            "exp" => $expiration,
-            "sub" => (string) $userId
-        );
-        $sessionData['accessToken'] = JWT::encode($token, JWT_KEY);
+        $sessionData['accessToken'] = JWTToken::getAccessToken(720, $userId, $website);
 
         //return JsonEncoder::encode($sessionData);  // This is handled elsewhere
         self::write($sessionData, $mockFilename);
@@ -91,15 +98,26 @@ class SessionCommands
             return false;
         }
 
-        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . "jsonSessionData" . DIRECTORY_SEPARATOR . $sessionId . ".json";
+        return self::getSessionDirectory($mockFilename) . DIRECTORY_SEPARATOR . $sessionId . ".json";
+    }
+
+    private static function getSessionDirectory($mockFilename = null)
+    {
+        if(is_null($mockFilename)) {
+            $subdir = "jsonSessionData";
+        } else {
+            $subdir = "jsonSessionData4tests";
+        }
+
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $subdir;
     }
 
     private static function write($data, $mockFilename = null)
     {
         $jsonData = json_encode($data);
 
-        if(!file_exists(sys_get_temp_dir() . DIRECTORY_SEPARATOR . "jsonSessionData")){
-            mkdir(sys_get_temp_dir() . DIRECTORY_SEPARATOR . "jsonSessionData");
+        if(!file_exists(self::getSessionDirectory($mockFilename))){
+            mkdir(self::getSessionDirectory($mockFilename));
         }
 
         //May pose a possible security risk to save with ID as filename.

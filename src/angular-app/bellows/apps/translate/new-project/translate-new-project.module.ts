@@ -1,17 +1,16 @@
 import * as angular from 'angular';
 import uiRouter from 'angular-ui-router';
 
-import { CoreModule } from '../../../core/core.module';
-import { InputSystemsModule } from '../../../core/input-systems/input-systems.service';
-import { PuiUtilityModule } from '../../../shared/pui-utils.module';
-import { TranslateCoreModule } from '../core/translate-core.module';
-import { TranslateSharedModule } from '../shared/translate-shared.module';
-import { TranslateNewProjectController } from './translate-new-project.controller';
+import {CoreModule} from '../../../core/core.module';
+import {InputSystemsModule} from '../../../core/input-systems/input-systems.service';
+import {PuiUtilityModule} from '../../../shared/utils/pui-utils.module';
+import {TranslateCoreModule} from '../core/translate-core.module';
+import {TranslateSharedModule} from '../shared/translate-shared.module';
+import {TranslateNewProjectController} from './translate-new-project.controller';
 
 export const TranslateNewProjectModule = angular.module('translate-new-project', [
     'ui.bootstrap',
     uiRouter,
-    'pascalprecht.translate',
     'ngFileUpload',
     CoreModule,
     PuiUtilityModule,
@@ -20,18 +19,8 @@ export const TranslateNewProjectModule = angular.module('translate-new-project',
     TranslateSharedModule
   ])
   .controller('NewTranslateProjectCtrl', TranslateNewProjectController)
-  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
-  ($stateProvider: angular.ui.IStateProvider,
-   $urlRouterProvider: angular.ui.IUrlRouterProvider,
-   $translateProvider: angular.translate.ITranslateProvider) => {
-
-    // configure interface language filepath
-    $translateProvider.useStaticFilesLoader({
-      prefix: '/angular-app/bellows/apps/translate/new-project/lang/',
-      suffix: '.json'
-    });
-    $translateProvider.preferredLanguage('en');
-    $translateProvider.useSanitizeValueStrategy('escape');
+  .config(['$stateProvider', '$urlRouterProvider',
+  ($stateProvider: angular.ui.IStateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider) => {
 
     // State machine from ui.router
     $stateProvider

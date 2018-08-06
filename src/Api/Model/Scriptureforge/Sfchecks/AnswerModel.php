@@ -30,6 +30,7 @@ class AnswerModel extends CommentModel
     /** @var MapOf<CommentModel> */
     public $comments;
 
+    /** @var string */
     public $textHighlight;
 
     /** @var int */
@@ -38,6 +39,6 @@ class AnswerModel extends CommentModel
     /** @var ArrayOf<string> */
     public $tags;
 
-    /** @var Boolean Flag to be exported for ParaTExt Export */
+    /** @var Boolean Flag to be exported for Paratext Export */
     public $isToBeExported;
 }

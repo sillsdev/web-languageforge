@@ -1,5 +1,16 @@
 # Language Forge Release Notes #
 
+### 1.6 Release (6-August-2018)
+- Activity on each entry can be shown next to each entry. Click **Activity Feed**
+- Activity across all projects. Click **My Projects** > **Activity for All Projects**
+- Meanings (senses) and Examples can be reordered
+- Field Configuration and View Settings have been combined to make it easier to change what is displayed. Fields can be dragged to reorder them
+- Interface language selection is now top-right and it also changes the *Semantic Domain* language
+- If a font is installed on your device, put the font name in **Configuration** > **Input Systems** to use that font with a particular input system
+- Sort and Filter options are retained on browser refresh. This also means particular options can be bookmarked (added to favorites)
+- Various improvements when setting up a project that does Send/Receive with FieldWorks
+- Numerous internal improvements and bugfixes
+
 ### 1.5 Release (26-March-2018)
 - Send/Receive now sends and receives comments along with lexical data
     - Comments in Language Forge will appear as "Messages" in FieldWorks Language Explorer

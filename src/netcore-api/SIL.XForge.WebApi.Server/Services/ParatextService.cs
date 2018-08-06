@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using SIL.WritingSystems;
 using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Models;
 using SIL.XForge.WebApi.Server.Options;
@@ -35,18 +36,18 @@ namespace SIL.XForge.WebApi.Server.Services
             _httpClientHandler = new HttpClientHandler();
             _dataAccessClient = new HttpClient(_httpClientHandler);
             _registryClient = new HttpClient(_httpClientHandler);
-            //if (env.IsDevelopment())
-            //{
-            _httpClientHandler.ServerCertificateCustomValidationCallback
-                = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-            _dataAccessClient.BaseAddress = new Uri("https://data-access-dev.paratext.org");
-            _registryClient.BaseAddress = new Uri("https://registry-dev.paratext.org");
-            //}
-            //else
-            //{
-            //    _dataAccessClient.BaseAddress = new Uri("https://data-access.paratext.org");
-            //    _registryClient.BaseAddress = new Uri("https://registry.paratext.org");
-            //}
+            if (env.IsDevelopment())
+            {
+                _httpClientHandler.ServerCertificateCustomValidationCallback
+                    = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                _dataAccessClient.BaseAddress = new Uri("https://data-access-dev.paratext.org");
+                _registryClient.BaseAddress = new Uri("https://registry-dev.paratext.org");
+            }
+            else
+            {
+               _dataAccessClient.BaseAddress = new Uri("https://data-access.paratext.org");
+               _registryClient.BaseAddress = new Uri("https://registry.paratext.org");
+            }
             _registryClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
@@ -72,13 +73,16 @@ namespace SIL.XForge.WebApi.Server.Services
                         if (!repoIds.Contains(projectId))
                             continue;
 
+                        var langName = (string) projectObj["language_iso"];
+                        if (StandardSubtags.TryGetLanguageFromIso3Code(langName, out LanguageSubtag subtag))
+                            langName = subtag.Name;
+
                         projects.Add(new ParatextProject
                             {
                                 Id = projectId,
                                 Name = (string) identificationObj["fullname"],
                                 LanguageTag = (string) projectObj["language_ldml"],
-                                // TODO: use SIL.WritingSystems to get language name from ISO-3 code
-                                LanguageName = (string) projectObj["language_iso"]
+                                LanguageName = langName
                             });
                     }
                     return Attempt.Success(new ParatextUserInfo
@@ -91,28 +95,37 @@ namespace SIL.XForge.WebApi.Server.Services
             return Attempt<ParatextUserInfo>.Failure;
         }
 
-        public async Task<Attempt<IReadOnlyList<string>>> TryGetBooksAsync(User user, string projectId)
+        public async Task<IReadOnlyList<string>> GetBooksAsync(User user, string projectId)
         {
             if ((await TryCallApiAsync(_dataAccessClient, user, HttpMethod.Get, $"books/{projectId}"))
                 .TryResult(out string response))
             {
                 var books = XElement.Parse(response);
                 string[] bookIds = books.Elements("Book").Select(b => (string) b.Attribute("id")).ToArray();
-                return Attempt.Success<IReadOnlyList<string>>(bookIds);
+                return bookIds;
             }
-            return Attempt<IReadOnlyList<string>>.Failure;
+            throw new InvalidOperationException("The user's access token is invalid.");
         }
 
-        public Task<Attempt<string>> TryGetBookTextAsync(User user, string projectId, string bookId)
+        public async Task<string> GetBookTextAsync(User user, string projectId, string bookId)
         {
-            return TryCallApiAsync(_dataAccessClient, user, HttpMethod.Get, $"text/{projectId}/{bookId}");
+            if ((await TryCallApiAsync(_dataAccessClient, user, HttpMethod.Get, $"text/{projectId}/{bookId}"))
+                .TryResult(out string response))
+            {
+                return response;
+            }
+            throw new InvalidOperationException("The user's access token is invalid.");
         }
 
-        public Task<Attempt<string>> TryUpdateBookTextAsync(User user, string projectId, string bookId, string revision,
+        public async Task<string> UpdateBookTextAsync(User user, string projectId, string bookId, string revision,
             string usxText)
         {
-            return TryCallApiAsync(_dataAccessClient, user, HttpMethod.Post, $"text/{projectId}/{revision}/{bookId}",
-                usxText);
+            if ((await TryCallApiAsync(_dataAccessClient, user, HttpMethod.Post,
+                $"text/{projectId}/{revision}/{bookId}", usxText)).TryResult(out string response))
+            {
+                return response;
+            }
+            throw new InvalidOperationException("The user's access token is invalid.");
         }
 
         private string GetUsername(User user)
@@ -122,7 +135,7 @@ namespace SIL.XForge.WebApi.Server.Services
             return usernameClaim?.Value;
         }
 
-        private async Task<bool> RefreshAccessTokenAsync(User user)
+        private async Task RefreshAccessTokenAsync(User user)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "api8/token");
 
@@ -134,8 +147,7 @@ namespace SIL.XForge.WebApi.Server.Services
                 new JProperty("refresh_token", user.ParatextAccessToken.RefreshToken));
             request.Content = new StringContent(requestObj.ToString(), Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _registryClient.SendAsync(request);
-            if (!response.IsSuccessStatusCode)
-                return false;
+            response.EnsureSuccessStatusCode();
 
             string responseJson = await response.Content.ReadAsStringAsync();
             var responseObj = JObject.Parse(responseJson);
@@ -146,7 +158,6 @@ namespace SIL.XForge.WebApi.Server.Services
                 RefreshToken = (string) responseObj["refresh_token"]
             };
             await _userRepo.UpdateAsync(user, b => b.Set(u => u.ParatextAccessToken, user.ParatextAccessToken));
-            return true;
         }
 
         private async Task<Attempt<string>> TryCallApiAsync(HttpClient client, User user, HttpMethod method, string url,
@@ -161,8 +172,7 @@ namespace SIL.XForge.WebApi.Server.Services
             {
                 if (expired)
                 {
-                    if (!await RefreshAccessTokenAsync(user))
-                        return Attempt<string>.Failure;
+                    await RefreshAccessTokenAsync(user);
                     refreshed = true;
                 }
 
@@ -173,17 +183,11 @@ namespace SIL.XForge.WebApi.Server.Services
                     request.Content = new StringContent(content);
                 HttpResponseMessage response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
-                {
                     return Attempt.Success(await response.Content.ReadAsStringAsync());
-                }
                 else if (response.StatusCode == HttpStatusCode.Unauthorized)
-                {
                     expired = true;
-                }
                 else
-                {
-                    return Attempt.Failure(await response.Content.ReadAsStringAsync());
-                }
+                    response.EnsureSuccessStatusCode();
             }
 
             return Attempt<string>.Failure;

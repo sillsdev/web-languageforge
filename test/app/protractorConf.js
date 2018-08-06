@@ -28,7 +28,7 @@ exports.config = {
 
   // Selector for the element housing the angular app - this defaults to
   // body, but is necessary if ng-app is on a descendant of <body>
-  rootElement: '[id="app-container-for-bootstrap"]',
+  rootElement: '[id="app-container"]',
 
   // Spec patterns are relative to the current working directly when
   // protractor is called.
@@ -38,7 +38,7 @@ exports.config = {
   jasmineNodeOpts: {
     showColors: true,
     defaultTimeoutInterval: 120000,
-    print: function() {}
+    print: function () {}
 
     //isVerbose: true,
   },
@@ -51,8 +51,7 @@ exports.config = {
     if (process.env.TEAMCITY_VERSION) {
       var jasmineReporters = require('jasmine-reporters');
       jasmine.getEnv().addReporter(new jasmineReporters.TeamCityReporter());
-    }
-    else {
+    } else {
       var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
       jasmine.getEnv().addReporter(new SpecReporter({
         spec: {
@@ -69,10 +68,11 @@ exports.config = {
       var pauseOnFailure = {
         specDone: function (spec) {
           if (spec.status === 'failed') {
-            browser.pause();
+            debugger;
           }
         }
-      }
+      };
+
       // Uncomment to pause tests on first failure
       // jasmine.getEnv().addReporter(pauseOnFailure);
     }

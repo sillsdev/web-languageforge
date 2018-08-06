@@ -1,0 +1,25 @@
+<div class="modal-header align-items-center">
+    <h3>Add Member-Specific Settings</h3>
+</div>
+<div class="modal-body">
+    <form class="form-horizontal">
+        <div class="form-horizontal align-items-end">
+            <div class="col-auto">
+                <pui-typeahead class="typeahead mb-3" items="$ctrl.typeahead.users" term="$ctrl.typeahead.userName"
+                                search="$ctrl.typeahead.searchUsers" select="$ctrl.typeahead.selectUser" placeholder="'username'">
+                    <ul>
+                        <li class="typeahead-item" typeahead-item="user" data-ng-repeat="user in $ctrl.typeahead.users">
+                            <img class="left" width="32px" data-ng-src="{{$ctrl.typeahead.imageSource(user.avatarRef)}}">
+                            <p class="name">{{user.name}}</p>
+                            <p class="email">{{user.email}}</p>
+                        </li>
+                    </ul>
+                </pui-typeahead>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-sm btn-primary" data-ng-click="addGroup($ctrl.typeahead)" id="add-member-specific-settings-btn">
+                    <i class="fa fa-plus iconPadding"></i>Add Member-Specific Settings Column</button>
+            </div>
+        </div>
+    </form>
+</div>

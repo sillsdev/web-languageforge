@@ -183,7 +183,8 @@ class UserModel extends MapperModel
      * @param array<string> $properties to assign
      * @param array $params - user model fields to update
      */
-    public function setProperties($properties, $params) {
+    public function setProperties($properties, $params)
+    {
         foreach ($properties as $property) {
             if (array_key_exists($property, $params)) {
                 $this->{$property} = $params[$property];
@@ -290,7 +291,8 @@ class UserModel extends MapperModel
      * @param string $emailOrUsername
      * @return bool
      */
-    public static function userExists($emailOrUsername) {
+    public static function userExists($emailOrUsername)
+    {
         $user = new UserModel();
         if (!$user->readByEmail($emailOrUsername)) {
             if (!$user->readByUserName($emailOrUsername)) {
@@ -322,7 +324,8 @@ class UserModel extends MapperModel
      * @param string $usernameOrEmail
      * @return bool - true if we were successful reading by either username or email
      */
-    public function readByUsernameOrEmail($usernameOrEmail) {
+    public function readByUsernameOrEmail($usernameOrEmail)
+    {
         if (strpos($usernameOrEmail, '@') !== false) {
             return $this->readByEmail($usernameOrEmail);
         } else {
@@ -335,11 +338,11 @@ class UserModel extends MapperModel
      * @param int $right
      * @param Website $website
      * @return bool
+     * @throws \Exception
      */
     public function hasRight($right, $website)
     {
-        $result = SiteRoles::hasRight($this->siteRole, $right) ||
-                SystemRoles::hasRight($this->role, $right);
+        $result = SiteRoles::hasRight($this->siteRole, $right) || SystemRoles::hasRight($this->role, $right);
 
         return $result;
     }
@@ -399,6 +402,7 @@ class UserModel extends MapperModel
     /**
      * @param int $days
      * @return string - validation key
+     * @throws \Exception
      */
     public function setValidation($days)
     {
@@ -436,6 +440,7 @@ class UserModel extends MapperModel
     /**
      * @param int $days
      * @return string - reset password key
+     * @throws \Exception
      */
     public function setForgotPassword($days)
     {
@@ -449,7 +454,8 @@ class UserModel extends MapperModel
     /**
      * @param $usernameBase - a string which the username should be based on
      */
-    public function setUniqueUsernameFromString($usernameBase) {
+    public function setUniqueUsernameFromString($usernameBase)
+    {
         if (strpos($usernameBase, '@') !== FALSE) {
             $usernameBase = substr($usernameBase, 0, strpos($usernameBase, '@'));
         }

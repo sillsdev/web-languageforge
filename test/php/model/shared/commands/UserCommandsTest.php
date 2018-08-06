@@ -2,6 +2,7 @@
 
 use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Library\Shared\Website;
+use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\PasswordModel;
 use Api\Model\Shared\ProjectModel;
@@ -189,6 +190,70 @@ class UserCommandsTest extends TestCase
         $newUserId = UserCommands::updateUserProfile($params, $userId, self::$environ->website);
 
         // user profile updated
+        $user = new UserModel($newUserId);
+        $this->assertEquals('th', $user->interfaceLanguageCode);
+        $this->assertEquals($newUserId, $userId);
+    }
+
+    public function testUpdateUserProfile_SetLangCodeOnly_LangCodeSet()
+    {
+        // setup parameters
+        $userId = self::$environ->createUser('username', 'name', 'name@example.com');
+        $params = [
+            'interfaceLanguageCode' => 'th'
+        ];
+
+        $newUserId = UserCommands::updateUserProfile($params, $userId, self::$environ->website);
+
+        // user profile updated
+        $user = new UserModel($newUserId);
+        $this->assertEquals('th', $user->interfaceLanguageCode);
+        $this->assertEquals($newUserId, $userId);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testUpdateUserProfile_SetProjectUserProfiles_ProjectUserProfilesSet()
+    {
+        // setup parameters
+        $userId = self::$environ->createUser('username', 'name', 'name@example.com');
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        ProjectCommands::updateUserRole($projectId, $userId);
+        $params = [
+            'projectUserProfiles' => [
+                $projectId => [
+                    'city' => '',
+                    'preferredBibleVersion' => '',
+                    'religiousAffiliation' => '',
+                    'studyGroup' => 'group1',
+                    'feedbackGroup' => ''
+                ]
+            ]
+        ];
+
+        $newUserId = UserCommands::updateUserProfile($params, $userId, self::$environ->website);
+
+        // user profile updated
+        $user = new UserModel($newUserId);
+        $this->assertCount(1, $user->projectUserProfiles);
+        $this->assertEquals('group1', $user->projectUserProfiles[$projectId]->studyGroup);
+        $this->assertEquals($newUserId, $userId);
+    }
+
+    public function testUpdateUser_SetLangCodeOnly_LangCodeSet()
+    {
+        // setup parameters
+        $userId = self::$environ->createUser('username', 'name', 'name@example.com');
+        $params = [
+            'id' => $userId,
+            'interfaceLanguageCode' => 'th'
+        ];
+
+        $newUserId = UserCommands::updateUser($params, self::$environ->website);
+
+        // user updated
         $user = new UserModel($newUserId);
         $this->assertEquals('th', $user->interfaceLanguageCode);
         $this->assertEquals($newUserId, $userId);
@@ -636,5 +701,30 @@ class UserCommandsTest extends TestCase
         $passwordModel = new PasswordModel($userId);
         $result = $passwordModel->verifyPassword('somepass');
         $this->assertTrue($result, 'Could not verify changed password');
+    }
+
+    public function testUserTypeaheadList_SearchForUserByUsername_OneResult()
+    {
+        self::$environ->createUser('bob', 'Bob', 'bob@example.com');
+
+        $list = UserCommands::userTypeaheadList('bob', '', self::$environ->website);
+        $this->assertEquals(1, $list->totalCount);
+    }
+
+    public function testUserTypeaheadList_SearchForUserByPartialEmail_NoResults()
+    {
+        self::$environ->createUser('bob', 'Bob', 'bob@example.com');
+
+        $list = UserCommands::userTypeaheadList('bob@e', '', self::$environ->website);
+        $this->assertEquals([], $list->entries);
+    }
+
+    public function testUserTypeaheadList_SearchForUserByCompleteEmail_OneResult()
+    {
+        self::$environ->createUser('bob', 'Bob', 'bob@example.com');
+
+        $list = UserCommands::userTypeaheadList('bob@example.com', '', self::$environ->website);
+        $this->assertEquals(1, $list->totalCount);
+        $this->assertFalse(array_key_exists('email', $list->entries[0]), 'Email should not be returned.');
     }
 }

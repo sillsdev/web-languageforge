@@ -5,30 +5,39 @@ angular.module('palaso.ui.tabset', [])
   .directive('puiTabset', [function () {
     return {
       restrict: 'E',
-      scope: {},
+      scope: {
+        active: '=?'
+      },
       transclude: true,
-      controller: function () {
+      controller: ['$scope', function ($scope) {
         this.tabs = [];
-        this.tabIndex = 0;
+        $scope.active = $scope.active | 0;
+
+        $scope.$watch('active', function (newValue, oldValue) {
+          if (newValue != null && newValue !== oldValue) {
+            this.selectTab(newValue);
+          }
+        }.bind(this));
+
         this.addTab = function (tab) {
           this.tabs.push(tab);
         };
 
         this.selectTab = function (index) {
           this.tabs[index].onSelect();
-          this.tabIndex = index;
+          $scope.active = index;
           this.tabs.forEach(function (val, i) {
             this.tabs[i].selected = i === index;
           }, this);
         };
 
         this.selectedTab = function () {
-          return this.tabs[this.tabIndex];
+          return this.tabs[$scope.active];
         };
-      },
+      }],
 
       link: function ($scope, $element, $attrs, $ctrl) {
-        $ctrl.selectTab($attrs.selected || $ctrl.tabIndex);
+        $ctrl.selectTab($attrs.selected || $scope.active);
       },
 
       controllerAs: 'tabset',
