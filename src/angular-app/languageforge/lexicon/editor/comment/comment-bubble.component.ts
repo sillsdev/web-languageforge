@@ -3,6 +3,7 @@ import * as angular from 'angular';
 import {LexiconCommentService} from '../../../../bellows/core/offline/lexicon-comments.service';
 import {InputSystem} from '../../../../bellows/shared/model/input-system.model';
 import {LexiconConfigService} from '../../core/lexicon-config.service';
+import {LexEntry} from '../../shared/model/lex-entry.model';
 import {LexField} from '../../shared/model/lex-field.model';
 import {LexPicture} from '../../shared/model/lex-picture.model';
 import {FieldControl} from '../field/field-control.model';
@@ -29,9 +30,10 @@ export class CommentBubbleController implements angular.IController {
 
   $onInit(): void {
     if (this.inputSystem == null) {
-      this.inputSystem = new InputSystem();
-      this.inputSystem.abbreviation = '';
-      this.inputSystem.tag = '';
+      this.inputSystem = {
+        abbreviation: '',
+        tag: ''
+      } as InputSystem;
     }
 
     this.setContextGuid();
@@ -84,8 +86,8 @@ export class CommentBubbleController implements angular.IController {
   }
 
   isCommentingAvailable(): boolean {
-    return ((this.control.currentEntry.id != null && this.control.currentEntry.id.includes('_new_')) ||
-      !this.control.rights.canComment() || (this.field === 'entry' && !this.getCount()));
+    return !CommentBubbleController.isEntryNew(this.control.currentEntry) && this.control.rights.canComment() &&
+      (this.field !== 'entry' || this.getCount() > 0);
   }
 
   private getCount(): number {
@@ -126,12 +128,15 @@ export class CommentBubbleController implements angular.IController {
         this.contextGuid += '#' + this.multiOptionValue;
       }
 
-      this.contextGuid += (this.inputSystem.abbreviation ? '.' +
-        this.inputSystem.abbreviation : '');
-      if (this.contextGuid.indexOf('undefined')  === -1) {
+      this.contextGuid += (this.inputSystem.tag ? '.' + this.inputSystem.tag : '');
+      if (!this.contextGuid.includes('undefined')) {
         this.active = true;
       }
     });
+  }
+
+  private static isEntryNew(entry: LexEntry): boolean {
+    return entry.id != null && entry.id.includes('_new_');
   }
 
 }
