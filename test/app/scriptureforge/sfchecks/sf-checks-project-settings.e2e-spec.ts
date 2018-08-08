@@ -224,8 +224,8 @@ describe('SFChecks E2E project settings page - project manager', () => {
 
   describe('communication settings tab', () => {
 
-    it('is not visible for project manager', () => {
-      expect<any>(projectSettingsPage.tabs.communication.isPresent()).toBe(false);
+    it('is visible for project manager', () => {
+      expect<any>(projectSettingsPage.tabs.communication.isDisplayed()).toBe(true);
     });
 
     describe('as a system admin', () => {
