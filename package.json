@@ -118,6 +118,7 @@
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-livereload-plugin": "^0.11.0",
     "webpack-merge": "^4.1.0",
+    "worker-loader": "^2.0.0",
     "yargs": "^6.3.0"
   },
   "jscsConfig": {
