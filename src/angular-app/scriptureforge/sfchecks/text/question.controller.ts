@@ -4,16 +4,18 @@ import {JsonRpcResult} from '../../../bellows/core/api/json-rpc.service';
 import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
 import {SessionService} from '../../../bellows/core/session.service';
+import {ListViewModule} from '../../../bellows/shared/list-view.component';
 import {SfChecksCoreModule} from '../core/sf-checks-core.module';
 import {Answer, Comment, Question} from '../shared/model/text.model';
 import {SfChecksSelectionModule} from '../shared/sil-selection.directive';
+import {TaggingModule} from '../shared/tagging.module';
 
 export const SfChecksQuestionModule = angular
   .module('sfchecks.question', [
     CoreModule,
     NoticeModule,
-    'palaso.ui.listview',
-    'palaso.ui.tagging',
+    ListViewModule,
+    TaggingModule,
     SfChecksCoreModule,
     SfChecksSelectionModule
   ])

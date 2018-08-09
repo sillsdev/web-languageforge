@@ -1,0 +1,20 @@
+<div class="listview" data-ng-hide="$ctrl.hideIfEmpty && $ctrl.items.length == 0">
+    <div data-ng-transclude></div>
+    <div class="row" data-ng-hide="$ctrl.filteredItems.length <= 10">
+        <div class="col-md-8 col-lg-10" data-ng-hide="$ctrl.filteredItems.length <= $ctrl.itemsPerPage">
+            <ul uib-pagination data-ng-model="$ctrl.currentPage" data-ng-chamge="$ctrl.updateVisibleItems()"
+                total-items="$ctrl.filteredItems.length" boundary-links="true"
+                items-per-page="$ctrl.itemsPerPage" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
+            </ul>
+        </div>
+        <div class="right col-md-4 col-lg-2">Items per page
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select class="form-control custom-select" data-ng-model="$ctrl.itemsPerPage" data-ng-change="$ctrl.changeItemsPerPage()">
+                <option value="10" data-ng-selected="true">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+    </div>
+</div>
