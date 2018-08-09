@@ -144,7 +144,7 @@ export class ProjectService {
   }
 
   runReport(reportName: string, params: any[] = [], callback?: JsonRpcCallback) {
-    this.api.call('project_management_report_' + reportName, params, callback);
+    return this.api.call('project_management_report_' + reportName, params, callback);
   }
 
 }

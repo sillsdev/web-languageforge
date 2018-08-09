@@ -3,8 +3,12 @@ import 'ng-drag-to-reorder';
 
 import {CoreModule} from '../../../../bellows/core/core.module';
 import {NoticeModule} from '../../../../bellows/core/notice/notice.module';
+import {PickListEditorModule} from '../../../../bellows/shared/pick-list-editor.module';
 import {SelectLanguageModule} from '../../../../bellows/shared/select-language.component';
+import {TabSetModule} from '../../../../bellows/shared/tabset.module';
+import {TypeAheadModule} from '../../../../bellows/shared/type-ahead.module';
 import {LexiconCoreModule} from '../../core/lexicon-core.module';
+import {ModelTransformModule} from '../../shared/model-transform.directive';
 import {FieldsConfigurationComponent} from './configuration-fields.component';
 import {InputSystemsConfigurationComponent} from './configuration-input-systems.component';
 import {OptionListConfigurationComponent} from './configuration-option-lists.component';
@@ -15,11 +19,11 @@ export const LexiconConfigurationModule = angular
     'ngDragToReorder',
     CoreModule,
     NoticeModule,
+    PickListEditorModule,
     SelectLanguageModule,
-    'palaso.ui.tabset',
-    'palaso.ui.typeahead',
-    'palaso.ui.picklistEditor',
-    'palaso.util.model.transform',
+    TabSetModule,
+    TypeAheadModule,
+    ModelTransformModule,
     LexiconCoreModule
   ])
   .component('lscFields', FieldsConfigurationComponent)

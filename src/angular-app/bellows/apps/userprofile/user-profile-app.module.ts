@@ -3,6 +3,7 @@ import * as angular from 'angular';
 import {BreadcrumbModule} from '../../core/breadcrumbs/breadcrumb.module';
 import {CoreModule} from '../../core/core.module';
 import {NoticeModule} from '../../core/notice/notice.module';
+import {InternationalTelephoneInputModule} from './international-telephone-input.directive';
 import {UserProfileAppComponent} from './user-profile-app.component';
 
 export const UserProfileAppModule = angular
@@ -11,7 +12,7 @@ export const UserProfileAppModule = angular
     BreadcrumbModule,
     CoreModule,
     NoticeModule,
-    'palaso.ui.intlTelInput'
+    InternationalTelephoneInputModule
   ])
   .component('userProfileApp', UserProfileAppComponent)
   .name;

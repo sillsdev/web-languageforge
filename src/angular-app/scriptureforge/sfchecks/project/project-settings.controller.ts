@@ -5,23 +5,28 @@ import {BreadcrumbModule} from '../../../bellows/core/breadcrumbs/breadcrumb.mod
 import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
 import {Session, SessionService} from '../../../bellows/core/session.service';
+import {DeleteProjectModule} from '../../../bellows/shared/delete-project.component';
+import {ListViewModule} from '../../../bellows/shared/list-view.component';
 import {User} from '../../../bellows/shared/model/user.model';
+import {PickListEditorModule} from '../../../bellows/shared/pick-list-editor.module';
+import {TabSetModule} from '../../../bellows/shared/tabset.module';
+import {TypeAheadModule} from '../../../bellows/shared/type-ahead.module';
 import {SfChecksCoreModule} from '../core/sf-checks-core.module';
 import {QuestionTemplate} from '../shared/model/text.model';
 import {UserProfilePickLists, UserProperties} from '../shared/model/user-properties.model';
+import {RunReportModule} from './run-report.component';
 
 export const SfChecksProjectSettingsModule = angular
   .module('sfchecks.projectSettings', [
     BreadcrumbModule,
     CoreModule,
-    'palaso.ui.deleteProject',
-    'palaso.ui.listview',
+    DeleteProjectModule,
+    ListViewModule,
     NoticeModule,
-    'palaso.ui.picklistEditor',
-    'palaso.ui.runReport',
-    'palaso.ui.tabset',
-    'palaso.ui.textdrop',
-    'palaso.ui.typeahead',
+    PickListEditorModule,
+    RunReportModule,
+    TabSetModule,
+    TypeAheadModule,
     SfChecksCoreModule
   ])
   .controller('ProjectSettingsCtrl', ['$scope', '$q', 'breadcrumbService', 'userService',
