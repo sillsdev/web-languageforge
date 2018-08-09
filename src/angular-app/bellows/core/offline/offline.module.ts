@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import { CommentsOfflineCacheService } from './comments-offline-cache.service';
+import { DocumentsOfflineCacheService } from './documents-offline-cache.service';
 import { EditorDataService } from './editor-data.service';
 import { EditorOfflineCacheService } from './editor-offline-cache.service';
 import { LexiconCommentService } from './lexicon-comments.service';
@@ -15,4 +16,5 @@ export const OfflineModule = angular
   .service('lexCommentService', LexiconCommentService)
   .service('offlineCacheUtils', OfflineCacheUtilsService)
   .service('offlineCache', OfflineCacheService)
+  .service('documentsOfflineCache', DocumentsOfflineCacheService)
   .name;
