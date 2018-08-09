@@ -5,13 +5,22 @@ import {LexiconCoreModule} from '../../../languageforge/lexicon/core/lexicon-cor
 import {BreadcrumbModule} from '../../core/breadcrumbs/breadcrumb.module';
 import {CoreModule} from '../../core/core.module';
 import {NoticeModule} from '../../core/notice/notice.module';
+import {ListViewModule} from '../../shared/list-view.component';
+import {TypeAheadModule} from '../../shared/type-ahead.module';
 import {UserManagementJoinRequestsComponent} from './join-requests.component';
 import {UserManagementMembersComponent} from './members.component';
 import {UserManagementAppComponent} from './user-management-app.component';
 
 export const UserManagementAppModule = angular
-  .module('usermanagement', ['ui.router', 'ui.bootstrap', CoreModule,
-    NoticeModule, 'palaso.ui.listview', 'palaso.ui.typeahead', BreadcrumbModule, LexiconCoreModule
+  .module('usermanagement', [
+    'ui.bootstrap',
+    uiRouter,
+    CoreModule,
+    NoticeModule,
+    ListViewModule,
+    TypeAheadModule,
+    BreadcrumbModule,
+    LexiconCoreModule
   ])
   .component('userManagementApp', UserManagementAppComponent)
   .component('userManagementMembers', UserManagementMembersComponent)

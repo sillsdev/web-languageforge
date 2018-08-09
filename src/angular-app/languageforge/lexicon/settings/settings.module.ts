@@ -2,6 +2,9 @@ import * as angular from 'angular';
 
 import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
+import {ArchiveProjectModule} from '../../../bellows/shared/archive-project.component';
+import {DeleteProjectModule} from '../../../bellows/shared/delete-project.component';
+import {ListViewModule} from '../../../bellows/shared/list-view.component';
 import {SelectLanguageModule} from '../../../bellows/shared/select-language.component';
 import {LexiconCoreModule} from '../core/lexicon-core.module';
 import {LexiconConfigurationComponent} from './configuration/configuration.component';
@@ -15,12 +18,11 @@ export const LexiconSettingsModule = angular
     'ui.bootstrap',
     'ngFileUpload',
     CoreModule,
+    ArchiveProjectModule,
+    DeleteProjectModule,
     NoticeModule,
     SelectLanguageModule,
-    'palaso.ui.archiveProject',
-    'palaso.ui.deleteProject',
-    'palaso.ui.listview',
-    'palaso.ui.textdrop',
+    ListViewModule,
     LexiconCoreModule,
     LexiconConfigurationModule
   ])

@@ -6,10 +6,13 @@ import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
 import {Session, SessionService} from '../../../bellows/core/session.service';
 import {UtilityService} from '../../../bellows/core/utility.service';
+import {ListViewModule} from '../../../bellows/shared/list-view.component';
 import {UploadFile, UploadResponse} from '../../../bellows/shared/model/upload.model';
 import {SoundModule} from '../../../bellows/shared/sound.module';
+import {TypeAheadModule} from '../../../bellows/shared/type-ahead.module';
 import {SfChecksCoreModule} from '../core/sf-checks-core.module';
 import {Question, QuestionTemplate, Text} from '../shared/model/text.model';
+import {TextDropModule} from '../shared/textdrop.directive';
 
 export const SfChecksTextModule = angular
   .module('sfchecks.questions', [
@@ -17,8 +20,9 @@ export const SfChecksTextModule = angular
     CoreModule,
     BreadcrumbModule,
     SoundModule,
-    'palaso.ui.listview',
-    'palaso.ui.typeahead',
+    ListViewModule,
+    TextDropModule,
+    TypeAheadModule,
     NoticeModule,
     SfChecksCoreModule
   ])

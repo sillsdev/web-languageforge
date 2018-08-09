@@ -1,8 +1,9 @@
 import * as angular from 'angular';
 
-import { UserService } from '../../../core/api/user.service';
-import { SessionService } from '../../../core/session.service';
-import { UserWithPassword } from '../../../shared/model/user-password.model';
+import {UserService} from '../../../core/api/user.service';
+import {SessionService} from '../../../core/session.service';
+import {CaptchaData} from '../../../shared/model/captcha.model';
+import {UserWithPassword} from '../../../shared/model/user-password.model';
 
 class UserSignup extends UserWithPassword {
   captcha?: string;
@@ -23,16 +24,17 @@ export class SignupAppController implements angular.IController {
   takenEmail = '';
   passwordIsWeak = false;
   passwordStrength = new ZxcvbnPasswordStrength();
-  captchaData = '';
+  captchaData: CaptchaData = {} as CaptchaData;
   captchaFailed = false;
   record = new UserSignup();
   hostname: string;
 
-  static $inject = ['$scope', '$location', '$window',
+  static $inject = ['$scope', '$location',
+    '$window',
     'userService', 'sessionService'];
-  constructor(private $scope: any, private $location: angular.ILocationService,
-              private $window: angular.IWindowService,
-              private userService: UserService, private sessionService: SessionService) {}
+  constructor(private readonly $scope: any, private readonly $location: angular.ILocationService,
+              private readonly $window: angular.IWindowService,
+              private readonly userService: UserService, private readonly sessionService: SessionService) {}
 
   $onInit() {
     this.record.id = '';
@@ -40,24 +42,24 @@ export class SignupAppController implements angular.IController {
 
     // Parse for user details if given
     const email = this.$location.search().e;
-    if (email !== undefined && email.length > 0) {
+    if (email != null && email.length > 0) {
       this.record.email = decodeURIComponent(email);
       this.emailProvided = true;
     }
     const name = this.$location.search().n;
-    if (name !== undefined && name.length > 0) {
+    if (name != null && name.length > 0) {
       this.record.name = decodeURIComponent(name);
       this.nameProvided = true;
     }
     const avatar = this.$location.search().a;
-    if (avatar !== undefined && avatar.length > 0) {
+    if (avatar != null && avatar.length > 0) {
       this.record.avatar_ref = decodeURIComponent(avatar);
       this.avatarProvided = true;
     }
 
-    this.sessionService.getSession().then((session) => {
+    this.sessionService.getSession().then(session => {
       // signup app should only show when no user is present (not logged in)
-      if (angular.isDefined(session.userId())) {
+      if (session.userId() != null) {
         this.$window.location.href = '/app/projects';
       }
     });
@@ -66,7 +68,7 @@ export class SignupAppController implements angular.IController {
 
     // we need to watch the passwordStrength score because zxcvbn seems to be changing the score
     // after the ng-change event.  Only after zxcvbn changes should we validate the form
-    this.$scope.$watch(() => { return this.passwordStrength.score; }, () => {
+    this.$scope.$watch(() => this.passwordStrength.score, () => {
       this.validateForm();
     });
 
@@ -75,12 +77,12 @@ export class SignupAppController implements angular.IController {
 
   validateForm() {
     this.emailValid = this.$scope.signupForm.email.$pristine ||
-      ((this.$scope.signupForm.email.$dirty || this.emailProvided) &&
-        !this.$scope.signupForm.$error.email);
+      ((this.$scope.signupForm.email.$dirty || this.emailProvided) && !this.$scope.signupForm.$error.email);
 
-    if (angular.isDefined(this.record.password)) {
-      this.passwordIsWeak = this.passwordStrength.score < 2 ||
-        this.record.password.length < 7;
+    if (this.record.password) {
+      this.passwordIsWeak = this.passwordStrength.score < 2 || this.record.password.length < 7;
+    } else {
+      this.passwordIsWeak = false;
     }
   }
 
@@ -91,9 +93,9 @@ export class SignupAppController implements angular.IController {
   }
 
   private getCaptchaData() {
-    this.sessionService.getCaptchaData((result) => {
+    this.sessionService.getCaptchaData().then(result => {
       if (result.ok) {
-        this.captchaData = result.data;
+        this.captchaData = result.data as CaptchaData;
         this.record.captcha = null;
       }
     });
@@ -102,7 +104,7 @@ export class SignupAppController implements angular.IController {
   private registerUser(successCallback: (url: string) => void) {
     this.captchaFailed = false;
     this.submissionInProgress = true;
-    this.userService.register(this.record, (result) => {
+    this.userService.register(this.record).then(result => {
       if (result.ok) {
         switch (result.data) {
           case 'captchaFail':
@@ -123,6 +125,7 @@ export class SignupAppController implements angular.IController {
       this.submissionInProgress = false;
     });
   }
+
 }
 
 export const SignupAppComponent: angular.IComponentOptions = {
