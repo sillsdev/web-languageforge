@@ -136,9 +136,9 @@ describe('Lexicon E2E New Project wizard app', async () => {
     it('cannot move on if credentials are invalid', async () => {
       await page.srCredentialsPage.loginInput.sendKeys(constants.srUsername);
       await page.srCredentialsPage.passwordInput.sendKeys(constants.passwordValid);
+      await expect<any>(page.srCredentialsPage.loginOk.isPresent()).toBe(false);
       await browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.credentialsInvalid),
         constants.conditionTimeout);
-      await expect<any>(page.srCredentialsPage.loginOk.isPresent()).toBe(false);
       await expect<any>(page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true); // flaky assertion
       await page.formStatus.expectHasNoError();
       await page.nextButton.click();
@@ -456,6 +456,7 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await page.expectFormIsValid();
       await page.nextButton.click();
       await expect<any>(editorPage.browse.getEntryCount()).toBe(2);
+      await browser.sleep(1000);
     });
 
   });
@@ -464,8 +465,6 @@ describe('Lexicon E2E New Project wizard app', async () => {
 
     it('create: new empty project', async () => {
       await NewLexProjectPage.get();
-      await browser.wait(ExpectedConditions.visibilityOf(page.chooserPage.createButton),
-        constants.conditionTimeout);
       await page.chooserPage.createButton.click();
       await page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + Key.TAB);
       await browser.wait(ExpectedConditions.visibilityOf(page.namePage.projectCodeOk), constants.conditionTimeout);
@@ -479,6 +478,7 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await page.nextButton.click();
       await expect<any>(page.namePage.projectNameInput.isPresent()).toBe(false);
       await expect<any>(page.initialDataPage.browseButton.isPresent()).toBe(true);
+      await browser.sleep(1000);
     });
 
   });
@@ -490,6 +490,7 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await page.expectFormIsNotValid();
       await page.nextButton.click();
       await expect<any>(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
+      await browser.sleep(1000);
     });
 
   });

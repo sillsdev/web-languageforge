@@ -37,10 +37,11 @@ describe('Lexicon E2E Editor Comments', async () => {
     });
 
   it('comments panel: check that comment shows up', async () => {
+    await browser.sleep(1000);
     const comment = editorPage.comment.getComment(0);
-    /* await browser.wait(ExpectedConditions.visibilityOf(comment.contextGuid),
-        constants.conditionTimeout); */
-    await expect<any>(comment.contextGuid.getAttribute('textContent')).toEqual('lexeme.th');
+    await browser.wait(() => (comment.contextGuid.getAttribute('textContent')),
+        constants.conditionTimeout).then (async () =>
+    await expect<any>(comment.contextGuid.getAttribute('textContent')).toEqual('lexeme.th'));
 
     // Earlier tests modify the avatar and name of the manager user; don't check those
     await expect<any>(comment.score.getText()).toEqual('0 Likes');

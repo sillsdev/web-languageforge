@@ -49,12 +49,10 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('refresh returns to entry view', async () => {
-    // Here, This sleep needs to avoid warnings.
-    await browser.sleep(1000);
-    await expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
-    await browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.fields.get(0)), Utils.conditionTimeout);
+    await browser.sleep(1500);
     await expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
     await browser.refresh();
+    await browser.sleep(1500);
     await expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
   });
 
@@ -88,11 +86,10 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('citation form field overrides lexeme form in dictionary citation view', async () => {
+    await browser.sleep(300);
     await editorPage.edit.showHiddenFields();
     const citationFormMultiTextInputs = editorPage.edit.getMultiTextInputs('Citation Form');
     await editorPage.edit.selectElement.sendKeys(citationFormMultiTextInputs.first(), 'citation form');
-    await browser.wait(() =>
-        ExpectedConditions.visibilityOf(editorPage.edit.renderedDiv), constants.conditionTimeout);
     await expect(editorPage.edit.renderedDiv.getText()).toContain('citation form');
     await expect(editorPage.edit.renderedDiv.getText()).not.toContain(constants.testEntry1.lexeme.th.value);
     await expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
@@ -104,10 +101,11 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('one picture and caption is present', async () => {
-    await browser.wait(() =>
-      editorPage.edit.pictures.getFileName(0), constants.conditionTimeout);
+    await browser.sleep(1000);
+    await browser.wait(() => editorPage.edit.pictures.getFileName(0), constants.conditionTimeout);
     await expect(editorPage.edit.pictures.getFileName(0))
       .toContain('_' + constants.testEntry1.senses[0].pictures[0].fileName);
+    await browser.wait(() => editorPage.edit.pictures.getCaption(0), constants.conditionTimeout);
     await expect(editorPage.edit.pictures.getCaption(0))
       .toEqual({ en: constants.testEntry1.senses[0].pictures[0].caption.en.value });
   });
@@ -126,9 +124,6 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('file upload drop box is not displayed when Cancel Adding Picture is clicked', async () => {
-    await browser.wait(() =>
-        ExpectedConditions.visibilityOf(editorPage.edit.pictures.addCancelButton),
-        constants.conditionTimeout);
     await expect<any>(editorPage.edit.pictures.addCancelButton.isDisplayed()).toBe(true);
     await editorPage.edit.pictures.addCancelButton.click();
     await expect<any>(editorPage.edit.pictures.addPictureLink.isPresent()).toBe(true);
@@ -149,8 +144,6 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     await Utils.clickBreadcrumb(constants.testProjectName);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     await editorPage.edit.hideHiddenFields();
-    await browser.wait(() => editorPage.edit.pictures.captions.first(),
-      constants.conditionTimeout);
     await expect<any>(editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
     await editorPage.edit.selectElement.clear(editorPage.edit.pictures.captions.first());
     await expect<any>(editorPage.edit.pictures.captions.count()).toBe(0);
@@ -166,7 +159,12 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('when caption is empty, it is visible if "Hidden if empty" is cleared in config', async () => {
+    await browser.wait(ExpectedConditions.visibilityOf
+      (element(by.cssContainingText('.breadcrumb > li', constants.testProjectName))),
+      Utils.conditionTimeout);
     await Utils.clickBreadcrumb(constants.testProjectName);
+    await browser.wait(ExpectedConditions.visibilityOf(element(by.id('lexAppListView'))),
+      constants.conditionTimeout);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     await expect<any>(editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
   });
@@ -176,17 +174,20 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     await expect<any>(editorPage.edit.pictures.removeImages.first().isPresent()).toBe(true);
     await editorPage.edit.pictures.removeImages.first().click();
     await Utils.clickModalButton('Delete Picture');
-    await browser.wait(() => editorPage.edit.pictures.images, constants.conditionTimeout);
     await expect<any>(editorPage.edit.pictures.images.count()).toBe(0);
   });
 
   it('change config to hide Pictures and hide captions', async () => {
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(500);
     await configPage.get();
     await configPage.tabs.unified.click();
+    await browser.wait(() => configPage.unifiedPane.hiddenIfEmptyCheckbox('Pictures'),
+      constants.conditionTimeout);
     await util.setCheckbox(configPage.unifiedPane.hiddenIfEmptyCheckbox('Pictures'), true);
     await configPage.unifiedPane.fieldSpecificButton('Pictures').click();
-    // Here, This sleep needs to avoid warnings.
-    await browser.sleep(500);
+    await browser.wait(() => configPage.unifiedPane.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures'),
+      constants.conditionTimeout);
     await util.setCheckbox(configPage.unifiedPane.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures'), true);
     await configPage.applyButton.click();
   });
@@ -215,6 +216,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('file upload drop box is displayed when Upload is clicked', async () => {
+    // await browser.sleep(500);
+    await browser.wait(() => editorPage.edit.audio.moreControls(lexemeLabel).first(), constants.conditionTimeout);
     await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(true);
     await expect<any>(editorPage.edit.audio.uploadDropBoxes(lexemeLabel).first().isDisplayed()).toBe(false);
     await expect<any>(editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first().isDisplayed()).toBe(false);
@@ -225,6 +228,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('file upload drop box is not displayed when Cancel Uploading Audio is clicked', async () => {
+    await browser.wait(() => editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first(),
+      constants.conditionTimeout);
     await expect<any>(editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first().isDisplayed()).toBe(true);
     await editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first().click();
     await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(true);
@@ -280,10 +285,10 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('login as observer, click on first word', async () => {
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(1500);
     await loginPage.loginAsObserver();
     await projectsPage.get();
-    // browser.sleep needs to avoid warnings
-    await browser.sleep(500);
     await projectsPage.clickOnProjectName(constants.testProjectName);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
   });
@@ -306,15 +311,17 @@ describe('Lexicon E2E Editor List and Entry', async () => {
 
   it('word 2: audio Input System is not playable and does not have "upload" button (observer)',
   async () => {
-      await browser.wait(() => editorPage.edit.audio.playerIcons(lexemeLabel), constants.conditionTimeout);
       await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
       await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
       await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
       await expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
       await expect<any>(editorPage.edit.audio.downloadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
+      await browser.sleep(500);
     });
 
   it('login as manager, click on first word', async () => {
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(1500);
     await loginPage.loginAsManager();
     await projectsPage.get();
     await projectsPage.clickOnProjectName(constants.testProjectName);
@@ -339,6 +346,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('file upload drop box is not displayed when Cancel Uploading Audio is clicked', async () => {
+    await browser.wait(() => editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first(),
+      constants.conditionTimeout);
     await expect<any>(editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first().isDisplayed()).toBe(true);
     await editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first().click();
     await expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
@@ -528,8 +537,6 @@ describe('Lexicon E2E Editor List and Entry', async () => {
         configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, englishISIndex), true);
       await configPage.applyButton.click();
       await Utils.clickBreadcrumb(constants.testProjectName);
-      // browser.sleep needs to avoid warnings.
-      await browser.sleep(500);
       await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     });
 
@@ -545,9 +552,12 @@ describe('Lexicon E2E Editor List and Entry', async () => {
       await configPage.get();
       await configPage.tabs.unified.click();
       await configPage.unifiedPane.fieldSpecificButton(lexemeLabel).click();
+      await browser.wait(() => configPage.applyButton, constants.conditionTimeout);
       await util.setCheckbox(
         configPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox(lexemeLabel, englishISIndex), false);
       await configPage.applyButton.click();
+      // browser.sleep needs to avoid error informations.
+      await browser.sleep(500);
       await Utils.clickBreadcrumb(constants.testProjectName);
       await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     });

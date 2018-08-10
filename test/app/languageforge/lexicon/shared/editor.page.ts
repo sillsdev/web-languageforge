@@ -1,4 +1,4 @@
-import {browser, by, element, ExpectedConditions} from 'protractor';
+import {browser, by, element, ExpectedConditions, utils} from 'protractor';
 
 import {ElementArrayFinder, ElementFinder} from 'protractor/built/element';
 import {MockUploadElement} from '../../../bellows/shared/mock-upload.element';
@@ -197,6 +197,7 @@ export class EditorPage {
       // Returns the first (topmost) lexeme regardless of its wsid
       const lexeme = this.edit.fields.get(0);
       // await console.log("Print lexeme variable" + lexeme);
+      browser.wait(() => this.editorUtil.dcMultitextToFirstValue(lexeme), Utils.conditionTimeout);
       return await this.editorUtil.dcMultitextToFirstValue(lexeme);
     },
 
@@ -277,9 +278,9 @@ export class EditorPage {
       captions: EditorUtil.getOneField('Pictures')
         .all(by.css('.input-group > .dc-text input')),
       removeImages: EditorUtil.getOneField('Pictures').all(by.className('fa-trash')),
-      getFileName: (index: number) => {
-        return this.editorUtil.getOneFieldValue('Pictures').then((pictures: any) =>
-          pictures[index].fileName
+      getFileName: async (index: number) => {
+        return await this.editorUtil.getOneFieldValue('Pictures').then(async (pictures: any) =>
+          await pictures[index].fileName
         );
       },
 

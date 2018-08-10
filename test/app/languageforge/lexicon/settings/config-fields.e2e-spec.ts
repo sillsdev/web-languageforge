@@ -24,6 +24,7 @@ describe('Lexicon E2E Configuration Fields', async () => {
 
   it('check first entry for field order', async () => {
     await editorPage.edit.showHiddenFields();
+    await browser.wait(() => editorPage.edit.getFieldLabel(0), Utils.conditionTimeout);
     await expect<any>(editorPage.edit.getFieldLabel(0).getText()).toEqual('Word');
     await expect<any>(editorPage.edit.getFieldLabel(1).getText()).toEqual('Citation Form');
     await expect<any>(editorPage.edit.getFieldLabel(2).getText()).toEqual('Pronunciation');
@@ -32,8 +33,10 @@ describe('Lexicon E2E Configuration Fields', async () => {
   it('check first entry for field-specific input systems', async () => {
     const citationFormLabel = 'Citation Form';
     const scientificNameLabel = 'Scientific Name';
+    await browser.wait(() => editorPage.edit.getMultiTextInputSystems(citationFormLabel), Utils.conditionTimeout);
     await expect<any>(editorPage.edit.getMultiTextInputSystems(citationFormLabel).count()).toEqual(1);
     await expect<any>(editorPage.edit.getMultiTextInputSystems(citationFormLabel).get(0).getText()).toEqual('th');
+    await browser.wait(() => editorPage.edit.getMultiTextInputSystems(scientificNameLabel), Utils.conditionTimeout);
     await expect<any>(editorPage.edit.getMultiTextInputSystems(scientificNameLabel).count()).toEqual(1);
     await expect<any>(editorPage.edit.getMultiTextInputSystems(scientificNameLabel).get(0).getText()).toEqual('en');
   });
@@ -41,9 +44,11 @@ describe('Lexicon E2E Configuration Fields', async () => {
   it('can go to Configuration and select unified Fields tab', async () => {
     await expect<any>(configPage.settingsMenuLink.isDisplayed()).toBe(true);
     await configPage.get();
+    await browser.wait(() => configPage.applyButton, Utils.conditionTimeout);
     await expect<any>(configPage.applyButton.isDisplayed()).toBe(true);
     await expect<any>(configPage.applyButton.isEnabled()).toBe(false);
     await configPage.tabs.unified.click();
+    await browser.wait(() => configPage.unifiedPane.inputSystem.addInputSystemButton, Utils.conditionTimeout);
     await expect<any>(configPage.unifiedPane.inputSystem.addInputSystemButton.isDisplayed()).toBe(true);
     await expect<any>(configPage.unifiedPane.entry.addCustomEntryButton.isDisplayed()).toBe(true);
     await expect<any>(configPage.unifiedPane.sense.addCustomSenseButton.isDisplayed()).toBe(true);
@@ -147,8 +152,10 @@ describe('Lexicon E2E Configuration Fields', async () => {
     it('check first entry for changed field-specific input systems', async () => {
       const citationFormLabel = 'Citation Form';
       const scientificNameLabel = 'Scientific Name';
+      // await browser.wait(() => editorPage.edit.getMultiTextInputSystems(citationFormLabel), Utils.conditionTimeout);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(citationFormLabel).count()).toEqual(1);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(citationFormLabel).get(0).getText()).toEqual('th');
+    // await browser.wait(() => editorPage.edit.getMultiTextInputSystems(scientificNameLabel), Utils.conditionTimeout);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(scientificNameLabel).count()).toEqual(2);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(scientificNameLabel).get(0).getText()).toEqual('en');
       await expect<any>(editorPage.edit.getMultiTextInputSystems(scientificNameLabel).get(1).getText()).toEqual('th');
@@ -159,6 +166,7 @@ describe('Lexicon E2E Configuration Fields', async () => {
     it('can reorder Entry rows back to how they were', async () => {
       await browser.executeScript(Utils.simulateDragDrop, configPage.unifiedPane.entry.rows().get(2).getWebElement(),
         configPage.unifiedPane.entry.rows().get(0).getWebElement());
+      // await browser.wait(() => configPage.unifiedPane.entry.rowLabel(0), Utils.conditionTimeout);
       await expect<any>(configPage.unifiedPane.entry.rowLabel(0).getText()).toEqual('Word');
       await expect<any>(configPage.unifiedPane.entry.rowLabel(1).getText()).toEqual('Citation Form');
       await expect<any>(configPage.unifiedPane.entry.rowLabel(2).getText()).toEqual('Pronunciation');
@@ -166,11 +174,13 @@ describe('Lexicon E2E Configuration Fields', async () => {
     });
 
     it('can reorder Sense rows', async () => {
+      // await browser.wait(() => configPage.unifiedPane.sense.rowLabel(0), Utils.conditionTimeout);
       await expect<any>(configPage.unifiedPane.sense.rowLabel(0).getText()).toEqual('Gloss');
       await expect<any>(configPage.unifiedPane.sense.rowLabel(1).getText()).toEqual('Definition');
       await expect<any>(configPage.unifiedPane.sense.rowLabel(2).getText()).toEqual('Pictures');
       await browser.executeScript(Utils.simulateDragDrop, configPage.unifiedPane.sense.rows().get(2).getWebElement(),
         configPage.unifiedPane.sense.rows().get(0).getWebElement());
+      // await browser.wait(() => configPage.unifiedPane.sense.rowLabel(0), Utils.conditionTimeout);
       await expect<any>(configPage.unifiedPane.sense.rowLabel(0).getText()).toEqual('Gloss');
       await expect<any>(configPage.unifiedPane.sense.rowLabel(1).getText()).toEqual('Pictures');
       await expect<any>(configPage.unifiedPane.sense.rowLabel(2).getText()).toEqual('Definition');

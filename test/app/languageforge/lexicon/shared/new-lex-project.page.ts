@@ -1,4 +1,4 @@
-import {browser, by, element} from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 
 import {MockUploadElement} from '../../../bellows/shared/mock-upload.element';
 import {LexModals} from './lex-modals.util';
@@ -25,6 +25,7 @@ export class NewLexProjectPage {
   }
 
   async expectFormIsNotValid() {
+    await browser.sleep(300);
     await expect(this.nextButton.getAttribute('class')).not.toMatch(/btn-primary(?:\s|$)/);
   }
 

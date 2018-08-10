@@ -1,4 +1,4 @@
-import {browser, by, element, ExpectedConditions, utils} from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 
 import {Utils} from '../../../bellows/shared/utils';
 import {LexModals} from './lex-modals.util';

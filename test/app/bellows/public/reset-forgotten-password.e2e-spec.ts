@@ -119,6 +119,7 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
       // constants.conditionTimeout);
       // 'stalenessOf' occasionally failed with
       // WebDriverError: javascript error: document unloaded while waiting for result
+      await browser.sleep(100);
       await browser.wait(ExpectedConditions.visibilityOf(loginPage.infoMessages.get(0)), constants.conditionTimeout);
       await expect<any>(loginPage.username.isDisplayed()).toBe(true);
       await expect<any>(loginPage.form.isPresent()).toBe(true);

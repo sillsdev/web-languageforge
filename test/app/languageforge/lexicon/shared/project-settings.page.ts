@@ -25,10 +25,10 @@ export class ProjectSettingsPage {
   }
 
   async getByLink() {
-    await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
-    await this.settingsMenuLink.click();
-    await browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);
-    await this.projectSettingsLink.click();
+    await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout).then(async () =>
+    await this.settingsMenuLink.click());
+    await browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink),
+      this.conditionTimeout).then(async () => await this.projectSettingsLink.click());
   }
 
   tabDivs = element.all(by.className('tab-pane'));

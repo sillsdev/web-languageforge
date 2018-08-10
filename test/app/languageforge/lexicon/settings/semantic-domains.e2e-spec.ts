@@ -36,10 +36,14 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     await expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('English');
     await projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('ภาษาไทย');
     await projectSettingsPage.projectTab.saveButton.click();
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(1000);
     await expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
   });
 
   it('should be using Thai Semantic Domain', async () => {
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(500);
     await Utils.clickBreadcrumb(constants.testProjectName);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     await expect<any>(editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1Thai);
@@ -73,7 +77,8 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     await expect<any>(editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1Thai);
     await expect<any>(editorPage.edit.entryCountElem.isDisplayed()).toBe(true);
     await browser.refresh();
-    await browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.entryCountElem), Utils.conditionTimeout);
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(1000);
     await expect<any>(editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1Thai);
   });
 
@@ -96,9 +101,12 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
   });
 
   it('should be using English Semantic Domain after refresh', async () => {
+    await browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.entryCountElem),
+      Utils.conditionTimeout);
     await expect<any>(editorPage.edit.entryCountElem.isDisplayed()).toBe(true);
     await browser.refresh();
-    await browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.entryCountElem), Utils.conditionTimeout);
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(1000);
     await expect<any>(editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1English);
   });
 
