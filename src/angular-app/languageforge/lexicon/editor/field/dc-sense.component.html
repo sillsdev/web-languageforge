@@ -6,7 +6,15 @@
                 <span class="fa fa-ellipsis-v"></span>
             </a>
             <div class="dropdown-menu-right" uib-dropdown-menu>
-                <a href data-ng-click="$ctrl.remove($ctrl.index)" class="dropdown-item">Delete Meaning {{$ctrl.index+1}}</a>
+                <a href data-ng-click="$ctrl.remove($ctrl.index)" class="dropdown-item">
+                    <span class="fa fa-trash"></span> Delete Meaning {{$ctrl.index+1}}
+                </a>
+                <a href data-ng-show="$ctrl.index > 0" data-ng-click="$ctrl.move($ctrl.index, -1)" class="dropdown-item">
+                    <span class="fa fa-arrow-up"></span> Move Up
+                </a>
+                <a href data-ng-show="$ctrl.index+1 < $ctrl.numSenses()" data-ng-click="$ctrl.move($ctrl.index, 1)" class="dropdown-item">
+                    <span class="fa fa-arrow-down"></span> Move Down
+                </a>
             </div>
         </div>
         Meaning <span class="notranslate">{{$ctrl.index+1}}</span>
@@ -17,6 +25,7 @@
             <!--suppress JSUnusedLocalSymbols -->
             <div data-ng-repeat="example in $ctrl.model.examples">
                 <dc-example model="example" config="$ctrl.config.fields.examples" control="$ctrl.control" index="$index"
+                            move="$ctrl.moveExample" num-examples="$ctrl.numExamples"
                             parent-context-guid="$ctrl.contextGuid" remove="$ctrl.deleteExample" ></dc-example>
             </div>
             <div data-ng-if="$ctrl.control.rights.canEditEntry() && $ctrl.isAtEditorEntry()" class="addItem">

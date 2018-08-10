@@ -227,9 +227,8 @@ describe('SFChecks E2E project settings page - project manager', async () => {
 
   describe('communication settings tab', async () => {
 
-    it('is not visible for project manager', async () => {
-      await browser.sleep(500);
-      await expect<any>(projectSettingsPage.tabs.communication.isPresent()).toBe(false);
+    it('is visible for project manager', () => {
+      expect<any>(projectSettingsPage.tabs.communication.isDisplayed()).toBe(true);
     });
 
     describe('as a system admin', async () => {

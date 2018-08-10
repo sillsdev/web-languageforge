@@ -15,18 +15,45 @@ describe('Bellows E2E User Profile app', async () => {
   // Run the Activity E2E as each test user
   await usernames.forEach(expectedUsername => {
 
+    const newEmail = 'newemail@example.com';
+    let newColor: string;
+    let newShape: string;
+    let newMobilePhone: string;
+    let expectedAvatar: string;
+    let originalEmail: string;
+    let password: string;
+    let expectedFullname: string;
+
+    switch (expectedUsername) {
+      case constants.memberUsername:
+        newColor = 'Blue';
+        newShape = 'Elephant';
+        newMobilePhone = '+1876 5555555';
+        expectedAvatar = userProfile.blueElephantAvatarUri;
+        originalEmail = constants.memberEmail;
+        password = constants.memberPassword;
+        expectedFullname = constants.memberName;
+        break;
+      case constants.managerUsername:
+        newColor = 'Gold';
+        newShape = 'Pig';
+        newMobilePhone = '+1876 911';
+        expectedAvatar = userProfile.goldPigAvatarUri;
+        originalEmail = constants.managerEmail;
+        password = constants.managerPassword;
+        expectedFullname = constants.managerName;
+        break;
+    }
+
+    async function logInAsRole() {
+      if (expectedUsername === constants.memberUsername) await loginPage.loginAsMember();
+      else if (expectedUsername === constants.managerUsername) await loginPage.loginAsManager();
+    }
+
     // Perform activity E2E tests according to the different roles
     describe('Running as: ' + expectedUsername, async () => {
       it('Logging in', async () => {
-        // Login before test to ensure proper role
-        switch (expectedUsername) {
-          case constants.memberUsername:
-            await loginPage.loginAsUser();
-            break;
-          case constants.managerUsername:
-            await loginPage.loginAsManager();
-            break;
-        }
+        await logInAsRole();
       });
 
       it('Verify initial "My Account" settings created from setupTestEnvironment.php', async () => {
@@ -45,18 +72,8 @@ describe('Bellows E2E User Profile app', async () => {
       it('Verify initial "About Me" settings created from setupTestEnvironment.php', async () => {
         await userProfile.getAboutMe();
 
-        let expectedFullname: string = '';
         const expectedAge: string = '';
         const expectedGender: string = '';
-
-        switch (expectedUsername) {
-          case constants.memberUsername:
-            expectedFullname = constants.memberName;
-            break;
-          case constants.managerUsername:
-            expectedFullname = constants.managerName;
-            break;
-        }
 
         await expect<any>(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(expectedFullname);
         await expect<any>(userProfile.aboutMeTab.age.getAttribute('value')).toEqual(expectedAge);
@@ -67,30 +84,6 @@ describe('Bellows E2E User Profile app', async () => {
         await userProfile.getMyAccount();
 
         // Change profile except username
-        const newEmail = 'newemail@example.com';
-        let newColor: string;
-        let newShape: string;
-        let newMobilePhone: string;
-        let expectedAvatar: string;
-        let originalEmail: string;
-
-        switch (expectedUsername) {
-          case constants.memberUsername:
-            newColor = 'Blue';
-            newShape = 'Elephant';
-            newMobilePhone = '+1876 5555555';
-            expectedAvatar = userProfile.blueElephantAvatarUri;
-            originalEmail = constants.memberEmail;
-            break;
-          case constants.managerUsername:
-            newColor = 'Gold';
-            newShape = 'Pig';
-            newMobilePhone = '+1876 911';
-            expectedAvatar = userProfile.goldPigAvatarUri;
-            originalEmail = constants.managerEmail;
-            break;
-        }
-
         await userProfile.myAccountTab.updateEmail(newEmail);
 
         // Ensure "Blue" won't match "Steel Blue", etc.
@@ -104,11 +97,13 @@ describe('Bellows E2E User Profile app', async () => {
 
         // Change Password tested in changepassword e2e
         // Submit updated profile
-        await userProfile.myAccountTab.saveBtn.click().then(async () => {
-          await browser.refresh();
-          await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
+        await userProfile.myAccountTab.saveBtn.click();
+      });
+
+      it('Verify that new profile settings persisted', async () => {
+        await browser.refresh();
+        await browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
           constants.conditionTimeout);
-        });
 
         // Verify values.
         await expect<any>(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(newEmail);
@@ -130,20 +125,7 @@ describe('Bellows E2E User Profile app', async () => {
       });
 
       it('Update and store different username. Login with new credentials', async () => {
-        const newEmail = 'newemail@example.com';
-        let originalEmail: string;
-
-        // Login before test to ensure proper role
-        switch (expectedUsername) {
-          case constants.memberUsername:
-            originalEmail = constants.memberEmail;
-            await loginPage.loginAsUser();
-            break;
-          case constants.managerUsername:
-            originalEmail = constants.managerEmail;
-            await loginPage.loginAsManager();
-            break;
-        }
+        await logInAsRole();
 
         await userProfile.getMyAccount();
 
@@ -189,13 +171,7 @@ describe('Bellows E2E User Profile app', async () => {
         await expect<any>(loginPage.infoMessages.count()).toBe(1);
         await expect(loginPage.infoMessages.first().getText()).toContain('Username changed. Please login.');
 
-        switch (expectedUsername) {
-          case constants.memberUsername:
-            await loginPage.login(newUsername, constants.memberPassword);
-            break;
-          case constants.managerUsername:
-            await loginPage.login(newUsername, constants.managerPassword);
-        }
+        await loginPage.login(newUsername, password);
 
         await userProfile.getMyAccount();
         await expect<any>(userProfile.myAccountTab.username.getAttribute('value')).toEqual(newUsername);
@@ -206,14 +182,7 @@ describe('Bellows E2E User Profile app', async () => {
       });
 
       it('Update and store "About Me" settings', async () => {
-        switch (expectedUsername) {
-          case constants.memberUsername:
-            await loginPage.loginAsUser();
-            break;
-          case constants.managerUsername:
-            await loginPage.loginAsManager();
-            break;
-        }
+        await logInAsRole();
 
         await userProfile.getAboutMe();
 

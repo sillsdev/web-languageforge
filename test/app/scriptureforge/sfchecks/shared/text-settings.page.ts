@@ -5,10 +5,9 @@ import {SfTextPage} from './text.page';
 export class SfTextSettingsPage {
   private readonly textPage = new SfTextPage();
 
-  // currently this page is called questions-settings.html but will be refactored. IJH 2014-06
-  async get(projectName: any, textTitle: any) {
-    await this.textPage.get(projectName, textTitle);
-    await SfTextPage.clickTextSettingsButton();
+  get(projectName: any, textTitle: any) {
+    this.textPage.get(projectName, textTitle);
+    SfTextPage.clickTextSettingsButton();
   }
 
   tabs = {

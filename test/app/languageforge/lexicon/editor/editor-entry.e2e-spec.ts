@@ -450,11 +450,10 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('word with multiple meanings: edit page has correct example sentences, translations', async () => {
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. DDW
     await expect<any>(editorUtil.getFieldValues('Sentence')).toEqual([
-      '', { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
+      { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value },
-      '', { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
+      { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value }
     ]);
     await expect<any>(editorUtil.getFieldValues('Translation')).toEqual([
@@ -480,12 +479,20 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     ]);
 
     // First item is empty Etymology Source, now that View Settings all default to visible. IJH
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
     await expect<any>(editorUtil.getFieldValues('Source')).toEqual([
-      { en: '' }, '',
-      { en: constants.testMultipleMeaningEntry1.senses[0].source.en.value }, '',
+      { en: constants.testMultipleMeaningEntry1.senses[0].source.en.value },
       { en: constants.testMultipleMeaningEntry1.senses[1].source.en.value }
     ]);
+  });
+
+  it('senses can be reordered and deleted', async () => {
+    await editorPage.edit.sense.actionMenus.first().click();
+    await editorPage.edit.sense.moveDown.first().click();
+    await expect<any>(editorUtil.getFieldValues('Definition')).toEqual([
+      { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value },
+      { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value }
+    ]);
+    await editorPage.edit.saveBtn.click();
   });
 
   it('back to browse page, create new word', async () => {

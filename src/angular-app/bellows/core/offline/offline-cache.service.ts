@@ -37,11 +37,16 @@ export class OfflineCacheService {
     }));
   }
 
-  setObjectsInStore(storeName: string, projectId: string, items: any[]): angular.IPromise<any> {
+  setObjectsInStore(storeName: string, projectId: string, items: any[]): angular.IPromise<any[]> {
     const store: LocalForage = this.getStore(storeName);
     return this.$q.all(items.map(item => {
       return store.setItem(item.id, OfflineCacheService.addProjectId(item, projectId));
     }));
+  }
+
+  setObjectInStore(storeName: string, projectId: string, item: any): angular.IPromise<any> {
+    const store: LocalForage = this.getStore(storeName);
+    return this.$q.when(store.setItem(item.id, OfflineCacheService.addProjectId(item, projectId)));
   }
 
   private getStore(storeName: string): LocalForage {

@@ -13,6 +13,8 @@ export class FieldSenseController implements angular.IController {
   control: FieldControl;
   index: number;
   parentContextGuid: string;
+  numSenses: () => number;
+  move: (index: number, distance: number) => void;
   remove: (index: number) => void;
 
   contextGuid: string;
@@ -47,6 +49,19 @@ export class FieldSenseController implements angular.IController {
     this.control.hideRightPanel();
   }
 
+  numExamples = (): number => this.model.examples.length;
+
+  // noinspection JSUnusedGlobalSymbols
+  moveExample = (index: number, distance: number): void => {
+    const examples = this.model.examples;
+    const example = examples[index];
+    const newPosition = index + distance;
+    if (newPosition < 0 || newPosition >= examples.length) throw new Error();
+    examples.splice(index, 1); // remove 1 element starting from index
+    examples.splice(newPosition, 0, example); // insert example, overwriting 0 elements
+  }
+
+  // noinspection JSUnusedGlobalSymbols
   deleteExample = (index: number): void => {
     const deletemsg = 'Are you sure you want to delete the example <b>\' ' +
       LexiconUtilityService.getExample(this.control.config, this.config.fields.examples as LexConfigFieldList,
@@ -68,7 +83,9 @@ export const FieldSenseComponent: angular.IComponentOptions = {
     control: '<',
     index: '<',
     parentContextGuid: '<',
-    remove: '&'
+    numSenses: '<',
+    move: '<',
+    remove: '<'
   },
   controller: FieldSenseController,
   templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-sense.component.html'

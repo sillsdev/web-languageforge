@@ -18,7 +18,6 @@
     "angular-moment-picker": "git+https://github.com/sillsdev/angular-moment-picker.git",
     "angular-route": "^1.6.5",
     "angular-sanitize": "^1.6.10",
-    "angular-sortable-view": "0.0.15",
     "angular-ui-bootstrap-4": "git+https://github.com/sillsdev/bootstrap.git",
     "angular-ui-router": "0.4.2",
     "angular-ui-validate": "^1.2.3",
@@ -119,6 +118,7 @@
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-livereload-plugin": "^0.11.0",
     "webpack-merge": "^4.1.0",
+    "worker-loader": "^2.0.0",
     "yargs": "^6.3.0"
   },
   "jscsConfig": {

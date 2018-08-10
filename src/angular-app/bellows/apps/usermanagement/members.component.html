@@ -11,7 +11,7 @@
             </div>
             <div class="col-auto">
                 <input class="form-control" type="text" data-ng-model="$ctrl.userFilter" placeholder="Member List Filter">
-                <a data-ng-show="$ctrl.userFilter != ''" title="Clear Filter" data-ng-click="$ctrl.userFilter = ''"><i class="fa fa-times" style="color:gray"></i></a>
+                <a class="clear-search-button" data-ng-show="$ctrl.userFilter != ''" title="Clear Filter" data-ng-click="$ctrl.userFilter = ''"><i class="fa fa-times" style="color:gray"></i></a>
             </div>
         </div>
     </form>
@@ -22,8 +22,7 @@
                 <ul>
                     <li typeahead-item="user" data-ng-repeat="user in $ctrl.users" class="typeahead-item">
                         <img width="32px" data-ng-src="{{$ctrl.imageSource(user.avatarRef)}}" class="left">
-                        <p class="name">{{user.name}}</p>
-                        <p class="email">{{user.email}}</p>
+                        <span class="name">{{user.name}}</span>
                     </li>
                 </ul>
             </pui-typeahead>

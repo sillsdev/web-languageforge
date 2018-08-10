@@ -107,15 +107,6 @@ export class ProjectService {
     return this.api.call('project_usersDto', [], callback);
   }
 
-  /**
-   * @deprecated use listUsers instead
-   * @param {JsonRpcCallback} callback
-   * @returns {angular.IPromise<any>}
-   */
-  users(callback?: JsonRpcCallback) {
-    return this.api.call('project_usersDto', [], callback);
-  }
-
   getJoinRequests(callback?: JsonRpcCallback) {
     return this.api.call('project_getJoinRequests', [], callback);
   }
@@ -125,16 +116,6 @@ export class ProjectService {
   }
 
   deleteProject(projectIds: string[], callback?: JsonRpcCallback) {
-    return this.api.call('project_delete', [projectIds], callback);
-  }
-
-  /**
-   * @deprecated use deleteProject instead
-   * @param {string[]} projectIds
-   * @param {JsonRpcCallback} callback
-   * @returns {angular.IPromise<any>}
-   */
-  remove(projectIds: string[], callback?: JsonRpcCallback) {
     return this.api.call('project_delete', [projectIds], callback);
   }
 
@@ -163,7 +144,7 @@ export class ProjectService {
   }
 
   runReport(reportName: string, params: any[] = [], callback?: JsonRpcCallback) {
-    this.api.call('project_management_report_' + reportName, params, callback);
+    return this.api.call('project_management_report_' + reportName, params, callback);
   }
 
 }

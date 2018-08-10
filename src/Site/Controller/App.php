@@ -93,7 +93,7 @@ class App extends Base
             $this->addJavascriptFiles($appModel->siteFolder . '/lexicon', ['js/vendor', 'js/assets']);
         }
 
-        $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive');
+        $this->addCssFiles(NG_BASE_FOLDER . 'bellows/shared');
         $this->addCssFiles($appModel->appFolder, ['node_modules']);
 
         $this->addSemanticDomainFile($app, $appModel, $projectId);
@@ -290,7 +290,7 @@ class AppModel {
         return (
             $appName != '' &&
             file_exists($appFolder) &&
-            file_exists("$appFolder/views")
+            file_exists("$appFolder/$parentAppName-$appName.html")
         );
     }
 

@@ -1,0 +1,12 @@
+[dtr-draggable] input.picklist-row {
+  margin-bottom: 2px;
+  margin-top: 0;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: none;
+  width: auto;
+  background-color: #f8f9fa;
+  &:focus {
+    background-color: #fff;
+  }
+}

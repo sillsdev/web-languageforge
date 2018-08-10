@@ -399,6 +399,7 @@ export class LexiconEditorController implements angular.IController {
 
         // refresh data will add the new entry to the entries list
         this.editorService.refreshEditorData().then(() => {
+          this.activityService.markRefreshRequired();
           if (entry && isNewEntry) {
             this.setCurrentEntry(this.entries[this.editorService.getIndexInList(entry.id, this.entries)]);
             this.editorService.removeEntryFromLists(newEntryTempId);
@@ -646,6 +647,8 @@ export class LexiconEditorController implements angular.IController {
   }
 
   showActivityFeed = (): void => {
+    // Ideally this would automatically happen when activity is added but not possible yet
+    this.activityService.markRefreshRequired();
     this.showRightPanel('#lexAppActivityFeed');
   }
 
@@ -1104,7 +1107,7 @@ export class LexiconEditorController implements angular.IController {
 
   private prepEntryForUpdate(entry: LexEntry): LexEntry {
     const entryForUpdate: LexEntry = this.recursiveRemoveProperties(angular.copy(entry),
-      ['guid', 'mercurialSha', 'authorInfo', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+      ['mercurialSha', 'authorInfo', 'dateCreated', 'dateModified', '$$hashKey']);
     return this.prepCustomFieldsForUpdate(entryForUpdate);
   }
 
