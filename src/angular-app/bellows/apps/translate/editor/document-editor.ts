@@ -31,6 +31,7 @@ export abstract class DocumentEditor {
   private _quill: Quill;
   private initialSegmentRef: string = '';
   private initialSegmentChecksum: number;
+  private _isOpening: boolean = true;
 
   constructor(protected readonly $q: angular.IQService, protected readonly machine: MachineService,
               private readonly realTime: RealTimeService) {
@@ -93,6 +94,10 @@ export abstract class DocumentEditor {
     }
   }
 
+  get isOpening(): boolean {
+    return this._isOpening;
+  }
+
   setInitialSegment(segmentRef: string, checksum: number): void {
     this.initialSegmentRef = segmentRef;
     this.initialSegmentChecksum = checksum;
@@ -130,8 +135,17 @@ export abstract class DocumentEditor {
 
   openDocumentSet(collection: string, documentSetId: string): void {
     if (this.documentSetId !== documentSetId) {
+      this._isOpening = true;
+      // remove placeholder text while the document is opening
+      const editorElem = this.quill.container.getElementsByClassName('ql-editor')[0];
+      const placeholderText = editorElem.getAttribute('data-placeholder');
+      editorElem.setAttribute('data-placeholder', '');
       this.documentSetId = documentSetId;
-      this.realTime.createAndSubscribeRichTextDoc(collection, this.docId, this.quill);
+      this.realTime.createAndSubscribeRichTextDoc(collection, this.docId, this.quill)
+        .finally(() => {
+          editorElem.setAttribute('data-placeholder', placeholderText);
+          this._isOpening = false;
+        });
       this.segmenter.reset();
     }
   }

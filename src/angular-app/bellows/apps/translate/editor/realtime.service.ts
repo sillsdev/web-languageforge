@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 import Quill, { TextChangeHandler } from 'quill';
 import * as RichText from 'rich-text';
 import { Connection, Doc, OnOpsFunction, types } from 'sharedb/lib/client';
@@ -15,9 +16,9 @@ export class RealTimeService {
 
   private pendingOpCount: { [id: string]: number } = {};
 
-  static $inject = ['$window',
-                    'documentsOfflineCache'];
-  constructor(private readonly $window: angular.IWindowService,
+  static $inject = ['$window', '$q',
+    'documentsOfflineCache'];
+  constructor(private readonly $window: angular.IWindowService, private readonly $q: angular.IQService,
               private readonly docsOfflineCache: DocumentsOfflineCacheService) {
     types.register(RichText.type);
     // Open WebSocket connection to ShareDB server
@@ -35,7 +36,7 @@ export class RealTimeService {
     }
   }
 
-  createAndSubscribeRichTextDoc(collection: string, id: string, quill: Quill) {
+  createAndSubscribeRichTextDoc(collection: string, id: string, quill: Quill): angular.IPromise<void> {
     let doc: Doc;
     if (id in this.docSubs) {
       doc = this.docSubs[id];
@@ -45,21 +46,25 @@ export class RealTimeService {
       this.docSubs[id] = doc;
     }
 
+    const deferred = this.$q.defer<void>();
     if (DocumentsOfflineCacheService.canCache()) {
       this.docsOfflineCache.getDocument(id)
         .then(docData => {
           if (docData != null) {
             doc.ingestSnapshot(docData, err => {
-              if (err) throw err;
-              this.subscribe(id, doc, quill);
+              if (err) {
+                deferred.reject(err);
+              }
+              this.subscribe(id, doc, quill, deferred);
             });
           } else {
-            this.fetchOrCreate(id, doc, quill);
+            this.fetchOrCreate(id, doc, quill, deferred);
           }
-        }).catch(() => this.fetchOrCreate(id, doc, quill));
+        }).catch(() => this.fetchOrCreate(id, doc, quill, deferred));
     } else {
-      this.fetchOrCreate(id, doc, quill);
+      this.fetchOrCreate(id, doc, quill, deferred);
     }
+    return deferred.promise;
   }
 
   disconnectRichTextDoc(id: string, quill: Quill) {
@@ -97,26 +102,32 @@ export class RealTimeService {
     return protocol + '://' + this.$window.location.host + '/sharedb/';
   }
 
-  private fetchOrCreate(id: string, doc: Doc, quill: Quill): void {
+  private fetchOrCreate(id: string, doc: Doc, quill: Quill, deferred: angular.IDeferred<void>): void {
     doc.fetch(err => {
-      if (err) throw err;
+      if (err) {
+        deferred.reject(err);
+      }
 
       if (doc.type === null) {
         doc.create([{ insert: '' }], RichText.type.name, { source: quill }, createErr => {
-          if (createErr) throw createErr;
+          if (createErr) {
+            deferred.reject(createErr);
+          }
           this.updateDocumentCache(doc);
-          this.subscribe(id, doc, quill);
+          this.subscribe(id, doc, quill, deferred);
         });
       } else {
         this.updateDocumentCache(doc);
-        this.subscribe(id, doc, quill);
+        this.subscribe(id, doc, quill, deferred);
       }
     });
   }
 
-  private subscribe(id: string, doc: Doc, quill: Quill): void {
+  private subscribe(id: string, doc: Doc, quill: Quill, deferred: angular.IDeferred<void>): void {
     doc.subscribe(err => {
-      if (err) throw err;
+      if (err) {
+        deferred.reject(err);
+      }
 
       quill.setContents(doc.data);
       quill.getModule('history').clear();
@@ -142,6 +153,7 @@ export class RealTimeService {
       };
 
       doc.on('op', this.onOps[id]);
+      deferred.resolve();
     });
   }
 
