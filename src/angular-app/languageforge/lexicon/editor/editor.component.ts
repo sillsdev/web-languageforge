@@ -90,6 +90,7 @@ export class LexiconEditorController implements angular.IController {
   static $inject = ['$filter', '$interval',
     '$q', '$scope',
     '$state',
+    '$stateParams',
     '$window',
     'activityService',
     'applicationHeaderService',
@@ -107,6 +108,7 @@ export class LexiconEditorController implements angular.IController {
               private readonly $q: angular.IQService,
               private readonly $scope: angular.IScope,
               private readonly $state: angular.ui.IStateService,
+              private readonly $stateParams: angular.ui.IStateParamsService,
               private readonly $window: angular.IWindowService,
               private readonly activityService: ActivityService,
               private readonly applicationHeaderService: ApplicationHeaderService,
@@ -133,8 +135,13 @@ export class LexiconEditorController implements angular.IController {
 
     this.$scope.$on('$locationChangeStart', (event, next, current) => {
       if (current.includes('#!/editor/entry') && !next.includes('#!/editor/entry')) {
-        this.cancelAutoSaveTimer();
-        this.saveCurrentEntry();
+        for (let key in this.currentEntry.lexeme) {
+          if (this.currentEntry.lexeme[key].value) {
+            this.saveCurrentEntry();
+            this.setCurrentEntry();
+            break;
+          }
+        }
       }
     });
 
@@ -211,9 +218,24 @@ export class LexiconEditorController implements angular.IController {
   }
 
   returnToList(): void {
-    this.saveCurrentEntry();
-    this.setCurrentEntry();
-    this.$state.go('editor.list');
+    for (let key in this.currentEntry.lexeme)   {
+      if (this.currentEntry.lexeme[key].value) {
+        this.saveCurrentEntry();
+        this.setCurrentEntry();
+        break;
+      }
+    }
+    for (let entry of this.entries) {
+      if (LexiconEditorController.entryIsNew(entry)) {
+       this.editorService.removeEntryFromLists(entry.id);
+      }
+    }
+    this.$state.go('editor.list', {
+      sortBy: this.$stateParams.sortBy,
+      sortReverse: this.$stateParams.sortReverse,
+      filterType: this.$stateParams.filterType,
+      filterBy: this.$stateParams.filterBy
+    }, {notify: true});
   }
 
   isAtEditorList(): boolean {
@@ -240,40 +262,40 @@ export class LexiconEditorController implements angular.IController {
     const clear = this.$scope.$watch(() => this.entryListModifiers.sortOptions.length > 0, (ready: boolean) => {
       if (!ready) return;
       clear(); // remove the watcher
-      const sortBy = 'sortBy';
-      const sortReverse = 'sortReverse';
-      const filterType = 'filterType';
-      const filterBy = 'filterBy';
       this.$state.go(this.$state.current.name, {
-        sortBy: this.entryListModifiers.sortBy.label,
-        sortReverse: this.entryListModifiers.sortReverse,
-        filterType: this.entryListModifiers.filterType,
-        filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
-      }, { notify: false });
-      if (this.$state.params[sortBy]) {
+          sortBy: this.entryListModifiers.sortBy.label,
+          sortReverse: this.entryListModifiers.sortReverse,
+          filterType: this.entryListModifiers.filterType,
+          filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+        }, { notify: true });
+
+      if (this.$stateParams.sortBy) {
         this.entryListModifiers.sortBy =
-        this.setSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params[sortBy])[0];
+        this.setSelectedFilter(this.entryListModifiers.sortOptions, this.$stateParams.sortBy)[0];
         this.sortEntries(true);
       }
 
-      if (this.$state.params[sortReverse] === 'true') {
+      if (this.$stateParams.sortReverse === 'true') {
         this.entryListModifiers.sortReverse = true;
         this.sortEntries(true);
-      }
-      if (this.$state.params[filterType]) {
-        this.entryListModifiers.filterType = this.$state.params[filterType];
+      } else {
+        this.entryListModifiers.sortReverse = false;
+        this.sortEntries(false);
+       }
+      if (this.$stateParams.filterType) {
+        this.entryListModifiers.filterType = this.$stateParams.filterType;
         this.filterEntries(true);
       }
-      if (this.$state.params[filterBy]) {
+      if (this.$stateParams.filterBy) {
         this.entryListModifiers.filterBy =
-        this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params[filterBy])[0];
+        this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$stateParams.filterBy)[0];
         this.filterEntries(true);
       }
     });
   }
 
   sortEntries(args: any): void {
-    this.$state.go('editor.entry', {
+    this.$state.go(this.$state.current.name, {
       sortBy: this.entryListModifiers.sortBy.label,
       sortReverse: this.entryListModifiers.sortReverse,
       filterType: this.entryListModifiers.filterType,
@@ -285,7 +307,7 @@ export class LexiconEditorController implements angular.IController {
   }
 
   filterEntries(args: any): void {
-    this.$state.go('editor.entry', {
+    this.$state.go(this.$state.current.name, {
       sortBy: this.entryListModifiers.sortBy.label,
       sortReverse: this.entryListModifiers.sortReverse,
       filterType: this.entryListModifiers.filterType,
@@ -957,7 +979,13 @@ export class LexiconEditorController implements angular.IController {
     if (this.$state.is('editor.entry')) {
       this.$state.go('.', { entryId }, { notify: false });
     } else {
-      this.$state.go('editor.entry', { entryId });
+      this.$state.go('editor.entry', {
+        entryId,
+        sortBy: this.$stateParams.sortBy,
+        sortReverse: this.$stateParams.sortReverse,
+        filterType: this.$stateParams.filterType,
+        filterBy: this.$stateParams.filterBy
+      });
     }
   }
 
@@ -1304,7 +1332,6 @@ export class LexiconEditorListController implements angular.IController {
     this.lexProjectService.setBreadcrumbs('editor/list', 'List');
     this.lexProjectService.setupSettings();
   }
-
 }
 
 export class LexiconEditorEntryController implements angular.IController {
@@ -1315,7 +1342,6 @@ export class LexiconEditorEntryController implements angular.IController {
     this.lexProjectService.setBreadcrumbs('editor/entry', 'Edit');
     this.lexProjectService.setupSettings();
   }
-
 }
 
 export const LexiconEditorComponent: angular.IComponentOptions = {

@@ -32,7 +32,7 @@ export const LexiconAppModule = angular
       // this is needed to allow style="font-family" on ng-bind-html elements
       $sanitizeProvider.addValidAttrs(['style']);
 
-      $urlRouterProvider.otherwise('/editor/list');
+      $urlRouterProvider.otherwise('/editor/list?sortBy=Word&sortReverse=false&filterType=isNotEmpty&filterBy=null');
 
       // State machine from ui.router
       $stateProvider
