@@ -140,8 +140,11 @@
                     data-on-editor-created="$ctrl.onQuillCreated(editor, $ctrl.source)"
                     data-on-content-changed="$ctrl.onContentChanged($ctrl.source, delta)"
                     data-on-selection-changed="$ctrl.onSelectionChanged($ctrl.source)"
-                    data-ng-model="$ctrl.source.html" data-read-only="!$ctrl.hasDocumentSets() || $ctrl.isScripture"
+                    data-ng-model="$ctrl.source.html" data-read-only="!$ctrl.hasDocumentSets() || $ctrl.isScripture || $ctrl.source.isOpening"
                     data-placeholder="&#8203;enter text here or drop a file"></ng-quill-editor>
+                <div data-ng-if="$ctrl.source.isOpening" class="document-opening-indicator">
+                    <i class="fa fa-spinner fa-spin"></i>
+                </div>
             </div>
             <div class="col-sm-6 d-sm-none" data-ng-if="$ctrl.hasDocumentSets()">
                 <button type="button" class="btn btn-std btn-sm" data-ng-click="$ctrl.swapEditors()">
@@ -156,12 +159,15 @@
                     data-on-editor-created="$ctrl.onQuillCreated(editor, $ctrl.target)"
                     data-on-content-changed="$ctrl.onContentChanged($ctrl.target, delta)"
                     data-on-selection-changed="$ctrl.onSelectionChanged($ctrl.target)"
-                    data-ng-model="$ctrl.target.html" data-read-only="!$ctrl.hasDocumentSets()"
+                    data-ng-model="$ctrl.target.html" data-read-only="!$ctrl.hasDocumentSets() || $ctrl.target.isOpening"
                     data-placeholder="&#8203;enter text here or drop a file"
                     data-ng-class="{'template-editor': $ctrl.isScripture}"></ng-quill-editor>
                 <div class="ql-suggestions">
                     <ql-suggestion ql-suggestions="$ctrl.target.suggestions" ql-confidence="$ctrl.target.confidence"
-                                ql-insert-suggestion="$ctrl.target.insertSuggestion(suggestionIndex)"></ql-suggestion>
+                        ql-insert-suggestion="$ctrl.target.insertSuggestion(suggestionIndex)"></ql-suggestion>
+                </div>
+                <div data-ng-if="$ctrl.target.isOpening" class="document-opening-indicator">
+                    <i class="fa fa-spinner fa-spin"></i>
                 </div>
             </div>
         </div>
