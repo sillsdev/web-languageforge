@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+import * as moment from 'moment';
 
 import {BytesFilterFunction} from '../../../../bellows/core/filters';
 import {ModalService} from '../../../../bellows/core/modal/modal.service';
@@ -17,6 +18,7 @@ export class FieldAudioController implements angular.IController {
   dcProjectSlug: string;
 
   showAudioUpload: boolean = false;
+  showAudioRecorder: boolean = false;
 
   static $inject = ['$filter', '$state',
     'Upload', 'modalService',
@@ -135,6 +137,15 @@ export class FieldAudioController implements angular.IController {
           this.notice.setPercentComplete(Math.floor(100.0 * evt.loaded / evt.total));
         });
     });
+  }
+
+  audioRecorderCallback = (blob: Blob) => {
+    if (blob) {
+      const fileName = 'recording_' + moment.utc().format('YYYY_MM_DD_HH_mm_ss') + '.mp3';
+      const file = new File([blob], fileName);
+      this.uploadAudio(file);
+    }
+    this.showAudioRecorder = false;
   }
 
   // strips the timestamp file prefix (returns everything after the '_')
