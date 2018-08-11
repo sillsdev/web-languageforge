@@ -30,6 +30,7 @@
     "font-awesome": "^4.7.0",
     "intl-tel-input": "9.2.7",
     "jquery": "3.1.1",
+    "lamejs": "^1.2.0",
     "localforage": "^1.7.1",
     "machine": "https://build.palaso.org/guestAuth/repository/download/Machine_MachineTranslation/2.0.0-279/machine.tgz",
     "moment": "^2.18.1",

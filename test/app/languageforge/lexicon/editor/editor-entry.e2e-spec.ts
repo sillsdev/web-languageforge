@@ -220,8 +220,8 @@ describe('Lexicon E2E Editor List and Entry', () => {
   });
 
   it('word 2: audio Input System is not playable but has "upload" button (manager)', () => {
-    expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isPresent()).toBe(false);
+    expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isPresent()).toBe(false);
     expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
     expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
     expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isEnabled()).toBe(true);
@@ -253,8 +253,8 @@ describe('Lexicon E2E Editor List and Entry', () => {
   });
 
   it('word 2: audio Input System is not playable but has "upload" button (member)', () => {
-    expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isPresent()).toBe(false);
+    expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isPresent()).toBe(false);
     expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
     expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
     expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isEnabled()).toBe(true);
@@ -285,8 +285,8 @@ describe('Lexicon E2E Editor List and Entry', () => {
 
   it('word 2: audio Input System is not playable and does not have "upload" button (observer)',
     () => {
-      expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
-      expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
+      expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isPresent()).toBe(false);
+      expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isPresent()).toBe(false);
       expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
       expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
       expect<any>(editorPage.edit.audio.downloadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
