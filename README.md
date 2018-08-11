@@ -660,3 +660,7 @@ Before putting data into **ElasticSearch**, setup the index with settings and da
 - Ethan Clark
 - Ziqi Chen
 - Ye Joo Oh
+
+## Libraries used ##
+
+[lamejs](https://github.com/zhuker/lamejs) is used for encoding recorded audio and is based on [LAME](http://lame.sourceforge.net/), which is licensed under the terms of [the LGPL](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
