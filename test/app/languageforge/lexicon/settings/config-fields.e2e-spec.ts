@@ -18,6 +18,8 @@ describe('Lexicon E2E Configuration Fields', async () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
     await projectsPage.clickOnProjectName(constants.testProjectName);
+    // browser.sleep needs to avoid error informations.
+    await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     await expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
   });

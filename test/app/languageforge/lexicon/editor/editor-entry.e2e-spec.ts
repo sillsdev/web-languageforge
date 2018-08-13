@@ -49,9 +49,11 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('refresh returns to entry view', async () => {
+    // browser.sleep needs to avoid warnings
     await browser.sleep(1500);
     await expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
     await browser.refresh();
+    // browser.sleep needs to avoid warnings
     await browser.sleep(1500);
     await expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
   });
@@ -86,6 +88,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('citation form field overrides lexeme form in dictionary citation view', async () => {
+    // browser.sleep needs to avoid warnings
     await browser.sleep(300);
     await editorPage.edit.showHiddenFields();
     const citationFormMultiTextInputs = editorPage.edit.getMultiTextInputs('Citation Form');
@@ -101,6 +104,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('one picture and caption is present', async () => {
+    // browser.sleep needs to avoid warnings
     await browser.sleep(1000);
     await browser.wait(() => editorPage.edit.pictures.getFileName(0), constants.conditionTimeout);
     await expect(editorPage.edit.pictures.getFileName(0))
@@ -216,7 +220,6 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('file upload drop box is displayed when Upload is clicked', async () => {
-    // await browser.sleep(500);
     await browser.wait(() => editorPage.edit.audio.moreControls(lexemeLabel).first(), constants.conditionTimeout);
     await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(true);
     await expect<any>(editorPage.edit.audio.uploadDropBoxes(lexemeLabel).first().isDisplayed()).toBe(false);
@@ -254,6 +257,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     await loginPage.loginAsMember();
     await projectsPage.get();
     await projectsPage.clickOnProjectName(constants.testProjectName);
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
   });
 
@@ -290,6 +295,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     await loginPage.loginAsObserver();
     await projectsPage.get();
     await projectsPage.clickOnProjectName(constants.testProjectName);
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
   });
 
@@ -325,6 +332,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
     await projectsPage.clickOnProjectName(constants.testProjectName);
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
   });
 

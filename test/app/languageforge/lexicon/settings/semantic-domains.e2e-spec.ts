@@ -22,6 +22,8 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
     await projectsPage.clickOnProjectName(constants.testProjectName);
+    // browser.sleep needs to avoid error informations.
+    await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     await expect<any>(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
     await expect<any>(editorPage.edit.semanticDomain.values.first().getText()).toEqual(semanticDomain1dot1English);

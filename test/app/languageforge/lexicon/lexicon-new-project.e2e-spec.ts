@@ -456,6 +456,7 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await page.expectFormIsValid();
       await page.nextButton.click();
       await expect<any>(editorPage.browse.getEntryCount()).toBe(2);
+      // browser.sleep needs to avoid error informations.
       await browser.sleep(1000);
     });
 
@@ -478,6 +479,7 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await page.nextButton.click();
       await expect<any>(page.namePage.projectNameInput.isPresent()).toBe(false);
       await expect<any>(page.initialDataPage.browseButton.isPresent()).toBe(true);
+      // browser.sleep needs to avoid warnings.
       await browser.sleep(1000);
     });
 
@@ -490,6 +492,7 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await page.expectFormIsNotValid();
       await page.nextButton.click();
       await expect<any>(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
+      // browser.sleep needs to avoid warnings.
       await browser.sleep(1000);
     });
 
@@ -551,10 +554,13 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await page.formStatus.expectHasNoError();
       await expect<any>(page.nextButton.isEnabled()).toBe(true);
       await page.expectFormIsValid();
+      // browser.sleep needs to avoid warnings.
+      await browser.sleep(1000);
       await page.nextButton.click();
       await browser.wait(ExpectedConditions.visibilityOf(editorPage.browse.noEntriesElem), constants.conditionTimeout);
       await expect<any>(editorPage.browse.noEntriesElem.isDisplayed()).toBe(true);
       await editorPage.browse.noEntriesNewWordBtn.click();
+      await browser.wait(() => editorPage.edit.getEntryCount(), Utils.conditionTimeout);
       await expect<any>(editorPage.edit.getEntryCount()).toBe(1);
       await expect<any>(editorPage.edit.getLexemesAsObject()).toEqual({ es: '' });
     });
