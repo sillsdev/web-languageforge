@@ -2,6 +2,7 @@ import {browser, ExpectedConditions} from 'protractor';
 
 import {BellowsLoginPage} from '../../../bellows/shared/login.page';
 import {ProjectsPage} from '../../../bellows/shared/projects.page';
+import {Utils} from '../../../bellows/shared/utils';
 import {EditorPage} from '../shared/editor.page';
 
 describe('Lexicon E2E Editor Comments', async () => {
@@ -9,6 +10,7 @@ describe('Lexicon E2E Editor Comments', async () => {
   const loginPage = new BellowsLoginPage();
   const projectsPage = new ProjectsPage();
   const editorPage = new EditorPage();
+  const util         = new Utils();
 
   it('setup: login, click on test project', async () => {
     await loginPage.loginAsManager();
@@ -128,6 +130,7 @@ describe('Lexicon E2E Editor Comments', async () => {
   it('comments panel: show all comments', async () => {
     // ToDo: investigate why this was needed to be added after editor.js changed to TS - IJH 2018-05
     await browser.sleep(2000);
+    await browser.wait(() => editorPage.edit.toCommentsLink, Utils.conditionTimeout);
     await editorPage.edit.toCommentsLink.click();
     await browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     await expect<any>(editorPage.commentDiv.getAttribute('class')).toContain('panel-visible');

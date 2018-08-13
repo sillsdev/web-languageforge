@@ -7,7 +7,7 @@ exports.config = {
   // The timeout in milliseconds for each script run on the browser. This should
   // be longer than the maximum time your application needs to stabilize between
   // tasks.
-  allScriptsTimeout: 12000,
+  allScriptsTimeout: 13000,
 
   // To run tests in a single browser, uncomment the following
   capabilities: {

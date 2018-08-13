@@ -51,6 +51,7 @@ export class ProjectsPage {
   // Calling this method instead of "clickOnProject(projectName: string)" to avoid Promise Errors.
   async clickOnProjectName(projectName: string) {
     const projectLink = element.all(by.cssContainingText('span', projectName)).first();
+    await browser.wait(() => projectLink, Utils.conditionTimeout);
     await projectLink.click();
   }
 

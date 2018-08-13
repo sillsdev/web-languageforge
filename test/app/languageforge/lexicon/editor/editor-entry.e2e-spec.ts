@@ -397,10 +397,13 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('click on second word (found by definition)', async () => {
+    await browser.wait(() => editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value),
+      Utils.conditionTimeout);
     await editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value).click();
   });
 
   it('word 2: edit page has correct definition, part of speech', async () => {
+    await browser.wait(() => editorUtil.getFieldValues('Definition'), Utils.conditionTimeout);
     await expect<any>(editorUtil.getFieldValues('Definition')).toEqual([
       { en: constants.testEntry2.senses[0].definition.en.value }
     ]);
@@ -450,12 +453,14 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('word with multiple meanings: edit page has correct example sentences, translations', async () => {
+    await browser.wait(() => editorUtil.getFieldValues('Sentence'), Utils.conditionTimeout);
     await expect<any>(editorUtil.getFieldValues('Sentence')).toEqual([
       { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value }
     ]);
+    await browser.wait(() => editorUtil.getFieldValues('Translation'), Utils.conditionTimeout);
     await expect<any>(editorUtil.getFieldValues('Translation')).toEqual([
       { en: constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value },
       { en: constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value },

@@ -5,7 +5,7 @@ import {ElementArrayFinder, ElementFinder} from 'protractor/built/element';
 import {logging, WebElementPromise} from 'selenium-webdriver';
 
 export class Utils {
-  static readonly conditionTimeout: number = 3000;
+  static readonly conditionTimeout: number = 13000;
 
   async setCheckbox(checkboxElement: ElementFinder, value: boolean) {
     // Ensure a checkbox element will be either checked (true) or unchecked (false), regardless of
@@ -68,7 +68,7 @@ export class Utils {
 
   //noinspection JSUnusedGlobalSymbols
   waitForAlert(timeout: number) {
-    if (!timeout) { timeout = 8000; }
+    if (!timeout) { timeout = 9000; }
 
     browser.wait(() => {
       let alertPresent = true;

@@ -276,7 +276,7 @@ export class EditorPage {
       actionMenus: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle')),
       deleteSense: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle ~ .dropdown-menu fa-trash')),
       moveUp: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle ~ .dropdown-menu .fa-arrow-up')),
-      moveDown: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle ~ .dropdown-menu .fa-arrow-down')),
+      moveDown: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle ~ .dropdown-menu .fa-arrow-down'))
     },
 
     pictures: {
