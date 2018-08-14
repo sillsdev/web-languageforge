@@ -60,6 +60,7 @@ describe('Bellows E2E Project Settings app', async () =>  {
   });
 
   it('confirm Manager is owner of fourth project', async () =>  {
+    await browser.sleep(1000);
     await loginPage.loginAsManager();
     await settingsPage.get(constants.fourthProjectName);
     await settingsPage.tabs.project.click();
