@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-chromeDriverPath=`find $PWD -type f | grep "chromedriver" | tail -n1`
+chromeDriverPath=`find $PWD -type f -executable -ctime 0 | grep "chromedriver" | tail -n1`
 
 seleniumDriverPath=`find $PWD -type f | grep "selenium-server-standalone.jar" | tail -n1`
 
