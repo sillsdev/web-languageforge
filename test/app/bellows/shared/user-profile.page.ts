@@ -19,6 +19,7 @@ export class SfUserProfilePage {
   // Navigate to the MyProfile -> About Me page
   async getAboutMe() {
     await this.get();
+    await browser.wait(ExpectedConditions.visibilityOf(this.tabs.aboutMe), Utils.conditionTimeout);
     await this.tabs.aboutMe.click();
     await browser.wait(ExpectedConditions.visibilityOf(this.aboutMeTab.fullName), Utils.conditionTimeout);
   }

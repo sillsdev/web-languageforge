@@ -260,6 +260,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     // browser.sleep needs to avoid warnings
     await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+    // added browser.sleep to avoid Timeout warnings information
+    await browser.sleep(1000);
   });
 
   it('audio Input System is present, playable and has "more" control (member)', async () => {
@@ -383,6 +385,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
       await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.fileNameInput.clear();
       await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.fileSizeInput.clear();
       await editorPage.firstNoticeCloseButton.click();
+      // added browser.sleep to avoid Timeout warnings information
+      await browser.sleep(1000);
     });
 
     it('can upload an audio file', async () => {
@@ -401,6 +405,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
       await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(true);
       await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isEnabled()).toBe(true);
       await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(true);
+      // added browser.sleep to avoid Timeout warnings information
+      await browser.sleep(1000);
     });
 
   });
@@ -409,6 +415,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     await browser.wait(() => editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value),
       Utils.conditionTimeout);
     await editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value).click();
+    // added browser.sleep to avoid Timeout warnings information
+    await browser.sleep(1000);
   });
 
   it('word 2: edit page has correct definition, part of speech', async () => {

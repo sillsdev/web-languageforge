@@ -227,8 +227,8 @@ describe('SFChecks E2E project settings page - project manager', async () => {
 
   describe('communication settings tab', async () => {
 
-    it('is visible for project manager', () => {
-      expect<any>(projectSettingsPage.tabs.communication.isDisplayed()).toBe(true);
+    it('is visible for project manager', async () => {
+      await expect<any>(projectSettingsPage.tabs.communication.isDisplayed()).toBe(true);
     });
 
     describe('as a system admin', async () => {
@@ -259,7 +259,6 @@ describe('SFChecks E2E project settings page - project manager', async () => {
         await projectSettingsPage.communicationTab.button.click();
 
         await browser.navigate().refresh();
-        // await browser.sleep(600);
         await projectSettingsPage.tabs.communication.click();
 
         await expect<any>(projectSettingsPage.communicationTab.sms.accountId.getAttribute('value')).toBe(sample.a);

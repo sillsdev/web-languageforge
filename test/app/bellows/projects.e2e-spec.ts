@@ -1,4 +1,4 @@
-import {browser, by, ExpectedConditions} from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 import {ElementFinder} from 'protractor/built/element';
 
 import {BellowsLoginPage} from './shared/login.page';
@@ -54,7 +54,7 @@ describe('Bellows E2E Projects List app', async () => {
       // Check that the test project is around
       projectsPage.findProject(constants.testProjectName).then(async (projectRow: ElementFinder) => {
         await shouldProjectBeLinked(constants.testProjectName, projectRow, true);
-      });
+      }, () => {}); // added block to avoiding warnings of "project not found"
     });
 
     it('should show add and delete buttons', async () => {
@@ -73,7 +73,7 @@ describe('Bellows E2E Projects List app', async () => {
       projectsPage.findProject(constants.otherProjectName).then(async (projectRow: ElementFinder) => {
         await shouldProjectBeLinked(constants.otherProjectName, projectRow, true);
         await shouldProjectHaveButtons(projectRow, false);
-      });
+      }, () => {}); // added block to avoiding warnings of "project not found"
 
       await projectsPage.removeUserFromProject(constants.otherProjectName, constants.adminUsername);
       await loginPage.loginAsAdmin();
@@ -87,13 +87,13 @@ describe('Bellows E2E Projects List app', async () => {
 
         // Now add the admin back to the project
         await projectRow.element(by.id('managerButton')).click();
-      });
+      }, () => {}); // added block to avoiding warnings of "project not found"
 
       // And the buttons should go away after one of them is clicked
       projectsPage.findProject(constants.otherProjectName).then(async (projectRow: ElementFinder) => {
         await shouldProjectBeLinked(constants.otherProjectName, projectRow, true);
         await shouldProjectHaveButtons(projectRow, false);
-      });
+      }, () => {}); // added block to avoiding warnings of "project not found"
     });
 
   });

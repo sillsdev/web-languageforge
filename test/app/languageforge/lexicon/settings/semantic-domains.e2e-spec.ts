@@ -38,6 +38,7 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
     await expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('English');
     await projectSettingsPage.projectTab.defaultLanguageSelect.sendKeys('ภาษาไทย');
     await projectSettingsPage.projectTab.saveButton.click();
+    // added browser.sleep to avoid Timeout warnings information
     await browser.sleep(1000);
     await expect<any>(projectSettingsPage.projectTab.defaultLanguageSelected.getText()).toContain('ภาษาไทย');
     await expect<any>(header.language.button.getText()).toEqual('ภาษาไทย');
@@ -88,6 +89,7 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
   it('can change user interface language', async () => {
     await expect<any>(header.language.button.getText()).toEqual('ภาษาไทย');
     await header.language.button.click();
+    // added browser.sleep to avoid Timeout warnings information
     await browser.sleep(1000);
     await header.language.findItem('English').click();
     await expect<any>(header.language.button.getText()).toEqual('English');

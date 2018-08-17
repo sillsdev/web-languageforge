@@ -105,13 +105,13 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
 
     it('successfully change user\'s password', async () => {
       await BellowsResetPasswordPage.get(constants.resetPasswordKey);
-      await browser.wait(() => ExpectedConditions.visibilityOf(resetPasswordPage.passwordInput),
+      await browser.wait(ExpectedConditions.visibilityOf(resetPasswordPage.passwordInput),
         constants.conditionTimeout);
       await resetPasswordPage.passwordInput.sendKeys(constants.resetPassword);
-      await browser.wait(() => ExpectedConditions.visibilityOf(resetPasswordPage.confirmPasswordInput),
+      await browser.wait(ExpectedConditions.visibilityOf(resetPasswordPage.confirmPasswordInput),
         constants.conditionTimeout);
       await resetPasswordPage.confirmPasswordInput.sendKeys(constants.resetPassword);
-      await browser.wait(() => ExpectedConditions.visibilityOf(resetPasswordPage.resetButton),
+      await browser.wait(ExpectedConditions.visibilityOf(resetPasswordPage.resetButton),
         constants.conditionTimeout);
       await resetPasswordPage.resetButton.click();
 
@@ -131,8 +131,6 @@ describe('Bellows E2E Reset Forgotten Password app', async () => {
     it('successfully login after password change', async () => {
       await BellowsLoginPage.get();
       await loginPage.login(constants.resetUsername, constants.resetPassword);
-      // await browser.wait(ExpectedConditions.visibilityOf(header.loginButton), constants.conditionTimeout);
-      await browser.wait(() => ExpectedConditions.visibilityOf(header.loginButton), constants.conditionTimeout);
       await expect<any>(header.loginButton.isPresent()).toBe(false);
       await expect<any>(header.myProjects.button.isDisplayed()).toBe(true);
     });

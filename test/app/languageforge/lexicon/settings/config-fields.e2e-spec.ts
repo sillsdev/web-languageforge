@@ -155,10 +155,8 @@ describe('Lexicon E2E Configuration Fields', async () => {
     it('check first entry for changed field-specific input systems', async () => {
       const citationFormLabel = 'Citation Form';
       const scientificNameLabel = 'Scientific Name';
-      // await browser.wait(() => editorPage.edit.getMultiTextInputSystems(citationFormLabel), Utils.conditionTimeout);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(citationFormLabel).count()).toEqual(1);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(citationFormLabel).get(0).getText()).toEqual('th');
-    // await browser.wait(() => editorPage.edit.getMultiTextInputSystems(scientificNameLabel), Utils.conditionTimeout);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(scientificNameLabel).count()).toEqual(2);
       await expect<any>(editorPage.edit.getMultiTextInputSystems(scientificNameLabel).get(0).getText()).toEqual('en');
       await expect<any>(editorPage.edit.getMultiTextInputSystems(scientificNameLabel).get(1).getText()).toEqual('th');
@@ -169,7 +167,6 @@ describe('Lexicon E2E Configuration Fields', async () => {
     it('can reorder Entry rows back to how they were', async () => {
       await browser.executeScript(Utils.simulateDragDrop, configPage.unifiedPane.entry.rows().get(2).getWebElement(),
         configPage.unifiedPane.entry.rows().get(0).getWebElement());
-      // await browser.wait(() => configPage.unifiedPane.entry.rowLabel(0), Utils.conditionTimeout);
       await expect<any>(configPage.unifiedPane.entry.rowLabel(0).getText()).toEqual('Word');
       await expect<any>(configPage.unifiedPane.entry.rowLabel(1).getText()).toEqual('Citation Form');
       await expect<any>(configPage.unifiedPane.entry.rowLabel(2).getText()).toEqual('Pronunciation');
@@ -177,13 +174,11 @@ describe('Lexicon E2E Configuration Fields', async () => {
     });
 
     it('can reorder Sense rows', async () => {
-      // await browser.wait(() => configPage.unifiedPane.sense.rowLabel(0), Utils.conditionTimeout);
       await expect<any>(configPage.unifiedPane.sense.rowLabel(0).getText()).toEqual('Gloss');
       await expect<any>(configPage.unifiedPane.sense.rowLabel(1).getText()).toEqual('Definition');
       await expect<any>(configPage.unifiedPane.sense.rowLabel(2).getText()).toEqual('Pictures');
       await browser.executeScript(Utils.simulateDragDrop, configPage.unifiedPane.sense.rows().get(2).getWebElement(),
         configPage.unifiedPane.sense.rows().get(0).getWebElement());
-      // await browser.wait(() => configPage.unifiedPane.sense.rowLabel(0), Utils.conditionTimeout);
       await expect<any>(configPage.unifiedPane.sense.rowLabel(0).getText()).toEqual('Gloss');
       await expect<any>(configPage.unifiedPane.sense.rowLabel(1).getText()).toEqual('Pictures');
       await expect<any>(configPage.unifiedPane.sense.rowLabel(2).getText()).toEqual('Definition');
@@ -207,28 +202,22 @@ describe('Lexicon E2E Configuration Fields', async () => {
     it('can fully function "Select All" down the Input System observer column', async () => {
       const column = 'observer';
       const rowLabel = 'English';
-      await browser.wait(() => configPage.unifiedPane.observerCheckbox(rowLabel), Utils.conditionTimeout);
       await util.setCheckbox(configPage.unifiedPane.observerCheckbox(rowLabel), true);
-      await browser.wait(() => configPage.unifiedPane.inputSystem.selectAll.observer, Utils.conditionTimeout);
       await expect<any>(configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(false);
-      await browser.wait(() => configPage.unifiedPane.inputSystem.selectAll.observer, Utils.conditionTimeout);
       await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.observer, true);
       await expect<any>(configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(true);
       await expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
         .toBe(true);
-      await browser.wait(() => configPage.unifiedPane.observerCheckbox(rowLabel), Utils.conditionTimeout);
       await util.setCheckbox(configPage.unifiedPane.observerCheckbox(rowLabel), false);
       await expect<any>(configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(false);
       await expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
         .toBe(false);
       await expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), false))
         .toBe(false);
-      await browser.wait(() => configPage.unifiedPane.observerCheckbox(rowLabel), Utils.conditionTimeout);
       await util.setCheckbox(configPage.unifiedPane.observerCheckbox(rowLabel), true);
       await expect<any>(configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(true);
       await expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
         .toBe(true);
-      await browser.wait(() => configPage.unifiedPane.inputSystem.selectAll.observer, Utils.conditionTimeout);
       await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.observer, false);
       await expect<any>(configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(false);
       await expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), false))

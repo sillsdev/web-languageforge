@@ -25,6 +25,7 @@ export class NewLexProjectPage {
   }
 
   async expectFormIsNotValid() {
+    // added browser.sleep to avoid Timeout warnings information
     await browser.sleep(300);
     await expect(this.nextButton.getAttribute('class')).not.toMatch(/btn-primary(?:\s|$)/);
   }

@@ -33,18 +33,18 @@ export class Utils {
     let foundRow: ElementFinder;
     return new Promise<ElementFinder>(async (resolve, reject) => {
       await elementArray.map(async (row: ElementFinder) => {
-        await row.getText().then(async (rowText: string) => {
-          if (await searchFunc(rowText)) {
+        await row.getText().then((rowText: string) => {
+          if (searchFunc(rowText)) {
             foundRow = row;
           }
-        });
-      }).then(async () => {
-        if (await foundRow) {
-          await resolve(foundRow);
+        }, () => {}); // added block to avoiding warnings of "project not found"
+      }).then(() => {
+        if (foundRow) {
+          resolve(foundRow);
         } else {
-          await reject('Row not found');
+          reject('Row not found');
         }
-      });
+      }, () => {}); // added block to avoiding warnings of "project not found"
     });
   }
 

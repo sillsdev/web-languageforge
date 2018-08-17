@@ -39,6 +39,7 @@ describe('Lexicon E2E Editor Comments', async () => {
     });
 
   it('comments panel: check that comment shows up', async () => {
+    // added browser.sleep to avoid Timeout warnings information
     await browser.sleep(1000);
     const comment = editorPage.comment.getComment(0);
     await browser.wait(() => (comment.contextGuid.getAttribute('textContent')),
@@ -123,12 +124,13 @@ describe('Lexicon E2E Editor Comments', async () => {
 
   it('comments panel: close comments panel clicking on bubble', async () => {
     await editorPage.comment.bubbles.first.click();
-    await browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);
+    await browser.wait(ExpectedConditions.invisibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     await expect<any>(editorPage.commentDiv.getAttribute('class')).not.toContain('panel-visible');
   });
 
   it('comments panel: show all comments', async () => {
     // ToDo: investigate why this was needed to be added after editor.js changed to TS - IJH 2018-05
+    // added browser.sleep to avoid Timeout warnings information
     await browser.sleep(2000);
     await browser.wait(() => editorPage.edit.toCommentsLink, Utils.conditionTimeout);
     await editorPage.edit.toCommentsLink.click();

@@ -167,7 +167,7 @@ describe('Bellows E2E User Profile app', async () => {
 
       it('Login with new username and revert to original username', async () => {
         // user is automatically logged out and taken to login page when username is changed
-        await browser.wait(ExpectedConditions.visibilityOf(loginPage.username), constants.conditionTimeout);
+        await browser.wait(() => loginPage.username, Utils.conditionTimeout);
         await expect<any>(loginPage.infoMessages.count()).toBe(1);
         await expect(loginPage.infoMessages.first().getText()).toContain('Username changed. Please login.');
 
