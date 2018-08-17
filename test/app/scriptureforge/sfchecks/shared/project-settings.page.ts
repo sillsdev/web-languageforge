@@ -16,12 +16,12 @@ export class SfProjectSettingsPage {
   async get(projectName: string = '') {
     await this.projectsPage.get();
     await this.projectsPage.clickOnProjectName(projectName);
-    await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
     await this.clickOnSettingsLink();
 
   }
 
   async clickOnSettingsLink() {
+    await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
     await this.settingsMenuLink.click();
     await this.projectSettingsLink.click();
   }

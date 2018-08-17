@@ -1,4 +1,4 @@
-import {browser, by, ExpectedConditions} from 'protractor';
+import {browser, by, ExpectedConditions, utils} from 'protractor';
 
 import {BellowsLoginPage} from '../../bellows/shared/login.page';
 import {Utils} from '../../bellows/shared/utils';
@@ -228,11 +228,13 @@ describe('SFChecks E2E project settings page - project manager', async () => {
   describe('communication settings tab', async () => {
 
     it('is visible for project manager', async () => {
+      await browser.wait(() => projectSettingsPage.tabs.communication, Utils.conditionTimeout);
       await expect<any>(projectSettingsPage.tabs.communication.isDisplayed()).toBe(true);
     });
 
     describe('as a system admin', async () => {
       it('setup: logout, login as system admin, go to project settings', async () => {
+        await browser.sleep(1000);
         await BellowsLoginPage.logout();
         await loginPage.loginAsAdmin();
         await projectSettingsPage.get(constants.testProjectName);

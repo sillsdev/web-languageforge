@@ -5,9 +5,9 @@ import {SfTextPage} from './text.page';
 export class SfTextSettingsPage {
   private readonly textPage = new SfTextPage();
 
-  get(projectName: any, textTitle: any) {
-    this.textPage.get(projectName, textTitle);
-    SfTextPage.clickTextSettingsButton();
+  async get(projectName: any, textTitle: any) {
+    await this.textPage.get(projectName, textTitle);
+    await SfTextPage.clickTextSettingsButton();
   }
 
   tabs = {
