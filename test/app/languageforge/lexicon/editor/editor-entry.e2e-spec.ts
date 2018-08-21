@@ -49,12 +49,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('refresh returns to entry view', async () => {
-    // browser.sleep needs to avoid warnings
-    await browser.sleep(1500);
     await expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
-    await browser.refresh();
-    // browser.sleep needs to avoid warnings
-    await browser.sleep(1500);
+    await browser.driver.navigate().refresh();
     await expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
   });
 
@@ -163,12 +159,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('when caption is empty, it is visible if "Hidden if empty" is cleared in config', async () => {
-    await browser.wait(ExpectedConditions.visibilityOf
-      (element(by.cssContainingText('.breadcrumb > li', constants.testProjectName))),
-      Utils.conditionTimeout);
     await Utils.clickBreadcrumb(constants.testProjectName);
-    await browser.wait(ExpectedConditions.visibilityOf(element(by.id('lexAppListView'))),
-      constants.conditionTimeout);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     await expect<any>(editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
   });
@@ -182,16 +173,10 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('change config to hide Pictures and hide captions', async () => {
-    // browser.sleep needs to avoid warnings
-    await browser.sleep(500);
     await configPage.get();
     await configPage.tabs.unified.click();
-    await browser.wait(() => configPage.unifiedPane.hiddenIfEmptyCheckbox('Pictures'),
-      constants.conditionTimeout);
     await util.setCheckbox(configPage.unifiedPane.hiddenIfEmptyCheckbox('Pictures'), true);
     await configPage.unifiedPane.fieldSpecificButton('Pictures').click();
-    await browser.wait(() => configPage.unifiedPane.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures'),
-      constants.conditionTimeout);
     await util.setCheckbox(configPage.unifiedPane.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures'), true);
     await configPage.applyButton.click();
   });
@@ -209,8 +194,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   it('audio Input System is present, playable and has "more" control (manager)', async () => {
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).count()).toEqual(1);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(true);
-    await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().getAttribute('class')).
-      toContain('fa-play');
+    await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().getAttribute('class'))
+      .toContain('fa-play');
     await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(true);
     await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isEnabled()).toBe(true);
     await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(true);
@@ -220,7 +205,6 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('file upload drop box is displayed when Upload is clicked', async () => {
-    await browser.wait(() => editorPage.edit.audio.moreControls(lexemeLabel).first(), constants.conditionTimeout);
     await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(true);
     await expect<any>(editorPage.edit.audio.uploadDropBoxes(lexemeLabel).first().isDisplayed()).toBe(false);
     await expect<any>(editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first().isDisplayed()).toBe(false);
@@ -231,8 +215,6 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('file upload drop box is not displayed when Cancel Uploading Audio is clicked', async () => {
-    await browser.wait(() => editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first(),
-      constants.conditionTimeout);
     await expect<any>(editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first().isDisplayed()).toBe(true);
     await editorPage.edit.audio.uploadCancelButtons(lexemeLabel).first().click();
     await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(true);
@@ -245,8 +227,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('word 2: audio Input System is not playable but has "upload" button (manager)', async () => {
-    await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
-    await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
+    await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isPresent()).toBe(false);
+    await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isPresent()).toBe(false);
     await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
     await expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
     await expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isEnabled()).toBe(true);
@@ -257,18 +239,14 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     await loginPage.loginAsMember();
     await projectsPage.get();
     await projectsPage.clickOnProjectName(constants.testProjectName);
-    // browser.sleep needs to avoid warnings
-    await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
-    // added browser.sleep to avoid Timeout warnings information
-    await browser.sleep(1000);
   });
 
   it('audio Input System is present, playable and has "more" control (member)', async () => {
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).count()).toEqual(1);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(true);
-    await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().getAttribute('class')).
-      toContain('fa-play');
+    await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().getAttribute('class'))
+      .toContain('fa-play');
     await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(true);
     await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isEnabled()).toBe(true);
     await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(true);
@@ -283,8 +261,8 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('word 2: audio Input System is not playable but has "upload" button (member)', async () => {
-    await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
-    await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
+    await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isPresent()).toBe(false);
+    await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isPresent()).toBe(false);
     await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
     await expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
     await expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isEnabled()).toBe(true);
@@ -319,13 +297,12 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('word 2: audio Input System is not playable and does not have "upload" button (observer)',
-  async () => {
-      await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
-      await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
+    async () => {
+      await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isPresent()).toBe(false);
+      await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isPresent()).toBe(false);
       await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
       await expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
       await expect<any>(editorPage.edit.audio.downloadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
-      await browser.sleep(500);
     });
 
   it('login as manager, click on first word', async () => {
@@ -431,7 +408,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
 
   it('setup: click on word with multiple definitions (found by lexeme)', async () => {
     await editorPage.edit.findEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value).click();
-
+    await console.log('Start Test 1');
     // fix problem with protractor not scrolling to element before click
     await browser.driver.executeScript('arguments[0].scrollIntoView();',
       editorPage.edit.senses.first().getWebElement());

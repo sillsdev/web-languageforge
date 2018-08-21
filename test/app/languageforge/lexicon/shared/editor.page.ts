@@ -135,6 +135,7 @@ export class EditorPage {
     newWordBtn: this.editDiv.element(by.id('editorNewWordBtn')),
     entryCountElem: this.editDiv.element(by.id('totalNumberOfEntries')),
     getEntryCount: () => {
+      browser.wait(ExpectedConditions.visibilityOf(this.edit.entryCountElem), Utils.conditionTimeout);
       return this.edit.entryCountElem.getText().then((s: string) =>
         parseInt(s, 10)
       );
@@ -248,7 +249,7 @@ export class EditorPage {
       },
 
       uploadButtons: (searchLabel: string) => {
-        return EditorUtil.getOneField(searchLabel).all(by.css('.dc-audio button.buttonAppend'));
+        return EditorUtil.getOneField(searchLabel).all(by.css('.dc-audio .upload-audio'));
       },
 
       uploadDropBoxes: (searchLabel: string) => {

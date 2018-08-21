@@ -218,6 +218,9 @@ describe('Lexicon E2E Configuration Fields', async () => {
       await expect<any>(configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(true);
       await expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
         .toBe(true);
+      await browser.sleep(1000);
+      await browser.wait(ExpectedConditions.presenceOf(configPage.unifiedPane.inputSystem.selectAll.observer),
+        constants.conditionTimeout);
       await util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.observer, false);
       await expect<any>(configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(false);
       await expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), false))

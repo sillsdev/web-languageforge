@@ -1,6 +1,32 @@
 <div class="dc-audio">
+    <!-- upload control -->
+    <div class="uploadCtl" data-ng-show="$ctrl.showAudioUpload" data-ng-class="$ctrl.dcInterfaceConfig.pullNormal">
+        <div class="deleteX float-right">
+            <i data-ng-click="$ctrl.showAudioUpload = false" title="Cancel Uploading Audio" class="fa fa-times"
+               id="audioAddCancel"></i>
+        </div>
+        <div class="drop-box" data-ngf-drop="$ctrl.uploadAudio($file)" data-ngf-drag-over-class="'dragover'">
+            <h4>Drop an audio file here</h4>
+            <p>or if you prefer...</p>
+            <button class="btn btn-std" id="browseButton" data-ngf-select="$ctrl.uploadAudio($file)">Browse...</button>
+        </div>
+        <div data-ngf-no-file-drop>
+            <div class="btn btn-std" ngf-select="$ctrl.uploadAudio($file)">Browse...</div>
+        </div>
+    </div>
+
+    <!-- audio record control -->
+    <pui-audio-recorder data-ng-if="$ctrl.showAudioRecorder" callback="$ctrl.audioRecorderCallback"></pui-audio-recorder>
+
+    <!-- playback control -->
+    <div class="player" data-ng-if="$ctrl.hasAudio() && !$ctrl.showAudioUpload && !$ctrl.showAudioRecorder" data-ng-class="$ctrl.dcInterfaceConfig.pullNormal">
+        <pui-soundplayer pui-url="$ctrl.audioPlayUrl()"></pui-soundplayer>
+    </div>
+
+    <pui-mock-upload data-pui-do-upload="$ctrl.uploadAudio(file)"></pui-mock-upload><!-- Used to mock file upload. Assumes file is already in the right location. This should be removed from production code! IJH 2016-11 -->
+
     <!-- more control -->
-    <div data-ng-hide="$ctrl.showAudioUpload" data-ng-class="$ctrl.dcInterfaceConfig.pullToSide">
+    <div class="upload-controls" data-ng-hide="$ctrl.showAudioUpload || $ctrl.showAudioRecorder" data-ng-class="$ctrl.dcInterfaceConfig.pullToSide">
         <div data-ng-show="$ctrl.hasAudio()">
             <div class="dropdown" uib-dropdown data-ng-show="$ctrl.isAtEditorEntry() && $ctrl.dcRights.canEditEntry()">
                 <a class="btn btn-std dropdown-toggle pui-no-caret" uib-dropdown-toggle><i class="fa fa-ellipsis-v"></i></a>
@@ -10,6 +36,8 @@
                     <a class="dropdown-item dc-audio-delete" data-ng-click="$ctrl.deleteAudio()">
                         <i class="fa fa-trash"></i> Delete <span class="notranslate">'{{$ctrl.displayFilename()}}'</span></a>
                     <div class="dropdown-divider"></div>
+                    <a class="dropdown-item dc-audio-recorder" data-ng-click="$ctrl.showAudioRecorder = true">
+                        <i class="fa fa-microphone"></i> Record a replacement</a>
                     <a class="dropdown-item dc-audio-upload" data-ng-click="$ctrl.showAudioUpload = true">
                         <i class="fa fa-cloud-upload"></i> Upload a replacement</a>
                 </div>
@@ -20,33 +48,16 @@
             </div>
         </div>
         <div data-ng-hide="$ctrl.hasAudio()">
-            <button class="btn btn-std buttonAppend" data-ng-click="$ctrl.showAudioUpload = true"
+            <button class="btn btn-std" data-ng-click="$ctrl.showAudioRecorder = true"
+                data-ng-show="$ctrl.isAtEditorEntry() && $ctrl.dcRights.canEditEntry()"
+                title="Record audio">
+                <i class="fa fa-microphone"></i></button>
+        </div>
+        <div data-ng-hide="$ctrl.hasAudio()">
+            <button class="btn btn-std upload-audio" data-ng-click="$ctrl.showAudioUpload = true"
                 data-ng-show="$ctrl.isAtEditorEntry() && $ctrl.dcRights.canEditEntry()"
                 title="Upload an audio file">
                 <i class="fa fa-cloud-upload"></i></button>
         </div>
     </div>
-
-    <!-- upload control -->
-    <div class="uploadCtl" data-ng-show="$ctrl.showAudioUpload" data-ng-class="$ctrl.dcInterfaceConfig.pullNormal">
-        <div class="deleteX float-right">
-            <i data-ng-click="$ctrl.showAudioUpload = false" title="Cancel Uploading Audio" class="fa fa-times"
-               id="audioAddCancel"></i>
-        </div>
-        <div class="drop-box" data-ngf-drop="$ctrl.uploadAudio($file)" data-ngf-drag-over-class="'dragover'">
-            <h4>Drop an audio file here</h4>
-            <p>or if you prefer...</p>
-            <div class="btn btn-std" id="browseButton" data-ngf-select="$ctrl.uploadAudio($file)">Browse...</div>
-        </div>
-        <div data-ngf-no-file-drop>
-            <div class="btn btn-std" ngf-select="$ctrl.uploadAudio($file)">Browse...</div>
-        </div>
-    </div>
-
-    <!-- playback control -->
-    <div class="player" data-ng-show="$ctrl.hasAudio() && !$ctrl.showAudioUpload" data-ng-class="$ctrl.dcInterfaceConfig.pullNormal">
-        <pui-soundplayer pui-url="$ctrl.audioPlayUrl()"></pui-soundplayer>
-    </div>
-
-    <pui-mock-upload data-pui-do-upload="$ctrl.uploadAudio(file)"></pui-mock-upload><!-- Used to mock file upload. Assumes file is already in the right location. This should be removed from production code! IJH 2016-11 -->
 </div>

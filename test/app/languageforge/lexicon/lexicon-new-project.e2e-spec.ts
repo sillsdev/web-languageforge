@@ -554,13 +554,12 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await page.formStatus.expectHasNoError();
       await expect<any>(page.nextButton.isEnabled()).toBe(true);
       await page.expectFormIsValid();
-      // browser.sleep needs to avoid warnings.
-      await browser.sleep(1000);
       await page.nextButton.click();
       await browser.wait(ExpectedConditions.visibilityOf(editorPage.browse.noEntriesElem), constants.conditionTimeout);
       await expect<any>(editorPage.browse.noEntriesElem.isDisplayed()).toBe(true);
       await editorPage.browse.noEntriesNewWordBtn.click();
-      await browser.wait(() => editorPage.edit.getEntryCount(), Utils.conditionTimeout);
+      // browser.sleep needs to avoid warnings.
+      await browser.sleep(1000);
       await expect<any>(editorPage.edit.getEntryCount()).toBe(1);
       await expect<any>(editorPage.edit.getLexemesAsObject()).toEqual({ es: '' });
     });
