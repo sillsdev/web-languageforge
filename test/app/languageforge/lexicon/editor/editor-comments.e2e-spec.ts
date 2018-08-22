@@ -115,7 +115,7 @@ describe('Lexicon E2E Editor Comments', async () => {
 
   it('comments panel: refresh returns to comment', async () => {
     const comment = editorPage.comment.getComment(0);
-    await browser.refresh();
+    await browser.driver.navigate().refresh();
     await browser.wait(ExpectedConditions.visibilityOf(editorPage.comment.bubbles.first), constants.conditionTimeout);
     await editorPage.comment.bubbles.first.click();
     await browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);

@@ -455,9 +455,10 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await expect<any>(page.nextButton.isEnabled()).toBe(true);
       await page.expectFormIsValid();
       await page.nextButton.click();
+      await browser.sleep(1000); // browser.sleep needs to avoid warnings.
       await expect<any>(editorPage.browse.getEntryCount()).toBe(2);
       // browser.sleep needs to avoid error informations.
-      await browser.sleep(1000);
+      // await browser.sleep(1000);
     });
 
   });
@@ -479,8 +480,6 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await page.nextButton.click();
       await expect<any>(page.namePage.projectNameInput.isPresent()).toBe(false);
       await expect<any>(page.initialDataPage.browseButton.isPresent()).toBe(true);
-      // browser.sleep needs to avoid warnings.
-      await browser.sleep(1000);
     });
 
   });
@@ -492,8 +491,6 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await page.expectFormIsNotValid();
       await page.nextButton.click();
       await expect<any>(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
-      // browser.sleep needs to avoid warnings.
-      await browser.sleep(1000);
     });
 
   });
@@ -559,8 +556,10 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await expect<any>(editorPage.browse.noEntriesElem.isDisplayed()).toBe(true);
       await editorPage.browse.noEntriesNewWordBtn.click();
       // browser.sleep needs to avoid warnings.
-      await browser.sleep(1000);
+      // await browser.sleep(CHECK_PAUSE);
       await expect<any>(editorPage.edit.getEntryCount()).toBe(1);
+      // browser.sleep needs to avoid warnings.
+      // await browser.sleep(1500);
       await expect<any>(editorPage.edit.getLexemesAsObject()).toEqual({ es: '' });
     });
 

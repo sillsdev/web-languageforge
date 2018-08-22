@@ -15,11 +15,11 @@ export class EditorPage {
   static get(projectId: string, entryId: string) {
     let extra = projectId ? ('/' + projectId) : '';
     extra += (projectId && entryId) ? ('#!/editor/entry/' + entryId) : '';
-    browser.get(browser.baseUrl + '/app/lexicon' + extra);
+    browser.driver.get(browser.baseUrl + '/app/lexicon' + extra);
   }
 
   static async getProjectIdFromUrl() {
-    return await browser.getCurrentUrl().then(async url => {
+    return await browser.driver.getCurrentUrl().then(async url => {
       const match = url.match(/\/app\/lexicon\/([0-9a-z]{24})/);
       let projectId = '';
       if (await match) {
@@ -31,7 +31,7 @@ export class EditorPage {
   }
 
   static async getEntryIdFromUrl() {
-    return await browser.getCurrentUrl().then(async url => {
+    return await browser.driver.getCurrentUrl().then(async url => {
       const match = url.match(/\/editor\/entry\/([0-9a-z_]{6,24})/);
       let entryId = '';
       if (await match) {
@@ -185,11 +185,11 @@ export class EditorPage {
       return await this.editorUtil.dcMultitextToArray(lexeme);
     },
 
-    getLexemesAsObject: async () => {
+    getLexemesAsObject: () => {
 
       // Returns lexemes in the format [{en: 'word', de: 'Wort'}]
-      const lexeme = await this.edit.fields.get(0);
-      return await this.editorUtil.dcMultitextToObject(lexeme);
+      const lexeme = this.edit.fields.get(0);
+      return this.editorUtil.dcMultitextToObject(lexeme);
     },
 
     getFirstLexeme: async () => {

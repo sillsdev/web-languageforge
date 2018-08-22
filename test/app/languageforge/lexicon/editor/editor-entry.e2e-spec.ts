@@ -237,12 +237,19 @@ describe('Lexicon E2E Editor List and Entry', async () => {
 
   it('login as member, click on first word', async () => {
     await loginPage.loginAsMember();
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(1500);
     await projectsPage.get();
+    await browser.sleep(500);
     await projectsPage.clickOnProjectName(constants.testProjectName);
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
   });
 
   it('audio Input System is present, playable and has "more" control (member)', async () => {
+    // browser.sleep needs to avoid warnings
+    await browser.sleep(1000);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).count()).toEqual(1);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(true);
     await expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().getAttribute('class'))
@@ -408,7 +415,6 @@ describe('Lexicon E2E Editor List and Entry', async () => {
 
   it('setup: click on word with multiple definitions (found by lexeme)', async () => {
     await editorPage.edit.findEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value).click();
-    await console.log('Start Test 1');
     // fix problem with protractor not scrolling to element before click
     await browser.driver.executeScript('arguments[0].scrollIntoView();',
       editorPage.edit.senses.first().getWebElement());
