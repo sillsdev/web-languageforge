@@ -62,7 +62,7 @@ PHP code conforms to [PSR-2](http://www.php-fig.org/psr/psr-2/).
 
 JavaScript code conforms to [AirBNB JS style guide](https://github.com/airbnb/javascript).
 
-- Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#Coding-Standard-and-Style)).
+- Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#coding-standard-and-style)).
 - We plan to use [Prettier](https://prettier.io/) with pre-commit hook after re-writing the whole repo with Prettier first.
 
 ### TypeScript Style Guide ###
@@ -179,7 +179,7 @@ Edit your hosts file (On Linux, `/etc/hosts`, on Windows, `C:\windows\system32\d
 ```
 Then open languageforge.local and scriptureforge.local ensure they load correctly.
 
-Proceed to [Language Forge Configuration File](#Language-Forge-Configuration-File) and follow the rest of the steps in this README.
+Proceed to [Language Forge Configuration File](#language-forge-configuration-file) and follow the rest of the steps in this README.
 
 -------------------------------
 
@@ -238,7 +238,7 @@ Now would be a good time to check that PHP unit tests, TS unit tests, and E2E te
 
 To build Sass, run `gulp sass`. To watch the Sass for changes, run `gulp sass:watch`. Pass the `--debug` flag to enable sourcemaps and source comments.
 
-To build TypeScript, run `gulp webpack-lf` or `gulp webpack-sf` to build for Language Forge or Scripture Forge respectively. To watch the files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#LiveReload-Chrome-extension)).
+To build TypeScript, run `gulp webpack-lf` or `gulp webpack-sf` to build for Language Forge or Scripture Forge respectively. To watch the files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#livereload-chrome-extension)).
 
 #### Language Forge Configuration File ####
 
