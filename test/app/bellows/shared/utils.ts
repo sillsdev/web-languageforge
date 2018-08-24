@@ -37,14 +37,14 @@ export class Utils {
           if (searchFunc(rowText)) {
             foundRow = row;
           }
-        }, () => {}); // added block to avoiding warnings of "project not found"
+        });
       }).then(() => {
         if (foundRow) {
           resolve(foundRow);
         } else {
           reject('Row not found');
         }
-      }, () => {}); // added block to avoiding warnings of "project not found"
+      });
     });
   }
 

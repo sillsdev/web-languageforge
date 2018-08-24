@@ -23,23 +23,24 @@ export class ProjectsPage {
 
   async findProject(projectName: string) {
     let foundRow: any;
-    const result = protractor.promise.defer();
+    // const result = protractor.promise.defer();
     const searchName = new RegExp(projectName);
     await this.projectsList.map(async (row: any) => {
-      await row.getText().then(async (text: string) => {
-      if (searchName.test(text)) {
-        foundRow = row;
-      }
-      }, () => {}); // added block to avoiding warnings of "project not found"
-    }).then(async () => {
+      await row.getText().then((text: string) => {
+        if (searchName.test(text)) {
+          foundRow = row;
+        }
+      });
+    }); /* .then(() => {
       if (foundRow) {
         result.fulfill(foundRow);
       } else {
         result.reject('Project ' + projectName + ' not found.');
       }
-    }, () => {}); // added block to avoiding warnings of "project not found"
+    });
 
-    return result.promise;
+    return result.promise; */
+    return await foundRow;
   }
 
   // Calling this method instead of "clickOnProject(projectName: string)" to avoid Promise Errors.
@@ -50,12 +51,12 @@ export class ProjectsPage {
   }
 
   async clickOnProject(projectName: string) {
-      this.findProject(projectName).then(async (projectRow: any) => {
-        const projectLink = projectRow.element(by.css('a'));
-        await projectLink.getAttribute('href').then(async (url: string) => {
-          await browser.get(url);
-      }, () => {}); // added block to avoiding warnings of "project not found"
-    }, () => {}); // added block to avoiding warnings of "project not found"
+    await this.findProject(projectName).then(async (projectRow: any) => {
+      const projectLink = projectRow.element(by.css('a'));
+      await projectLink.getAttribute('href').then(async (url: string) => {
+        await browser.get(url);
+      });
+    });
   }
 
   settingsBtn = element(by.id('settingsBtn'));
@@ -63,12 +64,11 @@ export class ProjectsPage {
     element(by.id('userManagementLink')) : element(by.id('dropdown-project-settings'));
 
   async addUserToProject(projectName: any, usersName: string, roleText: string) {
-    // Commented the below code to avoid an error:
-    /* this.findProject(projectName).then(async (projectRow: any) => {
+    await this.findProject(projectName).then(async (projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
-      await projectLink.click(); */
-      const projectLink = element.all(by.cssContainingText('span', projectName)).first();
       await projectLink.click();
+    /* const projectLink = element.all(by.cssContainingText('span', projectName)).first();
+      await projectLink.click(); */
       await browser.wait(ExpectedConditions.visibilityOf(this.settingsBtn), Utils.conditionTimeout);
       await this.settingsBtn.click();
       await browser.wait(ExpectedConditions.visibilityOf(this.userManagementLink), Utils.conditionTimeout);
@@ -88,7 +88,7 @@ export class ProjectsPage {
         // browser.sleep applied here to avoid error and warning
         await browser.sleep(1000);
         await item.click();
-      }, () => {}); // added block to avoiding warnings of "project not found"
+      });
 
       // This should be unique no matter what
       await newMembersDiv.element(by.id('addUserButton')).click();
@@ -102,16 +102,16 @@ export class ProjectsPage {
           if (text === usersName) {
             foundUserRow = row;
           }
-        }, () => {}); // added block to avoiding warnings of "project not found"
+        });
       }).then(async () => {
         if (foundUserRow) {
           const select = foundUserRow.element(by.css('select:not([disabled])'));
           await Utils.clickDropdownByValue(select, roleText);
         }
-      }, () => {}); // added block to avoiding warnings of "project not found"
+      });
 
       await this.get(); // After all is finished, reload projects page
-    // });
+    });
   }
 
   //noinspection JSUnusedGlobalSymbols
@@ -124,7 +124,7 @@ export class ProjectsPage {
   }
 
   async removeUserFromProject(projectName: string, userName: string) {
-    this.findProject(projectName).then(async (projectRow: any) => {
+    await this.findProject(projectName).then(async (projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
       await projectLink.click();
 
@@ -136,11 +136,11 @@ export class ProjectsPage {
       if (await browser.baseUrl.includes('scriptureforge')) {
         userFilter = element(by.model('userFilter'));
         await userFilter.sendKeys(userName);
-        projectMemberRows = await element.all(by.repeater('user in list.visibleUsers'));
+        projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
       } else if (await browser.baseUrl.includes('languageforge')) {
         userFilter = element(by.model('$ctrl.userFilter'));
         await userFilter.sendKeys(userName);
-        projectMemberRows = await element.all(by.repeater('user in $ctrl.list.visibleUsers'));
+        projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
       }
 
       const foundUserRow = projectMemberRows.first();
@@ -151,6 +151,6 @@ export class ProjectsPage {
 
       await this.get(); // After all is finished, reload projects page
 
-    }, () => {}); // added block to avoiding warnings of "project not found"
+    });
   }
 }
