@@ -88,6 +88,7 @@ apache_vhosts:
         port: 80
         server_alias:
           - scriptureforge.local
+          - beta.scriptureforge.local
           - localhost
         proxy:
           - '/api2/ http://localhost:5000/'

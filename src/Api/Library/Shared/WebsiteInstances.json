@@ -18,6 +18,14 @@
       "releaseStage": "local"
     },
     {
+      "domain": "beta.scriptureforge.local",
+      "base": "Website::SCRIPTUREFORGE",
+      "name": "Scripture Forge",
+      "ssl": "true",
+      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
+      "releaseStage": "local"
+    },
+    {
       "domain": "jamaicanpsalms.scriptureforge.local",
       "base": "Website::SCRIPTUREFORGE",
       "name": "The Jamaican Psalms Project",
@@ -86,6 +94,14 @@
       "name": "Scripture Forge",
       "ssl": "true",
       "theme": "simple",
+      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
+      "releaseStage": "qa"
+    },
+    {
+      "domain": "beta.qa.scriptureforge.org",
+      "base": "Website::SCRIPTUREFORGE",
+      "name": "Scripture Forge",
+      "ssl": "true",
       "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
       "releaseStage": "qa"
     },

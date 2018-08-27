@@ -308,6 +308,7 @@
         - "scriptureforge.local"
         - "jamaicanpsalms.scriptureforge.local"
         - "demo.scriptureforge.local"
+        - "beta.scriptureforge.local"
         - "es_401"
       when: inventory_hostname == "localhost"
 
