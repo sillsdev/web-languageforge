@@ -1,4 +1,4 @@
-import {browser, by, element, ExpectedConditions, protractor} from 'protractor';
+import {browser, by, element, ElementFinder, ExpectedConditions, protractor} from 'protractor';
 import {Utils} from './utils';
 
 export class ProjectsPage {
@@ -24,6 +24,7 @@ export class ProjectsPage {
   async findProject(projectName: string) {
     let foundRow: any;
     // const result = protractor.promise.defer();
+    return new Promise<ElementFinder>(async (resolve, reject) => {
     const searchName = new RegExp(projectName);
     await this.projectsList.map(async (row: any) => {
       await row.getText().then((text: string) => {
@@ -31,16 +32,17 @@ export class ProjectsPage {
           foundRow = row;
         }
       });
-    }); /* .then(() => {
+    }).then(() => {
       if (foundRow) {
-        result.fulfill(foundRow);
+        resolve(foundRow);
+        // result.fulfill(foundRow);
       } else {
-        result.reject('Project ' + projectName + ' not found.');
+        reject('Project ' + projectName + ' not found.');
+        // result.reject('Project ' + projectName + ' not found.');
       }
     });
-
-    return result.promise; */
-    return await foundRow;
+  });
+    // return result.promise;
   }
 
   // Calling this method instead of "clickOnProject(projectName: string)" to avoid Promise Errors.
