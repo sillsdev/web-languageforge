@@ -53,6 +53,7 @@ obj/
 !/src/releasenotes
 _ReSharper*/
 *.user
+tempkey.rsa
 
 appsettings.user.json
 
