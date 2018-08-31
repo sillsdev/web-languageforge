@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "SIL.XForge.Scripture": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "https://scriptureforge.local",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5000"
+    }
+  }
+}
