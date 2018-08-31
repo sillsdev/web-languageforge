@@ -1,6 +1,6 @@
 namespace SIL.XForge.Scripture.Models
 {
-    public class ScriptureUserPreferences
+    public class SFUserPreferences
     {
         public double ConfidenceThreshold { get; set; }
         public bool HasConfidenceOverride { get; set; }

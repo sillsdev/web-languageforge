@@ -5,10 +5,10 @@ using SIL.XForge.Scripture.Models;
 
 namespace SIL.XForge.Scripture.Controllers
 {
-    public class ProjectsController : ApiControllerBase<ScriptureProjectResource>
+    public class ProjectsController : ApiControllerBase<SFProjectResource>
     {
         public ProjectsController(IJsonApiContext jsonApiContext,
-            IResourceService<ScriptureProjectResource, string> resourceService, ILoggerFactory loggerFactory)
+            IResourceService<SFProjectResource, string> resourceService, ILoggerFactory loggerFactory)
             : base(jsonApiContext, resourceService, loggerFactory)
         {
         }

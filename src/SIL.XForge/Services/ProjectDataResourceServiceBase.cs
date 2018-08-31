@@ -14,13 +14,15 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public abstract class ProjectDataResourceServiceBase<TResource, TEntity> : ResourceServiceBase<TResource, TEntity>
+    public abstract class ProjectDataResourceServiceBase<TResource, TEntity, TProjectEntity>
+        : ResourceServiceBase<TResource, TEntity>
         where TResource : class, IResource
         where TEntity : class, IEntity
+        where TProjectEntity : ProjectEntity
     {
-        private readonly IRepository<ProjectEntity> _projects;
+        private readonly IRepository<TProjectEntity> _projects;
 
-        public ProjectDataResourceServiceBase(IJsonApiContext jsonApiContext, IRepository<ProjectEntity> projects,
+        public ProjectDataResourceServiceBase(IJsonApiContext jsonApiContext, IRepository<TProjectEntity> projects,
             IRepository<TEntity> entities, IMapper mapper, IHttpContextAccessor httpContextAccessor)
             : base(jsonApiContext, entities, mapper, httpContextAccessor)
         {
@@ -67,11 +69,11 @@ namespace SIL.XForge.Services
             if (filter != null)
                 return filter;
 
-            List<ProjectEntity> projects = await _projects.Query().Where(p => p.Users.ContainsKey(UserId))
+            List<TProjectEntity> projects = await _projects.Query().Where(p => p.Users.ContainsKey(UserId))
                 .ToListAsync();
             var wherePredicate = PredicateBuilder.New<TEntity>();
             bool isEmpty = true;
-            foreach (ProjectEntity project in projects)
+            foreach (TProjectEntity project in projects)
             {
                 if (project.HasRight(UserId, new Right(Domain, Operation.View)))
                 {

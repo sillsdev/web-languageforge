@@ -3,9 +3,9 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Scripture.Models
 {
-    public class ScriptureProjectResource : ProjectResource
+    public class SFProjectResource : ProjectResource
     {
         [Attr("config")]
-        public ScriptureConfig Config { get; set; }
+        public SFConfig Config { get; set; }
     }
 }

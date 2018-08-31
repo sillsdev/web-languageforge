@@ -3,10 +3,10 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Scripture.Models
 {
-    public class ScriptureProjectEntity : ProjectEntity
+    public class SFProjectEntity : ProjectEntity
     {
-        public override ProjectRoles Roles => ScriptureRoles.Instance;
-        public ScriptureConfig Config { get; set; } = new ScriptureConfig();
+        public override ProjectRoles Roles => SFRoles.Instance;
+        public SFConfig Config { get; set; } = new SFConfig();
         public DateTime LastSyncedDate { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0).UtcDateTime;
         public bool UsersSeeEachOthersResponses { get; set; } = true;
     }

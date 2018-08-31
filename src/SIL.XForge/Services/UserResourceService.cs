@@ -13,7 +13,9 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public class UserResourceService : ResourceServiceBase<UserResource, UserEntity>
+    public class UserResourceService<TProjectResource, TProjectEntity> : ResourceServiceBase<UserResource, UserEntity>
+        where TProjectResource : ProjectResource
+        where TProjectEntity : ProjectEntity
     {
         public UserResourceService(IJsonApiContext jsonApiContext, IRepository<UserEntity> entities, IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
@@ -21,7 +23,7 @@ namespace SIL.XForge.Services
         {
         }
 
-        public IResourceQueryable<ProjectResource, ProjectEntity> ProjectResources { get; set; }
+        public IResourceQueryable<TProjectResource, TProjectEntity> ProjectResources { get; set; }
 
         protected override bool HasOwner => true;
         protected override Domain Domain => Domain.Users;

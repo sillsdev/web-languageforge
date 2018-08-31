@@ -13,22 +13,14 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public class ProjectResourceService : ProjectResourceService<ProjectResource, ProjectEntity>
-    {
-        public ProjectResourceService(IJsonApiContext jsonApiContext, IRepository<ProjectEntity> projects,
-            IRepository<ProjectEntity> entities, IMapper mapper, IHttpContextAccessor httpContextAccessor)
-            : base(jsonApiContext, projects, entities, mapper, httpContextAccessor)
-        {
-        }
-    }
-
-    public class ProjectResourceService<TResource, TEntity> : ProjectDataResourceServiceBase<TResource, TEntity>
+    public class ProjectResourceService<TResource, TEntity>
+        : ProjectDataResourceServiceBase<TResource, TEntity, TEntity>
         where TResource : ProjectResource
         where TEntity : ProjectEntity
     {
-        public ProjectResourceService(IJsonApiContext jsonApiContext, IRepository<ProjectEntity> projects,
-            IRepository<TEntity> entities, IMapper mapper, IHttpContextAccessor httpContextAccessor)
-            : base(jsonApiContext, projects, entities, mapper, httpContextAccessor)
+        public ProjectResourceService(IJsonApiContext jsonApiContext, IRepository<TEntity> entities,
+            IMapper mapper, IHttpContextAccessor httpContextAccessor)
+            : base(jsonApiContext, entities, entities, mapper, httpContextAccessor)
         {
         }
 

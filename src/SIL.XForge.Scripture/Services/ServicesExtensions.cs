@@ -7,14 +7,16 @@ namespace SIL.XForge.Scripture.Services
 {
     public static class ServicesExtensions
     {
-        public static IServiceCollection AddScriptureJsonApi(this IServiceCollection services, IMvcBuilder mvcBuilder,
+        public static IServiceCollection AddSFJsonApi(this IServiceCollection services, IMvcBuilder mvcBuilder,
             ContainerBuilder containerBuilder)
         {
-            services.AddJsonApi(mvcBuilder, containerBuilder, builder =>
+            containerBuilder.RegisterResourceService<SFUserResourceService>();
+
+            services.AddJsonApi(mvcBuilder, containerBuilder, (graphBuilder, mapConfig) =>
                 {
-                    builder.AddResource<ScriptureProjectResource, string>("projects");
+                    graphBuilder.AddResourceService<SFProjectResource, SFProjectEntity, SFProjectResourceService>(
+                        containerBuilder, mapConfig, "projects");
                 });
-            containerBuilder.AddResourceService<ScriptureProjectResourceService>();
             return services;
         }
     }

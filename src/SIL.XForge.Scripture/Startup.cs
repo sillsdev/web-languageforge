@@ -37,7 +37,7 @@ namespace SIL.XForge.Scripture
 
             services.AddExceptionLogging();
 
-            services.AddXForgeIdentity();
+            services.AddXForgeIdentityServer();
 
             services.AddAuthentication()
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -63,11 +63,11 @@ namespace SIL.XForge.Scripture
                         options.Audience = "api";
                     });
 
-            services.AddScriptureDataAccess(Configuration);
+            services.AddSFDataAccess(Configuration);
 
             IMvcBuilder mvcBuilder = services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddScriptureJsonApi(mvcBuilder, containerBuilder);
+            services.AddSFJsonApi(mvcBuilder, containerBuilder);
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

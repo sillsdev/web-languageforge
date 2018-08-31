@@ -5,7 +5,7 @@ namespace SIL.XForge.Identity
 {
     public static class IdentityExtensions
     {
-        public static IServiceCollection AddXForgeIdentity(this IServiceCollection services)
+        public static IServiceCollection AddXForgeIdentityServer(this IServiceCollection services)
         {
             services.ConfigureOptions<StaticFilesConfigureOptions>();
 
