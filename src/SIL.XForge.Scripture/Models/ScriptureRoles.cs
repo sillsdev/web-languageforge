@@ -1,17 +1,21 @@
 using System.Collections.Generic;
+using SIL.XForge.Models;
 
-namespace SIL.XForge.Models.SFChecks
+namespace SIL.XForge.Scripture.Models
 {
-    public class SFChecksRoles : ProjectRoles
+    public class ScriptureRoles : ProjectRoles
     {
-        public static SFChecksRoles Instance { get; } = new SFChecksRoles();
+        public static ScriptureRoles Instance { get; } = new ScriptureRoles();
 
-        private SFChecksRoles()
+        private ScriptureRoles()
         {
             var contributorRights = new HashSet<Right>
             {
                 new Right(Domain.Projects, Operation.View),
                 new Right(Domain.Texts, Operation.View),
+                new Right(Domain.Texts, Operation.Edit),
+                new Right(Domain.Texts, Operation.Create),
+                new Right(Domain.Texts, Operation.Delete),
                 new Right(Domain.Questions, Operation.View),
                 new Right(Domain.Answers, Operation.View),
                 new Right(Domain.Answers, Operation.ViewOwn),
@@ -47,7 +51,7 @@ namespace SIL.XForge.Models.SFChecks
                 new Right(Domain.Users, Operation.Delete),
                 new Right(Domain.Users, Operation.View)
             };
-            managerRights.UnionWith(AllRights(Domain.Templates));
+            managerRights.UnionWith(AllRights(Domain.Entries));
             Rights[Manager] = managerRights;
         }
     }

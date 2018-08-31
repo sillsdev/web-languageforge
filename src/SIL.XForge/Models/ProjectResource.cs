@@ -11,7 +11,7 @@ namespace SIL.XForge.Models
         public string ProjectName { get; set; }
         [Attr("project-code")]
         public string ProjectCode { get; set; }
-        [Attr("users")]
+        [Attr("user-roles")]
         public IDictionary<string, ProjectRole> Users { get; set; }
         [HasOne(OwnerRelationship)]
         public UserResource Owner { get; set; }

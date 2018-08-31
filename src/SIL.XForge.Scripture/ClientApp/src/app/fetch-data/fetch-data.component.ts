@@ -25,7 +25,8 @@ export class FetchDataComponent {
       project: {
         attributes: {
           projectName: { type: 'string' },
-          projectCode: { type: 'string' }
+          projectCode: { type: 'string' },
+          config: { type: 'object' }
         },
         relationships: {
           owner: { type: 'hasOne', model: 'user' }
@@ -96,7 +97,7 @@ export class FetchDataComponent {
 
   async ngOnInit(): Promise<void> {
     await this.coordinator.activate();
-    this.projects = (await this.store.query(q => q.findRecords('project'))) as Record[];
+    this.projects = await this.store.query(q => q.findRecords('project'));
   }
 
   updateProjectName(project: Record, value: string): void {

@@ -1,3 +1,4 @@
+using System;
 using Autofac;
 using AutoMapper;
 using JsonApiDotNetCore.Builders;
@@ -13,16 +14,17 @@ namespace SIL.XForge.Services
     public static class ServicesExtensions
     {
         public static IServiceCollection AddJsonApi(this IServiceCollection services, IMvcBuilder mvcBuilder,
-            ContainerBuilder containerBuilder)
+            ContainerBuilder containerBuilder, Action<IContextGraphBuilder> contextGraphBuilder)
         {
             var jsonApiOptions = new JsonApiOptions
             {
                 Namespace = "api"
             };
+            jsonApiOptions.SerializerSettings.ContractResolver = new XForgeDasherizedResolver();
             jsonApiOptions.BuildContextGraph(builder =>
                 {
                     builder.AddResource<UserResource, string>("users");
-                    builder.AddResource<ProjectResource, string>("projects");
+                    contextGraphBuilder(builder);
                 });
 
             mvcBuilder.AddMvcOptions(options =>
@@ -38,18 +40,18 @@ namespace SIL.XForge.Services
 
             services.AddAutoMapper();
 
-            containerBuilder.RegisterType<UserResourceService>()
-                .AsImplementedInterfaces()
-                .AsSelf()
-                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies)
-                .InstancePerLifetimeScope();
-            containerBuilder.RegisterType<ProjectResourceService>()
-                .AsImplementedInterfaces()
-                .AsSelf()
-                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies)
-                .InstancePerLifetimeScope();
-
+            containerBuilder.AddResourceService<UserResourceService>();
+            containerBuilder.AddResourceService<ProjectResourceService>();
             return services;
+        }
+
+        public static ContainerBuilder AddResourceService<T>(this ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<T>()
+                .AsImplementedInterfaces()
+                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies)
+                .InstancePerLifetimeScope();
+            return containerBuilder;
         }
     }
 }

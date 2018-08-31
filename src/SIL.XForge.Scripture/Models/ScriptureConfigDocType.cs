@@ -1,6 +1,8 @@
-namespace SIL.XForge.Models.Translate
+using SIL.XForge.Models;
+
+namespace SIL.XForge.Scripture.Models
 {
-    public class TranslateConfigDocType
+    public class ScriptureConfigDocType
     {
         public InputSystem InputSystem { get; set; } = new InputSystem();
         public ParatextProject ParatextProject { get; set; } = new ParatextProject();

@@ -1,6 +1,6 @@
-namespace SIL.XForge.Models.Translate
+namespace SIL.XForge.Scripture.Models
 {
-    public class TranslateUserPreferences
+    public class ScriptureUserPreferences
     {
         public double ConfidenceThreshold { get; set; }
         public bool HasConfidenceOverride { get; set; }

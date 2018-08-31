@@ -1,6 +1,6 @@
-namespace SIL.XForge.Models.Translate
+namespace SIL.XForge.Scripture.Models
 {
-    public class TranslateConfigMetrics
+    public class ScriptureConfigMetrics
     {
         public int ActiveEditTimeout { get; set; } = 5;
         public int EditingTimeout { get; set; } = 20 * 60;

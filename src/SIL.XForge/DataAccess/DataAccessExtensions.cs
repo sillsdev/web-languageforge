@@ -14,8 +14,6 @@ using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using SIL.XForge.Models;
-using SIL.XForge.Models.SFChecks;
-using SIL.XForge.Models.Translate;
 using SIL.XForge.Utils;
 
 namespace SIL.XForge.DataAccess
@@ -73,7 +71,7 @@ namespace SIL.XForge.DataAccess
             return query.ToListAsync(e => Task.FromResult(selector(e)));
         }
 
-        public static IServiceCollection AddMongoDataAccess(this IServiceCollection services,
+        public static IServiceCollection AddDataAccess(this IServiceCollection services,
             IConfiguration configuration)
         {
             IConfigurationSection dataAccessConfig = configuration.GetSection("DataAccess");
@@ -88,9 +86,6 @@ namespace SIL.XForge.DataAccess
                         Strategy = MongoMigrationStrategy.Migrate
                     }
                 }));
-
-            BsonSerializer.RegisterDiscriminatorConvention(typeof(ProjectEntity),
-                new HierarchicalDiscriminatorConvention("appName"));
 
             var globalPack = new ConventionPack
             {
@@ -119,14 +114,10 @@ namespace SIL.XForge.DataAccess
                         .SetSerializer(new EnumerableInterfaceImplementerSerializer<List<string>, string>(
                             new StringSerializer(BsonType.ObjectId)));
                 });
-
-            services.AddMongoRepository<ProjectEntity>("projects");
-            services.AddMongoRepository<TranslateProjectEntity>("projects", cm => cm.SetDiscriminator("translate"));
-            services.AddMongoRepository<SFChecksProjectEntity>("projects", cm => cm.SetDiscriminator("sfchecks"));
             return services;
         }
 
-        private static void AddMongoRepository<T>(this IServiceCollection services, string collectionName,
+        public static void AddMongoRepository<T>(this IServiceCollection services, string collectionName,
             Action<BsonClassMap<T>> setup = null) where T : IEntity
         {
             RegisterClass(setup);
@@ -145,7 +136,7 @@ namespace SIL.XForge.DataAccess
         private static IRepository<T> CreateRepository<T>(IMongoClient mongoClient, string collectionName)
             where T : IEntity
         {
-            return new MongoRepository<T>(mongoClient.GetDatabase("scriptureforge").GetCollection<T>(collectionName));
+            return new MongoRepository<T>(mongoClient.GetDatabase("xforge").GetCollection<T>(collectionName));
         }
     }
 }

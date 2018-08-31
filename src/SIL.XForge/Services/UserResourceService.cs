@@ -21,7 +21,7 @@ namespace SIL.XForge.Services
         {
         }
 
-        public ProjectResourceService ProjectResources { get; set; }
+        public IResourceQueryable<ProjectResource, ProjectEntity> ProjectResources { get; set; }
 
         protected override bool HasOwner => true;
         protected override Domain Domain => Domain.Users;

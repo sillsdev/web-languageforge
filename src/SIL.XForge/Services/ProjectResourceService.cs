@@ -13,21 +13,32 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public class ProjectResourceService : ProjectDataResourceServiceBase<ProjectResource, ProjectEntity>
+    public class ProjectResourceService : ProjectResourceService<ProjectResource, ProjectEntity>
     {
         public ProjectResourceService(IJsonApiContext jsonApiContext, IRepository<ProjectEntity> projects,
-            IMapper mapper, IHttpContextAccessor httpContextAccessor)
-            : base(jsonApiContext, projects, projects, mapper, httpContextAccessor)
+            IRepository<ProjectEntity> entities, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+            : base(jsonApiContext, projects, entities, mapper, httpContextAccessor)
+        {
+        }
+    }
+
+    public class ProjectResourceService<TResource, TEntity> : ProjectDataResourceServiceBase<TResource, TEntity>
+        where TResource : ProjectResource
+        where TEntity : ProjectEntity
+    {
+        public ProjectResourceService(IJsonApiContext jsonApiContext, IRepository<ProjectEntity> projects,
+            IRepository<TEntity> entities, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+            : base(jsonApiContext, projects, entities, mapper, httpContextAccessor)
         {
         }
 
-        public UserResourceService UserResources { get; set; }
+        public IResourceQueryable<UserResource, UserEntity> UserResources { get; set; }
 
         protected override bool HasOwner => true;
         protected override Domain Domain => Domain.Projects;
 
         protected override async Task<object> GetRelationshipResourcesAsync(IEnumerable<string> included,
-            Dictionary<string, IResource> resources, ProjectEntity entity, string relationshipName)
+            Dictionary<string, IResource> resources, TEntity entity, string relationshipName)
         {
             switch (relationshipName)
             {
@@ -39,8 +50,8 @@ namespace SIL.XForge.Services
             return base.GetRelationshipResourcesAsync(included, resources, entity, relationshipName);
         }
 
-        protected override UpdateDefinition<ProjectEntity> GetRelationshipUpdateOperation(
-            UpdateDefinitionBuilder<ProjectEntity> update, string relationshipName, IEnumerable<string> ids)
+        protected override UpdateDefinition<TEntity> GetRelationshipUpdateOperation(
+            UpdateDefinitionBuilder<TEntity> update, string relationshipName, IEnumerable<string> ids)
         {
             switch (relationshipName)
             {
@@ -50,27 +61,27 @@ namespace SIL.XForge.Services
             return base.GetRelationshipUpdateOperation(update, relationshipName, ids);
         }
 
-        protected override void SetNewEntityRelationships(ProjectEntity entity, ProjectResource resource)
+        protected override void SetNewEntityRelationships(TEntity entity, TResource resource)
         {
             entity.OwnerRef = resource.Owner?.Id;
         }
 
-        protected override Expression<Func<ProjectEntity, bool>> IsOwnedByUser()
+        protected override Expression<Func<TEntity, bool>> IsOwnedByUser()
         {
             return p => p.OwnerRef == UserId;
         }
 
-        protected override Expression<Func<ProjectEntity, bool>> IsInProject(string projectId)
+        protected override Expression<Func<TEntity, bool>> IsInProject(string projectId)
         {
             return p => p.Id == projectId;
         }
 
-        protected override Expression<Func<ProjectEntity, string>> ProjectRef()
+        protected override Expression<Func<TEntity, string>> ProjectRef()
         {
             return p => p.Id;
         }
 
-        protected override string GetProjectId(ProjectResource resource)
+        protected override string GetProjectId(TResource resource)
         {
             return resource.Id;
         }

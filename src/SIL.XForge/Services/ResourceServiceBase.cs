@@ -20,7 +20,8 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public abstract class ResourceServiceBase<TResource, TEntity> : IResourceService<TResource, string>
+    public abstract class ResourceServiceBase<TResource, TEntity> : IResourceService<TResource, string>,
+        IResourceQueryable<TResource, TEntity>
         where TResource : class, IResource
         where TEntity : class, IEntity
     {

@@ -11,10 +11,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SIL.XForge.DataAccess;
 using SIL.XForge.ExceptionLogging;
 using SIL.XForge.Identity;
-using SIL.XForge.Services;
+using SIL.XForge.Scripture.DataAccess;
+using SIL.XForge.Scripture.Services;
 
 namespace SIL.XForge.Scripture
 {
@@ -63,11 +63,11 @@ namespace SIL.XForge.Scripture
                         options.Audience = "api";
                     });
 
-            services.AddMongoDataAccess(Configuration);
+            services.AddScriptureDataAccess(Configuration);
 
             IMvcBuilder mvcBuilder = services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddJsonApi(mvcBuilder, containerBuilder);
+            services.AddScriptureJsonApi(mvcBuilder, containerBuilder);
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -91,8 +91,6 @@ namespace SIL.XForge.Scripture
 
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
-            else
-                app.UseExceptionHandler("/Error");
 
             app.UseBugsnag();
 
