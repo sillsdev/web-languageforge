@@ -1,13 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Http;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
@@ -29,28 +24,14 @@ namespace SIL.XForge.Services
         protected override bool HasOwner => true;
         protected override Domain Domain => Domain.Projects;
 
-        protected override async Task<object> GetRelationshipResourcesAsync(IEnumerable<string> included,
-            Dictionary<string, IResource> resources, TEntity entity, string relationshipName)
+        protected override IRelationship<TEntity> GetRelationship(string relationshipName)
         {
             switch (relationshipName)
             {
                 case ProjectResource.OwnerRelationship:
-                    return (await UserResources.QueryAsync(included, resources,
-                        query => query.Where(u => u.Id == entity.OwnerRef))).SingleOrDefault();
-
+                    return ManyToOne(UserResources, (TEntity p) => p.OwnerRef);
             }
-            return base.GetRelationshipResourcesAsync(included, resources, entity, relationshipName);
-        }
-
-        protected override UpdateDefinition<TEntity> GetRelationshipUpdateOperation(
-            UpdateDefinitionBuilder<TEntity> update, string relationshipName, IEnumerable<string> ids)
-        {
-            switch (relationshipName)
-            {
-                case ProjectResource.OwnerRelationship:
-                    return update.Set(p => p.OwnerRef, ids.First());
-            }
-            return base.GetRelationshipUpdateOperation(update, relationshipName, ids);
+            return base.GetRelationship(relationshipName);
         }
 
         protected override void SetNewEntityRelationships(TEntity entity, TResource resource)

@@ -103,8 +103,8 @@ namespace SIL.XForge.Services
 
                     foreach (KeyValuePair<RelationshipAttribute, object> rel in _jsonApiContext.RelationshipsToUpdate)
                     {
-                        updates.Add(GetRelationshipUpdateOperation(update, rel.Key.PublicRelationshipName,
-                            new[] { (string) rel.Value }));
+                        IRelationship<TEntity> relationship = GetRelationship(rel.Key.PublicRelationshipName);
+                        updates.Add(relationship.GetUpdateOperation(update, new[] { (string) rel.Value }));
                     }
 
                     return update.Combine(updates);
@@ -118,8 +118,9 @@ namespace SIL.XForge.Services
             await CheckUpdateDeleteRightAsync(Operation.Edit, id);
 
             IEnumerable<string> relationshipIds = relationships.Select(r => r?.Id?.ToString());
+            IRelationship<TEntity> relationship = GetRelationship(relationshipName);
             await Entities.UpdateAsync(e => e.Id == id,
-                update => GetRelationshipUpdateOperation(update, relationshipName, relationshipIds));
+                update => relationship.GetUpdateOperation(update, relationshipIds));
         }
 
         public async Task<IEnumerable<TResource>> QueryAsync(IEnumerable<string> included,
@@ -134,19 +135,12 @@ namespace SIL.XForge.Services
 
         protected Task<object> GetRelationshipResourcesAsync(TEntity entity, string relationshipName)
         {
-            return GetRelationshipResourcesAsync(Enumerable.Empty<string>(), new Dictionary<string, IResource>(),
-                entity, relationshipName);
+            IRelationship<TEntity> relationship = GetRelationship(relationshipName);
+            return relationship.GetResourcesAsync(Enumerable.Empty<string>(), new Dictionary<string, IResource>(),
+                entity);
         }
 
-        protected virtual Task<object> GetRelationshipResourcesAsync(IEnumerable<string> included,
-            Dictionary<string, IResource> resources, TEntity entity, string relationshipName)
-        {
-            throw new JsonApiException(StatusCodes.Status422UnprocessableEntity,
-                $"Relationship '{relationshipName}' does not exist on resource '{typeof(TResource)}'.");
-        }
-
-        protected virtual UpdateDefinition<TEntity> GetRelationshipUpdateOperation(UpdateDefinitionBuilder<TEntity> update,
-            string relationshipName, IEnumerable<string> ids)
+        protected virtual IRelationship<TEntity> GetRelationship(string relationshipName)
         {
             throw new JsonApiException(StatusCodes.Status422UnprocessableEntity,
                 $"Relationship '{relationshipName}' does not exist on resource '{typeof(TResource)}'.");
@@ -187,6 +181,55 @@ namespace SIL.XForge.Services
             if (HasOwner && HasSiteRight(GetOwnRight(Operation.View)))
                 filter = IsOwnedByUser();
             return Task.FromResult(filter);
+        }
+
+        protected IRelationship<TEntity> ManyToManyThis<TOtherResource, TOtherEntity>(
+            IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+            Expression<Func<TEntity, List<string>>> getFieldExpr)
+                where TOtherResource : class, IResource
+                where TOtherEntity : class, IEntity
+        {
+            return new ManyToManyThisRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources,
+                getFieldExpr);
+        }
+
+        protected IRelationship<TEntity> ManyToManyOther<TOtherResource, TOtherEntity>(
+            IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+            Expression<Func<TOtherEntity, List<string>>> getFieldExpr)
+                where TOtherResource : class, IResource
+                where TOtherEntity : class, IEntity
+        {
+            return new ManyToManyOtherRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources,
+                getFieldExpr);
+        }
+
+        protected IRelationship<TEntity> ManyToOne<TOtherResource, TOtherEntity>(
+            IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+            Expression<Func<TEntity, string>> getFieldExpr)
+                where TOtherResource : class, IResource
+                where TOtherEntity : class, IEntity
+        {
+            return new ManyToOneRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources, getFieldExpr);
+        }
+
+        protected IRelationship<TEntity> OneToMany<TOtherResource, TOtherEntity>(
+            IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+            Expression<Func<TOtherEntity, string>> getFieldExpr)
+                where TOtherResource : class, IResource
+                where TOtherEntity : class, IEntity
+        {
+            return new OneToManyRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources, getFieldExpr);
+        }
+
+        protected IRelationship<TEntity> Custom<TOtherResource, TOtherEntity>(
+            IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+            Func<TEntity, Expression<Func<TOtherEntity, bool>>> createPredicate,
+            Func<UpdateDefinitionBuilder<TEntity>, IEnumerable<string>, UpdateDefinition<TEntity>> createOperation = null)
+                where TOtherResource : class, IResource
+                where TOtherEntity : class, IEntity
+        {
+            return new CustomRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources, createPredicate,
+                createOperation);
         }
 
         private async Task CheckCreateRightAsync(TResource resource)
@@ -321,14 +364,14 @@ namespace SIL.XForge.Services
 
             if (included != null)
             {
-                foreach (string relationship in included)
+                foreach (string fullName in included)
                 {
-                    string[] relParts = relationship.Split('.');
+                    string[] relParts = fullName.Split('.');
                     string relationshipName = relParts[0];
+                    IRelationship<TEntity> relationship = GetRelationship(relationshipName);
                     string propertyName = _jsonApiContext.ContextGraph.GetRelationshipName<TResource>(relationshipName);
                     PropertyInfo propertyInfo = resource.GetType().GetProperty(propertyName);
-                    object value = await GetRelationshipResourcesAsync(relParts.Skip(1), resources, entity,
-                        relationshipName);
+                    object value = await relationship.GetResourcesAsync(relParts.Skip(1), resources, entity);
                     propertyInfo.SetValue(resource, value);
                 }
             }
