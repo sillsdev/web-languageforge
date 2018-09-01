@@ -1,0 +1,12 @@
+---
+
+- name: Linux Xenial local webserver for xForge beta upgrade
+  hosts: all
+  become: yes
+  tasks: []
+
+- include: dependencies_beta.yml
+  vars:
+    deploy: palaso
+
+- include: mongodb_reset_beta.yml

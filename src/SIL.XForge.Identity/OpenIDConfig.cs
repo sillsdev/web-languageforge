@@ -42,14 +42,14 @@ namespace SIL.XForge.Identity
                     RequireConsent = false,
                     RedirectUris =
                     {
-                        "https://scriptureforge.local/home",
-                        "https://scriptureforge.local/silent-refresh.html",
+                        "https://beta.scriptureforge.local/home",
+                        "https://beta.scriptureforge.local/silent-refresh.html",
                         "http://localhost:5000/home",
                         "http://localhost:5000/silent-refresh.html"
                     },
                     PostLogoutRedirectUris =
                     {
-                        "https://scriptureforge.local/",
+                        "https://beta.scriptureforge.local/",
                         "http://localhost:5000/"
                     },
                     AllowedScopes =

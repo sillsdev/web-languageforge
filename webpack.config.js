@@ -144,8 +144,9 @@ module.exports = function (env) {
   }
 
   if (env.isTest) {
+    var plugins;
     webpackConfig.devtool = false;
-    var plugins = [
+    plugins = [
       new webpack.SourceMapDevToolPlugin({
         filename: null, // if no value is provided the sourcemap is inlined
         test: /\.(ts|js)($|\?)/i // process .js and .ts files only
@@ -153,7 +154,7 @@ module.exports = function (env) {
     ];
     webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
   } else {
-    var plugins = [
+    plugins = [
       new webpack.optimize.CommonsChunkPlugin({
         name: 'vendor',
         minChunks: function (module) {

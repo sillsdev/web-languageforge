@@ -1,0 +1,145 @@
+---
+
+# vars_palaso
+
+# mongo_path: /hddlinux/mongodb
+mongo_path: /var/lib/mongodb
+php_log_folder: /var/log/php
+lf_path: /var/www/default_local/web-languageforge
+sf_path: /var/www/default_local/web-languageforge
+site_src_paths:
+  - "{{lf_path}}/src"
+  - "{{sf_path}}/src"
+
+ssl_letsencrypt_install: false
+
+ssl_items:
+  - name: scriptureforge
+    state: selfsign
+    request:
+        country_code: "TH"
+        state: "Chiang Mai"
+        locality: "Chiang Mai"
+        organization: "SIL"
+        organization_unit: ""
+        common_name: "scriptureforge.local"
+        alt_names:
+          - key: DNS.1
+            value: "www.scriptureforge.local"
+          - key: DNS.2
+            value: "scriptureforge.local"
+    sign:
+  - name: scriptureforge_beta
+    state: selfsign
+    request:
+        country_code: "TH"
+        state: "Chiang Mai"
+        locality: "Chiang Mai"
+        organization: "SIL"
+        organization_unit: ""
+        common_name: "beta.scriptureforge.local"
+        alt_names:
+          - key: DNS.1
+            value: "www.beta.scriptureforge.local"
+          - key: DNS.2
+            value: "beta.scriptureforge.local"
+    sign:
+
+apache_module_enable:
+  - headers
+  - proxy
+  - proxy_http
+  - proxy_wstunnel
+  - rewrite
+  - ssl
+
+apache_site_disable:
+  - default_local.conf
+
+apache_site_enable:
+  - languageforge_org.conf
+  - scriptureforge_org.conf
+  - scriptureforge_org_beta.conf
+
+apache_vhosts:
+  - server_name: default.local
+    server_admin: webmaster@palaso.org
+    server_file_name: default_local
+    template: vhost_proxypath_ssl.conf.j2
+    document_root: /var/www/default_local
+    directory_options:
+      - "+Indexes"
+      - "+FollowSymLinks"
+    directory_extra:
+      - RewriteEngine On
+    virtual_hosts:
+      - has_ssl: false
+        port: 80
+        server_alias:
+          - localhost
+  - server_name: languageforge.org
+    server_admin: webmaster@palaso.org
+    server_file_name: languageforge_org
+    template: vhost_proxypath_ssl.conf.j2
+    document_root: /var/www/languageforge.org/htdocs
+    link_to: "{{lf_path}}/src"
+    directory_extra:
+      - RewriteEngine On
+    virtual_hosts:
+      - has_ssl: false
+        port: 80
+        server_alias:
+          - languageforge.local
+  - server_name: scriptureforge.org
+    server_admin: webmaster@palaso.org
+    server_file_name: scriptureforge_org
+    template: vhost_proxypath_ssl.conf.j2
+    document_root: /var/www/scriptureforge.org/htdocs
+    link_to: "{{sf_path}}/src"
+    directory_extra:
+      - RewriteEngine On
+    virtual_hosts:
+      - has_ssl: false
+        port: 80
+        server_alias:
+          - scriptureforge.local
+          - localhost
+        proxy:
+          - '/api2/ http://localhost:5000/'
+          - '/machine/ http://localhost:5001/'
+          - '/sharedb/ "ws://localhost:5002/"'
+      - has_ssl: true
+        port: 443
+        certificate_file: "scriptureforge.pem"
+        key_file: "scriptureforge.key"
+        proxy:
+          - '/api2/ http://localhost:5000/'
+          - '/machine/ http://localhost:5001/'
+          - '/sharedb/ "ws://localhost:5002/"'
+  - server_name: beta.scriptureforge.org
+    server_admin: webmaster@palaso.org
+    server_file_name: scriptureforge_org_beta
+    template: vhost_proxypath_ssl.conf.j2
+    document_root: /var/www/scriptureforge.org_beta/htdocs
+    directory_extra:
+      - RewriteEngine On
+    virtual_hosts:
+      - has_ssl: false
+        port: 80
+        server_alias:
+          - beta.scriptureforge.local
+          - localhost
+        proxy:
+          - '/ http://localhost:5000/'
+          - '/machine/ http://localhost:5001/'
+          - '/sharedb/ "ws://localhost:5002/"'
+      - has_ssl: true
+        port: 443
+        server_alias:
+          - beta.scriptureforge.local
+        certificate_file: "scriptureforge_beta.pem"
+        key_file: "scriptureforge_beta.key"
+        proxy:
+          - '/ http://localhost:5000/'
+          - '/machine/ http://localhost:5001/'
+          - '/sharedb/ "ws://localhost:5002/"'
