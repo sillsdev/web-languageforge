@@ -52,6 +52,7 @@ namespace SIL.XForge.Services
             await CheckCreateRightAsync(resource);
 
             var entity = _mapper.Map<TEntity>(resource);
+            SetNewEntityRelationships(entity, resource);
             await Entities.InsertAsync(entity);
             entity = await Entities.GetAsync(entity.Id);
             return await MapWithRelationshipsAsync(entity);
@@ -143,6 +144,10 @@ namespace SIL.XForge.Services
         {
             throw new JsonApiException(StatusCodes.Status422UnprocessableEntity,
                 $"Relationship '{relationshipName}' does not exist on resource '{typeof(TResource)}'.");
+        }
+
+        protected virtual void SetNewEntityRelationships(TEntity entity, TResource resource)
+        {
         }
 
         protected virtual Expression<Func<TEntity, bool>> IsOwnedByUser()

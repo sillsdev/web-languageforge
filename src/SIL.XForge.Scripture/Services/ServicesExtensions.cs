@@ -17,13 +17,8 @@ namespace SIL.XForge.Scripture.Services
                     // projects
                     graphBuilder.AddResource<SFProjectResource, string>("projects");
                     containerBuilder.RegisterResourceService<SFProjectResourceService>();
-                    mapConfig.CreateMap<SFProjectEntity, SFProjectResource>();
-                    mapConfig.CreateMap<SFProjectResource, SFProjectEntity>()
-                        .ForMember(e => e.OwnerRef, o =>
-                            {
-                                o.Condition(r => r.Owner != null);
-                                o.MapFrom(r => r.Owner.Id);
-                            });
+                    mapConfig.CreateMap<SFProjectEntity, SFProjectResource>()
+                        .ReverseMap();
                 });
             return services;
         }
