@@ -34,11 +34,6 @@ namespace SIL.XForge.Services
             return base.GetRelationship(relationshipName);
         }
 
-        protected override void SetNewEntityRelationships(TEntity entity, TResource resource)
-        {
-            entity.OwnerRef = resource.Owner?.Id;
-        }
-
         protected override Expression<Func<TEntity, bool>> IsOwnedByUser()
         {
             return p => p.OwnerRef == UserId;

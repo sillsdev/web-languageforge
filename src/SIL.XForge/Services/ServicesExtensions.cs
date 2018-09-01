@@ -20,8 +20,12 @@ namespace SIL.XForge.Services
             var graphBuilder = new ContextGraphBuilder();
             services.AddAutoMapper(mapConfig =>
                 {
-                    graphBuilder.AddResource<UserResource, UserEntity>(mapConfig, "users",
-                        m => m.ForMember(u => u.Projects, o => o.Ignore()));
+                    // users
+                    graphBuilder.AddResource<UserResource, string>("users");
+                    mapConfig.CreateMap<UserEntity, UserResource>()
+                        .ForMember(u => u.Projects, o => o.Ignore())
+                        .ReverseMap();
+
                     configure(graphBuilder, mapConfig);
                 });
 
@@ -44,27 +48,6 @@ namespace SIL.XForge.Services
             services.AddScoped<IDocumentBuilder, XForgeDocumentBuilder>();
 
             return services;
-        }
-
-        public static void AddResourceService<TResource, TEntity, TService>(this IContextGraphBuilder graphBuilder,
-            ContainerBuilder containerBuilder, IMapperConfigurationExpression mapConfig, string typeName,
-            Func<IMappingExpression<TEntity, TResource>, IMappingExpression<TEntity, TResource>> mapping = null)
-            where TResource: class, IIdentifiable<string>
-        {
-            containerBuilder.RegisterResourceService<TService>();
-            graphBuilder.AddResource(mapConfig, typeName, mapping);
-        }
-
-        public static void AddResource<TResource, TEntity>(this IContextGraphBuilder graphBuilder,
-            IMapperConfigurationExpression mapConfig, string typeName,
-            Func<IMappingExpression<TEntity, TResource>, IMappingExpression<TEntity, TResource>> mapping = null)
-            where TResource : class, IIdentifiable<string>
-        {
-            graphBuilder.AddResource<TResource, string>(typeName);
-            var m = mapConfig.CreateMap<TEntity, TResource>();
-            if (mapping != null)
-                m = mapping(m);
-            m.ReverseMap();
         }
 
         public static void RegisterResourceService<T>(this ContainerBuilder containerBuilder)

@@ -14,8 +14,16 @@ namespace SIL.XForge.Scripture.Services
 
             services.AddJsonApi(mvcBuilder, containerBuilder, (graphBuilder, mapConfig) =>
                 {
-                    graphBuilder.AddResourceService<SFProjectResource, SFProjectEntity, SFProjectResourceService>(
-                        containerBuilder, mapConfig, "projects");
+                    // projects
+                    graphBuilder.AddResource<SFProjectResource, string>("projects");
+                    containerBuilder.RegisterResourceService<SFProjectResourceService>();
+                    mapConfig.CreateMap<SFProjectEntity, SFProjectResource>();
+                    mapConfig.CreateMap<SFProjectResource, SFProjectEntity>()
+                        .ForMember(e => e.OwnerRef, o =>
+                            {
+                                o.Condition(r => r.Owner != null);
+                                o.MapFrom(r => r.Owner.Id);
+                            });
                 });
             return services;
         }
