@@ -144,7 +144,8 @@ namespace SIL.XForge.DataAccess
         private static IRepository<T> CreateRepository<T>(IMongoClient mongoClient, string collectionName)
             where T : Entity
         {
-            return new MongoRepository<T>(mongoClient.GetDatabase("xforge").GetCollection<T>(collectionName));
+            return new MongoRepository<T>(mongoClient.GetDatabase(DataAccessConstants.MongoDatabase)
+                .GetCollection<T>(collectionName));
         }
     }
 }

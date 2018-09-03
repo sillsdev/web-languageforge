@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { OAuthService, AuthConfig, JwksValidationHandler } from 'angular-oauth2-oidc';
 
-import { environment } from '../environments/environment';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,7 +12,7 @@ export class AppComponent {
   private static readonly authConfig: AuthConfig = {
     issuer: window.location.origin,
     redirectUri: window.location.origin + '/home',
-    clientId: environment.clientId,
+    clientId: 'SF',
     scope: 'openid profile email api',
     postLogoutRedirectUri: window.location.origin + '/',
     silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html'

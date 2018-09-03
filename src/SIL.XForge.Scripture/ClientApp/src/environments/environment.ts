@@ -5,6 +5,5 @@
 
 export const environment = {
   staging: false,
-  production: false,
-  clientId: 'SFDev'
+  production: false
 };
