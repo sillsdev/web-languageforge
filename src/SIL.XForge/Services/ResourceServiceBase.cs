@@ -22,8 +22,8 @@ namespace SIL.XForge.Services
 {
     public abstract class ResourceServiceBase<TResource, TEntity> : IResourceService<TResource, string>,
         IResourceQueryable<TResource, TEntity>
-        where TResource : class, IResource
-        where TEntity : class, IEntity
+        where TResource : Resource
+        where TEntity : Entity
     {
         private readonly IJsonApiContext _jsonApiContext;
         private readonly IMapper _mapper;
@@ -38,6 +38,8 @@ namespace SIL.XForge.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public IResourceQueryable<UserResource, UserEntity> UserResources { get; set; }
+
         protected IRepository<TEntity> Entities { get; }
         private ClaimsPrincipal User => _httpContextAccessor.HttpContext.User;
         protected string UserId => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -45,7 +47,7 @@ namespace SIL.XForge.Services
         private string SiteRole => User.FindFirst("site_role")?.Value;
 
         protected abstract Domain Domain { get; }
-        protected virtual bool HasOwner => false;
+        protected virtual bool HasOwner => true;
 
         public virtual async Task<TResource> CreateAsync(TResource resource)
         {
@@ -124,7 +126,7 @@ namespace SIL.XForge.Services
         }
 
         public async Task<IEnumerable<TResource>> QueryAsync(IEnumerable<string> included,
-            Dictionary<string, IResource> resources,
+            Dictionary<string, Resource> resources,
             Func<IMongoQueryable<TEntity>, IMongoQueryable<TEntity>> querySelector)
         {
             IMongoQueryable<TEntity> query = Entities.Query();
@@ -136,23 +138,30 @@ namespace SIL.XForge.Services
         protected Task<object> GetRelationshipResourcesAsync(TEntity entity, string relationshipName)
         {
             IRelationship<TEntity> relationship = GetRelationship(relationshipName);
-            return relationship.GetResourcesAsync(Enumerable.Empty<string>(), new Dictionary<string, IResource>(),
+            return relationship.GetResourcesAsync(Enumerable.Empty<string>(), new Dictionary<string, Resource>(),
                 entity);
         }
 
         protected virtual IRelationship<TEntity> GetRelationship(string relationshipName)
         {
+            switch (relationshipName)
+            {
+                case Resource.OwnerRelationship:
+                    return ManyToOne(UserResources, (TEntity p) => p.OwnerRef);
+            }
             throw new JsonApiException(StatusCodes.Status422UnprocessableEntity,
                 $"Relationship '{relationshipName}' does not exist on resource '{typeof(TResource)}'.");
         }
 
         protected virtual void SetNewEntityRelationships(TEntity entity, TResource resource)
         {
+            if (resource.Owner != null)
+                entity.OwnerRef = resource.Owner.Id;
         }
 
         protected virtual Expression<Func<TEntity, bool>> IsOwnedByUser()
         {
-            throw new NotImplementedException();
+            return e => e.OwnerRef == UserId;
         }
 
         protected virtual Task<bool> HasCreateRightAsync(TResource resource)
@@ -178,7 +187,7 @@ namespace SIL.XForge.Services
             Expression<Func<TEntity, bool>> filter = null;
             if (HasSiteRight(new Right(Domain, Operation.View)))
                 filter = e => true;
-            if (HasOwner && HasSiteRight(GetOwnRight(Operation.View)))
+            else if (HasOwner && HasSiteRight(GetOwnRight(Operation.View)))
                 filter = IsOwnedByUser();
             return Task.FromResult(filter);
         }
@@ -186,8 +195,8 @@ namespace SIL.XForge.Services
         protected IRelationship<TEntity> ManyToManyThis<TOtherResource, TOtherEntity>(
             IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
             Expression<Func<TEntity, List<string>>> getFieldExpr)
-                where TOtherResource : class, IResource
-                where TOtherEntity : class, IEntity
+                where TOtherResource : Resource
+                where TOtherEntity : Entity
         {
             return new ManyToManyThisRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources,
                 getFieldExpr);
@@ -196,8 +205,8 @@ namespace SIL.XForge.Services
         protected IRelationship<TEntity> ManyToManyOther<TOtherResource, TOtherEntity>(
             IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
             Expression<Func<TOtherEntity, List<string>>> getFieldExpr)
-                where TOtherResource : class, IResource
-                where TOtherEntity : class, IEntity
+                where TOtherResource : Resource
+                where TOtherEntity : Entity
         {
             return new ManyToManyOtherRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources,
                 getFieldExpr);
@@ -206,8 +215,8 @@ namespace SIL.XForge.Services
         protected IRelationship<TEntity> ManyToOne<TOtherResource, TOtherEntity>(
             IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
             Expression<Func<TEntity, string>> getFieldExpr)
-                where TOtherResource : class, IResource
-                where TOtherEntity : class, IEntity
+                where TOtherResource : Resource
+                where TOtherEntity : Entity
         {
             return new ManyToOneRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources, getFieldExpr);
         }
@@ -215,8 +224,8 @@ namespace SIL.XForge.Services
         protected IRelationship<TEntity> OneToMany<TOtherResource, TOtherEntity>(
             IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
             Expression<Func<TOtherEntity, string>> getFieldExpr)
-                where TOtherResource : class, IResource
-                where TOtherEntity : class, IEntity
+                where TOtherResource : Resource
+                where TOtherEntity : Entity
         {
             return new OneToManyRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources, getFieldExpr);
         }
@@ -225,8 +234,8 @@ namespace SIL.XForge.Services
             IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
             Func<TEntity, Expression<Func<TOtherEntity, bool>>> createPredicate,
             Func<UpdateDefinitionBuilder<TEntity>, IEnumerable<string>, UpdateDefinition<TEntity>> createOperation = null)
-                where TOtherResource : class, IResource
-                where TOtherEntity : class, IEntity
+                where TOtherResource : Resource
+                where TOtherEntity : Entity
         {
             return new CustomRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources, createPredicate,
                 createOperation);
@@ -350,13 +359,13 @@ namespace SIL.XForge.Services
         private Task<TResource> MapWithRelationshipsAsync(TEntity entity)
         {
             return MapWithRelationshipsAsync(_jsonApiContext.QuerySet?.IncludedRelationships,
-                new Dictionary<string, IResource>(), entity);
+                new Dictionary<string, Resource>(), entity);
         }
 
         private async Task<TResource> MapWithRelationshipsAsync(IEnumerable<string> included,
-            Dictionary<string, IResource> resources, TEntity entity)
+            Dictionary<string, Resource> resources, TEntity entity)
         {
-            if (resources.TryGetValue(entity.Id, out IResource existing))
+            if (resources.TryGetValue(entity.Id, out Resource existing))
                 return (TResource) existing;
 
             TResource resource = _mapper.Map<TResource>(entity);

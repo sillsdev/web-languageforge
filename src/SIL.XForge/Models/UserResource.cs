@@ -3,7 +3,7 @@ using JsonApiDotNetCore.Models;
 
 namespace SIL.XForge.Models
 {
-    public class UserResource : ResourceBase
+    public class UserResource : Resource
     {
         public const string ProjectsRelationship = "projects";
 

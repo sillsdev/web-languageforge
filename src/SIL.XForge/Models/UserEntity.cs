@@ -5,7 +5,7 @@ using IdentityModel;
 
 namespace SIL.XForge.Models
 {
-    public class UserEntity : EntityBase
+    public class UserEntity : Entity
     {
         public string Username { get; set; }
         public string Name { get; set; }

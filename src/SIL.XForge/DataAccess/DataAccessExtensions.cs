@@ -21,17 +21,17 @@ namespace SIL.XForge.DataAccess
     public static class DataAccessExtensions
     {
         public static Task<T> UpdateAsync<T>(this IRepository<T> repo, T entity,
-            Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update, bool upsert = false) where T : IEntity
+            Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update, bool upsert = false) where T : Entity
         {
             return repo.UpdateAsync(e => e.Id == entity.Id, update, upsert);
         }
 
-        public static async Task<T> DeleteAsync<T>(this IRepository<T> repo, string id) where T : IEntity
+        public static async Task<T> DeleteAsync<T>(this IRepository<T> repo, string id) where T : Entity
         {
             return await repo.DeleteAsync(e => e.Id == id);
         }
 
-        public static async Task<T> GetAsync<T>(this IRepository<T> repo, string id) where T : IEntity
+        public static async Task<T> GetAsync<T>(this IRepository<T> repo, string id) where T : Entity
         {
             Attempt<T> attempt = await repo.TryGetAsync(id);
             if (attempt.Success)
@@ -39,12 +39,12 @@ namespace SIL.XForge.DataAccess
             return default(T);
         }
 
-        public static async Task<IReadOnlyList<T>> GetAllAsync<T>(this IRepository<T> repo) where T : IEntity
+        public static async Task<IReadOnlyList<T>> GetAllAsync<T>(this IRepository<T> repo) where T : Entity
         {
             return await repo.Query().ToListAsync();
         }
 
-        public static async Task<Attempt<T>> TryGetAsync<T>(this IRepository<T> repo, string id) where T : IEntity
+        public static async Task<Attempt<T>> TryGetAsync<T>(this IRepository<T> repo, string id) where T : Entity
         {
             T entity = await repo.Query().Where(e => e.Id == id).FirstOrDefaultAsync();
             return new Attempt<T>(entity != null, entity);
@@ -96,11 +96,19 @@ namespace SIL.XForge.DataAccess
             var paratextProjectPack = new ConventionPack { new NoIdMemberConvention() };
             ConventionRegistry.Register("ParatextProject", paratextProjectPack, t => t == typeof(ParatextProject));
 
-            RegisterClass<EntityBase>(cm =>
+            RegisterClass<Entity>(cm =>
                 {
                     cm.MapIdProperty(e => e.Id)
                         .SetIdGenerator(StringObjectIdGenerator.Instance)
                         .SetSerializer(new StringSerializer(BsonType.ObjectId));
+                    cm.MapMember(e => e.OwnerRef)
+                        .SetShouldSerializeMethod(e => e.GetType() != typeof(UserEntity));
+                });
+
+            RegisterClass<ProjectDataEntity>(cm =>
+                {
+                    cm.MapMember(p => p.ProjectRef)
+                        .SetShouldSerializeMethod(p => p.GetType() != typeof(ProjectEntity));
                 });
 
             services.AddSingleton<IMongoClient>(sp => new MongoClient(connectionString));
@@ -118,7 +126,7 @@ namespace SIL.XForge.DataAccess
         }
 
         public static void AddMongoRepository<T>(this IServiceCollection services, string collectionName,
-            Action<BsonClassMap<T>> setup = null) where T : IEntity
+            Action<BsonClassMap<T>> setup = null) where T : Entity
         {
             RegisterClass(setup);
             services.AddSingleton(sp => CreateRepository<T>(sp.GetService<IMongoClient>(), collectionName));
@@ -134,7 +142,7 @@ namespace SIL.XForge.DataAccess
         }
 
         private static IRepository<T> CreateRepository<T>(IMongoClient mongoClient, string collectionName)
-            where T : IEntity
+            where T : Entity
         {
             return new MongoRepository<T>(mongoClient.GetDatabase("xforge").GetCollection<T>(collectionName));
         }

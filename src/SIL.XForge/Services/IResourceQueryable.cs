@@ -7,11 +7,11 @@ using SIL.XForge.Models;
 namespace SIL.XForge.Services
 {
     public interface IResourceQueryable<TResource, TEntity>
-        where TResource : class, IResource
-        where TEntity : class, IEntity
+        where TResource : Resource
+        where TEntity : Entity
     {
         Task<IEnumerable<TResource>> QueryAsync(IEnumerable<string> included,
-            Dictionary<string, IResource> resources,
+            Dictionary<string, Resource> resources,
             Func<IMongoQueryable<TEntity>, IMongoQueryable<TEntity>> querySelector);
     }
 }

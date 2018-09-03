@@ -5,9 +5,9 @@ using JsonApiDotNetCore.Builders;
 using JsonApiDotNetCore.Configuration;
 using JsonApiDotNetCore.Extensions;
 using JsonApiDotNetCore.Middleware;
-using JsonApiDotNetCore.Models;
 using JsonApiDotNetCore.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Serialization;
 using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
@@ -34,7 +34,7 @@ namespace SIL.XForge.Services
                 Namespace = "api",
                 ContextGraph = graphBuilder.Build()
             };
-            jsonApiOptions.SerializerSettings.ContractResolver = new XForgeDasherizedResolver();
+            jsonApiOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
             mvcBuilder.AddMvcOptions(options =>
                  {

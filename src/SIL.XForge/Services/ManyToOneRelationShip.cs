@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -11,9 +10,9 @@ using SIL.XForge.Models;
 namespace SIL.XForge.Services
 {
     public class ManyToOneRelationship<TThisEntity, TOtherResource, TOtherEntity> : IRelationship<TThisEntity>
-        where TThisEntity : class, IEntity
-        where TOtherResource : class, IResource
-        where TOtherEntity : class, IEntity
+        where TThisEntity : Entity
+        where TOtherResource : Resource
+        where TOtherEntity : Entity
     {
         private readonly IResourceQueryable<TOtherResource, TOtherEntity> _otherResources;
         private readonly Expression<Func<TThisEntity, string>> _getFieldExpr;
@@ -26,7 +25,7 @@ namespace SIL.XForge.Services
         }
 
         public async Task<object> GetResourcesAsync(IEnumerable<string> included,
-            Dictionary<string, IResource> resources, TThisEntity entity)
+            Dictionary<string, Resource> resources, TThisEntity entity)
         {
             Func<TThisEntity, string> getField = _getFieldExpr.Compile();
             string id = getField(entity);

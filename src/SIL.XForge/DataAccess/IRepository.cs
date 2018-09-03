@@ -7,7 +7,7 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.DataAccess
 {
-    public interface IRepository<T> where T : IEntity
+    public interface IRepository<T> where T : Entity
     {
         IMongoQueryable<T> Query();
 

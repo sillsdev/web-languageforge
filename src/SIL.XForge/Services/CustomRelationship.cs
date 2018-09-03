@@ -11,9 +11,9 @@ using SIL.XForge.Models;
 namespace SIL.XForge.Services
 {
     public class CustomRelationship<TThisEntity, TOtherResource, TOtherEntity> : IRelationship<TThisEntity>
-        where TThisEntity : class, IEntity
-        where TOtherResource : class, IResource
-        where TOtherEntity : class, IEntity
+        where TThisEntity : Entity
+        where TOtherResource : Resource
+        where TOtherEntity : Entity
     {
         private readonly IResourceQueryable<TOtherResource, TOtherEntity> _otherResources;
         private readonly Func<TThisEntity, Expression<Func<TOtherEntity, bool>>> _createPredicate;
@@ -29,7 +29,7 @@ namespace SIL.XForge.Services
         }
 
         public async Task<object> GetResourcesAsync(IEnumerable<string> included,
-            Dictionary<string, IResource> resources, TThisEntity entity)
+            Dictionary<string, Resource> resources, TThisEntity entity)
         {
             return await _otherResources.QueryAsync(included, resources, q => q.Where(_createPredicate(entity)));
         }

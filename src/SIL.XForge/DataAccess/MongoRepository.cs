@@ -7,7 +7,7 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.DataAccess
 {
-    public class MongoRepository<T> : IRepository<T> where T : IEntity
+    public class MongoRepository<T> : IRepository<T> where T : Entity
     {
         private readonly IMongoCollection<T> _collection;
 

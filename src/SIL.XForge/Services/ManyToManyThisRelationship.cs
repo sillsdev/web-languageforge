@@ -10,9 +10,9 @@ using SIL.XForge.Models;
 namespace SIL.XForge.Services
 {
     public class ManyToManyThisRelationship<TThisEntity, TOtherResource, TOtherEntity> : IRelationship<TThisEntity>
-        where TThisEntity : class, IEntity
-        where TOtherResource : class, IResource
-        where TOtherEntity : class, IEntity
+        where TThisEntity : Entity
+        where TOtherResource : Resource
+        where TOtherEntity : Entity
     {
         private readonly IResourceQueryable<TOtherResource, TOtherEntity> _otherResources;
         private readonly Expression<Func<TThisEntity, List<string>>> _getFieldExpr;
@@ -25,7 +25,7 @@ namespace SIL.XForge.Services
         }
 
         public async Task<object> GetResourcesAsync(IEnumerable<string> included,
-            Dictionary<string, IResource> resources, TThisEntity entity)
+            Dictionary<string, Resource> resources, TThisEntity entity)
         {
             Func<TThisEntity, List<string>> getField = _getFieldExpr.Compile();
             List<string> ids = getField(entity);

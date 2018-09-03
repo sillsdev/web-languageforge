@@ -14,10 +14,11 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public abstract class ProjectDataResourceServiceBase<TResource, TEntity, TProjectEntity>
+    public abstract class ProjectDataResourceServiceBase<TResource, TEntity, TProjectResource, TProjectEntity>
         : ResourceServiceBase<TResource, TEntity>
-        where TResource : class, IResource
-        where TEntity : class, IEntity
+        where TResource : ProjectDataResource
+        where TEntity : ProjectDataEntity
+        where TProjectResource : ProjectResource
         where TProjectEntity : ProjectEntity
     {
         private readonly IRepository<TProjectEntity> _projects;
@@ -29,18 +30,34 @@ namespace SIL.XForge.Services
             _projects = projects;
         }
 
-        protected abstract Expression<Func<TEntity, bool>> IsInProject(string projectId);
+        public IResourceQueryable<TProjectResource, TProjectEntity> ProjectResources { get; set; }
 
-        protected abstract Expression<Func<TEntity, string>> ProjectRef();
+        protected override IRelationship<TEntity> GetRelationship(string relationshipName)
+        {
+            switch (relationshipName)
+            {
+                case ProjectDataResource.ProjectRelationship:
+                    return ManyToOne(ProjectResources, ProjectRef());
+            }
+            return base.GetRelationship(relationshipName);
+        }
 
-        protected abstract string GetProjectId(TResource resource);
+        protected override void SetNewEntityRelationships(TEntity entity, TResource resource)
+        {
+            base.SetNewEntityRelationships(entity, resource);
+            if (resource.Project != null)
+                entity.ProjectRef = resource.Project.Id;
+        }
 
         protected override async Task<bool> HasCreateRightAsync(TResource resource)
         {
             if (await base.HasCreateRightAsync(resource))
                 return true;
 
-            ProjectEntity project = await _projects.GetAsync(GetProjectId(resource));
+            if (resource.Project == null)
+                return false;
+
+            ProjectEntity project = await _projects.GetAsync(resource.Project.Id);
             return project.HasRight(UserId, new Right(Domain, Operation.Create));
         }
 
@@ -87,6 +104,16 @@ namespace SIL.XForge.Services
                 }
             }
             return isEmpty ? null : wherePredicate;
+        }
+
+        protected virtual Expression<Func<TEntity, bool>> IsInProject(string projectId)
+        {
+            return e => e.ProjectRef == projectId;
+        }
+
+        protected virtual Expression<Func<TEntity, string>> ProjectRef()
+        {
+            return e => e.ProjectRef;
         }
     }
 }

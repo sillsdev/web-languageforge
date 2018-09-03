@@ -50,7 +50,7 @@ namespace SIL.XForge.Scripture
                                     = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                             };
                         }
-                        options.Authority = "https://scriptureforge.local";
+                        options.Authority = "https://beta.scriptureforge.local";
                         options.Audience = "api";
                     })
                 .AddJwtBearer("localhost", options =>

@@ -20,7 +20,6 @@ namespace SIL.XForge.Services
 
         public IResourceQueryable<TProjectResource, TProjectEntity> ProjectResources { get; set; }
 
-        protected override bool HasOwner => true;
         protected override Domain Domain => Domain.Users;
 
         protected override IRelationship<UserEntity> GetRelationship(string relationshipName)
@@ -28,8 +27,7 @@ namespace SIL.XForge.Services
             switch (relationshipName)
             {
                 case UserResource.ProjectsRelationship:
-                    return Custom(ProjectResources,
-                        (UserEntity u) => { return p => p.Users.ContainsKey(u.Id); });
+                    return Custom(ProjectResources, (UserEntity u) => { return p => p.Users.ContainsKey(u.Id); });
             }
             return base.GetRelationship(relationshipName);
         }
