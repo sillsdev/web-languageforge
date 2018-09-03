@@ -49,17 +49,16 @@ namespace SIL.XForge.Scripture
                                 ServerCertificateCustomValidationCallback
                                     = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                             };
+                            options.Authority = "https://beta.scriptureforge.local";
                         }
-                        options.Authority = "https://beta.scriptureforge.local";
-                        options.Audience = "api";
-                    })
-                .AddJwtBearer("localhost", options =>
-                    {
-                        if (Environment.IsDevelopment())
+                        else if (Environment.IsStaging())
                         {
-                            options.RequireHttpsMetadata = false;
+                            options.Authority = "https://beta.qa.scriptureforge.org";
                         }
-                        options.Authority = "http://localhost:5000";
+                        else if (Environment.IsProduction())
+                        {
+                            options.Authority = "https://beta.scriptureforge.org";
+                        }
                         options.Audience = "api";
                     });
 

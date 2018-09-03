@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  staging: false,
+  production: true,
+  clientId: 'SFLive'
 };

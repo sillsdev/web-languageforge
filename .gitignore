@@ -54,6 +54,7 @@ obj/
 _ReSharper*/
 *.user
 tempkey.rsa
+.leu
 
 appsettings.user.json
 
