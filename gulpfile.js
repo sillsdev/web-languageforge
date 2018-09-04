@@ -1526,7 +1526,7 @@ gulp.task('build-beta', function () {
       .pipe(dotnetPublish({
         configuration: 'Release',
         runtime: 'linux-x64',
-        output: '../../../artifacts/app'
+        output: '../../artifacts/app'
       }));
 });
 
