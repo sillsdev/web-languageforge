@@ -1519,14 +1519,7 @@ gulp.task('build-php-coverage',
     'test-php-coverage')
 );
 
-gulp.task('build-and-upload-sf',
-  gulp.series(
-    'build-sf',
-    'build-upload-sf',
-    'remote-restart-sf')
-);
-
-gulp.task('build-sf', function () {
+gulp.task('build-beta', function () {
   del('artifacts/app/**/*');
   return gulp.src('src/SIL.XForge.Scripture/SIL.XForge.Scripture.csproj',
     { read: false })
@@ -1537,7 +1530,7 @@ gulp.task('build-sf', function () {
       }));
 });
 
-gulp.task('build-upload-sf', function (cb) {
+gulp.task('build-upload-beta', function (cb) {
   var params = require('yargs')
     .option('dest', {
       demand: true,
@@ -1566,8 +1559,11 @@ gulp.task('build-upload-sf', function (cb) {
   );
 });
 
-gulp.task('remote-restart-sf', function (cb) {
+gulp.task('remote-restart-beta', function (cb) {
   var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
     .option('dest', {
       demand: true,
       type: 'string' })
@@ -1578,17 +1574,25 @@ gulp.task('remote-restart-sf', function (cb) {
     .argv;
 
   var options = {
+    applicationName: params.applicationName,
     credentials: params.uploadCredentials,
     destination: params.dest.slice(0, params.dest.indexOf(':'))
   };
 
   execute(
     'ssh -i <%= credentials %> <%= destination %>' +
-      " 'systemctl restart scriptureforge-web-app'",
+      " 'systemctl restart <%= applicationName %>-web-app'",
     options,
     cb
   );
 });
+
+gulp.task('build-and-upload-beta',
+  gulp.series(
+    'build-beta',
+    'build-upload-beta',
+    'remote-restart-beta')
+);
 
 //endregion
 
