@@ -15,7 +15,7 @@ describe('Lexicon E2E Editor Comments', async () => {
   it('setup: login, click on test project', async () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
-    await projectsPage.clickOnProjectName(constants.testProjectName);
+    await projectsPage.clickOnProject(constants.testProjectName);
   });
 
   it('browse page has correct word count', async () => {
@@ -115,7 +115,7 @@ describe('Lexicon E2E Editor Comments', async () => {
 
   it('comments panel: refresh returns to comment', async () => {
     const comment = editorPage.comment.getComment(0);
-    await browser.driver.navigate().refresh();
+    await browser.refresh();
     await browser.wait(ExpectedConditions.visibilityOf(editorPage.comment.bubbles.first), constants.conditionTimeout);
     await editorPage.comment.bubbles.first.click();
     await browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);

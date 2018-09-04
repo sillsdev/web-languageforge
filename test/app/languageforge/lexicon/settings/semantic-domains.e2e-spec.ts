@@ -21,7 +21,7 @@ describe('Lexicon E2E Semantic Domains Lazy Load', () => {
   it('should be using English Semantic Domain for manager', async () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
-    await projectsPage.clickOnProjectName(constants.testProjectName);
+    await projectsPage.clickOnProject(constants.testProjectName);
     // browser.sleep needs to avoid error informations.
     await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();

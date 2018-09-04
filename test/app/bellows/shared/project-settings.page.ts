@@ -13,8 +13,7 @@ export class BellowsProjectSettingsPage {
   // Get the projectSettings for project projectName
   async get(projectName: string) {
     await this.projectsPage.get();
-    // this.projectsPage.clickOnProject(projectName);
-    await this.projectsPage.clickOnProjectName(projectName);
+    await this.projectsPage.clickOnProject(projectName);
     await browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
     await this.settingsMenuLink.click();
     await browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);

@@ -14,8 +14,7 @@ describe('Bellows E2E Project Settings app', async () =>  {
   it('Normal user cannot access projectSettings to a project of which the user is a member', async () => {
     await loginPage.loginAsMember();
     await projectsPage.get();
-    // await projectsPage.clickOnProject(constants.testProjectName);
-    await projectsPage.clickOnProjectName(constants.testProjectName);
+    await projectsPage.clickOnProject(constants.testProjectName);
     await expect<any>(settingsPage.settingsMenuLink.getAttribute('class')).not.toContain('app-settings-available');
   });
 

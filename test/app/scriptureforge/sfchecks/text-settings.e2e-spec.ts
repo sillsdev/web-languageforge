@@ -17,7 +17,7 @@ describe('SFChecks E2E the questions settings page - project manager', async () 
     await BellowsLoginPage.logout();
     await loginPage.loginAsManager();
     await projectListPage.get();
-    await projectListPage.clickOnProjectName(constants.testProjectName);
+    await projectListPage.clickOnProject(constants.testProjectName);
     await SfProjectPage.textLink(constants.testText1Title).click();
     await SfTextPage.clickTextSettingsButton();
   });

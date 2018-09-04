@@ -17,7 +17,7 @@ describe('Lexicon E2E Configuration Fields', async () => {
   it('setup: login as manager, select test project and first entry', async () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
-    await projectsPage.clickOnProjectName(constants.testProjectName);
+    await projectsPage.clickOnProject(constants.testProjectName);
     // browser.sleep needs to avoid error informations.
     await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();

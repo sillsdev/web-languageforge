@@ -135,7 +135,8 @@ export class EditorPage {
     newWordBtn: this.editDiv.element(by.id('editorNewWordBtn')),
     entryCountElem: this.editDiv.element(by.id('totalNumberOfEntries')),
     getEntryCount: () => {
-      browser.wait(ExpectedConditions.visibilityOf(this.edit.entryCountElem), Utils.conditionTimeout);
+      // browser.wait(ExpectedConditions.visibilityOf(this.edit.entryCountElem), Utils.conditionTimeout);
+      // browser.sleep(1000);
       return this.edit.entryCountElem.getText().then((s: string) =>
         parseInt(s, 10)
       );
@@ -186,7 +187,7 @@ export class EditorPage {
     },
 
     getLexemesAsObject: () => {
-
+      // browser.sleep(1000);
       // Returns lexemes in the format [{en: 'word', de: 'Wort'}]
       const lexeme = this.edit.fields.get(0);
       return this.editorUtil.dcMultitextToObject(lexeme);

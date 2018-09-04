@@ -21,7 +21,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   it('setup: login, click on test project', async () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
-    await projectsPage.clickOnProjectName(constants.testProjectName);
+    await projectsPage.clickOnProject(constants.testProjectName);
   });
 
   it('browse page has correct word count', async () => {
@@ -40,7 +40,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
   });
 
   it('refresh returns to list view', async () => {
-    await browser.refresh();
+    await browser.driver.navigate().refresh();
     await expect<any>(editorPage.browse.getEntryCount()).toBe(3);
   });
 
@@ -241,7 +241,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     await browser.sleep(1500);
     await projectsPage.get();
     await browser.sleep(500);
-    await projectsPage.clickOnProjectName(constants.testProjectName);
+    await projectsPage.clickOnProject(constants.testProjectName);
     // browser.sleep needs to avoid warnings
     await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
@@ -281,7 +281,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     await browser.sleep(1500);
     await loginPage.loginAsObserver();
     await projectsPage.get();
-    await projectsPage.clickOnProjectName(constants.testProjectName);
+    await projectsPage.clickOnProject(constants.testProjectName);
     // browser.sleep needs to avoid warnings
     await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
@@ -317,7 +317,7 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     await browser.sleep(1500);
     await loginPage.loginAsManager();
     await projectsPage.get();
-    await projectsPage.clickOnProjectName(constants.testProjectName);
+    await projectsPage.clickOnProject(constants.testProjectName);
     // browser.sleep needs to avoid warnings
     await browser.sleep(500);
     await editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
@@ -369,8 +369,6 @@ describe('Lexicon E2E Editor List and Entry', async () => {
       await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.fileNameInput.clear();
       await editorPage.edit.audio.control(lexemeLabel, 0).mockUpload.fileSizeInput.clear();
       await editorPage.firstNoticeCloseButton.click();
-      // added browser.sleep to avoid Timeout warnings information
-      await browser.sleep(1000);
     });
 
     it('can upload an audio file', async () => {
@@ -389,8 +387,6 @@ describe('Lexicon E2E Editor List and Entry', async () => {
       await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(true);
       await expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isEnabled()).toBe(true);
       await expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(true);
-      // added browser.sleep to avoid Timeout warnings information
-      await browser.sleep(1000);
     });
 
   });
@@ -399,12 +395,9 @@ describe('Lexicon E2E Editor List and Entry', async () => {
     await browser.wait(() => editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value),
       Utils.conditionTimeout);
     await editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value).click();
-    // added browser.sleep to avoid Timeout warnings information
-    await browser.sleep(1000);
   });
 
   it('word 2: edit page has correct definition, part of speech', async () => {
-    await browser.wait(() => editorUtil.getFieldValues('Definition'), Utils.conditionTimeout);
     await expect<any>(editorUtil.getFieldValues('Definition')).toEqual([
       { en: constants.testEntry2.senses[0].definition.en.value }
     ]);

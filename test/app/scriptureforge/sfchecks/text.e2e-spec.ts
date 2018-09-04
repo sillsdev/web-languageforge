@@ -19,7 +19,7 @@ describe('SFChecks E2E the questions list page (AKA the text page)', () => {
     it('setup: login as normal user', async () => {
       await loginPage.loginAsMember();
       await projectListPage.get();
-      await projectListPage.clickOnProjectName(constants.testProjectName);
+      await projectListPage.clickOnProject(constants.testProjectName);
       await SfProjectPage.textLink(constants.testText1Title).click();
     });
 
@@ -69,7 +69,7 @@ describe('SFChecks E2E the questions list page (AKA the text page)', () => {
     it('setup: login as manager', async () => {
       await loginPage.loginAsManager();
       await projectListPage.get();
-      await projectListPage.clickOnProjectName(constants.testProjectName);
+      await projectListPage.clickOnProject(constants.testProjectName);
       await SfProjectPage.textLink(constants.testText1Title).click();
     });
 
@@ -143,7 +143,7 @@ describe('SFChecks E2E the questions list page (AKA the text page)', () => {
     it('setup: login as admin', async () => {
       await loginPage.loginAsAdmin();
       await projectListPage.get();
-      await projectListPage.clickOnProjectName(constants.testProjectName);
+      await projectListPage.clickOnProject(constants.testProjectName);
       await SfProjectPage.textLink(constants.testText1Title).click();
     });
 

@@ -52,7 +52,7 @@ describe('SFChecks E2E the project dashboard AKA text list page', () => {
       await BellowsLoginPage.logout();
       await loginPage.loginAsManager();
       await projectListPage.get();
-      await projectListPage.clickOnProjectName(constants.testProjectName);
+      await projectListPage.clickOnProject(constants.testProjectName);
     });
 
     it('has access to the invite-a-friend button', async () => {

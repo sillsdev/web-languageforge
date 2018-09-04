@@ -49,12 +49,11 @@ describe('Lexicon E2E New Project wizard app', async () => {
     });
 
     it('can go back to Chooser page', async () => {
-      await browser.wait(ExpectedConditions.visibilityOf(page.backButton),
-        constants.conditionTimeout);
+      await browser.wait(ExpectedConditions.visibilityOf(page.backButton), constants.conditionTimeout);
       await expect<any>(page.backButton.isDisplayed()).toBe(true);
       await page.backButton.click();
       await browser.wait(ExpectedConditions.visibilityOf(page.chooserPage.sendReceiveButton),
-        constants.conditionTimeout);
+      constants.conditionTimeout);
       await expect<any>(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
     });
 
@@ -65,12 +64,9 @@ describe('Lexicon E2E New Project wizard app', async () => {
     });
 
     it('can go back to Chooser page', async () => {
-      await browser.wait(ExpectedConditions.visibilityOf(page.backButton),
-        constants.conditionTimeout);
+      await browser.sleep(500); // added browser.sleep to avoid Timeout warnings information
       await expect<any>(page.backButton.isDisplayed()).toBe(true);
       await page.backButton.click();
-      await browser.wait(ExpectedConditions.visibilityOf(page.chooserPage.sendReceiveButton),
-        constants.conditionTimeout);
       await expect<any>(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
     });
 
@@ -79,8 +75,6 @@ describe('Lexicon E2E New Project wizard app', async () => {
   describe('Send Receive Credentials page', async () => {
 
     it('can get back to Send and Receive Credentials page', async () => {
-      await browser.wait(ExpectedConditions.visibilityOf(page.chooserPage.sendReceiveButton),
-        constants.conditionTimeout);
       await page.chooserPage.sendReceiveButton.click();
       await expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       await expect<any>(page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
@@ -136,10 +130,12 @@ describe('Lexicon E2E New Project wizard app', async () => {
     it('cannot move on if credentials are invalid', async () => {
       await page.srCredentialsPage.loginInput.sendKeys(constants.srUsername);
       await page.srCredentialsPage.passwordInput.sendKeys(constants.passwordValid);
+      await browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.credentialsInvalid),
+        constants.conditionTimeout);
       await expect<any>(page.srCredentialsPage.loginOk.isPresent()).toBe(false);
       await browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.credentialsInvalid),
         constants.conditionTimeout);
-      await expect<any>(page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true); // flaky assertion
+      await expect<any>(page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true);
       await page.formStatus.expectHasNoError();
       await page.nextButton.click();
       await expect<any>(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
@@ -149,7 +145,7 @@ describe('Lexicon E2E New Project wizard app', async () => {
     it('can move on when the credentials are valid', async () => {
       await page.srCredentialsPage.passwordInput.clear();
       await page.srCredentialsPage.passwordInput.sendKeys(constants.srPassword);
-      await browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.passwordOk),
+      await browser.wait(ExpectedConditions.visibilityOf(page.srCredentialsPage.loginOk),
         constants.conditionTimeout);
       await expect<any>(page.srCredentialsPage.loginOk.isDisplayed()).toBe(true);
       await expect<any>(page.srCredentialsPage.passwordOk.isDisplayed()).toBe(true);
@@ -455,10 +451,9 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await expect<any>(page.nextButton.isEnabled()).toBe(true);
       await page.expectFormIsValid();
       await page.nextButton.click();
-      await browser.sleep(1000); // browser.sleep needs to avoid warnings.
+      await browser.sleep(CHECK_PAUSE);
       await expect<any>(editorPage.browse.getEntryCount()).toBe(2);
-      // browser.sleep needs to avoid error informations.
-      // await browser.sleep(1000);
+      await browser.sleep(CHECK_PAUSE);
     });
 
   });
@@ -476,7 +471,7 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await expect<any>(page.nextButton.isEnabled()).toBe(true);
 
       // added sleep to ensure state is stable so the next test passes (expectFormIsNotValid)
-      await browser.sleep(300);
+      await browser.sleep(500);
       await page.nextButton.click();
       await expect<any>(page.namePage.projectNameInput.isPresent()).toBe(false);
       await expect<any>(page.initialDataPage.browseButton.isPresent()).toBe(true);
@@ -498,8 +493,6 @@ describe('Lexicon E2E New Project wizard app', async () => {
   describe('Primary Language page', async () => {
 
     it('can go back to initial data page (then forward again)', async () => {
-      await browser.wait(ExpectedConditions.visibilityOf(page.backButton),
-        constants.conditionTimeout);
       await expect<any>(page.backButton.isDisplayed()).toBe(true);
       await expect<any>(page.backButton.isEnabled()).toBe(true);
       await page.backButton.click();
@@ -515,8 +508,6 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await expect<any>(page.nextButton.isEnabled()).toBe(true);
       await page.expectFormIsNotValid();
       await page.nextButton.click();
-      await browser.wait(ExpectedConditions.visibilityOf(page.primaryLanguagePage.selectButton),
-        constants.conditionTimeout);
       await expect<any>(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
       await page.formStatus.expectContainsError('Please select a primary language for the project.');
     });
@@ -555,11 +546,11 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await browser.wait(ExpectedConditions.visibilityOf(editorPage.browse.noEntriesElem), constants.conditionTimeout);
       await expect<any>(editorPage.browse.noEntriesElem.isDisplayed()).toBe(true);
       await editorPage.browse.noEntriesNewWordBtn.click();
-      // browser.sleep needs to avoid warnings.
-      // await browser.sleep(CHECK_PAUSE);
+      await browser.sleep(500); // added browser.sleep to avoid Timeout warnings information
+      // await browser.wait(() => editorPage.edit.getEntryCount(), constants.conditionTimeout);
       await expect<any>(editorPage.edit.getEntryCount()).toBe(1);
-      // browser.sleep needs to avoid warnings.
-      // await browser.sleep(1500);
+      await browser.sleep(500); // added browser.sleep to avoid Timeout warnings information
+      // await browser.wait(() => editorPage.edit.getLexemesAsObject(), constants.conditionTimeout);
       await expect<any>(editorPage.edit.getLexemesAsObject()).toEqual({ es: '' });
     });
 

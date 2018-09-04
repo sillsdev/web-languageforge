@@ -74,8 +74,7 @@ describe('Activity E2E Test', async () => {
     it('Login and navigate to the first test Question page', async () => {
       await loginPage.loginAsUser();
       await projectListPage.get();
-      // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
-      await projectListPage.clickOnProjectName(constants.testProjectName);
+      await projectListPage.clickOnProject(constants.testProjectName);
       await SfProjectPage.textLink(constants.testText1Title).click();
       await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
     });
@@ -100,8 +99,7 @@ describe('Activity E2E Test', async () => {
     it('Login and navigate to the first test Question page', async () => {
       await loginPage.loginAsSecondUser();
       await projectListPage.get();
-      // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
-      await projectListPage.clickOnProjectName(constants.testProjectName);
+      await projectListPage.clickOnProject(constants.testProjectName);
       await SfProjectPage.textLink(constants.testText1Title).click();
       await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
     });
@@ -127,8 +125,7 @@ describe('Activity E2E Test', async () => {
     it('Login and navigate to the first test Question page', async () => {
       await loginPage.loginAsManager();
       await projectListPage.get();
-      // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
-      await projectListPage.clickOnProjectName(constants.testProjectName);
+      await projectListPage.clickOnProject(constants.testProjectName);
       await SfProjectPage.textLink(constants.testText1Title).click();
       await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
     });
@@ -168,8 +165,7 @@ describe('Activity E2E Test', async () => {
 
       // Return back to Question Page for rest of test.
       await projectListPage.get();
-      // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
-      await projectListPage.clickOnProjectName(constants.testProjectName);
+      await projectListPage.clickOnProject(constants.testProjectName);
       await SfProjectPage.textLink(constants.testText1Title).click();
       await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
     });
@@ -248,8 +244,7 @@ describe('Activity E2E Test', async () => {
       it('Login and navigate to the first test Question page', async () => {
         await loginPage.loginAsUser();
         await projectListPage.get();
-        // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
-        await projectListPage.clickOnProjectName(constants.testProjectName);
+        await projectListPage.clickOnProject(constants.testProjectName);
         await SfProjectPage.textLink(constants.testText1Title).click();
         await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
       });
@@ -274,8 +269,7 @@ describe('Activity E2E Test', async () => {
       it('Login and navigate to the first test Question page', async () => {
         await loginPage.loginAsSecondUser();
         await projectListPage.get();
-        // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
-        await projectListPage.clickOnProjectName(constants.testProjectName);
+        await projectListPage.clickOnProject(constants.testProjectName);
         await SfProjectPage.textLink(constants.testText1Title).click();
         await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
       });
@@ -305,8 +299,7 @@ describe('Activity E2E Test', async () => {
       it('Login and navigate to the first test Question page', async () => {
         await loginPage.loginAsUser();
         await projectListPage.get();
-        // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
-        await projectListPage.clickOnProjectName(constants.testProjectName);
+        await projectListPage.clickOnProject(constants.testProjectName);
         await SfProjectPage.textLink(constants.testText1Title).click();
         await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
       });
@@ -331,8 +324,7 @@ describe('Activity E2E Test', async () => {
       it('Login and navigate to the first test Question page', async () => {
         await loginPage.loginAsSecondUser();
         await projectListPage.get();
-        // Invoking clickOnProjectName() method instead of "clickOnProject()" to avoid Promise Errors.
-        await projectListPage.clickOnProjectName(constants.testProjectName);
+        await projectListPage.clickOnProject(constants.testProjectName);
         await SfProjectPage.textLink(constants.testText1Title).click();
         await SfTextPage.clickOnQuestion(constants.testText1Question1Title);
       });

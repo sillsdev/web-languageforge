@@ -20,7 +20,7 @@ export class ProjectSettingsPage {
 
   async get(projectName: string) {
     await this.projectsPage.get();
-    await this.projectsPage.clickOnProjectName(projectName);
+    await this.projectsPage.clickOnProject(projectName);
     await this.getByLink();
   }
 

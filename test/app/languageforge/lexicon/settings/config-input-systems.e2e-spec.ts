@@ -17,7 +17,7 @@ describe('Lexicon E2E Configuration Input Systems', async () => {
     await loginPage.loginAsUser();
     await projectsPage.get();
 
-    await projectsPage.clickOnProjectName(constants.testProjectName);
+    await projectsPage.clickOnProject(constants.testProjectName);
     await expect<any>(configPage.settingsMenuLink.getAttribute('class')).not.toContain('app-settings-available');
   });
 
@@ -25,7 +25,7 @@ describe('Lexicon E2E Configuration Input Systems', async () => {
     await loginPage.loginAsManager();
     await projectsPage.get();
 
-    await projectsPage.clickOnProjectName(constants.testProjectName);
+    await projectsPage.clickOnProject(constants.testProjectName);
     await expect<any>(configPage.settingsMenuLink.isDisplayed()).toBe(true);
     await configPage.get();
     await expect<any>(configPage.applyButton.isDisplayed()).toBe(true);
