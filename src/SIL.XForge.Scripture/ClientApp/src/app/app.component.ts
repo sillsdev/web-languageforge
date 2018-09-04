@@ -7,16 +7,16 @@ import { OAuthService, AuthConfig, JwksValidationHandler } from 'angular-oauth2-
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'app';
-
   private static readonly authConfig: AuthConfig = {
     issuer: window.location.origin,
     redirectUri: window.location.origin + '/home',
-    clientId: 'SF',
+    clientId: 'xForge',
     scope: 'openid profile email api',
     postLogoutRedirectUri: window.location.origin + '/',
     silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html'
   };
+
+  title = 'app';
 
   constructor(private readonly oauthService: OAuthService) {
     this.oauthService.configure(AppComponent.authConfig);
