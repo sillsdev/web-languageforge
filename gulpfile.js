@@ -1519,6 +1519,77 @@ gulp.task('build-php-coverage',
     'test-php-coverage')
 );
 
+gulp.task('build-and-upload-sf',
+  gulp.series(
+    'build-sf',
+    'build-upload-sf',
+    'remote-restart-sf')
+);
+
+gulp.task('build-sf', function () {
+  del('artifacts/app/**/*');
+  return gulp.src('src/SIL.XForge.Scripture/SIL.XForge.Scripture.csproj',
+    { read: false })
+      .pipe(dotnetPublish({
+        configuration: 'Release',
+        runtime: 'linux-x64',
+        output: '../../../artifacts/app'
+      }));
+});
+
+gulp.task('build-upload-sf', function (cb) {
+  var params = require('yargs')
+    .option('dest', {
+      demand: true,
+      type: 'string' })
+    .option('uploadCredentials', {
+      demand: true,
+      type: 'string' })
+    .fail(yargFailure)
+    .argv;
+  var options = {
+    dryRun: false,
+    silent: false,
+    includeFile: 'upload-include.txt',  // read include patterns from FILE
+    excludeFile: 'upload-exclude.txt',  // read exclude patterns from FILE
+    rsh: '--rsh="ssh -v -i ' + params.uploadCredentials + '"',
+    src: 'artifacts/app/',
+    dest: path.join(params.dest, 'app')
+  };
+
+  execute(
+    'rsync -progzlt --chmod=Dug=rwx,Fug=rwx,o-rwx ' +
+    '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
+    '<%= src %> <%= dest %>',
+    options,
+    cb
+  );
+});
+
+gulp.task('remote-restart-sf', function (cb) {
+  var params = require('yargs')
+    .option('dest', {
+      demand: true,
+      type: 'string' })
+    .option('uploadCredentials', {
+      demand: true,
+      type: 'string' })
+    .fail(yargFailure)
+    .argv;
+
+  var options = {
+    credentials: params.uploadCredentials,
+    destination: params.dest.slice(0, params.dest.indexOf(':'))
+  };
+
+  execute(
+    'ssh -i <%= credentials %> <%= destination %>' +
+      " 'systemctl restart scriptureforge-web-app'",
+    options,
+    cb
+  );
+});
+
 //endregion
 
 // -------------------------------------

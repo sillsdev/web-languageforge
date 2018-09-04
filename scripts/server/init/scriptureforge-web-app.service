@@ -1,0 +1,15 @@
+[Unit]
+Description=Scripture Forge Web App
+
+[Service]
+ExecStartPre=-/bin/rm -f ${SOCKETFILE}
+ExecStart=/bin/sh -c "exec /var/www/scriptureforge.org_qa_beta/app/SIL.XForge.Scripture --urls http://unix:${SOCKETFILE}"
+WorkingDirectory=/var/www/scriptureforge.org_qa_beta/app
+Restart=always
+RestartSec=10
+SyslogIdentifier=scriptureforge-web-app_qa_beta
+User=www-data
+Environment=SOCKETFILE=/tmp/scriptureforge-web-app_qa_beta.sock
+
+[Install]
+WantedBy=multi-user.target
