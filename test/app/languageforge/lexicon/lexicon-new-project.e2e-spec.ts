@@ -546,11 +546,9 @@ describe('Lexicon E2E New Project wizard app', async () => {
       await browser.wait(ExpectedConditions.visibilityOf(editorPage.browse.noEntriesElem), constants.conditionTimeout);
       await expect<any>(editorPage.browse.noEntriesElem.isDisplayed()).toBe(true);
       await editorPage.browse.noEntriesNewWordBtn.click();
-      await browser.sleep(500); // added browser.sleep to avoid Timeout warnings information
-      // await browser.wait(() => editorPage.edit.getEntryCount(), constants.conditionTimeout);
+      await browser.sleep(1000); // added browser.sleep to avoid Timeout warnings information
       await expect<any>(editorPage.edit.getEntryCount()).toBe(1);
-      await browser.sleep(500); // added browser.sleep to avoid Timeout warnings information
-      // await browser.wait(() => editorPage.edit.getLexemesAsObject(), constants.conditionTimeout);
+      await browser.sleep(1000); // added browser.sleep to avoid Timeout warnings information
       await expect<any>(editorPage.edit.getLexemesAsObject()).toEqual({ es: '' });
     });
 
