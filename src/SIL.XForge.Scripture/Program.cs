@@ -14,12 +14,16 @@ namespace SIL.XForge.Scripture
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
+            IWebHostBuilder builder = WebHost.CreateDefaultBuilder(args);
+            string environment = builder.GetSetting("environment");
+
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("hosting.json", true, true)
+                .AddJsonFile($"hosting.{environment}.json", true, true)
                 .Build();
 
-            return WebHost.CreateDefaultBuilder(args)
+            return builder
                 .UseLibuv()
                 .UseUrls("http://localhost:5000")
                 .ConfigureAppConfiguration((context, config) => config.AddJsonFile("appsettings.user.json", true))
