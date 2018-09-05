@@ -1,3 +1,4 @@
+using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -13,12 +14,16 @@ namespace SIL.XForge.Scripture
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("hosting.json", true, true)
+                .Build();
+
             return WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((context, config) =>
-                {
-                    config.AddJsonFile("appsettings.host.json", true, true);
-                    config.AddJsonFile("appsettings.user.json", true);
-                })
+                .UseLibuv()
+                .UseUrls("http://localhost:5000")
+                .ConfigureAppConfiguration((context, config) => config.AddJsonFile("appsettings.user.json", true))
+                .UseConfiguration(configuration)
                 .UseStartup<Startup>();
         }
     }
