@@ -2,10 +2,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { DetailSnackBarComponent } from '@xforge-common/notice/detail-snack-bar.component';
 import { UICommonModule } from '@xforge-common/ui-common.module';
 import { XForgeCommonModule } from '@xforge-common/xforge-common.module';
+import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
@@ -33,9 +35,12 @@ import { SharedModule } from './shared/shared.module';
     BrowserAnimationsModule,
     CoreModule,
     HttpClientModule,
+
+    // not ready for production yet - 2018-11 IJH
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.pwaTest }), // || environment.production }),
     SharedModule,
     UICommonModule,
-    XForgeCommonModule,
+    XForgeCommonModule
   ],
   providers: [],
   entryComponents: [DetailSnackBarComponent],

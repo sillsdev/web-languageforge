@@ -1,0 +1,16 @@
+{
+  "name": "Scripture Forge",
+  "short_name": "Scripture Forge",
+  "theme_color": "#1976d2",
+  "background_color": "#fafafa",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/home",
+  "icons": [
+    {
+      "src": "assets/icons/sf-16x16.ico",
+      "sizes": "16x16",
+      "type": "image/vnd.microsoft.icon"
+    }
+  ]
+}
