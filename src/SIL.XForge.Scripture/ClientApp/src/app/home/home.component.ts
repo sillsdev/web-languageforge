@@ -21,6 +21,6 @@ export class HomeComponent {
   }
 
   public logoff(): void {
-    this.oauthService.logOut()
+    this.oauthService.logOut();
   }
 }

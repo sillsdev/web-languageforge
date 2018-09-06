@@ -16,7 +16,7 @@ export class AppComponent {
     silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html'
   };
 
-  title = 'app';
+  title = 'Scripture Forge';
 
   constructor(private readonly oauthService: OAuthService) {
     this.oauthService.configure(AppComponent.authConfig);
