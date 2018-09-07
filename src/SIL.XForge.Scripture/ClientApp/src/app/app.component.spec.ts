@@ -11,7 +11,7 @@ import {CounterComponent} from './counter/counter.component';
 import {FetchDataComponent} from './fetch-data/fetch-data.component';
 
 describe('AppComponent', () => {
-  const oauthMockService = {
+  const oauthServiceStub = {
     configure() {},
     loadDiscoveryDocumentAndLogin() {},
     setupAutomaticSilentRefresh() {},
@@ -41,7 +41,7 @@ describe('AppComponent', () => {
         ]),
       ],
       providers: [
-        { provide: OAuthService, useFactory: () => oauthMockService }
+        { provide: OAuthService, useValue: oauthServiceStub }
       ]
     }).compileComponents();
   }));
@@ -58,12 +58,6 @@ describe('AppComponent', () => {
   it('should have as title \'Scripture Forge\'', async(() => {
     const app = fixture.debugElement.componentInstance;
     expect(app.title).toEqual('Scripture Forge');
-  }));
-
-  xit('should render title in a h1 tag', async(() => {
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to Scripture Forge!');
   }));
 
 });

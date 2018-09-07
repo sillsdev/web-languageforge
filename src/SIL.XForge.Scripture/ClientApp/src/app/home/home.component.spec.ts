@@ -4,8 +4,10 @@ import {OAuthService} from 'angular-oauth2-oidc';
 import {HomeComponent} from './home.component';
 
 describe('HomeComponent', () => {
-  const oauthMockService = {
-    getIdentityClaims() {},
+  const oauthServiceStub = {
+    getIdentityClaims() {
+      return claims;
+    },
     initImplicitFlow() {},
     logOut() {
       loginStatus = false;
@@ -13,6 +15,7 @@ describe('HomeComponent', () => {
   };
 
   let loginStatus = true;
+  let claims: object;
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
 
@@ -20,7 +23,7 @@ describe('HomeComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ HomeComponent ],
       providers: [
-        { provide: OAuthService, useFactory: () => oauthMockService }
+        { provide: OAuthService, useValue: oauthServiceStub }
       ]
     })
     .compileComponents();
@@ -46,5 +49,18 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
     expect(loginStatus).toBe(false);
   }));
+
+  describe('with Name in context', () => {
+    beforeAll(() => {
+      claims = {
+        name: 'JohnyBeGood'
+      };
+    });
+
+    it('should display a user identified title', async(() => {
+      const titleText = fixture.nativeElement.querySelector('h1').textContent;
+      expect(titleText).toEqual('Hello, ' + claims['name'] + '!');
+    }));
+  });
 
 });
