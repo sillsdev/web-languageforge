@@ -1,6 +1,10 @@
 import * as angular from 'angular';
 import * as lamejs from 'lamejs';
 
+declare var webkitAudioContext: {
+  new(): AudioContext;
+};
+
 export class AudioRecorderController implements angular.IController {
 
   static $inject = ['$interval', '$scope'];
@@ -32,7 +36,8 @@ export class AudioRecorderController implements angular.IController {
   }
 
   recordingSupported() {
-    return navigator.mediaDevices && navigator.mediaDevices.enumerateDevices && navigator.mediaDevices.getUserMedia;
+    return navigator.mediaDevices && navigator.mediaDevices.enumerateDevices && navigator.mediaDevices.getUserMedia &&
+      ((window as any).AudioContext || (window as any).webkitAudioContext);
   }
 
   $onDestroy() {
@@ -51,7 +56,8 @@ export class AudioRecorderController implements angular.IController {
       });
 
       const recordingStartTime = new Date();
-      const context = new AudioContext();
+      // webkit prefix required for Safari
+      const context = (window as any).AudioContext ? new AudioContext() : new webkitAudioContext();
       const bufferSize = 0;
       const channels = 1;
       const processor = context.createScriptProcessor(bufferSize, channels, channels);
