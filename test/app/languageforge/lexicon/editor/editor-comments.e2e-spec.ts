@@ -10,6 +10,8 @@ describe('Lexicon E2E Editor Comments', () => {
   const projectsPage = new ProjectsPage();
   const editorPage = new EditorPage();
 
+  const originalDefinition = constants.testEntry1.senses[0].definition.en.value;
+
   it('setup: login, click on test project', () => {
     loginPage.loginAsManager();
     projectsPage.get();
@@ -18,8 +20,8 @@ describe('Lexicon E2E Editor Comments', () => {
 
   it('browse page has correct word count', () => {
     // flaky assertion, also test/app/languageforge/lexicon/editor/e2e/editor-entry.spec.js:20
-    expect<any>(editorPage.browse.entriesList.count()).toEqual(editorPage.browse.getEntryCount());
     expect<any>(editorPage.browse.getEntryCount()).toBe(3);
+    expect<any>(editorPage.browse.entriesList.count()).toEqual(editorPage.browse.getEntryCount());
   });
 
   it('click on first word', () => {
@@ -48,9 +50,8 @@ describe('Lexicon E2E Editor Comments', () => {
   it('comments panel: add comment to another part of the entry', () => {
     const definitionField = editorPage.edit.getMultiTextInputs('Definition').first();
     definitionField.clear();
-    definitionField.sendKeys(
-      constants.testEntry1.senses[0].definition.en.value
-    );
+    definitionField.sendKeys(originalDefinition);
+    expect<any>(definitionField.getAttribute('value')).toEqual(originalDefinition);
     editorPage.comment.bubbles.second.click();
     editorPage.comment.newComment.textarea.clear();
     editorPage.comment.newComment.textarea.sendKeys('Second comment.');
@@ -70,20 +71,21 @@ describe('Lexicon E2E Editor Comments', () => {
 
   it('comments panel: check regarding value is hidden when the field value matches', () => {
     const comment = editorPage.comment.getComment(-1);
+    const definitionField = editorPage.edit.getMultiTextInputs('Definition').first();
 
     // Make sure it is hidden
     expect<any>(comment.regarding.container.isDisplayed()).toBe(false);
 
     // Change the field value and then make sure it appears
-    editorPage.edit.getMultiTextInputs('Definition').first().sendKeys('update - ');
+    definitionField.sendKeys('update - ');
     expect<any>(comment.regarding.container.isDisplayed()).toBe(true);
 
     // Make sure the regarding value matches what was originally there
-    const word    = constants.testEntry1.senses[0].definition.en.value;
-    expect<any>(comment.regarding.fieldValue.getText()).toEqual(word);
+    expect<any>(comment.regarding.fieldValue.getText()).toEqual(originalDefinition);
 
-    // old stuff
-    // This comment should have a "regarding" section
+    definitionField.clear();
+    definitionField.sendKeys(originalDefinition);
+    expect<any>(definitionField.getAttribute('value')).toEqual(originalDefinition);
   });
 
   it('comments panel: click +1 button on first comment', () => {
@@ -94,7 +96,7 @@ describe('Lexicon E2E Editor Comments', () => {
     expect(comment.plusOneActive.getAttribute('data-ng-click')).not.toBe(null);
     comment.plusOneActive.click();
     expect<any>(comment.score.getText()).toEqual('1 Like');
-    });
+  });
 
   it('comments panel: +1 button disabled after clicking', () => {
     const comment = editorPage.comment.getComment(0);
@@ -133,4 +135,5 @@ describe('Lexicon E2E Editor Comments', () => {
     browser.wait(ExpectedConditions.invisibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     expect<any>(editorPage.commentDiv.getAttribute('class')).not.toContain('panel-visible');
   });
+
 });
