@@ -4,12 +4,20 @@ import {OAuthService} from 'angular-oauth2-oidc';
 import {HomeComponent} from './home.component';
 
 describe('HomeComponent', () => {
+  class Page {
+    constructor(private compFixture: ComponentFixture<HomeComponent>) { }
+
+    get logoutButton() { return this.compFixture.nativeElement.querySelector('button'); }
+    get titleText() { return this.compFixture.nativeElement.querySelector('h1').textContent; }
+  }
+
   let loginStatus = true;
   let claims: object;
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
+  let page: Page;
 
-  const oauthServiceStub = {
+  const oauthServiceStub: Partial<OAuthService> = {
     getIdentityClaims() {
       return claims;
     },
@@ -32,20 +40,19 @@ describe('HomeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
+    page = new Page(fixture);
     fixture.detectChanges();
   });
 
   it('should display a title', async(() => {
-    const titleText = fixture.nativeElement.querySelector('h1').textContent;
-    expect(titleText).toEqual('Hello, world!');
+    expect(page.titleText).toEqual('Hello, world!');
   }));
 
   it('should logout when the button is clicked', async(() => {
-    const logoutButton = fixture.nativeElement.querySelector('button');
-    expect(logoutButton.textContent).toContain('Logout');
+    expect(page.logoutButton.textContent).toContain('Logout');
     expect(loginStatus).toBe(true);
 
-    logoutButton.click();
+    page.logoutButton.click();
     fixture.detectChanges();
     expect(loginStatus).toBe(false);
   }));
@@ -58,8 +65,7 @@ describe('HomeComponent', () => {
     });
 
     it('should display a user identified title', async(() => {
-      const titleText = fixture.nativeElement.querySelector('h1').textContent;
-      expect(titleText).toEqual('Hello, ' + claims['name'] + '!');
+      expect(page.titleText).toEqual('Hello, ' + claims['name'] + '!');
     }));
   });
 
