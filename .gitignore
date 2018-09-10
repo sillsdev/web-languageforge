@@ -55,6 +55,8 @@ _ReSharper*/
 *.user
 tempkey.rsa
 .leu
+coverage/
+coverage.opencover.xml
 
 appsettings.user.json
 

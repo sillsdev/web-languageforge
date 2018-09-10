@@ -2,12 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using JsonApiDotNetCore.Builders;
 using JsonApiDotNetCore.Extensions;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Models;
 using JsonApiDotNetCore.Services;
 
-namespace JsonApiDotNetCore.Builders
+namespace SIL.XForge.Services
 {
     public class XForgeDocumentBuilder : IDocumentBuilder
     {
