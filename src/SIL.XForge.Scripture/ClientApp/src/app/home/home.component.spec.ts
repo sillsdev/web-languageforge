@@ -4,6 +4,11 @@ import {OAuthService} from 'angular-oauth2-oidc';
 import {HomeComponent} from './home.component';
 
 describe('HomeComponent', () => {
+  let loginStatus = true;
+  let claims: object;
+  let component: HomeComponent;
+  let fixture: ComponentFixture<HomeComponent>;
+
   const oauthServiceStub = {
     getIdentityClaims() {
       return claims;
@@ -13,11 +18,6 @@ describe('HomeComponent', () => {
       loginStatus = false;
     }
   };
-
-  let loginStatus = true;
-  let claims: object;
-  let component: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

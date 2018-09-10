@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
-import Coordinator, { RequestStrategy, SyncStrategy } from '@orbit/coordinator';
-import { Schema, SchemaSettings, Record } from '@orbit/data';
+import {Component, OnInit} from '@angular/core';
+import {OAuthService} from 'angular-oauth2-oidc';
+import Coordinator, {RequestStrategy, SyncStrategy} from '@orbit/coordinator';
+import {Schema, SchemaSettings, Record} from '@orbit/data';
 import JSONAPISource from '@orbit/jsonapi';
 import Store from '@orbit/store';
 
@@ -9,7 +9,7 @@ import Store from '@orbit/store';
   selector: 'app-fetch-data',
   templateUrl: './fetch-data.component.html'
 })
-export class FetchDataComponent {
+export class FetchDataComponent implements OnInit {
   private readonly schemaDefinition: SchemaSettings = {
     models: {
       user: {
