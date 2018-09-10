@@ -22,7 +22,7 @@ module.exports = function (config) {
       fixWebpackSourcePaths: true
     },
     reporters: config.angularCli && config.angularCli.codeCoverage
-      ? ['progress', 'teamcity', 'coverage-istanbul']
+      ? ['teamcity', 'coverage-istanbul']
       : ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
