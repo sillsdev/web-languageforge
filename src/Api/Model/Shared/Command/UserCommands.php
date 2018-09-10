@@ -491,7 +491,7 @@ class UserCommands
 
     public static function getCaptchaData(Session $session)
     {
-        srand(microtime() * 100);
+        srand(microtime(True) * 100);
         $captchaData = [
             'items' => [
                 [
