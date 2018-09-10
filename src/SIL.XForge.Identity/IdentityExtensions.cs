@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using IdentityModel;
 using IdentityServer4;
@@ -30,7 +27,7 @@ namespace SIL.XForge.Identity
             }
         };
 
-        private static Client XForgeClient(string host)
+        private static Client XFClient(string host)
         {
             return new Client
             {
@@ -59,7 +56,7 @@ namespace SIL.XForge.Identity
             };
         }
 
-        public static IServiceCollection AddXForgeIdentityServer(this IServiceCollection services,
+        public static IServiceCollection AddXFIdentityServer(this IServiceCollection services,
             IConfiguration configuration)
         {
             services.ConfigureOptions<StaticFilesConfigureOptions>();
@@ -75,7 +72,7 @@ namespace SIL.XForge.Identity
                 .AddValidationKeys()
                 .AddInMemoryIdentityResources(IdentityResources)
                 .AddInMemoryApiResources(ApiResources)
-                .AddInMemoryClients(new[] { XForgeClient(host) })
+                .AddInMemoryClients(new[] { XFClient(host) })
                 .AddProfileService<UserProfileService>()
                 .AddResourceOwnerValidator<UserResourceOwnerPasswordValidator>()
                 .AddOperationalStore(options =>

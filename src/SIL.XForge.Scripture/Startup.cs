@@ -40,7 +40,7 @@ namespace SIL.XForge.Scripture
 
             services.AddExceptionLogging();
 
-            services.AddXForgeIdentityServer(Configuration);
+            services.AddXFIdentityServer(Configuration);
 
             services.AddAuthentication()
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
