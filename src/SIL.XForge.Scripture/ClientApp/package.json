@@ -9,6 +9,7 @@
     "build": "ng build --extract-css",
     "build:ssr": "npm run build -- --app=ssr --output-hashing=media",
     "test": "ng test",
+    "test:tc": "ng test --browsers ChromiumHeadless --watch false --code-coverage",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

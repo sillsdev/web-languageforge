@@ -2,6 +2,9 @@
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 
 module.exports = function (config) {
+  const isTC = config.browsers && config.browsers.length === 1 &&
+    config.browsers[0] === 'ChromiumHeadless' && !config.watch;
+
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
@@ -21,7 +24,7 @@ module.exports = function (config) {
       reports: ['html', 'lcovonly'],
       fixWebpackSourcePaths: true
     },
-    reporters: config.angularCli && config.angularCli.codeCoverage
+    reporters: isTC
       ? ['teamcity', 'coverage-istanbul']
       : ['progress', 'kjhtml'],
     port: 9876,
