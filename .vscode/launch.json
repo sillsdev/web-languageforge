@@ -2,8 +2,12 @@
   "version": "0.2.0",
   "compounds": [
     {
-      "name": "Full App",
-      "configurations": [".NET Core", "XDebug", "Launch Chrome"]
+      "name": "Full App (legacy)",
+      "configurations": [".NET Core (legacy)", "XDebug (legacy)", "Launch Chrome (legacy)"]
+    },
+    {
+      "name": "Full App (SF)",
+      "configurations": [".NET Core (SF)", "Launch Chrome (SF)"]
     }
   ],
   "configurations": [
@@ -14,10 +18,10 @@
       "port": 9229
     },
     {
-      "name": ".NET Core",
+      "name": ".NET Core (legacy)",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "dotnet",
+      "preLaunchTask": "dotnet (legacy)",
       "program": "${workspaceRoot}/src/netcore-api/SIL.XForge.WebApi.Server/bin/Debug/netcoreapp2.0/SIL.XForge.WebApi.Server.dll",
       "args": [],
       "cwd": "${workspaceRoot}/src/netcore-api/SIL.XForge.WebApi.Server/",
@@ -29,18 +33,23 @@
     },
     {
       "type": "chrome",
-      "runtimeExecutable": "/usr/bin/chromium-browser",
       "request": "launch",
-      "name": "Launch Chromium on Linux",
+      "name": "Launch Chrome (legacy)",
       "url": "https://languageforge.local",
-      "webRoot": "${workspaceRoot}"
+      "webRoot": "${workspaceRoot}",
+      "linux": {
+        "runtimeExecutable": "/usr/bin/chromium-browser"
+      }
     },
     {
       "type": "chrome",
       "request": "launch",
-      "name": "Launch Chrome",
-      "url": "https://languageforge.local",
-      "webRoot": "${workspaceRoot}"
+      "name": "Launch Chrome (SF)",
+      "url": "https://beta.scriptureforge.local",
+      "webRoot": "${workspaceRoot}/src/SIL.XForge.Scripture/ClientApp",
+      "linux": {
+        "runtimeExecutable": "/usr/bin/chromium-browser"
+      }
     },
     {
       "type": "chrome",
@@ -50,7 +59,7 @@
       "webRoot": "${workspaceRoot}"
     },
     {
-      "name": "XDebug",
+      "name": "XDebug (legacy)",
       "type": "php",
       "request": "launch",
       "port": 9000,
@@ -60,12 +69,18 @@
       }
     },
     {
-      "name": "PHP script",
-      "type": "php",
+      "name": ".NET Core (SF)",
+      "type": "coreclr",
       "request": "launch",
-      "program": "${file}",
-      "cwd": "${fileDirname}",
-      "port": 9000
-    }
+      "preLaunchTask": "dotnet",
+      "program": "${workspaceRoot}/src/SIL.XForge.Scripture/bin/Debug/netcoreapp2.1/SIL.XForge.Scripture.dll",
+      "args": [],
+      "cwd": "${workspaceRoot}/src/SIL.XForge.Scripture/",
+      "stopAtEntry": false,
+      "console": "integratedTerminal",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
   ]
 }

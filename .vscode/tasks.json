@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "tasks": [
       {
-        "label": "webpack",
+        "label": "webpack (legacy)",
         "type": "shell",
         "windows": {
           "command": "bash -c 'gulp webpack-lf'"
@@ -22,7 +22,7 @@
         }
       },
       {
-        "label": "webpack-watch",
+        "label": "webpack-watch (legacy)",
         "type": "shell",
         "isBackground": true,
         "windows": {
@@ -37,7 +37,7 @@
         "problemMatcher": []
       },
       {
-        "label": "npm install",
+        "label": "npm install (legacy)",
         "type": "shell",
         "windows": {
           "command": "bash -c 'npm install'"
@@ -51,7 +51,7 @@
         "problemMatcher": []
       },
       {
-        "label": "sass",
+        "label": "sass (legacy)",
         "type": "shell",
         "windows": {
           "command": "bash -c 'gulp sass'"
@@ -65,7 +65,7 @@
         "problemMatcher": "$node-sass"
       },
       {
-        "label": "dotnet",
+        "label": "dotnet (legacy)",
         "command": "dotnet build",
         "type": "shell",
         "group": "build",
@@ -74,6 +74,19 @@
         },
         "options": {
           "cwd": "${workspaceRoot}/src/netcore-api"
+        },
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "dotnet",
+        "command": "dotnet build",
+        "type": "shell",
+        "group": "build",
+        "presentation": {
+          "reveal": "silent"
+        },
+        "options": {
+          "cwd": "${workspaceRoot}/"
         },
         "problemMatcher": "$msCompile"
       }
