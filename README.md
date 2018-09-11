@@ -52,16 +52,17 @@ We merge from **master** to testing (**qa** branch) then ship from **qa** to **l
 | Scripture Forge Beta | `sf-develop` | `sf-qa-beta` | `sf-live-beta` |
 
 ### Development Process ###
+
 The initial plan is to use Github Pull Requests (PR).
 
 The first task on a job is to create a feature. Branch off of the **sf-develop** branch.
-```
+```bash
 git checkout sf-develop
 git pull
 git checkout -b feature/<featureName>
 ```
 Then do some useful work and commit it.
-```
+```bash
 git push origin feature/<featureName>
 ```
 
@@ -89,3 +90,26 @@ Successful builds from our CI server deploy to:
 | Language Forge  | [dev.languageforge.org](https://dev.languageforge.org) | [qa.languageforge.org](https://qa.languageforge.org) | [languageforge.org](https://languageforge.org) |
 | Scripture Forge | [dev.scriptureforge.org](https://dev.scriptureforge.org) | [qa.scriptureforge.org](https://qa.scriptureforge.org) | [scriptureforge.org](https://scriptureforge.org) |
 | Scripture Forge Beta | - | [beta.qa.scriptureforge.org](https://beta.qa.scriptureforge.org) | [beta.scriptureforge.org](https://beta.scriptureforge.org) |
+
+## Testing ##
+
+### .NET Unit Testing ###
+
+To run back end unit tests, from the repo (repository) root
+```bash
+dotnet test
+```
+
+See documentation for [running tests](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test?tabs=netcore21) and [writing tests](https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-nunit).
+
+### Angular 6 Unit Testing ###
+
+To run front end unit tests make sure `ng serve` and `dotnet run` are **not** running (*ctrl + c* to end them), then from the repo root
+```bash
+cd src/SIL.XForge.Scripture/ClientApp/
+CHROME_BIN=chromium-browser ng test
+```
+
+You can make the environment variable (`CHROME_BIN=chromium-browser`) permanent by following the instructions [here](https://help.ubuntu.com/community/EnvironmentVariables), then you can simply run `ng test`.
+
+See documentation for [running tests](https://github.com/angular/angular-cli/wiki/test) and [writing tests](https://angular.io/guide/testing#testing).
