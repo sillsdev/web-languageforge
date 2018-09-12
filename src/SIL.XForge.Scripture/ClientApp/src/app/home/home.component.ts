@@ -8,7 +8,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 export class HomeComponent {
   constructor(private readonly oauthService: OAuthService) { }
 
-  public get name() {
+  get name() {
     const claims = this.oauthService.getIdentityClaims();
     if (claims != null) {
       return claims['name'];
@@ -16,11 +16,11 @@ export class HomeComponent {
     return null;
   }
 
-  public login(): void {
+  login(): void {
     this.oauthService.initImplicitFlow();
   }
 
-  public logoff(): void {
+  logoff(): void {
     this.oauthService.logOut();
   }
 }

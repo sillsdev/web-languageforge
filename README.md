@@ -26,15 +26,9 @@ For error reporting:
 
 [![Bugsnag logo](readme_images/bugsnag-logo.png "Bugsnag")](https://bugsnag.com/blog/bugsnag-loves-open-source)
 
-## Style Guides ##
-
-TypeScript follows the [Angular Style Guide](https://angular.io/guide/styleguide). This is opinionated not only about things like file name conventions but also file and folder structure.
-
-To this end you'll also want to be familiar with [Upgrading from AngularJS](https://angular.io/guide/upgrade) particularly the [Preparation](https://angular.io/guide/upgrade#preparation) section.
-
-We plan to use [Prettier](https://prettier.io/) with pre-commit hook after re-writing the whole repo with Prettier first.
-
 ## Developers ##
+
+### Gitflow ###
 
 We use [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) with two modifications:
 
@@ -50,6 +44,14 @@ We merge from **master** to testing (**qa** branch) then ship from **qa** to **l
 | Language Forge  | `master` | `lf-qa` | `lf-live` |
 | Scripture Forge | `master` | `sf-qa` | `sf-live` |
 | Scripture Forge Beta | `sf-develop` | `sf-qa-beta` | `sf-live-beta` |
+
+### Style Guides ###
+
+TypeScript follows the [Angular Style Guide](https://angular.io/guide/styleguide). This is opinionated not only about things like file name conventions but also file and folder structure.
+
+To this end you'll also want to be familiar with [Upgrading from AngularJS](https://angular.io/guide/upgrade) particularly the [Preparation](https://angular.io/guide/upgrade#preparation) section.
+
+We plan to use [Prettier](https://prettier.io/) with pre-commit hook after re-writing the whole repo with Prettier first.
 
 ### Development Process ###
 
@@ -90,6 +92,10 @@ Successful builds from our CI server deploy to:
 | Language Forge  | [dev.languageforge.org](https://dev.languageforge.org) | [qa.languageforge.org](https://qa.languageforge.org) | [languageforge.org](https://languageforge.org) |
 | Scripture Forge | [dev.scriptureforge.org](https://dev.scriptureforge.org) | [qa.scriptureforge.org](https://qa.scriptureforge.org) | [scriptureforge.org](https://scriptureforge.org) |
 | Scripture Forge Beta | - | [beta.qa.scriptureforge.org](https://beta.qa.scriptureforge.org) | [beta.scriptureforge.org](https://beta.scriptureforge.org) |
+
+### Layout ###
+
+We use [Material Design components for Angular](https://material.angular.io/guides) including the [Material Design Icons](https://google.github.io/material-design-icons/).
 
 ## Testing ##
 
