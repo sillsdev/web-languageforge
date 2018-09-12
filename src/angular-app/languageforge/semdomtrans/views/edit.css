@@ -3,7 +3,7 @@
 }
 
 .listItemPrimary {
-    text-align: initial !important;
+    text-align: initial;
     z-index:2;
     padding-right: 3px;
     font-size: 1.0em;
