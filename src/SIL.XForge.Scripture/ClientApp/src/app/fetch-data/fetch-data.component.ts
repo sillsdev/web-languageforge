@@ -21,7 +21,6 @@ export class FetchDataComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.projects = await this.projectService.getAll();
-    console.log(this.projects);
   }
 
   updateProjectName(project: Record, value: string): void {
@@ -33,8 +32,8 @@ export class FetchDataComponent implements OnInit {
   }
 
   update(): void {
-    for (const update of this.updatedNames) {
-      this.projectService.updateById(update[0], { projectName: update[1] });
+    for (const [projectId, projectName] of this.updatedNames) {
+      this.projectService.updateById(projectId, { projectName });
     }
     this.updatedNames.clear();
   }
