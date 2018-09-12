@@ -17,6 +17,11 @@
       "dom"
     ],
     "module": "es2015",
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "@xforge-common/*": [
+        "./src/xforge-common/*"
+      ],
+    }
   }
 }

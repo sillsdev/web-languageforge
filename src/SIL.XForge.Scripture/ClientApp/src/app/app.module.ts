@@ -5,13 +5,15 @@ import { MatButtonModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { OAuthModule } from 'angular-oauth2-oidc';
 
+import { XForgeCommonModule } from '@xforge-common/xforge-common.module';
 import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { HomeComponent } from './home/home.component';
+import { CoreModule } from './core/core.module';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
+import { HomeComponent } from './home/home.component';
+import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -25,12 +27,9 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
-    OAuthModule.forRoot({
-      resourceServer: {
-        allowedUrls: [window.location.origin + '/api'],
-        sendAccessToken: true
-      }
-    }),
+    XForgeCommonModule,
+    CoreModule,
+    SharedModule,
     RouterModule.forRoot([
       { path: 'home', component: HomeComponent },
       { path: 'counter', component: CounterComponent },
