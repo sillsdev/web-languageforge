@@ -1,11 +1,19 @@
 import { inject, TestBed } from '@angular/core/testing';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 import { UserService } from './user.service';
 
 describe('UserService', () => {
+  const oauthServiceStub = {
+    getAccessToken() { return 'token'; }
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UserService]
+      providers: [
+        UserService,
+        { provide: OAuthService, useValue: oauthServiceStub }
+      ]
     });
   });
 
