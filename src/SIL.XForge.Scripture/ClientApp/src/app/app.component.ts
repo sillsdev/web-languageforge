@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { OAuthService, AuthConfig, JwksValidationHandler } from 'angular-oauth2-oidc';
+import { AuthConfig, JwksValidationHandler, OAuthService } from 'angular-oauth2-oidc';
 
 @Component({
   selector: 'app-root',

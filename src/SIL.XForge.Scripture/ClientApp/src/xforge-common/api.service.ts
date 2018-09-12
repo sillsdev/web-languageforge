@@ -114,6 +114,7 @@ export class ApiService {
   }
 
   create(resource: Record): Promise<void> {
+    this.schema.initializeRecord(resource);
     return this._update(t => t.addRecord(resource));
   }
 
