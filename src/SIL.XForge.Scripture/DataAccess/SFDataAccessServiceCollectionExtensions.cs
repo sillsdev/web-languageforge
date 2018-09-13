@@ -11,7 +11,11 @@ namespace SIL.XForge.Scripture.DataAccess
             IConfiguration configuration)
         {
             services.AddDataAccess(configuration);
-            services.AddMongoRepository<SFProjectEntity>("sf_projects");
+
+            IConfigurationSection dataAccessConfig = configuration.GetSection("DataAccess");
+            string databaseName = dataAccessConfig.GetValue("MongoDatabaseName", "xforge");
+            services.AddMongoRepository<SFProjectEntity>(databaseName, "sf_projects");
+
             return services;
         }
     }

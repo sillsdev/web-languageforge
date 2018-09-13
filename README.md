@@ -137,11 +137,27 @@ See documentation for [running tests](https://github.com/angular/angular-cli/wik
 To run E2E tests, make sure you are serving the app. From the repo root
 ```bash
 cd src/SIL.XForge.Scripture/
-dotnet run
+dotnet run --environment "Testing"
 ```
 
 In another terminal, from the repo root
 ```bash
 cd src/SIL.XForge.Scripture/ClientApp/
-ng e2e
+./rune2e.sh
 ```
+
+### Special Cases ###
+
+Normally when you run `dotnet run` it starts `ng serve` for you. This works great if you are developing on the front end as it watches for file changes and reloads your browser once it has compiled.
+
+If you are developing on the backend this works better
+```bash
+cd src/SIL.XForge.Scripture/
+dotnet watch run --start-ng-serve=false
+```
+In another terminal
+```bash
+cd src/SIL.XForge.Scripture/ClientApp/
+ng serve
+```
+When files change on the backend it will compile the changes automatically and now `ng serve` won't re-start every time.

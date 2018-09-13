@@ -3,7 +3,7 @@ import { browser, by, element } from 'protractor';
 export class LoginPage {
   private static readonly baseUrl = 'https://beta.scriptureforge.local';
 
-  // private readonly constants = require('../testConstants.json');
+  private readonly constants = require('../testConstants.json');
 
   usernameInput = element(by.id('Username'));
   passwordInput = element(by.id('Password'));
@@ -31,18 +31,15 @@ export class LoginPage {
   }
 
   loginAsAdmin() {
-    // this.login(this.constants.adminEmail, this.constants.adminPassword);
-    this.login('admin', 'password');
+    this.login(this.constants.adminUsername, this.constants.adminPassword);
   }
 
   loginAsManager() {
-    // this.login(this.constants.managerEmail, this.constants.managerPassword);
-    this.login('admin', 'password');
+    this.login(this.constants.managerUsername, this.constants.managerPassword);
   }
 
   loginAsUser() {
-    // this.login(this.constants.memberEmail, this.constants.memberPassword);
-    this.login('admin', 'password');
+    this.login(this.constants.memberUsername, this.constants.memberPassword);
   }
 
 }

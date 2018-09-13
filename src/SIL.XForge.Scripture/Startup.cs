@@ -118,6 +118,10 @@ namespace SIL.XForge.Scripture
                     else
                         spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                 }
+                else if (env.IsEnvironment("Testing"))
+                {
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                }
             });
 
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());

@@ -1,0 +1,260 @@
+{
+  "_id": {
+    "$oid": "5b9a3c248c60ad62a451b9e2"
+  },
+  "active": true,
+  "dateCreated": {
+    "$date": "2018-09-13T10:29:56.268Z"
+  },
+  "dateModified": {
+    "$date": "2018-09-13T10:29:57.089Z"
+  },
+  "email": "test_runner_admin@example.com",
+  "emailPending": "test_runner_admin@example.com",
+  "name": "Test Admin",
+  "resetPasswordExpirationDate": {
+    "$date": "2018-09-13T10:29:56.000Z"
+  },
+  "role": "system_admin",
+  "siteRole": {
+    "languageforge___DOT___local": "project_creator"
+  },
+  "username": "test_runner_admin",
+  "validationExpirationDate": {
+    "$date": "2018-09-20T10:29:56.000Z"
+  },
+  "password": "$2y$07$ZBMwTkF8niIc9sZXleF3iOZlY0FyRUY67isXDUN9UvbQmBzGHwpia",
+  "validationKey": "b61f95c69ccf643afd59b60df6748e48c804190c",
+  "avatar_ref": "anonymoose.png",
+  "communicate_via": "email",
+  "projects": [
+    {
+      "$oid": "5b9a3c248c60ad62a451b9e9"
+    },
+    {
+      "$oid": "5b9a3c248c60ad62a451b9ed"
+    },
+    {
+      "$oid": "5b9a3c248c60ad62a451b9f1"
+    },
+    {
+      "$oid": "5b9a3c248c60ad62a451b9f5"
+    }
+  ]
+}
+{
+  "_id": {
+    "$oid": "5b9a3c248c60ad62a451b9e3"
+  },
+  "active": true,
+  "dateCreated": {
+    "$date": "2018-09-13T10:29:56.349Z"
+  },
+  "dateModified": {
+    "$date": "2018-09-13T10:29:56.807Z"
+  },
+  "email": "test_runner_manager_user@example.com",
+  "emailPending": "test_runner_manager_user@example.com",
+  "name": "Test Manager",
+  "resetPasswordExpirationDate": {
+    "$date": "2018-09-13T10:29:56.000Z"
+  },
+  "role": "user",
+  "siteRole": {
+    "languageforge___DOT___local": "project_creator"
+  },
+  "username": "test_runner_manager_user",
+  "validationExpirationDate": {
+    "$date": "2018-09-20T10:29:56.000Z"
+  },
+  "password": "$2y$07$9NqJX5pPkv8YrXLBm80kJeD8yXeQjq7BEFXg5oRuOFHZ7EuCWpZse",
+  "validationKey": "d9736fa9f67bf49fbdbf308b8d31b0f11fe7b469",
+  "avatar_ref": "anonymoose.png",
+  "communicate_via": "email",
+  "projects": [
+    {
+      "$oid": "5b9a3c248c60ad62a451b9ed"
+    },
+    {
+      "$oid": "5b9a3c248c60ad62a451b9f1"
+    },
+    {
+      "$oid": "5b9a3c248c60ad62a451b9f5"
+    },
+    {
+      "$oid": "5b9a3c248c60ad62a451b9e9"
+    }
+  ]
+}
+{
+  "_id": {
+    "$oid": "5b9a3c248c60ad62a451b9e4"
+  },
+  "active": true,
+  "dateCreated": {
+    "$date": "2018-09-13T10:29:56.362Z"
+  },
+  "dateModified": {
+    "$date": "2018-09-13T10:29:56.864Z"
+  },
+  "email": "test_runner_normal_user@example.com",
+  "emailPending": "test_runner_normal_user@example.com",
+  "name": "Test User",
+  "resetPasswordExpirationDate": {
+    "$date": "2018-09-13T10:29:56.000Z"
+  },
+  "role": "user",
+  "siteRole": {
+    "languageforge___DOT___local": "project_creator"
+  },
+  "username": "test_runner_normal_user",
+  "validationExpirationDate": {
+    "$date": "2018-09-20T10:29:56.000Z"
+  },
+  "password": "$2y$07$FC3Q1NDwDHbH0BcQkj7nsesCDLaiA31aj7eG6bc9OJ8YeKpw2Wqoi",
+  "validationKey": "f9d3246bff5e44b82d9c7519aab34ddcb4c7f14f",
+  "avatar_ref": "anonymoose.png",
+  "communicate_via": "email",
+  "projects": [
+    {
+      "$oid": "5b9a3c248c60ad62a451b9e9"
+    }
+  ]
+}
+{
+  "_id": {
+    "$oid": "5b9a3c248c60ad62a451b9e5"
+  },
+  "active": true,
+  "dateCreated": {
+    "$date": "2018-09-13T10:29:56.376Z"
+  },
+  "dateModified": {
+    "$date": "2018-09-13T10:29:56.920Z"
+  },
+  "email": "test_runner_normal_user_2@example.com",
+  "emailPending": "test_runner_normal_user_2@example.com",
+  "name": "Test Second User",
+  "resetPasswordExpirationDate": {
+    "$date": "2018-09-13T10:29:56.000Z"
+  },
+  "role": "user",
+  "siteRole": {
+    "languageforge___DOT___local": "project_creator"
+  },
+  "username": "test_runner_normal_user_2",
+  "validationExpirationDate": {
+    "$date": "2018-09-20T10:29:56.000Z"
+  },
+  "password": "$2y$07$RUVjv00Bhquy7ZiCEBl6g.wTOvocevU0ic4OhkduGmCB2NUWMs8Hi",
+  "validationKey": "b66999c0a4f6db48d9491d6ad2ba9b274db1c474",
+  "avatar_ref": "anonymoose.png",
+  "communicate_via": "email",
+  "projects": [
+    {
+      "$oid": "5b9a3c248c60ad62a451b9e9"
+    }
+  ]
+}
+{
+  "_id": {
+    "$oid": "5b9a3c248c60ad62a451b9e6"
+  },
+  "active": true,
+  "dateCreated": {
+    "$date": "2018-09-13T10:29:56.391Z"
+  },
+  "dateModified": {
+    "$date": "2018-09-13T10:29:56.434Z"
+  },
+  "email": "test_runner_expired_normal_user@example.com",
+  "emailPending": "test_runner_expired_normal_user@example.com",
+  "name": "Test ExpiredUser",
+  "resetPasswordExpirationDate": {
+    "$date": "2018-09-13T10:29:56.000Z"
+  },
+  "role": "user",
+  "siteRole": {
+    "languageforge___DOT___local": "project_creator"
+  },
+  "username": "test_runner_expired_normal_user",
+  "validationExpirationDate": {
+    "$date": "2018-09-20T10:29:56.000Z"
+  },
+  "password": "$2y$07$IOQ1lI8UoISwkvXaC5xqPu8Gb9GRhnMqCh0N8487HtkiA3gdh/RgK",
+  "validationKey": "da90dccfb866f9f6d6d61fd7b212a8423c93b0ae",
+  "avatar_ref": "anonymoose.png",
+  "communicate_via": "email",
+  "resetPasswordKey": "fa6c056d5155059c4f067e77c4cb420fcfc3762f"
+}
+{
+  "_id": {
+    "$oid": "5b9a3c248c60ad62a451b9e7"
+  },
+  "active": true,
+  "dateCreated": {
+    "$date": "2018-09-13T10:29:56.405Z"
+  },
+  "dateModified": {
+    "$date": "2018-09-13T10:29:56.978Z"
+  },
+  "email": "test_runner_reset_normal_user@example.com",
+  "emailPending": "test_runner_reset_normal_user@example.com",
+  "name": "Test ResetUser",
+  "resetPasswordExpirationDate": {
+    "$date": "2018-09-18T10:29:56.000Z"
+  },
+  "role": "user",
+  "siteRole": {
+    "languageforge___DOT___local": "project_creator"
+  },
+  "username": "test_runner_reset_normal_user",
+  "validationExpirationDate": {
+    "$date": "2018-09-20T10:29:56.000Z"
+  },
+  "password": "$2y$07$54cuQL0ODwY4d9uk2bUMAOMYydEX0FhRXGk3eV0rw8xxeB6sU8096",
+  "validationKey": "7c8d04a8cce7f92aabbc9221d7d6e8cbb3c01fd6",
+  "avatar_ref": "anonymoose.png",
+  "communicate_via": "email",
+  "resetPasswordKey": "122240670b5136bdb260d02feaff098280c33bd4",
+  "projects": [
+    {
+      "$oid": "5b9a3c248c60ad62a451b9e9"
+    }
+  ]
+}
+{
+  "_id": {
+    "$oid": "5b9a3c248c60ad62a451b9e8"
+  },
+  "active": true,
+  "dateCreated": {
+    "$date": "2018-09-13T10:29:56.419Z"
+  },
+  "dateModified": {
+    "$date": "2018-09-13T10:29:57.148Z"
+  },
+  "email": "test_runner_observer_normal_user@example.com",
+  "emailPending": "test_runner_observer_normal_user@example.com",
+  "name": "Test ObserverUser",
+  "resetPasswordExpirationDate": {
+    "$date": "2018-09-13T10:29:56.000Z"
+  },
+  "role": "user",
+  "siteRole": {
+    "languageforge___DOT___local": "project_creator"
+  },
+  "username": "test_runner_observer_normal_user",
+  "validationExpirationDate": {
+    "$date": "2018-09-20T10:29:56.000Z"
+  },
+  "password": "$2y$07$0US.QN0LYMUdLIbweEoR4.Up2kmsrAH/PlHQNUZDnvcyviusw1osW",
+  "validationKey": "e1ce49aa0b95166034dfcec89a3b52de37e49ceb",
+  "avatar_ref": "anonymoose.png",
+  "communicate_via": "email",
+  "projects": [
+    {
+      "$oid": "5b9a3c248c60ad62a451b9e9"
+    }
+  ]
+}

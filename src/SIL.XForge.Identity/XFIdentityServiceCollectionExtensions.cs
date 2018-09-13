@@ -67,6 +67,7 @@ namespace SIL.XForge.Identity
             IConfigurationSection dataAccessConfig = configuration.GetSection("DataAccess");
             string connectionString = systemConfig.GetValue("ConnectionString",
                 "mongodb://localhost:27017");
+            string databaseName = dataAccessConfig.GetValue("MongoDatabaseName", "xforge");
 
             IIdentityServerBuilder builder = services.AddIdentityServer()
                 .AddValidationKeys()
@@ -78,7 +79,7 @@ namespace SIL.XForge.Identity
                 .AddOperationalStore(options =>
                     {
                         options.ConnectionString = connectionString;
-                        options.Database = DataAccessConstants.MongoDatabase;
+                        options.Database = databaseName;
                     });
 
             IConfigurationSection securityConfig = configuration.GetSection("Security");

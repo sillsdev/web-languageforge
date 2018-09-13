@@ -59,7 +59,8 @@ namespace SIL.XForge.DataAccess
 
             services.AddSingleton<IMongoClient>(sp => new MongoClient(connectionString));
 
-            services.AddMongoRepository<UserEntity>("users", cm =>
+            string databaseName = dataAccessConfig.GetValue("MongoDatabaseName", "xforge");
+            services.AddMongoRepository<UserEntity>(databaseName, "users", cm =>
                 {
                     cm.MapMember(u => u.SiteRole).SetSerializer(
                         new DictionaryInterfaceImplementerSerializer<Dictionary<string, string>>(
@@ -71,11 +72,12 @@ namespace SIL.XForge.DataAccess
             return services;
         }
 
-        public static void AddMongoRepository<T>(this IServiceCollection services, string collectionName,
-            Action<BsonClassMap<T>> setup = null) where T : Entity
+        public static void AddMongoRepository<T>(this IServiceCollection services, string databaseName,
+            string collectionName, Action<BsonClassMap<T>> setup = null) where T : Entity
         {
             RegisterClass(setup);
-            services.AddSingleton(sp => CreateRepository<T>(sp.GetService<IMongoClient>(), collectionName));
+            services.AddSingleton(sp => CreateRepository<T>(sp.GetService<IMongoClient>(), databaseName,
+                collectionName));
         }
 
         private static void RegisterClass<T>(Action<BsonClassMap<T>> setup = null)
@@ -87,10 +89,10 @@ namespace SIL.XForge.DataAccess
                 });
         }
 
-        private static IRepository<T> CreateRepository<T>(IMongoClient mongoClient, string collectionName)
-            where T : Entity
+        private static IRepository<T> CreateRepository<T>(IMongoClient mongoClient, string databaseName,
+            string collectionName) where T : Entity
         {
-            return new MongoRepository<T>(mongoClient.GetDatabase(DataAccessConstants.MongoDatabase)
+            return new MongoRepository<T>(mongoClient.GetDatabase(databaseName)
                 .GetCollection<T>(collectionName));
         }
     }

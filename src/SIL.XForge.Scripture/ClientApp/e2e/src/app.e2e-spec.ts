@@ -2,11 +2,12 @@ import { AppPage } from './app.po';
 import { LoginPage } from './login.po';
 
 describe('App', () => {
+  const constants = require('../testConstants.json');
   const loginPage = new LoginPage();
 
-  it('should display welcome message', () => {
+  it('should display welcome message containing the users name', () => {
     loginPage.loginAsAdmin();
-    expect(AppPage.getMainHeading()).toEqual('Hello, Admin!');
+    expect(AppPage.getMainHeading()).toContain(constants.adminName);
   });
 
 });
