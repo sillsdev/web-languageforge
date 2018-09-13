@@ -110,7 +110,10 @@ namespace SIL.XForge.Scripture
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseAngularCliServer(npmScript: "start");
+                    if (Configuration.GetValue<bool>("start-ng-serve", true))
+                        spa.UseAngularCliServer(npmScript: "start");
+                    else
+                        spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                 }
             });
 
