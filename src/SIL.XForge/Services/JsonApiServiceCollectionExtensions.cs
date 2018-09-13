@@ -12,7 +12,7 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public static class ServicesExtensions
+    public static class JsonApiServiceCollectionExtensions
     {
         public static IServiceCollection AddJsonApi(this IServiceCollection services, IMvcBuilder mvcBuilder,
             ContainerBuilder containerBuilder, Action<IContextGraphBuilder, IMapperConfigurationExpression> configure)

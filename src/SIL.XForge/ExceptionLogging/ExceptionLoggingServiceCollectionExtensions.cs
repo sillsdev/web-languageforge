@@ -3,7 +3,6 @@
 
 using Bugsnag;
 using Bugsnag.AspNet.Core;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace SIL.XForge.ExceptionLogging
 {
-    public static class ExceptionLoggingExtensions
+    public static class ExceptionLoggingServiceCollectionExtensions
     {
         /// <summary>
         /// Add Bugsnag to your application. Configures the required bugsnag services and attaches
@@ -27,12 +26,5 @@ namespace SIL.XForge.ExceptionLogging
                 .AddSingleton<IStartupFilter, BugsnagStartupFilter>()
                 .AddSingleton<IClient, Client>(context => new Client(context.GetService<IOptions<Configuration>>().Value));
         }
-
-        public static void UseBugsnag(this IApplicationBuilder app)
-        {
-            // Force the creation of the bugsnag client
-            app.ApplicationServices.GetService<IClient>();
-        }
-
     }
 }

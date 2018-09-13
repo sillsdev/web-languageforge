@@ -5,7 +5,7 @@ using SIL.XForge.Scripture.Models;
 
 namespace SIL.XForge.Scripture.DataAccess
 {
-    public static class DataAccessExtensions
+    public static class SFDataAccessServiceCollectionExtensions
     {
         public static IServiceCollection AddSFDataAccess(this IServiceCollection services,
             IConfiguration configuration)

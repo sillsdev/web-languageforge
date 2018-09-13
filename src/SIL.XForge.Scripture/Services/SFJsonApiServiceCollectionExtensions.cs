@@ -5,7 +5,7 @@ using SIL.XForge.Services;
 
 namespace SIL.XForge.Scripture.Services
 {
-    public static class ServicesExtensions
+    public static class SFJsonApiServiceCollectionExtensions
     {
         public static IServiceCollection AddSFJsonApi(this IServiceCollection services, IMvcBuilder mvcBuilder,
             ContainerBuilder containerBuilder)

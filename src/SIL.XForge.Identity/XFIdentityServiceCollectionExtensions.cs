@@ -10,7 +10,7 @@ using SIL.XForge.Identity.Services;
 
 namespace SIL.XForge.Identity
 {
-    public static class IdentityExtensions
+    public static class XFIdentityServiceCollectionExtensions
     {
         private static readonly List<IdentityResource> IdentityResources = new List<IdentityResource>
         {
