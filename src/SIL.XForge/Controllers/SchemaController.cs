@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using SIL.XForge.Models;
-using SIL.XForge.Services;
 
 namespace SIL.XForge.Controllers
 {
@@ -8,17 +7,17 @@ namespace SIL.XForge.Controllers
     [ApiController]
     public class SchemaController : ControllerBase
     {
-        private readonly ResourceSchemaService _schemaService;
+        private readonly ResourceSchema _schema;
 
-        public SchemaController(ResourceSchemaService schemaService)
+        public SchemaController(ResourceSchema schema)
         {
-            _schemaService = schemaService;
+            _schema = schema;
         }
 
         [HttpGet]
         public ActionResult<ResourceSchema> Get()
         {
-            return _schemaService.Get();
+            return _schema;
         }
     }
 }

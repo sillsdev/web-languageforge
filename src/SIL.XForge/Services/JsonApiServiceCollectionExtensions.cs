@@ -4,10 +4,12 @@ using AutoMapper;
 using JsonApiDotNetCore.Builders;
 using JsonApiDotNetCore.Configuration;
 using JsonApiDotNetCore.Extensions;
+using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Middleware;
 using JsonApiDotNetCore.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
+using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
@@ -19,14 +21,14 @@ namespace SIL.XForge.Services
             var schemaBuilder = new ResourceSchemaBuilder();
             services.AddAutoMapper(mapConfig => configure(schemaBuilder, mapConfig));
 
-            ResourceSchemaService schemaService = schemaBuilder.BuildService();
+            (ResourceSchema schema, IContextGraph contextGraph) = schemaBuilder.Build();
 
-            services.AddSingleton(schemaService);
+            services.AddSingleton(schema);
 
             var jsonApiOptions = new JsonApiOptions
             {
                 Namespace = "api",
-                ContextGraph = schemaService.ContextGraph
+                ContextGraph = contextGraph
             };
             jsonApiOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
