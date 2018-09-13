@@ -49,22 +49,21 @@ namespace SIL.XForge.Services
         protected abstract Domain Domain { get; }
         protected virtual bool HasOwner => true;
 
-        public virtual async Task<TResource> CreateAsync(TResource resource)
+        public async Task<TResource> CreateAsync(TResource resource)
         {
             await CheckCreateRightAsync(resource);
 
             var entity = _mapper.Map<TEntity>(resource);
             SetNewEntityRelationships(entity, resource);
-            await Entities.InsertAsync(entity);
-            entity = await Entities.GetAsync(entity.Id);
+            entity = await InsertEntityAsync(entity);
             return await MapWithRelationshipsAsync(entity);
         }
 
-        public virtual async Task<bool> DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
             await CheckUpdateDeleteRightAsync(Operation.Delete, id);
 
-            return (await Entities.DeleteAsync(id)) != null;
+            return await DeleteEntityAsync(id);
         }
 
         public async Task<IEnumerable<TResource>> GetAsync()
@@ -93,36 +92,26 @@ namespace SIL.XForge.Services
             return GetRelationshipAsync(id, relationshipName);
         }
 
-        public virtual async Task<TResource> UpdateAsync(string id, TResource resource)
+        public async Task<TResource> UpdateAsync(string id, TResource resource)
         {
             await CheckUpdateDeleteRightAsync(Operation.Edit, id);
 
-            TEntity entity = await Entities.UpdateAsync(e => e.Id == id, update =>
-                {
-                    var updates = new List<UpdateDefinition<TEntity>>();
-                    foreach (KeyValuePair<AttrAttribute, object> attr in _jsonApiContext.AttributesToUpdate)
-                        updates.Add(update.Set(attr.Key.InternalAttributeName, attr.Value));
-
-                    foreach (KeyValuePair<RelationshipAttribute, object> rel in _jsonApiContext.RelationshipsToUpdate)
-                    {
-                        IRelationship<TEntity> relationship = GetRelationship(rel.Key.PublicRelationshipName);
-                        updates.Add(relationship.GetUpdateOperation(update, new[] { (string) rel.Value }));
-                    }
-
-                    return update.Combine(updates);
-                });
+            Dictionary<string, object> attrs = _jsonApiContext.AttributesToUpdate
+                .ToDictionary(kvp => kvp.Key.InternalAttributeName, kvp => kvp.Value);
+            Dictionary<string, string> relationships = _jsonApiContext.RelationshipsToUpdate
+                .ToDictionary(kvp => kvp.Key.PublicRelationshipName, kvp => (string) kvp.Value);
+            TEntity entity = await UpdateEntityAsync(id, attrs, relationships);
             return _mapper.Map<TResource>(entity);
         }
 
-        public virtual async Task UpdateRelationshipsAsync(string id, string relationshipName,
+        public async Task UpdateRelationshipsAsync(string id, string relationshipName,
             List<DocumentData> relationships)
         {
             await CheckUpdateDeleteRightAsync(Operation.Edit, id);
 
             IEnumerable<string> relationshipIds = relationships.Select(r => r?.Id?.ToString());
             IRelationship<TEntity> relationship = GetRelationship(relationshipName);
-            await Entities.UpdateAsync(e => e.Id == id,
-                update => relationship.GetUpdateOperation(update, relationshipIds));
+            await UpdateEntityRelationshipAsync(id, relationship, relationshipIds);
         }
 
         public async Task<IEnumerable<TResource>> QueryAsync(IEnumerable<string> included,
@@ -140,6 +129,43 @@ namespace SIL.XForge.Services
             IRelationship<TEntity> relationship = GetRelationship(relationshipName);
             return relationship.GetResourcesAsync(Enumerable.Empty<string>(), new Dictionary<string, Resource>(),
                 entity);
+        }
+
+        protected virtual async Task<TEntity> InsertEntityAsync(TEntity entity)
+        {
+            await Entities.InsertAsync(entity);
+            return await Entities.GetAsync(entity.Id);
+        }
+
+        protected virtual async Task<bool> DeleteEntityAsync(string id)
+        {
+            return (await Entities.DeleteAsync(id)) != null;
+        }
+
+        protected virtual Task<TEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
+            IDictionary<string, string> relationships)
+        {
+            return Entities.UpdateAsync(e => e.Id == id, update =>
+                {
+                    var updates = new List<UpdateDefinition<TEntity>>();
+                    foreach (KeyValuePair<string, object> attr in attrs)
+                        updates.Add(update.Set(attr.Key, attr.Value));
+
+                    foreach (KeyValuePair<string, string> rel in relationships)
+                    {
+                        IRelationship<TEntity> relationship = GetRelationship(rel.Key);
+                        updates.Add(relationship.GetUpdateOperation(update, new[] { rel.Value }));
+                    }
+
+                    return update.Combine(updates);
+                });
+        }
+
+        protected virtual Task UpdateEntityRelationshipAsync(string id, IRelationship<TEntity> relationship,
+            IEnumerable<string> relationshipIds)
+        {
+            return Entities.UpdateAsync(e => e.Id == id,
+                update => relationship.GetUpdateOperation(update, relationshipIds));
         }
 
         protected virtual IRelationship<TEntity> GetRelationship(string relationshipName)
