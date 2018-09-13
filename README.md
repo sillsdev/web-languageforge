@@ -70,11 +70,15 @@ git push origin feature/<featureName>
 
 Rebase often (at least at the start of day, and before making PR). Force pushing to your own branch is fine.
 
-Make PR's against the **sf-develop** branch. If the **sf-develop** branch has moved on since the feature branch was made, rebase your changes on top of the **sf-develop** branch before making your PR. 
+Make PR's against the **sf-develop** branch. If the **sf-develop** branch has moved on since the feature branch was made, rebase your changes on top of the **sf-develop** branch before making your PR.
+
+Ensure all [tests](#testing) are passing before submitting a PR. 
 
 Reviewers can and should rebase the completed PR change (default to squash and rebase unless commits have good reason to stay separate).
 If the person reviewing feels comfortable to approve it they can. However if they want other eyes on it, mention it in a comment on the PR.
 If you have minor changes to request on a PR you can say 'Make change X and then LGTM'. This means they can merge it themselves after the requested change.
+
+Delete the PR branch after merge.
 
 ### Builds ###
 
@@ -108,7 +112,15 @@ dotnet test
 
 See documentation for [running tests](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test?tabs=netcore21) and [writing tests](https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-nunit).
 
-### Angular 6 Unit Testing ###
+### Angular Linting ###
+
+To check TypeScript for readability, maintainability, and functionality errors. From the repo root
+```bash
+cd src/SIL.XForge.Scripture/ClientApp/
+ng lint
+```
+
+### Angular Unit Testing ###
 
 To run front end unit tests make sure `ng serve` and `dotnet run` are **not** running (*ctrl + c* to end them), then from the repo root
 ```bash
@@ -119,3 +131,17 @@ CHROME_BIN=chromium-browser ng test
 You can make the environment variable (`CHROME_BIN=chromium-browser`) permanent by following the instructions [here](https://help.ubuntu.com/community/EnvironmentVariables), then you can simply run `ng test`.
 
 See documentation for [running tests](https://github.com/angular/angular-cli/wiki/test) and [writing tests](https://angular.io/guide/testing#testing).
+
+### Angular End-To-End (E2E) Testing ###
+
+To run E2E tests, make sure you are serving the app. From the repo root
+```bash
+cd src/SIL.XForge.Scripture/
+dotnet run
+```
+
+In another terminal, from the repo root
+```bash
+cd src/SIL.XForge.Scripture/ClientApp/
+ng e2e
+```

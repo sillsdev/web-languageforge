@@ -1,14 +1,12 @@
 import { AppPage } from './app.po';
+import { LoginPage } from './login.po';
 
 describe('App', () => {
-  let page: AppPage;
-
-  beforeEach(() => {
-    page = new AppPage();
-  });
+  const loginPage = new LoginPage();
 
   it('should display welcome message', () => {
-    page.navigateTo();
-    expect(page.getMainHeading()).toEqual('Hello, world!');
+    loginPage.loginAsAdmin();
+    expect(AppPage.getMainHeading()).toEqual('Hello, Admin!');
   });
+
 });

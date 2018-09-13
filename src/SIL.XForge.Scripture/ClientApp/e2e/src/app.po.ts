@@ -1,11 +1,11 @@
 import { browser, by, element } from 'protractor';
 
 export class AppPage {
-  navigateTo() {
-    return browser.get('/');
+  static navigateTo() {
+    return browser.get('https://beta.scriptureforge.local/');
   }
 
-  getMainHeading() {
+  static getMainHeading() {
     return element(by.css('app-root h1')).getText();
   }
 }

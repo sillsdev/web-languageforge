@@ -1,21 +1,21 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {OAuthService} from 'angular-oauth2-oidc';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { OAuthService } from 'angular-oauth2-oidc';
 
-import {HomeComponent} from './home.component';
+import { HomeComponent } from './home.component';
+
+class HomeComponentPage {
+  constructor(private compFixture: ComponentFixture<HomeComponent>) { }
+
+  get logoutButton() { return this.compFixture.nativeElement.querySelector('button'); }
+  get titleText() { return this.compFixture.nativeElement.querySelector('h1').textContent; }
+}
 
 describe('HomeComponent', () => {
-  class Page {
-    constructor(private compFixture: ComponentFixture<HomeComponent>) { }
-
-    get logoutButton() { return this.compFixture.nativeElement.querySelector('button'); }
-    get titleText() { return this.compFixture.nativeElement.querySelector('h1').textContent; }
-  }
-
   let loginStatus = true;
   let claims: object;
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
-  let page: Page;
+  let page: HomeComponentPage;
 
   const oauthServiceStub: Partial<OAuthService> = {
     getIdentityClaims() {
@@ -40,7 +40,7 @@ describe('HomeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
-    page = new Page(fixture);
+    page = new HomeComponentPage(fixture);
     fixture.detectChanges();
   });
 
