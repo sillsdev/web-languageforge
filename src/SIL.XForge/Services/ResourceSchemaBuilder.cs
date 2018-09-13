@@ -1,16 +1,15 @@
-using System;
 using System.Collections.Generic;
 using JsonApiDotNetCore.Builders;
 using JsonApiDotNetCore.Models;
 
 namespace SIL.XForge.Services
 {
-    public class SchemaBuilder
+    public class ResourceSchemaBuilder
     {
         private readonly IContextGraphBuilder _graphBuilder;
         private readonly HashSet<string> _types;
 
-        public SchemaBuilder()
+        public ResourceSchemaBuilder()
         {
             _graphBuilder = new ContextGraphBuilder();
             _types = new HashSet<string>();
@@ -22,9 +21,9 @@ namespace SIL.XForge.Services
             _types.Add(type);
         }
 
-        public Schema Build()
+        public ResourceSchemaService BuildService()
         {
-            return new Schema(_types, _graphBuilder.Build());
+            return new ResourceSchemaService(_types, _graphBuilder.Build());
         }
     }
 }

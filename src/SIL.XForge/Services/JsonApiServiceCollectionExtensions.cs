@@ -14,20 +14,19 @@ namespace SIL.XForge.Services
     public static class JsonApiServiceCollectionExtensions
     {
         public static IServiceCollection AddJsonApi(this IServiceCollection services, IMvcBuilder mvcBuilder,
-            ContainerBuilder containerBuilder, Action<SchemaBuilder, IMapperConfigurationExpression> configure)
+            ContainerBuilder containerBuilder, Action<ResourceSchemaBuilder, IMapperConfigurationExpression> configure)
         {
-            var schemaBuilder = new SchemaBuilder();
+            var schemaBuilder = new ResourceSchemaBuilder();
             services.AddAutoMapper(mapConfig => configure(schemaBuilder, mapConfig));
 
-            Schema schema = schemaBuilder.Build();
+            ResourceSchemaService schemaService = schemaBuilder.BuildService();
 
-            services.AddSingleton<Schema>(schema);
-            services.AddSingleton<SchemaResourceService>();
+            services.AddSingleton(schemaService);
 
             var jsonApiOptions = new JsonApiOptions
             {
                 Namespace = "api",
-                ContextGraph = schema.ContextGraph
+                ContextGraph = schemaService.ContextGraph
             };
             jsonApiOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 

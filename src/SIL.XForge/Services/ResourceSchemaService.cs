@@ -11,8 +11,10 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public class SchemaResourceService
+    public class ResourceSchemaService
     {
+        public const int Version = 1;
+
         private static readonly Type[] DictionaryInterfaces =
         {
             typeof(IDictionary<,>),
@@ -20,31 +22,35 @@ namespace SIL.XForge.Services
             typeof(IReadOnlyDictionary<,>)
         };
 
-        private readonly Schema _schema;
+        private readonly HashSet<string> _types;
 
-        public SchemaResourceService(Schema schema)
+        public ResourceSchemaService(IEnumerable<string> types, IContextGraph contextGraph)
         {
-            _schema = schema;
+            _types = new HashSet<string>(types);
+            ContextGraph = contextGraph;
         }
 
-        public SchemaResource Get()
+        public IContextGraph ContextGraph { get; }
+
+        public ResourceSchema Get()
         {
-            var models = new Dictionary<string, SchemaModel>();
-            foreach (ContextEntity resourceType in _schema.ResourceTypes)
+            var models = new Dictionary<string, ResourceSchemaModel>();
+            foreach (ContextEntity resourceType in _types.Select(t => ContextGraph.GetContextEntity(t)))
                 models[Singularize(resourceType.EntityName)] = CreateModel(resourceType);
-            return new SchemaResource {
-                Version = 1,
+            return new ResourceSchema
+            {
+                Version = Version,
                 Models = models
             };
         }
 
-        private SchemaModel CreateModel(ContextEntity resourceType)
+        private ResourceSchemaModel CreateModel(ContextEntity resourceType)
         {
-            var attributes = new Dictionary<string, SchemaAttribute>();
+            var attributes = new Dictionary<string, ResourceSchemaAttribute>();
             foreach (AttrAttribute attr in resourceType.Attributes)
                 attributes[Camelize(attr.PublicAttributeName)] = CreateAttribute(resourceType, attr);
 
-            var relationships = new Dictionary<string, SchemaRelationship>();
+            var relationships = new Dictionary<string, ResourceSchemaRelationship>();
             foreach (RelationshipAttribute relationship in resourceType.Relationships)
             {
                 if (resourceType.EntityName == "users"
@@ -61,14 +67,14 @@ namespace SIL.XForge.Services
                     relationship);
             }
 
-            return new SchemaModel
+            return new ResourceSchemaModel
             {
                 Attributes = attributes,
                 Relationships = relationships
             };
         }
 
-        private SchemaAttribute CreateAttribute(ContextEntity resourceType, AttrAttribute attr)
+        private ResourceSchemaAttribute CreateAttribute(ContextEntity resourceType, AttrAttribute attr)
         {
             PropertyInfo pi = resourceType.EntityType.GetProperty(attr.InternalAttributeName);
             string type = "object";
@@ -102,16 +108,16 @@ namespace SIL.XForge.Services
                         type = "array";
                     break;
             }
-            return new SchemaAttribute { Type = type };
+            return new ResourceSchemaAttribute { Type = type };
         }
 
-        private SchemaRelationship CreateRelationship(ContextEntity resourceType, RelationshipAttribute relationship)
+        private ResourceSchemaRelationship CreateRelationship(ContextEntity resourceType, RelationshipAttribute relationship)
         {
             ContextEntity relationshipType;
             if (relationship.Type == typeof(ProjectResource))
-                relationshipType = _schema.ContextGraph.GetContextEntity("projects");
+                relationshipType = ContextGraph.GetContextEntity("projects");
             else
-                relationshipType = _schema.ContextGraph.GetContextEntity(relationship.Type);
+                relationshipType = ContextGraph.GetContextEntity(relationship.Type);
 
             RelationshipAttribute inverseRelationship = null;
             if  (relationship.PublicRelationshipName != Resource.OwnerRelationship)
@@ -121,7 +127,7 @@ namespace SIL.XForge.Services
                         && r.Type.IsAssignableFrom(resourceType.EntityType));
             }
 
-            return new SchemaRelationship
+            return new ResourceSchemaRelationship
             {
                 Type = relationship.IsHasMany ? "hasMany" : "hasOne",
                 Model = Singularize(relationshipType.EntityName),

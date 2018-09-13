@@ -1,6 +1,6 @@
 namespace SIL.XForge.Models
 {
-    public class SchemaRelationship
+    public class ResourceSchemaRelationship
     {
         public string Type { get; set; }
         public string Model { get; set; }

@@ -8,17 +8,17 @@ namespace SIL.XForge.Controllers
     [ApiController]
     public class SchemaController : ControllerBase
     {
-        private readonly SchemaResourceService _schemaResourceService;
+        private readonly ResourceSchemaService _schemaService;
 
-        public SchemaController(SchemaResourceService schemaResourceService)
+        public SchemaController(ResourceSchemaService schemaService)
         {
-            _schemaResourceService = schemaResourceService;
+            _schemaService = schemaService;
         }
 
         [HttpGet]
-        public ActionResult<SchemaResource> Get()
+        public ActionResult<ResourceSchema> Get()
         {
-            return _schemaResourceService.Get();
+            return _schemaService.Get();
         }
     }
 }
