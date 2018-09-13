@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
 
@@ -10,6 +11,9 @@ describe('SFProjectService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule
+      ],
       providers: [
         SFProjectService,
         { provide: OAuthService, useValue: oauthServiceStub }

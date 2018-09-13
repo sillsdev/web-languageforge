@@ -8,32 +8,26 @@ using JsonApiDotNetCore.Middleware;
 using JsonApiDotNetCore.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
-using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
     public static class JsonApiServiceCollectionExtensions
     {
         public static IServiceCollection AddJsonApi(this IServiceCollection services, IMvcBuilder mvcBuilder,
-            ContainerBuilder containerBuilder, Action<IContextGraphBuilder, IMapperConfigurationExpression> configure)
+            ContainerBuilder containerBuilder, Action<SchemaBuilder, IMapperConfigurationExpression> configure)
         {
-            var graphBuilder = new ContextGraphBuilder();
-            services.AddAutoMapper(mapConfig =>
-                {
-                    // users
-                    graphBuilder.AddResource<UserResource, string>("users");
-                    mapConfig.CreateMap<UserEntity, UserResource>()
-                        .ForMember(u => u.Projects, o => o.Ignore())
-                        .ForMember(u => u.Password, o => o.Ignore())
-                        .ReverseMap();
+            var schemaBuilder = new SchemaBuilder();
+            services.AddAutoMapper(mapConfig => configure(schemaBuilder, mapConfig));
 
-                    configure(graphBuilder, mapConfig);
-                });
+            Schema schema = schemaBuilder.Build();
+
+            services.AddSingleton<Schema>(schema);
+            services.AddSingleton<SchemaResourceService>();
 
             var jsonApiOptions = new JsonApiOptions
             {
                 Namespace = "api",
-                ContextGraph = graphBuilder.Build()
+                ContextGraph = schema.ContextGraph
             };
             jsonApiOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 

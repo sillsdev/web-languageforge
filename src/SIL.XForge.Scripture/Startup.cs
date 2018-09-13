@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using SIL.XForge.ExceptionLogging;
 using SIL.XForge.Identity;
 using SIL.XForge.Scripture.DataAccess;
@@ -59,7 +60,9 @@ namespace SIL.XForge.Scripture
 
             services.AddSFDataAccess(Configuration);
 
-            IMvcBuilder mvcBuilder = services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            IMvcBuilder mvcBuilder = services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(o => o.SerializerSettings.NullValueHandling = NullValueHandling.Ignore);
 
             services.AddSFJsonApi(mvcBuilder, containerBuilder);
 

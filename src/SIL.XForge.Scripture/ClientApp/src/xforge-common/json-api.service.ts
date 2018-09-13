@@ -1,7 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import Coordinator, { RequestStrategy, SyncStrategy } from '@orbit/coordinator';
 import {
-  FindRecordsTerm, Operation, QueryOrExpression, Record, RecordIdentity, Schema, SchemaSettings, TransformOrOperations
+  FindRecordsTerm, ModelDefinition, Operation, QueryOrExpression, Record, RecordIdentity, Schema, SchemaSettings,
+  TransformOrOperations
 } from '@orbit/data';
 import JSONAPISource from '@orbit/jsonapi';
 import Store from '@orbit/store';
@@ -14,40 +16,18 @@ import dcopy from 'deep-copy';
   providedIn: 'root'
 })
 export class JSONAPIService {
-  private readonly schemaDefinition: SchemaSettings = {
-    generateId: () => new ObjectId().toHexString(),
-    models: {
-      user: {
-        attributes: {
-          username: { type: 'string' },
-          name: { type: 'string' },
-          email: { type: 'string' },
-          password: { type: 'string' }
-        },
-        relationships: {
-          projects: { type: 'hasMany', model: 'project' }
-        }
-      },
-      project: {
-        attributes: {
-          projectName: { type: 'string' },
-          projectCode: { type: 'string' },
-          config: { type: 'object' }
-        },
-        relationships: {
-          owner: { type: 'hasOne', model: 'user' }
-        }
-      }
-    }
-  };
+  private schema: Schema;
+  private store: Store;
+  private remote: JSONAPISource;
+  private coordinator: Coordinator;
 
-  private readonly schema: Schema;
-  private readonly store: Store;
-  private readonly remote: JSONAPISource;
-  private readonly coordinator: Coordinator;
+  constructor(private readonly oauthService: OAuthService, private readonly http: HttpClient) { }
 
-  constructor(private readonly oauthService: OAuthService) {
-    this.schema = new Schema(this.schemaDefinition);
+  async init(): Promise<void> {
+    const schemaDef = await this.http.get<SchemaSettings>('api/schema',
+      { headers: { 'Content-Type': 'application/json' } }).toPromise();
+    schemaDef.generateId = () => new ObjectId().toHexString();
+    this.schema = new Schema(schemaDef);
 
     this.store = new Store({ schema: this.schema });
 
@@ -89,10 +69,7 @@ export class JSONAPIService {
         })
       ]
     });
-  }
-
-  init(): Promise<void> {
-    return this.coordinator.activate();
+    await this.coordinator.activate();
   }
 
   get<T extends Record>(resource: RecordIdentity): Promise<T> {

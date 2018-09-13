@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
 
@@ -10,6 +11,9 @@ describe('JSONAPIService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule
+      ],
       providers: [
         JSONAPIService,
         { provide: OAuthService, useValue: oauthServiceStub }
