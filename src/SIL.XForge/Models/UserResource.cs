@@ -13,6 +13,8 @@ namespace SIL.XForge.Models
         public string Name { get; set; }
         [Attr("email")]
         public string Email { get; set; }
+        [Attr("password")]
+        public string Password { get; set; }
         [HasMany(ProjectsRelationship)]
         public IReadOnlyList<ProjectResource> Projects { get; set; }
     }

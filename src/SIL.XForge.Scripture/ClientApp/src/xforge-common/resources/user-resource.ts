@@ -5,6 +5,7 @@ export interface UserAttributes extends Dict<any> {
   username?: string;
   name?: string;
   email?: string;
+  password?: string;
 }
 
 export interface UserResource extends Record {

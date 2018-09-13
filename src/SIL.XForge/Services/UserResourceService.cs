@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +23,14 @@ namespace SIL.XForge.Services
         public IResourceQueryable<TProjectResource, TProjectEntity> ProjectResources { get; set; }
 
         protected override Domain Domain => Domain.Users;
+
+        protected override Task<UserEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
+            IDictionary<string, string> relationships)
+        {
+            if (attrs.TryGetValue(nameof(UserResource.Password), out object value))
+                attrs[nameof(UserResource.Password)] = BCrypt.Net.BCrypt.HashPassword((string) value, 7);
+            return base.UpdateEntityAsync(id, attrs, relationships);
+        }
 
         protected override IRelationship<UserEntity> GetRelationship(string relationshipName)
         {

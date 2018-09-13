@@ -24,6 +24,7 @@ namespace SIL.XForge.Services
                     graphBuilder.AddResource<UserResource, string>("users");
                     mapConfig.CreateMap<UserEntity, UserResource>()
                         .ForMember(u => u.Projects, o => o.Ignore())
+                        .ForMember(u => u.Password, o => o.Ignore())
                         .ReverseMap();
 
                     configure(graphBuilder, mapConfig);
