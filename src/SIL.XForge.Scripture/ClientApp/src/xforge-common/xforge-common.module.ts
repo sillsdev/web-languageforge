@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { OAuthModule } from 'angular-oauth2-oidc';
 
-import { ApiService } from './api.service';
+import { JSONAPIService } from './json-api.service';
 
-export function initApi(apiService: ApiService): () => Promise<void> {
-  return () => apiService.init();
+export function initApi(jsonApiService: JSONAPIService): () => Promise<void> {
+  return () => jsonApiService.init();
 }
 
 @NgModule({
@@ -20,7 +20,7 @@ export function initApi(apiService: ApiService): () => Promise<void> {
   ],
   declarations: [],
   providers: [
-    { provide: APP_INITIALIZER, useFactory: initApi, deps: [ApiService], multi: true }
+    { provide: APP_INITIALIZER, useFactory: initApi, deps: [JSONAPIService], multi: true }
   ]
 })
 export class XForgeCommonModule {}

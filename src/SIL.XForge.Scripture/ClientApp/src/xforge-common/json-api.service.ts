@@ -8,11 +8,12 @@ import Store from '@orbit/store';
 import { Dict } from '@orbit/utils';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { ObjectId } from 'bson';
+import dcopy from 'deep-copy';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
+export class JSONAPIService {
   private readonly schemaDefinition: SchemaSettings = {
     generateId: () => new ObjectId().toHexString(),
     models: {
@@ -109,17 +110,18 @@ export class ApiService {
     return this._query(q => q.findRelatedRecords(resource, relationship));
   }
 
-  private _query(queryOrExpression: QueryOrExpression): Promise<any> {
-    return this.store.query(queryOrExpression, this.getOptions());
+  private async _query(queryOrExpression: QueryOrExpression): Promise<any> {
+    const result = await this.store.query(queryOrExpression, this.getOptions());
+    return dcopy(result);
   }
 
   create(resource: Record): Promise<void> {
     this.schema.initializeRecord(resource);
-    return this._update(t => t.addRecord(resource));
+    return this._update(t => t.addRecord(dcopy(resource)));
   }
 
   replace(resource: Record): Promise<void> {
-    return this._update(t => t.replaceRecord(resource));
+    return this._update(t => t.replaceRecord(dcopy(resource)));
   }
 
   async update<T extends Record>(resource: RecordIdentity, attrs: Dict<any>): Promise<T> {
@@ -130,7 +132,7 @@ export class ApiService {
       }
       return ops;
     });
-    return this.store.cache.query(q => q.findRecord(resource));
+    return this.getCached(resource);
   }
 
   delete(resource: RecordIdentity): Promise<void> {
@@ -139,29 +141,33 @@ export class ApiService {
 
   async addRelated<T extends Record>(resource: RecordIdentity, relationship: string, related: RecordIdentity): Promise<T> {
     await this._update(t => t.addToRelatedRecords(resource, relationship, related));
-    return this.store.cache.query(q => q.findRecord(resource));
+    return this.getCached(resource);
   }
 
   async removeRelated<T extends Record>(resource: RecordIdentity, relationship: string, related: RecordIdentity): Promise<T> {
     await this._update(t => t.removeFromRelatedRecords(resource, relationship, related));
-    return this.store.cache.query(q => q.findRecord(resource));
+    return this.getCached(resource);
   }
 
   async replaceAllRelated<T extends Record>(resource: RecordIdentity, relationship: string, related: RecordIdentity[]): Promise<T> {
     await this._update(t => t.replaceRelatedRecords(resource, relationship, related));
-    return this.store.cache.query(q => q.findRecord(resource));
+    return this.getCached(resource);
   }
 
   async setRelated<T extends Record>(resource: RecordIdentity, relationship: string, related: RecordIdentity): Promise<T> {
     await this._update(t => t.replaceRelatedRecord(resource, relationship, related));
-    return this.store.cache.query(q => q.findRecord(resource));
+    return this.getCached(resource);
   }
 
   private _update(transformOrOperations: TransformOrOperations): Promise<void> {
     return this.store.update(transformOrOperations, this.getOptions());
   }
 
-  getOptions(): any {
+  private getCached<T extends Record>(resource: RecordIdentity): T {
+    return dcopy(this.store.cache.query(q => q.findRecord(resource)));
+  }
+
+  private getOptions(): any {
     return {
       sources: {
         remote: {

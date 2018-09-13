@@ -1,9 +1,9 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
 
-import { ApiService } from './api.service';
+import { JSONAPIService } from './json-api.service';
 
-describe('ApiService', () => {
+describe('JSONAPIService', () => {
   const oauthServiceStub = {
     getAccessToken() { return 'token'; }
   };
@@ -11,13 +11,13 @@ describe('ApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        ApiService,
+        JSONAPIService,
         { provide: OAuthService, useValue: oauthServiceStub }
       ]
     });
   });
 
-  it('should be created', inject([ApiService], (service: ApiService) => {
+  it('should be created', inject([JSONAPIService], (service: JSONAPIService) => {
     expect(service).toBeTruthy();
   }));
 });
