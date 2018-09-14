@@ -63,12 +63,12 @@ git checkout sf-develop
 git pull
 git checkout -b feature/<featureName>
 ```
-Then do some useful work and commit it.
+Then do some useful work and commit it. Then
 ```bash
 git push origin feature/<featureName>
 ```
 
-Rebase often (at least at the start of day, and before making PR). Force pushing to your own branch is fine.
+Rebase often (at least at the start of the day, and before making a PR). Force pushing to your own branch is fine.
 
 Make PR's against the **sf-develop** branch. If the **sf-develop** branch has moved on since the feature branch was made, rebase your changes on top of the **sf-develop** branch before making your PR.
 
@@ -145,6 +145,30 @@ In another terminal, from the repo root
 cd src/SIL.XForge.Scripture/ClientApp/
 ./rune2e.sh
 ```
+
+#### Debugging E2E Tests ####
+
+To debug E2E tests, from the repo root
+```bash
+cd src/SIL.XForge.Scripture/
+dotnet run --environment "Testing"
+```
+
+In another terminal, from the repo root
+```bash
+cd src/SIL.XForge.Scripture/ClientApp/
+ng serve
+```
+
+Add a new line of `debugger;` to the `*.e2e-spec.ts` where you want it to break.
+
+In another terminal, from the repo root
+```bash
+cd src/SIL.XForge.Scripture/ClientApp/
+./rune2e.sh debug
+```
+
+Open `chrome://inspect/#devices` in Chromium and click **inspect**. This opens an instance of DevTools and immediately breaks the code at the top of the ng module. Hit continue (or F8) in your debugger to run your e2e tests, and hit any `debugger` statements in your code. Close the DevTools window to finish the tests.
 
 ### Special Cases ###
 

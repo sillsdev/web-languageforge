@@ -5,9 +5,9 @@ describe('App', () => {
   const constants = require('../testConstants.json');
   const loginPage = new LoginPage();
 
-  it('should display welcome message containing the users name', () => {
-    loginPage.loginAsAdmin();
-    expect(AppPage.getMainHeading()).toContain(constants.adminName);
+  it('should display welcome message containing the users name', async () => {
+    await loginPage.loginAsAdmin();
+    expect(await AppPage.getMainHeading()).toContain(constants.adminName);
   });
 
 });

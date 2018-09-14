@@ -9,37 +9,37 @@ export class LoginPage {
   passwordInput = element(by.id('Password'));
   loginButton = element(by.id('login-button'));
 
-  static get() {
-    browser.get(this.baseUrl + '/account/login');
+  static async get() {
+    await browser.get(this.baseUrl + '/account/login');
   }
 
-  static logout() {
-    browser.get(this.baseUrl + '/account/logout');
-    element(by.buttonText('Yes')).click();
+  static async logout() {
+    await browser.get(this.baseUrl + '/account/logout');
+    await element(by.buttonText('Yes')).click();
   }
 
-  login(username: string, password: string) {
+  async login(username: string, password: string) {
     browser.waitForAngularEnabled(false);
 
     // LoginPage.logout();
-    LoginPage.get();
+    await LoginPage.get();
     this.usernameInput.sendKeys(username);
     this.passwordInput.sendKeys(password);
-    this.loginButton.click();
+    await this.loginButton.click();
 
     browser.waitForAngularEnabled(true);
   }
 
-  loginAsAdmin() {
-    this.login(this.constants.adminUsername, this.constants.adminPassword);
+  async loginAsAdmin() {
+    await this.login(this.constants.adminUsername, this.constants.adminPassword);
   }
 
-  loginAsManager() {
-    this.login(this.constants.managerUsername, this.constants.managerPassword);
+  async loginAsManager() {
+    await this.login(this.constants.managerUsername, this.constants.managerPassword);
   }
 
-  loginAsUser() {
-    this.login(this.constants.memberUsername, this.constants.memberPassword);
+  async loginAsUser() {
+    await this.login(this.constants.memberUsername, this.constants.memberPassword);
   }
 
 }
