@@ -243,7 +243,7 @@ export class EditorPage {
       },
 
       uploadButtons: (searchLabel: string) => {
-        return EditorUtil.getOneField(searchLabel).all(by.css('.dc-audio button.buttonAppend'));
+        return EditorUtil.getOneField(searchLabel).all(by.css('.dc-audio .upload-audio'));
       },
 
       uploadDropBoxes: (searchLabel: string) => {

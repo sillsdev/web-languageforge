@@ -20,8 +20,7 @@
             <h3 class="col-form-label">{{$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].name}}</h3>
             <i>(At this time {{$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].name}} items cannot be deleted)</i>
             <div class="controls">
-                <picklist-editor items="$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].items"
-                                 pristine-items="$ctrl.olcOptionListsPristine[$ctrl.currentListIndex].items"></picklist-editor>
+                <picklist-editor items="$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].items"></picklist-editor>
             </div>
         </div>
     </div>

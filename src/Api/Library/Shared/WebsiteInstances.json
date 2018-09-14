@@ -81,6 +81,15 @@
       "releaseStage": "qa"
     },
     {
+      "domain": "demo.qa.scriptureforge.org",
+      "base": "Website::SCRIPTUREFORGE",
+      "name": "Scripture Forge",
+      "ssl": "true",
+      "theme": "simple",
+      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
+      "releaseStage": "qa"
+    },
+    {
       "__comment": "scriptureforge.org",
       "domain": "scriptureforge.org",
       "base": "Website::SCRIPTUREFORGE",

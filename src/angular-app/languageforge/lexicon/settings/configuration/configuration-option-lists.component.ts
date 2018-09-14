@@ -4,8 +4,6 @@ import {LexOptionList, LexOptionListItem} from '../../shared/model/option-list.m
 
 export class OptionListConfigurationController implements angular.IController {
   olcOptionListsDirty: LexOptionList[];
-  // noinspection JSUnusedGlobalSymbols
-  readonly olcOptionListsPristine: LexOptionList[];
   olcOnUpdate: (params: { $event: { optionListsDirty: LexOptionList[] } }) => void;
 
   currentListIndex = 0;
@@ -44,7 +42,6 @@ export class OptionListConfigurationController implements angular.IController {
 export const OptionListConfigurationComponent: angular.IComponentOptions = {
   bindings: {
     olcOptionListsDirty: '<',
-    olcOptionListsPristine: '<',
     olcOnUpdate: '&'
   },
   controller: OptionListConfigurationController,
