@@ -91,7 +91,6 @@ module.exports = function (env) {
 
     output: {
       filename: '[name].bundle.js',
-      sourceMapFilename: '[name].map',
       chunkFilename: '[id].chunk.js'
     },
 

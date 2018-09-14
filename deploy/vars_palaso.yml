@@ -35,6 +35,7 @@ apache_module_enable:
   - ssl
   - proxy
   - proxy_http
+  - proxy_wstunnel
 
 apache_site_enable:
   - default_local.conf
@@ -58,8 +59,9 @@ apache_vhosts:
         server_alias:
           - localhost
         proxy:
-          - '/api2/ http://localhost:5000/ timeout=21600'
-          - '/machine/ http://localhost:5001/ timeout=21600'
+          - '/api2/ http://localhost:5000/'
+          - '/machine/ http://localhost:5001/'
+          - '/sharedb/ "ws://localhost:5002/"'
   - server_name: languageforge.org
     server_admin: webmaster@palaso.org
     server_file_name: languageforge_org
@@ -88,12 +90,14 @@ apache_vhosts:
           - scriptureforge.local
           - localhost
         proxy:
-          - '/api2/ http://localhost:5000/ timeout=21600'
-          - '/machine/ http://localhost:5001/ timeout=21600'
+          - '/api2/ http://localhost:5000/'
+          - '/machine/ http://localhost:5001/'
+          - '/sharedb/ "ws://localhost:5002/"'
       - has_ssl: true
         port: 443
         certificate_file: "scriptureforge.pem"
         key_file: "scriptureforge.key"
         proxy:
-          - '/api2/ http://localhost:5000/ timeout=21600'
-          - '/machine/ http://localhost:5001/ timeout=21600'
+          - '/api2/ http://localhost:5000/'
+          - '/machine/ http://localhost:5001/'
+          - '/sharedb/ "ws://localhost:5002/"'

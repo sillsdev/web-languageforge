@@ -71,7 +71,7 @@ $small-text-size: 0.8em;
       cursor: pointer
   }
   .deleteX:hover {
-    color: map-get($theme-colors, danger);
+    color: red;
   }
   .commentRegarding {
     .row {

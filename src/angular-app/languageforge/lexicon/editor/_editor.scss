@@ -363,11 +363,11 @@ dc-entry .card {
     text-overflow: ellipsis;
   }
   .deleteX {
-    i {
+    .fa {
       cursor: pointer;
     }
-    i:hover {
-      color: map-get($theme-colors, danger);
+    .fa:hover {
+      color: red;
     }
   }
   h5 {
