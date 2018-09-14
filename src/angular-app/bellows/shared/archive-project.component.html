@@ -1,6 +1,7 @@
 <div class="form-group row">
     <div class="col-12">
-        <button class="btn btn-warning" data-ng-disabled="puiActionInProgress" ng-click="archiveProject()"><i class="fa fa-archive"></i> Archive this project</button>
+        <button class="btn btn-warning" data-ng-disabled="$ctrl.puiActionInProgress" data-ng-click="$ctrl.archiveProject()">
+            <i class="fa fa-archive"></i> Archive this project</button>
     </div>
 </div>
 <div class="text-error">Only project owners can archive a project, and this action can only be undone by a site administrator (at this point)</div>

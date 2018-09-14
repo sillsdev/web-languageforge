@@ -1,0 +1,22 @@
+<div class="deleteX float-right">
+  <span ng-click="$ctrl.close()" title="Cancel Recording Audio" class="fa fa-times"></span>
+</div>
+<div class="record-area" ng-if="$ctrl.recordingSupported()">
+  <a class="record-button" ng-click="$ctrl.toggleRecording()">
+    <span class="fa fa-microphone"></span>
+    <span ng-show="!$ctrl.isRecording" class="record-text">{{$ctrl.hasRecorded ? 'Record again' : 'Record'}}</span>
+    <span ng-show="$ctrl.isRecording" class="recording-time">{{$ctrl.recordingTime}}</span>
+  </a>
+  <span class="recording-preview" ng-show="$ctrl.hasRecorded && !$ctrl.isRecording">
+    <pui-soundplayer pui-url="$ctrl.audioSrc"></pui-soundplayer>
+    <a href class="btn btn-primary" ng-click="$ctrl.saveAudio()">
+      <span class="fa fa-check"></span>
+    </a>
+  </span>
+</div>
+<div ng-if="!$ctrl.recordingSupported()">
+  Your browser does not support recording audio. Please use a different browser or upload audio files.
+</div>
+<div ng-if="$ctrl.errorMessage">
+  {{$ctrl.errorMessage}}
+</div>

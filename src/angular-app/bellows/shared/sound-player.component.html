@@ -2,9 +2,9 @@
     <i class="fa" data-ng-class="$ctrl.iconClass()"></i>
 </a>
 <span class="controls">
-    <span data-ng-if="$ctrl.audioElement.duration" class="audioProgress text-muted">
+    <span data-ng-if="$ctrl.audioElement.duration" class="audio-progress text-muted">
         {{$ctrl.currentTime()}} / {{$ctrl.duration()}}
     </span>
     <!--suppress HtmlFormInputWithoutLabel -->
-    <input class="seek-slider ml-2" type="range" min="0" max="{{$ctrl.durationInSeconds()}}" value = 0 id="puiSoundplayerSlider">
+    <input class="seek-slider" type="range" min="0" max="{{$ctrl.durationInSeconds()}}" value="0" id="puiSoundplayerSlider">
 </span>

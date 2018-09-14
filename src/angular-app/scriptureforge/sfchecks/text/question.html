@@ -84,9 +84,9 @@
                              class="scripture-quote"></div>
                         <div class="answerContent" data-ng-bind-html="answer.content"></div>
                         <div class="answer-footer">
-                            <div data-view-tags data-ng-show="$parent.rightsCreateTag()"
-                                 data-tags="answer.tags" data-on-delete="deletedTags(answer)"
-                                 data-rights-delete="rightsDeleteTag()"></div>
+                            <view-tags class="tag-list" ng-show="$parent.rightsCreateTag()"
+                                 tags="answer.tags" on-delete="deletedTags(answer)"
+                                 rights-delete="rightsDeleteTag()"></view-tags>
                             <div class="author">
                                 <img data-ng-src="{{getAvatarUrl(answer.userRef.avatar_ref)}}" width="32" height="32">
                                 <div>
@@ -118,8 +118,7 @@
                             </div>
                             <div class="overlay" data-ng-show="tagEditorVisible">
                                 <div class="overlay-bg">
-                                    <form
-                                            data-ng-submit="addTags(tags, answer);tagEditorVisible=false">
+                                    <form data-ng-submit="addTags(tags, answer);tagEditorVisible=false">
                                         <label>Add tags (comma-separated)
                                             <add-tags tags="tags"></add-tags>
                                         </label>

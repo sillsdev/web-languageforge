@@ -1,45 +1,29 @@
+import * as angular from 'angular';
 import Quill, { TextChangeHandler } from 'quill';
+import * as RichText from 'rich-text';
+import { Connection, Doc, OnOpsFunction, types } from 'sharedb/lib/client';
 
+import { DocumentCacheData, DocumentsOfflineCacheService } from '../../../core/offline/documents-offline-cache.service';
 import { SaveState } from '../core/constants';
 
-type DocCallback = (error: any) => void;
-type OnOpsFunction = (op: any, source: any) => void;
-
-export declare class RealTimeDoc {
-  type: string;
-  id: string;
-  data: any;
-  fetch(callback: DocCallback): void;
-  subscribe(callback: DocCallback): void;
-  ingestSnapshot(snapshot: any, callback: DocCallback): void;
-  destroy(): void;
-  on(eventName: string, onOpsFunction: OnOpsFunction): void;
-  create(data: any[], type?: string, options?: any, callback?: DocCallback): void;
-  submitOp(op: any, options?: any, callback?: DocCallback): void;
-  del(options?: any, callback?: DocCallback): void;
-  whenNothingPending(callback: DocCallback): void;
-  removeListener(eventName: string, onOpsFunction: OnOpsFunction): void;
-}
-
 export class RealTimeService {
-  private static readonly ShareDB = require('sharedb/lib/client');
-  private static readonly richText = require('rich-text');
-
   private readonly socket: WebSocket;
-  private readonly connection: any;
+  private readonly connection: Connection;
 
-  private docSubs: { [id: string]: RealTimeDoc } = {};
+  private docSubs: { [id: string]: Doc } = {};
   private onTextChanges: { [id: string]: TextChangeHandler } = {};
   private onOps: { [id: string]: OnOpsFunction } = {};
 
   private pendingOpCount: { [id: string]: number } = {};
 
-  static $inject = ['$window'];
-  constructor(private $window: angular.IWindowService) {
-    RealTimeService.ShareDB.types.register(RealTimeService.richText.type);
+  static $inject = ['$window', '$q',
+    'documentsOfflineCache'];
+  constructor(private readonly $window: angular.IWindowService, private readonly $q: angular.IQService,
+              private readonly docsOfflineCache: DocumentsOfflineCacheService) {
+    types.register(RichText.type);
     // Open WebSocket connection to ShareDB server
     this.socket = new WebSocket(this.getWebSocketDocUrl());
-    this.connection = new RealTimeService.ShareDB.Connection(this.socket);
+    this.connection = new Connection(this.socket);
   }
 
   getSaveState(id: string): SaveState {
@@ -52,70 +36,35 @@ export class RealTimeService {
     }
   }
 
-  createAndSubscribeRichTextDoc(collection: string, id: string, quill: Quill) {
-    let doc: RealTimeDoc;
+  createAndSubscribeRichTextDoc(collection: string, id: string, quill: Quill): angular.IPromise<void> {
+    let doc: Doc;
     if (id in this.docSubs) {
       doc = this.docSubs[id];
       this.disconnectRichTextDoc(id, quill);
     } else {
       doc = this.connection.get(collection, id);
-      doc.fetch(err => {
-        if (err) throw err;
-
-        if (doc.type === null) {
-          doc.create([{ insert: '' }], RealTimeService.richText.type.name);
-        }
-      });
+      this.docSubs[id] = doc;
     }
 
-    this.docSubs[id] = doc;
-    doc.subscribe(err => {
-      if (err) throw err;
-
-      quill.setContents(doc.data);
-      quill.getModule('history').clear();
-
-      this.onTextChanges[id] = (delta: any, oldDelta: any, source: any) => {
-        if (source !== Quill.sources.USER) return;
-        if (!(id in this.pendingOpCount)) {
-          this.pendingOpCount[id] = 0;
-        }
-        this.pendingOpCount[id]++;
-        doc.submitOp(delta, {source: quill}, error => this.pendingOpCount[id]--);
-
-        // console.log('onTextChange: docId', id, 'data', quill.getText());
-      };
-
-      quill.on(Quill.events.TEXT_CHANGE, this.onTextChanges[id]);
-
-      this.onOps[id] = (op: any, source: any) => {
-        if (source === quill) return;
-        quill.updateContents(op);
-
-        // console.log('onOp: docId', id, 'data', quill.getText());
-      };
-
-      doc.on('op', this.onOps[id]);
-    });
-  }
-
-  updateRichTextDoc(collection: string, id: string, delta: any, source: any) {
-    let doc: RealTimeDoc;
-    if (id in this.docSubs) {
-      doc = this.docSubs[id];
-      doc.submitOp(delta, { source });
+    const deferred = this.$q.defer<void>();
+    if (DocumentsOfflineCacheService.canCache()) {
+      this.docsOfflineCache.getDocument(id)
+        .then(docData => {
+          if (docData != null) {
+            doc.ingestSnapshot(docData, err => {
+              if (err) {
+                deferred.reject(err);
+              }
+              this.subscribe(id, doc, quill, deferred);
+            });
+          } else {
+            this.fetchOrCreate(id, doc, quill, deferred);
+          }
+        }).catch(() => this.fetchOrCreate(id, doc, quill, deferred));
     } else {
-      doc = this.connection.get(collection, id);
-      doc.fetch(err => {
-        if (err) throw err;
-
-        if (doc.type === null) {
-          doc.create([{ insert: '' }], RealTimeService.richText.type.name);
-        } else {
-          doc.submitOp(delta, { source });
-        }
-      });
+      this.fetchOrCreate(id, doc, quill, deferred);
     }
+    return deferred.promise;
   }
 
   disconnectRichTextDoc(id: string, quill: Quill) {
@@ -151,6 +100,75 @@ export class RealTimeService {
         break;
     }
     return protocol + '://' + this.$window.location.host + '/sharedb/';
+  }
+
+  private fetchOrCreate(id: string, doc: Doc, quill: Quill, deferred: angular.IDeferred<void>): void {
+    doc.fetch(err => {
+      if (err) {
+        deferred.reject(err);
+      }
+
+      if (doc.type === null) {
+        doc.create([{ insert: '' }], RichText.type.name, { source: quill }, createErr => {
+          if (createErr) {
+            deferred.reject(createErr);
+          }
+          this.updateDocumentCache(doc);
+          this.subscribe(id, doc, quill, deferred);
+        });
+      } else {
+        this.updateDocumentCache(doc);
+        this.subscribe(id, doc, quill, deferred);
+      }
+    });
+  }
+
+  private subscribe(id: string, doc: Doc, quill: Quill, deferred: angular.IDeferred<void>): void {
+    doc.subscribe(err => {
+      if (err) {
+        deferred.reject(err);
+      }
+
+      quill.setContents(doc.data);
+      quill.getModule('history').clear();
+
+      this.onTextChanges[id] = (delta: any, oldDelta: any, source: any) => {
+        if (source !== Quill.sources.USER) return;
+        if (!(id in this.pendingOpCount)) {
+          this.pendingOpCount[id] = 0;
+        }
+        this.pendingOpCount[id]++;
+        doc.submitOp(delta, { source: quill }, () => {
+          this.pendingOpCount[id]--;
+          this.updateDocumentCache(doc);
+        });
+      };
+
+      quill.on(Quill.events.TEXT_CHANGE, this.onTextChanges[id]);
+
+      this.onOps[id] = (op: any, source: any) => {
+        if (source === quill) return;
+        quill.updateContents(op);
+        this.updateDocumentCache(doc);
+      };
+
+      doc.on('op', this.onOps[id]);
+      deferred.resolve();
+    });
+  }
+
+  private updateDocumentCache(doc: Doc): void {
+    if (!DocumentsOfflineCacheService.canCache()) {
+      return;
+    }
+
+    const docData: DocumentCacheData = {
+      id: doc.id,
+      v: doc.version,
+      data: doc.data,
+      type: doc.type.name
+    };
+    this.docsOfflineCache.updateDocument(docData);
   }
 
 }

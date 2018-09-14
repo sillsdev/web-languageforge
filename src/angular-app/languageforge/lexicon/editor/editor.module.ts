@@ -4,6 +4,7 @@ import uiRouter from 'angular-ui-router';
 import {ActivityAppModule} from '../../../bellows/apps/activity/activity-app.module';
 import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
+import {TypeAheadModule} from '../../../bellows/shared/type-ahead.module';
 import {PuiUtilityModule} from '../../../bellows/shared/utils/pui-utils.module';
 import {LexiconCoreModule} from '../core/lexicon-core.module';
 import {EditorCommentsModule} from './comment/comment.module';
@@ -18,7 +19,7 @@ export const LexiconEditorModule = angular
     CoreModule,
     NoticeModule,
     PuiUtilityModule,
-    'palaso.ui.typeahead',
+    TypeAheadModule,
     LexiconCoreModule,
     EditorCommentsModule,
     EditorFieldModule
