@@ -23,6 +23,10 @@ import { map, startWith } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class JSONAPIService {
+  private static readonly STORE = 'store';
+  private static readonly REMOTE = 'remote';
+  private static readonly BACKUP = 'backup';
+
   private schema: Schema;
   private bucket: IndexedDBBucket;
   private store: Store;
@@ -50,7 +54,7 @@ export class JSONAPIService {
     this.remote = new JSONAPISource({
       schema: this.schema,
       bucket: this.bucket,
-      name: 'remote',
+      name: JSONAPIService.REMOTE,
       host: window.location.origin,
       namespace: 'api'
     });
@@ -58,7 +62,7 @@ export class JSONAPIService {
     this.backup = new IndexedDBSource({
       schema: this.schema,
       bucket: this.bucket,
-      name: 'backup',
+      name: JSONAPIService.BACKUP,
       namespace: 'xforge'
     });
 
@@ -67,7 +71,7 @@ export class JSONAPIService {
       strategies: [
         // Purge a deleted resource from the cache when get() is called on it
         new RequestStrategy({
-          source: 'remote',
+          source: JSONAPIService.REMOTE,
           on: 'pullFail',
 
           action: (q: Query, e: Exception) => this.purgeDeletedResource(q, e),
@@ -76,7 +80,7 @@ export class JSONAPIService {
         }),
         // Purge deleted resources from the cache when getAll() is called
         new ConnectionStrategy({
-          source: 'remote',
+          source: JSONAPIService.REMOTE,
           on: 'pull',
 
           action: (q: Query, t: Transform[]) => this.purgeDeletedResources(q, t),
@@ -84,7 +88,7 @@ export class JSONAPIService {
         }),
         // Retry sending updates to server when push fails
         new RequestStrategy({
-          source: 'remote',
+          source: JSONAPIService.REMOTE,
           on: 'pushFail',
 
           action: (t: Transform, e: Exception) => this.handleFailedPush(t, e),
@@ -93,10 +97,10 @@ export class JSONAPIService {
         }),
         // Query the remote server whenever the store is queried
         new RequestStrategy({
-          source: 'store',
+          source: JSONAPIService.STORE,
           on: 'beforeQuery',
 
-          target: 'remote',
+          target: JSONAPIService.REMOTE,
           action: 'pull',
 
           blocking: false,
@@ -109,29 +113,29 @@ export class JSONAPIService {
         }),
         // Update the remote server whenever the store is updated
         new RequestStrategy({
-          source: 'store',
+          source: JSONAPIService.STORE,
           on: 'beforeUpdate',
 
-          target: 'remote',
-          filter: (t: Transform) => this.shouldUpdate(t, 'remote'),
+          target: JSONAPIService.REMOTE,
+          filter: (t: Transform) => this.shouldUpdate(t, JSONAPIService.REMOTE),
           action: 'push',
 
           blocking: false
         }),
         // Sync all changes received from the remote server to the store
         new SyncStrategy({
-          source: 'remote',
+          source: JSONAPIService.REMOTE,
 
-          target: 'store',
+          target: JSONAPIService.STORE,
 
           blocking: false
         }),
         // Sync all changes to the store to IndexedDB
         new SyncStrategy({
-          source: 'store',
+          source: JSONAPIService.STORE,
 
-          target: 'backup',
-          filter: (t: Transform) => this.shouldUpdate(t, 'backup'),
+          target: JSONAPIService.BACKUP,
+          filter: (t: Transform) => this.shouldUpdate(t, JSONAPIService.BACKUP),
 
           blocking: true
         }),
@@ -162,8 +166,8 @@ export class JSONAPIService {
   }
 
   private _query(queryOrExpression: QueryOrExpression): Observable<any> {
-    const query = buildQuery(queryOrExpression, this.getOptions(['remote', 'backup']), undefined,
-      this.store.queryBuilder);
+    const query = buildQuery(queryOrExpression, this.getOptions([JSONAPIService.REMOTE, JSONAPIService.BACKUP]),
+      undefined, this.store.queryBuilder);
 
     this.store.query(query);
 
@@ -226,9 +230,9 @@ export class JSONAPIService {
   }
 
   private _update(transformOrOperations: TransformOrOperations, cache: boolean): Promise<void> {
-    const update = ['remote'];
+    const update = [JSONAPIService.REMOTE];
     if (cache) {
-      update.push('backup');
+      update.push(JSONAPIService.BACKUP);
     }
     return this.store.update(transformOrOperations, this.getOptions(update));
   }
@@ -288,7 +292,7 @@ export class JSONAPIService {
   }
 
   private handleFailedPush(transform: Transform, ex: Exception): Promise<void> {
-    if (ex instanceof NetworkError) {
+    if (ex instanceof NetworkError && this.shouldUpdate(transform, JSONAPIService.BACKUP)) {
       setTimeout(() => this.remote.requestQueue.retry(), 5000);
     } else {
       if (this.store.transformLog.contains(transform.id)) {
@@ -309,6 +313,6 @@ export class JSONAPIService {
         ops.push(t.removeRecord(resource));
       }
       return ops;
-    }, { update: ['backup'] });
+    }, { update: [JSONAPIService.BACKUP] });
   }
 }
