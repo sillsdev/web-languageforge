@@ -32,6 +32,7 @@
     "@orbit/core": "^0.15.20",
     "@orbit/data": "^0.15.20",
     "@orbit/indexeddb": "^0.15.20",
+    "@orbit/indexeddb-bucket": "^0.15.20",
     "@orbit/jsonapi": "^0.15.20",
     "@orbit/store": "^0.15.20",
     "angular-oauth2-oidc": "^4.0.2",

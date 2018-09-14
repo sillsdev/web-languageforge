@@ -1,12 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import Coordinator, { ConnectionStrategy, RequestStrategy, SyncStrategy } from '@orbit/coordinator';
+import Coordinator, {
+  ConnectionStrategy, LogTruncationStrategy, RequestStrategy, SyncStrategy
+} from '@orbit/coordinator';
 import { Exception } from '@orbit/core';
 import {
-  buildQuery, ClientError, FindRecord, FindRecordsTerm, Operation, Query, QueryOrExpression, Record, RecordIdentity,
-  ReplaceRecordOperation, Schema, SchemaSettings, Transform, TransformOrOperations
+  buildQuery, ClientError, FindRecord, FindRecordsTerm, NetworkError, Operation, Query, QueryOrExpression, Record,
+  RecordIdentity, ReplaceRecordOperation, Schema, SchemaSettings, Transform, TransformOrOperations
 } from '@orbit/data';
 import IndexedDBSource from '@orbit/indexeddb';
+import IndexedDBBucket from '@orbit/indexeddb-bucket';
 import JSONAPISource from '@orbit/jsonapi';
 import Store from '@orbit/store';
 import { Dict } from '@orbit/utils';
@@ -21,6 +24,7 @@ import { map, startWith } from 'rxjs/operators';
 })
 export class JSONAPIService {
   private schema: Schema;
+  private bucket: IndexedDBBucket;
   private store: Store;
   private remote: JSONAPISource;
   private backup: IndexedDBSource;
@@ -34,10 +38,18 @@ export class JSONAPIService {
     schemaDef.generateId = () => new ObjectId().toHexString();
     this.schema = new Schema(schemaDef);
 
-    this.store = new Store({ schema: this.schema });
+    this.bucket = new IndexedDBBucket({
+      namespace: 'xforge-state'
+    });
+
+    this.store = new Store({
+      schema: this.schema,
+      bucket: this.bucket
+    });
 
     this.remote = new JSONAPISource({
       schema: this.schema,
+      bucket: this.bucket,
       name: 'remote',
       host: window.location.origin,
       namespace: 'api'
@@ -45,6 +57,7 @@ export class JSONAPIService {
 
     this.backup = new IndexedDBSource({
       schema: this.schema,
+      bucket: this.bucket,
       name: 'backup',
       namespace: 'xforge'
     });
@@ -68,6 +81,15 @@ export class JSONAPIService {
 
           action: (q: Query, t: Transform[]) => this.purgeDeletedResources(q, t),
           filter: (q: Query) => q.expression.op === 'findRecords'
+        }),
+        // Retry sending updates to server when push fails
+        new RequestStrategy({
+          source: 'remote',
+          on: 'pushFail',
+
+          action: (t: Transform, e: Exception) => this.handleFailedPush(t, e),
+
+          blocking: true
         }),
         // Query the remote server whenever the store is queried
         new RequestStrategy({
@@ -113,6 +135,7 @@ export class JSONAPIService {
 
           blocking: true
         }),
+        new LogTruncationStrategy()
       ]
     });
 
@@ -262,6 +285,17 @@ export class JSONAPIService {
     }
 
     this.removeFromBackup(deletedResources);
+  }
+
+  private handleFailedPush(transform: Transform, ex: Exception): Promise<void> {
+    if (ex instanceof NetworkError) {
+      setTimeout(() => this.remote.requestQueue.retry(), 5000);
+    } else {
+      if (this.store.transformLog.contains(transform.id)) {
+        this.store.rollback(transform.id, -1);
+      }
+      return this.remote.requestQueue.skip();
+    }
   }
 
   private removeFromBackup(resources: Record[]): void {
