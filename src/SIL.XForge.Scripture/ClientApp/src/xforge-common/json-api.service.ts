@@ -26,6 +26,7 @@ export class JSONAPIService {
   private static readonly STORE = 'store';
   private static readonly REMOTE = 'remote';
   private static readonly BACKUP = 'backup';
+  private static readonly RETRY_TIMEOUT = 5000;
 
   private schema: Schema;
   private bucket: IndexedDBBucket;
@@ -293,7 +294,7 @@ export class JSONAPIService {
 
   private handleFailedPush(transform: Transform, ex: Exception): Promise<void> {
     if (ex instanceof NetworkError && this.shouldUpdate(transform, JSONAPIService.BACKUP)) {
-      setTimeout(() => this.remote.requestQueue.retry(), 5000);
+      setTimeout(() => this.remote.requestQueue.retry(), JSONAPIService.RETRY_TIMEOUT);
     } else {
       if (this.store.transformLog.contains(transform.id)) {
         this.store.rollback(transform.id, -1);
