@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Record } from '@orbit/data';
+import { Observable } from 'rxjs';
 
 import { SFProjectService } from '../core/sfproject.service';
 import { SFProjectResource } from '../shared/resources/sfproject-resource';
@@ -11,7 +12,7 @@ import { SFProjectResource } from '../shared/resources/sfproject-resource';
 export class FetchDataComponent implements OnInit {
   private readonly updatedNames: Map<string, string> = new Map<string, string>();
 
-  public projects: SFProjectResource[];
+  public projects$: Observable<SFProjectResource[]>;
 
   constructor(private readonly projectService: SFProjectService) { }
 
@@ -19,8 +20,8 @@ export class FetchDataComponent implements OnInit {
     return this.updatedNames.size > 0;
   }
 
-  async ngOnInit(): Promise<void> {
-    this.projects = await this.projectService.getAll();
+  ngOnInit(): void {
+    this.projects$ = this.projectService.getAll();
   }
 
   updateProjectName(project: Record, value: string): void {
