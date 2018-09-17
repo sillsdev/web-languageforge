@@ -20,11 +20,9 @@ namespace SIL.XForge.DataAccess
         public static IServiceCollection AddDataAccess(this IServiceCollection services,
             IConfiguration configuration)
         {
-            IConfigurationSection dataAccessConfig = configuration.GetSection("DataAccess");
-            string connectionString = dataAccessConfig.GetValue("ConnectionString",
-                "mongodb://localhost:27017");
-            string jobDatabase = dataAccessConfig.GetValue("JobDatabase", "jobs");
-            services.AddHangfire(x => x.UseMongoStorage(connectionString, jobDatabase,
+            services.Configure<DataAccessOptions>(configuration.GetSection("DataAccess"));
+            DataAccessOptions options = configuration.GetDataAccessOptions();
+            services.AddHangfire(x => x.UseMongoStorage(options.ConnectionString, options.JobDatabase,
                 new MongoStorageOptions
                 {
                     MigrationOptions = new MongoMigrationOptions
@@ -57,10 +55,9 @@ namespace SIL.XForge.DataAccess
                         .SetShouldSerializeMethod(p => p.GetType() != typeof(ProjectEntity));
                 });
 
-            services.AddSingleton<IMongoClient>(sp => new MongoClient(connectionString));
+            services.AddSingleton<IMongoClient>(sp => new MongoClient(options.ConnectionString));
 
-            string databaseName = dataAccessConfig.GetValue("MongoDatabaseName", "xforge");
-            services.AddMongoRepository<UserEntity>(databaseName, "users", cm =>
+            services.AddMongoRepository<UserEntity>(options.MongoDatabaseName, "users", cm =>
                 {
                     cm.MapMember(u => u.SiteRole).SetSerializer(
                         new DictionaryInterfaceImplementerSerializer<Dictionary<string, string>>(

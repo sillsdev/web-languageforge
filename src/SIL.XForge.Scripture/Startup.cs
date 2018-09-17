@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using SIL.XForge.ExceptionLogging;
 using SIL.XForge.Identity;
 using SIL.XForge.Scripture.DataAccess;
+using SIL.XForge.Scripture.Realtime;
 using SIL.XForge.Scripture.Services;
 
 namespace SIL.XForge.Scripture
@@ -38,6 +39,8 @@ namespace SIL.XForge.Scripture
             string host = systemConfig.GetValue<string>("Hostname");
 
             var containerBuilder = new ContainerBuilder();
+
+            services.AddRealtimeServer(Environment.IsDevelopment());
 
             services.AddExceptionLogging();
 
@@ -123,6 +126,8 @@ namespace SIL.XForge.Scripture
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                 }
             });
+
+            app.UseRealtimeServer();
 
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }

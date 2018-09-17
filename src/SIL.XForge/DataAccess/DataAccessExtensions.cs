@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using SIL.XForge.Models;
@@ -59,6 +60,11 @@ namespace SIL.XForge.DataAccess
             Func<TSource, TResult> selector)
         {
             return query.ToListAsync(e => Task.FromResult(selector(e)));
+        }
+
+        public static DataAccessOptions GetDataAccessOptions(this IConfiguration configuration)
+        {
+            return configuration.GetSection("DataAccess").Get<DataAccessOptions>() ?? new DataAccessOptions();
         }
     }
 }

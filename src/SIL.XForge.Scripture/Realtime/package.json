@@ -1,0 +1,23 @@
+{
+  "name": "realtime-server",
+  "version": "2.0.0",
+  "description": "Realtime Server",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sillsdev/web-languageforge.git"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "rich-text": "^3.1.0",
+    "sharedb": "^1.0.0-beta.13",
+    "sharedb-mongo": "^1.0.0-beta.6",
+    "websocket-json-stream": "0.0.1",
+    "ws": "^1.1.5"
+  }
+}
