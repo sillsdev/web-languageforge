@@ -88,6 +88,7 @@ Status of builds from our continuous integration (CI) [server](https://build.pal
 | --------------- | ----------- | ---------- | -- | ---- |
 | Language Forge  | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt372)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeLive)/statusIcon) |
 | Scripture Forge | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt270)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeLive)/statusIcon) |
+| Scripture Forge Beta | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeDevelopUnitTests)/statusIcon) | not yet operational | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:xForgeDeploy_ScriptureForgeQaBeta)/statusIcon) | not yet live |
 
 Successful builds from our CI server deploy to:
 
@@ -170,7 +171,7 @@ cd src/SIL.XForge.Scripture/ClientApp/
 
 Open `chrome://inspect/#devices` in Chromium and click **inspect**. This opens an instance of DevTools and immediately breaks the code at the top of the ng module. Hit continue (or F8) in your debugger to run your e2e tests, and hit any `debugger` statements in your code. Close the DevTools window to finish the tests.
 
-### Special Cases ###
+### Backend Development ###
 
 Normally when you run `dotnet run` it starts `ng serve` for you. This works great if you are developing on the front end as it watches for file changes and reloads your browser once it has compiled.
 

@@ -1,4 +1,4 @@
-import { browser, by, element } from 'protractor';
+import { browser, by, element, promise } from 'protractor';
 
 export class LoginPage {
   private static readonly baseUrl = 'https://beta.scriptureforge.local';
@@ -9,37 +9,40 @@ export class LoginPage {
   passwordInput = element(by.id('Password'));
   loginButton = element(by.id('login-button'));
 
-  static async get() {
-    await browser.get(this.baseUrl + '/account/login');
+  static get(): promise.Promise<any> {
+    return browser.get(this.baseUrl + '/account/login');
   }
 
-  static async logout() {
+  static async logout(): promise.Promise<void> {
     await browser.get(this.baseUrl + '/account/logout');
     await element(by.buttonText('Yes')).click();
   }
 
+  // return type (Promise<void>) intentionally left off to avoid run error
   async login(username: string, password: string) {
     browser.waitForAngularEnabled(false);
 
     // LoginPage.logout();
     await LoginPage.get();
-    this.usernameInput.sendKeys(username);
-    this.passwordInput.sendKeys(password);
+    await this.usernameInput.sendKeys(username);
+    await this.passwordInput.sendKeys(password);
     await this.loginButton.click();
 
+    // wait for redirect before enabling angular wait
+    await browser.sleep(300);
     browser.waitForAngularEnabled(true);
   }
 
-  async loginAsAdmin() {
-    await this.login(this.constants.adminUsername, this.constants.adminPassword);
+  loginAsAdmin(): promise.Promise<void> {
+    return this.login(this.constants.adminUsername, this.constants.adminPassword);
   }
 
-  async loginAsManager() {
-    await this.login(this.constants.managerUsername, this.constants.managerPassword);
+  loginAsManager(): promise.Promise<void> {
+    return this.login(this.constants.managerUsername, this.constants.managerPassword);
   }
 
-  async loginAsUser() {
-    await this.login(this.constants.memberUsername, this.constants.memberPassword);
+  loginAsUser(): promise.Promise<void> {
+    return this.login(this.constants.memberUsername, this.constants.memberPassword);
   }
 
 }
