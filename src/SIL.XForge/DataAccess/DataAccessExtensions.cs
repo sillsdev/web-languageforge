@@ -61,10 +61,5 @@ namespace SIL.XForge.DataAccess
         {
             return query.ToListAsync(e => Task.FromResult(selector(e)));
         }
-
-        public static DataAccessOptions GetDataAccessOptions(this IConfiguration configuration)
-        {
-            return configuration.GetSection("DataAccess").Get<DataAccessOptions>() ?? new DataAccessOptions();
-        }
     }
 }

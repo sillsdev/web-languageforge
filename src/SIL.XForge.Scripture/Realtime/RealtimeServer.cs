@@ -1,8 +1,7 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.NodeServices;
 using Microsoft.Extensions.Options;
 using SIL.ObjectModel;
-using SIL.XForge.DataAccess;
+using SIL.XForge.Configuration;
 
 namespace SIL.XForge.Scripture.Realtime
 {

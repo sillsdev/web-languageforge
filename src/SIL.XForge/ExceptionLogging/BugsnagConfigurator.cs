@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Bugsnag;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -15,7 +14,7 @@ using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace SIL.XForge.ExceptionLogging
 {
-    public class BugsnagConfigurator: IConfigureOptions<Configuration>
+    public class BugsnagConfigurator: IConfigureOptions<Bugsnag.Configuration>
     {
         private readonly IConfiguration _bugsnagConfig;
         private readonly IHostingEnvironment _environment;
@@ -27,7 +26,7 @@ namespace SIL.XForge.ExceptionLogging
             _environment = environment;
         }
 
-        public void Configure(Configuration configuration)
+        public void Configure(Bugsnag.Configuration configuration)
         {
             var topLevelDirectory = RunTerminalCommand("git", "rev-parse --show-toplevel");
             if (!topLevelDirectory.EndsWith(Path.DirectorySeparatorChar.ToString()))

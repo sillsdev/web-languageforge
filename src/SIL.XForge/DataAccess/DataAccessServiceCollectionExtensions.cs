@@ -11,6 +11,7 @@ using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Bson.Serialization.Options;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
+using SIL.XForge.Configuration;
 using SIL.XForge.Models;
 
 namespace SIL.XForge.DataAccess
@@ -20,8 +21,7 @@ namespace SIL.XForge.DataAccess
         public static IServiceCollection AddDataAccess(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<DataAccessOptions>(configuration.GetSection("DataAccess"));
-            DataAccessOptions options = configuration.GetDataAccessOptions();
+            var options = configuration.GetOptions<DataAccessOptions>();
             services.AddHangfire(x => x.UseMongoStorage(options.ConnectionString, options.JobDatabase,
                 new MongoStorageOptions
                 {

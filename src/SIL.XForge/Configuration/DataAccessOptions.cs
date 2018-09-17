@@ -1,4 +1,4 @@
-namespace SIL.XForge.DataAccess
+namespace SIL.XForge.Configuration
 {
     public class DataAccessOptions
     {

@@ -5,7 +5,7 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SIL.XForge.DataAccess;
+using SIL.XForge.Configuration;
 using SIL.XForge.Identity.Services;
 
 namespace SIL.XForge.Identity
@@ -27,7 +27,7 @@ namespace SIL.XForge.Identity
             }
         };
 
-        private static Client XFClient(string host)
+        private static Client XFClient(string domain)
         {
             return new Client
             {
@@ -39,12 +39,12 @@ namespace SIL.XForge.Identity
                 RequireConsent = false,
                 RedirectUris =
                 {
-                    $"https://{host}/home",
-                    $"https://{host}/silent-refresh.html"
+                    $"https://{domain}/home",
+                    $"https://{domain}/silent-refresh.html"
                 },
                 PostLogoutRedirectUris =
                 {
-                    $"https://{host}/"
+                    $"https://{domain}/"
                 },
                 AllowedScopes =
                 {
@@ -61,16 +61,14 @@ namespace SIL.XForge.Identity
         {
             services.ConfigureOptions<StaticFilesConfigureOptions>();
 
-            IConfigurationSection systemConfig = configuration.GetSection("System");
-            string host = systemConfig.GetValue<string>("Hostname");
-
-            DataAccessOptions dataAccessOptions = configuration.GetDataAccessOptions();
+            var siteOptions = configuration.GetOptions<SiteOptions>();
+            var dataAccessOptions = configuration.GetOptions<DataAccessOptions>();
 
             IIdentityServerBuilder builder = services.AddIdentityServer()
                 .AddValidationKeys()
                 .AddInMemoryIdentityResources(IdentityResources)
                 .AddInMemoryApiResources(ApiResources)
-                .AddInMemoryClients(new[] { XFClient(host) })
+                .AddInMemoryClients(new[] { XFClient(siteOptions.Domain) })
                 .AddProfileService<UserProfileService>()
                 .AddResourceOwnerValidator<UserResourceOwnerPasswordValidator>()
                 .AddOperationalStore(options =>

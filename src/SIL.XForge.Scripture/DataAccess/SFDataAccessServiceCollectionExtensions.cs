@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Scripture.Models;
 
@@ -12,7 +13,7 @@ namespace SIL.XForge.Scripture.DataAccess
         {
             services.AddDataAccess(configuration);
 
-            DataAccessOptions options = configuration.GetDataAccessOptions();
+            var options = configuration.GetOptions<DataAccessOptions>();
             services.AddMongoRepository<SFProjectEntity>(options.MongoDatabaseName, "sf_projects");
 
             return services;

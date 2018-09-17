@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using SIL.XForge.Configuration;
 using SIL.XForge.ExceptionLogging;
 using SIL.XForge.Identity;
 using SIL.XForge.Scripture.DataAccess;
@@ -35,10 +36,9 @@ namespace SIL.XForge.Scripture
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            IConfigurationSection systemConfig = Configuration.GetSection("System");
-            string host = systemConfig.GetValue<string>("Hostname");
-
             var containerBuilder = new ContainerBuilder();
+
+            services.AddConfiguration(Configuration);
 
             services.AddRealtimeServer(Environment.IsDevelopment());
 
@@ -46,6 +46,7 @@ namespace SIL.XForge.Scripture
 
             services.AddXFIdentityServer(Configuration);
 
+            var siteOptions = Configuration.GetOptions<SiteOptions>();
             services.AddAuthentication()
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                     {
@@ -57,7 +58,7 @@ namespace SIL.XForge.Scripture
                                     = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                             };
                         }
-                        options.Authority = $"https://{host}";
+                        options.Authority = $"https://{siteOptions.Domain}";
                         options.Audience = "api";
                     });
 

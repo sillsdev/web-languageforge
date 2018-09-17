@@ -22,9 +22,9 @@ namespace SIL.XForge.ExceptionLogging
             // We add bugsnag manually instead of using the official AddBugsnag() extension
             // method because we want a singleton instead of a scoped object.
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            return services.AddSingleton<IConfigureOptions<Configuration>, BugsnagConfigurator>()
+            return services.AddSingleton<IConfigureOptions<Bugsnag.Configuration>, BugsnagConfigurator>()
                 .AddSingleton<IStartupFilter, BugsnagStartupFilter>()
-                .AddSingleton<IClient, Client>(context => new Client(context.GetService<IOptions<Configuration>>().Value));
+                .AddSingleton<IClient, Client>(context => new Client(context.GetService<IOptions<Bugsnag.Configuration>>().Value));
         }
     }
 }
