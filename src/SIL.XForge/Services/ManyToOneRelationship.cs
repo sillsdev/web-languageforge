@@ -24,13 +24,12 @@ namespace SIL.XForge.Services
             _getFieldExpr = getFieldExpr;
         }
 
-        public async Task<object> GetResourcesAsync(IEnumerable<string> included,
+        public async Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
             Dictionary<string, Resource> resources, TThisEntity entity)
         {
             Func<TThisEntity, string> getField = _getFieldExpr.Compile();
             string id = getField(entity);
-            return (await _otherResources.QueryAsync(included, resources, q => q.Where(e => e.Id == id)))
-                .SingleOrDefault();
+            return await _otherResources.QueryAsync(included, resources, q => q.Where(e => e.Id == id));
         }
 
         public UpdateDefinition<TThisEntity> GetUpdateOperation(UpdateDefinitionBuilder<TThisEntity> update,

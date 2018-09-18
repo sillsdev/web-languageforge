@@ -8,12 +8,11 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public class ProjectResourceService<TResource, TEntity>
-        : ProjectDataResourceServiceBase<TResource, TEntity, TResource, TEntity>
+    public class ProjectService<TResource, TEntity> : ProjectDataServiceBase<TResource, TEntity, TResource, TEntity>
         where TResource : ProjectResource
         where TEntity : ProjectEntity
     {
-        public ProjectResourceService(IJsonApiContext jsonApiContext, IRepository<TEntity> entities,
+        public ProjectService(IJsonApiContext jsonApiContext, IRepository<TEntity> entities,
             IMapper mapper, IHttpContextAccessor httpContextAccessor)
             : base(jsonApiContext, entities, entities, mapper, httpContextAccessor)
         {

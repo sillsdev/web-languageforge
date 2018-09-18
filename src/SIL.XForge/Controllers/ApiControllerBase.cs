@@ -1,8 +1,13 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using JsonApiDotNetCore.Controllers;
+using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Models;
 using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace SIL.XForge.Controllers
@@ -13,6 +18,32 @@ namespace SIL.XForge.Controllers
         public ApiControllerBase(IJsonApiContext jsonApiContext, IResourceService<T, string> resourceService,
             ILoggerFactory loggerFactory) : base(jsonApiContext, resourceService, loggerFactory)
         {
+        }
+
+        public override Task<IActionResult> PatchRelationshipsAsync(string id, string relationshipName,
+            [FromBody] List<DocumentData> relationships)
+        {
+            try
+            {
+                return base.PatchRelationshipsAsync(id, relationshipName, relationships);
+            }
+            catch (JsonApiException jae)
+            {
+                if (jae.GetStatusCode() == StatusCodes.Status400BadRequest)
+                {
+                    throw UnsupportedRequestMethodException();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        protected JsonApiException UnsupportedRequestMethodException()
+        {
+            return new JsonApiException(StatusCodes.Status405MethodNotAllowed, "Request method is not supported.",
+                "https://json-api-dotnet.github.io/#/errors/UnSupportedRequestMethod");
         }
     }
 }

@@ -84,7 +84,9 @@ namespace SIL.XForge.Services
         public async Task<object> GetRelationshipAsync(string id, string relationshipName)
         {
             TEntity entity = await GetEntityAsync(id);
-            return GetRelationshipResourcesAsync(entity, relationshipName);
+            (_, object value) = await GetRelationshipResourcesAsync(relationshipName, Enumerable.Empty<string>(),
+                new Dictionary<string, Resource>(), entity);
+            return value;
         }
 
         public Task<object> GetRelationshipsAsync(string id, string relationshipName)
@@ -122,13 +124,6 @@ namespace SIL.XForge.Services
             query = await ApplyRightFilterAsync(query);
             query = querySelector(query);
             return await query.ToListAsync(e => MapWithRelationshipsAsync(included, resources, e));
-        }
-
-        protected Task<object> GetRelationshipResourcesAsync(TEntity entity, string relationshipName)
-        {
-            IRelationship<TEntity> relationship = GetRelationship(relationshipName);
-            return relationship.GetResourcesAsync(Enumerable.Empty<string>(), new Dictionary<string, Resource>(),
-                entity);
         }
 
         protected virtual async Task<TEntity> InsertEntityAsync(TEntity entity)
@@ -403,14 +398,26 @@ namespace SIL.XForge.Services
                 {
                     string[] relParts = fullName.Split('.');
                     string relationshipName = relParts[0];
-                    IRelationship<TEntity> relationship = GetRelationship(relationshipName);
-                    string propertyName = _jsonApiContext.ContextGraph.GetRelationshipName<TResource>(relationshipName);
-                    PropertyInfo propertyInfo = resource.GetType().GetProperty(propertyName);
-                    object value = await relationship.GetResourcesAsync(relParts.Skip(1), resources, entity);
+                    (string propertyName, object value) = await GetRelationshipResourcesAsync(relationshipName,
+                        relParts.Skip(1), resources, entity);
+                    PropertyInfo propertyInfo = typeof(TResource).GetProperty(propertyName);
                     propertyInfo.SetValue(resource, value);
                 }
             }
             return resource;
+        }
+
+        private async Task<(string, object)> GetRelationshipResourcesAsync(string relationshipName,
+            IEnumerable<string> included, Dictionary<string, Resource> resources, TEntity entity)
+        {
+            IRelationship<TEntity> relationship = GetRelationship(relationshipName);
+            IEnumerable<Resource> relResources = await relationship.GetResourcesAsync(included, resources, entity);
+            ContextEntity resourceType = _jsonApiContext.ContextGraph.GetContextEntity(typeof(TResource));
+            RelationshipAttribute relAttr = resourceType.Relationships
+                .Single(r => r.PublicRelationshipName == relationshipName);
+            if (relAttr.IsHasMany)
+                return (relAttr.InternalRelationshipName, relResources.ToArray());
+            return (relAttr.InternalRelationshipName, relResources.SingleOrDefault());
         }
     }
 }

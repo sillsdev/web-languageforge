@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Hangfire;
 using JsonApiDotNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +16,7 @@ using Newtonsoft.Json;
 using SIL.XForge.Configuration;
 using SIL.XForge.ExceptionLogging;
 using SIL.XForge.Identity;
+using SIL.XForge.Scripture.Configuration;
 using SIL.XForge.Scripture.DataAccess;
 using SIL.XForge.Scripture.Realtime;
 using SIL.XForge.Scripture.Services;
@@ -38,7 +40,7 @@ namespace SIL.XForge.Scripture
         {
             var containerBuilder = new ContainerBuilder();
 
-            services.AddConfiguration(Configuration);
+            services.AddSFConfiguration(Configuration);
 
             services.AddRealtimeServer(Environment.IsDevelopment());
 
@@ -117,7 +119,7 @@ namespace SIL.XForge.Scripture
 
                 if (env.IsDevelopment())
                 {
-                    if (Configuration.GetValue<bool>("start-ng-serve", true))
+                    if (Configuration.GetValue("start-ng-serve", true))
                         spa.UseAngularCliServer(npmScript: "start");
                     else
                         spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
@@ -129,6 +131,8 @@ namespace SIL.XForge.Scripture
             });
 
             app.UseRealtimeServer();
+
+            app.UseHangfireServer();
 
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }

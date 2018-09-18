@@ -27,7 +27,7 @@ namespace SIL.XForge.Services
             _getFieldExpr = getFieldExpr;
         }
 
-        public async Task<object> GetResourcesAsync(IEnumerable<string> included,
+        public async Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
             Dictionary<string, Resource> resources, TThisEntity entity)
         {
             return await _otherResources.QueryAsync(included, resources,

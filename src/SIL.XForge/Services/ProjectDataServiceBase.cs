@@ -14,7 +14,7 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public abstract class ProjectDataResourceServiceBase<TResource, TEntity, TProjectResource, TProjectEntity>
+    public abstract class ProjectDataServiceBase<TResource, TEntity, TProjectResource, TProjectEntity>
         : ResourceServiceBase<TResource, TEntity>
         where TResource : ProjectDataResource
         where TEntity : ProjectDataEntity
@@ -23,7 +23,7 @@ namespace SIL.XForge.Services
     {
         private readonly IRepository<TProjectEntity> _projects;
 
-        public ProjectDataResourceServiceBase(IJsonApiContext jsonApiContext, IRepository<TProjectEntity> projects,
+        public ProjectDataServiceBase(IJsonApiContext jsonApiContext, IRepository<TProjectEntity> projects,
             IRepository<TEntity> entities, IMapper mapper, IHttpContextAccessor httpContextAccessor)
             : base(jsonApiContext, entities, mapper, httpContextAccessor)
         {

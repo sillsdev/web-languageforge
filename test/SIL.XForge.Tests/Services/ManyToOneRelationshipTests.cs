@@ -30,9 +30,9 @@ namespace SIL.XForge.Services
                 ProjectRef = "project1"
 
             };
-            object result = await rel.GetResourcesAsync(Enumerable.Empty<string>(), new Dictionary<string, Resource>(),
-               entity);
-            Assert.That(result, Is.EqualTo(projectResource));
+            IEnumerable<Resource> result = await rel.GetResourcesAsync(Enumerable.Empty<string>(),
+                new Dictionary<string, Resource>(), entity);
+            Assert.That(result, Is.EqualTo(new[] { projectResource }));
         }
     }
 }

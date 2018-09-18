@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using SIL.XForge.Models;
@@ -20,6 +19,11 @@ namespace SIL.XForge.DataAccess
         public static async Task<T> DeleteAsync<T>(this IRepository<T> repo, string id) where T : Entity
         {
             return await repo.DeleteAsync(e => e.Id == id);
+        }
+
+        public static async Task<bool> DeleteAsync<T>(this IRepository<T> repo, T entity) where T : Entity
+        {
+            return (await repo.DeleteAsync(e => e.Id == entity.Id)) != null;
         }
 
         public static async Task<T> GetAsync<T>(this IRepository<T> repo, string id) where T : Entity

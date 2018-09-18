@@ -8,9 +8,9 @@ using SIL.XForge.Services;
 
 namespace SIL.XForge.Scripture.Services
 {
-    public class SFUserResourceService : UserResourceService<SFProjectResource, SFProjectEntity>
+    public class SFUserService : UserService<SFProjectResource, SFProjectEntity>
     {
-        public SFUserResourceService(IJsonApiContext jsonApiContext, IRepository<UserEntity> entities,
+        public SFUserService(IJsonApiContext jsonApiContext, IRepository<UserEntity> entities,
             IMapper mapper, IHttpContextAccessor httpContextAccessor)
             : base(jsonApiContext, entities, mapper, httpContextAccessor)
         {

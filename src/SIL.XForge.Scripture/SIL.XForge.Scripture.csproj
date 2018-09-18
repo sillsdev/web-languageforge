@@ -11,6 +11,7 @@
 
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
+    <UserSecretsId>4d0606c3-0fc7-4d76-b43b-236485004e81</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ShareDB\ShareDB.csproj" />
     <ProjectReference Include="..\SIL.XForge.Identity\SIL.XForge.Identity.csproj" />
     <ProjectReference Include="..\SIL.XForge\SIL.XForge.csproj" />
   </ItemGroup>

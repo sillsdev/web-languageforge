@@ -25,11 +25,10 @@ namespace SIL.XForge.Services
             _getFieldExpr = getFieldExpr;
         }
 
-        public async Task<object> GetResourcesAsync(IEnumerable<string> included,
+        public async Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
             Dictionary<string, Resource> resources, TThisEntity entity)
         {
-            return await _otherResources.QueryAsync(included, resources,
-                q => q.Where(CreateEqualPredicate(entity.Id)));
+            return await _otherResources.QueryAsync(included, resources, q => q.Where(CreateEqualPredicate(entity.Id)));
         }
 
         private Expression<Func<TOtherEntity, bool>> CreateEqualPredicate(string id)

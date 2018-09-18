@@ -13,7 +13,7 @@ namespace SIL.XForge.Configuration
             return services;
         }
 
-        private static IServiceCollection AddOptions<T>(this IServiceCollection services,
+        public static IServiceCollection AddOptions<T>(this IServiceCollection services,
             IConfiguration configuration) where T : class
         {
             string sectionName = Options.GetSectionName<T>();

@@ -7,7 +7,7 @@ namespace SIL.XForge.Services
 {
     public interface IRelationship<T> where T : Entity
     {
-        Task<object> GetResourcesAsync(IEnumerable<string> included,
+        Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
             Dictionary<string, Resource> resources, T entity);
 
         UpdateDefinition<T> GetUpdateOperation(UpdateDefinitionBuilder<T> update,

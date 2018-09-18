@@ -28,7 +28,7 @@ namespace SIL.XForge.Services
             _createOperation = createOperation;
         }
 
-        public async Task<object> GetResourcesAsync(IEnumerable<string> included,
+        public async Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
             Dictionary<string, Resource> resources, TThisEntity entity)
         {
             return await _otherResources.QueryAsync(included, resources, q => q.Where(_createPredicate(entity)));

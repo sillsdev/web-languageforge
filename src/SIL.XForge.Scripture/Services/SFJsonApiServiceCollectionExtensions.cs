@@ -15,7 +15,7 @@ namespace SIL.XForge.Scripture.Services
                 {
                     // users
                     schemaBuilder.AddResourceType<UserResource>("users");
-                    containerBuilder.RegisterResourceService<SFUserResourceService>();
+                    containerBuilder.RegisterResourceService<SFUserService>();
                     mapConfig.CreateMap<UserEntity, UserResource>()
                         .ForMember(u => u.Projects, o => o.Ignore())
                         .ForMember(u => u.Password, o => o.Ignore())
@@ -23,10 +23,19 @@ namespace SIL.XForge.Scripture.Services
 
                     // projects
                     schemaBuilder.AddResourceType<SFProjectResource>("projects");
-                    containerBuilder.RegisterResourceService<SFProjectResourceService>();
+                    containerBuilder.RegisterResourceService<SFProjectService>();
                     mapConfig.CreateMap<SFProjectEntity, SFProjectResource>()
                         .ReverseMap();
+
+                    // send/receive jobs
+                    schemaBuilder.AddResourceType<SendReceiveJobResource>("sr-jobs");
+                    containerBuilder.RegisterResourceService<SendReceiveJobService>();
+                    mapConfig.CreateMap<SendReceiveJobEntity, SendReceiveJobResource>()
+                        .ReverseMap();
                 });
+
+            services.AddSingleton<ParatextService>();
+            services.AddSingleton<DeltaUsxMapper>();
             return services;
         }
     }

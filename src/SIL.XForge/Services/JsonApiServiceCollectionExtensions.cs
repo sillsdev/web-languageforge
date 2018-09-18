@@ -28,7 +28,8 @@ namespace SIL.XForge.Services
             var jsonApiOptions = new JsonApiOptions
             {
                 Namespace = "api",
-                ContextGraph = contextGraph
+                ContextGraph = contextGraph,
+                AllowClientGeneratedIds = true
             };
             jsonApiOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
