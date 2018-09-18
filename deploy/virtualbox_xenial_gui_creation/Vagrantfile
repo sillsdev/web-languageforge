@@ -1,67 +1,205 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# This Vagrantfile is for the creation of a VirtualBox image where xForge is installed
+# This Vagrantfile is for the creation of a VirtualBox image where xForge is
+# installed, for development of xForge.
 # Currently the result is hosted as NathanielPaulus/xenial64-xforge
 
 Vagrant.configure("2") do |config|
   config.vm.box = "chrisvire/xenial64"
   config.ssh.insert_key = false
+  config.vm.hostname = "vag-u1604-xf-creation"
 
-  config.vm.provider "virtualbox" do |vb|
-    vb.gui = true
-    vb.memory = "2048"
+  config.vm.provider "virtualbox" do |v|
+    v.name="vag-u1604-xf-creation"
+    v.memory = 4096
+    v.cpus = 4
+    v.gui = true
   end
 
   config.vm.provision "ubuntu-setup", type: "shell", privileged: false, inline: <<~SHELL
-    set -eux
+    set -eux -o pipefail
+
+    function tryharderto() { i=0; until "$@"; do ((++i > 3)) && false; echo >&2 Retrying $i; sleep 2m; done }
 
     # Disable automatic updates
     sudo sed -i 's/APT::Periodic::Update-Package-Lists "1";/APT::Periodic::Update-Package-Lists "0";/g' /etc/apt/apt.conf.d/10periodic
     sudo apt-get purge -y unattended-upgrades
 
-    CODENAME="$(lsb_release -cs)"
-    MIRRORS="deb mirror://mirrors.ubuntu.com/mirrors.txt $CODENAME main restricted universe multiverse
-    deb mirror://mirrors.ubuntu.com/mirrors.txt $CODENAME-updates main restricted universe multiverse
-    deb mirror://mirrors.ubuntu.com/mirrors.txt $CODENAME-backports main restricted universe multiverse
-    deb mirror://mirrors.ubuntu.com/mirrors.txt $CODENAME-security main restricted universe multiverse
-    "
+    # Pre-answer grub-pc dpkg dialog
+    echo grub-pc grub-pc/install_devices multiselect $(ls /dev/disk/by-id/ata-VBOX_HARDDISK_VB*|grep -v part) | sudo debconf-set-selections
+    echo grub-pc grub-pc/install_devices_disks_changed multiselect $(ls /dev/disk/by-id/ata-VBOX_HARDDISK_VB*|grep -v part) | sudo debconf-set-selections
 
-    # Add sources to the top of sources.list if they're not already there
-    grep --fixed-strings --silent 'deb mirror://mirrors.ubuntu.com/mirrors.txt' /etc/apt/sources.list || { { echo "$MIRRORS" && cat /etc/apt/sources.list; } > sources.list.tmp && sudo mv sources.list.tmp /etc/apt/sources.list; }
-
-    sudo apt-get update
-    sudo apt-get -y upgrade
+    tryharderto sudo apt-get update
+    tryharderto sudo apt-get -y upgrade
 
     # In order to run gsettings over SSH we have to set DBUS_SESSION_BUS_ADDRESS. See https://askubuntu.com/a/457023
     export DBUS_SESSION_BUS_ADDRESS="$(sudo cat /proc/$(pidof -s pulseaudio)/environ | tr '\\0' '\\n' | grep --text DBUS_SESSION_BUS_ADDRESS | cut -d '=' -f 2-)"
-    if [ "$DBUS_SESSION_BUS_ADDRESS" != "" ]; then
-      gsettings set org.gnome.desktop.screensaver lock-enabled false
-      gsettings set org.gnome.desktop.session idle-delay 0
-      gsettings set com.canonical.Unity.Lenses remote-content-search none
-      gsettings set com.canonical.Unity.Launcher favorites "['application://org.gnome.Nautilus.desktop', 'application://firefox.desktop', 'application://unity-control-center.desktop', 'unity://running-apps', 'application://gnome-terminal.desktop', 'unity://expo-icon', 'unity://devices']"
-    else
-      echo ***COULD NOT MODIFY GSETTINGS***
-    fi
+    [[ -n "$DBUS_SESSION_BUS_ADDRESS" ]] || exit 1
+    # Somehow dconf was owned by root.
+    sudo chown -R vagrant:vagrant /run/user/1000/dconf
+    gsettings set org.gnome.desktop.screensaver lock-enabled false
+    gsettings set org.gnome.desktop.session idle-delay 0
+    gsettings set com.canonical.Unity.Lenses remote-content-search none
+    gsettings set com.canonical.Unity.Launcher favorites "['application://org.gnome.Nautilus.desktop', 'application://firefox.desktop', 'application://unity-control-center.desktop', 'unity://running-apps', 'application://gnome-terminal.desktop', 'unity://expo-icon', 'unity://devices']"
+
+    # Make desktop a bit friendlier
+    gsettings set com.canonical.desktop.interface scrollbar-mode normal
+    dconf write /com/canonical/unity/integrated-menus false
+    gsettings set com.canonical.Unity always-show-menus true
+    # Make HUD less easy to accidentally open.
+    gsettings set org.compiz.integrated show-hud "['<Alt><Super>']"
+
+    # Choose a background to make the machine recognizable.
+    gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/TCP118v1_by_Tiziano_Consonni.jpg
 
     # Enable automatic login
     echo $'[SeatDefaults]\nautologin-user=vagrant' | sudo tee /etc/lightdm/lightdm.conf.d/12-autologin.conf > /dev/null
 
-    # remove some of the packages suggested by ubuntu-desktop
-    sudo apt-get -y purge update-manager update-notifier aisleriot cheese deja-dup example-content fwupd fwupdate fwupdate-signed gnome-accessibility-themes gnome-calendar gnome-font-viewer gnome-mahjongg gnome-mines gnome-orca gnome-screensaver gnome-sudoku libreoffice* remmina rhythmbox shotwell simple-scan thunderbird* totem transmission-gtk usb-creator-gtk
-    [ -f ~/examples.desktop ] && rm ~/examples.desktop
+    # Remove some of the packages suggested by ubuntu-desktop
+    tryharderto sudo apt-get -y purge update-manager update-notifier aisleriot cheese deja-dup example-content fwupd fwupdate fwupdate-signed gnome-accessibility-themes gnome-calendar gnome-font-viewer gnome-mahjongg gnome-mines gnome-orca gnome-screensaver gnome-sudoku libreoffice* remmina rhythmbox shotwell simple-scan thunderbird* totem transmission-gtk usb-creator-gtk
+    [ ! -f ~/examples.desktop ] || rm ~/examples.desktop
 
-    sudo apt-get -y autoremove
-    sudo apt-get clean
+    # Remove mistake in ssh_config in base image, if present.
+    sudo perl -ni -e 'print unless /UseDNS/' /etc/ssh/ssh_config
+
+    echo "Section ended successfully."
+  SHELL
+
+  config.vm.provision "xforge-desktop-setup", type: "shell", privileged: false, inline: <<~SHELL
+    set -e -o pipefail
+
+    function tryharderto() { i=0; until "$@"; do ((++i > 3)) && false; echo >&2 Retrying $i; sleep 2m; done }
+
+    # Configure desktop for XF development
+
+    # Tools
+
+    tryharderto sudo apt-get install -y \
+      git-gui \
+      vim \
+      wget \
+      terminator \
+      byobu \
+      meld \
+      kdiff3-qt \
+      synaptic \
+      chromium-browser \
+      dconf-tools \
+      git-cola \
+      python-pyinotify
+
+    # Install ack if available, and however the package is named
+    sleep 10s
+    sudo apt-get install -y ack || sudo apt-get install -y ack-grep || true
+
+    wget https://release.gitkraken.com/linux/gitkraken-amd64.deb -O gitkraken-amd64.deb
+    tryharderto sudo dpkg -i gitkraken-amd64.deb
+    rm gitkraken-amd64.deb
+
+    # Visual Studio Code https://code.visualstudio.com/docs/setup/linux
+    tryharderto sudo apt-get install -y curl
+    cd
+    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+    sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+    sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+    tryharderto sudo apt-get update
+    tryharderto sudo apt-get install code
+
+    # Settings
+
+    git config --global diff.tool meld
+    git config --global merge.conflictstyle diff3
+    git config --global merge.tool kdiff3
+    git config --global color.ui true
+    git config --global rerere.enabled true
+    git config --global gui.editor gedit
+    git config --global rebase.autosquash true
+    # Set the textwidth on the commit tool to help auto wrap commit messages
+    git config --global cola.textwidth 70
+
+    # Don't report developer or tester usage to analytics.
+    echo export FEEDBACK=false | tee -a ~/.bashrc
+    echo export WESAY_TRACK_AS_DEVELOPER=1 | tee -a ~/.bashrc
+
+    # Launchers
+
+    TOOLSDIR=$HOME/Desktop/development-tools
+    mkdir -p "\$TOOLSDIR"
+    cp -aL /usr/share/applications/{terminator,code,gitkraken,byobu}.desktop "\$TOOLSDIR"
+    chmod +x "\$TOOLSDIR"/*.desktop
+
+    OUTPUTFILE="$TOOLSDIR/xf-git-cola.desktop"
+    tee "$OUTPUTFILE" >/dev/null << ENDOFOUTPUTFILE
+    #!/usr/bin/env xdg-open
+
+    [Desktop Entry]
+    Version=1.0
+    Type=Application
+    Terminal=false
+    Exec=bash -c 'cd \$HOME/src/web-languageforge && git cola'
+    Name=XF Git Cola Commit Tool
+    Icon=/usr/share/git-cola/icons/git-cola.svg
+    ENDOFOUTPUTFILE
+    chmod +x "$OUTPUTFILE"
+
+    OUTPUTFILE="$TOOLSDIR/xf-gitk.desktop"
+    tee "$OUTPUTFILE" >/dev/null << ENDOFOUTPUTFILE
+    #!/usr/bin/env xdg-open
+
+    [Desktop Entry]
+    Version=1.0
+    Type=Application
+    Terminal=false
+    Exec=bash -c 'cd \$HOME/src/web-languageforge && gitk --branches --remotes --tags'
+    Name=XF Git History Viewer
+    Icon=/usr/share/git-gui/lib/git-gui.ico
+    ENDOFOUTPUTFILE
+    chmod +x "$OUTPUTFILE"
+
+    # On Ubuntu 18.04, trust the launchers. (Will be useful in a future version of the vagrant box)
+    if [[ $(lsb_release -sc) == "bionic" ]]; then
+      cd $HOME/Desktop/development-tools
+      for launcher in *desktop; do
+        gio set "$launcher" metadata::trusted yes
+      done
+    fi
+
+    echo "Section ended successfully."
   SHELL
 
   config.vm.provision "xforge-setup", type: "shell", privileged: false, inline: <<~SHELL
-    set -eux
+    set -eux -o pipefail
+
+    function tryharderto() { i=0; until "$@"; do ((++i > 3)) && false; echo >&2 Retrying $i; sleep 2m; done }
+
+    # Set some permissions at boot
+    sudo tee /root/xf-permissions >/dev/null << END
+    #!/bin/bash
+    mkdir -p /tmp/jsonSessionData
+    chown vagrant:www-data -R /tmp/jsonSessionData
+    chmod 775 -R /tmp/jsonSessionData
+    END
+    sudo chmod +x /root/xf-permissions
+
+    sudo tee /etc/systemd/system/xf-permissions.service >/dev/null << END
+    [Unit]
+    Description=xf-permissions
+
+    [Service]
+    ExecStart=/root/xf-permissions
+
+    [Install]
+    WantedBy=multi-user.target
+    END
+    sudo systemctl enable xf-permissions
+
+    echo >> ~/.pam_environment CHROME_BIN=chromium-browser
 
     sudo add-apt-repository ppa:ansible/ansible
     # Add mongo public key
-    sudo apt-get update
-    sudo apt-get -y install ansible git
+    tryharderto sudo apt-get update
+    tryharderto sudo apt-get -y install ansible git
     mkdir -p ~/src
     cd ~/src
 
@@ -72,32 +210,93 @@ Vagrant.configure("2") do |config|
       git pull --ff-only --recurse-submodules
     fi
 
-    cd ~/src
-    [ -d web-scriptureforge ] || ln -s web-languageforge web-scriptureforge
-
-    cd ~/src/web-languageforge/deploy/
-    ansible-playbook -i hosts playbook_create_config.yml --limit localhost
-    ansible-playbook -i hosts playbook_xenial_server_vagrant.yml --limit localhost
-
-    cd ~/src/web-languageforge
-    ./refreshDeps.sh
-
-    cd
-    if ! command -v code >> /dev/null ; then
-      wget -O vscode.deb https://az764295.vo.msecnd.net/stable/24f62626b222e9a8313213fb64b10d741a326288/code_1.24.1-1528912196_amd64.deb
-      sudo apt-get install ./vscode.deb
-      rm vscode.deb
-    fi
-
-    sudo apt-get -y autoremove
-    sudo apt-get clean
-
     cd ~/src/web-languageforge
     # Fix fetch issues caused by cloning with --depth
     git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     # if it's still a shallow repo
-    [ -f .git/shallow ] && git fetch --unshallow
+    [ ! -f .git/shallow ] || git fetch --unshallow
 
-    echo Install complete
+    cd ~/src
+    [ -d web-scriptureforge ] || ln -s web-languageforge web-scriptureforge
+
+    cd ~/src/web-languageforge/deploy/
+    # REVIEW Should these be from master or sf-develop branch?
+    ansible-playbook -i hosts playbook_create_config.yml --limit localhost
+    ansible-playbook -i hosts playbook_xenial_server_vagrant.yml --limit localhost
+
+    sudo adduser vagrant www-data
+    sudo chown vagrant:www-data -R /var/lib/languageforge
+    chmod u=rwX,g=rwX,o=rX -R /var/lib/languageforge
+
+    npm config set prefix /usr/local
+
+    cd ~/src/web-languageforge
+    ./refreshDeps.sh
+
+    cd ~/src/web-languageforge
+    git checkout -- package-lock.json
+    git checkout sf-develop
+    git submodule update --init --recursive
+    cd deploy
+    ansible-playbook playbook_xenial_beta.yml --limit localhost -K
+
+    # Set assets directory to be usable both by vagrant and www-data users.
+    setfacl -d -m u::rwX,g::rwX ~/src/web-languageforge/src/assets
+    sudo chown -R vagrant:www-data ~/src/web-languageforge/src/assets
+    chmod g+w ~/src/web-languageforge/src/assets
+    # This chmod needs to be sudo since vagrant isn't effectively in www-data group yet.
+    sudo chmod g+s ~/src/web-languageforge/src/assets
+
+    sudo npm i -g npm
+
+    cd ~/src/web-languageforge
+    ./refreshDeps.sh
+
+    echo "Section ended successfully."
   SHELL
+
+  config.vm.provision "cleanup", type: "shell", privileged: false, inline: <<~SHELL
+    set -e -o pipefail
+    # Clean up
+
+    # Free up disk space
+
+    sudo apt-get update && sudo apt-get autoremove && sudo apt-get clean
+
+    # Delete the guest's host keys and have them re-generated uniquely by users.
+
+    sudo tee /root/regenerate-ssh-host-keys >/dev/null << END
+    #!/bin/bash
+    # Regenerate ssh host keys if not present
+    test -f /etc/ssh/ssh_host_rsa_key || dpkg-reconfigure openssh-server
+    END
+    sudo chmod +x /root/regenerate-ssh-host-keys
+
+    sudo tee /etc/systemd/system/regenerate-ssh-host-keys.service >/dev/null << END
+    [Unit]
+    Description=regenerate-ssh-host-keys
+
+    [Service]
+    ExecStart=/root/regenerate-ssh-host-keys
+
+    [Install]
+    WantedBy=multi-user.target
+    END
+    sudo systemctl enable regenerate-ssh-host-keys
+
+    echo Removing SSH keys will prevent ssh commands until they are re-generated
+    sudo rm -v /etc/ssh/ssh_host_*
+
+    # Zero-out deleted files so they don't take up space shipping with the product.
+    # Note: This does not make the .vdi file on the host grow in size, so it should
+    # be safe to do for guests that need more space than the host has available.
+    # A `cat: write error: No space left on device` is expected and not a problem.
+    cat /dev/zero > ~/zeros 2>/dev/null || true
+    sync
+    rm -v ~/zeros
+    sleep 10s
+
+    echo "Section ended successfully."
+  SHELL
+
 end
