@@ -44,6 +44,8 @@ namespace SIL.XForge.Services
             services.AddScoped<IQueryParser, XForgeQueryParser>();
             services.AddScoped<IDocumentBuilder, XForgeDocumentBuilder>();
 
+            services.AddScoped<IUserAccessor, UserAccessor>();
+
             return services;
         }
 

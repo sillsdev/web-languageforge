@@ -1,6 +1,5 @@
 using AutoMapper;
 using JsonApiDotNetCore.Services;
-using Microsoft.AspNetCore.Http;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 using SIL.XForge.Scripture.Models;
@@ -14,8 +13,8 @@ namespace SIL.XForge.Scripture.Services
         where TEntity : ProjectDataEntity
     {
         public SFProjectDataServiceBase(IJsonApiContext jsonApiContext, IRepository<SFProjectEntity> projects,
-            IRepository<TEntity> entities, IMapper mapper, IHttpContextAccessor httpContextAccessor)
-            : base(jsonApiContext, projects, entities, mapper, httpContextAccessor)
+            IRepository<TEntity> entities, IMapper mapper, IUserAccessor userAccessor)
+            : base(jsonApiContext, projects, entities, mapper, userAccessor)
         {
         }
     }

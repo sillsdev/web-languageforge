@@ -3,9 +3,6 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Services;
-using Microsoft.AspNetCore.Http;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 using SIL.XForge.Utils;
@@ -17,7 +14,7 @@ namespace SIL.XForge.Services
         where TEntity : ProjectEntity
     {
         public ProjectService(IJsonApiContext jsonApiContext, IRepository<TEntity> entities, IMapper mapper,
-            IHttpContextAccessor httpContextAccessor) : base(jsonApiContext, entities, mapper, httpContextAccessor)
+            IUserAccessor userAccessor) : base(jsonApiContext, entities, mapper, userAccessor)
         {
         }
 

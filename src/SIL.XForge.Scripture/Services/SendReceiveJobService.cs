@@ -9,14 +9,15 @@ using MongoDB.Driver;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 using SIL.XForge.Scripture.Models;
+using SIL.XForge.Services;
 
 namespace SIL.XForge.Scripture.Services
 {
     public class SendReceiveJobService : SFProjectDataServiceBase<SendReceiveJobResource, SendReceiveJobEntity>
     {
         public SendReceiveJobService(IJsonApiContext jsonApiContext, IRepository<SFProjectEntity> projects,
-            IRepository<SendReceiveJobEntity> entities, IMapper mapper, IHttpContextAccessor httpContextAccessor)
-            : base(jsonApiContext, projects, entities, mapper, httpContextAccessor)
+            IRepository<SendReceiveJobEntity> entities, IMapper mapper, IUserAccessor userAccessor)
+            : base(jsonApiContext, projects, entities, mapper, userAccessor)
         {
         }
 

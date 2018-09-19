@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Extensions;
@@ -26,23 +25,20 @@ namespace SIL.XForge.Services
     {
         private readonly IJsonApiContext _jsonApiContext;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserAccessor _userAccessor;
 
         public ResourceServiceBase(IJsonApiContext jsonApiContext, IRepository<TEntity> entities, IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IUserAccessor userAccessor)
         {
             _jsonApiContext = jsonApiContext;
             Entities = entities;
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
+            _userAccessor = userAccessor;
         }
 
-        public IResourceQueryable<UserResource, UserEntity> UserResources { get; set; }
-
         protected IRepository<TEntity> Entities { get; }
-        private ClaimsPrincipal User => _httpContextAccessor.HttpContext.User;
-        protected string UserId => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        protected string SystemRole => User.FindFirst(ClaimTypes.Role)?.Value;
+        protected string UserId => _userAccessor.UserId;
+        protected string SystemRole => _userAccessor.SystemRole;
 
         public async Task<TResource> CreateAsync(TResource resource)
         {
@@ -95,12 +91,16 @@ namespace SIL.XForge.Services
         public async Task<TResource> GetAsync(string id)
         {
             TEntity entity = await GetEntityAsync(id);
+            if (entity == null)
+                return null;
             return await MapWithRelationshipsAsync(entity);
         }
 
         public async Task<object> GetRelationshipAsync(string id, string relationshipName)
         {
             TEntity entity = await GetEntityAsync(id);
+            if (entity == null)
+                return null;
             (_, object value) = await GetRelationshipResourcesAsync(relationshipName, Enumerable.Empty<string>(),
                 new Dictionary<string, Resource>(), entity);
             return value;
@@ -294,10 +294,7 @@ namespace SIL.XForge.Services
         {
             IMongoQueryable<TEntity> query = Entities.Query().Where(e => e.Id == id);
             query = await ApplyRightFilterAsync(query);
-            TEntity entity = await query.SingleOrDefaultAsync();
-            if (entity == null)
-                throw new JsonApiException(StatusCodes.Status404NotFound, "The specified resource does not exist.");
-            return entity;
+            return await query.SingleOrDefaultAsync();
         }
 
         private Task<TResource> MapWithRelationshipsAsync(TEntity entity)

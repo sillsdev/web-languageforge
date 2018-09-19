@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -26,13 +25,14 @@ namespace SIL.XForge.Services
         private readonly IRepository<TProjectEntity> _projects;
 
         public ProjectDataServiceBase(IJsonApiContext jsonApiContext, IRepository<TProjectEntity> projects,
-            IRepository<TEntity> entities, IMapper mapper, IHttpContextAccessor httpContextAccessor)
-            : base(jsonApiContext, entities, mapper, httpContextAccessor)
+            IRepository<TEntity> entities, IMapper mapper, IUserAccessor userAccessor)
+            : base(jsonApiContext, entities, mapper, userAccessor)
         {
             _projects = projects;
         }
 
         public IResourceQueryable<TProjectResource, TProjectEntity> ProjectResources { get; set; }
+        public IResourceQueryable<UserResource, UserEntity> UserResources { get; set; }
 
         protected abstract Domain Domain { get; }
 

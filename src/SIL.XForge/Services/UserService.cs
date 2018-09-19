@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Services;
-using Microsoft.AspNetCore.Http;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
@@ -15,8 +14,8 @@ namespace SIL.XForge.Services
         where TProjectEntity : ProjectEntity
     {
         public UserService(IJsonApiContext jsonApiContext, IRepository<UserEntity> entities, IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
-            : base(jsonApiContext, entities, mapper, httpContextAccessor)
+            IUserAccessor userAccessor)
+            : base(jsonApiContext, entities, mapper, userAccessor)
         {
         }
 

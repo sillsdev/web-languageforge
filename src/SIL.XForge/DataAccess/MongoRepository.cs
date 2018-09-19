@@ -44,7 +44,7 @@ namespace SIL.XForge.DataAccess
             }
         }
 
-        public async Task<bool> UpdateAsync(T entity, bool upsert = false)
+        public async Task<bool> ReplaceAsync(T entity, bool upsert = false)
         {
             var now = DateTime.UtcNow;
             entity.DateModified = now;

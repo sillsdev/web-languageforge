@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace SIL.XForge.Models
 {
     public static class SystemRoles
