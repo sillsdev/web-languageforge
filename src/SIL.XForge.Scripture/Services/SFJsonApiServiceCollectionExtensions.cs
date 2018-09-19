@@ -28,7 +28,7 @@ namespace SIL.XForge.Scripture.Services
                         .ReverseMap();
 
                     // send/receive jobs
-                    schemaBuilder.AddResourceType<SendReceiveJobResource>("sr-jobs");
+                    schemaBuilder.AddResourceType<SendReceiveJobResource>("send-receive-jobs");
                     containerBuilder.RegisterResourceService<SendReceiveJobService>();
                     mapConfig.CreateMap<SendReceiveJobEntity, SendReceiveJobResource>()
                         .ReverseMap();

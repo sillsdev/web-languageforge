@@ -129,12 +129,14 @@ namespace SIL.XForge.Services
                 relationshipType = contextGraph.GetContextEntity(relationship.Type);
 
             RelationshipAttribute inverseRelationship = null;
-            if (relationship.PublicRelationshipName != Resource.OwnerRelationship)
-            {
-                inverseRelationship = relationshipType.Relationships
-                    .FirstOrDefault(r => r.PublicRelationshipName != Resource.OwnerRelationship
-                        && r.Type.IsAssignableFrom(resourceType.EntityType));
-            }
+            // TODO: properly handle inverse relationships
+
+            //if (relationship.PublicRelationshipName != Resource.OwnerRelationship)
+            //{
+            //    inverseRelationship = relationshipType.Relationships
+            //        .FirstOrDefault(r => r.PublicRelationshipName != Resource.OwnerRelationship
+            //            && r.Type.IsAssignableFrom(resourceType.EntityType));
+            //}
 
             return new ResourceSchemaRelationship
             {

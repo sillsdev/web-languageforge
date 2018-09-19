@@ -3,18 +3,18 @@ import { OAuthService } from 'angular-oauth2-oidc';
 
 import { BaseResourceService } from './base-resource-service';
 import { JSONAPIService } from './json-api.service';
-import { UserAttributes, UserResource } from './resources/user-resource';
+import { User, UserAttributes, UserContants } from './resources/user';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService extends BaseResourceService<UserResource, UserAttributes> {
+export class UserService extends BaseResourceService<User, UserAttributes> {
   constructor(jsonApiService: JSONAPIService, private readonly oauthService: OAuthService) {
     super(jsonApiService);
   }
 
   get type(): string {
-    return 'user';
+    return UserContants.TYPE;
   }
 
   get currentUserId(): string {

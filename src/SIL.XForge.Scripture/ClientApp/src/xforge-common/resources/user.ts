@@ -1,6 +1,10 @@
 import { Record } from '@orbit/data';
 import { Dict } from '@orbit/utils';
 
+export class UserContants {
+  static readonly TYPE = 'user';
+}
+
 export interface UserAttributes extends Dict<any> {
   username?: string;
   name?: string;
@@ -8,6 +12,6 @@ export interface UserAttributes extends Dict<any> {
   password?: string;
 }
 
-export interface UserResource extends Record {
+export interface User extends Record {
   attributes?: UserAttributes;
 }

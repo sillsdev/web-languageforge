@@ -5,8 +5,8 @@ import Coordinator, {
 } from '@orbit/coordinator';
 import { Exception } from '@orbit/core';
 import {
-  buildQuery, ClientError, FindRecord, FindRecordsTerm, NetworkError, Operation, Query, QueryOrExpression, Record,
-  RecordIdentity, ReplaceRecordOperation, Schema, SchemaSettings, Transform, TransformOrOperations
+  buildQuery, ClientError, FindRecord, NetworkError, Operation, Query, QueryOrExpression, Record, RecordIdentity,
+  ReplaceRecordOperation, Schema, SchemaSettings, Transform, TransformOrOperations
 } from '@orbit/data';
 import IndexedDBSource from '@orbit/indexeddb';
 import IndexedDBBucket from '@orbit/indexeddb-bucket';
@@ -104,7 +104,7 @@ export class JSONAPIService {
           target: JSONAPIService.REMOTE,
           action: 'pull',
 
-          blocking: false,
+          blocking: (q: Query) => q.options.blocking,
 
           catch: (e: Exception) => {
             this.store.requestQueue.skip();
@@ -121,7 +121,7 @@ export class JSONAPIService {
           filter: (t: Transform) => this.shouldUpdate(t, JSONAPIService.REMOTE),
           action: 'push',
 
-          blocking: false
+          blocking: (t: Transform) => t.options.blocking
         }),
         // Sync all changes received from the remote server to the store
         new SyncStrategy({
@@ -150,36 +150,19 @@ export class JSONAPIService {
     await this.coordinator.activate();
   }
 
-  get<T extends Record>(resource: RecordIdentity): Observable<T> {
-    return this._query(q => q.findRecord(resource));
-  }
-
-  getRelated<T extends Record>(resource: RecordIdentity, relationship: string): Observable<T> {
-    return this._query(q => q.findRelatedRecord(resource, relationship));
-  }
-
-  getAll<T extends Record>(type: string, expressionBuilder = (t: FindRecordsTerm) => t): Observable<T[]> {
-    return this._query(q => expressionBuilder(q.findRecords(type)));
-  }
-
-  getAllRelated<T extends Record>(resource: RecordIdentity, relationship: string): Observable<T[]> {
-    return this._query(q => q.findRelatedRecords(resource, relationship));
-  }
-
-  private _query(queryOrExpression: QueryOrExpression): Observable<any> {
-    const query = buildQuery(queryOrExpression, this.getOptions([JSONAPIService.REMOTE, JSONAPIService.BACKUP]),
-      undefined, this.store.queryBuilder);
+  liveQuery(queryOrExpression: QueryOrExpression, persist = true): Observable<any> {
+    const query = buildQuery(queryOrExpression, this.getOptions(persist, false), undefined, this.store.queryBuilder);
 
     this.store.query(query);
 
     const patch$ = fromEventPattern(
-      (handler) => this.store.cache.on('patch', handler),
-      (handler) => this.store.cache.off('patch', handler),
+      handler => this.store.cache.on('patch', handler),
+      handler => this.store.cache.off('patch', handler),
     );
 
     const reset$ = fromEventPattern(
-      (handler) => this.store.cache.on('reset', handler),
-      (handler) => this.store.cache.off('reset', handler),
+      handler => this.store.cache.on('reset', handler),
+      handler => this.store.cache.off('reset', handler),
     );
 
     return merge(patch$, reset$)
@@ -187,60 +170,69 @@ export class JSONAPIService {
       .pipe(startWith(dcopy(this.store.cache.query(query))));
   }
 
-  create(resource: Record, cache: boolean = true): Promise<void> {
+  async query(queryOrExpression: QueryOrExpression, persist = true): Promise<any> {
+    const result = await this.store.query(queryOrExpression, this.getOptions(persist, true));
+    return dcopy(result);
+  }
+
+  create(resource: Record, persist = true, blocking = false): Promise<void> {
     this.schema.initializeRecord(resource);
-    return this._update(t => t.addRecord(dcopy(resource)), cache);
+    return this.update(t => t.addRecord(dcopy(resource)), persist, blocking);
   }
 
-  replace(resource: Record, cache: boolean = true): Promise<void> {
-    return this._update(t => t.replaceRecord(dcopy(resource)), cache);
+  replace(resource: Record, persist = true, blocking = false): Promise<void> {
+    return this.update(t => t.replaceRecord(dcopy(resource)), persist, blocking);
   }
 
-  update(resource: RecordIdentity, attrs: Dict<any>, cache: boolean = true): Promise<void> {
-    return this._update(t => {
+  updateAttributes(resource: RecordIdentity, attrs: Dict<any>, persist = true, blocking = false): Promise<void> {
+    return this.update(t => {
       const ops: Operation[] = [];
       for (const [name, value] of Object.entries(attrs)) {
         ops.push(t.replaceAttribute(resource, name, value));
       }
       return ops;
-    }, cache);
+    }, persist, blocking);
   }
 
-  delete(resource: RecordIdentity, cache: boolean = true): Promise<void> {
-    return this._update(t => t.removeRecord(resource), cache);
+  delete(resource: RecordIdentity, persist = true, blocking = false): Promise<void> {
+    return this.update(t => t.removeRecord(resource), persist, blocking);
   }
 
-  addRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity, cache: boolean = true
+  addRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity, persist = true, blocking = false
   ): Promise<void> {
-    return this._update(t => t.addToRelatedRecords(resource, relationship, related), cache);
+    return this.update(t => t.addToRelatedRecords(resource, relationship, related), persist, blocking);
   }
 
-  removeRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity, cache: boolean = true
+  removeRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity, persist = true,
+    blocking = false
   ): Promise<void> {
-    return this._update(t => t.removeFromRelatedRecords(resource, relationship, related), cache);
+    return this.update(t => t.removeFromRelatedRecords(resource, relationship, related), persist, blocking);
   }
 
-  replaceAllRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity[], cache: boolean = true
+  replaceAllRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity[], persist = true,
+    blocking = false
   ): Promise<void> {
-    return this._update(t => t.replaceRelatedRecords(resource, relationship, related), cache);
+    return this.update(t => t.replaceRelatedRecords(resource, relationship, related), persist, blocking);
   }
 
-  setRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity, cache: boolean = true
+  setRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity, persist = true, blocking = false
   ): Promise<void> {
-    return this._update(t => t.replaceRelatedRecord(resource, relationship, related), cache);
+    return this.update(t => t.replaceRelatedRecord(resource, relationship, related), persist, blocking);
   }
 
-  private _update(transformOrOperations: TransformOrOperations, cache: boolean): Promise<void> {
+  private update(transformOrOperations: TransformOrOperations, persist = true, blocking: boolean): Promise<any> {
+    return this.store.update(transformOrOperations, this.getOptions(persist, blocking));
+  }
+
+  private getOptions(persist: boolean, blocking: boolean): any {
     const update = [JSONAPIService.REMOTE];
-    if (cache) {
+    if (persist) {
       update.push(JSONAPIService.BACKUP);
     }
-    return this.store.update(transformOrOperations, this.getOptions(update));
-  }
 
-  private getOptions(update: string[]): any {
     return {
       update,
+      blocking,
       sources: {
         remote: {
           settings: {

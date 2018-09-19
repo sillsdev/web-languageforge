@@ -14,74 +14,75 @@ export abstract class BaseResourceService<TResource extends Record, TAttrs exten
   }
 
   getById(id: string): Observable<TResource> {
-    return this.jsonApiService.get(this.getIdentity(id));
+    return this.get(this.getIdentity(id));
   }
 
   get(resource: RecordIdentity): Observable<TResource> {
-    return this.jsonApiService.get(resource);
+    return this.jsonApiService.liveQuery(q => q.findRecord(resource));
   }
 
   getRelatedById<TRelationship extends Record>(id: string, relationship: string): Observable<TRelationship> {
-    return this.jsonApiService.getRelated(this.getIdentity(id), relationship);
+    return this.getRelated(this.getIdentity(id), relationship);
   }
 
   getRelated<TRelationship extends Record>(resource: RecordIdentity, relationship: string): Observable<TRelationship> {
-    return this.jsonApiService.getRelated(resource, relationship);
+    return this.jsonApiService.liveQuery(q => q.findRelatedRecord(resource, relationship));
   }
 
   getAll(expressionBuilder = (t: FindRecordsTerm) => t): Observable<TResource[]> {
-    return this.jsonApiService.getAll(this.type, expressionBuilder);
+    return this.jsonApiService.liveQuery(q => expressionBuilder(q.findRecords(this.type)));
   }
 
   getAllRelatedById(id: string, relationship: string): Observable<TResource[]> {
-    return this.jsonApiService.getAllRelated(this.getIdentity(id), relationship);
+    return this.getAllRelated(this.getIdentity(id), relationship);
   }
 
-  getAllRelated<TRelationship extends Record>(resource: RecordIdentity, relationship: string): Observable<TRelationship[]> {
-    return this.jsonApiService.getAllRelated(resource, relationship);
+  getAllRelated<TRelationship extends Record>(resource: RecordIdentity, relationship: string
+  ): Observable<TRelationship[]> {
+    return this.jsonApiService.liveQuery(q => q.findRelatedRecords(resource, relationship));
   }
 
-  create(resource: TResource, cache: boolean = true): Promise<void> {
-    return this.jsonApiService.create(resource, cache);
+  onlineGetAll(expressionBuilder = (t: FindRecordsTerm) => t): Promise<TResource[]> {
+    return this.jsonApiService.query(q => expressionBuilder(q.findRecords(this.type)));
   }
 
-  updateById(id: string, attrs: TAttrs, cache: boolean = true): Promise<void> {
-    return this.jsonApiService.update(this.getIdentity(id), attrs, cache);
+  create(resource: TResource): Promise<void> {
+    return this.jsonApiService.create(resource);
   }
 
-  update(resource: TResource, attrs: TAttrs, cache: boolean = true): Promise<void> {
-    return this.jsonApiService.update(resource, attrs, cache);
+  updateById(id: string, attrs: TAttrs): Promise<void> {
+    return this.jsonApiService.updateAttributes(this.getIdentity(id), attrs);
   }
 
-  replace(resource: TResource, cache: boolean = true): Promise<void> {
-    return this.jsonApiService.replace(resource, cache);
+  update(resource: TResource, attrs: TAttrs): Promise<void> {
+    return this.jsonApiService.updateAttributes(resource, attrs);
   }
 
-  delete(resource: TResource, cache: boolean = true): Promise<void> {
-    return this.jsonApiService.delete(resource, cache);
+  replace(resource: TResource): Promise<void> {
+    return this.jsonApiService.replace(resource);
   }
 
-  deleteById(id: string, cache: boolean = true): Promise<void> {
-    return this.jsonApiService.delete(this.getIdentity(id), cache);
+  delete(resource: TResource): Promise<void> {
+    return this.jsonApiService.delete(resource);
   }
 
-  addRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity, cache: boolean = true
-  ): Promise<void> {
-    return this.jsonApiService.addRelated(resource, relationship, related, cache);
+  deleteById(id: string): Promise<void> {
+    return this.jsonApiService.delete(this.getIdentity(id));
   }
 
-  removeRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity, cache: boolean = true
-  ): Promise<void> {
-    return this.jsonApiService.removeRelated(resource, relationship, related, cache);
+  addRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity): Promise<void> {
+    return this.jsonApiService.addRelated(resource, relationship, related);
   }
 
-  replaceAllRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity[], cache: boolean = true
-  ): Promise<void> {
-    return this.jsonApiService.replaceAllRelated(resource, relationship, related, cache);
+  removeRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity): Promise<void> {
+    return this.jsonApiService.removeRelated(resource, relationship, related);
   }
 
-  setRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity, cache: boolean = true
-  ): Promise<void> {
-    return this.jsonApiService.setRelated(resource, relationship, related, cache);
+  replaceAllRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity[]): Promise<void> {
+    return this.jsonApiService.replaceAllRelated(resource, relationship, related);
+  }
+
+  setRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity): Promise<void> {
+    return this.jsonApiService.setRelated(resource, relationship, related);
   }
 }

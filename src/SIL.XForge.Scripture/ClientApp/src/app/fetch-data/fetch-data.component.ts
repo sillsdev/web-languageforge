@@ -3,7 +3,7 @@ import { Record } from '@orbit/data';
 import { Observable } from 'rxjs';
 
 import { SFProjectService } from '../core/sfproject.service';
-import { SFProjectResource } from '../shared/resources/sfproject-resource';
+import { SFProject } from '../shared/resources/sfproject';
 
 @Component({
   selector: 'app-fetch-data',
@@ -12,7 +12,7 @@ import { SFProjectResource } from '../shared/resources/sfproject-resource';
 export class FetchDataComponent implements OnInit {
   private readonly updatedNames: Map<string, string> = new Map<string, string>();
 
-  public projects$: Observable<SFProjectResource[]>;
+  public projects$: Observable<SFProject[]>;
 
   constructor(private readonly projectService: SFProjectService) { }
 
