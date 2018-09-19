@@ -20,7 +20,7 @@ namespace SIL.XForge.Scripture.Services
         {
         }
 
-        protected override Domain Domain => Domain.Texts;
+        protected override Domain Domain => Domain.SendReceiveJobs;
 
         protected override async Task<SendReceiveJobEntity> InsertEntityAsync(SendReceiveJobEntity entity)
         {

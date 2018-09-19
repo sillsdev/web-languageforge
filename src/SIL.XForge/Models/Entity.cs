@@ -7,6 +7,5 @@ namespace SIL.XForge.Models
         public string Id { get; set; }
         public DateTime DateModified { get; set; }
         public DateTime DateCreated { get; set; }
-        public string OwnerRef { get; set; }
     }
 }

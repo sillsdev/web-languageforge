@@ -22,8 +22,6 @@ namespace SIL.XForge.Services
 
         public IResourceQueryable<TProjectResource, TProjectEntity> ProjectResources { get; set; }
 
-        protected override Domain Domain => Domain.Users;
-
         protected override Task<UserEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
             IDictionary<string, string> relationships)
         {
@@ -42,9 +40,38 @@ namespace SIL.XForge.Services
             return base.GetRelationship(relationshipName);
         }
 
-        protected override Expression<Func<UserEntity, bool>> IsOwnedByUser()
+        protected override Task CheckCanCreateAsync(UserResource resource)
         {
-            return u => u.Id == UserId;
+            if (SystemRole == SystemRoles.User)
+                throw ForbiddenException();
+            return Task.CompletedTask;
+        }
+
+        protected override Task CheckCanUpdateAsync(string id)
+        {
+            if (SystemRole == SystemRoles.User && id != UserId)
+                throw ForbiddenException();
+            return Task.CompletedTask;
+        }
+
+        protected override Task CheckCanDeleteAsync(string id)
+        {
+            return CheckCanUpdateAsync(id);
+        }
+
+        protected override Task<Expression<Func<UserEntity, bool>>> GetRightFilterAsync()
+        {
+            Expression<Func<UserEntity, bool>> filter = null;
+            switch (SystemRole)
+            {
+                case SystemRoles.User:
+                    filter = (UserEntity u) => u.Id == UserId;
+                    break;
+                case SystemRoles.SystemAdmin:
+                    filter = (UserEntity u) => true;
+                    break;
+            }
+            return Task.FromResult(filter);
         }
     }
 }

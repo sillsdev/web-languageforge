@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -43,15 +42,11 @@ namespace SIL.XForge.Services
         protected IRepository<TEntity> Entities { get; }
         private ClaimsPrincipal User => _httpContextAccessor.HttpContext.User;
         protected string UserId => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        private string SystemRole => User.FindFirst(ClaimTypes.Role)?.Value;
-        private string SiteRole => User.FindFirst("site_role")?.Value;
-
-        protected abstract Domain Domain { get; }
-        protected virtual bool HasOwner => true;
+        protected string SystemRole => User.FindFirst(ClaimTypes.Role)?.Value;
 
         public async Task<TResource> CreateAsync(TResource resource)
         {
-            await CheckCreateRightAsync(resource);
+            await CheckCanCreateAsync(resource);
 
             var entity = _mapper.Map<TEntity>(resource);
             SetNewEntityRelationships(entity, resource);
@@ -59,9 +54,31 @@ namespace SIL.XForge.Services
             return await MapWithRelationshipsAsync(entity);
         }
 
+        public async Task<TResource> UpdateAsync(string id, TResource resource)
+        {
+            await CheckCanUpdateAsync(id);
+
+            Dictionary<string, object> attrs = _jsonApiContext.AttributesToUpdate
+                .ToDictionary(kvp => kvp.Key.InternalAttributeName, kvp => kvp.Value);
+            Dictionary<string, string> relationships = _jsonApiContext.RelationshipsToUpdate
+                .ToDictionary(kvp => kvp.Key.PublicRelationshipName, kvp => (string) kvp.Value);
+            TEntity entity = await UpdateEntityAsync(id, attrs, relationships);
+            return _mapper.Map<TResource>(entity);
+        }
+
+        public async Task UpdateRelationshipsAsync(string id, string relationshipName,
+            List<DocumentData> relationships)
+        {
+            await CheckCanUpdateAsync(id);
+
+            IEnumerable<string> relationshipIds = relationships.Select(r => r?.Id?.ToString());
+            IRelationship<TEntity> relationship = GetRelationship(relationshipName);
+            await UpdateEntityRelationshipAsync(id, relationship, relationshipIds);
+        }
+
         public async Task<bool> DeleteAsync(string id)
         {
-            await CheckUpdateDeleteRightAsync(Operation.Delete, id);
+            await CheckCanDeleteAsync(id);
 
             return await DeleteEntityAsync(id);
         }
@@ -92,28 +109,6 @@ namespace SIL.XForge.Services
         public Task<object> GetRelationshipsAsync(string id, string relationshipName)
         {
             return GetRelationshipAsync(id, relationshipName);
-        }
-
-        public async Task<TResource> UpdateAsync(string id, TResource resource)
-        {
-            await CheckUpdateDeleteRightAsync(Operation.Edit, id);
-
-            Dictionary<string, object> attrs = _jsonApiContext.AttributesToUpdate
-                .ToDictionary(kvp => kvp.Key.InternalAttributeName, kvp => kvp.Value);
-            Dictionary<string, string> relationships = _jsonApiContext.RelationshipsToUpdate
-                .ToDictionary(kvp => kvp.Key.PublicRelationshipName, kvp => (string) kvp.Value);
-            TEntity entity = await UpdateEntityAsync(id, attrs, relationships);
-            return _mapper.Map<TResource>(entity);
-        }
-
-        public async Task UpdateRelationshipsAsync(string id, string relationshipName,
-            List<DocumentData> relationships)
-        {
-            await CheckUpdateDeleteRightAsync(Operation.Edit, id);
-
-            IEnumerable<string> relationshipIds = relationships.Select(r => r?.Id?.ToString());
-            IRelationship<TEntity> relationship = GetRelationship(relationshipName);
-            await UpdateEntityRelationshipAsync(id, relationship, relationshipIds);
         }
 
         public async Task<IEnumerable<TResource>> QueryAsync(IEnumerable<string> included,
@@ -165,53 +160,18 @@ namespace SIL.XForge.Services
 
         protected virtual IRelationship<TEntity> GetRelationship(string relationshipName)
         {
-            switch (relationshipName)
-            {
-                case Resource.OwnerRelationship:
-                    return ManyToOne(UserResources, (TEntity p) => p.OwnerRef);
-            }
             throw new JsonApiException(StatusCodes.Status422UnprocessableEntity,
                 $"Relationship '{relationshipName}' does not exist on resource '{typeof(TResource)}'.");
         }
 
         protected virtual void SetNewEntityRelationships(TEntity entity, TResource resource)
         {
-            if (resource.Owner != null)
-                entity.OwnerRef = resource.Owner.Id;
         }
 
-        protected virtual Expression<Func<TEntity, bool>> IsOwnedByUser()
-        {
-            return e => e.OwnerRef == UserId;
-        }
-
-        protected virtual Task<bool> HasCreateRightAsync(TResource resource)
-        {
-            return Task.FromResult(HasSiteRight(new Right(Domain, Operation.Create)));
-        }
-
-        protected virtual async Task<bool> HasUpdateDeleteRightAsync(Operation op, string id)
-        {
-            if (HasSiteRight(new Right(Domain, op)))
-                return true;
-
-            if (HasOwner)
-            {
-                if (HasSiteRight(GetOwnRight(op)) && await IsOwned(id))
-                    return true;
-            }
-            return false;
-        }
-
-        protected virtual Task<Expression<Func<TEntity, bool>>> GetRightFilterAsync()
-        {
-            Expression<Func<TEntity, bool>> filter = null;
-            if (HasSiteRight(new Right(Domain, Operation.View)))
-                filter = e => true;
-            else if (HasOwner && HasSiteRight(GetOwnRight(Operation.View)))
-                filter = IsOwnedByUser();
-            return Task.FromResult(filter);
-        }
+        protected abstract Task CheckCanCreateAsync(TResource resource);
+        protected abstract Task CheckCanUpdateAsync(string id);
+        protected abstract Task CheckCanDeleteAsync(string id);
+        protected abstract Task<Expression<Func<TEntity, bool>>> GetRightFilterAsync();
 
         protected IRelationship<TEntity> ManyToManyThis<TOtherResource, TOtherEntity>(
             IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
@@ -262,57 +222,20 @@ namespace SIL.XForge.Services
                 createOperation);
         }
 
-        private async Task CheckCreateRightAsync(TResource resource)
+        protected JsonApiException ForbiddenException()
         {
-            if (!await HasCreateRightAsync(resource))
-            {
-                throw new JsonApiException(StatusCodes.Status403Forbidden,
-                    "The specified user does not have permission to perform this operation.");
-            }
+            return new JsonApiException(StatusCodes.Status403Forbidden,
+                "The specified user does not have permission to perform this operation.");
         }
 
-        private async Task CheckUpdateDeleteRightAsync(Operation op, string id)
+        protected JsonApiException NotFoundException()
         {
-            if (!await HasUpdateDeleteRightAsync(op, id))
-            {
-                throw new JsonApiException(StatusCodes.Status403Forbidden,
-                    "The specified user does not have permission to perform this operation.");
-            }
+            return new JsonApiException(StatusCodes.Status404NotFound, "The resource could not be found.");
         }
 
         private async Task<IMongoQueryable<TEntity>> ApplyRightFilterAsync(IMongoQueryable<TEntity> query)
         {
             return query.Where((await GetRightFilterAsync()) ?? (e => false));
-        }
-
-        protected Task<bool> IsOwned(string id)
-        {
-            return Entities.Query().Where(e => e.Id == id).Where(IsOwnedByUser()).AnyAsync();
-        }
-
-        protected Right GetOwnRight(Operation op)
-        {
-            Operation ownOp;
-            switch (op)
-            {
-                case Operation.View:
-                    ownOp = Operation.ViewOwn;
-                    break;
-                case Operation.Delete:
-                    ownOp = Operation.DeleteOwn;
-                    break;
-                case Operation.Edit:
-                    ownOp = Operation.EditOwn;
-                    break;
-                default:
-                    throw new InvalidEnumArgumentException(nameof(op), (int) op, typeof(Operation));
-            }
-            return new Right(Domain, ownOp);
-        }
-
-        private bool HasSiteRight(Right right)
-        {
-            return SystemRoles.Instance.HasRight(SystemRole, right) || SiteRoles.Instance.HasRight(SiteRole, right);
         }
 
         private IMongoQueryable<TEntity> ApplySortAndFilterQuery(IMongoQueryable<TEntity> entities)

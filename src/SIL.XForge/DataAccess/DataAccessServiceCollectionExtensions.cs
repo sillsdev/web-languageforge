@@ -45,23 +45,12 @@ namespace SIL.XForge.DataAccess
                     cm.MapIdProperty(e => e.Id)
                         .SetIdGenerator(StringObjectIdGenerator.Instance)
                         .SetSerializer(new StringSerializer(BsonType.ObjectId));
-                    cm.MapMember(e => e.OwnerRef)
-                        .SetShouldSerializeMethod(e => e.GetType() != typeof(UserEntity));
-                });
-
-            RegisterClass<ProjectDataEntity>(cm =>
-                {
-                    cm.MapMember(p => p.ProjectRef)
-                        .SetShouldSerializeMethod(p => p.GetType() != typeof(ProjectEntity));
                 });
 
             services.AddSingleton<IMongoClient>(sp => new MongoClient(options.ConnectionString));
 
             services.AddMongoRepository<UserEntity>(options.MongoDatabaseName, "users", cm =>
                 {
-                    cm.MapMember(u => u.SiteRole).SetSerializer(
-                        new DictionaryInterfaceImplementerSerializer<Dictionary<string, string>>(
-                            DictionaryRepresentation.Document, new SiteDomainSerializer(), new StringSerializer()));
                     cm.MapMember(u => u.Projects)
                         .SetSerializer(new EnumerableInterfaceImplementerSerializer<List<string>, string>(
                             new StringSerializer(BsonType.ObjectId)));

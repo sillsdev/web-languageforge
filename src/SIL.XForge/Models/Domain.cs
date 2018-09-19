@@ -4,10 +4,6 @@ namespace SIL.XForge.Models
     {
         Any = 1000,
 
-        Users = 1100,
-
-        Projects = 1200,
-
         Comments = 1600,
 
         Texts = 1300,
@@ -15,6 +11,7 @@ namespace SIL.XForge.Models
         Answers = 1500,
         Templates = 1700,
         Tags = 1800,
+        SendReceiveJobs = 2000,
 
         Entries = 1900
     }

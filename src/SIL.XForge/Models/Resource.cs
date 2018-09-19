@@ -1,12 +1,13 @@
+using System;
 using JsonApiDotNetCore.Models;
 
 namespace SIL.XForge.Models
 {
     public class Resource : Identifiable<string>
     {
-        public const string OwnerRelationship = "owner";
-
-        [HasOne(OwnerRelationship)]
-        public UserResource Owner { get; set; }
+        [Attr("date-modified", true)]
+        public DateTime DateModified { get; set; }
+        [Attr("date-created", true)]
+        public DateTime DateCreated { get; set; }
     }
 }

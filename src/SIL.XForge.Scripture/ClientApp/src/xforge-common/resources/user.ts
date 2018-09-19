@@ -1,17 +1,16 @@
-import { Record } from '@orbit/data';
-import { Dict } from '@orbit/utils';
+import { Resource, ResourceAttributes } from './resource';
 
 export class UserContants {
   static readonly TYPE = 'user';
 }
 
-export interface UserAttributes extends Dict<any> {
+export interface UserAttributes extends ResourceAttributes {
   username?: string;
   name?: string;
   email?: string;
   password?: string;
 }
 
-export interface User extends Record {
+export interface User extends Resource {
   attributes?: UserAttributes;
 }

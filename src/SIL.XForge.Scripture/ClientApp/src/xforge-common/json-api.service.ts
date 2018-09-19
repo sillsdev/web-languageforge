@@ -12,10 +12,9 @@ import IndexedDBSource from '@orbit/indexeddb';
 import IndexedDBBucket from '@orbit/indexeddb-bucket';
 import JSONAPISource from '@orbit/jsonapi';
 import Store from '@orbit/store';
-import { Dict } from '@orbit/utils';
+import { clone, Dict } from '@orbit/utils';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { ObjectId } from 'bson';
-import dcopy from 'deep-copy';
 import { fromEventPattern, merge, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
@@ -166,22 +165,22 @@ export class JSONAPIService {
     );
 
     return merge(patch$, reset$)
-      .pipe(map(() => dcopy(this.store.cache.query(query))))
-      .pipe(startWith(dcopy(this.store.cache.query(query))));
+      .pipe(map(() => clone(this.store.cache.query(query))))
+      .pipe(startWith(clone(this.store.cache.query(query))));
   }
 
   async query(queryOrExpression: QueryOrExpression, persist = true): Promise<any> {
     const result = await this.store.query(queryOrExpression, this.getOptions(persist, true));
-    return dcopy(result);
+    return clone(result);
   }
 
   create(resource: Record, persist = true, blocking = false): Promise<void> {
     this.schema.initializeRecord(resource);
-    return this.update(t => t.addRecord(dcopy(resource)), persist, blocking);
+    return this.update(t => t.addRecord(clone(resource)), persist, blocking);
   }
 
   replace(resource: Record, persist = true, blocking = false): Promise<void> {
-    return this.update(t => t.replaceRecord(dcopy(resource)), persist, blocking);
+    return this.update(t => t.replaceRecord(resource), persist, blocking);
   }
 
   updateAttributes(resource: RecordIdentity, attrs: Dict<any>, persist = true, blocking = false): Promise<void> {

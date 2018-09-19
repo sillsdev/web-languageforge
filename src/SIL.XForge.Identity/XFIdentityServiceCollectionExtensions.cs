@@ -23,7 +23,7 @@ namespace SIL.XForge.Identity
         {
             new ApiResource("api", "Web API")
             {
-                UserClaims = { JwtClaimTypes.Role, "site_role" }
+                UserClaims = { JwtClaimTypes.Role }
             }
         };
 
@@ -77,16 +77,14 @@ namespace SIL.XForge.Identity
                         options.Database = dataAccessOptions.MongoDatabaseName;
                     });
 
-            IConfigurationSection securityConfig = configuration.GetSection("Security");
-            bool useDeveloperCredential = securityConfig.GetValue("UseDeveloperSigningCredential", false);
-            string certFileName = securityConfig.GetValue<string>("SigningCredential");
-            if (useDeveloperCredential)
+            var securityOptions = configuration.GetOptions<SecurityOptions>();
+            if (securityOptions.UseDeveloperSigningCredential)
             {
                 builder.AddDeveloperSigningCredential();
             }
             else
             {
-                var cert = new X509Certificate2(certFileName);
+                var cert = new X509Certificate2(securityOptions.SigningCredential);
                 builder.AddSigningCredential(cert);
             }
 

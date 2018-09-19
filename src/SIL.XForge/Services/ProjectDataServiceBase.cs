@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
+using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Services;
 using LinqKit;
 using Microsoft.AspNetCore.Http;
@@ -32,12 +34,16 @@ namespace SIL.XForge.Services
 
         public IResourceQueryable<TProjectResource, TProjectEntity> ProjectResources { get; set; }
 
+        protected abstract Domain Domain { get; }
+
         protected override IRelationship<TEntity> GetRelationship(string relationshipName)
         {
             switch (relationshipName)
             {
                 case ProjectDataResource.ProjectRelationship:
                     return ManyToOne(ProjectResources, ProjectRef());
+                case ProjectDataResource.OwnerRelationship:
+                    return ManyToOne(UserResources, (TEntity p) => p.OwnerRef);
             }
             return base.GetRelationship(relationshipName);
         }
@@ -47,57 +53,45 @@ namespace SIL.XForge.Services
             base.SetNewEntityRelationships(entity, resource);
             if (resource.Project != null)
                 entity.ProjectRef = resource.Project.Id;
+            entity.OwnerRef = UserId;
         }
 
-        protected override async Task<bool> HasCreateRightAsync(TResource resource)
+        protected override async Task CheckCanCreateAsync(TResource resource)
         {
-            if (await base.HasCreateRightAsync(resource))
-                return true;
-
             if (resource.Project == null)
-                return false;
+                throw new JsonApiException(StatusCodes.Status400BadRequest, "The project relationship is not defined.");
 
             ProjectEntity project = await _projects.GetAsync(resource.Project.Id);
-            return project.HasRight(UserId, new Right(Domain, Operation.Create));
+            if (HasRight(project, Operation.Create))
+                return;
+
+            throw ForbiddenException();
         }
 
-        protected override async Task<bool> HasUpdateDeleteRightAsync(Operation op, string id)
+        protected override Task CheckCanUpdateAsync(string id)
         {
-            if (await base.HasUpdateDeleteRightAsync(op, id))
-                return true;
+            return CheckCanUpdateDeleteAsync(id, Operation.Edit, Operation.EditOwn);
+        }
 
-            ProjectEntity project = await Entities.Query().Where(e => e.Id == id)
-                .Join(_projects.Query(), ProjectRef(), p => p.Id, (e, p) => p).SingleOrDefaultAsync();
-            if (project.HasRight(UserId, new Right(Domain, op)))
-                return true;
-
-            if (HasOwner)
-            {
-                if (project.HasRight(UserId, GetOwnRight(op)) && await IsOwned(id))
-                    return true;
-            }
-
-            return false;
+        protected override Task CheckCanDeleteAsync(string id)
+        {
+            return CheckCanUpdateDeleteAsync(id, Operation.Delete, Operation.DeleteOwn);
         }
 
         protected override async Task<Expression<Func<TEntity, bool>>> GetRightFilterAsync()
         {
-            Expression<Func<TEntity, bool>> filter = await base.GetRightFilterAsync();
-            if (filter != null)
-                return filter;
-
             List<TProjectEntity> projects = await _projects.Query().Where(p => p.Users.ContainsKey(UserId))
                 .ToListAsync();
             var wherePredicate = PredicateBuilder.New<TEntity>();
             bool isEmpty = true;
             foreach (TProjectEntity project in projects)
             {
-                if (project.HasRight(UserId, new Right(Domain, Operation.View)))
+                if (HasRight(project, Operation.View))
                 {
                     wherePredicate.Or(IsInProject(project.Id));
                     isEmpty = false;
                 }
-                else if (HasOwner && project.HasRight(UserId, GetOwnRight(Operation.View)))
+                else if (HasRight(project, Operation.ViewOwn))
                 {
                     wherePredicate.Or(IsInProject(project.Id).And(IsOwnedByUser()));
                     isEmpty = false;
@@ -106,14 +100,43 @@ namespace SIL.XForge.Services
             return isEmpty ? null : wherePredicate;
         }
 
-        protected virtual Expression<Func<TEntity, bool>> IsInProject(string projectId)
+        private async Task CheckCanUpdateDeleteAsync(string id, Operation op, Operation ownOp)
+        {
+            ProjectEntity project = await Entities.Query().Where(e => e.Id == id)
+                .Join(_projects.Query(), ProjectRef(), p => p.Id, (e, p) => p).SingleOrDefaultAsync();
+
+            if (HasRight(project, op))
+                return;
+
+            if (HasRight(project, ownOp) && await IsOwnedAsync(id))
+                return;
+
+            throw ForbiddenException();
+        }
+
+        private Expression<Func<TEntity, bool>> IsInProject(string projectId)
         {
             return e => e.ProjectRef == projectId;
         }
 
-        protected virtual Expression<Func<TEntity, string>> ProjectRef()
+        private Expression<Func<TEntity, string>> ProjectRef()
         {
             return e => e.ProjectRef;
+        }
+
+        private bool HasRight(ProjectEntity project, Operation op)
+        {
+            return project.HasRight(UserId, new Right(Domain, op));
+        }
+
+        private Expression<Func<TEntity, bool>> IsOwnedByUser()
+        {
+            return e => e.OwnerRef == UserId;
+        }
+
+        private Task<bool> IsOwnedAsync(string id)
+        {
+            return Entities.Query().Where(e => e.Id == id).Where(IsOwnedByUser()).AnyAsync();
         }
     }
 }

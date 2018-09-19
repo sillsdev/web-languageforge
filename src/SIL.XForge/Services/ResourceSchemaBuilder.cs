@@ -61,16 +61,6 @@ namespace SIL.XForge.Services
             var relationships = new Dictionary<string, ResourceSchemaRelationship>();
             foreach (RelationshipAttribute relationship in resourceType.Relationships)
             {
-                if (resourceType.EntityName == "users"
-                    && relationship.PublicRelationshipName == Resource.OwnerRelationship)
-                {
-                    continue;
-                }
-                if (resourceType.EntityName == "projects"
-                    && relationship.PublicRelationshipName == ProjectDataResource.ProjectRelationship)
-                {
-                    continue;
-                }
                 relationships[Camelize(relationship.PublicRelationshipName)] = CreateRelationship(contextGraph,
                     resourceType, relationship);
             }

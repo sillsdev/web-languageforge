@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace SIL.XForge.Models
 {
-    public abstract class ProjectEntity : ProjectDataEntity
+    public abstract class ProjectEntity : Entity
     {
         public string ProjectName { get; set; }
         public Dictionary<string, ProjectRole> Users { get; protected set; } = new Dictionary<string, ProjectRole>();
