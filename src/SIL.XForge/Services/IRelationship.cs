@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MongoDB.Driver;
+using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
@@ -10,7 +10,6 @@ namespace SIL.XForge.Services
         Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
             Dictionary<string, Resource> resources, T entity);
 
-        UpdateDefinition<T> GetUpdateOperation(UpdateDefinitionBuilder<T> update,
-            IEnumerable<string> ids);
+        bool Update(IUpdateBuilder<T> update, IEnumerable<string> ids);
     }
 }

@@ -12,14 +12,14 @@ namespace SIL.XForge.DataAccess
 {
     public static class DataAccessExtensions
     {
-        public static Task<T> UpdateAsync<T>(this IRepository<T> repo, string id,
-            Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update, bool upsert = false) where T : Entity
+        public static Task<T> UpdateAsync<T>(this IRepository<T> repo, string id, Action<IUpdateBuilder<T>> update,
+            bool upsert = false) where T : Entity
         {
             return repo.UpdateAsync(e => e.Id == id, update, upsert);
         }
 
-        public static Task<T> UpdateAsync<T>(this IRepository<T> repo, T entity,
-            Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update, bool upsert = false) where T : Entity
+        public static Task<T> UpdateAsync<T>(this IRepository<T> repo, T entity, Action<IUpdateBuilder<T>> update,
+            bool upsert = false) where T : Entity
         {
             return repo.UpdateAsync(entity.Id, update, upsert);
         }

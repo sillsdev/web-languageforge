@@ -3,7 +3,6 @@ using IdentityModel;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using MongoDB.Driver.Linq;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 

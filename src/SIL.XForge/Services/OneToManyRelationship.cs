@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using JsonApiDotNetCore.Internal;
-using Microsoft.AspNetCore.Http;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
+using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
@@ -42,10 +39,9 @@ namespace SIL.XForge.Services
             return Expression.Lambda<Func<TOtherEntity, bool>>(resultBody, ePar);
         }
 
-        public UpdateDefinition<TThisEntity> GetUpdateOperation(UpdateDefinitionBuilder<TThisEntity> update,
-            IEnumerable<string> ids)
+        public bool Update(IUpdateBuilder<TThisEntity> update, IEnumerable<string> ids)
         {
-            throw new JsonApiException(StatusCodes.Status400BadRequest, "The relationship cannot be updated.");
+            return false;
         }
     }
 }

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
+using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
@@ -32,10 +31,10 @@ namespace SIL.XForge.Services
             return await _otherResourceMapper.MapMatchingAsync(included, resources, q => q.Where(e => e.Id == id));
         }
 
-        public UpdateDefinition<TThisEntity> GetUpdateOperation(UpdateDefinitionBuilder<TThisEntity> update,
-            IEnumerable<string> ids)
+        public bool Update(IUpdateBuilder<TThisEntity> update, IEnumerable<string> ids)
         {
-            return update.Set(_getFieldExpr, ids.Single());
+            update.Set(_getFieldExpr, ids.Single());
+            return true;
         }
     }
 }

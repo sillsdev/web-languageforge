@@ -9,8 +9,6 @@ using Hangfire;
 using Hangfire.Server;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 using ShareDB;
 using ShareDB.RichText;
 using SIL.XForge.DataAccess;

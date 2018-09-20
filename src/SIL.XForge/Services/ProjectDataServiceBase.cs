@@ -8,8 +8,6 @@ using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Services;
 using LinqKit;
 using Microsoft.AspNetCore.Http;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 

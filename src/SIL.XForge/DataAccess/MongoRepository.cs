@@ -57,14 +57,16 @@ namespace SIL.XForge.DataAccess
             return false;
         }
 
-        public async Task<T> UpdateAsync(Expression<Func<T, bool>> filter,
-            Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update, bool upsert = false)
+        public async Task<T> UpdateAsync(Expression<Func<T, bool>> filter, Action<IUpdateBuilder<T>> update,
+            bool upsert = false)
         {
             var now = DateTime.UtcNow;
-            return await _collection.FindOneAndUpdateAsync(filter,
-                update(Builders<T>.Update)
-                    .Set(e => e.DateModified, now)
-                    .SetOnInsert(e => e.DateCreated, now),
+            var updateBuilder = new MongoUpdateBuilder<T>();
+            update(updateBuilder);
+            UpdateDefinition<T> updateDef = updateBuilder.Build()
+                .Set(e => e.DateModified, now)
+                .SetOnInsert(e => e.DateCreated, now);
+            return await _collection.FindOneAndUpdateAsync(filter, updateDef,
                 new FindOneAndUpdateOptions<T>
                 {
                     IsUpsert = upsert,

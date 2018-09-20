@@ -11,8 +11,6 @@ using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Models;
 using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Http;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
@@ -167,31 +165,35 @@ namespace SIL.XForge.Services
         {
             return Entities.UpdateAsync(e => e.Id == id, update =>
                 {
-                    var updates = new List<UpdateDefinition<TEntity>>();
                     foreach (KeyValuePair<string, object> attr in attrs)
-                        updates.Add(update.Set(attr.Key, attr.Value));
+                        update.Set(attr.Key, attr.Value);
 
                     foreach (KeyValuePair<string, string> rel in relationships)
                     {
                         IRelationship<TEntity> relationship = GetRelationship(rel.Key);
-                        updates.Add(relationship.GetUpdateOperation(update, new[] { rel.Value }));
+                        if (!relationship.Update(update, new[] { rel.Value }))
+                        {
+                            throw new JsonApiException(StatusCodes.Status400BadRequest,
+                                $"The relationship '{rel.Key}' cannot be updated.");
+                        }
                     }
-
-                    return update.Combine(updates);
                 });
         }
 
         protected virtual Task UpdateEntityRelationshipAsync(string id, IRelationship<TEntity> relationship,
             IEnumerable<string> relationshipIds)
         {
-            return Entities.UpdateAsync(e => e.Id == id,
-                update => relationship.GetUpdateOperation(update, relationshipIds));
+            return Entities.UpdateAsync(e => e.Id == id, update =>
+                {
+                    if (!relationship.Update(update, relationshipIds))
+                        throw UnsupportedRequestMethodException();
+                });
         }
 
         protected virtual IRelationship<TEntity> GetRelationship(string relationshipName)
         {
-            throw new JsonApiException(StatusCodes.Status422UnprocessableEntity,
-                $"Relationship '{relationshipName}' does not exist on resource '{typeof(TResource)}'.");
+            throw new JsonApiException(StatusCodes.Status400BadRequest,
+                $"The relationship '{relationshipName}' does not exist.");
         }
 
         protected virtual void SetNewEntityRelationships(TEntity entity, TResource resource)
@@ -244,12 +246,12 @@ namespace SIL.XForge.Services
         protected IRelationship<TEntity> Custom<TOtherResource, TOtherEntity>(
             IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Func<TEntity, Expression<Func<TOtherEntity, bool>>> createPredicate,
-            Func<UpdateDefinitionBuilder<TEntity>, IEnumerable<string>, UpdateDefinition<TEntity>> createOperation = null)
+            Action<IUpdateBuilder<TEntity>, IEnumerable<string>> update = null)
                 where TOtherResource : Resource
                 where TOtherEntity : Entity
         {
             return new CustomRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, createPredicate,
-                createOperation);
+                update);
         }
 
         protected JsonApiException ForbiddenException()
@@ -261,6 +263,12 @@ namespace SIL.XForge.Services
         protected JsonApiException NotFoundException()
         {
             return new JsonApiException(StatusCodes.Status404NotFound, "The resource could not be found.");
+        }
+
+        protected JsonApiException UnsupportedRequestMethodException()
+        {
+            return new JsonApiException(StatusCodes.Status405MethodNotAllowed, "Request method is not supported.",
+                "https://json-api-dotnet.github.io/#/errors/UnSupportedRequestMethod");
         }
 
         private async Task<IQueryable<TEntity>> ApplyRightFilterAsync(IQueryable<TEntity> query)
