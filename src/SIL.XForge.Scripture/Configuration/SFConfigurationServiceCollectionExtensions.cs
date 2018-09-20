@@ -10,8 +10,9 @@ namespace SIL.XForge.Scripture.Configuration
             IConfiguration configuration)
         {
             services.AddConfiguration(configuration);
-            services.AddOptions<ParatextOptions>();
-            services.AddOptions<SendReceiveOptions>();
+            services.AddOptions<ParatextOptions>(configuration);
+            services.AddOptions<SendReceiveOptions>(configuration);
+            services.AddOptions<RealtimeOptions>(configuration);
             return services;
         }
     }

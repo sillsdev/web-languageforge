@@ -6,7 +6,6 @@ var ShareDBMongo = require('sharedb-mongo');
 var WebSocketJSONStream = require('websocket-json-stream');
 var WebSocket = require('ws');
 
-var webSocketDocServerPort = 5002;
 ShareDB.types.register(richText.type);
 
 var backend = null;
@@ -17,7 +16,7 @@ app.use(express.static('static'));
 var server = http.createServer(app);
 
 module.exports = {
-  start: function (callback, mongo) {
+  start: function (callback, mongo, port) {
     var database = ShareDBMongo(mongo);
     backend = new ShareDB({
       db: database,
@@ -36,10 +35,10 @@ module.exports = {
       callback(err);
     });
     server.on('listening', function() {
-      console.log('Realtime Server is listening on http://localhost:' + webSocketDocServerPort);
+      console.log('Realtime Server is listening on http://localhost:' + port);
       callback();
     });
-    server.listen(webSocketDocServerPort);
+    server.listen(port);
   },
 
   stop: function(callback) {
