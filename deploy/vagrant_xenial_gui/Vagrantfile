@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "shell", privileged: false, inline: <<~SHELL
-    set -eux
+    set -eux -o pipefail
 
     # Delete and generate unique host keys until handled by base box.
     sudo rm -v /etc/ssh/ssh_host_*
@@ -27,5 +27,7 @@ Vagrant.configure("2") do |config|
     cd ~/src/web-languageforge
     git pull --ff-only --recurse-submodules
     ./refreshDeps.sh
+
+    sudo npm install -g @angular/cli@6.1.5
   SHELL
 end
