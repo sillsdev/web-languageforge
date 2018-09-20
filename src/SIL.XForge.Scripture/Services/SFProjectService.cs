@@ -15,7 +15,7 @@ namespace SIL.XForge.Scripture.Services
         {
         }
 
-        public IResourceQueryable<SendReceiveJobResource, SendReceiveJobEntity> SendReceiveJobResources { get; set; }
+        public IResourceMapper<SendReceiveJobResource, SendReceiveJobEntity> SendReceiveJobResources { get; set; }
 
         protected override IRelationship<SFProjectEntity> GetRelationship(string relationshipName)
         {

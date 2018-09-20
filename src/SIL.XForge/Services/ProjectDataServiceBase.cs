@@ -31,8 +31,8 @@ namespace SIL.XForge.Services
             _projects = projects;
         }
 
-        public IResourceQueryable<TProjectResource, TProjectEntity> ProjectResources { get; set; }
-        public IResourceQueryable<UserResource, UserEntity> UserResources { get; set; }
+        public IResourceMapper<TProjectResource, TProjectEntity> ProjectResourceMapper { get; set; }
+        public IResourceMapper<UserResource, UserEntity> UserResourceMapper { get; set; }
 
         protected abstract Domain Domain { get; }
 
@@ -41,9 +41,9 @@ namespace SIL.XForge.Services
             switch (relationshipName)
             {
                 case ProjectDataResource.ProjectRelationship:
-                    return ManyToOne(ProjectResources, ProjectRef());
+                    return ManyToOne(ProjectResourceMapper, ProjectRef());
                 case ProjectDataResource.OwnerRelationship:
-                    return ManyToOne(UserResources, (TEntity p) => p.OwnerRef);
+                    return ManyToOne(UserResourceMapper, (TEntity p) => p.OwnerRef);
             }
             return base.GetRelationship(relationshipName);
         }

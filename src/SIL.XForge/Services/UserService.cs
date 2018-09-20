@@ -19,7 +19,7 @@ namespace SIL.XForge.Services
         {
         }
 
-        public IResourceQueryable<TProjectResource, TProjectEntity> ProjectResources { get; set; }
+        public IResourceMapper<TProjectResource, TProjectEntity> ProjectResourceMapper { get; set; }
 
         protected override Task<UserEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
             IDictionary<string, string> relationships)
@@ -34,7 +34,7 @@ namespace SIL.XForge.Services
             switch (relationshipName)
             {
                 case UserResource.ProjectsRelationship:
-                    return Custom(ProjectResources, (UserEntity u) => { return p => p.Users.ContainsKey(u.Id); });
+                    return Custom(ProjectResourceMapper, (UserEntity u) => { return p => p.Users.ContainsKey(u.Id); });
             }
             return base.GetRelationship(relationshipName);
         }

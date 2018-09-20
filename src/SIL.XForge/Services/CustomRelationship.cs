@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using JsonApiDotNetCore.Internal;
@@ -15,15 +16,15 @@ namespace SIL.XForge.Services
         where TOtherResource : Resource
         where TOtherEntity : Entity
     {
-        private readonly IResourceQueryable<TOtherResource, TOtherEntity> _otherResources;
+        private readonly IResourceMapper<TOtherResource, TOtherEntity> _otherResourceMapper;
         private readonly Func<TThisEntity, Expression<Func<TOtherEntity, bool>>> _createPredicate;
         private readonly Func<UpdateDefinitionBuilder<TThisEntity>, IEnumerable<string>, UpdateDefinition<TThisEntity>> _createOperation;
 
-        public CustomRelationship(IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+        public CustomRelationship(IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Func<TThisEntity, Expression<Func<TOtherEntity, bool>>> createPredicate,
             Func<UpdateDefinitionBuilder<TThisEntity>, IEnumerable<string>, UpdateDefinition<TThisEntity>> createOperation = null)
         {
-            _otherResources = otherResources;
+            _otherResourceMapper = otherResourceMapper;
             _createPredicate = createPredicate;
             _createOperation = createOperation;
         }
@@ -31,7 +32,7 @@ namespace SIL.XForge.Services
         public async Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
             Dictionary<string, Resource> resources, TThisEntity entity)
         {
-            return await _otherResources.QueryAsync(included, resources, q => q.Where(_createPredicate(entity)));
+            return await _otherResourceMapper.MapMatchingAsync(included, resources, q => q.Where(_createPredicate(entity)));
         }
 
         public UpdateDefinition<TThisEntity> GetUpdateOperation(UpdateDefinitionBuilder<TThisEntity> update,

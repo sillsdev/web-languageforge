@@ -17,20 +17,20 @@ namespace SIL.XForge.Services
         where TOtherResource : Resource
         where TOtherEntity : Entity
     {
-        private readonly IResourceQueryable<TOtherResource, TOtherEntity> _otherResources;
+        private readonly IResourceMapper<TOtherResource, TOtherEntity> _otherResourceMapper;
         private readonly Expression<Func<TOtherEntity, List<string>>> _getFieldExpr;
 
-        public ManyToManyOtherRelationship(IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+        public ManyToManyOtherRelationship(IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TOtherEntity, List<string>>> getFieldExpr)
         {
-            _otherResources = otherResources;
+            _otherResourceMapper = otherResourceMapper;
             _getFieldExpr = getFieldExpr;
         }
 
         public async Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
             Dictionary<string, Resource> resources, TThisEntity entity)
         {
-            return await _otherResources.QueryAsync(included, resources,
+            return await _otherResourceMapper.MapMatchingAsync(included, resources,
                 q => q.Where(CreateContainsPredicate(entity.Id)));
         }
 

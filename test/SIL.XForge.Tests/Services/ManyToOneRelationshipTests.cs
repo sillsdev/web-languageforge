@@ -18,12 +18,12 @@ namespace SIL.XForge.Services
                 Id = "project1",
                 ProjectName = "Test"
             };
-            var projectResources = Substitute.For<IResourceQueryable<ProjectResource, ProjectEntity>>();
-            projectResources.QueryAsync(null, null, null)
+            var projectResourceMapper = Substitute.For<IResourceMapper<ProjectResource, ProjectEntity>>();
+            projectResourceMapper.MapMatchingAsync(null, null, null)
                 .ReturnsForAnyArgs(Task.FromResult<IEnumerable<ProjectResource>>(new[] { projectResource }));
 
-            var rel = new ManyToOneRelationship<ProjectDataEntity, ProjectResource, ProjectEntity>(projectResources,
-                e => e.ProjectRef);
+            var rel = new ManyToOneRelationship<ProjectDataEntity, ProjectResource, ProjectEntity>(
+                projectResourceMapper, e => e.ProjectRef);
             var entity = new ProjectDataEntity
             {
                 Id = "entity1",

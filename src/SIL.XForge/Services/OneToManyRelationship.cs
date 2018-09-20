@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using JsonApiDotNetCore.Internal;
@@ -15,20 +16,21 @@ namespace SIL.XForge.Services
         where TOtherResource : Resource
         where TOtherEntity : Entity
     {
-        private readonly IResourceQueryable<TOtherResource, TOtherEntity> _otherResources;
+        private readonly IResourceMapper<TOtherResource, TOtherEntity> _otherResourceMapper;
         private readonly Expression<Func<TOtherEntity, string>> _getFieldExpr;
 
-        public OneToManyRelationship(IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+        public OneToManyRelationship(IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TOtherEntity, string>> getFieldExpr)
         {
-            _otherResources = otherResources;
+            _otherResourceMapper = otherResourceMapper;
             _getFieldExpr = getFieldExpr;
         }
 
         public async Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
             Dictionary<string, Resource> resources, TThisEntity entity)
         {
-            return await _otherResources.QueryAsync(included, resources, q => q.Where(CreateEqualPredicate(entity.Id)));
+            return await _otherResourceMapper.MapMatchingAsync(included, resources,
+                q => q.Where(CreateEqualPredicate(entity.Id)));
         }
 
         private Expression<Func<TOtherEntity, bool>> CreateEqualPredicate(string id)

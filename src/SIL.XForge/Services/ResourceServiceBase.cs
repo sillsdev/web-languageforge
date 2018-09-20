@@ -19,7 +19,7 @@ using SIL.XForge.Models;
 namespace SIL.XForge.Services
 {
     public abstract class ResourceServiceBase<TResource, TEntity> : IResourceService<TResource, string>,
-        IResourceQueryable<TResource, TEntity>
+        IResourceMapper<TResource, TEntity>
         where TResource : Resource
         where TEntity : Entity
     {
@@ -47,7 +47,7 @@ namespace SIL.XForge.Services
             var entity = _mapper.Map<TEntity>(resource);
             SetNewEntityRelationships(entity, resource);
             entity = await InsertEntityAsync(entity);
-            return await MapWithRelationshipsAsync(entity);
+            return await MapAsync(entity);
         }
 
         public async Task<TResource> UpdateAsync(string id, TResource resource)
@@ -81,11 +81,11 @@ namespace SIL.XForge.Services
 
         public async Task<IEnumerable<TResource>> GetAsync()
         {
-            IMongoQueryable<TEntity> query = Entities.Query();
+            IQueryable<TEntity> query = Entities.Query();
             query = await ApplyRightFilterAsync(query);
             query = ApplySortAndFilterQuery(query);
             query = await ApplyPageQueryAsync(query);
-            return await query.ToListAsync(MapWithRelationshipsAsync);
+            return await query.ToListAsync(MapAsync);
         }
 
         public async Task<TResource> GetAsync(string id)
@@ -93,7 +93,7 @@ namespace SIL.XForge.Services
             TEntity entity = await GetEntityAsync(id);
             if (entity == null)
                 return null;
-            return await MapWithRelationshipsAsync(entity);
+            return await MapAsync(entity);
         }
 
         public async Task<object> GetRelationshipAsync(string id, string relationshipName)
@@ -111,14 +111,44 @@ namespace SIL.XForge.Services
             return GetRelationshipAsync(id, relationshipName);
         }
 
-        public async Task<IEnumerable<TResource>> QueryAsync(IEnumerable<string> included,
-            Dictionary<string, Resource> resources,
-            Func<IMongoQueryable<TEntity>, IMongoQueryable<TEntity>> querySelector)
+        private Task<TResource> MapAsync(TEntity entity)
         {
-            IMongoQueryable<TEntity> query = Entities.Query();
+            return MapAsync(_jsonApiContext.QuerySet?.IncludedRelationships,
+                new Dictionary<string, Resource>(), entity);
+        }
+
+        public async Task<TResource> MapAsync(IEnumerable<string> included,
+            Dictionary<string, Resource> resources, TEntity entity)
+        {
+            if (resources.TryGetValue(entity.Id, out Resource existing))
+                return (TResource) existing;
+
+            TResource resource = _mapper.Map<TResource>(entity);
+            resources[entity.Id] = resource;
+
+            if (included != null)
+            {
+                foreach (string fullName in included)
+                {
+                    string[] relParts = fullName.Split('.');
+                    string relationshipName = relParts[0];
+                    (string propertyName, object value) = await GetRelationshipResourcesAsync(relationshipName,
+                        relParts.Skip(1), resources, entity);
+                    PropertyInfo propertyInfo = typeof(TResource).GetProperty(propertyName);
+                    propertyInfo.SetValue(resource, value);
+                }
+            }
+            return resource;
+        }
+
+        public async Task<IEnumerable<TResource>> MapMatchingAsync(IEnumerable<string> included,
+            Dictionary<string, Resource> resources,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>> querySelector)
+        {
+            IQueryable<TEntity> query = Entities.Query();
             query = await ApplyRightFilterAsync(query);
             query = querySelector(query);
-            return await query.ToListAsync(e => MapWithRelationshipsAsync(included, resources, e));
+            return await query.ToListAsync(e => MapAsync(included, resources, e));
         }
 
         protected virtual async Task<TEntity> InsertEntityAsync(TEntity entity)
@@ -174,51 +204,51 @@ namespace SIL.XForge.Services
         protected abstract Task<Expression<Func<TEntity, bool>>> GetRightFilterAsync();
 
         protected IRelationship<TEntity> ManyToManyThis<TOtherResource, TOtherEntity>(
-            IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TEntity, List<string>>> getFieldExpr)
                 where TOtherResource : Resource
                 where TOtherEntity : Entity
         {
-            return new ManyToManyThisRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources,
+            return new ManyToManyThisRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper,
                 getFieldExpr);
         }
 
         protected IRelationship<TEntity> ManyToManyOther<TOtherResource, TOtherEntity>(
-            IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TOtherEntity, List<string>>> getFieldExpr)
                 where TOtherResource : Resource
                 where TOtherEntity : Entity
         {
-            return new ManyToManyOtherRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources,
+            return new ManyToManyOtherRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper,
                 getFieldExpr);
         }
 
         protected IRelationship<TEntity> ManyToOne<TOtherResource, TOtherEntity>(
-            IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TEntity, string>> getFieldExpr)
                 where TOtherResource : Resource
                 where TOtherEntity : Entity
         {
-            return new ManyToOneRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources, getFieldExpr);
+            return new ManyToOneRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, getFieldExpr);
         }
 
         protected IRelationship<TEntity> OneToMany<TOtherResource, TOtherEntity>(
-            IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TOtherEntity, string>> getFieldExpr)
                 where TOtherResource : Resource
                 where TOtherEntity : Entity
         {
-            return new OneToManyRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources, getFieldExpr);
+            return new OneToManyRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, getFieldExpr);
         }
 
         protected IRelationship<TEntity> Custom<TOtherResource, TOtherEntity>(
-            IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Func<TEntity, Expression<Func<TOtherEntity, bool>>> createPredicate,
             Func<UpdateDefinitionBuilder<TEntity>, IEnumerable<string>, UpdateDefinition<TEntity>> createOperation = null)
                 where TOtherResource : Resource
                 where TOtherEntity : Entity
         {
-            return new CustomRelationship<TEntity, TOtherResource, TOtherEntity>(otherResources, createPredicate,
+            return new CustomRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, createPredicate,
                 createOperation);
         }
 
@@ -233,12 +263,12 @@ namespace SIL.XForge.Services
             return new JsonApiException(StatusCodes.Status404NotFound, "The resource could not be found.");
         }
 
-        private async Task<IMongoQueryable<TEntity>> ApplyRightFilterAsync(IMongoQueryable<TEntity> query)
+        private async Task<IQueryable<TEntity>> ApplyRightFilterAsync(IQueryable<TEntity> query)
         {
             return query.Where((await GetRightFilterAsync()) ?? (e => false));
         }
 
-        private IMongoQueryable<TEntity> ApplySortAndFilterQuery(IMongoQueryable<TEntity> entities)
+        private IQueryable<TEntity> ApplySortAndFilterQuery(IQueryable<TEntity> entities)
         {
             QuerySet query = _jsonApiContext.QuerySet;
 
@@ -248,16 +278,16 @@ namespace SIL.XForge.Services
             if (query.Filters.Count > 0)
             {
                 foreach (FilterQuery filter in query.Filters)
-                    entities = (IMongoQueryable<TEntity>) entities.Filter(_jsonApiContext, filter);
+                    entities = entities.Filter(_jsonApiContext, filter);
             }
 
             if (query.SortParameters != null && query.SortParameters.Count > 0)
-                entities = (IMongoQueryable<TEntity>) entities.Sort(query.SortParameters);
+                entities = entities.Sort(query.SortParameters);
 
             return entities;
         }
 
-        private async Task<IMongoQueryable<TEntity>> ApplyPageQueryAsync(IMongoQueryable<TEntity> entities)
+        private async Task<IQueryable<TEntity>> ApplyPageQueryAsync(IQueryable<TEntity> entities)
         {
             PageManager pageManager = _jsonApiContext.PageManager;
             if (pageManager.IsPaginated)
@@ -271,8 +301,7 @@ namespace SIL.XForge.Services
 
                 if (pageManager.CurrentPage >= 0)
                 {
-                    entities = (IMongoQueryable<TEntity>) entities.PageForward(pageManager.PageSize,
-                        pageManager.CurrentPage);
+                    entities = entities.PageForward(pageManager.PageSize, pageManager.CurrentPage);
                 }
                 else
                 {
@@ -292,39 +321,9 @@ namespace SIL.XForge.Services
 
         private async Task<TEntity> GetEntityAsync(string id)
         {
-            IMongoQueryable<TEntity> query = Entities.Query().Where(e => e.Id == id);
+            IQueryable<TEntity> query = Entities.Query().Where(e => e.Id == id);
             query = await ApplyRightFilterAsync(query);
             return await query.SingleOrDefaultAsync();
-        }
-
-        private Task<TResource> MapWithRelationshipsAsync(TEntity entity)
-        {
-            return MapWithRelationshipsAsync(_jsonApiContext.QuerySet?.IncludedRelationships,
-                new Dictionary<string, Resource>(), entity);
-        }
-
-        private async Task<TResource> MapWithRelationshipsAsync(IEnumerable<string> included,
-            Dictionary<string, Resource> resources, TEntity entity)
-        {
-            if (resources.TryGetValue(entity.Id, out Resource existing))
-                return (TResource) existing;
-
-            TResource resource = _mapper.Map<TResource>(entity);
-            resources[entity.Id] = resource;
-
-            if (included != null)
-            {
-                foreach (string fullName in included)
-                {
-                    string[] relParts = fullName.Split('.');
-                    string relationshipName = relParts[0];
-                    (string propertyName, object value) = await GetRelationshipResourcesAsync(relationshipName,
-                        relParts.Skip(1), resources, entity);
-                    PropertyInfo propertyInfo = typeof(TResource).GetProperty(propertyName);
-                    propertyInfo.SetValue(resource, value);
-                }
-            }
-            return resource;
         }
 
         private async Task<(string, object)> GetRelationshipResourcesAsync(string relationshipName,

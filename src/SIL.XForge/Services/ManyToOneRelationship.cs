@@ -14,13 +14,13 @@ namespace SIL.XForge.Services
         where TOtherResource : Resource
         where TOtherEntity : Entity
     {
-        private readonly IResourceQueryable<TOtherResource, TOtherEntity> _otherResources;
+        private readonly IResourceMapper<TOtherResource, TOtherEntity> _otherResourceMapper;
         private readonly Expression<Func<TThisEntity, string>> _getFieldExpr;
 
-        public ManyToOneRelationship(IResourceQueryable<TOtherResource, TOtherEntity> otherResources,
+        public ManyToOneRelationship(IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TThisEntity, string>> getFieldExpr)
         {
-            _otherResources = otherResources;
+            _otherResourceMapper = otherResourceMapper;
             _getFieldExpr = getFieldExpr;
         }
 
@@ -29,7 +29,7 @@ namespace SIL.XForge.Services
         {
             Func<TThisEntity, string> getField = _getFieldExpr.Compile();
             string id = getField(entity);
-            return await _otherResources.QueryAsync(included, resources, q => q.Where(e => e.Id == id));
+            return await _otherResourceMapper.MapMatchingAsync(included, resources, q => q.Where(e => e.Id == id));
         }
 
         public UpdateDefinition<TThisEntity> GetUpdateOperation(UpdateDefinitionBuilder<TThisEntity> update,

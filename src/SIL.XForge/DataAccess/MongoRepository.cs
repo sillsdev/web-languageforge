@@ -1,8 +1,8 @@
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 using SIL.XForge.Models;
 
 namespace SIL.XForge.DataAccess
@@ -16,7 +16,7 @@ namespace SIL.XForge.DataAccess
             _collection = collection;
         }
 
-        public IMongoQueryable<T> Query()
+        public IQueryable<T> Query()
         {
             return _collection.AsQueryable();
         }
