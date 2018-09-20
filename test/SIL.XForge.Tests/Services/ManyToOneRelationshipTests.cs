@@ -19,8 +19,9 @@ namespace SIL.XForge.Services
                 ProjectName = "Test"
             };
             var projectResourceMapper = Substitute.For<IResourceMapper<ProjectResource, ProjectEntity>>();
+            IEnumerable<ProjectResource> projectResources = new[] { projectResource };
             projectResourceMapper.MapMatchingAsync(null, null, null)
-                .ReturnsForAnyArgs(Task.FromResult<IEnumerable<ProjectResource>>(new[] { projectResource }));
+                .ReturnsForAnyArgs(Task.FromResult(projectResources));
 
             var rel = new ManyToOneRelationship<ProjectDataEntity, ProjectResource, ProjectEntity>(
                 projectResourceMapper, e => e.ProjectRef);

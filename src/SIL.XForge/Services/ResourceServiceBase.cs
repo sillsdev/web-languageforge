@@ -67,7 +67,9 @@ namespace SIL.XForge.Services
 
             IEnumerable<string> relationshipIds = relationships.Select(r => r?.Id?.ToString());
             IRelationship<TEntity> relationship = GetRelationship(relationshipName);
-            await UpdateEntityRelationshipAsync(id, relationship, relationshipIds);
+            TEntity entity = await UpdateEntityRelationshipAsync(id, relationship, relationshipIds);
+            if (entity == null)
+                throw NotFoundException();
         }
 
         public async Task<bool> DeleteAsync(string id)
@@ -180,7 +182,7 @@ namespace SIL.XForge.Services
                 });
         }
 
-        protected virtual Task UpdateEntityRelationshipAsync(string id, IRelationship<TEntity> relationship,
+        protected virtual Task<TEntity> UpdateEntityRelationshipAsync(string id, IRelationship<TEntity> relationship,
             IEnumerable<string> relationshipIds)
         {
             return Entities.UpdateAsync(e => e.Id == id, update =>
@@ -283,7 +285,7 @@ namespace SIL.XForge.Services
             if (_jsonApiContext.QuerySet == null)
                 return entities;
 
-            if (query.Filters.Count > 0)
+            if (query.Filters != null && query.Filters.Count > 0)
             {
                 foreach (FilterQuery filter in query.Filters)
                     entities = entities.Filter(_jsonApiContext, filter);
