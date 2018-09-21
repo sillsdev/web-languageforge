@@ -121,7 +121,7 @@ namespace SIL.XForge.Services
 
             UserResource[] resources = (await env.Service.GetAsync()).ToArray();
 
-            Assert.That(resources.Select(r => r.Id), Is.EqualTo(new[] { "user01" }));
+            Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[] { "user01" }));
         }
 
         [Test]
@@ -136,7 +136,7 @@ namespace SIL.XForge.Services
 
             UserResource[] resources = (await env.Service.GetAsync()).ToArray();
 
-            Assert.That(resources.Select(r => r.Id), Is.EqualTo(new[] { "user01", "user02", "user03" }));
+            Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[] { "user01", "user02", "user03" }));
         }
 
         [Test]
@@ -180,18 +180,12 @@ namespace SIL.XForge.Services
                         new TestProjectEntity
                         {
                             Id = "project01",
-                            Users =
-                            {
-                                { "user01", new ProjectRole { Role = TestProjectRoles.Manager } }
-                            }
+                            Users = { { "user01", new ProjectRole(TestProjectRoles.Manager) } }
                         },
                         new TestProjectEntity
                         {
                             Id = "project02",
-                            Users =
-                            {
-                                { "user01", new ProjectRole { Role = TestProjectRoles.Manager } }
-                            }
+                            Users = { { "user01", new ProjectRole(TestProjectRoles.Manager) } }
                         }
                     });
 
