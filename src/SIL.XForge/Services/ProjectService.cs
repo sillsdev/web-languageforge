@@ -1,5 +1,4 @@
-using System;
-using System.Linq.Expressions;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Services;
@@ -45,19 +44,11 @@ namespace SIL.XForge.Services
             return CheckCanUpdateAsync(id);
         }
 
-        protected override Task<Expression<Func<TEntity, bool>>> GetRightFilterAsync()
+        protected override Task<IQueryable<TEntity>> ApplyPermissionFilterAsync(IQueryable<TEntity> query)
         {
-            Expression<Func<TEntity, bool>> filter = null;
-            switch (SystemRole)
-            {
-                case SystemRoles.User:
-                    filter = (TEntity p) => p.Users.ContainsKey(UserId);
-                    break;
-                case SystemRoles.SystemAdmin:
-                    filter = (TEntity u) => true;
-                    break;
-            }
-            return Task.FromResult(filter);
+            if (SystemRole == SystemRoles.User)
+                query = query.Where(p => p.Users.ContainsKey(UserId));
+            return Task.FromResult(query);
         }
     }
 }

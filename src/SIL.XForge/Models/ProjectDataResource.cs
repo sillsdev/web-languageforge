@@ -7,10 +7,12 @@ namespace SIL.XForge.Models
         public const string ProjectRelationship = "project";
         public const string OwnerRelationship = "owner";
 
-        [HasOne(ProjectRelationship)]
+        [HasOne(ProjectRelationship, withForeignKey: nameof(ProjectRef))]
         public ProjectResource Project { get; set; }
+        public string ProjectRef { get; set; }
 
-        [HasOne(OwnerRelationship)]
+        [HasOne(OwnerRelationship, withForeignKey: nameof(OwnerRef))]
         public UserResource Owner { get; set; }
+        public string OwnerRef { get; set; }
     }
 }

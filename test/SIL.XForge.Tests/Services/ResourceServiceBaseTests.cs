@@ -30,7 +30,8 @@ namespace SIL.XForge.Services
             {
                 Id = "testnew",
                 Str = "new",
-                User = new UserResource { Id = "user1" }
+                User = new UserResource { Id = "user1" },
+                UserRef = "user1"
             };
             TestResource updatedResource = await env.Service.CreateAsync(resource);
 

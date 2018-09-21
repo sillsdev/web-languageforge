@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Services;
@@ -66,19 +65,11 @@ namespace SIL.XForge.Services
             return CheckCanUpdateAsync(id);
         }
 
-        protected override Task<Expression<Func<UserEntity, bool>>> GetRightFilterAsync()
+        protected override Task<IQueryable<UserEntity>> ApplyPermissionFilterAsync(IQueryable<UserEntity> query)
         {
-            Expression<Func<UserEntity, bool>> filter = null;
-            switch (SystemRole)
-            {
-                case SystemRoles.User:
-                    filter = (UserEntity u) => u.Id == UserId;
-                    break;
-                case SystemRoles.SystemAdmin:
-                    filter = (UserEntity u) => true;
-                    break;
-            }
-            return Task.FromResult(filter);
+            if (SystemRole == SystemRoles.User)
+                query = query.Where(u => u.Id == UserId);
+            return Task.FromResult(query);
         }
     }
 }

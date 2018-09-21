@@ -1,5 +1,4 @@
-using System;
-using System.Linq.Expressions;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Services;
@@ -16,12 +15,6 @@ namespace SIL.XForge.Services
         }
 
         public IResourceMapper<UserResource, UserEntity> UserResourceMapper { get; set; }
-
-        protected override void SetNewEntityRelationships(TestEntity entity, TestResource resource)
-        {
-            if (resource.User != null)
-                entity.UserRef = resource.User.Id;
-        }
 
         protected override IRelationship<TestEntity> GetRelationship(string relationshipName)
         {
@@ -48,9 +41,9 @@ namespace SIL.XForge.Services
             return Task.CompletedTask;
         }
 
-        protected override Task<Expression<Func<TestEntity, bool>>> GetRightFilterAsync()
+        protected override Task<IQueryable<TestEntity>> ApplyPermissionFilterAsync(IQueryable<TestEntity> query)
         {
-            return Task.FromResult<Expression<Func<TestEntity, bool>>>((TestEntity e) => true);
+            return Task.FromResult(query);
         }
     }
 }

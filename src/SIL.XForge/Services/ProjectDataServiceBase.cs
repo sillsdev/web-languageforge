@@ -46,14 +46,6 @@ namespace SIL.XForge.Services
             return base.GetRelationship(relationshipName);
         }
 
-        protected override void SetNewEntityRelationships(TEntity entity, TResource resource)
-        {
-            base.SetNewEntityRelationships(entity, resource);
-            if (resource.Project != null)
-                entity.ProjectRef = resource.Project.Id;
-            entity.OwnerRef = UserId;
-        }
-
         protected override async Task CheckCanCreateAsync(TResource resource)
         {
             if (resource.Project == null)
@@ -76,7 +68,7 @@ namespace SIL.XForge.Services
             return CheckCanUpdateDeleteAsync(id, Operation.Delete, Operation.DeleteOwn);
         }
 
-        protected override async Task<Expression<Func<TEntity, bool>>> GetRightFilterAsync()
+        protected override async Task<IQueryable<TEntity>> ApplyPermissionFilterAsync(IQueryable<TEntity> query)
         {
             List<TProjectEntity> projects = await _projects.Query().Where(p => p.Users.ContainsKey(UserId))
                 .ToListAsync();
@@ -95,7 +87,9 @@ namespace SIL.XForge.Services
                     isEmpty = false;
                 }
             }
-            return isEmpty ? null : wherePredicate;
+            if (isEmpty)
+                return query.Where(e => false);
+            return query.Where(wherePredicate);
         }
 
         private async Task CheckCanUpdateDeleteAsync(string id, Operation op, Operation ownOp)

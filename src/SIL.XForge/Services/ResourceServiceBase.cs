@@ -43,7 +43,6 @@ namespace SIL.XForge.Services
             await CheckCanCreateAsync(resource);
 
             var entity = _mapper.Map<TEntity>(resource);
-            SetNewEntityRelationships(entity, resource);
             entity = await InsertEntityAsync(entity);
             return await MapAsync(entity);
         }
@@ -82,7 +81,7 @@ namespace SIL.XForge.Services
         public async Task<IEnumerable<TResource>> GetAsync()
         {
             IQueryable<TEntity> query = Entities.Query();
-            query = await ApplyRightFilterAsync(query);
+            query = await ApplyPermissionFilterAsync(query);
             query = ApplySortAndFilterQuery(query);
             query = await ApplyPageQueryAsync(query);
             return await query.ToListAsync(MapAsync);
@@ -146,7 +145,7 @@ namespace SIL.XForge.Services
             Func<IQueryable<TEntity>, IQueryable<TEntity>> querySelector)
         {
             IQueryable<TEntity> query = Entities.Query();
-            query = await ApplyRightFilterAsync(query);
+            query = await ApplyPermissionFilterAsync(query);
             query = querySelector(query);
             return await query.ToListAsync(e => MapAsync(included, resources, e));
         }
@@ -198,14 +197,10 @@ namespace SIL.XForge.Services
                 $"The relationship '{relationshipName}' does not exist.");
         }
 
-        protected virtual void SetNewEntityRelationships(TEntity entity, TResource resource)
-        {
-        }
-
         protected abstract Task CheckCanCreateAsync(TResource resource);
         protected abstract Task CheckCanUpdateAsync(string id);
         protected abstract Task CheckCanDeleteAsync(string id);
-        protected abstract Task<Expression<Func<TEntity, bool>>> GetRightFilterAsync();
+        protected abstract Task<IQueryable<TEntity>> ApplyPermissionFilterAsync(IQueryable<TEntity> query);
 
         protected IRelationship<TEntity> ManyToManyThis<TOtherResource, TOtherEntity>(
             IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
@@ -273,11 +268,6 @@ namespace SIL.XForge.Services
                 "https://json-api-dotnet.github.io/#/errors/UnSupportedRequestMethod");
         }
 
-        private async Task<IQueryable<TEntity>> ApplyRightFilterAsync(IQueryable<TEntity> query)
-        {
-            return query.Where((await GetRightFilterAsync()) ?? (e => false));
-        }
-
         private IQueryable<TEntity> ApplySortAndFilterQuery(IQueryable<TEntity> entities)
         {
             QuerySet query = _jsonApiContext.QuerySet;
@@ -332,7 +322,7 @@ namespace SIL.XForge.Services
         private async Task<TEntity> GetEntityAsync(string id)
         {
             IQueryable<TEntity> query = Entities.Query().Where(e => e.Id == id);
-            query = await ApplyRightFilterAsync(query);
+            query = await ApplyPermissionFilterAsync(query);
             return await query.SingleOrDefaultAsync();
         }
 
