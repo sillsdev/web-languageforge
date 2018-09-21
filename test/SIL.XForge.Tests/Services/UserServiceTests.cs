@@ -31,6 +31,7 @@ namespace SIL.XForge.Services
                 {
                     await env.Service.CreateAsync(resource);
                 });
+
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
         }
 
@@ -69,6 +70,7 @@ namespace SIL.XForge.Services
                 {
                     await env.Service.UpdateAsync(resource.Id, resource);
                 });
+
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
 
             resource.Id = "user01";
@@ -138,6 +140,7 @@ namespace SIL.XForge.Services
                     await env.Service.UpdateRelationshipsAsync("user01", UserResource.ProjectsRelationship,
                         new List<DocumentData> { new DocumentData { Type = "projects", Id = "project02" } });
                 });
+
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status405MethodNotAllowed));
         }
 

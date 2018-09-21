@@ -204,12 +204,12 @@ namespace SIL.XForge.Services
 
         protected IRelationship<TEntity> ManyToManyThis<TOtherResource, TOtherEntity>(
             IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
-            Expression<Func<TEntity, List<string>>> getFieldExpr)
+            Expression<Func<TEntity, List<string>>> getFieldExpr, bool updateAllowed = true)
                 where TOtherResource : Resource
                 where TOtherEntity : Entity
         {
             return new ManyToManyThisRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper,
-                getFieldExpr);
+                getFieldExpr, updateAllowed);
         }
 
         protected IRelationship<TEntity> ManyToManyOther<TOtherResource, TOtherEntity>(
@@ -224,11 +224,12 @@ namespace SIL.XForge.Services
 
         protected IRelationship<TEntity> ManyToOne<TOtherResource, TOtherEntity>(
             IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
-            Expression<Func<TEntity, string>> getFieldExpr)
+            Expression<Func<TEntity, string>> getFieldExpr, bool updateAllowed = true)
                 where TOtherResource : Resource
                 where TOtherEntity : Entity
         {
-            return new ManyToOneRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, getFieldExpr);
+            return new ManyToOneRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, getFieldExpr,
+                updateAllowed);
         }
 
         protected IRelationship<TEntity> OneToMany<TOtherResource, TOtherEntity>(

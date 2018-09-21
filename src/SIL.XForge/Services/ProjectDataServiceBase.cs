@@ -39,19 +39,23 @@ namespace SIL.XForge.Services
             switch (relationshipName)
             {
                 case ProjectDataResource.ProjectRelationship:
-                    return ManyToOne(ProjectResourceMapper, ProjectRef());
+                    return ManyToOne(ProjectResourceMapper, ProjectRef(), false);
                 case ProjectDataResource.OwnerRelationship:
-                    return ManyToOne(UserResourceMapper, (TEntity p) => p.OwnerRef);
+                    return ManyToOne(UserResourceMapper, (TEntity p) => p.OwnerRef, false);
             }
             return base.GetRelationship(relationshipName);
         }
 
         protected override async Task CheckCanCreateAsync(TResource resource)
         {
-            if (resource.Project == null)
-                throw new JsonApiException(StatusCodes.Status400BadRequest, "The project relationship is not defined.");
+            if (string.IsNullOrEmpty(resource.ProjectRef))
+                throw new JsonApiException(StatusCodes.Status400BadRequest, "The project is not defined.");
+            if (string.IsNullOrEmpty(resource.OwnerRef))
+                throw new JsonApiException(StatusCodes.Status400BadRequest, "The owner is not defined.");
+            if (resource.OwnerRef != UserId)
+                throw new JsonApiException(StatusCodes.Status400BadRequest, "The owner is not the current user.");
 
-            ProjectEntity project = await _projects.GetAsync(resource.Project.Id);
+            ProjectEntity project = await _projects.GetAsync(resource.ProjectRef);
             if (HasRight(project, Operation.Create))
                 return;
 

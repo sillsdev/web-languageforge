@@ -34,6 +34,7 @@ namespace SIL.XForge.Services
                 {
                     await env.Service.UpdateAsync(resource.Id, resource);
                 });
+
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
 
             resource.Id = "project01";

@@ -28,7 +28,9 @@ namespace SIL.XForge.Services
                 Id = "testnew",
                 Str = "new",
                 Project = new TestProjectResource { Id = "project01" },
-                ProjectRef = "project01"
+                ProjectRef = "project01",
+                Owner = new UserResource { Id = "user01" },
+                OwnerRef = "user01"
             };
             TestProjectDataResource newResource = await env.Service.CreateAsync(resource);
 
@@ -46,13 +48,60 @@ namespace SIL.XForge.Services
                 Id = "testnew",
                 Str = "new",
                 Project = new TestProjectResource { Id = "project02" },
-                ProjectRef = "project02"
+                ProjectRef = "project02",
+                Owner = new UserResource { Id = "user01" },
+                OwnerRef = "user01"
             };
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
                     await env.Service.CreateAsync(resource);
                 });
+
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
+        }
+
+        [Test]
+        public void CreateAsync_ProjectNotSet()
+        {
+            var env = new TestEnvironment();
+            env.SetUser("user01", SystemRoles.User);
+
+            var resource = new TestProjectDataResource
+            {
+                Id = "testnew",
+                Str = "new",
+                Owner = new UserResource { Id = "user01" },
+                OwnerRef = "user01"
+            };
+            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                {
+                    await env.Service.CreateAsync(resource);
+                });
+
+            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status400BadRequest));
+        }
+
+        [Test]
+        public void CreateAsync_IncorrectOwner()
+        {
+            var env = new TestEnvironment();
+            env.SetUser("user01", SystemRoles.User);
+
+            var resource = new TestProjectDataResource
+            {
+                Id = "testnew",
+                Str = "new",
+                Project = new TestProjectResource { Id = "project01" },
+                ProjectRef = "project01",
+                Owner = new UserResource { Id = "user02" },
+                OwnerRef = "user02"
+            };
+            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                {
+                    await env.Service.CreateAsync(resource);
+                });
+
+            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status400BadRequest));
         }
 
         [Test]
@@ -119,6 +168,7 @@ namespace SIL.XForge.Services
                 {
                     await env.Service.UpdateAsync(resource.Id, resource);
                 });
+
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
         }
 

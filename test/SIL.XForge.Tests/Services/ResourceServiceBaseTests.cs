@@ -126,6 +126,7 @@ namespace SIL.XForge.Services
                     await env.Service.UpdateRelationshipsAsync("testbad", TestResource.UserRelationship,
                         new List<DocumentData> { new DocumentData { Type = "users", Id = "user01" } });
                 });
+
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
         }
 
@@ -141,6 +142,7 @@ namespace SIL.XForge.Services
                     await env.Service.UpdateRelationshipsAsync("test01", "badrelationship",
                         new List<DocumentData> { new DocumentData { Type = "bad", Id = "badid" } });
                 });
+
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status400BadRequest));
         }
 
@@ -270,6 +272,7 @@ namespace SIL.XForge.Services
                 {
                     await env.Service.GetRelationshipAsync("test01", "badrelationship");
                 });
+
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status400BadRequest));
         }
 
