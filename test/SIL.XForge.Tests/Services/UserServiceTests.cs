@@ -21,9 +21,7 @@ namespace SIL.XForge.Services
         public void CreateAsync_UserRole()
         {
             var env = new TestEnvironment();
-            env.UserAccessor.IsAuthenticated.Returns(true);
-            env.UserAccessor.UserId.Returns("user01");
-            env.UserAccessor.SystemRole.Returns(SystemRoles.User);
+            env.SetUser("user01", SystemRoles.User);
 
             var resource = new UserResource
             {
@@ -40,9 +38,7 @@ namespace SIL.XForge.Services
         public async Task CreateAsync_SystemAdminRole()
         {
             var env = new TestEnvironment();
-            env.UserAccessor.IsAuthenticated.Returns(true);
-            env.UserAccessor.UserId.Returns("user01");
-            env.UserAccessor.SystemRole.Returns(SystemRoles.SystemAdmin);
+            env.SetUser("user01", SystemRoles.SystemAdmin);
 
             var userResource = new UserResource
             {
@@ -57,9 +53,7 @@ namespace SIL.XForge.Services
         public async Task UpdateAsync_UserRole()
         {
             var env = new TestEnvironment();
-            env.UserAccessor.IsAuthenticated.Returns(true);
-            env.UserAccessor.UserId.Returns("user01");
-            env.UserAccessor.SystemRole.Returns(SystemRoles.User);
+            env.SetUser("user01", SystemRoles.User);
             env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                 {
                     { env.GetAttribute("username"), "new" }
@@ -88,9 +82,7 @@ namespace SIL.XForge.Services
         public async Task UpdateAsync_SystemAdminRole()
         {
             var env = new TestEnvironment();
-            env.UserAccessor.IsAuthenticated.Returns(true);
-            env.UserAccessor.UserId.Returns("user01");
-            env.UserAccessor.SystemRole.Returns(SystemRoles.SystemAdmin);
+            env.SetUser("user01", SystemRoles.SystemAdmin);
             env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                 {
                     { env.GetAttribute("username"), "new" }
@@ -113,9 +105,7 @@ namespace SIL.XForge.Services
         public async Task GetAsync_UserRole()
         {
             var env = new TestEnvironment();
-            env.UserAccessor.IsAuthenticated.Returns(true);
-            env.UserAccessor.UserId.Returns("user01");
-            env.UserAccessor.SystemRole.Returns(SystemRoles.User);
+            env.SetUser("user01", SystemRoles.User);
             env.JsonApiContext.QuerySet.Returns(new QuerySet());
             env.JsonApiContext.PageManager.Returns(new PageManager());
 
@@ -128,9 +118,7 @@ namespace SIL.XForge.Services
         public async Task GetAsync_SystemAdminRole()
         {
             var env = new TestEnvironment();
-            env.UserAccessor.IsAuthenticated.Returns(true);
-            env.UserAccessor.UserId.Returns("user01");
-            env.UserAccessor.SystemRole.Returns(SystemRoles.SystemAdmin);
+            env.SetUser("user01", SystemRoles.SystemAdmin);
             env.JsonApiContext.QuerySet.Returns(new QuerySet());
             env.JsonApiContext.PageManager.Returns(new PageManager());
 
@@ -143,9 +131,7 @@ namespace SIL.XForge.Services
         public void UpdateRelationshipsAsync_ProjectsNotAllowed()
         {
             var env = new TestEnvironment();
-            env.UserAccessor.IsAuthenticated.Returns(true);
-            env.UserAccessor.UserId.Returns("user01");
-            env.UserAccessor.SystemRole.Returns(SystemRoles.User);
+            env.SetUser("user01", SystemRoles.User);
 
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
@@ -159,9 +145,7 @@ namespace SIL.XForge.Services
         public async Task GetRelationshipsAsync_Projects()
         {
             var env = new TestEnvironment();
-            env.UserAccessor.IsAuthenticated.Returns(true);
-            env.UserAccessor.UserId.Returns("user01");
-            env.UserAccessor.SystemRole.Returns(SystemRoles.User);
+            env.SetUser("user01", SystemRoles.User);
 
             object resources = await env.Service.GetRelationshipsAsync("user01", UserResource.ProjectsRelationship);
 

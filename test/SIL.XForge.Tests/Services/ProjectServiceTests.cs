@@ -18,9 +18,7 @@ namespace SIL.XForge.Services
         public async Task UpdateAsync_UserRole()
         {
             var env = new TestEnvironment();
-            env.UserAccessor.IsAuthenticated.Returns(true);
-            env.UserAccessor.UserId.Returns("user01");
-            env.UserAccessor.SystemRole.Returns(SystemRoles.User);
+            env.SetUser("user01", SystemRoles.User);
             env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                 {
                     { env.GetAttribute("project-name"), "new" }
@@ -49,9 +47,7 @@ namespace SIL.XForge.Services
         public async Task UpdateAsync_SystemAdminRole()
         {
             var env = new TestEnvironment();
-            env.UserAccessor.IsAuthenticated.Returns(true);
-            env.UserAccessor.UserId.Returns("user01");
-            env.UserAccessor.SystemRole.Returns(SystemRoles.SystemAdmin);
+            env.SetUser("user01", SystemRoles.SystemAdmin);
             env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                 {
                     { env.GetAttribute("project-name"), "new" }
@@ -74,9 +70,7 @@ namespace SIL.XForge.Services
         public async Task GetAsync_UserRole()
         {
             var env = new TestEnvironment();
-            env.UserAccessor.IsAuthenticated.Returns(true);
-            env.UserAccessor.UserId.Returns("user01");
-            env.UserAccessor.SystemRole.Returns(SystemRoles.User);
+            env.SetUser("user01", SystemRoles.User);
             env.JsonApiContext.QuerySet.Returns(new QuerySet());
             env.JsonApiContext.PageManager.Returns(new PageManager());
 
@@ -89,9 +83,7 @@ namespace SIL.XForge.Services
         public async Task GetAsync_SystemAdminRole()
         {
             var env = new TestEnvironment();
-            env.UserAccessor.IsAuthenticated.Returns(true);
-            env.UserAccessor.UserId.Returns("user01");
-            env.UserAccessor.SystemRole.Returns(SystemRoles.SystemAdmin);
+            env.SetUser("user01", SystemRoles.SystemAdmin);
             env.JsonApiContext.QuerySet.Returns(new QuerySet());
             env.JsonApiContext.PageManager.Returns(new PageManager());
 

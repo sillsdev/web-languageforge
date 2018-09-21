@@ -42,6 +42,7 @@ namespace SIL.XForge.Services
                 });
             Mapper = config.CreateMapper();
             UserAccessor = Substitute.For<IUserAccessor>();
+            UserAccessor.IsAuthenticated.Returns(false);
         }
 
         public IContextGraph ContextGraph { get; }
@@ -49,6 +50,13 @@ namespace SIL.XForge.Services
         public IUserAccessor UserAccessor { get; }
         public MemoryRepository<TEntity> Entities { get; }
         public IMapper Mapper { get; }
+
+        public void SetUser(string userId, string role)
+        {
+            UserAccessor.IsAuthenticated.Returns(true);
+            UserAccessor.UserId.Returns(userId);
+            UserAccessor.SystemRole.Returns(role);
+        }
 
         public AttrAttribute GetAttribute(string name)
         {
