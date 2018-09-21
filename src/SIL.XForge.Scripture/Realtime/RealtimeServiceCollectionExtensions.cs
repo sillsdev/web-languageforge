@@ -10,6 +10,7 @@ namespace SIL.XForge.Scripture.Realtime
             services.AddNodeServices(options =>
             {
                 options.LaunchWithDebugging = launchWithDebugging;
+                options.WatchFileExtensions = new string[0];
             });
             services.AddSingleton<RealtimeServer>();
             return services;
