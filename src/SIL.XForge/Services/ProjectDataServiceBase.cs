@@ -22,7 +22,7 @@ namespace SIL.XForge.Services
     {
         private readonly IRepository<TProjectEntity> _projects;
 
-        public ProjectDataServiceBase(IJsonApiContext jsonApiContext, IRepository<TProjectEntity> projects,
+        protected ProjectDataServiceBase(IJsonApiContext jsonApiContext, IRepository<TProjectEntity> projects,
             IRepository<TEntity> entities, IMapper mapper, IUserAccessor userAccessor)
             : base(jsonApiContext, entities, mapper, userAccessor)
         {

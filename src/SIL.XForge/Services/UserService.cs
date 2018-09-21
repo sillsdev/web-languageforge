@@ -8,14 +8,6 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public class UserService : UserService<ProjectResource, ProjectEntity>
-    {
-        public UserService(IJsonApiContext jsonApiContext, IRepository<UserEntity> entities, IMapper mapper,
-            IUserAccessor userAccessor) : base(jsonApiContext, entities, mapper, userAccessor)
-        {
-        }
-    }
-
     public class UserService<TProjectResource, TProjectEntity> : ResourceServiceBase<UserResource, UserEntity>
         where TProjectResource : ProjectResource
         where TProjectEntity : ProjectEntity

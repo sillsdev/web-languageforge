@@ -3,11 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Builders;
-using JsonApiDotNetCore.Configuration;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Models;
-using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using NUnit.Framework;
@@ -24,22 +22,22 @@ namespace SIL.XForge.Services
         {
             var env = new TestEnvironment();
 
-            Assert.That(env.Repository.Entities.ContainsKey("testnew"), Is.False);
+            Assert.That(env.Entities.Contains("testnew"), Is.False);
 
             var resource = new TestResource
             {
                 Id = "testnew",
                 Str = "new",
-                User = new UserResource { Id = "user1" },
-                UserRef = "user1"
+                User = new UserResource { Id = "user01" },
+                UserRef = "user01"
             };
-            TestResource updatedResource = await env.Service.CreateAsync(resource);
+            TestResource newResource = await env.Service.CreateAsync(resource);
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.Id, Is.EqualTo("testnew"));
-            Assert.That(updatedResource.Str, Is.EqualTo("new"));
-            Assert.That(updatedResource.UserRef, Is.EqualTo("user1"));
-            Assert.That(env.Repository.Entities.ContainsKey("testnew"), Is.True);
+            Assert.That(newResource, Is.Not.Null);
+            Assert.That(newResource.Id, Is.EqualTo("testnew"));
+            Assert.That(newResource.Str, Is.EqualTo("new"));
+            Assert.That(newResource.UserRef, Is.EqualTo("user01"));
+            Assert.That(env.Entities.Contains("testnew"), Is.True);
         }
 
         [Test]
@@ -52,10 +50,10 @@ namespace SIL.XForge.Services
                 });
             env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>
                 {
-                    { env.GetRelationship("user"), "user1" }
+                    { env.GetRelationship("user"), "user01" }
                 });
 
-            TestEntity entity = await env.Repository.GetAsync("test01");
+            TestEntity entity = await env.Entities.GetAsync("test01");
             Assert.That(entity.Str, Is.EqualTo("old"));
             Assert.That(entity.UserRef, Is.Null);
 
@@ -63,15 +61,15 @@ namespace SIL.XForge.Services
             {
                 Id = "test01",
                 Str = "new",
-                User = new UserResource { Id = "user1" },
-                UserRef = "user1"
+                User = new UserResource { Id = "user01" },
+                UserRef = "user01"
             };
             TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
 
             Assert.That(updatedResource, Is.Not.Null);
             Assert.That(updatedResource.Str, Is.EqualTo("new"));
-            Assert.That(updatedResource.UserRef, Is.EqualTo("user1"));
-            Assert.That(env.Repository.Entities.ContainsKey("test01"), Is.True);
+            Assert.That(updatedResource.UserRef, Is.EqualTo("user01"));
+            Assert.That(env.Entities.Contains("test01"), Is.True);
         }
 
         [Test]
@@ -84,17 +82,17 @@ namespace SIL.XForge.Services
                 });
             env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>
                 {
-                    { env.GetRelationship("user"), "user1" }
+                    { env.GetRelationship("user"), "user01" }
                 });
 
-            Assert.That(env.Repository.Entities.ContainsKey("testbad"), Is.False);
+            Assert.That(env.Entities.Contains("testbad"), Is.False);
 
             var resource = new TestResource
             {
                 Id = "testbad",
                 Str = "new",
-                User = new UserResource { Id = "user1" },
-                UserRef = "user1"
+                User = new UserResource { Id = "user01" },
+                UserRef = "user01"
             };
             TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
 
@@ -106,14 +104,14 @@ namespace SIL.XForge.Services
         {
             var env = new TestEnvironment();
 
-            TestEntity entity = await env.Repository.GetAsync("test01");
+            TestEntity entity = await env.Entities.GetAsync("test01");
             Assert.That(entity.UserRef, Is.Null);
 
             await env.Service.UpdateRelationshipsAsync("test01", TestResource.UserRelationship,
-                new List<DocumentData> { new DocumentData { Type = "users", Id = "user1" } });
+                new List<DocumentData> { new DocumentData { Type = "users", Id = "user01" } });
 
-            TestEntity updatedEntity = await env.Repository.GetAsync("test01");
-            Assert.That(updatedEntity.UserRef, Is.EqualTo("user1"));
+            TestEntity updatedEntity = await env.Entities.GetAsync("test01");
+            Assert.That(updatedEntity.UserRef, Is.EqualTo("user01"));
         }
 
         [Test]
@@ -121,12 +119,12 @@ namespace SIL.XForge.Services
         {
             var env = new TestEnvironment();
 
-            Assert.That(env.Repository.Entities.ContainsKey("testbad"), Is.False);
+            Assert.That(env.Entities.Contains("testbad"), Is.False);
 
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
                     await env.Service.UpdateRelationshipsAsync("testbad", TestResource.UserRelationship,
-                        new List<DocumentData> { new DocumentData { Type = "users", Id = "user1" } });
+                        new List<DocumentData> { new DocumentData { Type = "users", Id = "user01" } });
                 });
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
         }
@@ -136,7 +134,7 @@ namespace SIL.XForge.Services
         {
             var env = new TestEnvironment();
 
-            Assert.That(env.Repository.Entities.ContainsKey("test01"), Is.True);
+            Assert.That(env.Entities.Contains("test01"), Is.True);
 
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
@@ -151,11 +149,11 @@ namespace SIL.XForge.Services
         {
             var env = new TestEnvironment();
 
-            Assert.That(env.Repository.Entities.ContainsKey("test01"), Is.True);
+            Assert.That(env.Entities.Contains("test01"), Is.True);
 
             Assert.That(await env.Service.DeleteAsync("test01"), Is.True);
 
-            Assert.That(env.Repository.Entities.ContainsKey("test01"), Is.False);
+            Assert.That(env.Entities.Contains("test01"), Is.False);
         }
 
         [Test]
@@ -163,7 +161,7 @@ namespace SIL.XForge.Services
         {
             var env = new TestEnvironment();
 
-            Assert.That(env.Repository.Entities.ContainsKey("testbad"), Is.False);
+            Assert.That(env.Entities.Contains("testbad"), Is.False);
 
             Assert.That(await env.Service.DeleteAsync("testbad"), Is.False);
         }
@@ -173,7 +171,7 @@ namespace SIL.XForge.Services
         {
             var env = new TestEnvironment();
 
-            Assert.That(env.Repository.Entities.ContainsKey("test01"), Is.True);
+            Assert.That(env.Entities.Contains("test01"), Is.True);
 
             TestResource resource = await env.Service.GetAsync("test01");
 
@@ -187,7 +185,7 @@ namespace SIL.XForge.Services
         {
             var env = new TestEnvironment();
 
-            Assert.That(env.Repository.Entities.ContainsKey("testbad"), Is.False);
+            Assert.That(env.Entities.Contains("testbad"), Is.False);
 
             TestResource resource = await env.Service.GetAsync("testbad");
 
@@ -212,7 +210,7 @@ namespace SIL.XForge.Services
                 {
                     "test05", "test04", "test03", "test02"
                 }));
-            Assert.That(resources[3].UserRef, Is.EqualTo("user1"));
+            Assert.That(resources[3].UserRef, Is.EqualTo("user01"));
             Assert.That(resources[3].User, Is.Null);
             Assert.That(pageManager.TotalRecords, Is.EqualTo(9));
         }
@@ -231,8 +229,8 @@ namespace SIL.XForge.Services
             TestResource[] resources = (await env.Service.GetAsync()).ToArray();
 
             Assert.That(resources.Length, Is.EqualTo(10));
-            Assert.That(resources[1].User.Id, Is.EqualTo("user1"));
-            Assert.That(resources[7].User.Id, Is.EqualTo("user1"));
+            Assert.That(resources[1].User.Id, Is.EqualTo("user01"));
+            Assert.That(resources[7].User.Id, Is.EqualTo("user01"));
         }
 
         [Test]
@@ -240,13 +238,13 @@ namespace SIL.XForge.Services
         {
             var env = new TestEnvironment();
 
-            Assert.That(env.Repository.Entities.ContainsKey("test01"), Is.True);
+            Assert.That(env.Entities.Contains("test02"), Is.True);
 
-            object resource = await env.Service.GetRelationshipAsync("test01", TestResource.UserRelationship);
+            object resource = await env.Service.GetRelationshipAsync("test02", TestResource.UserRelationship);
 
             Assert.That(resource, Is.Not.Null);
             var userResource = (UserResource) resource;
-            Assert.That(userResource.Id, Is.EqualTo("user1"));
+            Assert.That(userResource.Id, Is.EqualTo("user01"));
         }
 
         [Test]
@@ -254,7 +252,7 @@ namespace SIL.XForge.Services
         {
             var env = new TestEnvironment();
 
-            Assert.That(env.Repository.Entities.ContainsKey("testbad"), Is.False);
+            Assert.That(env.Entities.Contains("testbad"), Is.False);
 
             object resource = await env.Service.GetRelationshipAsync("testbad", TestResource.UserRelationship);
 
@@ -266,7 +264,7 @@ namespace SIL.XForge.Services
         {
             var env = new TestEnvironment();
 
-            Assert.That(env.Repository.Entities.ContainsKey("test01"), Is.True);
+            Assert.That(env.Entities.Contains("test01"), Is.True);
 
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
@@ -275,67 +273,47 @@ namespace SIL.XForge.Services
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status400BadRequest));
         }
 
-        class TestEnvironment
+        class TestEnvironment : ResourceServiceTestEnvironmentBase<TestResource, TestEntity>
         {
             public TestEnvironment()
+                : base("tests")
             {
-                var contextGraphBuilder = new ContextGraphBuilder();
-                contextGraphBuilder.AddResource<TestResource, string>("tests");
-                contextGraphBuilder.AddResource<UserResource, string>("users");
-                ContextGraph = contextGraphBuilder.Build();
+                var users = new MemoryRepository<UserEntity>(new[] { new UserEntity { Id = "user01" } });
 
-                JsonApiContext = Substitute.For<IJsonApiContext>();
-                JsonApiContext.ContextGraph.Returns(ContextGraph);
-                JsonApiContext.RequestEntity.Returns(ContextGraph.GetContextEntity("tests"));
-                JsonApiContext.Options.Returns(new JsonApiOptions { IncludeTotalRecordCount = true });
-
-                Repository = new MemoryRepository<TestEntity>(new[]
-                    {
-                        new TestEntity { Id = "test01", Str = "old", Num = 0 },
-                        new TestEntity { Id = "test02", Str = "string1", Num = 1, UserRef = "user1" },
-                        new TestEntity { Id = "test03", Str = "string1", Num = 2 },
-                        new TestEntity { Id = "test04", Str = "string1", Num = 3 },
-                        new TestEntity { Id = "test05", Str = "string1", Num = 4 },
-                        new TestEntity { Id = "test06", Str = "string1", Num = 5 },
-                        new TestEntity { Id = "test07", Str = "string1", Num = 6 },
-                        new TestEntity { Id = "test08", Str = "string1", Num = 7, UserRef = "user1" },
-                        new TestEntity { Id = "test09", Str = "string1", Num = 8 },
-                        new TestEntity { Id = "test10", Str = "string1", Num = 9 }
-                    });
-
-                var config = new MapperConfiguration(cfg =>
-                    {
-                        cfg.CreateMissingTypeMaps = true;
-                        cfg.CreateMap<TestEntity, TestResource>()
-                            .ForMember(e => e.User, o => o.Ignore())
-                            .ReverseMap();
-                    });
-                var userAccessor = Substitute.For<IUserAccessor>();
-                var userResourceMapper = Substitute.For<IResourceMapper<UserResource, UserEntity>>();
-
-                IEnumerable<UserResource> userResources = new[] { new UserResource { Id = "user1" } };
-                userResourceMapper.MapMatchingAsync(null, null, null).ReturnsForAnyArgs(Task.FromResult(userResources));
-                Service = new TestService(JsonApiContext, Repository, config.CreateMapper(), userAccessor)
+                Service = new TestService(JsonApiContext, Entities, Mapper, UserAccessor)
                 {
-                    UserResourceMapper = userResourceMapper
+                    UserResourceMapper = new TestUserService(JsonApiContext, users, Mapper, UserAccessor)
                 };
             }
 
-            public IContextGraph ContextGraph { get; }
-            public IJsonApiContext JsonApiContext { get; }
-            public MemoryRepository<TestEntity> Repository { get; }
             public TestService Service { get; }
 
-            public AttrAttribute GetAttribute(string name)
+            protected override IEnumerable<TestEntity> GetInitialData()
             {
-                ContextEntity resourceType = ContextGraph.GetContextEntity("tests");
-                return resourceType.Attributes.First(a => a.PublicAttributeName == name);
+                return new[]
+                {
+                    new TestEntity { Id = "test01", Str = "old", Num = 0 },
+                    new TestEntity { Id = "test02", Str = "string1", Num = 1, UserRef = "user01" },
+                    new TestEntity { Id = "test03", Str = "string1", Num = 2 },
+                    new TestEntity { Id = "test04", Str = "string1", Num = 3 },
+                    new TestEntity { Id = "test05", Str = "string1", Num = 4 },
+                    new TestEntity { Id = "test06", Str = "string1", Num = 5 },
+                    new TestEntity { Id = "test07", Str = "string1", Num = 6 },
+                    new TestEntity { Id = "test08", Str = "string1", Num = 7, UserRef = "user01" },
+                    new TestEntity { Id = "test09", Str = "string1", Num = 8 },
+                    new TestEntity { Id = "test10", Str = "string1", Num = 9 }
+                };
             }
 
-            public RelationshipAttribute GetRelationship(string name)
+            protected override void SetupContextGraph(IContextGraphBuilder builder)
             {
-                ContextEntity resourceType = ContextGraph.GetContextEntity("tests");
-                return resourceType.Relationships.First(r => r.PublicRelationshipName == name);
+                builder.AddResource<UserResource, string>("users");
+            }
+
+            protected override void SetupMapper(IMapperConfigurationExpression config)
+            {
+                config.CreateMap<UserEntity, UserResource>()
+                    .ReverseMap();
             }
         }
     }

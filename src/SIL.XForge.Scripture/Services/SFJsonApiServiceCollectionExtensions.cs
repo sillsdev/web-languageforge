@@ -17,7 +17,6 @@ namespace SIL.XForge.Scripture.Services
                     schemaBuilder.AddResourceType<UserResource>("users");
                     containerBuilder.RegisterResourceService<SFUserService>();
                     mapConfig.CreateMap<UserEntity, UserResource>()
-                        .ForMember(u => u.Projects, o => o.Ignore())
                         .ForMember(u => u.Password, o => o.Ignore())
                         .ReverseMap();
 

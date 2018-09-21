@@ -25,7 +25,7 @@ namespace SIL.XForge.Services
         private readonly IMapper _mapper;
         private readonly IUserAccessor _userAccessor;
 
-        public ResourceServiceBase(IJsonApiContext jsonApiContext, IRepository<TEntity> entities, IMapper mapper,
+        protected ResourceServiceBase(IJsonApiContext jsonApiContext, IRepository<TEntity> entities, IMapper mapper,
             IUserAccessor userAccessor)
         {
             _jsonApiContext = jsonApiContext;

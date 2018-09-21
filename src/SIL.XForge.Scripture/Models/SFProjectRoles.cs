@@ -3,11 +3,11 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Scripture.Models
 {
-    public class SFRoles : ProjectRoles
+    public class SFProjectRoles : ProjectRoles
     {
-        public static SFRoles Instance { get; } = new SFRoles();
+        public static SFProjectRoles Instance { get; } = new SFProjectRoles();
 
-        private SFRoles()
+        private SFProjectRoles()
         {
             var contributorRights = new HashSet<Right>
             {

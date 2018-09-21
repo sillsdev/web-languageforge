@@ -11,21 +11,33 @@ namespace SIL.XForge.DataAccess
 {
     public class MemoryRepository<T> : IRepository<T> where T : Entity, new()
     {
+        private readonly Dictionary<string, string> _entities;
+
         public MemoryRepository()
         {
-            Entities = new Dictionary<string, string>();
+            _entities = new Dictionary<string, string>();
         }
 
         public MemoryRepository(IEnumerable<T> entities)
+            : this()
         {
-            Entities = entities.ToDictionary(e => e.Id, e => JsonConvert.SerializeObject(e));
+            Add(entities);
         }
 
-        public IDictionary<string, string> Entities { get; }
+        public void Add(IEnumerable<T> entities)
+        {
+            foreach (T entity in entities)
+                _entities[entity.Id] = JsonConvert.SerializeObject(entity);
+        }
+
+        public bool Contains(string id)
+        {
+            return _entities.ContainsKey(id);
+        }
 
         public IQueryable<T> Query()
         {
-            return Entities.Values.Select(e => JsonConvert.DeserializeObject<T>(e)).AsQueryable();
+            return _entities.Values.Select(e => JsonConvert.DeserializeObject<T>(e)).AsQueryable();
         }
 
         public Task<bool> InsertAsync(T entity)
@@ -33,14 +45,14 @@ namespace SIL.XForge.DataAccess
             if (string.IsNullOrEmpty(entity.Id))
                 entity.Id = ObjectId.GenerateNewId().ToString();
 
-            if (Entities.ContainsKey(entity.Id))
+            if (_entities.ContainsKey(entity.Id))
                 return Task.FromResult(false);
 
             var now = DateTime.UtcNow;
             entity.DateModified = now;
             entity.DateCreated = now;
 
-            Entities[entity.Id] = JsonConvert.SerializeObject(entity);
+            _entities[entity.Id] = JsonConvert.SerializeObject(entity);
             return Task.FromResult(true);
         }
 
@@ -49,14 +61,14 @@ namespace SIL.XForge.DataAccess
             if (string.IsNullOrEmpty(entity.Id))
                 entity.Id = ObjectId.GenerateNewId().ToString();
 
-            if (Entities.ContainsKey(entity.Id) || upsert)
+            if (_entities.ContainsKey(entity.Id) || upsert)
             {
                 var now = DateTime.UtcNow;
                 entity.DateModified = now;
                 if (entity.DateCreated == DateTime.MinValue)
                     entity.DateCreated = now;
 
-                Entities[entity.Id] = JsonConvert.SerializeObject(entity);
+                _entities[entity.Id] = JsonConvert.SerializeObject(entity);
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
@@ -74,7 +86,7 @@ namespace SIL.XForge.DataAccess
 
                 var builder = new MemoryUpdateBuilder<T>(entity, isInsert);
                 update(builder);
-                Entities[entity.Id] = JsonConvert.SerializeObject(entity);
+                _entities[entity.Id] = JsonConvert.SerializeObject(entity);
             }
             return Task.FromResult(entity);
         }
@@ -83,7 +95,7 @@ namespace SIL.XForge.DataAccess
         {
             T entity = Query().FirstOrDefault(filter.Compile());
             if (entity != null)
-                Entities.Remove(entity.Id);
+                _entities.Remove(entity.Id);
             return Task.FromResult(entity);
         }
     }
