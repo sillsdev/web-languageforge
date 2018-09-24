@@ -28,6 +28,7 @@
     "@angular/platform-browser-dynamic": "^6.1.4",
     "@angular/platform-server": "^6.1.4",
     "@angular/router": "^6.1.4",
+    "@ng-bootstrap/ng-bootstrap": "^3.2.2",
     "@nguniversal/module-map-ngfactory-loader": "^6.1.0",
     "@orbit/coordinator": "^0.15.20",
     "@orbit/core": "^0.15.20",
