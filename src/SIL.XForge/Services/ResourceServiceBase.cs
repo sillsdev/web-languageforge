@@ -202,23 +202,23 @@ namespace SIL.XForge.Services
         protected abstract Task CheckCanDeleteAsync(string id);
         protected abstract Task<IQueryable<TEntity>> ApplyPermissionFilterAsync(IQueryable<TEntity> query);
 
-        protected IRelationship<TEntity> ManyToManyThis<TOtherResource, TOtherEntity>(
+        protected IRelationship<TEntity> ManyToManyPrimary<TOtherResource, TOtherEntity>(
             IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TEntity, List<string>>> getFieldExpr, bool updateAllowed = true)
                 where TOtherResource : Resource
                 where TOtherEntity : Entity
         {
-            return new ManyToManyThisRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper,
+            return new ManyToManyPrimaryRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper,
                 getFieldExpr, updateAllowed);
         }
 
-        protected IRelationship<TEntity> ManyToManyOther<TOtherResource, TOtherEntity>(
+        protected IRelationship<TEntity> ManyToManyForeign<TOtherResource, TOtherEntity>(
             IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TOtherEntity, List<string>>> getFieldExpr)
                 where TOtherResource : Resource
                 where TOtherEntity : Entity
         {
-            return new ManyToManyOtherRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper,
+            return new ManyToManyForeignRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper,
                 getFieldExpr);
         }
 

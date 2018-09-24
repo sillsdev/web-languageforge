@@ -77,7 +77,7 @@ namespace SIL.XForge.DataAccess
         public Task<T> UpdateAsync(Expression<Func<T, bool>> filter, Action<IUpdateBuilder<T>> update,
             bool upsert = false)
         {
-            T entity = Query().FirstOrDefault(filter.Compile());
+            T entity = Query().FirstOrDefault(filter);
             if (entity != null || upsert)
             {
                 bool isInsert = entity == null;
@@ -93,7 +93,7 @@ namespace SIL.XForge.DataAccess
 
         public Task<T> DeleteAsync(Expression<Func<T, bool>> filter)
         {
-            T entity = Query().FirstOrDefault(filter.Compile());
+            T entity = Query().FirstOrDefault(filter);
             if (entity != null)
                 _entities.Remove(entity.Id);
             return Task.FromResult(entity);
