@@ -16,14 +16,14 @@ namespace SIL.XForge.Services
 
         public IResourceMapper<UserResource, UserEntity> UserResourceMapper { get; set; }
 
-        protected override IRelationship<TestEntity> GetRelationship(string relationshipName)
+        protected override IRelationship<TestEntity> GetRelationship(string propertyName)
         {
-            switch (relationshipName)
+            switch (propertyName)
             {
-                case TestResource.UserRelationship:
+                case nameof(TestResource.User):
                     return ManyToOne(UserResourceMapper, e => e.UserRef);
             }
-            return base.GetRelationship(relationshipName);
+            return base.GetRelationship(propertyName);
         }
 
         protected override Task CheckCanCreateAsync(TestResource resource)

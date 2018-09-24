@@ -89,7 +89,6 @@ namespace SIL.XForge.Identity.Controllers.Account
                         }
                     });
                 AuthService = Substitute.For<IAuthenticationService>();
-                var tempDataDictionaryFactory = Substitute.For<ITempDataDictionaryFactory>();
                 var serviceProvider = Substitute.For<IServiceProvider>();
                 serviceProvider.GetService(typeof(IAuthenticationService)).Returns(AuthService);
                 serviceProvider.GetService(typeof(ISystemClock)).Returns(new SystemClock());

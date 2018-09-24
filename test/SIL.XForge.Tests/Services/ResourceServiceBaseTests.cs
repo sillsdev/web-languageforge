@@ -107,7 +107,7 @@ namespace SIL.XForge.Services
             TestEntity entity = await env.Entities.GetAsync("test01");
             Assert.That(entity.UserRef, Is.Null);
 
-            await env.Service.UpdateRelationshipsAsync("test01", TestResource.UserRelationship,
+            await env.Service.UpdateRelationshipsAsync("test01", "user",
                 new List<DocumentData> { new DocumentData { Type = "users", Id = "user01" } });
 
             TestEntity updatedEntity = await env.Entities.GetAsync("test01");
@@ -123,7 +123,7 @@ namespace SIL.XForge.Services
 
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
-                    await env.Service.UpdateRelationshipsAsync("testbad", TestResource.UserRelationship,
+                    await env.Service.UpdateRelationshipsAsync("testbad", "user",
                         new List<DocumentData> { new DocumentData { Type = "users", Id = "user01" } });
                 });
 
@@ -143,7 +143,7 @@ namespace SIL.XForge.Services
                         new List<DocumentData> { new DocumentData { Type = "bad", Id = "badid" } });
                 });
 
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status400BadRequest));
+            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
         }
 
         [Test]
@@ -224,7 +224,7 @@ namespace SIL.XForge.Services
             env.JsonApiContext.QuerySet.Returns(new QuerySet
                 {
                     SortParameters = { new SortQuery(SortDirection.Ascending, env.GetAttribute("num")) },
-                    IncludedRelationships = { TestResource.UserRelationship }
+                    IncludedRelationships = { "user" }
                 });
             env.JsonApiContext.PageManager.Returns(new PageManager());
 
@@ -242,7 +242,7 @@ namespace SIL.XForge.Services
 
             Assert.That(env.Entities.Contains("test02"), Is.True);
 
-            object resource = await env.Service.GetRelationshipAsync("test02", TestResource.UserRelationship);
+            object resource = await env.Service.GetRelationshipAsync("test02", "user");
 
             Assert.That(resource, Is.Not.Null);
             var userResource = (UserResource) resource;
@@ -256,7 +256,7 @@ namespace SIL.XForge.Services
 
             Assert.That(env.Entities.Contains("testbad"), Is.False);
 
-            object resource = await env.Service.GetRelationshipAsync("testbad", TestResource.UserRelationship);
+            object resource = await env.Service.GetRelationshipAsync("testbad", "user");
 
             Assert.That(resource, Is.Null);
         }
@@ -273,7 +273,7 @@ namespace SIL.XForge.Services
                     await env.Service.GetRelationshipAsync("test01", "badrelationship");
                 });
 
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status400BadRequest));
+            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
         }
 
         class TestEnvironment : ResourceServiceTestEnvironmentBase<TestResource, TestEntity>

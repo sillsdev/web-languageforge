@@ -54,7 +54,7 @@ namespace SIL.XForge.Services
             Dictionary<string, object> attrs = _jsonApiContext.AttributesToUpdate
                 .ToDictionary(kvp => kvp.Key.InternalAttributeName, kvp => kvp.Value);
             Dictionary<string, string> relationships = _jsonApiContext.RelationshipsToUpdate
-                .ToDictionary(kvp => kvp.Key.PublicRelationshipName, kvp => (string) kvp.Value);
+                .ToDictionary(kvp => kvp.Key.InternalRelationshipName, kvp => (string) kvp.Value);
             TEntity entity = await UpdateEntityAsync(id, attrs, relationships);
             return _mapper.Map<TResource>(entity);
         }
@@ -64,8 +64,11 @@ namespace SIL.XForge.Services
         {
             await CheckCanUpdateAsync(id);
 
+            string propertyName = _jsonApiContext.ContextGraph.GetRelationshipName<TResource>(relationshipName);
+            if (propertyName == null)
+                throw NotFoundException();
             IEnumerable<string> relationshipIds = relationships.Select(r => r?.Id?.ToString());
-            IRelationship<TEntity> relationship = GetRelationship(relationshipName);
+            IRelationship<TEntity> relationship = GetRelationship(propertyName);
             TEntity entity = await UpdateEntityRelationshipAsync(id, relationship, relationshipIds);
             if (entity == null)
                 throw NotFoundException();
@@ -100,7 +103,11 @@ namespace SIL.XForge.Services
             TEntity entity = await GetEntityAsync(id);
             if (entity == null)
                 return null;
-            (_, object value) = await GetRelationshipResourcesAsync(relationshipName, Enumerable.Empty<string>(),
+            RelationshipAttribute relAttr = _jsonApiContext.ContextGraph
+                .GetRelationshipAttribute<TResource>(relationshipName);
+            if (relAttr == null)
+                throw NotFoundException();
+            object value = await GetRelationshipResourcesAsync(relAttr, Enumerable.Empty<string>(),
                 new Dictionary<string, Resource>(), entity);
             return value;
         }
@@ -131,9 +138,10 @@ namespace SIL.XForge.Services
                 {
                     string[] relParts = fullName.Split('.');
                     string relationshipName = relParts[0];
-                    (string propertyName, object value) = await GetRelationshipResourcesAsync(relationshipName,
-                        relParts.Skip(1), resources, entity);
-                    PropertyInfo propertyInfo = typeof(TResource).GetProperty(propertyName);
+                    RelationshipAttribute relAttr = _jsonApiContext.ContextGraph
+                        .GetRelationshipAttribute<TResource>(relationshipName);
+                    object value = await GetRelationshipResourcesAsync(relAttr, relParts.Skip(1), resources, entity);
+                    PropertyInfo propertyInfo = typeof(TResource).GetProperty(relAttr.InternalRelationshipName);
                     propertyInfo.SetValue(resource, value);
                 }
             }
@@ -174,8 +182,9 @@ namespace SIL.XForge.Services
                         IRelationship<TEntity> relationship = GetRelationship(rel.Key);
                         if (!relationship.Update(update, new[] { rel.Value }))
                         {
+                            string relName = _jsonApiContext.ContextGraph.GetPublicRelationshipName<TResource>(rel.Key);
                             throw new JsonApiException(StatusCodes.Status400BadRequest,
-                                $"The relationship '{rel.Key}' cannot be updated.");
+                                $"The relationship '{relName}' cannot be updated.");
                         }
                     }
                 });
@@ -191,12 +200,10 @@ namespace SIL.XForge.Services
                 });
         }
 
-        protected virtual IRelationship<TEntity> GetRelationship(string relationshipName)
+        protected virtual IRelationship<TEntity> GetRelationship(string propertyName)
         {
-            throw new JsonApiException(StatusCodes.Status400BadRequest,
-                $"The relationship '{relationshipName}' does not exist.");
+            return null;
         }
-
         protected abstract Task CheckCanCreateAsync(TResource resource);
         protected abstract Task CheckCanUpdateAsync(string id);
         protected abstract Task CheckCanDeleteAsync(string id);
@@ -327,17 +334,14 @@ namespace SIL.XForge.Services
             return await query.SingleOrDefaultAsync();
         }
 
-        private async Task<(string, object)> GetRelationshipResourcesAsync(string relationshipName,
+        private async Task<object> GetRelationshipResourcesAsync(RelationshipAttribute relAttr,
             IEnumerable<string> included, Dictionary<string, Resource> resources, TEntity entity)
         {
-            IRelationship<TEntity> relationship = GetRelationship(relationshipName);
+            IRelationship<TEntity> relationship = GetRelationship(relAttr.InternalRelationshipName);
             IEnumerable<Resource> relResources = await relationship.GetResourcesAsync(included, resources, entity);
-            ContextEntity resourceType = _jsonApiContext.ContextGraph.GetContextEntity(typeof(TResource));
-            RelationshipAttribute relAttr = resourceType.Relationships
-                .Single(r => r.PublicRelationshipName == relationshipName);
             if (relAttr.IsHasMany)
-                return (relAttr.InternalRelationshipName, relResources.ToArray());
-            return (relAttr.InternalRelationshipName, relResources.SingleOrDefault());
+                return relResources.ToArray();
+            return relResources.SingleOrDefault();
         }
     }
 }

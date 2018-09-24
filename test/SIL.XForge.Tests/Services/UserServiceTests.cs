@@ -137,7 +137,7 @@ namespace SIL.XForge.Services
 
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
-                    await env.Service.UpdateRelationshipsAsync("user01", UserResource.ProjectsRelationship,
+                    await env.Service.UpdateRelationshipsAsync("user01", "projects",
                         new List<DocumentData> { new DocumentData { Type = "projects", Id = "project02" } });
                 });
 
@@ -150,7 +150,7 @@ namespace SIL.XForge.Services
             var env = new TestEnvironment();
             env.SetUser("user01", SystemRoles.User);
 
-            object resources = await env.Service.GetRelationshipsAsync("user01", UserResource.ProjectsRelationship);
+            object resources = await env.Service.GetRelationshipsAsync("user01", "projects");
 
             Assert.That(resources, Is.Not.Null);
             var projectResources = (IEnumerable<Resource>) resources;

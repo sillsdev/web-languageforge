@@ -5,8 +5,6 @@ namespace SIL.XForge.Models
 {
     public class UserResource : Resource
     {
-        public const string ProjectsRelationship = "projects";
-
         [Attr("username")]
         public string Username { get; set; }
         [Attr("name")]
@@ -15,7 +13,7 @@ namespace SIL.XForge.Models
         public string Email { get; set; }
         [Attr("password")]
         public string Password { get; set; }
-        [HasMany(ProjectsRelationship)]
+        [HasMany("projects")]
         public IReadOnlyList<ProjectResource> Projects { get; set; }
     }
 }

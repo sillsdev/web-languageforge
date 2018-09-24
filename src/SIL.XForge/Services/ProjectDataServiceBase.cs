@@ -34,16 +34,16 @@ namespace SIL.XForge.Services
 
         protected abstract Domain Domain { get; }
 
-        protected override IRelationship<TEntity> GetRelationship(string relationshipName)
+        protected override IRelationship<TEntity> GetRelationship(string propertyName)
         {
-            switch (relationshipName)
+            switch (propertyName)
             {
-                case ProjectDataResource.ProjectRelationship:
+                case nameof(ProjectDataResource.Project):
                     return ManyToOne(ProjectResourceMapper, ProjectRef(), false);
-                case ProjectDataResource.OwnerRelationship:
+                case nameof(ProjectDataResource.Owner):
                     return ManyToOne(UserResourceMapper, (TEntity p) => p.OwnerRef, false);
             }
-            return base.GetRelationship(relationshipName);
+            return base.GetRelationship(propertyName);
         }
 
         protected override async Task CheckCanCreateAsync(TResource resource)

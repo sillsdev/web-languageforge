@@ -28,14 +28,14 @@ namespace SIL.XForge.Services
             return base.UpdateEntityAsync(id, attrs, relationships);
         }
 
-        protected override IRelationship<UserEntity> GetRelationship(string relationshipName)
+        protected override IRelationship<UserEntity> GetRelationship(string propertyName)
         {
-            switch (relationshipName)
+            switch (propertyName)
             {
-                case UserResource.ProjectsRelationship:
+                case nameof(UserResource.Projects):
                     return Custom(ProjectResourceMapper, (UserEntity u) => { return p => p.Users.ContainsKey(u.Id); });
             }
-            return base.GetRelationship(relationshipName);
+            return base.GetRelationship(propertyName);
         }
 
         protected override Task CheckCanCreateAsync(UserResource resource)
