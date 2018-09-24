@@ -1,0 +1,29 @@
+.notices {
+    position: fixed;
+    left: 25%;
+    right: 25%;
+    top: 0.5em;
+    z-index: 1;
+}
+
+@media only screen and (orientation: portrait) {
+    .notices {
+        right: 10%;
+        left: 10%;
+    }
+}
+
+.alert {
+    padding: 0.75em;
+    margin-bottom: 0em;
+    text-align: center;
+}
+
+.notice-alert,.loading-alert {
+    padding: 0em;
+    margin-bottom: 0.5em;
+}
+
+.alert-text {
+    margin-right: 2em;
+}

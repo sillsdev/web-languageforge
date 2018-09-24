@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { EMPTY } from 'rxjs';
 import { instance, mock, when } from 'ts-mockito';
@@ -12,6 +13,7 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { HomeComponent } from './home/home.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { NoticeComponent } from './notice/notice.component';
 
 describe('AppComponent', () => {
   const oauthServiceStub = mock(OAuthService);
@@ -27,11 +29,13 @@ describe('AppComponent', () => {
         NavMenuComponent,
         HomeComponent,
         CounterComponent,
-        FetchDataComponent
+        FetchDataComponent,
+        NoticeComponent
       ],
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        NgbModule,
         RouterTestingModule.withRoutes([
           { path: 'home', component: HomeComponent },
           { path: 'counter', component: CounterComponent },

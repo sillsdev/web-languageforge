@@ -9,6 +9,7 @@ import {
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { XForgeCommonModule } from '@xforge-common/xforge-common.module';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
@@ -20,6 +21,8 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { HomeComponent } from './home/home.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { NoticeComponent } from './notice/notice.component';
+
 
 @NgModule({
   declarations: [
@@ -28,6 +31,7 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
+    NoticeComponent,
     ChangePasswordComponent,
     ConnectProjectComponent
   ],
@@ -62,7 +66,8 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'change-password', component: ChangePasswordComponent },
       { path: 'connect-project', component: ConnectProjectComponent }
-    ])
+    ]),
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]
