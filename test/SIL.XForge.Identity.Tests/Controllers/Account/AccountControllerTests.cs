@@ -15,6 +15,9 @@ using NSubstitute;
 using NUnit.Framework;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
+using Microsoft.Extensions.Options;
+using SIL.XForge.Configuration;
+using Microsoft.AspNetCore.Hosting;
 
 namespace SIL.XForge.Identity.Controllers.Account
 {
@@ -62,6 +65,37 @@ namespace SIL.XForge.Identity.Controllers.Account
             await env.Events.Received().RaiseAsync(Arg.Any<UserLoginFailureEvent>());
         }
 
+       [Test]
+        public async Task ForgotPassword_CorrectUsernameOrEmail()
+        {
+            var env = new TestEnvironment();
+
+            var model = new ForgotPasswordViewModel
+            {
+                UsernameOrEmail = "user",
+                EnableErrorMessage = false
+            };
+            IActionResult result = await env.Controller.ForgotPassword(model);
+
+            Assert.That(result, Is.TypeOf<ViewResult>());
+            Assert.IsTrue(model.EnableErrorMessage == false);
+        }
+
+        [Test]
+        public async Task ForgotPassword_IncorrectUsernameOrEmail()
+        {
+            var env = new TestEnvironment();
+
+            var model = new ForgotPasswordViewModel
+            {
+                UsernameOrEmail = "user1",
+                EnableErrorMessage = false
+            };
+            IActionResult result = await env.Controller.ForgotPassword(model);
+
+            Assert.That(result, Is.TypeOf<ViewResult>());
+            Assert.IsTrue(model.EnableErrorMessage == true);
+        }
 
         class TestEnvironment
         {
@@ -90,10 +124,12 @@ namespace SIL.XForge.Identity.Controllers.Account
                     });
                 AuthService = Substitute.For<IAuthenticationService>();
                 var serviceProvider = Substitute.For<IServiceProvider>();
+                var options = Substitute.For<IOptions<SiteOptions>>();
+                var environment = Substitute.For<IHostingEnvironment>();
                 serviceProvider.GetService(typeof(IAuthenticationService)).Returns(AuthService);
                 serviceProvider.GetService(typeof(ISystemClock)).Returns(new SystemClock());
                 serviceProvider.GetService(typeof(IAuthenticationSchemeProvider)).Returns(schemeProvider);
-                Controller = new AccountController(interaction, clientStore, schemeProvider, Events, users)
+                Controller = new AccountController(interaction, clientStore, schemeProvider, Events, users, options, environment)
                 {
                     ControllerContext = new ControllerContext
                     {

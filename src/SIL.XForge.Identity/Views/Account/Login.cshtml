@@ -6,6 +6,13 @@
         <h1>Login</h1>
     </div>
 
+    @if (Model.ResetPasswordMessage.Length > 0)
+    {
+    <div uib-alert="" class="alert-info ng-isolate-scope alert" role="alert">
+        <div> @Html.DisplayFor(model => model.ResetPasswordMessage)  </div>
+    </div>
+    }
+
     @Html.Partial("_ValidationSummary")
 
     <div class="row">
@@ -40,6 +47,9 @@
                                         </label>
                                     </div>
                                 }
+                                <a href="~/account/forgotpassword" class="nav-link">
+                                  Forgot Password
+                                </a>
                                 <div class="form-group">
                                     <button class="btn btn-primary" name="button" value="login" id="login-button">Login</button>
                                     <button class="btn btn-default" name="button" value="cancel">Cancel</button>
