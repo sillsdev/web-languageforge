@@ -1,4 +1,5 @@
-import { browser, by, element, promise } from 'protractor';
+import { browser, by, element, ExpectedConditions, promise } from 'protractor';
+import { AppPage } from './app.po';
 
 export class LoginPage {
   private static readonly baseUrl = 'https://beta.scriptureforge.local';
@@ -28,9 +29,14 @@ export class LoginPage {
     await this.passwordInput.sendKeys(password);
     await this.loginButton.click();
 
-    // wait for redirect before enabling angular wait
-    await browser.sleep(300);
-    browser.waitForAngularEnabled(true);
+    // wait for redirect before enabling angular wait.
+    browser.wait(() => {
+      browser.waitForAngularEnabled(false);
+      return browser.getCurrentUrl().then(() => {
+        browser.waitForAngularEnabled(true);
+      });
+    }, this.constants.conditionTimeout);
+    await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.homepageHeader), this.constants.conditionTimeout);
   }
 
   loginAsAdmin(): promise.Promise<void> {
