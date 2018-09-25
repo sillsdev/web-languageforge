@@ -55,9 +55,9 @@ We plan to use [Prettier](https://prettier.io/) with pre-commit hook after re-wr
 
 ### Development Process ###
 
-The initial plan is to use Github Pull Requests (PR).
+The initial plan is to use GitHub Pull Requests (PR) and GitHub review (don't use Reviewable).
 
-The first task on a job is to create a feature. Branch off of the **sf-develop** branch.
+The first task on a job is to create a feature branch. Branch off of the **sf-develop** branch.
 ```bash
 git checkout sf-develop
 git pull
@@ -68,15 +68,15 @@ Then do some useful work and commit it. Then
 git push origin feature/<featureName>
 ```
 
-Rebase often (at least at the start of the day, and before making a PR). Force pushing to your own branch is fine.
+Rebase often (at least at the start of the day, and before making a PR). Force pushing to your own branch is fine but don't force push during code review (GitHub review doesn't cope with this).
 
 Make PR's against the **sf-develop** branch. If the **sf-develop** branch has moved on since the feature branch was made, rebase your changes on top of the **sf-develop** branch before making your PR.
 
 Ensure all [tests](#testing) are passing before submitting a PR. 
 
-Reviewers can and should rebase the completed PR change (default to squash and rebase unless commits have good reason to stay separate).
 If the person reviewing feels comfortable to approve it they can. However if they want other eyes on it, mention it in a comment on the PR.
-If you have minor changes to request on a PR you can say 'Make change X and then LGTM'. This means they can merge it themselves after the requested change.
+If you have minor changes to request on a PR you can say 'Make change X and then LGTM'. This means the person making the PR can merge it themselves after the requested change.
+People merging PRs can and should rebase the completed PR change (default to squash and rebase unless commits have good reason to stay separate).
 
 Delete the PR branch after merge.
 
