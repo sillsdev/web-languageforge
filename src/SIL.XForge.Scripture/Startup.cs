@@ -3,8 +3,8 @@ using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Hangfire;
+using IdentityServer4;
 using JsonApiDotNetCore.Extensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -13,9 +13,11 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using SIL.Extensions;
 using SIL.XForge.Configuration;
 using SIL.XForge.ExceptionLogging;
 using SIL.XForge.Identity;
+using SIL.XForge.Identity.Authentication;
 using SIL.XForge.Scripture.Configuration;
 using SIL.XForge.Scripture.DataAccess;
 using SIL.XForge.Scripture.Realtime;
@@ -49,8 +51,9 @@ namespace SIL.XForge.Scripture
             services.AddXFIdentityServer(Configuration);
 
             var siteOptions = Configuration.GetOptions<SiteOptions>();
+            var paratextOptions = Configuration.GetOptions<ParatextOptions>();
             services.AddAuthentication()
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                .AddJwtBearer(options =>
                     {
                         if (Environment.IsDevelopment())
                         {
@@ -62,6 +65,24 @@ namespace SIL.XForge.Scripture
                         }
                         options.Authority = $"https://{siteOptions.Domain}";
                         options.Audience = "api";
+                    })
+                .AddParatext(options =>
+                    {
+                        options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                        options.SaveTokens = true;
+
+                        if (Environment.IsDevelopment())
+                            options.UseDevServer();
+                        options.ClientId = paratextOptions.ClientId;
+                        options.ClientSecret = paratextOptions.ClientSecret;
+                        options.Scope.AddRange(new[]
+                            {
+                                "projects:read",
+                                "data_access",
+                                "offline_access",
+                                "projects.members:read",
+                                "projects.members:write"
+                            });
                     });
 
             services.AddSFDataAccess(Configuration);

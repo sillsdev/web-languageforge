@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Hangfire;
 using Hangfire.Mongo;
 using Microsoft.Extensions.Configuration;
@@ -33,7 +32,8 @@ namespace SIL.XForge.DataAccess
             var globalPack = new ConventionPack
             {
                 new CamelCaseElementNameConvention(),
-                new ObjectRefConvention()
+                new ObjectRefConvention(),
+                new IgnoreIfNullConvention(true)
             };
             ConventionRegistry.Register("Global", globalPack, t => true);
             var paratextProjectPack = new ConventionPack { new NoIdMemberConvention() };
@@ -48,12 +48,7 @@ namespace SIL.XForge.DataAccess
 
             services.AddSingleton<IMongoClient>(sp => new MongoClient(options.ConnectionString));
 
-            services.AddMongoRepository<UserEntity>(options.MongoDatabaseName, "users", cm =>
-                {
-                    cm.MapMember(u => u.Projects)
-                        .SetSerializer(new EnumerableInterfaceImplementerSerializer<List<string>, string>(
-                            new StringSerializer(BsonType.ObjectId)));
-                });
+            services.AddMongoRepository<UserEntity>(options.MongoDatabaseName, "users");
             return services;
         }
 

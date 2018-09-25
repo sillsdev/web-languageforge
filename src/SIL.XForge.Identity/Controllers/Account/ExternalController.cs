@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModel;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SIL.XForge.DataAccess;
+using SIL.XForge.Identity.Authentication;
 using SIL.XForge.Models;
 
 namespace SIL.XForge.Identity.Controllers.Account
@@ -58,7 +60,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 throw new Exception("invalid return URL");
             }
 
-            // start challenge and roundtrip the return URL and scheme 
+            // start challenge and roundtrip the return URL and scheme
             var props = new AuthenticationProperties
             {
                 RedirectUri = Url.Action(nameof(Callback)),
@@ -87,17 +89,19 @@ namespace SIL.XForge.Identity.Controllers.Account
             }
 
             // lookup our user and external provider info
-            UserEntity user = await GetUserFromExternalProvider(result);
-            if (user == null)
-            {
-                // TODO: redirect to sign up page
-            }
+            UserEntity user = await GetUserFromExternalProviderAsync(result);
 
             // this allows us to collect any additonal claims or properties
             // for the specific prtotocols used and store them in the local auth cookie.
             // this is typically used to store data needed for signout from those protocols.
             var additionalLocalClaims = new List<Claim>();
             var localSignInProps = new AuthenticationProperties();
+            // TODO: allow user to specify whether to remember the login
+            if (AccountOptions.AllowRememberLogin)
+            {
+                localSignInProps.IsPersistent = true;
+                localSignInProps.ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration);
+            };
             ProcessLoginCallbackForOidc(result, additionalLocalClaims, localSignInProps);
             ProcessLoginCallbackForWsFed(result, additionalLocalClaims, localSignInProps);
             ProcessLoginCallbackForSaml2p(result, additionalLocalClaims, localSignInProps);
@@ -136,17 +140,46 @@ namespace SIL.XForge.Identity.Controllers.Account
             return Redirect(returnUrl);
         }
 
-        private Task<UserEntity> GetUserFromExternalProvider(AuthenticateResult result)
+        private async Task<UserEntity> GetUserFromExternalProviderAsync(AuthenticateResult result)
         {
-            Claim subClaim = result.Principal.FindFirst(JwtClaimTypes.Subject);
-            string sub = subClaim?.Value;
-            Claim emailClaim = result.Principal.FindFirst(JwtClaimTypes.Email);
-            string email = emailClaim?.Value;
+            ClaimsPrincipal externalUser = result.Principal;
+            Claim userIdClaim = externalUser.FindFirst(JwtClaimTypes.Subject)
+                ?? externalUser.FindFirst(ClaimTypes.NameIdentifier);
+            string externalUserId = userIdClaim?.Value ?? "";
+            Claim emailClaim = externalUser.FindFirst(JwtClaimTypes.Email)
+                ?? externalUser.FindFirst(ClaimTypes.Email);
+            string email = emailClaim?.Value ?? "";
+            Claim nameClaim = externalUser.FindFirst(JwtClaimTypes.Name)
+                ?? externalUser.FindFirst(ClaimTypes.Name);
+            string name = nameClaim?.Value ?? "";
 
+            Expression<Func<UserEntity, bool>> predicate;
             string provider = result.Properties.Items["scheme"];
+            switch (provider)
+            {
+                case ParatextAuthenticationDefaults.AuthenticationScheme:
+                    predicate = u => u.ParatextUser.UserId == externalUserId || u.Email == email;
+                    break;
+                default:
+                    throw new Exception("Unknown external authentication scheme.");
+            }
+
+            var externalUserInfo = new ExternalUser
+            {
+                UserId = externalUserId,
+                Name = name,
+                AccessToken = result.Properties.GetTokenValue("access_token"),
+                RefreshToken = result.Properties.GetTokenValue("refresh_token")
+            };
 
             // find external user
-            return _users.Query().SingleOrDefaultAsync(u => u.GoogleOAuthIds.Contains(sub) || u.Email == email);
+            UserEntity user = await _users.UpdateAsync(predicate,
+                update => update.Set(u => u.ParatextUser, externalUserInfo));
+            if (user != null)
+                return user;
+
+            // TODO: create user
+            throw new NotImplementedException();
         }
 
         private void ProcessLoginCallbackForOidc(AuthenticateResult externalResult, List<Claim> localClaims,

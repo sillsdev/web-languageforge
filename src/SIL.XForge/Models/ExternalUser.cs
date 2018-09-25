@@ -1,8 +1,9 @@
 namespace SIL.XForge.Models
 {
-    public class AccessTokenInfo
+    public class ExternalUser
     {
-        public string IdToken { get; set; }
+        public string UserId { get; set; }
+        public string Name { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
     }

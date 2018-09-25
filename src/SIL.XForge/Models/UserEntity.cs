@@ -16,13 +16,9 @@ namespace SIL.XForge.Models
         public string ResetPasswordKey { get; set; }
         public DateTime ResetPasswordExpirationDate { get; set; }
         public string Role { get; set; }
-        public List<string> GoogleOAuthIds { get; protected set; } = new List<string>();
-        public List<string> ParatextOAuthIds { get; protected set; } = new List<string>();
-        public List<string> FacebookOAuthIds { get; protected set; } = new List<string>();
         public bool Active { get; set; }
         public string Password { get; set; }
-        public List<string> Projects { get; protected set; } = new List<string>();
-        public AccessTokenInfo ParatextAccessToken { get; set; } = new AccessTokenInfo();
+        public ExternalUser ParatextUser { get; set; } = new ExternalUser();
 
         public Dictionary<string, object> ExtraElements { get; protected set; }
 

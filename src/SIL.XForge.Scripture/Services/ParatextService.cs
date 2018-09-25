@@ -88,7 +88,7 @@ namespace SIL.XForge.Scripture.Services
                     }
                     return Attempt.Success(new ParatextUserInfo
                         {
-                            Username = GetUsername(user),
+                            Username = user.ParatextUser.Name,
                             Projects = projects
                         });
                 }
@@ -129,13 +129,6 @@ namespace SIL.XForge.Scripture.Services
             throw new InvalidOperationException("The user's access token is invalid.");
         }
 
-        private string GetUsername(UserEntity user)
-        {
-            var idToken = new JwtSecurityToken(user.ParatextAccessToken.IdToken);
-            Claim usernameClaim = idToken.Claims.FirstOrDefault(c => c.Type == "username");
-            return usernameClaim?.Value;
-        }
-
         private async Task RefreshAccessTokenAsync(UserEntity user)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "api8/token");
@@ -145,26 +138,30 @@ namespace SIL.XForge.Scripture.Services
                 new JProperty("grant_type", "refresh_token"),
                 new JProperty("client_id", options.ClientId),
                 new JProperty("client_secret", options.ClientSecret),
-                new JProperty("refresh_token", user.ParatextAccessToken.RefreshToken));
+                new JProperty("refresh_token", user.ParatextUser.RefreshToken));
             request.Content = new StringContent(requestObj.ToString(), Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _registryClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             string responseJson = await response.Content.ReadAsStringAsync();
             var responseObj = JObject.Parse(responseJson);
-            user.ParatextAccessToken = new AccessTokenInfo
+            var idToken = new JwtSecurityToken((string) responseObj["id_token"]);
+            Claim userIdClaim = idToken.Claims.First(c => c.Type == "sub");
+            Claim nameClaim = idToken.Claims.First(c => c.Type == "username");
+            user.ParatextUser = new ExternalUser
             {
-                IdToken = (string) responseObj["id_token"],
+                UserId = userIdClaim.Value,
+                Name = nameClaim.Value,
                 AccessToken = (string) responseObj["access_token"],
                 RefreshToken = (string) responseObj["refresh_token"]
             };
-            await _userRepo.UpdateAsync(user, b => b.Set(u => u.ParatextAccessToken, user.ParatextAccessToken));
+            await _userRepo.UpdateAsync(user, b => b.Set(u => u.ParatextUser, user.ParatextUser));
         }
 
         private async Task<Attempt<string>> TryCallApiAsync(HttpClient client, UserEntity user, HttpMethod method,
             string url, string content = null)
         {
-            if (user.ParatextAccessToken?.AccessToken == null)
+            if (user.ParatextUser?.AccessToken == null)
                 return Attempt<string>.Failure;
 
             bool expired = IsAccessTokenExpired(user);
@@ -179,7 +176,7 @@ namespace SIL.XForge.Scripture.Services
 
                 var request = new HttpRequestMessage(method, $"api8/{url}");
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer",
-                    user.ParatextAccessToken.AccessToken);
+                    user.ParatextUser.AccessToken);
                 if (content != null)
                     request.Content = new StringContent(content);
                 HttpResponseMessage response = await client.SendAsync(request);
@@ -196,7 +193,7 @@ namespace SIL.XForge.Scripture.Services
 
         private static bool IsAccessTokenExpired(UserEntity user)
         {
-            var accessToken = new JwtSecurityToken(user.ParatextAccessToken.AccessToken);
+            var accessToken = new JwtSecurityToken(user.ParatextUser.AccessToken);
             var now = DateTime.UtcNow;
             return now < accessToken.ValidFrom || now > accessToken.ValidTo;
         }
