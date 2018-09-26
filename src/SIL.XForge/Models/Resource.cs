@@ -3,7 +3,7 @@ using JsonApiDotNetCore.Models;
 
 namespace SIL.XForge.Models
 {
-    public class Resource : Identifiable<string>
+    public class Resource : Identifiable<string>, IResource
     {
         [Attr("date-modified", true)]
         public DateTime DateModified { get; set; }

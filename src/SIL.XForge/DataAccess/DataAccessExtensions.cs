@@ -155,5 +155,61 @@ namespace SIL.XForge.DataAccess
         {
             return query.ToListAsync(e => Task.FromResult(selector(e)));
         }
+
+        public static IUpdateBuilder<T> Set<T, TField>(this IUpdateBuilder<T> update, Expression<Func<T, TField>> field,
+            TField value) where T : Entity
+        {
+            return update.Set(GetPropertyName(field), value);
+        }
+
+        public static IUpdateBuilder<T> Set<T, TItem, TField>(this IUpdateBuilder<T> update,
+            Expression<Func<T, IEnumerable<TItem>>> collectionField, Expression<Func<TItem, TField>> field,
+            TField value, int index = -1) where T : Entity
+        {
+            return update.Set(GetPropertyName(collectionField), GetPropertyName(field), value, index);
+        }
+
+        public static IUpdateBuilder<T> Set<T, TItem, TField>(this IUpdateBuilder<T> update,
+            Expression<Func<T, IEnumerable<TItem>>> collectionField, string fieldName, TField value,
+            int index = -1) where T : Entity
+        {
+            return update.Set(GetPropertyName(collectionField), fieldName, value, index);
+        }
+
+        public static IUpdateBuilder<T> SetOnInsert<T, TField>(this IUpdateBuilder<T> update,
+            Expression<Func<T, TField>> field, TField value) where T : Entity
+        {
+            return update.SetOnInsert(GetPropertyName(field), value);
+        }
+
+        public static IUpdateBuilder<T> Unset<T>(this IUpdateBuilder<T> update, Expression<Func<T, object>> field)
+            where T : Entity
+        {
+            return update.Unset(GetPropertyName(field));
+        }
+
+        public static IUpdateBuilder<T> Inc<T>(this IUpdateBuilder<T> update, Expression<Func<T, int>> field, int value)
+            where T : Entity
+        {
+            return update.Inc(GetPropertyName(field), value);
+        }
+
+        public static IUpdateBuilder<T> RemoveAll<T, TItem>(this IUpdateBuilder<T> update,
+            Expression<Func<T, IEnumerable<TItem>>> field, Expression<Func<TItem, bool>> predicate) where T : Entity
+        {
+            return update.RemoveAll(GetPropertyName(field), predicate);
+        }
+
+        public static IUpdateBuilder<T> Add<T, TItem>(this IUpdateBuilder<T> update,
+            Expression<Func<T, IEnumerable<TItem>>> field, TItem value) where T : Entity
+        {
+            return update.Add(GetPropertyName(field), value);
+        }
+
+        private static string GetPropertyName<T, TField>(Expression<Func<T, TField>> field)
+        {
+            var body = (MemberExpression) field.Body;
+            return body.Member.Name;
+        }
     }
 }

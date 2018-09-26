@@ -1,15 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using JsonApiDotNetCore.Builders;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Models;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using NUnit.Framework;
-using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
@@ -129,57 +126,12 @@ namespace SIL.XForge.Services
             Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[] { "user01", "user02", "user03" }));
         }
 
-        [Test]
-        public void UpdateRelationshipsAsync_ProjectsNotAllowed()
-        {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
-                {
-                    await env.Service.UpdateRelationshipsAsync("user01", "projects",
-                        new List<DocumentData> { new DocumentData { Type = "projects", Id = "project02" } });
-                });
-
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status405MethodNotAllowed));
-        }
-
-        [Test]
-        public async Task GetRelationshipsAsync_Projects()
-        {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-
-            object resources = await env.Service.GetRelationshipsAsync("user01", "projects");
-
-            Assert.That(resources, Is.Not.Null);
-            var projectResources = (IEnumerable<Resource>) resources;
-            Assert.That(projectResources.Select(p => p.Id), Is.EqualTo(new[] { "project01", "project02" }));
-        }
-
         class TestEnvironment : ResourceServiceTestEnvironmentBase<UserResource, UserEntity>
         {
             public TestEnvironment()
                 : base("users")
             {
-                var projects = new MemoryRepository<TestProjectEntity>(new[]
-                    {
-                        new TestProjectEntity
-                        {
-                            Id = "project01",
-                            Users = { { "user01", new ProjectRole(TestProjectRoles.Manager) } }
-                        },
-                        new TestProjectEntity
-                        {
-                            Id = "project02",
-                            Users = { { "user01", new ProjectRole(TestProjectRoles.Manager) } }
-                        }
-                    });
-
-                Service = new TestUserService(JsonApiContext, Entities, Mapper, UserAccessor)
-                {
-                    ProjectResourceMapper = new TestProjectService(JsonApiContext, projects, Mapper, UserAccessor)
-                };
+                Service = new TestUserService(JsonApiContext, Mapper, UserAccessor, Entities);
             }
 
             public TestUserService Service { get; }
@@ -192,17 +144,6 @@ namespace SIL.XForge.Services
                     new UserEntity { Id = "user02", Username = "user02" },
                     new UserEntity { Id = "user03", Username = "user03" }
                 };
-            }
-
-            protected override void SetupContextGraph(IContextGraphBuilder builder)
-            {
-                builder.AddResource<TestProjectResource, string>("projects");
-            }
-
-            protected override void SetupMapper(IMapperConfigurationExpression config)
-            {
-                config.CreateMap<TestProjectEntity, TestProjectResource>()
-                    .ReverseMap();
             }
         }
     }

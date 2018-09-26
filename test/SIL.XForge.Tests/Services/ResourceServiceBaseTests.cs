@@ -283,9 +283,9 @@ namespace SIL.XForge.Services
             {
                 var users = new MemoryRepository<UserEntity>(new[] { new UserEntity { Id = "user01" } });
 
-                Service = new TestService(JsonApiContext, Entities, Mapper, UserAccessor)
+                Service = new TestService(JsonApiContext, Mapper, UserAccessor, Entities)
                 {
-                    UserResourceMapper = new TestUserService(JsonApiContext, users, Mapper, UserAccessor)
+                    UserMapper = new TestUserService(JsonApiContext, Mapper, UserAccessor, users)
                 };
             }
 

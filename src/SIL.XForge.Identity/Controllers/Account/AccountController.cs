@@ -195,7 +195,7 @@ namespace SIL.XForge.Identity.Controllers.Account
         /// Show forgot password page
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> ForgotPassword()
+        public IActionResult ForgotPassword()
         {
             ForgotPasswordViewModel vm = BuildForgotPasswordViewModel();
             return View("ForgotPassword", vm);

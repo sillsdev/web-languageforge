@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
+import { RecordIdentity } from '@orbit/data';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { Observable } from 'rxjs';
 
-import { BaseResourceService } from './base-resource-service';
-import { JSONAPIService } from './json-api.service';
-import { User, UserAttributes, UserContants } from './resources/user';
+import { JSONAPIService } from './jsonapi.service';
+import { ResourceRelationships } from './models/resource';
+import { User, UserAttributes, UserContants } from './models/user';
+import { ResourceService } from './resource.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService extends BaseResourceService<User, UserAttributes> {
+export class UserService extends ResourceService<User, UserAttributes, ResourceRelationships> {
   constructor(jsonApiService: JSONAPIService, private readonly oauthService: OAuthService) {
-    super(jsonApiService);
-  }
-
-  get type(): string {
-    return UserContants.TYPE;
+    super(jsonApiService, UserContants.TYPE);
   }
 
   get currentUserId(): string {
@@ -22,4 +21,11 @@ export class UserService extends BaseResourceService<User, UserAttributes> {
     return claims['sub'];
   }
 
+  currentUserIdentity(): RecordIdentity {
+    return this.identity(this.currentUserId);
+  }
+
+  onlineGetCurrentUser(): Observable<User> {
+    return this.jsonApiService.query(q => q.findRecord(this.identity(this.currentUserId)));
+  }
 }

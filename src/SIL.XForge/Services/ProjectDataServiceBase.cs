@@ -13,38 +13,21 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public abstract class ProjectDataServiceBase<TResource, TEntity, TProjectResource, TProjectEntity>
-        : ResourceServiceBase<TResource, TEntity>
+    public abstract class ProjectDataServiceBase<TResource, TEntity, TProjectEntity>
+        : RepositoryResourceServiceBase<TResource, TEntity>
         where TResource : ProjectDataResource
         where TEntity : ProjectDataEntity
-        where TProjectResource : ProjectResource
         where TProjectEntity : ProjectEntity
     {
-        private readonly IRepository<TProjectEntity> _projects;
-
-        protected ProjectDataServiceBase(IJsonApiContext jsonApiContext, IRepository<TProjectEntity> projects,
-            IRepository<TEntity> entities, IMapper mapper, IUserAccessor userAccessor)
-            : base(jsonApiContext, entities, mapper, userAccessor)
+        protected ProjectDataServiceBase(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
+            IRepository<TEntity> entities, IRepository<TProjectEntity> projects)
+            : base(jsonApiContext, mapper, userAccessor, entities)
         {
-            _projects = projects;
+            Projects = projects;
         }
-
-        public IResourceMapper<TProjectResource, TProjectEntity> ProjectResourceMapper { get; set; }
-        public IResourceMapper<UserResource, UserEntity> UserResourceMapper { get; set; }
 
         protected abstract Domain Domain { get; }
-
-        protected override IRelationship<TEntity> GetRelationship(string propertyName)
-        {
-            switch (propertyName)
-            {
-                case nameof(ProjectDataResource.Project):
-                    return ManyToOne(ProjectResourceMapper, ProjectRef(), false);
-                case nameof(ProjectDataResource.Owner):
-                    return ManyToOne(UserResourceMapper, (TEntity p) => p.OwnerRef, false);
-            }
-            return base.GetRelationship(propertyName);
-        }
+        protected IRepository<TProjectEntity> Projects { get; }
 
         protected override async Task CheckCanCreateAsync(TResource resource)
         {
@@ -55,7 +38,7 @@ namespace SIL.XForge.Services
             if (resource.OwnerRef != UserId)
                 throw new JsonApiException(StatusCodes.Status400BadRequest, "The owner is not the current user.");
 
-            ProjectEntity project = await _projects.GetAsync(resource.ProjectRef);
+            TProjectEntity project = await Projects.GetAsync(resource.ProjectRef);
             if (HasRight(project, Operation.Create))
                 return;
 
@@ -67,6 +50,11 @@ namespace SIL.XForge.Services
             return CheckCanUpdateDeleteAsync(id, Operation.Edit, Operation.EditOwn);
         }
 
+        protected override Task CheckCanUpdateRelationshipAsync(string id)
+        {
+            return CheckCanUpdateAsync(id);
+        }
+
         protected override Task CheckCanDeleteAsync(string id)
         {
             return CheckCanUpdateDeleteAsync(id, Operation.Delete, Operation.DeleteOwn);
@@ -74,8 +62,7 @@ namespace SIL.XForge.Services
 
         protected override async Task<IQueryable<TEntity>> ApplyPermissionFilterAsync(IQueryable<TEntity> query)
         {
-            List<TProjectEntity> projects = await _projects.Query().Where(p => p.Users.ContainsKey(UserId))
-                .ToListAsync();
+            IEnumerable<TProjectEntity> projects = await GetProjectsAsync();
             var wherePredicate = PredicateBuilder.New<TEntity>();
             bool isEmpty = true;
             foreach (TProjectEntity project in projects)
@@ -96,10 +83,17 @@ namespace SIL.XForge.Services
             return query.Where(wherePredicate);
         }
 
+        protected Expression<Func<TEntity, string>> ProjectRef()
+        {
+            return e => e.ProjectRef;
+        }
+
+        protected abstract Task<IEnumerable<TProjectEntity>> GetProjectsAsync();
+
         private async Task CheckCanUpdateDeleteAsync(string id, Operation op, Operation ownOp)
         {
-            ProjectEntity project = await Entities.Query().Where(e => e.Id == id)
-                .Join(_projects.Query(), ProjectRef(), p => p.Id, (e, p) => p).SingleOrDefaultAsync();
+            TProjectEntity project = await Entities.Query().Where(e => e.Id == id)
+                .Join(Projects.Query(), ProjectRef(), p => p.Id, (e, p) => p).SingleOrDefaultAsync();
 
             if (HasRight(project, op))
                 return;
@@ -115,12 +109,7 @@ namespace SIL.XForge.Services
             return e => e.ProjectRef == projectId;
         }
 
-        private Expression<Func<TEntity, string>> ProjectRef()
-        {
-            return e => e.ProjectRef;
-        }
-
-        private bool HasRight(ProjectEntity project, Operation op)
+        private bool HasRight(TProjectEntity project, Operation op)
         {
             return project.HasRight(UserId, new Right(Domain, op));
         }

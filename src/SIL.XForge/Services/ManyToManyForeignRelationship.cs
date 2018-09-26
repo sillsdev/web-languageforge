@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -12,8 +11,8 @@ namespace SIL.XForge.Services
     public class ManyToManyForeignRelationship<TForeignEntity, TPrimaryResource, TPrimaryEntity>
         : IRelationship<TForeignEntity>
         where TForeignEntity : Entity
-        where TPrimaryResource : Resource
-        where TPrimaryEntity : Entity
+        where TPrimaryResource : class, IResource
+        where TPrimaryEntity : class, IEntity
     {
         private readonly IResourceMapper<TPrimaryResource, TPrimaryEntity> _primaryResourceMapper;
         private readonly Expression<Func<TPrimaryEntity, List<string>>> _getFieldExpr;
@@ -25,11 +24,11 @@ namespace SIL.XForge.Services
             _getFieldExpr = getFieldExpr;
         }
 
-        public async Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
-            Dictionary<string, Resource> resources, TForeignEntity entity)
+        public async Task<IEnumerable<IResource>> GetResourcesAsync(IEnumerable<string> included,
+            Dictionary<string, IResource> resources, TForeignEntity entity)
         {
             return await _primaryResourceMapper.MapMatchingAsync(included, resources,
-                q => q.Where(CreateContainsPredicate(entity.Id)));
+                CreateContainsPredicate(entity.Id));
         }
 
         private Expression<Func<TPrimaryEntity, bool>> CreateContainsPredicate(string id)

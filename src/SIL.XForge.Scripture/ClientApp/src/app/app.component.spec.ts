@@ -3,7 +3,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { EMPTY } from 'rxjs';
+import { instance, mock, when } from 'ts-mockito';
 
+import { JSONAPIService } from '@xforge-common/jsonapi.service';
 import { AppComponent } from './app.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
@@ -11,14 +14,9 @@ import { HomeComponent } from './home/home.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 
 describe('AppComponent', () => {
-  const oauthServiceStub = {
-    configure() {},
-    loadDiscoveryDocumentAndLogin() {},
-    setupAutomaticSilentRefresh() {},
-    hasValidIdToken() {
-      return false;
-    }
-  };
+  const oauthServiceStub = mock(OAuthService);
+  const jsonApiServiceStub = mock(JSONAPIService);
+  when(oauthServiceStub.events).thenReturn(EMPTY);
 
   let fixture: ComponentFixture<AppComponent>;
 
@@ -41,7 +39,8 @@ describe('AppComponent', () => {
         ]),
       ],
       providers: [
-        { provide: OAuthService, useValue: oauthServiceStub }
+        { provide: OAuthService, useFactory: () => instance(oauthServiceStub) },
+        { provide: JSONAPIService, useFactory: () => instance(jsonApiServiceStub) }
       ]
     }).compileComponents();
   }));

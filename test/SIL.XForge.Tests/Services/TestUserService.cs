@@ -5,10 +5,10 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public class TestUserService : UserService<TestProjectResource, TestProjectEntity>
+    public class TestUserService : UserService<UserResource>
     {
-        public TestUserService(IJsonApiContext jsonApiContext, IRepository<UserEntity> entities, IMapper mapper,
-            IUserAccessor userAccessor) : base(jsonApiContext, entities, mapper, userAccessor)
+        public TestUserService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
+            IRepository<UserEntity> users) : base(jsonApiContext, mapper, userAccessor, users)
         {
         }
     }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using JsonApiDotNetCore.Models;
 
 namespace SIL.XForge.Models
@@ -13,7 +12,7 @@ namespace SIL.XForge.Models
         public string Email { get; set; }
         [Attr("password")]
         public string Password { get; set; }
-        [HasMany("projects")]
-        public IReadOnlyList<ProjectResource> Projects { get; set; }
+        [Attr("paratext-username", isImmutable: true)]
+        public string ParatextUsername { get; set; }
     }
 }

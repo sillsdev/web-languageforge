@@ -11,8 +11,8 @@ namespace SIL.XForge.Services
     public class ManyToManyPrimaryRelationship<TPrimaryEntity, TForeignResource, TForeignEntity>
         : IRelationship<TPrimaryEntity>
         where TPrimaryEntity : Entity
-        where TForeignResource : Resource
-        where TForeignEntity : Entity
+        where TForeignResource : class, IResource
+        where TForeignEntity : class, IEntity
     {
         private readonly IResourceMapper<TForeignResource, TForeignEntity> _foreignResourceMapper;
         private readonly Expression<Func<TPrimaryEntity, List<string>>> _getFieldExpr;
@@ -28,12 +28,11 @@ namespace SIL.XForge.Services
             _getField = _getFieldExpr.Compile();
         }
 
-        public async Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
-            Dictionary<string, Resource> resources, TPrimaryEntity entity)
+        public async Task<IEnumerable<IResource>> GetResourcesAsync(IEnumerable<string> included,
+            Dictionary<string, IResource> resources, TPrimaryEntity entity)
         {
             List<string> ids = _getField(entity);
-            return await _foreignResourceMapper.MapMatchingAsync(included, resources,
-                q => q.Where(e => ids.Contains(e.Id)));
+            return await _foreignResourceMapper.MapMatchingAsync(included, resources, e => ids.Contains(e.Id));
         }
 
         public bool Update(IUpdateBuilder<TPrimaryEntity> update, IEnumerable<string> ids)

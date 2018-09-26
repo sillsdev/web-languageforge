@@ -1,5 +1,4 @@
 using System;
-using MailKit;
 using MailKit.Net.Smtp;
 using MimeKit;
 using SIL.XForge.Configuration;
@@ -9,7 +8,6 @@ namespace SIL.XForge.Services
 {
     public class EmailService : IEmailService
     {
-
         private readonly IOptions<SiteOptions> _options;
         public EmailService(IOptions<SiteOptions> options)
         {

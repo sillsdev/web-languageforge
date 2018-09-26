@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using SIL.XForge.DataAccess;
@@ -10,8 +9,8 @@ namespace SIL.XForge.Services
 {
     public class CustomRelationship<TThisEntity, TOtherResource, TOtherEntity> : IRelationship<TThisEntity>
         where TThisEntity : Entity
-        where TOtherResource : Resource
-        where TOtherEntity : Entity
+        where TOtherResource : class, IResource
+        where TOtherEntity : class, IEntity
     {
         private readonly IResourceMapper<TOtherResource, TOtherEntity> _otherResourceMapper;
         private readonly Func<TThisEntity, Expression<Func<TOtherEntity, bool>>> _createPredicate;
@@ -26,11 +25,10 @@ namespace SIL.XForge.Services
             _update = update;
         }
 
-        public async Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
-            Dictionary<string, Resource> resources, TThisEntity entity)
+        public async Task<IEnumerable<IResource>> GetResourcesAsync(IEnumerable<string> included,
+            Dictionary<string, IResource> resources, TThisEntity entity)
         {
-            return await _otherResourceMapper.MapMatchingAsync(included, resources,
-                q => q.Where(_createPredicate(entity)));
+            return await _otherResourceMapper.MapMatchingAsync(included, resources, _createPredicate(entity));
         }
 
         public bool Update(IUpdateBuilder<TThisEntity> update, IEnumerable<string> ids)

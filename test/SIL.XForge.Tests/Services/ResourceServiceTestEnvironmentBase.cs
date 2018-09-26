@@ -36,9 +36,8 @@ namespace SIL.XForge.Services
 
             var config = new MapperConfiguration(cfg =>
                 {
-                    cfg.CreateMap<TEntity, TResource>()
-                        .ReverseMap();
                     SetupMapper(cfg);
+                    cfg.IgnoreAllUnmapped();
                 });
             Mapper = config.CreateMapper();
             UserAccessor = Substitute.For<IUserAccessor>();

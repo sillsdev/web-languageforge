@@ -36,14 +36,19 @@ namespace SIL.XForge.DataAccess
                 new IgnoreIfNullConvention(true)
             };
             ConventionRegistry.Register("Global", globalPack, t => true);
-            var paratextProjectPack = new ConventionPack { new NoIdMemberConvention() };
-            ConventionRegistry.Register("ParatextProject", paratextProjectPack, t => t == typeof(ParatextProject));
 
             RegisterClass<Entity>(cm =>
                 {
                     cm.MapIdProperty(e => e.Id)
                         .SetIdGenerator(StringObjectIdGenerator.Instance)
                         .SetSerializer(new StringSerializer(BsonType.ObjectId));
+                });
+
+            RegisterClass<ProjectUserEntity>(cm =>
+                {
+                    cm.SetIdMember(null);
+                    cm.MapProperty(u => u.Id).SetSerializer(new StringSerializer(BsonType.ObjectId));
+                    cm.UnmapProperty(u => u.ProjectRef);
                 });
 
             services.AddSingleton<IMongoClient>(sp => new MongoClient(options.ConnectionString));

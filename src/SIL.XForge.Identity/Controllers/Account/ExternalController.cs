@@ -48,7 +48,7 @@ namespace SIL.XForge.Identity.Controllers.Account
         /// initiate roundtrip to external authentication provider
         /// </summary>
         [HttpGet]
-        public IActionResult Challenge(string provider, string returnUrl)
+        public IActionResult Challenge(string provider, string returnUrl, string userId)
         {
             if (string.IsNullOrEmpty(returnUrl))
                 returnUrl = "~/";
@@ -67,9 +67,12 @@ namespace SIL.XForge.Identity.Controllers.Account
                 Items =
                 {
                     { "returnUrl", returnUrl },
-                    { "scheme", provider },
+                    { "scheme", provider }
                 }
             };
+
+            if (!string.IsNullOrEmpty(userId))
+                props.Items["userId"] = userId;
 
             return Challenge(props, provider);
         }
@@ -153,28 +156,28 @@ namespace SIL.XForge.Identity.Controllers.Account
                 ?? externalUser.FindFirst(ClaimTypes.Name);
             string name = nameClaim?.Value ?? "";
 
-            Expression<Func<UserEntity, bool>> predicate;
+            UserEntity user = null;
             string provider = result.Properties.Items["scheme"];
+            Expression<Func<UserEntity, bool>> predicate = null;
+            if (result.Properties.Items.TryGetValue("userId", out string userId))
+                predicate = u => u.Id == userId;
             switch (provider)
             {
                 case ParatextAuthenticationDefaults.AuthenticationScheme:
-                    predicate = u => u.ParatextUser.UserId == externalUserId || u.Email == email;
+                    if (predicate == null)
+                        predicate = u => u.ParatextId == externalUserId || u.Email == email;
+                    var paratextTokens = new Tokens
+                    {
+                        AccessToken = result.Properties.GetTokenValue("access_token"),
+                        RefreshToken = result.Properties.GetTokenValue("refresh_token")
+                    };
+                    user = await _users.UpdateAsync(predicate, update => update
+                        .Set(u => u.ParatextId, externalUserId)
+                        .Set(u => u.ParatextTokens, paratextTokens));
                     break;
                 default:
                     throw new Exception("Unknown external authentication scheme.");
             }
-
-            var externalUserInfo = new ExternalUser
-            {
-                UserId = externalUserId,
-                Name = name,
-                AccessToken = result.Properties.GetTokenValue("access_token"),
-                RefreshToken = result.Properties.GetTokenValue("refresh_token")
-            };
-
-            // find external user
-            UserEntity user = await _users.UpdateAsync(predicate,
-                update => update.Set(u => u.ParatextUser, externalUserInfo));
             if (user != null)
                 return user;
 

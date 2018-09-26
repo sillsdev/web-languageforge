@@ -7,21 +7,21 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public class TestService : ResourceServiceBase<TestResource, TestEntity>
+    public class TestService : RepositoryResourceServiceBase<TestResource, TestEntity>
     {
-        public TestService(IJsonApiContext jsonApiContext, IRepository<TestEntity> entities, IMapper mapper,
-            IUserAccessor userAccessor) : base(jsonApiContext, entities, mapper, userAccessor)
+        public TestService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
+            IRepository<TestEntity> entities) : base(jsonApiContext, mapper, userAccessor, entities)
         {
         }
 
-        public IResourceMapper<UserResource, UserEntity> UserResourceMapper { get; set; }
+        public IResourceMapper<UserResource, UserEntity> UserMapper { get; set; }
 
         protected override IRelationship<TestEntity> GetRelationship(string propertyName)
         {
             switch (propertyName)
             {
                 case nameof(TestResource.User):
-                    return ManyToOne(UserResourceMapper, e => e.UserRef);
+                    return ManyToOne(UserMapper, e => e.UserRef);
             }
             return base.GetRelationship(propertyName);
         }
@@ -31,12 +31,17 @@ namespace SIL.XForge.Services
             return Task.CompletedTask;
         }
 
-        protected override Task CheckCanDeleteAsync(string id)
+        protected override Task CheckCanUpdateAsync(string id)
         {
             return Task.CompletedTask;
         }
 
-        protected override Task CheckCanUpdateAsync(string id)
+        protected override Task CheckCanUpdateRelationshipAsync(string id)
+        {
+            return Task.CompletedTask;
+        }
+
+        protected override Task CheckCanDeleteAsync(string id)
         {
             return Task.CompletedTask;
         }

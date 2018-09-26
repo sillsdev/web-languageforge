@@ -13,17 +13,17 @@ namespace SIL.XForge.Services
         [Test]
         public async Task GetResourcesAsync_ValidRelationship()
         {
-            var projectResource = new ProjectResource
+            var projectResource = new TestProjectResource
             {
                 Id = "project1",
                 ProjectName = "Test"
             };
-            var projectResourceMapper = Substitute.For<IResourceMapper<ProjectResource, ProjectEntity>>();
-            IEnumerable<ProjectResource> projectResources = new[] { projectResource };
+            var projectResourceMapper = Substitute.For<IResourceMapper<TestProjectResource, TestProjectEntity>>();
+            IEnumerable<TestProjectResource> projectResources = new[] { projectResource };
             projectResourceMapper.MapMatchingAsync(null, null, null)
                 .ReturnsForAnyArgs(Task.FromResult(projectResources));
 
-            var rel = new ManyToOneRelationship<ProjectDataEntity, ProjectResource, ProjectEntity>(
+            var rel = new ManyToOneRelationship<ProjectDataEntity, TestProjectResource, TestProjectEntity>(
                 projectResourceMapper, e => e.ProjectRef);
             var entity = new ProjectDataEntity
             {
@@ -31,8 +31,8 @@ namespace SIL.XForge.Services
                 ProjectRef = "project1"
 
             };
-            IEnumerable<Resource> result = await rel.GetResourcesAsync(Enumerable.Empty<string>(),
-                new Dictionary<string, Resource>(), entity);
+            IEnumerable<IResource> result = await rel.GetResourcesAsync(Enumerable.Empty<string>(),
+                new Dictionary<string, IResource>(), entity);
             Assert.That(result, Is.EqualTo(new[] { projectResource }));
         }
     }

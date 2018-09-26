@@ -20,6 +20,7 @@
     "@angular/common": "^6.1.4",
     "@angular/compiler": "^6.1.4",
     "@angular/core": "^6.1.4",
+    "@angular/flex-layout": "^6.0.0-beta.18",
     "@angular/forms": "^6.1.4",
     "@angular/http": "^6.1.4",
     "@angular/material": "^6.4.7",
@@ -64,6 +65,7 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "karma-teamcity-reporter": "^1.1.0",
     "protractor": "^5.4.0",
+    "ts-mockito": "^2.3.1",
     "ts-node": "~4.1.0",
     "tslint": "~5.9.1",
     "typescript": "~2.9.2"

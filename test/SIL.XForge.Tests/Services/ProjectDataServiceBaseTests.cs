@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using JsonApiDotNetCore.Builders;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Models;
@@ -27,9 +25,7 @@ namespace SIL.XForge.Services
             {
                 Id = "testnew",
                 Str = "new",
-                Project = new TestProjectResource { Id = "project01" },
                 ProjectRef = "project01",
-                Owner = new UserResource { Id = "user01" },
                 OwnerRef = "user01"
             };
             TestProjectDataResource newResource = await env.Service.CreateAsync(resource);
@@ -47,9 +43,7 @@ namespace SIL.XForge.Services
             {
                 Id = "testnew",
                 Str = "new",
-                Project = new TestProjectResource { Id = "project02" },
                 ProjectRef = "project02",
-                Owner = new UserResource { Id = "user01" },
                 OwnerRef = "user01"
             };
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
@@ -70,7 +64,6 @@ namespace SIL.XForge.Services
             {
                 Id = "testnew",
                 Str = "new",
-                Owner = new UserResource { Id = "user01" },
                 OwnerRef = "user01"
             };
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
@@ -91,9 +84,7 @@ namespace SIL.XForge.Services
             {
                 Id = "testnew",
                 Str = "new",
-                Project = new TestProjectResource { Id = "project01" },
                 ProjectRef = "project01",
-                Owner = new UserResource { Id = "user02" },
                 OwnerRef = "user02"
             };
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
@@ -201,15 +192,33 @@ namespace SIL.XForge.Services
                             ProjectName = "project01",
                             Users =
                             {
-                                { "user01", new ProjectRole(TestProjectRoles.Manager) },
-                                { "user02", new ProjectRole(TestProjectRoles.Contributor) }
+                                new ProjectUserEntity
+                                {
+                                    Id = "projectuser01",
+                                    UserRef = "user01",
+                                    Role = TestProjectRoles.Manager
+                                },
+                                new ProjectUserEntity
+                                {
+                                    Id = "projectuser02",
+                                    UserRef = "user02",
+                                    Role = TestProjectRoles.Contributor
+                                }
                             }
                         },
                         new TestProjectEntity
                         {
                             Id = "project02",
                             ProjectName = "project02",
-                            Users = { { "user02", new ProjectRole(TestProjectRoles.Manager) } }
+                            Users =
+                            {
+                                new ProjectUserEntity
+                                {
+                                    Id = "projectuser03",
+                                    UserRef = "user02",
+                                    Role = TestProjectRoles.Manager
+                                }
+                            }
                         },
                         new TestProjectEntity
                         {
@@ -217,23 +226,23 @@ namespace SIL.XForge.Services
                             ProjectName = "project03",
                             Users =
                             {
-                                { "user01", new ProjectRole(TestProjectRoles.Contributor) },
-                                { "user02", new ProjectRole(TestProjectRoles.Manager) }
+                                new ProjectUserEntity
+                                {
+                                    Id = "projectuser04",
+                                    UserRef = "user01",
+                                    Role = TestProjectRoles.Contributor
+                                },
+                                new ProjectUserEntity
+                                {
+                                    Id = "projectuser05",
+                                    UserRef = "user02",
+                                    Role = TestProjectRoles.Manager
+                                }
                             }
                         }
                     });
 
-                var users = new MemoryRepository<UserEntity>(new[]
-                    {
-                        new UserEntity { Id = "user01" },
-                        new UserEntity { Id = "user02" }
-                    });
-
-                Service = new TestProjectDataService(JsonApiContext, projects, Entities, Mapper, UserAccessor)
-                {
-                    UserResourceMapper = new TestUserService(JsonApiContext, users, Mapper, UserAccessor),
-                    ProjectResourceMapper = new TestProjectService(JsonApiContext, projects, Mapper, UserAccessor)
-                };
+                Service = new TestProjectDataService(JsonApiContext, Mapper, UserAccessor, Entities, projects);
             }
 
             public TestProjectDataService Service { get; }
@@ -253,20 +262,6 @@ namespace SIL.XForge.Services
                     new TestProjectDataEntity { Id = "test09", ProjectRef = "project03", OwnerRef = "user01" },
                     new TestProjectDataEntity { Id = "test10", ProjectRef = "project01", OwnerRef = "user02" }
                 };
-            }
-
-            protected override void SetupContextGraph(IContextGraphBuilder builder)
-            {
-                builder.AddResource<UserResource, string>("users");
-                builder.AddResource<TestProjectResource, string>("projects");
-            }
-
-            protected override void SetupMapper(IMapperConfigurationExpression config)
-            {
-                config.CreateMap<UserEntity, UserResource>()
-                    .ReverseMap();
-                config.CreateMap<TestProjectEntity, TestProjectResource>()
-                    .ReverseMap();
             }
         }
     }

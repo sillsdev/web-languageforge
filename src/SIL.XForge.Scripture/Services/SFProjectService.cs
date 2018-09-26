@@ -1,31 +1,78 @@
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Services;
 using SIL.XForge.DataAccess;
+using SIL.XForge.Models;
 using SIL.XForge.Scripture.Models;
 using SIL.XForge.Services;
+using SIL.XForge.Utils;
 
 namespace SIL.XForge.Scripture.Services
 {
-    public class SFProjectService : ProjectService<SFProjectResource, SFProjectEntity>
+    public class SFProjectService : RepositoryResourceServiceBase<SFProjectResource, SFProjectEntity>
     {
-        public SFProjectService(IJsonApiContext jsonApiContext, IRepository<SFProjectEntity> entities, IMapper mapper,
-            IUserAccessor userAccessor)
-            : base(jsonApiContext, entities, mapper, userAccessor)
+        public SFProjectService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
+            IRepository<SFProjectEntity> projects) : base(jsonApiContext, mapper, userAccessor, projects)
         {
         }
 
-        public IResourceMapper<SendReceiveJobResource, SendReceiveJobEntity> SendReceiveJobResources { get; set; }
+        public IResourceMapper<SyncJobResource, SyncJobEntity> SyncJobMapper { get; set; }
+        public IResourceMapper<SFProjectUserResource, SFProjectUserEntity> ProjectUserMapper { get; set; }
 
         protected override IRelationship<SFProjectEntity> GetRelationship(string relationshipName)
         {
             switch (relationshipName)
             {
-                case SFProjectResource.ActiveSendReceiveJobRelationship:
-                    return Custom(SendReceiveJobResources,
-                        p => { return j => j.ProjectRef == p.Id && SendReceiveJobEntity.ActiveStates.Contains(j.State); });
+                case nameof(SFProjectResource.ActiveSyncJob):
+                    return Custom(SyncJobMapper, p =>
+                        {
+                            return j => j.ProjectRef == p.Id && SyncJobEntity.ActiveStates.Contains(j.State);
+                        });
+                case nameof(SFProjectResource.Users):
+                    return OneToMany(ProjectUserMapper, u => u.ProjectRef);
             }
             return base.GetRelationship(relationshipName);
+        }
+
+        protected override Task CheckCanCreateAsync(SFProjectResource resource)
+        {
+            return Task.CompletedTask;
+        }
+
+        protected override async Task CheckCanUpdateAsync(string id)
+        {
+            if (SystemRole == SystemRoles.User)
+            {
+                Attempt<SFProjectEntity> attempt = await Entities.TryGetAsync(id);
+                if (attempt.TryResult(out SFProjectEntity project))
+                {
+                    if (!project.Users.Any(u => u.UserRef == UserId))
+                        throw ForbiddenException();
+                }
+                else
+                {
+                    throw NotFoundException();
+                }
+            }
+        }
+
+        protected override Task CheckCanUpdateRelationshipAsync(string id)
+        {
+            return CheckCanUpdateAsync(id);
+        }
+
+        protected override Task CheckCanDeleteAsync(string id)
+        {
+            return CheckCanUpdateAsync(id);
+        }
+
+        protected override Task<IQueryable<SFProjectEntity>> ApplyPermissionFilterAsync(
+            IQueryable<SFProjectEntity> query)
+        {
+            if (SystemRole == SystemRoles.User)
+                query = query.Where(p => p.Users.Any(u => u.UserRef == UserId));
+            return Task.FromResult(query);
         }
     }
 }

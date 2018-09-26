@@ -14,26 +14,26 @@ namespace SIL.XForge.Scripture.Services
             services.AddJsonApi(mvcBuilder, containerBuilder, (schemaBuilder, mapConfig) =>
                 {
                     // users
-                    schemaBuilder.AddResourceType<UserResource>("users");
+                    schemaBuilder.AddResourceType<SFUserResource>("users");
                     containerBuilder.RegisterResourceService<SFUserService>();
-                    mapConfig.CreateMap<UserEntity, UserResource>()
+                    mapConfig.CreateMap<UserEntity, SFUserResource>()
                         .ForMember(u => u.Password, o => o.Ignore())
                         .ReverseMap();
 
                     // projects
                     schemaBuilder.AddResourceType<SFProjectResource>("projects");
                     containerBuilder.RegisterResourceService<SFProjectService>();
-                    mapConfig.CreateMap<SFProjectEntity, SFProjectResource>()
-                        .ReverseMap();
 
-                    // send/receive jobs
-                    schemaBuilder.AddResourceType<SendReceiveJobResource>("send-receive-jobs");
-                    containerBuilder.RegisterResourceService<SendReceiveJobService>();
-                    mapConfig.CreateMap<SendReceiveJobEntity, SendReceiveJobResource>()
-                        .ReverseMap();
+                    // project users
+                    schemaBuilder.AddResourceType<SFProjectUserResource>("project-users");
+                    containerBuilder.RegisterResourceService<SFProjectUserService>();
+
+                    // sync jobs
+                    schemaBuilder.AddResourceType<SyncJobResource>("sync-jobs");
+                    containerBuilder.RegisterResourceService<SyncJobService>();
                 });
 
-            services.AddSingleton<ParatextService>();
+            services.AddSingleton<IParatextService, ParatextService>();
             services.AddSingleton<DeltaUsxMapper>();
             return services;
         }

@@ -3,7 +3,7 @@ import { Record } from '@orbit/data';
 import { Observable } from 'rxjs';
 
 import { SFProjectService } from '../core/sfproject.service';
-import { SFProject } from '../shared/resources/sfproject';
+import { SFProject } from '../shared/models/sfproject';
 
 @Component({
   selector: 'app-fetch-data',
@@ -32,9 +32,9 @@ export class FetchDataComponent implements OnInit {
     this.updatedNames.set(project.id, value);
   }
 
-  update(): void {
+  async update(): Promise<void> {
     for (const [projectId, projectName] of this.updatedNames) {
-      this.projectService.updateById(projectId, { projectName });
+      await this.projectService.updateById(projectId, { projectName });
     }
     this.updatedNames.clear();
   }

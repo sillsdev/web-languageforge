@@ -6,13 +6,13 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Code</th>
+      <th>Language</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let project of projects$ | async">
       <td><input [ngModel]="project.attributes.projectName" (ngModelChange)="updateProjectName(project, $event)" /></td>
-      <td>{{ project.attributes.projectCode }}</td>
+      <td>{{ project.attributes.inputSystem.languageName }}</td>
     </tr>
   </tbody>
 </table>

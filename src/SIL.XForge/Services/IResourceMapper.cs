@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
     public interface IResourceMapper<TResource, TEntity>
-        where TResource : Resource
-        where TEntity : Entity
+        where TResource : class, IResource
+        where TEntity : class, IEntity
     {
-        Task<TResource> MapAsync(IEnumerable<string> included, Dictionary<string, Resource> resources,
+        Task<TResource> MapAsync(IEnumerable<string> included, Dictionary<string, IResource> resources,
             TEntity entity);
 
         Task<IEnumerable<TResource>> MapMatchingAsync(IEnumerable<string> included,
-            Dictionary<string, Resource> resources, Func<IQueryable<TEntity>, IQueryable<TEntity>> querySelector);
+            Dictionary<string, IResource> resources, Expression<Func<TEntity, bool>> predicate);
     }
 }

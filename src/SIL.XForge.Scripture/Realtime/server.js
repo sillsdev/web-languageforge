@@ -32,6 +32,7 @@ module.exports = {
     });
 
     server.on("error", function(err) {
+      console.log('Error in Realtime Server:' + err);
       callback(err);
     });
     server.on('listening', function() {
@@ -42,6 +43,10 @@ module.exports = {
   },
 
   stop: function(callback) {
+    if (server.listening) {
+      callback();
+      return;
+    }
     server.close(function() {
       backend.close();
       console.log('Realtime Server stopped');

@@ -18,23 +18,20 @@ namespace SIL.XForge.Services
 {
     public abstract class ResourceServiceBase<TResource, TEntity> : IResourceService<TResource, string>,
         IResourceMapper<TResource, TEntity>
-        where TResource : Resource
-        where TEntity : Entity
+        where TResource : class, IResource
+        where TEntity : class, IEntity
     {
-        private readonly IJsonApiContext _jsonApiContext;
         private readonly IMapper _mapper;
         private readonly IUserAccessor _userAccessor;
 
-        protected ResourceServiceBase(IJsonApiContext jsonApiContext, IRepository<TEntity> entities, IMapper mapper,
-            IUserAccessor userAccessor)
+        protected ResourceServiceBase(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor)
         {
-            _jsonApiContext = jsonApiContext;
-            Entities = entities;
+            JsonApiContext = jsonApiContext;
             _mapper = mapper;
             _userAccessor = userAccessor;
         }
 
-        protected IRepository<TEntity> Entities { get; }
+        protected IJsonApiContext JsonApiContext { get; }
         protected string UserId => _userAccessor.UserId;
         protected string SystemRole => _userAccessor.SystemRole;
 
@@ -51,9 +48,9 @@ namespace SIL.XForge.Services
         {
             await CheckCanUpdateAsync(id);
 
-            Dictionary<string, object> attrs = _jsonApiContext.AttributesToUpdate
+            Dictionary<string, object> attrs = JsonApiContext.AttributesToUpdate
                 .ToDictionary(kvp => kvp.Key.InternalAttributeName, kvp => kvp.Value);
-            Dictionary<string, string> relationships = _jsonApiContext.RelationshipsToUpdate
+            Dictionary<string, string> relationships = JsonApiContext.RelationshipsToUpdate
                 .ToDictionary(kvp => kvp.Key.InternalRelationshipName, kvp => (string) kvp.Value);
             TEntity entity = await UpdateEntityAsync(id, attrs, relationships);
             return _mapper.Map<TResource>(entity);
@@ -62,14 +59,13 @@ namespace SIL.XForge.Services
         public async Task UpdateRelationshipsAsync(string id, string relationshipName,
             List<DocumentData> relationships)
         {
-            await CheckCanUpdateAsync(id);
+            await CheckCanUpdateRelationshipAsync(id);
 
-            string propertyName = _jsonApiContext.ContextGraph.GetRelationshipName<TResource>(relationshipName);
+            string propertyName = JsonApiContext.ContextGraph.GetRelationshipName<TResource>(relationshipName);
             if (propertyName == null)
                 throw NotFoundException();
             IEnumerable<string> relationshipIds = relationships.Select(r => r?.Id?.ToString());
-            IRelationship<TEntity> relationship = GetRelationship(propertyName);
-            TEntity entity = await UpdateEntityRelationshipAsync(id, relationship, relationshipIds);
+            TEntity entity = await UpdateEntityRelationshipAsync(id, propertyName, relationshipIds);
             if (entity == null)
                 throw NotFoundException();
         }
@@ -83,7 +79,7 @@ namespace SIL.XForge.Services
 
         public async Task<IEnumerable<TResource>> GetAsync()
         {
-            IQueryable<TEntity> query = Entities.Query();
+            IQueryable<TEntity> query = GetEntityQueryable();
             query = await ApplyPermissionFilterAsync(query);
             query = ApplySortAndFilterQuery(query);
             query = await ApplyPageQueryAsync(query);
@@ -103,12 +99,12 @@ namespace SIL.XForge.Services
             TEntity entity = await GetEntityAsync(id);
             if (entity == null)
                 return null;
-            RelationshipAttribute relAttr = _jsonApiContext.ContextGraph
+            RelationshipAttribute relAttr = JsonApiContext.ContextGraph
                 .GetRelationshipAttribute<TResource>(relationshipName);
             if (relAttr == null)
                 throw NotFoundException();
             object value = await GetRelationshipResourcesAsync(relAttr, Enumerable.Empty<string>(),
-                new Dictionary<string, Resource>(), entity);
+                new Dictionary<string, IResource>(), entity);
             return value;
         }
 
@@ -119,14 +115,14 @@ namespace SIL.XForge.Services
 
         private Task<TResource> MapAsync(TEntity entity)
         {
-            return MapAsync(_jsonApiContext.QuerySet?.IncludedRelationships,
-                new Dictionary<string, Resource>(), entity);
+            return MapAsync(JsonApiContext.QuerySet?.IncludedRelationships,
+                new Dictionary<string, IResource>(), entity);
         }
 
         public async Task<TResource> MapAsync(IEnumerable<string> included,
-            Dictionary<string, Resource> resources, TEntity entity)
+            Dictionary<string, IResource> resources, TEntity entity)
         {
-            if (resources.TryGetValue(entity.Id, out Resource existing))
+            if (resources.TryGetValue(entity.Id, out IResource existing))
                 return (TResource) existing;
 
             TResource resource = _mapper.Map<TResource>(entity);
@@ -138,7 +134,7 @@ namespace SIL.XForge.Services
                 {
                     string[] relParts = fullName.Split('.');
                     string relationshipName = relParts[0];
-                    RelationshipAttribute relAttr = _jsonApiContext.ContextGraph
+                    RelationshipAttribute relAttr = JsonApiContext.ContextGraph
                         .GetRelationshipAttribute<TResource>(relationshipName);
                     object value = await GetRelationshipResourcesAsync(relAttr, relParts.Skip(1), resources, entity);
                     PropertyInfo propertyInfo = typeof(TResource).GetProperty(relAttr.InternalRelationshipName);
@@ -149,115 +145,28 @@ namespace SIL.XForge.Services
         }
 
         public async Task<IEnumerable<TResource>> MapMatchingAsync(IEnumerable<string> included,
-            Dictionary<string, Resource> resources,
-            Func<IQueryable<TEntity>, IQueryable<TEntity>> querySelector)
+            Dictionary<string, IResource> resources, Expression<Func<TEntity, bool>> predicate)
         {
-            IQueryable<TEntity> query = Entities.Query();
+            IQueryable<TEntity> query = GetEntityQueryable();
             query = await ApplyPermissionFilterAsync(query);
-            query = querySelector(query);
+            query = query.Where(predicate);
             return await query.ToListAsync(e => MapAsync(included, resources, e));
         }
 
-        protected virtual async Task<TEntity> InsertEntityAsync(TEntity entity)
-        {
-            await Entities.InsertAsync(entity);
-            return await Entities.GetAsync(entity.Id);
-        }
-
-        protected virtual async Task<bool> DeleteEntityAsync(string id)
-        {
-            return (await Entities.DeleteAsync(id)) != null;
-        }
-
-        protected virtual Task<TEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
-            IDictionary<string, string> relationships)
-        {
-            return Entities.UpdateAsync(e => e.Id == id, update =>
-                {
-                    foreach (KeyValuePair<string, object> attr in attrs)
-                        update.Set(attr.Key, attr.Value);
-
-                    foreach (KeyValuePair<string, string> rel in relationships)
-                    {
-                        IRelationship<TEntity> relationship = GetRelationship(rel.Key);
-                        if (!relationship.Update(update, new[] { rel.Value }))
-                        {
-                            string relName = _jsonApiContext.ContextGraph.GetPublicRelationshipName<TResource>(rel.Key);
-                            throw new JsonApiException(StatusCodes.Status400BadRequest,
-                                $"The relationship '{relName}' cannot be updated.");
-                        }
-                    }
-                });
-        }
-
-        protected virtual Task<TEntity> UpdateEntityRelationshipAsync(string id, IRelationship<TEntity> relationship,
-            IEnumerable<string> relationshipIds)
-        {
-            return Entities.UpdateAsync(e => e.Id == id, update =>
-                {
-                    if (!relationship.Update(update, relationshipIds))
-                        throw UnsupportedRequestMethodException();
-                });
-        }
-
-        protected virtual IRelationship<TEntity> GetRelationship(string propertyName)
-        {
-            return null;
-        }
         protected abstract Task CheckCanCreateAsync(TResource resource);
         protected abstract Task CheckCanUpdateAsync(string id);
+        protected abstract Task CheckCanUpdateRelationshipAsync(string id);
         protected abstract Task CheckCanDeleteAsync(string id);
         protected abstract Task<IQueryable<TEntity>> ApplyPermissionFilterAsync(IQueryable<TEntity> query);
-
-        protected IRelationship<TEntity> ManyToManyPrimary<TOtherResource, TOtherEntity>(
-            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
-            Expression<Func<TEntity, List<string>>> getFieldExpr, bool updateAllowed = true)
-                where TOtherResource : Resource
-                where TOtherEntity : Entity
-        {
-            return new ManyToManyPrimaryRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper,
-                getFieldExpr, updateAllowed);
-        }
-
-        protected IRelationship<TEntity> ManyToManyForeign<TOtherResource, TOtherEntity>(
-            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
-            Expression<Func<TOtherEntity, List<string>>> getFieldExpr)
-                where TOtherResource : Resource
-                where TOtherEntity : Entity
-        {
-            return new ManyToManyForeignRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper,
-                getFieldExpr);
-        }
-
-        protected IRelationship<TEntity> ManyToOne<TOtherResource, TOtherEntity>(
-            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
-            Expression<Func<TEntity, string>> getFieldExpr, bool updateAllowed = true)
-                where TOtherResource : Resource
-                where TOtherEntity : Entity
-        {
-            return new ManyToOneRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, getFieldExpr,
-                updateAllowed);
-        }
-
-        protected IRelationship<TEntity> OneToMany<TOtherResource, TOtherEntity>(
-            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
-            Expression<Func<TOtherEntity, string>> getFieldExpr)
-                where TOtherResource : Resource
-                where TOtherEntity : Entity
-        {
-            return new OneToManyRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, getFieldExpr);
-        }
-
-        protected IRelationship<TEntity> Custom<TOtherResource, TOtherEntity>(
-            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
-            Func<TEntity, Expression<Func<TOtherEntity, bool>>> createPredicate,
-            Action<IUpdateBuilder<TEntity>, IEnumerable<string>> update = null)
-                where TOtherResource : Resource
-                where TOtherEntity : Entity
-        {
-            return new CustomRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, createPredicate,
-                update);
-        }
+        protected abstract Task<TEntity> InsertEntityAsync(TEntity entity);
+        protected abstract Task<TEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
+            IDictionary<string, string> relationships);
+        protected abstract Task<TEntity> UpdateEntityRelationshipAsync(string id, string propertyName,
+            IEnumerable<string> relationshipIds);
+        protected abstract Task<bool> DeleteEntityAsync(string id);
+        protected abstract IQueryable<TEntity> GetEntityQueryable();
+        protected abstract Task<object> GetRelationshipResourcesAsync(RelationshipAttribute relAttr,
+            IEnumerable<string> included, Dictionary<string, IResource> resources, TEntity entity);
 
         protected JsonApiException ForbiddenException()
         {
@@ -278,15 +187,15 @@ namespace SIL.XForge.Services
 
         private IQueryable<TEntity> ApplySortAndFilterQuery(IQueryable<TEntity> entities)
         {
-            QuerySet query = _jsonApiContext.QuerySet;
+            QuerySet query = JsonApiContext.QuerySet;
 
-            if (_jsonApiContext.QuerySet == null)
+            if (JsonApiContext.QuerySet == null)
                 return entities;
 
             if (query.Filters != null && query.Filters.Count > 0)
             {
                 foreach (FilterQuery filter in query.Filters)
-                    entities = entities.Filter(_jsonApiContext, filter);
+                    entities = entities.Filter(JsonApiContext, filter);
             }
 
             if (query.SortParameters != null && query.SortParameters.Count > 0)
@@ -297,14 +206,14 @@ namespace SIL.XForge.Services
 
         private async Task<IQueryable<TEntity>> ApplyPageQueryAsync(IQueryable<TEntity> entities)
         {
-            PageManager pageManager = _jsonApiContext.PageManager;
+            PageManager pageManager = JsonApiContext.PageManager;
             if (pageManager.IsPaginated)
             {
                 int count = -1;
-                if (_jsonApiContext.Options.IncludeTotalRecordCount)
+                if (JsonApiContext.Options.IncludeTotalRecordCount)
                 {
                     count = await entities.CountAsync();
-                    _jsonApiContext.PageManager.TotalRecords = count;
+                    JsonApiContext.PageManager.TotalRecords = count;
                 }
 
                 if (pageManager.CurrentPage >= 0)
@@ -329,19 +238,9 @@ namespace SIL.XForge.Services
 
         private async Task<TEntity> GetEntityAsync(string id)
         {
-            IQueryable<TEntity> query = Entities.Query().Where(e => e.Id == id);
+            IQueryable<TEntity> query = GetEntityQueryable().Where(e => e.Id == id);
             query = await ApplyPermissionFilterAsync(query);
             return await query.SingleOrDefaultAsync();
-        }
-
-        private async Task<object> GetRelationshipResourcesAsync(RelationshipAttribute relAttr,
-            IEnumerable<string> included, Dictionary<string, Resource> resources, TEntity entity)
-        {
-            IRelationship<TEntity> relationship = GetRelationship(relAttr.InternalRelationshipName);
-            IEnumerable<Resource> relResources = await relationship.GetResourcesAsync(included, resources, entity);
-            if (relAttr.IsHasMany)
-                return relResources.ToArray();
-            return relResources.SingleOrDefault();
         }
     }
 }

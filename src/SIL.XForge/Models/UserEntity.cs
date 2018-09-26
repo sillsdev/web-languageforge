@@ -18,7 +18,8 @@ namespace SIL.XForge.Models
         public string Role { get; set; }
         public bool Active { get; set; }
         public string Password { get; set; }
-        public ExternalUser ParatextUser { get; set; } = new ExternalUser();
+        public string ParatextId { get; set; }
+        public Tokens ParatextTokens { get; set; }
 
         public Dictionary<string, object> ExtraElements { get; protected set; }
 

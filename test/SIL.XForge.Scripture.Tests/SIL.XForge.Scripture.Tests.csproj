@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SIL.XForge.Scripture\SIL.XForge.Scripture.csproj" />
+    <ProjectReference Include="..\SIL.XForge.Tests\SIL.XForge.Tests.csproj" />
   </ItemGroup>
 
 </Project>

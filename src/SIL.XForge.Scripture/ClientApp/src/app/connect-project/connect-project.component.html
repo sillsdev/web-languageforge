@@ -1,0 +1,42 @@
+<div fxLayout="column">
+  <mat-card class="connect-card">
+    <mat-card-title *ngIf="state === 'input'" class="connect-title">Connect Paratext Project</mat-card-title>
+    <mat-card-content fxLayout="column">
+      <div [ngSwitch]="state">
+        <div *ngSwitchCase="'loading'" class="progress-container" fxLayout="column" fxLayoutAlign="center center">
+          <div class="progress-label">Retrieving Paratext information</div>
+          <mat-progress-bar mode="query"></mat-progress-bar>
+        </div>
+        <div *ngSwitchCase="'login'" fxLayout="column" fxLayoutAlign="center center">
+          <button mat-raised-button class="login-button" color="primary" (click)="logInWithParatext()">
+            Log in with Paratext
+          </button>
+        </div>
+        <div *ngSwitchCase="'input'">
+          <form [formGroup]="connectProjectForm" (ngSubmit)="submit()" fxLayout="column">
+            <mat-form-field>
+              <mat-select placeholder="Paratext Project" formControlName="project">
+                <mat-option *ngFor="let project of targetProjects" [value]="project">{{ project.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div *ngIf="showTasks" formGroupName="tasks" fxLayout="column">
+              <div>Include Tasks</div>
+              <mat-checkbox formControlName="checking">Community Checking</mat-checkbox>
+              <mat-checkbox formControlName="translate">Translate (experimental)</mat-checkbox>
+              <mat-form-field>
+                <mat-select placeholder="Based on" formControlName="sourceProject">
+                  <mat-option *ngFor="let project of sourceProjects" [value]="project">{{ project.name }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <button mat-raised-button color="primary" type="submit" class="submit-button">Connect</button>
+          </form>
+        </div>
+        <div *ngSwitchCase="'connecting'" class="progress-container" fxLayout="column" fxLayoutAlign="center center">
+            <div class="progress-label">Connecting to Paratext project</div>
+            <mat-progress-bar [mode]="connectPending ? 'indeterminate' : 'determinate'" [value]="connectProgress"></mat-progress-bar>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

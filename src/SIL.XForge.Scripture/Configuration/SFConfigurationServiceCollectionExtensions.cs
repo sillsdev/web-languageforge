@@ -11,7 +11,7 @@ namespace SIL.XForge.Scripture.Configuration
         {
             services.AddConfiguration(configuration);
             services.AddOptions<ParatextOptions>(configuration);
-            services.AddOptions<SendReceiveOptions>(configuration);
+            services.AddOptions<SyncOptions>(configuration);
             services.AddOptions<RealtimeOptions>(configuration);
             return services;
         }

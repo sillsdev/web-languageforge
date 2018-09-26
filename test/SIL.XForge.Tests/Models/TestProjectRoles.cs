@@ -4,6 +4,9 @@ namespace SIL.XForge.Models
 {
     public class TestProjectRoles : ProjectRoles
     {
+        public const string Manager = "manager";
+        public const string Contributor = "contributor";
+
         public static TestProjectRoles Instance { get; } = new TestProjectRoles();
 
         private TestProjectRoles()

@@ -16,11 +16,6 @@ namespace SIL.XForge.DataAccess
             _isInsert = isInsert;
         }
 
-        public IUpdateBuilder<T> Set<TField>(Expression<Func<T, TField>> field, TField value)
-        {
-            return Set(GetPropertyName(field), value);
-        }
-
         public IUpdateBuilder<T> Set<TField>(string fieldName, TField value)
         {
             PropertyInfo prop = GetProperty(fieldName);
@@ -28,11 +23,9 @@ namespace SIL.XForge.DataAccess
             return this;
         }
 
-        public IUpdateBuilder<T> SetOnInsert<TField>(Expression<Func<T, TField>> field, TField value)
+        public IUpdateBuilder<T> Set<TField>(string collectionFieldName, string fieldName, TField value, int index = -1)
         {
-            if (_isInsert)
-                Set(field, value);
-            return this;
+            throw new NotImplementedException();
         }
 
         public IUpdateBuilder<T> SetOnInsert<TField>(string fieldName, TField value)
@@ -40,11 +33,6 @@ namespace SIL.XForge.DataAccess
             if (_isInsert)
                 Set(fieldName, value);
             return this;
-        }
-
-        public IUpdateBuilder<T> Unset(Expression<Func<T, object>> field)
-        {
-            return Unset(GetPropertyName(field));
         }
 
         public IUpdateBuilder<T> Unset(string fieldName)
@@ -57,11 +45,6 @@ namespace SIL.XForge.DataAccess
             return this;
         }
 
-        public IUpdateBuilder<T> Inc(Expression<Func<T, int>> field, int value)
-        {
-            return Inc(GetPropertyName(field), value);
-        }
-
         public IUpdateBuilder<T> Inc(string fieldName, int value)
         {
             PropertyInfo prop = GetProperty(fieldName);
@@ -71,10 +54,14 @@ namespace SIL.XForge.DataAccess
             return this;
         }
 
-        private string GetPropertyName<TField>(Expression<Func<T, TField>> field)
+        public IUpdateBuilder<T> RemoveAll<TItem>(string fieldName, Expression<Func<TItem, bool>> predicate)
         {
-            var body = (MemberExpression) field.Body;
-            return body.Member.Name;
+            throw new NotImplementedException();
+        }
+
+        public IUpdateBuilder<T> Add<TItem>(string fieldName, TItem value)
+        {
+            throw new NotImplementedException();
         }
 
         private PropertyInfo GetProperty(string fieldName)

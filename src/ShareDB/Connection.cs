@@ -26,10 +26,7 @@ namespace ShareDB
         public Connection(Uri uri)
         {
             _uri = uri;
-            _socket = new MessageWebSocketRx
-            {
-                IgnoreServerCertificateErrors = true
-            };
+            _socket = new MessageWebSocketRx();
             _collections = new Dictionary<string, Dictionary<string, IDocumentInternal>>();
             _nextSeq = 1;
         }
@@ -42,9 +39,9 @@ namespace ShareDB
         public async Task ConnectAsync()
         {
             _initTcs = new TaskCompletionSource<bool>();
-            await _socket.ConnectAsync(_uri);
-            _messageSubscription = _socket.MessageReceiverObservable
-                .Subscribe(msg => HandleMessage(JObject.Parse(msg)));
+            IObservable<string> messageObserver = await _socket.CreateObservableMessageReceiver(_uri,
+                ignoreServerCertificateErrors: true);
+            _messageSubscription = messageObserver.Subscribe(msg => HandleMessage(JObject.Parse(msg)));
             await _initTcs.Task;
         }
 
@@ -73,7 +70,7 @@ namespace ShareDB
 
         public Task CloseAsync()
         {
-            return _socket.DisconnectAsync();
+            return _socket.CloseAsync();
         }
 
         internal Task SendFetchAsync(IDocumentInternal doc)
@@ -167,7 +164,7 @@ namespace ShareDB
                 if (disposing)
                 {
                     _socket.Dispose();
-                    _messageSubscription.Dispose();
+                    _messageSubscription?.Dispose();
                 }
 
                 disposedValue = true;

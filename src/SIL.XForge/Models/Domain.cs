@@ -11,7 +11,7 @@ namespace SIL.XForge.Models
         Answers = 1500,
         Templates = 1700,
         Tags = 1800,
-        SendReceiveJobs = 2000,
+        SyncJobs = 2000,
 
         Entries = 1900
     }

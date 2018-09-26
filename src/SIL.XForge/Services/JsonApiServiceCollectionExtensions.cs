@@ -8,6 +8,7 @@ using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Middleware;
 using JsonApiDotNetCore.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SIL.XForge.Models;
 
@@ -19,7 +20,11 @@ namespace SIL.XForge.Services
             ContainerBuilder containerBuilder, Action<ResourceSchemaBuilder, IMapperConfigurationExpression> configure)
         {
             var schemaBuilder = new ResourceSchemaBuilder();
-            services.AddAutoMapper(mapConfig => configure(schemaBuilder, mapConfig));
+            services.AddAutoMapper(mapConfig =>
+                {
+                    configure(schemaBuilder, mapConfig);
+                    mapConfig.IgnoreAllUnmapped();
+                });
 
             (ResourceSchema schema, IContextGraph contextGraph) = schemaBuilder.Build();
 
@@ -29,9 +34,11 @@ namespace SIL.XForge.Services
             {
                 Namespace = "api",
                 ContextGraph = contextGraph,
-                AllowClientGeneratedIds = true
+                AllowClientGeneratedIds = true,
+                NullAttributeResponseBehavior = new NullAttributeResponseBehavior(true)
             };
             jsonApiOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            jsonApiOptions.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
 
             mvcBuilder.AddMvcOptions(options =>
                  {

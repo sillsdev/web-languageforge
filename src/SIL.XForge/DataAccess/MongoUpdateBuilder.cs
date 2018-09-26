@@ -18,21 +18,16 @@ namespace SIL.XForge.DataAccess
             _defs = new List<UpdateDefinition<T>>();
         }
 
-        public IUpdateBuilder<T> Set<TField>(Expression<Func<T, TField>> field, TField value)
-        {
-            _defs.Add(_builder.Set(field, value));
-            return this;
-        }
-
         public IUpdateBuilder<T> Set<TField>(string fieldName, TField value)
         {
             _defs.Add(_builder.Set(fieldName, value));
             return this;
         }
 
-        public IUpdateBuilder<T> SetOnInsert<TField>(Expression<Func<T, TField>> field, TField value)
+        public IUpdateBuilder<T> Set<TField>(string collectionFieldName, string fieldName, TField value, int index = -1)
         {
-            _defs.Add(_builder.SetOnInsert(field, value));
+            string indexStr = index == -1 ? "$" : index.ToString();
+            _defs.Add(_builder.Set($"{collectionFieldName}.{indexStr}.{fieldName}", value));
             return this;
         }
 
@@ -42,27 +37,28 @@ namespace SIL.XForge.DataAccess
             return this;
         }
 
-        public IUpdateBuilder<T> Unset(Expression<Func<T, object>> field)
-        {
-            _defs.Add(_builder.Unset(field));
-            return this;
-        }
-
         public IUpdateBuilder<T> Unset(string fieldName)
         {
             _defs.Add(_builder.Unset(fieldName));
             return this;
         }
 
-        public IUpdateBuilder<T> Inc(Expression<Func<T, int>> field, int value)
-        {
-            _defs.Add(_builder.Inc(field, value));
-            return this;
-        }
-
         public IUpdateBuilder<T> Inc(string fieldName, int value)
         {
             _defs.Add(_builder.Inc(fieldName, value));
+            return this;
+        }
+
+
+        public IUpdateBuilder<T> RemoveAll<TItem>(string fieldName, Expression<Func<TItem, bool>> predicate)
+        {
+            _defs.Add(_builder.PullFilter(fieldName, Builders<TItem>.Filter.Where(predicate)));
+            return this;
+        }
+
+        public IUpdateBuilder<T> Add<TItem>(string fieldName, TItem value)
+        {
+            _defs.Add(_builder.Push(fieldName, value));
             return this;
         }
 

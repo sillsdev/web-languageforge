@@ -43,7 +43,7 @@ namespace SIL.XForge.Services
 
             var models = new Dictionary<string, ResourceSchemaModel>();
             foreach (ContextEntity resourceType in _types.Select(t => contextGraph.GetContextEntity(t)))
-                models[Singularize(resourceType.EntityName)] = CreateModel(contextGraph, resourceType);
+                models[Camelize(Singularize(resourceType.EntityName))] = CreateModel(contextGraph, resourceType);
             var schema = new ResourceSchema
             {
                 Version = Version,
@@ -131,7 +131,7 @@ namespace SIL.XForge.Services
             return new ResourceSchemaRelationship
             {
                 Type = relationship.IsHasMany ? "hasMany" : "hasOne",
-                Model = Singularize(relationshipType.EntityName),
+                Model = Camelize(Singularize(relationshipType.EntityName)),
                 Inverse = Camelize(inverseRelationship?.PublicRelationshipName)
             };
         }

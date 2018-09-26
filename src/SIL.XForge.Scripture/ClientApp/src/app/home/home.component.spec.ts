@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
 
 import { HomeComponent } from './home.component';
@@ -6,7 +7,7 @@ import { HomeComponent } from './home.component';
 class HomeComponentPage {
   constructor(private compFixture: ComponentFixture<HomeComponent>) { }
 
-  get logoutButton() { return this.compFixture.nativeElement.querySelector('button'); }
+  get logoutButton() { return this.compFixture.nativeElement.querySelector('#logout'); }
   get titleText() { return this.compFixture.nativeElement.querySelector('h1').textContent; }
 }
 
@@ -29,6 +30,9 @@ describe('HomeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule
+      ],
       declarations: [ HomeComponent ],
       providers: [
         { provide: OAuthService, useValue: oauthServiceStub }
@@ -49,7 +53,7 @@ describe('HomeComponent', () => {
   }));
 
   it('should logout when the button is clicked', async(() => {
-    expect(page.logoutButton.textContent).toContain('Logout');
+    expect(page.logoutButton.textContent).toContain('Log Out');
     expect(loginStatus).toBe(true);
 
     page.logoutButton.click();

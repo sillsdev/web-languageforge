@@ -10,8 +10,8 @@ namespace SIL.XForge.Services
 {
     public class ManyToOneRelationship<TThisEntity, TOtherResource, TOtherEntity> : IRelationship<TThisEntity>
         where TThisEntity : Entity
-        where TOtherResource : Resource
-        where TOtherEntity : Entity
+        where TOtherResource : class, IResource
+        where TOtherEntity : class, IEntity
     {
         private readonly IResourceMapper<TOtherResource, TOtherEntity> _otherResourceMapper;
         private readonly Expression<Func<TThisEntity, string>> _getFieldExpr;
@@ -27,11 +27,11 @@ namespace SIL.XForge.Services
             _getField = _getFieldExpr.Compile();
         }
 
-        public async Task<IEnumerable<Resource>> GetResourcesAsync(IEnumerable<string> included,
-            Dictionary<string, Resource> resources, TThisEntity entity)
+        public async Task<IEnumerable<IResource>> GetResourcesAsync(IEnumerable<string> included,
+            Dictionary<string, IResource> resources, TThisEntity entity)
         {
             string id = _getField(entity);
-            return await _otherResourceMapper.MapMatchingAsync(included, resources, q => q.Where(e => e.Id == id));
+            return await _otherResourceMapper.MapMatchingAsync(included, resources, e => e.Id == id);
         }
 
         public bool Update(IUpdateBuilder<TThisEntity> update, IEnumerable<string> ids)

@@ -8,17 +8,14 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public class UserService<TProjectResource, TProjectEntity> : ResourceServiceBase<UserResource, UserEntity>
-        where TProjectResource : ProjectResource
-        where TProjectEntity : ProjectEntity
+    public class UserService<TResource> : RepositoryResourceServiceBase<TResource, UserEntity>
+        where TResource : UserResource
     {
-        public UserService(IJsonApiContext jsonApiContext, IRepository<UserEntity> entities, IMapper mapper,
-            IUserAccessor userAccessor)
-            : base(jsonApiContext, entities, mapper, userAccessor)
+        public UserService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
+            IRepository<UserEntity> users)
+            : base(jsonApiContext, mapper, userAccessor, users)
         {
         }
-
-        public IResourceMapper<TProjectResource, TProjectEntity> ProjectResourceMapper { get; set; }
 
         protected override Task<UserEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
             IDictionary<string, string> relationships)
@@ -28,17 +25,7 @@ namespace SIL.XForge.Services
             return base.UpdateEntityAsync(id, attrs, relationships);
         }
 
-        protected override IRelationship<UserEntity> GetRelationship(string propertyName)
-        {
-            switch (propertyName)
-            {
-                case nameof(UserResource.Projects):
-                    return Custom(ProjectResourceMapper, (UserEntity u) => { return p => p.Users.ContainsKey(u.Id); });
-            }
-            return base.GetRelationship(propertyName);
-        }
-
-        protected override Task CheckCanCreateAsync(UserResource resource)
+        protected override Task CheckCanCreateAsync(TResource resource)
         {
             if (SystemRole == SystemRoles.User)
                 throw ForbiddenException();
@@ -50,6 +37,11 @@ namespace SIL.XForge.Services
             if (SystemRole == SystemRoles.User && id != UserId)
                 throw ForbiddenException();
             return Task.CompletedTask;
+        }
+
+        protected override Task CheckCanUpdateRelationshipAsync(string id)
+        {
+            return CheckCanUpdateAsync(id);
         }
 
         protected override Task CheckCanDeleteAsync(string id)

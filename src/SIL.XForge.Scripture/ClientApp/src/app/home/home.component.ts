@@ -16,11 +16,7 @@ export class HomeComponent {
     return null;
   }
 
-  login(): void {
-    this.oauthService.initImplicitFlow();
-  }
-
-  logoff(): void {
+  logOut(): void {
     this.oauthService.logOut();
   }
 }

@@ -15,7 +15,7 @@ namespace SIL.XForge.Scripture.DataAccess
 
             var options = configuration.GetOptions<DataAccessOptions>();
             services.AddMongoRepository<SFProjectEntity>(options.MongoDatabaseName, "sf_projects");
-            services.AddMongoRepository<SendReceiveJobEntity>(options.MongoDatabaseName, "sr_jobs");
+            services.AddMongoRepository<SyncJobEntity>(options.MongoDatabaseName, "sr_jobs");
             services.AddMongoRepository<TextEntity>(options.MongoDatabaseName, "texts");
 
             return services;
