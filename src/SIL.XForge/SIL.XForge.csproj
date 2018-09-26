@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.2" />
     <PackageReference Include="MongoDB.Driver" Version="2.7.0" />
     <PackageReference Include="SIL.WritingSystems" Version="4.2.0-1057" />
+    <PackageReference Include="NETCore.MailKit" Version="2.0.2" />
   </ItemGroup>
 
 </Project>

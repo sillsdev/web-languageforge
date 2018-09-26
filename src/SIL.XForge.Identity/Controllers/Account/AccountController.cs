@@ -19,12 +19,9 @@ using MongoDB.Driver.Linq;
 using MongoDB.Driver;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
-using MailKit;
-using MailKit.Net.Smtp;
-using MimeKit;
+using SIL.XForge.Services;
 using Microsoft.Extensions.Options;
 using SIL.XForge.Configuration;
-using Microsoft.AspNetCore.Hosting;
 
 namespace SIL.XForge.Identity.Controllers.Account
 {
@@ -43,7 +40,7 @@ namespace SIL.XForge.Identity.Controllers.Account
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
         private readonly IOptions<SiteOptions> _options;
-        public IHostingEnvironment _environment { get; }
+        private readonly IEmailService _emailService;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
@@ -52,7 +49,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             IEventService events,
             IRepository<UserEntity> users,
             IOptions<SiteOptions> options,
-            IHostingEnvironment environment)
+            IEmailService emailService)
         {
             _users = users;
             _interaction = interaction;
@@ -60,7 +57,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             _schemeProvider = schemeProvider;
             _events = events;
             _options = options;
-            _environment = environment;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -214,20 +211,17 @@ namespace SIL.XForge.Identity.Controllers.Account
             byte[] key = Guid.NewGuid().ToByteArray();
             string resetPasswordKey = Convert.ToBase64String(time.Concat(key).ToArray());
             UserEntity user = await _users.UpdateAsync(u => u.Username == model.UsernameOrEmail || u.Email == model.UsernameOrEmail, update => update
-            .Set(u => u.ResetPasswordKey, resetPasswordKey)
-            .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddDays(7)));
-
+                .Set(u => u.ResetPasswordKey, resetPasswordKey)
+                .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddDays(7)));
             if (user != null)
             {
-                if (_environment.IsDevelopment())
-                {
-                    string emailId = "jamesprabud@gmail.com";
-                    string subject = "Scripture Forge Forgotten Password Verification";
-                    string body = "<div class=''><h1>Reset Password for " + user.Username + "</h1> " +
-                        "<p>Please click this link to <a href='https://beta.scriptureforge.local/account/resetpassword?token=" + resetPasswordKey + "' target='_blank'>Reset Your Password</a>.</p> " +
-                        "<p>This link will be valid for 1 week only.</p><p>Regards,<br>The Scripture Forge team</p></div>";
-                    SendEmail(subject, body, emailId);
-                }
+                string emailId = "jamesprabud@gmail.com";
+                string subject = "Scripture Forge Forgotten Password Verification";
+                string body = "<div class=''><h1>Reset Password for " + user.Username + "</h1> " +
+                    "<p>Please click this link to <a href='https://beta.scriptureforge.local/account/resetpassword?token=" + resetPasswordKey + "' target='_blank'>Reset Your Password</a>.</p> " +
+                    "<p>This link will be valid for 1 week only.</p><p>Regards,<br>The Scripture Forge team</p></div>";
+                var siteOptions = _options.Value;
+                _emailService.SendEmail(emailId, subject, body, siteOptions.Domain, siteOptions.Name, siteOptions.SmtpServer, siteOptions.PortNumber);
                 LoginViewModel vm = await BuildLoginViewModelAsync("");
                 vm.ResetPasswordMessage = "Password Reset email sent for username " + model.UsernameOrEmail;
                 return View("Login", vm);
@@ -236,32 +230,6 @@ namespace SIL.XForge.Identity.Controllers.Account
             {
                 model.EnableErrorMessage = true;
                 return View("ForgotPassword", model);
-            }
-        }
-
-        public void SendEmail(string subject, string body, string emailId)
-        {
-            var siteOptions = _options.Value;
-            string fromAddress = "no-reply@" + siteOptions.Domain;
-            string title = siteOptions.Name;
-
-            string smtpServer = siteOptions.SmtpServer;
-            int portNumber = Convert.ToInt32(siteOptions.PortNumber);
-
-            var mimeMessage = new MimeMessage();
-            mimeMessage.From.Add(new MailboxAddress(title, fromAddress));
-            mimeMessage.To.Add(new MailboxAddress("", emailId));
-            mimeMessage.Subject = subject;
-
-            var bodyBuilder = new BodyBuilder();
-            bodyBuilder.HtmlBody = body;
-            mimeMessage.Body = bodyBuilder.ToMessageBody();
-
-            using (var client = new SmtpClient())
-            {
-                client.Connect(smtpServer, portNumber, false);
-                client.Send(mimeMessage);
-                client.Disconnect(true);
             }
         }
 
