@@ -40,6 +40,7 @@ namespace SIL.XForge.Identity.Controllers.Account
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
         private readonly IOptions<SiteOptions> _options;
+        private IEmailService _emailService;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
@@ -47,7 +48,8 @@ namespace SIL.XForge.Identity.Controllers.Account
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
             IRepository<UserEntity> users,
-            IOptions<SiteOptions> options)
+            IOptions<SiteOptions> options,
+            IEmailService emailService)
         {
             _users = users;
             _interaction = interaction;
@@ -55,6 +57,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             _schemeProvider = schemeProvider;
             _events = events;
             _options = options;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -218,8 +221,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                     "<p>Please click this link to <a href='https://beta.scriptureforge.local/account/resetpassword?token=" + resetPasswordKey + "' target='_blank'>Reset Your Password</a>.</p> " +
                     "<p>This link will be valid for 1 week only.</p><p>Regards,<br>The Scripture Forge team</p></div>";
 
-                IEmailService emailService = new EmailService(_options.Value);
-                emailService.SendEmail(emailId, subject, body);
+                _emailService.SendEmail(emailId, subject, body);
 
                 LoginViewModel vm = await BuildLoginViewModelAsync("");
                 vm.ResetPasswordMessage = "Password Reset email sent for username " + model.UsernameOrEmail;

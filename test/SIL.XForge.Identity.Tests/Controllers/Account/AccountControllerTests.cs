@@ -84,11 +84,10 @@ namespace SIL.XForge.Identity.Controllers.Account
             Assert.True(user.ResetPasswordKey != "jGc6Qe4i1kgM+aA4LVczTJwfHx2YuDR/", "ResetPasswordKey not saved.");
             Assert.True(user.ResetPasswordExpirationDate != default(DateTime), "ResetPasswordExpirationDate not saved.");
 
-            string emailId = "jamesprabud@gmail.com";
+            string emailId = "abc@fakegmail.com";
             string subject = "Scripture Forge Forgotten Password Verification";
             string body = "Reset Password for User";
-            env.EmailService.SendEmail(emailId, subject, body);
-            env.EmailService.Received().SendEmail(Arg.Is("jamesprabud@gmail.com"), Arg.Any<string>(), Arg.Is("Reset Password for User"));
+            env.EmailService.Received().SendEmail(Arg.Is(emailId), Arg.Any<string>(), Arg.Any<string>());
         }
 
         [Test]
@@ -131,7 +130,8 @@ namespace SIL.XForge.Identity.Controllers.Account
                             Username = "user",
                             Password = BCrypt.Net.BCrypt.HashPassword("password", 7),
                             ResetPasswordKey =  "jGc6Qe4i1kgM+aA4LVczTJwfHx2YuDR/",
-                            ResetPasswordExpirationDate = DateTime.Now
+                            ResetPasswordExpirationDate = DateTime.Now,
+                            Email = "abc@fakegmail.com"
                         }
                     });
                 AuthService = Substitute.For<IAuthenticationService>();
@@ -145,7 +145,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 serviceProvider.GetService(typeof(IOptions<SiteOptions>)).Returns(options);
                 serviceProvider.GetService(typeof(IEmailService)).Returns(EmailService);
 
-                Controller = new AccountController(interaction, clientStore, schemeProvider, Events, Users, options)
+                Controller = new AccountController(interaction, clientStore, schemeProvider, Events, Users, options, EmailService)
                 {
                     ControllerContext = new ControllerContext
                     {
