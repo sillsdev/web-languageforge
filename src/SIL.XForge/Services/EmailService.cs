@@ -2,15 +2,24 @@ using System;
 using MailKit;
 using MailKit.Net.Smtp;
 using MimeKit;
+using SIL.XForge.Configuration;
 
 namespace SIL.XForge.Services
 {
     public class EmailService : IEmailService
     {
-        public string SendEmail(string emailId, string subject, string body, string domain, string name, string smtpServer, string portNumber)
+
+        private readonly SiteOptions _siteOptions;
+        public EmailService(SiteOptions siteOptions)
         {
-            string fromAddress = "no-reply@" + domain;
-            string title = name;
+            _siteOptions = siteOptions;
+        }
+
+        public string SendEmail(string emailId, string subject, string body)
+        {
+            if (_siteOptions == null) return "Sorry, Email was not sent.";
+            string fromAddress = "no-reply@" + _siteOptions.Domain;
+            string title = _siteOptions.Name;
             var mimeMessage = new MimeMessage();
             mimeMessage.From.Add(new MailboxAddress(title, fromAddress));
             mimeMessage.To.Add(new MailboxAddress("", emailId));
@@ -22,7 +31,7 @@ namespace SIL.XForge.Services
 
             using (var client = new SmtpClient())
             {
-                client.Connect(smtpServer, Convert.ToInt32(portNumber), false);
+                client.Connect(_siteOptions.SmtpServer, Convert.ToInt32(_siteOptions.PortNumber), false);
                 client.Send(mimeMessage);
                 client.Disconnect(true);
                 return "Email has been sent successfully!";

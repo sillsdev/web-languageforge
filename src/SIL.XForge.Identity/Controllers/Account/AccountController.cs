@@ -40,7 +40,6 @@ namespace SIL.XForge.Identity.Controllers.Account
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
         private readonly IOptions<SiteOptions> _options;
-        private readonly IEmailService _emailService;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
@@ -48,8 +47,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
             IRepository<UserEntity> users,
-            IOptions<SiteOptions> options,
-            IEmailService emailService)
+            IOptions<SiteOptions> options)
         {
             _users = users;
             _interaction = interaction;
@@ -57,7 +55,6 @@ namespace SIL.XForge.Identity.Controllers.Account
             _schemeProvider = schemeProvider;
             _events = events;
             _options = options;
-            _emailService = emailService;
         }
 
         /// <summary>
@@ -215,13 +212,15 @@ namespace SIL.XForge.Identity.Controllers.Account
                 .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddDays(7)));
             if (user != null)
             {
-                string emailId = "jamesprabud@gmail.com";
+                string emailId = user.Email;
                 string subject = "Scripture Forge Forgotten Password Verification";
                 string body = "<div class=''><h1>Reset Password for " + user.Username + "</h1> " +
                     "<p>Please click this link to <a href='https://beta.scriptureforge.local/account/resetpassword?token=" + resetPasswordKey + "' target='_blank'>Reset Your Password</a>.</p> " +
                     "<p>This link will be valid for 1 week only.</p><p>Regards,<br>The Scripture Forge team</p></div>";
-                var siteOptions = _options.Value;
-                _emailService.SendEmail(emailId, subject, body, siteOptions.Domain, siteOptions.Name, siteOptions.SmtpServer, siteOptions.PortNumber);
+
+                IEmailService emailService = new EmailService(_options.Value);
+                emailService.SendEmail(emailId, subject, body);
+
                 LoginViewModel vm = await BuildLoginViewModelAsync("");
                 vm.ResetPasswordMessage = "Password Reset email sent for username " + model.UsernameOrEmail;
                 return View("Login", vm);
