@@ -86,8 +86,10 @@ namespace SIL.XForge.Identity.Controllers.Account
 
             string emailId = "abc@fakegmail.com";
             string subject = "Scripture Forge Forgotten Password Verification";
-            string body = "Reset Password for User";
-            env.EmailService.Received().SendEmail(Arg.Is(emailId), Arg.Any<string>(), Arg.Any<string>());
+            string body = "<div class=''><h1>Reset Password for " + user.Username + "</h1> " +
+                "<p>Please click this link to <a href='https://beta.scriptureforge.local/account/resetpassword?token=" + user.ResetPasswordKey + "' target='_blank'>Reset Your Password</a>.</p> " +
+                "<p>This link will be valid for 1 week only.</p><p>Regards,<br>The Scripture Forge team</p></div>";
+            env.EmailService.Received().SendEmail(Arg.Is(emailId), Arg.Is(subject), Arg.Is(body));
         }
 
         [Test]

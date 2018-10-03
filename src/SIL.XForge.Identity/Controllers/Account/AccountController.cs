@@ -40,7 +40,7 @@ namespace SIL.XForge.Identity.Controllers.Account
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
         private readonly IOptions<SiteOptions> _options;
-        private IEmailService _emailService;
+        private readonly IEmailService _emailService;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
