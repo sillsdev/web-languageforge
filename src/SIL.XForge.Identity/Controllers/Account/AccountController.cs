@@ -15,8 +15,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
+using SIL.XForge.Services;
+using Microsoft.Extensions.Options;
+using SIL.XForge.Configuration;
 
 namespace SIL.XForge.Identity.Controllers.Account
 {
@@ -34,20 +39,25 @@ namespace SIL.XForge.Identity.Controllers.Account
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
+        private readonly IOptions<SiteOptions> _options;
+        private readonly IEmailService _emailService;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
-            IRepository<UserEntity> users)
+            IRepository<UserEntity> users,
+            IOptions<SiteOptions> options,
+            IEmailService emailService)
         {
             _users = users;
-
             _interaction = interaction;
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _events = events;
+            _options = options;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -83,7 +93,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             {
                 if (context != null)
                 {
-                    // if the user cancels, send a result back into IdentityServer as if they 
+                    // if the user cancels, send a result back into IdentityServer as if they
                     // denied the consent (even if this client does not require consent).
                     // this will send back an access denied OIDC error response to the client.
                     await _interaction.GrantConsentAsync(context, ConsentResponse.Denied);
@@ -113,7 +123,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 {
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.Username, user.Id, user.Username));
 
-                    // only set explicit expiration here if user chooses "remember me". 
+                    // only set explicit expiration here if user chooses "remember me".
                     // otherwise we rely upon expiration configured in cookie middleware.
                     AuthenticationProperties props = null;
                     if (AccountOptions.AllowRememberLogin && model.RememberLogin)
@@ -166,7 +176,64 @@ namespace SIL.XForge.Identity.Controllers.Account
             return View(vm);
         }
 
-        
+        /// <summary>
+        /// Show reset password page
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword(string token)
+        {
+            if (!string.IsNullOrEmpty(token))
+                return View();
+            else
+            {
+                LoginViewModel vm = await BuildLoginViewModelAsync("");
+                return View("Login", vm);
+            }
+        }
+
+        /// <summary>
+        /// Show forgot password page
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> ForgotPassword()
+        {
+            ForgotPasswordViewModel vm = BuildForgotPasswordViewModel();
+            return View("ForgotPassword", vm);
+        }
+
+        /// <summary>
+        /// Validate username or email and send email
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            byte[] time = BitConverter.GetBytes(DateTime.UtcNow.ToBinary());
+            byte[] key = Guid.NewGuid().ToByteArray();
+            string resetPasswordKey = Convert.ToBase64String(time.Concat(key).ToArray());
+            UserEntity user = await _users.UpdateAsync(u => u.Username == model.UsernameOrEmail || u.Email == model.UsernameOrEmail, update => update
+                .Set(u => u.ResetPasswordKey, resetPasswordKey)
+                .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddDays(7)));
+            if (user != null)
+            {
+                string emailId = user.Email;
+                string subject = "Scripture Forge Forgotten Password Verification";
+                string body = "<div class=''><h1>Reset Password for " + user.Username + "</h1> " +
+                    "<p>Please click this link to <a href='https://beta.scriptureforge.local/account/resetpassword?token=" + resetPasswordKey + "' target='_blank'>Reset Your Password</a>.</p> " +
+                    "<p>This link will be valid for 1 week only.</p><p>Regards,<br>The Scripture Forge team</p></div>";
+
+                _emailService.SendEmail(emailId, subject, body);
+
+                LoginViewModel vm = await BuildLoginViewModelAsync("");
+                vm.ResetPasswordMessage = "Password Reset email sent for username " + model.UsernameOrEmail;
+                return View("Login", vm);
+            }
+            else
+            {
+                model.EnableErrorMessage = true;
+                return View("ForgotPassword", model);
+            }
+        }
+
         /// <summary>
         /// Show logout page
         /// </summary>
@@ -271,7 +338,8 @@ namespace SIL.XForge.Identity.Controllers.Account
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
                 Username = context?.LoginHint,
-                ExternalProviders = providers.ToArray()
+                ExternalProviders = providers.ToArray(),
+                ResetPasswordMessage = ""
             };
         }
 
@@ -281,6 +349,15 @@ namespace SIL.XForge.Identity.Controllers.Account
             vm.Username = model.Username;
             vm.RememberLogin = model.RememberLogin;
             return vm;
+        }
+
+        private ForgotPasswordViewModel BuildForgotPasswordViewModel()
+        {
+            return new ForgotPasswordViewModel
+                {
+                    UsernameOrEmail = "",
+                    EnableErrorMessage = false
+                };
         }
 
         private async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)

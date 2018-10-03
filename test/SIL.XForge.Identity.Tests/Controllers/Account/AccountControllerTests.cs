@@ -15,6 +15,9 @@ using NSubstitute;
 using NUnit.Framework;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
+using SIL.XForge.Services;
+using Microsoft.Extensions.Options;
+using SIL.XForge.Configuration;
 
 namespace SIL.XForge.Identity.Controllers.Account
 {
@@ -62,6 +65,46 @@ namespace SIL.XForge.Identity.Controllers.Account
             await env.Events.Received().RaiseAsync(Arg.Any<UserLoginFailureEvent>());
         }
 
+       [Test]
+        public async Task ForgotPassword_CorrectUsernameOrEmail()
+        {
+            var env = new TestEnvironment();
+
+            var model = new ForgotPasswordViewModel
+            {
+                UsernameOrEmail = "user",
+                EnableErrorMessage = false
+            };
+            IActionResult result = await env.Controller.ForgotPassword(model);
+
+            Assert.That(result, Is.TypeOf<ViewResult>());
+            Assert.IsTrue(model.EnableErrorMessage == false);
+
+            UserEntity user = await env.Users.Query().SingleOrDefaultAsync(x => x.Username == model.UsernameOrEmail);
+            Assert.True(user.ResetPasswordKey != "jGc6Qe4i1kgM+aA4LVczTJwfHx2YuDR/", "ResetPasswordKey not saved.");
+            Assert.True(user.ResetPasswordExpirationDate != default(DateTime), "ResetPasswordExpirationDate not saved.");
+
+            string emailId = "abc@fakegmail.com";
+            string subject = "Scripture Forge Forgotten Password Verification";
+            // Skip verification for the body, we may change the content
+            env.EmailService.Received().SendEmail(Arg.Is(emailId), Arg.Is(subject), Arg.Any<string>());
+        }
+
+        [Test]
+        public async Task ForgotPassword_IncorrectUsernameOrEmail()
+        {
+            var env = new TestEnvironment();
+
+            var model = new ForgotPasswordViewModel
+            {
+                UsernameOrEmail = "user1",
+                EnableErrorMessage = false
+            };
+            IActionResult result = await env.Controller.ForgotPassword(model);
+
+            Assert.That(result, Is.TypeOf<ViewResult>());
+            Assert.IsTrue(model.EnableErrorMessage == true);
+        }
 
         class TestEnvironment
         {
@@ -79,21 +122,30 @@ namespace SIL.XForge.Identity.Controllers.Account
                     CookieAuthenticationDefaults.AuthenticationScheme, typeof(CookieAuthenticationHandler));
                 schemeProvider.GetDefaultAuthenticateSchemeAsync().Returns(Task.FromResult(cookieAuthScheme));
                 Events = Substitute.For<IEventService>();
-                var users = new MemoryRepository<UserEntity>(new[]
+                Users = new MemoryRepository<UserEntity>(new[]
                     {
                         new UserEntity
                         {
                             Id = "user01",
                             Username = "user",
-                            Password = BCrypt.Net.BCrypt.HashPassword("password", 7)
+                            Password = BCrypt.Net.BCrypt.HashPassword("password", 7),
+                            ResetPasswordKey =  "jGc6Qe4i1kgM+aA4LVczTJwfHx2YuDR/",
+                            ResetPasswordExpirationDate = DateTime.Now,
+                            Email = "abc@fakegmail.com"
                         }
                     });
                 AuthService = Substitute.For<IAuthenticationService>();
                 var serviceProvider = Substitute.For<IServiceProvider>();
+                var options = Substitute.For<IOptions<SiteOptions>>();
+                EmailService = Substitute.For<IEmailService>();
+
                 serviceProvider.GetService(typeof(IAuthenticationService)).Returns(AuthService);
                 serviceProvider.GetService(typeof(ISystemClock)).Returns(new SystemClock());
                 serviceProvider.GetService(typeof(IAuthenticationSchemeProvider)).Returns(schemeProvider);
-                Controller = new AccountController(interaction, clientStore, schemeProvider, Events, users)
+                serviceProvider.GetService(typeof(IOptions<SiteOptions>)).Returns(options);
+                serviceProvider.GetService(typeof(IEmailService)).Returns(EmailService);
+
+                Controller = new AccountController(interaction, clientStore, schemeProvider, Events, Users, options, EmailService)
                 {
                     ControllerContext = new ControllerContext
                     {
@@ -109,6 +161,8 @@ namespace SIL.XForge.Identity.Controllers.Account
             public IAuthenticationService AuthService { get; }
             public IEventService Events { get; }
             public AccountController Controller { get; }
+            public MemoryRepository<UserEntity> Users {get; set;}
+            public IEmailService EmailService { get; set; }
         }
     }
 }

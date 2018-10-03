@@ -19,5 +19,6 @@ namespace SIL.XForge.Identity.Controllers.Account
 
         public bool IsExternalLoginOnly => EnableLocalLogin == false && ExternalProviders?.Count() == 1;
         public string ExternalLoginScheme => IsExternalLoginOnly ? ExternalProviders?.SingleOrDefault()?.AuthenticationScheme : null;
+        public string ResetPasswordMessage { get; set; }
     }
 }

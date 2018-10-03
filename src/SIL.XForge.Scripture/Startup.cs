@@ -22,6 +22,7 @@ using SIL.XForge.Scripture.Configuration;
 using SIL.XForge.Scripture.DataAccess;
 using SIL.XForge.Scripture.Realtime;
 using SIL.XForge.Scripture.Services;
+using SIL.XForge.Services;
 
 namespace SIL.XForge.Scripture
 {
@@ -92,6 +93,8 @@ namespace SIL.XForge.Scripture
                 .AddJsonOptions(o => o.SerializerSettings.NullValueHandling = NullValueHandling.Ignore);
 
             services.AddSFJsonApi(mvcBuilder, containerBuilder);
+
+            services.AddTransient<IEmailService, EmailService>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
