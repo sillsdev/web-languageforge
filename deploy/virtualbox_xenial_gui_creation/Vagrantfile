@@ -26,6 +26,20 @@ Vagrant.configure("2") do |config|
     sudo sed -i 's/APT::Periodic::Update-Package-Lists "1";/APT::Periodic::Update-Package-Lists "0";/g' /etc/apt/apt.conf.d/10periodic
     sudo apt-get purge -y unattended-upgrades
 
+    # Don't prompt for OS upgrade.
+    sudo perl -pi -e 's/Prompt=lts/Prompt=never/' /etc/update-manager/release-upgrades
+
+    # Log-in reminder
+    reminderCount=0;
+    until pgrep -f unity-panel-service; do
+        if ((++reminderCount > 5)); then
+            echo >&2 Giving up.
+            exit 1
+        fi
+        echo >&2 ATTENTION You must log into the box, as described in instructions.md, to perform the provisioning. Trying again in a minute.
+        sleep 1m
+    done
+
     # Pre-answer grub-pc dpkg dialog
     echo grub-pc grub-pc/install_devices multiselect $(ls /dev/disk/by-id/ata-VBOX_HARDDISK_VB*|grep -v part) | sudo debconf-set-selections
     echo grub-pc grub-pc/install_devices_disks_changed multiselect $(ls /dev/disk/by-id/ata-VBOX_HARDDISK_VB*|grep -v part) | sudo debconf-set-selections
@@ -295,6 +309,9 @@ Vagrant.configure("2") do |config|
     sync
     rm -v ~/zeros
     sleep 10s
+
+    echo "Shutting down in 1 minute from within guest, to ensure graceful shutdown since the host loses contact because we deleted the ssh host keys. The guest should not be booted again until after the base box is created, to avoid generating new ssh host keys."
+    sudo shutdown +1
 
     echo "Section ended successfully."
   SHELL
