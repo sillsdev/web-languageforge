@@ -21,6 +21,10 @@ export class UserService extends ResourceService<User, UserAttributes, ResourceR
     return claims['sub'];
   }
 
+  changePassword(newPassword: string): Promise<void> {
+    return this.jsonApiService.updateAttributes(this.identity(this.currentUserId), { password: newPassword }, false, true);
+  }
+
   currentUserIdentity(): RecordIdentity {
     return this.identity(this.currentUserId);
   }
