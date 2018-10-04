@@ -37,6 +37,7 @@
     "@orbit/jsonapi": "^0.15.20",
     "@orbit/store": "^0.15.20",
     "angular-oauth2-oidc": "^4.0.2",
+    "angular-password-strength-meter": "0.0.4",
     "aspnet-prerendering": "^3.0.1",
     "bootstrap": "^4.1.3",
     "bson": "^3.0.2",
@@ -44,7 +45,8 @@
     "core-js": "^2.4.1",
     "hammerjs": "^2.0.8",
     "rxjs": "^6.2.2",
-    "zone.js": "^0.8.26"
+    "zone.js": "^0.8.26",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.7.0",

@@ -9,8 +9,10 @@ import {
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-
 import { XForgeCommonModule } from '@xforge-common/xforge-common.module';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
+import { ChangePasswordComponent } from '../xforge-common/change-password/change-password.component';
 import { AppComponent } from './app.component';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
 import { CoreModule } from './core/core.module';
@@ -26,12 +28,12 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
+    ChangePasswordComponent,
     ConnectProjectComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
-
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
@@ -44,14 +46,21 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
-
     XForgeCommonModule,
     CoreModule,
-
+    ReactiveFormsModule,
+    PasswordStrengthMeterModule,
+    OAuthModule.forRoot({
+      resourceServer: {
+        allowedUrls: [window.location.origin + '/api'],
+        sendAccessToken: true
+      }
+    }),
     RouterModule.forRoot([
       { path: 'home', component: HomeComponent },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
+      { path: 'change-password', component: ChangePasswordComponent },
       { path: 'connect-project', component: ConnectProjectComponent }
     ])
   ],
