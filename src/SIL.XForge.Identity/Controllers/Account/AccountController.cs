@@ -177,17 +177,30 @@ namespace SIL.XForge.Identity.Controllers.Account
         }
 
         /// <summary>
-        /// Show reset password page
+        /// ResetPassword from the token produced by ForgotPassword.
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> ResetPassword(string token)
         {
-            if (!string.IsNullOrEmpty(token))
-                return View();
+            UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.ResetPasswordKey == token);
+            if (user != null)
+            {
+                if (DateTime.Now.Subtract(user.ResetPasswordExpirationDate).TotalDays < 7)
+                {
+                    ResetPasswordViewModel vm = BuildResetPasswordViewModel(user);
+                    return View("ResetPassword", vm);
+                }
+                else
+                {
+                    LoginViewModel vm = await BuildLoginViewModelAsync("");
+                    vm.ResetPasswordMessage = "The password reset request has expired. Please request another reset.";
+                    return Redirect("Login");
+                }
+            }
             else
             {
                 LoginViewModel vm = await BuildLoginViewModelAsync("");
-                return View("Login", vm);
+                return Redirect("Login");
             }
         }
 
@@ -234,6 +247,37 @@ namespace SIL.XForge.Identity.Controllers.Account
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.Password != model.ConfirmPassword)
+                {
+                    ModelState.AddModelError(string.Empty, "Both Passwords do not match");
+                }
+                else
+                {
+                    UserEntity user = await _users.UpdateAsync(u =>  u.Username == model.Username, update => update
+                                     .Set(u => u.Password,BCrypt.Net.BCrypt.HashPassword(model.Password,7)));
+                    LoginViewModel vm = await BuildLoginViewModelAsync("");
+                    vm.ResetPasswordMessage = "Your password has been reset. Please login.";
+                    return Redirect("Login");
+                }
+            }
+            return View(model);
+        }
+
+
+        private ResetPasswordViewModel BuildResetPasswordViewModel(UserEntity user)
+        {
+            return new ResetPasswordViewModel
+            {
+                Password = "",
+                ConfirmPassword = "",
+                Username = user.Username,
+            };
+        }
         /// <summary>
         /// Show logout page
         /// </summary>
@@ -303,7 +347,8 @@ namespace SIL.XForge.Identity.Controllers.Account
                     EnableLocalLogin = false,
                     ReturnUrl = returnUrl,
                     Username = context?.LoginHint,
-                    ExternalProviders = new ExternalProvider[] { new ExternalProvider { AuthenticationScheme = context.IdP } }
+                    ExternalProviders = new ExternalProvider[] { new ExternalProvider { AuthenticationScheme = context.IdP } },
+                    ResetPasswordMessage = ""
                 };
             }
 
