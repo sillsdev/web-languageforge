@@ -28,6 +28,24 @@ For error reporting:
 
 ## Developers ##
 
+### Builds ###
+
+Status of builds from our continuous integration (CI) [server](https://build.palaso.org):
+
+| Site            | Master Unit | Master E2E | QA | Live |
+| --------------- | ----------- | ---------- | -- | ---- |
+| Language Forge  | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt372)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeLive)/statusIcon) |
+| Scripture Forge | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt270)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeLive)/statusIcon) |
+| Scripture Forge Beta | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeDevelopUnitTests)/statusIcon) | not yet operational | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:xForgeDeploy_ScriptureForgeQaBeta)/statusIcon) | not yet live |
+
+Successful builds from our CI server deploy to:
+
+| Site            | Master | QA | Live |
+| --------------- | ------ | -- | ---- |
+| Language Forge  | [dev.languageforge.org](https://dev.languageforge.org) | [qa.languageforge.org](https://qa.languageforge.org) | [languageforge.org](https://languageforge.org) |
+| Scripture Forge | [dev.scriptureforge.org](https://dev.scriptureforge.org) | [qa.scriptureforge.org](https://qa.scriptureforge.org) | [scriptureforge.org](https://scriptureforge.org) |
+| Scripture Forge Beta | - | [beta.qa.scriptureforge.org](https://beta.qa.scriptureforge.org) | [beta.scriptureforge.org](https://beta.scriptureforge.org) |
+
 ### Gitflow ###
 
 We use [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) with two modifications:
@@ -53,9 +71,11 @@ To this end you'll also want to be familiar with [Upgrading from AngularJS](http
 
 We plan to use [Prettier](https://prettier.io/) with pre-commit hook after re-writing the whole repo with Prettier first.
 
-### Development Process ###
+### Layout ###
 
-The initial plan is to use GitHub Pull Requests (PR) and GitHub review (don't use Reviewable).
+We use [Angular Flex-Layout](https://github.com/angular/flex-layout) with [Material Design components for Angular](https://material.angular.io/guides) including the [Material Design Icons](https://google.github.io/material-design-icons/).
+
+### Development Process ###
 
 The first task on a job is to create a feature branch. Branch off of the **sf-develop** branch.
 ```bash
@@ -68,39 +88,19 @@ Then do some useful work and commit it. Then
 git push origin feature/<featureName>
 ```
 
-Rebase often (at least at the start of the day, and before making a PR). Force pushing to your own branch is fine but don't force push during code review (GitHub review doesn't cope with this).
+Rebase often (at least at the start of the day, and before making a PR). Force pushing to your own branch is fine (even during review).
 
 Make PR's against the **sf-develop** branch. If the **sf-develop** branch has moved on since the feature branch was made, rebase your changes on top of the **sf-develop** branch before making your PR.
 
 Ensure all [tests](#testing) are passing before submitting a PR. 
+
+We now use [Reviewable](https://reviewable.io/) for GitHub Pull Requests (PR). When submitting a PR, a **This change is Reviewable** link is added to the PR description. Remember to hit the **Publish** button after adding comments in Reviewable.
 
 If the person reviewing feels comfortable to approve it they can. However if they want other eyes on it, mention it in a comment on the PR.
 If you have minor changes to request on a PR you can say 'Make change X and then LGTM'. This means the person making the PR can merge it themselves after the requested change.
 People merging PRs can and should rebase the completed PR change (default to squash and rebase unless commits have good reason to stay separate).
 
 Delete the PR branch after merge.
-
-### Builds ###
-
-Status of builds from our continuous integration (CI) [server](https://build.palaso.org):
-
-| Site            | Master Unit | Master E2E | QA | Live |
-| --------------- | ----------- | ---------- | -- | ---- |
-| Language Forge  | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt372)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeLive)/statusIcon) |
-| Scripture Forge | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt270)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeLive)/statusIcon) |
-| Scripture Forge Beta | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeDevelopUnitTests)/statusIcon) | not yet operational | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:xForgeDeploy_ScriptureForgeQaBeta)/statusIcon) | not yet live |
-
-Successful builds from our CI server deploy to:
-
-| Site            | Master | QA | Live |
-| --------------- | ------ | -- | ---- |
-| Language Forge  | [dev.languageforge.org](https://dev.languageforge.org) | [qa.languageforge.org](https://qa.languageforge.org) | [languageforge.org](https://languageforge.org) |
-| Scripture Forge | [dev.scriptureforge.org](https://dev.scriptureforge.org) | [qa.scriptureforge.org](https://qa.scriptureforge.org) | [scriptureforge.org](https://scriptureforge.org) |
-| Scripture Forge Beta | - | [beta.qa.scriptureforge.org](https://beta.qa.scriptureforge.org) | [beta.scriptureforge.org](https://beta.scriptureforge.org) |
-
-### Layout ###
-
-We use [Material Design components for Angular](https://material.angular.io/guides) including the [Material Design Icons](https://google.github.io/material-design-icons/).
 
 ## Testing ##
 
