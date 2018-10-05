@@ -106,6 +106,65 @@ namespace SIL.XForge.Identity.Controllers.Account
             Assert.IsTrue(model.EnableErrorMessage == true);
         }
 
+        [Test]
+        public async Task ResetPassword_CorrectResetPasswordKey()
+        {
+            const string resetPasswordKey = "jGc6Qe4i1kgM+aA4LVczTJwfHx2YuDR/";
+            var env = new TestEnvironment();
+
+            IActionResult result = await env.Controller.ResetPassword(resetPasswordKey);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+            var viewResult = result as ViewResult;
+            Assert.True(viewResult.ViewName == "ResetPassword");
+        }
+
+        [Test]
+        public async Task ResetPassword_IncorrectResetPasswordKey()
+        {
+            const string resetPasswordKey = "jGc6Qe4i1kgM+aA4LVczTJwfHx2YuDR";
+            var env = new TestEnvironment();
+
+            IActionResult result = await env.Controller.ResetPassword(resetPasswordKey);
+            Assert.That(result, Is.TypeOf<RedirectResult>());
+            var redirectResult = result as RedirectResult;
+            Assert.True(redirectResult.Url == "Login");
+        }
+
+        [Test]
+        public async Task ResetPassword_PasswordNotSaved()
+        {
+            var env = new TestEnvironment();
+
+            var model = new ResetPasswordViewModel
+            {
+                Password = "NewPassword",
+                ConfirmPassword = "NewPassword1"
+            };
+            UserEntity beforeSave = await env.Users.Query().SingleOrDefaultAsync();
+            IActionResult result = await env.Controller.ResetPassword(model);
+            Assert.That(result, Is.TypeOf<ViewResult>());
+            UserEntity afterSave = await env.Users.Query().SingleOrDefaultAsync();
+            Assert.True(beforeSave.Password == afterSave.Password);
+        }
+
+        [Test]
+        public async Task ResetPassword_PasswordSaved()
+        {
+            var env = new TestEnvironment();
+
+            var model = new ResetPasswordViewModel
+            {
+                Username = "user",
+                Password = "NewPassword",
+                ConfirmPassword = "NewPassword"
+            };
+            UserEntity beforeSave = await env.Users.Query().SingleOrDefaultAsync();
+            IActionResult result = await env.Controller.ResetPassword(model);
+            Assert.That(result, Is.TypeOf<RedirectResult>());
+            UserEntity afterSave = await env.Users.Query().SingleOrDefaultAsync();
+            Assert.True(beforeSave.Password != afterSave.Password);
+        }
+
         class TestEnvironment
         {
             public TestEnvironment()
