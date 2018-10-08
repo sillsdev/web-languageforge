@@ -11,7 +11,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { XForgeCommonModule } from '@xforge-common/xforge-common.module';
-import { OAuthModule } from 'angular-oauth2-oidc';
 import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
 import { ChangePasswordComponent } from '../xforge-common/change-password/change-password.component';
 import { AppComponent } from './app.component';
@@ -54,12 +53,6 @@ import { NoticeComponent } from './notice/notice.component';
     CoreModule,
     ReactiveFormsModule,
     PasswordStrengthMeterModule,
-    OAuthModule.forRoot({
-      resourceServer: {
-        allowedUrls: [window.location.origin + '/api'],
-        sendAccessToken: true
-      }
-    }),
     RouterModule.forRoot([
       { path: 'home', component: HomeComponent },
       { path: 'counter', component: CounterComponent },
