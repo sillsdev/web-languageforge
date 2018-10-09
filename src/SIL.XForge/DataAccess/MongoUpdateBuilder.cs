@@ -24,7 +24,8 @@ namespace SIL.XForge.DataAccess
             return this;
         }
 
-        public IUpdateBuilder<T> Set<TField>(string collectionFieldName, string fieldName, TField value, int index = -1)
+        public IUpdateBuilder<T> Set<TField>(string collectionFieldName, string fieldName, TField value,
+            int index = -1)
         {
             string indexStr = index == -1 ? "$" : index.ToString();
             _defs.Add(_builder.Set($"{collectionFieldName}.{indexStr}.{fieldName}", value));

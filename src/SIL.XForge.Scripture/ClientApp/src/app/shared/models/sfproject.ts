@@ -1,10 +1,11 @@
 import { RecordHasManyRelationship, RecordHasOneRelationship } from '@orbit/data';
 
 import { InputSystem } from '@xforge-common/models/input-system';
-import { Project, ProjectAttributes } from '@xforge-common/models/project';
-import { ResourceRelationships } from '@xforge-common/models/resource';
+import { Project, PROJECT, ProjectAttributes, ProjectRelationships } from '@xforge-common/models/project';
 import { TaskConfig } from '@xforge-common/models/task-config';
 import { TranslateConfig } from './translate-config';
+
+export const SFPROJECT = PROJECT;
 
 export interface SFProjectAttributes extends ProjectAttributes {
   paratextId?: string;
@@ -13,7 +14,7 @@ export interface SFProjectAttributes extends ProjectAttributes {
   translateConfig?: TranslateConfig;
 }
 
-export interface SFProjectRelationships extends ResourceRelationships {
+export interface SFProjectRelationships extends ProjectRelationships {
   users?: RecordHasManyRelationship;
   activeSyncJob?: RecordHasOneRelationship;
 }

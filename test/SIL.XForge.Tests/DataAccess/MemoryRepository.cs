@@ -84,7 +84,7 @@ namespace SIL.XForge.DataAccess
                 if (isInsert)
                     entity = new T();
 
-                var builder = new MemoryUpdateBuilder<T>(entity, isInsert);
+                var builder = new MemoryUpdateBuilder<T>(filter, entity, isInsert);
                 update(builder);
                 _entities[entity.Id] = JsonConvert.SerializeObject(entity);
             }

@@ -1,8 +1,6 @@
-import { Resource, ResourceAttributes } from './resource';
+import { Resource, ResourceAttributes, ResourceRelationships } from './resource';
 
-export class UserContants {
-  static readonly TYPE = 'user';
-}
+export const USER = 'user';
 
 export interface UserAttributes extends ResourceAttributes {
   username?: string;
@@ -11,6 +9,8 @@ export interface UserAttributes extends ResourceAttributes {
   password?: string;
   paratextUsername?: string;
 }
+
+export type UserRelationships = ResourceRelationships;
 
 export interface User extends Resource {
   attributes?: UserAttributes;

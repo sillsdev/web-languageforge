@@ -4,7 +4,7 @@ namespace SIL.XForge.Models
 {
     public class ProjectUserResource : Identifiable<string>, IResource
     {
-        [Attr("role")]
+        [Attr("role", isImmutable: true)]
         public string Role { get; set; }
 
         public string UserRef { get; set; }

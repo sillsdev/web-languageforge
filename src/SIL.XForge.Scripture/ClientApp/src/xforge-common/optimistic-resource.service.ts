@@ -1,14 +1,16 @@
 import { FindRecordsTerm, Record, RecordIdentity } from '@orbit/data';
 
+import { JSONAPIService } from './jsonapi.service';
 import { LiveQueryObservable } from './live-query-observable';
-import { Resource, ResourceAttributes, ResourceRelationships } from './models/resource';
-import { ResourceService } from './resource.service';
+import { Resource, ResourceAttributes } from './models/resource';
+import { identity, record } from './resource-utils';
 
-export class OptimisticResourceService<TResource extends Resource, TAttrs extends ResourceAttributes,
-  TRels extends ResourceRelationships> extends ResourceService<TResource, TAttrs, TRels> {
+export class OptimisticResourceService<TResource extends Resource, TAttrs extends ResourceAttributes> {
+
+  constructor(protected readonly jsonApiService: JSONAPIService, protected type: string) { }
 
   getById(id: string): LiveQueryObservable<TResource> {
-    return this.get(this.identity(id));
+    return this.get(identity(this.type, id));
   }
 
   get(resource: RecordIdentity): LiveQueryObservable<TResource> {
@@ -16,7 +18,7 @@ export class OptimisticResourceService<TResource extends Resource, TAttrs extend
   }
 
   getRelatedById<TRelationship extends Record>(id: string, relationship: string): LiveQueryObservable<TRelationship> {
-    return this.getRelated(this.identity(id), relationship);
+    return this.getRelated(identity(this.type, id), relationship);
   }
 
   getRelated<TRelationship extends Record>(resource: RecordIdentity, relationship: string
@@ -29,7 +31,7 @@ export class OptimisticResourceService<TResource extends Resource, TAttrs extend
   }
 
   getAllRelatedById(id: string, relationship: string): LiveQueryObservable<TResource[]> {
-    return this.getAllRelated(this.identity(id), relationship);
+    return this.getAllRelated(identity(this. type, id), relationship);
   }
 
   getAllRelated<TRelationship extends Record>(resource: RecordIdentity, relationship: string
@@ -37,12 +39,12 @@ export class OptimisticResourceService<TResource extends Resource, TAttrs extend
     return this.jsonApiService.liveQuery(q => q.findRelatedRecords(resource, relationship));
   }
 
-  create(resource: TResource): Promise<string> {
-    return this.jsonApiService.create(resource);
+  create(resource: Partial<TResource>): Promise<string> {
+    return this.jsonApiService.create(record(this.type, resource));
   }
 
   updateById(id: string, attrs: TAttrs): Promise<void> {
-    return this.jsonApiService.updateAttributes(this.identity(id), attrs);
+    return this.jsonApiService.updateAttributes(identity(this.type, id), attrs);
   }
 
   update(resource: TResource, attrs: TAttrs): Promise<void> {
@@ -58,7 +60,7 @@ export class OptimisticResourceService<TResource extends Resource, TAttrs extend
   }
 
   deleteById(id: string): Promise<void> {
-    return this.jsonApiService.delete(this.identity(id));
+    return this.jsonApiService.delete(identity(this.type, id));
   }
 
   addRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity): Promise<void> {

@@ -3,32 +3,29 @@ import { interval, Observable, ReplaySubject } from 'rxjs';
 import { concat, multicast, switchMap, take, takeWhile } from 'rxjs/operators';
 
 import { JSONAPIService } from '@xforge-common/jsonapi.service';
-import { ResourceService } from '@xforge-common/resource.service';
-import { UserService } from '@xforge-common/user.service';
-import { SyncJob, SyncJobAttributes, SyncJobConstants, SyncJobRelationships } from '../shared/models/sync-job';
-import { SFProjectService } from './sfproject.service';
+import { hasOne, identity, record } from '@xforge-common/resource-utils';
+import { SFPROJECT } from '../shared/models/sfproject';
+import { SFUSER } from '../shared/models/sfuser';
+import { SYNC_JOB, SyncJob } from '../shared/models/sync-job';
+import { SFUserService } from './sfuser.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SyncJobService extends ResourceService<SyncJob, SyncJobAttributes, SyncJobRelationships> {
+export class SyncJobService {
   static isActive(job: SyncJob): boolean {
     return job.attributes.state === 'PENDING' || job.attributes.state === 'SYNCING';
   }
 
-  constructor(jsonApiService: JSONAPIService, private readonly userService: UserService,
-    private readonly projectService: SFProjectService
-  ) {
-    super(jsonApiService, SyncJobConstants.TYPE);
-  }
+  constructor(private readonly jsonApiService: JSONAPIService, private readonly userService: SFUserService) { }
 
   onlineGetById(id: string): Observable<SyncJob> {
-    return this.jsonApiService.query(q => q.findRecord(this.identity(id)), false);
+    return this.jsonApiService.query(q => q.findRecord(identity(SYNC_JOB, id)), false);
   }
 
   onlineGetActive(projectId: string): Observable<SyncJob> {
-    return this.jsonApiService.query(q =>
-      q.findRelatedRecord(this.projectService.identity(projectId), 'activeSyncJob'), false);
+    return this.jsonApiService.query(q => q.findRelatedRecord(identity(SFPROJECT, projectId), 'activeSyncJob'),
+      false);
   }
 
   listen(jobId: string): Observable<SyncJob> {
@@ -45,18 +42,16 @@ export class SyncJobService extends ResourceService<SyncJob, SyncJobAttributes, 
   }
 
   async start(projectId: string): Promise<string> {
-    const job: SyncJob = {
-      id: undefined,
-      type: this.type,
+    const rec = record(SYNC_JOB, {
       relationships: {
-        project: this.projectService.hasOne(projectId),
-        owner: this.userService.hasOne(this.userService.currentUserId)
+        project: hasOne(SFPROJECT, projectId),
+        owner: hasOne(SFUSER, this.userService.currentUserId)
       }
-    };
-    return this.jsonApiService.create(job, false, true);
+    });
+    return this.jsonApiService.create(rec, false, true);
   }
 
   cancel(id: string): Promise<void> {
-    return this.jsonApiService.delete(this.identity(id), false, true);
+    return this.jsonApiService.delete(identity(SYNC_JOB, id), false, true);
   }
 }

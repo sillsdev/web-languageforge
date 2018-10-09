@@ -119,7 +119,7 @@ namespace SIL.XForge.Scripture.Services
                             {
                                 Id = "projectuser01",
                                 UserRef = "user01",
-                                Role = TestProjectRoles.Manager
+                                Role = SFProjectRoles.Administrator
                             }
                         }
                     },
@@ -133,7 +133,7 @@ namespace SIL.XForge.Scripture.Services
                             {
                                 Id = "projectuser02",
                                 UserRef = "user02",
-                                Role = TestProjectRoles.Manager
+                                Role = SFProjectRoles.Administrator
                             }
                         }
                     },
@@ -147,7 +147,7 @@ namespace SIL.XForge.Scripture.Services
                             {
                                 Id = "projectuser03",
                                 UserRef = "user01",
-                                Role = TestProjectRoles.Manager
+                                Role = SFProjectRoles.Administrator
                             }
                         }
                     }

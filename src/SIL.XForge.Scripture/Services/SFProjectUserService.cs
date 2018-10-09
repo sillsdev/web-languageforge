@@ -42,6 +42,11 @@ namespace SIL.XForge.Scripture.Services
 
         protected override Task CheckCanCreateAsync(SFProjectUserResource resource)
         {
+            if (resource.ProjectRef == null)
+                throw new JsonApiException(StatusCodes.Status400BadRequest, "A project must be specified.");
+            if (resource.UserRef == null)
+                throw new JsonApiException(StatusCodes.Status400BadRequest, "A user must be specified.");
+
             if (SystemRole == SystemRoles.User)
             {
                 if (resource.UserRef != UserId)
@@ -89,16 +94,17 @@ namespace SIL.XForge.Scripture.Services
             switch (relAttr.InternalRelationshipName)
             {
                 case nameof(SFProjectUserResource.User):
-                    return await UserMapper.MapMatchingAsync(included, resources, u => u.Id == entity.UserRef);
+                    return (await UserMapper.MapMatchingAsync(included, resources, u => u.Id == entity.UserRef))
+                        .SingleOrDefault();
                 case nameof(SFProjectUserResource.Project):
-                    return await ProjectMapper.MapMatchingAsync(included, resources, p => p.Id == entity.ProjectRef);
+                    return (await ProjectMapper.MapMatchingAsync(included, resources, p => p.Id == entity.ProjectRef))
+                        .SingleOrDefault();
             }
             return null;
         }
 
         protected override async Task<SFProjectUserEntity> InsertEntityAsync(SFProjectUserEntity entity)
         {
-            UserEntity user = await _users.GetAsync(UserId);
             string paratextId = await _projects.Query().Where(p => p.Id == entity.ProjectRef).Select(p => p.ParatextId)
                 .SingleOrDefaultAsync();
             if (paratextId == null)
@@ -106,7 +112,10 @@ namespace SIL.XForge.Scripture.Services
                 throw new JsonApiException(StatusCodes.Status400BadRequest,
                     "The specified project could not be found.");
             }
+            UserEntity user = await _users.GetAsync(UserId);
             entity.Role = await _paratextService.GetProjectRoleAsync(user, paratextId);
+            if (entity.Role != SFProjectRoles.Administrator)
+                throw ForbiddenException();
             SFProjectEntity project = await _projects.UpdateAsync(p => p.Id == entity.ProjectRef, update => update
                 .Add(p => p.Users, entity));
             return project.Users.FirstOrDefault(u => u.Id == entity.Id);

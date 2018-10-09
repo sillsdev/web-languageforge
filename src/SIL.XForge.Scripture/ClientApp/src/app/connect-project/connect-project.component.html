@@ -3,7 +3,8 @@
     <mat-card-title *ngIf="state === 'input'" class="connect-title">Connect Paratext Project</mat-card-title>
     <mat-card-content fxLayout="column">
       <div [ngSwitch]="state">
-        <div *ngSwitchCase="'loading'" class="progress-container" fxLayout="column" fxLayoutAlign="center center">
+        <div *ngSwitchCase="'loading'" id="loading" class="progress-container" fxLayout="column"
+             fxLayoutAlign="center center">
           <div class="progress-label">Retrieving Paratext information</div>
           <mat-progress-bar mode="query"></mat-progress-bar>
         </div>
