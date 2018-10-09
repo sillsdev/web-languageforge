@@ -6,6 +6,7 @@ using IdentityServer4.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SIL.XForge.Configuration;
+using SIL.XForge.Identity.Configuration;
 using SIL.XForge.Identity.Services;
 
 namespace SIL.XForge.Identity
@@ -59,9 +60,11 @@ namespace SIL.XForge.Identity
         public static IServiceCollection AddXFIdentityServer(this IServiceCollection services,
             IConfiguration configuration)
         {
+            services.AddOptions<GoogleCaptchaOptions>(configuration);
             services.ConfigureOptions<StaticFilesConfigureOptions>();
 
             var siteOptions = configuration.GetOptions<SiteOptions>();
+
             var dataAccessOptions = configuration.GetOptions<DataAccessOptions>();
 
             IIdentityServerBuilder builder = services.AddIdentityServer()

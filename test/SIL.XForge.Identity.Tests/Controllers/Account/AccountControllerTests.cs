@@ -18,9 +18,13 @@ using SIL.XForge.Models;
 using SIL.XForge.Services;
 using Microsoft.Extensions.Options;
 using SIL.XForge.Configuration;
+using Microsoft.Extensions.Configuration;
+using SIL.XForge.Identity.Authentication;
+using SIL.XForge.Identity.Configuration;
 
 namespace SIL.XForge.Identity.Controllers.Account
 {
+
     [TestFixture]
     public class AccountControllerTests
     {
@@ -65,7 +69,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             await env.Events.Received().RaiseAsync(Arg.Any<UserLoginFailureEvent>());
         }
 
-       [Test]
+        [Test]
         public async Task ForgotPassword_CorrectUsernameOrEmail()
         {
             var env = new TestEnvironment();
@@ -84,7 +88,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             Assert.True(user.ResetPasswordKey != "jGc6Qe4i1kgM+aA4LVczTJwfHx2YuDR/", "ResetPasswordKey not saved.");
             Assert.True(user.ResetPasswordExpirationDate != default(DateTime), "ResetPasswordExpirationDate not saved.");
 
-            string emailId = "abc@fakegmail.com";
+            string emailId = "abc@fakegmail.com";
             string subject = "Scripture Forge Forgotten Password Verification";
             // Skip verification for the body, we may change the content
             env.EmailService.Received().SendEmail(Arg.Is(emailId), Arg.Is(subject), Arg.Any<string>());
@@ -165,6 +169,62 @@ namespace SIL.XForge.Identity.Controllers.Account
             Assert.True(beforeSave.Password != afterSave.Password);
         }
 
+        [Test]
+        public async Task Register_NewUserAdded()
+        {
+            var env = new TestEnvironment();
+
+            var model = new RegisterViewModel
+            {
+                Fullname = "testsamplename",
+                Password = "password1234",
+                Email = "testeremail@gmail.com"
+            };
+
+            IActionResult result = await env.Controller.Register(model, "/home");
+            Assert.That(result, Is.Not.Null);
+            Assert.That(env.Controller.ModelState.ErrorCount, Is.EqualTo(0));
+
+            UserEntity user = await env.Users.Query().SingleOrDefaultAsync(x => x.EmailPending == model.Email);
+            Assert.IsTrue(user.Username == "testsamplename");
+        }
+
+        [Test]
+        public async Task Register_DuplicateEmailOrUserRejected()
+        {
+            var env = new TestEnvironment();
+
+            env.Users.Add(new [] { new UserEntity
+                        {
+                            Id = "uniqueidwithdupemailid",
+                            Username = "user",
+                            Email = "duplicate@fakegmail.com"
+                        }});
+            // Duplicate emailid should result in an error
+            var model = new RegisterViewModel
+            {
+                Fullname = "Non Duplicated Name",
+                Password = "unimportant1234",
+                Email = "duplicate@fakegmail.com"
+            };
+
+            var result = await env.Controller.Register(model, "/home");
+            Assert.That(result, Is.Not.Null);
+            Assert.That(env.Controller.ModelState.ErrorCount, Is.EqualTo(1));
+
+            // Duplicate user should result in an error
+            model = new RegisterViewModel
+            {
+                Fullname = "Non Duplicated Name",
+                Password = "unimportant1234",
+                Email = "notaduplicate@fakegmail.com"
+            };
+
+            result = await env.Controller.Register(model, "/home");
+            Assert.That(result, Is.Not.Null);
+            Assert.That(env.Controller.ModelState.ErrorCount, Is.EqualTo(1));
+        }
+
         class TestEnvironment
         {
             public TestEnvironment()
@@ -174,6 +234,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 {
                     ClientId = "xForge"
                 };
+
                 interaction.GetAuthorizationContextAsync(null).ReturnsForAnyArgs(Task.FromResult(authorizationRequest));
                 var clientStore = Substitute.For<IClientStore>();
                 var schemeProvider = Substitute.For<IAuthenticationSchemeProvider>();
@@ -196,15 +257,26 @@ namespace SIL.XForge.Identity.Controllers.Account
                 AuthService = Substitute.For<IAuthenticationService>();
                 var serviceProvider = Substitute.For<IServiceProvider>();
                 var options = Substitute.For<IOptions<SiteOptions>>();
+
+                GoogleCaptchaOptions captchaOptions = new GoogleCaptchaOptions
+                {
+                    CaptchaId = "mockKey",
+                    CaptchaSecret = "mockSecret"
+                };
+
+                var captcha = Substitute.For<IOptions<GoogleCaptchaOptions>>();
+                captcha.Value.Returns(captchaOptions);
+
                 EmailService = Substitute.For<IEmailService>();
 
                 serviceProvider.GetService(typeof(IAuthenticationService)).Returns(AuthService);
                 serviceProvider.GetService(typeof(ISystemClock)).Returns(new SystemClock());
                 serviceProvider.GetService(typeof(IAuthenticationSchemeProvider)).Returns(schemeProvider);
                 serviceProvider.GetService(typeof(IOptions<SiteOptions>)).Returns(options);
+
                 serviceProvider.GetService(typeof(IEmailService)).Returns(EmailService);
 
-                Controller = new AccountController(interaction, clientStore, schemeProvider, Events, Users, options, EmailService)
+                Controller = new AccountController(interaction, clientStore, schemeProvider, Events, Users, options, EmailService, captcha)
                 {
                     ControllerContext = new ControllerContext
                     {
@@ -220,8 +292,9 @@ namespace SIL.XForge.Identity.Controllers.Account
             public IAuthenticationService AuthService { get; }
             public IEventService Events { get; }
             public AccountController Controller { get; }
-            public MemoryRepository<UserEntity> Users {get; set;}
+            public MemoryRepository<UserEntity> Users { get; set; }
             public IEmailService EmailService { get; set; }
+
         }
     }
 }
