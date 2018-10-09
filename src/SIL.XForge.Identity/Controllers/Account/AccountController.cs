@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.Events;
@@ -17,11 +19,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver.Linq;
 using MongoDB.Driver;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 using SIL.XForge.Services;
 using Microsoft.Extensions.Options;
 using SIL.XForge.Configuration;
+using System.Security.Cryptography;
+using System.Text;
+using SIL.XForge.Identity.Authentication;
+using SIL.XForge.Identity.Configuration;
 
 namespace SIL.XForge.Identity.Controllers.Account
 {
@@ -34,6 +42,7 @@ namespace SIL.XForge.Identity.Controllers.Account
     [AllowAnonymous]
     public class AccountController : Controller
     {
+        private readonly GoogleCaptchaOptions _captcha;
         private readonly IRepository<UserEntity> _users;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
@@ -41,7 +50,6 @@ namespace SIL.XForge.Identity.Controllers.Account
         private readonly IEventService _events;
         private readonly IOptions<SiteOptions> _options;
         private readonly IEmailService _emailService;
-
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
@@ -49,7 +57,8 @@ namespace SIL.XForge.Identity.Controllers.Account
             IEventService events,
             IRepository<UserEntity> users,
             IOptions<SiteOptions> options,
-            IEmailService emailService)
+            IEmailService emailService,
+            IOptions<GoogleCaptchaOptions> captcha)
         {
             _users = users;
             _interaction = interaction;
@@ -58,6 +67,27 @@ namespace SIL.XForge.Identity.Controllers.Account
             _events = events;
             _options = options;
             _emailService = emailService;
+            _captcha = captcha.Value;
+        }
+
+        private string GenerateValidationKey()
+        {
+            char[] chars = new char[62];
+            chars =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
+            byte[] data = new byte[1];
+            using (RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider())
+            {
+                crypto.GetNonZeroBytes(data);
+                data = new byte[16];
+                crypto.GetNonZeroBytes(data);
+            }
+            StringBuilder key = new StringBuilder(16);
+            foreach (byte b in data)
+            {
+                key.Append(chars[b % (chars.Length)]);
+            }
+            return key.ToString();
         }
 
         /// <summary>
@@ -193,7 +223,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 else
                 {
                     LoginViewModel vm = await BuildLoginViewModelAsync("");
-                    vm.ResetPasswordMessage = "The password reset request has expired. Please request another reset.";
+                    vm.ShowMessage = "The password reset request has expired. Please request another reset.";
                     return Redirect("Login");
                 }
             }
@@ -220,24 +250,21 @@ namespace SIL.XForge.Identity.Controllers.Account
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
-            byte[] time = BitConverter.GetBytes(DateTime.UtcNow.ToBinary());
-            byte[] key = Guid.NewGuid().ToByteArray();
-            string resetPasswordKey = Convert.ToBase64String(time.Concat(key).ToArray());
             UserEntity user = await _users.UpdateAsync(u => u.Username == model.UsernameOrEmail || u.Email == model.UsernameOrEmail, update => update
-                .Set(u => u.ResetPasswordKey, resetPasswordKey)
+                .Set(u => u.ResetPasswordKey, GenerateValidationKey())
                 .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddDays(7)));
             if (user != null)
             {
                 string emailId = user.Email;
                 string subject = "Scripture Forge Forgotten Password Verification";
                 string body = "<div class=''><h1>Reset Password for " + user.Username + "</h1> " +
-                    "<p>Please click this link to <a href='https://beta.scriptureforge.local/account/resetpassword?token=" + resetPasswordKey + "' target='_blank'>Reset Your Password</a>.</p> " +
+                    "<p>Please click this link to <a href='https://beta.scriptureforge.local/account/resetpassword?token=" + user.ResetPasswordKey + "' target='_blank'>Reset Your Password</a>.</p> " +
                     "<p>This link will be valid for 1 week only.</p><p>Regards,<br>The Scripture Forge team</p></div>";
 
                 _emailService.SendEmail(emailId, subject, body);
 
                 LoginViewModel vm = await BuildLoginViewModelAsync("");
-                vm.ResetPasswordMessage = "Password Reset email sent for username " + model.UsernameOrEmail;
+                vm.ShowMessage = "Password Reset email sent for username " + model.UsernameOrEmail;
                 return View("Login", vm);
             }
             else
@@ -258,10 +285,10 @@ namespace SIL.XForge.Identity.Controllers.Account
                 }
                 else
                 {
-                    UserEntity user = await _users.UpdateAsync(u =>  u.Username == model.Username, update => update
-                                     .Set(u => u.Password,BCrypt.Net.BCrypt.HashPassword(model.Password,7)));
+                    UserEntity user = await _users.UpdateAsync(u => u.Username == model.Username, update => update
+                                    .Set(u => u.Password, BCrypt.Net.BCrypt.HashPassword(model.Password, 7)));
                     LoginViewModel vm = await BuildLoginViewModelAsync("");
-                    vm.ResetPasswordMessage = "Your password has been reset. Please login.";
+                    vm.ShowMessage = "Your password has been reset. Please login.";
                     return Redirect("Login");
                 }
             }
@@ -331,8 +358,6 @@ namespace SIL.XForge.Identity.Controllers.Account
             return View("LoggedOut", vm);
         }
 
-
-
         /*****************************************/
         /* helper APIs for the AccountController */
         /*****************************************/
@@ -348,7 +373,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                     ReturnUrl = returnUrl,
                     Username = context?.LoginHint,
                     ExternalProviders = new ExternalProvider[] { new ExternalProvider { AuthenticationScheme = context.IdP } },
-                    ResetPasswordMessage = ""
+                    ShowMessage = ""
                 };
             }
 
@@ -384,7 +409,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 ReturnUrl = returnUrl,
                 Username = context?.LoginHint,
                 ExternalProviders = providers.ToArray(),
-                ResetPasswordMessage = ""
+                ShowMessage = ""
             };
         }
 
@@ -399,10 +424,10 @@ namespace SIL.XForge.Identity.Controllers.Account
         private ForgotPasswordViewModel BuildForgotPasswordViewModel()
         {
             return new ForgotPasswordViewModel
-                {
-                    UsernameOrEmail = "",
-                    EnableErrorMessage = false
-                };
+            {
+                UsernameOrEmail = "",
+                EnableErrorMessage = false
+            };
         }
 
         private async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)
@@ -465,6 +490,75 @@ namespace SIL.XForge.Identity.Controllers.Account
             }
 
             return vm;
+        }
+
+        [HttpGet("Account/Register")]
+        [AllowAnonymous]
+        public IActionResult Register()
+        {
+            ViewData["ReCaptchaKey"] = _captcha.CaptchaId;
+            return View();
+        }
+
+        [HttpPost]
+        [TypeFilter(typeof(ValidateRecaptchaFilter))]
+        public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        {
+            ViewData["ReCaptchaKey"] = _captcha.CaptchaId;
+            ViewData["ReturnUrl"] = returnUrl;
+            if (ModelState.IsValid)
+            {
+                var checkEmailAlreadyExists = _users.Query().SingleOrDefault(u => u.Email == model.Email);
+                if (checkEmailAlreadyExists != null)
+                {
+                    ModelState.AddModelError(string.Empty, "EmailID already exists, Please try with another emailid.");
+                    return View(model);
+                }
+
+                var user = new UserEntity
+                {
+                    Username = model.Fullname,
+                    Name = model.Fullname,
+                    EmailPending = model.Email,
+                    Password = BCrypt.Net.BCrypt.HashPassword(model.Password, 7, false),
+                    Role = SystemRoles.User,
+                    ValidationKey = GenerateValidationKey(),
+                    ValidationExpirationDate = DateTime.Now.AddDays(7),
+                    Active = true
+                };
+
+                var result = await _users.InsertAsync(user);
+                if (result)
+                {
+                    string emailId = user.Email;
+                    string subject = "Scripture Forge - Signup Verification";
+                    string body = "<div class=''><h1>Dear " + user.Username.ToUpper() + ",</h1> <br />" +
+                        "<p>Please click this link to activate your account <a href='https://beta.scriptureforge.local/account/VerifyEmail?user=" + user.Email + "&key=" + user.ValidationKey + "' target='_blank'>Confirm Verification</a>.</p> " +
+                        "<br /> <p>Thank you.</p><p>Regards,<br>The Scripture Forge Team</p></div>";
+
+                    _emailService.SendEmail(emailId, subject, body);
+                    ModelState.Clear();
+                    return Redirect("~/account/login");
+                }
+                else
+                {
+                    return View();
+                }
+            }
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        [HttpGet("Account/VerifyEmail")]
+        public async Task<ActionResult> VerifyEmail([FromQuery] string user, [FromQuery] string key)
+        {
+            LoginViewModel vm = await BuildLoginViewModelAsync("");
+            UserEntity userEntity = _users.Query().SingleOrDefault(u => u.Email == user && u.ValidationKey == key);
+            if (userEntity != null)
+            {
+                userEntity = await _users.UpdateAsync(userEntity, update => update.Set(u => u.Email, userEntity.EmailPending));
+            }
+            return View("VerifyEmail");
         }
     }
 }

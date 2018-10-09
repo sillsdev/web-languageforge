@@ -6,10 +6,10 @@
         <h1>Login</h1>
     </div>
 
-    @if (Model.ResetPasswordMessage.Length > 0)
+    @if (Model.ShowMessage != null && Model.ShowMessage.Length > 0)
     {
     <div uib-alert="" class="alert-info ng-isolate-scope alert" role="alert">
-        <div> @Html.DisplayFor(model => model.ResetPasswordMessage)  </div>
+        <div> @Html.DisplayFor(model => model.ShowMessage)  </div>
     </div>
     }
 
@@ -53,6 +53,7 @@
                                 <div class="form-group">
                                     <button class="btn btn-primary" name="button" value="login" id="login-button">Login</button>
                                     <button class="btn btn-default" name="button" value="cancel">Cancel</button>
+                                    <a href="/Account/Register" class="btn btn-default">Sign Up</a>
                                 </div>
                             </fieldset>
                         </form>
