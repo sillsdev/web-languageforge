@@ -2,14 +2,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { UserService } from '@xforge-common/user.service';
 import { ParatextProject } from '../shared/models/paratext-project';
+import { SFUserService } from './sfuser.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ParatextService {
-  constructor(private readonly http: HttpClient, private readonly userService: UserService) { }
+  constructor(private readonly http: HttpClient, private readonly userService: SFUserService) { }
 
   logIn(returnUrl: string): void {
     const url = '/external/challenge?provider=Paratext&returnUrl=' + returnUrl + '&userId='

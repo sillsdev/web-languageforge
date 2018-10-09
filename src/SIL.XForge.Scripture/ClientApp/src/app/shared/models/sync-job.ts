@@ -2,9 +2,7 @@ import { RecordHasOneRelationship } from '@orbit/data';
 
 import { Resource, ResourceAttributes, ResourceRelationships } from '@xforge-common/models/resource';
 
-export class SyncJobConstants {
-  static readonly TYPE = 'syncJob';
-}
+export const SYNC_JOB = 'syncJob';
 
 export interface SyncJobAttributes extends ResourceAttributes {
   percentCompleted?: number;

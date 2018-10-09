@@ -1,21 +1,16 @@
 import { Injectable } from '@angular/core';
 
 import { JSONAPIService } from '@xforge-common/jsonapi.service';
-import { ProjectUserConstants } from '@xforge-common/models/project-user';
-import { ResourceService } from '@xforge-common/resource.service';
-import { SFProjectUser, SFProjectUserAttributes, SFProjectUserRelationships } from '../shared/models/sfproject-user';
+import { record } from '@xforge-common/resource-utils';
+import { SFPROJECT_USER, SFProjectUser } from '../shared/models/sfproject-user';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SFProjectUserService
-  extends ResourceService<SFProjectUser, SFProjectUserAttributes, SFProjectUserRelationships> {
+export class SFProjectUserService {
+  constructor(private readonly jsonApiService: JSONAPIService) { }
 
-  constructor(jsonApiService: JSONAPIService) {
-    super(jsonApiService, ProjectUserConstants.TYPE);
-  }
-
-  onlineCreate(resource: SFProjectUser): Promise<string> {
-    return this.jsonApiService.create(resource, true, true);
+  onlineCreate(resource: Partial<SFProjectUser>): Promise<string> {
+    return this.jsonApiService.create(record(SFPROJECT_USER, resource), true, true);
   }
 }

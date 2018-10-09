@@ -13,7 +13,7 @@ using SIL.XForge.Models;
 namespace SIL.XForge.Services
 {
     public abstract class ResourceServiceTestEnvironmentBase<TResource, TEntity>
-        where TResource : Resource
+        where TResource : class, IResource
         where TEntity : Entity, new()
     {
         private readonly string _resourceName;
