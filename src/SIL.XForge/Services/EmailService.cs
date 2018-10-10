@@ -3,6 +3,7 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using SIL.XForge.Configuration;
 using Microsoft.Extensions.Options;
+using MailKit.Security;
 
 namespace SIL.XForge.Services
 {
@@ -31,7 +32,7 @@ namespace SIL.XForge.Services
 
             using (var client = new SmtpClient())
             {
-                client.Connect(siteOptions.SmtpServer, Convert.ToInt32(siteOptions.PortNumber), false);
+                client.Connect(siteOptions.SmtpServer, Convert.ToInt32(siteOptions.PortNumber), SecureSocketOptions.None);
                 client.Send(mimeMessage);
                 client.Disconnect(true);
                 return "Email has been sent successfully!";
