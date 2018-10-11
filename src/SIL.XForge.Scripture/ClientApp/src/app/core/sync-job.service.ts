@@ -1,31 +1,26 @@
 import { Injectable } from '@angular/core';
+import { RecordIdentity } from '@orbit/data';
 import { interval, Observable, ReplaySubject } from 'rxjs';
 import { concat, multicast, switchMap, take, takeWhile } from 'rxjs/operators';
 
 import { JSONAPIService } from '@xforge-common/jsonapi.service';
-import { hasOne, identity, record } from '@xforge-common/resource-utils';
-import { SFPROJECT } from '../shared/models/sfproject';
-import { SFUSER } from '../shared/models/sfuser';
-import { SYNC_JOB, SyncJob } from '../shared/models/sync-job';
+import { SFProject, SFProjectRef } from '../shared/models/sfproject';
+import { SFUserRef } from '../shared/models/sfuser';
+import { SyncJob } from '../shared/models/sync-job';
 import { SFUserService } from './sfuser.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SyncJobService {
-  static isActive(job: SyncJob): boolean {
-    return job.attributes.state === 'PENDING' || job.attributes.state === 'SYNCING';
-  }
-
   constructor(private readonly jsonApiService: JSONAPIService, private readonly userService: SFUserService) { }
 
   onlineGetById(id: string): Observable<SyncJob> {
-    return this.jsonApiService.query(q => q.findRecord(identity(SYNC_JOB, id)), false);
+    return this.jsonApiService.onlineGet(this.identity(id), false);
   }
 
   onlineGetActive(projectId: string): Observable<SyncJob> {
-    return this.jsonApiService.query(q => q.findRelatedRecord(identity(SFPROJECT, projectId), 'activeSyncJob'),
-      false);
+    return this.jsonApiService.onlineGetRelated({ type: SFProject.TYPE, id: projectId }, 'activeSyncJob', false);
   }
 
   listen(jobId: string): Observable<SyncJob> {
@@ -34,7 +29,7 @@ export class SyncJobService {
       multicast(
         () => new ReplaySubject(1),
         jobs => jobs.pipe(
-          takeWhile(j => SyncJobService.isActive(j)),
+          takeWhile(j => j.isActive),
           concat(jobs.pipe(take(1)))
         )
       )
@@ -42,16 +37,18 @@ export class SyncJobService {
   }
 
   async start(projectId: string): Promise<string> {
-    const rec = record(SYNC_JOB, {
-      relationships: {
-        project: hasOne(SFPROJECT, projectId),
-        owner: hasOne(SFUSER, this.userService.currentUserId)
-      }
+    const job = new SyncJob({
+      project: new SFProjectRef(projectId),
+      owner: new SFUserRef(this.userService.currentUserId)
     });
-    return this.jsonApiService.create(rec, false, true);
+    return this.jsonApiService.create(job, false, true);
   }
 
   cancel(id: string): Promise<void> {
-    return this.jsonApiService.delete(identity(SYNC_JOB, id), false, true);
+    return this.jsonApiService.delete(this.identity(id), false, true);
+  }
+
+  private identity(id: string): RecordIdentity {
+    return { type: SyncJob.TYPE, id };
   }
 }

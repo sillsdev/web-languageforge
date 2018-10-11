@@ -5,19 +5,20 @@ import Coordinator, {
 } from '@orbit/coordinator';
 import { Exception } from '@orbit/core';
 import {
-  buildQuery, ClientError, FindRecord, NetworkError, Operation, Query, QueryOrExpression, Record, RecordIdentity,
-  ReplaceRecordOperation, Schema, SchemaSettings, Transform, TransformOrOperations
+  buildQuery, ClientError, FindRecord, FindRecordsTerm, NetworkError, Operation, Query, QueryOrExpression, Record,
+  RecordIdentity, RecordRelationship, ReplaceRecordOperation, Schema, SchemaSettings, Transform, TransformOrOperations
 } from '@orbit/data';
 import IndexedDBSource from '@orbit/indexeddb';
 import IndexedDBBucket from '@orbit/indexeddb-bucket';
 import Store from '@orbit/store';
-import { clone, Dict } from '@orbit/utils';
+import { clone, Dict, eq, extend } from '@orbit/utils';
 import { ObjectId } from 'bson';
 import { from, fromEventPattern, merge, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 import { XForgeJSONAPISource } from './jsonapi/xforge-jsonapi-source';
 import { LiveQueryObservable } from './live-query-observable';
+import { getResourceRefType, getResourceType, Resource, ResourceRef } from './models/resource';
 
 @Injectable({
   providedIn: 'root'
@@ -161,7 +162,105 @@ export class JSONAPIService {
     await this.coordinator.activate();
   }
 
-  liveQuery(queryOrExpression: QueryOrExpression, persist = true): LiveQueryObservable<any> {
+  setAccessToken(accessToken: string): void {
+    this.remote.defaultFetchSettings.headers['Authorization'] = 'Bearer ' + accessToken;
+  }
+
+  get(identity: RecordIdentity, persist = true): LiveQueryObservable<any> {
+    return this.liveQuery(q => q.findRecord(identity), persist);
+  }
+
+  getRelated(identity: RecordIdentity, relationship: string, persist = true): LiveQueryObservable<any> {
+    return this.liveQuery(q => q.findRelatedRecord(identity, relationship), persist);
+  }
+
+  getAll(type: string, expressionBuilder = (t: FindRecordsTerm) => t, persist = true): LiveQueryObservable<any[]> {
+    return this.liveQuery(q => expressionBuilder(q.findRecords(type)), persist);
+  }
+
+  getAllRelated(identity: RecordIdentity, relationship: string, persist = true): LiveQueryObservable<any[]> {
+    return this.liveQuery(q => q.findRelatedRecords(identity, relationship), persist);
+  }
+
+  onlineGet(identity: RecordIdentity, persist = true): Observable<any> {
+    return this.query(q => q.findRecord(identity), persist);
+  }
+
+  onlineGetRelated(identity: RecordIdentity, relationship: string, persist = true): Observable<any> {
+    return this.query(q => q.findRelatedRecord(identity, relationship), persist);
+  }
+
+  onlineGetAll(type: string, expressionBuilder = (t: FindRecordsTerm) => t, persist = true): Observable<any[]> {
+    return this.query(q => expressionBuilder(q.findRecords(type)), persist);
+  }
+
+  onlineGetAllRelated(identity: RecordIdentity, relationship: string, persist = true): Observable<any[]> {
+    return this.query(q => q.findRelatedRecords(identity, relationship), persist);
+  }
+
+  async create(resource: Resource, persist = true, blocking = false): Promise<string> {
+    const record = this.createRecord(resource);
+    this.schema.initializeRecord(record);
+    resource.id = record.id;
+    await this.transform(t => t.addRecord(record), persist, blocking);
+    return record.id;
+  }
+
+  replace(resource: Resource, persist = true, blocking = false): Promise<void> {
+    const record = this.createRecord(resource);
+    return this.transform(t => t.replaceRecord(record), persist, blocking);
+  }
+
+  update(resource: Resource, persist = true, blocking = false): Promise<void> {
+    const updatedRecord = this.createRecord(resource);
+    const record = this.store.cache.query(q => q.findRecord(resource)) as Record;
+    return this.transform(t => {
+      const ops: Operation[] = [];
+
+      const updatedAttrs = this.getUpdatedProps(record.attributes, updatedRecord.attributes);
+      for (const attrName of updatedAttrs) {
+        ops.push(t.replaceAttribute(record, attrName, updatedRecord.attributes[attrName]));
+      }
+
+      const updatedRels = this.getUpdatedProps(record.relationships, updatedRecord.relationships);
+      for (const relName of updatedRels) {
+        const relData = updatedRecord.relationships[relName].data;
+        if (relData instanceof Array) {
+          ops.push(t.replaceRelatedRecords(record, relName, relData));
+        } else {
+          ops.push(t.replaceRelatedRecord(record, relName, relData));
+        }
+      }
+      return ops;
+    }, persist, blocking);
+  }
+
+  updateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist = true, blocking = false): Promise<void> {
+    return this.transform(t => {
+      const ops: Operation[] = [];
+      for (const [name, value] of Object.entries(attrs)) {
+        ops.push(t.replaceAttribute(identity, name, value));
+      }
+      return ops;
+    }, persist, blocking);
+  }
+
+  delete(identity: RecordIdentity, persist = true, blocking = false): Promise<void> {
+    return this.transform(t => t.removeRecord(identity), persist, blocking);
+  }
+
+  replaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[], persist = true,
+    blocking = false
+  ): Promise<void> {
+    return this.transform(t => t.replaceRelatedRecords(identity, relationship, related), persist, blocking);
+  }
+
+  setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist = true, blocking = false
+  ): Promise<void> {
+    return this.transform(t => t.replaceRelatedRecord(identity, relationship, related), persist, blocking);
+  }
+
+  private liveQuery(queryOrExpression: QueryOrExpression, persist: boolean): LiveQueryObservable<any> {
     const query = buildQuery(queryOrExpression, this.getOptions(persist, false), undefined, this.store.queryBuilder);
 
     const patch$ = fromEventPattern(
@@ -175,8 +274,8 @@ export class JSONAPIService {
     );
 
     const source$ = merge(patch$, reset$).pipe(
-      map(() => this.getCurrentResource(query)),
-      startWith(this.getCurrentResource(query))
+      map(() => this.getCachedResults(query)),
+      startWith(this.getCachedResults(query))
     );
 
     const observable = new LiveQueryObservable(source$, this.store, query);
@@ -184,57 +283,12 @@ export class JSONAPIService {
     return observable;
   }
 
-  query(queryOrExpression: QueryOrExpression, persist = true): Observable<any> {
-    return from(this.store.query(queryOrExpression, this.getOptions(persist, true))).pipe(map(r => clone(r)));
+  private query(queryOrExpression: QueryOrExpression, persist: boolean): Observable<any> {
+    return from(this.store.query(queryOrExpression, this.getOptions(persist, true)))
+      .pipe(map(r => this.convertResults(r)));
   }
 
-  async create(resource: Record, persist = true, blocking = false): Promise<string> {
-    this.schema.initializeRecord(resource);
-    await this.update(t => t.addRecord(clone(resource)), persist, blocking);
-    return resource.id;
-  }
-
-  replace(resource: Record, persist = true, blocking = false): Promise<void> {
-    return this.update(t => t.replaceRecord(resource), persist, blocking);
-  }
-
-  updateAttributes(resource: RecordIdentity, attrs: Dict<any>, persist = true, blocking = false): Promise<void> {
-    return this.update(t => {
-      const ops: Operation[] = [];
-      for (const [name, value] of Object.entries(attrs)) {
-        ops.push(t.replaceAttribute(resource, name, value));
-      }
-      return ops;
-    }, persist, blocking);
-  }
-
-  delete(resource: RecordIdentity, persist = true, blocking = false): Promise<void> {
-    return this.update(t => t.removeRecord(resource), persist, blocking);
-  }
-
-  addRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity, persist = true, blocking = false
-  ): Promise<void> {
-    return this.update(t => t.addToRelatedRecords(resource, relationship, related), persist, blocking);
-  }
-
-  removeRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity, persist = true,
-    blocking = false
-  ): Promise<void> {
-    return this.update(t => t.removeFromRelatedRecords(resource, relationship, related), persist, blocking);
-  }
-
-  replaceAllRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity[], persist = true,
-    blocking = false
-  ): Promise<void> {
-    return this.update(t => t.replaceRelatedRecords(resource, relationship, related), persist, blocking);
-  }
-
-  setRelated(resource: RecordIdentity, relationship: string, related: RecordIdentity, persist = true, blocking = false
-  ): Promise<void> {
-    return this.update(t => t.replaceRelatedRecord(resource, relationship, related), persist, blocking);
-  }
-
-  private update(transformOrOperations: TransformOrOperations, persist = true, blocking: boolean): Promise<any> {
+  private transform(transformOrOperations: TransformOrOperations, persist: boolean, blocking: boolean): Promise<any> {
     return this.store.update(transformOrOperations, this.getOptions(persist, blocking));
   }
 
@@ -247,16 +301,108 @@ export class JSONAPIService {
     return { update, blocking };
   }
 
-  setAccessToken(accessToken: string): void {
-    this.remote.defaultFetchSettings.headers['Authorization'] = 'Bearer ' + accessToken;
+  private getUpdatedProps(current: Dict<any>, updated: Dict<any>): string[] {
+    const updatedProps: string[] = [];
+    if (updated != null) {
+      for (const name in updated) {
+        if (updated.hasOwnProperty(name)) {
+          const value = updated[name];
+          if (current == null || !eq(current[name], value)) {
+            updatedProps.push(name);
+          }
+        }
+      }
+    }
+    return updatedProps;
   }
 
-  private getCurrentResource(query: Query): any {
+  private getCachedResults(query: Query): any {
     try {
-      return clone(this.store.cache.query(query));
+      return this.convertResults(this.store.cache.query(query));
     } catch (ex) {
       return null;
     }
+  }
+
+  private convertResults(results: Record | Record[]): Resource | Resource[] {
+    if (results instanceof Array) {
+      return results.map(r => this.createResource(r));
+    }
+    return this.createResource(results);
+  }
+
+  private createResource(record: Record): Resource {
+    const ResourceType = getResourceType(record.type);
+    const resource = new ResourceType();
+    resource.id = record.id;
+    if (record.attributes != null) {
+      extend(resource, record.attributes);
+    }
+    if (record.relationships != null) {
+      for (const relName in record.relationships) {
+        if (record.relationships.hasOwnProperty(relName)) {
+          const relData = record.relationships[relName].data;
+          if (relData instanceof Array) {
+            resource[relName] = relData.map(ri => this.createResourceRef(ri));
+          } else {
+            resource[relName] = this.createResourceRef(relData);
+          }
+        }
+      }
+    }
+    return resource;
+  }
+
+  private createResourceRef(identity: RecordIdentity): ResourceRef {
+    if (identity === null) {
+      return null;
+    }
+    const ResourceRefType = getResourceRefType(identity.type);
+    return new ResourceRefType(identity.id);
+  }
+
+  private createRecord(resource: Resource): Record {
+    const record: Record = {
+      id: resource.id,
+      type: resource.type
+    };
+    const model = this.schema.getModel(resource.type);
+    if (model.attributes != null) {
+      record.attributes = { };
+      for (const attrName in model.attributes) {
+        if (model.attributes.hasOwnProperty(attrName)) {
+          const value = resource[attrName];
+          if (value !== undefined) {
+            record.attributes[attrName] = clone(value);
+          }
+        }
+      }
+    }
+    if (model.relationships != null) {
+      record.relationships = { };
+      for (const relName in model.relationships) {
+        if (model.relationships.hasOwnProperty(relName)) {
+          const ref = resource[relName] as ResourceRef | ResourceRef[];
+          if (ref !== undefined) {
+            let recRel: RecordRelationship;
+            if (ref instanceof Array) {
+              recRel = { data: ref.map(r => this.createRecordIdentity(r)) };
+            } else {
+              recRel = { data: this.createRecordIdentity(ref) };
+            }
+            record.relationships[relName] = recRel;
+          }
+        }
+      }
+    }
+    return record;
+  }
+
+  private createRecordIdentity(ref: ResourceRef): RecordIdentity {
+    if (ref === null) {
+      return null;
+    }
+    return { type: ref.type, id: ref.id };
   }
 
   private shouldUpdate(transform: Transform, source: string): boolean {

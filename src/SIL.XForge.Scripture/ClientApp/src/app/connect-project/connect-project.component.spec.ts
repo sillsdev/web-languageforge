@@ -8,22 +8,20 @@ import {
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
-import { clone } from '@orbit/utils';
 import { cold, getTestScheduler } from 'jasmine-marbles';
 import { defer, of } from 'rxjs';
 import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
-import { hasOne } from '@xforge-common/resource-utils';
 import { ParatextService } from '../core/paratext.service';
 import { SFProjectUserService } from '../core/sfproject-user.service';
 import { SFProjectService } from '../core/sfproject.service';
 import { SFUserService } from '../core/sfuser.service';
 import { SyncJobService } from '../core/sync-job.service';
 import { ParatextProject } from '../shared/models/paratext-project';
-import { SFProject, SFPROJECT } from '../shared/models/sfproject';
+import { SFProject, SFProjectRef } from '../shared/models/sfproject';
 import { SFProjectUser } from '../shared/models/sfproject-user';
-import { SFUSER } from '../shared/models/sfuser';
-import { SYNC_JOB, SyncJob } from '../shared/models/sync-job';
+import { SFUserRef } from '../shared/models/sfuser';
+import { SyncJob } from '../shared/models/sync-job';
 import { ConnectProjectComponent } from './connect-project.component';
 
 class TestEnvironment {
@@ -46,21 +44,18 @@ class TestEnvironment {
     this.mockedSFUserService = mock(SFUserService);
 
     when(this.mockedSyncJobService.start(anyString())).thenResolve('job01');
-    const a: SyncJob = {
+    const a = new SyncJob({
       id: 'job01',
-      type: SYNC_JOB,
-      attributes: {
-        percentCompleted: 0,
-        state: 'PENDING'
-      }
-    };
-    const b: SyncJob = clone(a);
-    b.attributes.state = 'SYNCING';
-    const c: SyncJob = clone(b);
-    c.attributes.percentCompleted = 0.5;
-    const d: SyncJob = clone(c);
-    d.attributes.percentCompleted = 1.0;
-    d.attributes.state = 'IDLE';
+      percentCompleted: 0,
+      state: 'PENDING'
+    });
+    const b = new SyncJob(a);
+    b.state = 'SYNCING';
+    const c = new SyncJob(b);
+    c.percentCompleted = 0.5;
+    const d = new SyncJob(c);
+    d.percentCompleted = 1.0;
+    d.state = 'IDLE';
     when(this.mockedSyncJobService.listen('job01')).thenReturn(cold('-a-b-c-d|', { a, b, c, d }));
     when(this.mockedSFProjectUserService.onlineCreate(anything())).thenResolve('projectuser01');
     when(this.mockedSFProjectService.onlineCreate(anything())).thenResolve('project01');
@@ -217,12 +212,10 @@ describe('ConnectProjectComponent', () => {
 
     env.clickSubmitButton();
 
-    const projectUser: Partial<SFProjectUser> = {
-      relationships: {
-        user: hasOne(SFUSER, 'user01'),
-        project: hasOne(SFPROJECT, 'project01')
-      }
-    };
+    const projectUser = new SFProjectUser({
+      user: new SFUserRef('user01'),
+      project: new SFProjectRef('project01')
+    });
     verify(env.mockedSFProjectUserService.onlineCreate(deepEqual(projectUser))).once();
 
     verify(env.mockedRouter.navigate(deepEqual(['/home']))).once();
@@ -258,39 +251,35 @@ describe('ConnectProjectComponent', () => {
 
     expect(env.component.state).toEqual('connecting');
 
-    const project: Partial<SFProject> = {
-      attributes: {
-        projectName: 'Target',
-        paratextId: 'pt01',
-        inputSystem: {
-          tag: 'en',
-          languageName: 'English',
-          abbreviation: 'en',
-          isRightToLeft: false
-        },
-        checkingConfig: {
-          enabled: true
-        },
-        translateConfig: {
-          enabled: true,
-          sourceParatextId: 'pt02',
-          sourceInputSystem: {
-            languageName: 'Spanish',
-            tag: 'es',
-            isRightToLeft: false,
-            abbreviation: 'es'
-          }
+    const project = new SFProject({
+      projectName: 'Target',
+      paratextId: 'pt01',
+      inputSystem: {
+        tag: 'en',
+        languageName: 'English',
+        abbreviation: 'en',
+        isRightToLeft: false
+      },
+      checkingConfig: {
+        enabled: true
+      },
+      translateConfig: {
+        enabled: true,
+        sourceParatextId: 'pt02',
+        sourceInputSystem: {
+          languageName: 'Spanish',
+          tag: 'es',
+          isRightToLeft: false,
+          abbreviation: 'es'
         }
       }
-    };
+    });
     verify(env.mockedSFProjectService.onlineCreate(deepEqual(project))).once();
 
-    const projectUser: Partial<SFProjectUser> = {
-      relationships: {
-        user: hasOne(SFUSER, 'user01'),
-        project: hasOne(SFPROJECT, 'project01')
-      }
-    };
+    const projectUser = new SFProjectUser({
+      user: new SFUserRef('user01'),
+      project: new SFProjectRef('project01')
+    });
     verify(env.mockedSFProjectUserService.onlineCreate(deepEqual(projectUser))).once();
 
     verify(env.mockedRouter.navigate(deepEqual(['/home']))).once();

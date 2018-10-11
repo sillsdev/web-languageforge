@@ -3,8 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OAuthService } from 'angular-oauth2-oidc';
 
 import { JSONAPIService } from '../jsonapi.service';
-import { USER } from '../models/user';
-import { identity } from '../resource-utils';
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-change-password',
@@ -40,7 +39,7 @@ export class ChangePasswordComponent implements OnInit {
       this.changePasswordForm.value.newPassword && this.changePasswordForm.value.newPassword.length > 6
     ) {
       const userId = this.oauthService.getIdentityClaims()['sub'] as string;
-      await this.jsonApiService.updateAttributes(identity(USER, userId),
+      await this.jsonApiService.updateAttributes({ type: User.TYPE, id: userId },
         { password: this.changePasswordForm.value.newPassword }, false, true);
       this.callBackStatusMessage = 'Password Successfully Changed';
       this.callBackMessageDisplay = true;
