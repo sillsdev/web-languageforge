@@ -2,6 +2,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
 import { OAuthModule, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
 
 import { ChangePasswordComponent } from './change-password.component';
@@ -12,7 +14,7 @@ describe('ChangePasswordComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports : [ HttpClientModule, FormsModule, ReactiveFormsModule, OAuthModule],
+      imports : [FormsModule, HttpClientModule, MatSnackBarModule, OAuthModule, ReactiveFormsModule, RouterTestingModule  ],
       declarations: [ ChangePasswordComponent ],
       providers: [OAuthService, UrlHelperService],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -39,7 +41,6 @@ describe('ChangePasswordComponent', () => {
     let errors = {};
     const newPassword = component.changePasswordForm.controls['newPassword'];
     errors = newPassword.errors || {};
-    console.log(errors);
     expect(errors['required']).toBeTruthy();
   });
 
@@ -51,7 +52,6 @@ describe('ChangePasswordComponent', () => {
   });
 
   it('new password and confirm password are equal', () => {
-    // component.enabledButton = true;
     const newPassword = component.changePasswordForm.controls['newPassword'];
     newPassword.setValue('Testing');
     const confirmPassword = component.changePasswordForm.controls['confirmPassword'];

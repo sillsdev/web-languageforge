@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  MatButtonModule, MatCardModule, MatCheckboxModule, MatFormFieldModule, MatOptionModule, MatProgressBarModule,
-  MatProgressSpinnerModule, MatSelectModule
+  MatButtonModule, MatCardModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, MatOptionModule, MatProgressBarModule,
+  MatProgressSpinnerModule, MatSelectModule, MatSnackBarModule
 } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -36,23 +36,25 @@ import { NoticeComponent } from './notice/notice.component';
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    BrowserAnimationsModule,
+    CoreModule,
+    FormsModule,
+    FlexLayoutModule,
     HttpClientModule,
     MatButtonModule,
     MatCardModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatProgressSpinnerModule,
-    MatProgressBarModule,
     MatCheckboxModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    FlexLayoutModule,
-    XForgeCommonModule,
-    CoreModule,
-    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatOptionModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    NgbModule,
     PasswordStrengthMeterModule,
+    ReactiveFormsModule,
+    ReactiveFormsModule,
     RouterModule.forRoot([
       { path: 'home', component: HomeComponent },
       { path: 'counter', component: CounterComponent },
@@ -60,7 +62,7 @@ import { NoticeComponent } from './notice/notice.component';
       { path: 'change-password', component: ChangePasswordComponent },
       { path: 'connect-project', component: ConnectProjectComponent }
     ]),
-    NgbModule
+    XForgeCommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
