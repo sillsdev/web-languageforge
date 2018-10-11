@@ -1,17 +1,23 @@
-import { Resource, ResourceAttributes, ResourceRelationships } from './resource';
+import { Resource, ResourceRef } from './resource';
 
-export const USER = 'user';
+export abstract class User extends Resource {
+  static readonly TYPE = 'user';
 
-export interface UserAttributes extends ResourceAttributes {
   username?: string;
   name?: string;
   email?: string;
   password?: string;
   paratextUsername?: string;
+
+  constructor(init?: Partial<User>) {
+    super(User.TYPE, init);
+  }
 }
 
-export type UserRelationships = ResourceRelationships;
+export abstract class UserRef extends ResourceRef {
+  static readonly TYPE = User.TYPE;
 
-export interface User extends Resource {
-  attributes?: UserAttributes;
+  constructor(id: string) {
+    super(UserRef.TYPE, id);
+  }
 }

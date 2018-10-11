@@ -1,15 +1,15 @@
-import { RecordHasManyRelationship } from '@orbit/data';
+import { resource, resourceRef } from '@xforge-common/models/resource';
+import { User, UserRef } from '@xforge-common/models/user';
+import { SFProjectUserRef } from './sfproject-user';
 
-import { User, USER, UserAttributes, UserRelationships } from '@xforge-common/models/user';
+@resource
+export class SFUser extends User {
+  projects?: SFProjectUserRef[];
 
-export const SFUSER = USER;
-
-export type SFUserAttributes = UserAttributes;
-
-export interface SFUserRelationships extends UserRelationships {
-  projects?: RecordHasManyRelationship;
+  constructor(init?: Partial<SFUser>) {
+    super(init);
+  }
 }
 
-export interface SFUser extends User {
-  relationships?: SFUserRelationships;
-}
+@resourceRef
+export class SFUserRef extends UserRef { }

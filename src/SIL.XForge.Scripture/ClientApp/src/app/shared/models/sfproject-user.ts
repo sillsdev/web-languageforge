@@ -1,21 +1,19 @@
-import { RecordHasOneRelationship } from '@orbit/data';
+import { ProjectUser, ProjectUserRef } from '@xforge-common/models/project-user';
+import { resource, resourceRef } from '@xforge-common/models/resource';
+import { SFProjectRef } from './sfproject';
+import { SFUserRef } from './sfuser';
 
-import {
-  PROJECT_USER, ProjectUser, ProjectUserAttributes, ProjectUserRelationships
-} from '@xforge-common/models/project-user';
-
-export const SFPROJECT_USER = PROJECT_USER;
-
-export interface SFProjectUserAttributes extends ProjectUserAttributes {
+@resource
+export class SFProjectUser extends ProjectUser {
   translateConfig?: any;
+
+  user?: SFUserRef;
+  project?: SFProjectRef;
+
+  constructor(init?: Partial<SFProjectUser>) {
+    super(init);
+  }
 }
 
-export interface SFProjectUserRelationships extends ProjectUserRelationships {
-  user?: RecordHasOneRelationship;
-  project?: RecordHasOneRelationship;
-}
-
-export interface SFProjectUser extends ProjectUser {
-  attributes?: SFProjectUserAttributes;
-  relationships?: SFProjectUserRelationships;
-}
+@resourceRef
+export class SFProjectUserRef extends ProjectUserRef { }

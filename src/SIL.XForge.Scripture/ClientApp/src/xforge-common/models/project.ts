@@ -1,13 +1,19 @@
-import { Resource, ResourceAttributes, ResourceRelationships } from './resource';
+import { Resource, ResourceRef } from './resource';
 
-export const PROJECT = 'project';
+export abstract class Project extends Resource {
+  static readonly TYPE = 'project';
 
-export interface ProjectAttributes extends ResourceAttributes {
   projectName?: string;
+
+  constructor(init?: Partial<Project>) {
+    super(Project.TYPE, init);
+  }
 }
 
-export type ProjectRelationships = ResourceRelationships;
+export abstract class ProjectRef extends ResourceRef {
+  static readonly TYPE = Project.TYPE;
 
-export interface Project extends Resource {
-  attributes?: ProjectAttributes;
+  constructor(id: string) {
+    super(ProjectRef.TYPE, id);
+  }
 }

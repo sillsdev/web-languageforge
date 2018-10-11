@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
-
-import { RecordIdentity } from '@orbit/data';
-import { JSONAPIService } from '@xforge-common/jsonapi.service';
-import { identity } from '@xforge-common/resource-utils';
 import { Observable } from 'rxjs';
-import { SFUser, SFUSER } from '../shared/models/sfuser';
+
+import { JSONAPIService } from '@xforge-common/jsonapi.service';
+import { SFUser } from '../shared/models/sfuser';
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +16,7 @@ export class SFUserService {
     return claims['sub'];
   }
 
-  currentUserIdentity(): RecordIdentity {
-    return identity(SFUSER, this.currentUserId);
-  }
-
   onlineGetCurrentUser(): Observable<SFUser> {
-    return this.jsonApiService.query(q => q.findRecord(identity(SFUSER, this.currentUserId)));
+    return this.jsonApiService.onlineGet({ type: SFUser.TYPE, id: this.currentUserId });
   }
 }

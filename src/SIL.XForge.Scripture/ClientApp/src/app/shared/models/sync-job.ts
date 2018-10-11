@@ -1,20 +1,31 @@
-import { RecordHasOneRelationship } from '@orbit/data';
+import { resource, Resource, ResourceRef, resourceRef } from '@xforge-common/models/resource';
+import { SFProjectRef } from './sfproject';
+import { SFUserRef } from './sfuser';
 
-import { Resource, ResourceAttributes, ResourceRelationships } from '@xforge-common/models/resource';
+@resource
+export class SyncJob extends Resource {
+  static readonly TYPE = 'syncJob';
 
-export const SYNC_JOB = 'syncJob';
-
-export interface SyncJobAttributes extends ResourceAttributes {
   percentCompleted?: number;
   state?: 'PENDING' | 'SYNCING' | 'IDLE' | 'HOLD';
+
+  owner?: SFUserRef;
+  project?: SFProjectRef;
+
+  constructor(init?: Partial<SyncJob>) {
+    super(SyncJob.TYPE, init);
+  }
+
+  get isActive(): boolean {
+    return this.state === 'PENDING' || this.state === 'SYNCING';
+  }
 }
 
-export interface SyncJobRelationships extends ResourceRelationships {
-  owner?: RecordHasOneRelationship;
-  project?: RecordHasOneRelationship;
-}
+@resourceRef
+export class SyncJobRef extends ResourceRef {
+  static readonly TYPE = SyncJob.TYPE;
 
-export interface SyncJob extends Resource {
-  attributes?: SyncJobAttributes;
-  relationships?: SyncJobRelationships;
+  constructor(id: string) {
+    super(SyncJobRef.TYPE, id);
+  }
 }

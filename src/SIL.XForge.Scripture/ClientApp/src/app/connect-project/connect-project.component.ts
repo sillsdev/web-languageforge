@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { InputSystem } from '@xforge-common/models/input-system';
-import { hasOne } from '@xforge-common/resource-utils';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { ParatextService } from '../core/paratext.service';
 import { SFProjectUserService } from '../core/sfproject-user.service';
@@ -11,9 +10,9 @@ import { SFProjectService } from '../core/sfproject.service';
 import { SFUserService } from '../core/sfuser.service';
 import { SyncJobService } from '../core/sync-job.service';
 import { ParatextProject } from '../shared/models/paratext-project';
-import { SFPROJECT, SFProject } from '../shared/models/sfproject';
+import { SFProject, SFProjectRef } from '../shared/models/sfproject';
 import { SFProjectUser } from '../shared/models/sfproject-user';
-import { SFUSER } from '../shared/models/sfuser';
+import { SFUserRef } from '../shared/models/sfuser';
 import { SyncJob } from '../shared/models/sync-job';
 
 interface ConnectProjectFormValues {
@@ -54,7 +53,7 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
   }
 
   get connectProgress(): number {
-    return this.job != null ? this.job.attributes.percentCompleted * 100 : 0;
+    return this.job != null ? this.job.percentCompleted * 100 : 0;
   }
 
   get connectPending(): boolean {
@@ -107,22 +106,16 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
     const values = this.connectProjectForm.value as ConnectProjectFormValues;
     if (values.project.projectId == null) {
       this.state = 'connecting';
-      const newProject: Partial<SFProject> = {
-        attributes: {
-          projectName: values.project.name,
-          paratextId: values.project.paratextId,
-          inputSystem: this.getInputSystem(values.project),
-          checkingConfig: {
-            enabled: values.tasks.checking
-          },
-          translateConfig: {
-            enabled: values.tasks.translate
-          }
-        }
-      };
+      const newProject = new SFProject({
+        projectName: values.project.name,
+        paratextId: values.project.paratextId,
+        inputSystem: this.getInputSystem(values.project),
+        checkingConfig: { enabled: values.tasks.checking },
+        translateConfig: { enabled: values.tasks.translate }
+      });
       if (values.tasks.translate) {
-        newProject.attributes.translateConfig.sourceParatextId = values.tasks.sourceProject.paratextId;
-        newProject.attributes.translateConfig.sourceInputSystem = this.getInputSystem(values.tasks.sourceProject);
+        newProject.translateConfig.sourceParatextId = values.tasks.sourceProject.paratextId;
+        newProject.translateConfig.sourceInputSystem = this.getInputSystem(values.tasks.sourceProject);
       }
 
       const newProjectId = await this.projectService.onlineCreate(newProject);
@@ -130,7 +123,7 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
       const jobId = await this.syncJobService.start(newProjectId);
       this.subscribe(this.syncJobService.listen(jobId), job => {
         this.job = job;
-        if (!SyncJobService.isActive(job)) {
+        if (!job.isActive) {
           this.router.navigate(['/home']);
         }
       });
@@ -141,12 +134,10 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
   }
 
   private async addCurrentUserToProject(projectId: string): Promise<void> {
-    const newProjectUser: Partial<SFProjectUser> = {
-      relationships: {
-        user: hasOne(SFUSER, this.userService.currentUserId),
-        project: hasOne(SFPROJECT, projectId)
-      }
-    };
+    const newProjectUser = new SFProjectUser({
+      user: new SFUserRef(this.userService.currentUserId),
+      project: new SFProjectRef(projectId)
+    });
     await this.projectUserService.onlineCreate(newProjectUser);
   }
 

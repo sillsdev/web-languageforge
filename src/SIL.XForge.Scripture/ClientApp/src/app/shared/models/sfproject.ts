@@ -1,25 +1,25 @@
-import { RecordHasManyRelationship, RecordHasOneRelationship } from '@orbit/data';
-
 import { InputSystem } from '@xforge-common/models/input-system';
-import { Project, PROJECT, ProjectAttributes, ProjectRelationships } from '@xforge-common/models/project';
+import { Project, ProjectRef } from '@xforge-common/models/project';
+import { resource, resourceRef } from '@xforge-common/models/resource';
 import { TaskConfig } from '@xforge-common/models/task-config';
+import { SFProjectUserRef } from './sfproject-user';
+import { SyncJobRef } from './sync-job';
 import { TranslateConfig } from './translate-config';
 
-export const SFPROJECT = PROJECT;
-
-export interface SFProjectAttributes extends ProjectAttributes {
+@resource
+export class SFProject extends Project {
   paratextId?: string;
   inputSystem?: InputSystem;
   checkingConfig?: TaskConfig;
   translateConfig?: TranslateConfig;
+
+  users?: SFProjectUserRef[];
+  activeSyncJob?: SyncJobRef;
+
+  constructor(init?: Partial<SFProject>) {
+    super(init);
+  }
 }
 
-export interface SFProjectRelationships extends ProjectRelationships {
-  users?: RecordHasManyRelationship;
-  activeSyncJob?: RecordHasOneRelationship;
-}
-
-export interface SFProject extends Project {
-  attributes?: SFProjectAttributes;
-  relationships?: SFProjectRelationships;
-}
+@resourceRef
+export class SFProjectRef extends ProjectRef { }
