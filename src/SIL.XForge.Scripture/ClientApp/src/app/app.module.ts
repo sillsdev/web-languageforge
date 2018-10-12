@@ -52,6 +52,7 @@ import { NoticeComponent } from './notice/notice.component';
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatSelectModule,
+    MatOptionModule,
     MatSnackBarModule,
     NgbModule,
     PasswordStrengthMeterModule,
@@ -59,8 +60,12 @@ import { NoticeComponent } from './notice/notice.component';
     BrowserAnimationsModule,
     FlexLayoutModule,
     XForgeCommonModule,
+<<<<<<< a16633b74eb5295e2fd1719c1cb0aa7ffbba8fdc
     CoreModule,
     PasswordStrengthMeterModule,
+=======
+    CoreModule,    
+>>>>>>> Fix: SF-50 Use Material in Change Password component
     RouterModule.forRoot([
       { path: 'home', component: HomeComponent },
       { path: 'counter', component: CounterComponent },
