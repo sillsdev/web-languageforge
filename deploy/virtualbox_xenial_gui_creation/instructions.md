@@ -12,15 +12,18 @@ Don't halt the vagrant box too quickly after it finishes provisioning, so the ze
 
 After making the base box, you can do the following smoke test. Note that you should not publish the box that you did the smoke test in, since it won't be cleaned up from the original provision (such as deleting ssh host keys).
 
+```
 cd ~/src/web-languageforge
 ./refreshDeps.sh
 gulp test-php
 gulp webpack-sf
 cd ~/src/web-languageforge/src/SIL.XForge.Scripture
 dotnet run &
+```
 
 A longer test could be:
 
+```
 #!/bin/bash
 set -e -o pipefail
 cd ~/src/web-languageforge
@@ -34,3 +37,4 @@ gulp webpack-sf
 ./rune2e.sh sf
 cd ~/src/web-languageforge/src/SIL.XForge.Scripture
 dotnet run &
+```
