@@ -8,7 +8,7 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "chrisvire/xenial64"
   config.ssh.insert_key = false
-  config.vm.hostname = "vag-u1604-xf-creation"
+  config.vm.hostname = "vag-u1604-xf"
 
   config.vm.provider "virtualbox" do |v|
     v.name="vag-u1604-xf-creation"
