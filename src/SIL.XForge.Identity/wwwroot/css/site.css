@@ -80,3 +80,11 @@
 .grants .grant li:last-child:after {
   content: '';
 }
+.alert-error {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+.forgot-password-content {
+    margin-top:125px;
+}
