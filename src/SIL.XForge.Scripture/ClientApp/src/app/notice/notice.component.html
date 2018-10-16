@@ -1,26 +1,5 @@
-<div class="notices">
-    <div *ngFor='let notice of notices()' class="notice-alert">
-        <ngb-alert [type]="notice.type" (close)="closeNotice(notice.id)">
-            <div class="alert-text">{{notice.message}}
-                <div *ngIf="notice.details">
-                    <a (click)="notice.toggleDetails()">Click for details</a>
-                    <div *ngIf="notice.showDetails">
-                        <pre>{{notice.details}}</pre>
-                        <div *ngIf="notice.type == 'danger'">
-                            <a href="mailto:{{issueEmail}}?subject={{notice.message}}&body={{notice.details}}">Email a bug report to {{issueEmail}}</a>
-                            <br><i>Please copy error above and include screenshot.</i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </ngb-alert>
-    </div>
-    <div *ngIf="isLoading()" class="loading-alert">
-        <ngb-alert>
-            <div class="alert-text"><b>{{getLoadMessage()}}</b></div>
-            <div *ngIf="showProgressBar()">
-                <p><ngb-progressbar showValue="true" type="warning" [value]="getPercentComplete()"></ngb-progressbar></p>
-            </div>
-        </ngb-alert>
+<div *ngIf="isLoading()">
+    <div *ngIf="showProgressBar()">
+        <mat-progress-bar color="warn" [value]="getPercentComplete()"></mat-progress-bar>
     </div>
 </div>
