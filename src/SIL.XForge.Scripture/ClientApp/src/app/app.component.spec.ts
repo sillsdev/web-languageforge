@@ -1,8 +1,8 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { MatProgressBarModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { EMPTY } from 'rxjs';
 import { instance, mock, when } from 'ts-mockito';
@@ -35,7 +35,7 @@ describe('AppComponent', () => {
       imports: [
         HttpClientTestingModule,
         FormsModule,
-        NgbModule,
+        MatProgressBarModule,
         RouterTestingModule.withRoutes([
           { path: 'home', component: HomeComponent },
           { path: 'counter', component: CounterComponent },

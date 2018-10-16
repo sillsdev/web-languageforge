@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject} from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import { UtilityService } from '../app/core/utility.service';
@@ -7,11 +7,13 @@ import { UtilityService } from '../app/core/utility.service';
 export class Notice {
     cannotClose: boolean;
 
-    constructor(public type: string, public message: string, public id: string, public details: string, public showDetails: boolean) {}
-
-    toggleDetails() {
-        this.showDetails = !this.showDetails;
-    }
+    constructor(
+        public type: string,
+        public message: string,
+        public id: string,
+        public details: string,
+        public time: number // milliseconds until notice is automatically dismissed
+    ) { }
 }
 
 @Injectable({
@@ -20,7 +22,6 @@ export class Notice {
 export class NoticeService {
     static readonly ERROR: string = 'danger';
     static readonly WARN: string = 'warning';
-    static readonly INFO: string = 'info';
     static readonly SUCCESS: string = 'success';
 
     private notices: Notice[] = [];
@@ -29,24 +30,21 @@ export class NoticeService {
     private isProgressBarShown = false;
     private isLoadingNotice = false;
     private loadingMessage: string;
+    private newActveNoticeEmitter: Subject<Notice> = new Subject<Notice>();
+    private loadingStatusEmitter: Subject<boolean> = new Subject<boolean>();
 
-    push(type: string, message: string, details?: string, cannotClose?: boolean, time?: number): string {
+    push(type: string, message: string, details?: string, time?: number): string {
         const id = UtilityService.uuid();
         const obj = new Subject<string>();
 
         // Give a default auto-close time to success notifications of 4 seconds
         if (!time && type === NoticeService.SUCCESS) {
             time = 4 * 1000;
+        } else if (!time && type === NoticeService.WARN && !details) {
+            time = 6 * 1000;
         }
-        if (time) {
-            obj.pipe(debounceTime(time)).subscribe((noteId) => {
-                this.removeById(noteId);
-                this.timers[noteId] = null;
-            });
-            obj.next(id);
-            this.timers[id] = obj;
-        }
-        const notice = new Notice(type, message, id, details, false);
+
+        const notice = new Notice(type, message, id, details, time);
 
         if (details) {
           details = details.replace(/<p>/gm, '\n');
@@ -58,21 +56,31 @@ export class NoticeService {
           notice.details = details;
         }
 
-        if (cannotClose) {
-          notice.cannotClose = true;
-        }
-
         this.notices.push(notice);
+        if (this.notices.length === 1) {
+            this.newActveNoticeEmitter.next(notice);
+        }
         return id;
-      }
+    }
+
+    onNewNoticeActive(): Observable<Notice> {
+        return this.newActveNoticeEmitter.asObservable();
+    }
+
+    onLoadActivity(): Observable<boolean> {
+        return this.loadingStatusEmitter.asObservable();
+    }
 
     removeById(id: string): void {
         this.remove(this.notices.findIndex(note => note.id === id));
     }
 
     remove(index: number): void {
-        if (index !== undefined) {
-            this.notices.splice(index, 1);
+        if (index !== -1) {
+           this.notices.splice(index, 1);
+           if (this.notices.length > 0 && index === 0) {
+               this.newActveNoticeEmitter.next(this.notices[0]);
+           }
         }
     }
 
@@ -86,6 +94,9 @@ export class NoticeService {
 
     setLoading(message: string): void {
         this.loadingMessage = message;
+        if (!this.isLoadingNotice) {
+            this.loadingStatusEmitter.next(true);
+        }
         this.isLoadingNotice = true;
     }
 
@@ -108,6 +119,9 @@ export class NoticeService {
 
     cancelLoading(): void {
         this.loadingMessage = '';
+        if (this.isLoadingNotice) {
+            this.loadingStatusEmitter.next(false);
+        }
         this.isLoadingNotice = false;
     }
 
