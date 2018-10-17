@@ -182,6 +182,35 @@ export class JSONAPIService {
     return this.liveQuery(q => q.findRelatedRecords(identity, relationship), persist);
   }
 
+  create(resource: Resource, persist = true): Promise<string> {
+    return this._create(resource, persist, false);
+  }
+
+  replace(resource: Resource, persist = true): Promise<void> {
+    return this._replace(resource, persist, false);
+  }
+
+  update(resource: Resource, persist = true): Promise<void> {
+    return this._update(resource, persist, false);
+  }
+
+  updateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist = true): Promise<void> {
+    return this._updateAttributes(identity, attrs, persist, false);
+  }
+
+  delete(identity: RecordIdentity, persist = true): Promise<void> {
+    return this._delete(identity, persist, false);
+  }
+
+  replaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[], persist = true
+  ): Promise<void> {
+    return this._replaceAllRelated(identity, relationship, related, persist, false);
+  }
+
+  setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist = true): Promise<void> {
+    return this._setRelated(identity, relationship, related, persist, false);
+  }
+
   onlineGet(identity: RecordIdentity, persist = true): Observable<any> {
     return this.query(q => q.findRecord(identity), persist);
   }
@@ -198,66 +227,33 @@ export class JSONAPIService {
     return this.query(q => q.findRelatedRecords(identity, relationship), persist);
   }
 
-  async create(resource: Resource, persist = true, blocking = false): Promise<string> {
-    const record = this.createRecord(resource);
-    this.schema.initializeRecord(record);
-    resource.id = record.id;
-    await this.transform(t => t.addRecord(record), persist, blocking);
-    return record.id;
+  onlineCreate(resource: Resource, persist = true): Promise<string> {
+    return this._create(resource, persist, true);
   }
 
-  replace(resource: Resource, persist = true, blocking = false): Promise<void> {
-    const record = this.createRecord(resource);
-    return this.transform(t => t.replaceRecord(record), persist, blocking);
+  onlineReplace(resource: Resource, persist = true): Promise<void> {
+    return this._replace(resource, persist, true);
   }
 
-  update(resource: Resource, persist = true, blocking = false): Promise<void> {
-    const updatedRecord = this.createRecord(resource);
-    const record = this.store.cache.query(q => q.findRecord(resource)) as Record;
-    return this.transform(t => {
-      const ops: Operation[] = [];
-
-      const updatedAttrs = this.getUpdatedProps(record.attributes, updatedRecord.attributes);
-      for (const attrName of updatedAttrs) {
-        ops.push(t.replaceAttribute(record, attrName, updatedRecord.attributes[attrName]));
-      }
-
-      const updatedRels = this.getUpdatedProps(record.relationships, updatedRecord.relationships);
-      for (const relName of updatedRels) {
-        const relData = updatedRecord.relationships[relName].data;
-        if (relData instanceof Array) {
-          ops.push(t.replaceRelatedRecords(record, relName, relData));
-        } else {
-          ops.push(t.replaceRelatedRecord(record, relName, relData));
-        }
-      }
-      return ops;
-    }, persist, blocking);
+  onlineUpdate(resource: Resource, persist = true): Promise<void> {
+    return this._update(resource, persist, true);
   }
 
-  updateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist = true, blocking = false): Promise<void> {
-    return this.transform(t => {
-      const ops: Operation[] = [];
-      for (const [name, value] of Object.entries(attrs)) {
-        ops.push(t.replaceAttribute(identity, name, value));
-      }
-      return ops;
-    }, persist, blocking);
+  onlineUpdateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist = true): Promise<void> {
+    return this._updateAttributes(identity, attrs, persist, true);
   }
 
-  delete(identity: RecordIdentity, persist = true, blocking = false): Promise<void> {
-    return this.transform(t => t.removeRecord(identity), persist, blocking);
+  onlineDelete(identity: RecordIdentity, persist = true): Promise<void> {
+    return this._delete(identity, persist, true);
   }
 
-  replaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[], persist = true,
-    blocking = false
+  onlineReplaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[], persist = true
   ): Promise<void> {
-    return this.transform(t => t.replaceRelatedRecords(identity, relationship, related), persist, blocking);
+    return this._replaceAllRelated(identity, relationship, related, persist, true);
   }
 
-  setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist = true, blocking = false
-  ): Promise<void> {
-    return this.transform(t => t.replaceRelatedRecord(identity, relationship, related), persist, blocking);
+  onlineSetRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist = true): Promise<void> {
+    return this._setRelated(identity, relationship, related, persist, true);
   }
 
   private liveQuery(queryOrExpression: QueryOrExpression, persist: boolean): LiveQueryObservable<any> {
@@ -286,6 +282,70 @@ export class JSONAPIService {
   private query(queryOrExpression: QueryOrExpression, persist: boolean): Observable<any> {
     return from(this.store.query(queryOrExpression, this.getOptions(persist, true)))
       .pipe(map(r => this.convertResults(r)));
+  }
+
+  private async _create(resource: Resource, persist: boolean, blocking: boolean): Promise<string> {
+    const record = this.createRecord(resource);
+    this.schema.initializeRecord(record);
+    resource.id = record.id;
+    await this.transform(t => t.addRecord(record), persist, blocking);
+    return record.id;
+  }
+
+  private _replace(resource: Resource, persist: boolean, blocking: boolean): Promise<void> {
+    const record = this.createRecord(resource);
+    return this.transform(t => t.replaceRecord(record), persist, blocking);
+  }
+
+  private _update(resource: Resource, persist: boolean, blocking: boolean): Promise<void> {
+    const updatedRecord = this.createRecord(resource);
+    const record = this.store.cache.query(q => q.findRecord(resource)) as Record;
+    return this.transform(t => {
+      const ops: Operation[] = [];
+
+      const updatedAttrs = this.getUpdatedProps(record.attributes, updatedRecord.attributes);
+      for (const attrName of updatedAttrs) {
+        ops.push(t.replaceAttribute(record, attrName, updatedRecord.attributes[attrName]));
+      }
+
+      const updatedRels = this.getUpdatedProps(record.relationships, updatedRecord.relationships);
+      for (const relName of updatedRels) {
+        const relData = updatedRecord.relationships[relName].data;
+        if (relData instanceof Array) {
+          ops.push(t.replaceRelatedRecords(record, relName, relData));
+        } else {
+          ops.push(t.replaceRelatedRecord(record, relName, relData));
+        }
+      }
+      return ops;
+    }, persist, blocking);
+  }
+
+  private _updateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist: boolean, blocking: boolean
+  ): Promise<void> {
+    return this.transform(t => {
+      const ops: Operation[] = [];
+      for (const [name, value] of Object.entries(attrs)) {
+        ops.push(t.replaceAttribute(identity, name, value));
+      }
+      return ops;
+    }, persist, blocking);
+  }
+
+  private _delete(identity: RecordIdentity, persist: boolean, blocking: boolean): Promise<void> {
+    return this.transform(t => t.removeRecord(identity), persist, blocking);
+  }
+
+  private _replaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[],
+    persist: boolean, blocking: boolean
+  ): Promise<void> {
+    return this.transform(t => t.replaceRelatedRecords(identity, relationship, related), persist, blocking);
+  }
+
+  private _setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist: boolean,
+    blocking: boolean
+  ): Promise<void> {
+    return this.transform(t => t.replaceRelatedRecord(identity, relationship, related), persist, blocking);
   }
 
   private transform(transformOrOperations: TransformOrOperations, persist: boolean, blocking: boolean): Promise<any> {

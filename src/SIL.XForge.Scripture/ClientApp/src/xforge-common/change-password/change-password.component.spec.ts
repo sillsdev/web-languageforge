@@ -1,17 +1,14 @@
 import { HttpClientModule } from '@angular/common/http';
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { By } from '@angular/platform-browser';
 import { OAuthModule, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+
 import { ChangePasswordComponent } from './change-password.component';
 
 describe('ChangePasswordComponent', () => {
   let component: ChangePasswordComponent;
   let fixture: ComponentFixture<ChangePasswordComponent>;
-  let submitEl: DebugElement;
-  let newPasswordEl: DebugElement;
-  let confirmPasswordEl: DebugElement;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -28,10 +25,6 @@ describe('ChangePasswordComponent', () => {
     component = fixture.componentInstance;
 
     fixture.detectChanges();
-
-    submitEl = fixture.debugElement.query(By.css('btnChangePassword'));
-    newPasswordEl = fixture.debugElement.query(By.css('input[type=newPassword]'));
-    confirmPasswordEl = fixture.debugElement.query(By.css('input[type=confirmPassword]'));
   });
 
   it('should create', () => {

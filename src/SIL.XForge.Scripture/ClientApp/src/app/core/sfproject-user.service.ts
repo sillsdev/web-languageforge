@@ -1,15 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import { JSONAPIService } from '@xforge-common/jsonapi.service';
+import { ProjectUserService } from '@xforge-common/project-user.service';
 import { SFProjectUser } from '../shared/models/sfproject-user';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SFProjectUserService {
-  constructor(private readonly jsonApiService: JSONAPIService) { }
-
-  onlineCreate(resource: SFProjectUser): Promise<string> {
-    return this.jsonApiService.create(resource, true, true);
-  }
-}
+export class SFProjectUserService extends ProjectUserService<SFProjectUser> { }

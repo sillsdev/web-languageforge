@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OAuthService } from 'angular-oauth2-oidc';
 
-import { JSONAPIService } from '../jsonapi.service';
-import { User } from '../models/user';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-change-password',
@@ -19,8 +17,7 @@ export class ChangePasswordComponent implements OnInit {
 
   get formControls() { return this.changePasswordForm.controls; }
 
-  constructor(private readonly formBuilder: FormBuilder, private readonly oauthService: OAuthService,
-    private readonly jsonApiService: JSONAPIService) { }
+  constructor(private readonly formBuilder: FormBuilder, private readonly userService: UserService) { }
 
   ngOnInit() {
     this.changePasswordForm = this.formBuilder.group({
@@ -38,9 +35,7 @@ export class ChangePasswordComponent implements OnInit {
     if (this.changePasswordForm.value.newPassword === this.changePasswordForm.value.confirmPassword &&
       this.changePasswordForm.value.newPassword && this.changePasswordForm.value.newPassword.length > 6
     ) {
-      const userId = this.oauthService.getIdentityClaims()['sub'] as string;
-      await this.jsonApiService.updateAttributes({ type: User.TYPE, id: userId },
-        { password: this.changePasswordForm.value.newPassword }, false, true);
+      await this.userService.onlineChangePassword(this.changePasswordForm.value.newPassword);
       this.callBackStatusMessage = 'Password Successfully Changed';
       this.callBackMessageDisplay = true;
         this.errorNotMatchMessage = false;
