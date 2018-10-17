@@ -5,8 +5,9 @@ import Coordinator, {
 } from '@orbit/coordinator';
 import { Exception } from '@orbit/core';
 import {
-  buildQuery, ClientError, FindRecord, FindRecordsTerm, NetworkError, Operation, Query, QueryOrExpression, Record,
-  RecordIdentity, RecordRelationship, ReplaceRecordOperation, Schema, SchemaSettings, Transform, TransformOrOperations
+  AttributeFilterSpecifier, AttributeSortSpecifier, buildQuery, ClientError, FilterSpecifier, FindRecord, NetworkError,
+  OffsetLimitPageSpecifier, Operation, Query, QueryBuilder, QueryOrExpression, QueryTerm, Record, RecordIdentity,
+  RecordRelationship, ReplaceRecordOperation, Schema, SchemaSettings, SortSpecifier, Transform, TransformOrOperations
 } from '@orbit/data';
 import IndexedDBSource from '@orbit/indexeddb';
 import IndexedDBBucket from '@orbit/indexeddb-bucket';
@@ -20,6 +21,38 @@ import { XForgeJSONAPISource } from './jsonapi/xforge-jsonapi-source';
 import { LiveQueryObservable } from './live-query-observable';
 import { getResourceRefType, getResourceType, Resource, ResourceRef } from './models/resource';
 
+export interface Filter {
+  name: string;
+  value: any;
+}
+
+export interface Sort {
+  name: string;
+  order: 'ascending' | 'descending';
+}
+
+export interface GetAllParameters {
+  filter?: Filter[];
+  sort?: Sort[];
+  page?: {
+    offset?: number;
+    limit?: number;
+  };
+}
+
+/**
+ * The JSON-API service is responsible for performing CRUD operations on resource models. This service transparently
+ * manages the interaction between three data sources: a memory cache, an IndexedDB database, and a JSON-API server.
+ *
+ * The service provides implementations for two types of CRUD operations are supported: optimistic and pessimistic.
+ *
+ * Optimisitic operations are used for offline-only views. Optimistic queries return a live observable that will return
+ * the current results from the cache immediately, and then listen for any updated results that are returned from the
+ * JSON-API server or performed locally.
+ *
+ * Pessimistic operations are used for online-only views. Pessimistic queries will only return the single value that is
+ * returned from the JSON-API server. Pessimistic methods are prefixed with "online".
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -38,6 +71,11 @@ export class JSONAPIService {
 
   constructor(private readonly http: HttpClient) { }
 
+  /**
+   * Initializes the service. This should be called at application startup after the user has logged in.
+   *
+   * @param {string} accessToken The user's current access token.
+   */
   async init(accessToken: string): Promise<void> {
     const schemaDef = await this.http.get<SchemaSettings>('api/schema',
       { headers: { 'Content-Type': 'application/json' } }).toPromise();
@@ -162,97 +200,277 @@ export class JSONAPIService {
     await this.coordinator.activate();
   }
 
+  /**
+   * Updates the access token. This should be called when the access token is refreshed.
+   *
+   * @param {string} accessToken The user's current access token.
+   */
   setAccessToken(accessToken: string): void {
     this.remote.defaultFetchSettings.headers['Authorization'] = 'Bearer ' + accessToken;
   }
 
-  get(identity: RecordIdentity, persist = true): LiveQueryObservable<any> {
+  /**
+   * Gets the resource with the specified identity optimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {LiveQueryObservable<any>} The live query observable.
+   */
+  get(identity: RecordIdentity, persist: boolean = true): LiveQueryObservable<any> {
     return this.liveQuery(q => q.findRecord(identity), persist);
   }
 
-  getRelated(identity: RecordIdentity, relationship: string, persist = true): LiveQueryObservable<any> {
+  /**
+   * Gets the resource from a many-to-one relationship optimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {string} relationship The relationship name.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {LiveQueryObservable<any>} The live query observable.
+   */
+  getRelated(identity: RecordIdentity, relationship: string, persist: boolean = true): LiveQueryObservable<any> {
     return this.liveQuery(q => q.findRelatedRecord(identity, relationship), persist);
   }
 
-  getAll(type: string, expressionBuilder = (t: FindRecordsTerm) => t, persist = true): LiveQueryObservable<any[]> {
-    return this.liveQuery(q => expressionBuilder(q.findRecords(type)), persist);
+  /**
+   * Gets all resources of the specified type optimistically.
+   *
+   * @param {string} type The resource type.
+   * @param {GetAllParameters} parameters Optional. Filtering, sorting, and paging parameters.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
+   * @returns {LiveQueryObservable<any[]>} The live query observable.
+   */
+  getAll(type: string, parameters?: GetAllParameters, persist: boolean = true): LiveQueryObservable<any[]> {
+    return this.liveQuery(q => this.getAllQuery(q, type, parameters), persist);
   }
 
-  getAllRelated(identity: RecordIdentity, relationship: string, persist = true): LiveQueryObservable<any[]> {
+  /**
+   * Gets all resources from a one-to-many relationship optimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {string} relationship The relationship name.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
+   * @returns {LiveQueryObservable<any[]>} The live query observable.
+   */
+  getAllRelated(identity: RecordIdentity, relationship: string, persist: boolean = true): LiveQueryObservable<any[]> {
     return this.liveQuery(q => q.findRelatedRecords(identity, relationship), persist);
   }
 
-  create(resource: Resource, persist = true): Promise<string> {
+  /**
+   * Creates a new resource optimistically.
+   *
+   * @param {Resource} resource The new resource.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Promise<string>} Resolves when the resource is created locally. Returns the new resource's ID.
+   */
+  create(resource: Resource, persist: boolean = true): Promise<string> {
     return this._create(resource, persist, false);
   }
 
-  replace(resource: Resource, persist = true): Promise<void> {
+  /**
+   * Completely replaces an existing resource optimistically.
+   *
+   * @param {Resource} resource The new resource.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Promise<void>} Resolves when the resource is replaced locally.
+   */
+  replace(resource: Resource, persist: boolean = true): Promise<void> {
     return this._replace(resource, persist, false);
   }
 
-  update(resource: Resource, persist = true): Promise<void> {
+  /**
+   * Updates an existing resource optimistically. This method only updates the attributes and relationships that have
+   * changed.
+   *
+   * @param {Resource} resource The resource to update.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Promise<void>} Resolves when the resource is updated locally.
+   */
+  update(resource: Resource, persist: boolean = true): Promise<void> {
     return this._update(resource, persist, false);
   }
 
-  updateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist = true): Promise<void> {
+  /**
+   * Updates the attributes of an existing resource optimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {Dict<any>} attrs The attribute values to update.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Promise<void>} Resolves when the resource is updated locally.
+   */
+  updateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist: boolean = true): Promise<void> {
     return this._updateAttributes(identity, attrs, persist, false);
   }
 
-  delete(identity: RecordIdentity, persist = true): Promise<void> {
+  /**
+   * Deletes a resource optimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Promise<void>} Resolves when the resource is deleted locally.
+   */
+  delete(identity: RecordIdentity, persist: boolean = true): Promise<void> {
     return this._delete(identity, persist, false);
   }
 
-  replaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[], persist = true
+  /**
+   * Replaces all resources in a one-to-many relationship optimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {string} relationship The relationship name.
+   * @param {RecordIdentity[]} related The new related resource identities.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
+   * @returns {Promise<void>} Resolves when the resources are replaced locally.
+   */
+  replaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[], persist: boolean = true
   ): Promise<void> {
     return this._replaceAllRelated(identity, relationship, related, persist, false);
   }
 
-  setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist = true): Promise<void> {
+  /**
+   * Sets the resource in a many-to-one relationship optimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {string} relationship The relationship name.
+   * @param {RecordIdentity} related The new related resource identity.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Promise<void>} Resolves when the resource is set locally.
+   */
+  setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist: boolean = true
+  ): Promise<void> {
     return this._setRelated(identity, relationship, related, persist, false);
   }
 
-  onlineGet(identity: RecordIdentity, persist = true): Observable<any> {
+  /**
+   * Gets the resource with the specified identity pessimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Observable<any>} The query observable.
+   */
+  onlineGet(identity: RecordIdentity, persist: boolean = true): Observable<any> {
     return this.query(q => q.findRecord(identity), persist);
   }
 
-  onlineGetRelated(identity: RecordIdentity, relationship: string, persist = true): Observable<any> {
+  /**
+   * Gets the resource from a many-to-one relationship pessimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {string} relationship The relationship name.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Observable<any>} The query observable.
+   */
+  onlineGetRelated(identity: RecordIdentity, relationship: string, persist: boolean = true): Observable<any> {
     return this.query(q => q.findRelatedRecord(identity, relationship), persist);
   }
 
-  onlineGetAll(type: string, expressionBuilder = (t: FindRecordsTerm) => t, persist = true): Observable<any[]> {
-    return this.query(q => expressionBuilder(q.findRecords(type)), persist);
+  /**
+   * Gets all resources of the specified type pessimistically.
+   *
+   * @param {string} type The resource type.
+   * @param {GetAllParameters} parameters Optional. Filtering, sorting, and paging parameters.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
+   * @returns {Observable<any[]>} The query observable.
+   */
+  onlineGetAll(type: string, parameters?: GetAllParameters, persist: boolean = true): Observable<any[]> {
+    return this.query(q => this.getAllQuery(q, type, parameters), persist);
   }
 
-  onlineGetAllRelated(identity: RecordIdentity, relationship: string, persist = true): Observable<any[]> {
+  /**
+   * Gets all resources from a one-to-many relationship pessimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {string} relationship The relationship name.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
+   * @returns {Observable<any[]>} The live query observable.
+   */
+  onlineGetAllRelated(identity: RecordIdentity, relationship: string, persist: boolean = true): Observable<any[]> {
     return this.query(q => q.findRelatedRecords(identity, relationship), persist);
   }
 
-  onlineCreate(resource: Resource, persist = true): Promise<string> {
+  /**
+   * Creates a new resource pessimistically.
+   *
+   * @param {Resource} resource The new resource.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Promise<string>} Resolves when the resource is created remotely. Returns the new resource's ID.
+   */
+  onlineCreate(resource: Resource, persist: boolean = true): Promise<string> {
     return this._create(resource, persist, true);
   }
 
-  onlineReplace(resource: Resource, persist = true): Promise<void> {
+  /**
+   * Completely replaces an existing resource pessimistically.
+   *
+   * @param {Resource} resource The new resource.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Promise<void>} Resolves when the resource is replaced remotely.
+   */
+  onlineReplace(resource: Resource, persist: boolean = true): Promise<void> {
     return this._replace(resource, persist, true);
   }
 
-  onlineUpdate(resource: Resource, persist = true): Promise<void> {
+  /**
+   * Updates an existing resource pessimistically. This method only updates the attributes and relationships that have
+   * changed.
+   *
+   * @param {Resource} resource The resource to update.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Promise<void>} Resolves when the resource is updated remotely.
+   */
+  onlineUpdate(resource: Resource, persist: boolean = true): Promise<void> {
     return this._update(resource, persist, true);
   }
 
-  onlineUpdateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist = true): Promise<void> {
+  /**
+   * Updates the attributes of an existing resource pessimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {Dict<any>} attrs The attribute values to update.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Promise<void>} Resolves when the resource is updated remotely.
+   */
+  onlineUpdateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist: boolean = true): Promise<void> {
     return this._updateAttributes(identity, attrs, persist, true);
   }
 
-  onlineDelete(identity: RecordIdentity, persist = true): Promise<void> {
+  /**
+   * Deletes a resource pessimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Promise<void>} Resolves when the resource is deleted remotely.
+   */
+  onlineDelete(identity: RecordIdentity, persist: boolean = true): Promise<void> {
     return this._delete(identity, persist, true);
   }
 
-  onlineReplaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[], persist = true
+  /**
+   * Replaces all resources in a one-to-many relationship pessimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {string} relationship The relationship name.
+   * @param {RecordIdentity[]} related The new related resource identities.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
+   * @returns {Promise<void>} Resolves when the resources are replaced remotely.
+   */
+  onlineReplaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[],
+    persist: boolean = true
   ): Promise<void> {
     return this._replaceAllRelated(identity, relationship, related, persist, true);
   }
 
-  onlineSetRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist = true): Promise<void> {
+  /**
+   * Sets the resource in a many-to-one relationship pessimistically.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {string} relationship The relationship name.
+   * @param {RecordIdentity} related The new related resource identity.
+   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * @returns {Promise<void>} Resolves when the resource is set remotely.
+   */
+  onlineSetRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist: boolean = true
+  ): Promise<void> {
     return this._setRelated(identity, relationship, related, persist, true);
   }
 
@@ -282,6 +500,46 @@ export class JSONAPIService {
   private query(queryOrExpression: QueryOrExpression, persist: boolean): Observable<any> {
     return from(this.store.query(queryOrExpression, this.getOptions(persist, true)))
       .pipe(map(r => this.convertResults(r)));
+  }
+
+  private getAllQuery(q: QueryBuilder, type: string, parameters: GetAllParameters): QueryTerm {
+    let findRecords = q.findRecords(type);
+    if (parameters != null) {
+      if (parameters.filter != null) {
+        findRecords = findRecords.filter(...parameters.filter.map(f => this.createFilterSpecifier(f)));
+      }
+      if (parameters.sort != null) {
+        findRecords = findRecords.sort(...parameters.sort.map(s => this.createSortSpecifier(s)));
+      }
+      if (parameters.page != null) {
+        const pageSpecifier: OffsetLimitPageSpecifier = {
+          kind: 'offsetLimit',
+          offset: parameters.page.offset,
+          limit: parameters.page.limit
+        };
+        findRecords = findRecords.page(pageSpecifier);
+      }
+    }
+    return findRecords;
+  }
+
+  private createFilterSpecifier(filter: Filter): FilterSpecifier {
+    const attrSpecifier: AttributeFilterSpecifier = {
+      kind: 'attribute',
+      attribute: filter.name,
+      value: filter.value,
+      op: 'equal'
+    };
+    return attrSpecifier;
+  }
+
+  private createSortSpecifier(sort: Sort): SortSpecifier {
+    const sortSpecifier: AttributeSortSpecifier = {
+      kind: 'attribute',
+      attribute: sort.name,
+      order: sort.order
+    };
+    return sortSpecifier;
   }
 
   private async _create(resource: Resource, persist: boolean, blocking: boolean): Promise<string> {
