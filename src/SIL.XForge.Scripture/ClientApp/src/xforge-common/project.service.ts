@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { FindRecordsTerm } from '@orbit/data';
 
-import { JSONAPIService } from '@xforge-common/jsonapi.service';
+import { GetAllParameters, JSONAPIService } from '@xforge-common/jsonapi.service';
 import { LiveQueryObservable } from '@xforge-common/live-query-observable';
 import { ResourceService } from '@xforge-common/resource.service';
 import { Project } from './models/project';
@@ -14,8 +13,8 @@ export class ProjectService<T extends Project = Project> extends ResourceService
     super(Project.TYPE, jsonApiService);
   }
 
-  getAll(expressionBuilder = (t: FindRecordsTerm) => t): LiveQueryObservable<T[]> {
-    return this.jsonApiService.getAll(this.type, expressionBuilder);
+  getAll(parameters?: GetAllParameters): LiveQueryObservable<T[]> {
+    return this.jsonApiService.getAll(this.type, parameters);
   }
 
   update(project: T): Promise<void> {
