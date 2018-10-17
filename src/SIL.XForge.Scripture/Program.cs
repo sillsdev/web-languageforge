@@ -1,4 +1,5 @@
 using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +27,18 @@ namespace SIL.XForge.Scripture
             return builder
                 .UseLibuv()
                 .UseUrls("http://localhost:5000")
-                .ConfigureAppConfiguration((context, config) => config.AddJsonFile("appsettings.user.json", true))
+                .ConfigureAppConfiguration((context, config) =>
+                    {
+                        IHostingEnvironment env = context.HostingEnvironment;
+                        if (env.IsDevelopment() || env.IsEnvironment("Testing"))
+                            config.AddJsonFile("appsettings.user.json", true);
+                        if (env.IsEnvironment("Testing"))
+                        {
+                            var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
+                            if (appAssembly != null)
+                                config.AddUserSecrets(appAssembly, true);
+                        }
+                    })
                 .UseConfiguration(configuration)
                 .UseStartup<Startup>();
         }

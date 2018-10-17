@@ -45,7 +45,7 @@ namespace SIL.XForge.Scripture
 
             services.AddSFConfiguration(Configuration);
 
-            services.AddRealtimeServer(Environment.IsDevelopment());
+            services.AddRealtimeServer(Environment.IsDevelopment() || Environment.IsEnvironment("Testing"));
 
             services.AddExceptionLogging();
 
@@ -56,7 +56,7 @@ namespace SIL.XForge.Scripture
             services.AddAuthentication()
                 .AddJwtBearer(options =>
                     {
-                        if (Environment.IsDevelopment())
+                        if (Environment.IsDevelopment() || Environment.IsEnvironment("Testing"))
                         {
                             options.BackchannelHttpHandler = new HttpClientHandler
                             {
@@ -72,7 +72,7 @@ namespace SIL.XForge.Scripture
                         options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                         options.SaveTokens = true;
 
-                        if (Environment.IsDevelopment())
+                        if (Environment.IsDevelopment() || Environment.IsEnvironment("Testing"))
                             options.UseDevServer();
                         options.ClientId = paratextOptions.ClientId;
                         options.ClientSecret = paratextOptions.ClientSecret;
@@ -116,7 +116,7 @@ namespace SIL.XForge.Scripture
                     ForwardedHeaders = ForwardedHeaders.All
                 });
 
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsEnvironment("Testing"))
                 app.UseDeveloperExceptionPage();
 
             app.UseBugsnag();
