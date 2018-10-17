@@ -1,27 +1,24 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { instance, mock } from 'ts-mockito';
 
-import { SFProjectService } from './sfproject.service';
+import { UserService } from './user.service';
 
-describe('SFProjectService', () => {
-  const oauthServiceStub = {
-    getAccessToken() { return 'token'; }
-  };
-
+describe('UserService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule
       ],
       providers: [
-        SFProjectService,
-        { provide: OAuthService, useValue: oauthServiceStub }
+        UserService,
+        { provide: OAuthService, useFactory: () => instance(mock(OAuthService)) }
       ]
     });
   });
 
-  it('should be created', inject([SFProjectService], (service: SFProjectService) => {
+  it('should be created', inject([UserService], (service: UserService) => {
     expect(service).toBeTruthy();
   }));
 });

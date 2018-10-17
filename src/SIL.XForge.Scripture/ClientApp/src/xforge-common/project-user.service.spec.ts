@@ -1,19 +1,19 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 
-import { SFProjectUserService } from './sfproject-user.service';
+import { ProjectUserService } from './project-user.service';
 
-describe('SFProjectUserService', () => {
+describe('ProjectUserService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule
       ],
-      providers: [SFProjectUserService]
+      providers: [ProjectUserService]
     });
   });
 
-  it('should be created', inject([SFProjectUserService], (service: SFProjectUserService) => {
+  it('should be created', inject([ProjectUserService], (service: ProjectUserService) => {
     expect(service).toBeTruthy();
   }));
 });
