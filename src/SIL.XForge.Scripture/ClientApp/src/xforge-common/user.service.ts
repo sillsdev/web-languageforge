@@ -19,7 +19,7 @@ export class UserService extends ResourceService {
   }
 
   onlineChangePassword(newPassword: string): Promise<void> {
-    return this.jsonApiService.onlineUpdateAttributes(this.identity(this.currentUserId), { password: newPassword },
-      false);
+    const attrs: Partial<User> = { password: newPassword };
+    return this.jsonApiService.onlineUpdateAttributes(this.identity(this.currentUserId), attrs, false);
   }
 }

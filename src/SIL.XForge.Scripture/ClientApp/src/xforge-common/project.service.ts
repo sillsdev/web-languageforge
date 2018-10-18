@@ -13,7 +13,7 @@ export class ProjectService<T extends Project = Project> extends ResourceService
     super(Project.TYPE, jsonApiService);
   }
 
-  getAll(parameters?: GetAllParameters): LiveQueryObservable<T[]> {
+  getAll(parameters?: GetAllParameters<T>): LiveQueryObservable<T[]> {
     return this.jsonApiService.getAll(this.type, parameters);
   }
 
