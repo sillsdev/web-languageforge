@@ -32,6 +32,8 @@ namespace SIL.XForge.Scripture
                         IHostingEnvironment env = context.HostingEnvironment;
                         if (env.IsDevelopment() || env.IsEnvironment("Testing"))
                             config.AddJsonFile("appsettings.user.json", true);
+                        else
+                            config.AddJsonFile("secrets.json", true, true);
                         if (env.IsEnvironment("Testing"))
                         {
                             var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));

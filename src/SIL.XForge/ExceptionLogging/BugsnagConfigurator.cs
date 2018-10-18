@@ -20,7 +20,7 @@ namespace SIL.XForge.ExceptionLogging
         private readonly IHostingEnvironment _environment;
 
         public BugsnagConfigurator(IConfiguration bugsnagConfig,
-            IHostingEnvironment                   environment)
+            IHostingEnvironment environment)
         {
             _bugsnagConfig = bugsnagConfig;
             _environment = environment;
@@ -33,7 +33,7 @@ namespace SIL.XForge.ExceptionLogging
                 topLevelDirectory = topLevelDirectory + Path.DirectorySeparatorChar;
 
             configuration.ApiKey = _bugsnagConfig.GetValue<string>("ApiKey") ?? "missing-bugsnag-api-key";
-            configuration.ProjectNamespaces = new[] { "SIL", "SIL.XForge.WebApi.Server", "ShareDB" };
+            configuration.ProjectNamespaces = new[] { "SIL", "ShareDB" };
             configuration.ProjectRoots = new[] { topLevelDirectory };
             configuration.AutoCaptureSessions = true;
             configuration.AutoNotify = true;
