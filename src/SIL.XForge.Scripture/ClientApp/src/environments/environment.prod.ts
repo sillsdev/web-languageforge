@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  issueEmail: 'issues@beta.qa.scriptureforge.org'
 };

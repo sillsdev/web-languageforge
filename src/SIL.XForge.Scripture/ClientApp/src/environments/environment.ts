@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  issueEmail: 'issues@scriptureforge.org'
+  issueEmail: 'issues@beta.scriptureforge.local'
 };
