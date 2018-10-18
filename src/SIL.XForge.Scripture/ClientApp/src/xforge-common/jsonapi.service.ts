@@ -21,19 +21,19 @@ import { XForgeJSONAPISource } from './jsonapi/xforge-jsonapi-source';
 import { LiveQueryObservable } from './live-query-observable';
 import { getResourceRefType, getResourceType, Resource, ResourceRef } from './models/resource';
 
-export interface Filter {
-  name: string;
+export interface Filter<T = any> {
+  name: Extract<keyof T, string>;
   value: any;
 }
 
-export interface Sort {
-  name: string;
+export interface Sort<T = any> {
+  name: Extract<keyof T, string>;
   order: 'ascending' | 'descending';
 }
 
-export interface GetAllParameters {
-  filter?: Filter[];
-  sort?: Sort[];
+export interface GetAllParameters<T = any> {
+  filter?: Filter<T>[];
+  sort?: Sort<T>[];
   page?: {
     offset?: number;
     limit?: number;
@@ -221,8 +221,11 @@ export class JSONAPIService {
   }
 
   /**
-   * Gets the resource from a many-to-one relationship optimistically.
+   * Gets the resource from a many-to-one relationship optimistically. It is recommended that the "relationship"
+   * parameter is checked for type safety using the {@link nameof} function.
    *
+   * @example <caption>Type safe usage</caption>
+   * jsonApiService.getRelated({ type: SFProjectUser.TYPE, id }, nameof<SFProjectUser>('user'));
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
@@ -233,7 +236,8 @@ export class JSONAPIService {
   }
 
   /**
-   * Gets all resources of the specified type optimistically.
+   * Gets all resources of the specified type optimistically. It is recommeneded that callers use the generic version
+   * of {@link GetAllParameters} to ensure type safety.
    *
    * @param {string} type The resource type.
    * @param {GetAllParameters} parameters Optional. Filtering, sorting, and paging parameters.
@@ -245,8 +249,11 @@ export class JSONAPIService {
   }
 
   /**
-   * Gets all resources from a one-to-many relationship optimistically.
+   * Gets all resources from a one-to-many relationship optimistically. It is recommended that the "relationship"
+   * parameter is checked for type safety using the {@link nameof} function.
    *
+   * @example <caption>Type safe usage</caption>
+   * jsonApiService.getAllRelated({ type: SFUser.TYPE, id }, nameof<SFUser>('projects'));
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
@@ -291,8 +298,12 @@ export class JSONAPIService {
   }
 
   /**
-   * Updates the attributes of an existing resource optimistically.
+   * Updates the attributes of an existing resource optimistically. It is recommeneded that attributes are specified
+   * using a partial type of the resource class, e.g. "Partial<User>".
    *
+   * @example <caption>Type safe usage</caption>
+   * const attrs: Partial<User> = { username: 'new' };
+   * jsonApiServer.updateAttributes({ type: User.TYPE, id }, attrs);
    * @param {RecordIdentity} identity The resource identity.
    * @param {Dict<any>} attrs The attribute values to update.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
@@ -314,8 +325,11 @@ export class JSONAPIService {
   }
 
   /**
-   * Replaces all resources in a one-to-many relationship optimistically.
+   * Replaces all resources in a one-to-many relationship optimistically. It is recommended that the "relationship"
+   * parameter is checked for type safety using the {@link nameof} function.
    *
+   * @example <caption>Type safe usage</caption>
+   * jsonApiService.replaceAllRelated({ type: SFProject.TYPE, id }, nameof<SFProject>('users'), []);
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {RecordIdentity[]} related The new related resource identities.
@@ -328,15 +342,18 @@ export class JSONAPIService {
   }
 
   /**
-   * Sets the resource in a many-to-one relationship optimistically.
+   * Sets the resource in a many-to-one relationship optimistically. It is recommended that the "relationship"
+   * parameter is checked for type safety using the {@link nameof} function.
    *
+   * @example <caption>Type safe usage</caption>
+   * jsonApiService.setRelated({ type: SFProjectUser.TYPE, id }, nameof<SFProjectUser>('user'), null);
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {RecordIdentity} related The new related resource identity.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
    * @returns {Promise<void>} Resolves when the resource is set locally.
    */
-  setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist: boolean = true
+  setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity | null, persist: boolean = true
   ): Promise<void> {
     return this._setRelated(identity, relationship, related, persist, false);
   }
@@ -353,8 +370,11 @@ export class JSONAPIService {
   }
 
   /**
-   * Gets the resource from a many-to-one relationship pessimistically.
+   * Gets the resource from a many-to-one relationship pessimistically. It is recommended that the "relationship"
+   * parameter is checked for type safety using the {@link nameof} function.
    *
+   * @example <caption>Type safe usage</caption>
+   * jsonApiService.onlineGetRelated({ type: SFProjectUser.TYPE, id }, nameof<SFProjectUser>('user'));
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
@@ -365,7 +385,8 @@ export class JSONAPIService {
   }
 
   /**
-   * Gets all resources of the specified type pessimistically.
+   * Gets all resources of the specified type pessimistically. It is recommeneded that callers use the generic version
+   * of {@link GetAllParameters} to ensure type safety.
    *
    * @param {string} type The resource type.
    * @param {GetAllParameters} parameters Optional. Filtering, sorting, and paging parameters.
@@ -377,8 +398,11 @@ export class JSONAPIService {
   }
 
   /**
-   * Gets all resources from a one-to-many relationship pessimistically.
+   * Gets all resources from a one-to-many relationship pessimistically. It is recommended that the "relationship"
+   * parameter is checked for type safety using the {@link nameof} function.
    *
+   * @example <caption>Type safe usage</caption>
+   * jsonApiService.onlineGetAllRelated({ type: SFUser.TYPE, id }, nameof<SFUser>('projects'));
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
@@ -423,8 +447,12 @@ export class JSONAPIService {
   }
 
   /**
-   * Updates the attributes of an existing resource pessimistically.
+   * Updates the attributes of an existing resource pessimistically. It is recommeneded that attributes are specified
+   * using a partial type of the resource class, e.g. "Partial<User>".
    *
+   * @example <caption>Type safe usage</caption>
+   * const attrs: Partial<User> = { username: 'new' };
+   * jsonApiServer.onlineUpdateAttributes({ type: User.TYPE, id }, attrs);
    * @param {RecordIdentity} identity The resource identity.
    * @param {Dict<any>} attrs The attribute values to update.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
@@ -446,8 +474,11 @@ export class JSONAPIService {
   }
 
   /**
-   * Replaces all resources in a one-to-many relationship pessimistically.
+   * Replaces all resources in a one-to-many relationship pessimistically. It is recommended that the "relationship"
+   * parameter is checked for type safety using the {@link nameof} function.
    *
+   * @example <caption>Type safe usage</caption>
+   * jsonApiService.onlineReplaceAllRelated({ type: SFProject.TYPE, id }, nameof<SFProject>('users'), []);
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {RecordIdentity[]} related The new related resource identities.
@@ -461,15 +492,19 @@ export class JSONAPIService {
   }
 
   /**
-   * Sets the resource in a many-to-one relationship pessimistically.
+   * Sets the resource in a many-to-one relationship pessimistically. It is recommended that the "relationship"
+   * parameter is checked for type safety using the {@link nameof} function.
    *
+   * @example <caption>Type safe usage</caption>
+   * jsonApiService.onlineSetRelated({ type: SFProjectUser.TYPE, id }, nameof<SFProjectUser>('user'), null);
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {RecordIdentity} related The new related resource identity.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
    * @returns {Promise<void>} Resolves when the resource is set remotely.
    */
-  onlineSetRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist: boolean = true
+  onlineSetRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity | null,
+    persist: boolean = true
   ): Promise<void> {
     return this._setRelated(identity, relationship, related, persist, true);
   }

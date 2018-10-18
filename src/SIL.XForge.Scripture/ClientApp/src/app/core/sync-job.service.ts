@@ -4,6 +4,7 @@ import { concat, multicast, switchMap, take, takeWhile } from 'rxjs/operators';
 
 import { JSONAPIService } from '@xforge-common/jsonapi.service';
 import { ResourceService } from '@xforge-common/resource.service';
+import { nameof } from '@xforge-common/utils';
 import { SFProject, SFProjectRef } from '../shared/models/sfproject';
 import { SFUserRef } from '../shared/models/sfuser';
 import { SyncJob } from '../shared/models/sync-job';
@@ -22,7 +23,8 @@ export class SyncJobService extends ResourceService {
   }
 
   onlineGetActive(projectId: string): Observable<SyncJob> {
-    return this.jsonApiService.onlineGetRelated({ type: SFProject.TYPE, id: projectId }, 'activeSyncJob', false);
+    return this.jsonApiService.onlineGetRelated({ type: SFProject.TYPE, id: projectId },
+      nameof<SFProject>('activeSyncJob'), false);
   }
 
   listen(jobId: string): Observable<SyncJob> {
