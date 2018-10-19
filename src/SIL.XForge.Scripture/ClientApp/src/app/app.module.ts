@@ -1,10 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatButtonModule, MatCardModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, MatOptionModule, MatProgressBarModule,
-  MatProgressSpinnerModule, MatSelectModule, MatSnackBarModule
+  MatProgressSpinnerModule, MatSelectModule, MatSliderModule, MatSlideToggleModule, MatSnackBarModule
 } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -22,6 +22,7 @@ import { HomeComponent } from './home/home.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { DetailSnackBarComponent } from './notice/detail-snack-bar.component';
 import { NoticeComponent } from './notice/notice.component';
+import { SystemAdministrationComponent } from './system-administration/system-administration.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { NoticeComponent } from './notice/notice.component';
     NoticeComponent,
     DetailSnackBarComponent,
     ChangePasswordComponent,
-    ConnectProjectComponent
+    ConnectProjectComponent,
+    SystemAdministrationComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -54,6 +56,7 @@ import { NoticeComponent } from './notice/notice.component';
     MatSelectModule,
     MatOptionModule,
     MatSnackBarModule,
+    MatSlideToggleModule,
     NgbModule,
     PasswordStrengthMeterModule,
     ReactiveFormsModule,
@@ -71,12 +74,13 @@ import { NoticeComponent } from './notice/notice.component';
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'change-password', component: ChangePasswordComponent },
-      { path: 'connect-project', component: ConnectProjectComponent }
+      { path: 'connect-project', component: ConnectProjectComponent },
+      { path: 'system-administration', component: SystemAdministrationComponent },
     ]),
-    XForgeCommonModule
+    XForgeCommonModule,
   ],
   providers: [],
-  entryComponents: [ DetailSnackBarComponent ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

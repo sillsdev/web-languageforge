@@ -50,6 +50,7 @@ namespace SIL.XForge.Identity.Controllers.Account
         private readonly IEventService _events;
         private readonly IOptions<SiteOptions> _options;
         private readonly IEmailService _emailService;
+
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
@@ -223,7 +224,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 else
                 {
                     LoginViewModel vm = await BuildLoginViewModelAsync("");
-                    vm.ShowMessage = "The password reset request has expired. Please request another reset.";
+                    vm.ResetPasswordMessage = "The password reset request has expired. Please request another reset.";
                     return Redirect("Login");
                 }
             }
@@ -373,7 +374,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                     ReturnUrl = returnUrl,
                     Username = context?.LoginHint,
                     ExternalProviders = new ExternalProvider[] { new ExternalProvider { AuthenticationScheme = context.IdP } },
-                    ShowMessage = ""
+                    ResetPasswordMessage = ""
                 };
             }
 
