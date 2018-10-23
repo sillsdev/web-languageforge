@@ -8,8 +8,8 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-; applies only to JS, TS, and YML files
-[*.{js,ts,yml}]
+; applies only to specified files
+[*.{css, js,ts,yml}]
 tab_width = 2
 indent_size = 2
 continuation_indent_size = 2
@@ -31,7 +31,7 @@ indent_size = 4
 continuation_indent_size = 4
 
 ; applies to the rest of these files
-[*.{css, html, xml}]
+[*.{html, xml}]
 tab_width = 4
 indent_size = 4
 continuation_indent_size = 8

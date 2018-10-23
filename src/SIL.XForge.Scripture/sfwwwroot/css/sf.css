@@ -1,0 +1,192 @@
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.prim-around {
+  justify-content: space-around;
+}
+
+.prim-between {
+  justify-content: space-between;
+}
+
+.prim-center {
+  justify-content: center;
+}
+
+.prim-start {
+  justify-content: flex-start;
+}
+
+.sec-baseline {
+  align-items: baseline;
+}
+
+.sec-center {
+  align-content: center;
+  align-items: center;
+}
+
+#content > div {
+  width: 100%;
+}
+
+/* styles for the header */
+#header {
+  flex-wrap: wrap-reverse;
+  position: fixed;
+  width: 100%;
+  background-color: #009dff;
+}
+
+#header div {
+  margin: 7px;
+}
+
+#title {
+  font-size: 2.5rem;
+}
+
+#icon {
+  width: 32px;
+}
+
+#header button {
+  margin: 5px;
+}
+
+/* responsive styles for the header section when it is smaller */
+@media screen and (max-width: 535px) {
+  #header div {
+    margin: 4px;
+  }
+
+  #title {
+    font-size: 1.3rem;
+  }
+
+  #icon {
+    width: 24px;
+  }
+
+  #header button {
+    margin: 2px;
+    padding: 0px 6px;
+    font-size: .9rem;
+  }
+}
+
+@media screen and (max-width: 333px) {
+  #header div {
+    margin: 2px;
+  }
+
+  #title {
+    font-size: .9rem;
+  }
+
+  #icon {
+    width: 16px;
+  }
+
+  #header button {
+    margin: 0px;
+    padding: 0px;
+    font-size: .7rem;
+  }
+}
+
+@media screen and (max-width: 270px) {
+  #icon {
+    width: 8px;
+  }
+}
+
+@media screen and (max-width: 260px) {
+  #icon {
+    display: none;
+  }
+}
+
+/* static styles for the welcome section */
+#welcome {
+  background-size: cover;
+  color: white;
+  text-shadow: .2em .2em .2em black;
+  text-align: center;
+}
+
+#welcome h1 {
+  padding: 0 .5em;
+  font-size: 2.25em;
+}
+
+#welcome p {
+  padding: 0 1em;
+  font-size: 1em;
+  line-height: 1.5em;
+  max-width: 41em; /* Prevent the text from becoming one big ugly line on large screens */
+}
+
+/* responsive styles for the welcome section. Default is for small screens */
+#welcome {
+  padding-top: 75px;
+  padding-bottom: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  min-height: 300px;
+  background-image: url("/sf/images/EarthLightsSmall.jpg");
+  font-size: 14px;
+}
+
+@media screen and (min-width: 700px) {
+  #welcome {
+    padding-top: 40px;
+    padding-bottom: 50px;
+    padding-left: 25px;
+    padding-right: 25px;
+    height: 450px;
+    background-image: url("/sf/images/EarthLightsMedium.jpg");
+    font-size: 16px;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  #welcome {
+    padding-top: 60px;
+    padding-bottom: 75px;
+    padding-left: 60px;
+    padding-right: 60px;
+    font-size: 18px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  #welcome {
+    height: 800px;
+    background-image: url("/sf/images/EarthLightsLarge.jpg");
+    font-size: 24px;
+  }
+}
+
+/* static styles for the checking and drafting divs */
+#checking {
+  background-color: lemonchiffon;
+}
+
+.text-column {
+  max-width: 240px;
+  padding: 8px;
+}
+
+#drafting {
+  background-color: aquamarine;
+  padding: 3px;
+}
