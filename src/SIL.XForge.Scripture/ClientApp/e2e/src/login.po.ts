@@ -1,4 +1,5 @@
 import { browser, by, element, ExpectedConditions, promise } from 'protractor';
+
 import { AppPage } from './app.po';
 
 export class LoginPage {
@@ -6,7 +7,7 @@ export class LoginPage {
 
   private readonly constants = require('../testConstants.json');
 
-  usernameInput = element(by.id('Username'));
+  usernameInput = element(by.id('EmailOrUsername'));
   passwordInput = element(by.id('Password'));
   loginButton = element(by.id('login-button'));
 
@@ -29,13 +30,7 @@ export class LoginPage {
     await this.passwordInput.sendKeys(password);
     await this.loginButton.click();
 
-    // wait for redirect before enabling angular wait.
-    browser.wait(() => {
-      browser.waitForAngularEnabled(false);
-      return browser.getCurrentUrl().then(() => {
-        browser.waitForAngularEnabled(true);
-      });
-    }, this.constants.conditionTimeout);
+    browser.waitForAngularEnabled(true);
     await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.homepageHeader), this.constants.conditionTimeout);
   }
 
@@ -43,11 +38,11 @@ export class LoginPage {
     return this.login(this.constants.adminUsername, this.constants.adminPassword);
   }
 
-  loginAsManager(): promise.Promise<void> {
+  loginAsManager(): promise.Promise<void>  {
     return this.login(this.constants.managerUsername, this.constants.managerPassword);
   }
 
-  loginAsUser(): promise.Promise<void> {
+  loginAsUser(): promise.Promise<void>  {
     return this.login(this.constants.memberUsername, this.constants.memberPassword);
   }
 

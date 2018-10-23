@@ -8,6 +8,7 @@ describe('App', () => {
   it('should display welcome message containing the users name', async () => {
     await loginPage.loginAsAdmin();
     expect(await AppPage.getMainHeading()).toContain(constants.adminName);
+    await AppPage.homepage.logoutButton.click();
   });
 
 });
