@@ -60,7 +60,7 @@
         - geoipupdate
         - libapache2-mod-php
         - mongodb-org
-        - npm
+        - nodejs
         - p7zip-full
         - php7.0-cli
         - php7.0-curl
@@ -74,6 +74,7 @@
         - unzip
         - chromium-browser
         - default-jre-headless
+      tags: [ 'packages' ]
 
     - name: check for node binary
       stat: path=/usr/local/bin/node
@@ -100,12 +101,6 @@
       shell: npm install -g gulp-cli
       args:
         creates: /usr/local/bin/gulp
-
-    - name: install JSCS
-      shell: npm install -g jscs
-      args:
-        creates: /usr/local/bin/jscs
-      when: inventory_hostname == "localhost"
 
     - name: php log folder exists
       file: path={{php_log_folder}} state=directory owner=www-data group=www-data mode=0775 recurse=yes
@@ -241,7 +236,7 @@
         line: 'extension=mongodb.so'
         state: present
         create: yes
-        mode: 0644
+        mode: 'u=rw,g=r,o=r'
     - name: install PECL mongo extension | ensure conf.d exists
       file: path=/etc/php/7.0/cli/conf.d state=directory mode=0755
     - name: install PECL mongo extension | add mods-available in cli/conf.d
@@ -295,6 +290,20 @@
     - name: 'Fetch GeoLite2 database'
       shell: /usr/bin/geoipupdate
 
+    - name: add localhost to dnsmasq
+      lineinfile:
+        dest: /etc/NetworkManager/dnsmasq.d/localhost-domain
+        line: "{{item}}"
+        state: present
+        create: yes
+        mode: 'u=rw,g=r,o=r'
+      with_items:
+        - "address=/localhost/127.0.0.1"
+        - "address=/localhost/::1"
+      when: inventory_hostname == "localhost"
+      notify: restart network
+      tags: [ 'network' ]
+
     - name: add host aliases
       lineinfile:
         dest: /etc/hosts
@@ -306,8 +315,6 @@
         - "default.local"
         - "languageforge.local"
         - "scriptureforge.local"
-        - "jamaicanpsalms.scriptureforge.local"
-        - "demo.scriptureforge.local"
         - "es_401"
       when: inventory_hostname == "localhost"
 
@@ -325,3 +332,6 @@
 
     - name: restart postfix
       service: name=postfix state=restarted
+
+    - name: restart network
+      service: name=network-manager state=restarted
