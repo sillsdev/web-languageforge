@@ -1,13 +1,14 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { instance, mock } from 'ts-mockito';
 
+import { JSONAPIService } from '@xforge-common/jsonapi.service';
+import { SFUserService } from './sfuser.service';
 import { SyncJobService } from './sync-job.service';
 
 describe('SyncJobService', () => {
-  const oauthServiceStub = {
-    getAccessToken() { return 'token'; }
-  };
+  const mockedJSONAPIService = mock(JSONAPIService);
+  const mockedSFUserService = mock(SFUserService);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -16,7 +17,8 @@ describe('SyncJobService', () => {
       ],
       providers: [
         SyncJobService,
-        { provide: OAuthService, useValue: oauthServiceStub }
+        { provide: JSONAPIService, useFactory: () => instance(mockedJSONAPIService) },
+        { provide: SFUserService, useFactory: () => instance(mockedSFUserService) }
       ]
     });
   });

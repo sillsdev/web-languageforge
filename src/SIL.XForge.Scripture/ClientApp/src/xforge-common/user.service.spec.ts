@@ -3,9 +3,13 @@ import { inject, TestBed } from '@angular/core/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { instance, mock } from 'ts-mockito';
 
+import { JSONAPIService } from './jsonapi.service';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
+  const mockedJSONAPIService = mock(JSONAPIService);
+  const mockedOAuthService = mock(OAuthService);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -13,7 +17,8 @@ describe('UserService', () => {
       ],
       providers: [
         UserService,
-        { provide: OAuthService, useFactory: () => instance(mock(OAuthService)) }
+        { provide: JSONAPIService, useFactory: () => instance(mockedJSONAPIService) },
+        { provide: OAuthService, useFactory: () => instance(mockedOAuthService) }
       ]
     });
   });

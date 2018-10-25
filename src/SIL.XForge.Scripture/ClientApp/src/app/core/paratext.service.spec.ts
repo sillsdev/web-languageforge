@@ -4,9 +4,11 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { instance, mock } from 'ts-mockito';
 
 import { ParatextService } from './paratext.service';
+import { SFUserService } from './sfuser.service';
 
 describe('ParatextService', () => {
-  const oauthServiceStub = mock(OAuthService);
+  const mockedOAuthService = mock(OAuthService);
+  const mockedSFUserService = mock(SFUserService);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -15,7 +17,8 @@ describe('ParatextService', () => {
       ],
       providers: [
         ParatextService,
-        { provide: OAuthService, useFactory: () => instance(oauthServiceStub) }
+        { provide: OAuthService, useFactory: () => instance(mockedOAuthService) },
+        { provide: SFUserService, useFactory: () => instance(mockedSFUserService) }
       ]
     });
   });
