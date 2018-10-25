@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -56,11 +57,21 @@ namespace SIL.XForge.Scripture.Services
 
         public async Task<IReadOnlyList<ParatextProject>> GetProjectsAsync(UserEntity user)
         {
+            var accessToken = new JwtSecurityToken(user.ParatextTokens.AccessToken);
+            Claim usernameClaim = accessToken.Claims.FirstOrDefault(c => c.Type == "username");
+            string username = usernameClaim?.Value;
             string response = await CallApiAsync(_dataAccessClient, user, HttpMethod.Get, "projects");
-            var repos = XElement.Parse(response);
-            var repoIds = new HashSet<string>(repos.Elements("repo").Select(r => (string) r.Element("projid")));
+            var reposElem = XElement.Parse(response);
+            var repos = new Dictionary<string, string>();
+            foreach (XElement repoElem in reposElem.Elements("repo"))
+            {
+                var projId = (string) repoElem.Element("projid");
+                XElement userElem = repoElem.Element("users")?.Elements("user")
+                    ?.FirstOrDefault(ue => (string) ue.Element("name") == username);
+                repos[projId] = (string) userElem?.Element("role");
+            }
             Dictionary<string, SFProjectEntity> existingProjects = (await _projects.Query()
-                .Where(p => repoIds.Contains(p.ParatextId))
+                .Where(p => repos.Keys.Contains(p.ParatextId))
                 .ToListAsync())
                 .ToDictionary(p => p.ParatextId);
             response = await CallApiAsync(_registryClient, user, HttpMethod.Get, "projects");
@@ -73,10 +84,11 @@ namespace SIL.XForge.Scripture.Services
                 if (identificationObj == null)
                     continue;
                 string paratextId = (string) identificationObj["text"];
-                if (!repoIds.Contains(paratextId))
+                if (!repos.TryGetValue(paratextId, out string role))
                     continue;
 
-                string role = await GetProjectRoleAsync(user, paratextId);
+                // determine if the project is connectable, i.e. either the project exists and the user hasn't been
+                // added to the project, or the project doesn't exist and the user is the administrator
                 bool isConnectable;
                 string projectId = null;
                 if (existingProjects.TryGetValue(paratextId, out SFProjectEntity project))
