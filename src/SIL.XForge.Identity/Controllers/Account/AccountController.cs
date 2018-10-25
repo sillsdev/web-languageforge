@@ -530,10 +530,10 @@ namespace SIL.XForge.Identity.Controllers.Account
                 var result = await _users.InsertAsync(user);
                 if (result)
                 {
-                    string emailId = user.Email;
+                    string emailId = user.EmailPending;
                     string subject = "Scripture Forge - Signup Verification";
                     string body = "<div class=''><h1>Dear " + user.Username.ToUpper() + ",</h1> <br />" +
-                        "<p>Please click this link to activate your account <a href='https://beta.scriptureforge.local/account/VerifyEmail?user=" + user.Email + "&key=" + user.ValidationKey + "' target='_blank'>Confirm Verification</a>.</p> " +
+                        "<p>Please click this link to activate your account <a href='https://beta.scriptureforge.local/account/VerifyEmail?user=" + user.EmailPending + "&key=" + user.ValidationKey + "' target='_blank'>Confirm Verification</a>.</p> " +
                         "<br /> <p>Thank you.</p><p>Regards,<br>The Scripture Forge Team</p></div>";
 
                     _emailService.SendEmail(emailId, subject, body);
