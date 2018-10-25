@@ -4,19 +4,23 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-import { OAuthModule, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
+import { instance, mock } from 'ts-mockito';
 
+import { UserService } from '@xforge-common/user.service';
 import { ChangePasswordComponent } from './change-password.component';
 
 describe('ChangePasswordComponent', () => {
+  const mockedUserService = mock(UserService);
   let component: ChangePasswordComponent;
   let fixture: ComponentFixture<ChangePasswordComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports : [FormsModule, HttpClientModule, MatSnackBarModule, OAuthModule, ReactiveFormsModule, RouterTestingModule  ],
+      imports : [FormsModule, HttpClientModule, MatSnackBarModule, ReactiveFormsModule, RouterTestingModule],
       declarations: [ ChangePasswordComponent ],
-      providers: [OAuthService, UrlHelperService],
+      providers: [
+        { provide: UserService, useFactory: () => instance(mockedUserService) }
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();

@@ -1,131 +1,127 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject} from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-
-import { UtilityService } from '../app/core/utility.service';
+import Orbit from '@orbit/core';
+import { Observable, Subject } from 'rxjs';
 
 export class Notice {
-    cannotClose: boolean;
+  cannotClose: boolean;
 
-    constructor(
-        public type: string,
-        public message: string,
-        public id: string,
-        public details: string,
-        public time: number // milliseconds until notice is automatically dismissed
-    ) { }
+  constructor(
+    public type: string,
+    public message: string,
+    public id: string,
+    public details: string,
+    public time: number // milliseconds until notice is automatically dismissed
+  ) { }
 }
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class NoticeService {
-    static readonly ERROR: string = 'danger';
-    static readonly WARN: string = 'warning';
-    static readonly SUCCESS: string = 'success';
+  static readonly ERROR: string = 'danger';
+  static readonly WARN: string = 'warning';
+  static readonly SUCCESS: string = 'success';
 
-    private notices: Notice[] = [];
-    private timers: {[id: string]: Subject<string>} = {};
-    private percentComplete = 0;
-    private isProgressBarShown = false;
-    private isLoadingNotice = false;
-    private loadingMessage: string;
-    private newActveNoticeEmitter: Subject<Notice> = new Subject<Notice>();
-    private loadingStatusEmitter: Subject<boolean> = new Subject<boolean>();
+  private notices: Notice[] = [];
+  private percentComplete = 0;
+  private isProgressBarShown = false;
+  private isLoadingNotice = false;
+  private loadingMessage: string;
+  private newActveNoticeEmitter: Subject<Notice> = new Subject<Notice>();
+  private loadingStatusEmitter: Subject<boolean> = new Subject<boolean>();
 
-    push(type: string, message: string, details?: string, time?: number): string {
-        const id = UtilityService.uuid();
-        const obj = new Subject<string>();
+  push(type: string, message: string, details?: string, time?: number): string {
+    const id = Orbit.uuid();
 
-        // Give a default auto-close time to success notifications of 4 seconds
-        if (!time && type === NoticeService.SUCCESS) {
-            time = 4 * 1000;
-        } else if (!time && type === NoticeService.WARN && !details) {
-            time = 6 * 1000;
-        }
-
-        const notice = new Notice(type, message, id, details, time);
-
-        if (details) {
-          details = details.replace(/<p>/gm, '\n');
-          details = details.replace(/<pre>/gm, '\n');
-          details = details.replace(/<\/p>/gm, '\n');
-          details = details.replace(/<\/pre>/gm, '\n');
-          details = details.replace(/<[^>]+>/gm, ''); // remove HTML
-          details = details.replace(/\\\//g, '/');
-          notice.details = details;
-        }
-
-        this.notices.push(notice);
-        if (this.notices.length === 1) {
-            this.newActveNoticeEmitter.next(notice);
-        }
-        return id;
+    // Give a default auto-close time to success notifications of 4 seconds
+    if (!time && type === NoticeService.SUCCESS) {
+      time = 4 * 1000;
+    } else if (!time && type === NoticeService.WARN && !details) {
+      time = 6 * 1000;
     }
 
-    onNewNoticeActive(): Observable<Notice> {
-        return this.newActveNoticeEmitter.asObservable();
+    const notice = new Notice(type, message, id, details, time);
+
+    if (details) {
+      details = details.replace(/<p>/gm, '\n');
+      details = details.replace(/<pre>/gm, '\n');
+      details = details.replace(/<\/p>/gm, '\n');
+      details = details.replace(/<\/pre>/gm, '\n');
+      details = details.replace(/<[^>]+>/gm, ''); // remove HTML
+      details = details.replace(/\\\//g, '/');
+      notice.details = details;
     }
 
-    onLoadActivity(): Observable<boolean> {
-        return this.loadingStatusEmitter.asObservable();
+    this.notices.push(notice);
+    if (this.notices.length === 1) {
+      this.newActveNoticeEmitter.next(notice);
     }
+    return id;
+  }
 
-    removeById(id: string): void {
-        this.remove(this.notices.findIndex(note => note.id === id));
-    }
+  onNewNoticeActive(): Observable<Notice> {
+    return this.newActveNoticeEmitter.asObservable();
+  }
 
-    remove(index: number): void {
-        if (index !== -1) {
-           this.notices.splice(index, 1);
-           if (this.notices.length > 0 && index === 0) {
-               this.newActveNoticeEmitter.next(this.notices[0]);
-           }
-        }
-    }
+  onLoadActivity(): Observable<boolean> {
+    return this.loadingStatusEmitter.asObservable();
+  }
 
-    get(): Notice[] {
-        return this.notices;
-    }
+  removeById(id: string): void {
+    this.remove(this.notices.findIndex(note => note.id === id));
+  }
 
-    getLoadMessage(): string {
-        return this.loadingMessage;
+  remove(index: number): void {
+    if (index !== -1) {
+      this.notices.splice(index, 1);
+      if (this.notices.length > 0 && index === 0) {
+        this.newActveNoticeEmitter.next(this.notices[0]);
+      }
     }
+  }
 
-    setLoading(message: string): void {
-        this.loadingMessage = message;
-        if (!this.isLoadingNotice) {
-            this.loadingStatusEmitter.next(true);
-        }
-        this.isLoadingNotice = true;
-    }
+  get(): Notice[] {
+    return this.notices;
+  }
 
-    getPercentComplete(): number {
-        return this.percentComplete;
-    }
+  getLoadMessage(): string {
+    return this.loadingMessage;
+  }
 
-    setPercentComplete(percent: number): void {
-        this.percentComplete = percent;
-        this.isProgressBarShown = true;
+  setLoading(message: string): void {
+    this.loadingMessage = message;
+    if (!this.isLoadingNotice) {
+      this.loadingStatusEmitter.next(true);
     }
+    this.isLoadingNotice = true;
+  }
 
-    cancelProgressBar(): void {
-        this.isProgressBarShown = false;
-    }
+  getPercentComplete(): number {
+    return this.percentComplete;
+  }
 
-    showProgressBar(): boolean {
-        return this.isProgressBarShown && this.percentComplete > 4;
-    }
+  setPercentComplete(percent: number): void {
+    this.percentComplete = percent;
+    this.isProgressBarShown = true;
+  }
 
-    cancelLoading(): void {
-        this.loadingMessage = '';
-        if (this.isLoadingNotice) {
-            this.loadingStatusEmitter.next(false);
-        }
-        this.isLoadingNotice = false;
-    }
+  cancelProgressBar(): void {
+    this.isProgressBarShown = false;
+  }
 
-    isLoading(): boolean {
-        return this.isLoadingNotice;
+  showProgressBar(): boolean {
+    return this.isProgressBarShown && this.percentComplete > 4;
+  }
+
+  cancelLoading(): void {
+    this.loadingMessage = '';
+    if (this.isLoadingNotice) {
+      this.loadingStatusEmitter.next(false);
     }
+    this.isLoadingNotice = false;
+  }
+
+  isLoading(): boolean {
+    return this.isLoadingNotice;
+  }
 }

@@ -1,8 +1,0 @@
-<span>{{data.message}}
-    <pre>{{data.details}}</pre>
-    <div *ngIf="data.isError">
-        <a href="mailto:issues@scriptureforge.org?subject={{data.message}}&body={{data.details}}">Email a bug report to issues@scriptureforge.org</a>
-        <br><i>Please copy error above and include screenshot.</i>
-    </div>
-</span>
-<div class="mat-simple-snackbar-action"><button mat-button (click)="dismiss()">dismiss</button></div>
