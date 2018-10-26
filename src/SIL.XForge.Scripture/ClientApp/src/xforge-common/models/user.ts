@@ -1,12 +1,15 @@
 import { Resource, ResourceRef } from './resource';
 
-export abstract class User extends Resource {
+export class User extends Resource {
   static readonly TYPE = 'user';
 
   username?: string;
   name?: string;
   email?: string;
   password?: string;
+  active?: boolean;
+  role?: string;
+
   paratextUsername?: string;
 
   constructor(init?: Partial<User>) {
@@ -14,7 +17,7 @@ export abstract class User extends Resource {
   }
 }
 
-export abstract class UserRef extends ResourceRef {
+export class UserRef extends ResourceRef {
   static readonly TYPE = User.TYPE;
 
   constructor(id: string) {

@@ -24,15 +24,35 @@ export class UserService extends ResourceService {
     return this.jsonApiService.onlineUpdateAttributes(this.identity(this.currentUserId), attrs, false);
   }
 
-  onlineAddUser(accountObject): Observable<any> {
-    return this.jsonApiService.onlineAddUser(accountObject);
+  onlineAddUser(accountObject): Promise<any> {
+    return this.jsonApiService.onlineCreate(accountObject, false);
+  }
+
+  onlineUpdateUser(updateUser): Promise<any> {
+    let attrs: Partial<User> = {};
+    if (updateUser.Password) {
+      attrs = {
+        active: updateUser.Active, email: updateUser.Email, name: updateUser.Name,
+        role: updateUser.Role, username: updateUser.Username, password: updateUser.Password
+      };
+    } else {
+      attrs = {
+        active: updateUser.Active, email: updateUser.Email, name: updateUser.Name,
+        role: updateUser.Role, username: updateUser.Username
+      };
+    }
+    return this.jsonApiService.onlineUpdateAttributes(this.identity(updateUser.Id), attrs, false);
   }
 
   onlineGetUser(userId): Observable<any> {
-    return this.jsonApiService.onlineGetUser(userId);
+    return this.jsonApiService.onlineGet(this.identity(userId));
   }
 
-  onlineUpdateUser(updateUser): Observable<any> {
-    return this.jsonApiService.onlineUpdateUser(updateUser);
+  onlineGetAllUser(): Observable<any> {
+    return this.jsonApiService.onlineGetAll('user');
+  }
+
+  onlineDeleteUser(userId: string): Promise<any> {
+    return this.jsonApiService.delete(this.identity(userId));
   }
 }

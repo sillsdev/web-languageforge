@@ -224,7 +224,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 else
                 {
                     LoginViewModel vm = await BuildLoginViewModelAsync("");
-                    vm.ResetPasswordMessage = "The password reset request has expired. Please request another reset.";
+                    vm.ShowMessage = "The password reset request has expired. Please request another reset.";
                     return Redirect("Login");
                 }
             }
@@ -374,7 +374,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                     ReturnUrl = returnUrl,
                     Username = context?.LoginHint,
                     ExternalProviders = new ExternalProvider[] { new ExternalProvider { AuthenticationScheme = context.IdP } },
-                    ResetPasswordMessage = ""
+                    ShowMessage = ""
                 };
             }
 
@@ -563,3 +563,5 @@ namespace SIL.XForge.Identity.Controllers.Account
         }
     }
 }
+
+

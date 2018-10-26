@@ -821,24 +821,4 @@ export class JSONAPIService {
       return ops;
     }, { update: [JSONAPIService.BACKUP] });
   }
-
-  public onlineAddUser(accountObject): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
-    return this.http.post('https://beta.scriptureforge.local/Account/AddAccountUser',
-      JSON.stringify(accountObject), { headers: headers })
-      .pipe(map((response: Response) => response));
-  }
-
-  public onlineGetUser(userId): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
-    return this.http.get('https://beta.scriptureforge.local/Account/GetAccountUserById?userId=' + userId)
-      .pipe(map((response: Response) => response));
-  }
-
-  public onlineUpdateUser(updateUser): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
-    return this.http.post('https://beta.scriptureforge.local/Account/UpdateAccountUserById',
-      JSON.stringify(updateUser), { headers: headers })
-      .pipe(map((response: Response) => response));
-  }
 }

@@ -1,8 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
-import { Router } from '@angular/router';
+import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 
+import { User } from '@xforge-common/models/user';
+import { NoticeService } from '@xforge-common/notice.service';
 import { UserService } from '@xforge-common/user.service';
 
 @Component({
@@ -11,12 +13,21 @@ import { UserService } from '@xforge-common/user.service';
   styleUrls: ['./system-administration.component.scss']
 })
 
-export class SystemAdministrationComponent {
-  @ViewChild('accountUserRef') accountUserRef;
+export class SystemAdministrationComponent implements OnInit {
+  accountUserForm: FormGroup;
+  firstNameAutofilled: boolean;
+  // userProject: any[] = [];
+  dataSource = new MatTableDataSource<any>();
+
+  userCount: number;
+  // sfProjectUser: SFProjectUser;
+  displayedColumns: string[] = ['no', 'name', 'username', 'active'];
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  // @ViewChild('accountUserRef') accountUserRef;
   get formControls() { return this.accountUserForm.controls; }
 
-  accountUserForm: FormGroup;
   isSubmitted: boolean = false;
+  userId: string = '';
 
   btnUserAdd: boolean = true;
   btnUserUpdate: boolean = false;
@@ -25,20 +36,52 @@ export class SystemAdministrationComponent {
   showPasswordPanel: boolean = true;
   showActivateDeActivatePanel: boolean = false;
 
+  addEditPanel: boolean = false;
+
   lblActivateDeactive: string;
   lblLastlogin: string = '';
   lblUsercreated: string = '';
+  lbltitle: string = 'New account details';
 
-  constructor(private readonly formBuilder: FormBuilder, private readonly userService: UserService,
-    private readonly router: Router, private readonly snakerBar: MatSnackBar) {
+  constructor(public dialog: MatDialog, private readonly datePipe: DatePipe,
+    private readonly formBuilder: FormBuilder, private readonly userService: UserService,
+    private readonly noticeService: NoticeService) {
     this.accountUserForm = this.formBuilder.group({
       FullName: ['', Validators.compose([Validators.required])],
       Username: ['', Validators.compose([Validators.required])],
       Email: ['', Validators.compose([Validators.required, Validators.email])],
       Role: ['', Validators.compose([Validators.required])],
       Password: ['', Validators.compose([Validators.required])],
-      ActivateStatus: [true]
+      ActivateStatus: []
     });
+    this.onUserlist();
+  }
+
+  ngOnInit() {
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      return data.username.indexOf(filter) !== -1;
+    };
+  }
+  onUserlist() {
+    this.userService.onlineGetAllUser().subscribe(response => {
+      this.dataSource.data = response;
+      this.firstNameAutofilled = true;
+      this.userCount = this.dataSource.data.length;
+      this.dataSource.paginator = this.paginator;
+    });
+  }
+
+  addUser(): void {
+    this.lbltitle = 'New account details';
+    this.btnUserAdd = true;
+    this.btnUserUpdate = false;
+    this.btnChangePassword = false;
+    this.showPasswordPanel = true;
+    this.showActivateDeActivatePanel = false;
+    this.addEditPanel = true;
+    this.accountUserForm.controls['Password'].setValidators([Validators.required]);
+    this.accountUserForm.get('Password').updateValueAndValidity();
+    this.accountUserForm.reset();
   }
 
   onUserAdd() {
@@ -46,29 +89,28 @@ export class SystemAdministrationComponent {
     if (this.accountUserForm.invalid) {
       return;
     }
-    const userObj: any = {
-      Name: this.accountUserForm.value.FullName, Username: this.accountUserForm.value.Username,
-      Email: this.accountUserForm.value.Email, Role: this.accountUserForm.value.Role,
-      Password: this.accountUserForm.value.Password, Active: false
-    };
-    this.userService.onlineAddUser(userObj).subscribe(response => {
-      if (response != null) {
-        if (response.status === true) {
-          this.accountUserRef.resetForm();
-          this.router.navigateByUrl('/home');
-        }
-        this.snackMessage(response.message);
-      }
+    const userObj = new User({
+      name: this.accountUserForm.value.FullName, username: this.accountUserForm.value.Username,
+      email: this.accountUserForm.value.Email, role: this.accountUserForm.value.Role,
+      active: true, password: this.accountUserForm.value.Password
+    });
+
+    this.userService.onlineAddUser(userObj).then(response => {
+      this.accountUserForm.reset();
+      this.noticeService.push(NoticeService.SUCCESS, 'User account created successfully');
+      this.onUserlist();
+      this.addEditPanel = false;
     });
   }
 
-  onChange(value) {
-    value.checked === true ? this.accountUserForm.controls['ActivateStatus'].setValue(true)
-      : this.accountUserForm.controls['ActivateStatus'].setValue(false);
-    value.checked === true ? this.lblActivateDeactive = 'Activated' : this.lblActivateDeactive = 'DeActivated';
+  editUser(userId: string) {
+    this.userId = userId;
+    this.getCurrentUser(userId);
+    this.addEditPanel = true;
+    this.lbltitle = 'Account details';
   }
 
-  onUpdate(userId: string) {
+  onUpdate() {
     if (this.showPasswordPanel === false) {
       this.accountUserForm.get('Password').clearValidators();
       this.accountUserForm.get('Password').updateValueAndValidity();
@@ -77,19 +119,29 @@ export class SystemAdministrationComponent {
       return;
     }
     const updateUser: any = {
-      Id: userId, Name: this.accountUserForm.value.FullName,
+      Id: this.userId, Name: this.accountUserForm.value.FullName,
       Username: this.accountUserForm.value.Username, Email: this.accountUserForm.value.Email,
       Role: this.accountUserForm.value.Role, Password: this.accountUserForm.value.Password,
       Active: this.accountUserForm.value.ActivateStatus
     };
-    this.userService.onlineUpdateUser(updateUser).subscribe(response => {
-      this.router.navigateByUrl('/home');
-      this.snackMessage(response.message);
+    this.userService.onlineUpdateUser(updateUser).then(response => {
+      this.accountUserForm.reset();
+      this.onUserlist();
+      this.noticeService.push(NoticeService.SUCCESS, 'User account updated.');
     });
+
+    this.btnUserAdd = true;
+    this.btnUserUpdate = false;
+    this.btnChangePassword = false;
+    this.showPasswordPanel = true;
+    this.showActivateDeActivatePanel = false;
+    this.addEditPanel = false;
+    this.accountUserForm.controls['Password'].setValidators([Validators.required]);
+    this.accountUserForm.get('Password').updateValueAndValidity();
   }
 
-  snackMessage(response) {
-    this.snakerBar.open(response, null, { duration: 5000, horizontalPosition: 'right', verticalPosition: 'top' });
+  onChange(value) {
+    value.checked === true ? this.lblActivateDeactive = 'Activated' : this.lblActivateDeactive = 'DeActivated';
   }
 
   getCurrentUser(userId: string) {
@@ -101,15 +153,21 @@ export class SystemAdministrationComponent {
     this.userService.onlineGetUser(userId).subscribe(response => {
       if (response != null) {
         this.accountUserForm.patchValue({
-          FullName: response.Name,
-          Username: response.Username,
-          Email: response.Email,
-          Role: response.Role,
-          ActivateStatus: response.Active
+          FullName: response.name,
+          Username: response.username,
+          Email: response.email,
+          Role: response.role,
+          ActivateStatus: response.active
         });
-        this.lblLastlogin = response.Lastlogin;
-        this.lblUsercreated = response.Usercreated;
-        response.Active === true ? this.lblActivateDeactive = 'Activated' : this.lblActivateDeactive = 'DeActivated';
+        this.lblLastlogin = this.datePipe.transform(response.dateModified, 'dd MMMM yyyy');
+        this.lblUsercreated = this.datePipe.transform(response.dateCreated, 'dd MMMM yyyy');
+        if (response.active === 'True') {
+          this.lblActivateDeactive = 'Activated';
+          this.accountUserForm.controls['ActivateStatus'].setValue(true);
+        } else {
+          this.lblActivateDeactive = 'DeActivated';
+          this.accountUserForm.controls['ActivateStatus'].setValue(false);
+        }
       }
     });
   }
@@ -120,5 +178,27 @@ export class SystemAdministrationComponent {
     this.isSubmitted = true;
     this.accountUserForm.get('Password').markAsTouched();
   }
-}
 
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.userCount = this.dataSource.filteredData.length;
+  }
+
+  deleteProjectUser() {
+    this.closeDialog();
+    this.userService.onlineDeleteUser(this.userId).then(data => {
+      this.noticeService.push(NoticeService.SUCCESS, 'User account deleted successfully');
+      this.onUserlist();
+    });
+  }
+
+  openDialog(dialogRef: any, id) {
+    this.addEditPanel = false;
+    this.userId = id;
+    this.dialog.open(dialogRef, { disableClose: true });
+  }
+
+  closeDialog() {
+    this.dialog.closeAll();
+  }
+}
