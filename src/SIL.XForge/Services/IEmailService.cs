@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace SIL.XForge.Services
 {
     public interface IEmailService
     {
-        string SendEmail(string emailId, string subject, string body);
+        Task SendEmailAsync(string email, string subject, string body);
     }
 }

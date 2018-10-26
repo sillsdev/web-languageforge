@@ -15,29 +15,27 @@
                     <h3 class="panel-title">Create an account</h3>
                 </div>
                 <div class="panel-body">
-                    <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" autocomplete="off">
+                    <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" autocomplete="off">
                         @Html.Partial("_ValidationSummary")
                         <fieldset>
                         <div class="form-group">
                                 <label asp-for="Fullname" ></label>
-                                <input asp-for="Fullname" class="form-control" autofocus/>
+                                <input asp-for="Fullname" placeholder="Full Name" class="form-control" autofocus/>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group password">
                                 <label asp-for="Password" ></label>
-                                <input asp-for="Password" class="form-control" />
+                                <input asp-for="Password" placeholder="Password" class="form-control" />
                                 <div id="StrengthProgressBar" class="progress-bar"></div>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Email" ></label>
-                                <input asp-for="Email" class="form-control" />
+                                <input asp-for="Email" placeholder="Email Address" class="form-control" />
                             </div>
                             <div class="form-group">
                                 <div class="g-recaptcha" data-size="normal" data-sitekey="@ViewData["ReCaptchaKey"]"></div>
                             </div>
                             <div class="form-group">
-                                <div class="col-md-offset-2 col-md-10">
-                                    <button type="submit" class="btn btn-default" onclick="Enablecontrols();">Register</button>
-                                </div>
+                                <button type="submit" class="btn btn-default">Register</button>
                             </div>
                             <div class="form-group">
                                 <span style="color: green;">@ViewBag.StatusMessage</span>

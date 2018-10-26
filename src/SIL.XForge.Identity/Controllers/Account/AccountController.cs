@@ -4,8 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.Events;
@@ -19,8 +17,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver.Linq;
 using MongoDB.Driver;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 using SIL.XForge.Services;
@@ -28,7 +24,6 @@ using Microsoft.Extensions.Options;
 using SIL.XForge.Configuration;
 using System.Security.Cryptography;
 using System.Text;
-using SIL.XForge.Identity.Authentication;
 using SIL.XForge.Identity.Configuration;
 
 namespace SIL.XForge.Identity.Controllers.Account
@@ -72,9 +67,7 @@ namespace SIL.XForge.Identity.Controllers.Account
 
         private string GenerateValidationKey()
         {
-            char[] chars = new char[62];
-            chars =
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
+            char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
             byte[] data = new byte[1];
             using (RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider())
             {
@@ -147,7 +140,8 @@ namespace SIL.XForge.Identity.Controllers.Account
 
             if (ModelState.IsValid)
             {
-                UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.Username == model.Username);
+                UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.Username == model.EmailOrUsername
+                    || u.Email == model.EmailOrUsername);
                 // validate username/password against in-memory store
                 if (user != null && user.VerifyPassword(model.Password))
                 {
@@ -197,7 +191,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                     }
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));
+                await _events.RaiseAsync(new UserLoginFailureEvent(model.EmailOrUsername, "invalid credentials"));
                 ModelState.AddModelError("", AccountOptions.InvalidCredentialsErrorMessage);
             }
 
@@ -250,21 +244,27 @@ namespace SIL.XForge.Identity.Controllers.Account
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
-            UserEntity user = await _users.UpdateAsync(u => u.Username == model.UsernameOrEmail || u.Email == model.UsernameOrEmail, update => update
-                .Set(u => u.ResetPasswordKey, GenerateValidationKey())
-                .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddDays(7)));
+            UserEntity user = await _users.UpdateAsync(
+                u => u.Username == model.EmailOrUsername || u.Email == model.EmailOrUsername,
+                update => update
+                    .Set(u => u.ResetPasswordKey, GenerateValidationKey())
+                    .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddDays(7)));
             if (user != null)
             {
-                string emailId = user.Email;
-                string subject = "Scripture Forge Forgotten Password Verification";
-                string body = "<div class=''><h1>Reset Password for " + user.Username + "</h1> " +
-                    "<p>Please click this link to <a href='https://beta.scriptureforge.local/account/resetpassword?token=" + user.ResetPasswordKey + "' target='_blank'>Reset Your Password</a>.</p> " +
-                    "<p>This link will be valid for 1 week only.</p><p>Regards,<br>The Scripture Forge team</p></div>";
+                SiteOptions siteOptions = _options.Value;
+                string subject = $"{siteOptions.Name} Forgotten Password Verification";
+                string url = $"https://{siteOptions.Domain}/account/resetpassword?token={user.ResetPasswordKey}";
+                string body = "<div class=''>"
+                    + $"<h1>Reset Password for {user.Name}</h1>"
+                    + $"<p>Please click this link to <a href='{url}' target='_blank'>Reset Your Password</a>.</p>"
+                    + "<p>This link will be valid for 1 week only.</p>"
+                    + $"<p>Regards,<br>The {siteOptions.Name} team</p>"
+                    + "</div>";
 
-                _emailService.SendEmail(emailId, subject, body);
+                await _emailService.SendEmailAsync(user.Email, subject, body);
 
                 LoginViewModel vm = await BuildLoginViewModelAsync("");
-                vm.ShowMessage = "Password Reset email sent for username " + model.UsernameOrEmail;
+                vm.ShowMessage = "Password reset email sent.";
                 return View("Login", vm);
             }
             else
@@ -358,6 +358,76 @@ namespace SIL.XForge.Identity.Controllers.Account
             return View("LoggedOut", vm);
         }
 
+        [HttpGet("Account/Register")]
+        [AllowAnonymous]
+        public IActionResult Register()
+        {
+            ViewData["ReCaptchaKey"] = _captcha.CaptchaId;
+            return View();
+        }
+
+        [HttpPost]
+        [TypeFilter(typeof(ValidateRecaptchaFilter))]
+        public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        {
+            ViewData["ReCaptchaKey"] = _captcha.CaptchaId;
+            ViewData["ReturnUrl"] = returnUrl;
+            if (ModelState.IsValid)
+            {
+                bool emailExists = await _users.Query().AnyAsync(u => u.Email == model.Email);
+                if (emailExists)
+                {
+                    ModelState.AddModelError(string.Empty,
+                        "A user with the specified email address already exists. Please use a different email address.");
+                    return View(model);
+                }
+
+                var user = new UserEntity
+                {
+                    Name = model.Fullname,
+                    Email = model.Email,
+                    EmailVerified = false,
+                    Password = BCrypt.Net.BCrypt.HashPassword(model.Password, 7, false),
+                    Role = SystemRoles.User,
+                    ValidationKey = GenerateValidationKey(),
+                    ValidationExpirationDate = DateTime.Now.AddDays(7),
+                    Active = true
+                };
+
+                var result = await _users.InsertAsync(user);
+                if (result)
+                {
+                    SiteOptions siteOptions = _options.Value;
+                    string subject = $"{siteOptions.Name} - Email Verification";
+                    string url = $"https://{siteOptions.Domain}/account/VerifyEmail?email={user.Email}&key={user.ValidationKey}";
+                    string body = "<div class=''>"
+                        + $"<h1>Dear {user.Name},</h1>"
+                        + $"<p>Please click this link to activate your account <a href='{url}' target='_blank'>Confirm Verification</a>.</p>"
+                        + $"<p>Regards,<br>The {siteOptions.Name} Team</p>"
+                        + "</div>";
+
+                    await _emailService.SendEmailAsync(user.Email, subject, body);
+                    ModelState.Clear();
+                    return Redirect("~/account/login");
+                }
+                else
+                {
+                    return View();
+                }
+            }
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        [HttpGet("Account/VerifyEmail")]
+        public async Task<ActionResult> VerifyEmail([FromQuery] string email, [FromQuery] string key)
+        {
+            LoginViewModel vm = await BuildLoginViewModelAsync("");
+            await _users.UpdateAsync(u => u.Email == email && u.ValidationKey == key,
+                update => update.Set(u => u.EmailVerified, true));
+            return View("VerifyEmail");
+        }
+
         /*****************************************/
         /* helper APIs for the AccountController */
         /*****************************************/
@@ -371,7 +441,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 {
                     EnableLocalLogin = false,
                     ReturnUrl = returnUrl,
-                    Username = context?.LoginHint,
+                    EmailOrUsername = context?.LoginHint,
                     ExternalProviders = new ExternalProvider[] { new ExternalProvider { AuthenticationScheme = context.IdP } },
                     ShowMessage = ""
                 };
@@ -407,7 +477,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 AllowRememberLogin = AccountOptions.AllowRememberLogin,
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
-                Username = context?.LoginHint,
+                EmailOrUsername = context?.LoginHint,
                 ExternalProviders = providers.ToArray(),
                 ShowMessage = ""
             };
@@ -416,7 +486,7 @@ namespace SIL.XForge.Identity.Controllers.Account
         private async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
         {
             LoginViewModel vm = await BuildLoginViewModelAsync(model.ReturnUrl);
-            vm.Username = model.Username;
+            vm.EmailOrUsername = model.EmailOrUsername;
             vm.RememberLogin = model.RememberLogin;
             return vm;
         }
@@ -425,7 +495,7 @@ namespace SIL.XForge.Identity.Controllers.Account
         {
             return new ForgotPasswordViewModel
             {
-                UsernameOrEmail = "",
+                EmailOrUsername = "",
                 EnableErrorMessage = false
             };
         }
@@ -490,75 +560,6 @@ namespace SIL.XForge.Identity.Controllers.Account
             }
 
             return vm;
-        }
-
-        [HttpGet("Account/Register")]
-        [AllowAnonymous]
-        public IActionResult Register()
-        {
-            ViewData["ReCaptchaKey"] = _captcha.CaptchaId;
-            return View();
-        }
-
-        [HttpPost]
-        [TypeFilter(typeof(ValidateRecaptchaFilter))]
-        public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl = null)
-        {
-            ViewData["ReCaptchaKey"] = _captcha.CaptchaId;
-            ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
-            {
-                var checkEmailAlreadyExists = _users.Query().SingleOrDefault(u => u.Email == model.Email);
-                if (checkEmailAlreadyExists != null)
-                {
-                    ModelState.AddModelError(string.Empty, "EmailID already exists, Please try with another emailid.");
-                    return View(model);
-                }
-
-                var user = new UserEntity
-                {
-                    Username = model.Fullname,
-                    Name = model.Fullname,
-                    EmailPending = model.Email,
-                    Password = BCrypt.Net.BCrypt.HashPassword(model.Password, 7, false),
-                    Role = SystemRoles.User,
-                    ValidationKey = GenerateValidationKey(),
-                    ValidationExpirationDate = DateTime.Now.AddDays(7),
-                    Active = true
-                };
-
-                var result = await _users.InsertAsync(user);
-                if (result)
-                {
-                    string emailId = user.EmailPending;
-                    string subject = "Scripture Forge - Signup Verification";
-                    string body = "<div class=''><h1>Dear " + user.Username.ToUpper() + ",</h1> <br />" +
-                        "<p>Please click this link to activate your account <a href='https://beta.scriptureforge.local/account/VerifyEmail?user=" + user.EmailPending + "&key=" + user.ValidationKey + "' target='_blank'>Confirm Verification</a>.</p> " +
-                        "<br /> <p>Thank you.</p><p>Regards,<br>The Scripture Forge Team</p></div>";
-
-                    _emailService.SendEmail(emailId, subject, body);
-                    ModelState.Clear();
-                    return Redirect("~/account/login");
-                }
-                else
-                {
-                    return View();
-                }
-            }
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
-
-        [HttpGet("Account/VerifyEmail")]
-        public async Task<ActionResult> VerifyEmail([FromQuery] string user, [FromQuery] string key)
-        {
-            LoginViewModel vm = await BuildLoginViewModelAsync("");
-            UserEntity userEntity = _users.Query().SingleOrDefault(u => u.Email == user && u.ValidationKey == key);
-            if (userEntity != null)
-            {
-                userEntity = await _users.UpdateAsync(userEntity, update => update.Set(u => u.Email, userEntity.EmailPending));
-            }
-            return View("VerifyEmail");
         }
     }
 }

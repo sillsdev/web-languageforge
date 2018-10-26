@@ -4,39 +4,46 @@ using MimeKit;
 using SIL.XForge.Configuration;
 using Microsoft.Extensions.Options;
 using MailKit.Security;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace SIL.XForge.Services
 {
     public class EmailService : IEmailService
     {
         private readonly IOptions<SiteOptions> _options;
-        public EmailService(IOptions<SiteOptions> options)
+        private readonly ILogger<EmailService> _logger;
+
+        public EmailService(IOptions<SiteOptions> options, ILogger<EmailService> logger)
         {
             _options = options;
+            _logger = logger;
         }
 
-        public string SendEmail(string emailId, string subject, string body)
+        public async Task SendEmailAsync(string email, string subject, string body)
         {
-            var siteOptions = _options.Value;
-            if (siteOptions == null) return "Sorry, Email was not sent.";
+            SiteOptions siteOptions = _options.Value;
             string fromAddress = "no-reply@" + siteOptions.Domain;
             string title = siteOptions.Name;
             var mimeMessage = new MimeMessage();
             mimeMessage.From.Add(new MailboxAddress(title, fromAddress));
-            mimeMessage.To.Add(new MailboxAddress("", emailId));
+            mimeMessage.To.Add(new MailboxAddress("", email));
             mimeMessage.Subject = subject;
 
             var bodyBuilder = new BodyBuilder();
             bodyBuilder.HtmlBody = body;
             mimeMessage.Body = bodyBuilder.ToMessageBody();
 
-            using (var client = new SmtpClient())
-            {
-                client.Connect(siteOptions.SmtpServer, Convert.ToInt32(siteOptions.PortNumber), SecureSocketOptions.None);
-                client.Send(mimeMessage);
-                client.Disconnect(true);
-                return "Email has been sent successfully!";
+            if (siteOptions.SendEmail) {
+                using (var client = new SmtpClient())
+                {
+                    await client.ConnectAsync(siteOptions.SmtpServer, Convert.ToInt32(siteOptions.PortNumber),
+                        SecureSocketOptions.None);
+                    await client.SendAsync(mimeMessage);
+                    await client.DisconnectAsync(true);
+                }
             }
+            _logger.LogInformation("Email Sent\n{0}", mimeMessage.ToString());
         }
     }
 }
