@@ -37,6 +37,7 @@ namespace SIL.XForge.Identity.Controllers.Account
     [AllowAnonymous]
     public class AccountController : Controller
     {
+        private const int PasswordResetPeriodDays = 7;
         private readonly GoogleCaptchaOptions _captcha;
         private readonly IRepository<UserEntity> _users;
         private readonly IIdentityServerInteractionService _interaction;
@@ -209,7 +210,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.ResetPasswordKey == token);
             if (user != null)
             {
-                if (DateTime.Now.Subtract(user.ResetPasswordExpirationDate).TotalDays < 7)
+                if (DateTime.Now < user.ResetPasswordExpirationDate)
                 {
                     ResetPasswordViewModel vm = BuildResetPasswordViewModel(user);
                     return View("ResetPassword", vm);
@@ -248,7 +249,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 u => u.Username == model.EmailOrUsername || u.Email == model.EmailOrUsername,
                 update => update
                     .Set(u => u.ResetPasswordKey, GenerateValidationKey())
-                    .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddDays(7)));
+                    .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddDays(PasswordResetPeriodDays)));
             if (user != null)
             {
                 SiteOptions siteOptions = _options.Value;
@@ -274,6 +275,8 @@ namespace SIL.XForge.Identity.Controllers.Account
             }
         }
 
+        /// <remarks>REVIEW (Hasso) 2018.10: would it be possible for an attacker of moderate intelligence to
+        /// post such a request without first clicking the generated reset link?</remarks>
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
@@ -286,7 +289,8 @@ namespace SIL.XForge.Identity.Controllers.Account
                 else
                 {
                     UserEntity user = await _users.UpdateAsync(u => u.Username == model.Username, update => update
-                                    .Set(u => u.Password, BCrypt.Net.BCrypt.HashPassword(model.Password, 7)));
+                        .Set(u => u.Password, BCrypt.Net.BCrypt.HashPassword(model.Password, 7))
+                        .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddYears(-42)));
                     LoginViewModel vm = await BuildLoginViewModelAsync("");
                     vm.ShowMessage = "Your password has been reset. Please login.";
                     return Redirect("Login");
