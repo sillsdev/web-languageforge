@@ -15,6 +15,10 @@ cat <<EOF > $BUILD_OUTPUT/app/secrets.json
   "Paratext": {
     "ClientId": "$PARATEXT_CLIENT_ID",
     "ClientSecret": "$PARATEXT_API_TOKEN"
+  },
+  "GoogleCaptcha": {
+    "CaptchaId": "$CAPTCHA_SITE_KEY",
+    "CaptchaSecret": "$CAPTCHA_SECRET_KEY"
   }
 }
 EOF
