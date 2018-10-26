@@ -18,9 +18,8 @@ using SIL.XForge.Models;
 using SIL.XForge.Services;
 using Microsoft.Extensions.Options;
 using SIL.XForge.Configuration;
-using Microsoft.Extensions.Configuration;
-using SIL.XForge.Identity.Authentication;
 using SIL.XForge.Identity.Configuration;
+using System.Linq;
 
 namespace SIL.XForge.Identity.Controllers.Account
 {
@@ -35,7 +34,7 @@ namespace SIL.XForge.Identity.Controllers.Account
 
             var model = new LoginInputModel
             {
-                Username = "user",
+                EmailOrUsername = "user",
                 Password = "password",
                 ReturnUrl = "https://beta.scriptureforge.local/home"
             };
@@ -58,7 +57,7 @@ namespace SIL.XForge.Identity.Controllers.Account
 
             var model = new LoginInputModel
             {
-                Username = "user",
+                EmailOrUsername = "user",
                 Password = "wrong",
                 ReturnUrl = "https://beta.scriptureforge.local/home"
             };
@@ -76,7 +75,7 @@ namespace SIL.XForge.Identity.Controllers.Account
 
             var model = new ForgotPasswordViewModel
             {
-                UsernameOrEmail = "user",
+                EmailOrUsername = "user",
                 EnableErrorMessage = false
             };
             IActionResult result = await env.Controller.ForgotPassword(model);
@@ -84,14 +83,14 @@ namespace SIL.XForge.Identity.Controllers.Account
             Assert.That(result, Is.TypeOf<ViewResult>());
             Assert.IsTrue(model.EnableErrorMessage == false);
 
-            UserEntity user = await env.Users.Query().SingleOrDefaultAsync(x => x.Username == model.UsernameOrEmail);
+            UserEntity user = await env.Users.Query().SingleOrDefaultAsync(x => x.Username == model.EmailOrUsername);
             Assert.True(user.ResetPasswordKey != "jGc6Qe4i1kgM+aA4LVczTJwfHx2YuDR/", "ResetPasswordKey not saved.");
             Assert.True(user.ResetPasswordExpirationDate != default(DateTime), "ResetPasswordExpirationDate not saved.");
 
             string emailId = "abc@fakegmail.com";
-            string subject = "Scripture Forge Forgotten Password Verification";
+            string subject = "xForge Forgotten Password Verification";
             // Skip verification for the body, we may change the content
-            env.EmailService.Received().SendEmail(Arg.Is(emailId), Arg.Is(subject), Arg.Any<string>());
+            await env.EmailService.Received().SendEmailAsync(Arg.Is(emailId), Arg.Is(subject), Arg.Any<string>());
         }
 
         [Test]
@@ -101,7 +100,7 @@ namespace SIL.XForge.Identity.Controllers.Account
 
             var model = new ForgotPasswordViewModel
             {
-                UsernameOrEmail = "user1",
+                EmailOrUsername = "user1",
                 EnableErrorMessage = false
             };
             IActionResult result = await env.Controller.ForgotPassword(model);
@@ -185,8 +184,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             Assert.That(result, Is.Not.Null);
             Assert.That(env.Controller.ModelState.ErrorCount, Is.EqualTo(0));
 
-            UserEntity user = await env.Users.Query().SingleOrDefaultAsync(x => x.EmailPending == model.Email);
-            Assert.IsTrue(user.Username == "testsamplename");
+            Assert.That(env.Users.Query().Any(x => x.Email == model.Email), Is.True);
         }
 
         [Test]
@@ -194,12 +192,15 @@ namespace SIL.XForge.Identity.Controllers.Account
         {
             var env = new TestEnvironment();
 
-            env.Users.Add(new [] { new UserEntity
-                        {
-                            Id = "uniqueidwithdupemailid",
-                            Username = "user",
-                            Email = "duplicate@fakegmail.com"
-                        }});
+            env.Users.Add(new[]
+                {
+                    new UserEntity
+                    {
+                        Id = "uniqueidwithdupemailid",
+                        Username = "user",
+                        Email = "duplicate@fakegmail.com"
+                    }
+                });
             // Duplicate emailid should result in an error
             var model = new RegisterViewModel
             {
@@ -257,6 +258,11 @@ namespace SIL.XForge.Identity.Controllers.Account
                 AuthService = Substitute.For<IAuthenticationService>();
                 var serviceProvider = Substitute.For<IServiceProvider>();
                 var options = Substitute.For<IOptions<SiteOptions>>();
+                options.Value.Returns(new SiteOptions
+                    {
+                        Name = "xForge",
+                        Domain = "localhost"
+                    });
 
                 GoogleCaptchaOptions captchaOptions = new GoogleCaptchaOptions
                 {
@@ -276,7 +282,8 @@ namespace SIL.XForge.Identity.Controllers.Account
 
                 serviceProvider.GetService(typeof(IEmailService)).Returns(EmailService);
 
-                Controller = new AccountController(interaction, clientStore, schemeProvider, Events, Users, options, EmailService, captcha)
+                Controller = new AccountController(interaction, clientStore, schemeProvider, Events, Users, options,
+                    EmailService, captcha)
                 {
                     ControllerContext = new ControllerContext
                     {

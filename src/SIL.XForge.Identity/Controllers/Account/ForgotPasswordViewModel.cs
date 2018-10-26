@@ -7,8 +7,7 @@ namespace SIL.XForge.Identity.Controllers.Account
     public class ForgotPasswordViewModel
     {
         [Required]
-        [Display(Name = "Username/Email")]
-        public string UsernameOrEmail { get; set; }
+        public string EmailOrUsername { get; set; }
         public bool EnableErrorMessage { get; set; }
     }
 }

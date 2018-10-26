@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.CSharp.RuntimeBinder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;

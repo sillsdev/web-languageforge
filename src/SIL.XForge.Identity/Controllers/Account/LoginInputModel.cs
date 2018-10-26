@@ -10,8 +10,10 @@ namespace SIL.XForge.Identity.Controllers.Account
     public class LoginInputModel
     {
         [Required]
-        public string Username { get; set; }
+        [Display(Name = "Email or Username")]
+        public string EmailOrUsername { get; set; }
         [Required]
+        [Display(Name = "Password")]
         public string Password { get; set; }
         public bool RememberLogin { get; set; }
         public string ReturnUrl { get; set; }

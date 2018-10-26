@@ -9,8 +9,8 @@ namespace SIL.XForge.Models
     {
         public string Username { get; set; }
         public string Name { get; set; }
-        public string EmailPending { get; set; }
         public string Email { get; set; }
+        public bool EmailVerified { get; set; }
         public string ValidationKey { get; set; }
         public DateTime ValidationExpirationDate { get; set; }
         public string ResetPasswordKey { get; set; }
@@ -25,14 +25,16 @@ namespace SIL.XForge.Models
 
         public IEnumerable<Claim> GetClaims(string site)
         {
-            return new List<Claim>
+            var claims = new List<Claim>
             {
                 new Claim(JwtClaimTypes.Subject, Id),
-                new Claim(JwtClaimTypes.PreferredUserName, Username),
                 new Claim(JwtClaimTypes.Name, Name),
-                new Claim(JwtClaimTypes.Email, Email),
-                new Claim(JwtClaimTypes.Role, Role)
+                new Claim(JwtClaimTypes.Role, Role),
+                new Claim(JwtClaimTypes.Email, Email)
             };
+            if (Username != null)
+                claims.Add(new Claim(JwtClaimTypes.PreferredUserName, Username));
+            return claims;
         }
 
         public bool VerifyPassword(string password)
