@@ -10,7 +10,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { RecordIdentity } from '@orbit/data';
 import { Observer, of } from 'rxjs';
 import { anything, capture, instance, mock, verify, when } from 'ts-mockito';
+import { ParatextService } from '../core/paratext.service';
 
+import { AuthService } from '@xforge-common/auth.service';
 import { QueryResults } from '@xforge-common/json-api.service';
 import { Resource } from '@xforge-common/models/resource';
 import { User } from '@xforge-common/models/user';
@@ -22,7 +24,7 @@ import { SFUserService } from '../core/sfuser.service';
 import { ChangingUsernameDialogComponent } from './changing-username-dialog/changing-username-dialog.component';
 import { MyAccountComponent } from './my-account.component';
 
-class StubQueryResults<T> implements QueryResults<T> {
+export class StubQueryResults<T> implements QueryResults<T> {
   constructor(public readonly results: T, public readonly totalPagedCount?: number) {}
 
   getIncluded<TInclude extends Resource>(_identity: RecordIdentity): TInclude {
@@ -61,19 +63,28 @@ class TestEnvironment {
   fixture: ComponentFixture<MyAccountComponent>;
 
   mockedSFUserService: SFUserService;
+  mockedParatextService: ParatextService;
   mockedMatDialog: MatDialog;
   mockedMatDialogRefForCUDC: MatDialogRef<ChangingUsernameDialogComponent>;
   mockedNoticeService: NoticeService;
+  mockedAuthService: AuthService;
 
+  private substituteParatextUsername: string;
   constructor() {
     this.mockedSFUserService = mock(SFUserService);
+    this.mockedParatextService = mock(ParatextService);
     this.mockedMatDialog = mock(MatDialog);
     this.mockedMatDialogRefForCUDC = mock(MatDialogRef);
     this.mockedNoticeService = mock(NoticeService);
+    this.mockedAuthService = mock(AuthService);
 
     when(this.mockedSFUserService.getCurrentUser()).thenReturn(of(new StubQueryResults(this.userInDatabase)));
     when(this.mockedSFUserService.currentUserId).thenReturn('user01');
-
+    when(this.mockedParatextService.getParatextUsername()).thenReturn(of(this.substituteParatextUsername));
+    when(this.mockedSFUserService.onlineUnlinkParatextAccount()).thenCall(() => {
+      this.setParatextUsername(null);
+      return Promise.resolve();
+    });
     when(this.mockedMatDialogRefForCUDC.afterClosed()).thenReturn(of('update'));
     when(this.mockedMatDialog.open(anything(), anything())).thenReturn(instance(this.mockedMatDialogRefForCUDC));
 
@@ -83,8 +94,10 @@ class TestEnvironment {
       imports: [TestModule],
       providers: [
         { provide: UserService, useFactory: () => instance(this.mockedSFUserService) },
+        { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
         { provide: MatDialog, useFactory: () => instance(this.mockedMatDialog) },
-        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) }
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
+        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
       ],
       declarations: []
     }).compileComponents();
@@ -101,6 +114,11 @@ class TestEnvironment {
 
   buttonIcon(controlName: string): DebugElement {
     return this.fixture.debugElement.query(By.css(`#${controlName}-button-icon`));
+  }
+
+  setParatextUsername(name: string): void {
+    this.substituteParatextUsername = name;
+    this.component.paratextUsername = this.substituteParatextUsername;
   }
 
   spinner(controlName: string): DebugElement {
@@ -129,6 +147,30 @@ class TestEnvironment {
 
   get header2(): HTMLElement {
     return this.fixture.nativeElement.querySelector('h2');
+  }
+
+  get paratextLinkElement(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#paratext-link'));
+  }
+
+  get paratextLinkLabel(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#paratext-link-label'));
+  }
+
+  get connectParatextButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#connect-paratext-button'));
+  }
+
+  get unlinkParatextButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#unlink-paratext-button'));
+  }
+
+  get deleteAccountElement(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#delete-account'));
+  }
+
+  get deleteAccountButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#delete-account-button'));
   }
 }
 
@@ -707,6 +749,46 @@ describe('MyAccountComponent', () => {
       );
       verify(env.mockedSFUserService.updateUserAttributes(anything())).never();
     });
+  });
+
+  describe('Linked accounts', () => {
+    it('should give the option to link a paratext account', fakeAsync(() => {
+      expect(env.component.isLinkedToParatext).toBeFalsy();
+      expect(env.connectParatextButton.nativeElement.textContent).toContain('Connect to Paratext');
+      env.setParatextUsername('Johnny Paratext');
+      env.fixture.detectChanges();
+      expect(env.paratextLinkLabel.nativeElement.textContent).toContain('Johnny Paratext');
+      expect(env.unlinkParatextButton.nativeElement.textContent).toContain('Remove link');
+    }));
+
+    it('should remove linked paratext account', fakeAsync(() => {
+      env.setParatextUsername('Johnny Paratext');
+      env.fixture.detectChanges();
+      expect(env.unlinkParatextButton.nativeElement.textContent).toContain('Remove link');
+      env.clickButton(env.unlinkParatextButton);
+      verify(env.mockedSFUserService.onlineUnlinkParatextAccount()).once();
+      expect(env.paratextLinkLabel).toBeNull();
+      expect(env.connectParatextButton.nativeElement.textContent).toContain('Connect to Paratext');
+    }));
+
+    // TODO: Add tests for linked google account
+  });
+
+  describe('delete account', () => {
+    it('should have a title and a delete account button', fakeAsync(() => {
+      expect(env.deleteAccountElement.nativeElement.querySelector('mat-card mat-card-title').textContent).toBe(
+        'Delete account'
+      );
+      expect(env.deleteAccountElement.nativeElement.querySelector('mat-card mat-card-subtitle').textContent).toContain(
+        env.userInDatabase.username
+      );
+    }));
+
+    it('should bring up a dialog if button is clicked', fakeAsync(() => {
+      expect(env.deleteAccountButton.nativeElement.textContent).toContain('Delete my account');
+      env.clickButton(env.deleteAccountButton);
+      verify(env.mockedMatDialog.open(anything(), anything())).once();
+    }));
   });
 });
 

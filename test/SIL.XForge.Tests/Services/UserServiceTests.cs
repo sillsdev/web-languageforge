@@ -142,6 +142,31 @@ namespace SIL.XForge.Services
         }
 
         [Test]
+        public async Task UpdateAsync_UnlinkParatextAccount()
+        {
+            var env = new TestEnvironment();
+            env.SetUser("paratextuser01", SystemRoles.User);
+
+            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+            {
+                { env.GetAttribute("paratext-id"), null }
+            });
+            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+
+            var resource = new TestUserResource
+            {
+                Id = "paratextuser01",
+                ParatextId = null,
+            };
+            UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+            Assert.That(updatedResource, Is.Not.Null);
+            Assert.That(updatedResource.ParatextId, Is.Null);
+            // Unsetting the paratext-id should also unset paratext tokens
+            UserEntity paratextUser = await env.Service.GetEntityAsync("paratextuser01");
+            Assert.That(paratextUser.ParatextTokens, Is.Null);
+        }
+
+        [Test]
         public async Task GetAsync_UserRole()
         {
             var env = new TestEnvironment();
@@ -164,7 +189,7 @@ namespace SIL.XForge.Services
 
             UserResource[] resources = (await env.Service.GetAsync()).ToArray();
 
-            Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[] { "user01", "user02", "user03" }));
+            Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[] { "user01", "user02", "user03", "paratextuser01" }));
         }
 
         class TestEnvironment : ResourceServiceTestEnvironmentBase<UserResource, UserEntity>
@@ -202,6 +227,19 @@ namespace SIL.XForge.Services
                         Email = "user03@gmail.com",
                         CanonicalEmail = "user03@gmail.com"
                     },
+                    new UserEntity
+                    {
+                        Id = "paratextuser01",
+                        Username = "paratextuser01",
+                        Email = "paratextuser01@example.com",
+                        CanonicalEmail = "paratextuser01@example.com",
+                        ParatextId = "paratextuser01id",
+                        ParatextTokens = new Tokens
+                        {
+                            AccessToken = "paratextuser01accesstoken",
+                            RefreshToken = "paratextuser01refreshtoken"
+                        }
+                    }
                 };
             }
         }

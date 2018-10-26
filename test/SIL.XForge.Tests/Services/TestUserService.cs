@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Services;
 using SIL.XForge.DataAccess;
@@ -10,6 +11,11 @@ namespace SIL.XForge.Services
         public TestUserService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
             IRepository<UserEntity> users) : base(jsonApiContext, mapper, userAccessor, users)
         {
+        }
+
+        public async Task<UserEntity> GetEntityAsync(string id)
+        {
+            return await Entities.GetAsync(id);
         }
     }
 }

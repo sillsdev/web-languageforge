@@ -312,6 +312,65 @@
           >
         </div>
       </div>
+      <div
+        *ngIf="isLinkedToParatext"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+        fxLayoutGap="1em"
+        id="paratext-link"
+        class="linked-paratext"
+      >
+        <div>Linked to Paratext account</div>
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="0.5em">
+          <label id="paratext-link-label"
+            ><strong>{{ paratextUsername }}</strong></label
+          >
+          <button mat-button id="unlink-paratext-button" class="unlink-button" (click)="deleteParatextLink()">
+            <i class="material-icons">clear</i> <span fxHide.lt-md>Remove link</span>
+          </button>
+        </div>
+      </div>
+      <div *ngIf="!isLinkedToParatext" id="paratext-link" class="linked-paratext">
+        <button mat-stroked-button id="connect-paratext-button" (click)="logInWithParatext()">
+          <i class="material-icons">link</i> Connect to Paratext
+        </button>
+      </div>
+      <!--Add this back in once login with Google (SF-77) is finished
+      <div
+        *ngIf="isLinkedToGoogle"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+        fxLayoutGap="1em"
+        id="google-link"
+        class="linked-google"
+      >
+        <div>Linked to Google account</div>
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="0.5em">
+          <label
+            ><strong>{{ googleUsername }}</strong></label
+          >
+          <button mat-stroked-button id="unlink-google-button class="unlink-button" (click)="deleteGoogleLink()">
+            <i class="material-icons">clear</i> <span fxHide.lt-md>Remove link</span>
+          </button>
+        </div>
+      </div>
+      <div *ngIf="!isLinkedToGoogle" id="google-link" class="linked-google">
+        <button mat-stroked-button><i class="material-icons">link</i> Connect to Google</button>
+      </div>
+    -->
+      <div fxLayout="column" fxLayoutAlign="space-between stretch" id="delete-account" class="delete-account">
+        <mat-card>
+          <mat-card-title>Delete account</mat-card-title>
+          <mat-card-subtitle>Delete my account ({{ username }})</mat-card-subtitle>
+          <mat-card-content>Once you delete your account, there is no going back. Please be certain.</mat-card-content>
+          <mat-card-actions>
+            <button mat-stroked-button (click)="openDeleteAccountDialog()" id="delete-account-button">
+              Delete my account
+            </button>
+          </mat-card-actions>
+          <p><mat-card-content>You will lose access to your projects.</mat-card-content></p>
+        </mat-card>
+      </div>
     </div>
   </form>
   <div>[Profile picture here]</div>

@@ -42,9 +42,14 @@ namespace SIL.XForge.Services
             IDictionary<string, string> relationships)
         {
             if (attrs.TryGetValue(nameof(UserEntity.Password), out object password))
-                attrs[nameof(UserEntity.Password)] = BCrypt.Net.BCrypt.HashPassword((string) password, 7);
+                attrs[nameof(UserEntity.Password)] = BCrypt.Net.BCrypt.HashPassword((string)password, 7);
             if (attrs.TryGetValue(nameof(UserEntity.Email), out object email))
-                attrs[nameof(UserEntity.CanonicalEmail)] = UserEntity.CanonicalizeEmail((string) email);
+                attrs[nameof(UserEntity.CanonicalEmail)] = UserEntity.CanonicalizeEmail((string)email);
+            if (attrs.TryGetValue(nameof(UserEntity.ParatextId), out object paratextId))
+            {
+                if (paratextId == null)
+                    attrs[nameof(UserEntity.ParatextTokens)] = null;
+            }
             return base.UpdateEntityAsync(id, attrs, relationships);
         }
 

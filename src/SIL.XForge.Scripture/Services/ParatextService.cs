@@ -49,8 +49,8 @@ namespace SIL.XForge.Scripture.Services
             }
             else
             {
-               _dataAccessClient.BaseAddress = new Uri("https://data-access.paratext.org");
-               _registryClient.BaseAddress = new Uri("https://registry.paratext.org");
+                _dataAccessClient.BaseAddress = new Uri("https://data-access.paratext.org");
+                _registryClient.BaseAddress = new Uri("https://registry.paratext.org");
             }
             _registryClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
@@ -65,10 +65,10 @@ namespace SIL.XForge.Scripture.Services
             var repos = new Dictionary<string, string>();
             foreach (XElement repoElem in reposElem.Elements("repo"))
             {
-                var projId = (string) repoElem.Element("projid");
+                var projId = (string)repoElem.Element("projid");
                 XElement userElem = repoElem.Element("users")?.Elements("user")
-                    ?.FirstOrDefault(ue => (string) ue.Element("name") == username);
-                repos[projId] = (string) userElem?.Element("role");
+                    ?.FirstOrDefault(ue => (string)ue.Element("name") == username);
+                repos[projId] = (string)userElem?.Element("role");
             }
             Dictionary<string, SFProjectEntity> existingProjects = (await _projects.Query()
                 .Where(p => repos.Keys.Contains(p.ParatextId))
@@ -80,10 +80,10 @@ namespace SIL.XForge.Scripture.Services
             foreach (JToken projectObj in projectArray)
             {
                 JToken identificationObj = projectObj["identification_systemId"]
-                    .FirstOrDefault(id => (string) id["type"] == "paratext");
+                    .FirstOrDefault(id => (string)id["type"] == "paratext");
                 if (identificationObj == null)
                     continue;
-                string paratextId = (string) identificationObj["text"];
+                string paratextId = (string)identificationObj["text"];
                 if (!repos.TryGetValue(paratextId, out string role))
                     continue;
 
@@ -105,19 +105,19 @@ namespace SIL.XForge.Scripture.Services
                     isConnectable = false;
                 }
 
-                var langName = (string) projectObj["language_iso"];
+                var langName = (string)projectObj["language_iso"];
                 if (StandardSubtags.TryGetLanguageFromIso3Code(langName, out LanguageSubtag subtag))
                     langName = subtag.Name;
 
                 projects.Add(new ParatextProject
-                    {
-                        ParatextId = paratextId,
-                        Name = (string) identificationObj["fullname"],
-                        LanguageTag = (string) projectObj["language_ldml"],
-                        LanguageName = langName,
-                        ProjectId = projectId,
-                        IsConnectable = isConnectable
-                    });
+                {
+                    ParatextId = paratextId,
+                    Name = (string)identificationObj["fullname"],
+                    LanguageTag = (string)projectObj["language_ldml"],
+                    LanguageName = langName,
+                    ProjectId = projectId,
+                    IsConnectable = isConnectable
+                });
             }
             return projects;
         }
@@ -127,14 +127,21 @@ namespace SIL.XForge.Scripture.Services
             string response = await CallApiAsync(_registryClient, user, HttpMethod.Get,
                 $"projects/{paratextId}/members/{user.ParatextId}");
             var memberObj = JObject.Parse(response);
-            return (string) memberObj["role"];
+            return (string)memberObj["role"];
+        }
+
+        public string GetParatextUsername(UserEntity user)
+        {
+            var accessToken = new JwtSecurityToken(user.ParatextTokens.AccessToken);
+            Claim usernameClaim = accessToken.Claims.FirstOrDefault(c => c.Type == "username");
+            return usernameClaim?.Value;
         }
 
         public async Task<IReadOnlyList<string>> GetBooksAsync(UserEntity user, string projectId)
         {
             string response = await CallApiAsync(_dataAccessClient, user, HttpMethod.Get, $"books/{projectId}");
             var books = XElement.Parse(response);
-            string[] bookIds = books.Elements("Book").Select(b => (string) b.Attribute("id")).ToArray();
+            string[] bookIds = books.Elements("Book").Select(b => (string)b.Attribute("id")).ToArray();
             return bookIds;
         }
 
@@ -168,8 +175,8 @@ namespace SIL.XForge.Scripture.Services
             var responseObj = JObject.Parse(responseJson);
             user.ParatextTokens = new Tokens
             {
-                AccessToken = (string) responseObj["access_token"],
-                RefreshToken = (string) responseObj["refresh_token"]
+                AccessToken = (string)responseObj["access_token"],
+                RefreshToken = (string)responseObj["refresh_token"]
             };
             await _users.UpdateAsync(user, b => b.Set(u => u.ParatextTokens, user.ParatextTokens));
         }
