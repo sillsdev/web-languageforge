@@ -28,6 +28,8 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { HomeComponent } from './home/home.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { RealtimeComponent } from './realtime/realtime.component';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,8 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    ConnectProjectComponent
+    ConnectProjectComponent,
+    RealtimeComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -61,8 +64,10 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'change-password', component: ChangePasswordComponent },
-      { path: 'connect-project', component: ConnectProjectComponent }
+      { path: 'connect-project', component: ConnectProjectComponent },
+      { path: 'realtime', component: RealtimeComponent }
     ]),
+    SharedModule,
     XForgeCommonModule
   ],
   providers: [],

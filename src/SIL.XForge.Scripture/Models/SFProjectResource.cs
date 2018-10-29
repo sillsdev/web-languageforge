@@ -18,6 +18,10 @@ namespace SIL.XForge.Scripture.Models
         [HasOne("active-sync-job")]
         public SyncJobResource ActiveSyncJob { get; set; }
         [HasMany("users")]
+        [SchemaInfo(Inverse = nameof(SFProjectUserResource.Project), IsDependent = true)]
         public IReadOnlyList<SFProjectUserResource> Users { get; set; }
+        [HasMany("texts")]
+        [SchemaInfo(Inverse = nameof(TextResource.Project), IsDependent = true)]
+        public IReadOnlyList<TextResource> Texts { get; set; }
     }
 }

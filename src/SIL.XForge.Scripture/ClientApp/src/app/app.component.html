@@ -1,11 +1,7 @@
-<div *ngIf="isInitialized">
+<div class="flex-column flex-grow" *ngIf="isInitialized">
   <app-nav-menu></app-nav-menu>
   <app-notice></app-notice>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12 body-content">
-        <router-outlet></router-outlet>
-      </div>
-    </div>
+  <div class="app-content">
+    <router-outlet></router-outlet>
   </div>
 </div>

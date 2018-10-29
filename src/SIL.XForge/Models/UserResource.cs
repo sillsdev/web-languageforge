@@ -12,7 +12,7 @@ namespace SIL.XForge.Models
         public string Email { get; set; }
         [Attr("password")]
         public string Password { get; set; }
-        [Attr("paratext-username", isImmutable: true)]
-        public string ParatextUsername { get; set; }
+        [Attr("paratext-id")]
+        public string ParatextId { get; set; }
     }
 }

@@ -4,6 +4,7 @@ import { resource, resourceRef } from '@xforge-common/models/resource';
 import { TaskConfig } from '@xforge-common/models/task-config';
 import { SFProjectUserRef } from './sfproject-user';
 import { SyncJobRef } from './sync-job';
+import { TextRef } from './text';
 import { TranslateConfig } from './translate-config';
 
 @resource
@@ -15,6 +16,7 @@ export class SFProject extends Project {
 
   users?: SFProjectUserRef[];
   activeSyncJob?: SyncJobRef;
+  texts?: TextRef[];
 
   constructor(init?: Partial<SFProject>) {
     super(init);

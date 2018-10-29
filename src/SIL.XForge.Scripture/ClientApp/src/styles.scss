@@ -4,4 +4,24 @@
 @import '~bootstrap/scss/bootstrap.scss';
 
 html, body { height: 100%; }
-body { margin: 0; font-family: 'Roboto', sans-serif; }
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-grow {
+  flex: 1 1 auto;
+}

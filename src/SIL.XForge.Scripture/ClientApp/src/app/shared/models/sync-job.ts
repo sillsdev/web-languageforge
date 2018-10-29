@@ -1,16 +1,12 @@
-import { resource, Resource, ResourceRef, resourceRef } from '@xforge-common/models/resource';
-import { SFProjectRef } from './sfproject';
-import { SFUserRef } from './sfuser';
+import { resource, ResourceRef, resourceRef } from '@xforge-common/models/resource';
+import { SFProjectData } from './sfproject-data';
 
 @resource
-export class SyncJob extends Resource {
+export class SyncJob extends SFProjectData {
   static readonly TYPE = 'syncJob';
 
   percentCompleted?: number;
   state?: 'PENDING' | 'SYNCING' | 'IDLE' | 'HOLD';
-
-  owner?: SFUserRef;
-  project?: SFProjectRef;
 
   constructor(init?: Partial<SyncJob>) {
     super(SyncJob.TYPE, init);

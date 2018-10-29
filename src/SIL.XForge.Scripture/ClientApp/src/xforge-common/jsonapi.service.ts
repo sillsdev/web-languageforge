@@ -556,6 +556,9 @@ export class JSONAPIService {
    * @returns {T} The resource.
    */
   localGet<T extends Resource>(identity: RecordIdentity): T {
+    if (identity == null) {
+      return null;
+    }
     const record = this.store.cache.query(q => q.findRecord(identity));
     return this.convertResults(record) as T;
   }
@@ -568,6 +571,9 @@ export class JSONAPIService {
    * @returns {T[]} The resources.
    */
   localGetMany<T extends Resource>(identities: RecordIdentity[]): T[] {
+    if (identities == null) {
+      return [];
+    }
     return identities.map(identity => this.localGet(identity));
   }
 
