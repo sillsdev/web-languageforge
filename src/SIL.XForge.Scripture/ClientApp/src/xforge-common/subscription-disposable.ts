@@ -2,7 +2,7 @@ import { OnDestroy } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-export class SubscriptionDisposable implements OnDestroy {
+export abstract class SubscriptionDisposable implements OnDestroy {
   private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   ngOnDestroy() {

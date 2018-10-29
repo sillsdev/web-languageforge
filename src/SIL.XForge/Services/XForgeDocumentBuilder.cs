@@ -19,8 +19,8 @@ namespace SIL.XForge.Services
         private readonly IScopedServiceProvider _scopedServiceProvider;
 
         public XForgeDocumentBuilder(
-            IJsonApiContext jsonApiContext, 
-            IRequestMeta requestMeta = null, 
+            IJsonApiContext jsonApiContext,
+            IRequestMeta requestMeta = null,
             IDocumentBuilderOptionsProvider documentBuilderOptionsProvider = null,
             IScopedServiceProvider scopedServiceProvider = null)
         {
@@ -205,7 +205,7 @@ namespace SIL.XForge.Services
                     foreach (IIdentifiable includedEntity in hasManyNavigationEntity)
                         included = AddIncludedEntity(included, includedEntity);
                 else
-                    included = AddIncludedEntity(included, (IIdentifiable)navigationEntity);
+                    included = AddIncludedEntity(included, (IIdentifiable) navigationEntity);
             });
 
             return included;
@@ -224,7 +224,8 @@ namespace SIL.XForge.Services
                 entities.Add(includedEntity);
             }
 
-            return entities;
+            ContextEntity ce = _jsonApiContext.ContextGraph.GetContextEntity(entity.GetType());
+            return AppendIncludedObject(entities, ce, entity);
         }
 
         private DocumentData GetIncludedEntity(IIdentifiable entity)
@@ -240,7 +241,9 @@ namespace SIL.XForge.Services
 
             contextEntity.Attributes.ForEach(attr =>
             {
-                data.Attributes.Add(attr.PublicAttributeName, attr.GetValue(entity));
+                var value = attr.GetValue(entity);
+                if (ShouldIncludeAttribute(attr, value))
+                    data.Attributes.Add(attr.PublicAttributeName, value);
             });
 
             return data;

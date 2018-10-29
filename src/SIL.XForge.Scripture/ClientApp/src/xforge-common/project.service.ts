@@ -5,16 +5,14 @@ import { LiveQueryObservable } from '@xforge-common/live-query-observable';
 import { ResourceService } from '@xforge-common/resource.service';
 import { Project } from './models/project';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ProjectService<T extends Project = Project> extends ResourceService {
   constructor(jsonApiService: JSONAPIService) {
     super(Project.TYPE, jsonApiService);
   }
 
-  getAll(parameters?: GetAllParameters<T>): LiveQueryObservable<T[]> {
-    return this.jsonApiService.getAll(this.type, parameters);
+  getAll(parameters?: GetAllParameters<T>, include?: string[]): LiveQueryObservable<T[]> {
+    return this.jsonApiService.getAll(this.type, parameters, include);
   }
 
   update(project: T): Promise<void> {
