@@ -19,12 +19,12 @@ export class SyncJobService extends ResourceService {
   }
 
   onlineGet(id: string): Observable<SyncJob> {
-    return this.jsonApiService.onlineGet(this.identity(id), false);
+    return this.jsonApiService.onlineGet(this.identity(id), undefined, false);
   }
 
   onlineGetActive(projectId: string): Observable<SyncJob> {
     return this.jsonApiService.onlineGetRelated({ type: SFProject.TYPE, id: projectId },
-      nameof<SFProject>('activeSyncJob'), false);
+      nameof<SFProject>('activeSyncJob'), undefined, false);
   }
 
   listen(jobId: string): Observable<SyncJob> {

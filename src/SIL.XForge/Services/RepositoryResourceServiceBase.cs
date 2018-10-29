@@ -84,7 +84,12 @@ namespace SIL.XForge.Services
             IRelationship<TEntity> relationship = GetRelationship(relAttr.InternalRelationshipName);
             IEnumerable<IResource> relResources = await relationship.GetResourcesAsync(included, resources, entity);
             if (relAttr.IsHasMany)
-                return relResources.ToArray();
+            {
+                IResource[] resArray = relResources.ToArray();
+                var result = Array.CreateInstance(relAttr.Type, resArray.Length);
+                resArray.CopyTo(result, 0);
+                return result;
+            }
             return relResources.SingleOrDefault();
         }
 

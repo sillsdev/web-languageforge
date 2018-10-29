@@ -12,7 +12,7 @@ import {
 import IndexedDBSource from '@orbit/indexeddb';
 import IndexedDBBucket from '@orbit/indexeddb-bucket';
 import Store from '@orbit/store';
-import { clone, Dict, eq, extend } from '@orbit/utils';
+import { clone, dasherize, Dict, eq, extend } from '@orbit/utils';
 import { ObjectId } from 'bson';
 import { from, fromEventPattern, merge, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -44,7 +44,7 @@ export interface GetAllParameters<T = any> {
  * The JSON-API service is responsible for performing CRUD operations on resource models. This service transparently
  * manages the interaction between three data sources: a memory cache, an IndexedDB database, and a JSON-API server.
  *
- * The service provides implementations for two types of CRUD operations are supported: optimistic and pessimistic.
+ * This service provides implementations for two types of CRUD operations: optimistic and pessimistic.
  *
  * Optimisitic operations are used for offline-only views. Optimistic queries return a live observable that will return
  * the current results from the cache immediately, and then listen for any updated results that are returned from the
@@ -52,6 +52,9 @@ export interface GetAllParameters<T = any> {
  *
  * Pessimistic operations are used for online-only views. Pessimistic queries will only return the single value that is
  * returned from the JSON-API server. Pessimistic methods are prefixed with "online".
+ *
+ * The service also provides methods for getting resources from the local cache. This can be useful for getting related
+ * resources after performing a remote query that includes relationship data.
  */
 @Injectable({
   providedIn: 'root'
@@ -212,12 +215,16 @@ export class JSONAPIService {
   /**
    * Gets the resource with the specified identity optimistically.
    *
+   * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
+   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
+   * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {LiveQueryObservable<any>} The live query observable.
+   * @returns {LiveQueryObservable<T>} The live query observable.
    */
-  get(identity: RecordIdentity, persist: boolean = true): LiveQueryObservable<any> {
-    return this.liveQuery(q => q.findRecord(identity), persist);
+  get<T extends Resource>(identity: RecordIdentity, include?: string[], persist: boolean = true
+  ): LiveQueryObservable<T> {
+    return this.liveQuery(q => q.findRecord(identity), include, persist);
   }
 
   /**
@@ -226,26 +233,35 @@ export class JSONAPIService {
    *
    * @example <caption>Type safe usage</caption>
    * jsonApiService.getRelated({ type: SFProjectUser.TYPE, id }, nameof<SFProjectUser>('user'));
+   * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
+   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
+   * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {LiveQueryObservable<any>} The live query observable.
+   * @returns {LiveQueryObservable<T>} The live query observable.
    */
-  getRelated(identity: RecordIdentity, relationship: string, persist: boolean = true): LiveQueryObservable<any> {
-    return this.liveQuery(q => q.findRelatedRecord(identity, relationship), persist);
+  getRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
+    persist: boolean = true
+  ): LiveQueryObservable<T> {
+    return this.liveQuery(q => q.findRelatedRecord(identity, relationship), include, persist);
   }
 
   /**
    * Gets all resources of the specified type optimistically. It is recommeneded that callers use the generic version
    * of {@link GetAllParameters} to ensure type safety.
    *
+   * @template T The resource type.
    * @param {string} type The resource type.
    * @param {GetAllParameters} parameters Optional. Filtering, sorting, and paging parameters.
+   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
+   * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
-   * @returns {LiveQueryObservable<any[]>} The live query observable.
+   * @returns {LiveQueryObservable<T[]>} The live query observable.
    */
-  getAll(type: string, parameters?: GetAllParameters, persist: boolean = true): LiveQueryObservable<any[]> {
-    return this.liveQuery(q => this.getAllQuery(q, type, parameters), persist);
+  getAll<T extends Resource>(type: string, parameters?: GetAllParameters, include?: string[], persist: boolean = true
+  ): LiveQueryObservable<T[]> {
+    return this.liveQuery(q => this.getAllQuery(q, type, parameters), include, persist);
   }
 
   /**
@@ -254,13 +270,18 @@ export class JSONAPIService {
    *
    * @example <caption>Type safe usage</caption>
    * jsonApiService.getAllRelated({ type: SFUser.TYPE, id }, nameof<SFUser>('projects'));
+   * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
+   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
+   * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
-   * @returns {LiveQueryObservable<any[]>} The live query observable.
+   * @returns {LiveQueryObservable<T[]>} The live query observable.
    */
-  getAllRelated(identity: RecordIdentity, relationship: string, persist: boolean = true): LiveQueryObservable<any[]> {
-    return this.liveQuery(q => q.findRelatedRecords(identity, relationship), persist);
+  getAllRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
+    persist: boolean = true
+  ): LiveQueryObservable<T[]> {
+    return this.liveQuery(q => q.findRelatedRecords(identity, relationship), include, persist);
   }
 
   /**
@@ -361,12 +382,15 @@ export class JSONAPIService {
   /**
    * Gets the resource with the specified identity pessimistically.
    *
+   * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
+   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
+   * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {Observable<any>} The query observable.
+   * @returns {Observable<T>} The query observable.
    */
-  onlineGet(identity: RecordIdentity, persist: boolean = true): Observable<any> {
-    return this.query(q => q.findRecord(identity), persist);
+  onlineGet<T extends Resource>(identity: RecordIdentity, include?: string[], persist: boolean = true): Observable<T> {
+    return this.query(q => q.findRecord(identity), include, persist);
   }
 
   /**
@@ -375,26 +399,36 @@ export class JSONAPIService {
    *
    * @example <caption>Type safe usage</caption>
    * jsonApiService.onlineGetRelated({ type: SFProjectUser.TYPE, id }, nameof<SFProjectUser>('user'));
+   * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
+   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
+   * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {Observable<any>} The query observable.
+   * @returns {Observable<T>} The query observable.
    */
-  onlineGetRelated(identity: RecordIdentity, relationship: string, persist: boolean = true): Observable<any> {
-    return this.query(q => q.findRelatedRecord(identity, relationship), persist);
+  onlineGetRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
+    persist: boolean = true
+  ): Observable<T> {
+    return this.query(q => q.findRelatedRecord(identity, relationship), include, persist);
   }
 
   /**
    * Gets all resources of the specified type pessimistically. It is recommeneded that callers use the generic version
    * of {@link GetAllParameters} to ensure type safety.
    *
+   * @template T The resource type.
    * @param {string} type The resource type.
    * @param {GetAllParameters} parameters Optional. Filtering, sorting, and paging parameters.
+   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
+   * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
-   * @returns {Observable<any[]>} The query observable.
+   * @returns {Observable<T[]>} The query observable.
    */
-  onlineGetAll(type: string, parameters?: GetAllParameters, persist: boolean = true): Observable<any[]> {
-    return this.query(q => this.getAllQuery(q, type, parameters), persist);
+  onlineGetAll<T extends Resource>(type: string, parameters?: GetAllParameters, include?: string[],
+    persist: boolean = true
+  ): Observable<T[]> {
+    return this.query(q => this.getAllQuery(q, type, parameters), include, persist);
   }
 
   /**
@@ -403,13 +437,18 @@ export class JSONAPIService {
    *
    * @example <caption>Type safe usage</caption>
    * jsonApiService.onlineGetAllRelated({ type: SFUser.TYPE, id }, nameof<SFUser>('projects'));
+   * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
+   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
+   * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
-   * @returns {Observable<any[]>} The live query observable.
+   * @returns {Observable<T[]>} The live query observable.
    */
-  onlineGetAllRelated(identity: RecordIdentity, relationship: string, persist: boolean = true): Observable<any[]> {
-    return this.query(q => q.findRelatedRecords(identity, relationship), persist);
+  onlineGetAllRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
+    persist: boolean = true
+  ): Observable<T[]> {
+    return this.query(q => q.findRelatedRecords(identity, relationship), include, persist);
   }
 
   /**
@@ -509,8 +548,33 @@ export class JSONAPIService {
     return this._setRelated(identity, relationship, related, persist, true);
   }
 
-  private liveQuery(queryOrExpression: QueryOrExpression, persist: boolean): LiveQueryObservable<any> {
-    const query = buildQuery(queryOrExpression, this.getOptions(persist, false), undefined, this.store.queryBuilder);
+  /**
+   * Gets the resource with the specified identity from the local cache.
+   *
+   * @template T The resource type.
+   * @param {RecordIdentity} identity The resource identity.
+   * @returns {T} The resource.
+   */
+  localGet<T extends Resource>(identity: RecordIdentity): T {
+    const record = this.store.cache.query(q => q.findRecord(identity));
+    return this.convertResults(record) as T;
+  }
+
+  /**
+   * Gets all of the resources with the specified identities from the local cache.
+   *
+   * @template T The resource type.
+   * @param {RecordIdentity[]} identities The resource identities.
+   * @returns {T[]} The resources.
+   */
+  localGetMany<T extends Resource>(identities: RecordIdentity[]): T[] {
+    return identities.map(identity => this.localGet(identity));
+  }
+
+  private liveQuery(queryOrExpression: QueryOrExpression, include: string[], persist: boolean
+  ): LiveQueryObservable<any> {
+    const query = buildQuery(queryOrExpression, this.getOptions(persist, false, include), undefined,
+      this.store.queryBuilder);
 
     const patch$ = fromEventPattern(
       handler => this.store.cache.on('patch', handler),
@@ -532,8 +596,8 @@ export class JSONAPIService {
     return observable;
   }
 
-  private query(queryOrExpression: QueryOrExpression, persist: boolean): Observable<any> {
-    return from(this.store.query(queryOrExpression, this.getOptions(persist, true)))
+  private query(queryOrExpression: QueryOrExpression, include: string[], persist: boolean): Observable<any> {
+    return from(this.store.query(queryOrExpression, this.getOptions(persist, true, include)))
       .pipe(map(r => this.convertResults(r)));
   }
 
@@ -645,13 +709,17 @@ export class JSONAPIService {
     return this.store.update(transformOrOperations, this.getOptions(persist, blocking));
   }
 
-  private getOptions(persist: boolean, blocking: boolean): any {
+  private getOptions(persist: boolean, blocking: boolean, include?: string[]): any {
     const update = [JSONAPIService.REMOTE];
     if (persist) {
       update.push(JSONAPIService.BACKUP);
     }
 
-    return { update, blocking };
+    const options: any = { update, blocking };
+    if (include != null) {
+      options.sources = { remote: { include: [include.map(rel => dasherize(rel)).join('.')] } };
+    }
+    return options;
   }
 
   private getUpdatedProps(current: Dict<any>, updated: Dict<any>): string[] {
