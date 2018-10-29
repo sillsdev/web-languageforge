@@ -7,7 +7,7 @@ export abstract class User extends Resource {
   name?: string;
   email?: string;
   password?: string;
-  paratextUsername?: string;
+  paratextId?: string;
 
   constructor(init?: Partial<User>) {
     super(User.TYPE, init);

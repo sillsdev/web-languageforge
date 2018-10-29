@@ -31,6 +31,10 @@ namespace SIL.XForge.Scripture.Services
                     // sync jobs
                     schemaBuilder.AddResourceType<SyncJobResource>("sync-jobs");
                     containerBuilder.RegisterResourceService<SyncJobService>();
+
+                    // texts
+                    schemaBuilder.AddResourceType<TextResource>("texts");
+                    containerBuilder.RegisterResourceService<TextService>();
                 });
 
             services.AddSingleton<IParatextService, ParatextService>();

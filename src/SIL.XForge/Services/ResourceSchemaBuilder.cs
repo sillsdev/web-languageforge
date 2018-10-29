@@ -112,28 +112,51 @@ namespace SIL.XForge.Services
         private static ResourceSchemaRelationship CreateRelationship(IContextGraph contextGraph,
             ContextEntity resourceType, RelationshipAttribute relationship)
         {
-            ContextEntity relationshipType;
-            if (relationship.Type == typeof(ProjectResource))
-                relationshipType = contextGraph.GetContextEntity("projects");
-            else
-                relationshipType = contextGraph.GetContextEntity(relationship.Type);
+            ContextEntity relationshipType = contextGraph.GetContextEntity(relationship.Type);
 
-            RelationshipAttribute inverseRelationship = null;
-            // TODO: properly handle inverse relationships
+            SchemaInfoAttribute schemaInfo = GetSchemaInfo(resourceType, relationship);
+            string inverse = null;
+            bool isDependent = false;
+            if (schemaInfo != null)
+            {
+                if (schemaInfo.Inverse != null)
+                {
+                    RelationshipAttribute inverseRelationship = relationshipType.Relationships
+                        .FirstOrDefault(r => r.InternalRelationshipName == schemaInfo.Inverse);
+                    inverse = inverseRelationship?.PublicRelationshipName;
+                }
+                isDependent = schemaInfo.IsDependent;
+            }
 
-            //if (relationship.PublicRelationshipName != Resource.OwnerRelationship)
-            //{
-            //    inverseRelationship = relationshipType.Relationships
-            //        .FirstOrDefault(r => r.PublicRelationshipName != Resource.OwnerRelationship
-            //            && r.Type.IsAssignableFrom(resourceType.EntityType));
-            //}
+            if (inverse == null)
+            {
+                // check if the related resource type has a relationship back to this type that is marked as the
+                // inverse of the current relationship
+                foreach (RelationshipAttribute candidate in relationshipType.Relationships
+                    .Where(r => r.Type.IsAssignableFrom(resourceType.EntityType)))
+                {
+                    SchemaInfoAttribute candidateSchemaInfo = GetSchemaInfo(relationshipType, candidate);
+                    if (candidateSchemaInfo?.Inverse == relationship.InternalRelationshipName)
+                    {
+                        inverse = candidate.PublicRelationshipName;
+                        break;
+                    }
+                }
+            }
 
             return new ResourceSchemaRelationship
             {
                 Type = relationship.IsHasMany ? "hasMany" : "hasOne",
                 Model = Camelize(Singularize(relationshipType.EntityName)),
-                Inverse = Camelize(inverseRelationship?.PublicRelationshipName)
+                Inverse = Camelize(inverse),
+                Dependent = isDependent ? "remove" : null
             };
+        }
+
+        private static SchemaInfoAttribute GetSchemaInfo(ContextEntity ce, RelationshipAttribute relationship)
+        {
+            PropertyInfo pi = ce.EntityType.GetProperty(relationship.InternalRelationshipName);
+            return pi.GetCustomAttribute<SchemaInfoAttribute>();
         }
 
         private static string Singularize(string word)

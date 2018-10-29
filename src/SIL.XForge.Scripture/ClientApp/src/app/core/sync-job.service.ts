@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { interval, Observable, ReplaySubject } from 'rxjs';
-import { concat, multicast, switchMap, take, takeWhile } from 'rxjs/operators';
+import { interval, Observable } from 'rxjs';
+import { takeWhileInclusive } from 'rxjs-take-while-inclusive';
+import { switchMap } from 'rxjs/operators';
 
 import { JSONAPIService } from '@xforge-common/jsonapi.service';
 import { ResourceService } from '@xforge-common/resource.service';
@@ -19,24 +20,18 @@ export class SyncJobService extends ResourceService {
   }
 
   onlineGet(id: string): Observable<SyncJob> {
-    return this.jsonApiService.onlineGet(this.identity(id), undefined, false);
+    return this.jsonApiService.onlineGet(this.identity(id), [], false);
   }
 
   onlineGetActive(projectId: string): Observable<SyncJob> {
     return this.jsonApiService.onlineGetRelated({ type: SFProject.TYPE, id: projectId },
-      nameof<SFProject>('activeSyncJob'), undefined, false);
+      nameof<SFProject>('activeSyncJob'), [], false);
   }
 
   listen(jobId: string): Observable<SyncJob> {
     return interval(2000).pipe(
       switchMap(() => this.onlineGet(jobId)),
-      multicast(
-        () => new ReplaySubject(1),
-        jobs => jobs.pipe(
-          takeWhile(j => j.isActive),
-          concat(jobs.pipe(take(1)))
-        )
-      )
+      takeWhileInclusive(j => j.isActive)
     );
   }
 

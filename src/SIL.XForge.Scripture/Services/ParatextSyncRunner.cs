@@ -186,11 +186,12 @@ namespace SIL.XForge.Scripture.Services
                             {
                                 if (!BookNames.TryGetValue(bookId, out string name))
                                     name = bookId;
-                                TextEntity text = await _texts.UpdateAsync(t => t.BookId == bookId,
+                                TextEntity text = await _texts.UpdateAsync(
+                                    t => t.ProjectRef == project.Id && t.BookId == bookId,
                                     u => u.SetOnInsert(t => t.Name, name)
                                           .SetOnInsert(t => t.BookId, bookId)
                                           .SetOnInsert(t => t.ProjectRef, project.Id)
-                                          .Set(t => t.IsDeleted, false), true);
+                                          .SetOnInsert(t => t.OwnerRef, userId), upsert: true);
 
                                 if (hasSource)
                                 {
@@ -203,9 +204,8 @@ namespace SIL.XForge.Scripture.Services
 
                             foreach (string bookId in booksToDelete)
                             {
-                                TextEntity text = await _texts.UpdateAsync(
-                                    t => t.ProjectRef == project.Id && t.BookId == bookId,
-                                    u => u.Set(t => t.IsDeleted, true));
+                                TextEntity text = await _texts.DeleteAsync(
+                                    t => t.ProjectRef == project.Id && t.BookId == bookId);
 
                                 if (hasSource)
                                     await DeleteBookAsync(conn, project, text, sourceParatextId, "source", bookId);

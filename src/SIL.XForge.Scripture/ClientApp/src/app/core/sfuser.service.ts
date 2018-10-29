@@ -15,7 +15,10 @@ export class SFUserService extends UserService<SFUser> {
     super(jsonApiService, oauthService);
   }
 
-  localGetProjects(user: SFUser): SFProject[] {
+  localGetProjects(user: SFUser | string): SFProject[] {
+    if (typeof user === 'string') {
+      user = this.jsonApiService.localGet(this.identity(user));
+    }
     return this.jsonApiService.localGetMany<SFProjectUser>(user.projects)
       .map(pu => this.jsonApiService.localGet<SFProject>(pu.project));
   }

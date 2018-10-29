@@ -5,5 +5,6 @@ namespace SIL.XForge.Models
         public string Type { get; set; }
         public string Model { get; set; }
         public string Inverse { get; set; }
+        public string Dependent { get; set; }
     }
 }

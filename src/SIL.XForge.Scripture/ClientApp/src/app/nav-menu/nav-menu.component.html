@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" [routerLink]="['/']">Scripture Forge</a>
+  <a class="navbar-brand" routerLink="/">Scripture Forge</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" [attr.aria-expanded]="isExpanded" (click)="toggle()">
       <span class="navbar-toggler-icon"></span>
   </button>
@@ -7,18 +7,23 @@
   <div class="collapse navbar-collapse" [ngClass]="{ 'show': isExpanded }">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">
-        <a class="nav-link" [routerLink]="['/home']" (click)="collapse()">
+        <a class="nav-link" routerLink="/home" (click)="collapse()">
             <i class="material-icons">home</i> Home
         </a>
       </li>
       <li class="nav-item" [routerLinkActive]="['link-active']">
-        <a class="nav-link" [routerLink]="['/counter']" (click)="collapse()">
+        <a class="nav-link" routerLink="/counter" (click)="collapse()">
             <i class="material-icons">school</i> Counter
         </a>
       </li>
       <li class="nav-item" [routerLinkActive]="['link-active']">
-        <a class="nav-link" [routerLink]="['/fetch-data']" (click)="collapse()">
+        <a class="nav-link" routerLink="/fetch-data" (click)="collapse()">
             <i class="material-icons">view_list</i> Fetch data
+        </a>
+      </li>
+      <li class="nav-item" [routerLinkActive]="['link-active']">
+        <a class="nav-link" routerLink="/realtime" (click)="collapse()">
+            <i class="material-icons">view_list</i> Realtime
         </a>
       </li>
     </ul>
