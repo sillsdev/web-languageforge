@@ -51,13 +51,14 @@
     </div>
 </div>
 @section Scripts {
+    <script src="~/lib/bootstrap/js/bootstrap.js"></script>
     <script src='https://www.google.com/recaptcha/api.js'></script>
     <script src="/lib/zxcvbn/zxcvbn.js"></script>
     <script src="/lib/zxcvbn/passwordstrengthmeter.js"></script>
 
-<script>
-    $(document).ready(function () {
-		$("#StrengthProgressBar").zxcvbnProgressBar({ passwordInput: "#Password" });
-	});
-</script>
+    <script>
+        $(document).ready(function () {
+            $("#StrengthProgressBar").zxcvbnProgressBar({ passwordInput: "#Password" });
+        });
+    </script>
 }

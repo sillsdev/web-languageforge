@@ -61,7 +61,6 @@ namespace SIL.XForge.Identity
             IConfiguration configuration)
         {
             services.AddOptions<GoogleCaptchaOptions>(configuration);
-            services.ConfigureOptions<StaticFilesConfigureOptions>();
 
             var siteOptions = configuration.GetOptions<SiteOptions>();
 
