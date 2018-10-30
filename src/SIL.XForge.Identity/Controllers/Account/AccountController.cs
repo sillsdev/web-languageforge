@@ -1,5 +1,6 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+// Licensed under the Apache License, Version 2.0.
+// Modifications copyright 2018 SIL International and licensed under a different license.
 
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver.Linq;
-using MongoDB.Driver;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 using SIL.XForge.Services;
@@ -66,7 +65,9 @@ namespace SIL.XForge.Identity.Controllers.Account
             _captcha = captcha.Value;
         }
 
-        private string GenerateValidationKey()
+        private const string ShowMessageKey = "showMessage";
+
+        private static string GenerateValidationKey()
         {
             char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
             byte[] data = new byte[1];
@@ -98,10 +99,10 @@ namespace SIL.XForge.Identity.Controllers.Account
                 // we only have one option for logging in and it's an external provider
                 return RedirectToAction("Challenge", "External", new { provider = vm.ExternalLoginScheme, returnUrl });
             }
-            if (TempData["showMessage"] != null)
+            if (TempData[ShowMessageKey] != null)
             {
-                vm.ShowMessage = TempData["showMessage"].ToString();
-                TempData["showMessage"] = null;
+                vm.ShowMessage = TempData[ShowMessageKey].ToString();
+                TempData[ShowMessageKey] = null;
             }
 
             return View(vm);
@@ -153,6 +154,9 @@ namespace SIL.XForge.Identity.Controllers.Account
                 {
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.Username, user.Id, user.Username));
 
+                    // the user's password is not forgotten, so invalidate any password reset link.
+                    await _users.UpdateAsync(user, update => update.Unset(u => u.ResetPasswordExpirationDate));
+
                     // only set explicit expiration here if user chooses "remember me".
                     // otherwise we rely upon expiration configured in cookie middleware.
                     AuthenticationProperties props = null;
@@ -163,7 +167,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                             IsPersistent = true,
                             ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration)
                         };
-                    };
+                    }
 
                     // issue authentication cookie with subject ID and username
                     await HttpContext.SignInAsync(user.Id, user.Username, props);
@@ -207,34 +211,6 @@ namespace SIL.XForge.Identity.Controllers.Account
         }
 
         /// <summary>
-        /// ResetPassword from the token produced by ForgotPassword.
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> ResetPassword(string token)
-        {
-            UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.ResetPasswordKey == token);
-            if (user != null)
-            {
-                if (DateTime.Now < user.ResetPasswordExpirationDate)
-                {
-                    ResetPasswordViewModel vm = BuildResetPasswordViewModel(user);
-                    return View("ResetPassword", vm);
-                }
-                else
-                {
-                    LoginViewModel vm = await BuildLoginViewModelAsync("");
-                    TempData["showMessage"] = "The password reset request has expired. Please request another reset.";
-                    return RedirectToAction("Login", "Account");
-                }
-            }
-            else
-            {
-                LoginViewModel vm = await BuildLoginViewModelAsync("");
-                return RedirectToAction("Login", "Account");
-            }
-        }
-
-        /// <summary>
         /// Show forgot password page
         /// </summary>
         [HttpGet]
@@ -254,22 +230,23 @@ namespace SIL.XForge.Identity.Controllers.Account
                 u => u.Username == model.EmailOrUsername || u.Email == model.EmailOrUsername,
                 update => update
                     .Set(u => u.ResetPasswordKey, GenerateValidationKey())
-                    .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddDays(PasswordResetPeriodDays)));
+                    .Set(u => u.ResetPasswordExpirationDate, DateTime.UtcNow.AddDays(PasswordResetPeriodDays)));
             if (user != null)
             {
-                SiteOptions siteOptions = _options.Value;
-                string subject = $"{siteOptions.Name} Forgotten Password Verification";
-                string url = $"https://{siteOptions.Domain}/account/resetpassword?token={user.ResetPasswordKey}";
-                string body = "<div class=''>"
+                var siteOptions = _options.Value;
+                var subject = $"{siteOptions.Name} Forgotten Password Verification";
+                // TODO (Hasso) 2018.11: use the insecure protocol for development and testing
+                var url = $"https://{siteOptions.Domain}/account/resetpassword?token={user.ResetPasswordKey}";
+                var body = "<div class=''>"
                     + $"<h1>Reset Password for {user.Name}</h1>"
                     + $"<p>Please click this link to <a href='{url}' target='_blank'>Reset Your Password</a>.</p>"
-                    + "<p>This link will be valid for 1 week only.</p>"
+                    + "<p>This link will be valid for 1 week.</p>"
                     + $"<p>Regards,<br>The {siteOptions.Name} team</p>"
                     + "</div>";
 
                 await _emailService.SendEmailAsync(user.Email, subject, body);
 
-                TempData["showMessage"] = "Password reset email sent.";
+                TempData[ShowMessageKey] = "Password reset email sent.";
                 return RedirectToAction("Login", "Account");
             }
             else
@@ -279,40 +256,60 @@ namespace SIL.XForge.Identity.Controllers.Account
             }
         }
 
+        /// <summary>
+        /// Validate the token produced by ForgotPassword; allow the user to reset the password
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword(string token)
+        {
+            var userEntity = await _users.Query().SingleOrDefaultAsync(u => u.ResetPasswordKey == token);
+            if (userEntity != null && userEntity.ResetPasswordExpirationDate > DateTime.UtcNow)
+            {
+                var vm = BuildResetPasswordViewModel(userEntity);
+                return View("ResetPassword", vm);
+            }
+
+            TempData[ShowMessageKey] = "The password reset request has expired. Please request another reset.";
+            return RedirectToAction("Login", "Account");
+        }
+
         /// <remarks>REVIEW (Hasso) 2018.10: would it be possible for an attacker of moderate intelligence to
         /// post such a request without first clicking the generated reset link?</remarks>
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                if (model.Password != model.ConfirmPassword)
-                {
-                    ModelState.AddModelError(string.Empty, "Both Passwords do not match");
-                }
-                else
-                {
-                    UserEntity user = await _users.UpdateAsync(u => u.Username == model.Username, update => update
-                        .Set(u => u.Password, BCrypt.Net.BCrypt.HashPassword(model.Password, 7))
-                        .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddYears(-42)));
-                    LoginViewModel vm = await BuildLoginViewModelAsync("");
-                    TempData["showMessage"] = "Your password has been reset. Please login.";
-                    return RedirectToAction("Login", "Account");
-                }
+                return View(model);
             }
-            return View(model);
+            if (model.Password != model.ConfirmPassword)
+            {
+                ModelState.AddModelError(string.Empty, "Both Passwords do not match");
+                return View(model);
+            }
+            var updatedUserEntity = await _users.UpdateAsync(u => u.Username == model.Username
+                                                               && u.ResetPasswordKey == model.ResetToken
+                                                               && u.ResetPasswordExpirationDate > DateTime.UtcNow,
+                update => update
+                    .Set(u => u.Password, BCrypt.Net.BCrypt.HashPassword(model.Password, 7))
+                    .Unset(u => u.ResetPasswordExpirationDate));
+            TempData[ShowMessageKey] = updatedUserEntity != null
+                ? "Your password has been reset. Please login." // valid request
+                : "The server had difficulty processing your request. Please try again."; // invalid request; play dumb.
+            return RedirectToAction("Login", "Account");
         }
 
-
-        private ResetPasswordViewModel BuildResetPasswordViewModel(UserEntity user)
+        private static ResetPasswordViewModel BuildResetPasswordViewModel(UserEntity user)
         {
             return new ResetPasswordViewModel
             {
                 Password = "",
                 ConfirmPassword = "",
                 Username = user.Username,
+                ResetToken = user.ResetPasswordKey
             };
         }
+
         /// <summary>
         /// Show logout page
         /// </summary>
@@ -395,10 +392,10 @@ namespace SIL.XForge.Identity.Controllers.Account
                     Name = model.Fullname,
                     Email = model.Email,
                     EmailVerified = false,
-                    Password = BCrypt.Net.BCrypt.HashPassword(model.Password, 7, false),
+                    Password = BCrypt.Net.BCrypt.HashPassword(model.Password, 7),
                     Role = SystemRoles.User,
                     ValidationKey = GenerateValidationKey(),
-                    ValidationExpirationDate = DateTime.Now.AddDays(7),
+                    ValidationExpirationDate = DateTime.UtcNow.AddDays(7),
                     Active = true
                 };
 
@@ -430,7 +427,6 @@ namespace SIL.XForge.Identity.Controllers.Account
         [HttpGet("Account/VerifyEmail")]
         public async Task<ActionResult> VerifyEmail([FromQuery] string email, [FromQuery] string key)
         {
-            LoginViewModel vm = await BuildLoginViewModelAsync("");
             await _users.UpdateAsync(u => u.Email == email && u.ValidationKey == key,
                 update => update.Set(u => u.EmailVerified, true));
             return View("VerifyEmail");
@@ -449,8 +445,8 @@ namespace SIL.XForge.Identity.Controllers.Account
                 {
                     EnableLocalLogin = false,
                     ReturnUrl = returnUrl,
-                    EmailOrUsername = context?.LoginHint,
-                    ExternalProviders = new ExternalProvider[] { new ExternalProvider { AuthenticationScheme = context.IdP } },
+                    EmailOrUsername = context.LoginHint,
+                    ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context.IdP } },
                     ShowMessage = ""
                 };
             }

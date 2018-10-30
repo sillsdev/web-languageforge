@@ -15,6 +15,9 @@ namespace SIL.XForge.Identity.Controllers.Account
         [DataType(DataType.Password)]
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
-        public string Username {get; set;}
+
+        public string Username { get; set; }
+
+        public string ResetToken { get; set; }
     }
 }
