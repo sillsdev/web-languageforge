@@ -320,6 +320,25 @@ namespace SIL.XForge.Identity.Controllers.Account
             Assert.That(env.Controller.ModelState.ErrorCount, Is.EqualTo(1));
         }
 
+        [Test]
+        public async Task InviteFriend_Email()
+        {
+            var env = new TestEnvironment();
+
+            var model = new UserEntity
+            {
+                Name = "user",
+                Email = "abc1@fakegmail.com"
+            };
+            var data = await env.Controller.SendInvitation(model);
+            Assert.AreEqual("An invitation email has been sent to abc1@fakegmail.com", data);
+
+            string emailId = "abc1@fakegmail.com";
+            string subject = "You've been added to the project [Project Name] on Scripture Forge";
+            // Skip verification for the body, we may change the content
+            await env.EmailService.Received().SendEmailAsync(Arg.Is(emailId), Arg.Is(subject), Arg.Any<string>());
+        }
+
         private class TestEnvironment
         {
             public TestEnvironment(bool isResetLinkExpired = false)
