@@ -148,6 +148,18 @@
   }
 }
 
-.reset-password-content {
-  margin-top:125px;
+.login-page {
+  width:100%;
+}
+
+.register-form {
+  clear: both;
+  max-width     : 400px;
+  margin-bottom : 24px;
+}
+
+.validationsummary
+{
+  width: 400px;
+  text-align: left;
 }
