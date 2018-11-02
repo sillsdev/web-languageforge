@@ -182,8 +182,8 @@ namespace SIL.XForge.DataAccess
             return update.SetOnInsert(GetPropertyName(field), value);
         }
 
-        public static IUpdateBuilder<T> Unset<T>(this IUpdateBuilder<T> update, Expression<Func<T, object>> field)
-            where T : Entity
+        public static IUpdateBuilder<T> Unset<T, TField>(this IUpdateBuilder<T> update,
+            Expression<Func<T, TField>> field) where T : Entity
         {
             return update.Unset(GetPropertyName(field));
         }
