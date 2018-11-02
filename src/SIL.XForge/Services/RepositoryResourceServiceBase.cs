@@ -42,7 +42,12 @@ namespace SIL.XForge.Services
             return Entities.UpdateAsync(e => e.Id == id, update =>
                 {
                     foreach (KeyValuePair<string, object> attr in attrs)
-                        update.Set(attr.Key, attr.Value);
+                    {
+                        if (attr.Value == null)
+                            update.Unset(attr.Key);
+                        else
+                            update.Set(attr.Key, attr.Value);
+                    }
 
                     foreach (KeyValuePair<string, string> rel in relationships)
                     {

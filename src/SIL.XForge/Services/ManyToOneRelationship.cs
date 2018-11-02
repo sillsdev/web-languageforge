@@ -38,7 +38,11 @@ namespace SIL.XForge.Services
         {
             if (!_updateAllowed)
                 return false;
-            update.Set(_getFieldExpr, ids.Single());
+            string id = ids.Single();
+            if (id == null)
+                update.Unset(_getFieldExpr);
+            else
+                update.Set(_getFieldExpr, id);
             return true;
         }
     }

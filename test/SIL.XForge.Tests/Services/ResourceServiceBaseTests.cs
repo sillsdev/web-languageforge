@@ -73,6 +73,54 @@ namespace SIL.XForge.Services
         }
 
         [Test]
+        public async Task UpdateAsync_RemoveAttribute()
+        {
+            var env = new TestEnvironment();
+            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                {
+                    { env.GetAttribute("num"), null }
+                });
+            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+
+            TestEntity entity = await env.Entities.GetAsync("test02");
+            Assert.That(entity.Num, Is.EqualTo(1));
+
+            var resource = new TestResource
+            {
+                Id = "test02"
+            };
+            TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+            Assert.That(updatedResource, Is.Not.Null);
+            Assert.That(updatedResource.Num, Is.EqualTo(default(int)));
+            Assert.That(env.Entities.Contains("test02"), Is.True);
+        }
+
+        [Test]
+        public async Task UpdateAsync_RemoveRelationship()
+        {
+            var env = new TestEnvironment();
+            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>());
+            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>
+                {
+                    { env.GetRelationship("user"), null }
+                });
+
+            TestEntity entity = await env.Entities.GetAsync("test02");
+            Assert.That(entity.UserRef, Is.EqualTo("user01"));
+
+            var resource = new TestResource
+            {
+                Id = "test02"
+            };
+            TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+            Assert.That(updatedResource, Is.Not.Null);
+            Assert.That(updatedResource.UserRef, Is.Null);
+            Assert.That(env.Entities.Contains("test02"), Is.True);
+        }
+
+        [Test]
         public async Task UpdateAsync_NotFound()
         {
             var env = new TestEnvironment();
