@@ -1,0 +1,36 @@
+{
+    "short_name": "Scripture Forge",
+    "name": "Scripture Forge",
+    "start_url": "/app/projects",
+    "background_color": "#ffffff",
+    "theme_color": "#3a3a3a",
+    "display": "fullscreen",
+    "description": "Scripture Forge is a web tool to facilitate online community Scripture checking",
+    "icons": [
+      {
+        "src": "images/sf-logo-48.png",
+        "type": "image/png",
+        "sizes": "48x48"
+      },
+      {
+        "src": "images/sf-logo-96.png",
+        "type": "image/png",
+        "sizes": "96x96"
+      },
+      {
+        "src": "images/sf-logo-144.png",
+        "type": "image/png",
+        "sizes": "144x144"
+      },
+      {
+        "src": "images/sf-logo-192.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      },
+      {
+        "src": "images/sf-logo-512.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ]
+}
