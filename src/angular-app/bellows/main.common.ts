@@ -7,6 +7,8 @@ import 'angular-zxcvbn';
 
 import 'ng-file-upload/dist/ng-file-upload-all.js';
 
+import './core/service-worker-registration.js';
+
 import './polyfills.browser';
 
 import './apps/activity/activity-app.module';
