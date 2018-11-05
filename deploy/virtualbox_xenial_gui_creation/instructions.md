@@ -21,11 +21,11 @@ cd ~/src/web-languageforge/src/SIL.XForge.Scripture
 dotnet run &
 ```
 
-A longer test could be:
+A more thorough test could be:
 
 ```
 #!/bin/bash
-set -e -o pipefail
+set -e -o pipefail -x
 cd ~/src/web-languageforge
 ./refreshDeps.sh
 gulp test-php && gulp test-ts-lf && gulp test-ts-sf
@@ -37,4 +37,17 @@ gulp webpack-sf
 ./rune2e.sh sf
 cd ~/src/web-languageforge/src/SIL.XForge.Scripture
 dotnet run &
+sleep 10m
+killall dotnet
+sleep 1m
+cd ~/src/web-languageforge/src/SIL.XForge.Scripture/ClientApp
+ng test
 ```
+
+Kill ng.
+```
+cd ~/src/web-languageforge/src/SIL.XForge.Scripture
+dotnet run
+```
+Log into http://beta.scriptureforge.localhost in Chromium.
+
