@@ -3,6 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material';
+import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance, mock } from 'ts-mockito';
 
@@ -16,8 +17,8 @@ describe('ChangePasswordComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports : [FormsModule, HttpClientModule, MatSnackBarModule, ReactiveFormsModule, RouterTestingModule],
-      declarations: [ ChangePasswordComponent ],
+      imports: [FormsModule, HttpClientModule, MatSnackBarModule, ReactiveFormsModule, RouterTestingModule],
+      declarations: [ChangePasswordComponent],
       providers: [
         { provide: UserService, useFactory: () => instance(mockedUserService) }
       ],
@@ -61,5 +62,33 @@ describe('ChangePasswordComponent', () => {
     const confirmPassword = component.changePasswordForm.controls['confirmPassword'];
     confirmPassword.setValue('Testing');
     expect(component.changePasswordForm.valid).toBeTruthy();
+  });
+
+  it('new password and confirm password fields are valid for minimum 7 length characters', () => {
+    let errors = {};
+    const newPassword = component.changePasswordForm.controls['newPassword'];
+    newPassword.setValue('1234');
+    errors = newPassword.errors || {};
+    expect(errors['required']).toBeFalsy();
+    expect(errors['minlength']).toBeTruthy();
+
+    const confirmPassword = component.changePasswordForm.controls['confirmPassword'];
+    confirmPassword.setValue('test');
+    errors = confirmPassword.errors || {};
+    expect(errors['required']).toBeFalsy();
+    expect(errors['minlength']).toBeTruthy();
+  });
+
+  it('new password and confirm password are not equal', () => {
+    const newPassword = component.changePasswordForm.controls['newPassword'];
+    newPassword.setValue('Testing');
+    const confirmPassword = component.changePasswordForm.controls['confirmPassword'];
+    confirmPassword.setValue('Newtest');
+
+    fixture.detectChanges();
+    const changePasswordBtn = fixture.debugElement.query(By.css('button[id="btnChangePassword"]'));
+    changePasswordBtn.nativeElement.click();
+    const matErrorElement = fixture.debugElement.query(By.css('mat-error'));
+    expect(matErrorElement.nativeElement.textContent.trim()).toContain('Passwords do not match');
   });
 });
