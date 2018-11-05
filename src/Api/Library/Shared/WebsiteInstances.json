@@ -10,7 +10,16 @@
       "releaseStage": "local"
     },
     {
-      "domain": "e2etest.scriptureforge.local",
+      "__comment": "scriptureforge.localhost sites",
+      "domain": "scriptureforge.localhost",
+      "base": "Website::SCRIPTUREFORGE",
+      "name": "Scripture Forge",
+      "ssl": false,
+      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
+      "releaseStage": "local"
+    },
+    {
+      "domain": "e2etest.scriptureforge.localhost",
       "base": "Website::SCRIPTUREFORGE",
       "name": "Scripture Forge",
       "ssl": "false",
@@ -18,15 +27,7 @@
       "releaseStage": "local"
     },
     {
-      "domain": "beta.scriptureforge.local",
-      "base": "Website::SCRIPTUREFORGE",
-      "name": "Scripture Forge",
-      "ssl": "true",
-      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
-      "releaseStage": "local"
-    },
-    {
-      "domain": "jamaicanpsalms.scriptureforge.local",
+      "domain": "jamaicanpsalms.scriptureforge.localhost",
       "base": "Website::SCRIPTUREFORGE",
       "name": "The Jamaican Psalms Project",
       "ssl": "false",
@@ -35,7 +36,7 @@
       "releaseStage": "local"
     },
     {
-      "domain": "jamaicanpsalms.e2etest.scriptureforge.local",
+      "domain": "jamaicanpsalms.e2etest.scriptureforge.localhost",
       "base": "Website::SCRIPTUREFORGE",
       "name": "The Jamaican Psalms Project",
       "ssl": "true",
@@ -44,7 +45,7 @@
       "releaseStage": "local"
     },
     {
-      "domain": "demo.scriptureforge.local",
+      "domain": "demo.scriptureforge.localhost",
       "base": "Website::SCRIPTUREFORGE",
       "name": "Scripture Forge",
       "ssl": "true",
@@ -98,14 +99,6 @@
       "releaseStage": "qa"
     },
     {
-      "domain": "beta.qa.scriptureforge.org",
-      "base": "Website::SCRIPTUREFORGE",
-      "name": "Scripture Forge",
-      "ssl": "true",
-      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
-      "releaseStage": "qa"
-    },
-    {
       "__comment": "scriptureforge.org",
       "domain": "scriptureforge.org",
       "base": "Website::SCRIPTUREFORGE",
@@ -149,7 +142,16 @@
       "releaseStage": "local"
     },
     {
-      "domain": "e2etest.languageforge.local",
+      "__comment": "languageforge.localhost sites",
+      "domain": "languageforge.localhost",
+      "base": "Website::LANGUAGEFORGE",
+      "name": "Language Forge",
+      "ssl": "false",
+      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
+      "releaseStage": "local"
+    },
+    {
+      "domain": "e2etest.languageforge.localhost",
       "base": "Website::LANGUAGEFORGE",
       "name": "Language Forge",
       "ssl": "false",
