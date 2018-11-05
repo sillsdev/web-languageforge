@@ -90,6 +90,14 @@ apache_vhosts:
         port: 80
         server_alias:
           - languageforge.local
+          - languageforge.localhost
+          - localhost
+        extra:
+          - '<ifModule mod_headers.c>'
+          - '    <Files "service-worker.js">'
+          - '        Header Set Service-Worker-allowed "/"'
+          - '    </Files>'
+          - '</IfModule>'
   - server_name: scriptureforge.org
     server_admin: webmaster@palaso.org
     server_file_name: scriptureforge_org
@@ -103,7 +111,14 @@ apache_vhosts:
         port: 80
         server_alias:
           - scriptureforge.local
+          - scriptureforge.localhost
           - localhost
+        extra:
+          - '<ifModule mod_headers.c>'
+          - '    <Files "service-worker.js">'
+          - '        Header Set Service-Worker-allowed "/"'
+          - '    </Files>'
+          - '</IfModule>'
         proxy:
           - '/api2/ http://localhost:5000/'
           - '/machine/ http://localhost:5001/'
@@ -112,6 +127,12 @@ apache_vhosts:
         port: 443
         certificate_file: "scriptureforge.pem"
         key_file: "scriptureforge.key"
+        extra:
+          - '<ifModule mod_headers.c>'
+          - '    <Files "service-worker.js">'
+          - '        Header Set Service-Worker-allowed "/"'
+          - '    </Files>'
+          - '</IfModule>'
         proxy:
           - '/api2/ http://localhost:5000/'
           - '/machine/ http://localhost:5001/'
@@ -128,18 +149,20 @@ apache_vhosts:
         port: 80
         server_alias:
           - beta.scriptureforge.local
+          - beta.scriptureforge.localhost
           - localhost
         proxy:
-          - '/ http://localhost:5000/'
-          - '/machine/ http://localhost:5001/'
           - '/sharedb/ "ws://localhost:5002/"'
+          - '/machine/ http://localhost:5001/'
+          - '/ http://localhost:5000/'
       - has_ssl: true
         port: 443
         server_alias:
           - beta.scriptureforge.local
+          - beta.scriptureforge.localhost
         certificate_file: "scriptureforge_beta.pem"
         key_file: "scriptureforge_beta.key"
         proxy:
-          - '/ http://localhost:5000/'
-          - '/machine/ http://localhost:5001/'
           - '/sharedb/ "ws://localhost:5002/"'
+          - '/machine/ http://localhost:5001/'
+          - '/ http://localhost:5000/'
