@@ -8,6 +8,7 @@ export class ChangePasswordPage {
   newPasswordInput = element(by.id('newPassword'));
   confirmPasswordInput = element(by.id('confirmPassword'));
   successMessage = element(by.css('div simple-snack-bar'));
+  warnPasswordNotMatch = element(by.id('passwordNotMatch'));
 
   async get() {
     await browser.get(ChangePasswordPage.baseUrl + '/change-password');

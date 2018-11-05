@@ -16,15 +16,6 @@ describe('E2E Change Password app', () => {
     await changePasswordPage.get();
   });
 
-  it('Verify the form, refuses to allow form submission if input does not match', async () => {
-    await changePasswordPage.newPasswordInput.clear();
-    await changePasswordPage.confirmPasswordInput.clear();
-    await changePasswordPage.newPasswordInput.sendKeys(newPassword);
-    await changePasswordPage.confirmPasswordInput.sendKeys('test');
-    await changePasswordPage.changePasswordButton.click();
-  });
-
-
   it('Verify the changed password navigates to homepage after clicking the submit button', async () => {
     await changePasswordPage.newPasswordInput.clear();
     await changePasswordPage.confirmPasswordInput.clear();
@@ -32,9 +23,8 @@ describe('E2E Change Password app', () => {
     await changePasswordPage.confirmPasswordInput.sendKeys(newPassword);
     await changePasswordPage.changePasswordButton.click();
 
-    await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.changePasswordButton), constants.conditionTimeout);
+    await browser.wait(ExpectedConditions.urlContains('home'), constants.conditionTimeout);
     await expect(browser.getCurrentUrl()).toContain('/home');
-    await browser.wait(ExpectedConditions.visibilityOf(changePasswordPage.successMessage), constants.conditionTimeout);
     await expect(changePasswordPage.successMessage.getText()).toContain('Password Successfully Changed');
     expect(await AppPage.getMainHeading()).toContain(constants.memberName);
     await AppPage.homepage.logoutButton.click();
@@ -49,9 +39,9 @@ describe('E2E Change Password app', () => {
     await changePasswordPage.newPasswordInput.sendKeys(constants.adminPassword);
     await changePasswordPage.confirmPasswordInput.sendKeys(constants.adminPassword);
     await changePasswordPage.changePasswordButton.click();
-    await browser.wait(ExpectedConditions.visibilityOf(changePasswordPage.successMessage), constants.conditionTimeout);
+    await browser.wait(ExpectedConditions.urlContains('home'), constants.conditionTimeout);
+    await expect(browser.getCurrentUrl()).toContain('/home');
     await expect(changePasswordPage.successMessage.getText()).toContain('Password Successfully Changed');
     await AppPage.homepage.logoutButton.click();
   });
-
 });
