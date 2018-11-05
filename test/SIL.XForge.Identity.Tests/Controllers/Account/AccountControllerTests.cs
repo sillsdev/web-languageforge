@@ -20,6 +20,7 @@ using Microsoft.Extensions.Options;
 using SIL.XForge.Configuration;
 using SIL.XForge.Identity.Configuration;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace SIL.XForge.Identity.Controllers.Account
 {
@@ -86,9 +87,9 @@ namespace SIL.XForge.Identity.Controllers.Account
                 EmailOrUsername = emailOrUsername,
                 EnableErrorMessage = false
             };
-            var result = await env.Controller.ForgotPassword(model);
-
-            Assert.That(result, Is.TypeOf<ViewResult>());
+            var result = (RedirectToActionResult) await env.Controller.ForgotPassword(model);
+            Assert.AreEqual("Account", result.ControllerName);
+            Assert.AreEqual("Login", result.ActionName);
             Assert.IsFalse(model.EnableErrorMessage);
 
             var user = await env.Users.Query().SingleOrDefaultAsync(
@@ -340,12 +341,15 @@ namespace SIL.XForge.Identity.Controllers.Account
 
                 EmailService = Substitute.For<IEmailService>();
 
+                var urlHelperFactory = Substitute.For<IUrlHelperFactory>();
+
                 serviceProvider.GetService(typeof(IAuthenticationService)).Returns(AuthService);
                 serviceProvider.GetService(typeof(ISystemClock)).Returns(new SystemClock());
                 serviceProvider.GetService(typeof(IAuthenticationSchemeProvider)).Returns(schemeProvider);
                 serviceProvider.GetService(typeof(IOptions<SiteOptions>)).Returns(options);
 
                 serviceProvider.GetService(typeof(IEmailService)).Returns(EmailService);
+                serviceProvider.GetService(typeof(IUrlHelperFactory)).Returns(urlHelperFactory);
 
                 Controller = new AccountController(interaction, clientStore, schemeProvider, Events, Users, options,
                     EmailService, captcha)

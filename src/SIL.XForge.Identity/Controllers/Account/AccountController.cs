@@ -98,6 +98,11 @@ namespace SIL.XForge.Identity.Controllers.Account
                 // we only have one option for logging in and it's an external provider
                 return RedirectToAction("Challenge", "External", new { provider = vm.ExternalLoginScheme, returnUrl });
             }
+            if (TempData["showMessage"] != null)
+            {
+                vm.ShowMessage = TempData["showMessage"].ToString();
+                TempData["showMessage"] = null;
+            }
 
             return View(vm);
         }
@@ -264,9 +269,8 @@ namespace SIL.XForge.Identity.Controllers.Account
 
                 await _emailService.SendEmailAsync(user.Email, subject, body);
 
-                LoginViewModel vm = await BuildLoginViewModelAsync("");
-                vm.ShowMessage = "Password reset email sent.";
-                return View("Login", vm);
+                TempData["showMessage"] = "Password reset email sent.";
+                return RedirectToAction("Login", "Account");
             }
             else
             {
