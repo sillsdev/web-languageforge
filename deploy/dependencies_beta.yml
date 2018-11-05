@@ -55,6 +55,7 @@
         - mongodb-org
         - nodejs
         - default-jre-headless
+      tags: [ 'packages' ]
 
     - name: check for node binary
       stat: path=/usr/local/bin/node
@@ -172,6 +173,20 @@
     - name: 'Fetch GeoLite2 database'
       shell: /usr/bin/geoipupdate
 
+    - name: add localhost to dnsmasq
+      lineinfile:
+        dest: /etc/NetworkManager/dnsmasq.d/localhost-domain
+        line: "{{item}}"
+        state: present
+        create: yes
+        mode: 'u=rw,g=r,o=r'
+      with_items:
+        - "address=/localhost/127.0.0.1"
+        - "address=/localhost/::1"
+      when: inventory_hostname == "localhost"
+      notify: restart network
+      tags: [ 'network' ]
+
     - name: add host aliases
       lineinfile:
         dest: /etc/hosts
@@ -180,11 +195,8 @@
         state: present
         create: yes
       with_items:
-        - "default.local"
         - "languageforge.local"
         - "scriptureforge.local"
-        - "jamaicanpsalms.scriptureforge.local"
-        - "demo.scriptureforge.local"
         - "beta.scriptureforge.local"
         - "es_401"
       when: inventory_hostname == "localhost"
@@ -192,3 +204,6 @@
   handlers:
     - name: restart mongod
       service: name=mongod state=restarted
+
+    - name: restart network
+      service: name=network-manager state=restarted
