@@ -3,28 +3,18 @@ import { fromEvent, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Doc, Snapshot } from 'sharedb/lib/client';
 
-const recordTypeToRealtimeDataTypeMap = new Map<string, RealtimeDataConstructor>();
-
-export function realtimeData(target: RealtimeDataConstructor) {
-  recordTypeToRealtimeDataTypeMap.set(target.TYPE, target);
-}
-
-export function getRealtimeDataType(recordType: string): RealtimeDataConstructor {
-  return recordTypeToRealtimeDataTypeMap.get(recordType);
-}
-
-export interface RealtimeDataConstructor {
+export interface RealtimeDocConstructor {
   readonly TYPE: string;
 
-  new(doc: Doc, store: LocalForage): RealtimeData;
+  new(doc: Doc, store: LocalForage): RealtimeDoc;
 }
 
-export interface OfflineData {
+interface OfflineData {
   snapshot: Snapshot;
   pendingOps: any[];
 }
 
-export abstract class RealtimeData<T = any> implements RecordIdentity {
+export abstract class RealtimeDoc<T = any> implements RecordIdentity {
   private readonly opSub: Subscription;
   private readonly pendingSub: Subscription;
 

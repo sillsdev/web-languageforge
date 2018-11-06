@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
-import { SFProject } from '../shared/models/sfproject';
 
 @Component({
   selector: 'app-fetch-data',

@@ -1,20 +1,25 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { QuillModule } from 'ngx-quill';
+import { instance, mock } from 'ts-mockito';
 
+import { TextService } from '../../core/text.service';
 import { TextComponent } from './text.component';
 
 describe('TextComponent', () => {
   let component: TextComponent;
   let fixture: ComponentFixture<TextComponent>;
 
+  const mockedTextService = mock(TextService);
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        QuillModule,
-        HttpClientTestingModule
+        QuillModule
       ],
-      declarations: [TextComponent]
+      declarations: [TextComponent],
+      providers: [
+        { provide: TextService, useFactory: () => instance(mockedTextService) }
+      ]
     })
     .compileComponents();
   }));

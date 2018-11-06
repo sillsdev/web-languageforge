@@ -1,31 +1,16 @@
 import { RecordIdentity } from '@orbit/data';
 import { clone } from '@orbit/utils';
 
-const recordTypeToResourceTypeMap = new Map<string, ResourceConstructor>();
-const recordTypeToResourceRefTypeMap = new Map<string, ResourceRefConstructor>();
-
-export function resource(target: ResourceConstructor) {
-  recordTypeToResourceTypeMap.set(target.TYPE, target);
-}
-
-export function resourceRef(target: ResourceRefConstructor) {
-  recordTypeToResourceRefTypeMap.set(target.TYPE, target);
-}
-
-export function getResourceType(recordType: string): ResourceConstructor {
-  return recordTypeToResourceTypeMap.get(recordType);
-}
-
-export function getResourceRefType(recordType: string): ResourceRefConstructor {
-  return recordTypeToResourceRefTypeMap.get(recordType);
-}
-
 export interface ResourceRefConstructor {
   readonly TYPE: string;
 
   new(id: string): ResourceRef;
 }
 
+/**
+ * This is the base class for all resource reference classes. This class represents a reference to a resource of the
+ * specified type. Subclasses should override the constructor and provide the correct type.
+ */
 export abstract class ResourceRef implements RecordIdentity {
   static readonly TYPE: string;
 
@@ -38,6 +23,10 @@ export interface ResourceConstructor {
   new(init?: Partial<Resource>): Resource;
 }
 
+/**
+ * This is the base class for all resource models. Subclasses should override the constructor and provide the correct
+ * type.
+ */
 export abstract class Resource implements RecordIdentity {
   static readonly TYPE: string;
 

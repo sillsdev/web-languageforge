@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { JSONAPIService } from '@xforge-common/jsonapi.service';
 import { ProjectUserService } from '@xforge-common/project-user.service';
-import { SFProjectUser } from '../shared/models/sfproject-user';
+import { SFProjectUser } from './models/sfproject-user';
 
 @Injectable({
   providedIn: 'root'

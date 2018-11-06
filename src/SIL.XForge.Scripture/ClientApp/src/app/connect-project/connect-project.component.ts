@@ -4,16 +4,16 @@ import { Router } from '@angular/router';
 
 import { InputSystem } from '@xforge-common/models/input-system';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
+import { ParatextProject } from '../core/models/paratext-project';
+import { SFProject, SFProjectRef } from '../core/models/sfproject';
+import { SFProjectUser } from '../core/models/sfproject-user';
+import { SFUserRef } from '../core/models/sfuser';
+import { SyncJob } from '../core/models/sync-job';
 import { ParatextService } from '../core/paratext.service';
 import { SFProjectUserService } from '../core/sfproject-user.service';
 import { SFProjectService } from '../core/sfproject.service';
 import { SFUserService } from '../core/sfuser.service';
 import { SyncJobService } from '../core/sync-job.service';
-import { ParatextProject } from '../shared/models/paratext-project';
-import { SFProject, SFProjectRef } from '../shared/models/sfproject';
-import { SFProjectUser } from '../shared/models/sfproject-user';
-import { SFUserRef } from '../shared/models/sfuser';
-import { SyncJob } from '../shared/models/sync-job';
 
 interface ConnectProjectFormValues {
   project: ParatextProject;

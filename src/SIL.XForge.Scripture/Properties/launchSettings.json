@@ -3,7 +3,7 @@
     "SIL.XForge.Scripture": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "https://beta.scriptureforge.local",
+      "launchUrl": "http://beta.scriptureforge.localhost",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

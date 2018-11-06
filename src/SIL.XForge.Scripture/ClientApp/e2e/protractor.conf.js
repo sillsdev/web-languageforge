@@ -12,7 +12,7 @@ exports.config = {
     browserName: 'chrome'
   },
   directConnect: true,
-  baseUrl: 'https://beta.scriptureforge.local/',
+  baseUrl: 'http://beta.scriptureforge.localhost/',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
@@ -22,7 +22,7 @@ exports.config = {
   SELENIUM_PROMISE_MANAGER: false,
   onPrepare() {
     browser.driver.manage().window().maximize();
-    
+
     require('ts-node').register({
       project: 'e2e/tsconfig.e2e.json'
     });

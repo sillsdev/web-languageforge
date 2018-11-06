@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
 
 import { JSONAPIService } from '@xforge-common/jsonapi.service';
-import { LiveQueryObservable } from '@xforge-common/live-query-observable';
 import { RealtimeService } from '@xforge-common/realtime.service';
 import { ResourceService } from '@xforge-common/resource.service';
-import { nameof } from '@xforge-common/utils';
-import { SFProject } from '../shared/models/sfproject';
-import { Text } from '../shared/models/text';
-import { TextData } from '../shared/models/text-data';
+import { Text } from './models/text';
+import { TextData } from './models/text-data';
 
 export type TextType = 'source' | 'target';
 
@@ -20,7 +17,7 @@ export class TextService extends ResourceService {
   }
 
   connect(id: string, textType: TextType): Promise<TextData> {
-    return this.realtimeService.connect({ type: TextData.TYPE, id : this.getTextDataId(id, textType) });
+    return this.realtimeService.connect(this.identity(this.getTextDataId(id, textType)));
   }
 
   disconnect(textData: TextData): Promise<void> {

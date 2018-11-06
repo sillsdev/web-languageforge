@@ -3,7 +3,7 @@ import { browser, by, element, ExpectedConditions, promise } from 'protractor';
 import { AppPage } from './app.po';
 
 export class LoginPage {
-  private static readonly baseUrl = 'https://beta.scriptureforge.local';
+  private static readonly baseUrl = 'http://beta.scriptureforge.localhost';
 
   private readonly constants = require('../testConstants.json');
 
