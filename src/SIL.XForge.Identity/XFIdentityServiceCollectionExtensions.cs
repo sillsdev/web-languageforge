@@ -28,8 +28,9 @@ namespace SIL.XForge.Identity
             }
         };
 
-        private static Client XFClient(string domain)
+        private static Client XFClient(string domain, bool insecureProtocol = false)
         {
+            string protocol = insecureProtocol ? "http" : "https";
             return new Client
             {
                 ClientId = "xForge",
@@ -40,12 +41,12 @@ namespace SIL.XForge.Identity
                 RequireConsent = false,
                 RedirectUris =
                 {
-                    $"https://{domain}/home",
-                    $"https://{domain}/silent-refresh.html"
+                    $"{protocol}://{domain}/home",
+                    $"{protocol}://{domain}/silent-refresh.html"
                 },
                 PostLogoutRedirectUris =
                 {
-                    $"https://{domain}/"
+                    $"{protocol}://{domain}/"
                 },
                 AllowedScopes =
                 {
@@ -58,7 +59,7 @@ namespace SIL.XForge.Identity
         }
 
         public static IServiceCollection AddXFIdentityServer(this IServiceCollection services,
-            IConfiguration configuration)
+            IConfiguration configuration, bool insecureProtocol = false)
         {
             services.AddOptions<GoogleCaptchaOptions>(configuration);
 
@@ -70,7 +71,7 @@ namespace SIL.XForge.Identity
                 .AddValidationKeys()
                 .AddInMemoryIdentityResources(IdentityResources)
                 .AddInMemoryApiResources(ApiResources)
-                .AddInMemoryClients(new[] { XFClient(siteOptions.Domain) })
+                .AddInMemoryClients(new[] { XFClient(siteOptions.Domain, insecureProtocol) })
                 .AddProfileService<UserProfileService>()
                 .AddResourceOwnerValidator<UserResourceOwnerPasswordValidator>()
                 .AddOperationalStore(options =>
