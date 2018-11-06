@@ -1,39 +1,3 @@
-.flex-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
-}
-
-.prim-around {
-  justify-content: space-around;
-}
-
-.prim-between {
-  justify-content: space-between;
-}
-
-.prim-center {
-  justify-content: center;
-}
-
-.prim-start {
-  justify-content: flex-start;
-}
-
-.sec-baseline {
-  align-items: baseline;
-}
-
-.sec-center {
-  align-content: center;
-  align-items: center;
-}
-
 #content > div {
   width: 100%;
 }
@@ -76,7 +40,7 @@
     width: 24px;
   }
 
-  #header button {
+  #header a {
     margin: 2px;
     padding: 0px 6px;
     font-size: .9rem;
@@ -96,9 +60,11 @@
     width: 16px;
   }
 
-  #header button {
+  #header a {
     margin: 0px;
     padding: 0px;
+    line-height:24px;
+    height:24px;
     font-size: .7rem;
   }
 }
@@ -106,6 +72,14 @@
 @media screen and (max-width: 270px) {
   #icon {
     width: 8px;
+  }
+
+  #header a {
+    margin: 0px;
+    padding: 0px;
+    line-height:18px;
+    height:18px;
+    font-size: .5rem;
   }
 }
 

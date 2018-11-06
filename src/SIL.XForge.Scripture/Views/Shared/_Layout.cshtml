@@ -20,11 +20,21 @@
     @RenderSection("css", required: false)
 </head>
 <body>
-    <div class="container body-content">
+    <div class="mdl-layout__content container body-content">
         @RenderBody()
     </div>
     <script src="~/lib/jquery/jquery.js"></script>
     <script src="~/lib/material-design-lite/js/material.min.js"></script>
+    <div id="footer" class="flex-column">
+        <div id="icons" class="flex-row prim-between sec-center">
+            <div id="payap"><a href="https://inter.payap.ac.th/"><img src="/images/payap_logo.png" alt="Payap University Logo"></a></div>
+            <div id="sil"><a href="http://www.sil.org"><img src="/images/sil_logo.png" alt="SIL International Logo"></a></div>
+        </div>
+        <div id="copyright" class="flex-row prim-center sec-center">
+            <div>Copyright &copy; <span class="notranslate">2018 </span><a href="http://www.sil.org">SIL International</a>. Use of this site is
+            governed by our <a href="/terms_and_conditions">terms and conditions</a>.</div>
+        </div>
+    </div>
     @RenderSection("scripts", required: false)
 </body>
 </html>

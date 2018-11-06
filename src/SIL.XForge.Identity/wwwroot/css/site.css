@@ -86,11 +86,68 @@
   border-color: #ebccd1;
 }
 .forgot-password-content {
-  margin-top:125px;
+  margin-top: 125px;
 }
 .password {
   margin-bottom: 20px;
 }
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.prim-around {
+  justify-content: space-around;
+}
+.prim-between {
+  justify-content: space-between;
+}
+.prim-center {
+  justify-content: center;
+}
+.prim-start {
+  justify-content: flex-start;
+}
+.sec-baseline {
+  align-items: baseline;
+}
+.sec-center {
+  align-content: center;
+  align-items: center;
+}
+#footer {
+  background-color: #0067A5;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 5px;
+}
+#sil {
+  width: 100px;
+}
+#payap {
+  width: 170px;
+}
+#payap img {
+  width:100%;
+  height:auto;
+}
+#sil img {
+  width:100%;
+  height:auto;
+}
+@media screen and (max-width: 600px) {
+  #sil {
+    width: 50px;
+  }
+  #payap {
+    width: 85px;
+  }
+}
+
 .reset-password-content {
   margin-top:125px;
 }
