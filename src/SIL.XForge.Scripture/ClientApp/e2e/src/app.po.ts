@@ -9,7 +9,7 @@ export class AppPage {
   };
 
   static navigateTo(): promise.Promise<any> {
-    return browser.get('https://beta.scriptureforge.local/');
+    return browser.get('http://beta.scriptureforge.localhost/');
   }
 
   static getMainHeading(): promise.Promise<string> {

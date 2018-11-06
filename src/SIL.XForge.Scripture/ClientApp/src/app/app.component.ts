@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthConfig, JwksValidationHandler, OAuthService } from 'angular-oauth2-oidc';
 
 import { JSONAPIService } from '@xforge-common/jsonapi.service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,8 @@ export class AppComponent {
     clientId: 'xForge',
     scope: 'openid profile email api',
     postLogoutRedirectUri: window.location.origin + '/',
-    silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html'
+    silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html',
+    requireHttps: environment.production
   };
 
   title = 'Scripture Forge';
