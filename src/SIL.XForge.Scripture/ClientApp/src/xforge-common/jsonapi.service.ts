@@ -19,7 +19,8 @@ import { map, startWith } from 'rxjs/operators';
 
 import { XForgeJSONAPISource } from './jsonapi/xforge-jsonapi-source';
 import { LiveQueryObservable } from './live-query-observable';
-import { getResourceRefType, getResourceType, Resource, ResourceRef } from './models/resource';
+import { DomainModel } from './models/domain-model';
+import { Resource, ResourceRef } from './models/resource';
 
 export interface Filter<T = any> {
   name: Extract<keyof T, string>;
@@ -72,7 +73,7 @@ export class JSONAPIService {
   private backup: IndexedDBSource;
   private coordinator: Coordinator;
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient, private readonly domainModel: DomainModel) { }
 
   /**
    * Initializes the service. This should be called at application startup after the user has logged in.
@@ -722,7 +723,7 @@ export class JSONAPIService {
     }
 
     const options: any = { update, blocking };
-    if (include != null) {
+    if (include != null && include.length > 0) {
       options.sources = { remote: { include: [include.map(rel => dasherize(rel)).join('.')] } };
     }
     return options;
@@ -759,7 +760,7 @@ export class JSONAPIService {
   }
 
   private createResource(record: Record): Resource {
-    const ResourceType = getResourceType(record.type);
+    const ResourceType = this.domainModel.getResourceType(record.type);
     const resource = new ResourceType();
     resource.id = record.id;
     if (record.attributes != null) {
@@ -784,7 +785,7 @@ export class JSONAPIService {
     if (identity === null) {
       return null;
     }
-    const ResourceRefType = getResourceRefType(identity.type);
+    const ResourceRefType = this.domainModel.getResourceRefType(identity.type);
     return new ResourceRefType(identity.id);
   }
 

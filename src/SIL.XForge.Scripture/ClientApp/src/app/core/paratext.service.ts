@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ParatextProject } from '../shared/models/paratext-project';
+import { ParatextProject } from './models/paratext-project';
 import { SFUserService } from './sfuser.service';
 
 @Injectable({

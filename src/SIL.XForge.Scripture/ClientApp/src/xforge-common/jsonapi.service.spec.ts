@@ -1,13 +1,12 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { instance, mock } from 'ts-mockito';
 
 import { JSONAPIService } from './jsonapi.service';
+import { DomainModel } from './models/domain-model';
 
 describe('JSONAPIService', () => {
-  const oauthServiceStub = {
-    getAccessToken() { return 'token'; }
-  };
+  const mockedDomainModel = mock(DomainModel);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -16,7 +15,7 @@ describe('JSONAPIService', () => {
       ],
       providers: [
         JSONAPIService,
-        { provide: OAuthService, useValue: oauthServiceStub }
+        { provide: DomainModel, useFactory: () => instance(mockedDomainModel) }
       ]
     });
   });

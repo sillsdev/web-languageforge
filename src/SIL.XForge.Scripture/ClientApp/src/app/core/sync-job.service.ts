@@ -6,9 +6,9 @@ import { switchMap } from 'rxjs/operators';
 import { JSONAPIService } from '@xforge-common/jsonapi.service';
 import { ResourceService } from '@xforge-common/resource.service';
 import { nameof } from '@xforge-common/utils';
-import { SFProject, SFProjectRef } from '../shared/models/sfproject';
-import { SFUserRef } from '../shared/models/sfuser';
-import { SyncJob } from '../shared/models/sync-job';
+import { SFProject, SFProjectRef } from './models/sfproject';
+import { SFUserRef } from './models/sfuser';
+import { SyncJob } from './models/sync-job';
 import { SFUserService } from './sfuser.service';
 
 @Injectable({

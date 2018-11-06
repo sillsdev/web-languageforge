@@ -1,7 +1,6 @@
-import { resource, ResourceRef, resourceRef } from '@xforge-common/models/resource';
+import { ResourceRef } from '@xforge-common/models/resource';
 import { SFProjectData } from './sfproject-data';
 
-@resource
 export class SyncJob extends SFProjectData {
   static readonly TYPE = 'syncJob';
 
@@ -17,7 +16,6 @@ export class SyncJob extends SFProjectData {
   }
 }
 
-@resourceRef
 export class SyncJobRef extends ResourceRef {
   static readonly TYPE = SyncJob.TYPE;
 
