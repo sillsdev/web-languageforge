@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { nameof } from '@xforge-common/utils';
+import { SFProject } from '../core/models/sfproject';
+import { Text } from '../core/models/text';
 import { SFProjectService } from '../core/sfproject.service';
-import { SFProject } from '../shared/models/sfproject';
-import { Text } from '../shared/models/text';
 
 
 @Component({

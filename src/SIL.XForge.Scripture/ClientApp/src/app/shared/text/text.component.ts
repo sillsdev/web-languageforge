@@ -3,8 +3,8 @@ import Quill, { DeltaStatic, Sources } from 'quill';
 import { fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
-import { TextService, TextType } from 'src/app/core/text.service';
-import { TextData } from '../models/text-data';
+import { TextData } from '../../core/models/text-data';
+import { TextService, TextType } from '../../core/text.service';
 import { registerScripture } from './quill-scripture';
 
 registerScripture();

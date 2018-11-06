@@ -4,9 +4,10 @@ import { underscore } from '@orbit/utils';
 import * as localforage from 'localforage';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import * as RichText from 'rich-text';
-import { Connection, Doc, types } from 'sharedb/lib/client';
+import { Connection, types } from 'sharedb/lib/client';
 
-import { getRealtimeDataType, OfflineData, RealtimeData } from './models/realtime-data';
+import { DomainModel } from './models/domain-model';
+import { RealtimeDoc } from './models/realtime-doc';
 
 types.register(RichText.type);
 
@@ -16,36 +17,37 @@ types.register(RichText.type);
 export class RealtimeService {
   private readonly ws: ReconnectingWebSocket;
   private readonly connection: Connection;
-  private readonly dataMap = new Map<RecordIdentity, Promise<any>>();
+  private readonly docs = new Map<RecordIdentity, Promise<any>>();
   private readonly stores = new Map<string, LocalForage>();
 
-  constructor() {
-    this.ws = new ReconnectingWebSocket('wss://' + window.location.host + '/sharedb/');
+  constructor(private readonly domainModel: DomainModel) {
+    const protocol = window.location.protocol === 'https' ? 'wss' : 'ws';
+    this.ws = new ReconnectingWebSocket(protocol + '://' + window.location.host + '/sharedb/');
     this.connection = new Connection(this.ws);
   }
 
-  connect<T extends RealtimeData>(identity: RecordIdentity): Promise<T> {
-    if (!this.dataMap.has(identity)) {
-      const doc = this.connection.get(underscore(identity.type), identity.id);
+  connect<T extends RealtimeDoc>(identity: RecordIdentity): Promise<T> {
+    if (!this.docs.has(identity)) {
+      const sharedbDoc = this.connection.get(underscore(identity.type) + '_data', identity.id);
       const store = this.getStore(identity.type);
-      const RealtimeDataType = getRealtimeDataType(identity.type);
-      const data = new RealtimeDataType(doc, store);
-      this.dataMap.set(identity, new Promise<any>((resolve, reject) => {
-        data.subscribe().then(() => resolve(data), err => reject(err));
+      const RealtimeDocType = this.domainModel.getRealtimeDocType(identity.type);
+      const realtimeDoc = new RealtimeDocType(sharedbDoc, store);
+      this.docs.set(identity, new Promise<any>((resolve, reject) => {
+        realtimeDoc.subscribe().then(() => resolve(realtimeDoc), err => reject(err));
       }));
     }
 
-    return this.dataMap.get(identity);
+    return this.docs.get(identity);
   }
 
-  disconnect(data: RealtimeData): Promise<void> {
-    this.dataMap.delete(data);
-    return data.dispose();
+  disconnect(doc: RealtimeDoc): Promise<void> {
+    this.docs.delete(doc);
+    return doc.dispose();
   }
 
   private getStore(type: string): LocalForage {
     if (!this.stores.has(type)) {
-      this.stores.set(type, localforage.createInstance({ name: type }));
+      this.stores.set(type, localforage.createInstance({ name: 'xforge-realtime', storeName: type }));
     }
     return this.stores.get(type);
   }

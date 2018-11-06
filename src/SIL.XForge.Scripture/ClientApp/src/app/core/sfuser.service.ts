@@ -3,9 +3,9 @@ import { OAuthService } from 'angular-oauth2-oidc';
 
 import { JSONAPIService } from '@xforge-common/jsonapi.service';
 import { UserService } from '@xforge-common/user.service';
-import { SFProject } from '../shared/models/sfproject';
-import { SFProjectUser } from '../shared/models/sfproject-user';
-import { SFUser } from '../shared/models/sfuser';
+import { SFProject } from './models/sfproject';
+import { SFProjectUser } from './models/sfproject-user';
+import { SFUser } from './models/sfuser';
 
 @Injectable({
   providedIn: 'root'
