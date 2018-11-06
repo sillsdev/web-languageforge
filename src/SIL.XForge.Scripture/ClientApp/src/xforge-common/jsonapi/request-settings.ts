@@ -1,8 +1,12 @@
 import { Query, Source, Transform } from '@orbit/data';
 import { clone, deepGet, deepMerge, deepSet, deprecate, isArray } from '@orbit/utils';
 
+export interface Filter {
+  [filterOn: string]: any;
+}
+
 export interface RequestOptions {
-  filter?: any;
+  filter?: Filter[];
   sort?: any;
   page?: any;
   include?: any;
