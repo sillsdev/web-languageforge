@@ -270,7 +270,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             {
                 Fullname = "Non Duplicated Name",
                 Password = "unimportant1234",
-                Email = "duplicate@fakegmail.com"
+                Email = "DUPLICATE@fakegmail.com"
             };
 
             var result = await env.Controller.Register(model, "/home");
