@@ -382,7 +382,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                bool emailExists = await _users.Query().AnyAsync(u => String.Equals(u.Email, model.Email, StringComparison.OrdinalIgnoreCase));
+                bool emailExists = await _users.Query().AnyAsync(u => u.Email.ToLowerInvariant() == model.Email.ToLowerInvariant());
                 if (emailExists)
                 {
                     ModelState.AddModelError(string.Empty,
