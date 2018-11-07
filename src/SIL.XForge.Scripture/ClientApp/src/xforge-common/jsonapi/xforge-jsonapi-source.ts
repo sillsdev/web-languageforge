@@ -37,7 +37,7 @@ export class XForgeJSONAPISource extends JSONAPISource {
     return operator(this, query);
   }
 
-  protected _processRequestsWithOptions(requests, processors, options): Promise<Transform[]> {
+  protected _processRequestsWithOptions(requests: any[], processors: any, options: any): Promise<Transform[]> {
     const transforms: Transform[] = [];
     let result: Promise<void> = Orbit.Promise.resolve();
 
@@ -46,7 +46,7 @@ export class XForgeJSONAPISource extends JSONAPISource {
 
       result = result.then(() => {
         return processor(this, request, options)
-          .then(additionalTransforms => {
+          .then((additionalTransforms: Transform[]) => {
             if (additionalTransforms) {
               Array.prototype.push.apply(transforms, additionalTransforms);
             }

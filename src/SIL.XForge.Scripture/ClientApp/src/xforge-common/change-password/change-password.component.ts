@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 
@@ -17,7 +17,7 @@ export class ChangePasswordComponent implements OnInit {
   errorNotMatchMessage: boolean = false;
   get formControls() { return this.changePasswordForm.controls; }
 
-  @ViewChild('changePasswordRef') changePasswordNgForm;
+  @ViewChild('changePasswordRef') changePasswordNgForm: NgForm;
 
   constructor(private readonly formBuilder: FormBuilder,
     private readonly userService: UserService,

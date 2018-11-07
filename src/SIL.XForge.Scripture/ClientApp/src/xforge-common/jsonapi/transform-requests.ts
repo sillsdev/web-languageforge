@@ -22,7 +22,7 @@ import { clone, deepSet } from '@orbit/utils';
 import { buildFetchSettings, customRequestOptions } from './request-settings';
 
 export const TransformRequestProcessors = {
-  addRecord(source: JSONAPISource, request, options) {
+  addRecord(source: JSONAPISource, request: any, options: any) {
     const { serializer } = source;
     const record = request.record;
     const requestDoc: JSONAPIDocument = serializer.serializeDocument(record);
@@ -32,7 +32,7 @@ export const TransformRequestProcessors = {
       .then((raw: JSONAPIDocument) => handleChanges(record, serializer.deserializeDocument(raw, record), options));
   },
 
-  removeRecord(source: JSONAPISource, request) {
+  removeRecord(source: JSONAPISource, request: any) {
     const { type, id } = request.record;
     const settings = buildFetchSettings(request.options, { method: 'DELETE' });
 
@@ -40,7 +40,7 @@ export const TransformRequestProcessors = {
       .then(() => []);
   },
 
-  replaceRecord(source: JSONAPISource, request, options) {
+  replaceRecord(source: JSONAPISource, request: any, options: any) {
     const { serializer } = source;
     const record = request.record;
     const { type, id } = record;
@@ -57,11 +57,11 @@ export const TransformRequestProcessors = {
       });
   },
 
-  addToRelatedRecords(source: JSONAPISource, request) {
+  addToRelatedRecords(source: JSONAPISource, request: any) {
     const { type, id } = request.record;
     const { relationship } = request;
     const json = {
-      data: request.relatedRecords.map(r => source.serializer.resourceIdentity(r))
+      data: request.relatedRecords.map((r: any) => source.serializer.resourceIdentity(r))
     };
     const settings = buildFetchSettings(request.options, { method: 'POST', json });
 
@@ -69,11 +69,11 @@ export const TransformRequestProcessors = {
       .then(() => []);
   },
 
-  removeFromRelatedRecords(source: JSONAPISource, request) {
+  removeFromRelatedRecords(source: JSONAPISource, request: any) {
     const { type, id } = request.record;
     const { relationship } = request;
     const json = {
-      data: request.relatedRecords.map(r => source.serializer.resourceIdentity(r))
+      data: request.relatedRecords.map((r: any) => source.serializer.resourceIdentity(r))
     };
     const settings = buildFetchSettings(request.options, { method: 'DELETE', json });
 
@@ -81,7 +81,7 @@ export const TransformRequestProcessors = {
       .then(() => []);
   },
 
-  replaceRelatedRecord(source: JSONAPISource, request) {
+  replaceRelatedRecord(source: JSONAPISource, request: any) {
     const { type, id } = request.record;
     const { relationship, relatedRecord } = request;
     const json = {
@@ -93,11 +93,11 @@ export const TransformRequestProcessors = {
       .then(() => []);
   },
 
-  replaceRelatedRecords(source: JSONAPISource, request) {
+  replaceRelatedRecords(source: JSONAPISource, request: any) {
     const { type, id } = request.record;
     const { relationship, relatedRecords } = request;
     const json = {
-      data: relatedRecords.map(r => source.serializer.resourceIdentity(r))
+      data: relatedRecords.map((r: any) => source.serializer.resourceIdentity(r))
     };
     const settings = buildFetchSettings(request.options, { method: 'PATCH', json });
 
@@ -183,8 +183,8 @@ const OperationToRequestMap = {
 };
 
 export function getTransformRequests(source: JSONAPISource, transform: Transform) {
-  const requests = [];
-  let prevRequest;
+  const requests: any[] = [];
+  let prevRequest: any;
 
   transform.operations.forEach((operation: RecordOperation) => {
     let request;
@@ -246,7 +246,7 @@ function replaceRecordHasMany(record: RecordIdentity, relationship: string, rela
   deepSet(record, ['relationships', relationship, 'data'], relatedRecords.map(r => cloneRecordIdentity(r)));
 }
 
-function handleChanges(record: Record, responseDoc, options) {
+function handleChanges(record: Record, responseDoc: any, options: any) {
   const updatedRecord: Record = <Record>responseDoc.data;
   const transforms = [];
   const updateOps = recordDiffs(record, updatedRecord);
@@ -254,7 +254,7 @@ function handleChanges(record: Record, responseDoc, options) {
     transforms.push(buildTransform(updateOps, options));
   }
   if (responseDoc.included && responseDoc.included.length > 0) {
-    const includedOps = responseDoc.included.map(rec => {
+    const includedOps = responseDoc.included.map((rec: any) => {
       return { op: 'replaceRecord', rec };
     });
     transforms.push(buildTransform(includedOps, options));
