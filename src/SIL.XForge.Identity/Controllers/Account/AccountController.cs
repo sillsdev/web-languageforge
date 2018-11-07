@@ -223,14 +223,14 @@ namespace SIL.XForge.Identity.Controllers.Account
                 else
                 {
                     LoginViewModel vm = await BuildLoginViewModelAsync("");
-                    vm.ShowMessage = "The password reset request has expired. Please request another reset.";
-                    return Redirect("Login");
+                    TempData["showMessage"] = "The password reset request has expired. Please request another reset.";
+                    return RedirectToAction("Login", "Account");
                 }
             }
             else
             {
                 LoginViewModel vm = await BuildLoginViewModelAsync("");
-                return Redirect("Login");
+                return RedirectToAction("Login", "Account");
             }
         }
 
@@ -296,8 +296,8 @@ namespace SIL.XForge.Identity.Controllers.Account
                         .Set(u => u.Password, BCrypt.Net.BCrypt.HashPassword(model.Password, 7))
                         .Set(u => u.ResetPasswordExpirationDate, DateTime.Now.AddYears(-42)));
                     LoginViewModel vm = await BuildLoginViewModelAsync("");
-                    vm.ShowMessage = "Your password has been reset. Please login.";
-                    return Redirect("Login");
+                    TempData["showMessage"] = "Your password has been reset. Please login.";
+                    return RedirectToAction("Login", "Account");
                 }
             }
             return View(model);
