@@ -137,10 +137,12 @@ namespace SIL.XForge.Identity.Controllers.Account
             const string resetPasswordKey = "not" + TestResetPasswordKey;
             var env = new TestEnvironment();
 
-            var result = await env.Controller.ResetPassword(resetPasswordKey);
-            Assert.That(result, Is.TypeOf<RedirectResult>(), "shouldn't accept incorrect key");
-            var redirectResult = result as RedirectResult;
-            Assert.That(redirectResult.Url, Is.EqualTo("Login"), "bad link should redirect to login");
+            var result = (RedirectToActionResult) await env.Controller.ResetPassword(resetPasswordKey);
+            Assert.AreEqual("Account", result.ControllerName);
+            Assert.AreEqual("Login", result.ActionName);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>(), "shouldn't accept incorrect key");
+            var redirectResult = result as RedirectToActionResult;
+            Assert.That(redirectResult.ActionName, Is.EqualTo("Login"), "bad link should redirect to login");
         }
 
         [Test]
@@ -149,10 +151,12 @@ namespace SIL.XForge.Identity.Controllers.Account
             const string resetPasswordKey = TestResetPasswordKey;
             var env = new TestEnvironment(isResetLinkExpired: true);
 
-            var result = await env.Controller.ResetPassword(resetPasswordKey);
-            Assert.That(result, Is.TypeOf<RedirectResult>(), "shouldn't accept expired key");
-            var redirectResult = result as RedirectResult;
-            Assert.That(redirectResult.Url, Is.EqualTo("Login"), "bad link should redirect to login");
+            var result = (RedirectToActionResult) await env.Controller.ResetPassword(resetPasswordKey);
+            Assert.AreEqual("Account", result.ControllerName);
+            Assert.AreEqual("Login", result.ActionName);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>(), "shouldn't accept expired key");
+            var redirectResult = result as RedirectToActionResult;
+            Assert.That(redirectResult.ActionName, Is.EqualTo("Login"), "bad link should redirect to login");
         }
 
         [Test]
@@ -166,9 +170,12 @@ namespace SIL.XForge.Identity.Controllers.Account
                 ConfirmPassword = "NewPassword"
             };
             var beforeSave = await env.Users.Query().SingleOrDefaultAsync();
-            var result = await env.Controller.ResetPassword(model);
-            Assert.That(result, Is.TypeOf<RedirectResult>(), "bad username should redirect to login");
-            Assert.That(((RedirectResult)result).Url, Is.EqualTo("Login"), "bad username should redirect to login");
+            var result = (RedirectToActionResult) await env.Controller.ResetPassword(model);
+            Assert.AreEqual("Account", result.ControllerName);
+            Assert.AreEqual("Login", result.ActionName);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>(), "bad username should redirect to login");
+            var redirectResult = result as RedirectToActionResult;
+            Assert.That(redirectResult.ActionName, Is.EqualTo("Login"), "bad username should redirect to login");
             var afterSave = await env.Users.Query().SingleOrDefaultAsync();
             Assert.That(afterSave.Password, Is.EqualTo(beforeSave.Password));
         }
@@ -205,7 +212,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             };
             var beforeSave = await env.Users.Query().SingleOrDefaultAsync();
             var result = await env.Controller.ResetPassword(model);
-            Assert.That(result, Is.TypeOf<RedirectResult>());
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>());
             var afterSave = await env.Users.Query().SingleOrDefaultAsync();
             Assert.That(afterSave.Password, Is.Not.EqualTo(beforeSave.Password));
         }
@@ -222,14 +229,16 @@ namespace SIL.XForge.Identity.Controllers.Account
                 ConfirmPassword = "NewPassword"
             };
             var beforeSave = await env.Users.Query().SingleOrDefaultAsync();
-            var result = await env.Controller.ResetPassword(model);
-            Assert.That(result, Is.TypeOf<RedirectResult>());
+            var result = (RedirectToActionResult) await env.Controller.ResetPassword(model);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>());
             var afterSave = await env.Users.Query().SingleOrDefaultAsync();
             Assert.True(beforeSave.Password != afterSave.Password);
-            result = await env.Controller.ResetPassword(TestResetPasswordKey);
-            Assert.That(result, Is.TypeOf<RedirectResult>(), "link should work only once");
-            var redirectResult = result as RedirectResult;
-            Assert.That(redirectResult.Url, Is.EqualTo("Login"), "bad link should redirect to login");
+            result = (RedirectToActionResult) await env.Controller.ResetPassword(TestResetPasswordKey);
+            Assert.AreEqual("Account", result.ControllerName);
+            Assert.AreEqual("Login", result.ActionName);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>(), "link should work only once");
+            var redirectResult = result as RedirectToActionResult;
+            Assert.That(redirectResult.ActionName, Is.EqualTo("Login"), "bad link should redirect to login");
         }
 
         [Test]
