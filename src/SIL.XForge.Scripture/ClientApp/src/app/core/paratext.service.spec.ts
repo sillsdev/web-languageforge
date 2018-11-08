@@ -1,14 +1,12 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
-import { OAuthService } from 'angular-oauth2-oidc';
 import { instance, mock } from 'ts-mockito';
 
+import { AuthService } from '@xforge-common/auth.service';
 import { ParatextService } from './paratext.service';
-import { SFUserService } from './sfuser.service';
 
 describe('ParatextService', () => {
-  const mockedOAuthService = mock(OAuthService);
-  const mockedSFUserService = mock(SFUserService);
+  const mockedAuthService = mock(AuthService);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -17,8 +15,7 @@ describe('ParatextService', () => {
       ],
       providers: [
         ParatextService,
-        { provide: OAuthService, useFactory: () => instance(mockedOAuthService) },
-        { provide: SFUserService, useFactory: () => instance(mockedSFUserService) }
+        { provide: AuthService, useFactory: () => instance(mockedAuthService) }
       ]
     });
   });

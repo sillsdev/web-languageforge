@@ -2,11 +2,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { EMPTY } from 'rxjs';
 import { instance, mock, when } from 'ts-mockito';
 
-import { JSONAPIService } from '@xforge-common/jsonapi.service';
+import { AuthService } from '@xforge-common/auth.service';
 import { XForgeCommonModule } from '@xforge-common/xforge-common.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
@@ -16,9 +14,7 @@ import { HomeComponent } from './home/home.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 
 describe('AppComponent', () => {
-  const mockedOAuthService = mock(OAuthService);
-  const mockedJSONAPIService = mock(JSONAPIService);
-  when(mockedOAuthService.events).thenReturn(EMPTY);
+  const mockedAuthService = mock(AuthService);
 
   let fixture: ComponentFixture<AppComponent>;
 
@@ -43,8 +39,7 @@ describe('AppComponent', () => {
         XForgeCommonModule
       ],
       providers: [
-        { provide: OAuthService, useFactory: () => instance(mockedOAuthService) },
-        { provide: JSONAPIService, useFactory: () => instance(mockedJSONAPIService) }
+        { provide: AuthService, useFactory: () => instance(mockedAuthService) }
       ]
     }).compileComponents();
   }));

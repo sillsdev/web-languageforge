@@ -1,26 +1,12 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatOptionModule,
-  MatProgressBarModule,
-  MatProgressSpinnerModule,
-  MatSelectModule,
-  MatSnackBarModule
-} from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
 
-import { ChangePasswordComponent } from '@xforge-common/change-password/change-password.component';
 import { DetailSnackBarComponent } from '@xforge-common/notice/detail-snack-bar.component';
+import { UICommonModule } from '@xforge-common/ui-common.module';
 import { XForgeCommonModule } from '@xforge-common/xforge-common.module';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
 import { CoreModule } from './core/core.module';
@@ -42,33 +28,14 @@ import { SharedModule } from './shared/shared.module';
     RealtimeComponent
   ],
   imports: [
+    AppRoutingModule,
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     BrowserAnimationsModule,
     CoreModule,
-    FormsModule,
-    FlexLayoutModule,
     HttpClientModule,
-    MatButtonModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatOptionModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatSelectModule,
-    MatSnackBarModule,
-    ReactiveFormsModule,
-    RouterModule.forRoot([
-      { path: 'home', component: HomeComponent },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'change-password', component: ChangePasswordComponent },
-      { path: 'connect-project', component: ConnectProjectComponent },
-      { path: 'realtime', component: RealtimeComponent }
-    ]),
     SharedModule,
-    XForgeCommonModule
+    UICommonModule,
+    XForgeCommonModule,
   ],
   providers: [],
   entryComponents: [DetailSnackBarComponent],

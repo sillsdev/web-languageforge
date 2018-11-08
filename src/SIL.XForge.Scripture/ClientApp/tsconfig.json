@@ -22,9 +22,8 @@
     "module": "es2015",
     "baseUrl": "./",
     "paths": {
-      "@xforge-common/*": [
-        "./src/xforge-common/*"
-      ],
+      "@xforge-common/*": ["./src/xforge-common/*"],
+      "@identity/*": ["./src/identity/*"]
     }
   }
 }

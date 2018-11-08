@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
 
+import { AuthService } from '@xforge-common/auth.service';
 import { JSONAPIService } from '@xforge-common/jsonapi.service';
 import { UserService } from '@xforge-common/user.service';
 import { SFProject } from './models/sfproject';
@@ -11,8 +11,8 @@ import { SFUser } from './models/sfuser';
   providedIn: 'root'
 })
 export class SFUserService extends UserService<SFUser> {
-  constructor(jsonApiService: JSONAPIService, oauthService: OAuthService) {
-    super(jsonApiService, oauthService);
+  constructor(jsonApiService: JSONAPIService, authService: AuthService) {
+    super(jsonApiService, authService);
   }
 
   localGetProjects(user: SFUser | string): SFProject[] {

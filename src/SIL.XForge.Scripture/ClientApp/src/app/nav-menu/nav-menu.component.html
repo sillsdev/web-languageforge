@@ -5,7 +5,7 @@
   </button>
 
   <div class="collapse navbar-collapse" [ngClass]="{ 'show': isExpanded }">
-    <ul class="navbar-nav mr-auto">
+    <ul *ngIf="isLoggedIn | async" class="navbar-nav mr-auto">
       <li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">
         <a class="nav-link" routerLink="/home" (click)="collapse()">
             <i class="material-icons">home</i> Home

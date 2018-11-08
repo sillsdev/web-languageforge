@@ -19,6 +19,7 @@ import { map, startWith } from 'rxjs/operators';
 
 import { XForgeJSONAPISource } from './jsonapi/xforge-jsonapi-source';
 import { LiveQueryObservable } from './live-query-observable';
+import { LocationService } from './location.service';
 import { DomainModel } from './models/domain-model';
 import { Resource, ResourceRef } from './models/resource';
 
@@ -73,7 +74,9 @@ export class JSONAPIService {
   private backup: IndexedDBSource;
   private coordinator: Coordinator;
 
-  constructor(private readonly http: HttpClient, private readonly domainModel: DomainModel) { }
+  constructor(private readonly http: HttpClient, private readonly domainModel: DomainModel,
+    private readonly locationService: LocationService
+  ) { }
 
   /**
    * Initializes the service. This should be called at application startup after the user has logged in.
@@ -99,8 +102,8 @@ export class JSONAPIService {
       schema: this.schema,
       bucket: this.bucket,
       name: JSONAPIService.REMOTE,
-      host: window.location.origin,
-      namespace: 'api'
+      host: this.locationService.origin,
+      namespace: 'json-api'
     });
 
     this.backup = new IndexedDBSource({

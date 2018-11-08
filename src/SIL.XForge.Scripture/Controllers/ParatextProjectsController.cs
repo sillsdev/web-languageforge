@@ -13,7 +13,7 @@ using SIL.XForge.Services;
 
 namespace SIL.XForge.Scripture.Controllers
 {
-    [Route("api/paratext/projects")]
+    [Route("paratext-api/projects")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ParatextProjectsController : ControllerBase

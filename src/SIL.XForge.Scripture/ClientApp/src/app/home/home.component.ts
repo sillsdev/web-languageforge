@@ -1,22 +1,19 @@
 import { Component } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
+
+import { AuthService } from '@xforge-common/auth.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
-  constructor(private readonly oauthService: OAuthService) { }
+  constructor(private readonly authService: AuthService) { }
 
-  get name() {
-    const claims = this.oauthService.getIdentityClaims();
-    if (claims != null) {
-      return claims['name'];
-    }
-    return null;
+  get name(): string {
+    return this.authService.currentUserName;
   }
 
   logOut(): void {
-    this.oauthService.logOut();
+    this.authService.logOut();
   }
 }

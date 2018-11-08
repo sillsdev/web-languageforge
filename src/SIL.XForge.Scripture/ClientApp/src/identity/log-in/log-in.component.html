@@ -1,0 +1,17 @@
+<div fxLayout="column">
+  <mat-card class="card">
+    <mat-card-title class="title">Log in</mat-card-title>
+    <mat-card-content fxLayout="column">
+      <form [formGroup]="logInForm" (ngSubmit)="submit()" fxLayout="column">
+        <mat-form-field>
+          <input matInput placeholder="Email or username" formControlName="user" autofocus>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="password" placeholder="Password" formControlName="password">
+        </mat-form-field>
+        <mat-checkbox formControlName="rememberLogIn">Remember me</mat-checkbox>
+        <button mat-raised-button class="submit-button" color="primary" type="submit" [disabled]="logInDisabled">Go</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

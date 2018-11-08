@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
 
+import { AuthService } from './auth.service';
 import { GetAllParameters, JSONAPIService } from './jsonapi.service';
 import { LiveQueryObservable } from './live-query-observable';
 import { User } from './models/user';
@@ -8,13 +8,12 @@ import { ResourceService } from './resource.service';
 
 @Injectable()
 export class UserService<T extends User = User> extends ResourceService {
-  constructor(jsonApiService: JSONAPIService, private readonly oauthService: OAuthService) {
+  constructor(jsonApiService: JSONAPIService, private readonly authService: AuthService) {
     super(User.TYPE, jsonApiService);
   }
 
   get currentUserId(): string {
-    const claims = this.oauthService.getIdentityClaims();
-    return claims['sub'];
+    return this.authService.currentUserId;
   }
 
   onlineChangePassword(newPassword: string): Promise<void> {

@@ -32,7 +32,7 @@ namespace SIL.XForge.Services
 
             var jsonApiOptions = new JsonApiOptions
             {
-                Namespace = "api",
+                Namespace = "json-api",
                 ContextGraph = contextGraph,
                 AllowClientGeneratedIds = true,
                 NullAttributeResponseBehavior = new NullAttributeResponseBehavior(true)

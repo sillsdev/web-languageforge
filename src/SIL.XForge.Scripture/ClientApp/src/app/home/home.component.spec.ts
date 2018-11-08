@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { instance, mock, when } from 'ts-mockito';
+
+import { AuthService } from '@xforge-common/auth.service';
 import { HomeComponent } from './home.component';
 
 class HomeComponentPage {
@@ -11,28 +13,17 @@ class HomeComponentPage {
 }
 
 describe('HomeComponent', () => {
-  let loginStatus = true;
-  let claims: object;
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
   let page: HomeComponentPage;
-
-  const oauthServiceStub: Partial<OAuthService> = {
-    getIdentityClaims() {
-      return claims;
-    },
-    initImplicitFlow() {},
-    logOut() {
-      loginStatus = false;
-    }
-  };
+  const mockedAuthService = mock(AuthService);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [ HomeComponent ],
       providers: [
-        { provide: OAuthService, useValue: oauthServiceStub }
+        { provide: AuthService, useFactory: () => instance(mockedAuthService) }
       ]
     })
     .compileComponents();
@@ -48,26 +39,4 @@ describe('HomeComponent', () => {
   it('should display a title', async(() => {
     expect(page.titleText).toEqual('Hello, world!');
   }));
-
-  it('should logout when the button is clicked', async(() => {
-    expect(page.logoutButton.textContent).toContain('Log Out');
-    expect(loginStatus).toBe(true);
-
-    page.logoutButton.click();
-    fixture.detectChanges();
-    expect(loginStatus).toBe(false);
-  }));
-
-  describe('with Name in context', () => {
-    beforeAll(() => {
-      claims = {
-        name: 'JohnyBeGood'
-      };
-    });
-
-    it('should display a user identified title', async(() => {
-      expect(page.titleText).toEqual('Hello, ' + claims['name'] + '!');
-    }));
-  });
-
 });
