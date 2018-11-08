@@ -162,6 +162,7 @@
 {
   width: 400px;
   text-align: left;
+  color: red;
 }
 .progress-bar-success {
   background-color: #5cb85c;

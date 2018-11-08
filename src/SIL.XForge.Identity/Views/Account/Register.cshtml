@@ -14,18 +14,17 @@
             </div>
             <div class="mdl-form_content register-form">
                 <span class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input asp-for="Fullname" id="name" placeholder="Full Name" class="mdl-textfield__input" autofocus required="username"/>
-                    <label asp-for="Fullname" for="name" class="mdl-textfield__label" ></label>
+                    <label class="mdl-textfield__label">Full Name</label>
+                    <input class="mdl-textfield__input" asp-for="Fullname" autofocus>
                 </span>
                 <span class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <label asp-for="Password" for="Password" class="mdl-textfield__label" ></label>
-                    <input asp-for="Password" id="Password" placeholder="Password" class="mdl-textfield__input" required="password" />
-                    <div id="StrengthProgressBar" class="progress-bar"></div>
+                    <label class="mdl-textfield__label">Password</label>
+                    <input class="mdl-textfield__input" asp-for="Password">
+                    <div id="StrengthProgressBar" class="mdl-progress mdl-js-progress"></div>
                 </span>
                 <span class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <label asp-for="Email" for="email" class="mdl-textfield__label" ></label>
-                    <input asp-for="Email" id="email" placeholder="Email Address" class="mdl-textfield__input" required="" />
-
+                    <label class="mdl-textfield__label">Email Address</label>
+                    <input class="mdl-textfield__input" asp-for="Email">
                 </span>
                 <span class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <div class="g-recaptcha" data-size="normal" data-sitekey="@ViewData["ReCaptchaKey"]"></div>
@@ -42,7 +41,6 @@
 </div>
 <div class="mdl-layout-spacer"></div>
 @section Scripts {
-    <script src="~/lib/bootstrap/js/bootstrap.js"></script>
     <script src='https://www.google.com/recaptcha/api.js'></script>
     <script src="/lib/zxcvbn/zxcvbn.js"></script>
     <script src="/lib/zxcvbn/passwordstrengthmeter.js"></script>
