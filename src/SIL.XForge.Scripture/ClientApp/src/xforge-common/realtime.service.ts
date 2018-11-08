@@ -6,6 +6,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import * as RichText from 'rich-text';
 import { Connection, types } from 'sharedb/lib/client';
 
+import { LocationService } from './location.service';
 import { DomainModel } from './models/domain-model';
 import { RealtimeDoc } from './models/realtime-doc';
 
@@ -20,9 +21,9 @@ export class RealtimeService {
   private readonly docs = new Map<RecordIdentity, Promise<any>>();
   private readonly stores = new Map<string, LocalForage>();
 
-  constructor(private readonly domainModel: DomainModel) {
-    const protocol = window.location.protocol === 'https' ? 'wss' : 'ws';
-    this.ws = new ReconnectingWebSocket(protocol + '://' + window.location.host + '/sharedb/');
+  constructor(private readonly domainModel: DomainModel, private readonly locationService: LocationService) {
+    const protocol = this.locationService.protocol === 'https' ? 'wss' : 'ws';
+    this.ws = new ReconnectingWebSocket(protocol + '://' + this.locationService.host + '/sharedb/');
     this.connection = new Connection(this.ws);
   }
 

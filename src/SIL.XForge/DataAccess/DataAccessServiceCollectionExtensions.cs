@@ -51,34 +51,53 @@ namespace SIL.XForge.DataAccess
                     cm.UnmapProperty(u => u.ProjectRef);
                 });
 
-            services.AddSingleton<IMongoClient>(sp => new MongoClient(options.ConnectionString));
+            var client = new MongoClient(options.ConnectionString);
+            services.AddSingleton<IMongoClient>(sp => client);
 
-            services.AddMongoRepository<UserEntity>(options.MongoDatabaseName, "users");
+            services.AddMongoRepository<UserEntity>(options.MongoDatabaseName, "users", indexSetup: indexes =>
+                {
+                    IndexKeysDefinitionBuilder<UserEntity> builder = Builders<UserEntity>.IndexKeys;
+                    var models = new[]
+                    {
+                        new CreateIndexModel<UserEntity>(builder.Ascending(u => u.Email),
+                            new CreateIndexOptions
+                            {
+                                Unique = true,
+                                Collation = new Collation("en", strength: CollationStrength.Secondary)
+                            }),
+                        new CreateIndexModel<UserEntity>(builder.Ascending(u => u.Username),
+                            new CreateIndexOptions { Unique = true })
+                    };
+                    indexes.CreateMany(models);
+                });
+
             return services;
         }
 
         public static void AddMongoRepository<T>(this IServiceCollection services, string databaseName,
-            string collectionName, Action<BsonClassMap<T>> setup = null) where T : Entity
+            string collectionName, Action<BsonClassMap<T>> mapSetup = null,
+            Action<IMongoIndexManager<T>> indexSetup = null) where T : Entity
         {
-            RegisterClass(setup);
+            RegisterClass(mapSetup);
             services.AddSingleton(sp => CreateRepository<T>(sp.GetService<IMongoClient>(), databaseName,
-                collectionName));
+                collectionName, indexSetup));
         }
 
-        private static void RegisterClass<T>(Action<BsonClassMap<T>> setup = null)
+        private static void RegisterClass<T>(Action<BsonClassMap<T>> mapSetup)
         {
             BsonClassMap.RegisterClassMap<T>(cm =>
                 {
                     cm.AutoMap();
-                    setup?.Invoke(cm);
+                    mapSetup?.Invoke(cm);
                 });
         }
 
         private static IRepository<T> CreateRepository<T>(IMongoClient mongoClient, string databaseName,
-            string collectionName) where T : Entity
+            string collectionName, Action<IMongoIndexManager<T>> indexSetup) where T : Entity
         {
-            return new MongoRepository<T>(mongoClient.GetDatabase(databaseName)
-                .GetCollection<T>(collectionName));
+            IMongoCollection<T> collection = mongoClient.GetDatabase(databaseName).GetCollection<T>(collectionName);
+            indexSetup?.Invoke(collection.Indexes);
+            return new MongoRepository<T>(collection);
         }
     }
 }

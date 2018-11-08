@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from '@xforge-common/auth.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -7,6 +8,12 @@ import { Component } from '@angular/core';
 })
 export class NavMenuComponent {
   isExpanded = false;
+
+  constructor(private readonly authService: AuthService) { }
+
+  get isLoggedIn(): Promise<boolean> {
+    return this.authService.isLoggedIn;
+  }
 
   collapse() {
     this.isExpanded = false;

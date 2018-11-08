@@ -67,7 +67,12 @@ namespace SIL.XForge.Identity
 
             var dataAccessOptions = configuration.GetOptions<DataAccessOptions>();
 
-            IIdentityServerBuilder builder = services.AddIdentityServer()
+            IIdentityServerBuilder builder = services.AddIdentityServer(options =>
+                {
+                    options.UserInteraction.LoginUrl = "/identity/log-in";
+                    options.UserInteraction.LogoutUrl = "/identity-api/log-out";
+                    options.UserInteraction.LogoutIdParameter = "logOutId";
+                })
                 .AddValidationKeys()
                 .AddInMemoryIdentityResources(IdentityResources)
                 .AddInMemoryApiResources(ApiResources)

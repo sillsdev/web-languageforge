@@ -12,22 +12,62 @@ namespace SIL.XForge.DataAccess
     public class MemoryRepository<T> : IRepository<T> where T : Entity, new()
     {
         private readonly Dictionary<string, string> _entities;
-
-        public MemoryRepository()
-        {
-            _entities = new Dictionary<string, string>();
-        }
+        private readonly Func<T, object>[] _uniqueKeySelectors;
+        private readonly HashSet<object>[] _uniqueKeys;
 
         public MemoryRepository(IEnumerable<T> entities)
-            : this()
+            : this(null, entities)
         {
-            Add(entities);
+        }
+
+        public MemoryRepository(IEnumerable<Func<T, object>> uniqueKeySelectors = null, IEnumerable<T> entities = null)
+        {
+            _uniqueKeySelectors = uniqueKeySelectors?.ToArray() ?? new Func<T, object>[0];
+            _uniqueKeys = new HashSet<object>[_uniqueKeySelectors.Length];
+            for (int i = 0; i < _uniqueKeys.Length; i++)
+                _uniqueKeys[i] = new HashSet<object>();
+
+            _entities = new Dictionary<string, string>();
+            if (entities != null)
+                Add(entities);
+        }
+
+        public void Add(T entity)
+        {
+            for (int i = 0; i < _uniqueKeySelectors.Length; i++)
+            {
+                object key = _uniqueKeySelectors[i](entity);
+                if (key != null)
+                    _uniqueKeys[i].Add(key);
+            }
+            _entities[entity.Id] = JsonConvert.SerializeObject(entity);
         }
 
         public void Add(IEnumerable<T> entities)
         {
             foreach (T entity in entities)
-                _entities[entity.Id] = JsonConvert.SerializeObject(entity);
+                Add(entity);
+        }
+
+        public void Remove(T entity)
+        {
+            for (int i = 0; i < _uniqueKeySelectors.Length; i++)
+            {
+                object key = _uniqueKeySelectors[i](entity);
+                if (key != null)
+                    _uniqueKeys[i].Remove(key);
+            }
+            _entities.Remove(entity.Id);
+        }
+
+        public void Replace(T entity)
+        {
+            if (_entities.TryGetValue(entity.Id, out string existingStr))
+            {
+                T existing = JsonConvert.DeserializeObject<T>(existingStr);
+                Remove(existing);
+            }
+            Add(entity);
         }
 
         public bool Contains(string id)
@@ -48,11 +88,14 @@ namespace SIL.XForge.DataAccess
             if (_entities.ContainsKey(entity.Id))
                 return Task.FromResult(false);
 
+            if (CheckDuplicateKeys(entity))
+                return Task.FromResult(false);
+
             var now = DateTime.UtcNow;
             entity.DateModified = now;
             entity.DateCreated = now;
 
-            _entities[entity.Id] = JsonConvert.SerializeObject(entity);
+            Add(entity);
             return Task.FromResult(true);
         }
 
@@ -68,7 +111,7 @@ namespace SIL.XForge.DataAccess
                 if (entity.DateCreated == DateTime.MinValue)
                     entity.DateCreated = now;
 
-                _entities[entity.Id] = JsonConvert.SerializeObject(entity);
+                Replace(entity);
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
@@ -86,7 +129,7 @@ namespace SIL.XForge.DataAccess
 
                 var builder = new MemoryUpdateBuilder<T>(filter, entity, isInsert);
                 update(builder);
-                _entities[entity.Id] = JsonConvert.SerializeObject(entity);
+                Replace(entity);
             }
             return Task.FromResult(entity);
         }
@@ -95,8 +138,22 @@ namespace SIL.XForge.DataAccess
         {
             T entity = Query().FirstOrDefault(filter);
             if (entity != null)
-                _entities.Remove(entity.Id);
+                Remove(entity);
             return Task.FromResult(entity);
+        }
+
+        private bool CheckDuplicateKeys(T entity)
+        {
+            for (int i = 0; i < _uniqueKeySelectors.Length; i++)
+            {
+                object key = _uniqueKeySelectors[i](entity);
+                if (key != null)
+                {
+                    if (_uniqueKeys[i].Contains(key))
+                        return true;
+                }
+            }
+            return false;
         }
     }
 }

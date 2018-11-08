@@ -1,14 +1,14 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
-import { OAuthService } from 'angular-oauth2-oidc';
 import { instance, mock } from 'ts-mockito';
 
+import { AuthService } from './auth.service';
 import { JSONAPIService } from './jsonapi.service';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
   const mockedJSONAPIService = mock(JSONAPIService);
-  const mockedOAuthService = mock(OAuthService);
+  const mockedAuthService = mock(AuthService);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -18,7 +18,7 @@ describe('UserService', () => {
       providers: [
         UserService,
         { provide: JSONAPIService, useFactory: () => instance(mockedJSONAPIService) },
-        { provide: OAuthService, useFactory: () => instance(mockedOAuthService) }
+        { provide: AuthService, useFactory: () => instance(mockedAuthService) }
       ]
     });
   });
