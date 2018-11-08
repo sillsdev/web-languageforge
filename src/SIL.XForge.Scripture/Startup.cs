@@ -125,7 +125,11 @@ namespace SIL.XForge.Scripture
 
             app.UseBugsnag();
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+                {
+                    // this will allow files without extensions to be served, which is necessary for LetsEncrypt
+                    ServeUnknownFileTypes = true
+                });
             app.UseSpaStaticFiles();
 
             app.UseXFIdentityServer();
