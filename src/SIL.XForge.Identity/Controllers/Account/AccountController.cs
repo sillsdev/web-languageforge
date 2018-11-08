@@ -236,7 +236,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 var siteOptions = _options.Value;
                 var subject = $"{siteOptions.Name} Forgotten Password Verification";
                 // TODO (Hasso) 2018.11: use the insecure protocol for development and testing
-                var url = $"https://{siteOptions.Domain}/account/resetpassword?token={user.ResetPasswordKey}";
+                var url = $"https://{siteOptions.Domain}/account/resetpassword?token={user.ResetPasswordKey}&user={user.Username}";
                 var body = "<div class=''>"
                     + $"<h1>Reset Password for {user.Name}</h1>"
                     + $"<p>Please click this link to <a href='{url}' target='_blank'>Reset Your Password</a>.</p>"
@@ -260,10 +260,11 @@ namespace SIL.XForge.Identity.Controllers.Account
         /// Validate the token produced by ForgotPassword; allow the user to reset the password
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> ResetPassword(string token)
+        public async Task<IActionResult> ResetPassword(string token, string user)
         {
-            var userEntity = await _users.Query().SingleOrDefaultAsync(u => u.ResetPasswordKey == token);
-            if (userEntity != null && userEntity.ResetPasswordExpirationDate > DateTime.UtcNow)
+            var userEntity = await _users.Query().SingleOrDefaultAsync(u =>
+                u.Username == user && u.ResetPasswordKey == token && u.ResetPasswordExpirationDate > DateTime.UtcNow);
+            if (userEntity != null)
             {
                 var vm = BuildResetPasswordViewModel(userEntity);
                 return View("ResetPassword", vm);

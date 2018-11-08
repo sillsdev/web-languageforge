@@ -124,12 +124,11 @@ namespace SIL.XForge.Identity.Controllers.Account
         }
 
         [Test]
-        public async Task ResetPassword_CorrectResetPasswordKey()
+        public async Task ResetPassword_Works()
         {
-            const string resetPasswordKey = TestResetPasswordKey;
             var env = new TestEnvironment();
 
-            var result = await env.Controller.ResetPassword(resetPasswordKey);
+            var result = await env.Controller.ResetPassword(TestResetPasswordKey, TestUsername);
             Assert.That(result, Is.TypeOf<ViewResult>());
             Assert.True(((ViewResult)result).ViewName == "ResetPassword", "valid token should allow user to reset password");
         }
@@ -140,7 +139,18 @@ namespace SIL.XForge.Identity.Controllers.Account
             const string resetPasswordKey = "not" + TestResetPasswordKey;
             var env = new TestEnvironment();
 
-            var result = (RedirectToActionResult) await env.Controller.ResetPassword(resetPasswordKey);
+            var result = (RedirectToActionResult) await env.Controller.ResetPassword(resetPasswordKey, TestUsername);
+            Assert.AreEqual("Account", result.ControllerName);
+            Assert.AreEqual("Login", result.ActionName, "bad link should redirect to login");
+        }
+
+        [Test]
+        public async Task ResetPassword_IncorrectUsername()
+        {
+            const string username = "not" + TestUsername;
+            var env = new TestEnvironment();
+
+            var result = (RedirectToActionResult) await env.Controller.ResetPassword(TestResetPasswordKey, username);
             Assert.AreEqual("Account", result.ControllerName);
             Assert.AreEqual("Login", result.ActionName, "bad link should redirect to login");
         }
@@ -148,10 +158,9 @@ namespace SIL.XForge.Identity.Controllers.Account
         [Test]
         public async Task ResetPassword_ExpiredResetPasswordKey()
         {
-            const string resetPasswordKey = TestResetPasswordKey;
             var env = new TestEnvironment(isResetLinkExpired: true);
 
-            var result = (RedirectToActionResult) await env.Controller.ResetPassword(resetPasswordKey);
+            var result = (RedirectToActionResult) await env.Controller.ResetPassword(TestResetPasswordKey, TestUsername);
             Assert.AreEqual("Account", result.ControllerName);
             Assert.AreEqual("Login", result.ActionName, "bad link should redirect to login");
             StringAssert.Contains("expired", env.Controller.TempData[ShowMessageKey].ToString(), "user should be informed that the link is expired");
@@ -269,7 +278,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             await env.Controller.ResetPassword(model);
             var afterSave = await env.Users.Query().SingleOrDefaultAsync();
             Assert.That(beforeSave.Password, Is.Not.EqualTo(afterSave.Password), "first reset should work");
-            var result = (RedirectToActionResult) await env.Controller.ResetPassword(TestResetPasswordKey);
+            var result = (RedirectToActionResult) await env.Controller.ResetPassword(TestResetPasswordKey, TestUsername);
             Assert.AreEqual("Account", result.ControllerName);
             Assert.AreEqual("Login", result.ActionName, "bad link should redirect to login");
         }
