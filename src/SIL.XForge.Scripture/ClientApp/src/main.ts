@@ -13,7 +13,7 @@ const providers = [
   { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] as any[] }
 ];
 
-if (environment.production) {
+if (environment.production || environment.pwaTest) {
   enableProdMode();
 }
 
