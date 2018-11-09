@@ -49,16 +49,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             };
             var result = await env.Controller.Login(model, "login");
 
-            Assert.That(result, Is.TypeOf<RedirectResult>());
-            var redirectResult = (RedirectResult) result;
-            Assert.That(redirectResult.Url, Is.EqualTo(TestReturnUrl));
-            await env.Events.Received().RaiseAsync(Arg.Any<UserLoginSuccessEvent>());
-            await env.AuthService.Received().SignInAsync(Arg.Any<HttpContext>(),
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                Arg.Is<ClaimsPrincipal>(u => u.GetSubjectId() == TestUserId),
-                Arg.Any<AuthenticationProperties>());
-            Assert.Less(env.Users.Query().First(u => u.Username == TestUsername).ResetPasswordExpirationDate, DateTime.UtcNow,
-                "successful login should invalidate pasword reset");
+            Assert.True(await env.TestLoginAuthenticated(result));
         }
 
         [Test]
@@ -79,6 +70,21 @@ namespace SIL.XForge.Identity.Controllers.Account
             await env.Events.Received().RaiseAsync(Arg.Any<UserLoginFailureEvent>());
             Assert.Greater(env.Users.Query().First(u => u.Username == TestUsername).ResetPasswordExpirationDate, DateTime.UtcNow,
                 "Unsuccessful login should not invalidate pasword reset");
+        }
+
+        [Test]
+        public async Task Login_EmailInputIsCaseInsensitive()
+        {
+            var env = new TestEnvironment();
+
+            var model = new LoginInputModel
+            {
+                EmailOrUsername = TestUserEmail.ToUpper(), // Emails should not be case-sensitive
+                Password = TestPassword,
+                ReturnUrl = TestReturnUrl
+            };
+            IActionResult result = await env.Controller.Login(model, "login");
+            Assert.True(await env.TestLoginAuthenticated(result));
         }
 
         [Test]
@@ -121,6 +127,20 @@ namespace SIL.XForge.Identity.Controllers.Account
 
             Assert.That(result, Is.TypeOf<ViewResult>());
             Assert.IsTrue(model.EnableErrorMessage);
+        }
+
+        [Test]
+        public async Task ForgotPassword_EmailInputIsCaseInsensitive()
+        {
+            var env = new TestEnvironment();
+
+            var model = new ForgotPasswordViewModel
+            {
+                EmailOrUsername = TestUserEmail.ToUpper(), // Email should not be case-sensitive
+                EnableErrorMessage = false
+            };
+            var result = await env.Controller.ForgotPassword(model);
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>());
         }
 
         [Test]
@@ -413,6 +433,21 @@ namespace SIL.XForge.Identity.Controllers.Account
             public MemoryRepository<UserEntity> Users { get; }
             public IEmailService EmailService { get; }
 
+            // Helper method to test that a login was successful
+            public async Task<bool> TestLoginAuthenticated(IActionResult result) {
+
+                Assert.That(result, Is.TypeOf<RedirectResult>());
+                var redirectResult = (RedirectResult) result;
+                Assert.That(redirectResult.Url, Is.EqualTo(TestReturnUrl));
+                await Events.Received().RaiseAsync(Arg.Any<UserLoginSuccessEvent>());
+                await AuthService.Received().SignInAsync(Arg.Any<HttpContext>(),
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    Arg.Is<ClaimsPrincipal>(u => u.GetSubjectId() == TestUserId),
+                    Arg.Any<AuthenticationProperties>());
+                Assert.Less(Users.Query().First(u => u.Username == TestUsername).ResetPasswordExpirationDate, DateTime.UtcNow,
+                    "successful login should invalidate pasword reset");
+                return true;
+            }
         }
     }
 }

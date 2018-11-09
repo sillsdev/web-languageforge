@@ -148,7 +148,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             if (ModelState.IsValid)
             {
                 UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.Username == model.EmailOrUsername
-                    || u.Email == model.EmailOrUsername);
+                    || u.Email.ToLowerInvariant() == model.EmailOrUsername.ToLowerInvariant());
                 // validate username/password against in-memory store
                 if (user != null && user.VerifyPassword(model.Password))
                 {
@@ -227,7 +227,7 @@ namespace SIL.XForge.Identity.Controllers.Account
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             UserEntity user = await _users.UpdateAsync(
-                u => u.Username == model.EmailOrUsername || u.Email == model.EmailOrUsername,
+                u => u.Username == model.EmailOrUsername || u.Email.ToLowerInvariant() == model.EmailOrUsername.ToLowerInvariant(),
                 update => update
                     .Set(u => u.ResetPasswordKey, GenerateValidationKey())
                     .Set(u => u.ResetPasswordExpirationDate, DateTime.UtcNow.AddDays(PasswordResetPeriodDays)));
