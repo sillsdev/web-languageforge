@@ -171,18 +171,39 @@ cd src/SIL.XForge.Scripture/ClientApp/
 
 Open `chrome://inspect/#devices` in Chromium and click **inspect**. This opens an instance of DevTools and immediately breaks the code at the top of the ng module. Hit continue (or F8) in your debugger to run your e2e tests, and hit any `debugger` statements in your code. Close the DevTools window to finish the tests.
 
-### Backend Development ###
+### PWA Testing ###
+
+To test the PWA (Progressive Web App), build the app for PWA testing and run the server without `ng serve`. From the repo root
+```bash
+cd src/SIL.XForge.Scripture/ClientApp/
+ng build --configuration=pwaTest
+```
+
+In another terminal, from the repo root
+```bash
+cd src/SIL.XForge.Scripture/
+dotnet run --start-ng-serve=no
+```
+
+!!! IMPORTANT !!! When you have finished testing, remove the built app `dist` folder. From the repo root
+```bash
+rm -rf src/SIL.XForge.Scripture/ClientApp/dist
+```
+
+## Backend Development ##
 
 Normally when you run `dotnet run` it starts `ng serve` for you. This works great if you are developing on the front end as it watches for file changes and reloads your browser once it has compiled.
 
 If you are developing on the backend this works better
 ```bash
 cd src/SIL.XForge.Scripture/
-dotnet watch run --start-ng-serve=false
+dotnet watch run --start-ng-serve=listen
 ```
+
 In another terminal
 ```bash
 cd src/SIL.XForge.Scripture/ClientApp/
 ng serve
 ```
+
 When files change on the backend it will compile the changes automatically and now `ng serve` won't re-start every time.
