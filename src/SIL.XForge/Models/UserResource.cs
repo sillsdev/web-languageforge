@@ -17,5 +17,12 @@ namespace SIL.XForge.Models
         public string Password { get; set; }
         [Attr]
         public string ParatextId { get; set; }
+        [Attr("paratext-username", isImmutable: true)]
+        public string ParatextUsername { get; set; }
+        [Attr("role")]
+        public string Role { get; set; }
+
+        [Attr("active")]
+        public string Active { get; set; }
     }
 }
