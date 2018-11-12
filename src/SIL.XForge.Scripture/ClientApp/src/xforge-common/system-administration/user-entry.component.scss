@@ -1,0 +1,37 @@
+.container {
+  width: 100%;
+  display: block;
+}
+
+.form-label {
+  padding-top: 29px;
+}
+
+.add-button {
+  width: 120px;
+  height: 40px;
+  align-self: center;
+}
+
+.update-button {
+  width: 120px;
+  height: 40px;
+  align-self: center;
+}
+
+.changepassword-button {
+  width: 160px;
+  height: 40px;
+  align-self: center;
+}
+
+.icon-button {
+  border: none;
+  cursor: pointer;
+}
+
+.mat-form-field {
+  font-weight: 400;
+  line-height: 1.125;
+  width: 400px;
+}

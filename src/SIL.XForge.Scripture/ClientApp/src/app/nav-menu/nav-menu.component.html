@@ -36,6 +36,11 @@
           <i class="material-icons">account_circle</i> My Account
         </a>
       </li>
+      <li class="nav-item" [routerLinkActive]="['link-active']">
+        <a class="nav-link" routerLink="/system-administration" (click)="collapse()">
+          <i class="material-icons">view_list</i> System Administration
+        </a>
+      </li>
     </ul>
   </div>
 </nav>
