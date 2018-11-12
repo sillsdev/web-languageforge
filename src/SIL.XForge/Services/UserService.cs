@@ -19,6 +19,8 @@ namespace SIL.XForge.Services
 
         protected override Task<UserEntity> InsertEntityAsync(UserEntity entity)
         {
+            if (!string.IsNullOrEmpty(entity.Password))
+                entity.Password = BCrypt.Net.BCrypt.HashPassword((string)entity.Password, 7);
             entity.CanonicalEmail = UserEntity.CanonicalizeEmail(entity.Email);
             return base.InsertEntityAsync(entity);
         }
