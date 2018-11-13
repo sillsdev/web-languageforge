@@ -158,32 +158,12 @@ namespace SIL.XForge.Identity.Controllers.Account
         }
 
         [Test]
-        public async Task ResetPassword_NoUsername_PasswordNotSaved()
-        {
-            var env = new TestEnvironment();
-
-            var model = new ResetPasswordViewModel
-            {
-                Password = "NewPassword",
-                ConfirmPassword = "NewPassword",
-                ResetToken = TestResetPasswordKey
-            };
-            var beforeSave = await env.Users.Query().SingleOrDefaultAsync();
-            var result = (RedirectToActionResult) await env.Controller.ResetPassword(model);
-            Assert.AreEqual("Account", result.ControllerName);
-            Assert.AreEqual("Login", result.ActionName, "bad username should redirect to login");
-            var afterSave = await env.Users.Query().SingleOrDefaultAsync();
-            Assert.That(afterSave.Password, Is.EqualTo(beforeSave.Password), "Password should not have changed");
-        }
-
-        [Test]
         public async Task ResetPassword_MismatchedPasswords_PasswordNotSaved()
         {
             var env = new TestEnvironment();
 
             var model = new ResetPasswordViewModel
             {
-                Username = TestUsername,
                 Password = "NewPassword",
                 ConfirmPassword = "NewPassword1",
                 ResetToken = TestResetPasswordKey
@@ -202,7 +182,6 @@ namespace SIL.XForge.Identity.Controllers.Account
 
             var model = new ResetPasswordViewModel
             {
-                Username = TestUsername,
                 Password = "NewPassword",
                 ConfirmPassword = "NewPassword",
                 ResetToken = TestResetPasswordKey + "bad"
@@ -221,7 +200,6 @@ namespace SIL.XForge.Identity.Controllers.Account
 
             var model = new ResetPasswordViewModel
             {
-                Username = TestUsername,
                 Password = "NewPassword",
                 ConfirmPassword = "NewPassword",
                 ResetToken = TestResetPasswordKey
@@ -241,16 +219,14 @@ namespace SIL.XForge.Identity.Controllers.Account
 
             var model = new ResetPasswordViewModel
             {
-                Username = TestUsername,
                 Password = newPassword,
                 ConfirmPassword = newPassword,
                 ResetToken = TestResetPasswordKey
             };
-            var beforeSave = await env.Users.Query().SingleOrDefaultAsync();
             var result = await env.Controller.ResetPassword(model);
             Assert.That(result, Is.TypeOf<RedirectToActionResult>());
             var afterSave = await env.Users.Query().SingleOrDefaultAsync();
-            Assert.That(afterSave.Password, Is.Not.EqualTo(beforeSave.Password), "Password should have been updated");
+            Assert.True(afterSave.VerifyPassword(newPassword), "Password should have been updated");
         }
 
         [Test]
@@ -258,17 +234,29 @@ namespace SIL.XForge.Identity.Controllers.Account
         {
             var env = new TestEnvironment();
 
+            const string firstNewPassword = "NewPassword";
+            const string secondNewPassword = "YetAnotherPassword";
+
             var model = new ResetPasswordViewModel
             {
-                Username = TestUsername,
-                Password = "NewPassword",
-                ConfirmPassword = "NewPassword",
+                Password = firstNewPassword,
+                ConfirmPassword = firstNewPassword,
                 ResetToken = TestResetPasswordKey
             };
-            var beforeSave = await env.Users.Query().SingleOrDefaultAsync();
             await env.Controller.ResetPassword(model);
             var afterSave = await env.Users.Query().SingleOrDefaultAsync();
-            Assert.That(beforeSave.Password, Is.Not.EqualTo(afterSave.Password), "first reset should work");
+            Assert.True(afterSave.VerifyPassword(firstNewPassword), "first reset should work");
+            model = new ResetPasswordViewModel
+            {
+                Password = secondNewPassword,
+                ConfirmPassword = secondNewPassword,
+                ResetToken = TestResetPasswordKey
+            };
+            // SUT
+            await env.Controller.ResetPassword(model);
+            afterSave = await env.Users.Query().SingleOrDefaultAsync();
+            Assert.True(afterSave.VerifyPassword(firstNewPassword), "second reset should NOT work");
+            // SUT
             var result = (RedirectToActionResult) await env.Controller.ResetPassword(TestResetPasswordKey);
             Assert.AreEqual("Account", result.ControllerName);
             Assert.AreEqual("Login", result.ActionName, "bad link should redirect to login");
