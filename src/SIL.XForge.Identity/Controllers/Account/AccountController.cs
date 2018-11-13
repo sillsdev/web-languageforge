@@ -233,10 +233,9 @@ namespace SIL.XForge.Identity.Controllers.Account
                     .Set(u => u.ResetPasswordExpirationDate, DateTime.UtcNow.AddDays(PasswordResetPeriodDays)));
             if (user != null)
             {
-                var siteOptions = _options.Value;
+                SiteOptions siteOptions = _options.Value;
                 var subject = $"{siteOptions.Name} Forgotten Password Verification";
-                // TODO (Hasso) 2018.11: use the insecure protocol for development and testing
-                var url = $"https://{siteOptions.Domain}/account/resetpassword?token={user.ResetPasswordKey}";
+                Uri url = new Uri(siteOptions.Origin, $"account/resetpassword?token={user.ResetPasswordKey}");
                 var body = "<div class=''>"
                     + $"<h1>Reset Password for {user.Name}</h1>"
                     + $"<p>Please click this link to <a href='{url}' target='_blank'>Reset Your Password</a>.</p>"
@@ -404,7 +403,8 @@ namespace SIL.XForge.Identity.Controllers.Account
                 {
                     SiteOptions siteOptions = _options.Value;
                     string subject = $"{siteOptions.Name} - Email Verification";
-                    string url = $"https://{siteOptions.Domain}/account/VerifyEmail?email={user.Email}&key={user.ValidationKey}";
+                    Uri url = new Uri(siteOptions.Origin,
+                        $"account/VerifyEmail?email={user.Email}&key={user.ValidationKey}");
                     string body = "<div class=''>"
                         + $"<h1>Dear {user.Name},</h1>"
                         + $"<p>Please click this link to activate your account <a href='{url}' target='_blank'>Confirm Verification</a>.</p>"

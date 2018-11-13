@@ -369,7 +369,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 options.Value.Returns(new SiteOptions
                     {
                         Name = "xForge",
-                        Domain = "localhost"
+                        Origin = new Uri("http://localhost")
                     });
 
                 GoogleCaptchaOptions captchaOptions = new GoogleCaptchaOptions

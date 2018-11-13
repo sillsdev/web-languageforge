@@ -17,12 +17,11 @@ using NSubstitute;
 using NUnit.Framework;
 using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
-using SIL.XForge.Identity.Controllers;
 using SIL.XForge.Identity.Models;
 using SIL.XForge.Models;
 using SIL.XForge.Services;
 
-namespace SIL.XForge.Identity.Tests.Controllers
+namespace SIL.XForge.Identity.Controllers
 {
     [TestFixture]
     public class IdentityControllerTests
@@ -163,6 +162,11 @@ namespace SIL.XForge.Identity.Tests.Controllers
              UserEntity user = await env.Users.Query().SingleOrDefaultAsync();
             Assert.That(user.VerifyPassword(NewPassword), Is.True, "Password should have been updated");
             Assert.That(user.ResetPasswordKey, Is.Null);
+            await env.Events.Received().RaiseAsync(Arg.Any<UserLoginSuccessEvent>());
+            await env.AuthService.Received().SignInAsync(Arg.Any<HttpContext>(),
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                Arg.Is<ClaimsPrincipal>(u => u.GetSubjectId() == TestUserId),
+                Arg.Any<AuthenticationProperties>());
         }
 
         [Test]
@@ -199,6 +203,10 @@ namespace SIL.XForge.Identity.Tests.Controllers
 
             Assert.That(result.Value.Success, Is.True);
             Assert.That(env.Users.Query().Any(x => x.Email == input.Email), Is.True);
+            await env.Events.Received().RaiseAsync(Arg.Any<UserLoginSuccessEvent>());
+            await env.AuthService.Received().SignInAsync(Arg.Any<HttpContext>(),
+                CookieAuthenticationDefaults.AuthenticationScheme, Arg.Any<ClaimsPrincipal>(),
+                Arg.Any<AuthenticationProperties>());
         }
 
         [Test]
@@ -267,7 +275,7 @@ namespace SIL.XForge.Identity.Tests.Controllers
                 options.Value.Returns(new SiteOptions
                     {
                         Name = "xForge",
-                        Domain = "localhost"
+                        Origin = new Uri("http://localhost")
                     });
 
                 EmailService = Substitute.For<IEmailService>();

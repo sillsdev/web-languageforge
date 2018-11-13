@@ -49,18 +49,15 @@ namespace SIL.XForge.Scripture
 
             services.AddExceptionLogging();
 
-            services.AddXFIdentityServer(Configuration,
-                Environment.IsDevelopment() || Environment.IsEnvironment("Testing"));
+            services.AddXFIdentityServer(Configuration);
 
             var siteOptions = Configuration.GetOptions<SiteOptions>();
             var paratextOptions = Configuration.GetOptions<ParatextOptions>();
             services.AddAuthentication()
                 .AddJwtBearer(options =>
                     {
-                        string protocol = "https";
                         if (Environment.IsDevelopment() || Environment.IsEnvironment("Testing"))
                         {
-                            protocol = "http";
                             options.RequireHttpsMetadata = false;
                             options.BackchannelHttpHandler = new HttpClientHandler
                             {
@@ -68,7 +65,7 @@ namespace SIL.XForge.Scripture
                                     = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                             };
                         }
-                        options.Authority = $"{protocol}://{siteOptions.Domain}";
+                        options.Authority = siteOptions.Origin.ToString();
                         options.Audience = "api";
                     })
                 .AddParatext(options =>
