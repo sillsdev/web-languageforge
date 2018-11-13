@@ -10,6 +10,7 @@ namespace SIL.XForge.Models
         public string Username { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+        public string CanonicalEmail { get; set; }
         public bool EmailVerified { get; set; }
         public string ValidationKey { get; set; }
         public DateTime ValidationExpirationDate { get; set; }
@@ -40,6 +41,11 @@ namespace SIL.XForge.Models
         public bool VerifyPassword(string password)
         {
             return BCrypt.Net.BCrypt.Verify(password, Password);
+        }
+
+        public static string CanonicalizeEmail(string email)
+        {
+            return email?.ToLowerInvariant();
         }
     }
 }

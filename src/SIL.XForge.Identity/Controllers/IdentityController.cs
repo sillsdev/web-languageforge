@@ -51,7 +51,7 @@ namespace SIL.XForge.Identity.Controllers
         public async Task<ActionResult<LogInResult>> LogIn(LogInParams parameters)
         {
             UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.Username == parameters.User
-                || u.Email == parameters.User);
+                || u.CanonicalEmail == UserEntity.CanonicalizeEmail(parameters.User));
             // validate username/password
             if (user != null && user.VerifyPassword(parameters.Password))
             {
@@ -122,7 +122,7 @@ namespace SIL.XForge.Identity.Controllers
         public async Task<ActionResult<IdentityResult>> ForgotPassword(ForgotPasswordParams parameters)
         {
             UserEntity user = await _users.UpdateAsync(
-                u => u.Username == parameters.User || u.Email == parameters.User,
+                u => u.Username == parameters.User || u.CanonicalEmail == UserEntity.CanonicalizeEmail(parameters.User),
                 update => update
                     .Set(u => u.ResetPasswordKey, GenerateKey())
                     .Set(u => u.ResetPasswordExpirationDate, DateTime.UtcNow.AddDays(PasswordResetPeriodDays)));
@@ -169,6 +169,7 @@ namespace SIL.XForge.Identity.Controllers
             {
                 Name = parameters.Name,
                 Email = parameters.Email,
+                CanonicalEmail = UserEntity.CanonicalizeEmail(parameters.Email),
                 EmailVerified = false,
                 Password = BCrypt.Net.BCrypt.HashPassword(parameters.Password, 7),
                 Role = SystemRoles.User,
