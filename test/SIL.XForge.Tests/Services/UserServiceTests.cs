@@ -48,6 +48,24 @@ namespace SIL.XForge.Services
         }
 
         [Test]
+        public async Task CreateAsync_Email()
+        {
+            var env = new TestEnvironment();
+            env.SetUser("user01", SystemRoles.SystemAdmin);
+
+            var userResource = new UserResource
+            {
+                Id = "usernew",
+                Email = "UserNew@gmail.com"
+            };
+            UserResource newResource = await env.Service.CreateAsync(userResource);
+
+            Assert.That(newResource, Is.Not.Null);
+            Assert.That(newResource.Email, Is.EqualTo("UserNew@gmail.com"));
+            Assert.That(newResource.CanonicalEmail, Is.EqualTo("usernew@gmail.com"));
+        }
+
+        [Test]
         public async Task UpdateAsync_UserRole()
         {
             var env = new TestEnvironment();
@@ -101,6 +119,29 @@ namespace SIL.XForge.Services
         }
 
         [Test]
+        public async Task UpdateAsync_Email()
+        {
+            var env = new TestEnvironment();
+            env.SetUser("user01", SystemRoles.SystemAdmin);
+            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                {
+                    { env.GetAttribute("email"), "New@gmail.com" }
+                });
+            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+
+            var resource = new UserResource
+            {
+                Id = "user01",
+                Email = "New@gmail.com"
+            };
+            UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+            Assert.That(updatedResource, Is.Not.Null);
+            Assert.That(updatedResource.Email, Is.EqualTo("New@gmail.com"));
+            Assert.That(updatedResource.CanonicalEmail, Is.EqualTo("new@gmail.com"));
+        }
+
+        [Test]
         public async Task GetAsync_UserRole()
         {
             var env = new TestEnvironment();
@@ -140,9 +181,27 @@ namespace SIL.XForge.Services
             {
                 return new[]
                 {
-                    new UserEntity { Id = "user01", Username = "user01" },
-                    new UserEntity { Id = "user02", Username = "user02" },
-                    new UserEntity { Id = "user03", Username = "user03" }
+                    new UserEntity
+                    {
+                        Id = "user01",
+                        Username = "user01",
+                        Email = "user01@gmail.com",
+                        CanonicalEmail = "user01@gmail.com"
+                    },
+                    new UserEntity
+                    {
+                        Id = "user02",
+                        Username = "user02",
+                        Email = "user02@gmail.com",
+                        CanonicalEmail = "user02@gmail.com"
+                    },
+                    new UserEntity
+                    {
+                        Id = "user03",
+                        Username = "user03",
+                        Email = "user03@gmail.com",
+                        CanonicalEmail = "user03@gmail.com"
+                    },
                 };
             }
         }

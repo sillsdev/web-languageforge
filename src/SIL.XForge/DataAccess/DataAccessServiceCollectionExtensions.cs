@@ -59,12 +59,8 @@ namespace SIL.XForge.DataAccess
                     IndexKeysDefinitionBuilder<UserEntity> builder = Builders<UserEntity>.IndexKeys;
                     var models = new[]
                     {
-                        new CreateIndexModel<UserEntity>(builder.Ascending(u => u.Email),
-                            new CreateIndexOptions
-                            {
-                                Unique = true,
-                                Collation = new Collation("en", strength: CollationStrength.Secondary)
-                            }),
+                        new CreateIndexModel<UserEntity>(builder.Ascending(u => u.CanonicalEmail),
+                            new CreateIndexOptions { Unique = true }),
                         new CreateIndexModel<UserEntity>(builder.Ascending(u => u.Username),
                             new CreateIndexOptions { Unique = true })
                     };

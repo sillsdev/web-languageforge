@@ -2,7 +2,8 @@ using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
@@ -12,23 +13,23 @@ namespace SIL.XForge.Identity.Services
     {
         private readonly IRepository<UserEntity> _userRepo;
         private readonly ISystemClock _clock;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IOptions<SiteOptions> _siteOptions;
 
         public UserResourceOwnerPasswordValidator(IRepository<UserEntity> userRepo, ISystemClock clock,
-            IHttpContextAccessor httpContextAccessor)
+            IOptions<SiteOptions> siteOptions)
         {
             _userRepo = userRepo;
             _clock = clock;
-            _httpContextAccessor = httpContextAccessor;
+            _siteOptions = siteOptions;
         }
 
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
             UserEntity user = await _userRepo.Query().SingleOrDefaultAsync(u => u.Username == context.UserName
-                || u.Email == context.UserName);
+                || u.CanonicalEmail == UserEntity.CanonicalizeEmail(context.UserName));
             if (user != null && user.VerifyPassword(context.Password))
             {
-                string site = _httpContextAccessor.HttpContext.Request.Host.Host;
+                string site = _siteOptions.Value.Origin.Host;
                 context.Result = new GrantValidationResult(user.Id, OidcConstants.AuthenticationMethods.Password,
                     _clock.UtcNow.UtcDateTime, user.GetClaims(site));
             }

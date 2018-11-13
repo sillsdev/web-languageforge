@@ -56,6 +56,27 @@ namespace SIL.XForge.Identity.Controllers
         }
 
         [Test]
+        public async Task LogIn_CaseInsensitiveEmail()
+        {
+            var env = new TestEnvironment();
+
+            var input = new LogInParams
+            {
+                User = "ABC@fakegmail.com",
+                Password = TestPassword,
+                ReturnUrl = TestReturnUrl
+            };
+            ActionResult<LogInResult> result = await env.Controller.LogIn(input);
+
+            Assert.That(result.Value.Success, Is.True);
+            await env.Events.Received().RaiseAsync(Arg.Any<UserLoginSuccessEvent>());
+            await env.AuthService.Received().SignInAsync(Arg.Any<HttpContext>(),
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                Arg.Is<ClaimsPrincipal>(u => u.GetSubjectId() == TestUserId),
+                Arg.Any<AuthenticationProperties>());
+        }
+
+        [Test]
         public async Task LogIn_IncorrectPassword()
         {
             var env = new TestEnvironment();
@@ -218,7 +239,8 @@ namespace SIL.XForge.Identity.Controllers
                 {
                     Id = "uniqueidwithdupemailid",
                     Username = TestUsername,
-                    Email = "duplicate@fakegmail.com"
+                    Email = "duplicate@fakegmail.com",
+                    CanonicalEmail = "duplicate@fakegmail.com"
                 });
             // Duplicate emailid should result in an error
             var input = new SignUpParams
@@ -252,7 +274,7 @@ namespace SIL.XForge.Identity.Controllers
                 Users = new MemoryRepository<UserEntity>(
                     uniqueKeySelectors: new Func<UserEntity, object>[]
                     {
-                        u => u.Email.ToLowerInvariant(),
+                        u => u.CanonicalEmail,
                         u => u.Username
                     },
                     entities: new[]
@@ -266,7 +288,8 @@ namespace SIL.XForge.Identity.Controllers
                             ResetPasswordExpirationDate = isResetLinkExpired
                                 ? DateTime.UtcNow.AddTicks(-1)
                                 : DateTime.UtcNow.AddMinutes(2),
-                            Email = TestUserEmail
+                            Email = TestUserEmail,
+                            CanonicalEmail = UserEntity.CanonicalizeEmail(TestUserEmail)
                         }
                     });
                 AuthService = Substitute.For<IAuthenticationService>();

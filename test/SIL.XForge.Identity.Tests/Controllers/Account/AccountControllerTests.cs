@@ -348,7 +348,8 @@ namespace SIL.XForge.Identity.Controllers.Account
                             ResetPasswordExpirationDate = isResetLinkExpired
                                 ? DateTime.UtcNow.AddTicks(-1)
                                 : DateTime.UtcNow.AddMinutes(2),
-                            Email = TestUserEmail
+                            Email = TestUserEmail,
+                            CanonicalEmail = UserEntity.CanonicalizeEmail(TestUserEmail)
                         }
                     });
                 AuthService = Substitute.For<IAuthenticationService>();

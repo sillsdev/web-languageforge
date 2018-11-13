@@ -148,7 +148,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             if (ModelState.IsValid)
             {
                 UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.Username == model.EmailOrUsername
-                    || u.Email == model.EmailOrUsername);
+                    || u.CanonicalEmail == UserEntity.CanonicalizeEmail(model.EmailOrUsername));
                 // validate username/password against in-memory store
                 if (user != null && user.VerifyPassword(model.Password))
                 {
@@ -227,7 +227,8 @@ namespace SIL.XForge.Identity.Controllers.Account
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             UserEntity user = await _users.UpdateAsync(
-                u => u.Username == model.EmailOrUsername || u.Email == model.EmailOrUsername,
+                u => u.Username == model.EmailOrUsername
+                    || u.CanonicalEmail == UserEntity.CanonicalizeEmail(model.EmailOrUsername),
                 update => update
                     .Set(u => u.ResetPasswordKey, GenerateValidationKey())
                     .Set(u => u.ResetPasswordExpirationDate, DateTime.UtcNow.AddDays(PasswordResetPeriodDays)));
@@ -388,6 +389,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 {
                     Name = model.Fullname,
                     Email = model.Email,
+                    CanonicalEmail = UserEntity.CanonicalizeEmail(model.Email),
                     EmailVerified = false,
                     Password = BCrypt.Net.BCrypt.HashPassword(model.Password, 7),
                     Role = SystemRoles.User,

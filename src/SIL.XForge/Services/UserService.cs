@@ -17,11 +17,19 @@ namespace SIL.XForge.Services
         {
         }
 
+        protected override Task<UserEntity> InsertEntityAsync(UserEntity entity)
+        {
+            entity.CanonicalEmail = UserEntity.CanonicalizeEmail(entity.Email);
+            return base.InsertEntityAsync(entity);
+        }
+
         protected override Task<UserEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
             IDictionary<string, string> relationships)
         {
-            if (attrs.TryGetValue(nameof(UserResource.Password), out object value))
-                attrs[nameof(UserResource.Password)] = BCrypt.Net.BCrypt.HashPassword((string) value, 7);
+            if (attrs.TryGetValue(nameof(UserEntity.Password), out object password))
+                attrs[nameof(UserEntity.Password)] = BCrypt.Net.BCrypt.HashPassword((string) password, 7);
+            if (attrs.TryGetValue(nameof(UserEntity.Email), out object email))
+                attrs[nameof(UserEntity.CanonicalEmail)] = UserEntity.CanonicalizeEmail((string) email);
             return base.UpdateEntityAsync(id, attrs, relationships);
         }
 
