@@ -20,6 +20,17 @@ Vagrant.configure("2") do |config|
 
     function tryharderto() { i=0; until "$@"; do ((++i > 3)) && false; echo >&2 Retrying $i; sleep 2m; done }
 
+    # Canary
+    tee ~/Desktop/development-tools/warning-not-provisioned.txt <<END
+    The presence of this file means that the vagrant virtual machine did not
+    finish provisioning correctly.
+    The best way to get to a working machine state is to backup any data that
+    you want to keep from this virtual machine, and then destroy and re-create
+    this vagrant virtual machine by running these commands from your host:
+        vagrant destroy
+        vagrant up
+    END
+
     # Delete and generate unique host keys until handled by base box.
     sudo rm -v /etc/ssh/ssh_host_*
     sudo dpkg-reconfigure openssh-server
@@ -29,8 +40,8 @@ Vagrant.configure("2") do |config|
 
     cd ~/src/web-languageforge
     git checkout -- package-lock.json
-    git pull --ff-only --recurse-submodules
-    ./refreshDeps.sh
+    # Pull only up to a commit that this vagrant was tested to work with.
+    git fetch && git pull --ff-only --recurse-submodules origin ac4b4157ac35abed54efad8a7e711eac0c025f34
 
     cd ~/src/web-languageforge/deploy
     tryharderto ansible-playbook playbook_xenial_beta.yml --limit localhost -K
@@ -40,6 +51,7 @@ Vagrant.configure("2") do |config|
 
     cd ~/src/web-languageforge
     npm install
+    ./refreshDeps.sh
 
     # These permission fixes need done in the ansible that is reverting them.
     sudo chown -R vagrant:www-data ~/src/web-languageforge/src/assets
@@ -53,10 +65,6 @@ Vagrant.configure("2") do |config|
 
     sudo mkdir -p /var/lib/scriptureforge/sync
     sudo chown $USER:$USER -R /var/lib/scriptureforge
-
-    sudo apt-get install -y paratext-8.0
-    cp -aL /usr/share/applications/paratext8.desktop ~/Desktop/development-tools/
-    chmod +x ~/Desktop/development-tools/paratext8.desktop
 
     cp -aL /usr/share/applications/chromium-browser.desktop ~/Desktop/development-tools/
     chmod +x ~/Desktop/development-tools/chromium-browser.desktop
@@ -80,5 +88,12 @@ Vagrant.configure("2") do |config|
     select Enable 3D Acceleration.
     END
 
+    tryharderto sudo apt-get install -y paratext-8.0
+    cp -aL /usr/share/applications/paratext8.desktop ~/Desktop/development-tools/
+    chmod +x ~/Desktop/development-tools/paratext8.desktop
+
+    # Remove canary
+    rm ~/Desktop/development-tools/warning-not-provisioned.txt
+    echo Provisioning finished successfully.
   SHELL
 end

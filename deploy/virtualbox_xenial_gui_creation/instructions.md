@@ -37,7 +37,7 @@ gulp webpack-sf
 ./rune2e.sh sf
 cd ~/src/web-languageforge/src/SIL.XForge.Scripture
 dotnet run &
-sleep 10m
+sleep 5m
 killall dotnet
 sleep 1m
 cd ~/src/web-languageforge/src/SIL.XForge.Scripture/ClientApp
