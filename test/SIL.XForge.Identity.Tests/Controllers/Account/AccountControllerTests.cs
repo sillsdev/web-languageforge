@@ -339,6 +339,41 @@ namespace SIL.XForge.Identity.Controllers.Account
             await env.EmailService.Received().SendEmailAsync(Arg.Is(emailId), Arg.Is(subject), Arg.Any<string>());
         }
 
+        [Test]
+        public async Task InviteViaEmailRegister_AddUser()
+        {
+            var env = new TestEnvironment();
+            var email = "abc1@fakegmail.com";
+
+            var result = await env.Controller.SendInvitation_CreateUserAccount(email);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(env.Controller.ModelState.ErrorCount, Is.EqualTo(0));
+            Assert.That(env.Users.Query().Any(x => x.Email == email), Is.True);
+        }
+
+        [Test]
+        public async Task InviteViaEmailRegister_UpdateUserAccount()
+        {
+            var env = new TestEnvironment();
+            var email = "abc1@fakegmail.com";
+
+            await env.Controller.SendInvitation_CreateUserAccount(email);
+            Assert.That(env.Users.Query().Any(x => x.Email == email), Is.True);
+
+            var model = new RegisterViewModel
+            {
+                Fullname = "Non Duplicated Name",
+                Password = "unimportant1234",
+                Email = "abc1@fakegmail.com",
+                InviteSignUp = true
+            };
+
+            var result = await env.Controller.Register(model, "/home");
+            Assert.That(result, Is.Not.Null);
+            Assert.That(env.Controller.ModelState.ErrorCount, Is.EqualTo(0));
+            Assert.That(env.Users.Query().Any(x => x.Name == model.Fullname), Is.True);
+        }
+
         private class TestEnvironment
         {
             public TestEnvironment(bool isResetLinkExpired = false)

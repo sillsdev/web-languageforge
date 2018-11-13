@@ -7,5 +7,7 @@
 export const environment = {
   production: false,
   pwaTest: false,
-  issueEmail: 'issues@beta.scriptureforge.localhost'
+  issueEmail: 'issues@beta.scriptureforge.localhost',
+  siteName: 'Scripture Forge',
+  siteOrigin: 'http://beta.scriptureforge.localhost'
 };

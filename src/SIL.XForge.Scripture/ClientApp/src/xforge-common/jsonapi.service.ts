@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import Coordinator, {
   ConnectionStrategy, LogTruncationStrategy, RequestStrategy, SyncStrategy
@@ -1044,12 +1044,5 @@ export class JSONAPIService {
       }
       return ops;
     }, { localOnly: true });
-  }
-
-  public sendInvitation(name: string, email: string): Observable<string> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
-    return this.http.post('https://beta.scriptureforge.local/Account/SendInvitation',
-      JSON.stringify({ name, email }), { headers: headers, responseType: 'text' })
-      .pipe(map((response: Response) => response));
   }
 }

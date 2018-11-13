@@ -5,25 +5,27 @@ import { OAuthService } from 'angular-oauth2-oidc';
 
 import { NoticeService } from '@xforge-common/notice.service';
 import { UserService } from '@xforge-common/user.service';
-import { SFUserService } from '../core/sfuser.service';
+import { environment } from '../../environments/environment';
+
 
 @Component({
-  selector: 'app-project-dashboard',
-  templateUrl: './project-dashboard.component.html',
-  styleUrls: ['./project-dashboard.component.scss']
+  selector: 'app-email-invite',
+  templateUrl: './email-invite.component.html',
+  styleUrls: ['./email-invite.component.scss']
 })
-
-export class ProjectDashboardComponent implements OnInit {
+export class EmailInviteComponent implements OnInit {
   sendInviteForm: FormGroup;
   isSubmitted: boolean = false;
   showInviteForm: boolean = true;
   spinnerDisplay: boolean = false;
   disabledSendInviteBtn: boolean = false;
+  siteName = environment.siteName;
+
   get formControls() { return this.sendInviteForm.controls; }
 
   constructor(private dialog: MatDialog, private readonly formBuilder: FormBuilder,
     private readonly noticeService: NoticeService, private readonly oauthService: OAuthService,
-    private readonly userService: UserService, private readonly sfUserSerive: SFUserService) { }
+    private readonly userService: UserService) { }
 
   get name() {
     const claims = this.oauthService.getIdentityClaims();

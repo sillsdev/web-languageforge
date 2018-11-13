@@ -24,7 +24,15 @@
                 </span>
                 <span class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <label class="mdl-textfield__label">Email Address</label>
-                    <input class="mdl-textfield__input" asp-for="Email">
+                    @if(!string.IsNullOrEmpty(Model.Email))
+                    {
+                        <input class="mdl-textfield__input" asp-for="Email" readonly="readonly" />
+                    }
+                    else
+                    {
+                        <input class="mdl-textfield__input" asp-for="Email"/>
+                    }
+                    <input type="hidden" asp-for="InviteSignUp" />
                 </span>
                 <span class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <div class="g-recaptcha" data-size="normal" data-sitekey="@ViewData["ReCaptchaKey"]"></div>

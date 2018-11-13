@@ -11,8 +11,7 @@ import { ResourceService } from './resource.service';
 
 @Injectable()
 export class UserService<T extends User = User> extends ResourceService {
-  constructor(jsonApiService: JSONAPIService, private readonly authService: AuthService,
-    private readonly http: HttpClient) {
+  constructor(jsonApiService: JSONAPIService, private readonly authService: AuthService, private readonly http: HttpClient) {
     super(User.TYPE, jsonApiService);
   }
 
@@ -31,7 +30,7 @@ export class UserService<T extends User = User> extends ResourceService {
 
   sendInvitation(name: string, email: string): Observable<string> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
-    return this.http.post(environment.siteOrigin + 'Account/SendInvitation',
+    return this.http.post(environment.siteOrigin + '/Account/SendInvitation',
       JSON.stringify({ name, email }), { headers: headers, responseType: 'text' })
       .pipe(map(response => response));
   }

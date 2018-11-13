@@ -1,6 +1,7 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance, mock, when } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 import { AuthService } from '@xforge-common/auth.service';
 import { HomeComponent } from './home.component';
@@ -21,12 +22,13 @@ describe('HomeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ HomeComponent ],
+      declarations: [HomeComponent],
       providers: [
         { provide: AuthService, useFactory: () => instance(mockedAuthService) }
-      ]
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { AuthService } from '@xforge-common/auth.service';
@@ -11,8 +12,8 @@ import { SFUser } from './models/sfuser';
   providedIn: 'root'
 })
 export class SFUserService extends UserService<SFUser> {
-  constructor(jsonApiService: JSONAPIService, authService: AuthService) {
-    super(jsonApiService, authService);
+  constructor(jsonApiService: JSONAPIService, authService: AuthService, http: HttpClient) {
+    super(jsonApiService, authService, http);
   }
 
   localGetProjects(user: SFUser | string): SFProject[] {
