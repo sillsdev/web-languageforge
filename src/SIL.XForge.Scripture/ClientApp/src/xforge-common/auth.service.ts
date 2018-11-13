@@ -31,6 +31,14 @@ export class AuthService {
     return null;
   }
 
+  get isLoggedIn(): Promise<boolean> {
+    return this.tryLoginPromise;
+  }
+
+  get accessToken(): string {
+    return this.oauthService.getAccessToken();
+  }
+
   init(): void {
     const authConfig: AuthConfig = {
       issuer: this.locationService.origin,
@@ -52,29 +60,22 @@ export class AuthService {
     });
     this.tryLoginPromise = this.oauthService.loadDiscoveryDocumentAndTryLogin()
       .then(async result => {
-        let loggedIn = result;
-        if (!loggedIn) {
+        let isLoggedIn = result;
+        // if we weren't able to log in, try a silent refresh, this can avoid an extra page load
+        // don't try to perform a silent refresh if we in the middle of an implicit flow, because it will overwrite the
+        // nonce and cause it to fail
+        if (!isLoggedIn && !this.isLoggingIn) {
           try {
             const event = await this.oauthService.silentRefresh();
-            loggedIn = event.type === 'silently_refreshed';
-          } catch (err) {
-            loggedIn = false;
-          }
+            isLoggedIn = event.type === 'silently_refreshed';
+          } catch (err) { }
         }
-        if (loggedIn) {
+        if (isLoggedIn) {
           await this.jsonApiService.init(this.oauthService.getAccessToken());
           return true;
         }
         return false;
       });
-  }
-
-  get isLoggedIn(): Promise<boolean> {
-    return this.tryLoginPromise;
-  }
-
-  get accessToken(): string {
-    return this.oauthService.getAccessToken();
   }
 
   logIn(): void {
@@ -83,5 +84,10 @@ export class AuthService {
 
   logOut(): void {
     this.oauthService.logOut();
+  }
+
+  private get isLoggingIn(): boolean {
+    // we can tell if we are in the middle of an implicit flow if a nonce is stored and nothing else
+    return sessionStorage.getItem('nonce') != null && this.oauthService.getAccessToken() == null;
   }
 }
