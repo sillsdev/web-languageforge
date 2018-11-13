@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using IdentityModel;
@@ -28,9 +29,8 @@ namespace SIL.XForge.Identity
             }
         };
 
-        private static Client XFClient(string domain, bool insecureProtocol = false)
+        private static Client XFClient(Uri origin)
         {
-            string protocol = insecureProtocol ? "http" : "https";
             return new Client
             {
                 ClientId = "xForge",
@@ -41,12 +41,12 @@ namespace SIL.XForge.Identity
                 RequireConsent = false,
                 RedirectUris =
                 {
-                    $"{protocol}://{domain}/home",
-                    $"{protocol}://{domain}/silent-refresh.html"
+                    BuildUrl(origin, "home"),
+                    BuildUrl(origin, "silent-refresh.html")
                 },
                 PostLogoutRedirectUris =
                 {
-                    $"{protocol}://{domain}/"
+                    origin.ToString()
                 },
                 AllowedScopes =
                 {
@@ -58,8 +58,14 @@ namespace SIL.XForge.Identity
             };
         }
 
+        private static string BuildUrl(Uri baseUri, string relativeUri)
+        {
+            var result = new Uri(baseUri, relativeUri);
+            return result.ToString();
+        }
+
         public static IServiceCollection AddXFIdentityServer(this IServiceCollection services,
-            IConfiguration configuration, bool insecureProtocol = false)
+            IConfiguration configuration)
         {
             services.AddOptions<GoogleCaptchaOptions>(configuration);
 
@@ -76,7 +82,7 @@ namespace SIL.XForge.Identity
                 .AddValidationKeys()
                 .AddInMemoryIdentityResources(IdentityResources)
                 .AddInMemoryApiResources(ApiResources)
-                .AddInMemoryClients(new[] { XFClient(siteOptions.Domain, insecureProtocol) })
+                .AddInMemoryClients(new[] { XFClient(siteOptions.Origin) })
                 .AddProfileService<UserProfileService>()
                 .AddResourceOwnerValidator<UserResourceOwnerPasswordValidator>()
                 .AddOperationalStore(options =>

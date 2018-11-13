@@ -55,22 +55,7 @@ namespace SIL.XForge.Identity.Controllers
             // validate username/password
             if (user != null && user.VerifyPassword(parameters.Password))
             {
-                await _events.RaiseAsync(new UserLoginSuccessEvent(user.Email, user.Id, user.Name));
-
-                // only set explicit expiration here if user chooses "remember me".
-                // otherwise we rely upon expiration configured in cookie middleware.
-                AuthenticationProperties props = null;
-                if (parameters.RememberLogIn)
-                {
-                    props = new AuthenticationProperties
-                    {
-                        IsPersistent = true,
-                        ExpiresUtc = DateTimeOffset.UtcNow.Add(RememberMeLogInDuration)
-                    };
-                };
-
-                // issue authentication cookie with subject ID and name
-                await HttpContext.SignInAsync(user.Id, user.Name, props);
+                await LogInUserAsync(user, parameters.RememberLogIn);
                 AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(parameters.ReturnUrl);
                 return new LogInResult
                 {
@@ -143,10 +128,9 @@ namespace SIL.XForge.Identity.Controllers
                     .Set(u => u.ResetPasswordExpirationDate, DateTime.UtcNow.AddDays(PasswordResetPeriodDays)));
             if (user != null)
             {
-                var siteOptions = _options.Value;
+                SiteOptions siteOptions = _options.Value;
                 var subject = $"{siteOptions.Name} Forgotten Password Verification";
-                // TODO (Hasso) 2018.11: use the insecure protocol for development and testing
-                var url = $"https://{siteOptions.Domain}/account/resetpassword?key={user.ResetPasswordKey}";
+                Uri url = new Uri(siteOptions.Origin, $"account/resetpassword?token={user.ResetPasswordKey}");
                 var body = "<div class=''>"
                     + $"<h1>Reset Password for {user.Name}</h1>"
                     + $"<p>Please click this link to <a href='{url}' target='_blank'>Reset Your Password</a>.</p>"
@@ -171,7 +155,10 @@ namespace SIL.XForge.Identity.Controllers
                     .Unset(u => u.ResetPasswordKey)
                     .Unset(u => u.ResetPasswordExpirationDate));
             if (user != null)
+            {
+                await LogInUserAsync(user);
                 return new IdentityResult(true);
+            }
             return new IdentityResult(false);
         }
 
@@ -192,13 +179,12 @@ namespace SIL.XForge.Identity.Controllers
 
             if (await _users.InsertAsync(user))
             {
-                await _events.RaiseAsync(new UserLoginSuccessEvent(user.Email, user.Id, user.Name));
-                // issue authentication cookie with subject ID and name
-                await HttpContext.SignInAsync(user.Id, user.Name);
+                await LogInUserAsync(user);
 
                 SiteOptions siteOptions = _options.Value;
                 string subject = $"{siteOptions.Name} - Email Verification";
-                string url = $"https://{siteOptions.Domain}/identity/verify-email?key={user.ValidationKey}";
+                Uri url = new Uri(siteOptions.Origin,
+                    $"account/VerifyEmail?email={user.Email}&key={user.ValidationKey}");
                 string body = "<div class=''>"
                     + $"<h1>Dear {user.Name},</h1>"
                     + $"<p>Please click this link to activate your account <a href='{url}' target='_blank'>Confirm Verification</a>.</p>"
@@ -224,6 +210,24 @@ namespace SIL.XForge.Identity.Controllers
             if (user != null)
                 return new IdentityResult(true);
             return new IdentityResult(false);
+        }
+
+        private async Task LogInUserAsync(UserEntity user, bool rememberLogIn = false)
+        {
+            await _events.RaiseAsync(new UserLoginSuccessEvent(user.Email, user.Id, user.Name));
+            // only set explicit expiration here if user chooses "remember me".
+            // otherwise we rely upon expiration configured in cookie middleware.
+            AuthenticationProperties props = null;
+            if (rememberLogIn)
+            {
+                props = new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.Add(RememberMeLogInDuration)
+                };
+            };
+            // issue authentication cookie with subject ID and name
+            await HttpContext.SignInAsync(user.Id, user.Name, props);
         }
 
         private static string GenerateKey()
