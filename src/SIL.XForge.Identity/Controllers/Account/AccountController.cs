@@ -286,8 +286,7 @@ namespace SIL.XForge.Identity.Controllers.Account
                 ModelState.AddModelError(string.Empty, "Both Passwords do not match");
                 return View(model);
             }
-            var updatedUserEntity = await _users.UpdateAsync(u => u.Username == model.Username
-                                                               && u.ResetPasswordKey == model.ResetToken
+            var updatedUserEntity = await _users.UpdateAsync(u => u.ResetPasswordKey == model.ResetToken
                                                                && u.ResetPasswordExpirationDate > DateTime.UtcNow,
                 update => update
                     .Set(u => u.Password, BCrypt.Net.BCrypt.HashPassword(model.Password, 7))
@@ -304,7 +303,6 @@ namespace SIL.XForge.Identity.Controllers.Account
             {
                 Password = "",
                 ConfirmPassword = "",
-                Username = user.Username,
                 ResetToken = user.ResetPasswordKey
             };
         }
