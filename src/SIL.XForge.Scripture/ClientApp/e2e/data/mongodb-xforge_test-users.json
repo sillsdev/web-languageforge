@@ -10,7 +10,7 @@
     "$date": "2018-09-13T10:29:57.089Z"
   },
   "email": "test_runner_admin@example.com",
-  "emailPending": "test_runner_admin@example.com",
+  "canonicalEmail": "test_runner_admin@example.com",
   "name": "Test Admin",
   "resetPasswordExpirationDate": {
     "$date": "2018-09-13T10:29:56.000Z"
@@ -54,7 +54,7 @@
     "$date": "2018-09-13T10:29:56.807Z"
   },
   "email": "test_runner_manager_user@example.com",
-  "emailPending": "test_runner_manager_user@example.com",
+  "canonicalEmail": "test_runner_manager_user@example.com",
   "name": "Test Manager",
   "resetPasswordExpirationDate": {
     "$date": "2018-09-13T10:29:56.000Z"
@@ -98,7 +98,7 @@
     "$date": "2018-09-13T10:29:56.864Z"
   },
   "email": "test_runner_normal_user@example.com",
-  "emailPending": "test_runner_normal_user@example.com",
+  "canonicalEmail": "test_runner_normal_user@example.com",
   "name": "Test User",
   "resetPasswordExpirationDate": {
     "$date": "2018-09-13T10:29:56.000Z"
@@ -133,7 +133,7 @@
     "$date": "2018-09-13T10:29:56.920Z"
   },
   "email": "test_runner_normal_user_2@example.com",
-  "emailPending": "test_runner_normal_user_2@example.com",
+  "canonicalEmail": "test_runner_normal_user_2@example.com",
   "name": "Test Second User",
   "resetPasswordExpirationDate": {
     "$date": "2018-09-13T10:29:56.000Z"
@@ -168,7 +168,7 @@
     "$date": "2018-09-13T10:29:56.434Z"
   },
   "email": "test_runner_expired_normal_user@example.com",
-  "emailPending": "test_runner_expired_normal_user@example.com",
+  "canonicalEmail": "test_runner_expired_normal_user@example.com",
   "name": "Test ExpiredUser",
   "resetPasswordExpirationDate": {
     "$date": "2018-09-13T10:29:56.000Z"
@@ -199,7 +199,7 @@
     "$date": "2018-09-13T10:29:56.978Z"
   },
   "email": "test_runner_reset_normal_user@example.com",
-  "emailPending": "test_runner_reset_normal_user@example.com",
+  "canonicalEmail": "test_runner_reset_normal_user@example.com",
   "name": "Test ResetUser",
   "resetPasswordExpirationDate": {
     "$date": "2018-09-18T10:29:56.000Z"
@@ -235,7 +235,7 @@
     "$date": "2018-09-13T10:29:57.148Z"
   },
   "email": "test_runner_observer_normal_user@example.com",
-  "emailPending": "test_runner_observer_normal_user@example.com",
+  "canonicalEmail": "test_runner_observer_normal_user@example.com",
   "name": "Test ObserverUser",
   "resetPasswordExpirationDate": {
     "$date": "2018-09-13T10:29:56.000Z"
