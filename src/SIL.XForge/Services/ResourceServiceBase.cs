@@ -168,6 +168,11 @@ namespace SIL.XForge.Services
         protected abstract Task<object> GetRelationshipResourcesAsync(RelationshipAttribute relAttr,
             IEnumerable<string> included, Dictionary<string, IResource> resources, TEntity entity);
 
+        protected virtual IQueryable<TEntity> ApplyFilter(IQueryable<TEntity> entities, FilterQuery filter)
+        {
+            return entities.Filter(JsonApiContext, filter);
+        }
+
         protected JsonApiException ForbiddenException()
         {
             return new JsonApiException(StatusCodes.Status403Forbidden,
@@ -195,7 +200,7 @@ namespace SIL.XForge.Services
             if (query.Filters != null && query.Filters.Count > 0)
             {
                 foreach (FilterQuery filter in query.Filters)
-                    entities = entities.Filter(JsonApiContext, filter);
+                    entities = ApplyFilter(entities, filter);
             }
 
             if (query.SortParameters != null && query.SortParameters.Count > 0)

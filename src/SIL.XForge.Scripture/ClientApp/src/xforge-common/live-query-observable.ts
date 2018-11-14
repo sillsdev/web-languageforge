@@ -14,6 +14,6 @@ export class LiveQueryObservable<T> extends Observable<T> {
   }
 
   update(): void {
-    this.store.query(this.query).catch(() => { });
+    this.store.query(this.query);
   }
 }

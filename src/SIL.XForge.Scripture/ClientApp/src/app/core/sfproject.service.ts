@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
+import { Record } from '@orbit/data';
+import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 
-import { JSONAPIService } from '@xforge-common/jsonapi.service';
+import { registerCustomFilter } from '@xforge-common/custom-filter-specifier';
+import { GetAllParameters, JSONAPIService } from '@xforge-common/jsonapi.service';
+import { InputSystem } from '@xforge-common/models/input-system';
 import { ProjectService } from '@xforge-common/project.service';
+import { nameof } from '@xforge-common/utils';
 import { SFProject } from './models/sfproject';
 import { Text } from './models/text';
 
@@ -9,8 +15,12 @@ import { Text } from './models/text';
   providedIn: 'root'
 })
 export class SFProjectService extends ProjectService<SFProject> {
+  private static readonly SEARCH_FILTER = 'search';
+
   constructor(jsonApiService: JSONAPIService) {
     super(jsonApiService);
+
+    registerCustomFilter(this.type, SFProjectService.SEARCH_FILTER, (r, v) => this.searchProjects(r, v));
   }
 
   localGetTexts(project: SFProject | string): Text[] {
@@ -18,5 +28,43 @@ export class SFProjectService extends ProjectService<SFProject> {
       project = this.jsonApiService.localGet(this.identity(project));
     }
     return this.jsonApiService.localGetMany(project.texts);
+  }
+
+  search(term$: Observable<string>): Observable<SFProject[]> {
+    return term$.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      startWith(''),
+      switchMap(term => {
+        let parameters: GetAllParameters<SFProject> = null;
+        if (term != null && term !== '') {
+          parameters = {
+            filter: [{ name: SFProjectService.SEARCH_FILTER, value: term }]
+          };
+        }
+        return this.jsonApiService.getAll(this.type, parameters);
+      })
+    );
+  }
+
+  private searchProjects(records: Record[], value: string): Record[] {
+    const valueLower = value.toLowerCase();
+    return records.filter(record => {
+      if (record.attributes == null) {
+        return false;
+      }
+
+      const projectName = record.attributes[nameof<SFProject>('projectName')] as string;
+      if (projectName != null && projectName.toLowerCase().includes(valueLower)) {
+        return true;
+      }
+
+      const inputSystem = record.attributes[nameof<SFProject>('inputSystem')] as InputSystem;
+      if (inputSystem != null && inputSystem.languageName.toLowerCase().includes(valueLower)) {
+        return true;
+      }
+
+      return false;
+    });
   }
 }

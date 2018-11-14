@@ -15,6 +15,7 @@ import {
 import JSONAPISource, { JSONAPIDocument } from '@orbit/jsonapi';
 import { merge } from '@orbit/utils';
 
+import { CustomFilterSpecifier } from '../custom-filter-specifier';
 import { buildFetchSettings, customRequestOptions, Filter, RequestOptions } from './request-settings';
 
 export const GetOperators = {
@@ -82,12 +83,30 @@ function buildFilterParam(source: JSONAPISource, filterSpecifiers: FilterSpecifi
   const filters: Filter[] = [];
 
   filterSpecifiers.forEach(filterSpecifier => {
-    if (filterSpecifier.kind === 'attribute' && filterSpecifier.op === 'equal') {
+    if (filterSpecifier.kind === 'attribute') {
       const attributeFilter = filterSpecifier as AttributeFilterSpecifier;
 
       // Note: We don't know the `type` of the attribute here, so passing `null`
       const resourceAttribute = source.serializer.resourceAttribute(null, attributeFilter.attribute);
-      filters.push({ [resourceAttribute]: attributeFilter.value });
+      let prefix = '';
+      switch (attributeFilter.op) {
+        case 'equal':
+          prefix = 'eq';
+          break;
+        case 'gt':
+          prefix = 'gt';
+          break;
+        case 'lt':
+          prefix = 'lt';
+          break;
+        case 'gte':
+          prefix = 'ge';
+          break;
+        case 'lte':
+          prefix = 'le';
+          break;
+      }
+      filters.push({ [resourceAttribute]: prefix + ':' + attributeFilter.value });
     } else if (filterSpecifier.kind === 'relatedRecord') {
       const relatedRecordFilter = filterSpecifier as RelatedRecordFilterSpecifier;
       if (Array.isArray(relatedRecordFilter.record)) {
@@ -101,6 +120,11 @@ function buildFilterParam(source: JSONAPISource, filterSpecifiers: FilterSpecifi
       }
       const relatedRecordsFilter = filterSpecifier as RelatedRecordsFilterSpecifier;
       filters.push({ [relatedRecordsFilter.relation]: relatedRecordsFilter.records.map(e => e.id).join(',') });
+    } else if (filterSpecifier.kind === 'custom') {
+      const customFilter = filterSpecifier as CustomFilterSpecifier;
+
+      const filterName = source.serializer.resourceAttribute(null, customFilter.name);
+      filters.push({ [filterName]: customFilter.value });
     } else {
       throw new QueryExpressionParseError(`Filter operation ${filterSpecifier.op} not recognized for JSONAPISource.`,
         filterSpecifier);
