@@ -133,7 +133,7 @@ namespace SIL.XForge.Identity.Controllers
             {
                 SiteOptions siteOptions = _options.Value;
                 var subject = $"{siteOptions.Name} Forgotten Password Verification";
-                Uri url = new Uri(siteOptions.Origin, $"account/resetpassword?token={user.ResetPasswordKey}");
+                Uri url = new Uri(siteOptions.Origin, $"identity/reset-password?token={user.ResetPasswordKey}");
                 var body = "<div class=''>"
                     + $"<h1>Reset Password for {user.Name}</h1>"
                     + $"<p>Please click this link to <a href='{url}' target='_blank'>Reset Your Password</a>.</p>"
