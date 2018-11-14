@@ -1,11 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { LogInParams } from '@identity/models/log-in-params';
 import { LocationService } from '@xforge-common/location.service';
-import { isLocalUrl } from '@xforge-common/utils';
 import { IdentityService } from '../identity.service';
 
 @Component({
@@ -24,7 +23,8 @@ export class LogInComponent implements OnInit {
   private params: Params;
 
   constructor(private readonly identityService: IdentityService, public readonly snackBar: MatSnackBar,
-    private readonly activatedRoute: ActivatedRoute, private readonly locationService: LocationService
+    private readonly activatedRoute: ActivatedRoute, private readonly locationService: LocationService,
+    private readonly router: Router
   ) { }
 
   ngOnInit() {
@@ -44,10 +44,10 @@ export class LogInComponent implements OnInit {
     }
     const result = await this.identityService.logIn(logInParams);
     if (result.success) {
-      if (result.isReturnUrlTrusted || isLocalUrl(returnUrl)) {
+      if (returnUrl == null) {
+        this.router.navigateByUrl('/home');
+      } else if (result.isReturnUrlTrusted) {
         this.locationService.go(returnUrl);
-      } else if (returnUrl == null) {
-        this.locationService.go('/');
       } else {
         throw new Error('Invalid return URL.');
       }

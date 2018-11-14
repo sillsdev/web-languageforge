@@ -3,7 +3,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
@@ -20,14 +20,17 @@ class TestEnvironment {
   mockedIdentityService: IdentityService;
   mockedActivatedRoute: ActivatedRoute;
   mockedLocationService: LocationService;
+  mockedRouter: Router;
   overlayContainer: OverlayContainer;
 
   constructor() {
     this.mockedIdentityService = mock(IdentityService);
     this.mockedActivatedRoute = mock(ActivatedRoute);
     this.mockedLocationService = mock(LocationService);
+    this.mockedRouter = mock(Router);
 
     when(this.mockedActivatedRoute.queryParams).thenReturn(of({ }));
+    when(this.mockedRouter.navigateByUrl('/home')).thenResolve(true);
 
     TestBed.configureTestingModule({
       imports: [
@@ -38,7 +41,8 @@ class TestEnvironment {
       providers: [
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
-        { provide: LocationService, useFactory: () => instance(this.mockedLocationService) }
+        { provide: LocationService, useFactory: () => instance(this.mockedLocationService) },
+        { provide: Router, useFactory: () => instance(this.mockedRouter) }
       ]
     });
     this.fixture = TestBed.createComponent(LogInComponent);
@@ -110,7 +114,7 @@ describe('LogInComponent', () => {
       rememberLogIn: true
     };
     verify(env.mockedIdentityService.logIn(deepEqual(logInParams))).once();
-    verify(env.mockedLocationService.go('/')).once();
+    verify(env.mockedRouter.navigateByUrl('/home')).once();
   }));
 
   it('should display error when username and password are incorrect', fakeAsync(() => {
@@ -128,6 +132,7 @@ describe('LogInComponent', () => {
       rememberLogIn: false
     };
     verify(env.mockedIdentityService.logIn(deepEqual(logInParams))).once();
+    verify(env.mockedRouter.navigateByUrl('/home')).never();
     expect(env.getSnackBarContent()).toBe('Invalid email/username or password');
     flush();
   }));

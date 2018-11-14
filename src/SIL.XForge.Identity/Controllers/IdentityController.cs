@@ -57,10 +57,13 @@ namespace SIL.XForge.Identity.Controllers
             {
                 await LogInUserAsync(user, parameters.RememberLogIn);
                 AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(parameters.ReturnUrl);
+                bool trusted = context != null;
+                if (!trusted)
+                    trusted = Url.IsLocalUrl(parameters.ReturnUrl);
                 return new LogInResult
                 {
                     Success = true,
-                    IsReturnUrlTrusted = context != null
+                    IsReturnUrlTrusted = trusted
                 };
             }
 
