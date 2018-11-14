@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
@@ -11,7 +11,9 @@ import { SFProjectService } from '../core/sfproject.service';
 export class FetchDataComponent implements OnInit {
   private readonly updatedProjects: Set<SFProject> = new Set<SFProject>();
 
-  public projects$: Observable<SFProject[]>;
+  projects$: Observable<SFProject[]>;
+
+  private readonly searchTerm$ = new Subject<string>();
 
   constructor(private readonly projectService: SFProjectService) { }
 
@@ -20,7 +22,7 @@ export class FetchDataComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.projects$ = this.projectService.getAll();
+    this.projects$ = this.projectService.search(this.searchTerm$);
   }
 
   updateProjectName(project: SFProject, value: string): void {
@@ -29,6 +31,10 @@ export class FetchDataComponent implements OnInit {
     }
     project.projectName = value;
     this.updatedProjects.add(project);
+  }
+
+  updateSearchTerm(term: string): void {
+    this.searchTerm$.next(term);
   }
 
   async update(): Promise<void> {

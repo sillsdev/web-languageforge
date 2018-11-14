@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Services;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
@@ -76,6 +77,18 @@ namespace SIL.XForge.Scripture.Services
             if (SystemRole == SystemRoles.User)
                 query = query.Where(p => p.Users.Any(u => u.UserRef == UserId));
             return Task.FromResult(query);
+        }
+
+        protected override IQueryable<SFProjectEntity> ApplyFilter(IQueryable<SFProjectEntity> entities,
+            FilterQuery filter)
+        {
+            if (filter.Attribute == "search")
+            {
+                string value = filter.Value.ToLowerInvariant();
+                return entities.Where(p => p.ProjectName.ToLowerInvariant().Contains(value)
+                    || p.InputSystem.LanguageName.ToLowerInvariant().Contains(value));
+            }
+            return base.ApplyFilter(entities, filter);
         }
     }
 }

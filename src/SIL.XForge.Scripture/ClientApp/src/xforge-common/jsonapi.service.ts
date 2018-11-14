@@ -7,24 +7,28 @@ import { Exception } from '@orbit/core';
 import {
   AttributeFilterSpecifier, AttributeSortSpecifier, buildQuery, ClientError, FilterSpecifier, FindRecord, NetworkError,
   OffsetLimitPageSpecifier, Operation, Query, QueryBuilder, QueryOrExpression, QueryTerm, Record, RecordIdentity,
-  RecordRelationship, ReplaceRecordOperation, Schema, SchemaSettings, SortSpecifier, Transform, TransformOrOperations
+  RecordRelationship, ReplaceRecordOperation, Schema, SchemaSettings, SortSpecifier, Transform, TransformOrOperations,
+  ValueComparisonOperator
 } from '@orbit/data';
 import IndexedDBSource from '@orbit/indexeddb';
 import IndexedDBBucket from '@orbit/indexeddb-bucket';
 import Store from '@orbit/store';
 import { clone, dasherize, Dict, eq, extend } from '@orbit/utils';
 import { ObjectId } from 'bson';
-import { from, fromEventPattern, merge, Observable } from 'rxjs';
+import { from, fromEvent, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
+import { CustomFilterSpecifier, isCustomFilterRegistered } from './custom-filter-specifier';
 import { XForgeJSONAPISource } from './jsonapi/xforge-jsonapi-source';
 import { LiveQueryObservable } from './live-query-observable';
 import { LocationService } from './location.service';
 import { DomainModel } from './models/domain-model';
 import { Resource, ResourceRef } from './models/resource';
+import { XForgeStore } from './store/xforge-store';
 
-export interface Filter<T = any> {
-  name: Extract<keyof T, string>;
+export interface Filter {
+  op?: 'equal' | 'gt' | 'gte' | 'lt' | 'lte';
+  name: string;
   value: any;
 }
 
@@ -34,7 +38,7 @@ export interface Sort<T = any> {
 }
 
 export interface GetAllParameters<T = any> {
-  filter?: Filter<T>[];
+  filter?: Filter[];
   sort?: Sort<T>[];
   page?: {
     offset?: number;
@@ -93,7 +97,7 @@ export class JSONAPIService {
       namespace: 'xforge-state'
     });
 
-    this.store = new Store({
+    this.store = new XForgeStore({
       schema: this.schema,
       bucket: this.bucket
     });
@@ -586,17 +590,7 @@ export class JSONAPIService {
     const query = buildQuery(queryOrExpression, this.getOptions(persist, false, include), undefined,
       this.store.queryBuilder);
 
-    const patch$ = fromEventPattern(
-      handler => this.store.cache.on('patch', handler),
-      handler => this.store.cache.off('patch', handler),
-    );
-
-    const reset$ = fromEventPattern(
-      handler => this.store.cache.on('reset', handler),
-      handler => this.store.cache.off('reset', handler),
-    );
-
-    const source$ = merge(patch$, reset$).pipe(
+    const source$ = fromEvent(this.store, 'data_changed').pipe(
       map(() => this.getCachedResults(query)),
       startWith(this.getCachedResults(query))
     );
@@ -615,7 +609,7 @@ export class JSONAPIService {
     let findRecords = q.findRecords(type);
     if (parameters != null) {
       if (parameters.filter != null) {
-        findRecords = findRecords.filter(...parameters.filter.map(f => this.createFilterSpecifier(f)));
+        findRecords = findRecords.filter(...parameters.filter.map(f => this.createFilterSpecifier(type, f)));
       }
       if (parameters.sort != null) {
         findRecords = findRecords.sort(...parameters.sort.map(s => this.createSortSpecifier(s)));
@@ -632,14 +626,32 @@ export class JSONAPIService {
     return findRecords;
   }
 
-  private createFilterSpecifier(filter: Filter): FilterSpecifier {
-    const attrSpecifier: AttributeFilterSpecifier = {
-      kind: 'attribute',
-      attribute: filter.name,
-      value: filter.value,
-      op: 'equal'
-    };
-    return attrSpecifier;
+  private createFilterSpecifier(type: string, filter: Filter): FilterSpecifier {
+    if (this.schema.hasAttribute(type, filter.name)) {
+      let op: ValueComparisonOperator = 'equal';
+      if (filter.op != null) {
+        op = filter.op;
+      }
+      const attributeFilter: AttributeFilterSpecifier = {
+        kind: 'attribute',
+        op,
+        attribute: filter.name,
+        value: filter.value
+      };
+      return attributeFilter;
+    }
+
+    if (isCustomFilterRegistered(type, filter.name)) {
+      const customFilter: CustomFilterSpecifier = {
+        kind: 'custom',
+        op: undefined,
+        name: filter.name,
+        value: filter.value
+      };
+      return customFilter;
+    }
+
+    throw new Error('Unrecognized filter name.');
   }
 
   private createSortSpecifier(sort: Sort): SortSpecifier {
