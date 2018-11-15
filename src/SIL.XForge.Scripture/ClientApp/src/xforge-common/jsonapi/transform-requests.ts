@@ -17,30 +17,44 @@ import {
   Transform
 } from '@orbit/data';
 import JSONAPISource, { JSONAPIDocument } from '@orbit/jsonapi';
-import { clone, deepSet } from '@orbit/utils';
+import { clone, deepSet, Dict } from '@orbit/utils';
 
 import { buildFetchSettings, customRequestOptions } from './request-settings';
 
-export const TransformRequestProcessors = {
-  addRecord(source: JSONAPISource, request: any, options: any) {
+export interface TransformRequestResponse {
+  transforms: Transform[];
+  primaryData: Record | Record[];
+}
+
+export type TransformRequestProcessor = (source: JSONAPISource, request: any, options: any)
+  => Promise<TransformRequestResponse>;
+
+export const TransformRequestProcessors: Dict<TransformRequestProcessor> = {
+  addRecord(source: JSONAPISource, request: any, options: any): Promise<TransformRequestResponse> {
     const { serializer } = source;
     const record = request.record;
     const requestDoc: JSONAPIDocument = serializer.serializeDocument(record);
     const settings = buildFetchSettings(request.options, { method: 'POST', json: requestDoc });
 
     return source.fetch(source.resourceURL(record.type), settings)
-      .then((raw: JSONAPIDocument) => handleChanges(record, serializer.deserializeDocument(raw, record), options));
+      .then((raw: JSONAPIDocument) => {
+        const deserialized = serializer.deserializeDocument(raw, record);
+        return {
+          transforms: handleChanges(record, deserialized, options),
+          primaryData: deserialized.data
+        };
+      });
   },
 
-  removeRecord(source: JSONAPISource, request: any) {
+  removeRecord(source: JSONAPISource, request: any): Promise<TransformRequestResponse> {
     const { type, id } = request.record;
     const settings = buildFetchSettings(request.options, { method: 'DELETE' });
 
     return source.fetch(source.resourceURL(type, id), settings)
-      .then(() => []);
+      .then(() => ({ transforms: [], primaryData: null }));
   },
 
-  replaceRecord(source: JSONAPISource, request: any, options: any) {
+  replaceRecord(source: JSONAPISource, request: any, options: any): Promise<TransformRequestResponse> {
     const { serializer } = source;
     const record = request.record;
     const { type, id } = record;
@@ -50,14 +64,15 @@ export const TransformRequestProcessors = {
     return source.fetch(source.resourceURL(type, id), settings)
       .then((raw: JSONAPIDocument) => {
         if (raw) {
-          return handleChanges(record, serializer.deserializeDocument(raw, record), options);
+          const deserialized = serializer.deserializeDocument(raw, record);
+          return { transforms: handleChanges(record, deserialized, options), primaryData: deserialized.data };
         } else {
-          return [];
+          return { transforms: [], primaryData: null };
         }
       });
   },
 
-  addToRelatedRecords(source: JSONAPISource, request: any) {
+  addToRelatedRecords(source: JSONAPISource, request: any): Promise<TransformRequestResponse> {
     const { type, id } = request.record;
     const { relationship } = request;
     const json = {
@@ -66,10 +81,10 @@ export const TransformRequestProcessors = {
     const settings = buildFetchSettings(request.options, { method: 'POST', json });
 
     return source.fetch(source.resourceRelationshipURL(type, id, relationship), settings)
-      .then(() => []);
+      .then(() => ({ transforms: [], primaryData: null }));
   },
 
-  removeFromRelatedRecords(source: JSONAPISource, request: any) {
+  removeFromRelatedRecords(source: JSONAPISource, request: any): Promise<TransformRequestResponse> {
     const { type, id } = request.record;
     const { relationship } = request;
     const json = {
@@ -78,10 +93,10 @@ export const TransformRequestProcessors = {
     const settings = buildFetchSettings(request.options, { method: 'DELETE', json });
 
     return source.fetch(source.resourceRelationshipURL(type, id, relationship), settings)
-      .then(() => []);
+      .then(() => ({ transforms: [], primaryData: null }));
   },
 
-  replaceRelatedRecord(source: JSONAPISource, request: any) {
+  replaceRelatedRecord(source: JSONAPISource, request: any): Promise<TransformRequestResponse> {
     const { type, id } = request.record;
     const { relationship, relatedRecord } = request;
     const json = {
@@ -90,10 +105,10 @@ export const TransformRequestProcessors = {
     const settings = buildFetchSettings(request.options, { method: 'PATCH', json });
 
     return source.fetch(source.resourceRelationshipURL(type, id, relationship), settings)
-      .then(() => []);
+      .then(() => ({ transforms: [], primaryData: null }));
   },
 
-  replaceRelatedRecords(source: JSONAPISource, request: any) {
+  replaceRelatedRecords(source: JSONAPISource, request: any): Promise<TransformRequestResponse> {
     const { type, id } = request.record;
     const { relationship, relatedRecords } = request;
     const json = {
@@ -102,7 +117,7 @@ export const TransformRequestProcessors = {
     const settings = buildFetchSettings(request.options, { method: 'PATCH', json });
 
     return source.fetch(source.resourceRelationshipURL(type, id, relationship), settings)
-      .then(() => []);
+      .then(() => ({ transforms: [], primaryData: null }));
   }
 };
 

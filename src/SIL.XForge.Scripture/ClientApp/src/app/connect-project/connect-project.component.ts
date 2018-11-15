@@ -106,7 +106,7 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
     const values = this.connectProjectForm.value as ConnectProjectFormValues;
     if (values.project.projectId == null) {
       this.state = 'connecting';
-      const newProject = new SFProject({
+      let newProject = new SFProject({
         projectName: values.project.name,
         paratextId: values.project.paratextId,
         inputSystem: this.getInputSystem(values.project),
@@ -118,9 +118,9 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
         newProject.translateConfig.sourceInputSystem = this.getInputSystem(values.tasks.sourceProject);
       }
 
-      const newProjectId = await this.projectService.onlineCreate(newProject);
-      await this.addCurrentUserToProject(newProjectId);
-      const jobId = await this.syncJobService.start(newProjectId);
+      newProject = await this.projectService.onlineCreate(newProject);
+      await this.addCurrentUserToProject(newProject.id);
+      const jobId = await this.syncJobService.start(newProject.id);
       this.subscribe(this.syncJobService.listen(jobId), job => {
         this.job = job;
         if (!job.isActive) {

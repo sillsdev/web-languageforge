@@ -10,7 +10,7 @@ export class ProjectUserService<T extends ProjectUser = ProjectUser> extends Res
     super(ProjectUser.TYPE, jsonApiService);
   }
 
-  onlineCreate(projectUser: T): Promise<string> {
+  onlineCreate(projectUser: T): Promise<T> {
     return this.jsonApiService.onlineCreate(projectUser);
   }
 }

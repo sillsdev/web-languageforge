@@ -19,10 +19,8 @@ export class XForgeStore extends Store {
 
   protected _applyTransform(transform: Transform): PatchResultData[] {
     const results = super._applyTransform(transform);
-    if (results.some(data => data != null)) {
-      // emit an event that only occurs when data has changed in the store
-      this.emit('data_changed', transform, results);
-    }
+    // emit an event after transform has been applied
+    this.emit('transform_completed', transform, results);
     return results;
   }
 }

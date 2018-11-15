@@ -14,11 +14,11 @@ export class ProjectService<T extends Project = Project> extends ResourceService
     return this.jsonApiService.getAll(this.type, parameters, include);
   }
 
-  update(project: T): Promise<void> {
+  update(project: T): Promise<T> {
     return this.jsonApiService.update(project);
   }
 
-  onlineCreate(project: T): Promise<string> {
+  onlineCreate(project: T): Promise<T> {
     return this.jsonApiService.onlineCreate(project);
   }
 }

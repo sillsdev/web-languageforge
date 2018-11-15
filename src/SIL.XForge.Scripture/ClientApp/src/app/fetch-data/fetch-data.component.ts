@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { GetAllParameters } from '@xforge-common/jsonapi.service';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
 
@@ -23,8 +24,8 @@ export class FetchDataComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.projects$ = this.projectService.search(this.searchTerm$,
-      { sort: [{ name: 'projectName', order: 'ascending' }] }).pipe(map(r => r.results));
+    const parameters: GetAllParameters<SFProject> = { sort: [{ name: 'projectName', order: 'ascending' }] };
+    this.projects$ = this.projectService.search(this.searchTerm$, parameters).pipe(map(r => r.results));
   }
 
   updateProjectName(project: SFProject, value: string): void {

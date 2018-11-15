@@ -1,17 +1,17 @@
 <form [formGroup]="selectTextForm">
   <mat-form-field>
-    <mat-select placeholder="Project" formControlName="project">
-      <mat-option *ngFor="let project of projects$ | async" [value]="project.id">
-        {{ project.projectName }}
+    <mat-select placeholder="Project" formControlName="project" [compareWith]="compareOption">
+      <mat-option *ngFor="let project of projects$ | async" [value]="project">
+        {{ project.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field>
-    <mat-select placeholder="Book" formControlName="text">
-      <mat-option *ngFor="let text of texts" [value]="text.id">
+    <mat-select placeholder="Book" formControlName="text" [compareWith]="compareOption">
+      <mat-option *ngFor="let text of selectedProject?.texts" [value]="text">
         {{ text.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
 </form>
-<app-text [textId]="selectedTextId" class="flex-column flex-grow"></app-text>
+<app-text [textId]="selectedText?.id" class="flex-column flex-grow"></app-text>

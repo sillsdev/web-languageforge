@@ -15,9 +15,9 @@ export class UserService<T extends User = User> extends ResourceService {
     return this.authService.currentUserId;
   }
 
-  onlineChangePassword(newPassword: string): Promise<void> {
+  async onlineChangePassword(newPassword: string): Promise<void> {
     const attrs: Partial<User> = { password: newPassword };
-    return this.jsonApiService.onlineUpdateAttributes(this.identity(this.currentUserId), attrs, false);
+    await this.jsonApiService.onlineUpdateAttributes(this.identity(this.currentUserId), attrs);
   }
 
   getAll(parameters?: GetAllParameters<T>, include?: string[]): QueryObservable<T[]> {
