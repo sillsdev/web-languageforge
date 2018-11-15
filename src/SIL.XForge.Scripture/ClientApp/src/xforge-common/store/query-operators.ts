@@ -7,11 +7,11 @@ import {
   FindRelatedRecord,
   FindRelatedRecords,
   OffsetLimitPageSpecifier,
+  PageSpecifier,
   QueryExpression,
   QueryExpressionParseError,
   Record,
   RecordIdentity,
-  RecordNotFoundException,
   RelatedRecordFilterSpecifier,
   RelatedRecordsFilterSpecifier,
   SortSpecifier
@@ -20,12 +20,13 @@ import { Cache } from '@orbit/store';
 import { deepGet, Dict, isNone } from '@orbit/utils';
 
 import { applyCustomFilter, CustomFilterSpecifier } from '../custom-filter-specifier';
+import { IndexedPageSpecifier } from '../indexed-page-specifier';
 
 /**
  * @export
  * @interface QueryOperator
  */
-export type QueryOperator = (cache: Cache, expression: QueryExpression) => any;
+export type QueryOperator = (cache: Cache, expression: QueryExpression, queryOptions: any) => any;
 
 export const QueryOperators: Dict<QueryOperator> = {
   findRecord(cache: Cache, expression: FindRecord) {
@@ -33,13 +34,13 @@ export const QueryOperators: Dict<QueryOperator> = {
     const record = cache.records(type).get(id);
 
     if (!record) {
-      throw new RecordNotFoundException(type, id);
+      return null;
     }
 
     return record;
   },
 
-  findRecords(cache: Cache, expression: FindRecords) {
+  findRecords(cache: Cache, expression: FindRecords, queryOptions: any) {
     let results = Array.from(cache.records(expression.type).values());
     if (expression.filter) {
       results = filterRecords(expression.type, results, expression.filter);
@@ -48,6 +49,7 @@ export const QueryOperators: Dict<QueryOperator> = {
       results = sortRecords(results, expression.sort);
     }
     if (expression.page) {
+      queryOptions.totalPagedCount = results.length;
       results = paginateRecords(results, expression.page as OffsetLimitPageSpecifier);
     }
     return results;
@@ -195,15 +197,22 @@ function sortRecords(records: Record[], sortSpecifiers: SortSpecifier[]) {
   });
 }
 
-function paginateRecords(records: Record[], paginationOptions: OffsetLimitPageSpecifier) {
-  if (paginationOptions.limit !== undefined) {
-    const offset = paginationOptions.offset === undefined ? 0 : paginationOptions.offset;
-    const limit = paginationOptions.limit;
+function paginateRecords(records: Record[], paginationOptions: PageSpecifier) {
+  switch (paginationOptions.kind) {
+    case 'offsetLimit':
+      const offsetLimit = paginationOptions as OffsetLimitPageSpecifier;
+      if (offsetLimit.limit !== undefined) {
+        const offset = offsetLimit.offset === undefined ? 0 : offsetLimit.offset;
+        const limit = offsetLimit.limit;
 
-    return records.slice(offset, offset + limit);
-
-  } else {
-    throw new QueryExpressionParseError(
-      'Pagination options not recognized for Store. Please specify `offset` and `limit`.', paginationOptions);
+        return records.slice(offset, offset + limit);
+      } else {
+        throw new QueryExpressionParseError(
+          'Pagination options not recognized for Store. Please specify `offset` and `limit`.', paginationOptions);
+      }
+    case 'indexed':
+      const indexed = paginationOptions as IndexedPageSpecifier;
+      const start = (indexed.index - 1) * indexed.size;
+      return records.slice(start, start + indexed.size);
   }
 }

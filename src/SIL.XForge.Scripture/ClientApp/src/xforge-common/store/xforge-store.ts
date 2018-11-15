@@ -13,7 +13,7 @@ export class XForgeStore extends Store {
       if (!operator) {
         throw new Error('Unable to find operator: ' + query.expression.op);
       }
-      return operator(this, query.expression);
+      return operator(this, query.expression, query.options);
     };
   }
 
@@ -21,7 +21,7 @@ export class XForgeStore extends Store {
     const results = super._applyTransform(transform);
     if (results.some(data => data != null)) {
       // emit an event that only occurs when data has changed in the store
-      this.emit('data_changed', results);
+      this.emit('data_changed', transform, results);
     }
     return results;
   }

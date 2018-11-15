@@ -1,6 +1,7 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { nameof } from '@xforge-common/utils';
@@ -29,7 +30,7 @@ export class RealtimeComponent extends SubscriptionDisposable implements OnInit 
   }
 
   ngOnInit() {
-    this.projects$ = this.projectService.getAll({}, [nameof<SFProject>('texts')]);
+    this.projects$ = this.projectService.getAll({ }, [nameof<SFProject>('texts')]).pipe(map(r => r.results));
     this.subscribe(this.selectTextForm.get('project').valueChanges, (projectId: string) => {
       this.selectTextForm.get('text').reset();
       if (projectId !== '') {

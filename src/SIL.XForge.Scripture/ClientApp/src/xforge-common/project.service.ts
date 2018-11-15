@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { GetAllParameters, JSONAPIService } from '@xforge-common/jsonapi.service';
-import { LiveQueryObservable } from '@xforge-common/live-query-observable';
+import { GetAllParameters, JSONAPIService, QueryObservable } from '@xforge-common/jsonapi.service';
 import { ResourceService } from '@xforge-common/resource.service';
 import { Project } from './models/project';
 
@@ -11,7 +10,7 @@ export class ProjectService<T extends Project = Project> extends ResourceService
     super(Project.TYPE, jsonApiService);
   }
 
-  getAll(parameters?: GetAllParameters<T>, include?: string[]): LiveQueryObservable<T[]> {
+  getAll(parameters?: GetAllParameters<T>, include?: string[]): QueryObservable<T[]> {
     return this.jsonApiService.getAll(this.type, parameters, include);
   }
 

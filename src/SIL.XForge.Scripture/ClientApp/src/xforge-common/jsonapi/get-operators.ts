@@ -6,6 +6,8 @@ import {
   FindRecords,
   FindRelatedRecord,
   FindRelatedRecords,
+  OffsetLimitPageSpecifier,
+  PageSpecifier,
   Query,
   QueryExpressionParseError,
   RelatedRecordFilterSpecifier,
@@ -16,6 +18,7 @@ import JSONAPISource, { JSONAPIDocument } from '@orbit/jsonapi';
 import { merge } from '@orbit/utils';
 
 import { CustomFilterSpecifier } from '../custom-filter-specifier';
+import { IndexedPageSpecifier } from '../indexed-page-specifier';
 import { buildFetchSettings, customRequestOptions, Filter, RequestOptions } from './request-settings';
 
 export const GetOperators = {
@@ -44,7 +47,7 @@ export const GetOperators = {
     }
 
     if (expression.page) {
-      requestOptions.page = expression.page;
+      requestOptions.page = buildPageParam(expression.page);
     }
 
     const customOptions = customRequestOptions(source, query);
@@ -79,7 +82,7 @@ export const GetOperators = {
   }
 };
 
-function buildFilterParam(source: JSONAPISource, filterSpecifiers: FilterSpecifier[]) {
+function buildFilterParam(source: JSONAPISource, filterSpecifiers: FilterSpecifier[]): Filter[] {
   const filters: Filter[] = [];
 
   filterSpecifiers.forEach(filterSpecifier => {
@@ -134,7 +137,7 @@ function buildFilterParam(source: JSONAPISource, filterSpecifiers: FilterSpecifi
   return filters;
 }
 
-function buildSortParam(source: JSONAPISource, sortSpecifiers: SortSpecifier[]) {
+function buildSortParam(source: JSONAPISource, sortSpecifiers: SortSpecifier[]): string {
   return sortSpecifiers.map(sortSpecifier => {
     if (sortSpecifier.kind === 'attribute') {
       const attributeSort = sortSpecifier as AttributeSortSpecifier;
@@ -146,4 +149,21 @@ function buildSortParam(source: JSONAPISource, sortSpecifiers: SortSpecifier[]) 
     throw new QueryExpressionParseError(`Sort specifier ${sortSpecifier.kind} not recognized for JSONAPISource.`,
       sortSpecifier);
   }).join(',');
+}
+
+function buildPageParam(pageSpecifier: PageSpecifier): any {
+  const param = { };
+  switch (pageSpecifier.kind) {
+    case 'offsetLimit':
+      const offsetLimit = pageSpecifier as OffsetLimitPageSpecifier;
+      param['offset'] = offsetLimit.offset;
+      param['limit'] = offsetLimit.limit;
+      break;
+    case 'indexed':
+      const indexed = pageSpecifier as IndexedPageSpecifier;
+      param['number'] = indexed.index;
+      param['size'] = indexed.size;
+      break;
+  }
+  return param;
 }

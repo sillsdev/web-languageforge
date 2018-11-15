@@ -5,26 +5,66 @@ import Coordinator, {
 } from '@orbit/coordinator';
 import { Exception } from '@orbit/core';
 import {
-  AttributeFilterSpecifier, AttributeSortSpecifier, buildQuery, ClientError, FilterSpecifier, FindRecord, NetworkError,
-  OffsetLimitPageSpecifier, Operation, Query, QueryBuilder, QueryOrExpression, QueryTerm, Record, RecordIdentity,
-  RecordRelationship, ReplaceRecordOperation, Schema, SchemaSettings, SortSpecifier, Transform, TransformOrOperations,
+  AddRecordOperation,
+  AddToRelatedRecordsOperation,
+  AttributeFilterSpecifier,
+  AttributeSortSpecifier,
+  buildQuery,
+  ClientError,
+  equalRecordIdentities,
+  FilterSpecifier,
+  FindRecord,
+  FindRecords,
+  FindRelatedRecord,
+  FindRelatedRecords,
+  NetworkError,
+  Operation,
+  Query,
+  QueryBuilder,
+  QueryOrExpression,
+  QueryTerm,
+  Record,
+  RecordIdentity,
+  RecordRelationship,
+  RemoveFromRelatedRecordsOperation,
+  RemoveRecordOperation,
+  ReplaceAttributeOperation,
+  ReplaceRecordOperation,
+  ReplaceRelatedRecordOperation,
+  ReplaceRelatedRecordsOperation,
+  Schema,
+  SchemaSettings,
+  SortSpecifier,
+  Transform,
+  TransformOrOperations,
   ValueComparisonOperator
 } from '@orbit/data';
 import IndexedDBSource from '@orbit/indexeddb';
 import IndexedDBBucket from '@orbit/indexeddb-bucket';
-import Store from '@orbit/store';
-import { clone, dasherize, Dict, eq, extend } from '@orbit/utils';
+import JSONAPISource from '@orbit/jsonapi';
+import Store, { PatchResultData } from '@orbit/store';
+import { clone, dasherize, deepGet, Dict, eq, extend } from '@orbit/utils';
 import { ObjectId } from 'bson';
 import { from, fromEvent, Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 
 import { CustomFilterSpecifier, isCustomFilterRegistered } from './custom-filter-specifier';
+import { IndexedPageSpecifier } from './indexed-page-specifier';
 import { XForgeJSONAPISource } from './jsonapi/xforge-jsonapi-source';
-import { LiveQueryObservable } from './live-query-observable';
 import { LocationService } from './location.service';
 import { DomainModel } from './models/domain-model';
 import { Resource, ResourceRef } from './models/resource';
 import { XForgeStore } from './store/xforge-store';
+
+export type QuerySource = 'local' | 'remote' | 'other';
+
+export interface QueryResults<T> {
+  results: T;
+  source: QuerySource;
+  totalPagedCount?: number;
+}
+
+export type QueryObservable<T> = Observable<QueryResults<T>>;
 
 export interface Filter {
   op?: 'equal' | 'gt' | 'gte' | 'lt' | 'lte';
@@ -38,11 +78,11 @@ export interface Sort<T = any> {
 }
 
 export interface GetAllParameters<T = any> {
-  filter?: Filter[];
+  filters?: Filter[];
   sort?: Sort<T>[];
-  page?: {
-    offset?: number;
-    limit?: number;
+  pagination?: {
+    index: number;
+    size: number;
   };
 }
 
@@ -74,7 +114,7 @@ export class JSONAPIService {
   private schema: Schema;
   private bucket: IndexedDBBucket;
   private store: Store;
-  private remote: XForgeJSONAPISource;
+  private remote: JSONAPISource;
   private backup: IndexedDBSource;
   private coordinator: Coordinator;
 
@@ -228,10 +268,9 @@ export class JSONAPIService {
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
    * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {LiveQueryObservable<T>} The live query observable.
+   * @returns {QueryObservable<T>} The live query observable.
    */
-  get<T extends Resource>(identity: RecordIdentity, include?: string[], persist: boolean = true
-  ): LiveQueryObservable<T> {
+  get<T extends Resource>(identity: RecordIdentity, include?: string[], persist: boolean = true): QueryObservable<T> {
     return this.liveQuery(q => q.findRecord(identity), include, persist);
   }
 
@@ -247,11 +286,11 @@ export class JSONAPIService {
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
    * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {LiveQueryObservable<T>} The live query observable.
+   * @returns {QueryObservable<T>} The live query observable.
    */
   getRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
     persist: boolean = true
-  ): LiveQueryObservable<T> {
+  ): QueryObservable<T> {
     return this.liveQuery(q => q.findRelatedRecord(identity, relationship), include, persist);
   }
 
@@ -265,10 +304,10 @@ export class JSONAPIService {
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
    * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
-   * @returns {LiveQueryObservable<T[]>} The live query observable.
+   * @returns {QueryObservable<T[]>} The live query observable.
    */
   getAll<T extends Resource>(type: string, parameters?: GetAllParameters, include?: string[], persist: boolean = true
-  ): LiveQueryObservable<T[]> {
+  ): QueryObservable<T[]> {
     return this.liveQuery(q => this.getAllQuery(q, type, parameters), include, persist);
   }
 
@@ -284,11 +323,11 @@ export class JSONAPIService {
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
    * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
-   * @returns {LiveQueryObservable<T[]>} The live query observable.
+   * @returns {QueryObservable<T[]>} The live query observable.
    */
   getAllRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
     persist: boolean = true
-  ): LiveQueryObservable<T[]> {
+  ): QueryObservable<T[]> {
     return this.liveQuery(q => q.findRelatedRecords(identity, relationship), include, persist);
   }
 
@@ -395,9 +434,10 @@ export class JSONAPIService {
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
    * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {Observable<T>} The query observable.
+   * @returns {QueryObservable<T>} The query observable.
    */
-  onlineGet<T extends Resource>(identity: RecordIdentity, include?: string[], persist: boolean = true): Observable<T> {
+  onlineGet<T extends Resource>(identity: RecordIdentity, include?: string[], persist: boolean = true
+  ): QueryObservable<T> {
     return this.query(q => q.findRecord(identity), include, persist);
   }
 
@@ -413,11 +453,11 @@ export class JSONAPIService {
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
    * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {Observable<T>} The query observable.
+   * @returns {QueryObservable<T>} The query observable.
    */
   onlineGetRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
     persist: boolean = true
-  ): Observable<T> {
+  ): QueryObservable<T> {
     return this.query(q => q.findRelatedRecord(identity, relationship), include, persist);
   }
 
@@ -431,11 +471,11 @@ export class JSONAPIService {
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
    * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
-   * @returns {Observable<T[]>} The query observable.
+   * @returns {QueryObservable<T[]>} The query observable.
    */
   onlineGetAll<T extends Resource>(type: string, parameters?: GetAllParameters, include?: string[],
     persist: boolean = true
-  ): Observable<T[]> {
+  ): QueryObservable<T[]> {
     return this.query(q => this.getAllQuery(q, type, parameters), include, persist);
   }
 
@@ -451,11 +491,11 @@ export class JSONAPIService {
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
    * in the results from the server. The included resources are not returned but cached locally.
    * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
-   * @returns {Observable<T[]>} The live query observable.
+   * @returns {QueryObservable<T[]>} The query observable.
    */
   onlineGetAllRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
     persist: boolean = true
-  ): Observable<T[]> {
+  ): QueryObservable<T[]> {
     return this.query(q => q.findRelatedRecords(identity, relationship), include, persist);
   }
 
@@ -586,39 +626,41 @@ export class JSONAPIService {
   }
 
   private liveQuery(queryOrExpression: QueryOrExpression, include: string[], persist: boolean
-  ): LiveQueryObservable<any> {
+  ): QueryObservable<any> {
     const query = buildQuery(queryOrExpression, this.getOptions(persist, false, include), undefined,
       this.store.queryBuilder);
 
-    const source$ = fromEvent(this.store, 'data_changed').pipe(
-      map(() => this.getCachedResults(query)),
-      startWith(this.getCachedResults(query))
+    const source$ = fromEvent<[Transform, PatchResultData[]]>(this.store, 'data_changed').pipe(
+      // determine if the change is applicable to the live query before re-executing the query and emitting the results
+      filter(([transform, results]) => this.isChangeApplicable(query, transform, results)),
+      map(([transform]) => this.getLiveQueryResults(query, transform.id)),
+      startWith(this.getLiveQueryResults(query))
     );
-
-    const observable = new LiveQueryObservable(source$, this.store, query);
-    observable.update();
-    return observable;
+    this.store.query(query);
+    return source$;
   }
 
-  private query(queryOrExpression: QueryOrExpression, include: string[], persist: boolean): Observable<any> {
-    return from(this.store.query(queryOrExpression, this.getOptions(persist, true, include)))
-      .pipe(map(r => this.convertResults(r)));
+  private query(queryOrExpression: QueryOrExpression, include: string[], persist: boolean
+  ): QueryObservable<any> {
+    const query = buildQuery(queryOrExpression, this.getOptions(persist, true, include), undefined,
+      this.store.queryBuilder);
+    return from(this.store.query(query)).pipe(map(r => this.getOnlineQueryResults(query, r)));
   }
 
   private getAllQuery(q: QueryBuilder, type: string, parameters: GetAllParameters): QueryTerm {
     let findRecords = q.findRecords(type);
     if (parameters != null) {
-      if (parameters.filter != null) {
-        findRecords = findRecords.filter(...parameters.filter.map(f => this.createFilterSpecifier(type, f)));
+      if (parameters.filters != null) {
+        findRecords = findRecords.filter(...parameters.filters.map(f => this.createFilterSpecifier(type, f)));
       }
       if (parameters.sort != null) {
         findRecords = findRecords.sort(...parameters.sort.map(s => this.createSortSpecifier(s)));
       }
-      if (parameters.page != null) {
-        const pageSpecifier: OffsetLimitPageSpecifier = {
-          kind: 'offsetLimit',
-          offset: parameters.page.offset,
-          limit: parameters.page.limit
+      if (parameters.pagination != null) {
+        const pageSpecifier: IndexedPageSpecifier = {
+          kind: 'indexed',
+          index: parameters.pagination.index,
+          size: parameters.pagination.size
         };
         findRecords = findRecords.page(pageSpecifier);
       }
@@ -626,27 +668,27 @@ export class JSONAPIService {
     return findRecords;
   }
 
-  private createFilterSpecifier(type: string, filter: Filter): FilterSpecifier {
-    if (this.schema.hasAttribute(type, filter.name)) {
+  private createFilterSpecifier(type: string, filterDef: Filter): FilterSpecifier {
+    if (this.schema.hasAttribute(type, filterDef.name)) {
       let op: ValueComparisonOperator = 'equal';
-      if (filter.op != null) {
-        op = filter.op;
+      if (filterDef.op != null) {
+        op = filterDef.op;
       }
       const attributeFilter: AttributeFilterSpecifier = {
         kind: 'attribute',
         op,
-        attribute: filter.name,
-        value: filter.value
+        attribute: filterDef.name,
+        value: filterDef.value
       };
       return attributeFilter;
     }
 
-    if (isCustomFilterRegistered(type, filter.name)) {
+    if (isCustomFilterRegistered(type, filterDef.name)) {
       const customFilter: CustomFilterSpecifier = {
         kind: 'custom',
         op: undefined,
-        name: filter.name,
-        value: filter.value
+        name: filterDef.name,
+        value: filterDef.value
       };
       return customFilter;
     }
@@ -759,12 +801,120 @@ export class JSONAPIService {
     return updatedProps;
   }
 
-  private getCachedResults(query: Query): any {
-    try {
-      return this.convertResults(this.store.cache.query(query));
-    } catch (ex) {
-      return null;
+  private getLiveQueryResults(query: Query, transformId?: string): QueryResults<any> {
+    const cacheQueryOptions: any = { };
+    const results = this.convertResults(this.store.cache.query(query, cacheQueryOptions));
+    let source: QuerySource;
+    let totalPagedCount: number;
+    if (transformId == null) {
+      source = 'local';
+      totalPagedCount = cacheQueryOptions.totalPagedCount;
+    } else if (query.options.transformId === transformId) {
+      source = 'remote';
+      totalPagedCount = query.options.totalPagedCount;
+    } else {
+      source = 'other';
     }
+    return {
+      results,
+      source,
+      totalPagedCount
+    };
+  }
+
+  private getOnlineQueryResults(query: Query, results: Resource | Resource[]): QueryResults<any> {
+    return {
+      results: this.convertResults(results),
+      source: 'remote',
+      totalPagedCount: query.options.totalPagedCount
+    };
+  }
+
+  private isChangeApplicable(query: Query, transform: Transform, results: PatchResultData[]): boolean {
+    let queryRecord: RecordIdentity = null;
+    let queryType: string = null;
+    let queryRelationship: string = null;
+    let queryRelated: RecordIdentity[] = null;
+    switch (query.expression.op) {
+      case 'findRecord':
+        const findRecord = query.expression as FindRecord;
+        queryRecord = findRecord.record;
+        break;
+      case 'findRecords':
+        const findRecords = query.expression as FindRecords;
+        queryType = findRecords.type;
+        break;
+      case 'findRelatedRecord':
+      case 'findRelatedRecords':
+        const findRelated = query.expression as FindRelatedRecord | FindRelatedRecords;
+        queryRecord = findRelated.record;
+        queryRelationship = findRelated.relationship;
+        const record = this.store.cache.records(queryRecord.type).get(queryRecord.id);
+        const related = deepGet(record,
+          ['relationships', queryRelationship, 'data']) as RecordIdentity | RecordIdentity[];
+        if (related != null) {
+          if (related instanceof Array) {
+            queryRelated = related;
+          } else {
+            queryRelated = [related];
+          }
+        }
+        break;
+    }
+
+    for (let i = 0; i < transform.operations.length; i++) {
+      // skip operations that didn't result in an actual change
+      if (results[i] == null) {
+        continue;
+      }
+      const operation = transform.operations[i];
+      let transformRecord: RecordIdentity;
+      let transformRelationship: string = '';
+      switch (operation.op) {
+        case 'addRecord':
+          const addRecord = operation as AddRecordOperation;
+          transformRecord = addRecord.record;
+          break;
+        case 'replaceRecord':
+        case 'removeRecord':
+          const replaceRemoveRecord = operation as ReplaceRecordOperation | RemoveRecordOperation;
+          transformRecord = replaceRemoveRecord.record;
+          break;
+        case 'replaceAttribute':
+          const replaceAttribute = operation as ReplaceAttributeOperation;
+          transformRecord = replaceAttribute.record;
+          break;
+        case 'addToRelatedRecords':
+        case 'removeFromRelatedRecords':
+        case 'replaceRelatedRecords':
+        case 'replaceRelatedRecord':
+          const updateRelated = operation as AddToRelatedRecordsOperation | RemoveFromRelatedRecordsOperation
+            | ReplaceRelatedRecordsOperation | ReplaceRelatedRecordOperation;
+          transformRecord = updateRelated.record;
+          transformRelationship = updateRelated.relationship;
+          break;
+      }
+
+      // check if the transformed record matches record being queried
+      // if performing a related record query, ensure that the transformed relationship matches the queried relationship
+      if (equalRecordIdentities(queryRecord, transformRecord)
+        && (queryRelationship == null || queryRelationship === transformRelationship)
+      ) {
+        return true;
+      }
+
+      // check if the type of the transformed record matches the type being queried
+      if (queryType === transformRecord.type) {
+        return true;
+      }
+
+      // check if the transformed record is one of the related records being queried
+      if (queryRelated != null && queryRelated.some(r => equalRecordIdentities(r, transformRecord))) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private convertResults(results: Record | Record[]): Resource | Resource[] {
