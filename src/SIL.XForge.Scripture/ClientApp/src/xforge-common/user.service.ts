@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { AuthService } from './auth.service';
-import { GetAllParameters, JSONAPIService } from './jsonapi.service';
-import { LiveQueryObservable } from './live-query-observable';
+import { GetAllParameters, JSONAPIService, QueryObservable } from './jsonapi.service';
 import { User } from './models/user';
 import { ResourceService } from './resource.service';
 
@@ -21,7 +20,7 @@ export class UserService<T extends User = User> extends ResourceService {
     return this.jsonApiService.onlineUpdateAttributes(this.identity(this.currentUserId), attrs, false);
   }
 
-  getAll(parameters?: GetAllParameters<T>, include?: string[]): LiveQueryObservable<T[]> {
+  getAll(parameters?: GetAllParameters<T>, include?: string[]): QueryObservable<T[]> {
     return this.jsonApiService.getAll(this.type, parameters, include);
   }
 }

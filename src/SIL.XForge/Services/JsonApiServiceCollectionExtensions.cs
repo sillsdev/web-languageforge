@@ -35,7 +35,8 @@ namespace SIL.XForge.Services
                 Namespace = "json-api",
                 ContextGraph = contextGraph,
                 AllowClientGeneratedIds = true,
-                NullAttributeResponseBehavior = new NullAttributeResponseBehavior(true)
+                NullAttributeResponseBehavior = new NullAttributeResponseBehavior(true),
+                IncludeTotalRecordCount = true
             };
             jsonApiOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             jsonApiOptions.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;

@@ -19,7 +19,14 @@ function deserialize(source: JSONAPISource, document: JSONAPIDocument, query: Qu
     };
   });
 
-  return [buildTransform(operations, query.options)];
+  const transform = buildTransform(operations, query.options);
+
+  query.options.transformId = transform.id;
+  if (document.meta != null) {
+    query.options.totalPagedCount = document.meta['total-records'];
+  }
+
+  return [transform];
 }
 
 export type PullOperator = (source: JSONAPISource, query: Query) => any;

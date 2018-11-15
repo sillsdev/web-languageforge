@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Record } from '@orbit/data';
+import { clone } from '@orbit/utils';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 
 import { registerCustomFilter } from '@xforge-common/custom-filter-specifier';
-import { GetAllParameters, JSONAPIService } from '@xforge-common/jsonapi.service';
+import { GetAllParameters, JSONAPIService, QueryObservable } from '@xforge-common/jsonapi.service';
 import { InputSystem } from '@xforge-common/models/input-system';
 import { ProjectService } from '@xforge-common/project.service';
 import { nameof } from '@xforge-common/utils';
@@ -30,19 +31,21 @@ export class SFProjectService extends ProjectService<SFProject> {
     return this.jsonApiService.localGetMany(project.texts);
   }
 
-  search(term$: Observable<string>): Observable<SFProject[]> {
+  search(term$: Observable<string>, parameters: GetAllParameters<SFProject> = { }): QueryObservable<SFProject[]> {
+    if (parameters.filters == null) {
+      parameters.filters = [];
+    }
     return term$.pipe(
       debounceTime(400),
       distinctUntilChanged(),
       startWith(''),
       switchMap(term => {
-        let parameters: GetAllParameters<SFProject> = null;
+        let currentParameters = parameters;
         if (term != null && term !== '') {
-          parameters = {
-            filter: [{ name: SFProjectService.SEARCH_FILTER, value: term }]
-          };
+          currentParameters = clone(parameters);
+          currentParameters.filters.push({ name: SFProjectService.SEARCH_FILTER, value: term });
         }
-        return this.jsonApiService.getAll(this.type, parameters);
+        return this.jsonApiService.getAll(this.type, currentParameters);
       })
     );
   }
