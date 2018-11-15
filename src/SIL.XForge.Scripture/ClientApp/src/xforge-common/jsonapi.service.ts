@@ -36,17 +36,15 @@ import {
   SchemaSettings,
   SortSpecifier,
   Transform,
-  TransformOrOperations,
   ValueComparisonOperator
 } from '@orbit/data';
 import IndexedDBSource from '@orbit/indexeddb';
 import IndexedDBBucket from '@orbit/indexeddb-bucket';
-import JSONAPISource from '@orbit/jsonapi';
-import Store, { PatchResultData } from '@orbit/store';
+import { PatchResultData } from '@orbit/store';
 import { clone, dasherize, deepGet, Dict, eq, extend } from '@orbit/utils';
 import { ObjectId } from 'bson';
-import { from, fromEvent, Observable } from 'rxjs';
-import { filter, map, startWith } from 'rxjs/operators';
+import { BehaviorSubject, ConnectableObservable, from, Observable } from 'rxjs';
+import { finalize, map, publishReplay } from 'rxjs/operators';
 
 import { CustomFilterSpecifier, isCustomFilterRegistered } from './custom-filter-specifier';
 import { IndexedPageSpecifier } from './indexed-page-specifier';
@@ -56,12 +54,28 @@ import { DomainModel } from './models/domain-model';
 import { Resource, ResourceRef } from './models/resource';
 import { XForgeStore } from './store/xforge-store';
 
-export type QuerySource = 'local' | 'remote' | 'other';
-
+/**
+ * This interface represents query results from the {@link JSONAPIService}.
+ */
 export interface QueryResults<T> {
-  results: T;
-  source: QuerySource;
-  totalPagedCount?: number;
+  readonly results: T;
+  readonly totalPagedCount?: number;
+
+  /**
+   * Gets the resource with the specified identity from the included resources.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @returns {TInclude} The included resource.
+   */
+  getIncluded<TInclude extends Resource>(identity: RecordIdentity): TInclude;
+
+  /**
+   * Gets all of the resources with the specified identities from the included resources.
+   *
+   * @param {RecordIdentity[]} identities The resource identities.
+   * @returns {TInclude[]} The included resources.
+   */
+  getManyIncluded<TInclude extends Resource>(identities: RecordIdentity[]): TInclude[];
 }
 
 export type QueryObservable<T> = Observable<QueryResults<T>>;
@@ -86,6 +100,57 @@ export interface GetAllParameters<T = any> {
   };
 }
 
+class CacheQueryResults<T> implements QueryResults<T> {
+  constructor(private readonly jsonApiService: JSONAPIService, public readonly results: T,
+    public readonly totalPagedCount?: number
+  ) { }
+
+  getIncluded<TInclude extends Resource>(identity: RecordIdentity): TInclude {
+    return this.jsonApiService.localGet(identity);
+  }
+
+  getManyIncluded<TInclude extends Resource>(identities: RecordIdentity[]): TInclude[] {
+    return this.jsonApiService.localGetMany(identities);
+  }
+}
+
+class MapQueryResults<T> implements QueryResults<T> {
+  private readonly map: Dict<Map<string, Resource>> = { };
+
+  constructor(public readonly results: T, public readonly totalPagedCount?: number, included?: Resource[]
+  ) {
+    if (included != null) {
+      for (const resource of included) {
+        let typeMap = this.map[resource.type];
+        if (typeMap == null) {
+          typeMap = new Map<string, Resource>();
+          this.map[resource.type] = typeMap;
+        }
+        typeMap.set(resource.id, resource);
+      }
+    }
+  }
+
+  getIncluded<TInclude extends Resource>(identity: RecordIdentity): TInclude {
+    if (identity == null) {
+      return null;
+    }
+    const typeMap = this.map[identity.type];
+    if (typeMap != null) {
+      return typeMap.get(identity.id) as TInclude;
+    }
+    return null;
+  }
+
+  getManyIncluded<TInclude extends Resource>(identities: RecordIdentity[]): TInclude[] {
+    if (identities == null) {
+      return [];
+    }
+
+    return identities.map(i => this.getIncluded(i));
+  }
+}
+
 /**
  * The JSON-API service is responsible for performing CRUD operations on resource models. This service transparently
  * manages the interaction between three data sources: a memory cache, an IndexedDB database, and a JSON-API server.
@@ -96,11 +161,9 @@ export interface GetAllParameters<T = any> {
  * the current results from the cache immediately, and then listen for any updated results that are returned from the
  * JSON-API server or performed locally.
  *
- * Pessimistic operations are used for online-only views. Pessimistic queries will only return the single value that is
- * returned from the JSON-API server. Pessimistic methods are prefixed with "online".
- *
- * The service also provides methods for getting resources from the local cache. This can be useful for getting related
- * resources after performing a remote query that includes relationship data.
+ * Pessimistic operations are used for online-only views. Pessimistic queries return an observable that returns the
+ * results from the JSON-API server. Resources returned from pessimistic operations are not cached or persisted.
+ * Pessimistic methods are prefixed with "online".
  */
 @Injectable({
   providedIn: 'root'
@@ -112,9 +175,12 @@ export class JSONAPIService {
   private static readonly RETRY_TIMEOUT = 5000;
 
   private schema: Schema;
+
+  private onlineStore: XForgeJSONAPISource;
+
   private bucket: IndexedDBBucket;
-  private store: Store;
-  private remote: JSONAPISource;
+  private store: XForgeStore;
+  private remote: XForgeJSONAPISource;
   private backup: IndexedDBSource;
   private coordinator: Coordinator;
 
@@ -132,6 +198,13 @@ export class JSONAPIService {
       { headers: { 'Content-Type': 'application/json' } }).toPromise();
     schemaDef.generateId = () => new ObjectId().toHexString();
     this.schema = new Schema(schemaDef);
+
+    this.onlineStore = new XForgeJSONAPISource({
+      schema: this.schema,
+      name: JSONAPIService.REMOTE,
+      host: this.locationService.origin,
+      namespace: 'json-api'
+    });
 
     this.bucket = new IndexedDBBucket({
       namespace: 'xforge-state'
@@ -160,21 +233,15 @@ export class JSONAPIService {
     this.coordinator = new Coordinator({
       sources: [this.store, this.remote, this.backup],
       strategies: [
-        // Do not queue queries that fail
-        new RequestStrategy({
-          source: JSONAPIService.STORE,
-          on: 'queryFail',
-
-          action: () => this.store.requestQueue.skip(),
-
-          blocking: true
-        }),
         // Purge a deleted resource from the cache when get() is called on it
         new RequestStrategy({
           source: JSONAPIService.REMOTE,
           on: 'pullFail',
 
-          action: (q: Query, e: Exception) => this.purgeDeletedResource(q, e),
+          action: (q: Query, e: Exception) => {
+            this.purgeDeletedResource(q, e);
+            this.remote.requestQueue.skip();
+          },
 
           blocking: true
         }),
@@ -203,7 +270,7 @@ export class JSONAPIService {
           target: JSONAPIService.REMOTE,
           action: 'pull',
 
-          blocking: (q: Query) => q.options.blocking,
+          blocking: false,
 
           catch: (e: Exception) => {
             this.store.requestQueue.skip();
@@ -217,10 +284,10 @@ export class JSONAPIService {
           on: 'beforeUpdate',
 
           target: JSONAPIService.REMOTE,
-          filter: (t: Transform) => this.shouldUpdate(t, JSONAPIService.REMOTE),
+          filter: (t: Transform) => !t.options.localOnly,
           action: 'push',
 
-          blocking: (t: Transform) => t.options.blocking
+          blocking: false
         }),
         // Sync all changes received from the remote server to the store
         new SyncStrategy({
@@ -235,7 +302,6 @@ export class JSONAPIService {
           source: JSONAPIService.STORE,
 
           target: JSONAPIService.BACKUP,
-          filter: (t: Transform) => this.shouldUpdate(t, JSONAPIService.BACKUP),
 
           blocking: true
         }),
@@ -257,7 +323,9 @@ export class JSONAPIService {
    * @param {string} accessToken The user's current access token.
    */
   setAccessToken(accessToken: string): void {
-    this.remote.defaultFetchSettings.headers['Authorization'] = 'Bearer ' + accessToken;
+    const headerValue = 'Bearer ' + accessToken;
+    this.onlineStore.defaultFetchSettings.headers['Authorization'] = headerValue;
+    this.remote.defaultFetchSettings.headers['Authorization'] = headerValue;
   }
 
   /**
@@ -266,12 +334,12 @@ export class JSONAPIService {
    * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server. The included resources are not returned but cached locally.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * in the results from the server.
    * @returns {QueryObservable<T>} The live query observable.
    */
-  get<T extends Resource>(identity: RecordIdentity, include?: string[], persist: boolean = true): QueryObservable<T> {
-    return this.liveQuery(q => q.findRecord(identity), include, persist);
+  get<T extends Resource>(identity: RecordIdentity, include?: string[]): QueryObservable<T> {
+    const queryExpression: QueryOrExpression = q => q.findRecord(identity);
+    return this.liveQuery(queryExpression, queryExpression, include);
   }
 
   /**
@@ -284,14 +352,13 @@ export class JSONAPIService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server. The included resources are not returned but cached locally.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * in the results from the server.
    * @returns {QueryObservable<T>} The live query observable.
    */
-  getRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
-    persist: boolean = true
+  getRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[]
   ): QueryObservable<T> {
-    return this.liveQuery(q => q.findRelatedRecord(identity, relationship), include, persist);
+    const queryExpression: QueryOrExpression = q => q.findRelatedRecord(identity, relationship);
+    return this.liveQuery(queryExpression, queryExpression, include);
   }
 
   /**
@@ -302,13 +369,12 @@ export class JSONAPIService {
    * @param {string} type The resource type.
    * @param {GetAllParameters} parameters Optional. Filtering, sorting, and paging parameters.
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server. The included resources are not returned but cached locally.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
+   * in the results from the server.
    * @returns {QueryObservable<T[]>} The live query observable.
    */
-  getAll<T extends Resource>(type: string, parameters?: GetAllParameters, include?: string[], persist: boolean = true
-  ): QueryObservable<T[]> {
-    return this.liveQuery(q => this.getAllQuery(q, type, parameters), include, persist);
+  getAll<T extends Resource>(type: string, parameters?: GetAllParameters, include?: string[]): QueryObservable<T[]> {
+    return this.liveQuery(q => this.getAllQuery(q, type, parameters), q => this.getAllQuery(q, type, parameters, false),
+      include);
   }
 
   /**
@@ -321,36 +387,39 @@ export class JSONAPIService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server. The included resources are not returned but cached locally.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
+   * in the results from the server.
    * @returns {QueryObservable<T[]>} The live query observable.
    */
-  getAllRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
-    persist: boolean = true
+  getAllRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[]
   ): QueryObservable<T[]> {
-    return this.liveQuery(q => q.findRelatedRecords(identity, relationship), include, persist);
+    const queryExpression: QueryOrExpression = q => q.findRelatedRecords(identity, relationship);
+    return this.liveQuery(queryExpression, queryExpression, include);
   }
 
   /**
    * Creates a new resource optimistically.
    *
    * @param {Resource} resource The new resource.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {Promise<string>} Resolves when the resource is created locally. Returns the new resource's ID.
+   * @returns {Promise<T>} Resolves when the resource is created locally. Returns the new resource.
    */
-  create(resource: Resource, persist: boolean = true): Promise<string> {
-    return this._create(resource, persist, false);
+  async create<T extends Resource>(resource: T): Promise<T> {
+    const record = this.createRecord(resource);
+    this.schema.initializeRecord(record);
+    resource.id = record.id;
+    await this.store.update(t => t.addRecord(record));
+    return resource;
   }
 
   /**
    * Completely replaces an existing resource optimistically.
    *
    * @param {Resource} resource The new resource.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {Promise<void>} Resolves when the resource is replaced locally.
+   * @returns {Promise<T>} Resolves when the resource is replaced locally. Returns the new resource.
    */
-  replace(resource: Resource, persist: boolean = true): Promise<void> {
-    return this._replace(resource, persist, false);
+  async replace<T extends Resource>(resource: T): Promise<T> {
+    const record = this.createRecord(resource);
+    await this.store.update(t => t.replaceRecord(record));
+    return resource;
   }
 
   /**
@@ -358,38 +427,59 @@ export class JSONAPIService {
    * changed.
    *
    * @param {Resource} resource The resource to update.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {Promise<void>} Resolves when the resource is updated locally.
+   * @returns {Promise<T>} Resolves when the resource is updated locally. Returns the updated resource.
    */
-  update(resource: Resource, persist: boolean = true): Promise<void> {
-    return this._update(resource, persist, false);
+  async update<T extends Resource>(resource: T): Promise<T> {
+    const updatedRecord = this.createRecord(resource);
+    const record = this.store.cache.query(q => q.findRecord(resource)) as Record;
+    await this.store.update(t => {
+      const ops: Operation[] = [];
+
+      const updatedAttrs = this.getUpdatedProps(record.attributes, updatedRecord.attributes);
+      for (const attrName of updatedAttrs) {
+        ops.push(t.replaceAttribute(record, attrName, updatedRecord.attributes[attrName]));
+      }
+
+      const updatedRels = this.getUpdatedProps(record.relationships, updatedRecord.relationships);
+      for (const relName of updatedRels) {
+        const relData = updatedRecord.relationships[relName].data;
+        if (relData instanceof Array) {
+          ops.push(t.replaceRelatedRecords(record, relName, relData));
+        } else {
+          ops.push(t.replaceRelatedRecord(record, relName, relData));
+        }
+      }
+      return ops;
+    });
+    return resource;
   }
 
   /**
-   * Updates the attributes of an existing resource optimistically. It is recommeneded that attributes are specified
-   * using a partial type of the resource class, e.g. "Partial<User>".
+   * Updates the attributes of an existing resource optimistically.
    *
-   * @example <caption>Type safe usage</caption>
-   * const attrs: Partial<User> = { username: 'new' };
-   * jsonApiServer.updateAttributes({ type: User.TYPE, id }, attrs);
    * @param {RecordIdentity} identity The resource identity.
    * @param {Dict<any>} attrs The attribute values to update.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {Promise<void>} Resolves when the resource is updated locally.
+   * @returns {Promise<T>} Resolves when the resource is updated locally. Returns the updated resource.
    */
-  updateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist: boolean = true): Promise<void> {
-    return this._updateAttributes(identity, attrs, persist, false);
+  async updateAttributes<T extends Resource>(identity: RecordIdentity, attrs: Partial<T>): Promise<T> {
+    await this.store.update(t => {
+      const ops: Operation[] = [];
+      for (const [name, value] of Object.entries(attrs)) {
+        ops.push(t.replaceAttribute(identity, name, value));
+      }
+      return ops;
+    });
+    return this.localGet(identity);
   }
 
   /**
    * Deletes a resource optimistically.
    *
    * @param {RecordIdentity} identity The resource identity.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
    * @returns {Promise<void>} Resolves when the resource is deleted locally.
    */
-  delete(identity: RecordIdentity, persist: boolean = true): Promise<void> {
-    return this._delete(identity, persist, false);
+  delete(identity: RecordIdentity): Promise<void> {
+    return this.store.update(t => t.removeRecord(identity));
   }
 
   /**
@@ -401,12 +491,10 @@ export class JSONAPIService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {RecordIdentity[]} related The new related resource identities.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
    * @returns {Promise<void>} Resolves when the resources are replaced locally.
    */
-  replaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[], persist: boolean = true
-  ): Promise<void> {
-    return this._replaceAllRelated(identity, relationship, related, persist, false);
+  replaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[]): Promise<void> {
+    return this.store.update(t => t.replaceRelatedRecords(identity, relationship, related));
   }
 
   /**
@@ -418,12 +506,10 @@ export class JSONAPIService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {RecordIdentity} related The new related resource identity.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
    * @returns {Promise<void>} Resolves when the resource is set locally.
    */
-  setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity | null, persist: boolean = true
-  ): Promise<void> {
-    return this._setRelated(identity, relationship, related, persist, false);
+  setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity | null): Promise<void> {
+    return this.store.update(t => t.replaceRelatedRecord(identity, relationship, related));
   }
 
   /**
@@ -432,13 +518,11 @@ export class JSONAPIService {
    * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server. The included resources are not returned but cached locally.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * in the results from the server.
    * @returns {QueryObservable<T>} The query observable.
    */
-  onlineGet<T extends Resource>(identity: RecordIdentity, include?: string[], persist: boolean = true
-  ): QueryObservable<T> {
-    return this.query(q => q.findRecord(identity), include, persist);
+  onlineGet<T extends Resource>(identity: RecordIdentity, include?: string[]): QueryObservable<T> {
+    return this.onlineQuery(q => q.findRecord(identity), include);
   }
 
   /**
@@ -451,14 +535,12 @@ export class JSONAPIService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server. The included resources are not returned but cached locally.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
+   * in the results from the server.
    * @returns {QueryObservable<T>} The query observable.
    */
-  onlineGetRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
-    persist: boolean = true
+  onlineGetRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[]
   ): QueryObservable<T> {
-    return this.query(q => q.findRelatedRecord(identity, relationship), include, persist);
+    return this.onlineQuery(q => q.findRelatedRecord(identity, relationship), include);
   }
 
   /**
@@ -469,14 +551,12 @@ export class JSONAPIService {
    * @param {string} type The resource type.
    * @param {GetAllParameters} parameters Optional. Filtering, sorting, and paging parameters.
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server. The included resources are not returned but cached locally.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
+   * in the results from the server.
    * @returns {QueryObservable<T[]>} The query observable.
    */
-  onlineGetAll<T extends Resource>(type: string, parameters?: GetAllParameters, include?: string[],
-    persist: boolean = true
+  onlineGetAll<T extends Resource>(type: string, parameters?: GetAllParameters, include?: string[]
   ): QueryObservable<T[]> {
-    return this.query(q => this.getAllQuery(q, type, parameters), include, persist);
+    return this.onlineQuery(q => this.getAllQuery(q, type, parameters), include);
   }
 
   /**
@@ -489,75 +569,65 @@ export class JSONAPIService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server. The included resources are not returned but cached locally.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
+   * in the results from the server.
    * @returns {QueryObservable<T[]>} The query observable.
    */
   onlineGetAllRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
-    persist: boolean = true
   ): QueryObservable<T[]> {
-    return this.query(q => q.findRelatedRecords(identity, relationship), include, persist);
+    return this.onlineQuery(q => q.findRelatedRecords(identity, relationship), include);
   }
 
   /**
    * Creates a new resource pessimistically.
    *
    * @param {Resource} resource The new resource.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {Promise<string>} Resolves when the resource is created remotely. Returns the new resource's ID.
+   * @returns {Promise<T>} Resolves when the resource is created remotely. Returns the new resource's ID.
    */
-  onlineCreate(resource: Resource, persist: boolean = true): Promise<string> {
-    return this._create(resource, persist, true);
+  async onlineCreate<T extends Resource>(resource: T): Promise<T> {
+    let record = this.createRecord(resource);
+    this.schema.initializeRecord(record);
+    record = await this.onlineStore.update(t => t.addRecord(record));
+    return this.createResource(record) as T;
   }
 
   /**
    * Completely replaces an existing resource pessimistically.
    *
    * @param {Resource} resource The new resource.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {Promise<void>} Resolves when the resource is replaced remotely.
+   * @returns {Promise<T>} Resolves when the resource is replaced remotely.
    */
-  onlineReplace(resource: Resource, persist: boolean = true): Promise<void> {
-    return this._replace(resource, persist, true);
+  async onlineReplace<T extends Resource>(resource: T): Promise<T> {
+    let record = this.createRecord(resource);
+    record = await this.onlineStore.update(t => t.replaceRecord(record));
+    return this.createResource(record) as T;
   }
 
   /**
-   * Updates an existing resource pessimistically. This method only updates the attributes and relationships that have
-   * changed.
+   * Updates the attributes of an existing resource pessimistically.
    *
-   * @param {Resource} resource The resource to update.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {Promise<void>} Resolves when the resource is updated remotely.
-   */
-  onlineUpdate(resource: Resource, persist: boolean = true): Promise<void> {
-    return this._update(resource, persist, true);
-  }
-
-  /**
-   * Updates the attributes of an existing resource pessimistically. It is recommeneded that attributes are specified
-   * using a partial type of the resource class, e.g. "Partial<User>".
-   *
-   * @example <caption>Type safe usage</caption>
-   * const attrs: Partial<User> = { username: 'new' };
-   * jsonApiServer.onlineUpdateAttributes({ type: User.TYPE, id }, attrs);
    * @param {RecordIdentity} identity The resource identity.
    * @param {Dict<any>} attrs The attribute values to update.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
-   * @returns {Promise<void>} Resolves when the resource is updated remotely.
+   * @returns {Promise<T>} Resolves when the resource is updated remotely.
    */
-  onlineUpdateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist: boolean = true): Promise<void> {
-    return this._updateAttributes(identity, attrs, persist, true);
+  async onlineUpdateAttributes<T extends Resource>(identity: RecordIdentity, attrs: Partial<T>): Promise<T> {
+    const record = await this.onlineStore.update(t => {
+      const ops: Operation[] = [];
+      for (const [name, value] of Object.entries(attrs)) {
+        ops.push(t.replaceAttribute(identity, name, value));
+      }
+      return ops;
+    });
+    return this.createResource(record) as T;
   }
 
   /**
    * Deletes a resource pessimistically.
    *
    * @param {RecordIdentity} identity The resource identity.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
    * @returns {Promise<void>} Resolves when the resource is deleted remotely.
    */
-  onlineDelete(identity: RecordIdentity, persist: boolean = true): Promise<void> {
-    return this._delete(identity, persist, true);
+  onlineDelete(identity: RecordIdentity): Promise<void> {
+    return this.onlineStore.update(t => t.removeRecord(identity));
   }
 
   /**
@@ -569,13 +639,10 @@ export class JSONAPIService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {RecordIdentity[]} related The new related resource identities.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
    * @returns {Promise<void>} Resolves when the resources are replaced remotely.
    */
-  onlineReplaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[],
-    persist: boolean = true
-  ): Promise<void> {
-    return this._replaceAllRelated(identity, relationship, related, persist, true);
+  onlineReplaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[]): Promise<void> {
+    return this.onlineStore.update(t => t.replaceRelatedRecords(identity, relationship, related));
   }
 
   /**
@@ -587,13 +654,10 @@ export class JSONAPIService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {RecordIdentity} related The new related resource identity.
-   * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
    * @returns {Promise<void>} Resolves when the resource is set remotely.
    */
-  onlineSetRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity | null,
-    persist: boolean = true
-  ): Promise<void> {
-    return this._setRelated(identity, relationship, related, persist, true);
+  onlineSetRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity | null): Promise<void> {
+    return this.onlineStore.update(t => t.replaceRelatedRecord(identity, relationship, related));
   }
 
   /**
@@ -625,29 +689,59 @@ export class JSONAPIService {
     return identities.map(identity => this.localGet(identity));
   }
 
-  private liveQuery(queryOrExpression: QueryOrExpression, include: string[], persist: boolean
+  private liveQuery(localQueryExpression: QueryOrExpression, remoteQueryExpression: QueryOrExpression, include: string[]
   ): QueryObservable<any> {
-    const query = buildQuery(queryOrExpression, this.getOptions(persist, false, include), undefined,
-      this.store.queryBuilder);
+    const localQuery = buildQuery(localQueryExpression, { }, undefined, this.store.queryBuilder);
+    const remoteQuery = buildQuery(remoteQueryExpression, this.getOptions(include), undefined, this.store.queryBuilder);
 
-    const source$ = fromEvent<[Transform, PatchResultData[]]>(this.store, 'data_changed').pipe(
-      // determine if the change is applicable to the live query before re-executing the query and emitting the results
-      filter(([transform, results]) => this.isChangeApplicable(query, transform, results)),
-      map(([transform]) => this.getLiveQueryResults(query, transform.id)),
-      startWith(this.getLiveQueryResults(query))
-    );
-    this.store.query(query);
-    return source$;
+    // initialize subject with current cached results
+    const changes$ = new BehaviorSubject<QueryResults<any>>(this.getQueryResults(localQuery));
+
+    // listen for any changes resulting from the remote query
+    const handler = (transform: Transform, results: PatchResultData[]) => {
+      if (this.isChangeApplicable(remoteQuery, transform, results)) {
+        changes$.next(this.getQueryResults(localQuery));
+      }
+    };
+    this.store.on('transform_completed', handler);
+
+    // start remote query right away
+    this.store.query(remoteQuery).catch(err => {
+      if (!(err instanceof ClientError)) {
+        console.error(err);
+      }
+    });
+
+    // remove listener after all subscribers have unsubscribed
+    const finalize$ = changes$.pipe(
+      finalize(() => this.store.off('transform_completed', handler)),
+      publishReplay(1)
+    ) as ConnectableObservable<QueryResults<any>>;
+    return finalize$.refCount();
   }
 
-  private query(queryOrExpression: QueryOrExpression, include: string[], persist: boolean
-  ): QueryObservable<any> {
-    const query = buildQuery(queryOrExpression, this.getOptions(persist, true, include), undefined,
-      this.store.queryBuilder);
-    return from(this.store.query(query)).pipe(map(r => this.getOnlineQueryResults(query, r)));
+  private onlineQuery(queryExpression: QueryOrExpression, include: string[]): QueryObservable<any> {
+    const query = buildQuery(queryExpression, this.getOptions(include), undefined, this.store.queryBuilder);
+
+    return from(this.onlineStore.query(query))
+      .pipe(map(r => this.getOnlineQueryResults(query, r)));
   }
 
-  private getAllQuery(q: QueryBuilder, type: string, parameters: GetAllParameters): QueryTerm {
+  private getQueryResults(localQuery: Query): QueryResults<any> {
+    const results = this.convertResults(this.store.cache.query(localQuery));
+    return new CacheQueryResults(this, results, localQuery.options.totalPagedCount);
+  }
+
+  private getOnlineQueryResults(query: Query, results: Resource | Resource[]): QueryResults<any> {
+    const resourceResults = this.convertResults(results);
+    let includedResources: Resource[];
+    if (query.options.included != null) {
+      includedResources = this.convertResults(query.options.included) as Resource[];
+    }
+    return new MapQueryResults(resourceResults, query.options.totalPagedCount, includedResources);
+  }
+
+  private getAllQuery(q: QueryBuilder, type: string, parameters: GetAllParameters, page: boolean = true): QueryTerm {
     let findRecords = q.findRecords(type);
     if (parameters != null) {
       if (parameters.filters != null) {
@@ -656,7 +750,7 @@ export class JSONAPIService {
       if (parameters.sort != null) {
         findRecords = findRecords.sort(...parameters.sort.map(s => this.createSortSpecifier(s)));
       }
-      if (parameters.pagination != null) {
+      if (page && parameters.pagination != null) {
         const pageSpecifier: IndexedPageSpecifier = {
           kind: 'indexed',
           index: parameters.pagination.index,
@@ -705,81 +799,8 @@ export class JSONAPIService {
     return sortSpecifier;
   }
 
-  private async _create(resource: Resource, persist: boolean, blocking: boolean): Promise<string> {
-    const record = this.createRecord(resource);
-    this.schema.initializeRecord(record);
-    resource.id = record.id;
-    await this.transform(t => t.addRecord(record), persist, blocking);
-    return record.id;
-  }
-
-  private _replace(resource: Resource, persist: boolean, blocking: boolean): Promise<void> {
-    const record = this.createRecord(resource);
-    return this.transform(t => t.replaceRecord(record), persist, blocking);
-  }
-
-  private _update(resource: Resource, persist: boolean, blocking: boolean): Promise<void> {
-    const updatedRecord = this.createRecord(resource);
-    const record = this.store.cache.query(q => q.findRecord(resource)) as Record;
-    return this.transform(t => {
-      const ops: Operation[] = [];
-
-      const updatedAttrs = this.getUpdatedProps(record.attributes, updatedRecord.attributes);
-      for (const attrName of updatedAttrs) {
-        ops.push(t.replaceAttribute(record, attrName, updatedRecord.attributes[attrName]));
-      }
-
-      const updatedRels = this.getUpdatedProps(record.relationships, updatedRecord.relationships);
-      for (const relName of updatedRels) {
-        const relData = updatedRecord.relationships[relName].data;
-        if (relData instanceof Array) {
-          ops.push(t.replaceRelatedRecords(record, relName, relData));
-        } else {
-          ops.push(t.replaceRelatedRecord(record, relName, relData));
-        }
-      }
-      return ops;
-    }, persist, blocking);
-  }
-
-  private _updateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist: boolean, blocking: boolean
-  ): Promise<void> {
-    return this.transform(t => {
-      const ops: Operation[] = [];
-      for (const [name, value] of Object.entries(attrs)) {
-        ops.push(t.replaceAttribute(identity, name, value));
-      }
-      return ops;
-    }, persist, blocking);
-  }
-
-  private _delete(identity: RecordIdentity, persist: boolean, blocking: boolean): Promise<void> {
-    return this.transform(t => t.removeRecord(identity), persist, blocking);
-  }
-
-  private _replaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[],
-    persist: boolean, blocking: boolean
-  ): Promise<void> {
-    return this.transform(t => t.replaceRelatedRecords(identity, relationship, related), persist, blocking);
-  }
-
-  private _setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist: boolean,
-    blocking: boolean
-  ): Promise<void> {
-    return this.transform(t => t.replaceRelatedRecord(identity, relationship, related), persist, blocking);
-  }
-
-  private transform(transformOrOperations: TransformOrOperations, persist: boolean, blocking: boolean): Promise<any> {
-    return this.store.update(transformOrOperations, this.getOptions(persist, blocking));
-  }
-
-  private getOptions(persist: boolean, blocking: boolean, include?: string[]): any {
-    const update = [JSONAPIService.REMOTE];
-    if (persist) {
-      update.push(JSONAPIService.BACKUP);
-    }
-
-    const options: any = { update, blocking };
+  private getOptions(include?: string[]): any {
+    const options: any = { };
     if (include != null && include.length > 0) {
       options.sources = { remote: { include: [include.map(rel => dasherize(rel)).join('.')] } };
     }
@@ -799,35 +820,6 @@ export class JSONAPIService {
       }
     }
     return updatedProps;
-  }
-
-  private getLiveQueryResults(query: Query, transformId?: string): QueryResults<any> {
-    const cacheQueryOptions: any = { };
-    const results = this.convertResults(this.store.cache.query(query, cacheQueryOptions));
-    let source: QuerySource;
-    let totalPagedCount: number;
-    if (transformId == null) {
-      source = 'local';
-      totalPagedCount = cacheQueryOptions.totalPagedCount;
-    } else if (query.options.transformId === transformId) {
-      source = 'remote';
-      totalPagedCount = query.options.totalPagedCount;
-    } else {
-      source = 'other';
-    }
-    return {
-      results,
-      source,
-      totalPagedCount
-    };
-  }
-
-  private getOnlineQueryResults(query: Query, results: Resource | Resource[]): QueryResults<any> {
-    return {
-      results: this.convertResults(results),
-      source: 'remote',
-      totalPagedCount: query.options.totalPagedCount
-    };
   }
 
   private isChangeApplicable(query: Query, transform: Transform, results: PatchResultData[]): boolean {
@@ -998,14 +990,6 @@ export class JSONAPIService {
     return { type: ref.type, id: ref.id };
   }
 
-  private shouldUpdate(transform: Transform, source: string): boolean {
-    if (transform.options == null || transform.options.update == null) {
-      return true;
-    }
-    const update: string[] = transform.options.update;
-    return update.includes(source);
-  }
-
   private purgeDeletedResource(query: Query, ex: Exception): void {
     if (ex instanceof ClientError) {
       const response: Response = (ex as any).response;
@@ -1038,7 +1022,7 @@ export class JSONAPIService {
   }
 
   private handleFailedPush(transform: Transform, ex: Exception): Promise<void> {
-    if (ex instanceof NetworkError && this.shouldUpdate(transform, JSONAPIService.BACKUP)) {
+    if (ex instanceof NetworkError) {
       setTimeout(() => this.remote.requestQueue.retry(), JSONAPIService.RETRY_TIMEOUT);
     } else {
       if (this.store.transformLog.contains(transform.id)) {
@@ -1059,6 +1043,6 @@ export class JSONAPIService {
         ops.push(t.removeRecord(resource));
       }
       return ops;
-    }, { update: [JSONAPIService.BACKUP] });
+    }, { localOnly: true });
   }
 }

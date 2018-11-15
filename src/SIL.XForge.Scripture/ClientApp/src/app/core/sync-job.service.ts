@@ -20,12 +20,12 @@ export class SyncJobService extends ResourceService {
   }
 
   onlineGet(id: string): QueryObservable<SyncJob> {
-    return this.jsonApiService.onlineGet(this.identity(id), [], false);
+    return this.jsonApiService.onlineGet(this.identity(id));
   }
 
   onlineGetActive(projectId: string): QueryObservable<SyncJob> {
     return this.jsonApiService.onlineGetRelated({ type: SFProject.TYPE, id: projectId },
-      nameof<SFProject>('activeSyncJob'), [], false);
+      nameof<SFProject>('activeSyncJob'));
   }
 
   listen(jobId: string): Observable<SyncJob> {
@@ -41,10 +41,11 @@ export class SyncJobService extends ResourceService {
       project: new SFProjectRef(projectId),
       owner: new SFUserRef(this.userService.currentUserId)
     });
-    return this.jsonApiService.onlineCreate(job, false);
+    const newJob = await this.jsonApiService.onlineCreate(job);
+    return newJob.id;
   }
 
   cancel(id: string): Promise<void> {
-    return this.jsonApiService.onlineDelete(this.identity(id), false);
+    return this.jsonApiService.onlineDelete(this.identity(id));
   }
 }

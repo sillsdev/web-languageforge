@@ -57,8 +57,9 @@ class TestEnvironment {
     d.percentCompleted = 1.0;
     d.state = 'IDLE';
     when(this.mockedSyncJobService.listen('job01')).thenReturn(cold('-a-b-c-d|', { a, b, c, d }));
-    when(this.mockedSFProjectUserService.onlineCreate(anything())).thenResolve('projectuser01');
-    when(this.mockedSFProjectService.onlineCreate(anything())).thenResolve('project01');
+    when(this.mockedSFProjectUserService.onlineCreate(anything()))
+      .thenResolve(new SFProjectUser({ id: 'projectuser01' }));
+    when(this.mockedSFProjectService.onlineCreate(anything())).thenResolve(new SFProject({ id: 'project01' }));
     when(this.mockedSFUserService.currentUserId).thenReturn('user01');
 
     TestBed.configureTestingModule({
