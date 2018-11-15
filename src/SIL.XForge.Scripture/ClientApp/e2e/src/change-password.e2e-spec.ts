@@ -30,7 +30,8 @@ describe('E2E Change Password app', () => {
     await AppPage.homepage.logoutButton.click();
 
     await loginPage.login(constants.memberUsername, newPassword);
-    await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.changePasswordButton), constants.conditionTimeout);
+    await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.changePasswordButton),
+      constants.conditionTimeout);
     expect(await AppPage.getMainHeading()).toContain(constants.memberName);
   });
 

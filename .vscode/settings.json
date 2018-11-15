@@ -1,3 +1,4 @@
 {
-  "dotnet-test-explorer.testProjectPath": "test/**/*.Tests.csproj"
+  "dotnet-test-explorer.testProjectPath": "test/**/*.Tests.csproj",
+  "editor.wordWrapColumn": 120
 }
