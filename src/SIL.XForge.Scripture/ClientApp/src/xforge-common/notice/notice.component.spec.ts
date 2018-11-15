@@ -90,7 +90,8 @@ describe('NoticeComponent', () => {
     tick();
     fixture.detectChanges();
     expect(overlayContainerElement.querySelector('detail-snack-bar')).toBeDefined();
-    expect(overlayContainerElement.querySelector('snack-bar-container').textContent).toContain('Details in a Custom Snack Bar');
+    expect(overlayContainerElement.querySelector('snack-bar-container').textContent)
+      .toContain('Details in a Custom Snack Bar');
     flush();
   }));
 

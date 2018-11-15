@@ -31,7 +31,8 @@ export class LoginPage {
     await this.loginButton.click();
 
     browser.waitForAngularEnabled(true);
-    await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.homepageHeader), this.constants.conditionTimeout);
+    await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.homepageHeader),
+      this.constants.conditionTimeout);
   }
 
   loginAsAdmin(): promise.Promise<void> {
