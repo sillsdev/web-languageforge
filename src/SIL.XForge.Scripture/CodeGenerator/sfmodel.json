@@ -279,6 +279,10 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "TYPE": {
+              "type": "string",
+              "const": "projectUserResource"
+            },
             "Role": {
               "type": [
                 "null",
@@ -326,6 +330,7 @@
         },
         {
           "type": "object",
+          "x-abstract": true,
           "additionalProperties": false,
           "properties": {
             "Username": {
@@ -415,6 +420,7 @@
         },
         {
           "type": "object",
+          "x-abstract": true,
           "additionalProperties": false,
           "properties": {
             "ProjectName": {

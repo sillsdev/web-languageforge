@@ -1,0 +1,79 @@
+{% if HasDescription -%}
+/** {{ Description }} */
+{% endif -%}
+{% if ExportTypes %}export {% endif %}{% if IsAbstract %}abstract {% endif %}class {{ ClassName }}{{ Inheritance }} {
+    /** type identifier string for domain type mapping */
+    static readonly TYPE:string = '{{ ClassName | downcase }}'; 
+{% for property in Properties -%}
+{%   if property.HasDescription -%}
+    /** {{ property.Description }} */
+{%   endif -%}
+    {% if property.IsReadOnly %}readonly {% endif %}{{ property.PropertyName }}{% if property.IsOptional %}?{% elseif RequiresStrictPropertyInitialization && !property.HasDefaultValue %}!{% endif %}: {{ property.Type }}{{ property.TypePostfix }};
+{% endfor -%}
+{% if HasIndexerProperty -%}
+
+    [key: string]: {{ IndexerPropertyValueType }}; 
+{% endif -%}
+{% if HasDiscriminator -%}
+    protected _discriminator: string;
+{% endif -%}
+
+    constructor(init?: Partial<{{ ClassName }}>) {
+{%     if HasInheritance -%}
+        super(init);
+{%     endif -%}
+{%     if HasDefaultValues -%}
+// WTW?
+        if (!init) {
+{%         for property in Properties -%}
+{%             if property.HasDefaultValue -%}
+            this.{{ property.PropertyName }} = {{ property.DefaultValue }};
+{%             endif -%}
+{%         endfor -%}
+        }
+{%     endif -%}
+{%     if HasBaseDiscriminator -%}
+        this._discriminator = "{{ DiscriminatorName }}";
+{%     endif -%}
+    }
+
+{% if GenerateCloneMethod -%}
+    clone(): {{ ClassName }} {
+{%   if IsAbstract -%}
+        throw new Error("The abstract class '{{ ClassName }}' cannot be instantiated.");
+{%   else -%}
+        const json = this.toJSON();
+        let result = new {{ ClassName }}();
+        result.init(json);
+        return result;
+{%   endif -%}
+    }
+{% endif -%}
+}
+{% if GenerateConstructorInterface -%}
+{%   if HasDescription -%}
+/** {{ Description }} */
+{%   endif -%}
+{% if ExportTypes %}export {% endif %}interface I{{ ClassName }}{{ InterfaceInheritance }} {
+{%   for property in Properties -%}
+{%       if property.HasDescription -%}
+    /** {{ property.Description }} */
+{%       endif -%}
+    {{ property.PropertyName }}{% if property.IsOptional %}?{% endif %}: {{ property.ConstructorInterfaceType }}{{ property.TypePostfix }};
+{%   endfor -%}
+{%   if HasIndexerProperty -%}
+
+    [key: string]: {{ IndexerPropertyValueType }}; 
+{%   endif -%}
+}
+
+{% endif -%}
+
+/** ResourceRef class for {{ ClassName }} **/
+export class {{ ClassName }}Ref extends ResourceRef {
+    static readonly TYPE:string = {{ ClassName }}.TYPE;
+
+    constructor(id: string) {
+        super({{ ClassName }}Ref.TYPE, id);
+    }
+}

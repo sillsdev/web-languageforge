@@ -43,6 +43,10 @@ namespace CodeGenerator
                 return;
             }
 
+            // test abstract
+            var testSchema = JsonSchema4.FromTypeAsync(typeof(TestAbstractType)).Result;
+            Console.Write(testSchema.ToJson());
+
             // Load the schema from the file
             var sourceSchema = JsonSchema4.FromJsonAsync(File.ReadAllText(schema)).Result;
             var handWrittenBaseClasses = new Dictionary<string, string>();
@@ -62,19 +66,33 @@ namespace CodeGenerator
             #endregion
 
             #region Generate Typescript model objects
+            // Get all the types defined in the schema
+            var definedTypes = new List<string>();
+            foreach (var type in sourceSchema.Definitions)
+            {
+                definedTypes.Add(type.Key);
+            }
+            
             var typescriptSettings = new TypeScriptGeneratorSettings()
             {
                 Namespace = "SIL.XForge.Scripture.Models",
-                ExcludedTypeNames = new List<string>(handWrittenBaseClasses.Keys).ToArray()
+                ExcludedTypeNames = new List<string>(handWrittenBaseClasses.Keys).ToArray(),
+                ExtensionCode = "import {Resource, ResourceRef} from \"../../../xforge-common/models/resource\";",
+                TemplateDirectory = "../../../Templates",
+                ConvertConstructorInterfaceData = false,
+                // skip generating interfaces for the defined types
+                GenerateConstructorInterface = false,
+                MarkOptionalProperties = true
             };
+
             var tsGenerator = new TypeScriptGenerator(sourceSchema, typescriptSettings);
             var tsContents = tsGenerator.GenerateFile();
             File.WriteAllText(typescript, tsContents);
             #endregion
-            GenerateJsonModelIncludeFile(schema, typescript, new List<string>(handWrittenBaseClasses.Keys), jsonApi, sourceSchema);
+            GenerateJsonModelIncludeFile(schema, typescript, definedTypes, new List<string>(handWrittenBaseClasses.Keys), jsonApi, sourceSchema);
         }
 
-        private static void GenerateJsonModelIncludeFile(string schema, string typescript, List<string> handWrittenBaseClasses, string jsonApi, JsonSchema4 sourceSchema)
+        private static void GenerateJsonModelIncludeFile(string schema, string typescript, List<string> importTypes, List<string> handWrittenBaseClasses, string jsonApi, JsonSchema4 sourceSchema)
         {
             #region Generate injectable model include typescript file
             var classComment = $"//----------------------" +
@@ -84,11 +102,11 @@ namespace CodeGenerator
                                $"//----------------------" +
                                $"{Environment.NewLine}";
             string imports = string.Empty;
-            foreach(var type in sourceSchema.Definitions)
+            foreach(var type in importTypes)
             {
-                if (handWrittenBaseClasses.Contains(type.Key))
+                if (handWrittenBaseClasses.Contains(type))
                     continue;
-                imports += $"import {{{type.Key}}} from '{typescript}';{Environment.NewLine}";
+                imports += $"import {{{type}}} from '{typescript.Substring(0, typescript.Length - 3)}';{Environment.NewLine}";
             }
             var config = string.Empty;
             var fileContents = $"{classComment}{Environment.NewLine}" +
@@ -108,5 +126,10 @@ namespace CodeGenerator
             }
             csharpContents = csharpContents.Replace("namespace SIL.XForge.Scripture.Models", $"{importsString}{Environment.NewLine}namespace SIL.XForge.Scripture.Models");
         }
+    }
+
+    abstract class TestAbstractType
+    {
+        public const int test = 5;
     }
 }
