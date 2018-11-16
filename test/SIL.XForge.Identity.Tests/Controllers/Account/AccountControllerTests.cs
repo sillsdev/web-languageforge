@@ -324,54 +324,21 @@ namespace SIL.XForge.Identity.Controllers.Account
         public async Task InviteFriend_Email()
         {
             var env = new TestEnvironment();
-
             var model = new UserEntity
             {
-                Name = "user",
-                Email = "abc1@fakegmail.com"
+                Email = "abc1@example.com"
             };
-            var data = await env.Controller.SendInvitation(model);
-            Assert.AreEqual("An invitation email has been sent to abc1@fakegmail.com", data);
+            Assert.That(env.Users.Query().Any(x => x.Email == model.Email), Is.False);
 
-            string emailId = "abc1@fakegmail.com";
-            string subject = "You've been added to the project [Project Name] on Scripture Forge";
+            var result = await env.Controller.SendInvitation(model);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(env.Controller.ModelState.ErrorCount, Is.EqualTo(0));
+            Assert.That(env.Users.Query().Any(x => x.Email == model.Email), Is.True);
+            Assert.AreEqual($"An invitation email has been sent to {model.Email}", result);
+            string subject = "You've been invited to the project [Project Name] on xForge";
             // Skip verification for the body, we may change the content
-            await env.EmailService.Received().SendEmailAsync(Arg.Is(emailId), Arg.Is(subject), Arg.Any<string>());
-        }
-
-        [Test]
-        public async Task InviteViaEmailRegister_AddUser()
-        {
-            var env = new TestEnvironment();
-            var email = "abc1@fakegmail.com";
-
-            var result = await env.Controller.SendInvitation_CreateUserAccount(email);
-            Assert.That(result, Is.Not.Null);
-            Assert.That(env.Controller.ModelState.ErrorCount, Is.EqualTo(0));
-            Assert.That(env.Users.Query().Any(x => x.Email == email), Is.True);
-        }
-
-        [Test]
-        public async Task InviteViaEmailRegister_UpdateUserAccount()
-        {
-            var env = new TestEnvironment();
-            var email = "abc1@fakegmail.com";
-
-            await env.Controller.SendInvitation_CreateUserAccount(email);
-            Assert.That(env.Users.Query().Any(x => x.Email == email), Is.True);
-
-            var model = new RegisterViewModel
-            {
-                Fullname = "Non Duplicated Name",
-                Password = "unimportant1234",
-                Email = "abc1@fakegmail.com",
-                InviteSignUp = true
-            };
-
-            var result = await env.Controller.Register(model, "/home");
-            Assert.That(result, Is.Not.Null);
-            Assert.That(env.Controller.ModelState.ErrorCount, Is.EqualTo(0));
-            Assert.That(env.Users.Query().Any(x => x.Name == model.Fullname), Is.True);
+            await env.EmailService.Received().SendEmailAsync(Arg.Is(model.Email), Arg.Is(subject), Arg.Any<string>());
         }
 
         private class TestEnvironment

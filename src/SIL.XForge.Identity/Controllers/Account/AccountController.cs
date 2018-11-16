@@ -621,29 +621,31 @@ namespace SIL.XForge.Identity.Controllers.Account
                 UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.Email == model.Email);
                 if (user != null)
                 {
-                    return "User already have an account!";
+                    return "User already has an account!";
                 }
-                else
+                else if (await CreateInvitedUserAccount(model.Email))
                 {
-                    if (await SendInvitation_CreateUserAccount(model.Email))
-                    {
-                        SiteOptions siteOptions = _options.Value;
-                        string emailId = model.Email.ToLower();
-                        string name = model.Name.ToUpper();
-                        string url = $"{siteOptions.Origin}Account/Register?e={HttpUtility.UrlEncode(model.Email)}";
-                        string subject = "You've been added to the project [Project Name] on Scripture Forge";
-                        string body = "<p> Hello </p>" +
-                            $"<p> {name} has just added you to the [Project Name] project on Scripture Forge. Go to  <a href={url} target='_blank'> [link to the scripture forge with project information] </a> to join.</p>" +
-                            "<p>Regards,<br>The Scripture Forge team</p></div>";
-                        await _emailService.SendEmailAsync(emailId, subject, body);
-                        return "An invitation email has been sent to " + model.Email;
-                    }
+                    SiteOptions siteOptions = _options.Value;
+                    string projectName = "[Project Name]";
+                    string inviterName = User.GetDisplayName();
+                    string url = $"{siteOptions.Origin}Account/Register?e={HttpUtility.UrlEncode(model.Email)}";
+                    string subject = $"You've been invited to the project {projectName} on {siteOptions.Name}";
+                    string body = "<p>Hello </p><p></p>" +
+                        $"<p>{inviterName} invites you to join the {projectName} project on {siteOptions.Name}." +
+                        "</p><p></p>" +
+                        "<p>You're almost ready to start. Just click the link below to complete your signup and " +
+                        "then you will be ready to get started.</p><p></p>" +
+                        $"<p>To join, go to {url}</p><p></p>" +
+                        $"<p>Regards</p><p>    The {siteOptions.Name} team</p>";
+                    await _emailService.SendEmailAsync(model.Email, subject, body);
+                    return "An invitation email has been sent to " + model.Email;
                 }
             }
+
             return null;
         }
 
-        public async Task<bool> SendInvitation_CreateUserAccount(string email)
+        private async Task<bool> CreateInvitedUserAccount(string email)
         {
             var user = new UserEntity
             {
@@ -657,6 +659,9 @@ namespace SIL.XForge.Identity.Controllers.Account
                 ValidationExpirationDate = DateTime.Now.AddDays(7),
                 Active = false
             };
+
+            // add the user to the current project once we have a current project in context
+
             var result = await _users.InsertAsync(user);
             if (result)
             {

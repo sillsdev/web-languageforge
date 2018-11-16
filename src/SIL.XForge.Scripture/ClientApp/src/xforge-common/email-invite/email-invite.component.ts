@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-import { OAuthService } from 'angular-oauth2-oidc';
 
+import { AuthService } from '@xforge-common/auth.service';
 import { NoticeService } from '@xforge-common/notice.service';
 import { UserService } from '@xforge-common/user.service';
 import { environment } from '../../environments/environment';
@@ -21,24 +21,22 @@ export class EmailInviteComponent implements OnInit {
   disabledSendInviteBtn: boolean = false;
   siteName = environment.siteName;
 
-  get formControls() { return this.sendInviteForm.controls; }
-
   constructor(private dialog: MatDialog, private readonly formBuilder: FormBuilder,
-    private readonly noticeService: NoticeService, private readonly oauthService: OAuthService,
+    private readonly noticeService: NoticeService, private readonly authService: AuthService,
     private readonly userService: UserService) { }
-
-  get name() {
-    const claims = this.oauthService.getIdentityClaims();
-    if (claims != null) {
-      return claims['name'];
-    }
-    return null;
-  }
 
   ngOnInit() {
     this.sendInviteForm = this.formBuilder.group({
       email: ['', Validators.compose([Validators.required, Validators.email])],
     });
+  }
+
+  get formControls() {
+    return this.sendInviteForm.controls;
+  }
+
+  get name() {
+    return this.authService.currentUserName;
   }
 
   openDialog(dialogRef: any) {
@@ -52,7 +50,7 @@ export class EmailInviteComponent implements OnInit {
       this.disabledSendInviteBtn = true;
       this.userService.sendInvitation(this.name, this.sendInviteForm.value.email)
         .subscribe(response => {
-          if (response === 'User already have an account!') {
+          if (response === 'User already has an account!') {
             this.isSubmitted = false;
             this.spinnerDisplay = false;
             this.disabledSendInviteBtn = false;
