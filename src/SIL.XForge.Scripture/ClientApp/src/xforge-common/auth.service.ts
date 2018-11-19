@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuthConfig, JwksValidationHandler, OAuthService } from 'angular-oauth2-oidc';
+import { AuthConfig, JwksValidationHandler, OAuthErrorEvent, OAuthService } from 'angular-oauth2-oidc';
 
 import { environment } from '../environments/environment';
 import { JSONAPIService } from './jsonapi.service';
@@ -67,8 +67,16 @@ export class AuthService {
         if (!isLoggedIn && !this.isLoggingIn) {
           try {
             const event = await this.oauthService.silentRefresh();
-            isLoggedIn = event.type === 'silently_refreshed';
-          } catch (err) { }
+            if (event.type === 'silently_refreshed') {
+              isLoggedIn = true;
+            }
+          } catch (err) {
+            if (err instanceof OAuthErrorEvent && err.reason['error'] === 'login_required') {
+              this.oauthService.logOut(true);
+            } else {
+              throw err;
+            }
+          }
         }
         if (isLoggedIn) {
           await this.jsonApiService.init(this.oauthService.getAccessToken());

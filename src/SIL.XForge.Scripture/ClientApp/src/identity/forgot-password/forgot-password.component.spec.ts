@@ -89,6 +89,7 @@ describe('ForgotPasswordComponent', () => {
 
     verify(env.mockedIdentityService.forgotPassword(deepEqual('user'))).once();
     verify(env.mockedLocationService.go('/home')).once();
+    expect().nothing();
   }));
 
   it('should display error when email or username is incorrect', fakeAsync(() => {
@@ -111,5 +112,6 @@ describe('ForgotPasswordComponent', () => {
     env.clickSubmitButton();
 
     verify(env.mockedIdentityService.forgotPassword(anything())).never();
+    expect().nothing();
   }));
 });

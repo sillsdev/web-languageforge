@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 
-import { LogInParams } from '@identity/models/log-in-params';
+import { AuthService } from '@xforge-common/auth.service';
 import { LocationService } from '@xforge-common/location.service';
 import { IdentityService } from '../identity.service';
+import { LogInParams } from '../models/log-in-params';
 
 @Component({
   selector: 'app-log-in',
@@ -24,7 +25,7 @@ export class LogInComponent implements OnInit {
 
   constructor(private readonly identityService: IdentityService, public readonly snackBar: MatSnackBar,
     private readonly activatedRoute: ActivatedRoute, private readonly locationService: LocationService,
-    private readonly router: Router
+    private readonly authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -45,7 +46,7 @@ export class LogInComponent implements OnInit {
     const result = await this.identityService.logIn(logInParams);
     if (result.success) {
       if (returnUrl == null) {
-        this.router.navigateByUrl('/home');
+        this.authService.logIn();
       } else if (result.isReturnUrlTrusted) {
         this.locationService.go(returnUrl);
       } else {

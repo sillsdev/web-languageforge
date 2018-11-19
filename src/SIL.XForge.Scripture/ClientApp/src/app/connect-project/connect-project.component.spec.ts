@@ -175,6 +175,7 @@ describe('ConnectProjectComponent', () => {
     verify(env.mockedSFProjectService.onlineCreate(anything())).never();
     verify(env.mockedSFProjectUserService.onlineCreate(anything())).never();
     verify(env.mockedRouter.navigate(deepEqual(['/home']))).never();
+    expect().nothing();
   }));
 
   it('should display loading when getting PT projects', fakeAsync(() => {

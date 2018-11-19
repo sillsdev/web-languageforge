@@ -22,8 +22,8 @@ export class RealtimeService {
   private readonly stores = new Map<string, LocalForage>();
 
   constructor(private readonly domainModel: DomainModel, private readonly locationService: LocationService) {
-    const protocol = this.locationService.protocol === 'https' ? 'wss' : 'ws';
-    this.ws = new ReconnectingWebSocket(protocol + '://' + this.locationService.host + '/sharedb/');
+    const protocol = this.locationService.protocol === 'https:' ? 'wss:' : 'ws:';
+    this.ws = new ReconnectingWebSocket(protocol + '//' + this.locationService.host + '/sharedb/');
     this.connection = new Connection(this.ws);
   }
 
