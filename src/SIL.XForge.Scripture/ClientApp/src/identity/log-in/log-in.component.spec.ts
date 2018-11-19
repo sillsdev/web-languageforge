@@ -9,6 +9,7 @@ import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
 import { IdentityService } from '@identity/identity.service';
 import { LogInParams } from '@identity/models/log-in-params';
+import { AuthService } from '@xforge-common/auth.service';
 import { LocationService } from '@xforge-common/location.service';
 import { UICommonModule } from '@xforge-common/ui-common.module';
 import { LogInComponent } from './log-in.component';
@@ -20,17 +21,16 @@ class TestEnvironment {
   mockedIdentityService: IdentityService;
   mockedActivatedRoute: ActivatedRoute;
   mockedLocationService: LocationService;
-  mockedRouter: Router;
+  mockedAuthService: AuthService;
   overlayContainer: OverlayContainer;
 
   constructor() {
     this.mockedIdentityService = mock(IdentityService);
     this.mockedActivatedRoute = mock(ActivatedRoute);
     this.mockedLocationService = mock(LocationService);
-    this.mockedRouter = mock(Router);
+    this.mockedAuthService = mock(AuthService);
 
     when(this.mockedActivatedRoute.queryParams).thenReturn(of({ }));
-    when(this.mockedRouter.navigateByUrl('/home')).thenResolve(true);
 
     TestBed.configureTestingModule({
       imports: [
@@ -42,7 +42,7 @@ class TestEnvironment {
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
         { provide: LocationService, useFactory: () => instance(this.mockedLocationService) },
-        { provide: Router, useFactory: () => instance(this.mockedRouter) }
+        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
       ]
     });
     this.fixture = TestBed.createComponent(LogInComponent);
@@ -114,7 +114,8 @@ describe('LogInComponent', () => {
       rememberLogIn: true
     };
     verify(env.mockedIdentityService.logIn(deepEqual(logInParams))).once();
-    verify(env.mockedRouter.navigateByUrl('/home')).once();
+    verify(env.mockedAuthService.logIn()).once();
+    expect().nothing();
   }));
 
   it('should display error when username and password are incorrect', fakeAsync(() => {
@@ -132,7 +133,7 @@ describe('LogInComponent', () => {
       rememberLogIn: false
     };
     verify(env.mockedIdentityService.logIn(deepEqual(logInParams))).once();
-    verify(env.mockedRouter.navigateByUrl('/home')).never();
+    verify(env.mockedAuthService.logIn()).never();
     expect(env.getSnackBarContent()).toBe('Invalid email/username or password');
     flush();
   }));
@@ -144,5 +145,6 @@ describe('LogInComponent', () => {
     env.clickSubmitButton();
 
     verify(env.mockedIdentityService.logIn(anything())).never();
+    expect().nothing();
   }));
 });
