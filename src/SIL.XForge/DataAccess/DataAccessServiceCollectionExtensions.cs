@@ -57,14 +57,14 @@ namespace SIL.XForge.DataAccess
             services.AddMongoRepository<UserEntity>(options.MongoDatabaseName, "users", indexSetup: indexes =>
                 {
                     IndexKeysDefinitionBuilder<UserEntity> builder = Builders<UserEntity>.IndexKeys;
-                    var models = new[]
-                    {
-                        new CreateIndexModel<UserEntity>(builder.Ascending(u => u.CanonicalEmail),
-                            new CreateIndexOptions { Unique = true }),
-                        new CreateIndexModel<UserEntity>(builder.Ascending(u => u.Username),
-                            new CreateIndexOptions { Unique = true })
-                    };
-                    indexes.CreateMany(models);
+                    indexes.CreateOrUpdate(new CreateIndexModel<UserEntity>(builder.Ascending(u => u.CanonicalEmail),
+                        new CreateIndexOptions { Unique = true }));
+                    indexes.CreateOrUpdate(new CreateIndexModel<UserEntity>(builder.Ascending(u => u.Username),
+                        new CreateIndexOptions<UserEntity>
+                            {
+                                Unique = true,
+                                PartialFilterExpression = Builders<UserEntity>.Filter.Exists(u => u.Username)
+                            }));
                 });
 
             return services;
