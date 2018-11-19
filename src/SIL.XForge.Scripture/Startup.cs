@@ -26,6 +26,13 @@ using SIL.XForge.Services;
 
 namespace SIL.XForge.Scripture
 {
+    public enum SpaDevServerStartup
+    {
+        None,
+        Start,
+        Listen
+    }
+
     public class Startup
     {
         public Startup(IConfiguration configuration, IHostingEnvironment env)
@@ -38,6 +45,30 @@ namespace SIL.XForge.Scripture
         public IHostingEnvironment Environment { get; }
         public IContainer ApplicationContainer { get; private set; }
 
+        private SpaDevServerStartup SpaDevServerStartup {
+            get
+            {
+                if (Environment.IsDevelopment())
+                {
+                    string startNgServe = Configuration.GetValue("start-ng-serve", "yes");
+                    switch (startNgServe)
+                    {
+                        case "yes":
+                            return SpaDevServerStartup.Start;
+                        case "listen":
+                            return SpaDevServerStartup.Listen;
+                    }
+                }
+                else if (Environment.IsEnvironment("Testing"))
+                {
+                    return SpaDevServerStartup.Listen;
+                }
+                return SpaDevServerStartup.None;
+            }
+        }
+
+        private bool IsDevelopment => Environment.IsDevelopment() || Environment.IsEnvironment("Testing");
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
@@ -45,7 +76,7 @@ namespace SIL.XForge.Scripture
 
             services.AddSFConfiguration(Configuration);
 
-            services.AddRealtimeServer(Environment.IsDevelopment() || Environment.IsEnvironment("Testing"));
+            services.AddRealtimeServer(IsDevelopment);
 
             services.AddExceptionLogging();
 
@@ -56,7 +87,7 @@ namespace SIL.XForge.Scripture
             services.AddAuthentication()
                 .AddJwtBearer(options =>
                     {
-                        if (Environment.IsDevelopment() || Environment.IsEnvironment("Testing"))
+                        if (IsDevelopment)
                         {
                             options.RequireHttpsMetadata = false;
                             options.BackchannelHttpHandler = new HttpClientHandler
@@ -73,7 +104,7 @@ namespace SIL.XForge.Scripture
                         options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                         options.SaveTokens = true;
 
-                        if (Environment.IsDevelopment() || Environment.IsEnvironment("Testing"))
+                        if (IsDevelopment)
                             options.UseDevServer();
                         options.ClientId = paratextOptions.ClientId;
                         options.ClientSecret = paratextOptions.ClientSecret;
@@ -97,11 +128,14 @@ namespace SIL.XForge.Scripture
 
             services.AddTransient<IEmailService, EmailService>();
 
-            // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-                {
-                    configuration.RootPath = "ClientApp/dist";
-                });
+            if (SpaDevServerStartup == SpaDevServerStartup.None)
+            {
+                // In production, the Angular files will be served from this directory
+                services.AddSpaStaticFiles(configuration =>
+                    {
+                        configuration.RootPath = "ClientApp/dist";
+                    });
+            }
 
             containerBuilder.Populate(services);
 
@@ -110,14 +144,14 @@ namespace SIL.XForge.Scripture
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime appLifetime)
+        public void Configure(IApplicationBuilder app, IApplicationLifetime appLifetime)
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions
                 {
                     ForwardedHeaders = ForwardedHeaders.All
                 });
 
-            if (env.IsDevelopment() || env.IsEnvironment("Testing"))
+            if (IsDevelopment)
                 app.UseDeveloperExceptionPage();
 
             app.UseBugsnag();
@@ -127,7 +161,9 @@ namespace SIL.XForge.Scripture
                     // this will allow files without extensions to be served, which is necessary for LetsEncrypt
                     ServeUnknownFileTypes = true
                 });
-            app.UseSpaStaticFiles();
+
+            if (SpaDevServerStartup == SpaDevServerStartup.None)
+                app.UseSpaStaticFiles();
 
             app.UseXFIdentityServer();
 
@@ -146,17 +182,15 @@ namespace SIL.XForge.Scripture
                 // see https://go.microsoft.com/fwlink/?linkid=864501
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
+                switch (SpaDevServerStartup)
                 {
-                    string startNgServe = Configuration.GetValue("start-ng-serve", "yes");
-                    if (startNgServe == "yes")
+                    case SpaDevServerStartup.Start:
                         spa.UseAngularCliServer(npmScript: "start");
-                    else if (startNgServe == "listen")
+                        break;
+
+                    case SpaDevServerStartup.Listen:
                         spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
-                }
-                else if (env.IsEnvironment("Testing"))
-                {
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                        break;
                 }
             });
 
