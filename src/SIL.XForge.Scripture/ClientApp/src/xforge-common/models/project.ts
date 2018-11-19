@@ -2,7 +2,7 @@ import { ProjectUserRef } from './project-user';
 import { Resource, ResourceRef } from './resource';
 
 export abstract class Project extends Resource {
-  static readonly TYPE = 'project';
+  static readonly TYPE: string = 'project';
 
   projectName?: string;
 

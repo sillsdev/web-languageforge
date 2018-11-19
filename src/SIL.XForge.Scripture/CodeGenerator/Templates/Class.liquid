@@ -1,9 +1,12 @@
 {% if HasDescription -%}
 /** {{ Description }} */
 {% endif -%}
-{% if ExportTypes %}export {% endif %}{% if IsAbstract %}abstract {% endif %}class {{ ClassName }}{{ Inheritance }} {
+{% if ExportTypes %}export {% endif %}{% if IsAbstract %}abstract {% endif %}{%if Description contains "--- Generated Interface"%}interface{% else %}class{% endif %} {{ ClassName }}{{ Inheritance }} {
+{% if Description contains "--- Generated Interface" -%}
+{% else -%}
     /** type identifier string for domain type mapping */
-    static readonly TYPE:string = '{{ ClassName | downcase }}'; 
+    static readonly TYPE: string = '{{ ClassName | lowercamelcase }}';
+{% endif -%}
 {% for property in Properties -%}
 {%   if property.HasDescription -%}
     /** {{ property.Description }} */
@@ -12,18 +15,18 @@
 {% endfor -%}
 {% if HasIndexerProperty -%}
 
-    [key: string]: {{ IndexerPropertyValueType }}; 
+    [key: string]: {{ IndexerPropertyValueType }};
 {% endif -%}
 {% if HasDiscriminator -%}
     protected _discriminator: string;
 {% endif -%}
-
+{% if Description contains "--- Generated Interface" -%}
+{% else -%}
     constructor(init?: Partial<{{ ClassName }}>) {
 {%     if HasInheritance -%}
         super(init);
 {%     endif -%}
 {%     if HasDefaultValues -%}
-// WTW?
         if (!init) {
 {%         for property in Properties -%}
 {%             if property.HasDefaultValue -%}
@@ -36,6 +39,7 @@
         this._discriminator = "{{ DiscriminatorName }}";
 {%     endif -%}
     }
+{% endif -%}
 
 {% if GenerateCloneMethod -%}
     clone(): {{ ClassName }} {
@@ -63,17 +67,25 @@
 {%   endfor -%}
 {%   if HasIndexerProperty -%}
 
-    [key: string]: {{ IndexerPropertyValueType }}; 
+    [key: string]: {{ IndexerPropertyValueType }};
 {%   endif -%}
 }
 
 {% endif -%}
 
+
+{% if Description contains "--- Generated Interface" -%}
+{% else%}
 /** ResourceRef class for {{ ClassName }} **/
-export class {{ ClassName }}Ref extends ResourceRef {
-    static readonly TYPE:string = {{ ClassName }}.TYPE;
+export class {{ ClassName }}Ref{% if HasInheritance %}{{ Inheritance }}Ref {% endif %}{
+{% if HasInheritance -%}
+    // Only the base class needs to define the constructor which takes the type and id
+{% else -%}
+    static readonly TYPE: string = {{ ClassName }}.TYPE;
 
     constructor(id: string) {
         super({{ ClassName }}Ref.TYPE, id);
     }
+{% endif -%}
 }
+{% endif -%}

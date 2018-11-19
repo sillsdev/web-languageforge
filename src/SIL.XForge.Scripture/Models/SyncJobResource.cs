@@ -7,6 +7,6 @@ namespace SIL.XForge.Scripture.Models
         [Attr]
         public double PercentCompleted { get; set; }
         [Attr]
-        public string State { get; set; }
+        public SyncJobState State { get; set; }
     }
 }

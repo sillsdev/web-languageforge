@@ -1,8 +1,5 @@
 import { DomainModelConfig } from '@xforge-common/models/domain-model';
-import { SFProject, SFProjectRef } from './sfproject';
-import { SFProjectUser, SFProjectUserRef } from './sfproject-user';
-import { SFUser, SFUserRef } from './sfuser';
-import { SyncJob, SyncJobRef } from './sync-job';
+import { SFProject, SFProjectRef, SFProjectUser, SFProjectUserRef, SFUser, SFUserRef, SyncJob, SyncJobRef } from './sfproject.generated';
 import { Text, TextRef } from './text';
 import { TextData } from './text-data';
 

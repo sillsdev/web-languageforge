@@ -1,6 +1,6 @@
 using CommandLine;
 
-namespace CodeGenerator
+namespace SIL.XForge.Scripture.CodeGenerator
 {
     /// <summary>
     /// Command line options supported by the CodeGenerator
@@ -10,7 +10,7 @@ namespace CodeGenerator
         /// <summary>
         /// Schema files used to generate the classes
         /// </summary>
-        [Option('s', "schema", Required = true, HelpText = "Json-Schema file to be processed.")]
+        [Option('s', "schema", Required = false, HelpText = "Json-Schema output.")]
         public string Schema { get; set; }
 
         /// <summary>
@@ -22,14 +22,14 @@ namespace CodeGenerator
         /// <summary>
         /// Output folder for C# classes
         /// </summary>
-        [Option('c', "csharp", Required = true, HelpText = "Destination location for C# classes.")]
-        public string CSharp { get; set; }
+        [Option('m', "model", Required = true, HelpText = "Fully qualified type name for C# class to generate TypeScript from")]
+        public string Model { get; set; }
 
         /// <summary>
         /// File and full path to generate the json-api-service inclusion of TypeScript classes
         /// </summary>
         [Option('j', "jsonapi", Required = true, HelpText = "Fullpath and filename to generate file for json-api-service injection.")]
-        public string JsonApi { get; set; }
+        public string JsonDomainModel { get; set; }
 
     }
 }

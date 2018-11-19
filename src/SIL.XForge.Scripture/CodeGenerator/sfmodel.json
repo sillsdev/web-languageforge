@@ -18,6 +18,25 @@
         }
       ]
     },
+    "TextResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/SFProjectDataResource"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "book-id": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
     "TaskConfig": {
       "type": "object",
       "additionalProperties": false,
@@ -273,7 +292,7 @@
     "ProjectUserResource": {
       "allOf": [
         {
-          "$ref": "#/definitions/IdentifiableOfString"
+          "$ref": "#/definitions/Resource"
         },
         {
           "type": "object",
@@ -495,6 +514,15 @@
           ],
           "items": {
             "$ref": "#/definitions/SFProjectUserResource"
+          }
+        },
+        "texts": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/TextResource"
           }
         }
       }
