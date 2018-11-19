@@ -206,6 +206,25 @@ namespace SIL.XForge.DataAccess
             return update.Add(GetPropertyName(field), value);
         }
 
+        public static void CreateOrUpdate<T>(this IMongoIndexManager<T> indexes, CreateIndexModel<T> indexModel)
+        {
+            try
+            {
+                indexes.CreateOne(indexModel);
+            }
+            catch (MongoCommandException ex)
+            {
+                if (ex.CodeName == "IndexOptionsConflict")
+                {
+                    string name = ex.Command["indexes"][0]["name"].AsString;
+                    indexes.DropOne(name);
+                    indexes.CreateOne(indexModel);
+                } else {
+                    throw;
+                }
+            }
+        }
+
         private static string GetPropertyName<T, TField>(Expression<Func<T, TField>> field)
         {
             var body = (MemberExpression) field.Body;
