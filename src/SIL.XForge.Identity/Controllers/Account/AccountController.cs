@@ -24,6 +24,7 @@ using SIL.XForge.Configuration;
 using System.Security.Cryptography;
 using System.Text;
 using SIL.XForge.Identity.Configuration;
+using System.Web;
 
 namespace SIL.XForge.Identity.Controllers.Account
 {
@@ -363,10 +364,18 @@ namespace SIL.XForge.Identity.Controllers.Account
 
         [HttpGet("Account/Register")]
         [AllowAnonymous]
-        public IActionResult Register()
+        public IActionResult Register([FromQuery] string e)
         {
             ViewData["ReCaptchaKey"] = _captcha.CaptchaId;
-            return View();
+            RegisterViewModel model = new RegisterViewModel();
+            if (!String.IsNullOrEmpty(e))
+            {
+                model.Fullname = string.Empty;
+                model.Email = e;
+                model.InviteSignUp = true;
+                model.Password = string.Empty;
+            }
+            return View(model);
         }
 
         [HttpPost]
@@ -377,14 +386,6 @@ namespace SIL.XForge.Identity.Controllers.Account
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                bool emailExists = await _users.Query().AnyAsync(u => u.Email.ToLowerInvariant() == model.Email.ToLowerInvariant());
-                if (emailExists)
-                {
-                    ModelState.AddModelError(string.Empty,
-                        "A user with the specified email address already exists. Please use a different email address.");
-                    return View(model);
-                }
-
                 var user = new UserEntity
                 {
                     Name = model.Fullname,
@@ -398,30 +399,76 @@ namespace SIL.XForge.Identity.Controllers.Account
                     Active = true
                 };
 
-                var result = await _users.InsertAsync(user);
-                if (result)
+                if (model.InviteSignUp)
                 {
-                    SiteOptions siteOptions = _options.Value;
-                    string subject = $"{siteOptions.Name} - Email Verification";
-                    Uri url = new Uri(siteOptions.Origin,
-                        $"account/VerifyEmail?email={user.Email}&key={user.ValidationKey}");
-                    string body = "<div class=''>"
-                        + $"<h1>Dear {user.Name},</h1>"
-                        + $"<p>Please click this link to activate your account <a href='{url}' target='_blank'>Confirm Verification</a>.</p>"
-                        + $"<p>Regards,<br>The {siteOptions.Name} Team</p>"
-                        + "</div>";
-
-                    await _emailService.SendEmailAsync(user.Email, subject, body);
-                    ModelState.Clear();
-                    return Redirect("~/account/login");
+                    return await InviteCreateAccount(model, user);
                 }
                 else
                 {
-                    return View();
+                    bool emailExists = await _users.Query().AnyAsync(u => u.Email.ToLowerInvariant() == model.Email.ToLowerInvariant());
+                    if (emailExists)
+                    {
+                        ModelState.AddModelError(string.Empty,
+                            "A user with the specified email address already exists. Please use a different email address.");
+                        return View(model);
+                    }
+
+                    var result = await _users.InsertAsync(user);
+                    if (result)
+                    {
+                        SiteOptions siteOptions = _options.Value;
+                        string subject = $"{siteOptions.Name} - Email Verification";
+                        Uri url = new Uri(siteOptions.Origin,
+                            $"account/VerifyEmail?email={user.Email}&key={user.ValidationKey}");
+                        string body = "<div class=''>"
+                            + $"<h1>Dear {user.Name},</h1>"
+                            + $"<p>Please click this link to activate your account <a href='{url}' target='_blank'>Confirm Verification</a>.</p>"
+                            + $"<p>Regards,<br>The {siteOptions.Name} Team</p>"
+                            + "</div>";
+
+                        await _emailService.SendEmailAsync(user.Email, subject, body);
+                        ModelState.Clear();
+                        return Redirect("~/account/login");
+                    }
+                    else
+                    {
+                        return View();
+                    }
                 }
             }
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        public async Task<ActionResult> InviteCreateAccount(RegisterViewModel model, UserEntity user)
+        {
+            await _users.UpdateAsync(u => u.Email == user.Email,
+                        update => update.Set(u => u.EmailVerified, true)
+                                .Set(u => u.Name, user.Name)
+                                .Set(u => u.Username, user.Name)
+                                .Set(u => u.Password, user.Password)
+                                .Set(u => u.Active, user.Active));
+
+            user = await _users.Query().SingleOrDefaultAsync(u => u.Username == model.Fullname
+            || u.Email == model.Email);
+            // validate username/password against in-memory store
+            if (user != null)
+            {
+                await _events.RaiseAsync(new UserLoginSuccessEvent(user.Username, user.Id, user.Username));
+
+                // only set explicit expiration here if user chooses "remember me".
+                // otherwise we rely upon expiration configured in cookie middleware.
+                AuthenticationProperties props = null;
+                props = new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration)
+                };
+
+                await HttpContext.SignInAsync(user.Id, user.Username, props);
+                return Redirect("~/");
+            }
+            return null;
         }
 
         [HttpGet("Account/VerifyEmail")]
@@ -564,6 +611,63 @@ namespace SIL.XForge.Identity.Controllers.Account
             }
 
             return vm;
+        }
+
+        [HttpPost]
+        public async Task<string> SendInvitation([FromBody] UserEntity model)
+        {
+            if (!string.IsNullOrEmpty(model.Email))
+            {
+                UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.Email == model.Email);
+                if (user != null)
+                {
+                    return "User already has an account!";
+                }
+                else if (await CreateInvitedUserAccount(model.Email))
+                {
+                    SiteOptions siteOptions = _options.Value;
+                    string projectName = "[Project Name]";
+                    string inviterName = User.GetDisplayName();
+                    string url = $"{siteOptions.Origin}Account/Register?e={HttpUtility.UrlEncode(model.Email)}";
+                    string subject = $"You've been invited to the project {projectName} on {siteOptions.Name}";
+                    string body = "<p>Hello </p><p></p>" +
+                        $"<p>{inviterName} invites you to join the {projectName} project on {siteOptions.Name}." +
+                        "</p><p></p>" +
+                        "<p>You're almost ready to start. Just click the link below to complete your signup and " +
+                        "then you will be ready to get started.</p><p></p>" +
+                        $"<p>To join, go to {url}</p><p></p>" +
+                        $"<p>Regards</p><p>    The {siteOptions.Name} team</p>";
+                    await _emailService.SendEmailAsync(model.Email, subject, body);
+                    return "An invitation email has been sent to " + model.Email;
+                }
+            }
+
+            return null;
+        }
+
+        private async Task<bool> CreateInvitedUserAccount(string email)
+        {
+            var user = new UserEntity
+            {
+                Name = string.Empty,
+                Email = email,
+                CanonicalEmail = UserEntity.CanonicalizeEmail(email),
+                EmailVerified = false,
+                Password = string.Empty,
+                Role = SystemRoles.User,
+                ValidationKey = GenerateValidationKey(),
+                ValidationExpirationDate = DateTime.Now.AddDays(7),
+                Active = false
+            };
+
+            // add the user to the current project once we have a current project in context
+
+            var result = await _users.InsertAsync(user);
+            if (result)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

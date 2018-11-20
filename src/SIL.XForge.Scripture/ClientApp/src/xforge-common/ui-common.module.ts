@@ -5,13 +5,16 @@ import {
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
+  MatDialogModule,
   MatFormFieldModule,
+  MatIconModule,
   MatInputModule,
   MatOptionModule,
   MatProgressBarModule,
   MatProgressSpinnerModule,
   MatSelectModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatToolbarModule
 } from '@angular/material';
 
 const modules = [
@@ -20,13 +23,16 @@ const modules = [
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
+  MatDialogModule,
   MatFormFieldModule,
+  MatIconModule,
   MatInputModule,
   MatOptionModule,
   MatProgressBarModule,
   MatProgressSpinnerModule,
   MatSelectModule,
   MatSnackBarModule,
+  MatToolbarModule,
   ReactiveFormsModule
 ];
 

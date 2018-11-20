@@ -21,6 +21,7 @@ namespace SIL.XForge.Identity.Controllers.Account
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         [Display(Name = "Email Address")]
         public string Email { get; set; }
+        public bool InviteSignUp { get; set; }
 
     }
 }

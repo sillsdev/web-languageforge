@@ -1,4 +1,7 @@
 <h1 *ngIf="!name">Hello, world!</h1>
+<p class="email-invite-panel">
+  <app-email-invite></app-email-invite>
+</p>
 <h1 *ngIf="name">Hello, {{name}}!</h1>
 <p>Welcome to your new single-page application, built with:</p>
 <ul>
@@ -14,7 +17,7 @@
 </ul>
 <p>The <code>ClientApp</code> subdirectory is a standard Angular CLI application. If you open a command prompt in that directory, you can run any <code>ng</code> command (e.g., <code>ng test</code>), or use <code>npm</code> to install extra packages into it.</p>
 <p>
+
 <p><button mat-stroked-button [routerLink]="['/connect-project']">Connect Project</button></p>
 <p><button mat-stroked-button (click)="logOut()" id="logout">Log Out</button></p>
-
 <button mat-stroked-button [routerLink]="['/change-password']" id="home-change-password-btn">Change Password</button>

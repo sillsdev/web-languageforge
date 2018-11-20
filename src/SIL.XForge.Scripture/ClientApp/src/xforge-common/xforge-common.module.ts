@@ -4,6 +4,7 @@ import { OAuthModule } from 'angular-oauth2-oidc';
 import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
 
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { EmailInviteComponent } from './email-invite/email-invite.component';
 import { DetailSnackBarComponent } from './notice/detail-snack-bar.component';
 import { NoticeComponent } from './notice/notice.component';
 import { UICommonModule } from './ui-common.module';
@@ -18,12 +19,14 @@ import { UICommonModule } from './ui-common.module';
   declarations: [
     ChangePasswordComponent,
     DetailSnackBarComponent,
-    NoticeComponent
+    NoticeComponent,
+    EmailInviteComponent
   ],
   exports: [
     ChangePasswordComponent,
     DetailSnackBarComponent,
-    NoticeComponent
+    NoticeComponent,
+    EmailInviteComponent
   ]
 })
 export class XForgeCommonModule { }
