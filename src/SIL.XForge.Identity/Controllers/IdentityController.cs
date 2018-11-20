@@ -134,9 +134,9 @@ namespace SIL.XForge.Identity.Controllers
                 SiteOptions siteOptions = _options.Value;
                 var subject = $"{siteOptions.Name} Forgotten Password Verification";
                 Uri url = new Uri(siteOptions.Origin, $"identity/reset-password?token={user.ResetPasswordKey}");
-                var body = "<div class=''>"
+                var body = "<div>"
                     + $"<h1>Reset Password for {user.Name}</h1>"
-                    + $"<p>Please click this link to <a href='{url}' target='_blank'>Reset Your Password</a>.</p>"
+                    + $"<p>Please click this link to <a href=\"{url}\" target=\"_blank\">Reset Your Password</a>.</p>"
                     + "<p>This link will be valid for 1 week.</p>"
                     + $"<p>Regards,<br>The {siteOptions.Name} team</p>"
                     + "</div>";
@@ -145,6 +145,18 @@ namespace SIL.XForge.Identity.Controllers
                 return new IdentityResult(true);
             }
 
+            return new IdentityResult(false);
+        }
+
+        [HttpPost("verify-token")]
+        public async Task<ActionResult<IdentityResult>> VerifyToken(VerifyTokenParams parameters)
+        {
+            UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.ResetPasswordKey == parameters.Token &&
+                u.ResetPasswordExpirationDate > DateTime.UtcNow);
+            if (user != null)
+            {
+                return new IdentityResult(true);
+            }
             return new IdentityResult(false);
         }
 
@@ -189,9 +201,9 @@ namespace SIL.XForge.Identity.Controllers
                 string subject = $"{siteOptions.Name} - Email Verification";
                 Uri url = new Uri(siteOptions.Origin,
                     $"account/VerifyEmail?email={user.Email}&key={user.ValidationKey}");
-                string body = "<div class=''>"
+                string body = "<div>"
                     + $"<h1>Dear {user.Name},</h1>"
-                    + $"<p>Please click this link to activate your account <a href='{url}' target='_blank'>Confirm Verification</a>.</p>"
+                    + $"<p>Please click this link to activate your account <a href=\"{url}\" target=\"_blank\">Confirm Verification</a>.</p>"
                     + $"<p>Regards,<br>The {siteOptions.Name} Team</p>"
                     + "</div>";
 
