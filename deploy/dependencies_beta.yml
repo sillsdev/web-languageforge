@@ -25,11 +25,6 @@
         url: https://packages.microsoft.com/keys/microsoft.asc
         keyring: /etc/apt/trusted.gpg.d/microsoft.gpg
       when: base_distribution == 'ubuntu'
-    - name: "Add GeoIP Update | add source"
-      apt_repository:
-        repo: "ppa:maxmind/ppa"
-        state: present
-      when: base_distribution == 'ubuntu'
     - name: add Mongo apt key
       apt_key:
         keyserver: keyserver.ubuntu.com
@@ -40,30 +35,14 @@
         filename: mongodb-org-3.6
         update_cache: yes
       when: base_distribution == 'ubuntu' and (base_distribution_release == 'xenial' or base_distribution_release == 'bionic')
-  roles:
-    - fix
-    # locale_install may be needed if locale has been changed away from defaults
-#    - locale_install
-    - ssl_config
-    - apache_config
   tasks:
     - name: install packages
       apt: name="{{item}}" state=present update_cache='yes'
       with_items:
         - dotnet-sdk-2.1
-        - geoipupdate
         - mongodb-org
         - nodejs
-        - default-jre-headless
       tags: [ 'packages' ]
-
-    - name: check for node binary
-      stat: path=/usr/local/bin/node
-      register: node_binary
-
-    - name: symlink node to nodejs
-      file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
-      when: node_binary.stat.exists == False
 
     - name: install n
       shell: npm install -g n
@@ -72,70 +51,6 @@
 
     - name: change node version
       shell: "n {{node_version}}"
-
-    - name: install gulp cli
-      shell: npm install -g gulp-cli
-      args:
-        creates: /usr/local/bin/gulp
-
-    # This stanza ensures that the /var/www/virtual/default_local links to wherever your source actually is.
-    - name: "Ensure Source Link: default_local folder does not exist (localhost)"
-      file: path="/var/www/default_local" state=absent force=true
-      when: inventory_hostname == "localhost"
-    - name: "Ensure Source Link: Get current location of the source code (localhost)"
-      local_action: shell pwd
-      register: local_dir
-      when: inventory_hostname == "localhost"
-    - name: "Ensure Source Link: default_local link exists (localhost)"
-      file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/default_local" state=link group=www-data force=true
-      when: inventory_hostname == "localhost"
-
-    - name: Ensure folder permissions
-      # see http://stackoverflow.com/questions/28778738/ansible-mode-755-for-directories-and-644-for-files-recursively
-      file:
-        path: "{{item.path}}"
-        state: directory
-        mode: "{{item.mode}}"
-        recurse: yes
-      with_items:
-        - path: "{{lf_path}}/src"
-          mode: 'u=rwX,g=rX,o=rX'
-        - path: "{{sf_path}}/src"
-          mode: 'u=rwX,g=rX,o=rX'
-        - path: "{{lf_path}}/test"
-          mode: 'u=rwX,g=rX,o=rX'
-        - path: "{{sf_path}}/test"
-          mode: 'u=rwX,g=rX,o=rX'
-        - path: "{{lf_path}}/docs"
-          mode: 'u=rwX,g=rX,o=rX'
-        - path: "{{sf_path}}/docs"
-          mode: 'u=rwX,g=rX,o=rX'
-
-    - name: Ensure www-data has permission to folders
-      # see http://stackoverflow.com/questions/28778738/ansible-mode-755-for-directories-and-644-for-files-recursively
-      file:
-        path: "{{item.path}}"
-        state: directory
-        group: www-data
-        mode: "{{item.mode}}"
-        recurse: yes
-      with_items:
-        - path: "{{lf_path}}/src/assets"
-          mode: 'u=rwX,g=rwX'
-        - path: "{{sf_path}}/src/assets"
-          mode: 'u=rwX,g=rwX'
-        - path: "{{lf_path}}/src/cache"
-          mode: 'u=rwX,g=rwX'
-        - path: "{{sf_path}}/src/cache"
-          mode: 'u=rwX,g=rwX'
-
-    - name: Set Apache umask to 002
-      lineinfile:
-        dest: /etc/apache2/envvars
-        regexp: '^umask \d+'
-        line: 'umask 002'
-        backrefs: no
-      notify: Restart apache
 
     - name: update the mongo config file
       lineinfile:
@@ -152,27 +67,6 @@
         state: started
         enabled: yes
 
-    - name: 'Add GeoLite2 configuration'
-      copy:
-        content: |
-          # The following UserId and LicenseKey are required placeholders:
-          UserId 999999
-          LicenseKey 000000000000
-
-          # Include one or more of the following ProductIds:
-          # * GeoLite2-City - GeoLite 2 City
-          # * GeoLite2-Country - GeoLite2 Country
-          # * GeoLite-Legacy-IPv6-City - GeoLite Legacy IPv6 City
-          # * GeoLite-Legacy-IPv6-Country - GeoLite Legacy IPv6 Country
-          # * 506 - GeoLite Legacy Country
-          # * 517 - GeoLite Legacy ASN
-          # * 533 - GeoLite Legacy City
-          ProductIds GeoLite2-City
-        dest: /etc/GeoIP.conf
-
-    - name: 'Fetch GeoLite2 database'
-      shell: /usr/bin/geoipupdate
-
     - name: add localhost to dnsmasq
       lineinfile:
         dest: /etc/NetworkManager/dnsmasq.d/localhost-domain
@@ -186,20 +80,6 @@
       when: inventory_hostname == "localhost"
       notify: restart network
       tags: [ 'network' ]
-
-    - name: add host aliases
-      lineinfile:
-        dest: /etc/hosts
-        regexp: '\s{{item}}'
-        line: "127.0.0.1    {{item}}"
-        state: present
-        create: yes
-      with_items:
-        - "languageforge.local"
-        - "scriptureforge.local"
-        - "beta.scriptureforge.local"
-        - "es_401"
-      when: inventory_hostname == "localhost"
 
   handlers:
     - name: restart mongod
