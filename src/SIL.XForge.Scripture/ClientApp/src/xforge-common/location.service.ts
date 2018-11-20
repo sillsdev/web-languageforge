@@ -20,6 +20,10 @@ export class LocationService {
     return window.location.host;
   }
 
+  get hostname(): string {
+    return window.location.hostname;
+  }
+
   go(url: string): void {
     window.location.href = url;
   }

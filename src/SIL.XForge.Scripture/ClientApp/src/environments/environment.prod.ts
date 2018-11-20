@@ -3,5 +3,6 @@ export const environment = {
   pwaTest: false,
   issueEmail: 'issues@beta.qa.scriptureforge.org',
   siteName: 'Scripture Forge',
-  siteOrigin: 'https://beta.qa.scriptureforge.org'
+  siteOrigin: 'https://beta.qa.scriptureforge.org',
+  realtimeUrl: '/realtime-api/'
 };

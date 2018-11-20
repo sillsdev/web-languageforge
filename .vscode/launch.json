@@ -45,7 +45,7 @@
       "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome (SF)",
-      "url": "https://beta.scriptureforge.local",
+      "url": "http://localhost:5000",
       "webRoot": "${workspaceRoot}/src/SIL.XForge.Scripture/ClientApp",
       "linux": {
         "runtimeExecutable": "/usr/bin/chromium-browser"
