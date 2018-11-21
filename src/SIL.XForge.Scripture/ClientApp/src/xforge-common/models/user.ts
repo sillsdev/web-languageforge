@@ -1,3 +1,4 @@
+import { ProjectUserRef } from './project-user';
 import { Resource, ResourceRef } from './resource';
 
 export abstract class User extends Resource {
@@ -9,6 +10,8 @@ export abstract class User extends Resource {
   canonicalEmail?: string;
   password?: string;
   paratextId?: string;
+
+  projects?: ProjectUserRef[];
 
   constructor(init?: Partial<User>) {
     super(User.TYPE, init);

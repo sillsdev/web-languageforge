@@ -98,32 +98,6 @@ namespace SIL.XForge.Scripture.Services
         }
 
         [Test]
-        public void CreateAsync_NonPTAdmin()
-        {
-            var env = new TestEnvironment();
-            env.SetUser("user02", SystemRoles.User);
-            env.ParatextService.GetProjectRoleAsync(Arg.Any<UserEntity>(), "pt01")
-                .Returns(Task.FromResult(SFProjectRoles.Translator));
-
-            Assert.That(env.ContainsProjectUser("projectusernew"), Is.False);
-
-            var projectUser = new SFProjectUserResource
-            {
-                Id = "projectusernew",
-                ProjectRef = "project01",
-                Project = new SFProjectResource { Id = "project01" },
-                UserRef = "user02",
-                User = new SFUserResource { Id = "user02" }
-            };
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
-                {
-                    await env.Service.CreateAsync(projectUser);
-                });
-
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
-        }
-
-        [Test]
         public async Task UpdateAsync_UserRoleSameUser()
         {
             var env = new TestEnvironment();

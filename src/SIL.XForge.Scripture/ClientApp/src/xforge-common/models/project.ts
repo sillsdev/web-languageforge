@@ -1,3 +1,4 @@
+import { ProjectUserRef } from './project-user';
 import { Resource, ResourceRef } from './resource';
 
 export abstract class Project extends Resource {
@@ -5,9 +6,13 @@ export abstract class Project extends Resource {
 
   projectName?: string;
 
+  users?: ProjectUserRef[];
+
   constructor(init?: Partial<Project>) {
     super(Project.TYPE, init);
   }
+
+  abstract get taskNames(): string[];
 }
 
 export abstract class ProjectRef extends ResourceRef {

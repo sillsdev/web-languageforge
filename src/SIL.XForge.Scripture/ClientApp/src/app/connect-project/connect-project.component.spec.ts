@@ -13,9 +13,8 @@ import { defer, of } from 'rxjs';
 import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
 import { ParatextProject } from '../core/models/paratext-project';
-import { SFProject, SFProjectRef } from '../core/models/sfproject';
+import { SFProject } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
-import { SFUserRef } from '../core/models/sfuser';
 import { SyncJob } from '../core/models/sync-job';
 import { ParatextService } from '../core/paratext.service';
 import { SFProjectUserService } from '../core/sfproject-user.service';
@@ -57,7 +56,7 @@ class TestEnvironment {
     d.percentCompleted = 1.0;
     d.state = 'IDLE';
     when(this.mockedSyncJobService.listen('job01')).thenReturn(cold('-a-b-c-d|', { a, b, c, d }));
-    when(this.mockedSFProjectUserService.onlineCreate(anything()))
+    when(this.mockedSFProjectUserService.onlineCreate(anything(), anything()))
       .thenResolve(new SFProjectUser({ id: 'projectuser01' }));
     when(this.mockedSFProjectService.onlineCreate(anything())).thenResolve(new SFProject({ id: 'project01' }));
     when(this.mockedSFUserService.currentUserId).thenReturn('user01');
@@ -173,7 +172,7 @@ describe('ConnectProjectComponent', () => {
     env.clickSubmitButton();
 
     verify(env.mockedSFProjectService.onlineCreate(anything())).never();
-    verify(env.mockedSFProjectUserService.onlineCreate(anything())).never();
+    verify(env.mockedSFProjectUserService.onlineCreate(anything(), anything())).never();
     verify(env.mockedRouter.navigate(deepEqual(['/home']))).never();
     expect().nothing();
   }));
@@ -214,11 +213,7 @@ describe('ConnectProjectComponent', () => {
 
     env.clickSubmitButton();
 
-    const projectUser = new SFProjectUser({
-      user: new SFUserRef('user01'),
-      project: new SFProjectRef('project01')
-    });
-    verify(env.mockedSFProjectUserService.onlineCreate(deepEqual(projectUser))).once();
+    verify(env.mockedSFProjectUserService.onlineCreate('project01', 'user01')).once();
 
     verify(env.mockedRouter.navigate(deepEqual(['/home']))).once();
   }));
@@ -278,11 +273,7 @@ describe('ConnectProjectComponent', () => {
     });
     verify(env.mockedSFProjectService.onlineCreate(deepEqual(project))).once();
 
-    const projectUser = new SFProjectUser({
-      user: new SFUserRef('user01'),
-      project: new SFProjectRef('project01')
-    });
-    verify(env.mockedSFProjectUserService.onlineCreate(deepEqual(projectUser))).once();
+    verify(env.mockedSFProjectUserService.onlineCreate('project01', 'user01')).once();
 
     verify(env.mockedRouter.navigate(deepEqual(['/home']))).once();
   }));

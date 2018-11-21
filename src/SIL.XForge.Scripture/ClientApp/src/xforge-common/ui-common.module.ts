@@ -9,11 +9,14 @@ import {
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
+  MatListModule,
   MatOptionModule,
+  MatPaginatorModule,
   MatProgressBarModule,
   MatProgressSpinnerModule,
   MatSelectModule,
   MatSnackBarModule,
+  MatTableModule,
   MatToolbarModule
 } from '@angular/material';
 
@@ -27,12 +30,15 @@ const modules = [
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
+  MatListModule,
   MatOptionModule,
+  MatPaginatorModule,
   MatProgressBarModule,
   MatProgressSpinnerModule,
   MatSelectModule,
   MatSnackBarModule,
   MatToolbarModule,
+  MatTableModule,
   ReactiveFormsModule
 ];
 

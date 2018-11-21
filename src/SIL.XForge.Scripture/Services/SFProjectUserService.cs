@@ -55,15 +55,12 @@ namespace SIL.XForge.Scripture.Services
             return Task.CompletedTask;
         }
 
-        protected override async Task CheckCanUpdateAsync(string id)
+        protected override async Task CheckCanUpdateAsync(string id, IDictionary<string, object> attrs,
+            IDictionary<string, string> relationships)
         {
-            if (SystemRole == SystemRoles.User)
-            {
-                SFProjectUserEntity projectUser = await _projects.Query().SelectMany(p => p.Users)
-                    .SingleOrDefaultAsync(u => u.Id == id);
-                if (projectUser.UserRef != UserId)
-                    throw ForbiddenException();
-            }
+            await CheckCanUpdateDeleteAsync(id);
+            if (SystemRole != SystemRoles.SystemAdmin && attrs.ContainsKey(nameof(SFProjectUserResource.Role)))
+                throw ForbiddenException();
         }
 
         protected override Task CheckCanUpdateRelationshipAsync(string id)
@@ -73,7 +70,7 @@ namespace SIL.XForge.Scripture.Services
 
         protected override Task CheckCanDeleteAsync(string id)
         {
-            return CheckCanUpdateAsync(id);
+            return CheckCanUpdateDeleteAsync(id);
         }
 
         protected override IQueryable<SFProjectUserEntity> GetEntityQueryable()
@@ -105,17 +102,19 @@ namespace SIL.XForge.Scripture.Services
 
         protected override async Task<SFProjectUserEntity> InsertEntityAsync(SFProjectUserEntity entity)
         {
-            string paratextId = await _projects.Query().Where(p => p.Id == entity.ProjectRef).Select(p => p.ParatextId)
-                .SingleOrDefaultAsync();
-            if (paratextId == null)
-            {
-                throw new JsonApiException(StatusCodes.Status400BadRequest,
-                    "The specified project could not be found.");
-            }
             UserEntity user = await _users.GetAsync(UserId);
-            entity.Role = await _paratextService.GetProjectRoleAsync(user, paratextId);
-            if (entity.Role != SFProjectRoles.Administrator)
-                throw ForbiddenException();
+            if (user.Role == SystemRoles.User || entity.Role == null)
+            {
+                // get role from Paratext project
+                string paratextId = await _projects.Query().Where(p => p.Id == entity.ProjectRef)
+                    .Select(p => p.ParatextId).SingleOrDefaultAsync();
+                if (paratextId == null)
+                {
+                    throw new JsonApiException(StatusCodes.Status400BadRequest,
+                        "The specified project could not be found.");
+                }
+                entity.Role = await _paratextService.GetProjectRoleAsync(user, paratextId);
+            }
             SFProjectEntity project = await _projects.UpdateAsync(p => p.Id == entity.ProjectRef, update => update
                 .Add(p => p.Users, entity));
             return project.Users.FirstOrDefault(u => u.Id == entity.Id);
@@ -142,6 +141,17 @@ namespace SIL.XForge.Scripture.Services
         {
             return (await _projects.UpdateAsync(p => p.Users.Any(u => u.Id == id), update => update
                 .RemoveAll(p => p.Users, u => u.Id == id))) != null;
+        }
+
+        private async Task CheckCanUpdateDeleteAsync(string id)
+        {
+            if (SystemRole == SystemRoles.User)
+            {
+                SFProjectUserEntity projectUser = await _projects.Query().SelectMany(p => p.Users)
+                    .SingleOrDefaultAsync(u => u.Id == id);
+                if (projectUser.UserRef != UserId)
+                    throw ForbiddenException();
+            }
         }
     }
 }

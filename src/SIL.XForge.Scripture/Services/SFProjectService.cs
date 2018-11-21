@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -44,31 +45,20 @@ namespace SIL.XForge.Scripture.Services
             return Task.CompletedTask;
         }
 
-        protected override async Task CheckCanUpdateAsync(string id)
+        protected override Task CheckCanUpdateAsync(string id, IDictionary<string, object> attrs,
+            IDictionary<string, string> relationships)
         {
-            if (SystemRole == SystemRoles.User)
-            {
-                Attempt<SFProjectEntity> attempt = await Entities.TryGetAsync(id);
-                if (attempt.TryResult(out SFProjectEntity project))
-                {
-                    if (!project.Users.Any(u => u.UserRef == UserId))
-                        throw ForbiddenException();
-                }
-                else
-                {
-                    throw NotFoundException();
-                }
-            }
+            return CheckCanUpdateDeleteAsync(id);
         }
 
         protected override Task CheckCanUpdateRelationshipAsync(string id)
         {
-            return CheckCanUpdateAsync(id);
+            return CheckCanUpdateDeleteAsync(id);
         }
 
         protected override Task CheckCanDeleteAsync(string id)
         {
-            return CheckCanUpdateAsync(id);
+            return CheckCanUpdateDeleteAsync(id);
         }
 
         protected override Task<IQueryable<SFProjectEntity>> ApplyPermissionFilterAsync(
@@ -89,6 +79,23 @@ namespace SIL.XForge.Scripture.Services
                     || p.InputSystem.LanguageName.ToLowerInvariant().Contains(value));
             }
             return base.ApplyFilter(entities, filter);
+        }
+
+        private async Task CheckCanUpdateDeleteAsync(string id)
+        {
+            if (SystemRole == SystemRoles.User)
+            {
+                Attempt<SFProjectEntity> attempt = await Entities.TryGetAsync(id);
+                if (attempt.TryResult(out SFProjectEntity project))
+                {
+                    if (!project.Users.Any(u => u.UserRef == UserId))
+                        throw ForbiddenException();
+                }
+                else
+                {
+                    throw NotFoundException();
+                }
+            }
         }
     }
 }

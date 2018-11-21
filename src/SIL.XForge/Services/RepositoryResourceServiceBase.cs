@@ -98,26 +98,6 @@ namespace SIL.XForge.Services
             return relResources.SingleOrDefault();
         }
 
-        protected IRelationship<TEntity> ManyToManyPrimary<TOtherResource, TOtherEntity>(
-            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
-            Expression<Func<TEntity, List<string>>> getFieldExpr, bool updateAllowed = true)
-                where TOtherResource : class, IResource
-                where TOtherEntity : class, IEntity
-        {
-            return new ManyToManyPrimaryRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper,
-                getFieldExpr, updateAllowed);
-        }
-
-        protected IRelationship<TEntity> ManyToManyForeign<TOtherResource, TOtherEntity>(
-            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
-            Expression<Func<TOtherEntity, List<string>>> getFieldExpr)
-                where TOtherResource : class, IResource
-                where TOtherEntity : class, IEntity
-        {
-            return new ManyToManyForeignRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper,
-                getFieldExpr);
-        }
-
         protected IRelationship<TEntity> ManyToOne<TOtherResource, TOtherEntity>(
             IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TEntity, string>> getFieldExpr, bool updateAllowed = true)
