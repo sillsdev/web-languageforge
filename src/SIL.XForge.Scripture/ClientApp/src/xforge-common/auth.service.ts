@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthConfig, JwksValidationHandler, OAuthErrorEvent, OAuthService } from 'angular-oauth2-oidc';
 
 import { environment } from '../environments/environment';
@@ -12,7 +13,7 @@ export class AuthService {
   private tryLoginPromise: Promise<boolean>;
 
   constructor(private readonly oauthService: OAuthService, private readonly jsonApiService: JSONAPIService,
-    private readonly locationService: LocationService
+    private readonly locationService: LocationService, private readonly router: Router
   ) { }
 
   get currentUserId(): string {
@@ -47,7 +48,12 @@ export class AuthService {
       scope: 'openid profile email api',
       postLogoutRedirectUri: this.locationService.origin + '/',
       silentRefreshRedirectUri: this.locationService.origin + '/silent-refresh.html',
-      requireHttps: environment.production
+      requireHttps: environment.production,
+      // OAuthService changes "window.location.hash" to clear the the hash fragment. This triggers the "popstate" and
+      // "hashchange" browser events, which causes the Angular router to navigate. It is possible that the router
+      // does not handle these events properly and navigates to the root ("/"). We workaround this issue by clearing
+      // the hash through a direct call to the router.
+      clearHashAfterLogin: false
     };
 
     this.oauthService.configure(authConfig);
@@ -61,9 +67,13 @@ export class AuthService {
     this.tryLoginPromise = this.oauthService.loadDiscoveryDocumentAndTryLogin()
       .then(async result => {
         let isLoggedIn = result;
-        // if we weren't able to log in, try a silent refresh, this can avoid an extra page load
+        if (isLoggedIn) {
+          // remove hash fragment manually (contains access and id tokens)
+          this.router.navigateByUrl(this.locationService.pathname);
+        }
+        // if we weren't able to log in, try a silent refresh, this can avoid an extra page load.
         // don't try to perform a silent refresh if we in the middle of an implicit flow, because it will overwrite the
-        // nonce and cause it to fail
+        // nonce and cause it to fail.
         if (!isLoggedIn && !this.isLoggingIn) {
           try {
             const event = await this.oauthService.silentRefresh();

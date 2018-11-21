@@ -24,6 +24,10 @@ export class LocationService {
     return window.location.hostname;
   }
 
+  get pathname(): string {
+    return window.location.pathname;
+  }
+
   go(url: string): void {
     window.location.href = url;
   }
