@@ -3,6 +3,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Dynamic;
+using System.Net.Http;
+using System.Collections.Generic;
 using IdentityModel;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
@@ -13,8 +16,12 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.CSharp.RuntimeBinder;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
+using SIL.XForge.Identity.Configuration;
 using SIL.XForge.Identity.Models;
 using SIL.XForge.Models;
 using SIL.XForge.Services;
@@ -28,6 +35,7 @@ namespace SIL.XForge.Identity.Controllers
         private const int PasswordResetPeriodDays = 7;
         private const int EmailVerificationPeriodDays = 7;
         private static TimeSpan RememberMeLogInDuration = TimeSpan.FromDays(30);
+        private const string verificationUrl = "https://www.google.com/recaptcha/api/siteverify";
 
         private readonly IRepository<UserEntity> _users;
         private readonly IIdentityServerInteractionService _interaction;
@@ -35,10 +43,11 @@ namespace SIL.XForge.Identity.Controllers
         private readonly IEventService _events;
         private readonly IOptions<SiteOptions> _options;
         private readonly IEmailService _emailService;
+        private readonly GoogleCaptchaOptions _captcha;
 
         public IdentityController(IIdentityServerInteractionService interaction, IClientStore clientStore,
             IEventService events, IRepository<UserEntity> users, IOptions<SiteOptions> options,
-            IEmailService emailService)
+            IEmailService emailService, IOptions<GoogleCaptchaOptions> captcha)
         {
             _users = users;
             _interaction = interaction;
@@ -46,6 +55,7 @@ namespace SIL.XForge.Identity.Controllers
             _events = events;
             _options = options;
             _emailService = emailService;
+            _captcha = captcha.Value;
         }
 
         [HttpPost("log-in")]
@@ -166,6 +176,42 @@ namespace SIL.XForge.Identity.Controllers
             return new IdentityResult(false);
         }
 
+        [HttpGet("captcha-id")]
+        public string CaptchaId()
+        {
+            return _captcha.CaptchaId;
+        }
+
+        [HttpPost("verify-recaptcha")]
+        public async Task<ActionResult<IdentityResult>> VerifyRecaptchaResponse(VerifyRecaptchaParams parameters)
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var values = new Dictionary<string, string>
+                    {
+                        { "secret", _captcha.CaptchaSecret },
+                        { "response", parameters.RecaptchaResponse },
+                    };
+                    var content = new FormUrlEncodedContent(values);
+
+                    HttpResponseMessage response;
+                    response = await client.PostAsync(verificationUrl, content);
+
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+
+                    var converter = new ExpandoObjectConverter();
+
+                    dynamic obj = JsonConvert.DeserializeObject<ExpandoObject>(responseString, converter);
+                    return new IdentityResult(obj.success);
+                }
+                catch (RuntimeBinderException) { }
+            }
+            return new IdentityResult(false);
+        }
+
         [HttpPost("send-invite")]
         public async Task<ActionResult<SendInviteResult>> SendInvite(SendInviteParams parameters)
         {
@@ -176,7 +222,7 @@ namespace SIL.XForge.Identity.Controllers
                     SiteOptions siteOptions = _options.Value;
                     string projectName = "[Project Name]";
                     string inviterName = User.GetDisplayName();
-                    string url = $"{siteOptions.Origin}Account/Register?e={HttpUtility.UrlEncode(parameters.Email)}";
+                    string url = $"{siteOptions.Origin}identity/sign-up?e={HttpUtility.UrlEncode(parameters.Email)}";
                     string subject = $"You've been invited to the project {projectName} on {siteOptions.Name}";
                     string body = "<p>Hello </p><p></p>" +
                         $"<p>{inviterName} invites you to join the {projectName} project on {siteOptions.Name}." +
@@ -231,7 +277,7 @@ namespace SIL.XForge.Identity.Controllers
         }
 
         [HttpPost("sign-up")]
-        public async Task<ActionResult<IdentityResult>> SignUp(SignUpParams parameters)
+        public async Task<ActionResult<SignUpResult>> SignUp(SignUpParams parameters)
         {
             UserEntity existingUser = await _users.Query()
                 .SingleOrDefaultAsync(u => u.CanonicalEmail == UserEntity.CanonicalizeEmail(parameters.Email));
@@ -249,13 +295,24 @@ namespace SIL.XForge.Identity.Controllers
                     if (existingUser != null)
                     {
                         await LogInUserAsync(existingUser);
-                        return new IdentityResult(true);
+                        return new SignUpResult
+                        {
+                            Success = true
+                        };
                     }
                 }
                 else if (existingUser.VerifyPassword(parameters.Password))
                 {
                     // check for signup from other site
                     // ToDo
+                }
+                else
+                {
+                    return new SignUpResult
+                    {
+                        Success = false,
+                        Reason = "Duplicate Email"
+                    };
                 }
             }
             else
@@ -290,11 +347,17 @@ namespace SIL.XForge.Identity.Controllers
 
                     await _emailService.SendEmailAsync(user.Email, subject, body);
 
-                    return new IdentityResult(true);
+                    return new SignUpResult
+                    {
+                        Success = true
+                    };
                 }
             }
 
-            return new IdentityResult(false);
+            return new SignUpResult
+            {
+                Success = false
+            };
         }
 
         [HttpPost("verify-email")]
@@ -327,11 +390,9 @@ namespace SIL.XForge.Identity.Controllers
         {
             var user = new UserEntity
             {
-                Name = string.Empty,
                 Email = email,
                 CanonicalEmail = UserEntity.CanonicalizeEmail(email),
                 EmailVerified = false,
-                Password = string.Empty,
                 Role = SystemRoles.User,
                 ValidationKey = GenerateKey(),
                 ValidationExpirationDate = DateTime.Now.AddDays(7),

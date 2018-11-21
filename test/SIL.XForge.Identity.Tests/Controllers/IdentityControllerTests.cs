@@ -20,6 +20,7 @@ using SIL.XForge.DataAccess;
 using SIL.XForge.Identity.Models;
 using SIL.XForge.Models;
 using SIL.XForge.Services;
+using SIL.XForge.Identity.Configuration;
 
 namespace SIL.XForge.Identity.Controllers
 {
@@ -263,6 +264,19 @@ namespace SIL.XForge.Identity.Controllers
         }
 
         [Test]
+        public async Task VerifyRecaptcha_ProvidesAResponse()
+        {
+            var env = new TestEnvironment();
+            var recaptchaParams = new VerifyRecaptchaParams
+            {
+                RecaptchaResponse = "1234FakeResponse"
+            };
+            // Since we are using test reCaptcha site key, the verification request will pass
+            var result = await env.Controller.VerifyRecaptchaResponse(recaptchaParams);
+            Assert.That(result.Value.Success, Is.True);
+        }
+
+        [Test]
         public async Task SignUp_NewUserAdded()
         {
             var env = new TestEnvironment();
@@ -273,7 +287,7 @@ namespace SIL.XForge.Identity.Controllers
                 Password = "password1234",
                 Email = "testeremail@gmail.com"
             };
-            ActionResult<IdentityResult> result = await env.Controller.SignUp(input);
+            ActionResult<SignUpResult> result = await env.Controller.SignUp(input);
 
             Assert.That(result.Value.Success, Is.True);
             Assert.That(env.Users.Query().Any(x => x.Email == input.Email), Is.True);
@@ -303,7 +317,7 @@ namespace SIL.XForge.Identity.Controllers
                 Password = "unimportant1234",
                 Email = "DUPLICATE@example.com"
             };
-            ActionResult<IdentityResult> result = await env.Controller.SignUp(input);
+            ActionResult<SignUpResult> result = await env.Controller.SignUp(input);
 
             Assert.That(result.Value.Success, Is.False);
         }
@@ -325,7 +339,7 @@ namespace SIL.XForge.Identity.Controllers
                 Password = "unimportant1234",
                 Email = "me@example.com"
             };
-            ActionResult<IdentityResult> result = await env.Controller.SignUp(input);
+            ActionResult<SignUpResult> result = await env.Controller.SignUp(input);
 
             Assert.That(result.Value.Success, Is.True);
         }
@@ -379,6 +393,13 @@ namespace SIL.XForge.Identity.Controllers
 
                 EmailService = Substitute.For<IEmailService>();
 
+                Captcha = Substitute.For<IOptions<GoogleCaptchaOptions>>();
+                Captcha.Value.Returns(new GoogleCaptchaOptions
+                {
+                    CaptchaId = TestSiteKey,
+                    CaptchaSecret = TestSiteSecret
+                });
+
                 var urlHelperFactory = Substitute.For<IUrlHelperFactory>();
 
                 serviceProvider.GetService(typeof(IAuthenticationService)).Returns(AuthService);
@@ -390,7 +411,7 @@ namespace SIL.XForge.Identity.Controllers
                 serviceProvider.GetService(typeof(IUrlHelperFactory)).Returns(urlHelperFactory);
 
                 Controller = new IdentityController(interaction, clientStore, Events, Users, options,
-                    EmailService)
+                    EmailService, Captcha)
                 {
                     ControllerContext = new ControllerContext
                     {
@@ -401,12 +422,16 @@ namespace SIL.XForge.Identity.Controllers
                     }
                 };
             }
+            // The site key and site secret are for testing purposes from the reCaptcha developer site
+            private string TestSiteKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
+            private string TestSiteSecret = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe";
 
             public IAuthenticationService AuthService { get; }
             public IEventService Events { get; }
             public IdentityController Controller { get; }
             public MemoryRepository<UserEntity> Users { get; }
             public IEmailService EmailService { get; }
+            public IOptions<GoogleCaptchaOptions> Captcha { get; }
 
         }
     }

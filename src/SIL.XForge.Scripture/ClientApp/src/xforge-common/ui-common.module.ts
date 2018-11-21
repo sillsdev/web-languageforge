@@ -19,6 +19,8 @@ import {
   MatTableModule
 } from '@angular/material';
 import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
+import { RecaptchaModule } from 'ng-recaptcha';
+import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
 
 const modules = [
   FlexLayoutModule,
@@ -39,7 +41,9 @@ const modules = [
   MatSnackBarModule,
   MatTableModule,
   PasswordStrengthMeterModule,
-  ReactiveFormsModule
+  ReactiveFormsModule,
+  RecaptchaModule,
+  RecaptchaFormsModule
 ];
 
 @NgModule({

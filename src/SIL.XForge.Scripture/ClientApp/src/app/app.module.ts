@@ -45,7 +45,6 @@ import { SharedModule } from './shared/shared.module';
     UICommonModule,
     XForgeCommonModule
   ],
-  providers: [],
   entryComponents: [DetailSnackBarComponent, InviteDialogComponent],
   bootstrap: [AppComponent]
 })

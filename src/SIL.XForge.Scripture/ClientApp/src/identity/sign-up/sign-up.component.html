@@ -1,0 +1,37 @@
+<div fxLayout="column">
+  <mat-card class="card">
+    <mat-card-title class="title">Sign up</mat-card-title>
+    <mat-card-content fxLayout="column">
+      <form [formGroup]="signUpForm" (ngSubmit)="submit()" fxLayout="column">
+        <mat-form-field>
+          <input matInput id="fullName" placeholder="Full Name" formControlName="name" autofocus />
+          <mat-error *ngIf="name.hasError('required')"> Full Name is required </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput id="password" type="password" placeholder="Password" formControlName="password" />
+          <mat-error *ngIf="password.hasError('minlength')"> Password must be at least 7 characters long </mat-error>
+          <mat-error *ngIf="password.hasError('required')"> Password is required </mat-error>
+        </mat-form-field>
+        <password-strength-meter id="passwordStrengthMeter" [password]="password.value"></password-strength-meter>
+        <mat-form-field>
+          <input
+            matInput
+            id="email"
+            placeholder="Email Address"
+            formControlName="email"
+            [readonly]="emailEntry != null"
+          />
+          <mat-error *ngIf="email.hasError('email')"> Please enter a valid email address </mat-error>
+        </mat-form-field>
+        <re-captcha [siteKey]="captchaId" (resolved)="$event && resolved($event)" formControlName="recaptcha">
+        </re-captcha>
+        <mat-error *ngIf="recaptcha.hasError('required') && isSubmitted"> Please verify the reCaptcha </mat-error>
+        <button mat-raised-button class="submit-button" color="primary" type="submit" [disabled]="signUpDisabled">
+          Sign Up
+        </button>
+      </form>
+      <br />
+      <p>You will be sent an email with a link to verify your email address.</p>
+    </mat-card-content>
+  </mat-card>
+</div>
