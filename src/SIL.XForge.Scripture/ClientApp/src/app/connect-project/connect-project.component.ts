@@ -5,9 +5,7 @@ import { Router } from '@angular/router';
 import { InputSystem } from '@xforge-common/models/input-system';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { ParatextProject } from '../core/models/paratext-project';
-import { SFProject, SFProjectRef } from '../core/models/sfproject';
-import { SFProjectUser } from '../core/models/sfproject-user';
-import { SFUserRef } from '../core/models/sfuser';
+import { SFProject } from '../core/models/sfproject';
 import { SyncJob } from '../core/models/sync-job';
 import { ParatextService } from '../core/paratext.service';
 import { SFProjectUserService } from '../core/sfproject-user.service';
@@ -119,7 +117,7 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
       }
 
       newProject = await this.projectService.onlineCreate(newProject);
-      await this.addCurrentUserToProject(newProject.id);
+      await this.projectUserService.onlineCreate(newProject.id, this.userService.currentUserId);
       const jobId = await this.syncJobService.start(newProject.id);
       this.subscribe(this.syncJobService.listen(jobId), job => {
         this.job = job;
@@ -128,17 +126,9 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
         }
       });
     } else {
-      await this.addCurrentUserToProject(values.project.projectId);
+      await this.projectUserService.onlineCreate(values.project.projectId, this.userService.currentUserId);
       this.router.navigate(['/home']);
     }
-  }
-
-  private async addCurrentUserToProject(projectId: string): Promise<void> {
-    const newProjectUser = new SFProjectUser({
-      user: new SFUserRef(this.userService.currentUserId),
-      project: new SFProjectRef(projectId)
-    });
-    await this.projectUserService.onlineCreate(newProjectUser);
   }
 
   private getInputSystem(project: ParatextProject): InputSystem {

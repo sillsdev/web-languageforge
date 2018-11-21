@@ -46,12 +46,12 @@ namespace SIL.XForge.Services
 
         public async Task<TResource> UpdateAsync(string id, TResource resource)
         {
-            await CheckCanUpdateAsync(id);
-
             Dictionary<string, object> attrs = JsonApiContext.AttributesToUpdate
                 .ToDictionary(kvp => kvp.Key.InternalAttributeName, kvp => kvp.Value);
             Dictionary<string, string> relationships = JsonApiContext.RelationshipsToUpdate
                 .ToDictionary(kvp => kvp.Key.InternalRelationshipName, kvp => (string) kvp.Value);
+            await CheckCanUpdateAsync(id, attrs, relationships);
+
             TEntity entity = await UpdateEntityAsync(id, attrs, relationships);
             return _mapper.Map<TResource>(entity);
         }
@@ -154,7 +154,8 @@ namespace SIL.XForge.Services
         }
 
         protected abstract Task CheckCanCreateAsync(TResource resource);
-        protected abstract Task CheckCanUpdateAsync(string id);
+        protected abstract Task CheckCanUpdateAsync(string id, IDictionary<string, object> attrs,
+            IDictionary<string, string> relationships);
         protected abstract Task CheckCanUpdateRelationshipAsync(string id);
         protected abstract Task CheckCanDeleteAsync(string id);
         protected abstract Task<IQueryable<TEntity>> ApplyPermissionFilterAsync(IQueryable<TEntity> query);

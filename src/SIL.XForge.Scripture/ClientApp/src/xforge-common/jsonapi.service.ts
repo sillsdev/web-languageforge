@@ -605,6 +605,31 @@ export class JSONAPIService {
   }
 
   /**
+   * Dynamically creates a resource object. This is useful when you have to create a resource object, but you don't
+   * have access to the concrete type.
+   *
+   * @param {string} type The resource type.
+   * @param {Partial<T>} [init] Initial property values.
+   * @returns {T} The resource.
+   */
+  newResource<T extends Resource>(type: string, init?: Partial<T>): T {
+    const ResourceType = this.domainModel.getResourceType(type);
+    return new ResourceType(init) as T;
+  }
+
+  /**
+   * Dynamically creates a resource ref object. This is useful when you have to create a resource ref object, but you
+   * don't have access to the concrete type.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @returns {T} The resource ref object.
+   */
+  newResourceRef<T extends ResourceRef>(identity: RecordIdentity): T {
+    const ResourceRefType = this.domainModel.getResourceRefType(identity.type);
+    return new ResourceRefType(identity.id) as T;
+  }
+
+  /**
    * Gets the resource with the specified identity from the local cache.
    *
    * @template T The resource type.
@@ -861,8 +886,7 @@ export class JSONAPIService {
   }
 
   private createResource(record: Record): Resource {
-    const ResourceType = this.domainModel.getResourceType(record.type);
-    const resource = new ResourceType();
+    const resource = this.newResource(record.type);
     resource.id = record.id;
     if (record.attributes != null) {
       extend(resource, record.attributes);
@@ -886,8 +910,7 @@ export class JSONAPIService {
     if (identity === null) {
       return null;
     }
-    const ResourceRefType = this.domainModel.getResourceRefType(identity.type);
-    return new ResourceRefType(identity.id);
+    return this.newResourceRef(identity);
   }
 
   private createRecord(resource: Resource): Record {

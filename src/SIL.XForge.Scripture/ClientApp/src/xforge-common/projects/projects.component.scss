@@ -1,0 +1,33 @@
+.body-content {
+  max-width: 800px;
+  width: 100%;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+}
+
+mat-form-field {
+  margin-top: 10px;
+}
+
+.no-projects-label {
+  padding-top: 14px;
+}
+
+.loading-spinner {
+  align-self: center;
+  margin: 30px 0px;
+}
+
+.projects-table {
+  table-layout: fixed;
+}
+
+.connect-cell {
+  text-align: right;
+}
+
+.task-label {
+  font-size: small;
+  color: darkgray;
+}

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { GetAllParameters } from '@xforge-common/jsonapi.service';
@@ -15,7 +15,7 @@ export class FetchDataComponent implements OnInit {
 
   projects$: Observable<SFProject[]>;
 
-  private readonly searchTerm$ = new Subject<string>();
+  private readonly searchTerm$ = new BehaviorSubject<string>('');
 
   constructor(private readonly projectService: SFProjectService) { }
 
@@ -24,8 +24,8 @@ export class FetchDataComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const parameters: GetAllParameters<SFProject> = { sort: [{ name: 'projectName', order: 'ascending' }] };
-    this.projects$ = this.projectService.search(this.searchTerm$, parameters).pipe(map(r => r.results));
+    const parameters$ = of({ sort: [{ name: 'projectName', order: 'ascending' }] } as GetAllParameters<SFProject>);
+    this.projects$ = this.projectService.onlineSearch(this.searchTerm$, parameters$).pipe(map(r => r.results));
   }
 
   updateProjectName(project: SFProject, value: string): void {
@@ -42,7 +42,7 @@ export class FetchDataComponent implements OnInit {
 
   async update(): Promise<void> {
     for (const project of this.updatedProjects) {
-      await this.projectService.update(project);
+      await this.projectService.onlineUpdateAttributes(project.id, { projectName: project.projectName });
     }
     this.updatedProjects.clear();
   }

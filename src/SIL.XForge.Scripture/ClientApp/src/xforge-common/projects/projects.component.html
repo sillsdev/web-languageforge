@@ -1,0 +1,46 @@
+<div class="body-content">
+  <div>
+    <button mat-raised-button color="primary" routerLink="/connect-project">Connect Project</button>
+  </div>
+  <div>
+    <mat-form-field class="filter-field">
+      <input matInput placeholder="Filter projects..." (keyup)="updateSearchTerm($event.target.value)">
+    </mat-form-field>
+  </div>
+  <div *ngIf="!isLoading; else loading">
+    <div *ngIf="length > 0">
+      <table mat-table fxFill class="projects-table" [dataSource]="rows">
+        <ng-container matColumnDef="name">
+          <td mat-cell *matCellDef="let row">
+            <a *ngIf="row.isMember; else nonmember" [routerLink]="['/project', row.project.id]">{{ row.name }}</a>
+            <ng-template #nonmember>{{ row.name }}</ng-template>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="tasks">
+          <td mat-cell *matCellDef="let row"><span class="task-label">{{ row.tasks }}</span></td>
+        </ng-container>
+        <ng-container matColumnDef="role">
+          <td mat-cell *matCellDef="let row" class="connect-cell">
+            <mat-form-field class="role-field">
+              <mat-select placeholder="Role" [value]="row.projectRole" [disabled]="row.isUpdatingRole"
+                          (selectionChange)="updateRole(row, $event.value)">
+                <mat-option *ngFor="let projectRole of projectRoles" [value]="projectRole">
+                  {{ projectRole.displayName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <tr mat-row *matRowDef="let row; columns: ['name', 'tasks', 'role']"></tr>
+      </table>
+      <mat-paginator [pageIndex]="pageIndex" [length]="length" [pageSize]="pageSize"
+                     [pageSizeOptions]="[5, 10, 20, 50, 100]" (page)="updatePage($event.pageIndex, $event.pageSize)">
+      </mat-paginator>
+    </div>
+    <div *ngIf="length === 0" class="no-projects-label">No projects found</div>
+  </div>
+  <ng-template #loading>
+    <mat-progress-spinner mode="indeterminate" diameter="50" class="loading-spinner"></mat-progress-spinner>
+  </ng-template>
+</div>

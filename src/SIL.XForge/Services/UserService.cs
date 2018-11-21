@@ -40,21 +40,20 @@ namespace SIL.XForge.Services
             return Task.CompletedTask;
         }
 
-        protected override Task CheckCanUpdateAsync(string id)
+        protected override Task CheckCanUpdateAsync(string id, IDictionary<string, object> attrs,
+            IDictionary<string, string> relationships)
         {
-            if (SystemRole == SystemRoles.User && id != UserId)
-                throw ForbiddenException();
-            return Task.CompletedTask;
+            return CheckCanUpdateDeleteAsync(id);
         }
 
         protected override Task CheckCanUpdateRelationshipAsync(string id)
         {
-            return CheckCanUpdateAsync(id);
+            return CheckCanUpdateDeleteAsync(id);
         }
 
         protected override Task CheckCanDeleteAsync(string id)
         {
-            return CheckCanUpdateAsync(id);
+            return CheckCanUpdateDeleteAsync(id);
         }
 
         protected override Task<IQueryable<UserEntity>> ApplyPermissionFilterAsync(IQueryable<UserEntity> query)
@@ -62,6 +61,13 @@ namespace SIL.XForge.Services
             if (SystemRole == SystemRoles.User)
                 query = query.Where(u => u.Id == UserId);
             return Task.FromResult(query);
+        }
+
+        private Task CheckCanUpdateDeleteAsync(string id)
+        {
+            if (SystemRole == SystemRoles.User && id != UserId)
+                throw ForbiddenException();
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -31,7 +32,8 @@ namespace SIL.XForge.Services
             return Task.CompletedTask;
         }
 
-        protected override Task CheckCanUpdateAsync(string id)
+        protected override Task CheckCanUpdateAsync(string id, IDictionary<string, object> attrs,
+            IDictionary<string, string> relationships)
         {
             return Task.CompletedTask;
         }

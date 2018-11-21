@@ -5,12 +5,15 @@ import { map } from 'rxjs/operators';
 
 import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
-import { GetAllParameters, JSONAPIService, QueryObservable } from './jsonapi.service';
+import { JSONAPIService, QueryObservable } from './jsonapi.service';
+import { ProjectUser } from './models/project-user';
 import { User } from './models/user';
 import { ResourceService } from './resource.service';
+import { nameof } from './utils';
 
 @Injectable()
-export class UserService<T extends User = User> extends ResourceService {
+export abstract class UserService extends ResourceService {
+
   constructor(jsonApiService: JSONAPIService, private readonly authService: AuthService,
     private readonly http: HttpClient
   ) {
@@ -26,8 +29,8 @@ export class UserService<T extends User = User> extends ResourceService {
     await this.jsonApiService.onlineUpdateAttributes(this.identity(this.currentUserId), attrs);
   }
 
-  getAll(parameters?: GetAllParameters<T>, include?: string[]): QueryObservable<T[]> {
-    return this.jsonApiService.getAll(this.type, parameters, include);
+  onlineGetProjects(id: string): QueryObservable<ProjectUser[]> {
+    return this.jsonApiService.onlineGetAllRelated(this.identity(id), nameof<User>('projects'));
   }
 
   sendInvitation(name: string, email: string): Observable<string> {

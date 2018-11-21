@@ -45,14 +45,15 @@ namespace SIL.XForge.Services
             throw ForbiddenException();
         }
 
-        protected override Task CheckCanUpdateAsync(string id)
+        protected override Task CheckCanUpdateAsync(string id, IDictionary<string, object> attrs,
+            IDictionary<string, string> relationships)
         {
             return CheckCanUpdateDeleteAsync(id, Operation.Edit, Operation.EditOwn);
         }
 
         protected override Task CheckCanUpdateRelationshipAsync(string id)
         {
-            return CheckCanUpdateAsync(id);
+            return CheckCanUpdateDeleteAsync(id, Operation.Edit, Operation.EditOwn);
         }
 
         protected override Task CheckCanDeleteAsync(string id)
