@@ -1,9 +1,5 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
-import { environment } from '../environments/environment';
 import { AuthService } from './auth.service';
 import { JSONAPIService, QueryObservable } from './jsonapi.service';
 import { ProjectUser } from './models/project-user';
@@ -13,10 +9,7 @@ import { nameof } from './utils';
 
 @Injectable()
 export abstract class UserService extends ResourceService {
-
-  constructor(jsonApiService: JSONAPIService, private readonly authService: AuthService,
-    private readonly http: HttpClient
-  ) {
+  constructor(jsonApiService: JSONAPIService, private readonly authService: AuthService) {
     super(User.TYPE, jsonApiService);
   }
 
@@ -31,12 +24,5 @@ export abstract class UserService extends ResourceService {
 
   onlineGetProjects(id: string): QueryObservable<ProjectUser[]> {
     return this.jsonApiService.onlineGetAllRelated(this.identity(id), nameof<User>('projects'));
-  }
-
-  sendInvitation(name: string, email: string): Observable<string> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
-    return this.http.post(environment.siteOrigin + '/Account/SendInvitation',
-      JSON.stringify({ name, email }), { headers: headers, responseType: 'text' })
-      .pipe(map(response => response));
   }
 }

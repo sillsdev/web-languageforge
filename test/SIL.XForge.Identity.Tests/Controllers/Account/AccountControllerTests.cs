@@ -320,27 +320,6 @@ namespace SIL.XForge.Identity.Controllers.Account
             Assert.That(env.Controller.ModelState.ErrorCount, Is.EqualTo(1));
         }
 
-        [Test]
-        public async Task InviteFriend_Email()
-        {
-            var env = new TestEnvironment();
-            var model = new UserEntity
-            {
-                Email = "abc1@example.com"
-            };
-            Assert.That(env.Users.Query().Any(x => x.Email == model.Email), Is.False);
-
-            var result = await env.Controller.SendInvitation(model);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(env.Controller.ModelState.ErrorCount, Is.EqualTo(0));
-            Assert.That(env.Users.Query().Any(x => x.Email == model.Email), Is.True);
-            Assert.AreEqual($"An invitation email has been sent to {model.Email}", result);
-            string subject = "You've been invited to the project [Project Name] on xForge";
-            // Skip verification for the body, we may change the content
-            await env.EmailService.Received().SendEmailAsync(Arg.Is(model.Email), Arg.Is(subject), Arg.Any<string>());
-        }
-
         private class TestEnvironment
         {
             public TestEnvironment(bool isResetLinkExpired = false)

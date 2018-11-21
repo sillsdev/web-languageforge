@@ -16,8 +16,7 @@ import {
   MatProgressSpinnerModule,
   MatSelectModule,
   MatSnackBarModule,
-  MatTableModule,
-  MatToolbarModule
+  MatTableModule
 } from '@angular/material';
 import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
 
@@ -38,10 +37,9 @@ const modules = [
   MatProgressSpinnerModule,
   MatSelectModule,
   MatSnackBarModule,
-  MatToolbarModule,
-  ReactiveFormsModule,
   MatTableModule,
-  PasswordStrengthMeterModule
+  PasswordStrengthMeterModule,
+  ReactiveFormsModule
 ];
 
 @NgModule({
