@@ -26,11 +26,10 @@ export interface TransformRequestResponse {
   primaryData: Record | Record[];
 }
 
-export type TransformRequestProcessor = (source: JSONAPISource, request: any, options: any)
-  => Promise<TransformRequestResponse>;
+export type TransformRequestProcessor = (source: JSONAPISource, request: any) => Promise<TransformRequestResponse>;
 
 export const TransformRequestProcessors: Dict<TransformRequestProcessor> = {
-  addRecord(source: JSONAPISource, request: any, options: any): Promise<TransformRequestResponse> {
+  addRecord(source: JSONAPISource, request: any): Promise<TransformRequestResponse> {
     const { serializer } = source;
     const record = request.record;
     const requestDoc: JSONAPIDocument = serializer.serializeDocument(record);
@@ -40,7 +39,7 @@ export const TransformRequestProcessors: Dict<TransformRequestProcessor> = {
       .then((raw: JSONAPIDocument) => {
         const deserialized = serializer.deserializeDocument(raw, record);
         return {
-          transforms: handleChanges(record, deserialized, options),
+          transforms: handleChanges(record, deserialized),
           primaryData: deserialized.data
         };
       });
@@ -54,7 +53,7 @@ export const TransformRequestProcessors: Dict<TransformRequestProcessor> = {
       .then(() => ({ transforms: [], primaryData: null }));
   },
 
-  replaceRecord(source: JSONAPISource, request: any, options: any): Promise<TransformRequestResponse> {
+  replaceRecord(source: JSONAPISource, request: any): Promise<TransformRequestResponse> {
     const { serializer } = source;
     const record = request.record;
     const { type, id } = record;
@@ -65,7 +64,7 @@ export const TransformRequestProcessors: Dict<TransformRequestProcessor> = {
       .then((raw: JSONAPIDocument) => {
         if (raw) {
           const deserialized = serializer.deserializeDocument(raw, record);
-          return { transforms: handleChanges(record, deserialized, options), primaryData: deserialized.data };
+          return { transforms: handleChanges(record, deserialized), primaryData: deserialized.data };
         } else {
           return { transforms: [], primaryData: null };
         }
@@ -261,18 +260,18 @@ function replaceRecordHasMany(record: RecordIdentity, relationship: string, rela
   deepSet(record, ['relationships', relationship, 'data'], relatedRecords.map(r => cloneRecordIdentity(r)));
 }
 
-function handleChanges(record: Record, responseDoc: any, options: any) {
+function handleChanges(record: Record, responseDoc: any) {
   const updatedRecord: Record = <Record>responseDoc.data;
   const transforms = [];
   const updateOps = recordDiffs(record, updatedRecord);
   if (updateOps.length > 0) {
-    transforms.push(buildTransform(updateOps, options));
+    transforms.push(buildTransform(updateOps));
   }
   if (responseDoc.included && responseDoc.included.length > 0) {
     const includedOps = responseDoc.included.map((rec: any) => {
       return { op: 'replaceRecord', rec };
     });
-    transforms.push(buildTransform(includedOps, options));
+    transforms.push(buildTransform(includedOps));
   }
   return transforms;
 }
