@@ -11,7 +11,6 @@ export interface RequestOptions {
   page?: any;
   include?: any;
   settings?: any;
-  transformOptions?: any;
 }
 
 export function customRequestOptions(source: Source, queryOrTransform: Query | Transform): RequestOptions {

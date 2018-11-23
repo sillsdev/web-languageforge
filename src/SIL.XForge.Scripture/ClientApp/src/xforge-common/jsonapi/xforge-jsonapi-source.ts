@@ -3,7 +3,6 @@ import Orbit, {
 } from '@orbit/data';
 import JSONAPISource from '@orbit/jsonapi';
 
-import { PullOperator, PullOperators } from './pull-operators';
 import { QueryOperator, QueryOperators } from './query-operators';
 import { getTransformRequests, TransformRequestProcessors, TransformRequestResponse } from './transform-requests';
 
@@ -33,7 +32,7 @@ export class XForgeJSONAPISource extends JSONAPISource implements Updatable {
 
     requests.forEach(request => {
       result = result.then(() => {
-        return this._processRequest(request, transform.options).then(response => {
+        return this._processRequest(request).then(response => {
           Array.prototype.push.apply(transforms, response.transforms);
         });
       });
@@ -45,23 +44,30 @@ export class XForgeJSONAPISource extends JSONAPISource implements Updatable {
     });
   }
 
-  _pull(query: Query): Promise<Transform[]> {
-    const operator: PullOperator = PullOperators[query.expression.op];
-    if (!operator) {
-      throw new Error('JSONAPISource does not support the ' + query.expression.op + ' operator for queries.');
-    }
-    return operator(this, query);
-  }
-
-  _query(query: Query): Promise<Record | Record[]> {
+  async _pull(query: Query): Promise<Transform[]> {
     const operator: QueryOperator = QueryOperators[query.expression.op];
     if (!operator) {
-      throw new Error('JSONAPISource does not support the `${query.expression.op}` operator for queries.');
+      throw new Error(`JSONAPISource does not support the \`${query.expression.op}\` operator for queries.`);
     }
-    return operator(this, query).then(response => {
-      return this._transformed(response.transforms)
-        .then(() => response.primaryData);
-    });
+    const response = await operator(this, query);
+    if (response.meta != null) {
+      query.options.totalPagedCount = response.meta['total-records'];
+    }
+    return response.transforms;
+  }
+
+  async _query(query: Query): Promise<Record | Record[]> {
+    const operator: QueryOperator = QueryOperators[query.expression.op];
+    if (!operator) {
+      throw new Error(`JSONAPISource does not support the \`${query.expression.op}\` operator for queries.`);
+    }
+    const response = await operator(this, query);
+    query.options.included = response.includedData;
+    if (response.meta != null) {
+      query.options.totalPagedCount = response.meta['total-records'];
+    }
+    await this._transformed(response.transforms);
+    return response.primaryData;
   }
 
   _update(transform: Transform): Promise<any> {
@@ -70,15 +76,15 @@ export class XForgeJSONAPISource extends JSONAPISource implements Updatable {
     if (requests.length > 1) {
       return Orbit.Promise.resolve()
         .then(() => {
-          throw new TransformNotAllowed('This update requires more than 1 request.', transform);
+          throw new TransformNotAllowed('This update requires more than one request.', transform);
         });
     }
 
-    return this._processRequest(requests[0], transform.options).then(response => response.primaryData);
+    return this._processRequest(requests[0]).then(response => response.primaryData);
   }
 
-  protected _processRequest(request: any, options: any): Promise<TransformRequestResponse> {
+  protected _processRequest(request: any): Promise<TransformRequestResponse> {
     const processor = TransformRequestProcessors[request.op];
-    return processor(this, request, options);
+    return processor(this, request);
   }
 }
