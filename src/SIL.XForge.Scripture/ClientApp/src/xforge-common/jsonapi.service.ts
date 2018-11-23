@@ -1,9 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import Coordinator, {
-  ConnectionStrategy, LogTruncationStrategy, RequestStrategy, SyncStrategy
-} from '@orbit/coordinator';
-import { Exception } from '@orbit/core';
+import Coordinator, { LogTruncationStrategy } from '@orbit/coordinator';
 import {
   AddRecordOperation,
   AddToRelatedRecordsOperation,
@@ -17,7 +14,6 @@ import {
   FindRecords,
   FindRelatedRecord,
   FindRelatedRecords,
-  NetworkError,
   Operation,
   Query,
   QueryBuilder,
@@ -53,6 +49,13 @@ import { LocationService } from './location.service';
 import { DomainModel } from './models/domain-model';
 import { Resource, ResourceRef } from './models/resource';
 import { XForgeStore } from './store/xforge-store';
+import { RemotePullFailStrategy } from './strategies/remote-pull-fail-strategy';
+import { RemotePullStorePurgeStrategy } from './strategies/remote-pull-store-purge-strategy';
+import { RemotePushFailStrategy } from './strategies/remote-push-fail-strategy';
+import { RemoteStoreSyncStrategy } from './strategies/remote-store-sync-strategy';
+import { StoreBackupSyncStrategy } from './strategies/store-backup-sync-strategy';
+import { StoreRemoteQueryStrategy } from './strategies/store-remote-query-strategy';
+import { StoreRemoteUpdateStrategy } from './strategies/store-remote-update-strategy';
 
 /**
  * This interface represents query results from the {@link JSONAPIService}.
@@ -172,7 +175,6 @@ export class JSONAPIService {
   private static readonly STORE = 'store';
   private static readonly REMOTE = 'remote';
   private static readonly BACKUP = 'backup';
-  private static readonly RETRY_TIMEOUT = 5000;
 
   private schema: Schema;
 
@@ -233,78 +235,20 @@ export class JSONAPIService {
     this.coordinator = new Coordinator({
       sources: [this.store, this.remote, this.backup],
       strategies: [
-        // Purge a deleted resource from the cache when get() is called on it
-        new RequestStrategy({
-          source: JSONAPIService.REMOTE,
-          on: 'pullFail',
-
-          action: (q: Query, e: Exception) => {
-            this.purgeDeletedResource(q, e);
-            this.remote.requestQueue.skip();
-          },
-
-          blocking: true
-        }),
-        // Purge deleted resources from the cache when getAll() is called
-        new ConnectionStrategy({
-          source: JSONAPIService.REMOTE,
-          on: 'pull',
-
-          action: (q: Query, t: Transform[]) => this.purgeDeletedResources(q, t),
-          filter: (q: Query) => q.expression.op === 'findRecords'
-        }),
-        // Retry sending updates to server when push fails
-        new RequestStrategy({
-          source: JSONAPIService.REMOTE,
-          on: 'pushFail',
-
-          action: (t: Transform, e: Exception) => this.handleFailedPush(t, e),
-
-          blocking: true
-        }),
+        // Handle a pull failure
+        new RemotePullFailStrategy(JSONAPIService.REMOTE, JSONAPIService.STORE),
+        // Purge deleted records from the server when performing a findRecords query
+        new RemotePullStorePurgeStrategy(JSONAPIService.REMOTE, JSONAPIService.STORE),
+        // Handle a push failure
+        new RemotePushFailStrategy(JSONAPIService.REMOTE, JSONAPIService.STORE),
         // Query the remote server whenever the store is queried
-        new RequestStrategy({
-          source: JSONAPIService.STORE,
-          on: 'beforeQuery',
-
-          target: JSONAPIService.REMOTE,
-          action: 'pull',
-
-          blocking: false,
-
-          catch: (e: Exception) => {
-            this.store.requestQueue.skip();
-            this.remote.requestQueue.skip();
-            throw e;
-          }
-        }),
+        new StoreRemoteQueryStrategy(JSONAPIService.STORE, JSONAPIService.REMOTE),
         // Update the remote server whenever the store is updated
-        new RequestStrategy({
-          source: JSONAPIService.STORE,
-          on: 'beforeUpdate',
-
-          target: JSONAPIService.REMOTE,
-          filter: (t: Transform) => !t.options.localOnly,
-          action: 'push',
-
-          blocking: false
-        }),
+        new StoreRemoteUpdateStrategy(JSONAPIService.STORE, JSONAPIService.REMOTE),
         // Sync all changes received from the remote server to the store
-        new SyncStrategy({
-          source: JSONAPIService.REMOTE,
-
-          target: JSONAPIService.STORE,
-
-          blocking: false
-        }),
+        new RemoteStoreSyncStrategy(JSONAPIService.REMOTE, JSONAPIService.STORE),
         // Sync all changes to the store to IndexedDB
-        new SyncStrategy({
-          source: JSONAPIService.STORE,
-
-          target: JSONAPIService.BACKUP,
-
-          blocking: true
-        }),
+        new StoreBackupSyncStrategy(JSONAPIService.STORE, JSONAPIService.BACKUP),
         new LogTruncationStrategy()
       ]
     });
@@ -988,61 +932,5 @@ export class JSONAPIService {
       return null;
     }
     return { type: ref.type, id: ref.id };
-  }
-
-  private purgeDeletedResource(query: Query, ex: Exception): void {
-    if (ex instanceof ClientError) {
-      const response: Response = (ex as any).response;
-      if (response.status === 404 && query.expression.op === 'findRecord') {
-        this.removeFromBackup([(query.expression as FindRecord).record]);
-      }
-    }
-  }
-
-  private purgeDeletedResources(query: Query, result: Transform[]): void {
-    const cachedResources: Record[] = this.store.cache.query(query);
-    if (cachedResources.length === 0) {
-      return;
-    }
-
-    const transform = result[0];
-    const remoteResourceIds = new Set<string>();
-    for (const op of transform.operations) {
-      remoteResourceIds.add((op as ReplaceRecordOperation).record.id);
-    }
-
-    const deletedResources: Record[] = [];
-    for (const cachedResource of cachedResources) {
-      if (!remoteResourceIds.has(cachedResource.id)) {
-        deletedResources.push(cachedResource);
-      }
-    }
-
-    this.removeFromBackup(deletedResources);
-  }
-
-  private handleFailedPush(transform: Transform, ex: Exception): Promise<void> {
-    if (ex instanceof NetworkError) {
-      setTimeout(() => this.remote.requestQueue.retry(), JSONAPIService.RETRY_TIMEOUT);
-    } else {
-      if (this.store.transformLog.contains(transform.id)) {
-        this.store.rollback(transform.id, -1);
-      }
-      return this.remote.requestQueue.skip();
-    }
-  }
-
-  private removeFromBackup(resources: Record[]): void {
-    if (resources.length === 0) {
-      return;
-    }
-
-    this.store.update(t => {
-      const ops: Operation[] = [];
-      for (const resource of resources) {
-        ops.push(t.removeRecord(resource));
-      }
-      return ops;
-    }, { localOnly: true });
   }
 }
