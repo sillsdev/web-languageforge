@@ -212,7 +212,7 @@ function paginateRecords(records: Record[], paginationOptions: PageSpecifier) {
       }
     case 'indexed':
       const indexed = paginationOptions as IndexedPageSpecifier;
-      const start = (indexed.index - 1) * indexed.size;
+      const start = indexed.index * indexed.size;
       return records.slice(start, start + indexed.size);
   }
 }
