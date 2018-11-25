@@ -28,7 +28,7 @@ export class ForgotPasswordComponent {
     this.forgotPasswordDisabled = true;
     const result = await this.identityService.forgotPassword(this.forgotPasswordForm.controls['user'].value);
     if (result) {
-      this.locationService.go('/home');
+      this.snackBar.open('Password reset email sent', undefined);
     } else {
       this.forgotPasswordDisabled = false;
       this.snackBar.open('Invalid email or username', undefined, { duration: 5000 });

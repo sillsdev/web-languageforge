@@ -88,8 +88,9 @@ describe('ForgotPasswordComponent', () => {
     env.clickSubmitButton();
 
     verify(env.mockedIdentityService.forgotPassword(deepEqual('user'))).once();
-    verify(env.mockedLocationService.go('/home')).once();
+    expect(env.getSnackBarContent()).toBe('Password reset email sent');
     expect().nothing();
+    flush();
   }));
 
   it('should display error when email or username is incorrect', fakeAsync(() => {
