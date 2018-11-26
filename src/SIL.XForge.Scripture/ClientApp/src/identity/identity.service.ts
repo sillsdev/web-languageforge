@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
+import { VerifyTokenParams } from '@identity/models/verify-token-params';
 import { ForgotPasswordParams } from './models/forgot-password-params';
 import { IdentityResult } from './models/identity-result';
 import { LogInParams } from './models/log-in-params';
@@ -35,6 +36,11 @@ export class IdentityService {
 
   async verifyEmail(key: string): Promise<boolean> {
     const result = await this.callApi('verify-email', { key } as VerifyEmailParams);
+    return result.success;
+  }
+
+  async verifyToken(token: string): Promise<boolean> {
+    const result = await this.callApi('verify-token', { token } as VerifyTokenParams);
     return result.success;
   }
 

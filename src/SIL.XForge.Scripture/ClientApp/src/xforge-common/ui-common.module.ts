@@ -19,6 +19,7 @@ import {
   MatTableModule,
   MatToolbarModule
 } from '@angular/material';
+import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
 
 const modules = [
   FlexLayoutModule,
@@ -38,8 +39,9 @@ const modules = [
   MatSelectModule,
   MatSnackBarModule,
   MatToolbarModule,
+  ReactiveFormsModule,
   MatTableModule,
-  ReactiveFormsModule
+  PasswordStrengthMeterModule
 ];
 
 @NgModule({

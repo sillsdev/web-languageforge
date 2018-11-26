@@ -6,10 +6,12 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { IdentityRoutingModule } from './identity-routing.module';
 import { IdentityService } from './identity.service';
 import { LogInComponent } from './log-in/log-in.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   declarations: [LogInComponent,
-    ForgotPasswordComponent],
+    ForgotPasswordComponent,
+    ResetPasswordComponent],
   imports: [
     CommonModule,
     IdentityRoutingModule,
