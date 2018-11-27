@@ -40,8 +40,7 @@ Vagrant.configure("2") do |config|
 
     cd ~/src/web-languageforge
     git checkout -- package-lock.json
-    # Pull only up to a commit that this vagrant was tested to work with.
-    git fetch && git pull --ff-only --recurse-submodules origin ac4b4157ac35abed54efad8a7e711eac0c025f34
+    git pull --ff-only --recurse-submodules
 
     cd ~/src/web-languageforge/deploy
     tryharderto ansible-playbook playbook_xenial_beta.yml --limit localhost -K
