@@ -2,6 +2,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using IdentityModel;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
@@ -148,18 +149,6 @@ namespace SIL.XForge.Identity.Controllers
             return new IdentityResult(false);
         }
 
-        [HttpPost("verify-token")]
-        public async Task<ActionResult<IdentityResult>> VerifyToken(VerifyTokenParams parameters)
-        {
-            UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.ResetPasswordKey == parameters.Token &&
-                u.ResetPasswordExpirationDate > DateTime.UtcNow);
-            if (user != null)
-            {
-                return new IdentityResult(true);
-            }
-            return new IdentityResult(false);
-        }
-
         [HttpPost("reset-password")]
         public async Task<ActionResult<IdentityResult>> ResetPassword(ResetPasswordParams parameters)
         {
@@ -177,38 +166,132 @@ namespace SIL.XForge.Identity.Controllers
             return new IdentityResult(false);
         }
 
+        [HttpPost("send-invite")]
+        public async Task<ActionResult<SendInviteResult>> SendInvite(SendInviteParams parameters)
+        {
+            if (!string.IsNullOrEmpty(parameters.Email))
+            {
+                if (await CreateInvitedUserAccount(parameters.Email))
+                {
+                    SiteOptions siteOptions = _options.Value;
+                    string projectName = "[Project Name]";
+                    string inviterName = User.GetDisplayName();
+                    string url = $"{siteOptions.Origin}Account/Register?e={HttpUtility.UrlEncode(parameters.Email)}";
+                    string subject = $"You've been invited to the project {projectName} on {siteOptions.Name}";
+                    string body = "<p>Hello </p><p></p>" +
+                        $"<p>{inviterName} invites you to join the {projectName} project on {siteOptions.Name}." +
+                        "</p><p></p>" +
+                        "<p>You're almost ready to start. Just click the link below to complete your signup and " +
+                        "then you will be ready to get started.</p><p></p>" +
+                        $"<p>To join, go to {url}</p><p></p>" +
+                        $"<p>Regards</p><p>    The {siteOptions.Name} team</p>";
+                    await _emailService.SendEmailAsync(parameters.Email, subject, body);
+                    return new SendInviteResult
+                    {
+                        Success = true,
+                        EmailTypeSent = "invited"
+                    };
+                }
+                else
+                {
+                    // user already exists
+
+                    // ToDo: once we have a current project in context - IJH 2018-11
+                    // if (user is already in the project)
+                    // {
+                    //     return new SendInviteResult
+                    //     {
+                    //         Success = true,
+                    //         IsAlreadyInProject = true
+                    //     };
+                    // }
+                    // else add the user to the current project
+
+                    SiteOptions siteOptions = _options.Value;
+                    string projectName = "[Project Name]";
+                    string inviterName = User.GetDisplayName();
+                    string subject = $"You've been added to the project {projectName} on {siteOptions.Name}";
+                    string body = "<p>Hello </p><p></p>" +
+                        $"<p>{inviterName} has just added you to the {projectName} project on {siteOptions.Name}." +
+                        "</p><p></p>" +
+                        $"<p>Regards</p><p>    The {siteOptions.Name} team</p>";
+                    await _emailService.SendEmailAsync(parameters.Email, subject, body);
+                    return new SendInviteResult
+                    {
+                        Success = true,
+                        EmailTypeSent = "joined"
+                    };
+                }
+            }
+
+            return new SendInviteResult
+            {
+                Success = false
+            };
+        }
+
         [HttpPost("sign-up")]
         public async Task<ActionResult<IdentityResult>> SignUp(SignUpParams parameters)
         {
-            var user = new UserEntity
+            UserEntity existingUser = await _users.Query()
+                .SingleOrDefaultAsync(u => u.CanonicalEmail == UserEntity.CanonicalizeEmail(parameters.Email));
+            if (existingUser != null)
             {
-                Name = parameters.Name,
-                Email = parameters.Email,
-                CanonicalEmail = UserEntity.CanonicalizeEmail(parameters.Email),
-                EmailVerified = false,
-                Password = BCrypt.Net.BCrypt.HashPassword(parameters.Password, 7),
-                Role = SystemRoles.User,
-                ValidationKey = GenerateKey(),
-                ValidationExpirationDate = DateTime.UtcNow.AddDays(EmailVerificationPeriodDays),
-                Active = true
-            };
-
-            if (await _users.InsertAsync(user))
+                if (!existingUser.Active && existingUser.Password == null)
+                {
+                    // invited user - activate, update and login user
+                    existingUser = await _users
+                        .UpdateAsync(u => u.CanonicalEmail == UserEntity.CanonicalizeEmail(parameters.Email),
+                            update => update.Set(u => u.EmailVerified, true)
+                                .Set(u => u.Name, parameters.Name)
+                                .Set(u => u.Password, BCrypt.Net.BCrypt.HashPassword(parameters.Password, 7))
+                                .Set(u => u.Active, true));
+                    if (existingUser != null)
+                    {
+                        await LogInUserAsync(existingUser);
+                        return new IdentityResult(true);
+                    }
+                }
+                else if (existingUser.VerifyPassword(parameters.Password))
+                {
+                    // check for signup from other site
+                    // ToDo
+                }
+            }
+            else
             {
-                await LogInUserAsync(user);
+                var user = new UserEntity
+                {
+                    Name = parameters.Name,
+                    Email = parameters.Email,
+                    CanonicalEmail = UserEntity.CanonicalizeEmail(parameters.Email),
+                    EmailVerified = false,
+                    Password = BCrypt.Net.BCrypt.HashPassword(parameters.Password, 7),
+                    Role = SystemRoles.User,
+                    ValidationKey = GenerateKey(),
+                    ValidationExpirationDate = DateTime.UtcNow.AddDays(EmailVerificationPeriodDays),
+                    Active = true
+                };
 
-                SiteOptions siteOptions = _options.Value;
-                string subject = $"{siteOptions.Name} - Email Verification";
-                Uri url = new Uri(siteOptions.Origin,
-                    $"account/VerifyEmail?email={user.Email}&key={user.ValidationKey}");
-                string body = "<div>"
-                    + $"<h1>Dear {user.Name},</h1>"
-                    + $"<p>Please click this link to activate your account <a href=\"{url}\" target=\"_blank\">Confirm Verification</a>.</p>"
-                    + $"<p>Regards,<br>The {siteOptions.Name} Team</p>"
-                    + "</div>";
+                if (await _users.InsertAsync(user))
+                {
+                    await LogInUserAsync(user);
 
-                await _emailService.SendEmailAsync(user.Email, subject, body);
-                return new IdentityResult(true);
+                    SiteOptions siteOptions = _options.Value;
+                    string subject = $"{siteOptions.Name} - Email Verification";
+                    Uri url = new Uri(siteOptions.Origin,
+                        $"account/VerifyEmail?email={user.Email}&key={user.ValidationKey}");
+                    string body = "<div>"
+                        + $"<h1>Dear {user.Name},</h1>"
+                        + $"<p>Please click this link to verify your email <a href=\"{url}\" target=\"_blank\">"
+                        + "Confirm Verification</a>.</p>"
+                        + $"<p>Regards,<br>The {siteOptions.Name} Team</p>"
+                        + "</div>";
+
+                    await _emailService.SendEmailAsync(user.Email, subject, body);
+
+                    return new IdentityResult(true);
+                }
             }
 
             return new IdentityResult(false);
@@ -228,22 +311,38 @@ namespace SIL.XForge.Identity.Controllers
             return new IdentityResult(false);
         }
 
-        private async Task LogInUserAsync(UserEntity user, bool rememberLogIn = false)
+        [HttpPost("verify-token")]
+        public async Task<ActionResult<IdentityResult>> VerifyToken(VerifyTokenParams parameters)
         {
-            await _events.RaiseAsync(new UserLoginSuccessEvent(user.Email, user.Id, user.Name));
-            // only set explicit expiration here if user chooses "remember me".
-            // otherwise we rely upon expiration configured in cookie middleware.
-            AuthenticationProperties props = null;
-            if (rememberLogIn)
+            UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.ResetPasswordKey == parameters.Token &&
+                u.ResetPasswordExpirationDate > DateTime.UtcNow);
+            if (user != null)
             {
-                props = new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.Add(RememberMeLogInDuration)
-                };
+                return new IdentityResult(true);
+            }
+            return new IdentityResult(false);
+        }
+
+        private async Task<bool> CreateInvitedUserAccount(string email)
+        {
+            var user = new UserEntity
+            {
+                Name = string.Empty,
+                Email = email,
+                CanonicalEmail = UserEntity.CanonicalizeEmail(email),
+                EmailVerified = false,
+                Password = string.Empty,
+                Role = SystemRoles.User,
+                ValidationKey = GenerateKey(),
+                ValidationExpirationDate = DateTime.Now.AddDays(7),
+                Active = false
             };
-            // issue authentication cookie with subject ID and name
-            await HttpContext.SignInAsync(user.Id, user.Name, props);
+
+            var result = await _users.InsertAsync(user);
+
+            // add the user to the current project once we have a current project in context
+
+            return result;
         }
 
         private static string GenerateKey()
@@ -262,6 +361,24 @@ namespace SIL.XForge.Identity.Controllers
                 key.Append(chars[b % (chars.Length)]);
             }
             return key.ToString();
+        }
+
+        private async Task LogInUserAsync(UserEntity user, bool rememberLogIn = false)
+        {
+            await _events.RaiseAsync(new UserLoginSuccessEvent(user.Email, user.Id, user.Name));
+            // only set explicit expiration here if user chooses "remember me".
+            // otherwise we rely upon expiration configured in cookie middleware.
+            AuthenticationProperties props = null;
+            if (rememberLogIn)
+            {
+                props = new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.Add(RememberMeLogInDuration)
+                };
+            };
+            // issue authentication cookie with subject ID and name
+            await HttpContext.SignInAsync(user.Id, user.Name, props);
         }
     }
 }

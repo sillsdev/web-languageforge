@@ -210,6 +210,59 @@ namespace SIL.XForge.Identity.Controllers
         }
 
         [Test]
+        public async Task SendInvite_NoUser_InvitedEmail()
+        {
+            var env = new TestEnvironment();
+            var parameters = new SendInviteParams
+            {
+                Email = "abc1@example.com"
+            };
+            Assert.That(env.Users.Query().Any(x => x.Email == parameters.Email), Is.False);
+
+            var result = await env.Controller.SendInvite(parameters);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(env.Users.Query().Any(x => x.Email == parameters.Email), Is.True);
+            Assert.That(result.Value.Success, Is.True);
+            Assert.That(result.Value.IsAlreadyInProject, Is.False);
+            Assert.AreEqual("invited", result.Value.EmailTypeSent);
+            string subject = "You've been invited to the project [Project Name] on xForge";
+            // Skip verification for the body, we may change the content
+            await env.EmailService.Received().SendEmailAsync(Arg.Is(parameters.Email), Arg.Is(subject), Arg.Any<string>());
+        }
+
+        [Test]
+        public async Task SendInvite_UserNoProjects_JoinedEmail()
+        {
+            var env = new TestEnvironment();
+            var parameters = new SendInviteParams
+            {
+                Email = "abc1@example.com"
+            };
+            env.Users.Add(new[]
+                {
+                    new UserEntity
+                    {
+                        Id = "userWithNoProjects",
+                        Email = parameters.Email,
+                        CanonicalEmail = parameters.Email
+                    }
+                });
+            Assert.That(env.Users.Query().Any(x => x.Email == parameters.Email), Is.True);
+
+            var result = await env.Controller.SendInvite(parameters);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(env.Users.Query().Any(x => x.Email == parameters.Email), Is.True);
+            Assert.That(result.Value.Success, Is.True);
+            Assert.That(result.Value.IsAlreadyInProject, Is.False);
+            Assert.AreEqual("joined", result.Value.EmailTypeSent);
+            string subject = "You've been added to the project [Project Name] on xForge";
+            // Skip verification for the body, we may change the content
+            await env.EmailService.Received().SendEmailAsync(Arg.Is(parameters.Email), Arg.Is(subject), Arg.Any<string>());
+        }
+
+        [Test]
         public async Task SignUp_NewUserAdded()
         {
             var env = new TestEnvironment();
@@ -238,20 +291,43 @@ namespace SIL.XForge.Identity.Controllers
             env.Users.Add(new UserEntity
                 {
                     Id = "uniqueidwithdupemailid",
-                    Username = TestUsername,
-                    Email = "duplicate@fakegmail.com",
-                    CanonicalEmail = "duplicate@fakegmail.com"
+                    Password = BCrypt.Net.BCrypt.HashPassword("unimportant1234", 7),
+                    Email = "duplicate@example.com",
+                    CanonicalEmail = "duplicate@example.com",
+                    Active = true
                 });
             // Duplicate emailid should result in an error
             var input = new SignUpParams
             {
                 Name = "Non Duplicated Name",
                 Password = "unimportant1234",
-                Email = "DUPLICATE@fakegmail.com"
+                Email = "DUPLICATE@example.com"
             };
             ActionResult<IdentityResult> result = await env.Controller.SignUp(input);
 
             Assert.That(result.Value.Success, Is.False);
+        }
+
+        [Test]
+        public async Task SignUp_InvitedUser()
+        {
+            var env = new TestEnvironment();
+
+            env.Users.Add(new UserEntity
+                {
+                    Id = "uniqueidforinviteduser",
+                    Email = "me@example.com",
+                    CanonicalEmail = "me@example.com"
+                });
+            var input = new SignUpParams
+            {
+                Name = "User Name",
+                Password = "unimportant1234",
+                Email = "me@example.com"
+            };
+            ActionResult<IdentityResult> result = await env.Controller.SignUp(input);
+
+            Assert.That(result.Value.Success, Is.True);
         }
 
         private class TestEnvironment

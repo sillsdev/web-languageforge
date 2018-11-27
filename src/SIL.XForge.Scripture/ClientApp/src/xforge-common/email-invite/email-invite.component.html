@@ -1,33 +1,4 @@
-<div [hidden]="showInviteForm">
-  <ng-template #dialogRef>
-    <form [formGroup]="sendInviteForm" id="send-invite-form">
-      <h3 mat-dialog-title>Invite a friend to {{ siteName }}</h3>
-      <mat-dialog-content>
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="Email" id="email" name="email" #email formControlName="email">
-          <mat-error *ngIf="sendInviteForm.get('email').hasError('email') && !sendInviteForm.get('email').hasError('required')">
-            Please enter a valid email address, e.g. me@example.com
-          </mat-error>
-          <mat-error *ngIf="sendInviteForm.get('email').hasError('required') && isSubmitted">
-            Email is <strong>required</strong>
-          </mat-error>
-        </mat-form-field>
-        <mat-spinner *ngIf="spinnerDisplay" strokeWidth="3" [diameter]="20"></mat-spinner>
-      </mat-dialog-content>
-      <mat-dialog-actions align="end">
-        <button mat-button (click)="onCancel()" id="invitation-cancel-btn">Cancel</button>
-        <button mat-button cdkfocusinitial [disabled]="disabledSendInviteBtn" (click)="onSubmit()" id="invitation-send-btn">
-          Send Invitation</button>
-      </mat-dialog-actions>
-    </form>
-  </ng-template>
-</div>
-
-<div class="container">
-  <div class="page-header">
-    <span style="float: right;">
-      <button type="button" (click)="openDialog(dialogRef)" color="accent" mat-raised-button id="invite-btn">
-          <mat-icon>email</mat-icon> Invite a Friend</button>
-    </span>
-  </div>
-</div>
+<span style="float: right;">
+  <button mat-raised-button class="mat-primary" (click)="openDialog()" id="invite-btn">
+      <mat-icon>email</mat-icon> Invite a Friend</button>
+</span>

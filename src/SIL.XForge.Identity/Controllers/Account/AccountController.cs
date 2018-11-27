@@ -24,7 +24,6 @@ using SIL.XForge.Configuration;
 using System.Security.Cryptography;
 using System.Text;
 using SIL.XForge.Identity.Configuration;
-using System.Web;
 
 namespace SIL.XForge.Identity.Controllers.Account
 {
@@ -401,7 +400,7 @@ namespace SIL.XForge.Identity.Controllers.Account
 
                 if (model.InviteSignUp)
                 {
-                    return await InviteCreateAccount(model, user);
+                    return await InviteUpdateAccount(model, user);
                 }
                 else
                 {
@@ -440,7 +439,7 @@ namespace SIL.XForge.Identity.Controllers.Account
             return View(model);
         }
 
-        public async Task<ActionResult> InviteCreateAccount(RegisterViewModel model, UserEntity user)
+        public async Task<ActionResult> InviteUpdateAccount(RegisterViewModel model, UserEntity user)
         {
             await _users.UpdateAsync(u => u.Email == user.Email,
                         update => update.Set(u => u.EmailVerified, true)
@@ -449,8 +448,8 @@ namespace SIL.XForge.Identity.Controllers.Account
                                 .Set(u => u.Password, user.Password)
                                 .Set(u => u.Active, user.Active));
 
-            user = await _users.Query().SingleOrDefaultAsync(u => u.Username == model.Fullname
-            || u.Email == model.Email);
+            user = await _users.Query().SingleOrDefaultAsync(u => u.Username == model.Fullname ||
+                u.Email == model.Email);
             // validate username/password against in-memory store
             if (user != null)
             {
@@ -613,61 +612,5 @@ namespace SIL.XForge.Identity.Controllers.Account
             return vm;
         }
 
-        [HttpPost]
-        public async Task<string> SendInvitation([FromBody] UserEntity model)
-        {
-            if (!string.IsNullOrEmpty(model.Email))
-            {
-                UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.Email == model.Email);
-                if (user != null)
-                {
-                    return "User already has an account!";
-                }
-                else if (await CreateInvitedUserAccount(model.Email))
-                {
-                    SiteOptions siteOptions = _options.Value;
-                    string projectName = "[Project Name]";
-                    string inviterName = User.GetDisplayName();
-                    string url = $"{siteOptions.Origin}Account/Register?e={HttpUtility.UrlEncode(model.Email)}";
-                    string subject = $"You've been invited to the project {projectName} on {siteOptions.Name}";
-                    string body = "<p>Hello </p><p></p>" +
-                        $"<p>{inviterName} invites you to join the {projectName} project on {siteOptions.Name}." +
-                        "</p><p></p>" +
-                        "<p>You're almost ready to start. Just click the link below to complete your signup and " +
-                        "then you will be ready to get started.</p><p></p>" +
-                        $"<p>To join, go to {url}</p><p></p>" +
-                        $"<p>Regards</p><p>    The {siteOptions.Name} team</p>";
-                    await _emailService.SendEmailAsync(model.Email, subject, body);
-                    return "An invitation email has been sent to " + model.Email;
-                }
-            }
-
-            return null;
-        }
-
-        private async Task<bool> CreateInvitedUserAccount(string email)
-        {
-            var user = new UserEntity
-            {
-                Name = string.Empty,
-                Email = email,
-                CanonicalEmail = UserEntity.CanonicalizeEmail(email),
-                EmailVerified = false,
-                Password = string.Empty,
-                Role = SystemRoles.User,
-                ValidationKey = GenerateValidationKey(),
-                ValidationExpirationDate = DateTime.Now.AddDays(7),
-                Active = false
-            };
-
-            // add the user to the current project once we have a current project in context
-
-            var result = await _users.InsertAsync(user);
-            if (result)
-            {
-                return true;
-            }
-            return false;
-        }
     }
 }
