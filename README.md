@@ -102,6 +102,16 @@ People merging PRs can and should rebase the completed PR change (default to squ
 
 Delete the PR branch after merge.
 
+### Reference ###
+
+* Angular Tutorial https://angular.io/tutorial
+* Angular https://angular.io/api
+* Angular Material https://material.angular.io/components/categories
+* TypeScript https://www.typescriptlang.org/docs/home.html
+* JavaScript https://developer.mozilla.org/en-US/docs/Web/JavaScript
+* ts-mockito https://github.com/NagRock/ts-mockito#ts-mockito--
+* Mockito (for Java Mockito, but helps know how to use ts-mockito) http://static.javadoc.io/org.mockito/mockito-core/2.23.0/org/mockito/Mockito.html
+
 ## Testing ##
 
 ### .NET Unit Testing ###
