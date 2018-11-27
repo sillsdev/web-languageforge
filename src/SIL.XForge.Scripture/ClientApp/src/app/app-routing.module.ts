@@ -9,6 +9,7 @@ import { ConnectProjectComponent } from './connect-project/connect-project.compo
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { HomeComponent } from './home/home.component';
+import { MyAccountComponent } from './my-account/my-account.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 
 const routes: Routes = [
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] },
   { path: 'connect-project', component: ConnectProjectComponent, canActivate: [AuthGuard] },
+  { path: 'my-account', component: MyAccountComponent, canActivate: [AuthGuard] },
   { path: 'realtime', component: RealtimeComponent, canActivate: [AuthGuard] },
   { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard] },
   { path: 'identity', children: identityRoutes }

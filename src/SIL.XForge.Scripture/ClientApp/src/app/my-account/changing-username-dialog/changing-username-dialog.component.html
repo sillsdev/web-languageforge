@@ -1,0 +1,12 @@
+<h3 mat-dialog-title id="changing-username-header">Changing Username?</h3>
+<mat-dialog-content>
+  <p>
+    Changing username from <strong>{{ data.oldUsername }}</strong> to <strong>{{ data.newUsername }}</strong> will
+    require you to login again.
+  </p>
+  <p>Do you want to update your username?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="'cancel'" class="cancel-button">Cancel</button>
+  <button mat-button [mat-dialog-close]="'update'" cdkFocusInitial class="update-button">Update</button>
+</mat-dialog-actions>
