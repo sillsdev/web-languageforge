@@ -10,6 +10,10 @@ export abstract class User extends Resource {
   canonicalEmail?: string;
   password?: string;
   paratextId?: string;
+  mobilePhone?: string;
+  contactMethod?: 'email' | 'sms' | 'emailsms';
+  birthday?: Date;
+  gender?: 'female' | 'male';
 
   projects?: ProjectUserRef[];
 

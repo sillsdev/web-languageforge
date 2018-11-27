@@ -76,5 +76,4 @@ export class UserService {
   sendInvite(toEmail: string, callback?: JsonRpcCallback) {
     return this.api.call('user_sendInvite', [toEmail], callback);
   }
-
 }
