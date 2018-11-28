@@ -48,7 +48,6 @@ class TestUserEntryComponent {
       providers: [{ provide: UserService, useFactory: () => instance(this.mockedUserService) }]
     });
 
-
     this.fixture = TestBed.createComponent(UserEntryComponent);
     this.component = this.fixture.componentInstance;
   }
@@ -93,4 +92,3 @@ class TestUserEntryComponent {
     flush();
   }
 }
-

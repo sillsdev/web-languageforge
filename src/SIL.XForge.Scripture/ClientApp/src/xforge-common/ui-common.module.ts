@@ -23,6 +23,7 @@ import {
   MatDatepickerModule,
   MatDialogModule,
   MatFormFieldModule,
+  MatGridListModule,
   MatIconModule,
   MatInputModule,
   MatNativeDateModule,
@@ -31,6 +32,7 @@ import {
   MatProgressBarModule,
   MatProgressSpinnerModule,
   MatSelectModule,
+  MatSlideToggleModule,
   MatSnackBarModule,
   MatTableModule
 } from '@angular/material';
@@ -48,6 +50,7 @@ const modules = [
   MatDatepickerModule,
   MatDialogModule,
   MatFormFieldModule,
+  MatGridListModule,
   MatIconModule,
   MatInputModule,
   MatNativeDateModule,
@@ -56,6 +59,7 @@ const modules = [
   MatProgressBarModule,
   MatProgressSpinnerModule,
   MatSelectModule,
+  MatSlideToggleModule,
   MatSnackBarModule,
   MatTableModule,
   MdcButtonModule,

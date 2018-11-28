@@ -39,9 +39,11 @@ class TestDeleteDialogComponent {
       ],
       declarations: [DeleteDialogComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-      providers: [{ provide: UserService, useFactory: () => instance(this.mockedUserService) },
+      providers: [
+        { provide: UserService, useFactory: () => instance(this.mockedUserService) },
         { provide: MAT_DIALOG_DATA },
-        { provide: MatDialogRef, useValue: {} }]
+        { provide: MatDialogRef, useValue: {} }
+      ]
     });
 
     this.fixture = TestBed.createComponent(DeleteDialogComponent);

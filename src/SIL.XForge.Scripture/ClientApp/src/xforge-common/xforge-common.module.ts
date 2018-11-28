@@ -1,20 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatDialogModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatProgressBarModule,
-  MatSnackBarModule,
-  MatToolbarModule
-} from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { OAuthModule } from 'angular-oauth2-oidc';
-import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
 
 import { DeleteDialogComponent } from '@xforge-common/delete-dialog/delete-dialog.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
@@ -39,22 +26,21 @@ import { UICommonModule } from './ui-common.module';
   ],
   declarations: [
     ChangePasswordComponent,
+    DeleteDialogComponent,
     DetailSnackBarComponent,
-    NoticeComponent,
     EmailInviteComponent,
     InviteDialogComponent,
     ProjectsComponent,
-    DeleteDialogComponent
+    NoticeComponent
   ],
   exports: [
     ChangePasswordComponent,
+    DeleteDialogComponent,
     DetailSnackBarComponent,
-    NoticeComponent,
     EmailInviteComponent,
     InviteDialogComponent,
     ProjectsComponent,
-    DeleteDialogComponent
-  ],
-  entryComponents: [DeleteDialogComponent]
+    NoticeComponent
+  ]
 })
 export class XForgeCommonModule {}

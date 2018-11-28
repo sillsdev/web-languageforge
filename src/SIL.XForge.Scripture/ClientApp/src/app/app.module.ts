@@ -1,32 +1,9 @@
 import { DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule } from '@angular/forms';
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatDialogModule,
-  MatFormFieldModule,
-  MatGridListModule,
-  MatIconModule,
-  MatInputModule,
-  MatListModule,
-  MatOptionModule,
-  MatPaginatorModule,
-  MatProgressBarModule,
-  MatProgressSpinnerModule,
-  MatSelectModule,
-  MatSlideToggleModule,
-  MatSnackBarModule,
-  MatTableModule,
-  MatToolbarModule
-} from '@angular/material';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
 import { AvatarModule } from 'ngx-avatar';
 
 import { DeleteDialogComponent } from '@xforge-common/delete-dialog/delete-dialog.component';
@@ -69,41 +46,19 @@ import { SharedModule } from './shared/shared.module';
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     BrowserAnimationsModule,
     CoreModule,
-    FormsModule,
-    FlexLayoutModule,
     HttpClientModule,
-    MatButtonModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatOptionModule,
-    MatGridListModule,
-    MatPaginatorModule,
-    MatTableModule,
-    MatToolbarModule,
-    MatListModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatSnackBarModule,
-    MatSlideToggleModule,
+
     // not ready for production yet - 2018-11 IJH
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.pwaTest }), // || environment.production }),
     SharedModule,
     UICommonModule,
-    PasswordStrengthMeterModule,
     XForgeCommonModule
   ],
   providers: [DatePipe],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   entryComponents: [
-    DetailSnackBarComponent,
     ChangingUsernameDialogComponent,
     DeleteDialogComponent,
+    DetailSnackBarComponent,
     InviteDialogComponent
   ],
   bootstrap: [AppComponent]
