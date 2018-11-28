@@ -8,10 +8,8 @@ import { UserService } from '@xforge-common/user.service';
 export class SystemAdminGuard implements CanActivate {
   constructor(private readonly userService: UserService) {}
 
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    const getUserPromise = this.userService.onlineGetUser(this.userService.currentUserId).toPromise();
-    return getUserPromise.then(u => {
-      return u.results.role === 'system_admin';
-    });
+  async canActivate(_next: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Promise<boolean> {
+    const user = (await this.userService.onlineGetUser(this.userService.currentUserId).toPromise()).results;
+    return user.role === 'system_admin';
   }
 }
