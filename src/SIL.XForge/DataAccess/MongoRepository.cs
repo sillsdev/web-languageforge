@@ -31,16 +31,11 @@ namespace SIL.XForge.DataAccess
                 await _collection.InsertOneAsync(entity);
                 return true;
             }
-            catch (AggregateException ae)
+            catch (MongoWriteException e)
             {
-                ae.Handle(e =>
-                    {
-                        var mwe = e as MongoWriteException;
-                        if (mwe != null && mwe.WriteError.Category == ServerErrorCategory.DuplicateKey)
-                            return true;
-                        return false;
-                    });
-                return false;
+                if (e.WriteError.Category == ServerErrorCategory.DuplicateKey)
+                    return false;
+                throw;
             }
         }
 
