@@ -34,8 +34,12 @@ export class UserEntryComponent implements OnInit, OnChanges {
   @Output() outputUserList: EventEmitter<boolean> = new EventEmitter<boolean>(false);
   @ViewChild('accountUserFormReset') accountUserFormReset: any;
 
-  constructor(private readonly formBuilder: FormBuilder, private readonly datePipe: DatePipe,
-    private readonly userService: UserService, private readonly noticeService: NoticeService) {
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    private readonly datePipe: DatePipe,
+    private readonly userService: UserService,
+    private readonly noticeService: NoticeService
+  ) {
     this.accountUserForm = this.formBuilder.group({
       FullName: ['', Validators.compose([Validators.required])],
       Username: ['', Validators.compose([Validators.required])],
@@ -46,7 +50,9 @@ export class UserEntryComponent implements OnInit, OnChanges {
     });
   }
 
-  get formControls() { return this.accountUserForm.controls; }
+  get formControls() {
+    return this.accountUserForm.controls;
+  }
 
   ngOnInit(): void {
     this.editToAddReset();
@@ -93,7 +99,7 @@ export class UserEntryComponent implements OnInit, OnChanges {
       return;
     }
 
-    class PartialUser extends User { }
+    class PartialUser extends User {}
     const userObj = new PartialUser({
       name: this.accountUserForm.value.FullName,
       username: this.accountUserForm.value.Username,
@@ -120,9 +126,12 @@ export class UserEntryComponent implements OnInit, OnChanges {
       return;
     }
     const updateUser: any = {
-      Id: this.editUserId, Name: this.accountUserForm.value.FullName,
-      Username: this.accountUserForm.value.Username, Email: this.accountUserForm.value.Email,
-      Role: this.accountUserForm.value.Role, Password: this.accountUserForm.value.Password,
+      Id: this.editUserId,
+      Name: this.accountUserForm.value.FullName,
+      Username: this.accountUserForm.value.Username,
+      Email: this.accountUserForm.value.Email,
+      Role: this.accountUserForm.value.Role,
+      Password: this.accountUserForm.value.Password,
       Active: this.accountUserForm.value.ActivateStatus
     };
     this.userService.onlineUpdateUser(updateUser).then(() => {
@@ -135,8 +144,8 @@ export class UserEntryComponent implements OnInit, OnChanges {
     });
   }
 
-  onChange(value: { checked: boolean; }): void {
-    value.checked === true ? this.userActivateDeactive = 'Activated' : this.userActivateDeactive = 'DeActivated';
+  onChange(value: { checked: boolean }): void {
+    value.checked === true ? (this.userActivateDeactive = 'Activated') : (this.userActivateDeactive = 'DeActivated');
   }
 
   getCurrentUser(userId: string): void {

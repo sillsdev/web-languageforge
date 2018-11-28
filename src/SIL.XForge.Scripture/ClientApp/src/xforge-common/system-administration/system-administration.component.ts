@@ -21,14 +21,17 @@ export class SystemAdministrationComponent implements OnInit {
   enablePagination: boolean = false;
   paginator: MatPaginator;
 
-  @ViewChild(MatPaginator) set matPaginator(page: MatPaginator) {
+  @ViewChild(MatPaginator)
+  set matPaginator(page: MatPaginator) {
     this.paginator = page;
     this.setDataSourceAttributes();
   }
 
-  constructor(private readonly dialog: MatDialog, private readonly sfUserService: SFUserService,
-    private readonly noticeService: NoticeService) {
-  }
+  constructor(
+    private readonly dialog: MatDialog,
+    private readonly sfUserService: SFUserService,
+    private readonly noticeService: NoticeService
+  ) {}
 
   ngOnInit(): void {
     this.onUserlist();

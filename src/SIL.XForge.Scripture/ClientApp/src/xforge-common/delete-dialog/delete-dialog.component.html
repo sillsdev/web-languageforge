@@ -1,16 +1,6 @@
-<div class="show-dialog">
-  <mat-toolbar>
-    <div class="mat-toolbar-tools">
-      <h3>Delete Confirmation</h3>
-    </div>
-  </mat-toolbar>
-  <mat-dialog-content>
-    <p>Are you sure you want to delete?</p>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <span class="input-group-btn">
-      <button mat-stroked-button (click)="closeDialog()" id="confirm-button-no" type="button" class="confirm-button">No</button>&nbsp;
-      <button mat-stroked-button (click)="confirmDialog()" id="confirm-button-yes" type="button" class="confirm-button">Yes</button>
-    </span>
-  </mat-dialog-actions>
-</div>
+<h3 mat-dialog-title>Delete Confirmation</h3>
+<mat-dialog-content> <p>Are you sure you want to delete?</p> </mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button (click)="closeDialog()" id="confirm-button-no">No</button>
+  <button mat-raised-button class="mat-primary" (click)="confirmDialog()" id="confirm-button-yes">Yes</button>
+</mat-dialog-actions>

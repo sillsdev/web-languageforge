@@ -1,9 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import {
-  CUSTOM_ELEMENTS_SCHEMA,
-  DebugElement
-} from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -76,7 +73,10 @@ class UserTestEnvironment {
         { provide: JSONAPIService, useFactory: () => instance(this.mockedJsonApiService) },
         { provide: UserService, useFactory: () => instance(this.mockedUserService) },
         { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
-        DatePipe, OAuthService, UrlHelperService]
+        DatePipe,
+        OAuthService,
+        UrlHelperService
+      ]
     });
     this.fixture = TestBed.createComponent(SystemAdministrationComponent);
     this.component = this.fixture.componentInstance;
@@ -377,7 +377,7 @@ describe('SystemAdministrationComponent', () => {
         dateModified: '2018-11-12T07:20:33.893Z',
         dateCreated: '0001-01-01T00:00:00',
         projects: []
-      },
+      }
     },
     {
       user: {
@@ -392,7 +392,8 @@ describe('SystemAdministrationComponent', () => {
         dateCreated: '0001-01-01T00:00:00',
         projects: []
       }
-    }];
+    }
+  ];
 
   it('show the records in the view state', fakeAsync(() => {
     const env = new UserTestEnvironment();
@@ -450,7 +451,6 @@ describe('SystemAdministrationComponent', () => {
     flush();
   }));
 
-
   it('pagination display more than 20 records to show the control in the view state', () => {
     const env = new UserTestEnvironment();
     when(env.mockedSFUserService.getAllUserProjects()).thenReturn(of(response));
@@ -502,7 +502,8 @@ describe('SystemAdministrationComponent', () => {
           dateCreated: '0001-01-01T00:00:00',
           projects: []
         }
-      }];
+      }
+    ];
     const env = new UserTestEnvironment();
     when(env.mockedSFUserService.getAllUserProjects()).thenReturn(of(result));
     env.fixture.detectChanges();

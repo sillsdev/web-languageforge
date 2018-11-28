@@ -10,7 +10,6 @@ export abstract class User extends Resource {
   canonicalEmail?: string;
   password?: string;
   paratextId?: string;
-  paratextUsername?: string;
   active?: boolean;
   role?: string;
   mobilePhone?: string;
