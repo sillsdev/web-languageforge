@@ -886,6 +886,9 @@ export class JSONAPIService {
   }
 
   private createResource(record: Record): Resource {
+    if (record == null) {
+      return null;
+    }
     const resource = this.newResource(record.type);
     resource.id = record.id;
     if (record.attributes != null) {
