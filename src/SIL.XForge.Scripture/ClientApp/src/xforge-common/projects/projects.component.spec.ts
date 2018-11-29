@@ -129,7 +129,7 @@ class TestEnvironment {
   }
 
   get table(): DebugElement {
-    return this.fixture.debugElement.query(By.css('.projects-table'));
+    return this.fixture.debugElement.query(By.css('#projects-table'));
   }
 
   get rows(): DebugElement[] {
