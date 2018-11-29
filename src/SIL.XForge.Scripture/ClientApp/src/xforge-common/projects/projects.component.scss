@@ -19,7 +19,7 @@ mat-form-field {
   margin: 30px 0px;
 }
 
-.projects-table {
+.fixed-layout-table {
   table-layout: fixed;
 }
 
@@ -30,4 +30,8 @@ mat-form-field {
 .task-label {
   font-size: small;
   color: darkgray;
+}
+
+.small-form-field {
+  width: 130px;
 }
