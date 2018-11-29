@@ -1,4 +1,5 @@
 {
   "dotnet-test-explorer.testProjectPath": "test/**/*.Tests.csproj",
-  "editor.wordWrapColumn": 120
+  "editor.wordWrapColumn": 120,
+  "editor.rulers": [120]
 }
