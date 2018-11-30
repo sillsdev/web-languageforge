@@ -3,7 +3,7 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("json-api/[controller]")]
     [ApiController]
     public class SchemaController : ControllerBase
     {

@@ -2,16 +2,16 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { instance, mock } from 'ts-mockito';
 
-import { JSONAPIService } from './jsonapi.service';
+import { JsonApiService } from './json-api.service';
 import { ProjectUserService } from './project-user.service';
 
 describe('ProjectUserService', () => {
-  const mockedJSONAPIService = mock(JSONAPIService);
+  const mockedJsonApiService = mock(JsonApiService);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ProjectUserService, { provide: JSONAPIService, useFactory: () => instance(mockedJSONAPIService) }]
+      providers: [ProjectUserService, { provide: JsonApiService, useFactory: () => instance(mockedJsonApiService) }]
     });
   });
 

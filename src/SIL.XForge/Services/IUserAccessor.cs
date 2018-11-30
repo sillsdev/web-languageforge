@@ -5,5 +5,6 @@ namespace SIL.XForge.Services
         bool IsAuthenticated { get; }
         string UserId { get; }
         string SystemRole { get; }
+        string Name { get; }
     }
 }

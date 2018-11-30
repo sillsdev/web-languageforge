@@ -2,20 +2,20 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { instance, mock } from 'ts-mockito';
 
-import { JSONAPIService } from './jsonapi.service';
+import { JsonApiService } from './json-api.service';
 import { DomainModel } from './models/domain-model';
 
-describe('JSONAPIService', () => {
+describe('JsonApiService', () => {
   const mockedDomainModel = mock(DomainModel);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [JSONAPIService, { provide: DomainModel, useFactory: () => instance(mockedDomainModel) }]
+      providers: [JsonApiService, { provide: DomainModel, useFactory: () => instance(mockedDomainModel) }]
     });
   });
 
-  it('should be created', inject([JSONAPIService], (service: JSONAPIService) => {
+  it('should be created', inject([JsonApiService], (service: JsonApiService) => {
     expect(service).toBeTruthy();
   }));
 });

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { JSONAPIService } from '@xforge-common/jsonapi.service';
+import { JsonApiService } from '@xforge-common/json-api.service';
 import { RealtimeService } from '@xforge-common/realtime.service';
 import { ResourceService } from '@xforge-common/resource.service';
 import { Text } from './models/text';
@@ -12,7 +12,7 @@ export type TextType = 'source' | 'target';
   providedIn: 'root'
 })
 export class TextService extends ResourceService {
-  constructor(jsonApiService: JSONAPIService, private readonly realtimeService: RealtimeService) {
+  constructor(jsonApiService: JsonApiService, private readonly realtimeService: RealtimeService) {
     super(Text.TYPE, jsonApiService);
   }
 

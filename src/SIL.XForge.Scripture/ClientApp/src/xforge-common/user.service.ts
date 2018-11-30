@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { AuthService } from './auth.service';
-import { JSONAPIService, QueryObservable } from './jsonapi.service';
+import { JsonApiService, QueryObservable } from './json-api.service';
 import { ProjectUser } from './models/project-user';
 import { User } from './models/user';
 import { ResourceService } from './resource.service';
@@ -9,7 +9,7 @@ import { nameof } from './utils';
 
 @Injectable()
 export abstract class UserService extends ResourceService {
-  constructor(jsonApiService: JSONAPIService, private readonly authService: AuthService) {
+  constructor(jsonApiService: JsonApiService, private readonly authService: AuthService) {
     super(User.TYPE, jsonApiService);
   }
 

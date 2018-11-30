@@ -7,9 +7,8 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { IdentityService } from '@identity/identity.service';
-import { SendInviteResult } from '@identity/models/send-invite-result';
-import { UICommonModule } from '@xforge-common/ui-common.module';
+import { InviteAction, ProjectService } from '../project.service';
+import { UICommonModule } from '../ui-common.module';
 import { EmailInviteComponent } from './email-invite.component';
 import { InviteDialogComponent } from './invite-dialog.component';
 
@@ -21,7 +20,7 @@ describe('EmailInviteComponent', () => {
     env.clickElement(env.inviteButton);
 
     env.clickElement(env.closeButton);
-    verify(env.mockedIdentityService.sendInvite(anything())).never();
+    verify(env.mockedProjectService.onlineInvite(anything())).never();
     expect().nothing();
     flush();
   }));
@@ -36,7 +35,7 @@ describe('EmailInviteComponent', () => {
     env.setInputValue(env.emailInput, 'notAnEmailAddress');
 
     env.clickElement(env.closeButton);
-    verify(env.mockedIdentityService.sendInvite(anything())).never();
+    verify(env.mockedProjectService.onlineInvite(anything())).never();
     expect().nothing();
     flush();
   }));
@@ -52,7 +51,7 @@ describe('EmailInviteComponent', () => {
     env.setInputValue(env.emailInput, '');
 
     env.clickElement(env.closeButton);
-    verify(env.mockedIdentityService.sendInvite(anything())).never();
+    verify(env.mockedProjectService.onlineInvite(anything())).never();
     expect().nothing();
     flush();
   }));
@@ -66,7 +65,8 @@ describe('EmailInviteComponent', () => {
     env.setInputValue(env.emailInput, emailAddress);
 
     env.clickElement(env.sendInviteButton);
-    verify(env.mockedIdentityService.sendInvite(emailAddress)).once();
+    env.clickElement(env.closeButton);
+    verify(env.mockedProjectService.onlineInvite(emailAddress)).once();
     expect().nothing();
     flush();
   }));
@@ -85,17 +85,14 @@ class TestEnvironment {
   fixture: ComponentFixture<EmailInviteComponent>;
 
   mockedMatDialogRef: MatDialogRef<InviteDialogComponent>;
-  mockedIdentityService: IdentityService;
+  mockedProjectService: ProjectService;
   overlayContainer: OverlayContainer;
 
   constructor() {
     this.mockedMatDialogRef = mock(MatDialogRef);
-    this.mockedIdentityService = mock(IdentityService);
+    this.mockedProjectService = mock(ProjectService);
 
-    const sendInviteResult = {
-      success: true
-    } as SendInviteResult;
-    when(this.mockedIdentityService.sendInvite(anything())).thenResolve(sendInviteResult);
+    when(this.mockedProjectService.onlineInvite(anything())).thenResolve(InviteAction.Invited);
 
     TestBed.configureTestingModule({
       imports: [DialogTestModule],
@@ -103,7 +100,7 @@ class TestEnvironment {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: MatDialogRef, useFactory: () => instance(this.mockedMatDialogRef) },
-        { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) }
+        { provide: ProjectService, useFactory: () => instance(this.mockedProjectService) }
       ]
     });
     this.fixture = TestBed.createComponent(EmailInviteComponent);

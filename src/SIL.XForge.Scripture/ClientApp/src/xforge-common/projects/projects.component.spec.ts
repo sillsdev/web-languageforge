@@ -8,7 +8,7 @@ import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { GetAllParameters, QueryResults } from '../jsonapi.service';
+import { GetAllParameters, QueryResults } from '../json-api.service';
 import { Project, ProjectRef } from '../models/project';
 import { NONE_ROLE, ProjectRole } from '../models/project-role';
 import { ProjectUser } from '../models/project-user';

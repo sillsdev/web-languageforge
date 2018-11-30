@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
 
-import { IdentityService } from '@identity/identity.service';
-import { NoticeService } from '@xforge-common/notice.service';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
+import { NoticeService } from '../notice.service';
+import { InviteAction, ProjectService } from '../project.service';
 
 @Component({
   templateUrl: './invite-dialog.component.html',
@@ -20,37 +20,40 @@ export class InviteDialogComponent {
   constructor(
     private readonly dialogRef: MatDialogRef<InviteDialogComponent>,
     private readonly noticeService: NoticeService,
-    private readonly identityService: IdentityService
+    private readonly projectService: ProjectService
   ) {}
 
   get email() {
     return this.sendInviteForm.get('email');
   }
 
-  onSubmit() {
+  async onSubmit(): Promise<void> {
     if (!this.sendInviteForm.valid) {
-      return false;
+      return;
     }
 
     this.isSubmitted = true;
-    this.identityService.sendInvite(this.sendInviteForm.value.email).then(response => {
-      let message: string = '';
-      this.isSubmitted = false;
-      if (response.success) {
-        if (response.emailTypeSent === 'joined') {
-          message = 'An email has been sent to ' + this.sendInviteForm.value.email + ' adding them to this project';
-          this.noticeService.push(NoticeService.SUCCESS, message);
-          this.sendInviteForm.reset();
-        } else if (response.emailTypeSent === 'invited') {
-          message = 'An invitation email has been sent to ' + this.sendInviteForm.value.email;
-          this.noticeService.push(NoticeService.SUCCESS, message);
-          this.sendInviteForm.reset();
-        } else if (response.isAlreadyInProject) {
-          message = 'A user with email ' + this.sendInviteForm.value.email + ' is already in the project';
-          this.noticeService.push(NoticeService.SUCCESS, message);
-        }
-      }
-    });
+    const actionPerformed = await this.projectService.onlineInvite(this.sendInviteForm.value.email);
+    let message: string = '';
+    this.isSubmitted = false;
+    switch (actionPerformed) {
+      case InviteAction.Joined:
+        message = 'An email has been sent to ' + this.sendInviteForm.value.email + ' adding them to this project';
+        this.noticeService.push(NoticeService.SUCCESS, message);
+        this.sendInviteForm.reset();
+        break;
+
+      case InviteAction.Invited:
+        message = 'An invitation email has been sent to ' + this.sendInviteForm.value.email;
+        this.noticeService.push(NoticeService.SUCCESS, message);
+        this.sendInviteForm.reset();
+        break;
+
+      case InviteAction.None:
+        message = 'A user with email ' + this.sendInviteForm.value.email + ' is already in the project';
+        this.noticeService.push(NoticeService.SUCCESS, message);
+        break;
+    }
   }
 
   onClose() {

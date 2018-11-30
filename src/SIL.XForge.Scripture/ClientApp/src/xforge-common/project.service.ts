@@ -5,11 +5,17 @@ import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import { registerCustomFilter } from './custom-filter-specifier';
-import { GetAllParameters, JSONAPIService, QueryObservable } from './jsonapi.service';
+import { GetAllParameters, JsonApiService, QueryObservable } from './json-api.service';
 import { Project } from './models/project';
 import { NONE_ROLE, ProjectRole } from './models/project-role';
 import { ResourceService } from './resource.service';
 import { nameof } from './utils';
+
+export enum InviteAction {
+  None = 'none',
+  Joined = 'joined',
+  Invited = 'invited'
+}
 
 @Injectable()
 export abstract class ProjectService<T extends Project = Project> extends ResourceService {
@@ -17,7 +23,7 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
 
   readonly roles: Map<string, ProjectRole>;
 
-  constructor(jsonApiService: JSONAPIService, roles: ProjectRole[]) {
+  constructor(jsonApiService: JsonApiService, roles: ProjectRole[]) {
     super(Project.TYPE, jsonApiService);
 
     registerCustomFilter(this.type, ProjectService.SEARCH_FILTER, (r, v) => this.searchProjects(r, v));
@@ -59,6 +65,10 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
         return this.jsonApiService.onlineGetAll(this.type, currentParameters);
       })
     );
+  }
+
+  onlineInvite(email: string): Promise<InviteAction> {
+    return this.jsonApiService.onlineInvoke(this.type, 'invite', { email });
   }
 
   private searchProjects(records: Record[], value: string): Record[] {

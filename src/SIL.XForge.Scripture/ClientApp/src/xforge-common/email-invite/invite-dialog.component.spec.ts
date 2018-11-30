@@ -1,14 +1,13 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { IdentityService } from '@identity/identity.service';
-import { SendInviteResult } from '@identity/models/send-invite-result';
-import { UICommonModule } from '@xforge-common/ui-common.module';
+import { InviteAction, ProjectService } from '../project.service';
+import { UICommonModule } from '../ui-common.module';
 import { InviteDialogComponent } from './invite-dialog.component';
 
 describe('InviteDialogComponent', () => {
@@ -20,7 +19,8 @@ describe('InviteDialogComponent', () => {
     expect(env.component.sendInviteForm.valid).toBe(false);
     expect(env.component.email.hasError('email')).toBeFalsy();
     env.clickElement(env.closeButton);
-    verify(env.mockedIdentityService.sendInvite(anything())).never();
+    verify(env.mockedProjectService.onlineInvite(anything())).never();
+    flush();
   }));
 
   it('form should be invalid when dirty', fakeAsync(() => {
@@ -36,7 +36,8 @@ describe('InviteDialogComponent', () => {
     expect(env.component.sendInviteForm.valid).toBe(false);
     expect(env.component.email.hasError('email')).toBe(true);
     env.clickElement(env.closeButton);
-    verify(env.mockedIdentityService.sendInvite(anything())).never();
+    verify(env.mockedProjectService.onlineInvite(anything())).never();
+    flush();
   }));
 
   it('form should be invalid when dirty and empty', fakeAsync(() => {
@@ -53,7 +54,8 @@ describe('InviteDialogComponent', () => {
     expect(env.component.sendInviteForm.valid).toBe(false);
     expect(env.component.email.hasError('required')).toBe(true);
     env.clickElement(env.closeButton);
-    verify(env.mockedIdentityService.sendInvite(anything())).never();
+    verify(env.mockedProjectService.onlineInvite(anything())).never();
+    flush();
   }));
 
   it('should submit when form is valid', fakeAsync(() => {
@@ -68,7 +70,9 @@ describe('InviteDialogComponent', () => {
     expect(env.component.email.hasError('required')).toBeFalsy();
     expect(env.component.email.hasError('email')).toBeFalsy();
     env.clickElement(env.sendInviteButton);
-    verify(env.mockedIdentityService.sendInvite(emailAddress)).once();
+    env.clickElement(env.closeButton);
+    verify(env.mockedProjectService.onlineInvite(emailAddress)).once();
+    flush();
   }));
 });
 
@@ -77,23 +81,20 @@ class TestEnvironment {
   fixture: ComponentFixture<InviteDialogComponent>;
 
   mockedMatDialogRef: MatDialogRef<InviteDialogComponent>;
-  mockedIdentityService: IdentityService;
+  mockedProjectService: ProjectService;
 
   constructor() {
     this.mockedMatDialogRef = mock(MatDialogRef);
-    this.mockedIdentityService = mock(IdentityService);
+    this.mockedProjectService = mock(ProjectService);
 
-    const sendInviteResult = {
-      success: true
-    } as SendInviteResult;
-    when(this.mockedIdentityService.sendInvite(anything())).thenResolve(sendInviteResult);
+    when(this.mockedProjectService.onlineInvite(anything())).thenResolve(InviteAction.Invited);
 
     TestBed.configureTestingModule({
       imports: [FormsModule, ReactiveFormsModule, NoopAnimationsModule, UICommonModule],
       declarations: [InviteDialogComponent],
       providers: [
         { provide: MatDialogRef, useFactory: () => instance(this.mockedMatDialogRef) },
-        { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) }
+        { provide: ProjectService, useFactory: () => instance(this.mockedProjectService) }
       ]
     });
     this.fixture = TestBed.createComponent(InviteDialogComponent);

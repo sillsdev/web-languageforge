@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { GetAllParameters } from '@xforge-common/jsonapi.service';
+import { GetAllParameters } from '@xforge-common/json-api.service';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
 

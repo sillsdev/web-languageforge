@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Record } from '@orbit/data';
 
-import { JSONAPIService } from '@xforge-common/jsonapi.service';
+import { JsonApiService } from '@xforge-common/json-api.service';
 import { InputSystem } from '@xforge-common/models/input-system';
 import { ProjectRole } from '@xforge-common/models/project-role';
 import { ProjectService } from '@xforge-common/project.service';
@@ -17,7 +17,7 @@ export class SFProjectService extends ProjectService<SFProject> {
     { role: 'pt_translator', displayName: 'Translator' }
   ];
 
-  constructor(jsonApiService: JSONAPIService) {
+  constructor(jsonApiService: JsonApiService) {
     super(jsonApiService, SFProjectService.ROLES);
   }
 

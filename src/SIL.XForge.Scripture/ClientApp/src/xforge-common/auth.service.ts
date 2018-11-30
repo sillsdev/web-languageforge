@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AuthConfig, JwksValidationHandler, OAuthErrorEvent, OAuthService } from 'angular-oauth2-oidc';
 
 import { environment } from '../environments/environment';
-import { JSONAPIService } from './jsonapi.service';
+import { JsonApiService } from './json-api.service';
 import { LocationService } from './location.service';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class AuthService {
 
   constructor(
     private readonly oauthService: OAuthService,
-    private readonly jsonApiService: JSONAPIService,
+    private readonly jsonApiService: JsonApiService,
     private readonly locationService: LocationService,
     private readonly router: Router
   ) {}

@@ -45,7 +45,8 @@ namespace SIL.XForge.Scripture
         public IHostingEnvironment Environment { get; }
         public IContainer ApplicationContainer { get; private set; }
 
-        private SpaDevServerStartup SpaDevServerStartup {
+        private SpaDevServerStartup SpaDevServerStartup
+        {
             get
             {
                 if (Environment.IsDevelopment())
@@ -79,6 +80,8 @@ namespace SIL.XForge.Scripture
             services.AddRealtimeServer(IsDevelopment);
 
             services.AddExceptionLogging();
+
+            services.AddCommonServices();
 
             services.AddXFIdentityServer(Configuration);
 
@@ -126,7 +129,7 @@ namespace SIL.XForge.Scripture
 
             services.AddSFJsonApi(mvcBuilder, containerBuilder);
 
-            services.AddTransient<IEmailService, EmailService>();
+            services.AddXFJsonRpc();
 
             if (SpaDevServerStartup == SpaDevServerStartup.None)
             {
@@ -168,6 +171,8 @@ namespace SIL.XForge.Scripture
             app.UseXFIdentityServer();
 
             app.UseJsonApi();
+
+            app.UseXFJsonRpc();
 
             app.UseMvc(routes =>
                 {
