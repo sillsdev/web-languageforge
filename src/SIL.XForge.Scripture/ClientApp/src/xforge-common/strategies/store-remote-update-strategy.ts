@@ -8,7 +8,7 @@ export class StoreRemoteUpdateStrategy extends RequestStrategy {
       on: 'beforeUpdate',
 
       target: remote,
-      filter: (t: Transform) => !t.options.localOnly,
+      filter: (t: Transform) => t.options == null || !t.options.localOnly,
       action: 'push',
 
       blocking: false
