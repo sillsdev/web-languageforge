@@ -40,9 +40,12 @@ export class RealtimeService {
       const store = this.getStore(identity.type);
       const RealtimeDocType = this.domainModel.getRealtimeDocType(identity.type);
       const realtimeDoc = new RealtimeDocType(sharedbDoc, store);
-      this.docs.set(identity, new Promise<any>((resolve, reject) => {
-        realtimeDoc.subscribe().then(() => resolve(realtimeDoc), err => reject(err));
-      }));
+      this.docs.set(
+        identity,
+        new Promise<any>((resolve, reject) => {
+          realtimeDoc.subscribe().then(() => resolve(realtimeDoc), err => reject(err));
+        })
+      );
     }
 
     return this.docs.get(identity);

@@ -9,14 +9,8 @@ import { LogInComponent } from './log-in/log-in.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
-  declarations: [LogInComponent,
-    ForgotPasswordComponent,
-    ResetPasswordComponent],
-  imports: [
-    CommonModule,
-    IdentityRoutingModule,
-    UICommonModule
-  ],
+  declarations: [LogInComponent, ForgotPasswordComponent, ResetPasswordComponent],
+  imports: [CommonModule, IdentityRoutingModule, UICommonModule],
   providers: [IdentityService]
 })
-export class IdentityModule { }
+export class IdentityModule {}

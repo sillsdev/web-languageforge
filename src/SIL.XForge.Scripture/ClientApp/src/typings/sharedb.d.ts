@@ -32,8 +32,8 @@ declare module 'sharedb/lib/client' {
 
   export const Connection: {
     prototype: Connection;
-    new(socket: any): Connection;
-  }
+    new (socket: any): Connection;
+  };
 
   export interface Doc extends EventEmitter {
     type: OTType;

@@ -5,4 +5,4 @@ import { UserService } from '@xforge-common/user.service';
 @Injectable({
   providedIn: 'root'
 })
-export class SFUserService extends UserService { }
+export class SFUserService extends UserService {}

@@ -4,14 +4,16 @@
     <mat-card-content fxLayout="column">
       <form [formGroup]="logInForm" (ngSubmit)="submit()" fxLayout="column">
         <mat-form-field>
-          <input matInput placeholder="Email or Username" formControlName="user" autofocus>
+          <input matInput placeholder="Email or Username" formControlName="user" autofocus />
         </mat-form-field>
         <mat-form-field>
-          <input matInput type="password" placeholder="Password" formControlName="password">
+          <input matInput type="password" placeholder="Password" formControlName="password" />
         </mat-form-field>
         <mat-checkbox formControlName="rememberLogIn">Remember me</mat-checkbox>
-        <button mat-raised-button class="submit-button" color="primary" type="submit" [disabled]="logInDisabled">Go</button>
-        <a routerLink='/identity/forgot-password'>Forgot Password</a>
+        <button mat-raised-button class="submit-button" color="primary" type="submit" [disabled]="logInDisabled">
+          Go
+        </button>
+        <a routerLink="/identity/forgot-password">Forgot Password</a>
       </form>
     </mat-card-content>
   </mat-card>

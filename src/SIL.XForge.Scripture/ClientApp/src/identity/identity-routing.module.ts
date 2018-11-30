@@ -15,4 +15,4 @@ export const identityRoutes: Routes = [
   imports: [RouterModule.forChild(identityRoutes)],
   exports: [RouterModule]
 })
-export class IdentityRoutingModule { }
+export class IdentityRoutingModule {}

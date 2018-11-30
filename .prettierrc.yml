@@ -1,4 +1,7 @@
 overrides:
+  - files: "*.cshtml"
+    options:
+      parser: html
   - files: "*.html"
     options:
       parser: angular

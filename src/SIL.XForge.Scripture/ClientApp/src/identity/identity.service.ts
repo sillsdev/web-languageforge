@@ -14,8 +14,7 @@ import { VerifyEmailParams } from './models/verify-email-params';
 
 @Injectable()
 export class IdentityService {
-
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
   logIn(params: LogInParams): Promise<LogInResult> {
     return this.callApi('log-in', params);

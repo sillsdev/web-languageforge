@@ -17,7 +17,7 @@ export class FetchDataComponent implements OnInit {
 
   private readonly searchTerm$ = new BehaviorSubject<string>('');
 
-  constructor(private readonly projectService: SFProjectService) { }
+  constructor(private readonly projectService: SFProjectService) {}
 
   get isDirty(): boolean {
     return this.updatedProjects.size > 0;

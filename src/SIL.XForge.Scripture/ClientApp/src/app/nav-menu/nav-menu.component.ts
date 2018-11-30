@@ -9,7 +9,7 @@ import { AuthService } from '@xforge-common/auth.service';
 export class NavMenuComponent {
   isExpanded = false;
 
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   get isLoggedIn(): Promise<boolean> {
     return this.authService.isLoggedIn;

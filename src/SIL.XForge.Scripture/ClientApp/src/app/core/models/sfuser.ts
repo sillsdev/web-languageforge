@@ -9,4 +9,4 @@ export class SFUser extends User {
   }
 }
 
-export class SFUserRef extends UserRef { }
+export class SFUserRef extends UserRef {}

@@ -1,196 +1,210 @@
 {
-  "Bellows_Test_Constants" : "",
+  "Bellows_Test_Constants": "",
 
-  "siteType"           : "languageforge",
-  "siteHostname"       : "languageforge.local",
-  "baseUrl"            : "http://languageforge.local",
-  "conditionTimeout"   : 3000,
+  "siteType": "languageforge",
+  "siteHostname": "languageforge.local",
+  "baseUrl": "http://languageforge.local",
+  "conditionTimeout": 3000,
 
-  "adminUsername"      : "test_runner_admin",
-  "adminName"          : "Test Admin",
-  "adminPassword"      : "hammertime",
-  "adminEmail"         : "test_runner_admin@example.com",
-  "managerUsername"    : "test_runner_manager_user",
-  "managerName"        : "Test Manager",
-  "managerPassword"    : "manageruser1",
-  "managerEmail"       : "test_runner_manager_user@example.com",
-  "memberUsername"     : "test_runner_normal_user",
-  "memberName"         : "Test User",
-  "memberPassword"     : "normaluser1",
-  "memberEmail"        : "test_runner_normal_user@example.com",
-  "member2Username"    : "test_runner_normal_user_2",
-  "member2Name"        : "Test Second User",
-  "member2Password"    : "normaluser2",
-  "member2Email"       : "test_runner_normal_user_2@example.com",
-  "expiredUsername"    : "test_runner_expired_normal_user",
-  "expiredName"        : "Test ExpiredUser",
-  "expiredPassword"    : "normaluser3",
-  "expiredEmail"       : "test_runner_expired_normal_user@example.com",
-  "expiredPasswordKey" : "fa6c056d5155059c4f067e77c4cb420fcfc3762f",
-  "resetUsername"      : "test_runner_reset_normal_user",
-  "resetName"          : "Test ResetUser",
-  "resetPassword"      : "normaluser4",
-  "resetEmail"         : "test_runner_reset_normal_user@example.com",
-  "resetPasswordKey"   : "122240670b5136bdb260d02feaff098280c33bd4",
-  "observerUsername"   : "test_runner_observer_normal_user",
-  "observerName"       : "Test ObserverUser",
-  "observerPassword"   : "normaluser5",
-  "observerEmail"      : "test_runner_observer_normal_user@example.com",
-  "unusedUsername"     : "test_runner_unused_user",
-  "unusedName"         : "Test UnusedUser",
-  "unusedEmail"        : "test_runner_unused_user+test@example.com",
+  "adminUsername": "test_runner_admin",
+  "adminName": "Test Admin",
+  "adminPassword": "hammertime",
+  "adminEmail": "test_runner_admin@example.com",
+  "managerUsername": "test_runner_manager_user",
+  "managerName": "Test Manager",
+  "managerPassword": "manageruser1",
+  "managerEmail": "test_runner_manager_user@example.com",
+  "memberUsername": "test_runner_normal_user",
+  "memberName": "Test User",
+  "memberPassword": "normaluser1",
+  "memberEmail": "test_runner_normal_user@example.com",
+  "member2Username": "test_runner_normal_user_2",
+  "member2Name": "Test Second User",
+  "member2Password": "normaluser2",
+  "member2Email": "test_runner_normal_user_2@example.com",
+  "expiredUsername": "test_runner_expired_normal_user",
+  "expiredName": "Test ExpiredUser",
+  "expiredPassword": "normaluser3",
+  "expiredEmail": "test_runner_expired_normal_user@example.com",
+  "expiredPasswordKey": "fa6c056d5155059c4f067e77c4cb420fcfc3762f",
+  "resetUsername": "test_runner_reset_normal_user",
+  "resetName": "Test ResetUser",
+  "resetPassword": "normaluser4",
+  "resetEmail": "test_runner_reset_normal_user@example.com",
+  "resetPasswordKey": "122240670b5136bdb260d02feaff098280c33bd4",
+  "observerUsername": "test_runner_observer_normal_user",
+  "observerName": "Test ObserverUser",
+  "observerPassword": "normaluser5",
+  "observerEmail": "test_runner_observer_normal_user@example.com",
+  "unusedUsername": "test_runner_unused_user",
+  "unusedName": "Test UnusedUser",
+  "unusedEmail": "test_runner_unused_user+test@example.com",
   "passwordTooShort": "123456",
-  "passwordValid"   : "languageforge",
-  "emailNoAt"       : "email",
-  "emailValid"      : "email@example.com",
+  "passwordValid": "languageforge",
+  "emailNoAt": "email",
+  "emailValid": "email@example.com",
 
-  "avatar"           : "/Site/views/shared/image/avatar/anonymoose.png",
+  "avatar": "/Site/views/shared/image/avatar/anonymoose.png",
 
-  "testProjectName"  : "Test Project",
-  "testProjectCode"  : "test_project",
+  "testProjectName": "Test Project",
+  "testProjectCode": "test_project",
   "testProjectAllowInvites": false,
-  "otherProjectName" : "Other Project for Testing",
-  "otherProjectCode" : "otherproject",
+  "otherProjectName": "Other Project for Testing",
+  "otherProjectCode": "otherproject",
   "otherProjectAllowInvites": true,
-  "thirdProjectName" : "new kid on the block",
-  "thirdProjectCode" : "nkotb",
-  "fourthProjectName" : "Fourth Project for Testing",
-  "fourthProjectCode" : "fourthproject",
+  "thirdProjectName": "new kid on the block",
+  "thirdProjectCode": "nkotb",
+  "fourthProjectName": "Fourth Project for Testing",
+  "fourthProjectCode": "fourthproject",
   "fourthProjectAllowInvites": true,
-  "newProjectName"   : "New Project",
-  "newProjectCode"   : "new_project",
-  "emptyProjectName" : "Empty Project",
-  "emptyProjectCode" : "empty_project",
-  "srProjectName"    : "SR Project",
-  "srProjectCode"    : "sr_project",
-  "srIdentifier"     : "mock-id1",
-  "srName"           : "mock-name1",
-  "srUsername"       : "sr-mock-username",
-  "srPassword"       : "sr-mock-password",
+  "newProjectName": "New Project",
+  "newProjectCode": "new_project",
+  "emptyProjectName": "Empty Project",
+  "emptyProjectCode": "empty_project",
+  "srProjectName": "SR Project",
+  "srProjectCode": "sr_project",
+  "srIdentifier": "mock-id1",
+  "srName": "mock-name1",
+  "srUsername": "sr-mock-username",
+  "srPassword": "sr-mock-password",
 
+  "ScriptureForge_Test_Constants": "",
 
+  "testText1Title": "Chapter 3",
+  "testText1Content": "Content of chapter 3",
+  "testText2Title": "Chapter 4",
+  "testText2Content": "Fourth chapter goes here",
+  "testText3Title": "Chapter 5",
+  "testText3Content": "Fifth chapter goes here",
 
-  "ScriptureForge_Test_Constants" : "",
+  "testText1Question1Title": "Who is speaking?",
+  "testText1Question1Content": "Who is speaking in this text?",
+  "testText1Question1Answer": "Bach is the speaker.",
+  "testText1Question1Answer1Comment": "This is a manager's comment #1.",
+  "testText1Question2Title": "Where is the story happening?",
+  "testText1Question2Content": "Where is the story in this text happening?",
+  "testText1Question2Answer": "Springfield",
+  "testText1Question2Answer2Comment": "This is a manager's comment #2.",
+  "testText1Question3Title": "What is the meaning of life?",
+  "testText1Question3Summary": "Meaning from Hitchhiker's Guide",
+  "testText1Question3Answer": "42",
 
+  "LanguageForge_Test_Constants": "",
 
-  "testText1Title"   : "Chapter 3",
-  "testText1Content" : "Content of chapter 3",
-  "testText2Title"   : "Chapter 4",
-  "testText2Content" : "Fourth chapter goes here",
-  "testText3Title"   : "Chapter 5",
-  "testText3Content" : "Fifth chapter goes here",
+  "Language added to new project": "",
+  "searchLanguage": "Spanish",
+  "foundLanguage": "español",
 
-  "testText1Question1Title"          : "Who is speaking?",
-  "testText1Question1Content"        : "Who is speaking in this text?",
-  "testText1Question1Answer"         : "Bach is the speaker.",
-  "testText1Question1Answer1Comment" : "This is a manager's comment #1.",
-  "testText1Question2Title"          : "Where is the story happening?",
-  "testText1Question2Content"        : "Where is the story in this text happening?",
-  "testText1Question2Answer"         : "Springfield",
-  "testText1Question2Answer2Comment" : "This is a manager's comment #2.",
-  "testText1Question3Title"          : "What is the meaning of life?",
-  "testText1Question3Summary"        : "Meaning from Hitchhiker's Guide",
-  "testText1Question3Answer"         : "42",
-
-
-
-  "LanguageForge_Test_Constants" : "",
-
-  "Language added to new project" : "",
-  "searchLanguage" : "Spanish",
-  "foundLanguage" : "español",
-
-  "Entries added during setup" : "",
-  "testEntry1" : {
-    "lexeme": {"th":        {"value": "ข้าวผัดหมู"},
-               "th-fonipa": {"value": "khâaw phàt mǔu"},
-               "th-Zxxx-x-audio": {"value": "TestAudio.mp3"}},
-    "senses": [{"definition": {"en": {"value": "fried rice with pork"}},
-                "pictures": [{"fileName": "FriedRiceWithPork.jpg",
-                              "caption": {"en": {"value": "fried rice with pork"}}}],
-                "partOfSpeech": {"value": "n"},
-                "semanticDomain": {"values": ["1.1"]}
-    }]
+  "Entries added during setup": "",
+  "testEntry1": {
+    "lexeme": {
+      "th": { "value": "ข้าวผัดหมู" },
+      "th-fonipa": { "value": "khâaw phàt mǔu" },
+      "th-Zxxx-x-audio": { "value": "TestAudio.mp3" }
+    },
+    "senses": [
+      {
+        "definition": { "en": { "value": "fried rice with pork" } },
+        "pictures": [{ "fileName": "FriedRiceWithPork.jpg", "caption": { "en": { "value": "fried rice with pork" } } }],
+        "partOfSpeech": { "value": "n" },
+        "semanticDomain": { "values": ["1.1"] }
+      }
+    ]
   },
-  "testEntry2" : {
-    "lexeme": {"th":        {"value": "หน่อไม้ฝรั่งผัดกุ้ง"},
-               "th-fonipa": {"value": "nɔ̀máay fàràŋ phàt kûŋ"}},
-    "senses": [{"definition": {"en": {"value": "asparagus with shrimp over rice"}},
-                "partOfSpeech": {"value": "n"}}]
+  "testEntry2": {
+    "lexeme": { "th": { "value": "หน่อไม้ฝรั่งผัดกุ้ง" }, "th-fonipa": { "value": "nɔ̀máay fàràŋ phàt kûŋ" } },
+    "senses": [
+      { "definition": { "en": { "value": "asparagus with shrimp over rice" } }, "partOfSpeech": { "value": "n" } }
+    ]
   },
 
-  "Entries added by various tests" : "",
-  "testEntry3" : {
-    "lexeme": {"th":        {"value": "ผัดชีอิ้วหมู"},
-               "th-fonipa": {"value": "phàt siiʔ ǐw mǔu"}},
-    "senses": [{"definition": {"en": {"value": "noodles fried in soy sauce with pork"}},
-                "partOfSpeech": {"value": "n"}}]
+  "Entries added by various tests": "",
+  "testEntry3": {
+    "lexeme": { "th": { "value": "ผัดชีอิ้วหมู" }, "th-fonipa": { "value": "phàt siiʔ ǐw mǔu" } },
+    "senses": [
+      { "definition": { "en": { "value": "noodles fried in soy sauce with pork" } }, "partOfSpeech": { "value": "n" } }
+    ]
   },
-  "testEntry4" : {
-    "lexeme": {"th":        {"value": "กระเพาหมู"},
-               "th-fonipa": {"value": "krapâw mǔu"}},
-    "senses": [{"definition": {"en": {"value": "stir fried basil and pork over rice"}},
-                "partOfSpeech": {"value": "n"}}]
+  "testEntry4": {
+    "lexeme": { "th": { "value": "กระเพาหมู" }, "th-fonipa": { "value": "krapâw mǔu" } },
+    "senses": [
+      { "definition": { "en": { "value": "stir fried basil and pork over rice" } }, "partOfSpeech": { "value": "n" } }
+    ]
   },
-  "testEntry5" : {
-    "lexeme": {"th":        {"value": "ไก่สกกระเกียม"},
-               "th-fonipa": {"value": "kài sòt kràthiam"}},
-    "senses": [{"definition": {"en": {"value": "stir fried garlic chicken over rice"}},
-                "partOfSpeech": {"value": "n"}}]
+  "testEntry5": {
+    "lexeme": { "th": { "value": "ไก่สกกระเกียม" }, "th-fonipa": { "value": "kài sòt kràthiam" } },
+    "senses": [
+      { "definition": { "en": { "value": "stir fried garlic chicken over rice" } }, "partOfSpeech": { "value": "n" } }
+    ]
   },
 
   "Entries with multiple meanings and optional fields": "",
-  "testMultipleMeaningEntry1" : {
-    "lexeme": {"th":        {"value": "ว่า"},
-               "th-fonipa": {"value": "wâa"}},
-    "senses": [{"definition": {"en": {"value": "that, as"}},
-                "partOfSpeech": {"value": "prep"},
-                "generalNote": {"en": {"value": "Most common usage"}},
-                "examples": [{"sentence": {"th": {"value": "ผมยังอดสงสัยไม่ได้ว่า"}},
-                              "translation": {"en": {"value": "I can't help but think that..."}}},
-                             {"sentence": {"th": {"value": "เชื่อกันมานมนานแล้วว่า"}},
-                              "translation": {"en": {"value": "We have believed for a long time that..."}}}],
-                "source": {"en": {"value": "http://www.thai-language.com/id/131403"}}},
-               {"definition": {"en": {"value": "say, speak"}},
-                "partOfSpeech": {"value": "v"},
-                "generalNote": {"en": {"value": "This meaning is almost as common"}},
-                "examples": [{"sentence": {"th": {"value": "คำนี้ภาษาอังกฤษว่ายังไง"}},
-                              "translation": {"en": {"value": "How do you say this word in English?"}}},
-                             {"sentence": {"th": {"value": "ว่าแต่เขา อิเหนาเป็นเอง"}},
-                              "translation": {"en": {"value": "The pot calls the kettle black."}}}],
-                "source": {"en": {"value": "http://www.thai-language.com/id/131403#def1c"}}
-              }]
+  "testMultipleMeaningEntry1": {
+    "lexeme": { "th": { "value": "ว่า" }, "th-fonipa": { "value": "wâa" } },
+    "senses": [
+      {
+        "definition": { "en": { "value": "that, as" } },
+        "partOfSpeech": { "value": "prep" },
+        "generalNote": { "en": { "value": "Most common usage" } },
+        "examples": [
+          {
+            "sentence": { "th": { "value": "ผมยังอดสงสัยไม่ได้ว่า" } },
+            "translation": { "en": { "value": "I can't help but think that..." } }
+          },
+          {
+            "sentence": { "th": { "value": "เชื่อกันมานมนานแล้วว่า" } },
+            "translation": { "en": { "value": "We have believed for a long time that..." } }
+          }
+        ],
+        "source": { "en": { "value": "http://www.thai-language.com/id/131403" } }
+      },
+      {
+        "definition": { "en": { "value": "say, speak" } },
+        "partOfSpeech": { "value": "v" },
+        "generalNote": { "en": { "value": "This meaning is almost as common" } },
+        "examples": [
+          {
+            "sentence": { "th": { "value": "คำนี้ภาษาอังกฤษว่ายังไง" } },
+            "translation": { "en": { "value": "How do you say this word in English?" } }
+          },
+          {
+            "sentence": { "th": { "value": "ว่าแต่เขา อิเหนาเป็นเอง" } },
+            "translation": { "en": { "value": "The pot calls the kettle black." } }
+          }
+        ],
+        "source": { "en": { "value": "http://www.thai-language.com/id/131403#def1c" } }
+      }
+    ]
   },
 
-  "testMockZipImportFile" : {
-    "lastModified" : 1416986856000,
-    "name" : "TestLexProject.zip",
-    "size" : 28999,
-    "type" : "",
+  "testMockZipImportFile": {
+    "lastModified": 1416986856000,
+    "name": "TestLexProject.zip",
+    "size": 28999,
+    "type": "",
     "webkitRelativePath": ""
   },
-  "testMockJpgImportFile" : {
-    "lastModified" : 1416986856000,
-    "name" : "TestImage.jpg",
-    "size" : 2753,
-    "type" : "",
+  "testMockJpgImportFile": {
+    "lastModified": 1416986856000,
+    "name": "TestImage.jpg",
+    "size": 2753,
+    "type": "",
     "webkitRelativePath": ""
   },
-  "testMockPngUploadFile" : {
-    "lastModified" : 1416986856000,
-    "name" : "TestImage.png",
-    "size" : 5652,
-    "type" : "",
+  "testMockPngUploadFile": {
+    "lastModified": 1416986856000,
+    "name": "TestImage.png",
+    "size": 5652,
+    "type": "",
     "webkitRelativePath": ""
   },
-  "testMockMp3UploadFile" : {
-    "lastModified" : 1416986856000,
-    "name" : "TestAudio.mp3",
-    "size" : 21064,
-    "type" : "",
+  "testMockMp3UploadFile": {
+    "lastModified": 1416986856000,
+    "name": "TestAudio.mp3",
+    "size": 21064,
+    "type": "",
     "webkitRelativePath": ""
   },
 
-  "End_of_constants" : ""
-
+  "End_of_constants": ""
 }

@@ -38,13 +38,15 @@ export class RealtimeComponent extends SubscriptionDisposable implements OnInit 
   }
 
   ngOnInit() {
-    this.projects$ = this.projectService.getAll({ }, [nameof<SFProject>('texts')]).pipe(map(r => {
-      return r.results.map(p => ({
-        id: p.id,
-        name: p.projectName,
-        texts: r.getManyIncluded<Text>(p.texts).map(t => ({ id: t.id, name: t.name }))
-      }));
-    }));
+    this.projects$ = this.projectService.getAll({}, [nameof<SFProject>('texts')]).pipe(
+      map(r => {
+        return r.results.map(p => ({
+          id: p.id,
+          name: p.projectName,
+          texts: r.getManyIncluded<Text>(p.texts).map(t => ({ id: t.id, name: t.name }))
+        }));
+      })
+    );
     this.subscribe(this.selectTextForm.get('project').valueChanges, (project: ProjectOption) => {
       this.selectTextForm.get('text').reset();
       this.selectedProject = project;

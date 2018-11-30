@@ -47,7 +47,7 @@ function operationsFromDeserializedDocument(deserialized: any): Operation[] {
 
 export interface QueryOperatorResponse {
   transforms: Transform[];
-  primaryData: Record|Record[];
+  primaryData: Record | Record[];
   includedData?: Record[];
   meta?: any;
 }
@@ -137,7 +137,9 @@ export const QueryOperators: Dict<QueryOperator> = {
 
     try {
       const document: JSONAPIDocument = await source.fetch(
-        source.relatedResourceURL(record.type, record.id, relationship), settings);
+        source.relatedResourceURL(record.type, record.id, relationship),
+        settings
+      );
 
       const deserialized = source.serializer.deserializeDocument(document);
       const relatedRecord = deserialized.data;
@@ -173,7 +175,9 @@ export const QueryOperators: Dict<QueryOperator> = {
 
     try {
       const document: JSONAPIDocument = await source.fetch(
-        source.relatedResourceURL(record.type, record.id, relationship), settings);
+        source.relatedResourceURL(record.type, record.id, relationship),
+        settings
+      );
 
       const deserialized = source.serializer.deserializeDocument(document);
       const relatedRecords = deserialized.data;
@@ -250,8 +254,10 @@ function buildFilterParam(source: JSONAPISource, filterSpecifiers: FilterSpecifi
       const filterName = source.serializer.resourceAttribute(null, customFilter.name);
       filters.push({ [filterName]: customFilter.value });
     } else {
-      throw new QueryExpressionParseError(`Filter operation ${filterSpecifier.op} not recognized for JSONAPISource.`,
-        filterSpecifier);
+      throw new QueryExpressionParseError(
+        `Filter operation ${filterSpecifier.op} not recognized for JSONAPISource.`,
+        filterSpecifier
+      );
     }
   });
 
@@ -259,21 +265,25 @@ function buildFilterParam(source: JSONAPISource, filterSpecifiers: FilterSpecifi
 }
 
 function buildSortParam(source: JSONAPISource, sortSpecifiers: SortSpecifier[]) {
-  return sortSpecifiers.map(sortSpecifier => {
-    if (sortSpecifier.kind === 'attribute') {
-      const attributeSort = sortSpecifier as AttributeSortSpecifier;
+  return sortSpecifiers
+    .map(sortSpecifier => {
+      if (sortSpecifier.kind === 'attribute') {
+        const attributeSort = sortSpecifier as AttributeSortSpecifier;
 
-      // Note: We don't know the `type` of the attribute here, so passing `null`
-      const resourceAttribute = source.serializer.resourceAttribute(null, attributeSort.attribute);
-      return (sortSpecifier.order === 'descending' ? '-' : '') + resourceAttribute;
-    }
-    throw new QueryExpressionParseError(`Sort specifier ${sortSpecifier.kind} not recognized for JSONAPISource.`,
-      sortSpecifier);
-  }).join(',');
+        // Note: We don't know the `type` of the attribute here, so passing `null`
+        const resourceAttribute = source.serializer.resourceAttribute(null, attributeSort.attribute);
+        return (sortSpecifier.order === 'descending' ? '-' : '') + resourceAttribute;
+      }
+      throw new QueryExpressionParseError(
+        `Sort specifier ${sortSpecifier.kind} not recognized for JSONAPISource.`,
+        sortSpecifier
+      );
+    })
+    .join(',');
 }
 
 function buildPageParam(pageSpecifier: PageSpecifier): any {
-  const param = { };
+  const param = {};
   switch (pageSpecifier.kind) {
     case 'offsetLimit':
       const offsetLimit = pageSpecifier as OffsetLimitPageSpecifier;

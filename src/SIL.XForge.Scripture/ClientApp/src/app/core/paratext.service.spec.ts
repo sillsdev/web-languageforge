@@ -10,13 +10,8 @@ describe('ParatextService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
-        ParatextService,
-        { provide: AuthService, useFactory: () => instance(mockedAuthService) }
-      ]
+      imports: [HttpClientTestingModule],
+      providers: [ParatextService, { provide: AuthService, useFactory: () => instance(mockedAuthService) }]
     });
   });
 

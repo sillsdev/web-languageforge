@@ -14,7 +14,6 @@ import { EmailInviteComponent } from './email-invite.component';
 import { InviteDialogComponent } from './invite-dialog.component';
 
 describe('EmailInviteComponent', () => {
-
   it('form should be invalid when empty and pristine', fakeAsync(() => {
     const env = new TestEnvironment();
     env.fixture.detectChanges();
@@ -71,22 +70,15 @@ describe('EmailInviteComponent', () => {
     expect().nothing();
     flush();
   }));
-
 });
 
 @NgModule({
-  imports: [
-    FormsModule,
-    MatDialogModule,
-    ReactiveFormsModule,
-    NoopAnimationsModule,
-    UICommonModule
-  ],
+  imports: [FormsModule, MatDialogModule, ReactiveFormsModule, NoopAnimationsModule, UICommonModule],
   exports: [InviteDialogComponent],
   declarations: [InviteDialogComponent],
   entryComponents: [InviteDialogComponent]
 })
-class DialogTestModule { }
+class DialogTestModule {}
 
 class TestEnvironment {
   component: EmailInviteComponent;
@@ -158,5 +150,4 @@ class TestEnvironment {
     tick();
     this.fixture.detectChanges();
   }
-
 }

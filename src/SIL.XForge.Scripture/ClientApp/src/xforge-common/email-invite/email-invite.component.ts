@@ -9,7 +9,7 @@ import { InviteDialogComponent } from './invite-dialog.component';
   styleUrls: ['./email-invite.component.scss']
 })
 export class EmailInviteComponent {
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog) {}
 
   openDialog() {
     const dialogConfig = {

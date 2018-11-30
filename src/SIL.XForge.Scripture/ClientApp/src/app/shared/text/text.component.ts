@@ -26,7 +26,7 @@ export class TextComponent implements OnDestroy {
   private textDataSub: Subscription;
   private textData: TextData;
 
-  constructor(private readonly textService: TextService) { }
+  constructor(private readonly textService: TextService) {}
 
   get textId(): string {
     return this._textId;
@@ -52,12 +52,17 @@ export class TextComponent implements OnDestroy {
     if (this._textId == null || this.editor == null) {
       return;
     }
-    this.textData = await this.textService.connect(this.textId, this.textType);
+    this.textData = await this.textService.connect(
+      this.textId,
+      this.textType
+    );
     this.editor.setContents(this.textData.data);
-    this.editorSub = fromEvent<[DeltaStatic, DeltaStatic, Sources]>(this.editor, 'text-change').pipe(
-      filter(([, , source]) => source === 'user'),
-      map(([delta]) => delta)
-    ).subscribe(delta => this.textData.submit(delta, this.editor));
+    this.editorSub = fromEvent<[DeltaStatic, DeltaStatic, Sources]>(this.editor, 'text-change')
+      .pipe(
+        filter(([, , source]) => source === 'user'),
+        map(([delta]) => delta)
+      )
+      .subscribe(delta => this.textData.submit(delta, this.editor));
     this.textDataSub = this.textData.remoteChanges().subscribe(ops => this.editor.updateContents(ops));
   }
 

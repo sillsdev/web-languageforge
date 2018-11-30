@@ -4,7 +4,6 @@ import { AppPage } from './app.po';
 import { ChangePasswordPage } from './change-password.po';
 import { LoginPage } from './login.po';
 
-
 describe('E2E Change Password app', () => {
   const constants = require('../testConstants.json');
   const loginPage = new LoginPage();
@@ -30,12 +29,14 @@ describe('E2E Change Password app', () => {
     await AppPage.homepage.logoutButton.click();
 
     await loginPage.login(constants.memberUsername, newPassword);
-    await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.changePasswordButton),
-      constants.conditionTimeout);
+    await browser.wait(
+      ExpectedConditions.visibilityOf(AppPage.homepage.changePasswordButton),
+      constants.conditionTimeout
+    );
     expect(await AppPage.getMainHeading()).toContain(constants.memberName);
   });
 
- it('Verify the changed password into Old Password', async () => {
+  it('Verify the changed password into Old Password', async () => {
     await AppPage.homepage.changePasswordButton.click();
     await changePasswordPage.newPasswordInput.sendKeys(constants.adminPassword);
     await changePasswordPage.confirmPasswordInput.sendKeys(constants.adminPassword);

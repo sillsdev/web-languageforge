@@ -23,13 +23,16 @@ export class LogInComponent implements OnInit {
 
   private params: Params;
 
-  constructor(private readonly identityService: IdentityService, public readonly snackBar: MatSnackBar,
-    private readonly activatedRoute: ActivatedRoute, private readonly locationService: LocationService,
+  constructor(
+    private readonly identityService: IdentityService,
+    public readonly snackBar: MatSnackBar,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly locationService: LocationService,
     private readonly authService: AuthService
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(params => this.params = params);
+    this.activatedRoute.queryParams.subscribe(params => (this.params = params));
   }
 
   async submit(): Promise<void> {

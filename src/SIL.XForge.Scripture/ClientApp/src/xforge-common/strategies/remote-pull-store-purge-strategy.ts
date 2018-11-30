@@ -34,13 +34,16 @@ export class RemotePullStorePurgeStrategy extends ConnectionStrategy {
     }
 
     if (deletedResources.length > 0) {
-      store.update(t => {
-        const ops: Operation[] = [];
-        for (const resource of deletedResources) {
-          ops.push(t.removeRecord(resource));
-        }
-        return ops;
-      }, { localOnly: true });
+      store.update(
+        t => {
+          const ops: Operation[] = [];
+          for (const resource of deletedResources) {
+            ops.push(t.removeRecord(resource));
+          }
+          return ops;
+        },
+        { localOnly: true }
+      );
     }
   }
 }

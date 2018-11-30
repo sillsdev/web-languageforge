@@ -1,7 +1,6 @@
 import { browser, by, element, promise } from 'protractor';
 
 export class AppPage {
-
   static homepage = {
     homepageHeader: element(by.css('app-root h1')),
     logoutButton: element(by.id('logout')),

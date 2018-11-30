@@ -4,7 +4,7 @@ import { clone } from '@orbit/utils';
 export interface ResourceRefConstructor {
   readonly TYPE: string;
 
-  new(id: string): ResourceRef;
+  new (id: string): ResourceRef;
 }
 
 /**
@@ -14,13 +14,13 @@ export interface ResourceRefConstructor {
 export abstract class ResourceRef implements RecordIdentity {
   static readonly TYPE: string;
 
-  constructor(public readonly type: string, public readonly id: string) { }
+  constructor(public readonly type: string, public readonly id: string) {}
 }
 
 export interface ResourceConstructor {
   readonly TYPE: string;
 
-  new(init?: Partial<Resource>): Resource;
+  new (init?: Partial<Resource>): Resource;
 }
 
 /**

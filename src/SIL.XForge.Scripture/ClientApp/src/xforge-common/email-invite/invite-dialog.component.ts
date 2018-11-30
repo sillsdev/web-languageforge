@@ -17,9 +17,11 @@ export class InviteDialogComponent {
   isSubmitted: boolean = false;
   siteName = environment.siteName;
 
-  constructor(private readonly dialogRef: MatDialogRef<InviteDialogComponent>,
+  constructor(
+    private readonly dialogRef: MatDialogRef<InviteDialogComponent>,
     private readonly noticeService: NoticeService,
-    private readonly identityService: IdentityService) { }
+    private readonly identityService: IdentityService
+  ) {}
 
   get email() {
     return this.sendInviteForm.get('email');
@@ -31,26 +33,24 @@ export class InviteDialogComponent {
     }
 
     this.isSubmitted = true;
-    this.identityService.sendInvite(this.sendInviteForm.value.email)
-      .then(response => {
-        let message: string = '';
-        this.isSubmitted = false;
-        if (response.success) {
-          if (response.emailTypeSent === 'joined') {
-            message = 'An email has been sent to ' + this.sendInviteForm.value.email +
-              ' adding them to this project';
-            this.noticeService.push(NoticeService.SUCCESS, message);
-            this.sendInviteForm.reset();
-          } else if (response.emailTypeSent === 'invited') {
-            message = 'An invitation email has been sent to ' + this.sendInviteForm.value.email;
-            this.noticeService.push(NoticeService.SUCCESS, message);
-            this.sendInviteForm.reset();
-          } else if (response.isAlreadyInProject) {
-            message = 'A user with email ' + this.sendInviteForm.value.email + ' is already in the project';
-            this.noticeService.push(NoticeService.SUCCESS, message);
-          }
+    this.identityService.sendInvite(this.sendInviteForm.value.email).then(response => {
+      let message: string = '';
+      this.isSubmitted = false;
+      if (response.success) {
+        if (response.emailTypeSent === 'joined') {
+          message = 'An email has been sent to ' + this.sendInviteForm.value.email + ' adding them to this project';
+          this.noticeService.push(NoticeService.SUCCESS, message);
+          this.sendInviteForm.reset();
+        } else if (response.emailTypeSent === 'invited') {
+          message = 'An invitation email has been sent to ' + this.sendInviteForm.value.email;
+          this.noticeService.push(NoticeService.SUCCESS, message);
+          this.sendInviteForm.reset();
+        } else if (response.isAlreadyInProject) {
+          message = 'A user with email ' + this.sendInviteForm.value.email + ' is already in the project';
+          this.noticeService.push(NoticeService.SUCCESS, message);
         }
-      });
+      }
+    });
   }
 
   onClose() {

@@ -9,7 +9,7 @@ import { DetailSnackBarComponent } from './detail-snack-bar.component';
 @Component({
   selector: 'app-notice',
   templateUrl: './notice.component.html',
-  styleUrls: ['./notice.component.scss'],
+  styleUrls: ['./notice.component.scss']
 })
 export class NoticeComponent extends SubscriptionDisposable implements OnInit {
   loadingSnackBarRef: MatSnackBarRef<any>;
@@ -21,8 +21,8 @@ export class NoticeComponent extends SubscriptionDisposable implements OnInit {
   }
 
   ngOnInit() {
-    this.subscribe(this.noticeService.onNewNoticeActive(), (notice) => this.openSnackBar(notice));
-    this.subscribe(this.noticeService.onLoadActivity(), (state) => {
+    this.subscribe(this.noticeService.onNewNoticeActive(), notice => this.openSnackBar(notice));
+    this.subscribe(this.noticeService.onLoadActivity(), state => {
       if (state) {
         if (this.notices.length <= 0) {
           this.loadingSnackBarRef = this.snackBar.open(this.getLoadMessage());
@@ -37,7 +37,7 @@ export class NoticeComponent extends SubscriptionDisposable implements OnInit {
   openSnackBar(notice: Notice): void {
     if (notice.details) {
       this.activeSnackBarRef = this.snackBar.open(notice.message, 'Click for details', {
-        duration: notice.time,
+        duration: notice.time
       });
       const subscription = this.activeSnackBarRef.afterDismissed().subscribe(() => this.closeNotice(notice.id));
       this.activeSnackBarRef.onAction().subscribe(() => {
@@ -47,7 +47,7 @@ export class NoticeComponent extends SubscriptionDisposable implements OnInit {
       });
     } else {
       this.activeSnackBarRef = this.snackBar.open(notice.message, undefined, {
-        duration: notice.time,
+        duration: notice.time
       });
       this.activeSnackBarRef.afterDismissed().subscribe(() => this.closeNotice(notice.id));
     }

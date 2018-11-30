@@ -104,9 +104,11 @@ export interface GetAllParameters<T = any> {
 }
 
 class CacheQueryResults<T> implements QueryResults<T> {
-  constructor(private readonly jsonApiService: JSONAPIService, public readonly results: T,
+  constructor(
+    private readonly jsonApiService: JSONAPIService,
+    public readonly results: T,
     public readonly totalPagedCount?: number
-  ) { }
+  ) {}
 
   getIncluded<TInclude extends Resource>(identity: RecordIdentity): TInclude {
     return this.jsonApiService.localGet(identity);
@@ -118,10 +120,9 @@ class CacheQueryResults<T> implements QueryResults<T> {
 }
 
 class MapQueryResults<T> implements QueryResults<T> {
-  private readonly map: Dict<Map<string, Resource>> = { };
+  private readonly map: Dict<Map<string, Resource>> = {};
 
-  constructor(public readonly results: T, public readonly totalPagedCount?: number, included?: Resource[]
-  ) {
+  constructor(public readonly results: T, public readonly totalPagedCount?: number, included?: Resource[]) {
     if (included != null) {
       for (const resource of included) {
         let typeMap = this.map[resource.type];
@@ -186,9 +187,11 @@ export class JSONAPIService {
   private backup: IndexedDBSource;
   private coordinator: Coordinator;
 
-  constructor(private readonly http: HttpClient, private readonly domainModel: DomainModel,
+  constructor(
+    private readonly http: HttpClient,
+    private readonly domainModel: DomainModel,
     private readonly locationService: LocationService
-  ) { }
+  ) {}
 
   /**
    * Initializes the service. This should be called at application startup after the user has logged in.
@@ -196,8 +199,9 @@ export class JSONAPIService {
    * @param {string} accessToken The user's current access token.
    */
   async init(accessToken: string): Promise<void> {
-    const schemaDef = await this.http.get<SchemaSettings>('api/schema',
-      { headers: { 'Content-Type': 'application/json' } }).toPromise();
+    const schemaDef = await this.http
+      .get<SchemaSettings>('api/schema', { headers: { 'Content-Type': 'application/json' } })
+      .toPromise();
     schemaDef.generateId = () => new ObjectId().toHexString();
     this.schema = new Schema(schemaDef);
 
@@ -299,7 +303,10 @@ export class JSONAPIService {
    * in the results from the server.
    * @returns {QueryObservable<T>} The live query observable.
    */
-  getRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[]
+  getRelated<T extends Resource>(
+    identity: RecordIdentity,
+    relationship: string,
+    include?: string[]
   ): QueryObservable<T> {
     const queryExpression: QueryOrExpression = q => q.findRelatedRecord(identity, relationship);
     return this.liveQuery(queryExpression, queryExpression, include);
@@ -317,8 +324,11 @@ export class JSONAPIService {
    * @returns {QueryObservable<T[]>} The live query observable.
    */
   getAll<T extends Resource>(type: string, parameters?: GetAllParameters, include?: string[]): QueryObservable<T[]> {
-    return this.liveQuery(q => this.getAllQuery(q, type, parameters), q => this.getAllQuery(q, type, parameters, false),
-      include);
+    return this.liveQuery(
+      q => this.getAllQuery(q, type, parameters),
+      q => this.getAllQuery(q, type, parameters, false),
+      include
+    );
   }
 
   /**
@@ -334,7 +344,10 @@ export class JSONAPIService {
    * in the results from the server.
    * @returns {QueryObservable<T[]>} The live query observable.
    */
-  getAllRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[]
+  getAllRelated<T extends Resource>(
+    identity: RecordIdentity,
+    relationship: string,
+    include?: string[]
   ): QueryObservable<T[]> {
     const queryExpression: QueryOrExpression = q => q.findRelatedRecords(identity, relationship);
     return this.liveQuery(queryExpression, queryExpression, include);
@@ -482,7 +495,10 @@ export class JSONAPIService {
    * in the results from the server.
    * @returns {QueryObservable<T>} The query observable.
    */
-  onlineGetRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[]
+  onlineGetRelated<T extends Resource>(
+    identity: RecordIdentity,
+    relationship: string,
+    include?: string[]
   ): QueryObservable<T> {
     return this.onlineQuery(q => q.findRelatedRecord(identity, relationship), include);
   }
@@ -498,7 +514,10 @@ export class JSONAPIService {
    * in the results from the server.
    * @returns {QueryObservable<T[]>} The query observable.
    */
-  onlineGetAll<T extends Resource>(type: string, parameters?: GetAllParameters, include?: string[]
+  onlineGetAll<T extends Resource>(
+    type: string,
+    parameters?: GetAllParameters,
+    include?: string[]
   ): QueryObservable<T[]> {
     return this.onlineQuery(q => this.getAllQuery(q, type, parameters), include);
   }
@@ -516,7 +535,10 @@ export class JSONAPIService {
    * in the results from the server.
    * @returns {QueryObservable<T[]>} The query observable.
    */
-  onlineGetAllRelated<T extends Resource>(identity: RecordIdentity, relationship: string, include?: string[],
+  onlineGetAllRelated<T extends Resource>(
+    identity: RecordIdentity,
+    relationship: string,
+    include?: string[]
   ): QueryObservable<T[]> {
     return this.onlineQuery(q => q.findRelatedRecords(identity, relationship), include);
   }
@@ -658,9 +680,12 @@ export class JSONAPIService {
     return identities.map(identity => this.localGet(identity));
   }
 
-  private liveQuery(localQueryExpression: QueryOrExpression, remoteQueryExpression: QueryOrExpression, include: string[]
+  private liveQuery(
+    localQueryExpression: QueryOrExpression,
+    remoteQueryExpression: QueryOrExpression,
+    include: string[]
   ): QueryObservable<any> {
-    const localQuery = buildQuery(localQueryExpression, { }, undefined, this.store.queryBuilder);
+    const localQuery = buildQuery(localQueryExpression, {}, undefined, this.store.queryBuilder);
     const remoteQuery = buildQuery(remoteQueryExpression, this.getOptions(include), undefined, this.store.queryBuilder);
 
     // initialize subject with current cached results
@@ -692,8 +717,7 @@ export class JSONAPIService {
   private onlineQuery(queryExpression: QueryOrExpression, include: string[]): QueryObservable<any> {
     const query = buildQuery(queryExpression, this.getOptions(include), undefined, this.store.queryBuilder);
 
-    return from(this.onlineStore.query(query))
-      .pipe(map(r => this.getOnlineQueryResults(query, r)));
+    return from(this.onlineStore.query(query)).pipe(map(r => this.getOnlineQueryResults(query, r)));
   }
 
   private getQueryResults(localQuery: Query): QueryResults<any> {
@@ -769,7 +793,7 @@ export class JSONAPIService {
   }
 
   private getOptions(include?: string[]): any {
-    const options: any = { };
+    const options: any = {};
     if (include != null && include.length > 0) {
       options.sources = { remote: { include: [include.map(rel => dasherize(rel)).join('.')] } };
     }
@@ -811,8 +835,9 @@ export class JSONAPIService {
         queryRecord = findRelated.record;
         queryRelationship = findRelated.relationship;
         const record = this.store.cache.records(queryRecord.type).get(queryRecord.id);
-        const related = deepGet(record,
-          ['relationships', queryRelationship, 'data']) as RecordIdentity | RecordIdentity[];
+        const related = deepGet(record, ['relationships', queryRelationship, 'data']) as
+          | RecordIdentity
+          | RecordIdentity[];
         if (related != null) {
           if (related instanceof Array) {
             queryRelated = related;
@@ -849,8 +874,11 @@ export class JSONAPIService {
         case 'removeFromRelatedRecords':
         case 'replaceRelatedRecords':
         case 'replaceRelatedRecord':
-          const updateRelated = operation as AddToRelatedRecordsOperation | RemoveFromRelatedRecordsOperation
-            | ReplaceRelatedRecordsOperation | ReplaceRelatedRecordOperation;
+          const updateRelated = operation as
+            | AddToRelatedRecordsOperation
+            | RemoveFromRelatedRecordsOperation
+            | ReplaceRelatedRecordsOperation
+            | ReplaceRelatedRecordOperation;
           transformRecord = updateRelated.record;
           transformRelationship = updateRelated.relationship;
           break;
@@ -858,8 +886,9 @@ export class JSONAPIService {
 
       // check if the transformed record matches record being queried
       // if performing a related record query, ensure that the transformed relationship matches the queried relationship
-      if (equalRecordIdentities(queryRecord, transformRecord)
-        && (queryRelationship == null || queryRelationship === transformRelationship)
+      if (
+        equalRecordIdentities(queryRecord, transformRecord) &&
+        (queryRelationship == null || queryRelationship === transformRelationship)
       ) {
         return true;
       }
@@ -923,7 +952,7 @@ export class JSONAPIService {
     };
     const model = this.schema.getModel(resource.type);
     if (model.attributes != null) {
-      record.attributes = { };
+      record.attributes = {};
       for (const attrName in model.attributes) {
         if (model.attributes.hasOwnProperty(attrName)) {
           const value = resource[attrName];
@@ -934,7 +963,7 @@ export class JSONAPIService {
       }
     }
     if (model.relationships != null) {
-      record.relationships = { };
+      record.relationships = {};
       for (const relName in model.relationships) {
         if (model.relationships.hasOwnProperty(relName)) {
           const ref = resource[relName] as ResourceRef | ResourceRef[];

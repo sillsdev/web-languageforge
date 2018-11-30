@@ -10,5 +10,4 @@ describe('App', () => {
     expect(await AppPage.getMainHeading()).toContain(constants.adminName);
     await AppPage.homepage.logoutButton.click();
   });
-
 });

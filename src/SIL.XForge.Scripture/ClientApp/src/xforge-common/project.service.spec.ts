@@ -18,9 +18,7 @@ describe('ProjectService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
+      imports: [HttpClientTestingModule],
       providers: [
         { provide: ProjectService, useClass: TestProjectService },
         { provide: JSONAPIService, useFactory: () => instance(mockedJSONAPIService) }

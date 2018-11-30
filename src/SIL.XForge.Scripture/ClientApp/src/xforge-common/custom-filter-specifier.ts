@@ -12,12 +12,12 @@ import { Dict } from '@orbit/utils';
  */
 export type CustomFilter = (records: Record[], value: any, prevFilters: FilterSpecifier[]) => Record[];
 
-const customFilters: Dict<Dict<CustomFilter>> = { };
+const customFilters: Dict<Dict<CustomFilter>> = {};
 
 export function registerCustomFilter(type: string, name: string, filter: CustomFilter): void {
   let typeFilters = customFilters[type];
   if (typeFilters == null) {
-    typeFilters = { };
+    typeFilters = {};
     customFilters[type] = typeFilters;
   }
   typeFilters[name] = filter;
@@ -34,7 +34,11 @@ export function getCustomFilter(type: string, name: string): CustomFilter {
   return null;
 }
 
-export function applyCustomFilter(type: string, name: string, records: Record[], value: any,
+export function applyCustomFilter(
+  type: string,
+  name: string,
+  records: Record[],
+  value: any,
   prevFilters: FilterSpecifier[]
 ): Record[] {
   const customFilter = getCustomFilter(type, name);

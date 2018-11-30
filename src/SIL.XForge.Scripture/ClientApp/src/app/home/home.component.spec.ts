@@ -7,10 +7,14 @@ import { AuthService } from '@xforge-common/auth.service';
 import { HomeComponent } from './home.component';
 
 class HomeComponentPage {
-  constructor(private compFixture: ComponentFixture<HomeComponent>) { }
+  constructor(private compFixture: ComponentFixture<HomeComponent>) {}
 
-  get logoutButton() { return this.compFixture.nativeElement.querySelector('#logout'); }
-  get titleText() { return this.compFixture.nativeElement.querySelector('h1').textContent; }
+  get logoutButton() {
+    return this.compFixture.nativeElement.querySelector('#logout');
+  }
+  get titleText() {
+    return this.compFixture.nativeElement.querySelector('h1').textContent;
+  }
 }
 
 describe('HomeComponent', () => {
@@ -23,12 +27,9 @@ describe('HomeComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [HomeComponent],
-      providers: [
-        { provide: AuthService, useFactory: () => instance(mockedAuthService) }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-      .compileComponents();
+      providers: [{ provide: AuthService, useFactory: () => instance(mockedAuthService) }],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -10,13 +10,8 @@ describe('JSONAPIService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
-        JSONAPIService,
-        { provide: DomainModel, useFactory: () => instance(mockedDomainModel) }
-      ]
+      imports: [HttpClientTestingModule],
+      providers: [JSONAPIService, { provide: DomainModel, useFactory: () => instance(mockedDomainModel) }]
     });
   });
 
