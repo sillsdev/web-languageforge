@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import Orbit from '@orbit/core';
+import { uuid } from '@orbit/utils';
 import { Observable, Subject } from 'rxjs';
 
 export class Notice {
@@ -31,7 +31,7 @@ export class NoticeService {
   private loadingStatusEmitter: Subject<boolean> = new Subject<boolean>();
 
   push(type: string, message: string, details?: string, time?: number): string {
-    const id = Orbit.uuid();
+    const id = uuid();
 
     // Give a default auto-close time to success notifications of 4 seconds
     if (!time && type === NoticeService.SUCCESS) {

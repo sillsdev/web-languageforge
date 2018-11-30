@@ -1,7 +1,7 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { GetAllParameters } from '../jsonapi.service';
+import { GetAllParameters } from '../json-api.service';
 import { Project } from '../models/project';
 import { NONE_ROLE, ProjectRole } from '../models/project-role';
 import { ProjectUser } from '../models/project-user';

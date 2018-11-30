@@ -3,7 +3,7 @@ import { interval, Observable } from 'rxjs';
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive';
 import { map, switchMap } from 'rxjs/operators';
 
-import { JSONAPIService, QueryObservable } from '@xforge-common/jsonapi.service';
+import { JsonApiService, QueryObservable } from '@xforge-common/json-api.service';
 import { ResourceService } from '@xforge-common/resource.service';
 import { nameof } from '@xforge-common/utils';
 import { SFProject, SFProjectRef } from './models/sfproject';
@@ -15,7 +15,7 @@ import { SFUserService } from './sfuser.service';
   providedIn: 'root'
 })
 export class SyncJobService extends ResourceService {
-  constructor(jsonApiService: JSONAPIService, private readonly userService: SFUserService) {
+  constructor(jsonApiService: JsonApiService, private readonly userService: SFUserService) {
     super(SyncJob.TYPE, jsonApiService);
   }
 

@@ -12,7 +12,17 @@ import { ProjectsComponent } from './projects/projects.component';
 import { UICommonModule } from './ui-common.module';
 
 @NgModule({
-  imports: [CommonModule, OAuthModule.forRoot(), RouterModule, UICommonModule],
+  imports: [
+    CommonModule,
+    OAuthModule.forRoot({
+      resourceServer: {
+        allowedUrls: ['json-api'],
+        sendAccessToken: true
+      }
+    }),
+    RouterModule,
+    UICommonModule
+  ],
   declarations: [
     ChangePasswordComponent,
     DetailSnackBarComponent,

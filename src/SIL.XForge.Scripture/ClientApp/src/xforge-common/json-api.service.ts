@@ -44,6 +44,7 @@ import { finalize, map, publishReplay } from 'rxjs/operators';
 
 import { CustomFilterSpecifier, isCustomFilterRegistered } from './custom-filter-specifier';
 import { IndexedPageSpecifier } from './indexed-page-specifier';
+import { JsonRpcService } from './json-rpc.service';
 import { XForgeJSONAPISource } from './jsonapi/xforge-jsonapi-source';
 import { LocationService } from './location.service';
 import { DomainModel } from './models/domain-model';
@@ -105,7 +106,7 @@ export interface GetAllParameters<T = any> {
 
 class CacheQueryResults<T> implements QueryResults<T> {
   constructor(
-    private readonly jsonApiService: JSONAPIService,
+    private readonly jsonApiService: JsonApiService,
     public readonly results: T,
     public readonly totalPagedCount?: number
   ) {}
@@ -172,10 +173,11 @@ class MapQueryResults<T> implements QueryResults<T> {
 @Injectable({
   providedIn: 'root'
 })
-export class JSONAPIService {
+export class JsonApiService {
   private static readonly STORE = 'store';
   private static readonly REMOTE = 'remote';
   private static readonly BACKUP = 'backup';
+  private static readonly NAMESPACE = 'json-api';
 
   private schema: Schema;
 
@@ -190,7 +192,8 @@ export class JSONAPIService {
   constructor(
     private readonly http: HttpClient,
     private readonly domainModel: DomainModel,
-    private readonly locationService: LocationService
+    private readonly locationService: LocationService,
+    private readonly jsonRpcService: JsonRpcService
   ) {}
 
   /**
@@ -200,16 +203,16 @@ export class JSONAPIService {
    */
   async init(accessToken: string): Promise<void> {
     const schemaDef = await this.http
-      .get<SchemaSettings>('api/schema', { headers: { 'Content-Type': 'application/json' } })
+      .get<SchemaSettings>(`${JsonApiService.NAMESPACE}/schema`, { headers: { 'Content-Type': 'application/json' } })
       .toPromise();
     schemaDef.generateId = () => new ObjectId().toHexString();
     this.schema = new Schema(schemaDef);
 
     this.onlineStore = new XForgeJSONAPISource({
       schema: this.schema,
-      name: JSONAPIService.REMOTE,
+      name: JsonApiService.REMOTE,
       host: this.locationService.origin,
-      namespace: 'json-api'
+      namespace: JsonApiService.NAMESPACE
     });
 
     this.bucket = new IndexedDBBucket({
@@ -224,15 +227,15 @@ export class JSONAPIService {
     this.remote = new XForgeJSONAPISource({
       schema: this.schema,
       bucket: this.bucket,
-      name: JSONAPIService.REMOTE,
+      name: JsonApiService.REMOTE,
       host: this.locationService.origin,
-      namespace: 'json-api'
+      namespace: JsonApiService.NAMESPACE
     });
 
     this.backup = new IndexedDBSource({
       schema: this.schema,
       bucket: this.bucket,
-      name: JSONAPIService.BACKUP,
+      name: JsonApiService.BACKUP,
       namespace: 'xforge'
     });
 
@@ -240,19 +243,19 @@ export class JSONAPIService {
       sources: [this.store, this.remote, this.backup],
       strategies: [
         // Handle a pull failure
-        new RemotePullFailStrategy(JSONAPIService.REMOTE, JSONAPIService.STORE),
+        new RemotePullFailStrategy(JsonApiService.REMOTE, JsonApiService.STORE),
         // Purge deleted records from the server when performing a findRecords query
-        new RemotePullStorePurgeStrategy(JSONAPIService.REMOTE, JSONAPIService.STORE),
+        new RemotePullStorePurgeStrategy(JsonApiService.REMOTE, JsonApiService.STORE),
         // Handle a push failure
-        new RemotePushFailStrategy(JSONAPIService.REMOTE, JSONAPIService.STORE),
+        new RemotePushFailStrategy(JsonApiService.REMOTE, JsonApiService.STORE),
         // Query the remote server whenever the store is queried
-        new StoreRemoteQueryStrategy(JSONAPIService.STORE, JSONAPIService.REMOTE),
+        new StoreRemoteQueryStrategy(JsonApiService.STORE, JsonApiService.REMOTE),
         // Update the remote server whenever the store is updated
-        new StoreRemoteUpdateStrategy(JSONAPIService.STORE, JSONAPIService.REMOTE),
+        new StoreRemoteUpdateStrategy(JsonApiService.STORE, JsonApiService.REMOTE),
         // Sync all changes received from the remote server to the store
-        new RemoteStoreSyncStrategy(JSONAPIService.REMOTE, JSONAPIService.STORE),
+        new RemoteStoreSyncStrategy(JsonApiService.REMOTE, JsonApiService.STORE),
         // Sync all changes to the store to IndexedDB
-        new StoreBackupSyncStrategy(JSONAPIService.STORE, JSONAPIService.BACKUP),
+        new StoreBackupSyncStrategy(JsonApiService.STORE, JsonApiService.BACKUP),
         new LogTruncationStrategy()
       ]
     });
@@ -678,6 +681,19 @@ export class JSONAPIService {
       return [];
     }
     return identities.map(identity => this.localGet(identity));
+  }
+
+  onlineInvoke<T>(identityOrType: RecordIdentity | string, method: string, params: any): Promise<T> {
+    let type: string;
+    let id: string;
+    if (typeof identityOrType === 'string') {
+      type = identityOrType;
+    } else {
+      type = identityOrType.type;
+      id = identityOrType.id;
+    }
+    const resourceUrl = this.onlineStore.resourceURL(type, id);
+    return this.jsonRpcService.invoke<T>(`${resourceUrl}/commands`, method, params);
   }
 
   private liveQuery(

@@ -7,8 +7,6 @@ import { IdentityResult } from './models/identity-result';
 import { LogInParams } from './models/log-in-params';
 import { LogInResult } from './models/log-in-result';
 import { ResetPasswordParams } from './models/reset-password-params';
-import { SendInviteParams } from './models/send-invite-params';
-import { SendInviteResult } from './models/send-invite-result';
 import { SignUpParams } from './models/sign-up-params';
 import { SignUpResult } from './models/sign-up-result';
 import { VerifyEmailParams } from './models/verify-email-params';
@@ -30,10 +28,6 @@ export class IdentityService {
   async resetPassword(params: ResetPasswordParams): Promise<boolean> {
     const result = await this.callApi('reset-password', params);
     return result.success;
-  }
-
-  async sendInvite(email: string): Promise<SendInviteResult> {
-    return await this.callApi<SendInviteResult>('send-invite', { email } as SendInviteParams);
   }
 
   captchaId(): Promise<string> {

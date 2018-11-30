@@ -4,9 +4,11 @@ using AutoMapper;
 using JsonApiDotNetCore.Builders;
 using JsonApiDotNetCore.Configuration;
 using JsonApiDotNetCore.Extensions;
+using JsonApiDotNetCore.Formatters;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Middleware;
 using JsonApiDotNetCore.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -32,7 +34,7 @@ namespace SIL.XForge.Services
 
             var jsonApiOptions = new JsonApiOptions
             {
-                Namespace = "json-api",
+                Namespace = ServicesConstants.JsonApiNamespace,
                 ContextGraph = contextGraph,
                 AllowClientGeneratedIds = true,
                 NullAttributeResponseBehavior = new NullAttributeResponseBehavior(true),
@@ -45,14 +47,12 @@ namespace SIL.XForge.Services
                  {
                      options.Filters.Add(typeof(JsonApiExceptionFilter));
                      options.Filters.Add(typeof(TypeMatchFilter));
-                     options.SerializeAsJsonApi(jsonApiOptions);
+                     SerializeAsJsonApi(options, jsonApiOptions);
                  });
 
             services.AddJsonApiInternals(jsonApiOptions);
             services.AddScoped<IQueryParser, XForgeQueryParser>();
             services.AddScoped<IDocumentBuilder, XForgeDocumentBuilder>();
-
-            services.AddScoped<IUserAccessor, UserAccessor>();
 
             return services;
         }
@@ -63,6 +63,13 @@ namespace SIL.XForge.Services
                 .AsImplementedInterfaces()
                 .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies)
                 .InstancePerLifetimeScope();
+        }
+
+        private static void SerializeAsJsonApi(MvcOptions options, JsonApiOptions jsonApiOptions)
+        {
+            options.InputFormatters.Insert(0, new JsonApiInputFormatter());
+            options.OutputFormatters.Insert(0, new JsonApiOutputFormatter());
+            options.Conventions.Insert(0, new XForgeDasherizedRoutingConvention(jsonApiOptions.Namespace));
         }
     }
 }
