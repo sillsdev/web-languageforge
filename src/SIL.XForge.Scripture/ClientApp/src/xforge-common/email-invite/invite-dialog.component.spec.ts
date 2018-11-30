@@ -58,6 +58,21 @@ describe('InviteDialogComponent', () => {
     flush();
   }));
 
+  it('form should be invalid when email without .com or .in', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.fixture.detectChanges();
+
+    env.clickElement(env.emailInput);
+    env.setInputValue(env.emailInput, 'me@example');
+    expect(env.component.email.hasError('required')).toBeFalsy();
+
+    expect(env.component.sendInviteForm.dirty).toBe(true);
+    expect(env.component.sendInviteForm.valid).toBe(false);
+    expect(env.component.email.hasError('pattern')).toBe(true);
+    env.clickElement(env.closeButton);
+    verify(env.mockedIdentityService.sendInvite(anything())).never();
+  }));
+
   it('should submit when form is valid', fakeAsync(() => {
     const emailAddress = 'me@example.com';
     const env = new TestEnvironment();
@@ -68,6 +83,7 @@ describe('InviteDialogComponent', () => {
     expect(env.component.sendInviteForm.dirty).toBe(true);
     expect(env.component.sendInviteForm.valid).toBe(true);
     expect(env.component.email.hasError('required')).toBeFalsy();
+    expect(env.component.email.hasError('pattern')).toBe(false);
     expect(env.component.email.hasError('email')).toBeFalsy();
     env.clickElement(env.sendInviteButton);
     env.clickElement(env.closeButton);

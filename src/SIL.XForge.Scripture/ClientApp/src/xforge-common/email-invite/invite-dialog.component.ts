@@ -11,8 +11,9 @@ import { InviteAction, ProjectService } from '../project.service';
   styleUrls: ['./invite-dialog.component.scss']
 })
 export class InviteDialogComponent {
+  emailPattern = '[a-zA-Z0-9.-_]{1,}@[a-zA-Z0-9.-]{2,}[.]{1}[a-zA-Z]{2,}';
   sendInviteForm: FormGroup = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email])
+    email: new FormControl('', [Validators.required, Validators.email, Validators.pattern(this.emailPattern)])
   });
   isSubmitted: boolean = false;
   siteName = environment.siteName;
