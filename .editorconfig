@@ -7,12 +7,16 @@ end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
+max_line_length = 120
 
 ; applies only to specified files
-[*.{css, js,ts,yml}]
+[*.{css,scss,js,ts,yml}]
 tab_width = 2
 indent_size = 2
 continuation_indent_size = 2
+
+[*.{js,ts}]
+quote_type = single
 
 ; applies only to JSON files
 [*.json]
@@ -30,8 +34,7 @@ tab_width = 4
 indent_size = 4
 continuation_indent_size = 4
 
-; applies to the rest of these files
-[*.{html, xml}]
+[*.{cshtml,html,xml}]
 tab_width = 4
 indent_size = 4
 continuation_indent_size = 8
