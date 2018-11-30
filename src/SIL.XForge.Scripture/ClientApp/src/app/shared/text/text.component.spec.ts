@@ -13,15 +13,10 @@ describe('TextComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        QuillModule
-      ],
+      imports: [QuillModule],
       declarations: [TextComponent],
-      providers: [
-        { provide: TextService, useFactory: () => instance(mockedTextService) }
-      ]
-    })
-    .compileComponents();
+      providers: [{ provide: TextService, useFactory: () => instance(mockedTextService) }]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

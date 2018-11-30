@@ -5,11 +5,8 @@ import { QuillModule } from 'ngx-quill';
 import { TextComponent } from './text/text.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    QuillModule
-  ],
+  imports: [CommonModule, QuillModule],
   declarations: [TextComponent],
   exports: [TextComponent]
 })
-export class SharedModule { }
+export class SharedModule {}

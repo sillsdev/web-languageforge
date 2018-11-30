@@ -12,12 +12,7 @@ import { ProjectsComponent } from './projects/projects.component';
 import { UICommonModule } from './ui-common.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    OAuthModule.forRoot(),
-    RouterModule,
-    UICommonModule
-  ],
+  imports: [CommonModule, OAuthModule.forRoot(), RouterModule, UICommonModule],
   declarations: [
     ChangePasswordComponent,
     DetailSnackBarComponent,
@@ -35,4 +30,4 @@ import { UICommonModule } from './ui-common.module';
     ProjectsComponent
   ]
 })
-export class XForgeCommonModule { }
+export class XForgeCommonModule {}

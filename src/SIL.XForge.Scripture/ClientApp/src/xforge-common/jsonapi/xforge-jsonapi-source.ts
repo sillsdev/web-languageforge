@@ -1,5 +1,11 @@
 import Orbit, {
-  Query, Record, Transform, TransformNotAllowed, TransformOrOperations, Updatable, updatable
+  Query,
+  Record,
+  Transform,
+  TransformNotAllowed,
+  TransformOrOperations,
+  Updatable,
+  updatable
 } from '@orbit/data';
 import JSONAPISource from '@orbit/jsonapi';
 
@@ -18,13 +24,16 @@ export class XForgeJSONAPISource extends JSONAPISource implements Updatable {
     const requests = getTransformRequests(this, transform);
 
     if (this.maxRequestsPerTransform && requests.length > this.maxRequestsPerTransform) {
-      return Orbit.Promise.resolve()
-        .then(() => {
-          throw new TransformNotAllowed('This transform requires ' + requests.length
-              + ' requests, which exceeds the specified limit of ' + this.maxRequestsPerTransform
-              + ' requests per transform.',
-            transform);
-        });
+      return Orbit.Promise.resolve().then(() => {
+        throw new TransformNotAllowed(
+          'This transform requires ' +
+            requests.length +
+            ' requests, which exceeds the specified limit of ' +
+            this.maxRequestsPerTransform +
+            ' requests per transform.',
+          transform
+        );
+      });
     }
 
     const transforms: Transform[] = [];
@@ -74,10 +83,9 @@ export class XForgeJSONAPISource extends JSONAPISource implements Updatable {
     const requests = getTransformRequests(this, transform);
 
     if (requests.length > 1) {
-      return Orbit.Promise.resolve()
-        .then(() => {
-          throw new TransformNotAllowed('This update requires more than one request.', transform);
-        });
+      return Orbit.Promise.resolve().then(() => {
+        throw new TransformNotAllowed('This update requires more than one request.', transform);
+      });
     }
 
     return this._processRequest(requests[0]).then(response => response.primaryData);

@@ -19,12 +19,9 @@ describe('ChangePasswordComponent', () => {
     TestBed.configureTestingModule({
       imports: [FormsModule, HttpClientModule, MatSnackBarModule, ReactiveFormsModule, RouterTestingModule],
       declarations: [ChangePasswordComponent],
-      providers: [
-        { provide: UserService, useFactory: () => instance(mockedUserService) }
-      ],
+      providers: [{ provide: UserService, useFactory: () => instance(mockedUserService) }],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

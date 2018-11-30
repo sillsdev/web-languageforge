@@ -16,7 +16,7 @@ app.use(express.static('static'));
 var server = http.createServer(app);
 
 module.exports = {
-  start: function (callback, mongo, port) {
+  start: function(callback, mongo, port) {
     var database = ShareDBMongo(mongo);
     backend = new ShareDB({
       db: database,
@@ -26,12 +26,12 @@ module.exports = {
 
     // Connect any incoming WebSocket connection to ShareDB
     var wss = new WebSocket.Server({ server: server });
-    wss.on('connection', function (ws) {
+    wss.on('connection', function(ws) {
       var stream = new WebSocketJSONStream(ws);
       backend.listen(stream);
     });
 
-    server.on("error", function(err) {
+    server.on('error', function(err) {
       console.log('Error in Realtime Server:' + err);
       callback(err);
     });
@@ -53,4 +53,4 @@ module.exports = {
       callback();
     });
   }
-}
+};

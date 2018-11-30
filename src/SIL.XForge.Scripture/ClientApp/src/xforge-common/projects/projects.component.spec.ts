@@ -25,12 +25,12 @@ class TestProject extends Project {
     return ['Task1', 'Task2'];
   }
 }
-class TestProjectUser extends ProjectUser { }
-class TestProjectRef extends ProjectRef { }
-class TestUserRef extends UserRef { }
+class TestProjectUser extends ProjectUser {}
+class TestProjectRef extends ProjectRef {}
+class TestUserRef extends UserRef {}
 
 class TestQueryResults<T> implements QueryResults<T> {
-  constructor(public readonly results: T, public readonly totalPagedCount?: number) { }
+  constructor(public readonly results: T, public readonly totalPagedCount?: number) {}
 
   getIncluded<TInclude extends Resource>(_identity: RecordIdentity): TInclude {
     return null;
@@ -55,18 +55,16 @@ class TestEnvironment {
     this.mockedUserService = mock(UserService);
 
     when(this.mockedUserService.currentUserId).thenReturn('user01');
-    when(this.mockedProjectService.roles).thenReturn(new Map<string, ProjectRole>([
-      ['admin', { role: 'admin', displayName: 'Administrator' }],
-      ['user', { role: 'user', displayName: 'User' }],
-      [NONE_ROLE.role, NONE_ROLE]
-    ]));
+    when(this.mockedProjectService.roles).thenReturn(
+      new Map<string, ProjectRole>([
+        ['admin', { role: 'admin', displayName: 'Administrator' }],
+        ['user', { role: 'user', displayName: 'User' }],
+        [NONE_ROLE.role, NONE_ROLE]
+      ])
+    );
 
     TestBed.configureTestingModule({
-      imports: [
-        NoopAnimationsModule,
-        RouterTestingModule,
-        UICommonModule
-      ],
+      imports: [NoopAnimationsModule, RouterTestingModule, UICommonModule],
       declarations: [ProjectsComponent],
       providers: [
         { provide: ProjectUserService, useFactory: () => instance(this.mockedProjectUserService) },
@@ -79,53 +77,66 @@ class TestEnvironment {
   }
 
   setupProjectData(): void {
-    when(this.mockedProjectService.onlineSearch(anything(), anything()))
-      .thenCall((term$: Observable<string>, parameters$: Observable<GetAllParameters<TestProject>>) => {
+    when(this.mockedProjectService.onlineSearch(anything(), anything())).thenCall(
+      (term$: Observable<string>, parameters$: Observable<GetAllParameters<TestProject>>) => {
         const results = [
-          new TestQueryResults<TestProject[]>([
-            new TestProject({
-              id: 'project01',
-              projectName: 'Project 01'
-            }),
-            new TestProject({
-              id: 'project02',
-              projectName: 'Project 02'
-            }),
-            new TestProject({
-              id: 'project03',
-              projectName: 'Project 03'
-            }),
-          ], 3),
-          new TestQueryResults<TestProject[]>([
-            new TestProject({
-              id: 'project03',
-              projectName: 'Project 03'
-            }),
-          ], 1),
+          new TestQueryResults<TestProject[]>(
+            [
+              new TestProject({
+                id: 'project01',
+                projectName: 'Project 01'
+              }),
+              new TestProject({
+                id: 'project02',
+                projectName: 'Project 02'
+              }),
+              new TestProject({
+                id: 'project03',
+                projectName: 'Project 03'
+              })
+            ],
+            3
+          ),
+          new TestQueryResults<TestProject[]>(
+            [
+              new TestProject({
+                id: 'project03',
+                projectName: 'Project 03'
+              })
+            ],
+            1
+          )
         ];
 
         return combineLatest(term$, parameters$).pipe(map((_value, index) => results[index]));
-      });
+      }
+    );
 
-    when(this.mockedUserService.onlineGetProjects('user01')).thenReturn(of(new TestQueryResults<TestProjectUser[]>([
-      new TestProjectUser({
-        id: 'projectuser01',
-        role: 'admin',
-        project: new TestProjectRef('project01')
-      }),
-      new TestProjectUser({
-        id: 'projectuser02',
-        role: 'user',
-        project: new TestProjectRef('project03')
-      }),
-    ])));
+    when(this.mockedUserService.onlineGetProjects('user01')).thenReturn(
+      of(
+        new TestQueryResults<TestProjectUser[]>([
+          new TestProjectUser({
+            id: 'projectuser01',
+            role: 'admin',
+            project: new TestProjectRef('project01')
+          }),
+          new TestProjectUser({
+            id: 'projectuser02',
+            role: 'user',
+            project: new TestProjectRef('project03')
+          })
+        ])
+      )
+    );
   }
 
   setupEmptyProjectData(): void {
-    when(this.mockedProjectService.onlineSearch(anything(), anything()))
-      .thenReturn(of(new TestQueryResults<TestProject[]>([], 0)));
-    when(this.mockedUserService.onlineGetProjects('user01'))
-      .thenReturn(of(new TestQueryResults<TestProjectUser[]>([])));
+    when(this.mockedProjectService.onlineSearch(anything(), anything())).thenReturn(
+      of(new TestQueryResults<TestProject[]>([], 0))
+    );
+    when(this.mockedUserService.onlineGetProjects('user01')).thenReturn(
+      of(new TestQueryResults<TestProjectUser[]>([]))
+    );
   }
 
   get table(): DebugElement {
@@ -232,13 +243,14 @@ describe('ProjectsComponent', () => {
   it('should add user to project', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setupProjectData();
-    when(env.mockedProjectUserService.onlineCreate('project02', 'user01', 'admin'))
-      .thenResolve(new TestProjectUser({
+    when(env.mockedProjectUserService.onlineCreate('project02', 'user01', 'admin')).thenResolve(
+      new TestProjectUser({
         id: 'projectusernew',
         role: 'admin',
         project: new TestProjectRef('project02'),
         user: new TestUserRef('user01')
-      }));
+      })
+    );
     env.fixture.detectChanges();
     flush();
 

@@ -20,13 +20,7 @@ describe('AppComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        AppComponent,
-        NavMenuComponent,
-        HomeComponent,
-        CounterComponent,
-        FetchDataComponent
-      ],
+      declarations: [AppComponent, NavMenuComponent, HomeComponent, CounterComponent, FetchDataComponent],
       imports: [
         CoreModule,
         FormsModule,
@@ -34,13 +28,11 @@ describe('AppComponent', () => {
         RouterTestingModule.withRoutes([
           { path: 'home', component: HomeComponent },
           { path: 'counter', component: CounterComponent },
-          { path: 'fetch-data', component: FetchDataComponent },
+          { path: 'fetch-data', component: FetchDataComponent }
         ]),
         XForgeCommonModule
       ],
-      providers: [
-        { provide: AuthService, useFactory: () => instance(mockedAuthService) }
-      ]
+      providers: [{ provide: AuthService, useFactory: () => instance(mockedAuthService) }]
     }).compileComponents();
   }));
 
@@ -53,9 +45,8 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   }));
 
-  it('should have as title \'Scripture Forge\'', async(() => {
+  it('should have as title "Scripture Forge"', async(() => {
     const app = fixture.debugElement.componentInstance;
     expect(app.title).toEqual('Scripture Forge');
   }));
-
 });

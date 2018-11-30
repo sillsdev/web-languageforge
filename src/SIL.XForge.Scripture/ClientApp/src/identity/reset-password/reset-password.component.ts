@@ -25,20 +25,25 @@ export class ResetPasswordComponent implements OnInit {
   resetPasswordDisabled: boolean;
   private params: Params;
 
-  constructor(private readonly formBuilder: FormBuilder, private readonly identityService: IdentityService,
-    public readonly snackBar: MatSnackBar, private readonly activatedRoute: ActivatedRoute,
-    private readonly locationService: LocationService) { }
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    private readonly identityService: IdentityService,
+    public readonly snackBar: MatSnackBar,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly locationService: LocationService
+  ) {}
 
   ngOnInit(): void {
-    this.activatedRoute.queryParams.subscribe(params => this.params = params);
+    this.activatedRoute.queryParams.subscribe(params => (this.params = params));
     this.verifyToken();
   }
 
-  get formControls(): FormGroupControls { return this.resetPasswordForm.controls; }
+  get formControls(): FormGroupControls {
+    return this.resetPasswordForm.controls;
+  }
 
   get doPasswordsMatch(): boolean {
-    return this.resetPasswordForm.value.newPassword ===
-      this.resetPasswordForm.value.confirmPassword;
+    return this.resetPasswordForm.value.newPassword === this.resetPasswordForm.value.confirmPassword;
   }
 
   async submit(): Promise<void> {
@@ -46,8 +51,10 @@ export class ResetPasswordComponent implements OnInit {
       return;
     }
     this.isSubmitted = true;
-    if (this.doPasswordsMatch &&
-      this.resetPasswordForm.value.newPassword && this.resetPasswordForm.value.newPassword.length >= 7
+    if (
+      this.doPasswordsMatch &&
+      this.resetPasswordForm.value.newPassword &&
+      this.resetPasswordForm.value.newPassword.length >= 7
     ) {
       this.resetPasswordDisabled = true;
       const resetPasswordParams = this.resetPasswordForm.value as ResetPasswordParams;
@@ -69,8 +76,7 @@ export class ResetPasswordComponent implements OnInit {
     if (token) {
       this.identityService.verifyToken(token).then(result => {
         if (!result) {
-          this.snackBar.open('The password reset request has expired. Please request another reset.',
-            undefined);
+          this.snackBar.open('The password reset request has expired. Please request another reset.', undefined);
           this.resetPasswordDisabled = true;
         }
       });

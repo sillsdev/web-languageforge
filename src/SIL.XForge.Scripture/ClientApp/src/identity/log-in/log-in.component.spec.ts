@@ -30,13 +30,10 @@ class TestEnvironment {
     this.mockedLocationService = mock(LocationService);
     this.mockedAuthService = mock(AuthService);
 
-    when(this.mockedActivatedRoute.queryParams).thenReturn(of({ }));
+    when(this.mockedActivatedRoute.queryParams).thenReturn(of({}));
 
     TestBed.configureTestingModule({
-      imports: [
-        NoopAnimationsModule,
-        UICommonModule
-      ],
+      imports: [NoopAnimationsModule, UICommonModule],
       declarations: [LogInComponent],
       providers: [
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },

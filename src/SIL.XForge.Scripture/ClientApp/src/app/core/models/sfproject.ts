@@ -32,4 +32,4 @@ export class SFProject extends Project {
   }
 }
 
-export class SFProjectRef extends ProjectRef { }
+export class SFProjectRef extends ProjectRef {}

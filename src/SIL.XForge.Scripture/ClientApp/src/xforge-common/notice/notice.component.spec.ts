@@ -13,9 +13,11 @@ import { NoticeComponent } from './notice.component';
   template: '<app-notice></app-notice>'
 })
 class TestHostComponent {
-  constructor(private noticeService: NoticeService) { }
+  constructor(private noticeService: NoticeService) {}
 
-  get allNotices() { return this.noticeService.get(); }
+  get allNotices() {
+    return this.noticeService.get();
+  }
 
   pushNotice(type: string, message: string, details?: string): void {
     this.noticeService.push(type, message, details, 500);
@@ -38,7 +40,7 @@ class TestHostComponent {
   declarations: [TestHostComponent, NoticeComponent, DetailSnackBarComponent],
   entryComponents: [TestHostComponent, DetailSnackBarComponent]
 })
-class SnackBarTestModule { }
+class SnackBarTestModule {}
 
 describe('NoticeComponent', () => {
   let overlayContainer: OverlayContainer;
@@ -49,10 +51,8 @@ describe('NoticeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [],
-      imports: [
-        NoopAnimationsModule, SnackBarTestModule,
-      ],
-      providers: [NoticeService],
+      imports: [NoopAnimationsModule, SnackBarTestModule],
+      providers: [NoticeService]
     }).compileComponents();
   }));
 
@@ -90,8 +90,9 @@ describe('NoticeComponent', () => {
     tick();
     fixture.detectChanges();
     expect(overlayContainerElement.querySelector('detail-snack-bar')).toBeDefined();
-    expect(overlayContainerElement.querySelector('snack-bar-container').textContent)
-      .toContain('Details in a Custom Snack Bar');
+    expect(overlayContainerElement.querySelector('snack-bar-container').textContent).toContain(
+      'Details in a Custom Snack Bar'
+    );
     flush();
   }));
 

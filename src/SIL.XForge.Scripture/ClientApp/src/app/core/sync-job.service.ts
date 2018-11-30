@@ -24,8 +24,10 @@ export class SyncJobService extends ResourceService {
   }
 
   onlineGetActive(projectId: string): QueryObservable<SyncJob> {
-    return this.jsonApiService.onlineGetRelated({ type: SFProject.TYPE, id: projectId },
-      nameof<SFProject>('activeSyncJob'));
+    return this.jsonApiService.onlineGetRelated(
+      { type: SFProject.TYPE, id: projectId },
+      nameof<SFProject>('activeSyncJob')
+    );
   }
 
   listen(jobId: string): Observable<SyncJob> {

@@ -11,11 +11,11 @@ export class Notice {
     public id: string,
     public details: string,
     public time: number // milliseconds until notice is automatically dismissed
-  ) { }
+  ) {}
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class NoticeService {
   static readonly ERROR: string = 'danger';

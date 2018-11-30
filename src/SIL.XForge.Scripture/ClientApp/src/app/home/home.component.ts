@@ -4,10 +4,10 @@ import { AuthService } from '@xforge-common/auth.service';
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home.component.html',
+  templateUrl: './home.component.html'
 })
 export class HomeComponent {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   get name(): string {
     return this.authService.currentUserName;

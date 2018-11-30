@@ -31,20 +31,21 @@ export class LoginPage {
     await this.loginButton.click();
 
     browser.waitForAngularEnabled(true);
-    await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.homepageHeader),
-      this.constants.conditionTimeout);
+    await browser.wait(
+      ExpectedConditions.visibilityOf(AppPage.homepage.homepageHeader),
+      this.constants.conditionTimeout
+    );
   }
 
   loginAsAdmin(): promise.Promise<void> {
     return this.login(this.constants.adminUsername, this.constants.adminPassword);
   }
 
-  loginAsManager(): promise.Promise<void>  {
+  loginAsManager(): promise.Promise<void> {
     return this.login(this.constants.managerUsername, this.constants.managerPassword);
   }
 
-  loginAsUser(): promise.Promise<void>  {
+  loginAsUser(): promise.Promise<void> {
     return this.login(this.constants.memberUsername, this.constants.memberPassword);
   }
-
 }

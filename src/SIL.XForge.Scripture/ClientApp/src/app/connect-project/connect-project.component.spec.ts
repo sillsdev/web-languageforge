@@ -3,7 +3,11 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
-  MatCardModule, MatCheckboxModule, MatOptionModule, MatProgressBarModule, MatSelectModule
+  MatCardModule,
+  MatCheckboxModule,
+  MatOptionModule,
+  MatProgressBarModule,
+  MatSelectModule
 } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -56,8 +60,9 @@ class TestEnvironment {
     d.percentCompleted = 1.0;
     d.state = 'IDLE';
     when(this.mockedSyncJobService.listen('job01')).thenReturn(cold('-a-b-c-d|', { a, b, c, d }));
-    when(this.mockedSFProjectUserService.onlineCreate(anything(), anything()))
-      .thenResolve(new SFProjectUser({ id: 'projectuser01' }));
+    when(this.mockedSFProjectUserService.onlineCreate(anything(), anything())).thenResolve(
+      new SFProjectUser({ id: 'projectuser01' })
+    );
     when(this.mockedSFProjectService.onlineCreate(anything())).thenResolve(new SFProject({ id: 'project01' }));
     when(this.mockedSFUserService.currentUserId).thenReturn('user01');
 
@@ -72,7 +77,7 @@ class TestEnvironment {
         HttpClientTestingModule,
         NoopAnimationsModule
       ],
-      declarations: [ ConnectProjectComponent ],
+      declarations: [ConnectProjectComponent],
       providers: [
         { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
         { provide: Router, useFactory: () => instance(this.mockedRouter) },
@@ -194,16 +199,18 @@ describe('ConnectProjectComponent', () => {
 
   it('should join when existing project is selected', fakeAsync(() => {
     const env = new TestEnvironment();
-    when(env.mockedParatextService.getProjects()).thenReturn(of<ParatextProject[]>([
-      {
-        paratextId: 'pt01',
-        name: 'Target',
-        languageTag: 'en',
-        languageName: 'English',
-        projectId: 'project01',
-        isConnectable: true
-      }
-    ]));
+    when(env.mockedParatextService.getProjects()).thenReturn(
+      of<ParatextProject[]>([
+        {
+          paratextId: 'pt01',
+          name: 'Target',
+          languageTag: 'en',
+          languageName: 'English',
+          projectId: 'project01',
+          isConnectable: true
+        }
+      ])
+    );
     env.fixture.detectChanges();
     expect(env.component.state).toEqual('input');
 
@@ -220,22 +227,24 @@ describe('ConnectProjectComponent', () => {
 
   it('should create when non-existent project is selected', fakeAsync(() => {
     const env = new TestEnvironment();
-    when(env.mockedParatextService.getProjects()).thenReturn(of<ParatextProject[]>([
-      {
-        paratextId: 'pt01',
-        name: 'Target',
-        languageTag: 'en',
-        languageName: 'English',
-        isConnectable: true
-      },
-      {
-        paratextId: 'pt02',
-        name: 'Source',
-        languageTag: 'es',
-        languageName: 'Spanish',
-        isConnectable: false
-      }
-    ]));
+    when(env.mockedParatextService.getProjects()).thenReturn(
+      of<ParatextProject[]>([
+        {
+          paratextId: 'pt01',
+          name: 'Target',
+          languageTag: 'en',
+          languageName: 'English',
+          isConnectable: true
+        },
+        {
+          paratextId: 'pt02',
+          name: 'Source',
+          languageTag: 'es',
+          languageName: 'Spanish',
+          isConnectable: false
+        }
+      ])
+    );
     env.fixture.detectChanges();
     expect(env.component.state).toEqual('input');
 

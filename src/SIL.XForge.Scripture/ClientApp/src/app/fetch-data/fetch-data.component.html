@@ -1,10 +1,8 @@
 <h1>Projects</h1>
 
 <p>This component demonstrates fetching data from the server.</p>
-<p>
-  <input placeholder="Filter..." (keyup)="updateSearchTerm($event.target.value)">
-</p>
-<table class='table'>
+<p><input placeholder="Filter..." (keyup)="updateSearchTerm($event.target.value)" /></p>
+<table class="table">
   <thead>
     <tr>
       <th>Name</th>
@@ -12,7 +10,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let project of projects$ | async">
+    <tr *ngFor="let project of (projects$ | async)">
       <td><input [ngModel]="project.projectName" (ngModelChange)="updateProjectName(project, $event)" /></td>
       <td>{{ project.inputSystem.languageName }}</td>
     </tr>

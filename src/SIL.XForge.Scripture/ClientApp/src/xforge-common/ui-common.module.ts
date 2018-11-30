@@ -46,4 +46,4 @@ const modules = [
   imports: modules,
   exports: modules
 })
-export class UICommonModule { }
+export class UICommonModule {}

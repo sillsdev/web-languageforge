@@ -10,12 +10,12 @@ insert_final_newline = true
 max_line_length = 120
 
 ; applies only to specified files
-[*.{css,scss,js,ts,yml}]
+[*.{css,scss,less,js,ts,yml}]
 tab_width = 2
 indent_size = 2
 continuation_indent_size = 2
 
-[*.{js,ts}]
+[*.{css,scss,less,js,ts}]
 quote_type = single
 
 ; applies only to JSON files

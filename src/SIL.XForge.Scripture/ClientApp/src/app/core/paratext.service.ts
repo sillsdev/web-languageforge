@@ -9,11 +9,11 @@ import { ParatextProject } from './models/paratext-project';
   providedIn: 'root'
 })
 export class ParatextService {
-  constructor(private readonly http: HttpClient, private readonly authService: AuthService) { }
+  constructor(private readonly http: HttpClient, private readonly authService: AuthService) {}
 
   logIn(returnUrl: string): void {
-    const url = '/external/challenge?provider=Paratext&returnUrl=' + returnUrl + '&userId='
-      + this.authService.currentUserId;
+    const url =
+      '/external/challenge?provider=Paratext&returnUrl=' + returnUrl + '&userId=' + this.authService.currentUserId;
     document.location.href = url;
   }
 
@@ -24,7 +24,7 @@ export class ParatextService {
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + this.authService.accessToken
+      Authorization: 'Bearer ' + this.authService.accessToken
     });
   }
 }

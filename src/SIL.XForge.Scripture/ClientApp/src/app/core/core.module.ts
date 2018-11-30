@@ -11,9 +11,7 @@ import { SFProjectService } from './sfproject.service';
 import { SFUserService } from './sfuser.service';
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   declarations: [],
   providers: [
     { provide: UserService, useExisting: SFUserService },
@@ -22,4 +20,4 @@ import { SFUserService } from './sfuser.service';
     { provide: DomainModel, useFactory: () => new DomainModel(SFDOMAIN_MODEL_CONFIG) }
   ]
 })
-export class CoreModule { }
+export class CoreModule {}

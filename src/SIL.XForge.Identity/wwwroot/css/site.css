@@ -120,7 +120,7 @@
   align-items: center;
 }
 #footer {
-  background-color: #0067A5;
+  background-color: #0067a5;
   padding-left: 8px;
   padding-right: 8px;
   padding-bottom: 5px;
@@ -132,12 +132,12 @@
   width: 170px;
 }
 #payap img {
-  width:100%;
-  height:auto;
+  width: 100%;
+  height: auto;
 }
 #sil img {
-  width:100%;
-  height:auto;
+  width: 100%;
+  height: auto;
 }
 @media screen and (max-width: 600px) {
   #sil {
@@ -149,17 +149,16 @@
 }
 
 .login-page {
-  width:100%;
+  width: 100%;
 }
 
 .register-form {
   clear: both;
-  max-width     : 400px;
-  margin-bottom : 24px;
+  max-width: 400px;
+  margin-bottom: 24px;
 }
 
-.validationsummary
-{
+.validationsummary {
   width: 400px;
   text-align: left;
   color: red;

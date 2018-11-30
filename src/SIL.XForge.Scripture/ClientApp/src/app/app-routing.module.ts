@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'connect-project', component: ConnectProjectComponent, canActivate: [AuthGuard] },
   { path: 'realtime', component: RealtimeComponent, canActivate: [AuthGuard] },
   { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard] },
-  { path: 'identity', children: identityRoutes  }
+  { path: 'identity', children: identityRoutes }
   // ToDo: put the line below back and remove line above when IdenyityModule is removed from app.module.ts - IJH 2018-27
   // { path: 'identity', loadChildren: '../identity/identity.module#IdentityModule' }
 ];
@@ -28,4 +28,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

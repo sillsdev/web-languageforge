@@ -6,4 +6,4 @@ import { SFProjectUser } from './models/sfproject-user';
 @Injectable({
   providedIn: 'root'
 })
-export class SFProjectUserService extends ProjectUserService<SFProjectUser> { }
+export class SFProjectUserService extends ProjectUserService<SFProjectUser> {}

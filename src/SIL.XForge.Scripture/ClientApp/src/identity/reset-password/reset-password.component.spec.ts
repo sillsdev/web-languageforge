@@ -29,10 +29,7 @@ class TestEnvironment {
     when(this.mockedActivatedRoute.queryParams).thenReturn(of({}));
 
     TestBed.configureTestingModule({
-      imports: [
-        NoopAnimationsModule,
-        UICommonModule
-      ],
+      imports: [NoopAnimationsModule, UICommonModule],
       declarations: [ResetPasswordComponent],
       providers: [
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },

@@ -6,7 +6,7 @@ import { Doc, Snapshot } from 'sharedb/lib/client';
 export interface RealtimeDocConstructor {
   readonly TYPE: string;
 
-  new(doc: Doc, store: LocalForage): RealtimeDoc;
+  new (doc: Doc, store: LocalForage): RealtimeDoc;
 }
 
 interface OfflineData {

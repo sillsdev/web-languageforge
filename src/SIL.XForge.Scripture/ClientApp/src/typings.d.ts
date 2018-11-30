@@ -10,11 +10,15 @@ interface NodeModule {
 declare module '@orbit/data' {
   export type QueryBuilderFunc = (b: QueryBuilder) => QueryOrExpression;
   export type QueryOrExpression = Query | QueryExpression | QueryTerm | QueryBuilderFunc;
-  export function buildQuery(queryOrExpression: QueryOrExpression, queryOptions?: object, queryId?: string,
-    queryBuilder?: QueryBuilder): Query;
+  export function buildQuery(
+    queryOrExpression: QueryOrExpression,
+    queryOptions?: object,
+    queryId?: string,
+    queryBuilder?: QueryBuilder
+  ): Query;
 
   export type TransformBuilderFunc = (b: TransformBuilder) => TransformOrOperations;
-  export type TransformOrOperations = Transform | Operation | Operation[] | TransformBuilderFunc
+  export type TransformOrOperations = Transform | Operation | Operation[] | TransformBuilderFunc;
 }
 
 declare module 'quill' {
@@ -58,7 +62,7 @@ declare module 'quill' {
 
   export class Toolbar extends Module {
     controls: Array<[string, HTMLElement]>;
-    handlers: { [format: string]: (value: any) => void; }
+    handlers: { [format: string]: (value: any) => void };
 
     attach(input: HTMLElement): void;
     update(range: RangeStatic): void;

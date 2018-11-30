@@ -12,9 +12,7 @@ describe('SyncJobService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
+      imports: [HttpClientTestingModule],
       providers: [
         SyncJobService,
         { provide: JSONAPIService, useFactory: () => instance(mockedJSONAPIService) },

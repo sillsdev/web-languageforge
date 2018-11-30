@@ -9,13 +9,12 @@ export function getBaseUrl() {
   return document.getElementsByTagName('base')[0].href;
 }
 
-const providers = [
-  { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] as any[] }
-];
+const providers = [{ provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] as any[] }];
 
 if (environment.production || environment.pwaTest) {
   enableProdMode();
 }
 
-platformBrowserDynamic(providers).bootstrapModule(AppModule)
+platformBrowserDynamic(providers)
+  .bootstrapModule(AppModule)
   .catch(err => console.log(err));

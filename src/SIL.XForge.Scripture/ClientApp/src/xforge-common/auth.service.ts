@@ -12,9 +12,12 @@ import { LocationService } from './location.service';
 export class AuthService {
   private tryLoginPromise: Promise<boolean>;
 
-  constructor(private readonly oauthService: OAuthService, private readonly jsonApiService: JSONAPIService,
-    private readonly locationService: LocationService, private readonly router: Router
-  ) { }
+  constructor(
+    private readonly oauthService: OAuthService,
+    private readonly jsonApiService: JSONAPIService,
+    private readonly locationService: LocationService,
+    private readonly router: Router
+  ) {}
 
   get currentUserId(): string {
     const claims = this.oauthService.getIdentityClaims();
@@ -64,36 +67,35 @@ export class AuthService {
         this.tryLoginPromise.then(() => this.jsonApiService.setAccessToken(this.oauthService.getAccessToken()));
       }
     });
-    this.tryLoginPromise = this.oauthService.loadDiscoveryDocumentAndTryLogin()
-      .then(async result => {
-        let isLoggedIn = result;
-        if (isLoggedIn) {
-          // remove hash fragment manually (contains access and id tokens)
-          this.router.navigateByUrl(this.locationService.pathname);
-        }
-        // if we weren't able to log in, try a silent refresh, this can avoid an extra page load.
-        // don't try to perform a silent refresh if we in the middle of an implicit flow, because it will overwrite the
-        // nonce and cause it to fail.
-        if (!isLoggedIn && !this.isLoggingIn) {
-          try {
-            const event = await this.oauthService.silentRefresh();
-            if (event.type === 'silently_refreshed') {
-              isLoggedIn = true;
-            }
-          } catch (err) {
-            if (err instanceof OAuthErrorEvent && err.reason['error'] === 'login_required') {
-              this.oauthService.logOut(true);
-            } else {
-              throw err;
-            }
+    this.tryLoginPromise = this.oauthService.loadDiscoveryDocumentAndTryLogin().then(async result => {
+      let isLoggedIn = result;
+      if (isLoggedIn) {
+        // remove hash fragment manually (contains access and id tokens)
+        this.router.navigateByUrl(this.locationService.pathname);
+      }
+      // if we weren't able to log in, try a silent refresh, this can avoid an extra page load.
+      // don't try to perform a silent refresh if we in the middle of an implicit flow, because it will overwrite the
+      // nonce and cause it to fail.
+      if (!isLoggedIn && !this.isLoggingIn) {
+        try {
+          const event = await this.oauthService.silentRefresh();
+          if (event.type === 'silently_refreshed') {
+            isLoggedIn = true;
+          }
+        } catch (err) {
+          if (err instanceof OAuthErrorEvent && err.reason['error'] === 'login_required') {
+            this.oauthService.logOut(true);
+          } else {
+            throw err;
           }
         }
-        if (isLoggedIn) {
-          await this.jsonApiService.init(this.oauthService.getAccessToken());
-          return true;
-        }
-        return false;
-      });
+      }
+      if (isLoggedIn) {
+        await this.jsonApiService.init(this.oauthService.getAccessToken());
+        return true;
+      }
+      return false;
+    });
   }
 
   logIn(): void {

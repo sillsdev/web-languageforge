@@ -10,13 +10,8 @@ describe('ProjectUserService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
-        ProjectUserService,
-        { provide: JSONAPIService, useFactory: () => instance(mockedJSONAPIService) }
-      ]
+      imports: [HttpClientTestingModule],
+      providers: [ProjectUserService, { provide: JSONAPIService, useFactory: () => instance(mockedJSONAPIService) }]
     });
   });
 

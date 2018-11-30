@@ -49,4 +49,4 @@ import { SharedModule } from './shared/shared.module';
   entryComponents: [DetailSnackBarComponent, InviteDialogComponent],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

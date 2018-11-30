@@ -1,6 +1,14 @@
 import Parchment from 'parchment';
 import Quill, {
-  DeltaOperation, Module, Picker, QuillOptionsStatic, RangeStatic, SnowTheme, Theme, Toolbar, Tooltip
+  DeltaOperation,
+  Module,
+  Picker,
+  QuillOptionsStatic,
+  RangeStatic,
+  SnowTheme,
+  Theme,
+  Toolbar,
+  Tooltip
 } from 'quill';
 
 class UsxFormat {
@@ -248,11 +256,11 @@ export function registerScripture(): void {
       let shift = 0;
       if (rootBounds.right > containerBounds.right) {
         shift = containerBounds.right - rootBounds.right;
-        this.root.style.left = (left + shift) + 'px';
+        this.root.style.left = left + shift + 'px';
       }
       if (rootBounds.left < containerBounds.left) {
         shift = containerBounds.left - rootBounds.left;
-        this.root.style.left = (left + shift) + 'px';
+        this.root.style.left = left + shift + 'px';
       }
       if (rootBounds.bottom > containerBounds.bottom) {
         const height = rootBounds.bottom - rootBounds.top;
@@ -340,8 +348,12 @@ export function registerScripture(): void {
           const selection = document.getSelection();
           const range = document.caretRangeFromPoint(event.clientX, event.clientY);
           if (selection && range) {
-            selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer,
-              range.startOffset);
+            selection.setBaseAndExtent(
+              range.startContainer,
+              range.startOffset,
+              range.startContainer,
+              range.startOffset
+            );
           }
         }
 

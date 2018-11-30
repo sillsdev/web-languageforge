@@ -11,7 +11,7 @@ import { SubscriptionDisposable } from '../subscription-disposable';
 import { UserService } from '../user.service';
 
 class Row {
-  constructor(public readonly project: Project, public projectUser: ProjectUser, public projectRole: ProjectRole) { }
+  constructor(public readonly project: Project, public projectUser: ProjectUser, public projectRole: ProjectRole) {}
 
   isUpdatingRole: boolean = false;
 
@@ -48,7 +48,9 @@ export class ProjectsComponent extends SubscriptionDisposable implements OnInit 
   private readonly searchTerm$: BehaviorSubject<string>;
   private readonly parameters$: BehaviorSubject<GetAllParameters<Project>>;
 
-  constructor(private readonly projectService: ProjectService, private readonly userService: UserService,
+  constructor(
+    private readonly projectService: ProjectService,
+    private readonly userService: UserService,
     private readonly projectUserService: ProjectUserService
   ) {
     super();
@@ -93,8 +95,11 @@ export class ProjectsComponent extends SubscriptionDisposable implements OnInit 
     row.isUpdatingRole = true;
     if (row.projectUser == null) {
       // add user to project
-      const projectUser = await this.projectUserService.onlineCreate(row.project.id, this.userService.currentUserId,
-        projectRole.role);
+      const projectUser = await this.projectUserService.onlineCreate(
+        row.project.id,
+        this.userService.currentUserId,
+        projectRole.role
+      );
       this.projectUsers.set(projectUser.id, projectUser);
       row.projectUser = projectUser;
     } else if (projectRole === NONE_ROLE) {

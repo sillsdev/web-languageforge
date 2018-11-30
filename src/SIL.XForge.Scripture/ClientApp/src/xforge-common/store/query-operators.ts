@@ -61,7 +61,9 @@ export const QueryOperators: Dict<QueryOperator> = {
     const currentRecord = cache.records(type).get(id);
     const data = currentRecord && deepGet(currentRecord, ['relationships', relationship, 'data']);
 
-    if (!data) { return []; }
+    if (!data) {
+      return [];
+    }
 
     return (data as RecordIdentity[]).map(r => cache.records(r.type).get(r.id));
   },
@@ -72,7 +74,9 @@ export const QueryOperators: Dict<QueryOperator> = {
     const currentRecord = cache.records(type).get(id);
     const data = currentRecord && deepGet(currentRecord, ['relationships', relationship, 'data']);
 
-    if (!data) { return null; }
+    if (!data) {
+      return null;
+    }
 
     const r = data as RecordIdentity;
     return cache.records(r.type).get(r.id);
@@ -114,11 +118,16 @@ function applyFilter(record: Record, filter: FilterSpecifier) {
     const actual = deepGet(record, ['attributes', attributeFilter.attribute]);
     const expected = attributeFilter.value;
     switch (filter.op) {
-      case 'equal': return actual === expected;
-      case 'gt':    return actual > expected;
-      case 'gte':   return actual >= expected;
-      case 'lt':    return actual < expected;
-      case 'lte':   return actual <= expected;
+      case 'equal':
+        return actual === expected;
+      case 'gt':
+        return actual > expected;
+      case 'gte':
+        return actual >= expected;
+      case 'lt':
+        return actual < expected;
+      case 'lte':
+        return actual <= expected;
       default:
         throw new QueryExpressionParseError(`Filter operation ${filter.op} not recognized for Store.`, filter);
     }
@@ -129,8 +138,9 @@ function applyFilter(record: Record, filter: FilterSpecifier) {
     const expected = relatedRecordsFilter.records;
     switch (filter.op) {
       case 'equal':
-        return actual.length === expected.length
-          && expected.every(e => actual.some(a => a.id === e.id && a.type === e.type));
+        return (
+          actual.length === expected.length && expected.every(e => actual.some(a => a.id === e.id && a.type === e.type))
+        );
       case 'all':
         return expected.every(e => actual.some(a => a.id === e.id && a.type === e.type));
       case 'some':
@@ -167,17 +177,18 @@ function sortRecords(records: Record[], sortSpecifiers: SortSpecifier[]) {
       record,
       sortSpecifiers.map(sortSpecifier => {
         if (sortSpecifier.kind === 'attribute') {
-          return deepGet(record, ['attributes' , (<AttributeSortSpecifier>sortSpecifier).attribute]);
+          return deepGet(record, ['attributes', (<AttributeSortSpecifier>sortSpecifier).attribute]);
         } else {
-          throw new QueryExpressionParseError(`Sort specifier ${sortSpecifier.kind} not recognized for Store.`,
-            sortSpecifier);
+          throw new QueryExpressionParseError(
+            `Sort specifier ${sortSpecifier.kind} not recognized for Store.`,
+            sortSpecifier
+          );
         }
       })
     );
   });
 
-  const comparisonOrders = sortSpecifiers.map(
-    sortExpression => sortExpression.order === 'descending' ? -1 : 1);
+  const comparisonOrders = sortSpecifiers.map(sortExpression => (sortExpression.order === 'descending' ? -1 : 1));
 
   return records.sort((record1, record2) => {
     const values1 = comparisonValues.get(record1);
@@ -208,7 +219,9 @@ function paginateRecords(records: Record[], paginationOptions: PageSpecifier) {
         return records.slice(offset, offset + limit);
       } else {
         throw new QueryExpressionParseError(
-          'Pagination options not recognized for Store. Please specify `offset` and `limit`.', paginationOptions);
+          'Pagination options not recognized for Store. Please specify `offset` and `limit`.',
+          paginationOptions
+        );
       }
     case 'indexed':
       const indexed = paginationOptions as IndexedPageSpecifier;

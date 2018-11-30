@@ -43,9 +43,13 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
   private job: SyncJob;
   private projects: ParatextProject[] = null;
 
-  constructor(private readonly paratextService: ParatextService, private readonly userService: SFUserService,
-    private readonly projectService: SFProjectService, private readonly syncJobService: SyncJobService,
-    private readonly projectUserService: SFProjectUserService, private readonly router: Router
+  constructor(
+    private readonly paratextService: ParatextService,
+    private readonly userService: SFUserService,
+    private readonly projectService: SFProjectService,
+    private readonly syncJobService: SyncJobService,
+    private readonly projectUserService: SFProjectUserService,
+    private readonly router: Router
   ) {
     super();
   }

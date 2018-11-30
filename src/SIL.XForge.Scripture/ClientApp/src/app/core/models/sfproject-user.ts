@@ -13,4 +13,4 @@ export class SFProjectUser extends ProjectUser {
   }
 }
 
-export class SFProjectUserRef extends ProjectUserRef { }
+export class SFProjectUserRef extends ProjectUserRef {}
