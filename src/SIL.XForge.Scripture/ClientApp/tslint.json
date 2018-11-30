@@ -13,7 +13,12 @@
     "indent": [true, "spaces"],
     "interface-over-type-literal": true,
     "label-position": true,
-    "max-line-length": [true, 120],
+    "max-line-length": [
+      true, {
+        "limit": 120,
+        "ignore-pattern": "^import "
+      }
+    ],
     "member-access": false,
     "member-ordering": [
       true,
