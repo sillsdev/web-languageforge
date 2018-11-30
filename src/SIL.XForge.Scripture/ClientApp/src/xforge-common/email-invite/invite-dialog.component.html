@@ -2,7 +2,7 @@
 <mat-dialog-content>
   <mat-form-field [formGroup]="sendInviteForm" id="send-invite-form">
     <input matInput placeholder="Email" id="email" name="email" formControlName="email" />
-    <mat-error *ngIf="email.hasError('email') && !email.hasError('required')">
+    <mat-error *ngIf="email.hasError('pattern') || (email.hasError('email') && !email.hasError('required'))">
       Please enter a valid email address, e.g. me@example.com
     </mat-error>
     <mat-error *ngIf="email.hasError('required') && isSubmitted"> Email is <strong>required</strong> </mat-error>
