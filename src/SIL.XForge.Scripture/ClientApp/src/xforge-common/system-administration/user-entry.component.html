@@ -27,7 +27,7 @@
 
           <mat-form-field>
             <mat-select placeholder="System role" formControlName="Role">
-              <mat-option *ngFor="let item of roleList" value="{{item.id}}">{{ item.value }}</mat-option>
+              <mat-option *ngFor="let item of roleList" value="{{ item.id }}">{{ item.value }}</mat-option>
             </mat-select>
             <mat-error *ngIf="formControls.Role.errors?.required && isSubmitted"> System Role is required </mat-error>
           </mat-form-field>
@@ -56,7 +56,7 @@
           </div>
           <div *ngIf="showActivateDeActivatePanel">
             <p mat-line>Last login {{ userLastLoginDate }}</p>
-            <p mat-line>User Created {{ userCreatedDate }}</p>
+            <p mat-line>User created {{ userCreatedDate }}</p>
             <section class="example-section">
               <mat-slide-toggle class="example-margin" formControlName="ActivateStatus" (change)="onChange($event)">
                 {{ userActivateDeactive }}

@@ -15,9 +15,7 @@
           </td>
         </ng-container>
         <ng-container matColumnDef="tasks">
-          <td fxHide.xs="true" mat-cell *matCellDef="let row">
-            <span class="task-label">{{ row.tasks }}</span>
-          </td>
+          <td fxHide.xs mat-cell *matCellDef="let row" class="task-label">{{ row.tasks }}</td>
         </ng-container>
         <ng-container matColumnDef="role">
           <td mat-cell *matCellDef="let row" class="connect-cell">

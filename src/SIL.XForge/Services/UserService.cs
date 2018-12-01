@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Services;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
@@ -15,6 +16,18 @@ namespace SIL.XForge.Services
             IRepository<UserEntity> users)
             : base(jsonApiContext, mapper, userAccessor, users)
         {
+        }
+
+        protected override IQueryable<UserEntity> ApplyFilter(IQueryable<UserEntity> entities,
+            FilterQuery filter)
+        {
+            if (filter.Attribute == "search")
+            {
+                string value = filter.Value.ToLowerInvariant();
+                return entities.Where(u => u.Name.ToLowerInvariant().Contains(value)
+                    || u.CanonicalEmail.Contains(UserEntity.CanonicalizeEmail(filter.Value)));
+            }
+            return base.ApplyFilter(entities, filter);
         }
 
         protected override Task<UserEntity> InsertEntityAsync(UserEntity entity)

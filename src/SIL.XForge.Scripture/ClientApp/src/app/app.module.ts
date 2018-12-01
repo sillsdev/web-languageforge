@@ -10,6 +10,7 @@ import { IdentityModule } from '@identity/identity.module';
 import { DeleteDialogComponent } from '@xforge-common/delete-dialog/delete-dialog.component';
 import { InviteDialogComponent } from '@xforge-common/email-invite/invite-dialog.component';
 import { DetailSnackBarComponent } from '@xforge-common/notice/detail-snack-bar.component';
+import { SaUsersComponent } from '@xforge-common/system-administration/sa-users.component';
 import { SystemAdministrationComponent } from '@xforge-common/system-administration/system-administration.component';
 import { UserEntryComponent } from '@xforge-common/system-administration/user-entry.component';
 import { UICommonModule } from '@xforge-common/ui-common.module';
@@ -39,6 +40,7 @@ import { SharedModule } from './shared/shared.module';
     ConnectProjectComponent,
     MyAccountComponent,
     SystemAdministrationComponent,
+    SaUsersComponent,
     UserEntryComponent
   ],
   imports: [

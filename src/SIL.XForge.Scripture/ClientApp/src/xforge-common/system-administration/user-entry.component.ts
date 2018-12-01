@@ -26,9 +26,9 @@ export class UserEntryComponent implements OnInit, OnChanges {
   userActivateDeactive: string;
   userLastLoginDate: string = '';
   userCreatedDate: string = '';
-  headerTitle: string = 'New account details';
+  headerTitle: string;
 
-  roleList = [{ id: 'system_admin', value: 'Administrator' }, { id: 'system_user', value: 'User' }];
+  roleList = [{ id: 'system_admin', value: 'Administrator' }, { id: 'user', value: 'User' }];
 
   @Input() editUserId: string;
   @Output() outputUserList: EventEmitter<boolean> = new EventEmitter<boolean>(false);
@@ -81,6 +81,7 @@ export class UserEntryComponent implements OnInit, OnChanges {
       this.showActivateDeActivatePanel = true;
       this.getCurrentUser(this.editUserId);
     } else {
+      this.headerTitle = 'New account details';
       this.editToAddReset();
       this.accountUserForm.reset();
     }
@@ -145,7 +146,7 @@ export class UserEntryComponent implements OnInit, OnChanges {
   }
 
   onChange(value: { checked: boolean }): void {
-    value.checked === true ? (this.userActivateDeactive = 'Activated') : (this.userActivateDeactive = 'DeActivated');
+    value.checked ? (this.userActivateDeactive = 'Activated') : (this.userActivateDeactive = 'Deactive/Invited');
   }
 
   getCurrentUser(userId: string): void {
@@ -165,13 +166,8 @@ export class UserEntryComponent implements OnInit, OnChanges {
         });
         this.userLastLoginDate = this.datePipe.transform(response.results.dateModified, 'dd MMMM yyyy');
         this.userCreatedDate = this.datePipe.transform(response.results.dateCreated, 'dd MMMM yyyy');
-        if (response.results.active === 'True') {
-          this.userActivateDeactive = 'Activated';
-          this.accountUserForm.controls['ActivateStatus'].setValue(true);
-        } else {
-          this.userActivateDeactive = 'DeActivated';
-          this.accountUserForm.controls['ActivateStatus'].setValue(false);
-        }
+        this.accountUserForm.controls['ActivateStatus'].setValue(response.results.active);
+        this.onChange({ checked: response.results.active });
       }
     });
   }
