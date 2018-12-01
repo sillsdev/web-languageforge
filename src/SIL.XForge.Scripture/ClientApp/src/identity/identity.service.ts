@@ -10,7 +10,9 @@ import { ResetPasswordParams } from './models/reset-password-params';
 import { SendInviteParams } from './models/send-invite-params';
 import { SendInviteResult } from './models/send-invite-result';
 import { SignUpParams } from './models/sign-up-params';
+import { SignUpResult } from './models/sign-up-result';
 import { VerifyEmailParams } from './models/verify-email-params';
+import { VerifyRecaptchaParams } from './models/verify-recaptcha-params';
 
 @Injectable()
 export class IdentityService {
@@ -34,9 +36,19 @@ export class IdentityService {
     return await this.callApi<SendInviteResult>('send-invite', { email } as SendInviteParams);
   }
 
-  async signUp(params: SignUpParams): Promise<boolean> {
-    const result = await this.callApi('sign-up', params);
+  captchaId(): Promise<string> {
+    return this.http.get<string>('identity-api/captcha-id').toPromise();
+  }
+
+  async verifyCaptcha(userResponse: string): Promise<boolean> {
+    const response = { recaptchaResponse: userResponse } as VerifyRecaptchaParams;
+    const result = await this.callApi('verify-recaptcha', response);
     return result.success;
+  }
+
+  async signUp(params: SignUpParams): Promise<SignUpResult> {
+    const result = await this.callApi<SignUpResult>('sign-up', params);
+    return result;
   }
 
   async verifyEmail(key: string): Promise<boolean> {
