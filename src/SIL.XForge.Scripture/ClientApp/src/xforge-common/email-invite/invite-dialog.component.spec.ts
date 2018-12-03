@@ -12,7 +12,6 @@ import { UICommonModule } from '@xforge-common/ui-common.module';
 import { InviteDialogComponent } from './invite-dialog.component';
 
 describe('InviteDialogComponent', () => {
-
   it('form should be invalid when empty and pristine', fakeAsync(() => {
     const env = new TestEnvironment();
     env.fixture.detectChanges();
@@ -72,7 +71,7 @@ describe('InviteDialogComponent', () => {
     verify(env.mockedIdentityService.sendInvite(anything())).never();
   }));
 
-    it('should submit when form is valid', fakeAsync(() => {
+  it('should submit when form is valid', fakeAsync(() => {
     const emailAddress = 'me@example.com';
     const env = new TestEnvironment();
     env.fixture.detectChanges();
@@ -87,7 +86,6 @@ describe('InviteDialogComponent', () => {
     env.clickElement(env.sendInviteButton);
     verify(env.mockedIdentityService.sendInvite(emailAddress)).once();
   }));
-
 });
 
 class TestEnvironment {
@@ -107,12 +105,7 @@ class TestEnvironment {
     when(this.mockedIdentityService.sendInvite(anything())).thenResolve(sendInviteResult);
 
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        UICommonModule
-      ],
+      imports: [FormsModule, ReactiveFormsModule, NoopAnimationsModule, UICommonModule],
       declarations: [InviteDialogComponent],
       providers: [
         { provide: MatDialogRef, useFactory: () => instance(this.mockedMatDialogRef) },
@@ -155,5 +148,4 @@ class TestEnvironment {
     tick();
     this.fixture.detectChanges();
   }
-
 }
