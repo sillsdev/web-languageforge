@@ -12,7 +12,6 @@ import { UserService } from '@xforge-common/user.service';
   templateUrl: './system-administration.component.html',
   styleUrls: ['./system-administration.component.scss']
 })
-
 export class SystemAdministrationComponent implements OnInit {
   accountUserForm: FormGroup;
   firstNameAutofilled: boolean;
@@ -24,7 +23,9 @@ export class SystemAdministrationComponent implements OnInit {
   displayedColumns: string[] = ['no', 'name', 'username', 'active'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   // @ViewChild('accountUserRef') accountUserRef;
-  get formControls() { return this.accountUserForm.controls; }
+  get formControls() {
+    return this.accountUserForm.controls;
+  }
 
   isSubmitted: boolean = false;
   userId: string = '';
@@ -43,9 +44,13 @@ export class SystemAdministrationComponent implements OnInit {
   lblUsercreated: string = '';
   lbltitle: string = 'New account details';
 
-  constructor(public dialog: MatDialog, private readonly datePipe: DatePipe,
-    private readonly formBuilder: FormBuilder, private readonly userService: UserService,
-    private readonly noticeService: NoticeService) {
+  constructor(
+    public dialog: MatDialog,
+    private readonly datePipe: DatePipe,
+    private readonly formBuilder: FormBuilder,
+    private readonly userService: UserService,
+    private readonly noticeService: NoticeService
+  ) {
     this.accountUserForm = this.formBuilder.group({
       FullName: ['', Validators.compose([Validators.required])],
       Username: ['', Validators.compose([Validators.required])],
@@ -90,9 +95,12 @@ export class SystemAdministrationComponent implements OnInit {
       return;
     }
     const userObj = new User({
-      name: this.accountUserForm.value.FullName, username: this.accountUserForm.value.Username,
-      email: this.accountUserForm.value.Email, role: this.accountUserForm.value.Role,
-      active: true, password: this.accountUserForm.value.Password
+      name: this.accountUserForm.value.FullName,
+      username: this.accountUserForm.value.Username,
+      email: this.accountUserForm.value.Email,
+      role: this.accountUserForm.value.Role,
+      active: true,
+      password: this.accountUserForm.value.Password
     });
 
     this.userService.onlineAddUser(userObj).then(response => {
@@ -119,9 +127,12 @@ export class SystemAdministrationComponent implements OnInit {
       return;
     }
     const updateUser: any = {
-      Id: this.userId, Name: this.accountUserForm.value.FullName,
-      Username: this.accountUserForm.value.Username, Email: this.accountUserForm.value.Email,
-      Role: this.accountUserForm.value.Role, Password: this.accountUserForm.value.Password,
+      Id: this.userId,
+      Name: this.accountUserForm.value.FullName,
+      Username: this.accountUserForm.value.Username,
+      Email: this.accountUserForm.value.Email,
+      Role: this.accountUserForm.value.Role,
+      Password: this.accountUserForm.value.Password,
       Active: this.accountUserForm.value.ActivateStatus
     };
     this.userService.onlineUpdateUser(updateUser).then(response => {
@@ -141,7 +152,7 @@ export class SystemAdministrationComponent implements OnInit {
   }
 
   onChange(value) {
-    value.checked === true ? this.lblActivateDeactive = 'Activated' : this.lblActivateDeactive = 'DeActivated';
+    value.checked === true ? (this.lblActivateDeactive = 'Activated') : (this.lblActivateDeactive = 'DeActivated');
   }
 
   getCurrentUser(userId: string) {

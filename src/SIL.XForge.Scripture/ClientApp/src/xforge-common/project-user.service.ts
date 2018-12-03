@@ -22,11 +22,9 @@ export class ProjectUserService<T extends ProjectUser = ProjectUser> extends Res
     alert('service');
     // return this.jsonApiService.onlineGet(this.identity(id));
     // return this.jsonApiService.onlineGet({ type: SFProjectUser.TYPE, id: id },  false);
-    return this.jsonApiService.onlineGetAll( SFProjectUser.TYPE, null, true);
-
+    return this.jsonApiService.onlineGetAll(SFProjectUser.TYPE, null, true);
 
     // return this.jsonApiService.onlineGetAll('',(this.identity(id), true);
-
   }
 
   delete(id: string): Promise<void> {

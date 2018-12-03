@@ -1,13 +1,35 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import Coordinator, {
-  ConnectionStrategy, LogTruncationStrategy, RequestStrategy, SyncStrategy
+  ConnectionStrategy,
+  LogTruncationStrategy,
+  RequestStrategy,
+  SyncStrategy
 } from '@orbit/coordinator';
 import { Exception } from '@orbit/core';
 import {
-  AttributeFilterSpecifier, AttributeSortSpecifier, buildQuery, ClientError, FilterSpecifier, FindRecord, NetworkError,
-  OffsetLimitPageSpecifier, Operation, Query, QueryBuilder, QueryOrExpression, QueryTerm, Record, RecordIdentity,
-  RecordRelationship, ReplaceRecordOperation, Schema, SchemaSettings, SortSpecifier, Transform, TransformOrOperations
+  AttributeFilterSpecifier,
+  AttributeSortSpecifier,
+  buildQuery,
+  ClientError,
+  FilterSpecifier,
+  FindRecord,
+  NetworkError,
+  OffsetLimitPageSpecifier,
+  Operation,
+  Query,
+  QueryBuilder,
+  QueryOrExpression,
+  QueryTerm,
+  Record,
+  RecordIdentity,
+  RecordRelationship,
+  ReplaceRecordOperation,
+  Schema,
+  SchemaSettings,
+  SortSpecifier,
+  Transform,
+  TransformOrOperations
 } from '@orbit/data';
 import IndexedDBSource from '@orbit/indexeddb';
 import IndexedDBBucket from '@orbit/indexeddb-bucket';
@@ -69,7 +91,7 @@ export class JSONAPIService {
   private backup: IndexedDBSource;
   private coordinator: Coordinator;
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
   /**
    * Initializes the service. This should be called at application startup after the user has logged in.
@@ -77,8 +99,9 @@ export class JSONAPIService {
    * @param {string} accessToken The user's current access token.
    */
   async init(accessToken: string): Promise<void> {
-    const schemaDef = await this.http.get<SchemaSettings>('api/schema',
-      { headers: { 'Content-Type': 'application/json' } }).toPromise();
+    const schemaDef = await this.http
+      .get<SchemaSettings>('api/schema', { headers: { 'Content-Type': 'application/json' } })
+      .toPromise();
     schemaDef.generateId = () => new ObjectId().toHexString();
     this.schema = new Schema(schemaDef);
 
@@ -336,7 +359,11 @@ export class JSONAPIService {
    * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
    * @returns {Promise<void>} Resolves when the resources are replaced locally.
    */
-  replaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[], persist: boolean = true
+  replaceAllRelated(
+    identity: RecordIdentity,
+    relationship: string,
+    related: RecordIdentity[],
+    persist: boolean = true
   ): Promise<void> {
     return this._replaceAllRelated(identity, relationship, related, persist, false);
   }
@@ -353,7 +380,11 @@ export class JSONAPIService {
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
    * @returns {Promise<void>} Resolves when the resource is set locally.
    */
-  setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity | null, persist: boolean = true
+  setRelated(
+    identity: RecordIdentity,
+    relationship: string,
+    related: RecordIdentity | null,
+    persist: boolean = true
   ): Promise<void> {
     return this._setRelated(identity, relationship, related, persist, false);
   }
@@ -485,7 +516,10 @@ export class JSONAPIService {
    * @param {boolean} [persist=true] Optional. Indicates whether the resources should be persisted in IndexedDB.
    * @returns {Promise<void>} Resolves when the resources are replaced remotely.
    */
-  onlineReplaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[],
+  onlineReplaceAllRelated(
+    identity: RecordIdentity,
+    relationship: string,
+    related: RecordIdentity[],
     persist: boolean = true
   ): Promise<void> {
     return this._replaceAllRelated(identity, relationship, related, persist, true);
@@ -503,7 +537,10 @@ export class JSONAPIService {
    * @param {boolean} [persist=true] Optional. Indicates whether the resource should be persisted in IndexedDB.
    * @returns {Promise<void>} Resolves when the resource is set remotely.
    */
-  onlineSetRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity | null,
+  onlineSetRelated(
+    identity: RecordIdentity,
+    relationship: string,
+    related: RecordIdentity | null,
     persist: boolean = true
   ): Promise<void> {
     return this._setRelated(identity, relationship, related, persist, true);
@@ -514,12 +551,12 @@ export class JSONAPIService {
 
     const patch$ = fromEventPattern(
       handler => this.store.cache.on('patch', handler),
-      handler => this.store.cache.off('patch', handler),
+      handler => this.store.cache.off('patch', handler)
     );
 
     const reset$ = fromEventPattern(
       handler => this.store.cache.on('reset', handler),
-      handler => this.store.cache.off('reset', handler),
+      handler => this.store.cache.off('reset', handler)
     );
 
     const source$ = merge(patch$, reset$).pipe(
@@ -533,8 +570,9 @@ export class JSONAPIService {
   }
 
   private query(queryOrExpression: QueryOrExpression, persist: boolean): Observable<any> {
-    return from(this.store.query(queryOrExpression, this.getOptions(persist, true)))
-      .pipe(map(r => this.convertResults(r)));
+    return from(this.store.query(queryOrExpression, this.getOptions(persist, true))).pipe(
+      map(r => this.convertResults(r))
+    );
   }
 
   private getAllQuery(q: QueryBuilder, type: string, parameters: GetAllParameters): QueryTerm {
@@ -593,49 +631,69 @@ export class JSONAPIService {
   private _update(resource: Resource, persist: boolean, blocking: boolean): Promise<void> {
     const updatedRecord = this.createRecord(resource);
     const record = this.store.cache.query(q => q.findRecord(resource)) as Record;
-    return this.transform(t => {
-      const ops: Operation[] = [];
+    return this.transform(
+      t => {
+        const ops: Operation[] = [];
 
-      const updatedAttrs = this.getUpdatedProps(record.attributes, updatedRecord.attributes);
-      for (const attrName of updatedAttrs) {
-        ops.push(t.replaceAttribute(record, attrName, updatedRecord.attributes[attrName]));
-      }
-
-      const updatedRels = this.getUpdatedProps(record.relationships, updatedRecord.relationships);
-      for (const relName of updatedRels) {
-        const relData = updatedRecord.relationships[relName].data;
-        if (relData instanceof Array) {
-          ops.push(t.replaceRelatedRecords(record, relName, relData));
-        } else {
-          ops.push(t.replaceRelatedRecord(record, relName, relData));
+        const updatedAttrs = this.getUpdatedProps(record.attributes, updatedRecord.attributes);
+        for (const attrName of updatedAttrs) {
+          ops.push(t.replaceAttribute(record, attrName, updatedRecord.attributes[attrName]));
         }
-      }
-      return ops;
-    }, persist, blocking);
+
+        const updatedRels = this.getUpdatedProps(record.relationships, updatedRecord.relationships);
+        for (const relName of updatedRels) {
+          const relData = updatedRecord.relationships[relName].data;
+          if (relData instanceof Array) {
+            ops.push(t.replaceRelatedRecords(record, relName, relData));
+          } else {
+            ops.push(t.replaceRelatedRecord(record, relName, relData));
+          }
+        }
+        return ops;
+      },
+      persist,
+      blocking
+    );
   }
 
-  private _updateAttributes(identity: RecordIdentity, attrs: Dict<any>, persist: boolean, blocking: boolean
+  private _updateAttributes(
+    identity: RecordIdentity,
+    attrs: Dict<any>,
+    persist: boolean,
+    blocking: boolean
   ): Promise<void> {
-    return this.transform(t => {
-      const ops: Operation[] = [];
-      for (const [name, value] of Object.entries(attrs)) {
-        ops.push(t.replaceAttribute(identity, name, value));
-      }
-      return ops;
-    }, persist, blocking);
+    return this.transform(
+      t => {
+        const ops: Operation[] = [];
+        for (const [name, value] of Object.entries(attrs)) {
+          ops.push(t.replaceAttribute(identity, name, value));
+        }
+        return ops;
+      },
+      persist,
+      blocking
+    );
   }
 
   private _delete(identity: RecordIdentity, persist: boolean, blocking: boolean): Promise<void> {
     return this.transform(t => t.removeRecord(identity), persist, blocking);
   }
 
-  private _replaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[],
-    persist: boolean, blocking: boolean
+  private _replaceAllRelated(
+    identity: RecordIdentity,
+    relationship: string,
+    related: RecordIdentity[],
+    persist: boolean,
+    blocking: boolean
   ): Promise<void> {
     return this.transform(t => t.replaceRelatedRecords(identity, relationship, related), persist, blocking);
   }
 
-  private _setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity, persist: boolean,
+  private _setRelated(
+    identity: RecordIdentity,
+    relationship: string,
+    related: RecordIdentity,
+    persist: boolean,
     blocking: boolean
   ): Promise<void> {
     return this.transform(t => t.replaceRelatedRecord(identity, relationship, related), persist, blocking);
@@ -721,7 +779,7 @@ export class JSONAPIService {
     };
     const model = this.schema.getModel(resource.type);
     if (model.attributes != null) {
-      record.attributes = { };
+      record.attributes = {};
       for (const attrName in model.attributes) {
         if (model.attributes.hasOwnProperty(attrName)) {
           const value = resource[attrName];
@@ -732,7 +790,7 @@ export class JSONAPIService {
       }
     }
     if (model.relationships != null) {
-      record.relationships = { };
+      record.relationships = {};
       for (const relName in model.relationships) {
         if (model.relationships.hasOwnProperty(relName)) {
           const ref = resource[relName] as ResourceRef | ResourceRef[];
@@ -813,12 +871,15 @@ export class JSONAPIService {
       return;
     }
 
-    this.store.update(t => {
-      const ops: Operation[] = [];
-      for (const resource of resources) {
-        ops.push(t.removeRecord(resource));
-      }
-      return ops;
-    }, { update: [JSONAPIService.BACKUP] });
+    this.store.update(
+      t => {
+        const ops: Operation[] = [];
+        for (const resource of resources) {
+          ops.push(t.removeRecord(resource));
+        }
+        return ops;
+      },
+      { update: [JSONAPIService.BACKUP] }
+    );
   }
 }

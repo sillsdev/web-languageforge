@@ -3,75 +3,71 @@
     <mat-card>
       <mat-card-title class="account-title">System Administration</mat-card-title>
       <mat-card-content fxLayout="column">
-
         <div class="container" fxLayout="row" fxLayoutGap="0.5%" fxLayoutAlign="left">
           <mat-form-field fxLayout="row" fxFlex="33%" appearance="standard">
             <mat-label>User Name</mat-label>
-            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Username">
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Username" />
           </mat-form-field>
-          <label fxFlex="33%" class="form-label"> {{userCount}} &nbsp; Users</label>
-          <button fxLayoutAlign="center" mat-raised-button color="primary" class="button" (click)="addUser()">Add User</button>
+          <label fxFlex="33%" class="form-label"> {{ userCount }} &nbsp; Users</label>
+          <button fxLayoutAlign="center" mat-raised-button color="primary" class="button" (click)="addUser()">
+            Add User
+          </button>
         </div>
         <div class="mat-elevation-z8">
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
             <ng-container matColumnDef="no">
               <th mat-header-cell *matHeaderCellDef></th>
-              <td mat-cell *matCellDef="let row; let i = index;">
-                <ngx-avatar name={{row.name}} src="#" value="20%" size="60" [round]="true">
-                </ngx-avatar>
+              <td mat-cell *matCellDef="let row; let i = index">
+                <ngx-avatar name="{{row.name}}" src="#" value="20%" size="60" [round]="true"> </ngx-avatar>
               </td>
             </ng-container>
 
             <!-- Name Column -->
             <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef> Name </th>
-              <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let row">{{ row.name }}</td>
             </ng-container>
 
             <!-- Username Column -->
             <ng-container matColumnDef="username">
-              <th mat-header-cell *matHeaderCellDef> Username </th>
-              <td mat-cell *matCellDef="let row" class="grid-update-field" (click)="editUser(row.id)">{{row.username}}</td>
+              <th mat-header-cell *matHeaderCellDef>Username</th>
+              <td mat-cell *matCellDef="let row" class="grid-update-field" (click)="editUser(row.id)">
+                {{ row.username }}
+              </td>
             </ng-container>
-
 
             <ng-container matColumnDef="active">
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let row">
-                  <button *ngIf="row.active" mat-stroked-button>Cancel Invite</button> &nbsp;&nbsp;
-                  <button class="icon-button" (click)="openDialog(dialogRef,row.id)">
-                    <mat-icon color="green">clear</mat-icon>
-                  </button>
+                <button *ngIf="row.active" mat-stroked-button>Cancel Invite</button> &nbsp;&nbsp;
+                <button class="icon-button" (click)="openDialog(dialogRef, row.id)">
+                  <mat-icon color="green">clear</mat-icon>
+                </button>
               </td>
             </ng-container>
 
             <div hidden="true">
-                <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef> Userid </th>
-                    <td mat-cell *matCellDef="let row"> {{row.id}} </td>
-                  </ng-container>
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>Userid</th>
+                <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+              </ng-container>
             </div>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
+
           <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>
         </div>
-
       </mat-card-content>
     </mat-card>
 
     <div [hidden]="showDialog">
       <ng-template #dialogRef>
         <mat-toolbar>
-          <div class="mat-toolbar-tools">
-            <h3>Delete User</h3>
-          </div>
+          <div class="mat-toolbar-tools"><h3>Delete User</h3></div>
         </mat-toolbar>
-        <mat-dialog-content>
-          <p>Are you sure to delete?</p>
-        </mat-dialog-content>
+        <mat-dialog-content> <p>Are you sure to delete?</p> </mat-dialog-content>
         <mat-dialog-actions align="end">
           <span class="input-group-btn">
             <button mat-stroked-button (click)="closeDialog()" id="dialogClose" type="button">No</button>&nbsp;&nbsp;
@@ -82,71 +78,105 @@
     </div>
   </div>
   <div *ngIf="addEditPanel" fxLayout="column" fxFlex="50%" class="right-layout">
-      <mat-card>
-        <mat-card-title class="account-title"> {{lbltitle}} </mat-card-title>
-        <mat-card-content fxLayout="column">
-          <div fxLayout="column" fxLayoutAlign="center center">
-            <div class="fields-container">
-              <form [formGroup]="accountUserForm" fxLayout="column" novalidate autocomplete="off">
-                <mat-form-field>
-                  <input matInput placeholder="Name" formControlName="FullName" />
-                  <mat-error *ngIf="formControls.FullName.errors?.required && isSubmitted">Name is required</mat-error>
-                </mat-form-field>
+    <mat-card>
+      <mat-card-title class="account-title"> {{ lbltitle }} </mat-card-title>
+      <mat-card-content fxLayout="column">
+        <div fxLayout="column" fxLayoutAlign="center center">
+          <div class="fields-container">
+            <form [formGroup]="accountUserForm" fxLayout="column" novalidate autocomplete="off">
+              <mat-form-field>
+                <input matInput placeholder="Name" formControlName="FullName" />
+                <mat-error *ngIf="formControls.FullName.errors?.required && isSubmitted">Name is required</mat-error>
+              </mat-form-field>
 
-                <mat-form-field>
-                  <input matInput placeholder="Username" formControlName="Username" />
-                  <mat-error *ngIf="formControls.Username.errors?.required && isSubmitted">Username is required</mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                  <input matInput placeholder="Email Address" formControlName="Email" />
-                  <mat-error *ngIf="formControls.Email.errors?.required && isSubmitted">
-                    Email is required
-                  </mat-error>
-                  <mat-error *ngIf="formControls.Email.errors?.email && isSubmitted">
-                    Email is invalid
-                  </mat-error>
-                </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Username" formControlName="Username" />
+                <mat-error *ngIf="formControls.Username.errors?.required && isSubmitted"
+                  >Username is required</mat-error
+                >
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Email Address" formControlName="Email" />
+                <mat-error *ngIf="formControls.Email.errors?.required && isSubmitted"> Email is required </mat-error>
+                <mat-error *ngIf="formControls.Email.errors?.email && isSubmitted"> Email is invalid </mat-error>
+              </mat-form-field>
 
-                <mat-form-field>
-                  <mat-select placeholder="System role" formControlName="Role">
-                    <mat-option value="system_admin">Administrator</mat-option>
-                    <mat-option value="system_user">User</mat-option>
-                  </mat-select>
-                  <mat-error *ngIf="formControls.Role.errors?.required && isSubmitted">
-                    System Role is required
-                  </mat-error>
-                </mat-form-field>
+              <mat-form-field>
+                <mat-select placeholder="System role" formControlName="Role">
+                  <mat-option value="system_admin">Administrator</mat-option>
+                  <mat-option value="system_user">User</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formControls.Role.errors?.required && isSubmitted">
+                  System Role is required
+                </mat-error>
+              </mat-form-field>
 
-                <div *ngIf="showPasswordPanel">
-                  <mat-form-field class="example-full-width password">
-                    <input matInput placeholder="Password" type="password" id="password" name="password" formControlName="Password" />
-                    <mat-error *ngIf="formControls.Password.errors?.minlength">Password must be at least 7 characters</mat-error>
-                    <mat-error *ngIf="formControls.Password.errors?.required && isSubmitted">Password is
-                      required</mat-error>
-                  </mat-form-field>
-                  <password-strength-meter [password]="accountUserForm.value.Password" item-width="200px"></password-strength-meter>
-                </div>
-                <div *ngIf="showActivateDeActivatePanel">
-                  <p mat-line> Last login {{ lblLastlogin }} </p>
-                  <p mat-line> User Created {{ lblUsercreated }} </p>
-                  <section class="example-section">
-                    <mat-slide-toggle class="example-margin" formControlName="ActivateStatus" (change)="onChange($event)">
-                      {{ lblActivateDeactive }}
-                    </mat-slide-toggle>
-                  </section>
-                </div>
-                <mat-card-actions align="end">
-                  <button mat-raised-button color="primary" *ngIf="btnUserAdd" type="submit" class="button"
-                    (click)="onUserAdd()">Add</button>
-                  <button mat-raised-button color="primary" *ngIf="btnUserUpdate" type="button" class="button"
-                    (click)="onUpdate()">Update</button>
-                  <button mat-raised-button class="password-button" color="primary" *ngIf="btnChangePassword" (click)="onChangePassword()">Change
-                    Password</button>
-                </mat-card-actions>
-              </form>
-            </div>
+              <div *ngIf="showPasswordPanel">
+                <mat-form-field class="example-full-width password">
+                  <input
+                    matInput
+                    placeholder="Password"
+                    type="password"
+                    id="password"
+                    name="password"
+                    formControlName="Password"
+                  />
+                  <mat-error *ngIf="formControls.Password.errors?.minlength"
+                    >Password must be at least 7 characters</mat-error
+                  >
+                  <mat-error *ngIf="formControls.Password.errors?.required && isSubmitted"
+                    >Password is required</mat-error
+                  >
+                </mat-form-field>
+                <password-strength-meter
+                  [password]="accountUserForm.value.Password"
+                  item-width="200px"
+                ></password-strength-meter>
+              </div>
+              <div *ngIf="showActivateDeActivatePanel">
+                <p mat-line>Last login {{ lblLastlogin }}</p>
+                <p mat-line>User Created {{ lblUsercreated }}</p>
+                <section class="example-section">
+                  <mat-slide-toggle class="example-margin" formControlName="ActivateStatus" (change)="onChange($event)">
+                    {{ lblActivateDeactive }}
+                  </mat-slide-toggle>
+                </section>
+              </div>
+              <mat-card-actions align="end">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  *ngIf="btnUserAdd"
+                  type="submit"
+                  class="button"
+                  (click)="onUserAdd()"
+                >
+                  Add
+                </button>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  *ngIf="btnUserUpdate"
+                  type="button"
+                  class="button"
+                  (click)="onUpdate()"
+                >
+                  Update
+                </button>
+                <button
+                  mat-raised-button
+                  class="password-button"
+                  color="primary"
+                  *ngIf="btnChangePassword"
+                  (click)="onChangePassword()"
+                >
+                  Change Password
+                </button>
+              </mat-card-actions>
+            </form>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>

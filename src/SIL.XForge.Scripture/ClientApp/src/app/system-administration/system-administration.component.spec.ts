@@ -13,13 +13,11 @@ import { mock } from 'ts-mockito';
 import { SystemAdministrationComponent } from './system-administration.component';
 
 class TestEnvironment {
-
   component: SystemAdministrationComponent;
   fixture: ComponentFixture<SystemAdministrationComponent>;
 
   mockedUserService: UserService;
   mockedNoticeService: NoticeService;
-
 
   constructor() {
     this.mockedUserService = mock(UserService);
@@ -33,7 +31,6 @@ class TestEnvironment {
 
     this.fixture = TestBed.createComponent(SystemAdministrationComponent);
     this.component = this.fixture.componentInstance;
-
   }
 
   get buttonStyle(): DebugElement {
@@ -49,5 +46,4 @@ class TestEnvironment {
     this.fixture.detectChanges();
     flush();
   }
-
 }

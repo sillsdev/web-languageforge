@@ -14,19 +14,23 @@ export class ChangePasswordComponent implements OnInit {
   changePasswordForm: FormGroup;
   isSubmitted = false;
   errorNotMatchMessage: boolean = false;
-  get formControls() { return this.changePasswordForm.controls; }
+  get formControls() {
+    return this.changePasswordForm.controls;
+  }
 
-  constructor(private readonly formBuilder: FormBuilder,
+  constructor(
+    private readonly formBuilder: FormBuilder,
     private readonly userService: UserService,
     private readonly snackBar: MatSnackBar,
-    private readonly router: Router) { }
+    private readonly router: Router
+  ) {}
 
-    @ViewChild('changePasswordRef') changePasswordNgForm;
+  @ViewChild('changePasswordRef') changePasswordNgForm;
 
   ngOnInit() {
     this.changePasswordForm = this.formBuilder.group({
       newPassword: ['', Validators.compose([Validators.required, Validators.minLength(7)])],
-      confirmPassword: ['', Validators.compose([Validators.required, Validators.minLength(7)])],
+      confirmPassword: ['', Validators.compose([Validators.required, Validators.minLength(7)])]
     });
   }
 
@@ -35,9 +39,11 @@ export class ChangePasswordComponent implements OnInit {
     if (this.changePasswordForm.invalid) {
       return;
     }
-    if (this.changePasswordForm.value.newPassword === this.changePasswordForm.value.confirmPassword &&
-      this.changePasswordForm.value.newPassword && this.changePasswordForm.value.newPassword.length > 6) {
-
+    if (
+      this.changePasswordForm.value.newPassword === this.changePasswordForm.value.confirmPassword &&
+      this.changePasswordForm.value.newPassword &&
+      this.changePasswordForm.value.newPassword.length > 6
+    ) {
       await this.userService.onlineChangePassword(this.changePasswordForm.value.newPassword);
 
       this.errorNotMatchMessage = false;
@@ -45,10 +51,10 @@ export class ChangePasswordComponent implements OnInit {
       this.isSubmitted = false;
 
       this.snackBar.open('Password Successfully Changed', null, {
-          duration: 5000,
-          horizontalPosition: 'right',
-          verticalPosition: 'top',
-        });
+        duration: 5000,
+        horizontalPosition: 'right',
+        verticalPosition: 'top'
+      });
       this.router.navigateByUrl('/home');
     } else if (this.changePasswordForm.value.newPassword !== this.changePasswordForm.value.confirmPassword) {
       this.errorNotMatchMessage = true;

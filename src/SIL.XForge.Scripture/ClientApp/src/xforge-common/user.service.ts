@@ -32,13 +32,20 @@ export class UserService extends ResourceService {
     let attrs: Partial<User> = {};
     if (updateUser.Password) {
       attrs = {
-        active: updateUser.Active, email: updateUser.Email, name: updateUser.Name,
-        role: updateUser.Role, username: updateUser.Username, password: updateUser.Password
+        active: updateUser.Active,
+        email: updateUser.Email,
+        name: updateUser.Name,
+        role: updateUser.Role,
+        username: updateUser.Username,
+        password: updateUser.Password
       };
     } else {
       attrs = {
-        active: updateUser.Active, email: updateUser.Email, name: updateUser.Name,
-        role: updateUser.Role, username: updateUser.Username
+        active: updateUser.Active,
+        email: updateUser.Email,
+        name: updateUser.Name,
+        role: updateUser.Role,
+        username: updateUser.Username
       };
     }
     return this.jsonApiService.onlineUpdateAttributes(this.identity(updateUser.Id), attrs, false);
