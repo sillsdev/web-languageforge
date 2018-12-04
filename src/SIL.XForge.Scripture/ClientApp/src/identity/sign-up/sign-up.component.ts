@@ -44,6 +44,7 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
       this.emailEntry = this.params['e'] as string;
       this.email.setValue(this.emailEntry);
     });
+    this.isInvitatedUserExists(this.emailEntry);
   }
 
   get captchaId(): string {
@@ -91,6 +92,18 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
         );
       } else {
         this.noticeService.push(NoticeService.WARN, 'Your sign-up request was unsuccessful');
+      }
+    }
+  }
+
+  async isInvitatedUserExists(email: string): Promise<void> {
+    const invitedUserMessage =
+      'The invitation email has expired. Please request another invitation.';
+    if (email) {
+      const result = await this.identityService.verifyInvitedUser(email);
+      if (result) {
+        this.signUpDisabled = true;
+        this.noticeService.push(NoticeService.WARN, invitedUserMessage, undefined, -1);
       }
     }
   }
