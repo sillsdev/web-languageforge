@@ -14,7 +14,8 @@ export class EmailInviteComponent {
   openDialog() {
     const dialogConfig = {
       autoFocus: true,
-      disableClose: true
+      disableClose: true,
+      panelClass: 'inviteDialogComponent'
     } as MatDialogConfig;
     this.dialog.open(InviteDialogComponent, dialogConfig);
   }

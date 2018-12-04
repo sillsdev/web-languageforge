@@ -29,3 +29,12 @@ app-root {
 .flex-grow {
   flex: 1 1 auto;
 }
+
+.cdk-overlay-pane.inviteDialogComponent {
+  width: 80%;
+  max-width: 400px !important;
+}
+
+.cdk-overlay-pane.inviteDialogComponent>.mat-dialog-container {
+  padding-top: 5px !important;
+}
