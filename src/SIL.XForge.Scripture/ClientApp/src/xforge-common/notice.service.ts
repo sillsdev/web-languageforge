@@ -38,6 +38,8 @@ export class NoticeService {
       time = 4 * 1000;
     } else if (!time && type === NoticeService.WARN && !details) {
       time = 6 * 1000;
+    } else if (time === -1 && type === NoticeService.WARN && !details) {
+      time = null;
     }
 
     const notice = new Notice(type, message, id, details, time);

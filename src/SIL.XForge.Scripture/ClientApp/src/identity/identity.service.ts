@@ -36,6 +36,11 @@ export class IdentityService {
     return this.invoke('verifyResetPasswordKey', key);
   }
 
+  async verifyInvitedUser(email: string): Promise<boolean> {
+    const result = await this.callApi('verify-invited-user', { email } as VerifyInvitedUserParams);
+    return result.success;
+  }
+
   private async invoke<T>(method: string, ...params: any[]): Promise<T> {
     return this.jsonRpcService.invoke<T>('identity-api', method, params);
   }
