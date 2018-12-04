@@ -51,6 +51,10 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('.submit-button'));
   }
 
+  get signinParatextButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('.signin-paratext-button'));
+  }
+
   get logInForm(): DebugElement {
     return this.fixture.debugElement.query(By.css('form'));
   }
@@ -75,6 +79,12 @@ class TestEnvironment {
 
   clickSubmitButton(): void {
     this.submitButton.nativeElement.click();
+    this.fixture.detectChanges();
+    tick();
+  }
+
+  clickSingInParatextButton(): void {
+    this.signinParatextButton.nativeElement.click();
     this.fixture.detectChanges();
     tick();
   }
@@ -143,5 +153,17 @@ describe('LogInComponent', () => {
 
     verify(env.mockedIdentityService.logIn(anything())).never();
     expect().nothing();
+  }));
+
+  it('should log in when paratext button is clicked', fakeAsync(() => {
+    const env = new TestEnvironment();
+    when(env.mockedAuthService.externalLogIn()).thenResolve();
+    env.fixture.detectChanges();
+
+    env.clickSingInParatextButton();
+
+    verify(env.mockedAuthService.externalLogIn()).once();
+    expect().nothing();
+    flush();
   }));
 });

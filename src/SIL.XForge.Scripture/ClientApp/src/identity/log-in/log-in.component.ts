@@ -35,6 +35,10 @@ export class LogInComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => (this.params = params));
   }
 
+  signInWithParatext(): void {
+    this.authService.externalLogIn();
+  }
+
   async submit(): Promise<void> {
     if (!this.logInForm.valid) {
       return;

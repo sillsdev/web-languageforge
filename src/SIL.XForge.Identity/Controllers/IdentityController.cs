@@ -332,7 +332,7 @@ namespace SIL.XForge.Identity.Controllers
         [HttpGet("challenge")]
         public IActionResult Challenge(string provider, string returnUrl, string userId)
         {
-            if (string.IsNullOrEmpty(returnUrl))
+            if (string.IsNullOrEmpty(returnUrl) || returnUrl == "undefined")
                 returnUrl = "~/";
 
             // validate returnUrl - either it is a valid OIDC URL or back to a local page
