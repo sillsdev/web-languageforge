@@ -11,7 +11,7 @@ import { SubscriptionDisposable } from '../subscription-disposable';
 import { UserService } from '../user.service';
 
 class Row {
-  constructor(public readonly project: Project, public projectUser: ProjectUser, public projectRole: ProjectRole) {}
+  constructor(public readonly project: Project, public projectUser: ProjectUser, public projectRole: ProjectRole) { }
 
   isUpdatingRole: boolean = false;
 
@@ -67,6 +67,10 @@ export class ProjectsComponent extends SubscriptionDisposable implements OnInit 
   }
 
   ngOnInit() {
+    this.loadProjects();
+  }
+
+  loadProjects(): void {
     this.subscribe(this.projectService.onlineSearch(this.searchTerm$, this.parameters$), searchResults => {
       this.projects = searchResults.results;
       this.length = searchResults.totalPagedCount;
@@ -113,6 +117,7 @@ export class ProjectsComponent extends SubscriptionDisposable implements OnInit 
     }
     row.projectRole = projectRole;
     row.isUpdatingRole = false;
+    this.loadProjects();
   }
 
   private generateRows(): void {
