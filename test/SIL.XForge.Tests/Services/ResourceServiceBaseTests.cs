@@ -28,7 +28,7 @@ namespace SIL.XForge.Services
             {
                 Id = "testnew",
                 Str = "new",
-                User = new UserResource { Id = "user01" },
+                User = new TestUserResource { Id = "user01" },
                 UserRef = "user01"
             };
             TestResource newResource = await env.Service.CreateAsync(resource);
@@ -61,7 +61,7 @@ namespace SIL.XForge.Services
             {
                 Id = "test01",
                 Str = "new",
-                User = new UserResource { Id = "user01" },
+                User = new TestUserResource { Id = "user01" },
                 UserRef = "user01"
             };
             TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
@@ -139,7 +139,7 @@ namespace SIL.XForge.Services
             {
                 Id = "testbad",
                 Str = "new",
-                User = new UserResource { Id = "user01" },
+                User = new TestUserResource { Id = "user01" },
                 UserRef = "user01"
             };
             TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
@@ -156,7 +156,7 @@ namespace SIL.XForge.Services
             Assert.That(entity.UserRef, Is.Null);
 
             await env.Service.UpdateRelationshipsAsync("test01", "user",
-                new List<DocumentData> { new DocumentData { Type = "users", Id = "user01" } });
+                new List<ResourceObject> { new ResourceObject { Type = "users", Id = "user01" } });
 
             TestEntity updatedEntity = await env.Entities.GetAsync("test01");
             Assert.That(updatedEntity.UserRef, Is.EqualTo("user01"));
@@ -172,7 +172,7 @@ namespace SIL.XForge.Services
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
                     await env.Service.UpdateRelationshipsAsync("testbad", "user",
-                        new List<DocumentData> { new DocumentData { Type = "users", Id = "user01" } });
+                        new List<ResourceObject> { new ResourceObject { Type = "users", Id = "user01" } });
                 });
 
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
@@ -188,7 +188,7 @@ namespace SIL.XForge.Services
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
                     await env.Service.UpdateRelationshipsAsync("test01", "badrelationship",
-                        new List<DocumentData> { new DocumentData { Type = "bad", Id = "badid" } });
+                        new List<ResourceObject> { new ResourceObject { Type = "bad", Id = "badid" } });
                 });
 
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
@@ -249,7 +249,7 @@ namespace SIL.XForge.Services
             env.JsonApiContext.QuerySet.Returns(new QuerySet
                 {
                     Filters = { new FilterQuery("str", "string1", "eq") },
-                    SortParameters = { new SortQuery(SortDirection.Descending, env.GetAttribute("num")) }
+                    SortParameters = { new SortQuery(SortDirection.Descending, "num") }
                 });
             var pageManager = new PageManager { PageSize = 5, CurrentPage = 2 };
             env.JsonApiContext.PageManager.Returns(pageManager);
@@ -271,7 +271,7 @@ namespace SIL.XForge.Services
             var env = new TestEnvironment();
             env.JsonApiContext.QuerySet.Returns(new QuerySet
                 {
-                    SortParameters = { new SortQuery(SortDirection.Ascending, env.GetAttribute("num")) },
+                    SortParameters = { new SortQuery(SortDirection.Ascending, "num") },
                     IncludedRelationships = { "user" }
                 });
             env.JsonApiContext.PageManager.Returns(new PageManager());
@@ -293,7 +293,7 @@ namespace SIL.XForge.Services
             object resource = await env.Service.GetRelationshipAsync("test02", "user");
 
             Assert.That(resource, Is.Not.Null);
-            var userResource = (UserResource) resource;
+            var userResource = (TestUserResource) resource;
             Assert.That(userResource.Id, Is.EqualTo("user01"));
         }
 
@@ -356,14 +356,14 @@ namespace SIL.XForge.Services
                 };
             }
 
-            protected override void SetupContextGraph(IContextGraphBuilder builder)
+            protected override void SetupResourceGraph(IResourceGraphBuilder builder)
             {
-                builder.AddResource<UserResource, string>("users");
+                builder.AddResource<TestUserResource, string>("users");
             }
 
             protected override void SetupMapper(IMapperConfigurationExpression config)
             {
-                config.CreateMap<UserEntity, UserResource>()
+                config.CreateMap<UserEntity, TestUserResource>()
                     .ReverseMap();
             }
         }

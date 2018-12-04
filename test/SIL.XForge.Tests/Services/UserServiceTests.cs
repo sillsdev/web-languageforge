@@ -20,7 +20,7 @@ namespace SIL.XForge.Services
             var env = new TestEnvironment();
             env.SetUser("user01", SystemRoles.User);
 
-            var resource = new UserResource
+            var resource = new TestUserResource
             {
                 Id = "usernew"
             };
@@ -38,7 +38,7 @@ namespace SIL.XForge.Services
             var env = new TestEnvironment();
             env.SetUser("user01", SystemRoles.SystemAdmin);
 
-            var userResource = new UserResource
+            var userResource = new TestUserResource
             {
                 Id = "usernew"
             };
@@ -53,7 +53,7 @@ namespace SIL.XForge.Services
             var env = new TestEnvironment();
             env.SetUser("user01", SystemRoles.SystemAdmin);
 
-            var userResource = new UserResource
+            var userResource = new TestUserResource
             {
                 Id = "usernew",
                 Email = "UserNew@gmail.com"
@@ -76,7 +76,7 @@ namespace SIL.XForge.Services
                 });
             env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            var resource = new UserResource
+            var resource = new TestUserResource
             {
                 Id = "user02",
                 Username = "new"
@@ -106,7 +106,7 @@ namespace SIL.XForge.Services
                 });
             env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            var resource = new UserResource
+            var resource = new TestUserResource
             {
                 Id = "user02",
                 Username = "new"
@@ -129,7 +129,7 @@ namespace SIL.XForge.Services
                 });
             env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            var resource = new UserResource
+            var resource = new TestUserResource
             {
                 Id = "user01",
                 Email = "New@gmail.com"

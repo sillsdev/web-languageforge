@@ -54,7 +54,7 @@ namespace SIL.XForge.Services
                         IRelationship<TEntity> relationship = GetRelationship(rel.Key);
                         if (!relationship.Update(update, new[] { rel.Value }))
                         {
-                            string relName = JsonApiContext.ContextGraph.GetPublicRelationshipName<TResource>(rel.Key);
+                            string relName = JsonApiContext.ResourceGraph.GetPublicRelationshipName<TResource>(rel.Key);
                             throw new JsonApiException(StatusCodes.Status400BadRequest,
                                 $"The relationship '{relName}' cannot be updated.");
                         }

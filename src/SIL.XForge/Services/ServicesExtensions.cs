@@ -7,18 +7,18 @@ namespace SIL.XForge.Services
 {
     public static class ServicesExtensions
     {
-        public static string GetPublicRelationshipName<T>(this IContextGraph contextGraph,
+        public static string GetPublicRelationshipName<T>(this IResourceGraph resourceGraph,
             string internalPropertyName)
         {
-            ContextEntity contextEntity = contextGraph.GetContextEntity(typeof(T));
+            ContextEntity contextEntity = resourceGraph.GetContextEntity(typeof(T));
             return contextEntity.Relationships
                 .SingleOrDefault(r => r.InternalRelationshipName == internalPropertyName)?.PublicRelationshipName;
         }
 
-        public static RelationshipAttribute GetRelationshipAttribute<T>(this IContextGraph contextGraph,
+        public static RelationshipAttribute GetRelationshipAttribute<T>(this IResourceGraph resourceGraph,
             string publicRelationshipName)
         {
-            ContextEntity contextEntity = contextGraph.GetContextEntity(typeof(T));
+            ContextEntity contextEntity = resourceGraph.GetContextEntity(typeof(T));
             return contextEntity.Relationships.SingleOrDefault(r => r.Is(publicRelationshipName));
         }
 

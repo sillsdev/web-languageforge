@@ -2,9 +2,10 @@ using JsonApiDotNetCore.Models;
 
 namespace SIL.XForge.Models
 {
-    public class ProjectResource : Resource
+    [Resource("projects")]
+    public abstract class ProjectResource : Resource
     {
-        [Attr("project-name")]
+        [Attr]
         public string ProjectName { get; set; }
     }
 }

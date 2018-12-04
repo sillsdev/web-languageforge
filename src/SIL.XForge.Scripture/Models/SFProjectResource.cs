@@ -6,21 +6,21 @@ namespace SIL.XForge.Scripture.Models
 {
     public class SFProjectResource : ProjectResource
     {
-        [Attr("paratext-id", isImmutable: true)]
+        [Attr(isImmutable: true)]
         public string ParatextId { get; set; }
-        [Attr("checking-config")]
+        [Attr]
         public CheckingConfig CheckingConfig { get; set; }
-        [Attr("translate-config")]
+        [Attr]
         public TranslateConfig TranslateConfig { get; set; }
-        [Attr("input-system")]
+        [Attr]
         public InputSystem InputSystem { get; set; }
 
-        [HasOne("active-sync-job")]
+        [HasOne]
         public SyncJobResource ActiveSyncJob { get; set; }
-        [HasMany("users")]
+        [HasMany]
         [SchemaInfo(Inverse = nameof(SFProjectUserResource.Project), IsDependent = true)]
         public IReadOnlyList<SFProjectUserResource> Users { get; set; }
-        [HasMany("texts")]
+        [HasMany]
         [SchemaInfo(Inverse = nameof(TextResource.Project), IsDependent = true)]
         public IReadOnlyList<TextResource> Texts { get; set; }
     }

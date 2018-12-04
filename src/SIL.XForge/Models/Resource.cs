@@ -3,11 +3,11 @@ using JsonApiDotNetCore.Models;
 
 namespace SIL.XForge.Models
 {
-    public class Resource : Identifiable<string>, IResource
+    public abstract class Resource : Identifiable<string>, IResource
     {
-        [Attr("date-modified", true)]
+        [Attr(isImmutable: true)]
         public DateTime DateModified { get; set; }
-        [Attr("date-created", true)]
+        [Attr(isImmutable: true)]
         public DateTime DateCreated { get; set; }
     }
 }

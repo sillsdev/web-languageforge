@@ -187,7 +187,7 @@ namespace SIL.XForge.Scripture.Services
 
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
-                    await env.Service.UpdateRelationshipsAsync("projectuser01", "project", new List<DocumentData>());
+                    await env.Service.UpdateRelationshipsAsync("projectuser01", "project", new List<ResourceObject>());
                 });
 
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status405MethodNotAllowed));
@@ -200,7 +200,7 @@ namespace SIL.XForge.Scripture.Services
             env.SetUser("user01", SystemRoles.User);
             env.JsonApiContext.QuerySet.Returns(new QuerySet
                 {
-                    SortParameters = { new SortQuery(SortDirection.Ascending, env.GetAttribute("role")) }
+                    SortParameters = { new SortQuery(SortDirection.Ascending, "role") }
                 });
             env.JsonApiContext.PageManager.Returns(new PageManager());
 
@@ -218,7 +218,7 @@ namespace SIL.XForge.Scripture.Services
             env.SetUser("user01", SystemRoles.User);
             env.JsonApiContext.QuerySet.Returns(new QuerySet
                 {
-                    SortParameters = { new SortQuery(SortDirection.Ascending, env.GetAttribute("role")) }
+                    SortParameters = { new SortQuery(SortDirection.Ascending, "role") }
                 });
             env.JsonApiContext.PageManager.Returns(new PageManager());
 
