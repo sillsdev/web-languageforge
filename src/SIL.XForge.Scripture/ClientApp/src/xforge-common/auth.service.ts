@@ -102,6 +102,11 @@ export class AuthService {
     this.oauthService.initImplicitFlow();
   }
 
+  externalLogIn(returnUrl?: string): void {
+    const url = '/identity-api/challenge?provider=Paratext&returnUrl=' + returnUrl;
+    document.location.href = url;
+  }
+
   logOut(): void {
     this.oauthService.logOut();
   }
