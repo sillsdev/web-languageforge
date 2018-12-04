@@ -25,7 +25,7 @@ namespace SIL.XForge.Scripture.Services
             var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
                     await env.Service.UpdateRelationshipsAsync("user01", "projects",
-                        new List<DocumentData> { new DocumentData { Type = "projects", Id = "projectuser02" } });
+                        new List<ResourceObject> { new ResourceObject { Type = "projects", Id = "projectuser02" } });
                 });
 
             Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status405MethodNotAllowed));

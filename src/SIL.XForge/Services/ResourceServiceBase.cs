@@ -57,11 +57,11 @@ namespace SIL.XForge.Services
         }
 
         public async Task UpdateRelationshipsAsync(string id, string relationshipName,
-            List<DocumentData> relationships)
+            List<ResourceObject> relationships)
         {
             await CheckCanUpdateRelationshipAsync(id);
 
-            string propertyName = JsonApiContext.ContextGraph.GetRelationshipName<TResource>(relationshipName);
+            string propertyName = JsonApiContext.ResourceGraph.GetRelationshipName<TResource>(relationshipName);
             if (propertyName == null)
                 throw NotFoundException();
             IEnumerable<string> relationshipIds = relationships.Select(r => r?.Id?.ToString());
@@ -99,7 +99,7 @@ namespace SIL.XForge.Services
             TEntity entity = await GetEntityAsync(id);
             if (entity == null)
                 return null;
-            RelationshipAttribute relAttr = JsonApiContext.ContextGraph
+            RelationshipAttribute relAttr = JsonApiContext.ResourceGraph
                 .GetRelationshipAttribute<TResource>(relationshipName);
             if (relAttr == null)
                 throw NotFoundException();
@@ -134,7 +134,7 @@ namespace SIL.XForge.Services
                 {
                     string[] relParts = fullName.Split('.');
                     string relationshipName = relParts[0];
-                    RelationshipAttribute relAttr = JsonApiContext.ContextGraph
+                    RelationshipAttribute relAttr = JsonApiContext.ResourceGraph
                         .GetRelationshipAttribute<TResource>(relationshipName);
                     object value = await GetRelationshipResourcesAsync(relAttr, relParts.Skip(1), resources, entity);
                     PropertyInfo propertyInfo = typeof(TResource).GetProperty(relAttr.InternalRelationshipName);
@@ -205,7 +205,7 @@ namespace SIL.XForge.Services
             }
 
             if (query.SortParameters != null && query.SortParameters.Count > 0)
-                entities = entities.Sort(query.SortParameters);
+                entities = entities.Sort(JsonApiContext, query.SortParameters);
 
             return entities;
         }

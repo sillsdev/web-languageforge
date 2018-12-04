@@ -10,10 +10,14 @@ using JsonApiDotNetCore.Services;
 
 namespace SIL.XForge.Services
 {
+    /// <summary>
+    /// This class is a modified version of the default implementation in JsonApiDotNetCore. It has been modified to fix
+    /// a bug where attributes with null values were not omitted in included resources.
+    /// </summary>
     public class XForgeDocumentBuilder : IDocumentBuilder
     {
         private readonly IJsonApiContext _jsonApiContext;
-        private readonly IContextGraph _contextGraph;
+        private readonly IResourceGraph _resourceGraph;
         private readonly IRequestMeta _requestMeta;
         private readonly DocumentBuilderOptions _documentBuilderOptions;
         private readonly IScopedServiceProvider _scopedServiceProvider;
@@ -25,7 +29,7 @@ namespace SIL.XForge.Services
             IScopedServiceProvider scopedServiceProvider = null)
         {
             _jsonApiContext = jsonApiContext;
-            _contextGraph = jsonApiContext.ContextGraph;
+            _resourceGraph = jsonApiContext.ResourceGraph;
             _requestMeta = requestMeta;
             _documentBuilderOptions = documentBuilderOptionsProvider?.GetDocumentBuilderOptions() ?? new DocumentBuilderOptions();
             _scopedServiceProvider = scopedServiceProvider;
@@ -33,7 +37,7 @@ namespace SIL.XForge.Services
 
         public Document Build(IIdentifiable entity)
         {
-            var contextEntity = _contextGraph.GetContextEntity(entity.GetType());
+            var contextEntity = _resourceGraph.GetContextEntity(entity.GetType());
 
             var resourceDefinition = _scopedServiceProvider?.GetService(contextEntity.ResourceType) as IResourceDefinition;
             var document = new Document
@@ -53,13 +57,13 @@ namespace SIL.XForge.Services
         public Documents Build(IEnumerable<IIdentifiable> entities)
         {
             var entityType = GetElementType(entities);
-            var contextEntity = _contextGraph.GetContextEntity(entityType);
+            var contextEntity = _resourceGraph.GetContextEntity(entityType);
             var resourceDefinition = _scopedServiceProvider?.GetService(contextEntity.ResourceType) as IResourceDefinition;
 
             var enumeratedEntities = entities as IList<IIdentifiable> ?? entities.ToList();
             var documents = new Documents
             {
-                Data = new List<DocumentData>(),
+                Data = new List<ResourceObject>(),
                 Meta = GetMeta(enumeratedEntities.FirstOrDefault())
             };
 
@@ -96,7 +100,7 @@ namespace SIL.XForge.Services
 
         private bool ShouldIncludePageLinks(ContextEntity entity) => entity.Links.HasFlag(Link.Paging);
 
-        private List<DocumentData> AppendIncludedObject(List<DocumentData> includedObject, ContextEntity contextEntity, IIdentifiable entity)
+        private List<ResourceObject> AppendIncludedObject(List<ResourceObject> includedObject, ContextEntity contextEntity, IIdentifiable entity)
         {
             var includedEntities = GetIncludedEntities(includedObject, contextEntity, entity);
             if (includedEntities?.Count > 0)
@@ -108,12 +112,12 @@ namespace SIL.XForge.Services
         }
 
         [Obsolete("You should specify an IResourceDefinition implementation using the GetData/3 overload.")]
-        public DocumentData GetData(ContextEntity contextEntity, IIdentifiable entity)
+        public ResourceObject GetData(ContextEntity contextEntity, IIdentifiable entity)
             => GetData(contextEntity, entity, resourceDefinition: null);
 
-        public DocumentData GetData(ContextEntity contextEntity, IIdentifiable entity, IResourceDefinition resourceDefinition = null)
+        public ResourceObject GetData(ContextEntity contextEntity, IIdentifiable entity, IResourceDefinition resourceDefinition = null)
         {
-            var data = new DocumentData
+            var data = new ResourceObject
             {
                 Type = contextEntity.EntityName,
                 Id = entity.StringId
@@ -152,7 +156,7 @@ namespace SIL.XForge.Services
             return attributeValue == null && _documentBuilderOptions.OmitNullValuedAttributes;
         }
 
-        private void AddRelationships(DocumentData data, ContextEntity contextEntity, IIdentifiable entity)
+        private void AddRelationships(ResourceObject data, ContextEntity contextEntity, IIdentifiable entity)
         {
             data.Relationships = new Dictionary<string, RelationshipData>();
             contextEntity.Relationships.ForEach(r =>
@@ -180,7 +184,7 @@ namespace SIL.XForge.Services
             }
 
             // this only includes the navigation property, we need to actually check the navigation property Id
-            var navigationEntity = _jsonApiContext.ContextGraph.GetRelationship(entity, attr.InternalRelationshipName);
+            var navigationEntity = _jsonApiContext.ResourceGraph.GetRelationshipValue(entity, attr);
             if (navigationEntity == null)
                 relationshipData.SingleData = attr.IsHasOne
                     ? GetIndependentRelationshipIdentifier((HasOneAttribute)attr, entity)
@@ -193,30 +197,71 @@ namespace SIL.XForge.Services
             return relationshipData;
         }
 
-        private List<DocumentData> GetIncludedEntities(List<DocumentData> included, ContextEntity contextEntity, IIdentifiable entity)
+        private List<ResourceObject> GetIncludedEntities(List<ResourceObject> included, ContextEntity rootContextEntity, IIdentifiable rootResource)
         {
-            contextEntity.Relationships.ForEach(r =>
+            if (_jsonApiContext.IncludedRelationships != null)
             {
-                if (!RelationshipIsIncluded(r.PublicRelationshipName)) return;
+                foreach (var relationshipName in _jsonApiContext.IncludedRelationships)
+                {
+                    var relationshipChain = relationshipName.Split('.');
 
-                var navigationEntity = _jsonApiContext.ContextGraph.GetRelationship(entity, r.InternalRelationshipName);
-
-                if (navigationEntity is IEnumerable hasManyNavigationEntity)
-                    foreach (IIdentifiable includedEntity in hasManyNavigationEntity)
-                        included = AddIncludedEntity(included, includedEntity);
-                else
-                    included = AddIncludedEntity(included, (IIdentifiable) navigationEntity);
-            });
+                    var contextEntity = rootContextEntity;
+                    var entity = rootResource;
+                    included = IncludeRelationshipChain(included, rootContextEntity, rootResource, relationshipChain, 0);
+                }
+            }
 
             return included;
         }
 
-        private List<DocumentData> AddIncludedEntity(List<DocumentData> entities, IIdentifiable entity)
+        private List<ResourceObject> IncludeRelationshipChain(
+            List<ResourceObject> included, ContextEntity parentEntity, IIdentifiable parentResource, string[] relationshipChain, int relationshipChainIndex)
+        {
+            var requestedRelationship = relationshipChain[relationshipChainIndex];
+            var relationship = parentEntity.Relationships.FirstOrDefault(r => r.PublicRelationshipName == requestedRelationship);
+            if (relationship == null)
+                throw new JsonApiException(400, $"{parentEntity.EntityName} does not contain relationship {requestedRelationship}");
+
+            var navigationEntity = _jsonApiContext.ResourceGraph.GetRelationshipValue(parentResource, relationship);
+            if (navigationEntity is IEnumerable hasManyNavigationEntity)
+            {
+                foreach (IIdentifiable includedEntity in hasManyNavigationEntity)
+                {
+                    included = AddIncludedEntity(included, includedEntity);
+                    included = IncludeSingleResourceRelationships(included, includedEntity, relationship, relationshipChain, relationshipChainIndex);
+                }
+            }
+            else
+            {
+                included = AddIncludedEntity(included, (IIdentifiable)navigationEntity);
+                included = IncludeSingleResourceRelationships(included, (IIdentifiable)navigationEntity, relationship, relationshipChain, relationshipChainIndex);
+            }
+
+            return included;
+        }
+
+        private List<ResourceObject> IncludeSingleResourceRelationships(
+            List<ResourceObject> included, IIdentifiable navigationEntity, RelationshipAttribute relationship, string[] relationshipChain, int relationshipChainIndex)
+        {
+            if (relationshipChainIndex < relationshipChain.Length)
+            {
+                var nextContextEntity = _jsonApiContext.ResourceGraph.GetContextEntity(relationship.Type);
+                var resource = (IIdentifiable)navigationEntity;
+                // recursive call
+                if (relationshipChainIndex < relationshipChain.Length - 1)
+                    included = IncludeRelationshipChain(included, nextContextEntity, resource, relationshipChain, relationshipChainIndex + 1);
+            }
+
+            return included;
+        }
+
+
+        private List<ResourceObject> AddIncludedEntity(List<ResourceObject> entities, IIdentifiable entity)
         {
             var includedEntity = GetIncludedEntity(entity);
 
             if (entities == null)
-                entities = new List<DocumentData>();
+                entities = new List<ResourceObject>();
 
             if (includedEntity != null && entities.Any(doc =>
                 string.Equals(doc.Id, includedEntity.Id) && string.Equals(doc.Type, includedEntity.Type)) == false)
@@ -224,15 +269,14 @@ namespace SIL.XForge.Services
                 entities.Add(includedEntity);
             }
 
-            ContextEntity ce = _jsonApiContext.ContextGraph.GetContextEntity(entity.GetType());
-            return AppendIncludedObject(entities, ce, entity);
+            return entities;
         }
 
-        private DocumentData GetIncludedEntity(IIdentifiable entity)
+        private ResourceObject GetIncludedEntity(IIdentifiable entity)
         {
             if (entity == null) return null;
 
-            var contextEntity = _jsonApiContext.ContextGraph.GetContextEntity(entity.GetType());
+            var contextEntity = _jsonApiContext.ResourceGraph.GetContextEntity(entity.GetType());
             var resourceDefinition = _scopedServiceProvider.GetService(contextEntity.ResourceType) as IResourceDefinition;
 
             var data = GetData(contextEntity, entity, resourceDefinition);
@@ -241,7 +285,8 @@ namespace SIL.XForge.Services
 
             contextEntity.Attributes.ForEach(attr =>
             {
-                var value = attr.GetValue(entity);
+                // bug fix for improperly included attributes
+                object value = attr.GetValue(entity);
                 if (ShouldIncludeAttribute(attr, value))
                     data.Attributes.Add(attr.PublicAttributeName, value);
             });
@@ -249,24 +294,20 @@ namespace SIL.XForge.Services
             return data;
         }
 
-        private bool RelationshipIsIncluded(string relationshipName)
-        {
-            return _jsonApiContext.IncludedRelationships != null &&
-                _jsonApiContext.IncludedRelationships.SelectMany(r => r.Split('.')).Contains(relationshipName);
-        }
-
         private List<ResourceIdentifierObject> GetRelationships(IEnumerable<object> entities)
         {
-            var objType = GetElementType(entities);
-
-            var typeName = _jsonApiContext.ContextGraph.GetContextEntity(objType);
-
+            string typeName = null;
             var relationships = new List<ResourceIdentifierObject>();
             foreach (var entity in entities)
             {
+                // this method makes the assumption that entities is a homogenous collection
+                // so, we just lookup the type of the first entity on the graph
+                // this is better than trying to get it from the generic parameter since it could
+                // be less specific than what is registered on the graph (e.g. IEnumerable<object>)
+                typeName = typeName ?? _jsonApiContext.ResourceGraph.GetContextEntity(entity.GetType()).EntityName;
                 relationships.Add(new ResourceIdentifierObject
                 {
-                    Type = typeName.EntityName,
+                    Type = typeName,
                     Id = ((IIdentifiable)entity).StringId
                 });
             }
@@ -276,9 +317,9 @@ namespace SIL.XForge.Services
         private ResourceIdentifierObject GetRelationship(object entity)
         {
             var objType = entity.GetType();
-            var contextEntity = _jsonApiContext.ContextGraph.GetContextEntity(objType);
+            var contextEntity = _jsonApiContext.ResourceGraph.GetContextEntity(objType);
 
-            if(entity is IIdentifiable identifiableEntity)
+            if (entity is IIdentifiable identifiableEntity)
                 return new ResourceIdentifierObject
                 {
                     Type = contextEntity.EntityName,
@@ -294,7 +335,7 @@ namespace SIL.XForge.Services
             if (independentRelationshipIdentifier == null)
                 return null;
 
-            var relatedContextEntity = _jsonApiContext.ContextGraph.GetContextEntity(hasOne.Type);
+            var relatedContextEntity = _jsonApiContext.ResourceGraph.GetContextEntity(hasOne.Type);
             if (relatedContextEntity == null) // TODO: this should probably be a debug log at minimum
                 return null;
 
@@ -304,7 +345,6 @@ namespace SIL.XForge.Services
                 Id = independentRelationshipIdentifier.ToString()
             };
         }
-
 
         private static Type GetElementType(IEnumerable enumerable)
         {
@@ -331,9 +371,9 @@ namespace SIL.XForge.Services
             return elementType;
         }
 
-        private object GetIdentifiablePropertyValue(HasOneAttribute hasOne, object resource) => resource
+        private object GetIdentifiablePropertyValue(HasOneAttribute attr, object resource) => resource
                 .GetType()
-                .GetProperty(hasOne.IdentifiablePropertyName)
+                .GetProperty(attr.IdentifiablePropertyName)
                 ?.GetValue(resource);
     }
 }

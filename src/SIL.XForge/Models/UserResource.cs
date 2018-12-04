@@ -2,19 +2,20 @@ using JsonApiDotNetCore.Models;
 
 namespace SIL.XForge.Models
 {
-    public class UserResource : Resource
+    [Resource("users")]
+    public abstract class UserResource : Resource
     {
-        [Attr("username")]
+        [Attr]
         public string Username { get; set; }
-        [Attr("name")]
+        [Attr]
         public string Name { get; set; }
-        [Attr("email")]
+        [Attr]
         public string Email { get; set; }
-        [Attr("canonical-email", isImmutable: true)]
+        [Attr(isImmutable: true)]
         public string CanonicalEmail { get; set; }
-        [Attr("password")]
+        [Attr]
         public string Password { get; set; }
-        [Attr("paratext-id")]
+        [Attr]
         public string ParatextId { get; set; }
     }
 }

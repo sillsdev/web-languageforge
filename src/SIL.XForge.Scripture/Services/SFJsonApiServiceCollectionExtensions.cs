@@ -11,30 +11,11 @@ namespace SIL.XForge.Scripture.Services
         public static IServiceCollection AddSFJsonApi(this IServiceCollection services, IMvcBuilder mvcBuilder,
             ContainerBuilder containerBuilder)
         {
-            services.AddJsonApi(mvcBuilder, containerBuilder, (schemaBuilder, mapConfig) =>
+            services.AddJsonApi(mvcBuilder, containerBuilder, mapConfig =>
                 {
-                    // users
-                    schemaBuilder.AddResourceType<SFUserResource>("users");
-                    containerBuilder.RegisterResourceService<SFUserService>();
                     mapConfig.CreateMap<UserEntity, SFUserResource>()
-                        .ForMember(u => u.Password, o => o.Ignore())
+                        .IncludeBase<UserEntity, UserResource>()
                         .ReverseMap();
-
-                    // projects
-                    schemaBuilder.AddResourceType<SFProjectResource>("projects");
-                    containerBuilder.RegisterResourceService<SFProjectService>();
-
-                    // project users
-                    schemaBuilder.AddResourceType<SFProjectUserResource>("project-users");
-                    containerBuilder.RegisterResourceService<SFProjectUserService>();
-
-                    // sync jobs
-                    schemaBuilder.AddResourceType<SyncJobResource>("sync-jobs");
-                    containerBuilder.RegisterResourceService<SyncJobService>();
-
-                    // texts
-                    schemaBuilder.AddResourceType<TextResource>("texts");
-                    containerBuilder.RegisterResourceService<TextService>();
                 });
 
             services.AddSingleton<IParatextService, ParatextService>();

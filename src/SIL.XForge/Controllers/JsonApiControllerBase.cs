@@ -24,7 +24,7 @@ namespace SIL.XForge.Controllers
         }
 
         public override Task<IActionResult> PatchRelationshipsAsync(string id, string relationshipName,
-            [FromBody] List<DocumentData> relationships)
+            [FromBody] List<ResourceObject> relationships)
         {
             try
             {

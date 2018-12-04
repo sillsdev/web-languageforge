@@ -1,11 +1,12 @@
 using System;
+using System.Linq;
+using System.Reflection;
 using Autofac;
 using AutoMapper;
 using JsonApiDotNetCore.Builders;
 using JsonApiDotNetCore.Configuration;
 using JsonApiDotNetCore.Extensions;
 using JsonApiDotNetCore.Formatters;
-using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Middleware;
 using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -19,23 +20,43 @@ namespace SIL.XForge.Services
     public static class JsonApiServiceCollectionExtensions
     {
         public static IServiceCollection AddJsonApi(this IServiceCollection services, IMvcBuilder mvcBuilder,
-            ContainerBuilder containerBuilder, Action<ResourceSchemaBuilder, IMapperConfigurationExpression> configure)
+            ContainerBuilder containerBuilder, Action<IMapperConfigurationExpression> configure)
         {
-            var schemaBuilder = new ResourceSchemaBuilder();
+            // setup auto mapper
             services.AddAutoMapper(mapConfig =>
                 {
-                    configure(schemaBuilder, mapConfig);
+                    mapConfig.CreateMap<UserEntity, UserResource>()
+                        .ForMember(u => u.Password, o => o.Ignore())
+                        .ReverseMap();
+                    configure(mapConfig);
                     mapConfig.IgnoreAllUnmapped();
                 });
 
-            (ResourceSchema schema, IContextGraph contextGraph) = schemaBuilder.Build();
+            JsonApiOptions.ResourceNameFormatter = new XForgeResourceNameFormatter();
+            var graphBuilder = new ResourceGraphBuilder();
+            // find all resources
+            ResourceDescriptor[] resourceDescriptors = ResourceTypeLocator.GetIdentifableTypes(
+                Assembly.GetEntryAssembly()).ToArray();
+            foreach (ResourceDescriptor resourceDescriptor in resourceDescriptors)
+            {
+                // add resource to graph
+                string resourceName = JsonApiOptions.ResourceNameFormatter.FormatResourceName(
+                    resourceDescriptor.ResourceType);
+                graphBuilder.AddResource(resourceDescriptor.ResourceType, resourceDescriptor.IdType, resourceName);
 
-            services.AddSingleton(schema);
+                // register resource service
+                Type serviceInterfaceType = typeof(IResourceService<,>);
+                Type[] genericArguments = new[] { resourceDescriptor.ResourceType, resourceDescriptor.IdType };
+                Type serviceType = ResourceTypeLocator.GetGenericInterfaceImplementation(Assembly.GetEntryAssembly(),
+                    serviceInterfaceType, genericArguments);
+                if (serviceType != null)
+                    RegisterResourceService(containerBuilder, serviceType);
+            }
 
             var jsonApiOptions = new JsonApiOptions
             {
                 Namespace = ServicesConstants.JsonApiNamespace,
-                ContextGraph = contextGraph,
+                ResourceGraph = graphBuilder.Build(),
                 AllowClientGeneratedIds = true,
                 NullAttributeResponseBehavior = new NullAttributeResponseBehavior(true),
                 IncludeTotalRecordCount = true
@@ -51,15 +72,18 @@ namespace SIL.XForge.Services
                  });
 
             services.AddJsonApiInternals(jsonApiOptions);
-            services.AddScoped<IQueryParser, XForgeQueryParser>();
             services.AddScoped<IDocumentBuilder, XForgeDocumentBuilder>();
+
+            // generate resource schema
+            var schema = ResourceSchema.Build(jsonApiOptions.ResourceGraph, resourceDescriptors);
+            services.AddSingleton(schema);
 
             return services;
         }
 
-        public static void RegisterResourceService<T>(this ContainerBuilder containerBuilder)
+        private static void RegisterResourceService(ContainerBuilder containerBuilder, Type serviceType)
         {
-            containerBuilder.RegisterType<T>()
+            containerBuilder.RegisterType(serviceType)
                 .AsImplementedInterfaces()
                 .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies)
                 .InstancePerLifetimeScope();

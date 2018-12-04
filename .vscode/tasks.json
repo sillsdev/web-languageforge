@@ -1,94 +1,94 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "webpack (legacy)",
-        "type": "shell",
-        "windows": {
-          "command": "bash -c 'gulp webpack-lf'"
-        },
-        "linux": {
-          "command": "gulp webpack-lf"
-        },
-        "problemMatcher": "$awesometsc",
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "presentation": {
-          "reveal": "silent"
-        }
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "webpack (legacy)",
+      "type": "shell",
+      "windows": {
+        "command": "bash -c 'gulp webpack-lf'"
       },
-      {
-        "label": "webpack-watch (legacy)",
-        "type": "shell",
-        "isBackground": true,
-        "windows": {
-          "command": "bash -c 'gulp webpack-lf:watch'"
-        },
-        "linux": {
-          "command": "gulp webpack-lf:watch"
-        },
-        "presentation": {
-          "reveal": "silent"
-        },
-        "problemMatcher": []
+      "linux": {
+        "command": "gulp webpack-lf"
       },
-      {
-        "label": "npm install (legacy)",
-        "type": "shell",
-        "windows": {
-          "command": "bash -c 'npm install'"
-        },
-        "linux": {
-          "command": "npm install"
-        },
-        "presentation": {
-          "reveal": "silent"
-        },
-        "problemMatcher": []
+      "problemMatcher": "$awesometsc",
+      "group": {
+        "kind": "build",
+        "isDefault": true
       },
-      {
-        "label": "sass (legacy)",
-        "type": "shell",
-        "windows": {
-          "command": "bash -c 'gulp sass'"
-        },
-        "linux": {
-          "command": "gulp sass"
-        },
-        "presentation": {
-          "reveal": "silent"
-        },
-        "problemMatcher": "$node-sass"
-      },
-      {
-        "label": "dotnet (legacy)",
-        "command": "dotnet build",
-        "type": "shell",
-        "group": "build",
-        "presentation": {
-          "reveal": "silent"
-        },
-        "options": {
-          "cwd": "${workspaceRoot}/src/netcore-api"
-        },
-        "problemMatcher": "$msCompile"
-      },
-      {
-        "label": "dotnet",
-        "command": "dotnet build",
-        "type": "shell",
-        "group": "build",
-        "presentation": {
-          "reveal": "silent"
-        },
-        "options": {
-          "cwd": "${workspaceRoot}/"
-        },
-        "problemMatcher": "$msCompile"
+      "presentation": {
+        "reveal": "silent"
       }
-    ]
-  }
+    },
+    {
+      "label": "webpack-watch (legacy)",
+      "type": "shell",
+      "isBackground": true,
+      "windows": {
+        "command": "bash -c 'gulp webpack-lf:watch'"
+      },
+      "linux": {
+        "command": "gulp webpack-lf:watch"
+      },
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "npm install (legacy)",
+      "type": "shell",
+      "windows": {
+        "command": "bash -c 'npm install'"
+      },
+      "linux": {
+        "command": "npm install"
+      },
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "sass (legacy)",
+      "type": "shell",
+      "windows": {
+        "command": "bash -c 'gulp sass'"
+      },
+      "linux": {
+        "command": "gulp sass"
+      },
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$node-sass"
+    },
+    {
+      "label": "dotnet (legacy)",
+      "command": "dotnet build",
+      "type": "shell",
+      "group": "build",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "options": {
+        "cwd": "${workspaceRoot}/src/netcore-api"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "dotnet",
+      "command": "dotnet build /property:GenerateFullPaths=true",
+      "type": "shell",
+      "group": "build",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "options": {
+        "cwd": "${workspaceRoot}/"
+      },
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

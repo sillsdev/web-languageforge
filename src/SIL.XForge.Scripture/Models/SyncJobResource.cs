@@ -4,9 +4,9 @@ namespace SIL.XForge.Scripture.Models
 {
     public class SyncJobResource : SFProjectDataResource
     {
-        [Attr("percent-completed")]
+        [Attr]
         public double PercentCompleted { get; set; }
-        [Attr("state")]
+        [Attr]
         public string State { get; set; }
     }
 }

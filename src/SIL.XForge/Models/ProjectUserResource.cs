@@ -2,9 +2,10 @@ using JsonApiDotNetCore.Models;
 
 namespace SIL.XForge.Models
 {
-    public class ProjectUserResource : Identifiable<string>, IResource
+    [Resource("project-users")]
+    public abstract class ProjectUserResource : Identifiable<string>, IResource
     {
-        [Attr("role")]
+        [Attr]
         public string Role { get; set; }
 
         public string UserRef { get; set; }

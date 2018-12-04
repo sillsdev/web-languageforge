@@ -15,7 +15,7 @@ namespace SIL.XForge.Services
         {
         }
 
-        public IResourceMapper<UserResource, UserEntity> UserMapper { get; set; }
+        public IResourceMapper<TestUserResource, UserEntity> UserMapper { get; set; }
 
         protected override IRelationship<TestEntity> GetRelationship(string propertyName)
         {

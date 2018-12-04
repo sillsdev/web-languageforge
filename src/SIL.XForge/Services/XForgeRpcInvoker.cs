@@ -18,6 +18,9 @@ namespace SIL.XForge.Services
 {
     /// <summary>
     /// Default Rpc method invoker that uses asynchronous processing
+    ///
+    /// This class is a modified version of the default implementation in EdjCase.JsonRpc. It has been modified to
+    /// support controller inheritance.
     /// </summary>
     public class XForgeRpcInvoker : IRpcInvoker
     {

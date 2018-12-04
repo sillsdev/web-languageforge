@@ -22,14 +22,14 @@ namespace SIL.XForge.Services
         {
             _resourceName = resourceName;
 
-            var contextGraphBuilder = new ContextGraphBuilder();
-            contextGraphBuilder.AddResource<TResource, string>(_resourceName);
-            SetupContextGraph(contextGraphBuilder);
-            ContextGraph = contextGraphBuilder.Build();
+            var resourceGraphBuilder = new ResourceGraphBuilder();
+            resourceGraphBuilder.AddResource<TResource, string>(_resourceName);
+            SetupResourceGraph(resourceGraphBuilder);
+            ResourceGraph = resourceGraphBuilder.Build();
 
             JsonApiContext = Substitute.For<IJsonApiContext>();
-            JsonApiContext.ContextGraph.Returns(ContextGraph);
-            JsonApiContext.RequestEntity.Returns(ContextGraph.GetContextEntity(_resourceName));
+            JsonApiContext.ResourceGraph.Returns(ResourceGraph);
+            JsonApiContext.RequestEntity.Returns(ResourceGraph.GetContextEntity(_resourceName));
             JsonApiContext.Options.Returns(new JsonApiOptions { IncludeTotalRecordCount = true });
 
             Entities = new MemoryRepository<TEntity>(GetInitialData());
@@ -44,7 +44,7 @@ namespace SIL.XForge.Services
             UserAccessor.IsAuthenticated.Returns(false);
         }
 
-        public IContextGraph ContextGraph { get; }
+        public IResourceGraph ResourceGraph { get; }
         public IJsonApiContext JsonApiContext { get; }
         public IUserAccessor UserAccessor { get; }
         public MemoryRepository<TEntity> Entities { get; }
@@ -59,13 +59,13 @@ namespace SIL.XForge.Services
 
         public AttrAttribute GetAttribute(string name)
         {
-            ContextEntity resourceType = ContextGraph.GetContextEntity(_resourceName);
+            ContextEntity resourceType = ResourceGraph.GetContextEntity(_resourceName);
             return resourceType.Attributes.First(a => a.PublicAttributeName == name);
         }
 
         public RelationshipAttribute GetRelationship(string name)
         {
-            ContextEntity resourceType = ContextGraph.GetContextEntity(_resourceName);
+            ContextEntity resourceType = ResourceGraph.GetContextEntity(_resourceName);
             return resourceType.Relationships.First(r => r.PublicRelationshipName == name);
         }
 
@@ -74,7 +74,7 @@ namespace SIL.XForge.Services
             return Enumerable.Empty<TEntity>();
         }
 
-        protected virtual void SetupContextGraph(IContextGraphBuilder builder)
+        protected virtual void SetupResourceGraph(IResourceGraphBuilder builder)
         {
         }
 
