@@ -154,14 +154,17 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     const updatedAttributes: Partial<SFUser> = {};
     updatedAttributes[element] = this.formGroup.controls[element].value;
 
+    this.formGroup.get(element).disable();
     this.controlStates.set(element, ElementState.Submitting);
 
     this.userService
       .updateUserAttributes(updatedAttributes)
       .then(success => {
+        this.formGroup.get(element).enable();
         this.controlStates.set(element, ElementState.Submitted);
       })
       .catch(failure => {
+        this.formGroup.get(element).enable();
         // TODO handle
       });
   }
