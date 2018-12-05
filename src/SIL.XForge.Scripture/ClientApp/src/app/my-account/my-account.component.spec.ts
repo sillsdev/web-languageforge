@@ -157,7 +157,8 @@ describe('MyAccountComponent', () => {
       /* button enabled */ false,
       /* arrow */ true,
       /* spinner */ false,
-      /* green check */ false
+      /* green check */ false,
+      /* input enabled */ true
     );
 
     // change name on page
@@ -174,7 +175,8 @@ describe('MyAccountComponent', () => {
       /* button enabled */ true,
       /* arrow */ true,
       /* spinner */ false,
-      /* green check */ false
+      /* green check */ false,
+      /* input enabled */ true
     );
 
     // click update
@@ -188,7 +190,8 @@ describe('MyAccountComponent', () => {
       /* button enabled */ false,
       /* arrow */ false,
       /* spinner */ true,
-      /* green check */ false
+      /* green check */ false,
+      /* input enabled */ false
     );
 
     // The spinner shows during networking. Time passes. Finish networking with flush()
@@ -204,7 +207,8 @@ describe('MyAccountComponent', () => {
       /* button enabled */ false,
       /* arrow */ false,
       /* spinner */ false,
-      /* green check */ true
+      /* green check */ true,
+      /* input enabled */ true
     );
 
     // We don't need to test the fake database, but this failing is an early indication
@@ -224,7 +228,8 @@ describe('MyAccountComponent', () => {
       /* button enabled */ true,
       /* arrow */ true,
       /* spinner */ false,
-      /* green check */ false
+      /* green check */ false,
+      /* input enabled */ true
     );
 
     // Modify text back to what it is in the database. In other words, manually editing
@@ -240,7 +245,8 @@ describe('MyAccountComponent', () => {
       /* button enabled */ false,
       /* arrow */ true,
       /* spinner */ false,
-      /* green check */ false
+      /* green check */ false,
+      /* input enabled */ true
     );
   }));
 
@@ -339,11 +345,13 @@ function verifyControlDecorations(
   expectedUpdateButtonEnabled: boolean,
   expectedArrow: boolean,
   expectedSpinner: boolean,
-  expectedGreenCheck: boolean
+  expectedGreenCheck: boolean,
+  expectedInputEnabled: boolean
 ) {
   expect(env.component.controlStates.get(controlName)).toBe(expectedState);
   expect(updateButton.disabled).not.toBe(expectedUpdateButtonEnabled);
   expect(env.nameButtonIcon !== null).toBe(expectedArrow);
   expect(env.nameUpdateSpinner !== null).toBe(expectedSpinner);
   expect(env.nameUpdateDone !== null).toBe(expectedGreenCheck);
+  expect(env.component.formGroup.get(controlName).enabled).toBe(expectedInputEnabled);
 }
