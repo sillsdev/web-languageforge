@@ -9,7 +9,9 @@
         <div>
           <button
             id="name-update-button"
-            [disabled]="controlStates.get('name') !== elementState.Dirty"
+            [disabled]="
+              controlStates.get('name') !== elementState.Dirty && controlStates.get('name') !== elementState.Error
+            "
             mat-stroked-button
             (click)="updateClicked('name')"
           >
@@ -23,9 +25,14 @@
             <i
               id="name-update-done"
               *ngIf="controlStates.get('name') === elementState.Submitted"
-              class="material-icons"
-              style="color: green"
+              class="material-icons check-icon"
               >done</i
+            >
+            <i
+              id="name-error-icon"
+              *ngIf="controlStates.get('name') === elementState.Error"
+              class="material-icons error-icon"
+              >error</i
             >
             <i
               id="name-button-icon"
@@ -39,15 +46,23 @@
           </button>
         </div>
       </div>
-
       <div fxLayout="row" fwLayoutAlign="space-between stretch">
         <div fxFlex>
-          <mat-form-field fxFlex><input formControlName="username" matInput placeholder="Username"/></mat-form-field>
+          <mat-form-field fxFlex>
+            <input formControlName="username" matInput placeholder="Username" />
+            <mat-error *ngIf="formGroup.get('username').hasError('usernameBlank')"
+              >Username cannot be blank unless email is set</mat-error
+            ></mat-form-field
+          >
         </div>
         <div>
           <button
             id="username-update-button"
-            [disabled]="controlStates.get('username') !== elementState.Dirty"
+            [disabled]="
+              (controlStates.get('username') !== elementState.Dirty &&
+                controlStates.get('username') !== elementState.Error) ||
+              controlStates.get('username') === elementState.Invalid
+            "
             mat-stroked-button
             (click)="updateClicked('username')"
           >
@@ -61,16 +76,21 @@
             <i
               id="username-update-done"
               *ngIf="controlStates.get('username') === elementState.Submitted"
-              class="material-icons"
-              class="material-icons"
-              style="color: green"
+              class="material-icons check-icon"
               >done</i
+            >
+            <i
+              id="username-error-icon"
+              *ngIf="controlStates.get('username') === elementState.Error"
+              class="material-icons error-icon"
+              >error</i
             >
             <i
               id="username-button-icon"
               *ngIf="
                 controlStates.get('username') === elementState.InSync ||
-                controlStates.get('username') === elementState.Dirty
+                controlStates.get('username') === elementState.Dirty ||
+                controlStates.get('username') === elementState.Invalid
               "
               class="material-icons"
               >send</i
@@ -82,7 +102,7 @@
 
       <div fxLayout="row" fwLayoutAlign="space-between stretch">
         <!-- If we need to break the line, don't do it in the middle of the date. -->
-        <div fxFlex>Last login <span style="white-space: nowrap;">1999-12-31</span></div>
+        <div fxFlex>Last login <span class="nowrap">1999-12-31</span></div>
       </div>
 
       <!-- TODO 'end stretch' is not right-aligning this. -->
@@ -96,12 +116,19 @@
         <div fxFlex>
           <mat-form-field fxFlex hintLabel="you@example.com">
             <input formControlName="email" matInput placeholder="Email address" />
+            <mat-error *ngIf="formGroup.get('email').hasError('emailBlank')"
+              >You must supply a valid email address.</mat-error
+            >
           </mat-form-field>
         </div>
         <div>
           <button
             id="email-update-button"
-            [disabled]="controlStates.get('email') !== elementState.Dirty"
+            [disabled]="
+              (controlStates.get('email') !== elementState.Dirty &&
+                controlStates.get('email') !== elementState.Error) ||
+              controlStates.get('email') === elementState.Invalid
+            "
             mat-stroked-button
             (click)="updateClicked('email')"
           >
@@ -115,15 +142,21 @@
             <i
               id="email-update-done"
               *ngIf="controlStates.get('email') === elementState.Submitted"
-              class="material-icons"
-              class="material-icons"
-              style="color: green"
+              class="material-icons check-icon"
               >done</i
+            >
+            <i
+              id="email-error-icon"
+              *ngIf="controlStates.get('email') === elementState.Error"
+              class="material-icons error-icon"
+              >error</i
             >
             <i
               id="email-button-icon"
               *ngIf="
-                controlStates.get('email') === elementState.InSync || controlStates.get('email') === elementState.Dirty
+                controlStates.get('email') === elementState.InSync ||
+                controlStates.get('email') === elementState.Dirty ||
+                controlStates.get('email') === elementState.Invalid
               "
               class="material-icons"
               >send</i
@@ -142,7 +175,10 @@
         <div>
           <button
             id="mobilePhone-update-button"
-            [disabled]="controlStates.get('mobilePhone') !== elementState.Dirty"
+            [disabled]="
+              controlStates.get('mobilePhone') !== elementState.Dirty &&
+              controlStates.get('mobilePhone') !== elementState.Error
+            "
             mat-stroked-button
             (click)="updateClicked('mobilePhone')"
           >
@@ -156,10 +192,14 @@
             <i
               id="mobilePhone-update-done"
               *ngIf="controlStates.get('mobilePhone') === elementState.Submitted"
-              class="material-icons"
-              class="material-icons"
-              style="color: green"
+              class="material-icons check-icon"
               >done</i
+            >
+            <i
+              id="mobilePhone-error-icon"
+              *ngIf="controlStates.get('mobilePhone') === elementState.Error"
+              class="material-icons error-icon"
+              >error</i
             >
             <i
               id="mobilePhone-button-icon"
@@ -178,7 +218,7 @@
       <div fxLayout="column" fwLayoutAlign="space-between">
         <div>Receive messages via</div>
         <div>
-          <mat-button-toggle-group formControlName="contactMethod" (change)="update('contactMethod')">
+          <mat-button-toggle-group formControlName="contactMethod" (click)="update('contactMethod')">
             <mat-button-toggle value="email"><i class="material-icons">email</i> Email</mat-button-toggle>
             <mat-button-toggle value="sms"><i class="material-icons">textsms</i> SMS</mat-button-toggle>
             <mat-button-toggle value="emailsms"
@@ -195,10 +235,14 @@
           <i
             id="contactMethod-update-done"
             *ngIf="controlStates.get('contactMethod') === elementState.Submitted"
-            class="material-icons"
-            class="material-icons"
-            style="color: green"
+            class="material-icons check-icon"
             >done</i
+          >
+          <i
+            id="contactMethod-error-icon"
+            *ngIf="controlStates.get('contactMethod') === elementState.Error"
+            class="material-icons error-icon"
+            >error</i
           >
         </div>
       </div>
@@ -226,10 +270,14 @@
           <i
             id="birthday-update-done"
             *ngIf="controlStates.get('birthday') === elementState.Submitted"
-            class="material-icons"
-            class="material-icons"
-            style="color: green"
+            class="material-icons check-icon"
             >done</i
+          >
+          <i
+            id="birthday-error-icon"
+            *ngIf="controlStates.get('birthday') === elementState.Error"
+            class="material-icons error-icon"
+            >error</i
           >
         </div>
       </div>
@@ -258,10 +306,14 @@
           <i
             id="gender-update-done"
             *ngIf="controlStates.get('gender') === elementState.Submitted"
-            class="material-icons"
-            class="material-icons"
-            style="color: green"
+            class="material-icons check-icon"
             >done</i
+          >
+          <i
+            id="gender-error-icon"
+            *ngIf="controlStates.get('gender') === elementState.Error"
+            class="material-icons error-icon"
+            >error</i
           >
         </div>
       </div>

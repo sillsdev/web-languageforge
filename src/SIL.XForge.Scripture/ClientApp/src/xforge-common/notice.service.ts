@@ -14,6 +14,7 @@ export class Notice {
   ) {}
 }
 
+/** Manages and provides access to notices shown to user on the web site. */
 @Injectable({
   providedIn: 'root'
 })
@@ -30,6 +31,7 @@ export class NoticeService {
   private newActveNoticeEmitter: Subject<Notice> = new Subject<Notice>();
   private loadingStatusEmitter: Subject<boolean> = new Subject<boolean>();
 
+  /** Adds a new notice into the notices being shown. */
   push(type: string, message: string, details?: string, time?: number): string {
     const id = uuid();
 
