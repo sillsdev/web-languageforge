@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Params } from '@angular/router';
@@ -57,6 +57,10 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('#password'));
   }
 
+  get showPasswordCheckbox(): DebugElement {
+    return this.fixture.debugElement.query(By.css('mat-checkbox[formControlName="showPassword"'));
+  }
+
   get emailInput(): DebugElement {
     return this.fixture.debugElement.query(By.css('#email'));
   }
@@ -78,6 +82,12 @@ class TestEnvironment {
     this.component.resolved('fake-verification-response');
     tick();
     this.fixture.detectChanges();
+  }
+
+  clickCheckbox(checkbox: DebugElement): void {
+    checkbox.nativeElement.querySelector('input').click();
+    this.fixture.detectChanges();
+    flush();
   }
 
   clickSubmitButton(): void {
@@ -141,6 +151,17 @@ describe('SignUpComponent', () => {
     verify(env.mockedIdentityService.signUp(anything())).once();
     verify(env.mockedNoticeService.push(deepEqual(NoticeService.WARN), anything())).once();
     expect().nothing();
+  }));
+
+  it('should verify the inputType changes when the checkbox is changed.', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.fixture.detectChanges();
+    expect(env.passwordInput.nativeElement.attributes.type.value).toBe('password');
+    env.clickCheckbox(env.showPasswordCheckbox);
+    expect(env.passwordInput.nativeElement.attributes.type.value).toBe('text');
+    env.clickCheckbox(env.showPasswordCheckbox);
+    expect(env.passwordInput.nativeElement.attributes.type.value).toBe('password');
+    flush();
   }));
 
   it('should do nothing when the form is invalid', fakeAsync(() => {

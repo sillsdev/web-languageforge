@@ -8,15 +8,30 @@
           <mat-error *ngIf="name.hasError('required')"> Full Name is required </mat-error>
         </mat-form-field>
         <mat-form-field>
-          <input matInput id="password" type="password" placeholder="Password" formControlName="password" />
+          <input
+            matInput
+            id="email"
+            placeholder="Email Address"
+            formControlName="email"
+            [readonly]="emailEntry != null"
+          />
+          <mat-error *ngIf="email.hasError('email')"> Please enter a valid email address </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            id="password"
+            [type]="showPasswordCheckbox.checked ? 'text' : 'password'"
+            placeholder="Password"
+            formControlName="password"
+          />
           <mat-error *ngIf="password.hasError('minlength')"> Password must be at least 7 characters long </mat-error>
           <mat-error *ngIf="password.hasError('required')"> Password is required </mat-error>
         </mat-form-field>
         <password-strength-meter id="passwordStrengthMeter" [password]="password.value"></password-strength-meter>
-        <mat-form-field>
-          <input matInput id="email" placeholder="Email Address" formControlName="email" [readonly]="isEmailReadonly" />
-          <mat-error *ngIf="email.hasError('email')"> Please enter a valid email address </mat-error>
-        </mat-form-field>
+        <mat-checkbox id="showPassword" #showPasswordCheckbox formControlName="showPassword"
+          >Show password</mat-checkbox
+        >
         <re-captcha [siteKey]="captchaId" (resolved)="$event && resolved($event)" formControlName="recaptcha">
         </re-captcha>
         <mat-error *ngIf="recaptcha.hasError('required') && isSubmitted"> Please verify the reCaptcha </mat-error>
