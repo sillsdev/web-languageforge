@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormGroupDirective, NgForm, ValidationErrors } from '@angular/forms';
 import { DateAdapter, MatDialog, NativeDateAdapter } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
+import { NoticeService } from '@xforge-common/notice.service';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
-import { environment } from 'src/environments/environment';
-import { UserService } from '../../xforge-common/user.service';
+import { UserService } from '@xforge-common/user.service';
+import { environment } from '../../environments/environment';
 import { SFUser } from '../core/models/sfuser';
 import { ChangingUsernameDialogComponent } from './changing-username-dialog/changing-username-dialog.component';
 
@@ -43,7 +44,11 @@ enum ElementState {
   /** Pending a write to the database. */
   Submitting = 'Submitting',
   /** InSync and was written to the database since last Dirty. */
-  Submitted = 'Submitted'
+  Submitted = 'Submitted',
+  /** There was an error attempting to submit. */
+  Error = 'Error',
+  /** The data is invalid. */
+  Invalid = 'Invalid'
 }
 
 /**
@@ -64,8 +69,8 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
 
   formGroup = new FormGroup({
     name: new FormControl(),
-    username: new FormControl(),
-    email: new FormControl(),
+    username: new FormControl('', [(inputControl: FormControl) => this.emailAndUsernameValidator(this, inputControl)]),
+    email: new FormControl('', [(inputControl: FormControl) => this.emailAndUsernameValidator(this, inputControl)]),
     mobilePhone: new FormControl(),
     contactMethod: new FormControl(),
     birthday: new FormControl(),
@@ -77,8 +82,14 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
 
   private title = `Account details - ${environment.siteName}`;
   private doneInitialDatabaseImport: boolean = false;
+  private controlsWithUpdateButton: string[] = ['name', 'username', 'email', 'mobilePhone'];
 
-  constructor(private userService: UserService, public dialog: MatDialog, private titleService: Title) {
+  constructor(
+    private readonly dialog: MatDialog,
+    private readonly userService: UserService,
+    private readonly titleService: Title,
+    private readonly noticeService: NoticeService
+  ) {
     super();
   }
 
@@ -121,6 +132,10 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
         const isClean = this.userFromDatabase[element] === this.formGroup.get(element).value;
         const newState = isClean ? ElementState.InSync : ElementState.Dirty;
         this.controlStates.set(element, newState);
+
+        if (this.emailAndUsernameValidator(this, this.formGroup.get(element)) !== null) {
+          this.controlStates.set(element, ElementState.Invalid);
+        }
       });
     }
   }
@@ -150,19 +165,71 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     }
   }
 
-  update(element: string): void {
+  async update(element: string): Promise<void> {
     const updatedAttributes: Partial<SFUser> = {};
     updatedAttributes[element] = this.formGroup.controls[element].value;
 
+    this.formGroup.get(element).disable();
     this.controlStates.set(element, ElementState.Submitting);
 
-    this.userService
-      .updateUserAttributes(updatedAttributes)
-      .then(success => {
-        this.controlStates.set(element, ElementState.Submitted);
-      })
-      .catch(failure => {
-        // TODO handle
-      });
+    try {
+      await this.userService.updateUserAttributes(updatedAttributes);
+      this.formGroup.get(element).enable();
+      this.controlStates.set(element, ElementState.Submitted);
+    } catch (exception) {
+      // Set an input without an update button back to its previous value, so the user can try
+      // again by clicking the new and desired value.
+      if (!this.controlsWithUpdateButton.includes(element)) {
+        this.formGroup.get(element).setValue(this.userFromDatabase[element]);
+      }
+
+      const noEntrySymbol = '\u{26d4}';
+      this.formGroup.get(element).enable();
+      this.controlStates.set(element, ElementState.Error);
+      // .push() currently forces preformatting of details. So not indenting lines, and keeping within a narrow width.
+      this.noticeService.push(
+        NoticeService.ERROR,
+        `${noEntrySymbol} Error updating`,
+        `An error occurred while sending
+your updated information for
+'${element}'.
+It may help to make sure your
+Internet connection is working
+and then try again.
+Specific details:
+${exception.stack}`
+      );
+    }
+  }
+
+  /**
+   * Validation of username and email fields.
+   *  - Email address cannot be removed once set in database.
+   *  - Username cannot be blank unless email is set. Don't bother showing this error in addition to the above.
+   *
+   * This method takes a MyAccountComponent object, since references to 'this' end up referring to another
+   * object when this method gets called.
+   */
+  emailAndUsernameValidator(myAccount: MyAccountComponent, control: AbstractControl): ValidationErrors {
+    if (!myAccount.doneInitialDatabaseImport) {
+      return null;
+    }
+
+    if (control === myAccount.formGroup.get('email')) {
+      if (myAccount.userFromDatabase.email && !myAccount.formGroup.get('email').value) {
+        return { emailBlank: true };
+      }
+    }
+
+    if (control === myAccount.formGroup.get('username')) {
+      if (myAccount.userFromDatabase.email) {
+        return null;
+      }
+      if (!myAccount.formGroup.get('username').value) {
+        return { usernameBlank: true };
+      }
+    }
+
+    return null;
   }
 }
