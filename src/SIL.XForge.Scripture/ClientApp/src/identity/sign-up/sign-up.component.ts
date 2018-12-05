@@ -18,6 +18,7 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
   signUpForm = new FormGroup({
     name: new FormControl('', Validators.required),
     password: new FormControl('', [Validators.required, Validators.minLength(7)]),
+    showPassword: new FormControl(false),
     email: new FormControl('', [Validators.required, Validators.email]),
     recaptcha: new FormControl(null, Validators.required)
   });
