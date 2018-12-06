@@ -25,7 +25,7 @@ export class RealtimeService {
   constructor(private readonly domainModel: DomainModel, private readonly locationService: LocationService) {
     const protocol = this.locationService.protocol === 'https:' ? 'wss:' : 'ws:';
     let url = `${protocol}//${this.locationService.hostname}`;
-    if (environment.realtimePort != null && environment.realtimePort !== 0) {
+    if ('realtimePort' in environment && environment.realtimePort != null && environment.realtimePort !== 0) {
       url += `:${environment.realtimePort}`;
     }
     url += environment.realtimeUrl;

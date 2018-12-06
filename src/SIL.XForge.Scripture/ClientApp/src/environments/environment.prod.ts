@@ -3,6 +3,6 @@ export const environment = {
   pwaTest: false,
   issueEmail: 'issues@beta.qa.scriptureforge.org',
   siteName: 'Scripture Forge',
-  realtimePort: 5002,
+  realtimePort: undefined as number,
   realtimeUrl: '/realtime-api/'
 };

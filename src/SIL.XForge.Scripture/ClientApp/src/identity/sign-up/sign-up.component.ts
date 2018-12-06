@@ -60,6 +60,9 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
   get recaptcha() {
     return this.signUpForm.get('recaptcha');
   }
+  get isEmailReadonly(): boolean {
+    return this.emailEntry != null;
+  }
 
   async resolved(response: string): Promise<void> {
     this.captchaVerified = await this.identityService.verifyCaptcha(response);

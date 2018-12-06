@@ -14,13 +14,7 @@
         </mat-form-field>
         <password-strength-meter id="passwordStrengthMeter" [password]="password.value"></password-strength-meter>
         <mat-form-field>
-          <input
-            matInput
-            id="email"
-            placeholder="Email Address"
-            formControlName="email"
-            [readonly]="emailEntry != null"
-          />
+          <input matInput id="email" placeholder="Email Address" formControlName="email" [readonly]="isEmailReadonly" />
           <mat-error *ngIf="email.hasError('email')"> Please enter a valid email address </mat-error>
         </mat-form-field>
         <re-captcha [siteKey]="captchaId" (resolved)="$event && resolved($event)" formControlName="recaptcha">
