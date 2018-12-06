@@ -1,6 +1,70 @@
-.app-content {
+@import '~src/global';
+
+:host {
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
-  padding: 20px;
+  flex: 1;
+
+  > header {
+    mdc-top-app-bar-section {
+      .mdc-list-item {
+        cursor: pointer;
+      }
+      mdc-menu {
+        min-width: 200px;
+      }
+    }
+  }
+
+  .app-container {
+    flex: 1;
+
+    .app-content {
+      padding: 20px;
+      height: 100%;
+      overflow-y: auto;
+      flex: 1;
+    }
+  }
+
+  > footer {
+    background: $sf_footer;
+    padding: 10px 16px;
+    color: #fff;
+    font-size: 0.8rem;
+    align-items: center;
+    justify-content: space-between;
+
+    .partner-logos {
+      img {
+        &:first-child {
+          margin-right: 15px;
+        }
+      }
+    }
+
+    .app-details {
+      display: flex;
+      ul {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        list-style-type: none;
+
+        li {
+          margin-left: 15px;
+
+          a {
+            color: #fff;
+            text-decoration: underline;
+
+            &:hover {
+              color: #fff;
+              opacity: 0.8;
+            }
+          }
+        }
+      }
+    }
+  }
 }

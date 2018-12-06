@@ -1,5 +1,7 @@
-/* Override bootstrap variables here */
-$primary: #3498db;
-$secondary: #e67e22;
-$success: #2ecc71;
-$danger: #e74c3c;
+/* App specific */
+$sf_grey: #3a3a3a;
+$sf_header: $sf_grey;
+$sf_footer: $sf_grey;
+
+/* Overwrite Material */
+$mdc-theme-primary: $sf_grey;

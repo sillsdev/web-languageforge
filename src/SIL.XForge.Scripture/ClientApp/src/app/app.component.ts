@@ -9,8 +9,18 @@ import { AuthService } from '@xforge-common/auth.service';
 })
 export class AppComponent {
   title = 'Scripture Forge';
+  today = new Date();
+  version = '9.9.9';
 
-  constructor(authService: AuthService) {
+  constructor(private authService: AuthService) {
     authService.init();
+  }
+
+  logOut(): void {
+    this.authService.logOut();
+  }
+
+  get isLoggedIn(): Promise<boolean> {
+    return this.authService.isLoggedIn;
   }
 }

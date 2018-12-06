@@ -1,7 +1,5 @@
-/* Add global styles to this file, and also import other style files */
-@import 'variables';
-
-@import '~bootstrap/scss/bootstrap.scss';
+/* Generic styles for the main html/body page itself */
+@import '~src/global';
 
 html,
 body {
@@ -13,12 +11,6 @@ body {
   font-family: 'Roboto', sans-serif;
   display: flex;
   flex-direction: column;
-}
-
-app-root {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
 }
 
 .flex-column {
