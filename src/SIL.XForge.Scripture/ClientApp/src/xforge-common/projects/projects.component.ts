@@ -110,6 +110,7 @@ export class ProjectsComponent extends SubscriptionDisposable implements OnInit 
     } else {
       // update role in project
       await this.projectUserService.onlineUpdateRole(row.projectUser.id, projectRole.role);
+      row.projectUser.role = projectRole.role;
     }
     row.projectRole = projectRole;
     row.isUpdatingRole = false;

@@ -238,6 +238,7 @@ describe('ProjectsComponent', () => {
     expect(env.selectValue(roleSelect)).toEqual('User');
 
     verify(env.mockedProjectUserService.onlineUpdateRole('projectuser01', 'user')).once();
+    expect(env.component.rows[0].projectUser.role).toEqual('user');
   }));
 
   it('should add user to project', fakeAsync(() => {
