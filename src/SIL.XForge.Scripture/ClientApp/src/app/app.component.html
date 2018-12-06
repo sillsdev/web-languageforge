@@ -1,5 +1,63 @@
-<div class="flex-column flex-grow">
-  <app-nav-menu></app-nav-menu>
+<header>
+  <mdc-top-app-bar [fixedAdjustElement]="appContainer">
+    <mdc-top-app-bar-row>
+      <mdc-top-app-bar-section align="start" title="Scripture Forge">
+        <img id="nav-logo" src="/assets/images/logo-sf.svg" height="30" />
+      </mdc-top-app-bar-section>
+      <mdc-top-app-bar-section align="end" *ngIf="(isLoggedIn | async)">
+        <a mdc-list-item>
+          <mdc-icon mdcTopAppBarActionItem>notifications</mdc-icon>
+          <span matLine>Notifications</span>
+        </a>
+        <a mdc-list-item>
+          <mdc-icon mdcTopAppBarActionItem>help</mdc-icon>
+          <span matLine>Help</span>
+        </a>
+        <div mdcMenuSurfaceAnchor #userMenuAnchor>
+          <a mdc-list-item (click)="userMenu.open = !userMenu.open">
+            <mdc-icon mdcTopAppBarActionItem>person</mdc-icon>
+            <span matLine>User</span>
+          </a>
+          <mdc-menu #userMenu [anchorCorner]="'bottomStart'" [anchorElement]="userMenuAnchor">
+            <mdc-list>
+              <mdc-list-item [routerLink]="['/change-password']">Change Password</mdc-list-item>
+              <mdc-list-item (click)="logOut()">Logout</mdc-list-item>
+            </mdc-list>
+          </mdc-menu>
+        </div>
+      </mdc-top-app-bar-section>
+      <mdc-top-app-bar-section align="end" *ngIf="!(isLoggedIn | async)">
+        <a mdc-list-item href="/identity/sign-up">
+          <mdc-icon mdcTopAppBarActionItem>person_add</mdc-icon>
+          <span matLine>Sign Up</span>
+        </a>
+        <a mdc-list-item href="/identity/log-in">
+          <mdc-icon mdcTopAppBarActionItem>lock</mdc-icon>
+          <span matLine>Login</span>
+        </a>
+      </mdc-top-app-bar-section>
+    </mdc-top-app-bar-row>
+  </mdc-top-app-bar>
   <app-notice></app-notice>
+</header>
+<div class="app-container" fxLayout="row" #appContainer>
+  <app-nav-menu></app-nav-menu>
   <div class="app-content"><router-outlet></router-outlet></div>
 </div>
+<footer fxLayout="row">
+  <div class="partner-logos">
+    <a href="https://inter.payap.ac.th/">
+      <img src="/assets/images/logo-payap.svg" alt="Payap University Logo" height="30" />
+    </a>
+    <a href="http://www.sil.org">
+      <img src="/assets/images/logo-sil.svg" alt="SIL International Logo" height="30" />
+    </a>
+  </div>
+  <div class="app-details">
+    <span class="app-version">v {{ version }} Copyright {{ today | date: "yyyy" }}</span>
+    <ul>
+      <li><a href="http://www.sil.org">SIL International</a></li>
+      <li><a href="/terms_and_conditions">Terms and conditions</a></li>
+    </ul>
+  </div>
+</footer>

@@ -12,8 +12,4 @@ export class HomeComponent {
   get name(): string {
     return this.authService.currentUserName;
   }
-
-  logOut(): void {
-    this.authService.logOut();
-  }
 }

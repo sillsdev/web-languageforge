@@ -1,10 +1,10 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { instance, mock, when } from 'ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
 import { AuthService } from '@xforge-common/auth.service';
+import { UICommonModule } from '@xforge-common/ui-common.module';
 import { XForgeCommonModule } from '@xforge-common/xforge-common.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
@@ -23,13 +23,13 @@ describe('AppComponent', () => {
       declarations: [AppComponent, NavMenuComponent, HomeComponent, CounterComponent, FetchDataComponent],
       imports: [
         CoreModule,
-        FormsModule,
         HttpClientTestingModule,
         RouterTestingModule.withRoutes([
           { path: 'home', component: HomeComponent },
           { path: 'counter', component: CounterComponent },
           { path: 'fetch-data', component: FetchDataComponent }
         ]),
+        UICommonModule,
         XForgeCommonModule
       ],
       providers: [{ provide: AuthService, useFactory: () => instance(mockedAuthService) }]
