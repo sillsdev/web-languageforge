@@ -103,8 +103,11 @@ export class AuthService {
   }
 
   externalLogIn(returnUrl?: string): void {
-    const url = '/identity-api/challenge?provider=Paratext&returnUrl=' + returnUrl;
-    document.location.href = url;
+    let url = '/identity/challenge?provider=Paratext';
+    if (returnUrl != null) {
+      url += '&returnUrl=' + returnUrl;
+    }
+    this.locationService.go(url);
   }
 
   logOut(): void {

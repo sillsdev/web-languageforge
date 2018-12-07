@@ -1,5 +1,4 @@
-import { IdentityResult } from './identity-result';
-
-export interface LogInResult extends IdentityResult {
+export interface LogInResult {
+  success: boolean;
   isReturnUrlTrusted: boolean;
 }

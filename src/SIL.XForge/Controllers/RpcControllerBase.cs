@@ -27,12 +27,12 @@ namespace SIL.XForge.Controllers
             {
                 string path = _httpRequestAccessor.Path.Value;
                 // find beginning of the ID
-                int index = path.IndexOf('/', $"/{ServicesConstants.JsonApiNamespace}".Length + 1);
+                int index = path.IndexOf('/', $"/{XForgeConstants.JsonApiNamespace}".Length + 1);
                 if (index < 0)
                     return null;
                 index++;
                 // get length of the ID
-                int length = path.Length - $"/{ServicesConstants.CommandsResourceName}".Length - index;
+                int length = path.Length - $"/{XForgeConstants.CommandsEndpoint}".Length - index;
                 if (length < 0)
                     return null;
                 return path.Substring(index, length);

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { first } from 'rxjs/operators';
 
-import { IdentityService } from '@identity/identity.service';
-import { ResetPasswordParams } from '@identity/models/reset-password-params';
 import { LocationService } from '@xforge-common/location.service';
+import { IdentityService } from '../identity.service';
 
 interface FormGroupControls {
   [key: string]: AbstractControl;
@@ -23,19 +23,17 @@ export class ResetPasswordComponent implements OnInit {
   });
   isSubmitted: boolean = false;
   resetPasswordDisabled: boolean;
-  private params: Params;
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly identityService: IdentityService,
-    public readonly snackBar: MatSnackBar,
+    private readonly snackBar: MatSnackBar,
     private readonly activatedRoute: ActivatedRoute,
     private readonly locationService: LocationService
   ) {}
 
-  ngOnInit(): void {
-    this.activatedRoute.queryParams.subscribe(params => (this.params = params));
-    this.verifyToken();
+  ngOnInit(): Promise<void> {
+    return this.verifyKey();
   }
 
   get formControls(): FormGroupControls {
@@ -57,29 +55,30 @@ export class ResetPasswordComponent implements OnInit {
       this.resetPasswordForm.value.newPassword.length >= 7
     ) {
       this.resetPasswordDisabled = true;
-      const resetPasswordParams = this.resetPasswordForm.value as ResetPasswordParams;
-
-      const token = this.params['token'] as string;
-      if (token) {
-        resetPasswordParams.key = token;
-      }
-      resetPasswordParams.password = this.resetPasswordForm.value.newPassword;
-      const result = await this.identityService.resetPassword(resetPasswordParams);
+      const key = await this.getKey();
+      const password: string = this.resetPasswordForm.get('newPassword').value;
+      const result = await this.identityService.resetPassword(key, password);
       if (result) {
-        this.locationService.go('/home');
+        this.locationService.go('/');
       }
     }
   }
 
-  verifyToken(): void {
-    const token = this.params['token'] as string;
-    if (token) {
-      this.identityService.verifyToken(token).then(result => {
-        if (!result) {
-          this.snackBar.open('The password reset request has expired. Please request another reset.', undefined);
-          this.resetPasswordDisabled = true;
-        }
-      });
+  async verifyKey(): Promise<void> {
+    const key = await this.getKey();
+    if (key == null) {
+      return;
     }
+
+    const result = await this.identityService.verifyResetPasswordKey(key);
+    if (!result) {
+      this.snackBar.open('The password reset request has expired. Please request another reset.');
+      this.resetPasswordDisabled = true;
+    }
+  }
+
+  private async getKey(): Promise<string> {
+    const params = await this.activatedRoute.queryParams.pipe(first()).toPromise();
+    return params['key'];
   }
 }

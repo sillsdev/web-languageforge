@@ -10,8 +10,6 @@ using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using NUnit.Framework;
@@ -25,7 +23,7 @@ using SIL.XForge.Identity.Configuration;
 namespace SIL.XForge.Identity.Controllers
 {
     [TestFixture]
-    public class IdentityControllerTests
+    public class IdentityRpcControllerTests
     {
         private const string TestUserId = "user01";
         private const string TestUsername = "user";
@@ -40,15 +38,9 @@ namespace SIL.XForge.Identity.Controllers
         {
             var env = new TestEnvironment();
 
-            var input = new LogInParams
-            {
-                User = TestUsername,
-                Password = TestPassword,
-                ReturnUrl = TestReturnUrl
-            };
-            ActionResult<LogInResult> result = await env.Controller.LogIn(input);
+            LogInResult result = await env.Controller.LogIn(TestUsername, TestPassword, false, TestReturnUrl);
 
-            Assert.That(result.Value.Success, Is.True);
+            Assert.That(result.Success, Is.True);
             await env.Events.Received().RaiseAsync(Arg.Any<UserLoginSuccessEvent>());
             await env.AuthService.Received().SignInAsync(Arg.Any<HttpContext>(),
                 CookieAuthenticationDefaults.AuthenticationScheme,
@@ -61,15 +53,9 @@ namespace SIL.XForge.Identity.Controllers
         {
             var env = new TestEnvironment();
 
-            var input = new LogInParams
-            {
-                User = "ABC@fakegmail.com",
-                Password = TestPassword,
-                ReturnUrl = TestReturnUrl
-            };
-            ActionResult<LogInResult> result = await env.Controller.LogIn(input);
+            LogInResult result = await env.Controller.LogIn("ABC@fakegmail.com", TestPassword, false, TestReturnUrl);
 
-            Assert.That(result.Value.Success, Is.True);
+            Assert.That(result.Success, Is.True);
             await env.Events.Received().RaiseAsync(Arg.Any<UserLoginSuccessEvent>());
             await env.AuthService.Received().SignInAsync(Arg.Any<HttpContext>(),
                 CookieAuthenticationDefaults.AuthenticationScheme,
@@ -82,15 +68,9 @@ namespace SIL.XForge.Identity.Controllers
         {
             var env = new TestEnvironment();
 
-            var input = new LogInParams
-            {
-                User = TestUsername,
-                Password = "wrong",
-                ReturnUrl = TestReturnUrl
-            };
-            ActionResult<LogInResult> result = await env.Controller.LogIn(input);
+            LogInResult result = await env.Controller.LogIn(TestUsername, "wrong", false, TestReturnUrl);
 
-            Assert.That(result.Value.Success, Is.False);
+            Assert.That(result.Success, Is.False);
             await env.Events.Received().RaiseAsync(Arg.Any<UserLoginFailureEvent>());
         }
 
@@ -100,13 +80,9 @@ namespace SIL.XForge.Identity.Controllers
         {
             var env = new TestEnvironment(isResetLinkExpired: true);
 
-            var input = new ForgotPasswordParams
-            {
-                User = emailOrUsername
-            };
-            ActionResult<IdentityResult> result = await env.Controller.ForgotPassword(input);
+            bool result = await env.Controller.ForgotPassword(emailOrUsername);
 
-            Assert.That(result.Value.Success, Is.True);
+            Assert.That(result, Is.True);
             UserEntity user = await env.Users.Query().SingleOrDefaultAsync();
             Assert.That(user.ResetPasswordKey, Is.Not.EqualTo(TestResetPasswordKey), "ResetPasswordKey not updated.");
             Assert.That(user.ResetPasswordExpirationDate, Is.GreaterThan(DateTime.UtcNow),
@@ -122,13 +98,9 @@ namespace SIL.XForge.Identity.Controllers
         {
             var env = new TestEnvironment();
 
-            var input = new ForgotPasswordParams
-            {
-                User = "user1"
-            };
-            ActionResult<IdentityResult> result = await env.Controller.ForgotPassword(input);
+            bool result = await env.Controller.ForgotPassword("user1");
 
-            Assert.That(result.Value.Success, Is.False);
+            Assert.That(result, Is.False);
         }
 
         [Test]
@@ -137,14 +109,9 @@ namespace SIL.XForge.Identity.Controllers
             var env = new TestEnvironment();
             const string NewPassword = "NewPassword";
 
-            var input = new ResetPasswordParams
-            {
-                Key = TestResetPasswordKey + "bad",
-                Password = NewPassword
-            };
-            ActionResult<IdentityResult> result = await env.Controller.ResetPassword(input);
+            bool result = await env.Controller.ResetPassword(TestResetPasswordKey + "bad", NewPassword);
 
-            Assert.That(result.Value.Success, Is.False);
+            Assert.That(result, Is.False);
             UserEntity user = await env.Users.Query().SingleOrDefaultAsync();
             Assert.That(user.VerifyPassword(NewPassword), Is.False, "Password should not have changed");
         }
@@ -155,14 +122,9 @@ namespace SIL.XForge.Identity.Controllers
             var env = new TestEnvironment(isResetLinkExpired: true);
             const string NewPassword = "NewPassword";
 
-            var input = new ResetPasswordParams
-            {
-                Key = TestResetPasswordKey,
-                Password = NewPassword
-            };
-            ActionResult<IdentityResult> result = await env.Controller.ResetPassword(input);
+            bool result = await env.Controller.ResetPassword(TestResetPasswordKey, NewPassword);
 
-            Assert.That(result.Value.Success, Is.False);
+            Assert.That(result, Is.False);
             UserEntity user = await env.Users.Query().SingleOrDefaultAsync();
             Assert.That(user.VerifyPassword(NewPassword), Is.False, "Password should not have changed");
         }
@@ -173,14 +135,9 @@ namespace SIL.XForge.Identity.Controllers
             var env = new TestEnvironment();
             const string NewPassword = "N3wP@ssword";
 
-            var input = new ResetPasswordParams
-            {
-                Key = TestResetPasswordKey,
-                Password = NewPassword
-            };
-            ActionResult<IdentityResult> result = await env.Controller.ResetPassword(input);
+            bool result = await env.Controller.ResetPassword(TestResetPasswordKey, NewPassword);
 
-            Assert.That(result.Value.Success, Is.True);
+            Assert.That(result, Is.True);
             UserEntity user = await env.Users.Query().SingleOrDefaultAsync();
             Assert.That(user.VerifyPassword(NewPassword), Is.True, "Password should have been updated");
             Assert.That(user.ResetPasswordKey, Is.Null);
@@ -196,31 +153,13 @@ namespace SIL.XForge.Identity.Controllers
         {
             var env = new TestEnvironment();
 
-            var input = new ResetPasswordParams
-            {
-                Key = TestResetPasswordKey,
-                Password = "NewPassword"
-            };
-            ActionResult<IdentityResult> result = await env.Controller.ResetPassword(input);
+            bool result = await env.Controller.ResetPassword(TestResetPasswordKey, "NewPassword");
 
-            Assert.That(result.Value.Success, Is.True);
+            Assert.That(result, Is.True);
 
-            result = await env.Controller.ResetPassword(input);
+            result = await env.Controller.ResetPassword(TestResetPasswordKey, "NewPassword");
 
-            Assert.That(result.Value.Success, Is.False);
-        }
-
-        [Test]
-        public async Task VerifyRecaptcha_ProvidesAResponse()
-        {
-            var env = new TestEnvironment();
-            var recaptchaParams = new VerifyRecaptchaParams
-            {
-                RecaptchaResponse = "1234FakeResponse"
-            };
-            // Since we are using test reCaptcha site key, the verification request will pass
-            var result = await env.Controller.VerifyRecaptchaResponse(recaptchaParams);
-            Assert.That(result.Value.Success, Is.True);
+            Assert.That(result, Is.False);
         }
 
         [Test]
@@ -228,16 +167,11 @@ namespace SIL.XForge.Identity.Controllers
         {
             var env = new TestEnvironment();
 
-            var input = new SignUpParams
-            {
-                Name = "Test Sample Name",
-                Password = "password1234",
-                Email = "testeremail@gmail.com"
-            };
-            ActionResult<SignUpResult> result = await env.Controller.SignUp(input);
+            string result = await env.Controller.SignUp("Test Sample Name", "password1234", "testeremail@gmail.com",
+                null);
 
-            Assert.That(result.Value.Success, Is.True);
-            Assert.That(env.Users.Query().Any(x => x.Email == input.Email), Is.True);
+            Assert.That(result, Is.EqualTo("success"));
+            Assert.That(env.Users.Query().Any(x => x.Email == "testeremail@gmail.com"), Is.True);
             await env.Events.Received().RaiseAsync(Arg.Any<UserLoginSuccessEvent>());
             await env.AuthService.Received().SignInAsync(Arg.Any<HttpContext>(),
                 CookieAuthenticationDefaults.AuthenticationScheme, Arg.Any<ClaimsPrincipal>(),
@@ -258,15 +192,10 @@ namespace SIL.XForge.Identity.Controllers
                     Active = true
                 });
             // Duplicate emailid should result in an error
-            var input = new SignUpParams
-            {
-                Name = "Non Duplicated Name",
-                Password = "unimportant1234",
-                Email = "DUPLICATE@example.com"
-            };
-            ActionResult<SignUpResult> result = await env.Controller.SignUp(input);
+            string result = await env.Controller.SignUp("Non Duplicated Name", "unimportant1234",
+                "DUPLICATE@example.com", null);
 
-            Assert.That(result.Value.Success, Is.False);
+            Assert.That(result, Is.EqualTo("conflict"));
         }
 
         [Test]
@@ -280,15 +209,9 @@ namespace SIL.XForge.Identity.Controllers
                     Email = "me@example.com",
                     CanonicalEmail = "me@example.com"
                 });
-            var input = new SignUpParams
-            {
-                Name = "User Name",
-                Password = "unimportant1234",
-                Email = "me@example.com"
-            };
-            ActionResult<SignUpResult> result = await env.Controller.SignUp(input);
+            string result = await env.Controller.SignUp("User Name", "unimportant1234", "me@example.com", null);
 
-            Assert.That(result.Value.Success, Is.True);
+            Assert.That(result, Is.EqualTo("success"));
         }
 
         private class TestEnvironment
@@ -331,8 +254,8 @@ namespace SIL.XForge.Identity.Controllers
                     });
                 AuthService = Substitute.For<IAuthenticationService>();
                 var serviceProvider = Substitute.For<IServiceProvider>();
-                var options = Substitute.For<IOptions<SiteOptions>>();
-                options.Value.Returns(new SiteOptions
+                var siteOptions = Substitute.For<IOptions<SiteOptions>>();
+                siteOptions.Value.Returns(new SiteOptions
                     {
                         Name = "xForge",
                         Origin = new Uri("http://localhost")
@@ -340,45 +263,29 @@ namespace SIL.XForge.Identity.Controllers
 
                 EmailService = Substitute.For<IEmailService>();
 
-                Captcha = Substitute.For<IOptions<GoogleCaptchaOptions>>();
-                Captcha.Value.Returns(new GoogleCaptchaOptions
-                {
-                    CaptchaId = TestSiteKey,
-                    CaptchaSecret = TestSiteSecret
-                });
+                CaptchaOptions = Substitute.For<IOptions<GoogleCaptchaOptions>>();
+                CaptchaOptions.Value.Returns(new GoogleCaptchaOptions());
 
-                var urlHelperFactory = Substitute.For<IUrlHelperFactory>();
+                var httpContextAccessor = Substitute.For<IHttpContextAccessor>();
+                httpContextAccessor.HttpContext.Returns(new DefaultHttpContext
+                    {
+                        RequestServices = serviceProvider
+                    });
 
                 serviceProvider.GetService(typeof(IAuthenticationService)).Returns(AuthService);
                 serviceProvider.GetService(typeof(ISystemClock)).Returns(new SystemClock());
                 serviceProvider.GetService(typeof(IAuthenticationSchemeProvider)).Returns(schemeProvider);
-                serviceProvider.GetService(typeof(IOptions<SiteOptions>)).Returns(options);
 
-                serviceProvider.GetService(typeof(IEmailService)).Returns(EmailService);
-                serviceProvider.GetService(typeof(IUrlHelperFactory)).Returns(urlHelperFactory);
-
-                Controller = new IdentityController(interaction, clientStore, Events, Users, options,
-                    EmailService, Captcha)
-                {
-                    ControllerContext = new ControllerContext
-                    {
-                        HttpContext = new DefaultHttpContext
-                        {
-                            RequestServices = serviceProvider
-                        },
-                    }
-                };
+                Controller = new IdentityRpcController(interaction, clientStore, Events, Users, siteOptions,
+                    EmailService, CaptchaOptions, httpContextAccessor);
             }
-            // The site key and site secret are for testing purposes from the reCaptcha developer site
-            private string TestSiteKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
-            private string TestSiteSecret = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe";
 
             public IAuthenticationService AuthService { get; }
             public IEventService Events { get; }
-            public IdentityController Controller { get; }
+            public IdentityRpcController Controller { get; }
             public MemoryRepository<UserEntity> Users { get; }
             public IEmailService EmailService { get; }
-            public IOptions<GoogleCaptchaOptions> Captcha { get; }
+            public IOptions<GoogleCaptchaOptions> CaptchaOptions { get; }
 
         }
     }

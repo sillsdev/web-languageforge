@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
-import { ActivatedRoute } from '@angular/router';
 
-import { LocationService } from '@xforge-common/location.service';
 import { IdentityService } from '../identity.service';
 
 @Component({
@@ -19,8 +17,7 @@ export class ForgotPasswordComponent {
 
   constructor(
     private readonly identityService: IdentityService,
-    public readonly snackBar: MatSnackBar,
-    private readonly locationService: LocationService
+    private readonly snackBar: MatSnackBar
   ) {}
 
   async submit(): Promise<void> {
@@ -31,7 +28,7 @@ export class ForgotPasswordComponent {
     this.forgotPasswordDisabled = true;
     const result = await this.identityService.forgotPassword(this.forgotPasswordForm.controls['user'].value);
     if (result) {
-      this.snackBar.open('Password reset email sent', undefined);
+      this.snackBar.open('Password reset email sent');
     } else {
       this.forgotPasswordDisabled = false;
       this.snackBar.open('Invalid email or username', undefined, { duration: 5000 });

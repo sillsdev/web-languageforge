@@ -1,61 +1,42 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { VerifyTokenParams } from '@identity/models/verify-token-params';
-import { ForgotPasswordParams } from './models/forgot-password-params';
-import { IdentityResult } from './models/identity-result';
-import { LogInParams } from './models/log-in-params';
+import { JsonRpcService } from '@xforge-common/json-rpc.service';
 import { LogInResult } from './models/log-in-result';
-import { ResetPasswordParams } from './models/reset-password-params';
-import { SignUpParams } from './models/sign-up-params';
 import { SignUpResult } from './models/sign-up-result';
-import { VerifyEmailParams } from './models/verify-email-params';
-import { VerifyRecaptchaParams } from './models/verify-recaptcha-params';
 
 @Injectable()
 export class IdentityService {
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly jsonRpcService: JsonRpcService) {}
 
-  logIn(params: LogInParams): Promise<LogInResult> {
-    return this.callApi('log-in', params);
+  logIn(user: string, password: string, rememberLogIn: boolean, returnUrl?: string): Promise<LogInResult> {
+    return this.invoke('logIn', user, password, rememberLogIn, returnUrl);
   }
 
-  async forgotPassword(user: string): Promise<boolean> {
-    const result = await this.callApi('forgot-password', { user } as ForgotPasswordParams);
-    return result.success;
+  forgotPassword(user: string): Promise<boolean> {
+    return this.invoke('forgotPassword', user);
   }
 
-  async resetPassword(params: ResetPasswordParams): Promise<boolean> {
-    const result = await this.callApi('reset-password', params);
-    return result.success;
+  resetPassword(key: string, password: string): Promise<boolean> {
+    return this.invoke('resetPassword', key, password);
   }
 
-  captchaId(): Promise<string> {
-    return this.http.get<string>('identity-api/captcha-id').toPromise();
+  verifyCaptcha(userResponse: string): Promise<boolean> {
+    return this.invoke('verifyRecaptcha', userResponse);
   }
 
-  async verifyCaptcha(userResponse: string): Promise<boolean> {
-    const response = { recaptchaResponse: userResponse } as VerifyRecaptchaParams;
-    const result = await this.callApi('verify-recaptcha', response);
-    return result.success;
+  signUp(name: string, password: string, email: string, recaptcha: string): Promise<SignUpResult> {
+    return this.invoke('signUp', name, password, email, recaptcha);
   }
 
-  async signUp(params: SignUpParams): Promise<SignUpResult> {
-    const result = await this.callApi<SignUpResult>('sign-up', params);
-    return result;
+  verifyEmail(key: string): Promise<boolean> {
+    return this.invoke('verifyEmail', key);
   }
 
-  async verifyEmail(key: string): Promise<boolean> {
-    const result = await this.callApi('verify-email', { key } as VerifyEmailParams);
-    return result.success;
+  verifyResetPasswordKey(key: string): Promise<boolean> {
+    return this.invoke('verifyResetPasswordKey', key);
   }
 
-  async verifyToken(token: string): Promise<boolean> {
-    const result = await this.callApi('verify-token', { token } as VerifyTokenParams);
-    return result.success;
-  }
-
-  private async callApi<T extends IdentityResult>(endpoint: string, params: any): Promise<T> {
-    return this.http.post<T>('identity-api/' + endpoint, params).toPromise();
+  private async invoke<T>(method: string, ...params: any[]): Promise<T> {
+    return this.jsonRpcService.invoke<T>('identity-api', method, params);
   }
 }

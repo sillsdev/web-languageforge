@@ -1,27 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { first } from 'rxjs/operators';
 
 import { AuthService } from '@xforge-common/auth.service';
 import { LocationService } from '@xforge-common/location.service';
 import { IdentityService } from '../identity.service';
-import { LogInParams } from '../models/log-in-params';
 
 @Component({
   selector: 'app-log-in',
   templateUrl: './log-in.component.html',
   styleUrls: ['./log-in.component.scss']
 })
-export class LogInComponent implements OnInit {
+export class LogInComponent {
   logInForm = new FormGroup({
     user: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
     rememberLogIn: new FormControl(false)
   });
   logInDisabled: boolean;
-
-  private params: Params;
 
   constructor(
     private readonly identityService: IdentityService,
@@ -30,10 +28,6 @@ export class LogInComponent implements OnInit {
     private readonly locationService: LocationService,
     private readonly authService: AuthService
   ) {}
-
-  ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(params => (this.params = params));
-  }
 
   signInWithParatext(): void {
     this.authService.externalLogIn();
@@ -45,12 +39,11 @@ export class LogInComponent implements OnInit {
     }
 
     this.logInDisabled = true;
-    const returnUrl = this.params['returnUrl'] as string;
-    const logInParams = this.logInForm.value as LogInParams;
-    if (returnUrl != null) {
-      logInParams.returnUrl = returnUrl;
-    }
-    const result = await this.identityService.logIn(logInParams);
+    const user: string = this.logInForm.get('user').value;
+    const password: string = this.logInForm.get('password').value;
+    const rememberLogIn: boolean = this.logInForm.get('rememberLogIn').value;
+    const returnUrl = await this.getReturnUrl();
+    const result = await this.identityService.logIn(user, password, rememberLogIn, returnUrl);
     if (result.success) {
       if (returnUrl == null) {
         this.authService.logIn();
@@ -63,5 +56,10 @@ export class LogInComponent implements OnInit {
       this.logInDisabled = false;
       this.snackBar.open('Invalid email/username or password', undefined, { duration: 5000 });
     }
+  }
+
+  private async getReturnUrl(): Promise<string> {
+    const params = await this.activatedRoute.queryParams.pipe(first()).toPromise();
+    return params['returnUrl'];
   }
 }

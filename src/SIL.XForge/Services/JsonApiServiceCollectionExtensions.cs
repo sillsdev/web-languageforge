@@ -55,7 +55,7 @@ namespace SIL.XForge.Services
 
             var jsonApiOptions = new JsonApiOptions
             {
-                Namespace = ServicesConstants.JsonApiNamespace,
+                Namespace = XForgeConstants.JsonApiNamespace,
                 ResourceGraph = graphBuilder.Build(),
                 AllowClientGeneratedIds = true,
                 NullAttributeResponseBehavior = new NullAttributeResponseBehavior(true),
