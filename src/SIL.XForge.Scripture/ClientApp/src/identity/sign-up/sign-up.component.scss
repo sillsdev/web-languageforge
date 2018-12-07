@@ -17,3 +17,13 @@ re-captcha {
   height: 40px;
   align-self: center;
 }
+
+@media screen and (max-width: 375px) {
+  re-captcha,
+  #rc-imageselect {
+    transform: scale(0.77) !important;
+    -webkit-transform: scale(0.77) !important;
+    transform-origin: 0 0 !important;
+    -webkit-transform-origin: 0 0 !important;
+  }
+}
