@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { environment } from 'src/environments/environment';
+import { NoticeService } from '../../xforge-common/notice.service';
 import { UserService } from '../../xforge-common/user.service';
 import { SFUser } from '../core/models/sfuser';
 import { ChangingUsernameDialogComponent } from './changing-username-dialog/changing-username-dialog.component';
@@ -43,7 +44,9 @@ enum ElementState {
   /** Pending a write to the database. */
   Submitting = 'Submitting',
   /** InSync and was written to the database since last Dirty. */
-  Submitted = 'Submitted'
+  Submitted = 'Submitted',
+  /** There was an error attempting to submit. */
+  Error = 'Error'
 }
 
 /**
@@ -78,7 +81,12 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   private title = `Account details - ${environment.siteName}`;
   private doneInitialDatabaseImport: boolean = false;
 
-  constructor(private userService: UserService, public dialog: MatDialog, private titleService: Title) {
+  constructor(
+    private readonly dialog: MatDialog,
+    private readonly userService: UserService,
+    private readonly titleService: Title,
+    private readonly noticeService: NoticeService
+  ) {
     super();
   }
 
@@ -150,22 +158,34 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     }
   }
 
-  update(element: string): void {
+  async update(element: string): Promise<void> {
     const updatedAttributes: Partial<SFUser> = {};
     updatedAttributes[element] = this.formGroup.controls[element].value;
 
     this.formGroup.get(element).disable();
     this.controlStates.set(element, ElementState.Submitting);
 
-    this.userService
-      .updateUserAttributes(updatedAttributes)
-      .then(success => {
-        this.formGroup.get(element).enable();
-        this.controlStates.set(element, ElementState.Submitted);
-      })
-      .catch(failure => {
-        this.formGroup.get(element).enable();
-        // TODO handle
-      });
+    try {
+      await this.userService.updateUserAttributes(updatedAttributes);
+      this.formGroup.get(element).enable();
+      this.controlStates.set(element, ElementState.Submitted);
+    } catch (exception) {
+      const noEntrySymbol = '\u{26d4}';
+      this.formGroup.get(element).enable();
+      this.controlStates.set(element, ElementState.Error);
+      // .push() currently forces preformatting of details. So not indenting lines, and keeping within a narrow width.
+      this.noticeService.push(
+        NoticeService.ERROR,
+        `${noEntrySymbol} Error updating`,
+        `An error occurred while sending
+your updated information for
+'${element}'.
+It may help to make sure your
+Internet connection is working
+and then try again.
+Specific details:
+${exception.stack}`
+      );
+    }
   }
 }
