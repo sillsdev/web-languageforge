@@ -7,9 +7,9 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { IdentityService } from '@identity/identity.service';
 import { LocationService } from '@xforge-common/location.service';
 import { UICommonModule } from '@xforge-common/ui-common.module';
+import { IdentityService } from '../identity.service';
 import { ResetPasswordComponent } from './reset-password.component';
 
 class TestEnvironment {
@@ -26,7 +26,8 @@ class TestEnvironment {
     this.mockedActivatedRoute = mock(ActivatedRoute);
     this.mockedLocationService = mock(LocationService);
 
-    when(this.mockedActivatedRoute.queryParams).thenReturn(of({}));
+    when(this.mockedActivatedRoute.queryParams).thenReturn(of({ key: 'abcd1234' }));
+    when(this.mockedIdentityService.verifyResetPasswordKey('abcd1234')).thenResolve(true);
 
     TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, UICommonModule],
@@ -66,7 +67,7 @@ class TestEnvironment {
   clickSubmitButton(): void {
     this.submitButton.nativeElement.click();
     this.fixture.detectChanges();
-    tick();
+    flush();
   }
 
   setInputValue(input: DebugElement, value: string): void {
@@ -136,46 +137,48 @@ describe('ResetPasswordComponent', () => {
 
   it('new password and confirm password are not equal', fakeAsync(() => {
     const env = new TestEnvironment();
-    when(env.mockedIdentityService.resetPassword(anything())).thenResolve(false);
+    when(env.mockedIdentityService.resetPassword(anything(), anything())).thenResolve(false);
     env.fixture.detectChanges();
+    flush();
 
     env.setInputValue(env.newPasswordInput, 'Testing');
     env.setInputValue(env.confirmPasswordInput, 'Newtest');
     env.clickSubmitButton();
 
-    verify(env.mockedIdentityService.resetPassword(anything())).never();
-    flush();
+    verify(env.mockedIdentityService.resetPassword(anything(), anything())).never();
   }));
 
-  it('should confirm verify token method has been called.', fakeAsync(() => {
+  it('should verify key on init', fakeAsync(() => {
     const env = new TestEnvironment();
-    spyOn(env.component, 'verifyToken');
     env.fixture.detectChanges();
+    flush();
 
-    expect(env.component.verifyToken).toHaveBeenCalled();
+    verify(env.mockedIdentityService.verifyResetPasswordKey('abcd1234')).once();
+    expect().nothing();
   }));
 
   it('should submit when new password and confirm password are specified', fakeAsync(() => {
     const env = new TestEnvironment();
-    when(env.mockedIdentityService.resetPassword(anything())).thenResolve(true);
+    when(env.mockedIdentityService.resetPassword(anything(), anything())).thenResolve(true);
     env.fixture.detectChanges();
+    flush();
 
     env.setInputValue(env.newPasswordInput, 'newpassword');
     env.setInputValue(env.confirmPasswordInput, 'newpassword');
     env.clickSubmitButton();
 
-    verify(env.mockedIdentityService.resetPassword(anything())).once();
-    verify(env.mockedLocationService.go('/home')).once();
-    flush();
+    verify(env.mockedIdentityService.resetPassword(anything(), anything())).once();
+    verify(env.mockedLocationService.go('/')).once();
   }));
 
   it('should do nothing when form is invalid', fakeAsync(() => {
     const env = new TestEnvironment();
     env.fixture.detectChanges();
+    flush();
 
     env.clickSubmitButton();
 
-    verify(env.mockedIdentityService.resetPassword(anything())).never();
+    verify(env.mockedIdentityService.resetPassword(anything(), anything())).never();
     expect().nothing();
   }));
 });

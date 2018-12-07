@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { identityRoutes } from '@identity/identity-routing.module';
 import { AuthGuard } from '@xforge-common/auth.guard';
 import { ChangePasswordComponent } from '@xforge-common/change-password/change-password.component';
 import { ProjectsComponent } from '@xforge-common/projects/projects.component';
@@ -21,9 +20,7 @@ const routes: Routes = [
   { path: 'my-account', component: MyAccountComponent, canActivate: [AuthGuard] },
   { path: 'realtime', component: RealtimeComponent, canActivate: [AuthGuard] },
   { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard] },
-  { path: 'identity', children: identityRoutes }
-  // ToDo: put the line below back and remove line above when IdenyityModule is removed from app.module.ts - IJH 2018-27
-  // { path: 'identity', loadChildren: '../identity/identity.module#IdentityModule' }
+  { path: 'identity', loadChildren: '../identity/identity.module#IdentityModule' }
 ];
 
 @NgModule({

@@ -116,7 +116,7 @@
   padding-left: 30px;
   padding-right: 30px;
   min-height: 300px;
-  background-image: url("/images/EarthLightsSmall.jpg");
+  background-image: url('/images/EarthLightsSmall.jpg');
   font-size: 14px;
 }
 
@@ -127,7 +127,7 @@
     padding-left: 25px;
     padding-right: 25px;
     height: 450px;
-    background-image: url("/images/EarthLightsMedium.jpg");
+    background-image: url('/images/EarthLightsMedium.jpg');
     font-size: 16px;
   }
 }
@@ -145,7 +145,7 @@
 @media screen and (min-width: 1200px) {
   #welcome {
     height: 800px;
-    background-image: url("/images/EarthLightsLarge.jpg");
+    background-image: url('/images/EarthLightsLarge.jpg');
     font-size: 24px;
   }
 }
@@ -163,4 +163,74 @@
 #drafting {
   background-color: aquamarine;
   padding: 3px;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.prim-around {
+  justify-content: space-around;
+}
+
+.prim-between {
+  justify-content: space-between;
+}
+
+.prim-center {
+  justify-content: center;
+}
+
+.prim-start {
+  justify-content: flex-start;
+}
+
+.sec-baseline {
+  align-items: baseline;
+}
+
+.sec-center {
+  align-content: center;
+  align-items: center;
+}
+
+#footer {
+  background-color: #0067a5;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 5px;
+}
+
+#sil {
+  width: 100px;
+}
+
+#payap {
+  width: 170px;
+}
+
+#payap img {
+  width: 100%;
+  height: auto;
+}
+
+#sil img {
+  width: 100%;
+  height: auto;
+}
+
+@media screen and (max-width: 600px) {
+  #sil {
+    width: 50px;
+  }
+  #payap {
+    width: 85px;
+  }
 }

@@ -3,12 +3,11 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { IdentityService } from '@identity/identity.service';
-import { LogInParams } from '@identity/models/log-in-params';
 import { AuthService } from '@xforge-common/auth.service';
 import { LocationService } from '@xforge-common/location.service';
 import { UICommonModule } from '@xforge-common/ui-common.module';
@@ -107,7 +106,8 @@ class TestEnvironment {
 describe('LogInComponent', () => {
   it('should log in when username and password are specified', fakeAsync(() => {
     const env = new TestEnvironment();
-    when(env.mockedIdentityService.logIn(anything())).thenResolve({ success: true, isReturnUrlTrusted: false });
+    when(env.mockedIdentityService.logIn('user', 'password', true, undefined))
+      .thenResolve({ success: true, isReturnUrlTrusted: false });
     env.fixture.detectChanges();
 
     env.setInputValue(env.userInput, 'user');
@@ -115,31 +115,22 @@ describe('LogInComponent', () => {
     env.clickRememberMeCheckbox();
     env.clickSubmitButton();
 
-    const logInParams: LogInParams = {
-      user: 'user',
-      password: 'password',
-      rememberLogIn: true
-    };
-    verify(env.mockedIdentityService.logIn(deepEqual(logInParams))).once();
+    verify(env.mockedIdentityService.logIn('user', 'password', true, undefined)).once();
     verify(env.mockedAuthService.logIn()).once();
     expect().nothing();
   }));
 
   it('should display error when username and password are incorrect', fakeAsync(() => {
     const env = new TestEnvironment();
-    when(env.mockedIdentityService.logIn(anything())).thenResolve({ success: false, isReturnUrlTrusted: false });
+    when(env.mockedIdentityService.logIn('user', 'password', false, undefined))
+      .thenResolve({ success: false, isReturnUrlTrusted: false });
     env.fixture.detectChanges();
 
     env.setInputValue(env.userInput, 'user');
     env.setInputValue(env.passwordInput, 'password');
     env.clickSubmitButton();
 
-    const logInParams: LogInParams = {
-      user: 'user',
-      password: 'password',
-      rememberLogIn: false
-    };
-    verify(env.mockedIdentityService.logIn(deepEqual(logInParams))).once();
+    verify(env.mockedIdentityService.logIn('user', 'password', false, undefined)).once();
     verify(env.mockedAuthService.logIn()).never();
     expect(env.getSnackBarContent()).toBe('Invalid email/username or password');
     flush();
@@ -151,7 +142,7 @@ describe('LogInComponent', () => {
 
     env.clickSubmitButton();
 
-    verify(env.mockedIdentityService.logIn(anything())).never();
+    verify(env.mockedIdentityService.logIn(anything(), anything(), anything(), anything())).never();
     expect().nothing();
   }));
 

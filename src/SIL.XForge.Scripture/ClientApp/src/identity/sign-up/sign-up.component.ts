@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 
-import { SignUpParams } from '@identity/models/sign-up-params';
 import { LocationService } from '@xforge-common/location.service';
 import { NoticeService } from '@xforge-common/notice.service';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
+import { environment } from '../../environments/environment';
 import { IdentityService } from '../identity.service';
+import { SignUpResult } from '../models/sign-up-result';
 
 @Component({
   selector: 'app-sign-up',
@@ -22,7 +23,6 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
     email: new FormControl('', [Validators.required, Validators.email]),
     recaptcha: new FormControl(null, Validators.required)
   });
-  captchaId: string;
   signUpDisabled: boolean;
 
   private captchaVerified: boolean;
@@ -33,12 +33,9 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
     private readonly identityService: IdentityService,
     private readonly locationService: LocationService,
     private readonly activatedRoute: ActivatedRoute,
-    public readonly noticeService: NoticeService
+    private readonly noticeService: NoticeService
   ) {
     super();
-    this.identityService.captchaId().then(id => {
-      this.captchaId = id;
-    });
   }
 
   ngOnInit(): void {
@@ -49,6 +46,9 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
     });
   }
 
+  get captchaId(): string {
+    return environment.captchaId;
+  }
   get name() {
     return this.signUpForm.get('name');
   }
@@ -75,16 +75,18 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
       return;
     }
     this.signUpDisabled = true;
-    const duplicateEmailMessage =
-      'A user with the specified email address already exists. Please use a different email address';
-    const signUpParams = this.signUpForm.value as SignUpParams;
-    const result = await this.identityService.signUp(signUpParams);
-    if (result.success) {
-      this.locationService.go('/home');
+    const name: string = this.name.value;
+    const password: string = this.password.value;
+    const email: string = this.email.value;
+    const recaptcha: string = this.recaptcha.value;
+    const result = await this.identityService.signUp(name, password, email, recaptcha);
+    if (result === SignUpResult.Success) {
+      this.locationService.go('/');
     } else {
       this.signUpDisabled = false;
-      if (result.reason === 'Duplicate Email') {
-        this.noticeService.push(NoticeService.WARN, duplicateEmailMessage);
+      if (result === SignUpResult.Conflict) {
+        this.noticeService.push(NoticeService.WARN,
+          'A user with the specified email address already exists. Please use a different email address');
       } else {
         this.noticeService.push(NoticeService.WARN, 'Your sign-up request was unsuccessful');
       }

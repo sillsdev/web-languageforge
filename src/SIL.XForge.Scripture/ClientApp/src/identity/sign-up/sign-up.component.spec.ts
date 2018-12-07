@@ -6,11 +6,11 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { of } from 'rxjs';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
-import { IdentityService } from '@identity/identity.service';
-import { SignUpResult } from '@identity/models/sign-up-result';
 import { LocationService } from '@xforge-common/location.service';
 import { NoticeService } from '@xforge-common/notice.service';
 import { UICommonModule } from '@xforge-common/ui-common.module';
+import { IdentityService } from '../identity.service';
+import { SignUpResult } from '../models/sign-up-result';
 import { SignUpComponent } from './sign-up.component';
 
 class TestEnvironment {
@@ -28,8 +28,6 @@ class TestEnvironment {
     this.mockedNoticeService = mock(NoticeService);
     this.mockedActivatedRoute = mock(ActivatedRoute);
 
-    // this is the site key for testing
-    when(this.mockedIdentityService.captchaId()).thenReturn(of('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI').toPromise());
     when(this.mockedIdentityService.verifyCaptcha(anything())).thenResolve(true);
     when(this.mockedNoticeService.push(anything(), anything())).thenReturn();
     const parameters: Params = { ['e']: predefinedEmail };
@@ -100,8 +98,8 @@ class TestEnvironment {
 describe('SignUpComponent', () => {
   it('should allow user to complete the form and register', fakeAsync(() => {
     const env = new TestEnvironment();
-    const successResult: SignUpResult = { success: true };
-    when(env.mockedIdentityService.signUp(anything())).thenResolve(successResult);
+    when(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything()))
+      .thenResolve(SignUpResult.Success);
 
     env.fixture.detectChanges();
     env.setInputValue(env.nameInput, 'testUser1');
@@ -111,8 +109,8 @@ describe('SignUpComponent', () => {
     env.clickSubmitButton();
 
     verify(env.mockedIdentityService.verifyCaptcha(anything())).once();
-    verify(env.mockedIdentityService.signUp(anything())).once();
-    verify(env.mockedLocationService.go('/home')).once();
+    verify(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything())).once();
+    verify(env.mockedLocationService.go('/')).once();
     expect().nothing();
   }));
 
@@ -137,9 +135,8 @@ describe('SignUpComponent', () => {
 
   it('should display error if the sign up was unsuccessful', fakeAsync(() => {
     const env = new TestEnvironment();
-    const reason = 'Duplicate email';
-    const result = { success: false, reason };
-    when(env.mockedIdentityService.signUp(anything())).thenResolve(result);
+    when(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything()))
+      .thenResolve(SignUpResult.Conflict);
 
     env.fixture.detectChanges();
     env.setInputValue(env.nameInput, 'testUser1');
@@ -148,7 +145,7 @@ describe('SignUpComponent', () => {
     env.setRecaptchaValue();
     env.clickSubmitButton();
 
-    verify(env.mockedIdentityService.signUp(anything())).once();
+    verify(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything())).once();
     verify(env.mockedNoticeService.push(deepEqual(NoticeService.WARN), anything())).once();
     expect().nothing();
   }));
@@ -168,7 +165,7 @@ describe('SignUpComponent', () => {
     const env = new TestEnvironment();
     env.fixture.detectChanges();
     env.clickSubmitButton();
-    verify(env.mockedIdentityService.signUp(anything())).never();
+    verify(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything())).never();
     expect().nothing();
   }));
 });

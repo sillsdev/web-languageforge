@@ -11,9 +11,9 @@ namespace SIL.XForge.Services
 {
     /// <summary>
     /// This is the routing convention for JSON-RPC controllers. The route to a JSON-RPC controller consists of a
-    /// namespace prefix followed by a pluralized resource name. The resource name is generated from the controller class
-    /// name by removing the "RpcController" suffix and then dasherizing the remaining string. The resource name can also
-    /// be specified manually by using a <see cref="EdjCase.JsonRpc.Router.RpcRouteAttribute"/>.
+    /// namespace prefix followed by a pluralized resource name. The resource name is generated from the controller
+    /// class name by removing the "RpcController" suffix and then dasherizing the remaining string. The resource name
+    /// can also be specified manually by using a <see cref="EdjCase.JsonRpc.Router.RpcRouteAttribute"/>.
     ///
     /// This class should generate routes that are consist with <see cref="XForgeDasherizedRoutingConvention"/>.
     /// </summary>
@@ -21,7 +21,7 @@ namespace SIL.XForge.Services
     {
         private Dictionary<RpcPath, List<IRpcMethodProvider>> _routeCache;
 
-        public RpcPath BaseRequestPath => $"/{ServicesConstants.JsonApiNamespace}";
+        public RpcPath BaseRequestPath => $"/{XForgeConstants.JsonApiNamespace}";
 
         public List<IRpcMethodProvider> GetMethodsByPath(RpcPath path)
         {

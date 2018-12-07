@@ -6,7 +6,7 @@ import { LogInComponent } from './log-in/log-in.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 
-export const identityRoutes: Routes = [
+const routes: Routes = [
   { path: 'log-in', component: LogInComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
@@ -14,7 +14,7 @@ export const identityRoutes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(identityRoutes)],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
 export class IdentityRoutingModule {}

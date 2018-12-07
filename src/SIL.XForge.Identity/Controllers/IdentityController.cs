@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModel;
@@ -12,78 +10,29 @@ using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
-using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CSharp.RuntimeBinder;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Identity.Authentication;
-using SIL.XForge.Identity.Configuration;
-using SIL.XForge.Identity.Controllers.Account;
-using SIL.XForge.Identity.Models;
 using SIL.XForge.Models;
-using SIL.XForge.Services;
-using SIL.XForge.Utils;
 
 namespace SIL.XForge.Identity.Controllers
 {
-    [Route("identity-api")]
+    [Route("identity")]
     [ApiController]
     public class IdentityController : ControllerBase
     {
-        private const int PasswordResetPeriodDays = 7;
-        private const int EmailVerificationPeriodDays = 7;
-        private static TimeSpan RememberMeLogInDuration = TimeSpan.FromDays(30);
-        private const string verificationUrl = "https://www.google.com/recaptcha/api/siteverify";
-
         private readonly IRepository<UserEntity> _users;
         private readonly IIdentityServerInteractionService _interaction;
-        private readonly IClientStore _clientStore;
         private readonly IEventService _events;
-        private readonly IOptions<SiteOptions> _options;
-        private readonly IEmailService _emailService;
-        private readonly GoogleCaptchaOptions _captcha;
 
-        public IdentityController(IIdentityServerInteractionService interaction, IClientStore clientStore,
-            IEventService events, IRepository<UserEntity> users, IOptions<SiteOptions> options,
-            IEmailService emailService, IOptions<GoogleCaptchaOptions> captcha)
+        public IdentityController(IIdentityServerInteractionService interaction, IEventService events,
+            IRepository<UserEntity> users)
         {
             _users = users;
             _interaction = interaction;
-            _clientStore = clientStore;
             _events = events;
-            _options = options;
-            _emailService = emailService;
-            _captcha = captcha.Value;
-        }
-
-        [HttpPost("log-in")]
-        public async Task<ActionResult<LogInResult>> LogIn(LogInParams parameters)
-        {
-            UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.Username == parameters.User
-                || u.CanonicalEmail == UserEntity.CanonicalizeEmail(parameters.User));
-            // validate username/password
-            if (user != null && user.VerifyPassword(parameters.Password))
-            {
-                await LogInUserAsync(user, parameters.RememberLogIn);
-                AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(parameters.ReturnUrl);
-                bool trusted = context != null;
-                if (!trusted)
-                    trusted = Url.IsLocalUrl(parameters.ReturnUrl);
-                return new LogInResult
-                {
-                    Success = true,
-                    IsReturnUrlTrusted = trusted
-                };
-            }
-
-            await _events.RaiseAsync(new UserLoginFailureEvent(parameters.User, "invalid credentials"));
-            return new LogInResult { Success = false };
         }
 
         [HttpGet("log-out")]
@@ -134,205 +83,12 @@ namespace SIL.XForge.Identity.Controllers
         }
 
         /// <summary>
-        /// Validate username or email and send email
-        /// </summary>
-        [HttpPost("forgot-password")]
-        public async Task<ActionResult<IdentityResult>> ForgotPassword(ForgotPasswordParams parameters)
-        {
-            UserEntity user = await _users.UpdateAsync(
-                u => u.Username == parameters.User || u.CanonicalEmail == UserEntity.CanonicalizeEmail(parameters.User),
-                update => update
-                    .Set(u => u.ResetPasswordKey, Security.GenerateKey())
-                    .Set(u => u.ResetPasswordExpirationDate, DateTime.UtcNow.AddDays(PasswordResetPeriodDays)));
-            if (user != null)
-            {
-                SiteOptions siteOptions = _options.Value;
-                var subject = $"{siteOptions.Name} Forgotten Password Verification";
-                Uri url = new Uri(siteOptions.Origin, $"identity/reset-password?token={user.ResetPasswordKey}");
-                var body = "<div>"
-                    + $"<h1>Reset Password for {user.Name}</h1>"
-                    + $"<p>Please click this link to <a href=\"{url}\" target=\"_blank\">Reset Your Password</a>.</p>"
-                    + "<p>This link will be valid for 1 week.</p>"
-                    + $"<p>Regards,<br>The {siteOptions.Name} team</p>"
-                    + "</div>";
-
-                await _emailService.SendEmailAsync(user.Email, subject, body);
-                return new IdentityResult(true);
-            }
-
-            return new IdentityResult(false);
-        }
-
-        [HttpPost("reset-password")]
-        public async Task<ActionResult<IdentityResult>> ResetPassword(ResetPasswordParams parameters)
-        {
-            UserEntity user = await _users.UpdateAsync(
-                u => u.ResetPasswordKey == parameters.Key && u.ResetPasswordExpirationDate > DateTime.UtcNow,
-                update => update
-                    .Set(u => u.Password, BCrypt.Net.BCrypt.HashPassword(parameters.Password, 7))
-                    .Unset(u => u.ResetPasswordKey)
-                    .Unset(u => u.ResetPasswordExpirationDate));
-            if (user != null)
-            {
-                await LogInUserAsync(user);
-                return new IdentityResult(true);
-            }
-            return new IdentityResult(false);
-        }
-
-        [HttpGet("captcha-id")]
-        public string CaptchaId()
-        {
-            return _captcha.CaptchaId;
-        }
-
-        [HttpPost("verify-recaptcha")]
-        public async Task<ActionResult<IdentityResult>> VerifyRecaptchaResponse(VerifyRecaptchaParams parameters)
-        {
-            using (var client = new HttpClient())
-            {
-                try
-                {
-                    var values = new Dictionary<string, string>
-                    {
-                        { "secret", _captcha.CaptchaSecret },
-                        { "response", parameters.RecaptchaResponse },
-                    };
-                    var content = new FormUrlEncodedContent(values);
-
-                    HttpResponseMessage response;
-                    response = await client.PostAsync(verificationUrl, content);
-
-
-                    var responseString = await response.Content.ReadAsStringAsync();
-
-                    var converter = new ExpandoObjectConverter();
-
-                    dynamic obj = JsonConvert.DeserializeObject<ExpandoObject>(responseString, converter);
-                    return new IdentityResult(obj.success);
-                }
-                catch (RuntimeBinderException) { }
-            }
-            return new IdentityResult(false);
-        }
-
-        [HttpPost("sign-up")]
-        public async Task<ActionResult<SignUpResult>> SignUp(SignUpParams parameters)
-        {
-            UserEntity existingUser = await _users.Query()
-                .SingleOrDefaultAsync(u => u.CanonicalEmail == UserEntity.CanonicalizeEmail(parameters.Email));
-            if (existingUser != null)
-            {
-                if (!existingUser.Active && existingUser.Password == null)
-                {
-                    // invited user - activate, update and login user
-                    existingUser = await _users
-                        .UpdateAsync(u => u.CanonicalEmail == UserEntity.CanonicalizeEmail(parameters.Email),
-                            update => update.Set(u => u.EmailVerified, true)
-                                .Set(u => u.Name, parameters.Name)
-                                .Set(u => u.Password, BCrypt.Net.BCrypt.HashPassword(parameters.Password, 7))
-                                .Set(u => u.Active, true));
-                    if (existingUser != null)
-                    {
-                        await LogInUserAsync(existingUser);
-                        return new SignUpResult
-                        {
-                            Success = true
-                        };
-                    }
-                }
-                else if (existingUser.VerifyPassword(parameters.Password))
-                {
-                    // check for signup from other site
-                    // ToDo
-                }
-                else
-                {
-                    return new SignUpResult
-                    {
-                        Success = false,
-                        Reason = "Duplicate Email"
-                    };
-                }
-            }
-            else
-            {
-                var user = new UserEntity
-                {
-                    Name = parameters.Name,
-                    Email = parameters.Email,
-                    CanonicalEmail = UserEntity.CanonicalizeEmail(parameters.Email),
-                    EmailVerified = false,
-                    Password = BCrypt.Net.BCrypt.HashPassword(parameters.Password, 7),
-                    Role = SystemRoles.User,
-                    ValidationKey = Security.GenerateKey(),
-                    ValidationExpirationDate = DateTime.UtcNow.AddDays(EmailVerificationPeriodDays),
-                    Active = true
-                };
-
-                if (await _users.InsertAsync(user))
-                {
-                    await LogInUserAsync(user);
-
-                    SiteOptions siteOptions = _options.Value;
-                    string subject = $"{siteOptions.Name} - Email Verification";
-                    Uri url = new Uri(siteOptions.Origin,
-                        $"account/VerifyEmail?email={user.Email}&key={user.ValidationKey}");
-                    string body = "<div>"
-                        + $"<h1>Dear {user.Name},</h1>"
-                        + $"<p>Please click this link to verify your email <a href=\"{url}\" target=\"_blank\">"
-                        + "Confirm Verification</a>.</p>"
-                        + $"<p>Regards,<br>The {siteOptions.Name} Team</p>"
-                        + "</div>";
-
-                    await _emailService.SendEmailAsync(user.Email, subject, body);
-
-                    return new SignUpResult
-                    {
-                        Success = true
-                    };
-                }
-            }
-
-            return new SignUpResult
-            {
-                Success = false
-            };
-        }
-
-        [HttpPost("verify-email")]
-        public async Task<ActionResult<IdentityResult>> VerifyEmail(VerifyEmailParams parameters)
-        {
-            UserEntity user = await _users.UpdateAsync(
-                u => u.ValidationKey == parameters.Key && u.ValidationExpirationDate > DateTime.UtcNow,
-                update => update
-                    .Set(u => u.EmailVerified, true)
-                    .Unset(u => u.ValidationKey)
-                    .Unset(u => u.ValidationExpirationDate));
-            if (user != null)
-                return new IdentityResult(true);
-            return new IdentityResult(false);
-        }
-
-        [HttpPost("verify-token")]
-        public async Task<ActionResult<IdentityResult>> VerifyToken(VerifyTokenParams parameters)
-        {
-            UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.ResetPasswordKey == parameters.Token &&
-                u.ResetPasswordExpirationDate > DateTime.UtcNow);
-            if (user != null)
-            {
-                return new IdentityResult(true);
-            }
-            return new IdentityResult(false);
-        }
-
-        /// <summary>
         /// initiate roundtrip to external authentication provider
         /// </summary>
         [HttpGet("challenge")]
         public IActionResult Challenge(string provider, string returnUrl, string userId)
         {
-            if (string.IsNullOrEmpty(returnUrl) || returnUrl == "undefined")
+            if (string.IsNullOrEmpty(returnUrl))
                 returnUrl = "~/";
 
             // validate returnUrl - either it is a valid OIDC URL or back to a local page
@@ -382,11 +138,9 @@ namespace SIL.XForge.Identity.Controllers
             var additionalLocalClaims = new List<Claim>();
             var localSignInProps = new AuthenticationProperties();
             // TODO: allow user to specify whether to remember the login
-            if (AccountOptions.AllowRememberLogin)
-            {
-                localSignInProps.IsPersistent = true;
-                localSignInProps.ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration);
-            };
+            localSignInProps.IsPersistent = true;
+            localSignInProps.ExpiresUtc = DateTimeOffset.UtcNow.Add(IdentityConstants.RememberMeLogInDuration);
+
             ProcessLoginCallbackForOidc(result, additionalLocalClaims, localSignInProps);
             ProcessLoginCallbackForWsFed(result, additionalLocalClaims, localSignInProps);
             ProcessLoginCallbackForSaml2p(result, additionalLocalClaims, localSignInProps);
@@ -400,8 +154,8 @@ namespace SIL.XForge.Identity.Controllers
             string provider = result.Properties.Items["scheme"];
 
             // issue authentication cookie for user
-            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, userIdClaim.Value, user.Id, user.Username));
-            await HttpContext.SignInAsync(user.Id, user.Username, provider, localSignInProps,
+            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, userIdClaim.Value, user.Id, user.Name));
+            await HttpContext.SignInAsync(user.Id, user.Name, provider, localSignInProps,
                 additionalLocalClaims.ToArray());
 
             // delete temporary cookie used during external authentication
@@ -478,24 +232,6 @@ namespace SIL.XForge.Identity.Controllers
         private void ProcessLoginCallbackForSaml2p(AuthenticateResult externalResult, List<Claim> localClaims,
             AuthenticationProperties localSignInProps)
         {
-        }
-
-        private async Task LogInUserAsync(UserEntity user, bool rememberLogIn = false)
-        {
-            await _events.RaiseAsync(new UserLoginSuccessEvent(user.Email, user.Id, user.Name));
-            // only set explicit expiration here if user chooses "remember me".
-            // otherwise we rely upon expiration configured in cookie middleware.
-            AuthenticationProperties props = null;
-            if (rememberLogIn)
-            {
-                props = new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.Add(RememberMeLogInDuration)
-                };
-            };
-            // issue authentication cookie with subject ID and name
-            await HttpContext.SignInAsync(user.Id, user.Name, props);
         }
     }
 }

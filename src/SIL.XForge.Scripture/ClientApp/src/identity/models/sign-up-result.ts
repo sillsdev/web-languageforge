@@ -1,5 +1,4 @@
-import { IdentityResult } from './identity-result';
-
-export interface SignUpResult extends IdentityResult {
-  reason?: string;
+export enum SignUpResult {
+  Success = 'success',
+  Conflict = 'conflict'
 }

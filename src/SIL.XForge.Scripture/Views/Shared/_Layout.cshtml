@@ -1,12 +1,4 @@
-﻿@using IdentityServer4.Extensions
-@{
-    string name = null;
-    if (!true.Equals(ViewData["signed-out"]))
-    {
-        name = Context.User?.GetDisplayName();
-    }
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -15,7 +7,6 @@
     <title>Scripture Forge</title>
     <link rel="icon" type="image/x-icon" href="~/sf.ico" />
     <link rel="shortcut icon" type="image/x-icon" href="~/sf.ico" />
-    <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/lib/material-design-lite/css/material.indigo-pink.min.css"/>
     @RenderSection("css", required: false)
 </head>
@@ -23,7 +14,6 @@
     <div class="mdl-grid container body-content">
         @RenderBody()
     </div>
-    <script src="~/lib/jquery/jquery.js"></script>
     <script src="~/lib/material-design-lite/js/material.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>

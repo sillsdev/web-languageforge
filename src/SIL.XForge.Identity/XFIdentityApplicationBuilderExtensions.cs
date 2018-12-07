@@ -1,6 +1,7 @@
-using System.Reflection;
+using EdjCase.JsonRpc.Router.RouteProviders;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
+using SIL.XForge.Identity.Controllers;
 
 namespace SIL.XForge.Identity
 {
@@ -8,12 +9,10 @@ namespace SIL.XForge.Identity
     {
         public static void UseXFIdentityServer(this IApplicationBuilder app)
         {
-            app.UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider = new ManifestEmbeddedFileProvider(Assembly.GetExecutingAssembly(), "wwwroot")
-                });
-
             app.UseIdentityServer();
+            var options = new SingleRouteOptions { BaseRequestPath = "/identity-api" };
+            options.AddClass<IdentityRpcController>();
+            app.UseJsonRpc(new RpcSingleRouteProvider(Options.Create(options)));
         }
     }
 }

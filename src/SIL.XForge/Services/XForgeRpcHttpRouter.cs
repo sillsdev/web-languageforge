@@ -22,7 +22,7 @@ namespace SIL.XForge.Services
         {
             if (context.HttpContext.Request.ContentType != "application/json")
                 return;
-            if (!context.HttpContext.Request.Path.Value.EndsWith($"/{ServicesConstants.CommandsResourceName}"))
+            if (!context.HttpContext.Request.Path.Value.EndsWith($"/{XForgeConstants.CommandsEndpoint}"))
                 return;
 
             await _internalRouter.RouteAsync(context);
