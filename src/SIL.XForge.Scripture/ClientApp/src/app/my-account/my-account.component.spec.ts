@@ -12,6 +12,7 @@ import { anything, capture, instance, mock, verify, when } from 'ts-mockito';
 import { RecordIdentity } from '@orbit/data';
 import { Resource } from '@xforge-common/models/resource';
 import { User } from '@xforge-common/models/user';
+import { NoticeService } from '@xforge-common/notice.service';
 import { UICommonModule } from '@xforge-common/ui-common.module';
 import { QueryResults } from '../../xforge-common/json-api.service';
 import { UserService } from '../../xforge-common/user.service';
@@ -51,6 +52,7 @@ class TestEnvironment {
   mockedSFUserService: SFUserService;
   mockedMatDialog: MatDialog;
   mockedMatDialogRefForCUDC: MatDialogRef<ChangingUsernameDialogComponent>;
+  mockedNoticeService: NoticeService;
 
   userInDatabase: SFUser = new SFUser({
     name: 'bob smith',
@@ -62,6 +64,7 @@ class TestEnvironment {
     this.mockedSFUserService = mock(SFUserService);
     this.mockedMatDialog = mock(MatDialog);
     this.mockedMatDialogRefForCUDC = mock(MatDialogRef);
+    this.mockedNoticeService = mock(NoticeService);
 
     when(this.mockedSFUserService.getUser()).thenReturn(of(new StubQueryResults(this.userInDatabase)));
     when(this.mockedSFUserService.currentUserId).thenReturn('user01');
@@ -69,11 +72,14 @@ class TestEnvironment {
     when(this.mockedMatDialogRefForCUDC.afterClosed()).thenReturn(of('update'));
     when(this.mockedMatDialog.open(anything(), anything())).thenReturn(instance(this.mockedMatDialogRefForCUDC));
 
+    when(this.mockedNoticeService.push(anything(), anything())).thenReturn('aa');
+
     TestBed.configureTestingModule({
       imports: [TestModule],
       providers: [
         { provide: UserService, useFactory: () => instance(this.mockedSFUserService) },
-        { provide: MatDialog, useFactory: () => instance(this.mockedMatDialog) }
+        { provide: MatDialog, useFactory: () => instance(this.mockedMatDialog) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) }
       ],
       declarations: []
     }).compileComponents();
@@ -102,6 +108,10 @@ class TestEnvironment {
 
   get nameUpdateDone(): DebugElement {
     return this.fixture.debugElement.query(By.css('#name-update-done'));
+  }
+
+  get nameErrorIcon(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#name-error-icon'));
   }
 
   get usernameUpdateButton(): DebugElement {
@@ -158,6 +168,7 @@ describe('MyAccountComponent', () => {
       /* arrow */ true,
       /* spinner */ false,
       /* green check */ false,
+      /* error icon */ false,
       /* input enabled */ true
     );
 
@@ -176,6 +187,7 @@ describe('MyAccountComponent', () => {
       /* arrow */ true,
       /* spinner */ false,
       /* green check */ false,
+      /* error icon */ false,
       /* input enabled */ true
     );
 
@@ -191,6 +203,7 @@ describe('MyAccountComponent', () => {
       /* arrow */ false,
       /* spinner */ true,
       /* green check */ false,
+      /* error icon */ false,
       /* input enabled */ false
     );
 
@@ -208,6 +221,7 @@ describe('MyAccountComponent', () => {
       /* arrow */ false,
       /* spinner */ false,
       /* green check */ true,
+      /* error icon */ false,
       /* input enabled */ true
     );
 
@@ -229,6 +243,7 @@ describe('MyAccountComponent', () => {
       /* arrow */ true,
       /* spinner */ false,
       /* green check */ false,
+      /* error icon */ false,
       /* input enabled */ true
     );
 
@@ -246,8 +261,57 @@ describe('MyAccountComponent', () => {
       /* arrow */ true,
       /* spinner */ false,
       /* green check */ false,
+      /* error icon */ false,
       /* input enabled */ true
     );
+  }));
+
+  it('handles network error', fakeAsync(() => {
+    const technicalDetails = 'squirrel chewed thru line. smoke lost.';
+    when(env.mockedSFUserService.updateUserAttributes(anything())).thenReject({ stack: technicalDetails });
+
+    const originalName = env.component.userFromDatabase.name;
+    const updateButton = env.nameUpdateButton.nativeElement;
+    expect(env.component.formGroup.get('name').value).toEqual(originalName, 'test setup problem');
+
+    // change name on page
+    const newName = 'robert';
+    expect(originalName).not.toEqual(newName, 'test set up wrong');
+    env.component.formGroup.get('name').setValue(newName);
+    env.fixture.detectChanges();
+
+    // click update
+    env.clickButton(env.nameUpdateButton);
+
+    // Time passes
+    flush();
+    env.fixture.detectChanges();
+
+    verifyControlDecorations(
+      env,
+      'name',
+      /* expected state */ env.component.elementState.Error,
+      updateButton,
+      /* button enabled */ true,
+      /* arrow */ false,
+      /* spinner */ false,
+      /* green check */ false,
+      /* error icon */ true,
+      /* input enabled */ true
+    );
+
+    expect(env.component.formGroup.get('name').value).toEqual(
+      newName,
+      'input should contain new name that failed to transmit'
+    );
+
+    // Check error notice shown to user
+    const [type, title, details] = capture(env.mockedNoticeService.push).last();
+    expect(type).toEqual(NoticeService.ERROR);
+    expect(title).toContain('Error', 'error notice not shown to user');
+    expect(details).toContain('Internet');
+    expect(details).toContain(technicalDetails);
+    verify(env.mockedNoticeService.push(anything(), anything(), anything())).once();
   }));
 
   describe('changing username dialog', () => {
@@ -346,6 +410,7 @@ function verifyControlDecorations(
   expectedArrow: boolean,
   expectedSpinner: boolean,
   expectedGreenCheck: boolean,
+  expectedErrorIcon: boolean,
   expectedInputEnabled: boolean
 ) {
   expect(env.component.controlStates.get(controlName)).toBe(expectedState);
@@ -353,5 +418,6 @@ function verifyControlDecorations(
   expect(env.nameButtonIcon !== null).toBe(expectedArrow);
   expect(env.nameUpdateSpinner !== null).toBe(expectedSpinner);
   expect(env.nameUpdateDone !== null).toBe(expectedGreenCheck);
+  expect(env.nameErrorIcon != null).toBe(expectedErrorIcon);
   expect(env.component.formGroup.get(controlName).enabled).toBe(expectedInputEnabled);
 }
