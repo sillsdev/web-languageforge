@@ -1,24 +1,24 @@
 usx-para {
   display: block;
 
-  &[data-style="toc1"] {
+  &[data-style='toc1'] {
     font-weight: bold;
     font-style: italic;
     color: #004000;
   }
 
-  &[data-style="toc2"] {
+  &[data-style='toc2'] {
     font-style: italic;
     color: #004000;
   }
 
-  &[data-style="toc3"] {
+  &[data-style='toc3'] {
     font-weight: bold;
     font-style: italic;
     color: #800000;
   }
 
-  &[data-style="mt"] {
+  &[data-style='mt'] {
     font-weight: bold;
     text-align: center;
     font-size: 1.66em;
@@ -26,7 +26,7 @@ usx-para {
     margin-bottom: 0.33em;
   }
 
-  &[data-style="mt1"] {
+  &[data-style='mt1'] {
     font-weight: bold;
     text-align: center;
     font-size: 1.66em;
@@ -34,14 +34,14 @@ usx-para {
     margin-bottom: 0.33em;
   }
 
-  &[data-style="mt2"] {
+  &[data-style='mt2'] {
     font-style: italic;
     text-align: center;
     font-size: 1.33em;
     margin-bottom: 0.16em;
   }
 
-  &[data-style="mt3"] {
+  &[data-style='mt3'] {
     font-weight: bold;
     text-align: center;
     font-size: 1.33em;
@@ -49,14 +49,14 @@ usx-para {
     margin-bottom: 0.16em;
   }
 
-  &[data-style="mt4"] {
+  &[data-style='mt4'] {
     text-align: center;
     margin-top: 0.16em;
     margin-bottom: 0.16em;
   }
 
-  &[data-style="imt"],
-  &[data-style="imt1"] {
+  &[data-style='imt'],
+  &[data-style='imt1'] {
     font-weight: bold;
     text-align: center;
     font-size: 1.16em;
@@ -64,7 +64,7 @@ usx-para {
     margin-bottom: 0.33em;
   }
 
-  &[data-style="imt2"] {
+  &[data-style='imt2'] {
     font-style: italic;
     text-align: center;
     font-size: 1.08em;
@@ -72,43 +72,43 @@ usx-para {
     margin-bottom: 0.25em;
   }
 
-  &[data-style="imt3"] {
+  &[data-style='imt3'] {
     font-weight: bold;
     text-align: center;
     margin-top: 0.16em;
     margin-bottom: 0.16em;
   }
 
-  &[data-style="imt4"] {
+  &[data-style='imt4'] {
     font-style: italic;
     text-align: center;
     margin-top: 0.16em;
     margin-bottom: 0.16em;
   }
 
-  &[data-style="s"],
-  &[data-style="s1"] {
+  &[data-style='s'],
+  &[data-style='s1'] {
     font-weight: bold;
     text-align: center;
     margin-top: 0.66em;
     margin-bottom: 0.33em;
   }
 
-  &[data-style="s2"] {
+  &[data-style='s2'] {
     font-style: italic;
     text-align: center;
     margin-top: 0.66em;
     margin-bottom: 0.33em;
   }
 
-  &[data-style="s3"],
-  &[data-style="s4"] {
+  &[data-style='s3'],
+  &[data-style='s4'] {
     font-style: italic;
     margin-top: 0.5em;
     margin-bottom: 0.25em;
   }
 
-  &[data-style="li"] {
+  &[data-style='li'] {
     padding-left: 3em;
   }
 }

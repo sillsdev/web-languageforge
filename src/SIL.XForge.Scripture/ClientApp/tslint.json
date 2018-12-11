@@ -14,7 +14,8 @@
     "interface-over-type-literal": true,
     "label-position": true,
     "max-line-length": [
-      true, {
+      true,
+      {
         "limit": 120,
         "ignore-pattern": "^import "
       }
