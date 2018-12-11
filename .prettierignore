@@ -1,3 +1,5 @@
+# minified files aren't supposed to be Prettier
 *.min.*
 
+# mostly 3rd-party code
 src/SIL.XForge*/wwwroot/lib/**/*
