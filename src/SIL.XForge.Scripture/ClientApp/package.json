@@ -12,6 +12,7 @@
     "test:tc": "ng test --browsers ChromiumHeadless --watch false --code-coverage",
     "lint": "ng lint",
     "prettier": "prettier --write",
+    "prettier:tc": "prettier --list-different '**/*.{ts,js,json,css,scss,less,html,md,yml}'",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -81,7 +82,7 @@
     "karma-jasmine-html-reporter": "^1.4.0",
     "karma-teamcity-reporter": "^1.1.0",
     "lint-staged": "^8.1.0",
-    "prettier": "^1.15.3",
+    "prettier": "1.15.3",
     "protractor": "^5.4.1",
     "ts-mockito": "^2.3.1",
     "ts-node": "~7.0.1",
@@ -97,7 +98,7 @@
     "node-sass": "^4.9.0"
   },
   "lint-staged": {
-    "*.{ts,js,json,css,scss,less,html,md}": [
+    "*.{ts,js,json,css,scss,less,html,md,yml}": [
       "prettier --write",
       "git add"
     ]
