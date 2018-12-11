@@ -123,12 +123,13 @@ dotnet test
 
 See documentation for [running tests](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test?tabs=netcore21) and [writing tests](https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-nunit).
 
-### Angular Linting ###
+### Angular Linting and Prettiering ###
 
-To check TypeScript for readability, maintainability, and functionality errors. From the repo root
+To check TypeScript for readability, maintainability, and functionality errors, and to check a few other files for proper formatting. From the repo root
 ```bash
 cd src/SIL.XForge.Scripture/ClientApp/
 ng lint
+npm run prettier "**/*"
 ```
 
 ### Angular Unit Testing ###
@@ -195,7 +196,7 @@ cd src/SIL.XForge.Scripture/
 dotnet run --start-ng-serve=no
 ```
 
-!!! IMPORTANT !!! When you have finished testing, remove the built app `dist` folder. From the repo root
+**!!! IMPORTANT !!!** When you have finished testing, remove the built app `dist` folder. From the repo root
 ```bash
 rm -rf src/SIL.XForge.Scripture/ClientApp/dist
 ```
