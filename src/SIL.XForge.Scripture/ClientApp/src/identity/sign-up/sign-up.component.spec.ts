@@ -3,6 +3,7 @@ import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Params } from '@angular/router';
+import { RecaptchaLoaderService } from 'ng-recaptcha';
 import { of } from 'rxjs';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
@@ -21,17 +22,20 @@ class TestEnvironment {
   mockedLocationService: LocationService;
   mockedNoticeService: NoticeService;
   mockedActivatedRoute: ActivatedRoute;
+  mockedRecaptchaLoaderService: RecaptchaLoaderService;
 
   constructor(predefinedEmail: string = null) {
     this.mockedIdentityService = mock(IdentityService);
     this.mockedLocationService = mock(LocationService);
     this.mockedNoticeService = mock(NoticeService);
     this.mockedActivatedRoute = mock(ActivatedRoute);
+    this.mockedRecaptchaLoaderService = mock(RecaptchaLoaderService);
 
     when(this.mockedIdentityService.verifyCaptcha(anything())).thenResolve(true);
     when(this.mockedNoticeService.push(anything(), anything())).thenReturn();
     const parameters: Params = { ['e']: predefinedEmail };
     when(this.mockedActivatedRoute.queryParams).thenReturn(of(parameters));
+    when(this.mockedRecaptchaLoaderService.ready).thenReturn(of());
 
     TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, UICommonModule],
@@ -40,7 +44,8 @@ class TestEnvironment {
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
         { provide: LocationService, useFactory: () => instance(this.mockedLocationService) },
         { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
-        { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) }
+        { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
+        { provide: RecaptchaLoaderService, useFactory: () => instance(this.mockedRecaptchaLoaderService) }
       ]
     });
     this.fixture = TestBed.createComponent(SignUpComponent);

@@ -146,6 +146,7 @@ describe('ResetPasswordComponent', () => {
     env.clickSubmitButton();
 
     verify(env.mockedIdentityService.resetPassword(anything(), anything())).never();
+    expect().nothing();
   }));
 
   it('should verify key on init', fakeAsync(() => {
@@ -169,6 +170,7 @@ describe('ResetPasswordComponent', () => {
 
     verify(env.mockedIdentityService.resetPassword(anything(), anything())).once();
     verify(env.mockedLocationService.go('/')).once();
+    expect().nothing();
   }));
 
   it('should do nothing when form is invalid', fakeAsync(() => {
