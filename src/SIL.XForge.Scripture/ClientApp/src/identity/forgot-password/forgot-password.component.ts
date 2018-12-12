@@ -15,10 +15,7 @@ export class ForgotPasswordComponent {
   });
   forgotPasswordDisabled: boolean;
 
-  constructor(
-    private readonly identityService: IdentityService,
-    private readonly snackBar: MatSnackBar
-  ) {}
+  constructor(private readonly identityService: IdentityService, private readonly snackBar: MatSnackBar) {}
 
   async submit(): Promise<void> {
     if (!this.forgotPasswordForm.valid) {

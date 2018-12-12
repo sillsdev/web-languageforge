@@ -85,8 +85,10 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
     } else {
       this.signUpDisabled = false;
       if (result === SignUpResult.Conflict) {
-        this.noticeService.push(NoticeService.WARN,
-          'A user with the specified email address already exists. Please use a different email address');
+        this.noticeService.push(
+          NoticeService.WARN,
+          'A user with the specified email address already exists. Please use a different email address'
+        );
       } else {
         this.noticeService.push(NoticeService.WARN, 'Your sign-up request was unsuccessful');
       }

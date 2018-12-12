@@ -98,8 +98,9 @@ class TestEnvironment {
 describe('SignUpComponent', () => {
   it('should allow user to complete the form and register', fakeAsync(() => {
     const env = new TestEnvironment();
-    when(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything()))
-      .thenResolve(SignUpResult.Success);
+    when(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything())).thenResolve(
+      SignUpResult.Success
+    );
 
     env.fixture.detectChanges();
     env.setInputValue(env.nameInput, 'testUser1');
@@ -135,8 +136,9 @@ describe('SignUpComponent', () => {
 
   it('should display error if the sign up was unsuccessful', fakeAsync(() => {
     const env = new TestEnvironment();
-    when(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything()))
-      .thenResolve(SignUpResult.Conflict);
+    when(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything())).thenResolve(
+      SignUpResult.Conflict
+    );
 
     env.fixture.detectChanges();
     env.setInputValue(env.nameInput, 'testUser1');
