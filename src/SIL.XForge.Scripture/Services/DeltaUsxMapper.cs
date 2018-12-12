@@ -32,46 +32,62 @@ namespace SIL.XForge.Scripture.Services
             string curRef = null;
             string curChapter = null;
             string bookId = null;
-            foreach (XElement elem in usxElem.Elements())
+            foreach (XNode node in usxElem.Nodes())
             {
-                switch (elem.Name.LocalName)
+                switch (node)
                 {
-                    case "book":
-                        bookId = (string) elem.Attribute("code");
-                        break;
-
-                    case "para":
-                        var style = (string) elem.Attribute("style");
-                        bool paraStyle = IsParagraphStyle(style);
-                        if (paraStyle)
+                    case XElement elem:
+                        switch (elem.Name.LocalName)
                         {
-                            if (curRef != null)
-                            {
-                                int slashIndex = curRef.IndexOf("/", StringComparison.Ordinal);
-                                if (slashIndex != -1)
-                                    curRef = curRef.Substring(0, slashIndex);
-                                curRef = GetParagraphRef(nextIds, curRef, curRef + "/" + style);
-                            }
+                            case "book":
+                                bookId = (string) elem.Attribute("code");
+                                break;
+
+                            case "para":
+                                var style = (string) elem.Attribute("style");
+                                bool paraStyle = IsParagraphStyle(style);
+                                if (paraStyle)
+                                {
+                                    if (curRef != null)
+                                    {
+                                        int slashIndex = curRef.IndexOf("/", StringComparison.Ordinal);
+                                        if (slashIndex != -1)
+                                            curRef = curRef.Substring(0, slashIndex);
+                                        curRef = GetParagraphRef(nextIds, curRef, curRef + "/" + style);
+                                    }
+                                }
+                                else
+                                {
+                                    curRef = GetParagraphRef(nextIds, style, style);
+                                }
+                                ProcessChildNodes(projectId, bookId, newDelta, elem, curChapter, ref curRef,
+                                    ref nextNoteId);
+                                SegmentEnded(newDelta, curRef);
+                                if (!paraStyle)
+                                    curRef = null;
+                                newDelta.InsertPara(GetAttributes(elem));
+                                break;
+
+                            case "chapter":
+                                curRef = null;
+                                curChapter = (string) elem.Attribute("number");
+                                newDelta.InsertChapter(curChapter, GetAttributes(elem));
+                                break;
+
+                            // according to the USX schema, a verse can only occur within a paragraph, but Paratext 8.0
+                            // can still generate USX with verses at the top-level
+                            case "verse":
+                                InsertVerse(newDelta, elem, curChapter, ref curRef);
+                                break;
+
+                            default:
+                                LogUnknownElement(projectId, bookId, elem);
+                                break;
                         }
-                        else
-                        {
-                            curRef = GetParagraphRef(nextIds, style, style);
-                        }
-                        ProcessChildNodes(projectId, bookId, newDelta, elem, curChapter, ref curRef, ref nextNoteId);
-                        SegmentEnded(newDelta, curRef);
-                        if (!paraStyle)
-                            curRef = null;
-                        newDelta.InsertPara(GetAttributes(elem));
                         break;
 
-                    case "chapter":
-                        curRef = null;
-                        curChapter = (string) elem.Attribute("number");
-                        newDelta.InsertChapter(curChapter, GetAttributes(elem));
-                        break;
-
-                    default:
-                        LogUnknownElement(projectId, bookId, elem);
+                    case XText text:
+                        newDelta.InsertText(text.Value, curRef);
                         break;
                 }
             }
@@ -79,38 +95,35 @@ namespace SIL.XForge.Scripture.Services
             return newDelta;
         }
 
-        private void ProcessChildNodes(string projectId, string bookId, Delta newDelta, XElement elem,
+        private void ProcessChildNodes(string projectId, string bookId, Delta newDelta, XElement parentElem,
             string curChapter, ref string curRef, ref int nextNoteId)
         {
-            foreach (XNode node in elem.Nodes())
+            foreach (XNode node in parentElem.Nodes())
             {
                 switch (node)
                 {
-                    case XElement e:
-                        switch (e.Name.LocalName)
+                    case XElement elem:
+                        switch (elem.Name.LocalName)
                         {
                             case "verse":
-                                string verse = (string) e.Attribute("number");
-                                SegmentEnded(newDelta, curRef);
-                                curRef = $"verse_{curChapter}_{verse}";
-                                newDelta.InsertVerse(verse, GetAttributes(e));
+                                InsertVerse(newDelta, elem, curChapter, ref curRef);
                                 break;
 
                             case "char":
-                                newDelta.InsertChar(e.Value, GetAttributes(e), curRef);
+                                newDelta.InsertChar(elem.Value, GetAttributes(elem), curRef);
                                 break;
 
                             case "note":
                                 var noteDelta = new Delta();
                                 string tempRef = null;
-                                ProcessChildNodes(projectId, bookId, noteDelta, e, curChapter, ref tempRef,
+                                ProcessChildNodes(projectId, bookId, noteDelta, elem, curChapter, ref tempRef,
                                     ref nextNoteId);
-                                newDelta.InsertNote(nextNoteId, noteDelta, GetAttributes(e), curRef);
+                                newDelta.InsertNote(nextNoteId, noteDelta, GetAttributes(elem), curRef);
                                 nextNoteId++;
                                 break;
 
                             default:
-                                LogUnknownElement(projectId, bookId, e);
+                                LogUnknownElement(projectId, bookId, elem);
                                 break;
                         }
                         break;
@@ -127,6 +140,14 @@ namespace SIL.XForge.Scripture.Services
             _logger.LogWarning(
                 "Encountered unknown USX element '{Element}' in book '{Book}' of project '{Project}'",
                 elem.Name.LocalName, bookId, projectId);
+        }
+
+        private static void InsertVerse(Delta newDelta, XElement elem, string curChapter, ref string curRef)
+        {
+            var verse = (string) elem.Attribute("number");
+            SegmentEnded(newDelta, curRef);
+            curRef = $"verse_{curChapter}_{verse}";
+            newDelta.InsertVerse(verse, GetAttributes(elem));
         }
 
         private static void SegmentEnded(Delta newDelta, string segRef)
