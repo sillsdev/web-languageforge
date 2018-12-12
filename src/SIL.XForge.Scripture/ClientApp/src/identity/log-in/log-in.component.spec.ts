@@ -106,8 +106,10 @@ class TestEnvironment {
 describe('LogInComponent', () => {
   it('should log in when username and password are specified', fakeAsync(() => {
     const env = new TestEnvironment();
-    when(env.mockedIdentityService.logIn('user', 'password', true, undefined))
-      .thenResolve({ success: true, isReturnUrlTrusted: false });
+    when(env.mockedIdentityService.logIn('user', 'password', true, undefined)).thenResolve({
+      success: true,
+      isReturnUrlTrusted: false
+    });
     env.fixture.detectChanges();
 
     env.setInputValue(env.userInput, 'user');
@@ -122,8 +124,10 @@ describe('LogInComponent', () => {
 
   it('should display error when username and password are incorrect', fakeAsync(() => {
     const env = new TestEnvironment();
-    when(env.mockedIdentityService.logIn('user', 'password', false, undefined))
-      .thenResolve({ success: false, isReturnUrlTrusted: false });
+    when(env.mockedIdentityService.logIn('user', 'password', false, undefined)).thenResolve({
+      success: false,
+      isReturnUrlTrusted: false
+    });
     env.fixture.detectChanges();
 
     env.setInputValue(env.userInput, 'user');
