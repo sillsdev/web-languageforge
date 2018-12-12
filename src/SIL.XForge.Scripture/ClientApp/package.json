@@ -11,8 +11,8 @@
     "test": "ng test",
     "test:tc": "ng test --browsers ChromiumHeadless --watch false --code-coverage",
     "lint": "ng lint",
-    "prettier": "prettier --write",
-    "prettier:tc": "prettier --list-different '**/*.{ts,js,json,css,scss,less,html,md,yml}'",
+    "prettier": "prettier --write \"**/*.{ts,js,json,css,scss,less,html,md,yml}\"",
+    "prettier:tc": "prettier --list-different \"**/*.{ts,js,json,css,scss,less,html,md,yml}\"",
     "e2e": "ng e2e"
   },
   "private": true,
