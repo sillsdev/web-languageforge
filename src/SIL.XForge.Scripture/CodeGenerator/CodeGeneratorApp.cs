@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using SIL.Extensions;
 
 namespace SIL.XForge.Scripture.CodeGenerator
 {
@@ -36,8 +37,8 @@ namespace SIL.XForge.Scripture.CodeGenerator
             HandWrittenBaseClasses["UserResourceRef"] = "../../../xforge-common/models/user";
             HandWrittenBaseClasses["TextResource"] = "./text";
             HandWrittenBaseClasses["TextResourceRef"] = "./text";
-            HandWrittenBaseClasses["ProjectResource"] = "../../../xforge-common/models/ProjectResource";
-            HandWrittenBaseClasses["ProjectResourceRef"] = "../../../xforge-common/models/ProjectResource";
+            HandWrittenBaseClasses["ProjectResource"] = "../../../xforge-common/models/project";
+            HandWrittenBaseClasses["ProjectResourceRef"] = "../../../xforge-common/models/project";
             HandWrittenBaseClasses["ProjectUserResource"] = "../../../xforge-common/models/project-user";
             HandWrittenBaseClasses["ProjectUserResourceRef"] = "../../../xforge-common/models/project-user";
             HandWrittenBaseClasses["ProjectDataResource"] = "../../../xforge-common/models/project-data";
@@ -110,7 +111,7 @@ namespace SIL.XForge.Scripture.CodeGenerator
 
             var typescriptSettings = new TypeScriptGeneratorSettings
             {
-                //Namespace = "SIL.XForge.Scripture.Models", Skipping namespace in the typescript for now
+                // The ExcludedTypeNames should match the C# at this point to match what was generated in the Json Schema
                 ExcludedTypeNames = new List<string>(handWrittenBaseClasses.Keys).ToArray(),
                 ExtensionCode = GenerateBaseClassImports(handWrittenBaseClasses),
                 TemplateDirectory = templateDirectory,
@@ -119,7 +120,7 @@ namespace SIL.XForge.Scripture.CodeGenerator
                 GenerateConstructorInterface = false,
                 MarkOptionalProperties = true
             };
-            GenerateInterfacesInSchema(interfaces, sourceSchema);
+            AdjustTypeInfoInSchema(interfaces, sourceSchema);
             if (!string.IsNullOrEmpty(jsonSchemaFile))
             {
                 File.WriteAllText(jsonSchemaFile, sourceSchema.ToJson());
@@ -136,42 +137,57 @@ namespace SIL.XForge.Scripture.CodeGenerator
                 var classPattern = $"(class .*)( extends {i})";
                 tsContents = Regex.Replace(tsContents, classPattern, $"$1 implements {i}");
             }
-            // Drop Resource out of all base class names
-            tsContents = RenameResourceClasses(tsContents);
-            var streamWriter = new StreamWriter(typeScriptFile);
-            streamWriter.Write(tsContents);
-            streamWriter.Flush();
-            #endregion
-
             // Get all the types defined in the schema
             var definedTypes = new List<string>();
             foreach (var type in sourceSchema.Definitions)
             {
                 if (!handWrittenBaseClasses.ContainsKey(type.Key) && !interfaces.Contains(type.Key) && !type.Value.IsEnumeration)
                 {
-                    definedTypes.Add(RenameResourceClasses(type.Key));
+                    definedTypes.Add(type.Key);
                 }
             }
             // Add the starting type from the schema
-            definedTypes.Add(RenameResourceClasses(sourceSchema.Title));
+            definedTypes.Add(sourceSchema.Title);
+            // Drop Resource out of all base class names
+            var allClasses = new List<string>(HandWrittenBaseClasses.Keys);
+            allClasses.AddRange(definedTypes);
+            tsContents = RenameAbstractClasses(tsContents, (from s in allClasses orderby s.Length descending select s).ToList());
+            var streamWriter = new StreamWriter(typeScriptFile);
+            streamWriter.Write(tsContents);
+            streamWriter.Flush();
+            #endregion
+
             var nonRefTypes = new List<string>(handWrittenBaseClasses.Keys);
             nonRefTypes.AddRange(interfaces);
             // Get all the types defined in the schema
             GenerateJsonModelIncludeFile(csharpType.FullName, typeScriptFileName, definedTypes, jsonDomainModel);
         }
 
-        private static string RenameResourceClasses(string tsContents)
+        private static string RenameAbstractClasses(string tsContents, List<string> definedTypes)
         {
-            foreach (var baseClassName in HandWrittenBaseClasses.Keys)
+            foreach (var typeName in definedTypes)
             {
-                tsContents = Regex.Replace(tsContents, baseClassName,
-                    baseClassName.Substring(0, baseClassName.Length - "Resource".Length));
+                if (typeName != "Resource" && typeName.Contains("Resource"))
+                {
+                    var adjustedTypeName = typeName.Replace("Resource", string.Empty);
+                    // Rename [typeName]Ref type names to drop the "Resource" out
+                    tsContents = Regex.Replace(tsContents, $"({typeName})Ref",
+                        adjustedTypeName + "Ref");
+                    // Rename non-ref type names to include "Base"
+                    tsContents = Regex.Replace(tsContents, $"{typeName}",
+                        $"{adjustedTypeName}{(HandWrittenBaseClasses.Keys.Contains(typeName) ? string.Empty : "Base")}");
+                }
             }
 
             return tsContents;
         }
 
-        private static void GenerateInterfacesInSchema(List<string> interfaces, JsonSchema4 sourceSchema)
+        /// <summary>
+        /// Marks any type names that we want to be generated as interfaces in the schema. Also adds the interface members into
+        /// the classes which implement them. The class.liquid template will use this to generate the TypeScript correctly.
+        /// </summary>
+        /// <remarks>Currently using the description to mark a type as an interface</remarks>
+        private static void AdjustTypeInfoInSchema(List<string> interfaces, JsonSchema4 sourceSchema)
         {
             var interfaceSchemas = new List<JsonSchema4>();
             foreach (var jsonType in sourceSchema.Definitions)
@@ -222,10 +238,13 @@ namespace SIL.XForge.Scripture.CodeGenerator
         /// <param name="typeScriptFileName"></param>
         /// <param name="importTypes"></param>
         /// <param name="domainModelFile"></param>
-        private static void GenerateJsonModelIncludeFile(string schema, string typeScriptFileName, List<string> importTypes, Stream domainModelFile)
+        private static void GenerateJsonModelIncludeFile(string schema, string typeScriptFileName, List<string> originalImportTypes, Stream domainModelFile)
         {
+            originalImportTypes.Sort();
+            var importTypes = from type in originalImportTypes select type.Replace("Resource", string.Empty);
             #region Generate domain model typescript file
-            var classComment = $"// ----------------------{Environment.NewLine}" +
+            var classComment = $"/* tslint:disable:ordered-imports line-length */{Environment.NewLine}" +
+                               $"// ----------------------{Environment.NewLine}" +
                                $"// <auto-generated>{Environment.NewLine}" +
                                $"//    Generated using {Assembly.GetExecutingAssembly().FullName} from {schema}{Environment.NewLine}" +
                                $"// </auto-generated>{Environment.NewLine}" +
@@ -233,8 +252,12 @@ namespace SIL.XForge.Scripture.CodeGenerator
                                $"{Environment.NewLine}";
             var imports = "import { DomainModelConfig } from '@xforge-common/models/domain-model';" + Environment.NewLine;
             imports += "import { ";
-            imports += string.Join(", ", from type in importTypes select $"{type}, {type}Ref");
+            imports += string.Join(", ", from type in importTypes select $"{type}Ref");
             imports += $" }} from './{Path.GetFileName(typeScriptFileName.Substring(0, typeScriptFileName.Length - 3))}';{Environment.NewLine}";
+            foreach (var type in importTypes)
+            {
+                imports += $"import {{{ type }}} from './{GetFileNameFromTypeName(type)}';{Environment.NewLine}";
+            }
             imports += $"import {{ TextData }} from './text-data';{Environment.NewLine}";
 
             var config = $"export const SFDOMAIN_MODEL_CONFIG: DomainModelConfig = {{{Environment.NewLine}"
@@ -246,11 +269,24 @@ namespace SIL.XForge.Scripture.CodeGenerator
                                $"{imports}{Environment.NewLine}" +
                                $"// All resource, resource ref, and realtime doc types should be added to schema and generated into this config{Environment.NewLine}" +
                                $"{config}{Environment.NewLine}";
-
+            // Drop "Resource" out of all type names
+            fileContents = fileContents.Replace("Resource", string.Empty);
             var streamWriter = new StreamWriter(domainModelFile);
             streamWriter.Write(fileContents);
             streamWriter.Flush();
             #endregion
+        }
+
+        private static string GetFileNameFromTypeName(string typeName)
+        {
+            // Lower the case of anything that starts with SF? and then insert a - before each other capital letter
+            if (typeName.StartsWith("SF"))
+            {
+                typeName = $"sf{typeName[2].ToString().ToLower()}{typeName.Substring(3)}";
+            }
+            typeName = typeName.Replace("SFProject", "sfproject");
+            var parts = Regex.Split(typeName, @"(?<!^)(?=[A-Z])");
+            return string.Join('-', parts).ToLower();
         }
     }
 }

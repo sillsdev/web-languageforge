@@ -24,7 +24,7 @@ namespace SIL.XForge.Scripture.CodeGenerator.Tests
             var jsonApiWriter = new MemoryStream();
             var runningFrom = Assembly.GetExecutingAssembly().Location;
             Console.WriteLine(runningFrom);
-            CodeGeneratorApp.GenerateTypeScriptArtifactsFromCSharpType(typeof(TestClass), "SFProject.ts", excludedBaseClasses, interfaces,
+            CodeGeneratorApp.GenerateTypeScriptArtifactsFromCSharpType(typeof(TestClassResource), "SFProject.ts", excludedBaseClasses, interfaces,
                 "../../../../../src/SIL.XForge.Scripture/CodeGenerator/Templates", typeScriptFile, jsonApiWriter, null);
             // Seek back to the beginning before reading into a string
             typeScriptFile.Position = 0;
@@ -39,19 +39,19 @@ namespace SIL.XForge.Scripture.CodeGenerator.Tests
                 StringAssert.Contains($"import {{{excludedClassName}}} from '{excludedClassImportLoc}';", tsFileContents, "generated import is missing.");
                 StringAssert.DoesNotContain($"import {{extraExcludedClassName}}", tsFileContents, "No import should be generated if the path is null");
                 // Check that classes were generated as expected
-                StringAssert.Contains("export class TestClass", tsFileContents, "TestClass should have been generated in TypeScript");
-                StringAssert.Contains("export class TestClassTwo", tsFileContents, "TestClass should have been generated in TypeScript");
+                StringAssert.Contains("export abstract class TestClassBase", tsFileContents, "TestClassBase should have been generated in TypeScript");
+                StringAssert.Contains("export abstract class TestClassTwoBase", tsFileContents, "TestClassTwoBase should have been generated in TypeScript");
                 // Check that the class we declared to be an interface in typescript actually is
                 StringAssert.Contains("export interface TestInterfaceClass", tsFileContents, "The TestInterfaceClass was declared as an interface, and should have generated an interface");
                 StringAssert.Contains("awesomeTestClassString", tsFileContents, "JsonProperty annotation should have generated customized TypeScript property name");
                 StringAssert.Contains("TestClassTwoRef extends ExcludedBaseClassRef", tsFileContents, "Verify that generated Ref classes extend parent Ref classes");
                 StringAssert.DoesNotContain("TestClassThree extends TestInterfaceClass", tsFileContents, "Verify that classes which we want to be typescript interfaces are used as interfaces");
-                StringAssert.Contains("TestClassThree implements TestInterfaceClass", tsFileContents, "Verify that classes which we want to be typescript interfaces are used as interfaces");
+                StringAssert.Contains("TestClassThreeBase implements TestInterfaceClass", tsFileContents, "Verify that classes which we want to be typescript interfaces are used as interfaces");
                 StringAssert.DoesNotContain("TestInterfaceClassRef", tsFileContents, "No 'Ref' class or interface should be generated for an Interface");
                 StringAssert.DoesNotContain("export class ExcludedBaseClass", tsFileContents, "The classes passed in as 'Hand Generated' should not be generated");
                 StringAssert.DoesNotContain("export class TestInterfaceBaseClass", tsFileContents, "Interfaces that extend other interfaces should still be interfaces");
                 // This regex will prove that classes which implement an interface declare members of the interface
-                var regex = new Regex(".*export class TestClassThree implements TestInterfaceClass \\{(?<contentsBeforeMember>.*)InterfaceClassMember",
+                var regex = new Regex(".*export abstract class TestClassThreeBase implements TestInterfaceClass \\{(?<contentsBeforeMember>.*)InterfaceClassMember",
                     RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 var match = regex.Match(tsFileContents);
                 Assert.IsTrue(match.Success, "No implementation of interface member was found");
@@ -68,21 +68,21 @@ namespace SIL.XForge.Scripture.CodeGenerator.Tests
         }
     }
 
-    class TestClass
+    class TestClassResource
     {
         [Newtonsoft.Json.JsonProperty(PropertyName = "awesome-test-class-string")]
         public string TestClass_String { get; }
         public TestInterfaceClass TestClass_TestInterfaceClass { get; }
-        public TestClassTwo TestClass_TestClassTwo { get; }
-        public TestClassThree TestClass_TestClassThree { get; }
+        public TestClassTwoResource TestClass_TestClassTwo { get; }
+        public TestClassThreeResource TestClass_TestClassThree { get; }
     }
 
-    class TestClassTwo : ExcludedBaseClass
+    class TestClassTwoResource : ExcludedBaseClass
     {
         public double TestClassTwo_Double { get; }
     }
 
-    class TestClassThree : TestInterfaceClass
+    class TestClassThreeResource : TestInterfaceClass
     {
         public int TestClassThree_Int { get; }
     }

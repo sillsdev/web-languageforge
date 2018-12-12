@@ -21,11 +21,19 @@ import { UserService } from '../user.service';
 import { ProjectsComponent } from './projects.component';
 
 class TestProject extends Project {
+  constructor(init?: Partial<Project>) {
+    super(Project.TYPE, init);
+  }
+
   get taskNames(): string[] {
     return ['Task1', 'Task2'];
   }
 }
-class TestProjectUser extends ProjectUser {}
+class TestProjectUser extends ProjectUser {
+  constructor(init?: Partial<ProjectUser>) {
+    super(ProjectUser.TYPE, init);
+  }
+}
 class TestProjectRef extends ProjectRef {}
 class TestUserRef extends UserRef {}
 

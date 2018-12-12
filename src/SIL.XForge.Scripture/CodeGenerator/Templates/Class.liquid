@@ -1,11 +1,11 @@
 {% if HasDescription -%}
 /** {{ Description }} */
 {% endif -%}
-{% if ExportTypes %}export {% endif %}{% if IsAbstract %}abstract {% endif %}{%if Description contains "--- Generated Interface"%}interface{% else %}class{% endif %} {{ ClassName }}{{ Inheritance }} {
+{% if ExportTypes %}export {% endif %}{%if Description contains "--- Generated Interface"%}interface{% else %}abstract class{% endif %} {{ ClassName }}{{ Inheritance }} {
 {% if Description contains "--- Generated Interface" -%}
 {% else -%}
-    /** type identifier string for domain type mapping */
-    static readonly TYPE: string = '{{ ClassName | lowercamelcase }}';
+/** type identifier string for domain type mapping */
+   static readonly TYPE:string = '{{ ClassName | downcase }}';
 {% endif -%}
 {% for property in Properties -%}
 {%   if property.HasDescription -%}
@@ -17,14 +17,13 @@
 
     [key: string]: {{ IndexerPropertyValueType }};
 {% endif -%}
-{% if HasDiscriminator -%}
-    protected _discriminator: string;
-{% endif -%}
 {% if Description contains "--- Generated Interface" -%}
+{% else -%}
+{% if IsAbstract -%}
 {% else -%}
     constructor(init?: Partial<{{ ClassName }}>) {
 {%     if HasInheritance -%}
-        super(init);
+        super({{ ClassName }}.TYPE, init);
 {%     endif -%}
 {%     if HasDefaultValues -%}
         if (!init) {
@@ -35,44 +34,11 @@
 {%         endfor -%}
         }
 {%     endif -%}
-{%     if HasBaseDiscriminator -%}
-        this._discriminator = "{{ DiscriminatorName }}";
-{%     endif -%}
     }
 {% endif -%}
-
-{% if GenerateCloneMethod -%}
-    clone(): {{ ClassName }} {
-{%   if IsAbstract -%}
-        throw new Error("The abstract class '{{ ClassName }}' cannot be instantiated.");
-{%   else -%}
-        const json = this.toJSON();
-        let result = new {{ ClassName }}();
-        result.init(json);
-        return result;
-{%   endif -%}
-    }
-{% endif -%}
-}
-{% if GenerateConstructorInterface -%}
-{%   if HasDescription -%}
-/** {{ Description }} */
-{%   endif -%}
-{% if ExportTypes %}export {% endif %}interface I{{ ClassName }}{{ InterfaceInheritance }} {
-{%   for property in Properties -%}
-{%       if property.HasDescription -%}
-    /** {{ property.Description }} */
-{%       endif -%}
-    {{ property.PropertyName }}{% if property.IsOptional %}?{% endif %}: {{ property.ConstructorInterfaceType }}{{ property.TypePostfix }};
-{%   endfor -%}
-{%   if HasIndexerProperty -%}
-
-    [key: string]: {{ IndexerPropertyValueType }};
-{%   endif -%}
-}
-
 {% endif -%}
 
+}
 
 {% if Description contains "--- Generated Interface" -%}
 {% else%}
