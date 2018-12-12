@@ -165,6 +165,32 @@ namespace SIL.XForge.Scripture.Services
         }
 
         [Test]
+        public void ToUsx_NoParagraphs()
+        {
+            var delta = Delta.New()
+                .InsertChapter("1")
+                .InsertVerse("1")
+                .InsertText("This is verse 1.", "verse_1_1")
+                .InsertVerse("2")
+                .InsertBlank("verse_1_2")
+                .InsertVerse("3")
+                .InsertText("This is verse 3.", "verse_1_3")
+                .Insert("\n");
+
+            DeltaUsxMapper mapper = CreateMapper();
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
+
+            XElement expected = Usx("PHM",
+                Chapter("1"),
+                Verse("1"),
+                "This is verse 1.",
+                Verse("2"),
+                Verse("3"),
+                "This is verse 3.");
+            Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
+        }
+
+        [Test]
         public void ToDelta_EmptySegments()
         {
             XElement usxElem = Usx("PHM",
@@ -274,12 +300,39 @@ namespace SIL.XForge.Scripture.Services
             Assert.IsTrue(newDelta.DeepEquals(expected));
         }
 
+        [Test]
+        public void ToDelta_NoParagraphs()
+        {
+            XElement usxElem = Usx("PHM",
+                Chapter("1"),
+                Verse("1"),
+                "This is verse 1.",
+                Verse("2"),
+                Verse("3"),
+                "This is verse 3.");
+
+            DeltaUsxMapper mapper = CreateMapper();
+            Delta newDelta = mapper.ToDelta("12345", usxElem);
+
+            var expected = Delta.New()
+                .InsertChapter("1")
+                .InsertVerse("1")
+                .InsertText("This is verse 1.", "verse_1_1")
+                .InsertVerse("2")
+                .InsertBlank("verse_1_2")
+                .InsertVerse("3")
+                .InsertText("This is verse 3.", "verse_1_3")
+                .Insert("\n");
+
+            Assert.IsTrue(newDelta.DeepEquals(expected));
+        }
+
         private static DeltaUsxMapper CreateMapper()
         {
             return new DeltaUsxMapper(Substitute.For<ILogger<DeltaUsxMapper>>());
         }
 
-        private static XElement Usx(string code, params XElement[] elems)
+        private static XElement Usx(string code, params object[] elems)
         {
             return new XElement("usx", new XAttribute("version", "2.5"),
                 new XElement("book", new XAttribute("code", code), new XAttribute("style", "id")),
