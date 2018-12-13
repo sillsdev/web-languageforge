@@ -80,6 +80,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
 
   private title = `Account details - ${environment.siteName}`;
   private doneInitialDatabaseImport: boolean = false;
+  private controlsWithUpdateButton: string[] = ['name', 'username', 'email', 'mobilePhone'];
 
   constructor(
     private readonly dialog: MatDialog,
@@ -170,6 +171,12 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
       this.formGroup.get(element).enable();
       this.controlStates.set(element, ElementState.Submitted);
     } catch (exception) {
+      // Set an input without an update button back to its previous value, so the user can try
+      // again by clicking the new and desired value.
+      if (!this.controlsWithUpdateButton.includes(element)) {
+        this.formGroup.get(element).setValue(this.userFromDatabase[element]);
+      }
+
       const noEntrySymbol = '\u{26d4}';
       this.formGroup.get(element).enable();
       this.controlStates.set(element, ElementState.Error);

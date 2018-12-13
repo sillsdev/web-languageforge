@@ -205,7 +205,7 @@
       <div fxLayout="column" fwLayoutAlign="space-between">
         <div>Receive messages via</div>
         <div>
-          <mat-button-toggle-group formControlName="contactMethod" (change)="update('contactMethod')">
+          <mat-button-toggle-group formControlName="contactMethod" (click)="update('contactMethod')">
             <mat-button-toggle value="email"><i class="material-icons">email</i> Email</mat-button-toggle>
             <mat-button-toggle value="sms"><i class="material-icons">textsms</i> SMS</mat-button-toggle>
             <mat-button-toggle value="emailsms"
@@ -224,6 +224,12 @@
             *ngIf="controlStates.get('contactMethod') === elementState.Submitted"
             class="material-icons check-icon"
             >done</i
+          >
+          <i
+            id="contactMethod-error-icon"
+            *ngIf="controlStates.get('contactMethod') === elementState.Error"
+            class="material-icons error-icon"
+            >error</i
           >
         </div>
       </div>
@@ -254,6 +260,12 @@
             class="material-icons check-icon"
             >done</i
           >
+          <i
+            id="birthday-error-icon"
+            *ngIf="controlStates.get('birthday') === elementState.Error"
+            class="material-icons error-icon"
+            >error</i
+          >
         </div>
       </div>
 
@@ -283,6 +295,12 @@
             *ngIf="controlStates.get('gender') === elementState.Submitted"
             class="material-icons check-icon"
             >done</i
+          >
+          <i
+            id="gender-error-icon"
+            *ngIf="controlStates.get('gender') === elementState.Error"
+            class="material-icons error-icon"
+            >error</i
           >
         </div>
       </div>
