@@ -1,3 +1,5 @@
 /* Import anything useful to aid in the construction of other scss files i.e. variables, mixins, etc... */
 @import 'variables';
 @import '~@angular-mdc/theme/material';
+/* Only import relevant Bootstrap 4.x styles */
+@import '~bootstrap/scss/bootstrap-grid';
