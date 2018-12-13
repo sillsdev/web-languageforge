@@ -57,7 +57,8 @@ class TestEnvironment {
   userInDatabase: SFUser = new SFUser({
     name: 'bob smith',
     username: 'bobusername',
-    email: 'bob@example.com'
+    email: 'bob@example.com',
+    contactMethod: 'email'
   });
 
   constructor() {
@@ -98,24 +99,28 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('#name-update-button'));
   }
 
-  get nameButtonIcon(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#name-button-icon'));
+  buttonIcon(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-button-icon`));
   }
 
-  get nameUpdateSpinner(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#name-update-spinner'));
+  spinner(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-update-spinner`));
   }
 
-  get nameUpdateDone(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#name-update-done'));
+  greenCheck(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-update-done`));
   }
 
-  get nameErrorIcon(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#name-error-icon'));
+  errorIcon(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-error-icon`));
   }
 
   get usernameUpdateButton(): DebugElement {
     return this.fixture.debugElement.query(By.css('#username-update-button'));
+  }
+
+  get contactMethodSmsToggle(): DebugElement {
+    return this.fixture.debugElement.query(By.css('mat-button-toggle[value="sms"]'));
   }
 }
 
@@ -159,7 +164,7 @@ describe('MyAccountComponent', () => {
     const updateButton = env.nameUpdateButton.nativeElement;
     expect(env.component.formGroup.get('name').value).toEqual(originalName, 'test setup problem');
 
-    verifyControlDecorations(
+    verifyInputControlStates(
       env,
       'name',
       /* expected state */ env.component.elementState.InSync,
@@ -178,7 +183,7 @@ describe('MyAccountComponent', () => {
     env.component.formGroup.get('name').setValue(newName);
     env.fixture.detectChanges();
 
-    verifyControlDecorations(
+    verifyInputControlStates(
       env,
       'name',
       /* expected state */ env.component.elementState.Dirty,
@@ -194,7 +199,7 @@ describe('MyAccountComponent', () => {
     // click update
     env.clickButton(env.nameUpdateButton);
 
-    verifyControlDecorations(
+    verifyInputControlStates(
       env,
       'name',
       /* expected state */ env.component.elementState.Submitting,
@@ -212,7 +217,7 @@ describe('MyAccountComponent', () => {
     flush();
     env.fixture.detectChanges();
 
-    verifyControlDecorations(
+    verifyInputControlStates(
       env,
       'name',
       /* expected state */ env.component.elementState.Submitted,
@@ -234,7 +239,7 @@ describe('MyAccountComponent', () => {
     env.component.formGroup.get('name').setValue(newerName);
     env.fixture.detectChanges();
 
-    verifyControlDecorations(
+    verifyInputControlStates(
       env,
       'name',
       /* expected state */ env.component.elementState.Dirty,
@@ -252,7 +257,7 @@ describe('MyAccountComponent', () => {
     env.component.formGroup.get('name').setValue(newName);
     env.fixture.detectChanges();
 
-    verifyControlDecorations(
+    verifyInputControlStates(
       env,
       'name',
       /* expected state */ env.component.elementState.InSync,
@@ -287,7 +292,7 @@ describe('MyAccountComponent', () => {
     flush();
     env.fixture.detectChanges();
 
-    verifyControlDecorations(
+    verifyInputControlStates(
       env,
       'name',
       /* expected state */ env.component.elementState.Error,
@@ -312,6 +317,58 @@ describe('MyAccountComponent', () => {
     expect(details).toContain('Internet');
     expect(details).toContain(technicalDetails);
     verify(env.mockedNoticeService.push(anything(), anything(), anything())).once();
+  }));
+
+  // If there was a network error, don't just leave the gender or contactMethod setting shown as the new
+  // and unsuccessfully-submitted value, because the user may not be able to or know to re-submit it
+  // again by clicking on their desired setting. Instead, revert the value back to the previous value
+  // that we believed to be in the database, and the user can click their desired new setting again to
+  // try again.
+  it('handles network error for non-text inputs', fakeAsync(() => {
+    const technicalDetails = 'squirrel chewed thru line. smoke lost.';
+    when(env.mockedSFUserService.updateUserAttributes(anything())).thenReject({ stack: technicalDetails });
+
+    const originalvalue = env.component.userFromDatabase.contactMethod;
+    expect(env.component.formGroup.get('contactMethod').value).toEqual(originalvalue, 'test setup problem');
+
+    // change value on page
+    const newValue = 'sms';
+    expect(originalvalue).not.toEqual(newValue, 'test set up wrong');
+    env.component.formGroup.get('contactMethod').setValue(newValue);
+    env.fixture.detectChanges();
+
+    env.clickButton(env.contactMethodSmsToggle);
+    expect(env.component.formGroup.get('contactMethod').value).toEqual(newValue, 'test setup problem');
+
+    verifyStates(
+      env,
+      'contactMethod',
+      /* expected state */ env.component.elementState.Submitting,
+      /* spinner */ true,
+      /* green check */ false,
+      /* error icon */ false,
+      /* input enabled */ false
+    );
+
+    // Time passes
+    flush();
+    env.fixture.detectChanges();
+    expect(env.component.userFromDatabase.contactMethod).toEqual(originalvalue, 'test setup problem?');
+
+    expect(env.component.formGroup.get('contactMethod').value).toEqual(
+      originalvalue,
+      'should have set form value back to original value'
+    );
+
+    verifyStates(
+      env,
+      'contactMethod',
+      /* expected state */ env.component.elementState.Error,
+      /* spinner */ false,
+      /* green check */ false,
+      /* error icon */ true,
+      /* input enabled */ true
+    );
   }));
 
   describe('changing username dialog', () => {
@@ -401,7 +458,25 @@ describe('MyAccountComponent', () => {
   });
 });
 
-function verifyControlDecorations(
+/** Verify states of controls associated with a specific datum. */
+function verifyStates(
+  env: TestEnvironment,
+  controlName: string,
+  expectedState: any,
+  expectedSpinner: boolean,
+  expectedGreenCheck: boolean,
+  expectedErrorIcon: boolean,
+  expectedInputEnabled: boolean
+) {
+  expect(env.component.controlStates.get(controlName)).toBe(expectedState);
+  expect(env.spinner(controlName) !== null).toBe(expectedSpinner);
+  expect(env.greenCheck(controlName) !== null).toBe(expectedGreenCheck);
+  expect(env.errorIcon(controlName) !== null).toBe(expectedErrorIcon);
+  expect(env.component.formGroup.get(controlName).enabled).toBe(expectedInputEnabled);
+}
+
+/** Verify states of controls associated with a specifc datum, that uses an Update button. */
+function verifyInputControlStates(
   env: TestEnvironment,
   controlName: string,
   expectedState: any,
@@ -413,11 +488,15 @@ function verifyControlDecorations(
   expectedErrorIcon: boolean,
   expectedInputEnabled: boolean
 ) {
-  expect(env.component.controlStates.get(controlName)).toBe(expectedState);
   expect(updateButton.disabled).not.toBe(expectedUpdateButtonEnabled);
-  expect(env.nameButtonIcon !== null).toBe(expectedArrow);
-  expect(env.nameUpdateSpinner !== null).toBe(expectedSpinner);
-  expect(env.nameUpdateDone !== null).toBe(expectedGreenCheck);
-  expect(env.nameErrorIcon != null).toBe(expectedErrorIcon);
-  expect(env.component.formGroup.get(controlName).enabled).toBe(expectedInputEnabled);
+  expect(env.buttonIcon(controlName) !== null).toBe(expectedArrow);
+  verifyStates(
+    env,
+    controlName,
+    expectedState,
+    expectedSpinner,
+    expectedGreenCheck,
+    expectedErrorIcon,
+    expectedInputEnabled
+  );
 }
