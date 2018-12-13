@@ -1,4 +1,5 @@
-<mdc-drawer drawer="permanent" *ngIf="(isLoggedIn | async)">
+<button mdcIconButton (click)="toggleDrawer()" icon="menu" *ngIf="drawerType === 'modal'"></button>
+<mdc-drawer [drawer]="drawerType" *ngIf="(isLoggedIn | async)" open="{{ isExpanded }}">
   <mdc-drawer-header title="Main Menu"></mdc-drawer-header>
   <mdc-drawer-content>
     <a
