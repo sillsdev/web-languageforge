@@ -1,0 +1,26 @@
+<div fxLayout="column">
+  <mat-card class="card">
+    <mat-card-title class="title">Looks like you are new here!</mat-card-title>
+    <mat-card-content fxLayout="column">
+      <form (ngSubmit)="submit()" fxLayout="column">
+        <p>Please confirm you information below to create you account.</p>
+        <div class="userInfo">
+          <div class="avatarInfo"><ngx-avatar name="{{ userName }}" size="50" [round]="true"> </ngx-avatar></div>
+          <div>
+            <div class="userNameInfo">{{ userName }}</div>
+            <div>{{ emailId }}</div>
+          </div>
+        </div>
+        <button
+          mat-raised-button
+          class="submit-button"
+          color="primary"
+          type="submit"
+          [disabled]="forgotPasswordDisabled"
+        >
+          Sign up
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

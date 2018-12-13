@@ -1,0 +1,28 @@
+.card {
+  max-width: 500px;
+  width: 100%;
+  align-self: center;
+}
+
+.title {
+  text-align: center;
+}
+
+.submit-button {
+  width: 120px;
+  height: 40px;
+  align-self: center;
+}
+
+.userInfo {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.avatarInfo {
+  width: 15%;
+}
+
+.userNameInfo {
+  font-weight: bold;
+}

@@ -375,6 +375,19 @@ namespace SIL.XForge.Identity.Controllers
 
             // lookup our user and external provider info
             UserEntity user = await GetUserFromExternalProviderAsync(result);
+            if (user == null)
+            {
+                ClaimsPrincipal externalUser = result.Principal;
+                Claim emailClaim = externalUser.FindFirst(JwtClaimTypes.Email)
+                    ?? externalUser.FindFirst(ClaimTypes.Email);
+                string email = emailClaim?.Value ?? "";
+                Claim nameClaim = externalUser.FindFirst(JwtClaimTypes.Name)
+                    ?? externalUser.FindFirst(ClaimTypes.Name);
+                string name = nameClaim?.Value ?? "";
+                Claim pictureClaim = externalUser.FindFirst(JwtClaimTypes.Picture);
+                string picture = pictureClaim?.Value ?? "";
+                return Redirect("/identity/open-id-sign-up?email=" + email + "&name=" + name + "&picture=" + picture);
+            }
 
             // this allows us to collect any additonal claims or properties
             // for the specific prtotocols used and store them in the local auth cookie.
@@ -448,11 +461,7 @@ namespace SIL.XForge.Identity.Controllers
                 default:
                     throw new Exception("Unknown external authentication scheme.");
             }
-            if (user != null)
-                return user;
-
-            // TODO: create user
-            throw new NotImplementedException();
+            return user;
         }
 
         private void ProcessLoginCallbackForOidc(AuthenticateResult externalResult, List<Claim> localClaims,
