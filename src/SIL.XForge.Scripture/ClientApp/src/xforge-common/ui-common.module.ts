@@ -1,4 +1,16 @@
-import { MdcDrawerModule, MdcIconModule, MdcListModule, MdcMenuModule, MdcTopAppBarModule } from '@angular-mdc/web';
+import {
+  MdcButtonModule,
+  MdcCardModule,
+  MdcCheckboxModule,
+  MdcDrawerModule,
+  MdcFormFieldModule,
+  MdcIconModule,
+  MdcListModule,
+  MdcMenuModule,
+  MdcSnackbarModule,
+  MdcTextFieldModule,
+  MdcTopAppBarModule
+} from '@angular-mdc/web';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -45,9 +57,15 @@ const modules = [
   MatSelectModule,
   MatSnackBarModule,
   MatTableModule,
+  MdcButtonModule,
+  MdcCardModule,
+  MdcCheckboxModule,
   MdcDrawerModule,
+  MdcFormFieldModule,
   MdcIconModule,
   MdcListModule,
+  MdcSnackbarModule,
+  MdcTextFieldModule,
   MdcTopAppBarModule,
   MdcMenuModule,
   PasswordStrengthMeterModule,

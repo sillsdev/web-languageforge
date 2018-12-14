@@ -1,27 +1,54 @@
-.card {
-  max-width: 400px;
-  width: 100%;
-  align-self: center;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.title {
+.button-container {
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.forgot-password-button-container {
+  padding: 0px 6px;
+  display: flex;
+  flex-direction: column;
+  button {
+    align-self: flex-end;
+  }
+}
+
+mdc-text-field {
+  width: 100%;
+}
+
+.divider {
   text-align: center;
+  line-height: 0.1em;
+  margin: 20px 0px;
+
+  span {
+    background-color: white;
+    padding: 0px 10px;
+    color: rgba(0, 0, 0, 0.12);
+  }
+}
+
+.card {
+  max-width: 380px;
+  width: 100%;
+  padding: 20px;
 }
 
 .submit-button {
-  width: 120px;
   height: 40px;
-  align-self: center;
 }
 
-.signin-paratext-button {
-  width: 185px;
-  height: 40px;
-  align-self: center;
+.log-in-paratext-button {
   background-color: #648047;
   color: white;
-  padding: 0%;
-  margin-bottom: 16px;
+  height: 40px;
 }
 
 .paratext-logo {

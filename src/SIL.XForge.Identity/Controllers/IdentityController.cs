@@ -86,7 +86,7 @@ namespace SIL.XForge.Identity.Controllers
         /// initiate roundtrip to external authentication provider
         /// </summary>
         [HttpGet("challenge")]
-        public IActionResult Challenge(string provider, string returnUrl, string userId)
+        public IActionResult Challenge(string provider, bool rememberLogIn, string returnUrl, string userId)
         {
             if (string.IsNullOrEmpty(returnUrl))
                 returnUrl = "~/";
@@ -105,7 +105,8 @@ namespace SIL.XForge.Identity.Controllers
                 Items =
                 {
                     { "returnUrl", returnUrl },
-                    { "scheme", provider }
+                    { "scheme", provider },
+                    { "rememberLogIn", rememberLogIn.ToString() }
                 }
             };
 
@@ -137,9 +138,12 @@ namespace SIL.XForge.Identity.Controllers
             // this is typically used to store data needed for signout from those protocols.
             var additionalLocalClaims = new List<Claim>();
             var localSignInProps = new AuthenticationProperties();
-            // TODO: allow user to specify whether to remember the login
-            localSignInProps.IsPersistent = true;
-            localSignInProps.ExpiresUtc = DateTimeOffset.UtcNow.Add(IdentityConstants.RememberMeLogInDuration);
+            var rememberLogIn = bool.Parse(result.Properties.Items["rememberLogIn"]);
+            if (rememberLogIn)
+            {
+                localSignInProps.IsPersistent = true;
+                localSignInProps.ExpiresUtc = DateTimeOffset.UtcNow.Add(IdentityConstants.RememberMeLogInDuration);
+            }
 
             ProcessLoginCallbackForOidc(result, additionalLocalClaims, localSignInProps);
             ProcessLoginCallbackForWsFed(result, additionalLocalClaims, localSignInProps);

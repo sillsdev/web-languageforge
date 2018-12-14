@@ -12,9 +12,7 @@ export class ParatextService {
   constructor(private readonly http: HttpClient, private readonly authService: AuthService) {}
 
   logIn(returnUrl: string): void {
-    const url =
-      '/identity-api/challenge?provider=Paratext&returnUrl=' + returnUrl + '&userId=' + this.authService.currentUserId;
-    document.location.href = url;
+    this.authService.externalLogIn(true, returnUrl);
   }
 
   getProjects(): Observable<ParatextProject[]> {

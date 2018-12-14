@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ObservableMedia } from '@angular/flex-layout';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 
@@ -15,7 +16,6 @@ import { SignUpResult } from '../models/sign-up-result';
   styleUrls: ['./sign-up.component.scss']
 })
 export class SignUpComponent extends SubscriptionDisposable implements OnInit {
-  isSubmitted: boolean = false;
   signUpForm = new FormGroup({
     name: new FormControl('', Validators.required),
     password: new FormControl('', [Validators.required, Validators.minLength(7)]),
@@ -24,6 +24,7 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
     recaptcha: new FormControl(null, Validators.required)
   });
   signUpDisabled: boolean;
+  isPasswordVisible: boolean = false;
 
   private captchaVerified: boolean;
   private params: Params;
@@ -33,7 +34,8 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
     private readonly identityService: IdentityService,
     private readonly locationService: LocationService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly noticeService: NoticeService
+    private readonly noticeService: NoticeService,
+    public readonly media: ObservableMedia
   ) {
     super();
   }
@@ -71,7 +73,6 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
   }
 
   async submit(): Promise<void> {
-    this.isSubmitted = true;
     if (this.signUpForm.invalid || !this.captchaVerified) {
       return;
     }
