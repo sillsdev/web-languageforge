@@ -135,7 +135,7 @@ namespace SIL.XForge.Identity.Controllers
                 string responseString = await response.Content.ReadAsStringAsync();
 
                 var obj = JObject.Parse(responseString);
-                return (bool) obj["success"];
+                return (bool)obj["success"];
             }
         }
 
@@ -203,6 +203,18 @@ namespace SIL.XForge.Identity.Controllers
             }
 
             return "conflict";
+        }
+
+        public async Task<bool> VerifyInvitedUser(string email)
+        {
+            UserEntity existingUser = await _users.Query()
+                .SingleOrDefaultAsync(u => u.CanonicalEmail == UserEntity.CanonicalizeEmail(email));
+            if (existingUser != null && String.IsNullOrEmpty(existingUser.Name) &&
+                String.IsNullOrEmpty(existingUser.Password) && !existingUser.Active)
+            {
+                return true;
+            }
+            return false;
         }
 
         public async Task<bool> VerifyEmail(string key)

@@ -97,14 +97,15 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
   }
 
   async isInvitatedUserExists(email: string): Promise<void> {
-    const invitedUserMessage =
-      'The invitation email has expired. Please request another invitation.';
-    if (email) {
-      const result = await this.identityService.verifyInvitedUser(email);
-      if (result) {
-        this.signUpDisabled = true;
-        this.noticeService.push(NoticeService.WARN, invitedUserMessage, undefined, -1);
-      }
+    if (email == null) {
+      return;
+    }
+
+    const result = await this.identityService.verifyInvitedUser(email);
+    if (!result) {
+      const invitedUserMessage = 'The invitation email has expired. Please request another invitation.';
+      this.signUpDisabled = true;
+      this.noticeService.push(NoticeService.WARN, invitedUserMessage, undefined, -1);
     }
   }
 }

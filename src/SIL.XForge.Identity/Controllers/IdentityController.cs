@@ -83,21 +83,6 @@ namespace SIL.XForge.Identity.Controllers
         }
 
         /// <summary>
-        [HttpPost("verify-invited-user")]
-        public async Task<ActionResult<IdentityResult>> VerifyInvitedUser(VerifyInviteUserParams parameters)
-        {
-            UserEntity existingUser = await _users.Query()
-                .SingleOrDefaultAsync(u => u.CanonicalEmail == UserEntity.CanonicalizeEmail(parameters.Email));
-            if (existingUser != null)
-            {
-                if (!String.IsNullOrEmpty(existingUser.Name) && !String.IsNullOrEmpty(existingUser.Password) && !existingUser.Active)
-                {
-                    return new IdentityResult(true);
-                }
-            }
-            return new IdentityResult(false);
-        }
-
         /// initiate roundtrip to external authentication provider
         /// </summary>
         [HttpGet("challenge")]
