@@ -52,19 +52,15 @@ class TestEnvironment {
     this.component = this.fixture.componentInstance;
   }
 
-  get nameInput(): DebugElement {
+  get nameTextField(): DebugElement {
     return this.fixture.debugElement.query(By.css('#fullName'));
   }
 
-  get passwordInput(): DebugElement {
+  get passwordTextField(): DebugElement {
     return this.fixture.debugElement.query(By.css('#password'));
   }
 
-  get showPasswordCheckbox(): DebugElement {
-    return this.fixture.debugElement.query(By.css('mat-checkbox[formControlName="showPassword"'));
-  }
-
-  get emailInput(): DebugElement {
+  get emailTextField(): DebugElement {
     return this.fixture.debugElement.query(By.css('#email'));
   }
 
@@ -72,7 +68,8 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('.submit-button'));
   }
 
-  setInputValue(input: DebugElement, value: string): void {
+  setTextFieldValue(textField: DebugElement, value: string): void {
+    const input = textField.query(By.css('input'));
     const inputElem = input.nativeElement as HTMLInputElement;
     inputElem.value = value;
     inputElem.dispatchEvent(new Event('input'));
@@ -87,16 +84,10 @@ class TestEnvironment {
     this.fixture.detectChanges();
   }
 
-  clickCheckbox(checkbox: DebugElement): void {
-    checkbox.nativeElement.querySelector('input').click();
-    this.fixture.detectChanges();
-    flush();
-  }
-
   clickSubmitButton(): void {
     this.submitButton.nativeElement.click();
     this.fixture.detectChanges();
-    tick();
+    flush();
   }
 }
 
@@ -108,9 +99,9 @@ describe('SignUpComponent', () => {
     );
 
     env.fixture.detectChanges();
-    env.setInputValue(env.nameInput, 'testUser1');
-    env.setInputValue(env.passwordInput, 'password');
-    env.setInputValue(env.emailInput, 'test@example.com');
+    env.setTextFieldValue(env.nameTextField, 'testUser1');
+    env.setTextFieldValue(env.passwordTextField, 'password');
+    env.setTextFieldValue(env.emailTextField, 'test@example.com');
     env.setRecaptchaValue();
     env.clickSubmitButton();
 
@@ -122,13 +113,13 @@ describe('SignUpComponent', () => {
 
   it('should display errors on individual input fields', fakeAsync(() => {
     const env = new TestEnvironment();
-    env.setInputValue(env.nameInput, '');
+    env.setTextFieldValue(env.nameTextField, '');
     expect(env.component.name.hasError('required')).toBeTruthy();
-    env.setInputValue(env.nameInput, 'bare');
+    env.setTextFieldValue(env.nameTextField, 'bare');
     expect(env.component.name.hasError('required')).toBeFalsy();
-    env.setInputValue(env.passwordInput, 'bones');
+    env.setTextFieldValue(env.passwordTextField, 'bones');
     expect(env.component.password.hasError('minlength')).toBeTruthy();
-    env.setInputValue(env.emailInput, 'notavalidemail');
+    env.setTextFieldValue(env.emailTextField, 'notavalidemail');
     expect(env.component.email.hasError('email')).toBeTruthy();
   }));
 
@@ -136,7 +127,9 @@ describe('SignUpComponent', () => {
     const email = 'fakeemail@example.com';
     const env = new TestEnvironment(email);
     env.fixture.detectChanges();
-    expect(env.emailInput.nativeElement.value).toBe(email);
+    flush();
+    const inputElem = env.emailTextField.query(By.css('input')).nativeElement as HTMLInputElement;
+    expect(inputElem.value).toBe(email);
   }));
 
   it('should display error if the sign up was unsuccessful', fakeAsync(() => {
@@ -146,26 +139,15 @@ describe('SignUpComponent', () => {
     );
 
     env.fixture.detectChanges();
-    env.setInputValue(env.nameInput, 'testUser1');
-    env.setInputValue(env.passwordInput, 'password');
-    env.setInputValue(env.emailInput, 'test@example.com');
+    env.setTextFieldValue(env.nameTextField, 'testUser1');
+    env.setTextFieldValue(env.passwordTextField, 'password');
+    env.setTextFieldValue(env.emailTextField, 'test@example.com');
     env.setRecaptchaValue();
     env.clickSubmitButton();
 
     verify(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything())).once();
     verify(env.mockedNoticeService.push(deepEqual(NoticeService.WARN), anything())).once();
     expect().nothing();
-  }));
-
-  it('should verify the inputType changes when the checkbox is changed.', fakeAsync(() => {
-    const env = new TestEnvironment();
-    env.fixture.detectChanges();
-    expect(env.passwordInput.nativeElement.attributes.type.value).toBe('password');
-    env.clickCheckbox(env.showPasswordCheckbox);
-    expect(env.passwordInput.nativeElement.attributes.type.value).toBe('text');
-    env.clickCheckbox(env.showPasswordCheckbox);
-    expect(env.passwordInput.nativeElement.attributes.type.value).toBe('password');
-    flush();
   }));
 
   it('should do nothing when the form is invalid', fakeAsync(() => {

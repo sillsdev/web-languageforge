@@ -1,11 +1,12 @@
+import { MdcSnackbar } from '@angular-mdc/web';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 
 import { AuthService } from '@xforge-common/auth.service';
 import { LocationService } from '@xforge-common/location.service';
+import { environment } from '../../environments/environment';
 import { IdentityService } from '../identity.service';
 
 @Component({
@@ -17,20 +18,25 @@ export class LogInComponent {
   logInForm = new FormGroup({
     user: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
-    rememberLogIn: new FormControl(false)
+    rememberLogIn: new FormControl(true)
   });
   logInDisabled: boolean;
 
   constructor(
     private readonly identityService: IdentityService,
-    public readonly snackBar: MatSnackBar,
+    private readonly snackBar: MdcSnackbar,
     private readonly activatedRoute: ActivatedRoute,
     private readonly locationService: LocationService,
     private readonly authService: AuthService
   ) {}
 
-  signInWithParatext(): void {
-    this.authService.externalLogIn();
+  get siteName(): string {
+    return environment.siteName;
+  }
+
+  logInWithParatext(): void {
+    const rememberLogIn: boolean = this.logInForm.get('rememberLogIn').value;
+    this.authService.externalLogIn(rememberLogIn);
   }
 
   async submit(): Promise<void> {
@@ -54,7 +60,7 @@ export class LogInComponent {
       }
     } else {
       this.logInDisabled = false;
-      this.snackBar.open('Invalid email/username or password', undefined, { duration: 5000 });
+      this.snackBar.show('Invalid email/username or password', undefined, { timeout: 5000 });
     }
   }
 

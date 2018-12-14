@@ -102,8 +102,8 @@ export class AuthService {
     this.oauthService.initImplicitFlow();
   }
 
-  externalLogIn(returnUrl?: string): void {
-    let url = '/identity/challenge?provider=Paratext';
+  externalLogIn(rememberLogIn: boolean, returnUrl?: string): void {
+    let url = `/identity/challenge?provider=Paratext&rememberLogIn=${rememberLogIn}`;
     if (returnUrl != null) {
       url += '&returnUrl=' + returnUrl;
     }

@@ -1,4 +1,4 @@
-import { OverlayContainer } from '@angular/cdk/overlay';
+import { OverlayContainer } from '@angular-mdc/web';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -50,45 +50,36 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('.submit-button'));
   }
 
-  get signinParatextButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('.signin-paratext-button'));
+  get logInParatextButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('.log-in-paratext-button'));
   }
 
   get logInForm(): DebugElement {
     return this.fixture.debugElement.query(By.css('form'));
   }
 
-  get userInput(): DebugElement {
-    return this.logInForm.query(By.css('input[formControlName="user"'));
+  get userTextField(): DebugElement {
+    return this.logInForm.query(By.css('mdc-text-field[formControlName="user"]'));
   }
 
-  get passwordInput(): DebugElement {
-    return this.logInForm.query(By.css('input[formControlName="password"'));
-  }
-
-  get rememberMeCheckbox(): DebugElement {
-    return this.logInForm.query(By.css('mat-checkbox[formControlName="rememberLogIn"'));
-  }
-
-  clickRememberMeCheckbox(): void {
-    this.rememberMeCheckbox.nativeElement.querySelector('input').click();
-    this.fixture.detectChanges();
-    tick();
+  get passwordTextField(): DebugElement {
+    return this.logInForm.query(By.css('mdc-text-field[formControlName="password"]'));
   }
 
   clickSubmitButton(): void {
     this.submitButton.nativeElement.click();
     this.fixture.detectChanges();
-    tick();
+    flush();
   }
 
-  clickSingInParatextButton(): void {
-    this.signinParatextButton.nativeElement.click();
+  clickLogInParatextButton(): void {
+    this.logInParatextButton.nativeElement.click();
     this.fixture.detectChanges();
-    tick();
+    flush();
   }
 
-  setInputValue(input: DebugElement, value: string): void {
+  setTextFieldValue(textField: DebugElement, value: string): void {
+    const input = textField.query(By.css('input'));
     const inputElem = input.nativeElement as HTMLInputElement;
     inputElem.value = value;
     inputElem.dispatchEvent(new Event('input'));
@@ -98,7 +89,7 @@ class TestEnvironment {
 
   getSnackBarContent(): string {
     const overlayContainerElement = this.overlayContainer.getContainerElement();
-    const messageElement = overlayContainerElement.querySelector('snack-bar-container');
+    const messageElement = overlayContainerElement.querySelector('mdc-snackbar-container');
     return messageElement.textContent;
   }
 }
@@ -112,9 +103,8 @@ describe('LogInComponent', () => {
     });
     env.fixture.detectChanges();
 
-    env.setInputValue(env.userInput, 'user');
-    env.setInputValue(env.passwordInput, 'password');
-    env.clickRememberMeCheckbox();
+    env.setTextFieldValue(env.userTextField, 'user');
+    env.setTextFieldValue(env.passwordTextField, 'password');
     env.clickSubmitButton();
 
     verify(env.mockedIdentityService.logIn('user', 'password', true, undefined)).once();
@@ -124,19 +114,19 @@ describe('LogInComponent', () => {
 
   it('should display error when username and password are incorrect', fakeAsync(() => {
     const env = new TestEnvironment();
-    when(env.mockedIdentityService.logIn('user', 'password', false, undefined)).thenResolve({
+    when(env.mockedIdentityService.logIn('user', 'password', true, undefined)).thenResolve({
       success: false,
       isReturnUrlTrusted: false
     });
     env.fixture.detectChanges();
 
-    env.setInputValue(env.userInput, 'user');
-    env.setInputValue(env.passwordInput, 'password');
+    env.setTextFieldValue(env.userTextField, 'user');
+    env.setTextFieldValue(env.passwordTextField, 'password');
     env.clickSubmitButton();
 
-    verify(env.mockedIdentityService.logIn('user', 'password', false, undefined)).once();
+    verify(env.mockedIdentityService.logIn('user', 'password', true, undefined)).once();
     verify(env.mockedAuthService.logIn()).never();
-    expect(env.getSnackBarContent()).toBe('Invalid email/username or password');
+    expect(env.getSnackBarContent()).toEqual('Invalid email/username or password');
     flush();
   }));
 
@@ -152,13 +142,12 @@ describe('LogInComponent', () => {
 
   it('should log in when paratext button is clicked', fakeAsync(() => {
     const env = new TestEnvironment();
-    when(env.mockedAuthService.externalLogIn()).thenResolve();
+    when(env.mockedAuthService.externalLogIn(true)).thenResolve();
     env.fixture.detectChanges();
 
-    env.clickSingInParatextButton();
+    env.clickLogInParatextButton();
 
-    verify(env.mockedAuthService.externalLogIn()).once();
+    verify(env.mockedAuthService.externalLogIn(true)).once();
     expect().nothing();
-    flush();
   }));
 });

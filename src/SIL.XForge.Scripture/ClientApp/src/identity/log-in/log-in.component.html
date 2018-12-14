@@ -1,24 +1,29 @@
-<div fxLayout="column">
-  <mat-card class="card">
-    <mat-card-title class="title">Log in</mat-card-title>
-    <mat-card-content fxLayout="column">
-      <button mat-raised-button class="signin-paratext-button" (click)="signInWithParatext()">
+<div class="container">
+  <h2>Log in to {{ siteName }}</h2>
+  <mdc-card outlined class="card">
+    <div class="button-container">
+      <button mdc-button class="log-in-paratext-button" (click)="logInWithParatext()">
         <img src="/assets/paratext_logo.png" alt="Paratext Logo" class="paratext-logo" /> Log in with Paratext
       </button>
-      <p fxFlexAlign="center">or</p>
-      <form [formGroup]="logInForm" (ngSubmit)="submit()" fxLayout="column">
-        <mat-form-field>
-          <input matInput placeholder="Email or Username" formControlName="user" autofocus />
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput type="password" placeholder="Password" formControlName="password" />
-        </mat-form-field>
-        <mat-checkbox formControlName="rememberLogIn">Remember me</mat-checkbox>
-        <button mat-raised-button class="submit-button" color="primary" type="submit" [disabled]="logInDisabled">
-          Go
-        </button>
-        <a routerLink="/identity/forgot-password">Forgot Password</a>
-      </form>
-    </mat-card-content>
-  </mat-card>
+    </div>
+    <div class="mdc-list-divider divider"><span>OR</span></div>
+    <form class="flex-column" [formGroup]="logInForm" (ngSubmit)="submit()">
+      <mdc-form-field>
+        <mdc-text-field outlined label="Email or Username" formControlName="user" autofocus></mdc-text-field>
+      </mdc-form-field>
+      <mdc-form-field>
+        <mdc-text-field outlined type="password" label="Password" formControlName="password"></mdc-text-field>
+      </mdc-form-field>
+      <div class="forgot-password-button-container">
+        <button mdc-button dense routerLink="/identity/forgot-password">Forgot Password?</button>
+      </div>
+      <div class="button-container">
+        <button mdc-button primary class="submit-button" type="submit" [disabled]="logInDisabled">Log in</button>
+      </div>
+      <mdc-form-field *ngIf="false">
+        <mdc-checkbox formControlName="rememberLogIn"></mdc-checkbox>
+        <label>Remember me</label>
+      </mdc-form-field>
+    </form>
+  </mdc-card>
 </div>

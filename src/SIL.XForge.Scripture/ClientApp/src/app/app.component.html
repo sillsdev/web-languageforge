@@ -21,19 +21,19 @@
           <mdc-menu #userMenu [anchorCorner]="'bottomStart'" [anchorElement]="userMenuAnchor">
             <mdc-list>
               <mdc-list-item [routerLink]="['/change-password']">Change Password</mdc-list-item>
-              <mdc-list-item (click)="logOut()">Logout</mdc-list-item>
+              <mdc-list-item (click)="logOut()">Log out</mdc-list-item>
             </mdc-list>
           </mdc-menu>
         </div>
       </mdc-top-app-bar-section>
       <mdc-top-app-bar-section align="end" *ngIf="!(isLoggedIn | async)">
-        <a mdc-list-item href="/identity/sign-up">
+        <a mdc-list-item routerLink="/identity/sign-up">
           <mdc-icon mdcTopAppBarActionItem>person_add</mdc-icon>
-          <span matLine>Sign Up</span>
+          <span matLine>Sign up</span>
         </a>
-        <a mdc-list-item href="/identity/log-in">
+        <a mdc-list-item routerLink="/identity/log-in">
           <mdc-icon mdcTopAppBarActionItem>lock</mdc-icon>
-          <span matLine>Login</span>
+          <span matLine>Log in</span>
         </a>
       </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>

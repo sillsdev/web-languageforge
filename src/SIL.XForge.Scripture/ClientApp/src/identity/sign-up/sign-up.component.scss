@@ -1,29 +1,46 @@
-.card {
-  max-width: 400px;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+mdc-text-field {
   width: 100%;
-  align-self: center;
+}
+
+.component-container {
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  max-width: 380px;
+  width: 100%;
+  padding: 20px;
 }
 
 .title {
   text-align: center;
 }
 
-re-captcha {
-  margin-bottom: 1em;
+.recaptcha-helper-text {
+  min-height: 19px;
+  margin: 3px 16px 11px 16px;
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--mdc-theme-error, #b00020);
+  letter-spacing: 0.03333333em;
 }
 
 .submit-button {
-  width: 120px;
   height: 40px;
-  align-self: center;
 }
 
-@media screen and (max-width: 375px) {
-  re-captcha,
-  #rc-imageselect {
-    transform: scale(0.77) !important;
-    -webkit-transform: scale(0.77) !important;
-    transform-origin: 0 0 !important;
-    -webkit-transform-origin: 0 0 !important;
-  }
+.visible {
+  visibility: visible;
+}
+
+.hidden {
+  visibility: hidden;
 }
