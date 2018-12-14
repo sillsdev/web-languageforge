@@ -2,13 +2,11 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 @Component({
-  selector: 'app-delete-dialog',
-  templateUrl: './delete-dialog.component.html',
-  styleUrls: ['./delete-dialog.component.scss']
+  templateUrl: './sa-delete-dialog.component.html'
 })
-export class DeleteDialogComponent {
+export class SaDeleteDialogComponent {
   constructor(
-    private readonly dialogRef: MatDialogRef<DeleteDialogComponent>,
+    private readonly dialogRef: MatDialogRef<SaDeleteDialogComponent>,
     @Inject(MAT_DIALOG_DATA) private data: any
   ) {}
 

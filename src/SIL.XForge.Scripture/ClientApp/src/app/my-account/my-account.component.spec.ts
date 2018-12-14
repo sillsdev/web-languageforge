@@ -63,7 +63,7 @@ class TestEnvironment {
     this.mockedMatDialog = mock(MatDialog);
     this.mockedMatDialogRefForCUDC = mock(MatDialogRef);
 
-    when(this.mockedSFUserService.getUser()).thenReturn(of(new StubQueryResults(this.userInDatabase)));
+    when(this.mockedSFUserService.getCurrentUser()).thenReturn(of(new StubQueryResults(this.userInDatabase)));
     when(this.mockedSFUserService.currentUserId).thenReturn('user01');
 
     when(this.mockedMatDialogRefForCUDC.afterClosed()).thenReturn(of('update'));

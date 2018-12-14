@@ -28,6 +28,7 @@ mat-form-field {
 }
 
 .task-label {
+  display: table-cell !important; // FIXME: unknown why this is needed when in System Admin - IJH 2018-12
   font-size: small;
   color: darkgray;
 }
