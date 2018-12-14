@@ -184,13 +184,13 @@ namespace SIL.XForge.Identity.Controllers
             var env = new TestEnvironment();
 
             env.Users.Add(new UserEntity
-                {
-                    Id = "uniqueidwithdupemailid",
-                    Password = BCrypt.Net.BCrypt.HashPassword("unimportant1234", 7),
-                    Email = "duplicate@example.com",
-                    CanonicalEmail = "duplicate@example.com",
-                    Active = true
-                });
+            {
+                Id = "uniqueidwithdupemailid",
+                Password = BCrypt.Net.BCrypt.HashPassword("unimportant1234", 7),
+                Email = "duplicate@example.com",
+                CanonicalEmail = "duplicate@example.com",
+                Active = true
+            });
             // Duplicate emailid should result in an error
             string result = await env.Controller.SignUp("Non Duplicated Name", "unimportant1234",
                 "DUPLICATE@example.com", null);
@@ -204,14 +204,56 @@ namespace SIL.XForge.Identity.Controllers
             var env = new TestEnvironment();
 
             env.Users.Add(new UserEntity
-                {
-                    Id = "uniqueidforinviteduser",
-                    Email = "me@example.com",
-                    CanonicalEmail = "me@example.com"
-                });
+            {
+                Id = "uniqueidforinviteduser",
+                Email = "me@example.com",
+                CanonicalEmail = "me@example.com"
+            });
             string result = await env.Controller.SignUp("User Name", "unimportant1234", "me@example.com", null);
 
             Assert.That(result, Is.EqualTo("success"));
+        }
+
+        [Test]
+        public async Task VerifyInvitedUser_NoUser_NotInvited()
+        {
+            var env = new TestEnvironment();
+            bool result = await env.Controller.VerifyInvitedUser("me@example.com");
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public async Task VerifyInvitedUser_UserExists_NotInvited()
+        {
+            var env = new TestEnvironment();
+            env.Users.Add(new UserEntity
+            {
+                Id = "uniqueidforinviteduser",
+                Name = "User Name",
+                Password = "Password",
+                Active = true,
+                Email = "me@example.com",
+                CanonicalEmail = "me@example.com",
+
+            });
+            bool result = await env.Controller.VerifyInvitedUser("me@example.com");
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public async Task VerifyInvitedUser_UserExists_Invited()
+        {
+            var env = new TestEnvironment();
+            env.Users.Add(new UserEntity
+            {
+                Id = "uniqueidforinviteduser",
+                Active = false,
+                Email = "me@example.com",
+                CanonicalEmail = "me@example.com",
+
+            });
+            bool result = await env.Controller.VerifyInvitedUser("me@example.com");
+            Assert.That(result, Is.True);
         }
 
         private class TestEnvironment
@@ -256,10 +298,10 @@ namespace SIL.XForge.Identity.Controllers
                 var serviceProvider = Substitute.For<IServiceProvider>();
                 var siteOptions = Substitute.For<IOptions<SiteOptions>>();
                 siteOptions.Value.Returns(new SiteOptions
-                    {
-                        Name = "xForge",
-                        Origin = new Uri("http://localhost")
-                    });
+                {
+                    Name = "xForge",
+                    Origin = new Uri("http://localhost")
+                });
 
                 EmailService = Substitute.For<IEmailService>();
 
@@ -268,9 +310,9 @@ namespace SIL.XForge.Identity.Controllers
 
                 var httpContextAccessor = Substitute.For<IHttpContextAccessor>();
                 httpContextAccessor.HttpContext.Returns(new DefaultHttpContext
-                    {
-                        RequestServices = serviceProvider
-                    });
+                {
+                    RequestServices = serviceProvider
+                });
 
                 serviceProvider.GetService(typeof(IAuthenticationService)).Returns(AuthService);
                 serviceProvider.GetService(typeof(ISystemClock)).Returns(new SystemClock());
