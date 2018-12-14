@@ -4,8 +4,9 @@
 //    Generated using CodeGenerator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null from SIL.XForge.Scripture.Models.SFProject
 // </auto-generated>
 // ----------------------
+
 import { DomainModelConfig } from '@xforge-common/models/domain-model';
-import { SFProjectDataRef, SFProjectRef, SFProjectUserRef, SFUserRef, SyncJobRef } from './sfproject.generated';
+import { SFProjectRef, SFProjectUserRef, SFUserRef, SyncJobRef } from './sfdomain-model.generated';
 import { SFProject } from './sfproject';
 import { SFProjectUser } from './sfproject-user';
 import { SFUser } from './sfuser';
@@ -15,6 +16,6 @@ import { TextData } from './text-data';
 // All resource, resource ref, and realtime doc types should be added to schema and generated into this config
 export const SFDOMAIN_MODEL_CONFIG: DomainModelConfig = {
   resources: [SFProject, SFProjectUser, SFUser, SyncJob],
-  resourceRefs: [SFProjectDataRef, SFProjectRef, SFProjectUserRef, SFUserRef, SyncJobRef],
+  resourceRefs: [SFProjectRef, SFProjectUserRef, SFUserRef, SyncJobRef],
   realtimeDocs: [TextData]
 };

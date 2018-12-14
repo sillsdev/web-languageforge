@@ -17,9 +17,9 @@ import { defer, of } from 'rxjs';
 import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
 import { ParatextProject } from '../core/models/paratext-project';
+import { SyncJobState } from '../core/models/sfdomain-model.generated';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
-import { SyncJobState } from '../core/models/sfproject.generated';
 import { SyncJob } from '../core/models/sync-job';
 import { ParatextService } from '../core/paratext.service';
 import { SFProjectUserService } from '../core/sfproject-user.service';

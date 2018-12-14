@@ -5,7 +5,7 @@
 {% if Description contains "--- Generated Interface" -%}
 {% else -%}
 /** type identifier string for domain type mapping */
-   static readonly TYPE:string = '{{ ClassName | downcase }}';
+    static readonly TYPE: string = '{{ ClassName | lowercamelcase }}';
 {% endif -%}
 {% for property in Properties -%}
 {%   if property.HasDescription -%}
@@ -44,14 +44,10 @@
 {% else%}
 /** ResourceRef class for {{ ClassName }} **/
 export class {{ ClassName }}Ref{% if HasInheritance %}{{ Inheritance }}Ref {% endif %}{
-{% if HasInheritance -%}
-    // Only the base class needs to define the constructor which takes the type and id
-{% else -%}
     static readonly TYPE: string = {{ ClassName }}.TYPE;
 
     constructor(id: string) {
         super({{ ClassName }}Ref.TYPE, id);
     }
-{% endif -%}
 }
 {% endif -%}

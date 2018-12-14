@@ -9,9 +9,7 @@ export abstract class Project extends Resource {
 }
 
 export abstract class ProjectRef extends ResourceRef {
-  static readonly TYPE = Project.TYPE;
-
-  constructor(id: string) {
-    super(ProjectRef.TYPE, id);
+  constructor(type: string, id: string) {
+    super(type, id);
   }
 }

@@ -1,3 +1,6 @@
-import { SFProjectDataBase } from './sfproject.generated';
+import { ProjectData } from '../../../xforge-common/models/project-data';
+import { ResourceRef } from '../../../xforge-common/models/resource';
 
-export class SFProjectData extends SFProjectDataBase {}
+export abstract class SFProjectData extends ProjectData {}
+
+export class SFProjectDataRef extends ResourceRef {}

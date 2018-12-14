@@ -45,19 +45,23 @@ namespace SIL.XForge.Scripture.CodeGenerator.Tests
                 StringAssert.Contains("export interface TestInterfaceClass", tsFileContents, "The TestInterfaceClass was declared as an interface, and should have generated an interface");
                 StringAssert.Contains("awesomeTestClassString", tsFileContents, "JsonProperty annotation should have generated customized TypeScript property name");
                 StringAssert.Contains("TestClassTwoRef extends ExcludedBaseClassRef", tsFileContents, "Verify that generated Ref classes extend parent Ref classes");
-                StringAssert.DoesNotContain("TestClassThree extends TestInterfaceClass", tsFileContents, "Verify that classes which we want to be typescript interfaces are used as interfaces");
-                StringAssert.Contains("TestClassThreeBase implements TestInterfaceClass", tsFileContents, "Verify that classes which we want to be typescript interfaces are used as interfaces");
+                StringAssert.DoesNotContain("SFTestClassThree extends TestInterfaceClass", tsFileContents, "Verify that classes which we want to be typescript interfaces are used as interfaces");
+                StringAssert.Contains("SFTestClassThreeBase implements TestInterfaceClass", tsFileContents, "Verify that classes which we want to be typescript interfaces are used as interfaces");
                 StringAssert.DoesNotContain("TestInterfaceClassRef", tsFileContents, "No 'Ref' class or interface should be generated for an Interface");
                 StringAssert.DoesNotContain("export class ExcludedBaseClass", tsFileContents, "The classes passed in as 'Hand Generated' should not be generated");
                 StringAssert.DoesNotContain("export class TestInterfaceBaseClass", tsFileContents, "Interfaces that extend other interfaces should still be interfaces");
                 // This regex will prove that classes which implement an interface declare members of the interface
-                var regex = new Regex(".*export abstract class TestClassThreeBase implements TestInterfaceClass \\{(?<contentsBeforeMember>.*)InterfaceClassMember",
+                var regex = new Regex(".*export abstract class SFTestClassThreeBase implements TestInterfaceClass \\{(?<contentsBeforeMember>.*)InterfaceClassMember",
                     RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 var match = regex.Match(tsFileContents);
                 Assert.IsTrue(match.Success, "No implementation of interface member was found");
-                StringAssert.DoesNotContain("TYPE = 'testInterfaceClass'", tsFileContents, "Interfaces should not have a TYPE member generated");
+                StringAssert.DoesNotContain("TYPE: string = 'testInterfaceClass'", tsFileContents, "Interfaces should not have a TYPE member generated");
+                StringAssert.Contains("TYPE: string = 'testClassThree'", tsFileContents, "sf should have been dropped from the front and resource from the back.");
+                StringAssert.Contains("TYPE: string = 'testClassTwo'", tsFileContents, "Resource should have dropped from testClassTwoResource in the TYPE string.");
                 // Test that we don't have any classes between the one which needs the interface member and the place where we found the member
                 StringAssert.DoesNotContain("export class", match.Groups["contentsBeforeMember"].Value, "The interface member should be found before the next class definition starts");
+                // Verify that property references to resource classes are converted to ResourceRef
+                StringAssert.Contains("?: TestClassTwoRef", tsFileContents, "Resource reference properties should be converted to ResourceRef types.");
                 // Validate the generated domain model file
                 StringAssert.Contains("TestClass", domainModelContents, "TestClass should be included in the generated domain model collection");
                 StringAssert.Contains("TestClassRef", domainModelContents, "TestClassRef class should be included in the generated domain model collection");
@@ -74,7 +78,7 @@ namespace SIL.XForge.Scripture.CodeGenerator.Tests
         public string TestClass_String { get; }
         public TestInterfaceClass TestClass_TestInterfaceClass { get; }
         public TestClassTwoResource TestClass_TestClassTwo { get; }
-        public TestClassThreeResource TestClass_TestClassThree { get; }
+        public SFTestClassThreeResource TestClass_TestClassThree { get; }
     }
 
     class TestClassTwoResource : ExcludedBaseClass
@@ -82,7 +86,7 @@ namespace SIL.XForge.Scripture.CodeGenerator.Tests
         public double TestClassTwo_Double { get; }
     }
 
-    class TestClassThreeResource : TestInterfaceClass
+    class SFTestClassThreeResource : TestInterfaceClass
     {
         public int TestClassThree_Int { get; }
     }

@@ -1,4 +1,4 @@
-import { SFProjectBase } from './sfproject.generated';
+import { SFProjectBase } from './sfdomain-model.generated';
 
 export class SFProject extends SFProjectBase {
   constructor(init?: Partial<SFProject>) {

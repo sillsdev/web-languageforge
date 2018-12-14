@@ -1,5 +1,5 @@
 import { ResourceRef } from '@xforge-common/models/resource';
-import { SyncJobBase, SyncJobState } from './sfproject.generated';
+import { SyncJobBase, SyncJobState } from './sfdomain-model.generated';
 
 export class SyncJob extends SyncJobBase {
   static readonly TYPE = 'syncJob';

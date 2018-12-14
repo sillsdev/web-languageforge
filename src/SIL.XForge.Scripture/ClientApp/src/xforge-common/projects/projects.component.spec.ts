@@ -34,8 +34,16 @@ class TestProjectUser extends ProjectUser {
     super(ProjectUser.TYPE, init);
   }
 }
-class TestProjectRef extends ProjectRef {}
-class TestUserRef extends UserRef {}
+class TestProjectRef extends ProjectRef {
+  constructor(id: string) {
+    super('project', id);
+  }
+}
+class TestUserRef extends UserRef {
+  constructor(id: string) {
+    super('user', id);
+  }
+}
 
 class TestQueryResults<T> implements QueryResults<T> {
   constructor(public readonly results: T, public readonly totalPagedCount?: number) {}

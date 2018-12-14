@@ -33,16 +33,18 @@ namespace SIL.XForge.Scripture.CodeGenerator
         {
             HandWrittenBaseClasses["IdentifiableOfString"] = null;
             HandWrittenBaseClasses["Resource"] = null;
+            HandWrittenBaseClasses["ProjectDataResource"] = null;
+            HandWrittenBaseClasses["ProjectDataResourceRef"] = null;
             HandWrittenBaseClasses["UserResource"] = "../../../xforge-common/models/user";
             HandWrittenBaseClasses["UserResourceRef"] = "../../../xforge-common/models/user";
             HandWrittenBaseClasses["TextResource"] = "./text";
             HandWrittenBaseClasses["TextResourceRef"] = "./text";
+            HandWrittenBaseClasses["SFProjectDataResource"] = "./sfproject-data";
+            HandWrittenBaseClasses["SFProjectDataResourceRef"] = "./sfproject-data";
             HandWrittenBaseClasses["ProjectResource"] = "../../../xforge-common/models/project";
             HandWrittenBaseClasses["ProjectResourceRef"] = "../../../xforge-common/models/project";
             HandWrittenBaseClasses["ProjectUserResource"] = "../../../xforge-common/models/project-user";
             HandWrittenBaseClasses["ProjectUserResourceRef"] = "../../../xforge-common/models/project-user";
-            HandWrittenBaseClasses["ProjectDataResource"] = "../../../xforge-common/models/project-data";
-            HandWrittenBaseClasses["ProjectDataResourceRef"] = "../../../xforge-common/models/project-data";
 
             TypeScriptInterfaces = new List<string>
             {
@@ -106,7 +108,7 @@ namespace SIL.XForge.Scripture.CodeGenerator
         {
             if (!Directory.Exists(templateDirectory))
                 throw new ArgumentException($"{Assembly.GetExecutingAssembly().Location} || {templateDirectory}");
-            var sourceSchema = JsonSchema4.FromTypeAsync(csharpType).Result;
+            var sourceSchema = JsonSchema4.FromTypeAsync(csharpType).GetAwaiter().GetResult();
             #region Generate Typescript model objects
 
             var typescriptSettings = new TypeScriptGeneratorSettings
@@ -151,7 +153,7 @@ namespace SIL.XForge.Scripture.CodeGenerator
             // Drop Resource out of all base class names
             var allClasses = new List<string>(HandWrittenBaseClasses.Keys);
             allClasses.AddRange(definedTypes);
-            tsContents = RenameAbstractClasses(tsContents, (from s in allClasses orderby s.Length descending select s).ToList());
+            tsContents = RenameAbstractClasses(RenameTypePropValues(tsContents), (from s in allClasses orderby s.Length descending select s).ToList());
             var streamWriter = new StreamWriter(typeScriptFile);
             streamWriter.Write(tsContents);
             streamWriter.Flush();
@@ -173,11 +175,27 @@ namespace SIL.XForge.Scripture.CodeGenerator
                     // Rename [typeName]Ref type names to drop the "Resource" out
                     tsContents = Regex.Replace(tsContents, $"({typeName})Ref",
                         adjustedTypeName + "Ref");
+                    // Make all properties that reference a generated type reference the 'Ref' type instead
+                    tsContents = Regex.Replace(tsContents, $"(\\?:\\W+){typeName}(.*)",
+                        $"$1{adjustedTypeName}Ref$2");
                     // Rename non-ref type names to include "Base"
-                    tsContents = Regex.Replace(tsContents, $"{typeName}",
+                    tsContents = Regex.Replace(tsContents, $"{typeName}\\b",
                         $"{adjustedTypeName}{(HandWrittenBaseClasses.Keys.Contains(typeName) ? string.Empty : "Base")}");
                 }
             }
+
+            return tsContents;
+        }
+
+        private static string RenameTypePropValues(string tsContents)
+        {
+            // Match a TYPE property that may start with sF and end with Resource. drop any 'sF' and 'Resource' and
+            // change the first character of the converted type name to lower case.
+            // The liquid class template (Class.liquid) changes values to camel case but has an issue with the initial cap SF in the type names.
+            // This corrects that and drops the resource as well
+            tsContents = Regex.Replace(tsContents, $"(?<definition>TYPE: string = ')(?:sF|)(?<contents>.+)(?:Resource|$)(?<end>';)",
+                m => $"{m.Groups["definition"].Value}{m.Groups["contents"].Value[0].ToString().ToLowerInvariant()}" +
+                $"{m.Groups["contents"].Value.Substring(1)}{m.Groups["end"].Value}");
 
             return tsContents;
         }
@@ -243,7 +261,7 @@ namespace SIL.XForge.Scripture.CodeGenerator
             originalImportTypes.Sort();
             var importTypes = from type in originalImportTypes select type.Replace("Resource", string.Empty);
             #region Generate domain model typescript file
-            var classComment = $"/* tslint:disable:ordered-imports line-length */{Environment.NewLine}" +
+            var classComment = $"/* tslint:disable:ordered-imports max-line-length */{Environment.NewLine}" +
                                $"// ----------------------{Environment.NewLine}" +
                                $"// <auto-generated>{Environment.NewLine}" +
                                $"//    Generated using {Assembly.GetExecutingAssembly().FullName} from {schema}{Environment.NewLine}" +
@@ -261,8 +279,8 @@ namespace SIL.XForge.Scripture.CodeGenerator
             imports += $"import {{ TextData }} from './text-data';{Environment.NewLine}";
 
             var config = $"export const SFDOMAIN_MODEL_CONFIG: DomainModelConfig = {{{Environment.NewLine}"
-                       + $" resources: [ {string.Join($",{Environment.NewLine}\t\t", importTypes.ToArray())} ],{Environment.NewLine}"
-                       + $" resourceRefs: [ {string.Join($",{Environment.NewLine}\t\t", (from t in importTypes select t + "Ref").ToArray())} ],{Environment.NewLine}"
+                       + $" resources: [ {string.Join($",{Environment.NewLine}    ", importTypes.ToArray())} ],{Environment.NewLine}"
+                       + $" resourceRefs: [ {string.Join($",{Environment.NewLine}    ", (from t in importTypes select t + "Ref").ToArray())} ],{Environment.NewLine}"
                        + " realtimeDocs: [ TextData ]" // TODO: Generate?
                        + "};";
             var fileContents = $"{classComment}{Environment.NewLine}" +
@@ -282,7 +300,7 @@ namespace SIL.XForge.Scripture.CodeGenerator
             // Lower the case of anything that starts with SF? and then insert a - before each other capital letter
             if (typeName.StartsWith("SF"))
             {
-                typeName = $"sf{typeName[2].ToString().ToLower()}{typeName.Substring(3)}";
+                typeName = $"sf{typeName[2].ToString().ToLowerInvariant()}{typeName.Substring(3)}";
             }
             typeName = typeName.Replace("SFProject", "sfproject");
             var parts = Regex.Split(typeName, @"(?<!^)(?=[A-Z])");
