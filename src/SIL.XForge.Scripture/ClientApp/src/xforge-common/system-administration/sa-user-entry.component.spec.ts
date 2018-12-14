@@ -1,66 +1,41 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, flush, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  MatCardModule,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule,
-  MatOptionModule,
-  MatSelectModule,
-  MatSlideToggleModule,
-  MatToolbarModule
-} from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
 import { instance, mock } from 'ts-mockito/lib/ts-mockito';
 
-import { UserService } from '@xforge-common/user.service';
-import { UserEntryComponent } from './user-entry.component';
+import { UICommonModule } from '../ui-common.module';
+import { UserService } from '../user.service';
+import { SaUserEntryComponent } from './sa-user-entry.component';
 
 class TestUserEntryComponent {
-  component: UserEntryComponent;
-  fixture: ComponentFixture<UserEntryComponent>;
+  component: SaUserEntryComponent;
+  fixture: ComponentFixture<SaUserEntryComponent>;
   mockedUserService: UserService;
 
   constructor() {
     this.mockedUserService = mock(UserService);
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        MatCardModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatOptionModule,
-        MatToolbarModule,
-        MatSelectModule,
-        MatSlideToggleModule,
-        NoopAnimationsModule,
-        PasswordStrengthMeterModule
-      ],
-      declarations: [UserEntryComponent],
+      imports: [HttpClientTestingModule, NoopAnimationsModule, UICommonModule],
+      declarations: [SaUserEntryComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
       providers: [{ provide: UserService, useFactory: () => instance(this.mockedUserService) }]
     });
 
-    this.fixture = TestBed.createComponent(UserEntryComponent);
+    this.fixture = TestBed.createComponent(SaUserEntryComponent);
     this.component = this.fixture.componentInstance;
   }
 
-  get addButtonStyle(): DebugElement {
+  get addButton(): DebugElement {
     return this.fixture.debugElement.query(By.css('.add-button'));
   }
 
-  get updateButtonStyle(): DebugElement {
+  get updateButton(): DebugElement {
     return this.fixture.debugElement.query(By.css('.update-button'));
   }
 
-  get changepasswordButtonStyle(): DebugElement {
+  get changePasswordButton(): DebugElement {
     return this.fixture.debugElement.query(By.css('.changepassword-button'));
   }
 
@@ -82,12 +57,12 @@ class TestUserEntryComponent {
     flush();
   }
 
-  clickUserAddButton(): void {
-    this.clickButton(this.addButtonStyle);
-  }
+  clickElement(element: HTMLElement | DebugElement): void {
+    if (element instanceof DebugElement) {
+      element = (element as DebugElement).nativeElement as HTMLElement;
+    }
 
-  private clickButton(button: DebugElement): void {
-    button.nativeElement.click();
+    element.click();
     this.fixture.detectChanges();
     flush();
   }

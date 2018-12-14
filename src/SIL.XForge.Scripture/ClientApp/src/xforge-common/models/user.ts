@@ -8,9 +8,11 @@ export abstract class User extends Resource {
   name?: string;
   email?: string;
   canonicalEmail?: string;
+  googleId?: string;
   password?: string;
   paratextId?: string;
   active?: boolean;
+  avatarUrl?: string;
   role?: string;
   mobilePhone?: string;
   contactMethod?: 'email' | 'sms' | 'emailsms';

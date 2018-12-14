@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
+import { from, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 import { AuthService } from './auth.service';
 
@@ -9,12 +11,17 @@ import { AuthService } from './auth.service';
 export class AuthGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
 
-  async canActivate(_next: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Promise<boolean> {
-    if (await this.authService.isLoggedIn) {
-      return true;
-    }
+  canActivate(_next: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Observable<boolean> {
+    return this.allowTransition().pipe(
+      tap(isLoggedIn => {
+        if (!isLoggedIn) {
+          this.authService.logIn();
+        }
+      })
+    );
+  }
 
-    this.authService.logIn();
-    return false;
+  allowTransition(): Observable<boolean> {
+    return from(this.authService.isLoggedIn);
   }
 }

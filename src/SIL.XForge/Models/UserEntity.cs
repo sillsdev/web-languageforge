@@ -18,6 +18,8 @@ namespace SIL.XForge.Models
         public DateTime ResetPasswordExpirationDate { get; set; }
         public string Role { get; set; }
         public bool Active { get; set; }
+        public string AvatarUrl { get; set; }
+        public string GoogleId { get; set; }
         public string Password { get; set; }
         public string ParatextId { get; set; }
         public Tokens ParatextTokens { get; set; }

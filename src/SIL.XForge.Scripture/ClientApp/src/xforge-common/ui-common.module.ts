@@ -34,7 +34,8 @@ import {
   MatSelectModule,
   MatSlideToggleModule,
   MatSnackBarModule,
-  MatTableModule
+  MatTableModule,
+  MatTabsModule
 } from '@angular/material';
 import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
 import { RecaptchaModule } from 'ng-recaptcha';
@@ -62,6 +63,7 @@ const modules = [
   MatSlideToggleModule,
   MatSnackBarModule,
   MatTableModule,
+  MatTabsModule,
   MdcButtonModule,
   MdcCardModule,
   MdcCheckboxModule,

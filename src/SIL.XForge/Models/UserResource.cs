@@ -14,12 +14,16 @@ namespace SIL.XForge.Models
         [Attr(isImmutable: true)]
         public string CanonicalEmail { get; set; }
         [Attr]
+        public string GoogleId { get; set; }
+        [Attr]
         public string Password { get; set; }
         [Attr]
         public string ParatextId { get; set; }
-        [Attr("role")]
+        [Attr]
         public string Role { get; set; }
-        [Attr("active")]
-        public string Active { get; set; }
+        [Attr]
+        public bool Active { get; set; }
+        [Attr]
+        public string AvatarUrl { get; set; }
     }
 }

@@ -95,7 +95,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
 
   ngOnInit() {
     this.titleService.setTitle(this.title);
-    this.subscribe(this.userService.getUser(), user => {
+    this.subscribe(this.userService.getCurrentUser(), user => {
       this.userFromDatabase = user.results;
       if (user.results == null) {
         // The first time a user uses this page, the first subscribe
