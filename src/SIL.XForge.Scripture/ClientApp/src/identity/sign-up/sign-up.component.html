@@ -22,7 +22,7 @@
           label="Email Address*"
           type="email"
           formControlName="email"
-          [readonly]="emailEntry != null"
+          [readonly]="isEmailReadonly"
           [helperText]="emailHelperText"
         ></mdc-text-field>
         <mdc-text-field-helper-text #emailHelperText="mdcHelperText" validation>

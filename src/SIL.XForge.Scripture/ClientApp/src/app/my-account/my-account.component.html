@@ -285,12 +285,7 @@
       <div fxLayout="row" fwLayoutAlign="space-between stretch">
         <div fxFlex>
           <mat-form-field fxFlex>
-            <mat-select
-              formControlName="gender"
-              [(value)]="selected"
-              placeholder="Gender"
-              (selectionChange)="update('gender')"
-            >
+            <mat-select formControlName="gender" placeholder="Gender" (selectionChange)="update('gender')">
               <mat-option value="female">Female</mat-option>
               <mat-option value="male">Male</mat-option>
               <mat-option value="empty"></mat-option>

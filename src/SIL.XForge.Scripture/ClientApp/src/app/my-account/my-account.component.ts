@@ -11,7 +11,7 @@ import { SFUser } from '../core/models/sfuser';
 import { ChangingUsernameDialogComponent } from './changing-username-dialog/changing-username-dialog.component';
 
 /** Support ISO8601 formatted dates for datepicker, and handle timezone issues. */
-class ISO8601DateAdapter extends NativeDateAdapter {
+export class ISO8601DateAdapter extends NativeDateAdapter {
   /** Return date in ISO 8601 YYYY-mm-DD format. */
   format(date: Date, displayFormat: Object): string {
     // Cut off 'T00:00:00.000Z' from the end of the string.
