@@ -60,6 +60,15 @@ export abstract class UserService<T extends User = User> extends ResourceService
     return this.jsonApiService.onlineGetAllRelated(this.identity(id), nameof<User>('projects'));
   }
 
+  async onlineUnlinkParatextAccount(): Promise<void> {
+    const attrs: Partial<User> = { paratextId: null };
+    await this.jsonApiService.onlineUpdateAttributes(this.identity(this.currentUserId), attrs);
+  }
+
+  async onlineDelete(id: string): Promise<void> {
+    await this.jsonApiService.onlineDelete(this.identity(id));
+  }
+
   async onlineCreate(newUser: Partial<T>): Promise<T> {
     return await this.jsonApiService.onlineCreate<T>(this.newUser(newUser));
   }
@@ -74,10 +83,6 @@ export abstract class UserService<T extends User = User> extends ResourceService
 
   onlineGet(userId: string): QueryObservable<T> {
     return this.jsonApiService.onlineGet(this.identity(userId));
-  }
-
-  onlineDelete(userId: string): Promise<void> {
-    return this.jsonApiService.onlineDelete(this.identity(userId));
   }
 
   onlineSearch(

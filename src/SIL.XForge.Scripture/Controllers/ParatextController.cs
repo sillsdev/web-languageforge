@@ -13,16 +13,16 @@ using SIL.XForge.Services;
 
 namespace SIL.XForge.Scripture.Controllers
 {
-    [Route("paratext-api/projects")]
+    [Route("paratext-api")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class ParatextProjectsController : ControllerBase
+    public class ParatextController : ControllerBase
     {
         private readonly IRepository<UserEntity> _users;
         private readonly IParatextService _paratextService;
         private readonly IUserAccessor _userAccessor;
 
-        public ParatextProjectsController(IRepository<UserEntity> users, IParatextService paratextService,
+        public ParatextController(IRepository<UserEntity> users, IParatextService paratextService,
             IUserAccessor userAccessor)
         {
             _users = users;
@@ -30,7 +30,7 @@ namespace SIL.XForge.Scripture.Controllers
             _userAccessor = userAccessor;
         }
 
-        [HttpGet]
+        [HttpGet("projects")]
         public async Task<ActionResult<IEnumerable<ParatextProject>>> GetAsync()
         {
             UserEntity user = await _users.GetAsync(_userAccessor.UserId);
@@ -46,6 +46,16 @@ namespace SIL.XForge.Scripture.Controllers
             {
                 return NoContent();
             }
+        }
+
+        [HttpGet("username")]
+        public async Task<ActionResult<string>> UsernameAsync()
+        {
+            UserEntity user = await _users.GetAsync(_userAccessor.UserId);
+            if (user.ParatextTokens == null)
+                return NoContent();
+            string username = _paratextService.GetParatextUsername(user);
+            return Ok(username);
         }
     }
 }

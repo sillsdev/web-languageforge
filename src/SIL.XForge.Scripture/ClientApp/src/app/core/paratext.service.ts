@@ -19,8 +19,13 @@ export class ParatextService {
     return this.http.get<ParatextProject[]>('paratext-api/projects', { headers: this.getHeaders() });
   }
 
+  getParatextUsername(): Observable<string> {
+    return this.http.get<string>('paratext-api/username', { headers: this.getHeaders() });
+  }
+
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
+      Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + this.authService.accessToken
     });

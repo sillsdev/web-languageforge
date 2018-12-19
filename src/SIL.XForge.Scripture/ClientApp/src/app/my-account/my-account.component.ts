@@ -1,14 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormGroupDirective, NgForm, ValidationErrors } from '@angular/forms';
-import { DateAdapter, MatDialog, NativeDateAdapter } from '@angular/material';
+import { DateAdapter, MatDialog, MatDialogRef, NativeDateAdapter } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
-import { NoticeService } from '@xforge-common/notice.service';
+import { AuthService } from '@xforge-common/auth.service';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { UserService } from '@xforge-common/user.service';
 import { environment } from '../../environments/environment';
+import { NoticeService } from '../../xforge-common/notice.service';
 import { SFUser } from '../core/models/sfuser';
+import { ParatextService } from '../core/paratext.service';
 import { ChangingUsernameDialogComponent } from './changing-username-dialog/changing-username-dialog.component';
+import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 
 /** Support ISO8601 formatted dates for datepicker, and handle timezone issues. */
 export class ISO8601DateAdapter extends NativeDateAdapter {
@@ -66,7 +69,6 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
 
   /** Elements in this component and their states. */
   controlStates = new Map<string, ElementState>();
-
   formGroup = new FormGroup({
     name: new FormControl(),
     username: new FormControl('', [(inputControl: FormControl) => this.emailAndUsernameValidator(this, inputControl)]),
@@ -79,16 +81,33 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
 
   /** User data as received from the database. */
   userFromDatabase: SFUser;
+  paratextUsername: string;
+  googleUsername: string;
 
+  private activeDialogRef: MatDialogRef<DeleteAccountDialogComponent>;
   private title = `Account details - ${environment.siteName}`;
   private doneInitialDatabaseImport: boolean = false;
   private controlsWithUpdateButton: string[] = ['name', 'username', 'email', 'mobilePhone'];
 
+  get username() {
+    return this.userFromDatabase.username ? this.userFromDatabase.username : 'username unavailable';
+  }
+
+  get isLinkedToParatext() {
+    return this.paratextUsername && this.paratextUsername.length > 0;
+  }
+
+  get isLinkedToGoogle() {
+    return this.googleUsername && this.googleUsername.length > 0;
+  }
+
   constructor(
-    private readonly dialog: MatDialog,
     private readonly userService: UserService,
+    private readonly dialog: MatDialog,
+    private readonly authService: AuthService,
+    private readonly noticeService: NoticeService,
     private readonly titleService: Title,
-    private readonly noticeService: NoticeService
+    private readonly paratextService: ParatextService
   ) {
     super();
   }
@@ -103,6 +122,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
         return;
       }
 
+      this.loadLinkedAccounts();
       if (this.doneInitialDatabaseImport) {
         return;
       }
@@ -145,6 +165,19 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     // Set title back, until titling is done more elegantly,
     // like https://toddmotto.com/dynamic-page-titles-angular-2-router-events
     this.titleService.setTitle(environment.siteName);
+  }
+
+  loadLinkedAccounts(): void {
+    this.subscribe(
+      this.paratextService.getParatextUsername(),
+      ptUsername => {
+        this.paratextUsername = ptUsername;
+      },
+      () => {
+        this.noticeService.push(NoticeService.WARN, 'Got an error while loading linked accounts');
+      }
+    );
+    // TODO: get the username of the linked google account
   }
 
   updateClicked(element: string): void {
@@ -231,5 +264,43 @@ ${exception.stack}`
     }
 
     return null;
+  }
+
+  logInWithParatext(): void {
+    this.paratextService.logIn('/my-account');
+  }
+
+  openDeleteAccountDialog(): void {
+    const config = { data: { username: this.username } };
+    this.activeDialogRef = this.dialog.open(DeleteAccountDialogComponent, config);
+    this.activeDialogRef.afterClosed().subscribe(result => {
+      if (result === 'confirmed') {
+        this.onAccountDelete(this.userService.currentUserId);
+      }
+    });
+  }
+
+  async deleteParatextLink(): Promise<void> {
+    await this.userService.onlineUnlinkParatextAccount();
+    const message = 'Successfully removed the linked Paratext account';
+    this.noticeService.push(NoticeService.SUCCESS, message);
+    this.loadLinkedAccounts();
+  }
+
+  async deleteGoogleLink(): Promise<void> {
+    /* Not Implemented */
+  }
+
+  async onAccountDelete(userId: string): Promise<void> {
+    try {
+      await this.userService.onlineDelete(userId);
+      this.authService.logOut();
+    } catch (exception) {
+      this.noticeService.push(
+        NoticeService.ERROR,
+        'An error has occured, your account cannot be deleted at this time.',
+        `Specific details: ${exception.stack}`
+      );
+    }
   }
 }

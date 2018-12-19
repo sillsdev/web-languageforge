@@ -1,0 +1,17 @@
+<h2 mat-dialog-title><i class="material-icons">warning</i> Are you sure you want to delete your account?</h2>
+<div mat-dialog-content>
+  <p>
+    This action <strong>cannot</strong> be undone. This will permanently delete the
+    <strong>{{ data.username }}</strong> user and remove you from all your projects.
+  </p>
+  <br />
+  <p>Please type in your username to confirm.</p>
+</div>
+<div mat-dialog-actions>
+  <mat-form-field> <input matInput placeholder="Enter your username" [formControl]="usernameEntry" /> </mat-form-field>
+  <div>
+    <button mat-stroked-button id="confirm-delete-button" [mat-dialog-close]="'confirmed'" [disabled]="deleteDisabled">
+      I understand the consequences, delete my account
+    </button>
+  </div>
+</div>

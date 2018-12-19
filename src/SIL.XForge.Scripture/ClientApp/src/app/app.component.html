@@ -23,7 +23,7 @@
               <mdc-list-item *ngIf="(isSystemAdmin$ | async)" [routerLink]="['/system-administration']">
                 System Administration
               </mdc-list-item>
-              <mdc-list-item [routerLink]="['/change-password']">Change Password</mdc-list-item>
+              <mdc-list-item [routerLink]="['/my-account']">My Account</mdc-list-item>
               <mdc-list-item (click)="logOut()">Log out</mdc-list-item>
             </mdc-list>
           </mdc-menu>

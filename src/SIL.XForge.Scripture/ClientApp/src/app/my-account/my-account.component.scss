@@ -16,10 +16,23 @@
   color: green;
 }
 
+mat-card button {
+  left: 1em;
+}
+
 .error-icon {
   color: red;
 }
 
+.delete-account mat-card {
+  border: 2px solid red;
+}
+
 .nowrap {
   white-space: nowrap;
+}
+
+.linked-paratext,
+.linked-google {
+  margin-bottom: 1em;
 }
