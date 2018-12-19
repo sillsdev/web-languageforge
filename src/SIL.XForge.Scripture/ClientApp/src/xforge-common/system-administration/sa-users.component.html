@@ -39,7 +39,7 @@
             </td>
           </ng-container>
           <ng-container matColumnDef="projects">
-            <td fxHide.xs="true" mat-cell *matCellDef="let userRow">
+            <td fxHide.xs fxShow.sm fxHide.md fxShow.gt-md mat-cell *matCellDef="let userRow">
               <span *ngIf="userRow.projects?.length > 0">
                 {{ userRow.projects?.length }} Projects -
                 <span class="projectsNames" *ngFor="let project of userRow.projects; last as isLast">

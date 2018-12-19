@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { AuthGuard } from './auth.guard';
+import { SystemRole } from './models/system-role';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -20,7 +21,7 @@ export class SystemAdminAuthGuard implements CanActivate {
     return this.authGuard.allowTransition().pipe(
       switchMap(isLoggedIn => {
         if (isLoggedIn) {
-          return this.userService.hasCurrentUserRole('system_admin');
+          return this.userService.hasCurrentUserRole(SystemRole.SystemAdmin);
         }
         return of(false);
       })

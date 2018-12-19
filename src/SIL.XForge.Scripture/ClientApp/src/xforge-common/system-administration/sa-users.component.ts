@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 import { GetAllParameters } from '../json-api.service';
 import { Project } from '../models/project';

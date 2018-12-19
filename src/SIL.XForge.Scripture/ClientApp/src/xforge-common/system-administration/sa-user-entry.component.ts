@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { SystemRole } from '../models/system-role';
 import { User } from '../models/user';
 import { NoticeService } from '../notice.service';
 import { UserService } from '../user.service';
@@ -29,7 +30,7 @@ export class SaUserEntryComponent implements OnInit {
   userCreatedDate: string = '';
   headerTitle: string;
 
-  roleList = [{ id: 'system_admin', value: 'Administrator' }, { id: 'user', value: 'User' }];
+  roleList = [{ id: SystemRole.SystemAdmin, value: 'Administrator' }, { id: SystemRole.User, value: 'User' }];
   private readonly userRoleListIndex = 1;
 
   private _editUserId: string = '';
