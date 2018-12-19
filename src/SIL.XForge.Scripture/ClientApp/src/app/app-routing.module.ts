@@ -7,7 +7,6 @@ import { ProjectsComponent } from '@xforge-common/projects/projects.component';
 import { SystemAdminAuthGuard } from '@xforge-common/system-admin-auth.guard';
 import { SystemAdministrationComponent } from '@xforge-common/system-administration/system-administration.component';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
-import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { HomeComponent } from './home/home.component';
 import { MyAccountComponent } from './my-account/my-account.component';
@@ -15,7 +14,6 @@ import { RealtimeComponent } from './realtime/realtime.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'counter', component: CounterComponent, canActivate: [AuthGuard] },
   { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] },
   { path: 'connect-project', component: ConnectProjectComponent, canActivate: [AuthGuard] },

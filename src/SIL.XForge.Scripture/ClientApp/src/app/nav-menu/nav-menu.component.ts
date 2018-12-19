@@ -15,18 +15,21 @@ export class NavMenuComponent extends SubscriptionDisposable {
   constructor(private readonly authService: AuthService, private readonly media: ObservableMedia) {
     super();
     this.subscribe(media.asObservable(), (change: MediaChange) => {
-      if (['xs', 'sm'].indexOf(change.mqAlias) > -1) {
+      if (['xs', 'sm'].includes(change.mqAlias)) {
         this.collapseDrawer();
-        this.drawerType = 'modal';
+        this.drawerType = 'dismissible';
       } else {
         this.drawerType = 'permanent';
-        this.openDrawer();
       }
     });
   }
 
   get isLoggedIn(): Promise<boolean> {
     return this.authService.isLoggedIn;
+  }
+
+  get isDrawerPermanent() {
+    return this.drawerType === 'permanent';
   }
 
   collapseDrawer() {

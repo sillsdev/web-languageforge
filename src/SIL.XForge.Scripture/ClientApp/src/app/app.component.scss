@@ -6,6 +6,10 @@
   flex: 1;
 
   > header {
+    mdc-top-app-bar-title {
+      cursor: pointer;
+    }
+
     mdc-top-app-bar-section {
       .mdc-list-item {
         cursor: pointer;
@@ -58,10 +62,6 @@
 
     .app-details {
       display: flex;
-      @include media-breakpoint-only(xs) {
-        flex-direction: column;
-        align-items: center;
-      }
       ul {
         margin: 0;
         padding: 0;
@@ -70,11 +70,6 @@
 
         li {
           margin-left: 15px;
-          @include media-breakpoint-only(xs) {
-            &:first-child {
-              margin-left: 0;
-            }
-          }
 
           a {
             color: #fff;

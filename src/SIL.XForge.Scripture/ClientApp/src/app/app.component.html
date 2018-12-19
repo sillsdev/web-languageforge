@@ -1,8 +1,14 @@
 <header>
   <mdc-top-app-bar [fixedAdjustElement]="appContainer">
     <mdc-top-app-bar-row>
-      <mdc-top-app-bar-section align="start" title="Scripture Forge">
-        <img id="nav-logo" src="/assets/images/logo-sf.svg" height="30" />
+      <mdc-top-app-bar-section align="start">
+        <a (click)="navMenu.toggleDrawer()" *ngIf="(isLoggedIn | async) && !navMenu.isDrawerPermanent">
+          <mdc-icon mdcTopAppBarNavIcon>menu</mdc-icon>
+        </a>
+        <a (click)="goHome()">
+          <mdc-icon mdcTopAppBarNavIcon><img id="nav-logo" src="/assets/images/logo-sf.svg" height="30"/></mdc-icon>
+        </a>
+        <mdc-top-app-bar-title (click)="goHome()" fxHide.xs>Scripture Forge</mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
       <mdc-top-app-bar-section align="end" *ngIf="(isLoggedIn | async)">
         <a mdc-list-item>
@@ -15,21 +21,39 @@
         </a>
         <div mdcMenuSurfaceAnchor #userMenuAnchor>
           <a mdc-list-item (click)="userMenu.open = !userMenu.open">
-            <mdc-icon mdcTopAppBarActionItem>person</mdc-icon>
-            <span matLine>User</span>
+            <mdc-icon mdcTopAppBarActionItem>
+              <ngx-avatar
+                [googleId]="currentUser?.googleId"
+                [gravatarId]="currentUser?.email"
+                [src]="currentUser?.avatarUrl"
+                [name]="currentUser?.name"
+                size="32"
+                [round]="true"
+              ></ngx-avatar>
+            </mdc-icon>
           </a>
           <mdc-menu #userMenu [anchorCorner]="'bottomStart'" [anchorElement]="userMenuAnchor">
-            <mdc-list>
-              <mdc-list-item *ngIf="(isSystemAdmin$ | async)" [routerLink]="['/system-administration']">
-                System Administration
-              </mdc-list-item>
-              <mdc-list-item [routerLink]="['/my-account']">My Account</mdc-list-item>
-              <mdc-list-item (click)="logOut()">Log out</mdc-list-item>
-            </mdc-list>
+            <mdc-list-group>
+              <div class="mdc-list-group__subheader">
+                Logged in as
+                <div>
+                  <strong>{{ currentUser?.name }}</strong>
+                </div>
+              </div>
+              <mdc-list-divider></mdc-list-divider>
+              <mdc-list>
+                <mdc-list-item *ngIf="(isSystemAdmin$ | async)" routerLink="/system-administration">
+                  System Administration
+                </mdc-list-item>
+                <mdc-list-item routerLink="/my-account">My Account</mdc-list-item>
+                <mdc-list-item (click)="logOut()">Log out</mdc-list-item>
+              </mdc-list>
+            </mdc-list-group>
           </mdc-menu>
         </div>
       </mdc-top-app-bar-section>
-      <mdc-top-app-bar-section align="end" *ngIf="!(isLoggedIn | async)">
+      <!-- isLoggedIn is intentionally strict equality with false so in its unresolved state this is not rendered -->
+      <mdc-top-app-bar-section align="end" *ngIf="(isLoggedIn | async) === false">
         <a mdc-list-item routerLink="/identity/sign-up">
           <mdc-icon mdcTopAppBarActionItem>person_add</mdc-icon>
           <span matLine>Sign up</span>
@@ -44,13 +68,13 @@
   <app-notice></app-notice>
 </header>
 <div class="app-container" fxLayout="row" #appContainer>
-  <app-nav-menu></app-nav-menu>
+  <app-nav-menu #navMenu></app-nav-menu>
   <div class="app-content"><router-outlet></router-outlet></div>
 </div>
-<footer class="container-fluid">
+<footer class="container-fluid" *ngIf="!(isLoggedIn | async)">
   <div class="row">
     <div class="col d-flex justify-content-between align-items-center">
-      <div class="partner-logos">
+      <div class="partner-logos" fxHide.xs>
         <a href="https://inter.payap.ac.th/">
           <img src="/assets/images/logo-payap.svg" alt="Payap University Logo" height="30" />
         </a>
@@ -59,10 +83,10 @@
         </a>
       </div>
       <div class="app-details">
-        <span class="app-version">v {{ version }} Copyright {{ today | date: "yyyy" }}</span>
+        <span class="app-version">v {{ version }} © {{ today | date: "yyyy" }}</span>
         <ul>
           <li><a href="http://www.sil.org">SIL International</a></li>
-          <li><a href="/terms_and_conditions">Terms and conditions</a></li>
+          <li><a href="/terms_and_conditions">Terms</a></li>
         </ul>
       </div>
     </div>
