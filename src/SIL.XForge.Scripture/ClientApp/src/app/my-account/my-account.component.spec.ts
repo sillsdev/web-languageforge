@@ -780,7 +780,7 @@ describe('MyAccountComponent', () => {
         'Delete account'
       );
       expect(env.deleteAccountElement.nativeElement.querySelector('mat-card mat-card-subtitle').textContent).toContain(
-        env.userInDatabase.username
+        env.userInDatabase.name
       );
     }));
 

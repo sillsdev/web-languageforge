@@ -89,8 +89,8 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   private doneInitialDatabaseImport: boolean = false;
   private controlsWithUpdateButton: string[] = ['name', 'username', 'email', 'mobilePhone'];
 
-  get username() {
-    return this.userFromDatabase.username ? this.userFromDatabase.username : 'username unavailable';
+  get userName() {
+    return this.userFromDatabase.name ? this.userFromDatabase.name : 'unknown';
   }
 
   get isLinkedToParatext() {
@@ -271,9 +271,9 @@ ${exception.stack}`
   }
 
   openDeleteAccountDialog(): void {
-    const config = { data: { username: this.username } };
+    const config = { data: { name: this.userName } };
     this.activeDialogRef = this.dialog.open(DeleteAccountDialogComponent, config);
-    this.activeDialogRef.afterClosed().subscribe(result => {
+    this.subscribe(this.activeDialogRef.afterClosed(), result => {
       if (result === 'confirmed') {
         this.onAccountDelete(this.userService.currentUserId);
       }

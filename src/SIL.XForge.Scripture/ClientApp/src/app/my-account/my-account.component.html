@@ -361,14 +361,16 @@
       <div fxLayout="column" fxLayoutAlign="space-between stretch" id="delete-account" class="delete-account">
         <mat-card>
           <mat-card-title>Delete account</mat-card-title>
-          <mat-card-subtitle>Delete my account ({{ username }})</mat-card-subtitle>
-          <mat-card-content>Once you delete your account, there is no going back. Please be certain.</mat-card-content>
+          <mat-card-subtitle>Delete my account ({{ userName }})</mat-card-subtitle>
+          <mat-card-content>
+            <p>Once you delete your account, there is no going back. Please be certain.</p>
+            <p><strong>You will lose access to your projects.</strong></p>
+          </mat-card-content>
           <mat-card-actions>
             <button mat-stroked-button (click)="openDeleteAccountDialog()" id="delete-account-button">
               Delete my account
             </button>
           </mat-card-actions>
-          <p><mat-card-content>You will lose access to your projects.</mat-card-content></p>
         </mat-card>
       </div>
     </div>
