@@ -73,7 +73,7 @@ describe('DeleteAccountDialogComponent', () => {
     dialog = d;
     const config = {
       data: {
-        username: 'JohnnyByGood',
+        name: 'JohnnyByGood',
         viewContainerRef: testViewContainerRef
       }
     };
@@ -105,9 +105,9 @@ describe('DeleteAccountDialogComponent', () => {
     const dialogContainer = overlayContainerElement.querySelector('mat-dialog-container');
     const btnDelete: HTMLElement = dialogContainer.querySelector('#confirm-delete-button');
     expect(btnDelete.textContent).toContain('I understand the consequences, delete my account');
-    expect(component.data.username).toEqual('JohnnyByGood');
+    expect(component.data.name).toEqual('JohnnyByGood');
     expect(component.deleteDisabled).toBeTruthy();
-    component.usernameEntry.setValue('JohnnyByGood');
+    component.userNameEntry.setValue('JohnnyByGood');
     expect(component.deleteDisabled).toBeFalsy();
     btnDelete.click();
     viewContainerFixture.detectChanges();

@@ -8,11 +8,11 @@ import { MAT_DIALOG_DATA } from '@angular/material';
   styleUrls: ['./delete-account-dialog.component.scss']
 })
 export class DeleteAccountDialogComponent {
-  usernameEntry = new FormControl('');
+  userNameEntry = new FormControl('');
 
   get deleteDisabled() {
-    return this.usernameEntry.value.toLowerCase() !== this.data.username.toLowerCase();
+    return this.userNameEntry.value.toLowerCase() !== this.data.name.toLowerCase();
   }
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { name: string }) {}
 }

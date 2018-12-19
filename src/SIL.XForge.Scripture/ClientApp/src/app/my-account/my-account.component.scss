@@ -26,6 +26,9 @@ mat-card button {
 
 .delete-account mat-card {
   border: 2px solid red;
+  #delete-account-button {
+    color: red;
+  }
 }
 
 .nowrap {
