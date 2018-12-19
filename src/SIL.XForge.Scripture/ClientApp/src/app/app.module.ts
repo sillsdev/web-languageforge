@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { AvatarModule } from 'ngx-avatar';
 
 import { UICommonModule } from '@xforge-common/ui-common.module';
 import { xForgeCommonEntryComponents, XForgeCommonModule } from '@xforge-common/xforge-common.module';
@@ -12,7 +13,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
 import { CoreModule } from './core/core.module';
-import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { HomeComponent } from './home/home.component';
 import { ChangingUsernameDialogComponent } from './my-account/changing-username-dialog/changing-username-dialog.component';
@@ -27,7 +27,6 @@ import { SharedModule } from './shared/shared.module';
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
     FetchDataComponent,
     ChangingUsernameDialogComponent,
     ConnectProjectComponent,
@@ -37,6 +36,7 @@ import { SharedModule } from './shared/shared.module';
   ],
   imports: [
     AppRoutingModule,
+    AvatarModule,
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     BrowserAnimationsModule,
     CoreModule,
