@@ -23,6 +23,10 @@ namespace SIL.XForge.Models
         public string Password { get; set; }
         public string ParatextId { get; set; }
         public Tokens ParatextTokens { get; set; }
+        public string MobilePhone { get; set; }
+        public string ContactMethod { get; set; }
+        public DateTime Birthday { get; set; }
+        public string Gender { get; set; }
 
         public Dictionary<string, object> ExtraElements { get; protected set; }
 
