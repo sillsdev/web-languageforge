@@ -9,9 +9,16 @@ import { IdentityService } from './identity.service';
 import { LogInComponent } from './log-in/log-in.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 @NgModule({
-  declarations: [LogInComponent, ForgotPasswordComponent, SignUpComponent, ResetPasswordComponent],
+  declarations: [
+    LogInComponent,
+    ForgotPasswordComponent,
+    SignUpComponent,
+    ResetPasswordComponent,
+    VerifyEmailComponent
+  ],
   imports: [CommonModule, IdentityRoutingModule, UICommonModule, XForgeCommonModule],
   providers: [IdentityService]
 })

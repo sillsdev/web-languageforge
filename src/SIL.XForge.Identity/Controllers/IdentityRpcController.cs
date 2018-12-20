@@ -190,7 +190,7 @@ namespace SIL.XForge.Identity.Controllers
                     SiteOptions siteOptions = _siteOptions.Value;
                     string subject = $"{siteOptions.Name} - Email Verification";
                     Uri url = new Uri(siteOptions.Origin,
-                        $"account/VerifyEmail?email={user.Email}&key={user.ValidationKey}");
+                        $"identity/verify-email?email={user.CanonicalEmail}&key={user.ValidationKey}");
                     string body = "<div>"
                         + $"<h1>Dear {user.Name},</h1>"
                         + $"<p>Please click this link to verify your email <a href=\"{url}\" target=\"_blank\">"
@@ -218,10 +218,11 @@ namespace SIL.XForge.Identity.Controllers
             return false;
         }
 
-        public async Task<bool> VerifyEmail(string key)
+        public async Task<bool> VerifyEmail(string email, string key)
         {
             UserEntity user = await _users.UpdateAsync(
-                u => u.ValidationKey == key && u.ValidationExpirationDate > DateTime.UtcNow,
+                u => u.CanonicalEmail == email && u.ValidationKey == key
+                    && u.ValidationExpirationDate > DateTime.UtcNow,
                 update => update
                     .Set(u => u.EmailVerified, true)
                     .Unset(u => u.ValidationKey)

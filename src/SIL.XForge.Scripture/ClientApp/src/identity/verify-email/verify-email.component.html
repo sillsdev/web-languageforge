@@ -1,0 +1,8 @@
+<div class="container">
+  <h2 id="heading">Account Verification</h2>
+  <div *ngIf="success" id="email-verify"><h3>Email address is verified. Thank you.</h3></div>
+  <div *ngIf="!success" id="email-fail">
+    <h3>Email verification was unsuccessful.</h3>
+    <p>The link was invalid or it has expired.</p>
+  </div>
+</div>
