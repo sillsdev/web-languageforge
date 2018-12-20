@@ -8,7 +8,7 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RecordIdentity } from '@orbit/data';
-import { Observer, of } from 'rxjs';
+import { of } from 'rxjs';
 import { anything, capture, instance, mock, verify, when } from 'ts-mockito';
 import { ParatextService } from '../core/paratext.service';
 
@@ -50,15 +50,6 @@ export class StubQueryResults<T> implements QueryResults<T> {
 class TestModule {}
 
 class TestEnvironment {
-  userInDatabase: SFUser = new SFUser({
-    name: 'bob smith',
-    username: 'bobusername',
-    email: 'bob@example.com',
-    contactMethod: 'email'
-  });
-
-  userInDatabaseObserver: Observer<QueryResults<User>>;
-
   component: MyAccountComponent;
   fixture: ComponentFixture<MyAccountComponent>;
 
@@ -70,7 +61,8 @@ class TestEnvironment {
   mockedAuthService: AuthService;
 
   private substituteParatextUsername: string;
-  constructor() {
+
+  constructor(public userInDatabase: SFUser) {
     this.mockedSFUserService = mock(SFUserService);
     this.mockedParatextService = mock(ParatextService);
     this.mockedMatDialog = mock(MatDialog);
@@ -107,6 +99,23 @@ class TestEnvironment {
     this.fixture.detectChanges();
   }
 
+  /** Handler for mockUserService.updateUserAttributes that updates the fake database. */
+  mockUserServiceUpdateUserAttributes(): (updatedAttributes: Partial<User>) => Promise<User> {
+    return (updatedAttributes: Partial<User>) => {
+      return new Promise<User>(resolve => {
+        setTimeout(() => {
+          for (const property of ['name', 'username', 'email', 'mobilePhone', 'contactMethod', 'birthday', 'gender']) {
+            if (updatedAttributes[property] !== undefined) {
+              this.userInDatabase[property] = updatedAttributes[property];
+            }
+          }
+          resolve();
+        }, 0);
+      });
+    };
+  }
+
+  /** After calling, flush(); to make the database promise resolve. */
   clickButton(button: DebugElement): void {
     button.nativeElement.click();
     this.fixture.detectChanges();
@@ -137,8 +146,8 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css(`#${controlName}-update-button`));
   }
 
-  get contactMethodSmsToggle(): DebugElement {
-    return this.fixture.debugElement.query(By.css('mat-button-toggle[value="sms"]'));
+  contactMethodToggle(toggleName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`mat-button-toggle[value="${toggleName}"]`));
   }
 
   get matErrors(): Array<DebugElement> {
@@ -177,7 +186,15 @@ class TestEnvironment {
 describe('MyAccountComponent', () => {
   let env: TestEnvironment;
   beforeEach(() => {
-    env = new TestEnvironment();
+    env = new TestEnvironment(
+      new SFUser({
+        name: 'bob smith',
+        username: 'bobusername',
+        email: 'bob@example.com',
+        contactMethod: 'email',
+        mobilePhone: '+123 11 2222-33-4444'
+      })
+    );
   });
 
   it('should have a relevant title', () => {
@@ -394,7 +411,7 @@ describe('MyAccountComponent', () => {
     env.component.formGroup.get('contactMethod').setValue(newValue);
     env.fixture.detectChanges();
 
-    env.clickButton(env.contactMethodSmsToggle);
+    env.clickButton(env.contactMethodToggle('sms'));
     expect(env.component.formGroup.get('contactMethod').value).toEqual(newValue, 'test setup problem');
 
     verifyStates(env, 'contactMethod', {
@@ -662,6 +679,120 @@ describe('MyAccountComponent', () => {
         'must supply a valid email',
         'should be email error message, not username error message'
       );
+    }));
+  });
+
+  describe('contactMethod restrictions', () => {
+    it('cannot select email if no email address is set', fakeAsync(() => {
+      env.userInDatabase.email = '';
+      env.userInDatabase.contactMethod = 'sms';
+      env.component.reloadFromDatabase();
+      env.fixture.detectChanges();
+      expect(env.component.userFromDatabase.email).toEqual('', 'setup');
+      expect(env.component.formGroup.get('email').value).toEqual('', 'setup');
+      expect(env.component.userFromDatabase.contactMethod).not.toEqual('email', 'setup');
+      expect(env.component.formGroup.get('contactMethod').value).not.toEqual('email', 'setup');
+
+      expect(env.contactMethodToggle('email').nativeElement.firstChild.disabled).toBe(true);
+      expect(env.contactMethodToggle('emailSms').nativeElement.firstChild.disabled).toBe(true);
+    }));
+
+    it('cannot select sms if no mobile phone number is set', fakeAsync(() => {
+      env.userInDatabase.mobilePhone = '';
+      env.userInDatabase.contactMethod = 'email';
+      env.component.reloadFromDatabase();
+      env.fixture.detectChanges();
+      expect(env.component.userFromDatabase.mobilePhone).toEqual('', 'setup');
+      expect(env.component.formGroup.get('mobilePhone').value).toEqual('', 'setup');
+      expect(env.component.userFromDatabase.contactMethod).not.toEqual('sms', 'setup');
+      expect(env.component.formGroup.get('contactMethod').value).not.toEqual('sms', 'setup');
+
+      expect(env.contactMethodToggle('sms').nativeElement.firstChild.disabled).toBe(true);
+      expect(env.contactMethodToggle('emailSms').nativeElement.firstChild.disabled).toBe(true);
+    }));
+
+    it('cannot select email or sms if no email address or phone is set', fakeAsync(() => {
+      env.userInDatabase.email = '';
+      env.userInDatabase.mobilePhone = '';
+      env.userInDatabase.contactMethod = null;
+      env.component.reloadFromDatabase();
+      env.fixture.detectChanges();
+      expect(env.component.userFromDatabase.email).toEqual('', 'setup');
+      expect(env.component.formGroup.get('email').value).toEqual('', 'setup');
+      expect(env.component.userFromDatabase.mobilePhone).toEqual('', 'setup');
+      expect(env.component.formGroup.get('mobilePhone').value).toEqual('', 'setup');
+      expect(env.component.userFromDatabase.contactMethod).toEqual(null, 'setup');
+      expect(env.component.formGroup.get('contactMethod').value).toEqual(null, 'setup');
+
+      expect(env.contactMethodToggle('sms').nativeElement.firstChild.disabled).toBe(true);
+      expect(env.contactMethodToggle('email').nativeElement.firstChild.disabled).toBe(true);
+      expect(env.contactMethodToggle('emailSms').nativeElement.firstChild.disabled).toBe(true);
+    }));
+
+    it('deleting phone number disables and unsets sms contact method', fakeAsync(() => {
+      when(env.mockedSFUserService.updateUserAttributes(anything())).thenCall(
+        env.mockUserServiceUpdateUserAttributes()
+      );
+
+      env.userInDatabase.contactMethod = 'sms';
+      env.component.reloadFromDatabase();
+      env.fixture.detectChanges();
+      expect(env.component.userFromDatabase.mobilePhone.length).toBeGreaterThan(3, 'setup');
+      expect(env.component.formGroup.get('mobilePhone').value.length).toBeGreaterThan(3, 'setup');
+      expect(env.component.userFromDatabase.contactMethod).toEqual('sms', 'setup');
+      expect(env.component.formGroup.get('contactMethod').value).toEqual('sms', 'setup');
+
+      expect(env.contactMethodToggle('sms').nativeElement.firstChild.disabled).toBe(false);
+
+      env.component.formGroup.get('mobilePhone').setValue('');
+      env.component.formGroup.get('mobilePhone').markAsDirty();
+      env.fixture.detectChanges();
+
+      // Don't disable sms yet until phone is committed.
+      expect(env.contactMethodToggle('sms').nativeElement.firstChild.disabled).toBe(false);
+
+      env.clickButton(env.updateButton('mobilePhone'));
+      flush();
+      env.fixture.detectChanges();
+
+      expect(env.contactMethodToggle('sms').nativeElement.firstChild.disabled).toBe(true);
+      expect(env.contactMethodToggle('emailSms').nativeElement.firstChild.disabled).toBe(true);
+      expect(env.component.userFromDatabase.contactMethod).toEqual(null);
+      expect(env.component.formGroup.get('contactMethod').value).toEqual(null); // or at least not sms or emailSms
+      expect(env.component.controlStates.get('contactMethod')).toBe(env.component.elementState.InSync);
+    }));
+
+    it('deleting phone number does not disable or unset email contact method', fakeAsync(() => {
+      when(env.mockedSFUserService.updateUserAttributes(anything())).thenCall(
+        env.mockUserServiceUpdateUserAttributes()
+      );
+
+      env.userInDatabase.contactMethod = 'email';
+      env.component.reloadFromDatabase();
+      env.fixture.detectChanges();
+      expect(env.component.userFromDatabase.mobilePhone.length).toBeGreaterThan(3, 'setup');
+      expect(env.component.formGroup.get('mobilePhone').value.length).toBeGreaterThan(3, 'setup');
+      expect(env.component.userFromDatabase.contactMethod).toEqual('email', 'setup');
+      expect(env.component.formGroup.get('contactMethod').value).toEqual('email', 'setup');
+
+      expect(env.contactMethodToggle('email').nativeElement.firstChild.disabled).toBe(false);
+
+      env.component.formGroup.get('mobilePhone').setValue('');
+      env.component.formGroup.get('mobilePhone').markAsDirty();
+      env.fixture.detectChanges();
+
+      expect(env.contactMethodToggle('email').nativeElement.firstChild.disabled).toBe(false);
+
+      env.clickButton(env.updateButton('mobilePhone'));
+      flush();
+      env.fixture.detectChanges();
+
+      expect(env.contactMethodToggle('sms').nativeElement.firstChild.disabled).toBe(true);
+      expect(env.contactMethodToggle('emailSms').nativeElement.firstChild.disabled).toBe(true);
+      expect(env.contactMethodToggle('email').nativeElement.firstChild.disabled).toBe(false);
+      expect(env.component.userFromDatabase.contactMethod).toEqual('email');
+      expect(env.component.formGroup.get('contactMethod').value).toEqual('email');
+      expect(env.component.controlStates.get('contactMethod')).toBe(env.component.elementState.InSync);
     }));
   });
 
