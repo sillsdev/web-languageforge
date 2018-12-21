@@ -49,6 +49,21 @@ namespace SIL.XForge.Identity.Controllers
         }
 
         [Test]
+        public async Task LogIn_CaseInsensitiveUsername()
+        {
+            var env = new TestEnvironment();
+
+            LogInResult result = await env.Controller.LogIn(TestUsername.ToUpperInvariant(), TestPassword, false, TestReturnUrl);
+
+            Assert.That(result.Success, Is.True);
+            await env.Events.Received().RaiseAsync(Arg.Any<UserLoginSuccessEvent>());
+            await env.AuthService.Received().SignInAsync(Arg.Any<HttpContext>(),
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                Arg.Is<ClaimsPrincipal>(u => u.GetSubjectId() == TestUserId),
+                Arg.Any<AuthenticationProperties>());
+        }
+
+        [Test]
         public async Task LogIn_CaseInsensitiveEmail()
         {
             var env = new TestEnvironment();

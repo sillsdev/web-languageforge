@@ -32,6 +32,8 @@ namespace SIL.XForge.Services
 
         protected override Task<UserEntity> InsertEntityAsync(UserEntity entity)
         {
+            if (!string.IsNullOrEmpty(entity.Username))
+                entity.Username = entity.Username.ToLowerInvariant();
             if (!string.IsNullOrEmpty(entity.Password))
                 entity.Password = BCrypt.Net.BCrypt.HashPassword((string)entity.Password, 7);
             entity.CanonicalEmail = UserEntity.CanonicalizeEmail(entity.Email);
@@ -41,6 +43,8 @@ namespace SIL.XForge.Services
         protected override Task<UserEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
             IDictionary<string, string> relationships)
         {
+            if (attrs.TryGetValue(nameof(UserEntity.Username), out object username))
+                attrs[nameof(UserEntity.Username)] = ((string)username).ToLowerInvariant();
             if (attrs.TryGetValue(nameof(UserEntity.Password), out object password))
                 attrs[nameof(UserEntity.Password)] = BCrypt.Net.BCrypt.HashPassword((string)password, 7);
             if (attrs.TryGetValue(nameof(UserEntity.Email), out object email))
