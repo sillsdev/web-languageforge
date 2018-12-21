@@ -48,6 +48,23 @@ namespace SIL.XForge.Services
         }
 
         [Test]
+        public async Task CreateAsync_CaseInsensitiveUsername()
+        {
+            var env = new TestEnvironment();
+            env.SetUser("user01", SystemRoles.SystemAdmin);
+
+            var userResource = new TestUserResource
+            {
+                Id = "usernew",
+                Username = "USER_01"
+            };
+            UserResource newResource = await env.Service.CreateAsync(userResource);
+
+            Assert.That(newResource, Is.Not.Null);
+            Assert.That(newResource.Username, Is.EqualTo("user_01"));
+        }
+
+        [Test]
         public async Task CreateAsync_Email()
         {
             var env = new TestEnvironment();
@@ -116,6 +133,28 @@ namespace SIL.XForge.Services
 
             Assert.That(updatedResource, Is.Not.Null);
             Assert.That(updatedResource.Username, Is.EqualTo("new"));
+        }
+
+        [Test]
+        public async Task UpdateAsync_CaseInsensitiveUsername()
+        {
+            var env = new TestEnvironment();
+            env.SetUser("user01", SystemRoles.SystemAdmin);
+            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                {
+                    { env.GetAttribute("username"), "USER_01" }
+                });
+            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+
+            var resource = new TestUserResource
+            {
+                Id = "user01",
+                Username = "USER_01"
+            };
+            UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+            Assert.That(updatedResource, Is.Not.Null);
+            Assert.That(updatedResource.Username, Is.EqualTo("user_01"));
         }
 
         [Test]

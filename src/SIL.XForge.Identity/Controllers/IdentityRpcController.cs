@@ -52,7 +52,8 @@ namespace SIL.XForge.Identity.Controllers
         public async Task<LogInResult> LogIn(string userIdentifier, string password, bool rememberLogIn,
             string returnUrl = null)
         {
-            UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.Username == userIdentifier
+            UserEntity user = await _users.Query().SingleOrDefaultAsync(
+                u => u.Username == userIdentifier.ToLowerInvariant()
                 || u.CanonicalEmail == UserEntity.CanonicalizeEmail(userIdentifier));
             // validate username/password
             if (user != null && user.VerifyPassword(password))
