@@ -387,6 +387,6 @@
     </div>
   </form>
   <div fxLayout="column" fxLayoutAlign="space-between stretch">
-    <app-avatar [user]="userFromDatabase" size="192" [round]="false"></app-avatar>
+    <div *ngIf="showAvatar"><app-avatar [user]="userFromDatabase" size="192" [round]="false"></app-avatar></div>
   </div>
 </div>
