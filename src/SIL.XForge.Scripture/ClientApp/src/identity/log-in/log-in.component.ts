@@ -64,6 +64,13 @@ export class LogInComponent {
     }
   }
 
+  onInput(propertyName: string, value: string) {
+    // handle value inserted from password manager
+    if (this.logInForm.get(propertyName).value !== value) {
+      this.logInForm.get(propertyName).setValue(value);
+    }
+  }
+
   private async getReturnUrl(): Promise<string> {
     const params = await this.activatedRoute.queryParams.pipe(first()).toPromise();
     return params['returnUrl'];
