@@ -9,7 +9,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { RecordIdentity } from '@orbit/data';
 import { of } from 'rxjs';
 import { anything, capture, instance, mock, verify, when } from 'ts-mockito';
-import { ParatextService } from '../core/paratext.service';
 
 import { AuthService } from '@xforge-common/auth.service';
 import { QueryResults } from '@xforge-common/json-api.service';
@@ -19,6 +18,7 @@ import { NoticeService } from '@xforge-common/notice.service';
 import { UICommonModule } from '@xforge-common/ui-common.module';
 import { UserService } from '@xforge-common/user.service';
 import { SFUser } from '../core/models/sfuser';
+import { ParatextService } from '../core/paratext.service';
 import { SFUserService } from '../core/sfuser.service';
 import { ChangingUsernameDialogComponent } from './changing-username-dialog/changing-username-dialog.component';
 import { MyAccountComponent } from './my-account.component';
@@ -181,6 +181,10 @@ class TestEnvironment {
   get deleteAccountButton(): DebugElement {
     return this.fixture.debugElement.query(By.css('#delete-account-button'));
   }
+
+  get avatars(): DebugElement[] {
+    return this.fixture.debugElement.queryAll(By.css('app-avatar'));
+  }
 }
 
 describe('MyAccountComponent', () => {
@@ -202,6 +206,10 @@ describe('MyAccountComponent', () => {
     expect(title).toEqual('Account details - Scripture Forge');
     const header = env.header2.textContent;
     expect(header).toEqual('Account details');
+  });
+
+  it('should have avatar', () => {
+    expect(env.avatars.length).toBeGreaterThan(0);
   });
 
   // This tests that various UI icons etc are shown or not shown,

@@ -1,7 +1,7 @@
-<div fxLayout="column" fxLayout.gt-sm="row wrap" fxLayoutAlign="space-between start">
+<h2>Account details</h2>
+<div fxLayout="column" fxLayout.gt-sm="row wrap" fxLayoutAlign="start stretch" fxLayoutGap="1em">
   <form [formGroup]="formGroup">
     <div fxLayout="column" fxLayoutAlign="space-between stretch">
-      <h2>Account details</h2>
       <div fxLayout="row" fwLayoutAlign="space-between stretch">
         <div fxFlex>
           <mat-form-field fxFlex><input formControlName="name" matInput placeholder="Name"/></mat-form-field>
@@ -379,5 +379,7 @@
       </div>
     </div>
   </form>
-  <div><app-avatar [user]="userFromDatabase" size="192" [round]="false"></app-avatar></div>
+  <div fxLayout="column" fxLayoutAlign="space-between stretch">
+    <app-avatar [user]="userFromDatabase" size="192" [round]="false"></app-avatar>
+  </div>
 </div>
