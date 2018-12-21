@@ -286,7 +286,7 @@ namespace SIL.XForge.Identity.Controllers
                 ValidationKey = validationKey,
                 ValidationExpirationDate = DateTime.UtcNow.AddDays(7)
             });
-            bool result = await env.Controller.VerifyEmail("me@example.com", validationKey);
+            bool result = await env.Controller.VerifyEmail(validationKey);
             Assert.That(result, Is.True);
             UserEntity user = await env.Users.GetAsync(userId);
             Assert.That(user.EmailVerified, Is.True);
@@ -307,7 +307,7 @@ namespace SIL.XForge.Identity.Controllers
                 ValidationKey = validationKey,
                 ValidationExpirationDate = DateTime.UtcNow.AddDays(-1)
             });
-            bool result = await env.Controller.VerifyEmail("me@example.com", validationKey);
+            bool result = await env.Controller.VerifyEmail(validationKey);
             Assert.That(result, Is.False);
             UserEntity user = await env.Users.GetAsync(userId);
             Assert.That(user.EmailVerified, Is.False);

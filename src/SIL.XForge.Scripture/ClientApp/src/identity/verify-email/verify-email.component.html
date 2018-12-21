@@ -1,8 +1,12 @@
 <div class="container">
   <h2 id="heading">Account Verification</h2>
-  <div *ngIf="success" id="email-verify"><h3>Email address is verified. Thank you.</h3></div>
-  <div *ngIf="!success" id="email-fail">
+  <div *ngIf="success" id="email-verify">
+    <h3>Email address is verified. Thank you.</h3>
+    <p *ngIf="!(isLoggedIn | async)" id="prompt-login">You may log in now.</p>
+  </div>
+  <!-- Use success === false so result will show only when success is defined -->
+  <div *ngIf="success === false" id="email-fail">
     <h3>Email verification was unsuccessful.</h3>
-    <p>The link was invalid or it has expired.</p>
+    <p id="invalid-message">The link was invalid or it has expired. Please contact {{ issueEmail }} for help.</p>
   </div>
 </div>

@@ -32,8 +32,8 @@ export class IdentityService {
     return this.invoke('verifyInvitedUser', email);
   }
 
-  verifyEmail(email: string, key: string): Promise<boolean> {
-    return this.invoke('verifyEmail', email, key);
+  verifyEmail(key: string): Promise<boolean> {
+    return this.invoke('verifyEmail', key);
   }
 
   verifyResetPasswordKey(key: string): Promise<boolean> {
