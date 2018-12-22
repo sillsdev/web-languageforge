@@ -15,7 +15,7 @@ export abstract class User extends Resource {
   avatarUrl?: string;
   role?: string;
   mobilePhone?: string;
-  contactMethod?: 'email' | 'sms' | 'emailsms';
+  contactMethod?: 'email' | 'sms' | 'emailSms';
   birthday?: Date;
   gender?: 'female' | 'male';
 

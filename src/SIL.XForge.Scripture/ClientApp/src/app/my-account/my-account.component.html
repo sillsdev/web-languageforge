@@ -1,5 +1,5 @@
 <div fxLayout="column" fxLayout.gt-sm="row wrap" fxLayoutAlign="space-between start">
-  <form [formGroup]="formGroup" #theForm="ngForm">
+  <form [formGroup]="formGroup">
     <div fxLayout="column" fxLayoutAlign="space-between stretch">
       <h2>Account details</h2>
       <div fxLayout="row" fwLayoutAlign="space-between stretch">
@@ -219,9 +219,13 @@
         <div>Receive messages via</div>
         <div>
           <mat-button-toggle-group formControlName="contactMethod" (click)="update('contactMethod')">
-            <mat-button-toggle value="email"><i class="material-icons">email</i> Email</mat-button-toggle>
-            <mat-button-toggle value="sms"><i class="material-icons">textsms</i> SMS</mat-button-toggle>
-            <mat-button-toggle value="emailsms"
+            <mat-button-toggle value="email" [disabled]="!!contactMethodToggleDisabled.get('email')"
+              ><i class="material-icons">email</i> Email</mat-button-toggle
+            >
+            <mat-button-toggle value="sms" [disabled]="!!contactMethodToggleDisabled.get('sms')"
+              ><i class="material-icons">textsms</i> SMS</mat-button-toggle
+            >
+            <mat-button-toggle value="emailSms" [disabled]="!!contactMethodToggleDisabled.get('emailSms')"
               ><i class="material-icons">email</i><i class="material-icons">textsms</i> Both</mat-button-toggle
             >
           </mat-button-toggle-group>

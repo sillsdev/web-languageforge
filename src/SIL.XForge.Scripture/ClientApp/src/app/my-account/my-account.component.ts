@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, FormGroupDirective, NgForm, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { DateAdapter, MatDialog, MatDialogRef, NativeDateAdapter } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
@@ -79,27 +79,17 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     gender: new FormControl()
   });
 
+  contactMethodToggleDisabled = new Map<string, boolean>([['email', false], ['sms', false], ['emailSms', false]]);
+
   /** User data as received from the database. */
   userFromDatabase: SFUser;
   paratextUsername: string;
   googleUsername: string;
 
-  private activeDialogRef: MatDialogRef<DeleteAccountDialogComponent>;
   private title = `Account details - ${environment.siteName}`;
   private doneInitialDatabaseImport: boolean = false;
   private controlsWithUpdateButton: string[] = ['name', 'username', 'email', 'mobilePhone'];
-
-  get userName() {
-    return this.userFromDatabase.name ? this.userFromDatabase.name : 'unknown';
-  }
-
-  get isLinkedToParatext() {
-    return this.paratextUsername && this.paratextUsername.length > 0;
-  }
-
-  get isLinkedToGoogle() {
-    return this.googleUsername && this.googleUsername.length > 0;
-  }
+  private activeDialogRef: MatDialogRef<DeleteAccountDialogComponent>;
 
   constructor(
     private readonly userService: UserService,
@@ -127,22 +117,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
         return;
       }
 
-      // Set form values from database, if present.
-      this.formGroup.setValue({
-        name: this.userFromDatabase.name || '',
-        username: this.userFromDatabase.username || '',
-        email: this.userFromDatabase.email || '',
-        mobilePhone: this.userFromDatabase.mobilePhone || '',
-        contactMethod: this.userFromDatabase.contactMethod || null,
-        birthday: this.userFromDatabase.birthday || null,
-        gender: this.userFromDatabase.gender || null
-      });
-
-      // Update states.
-      Object.keys(this.formGroup.controls).forEach(elementName => {
-        this.controlStates.set(elementName, ElementState.InSync);
-      });
-
+      this.reloadFromDatabase();
       this.doneInitialDatabaseImport = true;
     });
 
@@ -167,6 +142,18 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     this.titleService.setTitle(environment.siteName);
   }
 
+  get userName() {
+    return this.userFromDatabase.name ? this.userFromDatabase.name : 'unknown';
+  }
+
+  get isLinkedToParatext() {
+    return this.paratextUsername && this.paratextUsername.length > 0;
+  }
+
+  get isLinkedToGoogle() {
+    return this.googleUsername && this.googleUsername.length > 0;
+  }
+
   loadLinkedAccounts(): void {
     this.subscribe(
       this.paratextService.getParatextUsername(),
@@ -178,6 +165,34 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
       }
     );
     // TODO: get the username of the linked google account
+  }
+
+  // MyAccountComponent is not designed to listen to the database and dynamically update the values on the form
+  // before the user's eyes. If we changed it to do that, we would need to not clobber the user's edits-in-progress
+  // from the many database 'updates' that are received that aren't actual changes (such as by only updating
+  // InSync fields).
+  reloadFromDatabase() {
+    if (this.userFromDatabase == null) {
+      return;
+    }
+
+    // Set form values from database, if present.
+    this.formGroup.setValue({
+      name: this.userFromDatabase.name || '',
+      username: this.userFromDatabase.username || '',
+      email: this.userFromDatabase.email || '',
+      mobilePhone: this.userFromDatabase.mobilePhone || '',
+      contactMethod: this.userFromDatabase.contactMethod || null,
+      birthday: this.userFromDatabase.birthday || null,
+      gender: this.userFromDatabase.gender || null
+    });
+
+    // Update states.
+    Object.keys(this.formGroup.controls).forEach(elementName => {
+      this.controlStates.set(elementName, ElementState.InSync);
+    });
+
+    this.conformContactMethod();
   }
 
   updateClicked(element: string): void {
@@ -205,10 +220,19 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     this.formGroup.get(element).disable();
     this.controlStates.set(element, ElementState.Submitting);
 
+    if (
+      element === 'mobilePhone' &&
+      !this.formGroup.controls[element].value &&
+      (this.userFromDatabase.contactMethod === 'sms' || this.userFromDatabase.contactMethod === 'emailSms')
+    ) {
+      updatedAttributes['contactMethod'] = null;
+    }
+
     try {
       await this.userService.updateUserAttributes(updatedAttributes);
       this.formGroup.get(element).enable();
       this.controlStates.set(element, ElementState.Submitted);
+      this.conformContactMethod();
     } catch (exception) {
       // Set an input without an update button back to its previous value, so the user can try
       // again by clicking the new and desired value.
@@ -232,6 +256,19 @@ and then try again.
 Specific details:
 ${exception.stack}`
       );
+    }
+  }
+
+  /** Set contactMethod value and the disabled states of its options based on values from database. */
+  conformContactMethod(): void {
+    const missingPhone = !this.userFromDatabase.mobilePhone;
+    const missingEmail = !this.userFromDatabase.email;
+    this.contactMethodToggleDisabled.set('sms', missingPhone);
+    this.contactMethodToggleDisabled.set('email', missingEmail);
+    this.contactMethodToggleDisabled.set('emailSms', missingPhone || missingEmail);
+
+    if (!this.userFromDatabase.mobilePhone) {
+      this.formGroup.get('contactMethod').setValue(this.userFromDatabase.contactMethod);
     }
   }
 
