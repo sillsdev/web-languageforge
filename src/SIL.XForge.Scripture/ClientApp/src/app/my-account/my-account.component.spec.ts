@@ -1,5 +1,4 @@
-import { DebugElement } from '@angular/core';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, NgModule } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { fakeAsync, flush } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -43,6 +42,7 @@ export class StubQueryResults<T> implements QueryResults<T> {
   declarations: [MyAccountComponent, ChangingUsernameDialogComponent],
   imports: [NoopAnimationsModule, RouterTestingModule, UICommonModule],
   exports: [MyAccountComponent, ChangingUsernameDialogComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   // ShowOnDirtyErrorStateMatcher helps form errors show up during unit testing.
   providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }],
   entryComponents: [MyAccountComponent, ChangingUsernameDialogComponent]

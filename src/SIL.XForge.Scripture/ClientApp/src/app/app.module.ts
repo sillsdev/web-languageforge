@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { AvatarModule } from 'ngx-avatar';
 
 import { UICommonModule } from '@xforge-common/ui-common.module';
 import { xForgeCommonEntryComponents, XForgeCommonModule } from '@xforge-common/xforge-common.module';
@@ -36,7 +35,6 @@ import { SharedModule } from './shared/shared.module';
   ],
   imports: [
     AppRoutingModule,
-    AvatarModule,
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     BrowserAnimationsModule,
     CoreModule,

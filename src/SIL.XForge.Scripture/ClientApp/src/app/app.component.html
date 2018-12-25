@@ -22,14 +22,7 @@
         <div mdcMenuSurfaceAnchor #userMenuAnchor>
           <a mdc-list-item (click)="userMenu.open = !userMenu.open">
             <mdc-icon mdcTopAppBarActionItem>
-              <ngx-avatar
-                [googleId]="currentUser?.googleId"
-                [gravatarId]="currentUser?.email"
-                [src]="currentUser?.avatarUrl"
-                [name]="currentUser?.name"
-                size="32"
-                [round]="true"
-              ></ngx-avatar>
+              <app-avatar [user]="currentUser" size="32" [round]="true"></app-avatar>
             </mdc-icon>
           </a>
           <mdc-menu #userMenu [anchorCorner]="'bottomStart'" [anchorElement]="userMenuAnchor">
