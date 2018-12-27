@@ -1,5 +1,7 @@
 using AutoMapper;
 using JsonApiDotNetCore.Services;
+using Microsoft.Extensions.Options;
+using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 using SIL.XForge.Scripture.Models;
@@ -10,7 +12,8 @@ namespace SIL.XForge.Scripture.Services
     public class SFUserService : UserService<SFUserResource>
     {
         public SFUserService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
-            IRepository<UserEntity> users) : base(jsonApiContext, mapper, userAccessor, users)
+            IRepository<UserEntity> users, IOptions<SiteOptions> options)
+            : base(jsonApiContext, mapper, userAccessor, users, options)
         {
         }
 

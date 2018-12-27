@@ -7,6 +7,7 @@ using JsonApiDotNetCore.Models;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using NUnit.Framework;
+using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
@@ -181,6 +182,48 @@ namespace SIL.XForge.Services
         }
 
         [Test]
+        public async Task UpdateAsync_Site()
+        {
+            var env = new TestEnvironment();
+            env.SetUser("user01", SystemRoles.SystemAdmin);
+            string serializedHostKey = SiteDomainSerializer.ConvertDotIn(TestEnvironment.SiteAuthority);
+            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                {
+                    { env.GetAttribute("site"), new Site
+                        {
+                            CurrentProjectId = "project01"
+                        }
+                    },
+                    { new AttrAttribute("sites." + serializedHostKey, "Sites." + serializedHostKey), new Site
+                        {
+                            CurrentProjectId = "project01"
+                        }
+                    }
+                });
+            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+
+            var resource = new TestUserResource
+            {
+                Id = "user01",
+                Site = new Site
+                {
+                    CurrentProjectId = "project01"
+                }
+            };
+            // TODO: fix the test MemoryUpdateBuilder.cs so it takes keys with dots.
+            // UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+            // Assert.That(updatedResource, Is.Not.Null);
+            // Assert.That(updatedResource.Site, Is.Not.Null);
+            // Assert.That(updatedResource.Site.CurrentProjectId, Is.EqualTo("project01"));
+
+            // UserEntity updatedEntity = await env.Service.GetEntityAsync(resource.Id);
+            // Assert.That(updatedEntity.Sites, Is.Not.Null);
+            // Assert.That(updatedEntity.Sites.Count, Is.EqualTo(1));
+            // Assert.That(updatedEntity.Sites[serializedHostKey].CurrentProjectId, Is.EqualTo("project01"));
+        }
+
+        [Test]
         public async Task UpdateAsync_UnlinkParatextAccount()
         {
             var env = new TestEnvironment();
@@ -236,7 +279,7 @@ namespace SIL.XForge.Services
             public TestEnvironment()
                 : base("users")
             {
-                Service = new TestUserService(JsonApiContext, Mapper, UserAccessor, Entities);
+                Service = new TestUserService(JsonApiContext, Mapper, UserAccessor, Entities, Options);
             }
 
             public TestUserService Service { get; }

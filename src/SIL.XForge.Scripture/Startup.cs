@@ -127,7 +127,7 @@ namespace SIL.XForge.Scripture
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(o => o.SerializerSettings.NullValueHandling = NullValueHandling.Ignore);
 
-            services.AddSFJsonApi(mvcBuilder, containerBuilder);
+            services.AddSFJsonApi(mvcBuilder, containerBuilder, Configuration);
 
             services.AddXFJsonRpc();
 

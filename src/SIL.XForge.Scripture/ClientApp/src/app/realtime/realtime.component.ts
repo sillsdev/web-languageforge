@@ -3,11 +3,14 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { Site } from '@xforge-common/models/site';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { nameof } from '@xforge-common/utils';
 import { SFProject } from '../core/models/sfproject';
+import { SFUser } from '../core/models/sfuser';
 import { Text } from '../core/models/text';
 import { SFProjectService } from '../core/sfproject.service';
+import { SFUserService } from '../core/sfuser.service';
 
 interface Option {
   id: string;
@@ -33,7 +36,9 @@ export class RealtimeComponent extends SubscriptionDisposable implements OnInit 
   selectedProject: ProjectOption = null;
   selectedText: Option = null;
 
-  constructor(private readonly projectService: SFProjectService) {
+  private currentUser: SFUser;
+
+  constructor(private readonly projectService: SFProjectService, private readonly userService: SFUserService) {
     super();
   }
 
@@ -47,9 +52,11 @@ export class RealtimeComponent extends SubscriptionDisposable implements OnInit 
         }));
       })
     );
+
     this.subscribe(this.selectTextForm.get('project').valueChanges, (project: ProjectOption) => {
       this.selectTextForm.get('text').reset();
       this.selectedProject = project;
+      this.saveCurrentProject(project.id);
     });
 
     this.subscribe(this.selectTextForm.get('text').valueChanges, (text: Option) => {
@@ -59,5 +66,10 @@ export class RealtimeComponent extends SubscriptionDisposable implements OnInit 
 
   compareOption(x: Option, y: Option): boolean {
     return x && y ? x.id === y.id : x === y;
+  }
+
+  private saveCurrentProject(projectId: string): void {
+    const site = { currentProjectId: projectId } as Site;
+    this.userService.onlineUpdateAttributes(this.userService.currentUserId, { site });
   }
 }

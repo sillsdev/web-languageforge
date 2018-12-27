@@ -244,7 +244,7 @@ namespace SIL.XForge.Scripture.Services
                     ParatextService)
                 {
                     ProjectMapper = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities),
-                    UserMapper = new SFUserService(JsonApiContext, Mapper, UserAccessor, Users)
+                    UserMapper = new SFUserService(JsonApiContext, Mapper, UserAccessor, Users, Options)
                 };
             }
 

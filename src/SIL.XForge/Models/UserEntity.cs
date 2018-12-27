@@ -27,6 +27,7 @@ namespace SIL.XForge.Models
         public string ContactMethod { get; set; }
         public DateTime Birthday { get; set; }
         public string Gender { get; set; }
+        public Dictionary<string, Site> Sites { get; set; }
 
         public Dictionary<string, object> ExtraElements { get; protected set; }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Hangfire;
 using Hangfire.Mongo;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.IdGenerators;
+using MongoDB.Bson.Serialization.Options;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using SIL.XForge.Configuration;
@@ -54,7 +56,16 @@ namespace SIL.XForge.DataAccess
             var client = new MongoClient(options.ConnectionString);
             services.AddSingleton<IMongoClient>(sp => client);
 
-            services.AddMongoRepository<UserEntity>(options.MongoDatabaseName, "users", indexSetup: indexes =>
+            services.AddMongoRepository<UserEntity>(options.MongoDatabaseName, "users",
+                mapSetup: cm =>
+                {
+                    var customSitesSerializer =
+                        new DictionaryInterfaceImplementerSerializer<Dictionary<string, Site>>(
+                            DictionaryRepresentation.Document, new SiteDomainSerializer(),
+                            BsonSerializer.SerializerRegistry.GetSerializer<Site>());
+                    cm.GetMemberMap(u => u.Sites).SetSerializer(customSitesSerializer);
+                },
+                indexSetup: indexes =>
                 {
                     IndexKeysDefinitionBuilder<UserEntity> builder = Builders<UserEntity>.IndexKeys;
                     indexes.CreateOrUpdate(new CreateIndexModel<UserEntity>(builder.Ascending(u => u.CanonicalEmail),

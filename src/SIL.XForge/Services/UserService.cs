@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Services;
+using Microsoft.Extensions.Options;
+using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
@@ -12,10 +14,13 @@ namespace SIL.XForge.Services
     public class UserService<TResource> : RepositoryResourceServiceBase<TResource, UserEntity>
         where TResource : UserResource
     {
+        private readonly IOptions<SiteOptions> _options;
+
         public UserService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
-            IRepository<UserEntity> users)
+            IRepository<UserEntity> users, IOptions<SiteOptions> options)
             : base(jsonApiContext, mapper, userAccessor, users)
         {
+            _options = options;
         }
 
         protected override IQueryable<UserEntity> ApplyFilter(IQueryable<UserEntity> entities,
@@ -53,6 +58,13 @@ namespace SIL.XForge.Services
             {
                 if (paratextId == null)
                     attrs[nameof(UserEntity.ParatextTokens)] = null;
+            }
+            if (attrs.TryGetValue(nameof(UserResource.Site), out object site))
+            {
+                SiteOptions siteOptions = _options.Value;
+                string serializedSiteKey = SiteDomainSerializer.ConvertDotIn(siteOptions.Origin.Authority);
+                attrs[nameof(UserEntity.Sites) + "." + serializedSiteKey] = (Site)site;
+                attrs.Remove(nameof(UserResource.Site));
             }
             return base.UpdateEntityAsync(id, attrs, relationships);
         }
