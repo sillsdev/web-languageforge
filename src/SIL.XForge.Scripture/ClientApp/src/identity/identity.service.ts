@@ -28,6 +28,10 @@ export class IdentityService {
     return this.invoke('signUp', name, password, email, recaptcha);
   }
 
+  resendLink(email: string): Promise<string> {
+    return this.invoke('sendEmailVerificationLink', email);
+  }
+
   verifyInvitedUser(email: string): Promise<boolean> {
     return this.invoke('verifyInvitedUser', email);
   }

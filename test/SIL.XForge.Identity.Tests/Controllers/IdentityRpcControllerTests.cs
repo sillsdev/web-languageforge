@@ -313,6 +313,29 @@ namespace SIL.XForge.Identity.Controllers
             Assert.That(user.EmailVerified, Is.False);
         }
 
+        [Test]
+        public async Task SendEmailVerificationLink_OverwritesExistingValidationKey()
+        {
+            var env = new TestEnvironment();
+            string userId = "existingvalidationkeyuser";
+            string validationKey = "validation_key_123";
+            env.Users.Add(new UserEntity
+            {
+                Id = userId,
+                Email = "me@example.com",
+                CanonicalEmail = "me@example.com",
+                EmailVerified = false,
+                ValidationKey = validationKey,
+                ValidationExpirationDate = DateTime.UtcNow
+            });
+            string result = await env.Controller.SendEmailVerificationLink("me@example.com");
+            Assert.AreEqual(result, "success");
+            UserEntity user = await env.Users.GetAsync(userId);
+            Assert.That(user.EmailVerified, Is.False);
+            Assert.AreNotEqual(validationKey, user.ValidationKey);
+            Assert.Greater(user.ValidationExpirationDate, DateTime.UtcNow.AddDays(6));
+        }
+
         private class TestEnvironment
         {
             public TestEnvironment(bool isResetLinkExpired = false)

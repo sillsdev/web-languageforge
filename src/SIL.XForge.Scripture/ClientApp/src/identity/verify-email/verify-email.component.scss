@@ -1,0 +1,14 @@
+.layout-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.form-field {
+  height: 115px;
+}
+
+#resend-btn {
+  position: relative;
+  left: 12em;
+}
