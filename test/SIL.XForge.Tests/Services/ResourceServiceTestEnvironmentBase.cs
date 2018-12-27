@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -6,7 +7,9 @@ using JsonApiDotNetCore.Configuration;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Models;
 using JsonApiDotNetCore.Services;
+using Microsoft.Extensions.Options;
 using NSubstitute;
+using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
@@ -36,12 +39,19 @@ namespace SIL.XForge.Services
 
             var config = new MapperConfiguration(cfg =>
                 {
+                    cfg.ValidateInlineMaps = false;
                     SetupMapper(cfg);
-                    cfg.IgnoreAllUnmapped();
                 });
             Mapper = config.CreateMapper();
             UserAccessor = Substitute.For<IUserAccessor>();
             UserAccessor.IsAuthenticated.Returns(false);
+
+            Options = Substitute.For<IOptions<SiteOptions>>();
+            Options.Value.Returns(new SiteOptions
+            {
+                Name = "xForge",
+                Origin = new Uri("http://" + SiteAuthority)
+            });
         }
 
         public IResourceGraph ResourceGraph { get; }
@@ -49,6 +59,9 @@ namespace SIL.XForge.Services
         public IUserAccessor UserAccessor { get; }
         public MemoryRepository<TEntity> Entities { get; }
         public IMapper Mapper { get; }
+        public IOptions<SiteOptions> Options { get; }
+
+        public const string SiteAuthority = "xf.localhost:5000";
 
         public void SetUser(string userId, string role)
         {

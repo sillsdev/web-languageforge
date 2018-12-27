@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using JsonApiDotNetCore.Models;
 
 namespace SIL.XForge.Models
@@ -36,5 +37,7 @@ namespace SIL.XForge.Models
         public DateTime Birthday { get; set; }
         [Attr]
         public string Gender { get; set; }
+        [Attr(isFilterable: false, isSortable: false)]
+        public Site Site { get; set; }
     }
 }

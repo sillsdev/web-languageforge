@@ -1,5 +1,6 @@
 import { ProjectUserRef } from './project-user';
 import { Resource, ResourceRef } from './resource';
+import { Site } from './site';
 
 export abstract class User extends Resource {
   username?: string;
@@ -17,6 +18,7 @@ export abstract class User extends Resource {
   contactMethod?: 'email' | 'sms' | 'emailSms';
   birthday?: Date;
   gender?: 'female' | 'male';
+  site?: Site;
 
   projects?: ProjectUserRef[];
 }

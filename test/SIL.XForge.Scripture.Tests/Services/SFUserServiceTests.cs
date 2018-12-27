@@ -79,7 +79,7 @@ namespace SIL.XForge.Scripture.Services
                         }
                     });
 
-                Service = new SFUserService(JsonApiContext, Mapper, UserAccessor, Entities)
+                Service = new SFUserService(JsonApiContext, Mapper, UserAccessor, Entities, Options)
                 {
                     ProjectUserMapper = new SFProjectUserService(JsonApiContext, Mapper, UserAccessor, projects,
                         Entities, Substitute.For<IParatextService>())

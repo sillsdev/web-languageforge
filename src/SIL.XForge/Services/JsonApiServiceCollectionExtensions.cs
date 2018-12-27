@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac;
@@ -10,9 +11,11 @@ using JsonApiDotNetCore.Formatters;
 using JsonApiDotNetCore.Middleware;
 using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using SIL.XForge.Configuration;
 using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
@@ -20,16 +23,24 @@ namespace SIL.XForge.Services
     public static class JsonApiServiceCollectionExtensions
     {
         public static IServiceCollection AddJsonApi(this IServiceCollection services, IMvcBuilder mvcBuilder,
-            ContainerBuilder containerBuilder, Action<IMapperConfigurationExpression> configure)
+            ContainerBuilder containerBuilder, IConfiguration configuration,
+            Action<IMapperConfigurationExpression> configure)
         {
             // setup auto mapper
+            var siteOptions = configuration.GetOptions<SiteOptions>();
+            string siteKey = siteOptions.Origin.Authority;
             services.AddAutoMapper(mapConfig =>
                 {
+                    mapConfig.ValidateInlineMaps = false;
                     mapConfig.CreateMap<UserEntity, UserResource>()
-                        .ForMember(u => u.Password, o => o.Ignore())
-                        .ReverseMap();
+                        .ForMember(ur => ur.Password, o => o.Ignore())
+                        .ForMember(ur => ur.Site, o => o.MapFrom(ue => ue.Sites[siteKey]))
+                        .ReverseMap()
+                        .ForPath(ue => ue.Sites, opt => opt.MapFrom(ur => new Dictionary<string, Site>
+                            {
+                                { siteKey, ur.Site }
+                            }));
                     configure(mapConfig);
-                    mapConfig.IgnoreAllUnmapped();
                 });
 
             JsonApiOptions.ResourceNameFormatter = new XForgeResourceNameFormatter();

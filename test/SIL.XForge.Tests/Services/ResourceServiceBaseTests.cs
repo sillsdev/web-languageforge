@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,8 +8,10 @@ using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using NUnit.Framework;
+using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
@@ -330,10 +333,16 @@ namespace SIL.XForge.Services
                 : base("tests")
             {
                 var users = new MemoryRepository<UserEntity>(new[] { new UserEntity { Id = "user01" } });
+                var options = Substitute.For<IOptions<SiteOptions>>();
+                options.Value.Returns(new SiteOptions
+                {
+                    Name = "xForge",
+                    Origin = new Uri("http://localhost")
+                });
 
                 Service = new TestService(JsonApiContext, Mapper, UserAccessor, Entities)
                 {
-                    UserMapper = new TestUserService(JsonApiContext, Mapper, UserAccessor, users)
+                    UserMapper = new TestUserService(JsonApiContext, Mapper, UserAccessor, users, options)
                 };
             }
 
