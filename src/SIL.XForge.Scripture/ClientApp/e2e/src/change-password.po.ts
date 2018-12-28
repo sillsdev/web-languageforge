@@ -1,7 +1,7 @@
 import { browser, by, element, ExpectedConditions } from 'protractor';
 
 export class ChangePasswordPage {
-  private static readonly baseUrl = 'http://beta.scriptureforge.localhost';
+  private static readonly baseUrl = 'http://localhost:5000';
   private readonly constants = require('../testConstants.json');
 
   changePasswordButton = element(by.id('btnChangePassword'));

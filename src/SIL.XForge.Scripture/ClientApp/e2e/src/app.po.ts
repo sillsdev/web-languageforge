@@ -8,7 +8,7 @@ export class AppPage {
   };
 
   static navigateTo(): promise.Promise<any> {
-    return browser.get('http://beta.scriptureforge.localhost/');
+    return browser.get('http://localhost:5000/');
   }
 
   static getMainHeading(): promise.Promise<string> {

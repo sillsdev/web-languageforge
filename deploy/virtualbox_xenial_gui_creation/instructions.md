@@ -45,9 +45,10 @@ ng test
 ```
 
 Kill ng.
+
 ```
 cd ~/src/web-languageforge/src/SIL.XForge.Scripture
 dotnet run
 ```
-Log into http://beta.scriptureforge.localhost in Chromium.
 
+Log into http://localhost:5000 in Chromium.
