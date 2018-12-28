@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { AvatarModule } from 'ngx-avatar';
 
+import { AvatarComponent } from './avatar/avatar.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { EmailInviteComponent } from './email-invite/email-invite.component';
 import { InviteDialogComponent } from './email-invite/invite-dialog.component';
@@ -17,6 +18,7 @@ import { SystemAdministrationComponent } from './system-administration/system-ad
 import { UICommonModule } from './ui-common.module';
 
 const componentExports = [
+  AvatarComponent,
   ChangePasswordComponent,
   DetailSnackBarComponent,
   EmailInviteComponent,

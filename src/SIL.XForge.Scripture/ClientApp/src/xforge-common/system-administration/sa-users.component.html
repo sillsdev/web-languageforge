@@ -15,18 +15,7 @@
         <table mat-table fxFill id="users-table" ngClass.gt-xs="fixed-layout-table" [dataSource]="userRows">
           <ng-container matColumnDef="avatar">
             <td mat-cell *matCellDef="let userRow; let i = index">
-              <div *ngIf="userRow.active">
-                <ngx-avatar
-                  [googleId]="userRow.googleId"
-                  [gravatarId]="userRow.email"
-                  [src]="userRow.avatarUrl"
-                  [name]="userRow.name"
-                  size="32"
-                  [round]="false"
-                  cornerRadius="3"
-                >
-                </ngx-avatar>
-              </div>
+              <div *ngIf="userRow.active"><app-avatar [user]="userRow" size="32" [round]="false"> </app-avatar></div>
             </td>
           </ng-container>
           <ng-container matColumnDef="name">
