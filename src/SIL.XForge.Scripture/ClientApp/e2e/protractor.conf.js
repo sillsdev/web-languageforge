@@ -10,7 +10,7 @@ exports.config = {
     browserName: 'chrome'
   },
   directConnect: true,
-  baseUrl: 'http://beta.scriptureforge.localhost/',
+  baseUrl: 'http://localhost:5000/',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,

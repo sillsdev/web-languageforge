@@ -30,7 +30,7 @@ namespace SIL.XForge.Identity.Controllers
         private const string TestPassword = "pa$$w0rd";
         private const string TestResetPasswordKey = "jGc6Qe4i1kgM+aA4LVczTJwfHx2YuDR9";
         private const string TestUserEmail = "abc@fakegmail.com";
-        private const string TestReturnUrl = "http://beta.scriptureforge.localhost/home";
+        private const string TestReturnUrl = "http://localhost:5000/home";
         private const string ShowMessageKey = "showMessage";
 
         [Test]
