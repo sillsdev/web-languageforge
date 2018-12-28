@@ -12,9 +12,10 @@ import { IdentityService } from '../identity.service';
   templateUrl: './verify-email.component.html',
   styleUrls: ['./verify-email.component.scss']
 })
-export class VerifyEmailComponent extends SubscriptionDisposable implements OnInit {
+export class VerifyEmailComponent implements OnInit {
   success: boolean;
-  emailPattern = '[a-zA-Z0-9.-_]{1,}@[a-zA-Z0-9.-]{2,}[.]{1}[a-zA-Z]{2,}';
+
+  private emailPattern = '[a-zA-Z0-9.-_]{1,}@[a-zA-Z0-9.-]{2,}[.]{1}[a-zA-Z]{2,}';
 
   resendLinkForm = new FormGroup({
     email: new FormControl('', [Validators.email, Validators.required, Validators.pattern(this.emailPattern)])
@@ -25,12 +26,10 @@ export class VerifyEmailComponent extends SubscriptionDisposable implements OnIn
     private readonly activatedRoute: ActivatedRoute,
     private readonly authService: AuthService,
     private readonly noticeService: NoticeService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit() {
-    this.subscribe(this.activatedRoute.queryParams, params => {
+    this.activatedRoute.queryParams.subscribe(params => {
       this.identityService.verifyEmail(params['key']).then(result => {
         this.success = result;
       });

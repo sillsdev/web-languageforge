@@ -2,7 +2,7 @@
   <h2 id="heading">Account Verification</h2>
   <div *ngIf="success" id="email-verify">
     <h3>Email address is verified. Thank you.</h3>
-    <p id="prompt-login">You may <a href="/identity/log-in">log in</a> now.</p>
+    <p id="prompt-login">You may <a routerLink="/identity/log-in">log in</a> now.</p>
   </div>
   <!-- Use success === false so result will show only when success is defined -->
   <div *ngIf="success === false" id="email-fail">

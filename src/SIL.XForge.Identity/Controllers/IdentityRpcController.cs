@@ -197,7 +197,7 @@ namespace SIL.XForge.Identity.Controllers
                 u => u.CanonicalEmail == UserEntity.CanonicalizeEmail(email),
                 update => update
                 .Set(u => u.ValidationKey, Security.GenerateKey())
-                .Set(u => u.ValidationExpirationDate, DateTime.UtcNow.AddDays(7))
+                .Set(u => u.ValidationExpirationDate, DateTime.UtcNow.AddDays(IdentityConstants.EmailVerificationPeriodDays))
             );
             SiteOptions siteOptions = _siteOptions.Value;
             string subject = $"{siteOptions.Name} - Email Verification";

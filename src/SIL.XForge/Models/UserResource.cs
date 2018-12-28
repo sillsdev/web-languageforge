@@ -13,7 +13,7 @@ namespace SIL.XForge.Models
         public string Email { get; set; }
         [Attr(isImmutable: true)]
         public string CanonicalEmail { get; set; }
-        [Attr]
+        [Attr(isImmutable: true)]
         public string EmailVerified { get; set; }
         [Attr]
         public string GoogleId { get; set; }
