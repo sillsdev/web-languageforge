@@ -11,7 +11,7 @@ export class AvatarComponent {
   @Input() size: number = 32;
 
   @Input() set user(user: User) {
-    this._user = clone(user);
+    this._user = user ? clone(user) : ({} as User);
     if (this._user.avatarUrl) {
       this._user.googleId = '';
       this._user.email = '';
