@@ -271,6 +271,71 @@ namespace SIL.XForge.Identity.Controllers
             Assert.That(result, Is.True);
         }
 
+        [Test]
+        public async Task VerifyEmail_SetsEmailVerified()
+        {
+            var env = new TestEnvironment();
+            string userId = "emailneedsverificationuser";
+            string validationKey = "validation_key_123";
+            env.Users.Add(new UserEntity
+            {
+                Id = userId,
+                Email = "me@example.com",
+                CanonicalEmail = "me@example.com",
+                EmailVerified = false,
+                ValidationKey = validationKey,
+                ValidationExpirationDate = DateTime.UtcNow.AddDays(7)
+            });
+            bool result = await env.Controller.VerifyEmail(validationKey);
+            Assert.That(result, Is.True);
+            UserEntity user = await env.Users.GetAsync(userId);
+            Assert.That(user.EmailVerified, Is.True);
+        }
+
+        [Test]
+        public async Task VerifyEmail_ExpiredLinkFails()
+        {
+            var env = new TestEnvironment();
+            string userId = "expiredemailverificationlink";
+            string validationKey = "validation_key_123";
+            env.Users.Add(new UserEntity
+            {
+                Id = userId,
+                Email = "me@example.com",
+                CanonicalEmail = "me@example.com",
+                EmailVerified = false,
+                ValidationKey = validationKey,
+                ValidationExpirationDate = DateTime.UtcNow.AddDays(-1)
+            });
+            bool result = await env.Controller.VerifyEmail(validationKey);
+            Assert.That(result, Is.False);
+            UserEntity user = await env.Users.GetAsync(userId);
+            Assert.That(user.EmailVerified, Is.False);
+        }
+
+        [Test]
+        public async Task SendEmailVerificationLink_OverwritesExistingValidationKey()
+        {
+            var env = new TestEnvironment();
+            string userId = "existingvalidationkeyuser";
+            string validationKey = "validation_key_123";
+            env.Users.Add(new UserEntity
+            {
+                Id = userId,
+                Email = "me@example.com",
+                CanonicalEmail = "me@example.com",
+                EmailVerified = false,
+                ValidationKey = validationKey,
+                ValidationExpirationDate = DateTime.UtcNow
+            });
+            string result = await env.Controller.SendEmailVerificationLink("me@example.com");
+            Assert.AreEqual(result, "success");
+            UserEntity user = await env.Users.GetAsync(userId);
+            Assert.That(user.EmailVerified, Is.False);
+            Assert.AreNotEqual(validationKey, user.ValidationKey);
+            Assert.Greater(user.ValidationExpirationDate, DateTime.UtcNow.AddDays(6));
+        }
+
         private class TestEnvironment
         {
             public TestEnvironment(bool isResetLinkExpired = false)

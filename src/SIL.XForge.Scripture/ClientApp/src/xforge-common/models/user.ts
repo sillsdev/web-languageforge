@@ -8,6 +8,7 @@ export abstract class User extends Resource {
   name?: string;
   email?: string;
   canonicalEmail?: string;
+  emailVerified?: boolean;
   googleId?: string;
   password?: string;
   paratextId?: string;

@@ -114,6 +114,10 @@ export class AuthService {
     this.oauthService.logOut();
   }
 
+  logOutNoRedirect(): void {
+    this.oauthService.logOut(true);
+  }
+
   private get isLoggingIn(): boolean {
     // we can tell if we are in the middle of an implicit flow if a nonce is stored and nothing else
     return sessionStorage.getItem('nonce') != null && this.oauthService.getAccessToken() == null;

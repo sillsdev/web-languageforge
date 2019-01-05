@@ -1,0 +1,33 @@
+<div class="container">
+  <h2 id="heading">Account Verification</h2>
+  <div *ngIf="success" id="email-verify">
+    <h3>Email address is verified. Thank you.</h3>
+    <p id="prompt-login">You may <a routerLink="/identity/log-in">log in</a> now.</p>
+  </div>
+  <!-- Use success === false so result will show only when success is defined -->
+  <div *ngIf="success === false" id="email-fail">
+    <h3>Email verification was unsuccessful.</h3>
+    <p id="invalid-message">The link was invalid or it has expired. Enter your email address to request a new link.</p>
+    <form [formGroup]="resendLinkForm" (ngSubmit)="resendLink()">
+      <div class="layout-column">
+        <mdc-form-field class="form-field">
+          <mdc-text-field
+            id="email-field"
+            outlined
+            label="Email"
+            formControlName="email"
+            autofocus
+            [helperText]="emailHelperText"
+          ></mdc-text-field>
+          <mdc-text-field-helper-text #emailHelperText="mdcHelperText" validation>
+            <span *ngIf="email.hasError('required')">Email address is required</span>
+            <span *ngIf="email.hasError('email') || email.hasError('pattern')"
+              >Please enter a valid email address, e.g. me@example.com</span
+            >
+          </mdc-text-field-helper-text>
+        </mdc-form-field>
+        <button id="resend-btn" mdc-button primary type="submit">Resend</button>
+      </div>
+    </form>
+  </div>
+</div>

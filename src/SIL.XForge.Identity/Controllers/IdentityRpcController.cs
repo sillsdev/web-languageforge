@@ -177,33 +177,41 @@ namespace SIL.XForge.Identity.Controllers
                     EmailVerified = false,
                     Password = BCrypt.Net.BCrypt.HashPassword(password, 7),
                     Role = SystemRoles.User,
-                    ValidationKey = Security.GenerateKey(),
-                    ValidationExpirationDate = DateTime.UtcNow.AddDays(
-                        IdentityConstants.EmailVerificationPeriodDays),
                     Active = true
                 };
 
                 if (await _users.InsertAsync(user))
                 {
                     await LogInUserAsync(user);
-
-                    SiteOptions siteOptions = _siteOptions.Value;
-                    string subject = $"{siteOptions.Name} - Email Verification";
-                    Uri url = new Uri(siteOptions.Origin,
-                        $"account/VerifyEmail?email={user.Email}&key={user.ValidationKey}");
-                    string body = "<div>"
-                        + $"<h1>Dear {user.Name},</h1>"
-                        + $"<p>Please click this link to verify your email <a href=\"{url}\" target=\"_blank\">"
-                        + "Confirm Verification</a>.</p>"
-                        + $"<p>Regards,<br>The {siteOptions.Name} Team</p>"
-                        + "</div>";
-
-                    await _emailService.SendEmailAsync(user.Email, subject, body);
+                    await SendEmailVerificationLink(user.CanonicalEmail);
                     return "success";
                 }
             }
 
             return "conflict";
+        }
+
+        public async Task<string> SendEmailVerificationLink(string email)
+        {
+            UserEntity user = await _users.UpdateAsync(
+                u => u.CanonicalEmail == UserEntity.CanonicalizeEmail(email),
+                update => update
+                .Set(u => u.ValidationKey, Security.GenerateKey())
+                .Set(u => u.ValidationExpirationDate, DateTime.UtcNow.AddDays(IdentityConstants.EmailVerificationPeriodDays))
+            );
+            SiteOptions siteOptions = _siteOptions.Value;
+            string subject = $"{siteOptions.Name} - Email Verification";
+            Uri url = new Uri(siteOptions.Origin,
+                $"identity/verify-email?key={user.ValidationKey}");
+            string body = "<div>"
+                + $"<h1>Dear {user.Name},</h1>"
+                + $"<p>Please click this link to verify your email <a href=\"{url}\" target=\"_blank\">"
+                + "Confirm Verification</a>.</p>"
+                + $"<p>Regards,<br>The {siteOptions.Name} Team</p>"
+                + "</div>";
+
+            await _emailService.SendEmailAsync(user.Email, subject, body);
+            return "success";
         }
 
         public async Task<bool> VerifyInvitedUser(string email)
