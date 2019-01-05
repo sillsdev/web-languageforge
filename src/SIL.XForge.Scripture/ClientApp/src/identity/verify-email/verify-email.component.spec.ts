@@ -26,7 +26,7 @@ class TestEnvironment {
     this.mockedNoticeService = mock(NoticeService);
 
     const params: Params = { ['key']: 'test_verification_key' };
-    when(this.mockedAuthService.isLoggedIn).thenResolve(false);
+    when(this.mockedAuthService.isLoggedIn).thenResolve(true);
     when(this.mockedActivatedRoute.queryParams).thenReturn(of(params));
     when(this.mockedIdentityService.verifyEmail(anything())).thenResolve(isVerified);
     when(this.mockedIdentityService.resendLink(anything())).thenResolve('success');
@@ -109,6 +109,7 @@ describe('VerifyEmailComponent', () => {
     // ensure that ngOnInit completes, then detect changes again
     flush();
     env.fixture.detectChanges();
+    verify(env.mockedAuthService.logOutNoRedirect()).once();
     expect(env.emailFailElement.nativeElement.textContent).toContain('Email verification was unsuccessful');
     expect(env.invalidMessageElement.nativeElement.textContent).toContain('The link was invalid or it has expired');
     flush();

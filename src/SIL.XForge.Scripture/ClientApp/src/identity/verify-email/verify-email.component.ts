@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 
 import { AuthService } from '@xforge-common/auth.service';
 import { NoticeService } from '@xforge-common/notice.service';
-import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { IdentityService } from '../identity.service';
 
 @Component({
@@ -29,19 +28,16 @@ export class VerifyEmailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.authService.logOutNoRedirect();
     this.activatedRoute.queryParams.subscribe(params => {
-      this.identityService.verifyEmail(params['key']).then(result => {
-        this.success = result;
+      this.identityService.verifyEmail(params['key']).then(verified => {
+        this.success = verified;
       });
     });
   }
 
   get email() {
     return this.resendLinkForm.get('email');
-  }
-
-  get isLoggedIn(): Promise<boolean> {
-    return this.authService.isLoggedIn;
   }
 
   async resendLink(): Promise<void> {
