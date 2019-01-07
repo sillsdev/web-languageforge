@@ -1,5 +1,5 @@
+import { MdcDialog, MdcDialogConfig } from '@angular-mdc/web';
 import { Component } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material';
 
 import { InviteDialogComponent } from './invite-dialog.component';
 
@@ -9,14 +9,12 @@ import { InviteDialogComponent } from './invite-dialog.component';
   styleUrls: ['./email-invite.component.scss']
 })
 export class EmailInviteComponent {
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MdcDialog) {}
 
   openDialog() {
     const dialogConfig = {
-      autoFocus: true,
-      disableClose: true,
-      panelClass: 'inviteDialogComponent'
-    } as MatDialogConfig;
+      clickOutsideToClose: false
+    } as MdcDialogConfig;
     this.dialog.open(InviteDialogComponent, dialogConfig);
   }
 }

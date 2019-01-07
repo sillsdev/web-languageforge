@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material';
 
 import { environment } from '../../environments/environment';
 import { NoticeService } from '../notice.service';
@@ -18,11 +17,7 @@ export class InviteDialogComponent {
   isSubmitted: boolean = false;
   siteName = environment.siteName;
 
-  constructor(
-    private readonly dialogRef: MatDialogRef<InviteDialogComponent>,
-    private readonly noticeService: NoticeService,
-    private readonly projectService: ProjectService
-  ) {}
+  constructor(private readonly noticeService: NoticeService, private readonly projectService: ProjectService) {}
 
   get email() {
     return this.sendInviteForm.get('email');
@@ -55,10 +50,5 @@ export class InviteDialogComponent {
         this.noticeService.push(NoticeService.SUCCESS, message);
         break;
     }
-  }
-
-  onClose() {
-    this.sendInviteForm.reset();
-    this.dialogRef.close();
   }
 }

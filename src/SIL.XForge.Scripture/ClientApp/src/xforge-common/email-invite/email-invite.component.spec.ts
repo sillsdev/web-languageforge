@@ -1,9 +1,7 @@
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, NgModule } from '@angular/core';
+import { MdcDialogModule, MdcDialogRef, OverlayContainer } from '@angular-mdc/web';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material';
-import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
@@ -30,7 +28,6 @@ describe('EmailInviteComponent', () => {
     env.fixture.detectChanges();
 
     env.clickElement(env.inviteButton);
-
     env.clickElement(env.emailInput);
     env.setInputValue(env.emailInput, 'notAnEmailAddress');
 
@@ -46,7 +43,6 @@ describe('EmailInviteComponent', () => {
 
     env.clickElement(env.inviteButton);
     env.setInputValue(env.emailInput, 'notAnEmailAddress');
-
     env.clickElement(env.emailInput);
     env.setInputValue(env.emailInput, '');
 
@@ -63,17 +59,18 @@ describe('EmailInviteComponent', () => {
 
     env.clickElement(env.inviteButton);
     env.setInputValue(env.emailInput, emailAddress);
-
+    expect(env.emailInput.querySelector('input').value).toBe(emailAddress);
     env.clickElement(env.sendInviteButton);
+
     env.clickElement(env.closeButton);
-    verify(env.mockedProjectService.onlineInvite(emailAddress)).once();
+    verify(env.mockedProjectService.onlineInvite(anything())).once();
     expect().nothing();
     flush();
   }));
 });
 
 @NgModule({
-  imports: [FormsModule, MatDialogModule, ReactiveFormsModule, NoopAnimationsModule, UICommonModule],
+  imports: [FormsModule, MdcDialogModule, ReactiveFormsModule, NoopAnimationsModule, UICommonModule],
   exports: [InviteDialogComponent],
   declarations: [InviteDialogComponent],
   entryComponents: [InviteDialogComponent]
@@ -84,12 +81,12 @@ class TestEnvironment {
   component: EmailInviteComponent;
   fixture: ComponentFixture<EmailInviteComponent>;
 
-  mockedMatDialogRef: MatDialogRef<InviteDialogComponent>;
+  mockedMdcDialogRef: MdcDialogRef<InviteDialogComponent>;
   mockedProjectService: ProjectService;
   overlayContainer: OverlayContainer;
 
   constructor() {
-    this.mockedMatDialogRef = mock(MatDialogRef);
+    this.mockedMdcDialogRef = mock(MdcDialogRef);
     this.mockedProjectService = mock(ProjectService);
 
     when(this.mockedProjectService.onlineInvite(anything())).thenResolve(InviteAction.Invited);
@@ -99,7 +96,7 @@ class TestEnvironment {
       declarations: [EmailInviteComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        { provide: MatDialogRef, useFactory: () => instance(this.mockedMatDialogRef) },
+        { provide: MdcDialogRef, useFactory: () => instance(this.mockedMdcDialogRef) },
         { provide: ProjectService, useFactory: () => instance(this.mockedProjectService) }
       ]
     });
@@ -108,8 +105,8 @@ class TestEnvironment {
     this.overlayContainer = TestBed.get(OverlayContainer);
   }
 
-  get inviteButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#invite-btn'));
+  get inviteButton(): HTMLButtonElement {
+    return this.fixture.nativeElement.querySelector('#invite-btn');
   }
 
   get sendInviteButton(): HTMLButtonElement {
@@ -122,29 +119,22 @@ class TestEnvironment {
     return overlayContainerElement.querySelector('#invitation-close-btn');
   }
 
-  get emailInput(): HTMLInputElement {
+  get emailInput(): HTMLElement {
     const overlayContainerElement = this.overlayContainer.getContainerElement();
     return overlayContainerElement.querySelector('#email');
   }
 
-  clickElement(element: HTMLElement | DebugElement): void {
-    if (element instanceof DebugElement) {
-      element = (element as DebugElement).nativeElement as HTMLElement;
-    }
-
+  clickElement(element: HTMLElement): void {
     element.click();
-    tick();
+    flush();
     this.fixture.detectChanges();
   }
 
-  setInputValue(input: HTMLInputElement | DebugElement, value: string): void {
-    if (input instanceof DebugElement) {
-      input = (input as DebugElement).nativeElement as HTMLInputElement;
-    }
-
-    input.value = value;
-    input.dispatchEvent(new Event('input'));
-    tick();
+  setInputValue(textField: HTMLElement, value: string): void {
+    const inputElem: HTMLInputElement = textField.querySelector('input');
+    inputElem.value = value;
+    inputElem.dispatchEvent(new Event('input'));
     this.fixture.detectChanges();
+    tick();
   }
 }
