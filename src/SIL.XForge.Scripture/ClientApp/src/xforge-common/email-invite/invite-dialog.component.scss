@@ -1,13 +1,18 @@
-.mat-form-field {
-  width: 100%;
-  margin-bottom: 20px;
+.dialog-size {
+  min-height: 230px;
+  max-width: 350px;
 }
 
-.mat-dialog-content {
-  overflow: unset;
+.content-padding {
+  padding-bottom: 0px;
 }
 
 @media (max-width: 416px) {
+  .dialog-size {
+    min-height: 280px;
+    width: 90%;
+  }
+
   #invitation-close-btn {
     margin-top: 10px;
     margin-bottom: 10px;
