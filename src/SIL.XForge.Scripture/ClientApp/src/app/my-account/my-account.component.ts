@@ -69,6 +69,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
 
   /** Elements in this component and their states. */
   controlStates = new Map<string, ElementState>();
+
   formGroup = new FormGroup({
     name: new FormControl(),
     username: new FormControl('', [(inputControl: FormControl) => this.emailAndUsernameValidator(this, inputControl)]),
@@ -80,6 +81,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   });
 
   contactMethodToggleDisabled = new Map<string, boolean>([['email', false], ['sms', false], ['emailSms', false]]);
+  showAvatar = true;
 
   /** User data as received from the database. */
   userFromDatabase: SFUser;
@@ -233,6 +235,9 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
       this.formGroup.get(element).enable();
       this.controlStates.set(element, ElementState.Submitted);
       this.conformContactMethod();
+      if (element === 'name' || element === 'email') {
+        this.refreshAvatar();
+      }
     } catch (exception) {
       // Set an input without an update button back to its previous value, so the user can try
       // again by clicking the new and desired value.
@@ -257,6 +262,19 @@ Specific details:
 ${exception.stack}`
       );
     }
+  }
+
+  /** Force avatar to refresh. Some discussion about this is at
+   * https://github.com/HaithemMosbahi/ngx-avatar/issues/18 .
+   */
+  async refreshAvatar() {
+    this.showAvatar = false;
+    await new Promise(resolve => {
+      setTimeout(() => {
+        this.showAvatar = true;
+        resolve();
+      }, 0);
+    });
   }
 
   /** Set contactMethod value and the disabled states of its options based on values from database. */

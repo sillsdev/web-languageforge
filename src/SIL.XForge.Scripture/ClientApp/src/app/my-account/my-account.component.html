@@ -1,7 +1,7 @@
-<div fxLayout="column" fxLayout.gt-sm="row wrap" fxLayoutAlign="space-between start">
+<h2>Account details</h2>
+<div fxLayout="column" fxLayout.gt-sm="row wrap" fxLayoutAlign="start stretch" fxLayoutGap="1em">
   <form [formGroup]="formGroup">
     <div fxLayout="column" fxLayoutAlign="space-between stretch">
-      <h2>Account details</h2>
       <div fxLayout="row" fwLayoutAlign="space-between stretch">
         <div fxFlex>
           <mat-form-field fxFlex><input formControlName="name" matInput placeholder="Name"/></mat-form-field>
@@ -111,6 +111,8 @@
           <i class="material-icons">edit</i> Change password
         </button>
       </div>
+
+      <mat-divider></mat-divider>
 
       <div fxLayout="row" fwLayoutAlign="space-between stretch">
         <div fxFlex>
@@ -251,6 +253,8 @@
         </div>
       </div>
 
+      <mat-divider></mat-divider>
+
       <div fxLayout="row" fwLayoutAlign="space-between stretch">
         <div fxFlex>
           <mat-form-field fxFlex hintLabel="YYYY-MM-DD">
@@ -316,6 +320,9 @@
           >
         </div>
       </div>
+
+      <mat-divider></mat-divider>
+
       <div
         *ngIf="isLinkedToParatext"
         fxLayout="row"
@@ -379,5 +386,7 @@
       </div>
     </div>
   </form>
-  <div><app-avatar [user]="userFromDatabase" size="192" [round]="false"></app-avatar></div>
+  <div fxLayout="column" fxLayoutAlign="space-between stretch">
+    <div *ngIf="showAvatar"><app-avatar [user]="userFromDatabase" size="192" [round]="false"></app-avatar></div>
+  </div>
 </div>
