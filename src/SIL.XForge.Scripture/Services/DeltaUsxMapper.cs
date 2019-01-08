@@ -32,6 +32,7 @@ namespace SIL.XForge.Scripture.Services
             string curRef = null;
             string curChapter = null;
             string bookId = null;
+            bool topLevelVerses = false;
             foreach (XNode node in usxElem.Nodes())
             {
                 switch (node)
@@ -44,6 +45,12 @@ namespace SIL.XForge.Scripture.Services
                                 break;
 
                             case "para":
+                                if (topLevelVerses)
+                                {
+                                    // add implicit paragraph when there are top-level verses
+                                    newDelta.Insert('\n');
+                                    topLevelVerses = false;
+                                }
                                 var style = (string) elem.Attribute("style");
                                 bool paraStyle = IsParagraphStyle(style);
                                 if (paraStyle)
@@ -69,6 +76,13 @@ namespace SIL.XForge.Scripture.Services
                                 break;
 
                             case "chapter":
+                                if (topLevelVerses)
+                                {
+                                    // add implicit paragraph when there are top-level verses
+                                    SegmentEnded(newDelta, curRef);
+                                    newDelta.Insert('\n');
+                                    topLevelVerses = false;
+                                }
                                 curRef = null;
                                 curChapter = (string) elem.Attribute("number");
                                 newDelta.InsertChapter(curChapter, GetAttributes(elem));
@@ -78,6 +92,7 @@ namespace SIL.XForge.Scripture.Services
                             // can still generate USX with verses at the top-level
                             case "verse":
                                 InsertVerse(newDelta, elem, curChapter, ref curRef);
+                                topLevelVerses = true;
                                 break;
 
                             default:
@@ -91,6 +106,8 @@ namespace SIL.XForge.Scripture.Services
                         break;
                 }
             }
+            if (topLevelVerses)
+                SegmentEnded(newDelta, curRef);
             newDelta.Insert("\n");
             return newDelta;
         }
@@ -219,7 +236,11 @@ namespace SIL.XForge.Scripture.Services
                     if (attrs == null)
                     {
                         if (text == "\n")
+                        {
+                            rootElem.Add(childNodes);
+                            childNodes.Clear();
                             continue;
+                        }
                         childNodes.Add(new XText(text));
                     }
                     else
