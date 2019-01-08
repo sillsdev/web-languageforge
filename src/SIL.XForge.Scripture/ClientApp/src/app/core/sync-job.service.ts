@@ -6,7 +6,8 @@ import { map, switchMap } from 'rxjs/operators';
 import { JsonApiService, QueryObservable } from '@xforge-common/json-api.service';
 import { ResourceService } from '@xforge-common/resource.service';
 import { nameof } from '@xforge-common/utils';
-import { SFProject, SFProjectRef } from './models/sfproject';
+import { SFProjectRef } from './models/sfdomain-model.generated';
+import { SFProject } from './models/sfproject';
 import { SFUserRef } from './models/sfuser';
 import { SyncJob } from './models/sync-job';
 import { SFUserService } from './sfuser.service';
@@ -40,8 +41,8 @@ export class SyncJobService extends ResourceService {
 
   async start(projectId: string): Promise<string> {
     const job = new SyncJob({
-      project: new SFProjectRef(projectId),
-      owner: new SFUserRef(this.userService.currentUserId)
+      projectRef: projectId,
+      ownerRef: this.userService.currentUserId
     });
     const newJob = await this.jsonApiService.onlineCreate(job);
     return newJob.id;

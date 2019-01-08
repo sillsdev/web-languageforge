@@ -17,6 +17,7 @@ import { defer, of } from 'rxjs';
 import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
 import { ParatextProject } from '../core/models/paratext-project';
+import { SyncJobState } from '../core/models/sfdomain-model.generated';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
 import { SyncJob } from '../core/models/sync-job';
@@ -50,15 +51,15 @@ class TestEnvironment {
     const a = new SyncJob({
       id: 'job01',
       percentCompleted: 0,
-      state: 'PENDING'
+      state: SyncJobState.PENDING
     });
     const b = new SyncJob(a);
-    b.state = 'SYNCING';
+    b.state = SyncJobState.SYNCING;
     const c = new SyncJob(b);
     c.percentCompleted = 0.5;
     const d = new SyncJob(c);
     d.percentCompleted = 1.0;
-    d.state = 'IDLE';
+    d.state = SyncJobState.IDLE;
     when(this.mockedSyncJobService.listen('job01')).thenReturn(cold('-a-b-c-d|', { a, b, c, d }));
     when(this.mockedSFProjectUserService.onlineCreate(anything(), anything())).thenResolve(
       new SFProjectUser({ id: 'projectuser01' })

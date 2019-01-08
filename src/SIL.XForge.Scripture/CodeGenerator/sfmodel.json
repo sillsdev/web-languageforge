@@ -1,0 +1,531 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "SFProjectResource",
+  "definitions": {
+    "CheckingConfig": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/TaskConfig"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "UsersSeeEachOthersResponses": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "TextResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/SFProjectDataResource"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "book-id": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "TaskConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "TranslateConfig": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/TaskConfig"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "SourceParatextId": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "SourceInputSystem": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/definitions/InputSystem"
+                }
+              ]
+            },
+            "IsTranslationDataShared": {
+              "type": "boolean"
+            },
+            "ConfidenceThreshold": {
+              "type": "number",
+              "format": "double"
+            },
+            "Metrics": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/definitions/TranslateMetrics"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "InputSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Abbreviation": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "Tag": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "LanguageName": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "IsRightToLeft": {
+          "type": "boolean"
+        }
+      }
+    },
+    "TranslateMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ActiveEditTimeout": {
+          "type": "integer",
+          "format": "int32",
+		  "default": "5"
+        },
+        "EditingTimeout": {
+          "type": "integer",
+          "format": "int32",
+		  "default": "1200"
+        }
+      }
+    },
+    "SyncJobResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/SFProjectDataResource"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "PercentCompleted": {
+              "type": "number",
+              "format": "double"
+            },
+            "State": {
+              "type": "string",
+			  "enum": ["PENDING", "SYNCING", "IDLE", "HOLD"]
+            }
+          }
+        }
+      ]
+    },
+    "SFProjectDataResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectDataResource"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Owner": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/definitions/SFUserResource"
+                }
+              ]
+            },
+            "Project": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "SFUserResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/UserResource"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Projects": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "$ref": "#/definitions/SFProjectUserResource"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "SFProjectUserResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProjectUserResource"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "TranslateConfig": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/definitions/TranslateProjectUserConfig"
+                }
+              ]
+            },
+            "User": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/definitions/SFUserResource"
+                }
+              ]
+            },
+            "Project": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "TranslateProjectUserConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ConfidenceThreshold": {
+          "type": "number",
+          "format": "double"
+        },
+        "HasConfidenceOverride": {
+          "type": "boolean"
+        },
+        "IsDocumentOrientationTargetRight": {
+          "type": "boolean"
+        },
+        "IsFormattingOptionsShown": {
+          "type": "boolean"
+        },
+        "SelectedDocumentSetId": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "SelectedSegmentRef": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "SelectedSegmentChecksum": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "ProjectUserResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Resource"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "TYPE": {
+              "type": "string",
+              "const": "projectUserResource"
+            },
+            "Role": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "UserRef": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "ProjectRef": {
+              "type": [
+                "null",
+                "string"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "IdentifiableOfString": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Id": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "StringId": {
+          "type": [
+            "null",
+            "string"
+          ]
+        }
+      }
+    },
+    "UserResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Resource"
+        },
+        {
+          "type": "object",
+          "x-abstract": true,
+          "additionalProperties": false,
+          "properties": {
+            "Username": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "Name": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "Email": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "Password": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "ParatextUsername": {
+              "type": [
+                "null",
+                "string"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "Resource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifiableOfString"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "DateModified": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "DateCreated": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      ]
+    },
+    "ProjectDataResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Resource"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ProjectRef": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "OwnerRef": {
+              "type": [
+                "null",
+                "string"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "ProjectResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Resource"
+        },
+        {
+          "type": "object",
+          "x-abstract": true,
+          "additionalProperties": false,
+          "properties": {
+            "ProjectName": {
+              "type": [
+                "null",
+                "string"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/ProjectResource"
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "paratext-id": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "checking-config": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/definitions/CheckingConfig"
+            }
+          ]
+        },
+        "translate-config": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/definitions/TranslateConfig"
+            }
+          ]
+        },
+        "input-system": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/definitions/InputSystem"
+            }
+          ]
+        },
+        "active-sync-job": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/definitions/SyncJobResource"
+            }
+          ]
+        },
+        "users": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/SFProjectUserResource"
+          }
+        },
+        "texts": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/TextResource"
+          }
+        }
+      }
+    }
+  ]
+}

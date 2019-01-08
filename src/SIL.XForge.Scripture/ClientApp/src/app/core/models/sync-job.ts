@@ -1,25 +1,14 @@
 import { ResourceRef } from '@xforge-common/models/resource';
-import { SFProjectData } from './sfproject-data';
+import { SyncJobBase, SyncJobState } from './sfdomain-model.generated';
 
-export class SyncJob extends SFProjectData {
+export class SyncJob extends SyncJobBase {
   static readonly TYPE = 'syncJob';
 
-  percentCompleted?: number;
-  state?: 'PENDING' | 'SYNCING' | 'IDLE' | 'HOLD';
-
   constructor(init?: Partial<SyncJob>) {
-    super(SyncJob.TYPE, init);
+    super(init);
   }
 
   get isActive(): boolean {
-    return this.state === 'PENDING' || this.state === 'SYNCING';
-  }
-}
-
-export class SyncJobRef extends ResourceRef {
-  static readonly TYPE = SyncJob.TYPE;
-
-  constructor(id: string) {
-    super(SyncJobRef.TYPE, id);
+    return this.state === SyncJobState.PENDING || this.state === SyncJobState.SYNCING;
   }
 }

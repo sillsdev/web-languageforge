@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
+      <PackageReference Include="NUnit" Version="3.10.1" />
+      <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SIL.XForge.Scripture\CodeGenerator\CodeGenerator.csproj" />
+    <ProjectReference Include="..\..\src\SIL.XForge.Scripture\SIL.XForge.Scripture.csproj" />
+  </ItemGroup>
+
+</Project>

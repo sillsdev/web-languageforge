@@ -1,7 +1,6 @@
-import { User, UserRef } from '@xforge-common/models/user';
-import { SFProjectUserRef } from './sfproject-user';
+import { SFProjectUserRef, SFUserBase } from './sfdomain-model.generated';
 
-export class SFUser extends User {
+export class SFUser extends SFUserBase {
   projects?: SFProjectUserRef[];
 
   constructor(init?: Partial<SFUser>) {
@@ -9,4 +8,4 @@ export class SFUser extends User {
   }
 }
 
-export class SFUserRef extends UserRef {}
+export { SFUserRef } from './sfdomain-model.generated';

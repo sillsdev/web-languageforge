@@ -1,8 +1,6 @@
-import { Resource } from '@xforge-common/models/resource';
-import { SFProjectRef } from './sfproject';
-import { SFUserRef } from './sfuser';
+import { ProjectData } from '../../../xforge-common/models/project-data';
+import { ResourceRef } from '../../../xforge-common/models/resource';
 
-export abstract class SFProjectData extends Resource {
-  owner?: SFUserRef;
-  project?: SFProjectRef;
-}
+export abstract class SFProjectData extends ProjectData {}
+
+export class SFProjectDataRef extends ResourceRef {}

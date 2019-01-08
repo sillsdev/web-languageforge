@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "CodeGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "-s ..\\..\\..\\sfmodel.json --typescript ..\\..\\..\\sfmodel.generated.ts --model \"SIL.XForge.Scripture.Models.SFProjectResource\" --jsonapi .\\js.ts",
+      "workingDirectory": "c:\\Repositories\\web-languageforge\\src\\SIL.XForge.Scripture\\CodeGenerator\\bin\\Debug\\netcoreapp2.1"
+    }
+  }
+}

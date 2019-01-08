@@ -26,7 +26,11 @@
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+    <Compile Remove="CodeGenerator\**" />
     <Content Remove="$(RealtimeRoot)node_modules\**" />
+    <Content Remove="CodeGenerator\**" />
+    <EmbeddedResource Remove="CodeGenerator\**" />
+    <None Remove="CodeGenerator\**" />
   </ItemGroup>
 
   <ItemGroup>

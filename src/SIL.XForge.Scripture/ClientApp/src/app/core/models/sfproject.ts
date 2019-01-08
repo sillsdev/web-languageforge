@@ -1,21 +1,6 @@
-import { InputSystem } from '@xforge-common/models/input-system';
-import { Project, ProjectRef } from '@xforge-common/models/project';
-import { TaskConfig } from '@xforge-common/models/task-config';
-import { SFProjectUserRef } from './sfproject-user';
-import { SyncJobRef } from './sync-job';
-import { TextRef } from './text';
-import { TranslateConfig } from './translate-config';
+import { SFProjectBase } from './sfdomain-model.generated';
 
-export class SFProject extends Project {
-  paratextId?: string;
-  inputSystem?: InputSystem;
-  checkingConfig?: TaskConfig;
-  translateConfig?: TranslateConfig;
-
-  users?: SFProjectUserRef[];
-  activeSyncJob?: SyncJobRef;
-  texts?: TextRef[];
-
+export class SFProject extends SFProjectBase {
   constructor(init?: Partial<SFProject>) {
     super(init);
   }
@@ -31,5 +16,3 @@ export class SFProject extends Project {
     return names;
   }
 }
-
-export class SFProjectRef extends ProjectRef {}
