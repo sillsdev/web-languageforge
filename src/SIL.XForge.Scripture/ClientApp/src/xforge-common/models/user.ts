@@ -21,10 +21,4 @@ export abstract class User extends Resource {
   projects?: ProjectUserRef[];
 }
 
-export abstract class UserRef extends ResourceRef {
-  static readonly TYPE = User.TYPE;
-
-  constructor(type: string, id: string) {
-    super(type, id);
-  }
-}
+export abstract class UserRef extends ResourceRef {}

@@ -8,8 +8,4 @@ export abstract class Project extends Resource {
   abstract get taskNames(): string[];
 }
 
-export abstract class ProjectRef extends ResourceRef {
-  constructor(type: string, id: string) {
-    super(type, id);
-  }
-}
+export abstract class ProjectRef extends ResourceRef {}

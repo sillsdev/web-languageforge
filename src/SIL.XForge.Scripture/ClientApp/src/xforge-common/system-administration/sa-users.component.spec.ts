@@ -193,11 +193,23 @@ describe('SaUsersComponent', () => {
   }));
 });
 
-class TestUser extends User {}
-class TestProjectUserRef extends ProjectUserRef {}
+class TestUser extends User {
+  constructor(init?: Partial<User>) {
+    super(User.TYPE, init);
+  }
+}
+class TestProjectUserRef extends ProjectUserRef {
+  constructor(id?: string) {
+    super(Project.TYPE, id);
+  }
+}
 class TestProject extends Project {
   get taskNames(): string[] {
     return [];
+  }
+
+  constructor(init?: Partial<Project>) {
+    super(Project.TYPE, init);
   }
 }
 

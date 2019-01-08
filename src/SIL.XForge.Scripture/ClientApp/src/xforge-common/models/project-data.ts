@@ -5,10 +5,4 @@ export abstract class ProjectData extends Resource {
   projectRef?: string;
 }
 
-export abstract class ProjectDataRef extends ResourceRef {
-  static readonly TYPE = ProjectData.TYPE;
-
-  constructor(id: string) {
-    super(ProjectDataRef.TYPE, id);
-  }
-}
+export abstract class ProjectDataRef extends ResourceRef {}
