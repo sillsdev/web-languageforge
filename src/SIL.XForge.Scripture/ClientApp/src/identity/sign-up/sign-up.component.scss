@@ -24,13 +24,15 @@ mdc-text-field {
   text-align: center;
 }
 
-.recaptcha-helper-text {
+.helper-text {
   min-height: 19px;
   margin: 3px 16px 11px 16px;
   font-weight: 400;
   font-size: 0.75rem;
   color: var(--mdc-theme-error, #b00020);
   letter-spacing: 0.03333333em;
+  line-height: normal;
+  -webkit-font-smoothing: antialiased;
 }
 
 .submit-button {

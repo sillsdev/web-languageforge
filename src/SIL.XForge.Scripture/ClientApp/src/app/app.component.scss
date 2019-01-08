@@ -33,6 +33,9 @@
       padding: 20px;
       overflow-y: auto;
       flex: 1;
+      @include media-breakpoint-only(xs) {
+        padding: 3px;
+      }
     }
   }
 

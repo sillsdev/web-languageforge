@@ -6,48 +6,48 @@
         <mdc-text-field
           outlined
           id="fullName"
-          label="Full Name*"
+          label="Full Name"
           formControlName="name"
           autofocus
-          [helperText]="nameHelperText"
+          required
         ></mdc-text-field>
-        <mdc-text-field-helper-text #nameHelperText="mdcHelperText" validation>
+        <mdc-helper-text validation>
           <span *ngIf="name.hasError('required')">Full Name is required</span>
-        </mdc-text-field-helper-text>
+        </mdc-helper-text>
       </mdc-form-field>
       <mdc-form-field>
         <mdc-text-field
           outlined
           id="email"
-          label="Email Address*"
+          label="Email Address"
           type="email"
           formControlName="email"
           [readonly]="isEmailReadonly"
-          [helperText]="emailHelperText"
+          required
         ></mdc-text-field>
-        <mdc-text-field-helper-text #emailHelperText="mdcHelperText" validation>
-          <span *ngIf="email.hasError('email')">Please enter a valid email address</span>
+        <mdc-helper-text validation>
+          <span *ngIf="email.hasError('email')">Email address is invalid</span>
           <span *ngIf="email.hasError('required')">Email address is required</span>
-        </mdc-text-field-helper-text>
+        </mdc-helper-text>
       </mdc-form-field>
       <mdc-form-field>
         <mdc-text-field
           outlined
           id="password"
           [type]="isPasswordVisible ? 'text' : 'password'"
-          label="Password*"
+          label="Password"
           formControlName="password"
-          [helperText]="passwordHelperText"
+          required
         >
           <mdc-icon mdcTextFieldIcon trailing clickable (click)="isPasswordVisible = !isPasswordVisible">{{
-            isPasswordVisible ? "visibility_off" : "visibility"
+            isPasswordVisible ? "visibility" : "visibility_off"
           }}</mdc-icon>
         </mdc-text-field>
-        <mdc-text-field-helper-text #passwordHelperText="mdcHelperText" validation>
+        <password-strength-meter id="passwordStrengthMeter" [password]="password.value"></password-strength-meter>
+        <div class="helper-text" [ngClass]="password.touched && password.invalid ? 'visible' : 'hidden'">
           <span *ngIf="password.hasError('minlength')">Password must be at least 7 characters long</span>
           <span *ngIf="password.hasError('required')">Password is required</span>
-        </mdc-text-field-helper-text>
-        <password-strength-meter id="passwordStrengthMeter" [password]="password.value"></password-strength-meter>
+        </div>
       </mdc-form-field>
       <div class="component-container">
         <re-captcha
@@ -66,7 +66,7 @@
           formControlName="recaptcha"
         >
         </re-captcha>
-        <div class="recaptcha-helper-text" [ngClass]="frm.submitted ? 'visible' : 'hidden'">
+        <div class="helper-text" [ngClass]="frm.submitted ? 'visible' : 'hidden'">
           <span *ngIf="recaptcha.hasError('required')">Please verify the reCAPTCHA</span>
         </div>
       </div>
