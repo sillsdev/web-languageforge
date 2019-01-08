@@ -175,6 +175,12 @@ namespace SIL.XForge.Scripture.Services
                 .InsertBlank("verse_1_2")
                 .InsertVerse("3")
                 .InsertText("This is verse 3.", "verse_1_3")
+                .Insert("\n")
+                .InsertChapter("2")
+                .InsertVerse("1")
+                .InsertBlank("verse_2_1")
+                .InsertVerse("2")
+                .InsertBlank("verse_2_2")
                 .Insert("\n");
 
             DeltaUsxMapper mapper = CreateMapper();
@@ -186,7 +192,10 @@ namespace SIL.XForge.Scripture.Services
                 "This is verse 1.",
                 Verse("2"),
                 Verse("3"),
-                "This is verse 3.");
+                "This is verse 3.",
+                Chapter("2"),
+                Verse("1"),
+                Verse("2"));
             Assert.IsTrue(XNode.DeepEquals(newUsxElem, expected));
         }
 
@@ -309,7 +318,10 @@ namespace SIL.XForge.Scripture.Services
                 "This is verse 1.",
                 Verse("2"),
                 Verse("3"),
-                "This is verse 3.");
+                "This is verse 3.",
+                Chapter("2"),
+                Verse("1"),
+                Verse("2"));
 
             DeltaUsxMapper mapper = CreateMapper();
             Delta newDelta = mapper.ToDelta("12345", usxElem);
@@ -322,6 +334,12 @@ namespace SIL.XForge.Scripture.Services
                 .InsertBlank("verse_1_2")
                 .InsertVerse("3")
                 .InsertText("This is verse 3.", "verse_1_3")
+                .Insert("\n")
+                .InsertChapter("2")
+                .InsertVerse("1")
+                .InsertBlank("verse_2_1")
+                .InsertVerse("2")
+                .InsertBlank("verse_2_2")
                 .Insert("\n");
 
             Assert.IsTrue(newDelta.DeepEquals(expected));
