@@ -71,6 +71,10 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
     return this.jsonApiService.onlineInvoke(this.type, 'invite', { email });
   }
 
+  onlineGet(id: string): QueryObservable<T> {
+    return this.jsonApiService.onlineGet(this.identity(id));
+  }
+
   protected isSearchMatch(record: Record, value: string): boolean {
     if (record.attributes == null) {
       return false;

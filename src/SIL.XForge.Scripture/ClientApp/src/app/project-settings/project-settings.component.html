@@ -1,0 +1,29 @@
+<div class="container">
+  <mdc-card class="card" mdc-card--outlined>
+    <form class="task-card-content" [formGroup]="form">
+      <h2>Tasks</h2>
+      <h3 class="mdc-typography--subtitle1">Select which tasks are available. At least one task must be selected.</h3>
+      <div class="invalid-feedback" *ngIf="form.errors && form.errors.requireCheckboxesToBeChecked">
+        You must select at least one option
+      </div>
+      <mdc-form-field>
+        <mdc-checkbox formControlName="checking" id="checkbox-community-checking"></mdc-checkbox>
+        <label>Community Checking</label>
+      </mdc-form-field>
+      <p class="helper-text">
+        Engage the wider community to ensure that the translation is clear, accurate, and natural. Select chapters, ask
+        targeted questions, allow discussion of answers.
+      </p>
+      <hr />
+      <mdc-form-field>
+        <mdc-checkbox formControlName="translation" id="checkbox-translating"></mdc-checkbox>
+        <label>Translate (experimental)</label>
+      </mdc-form-field>
+      <p class="helper-text">
+        This feature is under development<br />If your Paratext project is a <b>Daughter Translation</b> or you would
+        like to use your project as a <b>Daughter Translation</b> in the Translate Settings choose the project this
+        translation is based on. This will enable a number of features that can offer translation suggestions.
+      </p>
+    </form>
+  </mdc-card>
+</div>

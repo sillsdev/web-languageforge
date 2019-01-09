@@ -3,8 +3,6 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
 import { IdentityService } from '@identity/identity.service';
@@ -17,23 +15,18 @@ class TestEnvironment {
   fixture: ComponentFixture<ForgotPasswordComponent>;
 
   mockedIdentityService: IdentityService;
-  mockedActivatedRoute: ActivatedRoute;
   mockedLocationService: LocationService;
   overlayContainer: OverlayContainer;
 
   constructor() {
     this.mockedIdentityService = mock(IdentityService);
-    this.mockedActivatedRoute = mock(ActivatedRoute);
     this.mockedLocationService = mock(LocationService);
-
-    when(this.mockedActivatedRoute.queryParams).thenReturn(of({}));
 
     TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, UICommonModule],
       declarations: [ForgotPasswordComponent],
       providers: [
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
-        { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
         { provide: LocationService, useFactory: () => instance(this.mockedLocationService) }
       ]
     });
