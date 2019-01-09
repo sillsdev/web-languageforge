@@ -1,7 +1,5 @@
 import { SFProjectUserBase } from './sfdomain-model.generated';
 
-export class SFProjectUser extends SFProjectUserBase {
-  constructor(init?: Partial<SFProjectUser>) {
-    super(init);
-  }
-}
+export class SFProjectUser extends SFProjectUserBase {}
+
+export { SFProjectUserRef } from './sfdomain-model.generated';

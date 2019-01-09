@@ -18,7 +18,7 @@ export class SFProjectService extends ProjectService<SFProject> {
   ];
 
   constructor(jsonApiService: JsonApiService) {
-    super(jsonApiService, SFProjectService.ROLES);
+    super(SFProject.TYPE, jsonApiService, SFProjectService.ROLES);
   }
 
   protected isSearchMatch(record: Record, value: string): boolean {

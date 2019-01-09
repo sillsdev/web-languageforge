@@ -1,10 +1,6 @@
 import { SFProjectBase } from './sfdomain-model.generated';
 
 export class SFProject extends SFProjectBase {
-  constructor(init?: Partial<SFProject>) {
-    super(init);
-  }
-
   get taskNames(): string[] {
     const names: string[] = [];
     if (this.checkingConfig != null && this.checkingConfig.enabled) {
@@ -16,3 +12,5 @@ export class SFProject extends SFProjectBase {
     return names;
   }
 }
+
+export { SFProjectRef } from './sfdomain-model.generated';

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { AuthService } from '@xforge-common/auth.service';
+import { JsonApiService } from '@xforge-common/json-api.service';
 import { UserService } from '@xforge-common/user.service';
 import { SFUser } from './models/sfuser';
 
@@ -7,7 +9,7 @@ import { SFUser } from './models/sfuser';
   providedIn: 'root'
 })
 export class SFUserService extends UserService<SFUser> {
-  protected newUser(user: Partial<SFUser>): SFUser {
-    return new SFUser(user);
+  constructor(jsonApiService: JsonApiService, authService: AuthService) {
+    super(SFUser.TYPE, jsonApiService, authService);
   }
 }

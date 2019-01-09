@@ -8,10 +8,4 @@ export abstract class ProjectUser extends Resource {
   project?: ProjectRef;
 }
 
-export abstract class ProjectUserRef extends ResourceRef {
-  static readonly TYPE = ProjectUser.TYPE;
-
-  constructor(type: string, id: string) {
-    super(type, id);
-  }
-}
+export abstract class ProjectUserRef extends ResourceRef {}

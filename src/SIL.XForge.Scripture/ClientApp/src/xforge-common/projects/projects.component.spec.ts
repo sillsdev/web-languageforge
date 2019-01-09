@@ -21,8 +21,10 @@ import { UserService } from '../user.service';
 import { ProjectsComponent } from './projects.component';
 
 class TestProject extends Project {
+  static readonly TYPE = 'project';
+
   constructor(init?: Partial<Project>) {
-    super(Project.TYPE, init);
+    super(TestProject.TYPE, init);
   }
 
   get taskNames(): string[] {
@@ -30,18 +32,24 @@ class TestProject extends Project {
   }
 }
 class TestProjectUser extends ProjectUser {
+  static readonly TYPE = 'projectUser';
+
   constructor(init?: Partial<ProjectUser>) {
-    super(ProjectUser.TYPE, init);
+    super(TestProjectUser.TYPE, init);
   }
 }
 class TestProjectRef extends ProjectRef {
+  static readonly TYPE = TestProject.TYPE;
+
   constructor(id: string) {
-    super('project', id);
+    super(TestProjectRef.TYPE, id);
   }
 }
 class TestUserRef extends UserRef {
+  static readonly TYPE = 'user';
+
   constructor(id: string) {
-    super('user', id);
+    super(TestUserRef.TYPE, id);
   }
 }
 

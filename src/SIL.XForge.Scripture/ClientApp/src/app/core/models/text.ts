@@ -1,21 +1,5 @@
-import { ResourceRef } from '@xforge-common/models/resource';
-import { SFProjectData } from './sfproject-data';
+import { TextBase } from './sfdomain-model.generated';
 
-export class Text extends SFProjectData {
-  static readonly TYPE = 'text';
+export class Text extends TextBase {}
 
-  constructor(init?: Partial<Text>) {
-    super(Text.TYPE, init);
-  }
-
-  name?: string;
-  bookId?: string;
-}
-
-export class TextRef extends ResourceRef {
-  static readonly TYPE = Text.TYPE;
-
-  constructor(id: string) {
-    super(TextRef.TYPE, id);
-  }
-}
+export { TextRef } from './sfdomain-model.generated';

@@ -12,8 +12,6 @@ export interface ResourceRefConstructor {
  * specified type. Subclasses should override the constructor and provide the correct type.
  */
 export abstract class ResourceRef implements RecordIdentity {
-  static readonly TYPE: string;
-
   constructor(public readonly type: string, public readonly id: string) {}
 }
 
@@ -28,8 +26,6 @@ export interface ResourceConstructor {
  * type.
  */
 export abstract class Resource implements RecordIdentity {
-  static readonly TYPE: string;
-
   id: string;
   dateModified?: string;
   dateCreated?: string;

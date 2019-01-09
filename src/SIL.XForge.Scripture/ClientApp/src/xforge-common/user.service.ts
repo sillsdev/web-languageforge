@@ -6,7 +6,7 @@ import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operato
 
 import { AuthService } from './auth.service';
 import { registerCustomFilter } from './custom-filter-specifier';
-import { GetAllParameters, JsonApiService, QueryObservable, QueryResults } from './json-api.service';
+import { GetAllParameters, JsonApiService, QueryObservable } from './json-api.service';
 import { ProjectUser } from './models/project-user';
 import { User } from './models/user';
 import { ResourceService } from './resource.service';
@@ -19,8 +19,8 @@ import { nameof } from './utils';
 export abstract class UserService<T extends User = User> extends ResourceService {
   private static readonly SEARCH_FILTER = 'search';
 
-  constructor(jsonApiService: JsonApiService, private readonly authService: AuthService) {
-    super(User.TYPE, jsonApiService);
+  constructor(type: string, jsonApiService: JsonApiService, private readonly authService: AuthService) {
+    super(type, jsonApiService);
 
     registerCustomFilter(this.type, UserService.SEARCH_FILTER, (r, v) => this.searchUsers(r, v));
   }
@@ -69,8 +69,8 @@ export abstract class UserService<T extends User = User> extends ResourceService
     await this.jsonApiService.onlineDelete(this.identity(id));
   }
 
-  async onlineCreate(newUser: Partial<T>): Promise<T> {
-    return await this.jsonApiService.onlineCreate<T>(this.newUser(newUser));
+  async onlineCreate(init: Partial<T>): Promise<T> {
+    return await this.jsonApiService.onlineCreate<T>(this.jsonApiService.newResource(this.type, init));
   }
 
   async onlineUpdateAttributes(updateUserId: string, updateUser: Partial<T>): Promise<T> {
@@ -132,6 +132,4 @@ export abstract class UserService<T extends User = User> extends ResourceService
 
     return false;
   }
-
-  protected abstract newUser(user: Partial<T>): T;
 }

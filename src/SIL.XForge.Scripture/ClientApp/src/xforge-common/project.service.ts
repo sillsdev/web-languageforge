@@ -23,8 +23,8 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
 
   readonly roles: Map<string, ProjectRole>;
 
-  constructor(jsonApiService: JsonApiService, roles: ProjectRole[]) {
-    super(Project.TYPE, jsonApiService);
+  constructor(type: string, jsonApiService: JsonApiService, roles: ProjectRole[]) {
+    super(type, jsonApiService);
 
     registerCustomFilter(this.type, ProjectService.SEARCH_FILTER, (r, v) => this.searchProjects(r, v));
     this.roles = new Map<string, ProjectRole>();
@@ -71,11 +71,6 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
     return this.jsonApiService.onlineInvoke(this.type, 'invite', { email });
   }
 
-  private searchProjects(records: Record[], value: string): Record[] {
-    const valueLower = value.toLowerCase();
-    return records.filter(record => this.isSearchMatch(record, valueLower));
-  }
-
   protected isSearchMatch(record: Record, value: string): boolean {
     if (record.attributes == null) {
       return false;
@@ -87,5 +82,10 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
     }
 
     return false;
+  }
+
+  private searchProjects(records: Record[], value: string): Record[] {
+    const valueLower = value.toLowerCase();
+    return records.filter(record => this.isSearchMatch(record, valueLower));
   }
 }
