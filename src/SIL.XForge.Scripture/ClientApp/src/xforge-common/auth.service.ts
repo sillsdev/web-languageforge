@@ -107,6 +107,10 @@ export class AuthService {
     if (returnUrl != null) {
       url += '&returnUrl=' + returnUrl;
     }
+    const userId = this.currentUserId;
+    if (userId != null) {
+      url += '&userId=' + userId;
+    }
     this.locationService.go(url);
   }
 

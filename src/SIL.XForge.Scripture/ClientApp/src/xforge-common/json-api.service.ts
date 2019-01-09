@@ -429,7 +429,7 @@ export class JsonApiService {
       }
       return ops;
     });
-    return this.localGet(identity);
+    return this.localGet<T>(identity);
   }
 
   /**

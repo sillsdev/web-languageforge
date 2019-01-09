@@ -6,16 +6,17 @@
 // ----------------------
 
 import { DomainModelConfig } from '@xforge-common/models/domain-model';
-import { SFProjectRef, SFProjectUserRef, SFUserRef, SyncJobRef } from './sfdomain-model.generated';
+import { SFProjectRef, SFProjectUserRef, SFUserRef, SyncJobRef, TextRef } from './sfdomain-model.generated';
 import { SFProject } from './sfproject';
 import { SFProjectUser } from './sfproject-user';
 import { SFUser } from './sfuser';
 import { SyncJob } from './sync-job';
+import { Text } from './text';
 import { TextData } from './text-data';
 
 // All resource, resource ref, and realtime doc types should be added to schema and generated into this config
 export const SFDOMAIN_MODEL_CONFIG: DomainModelConfig = {
-  resources: [SFProject, SFProjectUser, SFUser, SyncJob],
-  resourceRefs: [SFProjectRef, SFProjectUserRef, SFUserRef, SyncJobRef],
+  resources: [SFProject, SFProjectUser, SFUser, SyncJob, Text],
+  resourceRefs: [SFProjectRef, SFProjectUserRef, SFUserRef, SyncJobRef, TextRef],
   realtimeDocs: [TextData]
 };

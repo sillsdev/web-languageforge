@@ -13,10 +13,7 @@
         "command": "gulp webpack-lf"
       },
       "problemMatcher": "$awesometsc",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
+      "group": "build",
       "presentation": {
         "reveal": "silent"
       }
@@ -78,16 +75,50 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "dotnet",
-      "command": "dotnet build /property:GenerateFullPaths=true",
+      "label": "dotnet build",
+      "command": "dotnet",
+      "args": ["build", "/property:GenerateFullPaths=true"],
       "type": "shell",
-      "group": "build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "presentation": {
         "reveal": "silent"
       },
       "options": {
         "cwd": "${workspaceRoot}/"
       },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Run SF",
+      "command": "dotnet run",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceRoot}/src/SIL.XForge.Scripture"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Generate SF model",
+      "command": "dotnet",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceRoot}/src/SIL.XForge.Scripture/CodeGenerator"
+      },
+      "args": [
+        "run",
+        "--",
+        "-s",
+        "./sfmodel.json",
+        "-t",
+        "../ClientApp/src/app/core/models/sfdomain-model.generated.ts",
+        "-m",
+        "SIL.XForge.Scripture.Models.SFProjectResource",
+        "-j",
+        "../ClientApp/src/app/core/models/sfdomain-model-config.generated.ts"
+      ],
       "problemMatcher": "$msCompile"
     }
   ]

@@ -1,13 +1,12 @@
-using CommandLine;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using CommandLine;
 using NJsonSchema;
 using NJsonSchema.CodeGeneration.TypeScript;
-using System.Reflection;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using SIL.Extensions;
 
 namespace SIL.XForge.Scripture.CodeGenerator
@@ -35,16 +34,14 @@ namespace SIL.XForge.Scripture.CodeGenerator
             HandWrittenBaseClasses["Resource"] = null;
             HandWrittenBaseClasses["ProjectDataResource"] = null;
             HandWrittenBaseClasses["ProjectDataResourceRef"] = null;
-            HandWrittenBaseClasses["UserResource"] = "../../../xforge-common/models/user";
-            HandWrittenBaseClasses["UserResourceRef"] = "../../../xforge-common/models/user";
-            HandWrittenBaseClasses["TextResource"] = "./text";
-            HandWrittenBaseClasses["TextResourceRef"] = "./text";
+            HandWrittenBaseClasses["UserResource"] = "@xforge-common/models/user";
+            HandWrittenBaseClasses["UserResourceRef"] = "@xforge-common/models/user";
             HandWrittenBaseClasses["SFProjectDataResource"] = "./sfproject-data";
             HandWrittenBaseClasses["SFProjectDataResourceRef"] = "./sfproject-data";
-            HandWrittenBaseClasses["ProjectResource"] = "../../../xforge-common/models/project";
-            HandWrittenBaseClasses["ProjectResourceRef"] = "../../../xforge-common/models/project";
-            HandWrittenBaseClasses["ProjectUserResource"] = "../../../xforge-common/models/project-user";
-            HandWrittenBaseClasses["ProjectUserResourceRef"] = "../../../xforge-common/models/project-user";
+            HandWrittenBaseClasses["ProjectResource"] = "@xforge-common/models/project";
+            HandWrittenBaseClasses["ProjectResourceRef"] = "@xforge-common/models/project";
+            HandWrittenBaseClasses["ProjectUserResource"] = "@xforge-common/models/project-user";
+            HandWrittenBaseClasses["ProjectUserResourceRef"] = "@xforge-common/models/project-user";
 
             TypeScriptInterfaces = new List<string>
             {
@@ -96,7 +93,7 @@ namespace SIL.XForge.Scripture.CodeGenerator
             using (var domainModelFileStream = File.Create(jsonDomainModel))
             {
                 GenerateTypeScriptArtifactsFromCSharpType(modelType, typescript, HandWrittenBaseClasses,
-                    TypeScriptInterfaces, "../../../Templates", typeScriptFileStream, domainModelFileStream, schema);
+                    TypeScriptInterfaces, "Templates", typeScriptFileStream, domainModelFileStream, schema);
             }
         }
 

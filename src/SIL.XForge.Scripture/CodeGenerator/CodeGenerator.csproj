@@ -18,4 +18,10 @@
     <ProjectReference Include="..\SIL.XForge.Scripture.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Templates\*.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

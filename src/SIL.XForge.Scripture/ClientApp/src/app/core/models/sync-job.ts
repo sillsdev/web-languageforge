@@ -1,14 +1,22 @@
-import { ResourceRef } from '@xforge-common/models/resource';
-import { SyncJobBase, SyncJobState } from './sfdomain-model.generated';
+import { SyncJobBase } from './sfdomain-model.generated';
+
+export enum SyncJobState {
+  PENDING = 'PENDING',
+  SYNCING = 'SYNCING',
+  IDLE = 'IDLE',
+  HOLD = 'HOLD'
+}
 
 export class SyncJob extends SyncJobBase {
-  static readonly TYPE = 'syncJob';
-
   constructor(init?: Partial<SyncJob>) {
     super(init);
   }
+
+  state?: SyncJobState;
 
   get isActive(): boolean {
     return this.state === SyncJobState.PENDING || this.state === SyncJobState.SYNCING;
   }
 }
+
+export { SyncJobRef } from './sfdomain-model.generated';

@@ -4,12 +4,25 @@ import { inject, TestBed } from '@angular/core/testing';
 import { instance, mock } from 'ts-mockito';
 
 import { JsonApiService } from './json-api.service';
+import { Project } from './models/project';
 import { ProjectService } from './project.service';
 
+class TestProject extends Project {
+  static readonly TYPE: string = 'project';
+
+  constructor(init?: Partial<TestProject>) {
+    super(TestProject.TYPE, init);
+  }
+
+  get taskNames(): string[] {
+    return [];
+  }
+}
+
 @Injectable()
-class TestProjectService extends ProjectService {
+class TestProjectService extends ProjectService<TestProject> {
   constructor(jsonApiService: JsonApiService) {
-    super(jsonApiService, []);
+    super(TestProject.TYPE, jsonApiService, []);
   }
 }
 

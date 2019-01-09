@@ -3,6 +3,12 @@
   "title": "SFProjectResource",
   "definitions": {
     "CheckingConfig": {
+      "description": "\r\n--- Generated Interface",
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
       "allOf": [
         {
           "$ref": "#/definitions/TaskConfig"
@@ -18,27 +24,9 @@
         }
       ]
     },
-    "TextResource": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/SFProjectDataResource"
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "book-id": {
-              "type": "string"
-            }
-          }
-        }
-      ]
-    },
     "TaskConfig": {
       "type": "object",
+      "description": "\r\n--- Generated Interface",
       "additionalProperties": false,
       "properties": {
         "Enabled": {
@@ -47,6 +35,12 @@
       }
     },
     "TranslateConfig": {
+      "description": "\r\n--- Generated Interface",
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
       "allOf": [
         {
           "$ref": "#/definitions/TaskConfig"
@@ -94,6 +88,7 @@
     },
     "InputSystem": {
       "type": "object",
+      "description": "\r\n--- Generated Interface",
       "additionalProperties": false,
       "properties": {
         "Abbreviation": {
@@ -121,17 +116,16 @@
     },
     "TranslateMetrics": {
       "type": "object",
+      "description": "\r\n--- Generated Interface",
       "additionalProperties": false,
       "properties": {
         "ActiveEditTimeout": {
           "type": "integer",
-          "format": "int32",
-		  "default": "5"
+          "format": "int32"
         },
         "EditingTimeout": {
           "type": "integer",
-          "format": "int32",
-		  "default": "1200"
+          "format": "int32"
         }
       }
     },
@@ -149,8 +143,10 @@
               "format": "double"
             },
             "State": {
-              "type": "string",
-			  "enum": ["PENDING", "SYNCING", "IDLE", "HOLD"]
+              "type": [
+                "null",
+                "string"
+              ]
             }
           }
         }
@@ -163,6 +159,7 @@
         },
         {
           "type": "object",
+          "x-abstract": true,
           "additionalProperties": false,
           "properties": {
             "Owner": {
@@ -256,6 +253,7 @@
     },
     "TranslateProjectUserConfig": {
       "type": "object",
+      "description": "\r\n--- Generated Interface",
       "additionalProperties": false,
       "properties": {
         "ConfidenceThreshold": {
@@ -292,16 +290,13 @@
     "ProjectUserResource": {
       "allOf": [
         {
-          "$ref": "#/definitions/Resource"
+          "$ref": "#/definitions/IdentifiableOfString"
         },
         {
           "type": "object",
+          "x-abstract": true,
           "additionalProperties": false,
           "properties": {
-            "TYPE": {
-              "type": "string",
-              "const": "projectUserResource"
-            },
             "Role": {
               "type": [
                 "null",
@@ -370,13 +365,68 @@
                 "string"
               ]
             },
+            "CanonicalEmail": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "EmailVerified": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "GoogleId": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
             "Password": {
               "type": [
                 "null",
                 "string"
               ]
             },
-            "ParatextUsername": {
+            "ParatextId": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "Role": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "Active": {
+              "type": "boolean"
+            },
+            "AvatarUrl": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "MobilePhone": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "ContactMethod": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "Birthday": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "Gender": {
               "type": [
                 "null",
                 "string"
@@ -393,6 +443,7 @@
         },
         {
           "type": "object",
+          "x-abstract": true,
           "additionalProperties": false,
           "properties": {
             "DateModified": {
@@ -414,6 +465,7 @@
         },
         {
           "type": "object",
+          "x-abstract": true,
           "additionalProperties": false,
           "properties": {
             "ProjectRef": {
@@ -423,6 +475,31 @@
               ]
             },
             "OwnerRef": {
+              "type": [
+                "null",
+                "string"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "TextResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/SFProjectDataResource"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Name": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "BookId": {
               "type": [
                 "null",
                 "string"
@@ -461,13 +538,13 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "paratext-id": {
+        "ParatextId": {
           "type": [
             "null",
             "string"
           ]
         },
-        "checking-config": {
+        "CheckingConfig": {
           "oneOf": [
             {
               "type": "null"
@@ -477,7 +554,7 @@
             }
           ]
         },
-        "translate-config": {
+        "TranslateConfig": {
           "oneOf": [
             {
               "type": "null"
@@ -487,7 +564,7 @@
             }
           ]
         },
-        "input-system": {
+        "InputSystem": {
           "oneOf": [
             {
               "type": "null"
@@ -497,7 +574,7 @@
             }
           ]
         },
-        "active-sync-job": {
+        "ActiveSyncJob": {
           "oneOf": [
             {
               "type": "null"
@@ -507,7 +584,7 @@
             }
           ]
         },
-        "users": {
+        "Users": {
           "type": [
             "array",
             "null"
@@ -516,7 +593,7 @@
             "$ref": "#/definitions/SFProjectUserResource"
           }
         },
-        "texts": {
+        "Texts": {
           "type": [
             "array",
             "null"

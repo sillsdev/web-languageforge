@@ -194,22 +194,28 @@ describe('SaUsersComponent', () => {
 });
 
 class TestUser extends User {
+  static readonly TYPE = 'user';
+
   constructor(init?: Partial<User>) {
-    super(User.TYPE, init);
+    super(TestUser.TYPE, init);
   }
 }
 class TestProjectUserRef extends ProjectUserRef {
+  static readonly TYPE = 'projectUser';
+
   constructor(id?: string) {
-    super(Project.TYPE, id);
+    super(TestProjectUserRef.TYPE, id);
   }
 }
 class TestProject extends Project {
-  get taskNames(): string[] {
-    return [];
-  }
+  static readonly TYPE = 'project';
 
   constructor(init?: Partial<Project>) {
-    super(Project.TYPE, init);
+    super(TestProject.TYPE, init);
+  }
+
+  get taskNames(): string[] {
+    return [];
   }
 }
 

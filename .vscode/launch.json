@@ -63,7 +63,7 @@
       "type": "php",
       "request": "launch",
       "port": 9000,
-      "windows":{
+      "windows": {
         "localSourceRoot": "${workspaceRoot}",
         "serverSourceRoot": "${env:WSL_XFORGE_PATH}"
       }
@@ -72,7 +72,7 @@
       "name": ".NET Core (SF)",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "dotnet",
+      "preLaunchTask": "dotnet build",
       "program": "${workspaceRoot}/src/SIL.XForge.Scripture/bin/Debug/netcoreapp2.1/SIL.XForge.Scripture.dll",
       "args": [],
       "cwd": "${workspaceRoot}/src/SIL.XForge.Scripture/",
@@ -81,6 +81,6 @@
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
-    },
+    }
   ]
 }

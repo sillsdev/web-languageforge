@@ -1,11 +1,5 @@
-import { SFProjectUserRef, SFUserBase } from './sfdomain-model.generated';
+import { SFUserBase } from './sfdomain-model.generated';
 
-export class SFUser extends SFUserBase {
-  projects?: SFProjectUserRef[];
-
-  constructor(init?: Partial<SFUser>) {
-    super(init);
-  }
-}
+export class SFUser extends SFUserBase {}
 
 export { SFUserRef } from './sfdomain-model.generated';
