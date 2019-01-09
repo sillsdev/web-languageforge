@@ -1,4 +1,4 @@
-import { browser, by, element, ExpectedConditions, protractor } from 'protractor';
+import { browser, by, element, ExpectedConditions, promise, protractor } from 'protractor';
 
 import { AppPage } from './app.po';
 
@@ -6,9 +6,9 @@ export class LoginPage {
   private static readonly baseUrl = 'http://localhost:5000';
   private readonly constants = require('../testConstants.json');
 
-  usernameInput = element(by.id('mdc-input-0'));
-  passwordInput = element(by.id('mdc-input-1'));
-  loginButton = element(by.css('button[class*="submit-button"]'));
+  usernameInput = element(by.css('input[id="userName"]'));
+  passwordInput = element(by.css('input[id="passWord"]'));
+  loginButton = element(by.id('submitButton'));
 
   static async get() {
     await browser.get(this.baseUrl + '/identity/log-in');
@@ -21,17 +21,20 @@ export class LoginPage {
   }
 
   // return type (Promise<void>) intentionally left off to avoid run error
-  async login(username: string, password: string, event?: string) {
+  async login(username: string, password: string, event?: boolean) {
     await LoginPage.get();
     await this.usernameInput.sendKeys(username);
     await this.passwordInput.sendKeys(password);
-    if (!event) await this.loginButton.click();
-    else
+    if (event) {
       await browser
         .actions()
         .sendKeys(protractor.Key.ENTER)
         .perform();
-    await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.homepageHeader), 6000);
+      await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.homepageHeader), 6000);
+    } else {
+      await this.loginButton.click();
+      await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.homepageHeader), 6000);
+    }
   }
 
   async loginAsAdmin() {
