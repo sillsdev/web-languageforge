@@ -1,0 +1,44 @@
+<div class="container">
+  <h2>Looks like you are new here!</h2>
+  <mdc-card outlined class="card">
+    <div>Please confirm your information below to create your account.</div>
+    <div class="sign-up-container">
+      <app-avatar [user]="user" size="32" round="true"></app-avatar>
+      <div fxLayout="column">
+        <div>
+          <b>{{ user.name }}</b>
+        </div>
+        <div>{{ user.email }}</div>
+      </div>
+      <button id="sign-up-button" mdc-button primary (click)="signUp()" [disabled]="buttonsDisabled">Sign up</button>
+    </div>
+  </mdc-card>
+  <h2 class="link-header">Already have an account?</h2>
+  <mdc-card outlined class="card">
+    <div>
+      Log in with your {{ siteName }} email/username and password to link <b>{{ user.email }}</b> to your account.
+    </div>
+    <form class="link-form" [formGroup]="linkForm" (ngSubmit)="link()">
+      <mdc-form-field>
+        <mdc-text-field
+          outlined
+          label="Email or Username"
+          formControlName="userIdentifier"
+          #userIdentifier
+          (input)="onInput('userIdentifier', userIdentifier.value)"
+        ></mdc-text-field>
+      </mdc-form-field>
+      <mdc-form-field>
+        <mdc-text-field
+          outlined
+          type="password"
+          label="Password"
+          formControlName="password"
+          #password
+          (input)="onInput('password', password.value)"
+        ></mdc-text-field>
+      </mdc-form-field>
+      <button id="link-button" mdc-button primary type="submit" [disabled]="buttonsDisabled">Link account</button>
+    </form>
+  </mdc-card>
+</div>

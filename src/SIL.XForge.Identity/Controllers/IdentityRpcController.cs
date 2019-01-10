@@ -15,6 +15,7 @@ using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Identity.Configuration;
 using SIL.XForge.Identity.Models;
+using SIL.XForge.Identity.Services;
 using SIL.XForge.Models;
 using SIL.XForge.Services;
 using SIL.XForge.Utils;
@@ -33,11 +34,12 @@ namespace SIL.XForge.Identity.Controllers
         private readonly IEmailService _emailService;
         private readonly IOptions<GoogleCaptchaOptions> _captchaOptions;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IExternalAuthenticationService _externalAuthService;
 
         public IdentityRpcController(IIdentityServerInteractionService interaction, IClientStore clientStore,
             IEventService events, IRepository<UserEntity> users, IOptions<SiteOptions> options,
             IEmailService emailService, IOptions<GoogleCaptchaOptions> captchaOptions,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IExternalAuthenticationService externalAuthService)
         {
             _users = users;
             _interaction = interaction;
@@ -47,6 +49,7 @@ namespace SIL.XForge.Identity.Controllers
             _emailService = emailService;
             _captchaOptions = captchaOptions;
             _httpContextAccessor = httpContextAccessor;
+            _externalAuthService = externalAuthService;
         }
 
         public async Task<LogInResult> LogIn(string userIdentifier, string password, bool rememberLogIn,
@@ -140,7 +143,7 @@ namespace SIL.XForge.Identity.Controllers
             }
         }
 
-        public async Task<string> SignUp(string name, string password, string email, string recaptcha)
+        public async Task<string> SignUp(string name, string password, string email)
         {
             UserEntity existingUser = await _users.Query()
                 .SingleOrDefaultAsync(u => u.CanonicalEmail == UserEntity.CanonicalizeEmail(email));
@@ -163,8 +166,7 @@ namespace SIL.XForge.Identity.Controllers
                 }
                 else if (existingUser.VerifyPassword(password))
                 {
-                    // check for signup from other site
-                    // ToDo
+                    // TODO: check for sign up from other xForge sites
                 }
             }
             else
@@ -242,6 +244,28 @@ namespace SIL.XForge.Identity.Controllers
             UserEntity user = await _users.Query().SingleOrDefaultAsync(u => u.ResetPasswordKey == key
                 && u.ResetPasswordExpirationDate > DateTime.UtcNow);
             return user != null;
+        }
+
+        public async Task<ExternalSignUpResult> ExternalSignUp()
+        {
+            (bool success, string returnUrl) = await _externalAuthService.SignUpAsync();
+            return new ExternalSignUpResult { Success = success, ReturnUrl = returnUrl };
+        }
+
+        public async Task<LinkAccountResult> LinkAccount(string userIdentifier, string password)
+        {
+            UserEntity user = await _users.Query().SingleOrDefaultAsync(
+                u => u.Username == userIdentifier.ToLowerInvariant()
+                || u.CanonicalEmail == UserEntity.CanonicalizeEmail(userIdentifier));
+            // validate username/password
+            if (user != null && user.VerifyPassword(password))
+            {
+                string returnUrl = await _externalAuthService.LogInAsync(user.Id);
+                return new LinkAccountResult { Success = true, ReturnUrl = returnUrl };
+            }
+
+            await _events.RaiseAsync(new UserLoginFailureEvent(userIdentifier, "invalid credentials"));
+            return new LinkAccountResult { Success = false };
         }
 
         private async Task LogInUserAsync(UserEntity user, bool rememberLogIn = false)

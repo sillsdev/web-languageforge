@@ -1,3 +1,4 @@
+import { OverlayContainer } from '@angular-mdc/web';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -5,34 +6,97 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Params } from '@angular/router';
 import { RecaptchaLoaderService } from 'ng-recaptcha';
 import { of } from 'rxjs';
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { LocationService } from '@xforge-common/location.service';
-import { NoticeService } from '@xforge-common/notice.service';
 import { UICommonModule } from '@xforge-common/ui-common.module';
 import { IdentityService } from '../identity.service';
 import { SignUpResult } from '../models/sign-up-result';
 import { SignUpComponent } from './sign-up.component';
 
+describe('SignUpComponent', () => {
+  it('should allow user to complete the form and register', fakeAsync(() => {
+    const env = new TestEnvironment();
+    when(env.mockedIdentityService.signUp(anything(), anything(), anything())).thenResolve(SignUpResult.Success);
+
+    env.fixture.detectChanges();
+    env.setTextFieldValue(env.nameTextField, 'testUser1');
+    env.setTextFieldValue(env.passwordTextField, 'password');
+    env.setTextFieldValue(env.emailTextField, 'test@example.com');
+    env.setRecaptchaValue();
+    env.clickSubmitButton();
+
+    verify(env.mockedIdentityService.verifyCaptcha(anything())).once();
+    verify(env.mockedIdentityService.signUp(anything(), anything(), anything())).once();
+    verify(env.mockedLocationService.go('/')).once();
+    expect().nothing();
+  }));
+
+  it('should display errors on individual input fields', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.setTextFieldValue(env.nameTextField, '');
+    expect(env.component.name.hasError('required')).toBeTruthy();
+    env.setTextFieldValue(env.nameTextField, 'bare');
+    expect(env.component.name.hasError('required')).toBeFalsy();
+    env.setTextFieldValue(env.passwordTextField, 'bones');
+    expect(env.component.password.hasError('minlength')).toBeTruthy();
+    env.setTextFieldValue(env.emailTextField, 'notavalidemail');
+    expect(env.component.email.hasError('email')).toBeTruthy();
+  }));
+
+  it('should fill in email if user signs up through email link', fakeAsync(() => {
+    const email = 'fakeemail@example.com';
+    const env = new TestEnvironment(email);
+    env.fixture.detectChanges();
+    flush();
+    const inputElem = env.emailTextField.query(By.css('input')).nativeElement as HTMLInputElement;
+    expect(inputElem.value).toBe(email);
+  }));
+
+  it('should display error if the sign up was unsuccessful', fakeAsync(() => {
+    const env = new TestEnvironment();
+    when(env.mockedIdentityService.signUp(anything(), anything(), anything())).thenResolve(SignUpResult.Conflict);
+
+    env.fixture.detectChanges();
+    env.setTextFieldValue(env.nameTextField, 'testUser1');
+    env.setTextFieldValue(env.passwordTextField, 'password');
+    env.setTextFieldValue(env.emailTextField, 'test@example.com');
+    env.setRecaptchaValue();
+    env.clickSubmitButton();
+
+    verify(env.mockedIdentityService.signUp(anything(), anything(), anything())).once();
+    expect(env.getSnackBarContent()).toEqual(
+      'A user with the specified email address already exists. Please use a different email address.'
+    );
+    expect().nothing();
+  }));
+
+  it('should do nothing when the form is invalid', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.fixture.detectChanges();
+    env.clickSubmitButton();
+    verify(env.mockedIdentityService.signUp(anything(), anything(), anything())).never();
+    expect().nothing();
+  }));
+});
+
 class TestEnvironment {
   component: SignUpComponent;
   fixture: ComponentFixture<SignUpComponent>;
+  overlayContainer: OverlayContainer;
 
   mockedIdentityService: IdentityService;
   mockedLocationService: LocationService;
-  mockedNoticeService: NoticeService;
   mockedActivatedRoute: ActivatedRoute;
   mockedRecaptchaLoaderService: RecaptchaLoaderService;
 
   constructor(predefinedEmail: string = null) {
     this.mockedIdentityService = mock(IdentityService);
     this.mockedLocationService = mock(LocationService);
-    this.mockedNoticeService = mock(NoticeService);
     this.mockedActivatedRoute = mock(ActivatedRoute);
     this.mockedRecaptchaLoaderService = mock(RecaptchaLoaderService);
 
     when(this.mockedIdentityService.verifyCaptcha(anything())).thenResolve(true);
-    when(this.mockedNoticeService.push(anything(), anything())).thenReturn();
     const parameters: Params = { ['e']: predefinedEmail };
     when(this.mockedActivatedRoute.queryParams).thenReturn(of(parameters));
     when(this.mockedRecaptchaLoaderService.ready).thenReturn(of());
@@ -43,13 +107,13 @@ class TestEnvironment {
       providers: [
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
         { provide: LocationService, useFactory: () => instance(this.mockedLocationService) },
-        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
         { provide: RecaptchaLoaderService, useFactory: () => instance(this.mockedRecaptchaLoaderService) }
       ]
     });
     this.fixture = TestBed.createComponent(SignUpComponent);
     this.component = this.fixture.componentInstance;
+    this.overlayContainer = TestBed.get(OverlayContainer);
   }
 
   get nameTextField(): DebugElement {
@@ -89,72 +153,10 @@ class TestEnvironment {
     this.fixture.detectChanges();
     flush();
   }
+
+  getSnackBarContent(): string {
+    const overlayContainerElement = this.overlayContainer.getContainerElement();
+    const messageElement = overlayContainerElement.querySelector('mdc-snackbar-container');
+    return messageElement.textContent;
+  }
 }
-
-describe('SignUpComponent', () => {
-  it('should allow user to complete the form and register', fakeAsync(() => {
-    const env = new TestEnvironment();
-    when(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything())).thenResolve(
-      SignUpResult.Success
-    );
-
-    env.fixture.detectChanges();
-    env.setTextFieldValue(env.nameTextField, 'testUser1');
-    env.setTextFieldValue(env.passwordTextField, 'password');
-    env.setTextFieldValue(env.emailTextField, 'test@example.com');
-    env.setRecaptchaValue();
-    env.clickSubmitButton();
-
-    verify(env.mockedIdentityService.verifyCaptcha(anything())).once();
-    verify(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything())).once();
-    verify(env.mockedLocationService.go('/')).once();
-    expect().nothing();
-  }));
-
-  it('should display errors on individual input fields', fakeAsync(() => {
-    const env = new TestEnvironment();
-    env.setTextFieldValue(env.nameTextField, '');
-    expect(env.component.name.hasError('required')).toBeTruthy();
-    env.setTextFieldValue(env.nameTextField, 'bare');
-    expect(env.component.name.hasError('required')).toBeFalsy();
-    env.setTextFieldValue(env.passwordTextField, 'bones');
-    expect(env.component.password.hasError('minlength')).toBeTruthy();
-    env.setTextFieldValue(env.emailTextField, 'notavalidemail');
-    expect(env.component.email.hasError('email')).toBeTruthy();
-  }));
-
-  it('should fill in email if user signs up through email link', fakeAsync(() => {
-    const email = 'fakeemail@example.com';
-    const env = new TestEnvironment(email);
-    env.fixture.detectChanges();
-    flush();
-    const inputElem = env.emailTextField.query(By.css('input')).nativeElement as HTMLInputElement;
-    expect(inputElem.value).toBe(email);
-  }));
-
-  it('should display error if the sign up was unsuccessful', fakeAsync(() => {
-    const env = new TestEnvironment();
-    when(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything())).thenResolve(
-      SignUpResult.Conflict
-    );
-
-    env.fixture.detectChanges();
-    env.setTextFieldValue(env.nameTextField, 'testUser1');
-    env.setTextFieldValue(env.passwordTextField, 'password');
-    env.setTextFieldValue(env.emailTextField, 'test@example.com');
-    env.setRecaptchaValue();
-    env.clickSubmitButton();
-
-    verify(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything())).once();
-    verify(env.mockedNoticeService.push(deepEqual(NoticeService.WARN), anything())).once();
-    expect().nothing();
-  }));
-
-  it('should do nothing when the form is invalid', fakeAsync(() => {
-    const env = new TestEnvironment();
-    env.fixture.detectChanges();
-    env.clickSubmitButton();
-    verify(env.mockedIdentityService.signUp(anything(), anything(), anything(), anything())).never();
-    expect().nothing();
-  }));
-});

@@ -25,8 +25,9 @@ namespace SIL.XForge.Identity.Services
 
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
-            UserEntity user = await _userRepo.Query().SingleOrDefaultAsync(u => u.Username == context.UserName
-                || u.CanonicalEmail == UserEntity.CanonicalizeEmail(context.UserName));
+            UserEntity user = await _userRepo.Query().SingleOrDefaultAsync(
+                u => u.Username == context.UserName.ToLowerInvariant()
+                    || u.CanonicalEmail == UserEntity.CanonicalizeEmail(context.UserName));
             if (user != null && user.VerifyPassword(context.Password))
             {
                 string site = _siteOptions.Value.Origin.Host;

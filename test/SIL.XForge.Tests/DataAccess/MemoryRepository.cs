@@ -125,7 +125,10 @@ namespace SIL.XForge.DataAccess
             {
                 bool isInsert = entity == null;
                 if (isInsert)
+                {
                     entity = new T();
+                    entity.Id = ObjectId.GenerateNewId().ToString();
+                }
 
                 var builder = new MemoryUpdateBuilder<T>(filter, entity, isInsert);
                 update(builder);

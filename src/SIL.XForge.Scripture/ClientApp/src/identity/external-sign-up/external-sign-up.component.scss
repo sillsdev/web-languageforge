@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card {
+  max-width: 380px;
+  width: 100%;
+  padding: 20px;
+}
+
+.sign-up-container {
+  display: flex;
+  flex-direction: row;
+  margin: 0px 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  > * {
+    margin-top: 10px;
+    margin-right: 10px;
+  }
+}
+
+.title {
+  font-size: large;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.link-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  mdc-text-field {
+    width: 100%;
+  }
+  button {
+    margin: 6px;
+  }
+}
+
+.link-header {
+  margin-top: 30px;
+}
