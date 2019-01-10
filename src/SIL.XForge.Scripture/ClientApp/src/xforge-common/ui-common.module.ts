@@ -11,7 +11,8 @@ import {
   MdcMenuModule,
   MdcSnackbarModule,
   MdcTextFieldModule,
-  MdcTopAppBarModule
+  MdcTopAppBarModule,
+  MdcTypographyModule
 } from '@angular-mdc/web';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -80,6 +81,7 @@ const modules = [
   MdcTextFieldModule,
   MdcTopAppBarModule,
   MdcMenuModule,
+  MdcTypographyModule,
   PasswordStrengthMeterModule,
   ReactiveFormsModule,
   RecaptchaModule,

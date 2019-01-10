@@ -11,6 +11,7 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { HomeComponent } from './home/home.component';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
+import { ProjectComponent } from './project/project.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'realtime', component: RealtimeComponent, canActivate: [AuthGuard] },
   { path: 'projects/:id/settings', component: ProjectSettingsComponent, canActivate: [AuthGuard] },
   { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard] },
+  { path: 'projects/:projectId', component: ProjectComponent, canActivate: [AuthGuard] },
   { path: 'system-administration', component: SystemAdministrationComponent, canActivate: [SystemAdminAuthGuard] },
   { path: 'identity', loadChildren: '../identity/identity.module#IdentityModule' }
 ];
