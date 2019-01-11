@@ -30,11 +30,10 @@ export class LoginPage {
         .actions()
         .sendKeys(protractor.Key.ENTER)
         .perform();
-      await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.homepageHeader), 6000);
     } else {
       await this.loginButton.click();
-      await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.homepageHeader), 6000);
     }
+    await browser.wait(ExpectedConditions.visibilityOf(AppPage.homepage.homepageHeader), 6000);
   }
 
   async loginAsAdmin() {
