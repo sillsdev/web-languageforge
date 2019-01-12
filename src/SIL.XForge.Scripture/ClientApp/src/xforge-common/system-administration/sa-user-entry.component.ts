@@ -67,7 +67,8 @@ export class SaUserEntryComponent implements OnInit {
       this.showPasswordPanel = false;
       this.showActivateDeActivatePanel = true;
       this.getCurrentUser(this._editUserId);
-      this.accountUserForm.controls['Role'].setValue(undefined);
+      // (Raymond L) I couldn't figure out a good reason for system role to be set to undefined.
+      // this.accountUserForm.controls['Role'].setValue(undefined);
     } else {
       this.headerTitle = 'New account details';
       this.editToAddReset();
@@ -137,9 +138,12 @@ export class SaUserEntryComponent implements OnInit {
       username: this.accountUserForm.value.Username,
       email: this.accountUserForm.value.Email,
       role: this.accountUserForm.value.Role,
-      password: this.accountUserForm.value.Password,
       active: this.accountUserForm.value.ActivateStatus
     };
+    if (this.accountUserForm.value.Password !== '') {
+      // The password was changed, so we need to update the password property of our user
+      updateUser.password = this.accountUserForm.value.password;
+    }
     await this.userService.onlineUpdateAttributes(this.editUserId, updateUser);
     this.accountUserForm.reset();
     this.noticeService.push(NoticeService.SUCCESS, 'User account updated.');
