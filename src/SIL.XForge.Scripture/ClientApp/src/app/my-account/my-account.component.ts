@@ -82,9 +82,11 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
 
   contactMethodToggleDisabled = new Map<string, boolean>([['email', false], ['sms', false], ['emailSms', false]]);
   showAvatar = true;
+  errorUsernameInUse = false;
 
   /** User data as received from the database. */
   userFromDatabase: SFUser;
+
   paratextUsername: string;
   googleUsername: string;
 
@@ -124,17 +126,40 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     });
 
     // Update states when control values change.
-    for (const element of Object.keys(this.formGroup.controls)) {
-      this.subscribe(this.formGroup.get(element).valueChanges, () => {
-        const isClean = this.userFromDatabase[element] === this.formGroup.get(element).value;
-        const newState = isClean ? ElementState.InSync : ElementState.Dirty;
-        this.controlStates.set(element, newState);
-
-        if (this.emailAndUsernameValidator(this, this.formGroup.get(element)) !== null) {
-          this.controlStates.set(element, ElementState.Invalid);
-        }
-      });
+    for (const controlName of Object.keys(this.formGroup.controls)) {
+      this.subscribe(this.formGroup.get(controlName).valueChanges, this.onControlValueChanges(controlName));
     }
+  }
+
+  private onControlValueChanges(controlName: string): () => void {
+    return () => {
+      const isClean = this.userFromDatabase[controlName] === this.formGroup.get(controlName).value;
+      const newState = isClean ? ElementState.InSync : ElementState.Dirty;
+      this.controlStates.set(controlName, newState);
+      if (this.emailAndUsernameValidator(this, this.formGroup.get(controlName)) !== null) {
+        this.controlStates.set(controlName, ElementState.Invalid);
+      }
+
+      if (controlName === 'username') {
+        const userMatches$ = this.userService.findUsers(this.formGroup.get(controlName).value);
+        if (userMatches$ === null) {
+          this.errorUsernameInUse = false;
+          return;
+        }
+
+        this.subscribe(userMatches$, value => {
+          if (this.formGroup.get(controlName).value === this.userFromDatabase.username) {
+            this.errorUsernameInUse = false;
+            this.controlStates.set(controlName, ElementState.InSync);
+            return;
+          }
+          this.errorUsernameInUse = value.results.length > 0;
+          if (this.errorUsernameInUse) {
+            this.controlStates.set(controlName, ElementState.Invalid);
+          }
+        });
+      }
+    };
   }
 
   ngOnDestroy() {

@@ -6,34 +6,20 @@ import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/materi
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { RecordIdentity } from '@orbit/data';
 import { of } from 'rxjs';
 import { anything, capture, instance, mock, verify, when } from 'ts-mockito';
 
 import { AuthService } from '@xforge-common/auth.service';
-import { QueryResults } from '@xforge-common/json-api.service';
-import { Resource } from '@xforge-common/models/resource';
 import { User } from '@xforge-common/models/user';
 import { NoticeService } from '@xforge-common/notice.service';
 import { UICommonModule } from '@xforge-common/ui-common.module';
 import { UserService } from '@xforge-common/user.service';
+import { StubQueryResults } from '@xforge-common/user.service.spec';
 import { SFUser } from '../core/models/sfuser';
 import { ParatextService } from '../core/paratext.service';
 import { SFUserService } from '../core/sfuser.service';
 import { ChangingUsernameDialogComponent } from './changing-username-dialog/changing-username-dialog.component';
 import { MyAccountComponent } from './my-account.component';
-
-export class StubQueryResults<T> implements QueryResults<T> {
-  constructor(public readonly results: T, public readonly totalPagedCount?: number) {}
-
-  getIncluded<TInclude extends Resource>(_identity: RecordIdentity): TInclude {
-    return null;
-  }
-
-  getManyIncluded<TInclude extends Resource>(_identities: RecordIdentity[]): TInclude[] {
-    return null;
-  }
-}
 
 /**
  * This helps set entry components so can test using ChangingUsernameDialogComponent.
@@ -81,6 +67,30 @@ class TestEnvironment {
     when(this.mockedMatDialog.open(anything(), anything())).thenReturn(instance(this.mockedMatDialogRefForCUDC));
 
     when(this.mockedNoticeService.push(anything(), anything())).thenReturn('aa');
+
+    when(this.mockedSFUserService.findUsers('bobusername')).thenReturn(
+      of(
+        new StubQueryResults([
+          new SFUser({
+            name: 'bob smith',
+            username: 'bobusername',
+            email: 'bob@example.com'
+          })
+        ])
+      )
+    );
+
+    when(this.mockedSFUserService.findUsers('sallyusername')).thenReturn(
+      of(
+        new StubQueryResults([
+          new SFUser({
+            name: 'sally jones',
+            username: 'sallyusername',
+            email: 'sally@example.com'
+          })
+        ])
+      )
+    );
 
     TestBed.configureTestingModule({
       imports: [TestModule],
@@ -152,6 +162,10 @@ class TestEnvironment {
 
   get matErrors(): Array<DebugElement> {
     return this.fixture.debugElement.queryAll(By.css('mat-error'));
+  }
+
+  get errorMessages(): Array<DebugElement> {
+    return this.fixture.debugElement.queryAll(By.css('.errorMessage'));
   }
 
   get header2(): HTMLElement {
@@ -687,6 +701,153 @@ describe('MyAccountComponent', () => {
         'must supply a valid email',
         'should be email error message, not username error message'
       );
+    }));
+
+    it('username does not show in-use error if is the username of current user', fakeAsync(() => {
+      const usernameInDB = env.component.userFromDatabase.username;
+      expect(usernameInDB.length).toBeGreaterThan(3, 'setup');
+      expect(env.component.formGroup.get('username').value).toEqual(usernameInDB, 'setup');
+
+      expect(env.matErrors.length).toEqual(0);
+      expect(env.errorMessages.length).toEqual(0);
+
+      // Edit username field, but then back to what is in database.
+      env.component.formGroup.get('username').setValue('a');
+      env.component.formGroup.get('username').markAsDirty();
+      env.fixture.detectChanges();
+      env.component.formGroup.get('username').setValue(usernameInDB);
+      env.component.formGroup.get('username').markAsDirty();
+      env.fixture.detectChanges();
+
+      verifyStates(
+        env,
+        'username',
+        {
+          state: env.component.elementState.InSync,
+          updateButtonEnabled: false,
+          arrow: true,
+          spinner: false,
+          greenCheck: false,
+          errorIcon: false,
+          inputEnabled: true
+        },
+        env.updateButton('username').nativeElement
+      );
+
+      expect(env.matErrors.length).toEqual(0);
+      expect(env.errorMessages.length).toEqual(0);
+    }));
+
+    it('username shows error if it is already in use, otherwise no error', fakeAsync(() => {
+      const usernameInDB = env.component.userFromDatabase.username;
+      expect(usernameInDB.length).toBeGreaterThan(3, 'setup');
+      expect(env.component.formGroup.get('username').value).toEqual(usernameInDB, 'setup');
+
+      const someoneElsesUsername = 'sallyusername';
+      env.component.formGroup.get('username').setValue(someoneElsesUsername);
+      env.component.formGroup.get('username').markAsDirty();
+      env.fixture.detectChanges();
+      flush();
+
+      expect(env.component.errorUsernameInUse).toEqual(true);
+      expect(env.errorMessages.length).toEqual(1);
+      expect((env.errorMessages[0].nativeElement as HTMLElement).innerText).toContain('in use');
+
+      verifyStates(
+        env,
+        'username',
+        {
+          state: env.component.elementState.Invalid,
+          updateButtonEnabled: false,
+          arrow: true,
+          spinner: false,
+          greenCheck: false,
+          errorIcon: false,
+          inputEnabled: true
+        },
+        env.updateButton('username').nativeElement
+      );
+
+      // Edit username field to user's username
+      env.component.formGroup.get('username').setValue(usernameInDB);
+      env.component.formGroup.get('username').markAsDirty();
+      env.fixture.detectChanges();
+
+      expect(env.errorMessages.length).toEqual(0);
+
+      verifyStates(
+        env,
+        'username',
+        {
+          state: env.component.elementState.InSync,
+          updateButtonEnabled: false,
+          arrow: true,
+          spinner: false,
+          greenCheck: false,
+          errorIcon: false,
+          inputEnabled: true
+        },
+        env.updateButton('username').nativeElement
+      );
+
+      // Edit username field to unused username
+      const unusedUsername = 'unusedUsername';
+      env.component.formGroup.get('username').setValue(unusedUsername);
+      env.component.formGroup.get('username').markAsDirty();
+      env.fixture.detectChanges();
+
+      expect(env.errorMessages.length).toEqual(0);
+
+      verifyStates(
+        env,
+        'username',
+        {
+          state: env.component.elementState.Dirty,
+          updateButtonEnabled: true,
+          arrow: true,
+          spinner: false,
+          greenCheck: false,
+          errorIcon: false,
+          inputEnabled: true
+        },
+        env.updateButton('username').nativeElement
+      );
+    }));
+
+    it('Shows both errors of email address removed and username in use, at same time.', fakeAsync(() => {
+      expect(env.component.userFromDatabase.email.length).toBeGreaterThan(3, 'test not set up');
+      expect(env.component.userFromDatabase.username.length).toBeGreaterThan(3, 'test not set up');
+
+      // Delete email from form
+      env.component.formGroup.get('email').setValue('');
+      env.component.formGroup.get('email').markAsDirty();
+      env.fixture.detectChanges();
+
+      // Set username to in-use username.
+      const someoneElsesUsername = 'sallyusername';
+      env.component.formGroup.get('username').setValue(someoneElsesUsername);
+      env.component.formGroup.get('username').markAsDirty();
+      env.fixture.detectChanges();
+      flush();
+
+      verifyStates(
+        env,
+        'username',
+        {
+          state: env.component.elementState.Invalid,
+          updateButtonEnabled: false,
+          arrow: true,
+          spinner: false,
+          greenCheck: false,
+          errorIcon: false,
+          inputEnabled: true
+        },
+        env.updateButton('username').nativeElement
+      );
+
+      expect(env.matErrors.length).toEqual(1);
+      expect(env.component.errorUsernameInUse).toEqual(true);
+      expect(env.errorMessages.length).toEqual(1);
     }));
   });
 

@@ -43,6 +43,12 @@ export abstract class UserService<T extends User = User> extends ResourceService
     return this.jsonApiService.get<T>(this.identity(this.currentUserId));
   }
 
+  /** Fetch User objects by username. */
+  findUsers(username: string): QueryObservable<T[]> {
+    const parameters = { filters: [{ name: 'username', value: username }] };
+    return this.jsonApiService.getAll<T>(this.type, parameters);
+  }
+
   /**
    * Update user attributes in database optimistically.
    * Pass a Partial<User> specifying the attributes to update.
@@ -81,6 +87,7 @@ export abstract class UserService<T extends User = User> extends ResourceService
     return await this.jsonApiService.onlineUpdateAttributes<T>(this.identity(updateUserId), attrs);
   }
 
+  /** Fetch User by userid. */
   onlineGet(userId: string): QueryObservable<T> {
     return this.jsonApiService.onlineGet(this.identity(userId));
   }

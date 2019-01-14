@@ -47,13 +47,14 @@
         </div>
       </div>
       <div fxLayout="row" fwLayoutAlign="space-between stretch">
-        <div fxFlex>
+        <div fxFlex fxLayout="column" fxLayoutAlign="start stretch">
           <mat-form-field fxFlex>
             <input formControlName="username" matInput placeholder="Username" />
             <mat-error *ngIf="formGroup.get('username').hasError('usernameBlank')"
               >Username cannot be blank unless email is set</mat-error
-            ></mat-form-field
-          >
+            >
+          </mat-form-field>
+          <div class="errorMessage" *ngIf="errorUsernameInUse">This username is already in use</div>
         </div>
         <div>
           <button
