@@ -12,7 +12,7 @@
         >
           <mat-form-field>
             <input id="full-name" matInput placeholder="Name" formControlName="FullName" />
-            <mat-error *ngIf="formControls.FullName.errors?.required && isSubmitted">Name is required</mat-error>
+            <mat-error *ngIf="fullName.errors?.required && isSubmitted">Name is required</mat-error>
           </mat-form-field>
 
           <mat-form-field>
@@ -20,15 +20,17 @@
           </mat-form-field>
           <mat-form-field>
             <input id="email" matInput placeholder="Email Address" formControlName="Email" />
-            <mat-error *ngIf="formControls.Email.errors?.required && isSubmitted"> Email is required </mat-error>
-            <mat-error *ngIf="formControls.Email.errors?.email && isSubmitted"> Email is invalid </mat-error>
+            <mat-error *ngIf="email.errors?.required && isSubmitted"> Email is required </mat-error>
+            <mat-error *ngIf="(email.errors?.email || email.errors?.pattern) && isSubmitted">
+              Email is invalid
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field>
             <mat-select id="user-role" placeholder="System role" formControlName="Role">
               <mat-option *ngFor="let item of roleList" value="{{ item.id }}">{{ item.value }}</mat-option>
             </mat-select>
-            <mat-error *ngIf="formControls.Role.errors?.required && isSubmitted"> System Role is required </mat-error>
+            <mat-error *ngIf="role.errors?.required && isSubmitted"> System Role is required </mat-error>
           </mat-form-field>
           <div *ngIf="showPasswordPanel">
             <mat-form-field class="example-full-width password">
@@ -41,10 +43,8 @@
                 formControlName="Password"
                 minlength="7"
               />
-              <mat-error *ngIf="formControls.Password.errors?.minlength"
-                >Password must be at least 7 characters</mat-error
-              >
-              <mat-error *ngIf="formControls.Password.errors?.required && isSubmitted"
+              <mat-error *ngIf="password.errors?.minlength">Password must be at least 7 characters</mat-error>
+              <mat-error *ngIf="password.errors?.required && isSubmitted"
                 >Password is required</mat-error
               > </mat-form-field
             ><br />

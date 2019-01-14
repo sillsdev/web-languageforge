@@ -172,73 +172,7 @@ class TestUserEntryComponent {
 }
 
 describe('System Administration User Entry Component', () => {
-  describe('Existing user account details', () => {
-    it('should display page for existing user', fakeAsync(() => {
-      const env = new TestUserEntryComponent();
-      env.useExistingUser();
-      expect(env.component.editUserId).toBe('user01');
-      expect(env.updateButton.nativeElement.textContent).toContain('Update');
-      expect(env.title.nativeElement.textContent).toContain('Account details');
-      expect(env.component.showActivateDeActivatePanel).toBe(true);
-      expect(env.dateCreated.nativeElement.textContent).toContain('01 January 2019');
-      expect(env.lastLogin.nativeElement.textContent).toContain('01 January 2019');
-    }));
-
-    it('should update user if form is valid', fakeAsync(() => {
-      const env = new TestUserEntryComponent();
-      env.useExistingUser();
-      expect(env.component.accountUserForm.get('FullName').value).toBe('User 01');
-      env.setInputValue(env.nameInput, 'Updated Name');
-      env.setInputValue(env.usernameInput, 'updatedusername');
-      expect(env.component.accountUserForm.get('Email').value).toBe('user01@example.com');
-      expect(env.component.showPasswordPanel).toBe(false);
-      // The user's password is not stored on the form
-      expect(env.component.accountUserForm.get('Password').value).toBe('');
-      expect(env.component.accountUserForm.get('Role').value).toBe('user');
-      expect(env.component.accountUserForm.get('ActivateStatus').value).toBe(true);
-      env.clickElement(env.updateButton);
-      verify(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).once();
-      verify(env.mockedNoticeService.push(anything(), 'User account updated.')).once();
-    }));
-
-    it('should not submit if form is invalid', fakeAsync(() => {
-      const env = new TestUserEntryComponent();
-      env.useExistingUser();
-      env.setInputValue(env.nameInput, '');
-      expect(env.component.accountUserForm.get('FullName').hasError('required')).toBe(true);
-      env.setInputValue(env.emailInput, '');
-      expect(env.component.accountUserForm.get('Email').hasError('required')).toBe(true);
-      env.setInputValue(env.emailInput, 'notvalidemail');
-      expect(env.component.accountUserForm.get('Email').hasError('email')).toBe(true);
-      env.clickElement(env.updateButton);
-      verify(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).never();
-    }));
-
-    it('should allow the user to be updated when password field is untouched', fakeAsync(() => {
-      const env = new TestUserEntryComponent();
-      env.useExistingUser();
-      expect(env.component.showPasswordPanel).toBe(false);
-      // The user's password is not stored on the form
-      expect(env.component.accountUserForm.get('Password').value).toBe('');
-      expect(env.component.accountUserForm.get('Password').hasError('required')).toBe(true);
-      // The validations on the password get bypassed when showPasswordPanel is false
-      env.clickElement(env.updateButton);
-      verify(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).once();
-    }));
-
-    it('should update password when new password is entered', fakeAsync(() => {
-      const env = new TestUserEntryComponent();
-      env.useExistingUser();
-      expect(env.changePasswordButton.nativeElement.textContent).toContain('Change Password');
-      env.clickElement(env.changePasswordButton);
-      env.setInputValue(env.passwordInput, 'short');
-      expect(env.component.accountUserForm.get('Password').hasError('minlength')).toBe(true);
-      env.setInputValue(env.passwordInput, 'newvalidpassword');
-      expect(env.component.accountUserForm.get('Password').hasError('minlength')).toBe(false);
-      env.clickElement(env.updateButton);
-      verify(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).once();
-    }));
-  });
+  describe('Existing user account details', () => {});
 
   describe('New user account details', () => {
     it('should display form to add a user', fakeAsync(() => {
@@ -246,7 +180,6 @@ describe('System Administration User Entry Component', () => {
       env.simulateAddUser();
       expect(env.addButton.nativeElement.textContent).toContain('Add');
       expect(env.title.nativeElement.textContent).toContain('New account details');
-      expect(env.userRoleSelect.nativeElement.textContent).toBe('System role');
       expect(env.component.showPasswordPanel).toBe(true);
     }));
 
@@ -254,11 +187,16 @@ describe('System Administration User Entry Component', () => {
       const env = new TestUserEntryComponent();
       env.simulateAddUser();
       env.setInputValue(env.nameInput, '');
-      expect(env.component.accountUserForm.get('FullName').hasError('required')).toBe(true);
+      expect(env.component.fullName.hasError('required')).toBe(true);
       env.setInputValue(env.emailInput, 'invalidemail');
-      expect(env.component.accountUserForm.get('Email').hasError('email')).toBe(true);
+      expect(env.component.email.hasError('email')).toBe(true);
+      env.setInputValue(env.emailInput, 'invalidemail@example');
+      expect(env.component.email.hasError('pattern')).toBe(true);
       env.setInputValue(env.passwordInput, '');
-      expect(env.component.accountUserForm.get('Password').hasError('required')).toBe(true);
+      expect(env.component.password.hasError('required')).toBe(true);
+      env.clickElement(env.addButton);
+      verify(env.mockedUserService.onlineCreate(anything())).never();
+      verify(env.mockedNoticeService.push(anything(), anything())).never();
     }));
 
     it('should submit if form is valid', fakeAsync(() => {
@@ -268,7 +206,7 @@ describe('System Administration User Entry Component', () => {
       env.setInputValue(env.emailInput, 'newemail@example.com');
       env.setInputValue(env.passwordInput, 'newpassword');
       // The default role is set to be user
-      expect(env.component.accountUserForm.get('Role').value).toBe('user');
+      expect(env.component.role.value).toBe('user');
       expect(env.component.accountUserForm.valid).toBe(true);
       env.clickElement(env.addButton);
       verify(env.mockedUserService.onlineCreate(anything())).once();
