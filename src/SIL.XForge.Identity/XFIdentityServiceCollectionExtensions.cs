@@ -68,6 +68,7 @@ namespace SIL.XForge.Identity
             IConfiguration configuration)
         {
             services.AddOptions<GoogleCaptchaOptions>(configuration);
+            services.AddTransient<IExternalAuthenticationService, ExternalAuthenticationService>();
 
             var siteOptions = configuration.GetOptions<SiteOptions>();
 

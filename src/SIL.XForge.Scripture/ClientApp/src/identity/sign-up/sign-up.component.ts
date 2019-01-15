@@ -1,10 +1,10 @@
+import { MdcSnackbar } from '@angular-mdc/web';
 import { Component, OnInit } from '@angular/core';
 import { ObservableMedia } from '@angular/flex-layout';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { LocationService } from '@xforge-common/location.service';
-import { NoticeService } from '@xforge-common/notice.service';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { environment } from '../../environments/environment';
 import { IdentityService } from '../identity.service';
@@ -34,7 +34,7 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
     private readonly identityService: IdentityService,
     private readonly locationService: LocationService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly noticeService: NoticeService,
+    private readonly snackbar: MdcSnackbar,
     public readonly media: ObservableMedia
   ) {
     super();
@@ -46,7 +46,7 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
       this.emailEntry = this.params['e'] as string;
       this.email.setValue(this.emailEntry);
     });
-    this.isInvitatedUserExists(this.emailEntry);
+    this.verifyInvitedUser(this.emailEntry);
   }
 
   get captchaId(): string {
@@ -80,33 +80,34 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
     const name: string = this.name.value;
     const password: string = this.password.value;
     const email: string = this.email.value;
-    const recaptcha: string = this.recaptcha.value;
-    const result = await this.identityService.signUp(name, password, email, recaptcha);
+    const result = await this.identityService.signUp(name, password, email);
     if (result === SignUpResult.Success) {
       this.locationService.go('/');
     } else {
       this.signUpDisabled = false;
       if (result === SignUpResult.Conflict) {
-        this.noticeService.push(
-          NoticeService.WARN,
-          'A user with the specified email address already exists. Please use a different email address'
+        this.snackbar.show(
+          'A user with the specified email address already exists. Please use a different email address.',
+          undefined,
+          { timeout: 6000 }
         );
       } else {
-        this.noticeService.push(NoticeService.WARN, 'Your sign-up request was unsuccessful');
+        this.snackbar.show('Your sign-up request was unsuccessful.', undefined, { timeout: 6000 });
       }
     }
   }
 
-  async isInvitatedUserExists(email: string): Promise<void> {
+  private async verifyInvitedUser(email: string): Promise<void> {
     if (email == null) {
       return;
     }
 
     const result = await this.identityService.verifyInvitedUser(email);
     if (!result) {
-      const invitedUserMessage = 'The invitation email has expired. Please request another invitation.';
       this.signUpDisabled = true;
-      this.noticeService.push(NoticeService.WARN, invitedUserMessage, undefined, -1);
+      this.snackbar.show('The invitation email has expired. Please request another invitation.', undefined, {
+        timeout: 6000
+      });
     }
   }
 }

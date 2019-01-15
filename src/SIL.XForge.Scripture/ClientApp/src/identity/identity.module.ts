@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { UICommonModule } from '@xforge-common/ui-common.module';
 import { XForgeCommonModule } from '@xforge-common/xforge-common.module';
+import { ExternalSignUpComponent } from './external-sign-up/external-sign-up.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { IdentityRoutingModule } from './identity-routing.module';
 import { IdentityService } from './identity.service';
@@ -17,7 +18,8 @@ import { VerifyEmailComponent } from './verify-email/verify-email.component';
     ForgotPasswordComponent,
     SignUpComponent,
     ResetPasswordComponent,
-    VerifyEmailComponent
+    VerifyEmailComponent,
+    ExternalSignUpComponent
   ],
   imports: [CommonModule, IdentityRoutingModule, UICommonModule, XForgeCommonModule],
   providers: [IdentityService]

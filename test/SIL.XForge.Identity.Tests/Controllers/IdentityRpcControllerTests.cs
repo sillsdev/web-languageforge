@@ -19,6 +19,7 @@ using SIL.XForge.Identity.Models;
 using SIL.XForge.Models;
 using SIL.XForge.Services;
 using SIL.XForge.Identity.Configuration;
+using SIL.XForge.Identity.Services;
 
 namespace SIL.XForge.Identity.Controllers
 {
@@ -53,7 +54,8 @@ namespace SIL.XForge.Identity.Controllers
         {
             var env = new TestEnvironment();
 
-            LogInResult result = await env.Controller.LogIn(TestUsername.ToUpperInvariant(), TestPassword, false, TestReturnUrl);
+            LogInResult result = await env.Controller.LogIn(TestUsername.ToUpperInvariant(), TestPassword, false,
+                TestReturnUrl);
 
             Assert.That(result.Success, Is.True);
             await env.Events.Received().RaiseAsync(Arg.Any<UserLoginSuccessEvent>());
@@ -182,8 +184,7 @@ namespace SIL.XForge.Identity.Controllers
         {
             var env = new TestEnvironment();
 
-            string result = await env.Controller.SignUp("Test Sample Name", "password1234", "testeremail@gmail.com",
-                null);
+            string result = await env.Controller.SignUp("Test Sample Name", "password1234", "testeremail@gmail.com");
 
             Assert.That(result, Is.EqualTo("success"));
             Assert.That(env.Users.Query().Any(x => x.Email == "testeremail@gmail.com"), Is.True);
@@ -208,7 +209,7 @@ namespace SIL.XForge.Identity.Controllers
             });
             // Duplicate emailid should result in an error
             string result = await env.Controller.SignUp("Non Duplicated Name", "unimportant1234",
-                "DUPLICATE@example.com", null);
+                "DUPLICATE@example.com");
 
             Assert.That(result, Is.EqualTo("conflict"));
         }
@@ -224,7 +225,7 @@ namespace SIL.XForge.Identity.Controllers
                 Email = "me@example.com",
                 CanonicalEmail = "me@example.com"
             });
-            string result = await env.Controller.SignUp("User Name", "unimportant1234", "me@example.com", null);
+            string result = await env.Controller.SignUp("User Name", "unimportant1234", "me@example.com");
 
             Assert.That(result, Is.EqualTo("success"));
         }
@@ -336,7 +337,52 @@ namespace SIL.XForge.Identity.Controllers
             Assert.Greater(user.ValidationExpirationDate, DateTime.UtcNow.AddDays(6));
         }
 
-        private class TestEnvironment
+        [Test]
+        public async Task LinkAccount_CorrectPassword()
+        {
+            var env = new TestEnvironment();
+
+            LinkAccountResult result = await env.Controller.LinkAccount(TestUsername, TestPassword);
+
+            Assert.That(result.Success, Is.True);
+            await env.ExternalService.Received().LogInAsync(TestUserId);
+        }
+
+        [Test]
+        public async Task LinkAccount_CaseInsensitiveUsername()
+        {
+            var env = new TestEnvironment();
+
+            LinkAccountResult result = await env.Controller.LinkAccount(TestUsername.ToUpperInvariant(), TestPassword);
+
+            Assert.That(result.Success, Is.True);
+            await env.ExternalService.Received().LogInAsync(TestUserId);
+        }
+
+        [Test]
+        public async Task LinkAccount_CaseInsensitiveEmail()
+        {
+            var env = new TestEnvironment();
+
+            LinkAccountResult result = await env.Controller.LinkAccount("ABC@fakegmail.com", TestPassword);
+
+            Assert.That(result.Success, Is.True);
+            await env.ExternalService.Received().LogInAsync(TestUserId);
+        }
+
+        [Test]
+        public async Task LinkAccount_IncorrectPassword()
+        {
+            var env = new TestEnvironment();
+
+            LinkAccountResult result = await env.Controller.LinkAccount(TestUsername, "wrong");
+
+            Assert.That(result.Success, Is.False);
+            await env.Events.Received().RaiseAsync(Arg.Any<UserLoginFailureEvent>());
+            await env.ExternalService.DidNotReceive().LogInAsync(TestUserId);
+        }
+
+        private class TestEnvironment : HttpTestEnvironmentBase
         {
             public TestEnvironment(bool isResetLinkExpired = false)
             {
@@ -348,10 +394,6 @@ namespace SIL.XForge.Identity.Controllers
 
                 interaction.GetAuthorizationContextAsync(null).ReturnsForAnyArgs(Task.FromResult(authorizationRequest));
                 var clientStore = Substitute.For<IClientStore>();
-                var schemeProvider = Substitute.For<IAuthenticationSchemeProvider>();
-                var cookieAuthScheme = new AuthenticationScheme(CookieAuthenticationDefaults.AuthenticationScheme,
-                    CookieAuthenticationDefaults.AuthenticationScheme, typeof(CookieAuthenticationHandler));
-                schemeProvider.GetDefaultAuthenticateSchemeAsync().Returns(Task.FromResult(cookieAuthScheme));
                 Events = Substitute.For<IEventService>();
                 Users = new MemoryRepository<UserEntity>(
                     uniqueKeySelectors: new Func<UserEntity, object>[]
@@ -374,8 +416,6 @@ namespace SIL.XForge.Identity.Controllers
                             CanonicalEmail = UserEntity.CanonicalizeEmail(TestUserEmail)
                         }
                     });
-                AuthService = Substitute.For<IAuthenticationService>();
-                var serviceProvider = Substitute.For<IServiceProvider>();
                 var siteOptions = Substitute.For<IOptions<SiteOptions>>();
                 siteOptions.Value.Returns(new SiteOptions
                 {
@@ -388,27 +428,18 @@ namespace SIL.XForge.Identity.Controllers
                 CaptchaOptions = Substitute.For<IOptions<GoogleCaptchaOptions>>();
                 CaptchaOptions.Value.Returns(new GoogleCaptchaOptions());
 
-                var httpContextAccessor = Substitute.For<IHttpContextAccessor>();
-                httpContextAccessor.HttpContext.Returns(new DefaultHttpContext
-                {
-                    RequestServices = serviceProvider
-                });
-
-                serviceProvider.GetService(typeof(IAuthenticationService)).Returns(AuthService);
-                serviceProvider.GetService(typeof(ISystemClock)).Returns(new SystemClock());
-                serviceProvider.GetService(typeof(IAuthenticationSchemeProvider)).Returns(schemeProvider);
+                ExternalService = Substitute.For<IExternalAuthenticationService>();
 
                 Controller = new IdentityRpcController(interaction, clientStore, Events, Users, siteOptions,
-                    EmailService, CaptchaOptions, httpContextAccessor);
+                    EmailService, CaptchaOptions, HttpContextAccessor, ExternalService);
             }
 
-            public IAuthenticationService AuthService { get; }
             public IEventService Events { get; }
             public IdentityRpcController Controller { get; }
             public MemoryRepository<UserEntity> Users { get; }
             public IEmailService EmailService { get; }
             public IOptions<GoogleCaptchaOptions> CaptchaOptions { get; }
-
+            public IExternalAuthenticationService ExternalService { get; }
         }
     }
 }

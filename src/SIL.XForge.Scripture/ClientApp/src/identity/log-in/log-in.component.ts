@@ -16,7 +16,7 @@ import { IdentityService } from '../identity.service';
 })
 export class LogInComponent {
   logInForm = new FormGroup({
-    user: new FormControl('', Validators.required),
+    userIdentifier: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
     rememberLogIn: new FormControl(true)
   });
@@ -45,11 +45,11 @@ export class LogInComponent {
     }
 
     this.logInDisabled = true;
-    const user: string = this.logInForm.get('user').value;
+    const userIdentifier: string = this.logInForm.get('userIdentifier').value;
     const password: string = this.logInForm.get('password').value;
     const rememberLogIn: boolean = this.logInForm.get('rememberLogIn').value;
     const returnUrl = await this.getReturnUrl();
-    const result = await this.identityService.logIn(user, password, rememberLogIn, returnUrl);
+    const result = await this.identityService.logIn(userIdentifier, password, rememberLogIn, returnUrl);
     if (result.success) {
       if (returnUrl == null) {
         this.authService.logIn();
@@ -60,7 +60,7 @@ export class LogInComponent {
       }
     } else {
       this.logInDisabled = false;
-      this.snackBar.show('Invalid email/username or password', undefined, { timeout: 5000 });
+      this.snackBar.show('Invalid email/username or password.', undefined, { timeout: 6000 });
     }
   }
 
