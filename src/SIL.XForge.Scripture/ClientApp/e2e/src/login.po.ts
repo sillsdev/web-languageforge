@@ -6,8 +6,8 @@ export class LoginPage {
   private static readonly baseUrl = 'http://localhost:5000';
   private readonly constants = require('../testConstants.json');
 
-  usernameInput = element(by.css('input[id="userName"]'));
-  passwordInput = element(by.css('input[id="passWord"]'));
+  usernameInput = element(by.css('input[id="username"]'));
+  passwordInput = element(by.css('input[id="password"]'));
   loginButton = element(by.id('submitButton'));
 
   static async get() {
@@ -21,11 +21,11 @@ export class LoginPage {
   }
 
   // return type (Promise<void>) intentionally left off to avoid run error
-  async login(username: string, password: string, event?: boolean) {
+  async login(username: string, password: string, shouldSubmitByEnterkey?: boolean) {
     await LoginPage.get();
     await this.usernameInput.sendKeys(username);
     await this.passwordInput.sendKeys(password);
-    if (event) {
+    if (shouldSubmitByEnterkey) {
       await browser
         .actions()
         .sendKeys(protractor.Key.ENTER)
