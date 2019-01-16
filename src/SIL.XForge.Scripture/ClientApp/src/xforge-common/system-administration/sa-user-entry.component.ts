@@ -17,6 +17,7 @@ export class SaUserEntryComponent implements OnInit {
 
   accountUserForm: FormGroup;
   isSubmitted: boolean = false;
+  emailPattern = '[a-zA-Z0-9.-_]{1,}@[a-zA-Z0-9.-]{2,}[.]{1}[a-zA-Z]{2,}';
 
   btnUserAdd: boolean = true;
   btnUserUpdate: boolean = false;
@@ -44,7 +45,7 @@ export class SaUserEntryComponent implements OnInit {
     this.accountUserForm = this.formBuilder.group({
       FullName: ['', Validators.compose([Validators.required])],
       Username: [],
-      Email: ['', Validators.compose([Validators.required, Validators.email])],
+      Email: ['', Validators.compose([Validators.required, Validators.email, Validators.pattern(this.emailPattern)])],
       Role: ['', Validators.compose([Validators.required])],
       Password: ['', Validators.compose([Validators.required, Validators.minLength(7)])],
       ActivateStatus: []
@@ -67,12 +68,11 @@ export class SaUserEntryComponent implements OnInit {
       this.showPasswordPanel = false;
       this.showActivateDeActivatePanel = true;
       this.getCurrentUser(this._editUserId);
-      this.accountUserForm.controls['Role'].setValue(undefined);
     } else {
       this.headerTitle = 'New account details';
       this.editToAddReset();
       this.accountUserForm.reset();
-      this.accountUserForm.controls['Role'].setValue(this.roleList[this.userRoleListIndex].id);
+      this.role.patchValue(this.roleList[this.userRoleListIndex].id);
     }
   }
 
@@ -84,6 +84,22 @@ export class SaUserEntryComponent implements OnInit {
     return this.accountUserForm.controls;
   }
 
+  get fullName() {
+    return this.formControls.FullName;
+  }
+
+  get email() {
+    return this.formControls.Email;
+  }
+
+  get password() {
+    return this.formControls.Password;
+  }
+
+  get role() {
+    return this.formControls.Role;
+  }
+
   editToAddReset(): void {
     if (!this.editUserId) {
       this.btnUserAdd = true;
@@ -92,23 +108,23 @@ export class SaUserEntryComponent implements OnInit {
       this.showPasswordPanel = true;
       this.showActivateDeActivatePanel = false;
     }
-    this.accountUserForm.controls['Password'].setValidators([Validators.required]);
-    this.accountUserForm.get('Password').updateValueAndValidity();
+    this.password.setValidators([Validators.required]);
+    this.password.updateValueAndValidity();
   }
 
   onChangePassword(): void {
     this.showPasswordPanel = true;
     this.btnChangePassword = false;
     this.isSubmitted = true;
-    this.accountUserForm.get('Password').markAsTouched();
+    this.password.markAsTouched();
   }
 
   async onUserAdd(): Promise<void> {
+    this.isSubmitted = true;
     if (this.accountUserForm.invalid) {
       return;
     }
 
-    this.isSubmitted = true;
     const newUser: Partial<User> = {
       name: this.accountUserForm.value.FullName,
       username: this.accountUserForm.value.Username,
@@ -119,6 +135,7 @@ export class SaUserEntryComponent implements OnInit {
     };
 
     await this.userService.onlineCreate(newUser);
+    this.isSubmitted = false;
     this.accountUserForm.reset();
     this.noticeService.push(NoticeService.SUCCESS, 'User account created successfully');
     this.outputUserList.emit(true);
@@ -126,8 +143,8 @@ export class SaUserEntryComponent implements OnInit {
 
   async onUpdate(): Promise<void> {
     if (!this.showPasswordPanel) {
-      this.accountUserForm.get('Password').clearValidators();
-      this.accountUserForm.get('Password').updateValueAndValidity();
+      this.password.clearValidators();
+      this.password.updateValueAndValidity();
     }
     if (this.accountUserForm.invalid) {
       return;
@@ -137,9 +154,12 @@ export class SaUserEntryComponent implements OnInit {
       username: this.accountUserForm.value.Username,
       email: this.accountUserForm.value.Email,
       role: this.accountUserForm.value.Role,
-      password: this.accountUserForm.value.Password,
       active: this.accountUserForm.value.ActivateStatus
     };
+    if (this.accountUserForm.value.Password != null) {
+      // The password was changed, so we need to update the password property of our user
+      updateUser.password = this.accountUserForm.value.password;
+    }
     await this.userService.onlineUpdateAttributes(this.editUserId, updateUser);
     this.accountUserForm.reset();
     this.noticeService.push(NoticeService.SUCCESS, 'User account updated.');

@@ -33,5 +33,10 @@
 .mat-form-field {
   font-weight: 400;
   line-height: 1.125;
-  width: 400px;
+}
+
+.fields-container,
+.password-field {
+  width: 100%;
+  max-width: 375px;
 }

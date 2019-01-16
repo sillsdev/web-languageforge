@@ -1,5 +1,5 @@
 <mat-card>
-  <mat-card-title class="account-title"> {{ headerTitle }} </mat-card-title>
+  <mat-card-title id="title" class="account-title"> {{ headerTitle }} </mat-card-title>
   <mat-card-content fxLayout="column">
     <div fxLayout="column" fxLayoutAlign="center center">
       <div class="fields-container">
@@ -11,38 +11,40 @@
           autocomplete="off"
         >
           <mat-form-field>
-            <input matInput placeholder="Name" formControlName="FullName" />
-            <mat-error *ngIf="formControls.FullName.errors?.required && isSubmitted">Name is required</mat-error>
-          </mat-form-field>
-
-          <mat-form-field> <input matInput placeholder="Username" formControlName="Username" /> </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="Email Address" formControlName="Email" />
-            <mat-error *ngIf="formControls.Email.errors?.required && isSubmitted"> Email is required </mat-error>
-            <mat-error *ngIf="formControls.Email.errors?.email && isSubmitted"> Email is invalid </mat-error>
+            <input id="full-name" matInput placeholder="Name" formControlName="FullName" />
+            <mat-error *ngIf="fullName.errors?.required && isSubmitted">Name is required</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-            <mat-select placeholder="System role" formControlName="Role">
+            <input id="username" matInput placeholder="Username" formControlName="Username" />
+          </mat-form-field>
+          <mat-form-field>
+            <input id="email" matInput placeholder="Email Address" formControlName="Email" />
+            <mat-error *ngIf="email.errors?.required && isSubmitted"> Email is required </mat-error>
+            <mat-error *ngIf="(email.errors?.email || email.errors?.pattern) && isSubmitted">
+              Email is invalid
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-select id="user-role" placeholder="System role" formControlName="Role">
               <mat-option *ngFor="let item of roleList" value="{{ item.id }}">{{ item.value }}</mat-option>
             </mat-select>
-            <mat-error *ngIf="formControls.Role.errors?.required && isSubmitted"> System Role is required </mat-error>
+            <mat-error *ngIf="role.errors?.required && isSubmitted"> System Role is required </mat-error>
           </mat-form-field>
           <div *ngIf="showPasswordPanel">
-            <mat-form-field class="example-full-width password">
+            <mat-form-field class="password-field">
               <input
                 matInput
                 placeholder="Password"
                 type="password"
-                id="Password"
+                id="password"
                 name="Password"
                 formControlName="Password"
                 minlength="7"
               />
-              <mat-error *ngIf="formControls.Password.errors?.minlength"
-                >Password must be at least 7 characters</mat-error
-              >
-              <mat-error *ngIf="formControls.Password.errors?.required && isSubmitted"
+              <mat-error *ngIf="password.errors?.minlength">Password must be at least 7 characters</mat-error>
+              <mat-error *ngIf="password.errors?.required && isSubmitted"
                 >Password is required</mat-error
               > </mat-form-field
             ><br />
@@ -52,8 +54,8 @@
             ></password-strength-meter>
           </div>
           <div *ngIf="showActivateDeActivatePanel">
-            <p mat-line>Last login {{ userLastLoginDate }}</p>
-            <p mat-line>User created {{ userCreatedDate }}</p>
+            <p id="last-login" mat-line>Last login {{ userLastLoginDate }}</p>
+            <p id="date-created" mat-line>User created {{ userCreatedDate }}</p>
             <section class="example-section">
               <mat-slide-toggle class="example-margin" formControlName="ActivateStatus" (change)="onChange($event)">
                 {{ userActivateDeactive }}
@@ -63,6 +65,7 @@
           <mat-card-actions align="end">
             <button
               mat-raised-button
+              id="add-button"
               color="primary"
               *ngIf="btnUserAdd"
               type="submit"
@@ -73,6 +76,7 @@
             </button>
             <button
               mat-raised-button
+              id="update-button"
               color="primary"
               *ngIf="btnUserUpdate"
               type="button"
@@ -83,6 +87,7 @@
             </button>
             <button
               mat-raised-button
+              id="changepassword-button"
               *ngIf="btnChangePassword"
               type="button"
               class="changepassword-button"
