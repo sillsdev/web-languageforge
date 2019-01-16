@@ -31,58 +31,65 @@ class TestProject extends SFProject {
   }
 }
 
-fdescribe('ProjectSettingsComponent', () => {
-  const mockedActivatedRoute = mock(ActivatedRoute);
-  const mockedSFProjectService = mock(SFProjectService);
-  const mockedNoticeService = mock(NoticeService);
-  when(mockedActivatedRoute.params).thenReturn(of({}));
-  when(mockedSFProjectService.onlineGet(anything())).thenReturn(
-    of(
-      new StubQueryResults(
-        new TestProject({
-          checkingConfig: { enabled: false },
-          translateConfig: { enabled: true }
-        })
-      )
-    )
-  );
-  when(mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).thenCall(() => Promise.resolve());
-  let component: ProjectSettingsComponent;
-  let fixture: ComponentFixture<ProjectSettingsComponent>;
+class TestEnvironment {
+  component: ProjectSettingsComponent;
+  fixture: ComponentFixture<ProjectSettingsComponent>;
+  mockedSFProjectService = mock(SFProjectService);
+  constructor() {
+    const mockedActivatedRoute = mock(ActivatedRoute);
+    const mockedNoticeService = mock(NoticeService);
 
-  beforeEach(async(() => {
+    when(mockedActivatedRoute.params).thenReturn(of({}));
+    when(this.mockedSFProjectService.onlineGet(anything())).thenReturn(
+      of(
+        new StubQueryResults(
+          new TestProject({
+            checkingConfig: { enabled: false },
+            translateConfig: { enabled: true }
+          })
+        )
+      )
+    );
+    when(this.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).thenCall(() => Promise.resolve());
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, UICommonModule],
       declarations: [ProjectSettingsComponent],
       providers: [
         { provide: ActivatedRoute, useFactory: () => instance(mockedActivatedRoute) },
-        { provide: SFProjectService, useFactory: () => instance(mockedSFProjectService) },
+        { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
         { provide: NoticeService, useFactory: () => instance(mockedNoticeService) }
       ]
     }).compileComponents();
-    fixture = TestBed.createComponent(ProjectSettingsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }));
+    this.fixture = TestBed.createComponent(ProjectSettingsComponent);
+    this.component = this.fixture.componentInstance;
+    this.fixture.detectChanges();
+  }
+}
 
+describe('ProjectSettingsComponent', () => {
+  let env: TestEnvironment;
   describe('Tasks', () => {
+    beforeEach(async(() => {
+      env = new TestEnvironment();
+    }));
+
     it('should select Community Checking and submit update when clicked', fakeAsync(() => {
-      const communitycb = fixture.debugElement.query(By.css('#checkbox-community-checking'));
+      const communitycb = env.fixture.debugElement.query(By.css('#checkbox-community-checking'));
       expect(communitycb).toBeDefined();
       expect(communitycb.nativeElement).toBeDefined();
       const inputelem = <HTMLInputElement>communitycb.nativeElement.querySelector('input');
       expect(inputelem.checked).toBeDefined();
       expect(inputelem.checked).toBeFalsy();
-      clickElement(inputelem, fixture);
+      clickElement(inputelem, env.fixture);
       expect(inputelem.checked).toBeTruthy();
-      verify(mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).times(1);
+      verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).times(1);
     }));
 
     it('unchecking the last task should report error and not send an update', fakeAsync(() => {
       // prove error div is absent
-      expect(fixture.debugElement.query(By.css('#invalid-feedback'))).toBeNull();
-      const translationcb = fixture.debugElement.query(By.css('#checkbox-translating'));
-      const communitycb = fixture.debugElement.query(By.css('#checkbox-community-checking'));
+      expect(env.fixture.debugElement.query(By.css('#invalid-feedback'))).toBeNull();
+      const translationcb = env.fixture.debugElement.query(By.css('#checkbox-translating'));
+      const communitycb = env.fixture.debugElement.query(By.css('#checkbox-community-checking'));
       expect(translationcb).toBeDefined();
       expect(translationcb.nativeElement).toBeDefined();
       let inputelem = <HTMLInputElement>communitycb.nativeElement.querySelector('input');
@@ -91,15 +98,47 @@ fdescribe('ProjectSettingsComponent', () => {
       inputelem = <HTMLInputElement>translationcb.nativeElement.querySelector('input');
       expect(inputelem.checked).toBeDefined();
       expect(inputelem.checked).toBeTruthy();
-      clickElement(inputelem, fixture);
+      clickElement(inputelem, env.fixture);
       expect(inputelem.checked).toBeFalsy();
       // error div should now be present
-      expect(fixture.debugElement.query(By.css('#invalid-feedback'))).toBeDefined();
-      verify(mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).never();
+      expect(env.fixture.debugElement.query(By.css('#invalid-feedback'))).toBeDefined();
+      verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).never();
     }));
-  });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    it('changing state of task option results in status icon', fakeAsync(() => {
+      // prove 'changes submitted' elements are absent
+      expect(env.fixture.debugElement.query(By.css('#checking-update-done'))).toBeNull();
+      expect(env.fixture.debugElement.query(By.css('#translation-update-done'))).toBeNull();
+      const translationcb = env.fixture.debugElement.query(By.css('#checkbox-translating'));
+      const communitycb = env.fixture.debugElement.query(By.css('#checkbox-community-checking'));
+      expect(translationcb).toBeDefined();
+      expect(translationcb.nativeElement).toBeDefined();
+      let inputelem = <HTMLInputElement>communitycb.nativeElement.querySelector('input');
+      expect(inputelem.checked).toBeDefined();
+      expect(inputelem.checked).toBeFalsy();
+      clickElement(inputelem, env.fixture);
+      inputelem = <HTMLInputElement>translationcb.nativeElement.querySelector('input');
+      expect(inputelem.checked).toBeDefined();
+      expect(inputelem.checked).toBeTruthy();
+      clickElement(inputelem, env.fixture);
+      // 'changes submitted' elements should now be present
+      expect(env.fixture.debugElement.query(By.css('#checking-update-done'))).toBeDefined();
+      expect(env.fixture.debugElement.query(By.css('#translation-update-done'))).toBeDefined();
+    }));
+
+    it('error on data submit shows error icon', fakeAsync(() => {
+      // prove 'error status' elements are absent
+      expect(env.fixture.debugElement.query(By.css('#checking-error-icon'))).toBeNull();
+      const communitycb = env.fixture.debugElement.query(By.css('#checkbox-community-checking'));
+      expect(communitycb).toBeDefined();
+      expect(communitycb.nativeElement).toBeDefined();
+      const inputelem = <HTMLInputElement>communitycb.nativeElement.querySelector('input');
+      expect(inputelem.checked).toBeDefined();
+      expect(inputelem.checked).toBeFalsy();
+      when(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).thenReject();
+      clickElement(inputelem, env.fixture);
+      // 'error status' elements should now be present
+      expect(env.fixture.debugElement.query(By.css('#checking-error-icon'))).toBeDefined();
+    }));
   });
 });
