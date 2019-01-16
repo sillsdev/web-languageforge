@@ -61,7 +61,7 @@ namespace SIL.XForge.DataAccess
                 {
                     var customSitesSerializer =
                         new DictionaryInterfaceImplementerSerializer<Dictionary<string, Site>>(
-                            DictionaryRepresentation.Document, new SiteDomainSerializer(),
+                            DictionaryRepresentation.Document, new DictionaryKeySerializer(),
                             BsonSerializer.SerializerRegistry.GetSerializer<Site>());
                     cm.GetMemberMap(u => u.Sites).SetSerializer(customSitesSerializer);
                 },
@@ -72,10 +72,10 @@ namespace SIL.XForge.DataAccess
                         new CreateIndexOptions { Unique = true }));
                     indexes.CreateOrUpdate(new CreateIndexModel<UserEntity>(builder.Ascending(u => u.Username),
                         new CreateIndexOptions<UserEntity>
-                            {
-                                Unique = true,
-                                PartialFilterExpression = Builders<UserEntity>.Filter.Exists(u => u.Username)
-                            }));
+                        {
+                            Unique = true,
+                            PartialFilterExpression = Builders<UserEntity>.Filter.Exists(u => u.Username)
+                        }));
                 });
 
             return services;

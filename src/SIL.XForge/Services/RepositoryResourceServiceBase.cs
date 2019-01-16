@@ -42,12 +42,7 @@ namespace SIL.XForge.Services
             return Entities.UpdateAsync(e => e.Id == id, update =>
                 {
                     foreach (KeyValuePair<string, object> attr in attrs)
-                    {
-                        if (attr.Value == null)
-                            update.Unset(attr.Key);
-                        else
-                            update.Set(attr.Key, attr.Value);
-                    }
+                        UpdateAttribute(update, attr.Key, attr.Value);
 
                     foreach (KeyValuePair<string, string> rel in relationships)
                     {
@@ -96,6 +91,15 @@ namespace SIL.XForge.Services
                 return result;
             }
             return relResources.SingleOrDefault();
+        }
+
+        protected virtual void UpdateAttribute(IUpdateBuilder<TEntity> update, string name, object value)
+        {
+            // by default, resource attribute names are the same as entity property names
+            if (value == null)
+                update.Unset(name);
+            else
+                update.Set(name, value);
         }
 
         protected IRelationship<TEntity> ManyToOne<TOtherResource, TOtherEntity>(

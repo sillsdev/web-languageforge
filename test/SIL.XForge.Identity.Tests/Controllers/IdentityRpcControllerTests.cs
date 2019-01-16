@@ -202,7 +202,7 @@ namespace SIL.XForge.Identity.Controllers
             env.Users.Add(new UserEntity
             {
                 Id = "uniqueidwithdupemailid",
-                Password = BCrypt.Net.BCrypt.HashPassword("unimportant1234", 7),
+                Password = UserEntity.HashPassword("unimportant1234"),
                 Email = "duplicate@example.com",
                 CanonicalEmail = "duplicate@example.com",
                 Active = true
@@ -407,7 +407,7 @@ namespace SIL.XForge.Identity.Controllers
                         {
                             Id = TestUserId,
                             Username = TestUsername,
-                            Password = BCrypt.Net.BCrypt.HashPassword(TestPassword, 7),
+                            Password = UserEntity.HashPassword(TestPassword),
                             ResetPasswordKey =  TestResetPasswordKey,
                             ResetPasswordExpirationDate = isResetLinkExpired
                                 ? DateTime.UtcNow.AddTicks(-1)

@@ -10,6 +10,9 @@ namespace SIL.XForge.DataAccess
         IUpdateBuilder<T> Set<TField>(string collectionFieldName, string fieldName, TField value,
             int index = -1);
 
+        IUpdateBuilder<T> SetDictionaryValue<TField>(string dictionaryFieldName, string key, TField value);
+        IUpdateBuilder<T> RemoveDictionaryValue(string dictionaryFieldName, string key);
+
         IUpdateBuilder<T> SetOnInsert<TField>(string fieldName, TField value);
 
         IUpdateBuilder<T> Unset(string fieldName);

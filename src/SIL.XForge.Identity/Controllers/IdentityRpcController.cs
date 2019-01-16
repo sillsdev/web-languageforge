@@ -55,11 +55,9 @@ namespace SIL.XForge.Identity.Controllers
         public async Task<LogInResult> LogIn(string userIdentifier, string password, bool rememberLogIn,
             string returnUrl = null)
         {
-            UserEntity user = await _users.Query().SingleOrDefaultAsync(
-                u => u.Username == userIdentifier.ToLowerInvariant()
-                || u.CanonicalEmail == UserEntity.CanonicalizeEmail(userIdentifier));
+            Attempt<UserEntity> attempt = await _users.TryGetByIdentifier(userIdentifier);
             // validate username/password
-            if (user != null && user.VerifyPassword(password))
+            if (attempt.TryResult(out UserEntity user) && user.VerifyPassword(password))
             {
                 await LogInUserAsync(user, rememberLogIn);
                 AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(returnUrl);
@@ -82,12 +80,10 @@ namespace SIL.XForge.Identity.Controllers
         /// </summary>
         public async Task<bool> ForgotPassword(string userIdentifier)
         {
-            UserEntity user = await _users.UpdateAsync(
-                u => u.Username == userIdentifier || u.CanonicalEmail == UserEntity.CanonicalizeEmail(userIdentifier),
-                update => update
-                    .Set(u => u.ResetPasswordKey, Security.GenerateKey())
-                    .Set(u => u.ResetPasswordExpirationDate,
-                        DateTime.UtcNow.AddDays(IdentityConstants.PasswordResetPeriodDays)));
+            UserEntity user = await _users.UpdateByIdentifierAsync(userIdentifier, update => update
+                .Set(u => u.ResetPasswordKey, Security.GenerateKey())
+                .Set(u => u.ResetPasswordExpirationDate,
+                    DateTime.UtcNow.AddDays(IdentityConstants.PasswordResetPeriodDays)));
             if (user != null)
             {
                 SiteOptions siteOptions = _siteOptions.Value;
@@ -112,7 +108,7 @@ namespace SIL.XForge.Identity.Controllers
             UserEntity user = await _users.UpdateAsync(
                 u => u.ResetPasswordKey == key && u.ResetPasswordExpirationDate > DateTime.UtcNow,
                 update => update
-                    .Set(u => u.Password, BCrypt.Net.BCrypt.HashPassword(password, 7))
+                    .Set(u => u.Password, UserEntity.HashPassword(password))
                     .Unset(u => u.ResetPasswordKey)
                     .Unset(u => u.ResetPasswordExpirationDate));
             if (user != null)
@@ -156,7 +152,7 @@ namespace SIL.XForge.Identity.Controllers
                         .UpdateAsync(u => u.CanonicalEmail == UserEntity.CanonicalizeEmail(email),
                             update => update.Set(u => u.EmailVerified, true)
                                 .Set(u => u.Name, name)
-                                .Set(u => u.Password, BCrypt.Net.BCrypt.HashPassword(password, 7))
+                                .Set(u => u.Password, UserEntity.HashPassword(password))
                                 .Set(u => u.Active, true));
                     if (existingUser != null)
                     {
@@ -177,7 +173,7 @@ namespace SIL.XForge.Identity.Controllers
                     Email = email,
                     CanonicalEmail = UserEntity.CanonicalizeEmail(email),
                     EmailVerified = false,
-                    Password = BCrypt.Net.BCrypt.HashPassword(password, 7),
+                    Password = UserEntity.HashPassword(password),
                     Role = SystemRoles.User,
                     Active = true
                 };
@@ -254,11 +250,9 @@ namespace SIL.XForge.Identity.Controllers
 
         public async Task<LinkAccountResult> LinkAccount(string userIdentifier, string password)
         {
-            UserEntity user = await _users.Query().SingleOrDefaultAsync(
-                u => u.Username == userIdentifier.ToLowerInvariant()
-                || u.CanonicalEmail == UserEntity.CanonicalizeEmail(userIdentifier));
+            Attempt<UserEntity> attempt = await _users.TryGetByIdentifier(userIdentifier);
             // validate username/password
-            if (user != null && user.VerifyPassword(password))
+            if (attempt.TryResult(out UserEntity user) && user.VerifyPassword(password))
             {
                 string returnUrl = await _externalAuthService.LogInAsync(user.Id);
                 return new LinkAccountResult { Success = true, ReturnUrl = returnUrl };

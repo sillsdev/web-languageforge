@@ -1,5 +1,4 @@
 using System.Linq;
-using AutoMapper;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Models;
 

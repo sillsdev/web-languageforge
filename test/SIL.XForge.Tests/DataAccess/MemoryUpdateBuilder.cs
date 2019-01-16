@@ -41,7 +41,7 @@ namespace SIL.XForge.DataAccess
                     if (callExpr.Arguments[0] is MemberExpression memberExpr
                         && memberExpr.Member.Name == collectionFieldName)
                     {
-                        var predicate = (LambdaExpression) callExpr.Arguments[1];
+                        var predicate = (LambdaExpression)callExpr.Arguments[1];
                         Type itemType = predicate.Parameters[0].Type;
                         MethodInfo firstOrDefault = GetFirstOrDefaultMethod(itemType);
                         item = firstOrDefault.Invoke(null, new object[] { curCollection, predicate.Compile() });
@@ -50,7 +50,7 @@ namespace SIL.XForge.DataAccess
             }
             else
             {
-                item = ((IEnumerable) curCollection).Cast<object>().ElementAt(index);
+                item = ((IEnumerable)curCollection).Cast<object>().ElementAt(index);
             }
 
             if (item != null)
@@ -58,6 +58,22 @@ namespace SIL.XForge.DataAccess
                 PropertyInfo prop = item.GetType().GetProperty(fieldName);
                 prop.SetValue(item, value);
             }
+            return this;
+        }
+
+        public IUpdateBuilder<T> SetDictionaryValue<TField>(string dictionaryFieldName, string key, TField value)
+        {
+            PropertyInfo dictionaryProp = typeof(T).GetProperty(dictionaryFieldName);
+            var curDictionary = (IDictionary)dictionaryProp.GetValue(_entity);
+            curDictionary[key] = value;
+            return this;
+        }
+
+        public IUpdateBuilder<T> RemoveDictionaryValue(string dictionaryFieldName, string key)
+        {
+            PropertyInfo dictionaryProp = typeof(T).GetProperty(dictionaryFieldName);
+            var curDictionary = (IDictionary)dictionaryProp.GetValue(_entity);
+            curDictionary.Remove(key);
             return this;
         }
 
@@ -81,7 +97,7 @@ namespace SIL.XForge.DataAccess
         public IUpdateBuilder<T> Inc(string fieldName, int value)
         {
             PropertyInfo prop = typeof(T).GetProperty(fieldName);
-            var curValue = (int) prop.GetValue(_entity);
+            var curValue = (int)prop.GetValue(_entity);
             curValue += value;
             prop.SetValue(_entity, curValue);
             return this;
@@ -90,7 +106,7 @@ namespace SIL.XForge.DataAccess
         public IUpdateBuilder<T> RemoveAll<TItem>(string fieldName, Expression<Func<TItem, bool>> predicate)
         {
             PropertyInfo prop = typeof(T).GetProperty(fieldName);
-            var curCollection = (IEnumerable<TItem>) prop.GetValue(_entity);
+            var curCollection = (IEnumerable<TItem>)prop.GetValue(_entity);
             TItem[] toRemove = curCollection.Where(predicate.Compile()).ToArray();
             MethodInfo removeMethod = curCollection.GetType().GetMethod("Remove");
             foreach (TItem item in toRemove)

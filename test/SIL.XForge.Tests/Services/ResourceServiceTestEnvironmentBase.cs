@@ -19,6 +19,8 @@ namespace SIL.XForge.Services
         where TResource : class, IResource
         where TEntity : Entity, new()
     {
+        public const string SiteAuthority = "xf.localhost:5000";
+
         private readonly string _resourceName;
 
         protected ResourceServiceTestEnvironmentBase(string resourceName)
@@ -60,8 +62,6 @@ namespace SIL.XForge.Services
         public MemoryRepository<TEntity> Entities { get; }
         public IMapper Mapper { get; }
         public IOptions<SiteOptions> Options { get; }
-
-        public const string SiteAuthority = "xf.localhost:5000";
 
         public void SetUser(string userId, string role)
         {

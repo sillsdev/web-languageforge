@@ -176,6 +176,18 @@ namespace SIL.XForge.DataAccess
             return update.Set(GetPropertyName(collectionField), fieldName, value, index);
         }
 
+        public static IUpdateBuilder<T> SetDictionaryValue<T, TItem, TField>(this IUpdateBuilder<T> update,
+            Expression<Func<T, IDictionary<string, TItem>>> dictionaryField, string key, TField value) where T : Entity
+        {
+            return update.SetDictionaryValue(GetPropertyName(dictionaryField), key, value);
+        }
+
+        public static IUpdateBuilder<T> RemoveDictionaryValue<T, TItem>(this IUpdateBuilder<T> update,
+            Expression<Func<T, IDictionary<string, TItem>>> dictionaryField, string key) where T : Entity
+        {
+            return update.RemoveDictionaryValue(GetPropertyName(dictionaryField), key);
+        }
+
         public static IUpdateBuilder<T> SetOnInsert<T, TField>(this IUpdateBuilder<T> update,
             Expression<Func<T, TField>> field, TField value) where T : Entity
         {
@@ -219,15 +231,36 @@ namespace SIL.XForge.DataAccess
                     string name = ex.Command["indexes"][0]["name"].AsString;
                     indexes.DropOne(name);
                     indexes.CreateOne(indexModel);
-                } else {
+                }
+                else
+                {
                     throw;
                 }
             }
         }
 
+        public static Task<UserEntity> UpdateByIdentifierAsync(this IRepository<UserEntity> users,
+            string userIdentifier, Action<IUpdateBuilder<UserEntity>> update, bool upsert = false)
+        {
+            return users.UpdateAsync(UserIdentifierFilter(userIdentifier), update, upsert);
+        }
+
+        public static async Task<Attempt<UserEntity>> TryGetByIdentifier(this IRepository<UserEntity> users,
+            string userIdentifier)
+        {
+            UserEntity user = await users.Query().SingleOrDefaultAsync(UserIdentifierFilter(userIdentifier));
+            return new Attempt<UserEntity>(user != null, user);
+        }
+
+        private static Expression<Func<UserEntity, bool>> UserIdentifierFilter(string userIdentifier)
+        {
+            return u => u.Username == UserEntity.NormalizeUsername(userIdentifier)
+                || u.CanonicalEmail == UserEntity.CanonicalizeEmail(userIdentifier);
+        }
+
         private static string GetPropertyName<T, TField>(Expression<Func<T, TField>> field)
         {
-            var body = (MemberExpression) field.Body;
+            var body = (MemberExpression)field.Body;
             return body.Member.Name;
         }
     }

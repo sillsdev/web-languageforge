@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac;
@@ -32,16 +31,9 @@ namespace SIL.XForge.Services
             services.AddAutoMapper(mapConfig =>
                 {
                     mapConfig.ValidateInlineMaps = false;
-                    mapConfig.CreateMap<UserEntity, UserResource>()
-                        .ForMember(ur => ur.Password, o => o.Ignore())
-                        .ForMember(ur => ur.Site, o => o.MapFrom(ue => ue.Sites[siteKey]))
-                        .ReverseMap()
-                        .ForPath(ue => ue.Sites, opt => opt.MapFrom(ur => new Dictionary<string, Site>
-                            {
-                                { siteKey, ur.Site }
-                            }));
+                    mapConfig.AddProfile(new UserProfile(siteKey));
                     configure(mapConfig);
-                });
+                }, new Assembly[0]);
 
             JsonApiOptions.ResourceNameFormatter = new XForgeResourceNameFormatter();
             var graphBuilder = new ResourceGraphBuilder();

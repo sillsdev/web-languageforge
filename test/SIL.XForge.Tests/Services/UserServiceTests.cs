@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Models;
@@ -182,45 +183,58 @@ namespace SIL.XForge.Services
         }
 
         [Test]
-        public async Task UpdateAsync_Site()
+        public async Task UpdateAsync_SetSite()
         {
             var env = new TestEnvironment();
             env.SetUser("user01", SystemRoles.SystemAdmin);
-            string serializedHostKey = SiteDomainSerializer.ConvertDotIn(TestEnvironment.SiteAuthority);
             env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                 {
-                    { env.GetAttribute("site"), new Site
-                        {
-                            CurrentProjectId = "project01"
-                        }
-                    },
-                    { new AttrAttribute("sites." + serializedHostKey, "Sites." + serializedHostKey), new Site
-                        {
-                            CurrentProjectId = "project01"
-                        }
-                    }
+                    { env.GetAttribute("site"), new Site { CurrentProjectId = "project01" } }
                 });
             env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
             var resource = new TestUserResource
             {
                 Id = "user01",
-                Site = new Site
-                {
-                    CurrentProjectId = "project01"
-                }
+                Site = new Site { CurrentProjectId = "project01" }
             };
-            // TODO: fix the test MemoryUpdateBuilder.cs so it takes keys with dots.
-            // UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+            UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
 
-            // Assert.That(updatedResource, Is.Not.Null);
-            // Assert.That(updatedResource.Site, Is.Not.Null);
-            // Assert.That(updatedResource.Site.CurrentProjectId, Is.EqualTo("project01"));
+            Assert.That(updatedResource, Is.Not.Null);
+            Assert.That(updatedResource.Site, Is.Not.Null);
+            Assert.That(updatedResource.Site.CurrentProjectId, Is.EqualTo("project01"));
 
-            // UserEntity updatedEntity = await env.Service.GetEntityAsync(resource.Id);
-            // Assert.That(updatedEntity.Sites, Is.Not.Null);
-            // Assert.That(updatedEntity.Sites.Count, Is.EqualTo(1));
-            // Assert.That(updatedEntity.Sites[serializedHostKey].CurrentProjectId, Is.EqualTo("project01"));
+            UserEntity updatedEntity = await env.Service.GetEntityAsync(resource.Id);
+            Assert.That(updatedEntity.Sites.Count, Is.EqualTo(1));
+            Assert.That(updatedEntity.Sites[TestEnvironment.SiteAuthority].CurrentProjectId, Is.EqualTo("project01"));
+        }
+
+        [Test]
+        public async Task UpdateAsync_UnsetSite()
+        {
+            var env = new TestEnvironment();
+            UserEntity initialEntity = await env.Service.GetEntityAsync("user02");
+            Assert.That(initialEntity.Sites.Count, Is.EqualTo(1));
+            Assert.That(initialEntity.Sites[TestEnvironment.SiteAuthority].CurrentProjectId, Is.EqualTo("project01"));
+
+            env.SetUser("user01", SystemRoles.SystemAdmin);
+            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                {
+                    { env.GetAttribute("site"), null }
+                });
+            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+
+            var resource = new TestUserResource
+            {
+                Id = "user02"
+            };
+            UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+            Assert.That(updatedResource, Is.Not.Null);
+            Assert.That(updatedResource.Site, Is.Null);
+
+            UserEntity updatedEntity = await env.Service.GetEntityAsync(resource.Id);
+            Assert.That(updatedEntity.Sites.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -271,7 +285,13 @@ namespace SIL.XForge.Services
 
             UserResource[] resources = (await env.Service.GetAsync()).ToArray();
 
-            Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[] { "user01", "user02", "user03", "paratextuser01" }));
+            Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[]
+                {
+                    "user01",
+                    "user02",
+                    "user03",
+                    "paratextuser01"
+                }));
         }
 
         class TestEnvironment : ResourceServiceTestEnvironmentBase<UserResource, UserEntity>
@@ -300,7 +320,11 @@ namespace SIL.XForge.Services
                         Id = "user02",
                         Username = "user02",
                         Email = "user02@gmail.com",
-                        CanonicalEmail = "user02@gmail.com"
+                        CanonicalEmail = "user02@gmail.com",
+                        Sites = new Dictionary<string, Site>
+                        {
+                            { SiteAuthority, new Site { CurrentProjectId = "project01" } }
+                        }
                     },
                     new UserEntity
                     {
@@ -323,6 +347,14 @@ namespace SIL.XForge.Services
                         }
                     }
                 };
+            }
+
+            protected override void SetupMapper(IMapperConfigurationExpression config)
+            {
+                config.AddProfile(new UserProfile(SiteAuthority));
+                config.CreateMap<UserEntity, TestUserResource>()
+                    .IncludeBase<UserEntity, UserResource>()
+                    .ReverseMap();
             }
         }
     }

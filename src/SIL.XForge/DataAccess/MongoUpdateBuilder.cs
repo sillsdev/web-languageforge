@@ -32,6 +32,18 @@ namespace SIL.XForge.DataAccess
             return this;
         }
 
+        public IUpdateBuilder<T> SetDictionaryValue<TField>(string dictionaryFieldName, string key, TField value)
+        {
+            _defs.Add(_builder.Set($"{dictionaryFieldName}.{DictionaryKeySerializer.SerializeKey(key)}", value));
+            return this;
+        }
+
+        public IUpdateBuilder<T> RemoveDictionaryValue(string dictionaryFieldName, string key)
+        {
+            _defs.Add(_builder.Unset($"{dictionaryFieldName}.{DictionaryKeySerializer.SerializeKey(key)}"));
+            return this;
+        }
+
         public IUpdateBuilder<T> SetOnInsert<TField>(string fieldName, TField value)
         {
             _defs.Add(_builder.SetOnInsert(fieldName, value));
@@ -49,7 +61,6 @@ namespace SIL.XForge.DataAccess
             _defs.Add(_builder.Inc(fieldName, value));
             return this;
         }
-
 
         public IUpdateBuilder<T> RemoveAll<TItem>(string fieldName, Expression<Func<TItem, bool>> predicate)
         {
