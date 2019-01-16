@@ -4,12 +4,16 @@
   align-items: center;
 }
 
+mdc-form-field {
+  padding: 6px 0px;
+}
+
 mdc-text-field {
   width: 100%;
 }
 
-.component-container {
-  padding: 6px;
+.recaptcha-container {
+  padding: 6px 0px;
   display: flex;
   flex-direction: column;
 }
@@ -26,7 +30,7 @@ mdc-text-field {
 
 .helper-text {
   min-height: 19px;
-  margin: 3px 16px 11px 16px;
+  margin: 0px 16px;
   font-weight: 400;
   font-size: 0.75rem;
   color: var(--mdc-theme-error, #b00020);

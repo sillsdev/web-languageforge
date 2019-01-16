@@ -198,7 +198,7 @@ describe('System Administration User Entry Component', () => {
       expect(env.component.accountUserForm.get('ActivateStatus').value).toBe(true);
       env.clickElement(env.updateButton);
       verify(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).once();
-      verify(env.mockedNoticeService.push(anything(), 'User account updated.')).once();
+      verify(env.mockedNoticeService.show('User account updated.')).once();
     }));
 
     it('should not submit if form is invalid', fakeAsync(() => {
@@ -280,7 +280,7 @@ describe('System Administration User Entry Component', () => {
       expect(env.component.password.hasError('required')).toBe(true);
       env.clickElement(env.addButton);
       verify(env.mockedUserService.onlineCreate(anything())).never();
-      verify(env.mockedNoticeService.push(anything(), anything())).never();
+      verify(env.mockedNoticeService.show(anything())).never();
     }));
 
     it('should submit if form is valid', fakeAsync(() => {
@@ -294,7 +294,7 @@ describe('System Administration User Entry Component', () => {
       expect(env.component.accountUserForm.valid).toBe(true);
       env.clickElement(env.addButton);
       verify(env.mockedUserService.onlineCreate(anything())).once();
-      verify(env.mockedNoticeService.push(anything(), 'User account created successfully')).once();
+      verify(env.mockedNoticeService.show('User account created successfully.')).once();
     }));
   });
 });

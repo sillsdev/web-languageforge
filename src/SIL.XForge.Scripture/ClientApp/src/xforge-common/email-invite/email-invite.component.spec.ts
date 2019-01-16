@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
+import { NoticeService } from '@xforge-common/notice.service';
 import { InviteAction, ProjectService } from '../project.service';
 import { UICommonModule } from '../ui-common.module';
 import { EmailInviteComponent } from './email-invite.component';
@@ -83,13 +84,16 @@ class TestEnvironment {
 
   mockedMdcDialogRef: MdcDialogRef<InviteDialogComponent>;
   mockedProjectService: ProjectService;
+  mockedNoticeService: NoticeService;
   overlayContainer: OverlayContainer;
 
   constructor() {
     this.mockedMdcDialogRef = mock(MdcDialogRef);
     this.mockedProjectService = mock(ProjectService);
+    this.mockedNoticeService = mock(NoticeService);
 
     when(this.mockedProjectService.onlineInvite(anything())).thenResolve(InviteAction.Invited);
+    when(this.mockedNoticeService.show(anything())).thenResolve();
 
     TestBed.configureTestingModule({
       imports: [DialogTestModule],
@@ -97,7 +101,8 @@ class TestEnvironment {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: MdcDialogRef, useFactory: () => instance(this.mockedMdcDialogRef) },
-        { provide: ProjectService, useFactory: () => instance(this.mockedProjectService) }
+        { provide: ProjectService, useFactory: () => instance(this.mockedProjectService) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) }
       ]
     });
     this.fixture = TestBed.createComponent(EmailInviteComponent);

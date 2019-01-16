@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Component, DebugElement, Directive, NgModule, ViewChild, ViewContainerRef } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { NoticeService } from '@xforge-common/notice.service';
 import { InviteAction, ProjectService } from '../project.service';
@@ -187,7 +187,7 @@ describe('InviteDialogComponent', () => {
     env.clickElement(env.closeButton);
     verify(mockedProjectService.onlineInvite(emailAddress)).once();
     flush();
-    const message = 'An invitation email has been sent to ' + emailAddress;
-    verify(mockedNoticeService.push(anything(), deepEqual(message))).once();
+    const message = 'An invitation email has been sent to ' + emailAddress + '.';
+    verify(mockedNoticeService.show(message)).once();
   }));
 });

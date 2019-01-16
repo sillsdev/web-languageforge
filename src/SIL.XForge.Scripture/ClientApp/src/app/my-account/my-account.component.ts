@@ -153,7 +153,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
         this.paratextUsername = ptUsername;
       },
       () => {
-        this.noticeService.push(NoticeService.WARN, 'Got an error while loading linked accounts');
+        this.noticeService.show('Got an error while loading linked accounts.');
       }
     );
     // TODO: get the username of the linked google account
@@ -235,22 +235,8 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
         this.formGroup.get(element).setValue(this.userFromDatabase[element]);
       }
 
-      const noEntrySymbol = '\u{26d4}';
       this.formGroup.get(element).enable();
       this.controlStates.set(element, ElementState.Error);
-      // .push() currently forces preformatting of details. So not indenting lines, and keeping within a narrow width.
-      this.noticeService.push(
-        NoticeService.ERROR,
-        `${noEntrySymbol} Error updating`,
-        `An error occurred while sending
-your updated information for
-'${element}'.
-It may help to make sure your
-Internet connection is working
-and then try again.
-Specific details:
-${exception.stack}`
-      );
     }
   }
 
@@ -327,8 +313,8 @@ ${exception.stack}`
 
   async deleteParatextLink(): Promise<void> {
     await this.userService.onlineUnlinkParatextAccount();
-    const message = 'Successfully removed the linked Paratext account';
-    this.noticeService.push(NoticeService.SUCCESS, message);
+    const message = 'Successfully removed the linked Paratext account.';
+    this.noticeService.show(message);
     this.loadLinkedAccounts();
   }
 
@@ -337,15 +323,7 @@ ${exception.stack}`
   }
 
   async onAccountDelete(userId: string): Promise<void> {
-    try {
-      await this.userService.onlineDelete(userId);
-      this.authService.logOut();
-    } catch (exception) {
-      this.noticeService.push(
-        NoticeService.ERROR,
-        'An error has occured, your account cannot be deleted at this time.',
-        `Specific details: ${exception.stack}`
-      );
-    }
+    await this.userService.onlineDelete(userId);
+    this.authService.logOut();
   }
 }

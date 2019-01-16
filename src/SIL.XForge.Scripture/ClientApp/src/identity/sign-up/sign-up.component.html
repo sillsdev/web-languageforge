@@ -44,12 +44,15 @@
           }}</mdc-icon>
         </mdc-text-field>
         <password-strength-meter id="passwordStrengthMeter" [password]="password.value"></password-strength-meter>
-        <div class="helper-text" [ngClass]="password.touched && password.invalid ? 'visible' : 'hidden'">
+        <div
+          class="helper-text"
+          [ngClass]="(frm.submitted || password.touched) && password.invalid ? 'visible' : 'hidden'"
+        >
           <span *ngIf="password.hasError('minlength')">Password must be at least 7 characters long</span>
           <span *ngIf="password.hasError('required')">Password is required</span>
         </div>
       </mdc-form-field>
-      <div class="component-container">
+      <div class="recaptcha-container">
         <re-captcha
           *ngIf="!media.isActive('xs')"
           [siteKey]="captchaId"

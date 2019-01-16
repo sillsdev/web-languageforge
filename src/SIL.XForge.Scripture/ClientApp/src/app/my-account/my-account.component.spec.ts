@@ -84,7 +84,7 @@ class TestEnvironment {
     when(this.mockedSFUserService.updateUserAttributes(anything())).thenCall(
       this.mockUserServiceUpdateUserAttributes()
     );
-    when(this.mockedNoticeService.push(anything(), anything())).thenReturn('aa');
+    when(this.mockedNoticeService.show(anything())).thenResolve();
 
     TestBed.configureTestingModule({
       imports: [TestModule],
@@ -379,14 +379,6 @@ describe('MyAccountComponent', () => {
       newName,
       'input should contain new name that failed to transmit'
     );
-
-    // Check error notice shown to user
-    const [type, title, details] = capture(env.mockedNoticeService.push).last();
-    expect(type).toEqual(NoticeService.ERROR);
-    expect(title).toContain('Error', 'error notice not shown to user');
-    expect(details).toContain('Internet');
-    expect(details).toContain(technicalDetails);
-    verify(env.mockedNoticeService.push(anything(), anything(), anything())).once();
   }));
 
   it('handles network error for non-text inputs', fakeAsync(() => {
@@ -950,6 +942,7 @@ describe('MyAccountComponent', () => {
       env.clickButton(env.deleteAccountButton);
       verify(env.mockedMatDialog.open(anything(), anything())).once();
       verify(env.mockedSFUserService.onlineDelete(anything())).once();
+      expect().nothing();
     }));
 
     it('should not delete account if cancelled', fakeAsync(() => {
@@ -958,6 +951,7 @@ describe('MyAccountComponent', () => {
       env.clickButton(env.deleteAccountButton);
       verify(env.mockedMatDialog.open(anything(), anything())).once();
       verify(env.mockedSFUserService.onlineDelete(anything())).never();
+      expect().nothing();
     }));
   });
 });

@@ -1,17 +1,14 @@
 <mdc-dialog>
   <mdc-dialog-container>
     <mdc-dialog-surface class="dialog-size">
-      <mdc-dialog-title> Invite a friend to {{ siteName }} </mdc-dialog-title>
+      <mdc-dialog-title>Invite a friend to {{ siteName }}</mdc-dialog-title>
       <mdc-dialog-content class="content-padding">
         <mdc-form-field [formGroup]="sendInviteForm" id="send-invite-form">
-          <mdc-text-field id="email" label="Email" type="email" formControlName="email" [helperText]="emailHelperText">
-          </mdc-text-field>
-          <mdc-text-field-helper-text #emailHelperText="mdcHelperText" validation>
-            <span *ngIf="email.hasError('pattern') || (email.hasError('email') && !email.hasError('required'))">
-              Please enter a valid email address, e.g. me@example.com
-            </span>
-            <span *ngIf="email.hasError('required') && isSubmitted"> Email is <strong>required</strong> </span>
-          </mdc-text-field-helper-text>
+          <mdc-text-field id="email" label="Email" type="email" formControlName="email" fullwidth></mdc-text-field>
+          <mdc-helper-text validation>
+            <span *ngIf="email.hasError('pattern') || email.hasError('email')">Email address is invalid</span>
+            <span *ngIf="email.hasError('required')">Email address is required</span>
+          </mdc-helper-text>
         </mdc-form-field>
       </mdc-dialog-content>
       <mdc-dialog-actions align="end">

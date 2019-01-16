@@ -28,15 +28,20 @@
   margin-bottom: 10px;
 }
 
+mdc-form-field {
+  padding: 6px 0px;
+}
+
+mdc-text-field {
+  width: 100%;
+}
+
 .link-form {
   display: flex;
   flex-direction: column;
   margin-top: 10px;
-  mdc-text-field {
-    width: 100%;
-  }
-  button {
-    margin: 6px;
+  > button {
+    margin: 6px 0px;
   }
 }
 

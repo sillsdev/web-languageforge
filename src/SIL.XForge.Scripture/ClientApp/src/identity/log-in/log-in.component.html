@@ -1,11 +1,9 @@
 <div class="container">
   <h2>Log in to {{ siteName }}</h2>
   <mdc-card outlined class="card">
-    <div class="button-container">
-      <button mdc-button class="log-in-paratext-button" (click)="logInWithParatext()">
-        <img src="/assets/paratext_logo.png" alt="Paratext Logo" class="paratext-logo" /> Log in with Paratext
-      </button>
-    </div>
+    <button mdc-button class="log-in-paratext-button" (click)="logInWithParatext()">
+      <img src="/assets/paratext_logo.png" alt="Paratext Logo" class="paratext-logo" /> Log in with Paratext
+    </button>
     <div class="mdc-list-divider divider"><span>OR</span></div>
     <form class="flex-column" [formGroup]="logInForm" (ngSubmit)="submit()">
       <mdc-form-field>
@@ -15,8 +13,6 @@
           label="Email or Username"
           formControlName="userIdentifier"
           autofocus
-          #userIdentifier
-          (input)="onInput('userIdentifier', userIdentifier.value)"
         ></mdc-text-field>
       </mdc-form-field>
       <mdc-form-field>
@@ -26,18 +22,14 @@
           type="password"
           label="Password"
           formControlName="password"
-          #password
-          (input)="onInput('password', password.value)"
         ></mdc-text-field>
       </mdc-form-field>
       <div class="forgot-password-button-container">
         <button mdc-button dense type="button" routerLink="/identity/forgot-password">Forgot Password?</button>
       </div>
-      <div class="button-container">
-        <button id="submitButton" mdc-button primary class="submit-button" type="submit" [disabled]="logInDisabled">
-          Log in
-        </button>
-      </div>
+      <button id="submitButton" mdc-button primary class="submit-button" type="submit" [disabled]="logInDisabled">
+        Log in
+      </button>
       <mdc-form-field *ngIf="false">
         <mdc-checkbox formControlName="rememberLogIn"></mdc-checkbox>
         <label>Remember me</label>

@@ -1,4 +1,3 @@
-import { MdcSnackbar } from '@angular-mdc/web';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -6,6 +5,7 @@ import { first } from 'rxjs/operators';
 
 import { AuthService } from '@xforge-common/auth.service';
 import { LocationService } from '@xforge-common/location.service';
+import { NoticeService } from '@xforge-common/notice.service';
 import { environment } from '../../environments/environment';
 import { IdentityService } from '../identity.service';
 
@@ -24,7 +24,7 @@ export class LogInComponent {
 
   constructor(
     private readonly identityService: IdentityService,
-    private readonly snackBar: MdcSnackbar,
+    private readonly noticeService: NoticeService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly locationService: LocationService,
     private readonly authService: AuthService
@@ -60,14 +60,7 @@ export class LogInComponent {
       }
     } else {
       this.logInDisabled = false;
-      this.snackBar.show('Invalid email/username or password.', undefined, { timeout: 6000 });
-    }
-  }
-
-  onInput(propertyName: string, value: string) {
-    // handle value inserted from password manager
-    if (this.logInForm.get(propertyName).value !== value) {
-      this.logInForm.get(propertyName).setValue(value);
+      this.noticeService.show('Invalid email/username or password.');
     }
   }
 
