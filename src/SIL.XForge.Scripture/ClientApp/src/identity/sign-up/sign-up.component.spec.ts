@@ -8,7 +8,8 @@ import { RecaptchaLoaderService } from 'ng-recaptcha';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { LocationService } from '@xforge-common/location.service';
+import { AuthService } from '@xforge-common/auth.service';
+import { NoticeService } from '@xforge-common/notice.service';
 import { UICommonModule } from '@xforge-common/ui-common.module';
 import { IdentityService } from '../identity.service';
 import { SignUpResult } from '../models/sign-up-result';
@@ -28,7 +29,7 @@ describe('SignUpComponent', () => {
 
     verify(env.mockedIdentityService.verifyCaptcha(anything())).once();
     verify(env.mockedIdentityService.signUp(anything(), anything(), anything())).once();
-    verify(env.mockedLocationService.go('/')).once();
+    verify(env.mockedAuthService.logIn()).once();
     expect().nothing();
   }));
 
@@ -65,9 +66,11 @@ describe('SignUpComponent', () => {
     env.clickSubmitButton();
 
     verify(env.mockedIdentityService.signUp(anything(), anything(), anything())).once();
-    expect(env.getSnackBarContent()).toEqual(
-      'A user with the specified email address already exists. Please use a different email address.'
-    );
+    verify(
+      env.mockedNoticeService.show(
+        'A user with the specified email address already exists. Please use a different email address.'
+      )
+    ).once();
     expect().nothing();
   }));
 
@@ -83,37 +86,39 @@ describe('SignUpComponent', () => {
 class TestEnvironment {
   component: SignUpComponent;
   fixture: ComponentFixture<SignUpComponent>;
-  overlayContainer: OverlayContainer;
 
   mockedIdentityService: IdentityService;
-  mockedLocationService: LocationService;
+  mockedAuthService: AuthService;
   mockedActivatedRoute: ActivatedRoute;
   mockedRecaptchaLoaderService: RecaptchaLoaderService;
+  mockedNoticeService: NoticeService;
 
   constructor(predefinedEmail: string = null) {
     this.mockedIdentityService = mock(IdentityService);
-    this.mockedLocationService = mock(LocationService);
+    this.mockedAuthService = mock(AuthService);
     this.mockedActivatedRoute = mock(ActivatedRoute);
     this.mockedRecaptchaLoaderService = mock(RecaptchaLoaderService);
+    this.mockedNoticeService = mock(NoticeService);
 
     when(this.mockedIdentityService.verifyCaptcha(anything())).thenResolve(true);
     const parameters: Params = { ['e']: predefinedEmail };
     when(this.mockedActivatedRoute.queryParams).thenReturn(of(parameters));
     when(this.mockedRecaptchaLoaderService.ready).thenReturn(of());
+    when(this.mockedNoticeService.show(anything())).thenResolve();
 
     TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, UICommonModule],
       declarations: [SignUpComponent],
       providers: [
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
-        { provide: LocationService, useFactory: () => instance(this.mockedLocationService) },
+        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
-        { provide: RecaptchaLoaderService, useFactory: () => instance(this.mockedRecaptchaLoaderService) }
+        { provide: RecaptchaLoaderService, useFactory: () => instance(this.mockedRecaptchaLoaderService) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) }
       ]
     });
     this.fixture = TestBed.createComponent(SignUpComponent);
     this.component = this.fixture.componentInstance;
-    this.overlayContainer = TestBed.get(OverlayContainer);
   }
 
   get nameTextField(): DebugElement {
@@ -152,11 +157,5 @@ class TestEnvironment {
     this.submitButton.nativeElement.click();
     this.fixture.detectChanges();
     flush();
-  }
-
-  getSnackBarContent(): string {
-    const overlayContainerElement = this.overlayContainer.getContainerElement();
-    const messageElement = overlayContainerElement.querySelector('mdc-snackbar-container');
-    return messageElement.textContent;
   }
 }

@@ -50,9 +50,9 @@ export class VerifyEmailComponent implements OnInit {
     }
     const result = await this.identityService.resendLink(this.email.value);
     if (result === 'success') {
-      this.noticeService.push(NoticeService.SUCCESS, 'An email with a verification link has been sent');
+      this.noticeService.show('An email with a verification link has been sent.');
     } else {
-      this.noticeService.push(NoticeService.WARN, 'Could not send a link at this time');
+      this.noticeService.show('Could not send a link at this time.');
     }
   }
 }

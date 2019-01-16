@@ -10,6 +10,7 @@ import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { IdentityService } from '@identity/identity.service';
 import { AuthService } from '@xforge-common/auth.service';
 import { LocationService } from '@xforge-common/location.service';
+import { NoticeService } from '@xforge-common/notice.service';
 import { UICommonModule } from '@xforge-common/ui-common.module';
 import { LogInComponent } from './log-in.component';
 
@@ -45,7 +46,8 @@ describe('LogInComponent', () => {
 
     verify(env.mockedIdentityService.logIn('user', 'password', true, undefined)).once();
     verify(env.mockedAuthService.logIn()).never();
-    expect(env.getSnackBarContent()).toEqual('Invalid email/username or password.');
+    verify(env.mockedNoticeService.show('Invalid email/username or password.')).once();
+    expect().nothing();
     flush();
   }));
 
@@ -79,15 +81,17 @@ class TestEnvironment {
   mockedActivatedRoute: ActivatedRoute;
   mockedLocationService: LocationService;
   mockedAuthService: AuthService;
-  overlayContainer: OverlayContainer;
+  mockedNoticeService: NoticeService;
 
   constructor() {
     this.mockedIdentityService = mock(IdentityService);
     this.mockedActivatedRoute = mock(ActivatedRoute);
     this.mockedLocationService = mock(LocationService);
     this.mockedAuthService = mock(AuthService);
+    this.mockedNoticeService = mock(NoticeService);
 
     when(this.mockedActivatedRoute.queryParams).thenReturn(of({}));
+    when(this.mockedNoticeService.show(anything())).thenResolve();
 
     TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, UICommonModule],
@@ -96,12 +100,12 @@ class TestEnvironment {
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
         { provide: LocationService, useFactory: () => instance(this.mockedLocationService) },
-        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
+        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) }
       ]
     });
     this.fixture = TestBed.createComponent(LogInComponent);
     this.component = this.fixture.componentInstance;
-    this.overlayContainer = TestBed.get(OverlayContainer);
   }
 
   get submitButton(): DebugElement {
@@ -143,11 +147,5 @@ class TestEnvironment {
     inputElem.dispatchEvent(new Event('input'));
     this.fixture.detectChanges();
     tick();
-  }
-
-  getSnackBarContent(): string {
-    const overlayContainerElement = this.overlayContainer.getContainerElement();
-    const messageElement = overlayContainerElement.querySelector('mdc-snackbar-container');
-    return messageElement.textContent;
   }
 }

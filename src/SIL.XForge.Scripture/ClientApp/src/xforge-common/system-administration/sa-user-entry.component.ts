@@ -137,7 +137,7 @@ export class SaUserEntryComponent implements OnInit {
     await this.userService.onlineCreate(newUser);
     this.isSubmitted = false;
     this.accountUserForm.reset();
-    this.noticeService.push(NoticeService.SUCCESS, 'User account created successfully');
+    this.noticeService.show('User account created successfully.');
     this.outputUserList.emit(true);
   }
 
@@ -162,7 +162,7 @@ export class SaUserEntryComponent implements OnInit {
     }
     await this.userService.onlineUpdateAttributes(this.editUserId, updateUser);
     this.accountUserForm.reset();
-    this.noticeService.push(NoticeService.SUCCESS, 'User account updated.');
+    this.noticeService.show('User account updated.');
     this.outputUserList.emit(true);
     this.editUserId = '';
     this.editToAddReset();

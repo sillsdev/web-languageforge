@@ -1,10 +1,10 @@
-import { MdcSnackbar } from '@angular-mdc/web';
 import { Component, OnInit } from '@angular/core';
 import { ObservableMedia } from '@angular/flex-layout';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 
-import { LocationService } from '@xforge-common/location.service';
+import { AuthService } from '@xforge-common/auth.service';
+import { NoticeService } from '@xforge-common/notice.service';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { environment } from '../../environments/environment';
 import { IdentityService } from '../identity.service';
@@ -32,9 +32,9 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
 
   constructor(
     private readonly identityService: IdentityService,
-    private readonly locationService: LocationService,
+    private readonly authService: AuthService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly snackbar: MdcSnackbar,
+    private readonly noticeService: NoticeService,
     public readonly media: ObservableMedia
   ) {
     super();
@@ -82,17 +82,15 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
     const email: string = this.email.value;
     const result = await this.identityService.signUp(name, password, email);
     if (result === SignUpResult.Success) {
-      this.locationService.go('/');
+      this.authService.logIn();
     } else {
       this.signUpDisabled = false;
       if (result === SignUpResult.Conflict) {
-        this.snackbar.show(
-          'A user with the specified email address already exists. Please use a different email address.',
-          undefined,
-          { timeout: 6000 }
+        this.noticeService.show(
+          'A user with the specified email address already exists. Please use a different email address.'
         );
       } else {
-        this.snackbar.show('Your sign-up request was unsuccessful.', undefined, { timeout: 6000 });
+        this.noticeService.show('Your sign-up request was unsuccessful.');
       }
     }
   }
@@ -105,9 +103,7 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
     const result = await this.identityService.verifyInvitedUser(email);
     if (!result) {
       this.signUpDisabled = true;
-      this.snackbar.show('The invitation email has expired. Please request another invitation.', undefined, {
-        timeout: 6000
-      });
+      this.noticeService.show('The invitation email has expired. Please request another invitation.');
     }
   }
 }

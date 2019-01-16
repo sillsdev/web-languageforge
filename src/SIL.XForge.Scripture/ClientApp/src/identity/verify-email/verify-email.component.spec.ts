@@ -124,7 +124,7 @@ describe('VerifyEmailComponent', () => {
     env.inputEmail('testuser@example.com');
     env.clickResendButton();
     verify(env.mockedIdentityService.resendLink(anything())).once();
-    verify(env.mockedNoticeService.push(anything(), anything())).once();
+    verify(env.mockedNoticeService.show(anything())).once();
     expect().nothing();
   }));
 

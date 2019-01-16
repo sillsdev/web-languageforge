@@ -20,23 +20,10 @@
     </div>
     <form class="link-form" [formGroup]="linkForm" (ngSubmit)="link()">
       <mdc-form-field>
-        <mdc-text-field
-          outlined
-          label="Email or Username"
-          formControlName="userIdentifier"
-          #userIdentifier
-          (input)="onInput('userIdentifier', userIdentifier.value)"
-        ></mdc-text-field>
+        <mdc-text-field outlined label="Email or Username" formControlName="userIdentifier"></mdc-text-field>
       </mdc-form-field>
       <mdc-form-field>
-        <mdc-text-field
-          outlined
-          type="password"
-          label="Password"
-          formControlName="password"
-          #password
-          (input)="onInput('password', password.value)"
-        ></mdc-text-field>
+        <mdc-text-field outlined type="password" label="Password" formControlName="password"></mdc-text-field>
       </mdc-form-field>
       <button id="link-button" mdc-button primary type="submit" [disabled]="buttonsDisabled">Link account</button>
     </form>

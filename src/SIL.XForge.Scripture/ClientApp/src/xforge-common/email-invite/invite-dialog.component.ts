@@ -34,20 +34,20 @@ export class InviteDialogComponent {
     this.isSubmitted = false;
     switch (actionPerformed) {
       case InviteAction.Joined:
-        message = 'An email has been sent to ' + this.sendInviteForm.value.email + ' adding them to this project';
-        this.noticeService.push(NoticeService.SUCCESS, message);
+        message = 'An email has been sent to ' + this.sendInviteForm.value.email + ' adding them to this project.';
+        this.noticeService.show(message);
         this.sendInviteForm.reset();
         break;
 
       case InviteAction.Invited:
-        message = 'An invitation email has been sent to ' + this.sendInviteForm.value.email;
-        this.noticeService.push(NoticeService.SUCCESS, message);
+        message = 'An invitation email has been sent to ' + this.sendInviteForm.value.email + '.';
+        this.noticeService.show(message);
         this.sendInviteForm.reset();
         break;
 
       case InviteAction.None:
-        message = 'A user with email ' + this.sendInviteForm.value.email + ' is already in the project';
-        this.noticeService.push(NoticeService.SUCCESS, message);
+        message = 'A user with email ' + this.sendInviteForm.value.email + ' is already in the project.';
+        this.noticeService.show(message);
         break;
     }
   }

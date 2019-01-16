@@ -8,8 +8,6 @@ import { AvatarComponent } from './avatar/avatar.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { EmailInviteComponent } from './email-invite/email-invite.component';
 import { InviteDialogComponent } from './email-invite/invite-dialog.component';
-import { DetailSnackBarComponent } from './notice/detail-snack-bar.component';
-import { NoticeComponent } from './notice/notice.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { SaDeleteDialogComponent } from './system-administration/sa-delete-dialog.component';
 import { SaUserEntryComponent } from './system-administration/sa-user-entry.component';
@@ -20,18 +18,16 @@ import { UICommonModule } from './ui-common.module';
 const componentExports = [
   AvatarComponent,
   ChangePasswordComponent,
-  DetailSnackBarComponent,
   EmailInviteComponent,
   InviteDialogComponent,
   ProjectsComponent,
-  NoticeComponent,
   SaDeleteDialogComponent,
   SaUserEntryComponent,
   SaUsersComponent,
   SystemAdministrationComponent
 ];
 
-export const xForgeCommonEntryComponents = [DetailSnackBarComponent, InviteDialogComponent, SaDeleteDialogComponent];
+export const xForgeCommonEntryComponents = [InviteDialogComponent, SaDeleteDialogComponent];
 
 @NgModule({
   imports: [
