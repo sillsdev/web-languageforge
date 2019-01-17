@@ -1,3 +1,5 @@
+import { browser, ExpectedConditions } from 'protractor';
+
 import { AppPage } from './app.po';
 import { LoginPage } from './login.po';
 
@@ -7,7 +9,12 @@ describe('App', () => {
 
   it('should display welcome message containing the users name', async () => {
     await loginPage.loginAsAdmin();
-    expect(await AppPage.getMainHeading()).toContain(constants.adminName);
-    await AppPage.homepage.logoutButton.click();
+    await expect(AppPage.getMainHeading()).toContain(constants.adminName);
+  });
+
+  it('Login by using Enter key should display welcome message containing the users name', async () => {
+    await LoginPage.logout();
+    await loginPage.login(constants.adminUsername, constants.adminPassword, true);
+    await expect(AppPage.getMainHeading()).toContain(constants.adminName);
   });
 });

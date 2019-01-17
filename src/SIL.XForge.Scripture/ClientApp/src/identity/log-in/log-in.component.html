@@ -10,6 +10,7 @@
     <form class="flex-column" [formGroup]="logInForm" (ngSubmit)="submit()">
       <mdc-form-field>
         <mdc-text-field
+          id="username"
           outlined
           label="Email or Username"
           formControlName="userIdentifier"
@@ -20,6 +21,7 @@
       </mdc-form-field>
       <mdc-form-field>
         <mdc-text-field
+          id="password"
           outlined
           type="password"
           label="Password"
@@ -32,7 +34,9 @@
         <button mdc-button dense type="button" routerLink="/identity/forgot-password">Forgot Password?</button>
       </div>
       <div class="button-container">
-        <button mdc-button primary class="submit-button" type="submit" [disabled]="logInDisabled">Log in</button>
+        <button id="submitButton" mdc-button primary class="submit-button" type="submit" [disabled]="logInDisabled">
+          Log in
+        </button>
       </div>
       <mdc-form-field *ngIf="false">
         <mdc-checkbox formControlName="rememberLogIn"></mdc-checkbox>
