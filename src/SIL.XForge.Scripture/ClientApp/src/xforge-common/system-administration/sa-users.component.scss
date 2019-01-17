@@ -1,5 +1,15 @@
-.mat-column-avatar {
+.mat-column-avatar,
+.mat-column-remove {
   width: 65px !important;
+}
+
+.mat-column-name {
+  padding-right: 0.5em;
+  word-break: break-word;
+}
+
+.mat-column-projects {
+  word-break: break-word;
 }
 
 mat-form-field {
