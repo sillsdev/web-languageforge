@@ -11,12 +11,12 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public class UserService<TResource> : RepositoryResourceServiceBase<TResource, UserEntity>
+    public abstract class UserService<TResource> : RepositoryResourceServiceBase<TResource, UserEntity>
         where TResource : UserResource
     {
         private readonly IOptions<SiteOptions> _options;
 
-        public UserService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
+        protected UserService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
             IRepository<UserEntity> users, IOptions<SiteOptions> options)
             : base(jsonApiContext, mapper, userAccessor, users)
         {
@@ -38,35 +38,49 @@ namespace SIL.XForge.Services
         protected override Task<UserEntity> InsertEntityAsync(UserEntity entity)
         {
             if (!string.IsNullOrEmpty(entity.Username))
-                entity.Username = entity.Username.ToLowerInvariant();
+                entity.Username = UserEntity.NormalizeUsername(entity.Username);
             if (!string.IsNullOrEmpty(entity.Password))
-                entity.Password = BCrypt.Net.BCrypt.HashPassword((string)entity.Password, 7);
+                entity.Password = UserEntity.HashPassword(entity.Password);
             entity.CanonicalEmail = UserEntity.CanonicalizeEmail(entity.Email);
             return base.InsertEntityAsync(entity);
         }
 
-        protected override Task<UserEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
-            IDictionary<string, string> relationships)
+        protected override void UpdateAttribute(IUpdateBuilder<UserEntity> update, string name, object value)
         {
-            if (attrs.TryGetValue(nameof(UserEntity.Username), out object username))
-                attrs[nameof(UserEntity.Username)] = ((string)username).ToLowerInvariant();
-            if (attrs.TryGetValue(nameof(UserEntity.Password), out object password))
-                attrs[nameof(UserEntity.Password)] = BCrypt.Net.BCrypt.HashPassword((string)password, 7);
-            if (attrs.TryGetValue(nameof(UserEntity.Email), out object email))
-                attrs[nameof(UserEntity.CanonicalEmail)] = UserEntity.CanonicalizeEmail((string)email);
-            if (attrs.TryGetValue(nameof(UserEntity.ParatextId), out object paratextId))
+            switch (name)
             {
-                if (paratextId == null)
-                    attrs[nameof(UserEntity.ParatextTokens)] = null;
+                case nameof(UserResource.Username):
+                    if (value == null)
+                        update.Unset(u => u.Username);
+                    else
+                        update.Set(u => u.Username, UserEntity.NormalizeUsername((string)value));
+                    break;
+                case nameof(UserResource.Password):
+                    update.Set(u => u.Password, UserEntity.HashPassword((string)value));
+                    break;
+                case nameof(UserResource.Email):
+                    update.Set(u => u.Email, value);
+                    update.Set(u => u.CanonicalEmail, UserEntity.CanonicalizeEmail((string)value));
+                    break;
+                case nameof(UserResource.ParatextId):
+                    if (value == null)
+                    {
+                        update.Unset(u => u.ParatextId);
+                        update.Unset(u => u.ParatextTokens);
+                    }
+                    break;
+                case nameof(UserResource.Site):
+                    SiteOptions siteOptions = _options.Value;
+                    string site = siteOptions.Origin.Authority;
+                    if (value == null)
+                        update.RemoveDictionaryValue(u => u.Sites, site);
+                    else
+                        update.SetDictionaryValue(u => u.Sites, site, value);
+                    break;
+                default:
+                    base.UpdateAttribute(update, name, value);
+                    break;
             }
-            if (attrs.TryGetValue(nameof(UserResource.Site), out object site))
-            {
-                SiteOptions siteOptions = _options.Value;
-                string serializedSiteKey = SiteDomainSerializer.ConvertDotIn(siteOptions.Origin.Authority);
-                attrs[nameof(UserEntity.Sites) + "." + serializedSiteKey] = (Site)site;
-                attrs.Remove(nameof(UserResource.Site));
-            }
-            return base.UpdateEntityAsync(id, attrs, relationships);
         }
 
         protected override Task CheckCanCreateAsync(TResource resource)

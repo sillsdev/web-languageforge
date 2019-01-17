@@ -7,6 +7,21 @@ namespace SIL.XForge.Models
 {
     public class UserEntity : Entity
     {
+        public static string CanonicalizeEmail(string email)
+        {
+            return email?.ToLowerInvariant();
+        }
+
+        public static string NormalizeUsername(string username)
+        {
+            return username?.ToLowerInvariant();
+        }
+
+        public static string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.HashPassword((string)password, 7);
+        }
+
         public string Username { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
@@ -27,7 +42,7 @@ namespace SIL.XForge.Models
         public string ContactMethod { get; set; }
         public DateTime Birthday { get; set; }
         public string Gender { get; set; }
-        public Dictionary<string, Site> Sites { get; set; }
+        public Dictionary<string, Site> Sites { get; set; } = new Dictionary<string, Site>();
 
         public Dictionary<string, object> ExtraElements { get; protected set; }
 
@@ -48,11 +63,6 @@ namespace SIL.XForge.Models
         public bool VerifyPassword(string password)
         {
             return BCrypt.Net.BCrypt.Verify(password, Password);
-        }
-
-        public static string CanonicalizeEmail(string email)
-        {
-            return email?.ToLowerInvariant();
         }
     }
 }
