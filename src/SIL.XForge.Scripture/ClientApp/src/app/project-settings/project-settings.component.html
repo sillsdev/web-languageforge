@@ -14,20 +14,20 @@
         <div class="status checkbox-row-item">
           <mat-spinner
             id="checking-update-spinner"
-            *ngIf="controlStates.get('checking') === elementState.Submitting"
+            *ngIf="controlStates.get('checking') === elementState.Submitting && !form.errors"
             [diameter]="15"
             class="update-button-spinner"
             aria-label="Update in progress"
           ></mat-spinner>
           <i
             id="checking-update-done"
-            *ngIf="controlStates.get('checking') === elementState.Submitted"
+            *ngIf="controlStates.get('checking') === elementState.Submitted && !form.errors"
             class="material-icons check-icon"
             >done</i
           >
           <i
             id="checking-error-icon"
-            *ngIf="controlStates.get('checking') === elementState.Error"
+            *ngIf="controlStates.get('checking') === elementState.Error && !form.errors"
             class="material-icons error-icon"
             >error</i
           >
@@ -49,20 +49,20 @@
         <div class="status checkbox-row-item">
           <mat-spinner
             id="translation-update-spinner"
-            *ngIf="controlStates.get('translation') === elementState.Submitting"
+            *ngIf="controlStates.get('translation') === elementState.Submitting && !form.errors"
             [diameter]="15"
             class="update-button-spinner"
             aria-label="Update in progress"
           ></mat-spinner>
           <i
             id="translation-update-done"
-            *ngIf="controlStates.get('translation') === elementState.Submitted"
+            *ngIf="controlStates.get('translation') === elementState.Submitted && !form.errors"
             class="material-icons check-icon"
             >done</i
           >
           <i
             id="translation-error-icon"
-            *ngIf="controlStates.get('translation') === elementState.Error"
+            *ngIf="controlStates.get('translation') === elementState.Error && !form.errors"
             class="material-icons error-icon"
             >error</i
           >
