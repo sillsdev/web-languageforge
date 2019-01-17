@@ -1,12 +1,13 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, NgModule } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { fakeAsync, flush } from '@angular/core/testing';
+import { async, fakeAsync, flush } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RecordIdentity } from '@orbit/data';
+import { merge } from '@orbit/utils';
 import { of } from 'rxjs';
 import { anything, capture, instance, mock, verify, when } from 'ts-mockito';
 
@@ -79,7 +80,9 @@ class TestEnvironment {
     });
     when(this.mockedMatDialogRefForCUDC.afterClosed()).thenReturn(of('update'));
     when(this.mockedMatDialog.open(anything(), anything())).thenReturn(instance(this.mockedMatDialogRefForCUDC));
-
+    when(this.mockedSFUserService.updateUserAttributes(anything())).thenCall(
+      this.mockUserServiceUpdateUserAttributes()
+    );
     when(this.mockedNoticeService.push(anything(), anything())).thenReturn('aa');
 
     TestBed.configureTestingModule({
@@ -104,11 +107,7 @@ class TestEnvironment {
     return (updatedAttributes: Partial<User>) => {
       return new Promise<User>(resolve => {
         setTimeout(() => {
-          for (const property of ['name', 'username', 'email', 'mobilePhone', 'contactMethod', 'birthday', 'gender']) {
-            if (updatedAttributes[property] !== undefined) {
-              this.userInDatabase[property] = updatedAttributes[property];
-            }
-          }
+          merge(this.userInDatabase, updatedAttributes);
           resolve();
         }, 0);
       });
@@ -218,23 +217,6 @@ describe('MyAccountComponent', () => {
   // arrow icon, and spinner.
   // The test goes thru a sequence of actions, verifying state and icons.
   it('should update spinner, arrow, check, and disabled, depending on activity', fakeAsync(() => {
-    when(env.mockedSFUserService.updateUserAttributes({ name: 'robert' })).thenReturn(
-      new Promise<User>(resolve => {
-        setTimeout(() => {
-          env.userInDatabase.name = 'robert';
-          resolve();
-        }, 0);
-      })
-    );
-
-    when(env.mockedSFUserService.updateUserAttributes(anything())).thenReturn(
-      new Promise<User>(resolve => {
-        setTimeout(() => {
-          resolve();
-        }, 0);
-      })
-    );
-
     const originalName = env.component.userFromDatabase.name;
     expect(env.component.formGroup.get('name').value).toEqual(originalName, 'test setup problem');
 
@@ -688,6 +670,67 @@ describe('MyAccountComponent', () => {
         'should be email error message, not username error message'
       );
     }));
+
+    describe('validate email pattern', () => {
+      it('good email pattern means no error and enabled update button', () => {
+        expectEmailPatternIsGood(env, 'bob_smith+extension@lunar-astronaut.technology');
+      });
+
+      it('bad email pattern means error message and disabled update button', () => {
+        expectEmailPatternIsBad(env, 'bob smith@example.com');
+      });
+
+      xdescribe('by-hand, more extensive pattern checking', () => {
+        it('no error for good email pattern', () => {
+          const goodEmail1 = 'john@example.com';
+          expect(env.userInDatabase.email).not.toEqual(goodEmail1, 'setup');
+
+          expectEmailPatternIsGood(env, goodEmail1);
+          expectEmailPatternIsGood(env, 'bob.james.smith.smitheyson@lunar-astronaut.technology');
+          expectEmailPatternIsGood(env, 'bob_smith@example.com');
+          expectEmailPatternIsGood(env, 'bob+extension@example.com');
+          expectEmailPatternIsGood(env, 'a@w.org');
+        });
+
+        it('error for bad email pattern', () => {
+          const badEmailPatterns = [
+            'bob',
+            'example.com',
+            '@',
+            'bob@',
+            '@example.com',
+            'bob@example',
+            'bob@.com',
+            '.bob@example.com',
+            'bob@.example.com',
+            'bob@example.com.',
+            'bob@example..com',
+            'bob@example.a',
+            'bob smith@example.com',
+            'bob@exam ple.com',
+            'bob@example.co m',
+            ' bob@example.com',
+            'bob @example.com',
+            'bob@ example.com',
+            'bob@example .com',
+            'bob@example. com',
+            'bob@example.com ',
+            '*@example.com',
+            'bob@@.com',
+            'bob@!.com',
+            'bob@example.&',
+            'bob@example*com',
+            'bob$bob@example.com',
+            'bob@example$example.com',
+            'bob@example.foo$foo.com',
+            'bob@example.c$om'
+          ];
+          for (const badEmailPattern of badEmailPatterns) {
+            expectEmailPatternIsBad(env, badEmailPattern);
+          }
+        });
+      });
+    });
   });
 
   describe('contactMethod restrictions', () => {
@@ -738,10 +781,6 @@ describe('MyAccountComponent', () => {
     }));
 
     it('deleting phone number disables and unsets sms contact method', fakeAsync(() => {
-      when(env.mockedSFUserService.updateUserAttributes(anything())).thenCall(
-        env.mockUserServiceUpdateUserAttributes()
-      );
-
       env.userInDatabase.contactMethod = 'sms';
       env.component.reloadFromDatabase();
       env.fixture.detectChanges();
@@ -771,10 +810,6 @@ describe('MyAccountComponent', () => {
     }));
 
     it('deleting phone number does not disable or unset email contact method', fakeAsync(() => {
-      when(env.mockedSFUserService.updateUserAttributes(anything())).thenCall(
-        env.mockUserServiceUpdateUserAttributes()
-      );
-
       env.userInDatabase.contactMethod = 'email';
       env.component.reloadFromDatabase();
       env.fixture.detectChanges();
@@ -806,14 +841,6 @@ describe('MyAccountComponent', () => {
 
   describe('changing username dialog', () => {
     it('should open', fakeAsync(() => {
-      when(env.mockedSFUserService.updateUserAttributes(anything())).thenReturn(
-        new Promise<User>(resolve => {
-          setTimeout(() => {
-            resolve();
-          }, 0);
-        })
-      );
-
       // Change username input so button is clickable and not disabled.
       env.component.formGroup.get('username').setValue('newusername');
       env.fixture.detectChanges();
@@ -822,20 +849,13 @@ describe('MyAccountComponent', () => {
       // Click update
       // SUT
       env.clickButton(env.updateButton('username'));
+      flush();
 
       verify(env.mockedMatDialog.open(anything(), anything())).once();
       expect().nothing();
     }));
 
     it('should update if requested', fakeAsync(() => {
-      when(env.mockedSFUserService.updateUserAttributes(anything())).thenReturn(
-        new Promise<User>(resolve => {
-          setTimeout(() => {
-            resolve();
-          }, 0);
-        })
-      );
-
       const originalUsername = 'originalBob';
       const newUsername = 'newBob';
 
@@ -859,14 +879,6 @@ describe('MyAccountComponent', () => {
     }));
 
     it('should not update if cancelled', () => {
-      when(env.mockedSFUserService.updateUserAttributes(anything())).thenReturn(
-        new Promise<User>(resolve => {
-          setTimeout(() => {
-            resolve();
-          }, 0);
-        })
-      );
-
       const originalUsername = 'originalBob';
       const newUsername = 'newBob';
 
@@ -930,6 +942,50 @@ describe('MyAccountComponent', () => {
     }));
   });
 });
+
+function expectEmailPatternIsBad(env: TestEnvironment, badEmail: string) {
+  env.component.formGroup.get('email').setValue(badEmail);
+  env.component.formGroup.get('email').markAsDirty();
+  env.fixture.detectChanges();
+  // Using .toBe() so the bad email prints in failure output
+  expect(env.matErrors.length).toBe(1, badEmail);
+  expect((env.matErrors[0].nativeElement as HTMLElement).innerText).toContain('valid email address');
+  verifyStates(
+    env,
+    'email',
+    {
+      state: env.component.elementState.Invalid,
+      updateButtonEnabled: false,
+      arrow: true,
+      spinner: false,
+      greenCheck: false,
+      errorIcon: false,
+      inputEnabled: true
+    },
+    env.updateButton('email').nativeElement
+  );
+}
+
+function expectEmailPatternIsGood(env: TestEnvironment, goodEmail: string) {
+  env.component.formGroup.get('email').setValue(goodEmail);
+  env.component.formGroup.get('email').markAsDirty();
+  env.fixture.detectChanges();
+  expect(env.matErrors.length).toEqual(0);
+  verifyStates(
+    env,
+    'email',
+    {
+      state: env.component.elementState.Dirty,
+      updateButtonEnabled: true,
+      arrow: true,
+      spinner: false,
+      greenCheck: false,
+      errorIcon: false,
+      inputEnabled: true
+    },
+    env.updateButton('email').nativeElement
+  );
+}
 
 /**
  * Verify states of controls associated with a specifc datum.

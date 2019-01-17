@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { DateAdapter, MatDialog, MatDialogRef, NativeDateAdapter } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
+import { VerifyEmailComponent } from '@identity/verify-email/verify-email.component';
 import { AuthService } from '@xforge-common/auth.service';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { UserService } from '@xforge-common/user.service';
@@ -73,7 +74,11 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   formGroup = new FormGroup({
     name: new FormControl(),
     username: new FormControl('', [(inputControl: FormControl) => this.emailAndUsernameValidator(this, inputControl)]),
-    email: new FormControl('', [(inputControl: FormControl) => this.emailAndUsernameValidator(this, inputControl)]),
+    email: new FormControl('', [
+      (inputControl: FormControl) => this.emailAndUsernameValidator(this, inputControl),
+      Validators.email,
+      Validators.pattern(VerifyEmailComponent.emailPattern)
+    ]),
     mobilePhone: new FormControl(),
     contactMethod: new FormControl(),
     birthday: new FormControl(),
@@ -88,7 +93,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   paratextUsername: string;
   googleUsername: string;
 
-  private title = `Account details - ${environment.siteName}`;
+  private readonly title = `Account details - ${environment.siteName}`;
   private doneInitialDatabaseImport: boolean = false;
   private controlsWithUpdateButton: string[] = ['name', 'username', 'email', 'mobilePhone'];
   private activeDialogRef: MatDialogRef<DeleteAccountDialogComponent>;
@@ -124,17 +129,21 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     });
 
     // Update states when control values change.
-    for (const element of Object.keys(this.formGroup.controls)) {
-      this.subscribe(this.formGroup.get(element).valueChanges, () => {
-        const isClean = this.userFromDatabase[element] === this.formGroup.get(element).value;
-        const newState = isClean ? ElementState.InSync : ElementState.Dirty;
-        this.controlStates.set(element, newState);
-
-        if (this.emailAndUsernameValidator(this, this.formGroup.get(element)) !== null) {
-          this.controlStates.set(element, ElementState.Invalid);
-        }
-      });
+    for (const controlName of Object.keys(this.formGroup.controls)) {
+      this.subscribe(this.formGroup.get(controlName).valueChanges, this.onControlValueChanges(controlName));
     }
+  }
+
+  private onControlValueChanges(controlName: string): () => void {
+    return () => {
+      const isClean = this.userFromDatabase[controlName] === this.formGroup.get(controlName).value;
+      const newState = isClean ? ElementState.InSync : ElementState.Dirty;
+      this.controlStates.set(controlName, newState);
+
+      if (this.formGroup.get(controlName).errors !== null) {
+        this.controlStates.set(controlName, ElementState.Invalid);
+      }
+    };
   }
 
   ngOnDestroy() {

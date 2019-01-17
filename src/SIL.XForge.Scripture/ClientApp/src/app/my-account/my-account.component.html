@@ -121,6 +121,9 @@
             <mat-error *ngIf="formGroup.get('email').hasError('emailBlank')"
               >You must supply a valid email address.</mat-error
             >
+            <mat-error *ngIf="formGroup.get('email').hasError('email') || formGroup.get('email').hasError('pattern')"
+              >Please enter a valid email address. For example, me@example.com.</mat-error
+            >
           </mat-form-field>
         </div>
         <div>
