@@ -61,7 +61,6 @@ export class SaUserEntryComponent implements OnInit {
     this._editUserId = value;
     if (this._editUserId) {
       this.headerTitle = 'Account details';
-      this.showPasswordPanel = false;
       this.btnUserAdd = false;
       this.btnUserUpdate = true;
       this.btnChangePassword = true;
@@ -137,9 +136,14 @@ export class SaUserEntryComponent implements OnInit {
       active: true,
       password: this.accountUserForm.value.password
     };
-
-    await this.userService.onlineCreate(newUser);
-    this.isSubmitted = false;
+    try {
+      await this.userService.onlineCreate(newUser);
+    } catch (e) {
+      this.noticeService.show('Error creating: ' + e.message);
+      return;
+    } finally {
+      this.isSubmitted = false;
+    }
     this.accountUserForm.reset();
     this.noticeService.show('User account created successfully.');
     this.outputUserList.emit(true);
@@ -164,7 +168,12 @@ export class SaUserEntryComponent implements OnInit {
       // The password was changed, so we need to update the password property of our user
       updateUser.password = this.accountUserForm.value.password;
     }
-    await this.userService.onlineUpdateAttributes(this.editUserId, updateUser);
+    try {
+      await this.userService.onlineUpdateAttributes(this.editUserId, updateUser);
+    } catch (e) {
+      this.noticeService.show('Error updating: ' + e.message);
+      return;
+    }
     this.accountUserForm.reset();
     this.noticeService.show('User account updated.');
     this.outputUserList.emit(true);

@@ -192,6 +192,16 @@ describe('System Administration User Entry Component', () => {
       verify(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).never();
     }));
 
+    it('should report any errors', fakeAsync(() => {
+      const env = new TestUserEntryComponent();
+      when(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).thenThrow(new Error('Server Error!'));
+      env.useExistingUser();
+      env.setInputValue(env.nameInput, 'Something New');
+      env.clickElement(env.updateButton);
+      verify(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).once();
+      verify(env.mockedNoticeService.show('Error updating: Server Error!')).once();
+    }));
+
     it('should allow the user to be updated when password field is untouched', fakeAsync(() => {
       const env = new TestUserEntryComponent();
       env.useExistingUser();
@@ -276,6 +286,19 @@ describe('System Administration User Entry Component', () => {
       env.clickElement(env.addButton);
       verify(env.mockedUserService.onlineCreate(anything())).once();
       verify(env.mockedNoticeService.show('User account created successfully.')).once();
+    }));
+
+    it('should report any errors', fakeAsync(() => {
+      const env = new TestUserEntryComponent();
+      when(env.mockedUserService.onlineCreate(anything())).thenThrow(new Error('Server Error!'));
+      env.simulateAddUser();
+      env.setInputValue(env.nameInput, 'New Name');
+      env.setInputValue(env.emailInput, env.testUser.email);
+      env.setInputValue(env.passwordInput, env.testUser.password);
+      expect(env.component.accountUserForm.valid).toBe(true);
+      env.clickElement(env.addButton);
+      verify(env.mockedUserService.onlineCreate(anything())).once();
+      verify(env.mockedNoticeService.show('Error creating: Server Error!')).once();
     }));
   });
 });
