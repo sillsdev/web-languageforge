@@ -100,16 +100,16 @@
         </div>
       </div> -->
 
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
-        <!-- If we need to break the line, don't do it in the middle of the date. -->
-        <div fxFlex>Last login <span class="nowrap">1999-12-31</span></div>
-      </div>
-
-      <!-- TODO 'end stretch' is not right-aligning this. -->
-      <div fxLayout="row" fwLayoutAlign="end stretch">
-        <button mat-stroked-button [routerLink]="['/change-password']">
-          <i class="material-icons">edit</i> Change password
-        </button>
+      <div fxLayout="row wrap">
+        <div fxFlex>
+          <!-- If we need to break the line, don't do it in the middle of the date. -->
+          Last login <span class="nowrap">1999-12-31</span>
+        </div>
+        <div fxLayoutAlign="end stretch">
+          <button mat-stroked-button [routerLink]="['/change-password']">
+            <i class="material-icons">edit</i> Change password
+          </button>
+        </div>
       </div>
 
       <mat-divider></mat-divider>
