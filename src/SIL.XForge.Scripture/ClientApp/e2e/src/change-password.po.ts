@@ -12,6 +12,9 @@ export class ChangePasswordPage {
 
   async get() {
     await browser.get(ChangePasswordPage.baseUrl + '/change-password');
-    await browser.wait(ExpectedConditions.visibilityOf(this.newPasswordInput), this.constants.conditionTimeout);
+    await browser.wait(
+      ExpectedConditions.elementToBeClickable(this.changePasswordButton),
+      this.constants.conditionTimeout
+    );
   }
 }

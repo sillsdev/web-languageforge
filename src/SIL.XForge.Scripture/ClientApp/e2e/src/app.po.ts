@@ -2,9 +2,10 @@ import { browser, by, element, promise } from 'protractor';
 
 export class AppPage {
   static homepage = {
-    homepageHeader: element(by.css('app-root h1')),
-    logoutButton: element(by.id('logout')),
-    changePasswordButton: element(by.id('home-change-password-btn'))
+    homepageHeader: element(by.css('app-home h1')),
+    avatar: element(by.id('avatarId')),
+    myAccount: element(by.name('myAccount')),
+    logoutButton: element(by.name('logout'))
   };
 
   static navigateTo(): promise.Promise<any> {
