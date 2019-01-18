@@ -10,7 +10,7 @@
       <table mat-table fxFill id="projects-table" ngClass.gt-xs="fixed-layout-table" [dataSource]="rows">
         <ng-container matColumnDef="name">
           <td mat-cell *matCellDef="let row">
-            <a *ngIf="row.isMember; else nonmember" [routerLink]="['/project', row.project.id]">{{ row.name }}</a>
+            <a *ngIf="row.isMember; else nonmember" [routerLink]="['/projects', row.project.id]">{{ row.name }}</a>
             <ng-template #nonmember>{{ row.name }}</ng-template>
           </td>
         </ng-container>

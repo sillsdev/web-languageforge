@@ -18,6 +18,7 @@ import { ChangingUsernameDialogComponent } from './my-account/changing-username-
 import { DeleteAccountDialogComponent } from './my-account/delete-account-dialog/delete-account-dialog.component';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { SharedModule } from './shared/shared.module';
 
@@ -31,7 +32,8 @@ import { SharedModule } from './shared/shared.module';
     ConnectProjectComponent,
     MyAccountComponent,
     RealtimeComponent,
-    DeleteAccountDialogComponent
+    DeleteAccountDialogComponent,
+    ProjectSettingsComponent
   ],
   imports: [
     AppRoutingModule,

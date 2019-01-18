@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 import { VerifyEmailComponent } from '@identity/verify-email/verify-email.component';
 import { AuthService } from '@xforge-common/auth.service';
+import { ElementState } from '@xforge-common/models/element-state';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { UserService } from '@xforge-common/user.service';
 import { environment } from '../../environments/environment';
@@ -33,26 +34,6 @@ export class ISO8601DateAdapter extends NativeDateAdapter {
   getDate(date: Date): number {
     return date.getUTCDate();
   }
-}
-
-/**
- * State of element in component, such as whether the email address is
- * being submitted, or was submitted succesfully.
- */
-enum ElementState {
-  /** Identical to what is believed to be in the database. */
-  InSync = 'InSync',
-  /** Different than what is believed to be in the database.
-   *  Not to be confused with an input control claiming to be 'dirty', which might still actually be InSync. */
-  Dirty = 'Dirty',
-  /** Pending a write to the database. */
-  Submitting = 'Submitting',
-  /** InSync and was written to the database since last Dirty. */
-  Submitted = 'Submitted',
-  /** There was an error attempting to submit. */
-  Error = 'Error',
-  /** The data is invalid. */
-  Invalid = 'Invalid'
 }
 
 /**

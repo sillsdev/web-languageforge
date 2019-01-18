@@ -1,0 +1,29 @@
+.task-card-content {
+  padding: 16px;
+}
+
+.helper-text {
+  color: var(--mdc-theme-text-hint-on-background);
+}
+
+.invalid-feedback {
+  color: var(--mdc-theme-error);
+}
+
+.checkbox-row-item {
+  display: flex;
+  align-items: center;
+}
+.check-icon {
+  color: green;
+}
+.error-icon {
+  color: red;
+}
+.task-grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+.status {
+  width: 24px;
+}

@@ -1,0 +1,82 @@
+<div class="container">
+  <mdc-card class="card" mdc-card--outlined>
+    <form class="task-card-content" [formGroup]="form">
+      <h2>Tasks</h2>
+      <h3 class="mdc-typography--subtitle1">Select which tasks are available. At least one task must be selected.</h3>
+      <div class="invalid-feedback" *ngIf="form.errors && form.errors.requireCheckboxesToBeChecked">
+        You must select at least one option
+      </div>
+      <div class="task-grid">
+        <mdc-form-field>
+          <mdc-checkbox formControlName="checking" id="checkbox-community-checking"></mdc-checkbox>
+        </mdc-form-field>
+        <div class="checkbox-label checkbox-row-item">Community Checking</div>
+        <div class="status checkbox-row-item">
+          <mat-spinner
+            id="checking-update-spinner"
+            *ngIf="controlStates.get('checking') === elementState.Submitting && !form.errors"
+            [diameter]="15"
+            class="update-button-spinner"
+            aria-label="Update in progress"
+          ></mat-spinner>
+          <i
+            id="checking-update-done"
+            *ngIf="controlStates.get('checking') === elementState.Submitted && !form.errors"
+            class="material-icons check-icon"
+            >done</i
+          >
+          <i
+            id="checking-error-icon"
+            *ngIf="controlStates.get('checking') === elementState.Error && !form.errors"
+            class="material-icons error-icon"
+            >error</i
+          >
+          <div class="in-sync" *ngIf="controlStates.get('checking') === elementState.InSync"></div>
+        </div>
+        <div class="empty"></div>
+        <p class="helper-text">
+          Engage the wider community to ensure that the translation is clear, accurate, and natural. Select chapters,
+          ask targeted questions, allow discussion of answers.
+        </p>
+        <div class="empty"></div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="task-grid">
+        <mdc-form-field>
+          <mdc-checkbox formControlName="translation" id="checkbox-translating"></mdc-checkbox>
+        </mdc-form-field>
+        <div class="checkbox-label checkbox-row-item">Translate (experimental)</div>
+        <div class="status checkbox-row-item">
+          <mat-spinner
+            id="translation-update-spinner"
+            *ngIf="controlStates.get('translation') === elementState.Submitting && !form.errors"
+            [diameter]="15"
+            class="update-button-spinner"
+            aria-label="Update in progress"
+          ></mat-spinner>
+          <i
+            id="translation-update-done"
+            *ngIf="controlStates.get('translation') === elementState.Submitted && !form.errors"
+            class="material-icons check-icon"
+            >done</i
+          >
+          <i
+            id="translation-error-icon"
+            *ngIf="controlStates.get('translation') === elementState.Error && !form.errors"
+            class="material-icons error-icon"
+            >error</i
+          >
+          <div class="in-sync" *ngIf="controlStates.get('translation') === elementState.InSync"></div>
+        </div>
+        <div class="empty"></div>
+        <p class="helper-text">
+          This feature is under development<br />If your Paratext project is a <b>Daughter Translation</b> or you would
+          like to use your project as a <b>Daughter Translation</b> in the
+          <a routerLink="/translate-settings">Translate Settings</a> choose the project this translation is based on.
+          This will enable a number of features that can offer translation suggestions.
+        </p>
+        <div class="empty"></div>
+      </div>
+    </form>
+  </mdc-card>
+</div>
