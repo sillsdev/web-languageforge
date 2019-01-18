@@ -2,7 +2,7 @@
 <div fxLayout="column" fxLayout.gt-sm="row wrap" fxLayoutAlign="start stretch" fxLayoutGap="1em">
   <form [formGroup]="formGroup">
     <div fxLayout="column" fxLayoutAlign="space-between stretch">
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
+      <div fxLayout="row">
         <div fxFlex>
           <mat-form-field fxFlex><input formControlName="name" matInput placeholder="Name"/></mat-form-field>
         </div>
@@ -46,7 +46,7 @@
           </button>
         </div>
       </div>
-      <!-- <div fxLayout="row" fwLayoutAlign="space-between stretch">
+      <!-- <div fxLayout="row">
         <div fxFlex>
           <mat-form-field fxFlex>
             <input formControlName="username" matInput placeholder="Username" />
@@ -114,7 +114,7 @@
 
       <mat-divider></mat-divider>
 
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
+      <div fxLayout="row">
         <div fxFlex>
           <mat-form-field fxFlex hintLabel="you@example.com">
             <input formControlName="email" matInput placeholder="Email" />
@@ -171,7 +171,7 @@
         </div>
       </div>
 
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
+      <div fxLayout="row">
         <div fxFlex>
           <mat-form-field fxFlex hintLabel="Include country and area codes.">
             <input formControlName="mobilePhone" matInput placeholder="Phone" />
@@ -220,7 +220,7 @@
         </div>
       </div>
 
-      <div fxLayout="column" fwLayoutAlign="space-between">
+      <div fxLayout="column">
         <div>Receive messages via</div>
         <div>
           <mat-button-toggle-group formControlName="contactMethod" (click)="update('contactMethod')">
@@ -258,7 +258,7 @@
 
       <mat-divider></mat-divider>
 
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
+      <div fxLayout="row">
         <div fxFlex>
           <mat-form-field fxFlex hintLabel="YYYY-MM-DD">
             <input
@@ -293,7 +293,7 @@
         </div>
       </div>
 
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
+      <div fxLayout="row">
         <div fxFlex>
           <mat-form-field fxFlex>
             <mat-select formControlName="gender" placeholder="Gender" (selectionChange)="update('gender')">
