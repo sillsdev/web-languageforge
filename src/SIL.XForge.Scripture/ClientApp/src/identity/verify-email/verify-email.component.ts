@@ -12,12 +12,16 @@ import { IdentityService } from '../identity.service';
   styleUrls: ['./verify-email.component.scss']
 })
 export class VerifyEmailComponent implements OnInit {
+  static readonly emailPattern = '[a-zA-Z0-9.+_-]{1,}@[a-zA-Z0-9.-]{1,}[.]{1}[a-zA-Z]{2,}';
+
   success: boolean;
 
-  private emailPattern = '[a-zA-Z0-9.-_]{1,}@[a-zA-Z0-9.-]{2,}[.]{1}[a-zA-Z]{2,}';
-
   resendLinkForm = new FormGroup({
-    email: new FormControl('', [Validators.email, Validators.required, Validators.pattern(this.emailPattern)])
+    email: new FormControl('', [
+      Validators.email,
+      Validators.required,
+      Validators.pattern(VerifyEmailComponent.emailPattern)
+    ])
   });
 
   constructor(
