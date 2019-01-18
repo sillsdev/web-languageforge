@@ -927,10 +927,10 @@ describe('MyAccountComponent', () => {
 
   describe('delete account', () => {
     it('should have a title and a delete account button', fakeAsync(() => {
-      expect(env.deleteAccountElement.nativeElement.querySelector('mat-card mat-card-title').textContent).toBe(
-        'Delete account'
+      expect(env.deleteAccountElement.nativeElement.querySelector('mat-card mat-card-title').textContent).toContain(
+        'Delete my account'
       );
-      expect(env.deleteAccountElement.nativeElement.querySelector('mat-card mat-card-subtitle').textContent).toContain(
+      expect(env.deleteAccountElement.nativeElement.querySelector('mat-card mat-card-title').textContent).toContain(
         env.userInDatabase.name
       );
     }));
