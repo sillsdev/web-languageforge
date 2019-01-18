@@ -381,9 +381,11 @@
             <p><strong>You will lose access to your projects.</strong></p>
           </mat-card-content>
           <mat-card-actions>
-            <button mat-stroked-button (click)="openDeleteAccountDialog()" id="delete-account-button">
-              Delete my account
-            </button>
+            <div fxLayout="row" fxLayoutAlign="end stretch">
+              <button mat-stroked-button (click)="openDeleteAccountDialog()" id="delete-account-button">
+                Delete my account
+              </button>
+            </div>
           </mat-card-actions>
         </mat-card>
       </div>
