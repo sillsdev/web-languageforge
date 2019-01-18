@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 import { VerifyEmailComponent } from '@identity/verify-email/verify-email.component';
 import { AuthService } from '@xforge-common/auth.service';
-import { ElementState } from '@xforge-common/element-state';
+import { ElementState } from '@xforge-common/models/element-state';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { UserService } from '@xforge-common/user.service';
 import { environment } from '../../environments/environment';

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { ElementState } from '@xforge-common/element-state';
+import { ElementState } from '@xforge-common/models/element-state';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
 
-type VoidFuncArray = (() => void)[];
+type VoidFunc = (() => void);
 
 @Component({
   selector: 'app-project-settings',
@@ -44,8 +44,8 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
       }
       if (this.form.valid) {
         const updatedProject = {} as SFProject;
-        const successHandlers: VoidFuncArray = [];
-        const failStateHandlers: VoidFuncArray = [];
+        const successHandlers: VoidFunc[] = [];
+        const failStateHandlers: VoidFunc[] = [];
         // Set status and include values for changed form items
         if (newValue.translation !== this.project.translateConfig.enabled) {
           updatedProject.translateConfig = { enabled: newValue.translation };
@@ -75,7 +75,7 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
   }
 
   // Update the controlStates for handling submitting a settings change (used to show spinner and success checkmark)
-  updateControlState(formControl: string, successHandlers: VoidFuncArray, failureHandlers: VoidFuncArray) {
+  updateControlState(formControl: string, successHandlers: VoidFunc[], failureHandlers: VoidFunc[]) {
     this.controlStates.set(formControl, ElementState.Submitting);
     successHandlers.push(() => this.controlStates.set(formControl, ElementState.Submitted));
     failureHandlers.push(() => this.controlStates.set(formControl, ElementState.Error));

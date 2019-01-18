@@ -52,7 +52,7 @@ describe('ProjectSettingsComponent', () => {
       expect(env.translationCb).toBeDefined();
       expect(env.translationCb.nativeElement).toBeDefined();
       expect(env.communityInputElem.checked).toBeDefined();
-      expect(env.communityInputElem).toBe(false);
+      expect(env.communityInputElem.checked).toBe(false);
       env.clickElement(env.communityInputElem);
       expect(env.translationInputElem.checked).toBeDefined();
       expect(env.translationInputElem.checked).toBe(true);
