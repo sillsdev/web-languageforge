@@ -117,7 +117,7 @@
       <div fxLayout="row" fwLayoutAlign="space-between stretch">
         <div fxFlex>
           <mat-form-field fxFlex hintLabel="you@example.com">
-            <input formControlName="email" matInput placeholder="Email address" />
+            <input formControlName="email" matInput placeholder="Email" />
             <mat-error *ngIf="formGroup.get('email').hasError('emailBlank')"
               >You must supply a valid email address.</mat-error
             >
@@ -174,7 +174,7 @@
       <div fxLayout="row" fwLayoutAlign="space-between stretch">
         <div fxFlex>
           <mat-form-field fxFlex hintLabel="Include country and area codes.">
-            <input formControlName="mobilePhone" matInput placeholder="Mobile phone" />
+            <input formControlName="mobilePhone" matInput placeholder="Phone" />
           </mat-form-field>
         </div>
         <div>
