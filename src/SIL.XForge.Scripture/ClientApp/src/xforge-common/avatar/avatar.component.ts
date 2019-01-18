@@ -9,21 +9,21 @@ import { User } from '../models/user';
 export class AvatarComponent {
   @Input() round: boolean = false;
   @Input() size: number = 32;
-  @Input() user: Partial<User> = {};
+  @Input() user: Partial<User>;
 
   get avatarUrl(): string {
-    return this.user.avatarUrl;
+    return this.user ? this.user.avatarUrl : '';
   }
 
   get googleId(): string {
-    return this.user.avatarUrl == null ? this.user.googleId : '';
+    return this.user && this.user.avatarUrl == null ? this.user.googleId : '';
   }
 
   get email(): string {
-    return this.user.avatarUrl == null ? this.user.email : '';
+    return this.user && this.user.avatarUrl == null ? this.user.email : '';
   }
 
   get name(): string {
-    return this.user.name;
+    return this.user ? this.user.name : '';
   }
 }
