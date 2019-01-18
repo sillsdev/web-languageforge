@@ -9,7 +9,7 @@
   <mat-form-field> <input matInput placeholder="Enter your name" [formControl]="userNameEntry" /> </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-stroked-button [mat-dialog-close]="'cancel'" class="cancel-button">Cancel</button>
+  <button mat-button mat-dialog-close="cancel" class="cancel-button">Cancel</button>
   <button mat-stroked-button id="confirm-delete-button" mat-dialog-close="confirmed" [disabled]="deleteDisabled">
     I understand the consequences, delete my account
   </button>
