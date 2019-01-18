@@ -512,7 +512,7 @@ describe('MyAccountComponent', () => {
       expect((env.matErrors[0].nativeElement as HTMLElement).innerText).toContain('must supply a valid email');
     }));
 
-    it('no error if username removed when email is set on form and in database', fakeAsync(() => {
+    xit('no error if username removed when email is set on form and in database', fakeAsync(() => {
       expect(env.component.userFromDatabase.email.length).toBeGreaterThan(3, 'test not set up');
       expect(env.component.userFromDatabase.username.length).toBeGreaterThan(3, 'test not set up');
       expect(env.component.formGroup.get('email').value.length).toBeGreaterThan(3, 'test not set up');
@@ -541,7 +541,7 @@ describe('MyAccountComponent', () => {
       expect(env.matErrors.length).toEqual(0);
     }));
 
-    it('error if username removed when no email', fakeAsync(() => {
+    xit('error if username removed when no email', fakeAsync(() => {
       env.userInDatabase.email = '';
       env.component.formGroup.get('email').setValue(env.userInDatabase.email);
       env.component.formGroup.get('email').markAsDirty();
@@ -575,7 +575,7 @@ describe('MyAccountComponent', () => {
       expect((env.matErrors[0].nativeElement as HTMLElement).innerText).toContain('unless email');
     }));
 
-    it('error if username is removed, when no email in database, even if email is typed on form', fakeAsync(() => {
+    xit('error if username is removed, when no email in database, even if email is typed on form', fakeAsync(() => {
       // Don't let user click Update in this situation.
 
       env.userInDatabase.email = '';
@@ -631,7 +631,7 @@ describe('MyAccountComponent', () => {
       expect((env.matErrors[0].nativeElement as HTMLElement).innerText).toContain('unless email');
     }));
 
-    it('only show email error when both email and username are removed', fakeAsync(() => {
+    xit('only show email error when both email and username are removed', fakeAsync(() => {
       // Don't bother showing error for username field since the email address can't be
       // removed anyway and so there's not really an error situation for the proposed username.
 
@@ -839,7 +839,7 @@ describe('MyAccountComponent', () => {
     }));
   });
 
-  describe('changing username dialog', () => {
+  xdescribe('changing username dialog', () => {
     it('should open', fakeAsync(() => {
       // Change username input so button is clickable and not disabled.
       env.component.formGroup.get('username').setValue('newusername');
