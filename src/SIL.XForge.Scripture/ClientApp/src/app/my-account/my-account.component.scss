@@ -28,6 +28,8 @@ mat-card button {
   border: 2px solid red;
   #delete-account-button {
     color: red;
+    // Help button stay within the card border
+    margin-right: 1em;
   }
 }
 

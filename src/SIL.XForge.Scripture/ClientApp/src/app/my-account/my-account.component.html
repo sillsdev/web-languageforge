@@ -1,52 +1,53 @@
 <h2>Account details</h2>
-<div fxLayout="column" fxLayout.gt-sm="row wrap" fxLayoutAlign="start stretch" fxLayoutGap="1em">
-  <form [formGroup]="formGroup">
-    <div fxLayout="column" fxLayoutAlign="space-between stretch">
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
-        <div fxFlex>
-          <mat-form-field fxFlex><input formControlName="name" matInput placeholder="Name"/></mat-form-field>
-        </div>
-        <div>
-          <button
-            id="name-update-button"
-            [disabled]="
-              controlStates.get('name') !== elementState.Dirty && controlStates.get('name') !== elementState.Error
-            "
-            mat-stroked-button
-            (click)="updateClicked('name')"
-          >
-            <mat-spinner
-              id="name-update-spinner"
-              *ngIf="controlStates.get('name') === elementState.Submitting"
-              [diameter]="15"
-              class="update-button-spinner"
-              aria-label="Update in progress"
-            ></mat-spinner>
-            <i
-              id="name-update-done"
-              *ngIf="controlStates.get('name') === elementState.Submitted"
-              class="material-icons check-icon"
-              >done</i
-            >
-            <i
-              id="name-error-icon"
-              *ngIf="controlStates.get('name') === elementState.Error"
-              class="material-icons error-icon"
-              >error</i
-            >
-            <i
-              id="name-button-icon"
-              *ngIf="
-                controlStates.get('name') === elementState.InSync || controlStates.get('name') === elementState.Dirty
+<div fxLayout="column" fxLayoutAlign="start start">
+  <div fxLayout="row" fxLayout.lt-sm="row wrap" fxLayoutAlign="start stretch" fxLayoutGap="1em">
+    <form [formGroup]="formGroup">
+      <div fxLayout="column" fxLayoutAlign="space-between stretch">
+        <div fxLayout="row">
+          <div fxFlex>
+            <mat-form-field fxFlex><input formControlName="name" matInput placeholder="Name"/></mat-form-field>
+          </div>
+          <div>
+            <button
+              id="name-update-button"
+              [disabled]="
+                controlStates.get('name') !== elementState.Dirty && controlStates.get('name') !== elementState.Error
               "
-              class="material-icons"
-              >send</i
+              mat-stroked-button
+              (click)="updateClicked('name')"
             >
-            Update
-          </button>
+              <mat-spinner
+                id="name-update-spinner"
+                *ngIf="controlStates.get('name') === elementState.Submitting"
+                [diameter]="15"
+                class="update-button-spinner"
+                aria-label="Update in progress"
+              ></mat-spinner>
+              <i
+                id="name-update-done"
+                *ngIf="controlStates.get('name') === elementState.Submitted"
+                class="material-icons check-icon"
+                >done</i
+              >
+              <i
+                id="name-error-icon"
+                *ngIf="controlStates.get('name') === elementState.Error"
+                class="material-icons error-icon"
+                >error</i
+              >
+              <i
+                id="name-button-icon"
+                *ngIf="
+                  controlStates.get('name') === elementState.InSync || controlStates.get('name') === elementState.Dirty
+                "
+                class="material-icons"
+                >send</i
+              >
+              Update
+            </button>
+          </div>
         </div>
-      </div>
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
+        <!-- <div fxLayout="row">
         <div fxFlex>
           <mat-form-field fxFlex>
             <input formControlName="username" matInput placeholder="Username" />
@@ -98,258 +99,258 @@
             Update
           </button>
         </div>
-      </div>
+      </div> -->
 
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
-        <!-- If we need to break the line, don't do it in the middle of the date. -->
-        <div fxFlex>Last login <span class="nowrap">1999-12-31</span></div>
-      </div>
-
-      <!-- TODO 'end stretch' is not right-aligning this. -->
-      <div fxLayout="row" fwLayoutAlign="end stretch">
-        <button mat-stroked-button [routerLink]="['/change-password']">
-          <i class="material-icons">edit</i> Change password
-        </button>
-      </div>
-
-      <mat-divider></mat-divider>
-
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
-        <div fxFlex>
-          <mat-form-field fxFlex hintLabel="you@example.com">
-            <input formControlName="email" matInput placeholder="Email address" />
-            <mat-error *ngIf="formGroup.get('email').hasError('emailBlank')"
-              >You must supply a valid email address.</mat-error
-            >
-            <mat-error *ngIf="formGroup.get('email').hasError('email') || formGroup.get('email').hasError('pattern')"
-              >Please enter a valid email address. For example, me@example.com.</mat-error
-            >
-          </mat-form-field>
+        <div fxLayout="row wrap">
+          <div fxFlex>
+            <!-- If we need to break the line, don't do it in the middle of the date. -->
+            Last login <span class="nowrap">1999-12-31</span>
+          </div>
+          <div fxLayoutAlign="end stretch">
+            <button mat-stroked-button [routerLink]="['/change-password']">
+              <i class="material-icons">edit</i> Change password
+            </button>
+          </div>
         </div>
-        <div>
-          <button
-            id="email-update-button"
-            [disabled]="
-              (controlStates.get('email') !== elementState.Dirty &&
-                controlStates.get('email') !== elementState.Error) ||
-              controlStates.get('email') === elementState.Invalid
-            "
-            mat-stroked-button
-            (click)="updateClicked('email')"
-          >
-            <mat-spinner
-              id="email-update-spinner"
-              *ngIf="controlStates.get('email') === elementState.Submitting"
-              [diameter]="15"
-              class="update-button-spinner"
-              aria-label="Update in progress"
-            ></mat-spinner>
-            <i
-              id="email-update-done"
-              *ngIf="controlStates.get('email') === elementState.Submitted"
-              class="material-icons check-icon"
-              >done</i
-            >
-            <i
-              id="email-error-icon"
-              *ngIf="controlStates.get('email') === elementState.Error"
-              class="material-icons error-icon"
-              >error</i
-            >
-            <i
-              id="email-button-icon"
-              *ngIf="
-                controlStates.get('email') === elementState.InSync ||
-                controlStates.get('email') === elementState.Dirty ||
+
+        <mat-divider></mat-divider>
+
+        <div fxLayout="row">
+          <div fxFlex>
+            <mat-form-field fxFlex hintLabel="you@example.com">
+              <input formControlName="email" matInput placeholder="Email" />
+              <mat-error *ngIf="formGroup.get('email').hasError('emailBlank')"
+                >You must supply a valid email address.</mat-error
+              >
+              <mat-error *ngIf="formGroup.get('email').hasError('email') || formGroup.get('email').hasError('pattern')"
+                >Please enter a valid email address. For example, me@example.com.</mat-error
+              >
+            </mat-form-field>
+          </div>
+          <div>
+            <button
+              id="email-update-button"
+              [disabled]="
+                (controlStates.get('email') !== elementState.Dirty &&
+                  controlStates.get('email') !== elementState.Error) ||
                 controlStates.get('email') === elementState.Invalid
               "
-              class="material-icons"
-              >send</i
+              mat-stroked-button
+              (click)="updateClicked('email')"
             >
-            Update
-          </button>
+              <mat-spinner
+                id="email-update-spinner"
+                *ngIf="controlStates.get('email') === elementState.Submitting"
+                [diameter]="15"
+                class="update-button-spinner"
+                aria-label="Update in progress"
+              ></mat-spinner>
+              <i
+                id="email-update-done"
+                *ngIf="controlStates.get('email') === elementState.Submitted"
+                class="material-icons check-icon"
+                >done</i
+              >
+              <i
+                id="email-error-icon"
+                *ngIf="controlStates.get('email') === elementState.Error"
+                class="material-icons error-icon"
+                >error</i
+              >
+              <i
+                id="email-button-icon"
+                *ngIf="
+                  controlStates.get('email') === elementState.InSync ||
+                  controlStates.get('email') === elementState.Dirty ||
+                  controlStates.get('email') === elementState.Invalid
+                "
+                class="material-icons"
+                >send</i
+              >
+              Update
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
-        <div fxFlex>
-          <mat-form-field fxFlex hintLabel="Include country and area codes.">
-            <input formControlName="mobilePhone" matInput placeholder="Mobile phone" />
-          </mat-form-field>
+        <div fxLayout="row">
+          <div fxFlex>
+            <mat-form-field fxFlex hintLabel="Include country and area codes.">
+              <input formControlName="mobilePhone" matInput placeholder="Phone" />
+            </mat-form-field>
+          </div>
+          <div>
+            <button
+              id="mobilePhone-update-button"
+              [disabled]="
+                controlStates.get('mobilePhone') !== elementState.Dirty &&
+                controlStates.get('mobilePhone') !== elementState.Error
+              "
+              mat-stroked-button
+              (click)="updateClicked('mobilePhone')"
+            >
+              <mat-spinner
+                id="mobilePhone-update-spinner"
+                *ngIf="controlStates.get('mobilePhone') === elementState.Submitting"
+                [diameter]="15"
+                class="update-button-spinner"
+                aria-label="Update in progress"
+              ></mat-spinner>
+              <i
+                id="mobilePhone-update-done"
+                *ngIf="controlStates.get('mobilePhone') === elementState.Submitted"
+                class="material-icons check-icon"
+                >done</i
+              >
+              <i
+                id="mobilePhone-error-icon"
+                *ngIf="controlStates.get('mobilePhone') === elementState.Error"
+                class="material-icons error-icon"
+                >error</i
+              >
+              <i
+                id="mobilePhone-button-icon"
+                *ngIf="
+                  controlStates.get('mobilePhone') === elementState.InSync ||
+                  controlStates.get('mobilePhone') === elementState.Dirty
+                "
+                class="material-icons"
+                >send</i
+              >
+              Update
+            </button>
+          </div>
         </div>
-        <div>
-          <button
-            id="mobilePhone-update-button"
-            [disabled]="
-              controlStates.get('mobilePhone') !== elementState.Dirty &&
-              controlStates.get('mobilePhone') !== elementState.Error
-            "
-            mat-stroked-button
-            (click)="updateClicked('mobilePhone')"
-          >
+
+        <div fxLayout="column">
+          <div>Receive messages via</div>
+          <div>
+            <mat-button-toggle-group formControlName="contactMethod" (click)="update('contactMethod')">
+              <mat-button-toggle value="email" [disabled]="!!contactMethodToggleDisabled.get('email')"
+                ><i class="material-icons">email</i> Email</mat-button-toggle
+              >
+              <mat-button-toggle value="sms" [disabled]="!!contactMethodToggleDisabled.get('sms')"
+                ><i class="material-icons">textsms</i> SMS</mat-button-toggle
+              >
+              <mat-button-toggle value="emailSms" [disabled]="!!contactMethodToggleDisabled.get('emailSms')"
+                ><i class="material-icons">email</i><i class="material-icons">textsms</i> Both</mat-button-toggle
+              >
+            </mat-button-toggle-group>
             <mat-spinner
-              id="mobilePhone-update-spinner"
-              *ngIf="controlStates.get('mobilePhone') === elementState.Submitting"
+              id="contactMethod-update-spinner"
+              *ngIf="controlStates.get('contactMethod') === elementState.Submitting"
               [diameter]="15"
-              class="update-button-spinner"
+              class="contactMethod-spinner"
               aria-label="Update in progress"
             ></mat-spinner>
             <i
-              id="mobilePhone-update-done"
-              *ngIf="controlStates.get('mobilePhone') === elementState.Submitted"
+              id="contactMethod-update-done"
+              *ngIf="controlStates.get('contactMethod') === elementState.Submitted"
               class="material-icons check-icon"
               >done</i
             >
             <i
-              id="mobilePhone-error-icon"
-              *ngIf="controlStates.get('mobilePhone') === elementState.Error"
+              id="contactMethod-error-icon"
+              *ngIf="controlStates.get('contactMethod') === elementState.Error"
               class="material-icons error-icon"
               >error</i
             >
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div fxLayout="row">
+          <div fxFlex>
+            <mat-form-field fxFlex hintLabel="YYYY-MM-DD">
+              <input
+                formControlName="birthday"
+                matInput
+                placeholder="Birthday"
+                [matDatepicker]="picker"
+                (dateChange)="update('birthday')"
+              />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <mat-spinner
+              id="birthday-update-spinner"
+              *ngIf="controlStates.get('birthday') === elementState.Submitting"
+              [diameter]="15"
+              class="birthday-spinner"
+              aria-label="Update in progress"
+            ></mat-spinner>
             <i
-              id="mobilePhone-button-icon"
-              *ngIf="
-                controlStates.get('mobilePhone') === elementState.InSync ||
-                controlStates.get('mobilePhone') === elementState.Dirty
-              "
-              class="material-icons"
-              >send</i
+              id="birthday-update-done"
+              *ngIf="controlStates.get('birthday') === elementState.Submitted"
+              class="material-icons check-icon"
+              >done</i
             >
-            Update
+            <i
+              id="birthday-error-icon"
+              *ngIf="controlStates.get('birthday') === elementState.Error"
+              class="material-icons error-icon"
+              >error</i
+            >
+          </div>
+        </div>
+
+        <div fxLayout="row">
+          <div fxFlex>
+            <mat-form-field fxFlex>
+              <mat-select formControlName="gender" placeholder="Gender" (selectionChange)="update('gender')">
+                <mat-option value="female">Female</mat-option>
+                <mat-option value="male">Male</mat-option>
+                <mat-option value="empty"></mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-spinner
+              id="gender-update-spinner"
+              *ngIf="controlStates.get('gender') === elementState.Submitting"
+              [diameter]="15"
+              class="gender-spinner"
+              aria-label="Update in progress"
+            ></mat-spinner>
+            <i
+              id="gender-update-done"
+              *ngIf="controlStates.get('gender') === elementState.Submitted"
+              class="material-icons check-icon"
+              >done</i
+            >
+            <i
+              id="gender-error-icon"
+              *ngIf="controlStates.get('gender') === elementState.Error"
+              class="material-icons error-icon"
+              >error</i
+            >
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div
+          *ngIf="isLinkedToParatext"
+          fxLayout="row"
+          fxLayoutAlign="space-between center"
+          fxLayoutGap="1em"
+          id="paratext-link"
+          class="linked-paratext"
+        >
+          <div>Linked to Paratext account</div>
+          <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="0.5em">
+            <label id="paratext-link-label"
+              ><strong>{{ paratextUsername }}</strong></label
+            >
+            <button mat-button id="unlink-paratext-button" class="unlink-button" (click)="deleteParatextLink()">
+              <i class="material-icons">clear</i> <span fxHide.lt-md>Remove link</span>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="!isLinkedToParatext" id="paratext-link" class="linked-paratext">
+          <button mat-stroked-button id="connect-paratext-button" (click)="logInWithParatext()">
+            <i class="material-icons">link</i> Connect to Paratext
           </button>
         </div>
-      </div>
-
-      <div fxLayout="column" fwLayoutAlign="space-between">
-        <div>Receive messages via</div>
-        <div>
-          <mat-button-toggle-group formControlName="contactMethod" (click)="update('contactMethod')">
-            <mat-button-toggle value="email" [disabled]="!!contactMethodToggleDisabled.get('email')"
-              ><i class="material-icons">email</i> Email</mat-button-toggle
-            >
-            <mat-button-toggle value="sms" [disabled]="!!contactMethodToggleDisabled.get('sms')"
-              ><i class="material-icons">textsms</i> SMS</mat-button-toggle
-            >
-            <mat-button-toggle value="emailSms" [disabled]="!!contactMethodToggleDisabled.get('emailSms')"
-              ><i class="material-icons">email</i><i class="material-icons">textsms</i> Both</mat-button-toggle
-            >
-          </mat-button-toggle-group>
-          <mat-spinner
-            id="contactMethod-update-spinner"
-            *ngIf="controlStates.get('contactMethod') === elementState.Submitting"
-            [diameter]="15"
-            class="contactMethod-spinner"
-            aria-label="Update in progress"
-          ></mat-spinner>
-          <i
-            id="contactMethod-update-done"
-            *ngIf="controlStates.get('contactMethod') === elementState.Submitted"
-            class="material-icons check-icon"
-            >done</i
-          >
-          <i
-            id="contactMethod-error-icon"
-            *ngIf="controlStates.get('contactMethod') === elementState.Error"
-            class="material-icons error-icon"
-            >error</i
-          >
-        </div>
-      </div>
-
-      <mat-divider></mat-divider>
-
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
-        <div fxFlex>
-          <mat-form-field fxFlex hintLabel="YYYY-MM-DD">
-            <input
-              formControlName="birthday"
-              matInput
-              placeholder="Birthday"
-              [matDatepicker]="picker"
-              (dateChange)="update('birthday')"
-            />
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
-          <mat-spinner
-            id="birthday-update-spinner"
-            *ngIf="controlStates.get('birthday') === elementState.Submitting"
-            [diameter]="15"
-            class="birthday-spinner"
-            aria-label="Update in progress"
-          ></mat-spinner>
-          <i
-            id="birthday-update-done"
-            *ngIf="controlStates.get('birthday') === elementState.Submitted"
-            class="material-icons check-icon"
-            >done</i
-          >
-          <i
-            id="birthday-error-icon"
-            *ngIf="controlStates.get('birthday') === elementState.Error"
-            class="material-icons error-icon"
-            >error</i
-          >
-        </div>
-      </div>
-
-      <div fxLayout="row" fwLayoutAlign="space-between stretch">
-        <div fxFlex>
-          <mat-form-field fxFlex>
-            <mat-select formControlName="gender" placeholder="Gender" (selectionChange)="update('gender')">
-              <mat-option value="female">Female</mat-option>
-              <mat-option value="male">Male</mat-option>
-              <mat-option value="empty"></mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-spinner
-            id="gender-update-spinner"
-            *ngIf="controlStates.get('gender') === elementState.Submitting"
-            [diameter]="15"
-            class="gender-spinner"
-            aria-label="Update in progress"
-          ></mat-spinner>
-          <i
-            id="gender-update-done"
-            *ngIf="controlStates.get('gender') === elementState.Submitted"
-            class="material-icons check-icon"
-            >done</i
-          >
-          <i
-            id="gender-error-icon"
-            *ngIf="controlStates.get('gender') === elementState.Error"
-            class="material-icons error-icon"
-            >error</i
-          >
-        </div>
-      </div>
-
-      <mat-divider></mat-divider>
-
-      <div
-        *ngIf="isLinkedToParatext"
-        fxLayout="row"
-        fxLayoutAlign="space-between center"
-        fxLayoutGap="1em"
-        id="paratext-link"
-        class="linked-paratext"
-      >
-        <div>Linked to Paratext account</div>
-        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="0.5em">
-          <label id="paratext-link-label"
-            ><strong>{{ paratextUsername }}</strong></label
-          >
-          <button mat-button id="unlink-paratext-button" class="unlink-button" (click)="deleteParatextLink()">
-            <i class="material-icons">clear</i> <span fxHide.lt-md>Remove link</span>
-          </button>
-        </div>
-      </div>
-      <div *ngIf="!isLinkedToParatext" id="paratext-link" class="linked-paratext">
-        <button mat-stroked-button id="connect-paratext-button" (click)="logInWithParatext()">
-          <i class="material-icons">link</i> Connect to Paratext
-        </button>
-      </div>
-      <!--Add this back in once login with Google (SF-77) is finished
+        <!--Add this back in once login with Google (SF-77) is finished
       <div
         *ngIf="isLinkedToGoogle"
         fxLayout="row"
@@ -371,25 +372,28 @@
       <div *ngIf="!isLinkedToGoogle" id="google-link" class="linked-google">
         <button mat-stroked-button><i class="material-icons">link</i> Connect to Google</button>
       </div>
-    -->
-      <div fxLayout="column" fxLayoutAlign="space-between stretch" id="delete-account" class="delete-account">
-        <mat-card>
-          <mat-card-title>Delete account</mat-card-title>
-          <mat-card-subtitle>Delete my account ({{ userName }})</mat-card-subtitle>
-          <mat-card-content>
-            <p>Once you delete your account, there is no going back. Please be certain.</p>
-            <p><strong>You will lose access to your projects.</strong></p>
-          </mat-card-content>
-          <mat-card-actions>
-            <button mat-stroked-button (click)="openDeleteAccountDialog()" id="delete-account-button">
-              Delete my account
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      </div>
+      --></div>
+    </form>
+    <div fxLayout="column" fxLayoutAlign="space-between stretch">
+      <div *ngIf="showAvatar"><app-avatar [user]="userFromDatabase" size="192" [round]="false"></app-avatar></div>
     </div>
-  </form>
-  <div fxLayout="column" fxLayoutAlign="space-between stretch">
-    <div *ngIf="showAvatar"><app-avatar [user]="userFromDatabase" size="192" [round]="false"></app-avatar></div>
+  </div>
+
+  <div fxLayout="column" fxLayoutAlign="space-between stretch" id="delete-account" class="delete-account">
+    <h2>Delete account</h2>
+    <mat-card>
+      <mat-card-title>Delete my account ({{ userName }})</mat-card-title>
+      <mat-card-content>
+        <p>Once you delete your account, there is no going back. Please be certain.</p>
+        <p><strong>You will lose access to your projects.</strong></p>
+      </mat-card-content>
+      <mat-card-actions>
+        <div fxLayout="row" fxLayoutAlign="end stretch">
+          <button mat-stroked-button (click)="openDeleteAccountDialog()" id="delete-account-button">
+            Delete my account
+          </button>
+        </div>
+      </mat-card-actions>
+    </mat-card>
   </div>
 </div>
