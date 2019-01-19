@@ -95,7 +95,6 @@ export class SaUsersComponent extends SubscriptionDisposable implements OnInit {
       height: '200px',
       disableClose: true
     });
-    this.dialogRef.updatePosition({ top: '10%', left: '35%' });
     this.dialogRef.afterClosed().subscribe(confirmation => {
       if (confirmation.toLowerCase() === 'confirmed') {
         this.showEditPanel = false;

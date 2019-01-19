@@ -2,6 +2,15 @@
   width: 65px !important;
 }
 
+.mat-column-name {
+  padding-right: 0.5em;
+  word-break: break-word;
+}
+
+.mat-column-projects {
+  word-break: break-word;
+}
+
 mat-form-field {
   margin-top: 10px;
 }
@@ -13,10 +22,6 @@ mat-form-field {
 .loading-spinner {
   align-self: center;
   margin: 30px 0px;
-}
-
-.fixed-layout-table {
-  table-layout: fixed;
 }
 
 .remove-cell {

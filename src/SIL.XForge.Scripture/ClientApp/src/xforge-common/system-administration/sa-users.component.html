@@ -12,7 +12,7 @@
     </div>
     <div *ngIf="!isLoading; else loading">
       <div *ngIf="length > 0">
-        <table mat-table fxFill id="users-table" ngClass.gt-xs="fixed-layout-table" [dataSource]="userRows">
+        <table mat-table fxFill id="users-table" [dataSource]="userRows">
           <ng-container matColumnDef="avatar">
             <td mat-cell *matCellDef="let userRow; let i = index">
               <div *ngIf="userRow.active"><app-avatar [user]="userRow" size="32" [round]="false"> </app-avatar></div>
@@ -33,7 +33,7 @@
                 {{ userRow.projects?.length }} Projects -
                 <span class="projectsNames" *ngFor="let project of userRow.projects; last as isLast">
                   <a [routerLink]="['/project', project.id]">{{ project.projectName }}</a>
-                  <span *ngIf="!isLast">,&nbsp;</span>
+                  <span *ngIf="!isLast">, </span>
                 </span>
               </span>
             </td>
@@ -48,6 +48,7 @@
               <button
                 *ngIf="!userRow.active"
                 fxHide.lt-sm
+                fxHide.md
                 fxShow
                 mat-stroked-button
                 color="warn"
@@ -60,6 +61,7 @@
                 *ngIf="!userRow.active"
                 fxHide
                 fxShow.lt-sm
+                fxShow.md
                 mat-icon-button
                 color="warn"
                 class="cancel-invite"
