@@ -214,6 +214,12 @@ export class JsonApiService {
       host: this.locationService.origin,
       namespace: JsonApiService.NAMESPACE
     });
+    this.onlineStore.on('update', () => this.onlineStore.transformLog.truncate(this.onlineStore.transformLog.head));
+    this.onlineStore.on('queryFail', () => this.onlineStore.requestQueue.skip());
+    this.onlineStore.on('updateFail', () => {
+      this.onlineStore.requestQueue.skip();
+      this.onlineStore.transformLog.truncate(this.onlineStore.transformLog.head);
+    });
 
     this.bucket = new IndexedDBBucket({
       namespace: 'xforge-state'
