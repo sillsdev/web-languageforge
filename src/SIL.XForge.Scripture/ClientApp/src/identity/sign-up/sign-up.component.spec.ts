@@ -16,6 +16,16 @@ import { SignUpResult } from '../models/sign-up-result';
 import { SignUpComponent } from './sign-up.component';
 
 describe('SignUpComponent', () => {
+  it('should log out any user', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.fixture.detectChanges();
+    // ensure that ngOnInit completes, then detect changes again
+    flush();
+    env.fixture.detectChanges();
+    verify(env.mockedAuthService.logOutNoRedirect()).once();
+    expect().nothing();
+  }));
+
   it('should allow user to complete the form and register', fakeAsync(() => {
     const env = new TestEnvironment();
     when(env.mockedIdentityService.signUp(anything(), anything(), anything())).thenResolve(SignUpResult.Success);

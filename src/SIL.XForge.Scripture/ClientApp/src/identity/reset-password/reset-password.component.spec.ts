@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
+import { AuthService } from '@xforge-common/auth.service';
 import { LocationService } from '@xforge-common/location.service';
 import { UICommonModule } from '@xforge-common/ui-common.module';
 import { IdentityService } from '../identity.service';
@@ -19,12 +20,14 @@ class TestEnvironment {
   mockedIdentityService: IdentityService;
   mockedActivatedRoute: ActivatedRoute;
   mockedLocationService: LocationService;
+  mockedAuthService: AuthService;
   overlayContainer: OverlayContainer;
 
   constructor() {
     this.mockedIdentityService = mock(IdentityService);
     this.mockedActivatedRoute = mock(ActivatedRoute);
     this.mockedLocationService = mock(LocationService);
+    this.mockedAuthService = mock(AuthService);
 
     when(this.mockedActivatedRoute.queryParams).thenReturn(of({ key: 'abcd1234' }));
     when(this.mockedIdentityService.verifyResetPasswordKey('abcd1234')).thenResolve(true);
@@ -35,7 +38,8 @@ class TestEnvironment {
       providers: [
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
-        { provide: LocationService, useFactory: () => instance(this.mockedLocationService) }
+        { provide: LocationService, useFactory: () => instance(this.mockedLocationService) },
+        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     });
@@ -86,6 +90,16 @@ class TestEnvironment {
 }
 
 describe('ResetPasswordComponent', () => {
+  it('should log out any user', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.fixture.detectChanges();
+    // ensure that ngOnInit completes, then detect changes again
+    flush();
+    env.fixture.detectChanges();
+    verify(env.mockedAuthService.logOutNoRedirect()).once();
+    expect().nothing();
+  }));
+
   it('form invalid when empty', () => {
     const env = new TestEnvironment();
 
