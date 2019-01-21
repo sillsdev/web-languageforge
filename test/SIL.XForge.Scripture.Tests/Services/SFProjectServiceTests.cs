@@ -19,80 +19,93 @@ namespace SIL.XForge.Scripture.Services
         [Test]
         public async Task UpdateAsync_UserRole()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("project-name"), "new" }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
-
-            var resource = new SFProjectResource
+            using (var env = new TestEnvironment())
             {
-                Id = "project02",
-                ProjectName = "new"
-            };
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                env.SetUser("user01", SystemRoles.User);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("project-name"), "new" }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+
+                var resource = new SFProjectResource
                 {
-                    await env.Service.UpdateAsync(resource.Id, resource);
-                });
+                    Id = "project02",
+                    ProjectName = "new"
+                };
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                    {
+                        await env.Service.UpdateAsync(resource.Id, resource);
+                    });
 
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
 
-            resource.Id = "project01";
-            SFProjectResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                resource.Id = "project01";
+                SFProjectResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.ProjectName, Is.EqualTo("new"));
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.ProjectName, Is.EqualTo("new"));
+            }
         }
 
         [Test]
         public async Task UpdateAsync_SystemAdminRole()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.SystemAdmin);
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("project-name"), "new" }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
-
-            var resource = new SFProjectResource
+            using (var env = new TestEnvironment())
             {
-                Id = "project02",
-                ProjectName = "new"
-            };
+                env.SetUser("user01", SystemRoles.SystemAdmin);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("project-name"), "new" }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            SFProjectResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                var resource = new SFProjectResource
+                {
+                    Id = "project02",
+                    ProjectName = "new"
+                };
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.ProjectName, Is.EqualTo("new"));
+                SFProjectResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.ProjectName, Is.EqualTo("new"));
+            }
         }
 
         [Test]
         public async Task GetAsync_UserRole()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-            env.JsonApiContext.QuerySet.Returns(new QuerySet());
-            env.JsonApiContext.PageManager.Returns(new PageManager());
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser("user01", SystemRoles.User);
+                env.JsonApiContext.QuerySet.Returns(new QuerySet());
+                env.JsonApiContext.PageManager.Returns(new PageManager());
 
-            SFProjectResource[] resources = (await env.Service.GetAsync()).ToArray();
+                SFProjectResource[] resources = (await env.Service.GetAsync()).ToArray();
 
-            Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[] { "project01", "project03" }));
+                Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[] { "project01", "project03" }));
+            }
         }
 
         [Test]
         public async Task GetAsync_SystemAdminRole()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.SystemAdmin);
-            env.JsonApiContext.QuerySet.Returns(new QuerySet());
-            env.JsonApiContext.PageManager.Returns(new PageManager());
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser("user01", SystemRoles.SystemAdmin);
+                env.JsonApiContext.QuerySet.Returns(new QuerySet());
+                env.JsonApiContext.PageManager.Returns(new PageManager());
 
-            SFProjectResource[] resources = (await env.Service.GetAsync()).ToArray();
+                SFProjectResource[] resources = (await env.Service.GetAsync()).ToArray();
 
-            Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[] { "project01", "project02", "project03" }));
+                Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[]
+                    {
+                        "project01",
+                        "project02",
+                        "project03"
+                    }));
+            }
         }
 
         class TestEnvironment : ResourceServiceTestEnvironmentBase<SFProjectResource, SFProjectEntity>

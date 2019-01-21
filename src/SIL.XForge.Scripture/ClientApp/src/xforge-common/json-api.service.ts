@@ -22,6 +22,7 @@ import {
   Record,
   RecordIdentity,
   RecordRelationship,
+  RelatedRecordFilterSpecifier,
   RemoveFromRelatedRecordsOperation,
   RemoveRecordOperation,
   ReplaceAttributeOperation,
@@ -790,6 +791,14 @@ export class JsonApiService {
         value: filterDef.value
       };
       return attributeFilter;
+    } else if (this.schema.hasRelationship(type, filterDef.name)) {
+      const relFilter: RelatedRecordFilterSpecifier = {
+        kind: 'relatedRecord',
+        op: 'equal',
+        relation: filterDef.name,
+        record: filterDef.value
+      };
+      return relFilter;
     }
 
     if (isCustomFilterRegistered(type, filterDef.name)) {

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -11,16 +13,35 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public abstract class UserService<TResource> : RepositoryResourceServiceBase<TResource, UserEntity>
-        where TResource : UserResource
+    public abstract class UserService<TResource>
+        : RepositoryResourceServiceBase<TResource, UserEntity>, IUserService<TResource> where TResource : UserResource
     {
-        private readonly IOptions<SiteOptions> _options;
+        private readonly IOptions<SiteOptions> _siteOptions;
 
         protected UserService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
-            IRepository<UserEntity> users, IOptions<SiteOptions> options)
+            IRepository<UserEntity> users, IOptions<SiteOptions> siteOptions)
             : base(jsonApiContext, mapper, userAccessor, users)
         {
-            _options = options;
+            _siteOptions = siteOptions;
+        }
+
+        public async Task<Uri> SaveAvatarAsync(string id, string name, Stream inputStream)
+        {
+            await CheckCanUpdateDeleteAsync(id);
+
+            string avatarsDir = Path.Combine(_siteOptions.Value.SharedDir, "avatars");
+            if (!Directory.Exists(avatarsDir))
+                Directory.CreateDirectory(avatarsDir);
+            string fileName = id + Path.GetExtension(name);
+            string path = Path.Combine(avatarsDir, fileName);
+            using (var fileStream = new FileStream(path, FileMode.Create))
+                await inputStream.CopyToAsync(fileStream);
+            // add a timestamp to the query part of the URL, this forces the browser to NOT use the previously cached
+            // image when a new avatar image is uploaded
+            var uri = new Uri(_siteOptions.Value.Origin,
+                $"/assets/avatars/{fileName}?t={DateTime.UtcNow.ToFileTime()}");
+            await Entities.UpdateAsync(id, update => update.Set(u => u.AvatarUrl, uri.PathAndQuery));
+            return uri;
         }
 
         protected override IQueryable<UserEntity> ApplyFilter(IQueryable<UserEntity> entities,
@@ -70,7 +91,7 @@ namespace SIL.XForge.Services
                     }
                     break;
                 case nameof(UserResource.Site):
-                    SiteOptions siteOptions = _options.Value;
+                    SiteOptions siteOptions = _siteOptions.Value;
                     string site = siteOptions.Origin.Authority;
                     if (value == null)
                         update.RemoveDictionaryValue(u => u.Sites, site);

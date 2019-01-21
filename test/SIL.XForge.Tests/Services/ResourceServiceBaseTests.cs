@@ -23,308 +23,331 @@ namespace SIL.XForge.Services
         [Test]
         public async Task CreateAsync()
         {
-            var env = new TestEnvironment();
-
-            Assert.That(env.Entities.Contains("testnew"), Is.False);
-
-            var resource = new TestResource
+            using (var env = new TestEnvironment())
             {
-                Id = "testnew",
-                Str = "new",
-                User = new TestUserResource { Id = "user01" },
-                UserRef = "user01"
-            };
-            TestResource newResource = await env.Service.CreateAsync(resource);
+                Assert.That(env.Entities.Contains("testnew"), Is.False);
 
-            Assert.That(newResource, Is.Not.Null);
-            Assert.That(newResource.Id, Is.EqualTo("testnew"));
-            Assert.That(newResource.Str, Is.EqualTo("new"));
-            Assert.That(newResource.UserRef, Is.EqualTo("user01"));
-            Assert.That(env.Entities.Contains("testnew"), Is.True);
+                var resource = new TestResource
+                {
+                    Id = "testnew",
+                    Str = "new",
+                    User = new TestUserResource { Id = "user01" },
+                    UserRef = "user01"
+                };
+                TestResource newResource = await env.Service.CreateAsync(resource);
+
+                Assert.That(newResource, Is.Not.Null);
+                Assert.That(newResource.Id, Is.EqualTo("testnew"));
+                Assert.That(newResource.Str, Is.EqualTo("new"));
+                Assert.That(newResource.UserRef, Is.EqualTo("user01"));
+                Assert.That(env.Entities.Contains("testnew"), Is.True);
+            }
         }
 
         [Test]
         public async Task UpdateAsync_Found()
         {
-            var env = new TestEnvironment();
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("str"), "new" }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>
-                {
-                    { env.GetRelationship("user"), "user01" }
-                });
-
-            TestEntity entity = await env.Entities.GetAsync("test01");
-            Assert.That(entity.Str, Is.EqualTo("old"));
-            Assert.That(entity.UserRef, Is.Null);
-
-            var resource = new TestResource
+            using (var env = new TestEnvironment())
             {
-                Id = "test01",
-                Str = "new",
-                User = new TestUserResource { Id = "user01" },
-                UserRef = "user01"
-            };
-            TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("str"), "new" }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>
+                    {
+                        { env.GetRelationship("user"), "user01" }
+                    });
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.Str, Is.EqualTo("new"));
-            Assert.That(updatedResource.UserRef, Is.EqualTo("user01"));
-            Assert.That(env.Entities.Contains("test01"), Is.True);
+                TestEntity entity = await env.Entities.GetAsync("test01");
+                Assert.That(entity.Str, Is.EqualTo("old"));
+                Assert.That(entity.UserRef, Is.Null);
+
+                var resource = new TestResource
+                {
+                    Id = "test01",
+                    Str = "new",
+                    User = new TestUserResource { Id = "user01" },
+                    UserRef = "user01"
+                };
+                TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.Str, Is.EqualTo("new"));
+                Assert.That(updatedResource.UserRef, Is.EqualTo("user01"));
+                Assert.That(env.Entities.Contains("test01"), Is.True);
+            }
         }
 
         [Test]
         public async Task UpdateAsync_RemoveAttribute()
         {
-            var env = new TestEnvironment();
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("num"), null }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
-
-            TestEntity entity = await env.Entities.GetAsync("test02");
-            Assert.That(entity.Num, Is.EqualTo(1));
-
-            var resource = new TestResource
+            using (var env = new TestEnvironment())
             {
-                Id = "test02"
-            };
-            TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("num"), null }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.Num, Is.EqualTo(default(int)));
-            Assert.That(env.Entities.Contains("test02"), Is.True);
+                TestEntity entity = await env.Entities.GetAsync("test02");
+                Assert.That(entity.Num, Is.EqualTo(1));
+
+                var resource = new TestResource
+                {
+                    Id = "test02"
+                };
+                TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.Num, Is.EqualTo(default(int)));
+                Assert.That(env.Entities.Contains("test02"), Is.True);
+            }
         }
 
         [Test]
         public async Task UpdateAsync_RemoveRelationship()
         {
-            var env = new TestEnvironment();
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>());
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>
-                {
-                    { env.GetRelationship("user"), null }
-                });
-
-            TestEntity entity = await env.Entities.GetAsync("test02");
-            Assert.That(entity.UserRef, Is.EqualTo("user01"));
-
-            var resource = new TestResource
+            using (var env = new TestEnvironment())
             {
-                Id = "test02"
-            };
-            TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>());
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>
+                    {
+                        { env.GetRelationship("user"), null }
+                    });
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.UserRef, Is.Null);
-            Assert.That(env.Entities.Contains("test02"), Is.True);
+                TestEntity entity = await env.Entities.GetAsync("test02");
+                Assert.That(entity.UserRef, Is.EqualTo("user01"));
+
+                var resource = new TestResource
+                {
+                    Id = "test02"
+                };
+                TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.UserRef, Is.Null);
+                Assert.That(env.Entities.Contains("test02"), Is.True);
+            }
         }
 
         [Test]
         public async Task UpdateAsync_NotFound()
         {
-            var env = new TestEnvironment();
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("str"), "new" }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>
-                {
-                    { env.GetRelationship("user"), "user01" }
-                });
-
-            Assert.That(env.Entities.Contains("testbad"), Is.False);
-
-            var resource = new TestResource
+            using (var env = new TestEnvironment())
             {
-                Id = "testbad",
-                Str = "new",
-                User = new TestUserResource { Id = "user01" },
-                UserRef = "user01"
-            };
-            TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("str"), "new" }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>
+                    {
+                        { env.GetRelationship("user"), "user01" }
+                    });
 
-            Assert.That(updatedResource, Is.Null);
+                Assert.That(env.Entities.Contains("testbad"), Is.False);
+
+                var resource = new TestResource
+                {
+                    Id = "testbad",
+                    Str = "new",
+                    User = new TestUserResource { Id = "user01" },
+                    UserRef = "user01"
+                };
+                TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Null);
+            }
         }
 
         [Test]
         public async Task UpdateRelationshipsAsync_Found()
         {
-            var env = new TestEnvironment();
+            using (var env = new TestEnvironment())
+            {
+                TestEntity entity = await env.Entities.GetAsync("test01");
+                Assert.That(entity.UserRef, Is.Null);
 
-            TestEntity entity = await env.Entities.GetAsync("test01");
-            Assert.That(entity.UserRef, Is.Null);
+                await env.Service.UpdateRelationshipsAsync("test01", "user",
+                    new List<ResourceObject> { new ResourceObject { Type = "users", Id = "user01" } });
 
-            await env.Service.UpdateRelationshipsAsync("test01", "user",
-                new List<ResourceObject> { new ResourceObject { Type = "users", Id = "user01" } });
-
-            TestEntity updatedEntity = await env.Entities.GetAsync("test01");
-            Assert.That(updatedEntity.UserRef, Is.EqualTo("user01"));
+                TestEntity updatedEntity = await env.Entities.GetAsync("test01");
+                Assert.That(updatedEntity.UserRef, Is.EqualTo("user01"));
+            }
         }
 
         [Test]
         public void UpdateRelationshipsAsync_NotFound()
         {
-            var env = new TestEnvironment();
+            using (var env = new TestEnvironment())
+            {
+                Assert.That(env.Entities.Contains("testbad"), Is.False);
 
-            Assert.That(env.Entities.Contains("testbad"), Is.False);
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                    {
+                        await env.Service.UpdateRelationshipsAsync("testbad", "user",
+                            new List<ResourceObject> { new ResourceObject { Type = "users", Id = "user01" } });
+                    });
 
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
-                {
-                    await env.Service.UpdateRelationshipsAsync("testbad", "user",
-                        new List<ResourceObject> { new ResourceObject { Type = "users", Id = "user01" } });
-                });
-
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
+            }
         }
 
         [Test]
         public void UpdateRelationshipsAsync_InvalidRelationship()
         {
-            var env = new TestEnvironment();
+            using (var env = new TestEnvironment())
+            {
+                Assert.That(env.Entities.Contains("test01"), Is.True);
 
-            Assert.That(env.Entities.Contains("test01"), Is.True);
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                    {
+                        await env.Service.UpdateRelationshipsAsync("test01", "badrelationship",
+                            new List<ResourceObject> { new ResourceObject { Type = "bad", Id = "badid" } });
+                    });
 
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
-                {
-                    await env.Service.UpdateRelationshipsAsync("test01", "badrelationship",
-                        new List<ResourceObject> { new ResourceObject { Type = "bad", Id = "badid" } });
-                });
-
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
+            }
         }
 
         [Test]
         public async Task DeleteAsync_Found()
         {
-            var env = new TestEnvironment();
+            using (var env = new TestEnvironment())
+            {
+                Assert.That(env.Entities.Contains("test01"), Is.True);
 
-            Assert.That(env.Entities.Contains("test01"), Is.True);
+                Assert.That(await env.Service.DeleteAsync("test01"), Is.True);
 
-            Assert.That(await env.Service.DeleteAsync("test01"), Is.True);
-
-            Assert.That(env.Entities.Contains("test01"), Is.False);
+                Assert.That(env.Entities.Contains("test01"), Is.False);
+            }
         }
 
         [Test]
         public async Task DeleteAsync_NotFound()
         {
-            var env = new TestEnvironment();
+            using (var env = new TestEnvironment())
+            {
+                Assert.That(env.Entities.Contains("testbad"), Is.False);
 
-            Assert.That(env.Entities.Contains("testbad"), Is.False);
-
-            Assert.That(await env.Service.DeleteAsync("testbad"), Is.False);
+                Assert.That(await env.Service.DeleteAsync("testbad"), Is.False);
+            }
         }
 
         [Test]
         public async Task GetAsync_WithIdFound()
         {
-            var env = new TestEnvironment();
+            using (var env = new TestEnvironment())
+            {
+                Assert.That(env.Entities.Contains("test01"), Is.True);
 
-            Assert.That(env.Entities.Contains("test01"), Is.True);
+                TestResource resource = await env.Service.GetAsync("test01");
 
-            TestResource resource = await env.Service.GetAsync("test01");
-
-            Assert.That(resource, Is.Not.Null);
-            Assert.That(resource.Id, Is.EqualTo("test01"));
-            Assert.That(resource.Str, Is.EqualTo("old"));
+                Assert.That(resource, Is.Not.Null);
+                Assert.That(resource.Id, Is.EqualTo("test01"));
+                Assert.That(resource.Str, Is.EqualTo("old"));
+            }
         }
 
         [Test]
         public async Task GetAsync_WithIdNotFound()
         {
-            var env = new TestEnvironment();
+            using (var env = new TestEnvironment())
+            {
+                Assert.That(env.Entities.Contains("testbad"), Is.False);
 
-            Assert.That(env.Entities.Contains("testbad"), Is.False);
+                TestResource resource = await env.Service.GetAsync("testbad");
 
-            TestResource resource = await env.Service.GetAsync("testbad");
-
-            Assert.That(resource, Is.Null);
+                Assert.That(resource, Is.Null);
+            }
         }
 
         [Test]
         public async Task GetAsync_FilterSortPage()
         {
-            var env = new TestEnvironment();
-            env.JsonApiContext.QuerySet.Returns(new QuerySet
+            using (var env = new TestEnvironment())
+            {
+                env.JsonApiContext.QuerySet.Returns(new QuerySet
                 {
                     Filters = { new FilterQuery("str", "string1", "eq") },
                     SortParameters = { new SortQuery(SortDirection.Descending, "num") }
                 });
-            var pageManager = new PageManager { PageSize = 5, CurrentPage = 2 };
-            env.JsonApiContext.PageManager.Returns(pageManager);
+                var pageManager = new PageManager { PageSize = 5, CurrentPage = 2 };
+                env.JsonApiContext.PageManager.Returns(pageManager);
 
-            TestResource[] resources = (await env.Service.GetAsync()).ToArray();
+                TestResource[] resources = (await env.Service.GetAsync()).ToArray();
 
-            Assert.That(resources.Select(r => r.Id), Is.EqualTo(new[]
-                {
-                    "test05", "test04", "test03", "test02"
-                }));
-            Assert.That(resources[3].UserRef, Is.EqualTo("user01"));
-            Assert.That(resources[3].User, Is.Null);
-            Assert.That(pageManager.TotalRecords, Is.EqualTo(9));
+                Assert.That(resources.Select(r => r.Id), Is.EqualTo(new[]
+                    {
+                        "test05", "test04", "test03", "test02"
+                    }));
+                Assert.That(resources[3].UserRef, Is.EqualTo("user01"));
+                Assert.That(resources[3].User, Is.Null);
+                Assert.That(pageManager.TotalRecords, Is.EqualTo(9));
+            }
         }
 
         [Test]
         public async Task GetAsync_Include()
         {
-            var env = new TestEnvironment();
-            env.JsonApiContext.QuerySet.Returns(new QuerySet
+            using (var env = new TestEnvironment())
+            {
+                env.JsonApiContext.QuerySet.Returns(new QuerySet
                 {
                     SortParameters = { new SortQuery(SortDirection.Ascending, "num") },
                     IncludedRelationships = { "user" }
                 });
-            env.JsonApiContext.PageManager.Returns(new PageManager());
+                env.JsonApiContext.PageManager.Returns(new PageManager());
 
-            TestResource[] resources = (await env.Service.GetAsync()).ToArray();
+                TestResource[] resources = (await env.Service.GetAsync()).ToArray();
 
-            Assert.That(resources.Length, Is.EqualTo(10));
-            Assert.That(resources[1].User.Id, Is.EqualTo("user01"));
-            Assert.That(resources[7].User.Id, Is.EqualTo("user01"));
+                Assert.That(resources.Length, Is.EqualTo(10));
+                Assert.That(resources[1].User.Id, Is.EqualTo("user01"));
+                Assert.That(resources[7].User.Id, Is.EqualTo("user01"));
+            }
         }
 
         [Test]
         public async Task GetRelationshipAsync_Found()
         {
-            var env = new TestEnvironment();
+            using (var env = new TestEnvironment())
+            {
+                Assert.That(env.Entities.Contains("test02"), Is.True);
 
-            Assert.That(env.Entities.Contains("test02"), Is.True);
+                object resource = await env.Service.GetRelationshipAsync("test02", "user");
 
-            object resource = await env.Service.GetRelationshipAsync("test02", "user");
-
-            Assert.That(resource, Is.Not.Null);
-            var userResource = (TestUserResource) resource;
-            Assert.That(userResource.Id, Is.EqualTo("user01"));
+                Assert.That(resource, Is.Not.Null);
+                var userResource = (TestUserResource)resource;
+                Assert.That(userResource.Id, Is.EqualTo("user01"));
+            }
         }
 
         [Test]
         public async Task GetRelationshipAsync_NotFound()
         {
-            var env = new TestEnvironment();
+            using (var env = new TestEnvironment())
+            {
+                Assert.That(env.Entities.Contains("testbad"), Is.False);
 
-            Assert.That(env.Entities.Contains("testbad"), Is.False);
+                object resource = await env.Service.GetRelationshipAsync("testbad", "user");
 
-            object resource = await env.Service.GetRelationshipAsync("testbad", "user");
-
-            Assert.That(resource, Is.Null);
+                Assert.That(resource, Is.Null);
+            }
         }
 
         [Test]
         public void GetRelationshipAsync_InvalidRelationship()
         {
-            var env = new TestEnvironment();
+            using (var env = new TestEnvironment())
+            {
+                Assert.That(env.Entities.Contains("test01"), Is.True);
 
-            Assert.That(env.Entities.Contains("test01"), Is.True);
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                    {
+                        await env.Service.GetRelationshipAsync("test01", "badrelationship");
+                    });
 
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
-                {
-                    await env.Service.GetRelationshipAsync("test01", "badrelationship");
-                });
-
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
+            }
         }
 
         class TestEnvironment : ResourceServiceTestEnvironmentBase<TestResource, TestEntity>

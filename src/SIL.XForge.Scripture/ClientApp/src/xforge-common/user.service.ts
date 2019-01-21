@@ -1,3 +1,4 @@
+import { HttpClient, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Record } from '@orbit/data';
 import { clone } from '@orbit/utils';
@@ -19,7 +20,12 @@ import { nameof } from './utils';
 export abstract class UserService<T extends User = User> extends ResourceService {
   private static readonly SEARCH_FILTER = 'search';
 
-  constructor(type: string, jsonApiService: JsonApiService, private readonly authService: AuthService) {
+  constructor(
+    type: string,
+    jsonApiService: JsonApiService,
+    private readonly authService: AuthService,
+    private readonly http: HttpClient
+  ) {
     super(type, jsonApiService);
 
     registerCustomFilter(this.type, UserService.SEARCH_FILTER, (r, v) => this.searchUsers(r, v));
@@ -109,6 +115,24 @@ export abstract class UserService<T extends User = User> extends ResourceService
         return this.jsonApiService.onlineGetAll<T>(this.type, currentParameters, include);
       })
     );
+  }
+
+  /**
+   * Uploads the specified image file as the current user's avatar.
+   *
+   * @param {File} file The file to upload.
+   * @returns {Promise<string>} The relative url to the uploaded avatar file.
+   */
+  async uploadCurrentUserAvatar(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await this.http
+      .post<HttpResponse<string>>(`json-api/users/${this.currentUserId}/avatar`, formData, {
+        headers: { Accept: 'application/json' },
+        observe: 'response'
+      })
+      .toPromise();
+    return response.headers.get('Location');
   }
 
   private searchUsers(records: Record[], value: string): Record[] {

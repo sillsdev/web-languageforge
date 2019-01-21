@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -19,279 +21,362 @@ namespace SIL.XForge.Services
         [Test]
         public void CreateAsync_UserRole()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-
-            var resource = new TestUserResource
+            using (var env = new TestEnvironment())
             {
-                Id = "usernew"
-            };
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
-                {
-                    await env.Service.CreateAsync(resource);
-                });
+                env.SetUser("user01", SystemRoles.User);
 
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
+                var resource = new TestUserResource
+                {
+                    Id = "usernew"
+                };
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                    {
+                        await env.Service.CreateAsync(resource);
+                    });
+
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
+            }
         }
 
         [Test]
         public async Task CreateAsync_SystemAdminRole()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.SystemAdmin);
-
-            var userResource = new TestUserResource
+            using (var env = new TestEnvironment())
             {
-                Id = "usernew"
-            };
-            UserResource newResource = await env.Service.CreateAsync(userResource);
+                env.SetUser("user01", SystemRoles.SystemAdmin);
 
-            Assert.That(newResource, Is.Not.Null);
+                var userResource = new TestUserResource
+                {
+                    Id = "usernew"
+                };
+                UserResource newResource = await env.Service.CreateAsync(userResource);
+
+                Assert.That(newResource, Is.Not.Null);
+            }
         }
 
         [Test]
         public async Task CreateAsync_CaseInsensitiveUsername()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.SystemAdmin);
-
-            var userResource = new TestUserResource
+            using (var env = new TestEnvironment())
             {
-                Id = "usernew",
-                Username = "USER_01"
-            };
-            UserResource newResource = await env.Service.CreateAsync(userResource);
+                env.SetUser("user01", SystemRoles.SystemAdmin);
 
-            Assert.That(newResource, Is.Not.Null);
-            Assert.That(newResource.Username, Is.EqualTo("user_01"));
+                var userResource = new TestUserResource
+                {
+                    Id = "usernew",
+                    Username = "USER_01"
+                };
+                UserResource newResource = await env.Service.CreateAsync(userResource);
+
+                Assert.That(newResource, Is.Not.Null);
+                Assert.That(newResource.Username, Is.EqualTo("user_01"));
+            }
         }
 
         [Test]
         public async Task CreateAsync_Email()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.SystemAdmin);
-
-            var userResource = new TestUserResource
+            using (var env = new TestEnvironment())
             {
-                Id = "usernew",
-                Email = "UserNew@gmail.com"
-            };
-            UserResource newResource = await env.Service.CreateAsync(userResource);
+                env.SetUser("user01", SystemRoles.SystemAdmin);
 
-            Assert.That(newResource, Is.Not.Null);
-            Assert.That(newResource.Email, Is.EqualTo("UserNew@gmail.com"));
-            Assert.That(newResource.CanonicalEmail, Is.EqualTo("usernew@gmail.com"));
+                var userResource = new TestUserResource
+                {
+                    Id = "usernew",
+                    Email = "UserNew@gmail.com"
+                };
+                UserResource newResource = await env.Service.CreateAsync(userResource);
+
+                Assert.That(newResource, Is.Not.Null);
+                Assert.That(newResource.Email, Is.EqualTo("UserNew@gmail.com"));
+                Assert.That(newResource.CanonicalEmail, Is.EqualTo("usernew@gmail.com"));
+            }
         }
 
         [Test]
         public async Task UpdateAsync_UserRole()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("username"), "new" }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
-
-            var resource = new TestUserResource
+            using (var env = new TestEnvironment())
             {
-                Id = "user02",
-                Username = "new"
-            };
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                env.SetUser("user01", SystemRoles.User);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("username"), "new" }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+
+                var resource = new TestUserResource
                 {
-                    await env.Service.UpdateAsync(resource.Id, resource);
-                });
+                    Id = "user02",
+                    Username = "new"
+                };
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                    {
+                        await env.Service.UpdateAsync(resource.Id, resource);
+                    });
 
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
 
-            resource.Id = "user01";
-            UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                resource.Id = "user01";
+                UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.Username, Is.EqualTo("new"));
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.Username, Is.EqualTo("new"));
+            }
         }
 
         [Test]
         public async Task UpdateAsync_SystemAdminRole()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.SystemAdmin);
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("username"), "new" }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
-
-            var resource = new TestUserResource
+            using (var env = new TestEnvironment())
             {
-                Id = "user02",
-                Username = "new"
-            };
+                env.SetUser("user01", SystemRoles.SystemAdmin);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("username"), "new" }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                var resource = new TestUserResource
+                {
+                    Id = "user02",
+                    Username = "new"
+                };
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.Username, Is.EqualTo("new"));
+                UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.Username, Is.EqualTo("new"));
+            }
         }
 
         [Test]
         public async Task UpdateAsync_CaseInsensitiveUsername()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.SystemAdmin);
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("username"), "USER_01" }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
-
-            var resource = new TestUserResource
+            using (var env = new TestEnvironment())
             {
-                Id = "user01",
-                Username = "USER_01"
-            };
-            UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                env.SetUser("user01", SystemRoles.SystemAdmin);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("username"), "USER_01" }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.Username, Is.EqualTo("user_01"));
+                var resource = new TestUserResource
+                {
+                    Id = "user01",
+                    Username = "USER_01"
+                };
+                UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.Username, Is.EqualTo("user_01"));
+            }
         }
 
         [Test]
         public async Task UpdateAsync_Email()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.SystemAdmin);
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("email"), "New@gmail.com" }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
-
-            var resource = new TestUserResource
+            using (var env = new TestEnvironment())
             {
-                Id = "user01",
-                Email = "New@gmail.com"
-            };
-            UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                env.SetUser("user01", SystemRoles.SystemAdmin);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("email"), "New@gmail.com" }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.Email, Is.EqualTo("New@gmail.com"));
-            Assert.That(updatedResource.CanonicalEmail, Is.EqualTo("new@gmail.com"));
+                var resource = new TestUserResource
+                {
+                    Id = "user01",
+                    Email = "New@gmail.com"
+                };
+                UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.Email, Is.EqualTo("New@gmail.com"));
+                Assert.That(updatedResource.CanonicalEmail, Is.EqualTo("new@gmail.com"));
+            }
         }
 
         [Test]
         public async Task UpdateAsync_SetSite()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.SystemAdmin);
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("site"), new Site { CurrentProjectId = "project01" } }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
-
-            var resource = new TestUserResource
+            using (var env = new TestEnvironment())
             {
-                Id = "user01",
-                Site = new Site { CurrentProjectId = "project01" }
-            };
-            UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                env.SetUser("user01", SystemRoles.SystemAdmin);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("site"), new Site { CurrentProjectId = "project01" } }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.Site, Is.Not.Null);
-            Assert.That(updatedResource.Site.CurrentProjectId, Is.EqualTo("project01"));
+                var resource = new TestUserResource
+                {
+                    Id = "user01",
+                    Site = new Site { CurrentProjectId = "project01" }
+                };
+                UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
 
-            UserEntity updatedEntity = await env.Service.GetEntityAsync(resource.Id);
-            Assert.That(updatedEntity.Sites.Count, Is.EqualTo(1));
-            Assert.That(updatedEntity.Sites[TestEnvironment.SiteAuthority].CurrentProjectId, Is.EqualTo("project01"));
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.Site, Is.Not.Null);
+                Assert.That(updatedResource.Site.CurrentProjectId, Is.EqualTo("project01"));
+
+                UserEntity updatedEntity = await env.Service.GetEntityAsync(resource.Id);
+                Assert.That(updatedEntity.Sites.Count, Is.EqualTo(1));
+                Assert.That(updatedEntity.Sites[TestEnvironment.SiteAuthority].CurrentProjectId,
+                    Is.EqualTo("project01"));
+            }
         }
 
         [Test]
         public async Task UpdateAsync_UnsetSite()
         {
-            var env = new TestEnvironment();
-            UserEntity initialEntity = await env.Service.GetEntityAsync("user02");
-            Assert.That(initialEntity.Sites.Count, Is.EqualTo(1));
-            Assert.That(initialEntity.Sites[TestEnvironment.SiteAuthority].CurrentProjectId, Is.EqualTo("project01"));
-
-            env.SetUser("user01", SystemRoles.SystemAdmin);
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("site"), null }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
-
-            var resource = new TestUserResource
+            using (var env = new TestEnvironment())
             {
-                Id = "user02"
-            };
-            UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                UserEntity initialEntity = await env.Service.GetEntityAsync("user02");
+                Assert.That(initialEntity.Sites.Count, Is.EqualTo(1));
+                Assert.That(initialEntity.Sites[TestEnvironment.SiteAuthority].CurrentProjectId,
+                    Is.EqualTo("project01"));
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.Site, Is.Null);
+                env.SetUser("user01", SystemRoles.SystemAdmin);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("site"), null }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            UserEntity updatedEntity = await env.Service.GetEntityAsync(resource.Id);
-            Assert.That(updatedEntity.Sites.Count, Is.EqualTo(0));
+                var resource = new TestUserResource
+                {
+                    Id = "user02"
+                };
+                UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.Site, Is.Null);
+
+                UserEntity updatedEntity = await env.Service.GetEntityAsync(resource.Id);
+                Assert.That(updatedEntity.Sites.Count, Is.EqualTo(0));
+            }
         }
 
         [Test]
         public async Task UpdateAsync_UnlinkParatextAccount()
         {
-            var env = new TestEnvironment();
-            env.SetUser("paratextuser01", SystemRoles.User);
-
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+            using (var env = new TestEnvironment())
             {
-                { env.GetAttribute("paratext-id"), null }
-            });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+                env.SetUser("paratextuser01", SystemRoles.User);
 
-            var resource = new TestUserResource
-            {
-                Id = "paratextuser01",
-                ParatextId = null,
-            };
-            UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.ParatextId, Is.Null);
-            // Unsetting the paratext-id should also unset paratext tokens
-            UserEntity paratextUser = await env.Service.GetEntityAsync("paratextuser01");
-            Assert.That(paratextUser.ParatextTokens, Is.Null);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                {
+                    { env.GetAttribute("paratext-id"), null }
+                });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+
+                var resource = new TestUserResource
+                {
+                    Id = "paratextuser01",
+                    ParatextId = null,
+                };
+                UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.ParatextId, Is.Null);
+                // Unsetting the paratext-id should also unset paratext tokens
+                UserEntity paratextUser = await env.Service.GetEntityAsync("paratextuser01");
+                Assert.That(paratextUser.ParatextTokens, Is.Null);
+            }
         }
 
         [Test]
         public async Task GetAsync_UserRole()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-            env.JsonApiContext.QuerySet.Returns(new QuerySet());
-            env.JsonApiContext.PageManager.Returns(new PageManager());
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser("user01", SystemRoles.User);
+                env.JsonApiContext.QuerySet.Returns(new QuerySet());
+                env.JsonApiContext.PageManager.Returns(new PageManager());
 
-            UserResource[] resources = (await env.Service.GetAsync()).ToArray();
+                UserResource[] resources = (await env.Service.GetAsync()).ToArray();
 
-            Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[] { "user01" }));
+                Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[] { "user01" }));
+            }
         }
 
         [Test]
         public async Task GetAsync_SystemAdminRole()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.SystemAdmin);
-            env.JsonApiContext.QuerySet.Returns(new QuerySet());
-            env.JsonApiContext.PageManager.Returns(new PageManager());
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser("user01", SystemRoles.SystemAdmin);
+                env.JsonApiContext.QuerySet.Returns(new QuerySet());
+                env.JsonApiContext.PageManager.Returns(new PageManager());
 
-            UserResource[] resources = (await env.Service.GetAsync()).ToArray();
+                UserResource[] resources = (await env.Service.GetAsync()).ToArray();
 
-            Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[]
+                Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[]
+                    {
+                        "user01",
+                        "user02",
+                        "user03",
+                        "paratextuser01"
+                    }));
+            }
+        }
+
+        [Test]
+        public async Task SaveAvatarAsync_UserRole()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.CreateSharedDir();
+                env.SetUser("user01", SystemRoles.User);
+
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
-                    "user01",
-                    "user02",
-                    "user03",
-                    "paratextuser01"
-                }));
+                    using (var inputStream = new MemoryStream())
+                        await env.Service.SaveAvatarAsync("user02", "file.png", inputStream);
+                });
+
+                Uri uri;
+                using (var inputStream = new MemoryStream())
+                    uri = await env.Service.SaveAvatarAsync("user01", "file.png", inputStream);
+
+                Assert.That(uri.AbsolutePath, Is.EqualTo("/assets/avatars/user01.png"));
+                Assert.That(string.IsNullOrEmpty(uri.Query), Is.False);
+                Assert.That(File.Exists(Path.Combine(TestEnvironment.SharedDir, "avatars", "user01.png")), Is.True);
+                UserEntity user = await env.Entities.GetAsync("user01");
+                Assert.That(user.AvatarUrl, Is.EqualTo(uri.PathAndQuery));
+            }
+        }
+
+        [Test]
+        public async Task SaveAvatarAsync_SystemAdminRole()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.CreateSharedDir();
+                env.SetUser("user01", SystemRoles.SystemAdmin);
+
+                Uri uri;
+                using (var inputStream = new MemoryStream())
+                    uri = await env.Service.SaveAvatarAsync("user02", "file.png", inputStream);
+
+                Assert.That(uri.AbsolutePath, Is.EqualTo("/assets/avatars/user02.png"));
+                Assert.That(string.IsNullOrEmpty(uri.Query), Is.False);
+                Assert.That(File.Exists(Path.Combine(TestEnvironment.SharedDir, "avatars", "user02.png")), Is.True);
+                UserEntity user = await env.Entities.GetAsync("user02");
+                Assert.That(user.AvatarUrl, Is.EqualTo(uri.PathAndQuery));
+
+                using (var inputStream = new MemoryStream())
+                    uri = await env.Service.SaveAvatarAsync("user01", "file.png", inputStream);
+
+                Assert.That(uri.AbsolutePath, Is.EqualTo("/assets/avatars/user01.png"));
+                Assert.That(string.IsNullOrEmpty(uri.Query), Is.False);
+                Assert.That(File.Exists(Path.Combine(TestEnvironment.SharedDir, "avatars", "user01.png")), Is.True);
+                user = await env.Entities.GetAsync("user01");
+                Assert.That(user.AvatarUrl, Is.EqualTo(uri.PathAndQuery));
+            }
         }
 
         class TestEnvironment : ResourceServiceTestEnvironmentBase<UserResource, UserEntity>
