@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { AuthService } from '@xforge-common/auth.service';
@@ -9,7 +10,7 @@ import { SFUser } from './models/sfuser';
   providedIn: 'root'
 })
 export class SFUserService extends UserService<SFUser> {
-  constructor(jsonApiService: JsonApiService, authService: AuthService) {
-    super(SFUser.TYPE, jsonApiService, authService);
+  constructor(jsonApiService: JsonApiService, authService: AuthService, http: HttpClient) {
+    super(SFUser.TYPE, jsonApiService, authService, http);
   }
 }

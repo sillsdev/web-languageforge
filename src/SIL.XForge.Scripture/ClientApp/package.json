@@ -41,6 +41,7 @@
     "@orbit/indexeddb-bucket": "^0.15.23",
     "@orbit/jsonapi": "^0.15.25",
     "@orbit/store": "^0.15.25",
+    "angular-file": "^0.5.9",
     "angular-oauth2-oidc": "^5.0.2",
     "angular-password-strength-meter": "0.0.4",
     "bootstrap": "^4.1.3",

@@ -19,29 +19,33 @@ namespace SIL.XForge.Scripture.Services
         [Test]
         public void UpdateRelationshipsAsync_ProjectsNotAllowed()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser("user01", SystemRoles.User);
 
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
-                {
-                    await env.Service.UpdateRelationshipsAsync("user01", "projects",
-                        new List<ResourceObject> { new ResourceObject { Type = "projects", Id = "projectuser02" } });
-                });
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                    {
+                        await env.Service.UpdateRelationshipsAsync("user01", "projects",
+                            new List<ResourceObject> { new ResourceObject { Type = "projects", Id = "projectuser02" } });
+                    });
 
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status405MethodNotAllowed));
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status405MethodNotAllowed));
+            }
         }
 
         [Test]
         public async Task GetRelationshipsAsync_Projects()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser("user01", SystemRoles.User);
 
-            object resources = await env.Service.GetRelationshipsAsync("user01", "projects");
+                object resources = await env.Service.GetRelationshipsAsync("user01", "projects");
 
-            Assert.That(resources, Is.Not.Null);
-            var projectResources = (IEnumerable<IResource>) resources;
-            Assert.That(projectResources.Select(p => p.Id), Is.EqualTo(new[] { "projectuser01", "projectuser02" }));
+                Assert.That(resources, Is.Not.Null);
+                var projectResources = (IEnumerable<IResource>)resources;
+                Assert.That(projectResources.Select(p => p.Id), Is.EqualTo(new[] { "projectuser01", "projectuser02" }));
+            }
         }
 
         class TestEnvironment : ResourceServiceTestEnvironmentBase<SFUserResource, UserEntity>

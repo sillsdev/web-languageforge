@@ -18,165 +18,181 @@ namespace SIL.XForge.Services
         [Test]
         public async Task CreateAsync_HasRight()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-
-            var resource = new TestProjectDataResource
+            using (var env = new TestEnvironment())
             {
-                Id = "testnew",
-                Str = "new",
-                ProjectRef = "project01",
-                OwnerRef = "user01"
-            };
-            TestProjectDataResource newResource = await env.Service.CreateAsync(resource);
+                env.SetUser("user01", SystemRoles.User);
 
-            Assert.That(newResource, Is.Not.Null);
+                var resource = new TestProjectDataResource
+                {
+                    Id = "testnew",
+                    Str = "new",
+                    ProjectRef = "project01",
+                    OwnerRef = "user01"
+                };
+                TestProjectDataResource newResource = await env.Service.CreateAsync(resource);
+
+                Assert.That(newResource, Is.Not.Null);
+            }
         }
 
         [Test]
         public void CreateAsync_NoRight()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-
-            var resource = new TestProjectDataResource
+            using (var env = new TestEnvironment())
             {
-                Id = "testnew",
-                Str = "new",
-                ProjectRef = "project02",
-                OwnerRef = "user01"
-            };
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
-                {
-                    await env.Service.CreateAsync(resource);
-                });
+                env.SetUser("user01", SystemRoles.User);
 
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
+                var resource = new TestProjectDataResource
+                {
+                    Id = "testnew",
+                    Str = "new",
+                    ProjectRef = "project02",
+                    OwnerRef = "user01"
+                };
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                    {
+                        await env.Service.CreateAsync(resource);
+                    });
+
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
+            }
         }
 
         [Test]
         public void CreateAsync_ProjectNotSet()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-
-            var resource = new TestProjectDataResource
+            using (var env = new TestEnvironment())
             {
-                Id = "testnew",
-                Str = "new",
-                OwnerRef = "user01"
-            };
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
-                {
-                    await env.Service.CreateAsync(resource);
-                });
+                env.SetUser("user01", SystemRoles.User);
 
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status400BadRequest));
+                var resource = new TestProjectDataResource
+                {
+                    Id = "testnew",
+                    Str = "new",
+                    OwnerRef = "user01"
+                };
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                    {
+                        await env.Service.CreateAsync(resource);
+                    });
+
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status400BadRequest));
+            }
         }
 
         [Test]
         public void CreateAsync_IncorrectOwner()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-
-            var resource = new TestProjectDataResource
+            using (var env = new TestEnvironment())
             {
-                Id = "testnew",
-                Str = "new",
-                ProjectRef = "project01",
-                OwnerRef = "user02"
-            };
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
-                {
-                    await env.Service.CreateAsync(resource);
-                });
+                env.SetUser("user01", SystemRoles.User);
 
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status400BadRequest));
+                var resource = new TestProjectDataResource
+                {
+                    Id = "testnew",
+                    Str = "new",
+                    ProjectRef = "project01",
+                    OwnerRef = "user02"
+                };
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                    {
+                        await env.Service.CreateAsync(resource);
+                    });
+
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status400BadRequest));
+            }
         }
 
         [Test]
         public async Task UpdateAsync_HasRight()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("str"), "new" }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
-
-            var resource = new TestProjectDataResource
+            using (var env = new TestEnvironment())
             {
-                Id = "test01",
-                Str = "new"
-            };
-            TestProjectDataResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                env.SetUser("user01", SystemRoles.User);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("str"), "new" }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.Str, Is.EqualTo("new"));
+                var resource = new TestProjectDataResource
+                {
+                    Id = "test01",
+                    Str = "new"
+                };
+                TestProjectDataResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.Str, Is.EqualTo("new"));
+            }
         }
 
         [Test]
         public async Task UpdateAsync_HasOwnRight()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("str"), "new" }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
-
-            var resource = new TestProjectDataResource
+            using (var env = new TestEnvironment())
             {
-                Id = "test03",
-                Str = "new"
-            };
-            TestProjectDataResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+                env.SetUser("user01", SystemRoles.User);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("str"), "new" }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            Assert.That(updatedResource, Is.Not.Null);
-            Assert.That(updatedResource.Str, Is.EqualTo("new"));
+                var resource = new TestProjectDataResource
+                {
+                    Id = "test03",
+                    Str = "new"
+                };
+                TestProjectDataResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.Str, Is.EqualTo("new"));
+            }
         }
 
         [Test]
         public void UpdateAsync_NoRight()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user02", SystemRoles.User);
-            env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
-                {
-                    { env.GetAttribute("str"), "new" }
-                });
-            env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
-
-            var resource = new TestProjectDataResource
+            using (var env = new TestEnvironment())
             {
-                Id = "test01",
-                Str = "new"
-            };
-            var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
-                {
-                    await env.Service.UpdateAsync(resource.Id, resource);
-                });
+                env.SetUser("user02", SystemRoles.User);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("str"), "new" }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-            Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
+                var resource = new TestProjectDataResource
+                {
+                    Id = "test01",
+                    Str = "new"
+                };
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                    {
+                        await env.Service.UpdateAsync(resource.Id, resource);
+                    });
+
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
+            }
         }
 
         [Test]
         public async Task GetAsync()
         {
-            var env = new TestEnvironment();
-            env.SetUser("user01", SystemRoles.User);
-            env.JsonApiContext.QuerySet.Returns(new QuerySet());
-            env.JsonApiContext.PageManager.Returns(new PageManager());
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser("user01", SystemRoles.User);
+                env.JsonApiContext.QuerySet.Returns(new QuerySet());
+                env.JsonApiContext.PageManager.Returns(new PageManager());
 
-            TestProjectDataResource[] resources = (await env.Service.GetAsync()).ToArray();
+                TestProjectDataResource[] resources = (await env.Service.GetAsync()).ToArray();
 
-            Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[]
-                {
-                    "test01", "test03", "test04", "test07", "test09", "test10"
-                }));
+                Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[]
+                    {
+                        "test01", "test03", "test04", "test07", "test09", "test10"
+                    }));
+            }
         }
 
         class TestEnvironment : ResourceServiceTestEnvironmentBase<TestProjectDataResource, TestProjectDataEntity>

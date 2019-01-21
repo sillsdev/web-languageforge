@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AutoMapper;
 using JsonApiDotNetCore.Builders;
@@ -9,17 +10,19 @@ using JsonApiDotNetCore.Models;
 using JsonApiDotNetCore.Services;
 using Microsoft.Extensions.Options;
 using NSubstitute;
+using SIL.ObjectModel;
 using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public abstract class ResourceServiceTestEnvironmentBase<TResource, TEntity>
+    public abstract class ResourceServiceTestEnvironmentBase<TResource, TEntity> : DisposableBase
         where TResource : class, IResource
         where TEntity : Entity, new()
     {
         public const string SiteAuthority = "xf.localhost:5000";
+        public static readonly string SharedDir = Path.Combine(Path.GetTempPath(), "ResourceServiceTests");
 
         private readonly string _resourceName;
 
@@ -52,7 +55,8 @@ namespace SIL.XForge.Services
             Options.Value.Returns(new SiteOptions
             {
                 Name = "xForge",
-                Origin = new Uri("http://" + SiteAuthority)
+                Origin = new Uri("http://" + SiteAuthority),
+                SharedDir = SharedDir
             });
         }
 
@@ -82,6 +86,13 @@ namespace SIL.XForge.Services
             return resourceType.Relationships.First(r => r.PublicRelationshipName == name);
         }
 
+        public void CreateSharedDir()
+        {
+            if (Directory.Exists(SharedDir))
+                Directory.Delete(SharedDir, true);
+            Directory.CreateDirectory(SharedDir);
+        }
+
         protected virtual IEnumerable<TEntity> GetInitialData()
         {
             return Enumerable.Empty<TEntity>();
@@ -93,6 +104,12 @@ namespace SIL.XForge.Services
 
         protected virtual void SetupMapper(IMapperConfigurationExpression config)
         {
+        }
+
+        protected override void DisposeManagedResources()
+        {
+            if (Directory.Exists(SharedDir))
+                Directory.Delete(SharedDir, true);
         }
     }
 }

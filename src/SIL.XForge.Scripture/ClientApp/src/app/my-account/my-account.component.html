@@ -374,8 +374,11 @@
       </div>
       --></div>
     </form>
-    <div fxLayout="column" fxLayoutAlign="space-between stretch">
+    <div fxLayout="column">
       <div *ngIf="showAvatar"><app-avatar [user]="userFromDatabase" size="192" [round]="false"></app-avatar></div>
+      <button mdc-button ngfSelect [(file)]="pictureFile" (fileChange)="uploadPicture()" accept="image/*">
+        Upload picture
+      </button>
     </div>
   </div>
 

@@ -73,6 +73,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   userFromDatabase: SFUser;
   paratextUsername: string;
   googleUsername: string;
+  pictureFile: File;
 
   private readonly title = `Account details - ${environment.siteName}`;
   private doneInitialDatabaseImport: boolean = false;
@@ -325,5 +326,10 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   async onAccountDelete(userId: string): Promise<void> {
     await this.userService.onlineDelete(userId);
     this.authService.logOut();
+  }
+
+  async uploadPicture(): Promise<void> {
+    this.userFromDatabase.avatarUrl = await this.userService.uploadCurrentUserAvatar(this.pictureFile);
+    await this.refreshAvatar();
   }
 }

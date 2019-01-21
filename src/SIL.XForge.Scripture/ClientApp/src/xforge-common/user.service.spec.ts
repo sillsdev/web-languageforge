@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Injectable } from '@angular/core';
 import { inject, TestBed } from '@angular/core/testing';
@@ -18,8 +19,8 @@ class TestUser extends User {
 
 @Injectable()
 class TestUserService extends UserService<TestUser> {
-  constructor(jsonApiService: JsonApiService, authService: AuthService) {
-    super(TestUser.TYPE, jsonApiService, authService);
+  constructor(jsonApiService: JsonApiService, authService: AuthService, http: HttpClient) {
+    super(TestUser.TYPE, jsonApiService, authService, http);
   }
 }
 
