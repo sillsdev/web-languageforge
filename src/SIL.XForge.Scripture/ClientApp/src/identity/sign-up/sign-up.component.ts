@@ -41,6 +41,7 @@ export class SignUpComponent extends SubscriptionDisposable implements OnInit {
   }
 
   ngOnInit(): void {
+    this.authService.logOutNoRedirect();
     this.subscribe(this.activatedRoute.queryParams, params => {
       this.params = params;
       this.emailEntry = this.params['e'] as string;

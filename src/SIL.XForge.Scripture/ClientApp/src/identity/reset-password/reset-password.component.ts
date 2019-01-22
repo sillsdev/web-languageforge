@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 
+import { AuthService } from '@xforge-common/auth.service';
 import { LocationService } from '@xforge-common/location.service';
 import { IdentityService } from '../identity.service';
 
@@ -27,12 +28,14 @@ export class ResetPasswordComponent implements OnInit {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly identityService: IdentityService,
+    private readonly authService: AuthService,
     private readonly snackBar: MatSnackBar,
     private readonly activatedRoute: ActivatedRoute,
     private readonly locationService: LocationService
   ) {}
 
   ngOnInit(): Promise<void> {
+    this.authService.logOutNoRedirect();
     return this.verifyKey();
   }
 
