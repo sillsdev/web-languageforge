@@ -70,7 +70,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   showAvatar = true;
 
   /** User data as received from the database. */
-  userFromDatabase: SFUser;
+  userFromDatabase: SFUser = new SFUser();
   paratextUsername: string;
   googleUsername: string;
   pictureFile: File;
@@ -94,12 +94,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   ngOnInit() {
     this.titleService.setTitle(this.title);
     this.subscribe(this.userService.getCurrentUser(), user => {
-      this.userFromDatabase = user.results;
-      if (user.results == null) {
-        // The first time a user uses this page, the first subscribe
-        // notification has a null .results. Just skip that one.
-        return;
-      }
+      this.userFromDatabase = user;
 
       this.loadLinkedAccounts();
       if (this.doneInitialDatabaseImport) {
@@ -222,13 +217,10 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     }
 
     try {
-      await this.userService.updateUserAttributes(updatedAttributes);
+      await this.userService.onlineUpdateCurrentUserAttributes(updatedAttributes);
       this.formGroup.get(element).enable();
       this.controlStates.set(element, ElementState.Submitted);
       this.conformContactMethod();
-      if (element === 'name' || element === 'email') {
-        this.refreshAvatar();
-      }
     } catch (exception) {
       // Set an input without an update button back to its previous value, so the user can try
       // again by clicking the new and desired value.
@@ -239,19 +231,6 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
       this.formGroup.get(element).enable();
       this.controlStates.set(element, ElementState.Error);
     }
-  }
-
-  /** Force avatar to refresh. Some discussion about this is at
-   * https://github.com/HaithemMosbahi/ngx-avatar/issues/18 .
-   */
-  async refreshAvatar() {
-    this.showAvatar = false;
-    await new Promise(resolve => {
-      setTimeout(() => {
-        this.showAvatar = true;
-        resolve();
-      }, 0);
-    });
   }
 
   /** Set contactMethod value and the disabled states of its options based on values from database. */
@@ -329,7 +308,6 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   }
 
   async uploadPicture(): Promise<void> {
-    this.userFromDatabase.avatarUrl = await this.userService.uploadCurrentUserAvatar(this.pictureFile);
-    await this.refreshAvatar();
+    await this.userService.uploadCurrentUserAvatar(this.pictureFile);
   }
 }

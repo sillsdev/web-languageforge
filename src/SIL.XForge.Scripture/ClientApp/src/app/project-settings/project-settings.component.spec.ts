@@ -1,16 +1,30 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
-import { UICommonModule } from '@xforge-common/ui-common.module';
-
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs/internal/observable/of';
+import { RecordIdentity } from '@orbit/data';
+import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
+
+import { QueryResults } from '@xforge-common/json-api.service';
+import { Resource } from '@xforge-common/models/resource';
+import { UICommonModule } from '@xforge-common/ui-common.module';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
-import { StubQueryResults } from '../my-account/my-account.component.spec';
 import { ProjectSettingsComponent } from './project-settings.component';
+
+export class StubQueryResults<T> implements QueryResults<T> {
+  constructor(public readonly results: T, public readonly totalPagedCount?: number) {}
+
+  getIncluded<TInclude extends Resource>(_identity: RecordIdentity): TInclude {
+    return null;
+  }
+
+  getManyIncluded<TInclude extends Resource>(_identities: RecordIdentity[]): TInclude[] {
+    return null;
+  }
+}
 
 describe('ProjectSettingsComponent', () => {
   let env: TestEnvironment;

@@ -10,7 +10,7 @@
         </a>
         <mdc-top-app-bar-title (click)="goHome()" fxHide.xs>Scripture Forge</mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
-      <mdc-top-app-bar-section align="end" *ngIf="(isLoggedIn | async)">
+      <mdc-top-app-bar-section align="end" *ngIf="(currentUser$ | async) as currentUser">
         <a mdc-list-item>
           <mdc-icon mdcTopAppBarActionItem>notifications</mdc-icon>
           <span matLine>Notifications</span>
@@ -30,12 +30,12 @@
               <div class="mdc-list-group__subheader">
                 Logged in as
                 <div>
-                  <strong>{{ currentUser?.name }}</strong>
+                  <strong>{{ currentUser.name }}</strong>
                 </div>
               </div>
               <mdc-list-divider></mdc-list-divider>
               <mdc-list>
-                <mdc-list-item *ngIf="(isSystemAdmin$ | async)" routerLink="/system-administration">
+                <mdc-list-item *ngIf="currentUser.isSystemAdmin" routerLink="/system-administration">
                   System Administration
                 </mdc-list-item>
                 <mdc-list-item routerLink="/my-account">My Account</mdc-list-item>

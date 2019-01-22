@@ -6,15 +6,12 @@ import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/materi
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { RecordIdentity } from '@orbit/data';
 import { merge } from '@orbit/utils';
 import { ngfModule } from 'angular-file';
 import { of } from 'rxjs';
 import { anything, capture, instance, mock, verify, when } from 'ts-mockito';
 
 import { AuthService } from '@xforge-common/auth.service';
-import { QueryResults } from '@xforge-common/json-api.service';
-import { Resource } from '@xforge-common/models/resource';
 import { User } from '@xforge-common/models/user';
 import { NoticeService } from '@xforge-common/notice.service';
 import { UICommonModule } from '@xforge-common/ui-common.module';
@@ -25,18 +22,6 @@ import { SFUserService } from '../core/sfuser.service';
 import { ChangingUsernameDialogComponent } from './changing-username-dialog/changing-username-dialog.component';
 import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 import { MyAccountComponent } from './my-account.component';
-
-export class StubQueryResults<T> implements QueryResults<T> {
-  constructor(public readonly results: T, public readonly totalPagedCount?: number) {}
-
-  getIncluded<TInclude extends Resource>(_identity: RecordIdentity): TInclude {
-    return null;
-  }
-
-  getManyIncluded<TInclude extends Resource>(_identities: RecordIdentity[]): TInclude[] {
-    return null;
-  }
-}
 
 /**
  * This helps set entry components so can test using ChangingUsernameDialogComponent.
@@ -75,14 +60,14 @@ class TestEnvironment {
     this.mockedNoticeService = mock(NoticeService);
     this.mockedAuthService = mock(AuthService);
 
-    when(this.mockedSFUserService.getCurrentUser()).thenReturn(of(new StubQueryResults(this.userInDatabase)));
+    when(this.mockedSFUserService.getCurrentUser()).thenReturn(of(this.userInDatabase));
     when(this.mockedSFUserService.currentUserId).thenReturn('user01');
     when(this.mockedParatextService.getParatextUsername()).thenReturn(of(this.substituteParatextUsername));
     when(this.mockedSFUserService.onlineUnlinkParatextAccount()).thenCall(() => {
       this.setParatextUsername(null);
       return Promise.resolve();
     });
-    when(this.mockedSFUserService.updateUserAttributes(anything())).thenCall(
+    when(this.mockedSFUserService.onlineUpdateCurrentUserAttributes(anything())).thenCall(
       this.mockUserServiceUpdateUserAttributes()
     );
     when(this.mockedNoticeService.show(anything())).thenResolve();
@@ -343,7 +328,7 @@ describe('MyAccountComponent', () => {
 
   it('handles network error', fakeAsync(() => {
     const technicalDetails = 'squirrel chewed thru line. smoke lost.';
-    when(env.mockedSFUserService.updateUserAttributes(anything())).thenReject({ stack: technicalDetails });
+    when(env.mockedSFUserService.onlineUpdateCurrentUserAttributes(anything())).thenReject({ stack: technicalDetails });
 
     const originalName = env.component.userFromDatabase.name;
     expect(env.component.formGroup.get('name').value).toEqual(originalName, 'test setup problem');
@@ -384,7 +369,7 @@ describe('MyAccountComponent', () => {
 
   it('handles network error for non-text inputs', fakeAsync(() => {
     const technicalDetails = 'squirrel chewed thru line. smoke lost.';
-    when(env.mockedSFUserService.updateUserAttributes(anything())).thenReject({ stack: technicalDetails });
+    when(env.mockedSFUserService.onlineUpdateCurrentUserAttributes(anything())).thenReject({ stack: technicalDetails });
 
     const originalvalue = env.component.userFromDatabase.contactMethod;
     expect(env.component.formGroup.get('contactMethod').value).toEqual(originalvalue, 'test setup problem');
@@ -865,7 +850,7 @@ describe('MyAccountComponent', () => {
       env.component.updateClicked('username');
       flush();
 
-      const [argsToUpdateUserAttributes] = capture(env.mockedSFUserService.updateUserAttributes).last();
+      const [argsToUpdateUserAttributes] = capture(env.mockedSFUserService.onlineUpdateCurrentUserAttributes).last();
       const expectedArgument: Partial<SFUser> = {};
       expectedArgument.username = newUsername;
       expect(argsToUpdateUserAttributes).toEqual(expectedArgument);
@@ -892,7 +877,7 @@ describe('MyAccountComponent', () => {
         newUsername,
         'input should still have new and dirty data'
       );
-      verify(env.mockedSFUserService.updateUserAttributes(anything())).never();
+      verify(env.mockedSFUserService.onlineUpdateCurrentUserAttributes(anything())).never();
     });
   });
 

@@ -297,7 +297,7 @@ export class JsonApiService {
    */
   get<T extends Resource>(identity: RecordIdentity, include?: string[]): QueryObservable<T> {
     const queryExpression: QueryOrExpression = q => q.findRecord(identity);
-    return this.liveQuery(queryExpression, queryExpression, include);
+    return this.storeQuery(queryExpression, queryExpression, include);
   }
 
   /**
@@ -319,7 +319,7 @@ export class JsonApiService {
     include?: string[]
   ): QueryObservable<T> {
     const queryExpression: QueryOrExpression = q => q.findRelatedRecord(identity, relationship);
-    return this.liveQuery(queryExpression, queryExpression, include);
+    return this.storeQuery(queryExpression, queryExpression, include);
   }
 
   /**
@@ -334,7 +334,7 @@ export class JsonApiService {
    * @returns {QueryObservable<T[]>} The live query observable.
    */
   getAll<T extends Resource>(type: string, parameters?: GetAllParameters, include?: string[]): QueryObservable<T[]> {
-    return this.liveQuery(
+    return this.storeQuery(
       q => this.getAllQuery(q, type, parameters),
       q => this.getAllQuery(q, type, parameters, false),
       include
@@ -360,7 +360,7 @@ export class JsonApiService {
     include?: string[]
   ): QueryObservable<T[]> {
     const queryExpression: QueryOrExpression = q => q.findRelatedRecords(identity, relationship);
-    return this.liveQuery(queryExpression, queryExpression, include);
+    return this.storeQuery(queryExpression, queryExpression, include);
   }
 
   /**
@@ -396,29 +396,8 @@ export class JsonApiService {
    * @param {Resource} resource The resource to update.
    * @returns {Promise<T>} Resolves when the resource is updated locally. Returns the updated resource.
    */
-  async update<T extends Resource>(resource: T): Promise<T> {
-    const updatedRecord = this.createRecord(resource);
-    const record = this.store.cache.query(q => q.findRecord(resource)) as Record;
-    await this.store.update(t => {
-      const ops: Operation[] = [];
-
-      const updatedAttrs = this.getUpdatedProps(record.attributes, updatedRecord.attributes);
-      for (const attrName of updatedAttrs) {
-        ops.push(t.replaceAttribute(record, attrName, updatedRecord.attributes[attrName]));
-      }
-
-      const updatedRels = this.getUpdatedProps(record.relationships, updatedRecord.relationships);
-      for (const relName of updatedRels) {
-        const relData = updatedRecord.relationships[relName].data;
-        if (relData instanceof Array) {
-          ops.push(t.replaceRelatedRecords(record, relName, relData));
-        } else {
-          ops.push(t.replaceRelatedRecord(record, relName, relData));
-        }
-      }
-      return ops;
-    });
-    return resource;
+  update<T extends Resource>(resource: T): Promise<T> {
+    return this.storeUpdate(resource, false);
   }
 
   /**
@@ -428,15 +407,8 @@ export class JsonApiService {
    * @param {Dict<any>} attrs The attribute values to update.
    * @returns {Promise<T>} Resolves when the resource is updated locally. Returns the updated resource.
    */
-  async updateAttributes<T extends Resource>(identity: RecordIdentity, attrs: Partial<T>): Promise<T> {
-    await this.store.update(t => {
-      const ops: Operation[] = [];
-      for (const [name, value] of Object.entries(attrs)) {
-        ops.push(t.replaceAttribute(identity, name, value));
-      }
-      return ops;
-    });
-    return this.localGet<T>(identity);
+  updateAttributes<T extends Resource>(identity: RecordIdentity, attrs: Partial<T>): Promise<T> {
+    return this.storeUpdateAttributes(identity, attrs, false);
   }
 
   /**
@@ -489,7 +461,7 @@ export class JsonApiService {
    * @returns {QueryObservable<T>} The query observable.
    */
   onlineGet<T extends Resource>(identity: RecordIdentity, include?: string[]): QueryObservable<T> {
-    return this.onlineQuery(q => q.findRecord(identity), include);
+    return this.onlineStoreQuery(q => q.findRecord(identity), include);
   }
 
   /**
@@ -510,7 +482,7 @@ export class JsonApiService {
     relationship: string,
     include?: string[]
   ): QueryObservable<T> {
-    return this.onlineQuery(q => q.findRelatedRecord(identity, relationship), include);
+    return this.onlineStoreQuery(q => q.findRelatedRecord(identity, relationship), include);
   }
 
   /**
@@ -529,7 +501,7 @@ export class JsonApiService {
     parameters?: GetAllParameters,
     include?: string[]
   ): QueryObservable<T[]> {
-    return this.onlineQuery(q => this.getAllQuery(q, type, parameters), include);
+    return this.onlineStoreQuery(q => this.getAllQuery(q, type, parameters), include);
   }
 
   /**
@@ -550,7 +522,7 @@ export class JsonApiService {
     relationship: string,
     include?: string[]
   ): QueryObservable<T[]> {
-    return this.onlineQuery(q => q.findRelatedRecords(identity, relationship), include);
+    return this.onlineStoreQuery(q => q.findRelatedRecords(identity, relationship), include);
   }
 
   /**
@@ -582,7 +554,7 @@ export class JsonApiService {
    * Updates the attributes of an existing resource pessimistically.
    *
    * @param {RecordIdentity} identity The resource identity.
-   * @param {Dict<any>} attrs The attribute values to update.
+   * @param {Partial<T>} attrs The attribute values to update.
    * @returns {Promise<T>} Resolves when the resource is updated remotely.
    */
   async onlineUpdateAttributes<T extends Resource>(identity: RecordIdentity, attrs: Partial<T>): Promise<T> {
@@ -690,6 +662,36 @@ export class JsonApiService {
     return identities.map(identity => this.localGet(identity));
   }
 
+  /**
+   * Updates an existing resource in the local cache. This method only updates the attributes and relationships that
+   * have changed.
+   *
+   * @param {Resource} resource The resource to update.
+   * @returns {Promise<T>} Returns the updated resource.
+   */
+  localUpdate<T extends Resource>(resource: T): Promise<T> {
+    return this.storeUpdate(resource, true);
+  }
+
+  /**
+   * Updates the attributes of an existing resource in the local cache.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @param {Dict<any>} attrs The attribute values to update.
+   * @returns {Promise<T>} Returns the updated resource.
+   */
+  localUpdateAttributes<T extends Resource>(identity: RecordIdentity, attrs: Partial<T>): Promise<T> {
+    return this.storeUpdateAttributes(identity, attrs, true);
+  }
+
+  /**
+   * Invokes a command on the specified type or resource.
+   *
+   * @param {(RecordIdentity | string)} identityOrType The type or resource to perform command on.
+   * @param {string} method The command name.
+   * @param {*} params The command parameters.
+   * @returns {Promise<T>} The command result.
+   */
   onlineInvoke<T>(identityOrType: RecordIdentity | string, method: string, params: any): Promise<T> {
     let type: string;
     let id: string;
@@ -703,7 +705,7 @@ export class JsonApiService {
     return this.jsonRpcService.invoke<T>(`${resourceUrl}/commands`, method, params);
   }
 
-  private liveQuery(
+  private storeQuery(
     localQueryExpression: QueryOrExpression,
     remoteQueryExpression: QueryOrExpression,
     include: string[]
@@ -737,7 +739,7 @@ export class JsonApiService {
     return finalize$.refCount();
   }
 
-  private onlineQuery(queryExpression: QueryOrExpression, include: string[]): QueryObservable<any> {
+  private onlineStoreQuery(queryExpression: QueryOrExpression, include: string[]): QueryObservable<any> {
     const query = buildQuery(queryExpression, this.getOptions(include), undefined, this.store.queryBuilder);
 
     return from(this.onlineStore.query(query)).pipe(map(r => this.getOnlineQueryResults(query, r)));
@@ -1018,5 +1020,51 @@ export class JsonApiService {
       return null;
     }
     return { type: ref.type, id: ref.id };
+  }
+
+  private async storeUpdate<T extends Resource>(resource: T, localOnly: boolean): Promise<T> {
+    const updatedRecord = this.createRecord(resource);
+    const record = this.store.cache.query(q => q.findRecord(resource)) as Record;
+    await this.store.update(
+      t => {
+        const ops: Operation[] = [];
+
+        const updatedAttrs = this.getUpdatedProps(record.attributes, updatedRecord.attributes);
+        for (const attrName of updatedAttrs) {
+          ops.push(t.replaceAttribute(record, attrName, updatedRecord.attributes[attrName]));
+        }
+
+        const updatedRels = this.getUpdatedProps(record.relationships, updatedRecord.relationships);
+        for (const relName of updatedRels) {
+          const relData = updatedRecord.relationships[relName].data;
+          if (relData instanceof Array) {
+            ops.push(t.replaceRelatedRecords(record, relName, relData));
+          } else {
+            ops.push(t.replaceRelatedRecord(record, relName, relData));
+          }
+        }
+        return ops;
+      },
+      { localOnly }
+    );
+    return resource;
+  }
+
+  private async storeUpdateAttributes<T extends Resource>(
+    identity: RecordIdentity,
+    attrs: Partial<T>,
+    localOnly: boolean
+  ): Promise<T> {
+    await this.store.update(
+      t => {
+        const ops: Operation[] = [];
+        for (const [name, value] of Object.entries(attrs)) {
+          ops.push(t.replaceAttribute(identity, name, value));
+        }
+        return ops;
+      },
+      { localOnly }
+    );
+    return this.localGet<T>(identity);
   }
 }
