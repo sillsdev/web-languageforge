@@ -10,16 +10,11 @@ import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
   styleUrls: ['./project.component.scss']
 })
 export class ProjectComponent extends SubscriptionDisposable {
-  projectId = 0;
   project: Project;
-  constructor(
-    private _ActivatedRoute: ActivatedRoute,
-    private _ProjectService: ProjectService,
-    private _Router: Router
-  ) {
+  constructor(private activatedRoute: ActivatedRoute, private projectService: ProjectService, private router: Router) {
     super();
-    this.subscribe(this._ActivatedRoute.params, params => {
-      this.subscribe(_ProjectService.get(params['projectId']), projectData => {
+    this.subscribe(this.activatedRoute.params, params => {
+      this.subscribe(projectService.get(params['id']), projectData => {
         if (projectData.results) {
           this.project = projectData.results;
         } else {
@@ -30,6 +25,6 @@ export class ProjectComponent extends SubscriptionDisposable {
   }
 
   goHome() {
-    this._Router.navigateByUrl('/home');
+    this.router.navigateByUrl('/home');
   }
 }

@@ -11,6 +11,18 @@ import { instance, mock, when } from 'ts-mockito';
 import { SFProject } from '../core/models/sfproject';
 import { ProjectComponent } from './project.component';
 
+describe('ProjectComponent', () => {
+  let env: TestEnvironment;
+  beforeEach(() => {
+    env = new TestEnvironment();
+    env.fixture.detectChanges();
+  });
+
+  it('can load a project', () => {
+    expect(env.getProjectHeading()).toEqual('Project 01');
+  });
+});
+
 class TestQueryResults<T> implements QueryResults<T> {
   constructor(public readonly results: T, public readonly totalPagedCount?: number) {}
 
@@ -40,7 +52,7 @@ class TestEnvironment {
         { provide: Router, useFactory: () => instance(this.mockedRouter) },
         {
           provide: ActivatedRoute,
-          useValue: { params: of({ projectId: 'project01' }) }
+          useValue: { params: of({ id: 'project01' }) }
         },
         { provide: ProjectService, useFactory: () => instance(this.mockedProjectService) }
       ]
@@ -67,15 +79,3 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('h1')).nativeElement.textContent;
   }
 }
-
-describe('ProjectComponent', () => {
-  let env: TestEnvironment;
-  beforeEach(() => {
-    env = new TestEnvironment();
-    env.fixture.detectChanges();
-  });
-
-  it('can load a project', () => {
-    expect(env.getProjectHeading()).toEqual('Project 01');
-  });
-});

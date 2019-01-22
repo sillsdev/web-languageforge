@@ -22,8 +22,8 @@ const routes: Routes = [
   { path: 'my-account', component: MyAccountComponent, canActivate: [AuthGuard] },
   { path: 'realtime', component: RealtimeComponent, canActivate: [AuthGuard] },
   { path: 'projects/:id/settings', component: ProjectSettingsComponent, canActivate: [AuthGuard] },
+  { path: 'projects/:id', component: ProjectComponent, canActivate: [AuthGuard] },
   { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard] },
-  { path: 'projects/:projectId', component: ProjectComponent, canActivate: [AuthGuard] },
   { path: 'system-administration', component: SystemAdministrationComponent, canActivate: [SystemAdminAuthGuard] },
   { path: 'identity', loadChildren: '../identity/identity.module#IdentityModule' }
 ];
