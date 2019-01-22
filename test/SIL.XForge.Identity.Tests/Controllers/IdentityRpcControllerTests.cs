@@ -92,6 +92,43 @@ namespace SIL.XForge.Identity.Controllers
         }
 
         [Test]
+        public async Task Login_NullPassword_NoThrow()
+        {
+            var env = new TestEnvironment();
+            string userEmail = "nopassworduser@example.com";
+            env.Users.Add(new UserEntity
+            {
+                Id = "nopassworduser",
+                Email = userEmail,
+                CanonicalEmail = userEmail
+            });
+
+            LogInResult result = await env.Controller.LogIn(userEmail, TestPassword, false, TestReturnUrl);
+
+            Assert.That(result.Success, Is.False);
+            await env.Events.Received().RaiseAsync(Arg.Any<UserLoginFailureEvent>());
+        }
+
+        [Test]
+        public async Task Login_EmptyPassword_NoThrow()
+        {
+            var env = new TestEnvironment();
+            string userEmail = "nopassworduser@example.com";
+            env.Users.Add(new UserEntity
+            {
+                Id = "nopassworduser",
+                Email = userEmail,
+                CanonicalEmail = userEmail,
+                Password = ""
+            });
+
+            LogInResult result = await env.Controller.LogIn(userEmail, TestPassword, false, TestReturnUrl);
+
+            Assert.That(result.Success, Is.False);
+            await env.Events.Received().RaiseAsync(Arg.Any<UserLoginFailureEvent>());
+        }
+
+        [Test]
         public async Task ForgotPassword_CorrectEmailOrUsername(
             [Values(TestUsername, TestUserEmail)] string emailOrUsername)
         {

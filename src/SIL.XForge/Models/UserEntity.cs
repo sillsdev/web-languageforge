@@ -62,6 +62,9 @@ namespace SIL.XForge.Models
 
         public bool VerifyPassword(string password)
         {
+            if (string.IsNullOrEmpty(Password))
+                return false;
+
             return BCrypt.Net.BCrypt.Verify(password, Password);
         }
     }
