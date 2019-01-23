@@ -1,5 +1,3 @@
-import { browser, ExpectedConditions } from 'protractor';
-
 import { AppPage } from './app.po';
 import { LoginPage } from './login.po';
 
