@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Project } from '@xforge-common/models/project';
 import { ProjectService } from '@xforge-common/project.service';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-projects',
@@ -13,15 +14,19 @@ export class ProjectComponent extends SubscriptionDisposable {
   project: Project;
   constructor(private activatedRoute: ActivatedRoute, private projectService: ProjectService, private router: Router) {
     super();
-    this.subscribe(this.activatedRoute.params, params => {
-      this.subscribe(projectService.get(params['id']), projectData => {
+    this.activatedRoute.params
+      .pipe(
+        switchMap(params => {
+          return projectService.get(params['id']);
+        })
+      )
+      .subscribe(projectData => {
         if (projectData.results) {
           this.project = projectData.results;
         } else {
           this.goHome();
         }
       });
-    });
   }
 
   goHome() {
