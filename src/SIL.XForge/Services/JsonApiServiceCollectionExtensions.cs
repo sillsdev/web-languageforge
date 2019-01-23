@@ -61,7 +61,6 @@ namespace SIL.XForge.Services
                 Namespace = XForgeConstants.JsonApiNamespace,
                 ResourceGraph = graphBuilder.Build(),
                 AllowClientGeneratedIds = true,
-                NullAttributeResponseBehavior = new NullAttributeResponseBehavior(true),
                 IncludeTotalRecordCount = true
             };
             jsonApiOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();

@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { AuthService } from '@xforge-common/auth.service';
 import { LocationService } from '@xforge-common/location.service';
 import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
-import { SystemAdminAuthGuard } from '@xforge-common/system-admin-auth.guard';
 import { SFUser } from './core/models/sfuser';
 import { SFUserService } from './core/sfuser.service';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
@@ -20,27 +19,22 @@ export class AppComponent extends SubscriptionDisposable implements OnInit {
   title = 'Scripture Forge';
   today = new Date();
   version = '9.9.9';
-  currentUser: SFUser = new SFUser();
 
-  isSystemAdmin$: Observable<boolean>;
+  currentUser$: Observable<SFUser>;
 
   constructor(
     private readonly router: Router,
     private readonly authService: AuthService,
     private readonly locationService: LocationService,
-    private readonly sfUserService: SFUserService,
-    private readonly systemAdminAuthGuard: SystemAdminAuthGuard
+    private readonly sfUserService: SFUserService
   ) {
     super();
   }
 
   async ngOnInit(): Promise<void> {
     this.authService.init();
-    this.isSystemAdmin$ = this.systemAdminAuthGuard.allowTransition();
     if (await this.isLoggedIn) {
-      this.subscribe(this.sfUserService.getCurrentUser(), userResult => {
-        this.currentUser = userResult.results;
-      });
+      this.currentUser$ = this.sfUserService.getCurrentUser();
     }
   }
 

@@ -1,6 +1,7 @@
 import { ProjectUserRef } from './project-user';
 import { Resource, ResourceRef } from './resource';
 import { Site } from './site';
+import { SystemRole } from './system-role';
 
 export abstract class User extends Resource {
   username?: string;
@@ -21,6 +22,10 @@ export abstract class User extends Resource {
   site?: Site;
 
   projects?: ProjectUserRef[];
+
+  get isSystemAdmin(): boolean {
+    return this.role === SystemRole.SystemAdmin;
+  }
 }
 
 export abstract class UserRef extends ResourceRef {}

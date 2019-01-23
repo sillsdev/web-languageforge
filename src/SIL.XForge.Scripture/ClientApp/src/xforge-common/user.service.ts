@@ -1,9 +1,9 @@
-import { HttpClient, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Record } from '@orbit/data';
 import { clone } from '@orbit/utils';
 import { combineLatest, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 
 import { AuthService } from './auth.service';
 import { registerCustomFilter } from './custom-filter-specifier';
@@ -19,6 +19,8 @@ import { nameof } from './utils';
 @Injectable()
 export abstract class UserService<T extends User = User> extends ResourceService {
   private static readonly SEARCH_FILTER = 'search';
+
+  private currentUser$: Observable<T>;
 
   constructor(
     type: string,
@@ -36,29 +38,32 @@ export abstract class UserService<T extends User = User> extends ResourceService
   }
 
   hasCurrentUserRole(role: string): Observable<boolean> {
-    return this.getCurrentUser().pipe(
-      map(userResult => {
-        const currentUser = userResult.results;
-        return currentUser && currentUser.role === role;
-      })
-    );
+    return this.getCurrentUser().pipe(map(currentUser => currentUser && currentUser.role === role));
   }
 
   /** Get currently-logged in user. */
-  getCurrentUser(): QueryObservable<T> {
-    return this.jsonApiService.get<T>(this.identity(this.currentUserId));
+  getCurrentUser(): Observable<T> {
+    if (this.currentUser$ == null) {
+      this.currentUser$ = this.jsonApiService.get<T>(this.identity(this.currentUserId)).pipe(
+        map(r => r.results),
+        filter(u => u != null),
+        shareReplay(1)
+      );
+    }
+    return this.currentUser$;
   }
 
   /**
-   * Update user attributes in database optimistically.
+   * Update the current user's attributes remotely and then locally.
    * Pass a Partial<User> specifying the attributes to update.
    */
-  updateUserAttributes(updatedAttributes: Partial<T>): Promise<T> {
-    return this.jsonApiService.updateAttributes<T>(this.identity(this.currentUserId), updatedAttributes);
+  async onlineUpdateCurrentUserAttributes(attrs: Partial<T>): Promise<T> {
+    const updatedUser = await this.jsonApiService.onlineUpdateAttributes<T>(this.identity(this.currentUserId), attrs);
+    return await this.jsonApiService.localUpdate(updatedUser);
   }
 
   async onlineChangePassword(newPassword: string): Promise<void> {
-    const attrs: Partial<T> = { password: newPassword } as Partial<T>;
+    const attrs = { password: newPassword } as Partial<T>;
     await this.jsonApiService.onlineUpdateAttributes<T>(this.identity(this.currentUserId), attrs);
   }
 
@@ -79,16 +84,12 @@ export abstract class UserService<T extends User = User> extends ResourceService
     return await this.jsonApiService.onlineCreate<T>(this.jsonApiService.newResource(this.type, init));
   }
 
-  async onlineUpdateAttributes(updateUserId: string, updateUser: Partial<T>): Promise<T> {
-    const attrs: Partial<T> = clone(updateUser);
-    if ('id' in attrs) {
-      delete attrs.id;
-    }
-    return await this.jsonApiService.onlineUpdateAttributes<T>(this.identity(updateUserId), attrs);
+  async onlineUpdateAttributes(id: string, attrs: Partial<T>): Promise<T> {
+    return await this.jsonApiService.onlineUpdateAttributes<T>(this.identity(id), attrs);
   }
 
-  onlineGet(userId: string): QueryObservable<T> {
-    return this.jsonApiService.onlineGet(this.identity(userId));
+  onlineGet(id: string): QueryObservable<T> {
+    return this.jsonApiService.onlineGet(this.identity(id));
   }
 
   onlineSearch(
@@ -123,7 +124,7 @@ export abstract class UserService<T extends User = User> extends ResourceService
    * @param {File} file The file to upload.
    * @returns {Promise<string>} The relative url to the uploaded avatar file.
    */
-  async uploadCurrentUserAvatar(file: File): Promise<string> {
+  async uploadCurrentUserAvatar(file: File): Promise<T> {
     const formData = new FormData();
     formData.append('file', file);
     const response = await this.http
@@ -132,7 +133,8 @@ export abstract class UserService<T extends User = User> extends ResourceService
         observe: 'response'
       })
       .toPromise();
-    return response.headers.get('Location');
+    const attrs = { avatarUrl: response.headers.get('Location') } as Partial<T>;
+    return await this.jsonApiService.localUpdateAttributes<T>(this.identity(this.currentUserId), attrs);
   }
 
   private searchUsers(records: Record[], value: string): Record[] {
