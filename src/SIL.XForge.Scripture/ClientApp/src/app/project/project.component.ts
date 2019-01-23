@@ -14,19 +14,20 @@ export class ProjectComponent extends SubscriptionDisposable {
   project: Project;
   constructor(private activatedRoute: ActivatedRoute, private projectService: ProjectService, private router: Router) {
     super();
-    this.activatedRoute.params
-      .pipe(
+    this.subscribe(
+      this.activatedRoute.params.pipe(
         switchMap(params => {
           return projectService.get(params['id']);
         })
-      )
-      .subscribe(projectData => {
+      ),
+      projectData => {
         if (projectData.results) {
           this.project = projectData.results;
         } else {
           this.goHome();
         }
-      });
+      }
+    );
   }
 
   goHome() {
