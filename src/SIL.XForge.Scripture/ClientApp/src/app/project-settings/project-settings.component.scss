@@ -1,4 +1,4 @@
-.task-card-content {
+.card-content {
   padding: 16px;
 }
 
@@ -26,4 +26,11 @@
 }
 .status {
   width: 24px;
+}
+
+#delete-project {
+  border: 2px solid red;
+  #delete-project-button {
+    color: red;
+  }
 }

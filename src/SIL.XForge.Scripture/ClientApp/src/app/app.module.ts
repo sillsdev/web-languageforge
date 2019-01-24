@@ -21,6 +21,7 @@ import { ChangingUsernameDialogComponent } from './my-account/changing-username-
 import { DeleteAccountDialogComponent } from './my-account/delete-account-dialog/delete-account-dialog.component';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { DeleteProjectDialogComponent } from './project-settings/delete-project-dialog/delete-project-dialog.component';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { FontSizeComponent } from './project/font-size/font-size.component';
 import { ProjectComponent } from './project/project.component';
@@ -41,6 +42,7 @@ import { TranslateModule } from './translate/translate.module';
     MyAccountComponent,
     RealtimeComponent,
     DeleteAccountDialogComponent,
+    DeleteProjectDialogComponent,
     ProjectSettingsComponent,
     ProjectComponent,
     FontSizeComponent
@@ -63,6 +65,7 @@ import { TranslateModule } from './translate/translate.module';
   entryComponents: [
     ChangingUsernameDialogComponent,
     DeleteAccountDialogComponent,
+    DeleteProjectDialogComponent,
     QuestionDialogComponent,
     ...xForgeCommonEntryComponents
   ],

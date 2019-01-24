@@ -78,6 +78,10 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
     return this.jsonApiService.onlineGet(this.identity(id));
   }
 
+  onlineDelete(id: string): Promise<void> {
+    return this.jsonApiService.onlineDelete(this.identity(id));
+  }
+
   protected isSearchMatch(record: Record, value: string): boolean {
     if (record.attributes == null) {
       return false;

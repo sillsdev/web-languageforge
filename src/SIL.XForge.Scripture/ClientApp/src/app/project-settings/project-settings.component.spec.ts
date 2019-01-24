@@ -1,17 +1,20 @@
+import { OverlayContainer } from '@angular-mdc/web';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
+import { DebugElement, NgModule } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RecordIdentity } from '@orbit/data';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
+import { AuthService } from 'xforge-common/auth.service';
 import { QueryResults } from 'xforge-common/json-api.service';
 import { Resource } from 'xforge-common/models/resource';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
+import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-project-dialog.component';
 import { ProjectSettingsComponent } from './project-settings.component';
 
 export class StubQueryResults<T> implements QueryResults<T> {
@@ -89,21 +92,48 @@ describe('ProjectSettingsComponent', () => {
       expect(env.fixture.debugElement.query(By.css('#checking-error-icon'))).toBeDefined();
     }));
   });
+
+  describe('Danger Zone', () => {
+    beforeEach(async(() => (env = new TestEnvironment())));
+
+    it('should display Danger Zone', fakeAsync(() => {
+      expect(env.fixture.nativeElement.querySelector('#danger-zone h2').textContent).toContain('Danger Zone');
+      expect(env.deleteProjectButton.textContent).toContain('Delete this project');
+    }));
+
+    it('should delete project if user confirms on the dialog', fakeAsync(() => {
+      env.clickElement(env.deleteProjectButton);
+      expect(env.deleteDialog).toBeDefined();
+      env.confirmDialog(true);
+      verify(env.mockedSFProjectService.onlineDelete(anything())).once();
+    }));
+
+    it('should not delete project if user cancels', fakeAsync(() => {
+      env.clickElement(env.deleteProjectButton);
+      expect(env.deleteDialog).toBeDefined();
+      env.confirmDialog(false);
+      verify(env.mockedSFProjectService.onlineDelete(anything())).never();
+    }));
+  });
 });
+
 class TestProject extends SFProject {
   static readonly TYPE = 'project';
 
   constructor(init?: Partial<SFProject>) {
     super(init);
+    this.projectName = 'project01';
   }
 }
 
 class TestEnvironment {
   component: ProjectSettingsComponent;
   fixture: ComponentFixture<ProjectSettingsComponent>;
+  overlayContainer: OverlayContainer;
   mockedSFProjectService = mock(SFProjectService);
   constructor() {
     const mockedActivatedRoute = mock(ActivatedRoute);
+    const mockedAuthService = mock(AuthService);
 
     when(mockedActivatedRoute.params).thenReturn(of({}));
     when(this.mockedSFProjectService.onlineGet(anything())).thenReturn(
@@ -118,16 +148,18 @@ class TestEnvironment {
     );
     when(this.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).thenCall(() => Promise.resolve());
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, UICommonModule],
+      imports: [DialogTestModule, HttpClientTestingModule, UICommonModule],
       declarations: [ProjectSettingsComponent],
       providers: [
         { provide: ActivatedRoute, useFactory: () => instance(mockedActivatedRoute) },
-        { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) }
+        { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
+        { provide: AuthService, useFactory: () => instance(mockedAuthService) }
       ]
     }).compileComponents();
     this.fixture = TestBed.createComponent(ProjectSettingsComponent);
     this.component = this.fixture.componentInstance;
     this.fixture.detectChanges();
+    this.overlayContainer = TestBed.get(OverlayContainer);
   }
 
   get communityCb(): DebugElement {
@@ -146,6 +178,41 @@ class TestEnvironment {
     return this.translationCb.nativeElement.querySelector('input') as HTMLInputElement;
   }
 
+  get deleteProjectButton(): HTMLElement {
+    return this.fixture.nativeElement.querySelector('#delete-btn');
+  }
+
+  get deleteDialog(): HTMLElement {
+    const oce = this.overlayContainer.getContainerElement();
+    return oce.querySelector('mdc-dialog');
+  }
+
+  get confirmDeleteBtn(): HTMLElement {
+    const oce = this.overlayContainer.getContainerElement();
+    return oce.querySelector('#project-delete-btn');
+  }
+
+  get cancelDeleteBtn(): HTMLElement {
+    const oce = this.overlayContainer.getContainerElement();
+    return oce.querySelector('#cancel-btn');
+  }
+
+  confirmDialog(confirm: boolean): void {
+    let button: HTMLElement;
+    const oce = this.overlayContainer.getContainerElement();
+    if (confirm) {
+      const projectInput: HTMLInputElement = oce.querySelector('#project-entry').querySelector('input');
+      projectInput.value = this.component.project.projectName;
+      projectInput.dispatchEvent(new Event('input'));
+      button = this.confirmDeleteBtn;
+    } else {
+      button = this.cancelDeleteBtn;
+    }
+    this.fixture.detectChanges();
+    tick();
+    this.clickElement(button);
+  }
+
   clickElement(element: HTMLElement | DebugElement): void {
     if (element instanceof DebugElement) {
       element = (element as DebugElement).nativeElement as HTMLElement;
@@ -155,3 +222,11 @@ class TestEnvironment {
     flush();
   }
 }
+
+@NgModule({
+  imports: [UICommonModule],
+  declarations: [DeleteProjectDialogComponent],
+  entryComponents: [DeleteProjectDialogComponent],
+  exports: [DeleteProjectDialogComponent]
+})
+class DialogTestModule {}
