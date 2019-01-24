@@ -3,3 +3,19 @@
 @import '~@angular-mdc/theme/material';
 /* Only import relevant Bootstrap 4.x styles */
 @import '~bootstrap/scss/bootstrap-grid';
+
+.panel {
+  .panel-heading {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    .material-icons {
+      margin-right: 10px;
+    }
+    h2 {
+      margin: 0;
+    }
+  }
+  .panel-content {
+  }
+}

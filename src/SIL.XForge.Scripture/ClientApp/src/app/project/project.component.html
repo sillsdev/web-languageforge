@@ -1,0 +1,38 @@
+<div id="projects-app" class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h1>{{ project.projectName }}</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col" id="questions-panel">
+      <div class="panel">
+        <div class="panel-heading">
+          <mdc-icon>info</mdc-icon>
+          <h2>Questions</h2>
+        </div>
+        <div class="panel-content">
+          <mdc-list twoLine>
+            <mdc-list-item>
+              <mdc-list-item-text secondaryText="Line of text">Question 1</mdc-list-item-text>
+            </mdc-list-item>
+            <mdc-list-item>
+              <mdc-list-item-text secondaryText="Line of text">Question 2</mdc-list-item-text>
+            </mdc-list-item>
+            <mdc-list-item>
+              <mdc-list-item-text secondaryText="Line of text">Question 3</mdc-list-item-text>
+            </mdc-list-item>
+          </mdc-list>
+        </div>
+      </div>
+    </div>
+    <div class="col" id="scripture-panel">
+      <div class="panel">
+        <div class="panel-heading">
+          <h2>{{ project.projectName }}</h2>
+        </div>
+        <div class="panel-content"></div>
+      </div>
+    </div>
+  </div>
+</div>
