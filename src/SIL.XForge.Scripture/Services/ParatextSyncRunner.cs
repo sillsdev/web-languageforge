@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ShareDB;
 using ShareDB.RichText;
+using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 using SIL.XForge.Scripture.Configuration;
@@ -109,7 +110,7 @@ namespace SIL.XForge.Scripture.Services
         private readonly IRepository<SyncJobEntity> _jobs;
         private readonly IRepository<SFProjectEntity> _projects;
         private readonly IParatextService _paratextService;
-        private readonly IOptions<SyncOptions> _options;
+        private readonly IOptions<SiteOptions> _siteOptions;
         private readonly IOptions<RealtimeOptions> _realtimeOptions;
         private readonly IRepository<TextEntity> _texts;
         private readonly DeltaUsxMapper _deltaUsxMapper;
@@ -119,13 +120,13 @@ namespace SIL.XForge.Scripture.Services
         private int _stepCount;
         private int _step;
 
-        public ParatextSyncRunner(IOptions<SyncOptions> options,
+        public ParatextSyncRunner(IOptions<SiteOptions> siteOptions,
             IOptions<RealtimeOptions> realtimeOptions, IRepository<UserEntity> users,
             IRepository<SyncJobEntity> jobs, IRepository<SFProjectEntity> projects,
             IParatextService paratextService, IRepository<TextEntity> texts,
             DeltaUsxMapper deltaUsxMapper, ILogger<ParatextSyncRunner> logger)
         {
-            _options = options;
+            _siteOptions = siteOptions;
             _realtimeOptions = realtimeOptions;
             _users = users;
             _jobs = jobs;
@@ -135,6 +136,8 @@ namespace SIL.XForge.Scripture.Services
             _deltaUsxMapper = deltaUsxMapper;
             _logger = logger;
         }
+
+        private string WorkingDir => Path.Combine(_siteOptions.Value.SiteDir, "sync");
 
         public async Task RunAsync(PerformContext context, IJobCancellationToken cancellationToken, string userId,
             string jobId)
@@ -151,8 +154,8 @@ namespace SIL.XForge.Scripture.Services
                 {
                     if ((await _projects.TryGetAsync(_job.ProjectRef)).TryResult(out SFProjectEntity project))
                     {
-                        if (!Directory.Exists(_options.Value.WorkingDir))
-                            Directory.CreateDirectory(_options.Value.WorkingDir);
+                        if (!Directory.Exists(WorkingDir))
+                            Directory.CreateDirectory(WorkingDir);
 
                         using (var conn = new Connection(new Uri($"ws://localhost:{_realtimeOptions.Value.Port}")))
                         {
@@ -351,7 +354,7 @@ namespace SIL.XForge.Scripture.Services
 
         private string GetProjectPath(SFProjectEntity project, string paratextId)
         {
-            return Path.Combine(_options.Value.WorkingDir, project.Id, paratextId);
+            return Path.Combine(WorkingDir, project.Id, paratextId);
         }
 
         private string GetBookTextFileName(string projectPath, string bookId)

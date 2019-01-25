@@ -6,19 +6,19 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.3.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.3.1" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="3.1.0" />
     <PackageReference Include="Bugsnag.AspNet.Core" Version="2.2.0" />
     <PackageReference Include="EdjCase.JsonRpc.Router" Version="3.0.1" />
-    <PackageReference Include="Hangfire" Version="1.6.20" />
-    <PackageReference Include="Hangfire.Mongo" Version="0.5.10" />
+    <PackageReference Include="Hangfire" Version="1.6.21" />
+    <PackageReference Include="Hangfire.Mongo" Version="0.5.15" />
     <PackageReference Include="IdentityModel" Version="3.9.0" />
     <PackageReference Include="JsonApiDotNetCore" Version="3.0.0" />
     <PackageReference Include="LINQKit.Core" Version="1.1.15" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.2" />
-    <PackageReference Include="MongoDB.Driver" Version="2.7.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.7.2" />
     <PackageReference Include="SIL.WritingSystems" Version="4.2.0-1057" />
     <PackageReference Include="NETCore.MailKit" Version="2.0.2" />
   </ItemGroup>

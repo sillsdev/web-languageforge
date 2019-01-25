@@ -6,6 +6,7 @@ using Autofac.Extensions.DependencyInjection;
 using Hangfire;
 using IdentityServer4;
 using JsonApiDotNetCore.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -15,7 +16,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using SIL.Extensions;
 using SIL.XForge.Configuration;
 using SIL.XForge.ExceptionLogging;
@@ -127,8 +127,7 @@ namespace SIL.XForge.Scripture
             services.AddSFDataAccess(Configuration);
 
             IMvcBuilder mvcBuilder = services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(o => o.SerializerSettings.NullValueHandling = NullValueHandling.Ignore);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSFJsonApi(mvcBuilder, containerBuilder, Configuration);
 
@@ -142,6 +141,14 @@ namespace SIL.XForge.Scripture
                         configuration.RootPath = "ClientApp/dist";
                     });
             }
+
+            services.AddMachine(config =>
+                {
+                    config.AuthenticationSchemes = new[] { JwtBearerDefaults.AuthenticationScheme };
+                })
+                .AddEngineOptions(o => o.EnginesDir = Path.Combine(siteOptions.SiteDir, "engines"))
+                .AddMongoDataAccess()
+                .AddTextCorpus<XForgeTextCorpusFactory>();
 
             containerBuilder.Populate(services);
 
@@ -211,6 +218,8 @@ namespace SIL.XForge.Scripture
             app.UseRealtimeServer();
 
             app.UseHangfireServer();
+
+            app.UseMachine();
 
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }
