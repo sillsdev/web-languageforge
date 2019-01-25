@@ -31,13 +31,13 @@ namespace SIL.XForge.DataAccess
                     }
                 }));
 
-            var globalPack = new ConventionPack
+            var conventionPack = new ConventionPack
             {
                 new CamelCaseElementNameConvention(),
                 new ObjectRefConvention(),
                 new IgnoreIfNullConvention(true)
             };
-            ConventionRegistry.Register("Global", globalPack, t => true);
+            ConventionRegistry.Register("xForge", conventionPack, t => t.Namespace.StartsWith("SIL.XForge"));
 
             RegisterClass<Entity>(cm =>
                 {

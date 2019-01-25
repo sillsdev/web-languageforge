@@ -16,10 +16,11 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.2" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.3.1" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.1" />
+    <PackageReference Include="SIL.Machine.WebApi" Version="2.1.0-4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +38,12 @@
     <ProjectReference Include="..\ShareDB\ShareDB.csproj" />
     <ProjectReference Include="..\SIL.XForge.Identity\SIL.XForge.Identity.csproj" />
     <ProjectReference Include="..\SIL.XForge\SIL.XForge.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="$(NuGetPackageRoot)sil.machine.webapi\2.1.0-4\contentFiles\any\netstandard2.0\thot-new-model.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And (!Exists('$(SpaRoot)node_modules') Or !Exists('$(RealtimeRoot)node_modules') Or '$(NpmInstall)' == 'true')">

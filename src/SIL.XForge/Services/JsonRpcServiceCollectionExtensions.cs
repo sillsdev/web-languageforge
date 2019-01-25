@@ -15,7 +15,8 @@ namespace SIL.XForge.Services
                 {
                     options.JsonSerializerSettings = new JsonSerializerSettings
                     {
-                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                        ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                        NullValueHandling = NullValueHandling.Ignore
                     };
                 });
             return services;

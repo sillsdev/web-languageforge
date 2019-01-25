@@ -9,6 +9,7 @@ namespace SIL.XForge.Configuration
         public string SmtpServer { get; set; }
         public string PortNumber { get; set; }
         public bool SendEmail { get; set; }
+        public string SiteDir { get; set; }
         public string SharedDir { get; set; }
     }
 }
