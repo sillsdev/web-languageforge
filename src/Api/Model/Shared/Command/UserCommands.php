@@ -11,7 +11,6 @@ use Api\Model\Shared\Dto\CreateSimpleDto;
 use Api\Model\Shared\Mapper\IdReference;
 use Api\Model\Shared\Mapper\JsonDecoder;
 use Api\Model\Shared\Mapper\JsonEncoder;
-use Api\Model\Shared\PasswordModel;
 use Api\Model\Shared\ProjectListModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\Domain;
@@ -230,7 +229,7 @@ class UserCommands
                 throw new UserUnauthorizedException();
             }
         }
-        $user = new PasswordModel($userId);
+        $user = new UserModelWithPassword($userId);
         $user->changePassword($newPassword);
         return $user->write();
     }
@@ -353,7 +352,7 @@ class UserCommands
      * @param array $params (email, name, password, captcha)
      * @param Website $website
      * @param array $captchaInfo
-     * @param DeliveryInterface|null $delivery
+     * @param DeliveryInterface $delivery
      * @return string {captchaFail, login, emailNotAvailable}
      * @throws \Exception
      */
@@ -367,17 +366,15 @@ class UserCommands
         }
 
         if (UserModel::userExists($email)) {
-            $user = new PasswordModel();
+            $user = new UserModelWithPassword();
             $user->readByProperty('email', $email);
-            if (!$user->passwordExists() && !$user->active) {
+            if ($user->isInvited || (!$user->passwordExists() && !$user->active)) {
                 // Write the password and names for invited users
-                $userPassword = new UserModelWithPassword($user->id->asString());
-                $userPassword->setPassword($params['password']);
-                $userId = $userPassword->write();
+                $user->setPassword($params['password']);
 
-                $user = new UserModel($userId);
                 $user->name = $params['name'];
                 $user->setUniqueUsernameFromString($params['name']);
+                $user->isInvited = false;
                 $user->active = true;
                 $user->write();
 
@@ -548,6 +545,7 @@ class UserCommands
             $invitedUser->email = $toEmail;
             $invitedUser->emailPending = $toEmail;
             $invitedUser->role = SystemRoles::USER;
+            $invitedUser->isInvited = true;
             $invitedUser->write();
         }
 
@@ -559,6 +557,7 @@ class UserCommands
         // Make sure the user exists on the site
         if (!$invitedUser->hasRoleOnSite($website)) {
             $invitedUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
+            $invitedUser->write();
         }
 
         // Add the user to the project, if they are not already a member
