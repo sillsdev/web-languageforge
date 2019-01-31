@@ -491,11 +491,15 @@ class UserCommandsTest extends TestCase
         $this->assertEquals($result, 'emailNotAvailable');
     }
 
-    public function testRegister_EmailInUseNoPassword_Login()
+    /** @throws Exception */
+    public function testRegister_InviteUser_Login()
     {
         // setup parameters: user 'test1'
-        $takenEmail = 'test@test.com';
-        self::$environ->createUser('test1', 'test1', $takenEmail);
+        $takenEmail = 'test@example.com';
+        $invitedUserId = self::$environ->createUser('test1', 'test1', $takenEmail);
+        $invitedUser = new UserModel($invitedUserId);
+        $invitedUser->active = false;
+        $invitedUser->write();
 
         $validCode = 'validCode';
         $params = [
@@ -512,7 +516,7 @@ class UserCommandsTest extends TestCase
         // Attempt to register
         $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
 
-        $this->assertEquals($result, 'login');
+        $this->assertEquals('login', $result);
     }
 
     public function testRegister_NewUser_Login()
@@ -561,6 +565,28 @@ class UserCommandsTest extends TestCase
         $joeUser->readByEmail('joe@smith.com');
         $this->assertEquals($result, 'login');
         $this->assertTrue($joeUser->hasRoleOnSite($website));
+    }
+
+    /** @throws Exception */
+    public function testRegister_ExistingGoogleUser_Deny()
+    {
+        $gmail = 'someone@gmail.com';
+        $validCode = 'validCode';
+        $params = [
+            'id' => '',
+            'username' => 'someusername',
+            'name' => 'Some Name',
+            'email' => $gmail,
+            'password' => 'anotherpassword',
+            'captcha' => $validCode
+        ];
+        $captcha_info = ['code' => $validCode];
+        self::$environ->createUser('someusername', 'Some Name', $gmail);
+        $delivery = new MockUserCommandsDelivery();
+
+        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+
+        $this->assertEquals('emailNotAvailable', $result);
     }
 
     public function testSendInvite_Register_UserActive()
