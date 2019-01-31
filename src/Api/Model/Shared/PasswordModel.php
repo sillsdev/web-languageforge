@@ -27,9 +27,14 @@ class PasswordModel extends MapperModel
         parent::__construct(PasswordModel_MongoMapper::instance(), $id);
     }
 
+    /** @var string */
     public $id;
 
+    /** @var string */
     public $password;
+
+    /** @var boolean */
+    public $active;
 
     public $remember_code; // Used so we can reset the remember_code after PW change, to force user to re-login
 
