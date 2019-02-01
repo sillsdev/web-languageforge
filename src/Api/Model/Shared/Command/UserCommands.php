@@ -353,9 +353,9 @@ class UserCommands
      * @param array $params (email, name, password, captcha)
      * @param Website $website
      * @param array $captchaInfo
-     * @param DeliveryInterface $delivery
-     * @throws \Exception
+     * @param DeliveryInterface|null $delivery
      * @return string {captchaFail, login, emailNotAvailable}
+     * @throws \Exception
      */
     public static function register($params, $website, $captchaInfo, DeliveryInterface $delivery = null)
     {
@@ -369,7 +369,7 @@ class UserCommands
         if (UserModel::userExists($email)) {
             $user = new PasswordModel();
             $user->readByProperty('email', $email);
-            if (!$user->passwordExists()) {
+            if (!$user->passwordExists() && !$user->active) {
                 // Write the password and names for invited users
                 $userPassword = new UserModelWithPassword($user->id->asString());
                 $userPassword->setPassword($params['password']);
