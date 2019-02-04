@@ -31,7 +31,7 @@ class UserModel extends MapperModel
         ['avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
          'name', 'email', 'username', 'age', 'gender', 'interfaceLanguageCode'];
     const ADMIN_ACCESSIBLE =
-        ['username', 'name', 'email', 'role', 'active',
+        ['username', 'name', 'email', 'role', 'active', 'isInvited',
          'avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
          'name', 'age', 'gender', 'interfaceLanguageCode'];
 
@@ -112,6 +112,9 @@ class UserModel extends MapperModel
 
     /** @var boolean */
     public $active;
+
+    /** @var boolean */
+    public $isInvited;
 
     //public $groups;
 
