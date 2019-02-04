@@ -5,7 +5,7 @@
 // </auto-generated>
 // ----------------------
 
-import { DomainModelConfig } from '@xforge-common/models/domain-model';
+import { DomainModelConfig } from 'xforge-common/models/domain-model';
 import { SFProjectRef, SFProjectUserRef, SFUserRef, SyncJobRef, TextRef } from './sfdomain-model.generated';
 import { SFProject } from './sfproject';
 import { SFProjectUser } from './sfproject-user';

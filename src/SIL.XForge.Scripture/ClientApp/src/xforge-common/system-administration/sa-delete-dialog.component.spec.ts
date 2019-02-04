@@ -3,9 +3,9 @@ import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testi
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { UICommonModule } from '@xforge-common/ui-common.module';
-import { instance, mock } from 'ts-mockito/lib/ts-mockito';
+import { instance, mock } from 'ts-mockito';
 
+import { UICommonModule } from '../ui-common.module';
 import { UserService } from '../user.service';
 import { SaDeleteDialogComponent } from './sa-delete-dialog.component';
 

@@ -34,14 +34,15 @@ namespace SIL.XForge.Scripture.CodeGenerator
             HandWrittenBaseClasses["Resource"] = null;
             HandWrittenBaseClasses["ProjectDataResource"] = null;
             HandWrittenBaseClasses["ProjectDataResourceRef"] = null;
-            HandWrittenBaseClasses["UserResource"] = "@xforge-common/models/user";
-            HandWrittenBaseClasses["UserResourceRef"] = "@xforge-common/models/user";
+            HandWrittenBaseClasses["Site"] = null;
+            HandWrittenBaseClasses["ProjectResource"] = "xforge-common/models/project";
+            HandWrittenBaseClasses["ProjectResourceRef"] = "xforge-common/models/project";
+            HandWrittenBaseClasses["ProjectUserResource"] = "xforge-common/models/project-user";
+            HandWrittenBaseClasses["ProjectUserResourceRef"] = "xforge-common/models/project-user";
+            HandWrittenBaseClasses["UserResource"] = "xforge-common/models/user";
+            HandWrittenBaseClasses["UserResourceRef"] = "xforge-common/models/user";
             HandWrittenBaseClasses["SFProjectDataResource"] = "./sfproject-data";
             HandWrittenBaseClasses["SFProjectDataResourceRef"] = "./sfproject-data";
-            HandWrittenBaseClasses["ProjectResource"] = "@xforge-common/models/project";
-            HandWrittenBaseClasses["ProjectResourceRef"] = "@xforge-common/models/project";
-            HandWrittenBaseClasses["ProjectUserResource"] = "@xforge-common/models/project-user";
-            HandWrittenBaseClasses["ProjectUserResourceRef"] = "@xforge-common/models/project-user";
 
             TypeScriptInterfaces = new List<string>
             {
@@ -265,7 +266,7 @@ namespace SIL.XForge.Scripture.CodeGenerator
                                $"// </auto-generated>{Environment.NewLine}" +
                                $"// ----------------------{Environment.NewLine}" +
                                $"{Environment.NewLine}";
-            var imports = "import { DomainModelConfig } from '@xforge-common/models/domain-model';" + Environment.NewLine;
+            var imports = "import { DomainModelConfig } from 'xforge-common/models/domain-model';" + Environment.NewLine;
             imports += "import { ";
             imports += string.Join(", ", from type in importTypes select $"{type}Ref");
             imports += $" }} from './{Path.GetFileName(typeScriptFileName.Substring(0, typeScriptFileName.Length - 3))}';{Environment.NewLine}";

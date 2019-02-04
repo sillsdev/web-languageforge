@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { JsonApiService } from '@xforge-common/json-api.service';
-import { ProjectUserService } from '@xforge-common/project-user.service';
+import { JsonApiService } from 'xforge-common/json-api.service';
+import { ProjectUserService } from 'xforge-common/project-user.service';
 import { SFProjectRef } from './models/sfproject';
 import { SFProjectUser } from './models/sfproject-user';
 import { SFUserRef } from './models/sfuser';

@@ -431,10 +431,32 @@
                 "null",
                 "string"
               ]
+            },
+            "Site": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/definitions/Site"
+                }
+              ]
             }
           }
         }
       ]
+    },
+    "Site": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CurrentProjectId": {
+          "type": [
+            "null",
+            "string"
+          ]
+        }
+      }
     },
     "Resource": {
       "allOf": [

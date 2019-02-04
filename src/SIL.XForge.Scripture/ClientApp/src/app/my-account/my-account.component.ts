@@ -3,11 +3,11 @@ import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators }
 import { DateAdapter, MatDialog, MatDialogRef, NativeDateAdapter } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
-import { VerifyEmailComponent } from '@identity/verify-email/verify-email.component';
-import { AuthService } from '@xforge-common/auth.service';
-import { ElementState } from '@xforge-common/models/element-state';
-import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
-import { UserService } from '@xforge-common/user.service';
+import { AuthService } from 'xforge-common/auth.service';
+import { ElementState } from 'xforge-common/models/element-state';
+import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
+import { UserService } from 'xforge-common/user.service';
+import { XFValidators } from 'xforge-common/xfvalidators';
 import { environment } from '../../environments/environment';
 import { NoticeService } from '../../xforge-common/notice.service';
 import { SFUser } from '../core/models/sfuser';
@@ -57,8 +57,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     username: new FormControl('', [(inputControl: FormControl) => this.emailAndUsernameValidator(this, inputControl)]),
     email: new FormControl('', [
       (inputControl: FormControl) => this.emailAndUsernameValidator(this, inputControl),
-      Validators.email,
-      Validators.pattern(VerifyEmailComponent.emailPattern)
+      XFValidators.email
     ]),
     mobilePhone: new FormControl(),
     contactMethod: new FormControl(),

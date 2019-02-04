@@ -5,9 +5,9 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { AuthService } from '@xforge-common/auth.service';
-import { NoticeService } from '@xforge-common/notice.service';
-import { UICommonModule } from '@xforge-common/ui-common.module';
+import { AuthService } from 'xforge-common/auth.service';
+import { NoticeService } from 'xforge-common/notice.service';
+import { UICommonModule } from 'xforge-common/ui-common.module';
 import { IdentityService } from '../identity.service';
 import { VerifyEmailComponent } from './verify-email.component';
 
@@ -137,7 +137,7 @@ describe('VerifyEmailComponent', () => {
     env.inputEmail('invalidemail');
     env.component.email.hasError('email');
     env.inputEmail('invalidemail@example');
-    env.component.email.hasError('pattern');
+    env.component.email.hasError('email');
     expect().nothing();
   }));
 });

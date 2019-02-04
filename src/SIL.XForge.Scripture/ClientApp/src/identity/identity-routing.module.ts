@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { RedirectRootGuard } from '@xforge-common/redirect-root.guard';
+import { RedirectRootGuard } from 'xforge-common/redirect-root.guard';
 import { ExternalSignUpComponent } from './external-sign-up/external-sign-up.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LogInComponent } from './log-in/log-in.component';

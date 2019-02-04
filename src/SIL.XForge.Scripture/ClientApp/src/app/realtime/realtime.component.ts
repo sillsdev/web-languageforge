@@ -3,9 +3,9 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Site } from '@xforge-common/models/site';
-import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
-import { nameof } from '@xforge-common/utils';
+import { Site } from 'xforge-common/models/site';
+import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
+import { nameof } from 'xforge-common/utils';
 import { SFProject } from '../core/models/sfproject';
 import { SFUser } from '../core/models/sfuser';
 import { Text } from '../core/models/text';

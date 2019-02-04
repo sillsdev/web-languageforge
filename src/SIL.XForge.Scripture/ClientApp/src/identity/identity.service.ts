@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { JsonRpcService } from '@xforge-common/json-rpc.service';
+import { JsonRpcService } from 'xforge-common/json-rpc.service';
 import { ExternalSignUpResult } from './models/external-sign-up-result';
 import { LinkAccountResult } from './models/link-account-result';
 import { LogInResult } from './models/log-in-result';

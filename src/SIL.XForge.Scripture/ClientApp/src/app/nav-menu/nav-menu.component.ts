@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
-import { AuthService } from '@xforge-common/auth.service';
-import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
+import { AuthService } from 'xforge-common/auth.service';
+import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 
 @Component({
   selector: 'app-nav-menu',

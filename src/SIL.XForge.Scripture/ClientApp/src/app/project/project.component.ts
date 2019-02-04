@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Project } from '@xforge-common/models/project';
-import { ProjectService } from '@xforge-common/project.service';
-import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
 import { switchMap } from 'rxjs/operators';
+
+import { Project } from 'xforge-common/models/project';
+import { ProjectService } from 'xforge-common/project.service';
+import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 
 @Component({
   selector: 'app-projects',

@@ -7,9 +7,9 @@ import { RecordIdentity } from '@orbit/data';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { QueryResults } from '@xforge-common/json-api.service';
-import { Resource } from '@xforge-common/models/resource';
-import { UICommonModule } from '@xforge-common/ui-common.module';
+import { QueryResults } from 'xforge-common/json-api.service';
+import { Resource } from 'xforge-common/models/resource';
+import { UICommonModule } from 'xforge-common/ui-common.module';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
 import { ProjectSettingsComponent } from './project-settings.component';

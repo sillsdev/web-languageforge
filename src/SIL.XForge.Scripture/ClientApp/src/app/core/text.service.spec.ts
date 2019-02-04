@@ -1,8 +1,8 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { instance, mock } from 'ts-mockito';
 
-import { JsonApiService } from '@xforge-common/json-api.service';
-import { RealtimeService } from '@xforge-common/realtime.service';
+import { JsonApiService } from 'xforge-common/json-api.service';
+import { RealtimeService } from 'xforge-common/realtime.service';
 import { TextService } from './text.service';
 
 describe('TextService', () => {

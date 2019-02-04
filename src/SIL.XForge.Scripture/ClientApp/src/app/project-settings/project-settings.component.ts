@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { ElementState } from '@xforge-common/models/element-state';
-import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
+import { ElementState } from 'xforge-common/models/element-state';
+import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
 

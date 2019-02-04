@@ -9,9 +9,9 @@ import { Resource } from '@orbit/jsonapi';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito/lib/ts-mockito';
 
-import { User } from '@xforge-common/models/user';
-import { NoticeService } from '@xforge-common/notice.service';
 import { QueryResults } from '../json-api.service';
+import { User } from '../models/user';
+import { NoticeService } from '../notice.service';
 import { UICommonModule } from '../ui-common.module';
 import { UserService } from '../user.service';
 import { SaUserEntryComponent } from './sa-user-entry.component';

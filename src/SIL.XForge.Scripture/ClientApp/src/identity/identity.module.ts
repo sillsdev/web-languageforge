@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
-import { UICommonModule } from '@xforge-common/ui-common.module';
-import { XForgeCommonModule } from '@xforge-common/xforge-common.module';
+import { UICommonModule } from 'xforge-common/ui-common.module';
+import { XForgeCommonModule } from 'xforge-common/xforge-common.module';
 import { ExternalSignUpComponent } from './external-sign-up/external-sign-up.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { IdentityRoutingModule } from './identity-routing.module';

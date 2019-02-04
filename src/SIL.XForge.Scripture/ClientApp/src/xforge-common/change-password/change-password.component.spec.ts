@@ -8,8 +8,8 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { anyString, capture, instance, mock, verify, when } from 'ts-mockito';
 
-import { NoticeService } from '@xforge-common/notice.service';
-import { UserService } from '@xforge-common/user.service';
+import { NoticeService } from '../notice.service';
+import { UserService } from '../user.service';
 import { ChangePasswordComponent } from './change-password.component';
 
 describe('ChangePasswordComponent', () => {

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Record } from '@orbit/data';
 
-import { JsonApiService } from '@xforge-common/json-api.service';
-import { InputSystem } from '@xforge-common/models/input-system';
-import { ProjectRole } from '@xforge-common/models/project-role';
-import { ProjectService } from '@xforge-common/project.service';
-import { nameof } from '@xforge-common/utils';
+import { JsonApiService } from 'xforge-common/json-api.service';
+import { InputSystem } from 'xforge-common/models/input-system';
+import { ProjectRole } from 'xforge-common/models/project-role';
+import { ProjectService } from 'xforge-common/project.service';
+import { nameof } from 'xforge-common/utils';
 import { SFProject } from './models/sfproject';
 
 @Injectable({

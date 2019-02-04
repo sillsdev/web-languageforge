@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { NoticeService } from '@xforge-common/notice.service';
+import { NoticeService } from '../notice.service';
 import { UserService } from '../user.service';
 
 /** User-facing page for changing one's own password. */

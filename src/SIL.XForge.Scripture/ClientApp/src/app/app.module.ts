@@ -6,8 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ngfModule } from 'angular-file';
 
-import { UICommonModule } from '@xforge-common/ui-common.module';
-import { xForgeCommonEntryComponents, XForgeCommonModule } from '@xforge-common/xforge-common.module';
+import { UICommonModule } from 'xforge-common/ui-common.module';
+import { xForgeCommonEntryComponents, XForgeCommonModule } from 'xforge-common/xforge-common.module';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
