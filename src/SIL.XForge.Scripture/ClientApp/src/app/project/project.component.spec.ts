@@ -18,48 +18,91 @@ describe('ProjectComponent', () => {
     env.fixture.detectChanges();
   });
 
-  it('can load a project', () => {
-    expect(env.getProjectHeading()).toEqual('Project 01');
+  describe('Interface', () => {
+    it('can load a project', () => {
+      expect(env.getProjectHeading()).toEqual('Project 01');
+    });
+    it('can navigate using next button', () => {
+      const question = env.selectQuestion(1);
+      const next = env.getNextButton();
+      next.nativeElement.click();
+      env.fixture.detectChanges();
+      const nextQuestion = env.getCurrentQuestion();
+      expect(nextQuestion).toEqual(2);
+    });
+
+    it('can navigate using previous button', () => {
+      const question = env.selectQuestion(2);
+      const prev = env.getPreviousButton();
+      prev.nativeElement.click();
+      env.fixture.detectChanges();
+      const nextQuestion = env.getCurrentQuestion();
+      expect(nextQuestion).toEqual(1);
+    });
+
+    it('check navigate buttons disable at the end of the question list', () => {
+      let question = env.selectQuestion(1);
+      const prev = env.getPreviousButton();
+      const next = env.getNextButton();
+      expect(prev.nativeElement.disabled).toBeTruthy();
+      expect(next.nativeElement.disabled).toBeFalsy();
+      question = env.selectQuestion(3);
+      expect(prev.nativeElement.disabled).toBeFalsy();
+      expect(next.nativeElement.disabled).toBeTruthy();
+    });
   });
 
-  it('questions are displaying', () => {
-    expect(env.getQuestions().children.length).toEqual(2);
+  describe('Questions', () => {
+    it('questions are displaying', () => {
+      expect(env.getQuestions().length).toEqual(3);
+    });
+
+    it('can select a question', () => {
+      const question = env.selectQuestion(1);
+      expect(question.classes['mdc-list-item--activated']).toBeTruthy();
+    });
+
+    it('question status change to read', fakeAsync(() => {
+      const question = env.selectQuestion(2);
+      // Wait for the 1 second time out before the state of the question changes
+      tick(1000);
+      env.fixture.detectChanges();
+      expect(question.classes['question-read']).toBeTruthy();
+    }));
+
+    it('question status change to answered', fakeAsync(() => {
+      let question = env.selectQuestion(2);
+      // Wait for the 1 second time out before the state of the question changes
+      tick(1000);
+      question = env.selectQuestion(1);
+      question = env.selectQuestion(2);
+      tick(1000);
+      env.fixture.detectChanges();
+      expect(question.classes['question-answered']).toBeTruthy();
+    }));
+
+    it('question shows answers icon and total', fakeAsync(() => {
+      let question = env.selectQuestion(2);
+      // Wait for the 1 second time out before the state of the question changes
+      tick(1000);
+      question = env.selectQuestion(1);
+      question = env.selectQuestion(2);
+      tick(1000);
+      env.fixture.detectChanges();
+      expect(question.query(By.css('.view-answers span')).nativeElement.textContent).toEqual('1');
+    }));
   });
 
-  it('can select a question', () => {
-    const question = env.selectQuestion(1);
-    expect(question.classes['mdc-list-item--activated']).toBeTruthy();
+  describe('Answers', () => {
+    it('answer panel is not initiated without a selected question', () => {
+      expect(env.getAnswerPanel()).toBeNull();
+    });
+
+    it('answer panel is now showing', () => {
+      const question = env.selectQuestion(1);
+      expect(env.getAnswerPanel()).toBeDefined();
+    });
   });
-
-  it('question status change to read', fakeAsync(() => {
-    const question = env.selectQuestion(2);
-    // Wait for the 1 second time out before the state of the question changes
-    tick(1000);
-    env.fixture.detectChanges();
-    expect(question.classes['question-read']).toBeTruthy();
-  }));
-
-  it('question status change to answered', fakeAsync(() => {
-    let question = env.selectQuestion(2);
-    // Wait for the 1 second time out before the state of the question changes
-    tick(1000);
-    question = env.selectQuestion(1);
-    question = env.selectQuestion(2);
-    tick(1000);
-    env.fixture.detectChanges();
-    expect(question.classes['question-answered']).toBeTruthy();
-  }));
-
-  it('question shows answers icon and total', fakeAsync(() => {
-    let question = env.selectQuestion(2);
-    // Wait for the 1 second time out before the state of the question changes
-    tick(1000);
-    question = env.selectQuestion(1);
-    question = env.selectQuestion(2);
-    tick(1000);
-    env.fixture.detectChanges();
-    expect(question.query(By.css('.view-answers span')).nativeElement.textContent).toEqual('1');
-  }));
 });
 
 class TestEnvironment {
@@ -106,8 +149,12 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('h1')).nativeElement.textContent;
   }
 
-  getQuestions(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#questions-panel .mdc-list-item'));
+  getAnswerPanel(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#answer-panel'));
+  }
+
+  getQuestions(): DebugElement[] {
+    return this.fixture.debugElement.queryAll(By.css('#questions-panel .mdc-list-item'));
   }
 
   selectQuestion(questionNumber: number): DebugElement {
@@ -117,5 +164,27 @@ class TestEnvironment {
     question.nativeElement.click();
     this.fixture.detectChanges();
     return question;
+  }
+
+  getCurrentQuestion(): number {
+    const questions = this.getQuestions();
+    for (const questionNumber in questions) {
+      if (
+        questions[questionNumber].classes.hasOwnProperty('mdc-list-item--activated') &&
+        questions[questionNumber].classes['mdc-list-item--activated'] === true
+      ) {
+        // Need to add one as css selector nth-child starts index from 1 instead of zero
+        return Number(questionNumber) + 1;
+      }
+    }
+    return -1;
+  }
+
+  getPreviousButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#project-navigation .prev-question'));
+  }
+
+  getNextButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#project-navigation .next-question'));
   }
 }

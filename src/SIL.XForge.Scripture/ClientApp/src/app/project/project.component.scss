@@ -75,4 +75,23 @@ $questionAnswerBubbleBackgroundColor: $sf_grey;
       }
     }
   }
+  #book-panel {
+    display: flex;
+    flex-direction: column;
+    #scripture-panel {
+    }
+    #answer-panel {
+    }
+    #project-navigation {
+      background-color: lighten($sf_grey, 70%);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 9px;
+    }
+    #project-summary {
+      width: 36px;
+      height: 36px;
+    }
+  }
 }

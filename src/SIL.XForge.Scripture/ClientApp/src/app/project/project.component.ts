@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -6,6 +6,12 @@ import { Project } from 'xforge-common/models/project';
 import { Resource } from 'xforge-common/models/resource';
 import { ProjectService } from 'xforge-common/project.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
+
+interface Summary {
+  unread: number;
+  read: number;
+  answered: number;
+}
 
 export class Question extends Resource {
   title: string;
@@ -58,9 +64,15 @@ export class Answer extends Resource {
   styleUrls: ['./project.component.scss']
 })
 export class ProjectComponent extends SubscriptionDisposable {
+  @HostBinding('class') classes = 'flex-max';
   project: Project;
   questions: Question[];
   activeQuestion: Question;
+  summary: Summary = {
+    read: 0,
+    unread: 0,
+    answered: 0
+  };
 
   constructor(private activatedRoute: ActivatedRoute, private projectService: ProjectService, private router: Router) {
     super();
@@ -81,11 +93,11 @@ export class ProjectComponent extends SubscriptionDisposable {
     );
   }
 
-  goHome() {
+  private goHome() {
     this.router.navigateByUrl('/home');
   }
 
-  loadQuestions() {
+  private loadQuestions() {
     const questions = [];
     questions.push(
       new Question({
@@ -102,6 +114,7 @@ export class ProjectComponent extends SubscriptionDisposable {
       })
     );
     this.questions = questions;
+    this.refreshSummary();
   }
 
   totalQuestions() {
@@ -116,7 +129,47 @@ export class ProjectComponent extends SubscriptionDisposable {
       if (this.activeQuestion.id === question.id) {
         question.markAsRead();
         readTimer.unsubscribe();
+        this.refreshSummary();
       }
     });
+  }
+
+  nextQuestion() {
+    this.changeQuestion(1);
+  }
+
+  previousQuestion() {
+    this.changeQuestion(-1);
+  }
+
+  private changeQuestion(newIndex: number) {
+    if (this.activeQuestion) {
+      if (this.checkCanChangeQuestion(newIndex)) {
+        this.activateQuestion(this.questions[this.getActiveQuestionIndex() + newIndex]);
+      }
+    }
+  }
+
+  checkCanChangeQuestion(newIndex: number) {
+    return !!this.questions[this.getActiveQuestionIndex() + newIndex];
+  }
+
+  private getActiveQuestionIndex() {
+    return this.questions.findIndex(question => question.id === this.activeQuestion.id);
+  }
+
+  private refreshSummary() {
+    this.summary.answered = 0;
+    this.summary.read = 0;
+    this.summary.unread = 0;
+    for (const question of this.questions) {
+      if (question.answered) {
+        this.summary.answered++;
+      } else if (question.read) {
+        this.summary.read++;
+      } else if (!question.read) {
+        this.summary.unread++;
+      }
+    }
   }
 }
