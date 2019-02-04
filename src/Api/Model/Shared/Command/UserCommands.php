@@ -368,10 +368,8 @@ class UserCommands
         if (UserModel::userExists($email)) {
             $user = new UserModelWithPassword();
             $user->readByProperty('email', $email);
-            if ($user->isInvited || (!$user->passwordExists() && !$user->active)) {
-                // Write the password and names for invited users
+            if ($user->isInvited) {
                 $user->setPassword($params['password']);
-
                 $user->name = $params['name'];
                 $user->setUniqueUsernameFromString($params['name']);
                 $user->isInvited = false;
