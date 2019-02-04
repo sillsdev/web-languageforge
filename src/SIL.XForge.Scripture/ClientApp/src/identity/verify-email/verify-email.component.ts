@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { AuthService } from '@xforge-common/auth.service';
-import { NoticeService } from '@xforge-common/notice.service';
+import { AuthService } from 'xforge-common/auth.service';
+import { NoticeService } from 'xforge-common/notice.service';
+import { XFValidators } from 'xforge-common/xfvalidators';
 import { IdentityService } from '../identity.service';
 
 @Component({
@@ -12,16 +13,10 @@ import { IdentityService } from '../identity.service';
   styleUrls: ['./verify-email.component.scss']
 })
 export class VerifyEmailComponent implements OnInit {
-  static readonly emailPattern = '[a-zA-Z0-9.+_-]{1,}@[a-zA-Z0-9.-]{1,}[.]{1}[a-zA-Z]{2,}';
-
   success: boolean;
 
   resendLinkForm = new FormGroup({
-    email: new FormControl('', [
-      Validators.email,
-      Validators.required,
-      Validators.pattern(VerifyEmailComponent.emailPattern)
-    ])
+    email: new FormControl('', [XFValidators.email, Validators.required])
   });
 
   constructor(

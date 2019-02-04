@@ -4,8 +4,8 @@ import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 
-import { AuthService } from '@xforge-common/auth.service';
-import { LocationService } from '@xforge-common/location.service';
+import { AuthService } from 'xforge-common/auth.service';
+import { LocationService } from 'xforge-common/location.service';
 import { IdentityService } from '../identity.service';
 
 interface FormGroupControls {

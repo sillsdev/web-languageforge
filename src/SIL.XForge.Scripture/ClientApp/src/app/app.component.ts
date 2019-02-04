@@ -2,9 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { AuthService } from '@xforge-common/auth.service';
-import { LocationService } from '@xforge-common/location.service';
-import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
+import { AuthService } from 'xforge-common/auth.service';
+import { LocationService } from 'xforge-common/location.service';
+import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { SFUser } from './core/models/sfuser';
 import { SFUserService } from './core/sfuser.service';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';

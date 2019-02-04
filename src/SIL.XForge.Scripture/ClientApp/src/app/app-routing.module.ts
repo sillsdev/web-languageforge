@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AuthGuard } from '@xforge-common/auth.guard';
-import { ChangePasswordComponent } from '@xforge-common/change-password/change-password.component';
-import { ProjectsComponent } from '@xforge-common/projects/projects.component';
-import { SystemAdminAuthGuard } from '@xforge-common/system-admin-auth.guard';
-import { SystemAdministrationComponent } from '@xforge-common/system-administration/system-administration.component';
+import { AuthGuard } from 'xforge-common/auth.guard';
+import { ChangePasswordComponent } from 'xforge-common/change-password/change-password.component';
+import { ProjectsComponent } from 'xforge-common/projects/projects.component';
+import { SystemAdminAuthGuard } from 'xforge-common/system-admin-auth.guard';
+import { SystemAdministrationComponent } from 'xforge-common/system-administration/system-administration.component';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { HomeComponent } from './home/home.component';

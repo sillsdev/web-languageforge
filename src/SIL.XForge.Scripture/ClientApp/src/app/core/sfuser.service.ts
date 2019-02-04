@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { AuthService } from '@xforge-common/auth.service';
-import { JsonApiService } from '@xforge-common/json-api.service';
-import { UserService } from '@xforge-common/user.service';
+import { AuthService } from 'xforge-common/auth.service';
+import { JsonApiService } from 'xforge-common/json-api.service';
+import { UserService } from 'xforge-common/user.service';
 import { SFUser } from './models/sfuser';
 
 @Injectable({

@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { NoticeService } from '@xforge-common/notice.service';
+import { NoticeService } from '../notice.service';
 import { InviteAction, ProjectService } from '../project.service';
 import { UICommonModule } from '../ui-common.module';
 import { EmailInviteComponent } from './email-invite.component';

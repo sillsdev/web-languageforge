@@ -7,9 +7,9 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { AuthService } from '@xforge-common/auth.service';
-import { LocationService } from '@xforge-common/location.service';
-import { UICommonModule } from '@xforge-common/ui-common.module';
+import { AuthService } from 'xforge-common/auth.service';
+import { LocationService } from 'xforge-common/location.service';
+import { UICommonModule } from 'xforge-common/ui-common.module';
 import { IdentityService } from '../identity.service';
 import { ResetPasswordComponent } from './reset-password.component';
 

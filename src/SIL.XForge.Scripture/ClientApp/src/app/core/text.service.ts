@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { JsonApiService } from '@xforge-common/json-api.service';
-import { RealtimeService } from '@xforge-common/realtime.service';
-import { ResourceService } from '@xforge-common/resource.service';
+import { JsonApiService } from 'xforge-common/json-api.service';
+import { RealtimeService } from 'xforge-common/realtime.service';
+import { ResourceService } from 'xforge-common/resource.service';
 import { Text } from './models/text';
 import { TextData } from './models/text-data';
 

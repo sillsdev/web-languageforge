@@ -8,7 +8,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { UICommonModule } from '@xforge-common/ui-common.module';
+import { UICommonModule } from 'xforge-common/ui-common.module';
 import { ChangingUsernameDialogComponent } from './changing-username-dialog.component';
 
 class TestEnvironment {

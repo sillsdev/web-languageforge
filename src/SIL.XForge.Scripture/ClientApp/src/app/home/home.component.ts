@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { AuthService } from '@xforge-common/auth.service';
+import { AuthService } from 'xforge-common/auth.service';
 
 @Component({
   selector: 'app-home',

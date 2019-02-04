@@ -1,4 +1,4 @@
-import { ProjectData, ProjectDataRef } from '@xforge-common/models/project-data';
+import { ProjectData, ProjectDataRef } from 'xforge-common/models/project-data';
 import { SFProjectRef } from './sfproject';
 import { SFUserRef } from './sfuser';
 

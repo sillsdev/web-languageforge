@@ -3,9 +3,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 
-import { AuthService } from '@xforge-common/auth.service';
-import { LocationService } from '@xforge-common/location.service';
-import { NoticeService } from '@xforge-common/notice.service';
+import { AuthService } from 'xforge-common/auth.service';
+import { LocationService } from 'xforge-common/location.service';
+import { NoticeService } from 'xforge-common/notice.service';
 import { environment } from '../../environments/environment';
 import { IdentityService } from '../identity.service';
 

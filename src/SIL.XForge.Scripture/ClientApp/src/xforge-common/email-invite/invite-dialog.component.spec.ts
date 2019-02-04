@@ -5,7 +5,7 @@ import { ComponentFixture, fakeAsync, flush, inject, TestBed, tick } from '@angu
 import { By } from '@angular/platform-browser';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { NoticeService } from '@xforge-common/notice.service';
+import { NoticeService } from '../notice.service';
 import { InviteAction, ProjectService } from '../project.service';
 import { UICommonModule } from '../ui-common.module';
 import { InviteDialogComponent } from './invite-dialog.component';

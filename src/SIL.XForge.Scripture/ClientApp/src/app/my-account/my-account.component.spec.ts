@@ -11,11 +11,11 @@ import { ngfModule } from 'angular-file';
 import { of } from 'rxjs';
 import { anything, capture, instance, mock, verify, when } from 'ts-mockito';
 
-import { AuthService } from '@xforge-common/auth.service';
-import { User } from '@xforge-common/models/user';
-import { NoticeService } from '@xforge-common/notice.service';
-import { UICommonModule } from '@xforge-common/ui-common.module';
-import { UserService } from '@xforge-common/user.service';
+import { AuthService } from 'xforge-common/auth.service';
+import { User } from 'xforge-common/models/user';
+import { NoticeService } from 'xforge-common/notice.service';
+import { UICommonModule } from 'xforge-common/ui-common.module';
+import { UserService } from 'xforge-common/user.service';
 import { SFUser } from '../core/models/sfuser';
 import { ParatextService } from '../core/paratext.service';
 import { SFUserService } from '../core/sfuser.service';

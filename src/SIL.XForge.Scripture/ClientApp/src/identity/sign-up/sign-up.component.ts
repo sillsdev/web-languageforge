@@ -3,9 +3,9 @@ import { ObservableMedia } from '@angular/flex-layout';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 
-import { AuthService } from '@xforge-common/auth.service';
-import { NoticeService } from '@xforge-common/notice.service';
-import { SubscriptionDisposable } from '@xforge-common/subscription-disposable';
+import { AuthService } from 'xforge-common/auth.service';
+import { NoticeService } from 'xforge-common/notice.service';
+import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { environment } from '../../environments/environment';
 import { IdentityService } from '../identity.service';
 import { SignUpResult } from '../models/sign-up-result';

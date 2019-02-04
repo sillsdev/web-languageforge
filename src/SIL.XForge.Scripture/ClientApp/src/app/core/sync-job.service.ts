@@ -3,9 +3,9 @@ import { interval, Observable } from 'rxjs';
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive';
 import { map, switchMap } from 'rxjs/operators';
 
-import { JsonApiService, QueryObservable } from '@xforge-common/json-api.service';
-import { ResourceService } from '@xforge-common/resource.service';
-import { nameof } from '@xforge-common/utils';
+import { JsonApiService, QueryObservable } from 'xforge-common/json-api.service';
+import { ResourceService } from 'xforge-common/resource.service';
+import { nameof } from 'xforge-common/utils';
 import { SFProject, SFProjectRef } from './models/sfproject';
 import { SFUserRef } from './models/sfuser';
 import { SyncJob } from './models/sync-job';

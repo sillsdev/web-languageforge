@@ -7,11 +7,11 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { IdentityService } from '@identity/identity.service';
-import { AuthService } from '@xforge-common/auth.service';
-import { LocationService } from '@xforge-common/location.service';
-import { NoticeService } from '@xforge-common/notice.service';
-import { UICommonModule } from '@xforge-common/ui-common.module';
+import { AuthService } from 'xforge-common/auth.service';
+import { LocationService } from 'xforge-common/location.service';
+import { NoticeService } from 'xforge-common/notice.service';
+import { UICommonModule } from 'xforge-common/ui-common.module';
+import { IdentityService } from '../identity.service';
 import { LogInComponent } from './log-in.component';
 
 describe('LogInComponent', () => {

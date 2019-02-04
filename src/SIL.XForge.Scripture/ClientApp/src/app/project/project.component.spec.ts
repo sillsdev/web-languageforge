@@ -2,12 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecordIdentity } from '@orbit/data';
-import { QueryResults } from '@xforge-common/json-api.service';
-import { Resource } from '@xforge-common/models/resource';
-import { ProjectService } from '@xforge-common/project.service';
-import { UICommonModule } from '@xforge-common/ui-common.module';
 import { of } from 'rxjs';
 import { instance, mock, when } from 'ts-mockito';
+
+import { QueryResults } from 'xforge-common/json-api.service';
+import { Resource } from 'xforge-common/models/resource';
+import { ProjectService } from 'xforge-common/project.service';
+import { UICommonModule } from 'xforge-common/ui-common.module';
 import { SFProject } from '../core/models/sfproject';
 import { ProjectComponent } from './project.component';
 

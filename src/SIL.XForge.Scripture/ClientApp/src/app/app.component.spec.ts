@@ -4,9 +4,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { instance, mock } from 'ts-mockito';
 
-import { AuthService } from '@xforge-common/auth.service';
-import { UICommonModule } from '@xforge-common/ui-common.module';
-import { XForgeCommonModule } from '@xforge-common/xforge-common.module';
+import { AuthService } from 'xforge-common/auth.service';
+import { UICommonModule } from 'xforge-common/ui-common.module';
+import { XForgeCommonModule } from 'xforge-common/xforge-common.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';

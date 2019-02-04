@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { instance, mock } from 'ts-mockito';
 
-import { AuthService } from '@xforge-common/auth.service';
+import { AuthService } from 'xforge-common/auth.service';
 import { ParatextService } from './paratext.service';
 
 describe('ParatextService', () => {

@@ -5,9 +5,9 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
-import { IdentityService } from '@identity/identity.service';
-import { LocationService } from '@xforge-common/location.service';
-import { UICommonModule } from '@xforge-common/ui-common.module';
+import { LocationService } from 'xforge-common/location.service';
+import { UICommonModule } from 'xforge-common/ui-common.module';
+import { IdentityService } from '../identity.service';
 import { ForgotPasswordComponent } from './forgot-password.component';
 
 class TestEnvironment {
