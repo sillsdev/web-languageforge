@@ -1,9 +1,9 @@
 <?php
 
-use Api\Model\Shared\PasswordModel;
+use Api\Model\Shared\UserModelWithPassword;
 use PHPUnit\Framework\TestCase;
 
-class PasswordModelTest extends TestCase
+class UserModelWithPasswordTest extends TestCase
 {
     public function testChangePassword_PasswordChanged()
     {
@@ -11,7 +11,7 @@ class PasswordModelTest extends TestCase
         $environ = new MongoTestEnvironment();
         $environ->clean();
         $userId = $environ->createUser('test', 'test user', 'user@me.com');
-        $passwordModel = new PasswordModel($userId);
+        $passwordModel = new UserModelWithPassword($userId);
         $someRandomPassword = '$2a$07$zLvg2ereYSEPMGoGttzxrenCCUykFpp6eNTAc.C/NDQPx7WkvUvWa'; // bcrypt for 'blahblah'
         $passwordModel->password = $someRandomPassword;
         $passwordModel->write();
@@ -22,7 +22,7 @@ class PasswordModelTest extends TestCase
         $passwordModel->write();
 
         // assert that the password was changed correctly
-        $passwordModel2 = new PasswordModel($userId);
+        $passwordModel2 = new UserModelWithPassword($userId);
         $this->assertTrue($passwordModel2->verifyPassword($password));
     }
 
@@ -31,7 +31,7 @@ class PasswordModelTest extends TestCase
         $environ = new MongoTestEnvironment();
         $environ->clean();
         $userId = $environ->createUser('test', 'test user', 'user@me.com');
-        $passwordModel = new PasswordModel($userId);
+        $passwordModel = new UserModelWithPassword($userId);
         $passwordModel->write();
 
         $this->assertFalse($passwordModel->passwordExists());
@@ -42,7 +42,7 @@ class PasswordModelTest extends TestCase
         $environ = new MongoTestEnvironment();
         $environ->clean();
         $userId = $environ->createUser('test', 'test user', 'user@me.com');
-        $passwordModel = new PasswordModel($userId);
+        $passwordModel = new UserModelWithPassword($userId);
         $someRandomPassword = '$2a$07$zLvg2ereYSEPMGoGttzxrenCCUykFpp6eNTAc.C/NDQPx7WkvUvWa'; // bcrypt for 'blahblah'
         $passwordModel->password = $someRandomPassword;
         $passwordModel->write();

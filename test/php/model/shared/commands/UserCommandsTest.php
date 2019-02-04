@@ -4,10 +4,10 @@ use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\UserCommands;
-use Api\Model\Shared\PasswordModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
+use Api\Model\Shared\UserModelWithPassword;
 use PHPUnit\Framework\TestCase;
 
 class MockUserCommandsDelivery implements DeliveryInterface
@@ -69,18 +69,21 @@ class UserCommandsTest extends TestCase
         UserCommands::deleteUsers(null);
     }
 
+    /** @throws Exception */
     public function testBanUser_NoId_Exception()
     {
         $this->expectException(Exception::class);
         UserCommands::banUser(null);
     }
 
+    /** @throws Exception */
     public function testBanUser_BadId_Exception()
     {
         $this->expectException(Exception::class);
         UserCommands::banUser('notAnId');
     }
 
+    /** @throws Exception */
     public function testBanUser_UserNotActive()
     {
         // setup parameters
@@ -94,6 +97,7 @@ class UserCommandsTest extends TestCase
         $this->assertFalse($user->active);
     }
 
+    /** @throws Exception */
     public function testUpdateUserProfile_OtherUsername_FalseNoUpdate()
     {
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
@@ -112,6 +116,7 @@ class UserCommandsTest extends TestCase
         $this->assertNotEquals($params['avatar_ref'], $zed->avatar_ref);
     }
 
+    /** @throws Exception */
     public function testUpdateUserProfile_OtherEmail_FalseNoUpdate()
     {
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
@@ -129,6 +134,7 @@ class UserCommandsTest extends TestCase
         $this->assertNotEquals($params['email'], $zed->email);
     }
 
+    /** @throws Exception */
     public function testUpdateUserProfile_OtherUsernameOtherEmail_False()
     {
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
@@ -146,6 +152,7 @@ class UserCommandsTest extends TestCase
         $this->assertNotEquals($params['email'], $zed->email);
     }
 
+    /** @throws Exception */
     public function testUpdateUserProfile_NewEmail_IdEmailChanged()
     {
         $zedId = self::$environ->createUser('zeduser', 'zed user','zed@example.com');
@@ -161,6 +168,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals('joe@smith.com', $zed->email);
     }
 
+    /** @throws Exception */
     public function testUpdateUserProfile_NewUsernameEmail_LoginUsernameEmailChanged()
     {
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
@@ -176,6 +184,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals('joe@smith.com', $zed->email);
     }
 
+    /** @throws Exception */
     public function testUpdateUserProfile_SetLangCode_LangCodeSet()
     {
         // setup parameters
@@ -195,6 +204,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals($newUserId, $userId);
     }
 
+    /** @throws Exception */
     public function testUpdateUserProfile_SetLangCodeOnly_LangCodeSet()
     {
         // setup parameters
@@ -334,6 +344,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals('emailExists', UserCommands::checkUniqueIdentity($zedUser, 'zedUser', 'JOE@SMITH.COM'));
     }
 
+    /** @throws Exception */
     public function testCreateUser_NewUser_NotFalse()
     {
         // setup parameters
@@ -346,6 +357,7 @@ class UserCommandsTest extends TestCase
         $this->assertNotFalse('login', UserCommands::createUser($params, self::$environ->website));
     }
 
+    /** @throws Exception */
     public function testCreateUser_SameUser_SameID()
     {
         $params = [
@@ -357,6 +369,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals($userId, UserCommands::createUser($params, self::$environ->website));
     }
 
+    /** @throws Exception */
     public function testCreateUser_EmailInUse_False()
     {
         // setup parameters
@@ -371,6 +384,7 @@ class UserCommandsTest extends TestCase
         $this->assertFalse(UserCommands::createUser($params, self::$environ->website));
     }
 
+    /** @throws Exception */
     public function testCreateSimple_CreateUser_PasswordAndJoinProject()
     {
         // setup parameters: username and project
@@ -396,6 +410,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals(SF_TESTPROJECT, $userProject['projectName']);
     }
 
+    /** @throws Exception */
     public function testCreateSimple_UsernameExist_Exception()
     {
         $this->expectException(Exception::class);
@@ -414,6 +429,7 @@ class UserCommandsTest extends TestCase
         UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
     }
 
+    /** @throws Exception */
     public function testRegister_NoProjectCode_UserInNoProjects()
     {
         $validCode = 'validCode';
@@ -438,6 +454,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals(0, $user->listProjects(self::$environ->website->domain)->count);
     }
 
+    /** @throws Exception */
     public function testRegister_InvalidCaptcha_CaptchaFail()
     {
         $validCode = 'validCode';
@@ -458,6 +475,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals($result, 'captchaFail');
     }
 
+    /** @throws Exception */
     public function testRegister_EmailInUsePasswordExists_EmailNotAvailable()
     {
         // setup parameters: user 'test1'
@@ -498,6 +516,7 @@ class UserCommandsTest extends TestCase
         $takenEmail = 'test@example.com';
         $invitedUserId = self::$environ->createUser('test1', 'test1', $takenEmail);
         $invitedUser = new UserModel($invitedUserId);
+        $invitedUser->isInvited = true;
         $invitedUser->active = false;
         $invitedUser->write();
 
@@ -519,6 +538,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals('login', $result);
     }
 
+    /** @throws Exception */
     public function testRegister_NewUser_Login()
     {
         $validCode = 'validCode';
@@ -539,6 +559,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals($result, 'login');
     }
 
+    /** @throws Exception */
     public function testRegister_CrossSiteEnabled_UserHasSiteRole()
     {
         $validCode = 'validCode';
@@ -589,6 +610,7 @@ class UserCommandsTest extends TestCase
         $this->assertEquals('emailNotAvailable', $result);
     }
 
+    /** @throws Exception */
     public function testSendInvite_Register_UserActive()
     {
         $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
@@ -619,6 +641,7 @@ class UserCommandsTest extends TestCase
         $this->assertTrue($joeUser->active);
     }
 
+    /** @throws Exception */
     public function testSendInvite_InvitedUserDoesNotExist_PropertiesFromToBodyOk()
     {
         $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
@@ -641,6 +664,7 @@ class UserCommandsTest extends TestCase
         $this->assertRegExp('/Test Project/', $delivery->content);
     }
 
+    /** @throws Exception */
     public function testSendInvite_InvitedUserExists_PropertiesFromToBodyOk()
     {
         $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
@@ -665,6 +689,7 @@ class UserCommandsTest extends TestCase
         $this->assertRegExp('/Test Project/', $delivery->content);
     }
 
+    /** @throws Exception */
     public function testSendInvite_InvitedUserDoesNotExistAndSendInviteTwice_PropertiesFromToBodyOk()
     {
         $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
@@ -691,6 +716,7 @@ class UserCommandsTest extends TestCase
         $this->assertRegExp('/public\/signup#!\/\?e=' . urlencode($toUser->emailPending) . '/', $delivery->content);
     }
 
+    /** @throws Exception */
     public function testSendInvite_InvitedUserExistsAndSendInviteTwice_EmailNotSent()
     {
         $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
@@ -711,6 +737,7 @@ class UserCommandsTest extends TestCase
         $this->assertEmpty($delivery->content);
     }
 
+    /** @throws Exception */
     public function testChangePassword_SystemAdminChangeOtherUser_Succeeds()
     {
         $adminModel = new UserModel();
@@ -724,8 +751,8 @@ class UserCommandsTest extends TestCase
 
         $this->assertNotEquals($userId, $adminId);
         UserCommands::changePassword($userId, 'somepass', $adminId);
-        $passwordModel = new PasswordModel($userId);
-        $result = $passwordModel->verifyPassword('somepass');
+        $userWithPassword = new UserModelWithPassword($userId);
+        $result = $userWithPassword->verifyPassword('somepass');
         $this->assertTrue($result, 'Could not verify changed password');
     }
 }
