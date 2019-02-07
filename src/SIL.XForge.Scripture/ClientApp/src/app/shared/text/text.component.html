@@ -4,5 +4,8 @@
   [readOnly]="isReadOnly"
   [modules]="modules"
   (onEditorCreated)="onEditorCreated($event)"
+  (onContentChanged)="onContentChanged($event.delta, $event.source)"
+  (onSelectionChanged)="onSelectionChanged()"
+  [ngClass]="{ 'template-editor': !isReadOnly }"
 >
 </quill-editor>

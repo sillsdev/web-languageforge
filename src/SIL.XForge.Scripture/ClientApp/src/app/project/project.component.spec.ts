@@ -2,12 +2,10 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RecordIdentity } from '@orbit/data';
 import { of } from 'rxjs';
 import { instance, mock, when } from 'ts-mockito';
 
-import { QueryResults } from 'xforge-common/json-api.service';
-import { Resource } from 'xforge-common/models/resource';
+import { MapQueryResults } from 'xforge-common/json-api.service';
 import { ProjectService } from 'xforge-common/project.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { SFProject } from '../core/models/sfproject';
@@ -64,18 +62,6 @@ describe('ProjectComponent', () => {
   }));
 });
 
-class TestQueryResults<T> implements QueryResults<T> {
-  constructor(public readonly results: T, public readonly totalPagedCount?: number) {}
-
-  getIncluded<TInclude extends Resource>(identity: RecordIdentity): TInclude {
-    return undefined;
-  }
-
-  getManyIncluded<TInclude extends Resource>(identities: RecordIdentity[]): TInclude[] {
-    return [];
-  }
-}
-
 class TestEnvironment {
   component: ProjectComponent;
   fixture: ComponentFixture<ProjectComponent>;
@@ -106,7 +92,7 @@ class TestEnvironment {
   setupProjectData(): void {
     when(this.mockedProjectService.get('project01')).thenReturn(
       of(
-        new TestQueryResults<SFProject>(
+        new MapQueryResults(
           new SFProject({
             id: 'project01',
             projectName: 'Project 01'

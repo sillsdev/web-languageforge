@@ -20,7 +20,7 @@
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.1" />
-    <PackageReference Include="SIL.Machine.WebApi" Version="2.1.0-4" />
+    <PackageReference Include="SIL.Machine.WebApi" Version="2.1.0-14" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="$(NuGetPackageRoot)sil.machine.webapi\2.1.0-4\contentFiles\any\netstandard2.0\thot-new-model.zip">
+    <Content Update="$(NuGetPackageRoot)sil.machine.webapi\2.1.0-14\contentFiles\any\netstandard2.0\thot-new-model.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

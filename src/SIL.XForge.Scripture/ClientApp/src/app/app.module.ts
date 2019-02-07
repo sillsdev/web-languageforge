@@ -23,6 +23,7 @@ import { ProjectSettingsComponent } from './project-settings/project-settings.co
 import { ProjectComponent } from './project/project.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { SharedModule } from './shared/shared.module';
+import { TranslateModule } from './translate/translate.module';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { SharedModule } from './shared/shared.module';
     // not ready for production yet - 2018-11 IJH
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.pwaTest }), // || environment.production }),
     SharedModule,
+    TranslateModule,
     UICommonModule,
     XForgeCommonModule
   ],

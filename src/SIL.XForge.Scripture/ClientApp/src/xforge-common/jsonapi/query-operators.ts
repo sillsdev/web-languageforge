@@ -238,16 +238,16 @@ function buildFilterParam(source: JSONAPISource, filterSpecifiers: FilterSpecifi
     } else if (filterSpecifier.kind === 'relatedRecord') {
       const relatedRecordFilter = filterSpecifier as RelatedRecordFilterSpecifier;
       if (Array.isArray(relatedRecordFilter.record)) {
-        filters.push({ [relatedRecordFilter.relation]: relatedRecordFilter.record.map(e => e.id).join(',') });
+        filters.push({ [relatedRecordFilter.relation + '.id']: relatedRecordFilter.record.map(e => e.id).join(',') });
       } else {
-        filters.push({ [relatedRecordFilter.relation]: relatedRecordFilter.record.id });
+        filters.push({ [relatedRecordFilter.relation + '.id']: relatedRecordFilter.record.id });
       }
     } else if (filterSpecifier.kind === 'relatedRecords') {
       if (filterSpecifier.op !== 'equal') {
         throw new Error(`Operation "${filterSpecifier.op}" is not supported in JSONAPI for relatedRecords filtering`);
       }
       const relatedRecordsFilter = filterSpecifier as RelatedRecordsFilterSpecifier;
-      filters.push({ [relatedRecordsFilter.relation]: relatedRecordsFilter.records.map(e => e.id).join(',') });
+      filters.push({ [relatedRecordsFilter.relation + '.id']: relatedRecordsFilter.records.map(e => e.id).join(',') });
     } else if (filterSpecifier.kind === 'custom') {
       const customFilter = filterSpecifier as CustomFilterSpecifier;
 

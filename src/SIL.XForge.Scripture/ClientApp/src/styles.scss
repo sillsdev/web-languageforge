@@ -18,6 +18,11 @@ body {
   flex-direction: column;
 }
 
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
 .flex-grow {
   flex: 1 1 auto;
 }

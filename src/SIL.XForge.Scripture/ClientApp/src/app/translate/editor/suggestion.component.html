@@ -1,0 +1,23 @@
+<div class="loading-indicator" *ngIf="isLoading"><span></span> <span></span> <span></span></div>
+<div *ngIf="!isLoading">
+  <span fxLayout="row" class="ql-suggest">
+    <a id="words-link" [routerLink]="" (click)="selectAll()" [ngStyle]="suggestionStyle">{{ words.join(" ") }}</a
+    >&nbsp;&nbsp;
+    <span
+      ><small class="text-muted">{{ confidencePercentage }}%</small></span
+    >&nbsp; <a [routerLink]="" (click)="toggleHelp()"><mdc-icon class="suggestion-help">info</mdc-icon></a>
+  </span>
+  <div class="ql-suggest text-muted" *ngIf="showHelp">
+    <small>Inserting suggestions:</small>
+    <ul>
+      <li>
+        <small><strong>Ctrl + 0</strong> or <strong>click</strong> to insert the entire phrase.</small>
+      </li>
+      <li>
+        <small
+          ><strong>Ctrl + <em>number</em></strong> to insert the first <strong>number</strong> of words.</small
+        >
+      </li>
+    </ul>
+  </div>
+</div>

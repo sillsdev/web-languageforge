@@ -16,7 +16,7 @@ import { TextData } from './text-data';
 
 // All resource, resource ref, and realtime doc types should be added to schema and generated into this config
 export const SFDOMAIN_MODEL_CONFIG: DomainModelConfig = {
-  resources: [SFProject, SFProjectUser, SFUser, SyncJob, Text],
-  resourceRefs: [SFProjectRef, SFProjectUserRef, SFUserRef, SyncJobRef, TextRef],
-  realtimeDocs: [TextData]
+  resourceTypes: [SFProject, SFProjectUser, SFUser, SyncJob, Text],
+  resourceRefTypes: [SFProjectRef, SFProjectUserRef, SFUserRef, SyncJobRef, TextRef],
+  realtimeDataTypes: [TextData]
 };

@@ -7,6 +7,7 @@ using JsonApiDotNetCore.Models;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using NUnit.Framework;
+using SIL.Machine.WebApi.Services;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 using SIL.XForge.Scripture.Models;
@@ -109,7 +110,7 @@ namespace SIL.XForge.Scripture.Services
             using (var env = new TestEnvironment())
             {
                 env.SetUser("user01", SystemRoles.User);
-                var newConfig = new TranslateProjectUserConfig { ConfidenceThreshold = 0.5 };
+                var newConfig = new TranslateProjectUserConfig { SelectedTextRef = "text02" };
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("translate-config"), newConfig }
@@ -124,7 +125,7 @@ namespace SIL.XForge.Scripture.Services
                 SFProjectUserResource updatedProjectUser = await env.Service.UpdateAsync(projectUser.Id, projectUser);
 
                 Assert.That(updatedProjectUser, Is.Not.Null);
-                Assert.That(updatedProjectUser.TranslateConfig.ConfidenceThreshold, Is.EqualTo(0.5));
+                Assert.That(updatedProjectUser.TranslateConfig.SelectedTextRef, Is.EqualTo("text02"));
             }
         }
 
@@ -134,7 +135,7 @@ namespace SIL.XForge.Scripture.Services
             using (var env = new TestEnvironment())
             {
                 env.SetUser("user02", SystemRoles.User);
-                var newConfig = new TranslateProjectUserConfig { ConfidenceThreshold = 0.5 };
+                var newConfig = new TranslateProjectUserConfig { SelectedTextRef = "text02" };
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("translate-config"), newConfig }
@@ -161,7 +162,7 @@ namespace SIL.XForge.Scripture.Services
             using (var env = new TestEnvironment())
             {
                 env.SetUser("user02", SystemRoles.SystemAdmin);
-                var newConfig = new TranslateProjectUserConfig { ConfidenceThreshold = 0.5 };
+                var newConfig = new TranslateProjectUserConfig { SelectedTextRef = "text02" };
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("translate-config"), newConfig }
@@ -176,7 +177,7 @@ namespace SIL.XForge.Scripture.Services
                 SFProjectUserResource updatedProjectUser = await env.Service.UpdateAsync(projectUser.Id, projectUser);
 
                 Assert.That(updatedProjectUser, Is.Not.Null);
-                Assert.That(updatedProjectUser.TranslateConfig.ConfidenceThreshold, Is.EqualTo(0.5));
+                Assert.That(updatedProjectUser.TranslateConfig.SelectedTextRef, Is.EqualTo("text02"));
             }
         }
 
@@ -202,7 +203,8 @@ namespace SIL.XForge.Scripture.Services
 
                 var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                     {
-                        await env.Service.UpdateRelationshipsAsync("projectuser01", "project", new List<ResourceObject>());
+                        await env.Service.UpdateRelationshipsAsync("projectuser01", "project",
+                            new List<ResourceObject>());
                     });
 
                 Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status405MethodNotAllowed));
@@ -260,10 +262,11 @@ namespace SIL.XForge.Scripture.Services
                         new UserEntity { Id = "user03", Username = "user03" }
                     });
                 ParatextService = Substitute.For<IParatextService>();
+                var engineService = Substitute.For<IEngineService>();
                 Service = new SFProjectUserService(JsonApiContext, Mapper, UserAccessor, Entities, Users,
                     ParatextService)
                 {
-                    ProjectMapper = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities),
+                    ProjectMapper = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, engineService),
                     UserMapper = new SFUserService(JsonApiContext, Mapper, UserAccessor, Users, Options)
                 };
             }
@@ -293,7 +296,7 @@ namespace SIL.XForge.Scripture.Services
                                 Id = "projectuser01",
                                 UserRef = "user01",
                                 Role = SFProjectRoles.Translator,
-                                TranslateConfig = new TranslateProjectUserConfig { ConfidenceThreshold = 0.2 }
+                                TranslateConfig = new TranslateProjectUserConfig { SelectedTextRef = "text01" }
                             }
                         }
                     },

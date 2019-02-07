@@ -4,10 +4,21 @@ quill-editor {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-
-  .ql-container {
+  div {
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
   }
+}
+
+.highlight-source {
+  background-color: #ffffce;
+}
+
+.template-editor .ql-container.ql-snow {
+  background-color: lightgray;
+}
+
+.template-editor span[data-segment] {
+  background-color: white;
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Services;
+using SIL.Machine.WebApi.Services;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 using SIL.XForge.Scripture.Models;
@@ -14,9 +15,13 @@ namespace SIL.XForge.Scripture.Services
 {
     public class SFProjectService : RepositoryResourceServiceBase<SFProjectResource, SFProjectEntity>
     {
+        private readonly IEngineService _engineService;
+
         public SFProjectService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
-            IRepository<SFProjectEntity> projects) : base(jsonApiContext, mapper, userAccessor, projects)
+            IRepository<SFProjectEntity> projects, IEngineService engineService)
+            : base(jsonApiContext, mapper, userAccessor, projects)
         {
+            _engineService = engineService;
         }
 
         public IResourceMapper<SyncJobResource, SyncJobEntity> SyncJobMapper { get; set; }
@@ -38,6 +43,17 @@ namespace SIL.XForge.Scripture.Services
                     return OneToMany(TextMapper, t => t.ProjectRef);
             }
             return base.GetRelationship(relationshipName);
+        }
+
+        protected override async Task<SFProjectEntity> InsertEntityAsync(SFProjectEntity entity)
+        {
+            entity = await base.InsertEntityAsync(entity);
+            if (entity.TranslateConfig.Enabled)
+            {
+                await _engineService.AddProjectAsync(entity.Id, entity.TranslateConfig.SourceInputSystem.Tag,
+                    entity.InputSystem.Tag, null, null, false);
+            }
+            return entity;
         }
 
         protected override Task CheckCanCreateAsync(SFProjectResource resource)

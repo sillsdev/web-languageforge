@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Record, RecordIdentity } from '@orbit/data';
+import { Record } from '@orbit/data';
 import { clone } from '@orbit/utils';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -39,7 +39,7 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
   }
 
   get(id: string, include?: string[]): QueryObservable<T> {
-    return this.jsonApiService.get(this.identity(id), include);
+    return this.jsonApiService.get<T>(this.identity(id), include);
   }
 
   onlineUpdateAttributes(id: string, attrs: Partial<T>): Promise<T> {

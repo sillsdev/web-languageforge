@@ -1,13 +1,18 @@
 import { DeltaStatic } from 'quill';
-import { Doc } from 'sharedb/lib/client';
 
-import { RealtimeDoc } from 'xforge-common/models/realtime-doc';
+import { RealtimeData } from 'xforge-common/models/realtime-data';
+import { RealtimeDoc } from 'xforge-common/realtime-doc';
+import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { Text } from './text';
 
-export class TextData extends RealtimeDoc<DeltaStatic> {
+export class TextData extends RealtimeData<DeltaStatic> {
   static readonly TYPE = Text.TYPE;
 
-  constructor(doc: Doc, store: LocalForage) {
+  constructor(doc: RealtimeDoc, store: RealtimeOfflineStore) {
     super(TextData.TYPE, doc, store);
+  }
+
+  protected prepareDataForStore(data: DeltaStatic): any {
+    return { ops: data.ops };
   }
 }

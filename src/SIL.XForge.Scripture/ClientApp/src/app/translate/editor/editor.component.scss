@@ -1,0 +1,31 @@
+.ql-suggestions {
+  margin: 0 6px;
+}
+
+.swap-button-container {
+  margin: 0px 3px;
+}
+
+.text-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  label {
+    height: 48px;
+    line-height: 48px;
+    font-size: larger;
+  }
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  position: relative;
+}
+
+app-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}

@@ -121,7 +121,7 @@ class CacheQueryResults<T> implements QueryResults<T> {
   }
 }
 
-class MapQueryResults<T> implements QueryResults<T> {
+export class MapQueryResults<T> implements QueryResults<T> {
   private readonly map: Dict<Map<string, Resource>> = {};
 
   constructor(public readonly results: T, public readonly totalPagedCount?: number, included?: Resource[]) {
@@ -328,12 +328,12 @@ export class JsonApiService {
    *
    * @template T The resource type.
    * @param {string} type The resource type.
-   * @param {GetAllParameters} parameters Optional. Filtering, sorting, and paging parameters.
+   * @param {GetAllParameters<T>} parameters Optional. Filtering, sorting, and paging parameters.
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
    * in the results from the server.
    * @returns {QueryObservable<T[]>} The live query observable.
    */
-  getAll<T extends Resource>(type: string, parameters?: GetAllParameters, include?: string[]): QueryObservable<T[]> {
+  getAll<T extends Resource>(type: string, parameters?: GetAllParameters<T>, include?: string[]): QueryObservable<T[]> {
     return this.storeQuery(
       q => this.getAllQuery(q, type, parameters),
       q => this.getAllQuery(q, type, parameters, false),
@@ -491,14 +491,14 @@ export class JsonApiService {
    *
    * @template T The resource type.
    * @param {string} type The resource type.
-   * @param {GetAllParameters} parameters Optional. Filtering, sorting, and paging parameters.
+   * @param {GetAllParameters<T>} parameters Optional. Filtering, sorting, and paging parameters.
    * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
    * in the results from the server.
    * @returns {QueryObservable<T[]>} The query observable.
    */
   onlineGetAll<T extends Resource>(
     type: string,
-    parameters?: GetAllParameters,
+    parameters?: GetAllParameters<T>,
     include?: string[]
   ): QueryObservable<T[]> {
     return this.onlineStoreQuery(q => this.getAllQuery(q, type, parameters), include);
@@ -868,9 +868,10 @@ export class JsonApiService {
         queryRecord = findRelated.record;
         queryRelationship = findRelated.relationship;
         const record = this.store.cache.records(queryRecord.type).get(queryRecord.id);
-        const related = deepGet(record, ['relationships', queryRelationship, 'data']) as
-          | RecordIdentity
-          | RecordIdentity[];
+        const related =
+          record == null
+            ? null
+            : (deepGet(record, ['relationships', queryRelationship, 'data']) as RecordIdentity | RecordIdentity[]);
         if (related != null) {
           if (related instanceof Array) {
             queryRelated = related;
@@ -954,7 +955,7 @@ export class JsonApiService {
     const resource = this.newResource(record.type);
     resource.id = record.id;
     if (record.attributes != null) {
-      extend(resource, record.attributes);
+      extend(resource, clone(record.attributes));
     }
     if (record.relationships != null) {
       for (const relName in record.relationships) {

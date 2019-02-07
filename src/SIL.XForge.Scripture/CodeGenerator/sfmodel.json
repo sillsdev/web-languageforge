@@ -256,26 +256,16 @@
       "description": "\r\n--- Generated Interface",
       "additionalProperties": false,
       "properties": {
-        "ConfidenceThreshold": {
-          "type": "number",
-          "format": "double"
-        },
-        "HasConfidenceOverride": {
+        "IsTargetTextRight": {
           "type": "boolean"
         },
-        "IsDocumentOrientationTargetRight": {
-          "type": "boolean"
-        },
-        "IsFormattingOptionsShown": {
-          "type": "boolean"
-        },
-        "SelectedDocumentSetId": {
+        "SelectedTextRef": {
           "type": [
             "null",
             "string"
           ]
         },
-        "SelectedSegmentRef": {
+        "SelectedSegment": {
           "type": [
             "null",
             "string"
