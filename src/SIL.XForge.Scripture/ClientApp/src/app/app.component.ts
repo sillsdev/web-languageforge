@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { AuthService } from 'xforge-common/auth.service';
 import { LocationService } from 'xforge-common/location.service';
+import { NoticeService } from 'xforge-common/notice.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { SFUser } from './core/models/sfuser';
 import { SFUserService } from './core/sfuser.service';
@@ -26,7 +27,8 @@ export class AppComponent extends SubscriptionDisposable implements OnInit {
     private readonly router: Router,
     private readonly authService: AuthService,
     private readonly locationService: LocationService,
-    private readonly sfUserService: SFUserService
+    private readonly sfUserService: SFUserService,
+    private readonly noticeService: NoticeService
   ) {
     super();
   }
@@ -40,6 +42,10 @@ export class AppComponent extends SubscriptionDisposable implements OnInit {
 
   get isLoggedIn(): Promise<boolean> {
     return this.authService.isLoggedIn;
+  }
+
+  get isLoading(): boolean {
+    return this.noticeService.isLoading;
   }
 
   logOut(): void {

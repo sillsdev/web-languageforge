@@ -51,7 +51,7 @@
     "one-line": [true, "check-open-brace", "check-catch", "check-else", "check-whitespace"],
     "prefer-const": true,
     "radix": true,
-    "semicolon": [true, "always"],
+    "semicolon": [true, "always", "strict-bound-class-methods"],
     "triple-equals": [true, "allow-null-check"],
     "typedef-whitespace": [
       true,

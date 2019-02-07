@@ -277,9 +277,9 @@ namespace SIL.XForge.Scripture.CodeGenerator
             imports += $"import {{ TextData }} from './text-data';{Environment.NewLine}";
 
             var config = $"export const SFDOMAIN_MODEL_CONFIG: DomainModelConfig = {{{Environment.NewLine}"
-                       + $" resources: [ {string.Join($",{Environment.NewLine}    ", importTypes.ToArray())} ],{Environment.NewLine}"
-                       + $" resourceRefs: [ {string.Join($",{Environment.NewLine}    ", (from t in importTypes select t + "Ref").ToArray())} ],{Environment.NewLine}"
-                       + " realtimeDocs: [ TextData ]" // TODO: Generate?
+                       + $" resourceTypes: [ {string.Join($",{Environment.NewLine}    ", importTypes.ToArray())} ],{Environment.NewLine}"
+                       + $" resourceRefTypes: [ {string.Join($",{Environment.NewLine}    ", (from t in importTypes select t + "Ref").ToArray())} ],{Environment.NewLine}"
+                       + " realtimeDataTypes: [ TextData ]" // TODO: Generate?
                        + "};";
             var fileContents = $"{classComment}{Environment.NewLine}" +
                                $"{imports}{Environment.NewLine}" +

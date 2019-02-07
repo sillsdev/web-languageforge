@@ -1,15 +1,5 @@
 import Parchment from 'parchment';
-import Quill, {
-  DeltaOperation,
-  Module,
-  Picker,
-  QuillOptionsStatic,
-  RangeStatic,
-  SnowTheme,
-  Theme,
-  Toolbar,
-  Tooltip
-} from 'quill';
+import Quill, { DeltaOperation, Module, Picker, QuillOptionsStatic, RangeStatic, SnowTheme, Toolbar } from 'quill';
 
 class UsxFormat {
   static readonly KEYS = new Set<string>(['style', 'altnumber', 'pubnumber', 'caller', 'closed']);
@@ -24,10 +14,6 @@ class UsxFormat {
 class Note {
   index: number;
   delta: { ops: DeltaOperation[] };
-}
-
-export interface SuggestionsTheme extends Theme {
-  suggestionsTooltip: Tooltip;
 }
 
 export type DropFunction = (file: File, editor: Quill, event: DragEvent | ClipboardEvent) => void;
@@ -220,100 +206,6 @@ export function registerScripture(): void {
     scope: Parchment.Scope.INLINE
   });
 
-  // Add a suggest tooltip to Quill
-  class SuggestionsTooltip implements Tooltip {
-    quill: Quill;
-    boundsContainer: HTMLElement;
-    root: HTMLElement;
-
-    private top: number;
-
-    constructor(quill: Quill, boundsContainer: HTMLElement) {
-      this.quill = quill;
-      this.boundsContainer = boundsContainer || document.body;
-      this.root = quill.addContainer('ql-suggest-tooltip');
-      if (this.quill.root === this.quill.scrollingContainer) {
-        this.quill.root.addEventListener('scroll', () => {
-          this.updateVisibility();
-        });
-      }
-      this.hide();
-    }
-
-    hide(): void {
-      this.root.classList.add('ql-hidden');
-    }
-
-    position(reference: any): number {
-      const left = reference.left;
-      // root.scrollTop should be 0 if scrollContainer !== root
-      this.top = reference.bottom + this.quill.root.scrollTop;
-      this.root.style.left = left + 'px';
-      this.root.style.top = this.top + 'px';
-      this.root.classList.remove('ql-flip');
-      const containerBounds = this.boundsContainer.getBoundingClientRect();
-      const rootBounds = this.root.getBoundingClientRect();
-      let shift = 0;
-      if (rootBounds.right > containerBounds.right) {
-        shift = containerBounds.right - rootBounds.right;
-        this.root.style.left = left + shift + 'px';
-      }
-      if (rootBounds.left < containerBounds.left) {
-        shift = containerBounds.left - rootBounds.left;
-        this.root.style.left = left + shift + 'px';
-      }
-      if (rootBounds.bottom > containerBounds.bottom) {
-        const height = rootBounds.bottom - rootBounds.top;
-        const verticalShift = reference.bottom - reference.top + height;
-        this.top -= verticalShift;
-        this.root.style.top = this.top + 'px';
-        this.root.classList.add('ql-flip');
-      }
-      this.updateVisibility();
-      return shift;
-    }
-
-    show(): void {
-      this.root.classList.remove('ql-editing');
-      this.root.classList.remove('ql-hidden');
-    }
-
-    private updateVisibility(): void {
-      const marginTop = -this.quill.root.scrollTop;
-      const offsetTop = marginTop + this.top;
-      const offsetBottom = offsetTop + this.root.clientHeight;
-      if (offsetTop < 0 || offsetBottom > this.quill.scrollingContainer.clientHeight) {
-        if (this.root.style.visibility !== 'hidden') {
-          this.root.style.visibility = 'hidden';
-          this.root.style.marginTop = -this.top + 'px';
-        }
-      } else {
-        this.root.style.marginTop = marginTop + 'px';
-        this.root.style.visibility = '';
-      }
-    }
-  }
-
-  class Suggestions extends QuillModule {
-    container: Element;
-
-    constructor(quill: Quill, options: any) {
-      super(quill, options);
-
-      // initially container is sibling of <ng-quill-editor>
-      const elem = quill.container.parentElement.parentElement.parentElement;
-      this.container = elem.querySelector(options.container);
-      const suggestionsTooltip = (quill.theme as SuggestionsTheme).suggestionsTooltip;
-      suggestionsTooltip.root.appendChild(this.container);
-      this.container.addEventListener('click', (event: MouseEvent) => {
-        if ((event.target as HTMLAnchorElement).classList.contains('suggestion-help')) {
-          suggestionsTooltip.show();
-          this.quill.focus();
-        }
-      });
-    }
-  }
-
   interface DropOptions extends QuillOptionsStatic {
     onDrop?: DropFunction;
     onPaste?: PasteFunction;
@@ -390,20 +282,17 @@ export function registerScripture(): void {
   }
 
   // Customize the Snow theme in Quill
-  class SuggestionsSnowTheme extends QuillSnowTheme implements SuggestionsTheme {
+  class MultiEditorSnowTheme extends QuillSnowTheme {
     private static pickers: Picker[];
-
-    suggestionsTooltip: Tooltip;
 
     constructor(quill: Quill, options: QuillOptionsStatic) {
       super(quill, options);
-      this.suggestionsTooltip = new SuggestionsTooltip(this.quill, this.options.bounds as HTMLElement);
     }
 
     extendToolbar(toolbar: any): void {
       if (toolbar.container.classList.contains('ql-snow')) {
         // hook up the update() method for pickers to the editor-change event
-        this.pickers = SuggestionsSnowTheme.pickers;
+        this.pickers = MultiEditorSnowTheme.pickers;
         this.quill.on('editor-change', () => {
           for (const picker of this.pickers) {
             picker.update();
@@ -411,7 +300,7 @@ export function registerScripture(): void {
         });
       } else {
         super.extendToolbar(toolbar);
-        SuggestionsSnowTheme.pickers = this.pickers;
+        MultiEditorSnowTheme.pickers = this.pickers;
       }
     }
   }
@@ -491,8 +380,7 @@ export function registerScripture(): void {
   Quill.register('blots/para', ParaBlock);
   Quill.register('blots/chapter', ChapterEmbed);
   Quill.register('blots/scroll', Scroll, true);
-  Quill.register('modules/suggestions', Suggestions);
   Quill.register('modules/dragAndDrop', DragAndDrop);
   Quill.register('modules/toolbar', MultiEditorToolbar, true);
-  Quill.register('themes/suggestions', SuggestionsSnowTheme);
+  Quill.register('themes/multiEditorSnow', MultiEditorSnowTheme);
 }

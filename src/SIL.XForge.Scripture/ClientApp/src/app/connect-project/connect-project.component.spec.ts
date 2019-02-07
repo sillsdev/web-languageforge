@@ -12,6 +12,7 @@ import {
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
+import { RemoteTranslationEngine } from '@sillsdev/machine';
 import { cold, getTestScheduler } from 'jasmine-marbles';
 import { defer, of } from 'rxjs';
 import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
@@ -26,129 +27,6 @@ import { SFProjectService } from '../core/sfproject.service';
 import { SFUserService } from '../core/sfuser.service';
 import { SyncJobService } from '../core/sync-job.service';
 import { ConnectProjectComponent } from './connect-project.component';
-
-class TestEnvironment {
-  component: ConnectProjectComponent;
-  fixture: ComponentFixture<ConnectProjectComponent>;
-
-  mockedParatextService: ParatextService;
-  mockedRouter: Router;
-  mockedSyncJobService: SyncJobService;
-  mockedSFProjectUserService: SFProjectUserService;
-  mockedSFProjectService: SFProjectService;
-  mockedSFUserService: SFUserService;
-
-  constructor() {
-    this.mockedParatextService = mock(ParatextService);
-    this.mockedRouter = mock(Router);
-    this.mockedSyncJobService = mock(SyncJobService);
-    this.mockedSFProjectUserService = mock(SFProjectUserService);
-    this.mockedSFProjectService = mock(SFProjectService);
-    this.mockedSFUserService = mock(SFUserService);
-
-    when(this.mockedSyncJobService.start(anyString())).thenResolve('job01');
-    const a = new SyncJob({
-      id: 'job01',
-      percentCompleted: 0,
-      state: SyncJobState.PENDING
-    });
-    const b = new SyncJob(a);
-    b.state = SyncJobState.SYNCING;
-    const c = new SyncJob(b);
-    c.percentCompleted = 0.5;
-    const d = new SyncJob(c);
-    d.percentCompleted = 1.0;
-    d.state = SyncJobState.IDLE;
-    when(this.mockedSyncJobService.listen('job01')).thenReturn(cold('-a-b-c-d|', { a, b, c, d }));
-    when(this.mockedSFProjectUserService.onlineCreate(anything(), anything())).thenResolve(
-      new SFProjectUser({ id: 'projectuser01' })
-    );
-    when(this.mockedSFProjectService.onlineCreate(anything())).thenResolve(new SFProject({ id: 'project01' }));
-    when(this.mockedSFUserService.currentUserId).thenReturn('user01');
-
-    TestBed.configureTestingModule({
-      imports: [
-        MatCardModule,
-        MatCheckboxModule,
-        MatOptionModule,
-        MatProgressBarModule,
-        MatSelectModule,
-        ReactiveFormsModule,
-        HttpClientTestingModule,
-        NoopAnimationsModule
-      ],
-      declarations: [ConnectProjectComponent],
-      providers: [
-        { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
-        { provide: Router, useFactory: () => instance(this.mockedRouter) },
-        { provide: SyncJobService, useFactory: () => instance(this.mockedSyncJobService) },
-        { provide: SFProjectUserService, useFactory: () => instance(this.mockedSFProjectUserService) },
-        { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
-        { provide: SFUserService, useFactory: () => instance(this.mockedSFUserService) }
-      ]
-    });
-    this.fixture = TestBed.createComponent(ConnectProjectComponent);
-    this.component = this.fixture.componentInstance;
-  }
-
-  get loadingDiv(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#loading'));
-  }
-
-  get loginButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('.login-button'));
-  }
-
-  get projectSelect(): DebugElement {
-    return this.fixture.debugElement.query(By.css('mat-select[formControlName="project"]'));
-  }
-
-  get submitButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('.submit-button'));
-  }
-
-  get connectProjectForm(): DebugElement {
-    return this.fixture.debugElement.query(By.css('form'));
-  }
-
-  get tasksDiv(): DebugElement {
-    return this.fixture.debugElement.query(By.css('div[formGroupName="tasks"'));
-  }
-
-  get translateCheckbox(): DebugElement {
-    return this.tasksDiv.query(By.css('mat-checkbox[formControlName="translate"'));
-  }
-
-  get sourceProjectSelect(): DebugElement {
-    return this.tasksDiv.query(By.css('mat-select[formControlName="sourceProject"]'));
-  }
-
-  changeSelectValue(select: DebugElement, option: number): void {
-    select.nativeElement.click();
-    this.fixture.detectChanges();
-    flush();
-    const options = select.queryAll(By.css('mat-option'));
-    options[option].nativeElement.click();
-    this.fixture.detectChanges();
-    flush();
-  }
-
-  clickCheckbox(checkbox: DebugElement): void {
-    checkbox.nativeElement.querySelector('input').click();
-    this.fixture.detectChanges();
-    flush();
-  }
-
-  clickSubmitButton(): void {
-    this.clickButton(this.submitButton);
-  }
-
-  private clickButton(button: DebugElement): void {
-    button.nativeElement.click();
-    this.fixture.detectChanges();
-    flush();
-  }
-}
 
 describe('ConnectProjectComponent', () => {
   it('should display login button when PT projects is null', () => {
@@ -254,6 +132,7 @@ describe('ConnectProjectComponent', () => {
 
     env.clickSubmitButton();
     getTestScheduler().flush();
+    flush();
 
     expect(env.component.state).toEqual('connecting');
 
@@ -287,3 +166,132 @@ describe('ConnectProjectComponent', () => {
     verify(env.mockedRouter.navigate(deepEqual(['/home']))).once();
   }));
 });
+
+class TestEnvironment {
+  component: ConnectProjectComponent;
+  fixture: ComponentFixture<ConnectProjectComponent>;
+
+  mockedParatextService: ParatextService;
+  mockedRouter: Router;
+  mockedSyncJobService: SyncJobService;
+  mockedSFProjectUserService: SFProjectUserService;
+  mockedSFProjectService: SFProjectService;
+  mockedSFUserService: SFUserService;
+  mockedRemoteTranslationEngine: RemoteTranslationEngine;
+
+  constructor() {
+    this.mockedParatextService = mock(ParatextService);
+    this.mockedRouter = mock(Router);
+    this.mockedSyncJobService = mock(SyncJobService);
+    this.mockedSFProjectUserService = mock(SFProjectUserService);
+    this.mockedSFProjectService = mock(SFProjectService);
+    this.mockedSFUserService = mock(SFUserService);
+    this.mockedRemoteTranslationEngine = mock(RemoteTranslationEngine);
+
+    when(this.mockedSyncJobService.start(anyString())).thenResolve('job01');
+    const a = new SyncJob({
+      id: 'job01',
+      percentCompleted: 0,
+      state: SyncJobState.PENDING
+    });
+    const b = new SyncJob(a);
+    b.state = SyncJobState.SYNCING;
+    const c = new SyncJob(b);
+    c.percentCompleted = 0.5;
+    const d = new SyncJob(c);
+    d.percentCompleted = 1.0;
+    d.state = SyncJobState.IDLE;
+    when(this.mockedSyncJobService.listen('job01')).thenReturn(cold('-a-b-c-d|', { a, b, c, d }));
+    when(this.mockedSFProjectUserService.onlineCreate(anything(), anything())).thenResolve(
+      new SFProjectUser({ id: 'projectuser01' })
+    );
+    when(this.mockedSFProjectService.onlineCreate(anything())).thenResolve(new SFProject({ id: 'project01' }));
+    when(this.mockedSFUserService.currentUserId).thenReturn('user01');
+    when(this.mockedRemoteTranslationEngine.startTraining()).thenResolve();
+    when(this.mockedSFProjectService.createTranslationEngine(anything())).thenReturn(
+      instance(this.mockedRemoteTranslationEngine)
+    );
+
+    TestBed.configureTestingModule({
+      imports: [
+        MatCardModule,
+        MatCheckboxModule,
+        MatOptionModule,
+        MatProgressBarModule,
+        MatSelectModule,
+        ReactiveFormsModule,
+        HttpClientTestingModule,
+        NoopAnimationsModule
+      ],
+      declarations: [ConnectProjectComponent],
+      providers: [
+        { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
+        { provide: Router, useFactory: () => instance(this.mockedRouter) },
+        { provide: SyncJobService, useFactory: () => instance(this.mockedSyncJobService) },
+        { provide: SFProjectUserService, useFactory: () => instance(this.mockedSFProjectUserService) },
+        { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
+        { provide: SFUserService, useFactory: () => instance(this.mockedSFUserService) }
+      ]
+    });
+    this.fixture = TestBed.createComponent(ConnectProjectComponent);
+    this.component = this.fixture.componentInstance;
+  }
+
+  get loadingDiv(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#loading'));
+  }
+
+  get loginButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('.login-button'));
+  }
+
+  get projectSelect(): DebugElement {
+    return this.fixture.debugElement.query(By.css('mat-select[formControlName="project"]'));
+  }
+
+  get submitButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('.submit-button'));
+  }
+
+  get connectProjectForm(): DebugElement {
+    return this.fixture.debugElement.query(By.css('form'));
+  }
+
+  get tasksDiv(): DebugElement {
+    return this.fixture.debugElement.query(By.css('div[formGroupName="tasks"'));
+  }
+
+  get translateCheckbox(): DebugElement {
+    return this.tasksDiv.query(By.css('mat-checkbox[formControlName="translate"'));
+  }
+
+  get sourceProjectSelect(): DebugElement {
+    return this.tasksDiv.query(By.css('mat-select[formControlName="sourceProject"]'));
+  }
+
+  changeSelectValue(select: DebugElement, option: number): void {
+    select.nativeElement.click();
+    this.fixture.detectChanges();
+    flush();
+    const options = select.queryAll(By.css('mat-option'));
+    options[option].nativeElement.click();
+    this.fixture.detectChanges();
+    flush();
+  }
+
+  clickCheckbox(checkbox: DebugElement): void {
+    checkbox.nativeElement.querySelector('input').click();
+    this.fixture.detectChanges();
+    flush();
+  }
+
+  clickSubmitButton(): void {
+    this.clickButton(this.submitButton);
+  }
+
+  private clickButton(button: DebugElement): void {
+    button.nativeElement.click();
+    this.fixture.detectChanges();
+    flush();
+  }
+}

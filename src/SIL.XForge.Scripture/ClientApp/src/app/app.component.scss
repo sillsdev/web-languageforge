@@ -32,11 +32,16 @@
     .app-content {
       display: flex;
       flex-direction: column;
-      padding: 20px;
-      overflow-y: auto;
       flex: 1;
-      @include media-breakpoint-only(xs) {
-        padding: 3px;
+      > div {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px 20px 14px 20px;
+        @include media-breakpoint-only(xs) {
+          padding: 0px 4px 4px 4px;
+        }
       }
     }
   }

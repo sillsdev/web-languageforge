@@ -7,6 +7,7 @@ using JsonApiDotNetCore.Models;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using NUnit.Framework;
+using SIL.Machine.WebApi.Services;
 using SIL.XForge.Models;
 using SIL.XForge.Scripture.Models;
 using SIL.XForge.Services;
@@ -113,7 +114,8 @@ namespace SIL.XForge.Scripture.Services
             public TestEnvironment()
                 : base("projects")
             {
-                Service = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities);
+                var engineService = Substitute.For<IEngineService>();
+                Service = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, engineService);
             }
 
             public SFProjectService Service { get; }

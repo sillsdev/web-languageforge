@@ -1,0 +1,74 @@
+:host {
+  background-color: #dedede;
+  border: 1px solid darkgray;
+  color: #373a3c;
+  padding: 0.1rem;
+  position: absolute;
+  z-index: 10;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+:host(.hidden) {
+  display: none;
+}
+
+:host(.flip) {
+  transform: translateY(-10px);
+}
+
+.loading-indicator {
+  display: table;
+  padding: 4px 2px;
+
+  span {
+    height: 10px;
+    width: 10px;
+    float: left;
+    margin: 0 1px;
+    background-color: #9e9ea1;
+    display: block;
+    border-radius: 50%;
+    opacity: 0.4;
+    @for $i from 1 through 3 {
+      &:nth-of-type(#{$i}) {
+        animation: 1s blink infinite ($i * 0.3333s);
+      }
+    }
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 1;
+  }
+}
+
+.ql-suggest a:hover {
+  color: #06c;
+  text-decoration: underline;
+}
+
+.ql-suggest a {
+  color: #06c;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  text-decoration: none;
+}
+
+.ql-suggest ul {
+  margin-bottom: 0.3rem;
+}
+
+div.ql-suggest {
+  padding-top: 5px;
+}
+
+.text-muted {
+  opacity: 0.5;
+}
+
+.suggestion-help {
+  font-size: inherit;
+}

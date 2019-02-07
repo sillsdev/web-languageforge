@@ -9,7 +9,9 @@ import { Connection, types } from 'sharedb/lib/client';
 import { environment } from '../environments/environment';
 import { LocationService } from './location.service';
 import { DomainModel } from './models/domain-model';
-import { RealtimeDoc } from './models/realtime-doc';
+import { RealtimeData } from './models/realtime-data';
+import { SharedbRealtimeDoc } from './realtime-doc';
+import { RealtimeOfflineStore } from './realtime-offline-store';
 
 types.register(RichText.type);
 
@@ -19,8 +21,8 @@ types.register(RichText.type);
 export class RealtimeService {
   private readonly ws: ReconnectingWebSocket;
   private readonly connection: Connection;
-  private readonly docs = new Map<RecordIdentity, Promise<any>>();
-  private readonly stores = new Map<string, LocalForage>();
+  private readonly connectedData = new Map<RecordIdentity, Promise<any>>();
+  private readonly stores = new Map<string, RealtimeOfflineStore>();
 
   constructor(private readonly domainModel: DomainModel, private readonly locationService: LocationService) {
     const protocol = this.locationService.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -34,13 +36,13 @@ export class RealtimeService {
     this.connection = new Connection(this.ws);
   }
 
-  connect<T extends RealtimeDoc>(identity: RecordIdentity): Promise<T> {
-    if (!this.docs.has(identity)) {
+  connect<T extends RealtimeData>(identity: RecordIdentity): Promise<T> {
+    if (!this.connectedData.has(identity)) {
       const sharedbDoc = this.connection.get(underscore(identity.type) + '_data', identity.id);
       const store = this.getStore(identity.type);
-      const RealtimeDocType = this.domainModel.getRealtimeDocType(identity.type);
-      const realtimeDoc = new RealtimeDocType(sharedbDoc, store);
-      this.docs.set(
+      const RealtimeDocType = this.domainModel.getRealtimeDataType(identity.type);
+      const realtimeDoc = new RealtimeDocType(new SharedbRealtimeDoc(sharedbDoc), store);
+      this.connectedData.set(
         identity,
         new Promise<any>((resolve, reject) => {
           realtimeDoc.subscribe().then(() => resolve(realtimeDoc), err => reject(err));
@@ -48,17 +50,20 @@ export class RealtimeService {
       );
     }
 
-    return this.docs.get(identity);
+    return this.connectedData.get(identity);
   }
 
-  disconnect(doc: RealtimeDoc): Promise<void> {
-    this.docs.delete(doc);
-    return doc.dispose();
+  disconnect(data: RealtimeData): Promise<void> {
+    this.connectedData.delete(data);
+    return data.dispose();
   }
 
-  private getStore(type: string): LocalForage {
+  private getStore(type: string): RealtimeOfflineStore {
     if (!this.stores.has(type)) {
-      this.stores.set(type, localforage.createInstance({ name: 'xforge-realtime', storeName: type }));
+      this.stores.set(
+        type,
+        new RealtimeOfflineStore(localforage.createInstance({ name: 'xforge-realtime', storeName: type }))
+      );
     }
     return this.stores.get(type);
   }

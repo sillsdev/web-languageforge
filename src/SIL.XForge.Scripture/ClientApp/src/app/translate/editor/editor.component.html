@@ -1,0 +1,38 @@
+<div [fxLayout]="isTargetTextRight ? 'row' : 'row-reverse'" class="flex-grow">
+  <div class="text-area">
+    <label>{{ sourceLabel }}</label>
+    <div class="text-container">
+      <app-text
+        #source
+        [textId]="textId"
+        textType="source"
+        [isReadOnly]="true"
+        [highlightSegment]="target.hasFocus"
+        (loaded)="onTextLoaded('source')"
+      ></app-text>
+    </div>
+  </div>
+  <div class="swap-button-container">
+    <button mdc-icon-button icon="swap_horiz" (click)="isTargetTextRight = !isTargetTextRight"></button>
+  </div>
+  <div class="text-area">
+    <label>{{ targetLabel }}</label>
+    <div class="text-container">
+      <app-text
+        #target
+        [textId]="textId"
+        textType="target"
+        [isReadOnly]="false"
+        (updated)="onTargetUpdated($event.segment, $event.delta, $event.prevSegment)"
+        (loaded)="onTextLoaded('target')"
+      ></app-text>
+      <app-suggestion
+        [show]="showSuggestion"
+        [words]="suggestionWords"
+        [confidence]="suggestionConfidence"
+        [text]="target"
+        (selected)="insertSuggestion($event)"
+      ></app-suggestion>
+    </div>
+  </div>
+</div>

@@ -71,7 +71,7 @@ export class ProjectComponent extends SubscriptionDisposable {
         })
       ),
       projectData => {
-        if (projectData.results) {
+        if (projectData) {
           this.project = projectData.results;
           this.loadQuestions();
         } else {

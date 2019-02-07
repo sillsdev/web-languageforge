@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { map } from 'rxjs/operators';
 
-import { JsonApiService } from 'xforge-common/json-api.service';
+import { JsonApiService, QueryObservable } from 'xforge-common/json-api.service';
 import { RealtimeService } from 'xforge-common/realtime.service';
 import { ResourceService } from 'xforge-common/resource.service';
 import { Text } from './models/text';
@@ -22,6 +23,10 @@ export class TextService extends ResourceService {
 
   disconnect(textData: TextData): Promise<void> {
     return this.realtimeService.disconnect(textData);
+  }
+
+  get(id: string, include?: string[]): QueryObservable<Text> {
+    return this.jsonApiService.get(this.identity(id), include);
   }
 
   private getTextDataId(id: string, textType: TextType): string {
