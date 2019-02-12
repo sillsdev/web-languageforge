@@ -112,9 +112,10 @@ export class ProjectComponent extends SubscriptionDisposable {
     this.activeQuestion = question;
 
     // Only mark as read if it has been viewed for a set period of time and not an accidental click
-    this.subscribe(timer(1000), response => {
+    const readTimer = this.subscribe(timer(1000), () => {
       if (this.activeQuestion.id === question.id) {
         question.markAsRead();
+        readTimer.unsubscribe();
       }
     });
   }

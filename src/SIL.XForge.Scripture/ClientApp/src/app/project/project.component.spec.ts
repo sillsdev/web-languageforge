@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecordIdentity } from '@orbit/data';
@@ -33,43 +33,35 @@ describe('ProjectComponent', () => {
     expect(question.classes['mdc-list-item--activated']).toBeTruthy();
   });
 
-  it('question status change to read', done => {
+  it('question status change to read', fakeAsync(() => {
     const question = env.selectQuestion(2);
     // Wait for the 1 second time out before the state of the question changes
-    setTimeout(function() {
-      env.fixture.detectChanges();
-      expect(question.classes['question-read']).toBeTruthy();
-      done();
-    }, 1001);
-  });
+    tick(1000);
+    env.fixture.detectChanges();
+    expect(question.classes['question-read']).toBeTruthy();
+  }));
 
-  it('question status change to answered', done => {
+  it('question status change to answered', fakeAsync(() => {
     let question = env.selectQuestion(2);
     // Wait for the 1 second time out before the state of the question changes
-    setTimeout(function() {
-      question = env.selectQuestion(1);
-      question = env.selectQuestion(2);
-      setTimeout(function() {
-        env.fixture.detectChanges();
-        expect(question.classes['question-answered']).toBeTruthy();
-        done();
-      }, 1001);
-    }, 1001);
-  });
+    tick(1000);
+    question = env.selectQuestion(1);
+    question = env.selectQuestion(2);
+    tick(1000);
+    env.fixture.detectChanges();
+    expect(question.classes['question-answered']).toBeTruthy();
+  }));
 
-  it('question shows answers icon and total', done => {
+  it('question shows answers icon and total', fakeAsync(() => {
     let question = env.selectQuestion(2);
     // Wait for the 1 second time out before the state of the question changes
-    setTimeout(function() {
-      question = env.selectQuestion(1);
-      question = env.selectQuestion(2);
-      setTimeout(function() {
-        env.fixture.detectChanges();
-        expect(question.query(By.css('.view-answers span')).nativeElement.textContent).toEqual('1');
-        done();
-      }, 1001);
-    }, 1001);
-  });
+    tick(1000);
+    question = env.selectQuestion(1);
+    question = env.selectQuestion(2);
+    tick(1000);
+    env.fixture.detectChanges();
+    expect(question.query(By.css('.view-answers span')).nativeElement.textContent).toEqual('1');
+  }));
 });
 
 class TestQueryResults<T> implements QueryResults<T> {
