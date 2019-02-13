@@ -241,6 +241,10 @@ Vagrant.configure("2") do |config|
     sudo adduser vagrant www-data
     sudo chown vagrant:www-data -R /var/lib/languageforge
     chmod u=rwX,g=rwX,o=rX -R /var/lib/languageforge
+	
+    sudo mkdir -p /var/lib/xforge/avatars
+    sudo chown vagrant:www-data -R /var/lib/xforge
+    chmod u=rwX,g=rwX,o=rX -R /var/lib/xforge
 
     npm config set prefix /usr/local
 
