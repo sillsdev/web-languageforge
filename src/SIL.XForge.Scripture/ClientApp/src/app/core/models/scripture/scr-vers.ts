@@ -1,10 +1,22 @@
 import { ScrVersType } from '../sfdomain-model.generated';
 import { BookSet } from './book-set';
 
+/**
+ * Accessor for getting information about a versification. This class has a small memory footprint so multiple ScrVers
+ * objects can be created that point to the same versification; useful for deserialization of versification information.
+ *
+ * Partially converted from https://github.com/sillsdev/libpalaso/blob/master/SIL.Scripture/ScrVers.cs
+ */
 export class ScrVers {
+  static readonly Original: ScrVers = new ScrVers(ScrVersType.Original);
+  static readonly Septuagint: ScrVers = new ScrVers(ScrVersType.Septuagint);
+  static readonly Vulgate: ScrVers = new ScrVers(ScrVersType.Vulgate);
   static readonly English: ScrVers = new ScrVers(ScrVersType.English);
+  static readonly RussianProtestant: ScrVers = new ScrVers(ScrVersType.RussianProtestant);
+  static readonly RussianOrthodox: ScrVers = new ScrVers(ScrVersType.RussianOrthodox);
 
-  private _type: ScrVersType | string;
+  private _type: ScrVersType;
+  // private versInfo: Versification;
 
   name?: string;
   fullPath?: string;
@@ -14,11 +26,21 @@ export class ScrVers {
   baseVersification?: ScrVers;
   scriptureBooks?: BookSet;
 
-  constructor(type?: ScrVersType | string) {
-    this._type = type;
+  constructor(name?: string);
+  constructor(type?: ScrVersType) {
+    if (name != null) {
+      this.name = name;
+    } else if (type != null) {
+      this._type = type;
+    } else {
+      throw new Error('Argument null');
+    }
   }
 
   get type() {
     return this._type;
   }
+
+  clearExcludedVerses() {}
+  clearVerseSegments() {}
 }

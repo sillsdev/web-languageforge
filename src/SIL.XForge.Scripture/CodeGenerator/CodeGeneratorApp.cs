@@ -43,7 +43,6 @@ namespace SIL.XForge.Scripture.CodeGenerator
             HandWrittenBaseClasses["ProjectUserResourceRef"] = "xforge-common/models/project-user";
             HandWrittenBaseClasses["ProjectDataResource"] = "xforge-common/models/project-data";
             HandWrittenBaseClasses["ProjectDataResourceRef"] = "xforge-common/models/project-data";
-            HandWrittenBaseClasses["VerseRefData"] = "./verse-ref-data";
 
             TypeScriptInterfaces = new List<string>
             {
@@ -52,7 +51,8 @@ namespace SIL.XForge.Scripture.CodeGenerator
                 "TranslateConfig",
                 "InputSystem",
                 "TranslateMetrics",
-                "TranslateProjectUserConfig"
+                "TranslateProjectUserConfig",
+                "VerseRefData"
             };
         }
         public static void Main(string[] args)

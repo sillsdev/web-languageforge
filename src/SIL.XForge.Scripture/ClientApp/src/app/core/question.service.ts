@@ -7,20 +7,20 @@ import { Question } from './models/question';
 @Injectable({
   providedIn: 'root'
 })
-export class QuestionService<T extends Question = Question> extends ResourceService {
+export class QuestionService extends ResourceService {
   constructor(jsonApiService: JsonApiService) {
     super(Question.TYPE, jsonApiService);
   }
 
-  getAll(parameters?: GetAllParameters<T>, include?: string[]): QueryObservable<T[]> {
+  getAll(parameters?: GetAllParameters, include?: string[]): QueryObservable<Question[]> {
     return this.jsonApiService.getAll(this.type, parameters, include);
   }
 
-  get(id: string, include?: string[]): QueryObservable<T> {
+  get(id: string, include?: string[]): QueryObservable<Question> {
     return this.jsonApiService.get(this.identity(id), include);
   }
 
-  create(question: T): Promise<T> {
+  create(question: Question): Promise<Question> {
     return this.jsonApiService.create(question);
   }
 }

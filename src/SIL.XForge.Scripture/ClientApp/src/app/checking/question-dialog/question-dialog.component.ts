@@ -1,6 +1,7 @@
 import { MDC_DIALOG_DATA, MdcDialogRef } from '@angular-mdc/web';
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { SFValidators } from 'src/app/shared/sfvalidators';
 
 export interface QuestionDialogData {
   newMode: boolean;
@@ -19,8 +20,8 @@ export interface QuestionDialogResult {
 export class QuestionDialogComponent {
   modeLabel = this.data && this.data.newMode ? 'New' : 'Edit';
   questionForm: FormGroup = new FormGroup({
-    scriptureStart: new FormControl('', [Validators.required]),
-    scriptureEnd: new FormControl(),
+    scriptureStart: new FormControl('', [Validators.required, SFValidators.verseStr]),
+    scriptureEnd: new FormControl('', [SFValidators.verseStr]),
     questionText: new FormControl('', [Validators.required])
   });
 

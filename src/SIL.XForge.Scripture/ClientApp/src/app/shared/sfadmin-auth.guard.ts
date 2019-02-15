@@ -14,14 +14,15 @@ export class SFAdminAuthGuard implements CanActivate {
   constructor(private readonly authGuard: AuthGuard, private readonly userService: UserService) {}
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.authGuard.canActivate(next, state).pipe(switchMap(() => this.allowTransition()));
+    const projectId = 'id' in next.params ? next.params['id'] : '';
+    return this.authGuard.canActivate(next, state).pipe(switchMap(() => this.allowTransition(projectId)));
   }
 
-  allowTransition(): Observable<boolean> {
+  allowTransition(projectId: string): Observable<boolean> {
     return this.authGuard.allowTransition().pipe(
       switchMap(isLoggedIn => {
         if (isLoggedIn) {
-          return this.userService.hasCurrentUserProjectRole(SFProjectRoles.ParatextAdministrator);
+          return this.userService.hasCurrentUserProjectRole(projectId, SFProjectRoles.ParatextAdministrator);
         }
         return of(false);
       })
