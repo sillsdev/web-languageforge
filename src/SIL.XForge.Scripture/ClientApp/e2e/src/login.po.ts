@@ -1,4 +1,4 @@
-import { browser, by, element, ExpectedConditions, promise, protractor } from 'protractor';
+import { browser, by, element, ExpectedConditions, protractor } from 'protractor';
 
 import { AppPage } from './app.po';
 

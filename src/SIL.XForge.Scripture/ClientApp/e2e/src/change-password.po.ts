@@ -7,11 +7,13 @@ export class ChangePasswordPage {
   changePasswordButton = element(by.id('btnChangePassword'));
   newPasswordInput = element(by.id('newPassword'));
   confirmPasswordInput = element(by.id('confirmPassword'));
-  successMessage = element(by.css('div simple-snack-bar'));
   warnPasswordNotMatch = element(by.id('passwordNotMatch'));
 
   async get() {
     await browser.get(ChangePasswordPage.baseUrl + '/change-password');
-    await browser.wait(ExpectedConditions.visibilityOf(this.newPasswordInput), this.constants.conditionTimeout);
+    await browser.wait(
+      ExpectedConditions.elementToBeClickable(this.changePasswordButton),
+      this.constants.conditionTimeout
+    );
   }
 }

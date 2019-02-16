@@ -22,7 +22,7 @@
         <div mdcMenuSurfaceAnchor #userMenuAnchor>
           <a mdc-list-item (click)="userMenu.open = !userMenu.open">
             <mdc-icon mdcTopAppBarActionItem>
-              <app-avatar [user]="currentUser" size="32" [round]="true"></app-avatar>
+              <app-avatar id="avatarId" [user]="currentUser" size="32" [round]="true"></app-avatar>
             </mdc-icon>
           </a>
           <mdc-menu #userMenu [anchorCorner]="'bottomStart'" [anchorElement]="userMenuAnchor">
@@ -38,8 +38,8 @@
                 <mdc-list-item *ngIf="currentUser.isSystemAdmin" routerLink="/system-administration">
                   System Administration
                 </mdc-list-item>
-                <mdc-list-item routerLink="/my-account">My Account</mdc-list-item>
-                <mdc-list-item (click)="logOut()">Log out</mdc-list-item>
+                <mdc-list-item name="myAccount" routerLink="/my-account">My Account</mdc-list-item>
+                <mdc-list-item name="logout" (click)="logOut()">Log out</mdc-list-item>
               </mdc-list>
             </mdc-list-group>
           </mdc-menu>
