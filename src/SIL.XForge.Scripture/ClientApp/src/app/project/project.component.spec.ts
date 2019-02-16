@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecordIdentity } from '@orbit/data';
@@ -22,6 +23,45 @@ describe('ProjectComponent', () => {
   it('can load a project', () => {
     expect(env.getProjectHeading()).toEqual('Project 01');
   });
+
+  it('questions are displaying', () => {
+    expect(env.getQuestions().children.length).toEqual(2);
+  });
+
+  it('can select a question', () => {
+    const question = env.selectQuestion(1);
+    expect(question.classes['mdc-list-item--activated']).toBeTruthy();
+  });
+
+  it('question status change to read', fakeAsync(() => {
+    const question = env.selectQuestion(2);
+    // Wait for the 1 second time out before the state of the question changes
+    tick(1000);
+    env.fixture.detectChanges();
+    expect(question.classes['question-read']).toBeTruthy();
+  }));
+
+  it('question status change to answered', fakeAsync(() => {
+    let question = env.selectQuestion(2);
+    // Wait for the 1 second time out before the state of the question changes
+    tick(1000);
+    question = env.selectQuestion(1);
+    question = env.selectQuestion(2);
+    tick(1000);
+    env.fixture.detectChanges();
+    expect(question.classes['question-answered']).toBeTruthy();
+  }));
+
+  it('question shows answers icon and total', fakeAsync(() => {
+    let question = env.selectQuestion(2);
+    // Wait for the 1 second time out before the state of the question changes
+    tick(1000);
+    question = env.selectQuestion(1);
+    question = env.selectQuestion(2);
+    tick(1000);
+    env.fixture.detectChanges();
+    expect(question.query(By.css('.view-answers span')).nativeElement.textContent).toEqual('1');
+  }));
 });
 
 class TestQueryResults<T> implements QueryResults<T> {
@@ -78,5 +118,18 @@ class TestEnvironment {
 
   getProjectHeading(): string {
     return this.fixture.debugElement.query(By.css('h1')).nativeElement.textContent;
+  }
+
+  getQuestions(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#questions-panel .mdc-list-item'));
+  }
+
+  selectQuestion(questionNumber: number): DebugElement {
+    const question = this.fixture.debugElement.query(
+      By.css('#questions-panel .mdc-list-item:nth-child(' + questionNumber + ')')
+    );
+    question.nativeElement.click();
+    this.fixture.detectChanges();
+    return question;
   }
 }
