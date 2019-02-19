@@ -20,6 +20,7 @@ import { DeleteAccountDialogComponent } from './my-account/delete-account-dialog
 import { MyAccountComponent } from './my-account/my-account.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
+import { FontSizeComponent } from './project/font-size/font-size.component';
 import { ProjectComponent } from './project/project.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { SharedModule } from './shared/shared.module';
@@ -37,7 +38,8 @@ import { TranslateModule } from './translate/translate.module';
     RealtimeComponent,
     DeleteAccountDialogComponent,
     ProjectSettingsComponent,
-    ProjectComponent
+    ProjectComponent,
+    FontSizeComponent
   ],
   imports: [
     AppRoutingModule,

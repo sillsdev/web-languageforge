@@ -9,6 +9,7 @@ import { MapQueryResults } from 'xforge-common/json-api.service';
 import { ProjectService } from 'xforge-common/project.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { SFProject } from '../core/models/sfproject';
+import { FontSizeComponent } from './font-size/font-size.component';
 import { ProjectComponent } from './project.component';
 
 describe('ProjectComponent', () => {
@@ -116,7 +117,7 @@ class TestEnvironment {
     this.mockedProjectService = mock(ProjectService);
 
     TestBed.configureTestingModule({
-      declarations: [ProjectComponent],
+      declarations: [ProjectComponent, FontSizeComponent],
       imports: [UICommonModule],
       providers: [
         { provide: Router, useFactory: () => instance(this.mockedRouter) },
