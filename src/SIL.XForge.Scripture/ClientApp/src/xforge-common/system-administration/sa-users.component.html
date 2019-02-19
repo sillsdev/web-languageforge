@@ -34,7 +34,7 @@
               <span *ngIf="userRow.projects?.length > 0">
                 {{ userRow.projects?.length }} Projects -
                 <span class="projectsNames" *ngFor="let project of userRow.projects; last as isLast">
-                  <a [routerLink]="['/project', project.id]">{{ project.projectName }}</a>
+                  <a [routerLink]="['/projects', project.id]">{{ project.projectName }}</a>
                   <span *ngIf="!isLast">, </span>
                 </span>
               </span>

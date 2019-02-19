@@ -1,0 +1,18 @@
+<div fxLayout="column" fxLayoutAlign="space-around">
+  <div fxLayout="row wrap" fxLayoutAlign="start center">
+    <h2 fxFlex fxLayoutAlign="start center"><i class="material-icons">notes</i> Available Texts</h2>
+    <div fxLayoutAlign="end stretch" *ngIf="(isProjectAdmin$ | async)">
+      <div>
+        <button mdc-button (click)="questionDialog(true)">
+          <i class="material-icons">note_add</i> <span fxHide.xs>Add question</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="row wrap" fxLayoutAlign="start center">
+    <button mdc-button (click)="questionDialog()" *ngIf="(isProjectAdmin$ | async)">
+      <i class="material-icons">edit</i>
+    </button>
+  </div>
+</div>

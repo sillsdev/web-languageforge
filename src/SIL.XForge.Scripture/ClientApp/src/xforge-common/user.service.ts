@@ -42,6 +42,20 @@ export class UserService extends ResourceService {
     return this.getCurrentUser().pipe(map(currentUser => currentUser && currentUser.role === role));
   }
 
+  hasCurrentUserProjectRole(role: string): Observable<boolean> {
+    return this.getProjects(this.currentUserId).pipe(
+      map(projectUserResults => {
+        for (const projectUser of projectUserResults.results) {
+          if (projectUser && projectUser.role === role) {
+            return true;
+          }
+        }
+
+        return false;
+      })
+    );
+  }
+
   /** Get currently-logged in user. */
   getCurrentUser(): Observable<User> {
     if (this.currentUser$ == null) {
@@ -52,6 +66,10 @@ export class UserService extends ResourceService {
       );
     }
     return this.currentUser$;
+  }
+
+  getProjects(id: string): QueryObservable<ProjectUser[]> {
+    return this.jsonApiService.getAllRelated(this.identity(id), nameof<User>('projects'));
   }
 
   /**
