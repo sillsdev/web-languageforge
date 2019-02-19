@@ -32,21 +32,18 @@
             <mdc-textarea
               label="Question"
               type="text"
-              formControlName="questionProse"
+              formControlName="questionText"
               rows="2"
               [helperText]="questionHelper"
-              id="question-prose"
+              id="question-text"
             ></mdc-textarea>
             <mdc-helper-text #questionHelper validation>*Required</mdc-helper-text>
           </mdc-form-field>
         </form>
       </mdc-dialog-content>
       <mdc-dialog-actions align="end">
-        <button mdcDialogButton mdcDialogAction="cancel" id="question-cancel-btn">Cancel</button>
-        <button mdc-button primary form="question-form" [disabled]="isSubmitted" id="question-save-btn">
-          <mat-spinner *ngIf="isSubmitted" strokeWidth="3" diameter="20"></mat-spinner>
-          Save
-        </button>
+        <button mdcDialogButton mdcDialogAction="close" id="question-cancel-btn">Cancel</button>
+        <button mdc-button primary form="question-form" [disabled]="isSubmitted" id="question-save-btn">Save</button>
       </mdc-dialog-actions>
     </mdc-dialog-surface>
   </mdc-dialog-container>

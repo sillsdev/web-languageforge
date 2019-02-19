@@ -17,6 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddMongoRepository<SFProjectEntity>("sf_projects");
             services.AddMongoRepository<SyncJobEntity>("sync_jobs");
             services.AddMongoRepository<TextEntity>("texts");
+            services.AddMongoRepository<QuestionEntity>("questions");
 
             return services;
         }

@@ -35,7 +35,7 @@ namespace SIL.XForge.Scripture.CodeGenerator.Tests
                 var domainModelContents = jsonReader.ReadToEnd();
                 // Validate the generated TypeScript
                 // Check imports of handwritten base classes
-                StringAssert.Contains($"import {{{excludedClassName}}} from '{excludedClassImportLoc}';", tsFileContents, "generated import is missing.");
+                StringAssert.Contains($"import {{ {excludedClassName} }} from '{excludedClassImportLoc}';", tsFileContents, "generated import is missing.");
                 StringAssert.DoesNotContain($"import {{extraExcludedClassName}}", tsFileContents, "No import should be generated if the path is null");
                 // Check that classes were generated as expected
                 StringAssert.Contains("export abstract class TestClassBase", tsFileContents, "TestClassBase should have been generated in TypeScript");

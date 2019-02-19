@@ -6,6 +6,12 @@ export interface QuestionDialogData {
   newMode: boolean;
 }
 
+export interface QuestionDialogResult {
+  scriptureStart?: string;
+  scriptureEnd?: string;
+  text?: string;
+}
+
 @Component({
   templateUrl: './question-dialog.component.html',
   styleUrls: ['./question-dialog.component.scss']
@@ -15,7 +21,7 @@ export class QuestionDialogComponent {
   questionForm: FormGroup = new FormGroup({
     scriptureStart: new FormControl('', [Validators.required]),
     scriptureEnd: new FormControl(),
-    questionProse: new FormControl('', [Validators.required])
+    questionText: new FormControl('', [Validators.required])
   });
 
   constructor(
@@ -23,15 +29,15 @@ export class QuestionDialogComponent {
     @Inject(MDC_DIALOG_DATA) private data: QuestionDialogData
   ) {}
 
-  get questionProse() {
-    return this.questionForm.get('questionProse');
-  }
-
   submit() {
     if (this.questionForm.invalid) {
       return;
     }
 
-    this.dialogRef.close();
+    this.dialogRef.close({
+      scriptureStart: this.questionForm.get('scriptureStart').value,
+      scriptureEnd: this.questionForm.get('scriptureEnd').value,
+      text: this.questionForm.get('questionText').value
+    } as QuestionDialogResult);
   }
 }

@@ -69,3 +69,6 @@ test/app/**/shared/*.js
 # Generated files
 src/Api/Library/Shared/WebsiteInstances.php
 src/angular-app/bellows/core/website-instances.generated-data.ts
+
+# code generator
+**/CodeGenerator/sfmodel.json

@@ -4,50 +4,48 @@
 {% if ExportTypes %}export {% endif %}{%if Description contains "--- Generated Interface"%}interface{% else %}abstract class{% endif %} {{ ClassName }}{{ Inheritance }} {
 {% if Description contains "--- Generated Interface" -%}
 {% else -%}
-/** type identifier string for domain type mapping */
-    static readonly TYPE: string = '{{ ClassName | lowercamelcase }}';
+  /** type identifier string for domain type mapping */
+  static readonly TYPE: string = '{{ ClassName | lowercamelcase }}';
 {% endif -%}
 {% for property in Properties -%}
 {%   if property.HasDescription -%}
-    /** {{ property.Description }} */
+  /** {{ property.Description }} */
 {%   endif -%}
-    {% if property.IsReadOnly %}readonly {% endif %}{{ property.PropertyName }}{% if property.IsOptional %}?{% elseif RequiresStrictPropertyInitialization && !property.HasDefaultValue %}!{% endif %}: {{ property.Type }}{{ property.TypePostfix }};
+  {% if property.IsReadOnly %}readonly {% endif %}{{ property.PropertyName }}{% if property.IsOptional %}?{% elseif RequiresStrictPropertyInitialization && !property.HasDefaultValue %}!{% endif %}: {{ property.Type }}{{ property.TypePostfix }};
 {% endfor -%}
 {% if HasIndexerProperty -%}
 
-    [key: string]: {{ IndexerPropertyValueType }};
+  [key: string]: {{ IndexerPropertyValueType }};
 {% endif -%}
 {% if Description contains "--- Generated Interface" -%}
 {% else -%}
 {% if IsAbstract -%}
 {% else -%}
-    constructor(init?: Partial<{{ ClassName }}>) {
+  constructor(init?: Partial<{{ ClassName }}>) {
 {%     if HasInheritance -%}
-        super({{ ClassName }}.TYPE, init);
+    super({{ ClassName }}.TYPE, init);
 {%     endif -%}
 {%     if HasDefaultValues -%}
-        if (!init) {
+    if (!init) {
 {%         for property in Properties -%}
 {%             if property.HasDefaultValue -%}
-            this.{{ property.PropertyName }} = {{ property.DefaultValue }};
+      this.{{ property.PropertyName }} = {{ property.DefaultValue }};
 {%             endif -%}
 {%         endfor -%}
-        }
-{%     endif -%}
     }
+{%     endif -%}
+  }
 {% endif -%}
 {% endif -%}
-
 }
-
 {% if Description contains "--- Generated Interface" -%}
 {% else%}
 /** ResourceRef class for {{ ClassName }} **/
 export class {{ ClassName }}Ref{% if HasInheritance %}{{ Inheritance }}Ref {% endif %}{
-    static readonly TYPE: string = {{ ClassName }}.TYPE;
+  static readonly TYPE: string = {{ ClassName }}.TYPE;
 
-    constructor(id: string) {
-        super({{ ClassName }}Ref.TYPE, id);
-    }
+  constructor(id: string) {
+    super({{ ClassName }}Ref.TYPE, id);
+  }
 }
 {% endif -%}
