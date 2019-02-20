@@ -3,12 +3,53 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
 import { LocationService } from 'xforge-common/location.service';
+import { NoticeService } from 'xforge-common/notice.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { IdentityService } from '../identity.service';
 import { ForgotPasswordComponent } from './forgot-password.component';
+
+describe('ForgotPasswordComponent', () => {
+  it('should submit when email or username is specified', fakeAsync(() => {
+    const env = new TestEnvironment();
+    when(env.mockedIdentityService.forgotPassword(anything())).thenResolve(true);
+    env.fixture.detectChanges();
+
+    env.setInputValue(env.userInput, 'user');
+    env.clickSubmitButton();
+
+    verify(env.mockedIdentityService.forgotPassword(deepEqual('user'))).once();
+    verify(env.mockedNoticeService.show(anyString())).once();
+    expect().nothing();
+    flush();
+  }));
+
+  it('should display error when email or username is incorrect', fakeAsync(() => {
+    const env = new TestEnvironment();
+    when(env.mockedIdentityService.forgotPassword(anything())).thenResolve(false);
+    env.fixture.detectChanges();
+
+    env.setInputValue(env.userInput, 'user1');
+    env.clickSubmitButton();
+
+    verify(env.mockedIdentityService.forgotPassword(deepEqual('user1'))).once();
+    verify(env.mockedNoticeService.show(anyString())).once();
+    flush();
+  }));
+
+  it('should do nothing when form is invalid', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.fixture.detectChanges();
+
+    env.clickSubmitButton();
+
+    verify(env.mockedIdentityService.forgotPassword(anything())).never();
+    verify(env.mockedNoticeService.show(anyString())).never();
+    expect().nothing();
+  }));
+});
 
 class TestEnvironment {
   component: ForgotPasswordComponent;
@@ -17,17 +58,22 @@ class TestEnvironment {
   mockedIdentityService: IdentityService;
   mockedLocationService: LocationService;
   overlayContainer: OverlayContainer;
+  mockedNoticeService: NoticeService;
 
   constructor() {
     this.mockedIdentityService = mock(IdentityService);
     this.mockedLocationService = mock(LocationService);
+    this.mockedNoticeService = mock(NoticeService);
+
+    when(this.mockedNoticeService.show(anyString())).thenResolve();
 
     TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, UICommonModule],
       declarations: [ForgotPasswordComponent],
       providers: [
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
-        { provide: LocationService, useFactory: () => instance(this.mockedLocationService) }
+        { provide: LocationService, useFactory: () => instance(this.mockedLocationService) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) }
       ]
     });
     this.fixture = TestBed.createComponent(ForgotPasswordComponent);
@@ -60,49 +106,4 @@ class TestEnvironment {
     this.fixture.detectChanges();
     tick();
   }
-
-  getSnackBarContent(): string {
-    const overlayContainerElement = this.overlayContainer.getContainerElement();
-    const messageElement = overlayContainerElement.querySelector('snack-bar-container');
-    return messageElement.textContent;
-  }
 }
-
-describe('ForgotPasswordComponent', () => {
-  it('should submit when email or username is specified', fakeAsync(() => {
-    const env = new TestEnvironment();
-    when(env.mockedIdentityService.forgotPassword(anything())).thenResolve(true);
-    env.fixture.detectChanges();
-
-    env.setInputValue(env.userInput, 'user');
-    env.clickSubmitButton();
-
-    verify(env.mockedIdentityService.forgotPassword(deepEqual('user'))).once();
-    expect(env.getSnackBarContent()).toBe('Password reset email sent');
-    expect().nothing();
-    flush();
-  }));
-
-  it('should display error when email or username is incorrect', fakeAsync(() => {
-    const env = new TestEnvironment();
-    when(env.mockedIdentityService.forgotPassword(anything())).thenResolve(false);
-    env.fixture.detectChanges();
-
-    env.setInputValue(env.userInput, 'user1');
-    env.clickSubmitButton();
-
-    verify(env.mockedIdentityService.forgotPassword(deepEqual('user1'))).once();
-    expect(env.getSnackBarContent()).toBe('Invalid email or username');
-    flush();
-  }));
-
-  it('should do nothing when form is invalid', fakeAsync(() => {
-    const env = new TestEnvironment();
-    env.fixture.detectChanges();
-
-    env.clickSubmitButton();
-
-    verify(env.mockedIdentityService.forgotPassword(anything())).never();
-    expect().nothing();
-  }));
-});

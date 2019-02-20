@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
 
+import { NoticeService } from 'xforge-common/notice.service';
 import { IdentityService } from '../identity.service';
 
+/** Helps user initiate a password reset. Found from the login page. */
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
@@ -15,7 +16,7 @@ export class ForgotPasswordComponent {
   });
   forgotPasswordDisabled: boolean;
 
-  constructor(private readonly identityService: IdentityService, private readonly snackBar: MatSnackBar) {}
+  constructor(private readonly identityService: IdentityService, private readonly noticeService: NoticeService) {}
 
   async submit(): Promise<void> {
     if (!this.forgotPasswordForm.valid) {
@@ -25,10 +26,10 @@ export class ForgotPasswordComponent {
     this.forgotPasswordDisabled = true;
     const result = await this.identityService.forgotPassword(this.forgotPasswordForm.controls['user'].value);
     if (result) {
-      this.snackBar.open('Password reset email sent');
+      this.noticeService.show('Password reset email sent');
     } else {
       this.forgotPasswordDisabled = false;
-      this.snackBar.open('Invalid email or username', undefined, { duration: 5000 });
+      this.noticeService.show('Invalid email or username');
     }
   }
 }
