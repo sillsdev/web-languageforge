@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { NoticeService } from '../notice.service';
@@ -11,49 +11,37 @@ import { UserService } from '../user.service';
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss']
 })
-export class ChangePasswordComponent implements OnInit {
-  changePasswordForm: FormGroup;
-  @ViewChild('changePasswordRef') changePasswordNgForm: NgForm;
-  isSubmitted = false;
-  private readonly requiredPasswordLength = 7;
+export class ChangePasswordComponent {
+  readonly requiredPasswordLength = 7;
+
+  changePasswordForm: FormGroup = new FormGroup({
+    newPassword: new FormControl('', [Validators.required, Validators.minLength(this.requiredPasswordLength)]),
+    confirmPassword: new FormControl('', [Validators.required])
+  });
 
   constructor(
-    private readonly formBuilder: FormBuilder,
     private readonly userService: UserService,
     private readonly noticeService: NoticeService,
     private readonly router: Router
   ) {}
 
-  ngOnInit() {
-    this.changePasswordForm = this.formBuilder.group({
-      newPassword: ['', Validators.compose([Validators.required, Validators.minLength(this.requiredPasswordLength)])],
-      confirmPassword: [
-        '',
-        Validators.compose([Validators.required, Validators.minLength(this.requiredPasswordLength)])
-      ]
-    });
+  get passwordsMatch(): boolean {
+    return this.changePasswordForm.value.newPassword === this.changePasswordForm.value.confirmPassword;
   }
 
-  get formControls() {
-    return this.changePasswordForm.controls;
+  get newPasswordControl(): FormControl {
+    return this.changePasswordForm.controls['newPassword'] as FormControl;
   }
 
-  get hasNoErrors() {
-    const newPasswordLongEnough: boolean = this.changePasswordForm.controls['newPassword'].valid;
-    const confirmPasswordLongEnough: boolean = this.changePasswordForm.controls['confirmPassword'].valid;
-    const passwordsMatch =
-      this.changePasswordForm.controls['newPassword'].value ===
-      this.changePasswordForm.controls['confirmPassword'].value;
-    return newPasswordLongEnough && confirmPasswordLongEnough && passwordsMatch;
+  get confirmPasswordControl(): FormControl {
+    return this.changePasswordForm.controls['confirmPassword'] as FormControl;
   }
 
-  async onSubmit(): Promise<void> {
-    this.isSubmitted = true;
-    if (!this.hasNoErrors) {
+  async submit(): Promise<void> {
+    if (this.changePasswordForm.invalid || !this.passwordsMatch) {
       return;
     }
     await this.userService.onlineChangePassword(this.changePasswordForm.value.newPassword);
-    this.changePasswordNgForm.resetForm();
     this.noticeService.show('Password changed successfully');
     this.router.navigateByUrl('/home');
   }

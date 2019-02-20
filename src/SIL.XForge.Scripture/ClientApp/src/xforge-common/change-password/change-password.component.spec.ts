@@ -1,13 +1,14 @@
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
-import { AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { anyString, capture, instance, mock, verify, when } from 'ts-mockito';
 
+import { UICommonModule } from 'xforge-common/ui-common.module';
 import { NoticeService } from '../notice.service';
 import { UserService } from '../user.service';
 import { ChangePasswordComponent } from './change-password.component';
@@ -18,156 +19,86 @@ describe('ChangePasswordComponent', () => {
     env = new TestEnvironment();
   });
 
-  it('form invalid when empty', () => {
+  it('newPassword error if empty', () => {
+    env.newPasswordControl.setValue('cheesesteak');
+    expect(env.newPasswordControl.hasError('required')).toBe(false);
+    env.fixture.detectChanges();
+    const requiredErrors = env.controlErrorMessagesContaining('Required');
+
+    env.newPasswordControl.setValue('');
+    expect(env.newPasswordControl.hasError('required')).toBe(true);
+    env.fixture.detectChanges();
+    expect(env.controlErrorMessagesContaining('Required')).toEqual(
+      requiredErrors + 1,
+      'should show new Required error message'
+    );
+  });
+
+  it('confirmPassword error if empty', () => {
+    env.confirmPasswordControl.setValue('cheesesteak');
+    expect(env.confirmPasswordControl.hasError('required')).toBe(false);
+
+    env.confirmPasswordControl.setValue('');
+    expect(env.confirmPasswordControl.hasError('required')).toBe(true);
+  });
+
+  it('newPassword error if not long enough', () => {
+    env.newPasswordControl.setValue('cheesesteak');
+    expect(env.newPasswordControl.hasError('minlength')).toBe(false);
+    env.fixture.detectChanges();
+    expect(env.controlErrorMessagesContaining('at least')).toEqual(0);
+
+    env.newPasswordControl.setValue('short');
+    expect(env.newPasswordControl.hasError('minlength')).toBe(true);
+    env.fixture.detectChanges();
+    expect(env.controlErrorMessagesContaining('at least')).toEqual(1);
+  });
+
+  it('different passwords dont show not-match error until both fields have content: new password', () => {
     expect(env.newPasswordControl.value).toEqual('', 'setup');
+    env.confirmPasswordControl.setValue('longenoughAPPLE');
+    env.confirmPasswordControl.markAsDirty();
+    env.fixture.detectChanges();
+    expect(env.notMatchError).toBeNull();
+  });
+
+  it('different passwords dont show not-match error until both fields have content: confirm password', () => {
     expect(env.confirmPasswordControl.value).toEqual('', 'setup');
-    expect(env.component.changePasswordForm.valid).toBe(false);
+    env.newPasswordControl.setValue('longenoughBANANA');
+    env.fixture.detectChanges();
+    expect(env.notMatchError).toBeNull();
   });
 
-  it('new password field validity', () => {
-    let errors = {};
-    const newPassword = env.newPasswordControl;
-    errors = newPassword.errors || {};
-    expect(errors['required']).toBeDefined();
+  it('different passwords show not-match error but after both lose focus', () => {
+    env.newPasswordControl.setValue('longenoughBANANA');
+    env.confirmPasswordControl.setValue('longenoughAPPLE');
+    env.fixture.detectChanges();
+    expect(env.component.passwordsMatch).toBe(false);
+    expect(env.notMatchError).toBeNull();
+    env.newPasswordControl.markAsTouched();
+    env.confirmPasswordControl.markAsTouched();
+    env.fixture.detectChanges();
+    expect(env.component.passwordsMatch).toBe(false);
+    expect(env.notMatchError).not.toBeNull();
+    expect(env.notMatchError.nativeElement.textContent).toContain('same password');
   });
 
-  it('confirm password field validity', () => {
-    let errors = {};
-    const confirmPassword = env.confirmPasswordControl;
-    errors = confirmPassword.errors || {};
-    expect(errors['required']).toBeDefined();
+  it('same passwords produce valid form with no not-match error', () => {
+    env.newPasswordControl.setValue('longenough');
+    env.newPasswordControl.markAsTouched();
+    env.confirmPasswordControl.setValue('longenough');
+    env.confirmPasswordControl.markAsTouched();
+    expect(env.form.valid).toBe(true);
+    env.fixture.detectChanges();
+    expect(env.notMatchError).toBeNull();
   });
 
-  it('valid when new password and confirm password are equal', () => {
-    const newPassword = env.newPasswordControl;
-    newPassword.setValue('Testing');
-    const confirmPassword = env.confirmPasswordControl;
-    confirmPassword.setValue('Testing');
-    env.fixture.detectChanges();
-    expect(env.component.changePasswordForm.valid).toBe(true);
-  });
-
-  it('new password and confirm password fields are valid for minimum 7 length characters', () => {
-    let errors = {};
-    const newPassword = env.newPasswordControl;
-    newPassword.setValue('1234');
-    env.fixture.detectChanges();
-    errors = newPassword.errors || {};
-    expect(errors['required']).toBeUndefined();
-    expect(errors['minlength']).toBeDefined();
-    newPassword.setValue('1234567');
-    env.fixture.detectChanges();
-    errors = newPassword.errors || {};
-    expect(errors['required']).toBeUndefined();
-    expect(errors['minlength']).toBeUndefined();
-
-    const confirmPassword = env.confirmPasswordControl;
-    confirmPassword.setValue('test');
-    env.fixture.detectChanges();
-    errors = confirmPassword.errors || {};
-    expect(errors['required']).toBeUndefined();
-    expect(errors['minlength']).toBeDefined();
-    confirmPassword.setValue('test123');
-    env.fixture.detectChanges();
-    errors = confirmPassword.errors || {};
-    expect(errors['required']).toBeUndefined();
-    expect(errors['minlength']).toBeUndefined();
-  });
-
-  it('not submittable if fields are less than min length', fakeAsync(() => {
-    const shortPassword = '1234';
-    const acceptablePassword = '1234567';
-    env.newPasswordControl.setValue(shortPassword);
-    env.confirmPasswordControl.setValue(shortPassword);
-    env.fixture.detectChanges();
-    expect(env.component.hasNoErrors).toBe(false);
-    expect(env.newPasswordControl.errors['minlength']).toBeDefined();
-    expect(env.confirmPasswordControl.errors['minlength']).toBeDefined();
-    env.clickSubmit();
-    expect(env.errorElements.length).toEqual(2);
-    expect(env.errorElements[0].nativeElement.textContent).toContain('at least 7');
-    expect(env.errorElements[1].nativeElement.textContent).toContain('at least 7');
-    env.newPasswordControl.setValue(acceptablePassword);
-    env.confirmPasswordControl.setValue(acceptablePassword);
-    env.fixture.detectChanges();
-    expect(env.component.hasNoErrors).toBe(true);
-    expect(env.newPasswordControl.errors).toBeNull();
-    expect(env.confirmPasswordControl.errors).toBeNull();
-    env.clickSubmit();
-    expect(env.errorElements.length).toEqual(0);
-  }));
-
-  it('same passwords do not produce not-match error', fakeAsync(() => {
-    env.newPasswordControl.setValue('aaaaaaaa');
-    env.confirmPasswordControl.setValue('aaaaaaaa');
-    env.fixture.detectChanges();
-    expect(env.component.hasNoErrors).toBe(true);
-    env.clickSubmit();
-    expect(env.errorElements.length).toEqual(0);
-  }));
-
-  it('different passwords produce not-match error', fakeAsync(() => {
-    env.newPasswordControl.setValue('aaaaaaaa');
-    env.confirmPasswordControl.setValue('bbbbbbbb');
-    env.fixture.detectChanges();
-    expect(env.component.hasNoErrors).toBe(false);
-    env.clickSubmit();
-    expect(env.errorElements.length).toEqual(1);
-    expect(env.errorElements[0].nativeElement.textContent).toContain('not match');
-  }));
-
-  it('not-match error does not appear until text is entered in both fields: confirm field', fakeAsync(() => {
-    env.newPasswordControl.setValue('aaaaaaaa');
-    expect(env.confirmPasswordControl.value).toEqual('', 'setup');
-    env.fixture.detectChanges();
-    expect(env.component.hasNoErrors).toBe(false);
-    env.clickSubmit();
-    expect(env.errorElements.length).toEqual(1);
-    expect(env.errorElements[0].nativeElement.textContent).not.toContain('not match');
-  }));
-
-  it('not-match error does not appear until text is entered in both fields: new password field', fakeAsync(() => {
-    env.confirmPasswordControl.setValue('aaaaaaaa');
-    expect(env.newPasswordControl.value).toEqual('', 'setup');
-    env.fixture.detectChanges();
-    expect(env.component.hasNoErrors).toBe(false);
-    env.clickSubmit();
-    expect(env.errorElements.length).toEqual(1);
-    expect(env.errorElements[0].nativeElement.textContent).not.toContain('not match');
-  }));
-
-  it('not submittable if only text in confirm field', fakeAsync(() => {
-    env.confirmPasswordControl.setValue('aaaaaaaa');
-    env.fixture.detectChanges();
-    expect(env.newPasswordControl.value).toEqual('', 'setup');
-    expect(env.component.hasNoErrors).toBe(false);
-    expect(env.newPasswordControl.errors['required']).toBeDefined();
-    env.clickSubmit();
-    expect(env.errorElements.length).toEqual(1);
-    expect(env.errorElements[0].nativeElement.textContent).toContain('is required');
-  }));
-
-  it('not submittable if only text in new password field', fakeAsync(() => {
-    env.newPasswordControl.setValue('aaaaaaaa');
-    env.fixture.detectChanges();
-    expect(env.confirmPasswordControl.value).toEqual('', 'setup');
-    expect(env.component.hasNoErrors).toBe(false);
-    expect(env.confirmPasswordControl.errors['required']).toBeDefined();
-    env.clickSubmit();
-    expect(env.errorElements.length).toEqual(1);
-    expect(env.errorElements[0].nativeElement.textContent).toContain('is required');
-  }));
-
-  it('submit sets flag, calls library, shows notice, goes /home', fakeAsync(() => {
-    expect(env.component.isSubmitted).toBe(false, 'setup');
+  it('clicking submit calls library, shows notice, goes /home', fakeAsync(() => {
     const newPassword = 'aaaaaaa';
     env.newPasswordControl.setValue(newPassword);
     env.confirmPasswordControl.setValue(newPassword);
     env.fixture.detectChanges();
-    env.submitButton.nativeElement.click();
-    env.fixture.detectChanges();
-    flush();
-    expect(env.component.isSubmitted).toBe(true);
+    env.clickSubmit();
     verify(env.mockedUserService.onlineChangePassword(anyString())).once();
     const arg = capture(env.mockedUserService.onlineChangePassword).last()[0];
     expect(arg).toEqual(newPassword);
@@ -177,21 +108,51 @@ describe('ChangePasswordComponent', () => {
     expect(routerArg).toEqual('/home');
   }));
 
-  it('if not submittable, submit sets flag but does not otherwise process', fakeAsync(() => {
-    expect(env.component.isSubmitted).toBe(false, 'setup');
-    const newPassword = 'short';
-    env.newPasswordControl.setValue(newPassword);
-    env.confirmPasswordControl.setValue(newPassword);
-    expect(env.component.hasNoErrors).toBe(false, 'setup');
-    env.fixture.detectChanges();
-    env.submitButton.nativeElement.click();
-    env.fixture.detectChanges();
-    flush();
-    expect(env.component.isSubmitted).toBe(true);
+  it('does not submit if anything is invalid or not-match', async () => {
+    env.form.clearValidators();
+    env.newPasswordControl.setValidators(Validators.required);
+    env.confirmPasswordControl.clearValidators();
+    env.form.updateValueAndValidity();
+    env.newPasswordControl.updateValueAndValidity();
+    env.confirmPasswordControl.updateValueAndValidity();
+    expect(env.form.valid).toBe(false);
+    expect(env.newPasswordControl.valid).toBe(false, 'setup');
+    expect(env.confirmPasswordControl.valid).toBe(true, 'setup');
+    await env.component.submit();
     verify(env.mockedUserService.onlineChangePassword(anyString())).never();
     verify(env.mockedNoticeService.show(anyString())).never();
     verify(env.mockedRouter.navigateByUrl(anyString())).never();
-  }));
+
+    env.form.clearValidators();
+    env.newPasswordControl.clearValidators();
+    env.confirmPasswordControl.setValidators(Validators.required);
+    env.form.updateValueAndValidity();
+    env.newPasswordControl.updateValueAndValidity();
+    env.confirmPasswordControl.updateValueAndValidity();
+    expect(env.form.valid).toBe(false);
+    expect(env.newPasswordControl.valid).toBe(true, 'setup');
+    expect(env.confirmPasswordControl.valid).toBe(false, 'setup');
+    await env.component.submit();
+    verify(env.mockedUserService.onlineChangePassword(anyString())).never();
+    verify(env.mockedNoticeService.show(anyString())).never();
+    verify(env.mockedRouter.navigateByUrl(anyString())).never();
+
+    env.newPasswordControl.setValue('cheeseSteak');
+    env.confirmPasswordControl.setValue('hamburger');
+    env.form.clearValidators();
+    env.newPasswordControl.clearValidators();
+    env.confirmPasswordControl.clearValidators();
+    env.form.updateValueAndValidity();
+    env.newPasswordControl.updateValueAndValidity();
+    env.confirmPasswordControl.updateValueAndValidity();
+    expect(env.component.passwordsMatch).toBe(false);
+    expect(env.newPasswordControl.valid).toBe(true, 'setup');
+    expect(env.confirmPasswordControl.valid).toBe(true, 'setup');
+    await env.component.submit();
+    verify(env.mockedUserService.onlineChangePassword(anyString())).never();
+    verify(env.mockedNoticeService.show(anyString())).never();
+    verify(env.mockedRouter.navigateByUrl(anyString())).never();
+  });
 });
 
 class TestEnvironment {
@@ -210,7 +171,14 @@ class TestEnvironment {
     when(this.mockedRouter.navigateByUrl(anyString())).thenResolve(true);
 
     TestBed.configureTestingModule({
-      imports: [FormsModule, HttpClientModule, MatSnackBarModule, ReactiveFormsModule, RouterTestingModule],
+      imports: [
+        FormsModule,
+        HttpClientModule,
+        MatSnackBarModule,
+        ReactiveFormsModule,
+        RouterTestingModule,
+        UICommonModule
+      ],
       declarations: [ChangePasswordComponent],
       providers: [
         { provide: UserService, useFactory: () => instance(this.mockedUserService) },
@@ -225,25 +193,33 @@ class TestEnvironment {
     this.fixture.detectChanges();
   }
 
+  get form(): FormGroup {
+    return this.component.changePasswordForm;
+  }
   get newPasswordControl(): AbstractControl {
-    return this.component.changePasswordForm.controls['newPassword'];
+    return this.component.newPasswordControl;
   }
 
   get confirmPasswordControl(): AbstractControl {
-    return this.component.changePasswordForm.controls['confirmPassword'];
+    return this.component.confirmPasswordControl;
   }
 
   get submitButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#btnChangePassword'));
+    return this.fixture.debugElement.query(By.css('#submitButton'));
   }
 
-  get errorElements(): DebugElement[] {
-    return this.fixture.debugElement.queryAll(By.css('mat-error'));
+  get notMatchError(): DebugElement {
+    return this.fixture.debugElement.query(By.css('.notMatchError'));
   }
 
-  clickSubmit() {
+  clickSubmit(): void {
     this.submitButton.nativeElement.click();
     this.fixture.detectChanges();
     flush();
+  }
+
+  controlErrorMessagesContaining(searchString: string): number {
+    const helperTexts = this.fixture.debugElement.queryAll(By.css('mdc-helper-text'));
+    return helperTexts.filter(item => item.nativeElement.textContent.includes(searchString)).length;
   }
 }
