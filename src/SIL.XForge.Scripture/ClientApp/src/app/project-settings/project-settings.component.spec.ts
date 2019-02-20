@@ -1,17 +1,15 @@
 import { OverlayContainer } from '@angular-mdc/web';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { DebugElement, NgModule } from '@angular/core';
+import { DebugElement, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RecordIdentity } from '@orbit/data';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { AuthService } from 'xforge-common/auth.service';
 import { QueryResults } from 'xforge-common/json-api.service';
-import { LocationService } from 'xforge-common/location.service';
 import { Resource } from 'xforge-common/models/resource';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { SFProject } from '../core/models/sfproject';
@@ -99,7 +97,7 @@ describe('ProjectSettingsComponent', () => {
     beforeEach(async(() => (env = new TestEnvironment())));
 
     it('should display Danger Zone', fakeAsync(() => {
-      expect(env.fixture.nativeElement.querySelector('#danger-zone h2').textContent).toContain('Danger Zone');
+      expect(env.dangerZoneTitle.textContent).toContain('Danger Zone');
       expect(env.deleteProjectButton.textContent).toContain('Delete this project');
     }));
 
@@ -132,13 +130,16 @@ class TestEnvironment {
   component: ProjectSettingsComponent;
   fixture: ComponentFixture<ProjectSettingsComponent>;
   overlayContainer: OverlayContainer;
-  mockedSFProjectService = mock(SFProjectService);
+  mockedSFProjectService: SFProjectService;
+  mockedRouter: Router;
+  mockedActivatedRoute: ActivatedRoute;
+  mockedAuthService: AuthService;
   constructor() {
-    const mockedActivatedRoute = mock(ActivatedRoute);
-    const mockedAuthService = mock(AuthService);
-    const mockedLocationService = mock(LocationService);
-
-    when(mockedActivatedRoute.params).thenReturn(of({}));
+    this.mockedSFProjectService = mock(SFProjectService);
+    this.mockedActivatedRoute = mock(ActivatedRoute);
+    this.mockedRouter = mock(Router);
+    this.mockedAuthService = mock(AuthService);
+    when(this.mockedActivatedRoute.params).thenReturn(of({}));
     when(this.mockedSFProjectService.onlineGet(anything())).thenReturn(
       of(
         new StubQueryResults(
@@ -151,15 +152,19 @@ class TestEnvironment {
     );
     when(this.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).thenCall(() => Promise.resolve());
     when(this.mockedSFProjectService.onlineDelete(anything())).thenResolve();
+    when(this.mockedRouter.navigateByUrl(anything())).thenResolve(true);
     TestBed.configureTestingModule({
-      imports: [DialogTestModule, HttpClientTestingModule, RouterTestingModule, UICommonModule],
+      imports: [DialogTestModule, HttpClientTestingModule, UICommonModule],
       declarations: [ProjectSettingsComponent],
       providers: [
-        { provide: ActivatedRoute, useFactory: () => instance(mockedActivatedRoute) },
+        { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
+        { provide: Router, useFactory: () => instance(this.mockedRouter) },
         { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
-        { provide: AuthService, useFactory: () => instance(mockedAuthService) },
-        { provide: LocationService, useFactory: () => instance(mockedLocationService) }
-      ]
+        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
+      ],
+      // The RouterTestingModule is needed to test routerLink in the html, but this is causing an
+      // error with RouterLinkWithHref, so this allows us to skip using the RouterTestingModule.
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
     this.fixture = TestBed.createComponent(ProjectSettingsComponent);
     this.component = this.fixture.componentInstance;
@@ -181,6 +186,10 @@ class TestEnvironment {
 
   get translationInputElem(): HTMLInputElement {
     return this.translationCb.nativeElement.querySelector('input') as HTMLInputElement;
+  }
+
+  get dangerZoneTitle(): HTMLElement {
+    return this.fixture.nativeElement.querySelector('#danger-zone h2');
   }
 
   get deleteProjectButton(): HTMLElement {

@@ -2,8 +2,8 @@ import { MdcDialog, MdcDialogConfig, MdcDialogRef, OverlayContainer } from '@ang
 import { Component, Directive, NgModule, ViewChild, ViewContainerRef } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 
-import { AuthService } from '@xforge-common/auth.service';
-import { UICommonModule } from '@xforge-common/ui-common.module';
+import { AuthService } from 'xforge-common/auth.service';
+import { UICommonModule } from 'xforge-common/ui-common.module';
 import { DeleteProjectDialogComponent } from './delete-project-dialog.component';
 
 describe('DeleteProjectDialogComponent', () => {
@@ -11,13 +11,6 @@ describe('DeleteProjectDialogComponent', () => {
   let overlayContainer: OverlayContainer;
   let viewContainerFixture: ComponentFixture<ChildViewContainerComponent>;
   let testViewContainerRef: ViewContainerRef;
-
-  it('should display a dialog with content', fakeAsync(() => {
-    const env = new TestEnvironment();
-    expect(env.title.textContent).toContain('Are you sure you want to delete this project?');
-    expect(env.deleteButton.textContent).toContain('I understand the consequences, delete this project');
-    expect(env.cancelButton.textContent).toBe('Cancel');
-  }));
 
   it('should allow user to delete the project', fakeAsync(() => {
     const env = new TestEnvironment();
@@ -62,10 +55,6 @@ describe('DeleteProjectDialogComponent', () => {
       this.overlayContainerElement = overlayContainer.getContainerElement();
       this.fixture = viewContainerFixture;
       this.fixture.detectChanges();
-    }
-
-    get title(): HTMLElement {
-      return this.overlayContainerElement.querySelector('#title');
     }
 
     get deleteButton(): HTMLElement {

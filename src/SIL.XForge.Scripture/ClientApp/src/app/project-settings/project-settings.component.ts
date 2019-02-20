@@ -1,12 +1,10 @@
 import { MdcDialog, MdcDialogConfig } from '@angular-mdc/web';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ElementState } from 'xforge-common/models/element-state';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 
-import { LocationService } from 'xforge-common/location.service';
-import { NoticeService } from 'xforge-common/notice.service';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
 import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-project-dialog.component';
@@ -31,9 +29,8 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
   constructor(
     private route: ActivatedRoute,
     private projectService: SFProjectService,
-    private locationService: LocationService,
     private dialog: MdcDialog,
-    private noticeService: NoticeService
+    private router: Router
   ) {
     super();
     this.route.params.subscribe(params => (this.projectId = params['id']));
@@ -137,9 +134,7 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
     const dialogRef = this.dialog.open(DeleteProjectDialogComponent, config);
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'accept') {
-        this.projectService.onlineDelete(this.projectId).then(() => {
-          this.locationService.go('/projects');
-        });
+        this.projectService.onlineDelete(this.projectId).then(() => this.router.navigateByUrl('/home'));
       }
     });
   }

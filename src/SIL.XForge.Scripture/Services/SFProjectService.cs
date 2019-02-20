@@ -3,9 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Services;
+using Hangfire;
 using SIL.Machine.WebApi.Services;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Scripture.Models;
+using SIL.XForge.Scripture.Services;
 using SIL.XForge.Services;
 
 namespace SIL.XForge.Scripture.Services
@@ -52,5 +54,13 @@ namespace SIL.XForge.Scripture.Services
             }
             return entity;
         }
+        }
+
+        protected override async Task<bool> DeleteEntityAsync(string id)
+        {
+            var resource = await GetAsync(id);
+            string jobId = resource.ActiveSyncJob.Id;
+            BackgroundJob.Enqueue<ParatextSyncRunner>(r => r.DeleteProject(null, null, jobId));
+            return jobId != null;
     }
 }

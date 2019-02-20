@@ -235,6 +235,44 @@ namespace SIL.XForge.Scripture.Services
             }
         }
 
+        public async Task DeleteProject(PerformContext context, IJobCancellationToken token, string jobId)
+        {
+            _job = await _jobs.GetAsync(jobId);
+            if ((await _projects.TryGetAsync(_job.ProjectRef)).TryResult(out SFProjectEntity project))
+            {
+                using (Connection conn = new Connection(new Uri($"ws://localhost:{_realtimeOptions.Value.Port}")))
+                {
+                    await conn.ConnectAsync();
+                    string targetParatextId = project.ParatextId;
+                    bool hasSource = project.TranslateConfig.Enabled;
+                    string sourceParatextId = project.TranslateConfig.SourceParatextId;
+                    var booksToDelete = new HashSet<string>();
+                    if (hasSource)
+                        booksToDelete.UnionWith(GetBooksToDelete(project, sourceParatextId, Enumerable.Empty<string>()));
+                    booksToDelete.UnionWith(GetBooksToDelete(project, targetParatextId, Enumerable.Empty<string>()));
+                    if (booksToDelete.Any())
+                    {
+                        foreach (var bookId in booksToDelete)
+                        {
+                            var text = await _texts.DeleteAsync(t => t.ProjectRef == project.Id && t.BookId == bookId);
+                            if (hasSource)
+                                await DeleteBookAsync(conn, project, text, sourceParatextId, "source", bookId);
+                            await DeleteBookAsync(conn, project, text, targetParatextId, "target", bookId);
+                            await UpdateProgress();
+                        }
+                    }
+                    await conn.CloseAsync();
+                }
+                SyncJobEntity job = await _jobs.DeleteAsync(_job.Id);
+                if (job != null)
+                {
+                    if (SyncJobEntity.ActiveStates.Contains(job.State))
+                        BackgroundJob.Delete(job.BackgroundJobId);
+                }
+                await _projects.DeleteAsync(project);
+            }
+        }
+
         private async Task UpdateProgress()
         {
             _step++;

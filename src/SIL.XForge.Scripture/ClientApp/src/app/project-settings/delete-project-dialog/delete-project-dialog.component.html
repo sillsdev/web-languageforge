@@ -18,7 +18,8 @@
       <mdc-dialog-actions>
         <button mdcDialogButton id="cancel-btn" mdcDialogAction="cancel">Cancel</button>
         <button mdc-button id="project-delete-btn" outlined mdcDialogAction="accept" [disabled]="deleteDisabled">
-          I understand the consequences, delete this project
+          <span fxHide.lt-sm>I understand the consequences, delete this project</span>
+          <span fxHide fxShow.xs>Delete this project</span>
         </button>
       </mdc-dialog-actions>
     </mdc-dialog-surface>
