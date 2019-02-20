@@ -3,7 +3,13 @@ import { Resource, ResourceRef } from './resource';
 import { Site } from './site';
 import { SystemRole } from './system-role';
 
-export abstract class User extends Resource {
+export class User extends Resource {
+  static readonly TYPE: string = 'user';
+
+  constructor(init?: Partial<User>) {
+    super(User.TYPE, init);
+  }
+
   username?: string;
   name?: string;
   email?: string;
@@ -28,4 +34,10 @@ export abstract class User extends Resource {
   }
 }
 
-export abstract class UserRef extends ResourceRef {}
+export class UserRef extends ResourceRef {
+  static readonly TYPE: string = User.TYPE;
+
+  constructor(id: string) {
+    super(UserRef.TYPE, id);
+  }
+}

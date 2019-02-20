@@ -49,7 +49,7 @@ namespace SIL.XForge.Services
             Dictionary<string, object> attrs = JsonApiContext.AttributesToUpdate
                 .ToDictionary(kvp => kvp.Key.InternalAttributeName, kvp => kvp.Value);
             Dictionary<string, string> relationships = JsonApiContext.RelationshipsToUpdate
-                .ToDictionary(kvp => kvp.Key.InternalRelationshipName, kvp => (string) kvp.Value);
+                .ToDictionary(kvp => kvp.Key.InternalRelationshipName, kvp => (string)kvp.Value);
             await CheckCanUpdateAsync(id, attrs, relationships);
 
             TEntity entity = await UpdateEntityAsync(id, attrs, relationships);
@@ -123,7 +123,7 @@ namespace SIL.XForge.Services
             Dictionary<string, IResource> resources, TEntity entity)
         {
             if (resources.TryGetValue(entity.Id, out IResource existing))
-                return (TResource) existing;
+                return (TResource)existing;
 
             TResource resource = _mapper.Map<TResource>(entity);
             resources[entity.Id] = resource;
@@ -151,6 +151,13 @@ namespace SIL.XForge.Services
             query = await ApplyPermissionFilterAsync(query);
             query = query.Where(predicate);
             return await query.ToListAsync(e => MapAsync(included, resources, e));
+        }
+
+        public async Task<TEntity> GetEntityAsync(string id)
+        {
+            IQueryable<TEntity> query = GetEntityQueryable().Where(e => e.Id == id);
+            query = await ApplyPermissionFilterAsync(query);
+            return await query.SingleOrDefaultAsync();
         }
 
         protected abstract Task CheckCanCreateAsync(TResource resource);
@@ -240,13 +247,6 @@ namespace SIL.XForge.Services
                 }
             }
             return entities;
-        }
-
-        private async Task<TEntity> GetEntityAsync(string id)
-        {
-            IQueryable<TEntity> query = GetEntityQueryable().Where(e => e.Id == id);
-            query = await ApplyPermissionFilterAsync(query);
-            return await query.SingleOrDefaultAsync();
         }
     }
 }

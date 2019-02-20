@@ -6,7 +6,7 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public interface IUserService<T> : IResourceService<T, string> where T : UserResource
+    public interface IUserService : IResourceService<UserResource, string>
     {
         Task<Uri> SaveAvatarAsync(string id, string name, Stream inputStream);
     }

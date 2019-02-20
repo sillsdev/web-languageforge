@@ -4,18 +4,18 @@ import { takeWhileInclusive } from 'rxjs-take-while-inclusive';
 import { map, switchMap } from 'rxjs/operators';
 
 import { JsonApiService, QueryObservable } from 'xforge-common/json-api.service';
+import { UserRef } from 'xforge-common/models/user';
 import { ResourceService } from 'xforge-common/resource.service';
+import { UserService } from 'xforge-common/user.service';
 import { nameof } from 'xforge-common/utils';
 import { SFProject, SFProjectRef } from './models/sfproject';
-import { SFUserRef } from './models/sfuser';
 import { SyncJob } from './models/sync-job';
-import { SFUserService } from './sfuser.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SyncJobService extends ResourceService {
-  constructor(jsonApiService: JsonApiService, private readonly userService: SFUserService) {
+  constructor(jsonApiService: JsonApiService, private readonly userService: UserService) {
     super(SyncJob.TYPE, jsonApiService);
   }
 
@@ -41,7 +41,7 @@ export class SyncJobService extends ResourceService {
   async start(projectId: string): Promise<string> {
     const job = new SyncJob({
       project: new SFProjectRef(projectId),
-      owner: new SFUserRef(this.userService.currentUserId)
+      owner: new UserRef(this.userService.currentUserId)
     });
     const newJob = await this.jsonApiService.onlineCreate(job);
     return newJob.id;

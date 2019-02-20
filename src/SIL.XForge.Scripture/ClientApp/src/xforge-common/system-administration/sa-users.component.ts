@@ -11,6 +11,11 @@ import { UserService } from '../user.service';
 import { nameof } from '../utils';
 import { SaDeleteDialogComponent } from './sa-delete-dialog.component';
 
+interface Row {
+  readonly user: User;
+  readonly projects: Project[];
+}
+
 @Component({
   selector: 'app-sa-users',
   templateUrl: './sa-users.component.html',
@@ -25,7 +30,7 @@ export class SaUsersComponent extends SubscriptionDisposable implements OnInit {
   showAddPanel: boolean = false;
   showEditPanel: boolean = false;
 
-  userRows: User[];
+  userRows: Row[];
 
   private userId: string;
   private dialogRef: MatDialogRef<SaDeleteDialogComponent, string>;
@@ -48,10 +53,10 @@ export class SaUsersComponent extends SubscriptionDisposable implements OnInit {
       searchResults => {
         if (searchResults && searchResults.results) {
           this.userRows = searchResults.results.map(user => {
-            user.projects = searchResults
+            const projects = searchResults
               .getManyIncluded<ProjectUser>(user.projects)
               .map(pu => searchResults.getIncluded<Project>(pu.project));
-            return user;
+            return { user, projects };
           });
           this.length = searchResults.totalPagedCount;
         }

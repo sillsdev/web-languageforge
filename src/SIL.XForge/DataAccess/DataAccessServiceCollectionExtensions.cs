@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Hangfire;
 using Hangfire.Mongo;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
@@ -12,9 +11,10 @@ using MongoDB.Bson.Serialization.Options;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using SIL.XForge.Configuration;
+using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
-namespace SIL.XForge.DataAccess
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class DataAccessServiceCollectionExtensions
     {
@@ -31,32 +31,30 @@ namespace SIL.XForge.DataAccess
                     }
                 }));
 
-            var conventionPack = new ConventionPack
-            {
+            DataAccessClassMap.RegisterConventions("SIL.XForge",
                 new CamelCaseElementNameConvention(),
                 new ObjectRefConvention(),
-                new IgnoreIfNullConvention(true)
-            };
-            ConventionRegistry.Register("xForge", conventionPack, t => t.Namespace.StartsWith("SIL.XForge"));
+                new IgnoreIfNullConvention(true));
 
-            RegisterClass<Entity>(cm =>
-                {
-                    cm.MapIdProperty(e => e.Id)
-                        .SetIdGenerator(StringObjectIdGenerator.Instance)
-                        .SetSerializer(new StringSerializer(BsonType.ObjectId));
-                });
+            DataAccessClassMap.RegisterClass<Entity>(cm =>
+            {
+                cm.MapIdProperty(e => e.Id)
+                    .SetIdGenerator(StringObjectIdGenerator.Instance)
+                    .SetSerializer(new StringSerializer(BsonType.ObjectId));
+            });
 
-            RegisterClass<ProjectUserEntity>(cm =>
-                {
-                    cm.SetIdMember(null);
-                    cm.MapProperty(u => u.Id).SetSerializer(new StringSerializer(BsonType.ObjectId));
-                    cm.UnmapProperty(u => u.ProjectRef);
-                });
+            DataAccessClassMap.RegisterClass<ProjectUserEntity>(cm =>
+            {
+                cm.SetIdMember(null);
+                cm.MapProperty(u => u.Id).SetSerializer(new StringSerializer(BsonType.ObjectId));
+                cm.UnmapProperty(u => u.ProjectRef);
+            });
 
-            var client = new MongoClient(options.ConnectionString);
-            services.AddSingleton<IMongoClient>(sp => client);
+            services.AddSingleton<IMongoClient>(sp => new MongoClient(options.ConnectionString));
+            services.AddSingleton<IMongoDatabase>(
+                sp => sp.GetService<IMongoClient>().GetDatabase(options.MongoDatabaseName));
 
-            services.AddMongoRepository<UserEntity>(options.MongoDatabaseName, "users",
+            services.AddMongoRepository<UserEntity>("users",
                 mapSetup: cm =>
                 {
                     var customSitesSerializer =
@@ -81,30 +79,12 @@ namespace SIL.XForge.DataAccess
             return services;
         }
 
-        public static void AddMongoRepository<T>(this IServiceCollection services, string databaseName,
-            string collectionName, Action<BsonClassMap<T>> mapSetup = null,
-            Action<IMongoIndexManager<T>> indexSetup = null) where T : Entity
+        public static void AddMongoRepository<T>(this IServiceCollection services, string collectionName,
+            Action<BsonClassMap<T>> mapSetup = null, Action<IMongoIndexManager<T>> indexSetup = null) where T : Entity
         {
-            RegisterClass(mapSetup);
-            services.AddSingleton(sp => CreateRepository<T>(sp.GetService<IMongoClient>(), databaseName,
-                collectionName, indexSetup));
-        }
-
-        private static void RegisterClass<T>(Action<BsonClassMap<T>> mapSetup)
-        {
-            BsonClassMap.RegisterClassMap<T>(cm =>
-                {
-                    cm.AutoMap();
-                    mapSetup?.Invoke(cm);
-                });
-        }
-
-        private static IRepository<T> CreateRepository<T>(IMongoClient mongoClient, string databaseName,
-            string collectionName, Action<IMongoIndexManager<T>> indexSetup) where T : Entity
-        {
-            IMongoCollection<T> collection = mongoClient.GetDatabase(databaseName).GetCollection<T>(collectionName);
-            indexSetup?.Invoke(collection.Indexes);
-            return new MongoRepository<T>(collection);
+            DataAccessClassMap.RegisterClass(mapSetup);
+            services.AddSingleton<IRepository<T>>(sp => new MongoRepository<T>(
+                sp.GetService<IMongoDatabase>().GetCollection<T>(collectionName), c => indexSetup?.Invoke(c.Indexes)));
         }
     }
 }

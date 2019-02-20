@@ -13,16 +13,27 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public abstract class UserService<TResource>
-        : RepositoryResourceServiceBase<TResource, UserEntity>, IUserService<TResource> where TResource : UserResource
+    public class UserService : RepositoryResourceServiceBase<UserResource, UserEntity>, IUserService
     {
         private readonly IOptions<SiteOptions> _siteOptions;
 
-        protected UserService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
+        public UserService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
             IRepository<UserEntity> users, IOptions<SiteOptions> siteOptions)
             : base(jsonApiContext, mapper, userAccessor, users)
         {
             _siteOptions = siteOptions;
+        }
+
+        public IResourceMapper<ProjectUserResource, ProjectUserEntity> ProjectUserMapper { get; set; }
+
+        protected override IRelationship<UserEntity> GetRelationship(string relationshipName)
+        {
+            switch (relationshipName)
+            {
+                case nameof(UserResource.Projects):
+                    return OneToMany(ProjectUserMapper, u => u.UserRef);
+            }
+            return base.GetRelationship(relationshipName);
         }
 
         public async Task<Uri> SaveAvatarAsync(string id, string name, Stream inputStream)
@@ -104,7 +115,7 @@ namespace SIL.XForge.Services
             }
         }
 
-        protected override Task CheckCanCreateAsync(TResource resource)
+        protected override Task CheckCanCreateAsync(UserResource resource)
         {
             if (SystemRole == SystemRoles.User)
                 throw ForbiddenException();

@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using SIL.XForge.Realtime;
 
-namespace SIL.XForge.Scripture.Realtime
+namespace Microsoft.AspNetCore.Builder
 {
     public static class RealtimeApplicationBuilderExtensions
     {

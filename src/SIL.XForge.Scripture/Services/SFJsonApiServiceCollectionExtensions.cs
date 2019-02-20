@@ -1,11 +1,8 @@
 using Autofac;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using SIL.XForge.Models;
-using SIL.XForge.Scripture.Models;
-using SIL.XForge.Services;
+using SIL.XForge.Scripture.Services;
 
-namespace SIL.XForge.Scripture.Services
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class SFJsonApiServiceCollectionExtensions
     {
@@ -13,11 +10,9 @@ namespace SIL.XForge.Scripture.Services
             ContainerBuilder containerBuilder, IConfiguration configuration)
         {
             services.AddJsonApi(mvcBuilder, containerBuilder, configuration, mapConfig =>
-                {
-                    mapConfig.CreateMap<UserEntity, SFUserResource>()
-                        .IncludeBase<UserEntity, UserResource>()
-                        .ReverseMap();
-                });
+            {
+                mapConfig.AddProfile<SFMapperProfile>();
+            });
 
             services.AddSingleton<IParatextService, ParatextService>();
             services.AddSingleton<DeltaUsxMapper>();

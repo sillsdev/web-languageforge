@@ -10,11 +10,12 @@ using SIL.XForge.Services;
 
 namespace SIL.XForge.Controllers
 {
-    public abstract class UsersController<T> : JsonApiControllerBase<T> where T : UserResource
+    [Route("users")]
+    public class UsersController : JsonApiControllerBase<UserResource>
     {
-        private readonly IUserService<T> _userService;
+        private readonly IUserService _userService;
 
-        protected UsersController(IJsonApiContext jsonApiContext, IUserService<T> userService,
+        public UsersController(IJsonApiContext jsonApiContext, IUserService userService,
             ILoggerFactory loggerFactory) : base(jsonApiContext, userService, loggerFactory)
         {
             _userService = userService;

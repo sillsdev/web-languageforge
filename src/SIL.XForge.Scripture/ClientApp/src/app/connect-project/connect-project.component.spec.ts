@@ -17,6 +17,7 @@ import { cold, getTestScheduler } from 'jasmine-marbles';
 import { defer, of } from 'rxjs';
 import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
+import { UserService } from 'xforge-common/user.service';
 import { ParatextProject } from '../core/models/paratext-project';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
@@ -24,7 +25,6 @@ import { SyncJob, SyncJobState } from '../core/models/sync-job';
 import { ParatextService } from '../core/paratext.service';
 import { SFProjectUserService } from '../core/sfproject-user.service';
 import { SFProjectService } from '../core/sfproject.service';
-import { SFUserService } from '../core/sfuser.service';
 import { SyncJobService } from '../core/sync-job.service';
 import { ConnectProjectComponent } from './connect-project.component';
 
@@ -176,7 +176,7 @@ class TestEnvironment {
   mockedSyncJobService: SyncJobService;
   mockedSFProjectUserService: SFProjectUserService;
   mockedSFProjectService: SFProjectService;
-  mockedSFUserService: SFUserService;
+  mockedUserService: UserService;
   mockedRemoteTranslationEngine: RemoteTranslationEngine;
 
   constructor() {
@@ -185,7 +185,7 @@ class TestEnvironment {
     this.mockedSyncJobService = mock(SyncJobService);
     this.mockedSFProjectUserService = mock(SFProjectUserService);
     this.mockedSFProjectService = mock(SFProjectService);
-    this.mockedSFUserService = mock(SFUserService);
+    this.mockedUserService = mock(UserService);
     this.mockedRemoteTranslationEngine = mock(RemoteTranslationEngine);
 
     when(this.mockedSyncJobService.start(anyString())).thenResolve('job01');
@@ -206,7 +206,7 @@ class TestEnvironment {
       new SFProjectUser({ id: 'projectuser01' })
     );
     when(this.mockedSFProjectService.onlineCreate(anything())).thenResolve(new SFProject({ id: 'project01' }));
-    when(this.mockedSFUserService.currentUserId).thenReturn('user01');
+    when(this.mockedUserService.currentUserId).thenReturn('user01');
     when(this.mockedRemoteTranslationEngine.startTraining()).thenResolve();
     when(this.mockedSFProjectService.createTranslationEngine(anything())).thenReturn(
       instance(this.mockedRemoteTranslationEngine)
@@ -230,7 +230,7 @@ class TestEnvironment {
         { provide: SyncJobService, useFactory: () => instance(this.mockedSyncJobService) },
         { provide: SFProjectUserService, useFactory: () => instance(this.mockedSFProjectUserService) },
         { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
-        { provide: SFUserService, useFactory: () => instance(this.mockedSFUserService) }
+        { provide: UserService, useFactory: () => instance(this.mockedUserService) }
       ]
     });
     this.fixture = TestBed.createComponent(ConnectProjectComponent);

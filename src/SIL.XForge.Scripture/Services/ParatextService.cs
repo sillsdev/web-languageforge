@@ -14,9 +14,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using SIL.WritingSystems;
+using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
-using SIL.XForge.Scripture.Configuration;
 using SIL.XForge.Scripture.Models;
 
 namespace SIL.XForge.Scripture.Services

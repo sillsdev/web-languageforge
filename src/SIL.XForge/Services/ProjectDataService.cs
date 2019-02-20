@@ -13,13 +13,13 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public abstract class ProjectDataServiceBase<TResource, TEntity, TProjectEntity>
+    public abstract class ProjectDataService<TResource, TEntity, TProjectEntity>
         : RepositoryResourceServiceBase<TResource, TEntity>
         where TResource : ProjectDataResource
         where TEntity : ProjectDataEntity
         where TProjectEntity : ProjectEntity
     {
-        protected ProjectDataServiceBase(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
+        protected ProjectDataService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
             IRepository<TEntity> entities, IRepository<TProjectEntity> projects)
             : base(jsonApiContext, mapper, userAccessor, entities)
         {
@@ -28,6 +28,21 @@ namespace SIL.XForge.Services
 
         protected abstract Domain Domain { get; }
         protected IRepository<TProjectEntity> Projects { get; }
+
+        public IResourceMapper<ProjectResource, ProjectEntity> ProjectMapper { get; set; }
+        public IResourceMapper<UserResource, UserEntity> UserMapper { get; set; }
+
+        protected override IRelationship<TEntity> GetRelationship(string propertyName)
+        {
+            switch (propertyName)
+            {
+                case nameof(ProjectDataResource.Project):
+                    return ManyToOne(ProjectMapper, ProjectRef(), false);
+                case nameof(ProjectDataResource.Owner):
+                    return ManyToOne(UserMapper, (TEntity p) => p.OwnerRef, false);
+            }
+            return base.GetRelationship(propertyName);
+        }
 
         protected override async Task CheckCanCreateAsync(TResource resource)
         {
@@ -89,7 +104,10 @@ namespace SIL.XForge.Services
             return e => e.ProjectRef;
         }
 
-        protected abstract Task<IEnumerable<TProjectEntity>> GetProjectsAsync();
+        private async Task<IEnumerable<TProjectEntity>> GetProjectsAsync()
+        {
+            return await Projects.Query().Where(p => p.Users.Any(u => u.UserRef == UserId)).ToListAsync();
+        }
 
         private async Task CheckCanUpdateDeleteAsync(string id, Operation op, Operation ownOp)
         {

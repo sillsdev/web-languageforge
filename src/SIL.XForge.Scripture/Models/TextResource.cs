@@ -1,8 +1,9 @@
 using JsonApiDotNetCore.Models;
+using SIL.XForge.Models;
 
 namespace SIL.XForge.Scripture.Models
 {
-    public class TextResource : SFProjectDataResource
+    public class TextResource : ProjectDataResource
     {
         [Attr]
         public string Name { get; set; }

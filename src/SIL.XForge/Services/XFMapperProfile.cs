@@ -4,9 +4,9 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public class UserProfile : Profile
+    public class XFMapperProfile : Profile
     {
-        public UserProfile(string site)
+        public XFMapperProfile(string site)
         {
             CreateMap<UserEntity, UserResource>()
                 .ForMember(ur => ur.Password, o => o.Ignore())
@@ -16,6 +16,10 @@ namespace SIL.XForge.Services
                     {
                         { site, ur.Site }
                     }));
+
+            CreateMap<ProjectUserEntity, ProjectUserResource>()
+                .IncludeAllDerived()
+                .ReverseMap();
         }
     }
 }

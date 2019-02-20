@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Builder;
+using SIL.XForge.Services;
 
-namespace SIL.XForge.Services
+namespace Microsoft.AspNetCore.Builder
 {
     public static class JsonRpcApplicationBuilderExtensions
     {
         public static void UseXFJsonRpc(this IApplicationBuilder app)
         {
-            app.UseRouter(new XForgeRpcHttpRouter());
+            app.UseRouter(new XFRpcHttpRouter());
         }
     }
 }

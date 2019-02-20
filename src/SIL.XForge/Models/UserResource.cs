@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using JsonApiDotNetCore.Models;
 
 namespace SIL.XForge.Models
 {
     [Resource("users")]
-    public abstract class UserResource : Resource
+    public class UserResource : Resource
     {
         [Attr]
         public string Username { get; set; }
@@ -38,5 +39,9 @@ namespace SIL.XForge.Models
         public string Gender { get; set; }
         [Attr(isFilterable: false, isSortable: false)]
         public Site Site { get; set; }
+
+        [HasMany]
+        [SchemaInfo(Inverse = nameof(ProjectUserResource.User), IsDependent = true)]
+        public IReadOnlyList<ProjectUserResource> Projects { get; set; }
     }
 }

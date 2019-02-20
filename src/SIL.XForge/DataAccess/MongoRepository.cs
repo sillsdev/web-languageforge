@@ -10,10 +10,17 @@ namespace SIL.XForge.DataAccess
     public class MongoRepository<T> : IRepository<T> where T : Entity
     {
         private readonly IMongoCollection<T> _collection;
+        private readonly Action<IMongoCollection<T>> _init;
 
-        public MongoRepository(IMongoCollection<T> collection)
+        public MongoRepository(IMongoCollection<T> collection, Action<IMongoCollection<T>> init)
         {
             _collection = collection;
+            _init = init;
+        }
+
+        public void Init()
+        {
+            _init(_collection);
         }
 
         public IQueryable<T> Query()

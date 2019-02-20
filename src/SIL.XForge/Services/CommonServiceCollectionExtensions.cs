@@ -1,6 +1,6 @@
-using Microsoft.Extensions.DependencyInjection;
+using SIL.XForge.Services;
 
-namespace SIL.XForge.Services
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class CommonServiceCollectionExtensions
     {

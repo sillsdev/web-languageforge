@@ -7,11 +7,5 @@ namespace SIL.XForge.Scripture.Models
     {
         [Attr]
         public TranslateProjectUserConfig TranslateConfig { get; set; }
-
-        [HasOne(withForeignKey: nameof(UserRef))]
-        public SFUserResource User { get; set; }
-
-        [HasOne(withForeignKey: nameof(ProjectRef))]
-        public SFProjectResource Project { get; set; }
     }
 }

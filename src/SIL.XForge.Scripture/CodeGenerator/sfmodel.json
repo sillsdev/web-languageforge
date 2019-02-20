@@ -132,7 +132,7 @@
     "SyncJobResource": {
       "allOf": [
         {
-          "$ref": "#/definitions/SFProjectDataResource"
+          "$ref": "#/definitions/ProjectDataResource"
         },
         {
           "type": "object",
@@ -152,23 +152,35 @@
         }
       ]
     },
-    "SFProjectDataResource": {
+    "ProjectDataResource": {
       "allOf": [
         {
-          "$ref": "#/definitions/ProjectDataResource"
+          "$ref": "#/definitions/Resource"
         },
         {
           "type": "object",
           "x-abstract": true,
           "additionalProperties": false,
           "properties": {
+            "ProjectRef": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "OwnerRef": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
             "Owner": {
               "oneOf": [
                 {
                   "type": "null"
                 },
                 {
-                  "$ref": "#/definitions/SFUserResource"
+                  "$ref": "#/definitions/UserResource"
                 }
               ]
             },
@@ -178,154 +190,13 @@
                   "type": "null"
                 },
                 {
-                  "$ref": "#"
+                  "$ref": "#/definitions/ProjectResource"
                 }
               ]
             }
           }
         }
       ]
-    },
-    "SFUserResource": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/UserResource"
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "Projects": {
-              "type": [
-                "array",
-                "null"
-              ],
-              "items": {
-                "$ref": "#/definitions/SFProjectUserResource"
-              }
-            }
-          }
-        }
-      ]
-    },
-    "SFProjectUserResource": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/ProjectUserResource"
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "TranslateConfig": {
-              "oneOf": [
-                {
-                  "type": "null"
-                },
-                {
-                  "$ref": "#/definitions/TranslateProjectUserConfig"
-                }
-              ]
-            },
-            "User": {
-              "oneOf": [
-                {
-                  "type": "null"
-                },
-                {
-                  "$ref": "#/definitions/SFUserResource"
-                }
-              ]
-            },
-            "Project": {
-              "oneOf": [
-                {
-                  "type": "null"
-                },
-                {
-                  "$ref": "#"
-                }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    "TranslateProjectUserConfig": {
-      "type": "object",
-      "description": "\r\n--- Generated Interface",
-      "additionalProperties": false,
-      "properties": {
-        "IsTargetTextRight": {
-          "type": "boolean"
-        },
-        "SelectedTextRef": {
-          "type": [
-            "null",
-            "string"
-          ]
-        },
-        "SelectedSegment": {
-          "type": [
-            "null",
-            "string"
-          ]
-        },
-        "SelectedSegmentChecksum": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "ProjectUserResource": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/IdentifiableOfString"
-        },
-        {
-          "type": "object",
-          "x-abstract": true,
-          "additionalProperties": false,
-          "properties": {
-            "Role": {
-              "type": [
-                "null",
-                "string"
-              ]
-            },
-            "UserRef": {
-              "type": [
-                "null",
-                "string"
-              ]
-            },
-            "ProjectRef": {
-              "type": [
-                "null",
-                "string"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    "IdentifiableOfString": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Id": {
-          "type": [
-            "null",
-            "string"
-          ]
-        },
-        "StringId": {
-          "type": [
-            "null",
-            "string"
-          ]
-        }
-      }
     },
     "UserResource": {
       "allOf": [
@@ -334,7 +205,6 @@
         },
         {
           "type": "object",
-          "x-abstract": true,
           "additionalProperties": false,
           "properties": {
             "Username": {
@@ -431,6 +301,15 @@
                   "$ref": "#/definitions/Site"
                 }
               ]
+            },
+            "Projects": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "$ref": "#/definitions/ProjectUserResource"
+              }
             }
           }
         }
@@ -447,6 +326,87 @@
           ]
         }
       }
+    },
+    "ProjectUserResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifiableOfString"
+        },
+        {
+          "type": "object",
+          "x-abstract": true,
+          "additionalProperties": false,
+          "properties": {
+            "Role": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "UserRef": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "ProjectRef": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "User": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/definitions/UserResource"
+                }
+              ]
+            },
+            "Project": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/definitions/ProjectResource"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "ProjectResource": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Resource"
+        },
+        {
+          "type": "object",
+          "x-abstract": true,
+          "additionalProperties": false,
+          "properties": {
+            "ProjectName": {
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            "Users": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "$ref": "#/definitions/ProjectUserResource"
+              }
+            }
+          }
+        }
+      ]
     },
     "Resource": {
       "allOf": [
@@ -470,36 +430,28 @@
         }
       ]
     },
-    "ProjectDataResource": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/Resource"
+    "IdentifiableOfString": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Id": {
+          "type": [
+            "null",
+            "string"
+          ]
         },
-        {
-          "type": "object",
-          "x-abstract": true,
-          "additionalProperties": false,
-          "properties": {
-            "ProjectRef": {
-              "type": [
-                "null",
-                "string"
-              ]
-            },
-            "OwnerRef": {
-              "type": [
-                "null",
-                "string"
-              ]
-            }
-          }
+        "StringId": {
+          "type": [
+            "null",
+            "string"
+          ]
         }
-      ]
+      }
     },
     "TextResource": {
       "allOf": [
         {
-          "$ref": "#/definitions/SFProjectDataResource"
+          "$ref": "#/definitions/ProjectDataResource"
         },
         {
           "type": "object",
@@ -521,25 +473,54 @@
         }
       ]
     },
-    "ProjectResource": {
+    "SFProjectUserResource": {
       "allOf": [
         {
-          "$ref": "#/definitions/Resource"
+          "$ref": "#/definitions/ProjectUserResource"
         },
         {
           "type": "object",
-          "x-abstract": true,
           "additionalProperties": false,
           "properties": {
-            "ProjectName": {
-              "type": [
-                "null",
-                "string"
+            "TranslateConfig": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/definitions/TranslateProjectUserConfig"
+                }
               ]
             }
           }
         }
       ]
+    },
+    "TranslateProjectUserConfig": {
+      "type": "object",
+      "description": "\r\n--- Generated Interface",
+      "additionalProperties": false,
+      "properties": {
+        "IsTargetTextRight": {
+          "type": "boolean"
+        },
+        "SelectedTextRef": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "SelectedSegment": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "SelectedSegmentChecksum": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
     }
   },
   "allOf": [
@@ -595,15 +576,6 @@
               "$ref": "#/definitions/SyncJobResource"
             }
           ]
-        },
-        "Users": {
-          "type": [
-            "array",
-            "null"
-          ],
-          "items": {
-            "$ref": "#/definitions/SFProjectUserResource"
-          }
         },
         "Texts": {
           "type": [

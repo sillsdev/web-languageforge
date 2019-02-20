@@ -14,21 +14,22 @@ import { ResourceService } from './resource.service';
 import { nameof } from './utils';
 
 /**
- * Provides operations on user objects. See also SFUserService.
+ * Provides operations on user objects.
  */
-@Injectable()
-export abstract class UserService<T extends User = User> extends ResourceService {
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService extends ResourceService {
   private static readonly SEARCH_FILTER = 'search';
 
-  private currentUser$: Observable<T>;
+  private currentUser$: Observable<User>;
 
   constructor(
-    type: string,
     jsonApiService: JsonApiService,
     private readonly authService: AuthService,
     private readonly http: HttpClient
   ) {
-    super(type, jsonApiService);
+    super(User.TYPE, jsonApiService);
 
     registerCustomFilter(this.type, UserService.SEARCH_FILTER, (r, v) => this.searchUsers(r, v));
   }
@@ -42,9 +43,9 @@ export abstract class UserService<T extends User = User> extends ResourceService
   }
 
   /** Get currently-logged in user. */
-  getCurrentUser(): Observable<T> {
+  getCurrentUser(): Observable<User> {
     if (this.currentUser$ == null) {
-      this.currentUser$ = this.jsonApiService.get<T>(this.identity(this.currentUserId)).pipe(
+      this.currentUser$ = this.jsonApiService.get<User>(this.identity(this.currentUserId)).pipe(
         map(r => r.results),
         filter(u => u != null),
         shareReplay(1)
@@ -57,14 +58,17 @@ export abstract class UserService<T extends User = User> extends ResourceService
    * Update the current user's attributes remotely and then locally.
    * Pass a Partial<User> specifying the attributes to update.
    */
-  async onlineUpdateCurrentUserAttributes(attrs: Partial<T>): Promise<T> {
-    const updatedUser = await this.jsonApiService.onlineUpdateAttributes<T>(this.identity(this.currentUserId), attrs);
+  async onlineUpdateCurrentUserAttributes(attrs: Partial<User>): Promise<User> {
+    const updatedUser = await this.jsonApiService.onlineUpdateAttributes<User>(
+      this.identity(this.currentUserId),
+      attrs
+    );
     return await this.jsonApiService.localUpdate(updatedUser);
   }
 
   async onlineChangePassword(newPassword: string): Promise<void> {
-    const attrs = { password: newPassword } as Partial<T>;
-    await this.jsonApiService.onlineUpdateAttributes<T>(this.identity(this.currentUserId), attrs);
+    const attrs = { password: newPassword } as Partial<User>;
+    await this.jsonApiService.onlineUpdateAttributes<User>(this.identity(this.currentUserId), attrs);
   }
 
   onlineGetProjects(id: string): QueryObservable<ProjectUser[]> {
@@ -80,24 +84,24 @@ export abstract class UserService<T extends User = User> extends ResourceService
     await this.jsonApiService.onlineDelete(this.identity(id));
   }
 
-  async onlineCreate(init: Partial<T>): Promise<T> {
-    return await this.jsonApiService.onlineCreate<T>(this.jsonApiService.newResource(this.type, init));
+  async onlineCreate(init: Partial<User>): Promise<User> {
+    return await this.jsonApiService.onlineCreate<User>(new User(init));
   }
 
-  async onlineUpdateAttributes(id: string, attrs: Partial<T>): Promise<T> {
-    return await this.jsonApiService.onlineUpdateAttributes<T>(this.identity(id), attrs);
+  async onlineUpdateAttributes(id: string, attrs: Partial<User>): Promise<User> {
+    return await this.jsonApiService.onlineUpdateAttributes<User>(this.identity(id), attrs);
   }
 
-  onlineGet(id: string): QueryObservable<T> {
+  onlineGet(id: string): QueryObservable<User> {
     return this.jsonApiService.onlineGet(this.identity(id));
   }
 
   onlineSearch(
     term$: Observable<string>,
-    parameters$: Observable<GetAllParameters<T>>,
+    parameters$: Observable<GetAllParameters<User>>,
     reload$: Observable<void>,
     include?: string[]
-  ): QueryObservable<T[]> {
+  ): QueryObservable<User[]> {
     const debouncedTerm$ = term$.pipe(
       debounceTime(400),
       distinctUntilChanged()
@@ -113,7 +117,7 @@ export abstract class UserService<T extends User = User> extends ResourceService
           }
           currentParameters.filters.push({ name: UserService.SEARCH_FILTER, value: term });
         }
-        return this.jsonApiService.onlineGetAll<T>(this.type, currentParameters, include);
+        return this.jsonApiService.onlineGetAll<User>(this.type, currentParameters, include);
       })
     );
   }
@@ -124,7 +128,7 @@ export abstract class UserService<T extends User = User> extends ResourceService
    * @param {File} file The file to upload.
    * @returns {Promise<string>} The relative url to the uploaded avatar file.
    */
-  async uploadCurrentUserAvatar(file: File): Promise<T> {
+  async uploadCurrentUserAvatar(file: File): Promise<User> {
     const formData = new FormData();
     formData.append('file', file);
     const response = await this.http
@@ -133,8 +137,8 @@ export abstract class UserService<T extends User = User> extends ResourceService
         observe: 'response'
       })
       .toPromise();
-    const attrs = { avatarUrl: response.headers.get('Location') } as Partial<T>;
-    return await this.jsonApiService.localUpdateAttributes<T>(this.identity(this.currentUserId), attrs);
+    const attrs = { avatarUrl: response.headers.get('Location') } as Partial<User>;
+    return await this.jsonApiService.localUpdateAttributes<User>(this.identity(this.currentUserId), attrs);
   }
 
   private searchUsers(records: Record[], value: string): Record[] {

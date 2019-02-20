@@ -15,9 +15,9 @@ namespace SIL.XForge.Services
     /// class name by removing the "RpcController" suffix and then dasherizing the remaining string. The resource name
     /// can also be specified manually by using a <see cref="EdjCase.JsonRpc.Router.RpcRouteAttribute"/>.
     ///
-    /// This class should generate routes that are consist with <see cref="XForgeDasherizedRoutingConvention"/>.
+    /// This class should generate routes that are consist with <see cref="XFDasherizedRoutingConvention"/>.
     /// </summary>
-    public class XForgeRpcRouteProvider : IRpcRouteProvider
+    public class XFRpcRouteProvider : IRpcRouteProvider
     {
         private Dictionary<RpcPath, List<IRpcMethodProvider>> _routeCache;
 

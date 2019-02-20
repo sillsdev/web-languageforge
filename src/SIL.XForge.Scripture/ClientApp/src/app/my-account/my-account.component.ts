@@ -5,12 +5,12 @@ import { Title } from '@angular/platform-browser';
 
 import { AuthService } from 'xforge-common/auth.service';
 import { ElementState } from 'xforge-common/models/element-state';
+import { User } from 'xforge-common/models/user';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { UserService } from 'xforge-common/user.service';
 import { XFValidators } from 'xforge-common/xfvalidators';
 import { environment } from '../../environments/environment';
 import { NoticeService } from '../../xforge-common/notice.service';
-import { SFUser } from '../core/models/sfuser';
 import { ParatextService } from '../core/paratext.service';
 import { ChangingUsernameDialogComponent } from './changing-username-dialog/changing-username-dialog.component';
 import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
@@ -69,7 +69,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   showAvatar = true;
 
   /** User data as received from the database. */
-  userFromDatabase: SFUser = new SFUser();
+  userFromDatabase: User = new User();
   paratextUsername: string;
   googleUsername: string;
   pictureFile: File;
@@ -201,7 +201,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   }
 
   async update(element: string): Promise<void> {
-    const updatedAttributes: Partial<SFUser> = {};
+    const updatedAttributes: Partial<User> = {};
     updatedAttributes[element] = this.formGroup.controls[element].value;
 
     this.formGroup.get(element).disable();

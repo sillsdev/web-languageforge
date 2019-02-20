@@ -11,16 +11,23 @@ using JsonApiDotNetCore.Middleware;
 using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using SIL.XForge;
 using SIL.XForge.Configuration;
 using SIL.XForge.Models;
+using SIL.XForge.Services;
 
-namespace SIL.XForge.Services
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class JsonApiServiceCollectionExtensions
     {
+        public static IServiceCollection AddJsonApi(this IServiceCollection services, IMvcBuilder mvcBuilder,
+            ContainerBuilder containerBuilder, IConfiguration configuration)
+        {
+            return services.AddJsonApi(mvcBuilder, containerBuilder, configuration, mapConfig => { });
+        }
+
         public static IServiceCollection AddJsonApi(this IServiceCollection services, IMvcBuilder mvcBuilder,
             ContainerBuilder containerBuilder, IConfiguration configuration,
             Action<IMapperConfigurationExpression> configure)
@@ -31,15 +38,16 @@ namespace SIL.XForge.Services
             services.AddAutoMapper(mapConfig =>
                 {
                     mapConfig.ValidateInlineMaps = false;
-                    mapConfig.AddProfile(new UserProfile(siteKey));
+                    mapConfig.AddProfile(new XFMapperProfile(siteKey));
                     configure(mapConfig);
                 }, new Assembly[0]);
 
-            JsonApiOptions.ResourceNameFormatter = new XForgeResourceNameFormatter();
-            var graphBuilder = new ResourceGraphBuilder();
+            JsonApiOptions.ResourceNameFormatter = new XFResourceNameFormatter();
+            var graphBuilder = new XFResourceGraphBuilder();
             // find all resources
-            ResourceDescriptor[] resourceDescriptors = ResourceTypeLocator.GetIdentifableTypes(
-                Assembly.GetEntryAssembly()).ToArray();
+            var assemblies = new[] { Assembly.GetEntryAssembly(), Assembly.GetExecutingAssembly() };
+            ResourceDescriptor[] resourceDescriptors = assemblies
+                .SelectMany(a => ResourceTypeLocator.GetIdentifableTypes(a)).ToArray();
             foreach (ResourceDescriptor resourceDescriptor in resourceDescriptors)
             {
                 // add resource to graph
@@ -50,8 +58,8 @@ namespace SIL.XForge.Services
                 // register resource service
                 Type serviceInterfaceType = typeof(IResourceService<,>);
                 Type[] genericArguments = new[] { resourceDescriptor.ResourceType, resourceDescriptor.IdType };
-                Type serviceType = ResourceTypeLocator.GetGenericInterfaceImplementation(Assembly.GetEntryAssembly(),
-                    serviceInterfaceType, genericArguments);
+                Type serviceType = ResourceTypeLocator.GetGenericInterfaceImplementation(
+                    resourceDescriptor.ResourceType.Assembly, serviceInterfaceType, genericArguments);
                 if (serviceType != null)
                     RegisterResourceService(containerBuilder, serviceType);
             }
@@ -74,7 +82,7 @@ namespace SIL.XForge.Services
                  });
 
             services.AddJsonApiInternals(jsonApiOptions);
-            services.AddScoped<IDocumentBuilder, XForgeDocumentBuilder>();
+            services.AddScoped<IDocumentBuilder, XFDocumentBuilder>();
 
             // generate resource schema
             var schema = ResourceSchema.Build(jsonApiOptions.ResourceGraph, resourceDescriptors);
@@ -95,7 +103,7 @@ namespace SIL.XForge.Services
         {
             options.InputFormatters.Insert(0, new JsonApiInputFormatter());
             options.OutputFormatters.Insert(0, new JsonApiOutputFormatter());
-            options.Conventions.Insert(0, new XForgeDasherizedRoutingConvention(jsonApiOptions.Namespace));
+            options.Conventions.Insert(0, new XFDasherizedRoutingConvention(jsonApiOptions.Namespace));
         }
     }
 }

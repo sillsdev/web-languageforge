@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostBinding, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   InteractiveTranslationSession,
@@ -15,13 +15,13 @@ import XRegExp from 'xregexp';
 
 import { NoticeService } from 'xforge-common/notice.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
+import { UserService } from 'xforge-common/user.service';
 import { nameof } from 'xforge-common/utils';
 import { SFProject } from '../../core/models/sfproject';
 import { SFProjectUser, TranslateProjectUserConfig } from '../../core/models/sfproject-user';
 import { Text } from '../../core/models/text';
 import { SFProjectUserService } from '../../core/sfproject-user.service';
 import { SFProjectService } from '../../core/sfproject.service';
-import { SFUserService } from '../../core/sfuser.service';
 import { TextService, TextType } from '../../core/text.service';
 import { Segment } from '../../shared/text/segment';
 import { INITIAL_BLANK_TEXT, isBlankText, NORMAL_BLANK_TEXT, TextComponent } from '../../shared/text/text.component';
@@ -60,7 +60,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit {
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
-    private readonly userService: SFUserService,
+    private readonly userService: UserService,
     private readonly projectService: SFProjectService,
     private readonly projectUserService: SFProjectUserService,
     private readonly textService: TextService,

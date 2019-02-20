@@ -17,19 +17,19 @@ import { Snapshot } from 'sharedb/lib/client';
 import { anything, deepEqual, instance, mock, resetCalls, verify, when } from 'ts-mockito';
 
 import { MapQueryResults } from 'xforge-common/json-api.service';
+import { UserRef } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
 import { RealtimeDoc } from 'xforge-common/realtime-doc';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
+import { UserService } from 'xforge-common/user.service';
 import { nameof } from 'xforge-common/utils';
 import { SFProject, SFProjectRef } from '../../core/models/sfproject';
 import { SFProjectUser, SFProjectUserRef, TranslateProjectUserConfig } from '../../core/models/sfproject-user';
-import { SFUserRef } from '../../core/models/sfuser';
 import { Text } from '../../core/models/text';
 import { TextData } from '../../core/models/text-data';
 import { SFProjectUserService } from '../../core/sfproject-user.service';
 import { SFProjectService } from '../../core/sfproject.service';
-import { SFUserService } from '../../core/sfuser.service';
 import { TextService, TextType } from '../../core/text.service';
 import { SharedModule } from '../../shared/shared.module';
 import { EditorComponent } from './editor.component';
@@ -362,7 +362,7 @@ class TestEnvironment {
   readonly fixture: ComponentFixture<EditorComponent>;
 
   mockedSFProjectService = mock(SFProjectService);
-  mockedSFUserService = mock(SFUserService);
+  mockedUserService = mock(UserService);
   mockedSFProjectUserService = mock(SFProjectUserService);
   mockedTextService = mock(TextService);
   mockedNoticeService = mock(NoticeService);
@@ -386,7 +386,7 @@ class TestEnvironment {
       )
     ).thenResolve(this.createTextData('target'));
     when(this.mockedActivatedRoute.params).thenReturn(of({ textId: 'text01' }));
-    when(this.mockedSFUserService.currentUserId).thenReturn('user01');
+    when(this.mockedUserService.currentUserId).thenReturn('user01');
     when(this.mockedSFProjectService.get('project01')).thenReturn(of());
     when(this.mockedSFProjectService.createTranslationEngine('project01')).thenReturn(
       instance(this.mockedRemoteTranslationEngine)
@@ -402,7 +402,7 @@ class TestEnvironment {
       providers: [
         { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
         { provide: SFProjectUserService, useFactory: () => instance(this.mockedSFProjectUserService) },
-        { provide: SFUserService, useFactory: () => instance(this.mockedSFUserService) },
+        { provide: UserService, useFactory: () => instance(this.mockedUserService) },
         { provide: TextService, useFactory: () => instance(this.mockedTextService) },
         { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) }
@@ -433,7 +433,7 @@ class TestEnvironment {
             }),
             new SFProjectUser({
               id: 'projectuser01',
-              user: new SFUserRef('user01'),
+              user: new UserRef('user01'),
               project: new SFProjectRef('project01'),
               translateConfig: userTranslateConfig
             })

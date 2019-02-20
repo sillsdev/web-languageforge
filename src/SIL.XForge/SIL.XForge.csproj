@@ -2,13 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RealtimeRoot>Realtime\</RealtimeRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(RealtimeRoot)node_modules\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.3.1" />
-    <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="3.1.0" />
     <PackageReference Include="Bugsnag.AspNet.Core" Version="2.2.0" />
     <PackageReference Include="EdjCase.JsonRpc.Router" Version="3.0.1" />
@@ -18,9 +20,32 @@
     <PackageReference Include="JsonApiDotNetCore" Version="3.0.0" />
     <PackageReference Include="LINQKit.Core" Version="1.1.15" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="2.1.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.7.2" />
-    <PackageReference Include="SIL.WritingSystems" Version="4.2.0-1057" />
     <PackageReference Include="NETCore.MailKit" Version="2.0.2" />
+    <PackageReference Include="SIL.WritingSystems" Version="4.2.0-1057" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="$(RealtimeRoot)node_modules\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(RealtimeRoot)*.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(RealtimeRoot)package.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And (!Exists('$(RealtimeRoot)node_modules') Or '$(NpmInstall)' == 'true')">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(RealtimeRoot)" Command="npm install" />
+  </Target>
 
 </Project>

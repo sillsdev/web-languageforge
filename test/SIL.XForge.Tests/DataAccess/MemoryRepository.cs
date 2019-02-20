@@ -11,6 +11,11 @@ namespace SIL.XForge.DataAccess
 {
     public class MemoryRepository<T> : IRepository<T> where T : Entity, new()
     {
+        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto
+        };
+
         private readonly Dictionary<string, string> _entities;
         private readonly Func<T, object>[] _uniqueKeySelectors;
         private readonly HashSet<object>[] _uniqueKeys;
@@ -32,6 +37,8 @@ namespace SIL.XForge.DataAccess
                 Add(entities);
         }
 
+        public void Init() { }
+
         public void Add(T entity)
         {
             for (int i = 0; i < _uniqueKeySelectors.Length; i++)
@@ -40,7 +47,7 @@ namespace SIL.XForge.DataAccess
                 if (key != null)
                     _uniqueKeys[i].Add(key);
             }
-            _entities[entity.Id] = JsonConvert.SerializeObject(entity);
+            _entities[entity.Id] = JsonConvert.SerializeObject(entity, Settings);
         }
 
         public void Add(IEnumerable<T> entities)
@@ -64,7 +71,7 @@ namespace SIL.XForge.DataAccess
         {
             if (_entities.TryGetValue(entity.Id, out string existingStr))
             {
-                T existing = JsonConvert.DeserializeObject<T>(existingStr);
+                T existing = JsonConvert.DeserializeObject<T>(existingStr, Settings);
                 Remove(existing);
             }
             Add(entity);
@@ -77,7 +84,7 @@ namespace SIL.XForge.DataAccess
 
         public IQueryable<T> Query()
         {
-            return _entities.Values.Select(e => JsonConvert.DeserializeObject<T>(e)).AsQueryable();
+            return _entities.Values.Select(e => JsonConvert.DeserializeObject<T>(e, Settings)).AsQueryable();
         }
 
         public Task<bool> InsertAsync(T entity)

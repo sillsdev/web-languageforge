@@ -1,6 +1,6 @@
-using Microsoft.Extensions.DependencyInjection;
+using SIL.XForge.Realtime;
 
-namespace SIL.XForge.Scripture.Realtime
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class RealtimeServiceCollectionExtensions
     {

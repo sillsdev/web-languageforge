@@ -7,7 +7,7 @@ using SIL.XForge.Services;
 
 namespace SIL.XForge.Scripture.Services
 {
-    public class TextService : SFProjectDataServiceBase<TextResource, TextEntity>
+    public class TextService : SFProjectDataService<TextResource, TextEntity>
     {
         public TextService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
             IRepository<TextEntity> entities, IRepository<SFProjectEntity> projects)

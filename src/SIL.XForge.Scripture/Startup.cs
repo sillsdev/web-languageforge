@@ -3,8 +3,6 @@ using System.IO;
 using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Hangfire;
-using IdentityServer4;
 using JsonApiDotNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -16,16 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
-using SIL.Extensions;
 using SIL.XForge.Configuration;
-using SIL.XForge.ExceptionLogging;
-using SIL.XForge.Identity;
-using SIL.XForge.Identity.Authentication;
-using SIL.XForge.Scripture.Configuration;
-using SIL.XForge.Scripture.DataAccess;
-using SIL.XForge.Scripture.Realtime;
 using SIL.XForge.Scripture.Services;
-using SIL.XForge.Services;
 
 namespace SIL.XForge.Scripture
 {
@@ -78,7 +68,7 @@ namespace SIL.XForge.Scripture
         {
             var containerBuilder = new ContainerBuilder();
 
-            services.AddSFConfiguration(Configuration);
+            services.AddConfiguration(Configuration);
 
             services.AddRealtimeServer(IsDevelopment);
 
@@ -86,43 +76,24 @@ namespace SIL.XForge.Scripture
 
             services.AddCommonServices();
 
-            services.AddXFIdentityServer(Configuration);
+            services.AddXFIdentityServer(Configuration, IsDevelopment);
 
             var siteOptions = Configuration.GetOptions<SiteOptions>();
-            var paratextOptions = Configuration.GetOptions<ParatextOptions>();
             services.AddAuthentication()
                 .AddJwtBearer(options =>
+                {
+                    if (IsDevelopment)
                     {
-                        if (IsDevelopment)
+                        options.RequireHttpsMetadata = false;
+                        options.BackchannelHttpHandler = new HttpClientHandler
                         {
-                            options.RequireHttpsMetadata = false;
-                            options.BackchannelHttpHandler = new HttpClientHandler
-                            {
-                                ServerCertificateCustomValidationCallback
-                                    = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                            };
-                        }
-                        options.Authority = siteOptions.Origin.ToString();
-                        options.Audience = "api";
-                    })
-                .AddParatext(options =>
-                    {
-                        options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                        options.SaveTokens = true;
-
-                        if (IsDevelopment)
-                            options.UseDevServer();
-                        options.ClientId = paratextOptions.ClientId;
-                        options.ClientSecret = paratextOptions.ClientSecret;
-                        options.Scope.AddRange(new[]
-                            {
-                                "projects:read",
-                                "data_access",
-                                "offline_access",
-                                "projects.members:read",
-                                "projects.members:write"
-                            });
-                    });
+                            ServerCertificateCustomValidationCallback
+                                = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                        };
+                    }
+                    options.Authority = siteOptions.Origin.ToString();
+                    options.Audience = "api";
+                });
 
             services.AddSFDataAccess(Configuration);
 
@@ -137,9 +108,9 @@ namespace SIL.XForge.Scripture
             {
                 // In production, the Angular files will be served from this directory
                 services.AddSpaStaticFiles(configuration =>
-                    {
-                        configuration.RootPath = "ClientApp/dist";
-                    });
+                {
+                    configuration.RootPath = "ClientApp/dist";
+                });
             }
 
             services.AddMachine(config =>
@@ -148,7 +119,7 @@ namespace SIL.XForge.Scripture
                 })
                 .AddEngineOptions(o => o.EnginesDir = Path.Combine(siteOptions.SiteDir, "engines"))
                 .AddMongoDataAccess()
-                .AddTextCorpus<XForgeTextCorpusFactory>();
+                .AddTextCorpus<SFTextCorpusFactory>();
 
             containerBuilder.Populate(services);
 
@@ -167,7 +138,7 @@ namespace SIL.XForge.Scripture
             if (IsDevelopment)
                 app.UseDeveloperExceptionPage();
 
-            app.UseBugsnag();
+            app.UseExceptionLogging();
 
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -191,11 +162,9 @@ namespace SIL.XForge.Scripture
             app.UseXFJsonRpc();
 
             app.UseMvc(routes =>
-                {
-                    routes.MapRoute(
-                        name: "default",
-                        template: "{controller=Default}/{action=Index}/{id?}");
-                });
+            {
+                routes.MapRoute(name: "default", template: "{controller=Default}/{action=Index}/{id?}");
+            });
 
             app.UseSpa(spa =>
             {
@@ -217,9 +186,9 @@ namespace SIL.XForge.Scripture
 
             app.UseRealtimeServer();
 
-            app.UseHangfireServer();
-
             app.UseMachine();
+
+            app.UseSFDataAccess();
 
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }

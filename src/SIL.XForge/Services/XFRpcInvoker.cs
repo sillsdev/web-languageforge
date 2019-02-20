@@ -22,12 +22,12 @@ namespace SIL.XForge.Services
     /// This class is a modified version of the default implementation in EdjCase.JsonRpc. It has been modified to
     /// support controller inheritance.
     /// </summary>
-    public class XForgeRpcInvoker : IRpcInvoker
+    public class XFRpcInvoker : IRpcInvoker
     {
         /// <summary>
         /// Logger for logging Rpc invocation
         /// </summary>
-        private ILogger<XForgeRpcInvoker> logger { get; }
+        private ILogger<XFRpcInvoker> logger { get; }
 
         /// <summary>
         /// AspNet service to authorize requests
@@ -62,8 +62,8 @@ namespace SIL.XForge.Services
         /// <param name="serverConfig">Configuration data for the server</param>
         /// <param name="rpcRequestMatcher">Matches the route method name and parameters to the correct method to
         /// execute</param>
-        public XForgeRpcInvoker(IAuthorizationService authorizationService,
-            IAuthorizationPolicyProvider policyProvider, ILogger<XForgeRpcInvoker> logger,
+        public XFRpcInvoker(IAuthorizationService authorizationService,
+            IAuthorizationPolicyProvider policyProvider, ILogger<XFRpcInvoker> logger,
             IOptions<RpcServerConfiguration> serverConfig, IRpcRequestMatcher rpcRequestMatcher)
         {
             this.authorizationService = authorizationService;
@@ -374,7 +374,7 @@ namespace SIL.XForge.Services
             {
                 object returnObj = methodInfo.Method.Invoke(obj, methodInfo.ConvertedParameters);
 
-                returnObj = await XForgeRpcInvoker.HandleAsyncResponses(returnObj);
+                returnObj = await XFRpcInvoker.HandleAsyncResponses(returnObj);
 
                 return returnObj;
             }

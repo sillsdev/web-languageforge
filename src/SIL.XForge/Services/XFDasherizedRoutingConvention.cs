@@ -12,13 +12,13 @@ namespace SIL.XForge.Services
     /// controller class name by removing the "Controller" suffix and then dasherizing the remaining string. The
     /// resource name can also be specified manually by using a <see cref="Microsoft.AspNetCore.Mvc.RouteAttribute"/>.
     ///
-    /// This class should generate routes that are consist with <see cref="XForgeRpcRouteProvider"/>.
+    /// This class should generate routes that are consist with <see cref="XFRpcRouteProvider"/>.
     /// </summary>
-    public class XForgeDasherizedRoutingConvention : IApplicationModelConvention
+    public class XFDasherizedRoutingConvention : IApplicationModelConvention
     {
         private readonly string _namespace;
 
-        public XForgeDasherizedRoutingConvention(string nspace)
+        public XFDasherizedRoutingConvention(string nspace)
         {
             _namespace = nspace;
         }

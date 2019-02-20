@@ -10,7 +10,7 @@ namespace SIL.XForge.Services
     /// This class formats resource and property names. This class is a modified version of the default implementation
     /// in JsonApiDotNetCore. It has been modified to strip the "Resource" suffix off of resource class names.
     /// </summary>
-    public class XForgeResourceNameFormatter : IResourceNameFormatter
+    public class XFResourceNameFormatter : IResourceNameFormatter
     {
         public string ApplyCasingConvention(string propertyName)
         {

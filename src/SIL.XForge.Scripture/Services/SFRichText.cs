@@ -8,12 +8,12 @@ using SIL.Machine.Tokenization;
 
 namespace SIL.XForge.Scripture.Services
 {
-    public class XForgeRichText : IText
+    public class SFRichText : IText
     {
-        public XForgeRichText(ITokenizer<string, int> segmentTokenizer, ITokenizer<string, int> wordTokenizer,
+        public SFRichText(ITokenizer<string, int> segmentTokenizer, ITokenizer<string, int> wordTokenizer,
             string projectId, BsonDocument doc)
         {
-            var id = (string) doc["_id"];
+            var id = (string)doc["_id"];
             int index = id.IndexOf(":", StringComparison.Ordinal);
             Id = $"{projectId}_{id.Substring(0, index)}";
             Segments = GetSegments(segmentTokenizer, wordTokenizer, doc).ToArray();
@@ -26,7 +26,7 @@ namespace SIL.XForge.Scripture.Services
         private static IEnumerable<TextSegment> GetSegments(ITokenizer<string, int> segmentTokenizer,
             ITokenizer<string, int> wordTokenizer, BsonDocument doc)
         {
-            var ops = (BsonArray) doc["ops"];
+            var ops = (BsonArray)doc["ops"];
             var sb = new StringBuilder();
             foreach (BsonDocument op in ops.Cast<BsonDocument>())
             {

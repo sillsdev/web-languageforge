@@ -14,7 +14,7 @@ namespace SIL.XForge.Services
     /// This class is a modified version of the default implementation in JsonApiDotNetCore. It has been modified to fix
     /// a bug where attributes with null values were not omitted in included resources.
     /// </summary>
-    public class XForgeDocumentBuilder : IDocumentBuilder
+    public class XFDocumentBuilder : IDocumentBuilder
     {
         private readonly IJsonApiContext _jsonApiContext;
         private readonly IResourceGraph _resourceGraph;
@@ -22,7 +22,7 @@ namespace SIL.XForge.Services
         private readonly DocumentBuilderOptions _documentBuilderOptions;
         private readonly IScopedServiceProvider _scopedServiceProvider;
 
-        public XForgeDocumentBuilder(
+        public XFDocumentBuilder(
             IJsonApiContext jsonApiContext,
             IRequestMeta requestMeta = null,
             IDocumentBuilderOptionsProvider documentBuilderOptionsProvider = null,

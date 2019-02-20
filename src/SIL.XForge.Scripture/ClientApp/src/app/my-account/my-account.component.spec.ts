@@ -16,9 +16,7 @@ import { User } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
-import { SFUser } from '../core/models/sfuser';
 import { ParatextService } from '../core/paratext.service';
-import { SFUserService } from '../core/sfuser.service';
 import { ChangingUsernameDialogComponent } from './changing-username-dialog/changing-username-dialog.component';
 import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 import { MyAccountComponent } from './my-account.component';
@@ -41,7 +39,7 @@ class TestEnvironment {
   component: MyAccountComponent;
   fixture: ComponentFixture<MyAccountComponent>;
 
-  mockedSFUserService: SFUserService;
+  mockedUserService: UserService;
   mockedParatextService: ParatextService;
   mockedMatDialog: MatDialog;
   mockedMatDialogRefForCUDC: MatDialogRef<ChangingUsernameDialogComponent>;
@@ -51,8 +49,8 @@ class TestEnvironment {
 
   private substituteParatextUsername: string;
 
-  constructor(public userInDatabase: SFUser) {
-    this.mockedSFUserService = mock(SFUserService);
+  constructor(public userInDatabase: User) {
+    this.mockedUserService = mock(UserService);
     this.mockedParatextService = mock(ParatextService);
     this.mockedMatDialog = mock(MatDialog);
     this.mockedMatDialogRefForCUDC = mock(MatDialogRef);
@@ -60,14 +58,14 @@ class TestEnvironment {
     this.mockedNoticeService = mock(NoticeService);
     this.mockedAuthService = mock(AuthService);
 
-    when(this.mockedSFUserService.getCurrentUser()).thenReturn(of(this.userInDatabase));
-    when(this.mockedSFUserService.currentUserId).thenReturn('user01');
+    when(this.mockedUserService.getCurrentUser()).thenReturn(of(this.userInDatabase));
+    when(this.mockedUserService.currentUserId).thenReturn('user01');
     when(this.mockedParatextService.getParatextUsername()).thenReturn(of(this.substituteParatextUsername));
-    when(this.mockedSFUserService.onlineUnlinkParatextAccount()).thenCall(() => {
+    when(this.mockedUserService.onlineUnlinkParatextAccount()).thenCall(() => {
       this.setParatextUsername(null);
       return Promise.resolve();
     });
-    when(this.mockedSFUserService.onlineUpdateCurrentUserAttributes(anything())).thenCall(
+    when(this.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).thenCall(
       this.mockUserServiceUpdateUserAttributes()
     );
     when(this.mockedNoticeService.show(anything())).thenResolve();
@@ -75,7 +73,7 @@ class TestEnvironment {
     TestBed.configureTestingModule({
       imports: [TestModule],
       providers: [
-        { provide: UserService, useFactory: () => instance(this.mockedSFUserService) },
+        { provide: UserService, useFactory: () => instance(this.mockedUserService) },
         { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
         { provide: MatDialog, useFactory: () => instance(this.mockedMatDialog) },
         { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
@@ -177,7 +175,7 @@ describe('MyAccountComponent', () => {
   let env: TestEnvironment;
   beforeEach(() => {
     env = new TestEnvironment(
-      new SFUser({
+      new User({
         name: 'bob smith',
         username: 'bobusername',
         email: 'bob@example.com',
@@ -328,7 +326,7 @@ describe('MyAccountComponent', () => {
 
   it('handles network error', fakeAsync(() => {
     const technicalDetails = 'squirrel chewed thru line. smoke lost.';
-    when(env.mockedSFUserService.onlineUpdateCurrentUserAttributes(anything())).thenReject({ stack: technicalDetails });
+    when(env.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).thenReject({ stack: technicalDetails });
 
     const originalName = env.component.userFromDatabase.name;
     expect(env.component.formGroup.get('name').value).toEqual(originalName, 'test setup problem');
@@ -369,7 +367,7 @@ describe('MyAccountComponent', () => {
 
   it('handles network error for non-text inputs', fakeAsync(() => {
     const technicalDetails = 'squirrel chewed thru line. smoke lost.';
-    when(env.mockedSFUserService.onlineUpdateCurrentUserAttributes(anything())).thenReject({ stack: technicalDetails });
+    when(env.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).thenReject({ stack: technicalDetails });
 
     const originalvalue = env.component.userFromDatabase.contactMethod;
     expect(env.component.formGroup.get('contactMethod').value).toEqual(originalvalue, 'test setup problem');
@@ -842,7 +840,7 @@ describe('MyAccountComponent', () => {
       when(env.mockedMatDialogRefForCUDC.afterClosed()).thenReturn(of('update'));
       when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForCUDC));
 
-      env.component.userFromDatabase = new SFUser({ username: originalUsername });
+      env.component.userFromDatabase = new User({ username: originalUsername });
       env.component.formGroup.controls.username.setValue(newUsername);
       expect(env.component.userFromDatabase.username).toEqual(originalUsername, 'setup');
       expect(env.component.userFromDatabase.username).not.toEqual(newUsername, 'setup');
@@ -850,8 +848,8 @@ describe('MyAccountComponent', () => {
       env.component.updateClicked('username');
       flush();
 
-      const [argsToUpdateUserAttributes] = capture(env.mockedSFUserService.onlineUpdateCurrentUserAttributes).last();
-      const expectedArgument: Partial<SFUser> = {};
+      const [argsToUpdateUserAttributes] = capture(env.mockedUserService.onlineUpdateCurrentUserAttributes).last();
+      const expectedArgument: Partial<User> = {};
       expectedArgument.username = newUsername;
       expect(argsToUpdateUserAttributes).toEqual(expectedArgument);
 
@@ -866,7 +864,7 @@ describe('MyAccountComponent', () => {
       when(env.mockedMatDialogRefForCUDC.afterClosed()).thenReturn(of('cancel'));
       when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForCUDC));
 
-      env.component.userFromDatabase = new SFUser({ username: originalUsername });
+      env.component.userFromDatabase = new User({ username: originalUsername });
       env.component.formGroup.controls.username.setValue(newUsername);
       expect(env.component.userFromDatabase.username).toEqual(originalUsername, 'setup');
       expect(env.component.userFromDatabase.username).not.toEqual(newUsername, 'setup');
@@ -877,7 +875,7 @@ describe('MyAccountComponent', () => {
         newUsername,
         'input should still have new and dirty data'
       );
-      verify(env.mockedSFUserService.onlineUpdateCurrentUserAttributes(anything())).never();
+      verify(env.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).never();
     });
   });
 
@@ -896,7 +894,7 @@ describe('MyAccountComponent', () => {
       env.fixture.detectChanges();
       expect(env.unlinkParatextButton.nativeElement.textContent).toContain('Remove link');
       env.clickButton(env.unlinkParatextButton);
-      verify(env.mockedSFUserService.onlineUnlinkParatextAccount()).once();
+      verify(env.mockedUserService.onlineUnlinkParatextAccount()).once();
       expect(env.paratextLinkLabel).toBeNull();
       expect(env.connectParatextButton.nativeElement.textContent).toContain('Connect to Paratext');
     }));
@@ -927,7 +925,7 @@ describe('MyAccountComponent', () => {
       when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForDAD));
       env.clickButton(env.deleteAccountButton);
       verify(env.mockedMatDialog.open(anything(), anything())).once();
-      verify(env.mockedSFUserService.onlineDelete(anything())).once();
+      verify(env.mockedUserService.onlineDelete(anything())).once();
       expect().nothing();
     }));
 
@@ -936,7 +934,7 @@ describe('MyAccountComponent', () => {
       when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForDAD));
       env.clickButton(env.deleteAccountButton);
       verify(env.mockedMatDialog.open(anything(), anything())).once();
-      verify(env.mockedSFUserService.onlineDelete(anything())).never();
+      verify(env.mockedUserService.onlineDelete(anything())).never();
       expect().nothing();
     }));
   });
