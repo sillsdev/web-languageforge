@@ -21,8 +21,5 @@ namespace SIL.XForge.Scripture.Models
         [HasMany]
         [SchemaInfo(Inverse = nameof(TextResource.Project), IsDependent = true)]
         public IReadOnlyList<TextResource> Texts { get; set; }
-        [HasMany]
-        [SchemaInfo(Inverse = nameof(QuestionResource.Project), IsDependent = true)]
-        public IReadOnlyList<QuestionResource> Questions { get; set; }
     }
 }

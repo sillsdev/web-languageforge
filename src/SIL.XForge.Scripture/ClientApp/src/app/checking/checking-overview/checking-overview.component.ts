@@ -1,16 +1,23 @@
 import { MdcDialog, MdcDialogConfig } from '@angular-mdc/web';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { clone } from '@orbit/utils';
+import { ObjectId } from 'bson';
 import { Observable } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 
 import { UserRef } from 'xforge-common/models/user';
+import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { UserService } from 'xforge-common/user.service';
 import { Question, QuestionSource } from '../../core/models/question';
+import { QuestionData } from '../../core/models/question-data';
 import { ScrVers } from '../../core/models/scripture/scr-vers';
 import { VerseRef } from '../../core/models/scripture/verse-ref';
-import { ScrVersType, VerseRefData } from '../../core/models/sfdomain-model.generated';
+import { ScrVersType } from '../../core/models/scripture/versification';
 import { SFProjectRef } from '../../core/models/sfproject';
+import { Text } from '../../core/models/text';
 import { QuestionService } from '../../core/question.service';
+import { SFProjectService } from '../../core/sfproject.service';
 import { SFAdminAuthGuard } from '../../shared/sfadmin-auth.guard';
 import {
   QuestionDialogComponent,
@@ -23,8 +30,12 @@ import {
   templateUrl: './checking-overview.component.html',
   styleUrls: ['./checking-overview.component.scss']
 })
-export class CheckingOverviewComponent implements OnInit {
+export class CheckingOverviewComponent extends SubscriptionDisposable implements OnInit, OnDestroy {
+  itemVisible: { [textId: string]: boolean } = {};
+  questions: { [textId: string]: QuestionData } = {};
   isProjectAdmin$: Observable<boolean>;
+  texts: Text[];
+  textsByBook: { [bookId: string]: Text };
 
   private projectId: string;
 
@@ -32,48 +43,125 @@ export class CheckingOverviewComponent implements OnInit {
     private readonly activatedRoute: ActivatedRoute,
     private readonly dialog: MdcDialog,
     private readonly adminAuthGuard: SFAdminAuthGuard,
-    private readonly userService: UserService,
-    private readonly questionService: QuestionService
-  ) {}
-
-  ngOnInit() {
-    this.activatedRoute.params.subscribe(params => {
-      this.projectId = params['id'];
-      this.isProjectAdmin$ = this.adminAuthGuard.allowTransition(this.projectId);
-    });
+    private readonly projectService: SFProjectService,
+    private readonly questionService: QuestionService,
+    private readonly userService: UserService
+  ) {
+    super();
   }
 
-  questionDialog(newMode = false) {
-    const dialogConfig = {
+  ngOnInit(): void {
+    this.subscribe(
+      this.activatedRoute.params.pipe(
+        tap(params => {
+          this.projectId = params['projectId'];
+          this.isProjectAdmin$ = this.adminAuthGuard.allowTransition(this.projectId);
+        }),
+        switchMap(() => this.projectService.getTexts(this.projectId))
+      ),
+      r => {
+        this.textsByBook = {};
+        this.texts = [];
+        r.forEach(t => {
+          this.textsByBook[t.bookId] = t;
+          this.texts.push(t);
+          this.bindQuestionData(t.id);
+        });
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    for (const text of this.texts) {
+      this.unbindQuestionData(text.id);
+    }
+    super.ngOnDestroy();
+  }
+
+  questionCount(textId: string): number {
+    if (!(textId in this.questions)) {
+      return undefined;
+    }
+
+    return this.questions[textId].data.length;
+  }
+
+  questionDialog(editMode = false, textId?: string, questionIndex: number = 0): void {
+    let newQuestion: Question = { id: undefined, owner: undefined, project: undefined };
+    let question: Question;
+    if (editMode) {
+      if (textId == null || textId === '' || questionIndex == null || questionIndex < 0) {
+        throw new Error('Must supply valid textId and questionIndex in editMode');
+      }
+
+      question = this.questions[textId].data[questionIndex];
+      newQuestion = clone(question);
+    }
+    const dialogConfig: MdcDialogConfig<QuestionDialogData> = {
       data: {
-        newMode
-      } as QuestionDialogData
-    } as MdcDialogConfig;
+        editMode,
+        question
+      }
+    };
     const dialogRef = this.dialog.open(QuestionDialogComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe((result: QuestionDialogResult) => {
+    dialogRef.afterClosed().subscribe(async (result: QuestionDialogResult) => {
       if (result !== 'close') {
         const verseStart = VerseRef.fromStr(result.scriptureStart, ScrVers.English);
         const verseEnd = VerseRef.fromStr(result.scriptureEnd, ScrVers.English);
-        const question = new Question({
-          owner: new UserRef(this.userService.currentUserId),
-          project: new SFProjectRef(this.projectId),
-          source: QuestionSource.Created,
-          scriptureStart: new VerseRefDataConstructor(verseStart.book, verseStart.chapter, verseStart.verse),
-          scriptureEnd: new VerseRefDataConstructor(verseEnd.book, verseEnd.chapter, verseEnd.verse),
-          text: result.text
-        });
-        this.questionService.create(question);
+        const versification: string = ScrVersType[ScrVersType.English];
+        newQuestion.scriptureStart = {
+          book: verseStart.book,
+          chapter: verseStart.chapter,
+          verse: verseStart.verse,
+          versification
+        };
+        newQuestion.scriptureEnd = {
+          book: verseEnd.book,
+          chapter: verseEnd.chapter,
+          verse: verseEnd.verse,
+          versification
+        };
+        newQuestion.text = result.text;
+
+        if (editMode) {
+          this.questions[textId].replaceInList(question, newQuestion, questionIndex);
+        } else {
+          const newTextId = this.textIdFrom(verseStart.book);
+          const questionData = await this.questionService.connect(newTextId);
+          newQuestion.id = new ObjectId().toHexString();
+          newQuestion.owner = new UserRef(this.userService.currentUserId);
+          newQuestion.project = new SFProjectRef(this.projectId);
+          newQuestion.source = QuestionSource.Created;
+          questionData.insertInList(newQuestion);
+        }
       }
     });
   }
-}
 
-class VerseRefDataConstructor implements VerseRefData {
-  constructor(
-    public book?: string,
-    public chapter?: string,
-    public verse?: string,
-    public versification: ScrVersType = ScrVersType.English
-  ) {}
+  private async bindQuestionData(textId: string): Promise<void> {
+    if (textId == null) {
+      return;
+    }
+
+    await this.unbindQuestionData(textId);
+    const questionData: QuestionData = await this.questionService.connect(textId);
+    this.questions[textId] = questionData;
+  }
+
+  private async unbindQuestionData(textId: string): Promise<void> {
+    if (!(textId in this.questions)) {
+      return;
+    }
+
+    await this.questionService.disconnect(this.questions[textId]);
+    delete this.questions[textId];
+  }
+
+  private textIdFrom(bookId: string): string {
+    if (!(bookId in this.textsByBook)) {
+      return undefined;
+    }
+    return this.textsByBook[bookId].id;
+  }
 }

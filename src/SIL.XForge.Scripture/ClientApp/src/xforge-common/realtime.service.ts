@@ -40,12 +40,12 @@ export class RealtimeService {
     if (!this.connectedData.has(identity)) {
       const sharedbDoc = this.connection.get(underscore(identity.type) + '_data', identity.id);
       const store = this.getStore(identity.type);
-      const RealtimeDocType = this.domainModel.getRealtimeDataType(identity.type);
-      const realtimeDoc = new RealtimeDocType(new SharedbRealtimeDoc(sharedbDoc), store);
+      const RealtimeDataType = this.domainModel.getRealtimeDataType(identity.type);
+      const realtimeData = new RealtimeDataType(new SharedbRealtimeDoc(sharedbDoc), store);
       this.connectedData.set(
         identity,
         new Promise<any>((resolve, reject) => {
-          realtimeDoc.subscribe().then(() => resolve(realtimeDoc), err => reject(err));
+          realtimeData.subscribe().then(() => resolve(realtimeData), err => reject(err));
         })
       );
     }

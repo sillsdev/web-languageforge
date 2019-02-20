@@ -28,7 +28,6 @@ namespace SIL.XForge.Scripture.Services
 
         public IProjectDataMapper<SyncJobResource, SyncJobEntity> SyncJobMapper { get; set; }
         public IProjectDataMapper<TextResource, TextEntity> TextMapper { get; set; }
-        public IProjectDataMapper<QuestionResource, QuestionEntity> QuestionMapper { get; set; }
 
         protected override IRelationship<SFProjectEntity> GetRelationship(string relationshipName)
         {
@@ -41,8 +40,6 @@ namespace SIL.XForge.Scripture.Services
                         });
                 case nameof(SFProjectResource.Texts):
                     return OneToMany(TextMapper, t => t.ProjectRef);
-                case nameof(SFProjectResource.Questions):
-                    return OneToMany(QuestionMapper, q => q.ProjectRef);
             }
             return base.GetRelationship(relationshipName);
         }
@@ -65,7 +62,6 @@ namespace SIL.XForge.Scripture.Services
             {
                 await SyncJobMapper.DeleteAllAsync(id);
                 await TextMapper.DeleteAllAsync(id);
-                await QuestionMapper.DeleteAllAsync(id);
                 await _engineService.RemoveProjectAsync(id);
                 string syncDir = Path.Combine(_siteOptions.Value.SiteDir, "sync", id);
                 if (Directory.Exists(syncDir))

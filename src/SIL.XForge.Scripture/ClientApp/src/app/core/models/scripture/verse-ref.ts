@@ -1,5 +1,6 @@
 import { Canon } from './canon';
 import { ScrVers } from './scr-vers';
+import { ScrVersType } from './versification';
 
 /**
  * Stores a reference to a specific verse in Scripture.
@@ -345,15 +346,4 @@ export enum ValidStatusType {
   OutOfRange,
   VerseOutOfOrder,
   VerseRepeated
-}
-
-// note: elsewhere this is a string enum
-enum ScrVersType {
-  Unknown,
-  Original,
-  Septuagint,
-  Vulgate,
-  English,
-  RussianProtestant,
-  RussianOrthodox
 }

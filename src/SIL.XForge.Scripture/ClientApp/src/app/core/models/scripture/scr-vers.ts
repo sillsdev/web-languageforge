@@ -1,5 +1,5 @@
-import { ScrVersType } from '../sfdomain-model.generated';
 import { BookSet } from './book-set';
+import { ScrVersType } from './versification';
 
 /**
  * Accessor for getting information about a versification. This class has a small memory footprint so multiple ScrVers
@@ -26,12 +26,13 @@ export class ScrVers {
   private _type: ScrVersType;
   // private versInfo: Versification;
 
-  constructor(name?: string);
-  constructor(type?: ScrVersType) {
-    if (name != null) {
-      this.name = name;
-    } else if (type != null) {
-      this._type = type;
+  constructor(type?: ScrVersType | string) {
+    if (type != null) {
+      if (typeof type === 'string') {
+        this.name = type;
+      } else {
+        this._type = type;
+      }
     } else {
       throw new Error('Argument null');
     }

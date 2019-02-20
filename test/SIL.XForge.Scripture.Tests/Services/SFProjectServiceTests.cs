@@ -126,7 +126,6 @@ namespace SIL.XForge.Scripture.Services
                 Assert.That(env.Entities.Contains("project01"), Is.False);
                 await env.SyncJobMapper.Received().DeleteAllAsync("project01");
                 await env.TextMapper.Received().DeleteAllAsync("project01");
-                await env.QuestionMapper.Received().DeleteAllAsync("project01");
                 await env.EngineService.Received().RemoveProjectAsync("project01");
                 Assert.That(Directory.Exists(syncDir), Is.False);
             }
@@ -140,13 +139,11 @@ namespace SIL.XForge.Scripture.Services
                 EngineService = Substitute.For<IEngineService>();
                 SyncJobMapper = Substitute.For<IProjectDataMapper<SyncJobResource, SyncJobEntity>>();
                 TextMapper = Substitute.For<IProjectDataMapper<TextResource, TextEntity>>();
-                QuestionMapper = Substitute.For<IProjectDataMapper<QuestionResource, QuestionEntity>>();
                 Service = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, EngineService,
                     SiteOptions)
                 {
                     SyncJobMapper = SyncJobMapper,
-                    TextMapper = TextMapper,
-                    QuestionMapper = QuestionMapper
+                    TextMapper = TextMapper
                 };
             }
 
@@ -154,7 +151,6 @@ namespace SIL.XForge.Scripture.Services
             public IEngineService EngineService { get; }
             public IProjectDataMapper<SyncJobResource, SyncJobEntity> SyncJobMapper { get; }
             public IProjectDataMapper<TextResource, TextEntity> TextMapper { get; }
-            public IProjectDataMapper<QuestionResource, QuestionEntity> QuestionMapper { get; }
 
             protected override IEnumerable<SFProjectEntity> GetInitialData()
             {

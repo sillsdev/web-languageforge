@@ -5,7 +5,7 @@ import { RealtimeDoc } from 'xforge-common/realtime-doc';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { Text } from './text';
 
-export class TextData extends RealtimeData<DeltaStatic> {
+export class TextData extends RealtimeData<DeltaStatic, DeltaStatic> {
   static readonly TYPE = Text.TYPE;
 
   constructor(doc: RealtimeDoc, store: RealtimeOfflineStore) {

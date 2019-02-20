@@ -1,9 +1,9 @@
 <div fxLayout="column" fxLayoutAlign="space-around">
   <div fxLayout="row wrap" fxLayoutAlign="start center">
-    <h2 fxFlex fxLayoutAlign="start center"><mdc-icon>notes</mdc-icon> Available Texts</h2>
-    <div fxLayoutAlign="end stretch" *ngIf="(isProjectAdmin$ | async)">
+    <h2 fxFlex fxLayoutAlign="start center"><mdc-icon>notes</mdc-icon> Texts with Questions</h2>
+    <div fxLayoutAlign="end center" *ngIf="(isProjectAdmin$ | async)">
       <div>
-        <button mdc-button (click)="questionDialog(true)" id="add-question-button">
+        <button mdc-button (click)="questionDialog()" id="add-question-button">
           <mdc-icon>note_add</mdc-icon> <span fxHide.xs>Add question</span>
         </button>
       </div>
@@ -11,6 +11,33 @@
   </div>
 
   <div fxLayout="row wrap" fxLayoutAlign="start center">
-    <button mdc-button (click)="questionDialog()" *ngIf="(isProjectAdmin$ | async)"><mdc-icon>edit</mdc-icon></button>
+    <div fxFlex *ngIf="(isProjectAdmin$ | async)">
+      <mdc-list dense id="text-with-questions-list">
+        <ng-container *ngFor="let text of texts">
+          <mdc-list-item
+            *ngIf="questionCount(text.id) > 0"
+            (selectionChange)="itemVisible[text.id] = !itemVisible[text.id]"
+          >
+            <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <span fxFlex>
+                <mdc-icon mdcListItemMeta>keyboard_arrow_{{ itemVisible[text.id] ? "down" : "right" }} </mdc-icon>
+                {{ text?.name }}
+              </span>
+              <span fxLayoutAlign="end center"> {{ questionCount(text.id) }} questions</span>
+            </div>
+          </mdc-list-item>
+          <div fxLayout="column" *ngIf="itemVisible[text.id]">
+            <mdc-list-item *ngFor="let question of questions[text.id].data; let i = index">
+              <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+                <span fxFlex>
+                  <button mdc-button (click)="questionDialog(true, text.id, i)"><mdc-icon>edit</mdc-icon></button>
+                  {{ question?.text }}
+                </span>
+              </div>
+            </mdc-list-item>
+          </div>
+        </ng-container>
+      </mdc-list>
+    </div>
   </div>
 </div>
