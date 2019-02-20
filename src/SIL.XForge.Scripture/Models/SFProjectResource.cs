@@ -12,14 +12,9 @@ namespace SIL.XForge.Scripture.Models
         public CheckingConfig CheckingConfig { get; set; }
         [Attr]
         public TranslateConfig TranslateConfig { get; set; }
-        [Attr]
-        public InputSystem InputSystem { get; set; }
 
         [HasOne]
         public SyncJobResource ActiveSyncJob { get; set; }
-        [HasMany]
-        [SchemaInfo(Inverse = nameof(SFProjectUserResource.Project), IsDependent = true)]
-        public IReadOnlyList<SFProjectUserResource> Users { get; set; }
         [HasMany]
         [SchemaInfo(Inverse = nameof(TextResource.Project), IsDependent = true)]
         public IReadOnlyList<TextResource> Texts { get; set; }

@@ -1,5 +1,6 @@
 import { RealtimeDataConstructor } from './realtime-data';
 import { ResourceConstructor, ResourceRefConstructor } from './resource';
+import { User, UserRef } from './user';
 
 export interface DomainModelConfig {
   resourceTypes: ResourceConstructor[];
@@ -19,7 +20,9 @@ export class DomainModel {
 
   constructor(settings: DomainModelConfig) {
     this.resourceTypes = this.createMap(settings.resourceTypes);
+    this.resourceTypes.set(User.TYPE, User);
     this.resourceRefTypes = this.createMap(settings.resourceRefTypes);
+    this.resourceRefTypes.set(UserRef.TYPE, UserRef);
     this.realtimeDataTypes = this.createMap(settings.realtimeDataTypes);
   }
 

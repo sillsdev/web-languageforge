@@ -4,16 +4,15 @@ import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testi
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { RecordIdentity } from '@orbit/data';
-import { Resource } from '@orbit/jsonapi';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { GetAllParameters, QueryResults } from '../json-api.service';
-import { Project } from '../models/project';
-import { ProjectUserRef } from '../models/project-user';
-import { User } from '../models/user';
+import { GetAllParameters, MapQueryResults } from '../json-api.service';
+import { Project, ProjectRef } from '../models/project';
+import { ProjectUser, ProjectUserRef } from '../models/project-user';
+import { Resource } from '../models/resource';
+import { User, UserRef } from '../models/user';
 import { UICommonModule } from '../ui-common.module';
 import { UserService } from '../user.service';
 import { SaDeleteDialogComponent } from './sa-delete-dialog.component';
@@ -193,24 +192,26 @@ describe('SaUsersComponent', () => {
   }));
 });
 
-class TestUser extends User {
-  static readonly TYPE = 'user';
+class TestProjectUser extends ProjectUser {
+  static readonly TYPE = 'projectUser';
 
-  constructor(init?: Partial<User>) {
-    super(TestUser.TYPE, init);
+  constructor(init?: Partial<TestProjectUser>) {
+    super(TestProjectUser.TYPE, init);
   }
 }
+
 class TestProjectUserRef extends ProjectUserRef {
-  static readonly TYPE = 'projectUser';
+  static readonly TYPE = TestProjectUser.TYPE;
 
   constructor(id?: string) {
     super(TestProjectUserRef.TYPE, id);
   }
 }
+
 class TestProject extends Project {
   static readonly TYPE = 'project';
 
-  constructor(init?: Partial<Project>) {
+  constructor(init?: Partial<TestProject>) {
     super(TestProject.TYPE, init);
   }
 
@@ -219,19 +220,11 @@ class TestProject extends Project {
   }
 }
 
-class TestQueryResults<T> implements QueryResults<T> {
-  constructor(public readonly results: T, public readonly totalPagedCount?: number) {}
+class TestProjectRef extends ProjectRef {
+  static readonly TYPE = TestProject.TYPE;
 
-  getIncluded<TInclude extends Resource>(_identity: RecordIdentity): TInclude {
-    return (new TestProject({ id: 'project01', projectName: 'Project 01' }) as unknown) as TInclude;
-  }
-
-  getManyIncluded<TInclude extends Resource>(_identities: RecordIdentity[]): TInclude[] {
-    if (_identities == null) {
-      return [];
-    }
-
-    return _identities.map(i => this.getIncluded(i));
+  constructor(id?: string) {
+    super(TestProjectRef.TYPE, id);
   }
 }
 
@@ -250,26 +243,31 @@ class TestEnvironment {
   mockedUserService: UserService;
   overlayContainer: OverlayContainer;
 
-  private users: User[] = [
-    new TestUser({
+  private readonly users: User[] = [
+    new User({
       id: 'user01',
       name: 'User 01',
       email: 'user01@example.com',
-      projects: [new TestProjectUserRef('project01')],
+      projects: [new TestProjectUserRef('projectuser01')],
       active: true
     }),
-    new TestUser({
+    new User({
       id: 'user02',
       name: 'User 02',
       email: 'user02@example.com',
       active: true
     }),
-    new TestUser({
+    new User({
       id: 'user03',
       email: 'user03@example.com',
-      projects: [new TestProjectUserRef('project01')],
+      projects: [new TestProjectUserRef('projectuser03')],
       active: false
     })
+  ];
+  private readonly included: Resource[] = [
+    new TestProjectUser({ id: 'projectuser01', user: new UserRef('user01'), project: new TestProjectRef('project01') }),
+    new TestProjectUser({ id: 'projectuser03', user: new UserRef('user03'), project: new TestProjectRef('project01') }),
+    new TestProject({ id: 'project01', projectName: 'Project 01' })
   ];
 
   constructor() {
@@ -296,12 +294,12 @@ class TestEnvironment {
 
   setupUserData(): void {
     when(this.mockedUserService.onlineSearch(anything(), anything(), anything(), anything())).thenCall(
-      (term$: Observable<string>, parameters$: Observable<GetAllParameters<TestUser>>, reload$: Observable<void>) => {
+      (term$: Observable<string>, parameters$: Observable<GetAllParameters<User>>, reload$: Observable<void>) => {
         const results = [
           // page 1
-          new TestQueryResults<TestUser[]>(this.users, this.users.length),
+          new MapQueryResults<User[]>(this.users, this.users.length, this.included),
           // page 2
-          new TestQueryResults<TestUser[]>([this.users[2]], 1)
+          new MapQueryResults<User[]>([this.users[2]], 1, this.included)
         ];
 
         return combineLatest(term$, parameters$, reload$).pipe(map((_value, index) => results[index]));
@@ -392,7 +390,7 @@ class TestEnvironment {
 
   private setupThisUserData(users: User[] = []): void {
     when(this.mockedUserService.onlineSearch(anything(), anything(), anything(), anything())).thenReturn(
-      of(new TestQueryResults<User[]>(users, 0))
+      of(new MapQueryResults<User[]>(users, 0, this.included))
     );
   }
 }

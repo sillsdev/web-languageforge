@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace SIL.XForge.Services
+namespace SIL.XForge.Utils
 {
     public sealed class ParameterRebinder : ExpressionVisitor
     {

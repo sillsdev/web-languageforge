@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 
 import { AuthService } from 'xforge-common/auth.service';
 import { LocationService } from 'xforge-common/location.service';
+import { User } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
-import { SFUser } from './core/models/sfuser';
-import { SFUserService } from './core/sfuser.service';
+import { UserService } from 'xforge-common/user.service';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 
 @Component({
@@ -21,13 +21,13 @@ export class AppComponent extends SubscriptionDisposable implements OnInit {
   today = new Date();
   version = '9.9.9';
 
-  currentUser$: Observable<SFUser>;
+  currentUser$: Observable<User>;
 
   constructor(
     private readonly router: Router,
     private readonly authService: AuthService,
     private readonly locationService: LocationService,
-    private readonly sfUserService: SFUserService,
+    private readonly userService: UserService,
     private readonly noticeService: NoticeService
   ) {
     super();
@@ -36,7 +36,7 @@ export class AppComponent extends SubscriptionDisposable implements OnInit {
   async ngOnInit(): Promise<void> {
     this.authService.init();
     if (await this.isLoggedIn) {
-      this.currentUser$ = this.sfUserService.getCurrentUser();
+      this.currentUser$ = this.userService.getCurrentUser();
     }
   }
 

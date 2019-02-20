@@ -8,6 +8,8 @@ namespace SIL.XForge.DataAccess
 {
     public interface IRepository<T> where T : Entity
     {
+        void Init();
+
         IQueryable<T> Query();
 
         Task<bool> InsertAsync(T entity);

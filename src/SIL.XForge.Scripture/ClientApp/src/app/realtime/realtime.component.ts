@@ -4,13 +4,13 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Site } from 'xforge-common/models/site';
+import { User } from 'xforge-common/models/user';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
+import { UserService } from 'xforge-common/user.service';
 import { nameof } from 'xforge-common/utils';
 import { SFProject } from '../core/models/sfproject';
-import { SFUser } from '../core/models/sfuser';
 import { Text } from '../core/models/text';
 import { SFProjectService } from '../core/sfproject.service';
-import { SFUserService } from '../core/sfuser.service';
 
 interface Option {
   id: string;
@@ -36,9 +36,9 @@ export class RealtimeComponent extends SubscriptionDisposable implements OnInit 
   selectedProject: ProjectOption = null;
   selectedText: Option = null;
 
-  private currentUser: SFUser;
+  private currentUser: User;
 
-  constructor(private readonly projectService: SFProjectService, private readonly userService: SFUserService) {
+  constructor(private readonly projectService: SFProjectService, private readonly userService: UserService) {
     super();
   }
 

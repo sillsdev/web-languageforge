@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Routing;
 
 namespace SIL.XForge.Services
 {
-    public class XForgeRpcHttpRouter : IRouter
+    public class XFRpcHttpRouter : IRouter
     {
         private readonly RpcHttpRouter _internalRouter;
 
-        public XForgeRpcHttpRouter()
+        public XFRpcHttpRouter()
         {
-            _internalRouter = new RpcHttpRouter(new XForgeRpcRouteProvider());
+            _internalRouter = new RpcHttpRouter(new XFRpcRouteProvider());
         }
 
         public VirtualPathData GetVirtualPath(VirtualPathContext context)

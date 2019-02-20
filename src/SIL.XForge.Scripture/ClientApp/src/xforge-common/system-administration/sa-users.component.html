@@ -15,16 +15,18 @@
         <table mat-table fxFill id="users-table" [dataSource]="userRows">
           <ng-container matColumnDef="avatar">
             <td mat-cell *matCellDef="let userRow; let i = index">
-              <div *ngIf="userRow.active"><app-avatar [user]="userRow" size="32" [round]="false"> </app-avatar></div>
+              <div *ngIf="userRow.user.active">
+                <app-avatar [user]="userRow.user" size="32" [round]="false"> </app-avatar>
+              </div>
             </td>
           </ng-container>
           <ng-container matColumnDef="name">
             <td mat-cell *matCellDef="let userRow">
-              <div *ngIf="userRow.active">
-                <strong>{{ userRow.name }}</strong>
+              <div *ngIf="userRow.user.active">
+                <strong>{{ userRow.user.name }}</strong>
               </div>
-              <div *ngIf="!userRow.active">Awaiting response from</div>
-              {{ userRow.email }}
+              <div *ngIf="!userRow.user.active">Awaiting response from</div>
+              {{ userRow.user.email }}
             </td>
           </ng-container>
           <ng-container matColumnDef="projects">
@@ -40,32 +42,37 @@
           </ng-container>
           <ng-container matColumnDef="remove">
             <td mat-cell *matCellDef="let userRow" class="remove-cell">
-              <button *ngIf="userRow.active" mat-icon-button class="remove-user" (click)="removeUser(userRow.id)">
+              <button
+                *ngIf="userRow.user.active"
+                mat-icon-button
+                class="remove-user"
+                (click)="removeUser(userRow.user.id)"
+              >
                 <mat-icon>clear</mat-icon>
               </button>
 
               <!-- 2 buttons below are 1 button displayed mutually exclusively, different style on breakpoints -->
               <button
-                *ngIf="!userRow.active"
+                *ngIf="!userRow.user.active"
                 fxHide.lt-sm
                 fxHide.md
                 fxShow
                 mat-stroked-button
                 color="warn"
                 class="cancel-invite"
-                (click)="removeUser(userRow.id)"
+                (click)="removeUser(userRow.user.id)"
               >
                 Cancel invite
               </button>
               <button
-                *ngIf="!userRow.active"
+                *ngIf="!userRow.user.active"
                 fxHide
                 fxShow.lt-sm
                 fxShow.md
                 mat-icon-button
                 color="warn"
                 class="cancel-invite"
-                (click)="removeUser(userRow.id)"
+                (click)="removeUser(userRow.user.id)"
               >
                 <mat-icon>clear</mat-icon>
               </button>
@@ -75,7 +82,7 @@
           <tr
             mat-row
             *matRowDef="let userRow; columns: ['avatar', 'name', 'projects', 'remove']"
-            (click)="editUser(userRow.id)"
+            (click)="editUser(userRow.user.id)"
           ></tr>
         </table>
 

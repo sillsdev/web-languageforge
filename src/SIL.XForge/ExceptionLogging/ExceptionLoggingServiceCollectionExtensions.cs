@@ -5,11 +5,11 @@ using Bugsnag;
 using Bugsnag.AspNet.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using SIL.XForge.ExceptionLogging;
 
-namespace SIL.XForge.ExceptionLogging
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ExceptionLoggingServiceCollectionExtensions
     {

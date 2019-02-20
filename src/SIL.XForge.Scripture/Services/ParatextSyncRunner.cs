@@ -14,7 +14,6 @@ using ShareDB.RichText;
 using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
-using SIL.XForge.Scripture.Configuration;
 using SIL.XForge.Scripture.Models;
 
 namespace SIL.XForge.Scripture.Services
@@ -239,7 +238,7 @@ namespace SIL.XForge.Scripture.Services
         private async Task UpdateProgress()
         {
             _step++;
-            double percentCompleted = (double) _step / _stepCount;
+            double percentCompleted = (double)_step / _stepCount;
             _job = await _jobs.UpdateAsync(_job, u => u
                 .Set(j => j.PercentCompleted, percentCompleted));
         }
@@ -292,10 +291,10 @@ namespace SIL.XForge.Scripture.Services
             XElement bookElem = oldUsxElem.Element("book");
             if (bookElem == null)
                 throw new InvalidOperationException("Invalid USX data, missing 'book' element.");
-            XElement newUsxElem = _deltaUsxMapper.ToUsx((string) oldUsxElem.Attribute("version"),
-                (string) bookElem.Attribute("code"), (string) bookElem, doc.Data);
+            XElement newUsxElem = _deltaUsxMapper.ToUsx((string)oldUsxElem.Attribute("version"),
+                (string)bookElem.Attribute("code"), (string)bookElem, doc.Data);
 
-            var revision = (string) bookTextElem.Attribute("revision");
+            var revision = (string)bookTextElem.Attribute("revision");
 
             string bookText;
             if (XNode.DeepEquals(oldUsxElem, newUsxElem))

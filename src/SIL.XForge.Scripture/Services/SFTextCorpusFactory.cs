@@ -15,14 +15,14 @@ using SIL.XForge.Scripture.Models;
 
 namespace SIL.XForge.Scripture.Services
 {
-    public class XForgeTextCorpusFactory : ITextCorpusFactory
+    public class SFTextCorpusFactory : ITextCorpusFactory
     {
         private readonly IMongoClient _mongoClient;
         private readonly Machine.WebApi.DataAccess.IRepository<Project> _machineProjects;
         private readonly IRepository<TextEntity> _texts;
         private readonly IOptions<DataAccessOptions> _dataAccessOptions;
 
-        public XForgeTextCorpusFactory(IOptions<DataAccessOptions> dataAccessOptions,
+        public SFTextCorpusFactory(IOptions<DataAccessOptions> dataAccessOptions,
             Machine.WebApi.DataAccess.IRepository<Project> machineProjects, IRepository<TextEntity> texts)
         {
             _dataAccessOptions = dataAccessOptions;
@@ -72,7 +72,7 @@ namespace SIL.XForge.Scripture.Services
                     FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter
                         .Eq("_id", $"{text.Id}:{suffix}");
                     BsonDocument doc = await textDataColl.Find(filter).FirstAsync();
-                    texts.Add(new XForgeScriptureText(wordTokenizer, project.Id, doc));
+                    texts.Add(new SFScriptureText(wordTokenizer, project.Id, doc));
                 }
             }
 

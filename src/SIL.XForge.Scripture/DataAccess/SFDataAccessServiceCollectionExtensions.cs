@@ -1,10 +1,9 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
+using SIL.XForge.Models;
 using SIL.XForge.Scripture.Models;
 
-namespace SIL.XForge.Scripture.DataAccess
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class SFDataAccessServiceCollectionExtensions
     {
@@ -13,10 +12,11 @@ namespace SIL.XForge.Scripture.DataAccess
         {
             services.AddDataAccess(configuration);
 
-            var options = configuration.GetOptions<DataAccessOptions>();
-            services.AddMongoRepository<SFProjectEntity>(options.MongoDatabaseName, "sf_projects");
-            services.AddMongoRepository<SyncJobEntity>(options.MongoDatabaseName, "sync_jobs");
-            services.AddMongoRepository<TextEntity>(options.MongoDatabaseName, "texts");
+            DataAccessClassMap.RegisterConcreteClass<ProjectUserEntity, SFProjectUserEntity>();
+
+            services.AddMongoRepository<SFProjectEntity>("sf_projects");
+            services.AddMongoRepository<SyncJobEntity>("sync_jobs");
+            services.AddMongoRepository<TextEntity>("texts");
 
             return services;
         }

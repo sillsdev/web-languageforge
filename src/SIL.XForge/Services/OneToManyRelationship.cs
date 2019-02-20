@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
+using SIL.XForge.Utils;
 
 namespace SIL.XForge.Services
 {
@@ -31,8 +32,7 @@ namespace SIL.XForge.Services
         private Expression<Func<TOtherEntity, bool>> CreateEqualPredicate(string id)
         {
             ParameterExpression ePar = Expression.Parameter(typeof(TOtherEntity), "e");
-            var e = new ParameterRebinder(ePar);
-            var getter = (MemberExpression) e.Visit(_getFieldExpr.Body);
+            var getter = (MemberExpression)ExpressionUtils.RebindParameter(ePar, _getFieldExpr);
             BinaryExpression resultBody = Expression.Equal(getter, Expression.Constant(id, typeof(string)));
             return Expression.Lambda<Func<TOtherEntity, bool>>(resultBody, ePar);
         }

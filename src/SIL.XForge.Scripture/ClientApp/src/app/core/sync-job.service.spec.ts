@@ -3,12 +3,12 @@ import { inject, TestBed } from '@angular/core/testing';
 import { instance, mock } from 'ts-mockito';
 
 import { JsonApiService } from 'xforge-common/json-api.service';
-import { SFUserService } from './sfuser.service';
+import { UserService } from 'xforge-common/user.service';
 import { SyncJobService } from './sync-job.service';
 
 describe('SyncJobService', () => {
   const mockedJsonApiService = mock(JsonApiService);
-  const mockedSFUserService = mock(SFUserService);
+  const mockedUserService = mock(UserService);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -16,7 +16,7 @@ describe('SyncJobService', () => {
       providers: [
         SyncJobService,
         { provide: JsonApiService, useFactory: () => instance(mockedJsonApiService) },
-        { provide: SFUserService, useFactory: () => instance(mockedSFUserService) }
+        { provide: UserService, useFactory: () => instance(mockedUserService) }
       ]
     });
   });

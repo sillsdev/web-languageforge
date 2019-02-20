@@ -1,4 +1,4 @@
-namespace SIL.XForge.Scripture.Configuration
+namespace SIL.XForge.Configuration
 {
     public class RealtimeOptions
     {

@@ -4,44 +4,22 @@ import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, NO_ERRORS_SCHEMA } from '@angular
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RecordIdentity } from '@orbit/data';
-import { Resource } from '@orbit/jsonapi';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito/lib/ts-mockito';
 
-import { QueryResults } from '../json-api.service';
+import { MapQueryResults } from '../json-api.service';
 import { User } from '../models/user';
 import { NoticeService } from '../notice.service';
 import { UICommonModule } from '../ui-common.module';
 import { UserService } from '../user.service';
 import { SaUserEntryComponent } from './sa-user-entry.component';
 
-class TestUser extends User {
-  static readonly TYPE = 'user';
-
-  constructor(init?: Partial<User>) {
-    super(TestUser.TYPE, init);
-  }
-}
-
-class TestQueryResults<T> implements QueryResults<T> {
-  constructor(public readonly results: T, public readonly totalPagedCount?: number) {}
-
-  getIncluded<TInclude extends Resource>(_identity: RecordIdentity): TInclude {
-    return null;
-  }
-
-  getManyIncluded<TInclude extends Resource>(_identity: RecordIdentity[]): TInclude[] {
-    return [];
-  }
-}
-
 class TestUserEntryComponent {
   component: SaUserEntryComponent;
   fixture: ComponentFixture<SaUserEntryComponent>;
   mockedUserService: UserService;
   mockedNoticeService: NoticeService;
-  testUser = new TestUser({
+  testUser = new User({
     id: 'user01',
     email: 'user01@example.com',
     name: 'User 01',
@@ -55,7 +33,7 @@ class TestUserEntryComponent {
   constructor() {
     this.mockedUserService = mock(UserService);
     this.mockedNoticeService = mock(NoticeService);
-    const updatedUser = new TestUser({
+    const updatedUser = new User({
       id: 'user01',
       name: 'Updated Name',
       username: 'updatedusername'
@@ -156,7 +134,7 @@ class TestUserEntryComponent {
   }
 
   useExistingUser(): void {
-    when(this.mockedUserService.onlineGet(anything())).thenReturn(of(new TestQueryResults(this.testUser)));
+    when(this.mockedUserService.onlineGet(anything())).thenReturn(of(new MapQueryResults(this.testUser)));
     // set the editUserId to display the details of the test user
     this.component.editUserId = 'user01';
     this.fixture.detectChanges();

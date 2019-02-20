@@ -1,16 +1,16 @@
 using EdjCase.JsonRpc.Router.Abstractions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using SIL.XForge.Services;
 
-namespace SIL.XForge.Services
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class JsonRpcServiceCollectionExtensions
     {
         public static IServiceCollection AddXFJsonRpc(this IServiceCollection services)
         {
-            services.AddScoped<IRpcInvoker, XForgeRpcInvoker>();
+            services.AddScoped<IRpcInvoker, XFRpcInvoker>();
             services.AddJsonRpc().WithOptions(options =>
                 {
                     options.JsonSerializerSettings = new JsonSerializerSettings

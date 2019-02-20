@@ -45,6 +45,7 @@ namespace SIL.XForge.Services
             var config = new MapperConfiguration(cfg =>
                 {
                     cfg.ValidateInlineMaps = false;
+                    cfg.AddProfile(new XFMapperProfile(SiteAuthority));
                     SetupMapper(cfg);
                 });
             Mapper = config.CreateMapper();

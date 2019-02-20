@@ -1,24 +1,17 @@
-import { Injectable } from '@angular/core';
-
 import { JsonApiService } from './json-api.service';
 import { ProjectUser } from './models/project-user';
+import { UserRef } from './models/user';
 import { ResourceService } from './resource.service';
 
-@Injectable()
 export abstract class ProjectUserService<T extends ProjectUser = ProjectUser> extends ResourceService {
-  constructor(
-    type: string,
-    jsonApiService: JsonApiService,
-    private readonly projectType: string,
-    private readonly userType: string
-  ) {
+  constructor(type: string, jsonApiService: JsonApiService, private readonly projectType: string) {
     super(type, jsonApiService);
   }
 
   onlineCreate(projectId: string, userId: string, role?: string): Promise<T> {
     const init: Partial<ProjectUser> = {
       project: this.jsonApiService.newResourceRef({ type: this.projectType, id: projectId }),
-      user: this.jsonApiService.newResourceRef({ type: this.userType, id: userId }),
+      user: new UserRef(userId),
       role
     };
     return this.jsonApiService.onlineCreate(this.jsonApiService.newResource(this.type, init) as T);

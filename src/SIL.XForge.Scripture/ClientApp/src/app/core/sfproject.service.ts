@@ -35,16 +35,4 @@ export class SFProjectService extends ProjectService<SFProject> {
       this.authService.accessToken
     );
   }
-
-  protected isSearchMatch(record: Record, value: string): boolean {
-    if (super.isSearchMatch(record, value)) {
-      return true;
-    }
-
-    const inputSystem = record.attributes[nameof<SFProject>('inputSystem')] as InputSystem;
-    if (inputSystem != null && inputSystem.languageName.toLowerCase().includes(value)) {
-      return true;
-    }
-    return false;
-  }
 }

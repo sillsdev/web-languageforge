@@ -1,8 +1,9 @@
 using JsonApiDotNetCore.Models;
+using SIL.XForge.Models;
 
 namespace SIL.XForge.Scripture.Models
 {
-    public class SyncJobResource : SFProjectDataResource
+    public class SyncJobResource : ProjectDataResource
     {
         [Attr]
         public double PercentCompleted { get; set; }

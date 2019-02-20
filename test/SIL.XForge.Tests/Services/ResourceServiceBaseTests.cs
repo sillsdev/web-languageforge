@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using JsonApiDotNetCore.Builders;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Internal.Query;
@@ -31,7 +30,7 @@ namespace SIL.XForge.Services
                 {
                     Id = "testnew",
                     Str = "new",
-                    User = new TestUserResource { Id = "user01" },
+                    User = new UserResource { Id = "user01" },
                     UserRef = "user01"
                 };
                 TestResource newResource = await env.Service.CreateAsync(resource);
@@ -66,7 +65,7 @@ namespace SIL.XForge.Services
                 {
                     Id = "test01",
                     Str = "new",
-                    User = new TestUserResource { Id = "user01" },
+                    User = new UserResource { Id = "user01" },
                     UserRef = "user01"
                 };
                 TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
@@ -150,7 +149,7 @@ namespace SIL.XForge.Services
                 {
                     Id = "testbad",
                     Str = "new",
-                    User = new TestUserResource { Id = "user01" },
+                    User = new UserResource { Id = "user01" },
                     UserRef = "user01"
                 };
                 TestResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
@@ -316,7 +315,7 @@ namespace SIL.XForge.Services
                 object resource = await env.Service.GetRelationshipAsync("test02", "user");
 
                 Assert.That(resource, Is.Not.Null);
-                var userResource = (TestUserResource)resource;
+                var userResource = (UserResource)resource;
                 Assert.That(userResource.Id, Is.EqualTo("user01"));
             }
         }
@@ -365,7 +364,7 @@ namespace SIL.XForge.Services
 
                 Service = new TestService(JsonApiContext, Mapper, UserAccessor, Entities)
                 {
-                    UserMapper = new TestUserService(JsonApiContext, Mapper, UserAccessor, users, options)
+                    UserMapper = new UserService(JsonApiContext, Mapper, UserAccessor, users, options)
                 };
             }
 
@@ -390,13 +389,7 @@ namespace SIL.XForge.Services
 
             protected override void SetupResourceGraph(IResourceGraphBuilder builder)
             {
-                builder.AddResource<TestUserResource, string>("users");
-            }
-
-            protected override void SetupMapper(IMapperConfigurationExpression config)
-            {
-                config.CreateMap<UserEntity, TestUserResource>()
-                    .ReverseMap();
+                builder.AddResource<UserResource, string>("users");
             }
         }
     }

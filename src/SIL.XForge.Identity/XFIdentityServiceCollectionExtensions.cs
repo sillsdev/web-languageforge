@@ -6,11 +6,13 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SIL.Extensions;
 using SIL.XForge.Configuration;
+using SIL.XForge.Identity.Authentication;
 using SIL.XForge.Identity.Configuration;
 using SIL.XForge.Identity.Services;
 
-namespace SIL.XForge.Identity
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class XFIdentityServiceCollectionExtensions
     {
@@ -65,7 +67,7 @@ namespace SIL.XForge.Identity
         }
 
         public static IServiceCollection AddXFIdentityServer(this IServiceCollection services,
-            IConfiguration configuration)
+            IConfiguration configuration, bool isDevelopment)
         {
             services.AddOptions<GoogleCaptchaOptions>(configuration);
             services.AddTransient<IExternalAuthenticationService, ExternalAuthenticationService>();
@@ -102,6 +104,27 @@ namespace SIL.XForge.Identity
                 var cert = new X509Certificate2(securityOptions.SigningCredential);
                 builder.AddSigningCredential(cert);
             }
+
+            var paratextOptions = configuration.GetOptions<ParatextOptions>();
+            services.AddAuthentication()
+                .AddParatext(options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    options.SaveTokens = true;
+
+                    if (isDevelopment)
+                        options.UseDevServer();
+                    options.ClientId = paratextOptions.ClientId;
+                    options.ClientSecret = paratextOptions.ClientSecret;
+                    options.Scope.AddRange(new[]
+                        {
+                            "projects:read",
+                            "data_access",
+                            "offline_access",
+                            "projects.members:read",
+                            "projects.members:write"
+                        });
+                });
 
             return services;
         }

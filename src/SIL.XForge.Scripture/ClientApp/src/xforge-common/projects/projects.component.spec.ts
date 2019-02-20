@@ -3,16 +3,14 @@ import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testi
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { RecordIdentity } from '@orbit/data';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { GetAllParameters, QueryResults } from '../json-api.service';
+import { GetAllParameters, MapQueryResults } from '../json-api.service';
 import { Project, ProjectRef } from '../models/project';
 import { NONE_ROLE, ProjectRole } from '../models/project-role';
 import { ProjectUser } from '../models/project-user';
-import { Resource } from '../models/resource';
 import { UserRef } from '../models/user';
 import { ProjectUserService } from '../project-user.service';
 import { ProjectService } from '../project.service';
@@ -43,25 +41,6 @@ class TestProjectRef extends ProjectRef {
 
   constructor(id: string) {
     super(TestProjectRef.TYPE, id);
-  }
-}
-class TestUserRef extends UserRef {
-  static readonly TYPE = 'user';
-
-  constructor(id: string) {
-    super(TestUserRef.TYPE, id);
-  }
-}
-
-class TestQueryResults<T> implements QueryResults<T> {
-  constructor(public readonly results: T, public readonly totalPagedCount?: number) {}
-
-  getIncluded<TInclude extends Resource>(_identity: RecordIdentity): TInclude {
-    return null;
-  }
-
-  getManyIncluded<TInclude extends Resource>(_identities: RecordIdentity[]): TInclude[] {
-    return null;
   }
 }
 
@@ -104,7 +83,7 @@ class TestEnvironment {
     when(this.mockedProjectService.onlineSearch(anything(), anything())).thenCall(
       (term$: Observable<string>, parameters$: Observable<GetAllParameters<TestProject>>) => {
         const results = [
-          new TestQueryResults<TestProject[]>(
+          new MapQueryResults<TestProject[]>(
             [
               new TestProject({
                 id: 'project01',
@@ -121,7 +100,7 @@ class TestEnvironment {
             ],
             3
           ),
-          new TestQueryResults<TestProject[]>(
+          new MapQueryResults<TestProject[]>(
             [
               new TestProject({
                 id: 'project03',
@@ -138,7 +117,7 @@ class TestEnvironment {
 
     when(this.mockedUserService.onlineGetProjects('user01')).thenReturn(
       of(
-        new TestQueryResults<TestProjectUser[]>([
+        new MapQueryResults<TestProjectUser[]>([
           new TestProjectUser({
             id: 'projectuser01',
             role: 'admin',
@@ -156,11 +135,9 @@ class TestEnvironment {
 
   setupEmptyProjectData(): void {
     when(this.mockedProjectService.onlineSearch(anything(), anything())).thenReturn(
-      of(new TestQueryResults<TestProject[]>([], 0))
+      of(new MapQueryResults<TestProject[]>([], 0))
     );
-    when(this.mockedUserService.onlineGetProjects('user01')).thenReturn(
-      of(new TestQueryResults<TestProjectUser[]>([]))
-    );
+    when(this.mockedUserService.onlineGetProjects('user01')).thenReturn(of(new MapQueryResults<TestProjectUser[]>([])));
   }
 
   get table(): DebugElement {
@@ -273,7 +250,7 @@ describe('ProjectsComponent', () => {
         id: 'projectusernew',
         role: 'admin',
         project: new TestProjectRef('project02'),
-        user: new TestUserRef('user01')
+        user: new UserRef('user01')
       })
     );
     env.fixture.detectChanges();

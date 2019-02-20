@@ -10,5 +10,11 @@ namespace SIL.XForge.Models
 
         public string UserRef { get; set; }
         public string ProjectRef { get; set; }
+
+        [HasOne(withForeignKey: nameof(UserRef))]
+        public UserResource User { get; set; }
+
+        [HasOne(withForeignKey: nameof(ProjectRef))]
+        public ProjectResource Project { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace SIL.XForge.Services
             {
                 env.SetUser("user01", SystemRoles.User);
 
-                var resource = new TestUserResource
+                var resource = new UserResource
                 {
                     Id = "usernew"
                 };
@@ -45,7 +45,7 @@ namespace SIL.XForge.Services
             {
                 env.SetUser("user01", SystemRoles.SystemAdmin);
 
-                var userResource = new TestUserResource
+                var userResource = new UserResource
                 {
                     Id = "usernew"
                 };
@@ -62,7 +62,7 @@ namespace SIL.XForge.Services
             {
                 env.SetUser("user01", SystemRoles.SystemAdmin);
 
-                var userResource = new TestUserResource
+                var userResource = new UserResource
                 {
                     Id = "usernew",
                     Username = "USER_01"
@@ -81,7 +81,7 @@ namespace SIL.XForge.Services
             {
                 env.SetUser("user01", SystemRoles.SystemAdmin);
 
-                var userResource = new TestUserResource
+                var userResource = new UserResource
                 {
                     Id = "usernew",
                     Email = "UserNew@gmail.com"
@@ -106,7 +106,7 @@ namespace SIL.XForge.Services
                     });
                 env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-                var resource = new TestUserResource
+                var resource = new UserResource
                 {
                     Id = "user02",
                     Username = "new"
@@ -138,7 +138,7 @@ namespace SIL.XForge.Services
                     });
                 env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-                var resource = new TestUserResource
+                var resource = new UserResource
                 {
                     Id = "user02",
                     Username = "new"
@@ -163,7 +163,7 @@ namespace SIL.XForge.Services
                     });
                 env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-                var resource = new TestUserResource
+                var resource = new UserResource
                 {
                     Id = "user01",
                     Username = "USER_01"
@@ -187,7 +187,7 @@ namespace SIL.XForge.Services
                     });
                 env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-                var resource = new TestUserResource
+                var resource = new UserResource
                 {
                     Id = "user01",
                     Email = "New@gmail.com"
@@ -212,7 +212,7 @@ namespace SIL.XForge.Services
                     });
                 env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-                var resource = new TestUserResource
+                var resource = new UserResource
                 {
                     Id = "user01",
                     Site = new Site { CurrentProjectId = "project01" }
@@ -247,7 +247,7 @@ namespace SIL.XForge.Services
                     });
                 env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-                var resource = new TestUserResource
+                var resource = new UserResource
                 {
                     Id = "user02"
                 };
@@ -274,7 +274,7 @@ namespace SIL.XForge.Services
                 });
                 env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
 
-                var resource = new TestUserResource
+                var resource = new UserResource
                 {
                     Id = "paratextuser01",
                     ParatextId = null,
@@ -379,15 +379,80 @@ namespace SIL.XForge.Services
             }
         }
 
+        [Test]
+        public void UpdateRelationshipsAsync_ProjectsNotAllowed()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser("user01", SystemRoles.User);
+
+                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                    {
+                        await env.Service.UpdateRelationshipsAsync("user01", "projects",
+                            new List<ResourceObject> { new ResourceObject { Type = "projects", Id = "projectuser02" } });
+                    });
+
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status405MethodNotAllowed));
+            }
+        }
+
+        [Test]
+        public async Task GetRelationshipsAsync_Projects()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser("user01", SystemRoles.User);
+
+                object resources = await env.Service.GetRelationshipsAsync("user01", "projects");
+
+                Assert.That(resources, Is.Not.Null);
+                var projectResources = (IEnumerable<IResource>)resources;
+                Assert.That(projectResources.Select(p => p.Id), Is.EqualTo(new[] { "projectuser01", "projectuser02" }));
+            }
+        }
+
         class TestEnvironment : ResourceServiceTestEnvironmentBase<UserResource, UserEntity>
         {
             public TestEnvironment()
                 : base("users")
             {
-                Service = new TestUserService(JsonApiContext, Mapper, UserAccessor, Entities, Options);
+                var projects = new MemoryRepository<TestProjectEntity>(new[]
+                    {
+                        new TestProjectEntity
+                        {
+                            Id = "project01",
+                            Users =
+                            {
+                                new TestProjectUserEntity
+                                {
+                                    Id = "projectuser01",
+                                    UserRef = "user01",
+                                    Role = TestProjectRoles.Manager
+                                }
+                            }
+                        },
+                        new TestProjectEntity
+                        {
+                            Id = "project02",
+                            Users =
+                            {
+                                new TestProjectUserEntity
+                                {
+                                    Id = "projectuser02",
+                                    UserRef = "user01",
+                                    Role = TestProjectRoles.Manager
+                                }
+                            }
+                        }
+                    });
+
+                Service = new UserService(JsonApiContext, Mapper, UserAccessor, Entities, Options)
+                {
+                    ProjectUserMapper = new TestProjectUserService(JsonApiContext, Mapper, UserAccessor, projects)
+                };
             }
 
-            public TestUserService Service { get; }
+            public UserService Service { get; }
 
             protected override IEnumerable<UserEntity> GetInitialData()
             {
@@ -436,9 +501,7 @@ namespace SIL.XForge.Services
 
             protected override void SetupMapper(IMapperConfigurationExpression config)
             {
-                config.AddProfile(new UserProfile(SiteAuthority));
-                config.CreateMap<UserEntity, TestUserResource>()
-                    .IncludeBase<UserEntity, UserResource>()
+                config.CreateMap<TestProjectUserEntity, TestProjectUserResource>()
                     .ReverseMap();
             }
         }

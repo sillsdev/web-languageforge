@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Models;
@@ -167,6 +168,11 @@ namespace SIL.XForge.Scripture.Services
                         }
                     }
                 };
+            }
+
+            protected override void SetupMapper(IMapperConfigurationExpression config)
+            {
+                config.AddProfile<SFMapperProfile>();
             }
         }
     }

@@ -1,16 +1,18 @@
+using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.NodeServices;
 using Microsoft.Extensions.Options;
 using SIL.ObjectModel;
 using SIL.XForge.Configuration;
-using SIL.XForge.Scripture.Configuration;
 
-namespace SIL.XForge.Scripture.Realtime
+namespace SIL.XForge.Realtime
 {
     public class RealtimeServer : DisposableBase
     {
         private readonly INodeServices _nodeServices;
         private readonly IOptions<DataAccessOptions> _dataAccessOptions;
         private readonly IOptions<RealtimeOptions> _realtimeOptions;
+        private readonly string _modulePath;
         private bool _started;
 
         public RealtimeServer(INodeServices nodeServices, IOptions<DataAccessOptions> dataAccessOptions,
@@ -19,6 +21,8 @@ namespace SIL.XForge.Scripture.Realtime
             _nodeServices = nodeServices;
             _dataAccessOptions = dataAccessOptions;
             _realtimeOptions = realtimeOptions;
+            _modulePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Realtime",
+                "server");
         }
 
         public void Start()
@@ -28,7 +32,7 @@ namespace SIL.XForge.Scripture.Realtime
 
             string mongo = $"{_dataAccessOptions.Value.ConnectionString}/{_dataAccessOptions.Value.MongoDatabaseName}";
             int port = _realtimeOptions.Value.Port;
-            _nodeServices.InvokeExportAsync<object>("./Realtime/server", "start", mongo, port).GetAwaiter().GetResult();
+            _nodeServices.InvokeExportAsync<object>(_modulePath, "start", mongo, port).GetAwaiter().GetResult();
             _started = true;
         }
 
@@ -37,7 +41,7 @@ namespace SIL.XForge.Scripture.Realtime
             if (!_started)
                 return;
 
-            _nodeServices.InvokeExportAsync<object>("./Realtime/server", "stop").GetAwaiter().GetResult();
+            _nodeServices.InvokeExportAsync<object>(_modulePath, "stop").GetAwaiter().GetResult();
             _started = false;
         }
 

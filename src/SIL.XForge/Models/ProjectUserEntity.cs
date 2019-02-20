@@ -1,6 +1,6 @@
 namespace SIL.XForge.Models
 {
-    public class ProjectUserEntity : IEntity
+    public abstract class ProjectUserEntity : IEntity
     {
         public string Id { get; set; }
         public string Role { get; set; }

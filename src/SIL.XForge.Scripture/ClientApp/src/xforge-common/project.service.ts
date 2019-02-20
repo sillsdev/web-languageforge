@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { Record } from '@orbit/data';
 import { clone } from '@orbit/utils';
 import { combineLatest, Observable } from 'rxjs';
@@ -6,6 +5,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import { registerCustomFilter } from './custom-filter-specifier';
 import { GetAllParameters, JsonApiService, QueryObservable } from './json-api.service';
+import { InputSystem } from './models/input-system';
 import { Project } from './models/project';
 import { NONE_ROLE, ProjectRole } from './models/project-role';
 import { ResourceService } from './resource.service';
@@ -17,7 +17,6 @@ export enum InviteAction {
   Invited = 'invited'
 }
 
-@Injectable()
 export abstract class ProjectService<T extends Project = Project> extends ResourceService {
   private static readonly SEARCH_FILTER = 'search';
 
@@ -86,6 +85,11 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
 
     const projectName = record.attributes[nameof<Project>('projectName')] as string;
     if (projectName != null && projectName.toLowerCase().includes(value)) {
+      return true;
+    }
+
+    const inputSystem = record.attributes[nameof<Project>('inputSystem')] as InputSystem;
+    if (inputSystem != null && inputSystem.languageName.toLowerCase().includes(value)) {
       return true;
     }
 

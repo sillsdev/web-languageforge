@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Models;
@@ -35,7 +36,7 @@ namespace SIL.XForge.Scripture.Services
                     ProjectRef = "project01",
                     Project = new SFProjectResource { Id = "project01" },
                     UserRef = "user02",
-                    User = new SFUserResource { Id = "user02" }
+                    User = new UserResource { Id = "user02" }
                 };
                 SFProjectUserResource newProjectUser = await env.Service.CreateAsync(projectUser);
 
@@ -64,7 +65,7 @@ namespace SIL.XForge.Scripture.Services
                     ProjectRef = "project01",
                     Project = new SFProjectResource { Id = "project01" },
                     UserRef = "user03",
-                    User = new SFUserResource { Id = "user03" }
+                    User = new UserResource { Id = "user03" }
                 };
                 var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                     {
@@ -92,7 +93,7 @@ namespace SIL.XForge.Scripture.Services
                     ProjectRef = "project01",
                     Project = new SFProjectResource { Id = "project01" },
                     UserRef = "user03",
-                    User = new SFUserResource { Id = "user03" }
+                    User = new UserResource { Id = "user03" }
                 };
                 SFProjectUserResource newProjectUser = await env.Service.CreateAsync(projectUser);
 
@@ -267,7 +268,7 @@ namespace SIL.XForge.Scripture.Services
                     ParatextService)
                 {
                     ProjectMapper = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, engineService),
-                    UserMapper = new SFUserService(JsonApiContext, Mapper, UserAccessor, Users, Options)
+                    UserMapper = new UserService(JsonApiContext, Mapper, UserAccessor, Users, Options)
                 };
             }
 
@@ -329,6 +330,11 @@ namespace SIL.XForge.Scripture.Services
                         }
                     }
                 };
+            }
+
+            protected override void SetupMapper(IMapperConfigurationExpression config)
+            {
+                config.AddProfile<SFMapperProfile>();
             }
         }
     }

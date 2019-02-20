@@ -208,13 +208,13 @@ namespace SIL.XForge.Services
                             ProjectName = "project01",
                             Users =
                             {
-                                new ProjectUserEntity
+                                new TestProjectUserEntity
                                 {
                                     Id = "projectuser01",
                                     UserRef = "user01",
                                     Role = TestProjectRoles.Manager
                                 },
-                                new ProjectUserEntity
+                                new TestProjectUserEntity
                                 {
                                     Id = "projectuser02",
                                     UserRef = "user02",
@@ -228,7 +228,7 @@ namespace SIL.XForge.Services
                             ProjectName = "project02",
                             Users =
                             {
-                                new ProjectUserEntity
+                                new TestProjectUserEntity
                                 {
                                     Id = "projectuser03",
                                     UserRef = "user02",
@@ -242,13 +242,13 @@ namespace SIL.XForge.Services
                             ProjectName = "project03",
                             Users =
                             {
-                                new ProjectUserEntity
+                                new TestProjectUserEntity
                                 {
                                     Id = "projectuser04",
                                     UserRef = "user01",
                                     Role = TestProjectRoles.Contributor
                                 },
-                                new ProjectUserEntity
+                                new TestProjectUserEntity
                                 {
                                     Id = "projectuser05",
                                     UserRef = "user02",

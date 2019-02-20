@@ -6,21 +6,20 @@
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
-    <RealtimeRoot>Realtime\</RealtimeRoot>
-    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**;$(RealtimeRoot)node_modules\**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
 
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
     <UserSecretsId>4d0606c3-0fc7-4d76-b43b-236485004e81</UserSecretsId>
+    <MachineVersion>2.1.0-14</MachineVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.6" />
-    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.1" />
-    <PackageReference Include="SIL.Machine.WebApi" Version="2.1.0-14" />
+    <PackageReference Include="SIL.Machine.WebApi" Version="$(MachineVersion)" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,7 +27,6 @@
     <Content Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     <Compile Remove="CodeGenerator\**" />
-    <Content Remove="$(RealtimeRoot)node_modules\**" />
     <Content Remove="CodeGenerator\**" />
     <EmbeddedResource Remove="CodeGenerator\**" />
     <None Remove="CodeGenerator\**" />
@@ -41,12 +39,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="$(NuGetPackageRoot)sil.machine.webapi\2.1.0-14\contentFiles\any\netstandard2.0\thot-new-model.zip">
+    <Content Update="$(NuGetPackageRoot)sil.machine.webapi\$(MachineVersion)\contentFiles\any\netstandard2.0\thot-new-model.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
-  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And (!Exists('$(SpaRoot)node_modules') Or !Exists('$(RealtimeRoot)node_modules') Or '$(NpmInstall)' == 'true')">
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And (!Exists('$(SpaRoot)node_modules') Or '$(NpmInstall)' == 'true')">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
@@ -54,7 +52,6 @@
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
     <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-    <Exec WorkingDirectory="$(RealtimeRoot)" Command="npm install" />
   </Target>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
@@ -62,13 +59,11 @@
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod" />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr -- --prod" Condition=" '$(BuildServerSideRenderer)' == 'true' " />
-    <Exec WorkingDirectory="$(RealtimeRoot)" Command="npm install" />
 
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
       <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />
-      <DistFiles Include="$(RealtimeRoot)*.js; $(RealtimeRoot)node_modules\**" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>%(DistFiles.Identity)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

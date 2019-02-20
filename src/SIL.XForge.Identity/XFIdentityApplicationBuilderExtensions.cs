@@ -1,9 +1,8 @@
 using EdjCase.JsonRpc.Router.RouteProviders;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 using SIL.XForge.Identity.Controllers;
 
-namespace SIL.XForge.Identity
+namespace Microsoft.AspNetCore.Builder
 {
     public static class XFIdentityApplicationBuilderExtensions
     {

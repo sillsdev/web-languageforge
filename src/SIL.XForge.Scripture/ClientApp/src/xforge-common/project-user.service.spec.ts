@@ -18,11 +18,7 @@ class TestProjectUser extends ProjectUser {
 @Injectable()
 class TestProjectUserService extends ProjectUserService<TestProjectUser> {
   constructor(jsonApiService: JsonApiService) {
-    super(TestProjectUser.TYPE, jsonApiService, 'project', 'user');
-  }
-
-  protected newProjectUser(_projectId: string, _userId: string, _role?: string): TestProjectUser {
-    throw new Error('Not implemented');
+    super(TestProjectUser.TYPE, jsonApiService, 'project');
   }
 }
 

@@ -12,7 +12,7 @@ using SIL.XForge.Services;
 
 namespace SIL.XForge.Scripture.Services
 {
-    public class SyncJobService : SFProjectDataServiceBase<SyncJobResource, SyncJobEntity>
+    public class SyncJobService : SFProjectDataService<SyncJobResource, SyncJobEntity>
     {
         public SyncJobService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
             IRepository<SyncJobEntity> jobs, IRepository<SFProjectEntity> projects)

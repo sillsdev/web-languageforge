@@ -7,7 +7,9 @@ using System.Text.RegularExpressions;
 using CommandLine;
 using NJsonSchema;
 using NJsonSchema.CodeGeneration.TypeScript;
+using NJsonSchema.Generation;
 using SIL.Extensions;
+using SIL.XForge.Scripture.Models;
 
 namespace SIL.XForge.Scripture.CodeGenerator
 {
@@ -32,17 +34,15 @@ namespace SIL.XForge.Scripture.CodeGenerator
         {
             HandWrittenBaseClasses["IdentifiableOfString"] = null;
             HandWrittenBaseClasses["Resource"] = null;
-            HandWrittenBaseClasses["ProjectDataResource"] = null;
-            HandWrittenBaseClasses["ProjectDataResourceRef"] = null;
+            HandWrittenBaseClasses["UserResource"] = null;
+            HandWrittenBaseClasses["UserResourceRef"] = null;
             HandWrittenBaseClasses["Site"] = null;
             HandWrittenBaseClasses["ProjectResource"] = "xforge-common/models/project";
             HandWrittenBaseClasses["ProjectResourceRef"] = "xforge-common/models/project";
             HandWrittenBaseClasses["ProjectUserResource"] = "xforge-common/models/project-user";
             HandWrittenBaseClasses["ProjectUserResourceRef"] = "xforge-common/models/project-user";
-            HandWrittenBaseClasses["UserResource"] = "xforge-common/models/user";
-            HandWrittenBaseClasses["UserResourceRef"] = "xforge-common/models/user";
-            HandWrittenBaseClasses["SFProjectDataResource"] = "./sfproject-data";
-            HandWrittenBaseClasses["SFProjectDataResourceRef"] = "./sfproject-data";
+            HandWrittenBaseClasses["ProjectDataResource"] = "xforge-common/models/project-data";
+            HandWrittenBaseClasses["ProjectDataResourceRef"] = "xforge-common/models/project-data";
 
             TypeScriptInterfaces = new List<string>
             {
@@ -106,7 +106,14 @@ namespace SIL.XForge.Scripture.CodeGenerator
         {
             if (!Directory.Exists(templateDirectory))
                 throw new ArgumentException($"{Assembly.GetExecutingAssembly().Location} || {templateDirectory}");
-            var sourceSchema = JsonSchema4.FromTypeAsync(csharpType).GetAwaiter().GetResult();
+
+            var settings = new JsonSchemaGeneratorSettings();
+            var sourceSchema = new JsonSchema4();
+            var resolver = new JsonSchemaResolver(sourceSchema, settings);
+            var generator = new JsonSchemaGenerator(settings);
+
+            generator.GenerateAsync(csharpType, null, sourceSchema, resolver).GetAwaiter().GetResult();
+            generator.GenerateAsync(typeof(SFProjectUserResource), resolver).GetAwaiter().GetResult();
             #region Generate Typescript model objects
 
             var typescriptSettings = new TypeScriptGeneratorSettings

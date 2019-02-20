@@ -4,13 +4,13 @@ import { Router } from '@angular/router';
 
 import { InputSystem } from 'xforge-common/models/input-system';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
+import { UserService } from 'xforge-common/user.service';
 import { ParatextProject } from '../core/models/paratext-project';
 import { SFProject } from '../core/models/sfproject';
 import { SyncJob } from '../core/models/sync-job';
 import { ParatextService } from '../core/paratext.service';
 import { SFProjectUserService } from '../core/sfproject-user.service';
 import { SFProjectService } from '../core/sfproject.service';
-import { SFUserService } from '../core/sfuser.service';
 import { SyncJobService } from '../core/sync-job.service';
 
 interface ConnectProjectFormValues {
@@ -45,7 +45,7 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
 
   constructor(
     private readonly paratextService: ParatextService,
-    private readonly userService: SFUserService,
+    private readonly userService: UserService,
     private readonly projectService: SFProjectService,
     private readonly syncJobService: SyncJobService,
     private readonly projectUserService: SFProjectUserService,
