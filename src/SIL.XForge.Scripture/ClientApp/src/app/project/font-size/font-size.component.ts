@@ -14,7 +14,7 @@ export class FontSizeComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    if (this.fontSize <= this.min) {
+    if (this.fontSize < this.min) {
       this.fontSize = this.min;
     }
     if (this.fontSize > this.max) {
@@ -27,18 +27,18 @@ export class FontSizeComponent implements OnInit {
     this.container.style.fontSize = this.fontSize + 'rem';
   }
 
-  increaseFontSize() {
-    this.fontSize = this.fontSize + 0.1;
-    if (this.fontSize > this.max) {
-      this.fontSize = this.max;
-    }
-    this.apply();
-  }
-
   decreaseFontSize() {
     this.fontSize = this.fontSize - 0.1;
     if (this.fontSize < this.min) {
       this.fontSize = this.min;
+    }
+    this.apply();
+  }
+
+  increaseFontSize() {
+    this.fontSize = this.fontSize + 0.1;
+    if (this.fontSize > this.max) {
+      this.fontSize = this.max;
     }
     this.apply();
   }

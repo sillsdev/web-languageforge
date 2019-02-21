@@ -25,9 +25,9 @@ describe('FontSizeComponent', () => {
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
     env.createHostComponent(template);
-    const fontSize = env.getFontSize();
-    env.clickButton(env.getIncreaseButton());
-    const newFontSize = env.getFontSize();
+    const fontSize = env.fontSize;
+    env.clickButton(env.increaseButton);
+    const newFontSize = env.fontSize;
     expect(newFontSize).toBeGreaterThan(fontSize);
   });
 
@@ -37,12 +37,12 @@ describe('FontSizeComponent', () => {
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
     env.createHostComponent(template);
-    const fontSize = env.getFontSize();
-    env.clickButton(env.getIncreaseButton());
-    let newFontSize = env.getFontSize();
+    const fontSize = env.fontSize;
+    env.clickButton(env.increaseButton);
+    let newFontSize = env.fontSize;
     expect(newFontSize).toBeGreaterThan(fontSize);
-    env.clickButton(env.getDecreaseButton());
-    newFontSize = env.getFontSize();
+    env.clickButton(env.decreaseButton);
+    newFontSize = env.fontSize;
     expect(newFontSize).toEqual(fontSize);
   });
 
@@ -52,13 +52,13 @@ describe('FontSizeComponent', () => {
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
     env.createHostComponent(template);
-    const fontSize = env.getFontSize();
-    expect(env.getDecreaseButton().nativeElement.disabled).toBeTruthy();
+    const fontSize = env.fontSize;
+    expect(env.decreaseButton.nativeElement.disabled).toBe(true);
     for (let i: number = 0; i < 30; i++) {
-      env.clickButton(env.getIncreaseButton());
+      env.clickButton(env.increaseButton);
     }
-    expect(env.getDecreaseButton().nativeElement.disabled).toBeFalsy();
-    expect(env.getIncreaseButton().nativeElement.disabled).toBeTruthy();
+    expect(env.decreaseButton.nativeElement.disabled).toBe(false);
+    expect(env.increaseButton.nativeElement.disabled).toBe(true);
   });
 
   it('check min attribute - greater than default size', () => {
@@ -67,9 +67,9 @@ describe('FontSizeComponent', () => {
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
     env.createHostComponent(template);
-    const fontSize = env.getFontSize();
+    const fontSize = env.fontSize;
     expect(fontSize).toBe(2);
-    expect(env.getDecreaseButton().nativeElement.disabled).toBe(true);
+    expect(env.decreaseButton.nativeElement.disabled).toBe(true);
   });
 
   it('check min attribute - less than default size', () => {
@@ -78,9 +78,9 @@ describe('FontSizeComponent', () => {
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
     env.createHostComponent(template);
-    const fontSize = env.getFontSize();
+    const fontSize = env.fontSize;
     expect(fontSize).toBe(1);
-    expect(env.getDecreaseButton().nativeElement.disabled).toBe(false);
+    expect(env.decreaseButton.nativeElement.disabled).toBe(false);
   });
 
   it('check max attribute - greater than default size', () => {
@@ -90,11 +90,11 @@ describe('FontSizeComponent', () => {
     `;
     env.createHostComponent(template);
     for (let i: number = 0; i < 5; i++) {
-      env.clickButton(env.getIncreaseButton());
+      env.clickButton(env.increaseButton);
     }
-    const fontSize = env.getFontSize();
+    const fontSize = env.fontSize;
     expect(fontSize).toBe(1.5);
-    expect(env.getIncreaseButton().nativeElement.disabled).toBe(true);
+    expect(env.increaseButton.nativeElement.disabled).toBe(true);
   });
 
   it('check max attribute - less than default size', () => {
@@ -103,9 +103,9 @@ describe('FontSizeComponent', () => {
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
     env.createHostComponent(template);
-    const fontSize = env.getFontSize();
+    const fontSize = env.fontSize;
     expect(fontSize).toBe(1);
-    expect(env.getIncreaseButton().nativeElement.disabled).toBe(true);
+    expect(env.increaseButton.nativeElement.disabled).toBe(true);
   });
 });
 
@@ -133,15 +133,15 @@ class TestEnvironment {
     this.fixture.detectChanges();
   }
 
-  getIncreaseButton(): DebugElement {
+  get increaseButton(): DebugElement {
     return this.fixture.debugElement.query(By.css('button[icon="add"]'));
   }
 
-  getDecreaseButton(): DebugElement {
+  get decreaseButton(): DebugElement {
     return this.fixture.debugElement.query(By.css('button[icon="remove"]'));
   }
 
-  getFontSize(): number {
+  get fontSize(): number {
     return parseFloat(this.fixture.debugElement.query(By.css('#container')).nativeElement.style.fontSize);
   }
 }
