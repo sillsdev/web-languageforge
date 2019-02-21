@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, ElementRef, ViewChild } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { FontSizeComponent } from './font-size.component';
@@ -14,14 +14,14 @@ describe('FontSizeComponent', () => {
 
   it('should create', () => {
     const template =
-      '<app-font-size [container]="container"></app-font-size><div #container>Lorem ipsum dolor sit amet.</div>';
+      '<app-font-size (apply)="applyFontChange($event)"></app-font-size><div #container>Lorem ipsum dolor sit .</div>';
     env.createHostComponent(template);
     expect(env.fixture.componentInstance).toBeTruthy();
   });
 
   it('can increase font', () => {
     const template = `
-      <app-font-size [container]="container"></app-font-size>
+      <app-font-size (apply)="applyFontChange($event)"></app-font-size>
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
     env.createHostComponent(template);
@@ -33,7 +33,7 @@ describe('FontSizeComponent', () => {
 
   it('can decrease font', () => {
     const template = `
-      <app-font-size [container]="container"></app-font-size>
+      <app-font-size (apply)="applyFontChange($event)"></app-font-size>
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
     env.createHostComponent(template);
@@ -48,7 +48,7 @@ describe('FontSizeComponent', () => {
 
   it('check disabled states', () => {
     const template = `
-      <app-font-size [container]="container"></app-font-size>
+      <app-font-size (apply)="applyFontChange($event)"></app-font-size>
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
     env.createHostComponent(template);
@@ -63,7 +63,7 @@ describe('FontSizeComponent', () => {
 
   it('check min attribute - greater than default size', () => {
     const template = `
-      <app-font-size [container]="container" [min]="2"></app-font-size>
+      <app-font-size (apply)="applyFontChange($event)" [min]="2"></app-font-size>
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
     env.createHostComponent(template);
@@ -74,7 +74,7 @@ describe('FontSizeComponent', () => {
 
   it('check min attribute - less than default size', () => {
     const template = `
-      <app-font-size [container]="container" [min]="0.5"></app-font-size>
+      <app-font-size (apply)="applyFontChange($event)" [min]="0.5"></app-font-size>
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
     env.createHostComponent(template);
@@ -85,7 +85,7 @@ describe('FontSizeComponent', () => {
 
   it('check max attribute - greater than default size', () => {
     const template = `
-      <app-font-size [container]="container" [max]="1.5"></app-font-size>
+      <app-font-size (apply)="applyFontChange($event)" [max]="1.5"></app-font-size>
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
     env.createHostComponent(template);
@@ -99,18 +99,23 @@ describe('FontSizeComponent', () => {
 
   it('check max attribute - less than default size', () => {
     const template = `
-      <app-font-size [container]="container" [max]="0.5"></app-font-size>
+      <app-font-size (apply)="applyFontChange($event)" [max]="0.5"></app-font-size>
       <div id="container" #container>Lorem ipsum dolor sit amet.</div>
     `;
-    env.createHostComponent(template);
-    const fontSize = env.fontSize;
-    expect(fontSize).toBe(1);
-    expect(env.increaseButton.nativeElement.disabled).toBe(true);
+    expect(function() {
+      env.createHostComponent(template);
+    }).toThrow(new RangeError('min (1) can not be larger than max (0.5)'));
   });
 });
 
 @Component({ selector: 'app-host', template: '' })
-class HostComponent {}
+class HostComponent {
+  @ViewChild('container') container: ElementRef;
+
+  applyFontChange($event: string) {
+    this.container.nativeElement.style.fontSize = $event;
+  }
+}
 
 class TestEnvironment {
   fixture: ComponentFixture<HostComponent>;

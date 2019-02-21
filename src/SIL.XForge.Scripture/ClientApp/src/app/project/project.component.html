@@ -39,7 +39,7 @@
           <div class="panel-heading">
             <mdc-icon>library_books</mdc-icon>
             <h2>{{ project.projectName }}</h2>
-            <div class="panel-activity"><app-font-size [container]="scripturePanel"></app-font-size></div>
+            <div class="panel-activity"><app-font-size (apply)="applyFontChange($event)"></app-font-size></div>
           </div>
           <div #scripturePanel class="panel-content">Scripture text goes here</div>
         </div>

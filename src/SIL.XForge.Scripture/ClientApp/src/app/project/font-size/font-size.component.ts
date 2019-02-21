@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-font-size',
@@ -6,9 +6,9 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./font-size.component.scss']
 })
 export class FontSizeComponent implements OnInit {
-  @Input() container: HTMLElement;
   @Input() min: number = 1;
   @Input() max: number = 3;
+  @Output() apply: EventEmitter<string> = new EventEmitter<string>();
   fontSize: number = 1;
 
   constructor() {}
@@ -17,14 +17,17 @@ export class FontSizeComponent implements OnInit {
     if (this.fontSize < this.min) {
       this.fontSize = this.min;
     }
-    if (this.fontSize > this.max) {
-      this.max = this.fontSize;
+    if (this.min > this.max) {
+      throw new RangeError('min (' + this.min + ') can not be larger than max (' + this.max + ')');
+    } else if (this.max < this.fontSize) {
+      throw new RangeError('max (' + this.max + ') can not be less than font size (' + this.fontSize + ')');
+    } else {
+      this.applySize();
     }
-    this.apply();
   }
 
-  apply() {
-    this.container.style.fontSize = this.fontSize + 'rem';
+  applySize() {
+    this.apply.emit(this.fontSize + 'rem');
   }
 
   decreaseFontSize() {
@@ -32,7 +35,7 @@ export class FontSizeComponent implements OnInit {
     if (this.fontSize < this.min) {
       this.fontSize = this.min;
     }
-    this.apply();
+    this.applySize();
   }
 
   increaseFontSize() {
@@ -40,6 +43,6 @@ export class FontSizeComponent implements OnInit {
     if (this.fontSize > this.max) {
       this.fontSize = this.max;
     }
-    this.apply();
+    this.applySize();
   }
 }

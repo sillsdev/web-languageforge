@@ -1,4 +1,4 @@
-import { Component, HostBinding } from '@angular/core';
+import { Component, ElementRef, HostBinding, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -65,6 +65,7 @@ export class Answer extends Resource {
 })
 export class ProjectComponent extends SubscriptionDisposable {
   @HostBinding('class') classes = 'flex-max';
+  @ViewChild('scripturePanel') scripturePanel: ElementRef;
   project: Project;
   questions: Question[];
   activeQuestion: Question;
@@ -104,6 +105,10 @@ export class ProjectComponent extends SubscriptionDisposable {
         this.refreshSummary();
       }
     });
+  }
+
+  applyFontChange($event: string) {
+    this.scripturePanel.nativeElement.style.fontSize = $event;
   }
 
   checkCanChangeQuestion(newIndex: number) {
