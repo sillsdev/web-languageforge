@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -6,6 +6,12 @@ import { Project } from 'xforge-common/models/project';
 import { Resource } from 'xforge-common/models/resource';
 import { ProjectService } from 'xforge-common/project.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
+
+interface Summary {
+  unread: number;
+  read: number;
+  answered: number;
+}
 
 export class Question extends Resource {
   title: string;
@@ -58,9 +64,15 @@ export class Answer extends Resource {
   styleUrls: ['./project.component.scss']
 })
 export class ProjectComponent extends SubscriptionDisposable {
+  @HostBinding('class') classes = 'flex-max';
   project: Project;
   questions: Question[];
   activeQuestion: Question;
+  summary: Summary = {
+    read: 0,
+    unread: 0,
+    answered: 0
+  };
 
   constructor(private activatedRoute: ActivatedRoute, private projectService: ProjectService, private router: Router) {
     super();
@@ -81,11 +93,40 @@ export class ProjectComponent extends SubscriptionDisposable {
     );
   }
 
-  goHome() {
+  activateQuestion(question: Question) {
+    this.activeQuestion = question;
+
+    // Only mark as read if it has been viewed for a set period of time and not an accidental click
+    const readTimer = this.subscribe(timer(1000), () => {
+      if (this.activeQuestion.id === question.id) {
+        question.markAsRead();
+        readTimer.unsubscribe();
+        this.refreshSummary();
+      }
+    });
+  }
+
+  checkCanChangeQuestion(newIndex: number) {
+    return !!this.questions[this.activeQuestionIndex + newIndex];
+  }
+
+  nextQuestion() {
+    this.changeQuestion(1);
+  }
+
+  previousQuestion() {
+    this.changeQuestion(-1);
+  }
+
+  totalQuestions() {
+    return this.questions.length;
+  }
+
+  private goHome() {
     this.router.navigateByUrl('/home');
   }
 
-  loadQuestions() {
+  private loadQuestions() {
     const questions = [];
     questions.push(
       new Question({
@@ -102,21 +143,31 @@ export class ProjectComponent extends SubscriptionDisposable {
       })
     );
     this.questions = questions;
+    this.refreshSummary();
   }
 
-  totalQuestions() {
-    return this.questions.length;
+  private changeQuestion(newDifferential: number) {
+    if (this.activeQuestion && this.checkCanChangeQuestion(newDifferential)) {
+      this.activateQuestion(this.questions[this.activeQuestionIndex + newDifferential]);
+    }
   }
 
-  activateQuestion(question: Question) {
-    this.activeQuestion = question;
+  private get activeQuestionIndex() {
+    return this.questions.findIndex(question => question.id === this.activeQuestion.id);
+  }
 
-    // Only mark as read if it has been viewed for a set period of time and not an accidental click
-    const readTimer = this.subscribe(timer(1000), () => {
-      if (this.activeQuestion.id === question.id) {
-        question.markAsRead();
-        readTimer.unsubscribe();
+  private refreshSummary() {
+    this.summary.answered = 0;
+    this.summary.read = 0;
+    this.summary.unread = 0;
+    for (const question of this.questions) {
+      if (question.answered) {
+        this.summary.answered++;
+      } else if (question.read) {
+        this.summary.read++;
+      } else if (!question.read) {
+        this.summary.unread++;
       }
-    });
+    }
   }
 }

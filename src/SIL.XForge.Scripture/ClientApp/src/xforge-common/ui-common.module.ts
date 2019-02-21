@@ -44,6 +44,7 @@ import {
 import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
 import { RecaptchaModule } from 'ng-recaptcha';
 import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
+import { ChartsModule } from 'ng2-charts';
 
 const modules = [
   FlexLayoutModule,
@@ -87,7 +88,8 @@ const modules = [
   PasswordStrengthMeterModule,
   ReactiveFormsModule,
   RecaptchaModule,
-  RecaptchaFormsModule
+  RecaptchaFormsModule,
+  ChartsModule
 ];
 
 @NgModule({

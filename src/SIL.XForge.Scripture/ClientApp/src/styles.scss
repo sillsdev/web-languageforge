@@ -27,6 +27,12 @@ body {
   flex: 1 1 auto;
 }
 
+.flex-max {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .cdk-overlay-pane.inviteDialogComponent {
   width: 80%;
   max-width: 400px !important;
