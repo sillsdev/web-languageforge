@@ -5,7 +5,7 @@ import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { anything, instance, mock, verify, when } from 'ts-mockito/lib/ts-mockito';
+import { anything, capture, instance, mock, verify, when } from 'ts-mockito/lib/ts-mockito';
 
 import { MapQueryResults } from '../json-api.service';
 import { User } from '../models/user';
@@ -233,6 +233,9 @@ describe('System Administration User Entry Component', () => {
       expect(env.component.accountUserForm.get('Password').hasError('minlength')).toBe(false);
       env.clickElement(env.updateButton);
       verify(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).once();
+      const [userId, partialUser] = capture(env.mockedUserService.onlineUpdateAttributes).last();
+      expect(userId).toBe('user01');
+      expect(partialUser.password).toBe('newvalidpassword');
     }));
   });
 

@@ -158,7 +158,7 @@ export class SaUserEntryComponent implements OnInit {
     };
     if (this.accountUserForm.value.Password != null) {
       // The password was changed, so we need to update the password property of our user
-      updateUser.password = this.accountUserForm.value.password;
+      updateUser.password = this.accountUserForm.value.Password;
     }
     await this.userService.onlineUpdateAttributes(this.editUserId, updateUser);
     this.accountUserForm.reset();
