@@ -14,7 +14,6 @@ namespace SIL.XForge.Scripture.Models
         public TranslateConfig TranslateConfig { get; set; }
 
         [HasOne]
-        [SchemaInfo(Inverse = nameof(SyncJobResource.Project), IsDependent = true)]
         public SyncJobResource ActiveSyncJob { get; set; }
         [HasMany]
         [SchemaInfo(Inverse = nameof(TextResource.Project), IsDependent = true)]
