@@ -20,41 +20,41 @@ describe('ProjectComponent', () => {
 
   describe('Interface', () => {
     it('can load a project', () => {
-      expect(env.getProjectHeading()).toEqual('Project 01');
+      expect(env.projectHeading).toEqual('Project 01');
     });
     it('can navigate using next button', () => {
       const question = env.selectQuestion(1);
-      const next = env.getNextButton();
+      const next = env.nextButton;
       next.nativeElement.click();
       env.fixture.detectChanges();
-      const nextQuestion = env.getCurrentQuestion();
+      const nextQuestion = env.currentQuestion;
       expect(nextQuestion).toEqual(2);
     });
 
     it('can navigate using previous button', () => {
       const question = env.selectQuestion(2);
-      const prev = env.getPreviousButton();
+      const prev = env.previousButton;
       prev.nativeElement.click();
       env.fixture.detectChanges();
-      const nextQuestion = env.getCurrentQuestion();
+      const nextQuestion = env.currentQuestion;
       expect(nextQuestion).toEqual(1);
     });
 
     it('check navigate buttons disable at the end of the question list', () => {
       let question = env.selectQuestion(1);
-      const prev = env.getPreviousButton();
-      const next = env.getNextButton();
-      expect(prev.nativeElement.disabled).toBeTruthy();
-      expect(next.nativeElement.disabled).toBeFalsy();
+      const prev = env.previousButton;
+      const next = env.nextButton;
+      expect(prev.nativeElement.disabled).toBe(true);
+      expect(next.nativeElement.disabled).toBe(false);
       question = env.selectQuestion(3);
-      expect(prev.nativeElement.disabled).toBeFalsy();
-      expect(next.nativeElement.disabled).toBeTruthy();
+      expect(prev.nativeElement.disabled).toBe(false);
+      expect(next.nativeElement.disabled).toBe(true);
     });
   });
 
   describe('Questions', () => {
     it('questions are displaying', () => {
-      expect(env.getQuestions().length).toEqual(3);
+      expect(env.questions.length).toEqual(3);
     });
 
     it('can select a question', () => {
@@ -95,12 +95,12 @@ describe('ProjectComponent', () => {
 
   describe('Answers', () => {
     it('answer panel is not initiated without a selected question', () => {
-      expect(env.getAnswerPanel()).toBeNull();
+      expect(env.answerPanel).toBeNull();
     });
 
     it('answer panel is now showing', () => {
       const question = env.selectQuestion(1);
-      expect(env.getAnswerPanel()).toBeDefined();
+      expect(env.answerPanel).toBeDefined();
     });
   });
 });
@@ -132,42 +132,12 @@ class TestEnvironment {
     this.component = this.fixture.componentInstance;
   }
 
-  setupProjectData(): void {
-    when(this.mockedProjectService.get('project01')).thenReturn(
-      of(
-        new MapQueryResults(
-          new SFProject({
-            id: 'project01',
-            projectName: 'Project 01'
-          })
-        )
-      )
-    );
-  }
-
-  getProjectHeading(): string {
-    return this.fixture.debugElement.query(By.css('h1')).nativeElement.textContent;
-  }
-
-  getAnswerPanel(): DebugElement {
+  get answerPanel(): DebugElement {
     return this.fixture.debugElement.query(By.css('#answer-panel'));
   }
 
-  getQuestions(): DebugElement[] {
-    return this.fixture.debugElement.queryAll(By.css('#questions-panel .mdc-list-item'));
-  }
-
-  selectQuestion(questionNumber: number): DebugElement {
-    const question = this.fixture.debugElement.query(
-      By.css('#questions-panel .mdc-list-item:nth-child(' + questionNumber + ')')
-    );
-    question.nativeElement.click();
-    this.fixture.detectChanges();
-    return question;
-  }
-
-  getCurrentQuestion(): number {
-    const questions = this.getQuestions();
+  get currentQuestion(): number {
+    const questions = this.questions;
     for (const questionNumber in questions) {
       if (
         questions[questionNumber].classes.hasOwnProperty('mdc-list-item--activated') &&
@@ -180,11 +150,41 @@ class TestEnvironment {
     return -1;
   }
 
-  getPreviousButton(): DebugElement {
+  get nextButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#project-navigation .next-question'));
+  }
+
+  get previousButton(): DebugElement {
     return this.fixture.debugElement.query(By.css('#project-navigation .prev-question'));
   }
 
-  getNextButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#project-navigation .next-question'));
+  get projectHeading(): string {
+    return this.fixture.debugElement.query(By.css('h1')).nativeElement.textContent;
+  }
+
+  get questions(): DebugElement[] {
+    return this.fixture.debugElement.queryAll(By.css('#questions-panel .mdc-list-item'));
+  }
+
+  selectQuestion(questionNumber: number): DebugElement {
+    const question = this.fixture.debugElement.query(
+      By.css('#questions-panel .mdc-list-item:nth-child(' + questionNumber + ')')
+    );
+    question.nativeElement.click();
+    this.fixture.detectChanges();
+    return question;
+  }
+
+  setupProjectData(): void {
+    when(this.mockedProjectService.get('project01')).thenReturn(
+      of(
+        new MapQueryResults<SFProject>(
+          new SFProject({
+            id: 'project01',
+            projectName: 'Project 01'
+          })
+        )
+      )
+    );
   }
 }

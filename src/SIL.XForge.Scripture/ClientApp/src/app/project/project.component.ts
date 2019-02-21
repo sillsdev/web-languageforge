@@ -93,6 +93,35 @@ export class ProjectComponent extends SubscriptionDisposable {
     );
   }
 
+  activateQuestion(question: Question) {
+    this.activeQuestion = question;
+
+    // Only mark as read if it has been viewed for a set period of time and not an accidental click
+    const readTimer = this.subscribe(timer(1000), () => {
+      if (this.activeQuestion.id === question.id) {
+        question.markAsRead();
+        readTimer.unsubscribe();
+        this.refreshSummary();
+      }
+    });
+  }
+
+  checkCanChangeQuestion(newIndex: number) {
+    return !!this.questions[this.activeQuestionIndex + newIndex];
+  }
+
+  nextQuestion() {
+    this.changeQuestion(1);
+  }
+
+  previousQuestion() {
+    this.changeQuestion(-1);
+  }
+
+  totalQuestions() {
+    return this.questions.length;
+  }
+
   private goHome() {
     this.router.navigateByUrl('/home');
   }
@@ -117,44 +146,13 @@ export class ProjectComponent extends SubscriptionDisposable {
     this.refreshSummary();
   }
 
-  totalQuestions() {
-    return this.questions.length;
-  }
-
-  activateQuestion(question: Question) {
-    this.activeQuestion = question;
-
-    // Only mark as read if it has been viewed for a set period of time and not an accidental click
-    const readTimer = this.subscribe(timer(1000), () => {
-      if (this.activeQuestion.id === question.id) {
-        question.markAsRead();
-        readTimer.unsubscribe();
-        this.refreshSummary();
-      }
-    });
-  }
-
-  nextQuestion() {
-    this.changeQuestion(1);
-  }
-
-  previousQuestion() {
-    this.changeQuestion(-1);
-  }
-
-  private changeQuestion(newIndex: number) {
-    if (this.activeQuestion) {
-      if (this.checkCanChangeQuestion(newIndex)) {
-        this.activateQuestion(this.questions[this.getActiveQuestionIndex() + newIndex]);
-      }
+  private changeQuestion(newDifferential: number) {
+    if (this.activeQuestion && this.checkCanChangeQuestion(newDifferential)) {
+      this.activateQuestion(this.questions[this.activeQuestionIndex + newDifferential]);
     }
   }
 
-  checkCanChangeQuestion(newIndex: number) {
-    return !!this.questions[this.getActiveQuestionIndex() + newIndex];
-  }
-
-  private getActiveQuestionIndex() {
+  private get activeQuestionIndex() {
     return this.questions.findIndex(question => question.id === this.activeQuestion.id);
   }
 
