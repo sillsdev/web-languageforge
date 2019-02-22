@@ -139,14 +139,26 @@ ng lint
 
 ### Angular Unit Testing
 
-To run front end unit tests make sure `ng serve` and `dotnet run` are **not** running (_ctrl + c_ to end them), then from the repo root
+To run front end unit tests, make sure `ng serve` and `dotnet run` are **not** running (_CTRL-C_ to end them), then from the repo root
 
 ```bash
 cd src/SIL.XForge.Scripture/ClientApp/
 CHROME_BIN=chromium-browser ng test
 ```
 
-You can make the environment variable (`CHROME_BIN=chromium-browser`) permanent by following the instructions [here](https://help.ubuntu.com/community/EnvironmentVariables), then you can simply run `ng test`.
+You can make the environment variable (`CHROME_BIN=chromium-browser`) permanent by following the instructions [here](https://help.ubuntu.com/community/EnvironmentVariables), then you can simply run `ng test`. The environment variable is already set in the vagrant.
+
+`ng test` will monitor and run tests in a Chromium browser window. You can also monitor and run tests headlessly from the commandline by running
+
+```bash
+src/SIL.XForge.Scripture/ClientApp/monitor-test-headless.sh
+```
+
+Or just run tests once without monitoring with
+
+```bash
+src/SIL.XForge.Scripture/ClientApp/test-headless.sh
+```
 
 See documentation for [running tests](https://github.com/angular/angular-cli/wiki/test) and [writing tests](https://angular.io/guide/testing#testing).
 
