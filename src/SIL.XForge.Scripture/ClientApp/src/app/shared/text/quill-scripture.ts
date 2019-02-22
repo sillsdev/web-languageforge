@@ -102,10 +102,10 @@ export function registerScripture(): void {
   }
 
   class NoteEmbed extends Embed {
-    private static readonly DELTA_KEY = '__note_delta';
-
     static blotName = 'note';
     static tagName = 'usx-note';
+
+    private static readonly DELTA_KEY = '__note_delta';
 
     static create(value: Note): Node {
       const node = super.create(value) as HTMLElement;

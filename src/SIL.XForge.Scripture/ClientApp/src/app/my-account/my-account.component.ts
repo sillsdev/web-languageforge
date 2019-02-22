@@ -90,6 +90,18 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     super();
   }
 
+  get userName() {
+    return this.userFromDatabase.name ? this.userFromDatabase.name : 'unknown';
+  }
+
+  get isLinkedToParatext() {
+    return this.paratextUsername && this.paratextUsername.length > 0;
+  }
+
+  get isLinkedToGoogle() {
+    return this.googleUsername && this.googleUsername.length > 0;
+  }
+
   ngOnInit() {
     this.titleService.setTitle(this.title);
     this.subscribe(this.userService.getCurrentUser(), user => {
@@ -110,35 +122,11 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     }
   }
 
-  private onControlValueChanges(controlName: string): () => void {
-    return () => {
-      const isClean = this.userFromDatabase[controlName] === this.formGroup.get(controlName).value;
-      const newState = isClean ? ElementState.InSync : ElementState.Dirty;
-      this.controlStates.set(controlName, newState);
-
-      if (this.formGroup.get(controlName).errors !== null) {
-        this.controlStates.set(controlName, ElementState.Invalid);
-      }
-    };
-  }
-
   ngOnDestroy() {
     super.ngOnDestroy();
     // Set title back, until titling is done more elegantly,
     // like https://toddmotto.com/dynamic-page-titles-angular-2-router-events
     this.titleService.setTitle(environment.siteName);
-  }
-
-  get userName() {
-    return this.userFromDatabase.name ? this.userFromDatabase.name : 'unknown';
-  }
-
-  get isLinkedToParatext() {
-    return this.paratextUsername && this.paratextUsername.length > 0;
-  }
-
-  get isLinkedToGoogle() {
-    return this.googleUsername && this.googleUsername.length > 0;
   }
 
   loadLinkedAccounts(): void {
@@ -308,5 +296,17 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
 
   async uploadPicture(): Promise<void> {
     await this.userService.uploadCurrentUserAvatar(this.pictureFile);
+  }
+
+  private onControlValueChanges(controlName: string): () => void {
+    return () => {
+      const isClean = this.userFromDatabase[controlName] === this.formGroup.get(controlName).value;
+      const newState = isClean ? ElementState.InSync : ElementState.Dirty;
+      this.controlStates.set(controlName, newState);
+
+      if (this.formGroup.get(controlName).errors !== null) {
+        this.controlStates.set(controlName, ElementState.Invalid);
+      }
+    };
   }
 }

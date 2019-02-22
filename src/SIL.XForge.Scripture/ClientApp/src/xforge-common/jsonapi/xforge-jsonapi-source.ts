@@ -14,11 +14,11 @@ import { getTransformRequests, TransformRequestProcessors, TransformRequestRespo
 
 @updatable
 export class XForgeJSONAPISource extends JSONAPISource implements Updatable {
+  update: (transformOrOperations: TransformOrOperations, options?: object, id?: string) => Promise<any>;
+
   constructor(settings = {}) {
     super(settings);
   }
-
-  update: (transformOrOperations: TransformOrOperations, options?: object, id?: string) => Promise<any>;
 
   _push(transform: Transform): Promise<Transform[]> {
     const requests = getTransformRequests(this, transform);

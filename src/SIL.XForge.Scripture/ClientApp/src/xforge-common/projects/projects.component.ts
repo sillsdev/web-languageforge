@@ -11,9 +11,9 @@ import { SubscriptionDisposable } from '../subscription-disposable';
 import { UserService } from '../user.service';
 
 class Row {
-  constructor(public readonly project: Project, public projectUser: ProjectUser, public projectRole: ProjectRole) {}
-
   isUpdatingRole: boolean = false;
+
+  constructor(public readonly project: Project, public projectUser: ProjectUser, public projectRole: ProjectRole) {}
 
   get isMember(): boolean {
     return this.projectUser != null;

@@ -17,13 +17,13 @@ interface JsonRpcResponse<T> {
 }
 
 export class JsonRpcError {
-  constructor(error: JsonRpcError) {
-    merge(this, error);
-  }
-
   code: number;
   message: string;
   data?: any;
+
+  constructor(error: JsonRpcError) {
+    merge(this, error);
+  }
 }
 
 /**

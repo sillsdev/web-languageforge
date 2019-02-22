@@ -11,10 +11,9 @@ import { SFProjectService } from '../core/sfproject.service';
   templateUrl: './fetch-data.component.html'
 })
 export class FetchDataComponent implements OnInit {
-  private readonly updatedProjects: Set<SFProject> = new Set<SFProject>();
-
   projects$: Observable<SFProject[]>;
 
+  private readonly updatedProjects: Set<SFProject> = new Set<SFProject>();
   private readonly searchTerm$ = new BehaviorSubject<string>('');
 
   constructor(private readonly projectService: SFProjectService) {}

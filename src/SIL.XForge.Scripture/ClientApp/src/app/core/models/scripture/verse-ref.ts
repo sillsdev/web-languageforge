@@ -16,50 +16,6 @@ export class VerseRef {
   private static readonly chapterDigitShifter: number = 1000;
   private static readonly bookDigitShifter: number = VerseRef.chapterDigitShifter * VerseRef.chapterDigitShifter;
   private static readonly bcvMaxValue: number = VerseRef.chapterDigitShifter - 1;
-  private readonly rtlMark: string = '\u200f';
-
-  firstChapter?: number;
-  lastChapter?: number;
-  lastVerse?: number;
-  isExcluded?: boolean;
-  hasSegmentsDefined?: boolean;
-  hasMultiple?: boolean;
-  text?: string;
-  BBBCCC?: number;
-  BBBCCCVVV?: number;
-  BBBCCCVVVS?: string;
-  longHashCode?: number;
-  versificationStr?: string;
-
-  private _bookNum: number;
-  private _chapterNum: number;
-  private _verseNum: number;
-  private _verse: string;
-  private _versification: ScrVers;
-
-  constructor(bookNum?: number, chapterNum?: number, verseNum?: number, versification?: ScrVers) {
-    if (!bookNum && !chapterNum && !verseNum && !versification) {
-      this._bookNum = 0;
-      this._chapterNum = 0;
-      this._verseNum = 0;
-      this._verse = null;
-      versification = null;
-    } else if (!bookNum && !chapterNum && !verseNum) {
-      this._bookNum = 0;
-      this._chapterNum = -1;
-      this._verseNum = -1;
-      this._verse = null;
-    } else {
-      this._bookNum = bookNum;
-      this._chapterNum = chapterNum;
-      this._verseNum = verseNum;
-    }
-
-    if (versification === undefined) {
-      versification = VerseRef.defaultVersification;
-    }
-    this._versification = versification;
-  }
 
   static fromStr(verseStr: string, versification: ScrVers = VerseRef.defaultVersification): VerseRef {
     let vref = new VerseRef(undefined, undefined, undefined, versification);
@@ -136,6 +92,50 @@ export class VerseRef {
       verse[verse.length - 1] !== this.verseRangeSeparator &&
       verse[verse.length - 1] !== this.verseSequenceIndicator
     );
+  }
+
+  firstChapter?: number;
+  lastChapter?: number;
+  lastVerse?: number;
+  isExcluded?: boolean;
+  hasSegmentsDefined?: boolean;
+  hasMultiple?: boolean;
+  text?: string;
+  BBBCCC?: number;
+  BBBCCCVVV?: number;
+  BBBCCCVVVS?: string;
+  longHashCode?: number;
+  versificationStr?: string;
+
+  private readonly rtlMark: string = '\u200f';
+  private _bookNum: number;
+  private _chapterNum: number;
+  private _verseNum: number;
+  private _verse: string;
+  private _versification: ScrVers;
+
+  constructor(bookNum?: number, chapterNum?: number, verseNum?: number, versification?: ScrVers) {
+    if (!bookNum && !chapterNum && !verseNum && !versification) {
+      this._bookNum = 0;
+      this._chapterNum = 0;
+      this._verseNum = 0;
+      this._verse = null;
+      versification = null;
+    } else if (!bookNum && !chapterNum && !verseNum) {
+      this._bookNum = 0;
+      this._chapterNum = -1;
+      this._verseNum = -1;
+      this._verse = null;
+    } else {
+      this._bookNum = bookNum;
+      this._chapterNum = chapterNum;
+      this._verseNum = verseNum;
+    }
+
+    if (versification === undefined) {
+      versification = VerseRef.defaultVersification;
+    }
+    this._versification = versification;
   }
 
   /**
@@ -264,9 +264,9 @@ export class VerseRef {
     return this.validStatus === ValidStatusType.Valid;
   }
 
-  /// <summary>
-  /// Get the valid status for this reference.
-  /// </summary>
+  /**
+   * Get the valid status for this reference.
+   */
   get validStatus(): ValidStatusType {
     return this.validateVerse(VerseRef.verseRangeSeparators, VerseRef.verseSequenceIndicators);
   }

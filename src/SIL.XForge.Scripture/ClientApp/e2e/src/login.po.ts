@@ -4,11 +4,6 @@ import { AppPage } from './app.po';
 
 export class LoginPage {
   private static readonly baseUrl = 'http://localhost:5000';
-  private readonly constants = require('../testConstants.json');
-
-  usernameInput = element(by.css('input[id="username"]'));
-  passwordInput = element(by.css('input[id="password"]'));
-  loginButton = element(by.id('submitButton'));
 
   static async get() {
     await browser.get(this.baseUrl + '/identity/log-in');
@@ -19,6 +14,12 @@ export class LoginPage {
     await browser.get(this.baseUrl + '/identity/log-out');
     browser.waitForAngularEnabled(true);
   }
+
+  usernameInput = element(by.css('input[id="username"]'));
+  passwordInput = element(by.css('input[id="password"]'));
+  loginButton = element(by.id('submitButton'));
+
+  private readonly constants = require('../testConstants.json');
 
   // return type (Promise<void>) intentionally left off to avoid run error
   async login(username: string, password: string, shouldSubmitByEnterkey?: boolean) {

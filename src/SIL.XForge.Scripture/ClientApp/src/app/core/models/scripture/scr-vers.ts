@@ -15,9 +15,6 @@ export class ScrVers {
   static readonly RussianProtestant: ScrVers = new ScrVers(ScrVersType.RussianProtestant);
   static readonly RussianOrthodox: ScrVers = new ScrVers(ScrVersType.RussianOrthodox);
 
-  private _type: ScrVersType;
-  // private versInfo: Versification;
-
   name?: string;
   fullPath?: string;
   isPresent?: boolean;
@@ -25,6 +22,9 @@ export class ScrVers {
   isCustomized?: boolean;
   baseVersification?: ScrVers;
   scriptureBooks?: BookSet;
+
+  private _type: ScrVersType;
+  // private versInfo: Versification;
 
   constructor(name?: string);
   constructor(type?: ScrVersType) {
