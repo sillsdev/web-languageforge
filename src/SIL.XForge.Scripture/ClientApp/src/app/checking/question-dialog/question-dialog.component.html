@@ -1,0 +1,50 @@
+<mdc-dialog>
+  <mdc-dialog-container>
+    <mdc-dialog-surface class="dialog-size">
+      <mdc-dialog-title fxLayoutAlign="start center">
+        <i class="material-icons">live_help</i> {{ modeLabel }} Question
+      </mdc-dialog-title>
+      <mdc-dialog-content class="content-padding">
+        <form [formGroup]="questionForm" (ngSubmit)="submit()" autocomplete="off" id="question-form">
+          <div fxLayout="row wrap" fxLayoutAlign="space-around start" fxLayoutGap.gt-xs="1em">
+            <mdc-form-field>
+              <mdc-text-field
+                label="Scripture reference"
+                type="text"
+                formControlName="scriptureStart"
+                outlined
+                id="scripture-start"
+              ></mdc-text-field>
+              <mdc-helper-text validation>*Required, e.g. JHN 3:16</mdc-helper-text>
+            </mdc-form-field>
+            <mdc-form-field>
+              <mdc-text-field
+                label="End reference"
+                type="text"
+                formControlName="scriptureEnd"
+                outlined
+                id="scripture-end"
+              ></mdc-text-field>
+              <mdc-helper-text validation>*Required, e.g. JHN 3:16</mdc-helper-text>
+            </mdc-form-field>
+          </div>
+          <mdc-form-field fluid>
+            <mdc-textarea
+              label="Question"
+              type="text"
+              formControlName="questionText"
+              rows="2"
+              [helperText]="questionHelper"
+              id="question-text"
+            ></mdc-textarea>
+            <mdc-helper-text #questionHelper validation>*Required</mdc-helper-text>
+          </mdc-form-field>
+        </form>
+      </mdc-dialog-content>
+      <mdc-dialog-actions align="end">
+        <button mdcDialogButton mdcDialogAction="close" id="question-cancel-btn">Cancel</button>
+        <button mdc-button primary form="question-form" [disabled]="isSubmitted" id="question-save-btn">Save</button>
+      </mdc-dialog-actions>
+    </mdc-dialog-surface>
+  </mdc-dialog-container>
+</mdc-dialog>

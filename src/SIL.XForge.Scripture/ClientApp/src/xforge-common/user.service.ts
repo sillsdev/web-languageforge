@@ -2,7 +2,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Record } from '@orbit/data';
 import { clone } from '@orbit/utils';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 
 import { AuthService } from './auth.service';
@@ -42,6 +42,24 @@ export class UserService extends ResourceService {
     return this.getCurrentUser().pipe(map(currentUser => currentUser && currentUser.role === role));
   }
 
+  hasCurrentUserProjectRole(projectId: string, role: string): Observable<boolean> {
+    if (!projectId) {
+      return of(false);
+    }
+
+    return this.getProjects(this.currentUserId).pipe(
+      map(projectUserResults => {
+        for (const projectUser of projectUserResults.results) {
+          if (projectUser && projectUser.project.id === projectId) {
+            return projectUser.role === role;
+          }
+        }
+
+        return false;
+      })
+    );
+  }
+
   /** Get currently-logged in user. */
   getCurrentUser(): Observable<User> {
     if (this.currentUser$ == null) {
@@ -52,6 +70,10 @@ export class UserService extends ResourceService {
       );
     }
     return this.currentUser$;
+  }
+
+  getProjects(id: string): QueryObservable<ProjectUser[]> {
+    return this.jsonApiService.getAllRelated(this.identity(id), nameof<User>('projects'));
   }
 
   /**

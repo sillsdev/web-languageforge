@@ -6,6 +6,7 @@ import { ChangePasswordComponent } from 'xforge-common/change-password/change-pa
 import { ProjectsComponent } from 'xforge-common/projects/projects.component';
 import { SystemAdminAuthGuard } from 'xforge-common/system-admin-auth.guard';
 import { SystemAdministrationComponent } from 'xforge-common/system-administration/system-administration.component';
+import { CheckingOverviewComponent } from './checking/checking-overview/checking-overview.component';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { HomeComponent } from './home/home.component';
@@ -13,6 +14,7 @@ import { MyAccountComponent } from './my-account/my-account.component';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ProjectComponent } from './project/project.component';
 import { RealtimeComponent } from './realtime/realtime.component';
+import { SFAdminAuthGuard } from './shared/sfadmin-auth.guard';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
@@ -21,7 +23,8 @@ const routes: Routes = [
   { path: 'connect-project', component: ConnectProjectComponent, canActivate: [AuthGuard] },
   { path: 'my-account', component: MyAccountComponent, canActivate: [AuthGuard] },
   { path: 'realtime', component: RealtimeComponent, canActivate: [AuthGuard] },
-  { path: 'projects/:id/settings', component: ProjectSettingsComponent, canActivate: [AuthGuard] },
+  { path: 'projects/:id/checking/overview', component: CheckingOverviewComponent, canActivate: [AuthGuard] },
+  { path: 'projects/:id/settings', component: ProjectSettingsComponent, canActivate: [SFAdminAuthGuard] },
   { path: 'projects/:id', component: ProjectComponent, canActivate: [AuthGuard] },
   { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard] },
   { path: 'system-administration', component: SystemAdministrationComponent, canActivate: [SystemAdminAuthGuard] },

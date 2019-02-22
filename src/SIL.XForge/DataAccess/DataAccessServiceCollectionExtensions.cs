@@ -34,6 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection
             DataAccessClassMap.RegisterConventions("SIL.XForge",
                 new CamelCaseElementNameConvention(),
                 new ObjectRefConvention(),
+                new EnumRepresentationConvention(BsonType.String),
                 new IgnoreIfNullConvention(true));
 
             DataAccessClassMap.RegisterClass<Entity>(cm =>

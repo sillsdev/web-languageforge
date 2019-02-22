@@ -12,6 +12,7 @@ using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using SIL.XForge;
 using SIL.XForge.Configuration;
@@ -73,6 +74,7 @@ namespace Microsoft.Extensions.DependencyInjection
             };
             jsonApiOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             jsonApiOptions.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            jsonApiOptions.SerializerSettings.Converters.Add(new StringEnumConverter());
 
             mvcBuilder.AddMvcOptions(options =>
                  {
