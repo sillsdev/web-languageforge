@@ -1,0 +1,13 @@
+@import '~src/global';
+
+:host {
+  display: flex;
+  align-items: center;
+  border: 1px solid $sf-grey;
+  border-radius: 4px;
+  padding: 2px;
+  background-color: lighten($sf_grey, 70%);
+  span {
+    padding: 0 15px;
+  }
+}
