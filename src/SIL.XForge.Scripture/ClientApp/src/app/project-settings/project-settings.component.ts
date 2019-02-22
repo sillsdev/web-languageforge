@@ -1,10 +1,13 @@
+import { MdcDialog, MdcDialogConfig } from '@angular-mdc/web';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ElementState } from 'xforge-common/models/element-state';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
+
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
+import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-project-dialog.component';
 
 type VoidFunc = (() => void);
 
@@ -23,7 +26,12 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
   /** Elements in this component and their states. */
   controlStates = new Map<string, ElementState>();
 
-  constructor(private route: ActivatedRoute, private projectService: SFProjectService) {
+  constructor(
+    private route: ActivatedRoute,
+    private projectService: SFProjectService,
+    private dialog: MdcDialog,
+    private router: Router
+  ) {
     super();
     this.route.params.subscribe(params => (this.projectId = params['id']));
     this.form = new FormGroup(
@@ -115,6 +123,18 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
         if (this.project) {
           this.updateSettingsInfo();
         }
+      }
+    });
+  }
+
+  openDeleteProjectDialog(): void {
+    const config: MdcDialogConfig = {
+      data: { name: this.project.projectName }
+    };
+    const dialogRef = this.dialog.open(DeleteProjectDialogComponent, config);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'accept') {
+        this.projectService.onlineDelete(this.projectId).then(() => this.router.navigateByUrl('/home'));
       }
     });
   }

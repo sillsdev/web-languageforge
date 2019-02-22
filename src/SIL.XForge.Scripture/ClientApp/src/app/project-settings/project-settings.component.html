@@ -1,6 +1,6 @@
 <div class="container">
   <mdc-card class="card" mdc-card--outlined>
-    <form class="task-card-content" [formGroup]="form">
+    <form class="card-content" [formGroup]="form">
       <h2>Tasks</h2>
       <h3 class="mdc-typography--subtitle1">Select which tasks are available. At least one task must be selected.</h3>
       <div class="invalid-feedback" *ngIf="form.errors && form.errors.requireCheckboxesToBeChecked">
@@ -79,4 +79,23 @@
       </div>
     </form>
   </mdc-card>
+  <div fxLayout="column" fxLayoutAlign="space-between stretch" id="danger-zone">
+    <h2>Danger Zone</h2>
+    <mdc-card class="card-content" id="delete-project">
+      <h3>Delete this project</h3>
+      <div>
+        <p>Once you delete a project, there is no going back. Please be certain.</p>
+        <p>
+          This will <strong>not</strong> delete your Paratext project, but it will delete any unsynchronized data stored
+          in Scripture Forge. It is recommended to <a [routerLink]="['/projects', projectId, 'sync']">Sync</a> first
+          before deleting.
+        </p>
+      </div>
+      <div>
+        <div fxLayout="row" fxLayoutAlign="end stretch">
+          <button id="delete-btn" mat-stroked-button (click)="openDeleteProjectDialog()">Delete this project</button>
+        </div>
+      </div>
+    </mdc-card>
+  </div>
 </div>

@@ -1,0 +1,27 @@
+<mdc-dialog>
+  <mdc-dialog-container>
+    <mdc-dialog-surface>
+      <mdc-dialog-title id="title"
+        ><mdc-icon>warning</mdc-icon> Are you sure you want to delete this project?</mdc-dialog-title
+      >
+      <mdc-dialog-content>
+        <p>
+          This action <strong>cannot</strong> be undone. This will permanently delete the
+          <strong>{{ data.name }}</strong> project, translation data, questions, answers, and comments.
+        </p>
+        <br />
+        <p>Please type in the name of the project to confirm.</p>
+        <mdc-form-field>
+          <mdc-text-field id="project-entry" label="Project Name" [formControl]="projectNameEntry"></mdc-text-field>
+        </mdc-form-field>
+      </mdc-dialog-content>
+      <mdc-dialog-actions>
+        <button mdcDialogButton id="cancel-btn" mdcDialogAction="cancel">Cancel</button>
+        <button mdc-button id="project-delete-btn" outlined mdcDialogAction="accept" [disabled]="deleteDisabled">
+          <span fxHide.lt-sm>I understand the consequences, delete this project</span>
+          <span fxHide fxShow.xs>Delete this project</span>
+        </button>
+      </mdc-dialog-actions>
+    </mdc-dialog-surface>
+  </mdc-dialog-container>
+</mdc-dialog>
