@@ -51,6 +51,12 @@ export interface TextUpdatedEvent {
   encapsulation: ViewEncapsulation.None
 })
 export class TextComponent implements OnDestroy {
+  @Input() textType: TextType = 'target';
+  @Input() isReadOnly: boolean = true;
+  @Output() updated = new EventEmitter<TextUpdatedEvent>(true);
+  @Output() segmentRefChange = new EventEmitter<string>();
+  @Output() loaded = new EventEmitter(true);
+
   private readonly DEFAULT_MODULES: any = {
     toolbar: false,
     keyboard: {
@@ -71,12 +77,6 @@ export class TextComponent implements OnDestroy {
     }
   };
 
-  @Input() textType: TextType = 'target';
-  @Input() isReadOnly: boolean = true;
-  @Output() updated = new EventEmitter<TextUpdatedEvent>(true);
-  @Output() segmentRefChange = new EventEmitter<string>();
-  @Output() loaded = new EventEmitter(true);
-
   private _textId?: string;
   private _modules: any = this.DEFAULT_MODULES;
   private _editor?: Quill;
@@ -95,7 +95,6 @@ export class TextComponent implements OnDestroy {
   get textId(): string {
     return this._textId;
   }
-
   @Input()
   set textId(value: string) {
     this._textId = value;
@@ -107,7 +106,6 @@ export class TextComponent implements OnDestroy {
   get modules(): any {
     return this._modules;
   }
-
   @Input()
   set modules(value: any) {
     this._modules = deepMerge(value, this.DEFAULT_MODULES);
@@ -116,7 +114,6 @@ export class TextComponent implements OnDestroy {
   get highlightSegment(): boolean {
     return this._highlightSegment;
   }
-
   @Input()
   set highlightSegment(value: boolean) {
     if (this._highlightSegment !== value) {
@@ -133,7 +130,6 @@ export class TextComponent implements OnDestroy {
     }
     return this._segment.ref;
   }
-
   @Input()
   set segmentRef(value: string) {
     if (value !== this.segmentRef) {
@@ -233,6 +229,17 @@ export class TextComponent implements OnDestroy {
     return this.segmenter.getSegmentRange(ref);
   }
 
+  onContentChanged(delta: DeltaStatic, source: Sources): void {
+    if (source === 'user') {
+      this.textData.submit(delta, this._editor);
+    }
+    this.update(delta);
+  }
+
+  onSelectionChanged(): void {
+    this.update();
+  }
+
   private async bindQuill(): Promise<void> {
     await this.unbindQuill();
     if (this._textId == null || this._editor == null) {
@@ -261,17 +268,6 @@ export class TextComponent implements OnDestroy {
     this.textDataSub.unsubscribe();
     await this.textService.disconnect(this.textData);
     this._editor.setText('', 'silent');
-  }
-
-  onContentChanged(delta: DeltaStatic, source: Sources): void {
-    if (source === 'user') {
-      this.textData.submit(delta, this._editor);
-    }
-    this.update(delta);
-  }
-
-  onSelectionChanged(): void {
-    this.update();
   }
 
   private isBackspaceAllowed(range: RangeStatic): boolean {

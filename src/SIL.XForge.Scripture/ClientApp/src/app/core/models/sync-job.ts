@@ -8,11 +8,11 @@ export enum SyncJobState {
 }
 
 export class SyncJob extends SyncJobBase {
+  state?: SyncJobState;
+
   constructor(init?: Partial<SyncJob>) {
     super(init);
   }
-
-  state?: SyncJobState;
 
   get isActive(): boolean {
     return this.state === SyncJobState.PENDING || this.state === SyncJobState.SYNCING;

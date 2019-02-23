@@ -6,10 +6,6 @@ import { SystemRole } from './system-role';
 export class User extends Resource {
   static readonly TYPE: string = 'user';
 
-  constructor(init?: Partial<User>) {
-    super(User.TYPE, init);
-  }
-
   username?: string;
   name?: string;
   email?: string;
@@ -28,6 +24,10 @@ export class User extends Resource {
   site?: Site;
 
   projects?: ProjectUserRef[];
+
+  constructor(init?: Partial<User>) {
+    super(User.TYPE, init);
+  }
 
   get isSystemAdmin(): boolean {
     return this.role === SystemRole.SystemAdmin;

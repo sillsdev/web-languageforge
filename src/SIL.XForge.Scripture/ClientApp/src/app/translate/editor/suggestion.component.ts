@@ -19,8 +19,6 @@ export class SuggestionComponent extends SubscriptionDisposable implements OnIni
 
   private top: number;
 
-  private readonly onScroll = () => this.updateVisibility();
-
   constructor(private readonly elemRef: ElementRef) {
     super();
   }
@@ -28,7 +26,6 @@ export class SuggestionComponent extends SubscriptionDisposable implements OnIni
   get show(): boolean {
     return !this.root.classList.contains('hidden');
   }
-
   @Input()
   set show(value: boolean) {
     if (value) {
@@ -102,6 +99,8 @@ export class SuggestionComponent extends SubscriptionDisposable implements OnIni
   selectAll(): void {
     this.selected.emit(-1);
   }
+
+  private readonly onScroll = () => this.updateVisibility();
 
   private setPosition(): void {
     const selection = this.editor.getSelection();

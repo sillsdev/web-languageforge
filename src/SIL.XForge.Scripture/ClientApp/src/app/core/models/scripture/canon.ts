@@ -164,6 +164,9 @@ export class Canon {
     'NDX'
   ];
 
+  static readonly firstBook = 1;
+  static readonly lastBook = Canon.allBookIds.length;
+
   /**
    * Array of the English names of all books
    */
@@ -309,9 +312,6 @@ export class Canon {
 
   // Used for fast look up of book IDs to the book number
   private static readonly bookNumbers: BookNumbers = Canon.createBookNumbers();
-
-  static readonly firstBook = 1;
-  static readonly lastBook = Canon.allBookIds.length;
 
   /**
    * Gets the 1-based number of the specified book

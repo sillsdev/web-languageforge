@@ -163,11 +163,6 @@ export class UserService extends ResourceService {
     return await this.jsonApiService.localUpdateAttributes<User>(this.identity(this.currentUserId), attrs);
   }
 
-  private searchUsers(records: Record[], value: string): Record[] {
-    const valueLower = value.toLowerCase();
-    return records.filter(record => this.isSearchMatch(record, valueLower));
-  }
-
   protected isSearchMatch(record: Record, value: string): boolean {
     if (record.attributes == null) {
       return false;
@@ -183,5 +178,10 @@ export class UserService extends ResourceService {
     }
 
     return false;
+  }
+
+  private searchUsers(records: Record[], value: string): Record[] {
+    const valueLower = value.toLowerCase();
+    return records.filter(record => this.isSearchMatch(record, valueLower));
   }
 }
