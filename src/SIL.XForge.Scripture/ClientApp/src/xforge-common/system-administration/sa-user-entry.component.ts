@@ -43,12 +43,12 @@ export class SaUserEntryComponent implements OnInit {
     private readonly noticeService: NoticeService
   ) {
     this.accountUserForm = this.formBuilder.group({
-      FullName: ['', Validators.compose([Validators.required])],
-      Username: [],
-      Email: ['', Validators.compose([Validators.required, Validators.email, Validators.pattern(this.emailPattern)])],
-      Role: ['', Validators.compose([Validators.required])],
-      Password: ['', Validators.compose([Validators.required, Validators.minLength(7)])],
-      ActivateStatus: []
+      fullName: ['', Validators.compose([Validators.required])],
+      username: [],
+      email: ['', Validators.compose([Validators.required, Validators.email, Validators.pattern(this.emailPattern)])],
+      role: ['', Validators.compose([Validators.required])],
+      password: ['', Validators.compose([Validators.required, Validators.minLength(7)])],
+      activateStatus: []
     });
   }
 
@@ -85,19 +85,23 @@ export class SaUserEntryComponent implements OnInit {
   }
 
   get fullName() {
-    return this.formControls.FullName;
+    return this.formControls.fullName;
   }
 
   get email() {
-    return this.formControls.Email;
+    return this.formControls.email;
   }
 
   get password() {
-    return this.formControls.Password;
+    return this.formControls.password;
   }
 
   get role() {
-    return this.formControls.Role;
+    return this.formControls.role;
+  }
+
+  get activateStatus() {
+    return this.formControls.activateStatus;
   }
 
   editToAddReset(): void {
@@ -126,12 +130,12 @@ export class SaUserEntryComponent implements OnInit {
     }
 
     const newUser: Partial<User> = {
-      name: this.accountUserForm.value.FullName,
-      username: this.accountUserForm.value.Username,
-      email: this.accountUserForm.value.Email,
-      role: this.accountUserForm.value.Role,
+      name: this.accountUserForm.value.fullName,
+      username: this.accountUserForm.value.username,
+      email: this.accountUserForm.value.email,
+      role: this.accountUserForm.value.role,
       active: true,
-      password: this.accountUserForm.value.Password
+      password: this.accountUserForm.value.password
     };
 
     await this.userService.onlineCreate(newUser);
@@ -150,13 +154,13 @@ export class SaUserEntryComponent implements OnInit {
       return;
     }
     const updateUser: Partial<User> = {
-      name: this.accountUserForm.value.FullName,
-      username: this.accountUserForm.value.Username,
-      email: this.accountUserForm.value.Email,
-      role: this.accountUserForm.value.Role,
-      active: this.accountUserForm.value.ActivateStatus
+      name: this.accountUserForm.value.fullName,
+      username: this.accountUserForm.value.username,
+      email: this.accountUserForm.value.email,
+      role: this.accountUserForm.value.role,
+      active: this.accountUserForm.value.activateStatus
     };
-    if (this.accountUserForm.value.Password != null) {
+    if (this.accountUserForm.value.password != null) {
       // The password was changed, so we need to update the password property of our user
       updateUser.password = this.accountUserForm.value.password;
     }
@@ -181,15 +185,15 @@ export class SaUserEntryComponent implements OnInit {
     this.userService.onlineGet(userId).subscribe(response => {
       if (response != null) {
         this.accountUserForm.patchValue({
-          FullName: response.results.name,
-          Username: response.results.username,
-          Email: response.results.email,
-          Role: response.results.role,
-          ActivateStatus: response.results.active
+          fullName: response.results.name,
+          username: response.results.username,
+          email: response.results.email,
+          role: response.results.role,
+          activateStatus: response.results.active
         });
         this.userLastLoginDate = this.datePipe.transform(response.results.dateModified, 'dd MMMM yyyy');
         this.userCreatedDate = this.datePipe.transform(response.results.dateCreated, 'dd MMMM yyyy');
-        this.accountUserForm.controls['ActivateStatus'].setValue(response.results.active);
+        this.activateStatus.setValue(response.results.active);
         this.onChange({ checked: response.results.active });
       }
     });

@@ -11,15 +11,15 @@
           autocomplete="off"
         >
           <mat-form-field>
-            <input id="full-name" matInput placeholder="Name" formControlName="FullName" />
+            <input id="full-name" matInput placeholder="Name" formControlName="fullName" />
             <mat-error *ngIf="fullName.errors?.required && isSubmitted">Name is required</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-            <input id="username" matInput placeholder="Username" formControlName="Username" />
+            <input id="username" matInput placeholder="Username" formControlName="username" />
           </mat-form-field>
           <mat-form-field>
-            <input id="email" matInput placeholder="Email Address" formControlName="Email" />
+            <input id="email" matInput placeholder="Email Address" formControlName="email" />
             <mat-error *ngIf="email.errors?.required && isSubmitted"> Email is required </mat-error>
             <mat-error *ngIf="(email.errors?.email || email.errors?.pattern) && isSubmitted">
               Email is invalid
@@ -27,7 +27,7 @@
           </mat-form-field>
 
           <mat-form-field>
-            <mat-select id="user-role" placeholder="System role" formControlName="Role">
+            <mat-select id="user-role" placeholder="System role" formControlName="role">
               <mat-option *ngFor="let item of roleList" value="{{ item.id }}">{{ item.value }}</mat-option>
             </mat-select>
             <mat-error *ngIf="role.errors?.required && isSubmitted"> System Role is required </mat-error>
@@ -40,7 +40,7 @@
                 type="password"
                 id="password"
                 name="Password"
-                formControlName="Password"
+                formControlName="password"
                 minlength="7"
               />
               <mat-error *ngIf="password.errors?.minlength">Password must be at least 7 characters</mat-error>
@@ -49,7 +49,7 @@
               > </mat-form-field
             ><br />
             <password-strength-meter
-              [password]="accountUserForm.value.Password"
+              [password]="accountUserForm.value.password"
               item-width="200px"
             ></password-strength-meter>
           </div>
@@ -57,7 +57,7 @@
             <p id="last-login" mat-line>Last login {{ userLastLoginDate }}</p>
             <p id="date-created" mat-line>User created {{ userCreatedDate }}</p>
             <section class="example-section">
-              <mat-slide-toggle class="example-margin" formControlName="ActivateStatus" (change)="onChange($event)">
+              <mat-slide-toggle class="example-margin" formControlName="activateStatus" (change)="onChange($event)">
                 {{ userActivateDeactive }}
               </mat-slide-toggle>
             </section>
