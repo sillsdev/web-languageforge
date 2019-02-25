@@ -95,11 +95,12 @@ namespace SIL.XForge.Services
 
         protected virtual void UpdateAttribute(IUpdateBuilder<TEntity> update, string name, object value)
         {
+            Expression<Func<TEntity, object>> field = GetField(name);
             // by default, resource attribute names are the same as entity property names
             if (value == null)
-                update.Unset(name);
+                update.Unset(field);
             else
-                update.Set(name, value);
+                update.Set(field, value);
         }
 
         protected IRelationship<TEntity> ManyToOne<TOtherResource, TOtherEntity>(
@@ -130,6 +131,13 @@ namespace SIL.XForge.Services
         {
             return new CustomRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, createPredicate,
                 update);
+        }
+
+        private static Expression<Func<TEntity, object>> GetField(string fieldName)
+        {
+            ParameterExpression param = Expression.Parameter(typeof(TEntity), "e");
+            Expression body = Expression.Convert(Expression.Property(param, fieldName), typeof(object));
+            return Expression.Lambda<Func<TEntity, object>>(body, param);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace SIL.XForge.Services
         private Expression<Func<TOtherEntity, bool>> CreateEqualPredicate(string id)
         {
             ParameterExpression ePar = Expression.Parameter(typeof(TOtherEntity), "e");
-            var getter = (MemberExpression)ExpressionUtils.RebindParameter(ePar, _getFieldExpr);
+            var getter = (MemberExpression)ExpressionHelper.RebindParameter(ePar, _getFieldExpr);
             BinaryExpression resultBody = Expression.Equal(getter, Expression.Constant(id, typeof(string)));
             return Expression.Lambda<Func<TOtherEntity, bool>>(resultBody, ePar);
         }
