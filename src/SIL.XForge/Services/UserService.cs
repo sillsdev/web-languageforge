@@ -108,7 +108,7 @@ namespace SIL.XForge.Services
                     if (value == null)
                         update.RemoveDictionaryValue(u => u.Sites, site);
                     else
-                        update.SetDictionaryValue(u => u.Sites, site, value);
+                        update.SetDictionaryValue(u => u.Sites, site, (Site)value);
                     break;
                 default:
                     base.UpdateAttribute(update, name, value);

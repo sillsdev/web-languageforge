@@ -101,7 +101,7 @@ namespace SIL.XForge.Services
             IEnumerable<string> included, Dictionary<string, IResource> resources,
             Expression<Func<ProjectEntity, bool>> predicate)
         {
-            return await MapMatchingAsync(included, resources, ExpressionUtils.ChangePredicateType<TEntity>(predicate));
+            return await MapMatchingAsync(included, resources, ExpressionHelper.ChangePredicateType<TEntity>(predicate));
         }
     }
 }

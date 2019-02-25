@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 
 namespace SIL.XForge.Utils
 {
-    public sealed class ParameterRebinder : ExpressionVisitor
+    internal class ParameterRebinder : ExpressionVisitor
     {
         private readonly ParameterExpression _parameter;
 

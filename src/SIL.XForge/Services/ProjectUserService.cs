@@ -103,10 +103,11 @@ namespace SIL.XForge.Services
         protected override async Task<TEntity> UpdateEntityAsync(string id,
             IDictionary<string, object> attrs, IDictionary<string, string> relationships)
         {
-            TProjectEntity project = await Projects.UpdateAsync(p => p.Users.Any(pu => pu.Id == id), update =>
+            TProjectEntity project = await Projects.UpdateAsync(p => p.Users.Any(pu => pu.Id == id),
+                update =>
                 {
                     foreach (KeyValuePair<string, object> attr in attrs)
-                        update.Set(p => p.Users, attr.Key, attr.Value);
+                        update.Set(GetField(attr.Key), attr.Value);
                 });
             return GetProjectUser(project, id);
         }
@@ -160,12 +161,20 @@ namespace SIL.XForge.Services
             }
         }
 
-        private TEntity GetProjectUser(TProjectEntity project, string id)
+        private static TEntity GetProjectUser(TProjectEntity project, string id)
         {
             TEntity projectUser = project.Users.Cast<TEntity>().FirstOrDefault(pu => pu.Id == id);
             if (projectUser != null)
                 projectUser.ProjectRef = project.Id;
             return projectUser;
+        }
+
+        private static Expression<Func<TProjectEntity, object>> GetField(string fieldName)
+        {
+            Expression<Func<TProjectEntity, TEntity>> getProjectUserExpr = p => (TEntity)p.Users[-1];
+            Expression body = Expression.Convert(Expression.Property(getProjectUserExpr.Body, fieldName),
+                typeof(object));
+            return Expression.Lambda<Func<TProjectEntity, object>>(body, getProjectUserExpr.Parameters);
         }
 
         async Task<ProjectUserResource> IResourceMapper<ProjectUserResource, ProjectUserEntity>.MapAsync(
@@ -178,7 +187,7 @@ namespace SIL.XForge.Services
             IEnumerable<string> included, Dictionary<string, IResource> resources,
             Expression<Func<ProjectUserEntity, bool>> predicate)
         {
-            return await MapMatchingAsync(included, resources, ExpressionUtils.ChangePredicateType<TEntity>(predicate));
+            return await MapMatchingAsync(included, resources, ExpressionHelper.ChangePredicateType<TEntity>(predicate));
         }
     }
 }

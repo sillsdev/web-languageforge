@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace SIL.XForge.Utils
 {
-    public static class ExpressionUtils
+    public static class ExpressionHelper
     {
         public static Expression<Func<T, bool>> ChangePredicateType<T>(LambdaExpression predicate)
         {
@@ -16,6 +17,13 @@ namespace SIL.XForge.Utils
         {
             var e = new ParameterRebinder(param);
             return e.Visit(lambda.Body);
+        }
+
+        public static IEnumerable<Expression> Flatten<T, TField>(Expression<Func<T, TField>> field)
+        {
+            var flattener = new FieldExpressionFlattener();
+            flattener.Visit(field);
+            return flattener.Nodes;
         }
     }
 }
