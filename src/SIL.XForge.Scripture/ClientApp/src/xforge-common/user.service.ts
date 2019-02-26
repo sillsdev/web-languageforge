@@ -49,7 +49,7 @@ export class UserService extends ResourceService {
 
     return this.getProjects(this.currentUserId).pipe(
       map(projectUserResults => {
-        for (const projectUser of projectUserResults.results) {
+        for (const projectUser of projectUserResults.data) {
           if (projectUser && projectUser.project.id === projectId) {
             return projectUser.role === role;
           }
@@ -64,7 +64,7 @@ export class UserService extends ResourceService {
   getCurrentUser(): Observable<User> {
     if (this.currentUser$ == null) {
       this.currentUser$ = this.jsonApiService.get<User>(this.identity(this.currentUserId)).pipe(
-        map(r => r.results),
+        map(r => r.data),
         filter(u => u != null),
         shareReplay(1)
       );
@@ -72,8 +72,12 @@ export class UserService extends ResourceService {
     return this.currentUser$;
   }
 
-  getProjects(id: string): QueryObservable<ProjectUser[]> {
-    return this.jsonApiService.getAllRelated(this.identity(id), nameof<User>('projects'));
+  getProjects(id: string, include?: string[][]): QueryObservable<ProjectUser[]> {
+    return this.jsonApiService.getAllRelated(this.identity(id), nameof<User>('projects'), include);
+  }
+
+  updateCurrentUserAttributes(attrs: Partial<User>): Promise<User> {
+    return this.jsonApiService.updateAttributes(this.identity(this.currentUserId), attrs);
   }
 
   /**
@@ -122,7 +126,7 @@ export class UserService extends ResourceService {
     term$: Observable<string>,
     parameters$: Observable<GetAllParameters<User>>,
     reload$: Observable<void>,
-    include?: string[]
+    include?: string[][]
   ): QueryObservable<User[]> {
     const debouncedTerm$ = term$.pipe(
       debounceTime(400),

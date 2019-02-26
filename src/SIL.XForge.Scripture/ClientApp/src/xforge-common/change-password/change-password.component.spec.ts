@@ -93,7 +93,7 @@ describe('ChangePasswordComponent', () => {
     expect(env.notMatchError).toBeNull();
   });
 
-  it('clicking submit calls library, shows notice, goes /home', fakeAsync(() => {
+  it('clicking submit calls library, shows notice, goes /projects', fakeAsync(() => {
     const newPassword = 'aaaaaaa';
     env.newPasswordControl.setValue(newPassword);
     env.confirmPasswordControl.setValue(newPassword);
@@ -105,7 +105,7 @@ describe('ChangePasswordComponent', () => {
     verify(env.mockedNoticeService.show(anyString())).once();
     verify(env.mockedRouter.navigateByUrl(anyString())).once();
     const routerArg = capture(env.mockedRouter.navigateByUrl).last()[0];
-    expect(routerArg).toEqual('/home');
+    expect(routerArg).toEqual('/projects');
   }));
 
   it('does not submit if anything is invalid or not-match', async () => {

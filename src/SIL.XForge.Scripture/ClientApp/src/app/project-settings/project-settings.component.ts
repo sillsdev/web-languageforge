@@ -33,7 +33,7 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
     private router: Router
   ) {
     super();
-    this.route.params.subscribe(params => (this.projectId = params['id']));
+    this.route.params.subscribe(params => (this.projectId = params['projectId']));
     this.form = new FormGroup(
       {
         translation: new FormControl(''),
@@ -118,8 +118,8 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
 
   ngOnInit() {
     this.subscribe(this.projectService.onlineGet(this.projectId), searchResults => {
-      if (searchResults && searchResults.results) {
-        this.project = searchResults.results;
+      if (searchResults && searchResults.data) {
+        this.project = searchResults.data;
         if (this.project) {
           this.updateSettingsInfo();
         }
@@ -134,7 +134,7 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
     const dialogRef = this.dialog.open(DeleteProjectDialogComponent, config);
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'accept') {
-        this.projectService.onlineDelete(this.projectId).then(() => this.router.navigateByUrl('/home'));
+        this.projectService.onlineDelete(this.projectId).then(() => this.router.navigateByUrl('/projects'));
       }
     });
   }

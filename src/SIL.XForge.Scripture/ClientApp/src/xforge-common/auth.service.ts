@@ -46,7 +46,7 @@ export class AuthService {
   init(): void {
     const authConfig: AuthConfig = {
       issuer: this.locationService.origin,
-      redirectUri: this.locationService.origin + '/home',
+      redirectUri: this.locationService.origin + '/projects',
       clientId: 'xForge',
       scope: 'openid profile email api',
       postLogoutRedirectUri: this.locationService.origin + '/',

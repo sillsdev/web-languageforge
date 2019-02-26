@@ -37,6 +37,7 @@ describe('ForgotPasswordComponent', () => {
     verify(env.mockedIdentityService.forgotPassword(deepEqual('user1'))).once();
     verify(env.mockedNoticeService.show(anyString())).once();
     flush();
+    expect().nothing();
   }));
 
   it('should do nothing when form is invalid', fakeAsync(() => {

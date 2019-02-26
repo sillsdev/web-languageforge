@@ -43,7 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 RequireConsent = false,
                 RedirectUris =
                 {
-                    BuildUrl(origin, "home"),
+                    BuildUrl(origin, "projects"),
                     BuildUrl(origin, "silent-refresh.html")
                 },
                 PostLogoutRedirectUris =

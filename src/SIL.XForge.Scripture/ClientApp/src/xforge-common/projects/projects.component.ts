@@ -68,13 +68,13 @@ export class ProjectsComponent extends SubscriptionDisposable implements OnInit 
 
   ngOnInit() {
     this.subscribe(this.projectService.onlineSearch(this.searchTerm$, this.parameters$), searchResults => {
-      this.projects = searchResults.results;
+      this.projects = searchResults.data;
       this.length = searchResults.totalPagedCount;
       this.generateRows();
     });
     this.subscribe(this.userService.onlineGetProjects(this.userService.currentUserId), projectUserResults => {
       this.projectUsers = new Map<string, ProjectUser>();
-      for (const projectUser of projectUserResults.results) {
+      for (const projectUser of projectUserResults.data) {
         this.projectUsers.set(projectUser.project.id, projectUser);
       }
       this.generateRows();

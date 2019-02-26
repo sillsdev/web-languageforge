@@ -33,7 +33,7 @@ export class SyncJobService extends ResourceService {
   listen(jobId: string): Observable<SyncJob> {
     return interval(2000).pipe(
       switchMap(() => this.onlineGet(jobId)),
-      map(r => r.results),
+      map(r => r.data),
       takeWhileInclusive(j => j.isActive)
     );
   }

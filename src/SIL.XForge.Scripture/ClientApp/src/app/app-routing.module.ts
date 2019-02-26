@@ -3,32 +3,24 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from 'xforge-common/auth.guard';
 import { ChangePasswordComponent } from 'xforge-common/change-password/change-password.component';
-import { ProjectsComponent } from 'xforge-common/projects/projects.component';
 import { SystemAdminAuthGuard } from 'xforge-common/system-admin-auth.guard';
 import { SystemAdministrationComponent } from 'xforge-common/system-administration/system-administration.component';
-import { CheckingOverviewComponent } from './checking/checking-overview/checking-overview.component';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { HomeComponent } from './home/home.component';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ProjectComponent } from './project/project.component';
-import { RealtimeComponent } from './realtime/realtime.component';
 import { SFAdminAuthGuard } from './shared/sfadmin-auth.guard';
+import { StartComponent } from './start/start.component';
 import { SyncComponent } from './sync/sync.component';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] },
   { path: 'connect-project', component: ConnectProjectComponent, canActivate: [AuthGuard] },
   { path: 'my-account', component: MyAccountComponent, canActivate: [AuthGuard] },
-  { path: 'realtime', component: RealtimeComponent, canActivate: [AuthGuard] },
-  { path: 'projects/:id/checking/overview', component: CheckingOverviewComponent, canActivate: [AuthGuard] },
-  { path: 'projects/:id/settings', component: ProjectSettingsComponent, canActivate: [SFAdminAuthGuard] },
-  { path: 'projects/:id/sync', component: SyncComponent, canActivate: [SFAdminAuthGuard] },
-  { path: 'projects/:id', component: ProjectComponent, canActivate: [AuthGuard] },
-  { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard] },
+  { path: 'projects/:projectId/settings', component: ProjectSettingsComponent, canActivate: [SFAdminAuthGuard] },
+  { path: 'projects/:projectId/sync', component: SyncComponent, canActivate: [SFAdminAuthGuard] },
+  { path: 'projects/:projectId', component: ProjectComponent, canActivate: [AuthGuard] },
+  { path: 'projects', component: StartComponent, canActivate: [AuthGuard] },
   { path: 'system-administration', component: SystemAdministrationComponent, canActivate: [SystemAdminAuthGuard] },
   { path: 'identity', loadChildren: '../identity/identity.module#IdentityModule' }
 ];

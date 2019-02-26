@@ -9,7 +9,7 @@ namespace SIL.XForge.Scripture.Controllers
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
-                return Redirect("/home");
+                return Redirect("/projects");
             return View();
         }
     }

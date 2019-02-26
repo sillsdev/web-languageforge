@@ -103,7 +103,8 @@ namespace SIL.XForge.Services
                 .GetRelationshipAttribute<TResource>(relationshipName);
             if (relAttr == null)
                 throw NotFoundException();
-            object value = await GetRelationshipResourcesAsync(relAttr, Enumerable.Empty<string>(),
+            object value = await GetRelationshipResourcesAsync(relAttr,
+                JsonApiContext.QuerySet?.IncludedRelationships ?? Enumerable.Empty<string>(),
                 new Dictionary<string, IResource>(), entity);
             return value;
         }

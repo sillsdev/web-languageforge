@@ -200,6 +200,7 @@ describe('System Administration User Entry Component', () => {
       env.clickElement(env.updateButton);
       verify(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).once();
       verify(env.mockedNoticeService.show('Error updating: Server Error!')).once();
+      expect().nothing();
     }));
 
     it('should allow the user to be updated when password field is untouched', fakeAsync(() => {
