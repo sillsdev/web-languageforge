@@ -21,156 +21,6 @@ import { ChangingUsernameDialogComponent } from './changing-username-dialog/chan
 import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 import { MyAccountComponent } from './my-account.component';
 
-/**
- * This helps set entry components so can test using ChangingUsernameDialogComponent.
- */
-@NgModule({
-  declarations: [MyAccountComponent, ChangingUsernameDialogComponent],
-  imports: [NoopAnimationsModule, ngfModule, RouterTestingModule, UICommonModule],
-  exports: [MyAccountComponent, ChangingUsernameDialogComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  // ShowOnDirtyErrorStateMatcher helps form errors show up during unit testing.
-  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }],
-  entryComponents: [MyAccountComponent, ChangingUsernameDialogComponent]
-})
-class TestModule {}
-
-class TestEnvironment {
-  component: MyAccountComponent;
-  fixture: ComponentFixture<MyAccountComponent>;
-
-  mockedUserService: UserService;
-  mockedParatextService: ParatextService;
-  mockedMatDialog: MatDialog;
-  mockedMatDialogRefForCUDC: MatDialogRef<ChangingUsernameDialogComponent>;
-  mockedMatDialogRefForDAD: MatDialogRef<DeleteAccountDialogComponent>;
-  mockedNoticeService: NoticeService;
-  mockedAuthService: AuthService;
-
-  private substituteParatextUsername: string;
-
-  constructor(public userInDatabase: User) {
-    this.mockedUserService = mock(UserService);
-    this.mockedParatextService = mock(ParatextService);
-    this.mockedMatDialog = mock(MatDialog);
-    this.mockedMatDialogRefForCUDC = mock(MatDialogRef);
-    this.mockedMatDialogRefForDAD = mock(MatDialogRef);
-    this.mockedNoticeService = mock(NoticeService);
-    this.mockedAuthService = mock(AuthService);
-
-    when(this.mockedUserService.getCurrentUser()).thenReturn(of(this.userInDatabase));
-    when(this.mockedUserService.currentUserId).thenReturn('user01');
-    when(this.mockedParatextService.getParatextUsername()).thenReturn(of(this.substituteParatextUsername));
-    when(this.mockedUserService.onlineUnlinkParatextAccount()).thenCall(() => {
-      this.setParatextUsername(null);
-      return Promise.resolve();
-    });
-    when(this.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).thenCall(
-      this.mockUserServiceUpdateUserAttributes()
-    );
-    when(this.mockedNoticeService.show(anything())).thenResolve();
-
-    TestBed.configureTestingModule({
-      imports: [TestModule],
-      providers: [
-        { provide: UserService, useFactory: () => instance(this.mockedUserService) },
-        { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
-        { provide: MatDialog, useFactory: () => instance(this.mockedMatDialog) },
-        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
-        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
-      ],
-      declarations: []
-    }).compileComponents();
-
-    this.fixture = TestBed.createComponent(MyAccountComponent);
-    this.component = this.fixture.componentInstance;
-    this.fixture.detectChanges();
-  }
-
-  /** Handler for mockUserService.updateUserAttributes that updates the fake database. */
-  mockUserServiceUpdateUserAttributes(): (updatedAttributes: Partial<User>) => Promise<User> {
-    return (updatedAttributes: Partial<User>) => {
-      return new Promise<User>(resolve => {
-        setTimeout(() => {
-          merge(this.userInDatabase, updatedAttributes);
-          resolve();
-        }, 0);
-      });
-    };
-  }
-
-  /** After calling, flush(); to make the database promise resolve. */
-  clickButton(button: DebugElement): void {
-    button.nativeElement.click();
-    this.fixture.detectChanges();
-  }
-
-  buttonIcon(controlName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`#${controlName}-button-icon`));
-  }
-
-  setParatextUsername(name: string): void {
-    this.substituteParatextUsername = name;
-    this.component.paratextUsername = this.substituteParatextUsername;
-  }
-
-  spinner(controlName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`#${controlName}-update-spinner`));
-  }
-
-  greenCheck(controlName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`#${controlName}-update-done`));
-  }
-
-  errorIcon(controlName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`#${controlName}-error-icon`));
-  }
-
-  updateButton(controlName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`#${controlName}-update-button`));
-  }
-
-  contactMethodToggle(toggleName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`mat-button-toggle[value="${toggleName}"]`));
-  }
-
-  get matErrors(): Array<DebugElement> {
-    return this.fixture.debugElement.queryAll(By.css('mat-error'));
-  }
-
-  get header2(): HTMLElement {
-    return this.fixture.nativeElement.querySelector('h2');
-  }
-
-  get paratextLinkElement(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#paratext-link'));
-  }
-
-  get paratextLinkLabel(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#paratext-link-label'));
-  }
-
-  get connectParatextButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#connect-paratext-button'));
-  }
-
-  get unlinkParatextButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#unlink-paratext-button'));
-  }
-
-  get deleteAccountElement(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#delete-account'));
-  }
-
-  get deleteAccountButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#delete-account-button'));
-  }
-
-  get avatars(): DebugElement[] {
-    return this.fixture.debugElement.queryAll(By.css('app-avatar'));
-  }
-}
-
 describe('MyAccountComponent', () => {
   let env: TestEnvironment;
   beforeEach(() => {
@@ -939,6 +789,156 @@ describe('MyAccountComponent', () => {
     }));
   });
 });
+
+/**
+ * This helps set entry components so can test using ChangingUsernameDialogComponent.
+ */
+@NgModule({
+  declarations: [MyAccountComponent, ChangingUsernameDialogComponent],
+  imports: [NoopAnimationsModule, ngfModule, RouterTestingModule, UICommonModule],
+  exports: [MyAccountComponent, ChangingUsernameDialogComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  // ShowOnDirtyErrorStateMatcher helps form errors show up during unit testing.
+  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }],
+  entryComponents: [MyAccountComponent, ChangingUsernameDialogComponent]
+})
+class TestModule {}
+
+class TestEnvironment {
+  component: MyAccountComponent;
+  fixture: ComponentFixture<MyAccountComponent>;
+
+  mockedUserService: UserService;
+  mockedParatextService: ParatextService;
+  mockedMatDialog: MatDialog;
+  mockedMatDialogRefForCUDC: MatDialogRef<ChangingUsernameDialogComponent>;
+  mockedMatDialogRefForDAD: MatDialogRef<DeleteAccountDialogComponent>;
+  mockedNoticeService: NoticeService;
+  mockedAuthService: AuthService;
+
+  private substituteParatextUsername: string;
+
+  constructor(public userInDatabase: User) {
+    this.mockedUserService = mock(UserService);
+    this.mockedParatextService = mock(ParatextService);
+    this.mockedMatDialog = mock(MatDialog);
+    this.mockedMatDialogRefForCUDC = mock(MatDialogRef);
+    this.mockedMatDialogRefForDAD = mock(MatDialogRef);
+    this.mockedNoticeService = mock(NoticeService);
+    this.mockedAuthService = mock(AuthService);
+
+    when(this.mockedUserService.getCurrentUser()).thenReturn(of(this.userInDatabase));
+    when(this.mockedUserService.currentUserId).thenReturn('user01');
+    when(this.mockedParatextService.getParatextUsername()).thenReturn(of(this.substituteParatextUsername));
+    when(this.mockedUserService.onlineUnlinkParatextAccount()).thenCall(() => {
+      this.setParatextUsername(null);
+      return Promise.resolve();
+    });
+    when(this.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).thenCall(
+      this.mockUserServiceUpdateUserAttributes()
+    );
+    when(this.mockedNoticeService.show(anything())).thenResolve();
+
+    TestBed.configureTestingModule({
+      imports: [TestModule],
+      providers: [
+        { provide: UserService, useFactory: () => instance(this.mockedUserService) },
+        { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
+        { provide: MatDialog, useFactory: () => instance(this.mockedMatDialog) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
+        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
+      ],
+      declarations: []
+    }).compileComponents();
+
+    this.fixture = TestBed.createComponent(MyAccountComponent);
+    this.component = this.fixture.componentInstance;
+    this.fixture.detectChanges();
+  }
+
+  /** Handler for mockUserService.updateUserAttributes that updates the fake database. */
+  mockUserServiceUpdateUserAttributes(): (updatedAttributes: Partial<User>) => Promise<User> {
+    return (updatedAttributes: Partial<User>) => {
+      return new Promise<User>(resolve => {
+        setTimeout(() => {
+          merge(this.userInDatabase, updatedAttributes);
+          resolve();
+        }, 0);
+      });
+    };
+  }
+
+  /** After calling, flush(); to make the database promise resolve. */
+  clickButton(button: DebugElement): void {
+    button.nativeElement.click();
+    this.fixture.detectChanges();
+  }
+
+  buttonIcon(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-button-icon`));
+  }
+
+  setParatextUsername(name: string): void {
+    this.substituteParatextUsername = name;
+    this.component.paratextUsername = this.substituteParatextUsername;
+  }
+
+  spinner(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-update-spinner`));
+  }
+
+  greenCheck(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-update-done`));
+  }
+
+  errorIcon(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-error-icon`));
+  }
+
+  updateButton(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-update-button`));
+  }
+
+  contactMethodToggle(toggleName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`mat-button-toggle[value="${toggleName}"]`));
+  }
+
+  get matErrors(): Array<DebugElement> {
+    return this.fixture.debugElement.queryAll(By.css('mat-error'));
+  }
+
+  get header2(): HTMLElement {
+    return this.fixture.nativeElement.querySelector('h2');
+  }
+
+  get paratextLinkElement(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#paratext-link'));
+  }
+
+  get paratextLinkLabel(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#paratext-link-label'));
+  }
+
+  get connectParatextButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#connect-paratext-button'));
+  }
+
+  get unlinkParatextButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#unlink-paratext-button'));
+  }
+
+  get deleteAccountElement(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#delete-account'));
+  }
+
+  get deleteAccountButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#delete-account-button'));
+  }
+
+  get avatars(): DebugElement[] {
+    return this.fixture.debugElement.queryAll(By.css('app-avatar'));
+  }
+}
 
 function expectEmailPatternIsBad(env: TestEnvironment, badEmail: string) {
   env.component.formGroup.get('email').setValue(badEmail);
