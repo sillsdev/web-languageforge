@@ -1,17 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 
 import { AuthService } from 'xforge-common/auth.service';
 import { LocationService } from 'xforge-common/location.service';
+import { NoticeService } from 'xforge-common/notice.service';
 import { IdentityService } from '../identity.service';
 
 interface FormGroupControls {
   [key: string]: AbstractControl;
 }
 
+/** Helps user reset a forgotten password. Accessed by a URI sent to user via email,
+ * such as from the forgot password component. */
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
@@ -29,9 +31,9 @@ export class ResetPasswordComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly identityService: IdentityService,
     private readonly authService: AuthService,
-    private readonly snackBar: MatSnackBar,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly locationService: LocationService
+    private readonly locationService: LocationService,
+    private readonly noticeService: NoticeService
   ) {}
 
   ngOnInit(): Promise<void> {
@@ -75,7 +77,7 @@ export class ResetPasswordComponent implements OnInit {
 
     const result = await this.identityService.verifyResetPasswordKey(key);
     if (!result) {
-      this.snackBar.open('The password reset request has expired. Please request another reset.');
+      this.noticeService.show('The password reset request has expired. Please request another reset.');
       this.resetPasswordDisabled = true;
     }
   }

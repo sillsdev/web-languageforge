@@ -5,10 +5,11 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { anything, instance, mock, verify, when } from 'ts-mockito';
+import { anyString, anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { AuthService } from 'xforge-common/auth.service';
 import { LocationService } from 'xforge-common/location.service';
+import { NoticeService } from 'xforge-common/notice.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { IdentityService } from '../identity.service';
 import { ResetPasswordComponent } from './reset-password.component';
@@ -21,6 +22,7 @@ class TestEnvironment {
   mockedActivatedRoute: ActivatedRoute;
   mockedLocationService: LocationService;
   mockedAuthService: AuthService;
+  mockedNoticeService: NoticeService;
   overlayContainer: OverlayContainer;
 
   constructor() {
@@ -28,9 +30,11 @@ class TestEnvironment {
     this.mockedActivatedRoute = mock(ActivatedRoute);
     this.mockedLocationService = mock(LocationService);
     this.mockedAuthService = mock(AuthService);
+    this.mockedNoticeService = mock(NoticeService);
 
     when(this.mockedActivatedRoute.queryParams).thenReturn(of({ key: 'abcd1234' }));
     when(this.mockedIdentityService.verifyResetPasswordKey('abcd1234')).thenResolve(true);
+    when(this.mockedNoticeService.show(anyString())).thenResolve();
 
     TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, UICommonModule],
@@ -39,7 +43,8 @@ class TestEnvironment {
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
         { provide: LocationService, useFactory: () => instance(this.mockedLocationService) },
-        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
+        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     });
@@ -80,12 +85,6 @@ class TestEnvironment {
     inputElem.dispatchEvent(new Event('input'));
     this.fixture.detectChanges();
     tick();
-  }
-
-  getSnackBarContent(): string {
-    const overlayContainerElement = this.overlayContainer.getContainerElement();
-    const messageElement = overlayContainerElement.querySelector('snack-bar-container');
-    return messageElement.textContent;
   }
 }
 
@@ -170,6 +169,14 @@ describe('ResetPasswordComponent', () => {
 
     verify(env.mockedIdentityService.verifyResetPasswordKey('abcd1234')).once();
     expect().nothing();
+  }));
+
+  it('bad key displays message', fakeAsync(() => {
+    const env = new TestEnvironment();
+    when(env.mockedIdentityService.verifyResetPasswordKey('abcd1234')).thenResolve(false);
+    env.fixture.detectChanges();
+    flush();
+    verify(env.mockedNoticeService.show(anyString())).once();
   }));
 
   it('should submit when new password and confirm password are specified', fakeAsync(() => {
