@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter, MatDialog, MatDialogRef, NativeDateAdapter } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
@@ -12,7 +12,6 @@ import { XFValidators } from 'xforge-common/xfvalidators';
 import { environment } from '../../environments/environment';
 import { NoticeService } from '../../xforge-common/notice.service';
 import { ParatextService } from '../core/paratext.service';
-import { ChangingUsernameDialogComponent } from './changing-username-dialog/changing-username-dialog.component';
 import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 
 /** Support ISO8601 formatted dates for datepicker, and handle timezone issues. */
@@ -54,11 +53,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
 
   formGroup = new FormGroup({
     name: new FormControl(),
-    username: new FormControl('', [(inputControl: FormControl) => this.emailAndUsernameValidator(this, inputControl)]),
-    email: new FormControl('', [
-      (inputControl: FormControl) => this.emailAndUsernameValidator(this, inputControl),
-      XFValidators.email
-    ]),
+    email: new FormControl('', [Validators.required, XFValidators.email]),
     mobilePhone: new FormControl(),
     contactMethod: new FormControl(),
     birthday: new FormControl(),
@@ -76,7 +71,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
 
   private readonly title = `Account details - ${environment.siteName}`;
   private doneInitialDatabaseImport: boolean = false;
-  private controlsWithUpdateButton: string[] = ['name', 'username', 'email', 'mobilePhone'];
+  private controlsWithUpdateButton: string[] = ['name', 'email', 'mobilePhone'];
   private activeDialogRef: MatDialogRef<DeleteAccountDialogComponent>;
 
   constructor(
@@ -154,7 +149,6 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     // Set form values from database, if present.
     this.formGroup.setValue({
       name: this.userFromDatabase.name || '',
-      username: this.userFromDatabase.username || '',
       email: this.userFromDatabase.email || '',
       mobilePhone: this.userFromDatabase.mobilePhone || '',
       contactMethod: this.userFromDatabase.contactMethod || null,
@@ -171,21 +165,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   }
 
   updateClicked(element: string): void {
-    if (element === 'username') {
-      const dialogRef = this.dialog.open(ChangingUsernameDialogComponent, {
-        data: {
-          oldUsername: this.userFromDatabase.username,
-          newUsername: this.formGroup.controls[element].value
-        }
-      });
-      this.subscribe(dialogRef.afterClosed(), dialogResult => {
-        if (dialogResult === 'update') {
-          this.update(element);
-        }
-      });
-    } else {
-      this.update(element);
-    }
+    this.update(element);
   }
 
   async update(element: string): Promise<void> {
@@ -231,37 +211,6 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     if (!this.userFromDatabase.mobilePhone) {
       this.formGroup.get('contactMethod').setValue(this.userFromDatabase.contactMethod);
     }
-  }
-
-  /**
-   * Validation of username and email fields.
-   *  - Email address cannot be removed once set in database.
-   *  - Username cannot be blank unless email is set. Don't bother showing this error in addition to the above.
-   *
-   * This method takes a MyAccountComponent object, since references to 'this' end up referring to another
-   * object when this method gets called.
-   */
-  emailAndUsernameValidator(myAccount: MyAccountComponent, control: AbstractControl): ValidationErrors {
-    if (!myAccount.doneInitialDatabaseImport) {
-      return null;
-    }
-
-    if (control === myAccount.formGroup.get('email')) {
-      if (myAccount.userFromDatabase.email && !myAccount.formGroup.get('email').value) {
-        return { emailBlank: true };
-      }
-    }
-
-    if (control === myAccount.formGroup.get('username')) {
-      if (myAccount.userFromDatabase.email) {
-        return null;
-      }
-      if (!myAccount.formGroup.get('username').value) {
-        return { usernameBlank: true };
-      }
-    }
-
-    return null;
   }
 
   logInWithParatext(): void {

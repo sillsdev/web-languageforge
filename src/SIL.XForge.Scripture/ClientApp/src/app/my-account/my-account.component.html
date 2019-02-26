@@ -47,59 +47,6 @@
             </button>
           </div>
         </div>
-        <!-- <div fxLayout="row">
-        <div fxFlex>
-          <mat-form-field fxFlex>
-            <input formControlName="username" matInput placeholder="Username" />
-            <mat-error *ngIf="formGroup.get('username').hasError('usernameBlank')"
-              >Username cannot be blank unless email is set</mat-error
-            ></mat-form-field
-          >
-        </div>
-        <div>
-          <button
-            id="username-update-button"
-            [disabled]="
-              (controlStates.get('username') !== elementState.Dirty &&
-                controlStates.get('username') !== elementState.Error) ||
-              controlStates.get('username') === elementState.Invalid
-            "
-            mat-stroked-button
-            (click)="updateClicked('username')"
-          >
-            <mat-spinner
-              id="username-update-spinner"
-              *ngIf="controlStates.get('username') === elementState.Submitting"
-              [diameter]="15"
-              class="update-button-spinner"
-              aria-label="Update in progress"
-            ></mat-spinner>
-            <i
-              id="username-update-done"
-              *ngIf="controlStates.get('username') === elementState.Submitted"
-              class="material-icons check-icon"
-              >done</i
-            >
-            <i
-              id="username-error-icon"
-              *ngIf="controlStates.get('username') === elementState.Error"
-              class="material-icons error-icon"
-              >error</i
-            >
-            <i
-              id="username-button-icon"
-              *ngIf="
-                controlStates.get('username') === elementState.InSync ||
-                controlStates.get('username') === elementState.Dirty ||
-                controlStates.get('username') === elementState.Invalid
-              "
-              class="material-icons"
-              >send</i
-            >
-            Update
-          </button>
-        </div>
-      </div> -->
 
         <div fxLayout="row wrap">
           <div fxFlex>
@@ -119,7 +66,7 @@
           <div fxFlex>
             <mat-form-field fxFlex hintLabel="you@example.com">
               <input formControlName="email" matInput placeholder="Email" />
-              <mat-error *ngIf="formGroup.get('email').hasError('emailBlank')"
+              <mat-error *ngIf="formGroup.get('email').hasError('required')"
                 >You must supply a valid email address.</mat-error
               >
               <mat-error *ngIf="formGroup.get('email').hasError('email')"
