@@ -3,9 +3,9 @@
 # Usage:
 #   src/SIL.XForge.Scripture/ClientApp/monitor-test-headless.sh
 
-ROOT_PATH="$(dirname "$0")"
+readonly ROOT_PATH="$(dirname "$0")"
 
-which inotifywait >/dev/null || {
+command -v inotifywait >/dev/null || {
   echo "Prerequisite not found. Run sudo apt install inotify-tools"
   exit 1
 }
