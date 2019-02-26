@@ -27,6 +27,7 @@ import { FontSizeComponent } from './project/font-size/font-size.component';
 import { ProjectComponent } from './project/project.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { SharedModule } from './shared/shared.module';
+import { SyncComponent } from './sync/sync.component';
 import { TranslateModule } from './translate/translate.module';
 
 @NgModule({
@@ -45,6 +46,7 @@ import { TranslateModule } from './translate/translate.module';
     DeleteProjectDialogComponent,
     ProjectSettingsComponent,
     ProjectComponent,
+    SyncComponent,
     FontSizeComponent
   ],
   imports: [

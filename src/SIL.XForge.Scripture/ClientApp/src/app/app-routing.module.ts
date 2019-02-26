@@ -15,6 +15,7 @@ import { ProjectSettingsComponent } from './project-settings/project-settings.co
 import { ProjectComponent } from './project/project.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { SFAdminAuthGuard } from './shared/sfadmin-auth.guard';
+import { SyncComponent } from './sync/sync.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
@@ -27,6 +28,7 @@ const routes: Routes = [
   { path: 'projects/:id/settings', component: ProjectSettingsComponent, canActivate: [SFAdminAuthGuard] },
   { path: 'projects/:id', component: ProjectComponent, canActivate: [AuthGuard] },
   { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard] },
+  { path: 'projects/:id/sync', component: SyncComponent, canActivate: [SFAdminAuthGuard] },
   { path: 'system-administration', component: SystemAdministrationComponent, canActivate: [SystemAdminAuthGuard] },
   { path: 'identity', loadChildren: '../identity/identity.module#IdentityModule' }
 ];

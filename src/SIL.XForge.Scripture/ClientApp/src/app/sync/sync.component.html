@@ -1,0 +1,39 @@
+<div fxLayout="column" class="base-container">
+  <mdc-card class="sync-card">
+    <div fxLayout="column" class="card-content">
+      <h2 id="title">Synchronize {{ projectName }} with Paratext</h2>
+      <button
+        *ngIf="!isLoggedIntoParatext"
+        id="btn-sign-in"
+        class="action-button"
+        mdc-button
+        primary
+        (click)="logInWithParatext()"
+      >
+        Sign in to Paratext
+      </button>
+      <button
+        *ngIf="isLoggedIntoParatext"
+        id="btn-sync"
+        class="action-button"
+        mdc-button
+        primary
+        (click)="syncProject()"
+        [disabled]="syncJobActive"
+      >
+        <mdc-icon>autorenew</mdc-icon>
+        Send/Receive {{ projectName }}
+      </button>
+      <mdc-linear-progress
+        *ngIf="syncJobActive"
+        class="progress-bar"
+        determinate
+        [progress]="percentComplete"
+      ></mdc-linear-progress>
+      <span *ngIf="syncJobActive" id="sync-message" class="sync-info">Your project is being synchronized...</span>
+      <span *ngIf="shouldDisplayLastSync" id="date-last-sync" class="sync-info"
+        >Last sync was on {{ lastSyncedDate }}</span
+      >
+    </div>
+  </mdc-card>
+</div>
