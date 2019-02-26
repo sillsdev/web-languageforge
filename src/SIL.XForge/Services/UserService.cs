@@ -61,8 +61,9 @@ namespace SIL.XForge.Services
             if (filter.Attribute == "search")
             {
                 string value = filter.Value.ToLowerInvariant();
+                string email = UserEntity.CanonicalizeEmail(filter.Value);
                 return entities.Where(u => u.Name.ToLowerInvariant().Contains(value)
-                    || u.CanonicalEmail.Contains(UserEntity.CanonicalizeEmail(filter.Value)));
+                    || u.CanonicalEmail.Contains(email));
             }
             return base.ApplyFilter(entities, filter);
         }
