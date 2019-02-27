@@ -16,14 +16,14 @@ import { SyncJobService } from '../core/sync-job.service';
   styleUrls: ['./sync.component.scss']
 })
 export class SyncComponent extends SubscriptionDisposable implements OnInit {
-  isProjectAdmin$: Observable<boolean>;
-  paratextUsername: string;
-  projectId: string;
   projectName: string;
-  syncJobActive: boolean;
-  syncInProgress$: Observable<SyncJob>;
+  syncJobActive = false;
   lastSyncedDate: string;
   percentComplete: number;
+
+  private paratextUsername: string;
+  private projectId: string;
+  private syncInProgress$: Observable<SyncJob>;
 
   constructor(
     private readonly datePipe: DatePipe,
@@ -34,7 +34,6 @@ export class SyncComponent extends SubscriptionDisposable implements OnInit {
     private readonly noticeService: NoticeService
   ) {
     super();
-    this.syncJobActive = false;
   }
 
   ngOnInit() {
