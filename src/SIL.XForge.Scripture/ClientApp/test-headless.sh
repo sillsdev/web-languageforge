@@ -3,7 +3,7 @@
 # Usage:
 #   src/SIL.XForge.Scripture/ClientApp/test-headless.sh
 
-ROOT_PATH="$(dirname "$0")"
+readonly ROOT_PATH="$(dirname "$0")"
 
 echo -e "\033[1;34mRunning tests\033[0m"
 date +"%F %T"
