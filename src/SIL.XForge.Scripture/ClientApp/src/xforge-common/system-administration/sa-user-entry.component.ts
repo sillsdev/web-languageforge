@@ -140,7 +140,7 @@ export class SaUserEntryComponent implements OnInit {
       await this.userService.onlineCreate(newUser);
     } catch (e) {
       this.noticeService.show('Error creating: ' + e.message);
-      return;
+      return; // rethrow if not 409 (and other place)
     } finally {
       this.isSubmitted = false;
     }

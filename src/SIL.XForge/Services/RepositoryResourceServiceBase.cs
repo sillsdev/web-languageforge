@@ -27,7 +27,7 @@ namespace SIL.XForge.Services
 
         protected override async Task<TEntity> InsertEntityAsync(TEntity entity)
         {
-            await Entities.InsertAsync(entity);
+            await Entities.InsertAsync(entity); // if false, throw 409
             return await Entities.GetAsync(entity.Id);
         }
 
@@ -54,7 +54,7 @@ namespace SIL.XForge.Services
                                 $"The relationship '{relName}' cannot be updated.");
                         }
                     }
-                });
+                }); /// if null, throw 409
         }
 
         protected override Task<TEntity> UpdateEntityRelationshipAsync(string id, string propertyName,
