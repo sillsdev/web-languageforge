@@ -1,175 +1,23 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, NgModule } from '@angular/core';
 import { fakeAsync, flush } from '@angular/core/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogRef } from '@angular/material';
-import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
+import { ErrorStateMatcher, MatDialog, MatDialogRef, ShowOnDirtyErrorStateMatcher } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { merge } from '@orbit/utils';
-import { ngfModule } from 'angular-file';
 import { of } from 'rxjs';
-import { anything, capture, instance, mock, verify, when } from 'ts-mockito';
+import { anything, instance, mock, verify, when } from 'ts-mockito';
 
+import { ngfModule } from 'angular-file';
 import { AuthService } from 'xforge-common/auth.service';
 import { User } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
 import { ParatextService } from '../core/paratext.service';
-import { ChangingUsernameDialogComponent } from './changing-username-dialog/changing-username-dialog.component';
 import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 import { MyAccountComponent } from './my-account.component';
-
-/**
- * This helps set entry components so can test using ChangingUsernameDialogComponent.
- */
-@NgModule({
-  declarations: [MyAccountComponent, ChangingUsernameDialogComponent],
-  imports: [NoopAnimationsModule, ngfModule, RouterTestingModule, UICommonModule],
-  exports: [MyAccountComponent, ChangingUsernameDialogComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  // ShowOnDirtyErrorStateMatcher helps form errors show up during unit testing.
-  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }],
-  entryComponents: [MyAccountComponent, ChangingUsernameDialogComponent]
-})
-class TestModule {}
-
-class TestEnvironment {
-  component: MyAccountComponent;
-  fixture: ComponentFixture<MyAccountComponent>;
-
-  mockedUserService: UserService;
-  mockedParatextService: ParatextService;
-  mockedMatDialog: MatDialog;
-  mockedMatDialogRefForCUDC: MatDialogRef<ChangingUsernameDialogComponent>;
-  mockedMatDialogRefForDAD: MatDialogRef<DeleteAccountDialogComponent>;
-  mockedNoticeService: NoticeService;
-  mockedAuthService: AuthService;
-
-  private substituteParatextUsername: string;
-
-  constructor(public userInDatabase: User) {
-    this.mockedUserService = mock(UserService);
-    this.mockedParatextService = mock(ParatextService);
-    this.mockedMatDialog = mock(MatDialog);
-    this.mockedMatDialogRefForCUDC = mock(MatDialogRef);
-    this.mockedMatDialogRefForDAD = mock(MatDialogRef);
-    this.mockedNoticeService = mock(NoticeService);
-    this.mockedAuthService = mock(AuthService);
-
-    when(this.mockedUserService.getCurrentUser()).thenReturn(of(this.userInDatabase));
-    when(this.mockedUserService.currentUserId).thenReturn('user01');
-    when(this.mockedParatextService.getParatextUsername()).thenReturn(of(this.substituteParatextUsername));
-    when(this.mockedUserService.onlineUnlinkParatextAccount()).thenCall(() => {
-      this.setParatextUsername(null);
-      return Promise.resolve();
-    });
-    when(this.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).thenCall(
-      this.mockUserServiceUpdateUserAttributes()
-    );
-    when(this.mockedNoticeService.show(anything())).thenResolve();
-
-    TestBed.configureTestingModule({
-      imports: [TestModule],
-      providers: [
-        { provide: UserService, useFactory: () => instance(this.mockedUserService) },
-        { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
-        { provide: MatDialog, useFactory: () => instance(this.mockedMatDialog) },
-        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
-        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
-      ],
-      declarations: []
-    }).compileComponents();
-
-    this.fixture = TestBed.createComponent(MyAccountComponent);
-    this.component = this.fixture.componentInstance;
-    this.fixture.detectChanges();
-  }
-
-  /** Handler for mockUserService.updateUserAttributes that updates the fake database. */
-  mockUserServiceUpdateUserAttributes(): (updatedAttributes: Partial<User>) => Promise<User> {
-    return (updatedAttributes: Partial<User>) => {
-      return new Promise<User>(resolve => {
-        setTimeout(() => {
-          merge(this.userInDatabase, updatedAttributes);
-          resolve();
-        }, 0);
-      });
-    };
-  }
-
-  /** After calling, flush(); to make the database promise resolve. */
-  clickButton(button: DebugElement): void {
-    button.nativeElement.click();
-    this.fixture.detectChanges();
-  }
-
-  buttonIcon(controlName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`#${controlName}-button-icon`));
-  }
-
-  setParatextUsername(name: string): void {
-    this.substituteParatextUsername = name;
-    this.component.paratextUsername = this.substituteParatextUsername;
-  }
-
-  spinner(controlName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`#${controlName}-update-spinner`));
-  }
-
-  greenCheck(controlName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`#${controlName}-update-done`));
-  }
-
-  errorIcon(controlName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`#${controlName}-error-icon`));
-  }
-
-  updateButton(controlName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`#${controlName}-update-button`));
-  }
-
-  contactMethodToggle(toggleName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`mat-button-toggle[value="${toggleName}"]`));
-  }
-
-  get matErrors(): Array<DebugElement> {
-    return this.fixture.debugElement.queryAll(By.css('mat-error'));
-  }
-
-  get header2(): HTMLElement {
-    return this.fixture.nativeElement.querySelector('h2');
-  }
-
-  get paratextLinkElement(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#paratext-link'));
-  }
-
-  get paratextLinkLabel(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#paratext-link-label'));
-  }
-
-  get connectParatextButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#connect-paratext-button'));
-  }
-
-  get unlinkParatextButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#unlink-paratext-button'));
-  }
-
-  get deleteAccountElement(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#delete-account'));
-  }
-
-  get deleteAccountButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#delete-account-button'));
-  }
-
-  get avatars(): DebugElement[] {
-    return this.fixture.debugElement.queryAll(By.css('app-avatar'));
-  }
-}
 
 describe('MyAccountComponent', () => {
   let env: TestEnvironment;
@@ -409,59 +257,7 @@ describe('MyAccountComponent', () => {
   }));
 
   describe('validation', () => {
-    it('no error if email address is entered and deleted, if not set in database', fakeAsync(() => {
-      env.userInDatabase.email = '';
-      env.component.formGroup.get('email').setValue(env.userInDatabase.email);
-      env.fixture.detectChanges();
-      expect(env.component.userFromDatabase.email.length).toEqual(0, 'test not set up');
-      expect(env.component.userFromDatabase.username.length).toBeGreaterThan(3, 'test not set up');
-      expect(env.component.formGroup.get('email').value).toEqual('', 'test not set up');
-
-      verifyStates(
-        env,
-        'email',
-        {
-          state: env.component.elementState.InSync,
-          updateButtonEnabled: false,
-          arrow: true,
-          spinner: false,
-          greenCheck: false,
-          errorIcon: false,
-          inputEnabled: true
-        },
-        env.updateButton('email').nativeElement
-      );
-
-      // Enter email on form
-      env.component.formGroup.get('email').setValue('me@example.com');
-      env.component.formGroup.get('email').markAsDirty();
-      env.fixture.detectChanges();
-
-      // Delete email from form
-      env.component.formGroup.get('email').setValue('');
-      env.component.formGroup.get('email').markAsDirty();
-      env.fixture.detectChanges();
-
-      verifyStates(
-        env,
-        'email',
-        {
-          state: env.component.elementState.InSync,
-          updateButtonEnabled: false,
-          arrow: true,
-          spinner: false,
-          greenCheck: false,
-          errorIcon: false,
-          inputEnabled: true
-        },
-        env.updateButton('email').nativeElement
-      );
-
-      // Expect no error message
-      expect(env.matErrors.length).toEqual(0);
-    }));
-
-    it('error if email address removed, and is set in database', fakeAsync(() => {
+    it('error if email address removed', fakeAsync(() => {
       expect(env.component.userFromDatabase.email.length).toBeGreaterThan(3, 'test not set up');
 
       // Delete email from form
@@ -485,167 +281,9 @@ describe('MyAccountComponent', () => {
       );
 
       // Expect specific error message
+      expect(env.component.formGroup.controls['email'].hasError('required')).toBe(true);
       expect(env.matErrors.length).toEqual(1);
       expect((env.matErrors[0].nativeElement as HTMLElement).innerText).toContain('must supply a valid email');
-    }));
-
-    xit('no error if username removed when email is set on form and in database', fakeAsync(() => {
-      expect(env.component.userFromDatabase.email.length).toBeGreaterThan(3, 'test not set up');
-      expect(env.component.userFromDatabase.username.length).toBeGreaterThan(3, 'test not set up');
-      expect(env.component.formGroup.get('email').value.length).toBeGreaterThan(3, 'test not set up');
-
-      // Delete username from form
-      env.component.formGroup.get('username').setValue('');
-      env.component.formGroup.get('username').markAsDirty();
-      env.fixture.detectChanges();
-
-      verifyStates(
-        env,
-        'username',
-        {
-          state: env.component.elementState.Dirty,
-          updateButtonEnabled: true,
-          arrow: true,
-          spinner: false,
-          greenCheck: false,
-          errorIcon: false,
-          inputEnabled: true
-        },
-        env.updateButton('username').nativeElement
-      );
-
-      // Expect no error message
-      expect(env.matErrors.length).toEqual(0);
-    }));
-
-    xit('error if username removed when no email', fakeAsync(() => {
-      env.userInDatabase.email = '';
-      env.component.formGroup.get('email').setValue(env.userInDatabase.email);
-      env.component.formGroup.get('email').markAsDirty();
-      env.fixture.detectChanges();
-      expect(env.component.userFromDatabase.email.length).toEqual(0, 'test not set up');
-      expect(env.component.userFromDatabase.username.length).toBeGreaterThan(3, 'test not set up');
-      expect(env.component.formGroup.get('email').value).toEqual('', 'test not set up');
-
-      // Delete username from form
-      env.component.formGroup.get('username').setValue('');
-      env.component.formGroup.get('username').markAsDirty();
-      env.fixture.detectChanges();
-
-      verifyStates(
-        env,
-        'username',
-        {
-          state: env.component.elementState.Invalid,
-          updateButtonEnabled: false,
-          arrow: true,
-          spinner: false,
-          greenCheck: false,
-          errorIcon: false,
-          inputEnabled: true
-        },
-        env.updateButton('username').nativeElement
-      );
-
-      // Expect specific error message
-      expect(env.matErrors.length).toEqual(1);
-      expect((env.matErrors[0].nativeElement as HTMLElement).innerText).toContain('unless email');
-    }));
-
-    xit('error if username is removed, when no email in database, even if email is typed on form', fakeAsync(() => {
-      // Don't let user click Update in this situation.
-
-      env.userInDatabase.email = '';
-      env.component.formGroup.get('email').setValue(env.userInDatabase.email);
-      env.component.formGroup.get('email').markAsDirty();
-      env.fixture.detectChanges();
-      expect(env.component.userFromDatabase.email.length).toEqual(0, 'test not set up');
-      expect(env.component.userFromDatabase.username.length).toBeGreaterThan(3, 'test not set up');
-      expect(env.component.formGroup.get('email').value).toEqual('', 'test not set up');
-
-      verifyStates(
-        env,
-        'username',
-        {
-          state: env.component.elementState.InSync,
-          updateButtonEnabled: false,
-          arrow: true,
-          spinner: false,
-          greenCheck: false,
-          errorIcon: false,
-          inputEnabled: true
-        },
-        env.updateButton('username').nativeElement
-      );
-
-      // Enter email on form
-      env.component.formGroup.get('email').setValue('me@example.com');
-      env.component.formGroup.get('email').markAsDirty();
-      env.fixture.detectChanges();
-
-      // Delete username from form
-      env.component.formGroup.get('username').setValue('');
-      env.component.formGroup.get('username').markAsDirty();
-      env.fixture.detectChanges();
-
-      verifyStates(
-        env,
-        'username',
-        {
-          state: env.component.elementState.Invalid,
-          updateButtonEnabled: false,
-          arrow: true,
-          spinner: false,
-          greenCheck: false,
-          errorIcon: false,
-          inputEnabled: true
-        },
-        env.updateButton('username').nativeElement
-      );
-
-      // Expect specific error message
-      expect(env.matErrors.length).toEqual(1);
-      expect((env.matErrors[0].nativeElement as HTMLElement).innerText).toContain('unless email');
-    }));
-
-    xit('only show email error when both email and username are removed', fakeAsync(() => {
-      // Don't bother showing error for username field since the email address can't be
-      // removed anyway and so there's not really an error situation for the proposed username.
-
-      expect(env.component.userFromDatabase.email.length).toBeGreaterThan(3, 'test not set up');
-      expect(env.component.userFromDatabase.username.length).toBeGreaterThan(3, 'test not set up');
-
-      // Delete email from form
-      env.component.formGroup.get('email').setValue('');
-      env.component.formGroup.get('email').markAsDirty();
-      env.fixture.detectChanges();
-
-      // Delete username from form
-      env.component.formGroup.get('username').setValue('');
-      env.component.formGroup.get('username').markAsDirty();
-      env.fixture.detectChanges();
-
-      verifyStates(
-        env,
-        'username',
-        {
-          state: env.component.elementState.Dirty,
-          updateButtonEnabled: true,
-          arrow: true,
-          spinner: false,
-          greenCheck: false,
-          errorIcon: false,
-          inputEnabled: true
-        },
-        env.updateButton('username').nativeElement
-      );
-
-      // Expect specific error message
-      expect(env.matErrors.length).toEqual(1, 'should have only showed one error message, not both');
-      expect((env.matErrors[0].nativeElement as HTMLElement).innerText).toContain(
-        'must supply a valid email',
-        'should be email error message, not username error message'
-      );
     }));
 
     describe('validate email pattern', () => {
@@ -816,69 +454,6 @@ describe('MyAccountComponent', () => {
     }));
   });
 
-  xdescribe('changing username dialog', () => {
-    it('should open', fakeAsync(() => {
-      // Change username input so button is clickable and not disabled.
-      env.component.formGroup.get('username').setValue('newusername');
-      env.fixture.detectChanges();
-      flush();
-
-      when(env.mockedMatDialogRefForCUDC.afterClosed()).thenReturn(of('update'));
-      when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForCUDC));
-
-      env.clickButton(env.updateButton('username'));
-      flush();
-
-      verify(env.mockedMatDialog.open(anything(), anything())).once();
-      expect().nothing();
-    }));
-
-    it('should update if requested', fakeAsync(() => {
-      const originalUsername = 'originalBob';
-      const newUsername = 'newBob';
-
-      when(env.mockedMatDialogRefForCUDC.afterClosed()).thenReturn(of('update'));
-      when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForCUDC));
-
-      env.component.userFromDatabase = new User({ username: originalUsername });
-      env.component.formGroup.controls.username.setValue(newUsername);
-      expect(env.component.userFromDatabase.username).toEqual(originalUsername, 'setup');
-      expect(env.component.userFromDatabase.username).not.toEqual(newUsername, 'setup');
-
-      env.component.updateClicked('username');
-      flush();
-
-      const [argsToUpdateUserAttributes] = capture(env.mockedUserService.onlineUpdateCurrentUserAttributes).last();
-      const expectedArgument: Partial<User> = {};
-      expectedArgument.username = newUsername;
-      expect(argsToUpdateUserAttributes).toEqual(expectedArgument);
-
-      // And we don't need to go on to test that the value was updated in the fake database
-      // because that would just test how well we set up the mock database.
-    }));
-
-    it('should not update if cancelled', () => {
-      const originalUsername = 'originalBob';
-      const newUsername = 'newBob';
-
-      when(env.mockedMatDialogRefForCUDC.afterClosed()).thenReturn(of('cancel'));
-      when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForCUDC));
-
-      env.component.userFromDatabase = new User({ username: originalUsername });
-      env.component.formGroup.controls.username.setValue(newUsername);
-      expect(env.component.userFromDatabase.username).toEqual(originalUsername, 'setup');
-      expect(env.component.userFromDatabase.username).not.toEqual(newUsername, 'setup');
-
-      env.component.updateClicked('username');
-
-      expect(env.component.formGroup.controls.username.value).toEqual(
-        newUsername,
-        'input should still have new and dirty data'
-      );
-      verify(env.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).never();
-    });
-  });
-
   describe('Linked accounts', () => {
     it('should give the option to link a paratext account', fakeAsync(() => {
       expect(env.component.isLinkedToParatext).toBeFalsy();
@@ -939,6 +514,151 @@ describe('MyAccountComponent', () => {
     }));
   });
 });
+
+@NgModule({
+  declarations: [MyAccountComponent],
+  imports: [NoopAnimationsModule, ngfModule, RouterTestingModule, UICommonModule],
+  exports: [MyAccountComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  // ShowOnDirtyErrorStateMatcher helps form errors show up during unit testing.
+  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }],
+  entryComponents: [MyAccountComponent]
+})
+class TestModule {}
+
+class TestEnvironment {
+  component: MyAccountComponent;
+  fixture: ComponentFixture<MyAccountComponent>;
+
+  mockedUserService: UserService;
+  mockedParatextService: ParatextService;
+  mockedMatDialog: MatDialog;
+  mockedMatDialogRefForDAD: MatDialogRef<DeleteAccountDialogComponent>;
+  mockedNoticeService: NoticeService;
+  mockedAuthService: AuthService;
+
+  private substituteParatextUsername: string;
+
+  constructor(public userInDatabase: User) {
+    this.mockedUserService = mock(UserService);
+    this.mockedParatextService = mock(ParatextService);
+    this.mockedMatDialog = mock(MatDialog);
+    this.mockedMatDialogRefForDAD = mock(MatDialogRef);
+    this.mockedNoticeService = mock(NoticeService);
+    this.mockedAuthService = mock(AuthService);
+
+    when(this.mockedUserService.getCurrentUser()).thenReturn(of(this.userInDatabase));
+    when(this.mockedUserService.currentUserId).thenReturn('user01');
+    when(this.mockedParatextService.getParatextUsername()).thenReturn(of(this.substituteParatextUsername));
+    when(this.mockedUserService.onlineUnlinkParatextAccount()).thenCall(() => {
+      this.setParatextUsername(null);
+      return Promise.resolve();
+    });
+    when(this.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).thenCall(
+      this.mockUserServiceUpdateUserAttributes()
+    );
+    when(this.mockedNoticeService.show(anything())).thenResolve();
+
+    TestBed.configureTestingModule({
+      imports: [TestModule],
+      providers: [
+        { provide: UserService, useFactory: () => instance(this.mockedUserService) },
+        { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
+        { provide: MatDialog, useFactory: () => instance(this.mockedMatDialog) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
+        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
+      ],
+      declarations: []
+    }).compileComponents();
+
+    this.fixture = TestBed.createComponent(MyAccountComponent);
+    this.component = this.fixture.componentInstance;
+    this.fixture.detectChanges();
+  }
+
+  /** Handler for mockUserService.updateUserAttributes that updates the fake database. */
+  mockUserServiceUpdateUserAttributes(): (updatedAttributes: Partial<User>) => Promise<User> {
+    return (updatedAttributes: Partial<User>) => {
+      return new Promise<User>(resolve => {
+        setTimeout(() => {
+          merge(this.userInDatabase, updatedAttributes);
+          resolve();
+        }, 0);
+      });
+    };
+  }
+
+  /** After calling, flush(); to make the database promise resolve. */
+  clickButton(button: DebugElement): void {
+    button.nativeElement.click();
+    this.fixture.detectChanges();
+  }
+
+  buttonIcon(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-button-icon`));
+  }
+
+  setParatextUsername(name: string): void {
+    this.substituteParatextUsername = name;
+    this.component.paratextUsername = this.substituteParatextUsername;
+  }
+
+  spinner(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-update-spinner`));
+  }
+
+  greenCheck(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-update-done`));
+  }
+
+  errorIcon(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-error-icon`));
+  }
+
+  updateButton(controlName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`#${controlName}-update-button`));
+  }
+
+  contactMethodToggle(toggleName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`mat-button-toggle[value="${toggleName}"]`));
+  }
+
+  get matErrors(): Array<DebugElement> {
+    return this.fixture.debugElement.queryAll(By.css('mat-error'));
+  }
+
+  get header2(): HTMLElement {
+    return this.fixture.nativeElement.querySelector('h2');
+  }
+
+  get paratextLinkElement(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#paratext-link'));
+  }
+
+  get paratextLinkLabel(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#paratext-link-label'));
+  }
+
+  get connectParatextButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#connect-paratext-button'));
+  }
+
+  get unlinkParatextButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#unlink-paratext-button'));
+  }
+
+  get deleteAccountElement(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#delete-account'));
+  }
+
+  get deleteAccountButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#delete-account-button'));
+  }
+
+  get avatars(): DebugElement[] {
+    return this.fixture.debugElement.queryAll(By.css('app-avatar'));
+  }
+}
 
 function expectEmailPatternIsBad(env: TestEnvironment, badEmail: string) {
   env.component.formGroup.get('email').setValue(badEmail);
