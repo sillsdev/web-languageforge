@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, NgModule } from '@angular/core';
-import { fakeAsync, flush } from '@angular/core/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { fakeAsync, flush } from '@angular/core/testing';
 import { ErrorStateMatcher, MatDialog, MatDialogRef, ShowOnDirtyErrorStateMatcher } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -9,7 +9,6 @@ import { merge } from '@orbit/utils';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
-import { ngfModule } from 'angular-file';
 import { AuthService } from 'xforge-common/auth.service';
 import { User } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
@@ -517,7 +516,7 @@ describe('MyAccountComponent', () => {
 
 @NgModule({
   declarations: [MyAccountComponent],
-  imports: [NoopAnimationsModule, ngfModule, RouterTestingModule, UICommonModule],
+  imports: [NoopAnimationsModule, RouterTestingModule, UICommonModule],
   exports: [MyAccountComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   // ShowOnDirtyErrorStateMatcher helps form errors show up during unit testing.
