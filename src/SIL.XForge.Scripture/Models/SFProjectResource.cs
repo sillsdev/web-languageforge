@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using JsonApiDotNetCore.Models;
 using SIL.XForge.Models;
@@ -12,6 +13,8 @@ namespace SIL.XForge.Scripture.Models
         public CheckingConfig CheckingConfig { get; set; }
         [Attr]
         public TranslateConfig TranslateConfig { get; set; }
+        [Attr]
+        public DateTime LastSyncedDate { get; set; }
 
         [HasOne]
         public SyncJobResource ActiveSyncJob { get; set; }
