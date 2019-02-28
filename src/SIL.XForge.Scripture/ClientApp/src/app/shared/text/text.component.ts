@@ -51,47 +51,6 @@ export interface TextUpdatedEvent {
   encapsulation: ViewEncapsulation.None
 })
 export class TextComponent implements OnDestroy {
-  @Input() textType: TextType = 'target';
-  @Input() isReadOnly: boolean = true;
-  @Output() updated = new EventEmitter<TextUpdatedEvent>(true);
-  @Output() segmentRefChange = new EventEmitter<string>();
-  @Output() loaded = new EventEmitter(true);
-
-  private readonly DEFAULT_MODULES: any = {
-    toolbar: false,
-    keyboard: {
-      bindings: {
-        disableBackspace: {
-          key: 'backspace',
-          handler: (range: RangeStatic) => this.isBackspaceAllowed(range)
-        },
-        disableDelete: {
-          key: 'delete',
-          handler: (range: RangeStatic) => this.isDeleteAllowed(range)
-        },
-        disableEnter: {
-          key: 'enter',
-          handler: () => false
-        }
-      }
-    }
-  };
-
-  private _textId?: string;
-  private _modules: any = this.DEFAULT_MODULES;
-  private _editor?: Quill;
-  private textDataSub?: Subscription;
-  private textData?: TextData;
-  private segmenter?: Segmenter;
-  private _segment?: Segment;
-  private initialSegmentRef?: string;
-  private initialSegmentChecksum?: number;
-  private initialSegmentFocus?: boolean;
-  private initialSegmentUpdate: boolean = false;
-  private _highlightSegment: boolean = false;
-
-  constructor(private readonly textService: TextService) {}
-
   get textId(): string {
     return this._textId;
   }
@@ -178,6 +137,57 @@ export class TextComponent implements OnDestroy {
     return text.endsWith('\n') ? text.substr(0, text.length - 1) : text;
   }
 
+  get editorStyles(): object {
+    return this._editorStyles;
+  }
+
+  private _editorStyles: any = { fontSize: '1rem' };
+
+  @Input() textType: TextType = 'target';
+  @Input() isReadOnly: boolean = true;
+  @Output() updated = new EventEmitter<TextUpdatedEvent>(true);
+  @Output() segmentRefChange = new EventEmitter<string>();
+  @Output() loaded = new EventEmitter(true);
+
+  @Input()
+  set editorStyles(styles: object) {
+    this._editorStyles = styles;
+    this.applyEditorStyles();
+  }
+  private readonly DEFAULT_MODULES: any = {
+    toolbar: false,
+    keyboard: {
+      bindings: {
+        disableBackspace: {
+          key: 'backspace',
+          handler: (range: RangeStatic) => this.isBackspaceAllowed(range)
+        },
+        disableDelete: {
+          key: 'delete',
+          handler: (range: RangeStatic) => this.isDeleteAllowed(range)
+        },
+        disableEnter: {
+          key: 'enter',
+          handler: () => false
+        }
+      }
+    }
+  };
+  private _textId?: string;
+  private _modules: any = this.DEFAULT_MODULES;
+  private _editor?: Quill;
+  private textDataSub?: Subscription;
+  private textData?: TextData;
+  private segmenter?: Segmenter;
+  private _segment?: Segment;
+  private initialSegmentRef?: string;
+  private initialSegmentChecksum?: number;
+  private initialSegmentFocus?: boolean;
+  private initialSegmentUpdate: boolean = false;
+  private _highlightSegment: boolean = false;
+
+  constructor(private readonly textService: TextService) {}
+
   ngOnDestroy(): void {
     this.unbindQuill();
     EDITORS.delete(this._editor);
@@ -248,6 +258,17 @@ export class TextComponent implements OnDestroy {
     this.update();
   }
 
+  private applyEditorStyles() {
+    const quillEditor: HTMLElement = <HTMLElement>document.getElementsByClassName('ql-container')[0];
+    if (quillEditor) {
+      for (const style in this.editorStyles) {
+        if (quillEditor.style.hasOwnProperty(style)) {
+          quillEditor.style[style] = this.editorStyles[style];
+        }
+      }
+    }
+  }
+
   private async bindQuill(): Promise<void> {
     await this.unbindQuill();
     if (this._textId == null || this._editor == null) {
@@ -265,6 +286,7 @@ export class TextComponent implements OnDestroy {
     this.textDataSub = this.textData.remoteChanges().subscribe(ops => this._editor.updateContents(ops));
     editorElem.setAttribute('data-placeholder', placeholderText);
     this.loaded.emit();
+    this.applyEditorStyles();
   }
 
   private async unbindQuill(): Promise<void> {
