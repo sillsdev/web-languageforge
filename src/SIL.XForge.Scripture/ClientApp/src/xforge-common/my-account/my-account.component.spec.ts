@@ -11,6 +11,7 @@ import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { ngfModule } from 'angular-file';
 import { AuthService } from '../auth.service';
+import { Site } from '../models/site';
 import { User } from '../models/user';
 import { NoticeService } from '../notice.service';
 import { ParatextService } from '../paratext.service';
@@ -28,7 +29,8 @@ describe('MyAccountComponent', () => {
         username: 'bobusername',
         email: 'bob@example.com',
         contactMethod: 'email',
-        mobilePhone: '+123 11 2222-33-4444'
+        mobilePhone: '+123 11 2222-33-4444',
+        site: { currentProjectId: 'testproject01', lastLogin: new Date('2019-02-01T12:00:00.000Z') } as Site
       })
     );
   });
@@ -42,6 +44,10 @@ describe('MyAccountComponent', () => {
 
   it('should have avatar', () => {
     expect(env.avatars.length).toBeGreaterThan(0);
+  });
+
+  it('should display last login date', () => {
+    expect(env.lastLogin.textContent).toContain('01 February 2019');
   });
 
   // This tests that various UI icons etc are shown or not shown,
@@ -629,6 +635,10 @@ class TestEnvironment {
 
   get header2(): HTMLElement {
     return this.fixture.nativeElement.querySelector('h2');
+  }
+
+  get lastLogin(): HTMLElement {
+    return this.fixture.nativeElement.querySelector('#last-login');
   }
 
   get paratextLinkElement(): DebugElement {

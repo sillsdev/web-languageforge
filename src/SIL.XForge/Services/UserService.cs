@@ -75,6 +75,10 @@ namespace SIL.XForge.Services
             if (!string.IsNullOrEmpty(entity.Password))
                 entity.Password = UserEntity.HashPassword(entity.Password);
             entity.CanonicalEmail = UserEntity.CanonicalizeEmail(entity.Email);
+            entity.Sites = new Dictionary<string, Site>
+            {
+                { _siteOptions.Value.Origin.Authority, new Site() }
+            };
             return base.InsertEntityAsync(entity);
         }
 

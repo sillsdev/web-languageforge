@@ -89,6 +89,10 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     return this.userFromDatabase.name ? this.userFromDatabase.name : 'unknown';
   }
 
+  get lastLogin() {
+    return this.userFromDatabase.site.lastLogin;
+  }
+
   get isLinkedToParatext() {
     return this.paratextUsername && this.paratextUsername.length > 0;
   }
