@@ -63,7 +63,7 @@ export class AudioRecorderController implements angular.IController {
       const processor = context.createScriptProcessor(bufferSize, channels, channels);
       context.createMediaStreamSource(stream).connect(processor);
       processor.connect(context.destination);
-      const sampleRate = 44100;
+      const sampleRate = context.sampleRate;
       const bitrate = 128;
       const mp3Encoder = new MP3Encoder(channels, sampleRate, bitrate);
 
