@@ -10,7 +10,7 @@ import {
   TranslationSuggester
 } from '@sillsdev/machine';
 import Quill, { DeltaStatic, RangeStatic } from 'quill';
-import { switchMap, tap } from 'rxjs/operators';
+import { filter, switchMap, tap } from 'rxjs/operators';
 import XRegExp from 'xregexp';
 
 import { NoticeService } from 'xforge-common/notice.service';
@@ -37,7 +37,6 @@ const PUNCT_SPACE_REGEX = XRegExp('^(\\p{P}|\\p{S}|\\p{Cc}|\\p{Z})+$');
 export class EditorComponent extends SubscriptionDisposable implements OnInit {
   @HostBinding('class') classes = 'flex-column flex-grow';
 
-  textId?: string;
   suggestionWords: string[] = [];
   suggestionConfidence: number = 0;
   showSuggestion: boolean = false;
@@ -85,18 +84,18 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit {
   }
 
   get isTargetTextRight(): boolean {
-    return this.userTranslateConfig == null ? true : this.userTranslateConfig.isTargetTextRight;
+    return this.translateUserConfig == null ? true : this.translateUserConfig.isTargetTextRight;
   }
 
   set isTargetTextRight(value: boolean) {
     if (this.isTargetTextRight !== value) {
-      this.userTranslateConfig.isTargetTextRight = value;
+      this.translateUserConfig.isTargetTextRight = value;
       this.target.focus();
-      this.updateUserTranslateConfig();
+      this.updateUserConfig();
     }
   }
 
-  get userTranslateConfig(): TranslateProjectUserConfig {
+  get translateUserConfig(): TranslateProjectUserConfig {
     return this.projectUser == null ? null : this.projectUser.translateConfig;
   }
 
@@ -117,33 +116,36 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit {
   ngOnInit(): void {
     this.subscribe(
       this.activatedRoute.params.pipe(
-        tap(params => {
+        tap(() => {
+          this.showSuggestion = false;
           this.sourceLoaded = false;
           this.targetLoaded = false;
           this.noticeService.loadingStarted();
-          this.textId = params['textId'];
         }),
         switchMap(params =>
-          this.textService.get(params['textId'], [nameof<Text>('project'), nameof<SFProject>('users')])
-        )
+          this.textService.get(params['textId'], [[nameof<Text>('project'), nameof<SFProject>('users')]])
+        ),
+        filter(r => r.data != null)
       ),
       r => {
-        this.text = r.results;
+        this.text = r.data;
         this.project = r.getIncluded(this.text.project);
         this.projectUser = r
           .getManyIncluded<SFProjectUser>(this.project.users)
           .find(pu => pu.user.id === this.userService.currentUserId);
-        if (this.userTranslateConfig != null) {
-          if (this.userTranslateConfig.isTargetTextRight == null) {
-            this.userTranslateConfig.isTargetTextRight = true;
+        this.source.textId = this.text.id;
+        this.target.textId = this.text.id;
+        if (this.translateUserConfig != null) {
+          if (this.translateUserConfig.isTargetTextRight == null) {
+            this.translateUserConfig.isTargetTextRight = true;
           }
           if (
-            this.userTranslateConfig.selectedTextRef === this.textId &&
-            this.userTranslateConfig.selectedSegment !== ''
+            this.translateUserConfig.selectedTextRef === this.text.id &&
+            this.translateUserConfig.selectedSegment !== ''
           ) {
-            this.target.switchSegment(
-              this.userTranslateConfig.selectedSegment,
-              this.userTranslateConfig.selectedSegmentChecksum,
+            this.target.changeSegment(
+              this.translateUserConfig.selectedSegment,
+              this.translateUserConfig.selectedSegmentChecksum,
               true
             );
           }
@@ -155,22 +157,23 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit {
 
   async onTargetUpdated(segment: Segment, delta?: DeltaStatic, prevSegment?: Segment): Promise<void> {
     if (segment !== prevSegment) {
-      this.source.switchSegment(this.target.segmentRef);
+      this.source.changeSegment(this.target.segmentRef);
       this.syncScroll();
 
       this.insertSuggestionEnd = -1;
       this.onStartTranslating();
       try {
         if (
-          this.userTranslateConfig != null &&
+          this.translateUserConfig != null &&
           this.target.segmentRef !== '' &&
-          (this.userTranslateConfig.selectedTextRef !== this.textId ||
-            this.userTranslateConfig.selectedSegment !== this.target.segmentRef)
+          (this.translateUserConfig.selectedTextRef !== this.text.id ||
+            this.translateUserConfig.selectedSegment !== this.target.segmentRef)
         ) {
-          this.userTranslateConfig.selectedTextRef = this.textId;
-          this.userTranslateConfig.selectedSegment = this.target.segmentRef;
-          this.userTranslateConfig.selectedSegmentChecksum = this.target.segmentChecksum;
-          await this.updateUserTranslateConfig();
+          this.projectUser.selectedTask = 'translate';
+          this.translateUserConfig.selectedTextRef = this.text.id;
+          this.translateUserConfig.selectedSegment = this.target.segmentRef;
+          this.translateUserConfig.selectedSegmentChecksum = this.target.segmentChecksum;
+          await this.updateUserConfig();
         }
         await this.trainSegment(prevSegment);
         await this.translateSegment();
@@ -350,7 +353,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit {
     return range.index + range.length !== this.target.length;
   }
 
-  private async updateUserTranslateConfig(): Promise<void> {
+  private async updateUserConfig(): Promise<void> {
     await this.projectUserService.update(this.projectUser);
   }
 

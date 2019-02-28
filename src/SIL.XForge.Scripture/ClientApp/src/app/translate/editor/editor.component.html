@@ -4,7 +4,6 @@
     <div class="text-container">
       <app-text
         #source
-        [textId]="textId"
         textType="source"
         [isReadOnly]="true"
         [highlightSegment]="target.hasFocus"
@@ -20,7 +19,6 @@
     <div class="text-container">
       <app-text
         #target
-        [textId]="textId"
         textType="target"
         [isReadOnly]="false"
         (updated)="onTargetUpdated($event.segment, $event.delta, $event.prevSegment)"

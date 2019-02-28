@@ -1,0 +1,79 @@
+<div id="projects-app" class="container-fluid flex-max">
+  <div class="row">
+    <div class="col">
+      <h1>{{ project.projectName }}</h1>
+    </div>
+  </div>
+  <div class="row flex-fill">
+    <div class="col" id="questions-panel">
+      <div class="panel">
+        <div class="panel-heading">
+          <mdc-icon>help</mdc-icon>
+          <h2>Questions ({{ totalQuestions() }})</h2>
+        </div>
+        <div class="panel-content">
+          <mdc-list>
+            <mdc-list-item
+              *ngFor="let question of questions"
+              [ngClass]="{
+                'question-read': question.read,
+                'question-unread': !question.read,
+                'question-answered': question.answered,
+                'question-has-answers': question.totalAnswers(),
+                'mdc-list-item--activated': activeQuestion && activeQuestion.id === question.id
+              }"
+              (click)="activateQuestion(question)"
+            >
+              <div class="question-title">{{ question.title }}</div>
+              <a class="view-answers" mdcListItemMeta title="View Answers">
+                <i mdcIcon>forum</i> <span>{{ question.totalAnswers() }}</span>
+              </a>
+            </mdc-list-item>
+          </mdc-list>
+        </div>
+      </div>
+    </div>
+    <div class="col" id="book-panel">
+      <div id="scripture-panel" class="flex-fill">
+        <div class="panel">
+          <div class="panel-heading">
+            <mdc-icon>library_books</mdc-icon>
+            <h2>{{ project.projectName }}</h2>
+            <div class="panel-activity"><app-font-size (apply)="applyFontChange($event)"></app-font-size></div>
+          </div>
+          <div #scripturePanel class="panel-content">Scripture text goes here</div>
+        </div>
+      </div>
+      <div id="answer-panel" *ngIf="activeQuestion">
+        <div id="project-navigation">
+          <button
+            mdc-button
+            (click)="previousQuestion()"
+            [disabled]="!checkCanChangeQuestion(-1)"
+            class="prev-question"
+          >
+            <mdc-icon>chevron_left</mdc-icon>Previous
+          </button>
+          <button mdc-button (click)="nextQuestion()" [disabled]="!checkCanChangeQuestion(1)" class="next-question">
+            Next<mdc-icon>chevron_right</mdc-icon>
+          </button>
+          <div style="display: block">
+            <div id="project-summary">
+              <canvas
+                baseChart
+                width="36"
+                height="36"
+                [labels]="['Unread', 'Read', 'Answered']"
+                [data]="[summary.unread, summary.read, summary.answered]"
+                [colors]="[{ backgroundColor: ['#3a3a3a', '#fff', '#018786'] }]"
+                [chartType]="'doughnut'"
+                [legend]="false"
+                [options]="{ events: [] }"
+              ></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

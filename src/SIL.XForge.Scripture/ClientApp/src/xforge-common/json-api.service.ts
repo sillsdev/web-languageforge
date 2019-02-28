@@ -63,7 +63,7 @@ import { StoreRemoteUpdateStrategy } from './strategies/store-remote-update-stra
  * This interface represents query results from the {@link JSONAPIService}.
  */
 export interface QueryResults<T> {
-  readonly results: T;
+  readonly data: T;
   readonly totalPagedCount?: number;
 
   /**
@@ -108,7 +108,7 @@ export interface GetAllParameters<T = any> {
 class CacheQueryResults<T> implements QueryResults<T> {
   constructor(
     private readonly jsonApiService: JsonApiService,
-    public readonly results: T,
+    public readonly data: T,
     public readonly totalPagedCount?: number
   ) {}
 
@@ -124,7 +124,7 @@ class CacheQueryResults<T> implements QueryResults<T> {
 export class MapQueryResults<T> implements QueryResults<T> {
   private readonly map: Dict<Map<string, Resource>> = {};
 
-  constructor(public readonly results: T, public readonly totalPagedCount?: number, included?: Resource[]) {
+  constructor(public readonly data: T, public readonly totalPagedCount?: number, included?: Resource[]) {
     if (included != null) {
       for (const resource of included) {
         let typeMap = this.map[resource.type];
@@ -163,7 +163,7 @@ export class MapQueryResults<T> implements QueryResults<T> {
  *
  * This service provides implementations for two types of CRUD operations: optimistic and pessimistic.
  *
- * Optimisitic operations are used for offline-only views. Optimistic queries return a live observable that will return
+ * Optimistic operations are used for offline-only views. Optimistic queries return a live observable that will return
  * the current results from the cache immediately, and then listen for any updated results that are returned from the
  * JSON-API server or performed locally.
  *
@@ -291,11 +291,11 @@ export class JsonApiService {
    *
    * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
-   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server.
+   * @param {string[][]} [include] Optional. A path of relationship names that specifies the related resources to
+   * include in the results from the server.
    * @returns {QueryObservable<T>} The live query observable.
    */
-  get<T extends Resource>(identity: RecordIdentity, include?: string[]): QueryObservable<T> {
+  get<T extends Resource>(identity: RecordIdentity, include?: string[][]): QueryObservable<T> {
     const queryExpression: QueryOrExpression = q => q.findRecord(identity);
     return this.storeQuery(queryExpression, queryExpression, include);
   }
@@ -309,14 +309,14 @@ export class JsonApiService {
    * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
-   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server.
+   * @param {string[][]} [include] Optional. A path of relationship names that specifies the related resources to
+   * include in the results from the server.
    * @returns {QueryObservable<T>} The live query observable.
    */
   getRelated<T extends Resource>(
     identity: RecordIdentity,
     relationship: string,
-    include?: string[]
+    include?: string[][]
   ): QueryObservable<T> {
     const queryExpression: QueryOrExpression = q => q.findRelatedRecord(identity, relationship);
     return this.storeQuery(queryExpression, queryExpression, include);
@@ -329,11 +329,15 @@ export class JsonApiService {
    * @template T The resource type.
    * @param {string} type The resource type.
    * @param {GetAllParameters<T>} parameters Optional. Filtering, sorting, and paging parameters.
-   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server.
+   * @param {string[][]} [include] Optional. A path of relationship names that specifies the related resources to
+   * include in the results from the server.
    * @returns {QueryObservable<T[]>} The live query observable.
    */
-  getAll<T extends Resource>(type: string, parameters?: GetAllParameters<T>, include?: string[]): QueryObservable<T[]> {
+  getAll<T extends Resource>(
+    type: string,
+    parameters?: GetAllParameters<T>,
+    include?: string[][]
+  ): QueryObservable<T[]> {
     return this.storeQuery(
       q => this.getAllQuery(q, type, parameters),
       q => this.getAllQuery(q, type, parameters, false),
@@ -350,14 +354,14 @@ export class JsonApiService {
    * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
-   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server.
+   * @param {string[][]} [include] Optional. A path of relationship names that specifies the related resources to
+   * include in the results from the server.
    * @returns {QueryObservable<T[]>} The live query observable.
    */
   getAllRelated<T extends Resource>(
     identity: RecordIdentity,
     relationship: string,
-    include?: string[]
+    include?: string[][]
   ): QueryObservable<T[]> {
     const queryExpression: QueryOrExpression = q => q.findRelatedRecords(identity, relationship);
     return this.storeQuery(queryExpression, queryExpression, include);
@@ -456,11 +460,11 @@ export class JsonApiService {
    *
    * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
-   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server.
+   * @param {string[][]} [include] Optional. A path of relationship names that specifies the related resources to
+   * include in the results from the server.
    * @returns {QueryObservable<T>} The query observable.
    */
-  onlineGet<T extends Resource>(identity: RecordIdentity, include?: string[]): QueryObservable<T> {
+  onlineGet<T extends Resource>(identity: RecordIdentity, include?: string[][]): QueryObservable<T> {
     return this.onlineStoreQuery(q => q.findRecord(identity), include);
   }
 
@@ -473,14 +477,14 @@ export class JsonApiService {
    * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
-   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server.
+   * @param {string[][]} [include] Optional. A path of relationship names that specifies the related resources to
+   * include in the results from the server.
    * @returns {QueryObservable<T>} The query observable.
    */
   onlineGetRelated<T extends Resource>(
     identity: RecordIdentity,
     relationship: string,
-    include?: string[]
+    include?: string[][]
   ): QueryObservable<T> {
     return this.onlineStoreQuery(q => q.findRelatedRecord(identity, relationship), include);
   }
@@ -492,14 +496,14 @@ export class JsonApiService {
    * @template T The resource type.
    * @param {string} type The resource type.
    * @param {GetAllParameters<T>} parameters Optional. Filtering, sorting, and paging parameters.
-   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server.
+   * @param {string[][]} [include] Optional. A path of relationship names that specifies the related resources to
+   * include in the results from the server.
    * @returns {QueryObservable<T[]>} The query observable.
    */
   onlineGetAll<T extends Resource>(
     type: string,
     parameters?: GetAllParameters<T>,
-    include?: string[]
+    include?: string[][]
   ): QueryObservable<T[]> {
     return this.onlineStoreQuery(q => this.getAllQuery(q, type, parameters), include);
   }
@@ -513,14 +517,14 @@ export class JsonApiService {
    * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
-   * @param {string[]} [include] Optional. A path of relationship names that specifies the related resources to include
-   * in the results from the server.
+   * @param {string[][]} [include] Optional. A path of relationship names that specifies the related resources to
+   * include in the results from the server.
    * @returns {QueryObservable<T[]>} The query observable.
    */
   onlineGetAllRelated<T extends Resource>(
     identity: RecordIdentity,
     relationship: string,
-    include?: string[]
+    include?: string[][]
   ): QueryObservable<T[]> {
     return this.onlineStoreQuery(q => q.findRelatedRecords(identity, relationship), include);
   }
@@ -708,7 +712,7 @@ export class JsonApiService {
   private storeQuery(
     localQueryExpression: QueryOrExpression,
     remoteQueryExpression: QueryOrExpression,
-    include: string[]
+    include: string[][]
   ): QueryObservable<any> {
     const localQuery = buildQuery(localQueryExpression, {}, undefined, this.store.queryBuilder);
     const remoteQuery = buildQuery(remoteQueryExpression, this.getOptions(include), undefined, this.store.queryBuilder);
@@ -718,7 +722,7 @@ export class JsonApiService {
 
     // listen for any changes resulting from the remote query
     const handler = (transform: Transform, results: PatchResultData[]) => {
-      if (this.isChangeApplicable(remoteQuery, transform, results)) {
+      if (this.isChangeApplicable(remoteQuery, transform, results, include)) {
         changes$.next(this.getQueryResults(localQuery));
       }
     };
@@ -739,7 +743,7 @@ export class JsonApiService {
     return finalize$.refCount();
   }
 
-  private onlineStoreQuery(queryExpression: QueryOrExpression, include: string[]): QueryObservable<any> {
+  private onlineStoreQuery(queryExpression: QueryOrExpression, include: string[][]): QueryObservable<any> {
     const query = buildQuery(queryExpression, this.getOptions(include), undefined, this.store.queryBuilder);
 
     return from(this.onlineStore.query(query)).pipe(map(r => this.getOnlineQueryResults(query, r)));
@@ -825,10 +829,10 @@ export class JsonApiService {
     return sortSpecifier;
   }
 
-  private getOptions(include?: string[]): any {
+  private getOptions(include?: string[][]): any {
     const options: any = {};
     if (include != null && include.length > 0) {
-      options.sources = { remote: { include: [include.map(rel => dasherize(rel)).join('.')] } };
+      options.sources = { remote: { include: include.map(i => [i.map(rel => dasherize(rel)).join('.')]) } };
     }
     return options;
   }
@@ -848,25 +852,35 @@ export class JsonApiService {
     return updatedProps;
   }
 
-  private isChangeApplicable(query: Query, transform: Transform, results: PatchResultData[]): boolean {
+  private isChangeApplicable(
+    query: Query,
+    transform: Transform,
+    results: PatchResultData[],
+    include: string[][]
+  ): boolean {
     let queryRecord: RecordIdentity = null;
     let queryType: string = null;
     let queryRelationship: string = null;
     let queryRelated: RecordIdentity[] = null;
+    let includedTypes: Set<string>;
     switch (query.expression.op) {
       case 'findRecord':
         const findRecord = query.expression as FindRecord;
         queryRecord = findRecord.record;
+        includedTypes = this.getIncludedTypes(queryRecord.type, include);
         break;
       case 'findRecords':
         const findRecords = query.expression as FindRecords;
         queryType = findRecords.type;
+        includedTypes = this.getIncludedTypes(queryType, include);
         break;
       case 'findRelatedRecord':
       case 'findRelatedRecords':
         const findRelated = query.expression as FindRelatedRecord | FindRelatedRecords;
         queryRecord = findRelated.record;
         queryRelationship = findRelated.relationship;
+        const model = this.schema.getModel(queryRecord.type);
+        includedTypes = this.getIncludedTypes(model.relationships[queryRelationship].model, include);
         const record = this.store.cache.records(queryRecord.type).get(queryRecord.id);
         const related =
           record == null
@@ -929,6 +943,11 @@ export class JsonApiService {
 
       // check if the type of the transformed record matches the type being queried
       if (queryType === transformRecord.type) {
+        return true;
+      }
+
+      // check if the type of the transformed record matches one of the included types
+      if (includedTypes.has(transformRecord.type)) {
         return true;
       }
 
@@ -1067,5 +1086,20 @@ export class JsonApiService {
       { localOnly }
     );
     return this.localGet<T>(identity);
+  }
+
+  private getIncludedTypes(type: string, include: string[][]): Set<string> {
+    const includedTypes = new Set<string>();
+    if (include != null) {
+      for (const i of include) {
+        let curType = type;
+        for (const rel of i) {
+          const model = this.schema.getModel(curType);
+          curType = model.relationships[rel].model;
+          includedTypes.add(curType);
+        }
+      }
+    }
+    return includedTypes;
   }
 }

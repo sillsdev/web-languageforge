@@ -38,7 +38,7 @@ export class SyncComponent extends SubscriptionDisposable implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.projectId = params['id'];
+      this.projectId = params['projectId'];
       this.updateLastSyncedDate();
     });
     this.subscribe(this.paratextService.getParatextUsername(), name => {
@@ -76,9 +76,9 @@ export class SyncComponent extends SubscriptionDisposable implements OnInit {
   private updateLastSyncedDate(): void {
     this.subscribe(this.projectService.onlineGet(this.projectId), p => {
       if (!this.projectName) {
-        this.projectName = p.results.projectName;
+        this.projectName = p.data.projectName;
       }
-      this.lastSyncedDate = this.datePipe.transform(p.results.lastSyncedDate, 'dd MMMM yyyy');
+      this.lastSyncedDate = this.datePipe.transform(p.data.lastSyncedDate, 'dd MMMM yyyy');
     });
   }
 }

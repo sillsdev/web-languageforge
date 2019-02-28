@@ -11,22 +11,18 @@ import { xForgeCommonEntryComponents, XForgeCommonModule } from 'xforge-common/x
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CheckingOverviewComponent } from './checking/checking-overview/checking-overview.component';
-import { QuestionDialogComponent } from './checking/question-dialog/question-dialog.component';
+import { CheckingModule } from './checking/checking.module';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
 import { CoreModule } from './core/core.module';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { HomeComponent } from './home/home.component';
 import { ChangingUsernameDialogComponent } from './my-account/changing-username-dialog/changing-username-dialog.component';
 import { DeleteAccountDialogComponent } from './my-account/delete-account-dialog/delete-account-dialog.component';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { DeleteProjectDialogComponent } from './project-settings/delete-project-dialog/delete-project-dialog.component';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
-import { FontSizeComponent } from './project/font-size/font-size.component';
 import { ProjectComponent } from './project/project.component';
-import { RealtimeComponent } from './realtime/realtime.component';
 import { SharedModule } from './shared/shared.module';
+import { StartComponent } from './start/start.component';
 import { SyncComponent } from './sync/sync.component';
 import { TranslateModule } from './translate/translate.module';
 
@@ -34,20 +30,15 @@ import { TranslateModule } from './translate/translate.module';
   declarations: [
     AppComponent,
     NavMenuComponent,
-    HomeComponent,
-    FetchDataComponent,
     ChangingUsernameDialogComponent,
-    CheckingOverviewComponent,
-    QuestionDialogComponent,
     ConnectProjectComponent,
     MyAccountComponent,
-    RealtimeComponent,
     DeleteAccountDialogComponent,
     DeleteProjectDialogComponent,
     ProjectSettingsComponent,
     ProjectComponent,
     SyncComponent,
-    FontSizeComponent
+    StartComponent
   ],
   imports: [
     AppRoutingModule,
@@ -60,6 +51,7 @@ import { TranslateModule } from './translate/translate.module';
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.pwaTest }), // || environment.production }),
     SharedModule,
     TranslateModule,
+    CheckingModule,
     UICommonModule,
     XForgeCommonModule
   ],
@@ -68,7 +60,6 @@ import { TranslateModule } from './translate/translate.module';
     ChangingUsernameDialogComponent,
     DeleteAccountDialogComponent,
     DeleteProjectDialogComponent,
-    QuestionDialogComponent,
     ...xForgeCommonEntryComponents
   ],
   bootstrap: [AppComponent]

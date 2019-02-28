@@ -17,7 +17,6 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 })
 export class AppComponent extends SubscriptionDisposable implements OnInit {
   @ViewChild(NavMenuComponent) navMenu: NavMenuComponent;
-  title = 'Scripture Forge';
   today = new Date();
   version = '9.9.9';
 
@@ -53,6 +52,6 @@ export class AppComponent extends SubscriptionDisposable implements OnInit {
   }
 
   async goHome(): Promise<void> {
-    (await this.isLoggedIn) ? this.router.navigateByUrl('/home') : this.locationService.go('/');
+    (await this.isLoggedIn) ? this.router.navigateByUrl('/projects') : this.locationService.go('/');
   }
 }

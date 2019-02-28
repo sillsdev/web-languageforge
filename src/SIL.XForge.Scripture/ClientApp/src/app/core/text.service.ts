@@ -25,7 +25,7 @@ export class TextService extends ResourceService {
     return this.realtimeService.disconnect(textData);
   }
 
-  get(id: string, include?: string[]): QueryObservable<Text> {
+  get(id: string, include?: string[][]): QueryObservable<Text> {
     return this.jsonApiService.get(this.identity(id), include);
   }
 

@@ -1,7 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   createRange,
@@ -12,7 +12,7 @@ import {
   WordAlignmentMatrix
 } from '@sillsdev/machine';
 import Quill, { DeltaStatic } from 'quill';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Snapshot } from 'sharedb/lib/client';
 import { anything, deepEqual, instance, mock, resetCalls, verify, when } from 'ts-mockito';
 
@@ -40,8 +40,8 @@ describe('EditorComponent', () => {
     const env = new TestEnvironment();
     env.setTranslateConfig({});
     await env.wait();
-    expect(env.component.sourceLabel).toEqual('Book (Source)');
-    expect(env.component.targetLabel).toEqual('Book (Target)');
+    expect(env.component.sourceLabel).toEqual('Book 1 (Source)');
+    expect(env.component.targetLabel).toEqual('Book 1 (Target)');
     expect(env.component.target.segmentRef).toEqual('');
     const selection = env.component.target.editor.getSelection();
     expect(selection).toBeNull();
@@ -75,7 +75,7 @@ describe('EditorComponent', () => {
     const selection = env.component.target.editor.getSelection();
     expect(selection.index).toEqual(35);
     expect(selection.length).toEqual(0);
-    expect(env.component.userTranslateConfig.selectedSegment).toEqual('verse_2_1');
+    expect(env.component.translateUserConfig.selectedSegment).toEqual('verse_2_1');
     verify(env.mockedSFProjectUserService.update(anything())).once();
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
     expect(env.component.showSuggestion).toBeFalsy();
@@ -95,7 +95,7 @@ describe('EditorComponent', () => {
     const selection = env.component.target.editor.getSelection();
     expect(selection.index).toEqual(30);
     expect(selection.length).toEqual(2);
-    expect(env.component.userTranslateConfig.selectedSegment).toEqual('verse_1_2');
+    expect(env.component.translateUserConfig.selectedSegment).toEqual('verse_1_2');
     verify(env.mockedSFProjectUserService.update(anything())).once();
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
     expect(env.component.showSuggestion).toBeTruthy();
@@ -255,6 +255,29 @@ describe('EditorComponent', () => {
     expect(env.component.target.segmentRef).toEqual('verse_1_1');
     expect(env.lastApprovedPrefix).toEqual([]);
   }));
+
+  it('change texts', async(async () => {
+    const env = new TestEnvironment();
+    env.setTranslateConfig({ selectedTextRef: 'text01', selectedSegment: 'verse_1_1' });
+    await env.wait();
+    expect(env.component.target.segmentRef).toEqual('verse_1_1');
+    verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
+
+    resetCalls(env.mockedRemoteTranslationEngine);
+    env.paramsSubject.next({ projectId: 'project01', textId: 'text02' });
+    await env.wait();
+    expect(env.component.sourceLabel).toEqual('Book 2 (Source)');
+    expect(env.component.targetLabel).toEqual('Book 2 (Target)');
+    expect(env.component.target.segmentRef).toEqual('');
+
+    resetCalls(env.mockedRemoteTranslationEngine);
+    env.paramsSubject.next({ projectId: 'project01', textId: 'text01' });
+    await env.wait();
+    expect(env.component.sourceLabel).toEqual('Book 1 (Source)');
+    expect(env.component.targetLabel).toEqual('Book 1 (Target)');
+    expect(env.component.target.segmentRef).toEqual('verse_1_1');
+    verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
+  }));
 });
 
 const Delta: new () => DeltaStatic = Quill.import('delta');
@@ -372,7 +395,10 @@ class TestEnvironment {
 
   lastApprovedPrefix: string[] = [];
 
+  paramsSubject: BehaviorSubject<Params>;
+
   constructor() {
+    this.paramsSubject = new BehaviorSubject<Params>({ projectId: 'project01', textId: 'text01' });
     when(
       this.mockedTextService.connect(
         'text01',
@@ -385,7 +411,19 @@ class TestEnvironment {
         'target'
       )
     ).thenResolve(this.createTextData('target'));
-    when(this.mockedActivatedRoute.params).thenReturn(of({ textId: 'text01' }));
+    when(
+      this.mockedTextService.connect(
+        'text02',
+        'source'
+      )
+    ).thenResolve(this.createTextData('source'));
+    when(
+      this.mockedTextService.connect(
+        'text02',
+        'target'
+      )
+    ).thenResolve(this.createTextData('target'));
+    when(this.mockedActivatedRoute.params).thenReturn(this.paramsSubject);
     when(this.mockedUserService.currentUserId).thenReturn('user01');
     when(this.mockedSFProjectService.get('project01')).thenReturn(of());
     when(this.mockedSFProjectService.createTranslationEngine('project01')).thenReturn(
@@ -417,33 +455,47 @@ class TestEnvironment {
   }
 
   setTranslateConfig(userTranslateConfig: TranslateProjectUserConfig): void {
+    const included = [
+      new SFProject({
+        id: 'project01',
+        users: [new SFProjectUserRef('projectuser01')],
+        inputSystem: { languageName: 'Target' },
+        translateConfig: { enabled: true, sourceInputSystem: { languageName: 'Source' } }
+      }),
+      new SFProjectUser({
+        id: 'projectuser01',
+        user: new UserRef('user01'),
+        project: new SFProjectRef('project01'),
+        translateConfig: userTranslateConfig
+      })
+    ];
     when(
-      this.mockedTextService.get('text01', deepEqual([nameof<Text>('project'), nameof<SFProject>('users')]))
+      this.mockedTextService.get('text01', deepEqual([[nameof<Text>('project'), nameof<SFProject>('users')]]))
     ).thenReturn(
       of(
         new MapQueryResults(
-          new Text({ id: 'text01', name: 'Book', project: new SFProjectRef('project01') }),
+          new Text({ id: 'text01', name: 'Book 1', project: new SFProjectRef('project01') }),
           undefined,
-          [
-            new SFProject({
-              id: 'project01',
-              users: [new SFProjectUserRef('projectuser01')],
-              inputSystem: { languageName: 'Target' },
-              translateConfig: { enabled: true, sourceInputSystem: { languageName: 'Source' } }
-            }),
-            new SFProjectUser({
-              id: 'projectuser01',
-              user: new UserRef('user01'),
-              project: new SFProjectRef('project01'),
-              translateConfig: userTranslateConfig
-            })
-          ]
+          included
+        )
+      )
+    );
+    when(
+      this.mockedTextService.get('text02', deepEqual([[nameof<Text>('project'), nameof<SFProject>('users')]]))
+    ).thenReturn(
+      of(
+        new MapQueryResults(
+          new Text({ id: 'text02', name: 'Book 2', project: new SFProjectRef('project01') }),
+          undefined,
+          included
         )
       )
     );
   }
 
   async wait(): Promise<void> {
+    this.fixture.detectChanges();
+    await this.fixture.whenStable();
     this.fixture.detectChanges();
     await this.fixture.whenStable();
     this.fixture.detectChanges();

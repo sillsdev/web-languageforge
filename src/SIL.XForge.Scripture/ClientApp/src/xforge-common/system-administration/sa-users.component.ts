@@ -47,12 +47,12 @@ export class SaUsersComponent extends SubscriptionDisposable implements OnInit {
   }
 
   ngOnInit() {
-    const include = [nameof<User>('projects'), nameof<ProjectUser>('project')];
+    const include = [[nameof<User>('projects'), nameof<ProjectUser>('project')]];
     this.subscribe(
       this.userService.onlineSearch(this.searchTerm$, this.parameters$, this.reload$, include),
       searchResults => {
-        if (searchResults && searchResults.results) {
-          this.userRows = searchResults.results.map(user => {
+        if (searchResults && searchResults.data) {
+          this.userRows = searchResults.data.map(user => {
             const projects = searchResults
               .getManyIncluded<ProjectUser>(user.projects)
               .map(pu => searchResults.getIncluded<Project>(pu.project));

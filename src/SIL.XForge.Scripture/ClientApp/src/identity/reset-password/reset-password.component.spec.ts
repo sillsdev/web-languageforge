@@ -177,6 +177,7 @@ describe('ResetPasswordComponent', () => {
     env.fixture.detectChanges();
     flush();
     verify(env.mockedNoticeService.show(anyString())).once();
+    expect().nothing();
   }));
 
   it('should submit when new password and confirm password are specified', fakeAsync(() => {

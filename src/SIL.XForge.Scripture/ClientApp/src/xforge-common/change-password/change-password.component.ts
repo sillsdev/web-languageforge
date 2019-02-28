@@ -43,6 +43,6 @@ export class ChangePasswordComponent {
     }
     await this.userService.onlineChangePassword(this.changePasswordForm.value.newPassword);
     this.noticeService.show('Password changed successfully');
-    this.router.navigateByUrl('/home');
+    this.router.navigateByUrl('/projects');
   }
 }

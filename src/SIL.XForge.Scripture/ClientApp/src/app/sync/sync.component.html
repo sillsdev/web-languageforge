@@ -21,8 +21,8 @@
         (click)="syncProject()"
         [disabled]="syncJobActive"
       >
-        <mdc-icon>autorenew</mdc-icon>
-        Send/Receive {{ projectName }}
+        <mdc-icon>sync</mdc-icon>
+        Synchronize
       </button>
       <mdc-linear-progress
         *ngIf="syncJobActive"

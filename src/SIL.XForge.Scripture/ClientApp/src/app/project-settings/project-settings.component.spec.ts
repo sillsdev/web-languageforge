@@ -18,7 +18,7 @@ import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-pro
 import { ProjectSettingsComponent } from './project-settings.component';
 
 export class StubQueryResults<T> implements QueryResults<T> {
-  constructor(public readonly results: T, public readonly totalPagedCount?: number) {}
+  constructor(public readonly data: T, public readonly totalPagedCount?: number) {}
 
   getIncluded<TInclude extends Resource>(_identity: RecordIdentity): TInclude {
     return null;

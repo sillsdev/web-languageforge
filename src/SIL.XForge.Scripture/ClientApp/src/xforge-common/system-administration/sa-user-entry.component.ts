@@ -194,16 +194,16 @@ export class SaUserEntryComponent implements OnInit {
     this.userService.onlineGet(userId).subscribe(response => {
       if (response != null) {
         this.accountUserForm.patchValue({
-          fullName: response.results.name,
-          username: response.results.username,
-          email: response.results.email,
-          role: response.results.role,
-          activateStatus: response.results.active
+          fullName: response.data.name,
+          username: response.data.username,
+          email: response.data.email,
+          role: response.data.role,
+          activateStatus: response.data.active
         });
-        this.userLastLoginDate = this.datePipe.transform(response.results.dateModified, 'dd MMMM yyyy');
-        this.userCreatedDate = this.datePipe.transform(response.results.dateCreated, 'dd MMMM yyyy');
-        this.activateStatus.setValue(response.results.active);
-        this.onChange({ checked: response.results.active });
+        this.userLastLoginDate = this.datePipe.transform(response.data.dateModified, 'dd MMMM yyyy');
+        this.userCreatedDate = this.datePipe.transform(response.data.dateCreated, 'dd MMMM yyyy');
+        this.activateStatus.setValue(response.data.active);
+        this.onChange({ checked: response.data.active });
       }
     });
   }

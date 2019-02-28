@@ -97,9 +97,17 @@ export class TextComponent implements OnDestroy {
   }
   @Input()
   set textId(value: string) {
-    this._textId = value;
-    if (this.editor != null) {
-      this.bindQuill();
+    if (this._textId !== value) {
+      this._textId = value;
+      this._segment = undefined;
+      this.initialSegmentRef = undefined;
+      this.initialSegmentChecksum = undefined;
+      this.initialSegmentFocus = undefined;
+      this.initialSegmentUpdate = false;
+      if (this.editor != null) {
+        this.segmenter.reset();
+        this.bindQuill();
+      }
     }
   }
 
@@ -133,7 +141,7 @@ export class TextComponent implements OnDestroy {
   @Input()
   set segmentRef(value: string) {
     if (value !== this.segmentRef) {
-      this.switchSegment(value);
+      this.changeSegment(value);
     }
   }
 
@@ -188,7 +196,7 @@ export class TextComponent implements OnDestroy {
     return this.editor.focus();
   }
 
-  switchSegment(segmentRef: string, checksum?: number, focus: boolean = false): boolean {
+  changeSegment(segmentRef: string, checksum?: number, focus: boolean = false): boolean {
     if (!this.initialSegmentUpdate) {
       this.initialSegmentRef = segmentRef;
       this.initialSegmentChecksum = checksum;
@@ -245,8 +253,6 @@ export class TextComponent implements OnDestroy {
     if (this._textId == null || this._editor == null) {
       return;
     }
-    this.segmenter.reset();
-    this.initialSegmentUpdate = false;
     // remove placeholder text while the document is opening
     const editorElem = this._editor.container.getElementsByClassName('ql-editor')[0];
     const placeholderText = editorElem.getAttribute('data-placeholder');
@@ -318,7 +324,7 @@ export class TextComponent implements OnDestroy {
     const prevSegment = this._segment;
     if (segmentRef != null) {
       // update/switch current segment
-      if (!this.switchSegment(segmentRef, checksum, focus)) {
+      if (!this.changeSegment(segmentRef, checksum, focus)) {
         if (this.highlightSegment) {
           this.toggleHighlight(this._segment.range, false);
         }

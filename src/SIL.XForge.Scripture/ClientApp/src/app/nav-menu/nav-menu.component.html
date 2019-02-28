@@ -1,33 +1,98 @@
-<mdc-drawer [drawer]="drawerType" *ngIf="(isLoggedIn | async)" [open]="isExpanded">
-  <mdc-drawer-header title="Main Menu"></mdc-drawer-header>
+<mdc-drawer id="menu-drawer" [drawer]="drawerType" *ngIf="selectedProject != null" [open]="isExpanded">
   <mdc-drawer-content>
-    <a
-      mdc-list-item
-      routerLink="/home"
-      [routerLinkActive]="['mdc-list-item--activated']"
-      [routerLinkActiveOptions]="{ exact: true }"
-      (click)="collapseDrawer()"
-    >
-      <mdc-icon mdcListItemGraphic>home</mdc-icon>
-      Home
-    </a>
-    <a
-      mdc-list-item
-      routerLink="/connect-project"
-      [routerLinkActive]="['mdc-list-item--activated']"
-      (click)="collapseDrawer()"
-    >
-      <mdc-icon mdcListItemGraphic>device_hub</mdc-icon>
-      Connect Project
-    </a>
-    <a
-      mdc-list-item
-      routerLink="/projects"
-      [routerLinkActive]="['mdc-list-item--activated']"
-      (click)="collapseDrawer()"
-    >
-      <mdc-icon mdcListItemGraphic>dashboard</mdc-icon>
-      Projects
-    </a>
+    <mdc-select class="project-select" (valueChange)="projectChanged($event.value)">
+      <mdc-menu>
+        <mdc-list>
+          <mdc-list-item *ngFor="let project of projects" [value]="project.id">{{ project.projectName }}</mdc-list-item>
+          <mdc-list-divider></mdc-list-divider>
+          <mdc-list-item value="">
+            <mdc-icon mdcListItemGraphic>add</mdc-icon>
+            Connect project
+          </mdc-list-item>
+        </mdc-list>
+      </mdc-menu>
+    </mdc-select>
+    <mdc-list id="menu-list">
+      <mdc-list-item
+        *ngIf="selectedProject.translateConfig.enabled"
+        (selectionChange)="translateVisible = !translateVisible"
+      >
+        <mdc-icon mdcListItemGraphic>translate</mdc-icon>
+        Translate
+        <mdc-icon mdcListItemMeta>keyboard_arrow_{{ translateVisible ? "down" : "right" }}</mdc-icon>
+      </mdc-list-item>
+      <div *ngIf="translateVisible">
+        <mdc-list-item
+          [routerLink]="['/projects', selectedProject.id, 'translate']"
+          [activated]="rlaTranslateOverview.isActive"
+          routerLinkActive
+          [routerLinkActiveOptions]="{ exact: true }"
+          #rlaTranslateOverview="routerLinkActive"
+        >
+          <mdc-icon mdcListItemGraphic>apps</mdc-icon>
+          Overview
+        </mdc-list-item>
+        <mdc-list-item
+          *ngFor="let text of texts"
+          [routerLink]="['/projects', selectedProject.id, 'translate', text.id]"
+          [activated]="rla.isActive"
+          routerLinkActive
+          #rla="routerLinkActive"
+        >
+          <mdc-icon mdcListItemGraphic>book</mdc-icon>
+          {{ text.name }}
+        </mdc-list-item>
+      </div>
+      <mdc-list-divider *ngIf="selectedProject.translateConfig.enabled"></mdc-list-divider>
+      <mdc-list-item
+        *ngIf="selectedProject.checkingConfig.enabled"
+        (selectionChange)="checkingVisible = !checkingVisible"
+      >
+        <mdc-icon mdcListItemGraphic>question_answer</mdc-icon>
+        Community Checking
+        <mdc-icon mdcListItemMeta>keyboard_arrow_{{ checkingVisible ? "down" : "right" }}</mdc-icon>
+      </mdc-list-item>
+      <div *ngIf="checkingVisible">
+        <mdc-list-item
+          [routerLink]="['/projects', selectedProject.id, 'checking']"
+          [activated]="rlaCheckingOverview.isActive"
+          routerLinkActive
+          [routerLinkActiveOptions]="{ exact: true }"
+          #rlaCheckingOverview="routerLinkActive"
+        >
+          <mdc-icon mdcListItemGraphic>apps</mdc-icon>
+          Overview
+        </mdc-list-item>
+        <mdc-list-item
+          *ngFor="let text of texts"
+          [routerLink]="['/projects', selectedProject.id, 'checking', text.id]"
+          [activated]="rla.isActive"
+          routerLinkActive
+          #rla="routerLinkActive"
+        >
+          <mdc-icon mdcListItemGraphic>book</mdc-icon>
+          {{ text.name }}
+        </mdc-list-item>
+      </div>
+      <mdc-list-divider *ngIf="selectedProject.checkingConfig.enabled"></mdc-list-divider>
+      <mdc-list-item
+        [routerLink]="['/projects', selectedProject.id, 'sync']"
+        [activated]="rlaSync.isActive"
+        routerLinkActive
+        #rlaSync="routerLinkActive"
+      >
+        <mdc-icon mdcListItemGraphic>sync</mdc-icon>
+        Synchronize
+      </mdc-list-item>
+      <mdc-list-item
+        [routerLink]="['/projects', selectedProject.id, 'settings']"
+        [activated]="rlaSettings.isActive"
+        routerLinkActive
+        #rlaSettings="routerLinkActive"
+      >
+        <mdc-icon mdcListItemGraphic>settings</mdc-icon>
+        Settings
+      </mdc-list-item>
+    </mdc-list>
   </mdc-drawer-content>
 </mdc-drawer>

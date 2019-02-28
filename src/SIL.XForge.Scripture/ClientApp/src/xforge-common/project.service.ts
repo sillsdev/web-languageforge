@@ -33,11 +33,11 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
     this.roles.set(NONE_ROLE.role, NONE_ROLE);
   }
 
-  getAll(parameters?: GetAllParameters<T>, include?: string[]): QueryObservable<T[]> {
+  getAll(parameters?: GetAllParameters<T>, include?: string[][]): QueryObservable<T[]> {
     return this.jsonApiService.getAll(this.type, parameters, include);
   }
 
-  get(id: string, include?: string[]): QueryObservable<T> {
+  get(id: string, include?: string[][]): QueryObservable<T> {
     return this.jsonApiService.get<T>(this.identity(id), include);
   }
 

@@ -12,11 +12,11 @@ export class QuestionService extends ResourceService {
     super(Question.TYPE, jsonApiService);
   }
 
-  getAll(parameters?: GetAllParameters, include?: string[]): QueryObservable<Question[]> {
+  getAll(parameters?: GetAllParameters, include?: string[][]): QueryObservable<Question[]> {
     return this.jsonApiService.getAll(this.type, parameters, include);
   }
 
-  get(id: string, include?: string[]): QueryObservable<Question> {
+  get(id: string, include?: string[][]): QueryObservable<Question> {
     return this.jsonApiService.get(this.identity(id), include);
   }
 

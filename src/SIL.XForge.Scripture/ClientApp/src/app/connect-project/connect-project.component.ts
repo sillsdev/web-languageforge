@@ -130,12 +130,12 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
             const translationEngine = this.projectService.createTranslationEngine(newProject.id);
             await translationEngine.startTraining();
           }
-          this.router.navigate(['/home']);
+          this.router.navigate(['/projects', newProject.id]);
         }
       });
     } else {
       await this.projectUserService.onlineCreate(values.project.projectId, this.userService.currentUserId);
-      this.router.navigate(['/home']);
+      this.router.navigate(['/projects', values.project.projectId]);
     }
   }
 

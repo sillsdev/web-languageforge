@@ -56,7 +56,7 @@ describe('ConnectProjectComponent', () => {
 
     verify(env.mockedSFProjectService.onlineCreate(anything())).never();
     verify(env.mockedSFProjectUserService.onlineCreate(anything(), anything())).never();
-    verify(env.mockedRouter.navigate(deepEqual(['/home']))).never();
+    verify(env.mockedRouter.navigate(anything())).never();
     expect().nothing();
   }));
 
@@ -100,7 +100,7 @@ describe('ConnectProjectComponent', () => {
 
     verify(env.mockedSFProjectUserService.onlineCreate('project01', 'user01')).once();
 
-    verify(env.mockedRouter.navigate(deepEqual(['/home']))).once();
+    verify(env.mockedRouter.navigate(deepEqual(['/projects', 'project01']))).once();
   }));
 
   it('should create when non-existent project is selected', fakeAsync(() => {
@@ -163,7 +163,7 @@ describe('ConnectProjectComponent', () => {
 
     verify(env.mockedSFProjectUserService.onlineCreate('project01', 'user01')).once();
 
-    verify(env.mockedRouter.navigate(deepEqual(['/home']))).once();
+    verify(env.mockedRouter.navigate(deepEqual(['/projects', 'project01']))).once();
   }));
 });
 

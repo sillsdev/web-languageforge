@@ -1,3 +1,3 @@
 export interface Site {
-  currentProjectId: String;
+  currentProjectId: string;
 }

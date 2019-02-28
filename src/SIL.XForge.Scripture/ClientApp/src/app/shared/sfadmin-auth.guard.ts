@@ -14,7 +14,7 @@ export class SFAdminAuthGuard implements CanActivate {
   constructor(private readonly authGuard: AuthGuard, private readonly userService: UserService) {}
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    const projectId = 'id' in next.params ? next.params['id'] : '';
+    const projectId = 'projectId' in next.params ? next.params['projectId'] : '';
     return this.authGuard.canActivate(next, state).pipe(switchMap(() => this.allowTransition(projectId)));
   }
 
