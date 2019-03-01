@@ -4,30 +4,16 @@ import { DebugElement, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RecordIdentity } from '@orbit/data';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { AuthService } from 'xforge-common/auth.service';
-import { QueryResults } from 'xforge-common/json-api.service';
-import { Resource } from 'xforge-common/models/resource';
 import { UICommonModule } from 'xforge-common/ui-common.module';
+import { UserService } from 'xforge-common/user.service';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
 import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-project-dialog.component';
 import { ProjectSettingsComponent } from './project-settings.component';
-
-export class StubQueryResults<T> implements QueryResults<T> {
-  constructor(public readonly data: T, public readonly totalPagedCount?: number) {}
-
-  getIncluded<TInclude extends Resource>(_identity: RecordIdentity): TInclude {
-    return null;
-  }
-
-  getManyIncluded<TInclude extends Resource>(_identities: RecordIdentity[]): TInclude[] {
-    return null;
-  }
-}
 
 describe('ProjectSettingsComponent', () => {
   let env: TestEnvironment;
@@ -105,6 +91,7 @@ describe('ProjectSettingsComponent', () => {
       env.clickElement(env.deleteProjectButton);
       expect(env.deleteDialog).toBeDefined();
       env.confirmDialog(true);
+      verify(env.mockedUserService.updateCurrentProjectId()).once();
       verify(env.mockedSFProjectService.onlineDelete(anything())).once();
     }));
 
@@ -112,6 +99,7 @@ describe('ProjectSettingsComponent', () => {
       env.clickElement(env.deleteProjectButton);
       expect(env.deleteDialog).toBeDefined();
       env.confirmDialog(false);
+      verify(env.mockedUserService.updateCurrentProjectId()).never();
       verify(env.mockedSFProjectService.onlineDelete(anything())).never();
     }));
   });
@@ -131,36 +119,35 @@ class TestEnvironment {
   fixture: ComponentFixture<ProjectSettingsComponent>;
   overlayContainer: OverlayContainer;
   mockedSFProjectService: SFProjectService;
-  mockedRouter: Router;
   mockedActivatedRoute: ActivatedRoute;
   mockedAuthService: AuthService;
+  mockedUserService: UserService;
+
   constructor() {
     this.mockedSFProjectService = mock(SFProjectService);
     this.mockedActivatedRoute = mock(ActivatedRoute);
-    this.mockedRouter = mock(Router);
     this.mockedAuthService = mock(AuthService);
+    this.mockedUserService = mock(UserService);
     when(this.mockedActivatedRoute.params).thenReturn(of({}));
     when(this.mockedSFProjectService.onlineGet(anything())).thenReturn(
       of(
-        new StubQueryResults(
-          new TestProject({
-            checkingConfig: { enabled: false },
-            translateConfig: { enabled: true }
-          })
-        )
+        new TestProject({
+          checkingConfig: { enabled: false },
+          translateConfig: { enabled: true }
+        })
       )
     );
     when(this.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).thenCall(() => Promise.resolve());
     when(this.mockedSFProjectService.onlineDelete(anything())).thenResolve();
-    when(this.mockedRouter.navigateByUrl(anything())).thenResolve(true);
+    when(this.mockedUserService.updateCurrentProjectId(anything())).thenResolve();
     TestBed.configureTestingModule({
       imports: [DialogTestModule, HttpClientTestingModule, UICommonModule],
       declarations: [ProjectSettingsComponent],
       providers: [
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
-        { provide: Router, useFactory: () => instance(this.mockedRouter) },
         { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
-        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
+        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
+        { provide: UserService, useFactory: () => instance(this.mockedUserService) }
       ],
       // The RouterTestingModule is needed to test routerLink in the html, but this is causing an
       // error with RouterLinkWithHref, so this allows us to skip using the RouterTestingModule.
@@ -225,6 +212,7 @@ class TestEnvironment {
     this.fixture.detectChanges();
     tick();
     this.clickElement(button);
+    tick();
   }
 
   clickElement(element: HTMLElement | DebugElement): void {

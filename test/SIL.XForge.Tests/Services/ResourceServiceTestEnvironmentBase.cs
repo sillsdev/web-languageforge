@@ -22,7 +22,9 @@ namespace SIL.XForge.Services
         where TEntity : Entity, new()
     {
         public const string SiteAuthority = "xf.localhost:5000";
-        public static readonly string SharedDir = Path.Combine(Path.GetTempPath(), "ResourceServiceTests");
+        public static readonly string TempDir = Path.Combine(Path.GetTempPath(), "ResourceServiceTests");
+        public static readonly string SiteDir = Path.Combine(TempDir, "site");
+        public static readonly string SharedDir = Path.Combine(TempDir, "shared");
 
         private readonly string _resourceName;
 
@@ -52,11 +54,12 @@ namespace SIL.XForge.Services
             UserAccessor = Substitute.For<IUserAccessor>();
             UserAccessor.IsAuthenticated.Returns(false);
 
-            Options = Substitute.For<IOptions<SiteOptions>>();
-            Options.Value.Returns(new SiteOptions
+            SiteOptions = Substitute.For<IOptions<SiteOptions>>();
+            SiteOptions.Value.Returns(new SiteOptions
             {
                 Name = "xForge",
                 Origin = new Uri("http://" + SiteAuthority),
+                SiteDir = SiteDir,
                 SharedDir = SharedDir
             });
         }
@@ -66,7 +69,7 @@ namespace SIL.XForge.Services
         public IUserAccessor UserAccessor { get; }
         public MemoryRepository<TEntity> Entities { get; }
         public IMapper Mapper { get; }
-        public IOptions<SiteOptions> Options { get; }
+        public IOptions<SiteOptions> SiteOptions { get; }
 
         public void SetUser(string userId, string role)
         {
@@ -85,6 +88,13 @@ namespace SIL.XForge.Services
         {
             ContextEntity resourceType = ResourceGraph.GetContextEntity(_resourceName);
             return resourceType.Relationships.First(r => r.PublicRelationshipName == name);
+        }
+
+        public void CreateSiteDir()
+        {
+            if (Directory.Exists(SiteDir))
+                Directory.Delete(SiteDir, true);
+            Directory.CreateDirectory(SiteDir);
         }
 
         public void CreateSharedDir()
@@ -114,8 +124,8 @@ namespace SIL.XForge.Services
 
         protected override void DisposeManagedResources()
         {
-            if (Directory.Exists(SharedDir))
-                Directory.Delete(SharedDir, true);
+            if (Directory.Exists(TempDir))
+                Directory.Delete(TempDir, true);
         }
     }
 }

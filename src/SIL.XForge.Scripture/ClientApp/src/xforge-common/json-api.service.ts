@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import Coordinator, { LogTruncationStrategy } from '@orbit/coordinator';
 import {
   AddRecordOperation,
@@ -21,6 +21,7 @@ import {
   QueryTerm,
   Record,
   RecordIdentity,
+  RecordOperation,
   RecordRelationship,
   RelatedRecordFilterSpecifier,
   RemoveFromRelatedRecordsOperation,
@@ -40,8 +41,8 @@ import IndexedDBBucket from '@orbit/indexeddb-bucket';
 import { PatchResultData } from '@orbit/store';
 import { clone, dasherize, deepGet, Dict, eq, extend } from '@orbit/utils';
 import { ObjectId } from 'bson';
-import { BehaviorSubject, ConnectableObservable, from, Observable } from 'rxjs';
-import { finalize, map, publishReplay } from 'rxjs/operators';
+import { BehaviorSubject, ConnectableObservable, from, fromEvent, Observable, of, throwError } from 'rxjs';
+import { catchError, filter, finalize, map, publishReplay } from 'rxjs/operators';
 
 import { CustomFilterSpecifier, isCustomFilterRegistered } from './custom-filter-specifier';
 import { IndexedPageSpecifier } from './indexed-page-specifier';
@@ -58,6 +59,7 @@ import { RemoteStoreSyncStrategy } from './strategies/remote-store-sync-strategy
 import { StoreBackupSyncStrategy } from './strategies/store-backup-sync-strategy';
 import { StoreRemoteQueryStrategy } from './strategies/store-remote-query-strategy';
 import { StoreRemoteUpdateStrategy } from './strategies/store-remote-update-strategy';
+import { isNotFoundError } from './utils';
 
 /**
  * This interface represents query results from the {@link JSONAPIService}.
@@ -168,8 +170,8 @@ export class MapQueryResults<T> implements QueryResults<T> {
  * JSON-API server or performed locally.
  *
  * Pessimistic operations are used for online-only views. Pessimistic queries return an observable that returns the
- * results from the JSON-API server. Resources returned from pessimistic operations are not cached or persisted.
- * Pessimistic methods are prefixed with "online".
+ * results from the JSON-API server. Resources returned from pessimistic operations are not cached or persisted unless
+ * specifically told to do so. Pessimistic methods are prefixed with "online".
  */
 @Injectable({
   providedIn: 'root'
@@ -194,7 +196,8 @@ export class JsonApiService {
     private readonly http: HttpClient,
     private readonly domainModel: DomainModel,
     private readonly locationService: LocationService,
-    private readonly jsonRpcService: JsonRpcService
+    private readonly jsonRpcService: JsonRpcService,
+    private readonly ngZone: NgZone
   ) {}
 
   /**
@@ -382,26 +385,15 @@ export class JsonApiService {
   }
 
   /**
-   * Completely replaces an existing resource optimistically.
-   *
-   * @param {Resource} resource The new resource.
-   * @returns {Promise<T>} Resolves when the resource is replaced locally. Returns the new resource.
-   */
-  async replace<T extends Resource>(resource: T): Promise<T> {
-    const record = this.createRecord(resource);
-    await this.store.update(t => t.replaceRecord(record));
-    return resource;
-  }
-
-  /**
    * Updates an existing resource optimistically. This method only updates the attributes and relationships that have
    * changed.
    *
    * @param {Resource} resource The resource to update.
    * @returns {Promise<T>} Resolves when the resource is updated locally. Returns the updated resource.
    */
-  update<T extends Resource>(resource: T): Promise<T> {
-    return this.storeUpdate(resource, false);
+  async update<T extends Resource>(resource: T): Promise<T> {
+    await this.storeUpdate(this.createRecord(resource), false);
+    return resource;
   }
 
   /**
@@ -533,24 +525,16 @@ export class JsonApiService {
    * Creates a new resource pessimistically.
    *
    * @param {Resource} resource The new resource.
+   * @param {boolean} [persist=false] If true, persists the new resource locally.
    * @returns {Promise<T>} Resolves when the resource is created remotely. Returns the new resource's ID.
    */
-  async onlineCreate<T extends Resource>(resource: T): Promise<T> {
+  async onlineCreate<T extends Resource>(resource: T, persist: boolean = false): Promise<T> {
     let record = this.createRecord(resource);
     this.schema.initializeRecord(record);
     record = await this.onlineStore.update(t => t.addRecord(record));
-    return this.createResource(record) as T;
-  }
-
-  /**
-   * Completely replaces an existing resource pessimistically.
-   *
-   * @param {Resource} resource The new resource.
-   * @returns {Promise<T>} Resolves when the resource is replaced remotely.
-   */
-  async onlineReplace<T extends Resource>(resource: T): Promise<T> {
-    let record = this.createRecord(resource);
-    record = await this.onlineStore.update(t => t.replaceRecord(record));
+    if (persist) {
+      await this.store.update(t => t.addRecord(record), { localOnly: true });
+    }
     return this.createResource(record) as T;
   }
 
@@ -559,9 +543,14 @@ export class JsonApiService {
    *
    * @param {RecordIdentity} identity The resource identity.
    * @param {Partial<T>} attrs The attribute values to update.
+   * @param {boolean} [persist=false] If true, persists the updated attributes locally.
    * @returns {Promise<T>} Resolves when the resource is updated remotely.
    */
-  async onlineUpdateAttributes<T extends Resource>(identity: RecordIdentity, attrs: Partial<T>): Promise<T> {
+  async onlineUpdateAttributes<T extends Resource>(
+    identity: RecordIdentity,
+    attrs: Partial<T>,
+    persist: boolean = false
+  ): Promise<T> {
     const record = await this.onlineStore.update(t => {
       const ops: Operation[] = [];
       for (const [name, value] of Object.entries(attrs)) {
@@ -569,17 +558,21 @@ export class JsonApiService {
       }
       return ops;
     });
+    if (persist) {
+      await this.storeUpdate(record, true);
+    }
     return this.createResource(record) as T;
   }
 
   /**
-   * Deletes a resource pessimistically.
+   * Deletes a resource pessimistically. The resource is deleted locally as well.
    *
    * @param {RecordIdentity} identity The resource identity.
    * @returns {Promise<void>} Resolves when the resource is deleted remotely.
    */
-  onlineDelete(identity: RecordIdentity): Promise<void> {
-    return this.onlineStore.update(t => t.removeRecord(identity));
+  async onlineDelete(identity: RecordIdentity): Promise<void> {
+    await this.onlineStore.update(t => t.removeRecord(identity));
+    await this.store.update(t => t.removeRecord(identity), { localOnly: true });
   }
 
   /**
@@ -591,10 +584,19 @@ export class JsonApiService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {RecordIdentity[]} related The new related resource identities.
+   * @param {boolean} [persist=false] If true, persists the updated relationship locally.
    * @returns {Promise<void>} Resolves when the resources are replaced remotely.
    */
-  onlineReplaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[]): Promise<void> {
-    return this.onlineStore.update(t => t.replaceRelatedRecords(identity, relationship, related));
+  async onlineReplaceAllRelated(
+    identity: RecordIdentity,
+    relationship: string,
+    related: RecordIdentity[],
+    persist: boolean = false
+  ): Promise<void> {
+    await this.onlineStore.update(t => t.replaceRelatedRecords(identity, relationship, related));
+    if (persist) {
+      await this.store.update(t => t.replaceRelatedRecords(identity, relationship, related), { localOnly: true });
+    }
   }
 
   /**
@@ -606,10 +608,19 @@ export class JsonApiService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {RecordIdentity} related The new related resource identity.
+   * @param {boolean} [persist=false] If true, persists the updated relationship locally.
    * @returns {Promise<void>} Resolves when the resource is set remotely.
    */
-  onlineSetRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity | null): Promise<void> {
-    return this.onlineStore.update(t => t.replaceRelatedRecord(identity, relationship, related));
+  async onlineSetRelated(
+    identity: RecordIdentity,
+    relationship: string,
+    related: RecordIdentity | null,
+    persist: boolean = false
+  ): Promise<void> {
+    await this.onlineStore.update(t => t.replaceRelatedRecord(identity, relationship, related));
+    if (persist) {
+      await this.store.update(t => t.replaceRelatedRecord(identity, relationship, related), { localOnly: true });
+    }
   }
 
   /**
@@ -667,17 +678,6 @@ export class JsonApiService {
   }
 
   /**
-   * Updates an existing resource in the local cache. This method only updates the attributes and relationships that
-   * have changed.
-   *
-   * @param {Resource} resource The resource to update.
-   * @returns {Promise<T>} Returns the updated resource.
-   */
-  localUpdate<T extends Resource>(resource: T): Promise<T> {
-    return this.storeUpdate(resource, true);
-  }
-
-  /**
    * Updates the attributes of an existing resource in the local cache.
    *
    * @param {RecordIdentity} identity The resource identity.
@@ -709,6 +709,15 @@ export class JsonApiService {
     return this.jsonRpcService.invoke<T>(`${resourceUrl}/commands`, method, params);
   }
 
+  resourceDeleted(type: string): Observable<string> {
+    return fromEvent<[RecordOperation, PatchResultData]>(this.store.cache, 'patch').pipe(
+      filter(
+        ([operation]) => operation.op === 'removeRecord' && (operation as RemoveRecordOperation).record.type === type
+      ),
+      map(([operation]) => (operation as RemoveRecordOperation).record.id)
+    );
+  }
+
   private storeQuery(
     localQueryExpression: QueryOrExpression,
     remoteQueryExpression: QueryOrExpression,
@@ -722,9 +731,11 @@ export class JsonApiService {
 
     // listen for any changes resulting from the remote query
     const handler = (transform: Transform, results: PatchResultData[]) => {
-      if (this.isChangeApplicable(remoteQuery, transform, results, include)) {
-        changes$.next(this.getQueryResults(localQuery));
-      }
+      this.ngZone.run(() => {
+        if (this.isChangeApplicable(remoteQuery, transform, results, include)) {
+          changes$.next(this.getQueryResults(localQuery));
+        }
+      });
     };
     this.store.on('transform_completed', handler);
 
@@ -746,7 +757,10 @@ export class JsonApiService {
   private onlineStoreQuery(queryExpression: QueryOrExpression, include: string[][]): QueryObservable<any> {
     const query = buildQuery(queryExpression, this.getOptions(include), undefined, this.store.queryBuilder);
 
-    return from(this.onlineStore.query(query)).pipe(map(r => this.getOnlineQueryResults(query, r)));
+    return from(this.onlineStore.query(query)).pipe(
+      catchError(err => (isNotFoundError(err) ? of(null) : throwError(err))),
+      map(r => this.getOnlineQueryResults(query, r))
+    );
   }
 
   private getQueryResults(localQuery: Query): QueryResults<any> {
@@ -1042,32 +1056,30 @@ export class JsonApiService {
     return { type: ref.type, id: ref.id };
   }
 
-  private async storeUpdate<T extends Resource>(resource: T, localOnly: boolean): Promise<T> {
-    const updatedRecord = this.createRecord(resource);
-    const record = this.store.cache.query(q => q.findRecord(resource)) as Record;
-    await this.store.update(
+  private async storeUpdate(updatedRecord: Record, localOnly: boolean): Promise<void> {
+    const cachedRecord = this.store.cache.query(q => q.findRecord(updatedRecord)) as Record;
+    return this.store.update(
       t => {
         const ops: Operation[] = [];
 
-        const updatedAttrs = this.getUpdatedProps(record.attributes, updatedRecord.attributes);
+        const updatedAttrs = this.getUpdatedProps(cachedRecord.attributes, updatedRecord.attributes);
         for (const attrName of updatedAttrs) {
-          ops.push(t.replaceAttribute(record, attrName, updatedRecord.attributes[attrName]));
+          ops.push(t.replaceAttribute(cachedRecord, attrName, updatedRecord.attributes[attrName]));
         }
 
-        const updatedRels = this.getUpdatedProps(record.relationships, updatedRecord.relationships);
+        const updatedRels = this.getUpdatedProps(cachedRecord.relationships, updatedRecord.relationships);
         for (const relName of updatedRels) {
           const relData = updatedRecord.relationships[relName].data;
           if (relData instanceof Array) {
-            ops.push(t.replaceRelatedRecords(record, relName, relData));
+            ops.push(t.replaceRelatedRecords(cachedRecord, relName, relData));
           } else {
-            ops.push(t.replaceRelatedRecord(record, relName, relData));
+            ops.push(t.replaceRelatedRecord(cachedRecord, relName, relData));
           }
         }
         return ops;
       },
       { localOnly }
     );
-    return resource;
   }
 
   private async storeUpdateAttributes<T extends Resource>(

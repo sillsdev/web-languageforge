@@ -76,20 +76,18 @@ export class UserService extends ResourceService {
     return this.jsonApiService.getAllRelated(this.identity(id), nameof<User>('projects'), include);
   }
 
-  updateCurrentUserAttributes(attrs: Partial<User>): Promise<User> {
-    return this.jsonApiService.updateAttributes(this.identity(this.currentUserId), attrs);
+  async updateCurrentProjectId(projectId: string = null): Promise<User> {
+    return this.jsonApiService.updateAttributes<User>(this.identity(this.currentUserId), {
+      site: { currentProjectId: projectId }
+    });
   }
 
   /**
    * Update the current user's attributes remotely and then locally.
    * Pass a Partial<User> specifying the attributes to update.
    */
-  async onlineUpdateCurrentUserAttributes(attrs: Partial<User>): Promise<User> {
-    const updatedUser = await this.jsonApiService.onlineUpdateAttributes<User>(
-      this.identity(this.currentUserId),
-      attrs
-    );
-    return await this.jsonApiService.localUpdate(updatedUser);
+  onlineUpdateCurrentUserAttributes(attrs: Partial<User>): Promise<User> {
+    return this.jsonApiService.onlineUpdateAttributes<User>(this.identity(this.currentUserId), attrs, true);
   }
 
   async onlineChangePassword(newPassword: string): Promise<void> {

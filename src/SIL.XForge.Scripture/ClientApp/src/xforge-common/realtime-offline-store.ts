@@ -5,6 +5,9 @@ export interface RealtimeOfflineData {
   pendingOps: any[];
 }
 
+/**
+ * This class is an abstraction for the local database, i.e LocalForage/IndexedDB. This allows for easier unit testing.
+ */
 export class RealtimeOfflineStore {
   constructor(private readonly store: LocalForage) {}
 
@@ -14,5 +17,9 @@ export class RealtimeOfflineStore {
 
   setItem(id: string, offlineData: RealtimeOfflineData): Promise<RealtimeOfflineData> {
     return this.store.setItem(id, offlineData);
+  }
+
+  delete(id: string): Promise<void> {
+    return this.store.removeItem(id);
   }
 }

@@ -1,9 +1,12 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Services;
+using Microsoft.Extensions.Options;
 using SIL.Machine.WebApi.Services;
+using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Scripture.Models;
 using SIL.XForge.Services;
@@ -13,17 +16,19 @@ namespace SIL.XForge.Scripture.Services
     public class SFProjectService : ProjectService<SFProjectResource, SFProjectEntity>
     {
         private readonly IEngineService _engineService;
+        private readonly IOptions<SiteOptions> _siteOptions;
 
         public SFProjectService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
-            IRepository<SFProjectEntity> projects, IEngineService engineService)
+            IRepository<SFProjectEntity> projects, IEngineService engineService, IOptions<SiteOptions> siteOptions)
             : base(jsonApiContext, mapper, userAccessor, projects)
         {
             _engineService = engineService;
+            _siteOptions = siteOptions;
         }
 
-        public IResourceMapper<SyncJobResource, SyncJobEntity> SyncJobMapper { get; set; }
-        public IResourceMapper<TextResource, TextEntity> TextMapper { get; set; }
-        public IResourceMapper<QuestionResource, QuestionEntity> QuestionMapper { get; set; }
+        public IProjectDataMapper<SyncJobResource, SyncJobEntity> SyncJobMapper { get; set; }
+        public IProjectDataMapper<TextResource, TextEntity> TextMapper { get; set; }
+        public IProjectDataMapper<QuestionResource, QuestionEntity> QuestionMapper { get; set; }
 
         protected override IRelationship<SFProjectEntity> GetRelationship(string relationshipName)
         {
@@ -51,6 +56,22 @@ namespace SIL.XForge.Scripture.Services
                     entity.InputSystem.Tag, null, null, false);
             }
             return entity;
+        }
+
+        protected override async Task<bool> DeleteEntityAsync(string id)
+        {
+            bool result = await base.DeleteEntityAsync(id);
+            if (result)
+            {
+                await SyncJobMapper.DeleteAllAsync(id);
+                await TextMapper.DeleteAllAsync(id);
+                await QuestionMapper.DeleteAllAsync(id);
+                await _engineService.RemoveProjectAsync(id);
+                string syncDir = Path.Combine(_siteOptions.Value.SiteDir, "sync", id);
+                if (Directory.Exists(syncDir))
+                    Directory.Delete(syncDir, true);
+            }
+            return result;
         }
     }
 }

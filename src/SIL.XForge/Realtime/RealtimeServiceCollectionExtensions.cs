@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.LaunchWithDebugging = launchWithDebugging;
                 options.WatchFileExtensions = new string[0];
             });
-            services.AddSingleton<RealtimeServer>();
+            services.AddSingleton<IRealtimeService, RealtimeService>();
             return services;
         }
     }

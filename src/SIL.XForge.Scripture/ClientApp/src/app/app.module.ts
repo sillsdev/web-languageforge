@@ -18,6 +18,7 @@ import { ChangingUsernameDialogComponent } from './my-account/changing-username-
 import { DeleteAccountDialogComponent } from './my-account/delete-account-dialog/delete-account-dialog.component';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { ProjectDeletedDialogComponent } from './nav-menu/project-deleted-dialog/project-deleted-dialog.component';
 import { DeleteProjectDialogComponent } from './project-settings/delete-project-dialog/delete-project-dialog.component';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ProjectComponent } from './project/project.component';
@@ -38,7 +39,8 @@ import { TranslateModule } from './translate/translate.module';
     ProjectSettingsComponent,
     ProjectComponent,
     SyncComponent,
-    StartComponent
+    StartComponent,
+    ProjectDeletedDialogComponent
   ],
   imports: [
     AppRoutingModule,
@@ -60,6 +62,7 @@ import { TranslateModule } from './translate/translate.module';
     ChangingUsernameDialogComponent,
     DeleteAccountDialogComponent,
     DeleteProjectDialogComponent,
+    ProjectDeletedDialogComponent,
     ...xForgeCommonEntryComponents
   ],
   bootstrap: [AppComponent]

@@ -1,7 +1,7 @@
 import { Record } from '@orbit/data';
 import { clone } from '@orbit/utils';
 import { combineLatest, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
 import { registerCustomFilter } from './custom-filter-specifier';
 import { GetAllParameters, JsonApiService, QueryObservable } from './json-api.service';
@@ -74,8 +74,8 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
     return this.jsonApiService.onlineInvoke(this.type, 'invite', { email });
   }
 
-  onlineGet(id: string): QueryObservable<T> {
-    return this.jsonApiService.onlineGet(this.identity(id));
+  onlineGet(id: string): Observable<T> {
+    return this.jsonApiService.onlineGet<T>(this.identity(id)).pipe(map(r => r.data));
   }
 
   onlineDelete(id: string): Promise<void> {

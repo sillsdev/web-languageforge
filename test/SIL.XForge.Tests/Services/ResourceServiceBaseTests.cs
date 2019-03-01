@@ -248,15 +248,16 @@ namespace SIL.XForge.Services
         }
 
         [Test]
-        public async Task GetAsync_WithIdNotFound()
+        public void GetAsync_WithIdNotFound()
         {
             using (var env = new TestEnvironment())
             {
                 Assert.That(env.Entities.Contains("testbad"), Is.False);
 
-                TestResource resource = await env.Service.GetAsync("testbad");
-
-                Assert.That(resource, Is.Null);
+                Assert.ThrowsAsync<JsonApiException>(async () =>
+                {
+                    await env.Service.GetAsync("testbad");
+                });
             }
         }
 
@@ -321,15 +322,16 @@ namespace SIL.XForge.Services
         }
 
         [Test]
-        public async Task GetRelationshipAsync_NotFound()
+        public void GetRelationshipAsync_NotFound()
         {
             using (var env = new TestEnvironment())
             {
                 Assert.That(env.Entities.Contains("testbad"), Is.False);
 
-                object resource = await env.Service.GetRelationshipAsync("testbad", "user");
-
-                Assert.That(resource, Is.Null);
+                Assert.ThrowsAsync<JsonApiException>(async () =>
+                {
+                    await env.Service.GetRelationshipAsync("testbad", "user");
+                });
             }
         }
 
@@ -341,9 +343,9 @@ namespace SIL.XForge.Services
                 Assert.That(env.Entities.Contains("test01"), Is.True);
 
                 var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
-                    {
-                        await env.Service.GetRelationshipAsync("test01", "badrelationship");
-                    });
+                {
+                    await env.Service.GetRelationshipAsync("test01", "badrelationship");
+                });
 
                 Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status404NotFound));
             }
@@ -355,16 +357,10 @@ namespace SIL.XForge.Services
                 : base("tests")
             {
                 var users = new MemoryRepository<UserEntity>(new[] { new UserEntity { Id = "user01" } });
-                var options = Substitute.For<IOptions<SiteOptions>>();
-                options.Value.Returns(new SiteOptions
-                {
-                    Name = "xForge",
-                    Origin = new Uri("http://localhost")
-                });
 
                 Service = new TestService(JsonApiContext, Mapper, UserAccessor, Entities)
                 {
-                    UserMapper = new UserService(JsonApiContext, Mapper, UserAccessor, users, options)
+                    UserMapper = new UserService(JsonApiContext, Mapper, UserAccessor, users, SiteOptions)
                 };
             }
 

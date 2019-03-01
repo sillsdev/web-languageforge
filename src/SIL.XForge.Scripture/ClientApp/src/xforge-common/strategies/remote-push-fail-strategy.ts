@@ -3,6 +3,9 @@ import { Exception } from '@orbit/core';
 import { NetworkError, Transform } from '@orbit/data';
 import Store from '@orbit/store';
 
+/**
+ * This strategy is responsible for retrying update operations that occurred while offline.
+ */
 export class RemotePushFailStrategy extends ConnectionStrategy {
   private static readonly RETRY_TIMEOUT = 5000;
 

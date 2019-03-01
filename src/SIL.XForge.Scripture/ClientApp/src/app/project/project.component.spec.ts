@@ -44,6 +44,26 @@ describe('ProjectComponent', () => {
     verify(env.mockedRouter.navigate(anything(), anything())).never();
     expect().nothing();
   }));
+
+  it('do not navigate when project is null', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.setNoProjectData();
+    env.fixture.detectChanges();
+    flush();
+
+    verify(env.mockedRouter.navigate(anything(), anything())).never();
+    expect().nothing();
+  }));
+
+  it('do not navigate when projectUser is null', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.setNoProjectUserData();
+    env.fixture.detectChanges();
+    flush();
+
+    verify(env.mockedRouter.navigate(anything(), anything())).never();
+    expect().nothing();
+  }));
 });
 
 class TestEnvironment {
@@ -71,6 +91,35 @@ class TestEnvironment {
     });
     this.fixture = TestBed.createComponent(ProjectComponent);
     this.component = this.fixture.componentInstance;
+  }
+
+  setNoProjectData(): void {
+    when(
+      this.mockedSFProjectService.get(
+        'project01',
+        deepEqual([[nameof<SFProject>('users')], [nameof<SFProject>('texts')]])
+      )
+    ).thenReturn(of(new MapQueryResults(null)));
+  }
+
+  setNoProjectUserData(): void {
+    when(
+      this.mockedSFProjectService.get(
+        'project01',
+        deepEqual([[nameof<SFProject>('users')], [nameof<SFProject>('texts')]])
+      )
+    ).thenReturn(
+      of(
+        new MapQueryResults(
+          new SFProject({
+            id: 'project01',
+            translateConfig: { enabled: true },
+            checkingConfig: { enabled: true },
+            texts: [new TextRef('text01'), new TextRef('text02')]
+          })
+        )
+      )
+    );
   }
 
   setProjectData(args: { isTranslateEnabled?: boolean; hasTexts?: boolean; selectedTask?: string }): void {

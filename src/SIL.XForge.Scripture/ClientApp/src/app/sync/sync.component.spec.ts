@@ -5,7 +5,6 @@ import { of, Subject } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { AuthService } from 'xforge-common/auth.service';
-import { MapQueryResults } from 'xforge-common/json-api.service';
 import { NoticeService } from 'xforge-common/notice.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { SFProjectRef } from '../core/models/sfdomain-model.generated';
@@ -89,7 +88,7 @@ class TestEnvironment {
       paratextId: 'pt01',
       lastSyncedDate: new Date('2019-02-01T12:00:00.000Z')
     });
-    when(this.mockedProjectService.onlineGet(anything())).thenReturn(of(new MapQueryResults(project)));
+    when(this.mockedProjectService.onlineGet(anything())).thenReturn(of(project));
     const ptUsername = connected ? 'Paratext User01' : '';
     when(this.mockedParatextService.getParatextUsername()).thenReturn(of(ptUsername));
     this.subject = new Subject<SyncJob>();

@@ -76,9 +76,9 @@ export class SyncComponent extends SubscriptionDisposable implements OnInit {
   private updateLastSyncedDate(): void {
     this.subscribe(this.projectService.onlineGet(this.projectId), p => {
       if (!this.projectName) {
-        this.projectName = p.data.projectName;
+        this.projectName = p.projectName;
       }
-      this.lastSyncedDate = this.datePipe.transform(p.data.lastSyncedDate, 'dd MMMM yyyy');
+      this.lastSyncedDate = this.datePipe.transform(p.lastSyncedDate, 'dd MMMM yyyy');
     });
   }
 }
