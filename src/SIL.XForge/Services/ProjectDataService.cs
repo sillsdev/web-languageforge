@@ -14,7 +14,7 @@ using SIL.XForge.Models;
 namespace SIL.XForge.Services
 {
     public abstract class ProjectDataService<TResource, TEntity, TProjectEntity>
-        : RepositoryResourceServiceBase<TResource, TEntity>
+        : RepositoryResourceServiceBase<TResource, TEntity>, IProjectDataMapper<TResource, TEntity>
         where TResource : ProjectDataResource
         where TEntity : ProjectDataEntity
         where TProjectEntity : ProjectEntity
@@ -31,6 +31,11 @@ namespace SIL.XForge.Services
 
         public IResourceMapper<ProjectResource, ProjectEntity> ProjectMapper { get; set; }
         public IResourceMapper<UserResource, UserEntity> UserMapper { get; set; }
+
+        public virtual Task DeleteAllAsync(string projectId)
+        {
+            return Entities.DeleteAllAsync(e => e.ProjectRef == projectId);
+        }
 
         protected override IRelationship<TEntity> GetRelationship(string propertyName)
         {

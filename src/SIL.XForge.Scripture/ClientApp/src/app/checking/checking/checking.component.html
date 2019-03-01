@@ -1,7 +1,7 @@
 <div id="projects-app" class="container-fluid flex-max">
   <div class="row">
     <div class="col">
-      <h1>{{ project.projectName }}</h1>
+      <h1>{{ project?.projectName }}</h1>
     </div>
   </div>
   <div class="row flex-fill">
@@ -38,7 +38,7 @@
         <div class="panel">
           <div class="panel-heading">
             <mdc-icon>library_books</mdc-icon>
-            <h2>{{ project.projectName }}</h2>
+            <h2>{{ project?.projectName }}</h2>
             <div class="panel-activity"><app-font-size (apply)="applyFontChange($event)"></app-font-size></div>
           </div>
           <div #scripturePanel class="panel-content">Scripture text goes here</div>

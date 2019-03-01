@@ -7,7 +7,7 @@ namespace Microsoft.AspNetCore.Builder
     {
         public static void UseRealtimeServer(this IApplicationBuilder app)
         {
-            app.ApplicationServices.GetService<RealtimeServer>().Start();
+            app.ApplicationServices.GetService<IRealtimeService>().StartServer();
         }
 
     }

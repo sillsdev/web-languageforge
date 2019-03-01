@@ -32,14 +32,19 @@ export class ProjectComponent extends SubscriptionDisposable implements OnInit {
         filter(projectId => projectId != null),
         switchMap(projectId =>
           this.projectService.get(projectId, [[nameof<SFProject>('users')], [nameof<SFProject>('texts')]])
-        ),
-        filter(r => r.data != null)
+        )
       ),
       r => {
         const project = r.data;
+        if (project == null) {
+          return;
+        }
         const projectUser = r
           .getManyIncluded<SFProjectUser>(project.users)
           .find(pu => pu.user.id === this.userService.currentUserId);
+        if (projectUser == null) {
+          return;
+        }
         // navigate to last location
         if (projectUser.selectedTask != null && projectUser.selectedTask !== '') {
           // the user has previously navigated to a location in a task

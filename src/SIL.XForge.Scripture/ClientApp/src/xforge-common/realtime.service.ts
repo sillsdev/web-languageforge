@@ -58,6 +58,11 @@ export class RealtimeService {
     return data.dispose();
   }
 
+  delete(identity: RecordIdentity): Promise<void> {
+    const store = this.getStore(identity.type);
+    return store.delete(identity.id);
+  }
+
   private getStore(type: string): RealtimeOfflineStore {
     if (!this.stores.has(type)) {
       this.stores.set(

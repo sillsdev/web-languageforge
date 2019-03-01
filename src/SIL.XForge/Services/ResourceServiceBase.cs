@@ -90,7 +90,7 @@ namespace SIL.XForge.Services
         {
             TEntity entity = await GetEntityAsync(id);
             if (entity == null)
-                return null;
+                throw NotFoundException();
             return await MapAsync(entity);
         }
 
@@ -98,7 +98,7 @@ namespace SIL.XForge.Services
         {
             TEntity entity = await GetEntityAsync(id);
             if (entity == null)
-                return null;
+                throw NotFoundException();
             RelationshipAttribute relAttr = JsonApiContext.ResourceGraph
                 .GetRelationshipAttribute<TResource>(relationshipName);
             if (relAttr == null)

@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   InteractiveTranslationSession,
@@ -34,7 +34,7 @@ const PUNCT_SPACE_REGEX = XRegExp('^(\\p{P}|\\p{S}|\\p{Cc}|\\p{Z})+$');
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
-export class EditorComponent extends SubscriptionDisposable implements OnInit {
+export class EditorComponent extends SubscriptionDisposable implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex-column flex-grow';
 
   suggestionWords: string[] = [];
@@ -153,6 +153,11 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit {
         this.translationEngine = this.projectService.createTranslationEngine(this.project.id);
       }
     );
+  }
+
+  ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.noticeService.loadingFinished();
   }
 
   async onTargetUpdated(segment: Segment, delta?: DeltaStatic, prevSegment?: Segment): Promise<void> {

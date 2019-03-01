@@ -1,17 +1,8 @@
-import { MdcSelect } from '@angular-mdc/web';
+import { MdcDialog, MdcSelect } from '@angular-mdc/web';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  shareReplay,
-  startWith,
-  switchMap,
-  tap,
-  withLatestFrom
-} from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
 import { AuthService } from 'xforge-common/auth.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
@@ -20,7 +11,7 @@ import { nameof } from 'xforge-common/utils';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
 import { Text } from '../core/models/text';
-import { SFProjectService } from '../core/sfproject.service';
+import { ProjectDeletedDialogComponent } from './project-deleted-dialog/project-deleted-dialog.component';
 
 @Component({
   selector: 'app-nav-menu',
@@ -39,6 +30,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
   texts: Text[];
 
   private _projectSelect: MdcSelect;
+  private projectDeletedDialogRef: any;
 
   constructor(
     private readonly authService: AuthService,
@@ -46,7 +38,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly userService: UserService,
-    private readonly projectService: SFProjectService
+    private readonly dialog: MdcDialog
   ) {
     super();
     this.subscribe(media.asObservable(), (change: MediaChange) => {
@@ -84,6 +76,9 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
       return;
     }
 
+    // retrieve the projectId from the current route. Since the nav menu is outside of the router outlet, it cannot use
+    // ActivatedRoute to get the params. Instead the nav menu, listens to router events and traverses the route tree
+    // to find the currently activated route
     const projectId$ = this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       startWith(null),
@@ -96,6 +91,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
       }),
       filter(r => r.outlet === 'primary'),
       tap(r => {
+        // ensure that the task of the current view has been expanded
         for (const segment of r.url) {
           if (segment.path === 'translate') {
             this.translateVisible = true;
@@ -108,46 +104,65 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
       }),
       map(r => r.params['projectId'] as string),
       distinctUntilChanged(),
-      shareReplay(1)
+      tap(projectId => {
+        // the project deleted dialog should be closed by now, so we can reset its ref to null
+        if (projectId == null) {
+          this.projectDeletedDialogRef = null;
+        }
+      })
     );
 
+    // populate the projects dropdown and select the current project
     this.subscribe(
       projectId$.pipe(
         switchMap(projectId =>
           this.userService
-            .getProjects(this.userService.currentUserId, [[nameof<SFProjectUser>('project')]])
-            .pipe(map(r => ({ projects: r.data.map(pu => r.getIncluded<SFProject>(pu.project)), projectId })))
+            .getProjects(this.userService.currentUserId, [
+              [nameof<SFProjectUser>('project'), nameof<SFProject>('texts')]
+            ])
+            .pipe(map(r => ({ results: r, projectId })))
         ),
         withLatestFrom(this.userService.getCurrentUser())
       ),
-      ([projectData, user]) => {
-        this.projects = projectData.projects;
-        this.selectedProject =
-          projectData.projectId == null ? undefined : projectData.projects.find(p => p.id === projectData.projectId);
-        if (this.selectedProject != null) {
-          if (!this.selectedProject.translateConfig.enabled) {
-            this.translateVisible = false;
-          }
-          if (!this.selectedProject.checkingConfig.enabled) {
-            this.checkingVisible = false;
-          }
-          if (this._projectSelect != null) {
-            this._projectSelect.value = this.selectedProject.id;
-          }
+      ([resultsAndProjectId, user]) => {
+        const results = resultsAndProjectId.results;
+        const projectId = resultsAndProjectId.projectId;
+        this.projects = results.data.map(pu => results.getIncluded(pu.project));
+        // if the project deleted dialog is displayed, don't do anything
+        if (this.projectDeletedDialogRef != null) {
+          return;
+        }
+        const selectedProject = projectId == null ? undefined : this.projects.find(p => p.id === projectId);
 
-          if (user.site.currentProjectId !== this.selectedProject.id) {
-            this.userService.updateCurrentUserAttributes({ site: { currentProjectId: this.selectedProject.id } });
+        // check if the currently selected project has been deleted
+        if (selectedProject == null && this.selectedProject != null && projectId === this.selectedProject.id) {
+          if (user.site.currentProjectId != null) {
+            // the project was deleted remotely, so notify the user
+            this.showProjectDeletedDialog();
+          } else {
+            // the project was deleted locally, so navigate to the start view
+            this.router.navigateByUrl('/projects');
+          }
+        } else {
+          this.selectedProject = selectedProject;
+          if (this.selectedProject != null) {
+            this.texts = results.getManyIncluded(this.selectedProject.texts);
+            if (!this.selectedProject.translateConfig.enabled) {
+              this.translateVisible = false;
+            }
+            if (!this.selectedProject.checkingConfig.enabled) {
+              this.checkingVisible = false;
+            }
+            if (this._projectSelect != null) {
+              this._projectSelect.value = this.selectedProject.id;
+            }
+
+            if (user.site.currentProjectId !== this.selectedProject.id) {
+              this.userService.updateCurrentProjectId(this.selectedProject.id);
+            }
           }
         }
       }
-    );
-
-    this.subscribe(
-      projectId$.pipe(
-        filter(projectId => projectId != null),
-        switchMap(projectId => this.projectService.getTexts(projectId))
-      ),
-      texts => (this.texts = texts)
     );
   }
 
@@ -169,5 +184,11 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
 
   toggleDrawer() {
     this.isExpanded = !this.isExpanded;
+  }
+
+  private async showProjectDeletedDialog(): Promise<void> {
+    await this.userService.updateCurrentProjectId();
+    this.projectDeletedDialogRef = this.dialog.open(ProjectDeletedDialogComponent);
+    this.projectDeletedDialogRef.afterClosed().subscribe(() => this.router.navigateByUrl('/projects'));
   }
 }

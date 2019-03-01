@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -110,16 +111,50 @@ namespace SIL.XForge.Scripture.Services
             }
         }
 
+        [Test]
+        public async Task DeleteAsync()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser("user01", SystemRoles.User);
+                env.CreateSiteDir();
+                string syncDir = Path.Combine(TestEnvironment.SiteDir, "sync", "project01");
+                Directory.CreateDirectory(syncDir);
+                bool result = await env.Service.DeleteAsync("project01");
+
+                Assert.That(result, Is.True);
+                Assert.That(env.Entities.Contains("project01"), Is.False);
+                await env.SyncJobMapper.Received().DeleteAllAsync("project01");
+                await env.TextMapper.Received().DeleteAllAsync("project01");
+                await env.QuestionMapper.Received().DeleteAllAsync("project01");
+                await env.EngineService.Received().RemoveProjectAsync("project01");
+                Assert.That(Directory.Exists(syncDir), Is.False);
+            }
+        }
+
         class TestEnvironment : ResourceServiceTestEnvironmentBase<SFProjectResource, SFProjectEntity>
         {
             public TestEnvironment()
                 : base("projects")
             {
-                var engineService = Substitute.For<IEngineService>();
-                Service = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, engineService);
+                EngineService = Substitute.For<IEngineService>();
+                SyncJobMapper = Substitute.For<IProjectDataMapper<SyncJobResource, SyncJobEntity>>();
+                TextMapper = Substitute.For<IProjectDataMapper<TextResource, TextEntity>>();
+                QuestionMapper = Substitute.For<IProjectDataMapper<QuestionResource, QuestionEntity>>();
+                Service = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, EngineService,
+                    SiteOptions)
+                {
+                    SyncJobMapper = SyncJobMapper,
+                    TextMapper = TextMapper,
+                    QuestionMapper = QuestionMapper
+                };
             }
 
             public SFProjectService Service { get; }
+            public IEngineService EngineService { get; }
+            public IProjectDataMapper<SyncJobResource, SyncJobEntity> SyncJobMapper { get; }
+            public IProjectDataMapper<TextResource, TextEntity> TextMapper { get; }
+            public IProjectDataMapper<QuestionResource, QuestionEntity> QuestionMapper { get; }
 
             protected override IEnumerable<SFProjectEntity> GetInitialData()
             {

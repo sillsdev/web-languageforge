@@ -490,7 +490,7 @@ namespace SIL.XForge.Services
                         }
                     });
 
-                Service = new UserService(JsonApiContext, Mapper, UserAccessor, Entities, Options)
+                Service = new UserService(JsonApiContext, Mapper, UserAccessor, Entities, SiteOptions)
                 {
                     ProjectUserMapper = new TestProjectUserService(JsonApiContext, Mapper, UserAccessor, projects)
                 };

@@ -1,10 +1,11 @@
 import { MdcDialog, MdcDialogConfig } from '@angular-mdc/web';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+
 import { ElementState } from 'xforge-common/models/element-state';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
-
+import { UserService } from 'xforge-common/user.service';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
 import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-project-dialog.component';
@@ -27,10 +28,10 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
   controlStates = new Map<string, ElementState>();
 
   constructor(
-    private route: ActivatedRoute,
-    private projectService: SFProjectService,
-    private dialog: MdcDialog,
-    private router: Router
+    private readonly route: ActivatedRoute,
+    private readonly projectService: SFProjectService,
+    private readonly dialog: MdcDialog,
+    private readonly userService: UserService
   ) {
     super();
     this.route.params.subscribe(params => (this.projectId = params['projectId']));
@@ -117,9 +118,9 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
   }
 
   ngOnInit() {
-    this.subscribe(this.projectService.onlineGet(this.projectId), searchResults => {
-      if (searchResults && searchResults.data) {
-        this.project = searchResults.data;
+    this.subscribe(this.projectService.onlineGet(this.projectId), project => {
+      if (project != null) {
+        this.project = project;
         if (this.project) {
           this.updateSettingsInfo();
         }
@@ -132,9 +133,10 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
       data: { name: this.project.projectName }
     };
     const dialogRef = this.dialog.open(DeleteProjectDialogComponent, config);
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async result => {
       if (result === 'accept') {
-        this.projectService.onlineDelete(this.projectId).then(() => this.router.navigateByUrl('/projects'));
+        await this.userService.updateCurrentProjectId();
+        await this.projectService.onlineDelete(this.projectId);
       }
     });
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { RecordIdentity } from '@orbit/data';
 
 import { JsonApiService, QueryObservable } from 'xforge-common/json-api.service';
 import { RealtimeService } from 'xforge-common/realtime.service';
@@ -15,10 +15,15 @@ export type TextType = 'source' | 'target';
 export class TextService extends ResourceService {
   constructor(jsonApiService: JsonApiService, private readonly realtimeService: RealtimeService) {
     super(Text.TYPE, jsonApiService);
+
+    this.jsonApiService.resourceDeleted(this.type).subscribe(textId => {
+      this.realtimeService.delete(this.dataIdentity(textId, 'source'));
+      this.realtimeService.delete(this.dataIdentity(textId, 'target'));
+    });
   }
 
   connect(id: string, textType: TextType): Promise<TextData> {
-    return this.realtimeService.connect(this.identity(this.getTextDataId(id, textType)));
+    return this.realtimeService.connect(this.dataIdentity(id, textType));
   }
 
   disconnect(textData: TextData): Promise<void> {
@@ -29,7 +34,7 @@ export class TextService extends ResourceService {
     return this.jsonApiService.get(this.identity(id), include);
   }
 
-  private getTextDataId(id: string, textType: TextType): string {
-    return id + ':' + textType;
+  private dataIdentity(id: string, textType: TextType): RecordIdentity {
+    return this.identity(id + ':' + textType);
   }
 }

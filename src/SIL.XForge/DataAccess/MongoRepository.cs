@@ -80,5 +80,11 @@ namespace SIL.XForge.DataAccess
         {
             return _collection.FindOneAndDeleteAsync(filter);
         }
+
+        public async Task<int> DeleteAllAsync(Expression<Func<T, bool>> filter)
+        {
+            DeleteResult result = await _collection.DeleteManyAsync(filter);
+            return (int)result.DeletedCount;
+        }
     }
 }
