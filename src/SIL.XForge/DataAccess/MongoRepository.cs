@@ -77,9 +77,9 @@ namespace SIL.XForge.DataAccess
                         ReturnDocument = ReturnDocument.After
                     });
             }
-            catch (MongoWriteException e)
+            catch (MongoCommandException e)
             {
-                if (e.WriteError.Category == ServerErrorCategory.DuplicateKey)
+                if ("DuplicateKey".Equals(e.CodeName))
                     return null;
                 throw;
             }

@@ -27,7 +27,9 @@ namespace SIL.XForge.Services
 
         protected override async Task<TEntity> InsertEntityAsync(TEntity entity)
         {
-            await Entities.InsertAsync(entity); // if false, throw 409
+            if (!await Entities.InsertAsync(entity))
+                throw new JsonApiException(StatusCodes.Status409Conflict,
+                    "Another entity with the same key already exists.");
             return await Entities.GetAsync(entity.Id);
         }
 
@@ -36,10 +38,10 @@ namespace SIL.XForge.Services
             return (await Entities.DeleteAsync(id)) != null;
         }
 
-        protected override Task<TEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
+        protected override async Task<TEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
             IDictionary<string, string> relationships)
         {
-            return Entities.UpdateAsync(e => e.Id == id, update =>
+            TEntity entity = await Entities.UpdateAsync(e => e.Id == id, update =>
                 {
                     foreach (KeyValuePair<string, object> attr in attrs)
                         UpdateAttribute(update, attr.Key, attr.Value);
@@ -54,7 +56,11 @@ namespace SIL.XForge.Services
                                 $"The relationship '{relName}' cannot be updated.");
                         }
                     }
-                }); /// if null, throw 409
+                });
+            if (entity == null)
+                throw new JsonApiException(StatusCodes.Status409Conflict,
+                    "Another entity with the same key already exists.");
+            return entity;
         }
 
         protected override Task<TEntity> UpdateEntityRelationshipAsync(string id, string propertyName,

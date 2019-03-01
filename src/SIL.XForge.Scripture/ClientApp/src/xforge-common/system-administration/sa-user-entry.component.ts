@@ -139,8 +139,11 @@ export class SaUserEntryComponent implements OnInit {
     try {
       await this.userService.onlineCreate(newUser);
     } catch (e) {
-      this.noticeService.show('Error creating: ' + e.message);
-      return; // rethrow if not 409 (and other place)
+      if (e.response.status === 409) {
+        this.noticeService.show('Error creating: ' + e.message);
+        return;
+      }
+      throw e;
     } finally {
       this.isSubmitted = false;
     }
@@ -171,8 +174,11 @@ export class SaUserEntryComponent implements OnInit {
     try {
       await this.userService.onlineUpdateAttributes(this.editUserId, updateUser);
     } catch (e) {
-      this.noticeService.show('Error updating: ' + e.message);
-      return;
+      if (e.response.status === 409) {
+        this.noticeService.show('Error updating: ' + e.message);
+        return;
+      }
+      throw e;
     }
     this.accountUserForm.reset();
     this.noticeService.show('User account updated.');

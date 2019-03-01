@@ -40,7 +40,7 @@ namespace SIL.XForge.Services
             JsonApiContext.RequestEntity.Returns(ResourceGraph.GetContextEntity(_resourceName));
             JsonApiContext.Options.Returns(new JsonApiOptions { IncludeTotalRecordCount = true });
 
-            Entities = new MemoryRepository<TEntity>(GetInitialData());
+            Entities = new MemoryRepository<TEntity>(GetUniqueKeySelectors(), GetInitialData());
 
             var config = new MapperConfiguration(cfg =>
                 {
@@ -92,6 +92,11 @@ namespace SIL.XForge.Services
             if (Directory.Exists(SharedDir))
                 Directory.Delete(SharedDir, true);
             Directory.CreateDirectory(SharedDir);
+        }
+
+        protected virtual IEnumerable<Func<TEntity, object>> GetUniqueKeySelectors()
+        {
+            return null;
         }
 
         protected virtual IEnumerable<TEntity> GetInitialData()

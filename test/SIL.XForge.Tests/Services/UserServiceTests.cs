@@ -19,6 +19,7 @@ namespace SIL.XForge.Services
     public class UserServiceTests
     {
         private const string User01Id = "user01";
+        private const string User02Id = "user02";
         private const string User01Email = "user01@example.com";
 
         [Test]
@@ -98,6 +99,23 @@ namespace SIL.XForge.Services
         }
 
         [Test]
+        public async Task CreateAsync_Email_Conflict()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
+
+                var userResource = new UserResource
+                {
+                    Id = "usernew",
+                    Email = User01Email
+                };
+                var exc = Assert.ThrowsAsync<JsonApiException>(() => env.Service.CreateAsync(userResource));
+                Assert.That(exc.GetStatusCode(), Is.EqualTo(StatusCodes.Status409Conflict));
+            }
+        }
+
+        [Test]
         public async Task UpdateAsync_UserRole()
         {
             using (var env = new TestEnvironment())
@@ -111,7 +129,7 @@ namespace SIL.XForge.Services
 
                 var resource = new UserResource
                 {
-                    Id = "user02",
+                    Id = User02Id,
                     Username = "new"
                 };
                 var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
@@ -143,7 +161,7 @@ namespace SIL.XForge.Services
 
                 var resource = new UserResource
                 {
-                    Id = "user02",
+                    Id = User02Id,
                     Username = "new"
                 };
 
@@ -204,11 +222,34 @@ namespace SIL.XForge.Services
         }
 
         [Test]
+        public async Task UpdateAsync_Email_Conflict()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("email"), User01Email }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+
+                var resource = new UserResource
+                {
+                    Id = User02Id,
+                    Email = User01Email
+                };
+
+                var exception = Assert.ThrowsAsync<JsonApiException>(() => env.Service.UpdateAsync(resource.Id, resource));
+                Assert.That(exception.GetStatusCode(), Is.EqualTo(StatusCodes.Status409Conflict));
+            }
+        }
+
+        [Test]
         public async Task UpdateAsync_SetSite()
         {
             using (var env = new TestEnvironment())
             {
-                env.SetUser("user01", SystemRoles.SystemAdmin);
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("site"), new Site { CurrentProjectId = "project01" } }
@@ -217,7 +258,7 @@ namespace SIL.XForge.Services
 
                 var resource = new UserResource
                 {
-                    Id = "user01",
+                    Id = User01Id,
                     Site = new Site { CurrentProjectId = "project01" }
                 };
                 UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
@@ -238,12 +279,12 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
-                UserEntity initialEntity = await env.Service.GetEntityAsync("user02");
+                UserEntity initialEntity = await env.Service.GetEntityAsync(User02Id);
                 Assert.That(initialEntity.Sites.Count, Is.EqualTo(1));
                 Assert.That(initialEntity.Sites[TestEnvironment.SiteAuthority].CurrentProjectId,
                     Is.EqualTo("project01"));
 
-                env.SetUser("user01", SystemRoles.SystemAdmin);
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("site"), null }
@@ -252,7 +293,7 @@ namespace SIL.XForge.Services
 
                 var resource = new UserResource
                 {
-                    Id = "user02"
+                    Id = User02Id
                 };
                 UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
 
@@ -320,7 +361,7 @@ namespace SIL.XForge.Services
                 Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[]
                     {
                         User01Id,
-                        "user02",
+                        User02Id,
                         "user03",
                         "paratextuser01"
                     }));
@@ -333,22 +374,22 @@ namespace SIL.XForge.Services
             using (var env = new TestEnvironment())
             {
                 env.CreateSharedDir();
-                env.SetUser("user01", SystemRoles.User);
+                env.SetUser(User01Id, SystemRoles.User);
 
-                var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
+                Assert.ThrowsAsync<JsonApiException>(async () =>
                 {
                     using (var inputStream = new MemoryStream())
-                        await env.Service.SaveAvatarAsync("user02", "file.png", inputStream);
+                        await env.Service.SaveAvatarAsync(User02Id, "file.png", inputStream);
                 });
 
                 Uri uri;
                 using (var inputStream = new MemoryStream())
-                    uri = await env.Service.SaveAvatarAsync("user01", "file.png", inputStream);
+                    uri = await env.Service.SaveAvatarAsync(User01Id, "file.png", inputStream);
 
                 Assert.That(uri.AbsolutePath, Is.EqualTo("/assets/avatars/user01.png"));
                 Assert.That(string.IsNullOrEmpty(uri.Query), Is.False);
                 Assert.That(File.Exists(Path.Combine(TestEnvironment.SharedDir, "avatars", "user01.png")), Is.True);
-                UserEntity user = await env.Entities.GetAsync("user01");
+                UserEntity user = await env.Entities.GetAsync(User01Id);
                 Assert.That(user.AvatarUrl, Is.EqualTo(uri.PathAndQuery));
             }
         }
@@ -359,25 +400,25 @@ namespace SIL.XForge.Services
             using (var env = new TestEnvironment())
             {
                 env.CreateSharedDir();
-                env.SetUser("user01", SystemRoles.SystemAdmin);
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
 
                 Uri uri;
                 using (var inputStream = new MemoryStream())
-                    uri = await env.Service.SaveAvatarAsync("user02", "file.png", inputStream);
+                    uri = await env.Service.SaveAvatarAsync(User02Id, "file.png", inputStream);
 
                 Assert.That(uri.AbsolutePath, Is.EqualTo("/assets/avatars/user02.png"));
                 Assert.That(string.IsNullOrEmpty(uri.Query), Is.False);
                 Assert.That(File.Exists(Path.Combine(TestEnvironment.SharedDir, "avatars", "user02.png")), Is.True);
-                UserEntity user = await env.Entities.GetAsync("user02");
+                UserEntity user = await env.Entities.GetAsync(User02Id);
                 Assert.That(user.AvatarUrl, Is.EqualTo(uri.PathAndQuery));
 
                 using (var inputStream = new MemoryStream())
-                    uri = await env.Service.SaveAvatarAsync("user01", "file.png", inputStream);
+                    uri = await env.Service.SaveAvatarAsync(User01Id, "file.png", inputStream);
 
                 Assert.That(uri.AbsolutePath, Is.EqualTo("/assets/avatars/user01.png"));
                 Assert.That(string.IsNullOrEmpty(uri.Query), Is.False);
                 Assert.That(File.Exists(Path.Combine(TestEnvironment.SharedDir, "avatars", "user01.png")), Is.True);
-                user = await env.Entities.GetAsync("user01");
+                user = await env.Entities.GetAsync(User01Id);
                 Assert.That(user.AvatarUrl, Is.EqualTo(uri.PathAndQuery));
             }
         }
@@ -387,11 +428,11 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
-                env.SetUser("user01", SystemRoles.User);
+                env.SetUser(User01Id, SystemRoles.User);
 
                 var ex = Assert.ThrowsAsync<JsonApiException>(async () =>
                     {
-                        await env.Service.UpdateRelationshipsAsync("user01", "projects",
+                        await env.Service.UpdateRelationshipsAsync(User01Id, "projects",
                             new List<ResourceObject> { new ResourceObject { Type = "projects", Id = "projectuser02" } });
                     });
 
@@ -404,9 +445,9 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
-                env.SetUser("user01", SystemRoles.User);
+                env.SetUser(User01Id, SystemRoles.User);
 
-                object resources = await env.Service.GetRelationshipsAsync("user01", "projects");
+                object resources = await env.Service.GetRelationshipsAsync(User01Id, "projects");
 
                 Assert.That(resources, Is.Not.Null);
                 var projectResources = (IEnumerable<IResource>)resources;
@@ -429,7 +470,7 @@ namespace SIL.XForge.Services
                                 new TestProjectUserEntity
                                 {
                                     Id = "projectuser01",
-                                    UserRef = "user01",
+                                    UserRef = User01Id,
                                     Role = TestProjectRoles.Manager
                                 }
                             }
@@ -442,7 +483,7 @@ namespace SIL.XForge.Services
                                 new TestProjectUserEntity
                                 {
                                     Id = "projectuser02",
-                                    UserRef = "user01",
+                                    UserRef = User01Id,
                                     Role = TestProjectRoles.Manager
                                 }
                             }
@@ -457,6 +498,14 @@ namespace SIL.XForge.Services
 
             public UserService Service { get; }
 
+            protected override IEnumerable<Func<UserEntity, object>> GetUniqueKeySelectors()
+            {
+                return new Func<UserEntity, object>[]
+                {
+                    entity => entity.CanonicalEmail
+                };
+            }
+
             protected override IEnumerable<UserEntity> GetInitialData()
             {
                 return new[]
@@ -470,8 +519,8 @@ namespace SIL.XForge.Services
                     },
                     new UserEntity
                     {
-                        Id = "user02",
-                        Username = "user02",
+                        Id = User02Id,
+                        Username = User02Id,
                         Email = "user02@example.com",
                         CanonicalEmail = "user02@example.com",
                         Sites = new Dictionary<string, Site>

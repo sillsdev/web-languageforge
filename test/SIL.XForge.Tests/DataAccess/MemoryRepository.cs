@@ -130,15 +130,24 @@ namespace SIL.XForge.DataAccess
             T entity = Query().FirstOrDefault(filter);
             if (entity != null || upsert)
             {
+                T original = null;
                 bool isInsert = entity == null;
                 if (isInsert)
                 {
                     entity = new T();
                     entity.Id = ObjectId.GenerateNewId().ToString();
                 }
+                else
+                {
+                    original = Query().FirstOrDefault(filter);
+                }
 
                 var builder = new MemoryUpdateBuilder<T>(filter, entity, isInsert);
                 update(builder);
+
+                if (CheckDuplicateKeys(entity, original))
+                    return Task.FromResult<T>(null);
+
                 Replace(entity);
             }
             return Task.FromResult(entity);
@@ -152,7 +161,13 @@ namespace SIL.XForge.DataAccess
             return Task.FromResult(entity);
         }
 
-        private bool CheckDuplicateKeys(T entity)
+        /// <param name="entity">the new or updated entity to be upserted</param>
+        /// <param name="original">the original entity, if this is an update (or replacement)</param>
+        /// <returns>
+        /// true if there is any existing entity, other than the original, that shares any keys with the new or updated
+        /// entity
+        /// </returns>
+        private bool CheckDuplicateKeys(T entity, T original = null)
         {
             for (int i = 0; i < _uniqueKeySelectors.Length; i++)
             {
@@ -160,7 +175,10 @@ namespace SIL.XForge.DataAccess
                 if (key != null)
                 {
                     if (_uniqueKeys[i].Contains(key))
-                        return true;
+                    {
+                        if (original == null || !key.Equals(_uniqueKeySelectors[i](original)))
+                            return true;
+                    }
                 }
             }
             return false;
