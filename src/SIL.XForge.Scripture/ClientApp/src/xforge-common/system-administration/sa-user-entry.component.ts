@@ -139,8 +139,8 @@ export class SaUserEntryComponent implements OnInit {
     try {
       await this.userService.onlineCreate(newUser);
     } catch (e) {
-      if (e.response.status === 409) {
-        this.noticeService.show('Error creating: ' + e.message);
+      if (SaUserEntryComponent.isConflict(e)) {
+        this.noticeService.show('User account could not be created due to a conflict!');
         return;
       }
       throw e;
@@ -174,8 +174,8 @@ export class SaUserEntryComponent implements OnInit {
     try {
       await this.userService.onlineUpdateAttributes(this.editUserId, updateUser);
     } catch (e) {
-      if (e.response.status === 409) {
-        this.noticeService.show('Error updating: ' + e.message);
+      if (SaUserEntryComponent.isConflict(e)) {
+        this.noticeService.show('User account could not be updated due to a conflict!');
         return;
       }
       throw e;
@@ -212,5 +212,15 @@ export class SaUserEntryComponent implements OnInit {
         this.onChange({ checked: response.data.active });
       }
     });
+  }
+
+  private static isConflict(error: any): boolean {
+    if (!error) {
+      return false;
+    }
+    if (!error.response) {
+      return false;
+    }
+    return error.response.status === 409;
   }
 }
