@@ -13,6 +13,16 @@ import { UserService } from '../user.service';
   styleUrls: ['./sa-user-entry.component.scss']
 })
 export class SaUserEntryComponent implements OnInit {
+  private static isConflict(error: any): boolean {
+    if (!error) {
+      return false;
+    }
+    if (!error.response) {
+      return false;
+    }
+    return error.response.status === 409;
+  }
+
   @Output() outputUserList: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
   accountUserForm: FormGroup;
@@ -212,15 +222,5 @@ export class SaUserEntryComponent implements OnInit {
         this.onChange({ checked: response.data.active });
       }
     });
-  }
-
-  private static isConflict(error: any): boolean {
-    if (!error) {
-      return false;
-    }
-    if (!error.response) {
-      return false;
-    }
-    return error.response.status === 409;
   }
 }
