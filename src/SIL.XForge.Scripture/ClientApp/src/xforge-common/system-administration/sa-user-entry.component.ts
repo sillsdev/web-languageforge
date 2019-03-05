@@ -140,7 +140,7 @@ export class SaUserEntryComponent implements OnInit {
       await this.userService.onlineCreate(newUser);
     } catch (e) {
       if (SaUserEntryComponent.isConflict(e)) {
-        this.noticeService.show('User account could not be created due to a conflict!');
+        this.noticeService.show('User account could not be created due to a conflict.');
         return;
       }
       throw e;
@@ -175,7 +175,7 @@ export class SaUserEntryComponent implements OnInit {
       await this.userService.onlineUpdateAttributes(this.editUserId, updateUser);
     } catch (e) {
       if (SaUserEntryComponent.isConflict(e)) {
-        this.noticeService.show('User account could not be updated due to a conflict!');
+        this.noticeService.show('User account could not be updated due to a conflict.');
         return;
       }
       throw e;

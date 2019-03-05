@@ -2,8 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Threading.Tasks;
 using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Core.Clusters;
+using MongoDB.Driver.Core.Connections;
+using MongoDB.Driver.Core.Servers;
 using Newtonsoft.Json;
 using SIL.XForge.Models;
 
@@ -146,7 +151,13 @@ namespace SIL.XForge.DataAccess
                 update(builder);
 
                 if (CheckDuplicateKeys(entity, original))
-                    return Task.FromResult<T>(null);
+                {
+                    throw new MongoCommandException(new ConnectionId(new ServerId(new ClusterId(), new TestEndPoint())),
+                        "Duplicate key!", null, new BsonDocument(new Dictionary<string, object>
+                        {
+                            {"codeName", "DuplicateKey"}
+                        }));
+                }
 
                 Replace(entity);
             }
@@ -183,5 +194,7 @@ namespace SIL.XForge.DataAccess
             }
             return false;
         }
+
+    private class TestEndPoint : EndPoint {}
     }
 }

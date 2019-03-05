@@ -8,6 +8,7 @@ using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Models;
 using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Http;
+using MongoDB.Driver;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
@@ -41,7 +42,9 @@ namespace SIL.XForge.Services
         protected override async Task<TEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
             IDictionary<string, string> relationships)
         {
-            TEntity entity = await Entities.UpdateAsync(e => e.Id == id, update =>
+            try
+            {
+                return await Entities.UpdateAsync(e => e.Id == id, update =>
                 {
                     foreach (KeyValuePair<string, object> attr in attrs)
                         UpdateAttribute(update, attr.Key, attr.Value);
@@ -57,10 +60,14 @@ namespace SIL.XForge.Services
                         }
                     }
                 });
-            if (entity == null)
-                throw new JsonApiException(StatusCodes.Status409Conflict,
-                    "Another entity with the same key already exists.");
-            return entity;
+            }
+            catch (MongoCommandException e)
+            {
+                if ("DuplicateKey".Equals(e.CodeName))
+                    throw new JsonApiException(StatusCodes.Status409Conflict,
+                        "Another entity with the same key already exists.");
+                throw;
+            }
         }
 
         protected override Task<TEntity> UpdateEntityRelationshipAsync(string id, string propertyName,

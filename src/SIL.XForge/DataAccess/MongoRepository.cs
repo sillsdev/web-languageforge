@@ -68,21 +68,12 @@ namespace SIL.XForge.DataAccess
             UpdateDefinition<T> updateDef = updateBuilder.Build()
                 .Set(e => e.DateModified, now)
                 .SetOnInsert(e => e.DateCreated, now);
-            try
-            {
                 return await _collection.FindOneAndUpdateAsync(filter, updateDef,
                     new FindOneAndUpdateOptions<T>
                     {
                         IsUpsert = upsert,
                         ReturnDocument = ReturnDocument.After
                     });
-            }
-            catch (MongoCommandException e)
-            {
-                if ("DuplicateKey".Equals(e.CodeName))
-                    return null;
-                throw;
-            }
         }
 
         public Task<T> DeleteAsync(Expression<Func<T, bool>> filter)

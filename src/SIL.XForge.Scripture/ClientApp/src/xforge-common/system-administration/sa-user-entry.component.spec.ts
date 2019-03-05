@@ -201,7 +201,7 @@ describe('System Administration User Entry Component', () => {
       env.setInputValue(env.nameInput, 'Something New');
       env.clickElement(env.updateButton);
       verify(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).once();
-      verify(env.mockedNoticeService.show('User account could not be updated due to a conflict!')).once();
+      verify(env.mockedNoticeService.show('User account could not be updated due to a conflict.')).once();
       expect().nothing();
     }));
 
@@ -312,7 +312,7 @@ describe('System Administration User Entry Component', () => {
       expect(env.component.accountUserForm.valid).toBe(true);
       env.clickElement(env.addButton);
       verify(env.mockedUserService.onlineCreate(anything())).once();
-      verify(env.mockedNoticeService.show('User account could not be created due to a conflict!')).once();
+      verify(env.mockedNoticeService.show('User account could not be created due to a conflict.')).once();
     }));
 
     it('should rethrow unrecognized errors', fakeAsync(() => {
