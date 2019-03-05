@@ -3,7 +3,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { instance, mock, when } from 'ts-mockito';
+import { deepEqual, instance, mock, when } from 'ts-mockito';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
@@ -15,7 +15,8 @@ import { DomainModel } from 'xforge-common/models/domain-model';
 import { RealtimeDoc } from 'xforge-common/realtime-doc';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
-import { SFProjectRef, TextRef } from '../../core/models/sfdomain-model.generated';
+import { nameof } from 'xforge-common/utils';
+import { SFProjectRef } from '../../core/models/sfdomain-model.generated';
 import { SFProject } from '../../core/models/sfproject';
 import { Text } from '../../core/models/text';
 import { TextData } from '../../core/models/text-data';
@@ -28,10 +29,10 @@ import { FontSizeComponent } from './font-size/font-size.component';
 
 describe('CheckingComponent', () => {
   let env: TestEnvironment;
-  beforeEach(fakeAsync(() => {
+  beforeEach(() => {
     env = new TestEnvironment();
     env.fixture.detectChanges();
-  }));
+  });
 
   describe('Interface', () => {
     it('can load a project', () => {
@@ -120,13 +121,16 @@ describe('CheckingComponent', () => {
   });
 
   describe('Text', () => {
-    it('can increase and decrease font size', () => {
-      const editor = env.quillEditor;
-      expect(editor.style.fontSize).toBe('1rem');
-      env.clickButton(env.increaseFontSizeButton);
-      expect(editor.style.fontSize).toBe('1.1rem');
-      env.clickButton(env.decreaseFontSizeButton);
-      expect(editor.style.fontSize).toBe('1rem');
+    it('can increase and decrease font size', done => {
+      env.component.scripturePanel.textComponent.loaded.subscribe(() => {
+        const editor = env.quillEditor;
+        expect(editor.style.fontSize).toBe('1rem');
+        env.clickButton(env.increaseFontSizeButton);
+        expect(editor.style.fontSize).toBe('1.1rem');
+        env.clickButton(env.decreaseFontSizeButton);
+        expect(editor.style.fontSize).toBe('1rem');
+        done();
+      });
     });
   });
 });
@@ -234,9 +238,9 @@ class TestEnvironment {
   }
 
   private setupProjectData(): void {
-    when(this.mockedTextService.get('text01')).thenReturn(
+    when(this.mockedTextService.get('text01', deepEqual([[nameof<Text>('project')]]))).thenReturn(
       of(
-        new MapQueryResults<TextRef>(
+        new MapQueryResults<Text>(
           new Text({
             id: 'text01',
             bookId: 'JHN',

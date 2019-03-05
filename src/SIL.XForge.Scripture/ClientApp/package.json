@@ -64,7 +64,7 @@
     "rxjs-take-while-inclusive": "^2.1.0",
     "sharedb": "^1.0.0-beta.13",
     "xregexp": "^4.2.4",
-    "zone.js": "^0.8.26",
+    "zone.js": "^0.8.29",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {

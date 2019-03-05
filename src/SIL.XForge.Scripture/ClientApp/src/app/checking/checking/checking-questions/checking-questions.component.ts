@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { timer } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { Question } from '../checking.component';
 
@@ -9,29 +10,26 @@ import { Question } from '../checking.component';
   styleUrls: ['./checking-questions.component.scss']
 })
 export class CheckingQuestionsComponent extends SubscriptionDisposable {
-  @Input() questions: Question[] = [];
-  @Output() update: EventEmitter<Question> = new EventEmitter<Question>();
-  activeQuestion: Question;
-
-  constructor() {
-    super();
-  }
-
   private get activeQuestionIndex() {
     return this.questions.findIndex(question => question.id === this.activeQuestion.id);
   }
+  @Input() questions: Question[] = [];
+  @Output() update: EventEmitter<Question> = new EventEmitter<Question>();
+  activeQuestionSubject: BehaviorSubject<Question> = new BehaviorSubject<Question>(undefined);
 
-  activateQuestion(question: Question) {
-    this.activeQuestion = question;
-
+  constructor() {
+    super();
     // Only mark as read if it has been viewed for a set period of time and not an accidental click
-    const readTimer = this.subscribe(timer(1000), () => {
-      if (this.activeQuestion.id === question.id) {
+    this.subscribe(this.activeQuestionSubject.pipe(debounceTime(1000)), question => {
+      if (question) {
         question.markAsRead();
-        readTimer.unsubscribe();
         this.update.emit(question);
       }
     });
+  }
+
+  get activeQuestion(): Question {
+    return this.activeQuestionSubject.value;
   }
 
   checkCanChangeQuestion(newIndex: number) {
@@ -44,6 +42,10 @@ export class CheckingQuestionsComponent extends SubscriptionDisposable {
 
   previousQuestion() {
     this.changeQuestion(-1);
+  }
+
+  activateQuestion(question: Question) {
+    this.activeQuestionSubject.next(question);
   }
 
   private changeQuestion(newDifferential: number) {

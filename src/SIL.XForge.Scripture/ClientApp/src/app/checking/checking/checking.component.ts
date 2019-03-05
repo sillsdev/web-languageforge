@@ -1,10 +1,11 @@
 import { Component, HostBinding, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { ProjectRef } from 'xforge-common/models/project';
 import { Resource } from 'xforge-common/models/resource';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
-import { TextBase } from '../../core/models/sfdomain-model.generated';
+import { nameof } from 'xforge-common/utils';
+import { SFProject } from '../../core/models/sfproject';
+import { Text } from '../../core/models/text';
 import { TextService } from '../../core/text.service';
 import { CheckingQuestionsComponent } from './checking-questions/checking-questions.component';
 import { CheckingTextComponent } from './checking-text/checking-text.component';
@@ -69,8 +70,8 @@ export class CheckingComponent extends SubscriptionDisposable {
   @HostBinding('class') classes = 'flex-max';
   @ViewChild(CheckingTextComponent) scripturePanel: CheckingTextComponent;
   @ViewChild(CheckingQuestionsComponent) questionsPanel: CheckingQuestionsComponent;
-  project: ProjectRef;
-  text: TextBase;
+  project: SFProject;
+  text: Text;
   questions: Question[];
   summary: Summary = {
     read: 0,
@@ -78,22 +79,18 @@ export class CheckingComponent extends SubscriptionDisposable {
     answered: 0
   };
 
-  constructor(private activatedRoute: ActivatedRoute, private textService: TextService, private router: Router) {
+  constructor(private activatedRoute: ActivatedRoute, private textService: TextService) {
     super();
     this.subscribe(
       this.activatedRoute.params.pipe(
         switchMap(params => {
-          return textService.get(params['textId']);
+          return textService.get(params['textId'], [[nameof<Text>('project')]]);
         })
       ),
       textData => {
-        if (textData) {
-          this.text = textData.data;
-          this.project = textData.getIncluded(textData.data.project);
-          this.loadQuestions();
-        } else {
-          this.goHome();
-        }
+        this.text = textData.data;
+        this.project = textData.getIncluded(this.text.project);
+        this.loadQuestions();
       }
     );
   }
@@ -108,10 +105,6 @@ export class CheckingComponent extends SubscriptionDisposable {
 
   questionUpdate(question: Question) {
     this.refreshSummary();
-  }
-
-  private goHome() {
-    this.router.navigateByUrl('/home');
   }
 
   private loadQuestions() {
