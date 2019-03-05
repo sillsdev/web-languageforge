@@ -68,12 +68,12 @@ namespace SIL.XForge.DataAccess
             UpdateDefinition<T> updateDef = updateBuilder.Build()
                 .Set(e => e.DateModified, now)
                 .SetOnInsert(e => e.DateCreated, now);
-            return await _collection.FindOneAndUpdateAsync(filter, updateDef,
-                new FindOneAndUpdateOptions<T>
-                {
-                    IsUpsert = upsert,
-                    ReturnDocument = ReturnDocument.After
-                });
+                return await _collection.FindOneAndUpdateAsync(filter, updateDef,
+                    new FindOneAndUpdateOptions<T>
+                    {
+                        IsUpsert = upsert,
+                        ReturnDocument = ReturnDocument.After
+                    });
         }
 
         public Task<T> DeleteAsync(Expression<Func<T, bool>> filter)

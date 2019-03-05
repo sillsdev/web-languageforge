@@ -13,6 +13,16 @@ import { UserService } from '../user.service';
   styleUrls: ['./sa-user-entry.component.scss']
 })
 export class SaUserEntryComponent implements OnInit {
+  private static isConflict(error: any): boolean {
+    if (!error) {
+      return false;
+    }
+    if (!error.response) {
+      return false;
+    }
+    return error.response.status === 409;
+  }
+
   @Output() outputUserList: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
   accountUserForm: FormGroup;
@@ -139,8 +149,11 @@ export class SaUserEntryComponent implements OnInit {
     try {
       await this.userService.onlineCreate(newUser);
     } catch (e) {
-      this.noticeService.show('Error creating: ' + e.message);
-      return;
+      if (SaUserEntryComponent.isConflict(e)) {
+        this.noticeService.show('User account could not be created due to a conflict.');
+        return;
+      }
+      throw e;
     } finally {
       this.isSubmitted = false;
     }
@@ -171,8 +184,11 @@ export class SaUserEntryComponent implements OnInit {
     try {
       await this.userService.onlineUpdateAttributes(this.editUserId, updateUser);
     } catch (e) {
-      this.noticeService.show('Error updating: ' + e.message);
-      return;
+      if (SaUserEntryComponent.isConflict(e)) {
+        this.noticeService.show('User account could not be updated due to a conflict.');
+        return;
+      }
+      throw e;
     }
     this.accountUserForm.reset();
     this.noticeService.show('User account updated.');

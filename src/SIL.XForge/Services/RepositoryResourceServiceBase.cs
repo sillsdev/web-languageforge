@@ -8,6 +8,7 @@ using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Models;
 using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Http;
+using MongoDB.Driver;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
@@ -27,7 +28,9 @@ namespace SIL.XForge.Services
 
         protected override async Task<TEntity> InsertEntityAsync(TEntity entity)
         {
-            await Entities.InsertAsync(entity);
+            if (!await Entities.InsertAsync(entity))
+                throw new JsonApiException(StatusCodes.Status409Conflict,
+                    "Another entity with the same key already exists.");
             return await Entities.GetAsync(entity.Id);
         }
 
@@ -36,10 +39,12 @@ namespace SIL.XForge.Services
             return (await Entities.DeleteAsync(id)) != null;
         }
 
-        protected override Task<TEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
+        protected override async Task<TEntity> UpdateEntityAsync(string id, IDictionary<string, object> attrs,
             IDictionary<string, string> relationships)
         {
-            return Entities.UpdateAsync(e => e.Id == id, update =>
+            try
+            {
+                return await Entities.UpdateAsync(e => e.Id == id, update =>
                 {
                     foreach (KeyValuePair<string, object> attr in attrs)
                         UpdateAttribute(update, attr.Key, attr.Value);
@@ -55,6 +60,14 @@ namespace SIL.XForge.Services
                         }
                     }
                 });
+            }
+            catch (MongoCommandException e)
+            {
+                if ("DuplicateKey".Equals(e.CodeName))
+                    throw new JsonApiException(StatusCodes.Status409Conflict,
+                        "Another entity with the same key already exists.");
+                throw;
+            }
         }
 
         protected override Task<TEntity> UpdateEntityRelationshipAsync(string id, string propertyName,

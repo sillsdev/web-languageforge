@@ -192,15 +192,28 @@ describe('System Administration User Entry Component', () => {
       verify(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).never();
     }));
 
-    it('should report any errors', fakeAsync(() => {
+    it('should report conflicts', fakeAsync(() => {
       const env = new TestUserEntryComponent();
-      when(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).thenThrow(new Error('Server Error!'));
+      when(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).thenThrow(
+        new MockClientError(409, 'Duplicate Email!')
+      );
       env.useExistingUser();
       env.setInputValue(env.nameInput, 'Something New');
       env.clickElement(env.updateButton);
       verify(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).once();
-      verify(env.mockedNoticeService.show('Error updating: Server Error!')).once();
+      verify(env.mockedNoticeService.show('User account could not be updated due to a conflict.')).once();
       expect().nothing();
+    }));
+
+    it('should rethrow unrecognized errors', fakeAsync(() => {
+      const env = new TestUserEntryComponent();
+      when(env.mockedUserService.onlineUpdateAttributes(anything(), anything())).thenThrow(
+        new Error('Ordered rabbit stew but got vegetable soup!')
+      );
+      env.useExistingUser();
+      env.setInputValue(env.nameInput, 'Something New');
+      const expected = new RegExp('.*Ordered rabbit stew but got vegetable soup!.*');
+      expect(() => env.clickElement(env.updateButton)).toThrowError(expected);
     }));
 
     it('should allow the user to be updated when password field is untouched', fakeAsync(() => {
@@ -289,9 +302,9 @@ describe('System Administration User Entry Component', () => {
       verify(env.mockedNoticeService.show('User account created successfully.')).once();
     }));
 
-    it('should report any errors', fakeAsync(() => {
+    it('should report conflicts', fakeAsync(() => {
       const env = new TestUserEntryComponent();
-      when(env.mockedUserService.onlineCreate(anything())).thenThrow(new Error('Server Error!'));
+      when(env.mockedUserService.onlineCreate(anything())).thenThrow(new MockClientError(409, 'Duplicate Email!'));
       env.simulateAddUser();
       env.setInputValue(env.nameInput, 'New Name');
       env.setInputValue(env.emailInput, env.testUser.email);
@@ -299,7 +312,27 @@ describe('System Administration User Entry Component', () => {
       expect(env.component.accountUserForm.valid).toBe(true);
       env.clickElement(env.addButton);
       verify(env.mockedUserService.onlineCreate(anything())).once();
-      verify(env.mockedNoticeService.show('Error creating: Server Error!')).once();
+      verify(env.mockedNoticeService.show('User account could not be created due to a conflict.')).once();
+    }));
+
+    it('should rethrow unrecognized errors', fakeAsync(() => {
+      const env = new TestUserEntryComponent();
+      when(env.mockedUserService.onlineCreate(anything())).thenThrow(new Error('Ordered rabbit stew but got veggie!'));
+      env.simulateAddUser();
+      env.setInputValue(env.nameInput, 'New Name');
+      env.setInputValue(env.emailInput, 'newEmail@example.com');
+      env.setInputValue(env.passwordInput, 'new password');
+      const expected = new RegExp('.*Ordered rabbit stew but got veggie!.*');
+      expect(() => env.clickElement(env.addButton)).toThrowError(expected);
     }));
   });
 });
+
+class MockClientError extends Error {
+  readonly response: any;
+
+  constructor(responseCode: number, message?: string) {
+    super(message);
+    this.response = { status: responseCode };
+  }
+}
