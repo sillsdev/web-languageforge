@@ -283,3 +283,11 @@ ng-quill-editor .ql-editor.drop-box {
         opacity: 1;
     }
 }
+
+.document-opening-indicator {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: x-large;
+}

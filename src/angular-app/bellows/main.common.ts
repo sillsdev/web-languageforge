@@ -1,12 +1,13 @@
 import 'angular';
 import 'angular-route';
-import 'angular-sortable-view';
 import 'angular-ui-bootstrap-4';
 import 'angular-ui-router';
 import 'angular-ui-validate';
 import 'angular-zxcvbn';
 
 import 'ng-file-upload/dist/ng-file-upload-all.js';
+
+import './core/service-worker-registration.js';
 
 import './polyfills.browser';
 

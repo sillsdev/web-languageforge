@@ -352,6 +352,7 @@ dc-entry .card {
     cursor: pointer;
   }
   .listItemPrimary {
+    text-align: initial;
     z-index: 2;
     font-size: 1.0em;
   }
@@ -363,11 +364,11 @@ dc-entry .card {
     text-overflow: ellipsis;
   }
   .deleteX {
-    i {
+    .fa {
       cursor: pointer;
     }
-    i:hover {
-      color: map-get($theme-colors, danger);
+    .fa:hover {
+      color: red;
     }
   }
   h5 {

@@ -1,10 +1,11 @@
 import * as angular from 'angular';
 import { ProgressStatus, TrainResultCode } from 'machine';
 import Quill, { DeltaStatic, RangeStatic } from 'quill';
+import Worker from 'worker-loader?name=document-cache.worker.js&publicPath=/dist/!./document-cache.worker';
 
-import { JsonRpcResult } from '../../../core/api/json-rpc.service';
 import { ModalService } from '../../../core/modal/modal.service';
 import { NoticeService } from '../../../core/notice/notice.service';
+import { DocumentsOfflineCacheService } from '../../../core/offline/documents-offline-cache.service';
 import { UtilityService } from '../../../core/utility.service';
 import { DocType, SaveState } from '../core/constants';
 import { MachineService } from '../core/machine.service';
@@ -40,6 +41,7 @@ export class TranslateEditorController implements angular.IController {
   private failedConnectionCount: number = 0;
   private currentDocType: string;
   private pendingUpdateUserPrefsCount: number;
+  private readonly documentCacheWorker: Worker;
 
   static $inject = ['$window', '$scope',
     '$q', 'machineService',
@@ -52,7 +54,11 @@ export class TranslateEditorController implements angular.IController {
               private readonly metricService: MetricService, private readonly modal: ModalService,
               private readonly notice: NoticeService, private readonly realTime: RealTimeService,
               private readonly projectApi: TranslateProjectService, private readonly util: UtilityService,
-              private readonly sendReceiveService: TranslateSendReceiveService) { }
+              private readonly sendReceiveService: TranslateSendReceiveService) {
+      if (DocumentsOfflineCacheService.canCache()) {
+        this.documentCacheWorker = new Worker();
+      }
+    }
 
   get isScripture(): boolean {
     return this.tecProject != null && this.tecProject.config.isTranslationDataScripture;
@@ -181,6 +187,14 @@ export class TranslateEditorController implements angular.IController {
           }
           this.resetDocumentSets(result.data.documentSetList);
 
+          if (DocumentsOfflineCacheService.canCache()) {
+            this.documentCacheWorker.postMessage({
+              projectId: this.tecProject.id,
+              slug: this.tecProject.slug,
+              docSetIds: this.documentSets.map(ds => ds.id)
+            });
+          }
+
           this.machine.confidenceThreshold = this.tecProject.config.confidenceThreshold;
           const userPreferences = this.tecProject.config.userPreferences;
           if (userPreferences.confidenceThreshold == null || !userPreferences.hasConfidenceOverride ||
@@ -257,6 +271,9 @@ export class TranslateEditorController implements angular.IController {
     this.source.closeDocumentSet();
     this.target.closeDocumentSet();
     this.machine.close();
+    if (DocumentsOfflineCacheService.canCache()) {
+      this.documentCacheWorker.terminate();
+    }
   }
 
   selectDocumentSet(index: number): void {
