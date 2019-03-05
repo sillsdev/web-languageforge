@@ -5,9 +5,12 @@ import {BreadcrumbModule} from '../../../bellows/core/breadcrumbs/breadcrumb.mod
 import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
 import {Session, SessionService} from '../../../bellows/core/session.service';
+import {ListViewModule} from '../../../bellows/shared/list-view.component';
 import {UploadFile} from '../../../bellows/shared/model/upload.model';
+import {TypeAheadModule} from '../../../bellows/shared/type-ahead.module';
 import {SfChecksCoreModule} from '../core/sf-checks-core.module';
 import {Text} from '../shared/model/text.model';
+import {TextDropModule} from '../shared/textdrop.directive';
 
 export const SfChecksProjectModule = angular
   .module('sfchecks.project', [
@@ -15,10 +18,10 @@ export const SfChecksProjectModule = angular
     BreadcrumbModule,
     CoreModule,
     SfChecksCoreModule,
-    'palaso.ui.listview',
-    'palaso.ui.typeahead',
+    ListViewModule,
+    TypeAheadModule,
     NoticeModule,
-    'palaso.ui.textdrop'
+    TextDropModule
   ])
   .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService',
     'linkService', 'listviewSortingService', 'silNoticeService', 'sfchecksProjectService',

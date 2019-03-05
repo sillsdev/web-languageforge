@@ -1,0 +1,29 @@
+pui-audio-recorder {
+  padding-top: 0.25em;
+  display: block;
+  text-align: center;
+
+  .record-area {
+    margin-right: 1em;
+  }
+
+  .record-button {
+    text-align: center;
+    .fa-microphone {
+      font-size: 2.5em;
+    }
+    .record-text, .recording-time {
+      display: block;
+      clear: left;
+    }
+  }
+
+  .recording-preview {
+    display: flex;
+    margin-left: 0.5em;
+    margin-bottom: 0.25em;
+    .btn {
+      padding: 0.2em 0.5em;
+    }
+  }
+}

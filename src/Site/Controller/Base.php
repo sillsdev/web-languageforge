@@ -35,6 +35,7 @@ class Base
         $this->data['vendorFilesCss'] = [];
         $this->data['vendorFilesMinJs'] = [];
         $this->data['isAngular2'] = false;
+        $this->data['themeColor'] = '';
     }
 
     /** @var array data used to render templates */
@@ -121,8 +122,13 @@ class Base
         $this->data['faviconPath'] = $this->getFilePath('image/favicon.ico');
 
         $this->data['manifestFilename'] = '';
-        if (file_exists('appManifest/' . $this->website->domain . '.manifest.json')) {
-            $this->data['manifestFilename'] = $this->website->domain . '.manifest.json';
+        if (file_exists('appManifest/' . $this->website->base . '.manifest.json')) {
+            $this->data['manifestFilename'] = $this->website->base . '.manifest.json';
+        }
+        if($this->website->base == Website::LANGUAGEFORGE) {
+            $this->data['themeColor'] = '#0a2440';
+        } elseif($this->website->base == Website::SCRIPTUREFORGE) {
+            $this->data['themeColor'] = '#3a3a3a';
         }
 
         $this->populateHeaderMenuViewdata();

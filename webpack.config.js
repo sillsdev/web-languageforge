@@ -8,6 +8,7 @@ var webpack = require('webpack');
 var webpackMerge = require('webpack-merge');
 var UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 var LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
+var workboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = function (env) {
   if (env == null) {
@@ -91,7 +92,6 @@ module.exports = function (env) {
 
     output: {
       filename: '[name].bundle.js',
-      sourceMapFilename: '[name].map',
       chunkFilename: '[id].chunk.js'
     },
 
@@ -123,6 +123,15 @@ module.exports = function (env) {
     }
   };
 
+  // Prepare service worker config
+  var serviceWorkerConfig = {
+    clientsClaim: true,
+    importScripts: [
+      '/service-worker/' + env.applicationName + '/service-worker.js'
+    ],
+    include: [] // To be changed once ready to start caching the whole app
+  };
+
   // Set up and return a customized Webpack config according to the environment we're in
 
   webpackConfig.entry.main = './src/angular-app/' + env.applicationName + '/main' +
@@ -138,6 +147,10 @@ module.exports = function (env) {
     webpackConfig.plugins.push(new LoaderOptionsPlugin({
       minimize: true
     }));
+  } else {
+    serviceWorkerConfig.importScripts = ['/service-worker/service-worker-debug.js']
+      .concat(serviceWorkerConfig.importScripts);
+    serviceWorkerConfig.skipWaiting = true;
   }
 
   if (env.isAnalyze) {
@@ -174,6 +187,11 @@ module.exports = function (env) {
     ];
     webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
   }
+
+  // Add Service Worker to list of plugins
+  webpackConfig.plugins = webpackConfig.plugins.concat(
+    [new workboxPlugin.GenerateSW(serviceWorkerConfig)]
+  );
 
   return webpackMerge(defaultConfig, webpackConfig);
 };

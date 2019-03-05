@@ -4,7 +4,6 @@
 Vagrant.configure("2") do |config|
 
   config.vm.box = "NathanielPaulus/xenial64-xforge"
-  config.ssh.insert_key = false
 
   config.vm.provider "virtualbox" do |vb|
     vb.gui = true
@@ -13,6 +12,10 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", privileged: false, inline: <<~SHELL
     set -eux
+
+    # Delete and generate unique host keys until handled by base box.
+    sudo rm -v /etc/ssh/ssh_host_*
+    sudo dpkg-reconfigure openssh-server
 
     git config --global user.email "#{`git config --get user.email`.strip}"
     git config --global user.name "#{`git config --get user.name`.strip}"
