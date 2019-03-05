@@ -101,7 +101,7 @@ export class UserService extends ResourceService {
 
   async onlineUnlinkParatextAccount(): Promise<void> {
     const attrs: Partial<User> = { paratextId: null };
-    await this.jsonApiService.onlineUpdateAttributes(this.identity(this.currentUserId), attrs);
+    await this.jsonApiService.onlineUpdateAttributes(this.identity(this.currentUserId), attrs, true);
   }
 
   async onlineDelete(id: string): Promise<void> {

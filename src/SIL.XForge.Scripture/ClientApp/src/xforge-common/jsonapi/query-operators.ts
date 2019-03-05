@@ -46,7 +46,6 @@ function operationsFromDeserializedDocument(deserialized: any): Operation[] {
 export interface QueryOperatorResponse {
   transforms: Transform[];
   primaryData: Record | Record[];
-  includedData?: Record[];
   meta?: any;
 }
 
@@ -66,10 +65,9 @@ export const QueryOperators: Dict<QueryOperator> = {
 
     const transforms = [buildTransform(operations)];
     const primaryData = deserialized.data;
-    const includedData = deserialized.included;
     const meta = document.meta;
 
-    return { transforms, primaryData, includedData, meta };
+    return { transforms, primaryData, meta };
   },
 
   async findRecords(source: JSONAPISource, query: Query): Promise<QueryOperatorResponse> {
@@ -104,10 +102,9 @@ export const QueryOperators: Dict<QueryOperator> = {
 
     const transforms = [buildTransform(operations)];
     const primaryData = deserialized.data;
-    const includedData = deserialized.included;
     const meta = document.meta;
 
-    return { transforms, primaryData, includedData, meta };
+    return { transforms, primaryData, meta };
   },
 
   async findRelatedRecord(source: JSONAPISource, query: Query): Promise<QueryOperatorResponse> {
@@ -133,10 +130,9 @@ export const QueryOperators: Dict<QueryOperator> = {
 
     const transforms = [buildTransform(operations)];
     const primaryData = relatedRecord;
-    const includedData = deserialized.included;
     const meta = document.meta;
 
-    return { transforms, primaryData, includedData, meta };
+    return { transforms, primaryData, meta };
   },
 
   async findRelatedRecords(source: JSONAPISource, query: Query): Promise<QueryOperatorResponse> {
@@ -163,10 +159,9 @@ export const QueryOperators: Dict<QueryOperator> = {
 
     const transforms = [buildTransform(operations)];
     const primaryData = relatedRecords;
-    const includedData = deserialized.included;
     const meta = document.meta;
 
-    return { transforms, primaryData, includedData, meta };
+    return { transforms, primaryData, meta };
   }
 };
 

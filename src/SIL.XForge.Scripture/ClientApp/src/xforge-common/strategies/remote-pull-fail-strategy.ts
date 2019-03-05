@@ -3,6 +3,7 @@ import { Exception } from '@orbit/core';
 import { FindRecord, FindRelatedRecord, FindRelatedRecords, Query, RecordIdentity } from '@orbit/data';
 import Store from '@orbit/store';
 
+import { isOnlineRequest, RequestType } from '../request-type';
 import { isNotFoundError } from '../utils';
 
 /**
@@ -16,14 +17,17 @@ export class RemotePullFailStrategy extends ConnectionStrategy {
       on: 'pullFail',
 
       target: store,
-
-      action: (q: Query, ex: Exception) => this.handlePullFail(q, ex),
+      action: (query: Query, ex: Exception) => this.handlePullFail(query, ex),
 
       blocking: true
     });
   }
 
-  private handlePullFail(query: Query, ex: Exception): void {
+  private async handlePullFail(query: Query, ex: Exception): Promise<void> {
+    await this.source.requestQueue.skip();
+    if (isOnlineRequest(query)) {
+      await this.target.requestQueue.skip();
+    }
     if (isNotFoundError(ex)) {
       let record: RecordIdentity;
       switch (query.expression.op) {
@@ -43,10 +47,8 @@ export class RemotePullFailStrategy extends ConnectionStrategy {
 
       if (record != null) {
         const store = this.target as Store;
-        store.update(t => t.removeRecord(record), { localOnly: true });
+        await store.update(t => t.removeRecord(record), { requestType: RequestType.LocalOnly });
       }
     }
-
-    this.source.requestQueue.skip();
   }
 }
