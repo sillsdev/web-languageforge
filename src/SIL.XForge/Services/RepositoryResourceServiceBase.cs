@@ -65,7 +65,7 @@ namespace SIL.XForge.Services
             {
                 if ("DuplicateKey".Equals(e.CodeName))
                     throw new JsonApiException(StatusCodes.Status409Conflict,
-                        "Another entity with the same key already exists.");
+                        "Another entity with the same key already exists.", e);
                 throw;
             }
         }
