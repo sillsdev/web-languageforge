@@ -149,7 +149,7 @@ CHROME_BIN=chromium-browser ng test
 
 You can make the environment variable (`CHROME_BIN=chromium-browser`) permanent by following the instructions [here](https://help.ubuntu.com/community/EnvironmentVariables), then you can simply run `ng test`. The environment variable is already set in the vagrant.
 
-`ng test` will monitor and run tests in a Chromium browser window. You can also monitor and run tests headlessly from the commandline by running
+`ng test` will monitor and run tests in a Chromium browser window. You can also monitor and run tests headlessly from the command line by running
 
 ```bash
 src/SIL.XForge.Scripture/ClientApp/monitor-test-headless.sh
@@ -160,6 +160,18 @@ Or just run tests once without monitoring with
 ```bash
 src/SIL.XForge.Scripture/ClientApp/test-headless.sh
 ```
+
+#### Debugging Unit Tests
+The best way to debug Angular unit tests is with Chromium.
+* Run as usual or with `ng test --sourceMap=true`.
+* When the Chromium window appears, press _F12_.
+* Click the Sources tab
+* Files might show up under `webpack://` or `context/localhost:dddd/src` or elsewhere, but you can always press _CTRL-P_ and type the name of a file to get there faster.
+
+[This video](https://youtu.be/NVqplMyOZTM) has a live demo of the process.
+
+#### Filtering Unit Tests
+To run (or not to run) specific tests or fixtures, you can use the prefixes `f`ocus and e`x`clude, as in `fdescribe` or `fit` to run only the specified functions, or `xdescribe` and `xit` to skip running the specified functions (but all functions will still be built). To skip building extra tests, modify the filter in `src/SIL.XForge.Scripture/ClientApp/src/tests.ts` per [these instructions](https://stackoverflow.com/a/50636750/3587084).
 
 See documentation for [running tests](https://github.com/angular/angular-cli/wiki/test) and [writing tests](https://angular.io/guide/testing#testing).
 
@@ -247,3 +259,6 @@ ng serve
 ```
 
 When files change on the backend it will compile the changes automatically and now `ng serve` won't re-start every time.
+
+## Database
+The VS Code extension [Azure Cosmos DB](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-cosmosdb) can be used to inspect our Mongo DB.
