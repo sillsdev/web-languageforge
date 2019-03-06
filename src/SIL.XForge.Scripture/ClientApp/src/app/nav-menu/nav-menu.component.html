@@ -74,25 +74,29 @@
           {{ text.name }}
         </mdc-list-item>
       </div>
-      <mdc-list-divider *ngIf="selectedProject.checkingConfig.enabled"></mdc-list-divider>
-      <mdc-list-item
-        [routerLink]="['/projects', selectedProject.id, 'sync']"
-        [activated]="rlaSync.isActive"
-        routerLinkActive
-        #rlaSync="routerLinkActive"
-      >
-        <mdc-icon mdcListItemGraphic>sync</mdc-icon>
-        Synchronize
-      </mdc-list-item>
-      <mdc-list-item
-        [routerLink]="['/projects', selectedProject.id, 'settings']"
-        [activated]="rlaSettings.isActive"
-        routerLinkActive
-        #rlaSettings="routerLinkActive"
-      >
-        <mdc-icon mdcListItemGraphic>settings</mdc-icon>
-        Settings
-      </mdc-list-item>
+      <div *ngIf="(isProjectAdmin$ | async)">
+        <mdc-list-divider></mdc-list-divider>
+        <mdc-list-item
+          [routerLink]="['/projects', selectedProject.id, 'sync']"
+          [activated]="rlaSync.isActive"
+          routerLinkActive
+          #rlaSync="routerLinkActive"
+          id="sync-item"
+        >
+          <mdc-icon mdcListItemGraphic>sync</mdc-icon>
+          Synchronize
+        </mdc-list-item>
+        <mdc-list-item
+          [routerLink]="['/projects', selectedProject.id, 'settings']"
+          [activated]="rlaSettings.isActive"
+          routerLinkActive
+          #rlaSettings="routerLinkActive"
+          id="settings-item"
+        >
+          <mdc-icon mdcListItemGraphic>settings</mdc-icon>
+          Settings
+        </mdc-list-item>
+      </div>
     </mdc-list>
   </mdc-drawer-content>
 </mdc-drawer>
