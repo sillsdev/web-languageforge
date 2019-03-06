@@ -3,10 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from 'xforge-common/auth.guard';
 import { ChangePasswordComponent } from 'xforge-common/change-password/change-password.component';
+import { MyAccountComponent } from 'xforge-common/my-account/my-account.component';
 import { SystemAdminAuthGuard } from 'xforge-common/system-admin-auth.guard';
 import { SystemAdministrationComponent } from 'xforge-common/system-administration/system-administration.component';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
-import { MyAccountComponent } from './my-account/my-account.component';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ProjectComponent } from './project/project.component';
 import { SFAdminAuthGuard } from './shared/sfadmin-auth.guard';

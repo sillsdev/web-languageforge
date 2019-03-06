@@ -10,8 +10,8 @@ import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { UserService } from 'xforge-common/user.service';
 import { XFValidators } from 'xforge-common/xfvalidators';
 import { environment } from '../../environments/environment';
-import { NoticeService } from '../../xforge-common/notice.service';
-import { ParatextService } from '../core/paratext.service';
+import { NoticeService } from '../notice.service';
+import { ParatextService } from '../paratext.service';
 import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 
 /** Support ISO8601 formatted dates for datepicker, and handle timezone issues. */

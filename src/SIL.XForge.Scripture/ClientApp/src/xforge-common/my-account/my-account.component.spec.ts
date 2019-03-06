@@ -15,7 +15,7 @@ import { User } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
-import { ParatextService } from '../core/paratext.service';
+import { ParatextService } from '../paratext.service';
 import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 import { MyAccountComponent } from './my-account.component';
 
