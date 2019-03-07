@@ -99,7 +99,7 @@ namespace SIL.XForge.Services
         }
 
         [Test]
-        public async Task CreateAsync_Email_Conflict()
+        public void CreateAsync_Email_Conflict()
         {
             using (var env = new TestEnvironment())
             {
@@ -222,7 +222,7 @@ namespace SIL.XForge.Services
         }
 
         [Test]
-        public async Task UpdateAsync_Email_Conflict()
+        public void UpdateAsync_Email_Conflict()
         {
             using (var env = new TestEnvironment())
             {
