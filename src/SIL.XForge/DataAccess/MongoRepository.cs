@@ -28,7 +28,7 @@ namespace SIL.XForge.DataAccess
             return _collection.AsQueryable();
         }
 
-        public async Task<bool> InsertAsync(T entity)
+        public async Task InsertAsync(T entity)
         {
             try
             {
@@ -36,44 +36,61 @@ namespace SIL.XForge.DataAccess
                 entity.DateModified = now;
                 entity.DateCreated = now;
                 await _collection.InsertOneAsync(entity);
-                return true;
             }
             catch (MongoWriteException e)
             {
                 if (e.WriteError.Category == ServerErrorCategory.DuplicateKey)
-                    return false;
+                    throw new DuplicateKeyException();
                 throw;
             }
         }
 
         public async Task<bool> ReplaceAsync(T entity, bool upsert = false)
         {
-            var now = DateTime.UtcNow;
-            entity.DateModified = now;
-            if (entity.DateCreated == DateTime.MinValue)
-                entity.DateCreated = now;
-            ReplaceOneResult result = await _collection.ReplaceOneAsync(e => e.Id == entity.Id, entity,
-                new UpdateOptions { IsUpsert = upsert });
-            if (result.IsAcknowledged)
-                return upsert || result.MatchedCount > 0;
-            return false;
+            try
+            {
+                var now = DateTime.UtcNow;
+                entity.DateModified = now;
+                if (entity.DateCreated == DateTime.MinValue)
+                    entity.DateCreated = now;
+                ReplaceOneResult result = await _collection.ReplaceOneAsync(e => e.Id == entity.Id, entity,
+                    new UpdateOptions { IsUpsert = upsert });
+                if (result.IsAcknowledged)
+                    return upsert || result.MatchedCount > 0;
+                return false;
+            }
+            catch (MongoWriteException e)
+            {
+                if (e.WriteError.Category == ServerErrorCategory.DuplicateKey)
+                    throw new DuplicateKeyException();
+                throw;
+            }
         }
 
         public async Task<T> UpdateAsync(Expression<Func<T, bool>> filter, Action<IUpdateBuilder<T>> update,
             bool upsert = false)
         {
-            var now = DateTime.UtcNow;
-            var updateBuilder = new MongoUpdateBuilder<T>();
-            update(updateBuilder);
-            UpdateDefinition<T> updateDef = updateBuilder.Build()
-                .Set(e => e.DateModified, now)
-                .SetOnInsert(e => e.DateCreated, now);
+            try
+            {
+                var now = DateTime.UtcNow;
+                var updateBuilder = new MongoUpdateBuilder<T>();
+                update(updateBuilder);
+                UpdateDefinition<T> updateDef = updateBuilder.Build()
+                    .Set(e => e.DateModified, now)
+                    .SetOnInsert(e => e.DateCreated, now);
                 return await _collection.FindOneAndUpdateAsync(filter, updateDef,
                     new FindOneAndUpdateOptions<T>
                     {
                         IsUpsert = upsert,
                         ReturnDocument = ReturnDocument.After
                     });
+            }
+            catch (MongoWriteException e)
+            {
+                if (e.WriteError.Category == ServerErrorCategory.DuplicateKey)
+                    throw new DuplicateKeyException();
+                throw;
+            }
         }
 
         public Task<T> DeleteAsync(Expression<Func<T, bool>> filter)

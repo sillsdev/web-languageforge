@@ -167,22 +167,25 @@ namespace SIL.XForge.Identity.Controllers
             }
             else
             {
-                var user = new UserEntity
+                try
                 {
-                    Name = name,
-                    Email = email,
-                    CanonicalEmail = UserEntity.CanonicalizeEmail(email),
-                    EmailVerified = false,
-                    Password = UserEntity.HashPassword(password),
-                    Role = SystemRoles.User,
-                    Active = true
-                };
-
-                if (await _users.InsertAsync(user))
-                {
+                    var user = new UserEntity
+                    {
+                        Name = name,
+                        Email = email,
+                        CanonicalEmail = UserEntity.CanonicalizeEmail(email),
+                        EmailVerified = false,
+                        Password = UserEntity.HashPassword(password),
+                        Role = SystemRoles.User,
+                        Active = true
+                    };
+                    await _users.InsertAsync(user);
                     await LogInUserAsync(user);
                     await SendEmailVerificationLink(user.CanonicalEmail);
                     return "success";
+                }
+                catch (DuplicateKeyException)
+                {
                 }
             }
 

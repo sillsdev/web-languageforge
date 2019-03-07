@@ -12,7 +12,7 @@ namespace SIL.XForge.DataAccess
 
         IQueryable<T> Query();
 
-        Task<bool> InsertAsync(T entity);
+        Task InsertAsync(T entity);
         Task<bool> ReplaceAsync(T entity, bool upsert = false);
         Task<T> UpdateAsync(Expression<Func<T, bool>> filter, Action<IUpdateBuilder<T>> update, bool upsert = false);
         Task<T> DeleteAsync(Expression<Func<T, bool>> filter);
