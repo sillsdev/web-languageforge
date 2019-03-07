@@ -2,13 +2,28 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
-import { instance, mock, when } from 'ts-mockito';
+import { Observable, of } from 'rxjs';
+import { deepEqual, instance, mock, when } from 'ts-mockito';
 
-import { MapQueryResults } from 'xforge-common/json-api.service';
-import { ProjectService } from 'xforge-common/project.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { QuillModule } from 'ngx-quill';
+import Quill, { DeltaStatic } from 'quill';
+import { Snapshot } from 'sharedb/lib/client';
+import { JsonApiService, MapQueryResults } from 'xforge-common/json-api.service';
+import { DomainModel } from 'xforge-common/models/domain-model';
+import { RealtimeDoc } from 'xforge-common/realtime-doc';
+import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
+import { nameof } from 'xforge-common/utils';
+import { SFProjectRef } from '../../core/models/sfdomain-model.generated';
 import { SFProject } from '../../core/models/sfproject';
+import { Text } from '../../core/models/text';
+import { TextData } from '../../core/models/text-data';
+import { TextService, TextType } from '../../core/text.service';
+import { TextComponent } from '../../shared/text/text.component';
+import { CheckingQuestionsComponent } from './checking-questions/checking-questions.component';
+import { CheckingTextComponent } from './checking-text/checking-text.component';
 import { CheckingComponent } from './checking.component';
 import { FontSizeComponent } from './font-size/font-size.component';
 
@@ -47,7 +62,7 @@ describe('CheckingComponent', () => {
       const next = env.nextButton;
       expect(prev.nativeElement.disabled).toBe(true);
       expect(next.nativeElement.disabled).toBe(false);
-      question = env.selectQuestion(3);
+      question = env.selectQuestion(14);
       expect(prev.nativeElement.disabled).toBe(false);
       expect(next.nativeElement.disabled).toBe(true);
     });
@@ -55,7 +70,7 @@ describe('CheckingComponent', () => {
 
   describe('Questions', () => {
     it('questions are displaying', () => {
-      expect(env.questions.length).toEqual(3);
+      expect(env.questions.length).toEqual(14);
     });
 
     it('can select a question', () => {
@@ -104,6 +119,20 @@ describe('CheckingComponent', () => {
       expect(env.answerPanel).toBeDefined();
     });
   });
+
+  describe('Text', () => {
+    it('can increase and decrease font size', done => {
+      env.component.scripturePanel.textComponent.loaded.subscribe(() => {
+        const editor = env.quillEditor;
+        expect(editor.style.fontSize).toBe('1rem');
+        env.clickButton(env.increaseFontSizeButton);
+        expect(editor.style.fontSize).toBe('1.1rem');
+        env.clickButton(env.decreaseFontSizeButton);
+        expect(editor.style.fontSize).toBe('1rem');
+        done();
+      });
+    });
+  });
 });
 
 class TestEnvironment {
@@ -111,21 +140,36 @@ class TestEnvironment {
   fixture: ComponentFixture<CheckingComponent>;
 
   mockedRouter: Router;
-  mockedProjectService: ProjectService;
+  mockedTextService: TextService;
+  mockedDomainModel: DomainModel;
+  mockedOAuthService: OAuthService;
+  mockedRealtimeOfflineStore: RealtimeOfflineStore;
   constructor() {
     this.mockedRouter = mock(Router);
-    this.mockedProjectService = mock(ProjectService);
+    this.mockedTextService = mock(TextService);
+    this.mockedDomainModel = mock(DomainModel);
+    this.mockedOAuthService = mock(OAuthService);
+    this.mockedRealtimeOfflineStore = mock(RealtimeOfflineStore);
 
     TestBed.configureTestingModule({
-      declarations: [CheckingComponent, FontSizeComponent],
-      imports: [UICommonModule],
+      declarations: [
+        CheckingComponent,
+        FontSizeComponent,
+        CheckingTextComponent,
+        CheckingQuestionsComponent,
+        TextComponent
+      ],
+      imports: [UICommonModule, HttpClientTestingModule, QuillModule],
       providers: [
         { provide: Router, useFactory: () => instance(this.mockedRouter) },
         {
           provide: ActivatedRoute,
-          useValue: { params: of({ projectId: 'project01' }) }
+          useValue: { params: of({ textId: 'text01' }) }
         },
-        { provide: ProjectService, useFactory: () => instance(this.mockedProjectService) }
+        { provide: TextService, useFactory: () => instance(this.mockedTextService) },
+        JsonApiService,
+        { provide: DomainModel, useFactory: () => instance(this.mockedDomainModel) },
+        { provide: OAuthService, useFactory: () => instance(this.mockedOAuthService) }
       ]
     });
     this.setupProjectData();
@@ -167,6 +211,23 @@ class TestEnvironment {
     return this.fixture.debugElement.queryAll(By.css('#questions-panel .mdc-list-item'));
   }
 
+  get quillEditor(): HTMLElement {
+    return <HTMLElement>document.getElementsByClassName('ql-container')[0];
+  }
+
+  get increaseFontSizeButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('app-font-size button[icon="add"]'));
+  }
+
+  get decreaseFontSizeButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('app-font-size button[icon="remove"]'));
+  }
+
+  clickButton(button: DebugElement): void {
+    button.nativeElement.click();
+    this.fixture.detectChanges();
+  }
+
   selectQuestion(questionNumber: number): DebugElement {
     const question = this.fixture.debugElement.query(
       By.css('#questions-panel .mdc-list-item:nth-child(' + questionNumber + ')')
@@ -176,16 +237,113 @@ class TestEnvironment {
     return question;
   }
 
-  setupProjectData(): void {
-    when(this.mockedProjectService.get('project01')).thenReturn(
+  private setupProjectData(): void {
+    when(this.mockedTextService.get('text01', deepEqual([[nameof<Text>('project')]]))).thenReturn(
       of(
-        new MapQueryResults<SFProject>(
-          new SFProject({
-            id: 'project01',
-            projectName: 'Project 01'
-          })
+        new MapQueryResults<Text>(
+          new Text({
+            id: 'text01',
+            bookId: 'JHN',
+            name: 'John',
+            project: new SFProjectRef('project01')
+          }),
+          undefined,
+          [
+            new SFProject({
+              id: 'project01',
+              projectName: 'Project 01'
+            })
+          ]
         )
       )
     );
+    when(
+      this.mockedTextService.connect(
+        'text01',
+        'source'
+      )
+    ).thenResolve(this.createTextData('source'));
+    when(
+      this.mockedTextService.connect(
+        'text01',
+        'target'
+      )
+    ).thenResolve(this.createTextData('target'));
+  }
+
+  private createTextData(textType: TextType): TextData {
+    const mockedRealtimeOfflineStore = mock(RealtimeOfflineStore);
+    const delta = new Delta();
+    delta.insert({ chapter: 1 }, { chapter: { style: 'c' } });
+    delta.insert({ verse: 1 }, { verse: { style: 'v' } });
+    delta.insert(`${textType}: chapter 1, verse 1.`, { segment: 'verse_1_1' });
+    delta.insert({ verse: 2 }, { verse: { style: 'v' } });
+    switch (textType) {
+      case 'source':
+        delta.insert(`${textType}: chapter 1, verse 2.`, { segment: 'verse_1_2' });
+        break;
+      case 'target':
+        delta.insert('\u2003\u2003', { segment: 'verse_1_2' });
+        break;
+    }
+    delta.insert('\n', { para: { style: 'p' } });
+    delta.insert({ chapter: 2 }, { chapter: { style: 'c' } });
+    delta.insert({ verse: 1 }, { verse: { style: 'v' } });
+    delta.insert(`${textType}: chapter 2, verse 1.`, { segment: 'verse_2_1' });
+    delta.insert({ verse: 2 }, { verse: { style: 'v' } });
+    delta.insert(`${textType}: chapter 2, verse 2.`, { segment: 'verse_2_2' });
+    delta.insert('\n', { para: { style: 'p' } });
+    delta.insert('\u00a0', { segment: 'verse_2_2/p_1' });
+    delta.insert({ verse: 3 }, { verse: { style: 'v' } });
+    switch (textType) {
+      case 'source':
+        delta.insert(`${textType}: chapter 2, verse 3.`, { segment: 'verse_2_3' });
+        break;
+      case 'target':
+        delta.insert(`${textType}: chapter 2, `, { segment: 'verse_2_3' });
+        break;
+    }
+    delta.insert('\n', { para: { style: 'p' } });
+    delta.insert('\n');
+    const doc = new MockRealtimeDoc('text01:' + textType, delta);
+    return new TextData(doc, instance(mockedRealtimeOfflineStore));
+  }
+}
+
+const Delta: new () => DeltaStatic = Quill.import('delta');
+
+class MockRealtimeDoc implements RealtimeDoc {
+  readonly version: number = 1;
+  readonly type: string = 'rich-text';
+  readonly pendingOps: any[] = [];
+
+  constructor(public readonly id: string, public readonly data: DeltaStatic) {}
+
+  idle(): Observable<void> {
+    return of();
+  }
+
+  fetch(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  ingestSnapshot(_snapshot: Snapshot): Promise<void> {
+    return Promise.resolve();
+  }
+
+  subscribe(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  submitOp(_data: any, _source?: any): Promise<void> {
+    return Promise.resolve();
+  }
+
+  remoteChanges(): Observable<any> {
+    return of();
+  }
+
+  destroy(): Promise<void> {
+    return Promise.resolve();
   }
 }

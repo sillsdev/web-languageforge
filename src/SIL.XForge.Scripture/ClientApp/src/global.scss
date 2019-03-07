@@ -5,6 +5,9 @@
 @import '~bootstrap/scss/bootstrap-grid';
 
 .panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   .panel-heading {
     display: flex;
     align-items: center;
@@ -18,5 +21,8 @@
     }
   }
   .panel-content {
+    display: flex;
+    position: relative;
+    flex: 1;
   }
 }

@@ -1,12 +1,14 @@
-import { Component, ElementRef, HostBinding, ViewChild } from '@angular/core';
+import { Component, HostBinding, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-
-import { Project } from 'xforge-common/models/project';
 import { Resource } from 'xforge-common/models/resource';
-import { ProjectService } from 'xforge-common/project.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
+import { nameof } from 'xforge-common/utils';
+import { SFProject } from '../../core/models/sfproject';
+import { Text } from '../../core/models/text';
+import { TextService } from '../../core/text.service';
+import { CheckingQuestionsComponent } from './checking-questions/checking-questions.component';
+import { CheckingTextComponent } from './checking-text/checking-text.component';
 
 interface Summary {
   unread: number;
@@ -66,100 +68,57 @@ export class Answer extends Resource {
 })
 export class CheckingComponent extends SubscriptionDisposable {
   @HostBinding('class') classes = 'flex-max';
-  @ViewChild('scripturePanel') scripturePanel: ElementRef;
-  project: Project;
+  @ViewChild(CheckingTextComponent) scripturePanel: CheckingTextComponent;
+  @ViewChild(CheckingQuestionsComponent) questionsPanel: CheckingQuestionsComponent;
+  project: SFProject;
+  text: Text;
   questions: Question[];
-  activeQuestion: Question;
   summary: Summary = {
     read: 0,
     unread: 0,
     answered: 0
   };
 
-  constructor(private activatedRoute: ActivatedRoute, private projectService: ProjectService, private router: Router) {
+  constructor(private activatedRoute: ActivatedRoute, private textService: TextService) {
     super();
     this.subscribe(
       this.activatedRoute.params.pipe(
         switchMap(params => {
-          return projectService.get(params['projectId']);
+          return textService.get(params['textId'], [[nameof<Text>('project')]]);
         })
       ),
-      projectData => {
-        if (projectData) {
-          this.project = projectData.data;
-          this.loadQuestions();
-        } else {
-          this.goHome();
-        }
+      textData => {
+        this.text = textData.data;
+        this.project = textData.getIncluded(this.text.project);
+        this.loadQuestions();
       }
     );
   }
 
-  activateQuestion(question: Question) {
-    this.activeQuestion = question;
-
-    // Only mark as read if it has been viewed for a set period of time and not an accidental click
-    const readTimer = this.subscribe(timer(1000), () => {
-      if (this.activeQuestion.id === question.id) {
-        question.markAsRead();
-        readTimer.unsubscribe();
-        this.refreshSummary();
-      }
-    });
-  }
-
-  applyFontChange($event: string) {
-    this.scripturePanel.nativeElement.style.fontSize = $event;
-  }
-
-  checkCanChangeQuestion(newIndex: number) {
-    return !!this.questions[this.activeQuestionIndex + newIndex];
-  }
-
-  nextQuestion() {
-    this.changeQuestion(1);
-  }
-
-  previousQuestion() {
-    this.changeQuestion(-1);
+  applyFontChange(fontSize: string) {
+    this.scripturePanel.applyFontChange(fontSize);
   }
 
   totalQuestions() {
     return this.questions.length;
   }
 
-  private goHome() {
-    this.router.navigateByUrl('/projects');
+  questionUpdate(question: Question) {
+    this.refreshSummary();
   }
 
   private loadQuestions() {
     const questions = [];
-    questions.push(
-      new Question({
-        id: 'q1',
-        title: 'Question One'
-      }),
-      new Question({
-        id: 'q2',
-        title: 'Question Two'
-      }),
-      new Question({
-        id: 'q3',
-        title: 'Question Three'
-      })
-    );
+    for (let q = 1; q < 15; q++) {
+      questions.push(
+        new Question({
+          id: 'q' + q,
+          title: 'Question ' + q
+        })
+      );
+    }
     this.questions = questions;
     this.refreshSummary();
-  }
-
-  private changeQuestion(newDifferential: number) {
-    if (this.activeQuestion && this.checkCanChangeQuestion(newDifferential)) {
-      this.activateQuestion(this.questions[this.activeQuestionIndex + newDifferential]);
-    }
-  }
-
-  private get activeQuestionIndex() {
-    return this.questions.findIndex(question => question.id === this.activeQuestion.id);
   }
 
   private refreshSummary() {

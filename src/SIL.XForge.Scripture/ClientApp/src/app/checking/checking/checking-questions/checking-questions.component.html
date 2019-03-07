@@ -1,0 +1,18 @@
+<mdc-list>
+  <mdc-list-item
+    (click)="activateQuestion(question)"
+    *ngFor="let question of questions"
+    [ngClass]="{
+      'question-read': question.read,
+      'question-unread': !question.read,
+      'question-answered': question.answered,
+      'question-has-answers': question.totalAnswers(),
+      'mdc-list-item--activated': activeQuestion && activeQuestion.id === question.id
+    }"
+  >
+    <div class="question-title">{{ question.title }}</div>
+    <a class="view-answers" mdcListItemMeta title="View Answers">
+      <i mdcIcon>forum</i> <span>{{ question.totalAnswers() }}</span>
+    </a>
+  </mdc-list-item>
+</mdc-list>

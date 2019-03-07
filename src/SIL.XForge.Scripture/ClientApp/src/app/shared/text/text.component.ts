@@ -57,6 +57,7 @@ export class TextComponent implements OnDestroy {
   @Output() segmentRefChange = new EventEmitter<string>();
   @Output() loaded = new EventEmitter(true);
 
+  private _editorStyles: any = { fontSize: '1rem' };
   private readonly DEFAULT_MODULES: any = {
     toolbar: false,
     keyboard: {
@@ -76,7 +77,6 @@ export class TextComponent implements OnDestroy {
       }
     }
   };
-
   private _textId?: string;
   private _modules: any = this.DEFAULT_MODULES;
   private _editor?: Quill;
@@ -95,6 +95,7 @@ export class TextComponent implements OnDestroy {
   get textId(): string {
     return this._textId;
   }
+
   @Input()
   set textId(value: string) {
     if (this._textId !== value) {
@@ -114,6 +115,7 @@ export class TextComponent implements OnDestroy {
   get modules(): any {
     return this._modules;
   }
+
   @Input()
   set modules(value: any) {
     this._modules = deepMerge(value, this.DEFAULT_MODULES);
@@ -122,6 +124,7 @@ export class TextComponent implements OnDestroy {
   get highlightSegment(): boolean {
     return this._highlightSegment;
   }
+
   @Input()
   set highlightSegment(value: boolean) {
     if (this._highlightSegment !== value) {
@@ -138,6 +141,7 @@ export class TextComponent implements OnDestroy {
     }
     return this._segment.ref;
   }
+
   @Input()
   set segmentRef(value: string) {
     if (value !== this.segmentRef) {
@@ -176,6 +180,16 @@ export class TextComponent implements OnDestroy {
   get text(): string {
     const text = this._editor.getText();
     return text.endsWith('\n') ? text.substr(0, text.length - 1) : text;
+  }
+
+  get editorStyles(): object {
+    return this._editorStyles;
+  }
+
+  @Input()
+  set editorStyles(styles: object) {
+    this._editorStyles = styles;
+    this.applyEditorStyles();
   }
 
   ngOnDestroy(): void {
@@ -248,6 +262,17 @@ export class TextComponent implements OnDestroy {
     this.update();
   }
 
+  private applyEditorStyles() {
+    const quillEditor: HTMLElement = <HTMLElement>document.getElementsByClassName('ql-container')[0];
+    if (quillEditor) {
+      for (const style in this.editorStyles) {
+        if (quillEditor.style.hasOwnProperty(style)) {
+          quillEditor.style[style] = this.editorStyles[style];
+        }
+      }
+    }
+  }
+
   private async bindQuill(): Promise<void> {
     await this.unbindQuill();
     if (this._textId == null || this._editor == null) {
@@ -265,6 +290,7 @@ export class TextComponent implements OnDestroy {
     this.textDataSub = this.textData.remoteChanges().subscribe(ops => this._editor.updateContents(ops));
     editorElem.setAttribute('data-placeholder', placeholderText);
     this.loaded.emit();
+    this.applyEditorStyles();
   }
 
   private async unbindQuill(): Promise<void> {
