@@ -8,7 +8,6 @@ using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Models;
 using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Http;
-using MongoDB.Driver;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 
@@ -28,10 +27,16 @@ namespace SIL.XForge.Services
 
         protected override async Task<TEntity> InsertEntityAsync(TEntity entity)
         {
-            if (!await Entities.InsertAsync(entity))
+            try
+            {
+                await Entities.InsertAsync(entity);
+                return await Entities.GetAsync(entity.Id);
+            }
+            catch (DuplicateKeyException)
+            {
                 throw new JsonApiException(StatusCodes.Status409Conflict,
                     "Another entity with the same key already exists.");
-            return await Entities.GetAsync(entity.Id);
+            }
         }
 
         protected override async Task<bool> DeleteEntityAsync(string id)
@@ -61,12 +66,10 @@ namespace SIL.XForge.Services
                     }
                 });
             }
-            catch (MongoCommandException e)
+            catch (DuplicateKeyException)
             {
-                if ("DuplicateKey".Equals(e.CodeName))
-                    throw new JsonApiException(StatusCodes.Status409Conflict,
-                        "Another entity with the same key already exists.", e);
-                throw;
+                throw new JsonApiException(StatusCodes.Status409Conflict,
+                    "Another entity with the same key already exists.");
             }
         }
 

@@ -2,13 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net;
 using System.Threading.Tasks;
 using MongoDB.Bson;
-using MongoDB.Driver;
-using MongoDB.Driver.Core.Clusters;
-using MongoDB.Driver.Core.Connections;
-using MongoDB.Driver.Core.Servers;
 using Newtonsoft.Json;
 using SIL.XForge.Models;
 
@@ -92,16 +87,13 @@ namespace SIL.XForge.DataAccess
             return _entities.Values.Select(e => JsonConvert.DeserializeObject<T>(e, Settings)).AsQueryable();
         }
 
-        public Task<bool> InsertAsync(T entity)
+        public Task InsertAsync(T entity)
         {
             if (string.IsNullOrEmpty(entity.Id))
                 entity.Id = ObjectId.GenerateNewId().ToString();
 
-            if (_entities.ContainsKey(entity.Id))
-                return Task.FromResult(false);
-
-            if (CheckDuplicateKeys(entity))
-                return Task.FromResult(false);
+            if (_entities.ContainsKey(entity.Id) || CheckDuplicateKeys(entity))
+                throw new DuplicateKeyException();
 
             var now = DateTime.UtcNow;
             entity.DateModified = now;
@@ -151,13 +143,7 @@ namespace SIL.XForge.DataAccess
                 update(builder);
 
                 if (CheckDuplicateKeys(entity, original))
-                {
-                    throw new MongoCommandException(new ConnectionId(new ServerId(new ClusterId(), new TestEndPoint())),
-                        "Duplicate key!", null, new BsonDocument(new Dictionary<string, object>
-                        {
-                            {"codeName", "DuplicateKey"}
-                        }));
-                }
+                    throw new DuplicateKeyException();
 
                 Replace(entity);
             }
@@ -202,7 +188,5 @@ namespace SIL.XForge.DataAccess
             }
             return false;
         }
-
-    private class TestEndPoint : EndPoint {}
     }
 }

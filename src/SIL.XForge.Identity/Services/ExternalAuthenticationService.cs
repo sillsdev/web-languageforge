@@ -172,9 +172,15 @@ namespace SIL.XForge.Identity.Services
                     throw new Exception("Unknown external authentication scheme.");
             }
 
-            if (await _users.InsertAsync(user))
+            try
+            {
+                await _users.InsertAsync(user);
                 return user;
-            return null;
+            }
+            catch (DuplicateKeyException)
+            {
+                return null;
+            }
         }
 
         private void ProcessLoginCallbackForOidc(AuthenticateResult externalResult, List<Claim> localClaims,

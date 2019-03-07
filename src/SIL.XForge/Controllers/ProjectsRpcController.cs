@@ -73,22 +73,26 @@ namespace SIL.XForge.Controllers
 
         private async Task<bool> CreateInvitedUserAccount(string email)
         {
-            var user = new UserEntity
+            try
             {
-                Email = email,
-                CanonicalEmail = UserEntity.CanonicalizeEmail(email),
-                EmailVerified = false,
-                Role = SystemRoles.User,
-                ValidationKey = Security.GenerateKey(),
-                ValidationExpirationDate = DateTime.Now.AddDays(7),
-                Active = false
-            };
-
-            bool result = await _users.InsertAsync(user);
-
-            // add the user to the current project once we have a current project in context
-
-            return result;
+                var user = new UserEntity
+                {
+                    Email = email,
+                    CanonicalEmail = UserEntity.CanonicalizeEmail(email),
+                    EmailVerified = false,
+                    Role = SystemRoles.User,
+                    ValidationKey = Security.GenerateKey(),
+                    ValidationExpirationDate = DateTime.Now.AddDays(7),
+                    Active = false
+                };
+                await _users.InsertAsync(user);
+                // add the user to the current project once we have a current project in context
+                return true;
+            }
+            catch (DuplicateKeyException)
+            {
+                return false;
+            }
         }
     }
 }
