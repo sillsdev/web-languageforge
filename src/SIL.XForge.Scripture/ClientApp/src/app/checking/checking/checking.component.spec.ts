@@ -16,6 +16,7 @@ import { RealtimeDoc } from 'xforge-common/realtime-doc';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { nameof } from 'xforge-common/utils';
+import { XForgeCommonModule } from 'xforge-common/xforge-common.module';
 import { SFProjectRef } from '../../core/models/sfdomain-model.generated';
 import { SFProject } from '../../core/models/sfproject';
 import { Text } from '../../core/models/text';
@@ -159,7 +160,7 @@ class TestEnvironment {
         CheckingQuestionsComponent,
         TextComponent
       ],
-      imports: [UICommonModule, HttpClientTestingModule, QuillModule],
+      imports: [UICommonModule, HttpClientTestingModule, QuillModule, XForgeCommonModule],
       providers: [
         { provide: Router, useFactory: () => instance(this.mockedRouter) },
         {

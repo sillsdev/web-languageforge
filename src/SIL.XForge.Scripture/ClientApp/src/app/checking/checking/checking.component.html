@@ -28,7 +28,10 @@
           <div class="panel-heading">
             <mdc-icon>library_books</mdc-icon>
             <h2>{{ text?.name }}</h2>
-            <div class="panel-activity"><app-font-size (apply)="applyFontChange($event)"></app-font-size></div>
+            <div class="panel-activity">
+              <app-font-size (apply)="applyFontChange($event)"></app-font-size>
+              <app-email-invite></app-email-invite>
+            </div>
           </div>
           <div class="panel-content"><app-checking-text #scripturePanel [textId]="text.id"></app-checking-text></div>
         </div>
