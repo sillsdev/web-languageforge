@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { AuthService } from 'xforge-common/auth.service';
+import { AuthService } from './auth.service';
 import { ParatextProject } from './models/paratext-project';
 
 @Injectable({

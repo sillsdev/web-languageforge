@@ -4,8 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { NoticeService } from 'xforge-common/notice.service';
+import { ParatextService } from 'xforge-common/paratext.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
-import { ParatextService } from '../../xforge-common/paratext.service';
 import { SyncJob } from '../core/models/sync-job';
 import { SFProjectService } from '../core/sfproject.service';
 import { SyncJobService } from '../core/sync-job.service';

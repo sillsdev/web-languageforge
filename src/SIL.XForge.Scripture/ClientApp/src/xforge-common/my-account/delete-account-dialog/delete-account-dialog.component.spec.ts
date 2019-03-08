@@ -6,8 +6,8 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { instance, mock } from 'ts-mockito';
 
-import { UICommonModule } from 'xforge-common/ui-common.module';
-import { UserService } from 'xforge-common/user.service';
+import { UICommonModule } from '../../ui-common.module';
+import { UserService } from '../../user.service';
 import { DeleteAccountDialogComponent } from './delete-account-dialog.component';
 
 // ts lint complains that a directive should be used as an attribute

@@ -6,8 +6,8 @@ import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { AuthService } from 'xforge-common/auth.service';
 import { NoticeService } from 'xforge-common/notice.service';
+import { ParatextService } from 'xforge-common/paratext.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
-import { ParatextService } from '../../xforge-common/paratext.service';
 import { SFProjectRef } from '../core/models/sfdomain-model.generated';
 import { SFProject } from '../core/models/sfproject';
 import { SyncJob, SyncJobState } from '../core/models/sync-job';
