@@ -1,6 +1,8 @@
+import { MdcSlider } from '@angular-mdc/web';
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Params } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
@@ -36,10 +38,10 @@ import { EditorComponent } from './editor.component';
 import { SuggestionComponent } from './suggestion.component';
 
 describe('EditorComponent', () => {
-  it('start with no previous selection', async(async () => {
+  it('start with no previous selection', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({});
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.sourceLabel).toEqual('Book 1 (Source)');
     expect(env.component.targetLabel).toEqual('Book 1 (Target)');
     expect(env.component.target.segmentRef).toEqual('');
@@ -47,10 +49,10 @@ describe('EditorComponent', () => {
     expect(selection).toBeNull();
   }));
 
-  it('start with previously selected segment', async(async () => {
+  it('start with previously selected segment', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({ selectedTextRef: 'text01', selectedSegment: 'verse_1_1' });
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_1_1');
     const selection = env.component.target.editor.getSelection();
     expect(selection.index).toEqual(29);
@@ -59,10 +61,10 @@ describe('EditorComponent', () => {
     expect(env.component.showSuggestion).toBeFalsy();
   }));
 
-  it('select non-blank segment', async(async () => {
+  it('select non-blank segment', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({ selectedTextRef: 'text01', selectedSegment: 'verse_1_1' });
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_1_1');
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
     expect(env.component.showSuggestion).toBeFalsy();
@@ -70,7 +72,7 @@ describe('EditorComponent', () => {
     resetCalls(env.mockedRemoteTranslationEngine);
     const range = env.component.target.getSegmentRange('verse_2_1');
     env.component.target.editor.setSelection(range.index, 0, 'user');
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_2_1');
     const selection = env.component.target.editor.getSelection();
     expect(selection.index).toEqual(35);
@@ -81,16 +83,16 @@ describe('EditorComponent', () => {
     expect(env.component.showSuggestion).toBeFalsy();
   }));
 
-  it('select blank segment', async(async () => {
+  it('select blank segment', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({ selectedTextRef: 'text01', selectedSegment: 'verse_1_1' });
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_1_1');
 
     resetCalls(env.mockedRemoteTranslationEngine);
     const range = env.component.target.getSegmentRange('verse_1_2');
     env.component.target.editor.setSelection(range.index, 0, 'user');
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_1_2');
     const selection = env.component.target.editor.getSelection();
     expect(selection.index).toEqual(30);
@@ -102,57 +104,55 @@ describe('EditorComponent', () => {
     expect(env.component.suggestionWords).toEqual(['target']);
   }));
 
-  it('select not at end of incomplete segment', async(async () => {
+  it('select not at end of incomplete segment', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({});
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('');
 
     const range = env.component.target.getSegmentRange('verse_2_3');
     env.component.target.editor.setSelection(range.index, 0, 'user');
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_2_3');
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
     expect(env.component.showSuggestion).toBeFalsy();
   }));
 
-  it('select at end of incomplete segment', async(async () => {
+  it('select at end of incomplete segment', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({});
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('');
 
     const range = env.component.target.getSegmentRange('verse_2_3');
     env.component.target.editor.setSelection(range.index + range.length, 0, 'user');
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_2_3');
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
     expect(env.component.showSuggestion).toBeTruthy();
     expect(env.component.suggestionWords).toEqual(['verse', '3']);
   }));
 
-  it('insert suggestion in non-blank segment', async(async () => {
+  it('insert suggestion in non-blank segment', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({ selectedTextRef: 'text01', selectedSegment: 'verse_2_3' });
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_2_3');
     expect(env.component.showSuggestion).toBeTruthy();
 
     env.insertSuggestion();
-    await env.wait();
     expect(env.component.target.segmentText).toEqual('target: chapter 2, verse 3');
     expect(env.component.showSuggestion).toBeFalsy();
   }));
 
-  it('insert space when typing character after inserting a suggestion', async(async () => {
+  it('insert space when typing character after inserting a suggestion', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({ selectedTextRef: 'text01', selectedSegment: 'verse_2_3' });
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_2_3');
     expect(env.component.showSuggestion).toBeTruthy();
 
     env.insertSuggestion(1);
-    await env.wait();
     expect(env.component.target.segmentText).toEqual('target: chapter 2, verse');
     expect(env.component.showSuggestion).toBeTruthy();
 
@@ -160,7 +160,7 @@ describe('EditorComponent', () => {
     const selectionIndex = selection.index;
     env.component.target.editor.insertText(selectionIndex, '3', 'user');
     env.component.target.editor.setSelection(selectionIndex + 1, 0, 'user');
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentText).toEqual('target: chapter 2, verse 3');
     expect(env.component.showSuggestion).toBeFalsy();
     selection = env.component.target.editor.getSelection();
@@ -168,22 +168,20 @@ describe('EditorComponent', () => {
     expect(selection.length).toEqual(0);
   }));
 
-  it('insert space when inserting a suggestion after inserting a previous suggestion', async(async () => {
+  it('insert space when inserting a suggestion after inserting a previous suggestion', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({ selectedTextRef: 'text01', selectedSegment: 'verse_2_3' });
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_2_3');
     expect(env.component.showSuggestion).toBeTruthy();
 
     env.insertSuggestion(1);
-    await env.wait();
     expect(env.component.target.segmentText).toEqual('target: chapter 2, verse');
     expect(env.component.showSuggestion).toBeTruthy();
 
     let selection = env.component.target.editor.getSelection();
     const selectionIndex = selection.index;
     env.insertSuggestion(1);
-    await env.wait();
     expect(env.component.target.segmentText).toEqual('target: chapter 2, verse 3');
     expect(env.component.showSuggestion).toBeFalsy();
     selection = env.component.target.editor.getSelection();
@@ -191,15 +189,14 @@ describe('EditorComponent', () => {
     expect(selection.length).toEqual(0);
   }));
 
-  it('do not insert space when typing punctuation after inserting a suggestion', async(async () => {
+  it('do not insert space when typing punctuation after inserting a suggestion', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({ selectedTextRef: 'text01', selectedSegment: 'verse_2_3' });
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_2_3');
     expect(env.component.showSuggestion).toBeTruthy();
 
     env.insertSuggestion(1);
-    await env.wait();
     expect(env.component.target.segmentText).toEqual('target: chapter 2, verse');
     expect(env.component.showSuggestion).toBeTruthy();
 
@@ -207,7 +204,7 @@ describe('EditorComponent', () => {
     const selectionIndex = selection.index;
     env.component.target.editor.insertText(selectionIndex, '.', 'user');
     env.component.target.editor.setSelection(selectionIndex + 1, 0, 'user');
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentText).toEqual('target: chapter 2, verse.');
     expect(env.component.showSuggestion).toBeFalsy();
     selection = env.component.target.editor.getSelection();
@@ -215,68 +212,87 @@ describe('EditorComponent', () => {
     expect(selection.length).toEqual(0);
   }));
 
-  it('train a modified segment after selecting a different segment', async(async () => {
+  it('train a modified segment after selecting a different segment', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({ selectedTextRef: 'text01', selectedSegment: 'verse_2_3' });
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_2_3');
     expect(env.component.showSuggestion).toBeTruthy();
 
     env.insertSuggestion();
-    await env.wait();
     expect(env.component.target.segmentText).toEqual('target: chapter 2, verse 3');
 
     const range = env.component.target.getSegmentRange('verse_1_1');
     env.component.target.editor.setSelection(range.index, 0, 'user');
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_1_1');
     expect(env.lastApprovedPrefix).toEqual(['target', ':', 'chapter', '2', ',', 'verse', '3']);
   }));
 
-  it('do not train an unmodified segment after selecting a different segment', async(async () => {
+  it('do not train an unmodified segment after selecting a different segment', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({ selectedTextRef: 'text01', selectedSegment: 'verse_2_3' });
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_2_3');
     expect(env.component.showSuggestion).toBeTruthy();
 
     env.insertSuggestion();
-    await env.wait();
     expect(env.component.target.segmentText).toEqual('target: chapter 2, verse 3');
 
     const selection = env.component.target.editor.getSelection();
     env.component.target.editor.deleteText(selection.index - 7, 7, 'user');
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentText).toEqual('target: chapter 2, ');
 
     const range = env.component.target.getSegmentRange('verse_1_1');
     env.component.target.editor.setSelection(range.index, 0, 'user');
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_1_1');
     expect(env.lastApprovedPrefix).toEqual([]);
   }));
 
-  it('change texts', async(async () => {
+  it('change texts', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({ selectedTextRef: 'text01', selectedSegment: 'verse_1_1' });
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_1_1');
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
 
     resetCalls(env.mockedRemoteTranslationEngine);
     env.paramsSubject.next({ projectId: 'project01', textId: 'text02' });
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.sourceLabel).toEqual('Book 2 (Source)');
     expect(env.component.targetLabel).toEqual('Book 2 (Target)');
     expect(env.component.target.segmentRef).toEqual('');
 
     resetCalls(env.mockedRemoteTranslationEngine);
     env.paramsSubject.next({ projectId: 'project01', textId: 'text01' });
-    await env.wait();
+    env.waitForSuggestion();
     expect(env.component.sourceLabel).toEqual('Book 1 (Source)');
     expect(env.component.targetLabel).toEqual('Book 1 (Target)');
     expect(env.component.target.segmentRef).toEqual('verse_1_1');
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
+  }));
+
+  it('update confidence threshold', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.setTranslateConfig({ selectedTextRef: 'text01', selectedSegment: 'verse_1_2', confidenceThreshold: 0.5 });
+    env.waitForSuggestion();
+    expect(env.component.confidenceThreshold).toBe(50);
+    expect(env.component.showSuggestion).toBeTruthy();
+
+    resetCalls(env.mockedSFProjectUserService);
+    env.clickSuggestionsMenuButton();
+    env.updateConfidenceThresholdSlider(60);
+    expect(env.component.confidenceThreshold).toBe(60);
+    verify(env.mockedSFProjectUserService.update(anything())).once();
+    expect(env.component.showSuggestion).toBeFalsy();
+
+    resetCalls(env.mockedSFProjectUserService);
+    env.updateConfidenceThresholdSlider(40);
+    expect(env.component.confidenceThreshold).toBe(40);
+    verify(env.mockedSFProjectUserService.update(anything())).once();
+    expect(env.component.showSuggestion).toBeTruthy();
   }));
 });
 
@@ -371,7 +387,7 @@ class MockInteractiveTranslationSession implements InteractiveTranslationSession
       if (targetWord === 'source') {
         targetWord = 'target';
       }
-      builder.appendWord(targetWord, 1);
+      builder.appendWord(targetWord, 0.5);
       const alignment = new WordAlignmentMatrix(1, 1);
       alignment.set(0, 0, true);
       builder.markPhrase(createRange(i, i + 1), alignment);
@@ -436,7 +452,7 @@ class TestEnvironment {
 
     TestBed.configureTestingModule({
       declarations: [EditorComponent, SuggestionComponent],
-      imports: [RouterTestingModule, SharedModule, UICommonModule],
+      imports: [NoopAnimationsModule, RouterTestingModule, SharedModule, UICommonModule],
       providers: [
         { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
         { provide: SFProjectUserService, useFactory: () => instance(this.mockedSFProjectUserService) },
@@ -452,6 +468,10 @@ class TestEnvironment {
 
   get suggestion(): DebugElement {
     return this.fixture.debugElement.query(By.css('app-suggestion'));
+  }
+
+  get confidenceThresholdSlider(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#confidence-threshold-slider'));
   }
 
   setTranslateConfig(userTranslateConfig: TranslateProjectUserConfig): void {
@@ -493,11 +513,11 @@ class TestEnvironment {
     );
   }
 
-  async wait(): Promise<void> {
+  waitForSuggestion(): void {
     this.fixture.detectChanges();
-    await this.fixture.whenStable();
+    tick();
     this.fixture.detectChanges();
-    await this.fixture.whenStable();
+    tick();
     this.fixture.detectChanges();
   }
 
@@ -515,6 +535,21 @@ class TestEnvironment {
       keydownEvent.initEvent('keydown', true, true);
       this.component.target.editor.root.dispatchEvent(keydownEvent);
     }
+    this.waitForSuggestion();
+  }
+
+  clickSuggestionsMenuButton(): void {
+    this.component.suggestionsMenuButton.elementRef.nativeElement.click();
+    this.fixture.detectChanges();
+    tick(16);
+    this.fixture.detectChanges();
+  }
+
+  updateConfidenceThresholdSlider(value: number): void {
+    const slider = this.confidenceThresholdSlider.componentInstance as MdcSlider;
+    slider.setValue(value, true);
+    tick(500);
+    this.waitForSuggestion();
   }
 
   private createTextData(textType: TextType): TextData {

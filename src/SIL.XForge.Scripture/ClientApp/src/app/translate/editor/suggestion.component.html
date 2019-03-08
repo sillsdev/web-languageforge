@@ -1,12 +1,11 @@
 <div class="loading-indicator" *ngIf="isLoading"><span></span> <span></span> <span></span></div>
 <div *ngIf="!isLoading">
-  <span fxLayout="row" class="ql-suggest">
-    <a id="words-link" [routerLink]="" (click)="selectAll()" [ngStyle]="suggestionStyle">{{ words.join(" ") }}</a
-    >&nbsp;&nbsp;
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" class="ql-suggest">
+    <a id="words-link" [routerLink]="" (click)="selectAll()" [ngStyle]="suggestionStyle">{{ words.join(" ") }}</a>
     <span
       ><small class="text-muted">{{ confidencePercentage }}%</small></span
-    >&nbsp; <a [routerLink]="" (click)="toggleHelp()"><mdc-icon class="suggestion-help">info</mdc-icon></a>
-  </span>
+    ><a class="help-icon" [routerLink]="" (click)="toggleHelp()"><mdc-icon>info</mdc-icon></a>
+  </div>
   <div class="ql-suggest text-muted" *ngIf="showHelp">
     <small>Inserting suggestions:</small>
     <ul>

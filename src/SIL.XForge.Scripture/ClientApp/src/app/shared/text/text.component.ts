@@ -263,11 +263,11 @@ export class TextComponent implements OnDestroy {
   }
 
   private applyEditorStyles() {
-    const quillEditor: HTMLElement = <HTMLElement>document.getElementsByClassName('ql-container')[0];
-    if (quillEditor) {
+    if (this._editor != null) {
+      const container = this._editor.container as HTMLElement;
       for (const style in this.editorStyles) {
-        if (quillEditor.style.hasOwnProperty(style)) {
-          quillEditor.style[style] = this.editorStyles[style];
+        if (container.style.hasOwnProperty(style)) {
+          container.style[style] = this.editorStyles[style];
         }
       }
     }
