@@ -11,20 +11,12 @@
         <mdc-top-app-bar-title (click)="goHome()" fxHide.xs>Scripture Forge</mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
       <mdc-top-app-bar-section align="end" *ngIf="(currentUser$ | async) as currentUser">
-        <a mdc-list-item>
-          <mdc-icon mdcTopAppBarActionItem>notifications</mdc-icon>
-          <span matLine>Notifications</span>
-        </a>
-        <a mdc-list-item>
-          <mdc-icon mdcTopAppBarActionItem>help</mdc-icon>
-          <span matLine>Help</span>
-        </a>
+        <mdc-icon mdcTopAppBarActionItem title="Notifications">notifications</mdc-icon>
+        <mdc-icon mdcTopAppBarActionItem title="Help">help</mdc-icon>
         <div mdcMenuSurfaceAnchor #userMenuAnchor>
-          <a mdc-list-item (click)="userMenu.open = !userMenu.open">
-            <mdc-icon mdcTopAppBarActionItem>
-              <app-avatar id="avatarId" [user]="currentUser" size="32" [round]="true"></app-avatar>
-            </mdc-icon>
-          </a>
+          <mdc-icon mdcTopAppBarActionItem [title]="currentUser.name" (click)="userMenu.open = !userMenu.open">
+            <app-avatar id="avatarId" [user]="currentUser" size="32" [round]="true"></app-avatar>
+          </mdc-icon>
           <mdc-menu #userMenu [anchorCorner]="'bottomStart'" [anchorElement]="userMenuAnchor">
             <mdc-list-group>
               <div class="mdc-list-group__subheader">
@@ -48,14 +40,8 @@
       </mdc-top-app-bar-section>
       <!-- isLoggedIn is intentionally strict equality with false so in its unresolved state this is not rendered -->
       <mdc-top-app-bar-section align="end" *ngIf="(isLoggedIn | async) === false">
-        <a mdc-list-item routerLink="/identity/sign-up">
-          <mdc-icon mdcTopAppBarActionItem>person_add</mdc-icon>
-          <span matLine>Sign up</span>
-        </a>
-        <a mdc-list-item routerLink="/identity/log-in">
-          <mdc-icon mdcTopAppBarActionItem>lock</mdc-icon>
-          <span matLine>Log in</span>
-        </a>
+        <a routerLink="/identity/sign-up"> <mdc-icon mdcTopAppBarActionItem title="Sign up">person_add</mdc-icon> </a>
+        <a routerLink="/identity/log-in"> <mdc-icon mdcTopAppBarActionItem title="Log in">lock</mdc-icon> </a>
       </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>
   </mdc-top-app-bar>
