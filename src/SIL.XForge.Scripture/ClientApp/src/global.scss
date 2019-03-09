@@ -19,6 +19,13 @@
       margin: 0;
       flex: 1;
     }
+    .panel-activity {
+      display: flex;
+      align-items: center;
+      > *:not(:first-child) {
+        margin-left: 15px;
+      }
+    }
   }
   .panel-content {
     display: flex;
