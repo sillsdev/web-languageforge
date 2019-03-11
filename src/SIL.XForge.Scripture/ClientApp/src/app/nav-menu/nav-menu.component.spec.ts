@@ -17,6 +17,7 @@ import { nameof } from 'xforge-common/utils';
 import { SFProject, SFProjectRef } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
 import { Text, TextRef } from '../core/models/text';
+import { SFAdminAuthGuard } from '../shared/sfadmin-auth.guard';
 import { NavMenuComponent } from './nav-menu.component';
 import { ProjectDeletedDialogComponent } from './project-deleted-dialog/project-deleted-dialog.component';
 
@@ -117,6 +118,16 @@ describe('NavMenuComponent', () => {
     expect(env.isDrawerVisible).toBeFalsy();
     expect(env.location.path()).toEqual('/projects');
   }));
+
+  it('should only display Sync and Settings for admin', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.makeUserAProjectAdmin(false);
+    expect(env.syncItem).toBeNull();
+    expect(env.settingsItem).toBeNull();
+    env.makeUserAProjectAdmin();
+    expect(env.syncItem).toBeDefined();
+    expect(env.settingsItem).toBeDefined();
+  }));
 });
 
 @Component({
@@ -164,6 +175,7 @@ class TestEnvironment {
 
   readonly mockedAuthService = mock(AuthService);
   readonly mockedUserService = mock(UserService);
+  readonly mockedSFAdminAuthGuard: SFAdminAuthGuard = mock(SFAdminAuthGuard);
 
   private readonly currentUser: User;
   private readonly projectsSubject: BehaviorSubject<QueryResults<SFProjectUser[]>>;
@@ -232,13 +244,15 @@ class TestEnvironment {
       )
     ).thenReturn(this.projectsSubject);
     when(this.mockedUserService.updateCurrentProjectId(anything())).thenResolve();
+    when(this.mockedSFAdminAuthGuard.allowTransition(anything())).thenReturn(of(true));
 
     TestBed.configureTestingModule({
       declarations: [AppComponent, MockComponent, NavMenuComponent],
       imports: [UICommonModule, DialogTestModule, RouterTestingModule.withRoutes(ROUTES)],
       providers: [
         { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
-        { provide: UserService, useFactory: () => instance(this.mockedUserService) }
+        { provide: UserService, useFactory: () => instance(this.mockedUserService) },
+        { provide: SFAdminAuthGuard, useFactory: () => instance(this.mockedSFAdminAuthGuard) }
       ]
     });
     this.router = TestBed.get(Router);
@@ -260,6 +274,14 @@ class TestEnvironment {
   get menuList(): MdcList {
     const listElem = this.fixture.debugElement.query(By.css('#menu-list'));
     return listElem.componentInstance;
+  }
+
+  get syncItem(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#sync-item'));
+  }
+
+  get settingsItem(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#settings-item'));
   }
 
   get selectedProjectId(): string {
@@ -287,6 +309,10 @@ class TestEnvironment {
   init(): void {
     this.component.openDrawer();
     this.wait();
+  }
+
+  makeUserAProjectAdmin(isProjectAdmin: boolean = true) {
+    this.component.isProjectAdmin$ = of(isProjectAdmin);
   }
 
   navigate(commands: any[]): void {

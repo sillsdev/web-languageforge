@@ -2,6 +2,7 @@ import { MdcDialog, MdcSelect } from '@angular-mdc/web';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
 import { AuthService } from 'xforge-common/auth.service';
@@ -11,6 +12,7 @@ import { nameof } from 'xforge-common/utils';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
 import { Text } from '../core/models/text';
+import { SFAdminAuthGuard } from '../shared/sfadmin-auth.guard';
 import { ProjectDeletedDialogComponent } from './project-deleted-dialog/project-deleted-dialog.component';
 
 @Component({
@@ -28,6 +30,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
   selectedProject: SFProject;
   projects: SFProject[];
   texts: Text[];
+  isProjectAdmin$: Observable<boolean>;
 
   private _projectSelect: MdcSelect;
   private projectDeletedDialogRef: any;
@@ -38,6 +41,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly userService: UserService,
+    private readonly adminAuthGuard: SFAdminAuthGuard,
     private readonly dialog: MdcDialog
   ) {
     super();
@@ -105,6 +109,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
       map(r => r.params['projectId'] as string),
       distinctUntilChanged(),
       tap(projectId => {
+        this.isProjectAdmin$ = this.adminAuthGuard.allowTransition(projectId);
         // the project deleted dialog should be closed by now, so we can reset its ref to null
         if (projectId == null) {
           this.projectDeletedDialogRef = null;
