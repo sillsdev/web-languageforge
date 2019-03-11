@@ -17,12 +17,12 @@ import { cold, getTestScheduler } from 'jasmine-marbles';
 import { defer, of } from 'rxjs';
 import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
+import { ParatextProject } from 'xforge-common/models/paratext-project';
+import { ParatextService } from 'xforge-common/paratext.service';
 import { UserService } from 'xforge-common/user.service';
-import { ParatextProject } from '../core/models/paratext-project';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
 import { SyncJob, SyncJobState } from '../core/models/sync-job';
-import { ParatextService } from '../core/paratext.service';
 import { SFProjectUserService } from '../core/sfproject-user.service';
 import { SFProjectService } from '../core/sfproject.service';
 import { SyncJobService } from '../core/sync-job.service';

@@ -3,15 +3,15 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter, MatDialog, MatDialogRef, NativeDateAdapter } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
-import { AuthService } from 'xforge-common/auth.service';
-import { ElementState } from 'xforge-common/models/element-state';
-import { User } from 'xforge-common/models/user';
-import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
-import { UserService } from 'xforge-common/user.service';
-import { XFValidators } from 'xforge-common/xfvalidators';
 import { environment } from '../../environments/environment';
-import { NoticeService } from '../../xforge-common/notice.service';
-import { ParatextService } from '../core/paratext.service';
+import { AuthService } from '../auth.service';
+import { ElementState } from '../models/element-state';
+import { User } from '../models/user';
+import { NoticeService } from '../notice.service';
+import { ParatextService } from '../paratext.service';
+import { SubscriptionDisposable } from '../subscription-disposable';
+import { UserService } from '../user.service';
+import { XFValidators } from '../xfvalidators';
 import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 
 /** Support ISO8601 formatted dates for datepicker, and handle timezone issues. */

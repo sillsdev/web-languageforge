@@ -6,9 +6,8 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { instance, mock } from 'ts-mockito';
 
-import { UICommonModule } from 'xforge-common/ui-common.module';
-import { UserService } from 'xforge-common/user.service';
-import { ParatextService } from '../../core/paratext.service';
+import { UICommonModule } from '../../ui-common.module';
+import { UserService } from '../../user.service';
 import { DeleteAccountDialogComponent } from './delete-account-dialog.component';
 
 // ts lint complains that a directive should be used as an attribute
@@ -50,16 +49,12 @@ describe('DeleteAccountDialogComponent', () => {
   let overlayContainerElement: HTMLElement;
 
   const mockedUserService: UserService = mock(UserService);
-  const mockedParatextService: ParatextService = mock(ParatextService);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [DialogTestModule],
       declarations: [],
-      providers: [
-        { provide: UserService, useFactory: () => instance(mockedUserService) },
-        { provide: ParatextService, useFactory: () => instance(mockedParatextService) }
-      ]
+      providers: [{ provide: UserService, useFactory: () => instance(mockedUserService) }]
     }).compileComponents();
   }));
 

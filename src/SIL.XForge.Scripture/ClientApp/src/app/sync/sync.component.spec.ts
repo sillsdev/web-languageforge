@@ -6,11 +6,11 @@ import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { AuthService } from 'xforge-common/auth.service';
 import { NoticeService } from 'xforge-common/notice.service';
+import { ParatextService } from 'xforge-common/paratext.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { SFProjectRef } from '../core/models/sfdomain-model.generated';
 import { SFProject } from '../core/models/sfproject';
 import { SyncJob, SyncJobState } from '../core/models/sync-job';
-import { ParatextService } from '../core/paratext.service';
 import { SFProjectService } from '../core/sfproject.service';
 import { SyncJobService } from '../core/sync-job.service';
 import { SyncComponent } from './sync.component';

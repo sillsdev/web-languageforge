@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { ngfModule } from 'angular-file';
 
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { xForgeCommonEntryComponents, XForgeCommonModule } from 'xforge-common/xforge-common.module';
@@ -14,9 +13,6 @@ import { AppComponent } from './app.component';
 import { CheckingModule } from './checking/checking.module';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
 import { CoreModule } from './core/core.module';
-import { ChangingUsernameDialogComponent } from './my-account/changing-username-dialog/changing-username-dialog.component';
-import { DeleteAccountDialogComponent } from './my-account/delete-account-dialog/delete-account-dialog.component';
-import { MyAccountComponent } from './my-account/my-account.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { ProjectDeletedDialogComponent } from './nav-menu/project-deleted-dialog/project-deleted-dialog.component';
 import { DeleteProjectDialogComponent } from './project-settings/delete-project-dialog/delete-project-dialog.component';
@@ -31,10 +27,7 @@ import { TranslateModule } from './translate/translate.module';
   declarations: [
     AppComponent,
     NavMenuComponent,
-    ChangingUsernameDialogComponent,
     ConnectProjectComponent,
-    MyAccountComponent,
-    DeleteAccountDialogComponent,
     DeleteProjectDialogComponent,
     ProjectSettingsComponent,
     ProjectComponent,
@@ -48,7 +41,6 @@ import { TranslateModule } from './translate/translate.module';
     BrowserAnimationsModule,
     CoreModule,
     HttpClientModule,
-    ngfModule,
     // not ready for production yet - 2018-11 IJH
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.pwaTest }), // || environment.production }),
     SharedModule,
@@ -58,13 +50,7 @@ import { TranslateModule } from './translate/translate.module';
     XForgeCommonModule
   ],
   providers: [DatePipe],
-  entryComponents: [
-    ChangingUsernameDialogComponent,
-    DeleteAccountDialogComponent,
-    DeleteProjectDialogComponent,
-    ProjectDeletedDialogComponent,
-    ...xForgeCommonEntryComponents
-  ],
+  entryComponents: [DeleteProjectDialogComponent, ProjectDeletedDialogComponent, ...xForgeCommonEntryComponents],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

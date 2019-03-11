@@ -10,12 +10,12 @@ import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { ngfModule } from 'angular-file';
-import { AuthService } from 'xforge-common/auth.service';
-import { User } from 'xforge-common/models/user';
-import { NoticeService } from 'xforge-common/notice.service';
-import { UICommonModule } from 'xforge-common/ui-common.module';
-import { UserService } from 'xforge-common/user.service';
-import { ParatextService } from '../core/paratext.service';
+import { AuthService } from '../auth.service';
+import { User } from '../models/user';
+import { NoticeService } from '../notice.service';
+import { ParatextService } from '../paratext.service';
+import { UICommonModule } from '../ui-common.module';
+import { UserService } from '../user.service';
 import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 import { MyAccountComponent } from './my-account.component';
 

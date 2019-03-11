@@ -8,8 +8,8 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { anyString, capture, instance, mock, verify, when } from 'ts-mockito';
 
-import { UICommonModule } from 'xforge-common/ui-common.module';
 import { NoticeService } from '../notice.service';
+import { UICommonModule } from '../ui-common.module';
 import { UserService } from '../user.service';
 import { ChangePasswordComponent } from './change-password.component';
 
