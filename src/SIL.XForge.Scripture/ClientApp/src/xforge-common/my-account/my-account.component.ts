@@ -89,7 +89,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     return this.userFromDatabase.name ? this.userFromDatabase.name : 'unknown';
   }
 
-  get lastLogin() {
+  get lastLogin(): Date {
     return this.userFromDatabase.site.lastLogin;
   }
 

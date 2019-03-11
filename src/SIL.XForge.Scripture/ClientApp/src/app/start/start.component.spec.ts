@@ -74,7 +74,7 @@ class TestEnvironment {
       of(
         new User({
           id: 'user01',
-          site: { currentProjectId: projectId, lastLogin: new Date('2019-02-01T12:00:00.000Z') }
+          site: { currentProjectId: projectId }
         })
       )
     );

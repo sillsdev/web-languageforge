@@ -51,7 +51,7 @@
         <div fxLayout="row wrap">
           <div fxFlex>
             <!-- If we need to break the line, don't do it in the middle of the date. -->
-            Last login <span id="last-login" class="nowrap">{{ lastLogin | date: "dd MMMM yyyy" }}</span>
+            Last login <span id="last-login" class="nowrap">{{ lastLogin | amTimeAgo }}</span>
           </div>
           <div fxLayoutAlign="end stretch">
             <button id="my-account-change-password-btn" mat-stroked-button [routerLink]="['/change-password']">

@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ngfModule } from 'angular-file';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { AvatarModule } from 'ngx-avatar';
+import { MomentModule } from 'ngx-moment';
 
 import { AvatarComponent } from './avatar/avatar.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
@@ -39,6 +40,7 @@ export const xForgeCommonEntryComponents = [InviteDialogComponent, SaDeleteDialo
     // AvatarModule included here rather than `ui-common.module.ts` so unit tests don't access the internet
     AvatarModule,
     CommonModule,
+    MomentModule,
     ngfModule,
     OAuthModule.forRoot({
       resourceServer: {

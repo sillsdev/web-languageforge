@@ -183,7 +183,7 @@ class TestEnvironment {
   constructor() {
     this.currentUser = new User({
       id: 'user01',
-      site: { currentProjectId: 'project01', lastLogin: new Date('2019-02-01T12:00:00.000Z') }
+      site: { currentProjectId: 'project01' }
     });
 
     this.projectsSubject = new BehaviorSubject<QueryResults<SFProjectUser[]>>(

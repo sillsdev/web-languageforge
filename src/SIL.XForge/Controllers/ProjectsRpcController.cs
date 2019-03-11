@@ -84,11 +84,11 @@ namespace SIL.XForge.Controllers
                     Role = SystemRoles.User,
                     ValidationKey = Security.GenerateKey(),
                     ValidationExpirationDate = DateTime.Now.AddDays(7),
-                    Active = false
-                ....Sites = new Dictionary<string, Site>
-                ....{
-                    ....{ _siteOptions.Value.Origin.Authority, new Site{} }
-                ....}
+                    Active = false,
+                    Sites = new Dictionary<string, Site>
+                    {
+                        { _siteOptions.Value.Origin.Authority, new Site{} }
+                    }
                 };
                 await _users.InsertAsync(user);
                 // add the user to the current project once we have a current project in context

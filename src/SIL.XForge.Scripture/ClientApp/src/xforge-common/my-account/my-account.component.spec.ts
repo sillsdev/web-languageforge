@@ -6,6 +6,7 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { merge } from '@orbit/utils';
+import { MomentModule } from 'ngx-moment';
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
@@ -22,6 +23,8 @@ import { MyAccountComponent } from './my-account.component';
 
 describe('MyAccountComponent', () => {
   let env: TestEnvironment;
+  const date = new Date(Date.now());
+  date.setDate(date.getDate() - 1);
   beforeEach(() => {
     env = new TestEnvironment(
       new User({
@@ -30,7 +33,7 @@ describe('MyAccountComponent', () => {
         email: 'bob@example.com',
         contactMethod: 'email',
         mobilePhone: '+123 11 2222-33-4444',
-        site: { currentProjectId: 'testproject01', lastLogin: new Date('2019-02-01T12:00:00.000Z') } as Site
+        site: { currentProjectId: 'testproject01', lastLogin: date } as Site
       })
     );
   });
@@ -47,7 +50,7 @@ describe('MyAccountComponent', () => {
   });
 
   it('should display last login date', () => {
-    expect(env.lastLogin.textContent).toContain('01 February 2019');
+    expect(env.lastLogin.textContent).toContain('a day ago');
   });
 
   // This tests that various UI icons etc are shown or not shown,
@@ -523,7 +526,7 @@ describe('MyAccountComponent', () => {
 
 @NgModule({
   declarations: [MyAccountComponent],
-  imports: [NoopAnimationsModule, ngfModule, RouterTestingModule, UICommonModule],
+  imports: [MomentModule, NoopAnimationsModule, ngfModule, RouterTestingModule, UICommonModule],
   exports: [MyAccountComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   // ShowOnDirtyErrorStateMatcher helps form errors show up during unit testing.
