@@ -36,12 +36,12 @@ export class UsxSegmenter extends Segmenter {
     let curVerseRef = '';
     for (const op of delta.ops) {
       const len = typeof op.insert === 'string' ? op.insert.length : 1;
-      if (op.attributes == null) {
+      if (op.insert !== '\n' && op.attributes == null) {
         curRangeLen += len;
       } else {
-        if (op.attributes.para != null) {
-          const style = op.attributes.para.style as string;
-          if (isParagraphStyle(style)) {
+        if (op.insert === '\n' || op.attributes.para != null) {
+          const style = op.attributes == null ? null : (op.attributes.para.style as string);
+          if (style == null || isParagraphStyle(style)) {
             for (const _ch of op.insert) {
               if (curVerseRef !== '') {
                 paraVerses.set(curVerseRef, { index: curIndex, length: curRangeLen });

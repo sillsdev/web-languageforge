@@ -26,7 +26,7 @@ import { SFProjectUserService } from '../../core/sfproject-user.service';
 import { SFProjectService } from '../../core/sfproject.service';
 import { TextService, TextType } from '../../core/text.service';
 import { Segment } from '../../shared/text/segment';
-import { INITIAL_BLANK_TEXT, isBlankText, NORMAL_BLANK_TEXT, TextComponent } from '../../shared/text/text.component';
+import { TextComponent } from '../../shared/text/text.component';
 
 const Delta: new () => DeltaStatic = Quill.import('delta');
 const PUNCT_SPACE_REGEX = XRegExp('^(\\p{P}|\\p{S}|\\p{Cc}|\\p{Z})+$');
@@ -375,7 +375,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
     let i: number;
     for (i = range.index; i < range.index + range.length; i++) {
       const ch = this.target.editor.getText(i, 1);
-      if (ch === INITIAL_BLANK_TEXT[0] || ch === NORMAL_BLANK_TEXT[0] || !/\s/.test(ch)) {
+      if (ch === '' || !/\s/.test(ch)) {
         return { index: i, length: range.length - (i - range.index) };
       }
     }
@@ -396,7 +396,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
     return (
       segment != null &&
       segment.range.length > 0 &&
-      !isBlankText(segment.text) &&
+      segment.text !== '' &&
       this.isSegmentComplete(segment.range) &&
       segment.isChanged
     );

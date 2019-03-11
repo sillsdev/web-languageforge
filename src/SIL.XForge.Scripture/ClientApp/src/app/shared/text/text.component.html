@@ -2,6 +2,7 @@
   spellcheck="false"
   placeholder="No book selected"
   [readOnly]="isReadOnly"
+  [strict]="false"
   [modules]="modules"
   (onEditorCreated)="onEditorCreated($event)"
   (onContentChanged)="onContentChanged($event.delta, $event.source)"

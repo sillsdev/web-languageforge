@@ -75,7 +75,7 @@ describe('EditorComponent', () => {
     env.waitForSuggestion();
     expect(env.component.target.segmentRef).toEqual('verse_2_1');
     const selection = env.component.target.editor.getSelection();
-    expect(selection.index).toEqual(35);
+    expect(selection.index).toEqual(34);
     expect(selection.length).toEqual(0);
     expect(env.component.translateUserConfig.selectedSegment).toEqual('verse_2_1');
     verify(env.mockedSFProjectUserService.update(anything())).once();
@@ -96,7 +96,7 @@ describe('EditorComponent', () => {
     expect(env.component.target.segmentRef).toEqual('verse_1_2');
     const selection = env.component.target.editor.getSelection();
     expect(selection.index).toEqual(30);
-    expect(selection.length).toEqual(2);
+    expect(selection.length).toEqual(1);
     expect(env.component.translateUserConfig.selectedSegment).toEqual('verse_1_2');
     verify(env.mockedSFProjectUserService.update(anything())).once();
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
@@ -563,7 +563,7 @@ class TestEnvironment {
         delta.insert(`${textType}: chapter 1, verse 2.`, { segment: 'verse_1_2' });
         break;
       case 'target':
-        delta.insert('\u2003\u2003', { segment: 'verse_1_2' });
+        delta.insert({ blank: 'normal' }, { segment: 'verse_1_2' });
         break;
     }
     delta.insert('\n', { para: { style: 'p' } });
@@ -573,7 +573,7 @@ class TestEnvironment {
     delta.insert({ verse: 2 }, { verse: { style: 'v' } });
     delta.insert(`${textType}: chapter 2, verse 2.`, { segment: 'verse_2_2' });
     delta.insert('\n', { para: { style: 'p' } });
-    delta.insert('\u00a0', { segment: 'verse_2_2/p_1' });
+    delta.insert({ blank: 'initial' }, { segment: 'verse_2_2/p_1' });
     delta.insert({ verse: 3 }, { verse: { style: 'v' } });
     switch (textType) {
       case 'source':
