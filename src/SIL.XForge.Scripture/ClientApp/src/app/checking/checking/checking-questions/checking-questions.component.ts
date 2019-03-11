@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, skip } from 'rxjs/operators';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { Question } from '../checking.component';
 
@@ -20,12 +20,18 @@ export class CheckingQuestionsComponent extends SubscriptionDisposable {
   constructor() {
     super();
     // Only mark as read if it has been viewed for a set period of time and not an accidental click
-    this.subscribe(this.activeQuestionSubject.pipe(debounceTime(1000)), question => {
-      if (question) {
-        question.markAsRead();
-        this.update.emit(question);
+    this.subscribe(
+      this.activeQuestionSubject.pipe(
+        skip(1),
+        debounceTime(1000)
+      ),
+      question => {
+        if (question) {
+          question.markAsRead();
+          this.update.emit(question);
+        }
       }
-    });
+    );
   }
 
   get activeQuestion(): Question {

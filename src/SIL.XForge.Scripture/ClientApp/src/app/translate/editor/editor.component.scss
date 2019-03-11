@@ -10,11 +10,11 @@
   display: flex;
   flex-direction: column;
   flex: 1 1 0;
-  label {
-    height: 48px;
-    line-height: 48px;
-    font-size: larger;
-  }
+}
+
+.text-title {
+  height: 48px;
+  line-height: 48px;
 }
 
 .text-container {
@@ -28,4 +28,13 @@ app-text {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
+}
+
+.suggestions-menu {
+  width: 400px;
+  padding: 15px;
+}
+
+.slider-labels {
+  margin-top: 15px;
 }

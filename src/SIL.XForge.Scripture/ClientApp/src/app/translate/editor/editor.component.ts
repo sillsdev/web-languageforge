@@ -1,3 +1,4 @@
+import { MdcIconButton } from '@angular-mdc/web';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -10,7 +11,8 @@ import {
   TranslationSuggester
 } from '@sillsdev/machine';
 import Quill, { DeltaStatic, RangeStatic } from 'quill';
-import { filter, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { debounceTime, filter, map, skip, switchMap, tap } from 'rxjs/operators';
 import XRegExp from 'xregexp';
 
 import { NoticeService } from 'xforge-common/notice.service';
@@ -40,9 +42,11 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   suggestionWords: string[] = [];
   suggestionConfidence: number = 0;
   showSuggestion: boolean = false;
+  displaySlider: boolean = false;
 
   @ViewChild('source') source: TextComponent;
   @ViewChild('target') target: TextComponent;
+  @ViewChild('suggestionsMenuButton') suggestionsMenuButton: MdcIconButton;
 
   private translationEngine: RemoteTranslationEngine;
   private isTranslating: boolean = false;
@@ -56,6 +60,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   private text: Text;
   private sourceLoaded: boolean = false;
   private targetLoaded: boolean = false;
+  private confidenceThresholdSubject: BehaviorSubject<number>;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -70,7 +75,22 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
     this.sourceWordTokenizer = wordTokenizer;
     this.targetWordTokenizer = wordTokenizer;
 
+    this.confidenceThresholdSubject = new BehaviorSubject<number>(20);
     this.translationSuggester.confidenceThreshold = 0.2;
+    this.subscribe(
+      this.confidenceThresholdSubject.pipe(
+        skip(1),
+        debounceTime(500),
+        map(value => value / 100),
+        filter(threshold => threshold !== this.translationSuggester.confidenceThreshold)
+      ),
+      threshold => {
+        this.translationSuggester.confidenceThreshold = threshold;
+        this.updateSuggestions();
+        this.translateUserConfig.confidenceThreshold = threshold;
+        this.updateUserConfig();
+      }
+    );
   }
 
   get sourceLabel(): string {
@@ -97,6 +117,15 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
 
   get translateUserConfig(): TranslateProjectUserConfig {
     return this.projectUser == null ? null : this.projectUser.translateConfig;
+  }
+
+  get confidenceThreshold(): number {
+    return this.confidenceThresholdSubject.value;
+  }
+
+  set confidenceThreshold(value: number) {
+    this.suggestionsMenuButton.elementRef.nativeElement.focus();
+    this.confidenceThresholdSubject.next(value);
   }
 
   private get isSelectionAtSegmentEnd(): boolean {
@@ -139,6 +168,11 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
           if (this.translateUserConfig.isTargetTextRight == null) {
             this.translateUserConfig.isTargetTextRight = true;
           }
+          if (this.translateUserConfig.confidenceThreshold != null) {
+            const pcnt = Math.round(this.translateUserConfig.confidenceThreshold * 100);
+            this.translationSuggester.confidenceThreshold = pcnt / 100;
+            this.confidenceThresholdSubject.next(pcnt);
+          }
           if (
             this.translateUserConfig.selectedTextRef === this.text.id &&
             this.translateUserConfig.selectedSegment !== ''
@@ -158,6 +192,20 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   ngOnDestroy(): void {
     super.ngOnDestroy();
     this.noticeService.loadingFinished();
+  }
+
+  suggestionsMenuOpened(): void {
+    // if the parent element of a slider resizes, then the slider will not be rendered properly. A menu is resized when
+    // it is opened, which triggers this bug. We workaround this bug in MDC Web by waiting to display the slider when
+    // the menu is opened.
+    // https://github.com/trimox/angular-mdc-web/issues/1832
+    // https://github.com/material-components/material-components-web/issues/1017
+    this.displaySlider = true;
+  }
+
+  suggestionsMenuClosed(): void {
+    this.displaySlider = false;
+    this.suggestionsMenuButton.elementRef.nativeElement.blur();
   }
 
   async onTargetUpdated(segment: Segment, delta?: DeltaStatic, prevSegment?: Segment): Promise<void> {
