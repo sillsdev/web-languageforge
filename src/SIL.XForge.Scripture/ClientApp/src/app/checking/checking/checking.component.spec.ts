@@ -7,6 +7,7 @@ import { deepEqual, instance, mock, when } from 'ts-mockito';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { AngularSplitModule } from 'angular-split';
 import { QuillModule } from 'ngx-quill';
 import Quill, { DeltaStatic } from 'quill';
 import { Snapshot } from 'sharedb/lib/client';
@@ -23,6 +24,7 @@ import { Text } from '../../core/models/text';
 import { TextData } from '../../core/models/text-data';
 import { TextService, TextType } from '../../core/text.service';
 import { TextComponent } from '../../shared/text/text.component';
+import { CheckingAnswersComponent } from './checking-answers/checking-answers.component';
 import { CheckingQuestionsComponent } from './checking-questions/checking-questions.component';
 import { CheckingTextComponent } from './checking-text/checking-text.component';
 import { CheckingComponent } from './checking.component';
@@ -82,7 +84,7 @@ describe('CheckingComponent', () => {
     it('question status change to read', fakeAsync(() => {
       const question = env.selectQuestion(2);
       // Wait for the 1 second time out before the state of the question changes
-      tick(1000);
+      tick(2000);
       env.fixture.detectChanges();
       expect(question.classes['question-read']).toBeTruthy();
     }));
@@ -90,10 +92,10 @@ describe('CheckingComponent', () => {
     it('question status change to answered', fakeAsync(() => {
       let question = env.selectQuestion(2);
       // Wait for the 1 second time out before the state of the question changes
-      tick(1000);
+      tick(2000);
       question = env.selectQuestion(1);
       question = env.selectQuestion(2);
-      tick(1000);
+      tick(2000);
       env.fixture.detectChanges();
       expect(question.classes['question-answered']).toBeTruthy();
     }));
@@ -101,10 +103,10 @@ describe('CheckingComponent', () => {
     it('question shows answers icon and total', fakeAsync(() => {
       let question = env.selectQuestion(2);
       // Wait for the 1 second time out before the state of the question changes
-      tick(1000);
+      tick(2000);
       question = env.selectQuestion(1);
       question = env.selectQuestion(2);
-      tick(1000);
+      tick(2000);
       env.fixture.detectChanges();
       expect(question.query(By.css('.view-answers span')).nativeElement.textContent).toEqual('1');
     }));
@@ -118,6 +120,7 @@ describe('CheckingComponent', () => {
     it('answer panel is now showing', () => {
       const question = env.selectQuestion(1);
       expect(env.answerPanel).toBeDefined();
+      expect(env.answerPanel.query(By.css('.question')).nativeElement.textContent).toBe('Question 1?');
     });
   });
 
@@ -158,9 +161,10 @@ class TestEnvironment {
         FontSizeComponent,
         CheckingTextComponent,
         CheckingQuestionsComponent,
+        CheckingAnswersComponent,
         TextComponent
       ],
-      imports: [UICommonModule, HttpClientTestingModule, QuillModule, XForgeCommonModule],
+      imports: [UICommonModule, HttpClientTestingModule, QuillModule, XForgeCommonModule, AngularSplitModule.forRoot()],
       providers: [
         { provide: Router, useFactory: () => instance(this.mockedRouter) },
         {
@@ -217,11 +221,11 @@ class TestEnvironment {
   }
 
   get increaseFontSizeButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('app-font-size button[icon="add"]'));
+    return this.fixture.debugElement.query(By.css('app-font-size button:last-child'));
   }
 
   get decreaseFontSizeButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('app-font-size button[icon="remove"]'));
+    return this.fixture.debugElement.query(By.css('app-font-size button:first-child'));
   }
 
   clickButton(button: DebugElement): void {

@@ -139,11 +139,11 @@ class TestEnvironment {
   }
 
   get increaseButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('button[icon="add"]'));
+    return this.fixture.debugElement.query(By.css('button:last-child'));
   }
 
   get decreaseButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('button[icon="remove"]'));
+    return this.fixture.debugElement.query(By.css('button:first-child'));
   }
 
   get fontSize(): number {

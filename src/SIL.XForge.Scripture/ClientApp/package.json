@@ -45,6 +45,7 @@
     "angular-file": "^0.5.9",
     "angular-oauth2-oidc": "^5.0.2",
     "angular-password-strength-meter": "0.0.4",
+    "angular-split": "^2.0.1",
     "bootstrap": "^4.1.3",
     "bson": "^3.0.2",
     "buffer": "^5.2.1",

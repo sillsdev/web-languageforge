@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { debounceTime, skip } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { Question } from '../checking.component';
 
@@ -15,27 +15,19 @@ export class CheckingQuestionsComponent extends SubscriptionDisposable {
   }
   @Input() questions: Question[] = [];
   @Output() update: EventEmitter<Question> = new EventEmitter<Question>();
-  activeQuestionSubject: BehaviorSubject<Question> = new BehaviorSubject<Question>(undefined);
+  @Output() changed: EventEmitter<Question> = new EventEmitter<Question>();
+  activeQuestion: Question;
+  activeQuestionSubject: Subject<Question> = new Subject<Question>();
 
   constructor() {
     super();
     // Only mark as read if it has been viewed for a set period of time and not an accidental click
-    this.subscribe(
-      this.activeQuestionSubject.pipe(
-        skip(1),
-        debounceTime(1000)
-      ),
-      question => {
-        if (question) {
-          question.markAsRead();
-          this.update.emit(question);
-        }
+    this.subscribe(this.activeQuestionSubject.pipe(debounceTime(2000)), question => {
+      if (question) {
+        question.markAsRead();
+        this.update.emit(question);
       }
-    );
-  }
-
-  get activeQuestion(): Question {
-    return this.activeQuestionSubject.value;
+    });
   }
 
   checkCanChangeQuestion(newIndex: number) {
@@ -51,6 +43,8 @@ export class CheckingQuestionsComponent extends SubscriptionDisposable {
   }
 
   activateQuestion(question: Question) {
+    this.activeQuestion = question;
+    this.changed.emit(question);
     this.activeQuestionSubject.next(question);
   }
 
