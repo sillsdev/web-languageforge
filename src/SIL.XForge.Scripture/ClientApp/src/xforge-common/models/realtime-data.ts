@@ -10,7 +10,7 @@ export interface RealtimeDataConstructor {
   new (doc: RealtimeDoc, store: RealtimeOfflineStore): RealtimeData;
 }
 
-export abstract class RealtimeData<T = any> implements RecordIdentity {
+export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity {
   private readonly subscription: Subscription;
 
   constructor(
@@ -42,11 +42,11 @@ export abstract class RealtimeData<T = any> implements RecordIdentity {
     await this.doc.subscribe();
   }
 
-  remoteChanges(): Observable<T> {
+  remoteChanges(): Observable<Ops> {
     return this.doc.remoteChanges();
   }
 
-  async submit(ops: T, source: any): Promise<void> {
+  async submit(ops: Ops, source?: any): Promise<void> {
     const submitPromise = this.doc.submitOp(ops, source);
     // update offline data when the op is first submitted
     this.updateOfflineData();
@@ -56,6 +56,10 @@ export abstract class RealtimeData<T = any> implements RecordIdentity {
   }
 
   updateOfflineData(): void {
+    if (this.doc.type == null) {
+      return;
+    }
+
     const pendingOps = this.doc.pendingOps.map(op => this.prepareDataForStore(op));
     const offlineData: RealtimeOfflineData = {
       snapshot: {

@@ -1,12 +1,14 @@
 var express = require('express');
 var http = require('http');
 var richText = require('rich-text');
+var otJson0 = require('ot-json0');
 var ShareDB = require('sharedb');
 var ShareDBMongo = require('sharedb-mongo');
 var WebSocketJSONStream = require('websocket-json-stream');
 var WebSocket = require('ws');
 
 ShareDB.types.register(richText.type);
+ShareDB.types.register(otJson0.type);
 
 var backend = null;
 

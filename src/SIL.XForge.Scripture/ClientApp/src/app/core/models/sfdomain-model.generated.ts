@@ -84,45 +84,6 @@ export class TextRef extends ProjectDataRef {
   }
 }
 
-export abstract class QuestionBase extends ProjectData {
-  /** type identifier string for domain type mapping */
-  static readonly TYPE: string = 'question';
-  source?: string;
-  scriptureStart?: VerseRefData;
-  scriptureEnd?: VerseRefData;
-  text?: string;
-  constructor(init?: Partial<QuestionBase>) {
-    super(QuestionBase.TYPE, init);
-  }
-}
-
-/** ResourceRef class for QuestionBase **/
-export class QuestionRef extends ProjectDataRef {
-  static readonly TYPE: string = QuestionBase.TYPE;
-
-  constructor(id: string) {
-    super(QuestionRef.TYPE, id);
-  }
-}
-
-/** --- Generated Interface */
-export interface VerseRefData {
-  book?: string;
-  chapter?: string;
-  verse?: string;
-  versification?: ScrVersType;
-}
-
-export enum ScrVersType {
-  Unknown = 'Unknown',
-  Original = 'Original',
-  Septuagint = 'Septuagint',
-  Vulgate = 'Vulgate',
-  English = 'English',
-  RussianProtestant = 'RussianProtestant',
-  RussianOrthodox = 'RussianOrthodox'
-}
-
 export abstract class SFProjectUserBase extends ProjectUser {
   /** type identifier string for domain type mapping */
   static readonly TYPE: string = 'projectUser';
@@ -160,7 +121,6 @@ export abstract class SFProjectBase extends Project {
   lastSyncedDate?: Date;
   activeSyncJob?: SyncJobRef;
   texts?: TextRef[];
-  questions?: QuestionRef[];
   constructor(init?: Partial<SFProjectBase>) {
     super(SFProjectBase.TYPE, init);
   }

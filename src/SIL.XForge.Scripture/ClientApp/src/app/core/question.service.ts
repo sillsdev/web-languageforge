@@ -1,26 +1,23 @@
 import { Injectable } from '@angular/core';
 
-import { GetAllParameters, JsonApiService, QueryObservable } from 'xforge-common/json-api.service';
+import { JsonApiService } from 'xforge-common/json-api.service';
+import { RealtimeService } from 'xforge-common/realtime.service';
 import { ResourceService } from 'xforge-common/resource.service';
-import { Question } from './models/question';
+import { QuestionData } from './models/question-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionService extends ResourceService {
-  constructor(jsonApiService: JsonApiService) {
-    super(Question.TYPE, jsonApiService);
+  constructor(jsonApiService: JsonApiService, private readonly realtimeService: RealtimeService) {
+    super(QuestionData.TYPE, jsonApiService);
   }
 
-  getAll(parameters?: GetAllParameters, include?: string[][]): QueryObservable<Question[]> {
-    return this.jsonApiService.getAll(this.type, parameters, include);
+  connect(textId: string): Promise<QuestionData> {
+    return this.realtimeService.connect(this.identity(textId));
   }
 
-  get(id: string, include?: string[][]): QueryObservable<Question> {
-    return this.jsonApiService.get(this.identity(id), include);
-  }
-
-  create(question: Question): Promise<Question> {
-    return this.jsonApiService.create(question);
+  disconnect(questionData: QuestionData): Promise<void> {
+    return this.realtimeService.disconnect(questionData);
   }
 }
