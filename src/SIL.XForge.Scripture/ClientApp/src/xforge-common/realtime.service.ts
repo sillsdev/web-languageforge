@@ -15,13 +15,18 @@ import { RealtimeOfflineStore } from './realtime-offline-store';
 
 types.register(RichText.type);
 
+interface ConnectedData {
+  promise: Promise<any>;
+  refCount: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class RealtimeService {
   private readonly ws: ReconnectingWebSocket;
   private readonly connection: Connection;
-  private readonly connectedData = new Map<RecordIdentity, Promise<any>>();
+  private readonly connectedDataMap = new Map<RecordIdentity, ConnectedData>();
   private readonly stores = new Map<string, RealtimeOfflineStore>();
 
   constructor(private readonly domainModel: DomainModel, private readonly locationService: LocationService) {
@@ -37,28 +42,33 @@ export class RealtimeService {
   }
 
   connect<T extends RealtimeData>(identity: RecordIdentity): Promise<T> {
-    if (!this.connectedData.has(identity)) {
+    let connectedData = this.connectedDataMap.get(identity);
+    if (connectedData == null) {
       const sharedbDoc = this.connection.get(underscore(identity.type) + '_data', identity.id);
       const store = this.getStore(identity.type);
       const RealtimeDataType = this.domainModel.getRealtimeDataType(identity.type);
       const realtimeData = new RealtimeDataType(new SharedbRealtimeDoc(sharedbDoc), store);
-      this.connectedData.set(
-        identity,
-        new Promise<any>((resolve, reject) => {
-          realtimeData.subscribe().then(() => resolve(realtimeData), err => reject(err));
-        })
-      );
+      const promise = new Promise<any>((resolve, reject) => {
+        realtimeData.subscribe().then(() => resolve(realtimeData), err => reject(err));
+      });
+      connectedData = { promise, refCount: 0 };
+      this.connectedDataMap.set(identity, connectedData);
     }
-
-    return this.connectedData.get(identity);
+    connectedData.refCount++;
+    return connectedData.promise;
   }
 
   disconnect(data: RealtimeData): Promise<void> {
-    this.connectedData.delete(data);
-    return data.dispose();
+    const connectedData = this.connectedDataMap.get(data);
+    connectedData.refCount--;
+    if (connectedData.refCount === 0) {
+      this.connectedDataMap.delete(data);
+      return data.dispose();
+    }
+    return Promise.resolve();
   }
 
-  delete(identity: RecordIdentity): Promise<void> {
+  localDelete(identity: RecordIdentity): Promise<void> {
     const store = this.getStore(identity.type);
     return store.delete(identity.id);
   }

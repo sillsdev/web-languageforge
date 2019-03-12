@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -21,9 +22,12 @@ namespace SIL.XForge.Scripture.Services
             _logger = logger;
         }
 
-        public Delta ToDelta(string projectId, XElement usxElem)
+        public IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> ToChapterDeltas(string projectId,
+            XElement usxElem)
         {
-            var newDelta = new Delta();
+            var chapterDeltas = new SortedList<int, (Delta Delta, int LastVerse)>();
+            var chapterDelta = new Delta();
+            string lastVerse = null;
             int nextNoteId = 0;
             var nextIds = new Dictionary<string, int>();
             string curRef = null;
@@ -45,7 +49,7 @@ namespace SIL.XForge.Scripture.Services
                                 if (topLevelVerses)
                                 {
                                     // add implicit paragraph when there are top-level verses
-                                    newDelta.Insert('\n');
+                                    chapterDelta.Insert('\n');
                                     topLevelVerses = false;
                                 }
                                 var style = (string)elem.Attribute("style");
@@ -64,31 +68,32 @@ namespace SIL.XForge.Scripture.Services
                                 {
                                     curRef = GetParagraphRef(nextIds, style, style);
                                 }
-                                ProcessChildNodes(projectId, bookId, newDelta, elem, curChapter, ref curRef,
-                                    ref nextNoteId);
-                                SegmentEnded(newDelta, curRef);
+                                ProcessChildNodes(projectId, bookId, chapterDelta, elem, curChapter, ref lastVerse,
+                                    ref curRef, ref nextNoteId);
+                                SegmentEnded(chapterDelta, curRef);
                                 if (!paraStyle)
                                     curRef = null;
-                                newDelta.InsertPara(GetAttributes(elem));
+                                chapterDelta.InsertPara(GetAttributes(elem));
                                 break;
 
                             case "chapter":
-                                if (topLevelVerses)
+                                if (curChapter != null)
                                 {
-                                    // add implicit paragraph when there are top-level verses
-                                    SegmentEnded(newDelta, curRef);
-                                    newDelta.Insert('\n');
-                                    topLevelVerses = false;
+                                    ChapterEnded(chapterDeltas, chapterDelta, curChapter, lastVerse, curRef,
+                                        topLevelVerses);
+                                    chapterDelta = new Delta();
                                 }
                                 curRef = null;
+                                lastVerse = null;
                                 curChapter = (string)elem.Attribute("number");
-                                newDelta.InsertChapter(curChapter, GetAttributes(elem));
+                                chapterDelta.InsertChapter(curChapter, GetAttributes(elem));
                                 break;
 
                             // according to the USX schema, a verse can only occur within a paragraph, but Paratext 8.0
                             // can still generate USX with verses at the top-level
                             case "verse":
-                                InsertVerse(newDelta, elem, curChapter, ref curRef);
+                                lastVerse = (string)elem.Attribute("number");
+                                InsertVerse(chapterDelta, elem, curChapter, ref curRef);
                                 topLevelVerses = true;
                                 break;
 
@@ -99,18 +104,38 @@ namespace SIL.XForge.Scripture.Services
                         break;
 
                     case XText text:
-                        newDelta.InsertText(text.Value, curRef);
+                        chapterDelta.InsertText(text.Value, curRef);
                         break;
                 }
             }
+            ChapterEnded(chapterDeltas, chapterDelta, curChapter, lastVerse, curRef, topLevelVerses);
+            return chapterDeltas;
+        }
+
+        private void ChapterEnded(SortedList<int, (Delta Delta, int LastVerse)> chapterDeltas, Delta chapterDelta,
+            string curChapter, string lastVerse, string curRef, bool topLevelVerses)
+        {
             if (topLevelVerses)
-                SegmentEnded(newDelta, curRef);
-            newDelta.Insert("\n");
-            return newDelta;
+            {
+                // add implicit paragraph when there are top-level verses
+                SegmentEnded(chapterDelta, curRef);
+                chapterDelta.Insert('\n');
+                topLevelVerses = false;
+            }
+            int lastVerseNum = 0;
+            if (lastVerse != null)
+            {
+                int dashIndex = lastVerse.IndexOf('-');
+                if (dashIndex != -1)
+                    lastVerseNum = int.Parse(lastVerse.Substring(dashIndex + 1), CultureInfo.InvariantCulture);
+                else
+                    lastVerseNum = int.Parse(lastVerse, CultureInfo.InvariantCulture);
+            }
+            chapterDeltas[int.Parse(curChapter, CultureInfo.InvariantCulture)] = (chapterDelta, lastVerseNum);
         }
 
         private void ProcessChildNodes(string projectId, string bookId, Delta newDelta, XElement parentElem,
-            string curChapter, ref string curRef, ref int nextNoteId)
+            string curChapter, ref string lastVerse, ref string curRef, ref int nextNoteId)
         {
             foreach (XNode node in parentElem.Nodes())
             {
@@ -120,6 +145,7 @@ namespace SIL.XForge.Scripture.Services
                         switch (elem.Name.LocalName)
                         {
                             case "verse":
+                                lastVerse = (string)elem.Attribute("number");
                                 InsertVerse(newDelta, elem, curChapter, ref curRef);
                                 break;
 
@@ -130,8 +156,8 @@ namespace SIL.XForge.Scripture.Services
                             case "note":
                                 var noteDelta = new Delta();
                                 string tempRef = null;
-                                ProcessChildNodes(projectId, bookId, noteDelta, elem, curChapter, ref tempRef,
-                                    ref nextNoteId);
+                                ProcessChildNodes(projectId, bookId, noteDelta, elem, curChapter, ref lastVerse,
+                                    ref tempRef, ref nextNoteId);
                                 newDelta.InsertNote(nextNoteId, noteDelta, GetAttributes(elem), curRef);
                                 nextNoteId++;
                                 break;
@@ -208,12 +234,13 @@ namespace SIL.XForge.Scripture.Services
             return obj;
         }
 
-        public XElement ToUsx(string usxVersion, string bookId, string desc, Delta delta)
+        public XElement ToUsx(string usxVersion, string bookId, string desc, IEnumerable<Delta> chapterDeltas)
         {
             var newUsxElem = new XElement("usx", new XAttribute("version", usxVersion),
                 new XElement("book", new XAttribute("code", bookId), new XAttribute("style", "id"),
                     desc == "" ? null : desc));
-            ProcessDelta(newUsxElem, delta);
+            foreach (Delta chapterDelta in chapterDeltas)
+                ProcessDelta(newUsxElem, chapterDelta);
             return newUsxElem;
         }
 

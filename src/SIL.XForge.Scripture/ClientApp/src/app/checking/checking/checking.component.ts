@@ -2,11 +2,13 @@ import { Component, ElementRef, HostBinding, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SplitComponent } from 'angular-split';
 import { switchMap } from 'rxjs/operators';
+
 import { Resource } from 'xforge-common/models/resource';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { nameof } from 'xforge-common/utils';
 import { SFProject } from '../../core/models/sfproject';
 import { Text } from '../../core/models/text';
+import { TextDataId } from '../../core/models/text-data';
 import { TextService } from '../../core/text.service';
 import { CheckingQuestionsComponent } from './checking-questions/checking-questions.component';
 import { CheckingTextComponent } from './checking-text/checking-text.component';
@@ -89,6 +91,10 @@ export class CheckingComponent extends SubscriptionDisposable {
     answered: 0
   };
   answersPanelContainerElement: ElementRef;
+  textDataId: TextDataId;
+  chapters: number[] = [];
+
+  private _chapter: number;
 
   constructor(private activatedRoute: ActivatedRoute, private textService: TextService) {
     super();
@@ -99,11 +105,28 @@ export class CheckingComponent extends SubscriptionDisposable {
         })
       ),
       textData => {
+        const prevTextId = this.text == null ? '' : this.text.id;
         this.text = textData.data;
         this.project = textData.getIncluded(this.text.project);
-        this.loadQuestions();
+        this.chapters = this.text.chapters.map(c => c.number);
+        if (prevTextId !== this.text.id) {
+          this._chapter = 1;
+          this.textDataId = new TextDataId(this.text.id, this.chapter);
+          this.loadQuestions();
+        }
       }
     );
+  }
+
+  get chapter(): number {
+    return this._chapter;
+  }
+
+  set chapter(value: number) {
+    if (this._chapter !== value) {
+      this._chapter = value;
+      this.textDataId = new TextDataId(this.text.id, this.chapter);
+    }
   }
 
   private get splitContainerElementHeight(): number {

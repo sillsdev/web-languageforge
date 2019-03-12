@@ -197,11 +197,11 @@ namespace SIL.XForge.Scripture.Services
 
                                 if (hasSource)
                                 {
-                                    await SyncOrCloneBookAsync(user, conn, project, text, sourceParatextId, "source",
-                                        bookId);
+                                    await SyncOrCloneBookAsync(user, conn, project, text, TextType.Source,
+                                        sourceParatextId);
                                 }
-                                await SyncOrCloneBookAsync(user, conn, project, text, targetParatextId, "target",
-                                    bookId);
+                                await SyncOrCloneBookAsync(user, conn, project, text, TextType.Target,
+                                    targetParatextId);
                             }
 
                             foreach (string bookId in booksToDelete)
@@ -210,8 +210,8 @@ namespace SIL.XForge.Scripture.Services
                                     t => t.ProjectRef == project.Id && t.BookId == bookId);
 
                                 if (hasSource)
-                                    await DeleteBookAsync(conn, project, text, sourceParatextId, "source", bookId);
-                                await DeleteBookAsync(conn, project, text, targetParatextId, "target", bookId);
+                                    await DeleteBookAsync(conn, project, text, TextType.Source, sourceParatextId);
+                                await DeleteBookAsync(conn, project, text, TextType.Target, targetParatextId);
                                 await UpdateProgress();
                             }
 
@@ -254,35 +254,50 @@ namespace SIL.XForge.Scripture.Services
             return booksToDelete;
         }
 
-        private async Task DeleteBookAsync(Connection conn, SFProjectEntity project, TextEntity text,
-            string paratextId, string docType, string bookId)
+        private async Task DeleteBookAsync(Connection conn, SFProjectEntity project, TextEntity text, TextType textType,
+            string paratextId)
         {
             string projectPath = GetProjectPath(project, paratextId);
-            File.Delete(GetBookTextFileName(projectPath, bookId));
-            Document<Delta> doc = GetShareDBDocument(conn, text, docType);
+            File.Delete(GetBookTextFileName(projectPath, text.BookId));
+            var tasks = new List<Task>();
+            foreach (Chapter chapter in text.Chapters)
+                tasks.Add(DeleteChapterAsync(conn, text, chapter.Number, textType));
+            await Task.WhenAll(tasks);
+        }
+
+        private async Task DeleteChapterAsync(Connection conn, TextEntity text, int chapter, TextType textType)
+        {
+            Document<Delta> doc = GetShareDBDocument(conn, text, chapter, textType);
             await doc.FetchAsync();
             await doc.DeleteAsync();
         }
 
         private async Task SyncOrCloneBookAsync(UserEntity user, Connection conn, SFProjectEntity project,
-            TextEntity text, string paratextId, string docType, string bookId)
+            TextEntity text, TextType textType, string paratextId)
         {
             string projectPath = GetProjectPath(project, paratextId);
             if (!Directory.Exists(projectPath))
                 Directory.CreateDirectory(projectPath);
 
-            Document<Delta> doc = GetShareDBDocument(conn, text, docType);
-            string fileName = GetBookTextFileName(projectPath, bookId);
+            string fileName = GetBookTextFileName(projectPath, text.BookId);
             if (File.Exists(fileName))
-                await SyncBookAsync(user, paratextId, fileName, bookId, doc);
+                await SyncBookAsync(user, conn, text, textType, paratextId, fileName);
             else
-                await CloneBookAsync(user, paratextId, fileName, bookId, doc);
+                await CloneBookAsync(user, conn, text, textType, paratextId, fileName);
         }
 
-        private async Task SyncBookAsync(UserEntity user, string paratextId, string fileName, string bookId,
-            Document<Delta> doc)
+        private async Task SyncBookAsync(UserEntity user, Connection conn, TextEntity text, TextType textType,
+            string paratextId, string fileName)
         {
-            await doc.FetchAsync();
+            var docs = new SortedList<int, Document<Delta>>();
+            var tasks = new List<Task>();
+            foreach (Chapter chapter in text.Chapters)
+            {
+                Document<Delta> doc = GetShareDBDocument(conn, text, chapter.Number, textType);
+                docs[chapter.Number] = doc;
+                tasks.Add(doc.FetchAsync());
+            }
+            await Task.WhenAll(tasks);
             XElement bookTextElem = await LoadBookTextAsync(fileName);
 
             XElement oldUsxElem = bookTextElem.Element("usx");
@@ -292,43 +307,78 @@ namespace SIL.XForge.Scripture.Services
             if (bookElem == null)
                 throw new InvalidOperationException("Invalid USX data, missing 'book' element.");
             XElement newUsxElem = _deltaUsxMapper.ToUsx((string)oldUsxElem.Attribute("version"),
-                (string)bookElem.Attribute("code"), (string)bookElem, doc.Data);
+                (string)bookElem.Attribute("code"), (string)bookElem, docs.Values.Select(d => d.Data));
 
             var revision = (string)bookTextElem.Attribute("revision");
 
             string bookText;
             if (XNode.DeepEquals(oldUsxElem, newUsxElem))
             {
-                bookText = await _paratextService.GetBookTextAsync(user, paratextId, bookId);
+                bookText = await _paratextService.GetBookTextAsync(user, paratextId, text.BookId);
             }
             else
             {
-                bookText = await _paratextService.UpdateBookTextAsync(user, paratextId, bookId, revision,
+                bookText = await _paratextService.UpdateBookTextAsync(user, paratextId, text.BookId, revision,
                     newUsxElem.ToString());
             }
             await UpdateProgress();
 
             bookTextElem = XElement.Parse(bookText);
 
-            Delta delta = _deltaUsxMapper.ToDelta(paratextId, bookTextElem.Element("usx"));
-            Delta diffDelta = doc.Data.Diff(delta);
-            await doc.SubmitOpAsync(diffDelta);
+            tasks.Clear();
+            bool chaptersChanged = false;
+            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> deltas = _deltaUsxMapper.ToChapterDeltas(paratextId,
+                bookTextElem.Element("usx"));
+            var chapters = new List<Chapter>();
+            foreach (KeyValuePair<int, (Delta Delta, int LastVerse)> kvp in deltas)
+            {
+                if (docs.TryGetValue(kvp.Key, out Document<Delta> doc))
+                {
+                    Delta diffDelta = doc.Data.Diff(kvp.Value.Delta);
+                    tasks.Add(doc.SubmitOpAsync(diffDelta));
+                    docs.Remove(kvp.Key);
+                }
+                else
+                {
+                    tasks.Add(doc.CreateAsync(kvp.Value.Delta));
+                    chaptersChanged = true;
+                }
+                chapters.Add(new Chapter { Number = kvp.Key, LastVerse = kvp.Value.LastVerse });
+            }
+            foreach (Document<Delta> doc in docs.Values)
+            {
+                tasks.Add(doc.DeleteAsync());
+                chaptersChanged = true;
+            }
+            await Task.WhenAll(tasks);
+            if (chaptersChanged)
+                await _texts.UpdateAsync(text, u => u.Set(t => t.Chapters, chapters));
             await UpdateProgress();
 
             await SaveBookTextAsync(bookTextElem, fileName);
             await UpdateProgress();
         }
 
-        private async Task CloneBookAsync(UserEntity user, string paratextId, string fileName, string bookId,
-            Document<Delta> doc)
+        private async Task CloneBookAsync(UserEntity user, Connection conn, TextEntity text, TextType textType,
+            string paratextId, string fileName)
         {
-            string bookText = await _paratextService.GetBookTextAsync(user, paratextId, bookId);
+            string bookText = await _paratextService.GetBookTextAsync(user, paratextId, text.BookId);
             await UpdateProgress();
 
             var bookTextElem = XElement.Parse(bookText);
 
-            Delta delta = _deltaUsxMapper.ToDelta(paratextId, bookTextElem.Element("usx"));
-            await doc.CreateAsync(delta);
+            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> deltas = _deltaUsxMapper.ToChapterDeltas(paratextId,
+                bookTextElem.Element("usx"));
+            var tasks = new List<Task>();
+            var chapters = new List<Chapter>();
+            foreach (KeyValuePair<int, (Delta Delta, int LastVerse)> kvp in deltas)
+            {
+                Document<Delta> doc = GetShareDBDocument(conn, text, kvp.Key, textType);
+                tasks.Add(doc.CreateAsync(kvp.Value.Delta));
+                chapters.Add(new Chapter { Number = kvp.Key, LastVerse = kvp.Value.LastVerse });
+            }
+            await Task.WhenAll(tasks);
+            await _texts.UpdateAsync(text, u => u.Set(t => t.Chapters, chapters));
             await UpdateProgress();
 
             await SaveBookTextAsync(bookTextElem, fileName);
@@ -361,9 +411,9 @@ namespace SIL.XForge.Scripture.Services
             return Path.Combine(projectPath, bookId + ".xml");
         }
 
-        private Document<Delta> GetShareDBDocument(Connection conn, TextEntity text, string docType)
+        private Document<Delta> GetShareDBDocument(Connection conn, TextEntity text, int chapter, TextType textType)
         {
-            return conn.Get<Delta>("text_data", $"{text.Id}:{docType}");
+            return conn.Get<Delta>("text_data", TextEntity.GetTextDataId(text.Id, chapter, textType));
         }
     }
 }

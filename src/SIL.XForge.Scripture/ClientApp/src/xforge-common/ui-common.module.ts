@@ -50,6 +50,8 @@ import { RecaptchaModule } from 'ng-recaptcha';
 import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
 import { ChartsModule } from 'ng2-charts';
 
+import { BlurOnClickDirective } from './blur-on-click.directive';
+
 const modules = [
   FlexLayoutModule,
   FormsModule,
@@ -101,7 +103,8 @@ const modules = [
 ];
 
 @NgModule({
+  declarations: [BlurOnClickDirective],
   imports: modules,
-  exports: modules
+  exports: [...modules, BlurOnClickDirective]
 })
 export class UICommonModule {}

@@ -5,9 +5,7 @@ import { JsonApiService, QueryObservable } from 'xforge-common/json-api.service'
 import { RealtimeService } from 'xforge-common/realtime.service';
 import { ResourceService } from 'xforge-common/resource.service';
 import { Text } from './models/text';
-import { TextData } from './models/text-data';
-
-export type TextType = 'source' | 'target';
+import { TextData, TextDataId } from './models/text-data';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +14,16 @@ export class TextService extends ResourceService {
   constructor(jsonApiService: JsonApiService, private readonly realtimeService: RealtimeService) {
     super(Text.TYPE, jsonApiService);
 
-    this.jsonApiService.resourceDeleted(this.type).subscribe(textId => {
-      this.realtimeService.delete(this.dataIdentity(textId, 'source'));
-      this.realtimeService.delete(this.dataIdentity(textId, 'target'));
+    this.jsonApiService.resourceDeleted<Text>(this.type).subscribe(text => {
+      for (const chapter of text.chapters) {
+        this.realtimeService.localDelete(this.dataIdentity(new TextDataId(text.id, chapter.number, 'source')));
+        this.realtimeService.localDelete(this.dataIdentity(new TextDataId(text.id, chapter.number, 'target')));
+      }
     });
   }
 
-  connect(id: string, textType: TextType): Promise<TextData> {
-    return this.realtimeService.connect(this.dataIdentity(id, textType));
+  connect(id: TextDataId): Promise<TextData> {
+    return this.realtimeService.connect(this.dataIdentity(id));
   }
 
   disconnect(textData: TextData): Promise<void> {
@@ -34,7 +34,7 @@ export class TextService extends ResourceService {
     return this.jsonApiService.get(this.identity(id), include);
   }
 
-  private dataIdentity(id: string, textType: TextType): RecordIdentity {
-    return this.identity(id + ':' + textType);
+  private dataIdentity(id: TextDataId): RecordIdentity {
+    return this.identity(id.toString());
   }
 }

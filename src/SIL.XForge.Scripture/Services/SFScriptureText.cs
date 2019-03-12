@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +9,10 @@ namespace SIL.XForge.Scripture.Services
 {
     public class SFScriptureText : IText
     {
-        public SFScriptureText(ITokenizer<string, int> wordTokenizer, string projectId, BsonDocument doc)
+        public SFScriptureText(ITokenizer<string, int> wordTokenizer, string projectId, string textId, int chapter,
+            BsonDocument doc)
         {
-            var id = (string)doc["_id"];
-            int index = id.IndexOf(":", StringComparison.Ordinal);
-            Id = $"{projectId}_{id.Substring(0, index)}";
+            Id = $"{projectId}_{textId}_{chapter}";
             Segments = GetSegments(wordTokenizer, doc).OrderBy(s => s.SegmentRef).ToArray();
         }
 
@@ -48,9 +46,7 @@ namespace SIL.XForge.Scripture.Services
                 }
 
                 string text = value.AsString;
-                // skip blanks
-                if (text != "\u00a0" && text != "\u2003\u2003")
-                    sb.Append(text);
+                sb.Append(text);
                 prevRef = curRef;
             }
 

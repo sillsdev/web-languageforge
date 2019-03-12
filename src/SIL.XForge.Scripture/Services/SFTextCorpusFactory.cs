@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -50,17 +51,19 @@ namespace SIL.XForge.Scripture.Services
                     continue;
 
                 string segmentType = null;
-                string suffix = null;
+                TextType textType;
                 switch (type)
                 {
                     case TextCorpusType.Source:
-                        suffix = "source";
+                        textType = TextType.Source;
                         segmentType = project.SourceSegmentType;
                         break;
                     case TextCorpusType.Target:
-                        suffix = "target";
+                        textType = TextType.Target;
                         segmentType = project.TargetSegmentType;
                         break;
+                    default:
+                        throw new InvalidEnumArgumentException(nameof(type), (int)type, typeof(TextType));
                 }
                 StringTokenizer segmentTokenizer = null;
                 if (segmentType != null)
@@ -69,10 +72,13 @@ namespace SIL.XForge.Scripture.Services
                 List<TextEntity> textList = await _texts.Query().Where(t => t.ProjectRef == projectId).ToListAsync();
                 foreach (TextEntity text in textList)
                 {
-                    FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter
-                        .Eq("_id", $"{text.Id}:{suffix}");
-                    BsonDocument doc = await textDataColl.Find(filter).FirstAsync();
-                    texts.Add(new SFScriptureText(wordTokenizer, project.Id, doc));
+                    foreach (Chapter chapter in text.Chapters)
+                    {
+                        FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter
+                            .Eq("_id", TextEntity.GetTextDataId(text.Id, chapter.Number, textType));
+                        BsonDocument doc = await textDataColl.Find(filter).FirstAsync();
+                        texts.Add(new SFScriptureText(wordTokenizer, project.Id, text.Id, chapter.Number, doc));
+                    }
                 }
             }
 

@@ -474,11 +474,11 @@ describe('JsonApiService', () => {
   }));
 
   it('resourceDeleted', async(async () => {
-    env.expectObservable(env.service.resourceDeleted(User.TYPE), (id, exId) => expect(id).toBe(exId), 'user01');
+    env.expectObservable(env.service.resourceDeleted(User.TYPE), (user, exId) => expect(user.id).toBe(exId), 'user01');
 
     env.expectObservable(
       env.service.resourceDeleted(TestProjectUser.TYPE),
-      (id, exId) => expect(id).toBe(exId),
+      (projectUser, exId) => expect(projectUser.id).toBe(exId),
       'projectuser01',
       'projectuser02'
     );

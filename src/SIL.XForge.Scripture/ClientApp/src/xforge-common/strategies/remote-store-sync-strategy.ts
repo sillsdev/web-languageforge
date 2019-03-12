@@ -6,7 +6,8 @@ import { isOnlineRequest } from '../request-type';
 
 /**
  * This strategy syncs any changes received from the remote source to the memory store. When it receives the results of
- * a "findRecords" query, it will check if any records have been removed and purge them from the memory store.
+ * a "findRecords" or "findRelatedRecords" query, it will check if any records have been removed and purge them from the
+ * memory store.
  */
 export class RemoteStoreSyncStrategy extends ConnectionStrategy {
   constructor(remote: string, store: string) {
@@ -25,28 +26,36 @@ export class RemoteStoreSyncStrategy extends ConnectionStrategy {
     const store = this.target as Store;
     const task = this.source.requestQueue.currentProcessor.task;
     if (task.type === 'pull') {
-      // Purge deleted records from the cache when performing a findRecords query
+      // Purge deleted records from the cache when performing a "findRecords" or "findRelatedRecords" query.
+      // Potential issues:
+      // 1. if filtering or paging is specified on a "findRecords" query, records that no longer match the query but
+      // still exist could be incorrectly the deleted.
+      // 2. a record that still exists but is no longer related to the record specified in the "findRelatedRecords"
+      // query could be incorrectly deleted.
+      //
+      // Although these issues could occur, it is preferable that we ensure that deleted records are purged from the
+      // memory store. If records are incorrectly deleted, they will still be retrieved from the server when needed.
       const query = task.data as Query;
-      if (query.expression.op === 'findRecords') {
-        const cachedResources: Record[] = store.cache.query(query);
-        if (cachedResources.length > 0) {
-          const remoteResourceIds = new Set<string>(
+      if (query.expression.op === 'findRecords' || query.expression.op === 'findRelatedRecords') {
+        const cachedRecords: Record[] = store.cache.query(query);
+        if (cachedRecords.length > 0) {
+          const remoteRecordIds = new Set<string>(
             transform.operations.map(op => (op as ReplaceRecordOperation).record.id)
           );
 
-          const deletedResources: Record[] = [];
-          for (const cachedResource of cachedResources) {
-            if (!remoteResourceIds.has(cachedResource.id)) {
-              deletedResources.push(cachedResource);
+          const deletedRecords: Record[] = [];
+          for (const cachedRecord of cachedRecords) {
+            if (!remoteRecordIds.has(cachedRecord.id)) {
+              deletedRecords.push(cachedRecord);
             }
           }
 
-          if (deletedResources.length > 0) {
+          if (deletedRecords.length > 0) {
             const operations = transform.operations.slice();
-            for (const resource of deletedResources) {
+            for (const deletedRecord of deletedRecords) {
               operations.push({
                 op: 'removeRecord',
-                record: { type: resource.type, id: resource.id }
+                record: { type: deletedRecord.type, id: deletedRecord.id }
               } as RemoveRecordOperation);
             }
             transform = buildTransform(operations, transform.options, transform.id);

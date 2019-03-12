@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
-import { deepMerge } from '@orbit/utils';
+import { deepMerge, eq } from '@orbit/utils';
 import Quill, { DeltaStatic, RangeStatic, Sources } from 'quill';
 import { Subscription } from 'rxjs';
 
-import { TextData } from '../../core/models/text-data';
-import { TextService, TextType } from '../../core/text.service';
+import { TextData, TextDataId } from '../../core/models/text-data';
+import { TextService } from '../../core/text.service';
 import { registerScripture } from './quill-scripture';
 import { Segment } from './segment';
 import { Segmenter } from './segmenter';
@@ -45,7 +45,6 @@ export interface TextUpdatedEvent {
   encapsulation: ViewEncapsulation.None
 })
 export class TextComponent implements OnDestroy {
-  @Input() textType: TextType = 'target';
   @Input() isReadOnly: boolean = true;
   @Output() updated = new EventEmitter<TextUpdatedEvent>(true);
   @Output() segmentRefChange = new EventEmitter<string>();
@@ -71,7 +70,7 @@ export class TextComponent implements OnDestroy {
       }
     }
   };
-  private _textId?: string;
+  private _id?: TextDataId;
   private _modules: any = this.DEFAULT_MODULES;
   private _editor?: Quill;
   private textDataSub?: Subscription;
@@ -86,14 +85,14 @@ export class TextComponent implements OnDestroy {
 
   constructor(private readonly textService: TextService) {}
 
-  get textId(): string {
-    return this._textId;
+  get id(): TextDataId {
+    return this._id;
   }
 
   @Input()
-  set textId(value: string) {
-    if (this._textId !== value) {
-      this._textId = value;
+  set id(value: TextDataId) {
+    if (!eq(this._id, value)) {
+      this._id = value;
       this._segment = undefined;
       this.initialSegmentRef = undefined;
       this.initialSegmentChecksum = undefined;
@@ -194,14 +193,22 @@ export class TextComponent implements OnDestroy {
   onEditorCreated(editor: Quill): void {
     this._editor = editor;
     this.segmenter = new UsxSegmenter(this._editor);
-    if (this.textId != null) {
+    if (this.id != null) {
       this.bindQuill();
     }
     EDITORS.add(this._editor);
   }
 
   focus(): void {
-    return this.editor.focus();
+    if (this.editor != null) {
+      this.editor.focus();
+    }
+  }
+
+  blur(): void {
+    if (this.editor != null) {
+      this.editor.blur();
+    }
   }
 
   changeSegment(segmentRef: string, checksum?: number, focus: boolean = false): boolean {
@@ -212,7 +219,7 @@ export class TextComponent implements OnDestroy {
       return;
     }
 
-    if (this._segment != null && this._textId === this._segment.textId && segmentRef === this._segment.ref) {
+    if (this._segment != null && this._id.textId === this._segment.textId && segmentRef === this._segment.ref) {
       // the selection has not changed to a different segment
       return false;
     }
@@ -229,7 +236,7 @@ export class TextComponent implements OnDestroy {
     if (this._segment != null && this.highlightSegment) {
       this.toggleHighlight(this._segment.range, false);
     }
-    this._segment = new Segment(this._textId, segmentRef);
+    this._segment = new Segment(this._id.textId, segmentRef);
     if (checksum != null) {
       this._segment.initialChecksum = checksum;
     }
@@ -243,6 +250,11 @@ export class TextComponent implements OnDestroy {
 
   getSegmentRange(ref: string): RangeStatic {
     return this.segmenter.getSegmentRange(ref);
+  }
+
+  getSegmentText(ref: string): string {
+    const range = this.segmenter.getSegmentRange(ref);
+    return this._editor.getText(range.index, range.length);
   }
 
   onContentChanged(delta: DeltaStatic, source: Sources): void {
@@ -269,17 +281,14 @@ export class TextComponent implements OnDestroy {
 
   private async bindQuill(): Promise<void> {
     await this.unbindQuill();
-    if (this._textId == null || this._editor == null) {
+    if (this._id == null || this._editor == null) {
       return;
     }
     // remove placeholder text while the document is opening
     const editorElem = this._editor.container.getElementsByClassName('ql-editor')[0];
     const placeholderText = editorElem.getAttribute('data-placeholder');
     editorElem.setAttribute('data-placeholder', '');
-    this.textData = await this.textService.connect(
-      this.textId,
-      this.textType
-    );
+    this.textData = await this.textService.connect(this._id);
     this._editor.setContents(this.textData.data);
     this.textDataSub = this.textData.remoteChanges().subscribe(ops => this._editor.updateContents(ops));
     editorElem.setAttribute('data-placeholder', placeholderText);
@@ -423,7 +432,7 @@ export class TextComponent implements OnDestroy {
     if (range.length > 0) {
       // this changes the underlying HTML, which can mess up some Quill events, so defer this call
       Promise.resolve().then(() =>
-        this._editor.formatText(range.index, range.length, 'highlight', value ? this.textType : false, 'silent')
+        this._editor.formatText(range.index, range.length, 'highlight', value ? this._id.textType : false, 'silent')
       );
     }
   }
