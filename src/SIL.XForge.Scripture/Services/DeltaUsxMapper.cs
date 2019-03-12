@@ -9,9 +9,6 @@ namespace SIL.XForge.Scripture.Services
 {
     public class DeltaUsxMapper
     {
-        internal const string InitialBlankText = "\u00a0";
-        internal const string NormalBlankText = "\u2003\u2003";
-
         private static readonly HashSet<string> ParagraphStyles = new HashSet<string>
         {
             "p", "m", "pmo", "pm", "pmc", "pmr", "pi", "mi", "cls", "li", "pc", "pr", "ph", "lit"
@@ -41,7 +38,7 @@ namespace SIL.XForge.Scripture.Services
                         switch (elem.Name.LocalName)
                         {
                             case "book":
-                                bookId = (string) elem.Attribute("code");
+                                bookId = (string)elem.Attribute("code");
                                 break;
 
                             case "para":
@@ -51,7 +48,7 @@ namespace SIL.XForge.Scripture.Services
                                     newDelta.Insert('\n');
                                     topLevelVerses = false;
                                 }
-                                var style = (string) elem.Attribute("style");
+                                var style = (string)elem.Attribute("style");
                                 bool paraStyle = IsParagraphStyle(style);
                                 if (paraStyle)
                                 {
@@ -84,7 +81,7 @@ namespace SIL.XForge.Scripture.Services
                                     topLevelVerses = false;
                                 }
                                 curRef = null;
-                                curChapter = (string) elem.Attribute("number");
+                                curChapter = (string)elem.Attribute("number");
                                 newDelta.InsertChapter(curChapter, GetAttributes(elem));
                                 break;
 
@@ -161,7 +158,7 @@ namespace SIL.XForge.Scripture.Services
 
         private static void InsertVerse(Delta newDelta, XElement elem, string curChapter, ref string curRef)
         {
-            var verse = (string) elem.Attribute("number");
+            var verse = (string)elem.Attribute("number");
             SegmentEnded(newDelta, curRef);
             curRef = $"verse_{curChapter}_{verse}";
             newDelta.InsertVerse(verse, GetAttributes(elem));
@@ -179,7 +176,7 @@ namespace SIL.XForge.Scripture.Services
             else
             {
                 JToken lastOp = newDelta.Ops[newDelta.Ops.Count - 1];
-                var attrs = (JObject) lastOp[Delta.Attributes];
+                var attrs = (JObject)lastOp[Delta.Attributes];
                 if (attrs != null && (attrs["verse"] != null || attrs["chapter"] != null || attrs["para"] != null))
                     newDelta.InsertBlank(segRef);
             }
@@ -228,11 +225,11 @@ namespace SIL.XForge.Scripture.Services
                 if (op.OpType() != Delta.InsertType)
                     throw new ArgumentException("The delta is not a document.", nameof(delta));
 
-                var attrs = (JObject) op[Delta.Attributes];
+                var attrs = (JObject)op[Delta.Attributes];
 
                 if (op[Delta.InsertType].Type == JTokenType.String)
                 {
-                    var text = (string) op[Delta.InsertType];
+                    var text = (string)op[Delta.InsertType];
                     if (attrs == null)
                     {
                         if (text == "\n")
@@ -263,7 +260,7 @@ namespace SIL.XForge.Scripture.Services
                                     break;
 
                                 case "segment":
-                                    if (attrs.Count == 1 && !IsBlank(text))
+                                    if (attrs.Count == 1)
                                         childNodes.Add(new XText(text));
                                     break;
                             }
@@ -273,23 +270,27 @@ namespace SIL.XForge.Scripture.Services
                 else
                 {
                     // embeds
-                    var obj = (JObject) op[Delta.InsertType];
+                    var obj = (JObject)op[Delta.InsertType];
                     foreach (JProperty prop in obj.Properties())
                     {
                         switch (prop.Name)
                         {
                             case "chapter":
-                                var chapterNum = (string) prop.Value;
+                                var chapterNum = (string)prop.Value;
                                 var chapterElem = new XElement("chapter", new XAttribute("number", chapterNum));
                                 AddAttributes(chapterElem, attrs["chapter"]);
                                 rootElem.Add(chapterElem);
                                 break;
 
                             case "verse":
-                                var verseNum = (string) prop.Value;
+                                var verseNum = (string)prop.Value;
                                 var verseElem = new XElement("verse", new XAttribute("number", verseNum));
                                 AddAttributes(verseElem, attrs["verse"]);
                                 childNodes.Add(verseElem);
+                                break;
+
+                            case "blank":
+                                // ignore blank embeds
                                 break;
 
                             case "note":
@@ -307,11 +308,6 @@ namespace SIL.XForge.Scripture.Services
             rootElem.Add(childNodes);
         }
 
-        private static bool IsBlank(string text)
-        {
-            return text == InitialBlankText || text == NormalBlankText;
-        }
-
         private static XElement CreateContainerElement(string name, JToken attributes, object content = null)
         {
             var elem = new XElement(name);
@@ -323,12 +319,12 @@ namespace SIL.XForge.Scripture.Services
 
         private static void AddAttributes(XElement elem, JToken attributes)
         {
-            var attrsObj = (JObject) attributes;
+            var attrsObj = (JObject)attributes;
             foreach (JProperty prop in attrsObj.Properties())
             {
                 if (prop.Name == "id" || prop.Name == "number")
                     continue;
-                elem.Add(new XAttribute(prop.Name, (string) prop.Value));
+                elem.Add(new XAttribute(prop.Name, (string)prop.Value));
             }
         }
     }

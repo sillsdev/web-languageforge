@@ -61,12 +61,13 @@ namespace SIL.XForge.Scripture.Services
 
         public static Delta InsertBlank(this Delta delta, string segRef)
         {
-            string blankText;
-            if (segRef.Contains("/p"))
-                blankText = DeltaUsxMapper.InitialBlankText;
-            else
-                blankText = DeltaUsxMapper.NormalBlankText;
-            return delta.InsertText(blankText, segRef);
+            string type = segRef.Contains("/p") ? "initial" : "normal";
+
+            var attrs = new JObject();
+            if (segRef != null)
+                attrs.Add(new JProperty("segment", segRef));
+
+            return delta.Insert(new { blank = type }, attrs);
         }
 
         public static Delta InsertVerse(this Delta delta, string number)

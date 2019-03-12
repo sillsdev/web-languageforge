@@ -10,13 +10,7 @@ import { Segment } from './segment';
 import { Segmenter } from './segmenter';
 import { UsxSegmenter } from './usx-segmenter';
 
-export const INITIAL_BLANK_TEXT = '\u00a0';
-export const NORMAL_BLANK_TEXT = '\u2003\u2003';
 const EDITORS = new Set<Quill>();
-
-export function isBlankText(text: string): boolean {
-  return text === INITIAL_BLANK_TEXT || text === NORMAL_BLANK_TEXT;
-}
 
 function onNativeSelectionChanged(): void {
   // workaround for bug where Quill allows a selection inside of an embed
@@ -392,7 +386,7 @@ export class TextComponent implements OnDestroy {
       return;
     }
     let newSel: RangeStatic;
-    if (isBlankText(this._segment.text)) {
+    if (this._segment.text === '') {
       // always select whole segment if blank
       newSel = this._segment.range;
     } else {
@@ -413,14 +407,9 @@ export class TextComponent implements OnDestroy {
 
     if (text === '' && range.length === 0) {
       // insert blank
-      let blankText: string;
-      if (ref.includes('/p')) {
-        blankText = INITIAL_BLANK_TEXT;
-      } else {
-        blankText = NORMAL_BLANK_TEXT;
-      }
-      this._editor.insertText(range.index, blankText, 'user');
-      range = { index: range.index, length: blankText.length };
+      const type = ref.includes('/p') ? 'initial' : 'normal';
+      this._editor.insertEmbed(range.index, 'blank', type, 'user');
+      range = { index: range.index, length: 1 };
     }
 
     const formats = this._editor.getFormat(range.index, range.length);

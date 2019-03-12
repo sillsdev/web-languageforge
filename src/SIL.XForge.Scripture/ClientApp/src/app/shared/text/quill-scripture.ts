@@ -82,6 +82,31 @@ export function registerScripture(): void {
     }
   }
 
+  class BlankEmbed extends Embed {
+    static blotName = 'blank';
+    static tagName = 'usx-blank';
+
+    static create(value: string): Node {
+      const node = super.create(value) as HTMLElement;
+      node.setAttribute(customAttributeName('type'), value);
+      let text: string;
+      switch (value) {
+        case 'initial':
+          text = ' ';
+          break;
+        case 'normal':
+          text = '        ';
+          break;
+      }
+      node.innerText = text;
+      return node;
+    }
+
+    static value(node: HTMLElement): any {
+      return node.getAttribute(customAttributeName('type'));
+    }
+  }
+
   class CharInline extends Inline {
     static blotName = 'char';
     static tagName = 'usx-char';
@@ -136,6 +161,7 @@ export function registerScripture(): void {
   }
 
   Block.allowedChildren.push(VerseEmbed);
+  Block.allowedChildren.push(BlankEmbed);
   Block.allowedChildren.push(NoteEmbed);
 
   class ParaBlock extends Block {
@@ -375,6 +401,7 @@ export function registerScripture(): void {
   Quill.register('formats/highlight', HighlightClass);
   Quill.register('formats/segment', SegmentClass);
   Quill.register('blots/verse', VerseEmbed);
+  Quill.register('blots/blank', BlankEmbed);
   Quill.register('blots/note', NoteEmbed);
   Quill.register('blots/char', CharInline);
   Quill.register('blots/para', ParaBlock);
