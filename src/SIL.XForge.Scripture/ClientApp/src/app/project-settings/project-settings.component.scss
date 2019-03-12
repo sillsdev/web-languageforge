@@ -1,3 +1,5 @@
+@import '~src/global';
+
 .card-content {
   padding: 16px;
 }
@@ -30,7 +32,8 @@
 
 #delete-project {
   border: 2px solid red;
-  #delete-project-button {
-    color: red;
-  }
+}
+
+#delete-btn {
+  @include mdc-button-container-fill-color(red);
 }

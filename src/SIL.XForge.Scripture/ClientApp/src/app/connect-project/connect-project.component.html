@@ -28,7 +28,7 @@
             <div *ngIf="showTasks" formGroupName="tasks" fxLayout="column">
               <div>Include Tasks</div>
               <mat-checkbox formControlName="checking">Community Checking</mat-checkbox>
-              <mat-checkbox formControlName="translate">Translate (experimental)</mat-checkbox>
+              <mat-checkbox formControlName="translate">Translate</mat-checkbox>
               <mat-form-field>
                 <mat-select placeholder="Based on" formControlName="sourceProject">
                   <mat-option *ngFor="let project of sourceProjects" [value]="project">{{ project.name }}</mat-option>
