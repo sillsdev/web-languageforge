@@ -1,5 +1,8 @@
 import { RequestStrategy } from '@orbit/coordinator';
-import { Exception } from '@orbit/core';
+import { Pullable, Query, Source, Transform } from '@orbit/data';
+
+import { isLocalRequest, isOnlineRequest } from '../request-type';
+import { isNotFoundError } from '../utils';
 
 export class StoreRemoteQueryStrategy extends RequestStrategy {
   constructor(store: string, remote: string) {
@@ -8,15 +11,21 @@ export class StoreRemoteQueryStrategy extends RequestStrategy {
       on: 'beforeQuery',
 
       target: remote,
-      action: 'pull',
+      filter: (query: Query) => !isLocalRequest(query),
+      action: (query: Query) => this.pull(query),
 
-      blocking: false,
-
-      catch: (e: Exception) => {
-        this.source.requestQueue.skip();
-        this.target.requestQueue.skip();
-        throw e;
-      }
+      blocking: (query: Query) => isOnlineRequest(query)
     });
+  }
+
+  async pull(query: Query): Promise<Transform[]> {
+    try {
+      return await (this.target as Source & Pullable).pull(query);
+    } catch (err) {
+      if (isOnlineRequest(query) && !isNotFoundError(err)) {
+        throw err;
+      }
+      return [];
+    }
   }
 }

@@ -10,6 +10,8 @@ import {
 } from '@orbit/data';
 import Store from '@orbit/store';
 
+import { isPersistRequest } from '../request-type';
+
 /**
  * This strategy syncs the memory cache with a persistent backup. A normal sync strategy cannot be used, because it
  * passes along the transform that the cache receives in its sync call. This transform does not include the removal of
@@ -26,6 +28,7 @@ export class StoreBackupSyncStrategy extends ConnectionStrategy {
       on: 'transform',
 
       target: backup,
+      filter: (transform: Transform) => isPersistRequest(transform),
       action: (transform: Transform) => this.handleTransform(transform),
 
       blocking: true

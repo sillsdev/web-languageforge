@@ -6,7 +6,11 @@ import { takeUntil } from 'rxjs/operators';
 export abstract class SubscriptionDisposable implements OnDestroy {
   private ngUnsubscribe: Subject<void> = new Subject<void>();
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
+    this.dispose();
+  }
+
+  dispose(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }

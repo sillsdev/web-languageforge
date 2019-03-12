@@ -25,7 +25,7 @@ export abstract class ProjectUserService<T extends ProjectUser = ProjectUser> ex
     await this.jsonApiService.onlineUpdateAttributes<ProjectUser>(this.identity(id), { role });
   }
 
-  update(projectUser: T): Promise<T> {
+  update(projectUser: T): Promise<void> {
     return this.jsonApiService.update(projectUser);
   }
 }

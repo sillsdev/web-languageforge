@@ -1,56 +1,23 @@
-import Orbit, {
-  Query,
-  Record,
-  Transform,
-  TransformNotAllowed,
-  TransformOrOperations,
-  Updatable,
-  updatable
-} from '@orbit/data';
+import { Query, Record, Transform } from '@orbit/data';
 import JSONAPISource from '@orbit/jsonapi';
 
+import { getRequestType } from '../request-type';
 import { QueryOperator, QueryOperators } from './query-operators';
-import { getTransformRequests, TransformRequestProcessors, TransformRequestResponse } from './transform-requests';
 
-@updatable
-export class XForgeJSONAPISource extends JSONAPISource implements Updatable {
-  update: (transformOrOperations: TransformOrOperations, options?: object, id?: string) => Promise<any>;
-
+export class XForgeJSONAPISource extends JSONAPISource {
   constructor(settings = {}) {
     super(settings);
   }
 
-  _push(transform: Transform): Promise<Transform[]> {
-    const requests = getTransformRequests(this, transform);
-
-    if (this.maxRequestsPerTransform && requests.length > this.maxRequestsPerTransform) {
-      return Orbit.Promise.resolve().then(() => {
-        throw new TransformNotAllowed(
-          'This transform requires ' +
-            requests.length +
-            ' requests, which exceeds the specified limit of ' +
-            this.maxRequestsPerTransform +
-            ' requests per transform.',
-          transform
-        );
-      });
+  async _push(transform: Transform): Promise<Transform[]> {
+    const transforms = await super._push(transform);
+    for (const t of transforms) {
+      if (t.options == null) {
+        t.options = {};
+      }
+      t.options.requestType = getRequestType(transform);
     }
-
-    const transforms: Transform[] = [];
-    let result: Promise<void> = Orbit.Promise.resolve();
-
-    requests.forEach(request => {
-      result = result.then(() => {
-        return this._processRequest(request).then(response => {
-          Array.prototype.push.apply(transforms, response.transforms);
-        });
-      });
-    });
-
-    return result.then(() => {
-      transforms.unshift(transform);
-      return transforms;
-    });
+    return transforms;
   }
 
   async _pull(query: Query): Promise<Transform[]> {
@@ -62,6 +29,12 @@ export class XForgeJSONAPISource extends JSONAPISource implements Updatable {
     if (response.meta != null) {
       query.options.totalPagedCount = response.meta['total-records'];
     }
+    for (const t of response.transforms) {
+      if (t.options == null) {
+        t.options = {};
+      }
+      t.options.requestType = getRequestType(query);
+    }
     return response.transforms;
   }
 
@@ -71,28 +44,16 @@ export class XForgeJSONAPISource extends JSONAPISource implements Updatable {
       throw new Error(`JSONAPISource does not support the \`${query.expression.op}\` operator for queries.`);
     }
     const response = await operator(this, query);
-    query.options.included = response.includedData;
     if (response.meta != null) {
       query.options.totalPagedCount = response.meta['total-records'];
     }
+    for (const t of response.transforms) {
+      if (t.options == null) {
+        t.options = {};
+      }
+      t.options.requestType = getRequestType(query);
+    }
     await this._transformed(response.transforms);
     return response.primaryData;
-  }
-
-  _update(transform: Transform): Promise<any> {
-    const requests = getTransformRequests(this, transform);
-
-    if (requests.length > 1) {
-      return Orbit.Promise.resolve().then(() => {
-        throw new TransformNotAllowed('This update requires more than one request.', transform);
-      });
-    }
-
-    return this._processRequest(requests[0]).then(response => response.primaryData);
-  }
-
-  protected _processRequest(request: any): Promise<TransformRequestResponse> {
-    const processor = TransformRequestProcessors[request.op];
-    return processor(this, request);
   }
 }

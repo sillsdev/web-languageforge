@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { AuthConfig, JwksValidationHandler, OAuthErrorEvent, OAuthService } from 'angular-oauth2-oidc';
 
 import { environment } from '../environments/environment';
-import { JsonApiService } from './json-api.service';
 import { LocationService } from './location.service';
+import { OrbitService } from './orbit-service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class AuthService {
 
   constructor(
     private readonly oauthService: OAuthService,
-    private readonly jsonApiService: JsonApiService,
+    private readonly orbitService: OrbitService,
     private readonly locationService: LocationService,
     private readonly router: Router
   ) {}
@@ -64,7 +64,7 @@ export class AuthService {
     this.oauthService.setupAutomaticSilentRefresh();
     this.oauthService.events.subscribe(event => {
       if (event.type === 'token_received') {
-        this.tryLoginPromise.then(() => this.jsonApiService.setAccessToken(this.oauthService.getAccessToken()));
+        this.tryLoginPromise.then(() => this.orbitService.setAccessToken(this.oauthService.getAccessToken()));
       }
     });
     this.tryLoginPromise = this.oauthService.loadDiscoveryDocumentAndTryLogin().then(async result => {
@@ -91,7 +91,7 @@ export class AuthService {
         }
       }
       if (isLoggedIn) {
-        await this.jsonApiService.init(this.oauthService.getAccessToken());
+        await this.orbitService.init(this.oauthService.getAccessToken());
         return true;
       }
       return false;

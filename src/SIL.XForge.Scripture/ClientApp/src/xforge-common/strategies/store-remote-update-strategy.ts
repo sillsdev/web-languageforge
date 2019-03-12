@@ -1,5 +1,8 @@
 import { RequestStrategy } from '@orbit/coordinator';
-import { Transform } from '@orbit/data';
+import { Pushable, Source, Transform } from '@orbit/data';
+
+import { isLocalRequest, isOnlineRequest } from '../request-type';
+import { isNotFoundError } from '../utils';
 
 export class StoreRemoteUpdateStrategy extends RequestStrategy {
   constructor(store: string, remote: string) {
@@ -8,10 +11,21 @@ export class StoreRemoteUpdateStrategy extends RequestStrategy {
       on: 'beforeUpdate',
 
       target: remote,
-      filter: (t: Transform) => t.options == null || !t.options.localOnly,
-      action: 'push',
+      filter: (transform: Transform) => !isLocalRequest(transform),
+      action: (transform: Transform) => this.push(transform),
 
-      blocking: false
+      blocking: (transform: Transform) => isOnlineRequest(transform)
     });
+  }
+
+  async push(transform: Transform): Promise<Transform[]> {
+    try {
+      return await (this.target as Source & Pushable).push(transform);
+    } catch (err) {
+      if (isOnlineRequest(transform) && !isNotFoundError(err)) {
+        throw err;
+      }
+      return [];
+    }
   }
 }
