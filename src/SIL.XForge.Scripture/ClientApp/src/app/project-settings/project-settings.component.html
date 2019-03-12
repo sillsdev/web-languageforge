@@ -1,100 +1,100 @@
-<div class="container">
-  <mdc-card class="card" mdc-card--outlined>
-    <form class="card-content" [formGroup]="form">
-      <h2>Tasks</h2>
-      <h3 class="mdc-typography--subtitle1">Select which tasks are available. At least one task must be selected.</h3>
-      <div class="invalid-feedback" *ngIf="form.errors && form.errors.requireCheckboxesToBeChecked">
-        You must select at least one option
-      </div>
-      <div class="task-grid">
-        <mdc-form-field>
-          <mdc-checkbox formControlName="checking" id="checkbox-community-checking"></mdc-checkbox>
-        </mdc-form-field>
-        <div class="checkbox-label checkbox-row-item">Community Checking</div>
-        <div class="status checkbox-row-item">
-          <mat-spinner
-            id="checking-update-spinner"
-            *ngIf="controlStates.get('checking') === elementState.Submitting && !form.errors"
-            [diameter]="15"
-            class="update-button-spinner"
-            aria-label="Update in progress"
-          ></mat-spinner>
-          <i
-            id="checking-update-done"
-            *ngIf="controlStates.get('checking') === elementState.Submitted && !form.errors"
-            class="material-icons check-icon"
-            >done</i
-          >
-          <i
-            id="checking-error-icon"
-            *ngIf="controlStates.get('checking') === elementState.Error && !form.errors"
-            class="material-icons error-icon"
-            >error</i
-          >
-          <div class="in-sync" *ngIf="controlStates.get('checking') === elementState.InSync"></div>
+<div fxLayout="column" fxLayoutAlign="space-between stretch" fxLayoutGap="2em" class="container">
+  <div>
+    <h2>Tasks</h2>
+    <p>Select which tasks are available. At least one task must be selected.</p>
+    <mdc-card class="card" outlined>
+      <form class="card-content" [formGroup]="form">
+        <div class="invalid-feedback" *ngIf="form.errors && form.errors.requireCheckboxesToBeChecked">
+          You must select at least one option
         </div>
-        <div class="empty"></div>
-        <p class="helper-text">
-          Engage the wider community to ensure that the translation is clear, accurate, and natural. Select chapters,
-          ask targeted questions, allow discussion of answers.
-        </p>
-        <div class="empty"></div>
-      </div>
-      <mat-divider></mat-divider>
-      <div class="task-grid">
-        <mdc-form-field>
-          <mdc-checkbox formControlName="translation" id="checkbox-translating"></mdc-checkbox>
-        </mdc-form-field>
-        <div class="checkbox-label checkbox-row-item">Translate (experimental)</div>
-        <div class="status checkbox-row-item">
-          <mat-spinner
-            id="translation-update-spinner"
-            *ngIf="controlStates.get('translation') === elementState.Submitting && !form.errors"
-            [diameter]="15"
-            class="update-button-spinner"
-            aria-label="Update in progress"
-          ></mat-spinner>
-          <i
-            id="translation-update-done"
-            *ngIf="controlStates.get('translation') === elementState.Submitted && !form.errors"
-            class="material-icons check-icon"
-            >done</i
-          >
-          <i
-            id="translation-error-icon"
-            *ngIf="controlStates.get('translation') === elementState.Error && !form.errors"
-            class="material-icons error-icon"
-            >error</i
-          >
-          <div class="in-sync" *ngIf="controlStates.get('translation') === elementState.InSync"></div>
+        <div class="task-grid">
+          <mdc-form-field>
+            <mdc-checkbox formControlName="checking" id="checkbox-community-checking"></mdc-checkbox>
+          </mdc-form-field>
+          <div class="checkbox-label checkbox-row-item">Community Checking</div>
+          <div class="status checkbox-row-item">
+            <mat-spinner
+              id="checking-update-spinner"
+              *ngIf="controlStates.get('checking') === elementState.Submitting && !form.errors"
+              [diameter]="15"
+              class="update-button-spinner"
+              aria-label="Update in progress"
+            ></mat-spinner>
+            <i
+              id="checking-update-done"
+              *ngIf="controlStates.get('checking') === elementState.Submitted && !form.errors"
+              class="material-icons check-icon"
+              >done</i
+            >
+            <i
+              id="checking-error-icon"
+              *ngIf="controlStates.get('checking') === elementState.Error && !form.errors"
+              class="material-icons error-icon"
+              >error</i
+            >
+            <div class="in-sync" *ngIf="controlStates.get('checking') === elementState.InSync"></div>
+          </div>
+          <div class="empty"></div>
+          <p class="helper-text">
+            Engage the wider community to ensure that the translation is clear, accurate, and natural. Select chapters,
+            ask targeted questions, allow discussion of answers.
+          </p>
+          <div class="empty"></div>
         </div>
-        <div class="empty"></div>
-        <p class="helper-text">
-          This feature is under development<br />If your Paratext project is a <b>Daughter Translation</b> or you would
-          like to use your project as a <b>Daughter Translation</b> in the
-          <a routerLink="/translate-settings">Translate Settings</a> choose the project this translation is based on.
-          This will enable a number of features that can offer translation suggestions.
-        </p>
-        <div class="empty"></div>
-      </div>
-    </form>
-  </mdc-card>
-  <div fxLayout="column" fxLayoutAlign="space-between stretch" id="danger-zone">
+        <mdc-list-divider></mdc-list-divider>
+        <div class="task-grid">
+          <mdc-form-field>
+            <mdc-checkbox formControlName="translation" id="checkbox-translating"></mdc-checkbox>
+          </mdc-form-field>
+          <div class="checkbox-label checkbox-row-item">Translate</div>
+          <div class="status checkbox-row-item">
+            <mat-spinner
+              id="translation-update-spinner"
+              *ngIf="controlStates.get('translation') === elementState.Submitting && !form.errors"
+              [diameter]="15"
+              class="update-button-spinner"
+              aria-label="Update in progress"
+            ></mat-spinner>
+            <i
+              id="translation-update-done"
+              *ngIf="controlStates.get('translation') === elementState.Submitted && !form.errors"
+              class="material-icons check-icon"
+              >done</i
+            >
+            <i
+              id="translation-error-icon"
+              *ngIf="controlStates.get('translation') === elementState.Error && !form.errors"
+              class="material-icons error-icon"
+              >error</i
+            >
+            <div class="in-sync" *ngIf="controlStates.get('translation') === elementState.InSync"></div>
+          </div>
+          <div class="empty"></div>
+          <p class="helper-text">
+            Collaborate with other translators working on the same text and use translation suggestions.<br />
+            If your Paratext project is a <b>Daughter Translation</b> or you would like to use your project as a
+            <b>Daughter Translation</b> in the <a routerLink="/translate-settings">Translate Settings</a> choose the
+            project this translation is based on. This will enable a number of features that can offer translation
+            suggestions.
+          </p>
+          <div class="empty"></div>
+        </div>
+      </form>
+    </mdc-card>
+  </div>
+
+  <div id="danger-zone">
     <h2>Danger Zone</h2>
     <mdc-card class="card-content" id="delete-project">
       <h3>Delete this project</h3>
-      <div>
-        <p>Once you delete a project, there is no going back. Please be certain.</p>
-        <p>
-          This will <strong>not</strong> delete your Paratext project, but it will delete any unsynchronized data stored
-          in Scripture Forge. It is recommended to <a [routerLink]="['/projects', projectId, 'sync']">Sync</a> first
-          before deleting.
-        </p>
-      </div>
-      <div>
-        <div fxLayout="row" fxLayoutAlign="end stretch">
-          <button id="delete-btn" mat-stroked-button (click)="openDeleteProjectDialog()">Delete this project</button>
-        </div>
+      <p>Once you delete a project, there is no going back. Please be certain.</p>
+      <p>
+        This will <strong>not</strong> delete your Paratext project, but it will delete any unsynchronized data stored
+        in Scripture Forge. It is recommended to
+        <a [routerLink]="['/projects', projectId, 'sync']">Synchronise</a> first before deleting.
+      </p>
+      <div fxLayout="row" fxLayoutAlign="end stretch">
+        <button id="delete-btn" mdc-button unelevated (click)="openDeleteProjectDialog()">Delete this project</button>
       </div>
     </mdc-card>
   </div>

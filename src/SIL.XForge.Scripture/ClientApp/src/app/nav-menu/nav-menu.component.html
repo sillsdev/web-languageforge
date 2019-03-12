@@ -75,7 +75,7 @@
         </mdc-list-item>
       </div>
       <div *ngIf="(isProjectAdmin$ | async)">
-        <mdc-list-divider></mdc-list-divider>
+        <mdc-list-divider *ngIf="selectedProject.checkingConfig.enabled"></mdc-list-divider>
         <mdc-list-item
           [routerLink]="['/projects', selectedProject.id, 'sync']"
           [activated]="rlaSync.isActive"
