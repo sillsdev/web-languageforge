@@ -51,6 +51,7 @@
     "buffer": "^5.2.1",
     "core-js": "^2.5.7",
     "crc-32": "^1.2.0",
+    "date-fns": "^1.30.1",
     "hammerjs": "^2.0.8",
     "localforage": "^1.7.3",
     "ng-recaptcha": "^4.2.1",

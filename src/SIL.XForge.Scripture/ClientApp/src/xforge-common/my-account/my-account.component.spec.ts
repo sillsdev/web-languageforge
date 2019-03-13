@@ -11,6 +11,7 @@ import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { ngfModule } from 'angular-file';
 import { AuthService } from '../auth.service';
+import { Site } from '../models/site';
 import { User } from '../models/user';
 import { NoticeService } from '../notice.service';
 import { ParatextService } from '../paratext.service';
@@ -21,6 +22,8 @@ import { MyAccountComponent } from './my-account.component';
 
 describe('MyAccountComponent', () => {
   let env: TestEnvironment;
+  const date = new Date(Date.now());
+  date.setDate(date.getDate() - 1);
   beforeEach(() => {
     env = new TestEnvironment(
       new User({
@@ -28,7 +31,8 @@ describe('MyAccountComponent', () => {
         username: 'bobusername',
         email: 'bob@example.com',
         contactMethod: 'email',
-        mobilePhone: '+123 11 2222-33-4444'
+        mobilePhone: '+123 11 2222-33-4444',
+        site: { currentProjectId: 'testproject01', lastLogin: date } as Site
       })
     );
   });
@@ -42,6 +46,10 @@ describe('MyAccountComponent', () => {
 
   it('should have avatar', () => {
     expect(env.avatars.length).toBeGreaterThan(0);
+  });
+
+  it('should display last login date', () => {
+    expect(env.lastLogin.textContent).toContain('Last login 1 day ago');
   });
 
   // This tests that various UI icons etc are shown or not shown,
@@ -629,6 +637,10 @@ class TestEnvironment {
 
   get header2(): HTMLElement {
     return this.fixture.nativeElement.querySelector('h2');
+  }
+
+  get lastLogin(): HTMLElement {
+    return this.fixture.nativeElement.querySelector('#last-login');
   }
 
   get paratextLinkElement(): DebugElement {

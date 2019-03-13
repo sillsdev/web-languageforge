@@ -177,7 +177,11 @@ namespace SIL.XForge.Identity.Controllers
                         EmailVerified = false,
                         Password = UserEntity.HashPassword(password),
                         Role = SystemRoles.User,
-                        Active = true
+                        Active = true,
+                        Sites = new Dictionary<string, Site>
+                        {
+                            { _siteOptions.Value.Origin.Authority, new Site() }
+                        }
                     };
                     await _users.InsertAsync(user);
                     await LogInUserAsync(user);
@@ -281,6 +285,12 @@ namespace SIL.XForge.Identity.Controllers
             };
             // issue authentication cookie with subject ID and name
             await _httpContextAccessor.HttpContext.SignInAsync(user.Id, user.Name, props);
+            // update the last login date
+            Dictionary<string, Site> sites = user.Sites;
+            sites[_siteOptions.Value.Origin.Authority].LastLogin = DateTime.UtcNow;
+            await _users.UpdateAsync(u => u.Id == user.Id, update => update
+                .Set(u => u.Sites, sites)
+            );
         }
     }
 }

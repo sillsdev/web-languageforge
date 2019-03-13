@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -78,6 +79,20 @@ namespace SIL.XForge.Identity.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 Arg.Is<ClaimsPrincipal>(u => u.GetSubjectId() == TestUserId),
                 Arg.Any<AuthenticationProperties>());
+        }
+
+        [Test]
+        public async Task LogIn_LastLoginUpdates()
+        {
+            var env = new TestEnvironment();
+
+            UserEntity user = await env.Users.GetAsync(TestUserId);
+            DateTime lastLogin = user.Sites[env.SiteOptions.Value.Origin.Authority].LastLogin;
+            Assert.That(lastLogin < DateTime.UtcNow);
+            LogInResult result = await env.Controller.LogIn(TestUsername, TestPassword, false, TestReturnUrl);
+            Assert.That(result.Success, Is.True);
+            user = await env.Users.GetAsync(TestUserId);
+            Assert.Greater(user.Sites[env.SiteOptions.Value.Origin.Authority].LastLogin, lastLogin);
         }
 
         [Test]
@@ -260,7 +275,11 @@ namespace SIL.XForge.Identity.Controllers
             {
                 Id = "uniqueidforinviteduser",
                 Email = "me@example.com",
-                CanonicalEmail = "me@example.com"
+                CanonicalEmail = "me@example.com",
+                Sites = new Dictionary<string, Site>
+                    {
+                        { env.SiteOptions.Value.Origin.Authority, new Site() }
+                    }
             });
             string result = await env.Controller.SignUp("User Name", "unimportant1234", "me@example.com");
 
@@ -432,6 +451,12 @@ namespace SIL.XForge.Identity.Controllers
                 interaction.GetAuthorizationContextAsync(null).ReturnsForAnyArgs(Task.FromResult(authorizationRequest));
                 var clientStore = Substitute.For<IClientStore>();
                 Events = Substitute.For<IEventService>();
+                SiteOptions = Substitute.For<IOptions<SiteOptions>>();
+                SiteOptions.Value.Returns(new SiteOptions
+                {
+                    Name = "xForge",
+                    Origin = new Uri("http://localhost")
+                });
                 Users = new MemoryRepository<UserEntity>(
                     uniqueKeySelectors: new Func<UserEntity, object>[]
                     {
@@ -450,15 +475,16 @@ namespace SIL.XForge.Identity.Controllers
                                 ? DateTime.UtcNow.AddTicks(-1)
                                 : DateTime.UtcNow.AddMinutes(2),
                             Email = TestUserEmail,
-                            CanonicalEmail = UserEntity.CanonicalizeEmail(TestUserEmail)
+                            CanonicalEmail = UserEntity.CanonicalizeEmail(TestUserEmail),
+                            Sites = new Dictionary<string, Site>
+                            {
+                                { SiteOptions.Value.Origin.Authority, new Site
+                                    { LastLogin = DateTime.UtcNow.AddDays(-1) }
+                                }
+                            }
                         }
                     });
-                var siteOptions = Substitute.For<IOptions<SiteOptions>>();
-                siteOptions.Value.Returns(new SiteOptions
-                {
-                    Name = "xForge",
-                    Origin = new Uri("http://localhost")
-                });
+
 
                 EmailService = Substitute.For<IEmailService>();
 
@@ -467,7 +493,7 @@ namespace SIL.XForge.Identity.Controllers
 
                 ExternalService = Substitute.For<IExternalAuthenticationService>();
 
-                Controller = new IdentityRpcController(interaction, clientStore, Events, Users, siteOptions,
+                Controller = new IdentityRpcController(interaction, clientStore, Events, Users, SiteOptions,
                     EmailService, CaptchaOptions, HttpContextAccessor, ExternalService);
             }
 
@@ -477,6 +503,7 @@ namespace SIL.XForge.Identity.Controllers
             public IEmailService EmailService { get; }
             public IOptions<GoogleCaptchaOptions> CaptchaOptions { get; }
             public IExternalAuthenticationService ExternalService { get; }
+            public IOptions<SiteOptions> SiteOptions { get; }
         }
     }
 }

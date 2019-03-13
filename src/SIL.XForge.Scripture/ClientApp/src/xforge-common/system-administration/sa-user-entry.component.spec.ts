@@ -7,6 +7,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { anything, capture, instance, mock, verify, when } from 'ts-mockito/lib/ts-mockito';
 
+import { Site } from 'xforge-common/models/site';
 import { MapQueryResults } from '../json-api.service';
 import { User } from '../models/user';
 import { NoticeService } from '../notice.service';
@@ -27,7 +28,10 @@ class TestUserEntryComponent {
     role: 'user',
     active: true,
     dateCreated: '2019-01-01T12:00:00.000Z',
-    dateModified: '2019-01-01T12:00:00.000Z'
+    site: {
+      currentProjectId: 'testproject01',
+      lastLogin: new Date('2019-02-01T12:00:00.000Z')
+    } as Site
   });
 
   constructor() {
@@ -159,7 +163,7 @@ describe('System Administration User Entry Component', () => {
       expect(env.title.nativeElement.textContent).toContain('Account details');
       expect(env.component.showActivateDeActivatePanel).toBe(true);
       expect(env.dateCreated.nativeElement.textContent).toContain('01 January 2019');
-      expect(env.lastLogin.nativeElement.textContent).toContain('01 January 2019');
+      expect(env.lastLogin.nativeElement.textContent).toContain('01 February 2019');
     }));
 
     it('should update user if form is valid', fakeAsync(() => {

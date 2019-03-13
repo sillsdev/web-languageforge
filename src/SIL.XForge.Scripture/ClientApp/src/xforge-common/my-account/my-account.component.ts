@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter, MatDialog, MatDialogRef, NativeDateAdapter } from '@angular/material';
 import { Title } from '@angular/platform-browser';
+import { distanceInWordsToNow } from 'date-fns';
 
 import { environment } from '../../environments/environment';
 import { AuthService } from '../auth.service';
@@ -87,6 +88,10 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
 
   get userName() {
     return this.userFromDatabase.name ? this.userFromDatabase.name : 'unknown';
+  }
+
+  get timeSinceLastLogin(): string {
+    return distanceInWordsToNow(this.userFromDatabase.site.lastLogin);
   }
 
   get isLinkedToParatext() {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Extensions.Options;
@@ -83,7 +84,11 @@ namespace SIL.XForge.Controllers
                     Role = SystemRoles.User,
                     ValidationKey = Security.GenerateKey(),
                     ValidationExpirationDate = DateTime.Now.AddDays(7),
-                    Active = false
+                    Active = false,
+                    Sites = new Dictionary<string, Site>
+                    {
+                        { _siteOptions.Value.Origin.Authority, new Site{} }
+                    }
                 };
                 await _users.InsertAsync(user);
                 // add the user to the current project once we have a current project in context
