@@ -8,12 +8,20 @@
       max-width: 300px;
     }
   }
-  #book-panel {
+  #text-panel {
     display: flex;
     flex-direction: column;
+    #split-container {
+      display: flex;
+      flex: 1;
+    }
     #scripture-panel {
+      .panel-content {
+        height: 100%;
+      }
     }
     #answer-panel {
+      padding: 12px 15px;
     }
     #project-navigation {
       background-color: lighten($sf_grey, 70%);

@@ -15,14 +15,15 @@
           <div class="panel-content">
             <app-checking-questions
               #questionsPanel
-              (update)="questionUpdate($event)"
+              (update)="questionUpdated($event)"
+              (changed)="questionChanged($event)"
               [questions]="questions"
             ></app-checking-questions>
           </div>
         </div>
       </div>
     </div>
-    <div class="col" id="book-panel">
+    <div class="col" id="text-panel">
       <div class="flex-max" id="scripture-panel">
         <div class="panel">
           <div class="panel-heading">
@@ -33,41 +34,57 @@
               <app-email-invite></app-email-invite>
             </div>
           </div>
-          <div class="panel-content"><app-checking-text #scripturePanel [textId]="text.id"></app-checking-text></div>
+          <div id="split-container" #splitContainer>
+            <as-split
+              direction="vertical"
+              [disabled]="!questionsPanel.activeQuestion"
+              (dragEnd)="checkSliderPosition($event)"
+              useTransition="true"
+            >
+              <as-split-area size="100">
+                <div class="panel-content" #scripturePanelContainer>
+                  <app-checking-text [textId]="text.id"></app-checking-text>
+                </div>
+              </as-split-area>
+              <as-split-area size="0">
+                <div *ngIf="questionsPanel.activeQuestion" id="answer-panel" #answerPanelContainer>
+                  <app-checking-answers [question]="questionsPanel.activeQuestion"></app-checking-answers>
+                </div>
+              </as-split-area>
+            </as-split>
+          </div>
         </div>
       </div>
-      <div *ngIf="questionsPanel.activeQuestion" id="answer-panel">
-        <div id="project-navigation">
-          <button
-            mdc-button
-            (click)="questionsPanel.previousQuestion()"
-            [disabled]="!questionsPanel.checkCanChangeQuestion(-1)"
-            class="prev-question"
-          >
-            <mdc-icon>chevron_left</mdc-icon>Previous
-          </button>
-          <button
-            (click)="questionsPanel.nextQuestion()"
-            [disabled]="!questionsPanel.checkCanChangeQuestion(1)"
-            class="next-question"
-            mdc-button
-          >
-            Next<mdc-icon>chevron_right</mdc-icon>
-          </button>
-          <div style="display: block">
-            <div id="project-summary">
-              <canvas
-                baseChart
-                width="36"
-                height="36"
-                [labels]="['Unread', 'Read', 'Answered']"
-                [data]="[summary.unread, summary.read, summary.answered]"
-                [colors]="[{ backgroundColor: ['#3a3a3a', '#fff', '#018786'] }]"
-                [chartType]="'doughnut'"
-                [legend]="false"
-                [options]="{ events: [] }"
-              ></canvas>
-            </div>
+      <div *ngIf="questionsPanel.activeQuestion" id="project-navigation">
+        <button
+          mdc-button
+          (click)="questionsPanel.previousQuestion()"
+          [disabled]="!questionsPanel.checkCanChangeQuestion(-1)"
+          class="prev-question"
+        >
+          <mdc-icon>chevron_left</mdc-icon>Previous
+        </button>
+        <button
+          (click)="questionsPanel.nextQuestion()"
+          [disabled]="!questionsPanel.checkCanChangeQuestion(1)"
+          class="next-question"
+          mdc-button
+        >
+          Next<mdc-icon>chevron_right</mdc-icon>
+        </button>
+        <div>
+          <div id="project-summary">
+            <canvas
+              baseChart
+              width="36"
+              height="36"
+              chartType="doughnut"
+              [legend]="false"
+              [labels]="['Unread', 'Read', 'Answered']"
+              [data]="[summary.unread, summary.read, summary.answered]"
+              [colors]="[{ backgroundColor: ['#3a3a3a', '#fff', '#018786'] }]"
+              [options]="{ events: [] }"
+            ></canvas>
           </div>
         </div>
       </div>

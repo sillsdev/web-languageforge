@@ -1,5 +1,6 @@
-import { Component, HostBinding, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, ElementRef, HostBinding, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { SplitComponent } from 'angular-split';
 import { switchMap } from 'rxjs/operators';
 import { Resource } from 'xforge-common/models/resource';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
@@ -70,6 +71,15 @@ export class CheckingComponent extends SubscriptionDisposable {
   @HostBinding('class') classes = 'flex-max';
   @ViewChild(CheckingTextComponent) scripturePanel: CheckingTextComponent;
   @ViewChild(CheckingQuestionsComponent) questionsPanel: CheckingQuestionsComponent;
+  @ViewChild(SplitComponent) splitComponent: SplitComponent;
+  @ViewChild('splitContainer') splitContainerElement: ElementRef;
+  @ViewChild('scripturePanelContainer') scripturePanelContainerElement: ElementRef;
+  @ViewChild('answerPanelContainer') set answersPanelElement(answersPanelContainerElement: ElementRef) {
+    // Need to trigger the calculation for the slider after DOM has been updated
+    this.answersPanelContainerElement = answersPanelContainerElement;
+    this.calculateScriptureSliderPosition();
+  }
+
   project: SFProject;
   text: Text;
   questions: Question[];
@@ -78,6 +88,7 @@ export class CheckingComponent extends SubscriptionDisposable {
     unread: 0,
     answered: 0
   };
+  answersPanelContainerElement: ElementRef;
 
   constructor(private activatedRoute: ActivatedRoute, private textService: TextService) {
     super();
@@ -95,16 +106,47 @@ export class CheckingComponent extends SubscriptionDisposable {
     );
   }
 
+  private get splitContainerElementHeight(): number {
+    return this.splitContainerElement ? this.splitContainerElement.nativeElement.offsetHeight : 0;
+  }
+
+  private get answerPanelElementHeight(): number {
+    return this.answersPanelContainerElement ? this.answersPanelContainerElement.nativeElement.offsetHeight : 0;
+  }
+
+  private get minAnswerPanelHeight(): number {
+    // Add 1 extra percentage to allow for gutter (slider toggle) height eating in to calculated space requested
+    return Math.ceil((this.answerPanelElementHeight / this.splitContainerElementHeight) * 100) + 1;
+  }
+
   applyFontChange(fontSize: string) {
     this.scripturePanel.applyFontChange(fontSize);
+  }
+
+  checkSliderPosition(event: any) {
+    if (event.hasOwnProperty('sizes')) {
+      if (event.sizes[1] < this.minAnswerPanelHeight) {
+        this.calculateScriptureSliderPosition();
+      }
+    }
+  }
+
+  questionUpdated(question: Question) {
+    this.refreshSummary();
+  }
+
+  questionChanged(question: Question) {
+    this.calculateScriptureSliderPosition();
   }
 
   totalQuestions() {
     return this.questions.length;
   }
 
-  questionUpdate(question: Question) {
-    this.refreshSummary();
+  private calculateScriptureSliderPosition(): void {
+    const scripturePanelHeight = 100 - this.minAnswerPanelHeight;
+    const answerPanelHeight = this.minAnswerPanelHeight;
+    this.splitComponent.setVisibleAreaSizes([scripturePanelHeight, answerPanelHeight]);
   }
 
   private loadQuestions() {

@@ -5,9 +5,11 @@
   align-items: center;
   border: 1px solid $sf-grey;
   border-radius: 4px;
-  padding: 2px;
   background-color: lighten($sf_grey, 70%);
   span {
-    padding: 0 15px;
+    padding: 0 5px;
+  }
+  .mdc-button {
+    margin-right: 0;
   }
 }
