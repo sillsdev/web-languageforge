@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 
 import { UserRef } from 'xforge-common/models/user';
+import { NoticeService } from 'xforge-common/notice.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { UserService } from 'xforge-common/user.service';
 import { Question, QuestionSource } from '../../core/models/question';
@@ -41,8 +42,9 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
-    private readonly dialog: MdcDialog,
     private readonly adminAuthGuard: SFAdminAuthGuard,
+    private readonly dialog: MdcDialog,
+    private readonly noticeService: NoticeService,
     private readonly projectService: SFProjectService,
     private readonly questionService: QuestionService,
     private readonly userService: UserService
@@ -54,19 +56,21 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
     this.subscribe(
       this.activatedRoute.params.pipe(
         tap(params => {
+          this.noticeService.loadingStarted();
           this.projectId = params['projectId'];
           this.isProjectAdmin$ = this.adminAuthGuard.allowTransition(this.projectId);
         }),
         switchMap(() => this.projectService.getTexts(this.projectId))
       ),
-      r => {
+      async r => {
         this.textsByBook = {};
         this.texts = [];
-        r.forEach(t => {
+        for (const t of r) {
           this.textsByBook[t.bookId] = t;
           this.texts.push(t);
-          this.bindQuestionData(t.id);
-        });
+          await this.bindQuestionData(t.id);
+        }
+        this.noticeService.loadingFinished();
       }
     );
   }
@@ -76,6 +80,7 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
       this.unbindQuestionData(text.id);
     }
     super.ngOnDestroy();
+    this.noticeService.loadingFinished();
   }
 
   questionCount(textId: string): number {

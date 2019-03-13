@@ -30,6 +30,7 @@ namespace SIL.XForge.Scripture.Services
             string[] textTypes = { "source", "target" };
             await _realtimeService.DeleteAllAsync("text",
                 ids.SelectMany(id => textTypes, (id, type) => id + ":" + type));
+            await _realtimeService.DeleteAllAsync("question", ids.Select(id => id));
             await base.DeleteAllAsync(projectId);
         }
 

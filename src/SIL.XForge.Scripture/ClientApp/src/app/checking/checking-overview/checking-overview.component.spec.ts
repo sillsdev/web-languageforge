@@ -5,12 +5,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { Snapshot } from 'sharedb/lib/client';
+import { of } from 'rxjs';
 import { anything, instance, mock, resetCalls, verify, when } from 'ts-mockito';
-
 import { AuthService } from 'xforge-common/auth.service';
-import { RealtimeDoc } from 'xforge-common/realtime-doc';
+import { NoticeService } from 'xforge-common/notice.service';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
@@ -19,6 +17,7 @@ import { QuestionData } from '../../core/models/question-data';
 import { Text } from '../../core/models/text';
 import { QuestionService } from '../../core/question.service';
 import { SFProjectService } from '../../core/sfproject.service';
+import { MockRealtimeDoc } from '../../shared/models/mock-realtime-doc';
 import { SFAdminAuthGuard } from '../../shared/sfadmin-auth.guard';
 import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
 import { CheckingOverviewComponent } from './checking-overview.component';
@@ -130,9 +129,10 @@ class TestEnvironment {
   fixture: ComponentFixture<CheckingOverviewComponent>;
 
   mockedActivatedRoute: ActivatedRoute = mock(ActivatedRoute);
+  mockedSFAdminAuthGuard: SFAdminAuthGuard = mock(SFAdminAuthGuard);
   mockedMdcDialog: MdcDialog = mock(MdcDialog);
   mockedQuestionDialogRef: MdcDialogRef<QuestionDialogComponent> = mock(MdcDialogRef);
-  mockedSFAdminAuthGuard: SFAdminAuthGuard = mock(SFAdminAuthGuard);
+  mockedNoticeService = mock(NoticeService);
   mockedProjectService: SFProjectService = mock(SFProjectService);
   mockedQuestionService: QuestionService = mock(QuestionService);
   mockedUserService: UserService = mock(UserService);
@@ -166,8 +166,9 @@ class TestEnvironment {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
-        { provide: MdcDialog, useFactory: () => instance(this.mockedMdcDialog) },
         { provide: SFAdminAuthGuard, useFactory: () => instance(this.mockedSFAdminAuthGuard) },
+        { provide: MdcDialog, useFactory: () => instance(this.mockedMdcDialog) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
         { provide: SFProjectService, useFactory: () => instance(this.mockedProjectService) },
         { provide: QuestionService, useFactory: () => instance(this.mockedQuestionService) },
         { provide: UserService, useFactory: () => instance(this.mockedUserService) },
@@ -221,43 +222,7 @@ class TestEnvironment {
   }
 
   private createQuestionData(id: string, data: Question[]): QuestionData {
-    const doc = new MockRealtimeDoc(id, data);
+    const doc = new MockRealtimeDoc<Question[]>('ot-json0', id, data);
     return new QuestionData(doc, instance(this.mockedRealtimeOfflineStore));
-  }
-}
-
-class MockRealtimeDoc implements RealtimeDoc {
-  readonly version: number = 1;
-  readonly type: string = 'ot-json0';
-  readonly pendingOps: any[] = [];
-
-  constructor(public readonly id: string, public readonly data: Question[]) {}
-
-  idle(): Observable<void> {
-    return of();
-  }
-
-  fetch(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  ingestSnapshot(_snapshot: Snapshot): Promise<void> {
-    return Promise.resolve();
-  }
-
-  subscribe(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  submitOp(_data: any, _source?: any): Promise<void> {
-    return Promise.resolve();
-  }
-
-  remoteChanges(): Observable<any> {
-    return of();
-  }
-
-  destroy(): Promise<void> {
-    return Promise.resolve();
   }
 }

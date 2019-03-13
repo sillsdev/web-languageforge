@@ -19,15 +19,22 @@ namespace SIL.XForge.Scripture.Services
 
             await env.Service.DeleteAllAsync("project01");
 
-            var expectedIds = new HashSet<string>
+            var expectedTextIds = new HashSet<string>
             {
                 "text01:source",
                 "text01:target",
                 "text02:source",
                 "text02:target"
             };
+            var expectedQuestionIds = new HashSet<string>
+            {
+                "text01",
+                "text02"
+            };
             await env.RealtimeService.Received().DeleteAllAsync("text",
-                Arg.Is<IEnumerable<string>>(ids => expectedIds.SetEquals(ids)));
+                Arg.Is<IEnumerable<string>>(ids => expectedTextIds.SetEquals(ids)));
+            await env.RealtimeService.Received().DeleteAllAsync("question",
+                Arg.Is<IEnumerable<string>>(ids => expectedQuestionIds.SetEquals(ids)));
             Assert.That(env.Entities.Contains("text01"), Is.False);
             Assert.That(env.Entities.Contains("text02"), Is.False);
             Assert.That(env.Entities.Contains("text03"), Is.True);
