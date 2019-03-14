@@ -6,8 +6,9 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { anything, instance, mock, resetCalls, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, resetCalls, verify, when } from 'ts-mockito';
 import { AuthService } from 'xforge-common/auth.service';
+import { JsonDataId } from 'xforge-common/models/json-data';
 import { NoticeService } from 'xforge-common/notice.service';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
@@ -74,27 +75,35 @@ describe('CheckingOverviewComponent', () => {
       verify(env.mockedQuestionService.connect(anything())).once();
       expect().nothing();
     }));
+  });
 
+  describe('Edit Question', () => {
     it('should expand/collapse questions in book text', fakeAsync(() => {
       const env = new TestEnvironment();
+      const id = new JsonDataId('text01', 1);
       env.waitForQuestions();
       expect(env.textRows.length).toEqual(2);
       expect(env.questionEdits.length).toEqual(0);
-      expect(env.component.itemVisible['text01']).toBeFalsy();
-      expect(env.component.questions['text01'].data.length).toBeGreaterThan(0);
-      expect(env.component.questionCount('text01')).toBeGreaterThan(0);
+      expect(env.component.itemVisible[id.toString()]).toBeFalsy();
+      expect(env.component.questions[id.toString()].data.length).toBeGreaterThan(0);
+      expect(env.component.questionCount(id.textId, id.chapter)).toBeGreaterThan(0);
 
       env.simulateRowClick(0);
-      expect(env.textRows.length).toEqual(4);
+      expect(env.textRows.length).toEqual(3);
+      env.simulateRowClick(1, id);
+      expect(env.textRows.length).toEqual(5);
       expect(env.questionEdits.length).toEqual(2);
 
+      env.simulateRowClick(1, id);
+      expect(env.textRows.length).toEqual(3);
+      expect(env.questionEdits.length).toEqual(0);
       env.simulateRowClick(0);
       expect(env.textRows.length).toEqual(2);
-      expect(env.questionEdits.length).toEqual(0);
     }));
 
     it('should edit question', fakeAsync(() => {
       const env = new TestEnvironment();
+      const id = new JsonDataId('text01', 1);
       when(env.mockedQuestionDialogRef.afterClosed()).thenReturn(
         of({
           scriptureStart: 'MAT 3:3',
@@ -104,7 +113,8 @@ describe('CheckingOverviewComponent', () => {
       );
       env.waitForQuestions();
       env.simulateRowClick(0);
-      expect(env.textRows.length).toEqual(4);
+      env.simulateRowClick(1, id);
+      expect(env.textRows.length).toEqual(5);
       expect(env.questionEdits.length).toEqual(2);
       verify(env.mockedQuestionService.connect(anything())).twice();
 
@@ -146,18 +156,24 @@ class TestEnvironment {
     when(this.mockedSFAdminAuthGuard.allowTransition(anything())).thenReturn(of(true));
     when(this.mockedProjectService.getTexts(anything())).thenReturn(
       of([
-        { id: 'text01', bookId: 'MAT', name: 'Matthew' } as Text,
-        { id: 'text02', bookId: 'LUK', name: 'Luke' } as Text
+        { id: 'text01', bookId: 'MAT', name: 'Matthew', chapters: [{ number: 1 }] } as Text,
+        { id: 'text02', bookId: 'LUK', name: 'Luke', chapters: [{ number: 1 }] } as Text
       ])
     );
-    when(this.mockedQuestionService.connect('text01')).thenResolve(
-      this.createQuestionData('text01', [
+    const text1_1id = new JsonDataId('text01', 1);
+    when(this.mockedQuestionService.connect(deepEqual(text1_1id))).thenResolve(
+      this.createQuestionData(text1_1id, [
         { id: 'q1Id', owner: undefined, project: undefined, text: 'Book 1, Q1 text' },
         { id: 'q2Id', owner: undefined, project: undefined, text: 'Book 1, Q2 text' }
       ])
     );
-    when(this.mockedQuestionService.connect('text02')).thenResolve(
-      this.createQuestionData('text02', [{ id: 'q3Id', owner: undefined, project: undefined, text: 'Book 2, Q3 text' }])
+    const text1_3id = new JsonDataId('text01', 3);
+    when(this.mockedQuestionService.connect(deepEqual(text1_3id))).thenResolve(this.createQuestionData(text1_3id, []));
+    const text2_1id = new JsonDataId('text02', 1);
+    when(this.mockedQuestionService.connect(deepEqual(text2_1id))).thenResolve(
+      this.createQuestionData(text2_1id, [
+        { id: 'q3Id', owner: undefined, project: undefined, text: 'Book 2, Q3 text' }
+      ])
     );
 
     TestBed.configureTestingModule({
@@ -201,16 +217,21 @@ class TestEnvironment {
   /**
    * simulate row click since actually clicking on the row deosn't fire the selectionChange event
    */
-  simulateRowClick(index: number): void {
-    const textId = this.component.texts[index].id;
-    this.component.itemVisible[textId] = !this.component.itemVisible[textId];
+  simulateRowClick(index: number, id?: JsonDataId): void {
+    let idStr: string;
+    if (id) {
+      idStr = id.toString();
+    } else {
+      idStr = this.component.texts[index].id;
+    }
+    this.component.itemVisible[idStr] = !this.component.itemVisible[idStr];
     this.fixture.detectChanges();
     flush();
   }
 
   clickElement(element: HTMLElement | DebugElement): void {
     if (element instanceof DebugElement) {
-      element = (element as DebugElement).nativeElement as HTMLElement;
+      element = element.nativeElement as HTMLElement;
     }
     element.click();
     this.fixture.detectChanges();
@@ -221,8 +242,8 @@ class TestEnvironment {
     this.component.isProjectAdmin$ = of(isProjectAdmin);
   }
 
-  private createQuestionData(id: string, data: Question[]): QuestionData {
-    const doc = new MockRealtimeDoc<Question[]>('ot-json0', id, data);
+  private createQuestionData(id: JsonDataId, data: Question[]): QuestionData {
+    const doc = new MockRealtimeDoc<Question[]>('ot-json0', id.toString(), data);
     return new QuestionData(doc, instance(this.mockedRealtimeOfflineStore));
   }
 }

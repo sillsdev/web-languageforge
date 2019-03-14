@@ -1,13 +1,12 @@
 import { JsonData } from 'xforge-common/models/json-data';
 import { RealtimeDoc } from 'xforge-common/realtime-doc';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
-import { Answer } from './answer';
-import { Question } from './question';
+import { Comment } from './comment';
 
-export class QuestionData extends JsonData<Question, Answer> {
-  static readonly TYPE = 'question';
+export class CommentData extends JsonData<Comment> {
+  static readonly TYPE = 'comment';
 
   constructor(doc: RealtimeDoc, store: RealtimeOfflineStore) {
-    super(QuestionData.TYPE, doc, store);
+    super(CommentData.TYPE, doc, store);
   }
 }

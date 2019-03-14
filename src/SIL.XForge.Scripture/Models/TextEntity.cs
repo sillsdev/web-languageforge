@@ -29,6 +29,11 @@ namespace SIL.XForge.Scripture.Models
             return $"{textId}:{chapter}:{textTypeStr}";
         }
 
+        public static string GetJsonDataId(string textId, int chapter)
+        {
+            return $"{textId}:{chapter}";
+        }
+
         public string Name { get; set; }
         public string BookId { get; set; }
         public List<Chapter> Chapters { get; protected set; } = new List<Chapter>();

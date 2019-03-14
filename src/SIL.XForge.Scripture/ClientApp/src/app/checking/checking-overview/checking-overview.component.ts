@@ -6,6 +6,7 @@ import { ObjectId } from 'bson';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 
+import { getJsonDataIdStr, JsonDataId } from 'xforge-common/models/json-data';
 import { UserRef } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
@@ -34,6 +35,7 @@ import {
 export class CheckingOverviewComponent extends SubscriptionDisposable implements OnInit, OnDestroy {
   itemVisible: { [textId: string]: boolean } = {};
   questions: { [textId: string]: QuestionData } = {};
+  getJsonDataIdStr = getJsonDataIdStr;
   isProjectAdmin$: Observable<boolean>;
   texts: Text[];
   textsByBook: { [bookId: string]: Text };
@@ -65,10 +67,12 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
       async r => {
         this.textsByBook = {};
         this.texts = [];
-        for (const t of r) {
-          this.textsByBook[t.bookId] = t;
-          this.texts.push(t);
-          await this.bindQuestionData(t.id);
+        for (const text of r) {
+          this.textsByBook[text.bookId] = text;
+          this.texts.push(text);
+          for (const chapter of text.chapters) {
+            await this.bindQuestionData(new JsonDataId(text.id, chapter.number));
+          }
         }
         this.noticeService.loadingFinished();
       }
@@ -78,30 +82,116 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
   ngOnDestroy(): void {
     if (this.texts != null) {
       for (const text of this.texts) {
-        this.unbindQuestionData(text.id);
+        for (const chapter of text.chapters) {
+          this.unbindQuestionData(new JsonDataId(text.id, chapter.number));
+        }
       }
     }
     super.ngOnDestroy();
     this.noticeService.loadingFinished();
   }
 
-  questionCount(textId: string): number {
-    if (!(textId in this.questions)) {
+  allQuestionsCount(text: Text): number {
+    let count: number;
+    for (const chapter of text.chapters) {
+      const questionCount = this.questionCount(text.id, chapter.number);
+      if (questionCount) {
+        if (!count) {
+          count = 0;
+        }
+        count += questionCount;
+      }
+    }
+    return count;
+  }
+
+  questionCount(textId: string, chapterNumber: number): number {
+    const id = new JsonDataId(textId, chapterNumber);
+    if (!(id.toString() in this.questions)) {
       return undefined;
     }
 
-    return this.questions[textId].data.length;
+    return this.questions[id.toString()].data.length;
   }
 
-  questionDialog(editMode = false, textId?: string, questionIndex: number = 0): void {
+  questionCountLabel(count: number): string {
+    return count ? count + ' questions' : '';
+  }
+
+  allAnswersCount(text: Text): number {
+    let count: number;
+    for (const chapter of text.chapters) {
+      const answerCount = this.chapterAnswerCount(text.id, chapter.number);
+      if (answerCount) {
+        if (!count) {
+          count = 0;
+        }
+        count += answerCount;
+      }
+    }
+    return count;
+  }
+
+  chapterAnswerCount(textId: string, chapterNumber: number): number {
+    const id = new JsonDataId(textId, chapterNumber);
+    if (!(id.toString() in this.questions)) {
+      return undefined;
+    }
+
+    let count: number;
+    for (const index of Object.keys(this.questions[id.toString()].data)) {
+      const answerCount = this.answerCount(textId, chapterNumber, +index);
+      if (answerCount) {
+        if (!count) {
+          count = 0;
+        }
+        count += answerCount;
+      }
+    }
+
+    return count;
+  }
+
+  answerCount(textId: string, chapterNumber: number, questionIndex: number = 0): number {
+    const id = new JsonDataId(textId, chapterNumber);
+    if (!(id.toString() in this.questions)) {
+      return undefined;
+    }
+
+    let count: number;
+    const question = this.questions[id.toString()].data[questionIndex];
+    if (question.answers) {
+      if (!count) {
+        count = 0;
+      }
+      count += question.answers.length;
+    }
+
+    return count;
+  }
+
+  answerCountLabel(count: number): string {
+    return count ? count + ' answers' : '';
+  }
+
+  questionDialog(editMode = false, textId?: string, chapterNumber?: number, questionIndex: number = 0): void {
     let newQuestion: Question = { id: undefined, owner: undefined, project: undefined };
+    let id: JsonDataId;
     let question: Question;
     if (editMode) {
-      if (textId == null || textId === '' || questionIndex == null || questionIndex < 0) {
-        throw new Error('Must supply valid textId and questionIndex in editMode');
+      if (
+        textId == null ||
+        textId === '' ||
+        chapterNumber == null ||
+        chapterNumber < 0 ||
+        questionIndex == null ||
+        questionIndex < 0
+      ) {
+        throw new Error('Must supply valid textId, chapterNumber and questionIndex in editMode');
       }
 
-      question = this.questions[textId].data[questionIndex];
+      id = new JsonDataId(textId, chapterNumber);
+      question = this.questions[id.toString()].data[questionIndex];
       newQuestion = clone(question);
     }
     const dialogConfig: MdcDialogConfig<QuestionDialogData> = {
@@ -132,43 +222,44 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
         newQuestion.text = result.text;
 
         if (editMode) {
-          this.questions[textId].replaceInList(question, newQuestion, questionIndex);
+          this.questions[id.toString()].replaceInList(question, newQuestion, [questionIndex]);
         } else {
-          const newTextId = this.textIdFrom(verseStart.book);
-          const questionData = await this.questionService.connect(newTextId);
+          id = new JsonDataId(this.textFromBook(verseStart.book).id, verseStart.chapterNum);
+          const questionData = await this.questionService.connect(id);
           newQuestion.id = new ObjectId().toHexString();
           newQuestion.owner = new UserRef(this.userService.currentUserId);
           newQuestion.project = new SFProjectRef(this.projectId);
           newQuestion.source = QuestionSource.Created;
+          newQuestion.answers = [];
           questionData.insertInList(newQuestion);
         }
       }
     });
   }
 
-  private async bindQuestionData(textId: string): Promise<void> {
-    if (textId == null) {
+  private async bindQuestionData(id: JsonDataId): Promise<void> {
+    if (id == null) {
       return;
     }
 
-    await this.unbindQuestionData(textId);
-    const questionData: QuestionData = await this.questionService.connect(textId);
-    this.questions[textId] = questionData;
+    await this.unbindQuestionData(id);
+    const questionData: QuestionData = await this.questionService.connect(id);
+    this.questions[id.toString()] = questionData;
   }
 
-  private async unbindQuestionData(textId: string): Promise<void> {
-    if (!(textId in this.questions)) {
+  private async unbindQuestionData(id: JsonDataId): Promise<void> {
+    if (!(id.toString() in this.questions)) {
       return;
     }
 
-    await this.questionService.disconnect(this.questions[textId]);
-    delete this.questions[textId];
+    await this.questionService.disconnect(this.questions[id.toString()]);
+    delete this.questions[id.toString()];
   }
 
-  private textIdFrom(bookId: string): string {
+  private textFromBook(bookId: string): Text {
     if (!(bookId in this.textsByBook)) {
       return undefined;
     }
-    return this.textsByBook[bookId].id;
+    return this.textsByBook[bookId];
   }
 }
