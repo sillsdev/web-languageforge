@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { InputSystem } from 'xforge-common/models/input-system';
 import { ParatextProject } from 'xforge-common/models/paratext-project';
 import { ParatextService } from 'xforge-common/paratext.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
@@ -111,13 +110,13 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
       let newProject = new SFProject({
         projectName: values.project.name,
         paratextId: values.project.paratextId,
-        inputSystem: this.getInputSystem(values.project),
+        inputSystem: ParatextService.getInputSystem(values.project),
         checkingConfig: { enabled: values.tasks.checking },
         translateConfig: { enabled: values.tasks.translate }
       });
       if (values.tasks.translate) {
         newProject.translateConfig.sourceParatextId = values.tasks.sourceProject.paratextId;
-        newProject.translateConfig.sourceInputSystem = this.getInputSystem(values.tasks.sourceProject);
+        newProject.translateConfig.sourceInputSystem = ParatextService.getInputSystem(values.tasks.sourceProject);
       }
 
       newProject = await this.projectService.onlineCreate(newProject);
@@ -126,10 +125,6 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
       this.subscribe(this.syncJobService.listen(jobId), async job => {
         this.job = job;
         if (!job.isActive) {
-          if (values.tasks.translate) {
-            const translationEngine = this.projectService.createTranslationEngine(newProject.id);
-            await translationEngine.startTraining();
-          }
           this.router.navigate(['/projects', newProject.id]);
         }
       });
@@ -137,14 +132,5 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
       await this.projectUserService.onlineCreate(values.project.projectId, this.userService.currentUserId);
       this.router.navigate(['/projects', values.project.projectId]);
     }
-  }
-
-  private getInputSystem(project: ParatextProject): InputSystem {
-    return {
-      tag: project.languageTag,
-      languageName: project.languageName,
-      abbreviation: project.languageTag,
-      isRightToLeft: false
-    };
   }
 }

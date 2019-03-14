@@ -1,14 +1,23 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
 import { AuthService } from './auth.service';
+import { InputSystem } from './models/input-system';
 import { ParatextProject } from './models/paratext-project';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ParatextService {
+  static getInputSystem(project: ParatextProject): InputSystem {
+    return {
+      tag: project.languageTag,
+      languageName: project.languageName,
+      abbreviation: project.languageTag,
+      isRightToLeft: false
+    };
+  }
+
   constructor(private readonly http: HttpClient, private readonly authService: AuthService) {}
 
   logIn(returnUrl: string): void {

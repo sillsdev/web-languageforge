@@ -16,6 +16,7 @@ import { SaUserEntryComponent } from './system-administration/sa-user-entry.comp
 import { SaUsersComponent } from './system-administration/sa-users.component';
 import { SystemAdministrationComponent } from './system-administration/system-administration.component';
 import { UICommonModule } from './ui-common.module';
+import { WriteStatusComponent } from './write-status/write-status.component';
 
 const componentExports = [
   AvatarComponent,
@@ -28,7 +29,8 @@ const componentExports = [
   SaDeleteDialogComponent,
   SaUserEntryComponent,
   SaUsersComponent,
-  SystemAdministrationComponent
+  SystemAdministrationComponent,
+  WriteStatusComponent
 ];
 
 export const xForgeCommonEntryComponents = [InviteDialogComponent, SaDeleteDialogComponent];

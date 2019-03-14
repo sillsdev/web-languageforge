@@ -1,0 +1,9 @@
+@import '~src/global';
+
+.check-icon {
+  color: green;
+}
+
+.error-icon {
+  color: var(--mdc-theme-error);
+}

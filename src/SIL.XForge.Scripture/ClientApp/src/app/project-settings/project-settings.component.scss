@@ -1,33 +1,25 @@
 @import '~src/global';
 
 .card-content {
-  padding: 16px;
+  padding: 1rem;
 }
 
 .helper-text {
   color: var(--mdc-theme-text-hint-on-background);
+  margin: 0;
 }
 
 .invalid-feedback {
   color: var(--mdc-theme-error);
 }
 
-.checkbox-row-item {
-  display: flex;
-  align-items: center;
+.indented-field {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
-.check-icon {
-  color: green;
-}
-.error-icon {
-  color: red;
-}
-.task-grid {
-  display: grid;
-  grid-template-columns: auto auto auto;
-}
+
 .status {
-  width: 24px;
+  padding-left: 2rem;
 }
 
 #delete-project {
