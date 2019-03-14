@@ -509,6 +509,8 @@ describe('MyAccountComponent', () => {
       when(env.mockedMatDialogRefForDAD.afterClosed()).thenReturn(of('confirmed'));
       when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForDAD));
       env.clickButton(env.deleteAccountButton);
+      env.fixture.detectChanges();
+      flush();
       verify(env.mockedMatDialog.open(anything(), anything())).once();
       verify(env.mockedUserService.onlineDelete(anything())).once();
       expect().nothing();
@@ -518,6 +520,8 @@ describe('MyAccountComponent', () => {
       when(env.mockedMatDialogRefForDAD.afterClosed()).thenReturn(of('cancel'));
       when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForDAD));
       env.clickButton(env.deleteAccountButton);
+      env.fixture.detectChanges();
+      flush();
       verify(env.mockedMatDialog.open(anything(), anything())).once();
       verify(env.mockedUserService.onlineDelete(anything())).never();
       expect().nothing();
@@ -526,13 +530,13 @@ describe('MyAccountComponent', () => {
 });
 
 @NgModule({
-  declarations: [MyAccountComponent],
+  declarations: [DeleteAccountDialogComponent, MyAccountComponent],
   imports: [NoopAnimationsModule, ngfModule, RouterTestingModule, UICommonModule],
-  exports: [MyAccountComponent],
+  exports: [DeleteAccountDialogComponent, MyAccountComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   // ShowOnDirtyErrorStateMatcher helps form errors show up during unit testing.
   providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }],
-  entryComponents: [MyAccountComponent]
+  entryComponents: [DeleteAccountDialogComponent, MyAccountComponent]
 })
 class TestModule {}
 

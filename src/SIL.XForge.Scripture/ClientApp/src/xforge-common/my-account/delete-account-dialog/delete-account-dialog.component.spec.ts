@@ -1,8 +1,8 @@
+import { MdcDialog, MdcDialogRef } from '@angular-mdc/web';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, Directive, NgModule, ViewChild, ViewContainerRef } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { instance, mock } from 'ts-mockito';
 
@@ -40,8 +40,11 @@ class ChildViewContainerComponent {
 class DialogTestModule {}
 
 describe('DeleteAccountDialogComponent', () => {
-  let dialog: MatDialog;
-  let dialogRef: MatDialogRef<DeleteAccountDialogComponent>;
+  const DeleteButtonText = 'I understand the consequences; delete my account';
+  const UserName = 'JohnnyBGoode';
+
+  let dialog: MdcDialog;
+  let dialogRef: MdcDialogRef<DeleteAccountDialogComponent>;
   let component: DeleteAccountDialogComponent;
   let testViewContainerRef: ViewContainerRef;
   let viewContainerFixture: ComponentFixture<ChildViewContainerComponent>;
@@ -64,18 +67,20 @@ describe('DeleteAccountDialogComponent', () => {
     testViewContainerRef = viewContainerFixture.componentInstance.childViewContainer;
   });
 
-  beforeEach(inject([MatDialog, OverlayContainer], (d: MatDialog, oc: OverlayContainer) => {
+  beforeEach(inject([MdcDialog, OverlayContainer], (d: MdcDialog, oc: OverlayContainer) => {
     dialog = d;
     const config = {
       data: {
-        name: 'JohnnyByGood',
+        name: UserName,
         viewContainerRef: testViewContainerRef
       }
     };
     dialogRef = dialog.open(DeleteAccountDialogComponent, config);
     component = dialogRef.componentInstance;
     overlayContainer = oc;
-    overlayContainerElement = oc.getContainerElement();
+    // TODO (Hasso) 2019.03: before, some magic populated the container element. Now, an empty one is created.
+    // TODO: find a more efficient way of finding the elements needed by tests.
+    overlayContainerElement = oc.getContainerElement().parentElement;
   }));
 
   afterEach(() => {
@@ -84,31 +89,31 @@ describe('DeleteAccountDialogComponent', () => {
 
   it('should show a dialog', fakeAsync(() => {
     const heading = 'Are you sure you want to delete your account?';
-    expect(overlayContainerElement.querySelector('h2').textContent).toContain(heading);
+    expect(overlayContainerElement.querySelector('mdc-dialog-title').textContent).toContain(heading);
   }));
 
   it('should have a delete account button', fakeAsync(() => {
-    const dialogContainer = overlayContainerElement.querySelector('mat-dialog-container');
-    expect(dialogContainer.querySelector('#confirm-delete-button').textContent).toContain(
-      'I understand the consequences, delete my account'
-    );
+    const dialogContainer = overlayContainerElement.querySelector('mdc-dialog-container');
+    expect(dialogContainer.querySelector('#confirm-delete-button').textContent).toContain(DeleteButtonText);
   }));
 
   it('should enable delete button if matching username is entered', fakeAsync(() => {
     const afterCloseCallback = jasmine.createSpy('afterClose callback');
     dialogRef.afterClosed().subscribe(afterCloseCallback);
-    const dialogContainer = overlayContainerElement.querySelector('mat-dialog-container');
+    const dialogContainer = overlayContainer.getContainerElement().parentElement.querySelector('mdc-dialog-container');
     const btnDelete: HTMLElement = dialogContainer.querySelector('#confirm-delete-button');
-    expect(btnDelete.textContent).toContain('I understand the consequences, delete my account');
-    expect(component.data.name).toEqual('JohnnyByGood');
-    expect(component.deleteDisabled).toBeTruthy();
-    component.userNameEntry.setValue('JohnnyByGood');
-    expect(component.deleteDisabled).toBeFalsy();
+    expect(btnDelete.textContent).toContain(DeleteButtonText);
+    expect(component.data.name).toEqual(UserName);
+    expect(component.deleteDisabled).toBe(true);
+    component.userNameEntry.setValue(UserName);
+    viewContainerFixture.detectChanges();
+    flush();
+    expect(component.deleteDisabled).toBe(false);
     btnDelete.click();
     viewContainerFixture.detectChanges();
-    tick();
+    flush();
     expect(afterCloseCallback).toHaveBeenCalledTimes(1);
-    expect(overlayContainerElement.querySelector('mat-dialog-container')).toBeNull();
+    expect(overlayContainer.getContainerElement().parentElement.querySelector('mdc-dialog-container')).toBeNull();
     flush();
   }));
 });

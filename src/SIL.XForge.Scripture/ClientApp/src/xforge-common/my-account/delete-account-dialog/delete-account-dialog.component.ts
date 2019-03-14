@@ -1,6 +1,6 @@
+import { MDC_DIALOG_DATA, MdcDialogRef } from '@angular-mdc/web';
 import { Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-delete-account',
@@ -8,11 +8,15 @@ import { MAT_DIALOG_DATA } from '@angular/material';
   styleUrls: ['./delete-account-dialog.component.scss']
 })
 export class DeleteAccountDialogComponent {
+  userName: string;
   userNameEntry = new FormControl('');
 
   get deleteDisabled() {
     return this.userNameEntry.value.toLowerCase() !== this.data.name.toLowerCase();
   }
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { name: string }) {}
+  constructor(
+    public dialogRef: MdcDialogRef<DeleteAccountDialogComponent>,
+    @Inject(MDC_DIALOG_DATA) public data: { name: string }
+  ) {}
 }

@@ -1,7 +1,13 @@
-mat-form-field {
-  margin-right: 1em;
+@import '~src/global';
+
+.broad {
+  @include mdc-dialog-max-width(880px, 16px);
 }
 
 button {
   margin-right: 1em;
+}
+
+#confirm-delete-button {
+  border: 1px solid;
 }
