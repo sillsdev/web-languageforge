@@ -167,6 +167,15 @@
           <mdc-icon mdcListItemGraphic>settings</mdc-icon>
           Settings
         </mdc-list-item>
+        <mdc-list-item
+          [routerLink]="['/projects', selectedProject.id, 'users']"
+          [activated]="rlaSettings.isActive"
+          routerLinkActive
+          #rlaUsers="routerLinkActive"
+        >
+          <mdc-icon mdcListItemGraphic>people</mdc-icon>
+          Users
+        </mdc-list-item>
       </div>
     </mdc-list>
   </mdc-drawer-content>

@@ -1,0 +1,65 @@
+<h2 id="title">Collaborators</h2>
+<div class="add-invite-user">
+  <div fxLayout="row" fxLayoutAlign="space-between center" class="text-entry">
+    <form [formGroup]="userSelectionForm">
+      <div mdcMenuSurfaceAnchor #userSearchAnchor>
+        <mdc-text-field
+          outlined
+          id="user-search"
+          formControlName="user"
+          label="Search by name, email or phone"
+          (input)="updateSearchTerms($event)"
+        ></mdc-text-field>
+        <mdc-menu
+          #userSearch
+          id="search-menu"
+          [anchorElement]="userSearchAnchor"
+          anchorCorner="bottomStart"
+          *ngIf="!noUserFound()"
+          (selected)="userSelected($event)"
+        >
+          <mdc-list>
+            <ng-container *ngFor="let user of users">
+              <mdc-list-item>{{ user.name }}</mdc-list-item>
+            </ng-container>
+          </mdc-list>
+        </mdc-menu>
+      </div>
+    </form>
+    <button mdc-button id="btn-add" class="action-btn" outlined (click)="onAdd()" [disabled]="addDisabled()">
+      Add user
+    </button>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="space-between center" class="text-entry">
+    <form [formGroup]="userInviteForm">
+      <div mdcMenuSurfaceAnchor #anchor>
+        <mdc-form-field>
+          <mdc-text-field
+            outlined
+            id="email-input"
+            formControlName="email"
+            label="Email"
+            (input)="searchForExistingEmail($event)"
+          ></mdc-text-field>
+          <mdc-helper-text validation>
+            <span *ngIf="userInviteForm.controls.email.hasError('required')">Email is required</span>
+            <span
+              *ngIf="
+                userInviteForm.controls.email.hasError('email') || userInviteForm.controls.email.hasError('pattern')
+              "
+              >Email is invalid</span
+            >
+          </mdc-helper-text>
+        </mdc-form-field>
+        <mdc-menu #inviteError id="invite-error" [anchorElement]="anchor" anchorCorner="bottomStart">
+          <mdc-list>
+            <ng-container> <mdc-list-item>Cannot invite existing users</mdc-list-item> </ng-container>
+          </mdc-list>
+        </mdc-menu>
+      </div>
+    </form>
+    <button mdc-button id="btn-invite" class="action-btn" outlined (click)="onInvite()" [disabled]="inviteDisabled()">
+      Invite user
+    </button>
+  </div>
+</div>
