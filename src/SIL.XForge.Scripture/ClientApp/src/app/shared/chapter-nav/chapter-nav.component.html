@@ -1,0 +1,28 @@
+<button
+  mdc-icon-button
+  appBlurOnClick
+  icon="keyboard_arrow_left"
+  (click)="prevChapter()"
+  [disabled]="isPrevChapterDisabled()"
+  title="Previous chapter"
+></button>
+<button
+  mdc-icon-button
+  appBlurOnClick
+  icon="keyboard_arrow_right"
+  (click)="nextChapter()"
+  [disabled]="isNextChapterDisabled()"
+  title="Next chapter"
+></button>
+<mdc-select
+  #chapterSelect
+  class="chapter-select"
+  [(ngModel)]="chapterString"
+  (selectionChange)="chapterSelect._selectedText.nativeElement.blur()"
+>
+  <mdc-menu>
+    <mdc-list>
+      <mdc-list-item *ngFor="let cs of chapterStrings" [value]="cs">Chapter {{ cs }}</mdc-list-item>
+    </mdc-list>
+  </mdc-menu>
+</mdc-select>

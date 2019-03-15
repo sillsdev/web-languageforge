@@ -30,6 +30,7 @@
             <mdc-icon>library_books</mdc-icon>
             <h2>{{ text?.name }}</h2>
             <div class="panel-activity">
+              <app-chapter-nav [chapters]="chapters" [(chapter)]="chapter"></app-chapter-nav>
               <app-font-size (apply)="applyFontChange($event)"></app-font-size>
               <app-email-invite></app-email-invite>
             </div>
@@ -43,7 +44,7 @@
             >
               <as-split-area size="100">
                 <div class="panel-content" #scripturePanelContainer>
-                  <app-checking-text [textId]="text.id"></app-checking-text>
+                  <app-checking-text [id]="textDataId"></app-checking-text>
                 </div>
               </as-split-area>
               <as-split-area size="0">

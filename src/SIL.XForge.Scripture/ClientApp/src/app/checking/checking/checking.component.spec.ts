@@ -9,6 +9,7 @@ import { QuillModule } from 'ngx-quill';
 import Quill, { DeltaStatic } from 'quill';
 import { of } from 'rxjs';
 import { deepEqual, instance, mock, when } from 'ts-mockito';
+
 import { JsonApiService, MapQueryResults } from 'xforge-common/json-api.service';
 import { DomainModel } from 'xforge-common/models/domain-model';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
@@ -18,10 +19,10 @@ import { XForgeCommonModule } from 'xforge-common/xforge-common.module';
 import { SFProjectRef } from '../../core/models/sfdomain-model.generated';
 import { SFProject } from '../../core/models/sfproject';
 import { Text } from '../../core/models/text';
-import { TextData } from '../../core/models/text-data';
-import { TextService, TextType } from '../../core/text.service';
+import { getTextDataIdStr, TextData, TextDataId } from '../../core/models/text-data';
+import { TextService } from '../../core/text.service';
 import { MockRealtimeDoc } from '../../shared/models/mock-realtime-doc';
-import { TextComponent } from '../../shared/text/text.component';
+import { SharedModule } from '../../shared/shared.module';
 import { CheckingAnswersComponent } from './checking-answers/checking-answers.component';
 import { CheckingQuestionsComponent } from './checking-questions/checking-questions.component';
 import { CheckingTextComponent } from './checking-text/checking-text.component';
@@ -160,10 +161,16 @@ class TestEnvironment {
         FontSizeComponent,
         CheckingTextComponent,
         CheckingQuestionsComponent,
-        CheckingAnswersComponent,
-        TextComponent
+        CheckingAnswersComponent
       ],
-      imports: [UICommonModule, HttpClientTestingModule, QuillModule, XForgeCommonModule, AngularSplitModule.forRoot()],
+      imports: [
+        UICommonModule,
+        HttpClientTestingModule,
+        QuillModule,
+        XForgeCommonModule,
+        AngularSplitModule.forRoot(),
+        SharedModule
+      ],
       providers: [
         { provide: Router, useFactory: () => instance(this.mockedRouter) },
         {
@@ -249,6 +256,7 @@ class TestEnvironment {
             id: 'text01',
             bookId: 'JHN',
             name: 'John',
+            chapters: [{ number: 1 }],
             project: new SFProjectRef('project01')
           }),
           undefined,
@@ -261,55 +269,28 @@ class TestEnvironment {
         )
       )
     );
-    when(
-      this.mockedTextService.connect(
-        'text01',
-        'source'
-      )
-    ).thenResolve(this.createTextData('source'));
-    when(
-      this.mockedTextService.connect(
-        'text01',
-        'target'
-      )
-    ).thenResolve(this.createTextData('target'));
+    when(this.mockedTextService.connect(deepEqual(new TextDataId('text01', 1)))).thenResolve(this.createTextData());
   }
 
-  private createTextData(textType: TextType): TextData {
+  private createTextData(): TextData {
     const mockedRealtimeOfflineStore = mock(RealtimeOfflineStore);
     const delta = new Delta();
     delta.insert({ chapter: 1 }, { chapter: { style: 'c' } });
     delta.insert({ verse: 1 }, { verse: { style: 'v' } });
-    delta.insert(`${textType}: chapter 1, verse 1.`, { segment: 'verse_1_1' });
+    delta.insert('target: chapter 1, verse 1.', { segment: 'verse_1_1' });
     delta.insert({ verse: 2 }, { verse: { style: 'v' } });
-    switch (textType) {
-      case 'source':
-        delta.insert(`${textType}: chapter 1, verse 2.`, { segment: 'verse_1_2' });
-        break;
-      case 'target':
-        delta.insert('\u2003\u2003', { segment: 'verse_1_2' });
-        break;
-    }
+    delta.insert({ blank: 'normal' }, { segment: 'verse_1_2' });
     delta.insert('\n', { para: { style: 'p' } });
-    delta.insert({ chapter: 2 }, { chapter: { style: 'c' } });
-    delta.insert({ verse: 1 }, { verse: { style: 'v' } });
-    delta.insert(`${textType}: chapter 2, verse 1.`, { segment: 'verse_2_1' });
-    delta.insert({ verse: 2 }, { verse: { style: 'v' } });
-    delta.insert(`${textType}: chapter 2, verse 2.`, { segment: 'verse_2_2' });
-    delta.insert('\n', { para: { style: 'p' } });
-    delta.insert('\u00a0', { segment: 'verse_2_2/p_1' });
     delta.insert({ verse: 3 }, { verse: { style: 'v' } });
-    switch (textType) {
-      case 'source':
-        delta.insert(`${textType}: chapter 2, verse 3.`, { segment: 'verse_2_3' });
-        break;
-      case 'target':
-        delta.insert(`${textType}: chapter 2, `, { segment: 'verse_2_3' });
-        break;
-    }
+    delta.insert(`target: chapter 1, verse 3.`, { segment: 'verse_1_3' });
+    delta.insert({ verse: 4 }, { verse: { style: 'v' } });
+    delta.insert(`target: chapter 1, verse 4.`, { segment: 'verse_1_4' });
     delta.insert('\n', { para: { style: 'p' } });
-    delta.insert('\n');
-    const doc = new MockRealtimeDoc<DeltaStatic>('rich-text', 'text01:' + textType, delta);
+    delta.insert({ blank: 'initial' }, { segment: 'verse_1_4/p_1' });
+    delta.insert({ verse: 5 }, { verse: { style: 'v' } });
+    delta.insert(`target: chapter 1, `, { segment: 'verse_1_5' });
+    delta.insert('\n', { para: { style: 'p' } });
+    const doc = new MockRealtimeDoc<DeltaStatic>('rich-text', getTextDataIdStr('text01', 1, 'target'), delta);
     return new TextData(doc, instance(mockedRealtimeOfflineStore));
   }
 }

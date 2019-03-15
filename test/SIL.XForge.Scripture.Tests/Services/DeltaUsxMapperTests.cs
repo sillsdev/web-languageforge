@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -18,7 +19,7 @@ namespace SIL.XForge.Scripture.Services
                 .Insert("\n");
 
             DeltaUsxMapper mapper = CreateMapper();
-            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, new[] { delta });
 
             XElement expected = Usx("PHM",
                 Para("h", "Philemon"));
@@ -36,7 +37,7 @@ namespace SIL.XForge.Scripture.Services
                 .Insert("\n");
 
             DeltaUsxMapper mapper = CreateMapper();
-            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, new[] { delta });
 
             XElement expected = Usx("PHM",
                 Chapter("1"),
@@ -67,7 +68,7 @@ namespace SIL.XForge.Scripture.Services
                 .Insert("\n");
 
             DeltaUsxMapper mapper = CreateMapper();
-            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, new[] { delta });
 
             XElement expected = Usx("PHM",
                 Chapter("1"),
@@ -94,7 +95,7 @@ namespace SIL.XForge.Scripture.Services
                 .Insert("\n");
 
             DeltaUsxMapper mapper = CreateMapper();
-            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, new[] { delta });
 
             XElement expected = Usx("PHM",
                 Chapter("1"),
@@ -127,7 +128,7 @@ namespace SIL.XForge.Scripture.Services
                 .Insert("\n");
 
             DeltaUsxMapper mapper = CreateMapper();
-            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, new[] { delta });
 
             XElement expected = Usx("PHM",
                 Chapter("1"),
@@ -156,7 +157,7 @@ namespace SIL.XForge.Scripture.Services
                 .Insert("\n");
 
             DeltaUsxMapper mapper = CreateMapper();
-            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, new[] { delta });
 
             XElement expected = Usx("PHM",
                 Para("p"),
@@ -167,24 +168,28 @@ namespace SIL.XForge.Scripture.Services
         [Test]
         public void ToUsx_NoParagraphs()
         {
-            var delta = Delta.New()
-                .InsertChapter("1")
-                .InsertVerse("1")
-                .InsertText("This is verse 1.", "verse_1_1")
-                .InsertVerse("2")
-                .InsertBlank("verse_1_2")
-                .InsertVerse("3")
-                .InsertText("This is verse 3.", "verse_1_3")
-                .Insert("\n")
-                .InsertChapter("2")
-                .InsertVerse("1")
-                .InsertBlank("verse_2_1")
-                .InsertVerse("2")
-                .InsertBlank("verse_2_2")
-                .Insert("\n");
+            var deltas = new[]
+            {
+                Delta.New()
+                    .InsertChapter("1")
+                    .InsertVerse("1")
+                    .InsertText("This is verse 1.", "verse_1_1")
+                    .InsertVerse("2")
+                    .InsertBlank("verse_1_2")
+                    .InsertVerse("3")
+                    .InsertText("This is verse 3.", "verse_1_3")
+                    .Insert("\n"),
+                Delta.New()
+                    .InsertChapter("2")
+                    .InsertVerse("1")
+                    .InsertBlank("verse_2_1")
+                    .InsertVerse("2")
+                    .InsertBlank("verse_2_2")
+                    .Insert("\n")
+            };
 
             DeltaUsxMapper mapper = CreateMapper();
-            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, delta);
+            XElement newUsxElem = mapper.ToUsx("2.5", "PHM", null, deltas);
 
             XElement expected = Usx("PHM",
                 Chapter("1"),
@@ -213,7 +218,7 @@ namespace SIL.XForge.Scripture.Services
                     Verse("3")));
 
             DeltaUsxMapper mapper = CreateMapper();
-            Delta newDelta = mapper.ToDelta("12345", usxElem);
+            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> newDeltas = mapper.ToChapterDeltas("12345", usxElem);
 
             var expected = Delta.New()
                 .InsertChapter("1")
@@ -229,16 +234,17 @@ namespace SIL.XForge.Scripture.Services
                 .InsertBlank("verse_1_2/p_3")
                 .InsertVerse("3")
                 .InsertBlank("verse_1_3")
-                .InsertPara("p")
-                .Insert("\n");
+                .InsertPara("p");
 
-            Assert.IsTrue(newDelta.DeepEquals(expected));
+            Assert.IsTrue(newDeltas[1].Delta.DeepEquals(expected));
+            Assert.That(newDeltas[1].LastVerse, Is.EqualTo(3));
         }
 
         [Test]
         public void ToDelta_SectionHeader()
         {
             XElement usxElem = Usx("PHM",
+                Para("mt", "Philemon"),
                 Chapter("1"),
                 Para("p",
                     Verse("1"),
@@ -248,9 +254,11 @@ namespace SIL.XForge.Scripture.Services
                     Verse("3")));
 
             DeltaUsxMapper mapper = CreateMapper();
-            Delta newDelta = mapper.ToDelta("12345", usxElem);
+            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> newDeltas = mapper.ToChapterDeltas("12345", usxElem);
 
             var expected = Delta.New()
+                .InsertText("Philemon", "mt_1")
+                .InsertPara("mt")
                 .InsertChapter("1")
                 .InsertVerse("1")
                 .InsertBlank("verse_1_1")
@@ -261,10 +269,10 @@ namespace SIL.XForge.Scripture.Services
                 .InsertPara("s")
                 .InsertVerse("3")
                 .InsertBlank("verse_1_3")
-                .InsertPara("p")
-                .Insert("\n");
+                .InsertPara("p");
 
-            Assert.IsTrue(newDelta.DeepEquals(expected));
+            Assert.IsTrue(newDeltas[1].Delta.DeepEquals(expected));
+            Assert.That(newDeltas[1].LastVerse, Is.EqualTo(3));
         }
 
         [Test]
@@ -287,7 +295,7 @@ namespace SIL.XForge.Scripture.Services
                     ", so that we can test it."));
 
             DeltaUsxMapper mapper = CreateMapper();
-            Delta newDelta = mapper.ToDelta("12345", usxElem);
+            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> newDeltas = mapper.ToChapterDeltas("12345", usxElem);
 
             var expected = Delta.New()
                 .InsertChapter("1")
@@ -303,10 +311,10 @@ namespace SIL.XForge.Scripture.Services
                     .InsertChar("Mark 1:1", "xt")
                     .Insert("."), "f", "+", "verse_1_1")
                 .InsertText(", so that we can test it.", "verse_1_1")
-                .InsertPara("p")
-                .Insert("\n");
+                .InsertPara("p");
 
-            Assert.IsTrue(newDelta.DeepEquals(expected));
+            Assert.IsTrue(newDeltas[1].Delta.DeepEquals(expected));
+            Assert.That(newDeltas[1].LastVerse, Is.EqualTo(1));
         }
 
         [Test]
@@ -321,12 +329,12 @@ namespace SIL.XForge.Scripture.Services
                 "This is verse 3.",
                 Chapter("2"),
                 Verse("1"),
-                Verse("2"));
+                Verse("2-3"));
 
             DeltaUsxMapper mapper = CreateMapper();
-            Delta newDelta = mapper.ToDelta("12345", usxElem);
+            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> newDeltas = mapper.ToChapterDeltas("12345", usxElem);
 
-            var expected = Delta.New()
+            var expected1 = Delta.New()
                 .InsertChapter("1")
                 .InsertVerse("1")
                 .InsertText("This is verse 1.", "verse_1_1")
@@ -334,15 +342,19 @@ namespace SIL.XForge.Scripture.Services
                 .InsertBlank("verse_1_2")
                 .InsertVerse("3")
                 .InsertText("This is verse 3.", "verse_1_3")
-                .Insert("\n")
+                .Insert("\n");
+            var expected2 = Delta.New()
                 .InsertChapter("2")
                 .InsertVerse("1")
                 .InsertBlank("verse_2_1")
-                .InsertVerse("2")
-                .InsertBlank("verse_2_2")
+                .InsertVerse("2-3")
+                .InsertBlank("verse_2_2-3")
                 .Insert("\n");
 
-            Assert.IsTrue(newDelta.DeepEquals(expected));
+            Assert.IsTrue(newDeltas[1].Delta.DeepEquals(expected1));
+            Assert.That(newDeltas[1].LastVerse, Is.EqualTo(3));
+            Assert.IsTrue(newDeltas[2].Delta.DeepEquals(expected2));
+            Assert.That(newDeltas[2].LastVerse, Is.EqualTo(3));
         }
 
         private static DeltaUsxMapper CreateMapper()

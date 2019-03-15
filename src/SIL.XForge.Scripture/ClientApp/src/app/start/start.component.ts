@@ -26,7 +26,7 @@ export class StartComponent extends SubscriptionDisposable implements OnInit {
         filter(user => user != null),
         switchMap(user =>
           iif(
-            () => user.site.currentProjectId != null,
+            () => user.site != null && user.site.currentProjectId != null,
             of(user.site.currentProjectId),
             this.userService.getProjects(user.id).pipe(map(r => (r.data.length > 0 ? r.data[0].project.id : null)))
           )

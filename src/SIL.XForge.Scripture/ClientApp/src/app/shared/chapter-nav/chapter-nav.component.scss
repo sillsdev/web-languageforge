@@ -1,0 +1,32 @@
+@import '~src/global';
+
+:host {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+}
+
+.mdc-icon-button {
+  @include mdc-icon-button-size(24px, 24px, 8px);
+}
+
+.mdc-select.chapter-select {
+  @include mdc-select-container-fill-color(transparent);
+  height: 40px;
+  width: 140px;
+  align-items: center;
+
+  ::ng-deep .mdc-select__selected-text {
+    border: none;
+    min-width: 140px;
+    padding: 8px;
+    height: 40px;
+  }
+  ::ng-deep .mdc-select__dropdown-icon {
+    bottom: 8px;
+  }
+  ::ng-deep .mdc-line-ripple {
+    display: none;
+  }
+}

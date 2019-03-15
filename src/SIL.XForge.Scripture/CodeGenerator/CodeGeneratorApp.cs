@@ -51,7 +51,8 @@ namespace SIL.XForge.Scripture.CodeGenerator
                 "TranslateConfig",
                 "InputSystem",
                 "TranslateMetrics",
-                "TranslateProjectUserConfig"
+                "TranslateProjectUserConfig",
+                "Chapter"
             };
         }
         public static void Main(string[] args)

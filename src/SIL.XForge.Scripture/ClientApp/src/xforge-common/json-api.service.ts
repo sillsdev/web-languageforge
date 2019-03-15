@@ -615,12 +615,12 @@ export class JsonApiService {
    * @param {string} type The resource type.
    * @returns {Observable<string>} The ID of the deleted resource.
    */
-  resourceDeleted(type: string): Observable<string> {
+  resourceDeleted<T extends Resource>(type: string): Observable<T> {
     return fromEvent<[RecordOperation, PatchResultData]>(this.store.cache, 'patch').pipe(
       filter(
         ([operation]) => operation.op === 'removeRecord' && (operation as RemoveRecordOperation).record.type === type
       ),
-      map(([operation]) => (operation as RemoveRecordOperation).record.id)
+      map(([, resultData]) => this.createResource(resultData) as T)
     );
   }
 

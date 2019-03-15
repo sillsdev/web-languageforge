@@ -22,9 +22,10 @@ import { nameof } from 'xforge-common/utils';
 import { SFProject } from '../../core/models/sfproject';
 import { SFProjectUser, TranslateProjectUserConfig } from '../../core/models/sfproject-user';
 import { Text } from '../../core/models/text';
+import { TextDataId, TextType } from '../../core/models/text-data';
 import { SFProjectUserService } from '../../core/sfproject-user.service';
 import { SFProjectService } from '../../core/sfproject.service';
-import { TextService, TextType } from '../../core/text.service';
+import { TextService } from '../../core/text.service';
 import { Segment } from '../../shared/text/segment';
 import { TextComponent } from '../../shared/text/text.component';
 
@@ -43,6 +44,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   suggestionConfidence: number = 0;
   showSuggestion: boolean = false;
   displaySlider: boolean = false;
+  chapters: number[] = [];
 
   @ViewChild('source') source: TextComponent;
   @ViewChild('target') target: TextComponent;
@@ -61,6 +63,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   private sourceLoaded: boolean = false;
   private targetLoaded: boolean = false;
   private confidenceThresholdSubject: BehaviorSubject<number>;
+  private _chapter: number;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -94,13 +97,11 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   }
 
   get sourceLabel(): string {
-    const sourceLangName = this.project == null ? '' : this.project.translateConfig.sourceInputSystem.languageName;
-    return `${this.textName} (${sourceLangName})`;
+    return this.project == null ? '' : this.project.translateConfig.sourceInputSystem.languageName;
   }
 
   get targetLabel(): string {
-    const targetLangName = this.project == null ? '' : this.project.inputSystem.languageName;
-    return `${this.textName} (${targetLangName})`;
+    return this.project == null ? '' : this.project.inputSystem.languageName;
   }
 
   get isTargetTextRight(): boolean {
@@ -110,7 +111,6 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   set isTargetTextRight(value: boolean) {
     if (this.isTargetTextRight !== value) {
       this.translateUserConfig.isTargetTextRight = value;
-      this.target.focus();
       this.updateUserConfig();
     }
   }
@@ -124,8 +124,19 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   }
 
   set confidenceThreshold(value: number) {
-    this.suggestionsMenuButton.elementRef.nativeElement.focus();
     this.confidenceThresholdSubject.next(value);
+  }
+
+  get chapter(): number {
+    return this._chapter;
+  }
+
+  set chapter(value: number) {
+    if (this._chapter !== value) {
+      this.showSuggestion = false;
+      this._chapter = value;
+      this.changeText();
+    }
   }
 
   private get isSelectionAtSegmentEnd(): boolean {
@@ -138,7 +149,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
     return selectionEndIndex === segmentEndIndex;
   }
 
-  private get textName(): string {
+  get textName(): string {
     return this.text == null ? '' : this.text.name;
   }
 
@@ -157,34 +168,35 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
         filter(r => r.data != null)
       ),
       r => {
+        const prevTextId = this.text == null ? '' : this.text.id;
         this.text = r.data;
         this.project = r.getIncluded(this.text.project);
         this.projectUser = r
           .getManyIncluded<SFProjectUser>(this.project.users)
           .find(pu => pu.user.id === this.userService.currentUserId);
-        this.source.textId = this.text.id;
-        this.target.textId = this.text.id;
-        if (this.translateUserConfig != null) {
-          if (this.translateUserConfig.isTargetTextRight == null) {
-            this.translateUserConfig.isTargetTextRight = true;
+        this.chapters = this.text.chapters.map(c => c.number);
+
+        if (this.text.id !== prevTextId) {
+          this._chapter = 1;
+          if (this.translateUserConfig != null) {
+            if (this.translateUserConfig.isTargetTextRight == null) {
+              this.translateUserConfig.isTargetTextRight = true;
+            }
+            if (this.translateUserConfig.confidenceThreshold != null) {
+              const pcnt = Math.round(this.translateUserConfig.confidenceThreshold * 100);
+              this.translationSuggester.confidenceThreshold = pcnt / 100;
+              this.confidenceThresholdSubject.next(pcnt);
+            }
+            if (this.translateUserConfig.selectedTextRef === this.text.id) {
+              if (this.translateUserConfig.selectedChapter != null && this.translateUserConfig.selectedChapter !== 0) {
+                this._chapter = this.translateUserConfig.selectedChapter;
+              }
+            }
           }
-          if (this.translateUserConfig.confidenceThreshold != null) {
-            const pcnt = Math.round(this.translateUserConfig.confidenceThreshold * 100);
-            this.translationSuggester.confidenceThreshold = pcnt / 100;
-            this.confidenceThresholdSubject.next(pcnt);
-          }
-          if (
-            this.translateUserConfig.selectedTextRef === this.text.id &&
-            this.translateUserConfig.selectedSegment !== ''
-          ) {
-            this.target.changeSegment(
-              this.translateUserConfig.selectedSegment,
-              this.translateUserConfig.selectedSegmentChecksum,
-              true
-            );
-          }
+          this.changeText();
+
+          this.translationEngine = this.projectService.createTranslationEngine(this.project.id);
         }
-        this.translationEngine = this.projectService.createTranslationEngine(this.project.id);
       }
     );
   }
@@ -220,10 +232,12 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
           this.translateUserConfig != null &&
           this.target.segmentRef !== '' &&
           (this.translateUserConfig.selectedTextRef !== this.text.id ||
+            this.translateUserConfig.selectedChapter !== this._chapter ||
             this.translateUserConfig.selectedSegment !== this.target.segmentRef)
         ) {
           this.projectUser.selectedTask = 'translate';
           this.translateUserConfig.selectedTextRef = this.text.id;
+          this.translateUserConfig.selectedChapter = this._chapter;
           this.translateUserConfig.selectedSegment = this.target.segmentRef;
           this.translateUserConfig.selectedSegmentChecksum = this.target.segmentChecksum;
           await this.updateUserConfig();
@@ -303,6 +317,26 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
     this.insertSuggestionEnd = selectIndex;
     this.target.editor.updateContents(delta, 'user');
     this.target.editor.setSelection(selectIndex, 0, 'user');
+  }
+
+  private changeText(): void {
+    this.target.blur();
+    let selectedSegment: string;
+    let selectedSegmentChecksum: number;
+    if (
+      this.translateUserConfig != null &&
+      this.translateUserConfig.selectedTextRef === this.text.id &&
+      this.translateUserConfig.selectedChapter === this._chapter &&
+      this.translateUserConfig.selectedSegment !== ''
+    ) {
+      selectedSegment = this.translateUserConfig.selectedSegment;
+      selectedSegmentChecksum = this.translateUserConfig.selectedSegmentChecksum;
+    }
+    this.source.id = new TextDataId(this.text.id, this._chapter, 'source');
+    this.target.id = new TextDataId(this.text.id, this._chapter, 'target');
+    if (selectedSegment != null) {
+      this.target.changeSegment(selectedSegment, selectedSegmentChecksum, true);
+    }
   }
 
   private onStartTranslating(): void {

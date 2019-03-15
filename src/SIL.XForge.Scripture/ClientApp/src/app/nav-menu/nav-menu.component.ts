@@ -141,7 +141,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
 
         // check if the currently selected project has been deleted
         if (selectedProject == null && this.selectedProject != null && projectId === this.selectedProject.id) {
-          if (user.site.currentProjectId != null) {
+          if (user.site != null && user.site.currentProjectId != null) {
             // the project was deleted remotely, so notify the user
             this.showProjectDeletedDialog();
           } else {
@@ -162,7 +162,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
               this._projectSelect.value = this.selectedProject.id;
             }
 
-            if (user.site.currentProjectId !== this.selectedProject.id) {
+            if (user.site == null || user.site.currentProjectId !== this.selectedProject.id) {
               this.userService.updateCurrentProjectId(this.selectedProject.id);
             }
           }

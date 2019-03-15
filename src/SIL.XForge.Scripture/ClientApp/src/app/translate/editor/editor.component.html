@@ -1,63 +1,64 @@
-<div [fxLayout]="isTargetTextRight ? 'row' : 'row-reverse'" class="flex-grow">
+<div mdcHeadline6>{{ textName }}</div>
+<div class="toolbar" fxLayout="row" fxLayoutAlign="start center">
+  <app-chapter-nav [(chapter)]="chapter" [chapters]="chapters"></app-chapter-nav>
+  <div class="toolbar-separator">&nbsp;</div>
+  <div mdcMenuSurfaceAnchor #suggestionsAnchor>
+    <button
+      #suggestionsMenuButton
+      mdc-icon-button
+      icon="linear_scale"
+      title="Adjust suggestion confidence"
+      (click)="suggestionsMenu.open = !suggestionsMenu.open"
+      [class.mdc-icon-button--activated]="suggestionsMenu.open"
+    ></button>
+    <mdc-menu-surface
+      class="suggestions-menu"
+      #suggestionsMenu
+      [anchorElement]="suggestionsAnchor"
+      [quickOpen]="true"
+      anchorCorner="bottomStart"
+      (opened)="suggestionsMenuOpened()"
+      (closed)="suggestionsMenuClosed()"
+    >
+      <div mdcSubtitle1 fxLayout="row" fxLayoutAlign="center">Suggestion Confidence</div>
+      <div class="slider-labels" fxLayout="row" fxLayoutAlign="space-between">
+        <span mdcCaption>More</span> <span mdcCaption>{{ confidenceThreshold }}%</span> <span mdcCaption>Better</span>
+      </div>
+      <mdc-slider
+        id="confidence-threshold-slider"
+        *ngIf="displaySlider"
+        [min]="0"
+        [max]="100"
+        [(ngModel)]="confidenceThreshold"
+      ></mdc-slider>
+    </mdc-menu-surface>
+  </div>
+  <button
+    mdc-icon-button
+    appBlurOnClick
+    icon="swap_horiz"
+    (click)="isTargetTextRight = !isTargetTextRight"
+    title="Swap source and target"
+  ></button>
+</div>
+<div [fxLayout]="isTargetTextRight ? 'row' : 'row-reverse'" class="flex-grow" fxLayoutGap="5px">
   <div class="text-area">
-    <div mdcHeadline5 class="text-title">{{ sourceLabel }}</div>
+    <div mdcSubtitle1>{{ sourceLabel }}</div>
     <div class="text-container">
       <app-text
         #source
-        textType="source"
         [isReadOnly]="true"
         [highlightSegment]="target.hasFocus"
         (loaded)="onTextLoaded('source')"
       ></app-text>
     </div>
   </div>
-  <div class="swap-button-container">
-    <button
-      mdc-icon-button
-      icon="swap_horiz"
-      (click)="isTargetTextRight = !isTargetTextRight"
-      title="Swap source and target"
-    ></button>
-  </div>
+  <div class="swap-button-container"></div>
   <div class="text-area">
-    <div fxLayout="row" fxLayoutAlign="space-between center">
-      <div mdcHeadline5 class="text-title">{{ targetLabel }}</div>
-      <div mdcMenuSurfaceAnchor #suggestionsAnchor>
-        <button
-          #suggestionsMenuButton
-          mdc-icon-button
-          icon="more_vert"
-          title="Adjust suggestion confidence"
-          (click)="suggestionsMenu.open = !suggestionsMenu.open"
-        ></button>
-        <mdc-menu-surface
-          class="suggestions-menu"
-          #suggestionsMenu
-          [anchorElement]="suggestionsAnchor"
-          [quickOpen]="true"
-          anchorCorner="bottomStart"
-          (opened)="suggestionsMenuOpened()"
-          (closed)="suggestionsMenuClosed()"
-        >
-          <div mdcSubtitle1 fxLayout="row" fxLayoutAlign="center">Suggestion Confidence</div>
-          <div class="slider-labels" fxLayout="row" fxLayoutAlign="space-between">
-            <span mdcCaption>More</span> <span mdcCaption>{{ confidenceThreshold }}%</span>
-            <span mdcCaption>Better</span>
-          </div>
-          <mdc-slider
-            id="confidence-threshold-slider"
-            *ngIf="displaySlider"
-            [min]="0"
-            [max]="100"
-            [(ngModel)]="confidenceThreshold"
-          ></mdc-slider>
-        </mdc-menu-surface>
-      </div>
-    </div>
+    <div mdcSubtitle1>{{ targetLabel }}</div>
     <div class="text-container">
       <app-text
         #target
-        textType="target"
         [isReadOnly]="false"
         (updated)="onTargetUpdated($event.segment, $event.delta, $event.prevSegment)"
         (loaded)="onTextLoaded('target')"

@@ -76,8 +76,10 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
   }
 
   ngOnDestroy(): void {
-    for (const text of this.texts) {
-      this.unbindQuestionData(text.id);
+    if (this.texts != null) {
+      for (const text of this.texts) {
+        this.unbindQuestionData(text.id);
+      }
     }
     super.ngOnDestroy();
     this.noticeService.loadingFinished();

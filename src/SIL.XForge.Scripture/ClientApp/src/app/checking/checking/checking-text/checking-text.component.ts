@@ -1,4 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
+
+import { TextDataId } from '../../../core/models/text-data';
 import { TextComponent } from '../../../shared/text/text.component';
 
 @Component({
@@ -8,7 +10,7 @@ import { TextComponent } from '../../../shared/text/text.component';
 })
 export class CheckingTextComponent {
   @ViewChild(TextComponent) textComponent: TextComponent;
-  @Input() textId: string = '';
+  @Input() id: TextDataId;
 
   constructor() {}
 

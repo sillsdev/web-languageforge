@@ -26,12 +26,23 @@ namespace SIL.XForge.Scripture.Services
 
         public override async Task DeleteAllAsync(string projectId)
         {
-            List<string> ids = await Entities.Query().Where(t => t.ProjectRef == projectId).ToListAsync(t => t.Id);
-            string[] textTypes = { "source", "target" };
-            await _realtimeService.DeleteAllAsync("text",
-                ids.SelectMany(id => textTypes, (id, type) => id + ":" + type));
-            await _realtimeService.DeleteAllAsync("question", ids.Select(id => id));
+            List<TextEntity> texts = await Entities.Query().Where(t => t.ProjectRef == projectId).ToListAsync();
+
+            await _realtimeService.DeleteAllAsync("text", GetAllTextDataIds(texts));
+            await _realtimeService.DeleteAllAsync("question", texts.Select(t => t.Id));
             await base.DeleteAllAsync(projectId);
+        }
+
+        private static IEnumerable<string> GetAllTextDataIds(IEnumerable<TextEntity> texts)
+        {
+            foreach (TextEntity text in texts)
+            {
+                foreach (Chapter chapter in text.Chapters)
+                {
+                    yield return TextEntity.GetTextDataId(text.Id, chapter.Number, TextType.Source);
+                    yield return TextEntity.GetTextDataId(text.Id, chapter.Number, TextType.Target);
+                }
+            }
         }
 
         protected override Task CheckCanCreateAsync(TextResource resource)

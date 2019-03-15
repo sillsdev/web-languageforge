@@ -21,10 +21,12 @@ namespace SIL.XForge.Scripture.Services
 
             var expectedTextIds = new HashSet<string>
             {
-                "text01:source",
-                "text01:target",
-                "text02:source",
-                "text02:target"
+                TextEntity.GetTextDataId("text01", 1, TextType.Source),
+                TextEntity.GetTextDataId("text01", 1, TextType.Target),
+                TextEntity.GetTextDataId("text02", 1, TextType.Source),
+                TextEntity.GetTextDataId("text02", 1, TextType.Target),
+                TextEntity.GetTextDataId("text02", 2, TextType.Source),
+                TextEntity.GetTextDataId("text02", 2, TextType.Target)
             };
             var expectedQuestionIds = new HashSet<string>
             {
@@ -61,17 +63,29 @@ namespace SIL.XForge.Scripture.Services
                     new TextEntity
                     {
                         Id = "text01",
-                        ProjectRef = "project01"
+                        ProjectRef = "project01",
+                        Chapters = { new Chapter { Number = 1, LastVerse = 3 } }
                     },
                     new TextEntity
                     {
                         Id = "text02",
-                        ProjectRef = "project01"
+                        ProjectRef = "project01",
+                        Chapters =
+                        {
+                            new Chapter { Number = 1, LastVerse = 3 },
+                            new Chapter { Number = 2, LastVerse = 3 }
+                        }
                     },
                     new TextEntity
                     {
                         Id = "text03",
-                        ProjectRef = "project02"
+                        ProjectRef = "project02",
+                        Chapters =
+                        {
+                            new Chapter { Number = 1, LastVerse = 3 },
+                            new Chapter { Number = 2, LastVerse = 3 },
+                            new Chapter { Number = 3, LastVerse = 3 }
+                        }
                     }
                 };
             }

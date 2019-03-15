@@ -9,6 +9,9 @@ quill-editor {
     flex-direction: column;
     flex: 1 1 auto;
   }
+  .ql-editor {
+    line-height: 1.6;
+  }
 }
 
 .highlight-source {
@@ -16,9 +19,11 @@ quill-editor {
 }
 
 .template-editor .ql-container.ql-snow {
-  background-color: lightgray;
+  background-color: #ededed;
 }
 
 .template-editor span[data-segment] {
   background-color: white;
+  border-radius: 3px;
+  padding: 0px 2px;
 }

@@ -1,20 +1,38 @@
-.ql-suggestions {
-  margin: 0 6px;
+@import '~src/global';
+
+.toolbar {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #e0e0e0;
+  padding: 5px 10px;
+
+  .mdc-icon-button {
+    @include mdc-icon-button-size(24px, 24px, 8px);
+  }
 }
 
-.swap-button-container {
-  margin: 0px 3px;
+.toolbar-separator {
+  border-left: 1px solid #e0e0e0;
+  margin: 0px 4px;
+  height: 36px;
+  width: 0;
+}
+
+.mdc-icon-button.mdc-icon-button--activated::before {
+  transition-duration: 12ms;
+  opacity: mdc-states-opacity(black, activated);
+}
+
+.ql-suggestions {
+  margin: 0 6px;
 }
 
 .text-area {
   display: flex;
   flex-direction: column;
   flex: 1 1 0;
-}
-
-.text-title {
-  height: 48px;
-  line-height: 48px;
 }
 
 .text-container {
