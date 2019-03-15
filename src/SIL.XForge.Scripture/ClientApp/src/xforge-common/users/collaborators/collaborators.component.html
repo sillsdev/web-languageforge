@@ -1,4 +1,4 @@
-<h2 id="title">Collaborators</h2>
+<h2 id="collaborators-label">Collaborators</h2>
 <div class="add-invite-user">
   <div fxLayout="row" fxLayoutAlign="space-between center" class="text-entry">
     <form [formGroup]="userSelectionForm">
@@ -15,19 +15,19 @@
           id="search-menu"
           [anchorElement]="userSearchAnchor"
           anchorCorner="bottomStart"
-          *ngIf="!noUserFound()"
+          *ngIf="usersFound"
           (selected)="userSelected($event)"
         >
           <mdc-list>
             <ng-container *ngFor="let user of users">
-              <mdc-list-item>{{ user.name }}</mdc-list-item>
+              <mdc-list-item>{{ user.name }} ({{ user.email }})</mdc-list-item>
             </ng-container>
           </mdc-list>
         </mdc-menu>
       </div>
     </form>
-    <button mdc-button id="btn-add" class="action-btn" outlined (click)="onAdd()" [disabled]="addDisabled()">
-      Add user
+    <button mdc-button id="btn-add" class="add-user-btn" outlined (click)="onAdd()" [disabled]="addDisabled">
+      <span fxShow fxHide.xs>Add user</span> <span fxHide fxShow.xs>Add</span>
     </button>
   </div>
   <div fxLayout="row" fxLayoutAlign="space-between center" class="text-entry">
@@ -52,14 +52,19 @@
           </mdc-helper-text>
         </mdc-form-field>
         <mdc-menu #inviteError id="invite-error" [anchorElement]="anchor" anchorCorner="bottomStart">
-          <mdc-list>
-            <ng-container> <mdc-list-item>Cannot invite existing users</mdc-list-item> </ng-container>
-          </mdc-list>
+          <mdc-list> <mdc-list-item>Please use Add for this user</mdc-list-item> </mdc-list>
         </mdc-menu>
       </div>
     </form>
-    <button mdc-button id="btn-invite" class="action-btn" outlined (click)="onInvite()" [disabled]="inviteDisabled()">
-      Invite user
+    <button
+      mdc-button
+      id="btn-invite"
+      class="invite-user-btn"
+      outlined
+      (click)="onInvite()"
+      [disabled]="inviteDisabled"
+    >
+      <span fxShow fxHide.xs>Invite user</span> <span fxHide fxShow.xs>Invite</span>
     </button>
   </div>
 </div>

@@ -19,22 +19,21 @@ describe('CollaboratorsComponent', () => {
     env.setTextFieldValue(env.searchUserInput, 'use');
     expect(env.component.userMenu.open).toBe(true);
     expect(env.component.users.length).toEqual(3);
-    expect(env.menuItemExists(env.searchMenuElement, 0, 'User 01')).toBe(true);
+    expect(env.menuItemExists(env.searchMenuElement, 0, 'User 01 (user01@example.com)')).toBe(true);
   }));
 
   it('should enable add button', fakeAsync(() => {
     const env = new TestEnvironment();
-    env.setupUserData();
     when(env.mockedProjectService.onlineInvite(anything())).thenResolve(InviteAction.Joined);
     env.setTextFieldValue(env.searchUserInput, 'user 01');
-    expect(env.menuItemExists(env.searchMenuElement, 0, 'User 01')).toBe(true);
+    expect(env.menuItemExists(env.searchMenuElement, 0, 'User 01 (user01@example.com)')).toBe(true);
 
     // The add button is disabled until the user selects a user from the menu
-    expect(env.component.addDisabled()).toBe(true);
+    expect(env.component.addDisabled).toBe(true);
     env.clickMenuItem(env.searchMenuElement, 0);
     const email = 'user01@example.com';
     expect(env.component.userSelectionForm.value.user).toBe(email);
-    expect(env.component.addDisabled()).toBe(false);
+    expect(env.component.addDisabled).toBe(false);
     env.clickButton(env.addButton);
     verify(env.mockedProjectService.onlineInvite(email)).once();
     const message = 'An email has been sent to ' + email + ' adding them to this project.';
@@ -43,7 +42,6 @@ describe('CollaboratorsComponent', () => {
 
   it('should display error when email is invalid', fakeAsync(() => {
     const env = new TestEnvironment();
-    env.setupUserData();
     env.setTextFieldValue(env.emailInput, '');
     expect(env.component.userInviteForm.controls.email.hasError('required')).toBe(true);
     env.setTextFieldValue(env.emailInput, 'notavalidemail');
@@ -55,17 +53,16 @@ describe('CollaboratorsComponent', () => {
     expect(env.component.inviteError.open).toBe(false);
     env.setTextFieldValue(env.emailInput, 'user01@example.com');
     expect(env.component.inviteError.open).toBe(true);
-    expect(env.menuItemExists(env.inviteMenuElement, 0, 'Cannot invite existing users')).toBe(true);
+    expect(env.menuItemExists(env.inviteMenuElement, 0, 'Please use Add for this user')).toBe(true);
   }));
 
   it('should enable invite button', fakeAsync(() => {
     const env = new TestEnvironment();
-    env.setupUserData();
     when(env.mockedProjectService.onlineInvite(anything())).thenResolve(InviteAction.Invited);
-    expect(env.component.inviteDisabled()).toBe(true);
+    expect(env.component.inviteDisabled).toBe(true);
     const newEmail = 'user04@example.com';
     env.setTextFieldValue(env.emailInput, newEmail);
-    expect(env.component.inviteDisabled()).toBe(false);
+    expect(env.component.inviteDisabled).toBe(false);
     env.clickButton(env.inviteButton);
     verify(env.mockedProjectService.onlineInvite(newEmail));
     const message = 'An invitation email has been sent to ' + newEmail + '.';
@@ -77,14 +74,15 @@ class TestEnvironment {
   fixture: ComponentFixture<CollaboratorsComponent>;
   component: CollaboratorsComponent;
 
-  mockedNoticeService: NoticeService;
-  mockedProjectService: ProjectService;
-  mockedUserService: UserService;
+  mockedNoticeService: NoticeService = mock(NoticeService);
+  mockedProjectService: ProjectService = mock(ProjectService);
+  mockedUserService: UserService = mock(UserService);
 
   private readonly users: User[] = [
     new User({
       id: 'user01',
       name: 'User 01',
+      email: 'user01@example.com',
       canonicalEmail: 'user01@example.com',
       active: true
     }),
@@ -92,21 +90,19 @@ class TestEnvironment {
       id: 'user02',
       name: 'User 02',
       email: 'user02@example.com',
+      canonicalEmail: 'user02@example.com',
       active: true
     }),
     new User({
       id: 'user03',
       name: 'User 03',
+      email: 'user03@example.com',
       canonicalEmail: 'user03@example.com',
       active: false
     })
   ];
 
   constructor() {
-    this.mockedNoticeService = mock(NoticeService);
-    this.mockedProjectService = mock(ProjectService);
-    this.mockedUserService = mock(UserService);
-
     TestBed.configureTestingModule({
       declarations: [CollaboratorsComponent],
       imports: [UICommonModule],
@@ -150,7 +146,7 @@ class TestEnvironment {
   }
 
   get title(): HTMLElement {
-    return this.fixture.nativeElement.querySelector('#title');
+    return this.fixture.nativeElement.querySelector('#collaborators-label');
   }
 
   clickButton(element: HTMLElement) {

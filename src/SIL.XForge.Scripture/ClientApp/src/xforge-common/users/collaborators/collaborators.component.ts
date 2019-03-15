@@ -9,6 +9,7 @@ import { NoticeService } from '../../notice.service';
 import { InviteAction, ProjectService } from '../../project.service';
 import { SubscriptionDisposable } from '../../subscription-disposable';
 import { UserService } from '../../user.service';
+import { XFValidators } from '../../xfvalidators';
 
 @Component({
   selector: 'app-collaborators',
@@ -18,7 +19,6 @@ import { UserService } from '../../user.service';
 export class CollaboratorsComponent extends SubscriptionDisposable implements OnInit {
   @ViewChild('inviteError') inviteError: MdcMenu;
   @ViewChild('userSearch') userMenu: MdcMenu;
-  emailPattern = '[a-zA-Z0-9.-_]{1,}@[a-zA-Z0-9.-]{2,}[.]{1}[a-zA-Z]{2,}';
   pageIndex: number = 0;
   pageSize: number = 50;
   users: User[];
@@ -26,13 +26,14 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
     user: new FormControl('')
   });
   userInviteForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email, Validators.pattern(this.emailPattern)])
+    email: new FormControl('', [Validators.required, XFValidators.email])
   });
 
   private isUserSelected = false;
   private searchTerm$ = new BehaviorSubject<string>('');
   private parameters$ = new BehaviorSubject<GetAllParameters<User>>({});
   private reload$ = new BehaviorSubject<void>(null);
+
   constructor(
     private readonly userService: UserService,
     private readonly projectService: ProjectService,
@@ -48,31 +49,25 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
     );
   }
 
-  addDisabled(): boolean {
+  get addDisabled(): boolean {
     return !(this.userSelectionForm.value.user && this.isUserSelected);
   }
 
-  emailExists(): boolean {
-    if (this.users) {
+  get inviteDisabled(): boolean {
+    return this.emailExists || this.userInviteForm.invalid;
+  }
+
+  get usersFound(): boolean {
+    return this.users != null && this.users.length > 0;
+  }
+
+  private get emailExists(): boolean {
+    if (this.usersFound) {
       const email: string = this.userInviteForm.value.email;
-      for (const user of this.users) {
-        if (user.canonicalEmail === email.toLowerCase()) {
-          return true;
-        }
-      }
+      const existingUser = this.users.find(user => user.canonicalEmail === email.toLowerCase());
+      return existingUser != null;
     }
     return false;
-  }
-
-  inviteDisabled(): boolean {
-    return this.emailExists() || this.userInviteForm.invalid;
-  }
-
-  noUserFound(): boolean {
-    if (this.users) {
-      return false;
-    }
-    return true;
   }
 
   async onAdd(): Promise<void> {
@@ -103,20 +98,23 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
 
   searchForExistingEmail(term: string): void {
     this.searchTerm$.next(term);
-    if (this.emailExists()) {
+    if (this.emailExists) {
       this.inviteError.open = true;
     }
   }
 
   updateSearchTerms(term: string): void {
     this.searchTerm$.next(term);
-    if (this.users && term.length > 2) {
-      this.userMenu.open = true;
+    if (this.usersFound && term.length > 2) {
+      if (this.users.length <= 10) {
+        // The text field loses focus when the menu appears. Display when 10 items or less match
+        this.userMenu.open = true;
+      }
     }
   }
 
   userSelected(event: { index: number; item: MdcListItem }) {
-    this.userSelectionForm.controls.user.setValue(this.users[event.index].canonicalEmail);
+    this.userSelectionForm.controls.user.setValue(this.users[event.index].email);
     this.isUserSelected = true;
   }
 }

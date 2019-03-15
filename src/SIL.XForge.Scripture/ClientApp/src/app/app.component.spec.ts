@@ -32,7 +32,7 @@ describe('AppComponent', () => {
 
     expect(env.isDrawerVisible).toBeTruthy();
     expect(env.selectedProjectId).toEqual('project01');
-    expect(env.menuLength).toEqual(4);
+    expect(env.menuLength).toEqual(5);
     verify(env.mockedUserService.updateCurrentProjectId(anything())).never();
   }));
 
@@ -43,7 +43,7 @@ describe('AppComponent', () => {
 
     expect(env.isDrawerVisible).toBeTruthy();
     expect(env.selectedProjectId).toEqual('project02');
-    expect(env.menuLength).toEqual(3);
+    expect(env.menuLength).toEqual(4);
     verify(env.mockedUserService.updateCurrentProjectId('project02')).once();
   }));
 
@@ -55,9 +55,9 @@ describe('AppComponent', () => {
     expect(env.isDrawerVisible).toBeTruthy();
     expect(env.selectedProjectId).toEqual('project01');
     env.selectItem(0);
-    expect(env.menuLength).toEqual(7);
+    expect(env.menuLength).toEqual(8);
     env.selectItem(0);
-    expect(env.menuLength).toEqual(4);
+    expect(env.menuLength).toEqual(5);
   }));
 
   it('change project', fakeAsync(() => {
