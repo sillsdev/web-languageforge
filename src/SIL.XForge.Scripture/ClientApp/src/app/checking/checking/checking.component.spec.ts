@@ -1,19 +1,16 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { deepEqual, instance, mock, when } from 'ts-mockito';
-
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AngularSplitModule } from 'angular-split';
 import { QuillModule } from 'ngx-quill';
 import Quill, { DeltaStatic } from 'quill';
-import { Snapshot } from 'sharedb/lib/client';
+import { of } from 'rxjs';
+import { deepEqual, instance, mock, when } from 'ts-mockito';
 import { JsonApiService, MapQueryResults } from 'xforge-common/json-api.service';
 import { DomainModel } from 'xforge-common/models/domain-model';
-import { RealtimeDoc } from 'xforge-common/realtime-doc';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { nameof } from 'xforge-common/utils';
@@ -23,6 +20,7 @@ import { SFProject } from '../../core/models/sfproject';
 import { Text } from '../../core/models/text';
 import { TextData } from '../../core/models/text-data';
 import { TextService, TextType } from '../../core/text.service';
+import { MockRealtimeDoc } from '../../shared/models/mock-realtime-doc';
 import { TextComponent } from '../../shared/text/text.component';
 import { CheckingAnswersComponent } from './checking-answers/checking-answers.component';
 import { CheckingQuestionsComponent } from './checking-questions/checking-questions.component';
@@ -41,8 +39,9 @@ describe('CheckingComponent', () => {
     it('can load a project', () => {
       expect(env.projectHeading).toEqual('Project 01');
     });
+
     it('can navigate using next button', () => {
-      const question = env.selectQuestion(1);
+      env.selectQuestion(1);
       const next = env.nextButton;
       next.nativeElement.click();
       env.fixture.detectChanges();
@@ -51,7 +50,7 @@ describe('CheckingComponent', () => {
     });
 
     it('can navigate using previous button', () => {
-      const question = env.selectQuestion(2);
+      env.selectQuestion(2);
       const prev = env.previousButton;
       prev.nativeElement.click();
       env.fixture.detectChanges();
@@ -60,12 +59,12 @@ describe('CheckingComponent', () => {
     });
 
     it('check navigate buttons disable at the end of the question list', () => {
-      let question = env.selectQuestion(1);
+      env.selectQuestion(1);
       const prev = env.previousButton;
       const next = env.nextButton;
       expect(prev.nativeElement.disabled).toBe(true);
       expect(next.nativeElement.disabled).toBe(false);
-      question = env.selectQuestion(14);
+      env.selectQuestion(14);
       expect(prev.nativeElement.disabled).toBe(false);
       expect(next.nativeElement.disabled).toBe(true);
     });
@@ -90,22 +89,22 @@ describe('CheckingComponent', () => {
     }));
 
     it('question status change to answered', fakeAsync(() => {
-      let question = env.selectQuestion(2);
+      env.selectQuestion(2);
       // Wait for the 1 second time out before the state of the question changes
       tick(2000);
-      question = env.selectQuestion(1);
-      question = env.selectQuestion(2);
+      env.selectQuestion(1);
+      const question = env.selectQuestion(2);
       tick(2000);
       env.fixture.detectChanges();
       expect(question.classes['question-answered']).toBeTruthy();
     }));
 
     it('question shows answers icon and total', fakeAsync(() => {
-      let question = env.selectQuestion(2);
+      env.selectQuestion(2);
       // Wait for the 1 second time out before the state of the question changes
       tick(2000);
-      question = env.selectQuestion(1);
-      question = env.selectQuestion(2);
+      env.selectQuestion(1);
+      const question = env.selectQuestion(2);
       tick(2000);
       env.fixture.detectChanges();
       expect(question.query(By.css('.view-answers span')).nativeElement.textContent).toEqual('1');
@@ -118,7 +117,7 @@ describe('CheckingComponent', () => {
     });
 
     it('answer panel is now showing', () => {
-      const question = env.selectQuestion(1);
+      env.selectQuestion(1);
       expect(env.answerPanel).toBeDefined();
       expect(env.answerPanel.query(By.css('.question')).nativeElement.textContent).toBe('Question 1?');
     });
@@ -310,45 +309,9 @@ class TestEnvironment {
     }
     delta.insert('\n', { para: { style: 'p' } });
     delta.insert('\n');
-    const doc = new MockRealtimeDoc('text01:' + textType, delta);
+    const doc = new MockRealtimeDoc<DeltaStatic>('rich-text', 'text01:' + textType, delta);
     return new TextData(doc, instance(mockedRealtimeOfflineStore));
   }
 }
 
 const Delta: new () => DeltaStatic = Quill.import('delta');
-
-class MockRealtimeDoc implements RealtimeDoc {
-  readonly version: number = 1;
-  readonly type: string = 'rich-text';
-  readonly pendingOps: any[] = [];
-
-  constructor(public readonly id: string, public readonly data: DeltaStatic) {}
-
-  idle(): Observable<void> {
-    return of();
-  }
-
-  fetch(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  ingestSnapshot(_snapshot: Snapshot): Promise<void> {
-    return Promise.resolve();
-  }
-
-  subscribe(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  submitOp(_data: any, _source?: any): Promise<void> {
-    return Promise.resolve();
-  }
-
-  remoteChanges(): Observable<any> {
-    return of();
-  }
-
-  destroy(): Promise<void> {
-    return Promise.resolve();
-  }
-}

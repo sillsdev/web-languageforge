@@ -14,14 +14,11 @@ import {
   WordAlignmentMatrix
 } from '@sillsdev/machine';
 import Quill, { DeltaStatic } from 'quill';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { Snapshot } from 'sharedb/lib/client';
+import { BehaviorSubject, of } from 'rxjs';
 import { anything, deepEqual, instance, mock, resetCalls, verify, when } from 'ts-mockito';
-
 import { MapQueryResults } from 'xforge-common/json-api.service';
 import { UserRef } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
-import { RealtimeDoc } from 'xforge-common/realtime-doc';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
@@ -33,6 +30,7 @@ import { TextData } from '../../core/models/text-data';
 import { SFProjectUserService } from '../../core/sfproject-user.service';
 import { SFProjectService } from '../../core/sfproject.service';
 import { TextService, TextType } from '../../core/text.service';
+import { MockRealtimeDoc } from '../../shared/models/mock-realtime-doc';
 import { SharedModule } from '../../shared/shared.module';
 import { EditorComponent } from './editor.component';
 import { SuggestionComponent } from './suggestion.component';
@@ -298,42 +296,6 @@ describe('EditorComponent', () => {
 
 const Delta: new () => DeltaStatic = Quill.import('delta');
 
-class MockRealtimeDoc implements RealtimeDoc {
-  readonly version: number = 1;
-  readonly type: string = 'rich-text';
-  readonly pendingOps: any[] = [];
-
-  constructor(public readonly id: string, public readonly data: DeltaStatic) {}
-
-  idle(): Observable<void> {
-    return of();
-  }
-
-  fetch(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  ingestSnapshot(_snapshot: Snapshot): Promise<void> {
-    return Promise.resolve();
-  }
-
-  subscribe(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  submitOp(_data: any, _source?: any): Promise<void> {
-    return Promise.resolve();
-  }
-
-  remoteChanges(): Observable<any> {
-    return of();
-  }
-
-  destroy(): Promise<void> {
-    return Promise.resolve();
-  }
-}
-
 class MockInteractiveTranslationSession implements InteractiveTranslationSession {
   prefix: string[] = [];
   isLastWordComplete: boolean = true;
@@ -585,7 +547,7 @@ class TestEnvironment {
     }
     delta.insert('\n', { para: { style: 'p' } });
     delta.insert('\n');
-    const doc = new MockRealtimeDoc('text01:' + textType, delta);
+    const doc = new MockRealtimeDoc<DeltaStatic>('rich-text', 'text01:' + textType, delta);
     return new TextData(doc, instance(this.mockedRealtimeOfflineStore));
   }
 }
