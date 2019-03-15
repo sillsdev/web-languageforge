@@ -38,7 +38,7 @@
     </Content>
   </ItemGroup>
 
-  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And (!Exists('$(RealtimeRoot)node_modules') Or '$(NpmInstall)' == 'true')">
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition="('$(Configuration)' == 'Debug' And !Exists('$(RealtimeRoot)node_modules')) Or '$(NpmInstall)' == 'true'">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
