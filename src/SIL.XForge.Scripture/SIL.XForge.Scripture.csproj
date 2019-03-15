@@ -12,6 +12,7 @@
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
     <UserSecretsId>4d0606c3-0fc7-4d76-b43b-236485004e81</UserSecretsId>
     <MachineVersion>2.1.0-21</MachineVersion>
+    <RealtimeRoot>..\SIL.XForge\Realtime\</RealtimeRoot>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,7 +46,7 @@
     </Content>
   </ItemGroup>
 
-  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And (!Exists('$(SpaRoot)node_modules') Or '$(NpmInstall)' == 'true')">
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition="('$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules')) Or '$(NpmInstall)' == 'true'">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
@@ -58,6 +59,7 @@
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(RealtimeRoot)" Command="npm install" />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod" />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr -- --prod" Condition=" '$(BuildServerSideRenderer)' == 'true' " />
 
@@ -67,6 +69,11 @@
       <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+      <RealtimeFiles Include="$(RealtimeRoot)node_modules\**\*" />
+      <ResolvedFileToPublish Include="@(RealtimeFiles)" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>Realtime\node_modules\%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>
     </ItemGroup>
