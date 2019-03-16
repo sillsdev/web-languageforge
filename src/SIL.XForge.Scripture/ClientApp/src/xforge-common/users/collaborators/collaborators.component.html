@@ -1,10 +1,8 @@
-<h2 id="collaborators-label">Collaborators</h2>
 <div class="add-invite-user">
-  <div fxLayout="row" fxLayoutAlign="space-between center" class="text-entry">
+  <div fxLayout="row wrap" fxLayoutAlign="space-between center" class="text-entry">
     <form [formGroup]="userSelectionForm">
       <div mdcMenuSurfaceAnchor #userSearchAnchor>
         <mdc-text-field
-          outlined
           id="user-search"
           formControlName="user"
           label="Search by name, email or phone"
@@ -30,12 +28,11 @@
       <span fxShow fxHide.xs>Add user</span> <span fxHide fxShow.xs>Add</span>
     </button>
   </div>
-  <div fxLayout="row" fxLayoutAlign="space-between center" class="text-entry">
+  <div fxLayout="row wrap" fxLayoutAlign="space-between center" class="text-entry">
     <form [formGroup]="userInviteForm">
       <div mdcMenuSurfaceAnchor #anchor>
         <mdc-form-field>
           <mdc-text-field
-            outlined
             id="email-input"
             formControlName="email"
             label="Email"
@@ -52,7 +49,7 @@
           </mdc-helper-text>
         </mdc-form-field>
         <mdc-menu #inviteError id="invite-error" [anchorElement]="anchor" anchorCorner="bottomStart">
-          <mdc-list> <mdc-list-item>Please use Add for this user</mdc-list-item> </mdc-list>
+          <mdc-list> <mdc-list-item>Please use "Add" for existing users</mdc-list-item> </mdc-list>
         </mdc-menu>
       </div>
     </form>

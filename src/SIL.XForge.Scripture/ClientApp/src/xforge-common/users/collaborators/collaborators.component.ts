@@ -26,7 +26,7 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
     user: new FormControl('')
   });
   userInviteForm = new FormGroup({
-    email: new FormControl('', [Validators.required, XFValidators.email])
+    email: new FormControl('', [XFValidators.email])
   });
 
   private isUserSelected = false;
@@ -42,19 +42,12 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
     super();
   }
 
-  ngOnInit() {
-    this.subscribe(
-      this.userService.onlineSearch(this.searchTerm$, this.parameters$, this.reload$),
-      users => (this.users = users.data)
-    );
-  }
-
   get addDisabled(): boolean {
     return !(this.userSelectionForm.value.user && this.isUserSelected);
   }
 
   get inviteDisabled(): boolean {
-    return this.emailExists || this.userInviteForm.invalid;
+    return this.emailExists || this.userInviteForm.invalid || !this.userInviteForm.value.email;
   }
 
   get usersFound(): boolean {
@@ -68,6 +61,13 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
       return existingUser != null;
     }
     return false;
+  }
+
+  ngOnInit() {
+    this.subscribe(
+      this.userService.onlineSearch(this.searchTerm$, this.parameters$, this.reload$),
+      users => (this.users = users.data)
+    );
   }
 
   async onAdd(): Promise<void> {

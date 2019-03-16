@@ -42,8 +42,6 @@ describe('CollaboratorsComponent', () => {
 
   it('should display error when email is invalid', fakeAsync(() => {
     const env = new TestEnvironment();
-    env.setTextFieldValue(env.emailInput, '');
-    expect(env.component.userInviteForm.controls.email.hasError('required')).toBe(true);
     env.setTextFieldValue(env.emailInput, 'notavalidemail');
     expect(env.component.userInviteForm.controls.email.hasError('email')).toBe(true);
     env.setTextFieldValue(env.emailInput, 'notavalidemail@bad');
@@ -53,7 +51,7 @@ describe('CollaboratorsComponent', () => {
     expect(env.component.inviteError.open).toBe(false);
     env.setTextFieldValue(env.emailInput, 'user01@example.com');
     expect(env.component.inviteError.open).toBe(true);
-    expect(env.menuItemExists(env.inviteMenuElement, 0, 'Please use Add for this user')).toBe(true);
+    expect(env.menuItemExists(env.inviteMenuElement, 0, 'Please use "Add" for existing users')).toBe(true);
   }));
 
   it('should enable invite button', fakeAsync(() => {
