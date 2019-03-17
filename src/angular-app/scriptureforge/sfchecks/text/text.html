@@ -40,11 +40,11 @@
                 <fieldset class="col-md-4">
                     <label class="form-group">Title
                         <input type="text" data-ng-model="questionTitle" class="form-control" maxlength="70"
-                            placeholder="One-line Summary For Title">
+                            placeholder="One-line Summary For Title" dir="auto">
                     </label>
                     <label class="form-group">Question
                         <textarea required data-ng-model="questionDescription" class="form-control" rows="4"
-                              placeholder="The Question"></textarea>
+                              placeholder="The Question" dir="auto"></textarea>
                     </label>
                     <label class="form-group">
                         <input title="A summary title is required for templates"
@@ -71,14 +71,14 @@
     <hr>
     <div class="row">
         <div class="col-md-5" oncopy="return false;">
-            <h2>{{text.title}}</h2>
+            <h2 dir="auto">{{text.title}}</h2>
             <div class="audio-buttons" data-ng-show="text.audioFileName">
                 <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
                     <i class="fa fa-arrow-circle-o-down" title="Download audio"></i>
                 </a>
                 <pui-soundplayer pui-url="audioPlayUrl" title="Play audio"></pui-soundplayer>
             </div>
-            <div id="textcontrol" style="font-family: {{text.fontfamily}}" data-ng-bind-html="text.content"></div>
+            <div id="textcontrol" style="font-family: {{text.fontfamily}}" dir="auto" data-ng-bind-html="text.content"></div>
         </div>
         <div class="col-md-7">
             <listview hide-if-empty="true" search="queryQuestions()"
@@ -95,7 +95,7 @@
                             <!--suppress HtmlFormInputWithoutLabel -->
                             <input type="checkbox" data-ng-show="rights.archive" data-ng-checked="isSelected(question)" data-ng-click="updateSelection($event, question)">
                         </td>
-                        <td>
+                        <td dir="auto">
                             <a data-ng-href="{{question.url}}"><span class="larger-text">{{question.calculatedTitle}}</span></a>
                         </td>
                         <td ng-class="{'text-muted':question.answerCount == 0}">

@@ -35,12 +35,13 @@
                     <div>
                         <div class="form-group">
                             <label>Title
-                                <input class="form-control" required data-ng-model="title" type="text" placeholder="Title">
+                                <input class="form-control" required data-ng-model="title" type="text" placeholder="Title" dir="auto">
                             </label>
                         </div>
                         <div class="form-group">
                             <label>Text
-                                <textarea class="form-control" textdrop data-ng-model="content" rows="4" placeholder="Paste the USX text here"></textarea>
+                                <textarea class="form-control" textdrop data-ng-model="content" rows="4"
+                                          placeholder="Paste the USX text here" dir="auto"></textarea>
                             </label>
                         </div>
                         <div class="form-group">
@@ -108,7 +109,7 @@
                         <input type="checkbox" data-ng-checked="isSelected(text)" data-ng-click="updateSelection($event, text)">
                     </label>
                 </td>
-                <td>
+                <td dir="auto">
                     <a data-ng-href="{{text.url}}"><div class="larger-text">{{text.title}}</div></a>
                 </td>
                 <td ng-class="{'text-muted':text.questionCount == 0}">
