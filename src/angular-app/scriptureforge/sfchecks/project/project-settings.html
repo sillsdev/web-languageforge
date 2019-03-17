@@ -152,9 +152,9 @@
                 <td align="center">
                     <label><input type="checkbox" data-ng-checked="isSelected(template)"
                                   data-ng-click="updateSelection($event, template)"></label></td>
-                <td class="align-middle"><a title="Click to edit this template" data-ng-click="showTemplateEditor(template)">
+                <td class="align-middle" dir="auto"><a title="Click to edit this template" data-ng-click="showTemplateEditor(template)">
                     {{template.title}}</a></td>
-                <td class="align-middle" style="text-overflow: ellipsis">{{template.description}}</td>
+                <td class="align-middle" dir="auto" "text-overflow: ellipsis">{{template.description}}</td>
             </tr>
         </table>
         </listview>
@@ -174,16 +174,14 @@
                     <td data-ng-show="rights.archive">
                         <label><input type="checkbox" data-ng-checked="isSelected(text)"
                                       data-ng-click="updateSelection($event, text)"></label></td>
-                    <td>
+                    <td dir="auto">
                         <a data-ng-href="{{text.url}}">
                             <span class="larger-text">{{text.title}}</span>
                         </a>
                     </td>
-                    <td><a data-ng-href="{{text.url}}">
-                        <div class="attention-block">
-                            <span class="subtitle"><span class="notranslate">{{text.questionCount}}</span> questions</span>
-                        </div>
-                    </a></td>
+                    <td>
+                        <span class="notranslate">{{text.questionCount}}</span> questions
+                    </td>
                     <td><span class="notranslate">{{text.responseCount}}</span> responses</td>
                     <td>Archived on <span class="notranslate">{{text.dateModified | date:'fullDate'}}</span></td>
                 </tr>

@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row text-heading" dir="auto">
     <h2>{{text.title}}</h2>
 </div>
 <div class="row">
@@ -10,26 +10,26 @@
             </a>
             <pui-soundplayer pui-url="audioPlayUrl" title="Play audio"></pui-soundplayer>
         </div>
-        <div id="textcontrol" style="font-family: {{text.fontfamily}}" data-sil-selection data-sil-selected-text="selectedText" content="text.content"></div>
+        <div id="textcontrol" dir="auto" style="font-family: {{text.fontfamily}}" data-sil-selection data-sil-selected-text="selectedText" content="text.content"></div>
     </div>
     <div id="comments" class="col-md-6" data-ng-show="finishedLoading">
         <div class="question">
             <button class="btn btn-std float-right" data-ng-show="rightsEditQuestion()" data-ng-click="toggleQuestionEditor()">
                 <i class="fa fa-cog fa-lg"></i></button>
-            <h2>{{questionTitleCalculated}}</h2>
+            <h2 class="question-heading" dir="auto">{{questionTitleCalculated}}</h2>
             <h4 data-ng-show="questionIsClosed()" style="color: gray; font-style: italic">This question is marked closed</h4>
-            <div>{{question.description}}</div>
+            <div dir="auto">{{question.description}}</div>
             <div class="edit-question" uib-collapse="editQuestionCollapsed">
                 <form class="card">
                     <b>Question Settings</b>
                     <fieldset class="card-body">
                         <label class="form-group">Question
                             <textarea required data-ng-model="editedQuestion.description" class="form-control col-12"
-                                      rows="4" placeholder="The Question"></textarea>
+                                      rows="4" placeholder="The Question" dir="auto"></textarea>
                         </label>
                         <label class="form-group">Title
                             <input type="text" data-ng-model="editedQuestion.title" class="form-control col-12"
-                                   maxlength="35" placeholder="One-line Summary For Title">
+                                   maxlength="35" placeholder="One-line Summary For Title" dir="auto">
                         </label>
                         <label class="form-group">Workflow
                             <select class="form-control custom-select" data-ng-model="editedQuestion.workflowState"
@@ -58,7 +58,7 @@
 
                     <div class="form-group">
                     <textarea required data-ng-model="newAnswer.content" class="newAnswer form-control" id="question-new-answer"
-                              placeholder='Type your answer here. Click "Save Answer" when finished.'></textarea>
+                              placeholder='Type your answer here. Click "Save Answer" when finished.' dir="auto"></textarea>
                     </div>
                     <div data-ng-hide="unreadResponseCount() == 0" class="right badge badge-important">
                         <span class="notranslate">{{unreadResponseCount()}}</span> new response<span data-ng-show="unreadResponseCount() > 1">s</span>
@@ -82,7 +82,7 @@
                         <!--<b>DEBUG:</b>answer = {{answer}}<br>-->
                         <div data-ng-show="answer.textHighlight" data-ng-bind-html="answer.textHighlight"
                              class="scripture-quote"></div>
-                        <div class="answerContent" data-ng-bind-html="answer.content"></div>
+                        <div class="answerContent" dir="auto" data-ng-bind-html="answer.content"></div>
                         <div class="answer-footer">
                             <view-tags class="tag-list" ng-show="$parent.rightsCreateTag()"
                                  tags="answer.tags" on-delete="deletedTags(answer)"
@@ -110,7 +110,7 @@
                             </div>
                             <div data-ng-switch data-on="answerEditorVisible(answerId)">
                                 <form data-ng-submit="editAnswer(editedAnswer)" data-ng-switch-when="true">
-                                    <label><textarea required data-ng-model="editedAnswer.content" class="editAnswer form-control">
+                                    <label><textarea required data-ng-model="editedAnswer.content" class="editAnswer form-control" dir="auto">
                                     </textarea></label>
                                     <button type="submit" class="btn btn-sm btn-primary answerBtn"> <i class="fa fa-check"></i>Save </button>
                                     <a href data-ng-click="hideAnswerEditor()">Cancel</a>
@@ -132,9 +132,9 @@
                         <div class="comments">
                             <div data-ng-repeat="comment in answer.comments">
                                 <div class="comment" data-ng-class="{unread: isUnreadComment(comment.id)}">
-                                    <span class="notranslate">{{comment.content}} -
-                                    {{comment.userRef.username}} -
-                                    {{comment.dateCreated | date:mediumdate}}</span>
+                                    <span class="notranslate">
+                                    <p dir="auto">{{comment.content}}</p>
+                                    {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}</span>
                                     <a href data-ng-show="rightsEditResponse(comment.userRef.userid) && !questionIsClosed()"
                                        data-ng-click="showCommentEditor(comment.id)">edit</a>&nbsp;
                                     <a href data-ng-show="rightsDeleteResponse(comment.userRef.userid) && !questionIsClosed()"
@@ -143,7 +143,7 @@
                                         <form data-ng-submit="editComment(answerId, answer, editedComment)"
                                               data-ng-switch-when="true">
                                             <div class="form-group">
-                                                <label><textarea class="form-control" required data-ng-model="editedComment.content"></textarea></label>
+                                                <label><textarea class="form-control" required data-ng-model="editedComment.content" dir="auto"></textarea></label>
                                                 <button type="submit" class="btn btn-sm btn-primary">Save</button>
                                                 <a href data-ng-click="hideCommentEditor()">Cancel</a>
                                             </div>
@@ -156,7 +156,8 @@
                                     add comment</a>
                                 <div uib-collapse="!collapsed">
                                     <form data-ng-submit="submitComment(answerId, answer); collapsed = !collapsed;">
-                                        <label class="form-group"><textarea class="form-control" required data-ng-model="newComment.content"></textarea></label>
+                                        <label class="form-group"><textarea class="form-control"
+                                            required data-ng-model="newComment.content" dir="auto"></textarea></label>
                                         <button type="submit" class="btn btn-sm btn-primary save-new-comment">Save Comment</button>
                                     </form>
                                 </div>

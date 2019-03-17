@@ -7,12 +7,13 @@
                     <div>
                         <div class="form-group">
                             <label>Title
-                                <input class="form-control" required data-ng-model="editedText.title" type="text" placeholder="Title">
+                                <input class="form-control" required data-ng-model="editedText.title" type="text" placeholder="Title" dir="auto">
                             </label>
                         </div>
                         <div class="form-group">
                             <label>Text
-                                <textarea class="form-control" textdrop data-ng-model="editedText.content" rows="4" placeholder="Paste the USX text here"></textarea>
+                                <textarea class="form-control" textdrop data-ng-model="editedText.content" rows="4"
+                                          placeholder="Paste the USX text here" dir="auto"></textarea>
                             </label>
                         </div>
                         <div class="form-group">
@@ -83,7 +84,7 @@
                              class="details-row" data-ng-class="{active: isSelected(question)}">
                                 <td data-ng-show="rights.archive">
                                     <label><input type="checkbox" data-ng-click="updateSelection($event, question)"></label></td>
-                                <td><a class="col-md-5" data-ng-href="{{question.url}}">
+                                <td dir="auto"><a class="col-md-5" data-ng-href="{{question.url}}">
                                     <span class="larger-text">{{question.calculatedTitle}}</span></a></td>
                                 <td><a data-ng-href="{{question.url}}">
                                         <span class="notranslate">{{question.answerCount}}</span> answers
