@@ -51,7 +51,7 @@ export class SoundController implements angular.IController {
 
   }
 
-  $onChanges(changes: any): void {
+  $onChanges(changes: angular.IOnChangesObject): void {
     const urlChange = changes.puiUrl as angular.IChangesObject<string>;
     if (urlChange != null && urlChange.currentValue) {
       if (this.playing) {
