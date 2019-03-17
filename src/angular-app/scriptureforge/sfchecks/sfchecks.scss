@@ -1,3 +1,8 @@
+body {
+  // Overide text-align: left; in Bootstrap's _reboot.scss, so that dir=auto will work
+  text-align: initial;
+}
+
 .no-margin {
     /* Fix Bootstrap's margins on checkboxes, etc. */
     margin: 0 !important;
@@ -228,4 +233,12 @@ div.new-item.collapse.in {
   margin-top:10px;
   padding: 5px;
   border: #C1DBC1 2px solid;
+}
+
+.text-heading {
+  max-width: 50%;
+}
+
+.question-heading {
+  margin-right: 2em;
 }
