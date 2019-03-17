@@ -179,11 +179,9 @@
                             <span class="larger-text">{{text.title}}</span>
                         </a>
                     </td>
-                    <td><a data-ng-href="{{text.url}}">
-                        <div class="attention-block">
-                            <span class="subtitle"><span class="notranslate">{{text.questionCount}}</span> questions</span>
-                        </div>
-                    </a></td>
+                    <td>
+                        <span class="notranslate">{{text.questionCount}}</span> questions
+                    </td>
                     <td><span class="notranslate">{{text.responseCount}}</span> responses</td>
                     <td>Archived on <span class="notranslate">{{text.dateModified | date:'fullDate'}}</span></td>
                 </tr>
