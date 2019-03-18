@@ -1,5 +1,4 @@
-import { MdcDialog, MdcDialogRef } from '@angular-mdc/web';
-import { OverlayContainer } from '@angular/cdk/overlay';
+import { MdcDialog, MdcDialogRef, OverlayContainer } from '@angular-mdc/web';
 import { Component, Directive, NgModule, ViewChild, ViewContainerRef } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -78,9 +77,7 @@ describe('DeleteAccountDialogComponent', () => {
     dialogRef = dialog.open(DeleteAccountDialogComponent, config);
     component = dialogRef.componentInstance;
     overlayContainer = oc;
-    // TODO (Hasso) 2019.03: before, some magic populated the container element. Now, an empty one is created.
-    // TODO: find a more efficient way of finding the elements needed by tests.
-    overlayContainerElement = oc.getContainerElement().parentElement;
+    overlayContainerElement = oc.getContainerElement();
   }));
 
   afterEach(() => {
@@ -100,20 +97,20 @@ describe('DeleteAccountDialogComponent', () => {
   it('should enable delete button if matching username is entered', fakeAsync(() => {
     const afterCloseCallback = jasmine.createSpy('afterClose callback');
     dialogRef.afterClosed().subscribe(afterCloseCallback);
-    const dialogContainer = overlayContainer.getContainerElement().parentElement.querySelector('mdc-dialog-container');
+    const dialogContainer = overlayContainerElement.querySelector('mdc-dialog-container');
     const btnDelete: HTMLElement = dialogContainer.querySelector('#confirm-delete-button');
     expect(btnDelete.textContent).toContain(DeleteButtonText);
     expect(component.data.name).toEqual(UserName);
     expect(component.deleteDisabled).toBe(true);
     component.userNameEntry.setValue(UserName);
     viewContainerFixture.detectChanges();
-    flush();
+    expect(component.userNameEntry.value).toEqual(UserName);
     expect(component.deleteDisabled).toBe(false);
     btnDelete.click();
     viewContainerFixture.detectChanges();
-    flush();
+    tick();
     expect(afterCloseCallback).toHaveBeenCalledTimes(1);
-    expect(overlayContainer.getContainerElement().parentElement.querySelector('mdc-dialog-container')).toBeNull();
+    expect(overlayContainerElement.querySelector('mdc-dialog-container')).toBeNull();
     flush();
   }));
 });

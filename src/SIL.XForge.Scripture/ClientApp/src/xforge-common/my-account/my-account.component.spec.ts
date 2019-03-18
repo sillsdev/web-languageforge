@@ -1,3 +1,4 @@
+import { MdcDialog, MdcDialogRef } from '@angular-mdc/web';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, NgModule } from '@angular/core';
 import { fakeAsync, flush } from '@angular/core/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -498,31 +499,30 @@ describe('MyAccountComponent', () => {
     }));
 
     it('should bring up a dialog if button is clicked', fakeAsync(() => {
-      when(env.mockedMatDialogRefForDAD.afterClosed()).thenReturn(of('confirmed'));
-      when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForDAD));
+      when(env.mockedMdcDialogRefForDAD.afterClosed()).thenReturn(of('confirmed'));
+      when(env.mockedMdcDialog.open(anything(), anything())).thenReturn(instance(env.mockedMdcDialogRefForDAD));
       expect(env.deleteAccountButton.nativeElement.textContent).toContain('Delete my account');
       env.clickButton(env.deleteAccountButton);
-      verify(env.mockedMatDialog.open(anything(), anything())).once();
+      flush();
+      verify(env.mockedMdcDialog.open(anything(), anything())).once();
     }));
 
     it('should delete account if requested', fakeAsync(() => {
-      when(env.mockedMatDialogRefForDAD.afterClosed()).thenReturn(of('confirmed'));
-      when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForDAD));
+      when(env.mockedMdcDialogRefForDAD.afterClosed()).thenReturn(of('confirmed'));
+      when(env.mockedMdcDialog.open(anything(), anything())).thenReturn(instance(env.mockedMdcDialogRefForDAD));
       env.clickButton(env.deleteAccountButton);
-      env.fixture.detectChanges();
       flush();
-      verify(env.mockedMatDialog.open(anything(), anything())).once();
+      verify(env.mockedMdcDialog.open(anything(), anything())).once();
       verify(env.mockedUserService.onlineDelete(anything())).once();
       expect().nothing();
     }));
 
     it('should not delete account if cancelled', fakeAsync(() => {
-      when(env.mockedMatDialogRefForDAD.afterClosed()).thenReturn(of('cancel'));
-      when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForDAD));
+      when(env.mockedMdcDialogRefForDAD.afterClosed()).thenReturn(of('cancel'));
+      when(env.mockedMdcDialog.open(anything(), anything())).thenReturn(instance(env.mockedMdcDialogRefForDAD));
       env.clickButton(env.deleteAccountButton);
-      env.fixture.detectChanges();
       flush();
-      verify(env.mockedMatDialog.open(anything(), anything())).once();
+      verify(env.mockedMdcDialog.open(anything(), anything())).once();
       verify(env.mockedUserService.onlineDelete(anything())).never();
       expect().nothing();
     }));
@@ -546,8 +546,8 @@ class TestEnvironment {
 
   mockedUserService: UserService;
   mockedParatextService: ParatextService;
-  mockedMatDialog: MatDialog;
-  mockedMatDialogRefForDAD: MatDialogRef<DeleteAccountDialogComponent>;
+  mockedMdcDialog: MdcDialog;
+  mockedMdcDialogRefForDAD: MdcDialogRef<DeleteAccountDialogComponent>;
   mockedNoticeService: NoticeService;
   mockedAuthService: AuthService;
 
@@ -556,8 +556,8 @@ class TestEnvironment {
   constructor(public userInDatabase: User) {
     this.mockedUserService = mock(UserService);
     this.mockedParatextService = mock(ParatextService);
-    this.mockedMatDialog = mock(MatDialog);
-    this.mockedMatDialogRefForDAD = mock(MatDialogRef);
+    this.mockedMdcDialog = mock(MdcDialog);
+    this.mockedMdcDialogRefForDAD = mock(MdcDialogRef);
     this.mockedNoticeService = mock(NoticeService);
     this.mockedAuthService = mock(AuthService);
 
@@ -578,7 +578,7 @@ class TestEnvironment {
       providers: [
         { provide: UserService, useFactory: () => instance(this.mockedUserService) },
         { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
-        { provide: MatDialog, useFactory: () => instance(this.mockedMatDialog) },
+        { provide: MdcDialog, useFactory: () => instance(this.mockedMdcDialog) },
         { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
         { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
       ],
@@ -604,6 +604,7 @@ class TestEnvironment {
 
   /** After calling, flush(); to make the database promise resolve. */
   clickButton(button: DebugElement): void {
+    console.log('clicking btn');
     button.nativeElement.click();
     this.fixture.detectChanges();
   }
