@@ -20,13 +20,17 @@ interface ConnectedData {
   refCount: number;
 }
 
+function serializeRecordIdentity(identity: RecordIdentity): string {
+  return `${identity.type}:${identity.id}`;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class RealtimeService {
   private readonly ws: ReconnectingWebSocket;
   private readonly connection: Connection;
-  private readonly connectedDataMap = new Map<RecordIdentity, ConnectedData>();
+  private readonly connectedDataMap = new Map<string, ConnectedData>();
   private readonly stores = new Map<string, RealtimeOfflineStore>();
 
   constructor(private readonly domainModel: DomainModel, private readonly locationService: LocationService) {
@@ -42,7 +46,8 @@ export class RealtimeService {
   }
 
   connect<T extends RealtimeData>(identity: RecordIdentity): Promise<T> {
-    let connectedData = this.connectedDataMap.get(identity);
+    const key = serializeRecordIdentity(identity);
+    let connectedData = this.connectedDataMap.get(key);
     if (connectedData == null) {
       const sharedbDoc = this.connection.get(underscore(identity.type) + '_data', identity.id);
       const store = this.getStore(identity.type);
@@ -52,17 +57,18 @@ export class RealtimeService {
         realtimeData.subscribe().then(() => resolve(realtimeData), err => reject(err));
       });
       connectedData = { promise, refCount: 0 };
-      this.connectedDataMap.set(identity, connectedData);
+      this.connectedDataMap.set(key, connectedData);
     }
     connectedData.refCount++;
     return connectedData.promise;
   }
 
   disconnect(data: RealtimeData): Promise<void> {
-    const connectedData = this.connectedDataMap.get(data);
+    const key = serializeRecordIdentity(data);
+    const connectedData = this.connectedDataMap.get(key);
     connectedData.refCount--;
     if (connectedData.refCount === 0) {
-      this.connectedDataMap.delete(data);
+      this.connectedDataMap.delete(key);
       return data.dispose();
     }
     return Promise.resolve();
