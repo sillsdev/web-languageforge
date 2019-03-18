@@ -33,3 +33,7 @@
     flex: 1;
   }
 }
+
+as-split.is-disabled > .as-split-gutter .as-split-gutter-icon {
+  background-image: none !important;
+}
