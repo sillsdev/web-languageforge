@@ -29,7 +29,7 @@ export class RemoteStoreSyncStrategy extends ConnectionStrategy {
       // Purge deleted records from the cache when performing a "findRecords" or "findRelatedRecords" query.
       // Potential issues:
       // 1. if filtering or paging is specified on a "findRecords" query, records that no longer match the query but
-      // still exist could be incorrectly the deleted.
+      // still exist could be incorrectly deleted.
       // 2. a record that still exists but is no longer related to the record specified in the "findRelatedRecords"
       // query could be incorrectly deleted.
       //

@@ -2,7 +2,8 @@ import { MDC_DIALOG_DATA, MdcDialogRef } from '@angular-mdc/web';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { Question, VerseRefData } from '../../core/models/question';
+import { Question } from '../../core/models/question';
+import { VerseRefData } from '../../core/models/verse-ref-data';
 import { SFValidators } from '../../shared/sfvalidators';
 
 export interface QuestionDialogData {

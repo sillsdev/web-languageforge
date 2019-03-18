@@ -1,3 +1,4 @@
+/** See https://github.com/ottypes/json0 */
 declare module 'ot-json0' {
   import { OTType } from 'sharedb/lib/client';
 
@@ -5,8 +6,10 @@ declare module 'ot-json0' {
 
   export type OtJson0Op = OtJson0OpNumber | OtJson0OpList | OtJson0OpObject | OtJson0OpSubtype | OtJson0OpString;
 
+  export type OtJson0Path = (string | number)[];
+
   interface OtJson0OpBase {
-    p: (string | number)[];
+    p: OtJson0Path;
   }
 
   interface OtJson0OpNumberAdd extends OtJson0OpBase {
@@ -16,10 +19,10 @@ declare module 'ot-json0' {
   type OtJson0OpNumber = OtJson0OpNumberAdd;
 
   interface OtJson0OpListInsert extends OtJson0OpBase {
-    li: object;
+    li: any;
   }
   interface OtJson0OpListDelete extends OtJson0OpBase {
-    ld: object;
+    ld: any;
   }
   interface OtJson0OpListReplace extends OtJson0OpListDelete, OtJson0OpListInsert {}
   interface OtJson0OpListMove extends OtJson0OpBase {
@@ -29,10 +32,10 @@ declare module 'ot-json0' {
   type OtJson0OpList = OtJson0OpListInsert | OtJson0OpListDelete | OtJson0OpListReplace | OtJson0OpListMove;
 
   interface OtJson0OpObjectInsert extends OtJson0OpBase {
-    oi: object;
+    oi: any;
   }
   interface OtJson0OpObjectDelete extends OtJson0OpBase {
-    od: object;
+    od: any;
   }
   interface OtJson0OpObjectReplace extends OtJson0OpObjectDelete, OtJson0OpObjectInsert {}
 
@@ -40,7 +43,7 @@ declare module 'ot-json0' {
 
   interface OtJson0OpSubtype extends OtJson0OpBase {
     t: string;
-    o: object[];
+    o: any[];
   }
 
   interface OtJson0OpStringInsert extends OtJson0OpBase {

@@ -29,7 +29,8 @@ namespace SIL.XForge.Scripture.Services
             List<TextEntity> texts = await Entities.Query().Where(t => t.ProjectRef == projectId).ToListAsync();
 
             await _realtimeService.DeleteAllAsync("text", GetAllTextDataIds(texts));
-            await _realtimeService.DeleteAllAsync("question", texts.Select(t => t.Id));
+            await _realtimeService.DeleteAllAsync("question", GetAllJsonDataIds(texts));
+            await _realtimeService.DeleteAllAsync("comment", GetAllJsonDataIds(texts));
             await base.DeleteAllAsync(projectId);
         }
 
@@ -41,6 +42,17 @@ namespace SIL.XForge.Scripture.Services
                 {
                     yield return TextEntity.GetTextDataId(text.Id, chapter.Number, TextType.Source);
                     yield return TextEntity.GetTextDataId(text.Id, chapter.Number, TextType.Target);
+                }
+            }
+        }
+
+        private static IEnumerable<string> GetAllJsonDataIds(IEnumerable<TextEntity> texts)
+        {
+            foreach (TextEntity text in texts)
+            {
+                foreach (Chapter chapter in text.Chapters)
+                {
+                    yield return TextEntity.GetJsonDataId(text.Id, chapter.Number);
                 }
             }
         }
