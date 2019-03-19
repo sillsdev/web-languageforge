@@ -1,5 +1,11 @@
 @import '~src/global';
 
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 .toolbar {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -38,14 +44,12 @@
 .text-container {
   display: flex;
   flex-direction: column;
-  flex: 1 1 0;
+  flex: 1;
   position: relative;
 }
 
 app-text {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
+  height: 100%;
 }
 
 .suggestions-menu {

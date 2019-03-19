@@ -1,16 +1,10 @@
 @import '~quill/dist/quill.snow.css';
 
 quill-editor {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  div {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-  }
+  height: 100%;
   .ql-editor {
     line-height: 1.6;
+    width: 100%;
   }
 }
 

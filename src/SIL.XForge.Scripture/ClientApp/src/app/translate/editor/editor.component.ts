@@ -1,6 +1,7 @@
 import { MdcIconButton } from '@angular-mdc/web';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { eq } from '@orbit/utils';
 import {
   InteractiveTranslationSession,
   LatinWordTokenizer,
@@ -11,14 +12,13 @@ import {
   TranslationSuggester
 } from '@sillsdev/machine';
 import Quill, { DeltaStatic, RangeStatic } from 'quill';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, filter, map, skip, switchMap, tap } from 'rxjs/operators';
-import XRegExp from 'xregexp';
-
 import { NoticeService } from 'xforge-common/notice.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { UserService } from 'xforge-common/user.service';
 import { nameof } from 'xforge-common/utils';
+import XRegExp from 'xregexp';
 import { SFProject } from '../../core/models/sfproject';
 import { SFProjectUser, TranslateProjectUserConfig } from '../../core/models/sfproject-user';
 import { Text } from '../../core/models/text';
@@ -28,6 +28,10 @@ import { SFProjectService } from '../../core/sfproject.service';
 import { TextService } from '../../core/text.service';
 import { Segment } from '../../shared/text/segment';
 import { TextComponent } from '../../shared/text/text.component';
+import { TranslateMetricsSession } from './translate-metrics-session';
+
+export const UPDATE_SUGGESTIONS_TIMEOUT = 100;
+export const CONFIDENCE_THRESHOLD_TIMEOUT = 500;
 
 const Delta: new () => DeltaStatic = Quill.import('delta');
 const PUNCT_SPACE_REGEX = XRegExp('^(\\p{P}|\\p{S}|\\p{Cc}|\\p{Z})+$');
@@ -38,13 +42,12 @@ const PUNCT_SPACE_REGEX = XRegExp('^(\\p{P}|\\p{S}|\\p{Cc}|\\p{Z})+$');
   styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent extends SubscriptionDisposable implements OnInit, OnDestroy {
-  @HostBinding('class') classes = 'flex-column flex-grow';
-
   suggestionWords: string[] = [];
   suggestionConfidence: number = 0;
   showSuggestion: boolean = false;
   displaySlider: boolean = false;
   chapters: number[] = [];
+  readonly metricsSession: TranslateMetricsSession;
 
   @ViewChild('source') source: TextComponent;
   @ViewChild('target') target: TextComponent;
@@ -62,8 +65,10 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   private text: Text;
   private sourceLoaded: boolean = false;
   private targetLoaded: boolean = false;
-  private confidenceThresholdSubject: BehaviorSubject<number>;
+  private confidenceThreshold$: BehaviorSubject<number>;
   private _chapter: number;
+  private lastShownSuggestionWords: string[] = [];
+  private readonly segmentUpdated$: Subject<void>;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -77,13 +82,14 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
     const wordTokenizer = new LatinWordTokenizer();
     this.sourceWordTokenizer = wordTokenizer;
     this.targetWordTokenizer = wordTokenizer;
+    this.metricsSession = new TranslateMetricsSession(this.projectService);
 
-    this.confidenceThresholdSubject = new BehaviorSubject<number>(20);
+    this.confidenceThreshold$ = new BehaviorSubject<number>(20);
     this.translationSuggester.confidenceThreshold = 0.2;
     this.subscribe(
-      this.confidenceThresholdSubject.pipe(
+      this.confidenceThreshold$.pipe(
         skip(1),
-        debounceTime(500),
+        debounceTime(CONFIDENCE_THRESHOLD_TIMEOUT),
         map(value => value / 100),
         filter(threshold => threshold !== this.translationSuggester.confidenceThreshold)
       ),
@@ -94,6 +100,9 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
         this.updateUserConfig();
       }
     );
+
+    this.segmentUpdated$ = new Subject<void>();
+    this.subscribe(this.segmentUpdated$.pipe(debounceTime(UPDATE_SUGGESTIONS_TIMEOUT)), () => this.updateSuggestions());
   }
 
   get sourceLabel(): string {
@@ -120,11 +129,11 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   }
 
   get confidenceThreshold(): number {
-    return this.confidenceThresholdSubject.value;
+    return this.confidenceThreshold$.value;
   }
 
   set confidenceThreshold(value: number) {
-    this.confidenceThresholdSubject.next(value);
+    this.confidenceThreshold$.next(value);
   }
 
   get chapter(): number {
@@ -169,6 +178,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
       ),
       r => {
         const prevTextId = this.text == null ? '' : this.text.id;
+        const prevProjectId = this.project == null ? '' : this.project.id;
         this.text = r.data;
         this.project = r.getIncluded(this.text.project);
         this.projectUser = r
@@ -185,7 +195,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
             if (this.translateUserConfig.confidenceThreshold != null) {
               const pcnt = Math.round(this.translateUserConfig.confidenceThreshold * 100);
               this.translationSuggester.confidenceThreshold = pcnt / 100;
-              this.confidenceThresholdSubject.next(pcnt);
+              this.confidenceThreshold$.next(pcnt);
             }
             if (this.translateUserConfig.selectedTextRef === this.text.id) {
               if (this.translateUserConfig.selectedChapter != null && this.translateUserConfig.selectedChapter !== 0) {
@@ -194,8 +204,11 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
             }
           }
           this.changeText();
+        }
 
+        if (this.project.id !== prevProjectId) {
           this.translationEngine = this.projectService.createTranslationEngine(this.project.id);
+          this.metricsSession.start(this.project.id, this.target);
         }
       }
     );
@@ -204,6 +217,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   ngOnDestroy(): void {
     super.ngOnDestroy();
     this.noticeService.loadingFinished();
+    this.metricsSession.dispose();
   }
 
   suggestionsMenuOpened(): void {
@@ -222,6 +236,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
 
   async onTargetUpdated(segment: Segment, delta?: DeltaStatic, prevSegment?: Segment): Promise<void> {
     if (segment !== prevSegment) {
+      this.lastShownSuggestionWords = [];
       this.source.changeSegment(this.target.segmentRef);
       this.syncScroll();
 
@@ -262,13 +277,14 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
           this.insertSuggestionEnd = -1;
           this.target.editor.setSelection(selectIndex, 0, 'user');
         }
-      } else if (this.insertSuggestionEnd !== -1) {
+      }
+      if (this.insertSuggestionEnd !== -1) {
         const selection = this.target.editor.getSelection();
         if (selection == null || selection.length > 0 || selection.index !== this.insertSuggestionEnd) {
           this.insertSuggestionEnd = -1;
         }
       }
-      this.updateSuggestions();
+      this.segmentUpdated$.next();
       this.syncScroll();
     }
   }
@@ -287,7 +303,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
     }
   }
 
-  insertSuggestion(suggestionIndex: number = -1): void {
+  insertSuggestion(suggestionIndex: number, event: Event): void {
     if (suggestionIndex >= this.suggestionWords.length) {
       return;
     }
@@ -312,11 +328,14 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
       insertText = ' ' + insertText;
     }
     delta.insert(insertText);
+    this.showSuggestion = false;
 
     const selectIndex = range.index + insertText.length;
     this.insertSuggestionEnd = selectIndex;
     this.target.editor.updateContents(delta, 'user');
     this.target.editor.setSelection(selectIndex, 0, 'user');
+
+    this.metricsSession.onSuggestionAccepted(event);
   }
 
   private changeText(): void {
@@ -399,6 +418,10 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
           const suggestion = this.translationSuggester.getSuggestion(prefix.length, isLastWordComplete, result);
           this.suggestionWords = suggestion.targetWordIndices.map(j => result.targetSegment[j]);
           this.suggestionConfidence = suggestion.confidence;
+          if (this.suggestionWords.length > 0 && !eq(this.lastShownSuggestionWords, this.suggestionWords)) {
+            this.metricsSession.onSuggestionShown();
+            this.lastShownSuggestionWords = this.suggestionWords;
+          }
         }
       }
     }

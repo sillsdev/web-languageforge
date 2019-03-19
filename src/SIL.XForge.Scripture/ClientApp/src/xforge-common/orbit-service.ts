@@ -4,8 +4,6 @@ import Coordinator, { LogTruncationStrategy } from '@orbit/coordinator';
 import { Schema, SchemaSettings } from '@orbit/data';
 import IndexedDBSource from '@orbit/indexeddb';
 import IndexedDBBucket from '@orbit/indexeddb-bucket';
-import { ObjectId } from 'bson';
-
 import { XForgeJSONAPISource } from './jsonapi/xforge-jsonapi-source';
 import { LocationService } from './location.service';
 import { XForgeStore } from './store/xforge-store';
@@ -15,6 +13,7 @@ import { RemoteStoreSyncStrategy } from './strategies/remote-store-sync-strategy
 import { StoreBackupSyncStrategy } from './strategies/store-backup-sync-strategy';
 import { StoreRemoteQueryStrategy } from './strategies/store-remote-query-strategy';
 import { StoreRemoteUpdateStrategy } from './strategies/store-remote-update-strategy';
+import { objectId } from './utils';
 
 const STORE = 'store';
 const REMOTE = 'remote';
@@ -58,7 +57,7 @@ export class OrbitService {
     const schemaDef = await this.http
       .get<SchemaSettings>(`${NAMESPACE}/schema`, { headers: { 'Content-Type': 'application/json' } })
       .toPromise();
-    schemaDef.generateId = () => new ObjectId().toHexString();
+    schemaDef.generateId = () => objectId();
     this._schema = new Schema(schemaDef);
 
     this.bucket = new IndexedDBBucket({
@@ -123,6 +122,10 @@ export class OrbitService {
   }
 
   resourceUrl(type: string, id?: string): string {
-    return this.remote.resourceURL(type, id);
+    let url = this.remote.resourceURL(type, id);
+    if (url.startsWith(this.locationService.origin)) {
+      url = url.substring(this.locationService.origin.length + 1);
+    }
+    return url;
   }
 }

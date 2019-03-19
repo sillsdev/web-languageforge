@@ -1,7 +1,7 @@
 <div class="loading-indicator" *ngIf="isLoading"><span></span> <span></span> <span></span></div>
 <div *ngIf="!isLoading">
   <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" class="ql-suggest">
-    <a id="words-link" [routerLink]="" (click)="selectAll()" [ngStyle]="suggestionStyle">{{ words.join(" ") }}</a>
+    <a id="words-link" [routerLink]="" (click)="selectAll($event)" [ngStyle]="suggestionStyle">{{ words.join(" ") }}</a>
     <span
       ><small class="text-muted">{{ confidencePercentage }}%</small></span
     ><a class="help-icon" [routerLink]="" (click)="toggleHelp()"><mdc-icon>info</mdc-icon></a>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Extensions.Options;
@@ -16,14 +17,17 @@ namespace SIL.XForge.Controllers
     /// </summary>
     public abstract class ProjectsRpcController<T> : RpcControllerBase where T : ProjectEntity
     {
+        private readonly IRepository<T> _projects;
         private readonly IRepository<UserEntity> _users;
         private readonly IEmailService _emailService;
         private readonly IOptions<SiteOptions> _siteOptions;
 
         protected ProjectsRpcController(IUserAccessor userAccessor, IHttpRequestAccessor httpRequestAccessor,
-            IRepository<UserEntity> users, IEmailService emailService, IOptions<SiteOptions> siteOptions)
+            IRepository<T> projects, IRepository<UserEntity> users, IEmailService emailService,
+            IOptions<SiteOptions> siteOptions)
             : base(userAccessor, httpRequestAccessor)
         {
+            _projects = projects;
             _users = users;
             _emailService = emailService;
             _siteOptions = siteOptions;
@@ -70,6 +74,11 @@ namespace SIL.XForge.Controllers
                 await _emailService.SendEmailAsync(email, subject, body);
                 return "joined";
             }
+        }
+
+        protected Task<bool> IsAuthorizedAsync()
+        {
+            return _projects.Query().AnyAsync(p => p.Id == ResourceId && p.Users.Any(pu => pu.UserRef == User.UserId));
         }
 
         private async Task<bool> CreateInvitedUserAccount(string email)

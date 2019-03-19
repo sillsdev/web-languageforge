@@ -4,3 +4,9 @@
   width: 100%;
   display: flex;
 }
+
+app-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}

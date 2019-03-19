@@ -9,6 +9,7 @@ import { MachineHttpClient } from './machine-http-client';
 import { SFProject } from './models/sfproject';
 import { ProjectRole, SFProjectRoles } from './models/sfproject-roles';
 import { Text } from './models/text';
+import { TranslateMetrics } from './models/translate-metrics';
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +32,9 @@ export class SFProjectService extends ProjectService<SFProject> {
     return this.jsonApiService
       .getAllRelated<Text>(this.identity(id), nameof<SFProject>('texts'))
       .pipe(map(r => r.data));
+  }
+
+  addTranslateMetrics(id: string, metrics: TranslateMetrics): Promise<void> {
+    return this.jsonApiService.onlineInvoke(this.identity(id), 'addTranslateMetrics', { metrics });
   }
 }

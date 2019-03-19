@@ -1,19 +1,25 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 import Quill from 'quill';
-
+import { fromEvent } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { TextComponent } from '../../shared/text/text.component';
+
+export interface SuggestionSelectedEvent {
+  index: number;
+  event: Event;
+}
 
 @Component({
   selector: 'app-suggestion',
   templateUrl: './suggestion.component.html',
   styleUrls: ['./suggestion.component.scss']
 })
-export class SuggestionComponent extends SubscriptionDisposable implements OnInit, AfterViewInit, OnDestroy {
+export class SuggestionComponent extends SubscriptionDisposable implements AfterViewInit {
   @Input() words: string[] = [];
   @Input() confidence: number;
   @Input() text: TextComponent;
-  @Output() selected = new EventEmitter<number>();
+  @Output() selected = new EventEmitter<SuggestionSelectedEvent>();
 
   showHelp: boolean = false;
 
@@ -62,45 +68,26 @@ export class SuggestionComponent extends SubscriptionDisposable implements OnIni
     return document.body;
   }
 
-  ngOnInit(): void {
-    const modules = {
-      keyboard: { bindings: {} }
-    };
-    for (let i = -1; i < 9; i++) {
-      const numKey = (i + 1).toString();
-      modules.keyboard.bindings['insertSuggestion' + numKey] = {
-        key: numKey,
-        shortKey: true,
-        handler: () => this.selected.emit(i)
-      };
-    }
-    this.text.modules = modules;
-  }
-
   ngAfterViewInit(): void {
     if (this.editor.root === this.editor.scrollingContainer) {
-      this.editor.root.addEventListener('scroll', this.onScroll);
+      this.subscribe(fromEvent(this.editor.root, 'scroll'), () => this.updateVisibility());
     }
+    this.subscribe(
+      fromEvent<KeyboardEvent>(this.editor.root, 'keydown').pipe(filter(event => this.isSelectSuggestionEvent(event))),
+      event => this.selected.emit({ index: parseInt(event.key, 10) - 1, event })
+    );
+    this.subscribe(fromEvent(window, 'resize'), () => this.setPosition());
     this.subscribe(this.text.updated, () => this.setPosition());
     this.show = false;
-  }
-
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
-    if (this.editor.root === this.editor.scrollingContainer) {
-      this.editor.root.removeEventListener('scroll', this.onScroll);
-    }
   }
 
   toggleHelp(): void {
     this.showHelp = !this.showHelp;
   }
 
-  selectAll(): void {
-    this.selected.emit(-1);
+  selectAll(event: Event): void {
+    this.selected.emit({ index: -1, event });
   }
-
-  private readonly onScroll = () => this.updateVisibility();
 
   private setPosition(): void {
     const selection = this.editor.getSelection();
@@ -148,5 +135,13 @@ export class SuggestionComponent extends SubscriptionDisposable implements OnIni
       this.root.style.marginTop = marginTop + 'px';
       this.root.style.visibility = '';
     }
+  }
+
+  private isSelectSuggestionEvent(event: KeyboardEvent): boolean {
+    if (event.key.length !== 1) {
+      return false;
+    }
+    const keyCode = event.key.charCodeAt(0);
+    return (event.ctrlKey || event.metaKey) && (keyCode >= 48 && keyCode <= 57);
   }
 }

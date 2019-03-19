@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 new CamelCaseElementNameConvention(),
                 new ObjectRefConvention(),
                 new EnumRepresentationConvention(BsonType.String),
-                new IgnoreIfNullConvention(true));
+                new IgnoreIfDefaultConvention(true));
 
             DataAccessClassMap.RegisterClass<Entity>(cm =>
             {

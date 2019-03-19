@@ -2,15 +2,14 @@ import { MdcDialog, MdcDialogConfig } from '@angular-mdc/web';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { clone } from '@orbit/utils';
-import { ObjectId } from 'bson';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-
 import { getJsonDataIdStr, JsonDataId } from 'xforge-common/models/json-data';
 import { UserRef } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { UserService } from 'xforge-common/user.service';
+import { objectId } from 'xforge-common/utils';
 import { Question, QuestionSource } from '../../core/models/question';
 import { QuestionData } from '../../core/models/question-data';
 import { ScrVers } from '../../core/models/scripture/scr-vers';
@@ -226,7 +225,7 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
         } else {
           id = new JsonDataId(this.textFromBook(verseStart.book).id, verseStart.chapterNum);
           const questionData = await this.questionService.connect(id);
-          newQuestion.id = new ObjectId().toHexString();
+          newQuestion.id = objectId();
           newQuestion.owner = new UserRef(this.userService.currentUserId);
           newQuestion.project = new SFProjectRef(this.projectId);
           newQuestion.source = QuestionSource.Created;

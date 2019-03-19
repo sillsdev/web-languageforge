@@ -41,7 +41,7 @@
     title="Swap source and target"
   ></button>
 </div>
-<div [fxLayout]="isTargetTextRight ? 'row' : 'row-reverse'" class="flex-grow" fxLayoutGap="5px">
+<div [fxLayout]="isTargetTextRight ? 'row' : 'row-reverse'" fxFlex="1 1 0%" fxLayoutGap="5px">
   <div class="text-area">
     <div mdcSubtitle1>{{ sourceLabel }}</div>
     <div class="text-container">
@@ -69,7 +69,7 @@
         [words]="suggestionWords"
         [confidence]="suggestionConfidence"
         [text]="target"
-        (selected)="insertSuggestion($event)"
+        (selected)="insertSuggestion($event.index, $event.event)"
       ></app-suggestion>
     </div>
   </div>
