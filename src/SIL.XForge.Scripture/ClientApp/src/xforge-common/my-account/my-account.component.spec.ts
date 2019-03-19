@@ -221,7 +221,8 @@ describe('MyAccountComponent', () => {
     );
   }));
 
-  it('handles network error for non-text inputs', fakeAsync(() => {
+  // TODO SF-178: include this test after SMS notification is implemented
+  xit('handles network error for toggle buttons', fakeAsync(() => {
     const technicalDetails = 'squirrel chewed thru line. smoke lost.';
     when(env.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).thenReject({ stack: technicalDetails });
 
@@ -356,7 +357,8 @@ describe('MyAccountComponent', () => {
     });
   });
 
-  describe('contactMethod restrictions', () => {
+  // TODO SF-178: include this test after SMS notification is implemented
+  xdescribe('contactMethod restrictions', () => {
     it('cannot select email if no email address is set', fakeAsync(() => {
       env.userInDatabase.email = '';
       env.userInDatabase.contactMethod = 'sms';
