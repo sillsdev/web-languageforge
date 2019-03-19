@@ -264,6 +264,50 @@ describe('MyAccountComponent', () => {
     });
   }));
 
+  it('handles network error for comboboxes', fakeAsync(() => {
+    const technicalDetails = 'squirrel chewed thru line. smoke lost.';
+    when(env.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).thenReject({ stack: technicalDetails });
+
+    const originalvalue = env.component.userFromDatabase.gender;
+    expect(env.component.formGroup.get('gender').value).toBe(originalvalue, 'test setup problem');
+
+    // change value on page
+    const newValue = 'Male';
+    expect(originalvalue).not.toEqual(newValue, 'test set up wrong');
+    env.component.formGroup.get('gender').setValue(newValue);
+    env.fixture.detectChanges();
+
+    // TODO?: env.clickButton(env.genderToggle('Male'));
+    env.clickButton(env.genderCombo);
+    expect(env.component.formGroup.get('gender').value).toEqual(newValue, 'test setup problem');
+
+    verifyStates(env, 'gender', {
+      state: env.component.elementState.Submitting,
+      spinner: true,
+      greenCheck: false,
+      errorIcon: false,
+      inputEnabled: false
+    });
+
+    // Time passes
+    flush();
+    env.fixture.detectChanges();
+    expect(env.component.userFromDatabase.gender).toEqual(originalvalue, 'test setup problem?');
+
+    expect(env.component.formGroup.get('gender').value).toEqual(
+      originalvalue,
+      'should have set form value back to original value'
+    );
+
+    verifyStates(env, 'gender', {
+      state: env.component.elementState.Error,
+      spinner: false,
+      greenCheck: false,
+      errorIcon: true,
+      inputEnabled: true
+    });
+  }));
+
   describe('validation', () => {
     it('error if email address removed', fakeAsync(() => {
       expect(env.component.userFromDatabase.email.length).toBeGreaterThan(3, 'test not set up');
@@ -632,6 +676,10 @@ class TestEnvironment {
   }
 
   contactMethodToggle(toggleName: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`mat-button-toggle[value="${toggleName}"]`));
+  }
+
+  genderCombo(itemName: string): DebugElement {
     return this.fixture.debugElement.query(By.css(`mat-button-toggle[value="${toggleName}"]`));
   }
 

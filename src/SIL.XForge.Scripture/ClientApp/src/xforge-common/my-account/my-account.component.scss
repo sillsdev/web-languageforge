@@ -16,7 +16,7 @@
   color: green;
 }
 
-mat-card button {
+mdc-card button {
   left: 1em;
 }
 
@@ -24,8 +24,13 @@ mat-card button {
   color: red;
 }
 
-.delete-account mat-card {
+.delete-account mdc-card {
   border: 2px solid red;
+  padding: 1em;
+  h2 {
+    font-weight: normal;
+    margin: 0;
+  }
   #delete-account-button {
     color: red;
     // Help button stay within the card border
@@ -47,7 +52,7 @@ mat-card button {
   margin-bottom: 1em;
 }
 
-mat-divider {
+mdc-divider {
   margin-top: 1em;
   margin-bottom: 1em;
 }

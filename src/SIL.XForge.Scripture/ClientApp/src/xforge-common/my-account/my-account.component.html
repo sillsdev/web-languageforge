@@ -13,7 +13,8 @@
               [disabled]="
                 controlStates.get('name') !== elementState.Dirty && controlStates.get('name') !== elementState.Error
               "
-              mat-stroked-button
+              mdc-button
+              [outlined]="true"
               (click)="updateClicked('name')"
             >
               <mat-spinner
@@ -53,7 +54,12 @@
             <span id="last-login">Last login {{ timeSinceLastLogin }} ago</span>
           </div>
           <div fxLayoutAlign="end stretch">
-            <button id="my-account-change-password-btn" mat-stroked-button [routerLink]="['/change-password']">
+            <button
+              id="my-account-change-password-btn"
+              mdc-button
+              [outlined]="true"
+              [routerLink]="['/change-password']"
+            >
               <i class="material-icons">edit</i> Change password
             </button>
           </div>
@@ -81,7 +87,8 @@
                   controlStates.get('email') !== elementState.Error) ||
                 controlStates.get('email') === elementState.Invalid
               "
-              mat-stroked-button
+              mdc-button
+              [outlined]="true"
               (click)="updateClicked('email')"
             >
               <mat-spinner
@@ -131,7 +138,8 @@
                 controlStates.get('mobilePhone') !== elementState.Dirty &&
                 controlStates.get('mobilePhone') !== elementState.Error
               "
-              mat-stroked-button
+              mdc-button
+              [outlined]="true"
               (click)="updateClicked('mobilePhone')"
             >
               <mat-spinner
@@ -293,7 +301,7 @@
           </div>
         </div>
         <div *ngIf="!isLinkedToParatext" id="paratext-link" class="linked-paratext">
-          <button mat-stroked-button id="connect-paratext-button" (click)="logInWithParatext()">
+          <button mdc-button [outlined]="true" id="connect-paratext-button" (click)="logInWithParatext()">
             <i class="material-icons">link</i> Connect to Paratext
           </button>
         </div>
@@ -311,13 +319,13 @@
           <label
             ><strong>{{ googleUsername }}</strong></label
           >
-          <button mat-stroked-button id="unlink-google-button class="unlink-button" (click)="deleteGoogleLink()">
+          <button mdc-button [outlined]="true" id="unlink-google-button class="unlink-button" (click)="deleteGoogleLink()">
             <i class="material-icons">clear</i> <span fxHide.lt-md>Remove link</span>
           </button>
         </div>
       </div>
       <div *ngIf="!isLinkedToGoogle" id="google-link" class="linked-google">
-        <button mat-stroked-button><i class="material-icons">link</i> Connect to Google</button>
+        <button mdc-button [outlined]="true"><i class="material-icons">link</i> Connect to Google</button>
       </div>
       --></div>
     </form>
@@ -331,19 +339,17 @@
 
   <div fxLayout="column" fxLayoutAlign="space-between stretch" id="delete-account" class="delete-account">
     <h2>Delete account</h2>
-    <mat-card>
-      <mat-card-title>Delete my account ({{ userName }})</mat-card-title>
-      <mat-card-content>
+    <mdc-card>
+      <h2>Delete my account ({{ userName }})</h2>
+      <div>
         <p>Once you delete your account, there is no going back. Please be certain.</p>
         <p><strong>You will lose access to your projects.</strong></p>
-      </mat-card-content>
-      <mat-card-actions>
-        <div fxLayout="row" fxLayoutAlign="end stretch">
-          <button mat-stroked-button (click)="openDeleteAccountDialog()" id="delete-account-button">
-            Delete my account
-          </button>
-        </div>
-      </mat-card-actions>
-    </mat-card>
+      </div>
+      <mdc-card-actions fxLayout="row" fxLayoutAlign="end stretch">
+        <button mdc-button [outlined]="true" (click)="openDeleteAccountDialog()" id="delete-account-button">
+          Delete my account
+        </button>
+      </mdc-card-actions>
+    </mdc-card>
   </div>
 </div>
