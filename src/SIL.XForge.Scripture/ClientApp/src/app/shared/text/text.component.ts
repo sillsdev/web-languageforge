@@ -2,13 +2,14 @@ import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } 
 import { deepMerge, eq } from '@orbit/utils';
 import Quill, { DeltaStatic, RangeStatic, Sources } from 'quill';
 import { Subscription } from 'rxjs';
-
 import { TextData, TextDataId } from '../../core/models/text-data';
 import { TextService } from '../../core/text.service';
 import { registerScripture } from './quill-scripture';
 import { Segment } from './segment';
 import { Segmenter } from './segmenter';
 import { UsxSegmenter } from './usx-segmenter';
+
+const Delta: new () => DeltaStatic = Quill.import('delta');
 
 const EDITORS = new Set<Quill>();
 
@@ -261,6 +262,12 @@ export class TextComponent implements OnDestroy {
     if (source === 'user') {
       this.textData.submit(delta, this._editor);
     }
+
+    // skip updating when only formatting changes occurred
+    if (delta.ops.every(op => op.retain != null)) {
+      return;
+    }
+
     this.update(delta);
   }
 
@@ -372,7 +379,14 @@ export class TextComponent implements OnDestroy {
           this.updateUsxSegmentFormat(ref, range);
         }
       } else if (this._segment != null) {
-        this.updateUsxSegmentFormat(this._segment.ref, this._segment.range);
+        if (this.updateUsxSegmentFormat(this._segment.ref, this._segment.range)) {
+          // if the segment is no longer blank, ensure that the selection is at the end of the segment.
+          // Sometimes after typing in a blank segment, the selection will be at the beginning. This seems to be a bug
+          // in Quill.
+          Promise.resolve().then(() =>
+            this.editor.setSelection(this._segment.range.index + this._segment.range.length, 0, 'user')
+          );
+        }
       }
     }
 
@@ -411,21 +425,25 @@ export class TextComponent implements OnDestroy {
     }
   }
 
-  private updateUsxSegmentFormat(ref: string, range: RangeStatic): void {
+  private updateUsxSegmentFormat(ref: string, range: RangeStatic): boolean {
     const text = this._editor.getText(range.index, range.length);
 
     if (text === '' && range.length === 0) {
       // insert blank
       const type = ref.includes('/p') ? 'initial' : 'normal';
-      this._editor.insertEmbed(range.index, 'blank', type, 'user');
-      range = { index: range.index, length: 1 };
+      const delta = new Delta();
+      delta.retain(range.index);
+      delta.insert({ blank: type }, { segment: ref });
+      this._editor.updateContents(delta, 'user');
+    } else {
+      const formats = this._editor.getFormat(range.index, range.length);
+      if (formats.segment == null) {
+        // add segment format if missing
+        this._editor.formatText(range.index, range.length, 'segment', ref, 'user');
+        return true;
+      }
     }
-
-    const formats = this._editor.getFormat(range.index, range.length);
-    if (formats.segment == null) {
-      // add segment format if missing
-      this._editor.formatText(range.index, range.length, 'segment', ref, 'user');
-    }
+    return false;
   }
 
   private toggleHighlight(range: RangeStatic, value: boolean): void {

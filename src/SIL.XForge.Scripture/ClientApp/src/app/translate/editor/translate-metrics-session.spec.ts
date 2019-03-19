@@ -1,0 +1,398 @@
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { QuillModule } from 'ngx-quill';
+import Quill, { DeltaStatic } from 'quill';
+import { anything, deepEqual, instance, mock, objectContaining, resetCalls, verify, when } from 'ts-mockito';
+import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
+import { TextData, TextDataId } from '../../core/models/text-data';
+import { SFProjectService } from '../../core/sfproject.service';
+import { TextService } from '../../core/text.service';
+import { MockRealtimeDoc } from '../../shared/models/mock-realtime-doc';
+import { TextComponent } from '../../shared/text/text.component';
+import {
+  ACTIVE_EDIT_TIMEOUT,
+  EDIT_TIMEOUT,
+  SEND_METRICS_INTERVAL,
+  TranslateMetricsSession
+} from './translate-metrics-session';
+
+describe('TranslateMetricsSession', () => {
+  describe('edit', () => {
+    it('start with edit keystroke', fakeAsync(() => {
+      const env = new TestEnvironment();
+      env.session.start('project01', env.component);
+
+      env.keyPress('ArrowRight');
+      expect(env.session.metrics.type).toBe('navigate');
+      expect(env.session.metrics.keyNavigationCount).toBe(1);
+
+      env.keyPress('a');
+      verify(
+        env.mockedSFProjectService.addTranslateMetrics(
+          'project01',
+          deepEqual({
+            id: env.session.prevMetricsId,
+            type: 'navigate',
+            sessionId: env.session.id,
+            keyNavigationCount: 1
+          })
+        )
+      ).once();
+      env.keyPress('Backspace');
+      env.keyPress('b');
+      env.keyPress('Delete');
+      tick(ACTIVE_EDIT_TIMEOUT);
+      expect(env.session.metrics.type).toBe('edit');
+      expect(env.session.metrics.timeEditActive).toBeDefined();
+      expect(env.session.metrics.keyCharacterCount).toBe(2);
+      expect(env.session.metrics.keyBackspaceCount).toBe(1);
+      expect(env.session.metrics.keyDeleteCount).toBe(1);
+
+      env.session.dispose();
+    }));
+
+    it('start with accepted suggestion', fakeAsync(() => {
+      const env = new TestEnvironment();
+      env.session.start('project01', env.component);
+
+      env.mouseClick();
+      env.showSuggestion();
+      expect(env.session.metrics.type).toBe('navigate');
+      expect(env.session.metrics.mouseClickCount).toBe(1);
+
+      env.mouseClick();
+      env.showSuggestion();
+      expect(env.session.metrics.type).toBe('navigate');
+      expect(env.session.metrics.mouseClickCount).toBe(2);
+
+      env.clickSuggestion();
+      verify(
+        env.mockedSFProjectService.addTranslateMetrics(
+          'project01',
+          deepEqual({
+            id: env.session.prevMetricsId,
+            type: 'navigate',
+            sessionId: env.session.id,
+            mouseClickCount: 2
+          })
+        )
+      ).once();
+      env.keyPress('a');
+      tick(ACTIVE_EDIT_TIMEOUT);
+      expect(env.session.metrics.type).toBe('edit');
+      expect(env.session.metrics.timeEditActive).toBeDefined();
+      expect(env.session.metrics.keyCharacterCount).toBe(1);
+      expect(env.session.metrics.mouseClickCount).toBe(1);
+      expect(env.session.metrics.suggestionTotalCount).toBe(1);
+      expect(env.session.metrics.suggestionAcceptedCount).toBe(1);
+
+      env.session.dispose();
+    }));
+
+    it('navigate keystroke', fakeAsync(() => {
+      const env = new TestEnvironment();
+      env.session.start('project01', env.component);
+
+      env.keyPress('a');
+      verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
+      tick(ACTIVE_EDIT_TIMEOUT);
+      expect(env.session.metrics.type).toBe('edit');
+      expect(env.session.metrics.timeEditActive).toBeDefined();
+      expect(env.session.metrics.keyCharacterCount).toBe(1);
+
+      env.keyPress('ArrowRight');
+      verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
+      expect(env.session.metrics.type).toBe('edit');
+      expect(env.session.metrics.keyNavigationCount).toBe(1);
+
+      env.session.dispose();
+    }));
+
+    it('mouse click', fakeAsync(() => {
+      const env = new TestEnvironment();
+      env.session.start('project01', env.component);
+
+      env.keyPress('a');
+      verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
+      tick(ACTIVE_EDIT_TIMEOUT);
+      expect(env.session.metrics.type).toBe('edit');
+      expect(env.session.metrics.timeEditActive).toBeDefined();
+      expect(env.session.metrics.keyCharacterCount).toBe(1);
+
+      env.mouseClick();
+      verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
+      expect(env.session.metrics.type).toBe('edit');
+      expect(env.session.metrics.mouseClickCount).toBe(1);
+
+      env.session.dispose();
+    }));
+
+    it('timeout', fakeAsync(() => {
+      const env = new TestEnvironment();
+      env.session.start('project01', env.component);
+
+      env.keyPress('a');
+      tick(ACTIVE_EDIT_TIMEOUT);
+      expect(env.session.metrics.type).toBe('edit');
+      expect(env.session.metrics.timeEditActive).toBeDefined();
+      expect(env.session.metrics.keyCharacterCount).toBe(1);
+
+      tick(EDIT_TIMEOUT);
+      verify(
+        env.mockedSFProjectService.addTranslateMetrics(
+          'project01',
+          objectContaining({
+            id: env.session.prevMetricsId,
+            type: 'edit',
+            sessionId: env.session.id,
+            keyCharacterCount: 1
+          })
+        )
+      ).once();
+
+      env.keyPress('b');
+      tick(ACTIVE_EDIT_TIMEOUT);
+      expect(env.session.metrics.type).toBe('edit');
+      expect(env.session.metrics.timeEditActive).toBeDefined();
+      expect(env.session.metrics.keyCharacterCount).toBe(1);
+
+      env.session.dispose();
+    }));
+
+    it('segment change', fakeAsync(() => {
+      const env = new TestEnvironment();
+      env.session.start('project01', env.component);
+
+      env.keyPress('a');
+      tick(ACTIVE_EDIT_TIMEOUT);
+      expect(env.session.metrics.type).toBe('edit');
+      expect(env.session.metrics.timeEditActive).toBeDefined();
+      expect(env.session.metrics.keyCharacterCount).toBe(1);
+
+      env.component.segmentRef = 'verse_1_2';
+      env.fixture.detectChanges();
+      tick();
+      verify(
+        env.mockedSFProjectService.addTranslateMetrics(
+          'project01',
+          objectContaining({
+            id: env.session.prevMetricsId,
+            type: 'edit',
+            sessionId: env.session.id,
+            keyCharacterCount: 1
+          })
+        )
+      ).once();
+      expect(env.session.metrics.type).toBe('navigate');
+
+      env.session.dispose();
+    }));
+  });
+
+  describe('navigate', () => {
+    it('navigate keystroke', fakeAsync(() => {
+      const env = new TestEnvironment();
+      env.session.start('project01', env.component);
+
+      env.keyPress('ArrowRight');
+      env.keyPress('ArrowLeft');
+      expect(env.session.metrics.type).toBe('navigate');
+      expect(env.session.metrics.keyNavigationCount).toBe(2);
+
+      env.session.dispose();
+    }));
+
+    it('mouse click', fakeAsync(() => {
+      const env = new TestEnvironment();
+      env.session.start('project01', env.component);
+
+      env.mouseClick();
+      env.mouseClick();
+      expect(env.session.metrics.type).toBe('navigate');
+      expect(env.session.metrics.mouseClickCount).toBe(2);
+
+      env.session.dispose();
+    }));
+
+    it('segment change', fakeAsync(() => {
+      const env = new TestEnvironment();
+      env.session.start('project01', env.component);
+
+      env.keyPress('ArrowDown');
+      env.mouseClick();
+      expect(env.session.metrics.type).toBe('navigate');
+      expect(env.session.metrics.keyNavigationCount).toBe(1);
+      expect(env.session.metrics.mouseClickCount).toBe(1);
+
+      env.component.segmentRef = 'verse_1_2';
+      env.fixture.detectChanges();
+      tick();
+      verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
+      expect(env.session.metrics.type).toBe('navigate');
+
+      env.keyPress('ArrowDown');
+      env.mouseClick();
+      expect(env.session.metrics.type).toBe('navigate');
+      expect(env.session.metrics.keyNavigationCount).toBe(2);
+      expect(env.session.metrics.mouseClickCount).toBe(2);
+
+      env.session.dispose();
+    }));
+  });
+
+  it('dispose', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.session.start('project01', env.component);
+
+    env.keyPress('ArrowRight');
+    env.keyPress('ArrowLeft');
+    expect(env.session.metrics.type).toBe('navigate');
+    expect(env.session.metrics.keyNavigationCount).toBe(2);
+    verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
+
+    const sessionId = env.session.id;
+    const metricsId = env.session.metrics.id;
+    env.session.dispose();
+    verify(
+      env.mockedSFProjectService.addTranslateMetrics(
+        'project01',
+        deepEqual({
+          id: metricsId,
+          type: 'navigate',
+          sessionId: sessionId,
+          keyNavigationCount: 2
+        })
+      )
+    ).once();
+  }));
+
+  it('periodic send', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.session.start('project01', env.component);
+
+    env.keyPress('ArrowRight');
+    env.keyPress('ArrowLeft');
+    expect(env.session.metrics.type).toBe('navigate');
+    expect(env.session.metrics.keyNavigationCount).toBe(2);
+    verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
+
+    tick(SEND_METRICS_INTERVAL);
+    verify(
+      env.mockedSFProjectService.addTranslateMetrics(
+        'project01',
+        deepEqual({
+          id: env.session.metrics.id,
+          type: 'navigate',
+          sessionId: env.session.id,
+          keyNavigationCount: 2
+        })
+      )
+    ).once();
+
+    resetCalls(env.mockedSFProjectService);
+    env.mouseClick();
+    expect(env.session.metrics.type).toBe('navigate');
+    expect(env.session.metrics.mouseClickCount).toBe(1);
+    verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
+
+    tick(SEND_METRICS_INTERVAL);
+    verify(
+      env.mockedSFProjectService.addTranslateMetrics(
+        'project01',
+        deepEqual({
+          id: env.session.metrics.id,
+          type: 'navigate',
+          sessionId: env.session.id,
+          keyNavigationCount: 2,
+          mouseClickCount: 1
+        })
+      )
+    ).once();
+
+    env.session.dispose();
+  }));
+});
+
+const Delta: new () => DeltaStatic = Quill.import('delta');
+
+class TestEnvironment {
+  readonly component: TextComponent;
+  readonly fixture: ComponentFixture<TextComponent>;
+  readonly session: TranslateMetricsSession;
+
+  readonly mockedSFProjectService = mock(SFProjectService);
+  readonly mockedTextService = mock(TextService);
+  readonly mockedRealtimeOfflineStore = mock(RealtimeOfflineStore);
+
+  constructor() {
+    this.addTextData(new TextDataId('text01', 1, 'target'));
+    when(this.mockedSFProjectService.addTranslateMetrics('project01', anything())).thenResolve();
+
+    TestBed.configureTestingModule({
+      declarations: [TextComponent],
+      imports: [QuillModule],
+      providers: [{ provide: TextService, useFactory: () => instance(this.mockedTextService) }]
+    });
+    this.fixture = TestBed.createComponent(TextComponent);
+    this.component = this.fixture.componentInstance;
+    this.component.id = new TextDataId('text01', 1, 'target');
+    this.component.segmentRef = 'verse_1_1';
+    this.session = new TranslateMetricsSession(instance(this.mockedSFProjectService));
+
+    this.fixture.detectChanges();
+    tick();
+  }
+
+  keyPress(key: string): void {
+    const keydownEvent: any = document.createEvent('CustomEvent');
+    keydownEvent.key = key;
+    keydownEvent.ctrlKey = false;
+    keydownEvent.metaKey = false;
+    keydownEvent.initEvent('keydown', true, true);
+    this.component.editor.root.dispatchEvent(keydownEvent);
+
+    const keyupEvent: any = document.createEvent('CustomEvent');
+    keyupEvent.key = key;
+    keyupEvent.ctrlKey = false;
+    keyupEvent.metaKey = false;
+    keyupEvent.initEvent('keyup', true, true);
+    this.component.editor.root.dispatchEvent(keyupEvent);
+  }
+
+  mouseClick(): void {
+    const mousedownEvent: any = document.createEvent('CustomEvent');
+    mousedownEvent.initEvent('mousedown', true, true);
+    this.component.editor.root.dispatchEvent(mousedownEvent);
+
+    const mouseupEvent: any = document.createEvent('CustomEvent');
+    mouseupEvent.initEvent('mouseup', true, true);
+    this.component.editor.root.dispatchEvent(mouseupEvent);
+  }
+
+  showSuggestion(): void {
+    this.session.onSuggestionShown();
+  }
+
+  clickSuggestion(): void {
+    this.mouseClick();
+    const clickEvent: any = document.createEvent('CustomEvent');
+    clickEvent.initEvent('click', true, true);
+    this.component.editor.root.dispatchEvent(clickEvent);
+    this.session.onSuggestionAccepted(clickEvent);
+  }
+
+  private addTextData(id: TextDataId): void {
+    when(this.mockedTextService.connect(deepEqual(id))).thenResolve(this.createTextData(id));
+  }
+
+  private createTextData(id: TextDataId): TextData {
+    const delta = new Delta();
+    delta.insert({ chapter: id.chapter }, { chapter: { style: 'c' } });
+    delta.insert({ verse: 1 }, { verse: { style: 'v' } });
+    delta.insert(`${id.textType}: chapter ${id.chapter}, verse 1.`, { segment: `verse_${id.chapter}_1` });
+    delta.insert({ verse: 2 }, { verse: { style: 'v' } });
+    delta.insert(`${id.textType}: chapter ${id.chapter}, verse 2.`, { segment: `verse_${id.chapter}_2` });
+    delta.insert('\n', { para: { style: 'p' } });
+    const doc = new MockRealtimeDoc<DeltaStatic>('rich-text', id.toString(), delta);
+    return new TextData(doc, instance(this.mockedRealtimeOfflineStore));
+  }
+}

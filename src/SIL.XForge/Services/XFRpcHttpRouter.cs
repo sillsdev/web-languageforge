@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
 using EdjCase.JsonRpc.Router;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Routing;
 
 namespace SIL.XForge.Services
@@ -25,6 +27,10 @@ namespace SIL.XForge.Services
             if (!context.HttpContext.Request.Path.Value.EndsWith($"/{XForgeConstants.CommandsEndpoint}"))
                 return;
 
+            AuthenticateResult result = await context.HttpContext.AuthenticateAsync(
+                JwtBearerDefaults.AuthenticationScheme);
+            if (result.Succeeded)
+                context.HttpContext.User = result.Principal;
             await _internalRouter.RouteAsync(context);
         }
     }

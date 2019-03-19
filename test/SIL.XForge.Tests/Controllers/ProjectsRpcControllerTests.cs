@@ -63,6 +63,15 @@ namespace SIL.XForge.Controllers
                 userAccessor.Name.Returns("User");
                 var httpRequestAccessor = Substitute.For<IHttpRequestAccessor>();
 
+                Projects = new MemoryRepository<TestProjectEntity>(new[]
+                {
+                    new TestProjectEntity
+                    {
+                        Id = "project01",
+                        ProjectName = "Project 1"
+                    }
+                });
+
                 Users = new MemoryRepository<UserEntity>(
                     uniqueKeySelectors: new Func<UserEntity, object>[]
                     {
@@ -87,11 +96,12 @@ namespace SIL.XForge.Controllers
 
                 EmailService = Substitute.For<IEmailService>();
 
-                Controller = new TestProjectsRpcController(userAccessor, httpRequestAccessor, Users, EmailService,
-                    options);
+                Controller = new TestProjectsRpcController(userAccessor, httpRequestAccessor, Projects, Users,
+                    EmailService, options);
             }
 
             public TestProjectsRpcController Controller { get; }
+            public MemoryRepository<TestProjectEntity> Projects { get; }
             public MemoryRepository<UserEntity> Users { get; }
             public IEmailService EmailService { get; }
         }

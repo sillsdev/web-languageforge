@@ -16,7 +16,6 @@ import {
 import Quill, { DeltaStatic } from 'quill';
 import { BehaviorSubject, of } from 'rxjs';
 import { anything, deepEqual, instance, mock, resetCalls, verify, when } from 'ts-mockito';
-
 import { MapQueryResults } from 'xforge-common/json-api.service';
 import { UserRef } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
@@ -33,7 +32,7 @@ import { SFProjectService } from '../../core/sfproject.service';
 import { TextService } from '../../core/text.service';
 import { MockRealtimeDoc } from '../../shared/models/mock-realtime-doc';
 import { SharedModule } from '../../shared/shared.module';
-import { EditorComponent } from './editor.component';
+import { CONFIDENCE_THRESHOLD_TIMEOUT, EditorComponent, UPDATE_SUGGESTIONS_TIMEOUT } from './editor.component';
 import { SuggestionComponent } from './suggestion.component';
 
 describe('EditorComponent', () => {
@@ -48,6 +47,7 @@ describe('EditorComponent', () => {
     expect(env.component.target.segmentRef).toBe('');
     const selection = env.component.target.editor.getSelection();
     expect(selection).toBeNull();
+    env.dispose();
   }));
 
   it('start with previously selected segment', fakeAsync(() => {
@@ -62,6 +62,7 @@ describe('EditorComponent', () => {
     expect(selection.length).toBe(0);
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
     expect(env.component.showSuggestion).toBe(false);
+    env.dispose();
   }));
 
   it('select non-blank segment', fakeAsync(() => {
@@ -84,6 +85,8 @@ describe('EditorComponent', () => {
     verify(env.mockedSFProjectUserService.update(anything())).once();
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
     expect(env.component.showSuggestion).toBe(false);
+
+    env.dispose();
   }));
 
   it('select blank segment', fakeAsync(() => {
@@ -105,6 +108,8 @@ describe('EditorComponent', () => {
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
     expect(env.component.showSuggestion).toBe(true);
     expect(env.component.suggestionWords).toEqual(['target']);
+
+    env.dispose();
   }));
 
   it('selection not at end of incomplete segment', fakeAsync(() => {
@@ -119,6 +124,8 @@ describe('EditorComponent', () => {
     expect(env.component.target.segmentRef).toBe('verse_1_5');
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
     expect(env.component.showSuggestion).toBe(false);
+
+    env.dispose();
   }));
 
   it('selection at end of incomplete segment', fakeAsync(() => {
@@ -134,6 +141,8 @@ describe('EditorComponent', () => {
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
     expect(env.component.showSuggestion).toBe(true);
     expect(env.component.suggestionWords).toEqual(['verse', '5']);
+
+    env.dispose();
   }));
 
   it('insert suggestion in non-blank segment', fakeAsync(() => {
@@ -146,6 +155,8 @@ describe('EditorComponent', () => {
     env.insertSuggestion();
     expect(env.component.target.segmentText).toBe('target: chapter 1, verse 5');
     expect(env.component.showSuggestion).toBe(false);
+
+    env.dispose();
   }));
 
   it('insert space when typing character after inserting a suggestion', fakeAsync(() => {
@@ -169,6 +180,8 @@ describe('EditorComponent', () => {
     selection = env.component.target.editor.getSelection();
     expect(selection.index).toBe(selectionIndex + 2);
     expect(selection.length).toBe(0);
+
+    env.dispose();
   }));
 
   it('insert space when inserting a suggestion after inserting a previous suggestion', fakeAsync(() => {
@@ -190,6 +203,8 @@ describe('EditorComponent', () => {
     selection = env.component.target.editor.getSelection();
     expect(selection.index).toBe(selectionIndex + 2);
     expect(selection.length).toBe(0);
+
+    env.dispose();
   }));
 
   it('do not insert space when typing punctuation after inserting a suggestion', fakeAsync(() => {
@@ -213,6 +228,8 @@ describe('EditorComponent', () => {
     selection = env.component.target.editor.getSelection();
     expect(selection.index).toBe(selectionIndex + 1);
     expect(selection.length).toBe(0);
+
+    env.dispose();
   }));
 
   it('train a modified segment after selecting a different segment', fakeAsync(() => {
@@ -230,6 +247,8 @@ describe('EditorComponent', () => {
     env.waitForSuggestion();
     expect(env.component.target.segmentRef).toBe('verse_1_1');
     expect(env.lastApprovedPrefix).toEqual(['target', ':', 'chapter', '1', ',', 'verse', '5']);
+
+    env.dispose();
   }));
 
   it('do not train an unmodified segment after selecting a different segment', fakeAsync(() => {
@@ -252,6 +271,8 @@ describe('EditorComponent', () => {
     env.waitForSuggestion();
     expect(env.component.target.segmentRef).toBe('verse_1_1');
     expect(env.lastApprovedPrefix).toEqual([]);
+
+    env.dispose();
   }));
 
   it('change texts', fakeAsync(() => {
@@ -275,6 +296,8 @@ describe('EditorComponent', () => {
     expect(env.component.textName).toBe('Book 1');
     expect(env.component.target.segmentRef).toBe('verse_1_1');
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
+
+    env.dispose();
   }));
 
   it('change chapters', fakeAsync(() => {
@@ -298,6 +321,8 @@ describe('EditorComponent', () => {
     env.waitForSuggestion();
     expect(env.component.target.segmentRef).toBe('verse_1_1');
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
+
+    env.dispose();
   }));
 
   it('update confidence threshold', fakeAsync(() => {
@@ -311,6 +336,7 @@ describe('EditorComponent', () => {
     env.waitForSuggestion();
     expect(env.component.confidenceThreshold).toBe(50);
     expect(env.component.showSuggestion).toBe(true);
+    tick(10000);
 
     resetCalls(env.mockedSFProjectUserService);
     env.clickSuggestionsMenuButton();
@@ -324,6 +350,8 @@ describe('EditorComponent', () => {
     expect(env.component.confidenceThreshold).toBe(40);
     verify(env.mockedSFProjectUserService.update(anything())).once();
     expect(env.component.showSuggestion).toBe(true);
+
+    env.dispose();
   }));
 });
 
@@ -406,17 +434,17 @@ class TestEnvironment {
 
   lastApprovedPrefix: string[] = [];
 
-  private readonly paramsSubject: BehaviorSubject<Params>;
+  private readonly params$: BehaviorSubject<Params>;
 
   constructor() {
-    this.paramsSubject = new BehaviorSubject<Params>({ projectId: 'project01', textId: 'text01' });
+    this.params$ = new BehaviorSubject<Params>({ projectId: 'project01', textId: 'text01' });
     this.addTextData(new TextDataId('text01', 1, 'source'));
     this.addTextData(new TextDataId('text01', 1, 'target'));
     this.addTextData(new TextDataId('text01', 2, 'source'));
     this.addTextData(new TextDataId('text01', 2, 'target'));
     this.addTextData(new TextDataId('text02', 1, 'source'));
     this.addTextData(new TextDataId('text02', 1, 'target'));
-    when(this.mockedActivatedRoute.params).thenReturn(this.paramsSubject);
+    when(this.mockedActivatedRoute.params).thenReturn(this.params$);
     when(this.mockedUserService.currentUserId).thenReturn('user01');
     when(this.mockedSFProjectService.get('project01')).thenReturn(of());
     when(this.mockedSFProjectService.createTranslationEngine('project01')).thenReturn(
@@ -426,6 +454,7 @@ class TestEnvironment {
       (_n: number, segment: string[]) =>
         Promise.resolve(new MockInteractiveTranslationSession(segment, prefix => (this.lastApprovedPrefix = prefix)))
     );
+    when(this.mockedSFProjectService.addTranslateMetrics('project01', anything())).thenResolve();
 
     TestBed.configureTestingModule({
       declarations: [EditorComponent, SuggestionComponent],
@@ -499,7 +528,7 @@ class TestEnvironment {
     this.fixture.detectChanges();
     tick();
     this.fixture.detectChanges();
-    tick();
+    tick(UPDATE_SUGGESTIONS_TIMEOUT);
     this.fixture.detectChanges();
   }
 
@@ -509,11 +538,8 @@ class TestEnvironment {
       wordsLink.nativeElement.click();
     } else {
       const keydownEvent: any = document.createEvent('CustomEvent');
-      keydownEvent.which = 48 + i;
+      keydownEvent.key = i.toString();
       keydownEvent.ctrlKey = true;
-      keydownEvent.altKey = false;
-      keydownEvent.metaKey = false;
-      keydownEvent.shiftKey = false;
       keydownEvent.initEvent('keydown', true, true);
       this.component.target.editor.root.dispatchEvent(keydownEvent);
     }
@@ -530,12 +556,16 @@ class TestEnvironment {
   updateConfidenceThresholdSlider(value: number): void {
     const slider = this.confidenceThresholdSlider.componentInstance as MdcSlider;
     slider.setValue(value, true);
-    tick(500);
+    tick(CONFIDENCE_THRESHOLD_TIMEOUT);
     this.waitForSuggestion();
   }
 
   updateParams(params: Params): void {
-    this.paramsSubject.next(params);
+    this.params$.next(params);
+  }
+
+  dispose(): void {
+    this.component.metricsSession.dispose();
   }
 
   private addTextData(id: TextDataId): void {
