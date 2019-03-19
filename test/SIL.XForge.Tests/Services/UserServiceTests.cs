@@ -18,6 +18,7 @@ namespace SIL.XForge.Services
     [TestFixture]
     public class UserServiceTests
     {
+        private const string ParatextUserId = "paratextuser01";
         private const string User01Id = "user01";
         private const string User02Id = "user02";
         private const string User01Email = "user01@example.com";
@@ -160,6 +161,9 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
+                Assert.That(initialEntity.Username, Is.Not.EqualTo("new"));
+
                 env.SetUser(User01Id, SystemRoles.User);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
@@ -177,13 +181,14 @@ namespace SIL.XForge.Services
                         await env.Service.UpdateAsync(resource.Id, resource);
                     });
 
-                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden));
+                Assert.That(ex.GetStatusCode(), Is.EqualTo(StatusCodes.Status403Forbidden),
+                    "should be forbidden to update others' accounts");
 
                 resource.Id = User01Id;
                 UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
 
                 Assert.That(updatedResource, Is.Not.Null);
-                Assert.That(updatedResource.Username, Is.EqualTo("new"));
+                Assert.That(updatedResource.Username, Is.EqualTo("new"), "should be permitted to update own account");
             }
         }
 
@@ -192,6 +197,9 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                UserEntity initialEntity = await env.Service.GetEntityAsync(User02Id);
+                Assert.That(initialEntity.Username, Is.Not.EqualTo("new"));
+
                 env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
@@ -241,6 +249,9 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
+                Assert.That(initialEntity.CanonicalEmail, Is.Not.EqualTo("new@example.com"));
+
                 env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
@@ -290,6 +301,9 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
+                Assert.That(initialEntity.ContactMethod, Is.Not.EqualTo(UserEntity.ContactMethods.emailSms));
+
                 env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                 {
@@ -314,6 +328,9 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
+                CollectionAssert.IsEmpty(initialEntity.Sites);
+
                 env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
@@ -375,7 +392,11 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
-                env.SetUser("paratextuser01", SystemRoles.User);
+                UserEntity initialEntity = await env.Service.GetEntityAsync(ParatextUserId);
+                Assert.That(initialEntity.ParatextId, Is.Not.Empty);
+                Assert.That(initialEntity.ParatextTokens, Is.Not.Null);
+
+                env.SetUser(ParatextUserId, SystemRoles.User);
 
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                 {
@@ -385,14 +406,14 @@ namespace SIL.XForge.Services
 
                 var resource = new UserResource
                 {
-                    Id = "paratextuser01",
+                    Id = ParatextUserId,
                     ParatextId = null,
                 };
                 UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
                 Assert.That(updatedResource, Is.Not.Null);
                 Assert.That(updatedResource.ParatextId, Is.Null);
                 // Unsetting the paratext-id should also unset paratext tokens
-                UserEntity paratextUser = await env.Service.GetEntityAsync("paratextuser01");
+                UserEntity paratextUser = await env.Service.GetEntityAsync(ParatextUserId);
                 Assert.That(paratextUser.ParatextTokens, Is.Null);
             }
         }
@@ -428,7 +449,7 @@ namespace SIL.XForge.Services
                         User01Id,
                         User02Id,
                         "user03",
-                        "paratextuser01"
+                        ParatextUserId
                     }));
             }
         }
@@ -602,8 +623,8 @@ namespace SIL.XForge.Services
                     },
                     new UserEntity
                     {
-                        Id = "paratextuser01",
-                        Username = "paratextuser01",
+                        Id = ParatextUserId,
+                        Username = ParatextUserId,
                         Email = "paratextuser01@example.com",
                         CanonicalEmail = "paratextuser01@example.com",
                         ParatextId = "paratextuser01id",
