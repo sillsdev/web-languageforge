@@ -9,6 +9,7 @@ import { SystemAdministrationComponent } from 'xforge-common/system-administrati
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ProjectComponent } from './project/project.component';
+import { ScriptureChooserDialogComponent } from './scripture-chooser-dialog/scripture-chooser-dialog.component';
 import { SFAdminAuthGuard } from './shared/sfadmin-auth.guard';
 import { StartComponent } from './start/start.component';
 import { SyncComponent } from './sync/sync.component';
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'projects/:projectId/sync', component: SyncComponent, canActivate: [SFAdminAuthGuard] },
   { path: 'projects/:projectId', component: ProjectComponent, canActivate: [AuthGuard] },
   { path: 'projects', component: StartComponent, canActivate: [AuthGuard] },
+  { path: 'scripture-chooser-dialog', component: ScriptureChooserDialogComponent, canActivate: [AuthGuard] },
   { path: 'system-administration', component: SystemAdministrationComponent, canActivate: [SystemAdminAuthGuard] },
   { path: 'identity', loadChildren: '../identity/identity.module#IdentityModule' }
 ];

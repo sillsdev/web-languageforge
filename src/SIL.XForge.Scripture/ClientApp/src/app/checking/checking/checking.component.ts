@@ -1,8 +1,11 @@
+import { MdcDialog, MdcDialogConfig } from '@angular-mdc/web';
 import { Component, ElementRef, HostBinding, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SplitComponent } from 'angular-split';
 import { switchMap } from 'rxjs/operators';
 
+import { VerseRefData } from 'src/app/core/models/verse-ref-data';
+import { ScriptureChooserDialogComponent } from 'src/app/scripture-chooser-dialog/scripture-chooser-dialog.component';
 import { Resource } from 'xforge-common/models/resource';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { nameof } from 'xforge-common/utils';
@@ -93,10 +96,15 @@ export class CheckingComponent extends SubscriptionDisposable {
   answersPanelContainerElement: ElementRef;
   textDataId: TextDataId;
   chapters: number[] = [];
+  favoriteVerse: VerseRefData = {};
 
   private _chapter: number;
 
-  constructor(private activatedRoute: ActivatedRoute, private textService: TextService) {
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private textService: TextService,
+    private readonly dialog: MdcDialog
+  ) {
     super();
     this.subscribe(
       this.activatedRoute.params.pipe(
@@ -140,6 +148,16 @@ export class CheckingComponent extends SubscriptionDisposable {
   private get minAnswerPanelHeight(): number {
     // Add 1 extra percentage to allow for gutter (slider toggle) height eating in to calculated space requested
     return Math.ceil((this.answerPanelElementHeight / this.splitContainerElementHeight) * 100) + 1;
+  }
+
+  openScriptureChooser(verseToHighlight: VerseRefData) {
+    const config: MdcDialogConfig = { data: verseToHighlight };
+    const dialogRef = this.dialog.open(ScriptureChooserDialogComponent, config);
+    dialogRef.afterClosed().subscribe((result: VerseRefData) => {
+      if (result !== null) {
+        this.favoriteVerse = result;
+      }
+    });
   }
 
   applyFontChange(fontSize: string) {

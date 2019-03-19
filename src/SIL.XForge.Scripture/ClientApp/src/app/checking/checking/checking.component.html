@@ -23,6 +23,9 @@
         </div>
       </div>
     </div>
+    <div (click)="openScriptureChooser(favoriteVerse)">
+      Favourite verse: {{ favoriteVerse.book }} {{ favoriteVerse.chapter }}:{{ favoriteVerse.verse }}
+    </div>
     <div class="col" id="text-panel">
       <div class="flex-max" id="scripture-panel">
         <div class="panel">

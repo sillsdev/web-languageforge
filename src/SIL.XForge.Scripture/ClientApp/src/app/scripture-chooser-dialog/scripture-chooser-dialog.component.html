@@ -1,0 +1,54 @@
+<mdc-card>
+  <div id="bookPane" *ngIf="showing === 'books'">
+    <div flexLayout="start center">
+      <button mdcIconButton id="backout-button" (click)="clickBackoutButton($event)"><mdc-icon>close</mdc-icon></button>
+      <span>Choose book</span>
+    </div>
+    <div flexLayout="start start" (click)="clickBook($event)">
+      <button *ngFor="let book of otBooks" mdc-button [primary]="input?.book === book">{{ book }}</button>
+    </div>
+    <br />
+    <div flexLayout="start start" (click)="clickBook($event)">
+      <button *ngFor="let book of ntBooks" mdc-button [primary]="input?.book === book">{{ book }}</button>
+    </div>
+  </div>
+
+  <div id="chapterPane" *ngIf="showing === 'chapters'">
+    <div flexLayout="start center">
+      <button mdcIconButton id="backout-button" (click)="clickBackoutButton($event)">
+        <mdc-icon>arrow_back</mdc-icon>
+      </button>
+      <span>Choose chapter</span>
+    </div>
+    <div class="reference">
+      <!-- TODO use full book name rather than 3-character abbreviation -->
+      {{ selection.book }}
+    </div>
+    <div flexLayout="start start" (click)="clickChapter($event)">
+      <button
+        *ngFor="let chapter of chapters"
+        mdc-button
+        [primary]="input?.book === selection?.book && +input?.chapter === +chapter"
+      >
+        {{ chapter }}
+      </button>
+    </div>
+  </div>
+  <div id="versePane" *ngIf="showing === 'verses'">
+    <div flexLayout="start center">
+      <button mdcIconButton id="backout-button" (click)="clickBackoutButton($event)">
+        <mdc-icon>arrow_back</mdc-icon></button
+      ><span>Choose verse</span>
+    </div>
+    <div class="reference">{{ selection.book }} {{ selection.chapter }}</div>
+    <div flexLayout="start start" (click)="clickVerse($event)">
+      <button
+        *ngFor="let verse of verses"
+        mdc-button
+        [primary]="input?.book === selection?.book && input?.chapter === selection?.chapter && +input?.verse === +verse"
+      >
+        {{ verse }}
+      </button>
+    </div>
+  </div>
+</mdc-card>
