@@ -131,7 +131,6 @@ export class MP3Encoder {
     // Flatten the buffer array while converting it from Float32 to Int16
     const pcmData = new Int16Array(this.buffer.length * this.buffer[0].length);
 
-    const gain = 10;
     // max and min 16-bit values
     const max = 0x7FFF;
     const min = 0x8000;
@@ -139,7 +138,7 @@ export class MP3Encoder {
     for (let i = 0, len1 = this.buffer.length; i < len1; ++i) {
       const chunk = this.buffer[i];
       for (let j = 0, len2 = chunk.length; j < len2; ++j) {
-        pcmData[index] = chunk[j] < 0 ? Math.max(-min, chunk[j] * gain * min) : Math.min(max, chunk[j] * gain * max);
+        pcmData[index] = chunk[j] < 0 ? chunk[j] * min : chunk[j] * max;
         ++index;
       }
     }
