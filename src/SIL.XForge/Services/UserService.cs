@@ -106,6 +106,10 @@ namespace SIL.XForge.Services
                         update.Unset(u => u.ParatextTokens);
                     }
                     break;
+                case nameof(UserResource.ContactMethod):
+                    Enum.TryParse((string) value, true, out UserEntity.ContactMethods method);
+                    update.Set(u => u.ContactMethod, method);
+                    break;
                 case nameof(UserResource.Site):
                     SiteOptions siteOptions = _siteOptions.Value;
                     string site = siteOptions.Origin.Authority;

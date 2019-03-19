@@ -116,6 +116,46 @@ namespace SIL.XForge.Services
         }
 
         [Test]
+        public async Task CreateAsync_ContactMethod()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
+
+                var userResource = new UserResource
+                {
+                    Id = "usernew",
+                    MobilePhone = "+1 234 567 8900",
+                    ContactMethod = "sms"
+                };
+                UserResource newResource = await env.Service.CreateAsync(userResource);
+
+                Assert.That(newResource, Is.Not.Null);
+                Assert.That(newResource.ContactMethod, Is.EqualTo(UserEntity.ContactMethods.sms.ToString()));
+            }
+        }
+
+        [Test]
+        public async Task CreateAsync_ContactMethod_Default()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
+
+                var userResource = new UserResource
+                {
+                    Id = "usernew",
+                    MobilePhone = "+1 234 567 8900"
+                };
+                UserResource newResource = await env.Service.CreateAsync(userResource);
+
+                Assert.That(newResource, Is.Not.Null);
+                Assert.That(newResource.ContactMethod, Is.EqualTo(UserEntity.ContactMethods.email.ToString()),
+                    "should be default");
+            }
+        }
+
+        [Test]
         public async Task UpdateAsync_UserRole()
         {
             using (var env = new TestEnvironment())
@@ -242,6 +282,30 @@ namespace SIL.XForge.Services
                 var exception = Assert.ThrowsAsync<JsonApiException>(
                     () => env.Service.UpdateAsync(resource.Id, resource));
                 Assert.That(exception.GetStatusCode(), Is.EqualTo(StatusCodes.Status409Conflict));
+            }
+        }
+
+        [Test]
+        public async Task UpdateAsync_ContactMethod()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                {
+                    {env.GetAttribute("contact-method"), "emailSms"}
+                });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+
+                var resource = new UserResource
+                {
+                    Id = User01Id,
+                    ContactMethod = "emailSms"
+                };
+                UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.ContactMethod, Is.EqualTo(UserEntity.ContactMethods.emailSms.ToString()));
             }
         }
 

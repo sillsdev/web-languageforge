@@ -33,7 +33,6 @@ namespace SIL.XForge.Identity.Controllers
         private const string TestResetPasswordKey = "jGc6Qe4i1kgM+aA4LVczTJwfHx2YuDR9";
         private const string TestUserEmail = "abc@fakegmail.com";
         private const string TestReturnUrl = "http://localhost:5000/projects";
-        private const string ShowMessageKey = "showMessage";
 
         [Test]
         public async Task LogIn_CorrectPassword()
@@ -246,6 +245,20 @@ namespace SIL.XForge.Identity.Controllers
                 Arg.Any<AuthenticationProperties>());
         }
 
+
+        [Test]
+        public async Task SignUp_DefaultContactMethodIsEmail()
+        {
+            var env = new TestEnvironment();
+            Assert.That(env.Users.Query().All(x => UserEntity.ContactMethods.email.Equals(x.ContactMethod)),
+                "Test fixture setup problem");
+
+            string result = await env.Controller.SignUp("Test Sample Name", "password1234", "testeremail@gmail.com");
+
+            Assert.That(result, Is.EqualTo("success"));
+            Assert.That(env.Users.Query().All(x => UserEntity.ContactMethods.email.Equals(x.ContactMethod)),
+                "should be default");
+        }
         [Test]
         public async Task SignUp_DuplicateEmailOrUserRejected()
         {
