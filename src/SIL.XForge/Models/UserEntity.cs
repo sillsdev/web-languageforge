@@ -7,6 +7,13 @@ namespace SIL.XForge.Models
 {
     public class UserEntity : Entity
     {
+        public enum ContactMethods
+        {
+            email,
+            emailSms,
+            sms
+        }
+
         public static string CanonicalizeEmail(string email)
         {
             return email?.ToLowerInvariant();
@@ -39,7 +46,7 @@ namespace SIL.XForge.Models
         public string ParatextId { get; set; }
         public Tokens ParatextTokens { get; set; }
         public string MobilePhone { get; set; }
-        public string ContactMethod { get; set; }
+        public ContactMethods ContactMethod { get; set; }
         public DateTime Birthday { get; set; }
         public string Gender { get; set; }
         public Dictionary<string, Site> Sites { get; set; } = new Dictionary<string, Site>();
