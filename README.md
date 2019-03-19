@@ -161,6 +161,12 @@ Or just run tests once without monitoring with
 src/SIL.XForge.Scripture/ClientApp/test-headless.sh
 ```
 
+You can filter the tests to compile and run by passing spec file names as arguments. For example,
+
+```bash
+src/SIL.XForge.Scripture/ClientApp/monitor-test-headless.sh some.component.spec.ts another.component.spec.ts
+```
+
 #### Debugging Unit Tests
 The best way to debug Angular unit tests is with Chromium.
 * Run as usual or with `ng test --sourceMap=true`.
@@ -171,7 +177,7 @@ The best way to debug Angular unit tests is with Chromium.
 [This video](https://youtu.be/NVqplMyOZTM) has a live demo of the process.
 
 #### Filtering Unit Tests
-To run (or not to run) specific tests or fixtures, you can use the prefixes `f`ocus and e`x`clude, as in `fdescribe` or `fit` to run only the specified functions, or `xdescribe` and `xit` to skip running the specified functions (but all functions will still be built). To skip building extra tests, modify the filter in `src/SIL.XForge.Scripture/ClientApp/src/tests.ts` per [these instructions](https://stackoverflow.com/a/50636750/3587084).
+To run (or not to run) specific tests or fixtures, you can use the prefixes `f`ocus and e`x`clude, as in `fdescribe` or `fit` to run only the specified functions, or `xdescribe` and `xit` to skip running the specified functions (but all functions will still be built). To skip building extra tests, modify the filter in `src/SIL.XForge.Scripture/ClientApp/src/test.ts` per [these instructions](https://stackoverflow.com/a/50636750/3587084).
 
 See documentation for [running tests](https://github.com/angular/angular-cli/wiki/test) and [writing tests](https://angular.io/guide/testing#testing).
 
