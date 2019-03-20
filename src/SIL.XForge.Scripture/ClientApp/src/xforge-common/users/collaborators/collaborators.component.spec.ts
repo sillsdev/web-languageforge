@@ -1,5 +1,6 @@
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import { combineLatest, Observable } from 'rxjs';
+import { ActivatedRoute, Params } from '@angular/router';
+import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
@@ -45,13 +46,13 @@ describe('CollaboratorsComponent', () => {
     env.setTextFieldValue(env.emailInput, 'notavalidemail');
     expect(env.component.userInviteForm.controls.email.hasError('email')).toBe(true);
     env.setTextFieldValue(env.emailInput, 'notavalidemail@bad');
-    expect(env.component.userInviteForm.controls.email.hasError('pattern'));
+    expect(env.component.userInviteForm.controls.email.hasError('email'));
 
-    // A menu will show explaining that existing users cannot be invited
-    expect(env.component.inviteError.open).toBe(false);
+    // A error will show explaining that existing users must be added
     env.setTextFieldValue(env.emailInput, 'user01@example.com');
-    expect(env.component.inviteError.open).toBe(true);
-    expect(env.menuItemExists(env.inviteMenuElement, 0, 'Please use "Add" for existing users')).toBe(true);
+    expect(env.component.userInviteForm.hasError('invite-disallowed'));
+    expect(env.component.inviteDisabled).toBe(true);
+    expect(env.inviteError.textContent).toContain('Please use "Add" for existing users');
   }));
 
   it('should enable invite button', fakeAsync(() => {
@@ -72,6 +73,7 @@ class TestEnvironment {
   fixture: ComponentFixture<CollaboratorsComponent>;
   component: CollaboratorsComponent;
 
+  mockedActivatedRoute: ActivatedRoute = mock(ActivatedRoute);
   mockedNoticeService: NoticeService = mock(NoticeService);
   mockedProjectService: ProjectService = mock(ProjectService);
   mockedUserService: UserService = mock(UserService);
@@ -101,10 +103,14 @@ class TestEnvironment {
   ];
 
   constructor() {
+    const parameters = { ['projectId']: 'testproject01' } as Params;
+    when(this.mockedActivatedRoute.params).thenReturn(of(parameters));
+    when(this.mockedProjectService.get(anything(), anything())).thenReturn(of());
     TestBed.configureTestingModule({
       declarations: [CollaboratorsComponent],
       imports: [UICommonModule],
       providers: [
+        { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
         { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
         { provide: ProjectService, useFactory: () => instance(this.mockedProjectService) },
         { provide: UserService, useFactory: () => instance(this.mockedUserService) }
@@ -131,7 +137,7 @@ class TestEnvironment {
     return this.fixture.nativeElement.querySelector('#btn-invite');
   }
 
-  get inviteMenuElement(): HTMLElement {
+  get inviteError(): HTMLElement {
     return this.fixture.nativeElement.querySelector('#invite-error');
   }
 

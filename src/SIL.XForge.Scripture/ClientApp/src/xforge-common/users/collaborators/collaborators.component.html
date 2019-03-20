@@ -18,7 +18,7 @@
         >
           <mdc-list>
             <ng-container *ngFor="let user of users">
-              <mdc-list-item>{{ user.name }} ({{ user.email }})</mdc-list-item>
+              <mdc-list-item [disabled]="isUserInProject(user)">{{ user.name }} ({{ user.email }})</mdc-list-item>
             </ng-container>
           </mdc-list>
         </mdc-menu>
@@ -30,27 +30,19 @@
   </div>
   <div fxLayout="row wrap" fxLayoutAlign="space-between center" class="text-entry">
     <form [formGroup]="userInviteForm">
-      <div mdcMenuSurfaceAnchor #anchor>
-        <mdc-form-field>
-          <mdc-text-field
-            id="email-input"
-            formControlName="email"
-            label="Email"
-            (input)="searchForExistingEmail($event)"
-          ></mdc-text-field>
-          <mdc-helper-text validation>
-            <span *ngIf="userInviteForm.controls.email.hasError('required')">Email is required</span>
-            <span
-              *ngIf="
-                userInviteForm.controls.email.hasError('email') || userInviteForm.controls.email.hasError('pattern')
-              "
-              >Email is invalid</span
-            >
-          </mdc-helper-text>
-        </mdc-form-field>
-        <mdc-menu #inviteError id="invite-error" [anchorElement]="anchor" anchorCorner="bottomStart">
-          <mdc-list> <mdc-list-item>Please use "Add" for existing users</mdc-list-item> </mdc-list>
-        </mdc-menu>
+      <mdc-form-field>
+        <mdc-text-field
+          id="email-input"
+          formControlName="email"
+          label="Email"
+          (input)="searchForExistingEmail($event)"
+        ></mdc-text-field>
+        <mdc-helper-text validation>
+          <span *ngIf="userInviteForm.controls.email.hasError('email')">Email is invalid</span>
+        </mdc-helper-text>
+      </mdc-form-field>
+      <div *ngIf="userInviteForm.hasError('invite-disallowed')" id="invite-error" class="invite-error-message">
+        Please use "Add" for existing users
       </div>
     </form>
     <button
@@ -64,4 +56,5 @@
       <span fxShow fxHide.xs>Invite user</span> <span fxHide fxShow.xs>Invite</span>
     </button>
   </div>
+  <p>The number of users in the project is:</p>
 </div>
