@@ -15,15 +15,15 @@ import { XForgeCommonModule } from 'xforge-common/xforge-common.module';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
 import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-project-dialog.component';
-import { ProjectSettingsComponent } from './project-settings.component';
+import { SettingsComponent } from './settings.component';
 
-describe('ProjectSettingsComponent', () => {
+describe('SettingsComponent', () => {
   describe('Tasks', () => {
     it('should select Community Checking and submit update when clicked', fakeAsync(() => {
       const env = new TestEnvironment();
-      expect(env.checkingInputElem.checked).toBe(false);
-      env.clickElement(env.checkingInputElem);
-      expect(env.checkingInputElem.checked).toBe(true);
+      expect(env.inputElement(env.checkingCheckbox).checked).toBe(false);
+      env.clickElement(env.inputElement(env.checkingCheckbox));
+      expect(env.inputElement(env.checkingCheckbox).checked).toBe(true);
       verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).once();
     }));
 
@@ -31,67 +31,97 @@ describe('ProjectSettingsComponent', () => {
       const env = new TestEnvironment();
       // prove error div is absent
       expect(env.atLeastOneError).toBeNull();
-      expect(env.checkingInputElem.checked).toBe(false);
-      expect(env.translateInputElem.checked).toBe(true);
-      env.clickElement(env.translateInputElem);
-      expect(env.translateInputElem.checked).toBe(false);
+      expect(env.inputElement(env.checkingCheckbox).checked).toBe(false);
+      expect(env.inputElement(env.translateCheckbox).checked).toBe(true);
+      env.clickElement(env.inputElement(env.translateCheckbox));
+      expect(env.inputElement(env.translateCheckbox).checked).toBe(false);
       // error div should now be present
       expect(env.atLeastOneError).toBeDefined();
       tick(1000);
       env.fixture.detectChanges();
-      expect(env.translateInputElem.checked).toBe(true);
+      expect(env.inputElement(env.translateCheckbox).checked).toBe(true);
       verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).never();
     }));
 
     it('changing state of task option results in status icon', fakeAsync(() => {
       const env = new TestEnvironment();
-      // prove 'changes submitted' elements are absent
-      expect(env.checkingStatusDone).toBeNull();
-      expect(env.translateStatusDone).toBeNull();
-      expect(env.checkingInputElem.checked).toBe(false);
-      env.clickElement(env.checkingInputElem);
-      expect(env.translateInputElem.checked).toBe(true);
-      env.clickElement(env.translateInputElem);
-      // 'changes submitted' elements should now be present
-      expect(env.checkingStatusDone).toBeDefined();
-      expect(env.translateStatusDone).toBeDefined();
+      expect(env.statusDone(env.checkingStatus)).toBeNull();
+      expect(env.inputElement(env.checkingCheckbox).checked).toBe(false);
+      env.clickElement(env.inputElement(env.checkingCheckbox));
+      expect(env.statusDone(env.checkingStatus)).toBeDefined();
+
+      expect(env.statusDone(env.translateStatus)).toBeNull();
+      expect(env.inputElement(env.translateCheckbox).checked).toBe(true);
+      env.clickElement(env.inputElement(env.translateCheckbox));
+      expect(env.statusDone(env.translateStatus)).toBeDefined();
     }));
 
     it('error on data submit shows error icon', fakeAsync(() => {
       const env = new TestEnvironment();
       // prove 'error status' elements are absent
-      expect(env.checkingStatusError).toBeNull();
-      expect(env.checkingInputElem.checked).toBe(false);
+      expect(env.statusError(env.checkingStatus)).toBeNull();
+      expect(env.inputElement(env.checkingCheckbox).checked).toBe(false);
       when(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).thenReject();
-      env.clickElement(env.checkingInputElem);
+      env.clickElement(env.inputElement(env.checkingCheckbox));
       // 'error status' elements should now be present
-      expect(env.checkingStatusError).toBeDefined();
+      expect(env.statusError(env.checkingStatus)).toBeDefined();
     }));
 
-    it('should hide Based On when translate task is disabled', fakeAsync(() => {
-      const env = new TestEnvironment();
-      env.wait();
-      env.clickElement(env.checkingInputElem);
-      expect(env.checkingInputElem.checked).toBe(true);
-      expect(env.translateInputElem.checked).toBe(true);
-      expect(env.basedOn).toBeDefined();
-      expect(env.basedOn.nativeElement.textContent).toContain('ParatextP1');
-      env.clickElement(env.translateInputElem);
-      expect(env.translateInputElem.checked).toBe(false);
-      expect(env.basedOn).toBeNull();
-    }));
+    describe('Translate options', () => {
+      it('should hide Based On when translate task is disabled', fakeAsync(() => {
+        const env = new TestEnvironment();
+        env.wait();
+        env.clickElement(env.inputElement(env.checkingCheckbox));
+        expect(env.inputElement(env.checkingCheckbox).checked).toBe(true);
+        expect(env.inputElement(env.translateCheckbox).checked).toBe(true);
+        expect(env.basedOnSelect).toBeDefined();
+        expect(env.basedOnSelect.nativeElement.textContent).toContain('ParatextP1');
+        env.clickElement(env.inputElement(env.translateCheckbox));
+        expect(env.inputElement(env.translateCheckbox).checked).toBe(false);
+        expect(env.basedOnSelect).toBeNull();
+      }));
 
-    it('should change Based On select value', fakeAsync(() => {
-      const env = new TestEnvironment();
-      env.wait();
-      expect(env.translateInputElem.checked).toBe(true);
-      expect(env.basedOn).toBeDefined();
-      expect(env.basedOn.nativeElement.textContent).toContain('ParatextP1');
-      verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).never();
-      env.setSelectValue(env.basedOnSelect, 'paratextId02');
-      expect(env.basedOn.nativeElement.textContent).toContain('ParatextP2');
-      verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).once();
-    }));
+      it('should change Based On select value', fakeAsync(() => {
+        const env = new TestEnvironment();
+        env.wait();
+        expect(env.inputElement(env.translateCheckbox).checked).toBe(true);
+        expect(env.basedOnSelect).toBeDefined();
+        expect(env.basedOnSelect.nativeElement.textContent).toContain('ParatextP1');
+        verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).never();
+        env.setSelectValue(env.basedOnSelect, 'paratextId02');
+        expect(env.basedOnSelect.nativeElement.textContent).toContain('ParatextP2');
+        verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).once();
+      }));
+    });
+
+    describe('Checking options', () => {
+      it('should hide options when checking task is disabled', fakeAsync(() => {
+        const env = new TestEnvironment();
+        env.wait();
+        expect(env.inputElement(env.translateCheckbox).checked).toBe(true);
+        expect(env.inputElement(env.checkingCheckbox).checked).toBe(false);
+        expect(env.seeOthersResponsesCheckbox).toBeNull();
+        expect(env.shareViaEmailCheckbox).toBeNull();
+        env.clickElement(env.inputElement(env.checkingCheckbox));
+        expect(env.inputElement(env.checkingCheckbox).checked).toBe(true);
+        expect(env.seeOthersResponsesCheckbox).toBeDefined();
+        expect(env.shareViaEmailCheckbox).toBeDefined();
+      }));
+
+      it('changing state of checking option results in status icon', fakeAsync(() => {
+        const env = new TestEnvironment();
+        env.clickElement(env.inputElement(env.checkingCheckbox));
+        expect(env.inputElement(env.checkingCheckbox).checked).toBe(true);
+
+        expect(env.statusDone(env.seeOthersResponsesStatus)).toBeNull();
+        env.clickElement(env.seeOthersResponsesCheckbox);
+        expect(env.statusDone(env.seeOthersResponsesStatus)).toBeDefined();
+
+        expect(env.statusDone(env.shareViaEmailStatus)).toBeNull();
+        env.clickElement(env.shareViaEmailCheckbox);
+        expect(env.statusDone(env.shareViaEmailStatus)).toBeDefined();
+      }));
+    });
   });
 
   describe('Danger Zone', () => {
@@ -132,8 +162,8 @@ class TestProject extends SFProject {
 }
 
 class TestEnvironment {
-  component: ProjectSettingsComponent;
-  fixture: ComponentFixture<ProjectSettingsComponent>;
+  component: SettingsComponent;
+  fixture: ComponentFixture<SettingsComponent>;
   overlayContainer: OverlayContainer;
 
   mockedActivatedRoute: ActivatedRoute = mock(ActivatedRoute);
@@ -166,7 +196,7 @@ class TestEnvironment {
     when(this.mockedSFProjectService.onlineGet(anything())).thenReturn(
       of(
         new TestProject({
-          checkingConfig: { enabled: false },
+          checkingConfig: { enabled: false, usersSeeEachOthersResponses: false, share: { viaEmail: false } },
           translateConfig: { enabled: true, sourceParatextId: 'paratextId01' }
         })
       )
@@ -176,7 +206,7 @@ class TestEnvironment {
     when(this.mockedUserService.updateCurrentProjectId(anything())).thenResolve();
     TestBed.configureTestingModule({
       imports: [DialogTestModule, HttpClientTestingModule, UICommonModule, XForgeCommonModule],
-      declarations: [ProjectSettingsComponent],
+      declarations: [SettingsComponent],
       providers: [
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
         { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
@@ -188,7 +218,7 @@ class TestEnvironment {
       // error with RouterLinkWithHref, so this allows us to skip using the RouterTestingModule.
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
-    this.fixture = TestBed.createComponent(ProjectSettingsComponent);
+    this.fixture = TestBed.createComponent(SettingsComponent);
     this.component = this.fixture.componentInstance;
     this.fixture.detectChanges();
     this.overlayContainer = TestBed.get(OverlayContainer);
@@ -198,48 +228,40 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('#invalid-feedback'));
   }
 
-  get checkingCb(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#checkbox-community-checking'));
-  }
-
-  get checkingInputElem(): HTMLInputElement {
-    return this.checkingCb.nativeElement.querySelector('input') as HTMLInputElement;
-  }
-
-  get checkingStatus(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#checking-status'));
-  }
-
-  get checkingStatusDone(): HTMLInputElement {
-    return this.checkingStatus.nativeElement.querySelector('.check-icon') as HTMLInputElement;
-  }
-
-  get checkingStatusError(): HTMLInputElement {
-    return this.checkingStatus.nativeElement.querySelector('.error-icon') as HTMLInputElement;
-  }
-
-  get translateCb(): DebugElement {
+  get translateCheckbox(): DebugElement {
     return this.fixture.debugElement.query(By.css('#checkbox-translate'));
-  }
-
-  get translateInputElem(): HTMLInputElement {
-    return this.translateCb.nativeElement.querySelector('input') as HTMLInputElement;
   }
 
   get translateStatus(): DebugElement {
     return this.fixture.debugElement.query(By.css('#translate-status'));
   }
 
-  get translateStatusDone(): HTMLInputElement {
-    return this.translateStatus.nativeElement.querySelector('.check-icon') as HTMLInputElement;
-  }
-
-  get basedOn(): DebugElement {
+  get basedOnSelect(): DebugElement {
     return this.fixture.debugElement.query(By.css('#based-on-select'));
   }
 
-  get basedOnSelect(): MdcSelect {
-    return this.basedOn.componentInstance;
+  get checkingCheckbox(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#checkbox-community-checking'));
+  }
+
+  get checkingStatus(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#checking-status'));
+  }
+
+  get seeOthersResponsesCheckbox(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#checkbox-see-others-responses'));
+  }
+
+  get seeOthersResponsesStatus(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#see-others-responses-status'));
+  }
+
+  get shareViaEmailCheckbox(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#checkbox-share-via-email'));
+  }
+
+  get shareViaEmailStatus(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#share-via-email-status'));
   }
 
   get dangerZoneTitle(): HTMLElement {
@@ -291,8 +313,20 @@ class TestEnvironment {
     tick(1000);
   }
 
-  setSelectValue(select: MdcSelect, value: string): void {
-    select.setSelectionByValue(value);
+  inputElement(element: DebugElement): HTMLInputElement {
+    return element.nativeElement.querySelector('input') as HTMLInputElement;
+  }
+
+  statusDone(element: DebugElement): HTMLInputElement {
+    return element.nativeElement.querySelector('.check-icon') as HTMLInputElement;
+  }
+
+  statusError(element: DebugElement): HTMLInputElement {
+    return element.nativeElement.querySelector('.error-icon') as HTMLInputElement;
+  }
+
+  setSelectValue(element: DebugElement, value: string): void {
+    element.componentInstance.setSelectionByValue(value);
     this.wait();
   }
 

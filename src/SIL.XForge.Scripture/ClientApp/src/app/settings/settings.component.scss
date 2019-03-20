@@ -4,6 +4,11 @@
   padding: 1rem;
 }
 
+p.helper-select,
+.indented-field-row {
+  margin-top: 1rem;
+}
+
 .helper-text {
   color: var(--mdc-theme-text-hint-on-background);
   margin: 0;
@@ -13,13 +18,8 @@
   color: var(--mdc-theme-error);
 }
 
-.indented-field {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-}
-
 .status {
-  padding-left: 2rem;
+  margin-left: 2rem;
 }
 
 #delete-project {
