@@ -15,9 +15,9 @@ import { ConnectProjectComponent } from './connect-project/connect-project.compo
 import { CoreModule } from './core/core.module';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { ProjectDeletedDialogComponent } from './nav-menu/project-deleted-dialog/project-deleted-dialog.component';
-import { DeleteProjectDialogComponent } from './project-settings/delete-project-dialog/delete-project-dialog.component';
-import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ProjectComponent } from './project/project.component';
+import { DeleteProjectDialogComponent } from './settings/delete-project-dialog/delete-project-dialog.component';
+import { SettingsComponent } from './settings/settings.component';
 import { SharedModule } from './shared/shared.module';
 import { StartComponent } from './start/start.component';
 import { SyncComponent } from './sync/sync.component';
@@ -26,14 +26,14 @@ import { TranslateModule } from './translate/translate.module';
 @NgModule({
   declarations: [
     AppComponent,
-    NavMenuComponent,
     ConnectProjectComponent,
     DeleteProjectDialogComponent,
-    ProjectSettingsComponent,
+    NavMenuComponent,
     ProjectComponent,
-    SyncComponent,
+    ProjectDeletedDialogComponent,
+    SettingsComponent,
     StartComponent,
-    ProjectDeletedDialogComponent
+    SyncComponent
   ],
   imports: [
     AppRoutingModule,

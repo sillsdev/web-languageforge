@@ -17,19 +17,20 @@ import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-pro
 type VoidFunc = (() => void);
 
 @Component({
-  selector: 'app-project-settings',
-  templateUrl: './project-settings.component.html',
-  styleUrls: ['./project-settings.component.scss']
+  selector: 'app-settings',
+  templateUrl: './settings.component.html',
+  styleUrls: ['./settings.component.scss']
 })
-export class ProjectSettingsComponent extends SubscriptionDisposable implements OnInit, OnDestroy {
-  atleastOneError: boolean = false;
+export class SettingsComponent extends SubscriptionDisposable implements OnInit, OnDestroy {
   form: FormGroup = new FormGroup(
     {
       translate: new FormControl({ value: false, disabled: true }),
       sourceParatextId: new FormControl('', [Validators.required]),
-      checking: new FormControl({ value: false, disabled: true })
+      checking: new FormControl({ value: false, disabled: true }),
+      seeOthersResponses: new FormControl(false),
+      shareViaEmail: new FormControl(false)
     },
-    this.requireOneSelectedBox()
+    this.requireOneSelectedTask()
   );
   projectId: string;
   project: SFProject;
@@ -75,6 +76,22 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
     return this.controlStates.get('checking');
   }
 
+  get seeOthersResponses(): boolean {
+    return this.form.get('seeOthersResponses').value;
+  }
+
+  get seeOthersResponsesState(): ElementState {
+    return this.controlStates.get('seeOthersResponses');
+  }
+
+  get shareViaEmail(): boolean {
+    return this.form.get('shareViaEmail').value;
+  }
+
+  get shareViaEmailState(): ElementState {
+    return this.controlStates.get('shareViaEmail');
+  }
+
   ngOnInit() {
     this.form.disable();
     this.form.setErrors({ required: true });
@@ -83,15 +100,16 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
       if (
         !this.project ||
         (newValue.translate === this.project.translateConfig.enabled &&
+          newValue.sourceParatextId === this.project.translateConfig.sourceParatextId &&
           newValue.checking === this.project.checkingConfig.enabled &&
-          newValue.sourceParatextId === this.project.translateConfig.sourceParatextId)
+          newValue.seeOthersResponses === this.project.checkingConfig.usersSeeEachOthersResponses &&
+          newValue.shareViaEmail === this.project.checkingConfig.share.viaEmail)
       ) {
         return;
       }
 
       if (this.form.valid) {
         this.previousFormValues = newValue;
-        this.atleastOneError = false;
         const updatedProject = {} as SFProject;
         const successHandlers: VoidFunc[] = [];
         const failStateHandlers: VoidFunc[] = [];
@@ -118,6 +136,24 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
           this.project.checkingConfig.enabled = newValue.checking;
           this.updateControlState('checking', successHandlers, failStateHandlers);
         }
+        if (newValue.seeOthersResponses !== this.project.checkingConfig.usersSeeEachOthersResponses) {
+          updatedProject.checkingConfig = { enabled: newValue.checking };
+          updatedProject.checkingConfig.usersSeeEachOthersResponses = newValue.seeOthersResponses;
+          this.project.checkingConfig.usersSeeEachOthersResponses = newValue.seeOthersResponses;
+          this.updateControlState('seeOthersResponses', successHandlers, failStateHandlers);
+        }
+        if (newValue.shareViaEmail !== this.project.checkingConfig.share.viaEmail) {
+          updatedProject.checkingConfig = { enabled: newValue.checking };
+          if (!updatedProject.checkingConfig.share) {
+            updatedProject.checkingConfig.share = {};
+          }
+          if (!this.project.checkingConfig.share) {
+            this.project.checkingConfig.share = {};
+          }
+          updatedProject.checkingConfig.share.viaEmail = newValue.shareViaEmail;
+          this.project.checkingConfig.share.viaEmail = newValue.shareViaEmail;
+          this.updateControlState('shareViaEmail', successHandlers, failStateHandlers);
+        }
         this.projectService
           .onlineUpdateAttributes(this.project.id, updatedProject)
           .then(() => {
@@ -130,10 +166,9 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
               failStateHandlers.pop().call(this);
             }
           });
-      } else {
+      } else if (this.form.errors && this.form.errors.requireCheckboxesToBeChecked) {
         // reset invalid form value
         setTimeout(() => this.form.setValue(this.previousFormValues), 1000);
-        this.atleastOneError = true;
       }
     });
     this.setAllControlsToInSync();
@@ -182,6 +217,29 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
     });
   }
 
+  private updateSettingsInfo() {
+    const sourceParatextId = this.project.translateConfig.sourceParatextId
+      ? this.project.translateConfig.sourceParatextId
+      : '';
+    this.previousFormValues = {
+      translate: this.project.translateConfig.enabled,
+      sourceParatextId,
+      checking: this.project.checkingConfig.enabled,
+      seeOthersResponses: this.project.checkingConfig.usersSeeEachOthersResponses,
+      shareViaEmail: this.project.checkingConfig.share.viaEmail
+    };
+    this.form.reset(this.previousFormValues);
+    this.setAllControlsToInSync();
+  }
+
+  private setAllControlsToInSync() {
+    this.controlStates.set('translate', ElementState.InSync);
+    this.controlStates.set('sourceParatextId', ElementState.InSync);
+    this.controlStates.set('checking', ElementState.InSync);
+    this.controlStates.set('seeOthersResponses', ElementState.InSync);
+    this.controlStates.set('shareViaEmail', ElementState.InSync);
+  }
+
   // Update the controlStates for handling submitting a settings change (used to show spinner and success checkmark)
   private updateControlState(formControl: string, successHandlers: VoidFunc[], failureHandlers: VoidFunc[]) {
     this.controlStates.set(formControl, ElementState.Submitting);
@@ -189,17 +247,11 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
     failureHandlers.push(() => this.controlStates.set(formControl, ElementState.Error));
   }
 
-  private setAllControlsToInSync() {
-    this.controlStates.set('checking', ElementState.InSync);
-    this.controlStates.set('translate', ElementState.InSync);
-    this.controlStates.set('sourceParatextId', ElementState.InSync);
-  }
-
-  private requireOneSelectedBox(): ValidatorFn {
+  private requireOneSelectedTask(): ValidatorFn {
     return function validate(formGroup: FormGroup) {
       let checked = 0;
 
-      Object.keys(formGroup.controls).forEach(key => {
+      ['translate', 'checking'].forEach(key => {
         const control = formGroup.controls[key];
 
         if (control.value === true) {
@@ -215,20 +267,5 @@ export class ProjectSettingsComponent extends SubscriptionDisposable implements 
 
       return null;
     };
-  }
-
-  private updateSettingsInfo() {
-    const sourceParatextId = this.project.translateConfig.sourceParatextId
-      ? this.project.translateConfig.sourceParatextId
-      : '';
-    this.previousFormValues = {
-      translate: this.project.translateConfig.enabled,
-      sourceParatextId,
-      checking: this.project.checkingConfig.enabled
-    };
-    this.form.reset(this.previousFormValues);
-    this.controlStates.set('checking', ElementState.InSync);
-    this.controlStates.set('translate', ElementState.InSync);
-    this.controlStates.set('sourceParatextId', ElementState.InSync);
   }
 }

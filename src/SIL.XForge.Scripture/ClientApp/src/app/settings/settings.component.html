@@ -5,9 +5,7 @@
     <p>Select which tasks are available. At least one task must be selected.</p>
     <mdc-card class="card" outlined>
       <form [formGroup]="form">
-        <ng-container
-          *ngIf="!isLoading && ((form.errors && form.errors.requireCheckboxesToBeChecked) || atleastOneError)"
-        >
+        <ng-container *ngIf="!isLoading && form.errors && form.errors.requireCheckboxesToBeChecked">
           <div class="card-content invalid-feedback">You must select at least one option</div>
           <mdc-list-divider></mdc-list-divider>
         </ng-container>
@@ -33,9 +31,9 @@
             </p>
           </div>
           <ng-container *ngIf="translate">
-            <div fxLayout="row" fxLayoutAlign="start center">
+            <div fxLayout="row" fxLayoutAlign="start center" class="indented-field-row">
               <div fxFlex="2.75rem" class="indent"></div>
-              <mdc-form-field class="indented-field">
+              <mdc-form-field>
                 <mdc-select placeholder="Based on" formControlName="sourceParatextId" id="based-on-select">
                   <mdc-menu>
                     <mdc-list>
@@ -57,7 +55,7 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="start center">
               <div fxFlex="2.75rem" class="indent"></div>
-              <p fxFlex class="helper-text">
+              <p fxFlex class="helper-text helper-select">
                 If your Paratext project is a <b>Daughter Translation</b> or you would like to use your project as a
                 <b>Daughter Translation</b>, choose the project this translation is based on. This will enable a number
                 of features that can offer translation suggestions.
@@ -88,6 +86,52 @@
               ask targeted questions, allow discussion of answers.
             </p>
           </div>
+          <ng-container *ngIf="checking">
+            <div fxLayout="row" fxLayoutAlign="start center" class="indented-field-row">
+              <div fxFlex="2.05rem" class="indent"></div>
+              <mdc-form-field>
+                <mdc-checkbox formControlName="seeOthersResponses" id="checkbox-see-others-responses"></mdc-checkbox>
+                <label>See other's answers and comments</label>
+              </mdc-form-field>
+              <app-write-status
+                fxFlex
+                fxLayoutAlign="start center"
+                class="status"
+                [state]="seeOthersResponsesState"
+                [formGroup]="form"
+                id="see-others-responses-status"
+              ></app-write-status>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center">
+              <div fxFlex="4.8rem" class="indent"></div>
+              <p fxFlex class="helper-text">
+                Users can see each other's answers and comments to interact with each other.
+              </p>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" class="indented-field-row">
+              <div fxFlex="2.05rem" class="indent"></div>
+              <mdc-form-field>
+                <mdc-checkbox formControlName="shareViaEmail" id="checkbox-share-via-email"></mdc-checkbox>
+                <label>Share via email</label>
+              </mdc-form-field>
+              <app-write-status
+                fxFlex
+                fxLayoutAlign="start center"
+                class="status"
+                [state]="shareViaEmailState"
+                [formGroup]="form"
+                id="share-via-email-status"
+              ></app-write-status>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center">
+              <div fxFlex="4.8rem" class="indent"></div>
+              <p fxFlex class="helper-text">
+                Users can share by inviting a friend to join the project.<br />
+                <i>Administrator's</i> can always invite others to the project in
+                <a [routerLink]="['/projects', projectId, 'users']">Users</a>.
+              </p>
+            </div>
+          </ng-container>
         </div>
       </form>
     </mdc-card>
