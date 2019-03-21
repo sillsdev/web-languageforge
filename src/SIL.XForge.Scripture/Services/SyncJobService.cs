@@ -14,10 +14,13 @@ namespace SIL.XForge.Scripture.Services
 {
     public class SyncJobService : SFProjectDataService<SyncJobResource, SyncJobEntity>
     {
+        private readonly IBackgroundJobClient _backgroundJobClient;
         public SyncJobService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
-            IRepository<SyncJobEntity> jobs, IRepository<SFProjectEntity> projects)
+            IRepository<SyncJobEntity> jobs, IRepository<SFProjectEntity> projects,
+            IBackgroundJobClient backgroundJobClient)
             : base(jsonApiContext, mapper, userAccessor, jobs, projects)
         {
+            _backgroundJobClient = backgroundJobClient;
         }
 
         protected override Domain Domain => Domain.SyncJobs;
@@ -36,7 +39,7 @@ namespace SIL.XForge.Scripture.Services
             {
                 // new job, so enqueue the runner
                 string jobId = job.Id;
-                BackgroundJob.Enqueue<ParatextSyncRunner>(r => r.RunAsync(null, null, UserId, jobId));
+                _backgroundJobClient.Enqueue<ParatextSyncRunner>(r => r.RunAsync(null, null, UserId, jobId));
                 return job;
             }
 
@@ -50,7 +53,7 @@ namespace SIL.XForge.Scripture.Services
             if (job != null)
             {
                 if (SyncJobEntity.ActiveStates.Contains(job.State))
-                    BackgroundJob.Delete(job.BackgroundJobId);
+                    _backgroundJobClient.Delete(job.BackgroundJobId);
                 return true;
             }
 
