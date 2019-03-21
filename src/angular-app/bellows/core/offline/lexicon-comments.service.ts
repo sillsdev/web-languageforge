@@ -108,7 +108,7 @@ export class LexiconCommentService {
   }
 
   getEntryCommentCount(entryId: string): number {
-    if (this.comments == null || this.comments.counts.byEntry[entryId] == null) {
+    if (this.comments.counts.byEntry[entryId] == null) {
       return 0;
     }
 
