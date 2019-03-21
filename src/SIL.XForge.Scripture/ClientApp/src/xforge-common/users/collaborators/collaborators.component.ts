@@ -1,4 +1,4 @@
-import { MdcListItem, MdcMenu } from '@angular-mdc/web';
+import { MdcListItem, MdcMenu, MdcTextField } from '@angular-mdc/web';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -23,6 +23,7 @@ import { XFValidators } from '../../xfvalidators';
 })
 export class CollaboratorsComponent extends SubscriptionDisposable implements OnInit {
   @ViewChild('userSearch') userMenu: MdcMenu;
+  @ViewChild('userAddInput') addUserInput: MdcTextField;
   pageIndex: number = 0;
   pageSize: number = 50;
   users: User[];
@@ -41,7 +42,7 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
   private inviteButtonClicked = false;
   private isUserSelected = false;
   private searchTerm$ = new BehaviorSubject<string>('');
-  private parameters$ = new BehaviorSubject<GetAllParameters<User>>({});
+  private parameters$ = new BehaviorSubject<GetAllParameters<User>>(this.getParameters());
   private reload$ = new BehaviorSubject<void>(null);
 
   constructor(
@@ -127,22 +128,30 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
     this.inviteButtonClicked = false;
   }
 
+  refocusInput(): void {
+    // Return focus back to the text input when the user menu opens and the text input loses focus
+    if (this.userMenu.open) {
+      this.addUserInput.focus();
+    }
+  }
+
   searchForExistingEmail(term: string): void {
     this.searchTerm$.next(term);
   }
 
   updateSearchTerms(term: string): void {
     this.searchTerm$.next(term);
-    if (this.usersFound && term.length > 2) {
-      if (this.users.length <= 10) {
-        // The text field loses focus when the menu appears. Display when 10 items or less match
+    if (this.usersFound && this.users.length <= 10 && term.length > 2) {
+      if (!this.userMenu.open) {
         this.userMenu.open = true;
       }
+    } else {
+      this.userMenu.open = false;
     }
   }
 
-  userSelected(event: { index: number; item: MdcListItem }) {
-    this.userSelectionForm.controls.user.setValue(this.users[event.index].email);
+  userSelected(event: { index: number; source: MdcListItem }) {
+    this.userSelectionForm.controls.user.setValue(event.source.value as string);
     this.isUserSelected = true;
   }
 
@@ -150,5 +159,9 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
     return (): { [key: string]: any } | null => {
       return this.emailExists ? { 'invite-disallowed': true } : null;
     };
+  }
+
+  private getParameters(): GetAllParameters<User> {
+    return { sort: [{ name: 'name', order: 'ascending' }] };
   }
 }

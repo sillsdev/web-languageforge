@@ -3,10 +3,12 @@
     <form [formGroup]="userSelectionForm">
       <div mdcMenuSurfaceAnchor #userSearchAnchor>
         <mdc-text-field
+          #userAddInput
           id="user-search"
           formControlName="user"
           label="Search by name, email or phone"
           (input)="updateSearchTerms($event)"
+          (blur)="refocusInput()"
         ></mdc-text-field>
         <mdc-menu
           #userSearch
@@ -18,7 +20,9 @@
         >
           <mdc-list>
             <ng-container *ngFor="let user of users">
-              <mdc-list-item [disabled]="isUserInProject(user)">{{ user.name }} ({{ user.email }})</mdc-list-item>
+              <mdc-list-item *ngIf="!isUserInProject(user)" [value]="user.email"
+                >{{ user.name }} ({{ user.email }})</mdc-list-item
+              >
             </ng-container>
           </mdc-list>
         </mdc-menu>
@@ -41,8 +45,11 @@
           <span *ngIf="userInviteForm.controls.email.hasError('email')">Email is invalid</span>
         </mdc-helper-text>
       </mdc-form-field>
-      <div *ngIf="userInviteForm.hasError('invite-disallowed')" id="invite-error" class="invite-error-message">
-        Please use "Add" for existing users
+      <div class="invite-error-message">
+        <span *ngIf="userInviteForm.hasError('invite-disallowed')" id="invite-error">
+          Please use <span fxShow fxHide.xs><b>Add user</b></span
+          ><span fxHide fxShow.xs><b>Add</b></span> for existing users
+        </span>
       </div>
     </form>
     <button
@@ -56,5 +63,4 @@
       <span fxShow fxHide.xs>Invite user</span> <span fxHide fxShow.xs>Invite</span>
     </button>
   </div>
-  <p>The number of users in the project is:</p>
 </div>

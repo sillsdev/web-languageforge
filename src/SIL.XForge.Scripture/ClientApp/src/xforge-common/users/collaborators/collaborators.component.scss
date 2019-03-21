@@ -23,5 +23,7 @@ mdc-text-field {
 }
 
 .invite-error-message {
+  font-size: smaller;
+  height: 1rem;
   color: var(--mdc-theme-error);
 }

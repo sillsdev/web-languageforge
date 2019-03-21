@@ -5,11 +5,14 @@ import { map } from 'rxjs/operators';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 
 import { GetAllParameters, MapQueryResults } from '../../json-api.service';
-import { User } from '../../models/user';
+import { Project, ProjectRef } from '../../models/project';
+import { ProjectUser, ProjectUserRef } from '../../models/project-user';
+import { User, UserRef } from '../../models/user';
 import { NoticeService } from '../../notice.service';
 import { InviteAction, ProjectService } from '../../project.service';
 import { UICommonModule } from '../../ui-common.module';
 import { UserService } from '../../user.service';
+import { nameof } from '../../utils';
 import { CollaboratorsComponent } from './collaborators.component';
 
 describe('CollaboratorsComponent', () => {
@@ -20,19 +23,21 @@ describe('CollaboratorsComponent', () => {
     env.setTextFieldValue(env.searchUserInput, 'use');
     expect(env.component.userMenu.open).toBe(true);
     expect(env.component.users.length).toEqual(3);
-    expect(env.menuItemExists(env.searchMenuElement, 0, 'User 01 (user01@example.com)')).toBe(true);
+    expect(env.component.usersInProject.length).toEqual(1);
+    expect(env.component.usersInProject[0].id).toBe('user01');
+    expect(env.menuItemExists(env.searchMenuElement, 0, 'User 02 (user02@example.com)')).toBe(true);
   }));
 
   it('should enable add button', fakeAsync(() => {
     const env = new TestEnvironment();
     when(env.mockedProjectService.onlineInvite(anything())).thenResolve(InviteAction.Joined);
-    env.setTextFieldValue(env.searchUserInput, 'user 01');
-    expect(env.menuItemExists(env.searchMenuElement, 0, 'User 01 (user01@example.com)')).toBe(true);
+    env.setTextFieldValue(env.searchUserInput, 'user 02');
+    expect(env.menuItemExists(env.searchMenuElement, 0, 'User 02 (user02@example.com)')).toBe(true);
 
     // The add button is disabled until the user selects a user from the menu
     expect(env.component.addDisabled).toBe(true);
     env.clickMenuItem(env.searchMenuElement, 0);
-    const email = 'user01@example.com';
+    const email = 'user02@example.com';
     expect(env.component.userSelectionForm.value.user).toBe(email);
     expect(env.component.addDisabled).toBe(false);
     env.clickButton(env.addButton);
@@ -52,7 +57,7 @@ describe('CollaboratorsComponent', () => {
     env.setTextFieldValue(env.emailInput, 'user01@example.com');
     expect(env.component.userInviteForm.hasError('invite-disallowed'));
     expect(env.component.inviteDisabled).toBe(true);
-    expect(env.inviteError.textContent).toContain('Please use "Add" for existing users');
+    expect(env.inviteError.textContent).toContain('Please use Add');
   }));
 
   it('should enable invite button', fakeAsync(() => {
@@ -68,6 +73,39 @@ describe('CollaboratorsComponent', () => {
     verify(env.mockedNoticeService.show(deepEqual(message)));
   }));
 });
+
+class TestProject extends Project {
+  static readonly TYPE = 'project';
+
+  constructor(init?: Partial<Project>) {
+    super(TestProject.TYPE, init);
+  }
+
+  get taskNames(): string[] {
+    return ['Task1', 'Task2'];
+  }
+}
+class TestProjectUser extends ProjectUser {
+  static readonly TYPE = 'projectUser';
+
+  constructor(init?: Partial<ProjectUser>) {
+    super(TestProjectUser.TYPE, init);
+  }
+}
+class TestProjectRef extends ProjectRef {
+  static readonly TYPE = TestProject.TYPE;
+
+  constructor(id: string) {
+    super(TestProjectRef.TYPE, id);
+  }
+}
+class TestProjectUserRef extends ProjectUserRef {
+  static readonly TYPE = TestProjectUser.TYPE;
+
+  constructor(id: string) {
+    super(TestProjectUser.TYPE, id);
+  }
+}
 
 class TestEnvironment {
   fixture: ComponentFixture<CollaboratorsComponent>;
@@ -106,6 +144,8 @@ class TestEnvironment {
     const parameters = { ['projectId']: 'testproject01' } as Params;
     when(this.mockedActivatedRoute.params).thenReturn(of(parameters));
     when(this.mockedProjectService.get(anything(), anything())).thenReturn(of());
+    this.setupProjectData();
+    this.setupUserData();
     TestBed.configureTestingModule({
       declarations: [CollaboratorsComponent],
       imports: [UICommonModule],
@@ -120,7 +160,6 @@ class TestEnvironment {
     this.fixture = TestBed.createComponent(CollaboratorsComponent);
     this.component = this.fixture.componentInstance;
 
-    this.setupUserData();
     this.fixture.detectChanges();
     tick();
   }
@@ -188,6 +227,27 @@ class TestEnvironment {
 
         return combineLatest(term$, parameters$, reload$).pipe(map(_value => results));
       }
+    );
+  }
+
+  setupProjectData(): void {
+    when(this.mockedProjectService.get(anything(), deepEqual([[nameof<Project>('users')]]))).thenReturn(
+      of(
+        new MapQueryResults(
+          new TestProject({
+            id: 'testproject01',
+            users: [new TestProjectUserRef('projectuser01')]
+          }),
+          undefined,
+          [
+            new TestProjectUser({
+              id: 'projectuser01',
+              user: new UserRef('user01'),
+              project: new TestProjectRef('testproject01')
+            })
+          ]
+        )
+      )
     );
   }
 }
