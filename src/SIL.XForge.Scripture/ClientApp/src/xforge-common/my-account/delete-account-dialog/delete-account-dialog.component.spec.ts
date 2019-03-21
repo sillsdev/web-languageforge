@@ -1,6 +1,6 @@
 import { MdcDialog, MdcDialogRef, OverlayContainer } from '@angular-mdc/web';
 import { Component, Directive, NgModule, ViewChild, ViewContainerRef } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, flush, inject, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { instance, mock } from 'ts-mockito';
@@ -39,8 +39,10 @@ class ChildViewContainerComponent {
 class DialogTestModule {}
 
 describe('DeleteAccountDialogComponent', () => {
-  const DeleteButtonText = 'I understand the consequences; delete my account';
-  const UserName = 'JohnnyBGoode';
+  // The first phrase on the delete button is in a span that disappears when the screen is too narrow.
+  // The MdcDialogButton trims whitespace around HTML tags, so the space between must be &nbsp;
+  const DELETE_BUTTON_TEXT = 'I understand the consequences;\xA0delete my account';
+  const USER_NAME = 'JohnnyBGoode';
 
   let dialog: MdcDialog;
   let dialogRef: MdcDialogRef<DeleteAccountDialogComponent>;
@@ -70,7 +72,7 @@ describe('DeleteAccountDialogComponent', () => {
     dialog = d;
     const config = {
       data: {
-        name: UserName,
+        name: USER_NAME,
         viewContainerRef: testViewContainerRef
       }
     };
@@ -91,7 +93,7 @@ describe('DeleteAccountDialogComponent', () => {
 
   it('should have a delete account button', fakeAsync(() => {
     const dialogContainer = overlayContainerElement.querySelector('mdc-dialog-container');
-    expect(dialogContainer.querySelector('#confirm-delete-button').textContent).toContain(DeleteButtonText);
+    expect(dialogContainer.querySelector('#confirm-delete-button').textContent).toContain(DELETE_BUTTON_TEXT);
   }));
 
   it('should enable delete button if matching username is entered', fakeAsync(() => {
@@ -99,16 +101,16 @@ describe('DeleteAccountDialogComponent', () => {
     dialogRef.afterClosed().subscribe(afterCloseCallback);
     const dialogContainer = overlayContainerElement.querySelector('mdc-dialog-container');
     const btnDelete: HTMLElement = dialogContainer.querySelector('#confirm-delete-button');
-    expect(btnDelete.textContent).toContain(DeleteButtonText);
-    expect(component.data.name).toEqual(UserName);
+    expect(btnDelete.textContent).toContain(DELETE_BUTTON_TEXT);
+    expect(component.data.name).toEqual(USER_NAME);
     expect(component.deleteDisabled).toBe(true);
-    component.userNameEntry.setValue(UserName);
+    component.userNameEntry.setValue(USER_NAME);
     viewContainerFixture.detectChanges();
-    expect(component.userNameEntry.value).toEqual(UserName);
+    expect(component.userNameEntry.value).toEqual(USER_NAME);
     expect(component.deleteDisabled).toBe(false);
     btnDelete.click();
+    flush();
     viewContainerFixture.detectChanges();
-    tick();
     expect(afterCloseCallback).toHaveBeenCalledTimes(1);
     expect(overlayContainerElement.querySelector('mdc-dialog-container')).toBeNull();
     flush();

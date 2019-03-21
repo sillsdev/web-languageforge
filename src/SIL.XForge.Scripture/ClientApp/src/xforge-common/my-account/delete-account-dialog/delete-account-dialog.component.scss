@@ -1,7 +1,7 @@
 @import '~src/global';
 
 .broad {
-  @include mdc-dialog-max-width(880px, 16px);
+  @include mdc-dialog-max-width(50rem, 2rem);
 }
 
 button {
@@ -10,4 +10,7 @@ button {
 
 #confirm-delete-button {
   border: 1px solid;
+}
+#confirm-delete-button:not([disabled]) {
+  color: red;
 }

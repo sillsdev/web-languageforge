@@ -14,9 +14,9 @@
         </mdc-form-field>
       </mdc-dialog-content>
       <mdc-dialog-actions>
-        <button mdcDialogButton mdcDialogAction="cancel" class="cancel-button">Cancel</button>
+        <button mdcDialogButton mdcDialogAction="close" class="cancel-button">Cancel</button>
         <button mdcDialogButton mdcDialogAction="confirmed" id="confirm-delete-button" [disabled]="deleteDisabled">
-          I understand the consequences; delete my account
+          <span fxHide.lt-sm>I understand the consequences;&nbsp;</span>delete my account
         </button>
       </mdc-dialog-actions>
     </mdc-dialog-surface>
