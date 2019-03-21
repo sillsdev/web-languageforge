@@ -2,12 +2,10 @@ import { Injectable } from '@angular/core';
 import { RemoteTranslationEngine } from '@sillsdev/machine';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { AuthService } from 'xforge-common/auth.service';
 import { JsonApiService } from 'xforge-common/json-api.service';
-import { LocationService } from 'xforge-common/location.service';
 import { ProjectService } from 'xforge-common/project.service';
 import { nameof } from 'xforge-common/utils';
+import { MachineHttpClient } from './machine-http-client';
 import { SFProject } from './models/sfproject';
 import { ProjectRole, SFProjectRoles } from './models/sfproject-roles';
 import { Text } from './models/text';
@@ -21,20 +19,12 @@ export class SFProjectService extends ProjectService<SFProject> {
     { role: SFProjectRoles.ParatextTranslator, displayName: 'Translator' }
   ];
 
-  constructor(
-    jsonApiService: JsonApiService,
-    private readonly authService: AuthService,
-    private readonly locationService: LocationService
-  ) {
+  constructor(jsonApiService: JsonApiService, private readonly machineHttp: MachineHttpClient) {
     super(SFProject.TYPE, jsonApiService, SFProjectService.ROLES);
   }
 
   createTranslationEngine(projectId: string): RemoteTranslationEngine {
-    return new RemoteTranslationEngine(
-      projectId,
-      this.locationService.origin + '/machine-api',
-      this.authService.accessToken
-    );
+    return new RemoteTranslationEngine(projectId, this.machineHttp);
   }
 
   getTexts(id: string): Observable<Text[]> {
