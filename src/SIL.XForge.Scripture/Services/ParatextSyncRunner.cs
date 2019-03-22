@@ -9,12 +9,14 @@ using Hangfire;
 using Hangfire.Server;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using ShareDB;
 using ShareDB.RichText;
 using SIL.Machine.WebApi.Services;
 using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
+using SIL.XForge.Scripture.DataAccess;
 using SIL.XForge.Scripture.Models;
 
 namespace SIL.XForge.Scripture.Services
@@ -269,15 +271,36 @@ namespace SIL.XForge.Scripture.Services
             File.Delete(GetBookTextFileName(projectPath, text.BookId));
             var tasks = new List<Task>();
             foreach (Chapter chapter in text.Chapters)
-                tasks.Add(DeleteChapterAsync(conn, text, chapter.Number, textType));
+            {
+                tasks.Add(DeleteTextDataAsync(conn, text, chapter.Number, textType));
+                if (textType == TextType.Target)
+                {
+                    tasks.Add(DeleteQuestionDataAsync(conn, text, chapter.Number));
+                    tasks.Add(DeleteCommentDataAsync(conn, text, chapter.Number));
+                }
+            }
             await Task.WhenAll(tasks);
         }
 
-        private async Task DeleteChapterAsync(Connection conn, TextEntity text, int chapter, TextType textType)
+        private async Task DeleteTextDataAsync(Connection conn, TextEntity text, int chapter, TextType textType)
         {
-            Document<Delta> doc = GetShareDBDocument(conn, text, chapter, textType);
-            await doc.FetchAsync();
-            await doc.DeleteAsync();
+            Document<Delta> textDataDoc = GetTextDataDocument(conn, text, chapter, textType);
+            await textDataDoc.FetchAsync();
+            await textDataDoc.DeleteAsync();
+        }
+
+        private async Task DeleteQuestionDataAsync(Connection conn, TextEntity text, int chapter)
+        {
+            Document<JToken> questionDataDoc = GetQuestionDataDocument(conn, text, chapter);
+            await questionDataDoc.FetchAsync();
+            await questionDataDoc.DeleteAsync();
+        }
+
+        private async Task DeleteCommentDataAsync(Connection conn, TextEntity text, int chapter)
+        {
+            Document<JToken> commentDataDoc = GetCommentDataDocument(conn, text, chapter);
+            await commentDataDoc.FetchAsync();
+            await commentDataDoc.DeleteAsync();
         }
 
         private async Task SyncOrCloneBookAsync(UserEntity user, Connection conn, SFProjectEntity project,
@@ -297,13 +320,13 @@ namespace SIL.XForge.Scripture.Services
         private async Task SyncBookAsync(UserEntity user, Connection conn, TextEntity text, TextType textType,
             string paratextId, string fileName)
         {
-            var docs = new SortedList<int, Document<Delta>>();
+            var textDataDocs = new SortedList<int, Document<Delta>>();
             var tasks = new List<Task>();
             foreach (Chapter chapter in text.Chapters)
             {
-                Document<Delta> doc = GetShareDBDocument(conn, text, chapter.Number, textType);
-                docs[chapter.Number] = doc;
-                tasks.Add(doc.FetchAsync());
+                Document<Delta> textDataDoc = GetTextDataDocument(conn, text, chapter.Number, textType);
+                textDataDocs[chapter.Number] = textDataDoc;
+                tasks.Add(textDataDoc.FetchAsync());
             }
             await Task.WhenAll(tasks);
             XElement bookTextElem = await LoadBookTextAsync(fileName);
@@ -315,7 +338,7 @@ namespace SIL.XForge.Scripture.Services
             if (bookElem == null)
                 throw new InvalidOperationException("Invalid USX data, missing 'book' element.");
             XElement newUsxElem = _deltaUsxMapper.ToUsx((string)oldUsxElem.Attribute("version"),
-                (string)bookElem.Attribute("code"), (string)bookElem, docs.Values.Select(d => d.Data));
+                (string)bookElem.Attribute("code"), (string)bookElem, textDataDocs.Values.Select(d => d.Data));
 
             var revision = (string)bookTextElem.Attribute("revision");
 
@@ -340,22 +363,34 @@ namespace SIL.XForge.Scripture.Services
             var chapters = new List<Chapter>();
             foreach (KeyValuePair<int, (Delta Delta, int LastVerse)> kvp in deltas)
             {
-                if (docs.TryGetValue(kvp.Key, out Document<Delta> doc))
+                if (textDataDocs.TryGetValue(kvp.Key, out Document<Delta> textDataDoc))
                 {
-                    Delta diffDelta = doc.Data.Diff(kvp.Value.Delta);
-                    tasks.Add(doc.SubmitOpAsync(diffDelta));
-                    docs.Remove(kvp.Key);
+                    Delta diffDelta = textDataDoc.Data.Diff(kvp.Value.Delta);
+                    tasks.Add(textDataDoc.SubmitOpAsync(diffDelta));
+                    textDataDocs.Remove(kvp.Key);
                 }
                 else
                 {
-                    tasks.Add(doc.CreateAsync(kvp.Value.Delta));
+                    tasks.Add(textDataDoc.CreateAsync(kvp.Value.Delta));
+                    if (textType == TextType.Target)
+                    {
+                        Document<JToken> questionDataDoc = GetQuestionDataDocument(conn, text, kvp.Key);
+                        tasks.Add(questionDataDoc.CreateAsync(new JArray()));
+                        Document<JToken> commentDataDoc = GetCommentDataDocument(conn, text, kvp.Key);
+                        tasks.Add(commentDataDoc.CreateAsync(new JArray()));
+                    }
                     chaptersChanged = true;
                 }
                 chapters.Add(new Chapter { Number = kvp.Key, LastVerse = kvp.Value.LastVerse });
             }
-            foreach (Document<Delta> doc in docs.Values)
+            foreach (KeyValuePair<int, Document<Delta>> kvp in textDataDocs)
             {
-                tasks.Add(doc.DeleteAsync());
+                tasks.Add(kvp.Value.DeleteAsync());
+                if (textType == TextType.Target)
+                {
+                    tasks.Add(DeleteQuestionDataAsync(conn, text, kvp.Key));
+                    tasks.Add(DeleteCommentDataAsync(conn, text, kvp.Key));
+                }
                 chaptersChanged = true;
             }
             await Task.WhenAll(tasks);
@@ -381,8 +416,15 @@ namespace SIL.XForge.Scripture.Services
             var chapters = new List<Chapter>();
             foreach (KeyValuePair<int, (Delta Delta, int LastVerse)> kvp in deltas)
             {
-                Document<Delta> doc = GetShareDBDocument(conn, text, kvp.Key, textType);
-                tasks.Add(doc.CreateAsync(kvp.Value.Delta));
+                Document<Delta> textDataDoc = GetTextDataDocument(conn, text, kvp.Key, textType);
+                tasks.Add(textDataDoc.CreateAsync(kvp.Value.Delta));
+                if (textType == TextType.Target)
+                {
+                    Document<JToken> questionDataDoc = GetQuestionDataDocument(conn, text, kvp.Key);
+                    tasks.Add(questionDataDoc.CreateAsync(new JArray()));
+                    Document<JToken> commentDataDoc = GetCommentDataDocument(conn, text, kvp.Key);
+                    tasks.Add(commentDataDoc.CreateAsync(new JArray()));
+                }
                 chapters.Add(new Chapter { Number = kvp.Key, LastVerse = kvp.Value.LastVerse });
             }
             await Task.WhenAll(tasks);
@@ -419,9 +461,22 @@ namespace SIL.XForge.Scripture.Services
             return Path.Combine(projectPath, bookId + ".xml");
         }
 
-        private Document<Delta> GetShareDBDocument(Connection conn, TextEntity text, int chapter, TextType textType)
+        private Document<Delta> GetTextDataDocument(Connection conn, TextEntity text, int chapter, TextType textType)
         {
-            return conn.Get<Delta>("text_data", TextEntity.GetTextDataId(text.Id, chapter, textType));
+            return conn.Get<Delta>(SFDataAccessConstants.TextDataCollectionName,
+                TextEntity.GetTextDataId(text.Id, chapter, textType));
+        }
+
+        private Document<JToken> GetQuestionDataDocument(Connection conn, TextEntity text, int chapter)
+        {
+            return conn.Get<JToken>(SFDataAccessConstants.QuestionDataCollectionName,
+                TextEntity.GetJsonDataId(text.Id, chapter));
+        }
+
+        private Document<JToken> GetCommentDataDocument(Connection conn, TextEntity text, int chapter)
+        {
+            return conn.Get<JToken>(SFDataAccessConstants.CommentDataCollectionName,
+                TextEntity.GetJsonDataId(text.Id, chapter));
         }
     }
 }

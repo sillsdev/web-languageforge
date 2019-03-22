@@ -5,8 +5,8 @@ import * as localforage from 'localforage';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import * as RichText from 'rich-text';
 import { Connection, types } from 'sharedb/lib/client';
-
 import { environment } from '../environments/environment';
+import { AuthService } from './auth.service';
 import { LocationService } from './location.service';
 import { DomainModel } from './models/domain-model';
 import { RealtimeData } from './models/realtime-data';
@@ -33,15 +33,12 @@ export class RealtimeService {
   private readonly connectedDataMap = new Map<string, ConnectedData>();
   private readonly stores = new Map<string, RealtimeOfflineStore>();
 
-  constructor(private readonly domainModel: DomainModel, private readonly locationService: LocationService) {
-    const protocol = this.locationService.protocol === 'https:' ? 'wss:' : 'ws:';
-    let url = `${protocol}//${this.locationService.hostname}`;
-    if ('realtimePort' in environment && environment.realtimePort != null && environment.realtimePort !== 0) {
-      url += `:${environment.realtimePort}`;
-    }
-    url += environment.realtimeUrl;
-
-    this.ws = new ReconnectingWebSocket(url);
+  constructor(
+    private readonly domainModel: DomainModel,
+    private readonly locationService: LocationService,
+    private readonly authService: AuthService
+  ) {
+    this.ws = new ReconnectingWebSocket(() => this.getUrl());
     this.connection = new Connection(this.ws);
   }
 
@@ -77,6 +74,16 @@ export class RealtimeService {
   localDelete(identity: RecordIdentity): Promise<void> {
     const store = this.getStore(identity.type);
     return store.delete(identity.id);
+  }
+
+  private getUrl(): string {
+    const protocol = this.locationService.protocol === 'https:' ? 'wss:' : 'ws:';
+    let url = `${protocol}//${this.locationService.hostname}`;
+    if ('realtimePort' in environment && environment.realtimePort != null && environment.realtimePort !== 0) {
+      url += `:${environment.realtimePort}`;
+    }
+    url += environment.realtimeUrl + '?access_token=' + this.authService.accessToken;
+    return url;
   }
 
   private getStore(type: string): RealtimeOfflineStore {

@@ -7,13 +7,19 @@ namespace ShareDB.RichText
 {
     public class RichTextOTType : IOTType
     {
+        public static RichTextOTType Instance { get; } = new RichTextOTType();
+
+        private RichTextOTType()
+        {
+        }
+
         public string Name => "rich-text";
         public Uri Uri => new Uri("http://sharejs.org/types/rich-text/v1");
         public Type DataType => typeof(Delta);
 
         public object Apply(object snapshot, JToken op)
         {
-            var snapshotDelta = new Delta((Delta) snapshot);
+            var snapshotDelta = new Delta((Delta)snapshot);
             Delta opDelta = DeserializeDelta(op);
             return snapshotDelta.Compose(opDelta);
         }
@@ -28,7 +34,7 @@ namespace ShareDB.RichText
 
         public JToken Serialize(object data)
         {
-            return SerializeDelta((Delta) data);
+            return SerializeDelta((Delta)data);
         }
 
         public object Deserialize(JToken ops)

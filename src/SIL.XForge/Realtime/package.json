@@ -14,9 +14,13 @@
   },
   "dependencies": {
     "express": "^4.16.3",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^1.4.0",
+    "mongodb": "^2.2.36",
     "ot-json0": "^1.1.0",
     "rich-text": "^3.1.0",
     "sharedb": "^1.0.0-beta.13",
+    "sharedb-access": "^5.0.0",
     "sharedb-mongo": "^1.0.0-beta.6",
     "websocket-json-stream": "0.0.1",
     "ws": "^1.1.5"

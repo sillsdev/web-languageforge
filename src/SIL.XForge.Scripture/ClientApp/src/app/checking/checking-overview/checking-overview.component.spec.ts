@@ -163,8 +163,8 @@ class TestEnvironment {
     const text1_1id = new JsonDataId('text01', 1);
     when(this.mockedQuestionService.connect(deepEqual(text1_1id))).thenResolve(
       this.createQuestionData(text1_1id, [
-        { id: 'q1Id', owner: undefined, project: undefined, text: 'Book 1, Q1 text' },
-        { id: 'q2Id', owner: undefined, project: undefined, text: 'Book 1, Q2 text' }
+        { id: 'q1Id', ownerRef: undefined, projectRef: undefined, text: 'Book 1, Q1 text' },
+        { id: 'q2Id', ownerRef: undefined, projectRef: undefined, text: 'Book 1, Q2 text' }
       ])
     );
     const text1_3id = new JsonDataId('text01', 3);
@@ -172,7 +172,7 @@ class TestEnvironment {
     const text2_1id = new JsonDataId('text02', 1);
     when(this.mockedQuestionService.connect(deepEqual(text2_1id))).thenResolve(
       this.createQuestionData(text2_1id, [
-        { id: 'q3Id', owner: undefined, project: undefined, text: 'Book 2, Q3 text' }
+        { id: 'q3Id', ownerRef: undefined, projectRef: undefined, text: 'Book 2, Q3 text' }
       ])
     );
 

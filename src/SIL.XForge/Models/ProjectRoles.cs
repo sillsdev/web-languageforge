@@ -14,7 +14,7 @@ namespace SIL.XForge.Models
 
         public IDictionary<string, ISet<Right>> Rights { get; }
 
-        protected static IEnumerable<Right> AllRights(Domain domain)
+        protected static IEnumerable<Right> AllRights(int domain)
         {
             foreach (Operation operation in Enum.GetValues(typeof(Operation)))
                 yield return new Right(domain, operation);
