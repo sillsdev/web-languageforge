@@ -1,7 +1,8 @@
+import { MdcDialog, MdcDialogRef } from '@angular-mdc/web';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, NgModule } from '@angular/core';
 import { fakeAsync, flush } from '@angular/core/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ErrorStateMatcher, MatDialog, MatDialogRef, ShowOnDirtyErrorStateMatcher } from '@angular/material';
+import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -98,7 +99,8 @@ describe('MyAccountComponent', () => {
     );
 
     // click update
-    env.clickButton(env.updateButton('name'));
+    env.updateButton('name').nativeElement.click();
+    env.fixture.detectChanges();
 
     verifyStates(
       env,
@@ -196,10 +198,6 @@ describe('MyAccountComponent', () => {
     // click update
     env.clickButton(env.updateButton('name'));
 
-    // Time passes
-    flush();
-    env.fixture.detectChanges();
-
     verifyStates(
       env,
       'name',
@@ -235,7 +233,8 @@ describe('MyAccountComponent', () => {
     env.component.formGroup.get('contactMethod').setValue(newValue);
     env.fixture.detectChanges();
 
-    env.clickButton(env.contactMethodToggle('sms'));
+    env.contactMethodToggle('sms').nativeElement.click();
+    env.fixture.detectChanges();
     expect(env.component.formGroup.get('contactMethod').value).toEqual(newValue, 'test setup problem');
 
     verifyStates(env, 'contactMethod', {
@@ -424,8 +423,6 @@ describe('MyAccountComponent', () => {
       expect(env.contactMethodToggle('sms').nativeElement.firstChild.disabled).toBe(false);
 
       env.clickButton(env.updateButton('mobilePhone'));
-      flush();
-      env.fixture.detectChanges();
 
       expect(env.contactMethodToggle('sms').nativeElement.firstChild.disabled).toBe(true);
       expect(env.contactMethodToggle('emailSms').nativeElement.firstChild.disabled).toBe(true);
@@ -452,8 +449,6 @@ describe('MyAccountComponent', () => {
       expect(env.contactMethodToggle('email').nativeElement.firstChild.disabled).toBe(false);
 
       env.clickButton(env.updateButton('mobilePhone'));
-      flush();
-      env.fixture.detectChanges();
 
       expect(env.contactMethodToggle('sms').nativeElement.firstChild.disabled).toBe(true);
       expect(env.contactMethodToggle('emailSms').nativeElement.firstChild.disabled).toBe(true);
@@ -498,27 +493,33 @@ describe('MyAccountComponent', () => {
     }));
 
     it('should bring up a dialog if button is clicked', fakeAsync(() => {
-      when(env.mockedMatDialogRefForDAD.afterClosed()).thenReturn(of('confirmed'));
-      when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForDAD));
+      when(env.mockedDeleteAccountDialogRef.afterClosed()).thenReturn(of('confirmed'));
+      when(env.mockedDeleteAccountDialog.open(anything(), anything())).thenReturn(
+        instance(env.mockedDeleteAccountDialogRef)
+      );
       expect(env.deleteAccountButton.nativeElement.textContent).toContain('Delete my account');
       env.clickButton(env.deleteAccountButton);
-      verify(env.mockedMatDialog.open(anything(), anything())).once();
+      verify(env.mockedDeleteAccountDialog.open(anything(), anything())).once();
     }));
 
     it('should delete account if requested', fakeAsync(() => {
-      when(env.mockedMatDialogRefForDAD.afterClosed()).thenReturn(of('confirmed'));
-      when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForDAD));
+      when(env.mockedDeleteAccountDialogRef.afterClosed()).thenReturn(of('confirmed'));
+      when(env.mockedDeleteAccountDialog.open(anything(), anything())).thenReturn(
+        instance(env.mockedDeleteAccountDialogRef)
+      );
       env.clickButton(env.deleteAccountButton);
-      verify(env.mockedMatDialog.open(anything(), anything())).once();
+      verify(env.mockedDeleteAccountDialog.open(anything(), anything())).once();
       verify(env.mockedUserService.onlineDelete(anything())).once();
       expect().nothing();
     }));
 
     it('should not delete account if cancelled', fakeAsync(() => {
-      when(env.mockedMatDialogRefForDAD.afterClosed()).thenReturn(of('cancel'));
-      when(env.mockedMatDialog.open(anything(), anything())).thenReturn(instance(env.mockedMatDialogRefForDAD));
+      when(env.mockedDeleteAccountDialogRef.afterClosed()).thenReturn(of('cancel'));
+      when(env.mockedDeleteAccountDialog.open(anything(), anything())).thenReturn(
+        instance(env.mockedDeleteAccountDialogRef)
+      );
       env.clickButton(env.deleteAccountButton);
-      verify(env.mockedMatDialog.open(anything(), anything())).once();
+      verify(env.mockedDeleteAccountDialog.open(anything(), anything())).once();
       verify(env.mockedUserService.onlineDelete(anything())).never();
       expect().nothing();
     }));
@@ -526,13 +527,13 @@ describe('MyAccountComponent', () => {
 });
 
 @NgModule({
-  declarations: [MyAccountComponent],
+  declarations: [DeleteAccountDialogComponent, MyAccountComponent],
   imports: [NoopAnimationsModule, ngfModule, RouterTestingModule, UICommonModule],
-  exports: [MyAccountComponent],
+  exports: [DeleteAccountDialogComponent, MyAccountComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   // ShowOnDirtyErrorStateMatcher helps form errors show up during unit testing.
   providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }],
-  entryComponents: [MyAccountComponent]
+  entryComponents: [DeleteAccountDialogComponent, MyAccountComponent]
 })
 class TestModule {}
 
@@ -542,8 +543,8 @@ class TestEnvironment {
 
   mockedUserService: UserService;
   mockedParatextService: ParatextService;
-  mockedMatDialog: MatDialog;
-  mockedMatDialogRefForDAD: MatDialogRef<DeleteAccountDialogComponent>;
+  mockedDeleteAccountDialog: MdcDialog;
+  mockedDeleteAccountDialogRef: MdcDialogRef<DeleteAccountDialogComponent>;
   mockedNoticeService: NoticeService;
   mockedAuthService: AuthService;
 
@@ -552,8 +553,8 @@ class TestEnvironment {
   constructor(public userInDatabase: User) {
     this.mockedUserService = mock(UserService);
     this.mockedParatextService = mock(ParatextService);
-    this.mockedMatDialog = mock(MatDialog);
-    this.mockedMatDialogRefForDAD = mock(MatDialogRef);
+    this.mockedDeleteAccountDialog = mock(MdcDialog);
+    this.mockedDeleteAccountDialogRef = mock(MdcDialogRef);
     this.mockedNoticeService = mock(NoticeService);
     this.mockedAuthService = mock(AuthService);
 
@@ -574,7 +575,7 @@ class TestEnvironment {
       providers: [
         { provide: UserService, useFactory: () => instance(this.mockedUserService) },
         { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
-        { provide: MatDialog, useFactory: () => instance(this.mockedMatDialog) },
+        { provide: MdcDialog, useFactory: () => instance(this.mockedDeleteAccountDialog) },
         { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
         { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
       ],
@@ -601,6 +602,7 @@ class TestEnvironment {
   /** After calling, flush(); to make the database promise resolve. */
   clickButton(button: DebugElement): void {
     button.nativeElement.click();
+    flush();
     this.fixture.detectChanges();
   }
 
@@ -736,16 +738,16 @@ function verifyStates(
   updateButton?: any
 ) {
   expect(env.component.controlStates.get(controlName)).toBe(expected.state);
-  expect(env.spinner(controlName) !== null).toBe(expected.spinner);
-  expect(env.greenCheck(controlName) !== null).toBe(expected.greenCheck);
-  expect(env.errorIcon(controlName) !== null).toBe(expected.errorIcon);
-  expect(env.component.formGroup.get(controlName).enabled).toBe(expected.inputEnabled);
+  expect(env.spinner(controlName) !== null).toBe(expected.spinner, 'spinner');
+  expect(env.greenCheck(controlName) !== null).toBe(expected.greenCheck, 'greencheck');
+  expect(env.errorIcon(controlName) !== null).toBe(expected.errorIcon, 'errorIcon');
+  expect(env.component.formGroup.get(controlName).enabled).toBe(expected.inputEnabled, controlName + '.enabled');
 
   if (expected.updateButtonEnabled !== undefined) {
-    expect(updateButton.disabled).not.toBe(expected.updateButtonEnabled);
+    expect(updateButton.disabled).not.toBe(expected.updateButtonEnabled, controlName + ' update button enabled');
   }
 
   if (expected.arrow !== undefined) {
-    expect(env.buttonIcon(controlName) !== null).toBe(expected.arrow);
+    expect(env.buttonIcon(controlName) !== null).toBe(expected.arrow, controlName + ' arrow');
   }
 }

@@ -1,8 +1,7 @@
-import { OverlayContainer } from '@angular/cdk/overlay';
+import { MdcDialog, MdcDialogRef, OverlayContainer } from '@angular-mdc/web';
 import { Component, Directive, NgModule, ViewChild, ViewContainerRef } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, flush, inject, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { instance, mock } from 'ts-mockito';
 
@@ -40,8 +39,13 @@ class ChildViewContainerComponent {
 class DialogTestModule {}
 
 describe('DeleteAccountDialogComponent', () => {
-  let dialog: MatDialog;
-  let dialogRef: MatDialogRef<DeleteAccountDialogComponent>;
+  // The first phrase on the delete button is in a span that disappears when the screen is too narrow.
+  // The MdcDialogButton trims whitespace around HTML tags, so the space between must be &nbsp;
+  const DELETE_BUTTON_TEXT = 'I understand the consequences;\xA0delete my account';
+  const USER_NAME = 'JohnnyBGoode';
+
+  let dialog: MdcDialog;
+  let dialogRef: MdcDialogRef<DeleteAccountDialogComponent>;
   let component: DeleteAccountDialogComponent;
   let testViewContainerRef: ViewContainerRef;
   let viewContainerFixture: ComponentFixture<ChildViewContainerComponent>;
@@ -64,11 +68,11 @@ describe('DeleteAccountDialogComponent', () => {
     testViewContainerRef = viewContainerFixture.componentInstance.childViewContainer;
   });
 
-  beforeEach(inject([MatDialog, OverlayContainer], (d: MatDialog, oc: OverlayContainer) => {
+  beforeEach(inject([MdcDialog, OverlayContainer], (d: MdcDialog, oc: OverlayContainer) => {
     dialog = d;
     const config = {
       data: {
-        name: 'JohnnyByGood',
+        name: USER_NAME,
         viewContainerRef: testViewContainerRef
       }
     };
@@ -84,31 +88,31 @@ describe('DeleteAccountDialogComponent', () => {
 
   it('should show a dialog', fakeAsync(() => {
     const heading = 'Are you sure you want to delete your account?';
-    expect(overlayContainerElement.querySelector('h2').textContent).toContain(heading);
+    expect(overlayContainerElement.querySelector('mdc-dialog-title').textContent).toContain(heading);
   }));
 
   it('should have a delete account button', fakeAsync(() => {
-    const dialogContainer = overlayContainerElement.querySelector('mat-dialog-container');
-    expect(dialogContainer.querySelector('#confirm-delete-button').textContent).toContain(
-      'I understand the consequences, delete my account'
-    );
+    const dialogContainer = overlayContainerElement.querySelector('mdc-dialog-container');
+    expect(dialogContainer.querySelector('#confirm-delete-button').textContent).toContain(DELETE_BUTTON_TEXT);
   }));
 
   it('should enable delete button if matching username is entered', fakeAsync(() => {
     const afterCloseCallback = jasmine.createSpy('afterClose callback');
     dialogRef.afterClosed().subscribe(afterCloseCallback);
-    const dialogContainer = overlayContainerElement.querySelector('mat-dialog-container');
+    const dialogContainer = overlayContainerElement.querySelector('mdc-dialog-container');
     const btnDelete: HTMLElement = dialogContainer.querySelector('#confirm-delete-button');
-    expect(btnDelete.textContent).toContain('I understand the consequences, delete my account');
-    expect(component.data.name).toEqual('JohnnyByGood');
-    expect(component.deleteDisabled).toBeTruthy();
-    component.userNameEntry.setValue('JohnnyByGood');
-    expect(component.deleteDisabled).toBeFalsy();
-    btnDelete.click();
+    expect(btnDelete.textContent).toContain(DELETE_BUTTON_TEXT);
+    expect(component.data.name).toEqual(USER_NAME);
+    expect(component.deleteDisabled).toBe(true);
+    component.userNameEntry.setValue(USER_NAME);
     viewContainerFixture.detectChanges();
-    tick();
+    expect(component.userNameEntry.value).toEqual(USER_NAME);
+    expect(component.deleteDisabled).toBe(false);
+    btnDelete.click();
+    flush();
+    viewContainerFixture.detectChanges();
     expect(afterCloseCallback).toHaveBeenCalledTimes(1);
-    expect(overlayContainerElement.querySelector('mat-dialog-container')).toBeNull();
+    expect(overlayContainerElement.querySelector('mdc-dialog-container')).toBeNull();
     flush();
   }));
 });

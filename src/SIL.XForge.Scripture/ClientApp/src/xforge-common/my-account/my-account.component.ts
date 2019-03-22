@@ -1,6 +1,7 @@
+import { MdcDialog, MdcDialogRef } from '@angular-mdc/web';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DateAdapter, MatDialog, MatDialogRef, NativeDateAdapter } from '@angular/material';
+import { DateAdapter, NativeDateAdapter } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { distanceInWordsToNow } from 'date-fns';
 
@@ -73,11 +74,11 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
   private readonly title = `Account details - ${environment.siteName}`;
   private doneInitialDatabaseImport: boolean = false;
   private controlsWithUpdateButton: string[] = ['name', 'email', 'mobilePhone'];
-  private activeDialogRef: MatDialogRef<DeleteAccountDialogComponent>;
+  private activeDialogRef: MdcDialogRef<DeleteAccountDialogComponent>;
 
   constructor(
     private readonly userService: UserService,
-    private readonly dialog: MatDialog,
+    private readonly dialog: MdcDialog,
     private readonly authService: AuthService,
     private readonly noticeService: NoticeService,
     private readonly titleService: Title,

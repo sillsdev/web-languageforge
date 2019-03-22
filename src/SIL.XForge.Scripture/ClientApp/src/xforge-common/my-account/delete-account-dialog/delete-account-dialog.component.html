@@ -1,16 +1,24 @@
-<h2 mat-dialog-title><i class="material-icons">warning</i> Are you sure you want to delete your account?</h2>
-<mat-dialog-content>
-  <p>
-    This action <strong>cannot</strong> be undone. This will permanently delete the
-    <strong>{{ data.name }}</strong> account and remove you from all your projects.
-  </p>
-  <br />
-  <p>Please type your name to confirm.</p>
-  <mat-form-field> <input matInput placeholder="Enter your name" [formControl]="userNameEntry" /> </mat-form-field>
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button mat-dialog-close="cancel" class="cancel-button">Cancel</button>
-  <button mat-stroked-button id="confirm-delete-button" mat-dialog-close="confirmed" [disabled]="deleteDisabled">
-    I understand the consequences, delete my account
-  </button>
-</mat-dialog-actions>
+<mdc-dialog class="broad">
+  <mdc-dialog-container>
+    <mdc-dialog-surface>
+      <mdc-dialog-title> <mdc-icon>warning</mdc-icon> Are you sure you want to delete your account? </mdc-dialog-title>
+      <mdc-dialog-content>
+        <p>
+          This action <strong>cannot</strong> be undone. This will permanently delete the
+          <strong>{{ data.name.replace(" ", "&nbsp;") }}</strong> account and remove you from all your projects.
+        </p>
+        <br />
+        <p>Please type your name to confirm.</p>
+        <mdc-form-field>
+          <mdc-text-field label="Enter your name" [formControl]="userNameEntry"></mdc-text-field>
+        </mdc-form-field>
+      </mdc-dialog-content>
+      <mdc-dialog-actions>
+        <button mdcDialogButton mdcDialogAction="close" class="cancel-button">Cancel</button>
+        <button mdcDialogButton mdcDialogAction="confirmed" id="confirm-delete-button" [disabled]="deleteDisabled">
+          <span fxHide.lt-sm>I understand the consequences;&nbsp;</span>delete my account
+        </button>
+      </mdc-dialog-actions>
+    </mdc-dialog-surface>
+  </mdc-dialog-container>
+</mdc-dialog>
