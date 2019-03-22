@@ -26,8 +26,7 @@ export class ParatextService {
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
       Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + this.authService.accessToken
+      'Content-Type': 'application/json'
     });
   }
 }

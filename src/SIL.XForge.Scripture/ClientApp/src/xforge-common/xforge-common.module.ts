@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { ngfModule } from 'angular-file';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { AvatarModule } from 'ngx-avatar';
-
 import { AvatarComponent } from './avatar/avatar.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { EmailInviteComponent } from './email-invite/email-invite.component';
@@ -40,12 +39,7 @@ export const xForgeCommonEntryComponents = [InviteDialogComponent, SaDeleteDialo
     AvatarModule,
     CommonModule,
     ngfModule,
-    OAuthModule.forRoot({
-      resourceServer: {
-        allowedUrls: ['json-api'],
-        sendAccessToken: true
-      }
-    }),
+    OAuthModule,
     RouterModule,
     UICommonModule
   ],
