@@ -1,10 +1,10 @@
-import { CommonModule, DatePipe } from '@angular/common';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { ActivatedRoute, Params } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { DebugElement } from '@angular/core';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 import { of, Subject } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
-
-import { AuthService } from 'xforge-common/auth.service';
 import { NoticeService } from 'xforge-common/notice.service';
 import { ParatextService } from 'xforge-common/paratext.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
@@ -16,16 +16,17 @@ import { SyncJobService } from '../core/sync-job.service';
 import { SyncComponent } from './sync.component';
 
 describe('SyncComponent', () => {
-  it('should display sign in to paratext', fakeAsync(() => {
+  it('should display log in to paratext', fakeAsync(() => {
     const env = new TestEnvironment();
     expect(env.title.textContent).toContain('Synchronize Sync Test Project with Paratext');
-    expect(env.signInButton.textContent).toContain('Sign in to Paratext');
+    expect(env.logInButton.nativeElement.textContent).toContain('Log in to Paratext');
+    expect(env.syncButton).toBeNull();
     expect(env.lastSyncDate).toBeNull();
   }));
 
-  it('should redirect the user to sign in to paratext', fakeAsync(() => {
+  it('should redirect the user to log in to paratext', fakeAsync(() => {
     const env = new TestEnvironment();
-    env.clickButton(env.signInButton);
+    env.clickElement(env.logInButton);
     verify(env.mockedParatextService.logIn(anything())).once();
     expect().nothing();
   }));
@@ -33,28 +34,62 @@ describe('SyncComponent', () => {
   it('should display sync project', fakeAsync(() => {
     const env = new TestEnvironment(true);
     expect(env.title.textContent).toContain('Synchronize Sync Test Project with Paratext');
-    expect(env.syncButton.textContent).toContain('Synchronize');
-    expect(env.lastSyncDate.textContent).toContain('01 February 2019');
+    expect(env.logInButton).toBeNull();
+    expect(env.syncButton.nativeElement.textContent).toContain('Synchronize');
+    expect(env.lastSyncDate.textContent).toContain(' 2 months ago');
   }));
 
   it('should sync project when the button is clicked', fakeAsync(() => {
     const env = new TestEnvironment(true);
-    verify(env.mockedProjectService.onlineGet(anything())).once();
-    env.clickButton(env.syncButton);
-    tick();
+    verify(env.mockedProjectService.onlineGet(anything(), anything())).once();
+    env.clickElement(env.syncButton);
+    verify(env.mockedSyncJobService.start(anything())).once();
+    verify(env.mockedSyncJobService.listen(anything())).once();
+    // Simulate sync starting
+    env.emitSyncJob(SyncJobState.PENDING);
+    expect(env.component.syncJobActive).toBe(true);
+    expect(env.progressBar).toBeDefined();
+    expect(env.component.isProgressDeterminate).toBe(false);
+    expect(env.syncMessage.textContent).toContain('Your project is being synchronized');
+    expect(env.logInButton).toBeNull();
+    expect(env.syncButton).toBeNull();
+    // Simulate sync in progress
+    env.emitSyncJob(SyncJobState.SYNCING, 0.1);
+    expect(env.component.syncJobActive).toBe(true);
+    expect(env.progressBar).toBeDefined();
+    expect(env.component.isProgressDeterminate).toBe(true);
+    // Simulate sync completed
+    env.emitSyncJob(SyncJobState.IDLE);
+    expect(env.component.syncJobActive).toBe(false);
+    expect(env.component.projectReload$.next).toHaveBeenCalledTimes(1);
+    verify(env.mockedNoticeService.show('Successfully synchronized Sync Test Project with Paratext.'));
+  }));
+
+  it('should report error if sync has a problem', fakeAsync(() => {
+    const env = new TestEnvironment(true);
+    verify(env.mockedProjectService.onlineGet(anything(), anything())).once();
+    env.clickElement(env.syncButton);
     verify(env.mockedSyncJobService.start(anything())).once();
     verify(env.mockedSyncJobService.listen(anything())).once();
     // Simulate sync in progress
     env.emitSyncJob(SyncJobState.PENDING);
-    env.fixture.detectChanges();
     expect(env.component.syncJobActive).toBe(true);
     expect(env.progressBar).toBeDefined();
-    expect(env.syncMessage.textContent).toContain('Your project is being synchronized');
-    // Simulate sync completed
-    env.emitSyncJob(SyncJobState.IDLE);
+    // Simulate sync on hold
+    env.emitSyncJob(SyncJobState.HOLD);
     expect(env.component.syncJobActive).toBe(false);
-    verify(env.mockedProjectService.onlineGet(anything())).twice();
-    verify(env.mockedNoticeService.show('Successfully synchronized Sync Test Project with Paratext.'));
+    expect(env.component.projectReload$.next).not.toHaveBeenCalled();
+    verify(
+      env.mockedNoticeService.show(
+        'Something went wrong while synchronizing the Sync Test Project with Paratext. Please try again.'
+      )
+    );
+  }));
+
+  it('should show progress if in-progress when loaded', fakeAsync(() => {
+    const env = new TestEnvironment(true, true);
+    expect(env.component.syncJobActive).toBe(true);
+    expect(env.progressBar).toBeDefined();
   }));
 });
 
@@ -62,36 +97,30 @@ class TestEnvironment {
   fixture: ComponentFixture<SyncComponent>;
   component: SyncComponent;
 
-  mockedActivatedRoute: ActivatedRoute;
-  mockedAuthService: AuthService;
-  mockedParatextService: ParatextService;
-  mockedProjectService: SFProjectService;
-  mockedSyncJobService: SyncJobService;
-  mockedNoticeService: NoticeService;
+  mockedActivatedRoute: ActivatedRoute = mock(ActivatedRoute);
+  mockedNoticeService: NoticeService = mock(NoticeService);
+  mockedParatextService: ParatextService = mock(ParatextService);
+  mockedProjectService: SFProjectService = mock(SFProjectService);
+  mockedSyncJobService: SyncJobService = mock(SyncJobService);
 
+  private activeSubject: Subject<SyncJob> = new Subject<SyncJob>();
+  private subject: Subject<SyncJob> = new Subject<SyncJob>();
   private syncJob: SyncJob;
-  private subject: Subject<SyncJob>;
 
-  constructor(connected: boolean = false) {
-    this.mockedActivatedRoute = mock(ActivatedRoute);
-    this.mockedAuthService = mock(AuthService);
-    this.mockedParatextService = mock(ParatextService);
-    this.mockedProjectService = mock(SFProjectService);
-    this.mockedSyncJobService = mock(SyncJobService);
-    this.mockedNoticeService = mock(NoticeService);
-
-    const parameters = { ['projectId']: 'testproject01' } as Params;
-    when(this.mockedActivatedRoute.params).thenReturn(of(parameters));
+  constructor(isParatextAccountConnected: boolean = false, isInProgress: boolean = false) {
+    when(this.mockedActivatedRoute.params).thenReturn(of({ projectId: 'testproject01' }));
+    const date = new Date();
+    date.setMonth(date.getMonth() - 2);
     const project = new SFProject({
       id: 'testproject01',
       projectName: 'Sync Test Project',
       paratextId: 'pt01',
-      lastSyncedDate: new Date('2019-02-01T12:00:00.000Z')
+      lastSyncedDate: date.toUTCString()
     });
-    when(this.mockedProjectService.onlineGet(anything())).thenReturn(of(project));
-    const ptUsername = connected ? 'Paratext User01' : '';
+    when(this.mockedProjectService.onlineGet(anything(), anything())).thenReturn(of(project));
+    const ptUsername = isParatextAccountConnected ? 'Paratext User01' : '';
     when(this.mockedParatextService.getParatextUsername()).thenReturn(of(ptUsername));
-    this.subject = new Subject<SyncJob>();
+    when(this.mockedSyncJobService.onlineGetActive(anything())).thenReturn(this.activeSubject);
     when(this.mockedSyncJobService.listen(anything())).thenReturn(this.subject);
     this.syncJob = new SyncJob({
       id: 'syncjob01',
@@ -102,9 +131,8 @@ class TestEnvironment {
       declarations: [SyncComponent],
       imports: [CommonModule, UICommonModule],
       providers: [
-        DatePipe,
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
-        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
         { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
         { provide: SFProjectService, useFactory: () => instance(this.mockedProjectService) },
         { provide: SyncJobService, useFactory: () => instance(this.mockedSyncJobService) }
@@ -113,24 +141,31 @@ class TestEnvironment {
 
     this.fixture = TestBed.createComponent(SyncComponent);
     this.component = this.fixture.componentInstance;
+    spyOn(this.component.projectReload$, 'next');
     this.fixture.detectChanges();
     tick();
+    if (isInProgress) {
+      this.emitSyncJob(SyncJobState.SYNCING, 0.1);
+    } else {
+      this.activeSubject.next(null);
+      this.fixture.detectChanges();
+    }
+  }
+
+  get logInButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#btn-log-in'));
+  }
+
+  get syncButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#btn-sync'));
+  }
+
+  get progressBar(): DebugElement {
+    return this.fixture.debugElement.query(By.css('mdc-linear-progress'));
   }
 
   get title(): HTMLElement {
     return this.fixture.nativeElement.querySelector('#title');
-  }
-
-  get signInButton(): HTMLElement {
-    return this.fixture.nativeElement.querySelector('#btn-sign-in');
-  }
-
-  get syncButton(): HTMLElement {
-    return this.fixture.nativeElement.querySelector('#btn-sync');
-  }
-
-  get progressBar(): HTMLElement {
-    return this.fixture.nativeElement.querySelector('mdc-linear-progress');
   }
 
   get lastSyncDate(): HTMLElement {
@@ -141,13 +176,20 @@ class TestEnvironment {
     return this.fixture.nativeElement.querySelector('#sync-message');
   }
 
-  clickButton(button: HTMLElement): void {
-    button.click();
+  clickElement(element: HTMLElement | DebugElement): void {
+    if (element instanceof DebugElement) {
+      element = element.nativeElement as HTMLElement;
+    }
+    element.click();
     this.fixture.detectChanges();
+    flush();
   }
 
-  emitSyncJob(state: SyncJobState): void {
+  emitSyncJob(state: SyncJobState, percentComplete: number = 0): void {
     this.syncJob.state = state;
+    this.syncJob.percentCompleted = percentComplete;
     this.subject.next(this.syncJob);
+    this.activeSubject.next(this.syncJob);
+    this.fixture.detectChanges();
   }
 }

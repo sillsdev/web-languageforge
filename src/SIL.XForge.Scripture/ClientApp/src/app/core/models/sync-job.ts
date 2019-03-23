@@ -17,6 +17,10 @@ export class SyncJob extends SyncJobBase {
   get isActive(): boolean {
     return this.state === SyncJobState.PENDING || this.state === SyncJobState.SYNCING;
   }
+
+  get isIdle(): boolean {
+    return this.state === SyncJobState.IDLE;
+  }
 }
 
 export { SyncJobRef } from './sfdomain-model.generated';

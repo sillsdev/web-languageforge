@@ -3,7 +3,7 @@ import { interval, Observable } from 'rxjs';
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive';
 import { map, switchMap } from 'rxjs/operators';
 
-import { JsonApiService, QueryObservable } from 'xforge-common/json-api.service';
+import { JsonApiService } from 'xforge-common/json-api.service';
 import { UserRef } from 'xforge-common/models/user';
 import { ResourceService } from 'xforge-common/resource.service';
 import { UserService } from 'xforge-common/user.service';
@@ -19,21 +19,19 @@ export class SyncJobService extends ResourceService {
     super(SyncJob.TYPE, jsonApiService);
   }
 
-  onlineGet(id: string): QueryObservable<SyncJob> {
-    return this.jsonApiService.onlineGet(this.identity(id));
+  onlineGet(id: string): Observable<SyncJob> {
+    return this.jsonApiService.onlineGet<SyncJob>(this.identity(id)).pipe(map(r => r.data));
   }
 
-  onlineGetActive(projectId: string): QueryObservable<SyncJob> {
-    return this.jsonApiService.onlineGetRelated(
-      { type: SFProject.TYPE, id: projectId },
-      nameof<SFProject>('activeSyncJob')
-    );
+  onlineGetActive(projectId: string): Observable<SyncJob> {
+    return this.jsonApiService
+      .onlineGetRelated<SyncJob>({ type: SFProject.TYPE, id: projectId }, nameof<SFProject>('activeSyncJob'))
+      .pipe(map(r => r.data));
   }
 
   listen(jobId: string): Observable<SyncJob> {
     return interval(2000).pipe(
       switchMap(() => this.onlineGet(jobId)),
-      map(r => r.data),
       takeWhileInclusive(j => j.isActive)
     );
   }

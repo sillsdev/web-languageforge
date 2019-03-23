@@ -1,28 +1,46 @@
+@import '~src/global';
+
 .sync-card {
-  max-width: 600px;
+  max-width: 37rem;
+  min-width: 18rem;
   align-self: center;
 }
 
 h2 {
   align-self: center;
+  text-align: center;
 }
 
 .card-content {
-  padding: 15px;
+  padding: 1rem;
   align-self: center;
 }
 
 .action-button {
-  width: 300px;
-  height: 40px;
   align-self: center;
-  margin-bottom: 15px;
 }
 
-mdc-linear-progress {
-  margin-bottom: 15px;
+#btn-sync {
+  margin-bottom: 1rem;
+}
+
+#btn-log-in {
+  background-color: $pt-button-green;
+  color: white;
+  height: 2.5rem;
+}
+
+.paratext-logo {
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.5rem;
+}
+
+#sync-message {
+  margin-bottom: 1rem;
 }
 
 .sync-info {
   align-self: center;
+  color: var(--mdc-theme-text-hint-on-background);
 }
