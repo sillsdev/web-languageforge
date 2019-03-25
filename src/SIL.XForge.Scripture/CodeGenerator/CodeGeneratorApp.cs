@@ -47,6 +47,7 @@ namespace SIL.XForge.Scripture.CodeGenerator
             TypeScriptInterfaces = new List<string>
             {
                 "CheckingConfig",
+                "CheckingConfigShare",
                 "TaskConfig",
                 "TranslateConfig",
                 "InputSystem",
