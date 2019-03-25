@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ShareDB;
 using ShareDB.RichText;
+using SIL.Machine.WebApi.Services;
 using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
@@ -105,13 +106,14 @@ namespace SIL.XForge.Scripture.Services
             { "MAN", "The Prayer of Manasseh" }
         };
 
+        private readonly IOptions<SiteOptions> _siteOptions;
+        private readonly IOptions<RealtimeOptions> _realtimeOptions;
         private readonly IRepository<UserEntity> _users;
         private readonly IRepository<SyncJobEntity> _jobs;
         private readonly IRepository<SFProjectEntity> _projects;
-        private readonly IParatextService _paratextService;
-        private readonly IOptions<SiteOptions> _siteOptions;
-        private readonly IOptions<RealtimeOptions> _realtimeOptions;
         private readonly IRepository<TextEntity> _texts;
+        private readonly IEngineService _engineService;
+        private readonly IParatextService _paratextService;
         private readonly DeltaUsxMapper _deltaUsxMapper;
         private readonly ILogger<ParatextSyncRunner> _logger;
 
@@ -122,7 +124,8 @@ namespace SIL.XForge.Scripture.Services
         public ParatextSyncRunner(IOptions<SiteOptions> siteOptions,
             IOptions<RealtimeOptions> realtimeOptions, IRepository<UserEntity> users,
             IRepository<SyncJobEntity> jobs, IRepository<SFProjectEntity> projects,
-            IParatextService paratextService, IRepository<TextEntity> texts,
+            IRepository<TextEntity> texts,
+            IEngineService engineService, IParatextService paratextService,
             DeltaUsxMapper deltaUsxMapper, ILogger<ParatextSyncRunner> logger)
         {
             _siteOptions = siteOptions;
@@ -130,8 +133,9 @@ namespace SIL.XForge.Scripture.Services
             _users = users;
             _jobs = jobs;
             _projects = projects;
-            _paratextService = paratextService;
             _texts = texts;
+            _engineService = engineService;
+            _paratextService = paratextService;
             _deltaUsxMapper = deltaUsxMapper;
             _logger = logger;
         }
@@ -223,6 +227,10 @@ namespace SIL.XForge.Scripture.Services
                             .Unset(j => j.BackgroundJobId));
                         await _projects.UpdateAsync(project,
                             u => u.Set(p => p.LastSyncedDate, _job.DateModified));
+
+                        // start training Machine engine
+                        await _engineService.StartBuildAsync(SIL.Machine.WebApi.DataAccess.EngineLocatorType.Project,
+                            _job.ProjectRef);
                     }
                 }
             }

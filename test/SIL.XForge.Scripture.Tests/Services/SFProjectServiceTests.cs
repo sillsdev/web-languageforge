@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Hangfire;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Models;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using NUnit.Framework;
 using SIL.Machine.WebApi.Services;
+using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 using SIL.XForge.Scripture.Models;
 using SIL.XForge.Services;
@@ -77,6 +79,73 @@ namespace SIL.XForge.Scripture.Services
         }
 
         [Test]
+        public async Task UpdateAsync_ChangeProject_SideEffects()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser("user01", SystemRoles.User);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("translate-config"), new TranslateConfig
+                            {
+                                Enabled = true,
+                                SourceParatextId = "changedId"
+                            }
+                        }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+                var resource = new SFProjectResource
+                {
+                    Id = "project01",
+                    TranslateConfig = new TranslateConfig { Enabled = true, SourceParatextId = "changedId" }
+                };
+                var jobs = await env.Jobs.GetAllAsync();
+                Assert.That(jobs.Count, Is.EqualTo(1));
+
+                SFProjectResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.TranslateConfig.SourceParatextId, Is.EqualTo("changedId"));
+                SyncJobEntity runningJob = await env.Jobs.GetAsync("job01");
+                Assert.That(runningJob, Is.Not.Null);
+                jobs = await env.Jobs.GetAllAsync();
+                Assert.That(jobs.Count, Is.EqualTo(2));
+                env.BackgroundJobClient.Received(1).ChangeState("backgroundJob01", Arg.Any<Hangfire.States.IState>(),
+                    Arg.Any<string>());
+            }
+        }
+
+        [Test]
+        public async Task UpdateAsync_EnableTranslate_NoSideEffects()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser("user01", SystemRoles.User);
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("translate-config"), new TranslateConfig { Enabled = true } }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+                var resource = new SFProjectResource
+                {
+                    Id = "project01",
+                    TranslateConfig = new TranslateConfig { Enabled = true }
+                };
+
+                SFProjectResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.TranslateConfig.Enabled, Is.True);
+                SyncJobEntity runningJob = await env.Jobs.GetAsync("job01");
+                Assert.That(runningJob, Is.Not.Null);
+                var jobs = await env.Jobs.GetAllAsync();
+                Assert.That(jobs.Count, Is.EqualTo(1));
+                env.BackgroundJobClient.DidNotReceive().ChangeState(Arg.Any<string>(),
+                    Arg.Any<Hangfire.States.IState>(), Arg.Any<string>());
+            }
+        }
+
+        [Test]
         public async Task GetAsync_UserRole()
         {
             using (var env = new TestEnvironment())
@@ -136,11 +205,23 @@ namespace SIL.XForge.Scripture.Services
             public TestEnvironment()
                 : base("projects")
             {
+                Jobs = new MemoryRepository<SyncJobEntity>(new[]
+                    {
+                        new SyncJobEntity
+                        {
+                            Id = "job01",
+                            ProjectRef = "project01",
+                            OwnerRef = "user01",
+                            State = SyncJobEntity.SyncingState,
+                            BackgroundJobId = "backgroundJob01"
+                        }
+                    });
                 EngineService = Substitute.For<IEngineService>();
+                BackgroundJobClient = Substitute.For<IBackgroundJobClient>();
                 SyncJobMapper = Substitute.For<IProjectDataMapper<SyncJobResource, SyncJobEntity>>();
                 TextMapper = Substitute.For<IProjectDataMapper<TextResource, TextEntity>>();
-                Service = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, EngineService,
-                    SiteOptions)
+                Service = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, Jobs, EngineService,
+                    SiteOptions, BackgroundJobClient)
                 {
                     SyncJobMapper = SyncJobMapper,
                     TextMapper = TextMapper
@@ -148,7 +229,9 @@ namespace SIL.XForge.Scripture.Services
             }
 
             public SFProjectService Service { get; }
+            public IRepository<SyncJobEntity> Jobs { get; }
             public IEngineService EngineService { get; }
+            public IBackgroundJobClient BackgroundJobClient { get; }
             public IProjectDataMapper<SyncJobResource, SyncJobEntity> SyncJobMapper { get; }
             public IProjectDataMapper<TextResource, TextEntity> TextMapper { get; }
 

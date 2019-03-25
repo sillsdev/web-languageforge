@@ -1,0 +1,8 @@
+<mat-spinner
+  *ngIf="state === ElementState.Submitting && !formGroup.errors"
+  [diameter]="15"
+  class="update-button-spinner"
+  aria-label="Update in progress"
+></mat-spinner>
+<mdc-icon *ngIf="state === ElementState.Submitted && !formGroup.errors" class="check-icon">done</mdc-icon>
+<mdc-icon *ngIf="state === ElementState.Error && !formGroup.errors" class="error-icon">error</mdc-icon>

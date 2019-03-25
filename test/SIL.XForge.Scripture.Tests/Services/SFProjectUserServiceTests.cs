@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Hangfire;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Internal.Query;
 using JsonApiDotNetCore.Models;
@@ -263,12 +264,14 @@ namespace SIL.XForge.Scripture.Services
                         new UserEntity { Id = "user03", Username = "user03" }
                     });
                 ParatextService = Substitute.For<IParatextService>();
+                var jobs = Substitute.For<IRepository<SyncJobEntity>>();
                 var engineService = Substitute.For<IEngineService>();
+                var backgroundJobClient = Substitute.For<IBackgroundJobClient>();
                 Service = new SFProjectUserService(JsonApiContext, Mapper, UserAccessor, Entities, Users,
                     ParatextService)
                 {
-                    ProjectMapper = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, engineService,
-                        SiteOptions),
+                    ProjectMapper = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, jobs,
+                        engineService, SiteOptions, backgroundJobClient),
                     UserMapper = new UserService(JsonApiContext, Mapper, UserAccessor, Users, SiteOptions)
                 };
             }
