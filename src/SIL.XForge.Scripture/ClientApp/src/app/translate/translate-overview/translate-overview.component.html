@@ -1,0 +1,11 @@
+<div fxLayout="row">
+  <h2 id="translate-overview-title"><mdc-icon>book</mdc-icon>Books Translated</h2>
+</div>
+<div *ngIf="!isLoading">
+  <mdc-list class="text-list">
+    <mdc-list-item *ngFor="let text of texts" fxLayout="column" fxLayoutAlign=" start">
+      <span>{{ text.name }}</span>
+      <mdc-linear-progress determinate [progress]="getTranslationProgress(text)"></mdc-linear-progress>
+    </mdc-list-item>
+  </mdc-list>
+</div>

@@ -30,6 +30,30 @@ export class TextData extends RealtimeData<DeltaStatic, DeltaStatic> {
     super(TextData.TYPE, doc, store);
   }
 
+  getEmptyVerses(): number {
+    let emptyVerses = 0;
+    let curVerseRef = '';
+    for (const op of this.data.ops) {
+      if (typeof op.insert === 'string') {
+        if (curVerseRef !== '') {
+          curVerseRef = '';
+          continue;
+        }
+      }
+      if (op.attributes != null && op.insert) {
+        if (op.attributes.verse != null) {
+          curVerseRef = op.insert.verse;
+        }
+        if (op.insert.blank != null && curVerseRef !== '') {
+          emptyVerses++;
+          curVerseRef = '';
+          continue;
+        }
+      }
+    }
+    return emptyVerses;
+  }
+
   protected prepareDataForStore(data: DeltaStatic): any {
     return { ops: data.ops };
   }
