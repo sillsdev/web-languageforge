@@ -130,6 +130,8 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
       });
     } else {
       await this.projectUserService.onlineCreate(values.project.projectId, this.userService.currentUserId);
+      // Fetch project to offline storage
+      await this.projectService.onlineGet(values.project.projectId).toPromise();
       this.router.navigate(['/projects', values.project.projectId]);
     }
   }

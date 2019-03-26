@@ -15,6 +15,7 @@ import { Text } from '../core/models/text';
 import { SFAdminAuthGuard } from '../shared/sfadmin-auth.guard';
 import { ProjectDeletedDialogComponent } from './project-deleted-dialog/project-deleted-dialog.component';
 
+/** Project navigation menu, shown while working on a project. */
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',

@@ -101,6 +101,8 @@ describe('ConnectProjectComponent', () => {
     verify(env.mockedSFProjectUserService.onlineCreate('project01', 'user01')).once();
 
     verify(env.mockedRouter.navigate(deepEqual(['/projects', 'project01']))).once();
+
+    verify(env.mockedSFProjectService.onlineGet(anything())).once();
   }));
 
   it('should create when non-existent project is selected', fakeAsync(() => {
@@ -206,6 +208,7 @@ class TestEnvironment {
       new SFProjectUser({ id: 'projectuser01' })
     );
     when(this.mockedSFProjectService.onlineCreate(anything())).thenResolve(new SFProject({ id: 'project01' }));
+    when(this.mockedSFProjectService.onlineGet(anything())).thenReturn(of(null));
     when(this.mockedUserService.currentUserId).thenReturn('user01');
     when(this.mockedRemoteTranslationEngine.startTraining()).thenResolve();
     when(this.mockedSFProjectService.createTranslationEngine(anything())).thenReturn(
