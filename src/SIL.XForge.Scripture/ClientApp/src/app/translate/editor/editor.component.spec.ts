@@ -8,13 +8,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import {
   createRange,
   InteractiveTranslationSession,
+  ProgressStatus,
   RemoteTranslationEngine,
   TranslationResult,
   TranslationResultBuilder,
   WordAlignmentMatrix
 } from '@sillsdev/machine';
 import Quill, { DeltaStatic } from 'quill';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, defer, of, Subject } from 'rxjs';
 import { anything, deepEqual, instance, mock, resetCalls, verify, when } from 'ts-mockito';
 import { MapQueryResults } from 'xforge-common/json-api.service';
 import { UserRef } from 'xforge-common/models/user';
@@ -353,6 +354,69 @@ describe('EditorComponent', () => {
 
     env.dispose();
   }));
+
+  it('training status', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.setTranslateConfig({ selectedTextRef: 'text01', selectedChapter: 1, selectedSegment: 'verse_1_1' });
+    env.waitForSuggestion();
+    expect(env.component.target.segmentRef).toBe('verse_1_1');
+    expect(env.component.showTrainingProgress).toBe(false);
+    verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
+    verify(env.mockedRemoteTranslationEngine.listenForTrainingStatus()).once();
+
+    resetCalls(env.mockedRemoteTranslationEngine);
+    env.updateTrainingProgress(0.1);
+    expect(env.trainingProgress).toBeDefined();
+    expect(env.component.showTrainingProgress).toBe(true);
+    expect(env.trainingProgressSpinner).toBeDefined();
+    env.updateTrainingProgress(1);
+    expect(env.trainingCompleteIcon).toBeDefined();
+    expect(env.trainingProgressSpinner).toBeNull();
+    env.completeTrainingProgress();
+    expect(env.trainingProgress).toBeDefined();
+    expect(env.component.showTrainingProgress).toBe(true);
+    tick(5000);
+    env.waitForSuggestion();
+    verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
+    expect(env.trainingProgress).toBeNull();
+    expect(env.component.showTrainingProgress).toBe(false);
+    env.updateTrainingProgress(0.1);
+    expect(env.trainingProgress).toBeDefined();
+    expect(env.component.showTrainingProgress).toBe(true);
+    expect(env.trainingProgressSpinner).toBeDefined();
+
+    env.dispose();
+  }));
+
+  it('close training status', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.setTranslateConfig({ selectedTextRef: 'text01', selectedChapter: 1, selectedSegment: 'verse_1_1' });
+    env.waitForSuggestion();
+    expect(env.component.target.segmentRef).toBe('verse_1_1');
+    expect(env.component.showTrainingProgress).toBe(false);
+    verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
+    verify(env.mockedRemoteTranslationEngine.listenForTrainingStatus()).once();
+
+    resetCalls(env.mockedRemoteTranslationEngine);
+    env.updateTrainingProgress(0.1);
+    expect(env.trainingProgress).toBeDefined();
+    expect(env.component.showTrainingProgress).toBe(true);
+    expect(env.trainingProgressSpinner).toBeDefined();
+    env.clickTrainingProgressCloseButton();
+    expect(env.trainingProgress).toBeNull();
+    expect(env.component.showTrainingProgress).toBe(false);
+    env.updateTrainingProgress(1);
+    env.completeTrainingProgress();
+    env.waitForSuggestion();
+    verify(env.mockedNoticeService.show(anything())).once();
+    verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
+    env.updateTrainingProgress(0.1);
+    expect(env.trainingProgress).toBeDefined();
+    expect(env.component.showTrainingProgress).toBe(true);
+    expect(env.trainingProgressSpinner).toBeDefined();
+
+    env.dispose();
+  }));
 });
 
 const Delta: new () => DeltaStatic = Quill.import('delta');
@@ -435,6 +499,7 @@ class TestEnvironment {
   lastApprovedPrefix: string[] = [];
 
   private readonly params$: BehaviorSubject<Params>;
+  private trainingProgress$ = new Subject<ProgressStatus>();
 
   constructor() {
     this.params$ = new BehaviorSubject<Params>({ projectId: 'project01', textId: 'text01' });
@@ -454,6 +519,7 @@ class TestEnvironment {
       (_n: number, segment: string[]) =>
         Promise.resolve(new MockInteractiveTranslationSession(segment, prefix => (this.lastApprovedPrefix = prefix)))
     );
+    when(this.mockedRemoteTranslationEngine.listenForTrainingStatus()).thenReturn(defer(() => this.trainingProgress$));
     when(this.mockedSFProjectService.addTranslateMetrics('project01', anything())).thenResolve();
 
     TestBed.configureTestingModule({
@@ -478,6 +544,22 @@ class TestEnvironment {
 
   get confidenceThresholdSlider(): DebugElement {
     return this.fixture.debugElement.query(By.css('#confidence-threshold-slider'));
+  }
+
+  get trainingProgress(): DebugElement {
+    return this.fixture.debugElement.query(By.css('.training-progress'));
+  }
+
+  get trainingProgressSpinner(): DebugElement {
+    return this.trainingProgress.query(By.css('#training-progress-spinner'));
+  }
+
+  get trainingCompleteIcon(): DebugElement {
+    return this.trainingProgress.query(By.css('#training-complete-icon'));
+  }
+
+  get trainingProgressCloseButton(): DebugElement {
+    return this.trainingProgress.query(By.css('#training-close-button'));
   }
 
   setTranslateConfig(userTranslateConfig: TranslateProjectUserConfig): void {
@@ -553,6 +635,11 @@ class TestEnvironment {
     this.fixture.detectChanges();
   }
 
+  clickTrainingProgressCloseButton(): void {
+    this.trainingProgressCloseButton.nativeElement.click();
+    this.fixture.detectChanges();
+  }
+
   updateConfidenceThresholdSlider(value: number): void {
     const slider = this.confidenceThresholdSlider.componentInstance as MdcSlider;
     slider.setValue(value, true);
@@ -562,6 +649,19 @@ class TestEnvironment {
 
   updateParams(params: Params): void {
     this.params$.next(params);
+  }
+
+  updateTrainingProgress(percentCompleted: number): void {
+    this.trainingProgress$.next({ percentCompleted, message: 'message' });
+    this.fixture.detectChanges();
+  }
+
+  completeTrainingProgress(): void {
+    const trainingProgress$ = this.trainingProgress$;
+    this.trainingProgress$ = new Subject<ProgressStatus>();
+    trainingProgress$.complete();
+    this.fixture.detectChanges();
+    tick();
   }
 
   dispose(): void {

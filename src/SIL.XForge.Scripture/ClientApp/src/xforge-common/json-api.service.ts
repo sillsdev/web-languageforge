@@ -368,10 +368,15 @@ export class JsonApiService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string[][]} [include] Optional. A path of relationship names that specifies the related resources to
    * include in the results from the server.
+   * @param {boolean} [persist=false] Optional. If true, persists the retrieved resource locally.
    * @returns {QueryObservable<T>} The query observable.
    */
-  onlineGet<T extends Resource>(identity: RecordIdentity, include?: string[][]): QueryObservable<T> {
-    return this.onlineQuery(q => q.findRecord(identity), include);
+  onlineGet<T extends Resource>(
+    identity: RecordIdentity,
+    include?: string[][],
+    persist: boolean = false
+  ): QueryObservable<T> {
+    return this.onlineQuery(q => q.findRecord(identity), include, persist);
   }
 
   /**
@@ -385,14 +390,16 @@ export class JsonApiService {
    * @param {string} relationship The relationship name.
    * @param {string[][]} [include] Optional. A path of relationship names that specifies the related resources to
    * include in the results from the server.
+   * @param {boolean} [persist=false] Optional. If true, persists the retrieved resource locally.
    * @returns {QueryObservable<T>} The query observable.
    */
   onlineGetRelated<T extends Resource>(
     identity: RecordIdentity,
     relationship: string,
-    include?: string[][]
+    include?: string[][],
+    persist: boolean = false
   ): QueryObservable<T> {
-    return this.onlineQuery(q => q.findRelatedRecord(identity, relationship), include);
+    return this.onlineQuery(q => q.findRelatedRecord(identity, relationship), include, persist);
   }
 
   /**
@@ -404,14 +411,16 @@ export class JsonApiService {
    * @param {GetAllParameters<T>} parameters Optional. Filtering, sorting, and paging parameters.
    * @param {string[][]} [include] Optional. A path of relationship names that specifies the related resources to
    * include in the results from the server.
+   * @param {boolean} [persist=false] Optional. If true, persists the retrieved resources locally.
    * @returns {QueryObservable<T[]>} The query observable.
    */
   onlineGetAll<T extends Resource>(
     type: string,
     parameters?: GetAllParameters<T>,
-    include?: string[][]
+    include?: string[][],
+    persist: boolean = false
   ): QueryObservable<T[]> {
-    return this.onlineQuery(q => this.getAllQuery(q, type, parameters), include);
+    return this.onlineQuery(q => this.getAllQuery(q, type, parameters), include, persist);
   }
 
   /**
@@ -425,21 +434,23 @@ export class JsonApiService {
    * @param {string} relationship The relationship name.
    * @param {string[][]} [include] Optional. A path of relationship names that specifies the related resources to
    * include in the results from the server.
+   * @param {boolean} [persist=false] Optional. If true, persists the retrieved resources locally.
    * @returns {QueryObservable<T[]>} The query observable.
    */
   onlineGetAllRelated<T extends Resource>(
     identity: RecordIdentity,
     relationship: string,
-    include?: string[][]
+    include?: string[][],
+    persist: boolean = false
   ): QueryObservable<T[]> {
-    return this.onlineQuery(q => q.findRelatedRecords(identity, relationship), include);
+    return this.onlineQuery(q => q.findRelatedRecords(identity, relationship), include, persist);
   }
 
   /**
    * Creates a new resource pessimistically.
    *
    * @param {Resource} resource The new resource.
-   * @param {boolean} [persist=false] If true, persists the new resource locally.
+   * @param {boolean} [persist=false] Optional. If true, persists the new resource locally.
    * @returns {Promise<T>} Resolves when the resource is created remotely. Returns the new resource's ID.
    */
   async onlineCreate<T extends Resource>(resource: T, persist: boolean = false): Promise<T> {
@@ -454,7 +465,7 @@ export class JsonApiService {
    *
    * @param {RecordIdentity} identity The resource identity.
    * @param {Partial<T>} attrs The attribute values to update.
-   * @param {boolean} [persist=false] If true, persists the updated attributes locally.
+   * @param {boolean} [persist=false] Optional. If true, persists the updated attributes locally.
    * @returns {Promise<T>} Resolves when the resource is updated remotely.
    */
   onlineUpdateAttributes<T extends Resource>(
@@ -484,7 +495,7 @@ export class JsonApiService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {RecordIdentity[]} related The new related resource identities.
-   * @param {boolean} [persist=false] If true, persists the updated relationship locally.
+   * @param {boolean} [persist=false] Optional. If true, persists the updated relationship locally.
    * @returns {Promise<void>} Resolves when the resources are replaced remotely.
    */
   async onlineReplaceAllRelated(
@@ -508,7 +519,7 @@ export class JsonApiService {
    * @param {RecordIdentity} identity The resource identity.
    * @param {string} relationship The relationship name.
    * @param {RecordIdentity} related The new related resource identity.
-   * @param {boolean} [persist=false] If true, persists the updated relationship locally.
+   * @param {boolean} [persist=false] Optional. If true, persists the updated relationship locally.
    * @returns {Promise<void>} Resolves when the resource is set remotely.
    */
   async onlineSetRelated(
@@ -676,10 +687,10 @@ export class JsonApiService {
     return new CacheQueryResults(this, results, localQuery.options.totalPagedCount);
   }
 
-  private onlineQuery(queryExpression: QueryOrExpression, include: string[][]): QueryObservable<any> {
+  private onlineQuery(queryExpression: QueryOrExpression, include: string[][], persist: boolean): QueryObservable<any> {
     const query = buildQuery(
       queryExpression,
-      this.getRemoteQueryOptions(RequestType.OnlineOnly, include),
+      this.getRemoteQueryOptions(persist ? RequestType.OnlinePersist : RequestType.OnlineOnly, include),
       undefined,
       this.store.queryBuilder
     );

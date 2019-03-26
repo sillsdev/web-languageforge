@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap, tap } from 'rxjs/operators';
-
+import { RemoteTranslationEngine } from '@sillsdev/machine';
+import { Subscription } from 'rxjs';
+import { filter, map, repeat, switchMap, tap } from 'rxjs/operators';
 import { NoticeService } from 'xforge-common/notice.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { Text } from '../../core/models/text';
@@ -9,9 +10,24 @@ import { TextDataId } from '../../core/models/text-data';
 import { SFProjectService } from '../../core/sfproject.service';
 import { TextService } from '../../core/text.service';
 
-interface Progress {
-  translated: number;
-  empty: number;
+const ENGINE_QUALITY_STAR_COUNT = 3;
+
+class Progress {
+  translated: number = 0;
+  blank: number = 0;
+
+  get total(): number {
+    return this.translated + this.blank;
+  }
+
+  get percentage(): number {
+    return Math.round((this.translated / this.total) * 100);
+  }
+}
+
+interface TextInfo {
+  text: Text;
+  progress: Progress;
 }
 
 @Component({
@@ -19,13 +35,19 @@ interface Progress {
   templateUrl: './translate-overview.component.html',
   styleUrls: ['./translate-overview.component.scss']
 })
-export class TranslateOverviewComponent extends SubscriptionDisposable implements OnInit {
-  texts: Text[];
+export class TranslateOverviewComponent extends SubscriptionDisposable implements OnInit, OnDestroy {
+  texts: TextInfo[];
+  overallProgress = new Progress();
+  trainingPercentage: number = 0;
+  isTraining: boolean = false;
+  readonly engineQualityStars: number[];
+  engineQuality: number = 0;
+  engineConfidence: number = 0;
+  trainedSegmentCount: number = 0;
 
   private _isLoading = true;
-  private _overallProgress: Progress;
-  private projectId: string;
-  private progressByBook: { [bookId: string]: Progress };
+  private trainingSubscription: Subscription;
+  private translationEngine: RemoteTranslationEngine;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -34,68 +56,98 @@ export class TranslateOverviewComponent extends SubscriptionDisposable implement
     private readonly textService: TextService
   ) {
     super();
+    this.engineQualityStars = [];
+    for (let i = 0; i < ENGINE_QUALITY_STAR_COUNT; i++) {
+      this.engineQualityStars.push(i);
+    }
   }
 
   get isLoading(): boolean {
     return this._isLoading;
   }
 
-  get overallProgress(): Progress {
-    return this._overallProgress;
-  }
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.subscribe(
       this.activatedRoute.params.pipe(
-        tap(params => {
-          this.projectId = params['projectId'];
+        map(params => params['projectId']),
+        tap(projectId => {
           this.noticeService.loadingStarted();
           this._isLoading = true;
+          this.createTranslationEngine(projectId);
         }),
-        switchMap(() => this.projectService.getTexts(this.projectId))
+        switchMap(projectId => this.projectService.getTexts(projectId))
       ),
-      textsInProject => {
-        this.texts = textsInProject;
-        this.progressByBook = {};
-        for (const text of textsInProject) {
-          this.progressByBook[text.bookId] = null;
-        }
-        this.calculateProgress().then(() => {
-          this._isLoading = false;
-          this.noticeService.loadingFinished();
-        });
+      async texts => {
+        this.texts = texts.map(t => ({ text: t, progress: new Progress() }));
+        await Promise.all([this.calculateProgress(), this.updateEngineStats()]);
+        this._isLoading = false;
+        this.noticeService.loadingFinished();
       }
     );
   }
 
-  getTranslationProgress(text: Text): Progress {
-    if (this.progressByBook) {
-      return this.progressByBook[text.bookId];
+  ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.trainingSubscription != null) {
+      this.trainingSubscription.unsubscribe();
     }
+    this.noticeService.loadingFinished();
   }
 
-  async getTextProgress(text: Text): Promise<Progress> {
-    let totalVerse = 0;
-    let translatedVerses = 0;
-    let emptyVerses = 0;
-    for (const chapter of text.chapters) {
-      const textId = new TextDataId(text.id, chapter.number);
-      const chapterText = await this.textService.connect(textId);
-      totalVerse += chapter.lastVerse;
-      translatedVerses += chapter.lastVerse - chapterText.emptyVerseCount;
-      await this.textService.disconnect(chapterText);
-    }
-    emptyVerses = totalVerse - translatedVerses;
-    return { translated: translatedVerses, empty: emptyVerses };
+  startTraining(): void {
+    this.translationEngine.startTraining();
+    this.trainingPercentage = 0;
+    this.isTraining = true;
   }
 
   private async calculateProgress(): Promise<void> {
-    this._overallProgress = { translated: 0, empty: 0 };
-    for (const text of this.texts) {
-      const progress = await this.getTextProgress(text);
-      this._overallProgress.translated += progress.translated;
-      this._overallProgress.empty += progress.empty;
-      this.progressByBook[text.bookId] = progress;
+    this.overallProgress = new Progress();
+    for (const textInfo of this.texts) {
+      await this.updateTextProgress(textInfo);
+      this.overallProgress.translated += textInfo.progress.translated;
+      this.overallProgress.blank += textInfo.progress.blank;
     }
+  }
+
+  private async updateTextProgress(textInfo: TextInfo): Promise<void> {
+    for (const chapter of textInfo.text.chapters) {
+      const textId = new TextDataId(textInfo.text.id, chapter.number);
+      const chapterText = await this.textService.connect(textId);
+      const { translated, blank } = chapterText.getSegmentCount();
+      textInfo.progress.translated += translated;
+      textInfo.progress.blank += blank;
+      await this.textService.disconnect(chapterText);
+    }
+  }
+
+  private createTranslationEngine(projectId: string): void {
+    if (this.trainingSubscription != null) {
+      this.trainingSubscription.unsubscribe();
+    }
+    this.translationEngine = this.projectService.createTranslationEngine(projectId);
+    const trainingStatus$ = this.translationEngine.listenForTrainingStatus().pipe(
+      tap(undefined, undefined, () => {
+        this.isTraining = false;
+        this.updateEngineStats();
+      }),
+      repeat(),
+      filter(progress => progress.percentCompleted > 0)
+    );
+    this.trainingSubscription = trainingStatus$.subscribe(async progress => {
+      this.trainingPercentage = progress.percentCompleted;
+      this.isTraining = true;
+    });
+  }
+
+  private async updateEngineStats(): Promise<void> {
+    const stats = await this.translationEngine.getStats();
+
+    this.engineConfidence = Math.round(stats.confidence * 100) / 100;
+
+    const rescaledConfidence = Math.min(1.0, stats.confidence / 0.6);
+    const quality = rescaledConfidence * ENGINE_QUALITY_STAR_COUNT;
+    this.engineQuality = Math.round(quality * 2) / 2;
+
+    this.trainedSegmentCount = stats.trainedSegmentCount;
   }
 }
