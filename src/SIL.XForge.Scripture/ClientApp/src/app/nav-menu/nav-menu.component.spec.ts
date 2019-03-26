@@ -128,6 +128,35 @@ describe('NavMenuComponent', () => {
     expect(env.syncItem).toBeDefined();
     expect(env.settingsItem).toBeDefined();
   }));
+
+  it('partial data does not throw', fakeAsync(() => {
+    // SF-229 The project properties may only be partiually available
+    // the first time we hear back from the observable. Don't prevent
+    // it from trying again by crashing in the fixture or component code.
+
+    const projectsSubject2 = new BehaviorSubject<QueryResults<SFProjectUser[]>>(
+      new MapQueryResults(
+        [
+          new SFProjectUser({
+            id: 'projectuser01',
+            project: new SFProjectRef('project01'),
+            user: new UserRef('user01')
+          })
+        ],
+        undefined,
+        [
+          new SFProject({
+            id: 'project01'
+          })
+        ]
+      )
+    );
+    expect(() => {
+      const env = new TestEnvironment(projectsSubject2);
+      env.navigate(['/projects', 'project01']);
+      env.init();
+    }).not.toThrow();
+  }));
 });
 
 @Component({
@@ -180,7 +209,7 @@ class TestEnvironment {
   private readonly currentUser: User;
   private readonly projectsSubject: BehaviorSubject<QueryResults<SFProjectUser[]>>;
 
-  constructor() {
+  constructor(customProjectsSubject?: BehaviorSubject<QueryResults<SFProjectUser[]>>) {
     this.currentUser = new User({
       id: 'user01',
       site: { currentProjectId: 'project01' }
@@ -233,6 +262,10 @@ class TestEnvironment {
         ]
       )
     );
+
+    if (customProjectsSubject !== undefined) {
+      this.projectsSubject = customProjectsSubject;
+    }
 
     when(this.mockedUserService.currentUserId).thenReturn('user01');
     when(this.mockedAuthService.isLoggedIn).thenResolve(true);
