@@ -44,13 +44,13 @@ class SfchecksReports
 
             foreach($listModel->entries as $user) {
                 $userModel = new UserModel($user['id']);
-                $user['isActive'] = $userModel->active;
+                if (!isset($user['email'])) $user['email'] = $userModel->emailPending;
                 $user['answers'] = 0;
                 $user['comments'] = 0;
                 $user['questions'] = 0;
                 $user['responses'] = 0;
                 $user['textIds'] = array();
-                if (!$user['isActive']) {
+                if (!$userModel->last_login) {
                     continue;
                 }
                 if ($project->users->offsetExists($user['id'])) {
@@ -346,17 +346,14 @@ class SfchecksReports
 
             foreach($listModel->entries as $user) {
                 $userModel = new UserModel($user['id']);
-                $user['isActive'] = $userModel->active;
+                if (!isset($user['email'])) $user['email'] = $userModel->emailPending;
                 $user['questions'] = 0;
                 $user['texts'] = 0;
                 $user['answers'] = 0;
                 $user['comments'] = 0;
                 $user['responses'] = 0;
                 $user['textIds'] = array();
-                if (!$user['isActive']) {
-                    if (!$user['email']) {
-                        $user['email'] = $userModel->emailPending;
-                    }
+                if (!$userModel->last_login && !isset($user['email'])) {
                     array_push($invalidUsers, $user);
                     continue;
                 }
