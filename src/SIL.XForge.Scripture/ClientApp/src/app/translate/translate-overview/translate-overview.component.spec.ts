@@ -39,7 +39,7 @@ class TestTextData extends TextData {
   constructor(doc: RealtimeDoc) {
     super(doc, null);
   }
-  getEmptyVerses(): number {
+  get emptyVerseCount(): number {
     return 5;
   }
 }
@@ -107,10 +107,6 @@ class TestEnvironment {
 
   get textList(): HTMLElement {
     return this.fixture.nativeElement.querySelector('mdc-list');
-  }
-
-  get textName(): HTMLElement {
-    return this.fixture.nativeElement.querySelector('#text-name');
   }
 
   get title(): HTMLElement {
