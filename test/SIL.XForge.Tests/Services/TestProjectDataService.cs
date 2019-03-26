@@ -14,6 +14,6 @@ namespace SIL.XForge.Services
         {
         }
 
-        protected override Domain Domain => Domain.Entries;
+        protected override int Domain => TestProjectRoles.TestDomain;
     }
 }

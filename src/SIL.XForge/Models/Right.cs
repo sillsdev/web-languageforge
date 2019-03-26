@@ -7,13 +7,13 @@ namespace SIL.XForge.Models
         public static bool operator ==(Right x, Right y) => x.Equals(y);
         public static bool operator !=(Right x, Right y) => !x.Equals(y);
 
-        public Right(Domain domain, Operation operation)
+        public Right(int domain, Operation operation)
         {
             Domain = domain;
             Operation = operation;
         }
 
-        public Domain Domain { get; }
+        public int Domain { get; }
         public Operation Operation { get; }
 
         public bool Equals(Right other)
@@ -23,7 +23,7 @@ namespace SIL.XForge.Models
 
         public override bool Equals(object obj)
         {
-            return !(obj is Right) && Equals((Right) obj);
+            return !(obj is Right) && Equals((Right)obj);
         }
 
         public override int GetHashCode()

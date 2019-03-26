@@ -70,7 +70,7 @@ namespace SIL.XForge.Scripture
 
             services.AddConfiguration(Configuration);
 
-            services.AddRealtimeServer(IsDevelopment);
+            services.AddSFRealtimeServer(IsDevelopment);
 
             services.AddExceptionLogging();
 

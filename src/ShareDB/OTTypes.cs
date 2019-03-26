@@ -1,3 +1,4 @@
+using ShareDB.Json0;
 using ShareDB.RichText;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,8 @@ namespace ShareDB
 
         static OTTypes()
         {
-            Register(new RichTextOTType());
+            Register(RichTextOTType.Instance);
+            Register(Json0OTType.Instance);
         }
 
         public static void Register(IOTType type)

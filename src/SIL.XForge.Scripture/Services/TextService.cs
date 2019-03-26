@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Services;
 using SIL.XForge.DataAccess;
-using SIL.XForge.Models;
 using SIL.XForge.Realtime;
 using SIL.XForge.Scripture.Models;
 using SIL.XForge.Services;
@@ -22,7 +21,7 @@ namespace SIL.XForge.Scripture.Services
             _realtimeService = realtimeService;
         }
 
-        protected override Domain Domain => Domain.Texts;
+        protected override int Domain => SFDomain.Texts;
 
         public override async Task DeleteAllAsync(string projectId)
         {

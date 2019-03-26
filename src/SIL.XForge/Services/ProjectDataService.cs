@@ -26,7 +26,7 @@ namespace SIL.XForge.Services
             Projects = projects;
         }
 
-        protected abstract Domain Domain { get; }
+        protected abstract int Domain { get; }
         protected IRepository<TProjectEntity> Projects { get; }
 
         public IResourceMapper<ProjectResource, ProjectEntity> ProjectMapper { get; set; }

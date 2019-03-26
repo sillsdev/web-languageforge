@@ -14,40 +14,38 @@ namespace SIL.XForge.Scripture.Models
         {
             var translatorRights = new HashSet<Right>
             {
-                new Right(Domain.Texts, Operation.View),
-                new Right(Domain.Texts, Operation.Edit),
-                new Right(Domain.Texts, Operation.Create),
-                new Right(Domain.Texts, Operation.Delete),
-                new Right(Domain.Questions, Operation.View),
-                new Right(Domain.Answers, Operation.View),
-                new Right(Domain.Answers, Operation.Create),
-                new Right(Domain.Answers, Operation.EditOwn),
-                new Right(Domain.Answers, Operation.DeleteOwn),
-                new Right(Domain.Comments, Operation.View),
-                new Right(Domain.Comments, Operation.Create),
-                new Right(Domain.Comments, Operation.EditOwn),
-                new Right(Domain.Comments, Operation.DeleteOwn),
-                new Right(Domain.SyncJobs, Operation.View),
-                new Right(Domain.SyncJobs, Operation.Create),
-                new Right(Domain.SyncJobs, Operation.Delete)
+                new Right(SFDomain.Texts, Operation.View),
+                new Right(SFDomain.Texts, Operation.Edit),
+
+                new Right(SFDomain.Questions, Operation.View),
+
+                new Right(SFDomain.Answers, Operation.View),
+                new Right(SFDomain.Answers, Operation.Create),
+                new Right(SFDomain.Answers, Operation.EditOwn),
+                new Right(SFDomain.Answers, Operation.DeleteOwn),
+
+                new Right(SFDomain.Comments, Operation.View),
+                new Right(SFDomain.Comments, Operation.Create),
+                new Right(SFDomain.Comments, Operation.EditOwn),
+                new Right(SFDomain.Comments, Operation.DeleteOwn),
+
+                new Right(SFDomain.SyncJobs, Operation.View),
+                new Right(SFDomain.SyncJobs, Operation.Create),
+                new Right(SFDomain.SyncJobs, Operation.Delete)
             };
             Rights[Translator] = translatorRights;
 
             var administratorRights = new HashSet<Right>(translatorRights)
             {
-                new Right(Domain.Texts, Operation.Create),
-                new Right(Domain.Texts, Operation.Edit),
-                new Right(Domain.Texts, Operation.Archive),
-                new Right(Domain.Questions, Operation.Create),
-                new Right(Domain.Questions, Operation.Edit),
-                new Right(Domain.Questions, Operation.Archive),
-                new Right(Domain.Answers, Operation.Edit),
-                new Right(Domain.Answers, Operation.Delete),
-                new Right(Domain.Comments, Operation.Edit),
-                new Right(Domain.Comments, Operation.Delete),
-                new Right(Domain.Tags, Operation.Create),
-                new Right(Domain.Tags, Operation.Edit),
-                new Right(Domain.Tags, Operation.Delete)
+                new Right(SFDomain.Questions, Operation.Create),
+                new Right(SFDomain.Questions, Operation.Edit),
+                new Right(SFDomain.Questions, Operation.Delete),
+
+                new Right(SFDomain.Answers, Operation.Edit),
+                new Right(SFDomain.Answers, Operation.Delete),
+
+                new Right(SFDomain.Comments, Operation.Edit),
+                new Right(SFDomain.Comments, Operation.Delete)
             };
             Rights[Administrator] = administratorRights;
         }

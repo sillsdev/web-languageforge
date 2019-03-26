@@ -1,4 +1,3 @@
-import * as OtJson0 from 'ot-json0';
 import { fromEvent, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Doc, Snapshot } from 'sharedb/lib/client';
@@ -35,9 +34,6 @@ export class SharedbRealtimeDoc implements RealtimeDoc {
   }
 
   get type(): string {
-    if (this.doc.type == null) {
-      return null;
-    }
     return this.doc.type.name;
   }
 
@@ -67,17 +63,7 @@ export class SharedbRealtimeDoc implements RealtimeDoc {
         if (err != null) {
           reject(err);
         } else {
-          if (this.doc.type === null) {
-            this.doc.create([], OtJson0.type.name, { source: 'realtime-doc' }, createErr => {
-              if (createErr) {
-                reject(createErr);
-              } else {
-                resolve();
-              }
-            });
-          } else {
-            resolve();
-          }
+          resolve();
         }
       });
     });
@@ -96,10 +82,7 @@ export class SharedbRealtimeDoc implements RealtimeDoc {
   }
 
   subscribe(): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (this.doc.type === null) {
-        await this.fetch();
-      }
+    return new Promise((resolve, reject) => {
       this.doc.subscribe(err => {
         if (err != null) {
           reject(err);

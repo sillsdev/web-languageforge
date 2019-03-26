@@ -174,7 +174,7 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
   }
 
   questionDialog(editMode = false, textId?: string, chapterNumber?: number, questionIndex: number = 0): void {
-    let newQuestion: Question = { id: undefined, owner: undefined, project: undefined };
+    let newQuestion: Question = { id: undefined, ownerRef: undefined, projectRef: undefined };
     let id: JsonDataId;
     let question: Question;
     if (editMode) {
@@ -226,8 +226,8 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
           id = new JsonDataId(this.textFromBook(verseStart.book).id, verseStart.chapterNum);
           const questionData = await this.questionService.connect(id);
           newQuestion.id = objectId();
-          newQuestion.owner = new UserRef(this.userService.currentUserId);
-          newQuestion.project = new SFProjectRef(this.projectId);
+          newQuestion.ownerRef = this.userService.currentUserId;
+          newQuestion.projectRef = this.projectId;
           newQuestion.source = QuestionSource.Created;
           newQuestion.answers = [];
           questionData.insertInList(newQuestion);

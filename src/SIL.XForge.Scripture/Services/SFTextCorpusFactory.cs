@@ -12,6 +12,7 @@ using SIL.Machine.WebApi.Models;
 using SIL.Machine.WebApi.Services;
 using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
+using SIL.XForge.Scripture.DataAccess;
 using SIL.XForge.Scripture.Models;
 
 namespace SIL.XForge.Scripture.Services
@@ -42,7 +43,8 @@ namespace SIL.XForge.Scripture.Services
         {
             StringTokenizer wordTokenizer = new LatinWordTokenizer();
             IMongoDatabase database = _mongoClient.GetDatabase(_dataAccessOptions.Value.MongoDatabaseName);
-            IMongoCollection<BsonDocument> textDataColl = database.GetCollection<BsonDocument>("text_data");
+            IMongoCollection<BsonDocument> textDataColl = database.GetCollection<BsonDocument>(
+                SFDataAccessConstants.TextDataCollectionName);
             var texts = new List<IText>();
             foreach (string projectId in projects)
             {

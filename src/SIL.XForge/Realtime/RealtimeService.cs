@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.NodeServices;
@@ -8,6 +9,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using SIL.ObjectModel;
 using SIL.XForge.Configuration;
+using SIL.XForge.Models;
 
 namespace SIL.XForge.Realtime
 {
@@ -18,21 +20,24 @@ namespace SIL.XForge.Realtime
     public class RealtimeService : DisposableBase, IRealtimeService
     {
         private readonly INodeServices _nodeServices;
+        private readonly IOptions<SiteOptions> _siteOptions;
         private readonly IOptions<DataAccessOptions> _dataAccessOptions;
         private readonly IOptions<RealtimeOptions> _realtimeOptions;
         private readonly IMongoDatabase _database;
         private readonly string _modulePath;
         private bool _started;
 
-        public RealtimeService(INodeServices nodeServices, IOptions<DataAccessOptions> dataAccessOptions,
-            IOptions<RealtimeOptions> realtimeOptions, IMongoClient mongoClient)
+        public RealtimeService(INodeServices nodeServices, IOptions<SiteOptions> siteOptions,
+            IOptions<DataAccessOptions> dataAccessOptions, IOptions<RealtimeOptions> realtimeOptions,
+            IMongoClient mongoClient)
         {
             _nodeServices = nodeServices;
+            _siteOptions = siteOptions;
             _dataAccessOptions = dataAccessOptions;
             _realtimeOptions = realtimeOptions;
             _database = mongoClient.GetDatabase(_dataAccessOptions.Value.MongoDatabaseName);
             _modulePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Realtime",
-                "server");
+                "realtime-server");
         }
 
         public void StartServer()
@@ -40,9 +45,8 @@ namespace SIL.XForge.Realtime
             if (_started)
                 return;
 
-            string mongo = $"{_dataAccessOptions.Value.ConnectionString}/{_dataAccessOptions.Value.MongoDatabaseName}";
-            int port = _realtimeOptions.Value.Port;
-            _nodeServices.InvokeExportAsync<object>(_modulePath, "start", mongo, port).GetAwaiter().GetResult();
+            object options = CreateOptions();
+            _nodeServices.InvokeExportAsync<object>(_modulePath, "start", options).GetAwaiter().GetResult();
             _started = true;
         }
 
@@ -69,6 +73,43 @@ namespace SIL.XForge.Realtime
         protected override void DisposeManagedResources()
         {
             StopServer();
+        }
+
+        private object CreateOptions()
+        {
+            string mongo = $"{_dataAccessOptions.Value.ConnectionString}/{_dataAccessOptions.Value.MongoDatabaseName}";
+            return new
+            {
+                connectionString = mongo,
+                port = _realtimeOptions.Value.Port,
+                origin = _siteOptions.Value.Origin.ToString(),
+                projectsCollectionName = _realtimeOptions.Value.ProjectsCollectionName,
+                projectRoles = CreateProjectRoles(_realtimeOptions.Value.ProjectRoles),
+                collections = _realtimeOptions.Value.Collections.Select(c => CreateCollectionConfig(c)).ToArray()
+            };
+        }
+
+        private static object CreateProjectRoles(ProjectRoles projectRoles)
+        {
+            return projectRoles.Rights.Select(kvp => new
+            {
+                name = kvp.Key,
+                rights = kvp.Value.Select(r => r.Domain + (int)r.Operation).ToArray()
+            }).ToArray();
+        }
+
+        private static object CreateCollectionConfig(RealtimeCollectionConfig collectionConfig)
+        {
+            return new
+            {
+                name = collectionConfig.Name,
+                metadataName = collectionConfig.MetadataName,
+                otTypeName = collectionConfig.OTTypeName,
+                types = collectionConfig.Types
+                    .OrderByDescending(t => t.Path.Count)
+                    .Select(t => new { domain = t.Domain, path = t.Path.ToArray() })
+                    .ToArray()
+            };
         }
     }
 }
