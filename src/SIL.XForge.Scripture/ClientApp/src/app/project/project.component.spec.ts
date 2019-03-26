@@ -64,6 +64,19 @@ describe('ProjectComponent', () => {
     verify(env.mockedRouter.navigate(anything(), anything())).never();
     expect().nothing();
   }));
+
+  it('handle partial data', fakeAsync(() => {
+    // Similar to SF-229
+
+    const env = new TestEnvironment();
+    env.setLimitedProjectUserData();
+    expect(() => {
+      env.fixture.detectChanges();
+      flush();
+    }).not.toThrow();
+    verify(env.mockedRouter.navigate(anything(), anything())).never();
+    expect().nothing();
+  }));
 });
 
 class TestEnvironment {
@@ -146,6 +159,38 @@ class TestEnvironment {
               project: new SFProjectRef('project01'),
               selectedTask: args.selectedTask,
               translateConfig: { selectedTextRef: args.selectedTask == null ? undefined : 'text02' }
+            })
+          ]
+        )
+      )
+    );
+  }
+
+  // Such as from an incomplete offline storage
+  setLimitedProjectUserData(): void {
+    when(
+      this.mockedSFProjectService.get(
+        'project01',
+        deepEqual([[nameof<SFProject>('users')], [nameof<SFProject>('texts')]])
+      )
+    ).thenReturn(
+      of(
+        new MapQueryResults(
+          new SFProject({
+            id: 'project01',
+            translateConfig: { enabled: true },
+            checkingConfig: { enabled: true },
+            users: [new SFProjectUserRef('projectuser01')],
+            texts: [new TextRef('text01'), new TextRef('text02')]
+          }),
+          undefined,
+          [
+            new SFProjectUser({
+              id: 'projectuser01',
+              user: undefined,
+              project: new SFProjectRef('project01'),
+              selectedTask: null,
+              translateConfig: undefined
             })
           ]
         )
