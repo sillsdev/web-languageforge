@@ -15,6 +15,7 @@ import { Text } from '../core/models/text';
 import { SFAdminAuthGuard } from '../shared/sfadmin-auth.guard';
 import { ProjectDeletedDialogComponent } from './project-deleted-dialog/project-deleted-dialog.component';
 
+/** Project navigation menu, shown while working on a project. */
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
@@ -150,21 +151,31 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
           }
         } else {
           this.selectedProject = selectedProject;
-          if (this.selectedProject != null) {
-            this.texts = results.getManyIncluded(this.selectedProject.texts);
-            if (!this.selectedProject.translateConfig.enabled) {
-              this.translateVisible = false;
-            }
-            if (!this.selectedProject.checkingConfig.enabled) {
-              this.checkingVisible = false;
-            }
-            if (this._projectSelect != null) {
-              this._projectSelect.value = this.selectedProject.id;
-            }
 
-            if (user.site == null || user.site.currentProjectId !== this.selectedProject.id) {
-              this.userService.updateCurrentProjectId(this.selectedProject.id);
-            }
+          // Return early if 'Connect project' was clicked, or if we don't have all the properties we need yet.
+          if (
+            this.selectedProject == null ||
+            this.selectedProject.texts == null ||
+            this.selectedProject.translateConfig == null ||
+            this.selectedProject.checkingConfig == null ||
+            this.selectedProject.id == null
+          ) {
+            return;
+          }
+
+          this.texts = results.getManyIncluded(this.selectedProject.texts);
+          if (!this.selectedProject.translateConfig.enabled) {
+            this.translateVisible = false;
+          }
+          if (!this.selectedProject.checkingConfig.enabled) {
+            this.checkingVisible = false;
+          }
+          if (this._projectSelect != null) {
+            this._projectSelect.value = this.selectedProject.id;
+          }
+
+          if (user.site == null || user.site.currentProjectId !== this.selectedProject.id) {
+            this.userService.updateCurrentProjectId(this.selectedProject.id);
           }
         }
       }
