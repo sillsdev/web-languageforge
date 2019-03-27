@@ -10,7 +10,7 @@ import { ParatextService } from 'xforge-common/paratext.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { SFProjectRef } from '../core/models/sfdomain-model.generated';
 import { SFProject } from '../core/models/sfproject';
-import { SyncJob, SyncJobState } from '../core/models/sync-job';
+import { SyncJob, SyncJobRef, SyncJobState } from '../core/models/sync-job';
 import { SFProjectService } from '../core/sfproject.service';
 import { SyncJobService } from '../core/sync-job.service';
 import { SyncComponent } from './sync.component';
@@ -41,7 +41,7 @@ describe('SyncComponent', () => {
 
   it('should sync project when the button is clicked', fakeAsync(() => {
     const env = new TestEnvironment(true);
-    verify(env.mockedProjectService.onlineGet(anything(), anything())).once();
+    verify(env.mockedProjectService.onlineGet(anything())).once();
     env.clickElement(env.syncButton);
     verify(env.mockedSyncJobService.start(anything())).once();
     verify(env.mockedSyncJobService.listen(anything())).once();
@@ -67,7 +67,7 @@ describe('SyncComponent', () => {
 
   it('should report error if sync has a problem', fakeAsync(() => {
     const env = new TestEnvironment(true);
-    verify(env.mockedProjectService.onlineGet(anything(), anything())).once();
+    verify(env.mockedProjectService.onlineGet(anything())).once();
     env.clickElement(env.syncButton);
     verify(env.mockedSyncJobService.start(anything())).once();
     verify(env.mockedSyncJobService.listen(anything())).once();
@@ -103,7 +103,6 @@ class TestEnvironment {
   mockedProjectService: SFProjectService = mock(SFProjectService);
   mockedSyncJobService: SyncJobService = mock(SyncJobService);
 
-  private activeSubject: Subject<SyncJob> = new Subject<SyncJob>();
   private subject: Subject<SyncJob> = new Subject<SyncJob>();
   private syncJob: SyncJob;
 
@@ -117,10 +116,12 @@ class TestEnvironment {
       paratextId: 'pt01',
       lastSyncedDate: date.toUTCString()
     });
-    when(this.mockedProjectService.onlineGet(anything(), anything())).thenReturn(of(project));
+    if (isInProgress) {
+      project.activeSyncJob = new SyncJobRef('syncjob01');
+    }
+    when(this.mockedProjectService.onlineGet(anything())).thenReturn(of(project));
     const ptUsername = isParatextAccountConnected ? 'Paratext User01' : '';
     when(this.mockedParatextService.getParatextUsername()).thenReturn(of(ptUsername));
-    when(this.mockedSyncJobService.onlineGetActive(anything())).thenReturn(this.activeSubject);
     when(this.mockedSyncJobService.listen(anything())).thenReturn(this.subject);
     this.syncJob = new SyncJob({
       id: 'syncjob01',
@@ -146,9 +147,6 @@ class TestEnvironment {
     tick();
     if (isInProgress) {
       this.emitSyncJob(SyncJobState.SYNCING, 0.1);
-    } else {
-      this.activeSubject.next(null);
-      this.fixture.detectChanges();
     }
   }
 
@@ -189,7 +187,6 @@ class TestEnvironment {
     this.syncJob.state = state;
     this.syncJob.percentCompleted = percentComplete;
     this.subject.next(this.syncJob);
-    this.activeSubject.next(this.syncJob);
     this.fixture.detectChanges();
   }
 }

@@ -11,9 +11,7 @@ using JsonApiDotNetCore.Middleware;
 using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 using SIL.XForge;
 using SIL.XForge.Configuration;
 using SIL.XForge.Models;
@@ -72,8 +70,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 AllowClientGeneratedIds = true,
                 IncludeTotalRecordCount = true
             };
-            jsonApiOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            jsonApiOptions.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            jsonApiOptions.SerializerSettings.ContractResolver = new JsonApiContractResolver();
             jsonApiOptions.SerializerSettings.Converters.Add(new StringEnumConverter());
 
             mvcBuilder.AddMvcOptions(options =>

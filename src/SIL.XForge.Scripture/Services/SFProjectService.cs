@@ -41,12 +41,9 @@ namespace SIL.XForge.Scripture.Services
             switch (relationshipName)
             {
                 case nameof(SFProjectResource.ActiveSyncJob):
-                    return Custom(SyncJobMapper, p =>
-                        {
-                            return j => j.ProjectRef == p.Id && SyncJobEntity.ActiveStates.Contains(j.State);
-                        });
+                    return HasOne(SyncJobMapper, p => p.ActiveSyncJobRef);
                 case nameof(SFProjectResource.Texts):
-                    return OneToMany(TextMapper, t => t.ProjectRef);
+                    return HasMany(TextMapper, t => t.ProjectRef);
             }
             return base.GetRelationship(relationshipName);
         }

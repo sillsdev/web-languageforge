@@ -2,13 +2,11 @@ import { Injectable } from '@angular/core';
 import { interval, Observable } from 'rxjs';
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive';
 import { map, switchMap } from 'rxjs/operators';
-
 import { JsonApiService } from 'xforge-common/json-api.service';
 import { UserRef } from 'xforge-common/models/user';
 import { ResourceService } from 'xforge-common/resource.service';
 import { UserService } from 'xforge-common/user.service';
-import { nameof } from 'xforge-common/utils';
-import { SFProject, SFProjectRef } from './models/sfproject';
+import { SFProjectRef } from './models/sfproject';
 import { SyncJob } from './models/sync-job';
 
 @Injectable({
@@ -21,12 +19,6 @@ export class SyncJobService extends ResourceService {
 
   onlineGet(id: string): Observable<SyncJob> {
     return this.jsonApiService.onlineGet<SyncJob>(this.identity(id)).pipe(map(r => r.data));
-  }
-
-  onlineGetActive(projectId: string): Observable<SyncJob> {
-    return this.jsonApiService
-      .onlineGetRelated<SyncJob>({ type: SFProject.TYPE, id: projectId }, nameof<SFProject>('activeSyncJob'))
-      .pipe(map(r => r.data));
   }
 
   listen(jobId: string): Observable<SyncJob> {

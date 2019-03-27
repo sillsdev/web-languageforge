@@ -23,7 +23,6 @@ export class SyncComponent extends SubscriptionDisposable implements OnInit {
   percentComplete: number;
 
   private isFirstLoad: boolean = true;
-  private activeJob: SyncJob;
   private paratextUsername: string;
   private projectId: string;
   private syncInProgress$: Observable<SyncJob>;
@@ -80,20 +79,22 @@ export class SyncComponent extends SubscriptionDisposable implements OnInit {
         }),
         switchMap(() =>
           combineLatest(
-            this.projectService.onlineGet(this.projectId, this.projectReload$),
-            this.syncJobService.onlineGetActive(this.projectId),
+            this.projectReload$.pipe(switchMap(() => this.projectService.onlineGet(this.projectId))),
             this.paratextService.getParatextUsername()
           )
         )
       ),
-      ([project, activeJob, paratextUsername]) => {
+      ([project, paratextUsername]) => {
         if (project != null) {
+          const prevActiveSyncJob = this.project != null ? this.project.activeSyncJob : null;
           this.project = project;
-        }
-        if (activeJob != null && activeJob.isActive && (!this.activeJob || this.activeJob.id !== activeJob.id)) {
-          this.activeJob = activeJob;
-          this.syncJobActive = true;
-          this.listenAndProcessSync(activeJob.id);
+          if (
+            this.project.activeSyncJob != null &&
+            (prevActiveSyncJob == null || prevActiveSyncJob.id !== this.project.activeSyncJob.id)
+          ) {
+            this.syncJobActive = true;
+            this.listenAndProcessSync(this.project.activeSyncJob.id);
+          }
         }
         if (paratextUsername != null) {
           this.paratextUsername = paratextUsername;

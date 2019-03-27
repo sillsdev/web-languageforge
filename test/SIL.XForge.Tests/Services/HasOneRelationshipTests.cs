@@ -8,7 +8,7 @@ using SIL.XForge.Models;
 namespace SIL.XForge.Services
 {
     [TestFixture]
-    public class ManyToOneRelationshipTests
+    public class HasOneRelationshipTests
     {
         [Test]
         public async Task GetResourcesAsync_ValidRelationship()
@@ -23,7 +23,7 @@ namespace SIL.XForge.Services
             projectResourceMapper.MapMatchingAsync(null, null, null)
                 .ReturnsForAnyArgs(Task.FromResult(projectResources));
 
-            var rel = new ManyToOneRelationship<ProjectDataEntity, TestProjectResource, TestProjectEntity>(
+            var rel = new HasOneRelationship<ProjectDataEntity, TestProjectResource, TestProjectEntity>(
                 projectResourceMapper, e => e.ProjectRef);
             var entity = new ProjectDataEntity
             {

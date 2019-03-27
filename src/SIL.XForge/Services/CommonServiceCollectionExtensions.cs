@@ -4,9 +4,9 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class CommonServiceCollectionExtensions
     {
-        /**
-         * Adds miscellaneous services that are common to all xForge applications to the DI container.
-         */
+        /// <summary>
+        /// Adds miscellaneous services that are common to all xForge applications to the DI container.
+        /// </summary>
         public static IServiceCollection AddCommonServices(this IServiceCollection services)
         {
             services.AddScoped<IUserAccessor, UserAccessor>();

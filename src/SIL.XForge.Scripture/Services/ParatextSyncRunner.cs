@@ -155,90 +155,94 @@ namespace SIL.XForge.Scripture.Services
 
             try
             {
-                if ((await _users.TryGetAsync(userId)).TryResult(out UserEntity user))
+                if ((await _users.TryGetAsync(userId)).TryResult(out UserEntity user)
+                    && (await _projects.TryGetAsync(_job.ProjectRef)).TryResult(out SFProjectEntity project))
                 {
-                    if ((await _projects.TryGetAsync(_job.ProjectRef)).TryResult(out SFProjectEntity project))
+                    if (!Directory.Exists(WorkingDir))
+                        Directory.CreateDirectory(WorkingDir);
+
+                    using (var conn = new Connection(new Uri($"ws://localhost:{_realtimeOptions.Value.Port}")))
                     {
-                        if (!Directory.Exists(WorkingDir))
-                            Directory.CreateDirectory(WorkingDir);
+                        await conn.ConnectAsync();
 
-                        using (var conn = new Connection(new Uri($"ws://localhost:{_realtimeOptions.Value.Port}")))
+                        bool hasSource = project.TranslateConfig.Enabled;
+                        string sourceParatextId = project.TranslateConfig.SourceParatextId;
+                        IReadOnlyList<string> sourceBooks = null;
+                        if (hasSource)
+                            sourceBooks = await _paratextService.GetBooksAsync(user, sourceParatextId);
+
+                        string targetParatextId = project.ParatextId;
+                        IReadOnlyList<string> targetBooks = await _paratextService.GetBooksAsync(user,
+                            targetParatextId);
+
+                        var booksToSync = new HashSet<string>(targetBooks);
+                        if (hasSource)
+                            booksToSync.IntersectWith(sourceBooks);
+
+                        var booksToDelete = new HashSet<string>();
+                        if (hasSource)
+                            booksToDelete.UnionWith(GetBooksToDelete(project, sourceParatextId, sourceBooks));
+                        booksToDelete.UnionWith(GetBooksToDelete(project, targetParatextId, targetBooks));
+
+                        _step = 0;
+                        _stepCount = booksToSync.Count * 3;
+                        if (hasSource)
+                            _stepCount *= 2;
+                        _stepCount += booksToDelete.Count;
+                        foreach (string bookId in booksToSync)
                         {
-                            await conn.ConnectAsync();
+                            if (!BookNames.TryGetValue(bookId, out string name))
+                                name = bookId;
+                            TextEntity text = await _texts.UpdateAsync(
+                                t => t.ProjectRef == project.Id && t.BookId == bookId,
+                                u => u.SetOnInsert(t => t.Name, name)
+                                        .SetOnInsert(t => t.BookId, bookId)
+                                        .SetOnInsert(t => t.ProjectRef, project.Id)
+                                        .SetOnInsert(t => t.OwnerRef, userId), upsert: true);
 
-                            bool hasSource = project.TranslateConfig.Enabled;
-                            string sourceParatextId = project.TranslateConfig.SourceParatextId;
-                            IReadOnlyList<string> sourceBooks = null;
                             if (hasSource)
-                                sourceBooks = await _paratextService.GetBooksAsync(user, sourceParatextId);
-
-                            string targetParatextId = project.ParatextId;
-                            IReadOnlyList<string> targetBooks = await _paratextService.GetBooksAsync(user,
+                            {
+                                await SyncOrCloneBookAsync(user, conn, project, text, TextType.Source,
+                                    sourceParatextId);
+                            }
+                            await SyncOrCloneBookAsync(user, conn, project, text, TextType.Target,
                                 targetParatextId);
-
-                            var booksToSync = new HashSet<string>(targetBooks);
-                            if (hasSource)
-                                booksToSync.IntersectWith(sourceBooks);
-
-                            var booksToDelete = new HashSet<string>();
-                            if (hasSource)
-                                booksToDelete.UnionWith(GetBooksToDelete(project, sourceParatextId, sourceBooks));
-                            booksToDelete.UnionWith(GetBooksToDelete(project, targetParatextId, targetBooks));
-
-                            _step = 0;
-                            _stepCount = booksToSync.Count * 3;
-                            if (hasSource)
-                                _stepCount *= 2;
-                            _stepCount += booksToDelete.Count;
-                            foreach (string bookId in booksToSync)
-                            {
-                                if (!BookNames.TryGetValue(bookId, out string name))
-                                    name = bookId;
-                                TextEntity text = await _texts.UpdateAsync(
-                                    t => t.ProjectRef == project.Id && t.BookId == bookId,
-                                    u => u.SetOnInsert(t => t.Name, name)
-                                          .SetOnInsert(t => t.BookId, bookId)
-                                          .SetOnInsert(t => t.ProjectRef, project.Id)
-                                          .SetOnInsert(t => t.OwnerRef, userId), upsert: true);
-
-                                if (hasSource)
-                                {
-                                    await SyncOrCloneBookAsync(user, conn, project, text, TextType.Source,
-                                        sourceParatextId);
-                                }
-                                await SyncOrCloneBookAsync(user, conn, project, text, TextType.Target,
-                                    targetParatextId);
-                            }
-
-                            foreach (string bookId in booksToDelete)
-                            {
-                                TextEntity text = await _texts.DeleteAsync(
-                                    t => t.ProjectRef == project.Id && t.BookId == bookId);
-
-                                if (hasSource)
-                                    await DeleteBookAsync(conn, project, text, TextType.Source, sourceParatextId);
-                                await DeleteBookAsync(conn, project, text, TextType.Target, targetParatextId);
-                                await UpdateProgress();
-                            }
-
-                            await conn.CloseAsync();
                         }
 
-                        _job = await _jobs.UpdateAsync(_job, u => u
-                            .Set(j => j.State, SyncJobEntity.IdleState)
-                            .Unset(j => j.BackgroundJobId));
-                        await _projects.UpdateAsync(project,
-                            u => u.Set(p => p.LastSyncedDate, _job.DateModified));
+                        foreach (string bookId in booksToDelete)
+                        {
+                            TextEntity text = await _texts.DeleteAsync(
+                                t => t.ProjectRef == project.Id && t.BookId == bookId);
 
-                        // start training Machine engine
-                        await _engineService.StartBuildAsync(SIL.Machine.WebApi.DataAccess.EngineLocatorType.Project,
-                            _job.ProjectRef);
+                            if (hasSource)
+                                await DeleteBookAsync(conn, project, text, TextType.Source, sourceParatextId);
+                            await DeleteBookAsync(conn, project, text, TextType.Target, targetParatextId);
+                            await UpdateProgress();
+                        }
+
+                        await conn.CloseAsync();
                     }
+
+                    // start training Machine engine
+                    await _engineService.StartBuildAsync(SIL.Machine.WebApi.DataAccess.EngineLocatorType.Project,
+                        _job.ProjectRef);
+
+                    await _projects.UpdateAsync(_job.ProjectRef, u => u
+                        .Set(p => p.LastSyncedDate, DateTime.UtcNow)
+                        .Unset(p => p.ActiveSyncJobRef));
                 }
+                else
+                {
+                    await _projects.UpdateAsync(_job.ProjectRef, u => u.Unset(p => p.ActiveSyncJobRef));
+                }
+                _job = await _jobs.UpdateAsync(_job, u => u
+                    .Set(j => j.State, SyncJobEntity.IdleState)
+                    .Unset(j => j.BackgroundJobId));
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error occurred while executing Paratext sync job '{Job}'", _job.Id);
+                await _projects.UpdateAsync(_job.ProjectRef, u => u.Unset(p => p.ActiveSyncJobRef));
                 await _jobs.UpdateAsync(_job, u => u
                     .Set(j => j.State, SyncJobEntity.HoldState)
                     .Unset(j => j.BackgroundJobId));

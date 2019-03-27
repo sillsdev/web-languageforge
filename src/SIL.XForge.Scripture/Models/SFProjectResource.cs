@@ -13,7 +13,9 @@ namespace SIL.XForge.Scripture.Models
         [Attr]
         public TranslateConfig TranslateConfig { get; set; }
 
-        [HasOne]
+        public string ActiveSyncJobRef { get; set; }
+
+        [HasOne(withForeignKey: nameof(ActiveSyncJobRef))]
         public SyncJobResource ActiveSyncJob { get; set; }
         [HasMany]
         [SchemaInfo(Inverse = nameof(TextResource.Project), IsDependent = true)]

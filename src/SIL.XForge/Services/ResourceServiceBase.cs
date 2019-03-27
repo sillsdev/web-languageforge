@@ -129,18 +129,11 @@ namespace SIL.XForge.Services
             TResource resource = _mapper.Map<TResource>(entity);
             resources[entity.Id] = resource;
 
-            if (included != null)
+            foreach ((RelationshipAttribute relAttr, string remaining) in ParseIncluded(included))
             {
-                foreach (string fullName in included)
-                {
-                    string[] relParts = fullName.Split('.');
-                    string relationshipName = relParts[0];
-                    RelationshipAttribute relAttr = JsonApiContext.ResourceGraph
-                        .GetRelationshipAttribute<TResource>(relationshipName);
-                    object value = await GetRelationshipResourcesAsync(relAttr, relParts.Skip(1), resources, entity);
-                    PropertyInfo propertyInfo = typeof(TResource).GetProperty(relAttr.InternalRelationshipName);
-                    propertyInfo.SetValue(resource, value);
-                }
+                object value = await GetRelationshipResourcesAsync(relAttr,
+                    remaining == null ? null : new[] { remaining }, resources, entity);
+                relAttr.SetValue(resource, value);
             }
             return resource;
         }
@@ -197,6 +190,33 @@ namespace SIL.XForge.Services
         {
             return new JsonApiException(StatusCodes.Status405MethodNotAllowed, "Request method is not supported.",
                 "https://json-api-dotnet.github.io/#/errors/UnSupportedRequestMethod");
+        }
+
+        private IEnumerable<(RelationshipAttribute Relationship, string Remaining)> ParseIncluded(
+            IEnumerable<string> included)
+        {
+            if (included == null)
+                yield break;
+
+            foreach (string i in included)
+            {
+                int index = i.IndexOf('.');
+                string relationshipName;
+                string remaining = null;
+                if (index == -1)
+                {
+                    relationshipName = i;
+                }
+                else
+                {
+                    relationshipName = i.Substring(0, index);
+                    remaining = i.Substring(index + 1);
+                }
+
+                RelationshipAttribute relAttr = JsonApiContext.ResourceGraph
+                    .GetRelationshipAttribute<TResource>(relationshipName);
+                yield return (relAttr, remaining);
+            }
         }
 
         private IQueryable<TEntity> ApplySortAndFilterQuery(IQueryable<TEntity> entities)

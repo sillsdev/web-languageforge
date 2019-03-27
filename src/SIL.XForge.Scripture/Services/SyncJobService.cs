@@ -36,6 +36,7 @@ namespace SIL.XForge.Scripture.Services
                 true);
             if (job.StartCount == 1)
             {
+                await Projects.UpdateAsync(job.ProjectRef, u => u.Set(p => p.ActiveSyncJobRef, job.Id));
                 // new job, so enqueue the runner
                 string jobId = job.Id;
                 _backgroundJobClient.Enqueue<ParatextSyncRunner>(r => r.RunAsync(null, null, UserId, jobId));

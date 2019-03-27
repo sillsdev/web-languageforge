@@ -30,7 +30,7 @@ namespace SIL.XForge.Services
             switch (relationshipName)
             {
                 case nameof(ProjectResource.Users):
-                    return OneToMany(ProjectUserMapper, u => u.ProjectRef);
+                    return HasMany(ProjectUserMapper, u => u.ProjectRef);
             }
             return base.GetRelationship(relationshipName);
         }
