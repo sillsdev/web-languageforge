@@ -1,12 +1,13 @@
-import { MdcSelect, OverlayContainer } from '@angular-mdc/web';
+import { OverlayContainer } from '@angular-mdc/web';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { anything, instance, mock, verify, when } from 'ts-mockito';
+import { BehaviorSubject, of } from 'rxjs';
+import { anything, instance, mock, resetCalls, verify, when } from 'ts-mockito';
 import { AuthService } from 'xforge-common/auth.service';
+import { ParatextProject } from 'xforge-common/models/paratext-project';
 import { NoticeService } from 'xforge-common/notice.service';
 import { ParatextService } from 'xforge-common/paratext.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
@@ -19,7 +20,7 @@ import { SettingsComponent } from './settings.component';
 
 describe('SettingsComponent', () => {
   describe('Tasks', () => {
-    it('should select Community Checking and submit update when clicked', fakeAsync(() => {
+    it('should select Checking and then submit update when clicked', fakeAsync(() => {
       const env = new TestEnvironment();
       expect(env.inputElement(env.checkingCheckbox).checked).toBe(false);
       env.clickElement(env.inputElement(env.checkingCheckbox));
@@ -68,7 +69,33 @@ describe('SettingsComponent', () => {
     }));
 
     describe('Translate options', () => {
-      it('should hide Based On when translate task is disabled', fakeAsync(() => {
+      it('should see login button when Paratext account not connected', fakeAsync(() => {
+        const env = new TestEnvironment();
+        env.setupParatextProjects(null);
+        env.wait();
+        expect(env.loginButton).toBeDefined();
+        expect(env.inputElement(env.translateCheckbox).disabled).toBe(true);
+        expect(env.basedOnSelect).toBeNull();
+      }));
+
+      it('should hide Based On when Translate is disabled', fakeAsync(() => {
+        const env = new TestEnvironment();
+        env.wait();
+        env.clickElement(env.inputElement(env.checkingCheckbox));
+        expect(env.inputElement(env.checkingCheckbox).checked).toBe(true);
+        expect(env.inputElement(env.translateCheckbox).checked).toBe(true);
+        expect(env.loginButton).toBeNull();
+        expect(env.basedOnSelect).toBeDefined();
+        expect(env.basedOnSelect.nativeElement.textContent).toContain('ParatextP1');
+
+        env.clickElement(env.inputElement(env.translateCheckbox));
+
+        expect(env.inputElement(env.translateCheckbox).checked).toBe(false);
+        expect(env.basedOnSelect).toBeNull();
+        expect(env.loginButton).toBeNull();
+      }));
+
+      it('should retain Based On value when Translate is disabled', fakeAsync(() => {
         const env = new TestEnvironment();
         env.wait();
         env.clickElement(env.inputElement(env.checkingCheckbox));
@@ -76,9 +103,19 @@ describe('SettingsComponent', () => {
         expect(env.inputElement(env.translateCheckbox).checked).toBe(true);
         expect(env.basedOnSelect).toBeDefined();
         expect(env.basedOnSelect.nativeElement.textContent).toContain('ParatextP1');
+
         env.clickElement(env.inputElement(env.translateCheckbox));
+
+        env.wait();
         expect(env.inputElement(env.translateCheckbox).checked).toBe(false);
-        expect(env.basedOnSelect).toBeNull();
+        expect(env.statusDone(env.translateStatus)).toBeDefined();
+
+        env.clickElement(env.inputElement(env.translateCheckbox));
+
+        env.wait();
+        expect(env.statusDone(env.translateStatus)).toBeDefined();
+        expect(env.basedOnSelect).toBeDefined();
+        expect(env.basedOnSelect.nativeElement.textContent).toContain('ParatextP1');
       }));
 
       it('should change Based On select value', fakeAsync(() => {
@@ -88,14 +125,84 @@ describe('SettingsComponent', () => {
         expect(env.basedOnSelect).toBeDefined();
         expect(env.basedOnSelect.nativeElement.textContent).toContain('ParatextP1');
         verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).never();
+
         env.setSelectValue(env.basedOnSelect, 'paratextId02');
+
         expect(env.basedOnSelect.nativeElement.textContent).toContain('ParatextP2');
+        verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).once();
+      }));
+
+      it('should not save Translate enable if Based On not set', fakeAsync(() => {
+        const env = new TestEnvironment();
+        env.setupProject(
+          new TestProject({
+            checkingConfig: { enabled: true, usersSeeEachOthersResponses: false, share: { viaEmail: false } },
+            translateConfig: { enabled: false, sourceParatextId: undefined }
+          })
+        );
+        env.wait();
+        expect(env.inputElement(env.translateCheckbox).checked).toBe(false);
+        expect(env.statusNone(env.translateStatus)).toBe(true);
+        expect(env.loginButton).toBeNull();
+        expect(env.basedOnSelect).toBeNull();
+
+        env.clickElement(env.inputElement(env.translateCheckbox));
+
+        expect(env.inputElement(env.translateCheckbox).checked).toBe(true);
+        expect(env.statusNone(env.translateStatus)).toBe(true);
+        expect(env.loginButton).toBeNull();
+        expect(env.basedOnSelect).toBeDefined();
+        expect(env.basedOnSelect.nativeElement.textContent).toEqual('Based on');
+        verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).never();
+      }));
+
+      it('should save Translate disable if Based On not set', fakeAsync(() => {
+        const env = new TestEnvironment();
+        env.setupProject(
+          new TestProject({
+            checkingConfig: { enabled: true, usersSeeEachOthersResponses: false, share: { viaEmail: false } },
+            translateConfig: { enabled: false, sourceParatextId: undefined }
+          })
+        );
+        env.wait();
+        env.clickElement(env.inputElement(env.translateCheckbox));
+        expect(env.statusNone(env.translateStatus)).toBe(true);
+        verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).never();
+
+        env.clickElement(env.inputElement(env.translateCheckbox));
+
+        expect(env.statusDone(env.translateStatus)).toBeDefined();
+        verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).once();
+      }));
+
+      it('should save Translate and Based On when Based On set', fakeAsync(() => {
+        const env = new TestEnvironment();
+        env.setupProject(
+          new TestProject({
+            checkingConfig: { enabled: true, usersSeeEachOthersResponses: false, share: { viaEmail: false } },
+            translateConfig: { enabled: false, sourceParatextId: undefined }
+          })
+        );
+        env.wait();
+        env.clickElement(env.inputElement(env.translateCheckbox));
+        expect(env.inputElement(env.translateCheckbox).checked).toBe(true);
+        expect(env.basedOnSelect).toBeDefined();
+        expect(env.statusNone(env.translateStatus)).toBe(true);
+        expect(env.statusNone(env.basedOnStatus)).toBe(true);
+        expect(env.basedOnSelect.nativeElement.textContent).toEqual('Based on');
+        verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).never();
+
+        env.setSelectValue(env.basedOnSelect, 'paratextId02');
+
+        expect(env.basedOnSelect.nativeElement.textContent).toContain('ParatextP2');
+        expect(env.statusDone(env.translateStatus)).toBeDefined();
+        expect(env.statusDone(env.basedOnStatus)).toBeDefined();
         verify(env.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).once();
       }));
     });
 
     describe('Checking options', () => {
-      it('should hide options when checking task is disabled', fakeAsync(() => {
+      it('should hide options when Checking is disabled', fakeAsync(() => {
         const env = new TestEnvironment();
         env.wait();
         expect(env.inputElement(env.translateCheckbox).checked).toBe(true);
@@ -132,6 +239,19 @@ describe('SettingsComponent', () => {
       flush();
     }));
 
+    it('should disable Delete button while loading', fakeAsync(() => {
+      const env = new TestEnvironment();
+      env.wait();
+      env.isLoading = true;
+      env.wait();
+      expect(env.deleteProjectButton).toBeDefined();
+      expect(env.deleteProjectButton.disabled).toBe(true);
+
+      env.isLoading = false;
+      env.wait();
+      expect(env.deleteProjectButton.disabled).toBe(false);
+    }));
+
     it('should delete project if user confirms on the dialog', fakeAsync(() => {
       const env = new TestEnvironment();
       env.clickElement(env.deleteProjectButton);
@@ -166,41 +286,44 @@ class TestEnvironment {
   fixture: ComponentFixture<SettingsComponent>;
   overlayContainer: OverlayContainer;
 
+  isLoading: boolean = false;
   mockedActivatedRoute: ActivatedRoute = mock(ActivatedRoute);
   mockedAuthService: AuthService = mock(AuthService);
+  mockedNoticeService: NoticeService = mock(NoticeService);
   mockedParatextService: ParatextService = mock(ParatextService);
   mockedSFProjectService: SFProjectService = mock(SFProjectService);
-  mockedNoticeService: NoticeService = mock(NoticeService);
   mockedUserService: UserService = mock(UserService);
+
+  private readonly project$: BehaviorSubject<SFProject>;
+  private readonly paratectProjects$: BehaviorSubject<ParatextProject[]>;
 
   constructor() {
     when(this.mockedActivatedRoute.params).thenReturn(of({ projectId: 'project01' }));
-    when(this.mockedParatextService.getProjects()).thenReturn(
-      of([
-        {
-          paratextId: 'paratextId01',
-          name: 'ParatextP1',
-          languageTag: 'qaa',
-          languageName: 'unspecified',
-          isConnectable: true
-        },
-        {
-          paratextId: 'paratextId02',
-          name: 'ParatextP2',
-          languageTag: 'qaa',
-          languageName: 'unspecified',
-          isConnectable: true
-        }
-      ])
+    when(this.mockedNoticeService.isLoading).thenCall(() => this.isLoading);
+    this.paratectProjects$ = new BehaviorSubject<ParatextProject[]>([
+      {
+        paratextId: 'paratextId01',
+        name: 'ParatextP1',
+        languageTag: 'qaa',
+        languageName: 'unspecified',
+        isConnectable: true
+      },
+      {
+        paratextId: 'paratextId02',
+        name: 'ParatextP2',
+        languageTag: 'qaa',
+        languageName: 'unspecified',
+        isConnectable: true
+      }
+    ]);
+    when(this.mockedParatextService.getProjects()).thenReturn(this.paratectProjects$);
+    this.project$ = new BehaviorSubject<SFProject>(
+      new TestProject({
+        checkingConfig: { enabled: false, usersSeeEachOthersResponses: false, share: { viaEmail: false } },
+        translateConfig: { enabled: true, sourceParatextId: 'paratextId01' }
+      })
     );
-    when(this.mockedSFProjectService.onlineGet(anything())).thenReturn(
-      of(
-        new TestProject({
-          checkingConfig: { enabled: false, usersSeeEachOthersResponses: false, share: { viaEmail: false } },
-          translateConfig: { enabled: true, sourceParatextId: 'paratextId01' }
-        })
-      )
-    );
+    when(this.mockedSFProjectService.onlineGet(anything())).thenReturn(this.project$);
     when(this.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).thenCall(() => Promise.resolve());
     when(this.mockedSFProjectService.onlineDelete(anything())).thenResolve();
     when(this.mockedUserService.updateCurrentProjectId(anything())).thenResolve();
@@ -210,6 +333,7 @@ class TestEnvironment {
       providers: [
         { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
         { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
         { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
         { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
         { provide: UserService, useFactory: () => instance(this.mockedUserService) }
@@ -240,6 +364,14 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('#based-on-select'));
   }
 
+  get basedOnStatus(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#based-on-status'));
+  }
+
+  get loginButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#btn-log-in-settings'));
+  }
+
   get checkingCheckbox(): DebugElement {
     return this.fixture.debugElement.query(By.css('#checkbox-community-checking'));
   }
@@ -268,7 +400,7 @@ class TestEnvironment {
     return this.fixture.nativeElement.querySelector('#danger-zone h3');
   }
 
-  get deleteProjectButton(): HTMLElement {
+  get deleteProjectButton(): HTMLButtonElement {
     return this.fixture.nativeElement.querySelector('#delete-btn');
   }
 
@@ -317,12 +449,16 @@ class TestEnvironment {
     return element.nativeElement.querySelector('input') as HTMLInputElement;
   }
 
-  statusDone(element: DebugElement): HTMLInputElement {
-    return element.nativeElement.querySelector('.check-icon') as HTMLInputElement;
+  statusNone(element: DebugElement): boolean {
+    return element.children.length === 0;
   }
 
-  statusError(element: DebugElement): HTMLInputElement {
-    return element.nativeElement.querySelector('.error-icon') as HTMLInputElement;
+  statusDone(element: DebugElement): HTMLElement {
+    return element.nativeElement.querySelector('.check-icon') as HTMLElement;
+  }
+
+  statusError(element: DebugElement): HTMLElement {
+    return element.nativeElement.querySelector('.error-icon') as HTMLElement;
   }
 
   setSelectValue(element: DebugElement, value: string): void {
@@ -335,6 +471,14 @@ class TestEnvironment {
     flush();
     this.fixture.detectChanges();
     flush();
+  }
+
+  setupProject(project: SFProject) {
+    this.project$.next(project);
+  }
+
+  setupParatextProjects(paratextProjects: ParatextProject[]) {
+    this.paratectProjects$.next(paratextProjects);
   }
 }
 

@@ -4,6 +4,18 @@
   padding: 1rem;
 }
 
+#btn-log-in-settings {
+  background-color: $pt-button-green;
+  color: white;
+  height: 2.5rem;
+}
+
+.paratext-logo {
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.5rem;
+}
+
 p.helper-select,
 .indented-field-row {
   margin-top: 1rem;
@@ -12,6 +24,10 @@ p.helper-select,
 .helper-text {
   color: var(--mdc-theme-text-hint-on-background);
   margin: 0;
+}
+
+.more-options {
+  margin-left: 1rem;
 }
 
 .invalid-feedback {
