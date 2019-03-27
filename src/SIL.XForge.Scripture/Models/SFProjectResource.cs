@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using JsonApiDotNetCore.Models;
 using SIL.XForge.Models;
@@ -13,10 +12,10 @@ namespace SIL.XForge.Scripture.Models
         public CheckingConfig CheckingConfig { get; set; }
         [Attr]
         public TranslateConfig TranslateConfig { get; set; }
-        [Attr]
-        public DateTime LastSyncedDate { get; set; }
 
-        [HasOne]
+        public string ActiveSyncJobRef { get; set; }
+
+        [HasOne(withForeignKey: nameof(ActiveSyncJobRef))]
         public SyncJobResource ActiveSyncJob { get; set; }
         [HasMany]
         [SchemaInfo(Inverse = nameof(TextResource.Project), IsDependent = true)]

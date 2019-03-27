@@ -13,10 +13,10 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Realtime
 {
-    /**
-     * This service is responsible for managing the real-time/ShareDB server. It provides methods for accessing
-     * real-time data and performing actions on the server.
-     */
+    /// <summary>
+    /// This service is responsible for managing the real-time/ShareDB server. It provides methods for accessing
+    /// real-time data and performing actions on the server.
+    /// </summary>
     public class RealtimeService : DisposableBase, IRealtimeService
     {
         private readonly INodeServices _nodeServices;

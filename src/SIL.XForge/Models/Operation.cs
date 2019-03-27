@@ -1,8 +1,8 @@
 namespace SIL.XForge.Models
 {
-    /**
-     * This should stay in sync with the corresponding enum in "Realtime/realtime-server.js".
-     */
+    /// <summary>
+    /// This should stay in sync with the corresponding enum in "Realtime/realtime-server.js".
+    /// </summary>
     public enum Operation
     {
         Create = 1,

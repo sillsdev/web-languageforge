@@ -8,7 +8,7 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.Services
 {
-    public class ManyToOneRelationship<TThisEntity, TOtherResource, TOtherEntity> : IRelationship<TThisEntity>
+    public class HasOneRelationship<TThisEntity, TOtherResource, TOtherEntity> : IRelationship<TThisEntity>
         where TThisEntity : Entity
         where TOtherResource : class, IResource
         where TOtherEntity : class, IEntity
@@ -18,7 +18,7 @@ namespace SIL.XForge.Services
         private readonly bool _updateAllowed;
         private readonly Func<TThisEntity, string> _getField;
 
-        public ManyToOneRelationship(IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
+        public HasOneRelationship(IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TThisEntity, string>> getFieldExpr, bool updateAllowed = true)
         {
             _otherResourceMapper = otherResourceMapper;

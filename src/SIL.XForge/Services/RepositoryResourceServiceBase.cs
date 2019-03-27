@@ -119,34 +119,23 @@ namespace SIL.XForge.Services
                 update.Set(field, value);
         }
 
-        protected IRelationship<TEntity> ManyToOne<TOtherResource, TOtherEntity>(
+        protected IRelationship<TEntity> HasOne<TOtherResource, TOtherEntity>(
             IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TEntity, string>> getFieldExpr, bool updateAllowed = true)
                 where TOtherResource : class, IResource
                 where TOtherEntity : class, IEntity
         {
-            return new ManyToOneRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, getFieldExpr,
+            return new HasOneRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, getFieldExpr,
                 updateAllowed);
         }
 
-        protected IRelationship<TEntity> OneToMany<TOtherResource, TOtherEntity>(
+        protected IRelationship<TEntity> HasMany<TOtherResource, TOtherEntity>(
             IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TOtherEntity, string>> getFieldExpr)
                 where TOtherResource : class, IResource
                 where TOtherEntity : class, IEntity
         {
-            return new OneToManyRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, getFieldExpr);
-        }
-
-        protected IRelationship<TEntity> Custom<TOtherResource, TOtherEntity>(
-            IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
-            Func<TEntity, Expression<Func<TOtherEntity, bool>>> createPredicate,
-            Action<IUpdateBuilder<TEntity>, IEnumerable<string>> update = null)
-                where TOtherResource : class, IResource
-                where TOtherEntity : class, IEntity
-        {
-            return new CustomRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, createPredicate,
-                update);
+            return new HasManyRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, getFieldExpr);
         }
 
         private static Expression<Func<TEntity, object>> GetField(string fieldName)

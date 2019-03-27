@@ -8,7 +8,7 @@ using SIL.XForge.Utils;
 
 namespace SIL.XForge.Services
 {
-    public class OneToManyRelationship<TThisEntity, TOtherResource, TOtherEntity> : IRelationship<TThisEntity>
+    public class HasManyRelationship<TThisEntity, TOtherResource, TOtherEntity> : IRelationship<TThisEntity>
         where TThisEntity : Entity
         where TOtherResource : class, IResource
         where TOtherEntity : class, IEntity
@@ -16,7 +16,7 @@ namespace SIL.XForge.Services
         private readonly IResourceMapper<TOtherResource, TOtherEntity> _otherResourceMapper;
         private readonly Expression<Func<TOtherEntity, string>> _getFieldExpr;
 
-        public OneToManyRelationship(IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
+        public HasManyRelationship(IResourceMapper<TOtherResource, TOtherEntity> otherResourceMapper,
             Expression<Func<TOtherEntity, string>> getFieldExpr)
         {
             _otherResourceMapper = otherResourceMapper;

@@ -22,7 +22,7 @@ namespace SIL.XForge.Services
             switch (propertyName)
             {
                 case nameof(TestResource.User):
-                    return ManyToOne(UserMapper, e => e.UserRef);
+                    return HasOne(UserMapper, e => e.UserRef);
             }
             return base.GetRelationship(propertyName);
         }

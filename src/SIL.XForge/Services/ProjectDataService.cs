@@ -42,9 +42,9 @@ namespace SIL.XForge.Services
             switch (propertyName)
             {
                 case nameof(ProjectDataResource.Project):
-                    return ManyToOne(ProjectMapper, ProjectRef(), false);
+                    return HasOne(ProjectMapper, ProjectRef(), false);
                 case nameof(ProjectDataResource.Owner):
-                    return ManyToOne(UserMapper, (TEntity p) => p.OwnerRef, false);
+                    return HasOne(UserMapper, (TEntity p) => p.OwnerRef, false);
             }
             return base.GetRelationship(propertyName);
         }

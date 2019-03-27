@@ -119,13 +119,13 @@ export const QueryOperators: Dict<QueryOperator> = {
     );
 
     const deserialized = source.serializer.deserializeDocument(document);
-    const relatedRecord = deserialized.data;
+    const relatedRecord = deserialized.data as Record;
     const operations = operationsFromDeserializedDocument(deserialized);
     operations.push({
       op: 'replaceRelatedRecord',
       record,
       relationship,
-      relatedRecord
+      relatedRecord: relatedRecord == null ? null : { type: relatedRecord.type, id: relatedRecord.id }
     } as ReplaceRelatedRecordOperation);
 
     const transforms = [buildTransform(operations)];
@@ -147,14 +147,14 @@ export const QueryOperators: Dict<QueryOperator> = {
     );
 
     const deserialized = source.serializer.deserializeDocument(document);
-    const relatedRecords = deserialized.data;
+    const relatedRecords = deserialized.data as Record[];
 
     const operations = operationsFromDeserializedDocument(deserialized);
     operations.push({
       op: 'replaceRelatedRecords',
       record,
       relationship,
-      relatedRecords
+      relatedRecords: relatedRecords.map(r => ({ type: r.type, id: r.id }))
     } as ReplaceRelatedRecordsOperation);
 
     const transforms = [buildTransform(operations)];

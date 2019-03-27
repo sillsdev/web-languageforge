@@ -31,7 +31,7 @@ namespace SIL.XForge.Services
             switch (relationshipName)
             {
                 case nameof(UserResource.Projects):
-                    return OneToMany(ProjectUserMapper, u => u.UserRef);
+                    return HasMany(ProjectUserMapper, u => u.UserRef);
             }
             return base.GetRelationship(relationshipName);
         }
@@ -107,7 +107,7 @@ namespace SIL.XForge.Services
                     }
                     break;
                 case nameof(UserResource.ContactMethod):
-                    Enum.TryParse((string) value, true, out UserEntity.ContactMethods method);
+                    Enum.TryParse((string)value, true, out UserEntity.ContactMethods method);
                     update.Set(u => u.ContactMethod, method);
                     break;
                 case nameof(UserResource.Site):
