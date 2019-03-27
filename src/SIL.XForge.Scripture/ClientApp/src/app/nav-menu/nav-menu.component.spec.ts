@@ -134,6 +134,7 @@ describe('NavMenuComponent', () => {
     // the first time we hear back from the observable. Don't prevent
     // it from trying again by crashing in the fixture or component code.
 
+    let env: TestEnvironment;
     const projectsSubject2 = new BehaviorSubject<QueryResults<SFProjectUser[]>>(
       new MapQueryResults(
         [
@@ -152,10 +153,12 @@ describe('NavMenuComponent', () => {
       )
     );
     expect(() => {
-      const env = new TestEnvironment(projectsSubject2);
+      env = new TestEnvironment(projectsSubject2);
       env.navigate(['/projects', 'project01']);
       env.init();
     }).not.toThrow();
+
+    expect(env.component.projects).toBeUndefined();
   }));
 });
 
@@ -233,12 +236,14 @@ class TestEnvironment {
         [
           new SFProject({
             id: 'project01',
+            projectName: 'project01',
             translateConfig: { enabled: true },
             checkingConfig: { enabled: true },
             texts: [new TextRef('text01'), new TextRef('text02')]
           }),
           new SFProject({
             id: 'project02',
+            projectName: 'project02',
             translateConfig: { enabled: false },
             checkingConfig: { enabled: true },
             texts: [new TextRef('text03'), new TextRef('text04')]
