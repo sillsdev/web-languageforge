@@ -118,7 +118,7 @@ namespace SIL.XForge.Scripture
                     config.AuthenticationSchemes = new[] { JwtBearerDefaults.AuthenticationScheme };
                 })
                 .AddEngineOptions(o => o.EnginesDir = Path.Combine(siteOptions.SiteDir, "engines"))
-                .AddMongoDataAccess()
+                .AddMongoDataAccess(o => o.MachineDatabaseName = "xforge_machine")
                 .AddTextCorpus<SFTextCorpusFactory>();
 
             containerBuilder.Populate(services);
