@@ -120,7 +120,7 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     // Update states when control values change.
     for (const controlName of Object.keys(this.formGroup.controls)) {
       this.subscribe(this.formGroup.get(controlName).valueChanges, this.onControlValueChanges(controlName));
-    }
+    } // TODO (Hasso) 2019.03: gender
   }
 
   ngOnDestroy() {

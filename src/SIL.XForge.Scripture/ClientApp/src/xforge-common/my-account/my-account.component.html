@@ -258,7 +258,12 @@
               </mat-select>
             </mat-form-field> -->
             <mdc-form-field fxFlex>
-              <mdc-select formControlName="gender" placeholder="Gender" (selectionChange)="update('gender')">
+              <mdc-select
+                formControlName="gender"
+                placeholder="Gender"
+                (selectionChange)="update('gender')"
+                (selectionchange)="update('gender')"
+              >
                 <option value="female">Female</option><option value="male">Male</option><option value="empty"></option>
               </mdc-select>
             </mdc-form-field>

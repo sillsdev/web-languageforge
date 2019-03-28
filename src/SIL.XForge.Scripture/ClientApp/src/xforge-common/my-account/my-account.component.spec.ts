@@ -265,7 +265,7 @@ describe('MyAccountComponent', () => {
     });
   }));
 
-  it('handles network error for comboboxes', fakeAsync(() => {
+  fit('handles network error for comboboxes', fakeAsync(() => {
     const technicalDetails = 'squirrel chewed thru line. smoke lost.';
     when(env.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).thenReject({ stack: technicalDetails });
 
@@ -273,7 +273,7 @@ describe('MyAccountComponent', () => {
     expect(env.component.formGroup.get('gender').value).toBe(originalvalue, 'test setup problem');
 
     // change value on page
-    const newValue = 'Male';
+    const newValue = 'female';
     expect(originalvalue).not.toEqual(newValue, 'test set up wrong');
     env.component.formGroup.get('gender').setValue(newValue);
     env.fixture.detectChanges();
@@ -508,8 +508,38 @@ describe('MyAccountComponent', () => {
     it('should update to the chosen gender', fakeAsync(() => {
       expect(env.userInDatabase.gender).toEqual('male', 'initial user');
       expect(env.component.formGroup.get('gender').value).toEqual(env.userInDatabase.gender, 'setup problem');
-      let john = env.genderCombo.children;
-      console.log(john);
+
+      const newValue = 'female';
+      // // https://stackoverflow.com/questions/48947374/angular5-click-select-option-in-component-test Emmy's solution:
+      // // env.genderCombo.nativeElement.click();
+      // env.genderCombo.query(By.css('i')).nativeElement.click();
+      // env.fixture.detectChanges();
+      // env.comboItem(newValue).nativeElement.click();
+      // console.log('after click: ' + env.component.formGroup.get('gender').value);
+      // flush();
+      // console.log('after flush: ' + env.component.formGroup.get('gender').value);
+      // env.fixture.detectChanges();
+      // console.log('after detect: ' + env.component.formGroup.get('gender').value);
+      // Ayala's solution
+      // env.genderCombo.nativeElement.value = newValue; // or setValue?
+      env.component.formGroup.get('gender').setValue(newValue);
+      console.log('after set: ' + env.component.formGroup.get('gender').value);
+      env.genderCombo.nativeElement.dispatchEvent(new Event('change'));
+      console.log('after change event: ' + env.component.formGroup.get('gender').value);
+      flush();
+      console.log('after flush: ' + env.component.formGroup.get('gender').value);
+      env.fixture.detectChanges();
+      console.log('after detect: ' + env.component.formGroup.get('gender').value);
+      // // my experiments
+      // env.clickButton(env.comboItem(newValue));
+      // console.log(env.comboItem(newValue).nativeElement.select);
+      // console.log(env.genderCombo.nativeElement.select);
+      // env.genderCombo.nativeElement.select = newValue;
+      // env.comboItem(newValue).nativeElement.select = newValue;
+      // env.fixture.detectChanges();
+      // flush();
+      expect(env.component.formGroup.get('gender').value).toEqual(newValue, 'not clicked?');
+      expect(env.userInDatabase.gender).toEqual(newValue, 'not properly updated in database');
     }));
   });
 
@@ -687,6 +717,10 @@ class TestEnvironment {
 
   contactMethodToggle(toggleName: string): DebugElement {
     return this.fixture.debugElement.query(By.css(`mat-button-toggle[value="${toggleName}"]`));
+  }
+
+  comboItem(value: string): DebugElement {
+    return this.fixture.debugElement.query(By.css(`option[value="${value}"]`));
   }
 
   get genderCombo(): DebugElement {
