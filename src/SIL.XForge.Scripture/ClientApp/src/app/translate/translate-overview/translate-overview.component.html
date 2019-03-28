@@ -1,0 +1,38 @@
+<div class="translation-progress-overview">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <h2 id="translate-overview-title"><mdc-icon>book</mdc-icon>Books Translated</h2>
+    <div class="overall-progress">
+      <canvas
+        baseChart
+        width="60"
+        height="60"
+        chartType="doughnut"
+        [legend]="false"
+        [labels]="['Translated', 'Empty']"
+        [data]="[overallProgress.translated, overallProgress.empty]"
+        [colors]="[{ backgroundColor: ['#3a3a3a', '#ececec'] }]"
+        [options]="{ events: [] }"
+      ></canvas>
+    </div>
+  </div>
+  <div *ngIf="!isLoading">
+    <mdc-list>
+      <mdc-list-item *ngFor="let text of texts" fxLayout="row" fxLayoutAlign="space-between center">
+        <span>{{ text.name }}</span>
+        <div class="project-progress">
+          <canvas
+            baseChart
+            width="36"
+            height="36"
+            chartType="doughnut"
+            [legend]="false"
+            [labels]="['Translated', 'Empty']"
+            [data]="[getTranslationProgress(text).translated, getTranslationProgress(text).empty]"
+            [colors]="[{ backgroundColor: ['#3a3a3a', '#ececec'] }]"
+            [options]="{ events: [] }"
+          ></canvas>
+        </div>
+      </mdc-list-item>
+    </mdc-list>
+  </div>
+</div>
