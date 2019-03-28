@@ -106,15 +106,19 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   }
 
   get sourceLabel(): string {
-    return this.project == null ? '' : this.project.translateConfig.sourceInputSystem.languageName;
+    return this.project == null || this.project.translateConfig == null
+      ? ''
+      : this.project.translateConfig.sourceInputSystem.languageName;
   }
 
   get targetLabel(): string {
-    return this.project == null ? '' : this.project.inputSystem.languageName;
+    return this.project == null || this.project.inputSystem == null ? '' : this.project.inputSystem.languageName;
   }
 
   get isTargetTextRight(): boolean {
-    return this.translateUserConfig == null ? true : this.translateUserConfig.isTargetTextRight;
+    return this.translateUserConfig == null || this.translateUserConfig == null
+      ? true
+      : this.translateUserConfig.isTargetTextRight;
   }
 
   set isTargetTextRight(value: boolean) {

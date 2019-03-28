@@ -88,7 +88,7 @@ export class OrbitService {
       sources: [this._store, this.remote, this.backup],
       strategies: [
         // Handle a pull failure
-        new RemotePullFailStrategy(REMOTE, STORE),
+        new RemotePullFailStrategy(REMOTE),
         // Handle a push failure
         new RemotePushFailStrategy(REMOTE, STORE),
         // Query the remote server whenever the store is queried

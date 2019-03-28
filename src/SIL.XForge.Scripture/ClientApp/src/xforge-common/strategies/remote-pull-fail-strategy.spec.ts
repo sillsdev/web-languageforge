@@ -1,7 +1,6 @@
 import Coordinator from '@orbit/coordinator';
-import { ClientError, pullable, Query, Schema, Source, Transform } from '@orbit/data';
+import { pullable, Query, Schema, Source, Transform } from '@orbit/data';
 
-import { RequestType } from '../request-type';
 import { XForgeStore } from '../store/xforge-store';
 import { TEST_SCHEMA_SETTINGS } from '../test-schema-settings';
 import { RemotePullFailStrategy } from './remote-pull-fail-strategy';
@@ -16,71 +15,18 @@ describe('RemotePullFailStrategy', () => {
   });
   afterEach(() => env.dispose());
 
-  describe('online', () => {
-    it('not found error - removed from cache', async () => {
-      env.setupNotFoundError();
+  it('error', async () => {
+    env.setupGeneralError();
 
-      let user = await env.store.query(q => q.findRecord({ type: 'user', id: 'user01' }), {
-        requestType: RequestType.OnlineOnly
-      });
-      expect(user).toBeNull();
-      user = env.store.cache.query(q => q.findRecord({ type: 'user', id: 'user01' }));
-      expect(user).toBeNull();
+    let err: any;
+    try {
+      await env.store.query(q => q.findRecord({ type: 'user', id: 'user01' }));
+    } catch (e) {
+      err = e;
+    }
+    expect(err).toBeDefined();
 
-      expect(env.store.requestQueue.empty).toBe(true);
-      expect(env.remote.requestQueue.empty).toBe(true);
-    });
-
-    it('general error - cache not changed', async () => {
-      env.setupGeneralError();
-
-      let err: any;
-      try {
-        await env.store.query(q => q.findRecord({ type: 'user', id: 'user01' }), {
-          requestType: RequestType.OnlineOnly
-        });
-      } catch (e) {
-        err = e;
-      }
-      expect(err).toBeDefined();
-      const user = env.store.cache.query(q => q.findRecord({ type: 'user', id: 'user01' }));
-      expect(user).not.toBeNull();
-
-      expect(env.store.requestQueue.empty).toBe(true);
-      expect(env.remote.requestQueue.empty).toBe(true);
-    });
-  });
-
-  describe('offline', () => {
-    it('not found error - removed from cache', async done => {
-      env.setupNotFoundError();
-
-      const initialUser = await env.store.query(q => q.findRecord({ type: 'user', id: 'user01' }), {
-        requestType: RequestType.OfflineFirst
-      });
-      expect(initialUser).not.toBeNull();
-
-      env.store.requestQueue.one('complete', () => {
-        const updatedUser = env.store.cache.query(q => q.findRecord({ type: 'user', id: 'user01' }));
-        expect(updatedUser).toBeNull();
-
-        expect(env.store.requestQueue.empty).toBe(true);
-        expect(env.remote.requestQueue.empty).toBe(true);
-        done();
-      });
-    });
-
-    it('general error - cache not changed', async () => {
-      env.setupGeneralError();
-
-      const user = await env.store.query(q => q.findRecord({ type: 'user', id: 'user01' }), {
-        requestType: RequestType.OfflineFirst
-      });
-      expect(user).not.toBeNull();
-
-      expect(env.store.requestQueue.empty).toBe(true);
-      expect(env.remote.requestQueue.empty).toBe(true);
-    });
+    expect(env.remote.requestQueue.empty).toBe(true);
   });
 });
 
@@ -110,20 +56,12 @@ class TestEnvironment {
 
     this.coordinator = new Coordinator({
       sources: [this.remote, this.store],
-      strategies: [new RemotePullFailStrategy('remote', 'store'), new StoreRemoteQueryStrategy('store', 'remote')]
+      strategies: [new RemotePullFailStrategy('remote'), new StoreRemoteQueryStrategy('store', 'remote')]
     });
   }
 
   init(): Promise<void> {
     return this.coordinator.activate();
-  }
-
-  setupNotFoundError(): void {
-    this.remote._pull = () => {
-      const err: any = new ClientError('Not found');
-      err.response = { status: 404 };
-      throw err;
-    };
   }
 
   setupGeneralError(): void {

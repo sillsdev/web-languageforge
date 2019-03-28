@@ -32,13 +32,13 @@ import {
   Schema,
   SortSpecifier,
   Transform,
+  TransformOrOperations,
   ValueComparisonOperator
 } from '@orbit/data';
 import { PatchResultData } from '@orbit/store';
 import { clone, dasherize, deepGet, Dict, eq, extend } from '@orbit/utils';
 import { BehaviorSubject, ConnectableObservable, from, fromEvent, Observable } from 'rxjs';
 import { filter, finalize, map, publishReplay } from 'rxjs/operators';
-
 import { CustomFilterSpecifier, isCustomFilterRegistered } from './custom-filter-specifier';
 import { IndexedPageSpecifier } from './indexed-page-specifier';
 import { JsonRpcService } from './json-rpc.service';
@@ -270,7 +270,7 @@ export class JsonApiService {
     const record = this.createRecord(resource);
     this.schema.initializeRecord(record);
     resource.id = record.id;
-    await this.store.update(t => t.addRecord(record), this.getOptions(RequestType.OfflineFirst));
+    await this.storeUpdate(t => t.addRecord(record), this.getOptions(RequestType.OfflineFirst));
     return resource;
   }
 
@@ -283,7 +283,7 @@ export class JsonApiService {
   update<T extends Resource>(resource: T): Promise<void> {
     const updatedRecord = this.createRecord(resource);
     const cachedRecord = this.store.cache.query(q => q.findRecord(updatedRecord)) as Record;
-    return this.store.update(t => {
+    return this.storeUpdate(t => {
       const ops: Operation[] = [];
 
       const updatedAttrs = this.getUpdatedProps(cachedRecord.attributes, updatedRecord.attributes);
@@ -322,7 +322,7 @@ export class JsonApiService {
    * @returns {Promise<void>} Resolves when the resource is deleted locally.
    */
   delete(identity: RecordIdentity): Promise<void> {
-    return this.store.update(t => t.removeRecord(identity), this.getOptions(RequestType.OfflineFirst));
+    return this.storeUpdate(t => t.removeRecord(identity), this.getOptions(RequestType.OfflineFirst));
   }
 
   /**
@@ -337,7 +337,7 @@ export class JsonApiService {
    * @returns {Promise<void>} Resolves when the resources are replaced locally.
    */
   replaceAllRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity[]): Promise<void> {
-    return this.store.update(
+    return this.storeUpdate(
       t => t.replaceRelatedRecords(identity, relationship, related),
       this.getOptions(RequestType.OfflineFirst)
     );
@@ -355,7 +355,7 @@ export class JsonApiService {
    * @returns {Promise<void>} Resolves when the resource is set locally.
    */
   setRelated(identity: RecordIdentity, relationship: string, related: RecordIdentity | null): Promise<void> {
-    return this.store.update(
+    return this.storeUpdate(
       t => t.replaceRelatedRecord(identity, relationship, related),
       this.getOptions(RequestType.OfflineFirst)
     );
@@ -445,7 +445,7 @@ export class JsonApiService {
   async onlineCreate<T extends Resource>(resource: T, persist: boolean = false): Promise<T> {
     const record = this.createRecord(resource);
     this.schema.initializeRecord(record);
-    await this.store.update(t => t.addRecord(record), this.getOnlineUpdateOptions(persist));
+    await this.storeUpdate(t => t.addRecord(record), this.getOnlineUpdateOptions(persist));
     return this.localGet<T>(record);
   }
 
@@ -472,7 +472,7 @@ export class JsonApiService {
    * @returns {Promise<void>} Resolves when the resource is deleted remotely.
    */
   onlineDelete(identity: RecordIdentity): Promise<void> {
-    return this.store.update(t => t.removeRecord(identity), this.getOnlineUpdateOptions(true));
+    return this.storeUpdate(t => t.removeRecord(identity), this.getOnlineUpdateOptions(true));
   }
 
   /**
@@ -493,7 +493,7 @@ export class JsonApiService {
     related: RecordIdentity[],
     persist: boolean = false
   ): Promise<void> {
-    return this.store.update(
+    return this.storeUpdate(
       t => t.replaceRelatedRecords(identity, relationship, related),
       this.getOnlineUpdateOptions(persist)
     );
@@ -517,7 +517,7 @@ export class JsonApiService {
     related: RecordIdentity | null,
     persist: boolean = false
   ): Promise<void> {
-    return this.store.update(
+    return this.storeUpdate(
       t => t.replaceRelatedRecord(identity, relationship, related),
       this.getOnlineUpdateOptions(persist)
     );
@@ -589,6 +589,16 @@ export class JsonApiService {
   }
 
   /**
+   * Deletes a resource in the local cache.
+   *
+   * @param {RecordIdentity} identity The resource identity.
+   * @returns {Promise<void>} Resolves when the resource is deleted locally.
+   */
+  localDelete(identity: RecordIdentity): Promise<void> {
+    return this.storeUpdate(t => t.removeRecord(identity), this.getOptions(RequestType.LocalOnly));
+  }
+
+  /**
    * Invokes a command on the specified type or resource.
    *
    * @param {(RecordIdentity | string)} identityOrType The type or resource to perform command on.
@@ -651,11 +661,7 @@ export class JsonApiService {
     this.store.on('transform_completed', handler);
 
     // start remote query right away
-    this.store.query(remoteQuery).catch(err => {
-      if (!(err instanceof ClientError)) {
-        console.error(err);
-      }
-    });
+    this.storeQuery(remoteQuery).catch(err => console.error(err));
 
     // remove listener after all subscribers have unsubscribed
     const finalize$ = changes$.pipe(
@@ -678,7 +684,7 @@ export class JsonApiService {
       this.store.queryBuilder
     );
 
-    return from(this.store.query(query)).pipe(
+    return from(this.storeQuery(query)).pipe(
       map(r => new CacheQueryResults(this, this.convertResults(r), query.options.totalPagedCount))
     );
   }
@@ -747,6 +753,24 @@ export class JsonApiService {
       order: sort.order
     };
     return sortSpecifier;
+  }
+
+  private async storeQuery(queryOrExpression: QueryOrExpression, options?: object): Promise<any> {
+    try {
+      return await this.store.query(queryOrExpression, options);
+    } catch (err) {
+      await this.store.requestQueue.skip();
+      throw err;
+    }
+  }
+
+  private async storeUpdate(transformOrOperations: TransformOrOperations, options?: object): Promise<any> {
+    try {
+      return await this.store.update(transformOrOperations, options);
+    } catch (err) {
+      await this.store.requestQueue.skip();
+      throw err;
+    }
   }
 
   private getOptions(requestType: RequestType): any {
@@ -1008,7 +1032,7 @@ export class JsonApiService {
     attrs: Partial<T>,
     requestType: RequestType
   ): Promise<T> {
-    await this.store.update(t => {
+    await this.storeUpdate(t => {
       const ops: Operation[] = [];
       for (const [name, value] of Object.entries(attrs)) {
         ops.push(t.replaceAttribute(identity, name, value));

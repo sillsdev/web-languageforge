@@ -27,7 +27,6 @@ describe('RemotePullFailStrategy', () => {
       const user: Record = env.store.cache.query(q => q.findRecord({ type: 'user', id: 'user01' }));
       expect(user.attributes.name).toBe('User 1a');
 
-      expect(env.store.requestQueue.empty).toBeTruthy();
       expect(env.remote.requestQueue.empty).toBeFalsy();
 
       // wait for retry
@@ -49,7 +48,6 @@ describe('RemotePullFailStrategy', () => {
       const user: Record = env.store.cache.query(q => q.findRecord({ type: 'user', id: 'user01' }));
       expect(user.attributes.name).toBe('User 1');
 
-      expect(env.store.requestQueue.empty).toBeTruthy();
       expect(env.remote.requestQueue.empty).toBeTruthy();
     });
   });
@@ -71,7 +69,6 @@ describe('RemotePullFailStrategy', () => {
       const user: Record = env.store.cache.query(q => q.findRecord({ type: 'user', id: 'user01' }));
       expect(user.attributes.name).toBe('User 1');
 
-      expect(env.store.requestQueue.empty).toBeTruthy();
       expect(env.remote.requestQueue.empty).toBeTruthy();
     });
 
@@ -91,7 +88,6 @@ describe('RemotePullFailStrategy', () => {
       const user: Record = env.store.cache.query(q => q.findRecord({ type: 'user', id: 'user01' }));
       expect(user.attributes.name).toBe('User 1');
 
-      expect(env.store.requestQueue.empty).toBeTruthy();
       expect(env.remote.requestQueue.empty).toBeTruthy();
     });
   });

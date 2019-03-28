@@ -1,8 +1,7 @@
 import { Record } from '@orbit/data';
 import { clone } from '@orbit/utils';
 import { combineLatest, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-
+import { debounceTime, distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { registerCustomFilter } from './custom-filter-specifier';
 import { GetAllParameters, JsonApiService, QueryObservable } from './json-api.service';
 import { InputSystem } from './models/input-system';
@@ -80,6 +79,17 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
 
   onlineDelete(id: string): Promise<void> {
     return this.jsonApiService.onlineDelete(this.identity(id));
+  }
+
+  async onlineExists(id: string): Promise<boolean> {
+    const project = await this.onlineGet(id)
+      .pipe(first())
+      .toPromise();
+    return project != null;
+  }
+
+  localDelete(id: string): Promise<void> {
+    return this.jsonApiService.localDelete(this.identity(id));
   }
 
   protected isSearchMatch(record: Record, value: string): boolean {
