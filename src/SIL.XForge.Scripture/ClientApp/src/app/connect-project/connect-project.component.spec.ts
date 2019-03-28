@@ -1,14 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import {
-  MatCardModule,
-  MatCheckboxModule,
-  MatOptionModule,
-  MatProgressBarModule,
-  MatSelectModule
-} from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -16,9 +8,9 @@ import { RemoteTranslationEngine } from '@sillsdev/machine';
 import { cold, getTestScheduler } from 'jasmine-marbles';
 import { defer, of } from 'rxjs';
 import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-
 import { ParatextProject } from 'xforge-common/models/paratext-project';
 import { ParatextService } from 'xforge-common/paratext.service';
+import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
@@ -127,9 +119,15 @@ describe('ConnectProjectComponent', () => {
     expect(env.component.state).toEqual('input');
 
     env.changeSelectValue(env.projectSelect, 0);
-    env.clickCheckbox(env.translateCheckbox);
-    env.changeSelectValue(env.sourceProjectSelect, 0);
+    expect(env.component.connectProjectForm.get('tasks.sourceProject').disabled).toBe(true);
+    expect(env.component.connectProjectForm.get('tasks.sourceProject').hasError('required')).toBe(false);
+    // Simulate clicking the checkbox without firing any events to prevent the error in mdc-select when
+    // the form control is set with a validator
+    env.checkTranslateCheckbox();
+    expect(env.component.connectProjectForm.get('tasks.sourceProject').disabled).toBe(false);
 
+    env.changeSelectValue(env.sourceProjectSelect, 0);
+    expect(env.component.connectProjectForm.valid).toBe(true);
     env.clickSubmitButton();
     getTestScheduler().flush();
     flush();
@@ -213,16 +211,7 @@ class TestEnvironment {
     );
 
     TestBed.configureTestingModule({
-      imports: [
-        MatCardModule,
-        MatCheckboxModule,
-        MatOptionModule,
-        MatProgressBarModule,
-        MatSelectModule,
-        ReactiveFormsModule,
-        HttpClientTestingModule,
-        NoopAnimationsModule
-      ],
+      imports: [HttpClientTestingModule, NoopAnimationsModule, UICommonModule],
       declarations: [ConnectProjectComponent],
       providers: [
         { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
@@ -246,7 +235,7 @@ class TestEnvironment {
   }
 
   get projectSelect(): DebugElement {
-    return this.fixture.debugElement.query(By.css('mat-select[formControlName="project"]'));
+    return this.fixture.debugElement.query(By.css('mdc-select[formControlName="project"]'));
   }
 
   get submitButton(): DebugElement {
@@ -262,25 +251,26 @@ class TestEnvironment {
   }
 
   get translateCheckbox(): DebugElement {
-    return this.tasksDiv.query(By.css('mat-checkbox[formControlName="translate"'));
+    return this.tasksDiv.query(By.css('mdc-checkbox[formControlName="translate"'));
   }
 
   get sourceProjectSelect(): DebugElement {
-    return this.tasksDiv.query(By.css('mat-select[formControlName="sourceProject"]'));
+    return this.tasksDiv.query(By.css('mdc-select[formControlName="sourceProject"]'));
   }
 
   changeSelectValue(select: DebugElement, option: number): void {
     select.nativeElement.click();
     this.fixture.detectChanges();
     flush();
-    const options = select.queryAll(By.css('mat-option'));
-    options[option].nativeElement.click();
+    const item = select.queryAll(By.css('mdc-list-item'));
+    item[option].nativeElement.click();
     this.fixture.detectChanges();
     flush();
   }
 
-  clickCheckbox(checkbox: DebugElement): void {
-    checkbox.nativeElement.querySelector('input').click();
+  checkTranslateCheckbox(): void {
+    this.component.connectProjectForm.get('tasks.translate').reset(true);
+    this.component.connectProjectForm.get('tasks.sourceProject').enable();
     this.fixture.detectChanges();
     flush();
   }

@@ -1,27 +1,52 @@
+@import '~src/global';
+
 .connect-card {
-  max-width: 600px;
+  max-width: 36rem;
   width: 100%;
   align-self: center;
+  padding: 0.4rem 1.2rem 1.2rem 1.2rem;
 }
 
 .connect-title {
   text-align: center;
 }
 
+.paratext-logo {
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.5rem;
+}
+
+#btn-login {
+  background-color: $pt-button-green;
+  color: white;
+  height: 2.5rem;
+}
+
 .submit-button {
-  width: 120px;
-  height: 40px;
+  width: 7.5rem;
+  height: 2.5rem;
   align-self: center;
 }
 
 .progress-container {
-  padding: 30px;
+  padding: 2rem;
 }
 
 .progress-label {
-  padding-bottom: 20px;
+  padding-bottom: 1.2rem;
 }
 
 .login-button {
-  margin: 30px;
+  margin: 2rem;
+}
+
+.project-selection {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+.project-selection-menu {
+  width: 80%;
+  max-width: 30rem;
 }

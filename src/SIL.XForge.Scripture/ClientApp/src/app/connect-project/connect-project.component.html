@@ -1,7 +1,7 @@
 <div fxLayout="column">
-  <mat-card class="connect-card">
-    <mat-card-title *ngIf="state === 'input'" class="connect-title">Connect Paratext Project</mat-card-title>
-    <mat-card-content fxLayout="column">
+  <mdc-card outlined class="connect-card">
+    <h2 *ngIf="state === 'input'" class="connect-title">Connect Paratext Project</h2>
+    <div fxLayout="column">
       <div [ngSwitch]="state">
         <div
           *ngSwitchCase="'loading'"
@@ -11,41 +11,59 @@
           fxLayoutAlign="center center"
         >
           <div class="progress-label">Retrieving Paratext information</div>
-          <mat-progress-bar mode="query"></mat-progress-bar>
+          <mdc-linear-progress [secondary]="true" reversed></mdc-linear-progress>
         </div>
         <div *ngSwitchCase="'login'" fxLayout="column" fxLayoutAlign="center center">
-          <button mat-raised-button class="login-button" color="primary" (click)="logInWithParatext()">
-            Log in with Paratext
+          <button mdc-button id="btn-login" class="login-button" (click)="logInWithParatext()">
+            <img src="/assets/paratext_logo.png" alt="Paratext Logo" class="paratext-logo" /> Log in with Paratext
           </button>
         </div>
         <div *ngSwitchCase="'input'">
           <form [formGroup]="connectProjectForm" (ngSubmit)="submit()" fxLayout="column">
-            <mat-form-field>
-              <mat-select placeholder="Paratext Project" formControlName="project">
-                <mat-option *ngFor="let project of targetProjects" [value]="project">{{ project.name }}</mat-option>
-              </mat-select>
-            </mat-form-field>
+            <mdc-form-field>
+              <mdc-select class="project-selection" placeholder="Paratext Project" formControlName="project">
+                <mdc-menu class="project-selection-menu">
+                  <mdc-list>
+                    <mdc-list-item *ngFor="let project of targetProjects" [value]="project">{{
+                      project.name
+                    }}</mdc-list-item>
+                  </mdc-list>
+                </mdc-menu>
+              </mdc-select>
+            </mdc-form-field>
             <div *ngIf="showTasks" formGroupName="tasks" fxLayout="column">
               <div>Include Tasks</div>
-              <mat-checkbox formControlName="checking">Community Checking</mat-checkbox>
-              <mat-checkbox formControlName="translate">Translate</mat-checkbox>
-              <mat-form-field>
-                <mat-select placeholder="Based on" formControlName="sourceProject">
-                  <mat-option *ngFor="let project of sourceProjects" [value]="project">{{ project.name }}</mat-option>
-                </mat-select>
-              </mat-form-field>
+              <mdc-form-field>
+                <mdc-checkbox formControlName="checking"></mdc-checkbox><label>Community Checking</label>
+              </mdc-form-field>
+              <mdc-form-field>
+                <mdc-checkbox (change)="onTranslateToggled($event)" formControlName="translate"></mdc-checkbox
+                ><label>Translate</label>
+              </mdc-form-field>
+              <mdc-form-field>
+                <mdc-select class="project-selection" placeholder="Based on" formControlName="sourceProject">
+                  <mdc-menu class="project-selection-menu">
+                    <mdc-list>
+                      <mdc-list-item *ngFor="let project of sourceProjects" [value]="project">{{
+                        project.name
+                      }}</mdc-list-item>
+                    </mdc-list>
+                  </mdc-menu>
+                </mdc-select>
+              </mdc-form-field>
             </div>
-            <button mat-raised-button color="primary" type="submit" class="submit-button">Connect</button>
+            <button mdc-button primary type="submit" class="submit-button">Connect</button>
           </form>
         </div>
         <div *ngSwitchCase="'connecting'" class="progress-container" fxLayout="column" fxLayoutAlign="center center">
           <div class="progress-label">Connecting to Paratext project</div>
-          <mat-progress-bar
-            [mode]="connectPending ? 'indeterminate' : 'determinate'"
-            [value]="connectProgress"
-          ></mat-progress-bar>
+          <mdc-linear-progress
+            [secondary]="true"
+            [determinate]="!connectPending"
+            [progress]="connectProgress"
+          ></mdc-linear-progress>
         </div>
       </div>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </mdc-card>
 </div>

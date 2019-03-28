@@ -1,7 +1,8 @@
+import { MdcCheckbox } from '@angular-mdc/web';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-
+import { Subject } from 'rxjs';
 import { ParatextProject } from 'xforge-common/models/paratext-project';
 import { ParatextService } from 'xforge-common/paratext.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
@@ -39,6 +40,7 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
   sourceProjects: ParatextProject[];
   state: 'connecting' | 'loading' | 'input' | 'login';
 
+  private translateToggled$ = new Subject<boolean>();
   private job: SyncJob;
   private projects: ParatextProject[] = null;
 
@@ -54,7 +56,7 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
   }
 
   get connectProgress(): number {
-    return this.job != null ? this.job.percentCompleted * 100 : 0;
+    return this.job != null ? this.job.percentCompleted : 0;
   }
 
   get connectPending(): boolean {
@@ -73,7 +75,7 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
     });
 
     this.state = 'loading';
-    this.subscribe(this.connectProjectForm.get('tasks.translate').valueChanges, (value: boolean) => {
+    this.subscribe(this.translateToggled$, (value: boolean) => {
       const sourceProject = this.connectProjectForm.get('tasks.sourceProject');
       if (value) {
         sourceProject.enable();
@@ -100,6 +102,10 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
     this.paratextService.logIn('/connect-project');
   }
 
+  onTranslateToggled(change: { source: MdcCheckbox; checked: boolean }): void {
+    this.translateToggled$.next(change.checked);
+  }
+
   async submit(): Promise<void> {
     if (!this.connectProjectForm.valid) {
       return;
@@ -115,8 +121,9 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
         translateConfig: { enabled: values.tasks.translate }
       });
       if (values.tasks.translate) {
-        newProject.translateConfig.sourceParatextId = values.tasks.sourceProject.paratextId;
-        newProject.translateConfig.sourceInputSystem = ParatextService.getInputSystem(values.tasks.sourceProject);
+        const translateSourceProject = values.tasks.sourceProject;
+        newProject.translateConfig.sourceParatextId = translateSourceProject.paratextId;
+        newProject.translateConfig.sourceInputSystem = ParatextService.getInputSystem(translateSourceProject);
       }
 
       newProject = await this.projectService.onlineCreate(newProject);
