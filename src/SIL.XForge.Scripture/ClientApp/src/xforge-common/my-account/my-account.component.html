@@ -5,7 +5,10 @@
       <div fxLayout="column" fxLayoutAlign="space-between stretch">
         <div fxLayout="row">
           <div fxFlex>
-            <mat-form-field fxFlex><input formControlName="name" matInput placeholder="Name"/></mat-form-field>
+            <mdc-form-field fxFlex>
+              <mdc-text-field formControlName="name" label="Name"></mdc-text-field>
+              <mdc-helper-text>Your name as you would like it to appear on this site</mdc-helper-text>
+            </mdc-form-field>
           </div>
           <div>
             <button
@@ -14,36 +17,36 @@
                 controlStates.get('name') !== elementState.Dirty && controlStates.get('name') !== elementState.Error
               "
               mdc-button
-              [outlined]="true"
+              outlined
               (click)="updateClicked('name')"
             >
-              <mat-spinner
-                id="name-update-spinner"
-                *ngIf="controlStates.get('name') === elementState.Submitting"
-                [diameter]="15"
-                class="update-button-spinner"
-                aria-label="Update in progress"
-              ></mat-spinner>
-              <i
+              <mdc-icon
                 id="name-update-done"
                 *ngIf="controlStates.get('name') === elementState.Submitted"
-                class="material-icons check-icon"
-                >done</i
+                class="mdc-button__icon check-icon"
+                >done</mdc-icon
               >
-              <i
+              <mdc-icon
                 id="name-error-icon"
                 *ngIf="controlStates.get('name') === elementState.Error"
-                class="material-icons error-icon"
-                >error</i
+                class="mdc-button__icon error-icon"
+                >error</mdc-icon
               >
-              <i
+              <mdc-icon
                 id="name-button-icon"
                 *ngIf="
                   controlStates.get('name') === elementState.InSync || controlStates.get('name') === elementState.Dirty
                 "
-                class="material-icons"
-                >send</i
+                class="mdc-button__icon"
+                >send</mdc-icon
               >
+              <mat-spinner
+                id="name-update-spinner"
+                *ngIf="controlStates.get('name') === elementState.Submitting"
+                [diameter]="15"
+                class="mdc-button__icon update-button-spinner"
+                aria-label="Update in progress"
+              ></mat-spinner>
               Update
             </button>
           </div>
@@ -54,72 +57,67 @@
             <span id="last-login">Last login {{ timeSinceLastLogin }} ago</span>
           </div>
           <div fxLayoutAlign="end stretch">
-            <button
-              id="my-account-change-password-btn"
-              mdc-button
-              [outlined]="true"
-              [routerLink]="['/change-password']"
-            >
-              <i class="material-icons">edit</i> Change password
+            <button id="my-account-change-password-btn" mdc-button outlined [routerLink]="['/change-password']">
+              <mdc-icon>edit</mdc-icon>Change password
             </button>
           </div>
         </div>
 
-        <mat-divider></mat-divider>
+        <!-- <mat-divider></mat-divider> -->
 
         <div fxLayout="row">
           <div fxFlex>
-            <mat-form-field fxFlex hintLabel="you@example.com">
-              <input formControlName="email" matInput placeholder="Email" />
-              <mat-error *ngIf="formGroup.get('email').hasError('required')"
-                >You must supply a valid email address.</mat-error
-              >
-              <mat-error *ngIf="formGroup.get('email').hasError('email')"
-                >Please enter a valid email address. For example, me@example.com.</mat-error
-              >
-            </mat-form-field>
+            <mdc-form-field fxFlex>
+              <mdc-text-field formControlName="email" label="Email"></mdc-text-field>
+              <mdc-helper-text>
+                <span *ngIf="!formGroup.get('email').hasError()">you@example.com</span>
+                <span *ngIf="formGroup.get('email').hasError('required')">
+                  You must supply a valid email address.
+                </span>
+                <span *ngIf="formGroup.get('email').hasError('email')">
+                  Please enter a valid email address. For example, me@example.com.
+                </span>
+              </mdc-helper-text>
+            </mdc-form-field>
           </div>
           <div>
             <button
               id="email-update-button"
               [disabled]="
-                (controlStates.get('email') !== elementState.Dirty &&
-                  controlStates.get('email') !== elementState.Error) ||
-                controlStates.get('email') === elementState.Invalid
+                controlStates.get('email') !== elementState.Dirty && controlStates.get('email') !== elementState.Error
               "
               mdc-button
-              [outlined]="true"
+              outlined
               (click)="updateClicked('email')"
             >
+              <mdc-icon
+                id="email-update-done"
+                *ngIf="controlStates.get('email') === elementState.Submitted"
+                class="mdc-button__icon check-icon"
+                >done</mdc-icon
+              >
+              <mdc-icon
+                id="email-error-icon"
+                *ngIf="controlStates.get('email') === elementState.Error"
+                class="mdc-button__icon error-icon"
+                >error</mdc-icon
+              >
+              <mdc-icon
+                id="email-button-icon"
+                *ngIf="
+                  controlStates.get('email') === elementState.InSync ||
+                  controlStates.get('email') === elementState.Dirty
+                "
+                class="mdc-button__icon"
+                >send</mdc-icon
+              >
               <mat-spinner
                 id="email-update-spinner"
                 *ngIf="controlStates.get('email') === elementState.Submitting"
                 [diameter]="15"
-                class="update-button-spinner"
+                class="mdc-button__icon update-button-spinner"
                 aria-label="Update in progress"
               ></mat-spinner>
-              <i
-                id="email-update-done"
-                *ngIf="controlStates.get('email') === elementState.Submitted"
-                class="material-icons check-icon"
-                >done</i
-              >
-              <i
-                id="email-error-icon"
-                *ngIf="controlStates.get('email') === elementState.Error"
-                class="material-icons error-icon"
-                >error</i
-              >
-              <i
-                id="email-button-icon"
-                *ngIf="
-                  controlStates.get('email') === elementState.InSync ||
-                  controlStates.get('email') === elementState.Dirty ||
-                  controlStates.get('email') === elementState.Invalid
-                "
-                class="material-icons"
-                >send</i
-              >
               Update
             </button>
           </div>
@@ -127,9 +125,10 @@
 
         <div fxLayout="row">
           <div fxFlex>
-            <mat-form-field fxFlex hintLabel="Include country and area codes.">
-              <input formControlName="mobilePhone" matInput placeholder="Phone" />
-            </mat-form-field>
+            <mdc-form-field fxFlex>
+              <mdc-text-field formControlName="mobilePhone" label="Phone"></mdc-text-field>
+              <mdc-helper-text>Include country and area codes.</mdc-helper-text>
+            </mdc-form-field>
           </div>
           <div>
             <button
@@ -139,37 +138,37 @@
                 controlStates.get('mobilePhone') !== elementState.Error
               "
               mdc-button
-              [outlined]="true"
+              outlined
               (click)="updateClicked('mobilePhone')"
             >
-              <mat-spinner
-                id="mobilePhone-update-spinner"
-                *ngIf="controlStates.get('mobilePhone') === elementState.Submitting"
-                [diameter]="15"
-                class="update-button-spinner"
-                aria-label="Update in progress"
-              ></mat-spinner>
-              <i
+              <mdc-icon
                 id="mobilePhone-update-done"
                 *ngIf="controlStates.get('mobilePhone') === elementState.Submitted"
-                class="material-icons check-icon"
-                >done</i
+                class="mdc-button__icon check-icon"
+                >done</mdc-icon
               >
-              <i
+              <mdc-icon
                 id="mobilePhone-error-icon"
                 *ngIf="controlStates.get('mobilePhone') === elementState.Error"
-                class="material-icons error-icon"
-                >error</i
+                class="mdc-button__icon error-icon"
+                >error</mdc-icon
               >
-              <i
+              <mdc-icon
                 id="mobilePhone-button-icon"
                 *ngIf="
                   controlStates.get('mobilePhone') === elementState.InSync ||
                   controlStates.get('mobilePhone') === elementState.Dirty
                 "
-                class="material-icons"
-                >send</i
+                class="mdc-button__icon"
+                >send</mdc-icon
               >
+              <mat-spinner
+                id="mobilePhone-update-spinner"
+                *ngIf="controlStates.get('mobilePhone') === elementState.Submitting"
+                [diameter]="15"
+                class="mdc-button__icon update-button-spinner"
+                aria-label="Update in progress"
+              ></mat-spinner>
               Update
             </button>
           </div>
@@ -212,7 +211,7 @@
         </div>
 -->
 
-        <mat-divider></mat-divider>
+        <!-- <mat-divider></mat-divider> -->
 
         <div fxLayout="row">
           <div fxFlex>
@@ -251,13 +250,18 @@
 
         <div fxLayout="row">
           <div fxFlex>
-            <mat-form-field fxFlex>
+            <!-- <mat-form-field fxFlex>
               <mat-select formControlName="gender" placeholder="Gender" (selectionChange)="update('gender')">
                 <mat-option value="female">Female</mat-option>
                 <mat-option value="male">Male</mat-option>
                 <mat-option value="empty"></mat-option>
               </mat-select>
-            </mat-form-field>
+            </mat-form-field> -->
+            <mdc-form-field fxFlex>
+              <mdc-select formControlName="gender" placeholder="Gender" (selectionChange)="update('gender')">
+                <option value="female">Female</option><option value="male">Male</option><option value="empty"></option>
+              </mdc-select>
+            </mdc-form-field>
             <mat-spinner
               id="gender-update-spinner"
               *ngIf="controlStates.get('gender') === elementState.Submitting"
@@ -280,7 +284,14 @@
           </div>
         </div>
 
-        <mat-divider></mat-divider>
+        <div fxLayout="row">
+          <div fxFlex>
+            <p>{{ formGroup.value | json }}</p>
+            <p>Gender in Database: {{ userFromDatabase.gender }}</p>
+          </div>
+        </div>
+
+        <!-- <mat-divider></mat-divider> -->
 
         <div
           *ngIf="isLinkedToParatext"
@@ -292,9 +303,9 @@
         >
           <div>Linked to Paratext account</div>
           <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="0.5em">
-            <label id="paratext-link-label"
-              ><strong>{{ paratextUsername }}</strong></label
-            >
+            <label id="paratext-link-label">
+              <strong>{{ paratextUsername }}</strong>
+            </label>
             <button mat-button id="unlink-paratext-button" class="unlink-button" (click)="deleteParatextLink()">
               <i class="material-icons">clear</i> <span fxHide.lt-md>Remove link</span>
             </button>
@@ -302,7 +313,7 @@
         </div>
         <div *ngIf="!isLinkedToParatext" id="paratext-link" class="linked-paratext">
           <button mdc-button [outlined]="true" id="connect-paratext-button" (click)="logInWithParatext()">
-            <i class="material-icons">link</i> Connect to Paratext
+            <mdc-icon>link</mdc-icon> Connect to Paratext
           </button>
         </div>
         <!--Add this back in once login with Google (SF-77) is finished

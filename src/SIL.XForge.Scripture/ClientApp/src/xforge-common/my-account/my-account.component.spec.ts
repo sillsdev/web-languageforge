@@ -33,6 +33,7 @@ describe('MyAccountComponent', () => {
         email: 'bob@example.com',
         contactMethod: 'email',
         mobilePhone: '+123 11 2222-33-4444',
+        gender: 'male',
         site: { currentProjectId: 'testproject01', lastLogin: date } as Site
       })
     );
@@ -58,7 +59,7 @@ describe('MyAccountComponent', () => {
   // the update button being disabled, the green check icon,
   // arrow icon, and spinner.
   // The test goes thru a sequence of actions, verifying state and icons.
-  it('should update spinner, arrow, check, and disabled, depending on activity', fakeAsync(() => {
+  fit('should update spinner, arrow, check, and disabled, depending on activity', fakeAsync(() => {
     const originalName = env.component.userFromDatabase.name;
     expect(env.component.formGroup.get('name').value).toEqual(originalName, 'test setup problem');
 
@@ -503,6 +504,15 @@ describe('MyAccountComponent', () => {
     }));
   });
 
+  fdescribe('select and picker', () => {
+    it('should update to the chosen gender', fakeAsync(() => {
+      expect(env.userInDatabase.gender).toEqual('male', 'initial user');
+      expect(env.component.formGroup.get('gender').value).toEqual(env.userInDatabase.gender, 'setup problem');
+      let john = env.genderCombo.children;
+      console.log(john);
+    }));
+  });
+
   describe('Linked accounts', () => {
     it('should give the option to link a paratext account', fakeAsync(() => {
       expect(env.component.isLinkedToParatext).toBeFalsy();
@@ -679,8 +689,8 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css(`mat-button-toggle[value="${toggleName}"]`));
   }
 
-  genderCombo(itemName: string): DebugElement {
-    return this.fixture.debugElement.query(By.css(`mat-button-toggle[value="${toggleName}"]`));
+  get genderCombo(): DebugElement {
+    return this.fixture.debugElement.query(By.css(`mdc-select[formControlName="gender"]`));
   }
 
   get matErrors(): Array<DebugElement> {
