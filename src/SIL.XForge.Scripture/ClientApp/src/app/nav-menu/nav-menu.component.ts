@@ -133,12 +133,12 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
       ([resultsAndProjectId, user]) => {
         const results = resultsAndProjectId.results;
         const projectId = resultsAndProjectId.projectId;
-        this.projects = results.data.map(pu => results.getIncluded(pu.project));
+        const projectList: SFProject[] = results.data.map(pu => results.getIncluded(pu.project));
         // if the project deleted dialog is displayed, don't do anything
         if (this.projectDeletedDialogRef != null) {
           return;
         }
-        const selectedProject = projectId == null ? undefined : this.projects.find(p => p.id === projectId);
+        const selectedProject = projectId == null ? undefined : projectList.find(p => p.id === projectId);
 
         // check if the currently selected project has been deleted
         if (selectedProject == null && this.selectedProject != null && projectId === this.selectedProject.id) {
@@ -152,17 +152,21 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
         } else {
           this.selectedProject = selectedProject;
 
-          // Return early if 'Connect project' was clicked, or if we don't have all the properties we need yet.
+          // Return early if 'Connect project' was clicked, or if we don't have all the
+          // properties we need yet for the below or template.
           if (
             this.selectedProject == null ||
             this.selectedProject.texts == null ||
             this.selectedProject.translateConfig == null ||
             this.selectedProject.checkingConfig == null ||
-            this.selectedProject.id == null
+            this.selectedProject.id == null ||
+            this.selectedProject.projectName == null
           ) {
             return;
           }
 
+          // Delay setting projects array until have display names, to prevent it from being blank.
+          this.projects = projectList;
           this.texts = results.getManyIncluded(this.selectedProject.texts);
           if (!this.selectedProject.translateConfig.enabled) {
             this.translateVisible = false;

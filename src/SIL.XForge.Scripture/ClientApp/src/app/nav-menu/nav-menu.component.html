@@ -1,6 +1,6 @@
 <mdc-drawer id="menu-drawer" [drawer]="drawerType" *ngIf="selectedProject != null" [open]="isExpanded">
   <mdc-drawer-content>
-    <mdc-select class="project-select" (valueChange)="projectChanged($event.value)">
+    <mdc-select *ngIf="projects != null" class="project-select" (valueChange)="projectChanged($event.value)">
       <mdc-menu>
         <mdc-list>
           <mdc-list-item *ngFor="let project of projects" [value]="project.id">{{ project.projectName }}</mdc-list-item>
