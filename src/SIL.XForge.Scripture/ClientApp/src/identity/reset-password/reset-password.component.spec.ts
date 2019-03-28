@@ -14,80 +14,6 @@ import { UICommonModule } from 'xforge-common/ui-common.module';
 import { IdentityService } from '../identity.service';
 import { ResetPasswordComponent } from './reset-password.component';
 
-class TestEnvironment {
-  component: ResetPasswordComponent;
-  fixture: ComponentFixture<ResetPasswordComponent>;
-
-  mockedIdentityService: IdentityService;
-  mockedActivatedRoute: ActivatedRoute;
-  mockedLocationService: LocationService;
-  mockedAuthService: AuthService;
-  mockedNoticeService: NoticeService;
-  overlayContainer: OverlayContainer;
-
-  constructor() {
-    this.mockedIdentityService = mock(IdentityService);
-    this.mockedActivatedRoute = mock(ActivatedRoute);
-    this.mockedLocationService = mock(LocationService);
-    this.mockedAuthService = mock(AuthService);
-    this.mockedNoticeService = mock(NoticeService);
-
-    when(this.mockedActivatedRoute.queryParams).thenReturn(of({ key: 'abcd1234' }));
-    when(this.mockedIdentityService.verifyResetPasswordKey('abcd1234')).thenResolve(true);
-    when(this.mockedNoticeService.show(anyString())).thenResolve();
-
-    TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, UICommonModule],
-      declarations: [ResetPasswordComponent],
-      providers: [
-        { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
-        { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
-        { provide: LocationService, useFactory: () => instance(this.mockedLocationService) },
-        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
-        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    });
-    this.fixture = TestBed.createComponent(ResetPasswordComponent);
-    this.component = this.fixture.componentInstance;
-    this.overlayContainer = TestBed.get(OverlayContainer);
-  }
-
-  get submitButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#btnResetPassword'));
-  }
-
-  get resetPasswordForm(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#resetPasswordForm'));
-  }
-
-  get newPasswordInput(): DebugElement {
-    return this.resetPasswordForm.query(By.css('#newPassword'));
-  }
-
-  get passwordStrengthMeter(): DebugElement {
-    return this.resetPasswordForm.query(By.css('#resetPasswordStrengthMeter'));
-  }
-
-  get confirmPasswordInput(): DebugElement {
-    return this.resetPasswordForm.query(By.css('#confirmPassword'));
-  }
-
-  clickSubmitButton(): void {
-    this.submitButton.nativeElement.click();
-    this.fixture.detectChanges();
-    flush();
-  }
-
-  setInputValue(input: DebugElement, value: string): void {
-    const inputElem = input.nativeElement as HTMLInputElement;
-    inputElem.value = value;
-    inputElem.dispatchEvent(new Event('input'));
-    this.fixture.detectChanges();
-    tick();
-  }
-}
-
 describe('ResetPasswordComponent', () => {
   it('should log out any user', fakeAsync(() => {
     const env = new TestEnvironment();
@@ -206,3 +132,77 @@ describe('ResetPasswordComponent', () => {
     expect().nothing();
   }));
 });
+
+class TestEnvironment {
+  component: ResetPasswordComponent;
+  fixture: ComponentFixture<ResetPasswordComponent>;
+
+  mockedIdentityService: IdentityService;
+  mockedActivatedRoute: ActivatedRoute;
+  mockedLocationService: LocationService;
+  mockedAuthService: AuthService;
+  mockedNoticeService: NoticeService;
+  overlayContainer: OverlayContainer;
+
+  constructor() {
+    this.mockedIdentityService = mock(IdentityService);
+    this.mockedActivatedRoute = mock(ActivatedRoute);
+    this.mockedLocationService = mock(LocationService);
+    this.mockedAuthService = mock(AuthService);
+    this.mockedNoticeService = mock(NoticeService);
+
+    when(this.mockedActivatedRoute.queryParams).thenReturn(of({ key: 'abcd1234' }));
+    when(this.mockedIdentityService.verifyResetPasswordKey('abcd1234')).thenResolve(true);
+    when(this.mockedNoticeService.show(anyString())).thenResolve();
+
+    TestBed.configureTestingModule({
+      imports: [NoopAnimationsModule, UICommonModule],
+      declarations: [ResetPasswordComponent],
+      providers: [
+        { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
+        { provide: ActivatedRoute, useFactory: () => instance(this.mockedActivatedRoute) },
+        { provide: LocationService, useFactory: () => instance(this.mockedLocationService) },
+        { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) }
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    });
+    this.fixture = TestBed.createComponent(ResetPasswordComponent);
+    this.component = this.fixture.componentInstance;
+    this.overlayContainer = TestBed.get(OverlayContainer);
+  }
+
+  get submitButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#btnResetPassword'));
+  }
+
+  get resetPasswordForm(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#resetPasswordForm'));
+  }
+
+  get newPasswordInput(): DebugElement {
+    return this.resetPasswordForm.query(By.css('#newPassword'));
+  }
+
+  get passwordStrengthMeter(): DebugElement {
+    return this.resetPasswordForm.query(By.css('#resetPasswordStrengthMeter'));
+  }
+
+  get confirmPasswordInput(): DebugElement {
+    return this.resetPasswordForm.query(By.css('#confirmPassword'));
+  }
+
+  clickSubmitButton(): void {
+    this.submitButton.nativeElement.click();
+    this.fixture.detectChanges();
+    flush();
+  }
+
+  setInputValue(input: DebugElement, value: string): void {
+    const inputElem = input.nativeElement as HTMLInputElement;
+    inputElem.value = value;
+    inputElem.dispatchEvent(new Event('input'));
+    this.fixture.detectChanges();
+    tick();
+  }
+}
