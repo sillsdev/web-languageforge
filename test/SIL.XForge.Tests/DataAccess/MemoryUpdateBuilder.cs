@@ -55,6 +55,10 @@ namespace SIL.XForge.DataAccess
 
         public IUpdateBuilder<T> Unset<TField>(Expression<Func<T, TField>> field)
         {
+            if (field.Body.Type != typeof(System.Object) && field.Body.Type != typeof(System.String))
+            {
+                throw new ArgumentException("Error: This will probably fail when used with MongoRepository. Use a simpler type.", nameof(field));
+            }
             (object owner, PropertyInfo prop) = GetFieldOwner(field);
             object value = null;
             if (prop.PropertyType.IsValueType)

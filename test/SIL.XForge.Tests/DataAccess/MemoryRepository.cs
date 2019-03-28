@@ -9,6 +9,7 @@ using SIL.XForge.Models;
 
 namespace SIL.XForge.DataAccess
 {
+    /// <summary>Memory-backed database, for use with tests.</summary>
     public class MemoryRepository<T> : IRepository<T> where T : Entity, new()
     {
         private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings

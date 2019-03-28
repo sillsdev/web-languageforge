@@ -22,6 +22,8 @@ using SIL.XForge.Utils;
 
 namespace SIL.XForge.Identity.Controllers
 {
+
+    /// <summary>Processes identity-related requests from front-end, such as from identity.service.ts.</summary>
     public class IdentityRpcController : RpcController
     {
         private const string VerificationUrl = "https://www.google.com/recaptcha/api/siteverify";
@@ -110,7 +112,7 @@ namespace SIL.XForge.Identity.Controllers
                 update => update
                     .Set(u => u.Password, UserEntity.HashPassword(password))
                     .Unset(u => u.ResetPasswordKey)
-                    .Unset(u => u.ResetPasswordExpirationDate));
+                    .Unset(u => u.ResetPasswordExpirationDate as object));
             if (user != null)
             {
                 await LogInUserAsync(user);
@@ -238,7 +240,7 @@ namespace SIL.XForge.Identity.Controllers
                 update => update
                     .Set(u => u.EmailVerified, true)
                     .Unset(u => u.ValidationKey)
-                    .Unset(u => u.ValidationExpirationDate));
+                    .Unset(u => u.ValidationExpirationDate as object));
             return user != null;
         }
 

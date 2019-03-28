@@ -6,6 +6,7 @@ import { LinkAccountResult } from './models/link-account-result';
 import { LogInResult } from './models/log-in-result';
 import { SignUpResult } from './models/sign-up-result';
 
+/** This interfaces to IdentityRpcController in the backend. */
 @Injectable()
 export class IdentityService {
   constructor(private readonly jsonRpcService: JsonRpcService) {}
