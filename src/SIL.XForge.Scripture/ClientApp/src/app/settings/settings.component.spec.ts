@@ -5,8 +5,9 @@ import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
-import { anything, instance, mock, resetCalls, verify, when } from 'ts-mockito';
+import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { AuthService } from 'xforge-common/auth.service';
+import { MapQueryResults } from 'xforge-common/json-api.service';
 import { ParatextProject } from 'xforge-common/models/paratext-project';
 import { NoticeService } from 'xforge-common/notice.service';
 import { ParatextService } from 'xforge-common/paratext.service';
@@ -294,7 +295,7 @@ class TestEnvironment {
   mockedSFProjectService: SFProjectService = mock(SFProjectService);
   mockedUserService: UserService = mock(UserService);
 
-  private readonly project$: BehaviorSubject<SFProject>;
+  private readonly project$: BehaviorSubject<MapQueryResults<SFProject>>;
   private readonly paratectProjects$: BehaviorSubject<ParatextProject[]>;
 
   constructor() {
@@ -317,11 +318,14 @@ class TestEnvironment {
       }
     ]);
     when(this.mockedParatextService.getProjects()).thenReturn(this.paratectProjects$);
-    this.project$ = new BehaviorSubject<SFProject>(
-      new TestProject({
-        checkingConfig: { enabled: false, usersSeeEachOthersResponses: false, share: { viaEmail: false } },
-        translateConfig: { enabled: true, sourceParatextId: 'paratextId01' }
-      })
+    this.project$ = new BehaviorSubject<MapQueryResults<SFProject>>(
+      new MapQueryResults(
+        new TestProject({
+          id: 'project01',
+          checkingConfig: { enabled: false, usersSeeEachOthersResponses: false, share: { viaEmail: false } },
+          translateConfig: { enabled: true, sourceParatextId: 'paratextId01' }
+        })
+      )
     );
     when(this.mockedSFProjectService.onlineGet(anything())).thenReturn(this.project$);
     when(this.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).thenCall(() => Promise.resolve());
@@ -474,7 +478,7 @@ class TestEnvironment {
   }
 
   setupProject(project: SFProject) {
-    this.project$.next(project);
+    this.project$.next(new MapQueryResults(project));
   }
 
   setupParatextProjects(paratextProjects: ParatextProject[]) {

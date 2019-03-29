@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router';
 import { clone } from '@orbit/utils';
 import { combineLatest } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { ElementState } from 'xforge-common/models/element-state';
 import { ParatextProject } from 'xforge-common/models/paratext-project';
 import { NoticeService } from 'xforge-common/notice.service';
@@ -207,7 +207,10 @@ export class SettingsComponent extends SubscriptionDisposable implements OnInit,
           this.form.disable();
         }),
         switchMap(() =>
-          combineLatest(this.projectService.onlineGet(this.projectId), this.paratextService.getProjects())
+          combineLatest(
+            this.projectService.onlineGet(this.projectId).pipe(map(r => r.data)),
+            this.paratextService.getProjects()
+          )
         )
       ),
       ([project, paratextProjects]) => {

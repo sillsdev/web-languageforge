@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
+import { MapQueryResults } from 'xforge-common/json-api.service';
 import { NoticeService } from 'xforge-common/notice.service';
 import { ParatextService } from 'xforge-common/paratext.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
@@ -41,7 +42,7 @@ describe('SyncComponent', () => {
 
   it('should sync project when the button is clicked', fakeAsync(() => {
     const env = new TestEnvironment(true);
-    verify(env.mockedProjectService.onlineGet(anything())).once();
+    verify(env.mockedProjectService.onlineGet(anything(), anything())).once();
     env.clickElement(env.syncButton);
     verify(env.mockedSyncJobService.start(anything())).once();
     verify(env.mockedSyncJobService.listen(anything())).once();
@@ -67,7 +68,7 @@ describe('SyncComponent', () => {
 
   it('should report error if sync has a problem', fakeAsync(() => {
     const env = new TestEnvironment(true);
-    verify(env.mockedProjectService.onlineGet(anything())).once();
+    verify(env.mockedProjectService.onlineGet(anything(), anything())).once();
     env.clickElement(env.syncButton);
     verify(env.mockedSyncJobService.start(anything())).once();
     verify(env.mockedSyncJobService.listen(anything())).once();
@@ -119,7 +120,7 @@ class TestEnvironment {
     if (isInProgress) {
       project.activeSyncJob = new SyncJobRef('syncjob01');
     }
-    when(this.mockedProjectService.onlineGet(anything())).thenReturn(of(project));
+    when(this.mockedProjectService.onlineGet(anything(), anything())).thenReturn(of(new MapQueryResults(project)));
     const ptUsername = isParatextAccountConnected ? 'Paratext User01' : '';
     when(this.mockedParatextService.getParatextUsername()).thenReturn(of(ptUsername));
     when(this.mockedSyncJobService.listen(anything())).thenReturn(this.subject);

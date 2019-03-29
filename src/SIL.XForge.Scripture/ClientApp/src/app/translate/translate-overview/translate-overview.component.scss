@@ -1,13 +1,82 @@
-.translation-progress-overview {
-  max-width: 25rem;
+@import '~src/global';
+
+.title {
+  margin-bottom: 20px;
 }
 
-.overall-progress {
-  width: 60px;
-  height: 60px;
+.dashboard {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  flex-wrap: wrap;
 }
 
-.project-progress {
-  width: 36px;
-  height: 36px;
+mdc-card {
+  min-height: 282px;
+}
+
+.books-card {
+  width: 18rem;
+
+  .books-card-title {
+    padding: 8px 16px;
+  }
+
+  a {
+    color: black;
+  }
+
+  mdc-list {
+    @include mdc-list-item-graphic-ink-color(rgba(0, 0, 0, 0.6));
+    overflow-y: auto;
+  }
+}
+
+.progress {
+  width: 32px;
+  height: 32px;
+}
+
+.engine-card {
+  width: 16rem;
+  overflow: hidden;
+
+  .engine-card-title {
+    padding: 4px 16px 8px 16px;
+  }
+
+  .engine-card-content {
+    display: flex;
+    flex-direction: column;
+
+    .engine-card-quality {
+      display: flex;
+      flex-direction: column;
+      align-self: stretch;
+      background-color: $mdc-theme-secondary;
+      padding: 26px 16px 15px 16px;
+
+      .engine-card-quality-stars {
+        align-self: center;
+        mdc-icon {
+          font-size: 3em;
+        }
+      }
+
+      .engine-card-quality-subtitle {
+        align-self: flex-end;
+        padding-right: 28px;
+      }
+    }
+
+    .engine-card-segments {
+      align-self: center;
+      padding: 15px 16px;
+
+      .engine-card-segments-count {
+        font-size: 2em;
+        margin-right: 8px;
+      }
+    }
+  }
 }

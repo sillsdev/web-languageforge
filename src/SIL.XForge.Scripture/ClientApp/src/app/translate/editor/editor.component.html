@@ -1,76 +1,104 @@
-<div mdcHeadline6>{{ textName }}</div>
-<div class="toolbar" fxLayout="row" fxLayoutAlign="start center">
-  <app-chapter-nav [(chapter)]="chapter" [chapters]="chapters"></app-chapter-nav>
-  <div class="toolbar-separator">&nbsp;</div>
-  <div mdcMenuSurfaceAnchor #suggestionsAnchor>
+<div mdcMenuSurfaceAnchor #trainingProgressAnchor fxLayout="column" fxFlex="1 1 0%">
+  <div mdcHeadline4>{{ textName }}</div>
+  <div class="toolbar" fxLayout="row" fxLayoutAlign="start center">
+    <app-chapter-nav [(chapter)]="chapter" [chapters]="chapters"></app-chapter-nav>
+    <div class="toolbar-separator">&nbsp;</div>
+    <div mdcMenuSurfaceAnchor #suggestionsAnchor>
+      <button
+        #suggestionsMenuButton
+        mdc-icon-button
+        icon="linear_scale"
+        title="Adjust suggestion confidence"
+        (click)="suggestionsMenu.open = !suggestionsMenu.open"
+        [class.mdc-icon-button--activated]="suggestionsMenu.open"
+      ></button>
+      <mdc-menu-surface
+        class="suggestions-menu"
+        #suggestionsMenu
+        [anchorElement]="suggestionsAnchor"
+        [quickOpen]="true"
+        anchorCorner="bottomStart"
+        (opened)="suggestionsMenuOpened()"
+        (closed)="suggestionsMenuClosed()"
+      >
+        <div mdcSubtitle1 fxLayout="row" fxLayoutAlign="center">Suggestion Confidence</div>
+        <div class="slider-labels" fxLayout="row" fxLayoutAlign="space-between">
+          <span mdcCaption>More</span> <span mdcCaption>{{ confidenceThreshold }}%</span> <span mdcCaption>Better</span>
+        </div>
+        <mdc-slider
+          id="confidence-threshold-slider"
+          *ngIf="displaySlider"
+          [min]="0"
+          [max]="100"
+          [(ngModel)]="confidenceThreshold"
+        ></mdc-slider>
+      </mdc-menu-surface>
+    </div>
     <button
-      #suggestionsMenuButton
       mdc-icon-button
-      icon="linear_scale"
-      title="Adjust suggestion confidence"
-      (click)="suggestionsMenu.open = !suggestionsMenu.open"
-      [class.mdc-icon-button--activated]="suggestionsMenu.open"
+      appBlurOnClick
+      icon="swap_horiz"
+      (click)="isTargetTextRight = !isTargetTextRight"
+      title="Swap source and target"
     ></button>
-    <mdc-menu-surface
-      class="suggestions-menu"
-      #suggestionsMenu
-      [anchorElement]="suggestionsAnchor"
-      [quickOpen]="true"
-      anchorCorner="bottomStart"
-      (opened)="suggestionsMenuOpened()"
-      (closed)="suggestionsMenuClosed()"
-    >
-      <div mdcSubtitle1 fxLayout="row" fxLayoutAlign="center">Suggestion Confidence</div>
-      <div class="slider-labels" fxLayout="row" fxLayoutAlign="space-between">
-        <span mdcCaption>More</span> <span mdcCaption>{{ confidenceThreshold }}%</span> <span mdcCaption>Better</span>
-      </div>
-      <mdc-slider
-        id="confidence-threshold-slider"
-        *ngIf="displaySlider"
-        [min]="0"
-        [max]="100"
-        [(ngModel)]="confidenceThreshold"
-      ></mdc-slider>
-    </mdc-menu-surface>
   </div>
-  <button
-    mdc-icon-button
-    appBlurOnClick
-    icon="swap_horiz"
-    (click)="isTargetTextRight = !isTargetTextRight"
-    title="Swap source and target"
-  ></button>
-</div>
-<div [fxLayout]="isTargetTextRight ? 'row' : 'row-reverse'" fxFlex="1 1 0%" fxLayoutGap="5px">
-  <div class="text-area">
-    <div mdcSubtitle1>{{ sourceLabel }}</div>
-    <div class="text-container">
-      <app-text
-        #source
-        [isReadOnly]="true"
-        [highlightSegment]="target.hasFocus"
-        (loaded)="onTextLoaded('source')"
-      ></app-text>
+  <div [fxLayout]="isTargetTextRight ? 'row' : 'row-reverse'" fxFlex="1 1 0%" fxLayoutGap="5px">
+    <div class="text-area">
+      <div mdcSubtitle1>{{ sourceLabel }}</div>
+      <div class="text-container">
+        <app-text
+          #source
+          [isReadOnly]="true"
+          [highlightSegment]="target.hasFocus"
+          (loaded)="onTextLoaded('source')"
+        ></app-text>
+      </div>
+    </div>
+    <div class="swap-button-container"></div>
+    <div class="text-area">
+      <div mdcSubtitle1>{{ targetLabel }}</div>
+      <div class="text-container">
+        <app-text
+          #target
+          [isReadOnly]="false"
+          (updated)="onTargetUpdated($event.segment, $event.delta, $event.prevSegment)"
+          (loaded)="onTextLoaded('target')"
+        ></app-text>
+        <app-suggestion
+          [mdcElevation]="2"
+          [show]="showSuggestion"
+          [words]="suggestionWords"
+          [confidence]="suggestionConfidence"
+          [text]="target"
+          (selected)="insertSuggestion($event.index, $event.event)"
+        ></app-suggestion>
+      </div>
     </div>
   </div>
-  <div class="swap-button-container"></div>
-  <div class="text-area">
-    <div mdcSubtitle1>{{ targetLabel }}</div>
-    <div class="text-container">
-      <app-text
-        #target
-        [isReadOnly]="false"
-        (updated)="onTargetUpdated($event.segment, $event.delta, $event.prevSegment)"
-        (loaded)="onTextLoaded('target')"
-      ></app-text>
-      <app-suggestion
-        [mdcElevation]="2"
-        [show]="showSuggestion"
-        [words]="suggestionWords"
-        [confidence]="suggestionConfidence"
-        [text]="target"
-        (selected)="insertSuggestion($event.index, $event.event)"
-      ></app-suggestion>
+  <div *ngIf="showTrainingProgress" class="training-progress" mdcElevation="2">
+    <div class="training-title" fxLayout="row" fxLayoutAlign="space-between center">
+      <div mdcSubtitle1>Training</div>
+      <button id="training-close-button" mdc-icon-button icon="close" (click)="closeTrainingProgress()"></button>
+    </div>
+    <mdc-list-divider></mdc-list-divider>
+    <div class="training-content" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px">
+      <div class="text-ellipsis" mdcBody2>{{ trainingMessage }}</div>
+      <div>
+        <canvas
+          id="training-progress-spinner"
+          *ngIf="trainingPercentage < 100"
+          baseChart
+          width="24"
+          height="24"
+          chartType="doughnut"
+          [legend]="false"
+          [labels]="['Complete', 'Incomplete']"
+          [data]="[trainingPercentage, 100 - trainingPercentage]"
+          [colors]="[{ backgroundColor: ['#b8d332', '#ececec'] }]"
+          [options]="{ events: [], elements: { arc: { borderWidth: 0 } } }"
+        ></canvas>
+        <mdc-icon id="training-complete-icon" *ngIf="trainingPercentage === 100">check_circle_outline</mdc-icon>
+      </div>
     </div>
   </div>
 </div>

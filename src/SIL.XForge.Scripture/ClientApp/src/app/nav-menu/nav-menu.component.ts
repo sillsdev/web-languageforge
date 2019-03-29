@@ -67,6 +67,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
     if (this._projectSelect != null) {
       setTimeout(() => {
         if (this.selectedProject != null) {
+          this._projectSelect.reset();
           this._projectSelect.value = this.selectedProject.id;
         }
       });
@@ -134,12 +135,12 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
       async ([resultsAndProjectId, user]) => {
         const results = resultsAndProjectId.results;
         const projectId = resultsAndProjectId.projectId;
-        const projectList: SFProject[] = results.data.map(pu => results.getIncluded(pu.project));
+        this.projects = results.data.map(pu => results.getIncluded(pu.project));
         // if the project deleted dialog is displayed, don't do anything
         if (this.projectDeletedDialogRef != null) {
           return;
         }
-        const selectedProject = projectId == null ? undefined : projectList.find(p => p.id === projectId);
+        const selectedProject = projectId == null ? undefined : this.projects.find(p => p.id === projectId);
 
         // check if the currently selected project has been deleted
         if (
@@ -170,8 +171,6 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
             return;
           }
 
-          // Delay setting projects array until have display names, to prevent it from being blank.
-          this.projects = projectList;
           this.texts = results.getManyIncluded(this.selectedProject.texts);
           if (!this.selectedProject.translateConfig.enabled) {
             this.translateVisible = false;
@@ -180,6 +179,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
             this.checkingVisible = false;
           }
           if (this._projectSelect != null) {
+            this._projectSelect.reset();
             this._projectSelect.value = this.selectedProject.id;
           }
 

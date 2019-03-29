@@ -25,24 +25,26 @@ export class TextDataId {
 
 export class TextData extends RealtimeData<DeltaStatic, DeltaStatic> {
   static readonly TYPE = Text.TYPE;
-  VERSE_REGEXP = /^verse_[0-9]{1,}_[0-9]{1,}$/;
 
   constructor(doc: RealtimeDoc, store: RealtimeOfflineStore) {
     super(TextData.TYPE, doc, store);
   }
 
-  get emptyVerseCount(): number {
-    let emptyVerses = 0;
+  getSegmentCount(): { translated: number; blank: number } {
+    let blank = 0;
+    let translated = 0;
     for (const op of this.data.ops) {
       if (op.attributes && op.attributes.segment) {
-        if (op.insert && op.insert.blank) {
-          if (this.VERSE_REGEXP.test(op.attributes.segment)) {
-            emptyVerses++;
+        if (op.insert.blank) {
+          if (op.insert.blank === 'normal') {
+            blank++;
           }
+        } else {
+          translated++;
         }
       }
     }
-    return emptyVerses;
+    return { translated, blank };
   }
 
   protected prepareDataForStore(data: DeltaStatic): any {

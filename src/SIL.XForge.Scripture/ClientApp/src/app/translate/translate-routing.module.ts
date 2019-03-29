@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
 import { AuthGuard } from 'xforge-common/auth.guard';
 import { EditorComponent } from './editor/editor.component';
 import { TranslateOverviewComponent } from './translate-overview/translate-overview.component';

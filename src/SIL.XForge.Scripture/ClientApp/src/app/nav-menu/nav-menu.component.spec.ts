@@ -171,8 +171,6 @@ describe('NavMenuComponent', () => {
     env.navigate(['/projects', 'project01']);
 
     expect(() => env.init()).not.toThrow();
-
-    expect(env.component.projects).toBeUndefined();
   }));
 });
 

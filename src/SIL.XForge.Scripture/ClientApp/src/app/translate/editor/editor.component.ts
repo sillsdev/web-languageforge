@@ -1,5 +1,5 @@
 import { MdcIconButton } from '@angular-mdc/web';
-import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { eq } from '@orbit/utils';
 import {
@@ -12,8 +12,8 @@ import {
   TranslationSuggester
 } from '@sillsdev/machine';
 import Quill, { DeltaStatic, RangeStatic } from 'quill';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { debounceTime, filter, map, skip, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { debounceTime, filter, map, repeat, skip, switchMap, tap } from 'rxjs/operators';
 import { NoticeService } from 'xforge-common/notice.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { UserService } from 'xforge-common/user.service';
@@ -48,6 +48,9 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   displaySlider: boolean = false;
   chapters: number[] = [];
   readonly metricsSession: TranslateMetricsSession;
+  trainingPercentage: number;
+  trainingMessage: string;
+  showTrainingProgress: boolean = false;
 
   @ViewChild('source') source: TextComponent;
   @ViewChild('target') target: TextComponent;
@@ -69,6 +72,9 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   private _chapter: number;
   private lastShownSuggestionWords: string[] = [];
   private readonly segmentUpdated$: Subject<void>;
+  private trainingSubscription: Subscription;
+  private trainingProgressClosed: boolean = false;
+  private trainingCompletedTimeout: any;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -211,7 +217,48 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
         }
 
         if (this.project.id !== prevProjectId) {
+          if (this.trainingSubscription != null) {
+            this.trainingSubscription.unsubscribe();
+          }
           this.translationEngine = this.projectService.createTranslationEngine(this.project.id);
+          this.trainingSubscription = this.subscribe(
+            this.translationEngine.listenForTrainingStatus().pipe(
+              tap(undefined, undefined, async () => {
+                // training completed successfully
+                if (this.trainingProgressClosed) {
+                  this.noticeService.show('Training completed successfully');
+                  this.trainingProgressClosed = false;
+                } else {
+                  this.trainingMessage = 'Completed successfully';
+                  this.trainingCompletedTimeout = setTimeout(() => {
+                    this.showTrainingProgress = false;
+                    this.trainingCompletedTimeout = undefined;
+                  }, 5000);
+                }
+
+                // re-translate current segment
+                this.onStartTranslating();
+                try {
+                  await this.translateSegment();
+                } finally {
+                  this.onFinishTranslating();
+                }
+              }),
+              repeat(),
+              filter(progress => progress.percentCompleted > 0)
+            ),
+            progress => {
+              if (!this.trainingProgressClosed) {
+                this.showTrainingProgress = true;
+              }
+              if (this.trainingCompletedTimeout != null) {
+                clearTimeout(this.trainingCompletedTimeout);
+                this.trainingCompletedTimeout = undefined;
+              }
+              this.trainingPercentage = Math.round(progress.percentCompleted * 100);
+              this.trainingMessage = progress.message;
+            }
+          );
           this.metricsSession.start(this.project.id, this.target);
         }
       }
@@ -236,6 +283,11 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   suggestionsMenuClosed(): void {
     this.displaySlider = false;
     this.suggestionsMenuButton.elementRef.nativeElement.blur();
+  }
+
+  closeTrainingProgress(): void {
+    this.showTrainingProgress = false;
+    this.trainingProgressClosed = true;
   }
 
   async onTargetUpdated(segment: Segment, delta?: DeltaStatic, prevSegment?: Segment): Promise<void> {
