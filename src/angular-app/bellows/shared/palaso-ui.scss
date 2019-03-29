@@ -59,25 +59,6 @@ div.listview div.pagination select {
     width: 70px;
 }
 
-/* Listview for projects, questions, answers views */
-.listview .attention-block {
-    text-align: center;
-    background-color: #f0f0f0; /* lightgray */
-    color: #dc143c; /* crimson */
-
-    a {
-      color: #dc143c;
-    }
-}
-
-div.listview div.attention-block .count {
-    font-size: 1.8em;
-}
-
-div.listview div.attention-block .subtitle {
-    font-size: 1.0em;
-}
-
 .larger-text {
     font-size: 1.25em;
 }

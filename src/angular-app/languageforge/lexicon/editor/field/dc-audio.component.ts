@@ -23,12 +23,15 @@ export class FieldAudioController implements angular.IController {
   static $inject = ['$filter', '$state',
     'Upload', 'modalService',
     'silNoticeService', 'sessionService',
-    'lexProjectService'
+    'lexProjectService', '$scope'
   ];
   constructor(private $filter: angular.IFilterService, private $state: angular.ui.IStateService,
               private Upload: any, private modalService: ModalService,
               private notice: NoticeService, private sessionService: SessionService,
-              private lexProjectService: LexiconProjectService) { }
+              private lexProjectService: LexiconProjectService, private $scope: angular.IScope) {
+
+                this.$scope.$watch(() => this.dcFilename, () => this.showAudioRecorder = false);
+              }
 
   hasAudio(): boolean {
     if (this.dcFilename == null) {
