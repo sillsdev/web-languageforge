@@ -258,12 +258,7 @@
               </mat-select>
             </mat-form-field> -->
             <mdc-form-field fxFlex>
-              <mdc-select
-                formControlName="gender"
-                placeholder="Gender"
-                (selectionChange)="update('gender')"
-                (selectionchange)="update('gender')"
-              >
+              <mdc-select formControlName="gender" placeholder="Gender" (valueChange)="update('gender', $event.value)">
                 <option value="female">Female</option><option value="male">Male</option><option value="empty"></option>
               </mdc-select>
             </mdc-form-field>

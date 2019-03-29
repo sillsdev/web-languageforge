@@ -121,6 +121,13 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     for (const controlName of Object.keys(this.formGroup.controls)) {
       this.subscribe(this.formGroup.get(controlName).valueChanges, this.onControlValueChanges(controlName));
     } // TODO (Hasso) 2019.03: gender
+
+    // // Update date and gender immediately
+    // for (const controlName of ['birthday', 'gender']) {
+    //   this.subscribe(this.formGroup.get(controlName).valueChanges, value => this.update(controlName, value));
+    // }
+
+    // this.subscribe(this.formGroup.get('gender').valueChanges, value => this.update('gender', value));
   }
 
   ngOnDestroy() {
@@ -174,22 +181,28 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     this.update(element);
   }
 
-  async update(element: string): Promise<void> {
-    const updatedAttributes: Partial<User> = {};
-    updatedAttributes[element] = this.formGroup.controls[element].value;
-
-    this.formGroup.get(element).disable();
-    this.controlStates.set(element, ElementState.Submitting);
-
-    if (
-      element === 'mobilePhone' &&
-      !this.formGroup.controls[element].value &&
-      (this.userFromDatabase.contactMethod === 'sms' || this.userFromDatabase.contactMethod === 'emailSms')
-    ) {
-      updatedAttributes['contactMethod'] = null;
-    }
-
+  async update(element: string, value?: any): Promise<void> {
     try {
+      const updatedAttributes: Partial<User> = {};
+      updatedAttributes[element] = value ? value : this.formGroup.controls[element].value;
+      // mdc-select (gender) fires this event once during form setup.
+      // Unfortunately, registering this event in ngOnInit instead of in the HTML results in near infinite recursion.
+      // Prevent an extra server call and a confusing status icon when nothing has changed.
+      if (this.userFromDatabase[element] === updatedAttributes[element]) {
+        return;
+      }
+
+      this.formGroup.get(element).disable();
+      this.controlStates.set(element, ElementState.Submitting);
+
+      if (
+        element === 'mobilePhone' &&
+        !updatedAttributes[element] &&
+        (this.userFromDatabase.contactMethod === 'sms' || this.userFromDatabase.contactMethod === 'emailSms')
+      ) {
+        updatedAttributes['contactMethod'] = null;
+      }
+
       await this.userService.onlineUpdateCurrentUserAttributes(updatedAttributes);
       this.formGroup.get(element).enable();
       this.controlStates.set(element, ElementState.Submitted);
