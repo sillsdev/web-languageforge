@@ -1,6 +1,7 @@
 import * as crc from 'crc-32';
 import { RangeStatic } from 'quill';
 
+/** A piece of text. Such as a short-lived range for editing. */
 export class Segment {
   initialChecksum: number;
 

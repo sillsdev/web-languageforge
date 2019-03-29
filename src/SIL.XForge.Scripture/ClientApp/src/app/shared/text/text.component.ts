@@ -39,6 +39,7 @@ export interface TextUpdatedEvent {
   segment: Segment;
 }
 
+/** View of an editable text document. Used for displaying Scripture. */
 @Component({
   selector: 'app-text',
   templateUrl: './text.component.html',
@@ -337,7 +338,7 @@ export class TextComponent implements OnDestroy {
     let checksum: number;
     let focus: boolean;
     let updateUsxFormatForAllSegments = false;
-    if (delta != null && !this.isEmpty && !this.initialSegmentUpdate) {
+    if (delta != null && !this.initialSegmentUpdate) {
       segmentRef = this.initialSegmentRef;
       checksum = this.initialSegmentChecksum;
       focus = this.initialSegmentFocus;
