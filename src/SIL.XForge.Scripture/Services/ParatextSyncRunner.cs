@@ -165,24 +165,24 @@ namespace SIL.XForge.Scripture.Services
                     {
                         await conn.ConnectAsync();
 
+                        string targetParatextId = project.ParatextId;
+                        IReadOnlyList<string> targetBooks = await _paratextService.GetBooksAsync(user,
+                            targetParatextId);
+
                         bool hasSource = project.TranslateConfig.Enabled;
                         string sourceParatextId = project.TranslateConfig.SourceParatextId;
                         IReadOnlyList<string> sourceBooks = null;
                         if (hasSource)
                             sourceBooks = await _paratextService.GetBooksAsync(user, sourceParatextId);
 
-                        string targetParatextId = project.ParatextId;
-                        IReadOnlyList<string> targetBooks = await _paratextService.GetBooksAsync(user,
-                            targetParatextId);
-
                         var booksToSync = new HashSet<string>(targetBooks);
                         if (hasSource)
                             booksToSync.IntersectWith(sourceBooks);
 
-                        var booksToDelete = new HashSet<string>();
+                        var booksToDelete = new HashSet<string>(
+                            GetBooksToDelete(project, targetParatextId, targetBooks));
                         if (hasSource)
                             booksToDelete.UnionWith(GetBooksToDelete(project, sourceParatextId, sourceBooks));
-                        booksToDelete.UnionWith(GetBooksToDelete(project, targetParatextId, targetBooks));
 
                         _step = 0;
                         _stepCount = booksToSync.Count * 3;
@@ -195,18 +195,21 @@ namespace SIL.XForge.Scripture.Services
                                 name = bookId;
                             TextEntity text = await _texts.UpdateAsync(
                                 t => t.ProjectRef == project.Id && t.BookId == bookId,
-                                u => u.SetOnInsert(t => t.Name, name)
-                                        .SetOnInsert(t => t.BookId, bookId)
-                                        .SetOnInsert(t => t.ProjectRef, project.Id)
-                                        .SetOnInsert(t => t.OwnerRef, userId), upsert: true);
+                                u => u
+                                    .SetOnInsert(t => t.Name, name)
+                                    .SetOnInsert(t => t.BookId, bookId)
+                                    .SetOnInsert(t => t.ProjectRef, project.Id)
+                                    .SetOnInsert(t => t.OwnerRef, userId), upsert: true);
 
+                            List<Chapter> newChapters = await SyncOrCloneBookUsxAsync(user, conn, project, text,
+                                TextType.Target, targetParatextId, false);
                             if (hasSource)
                             {
-                                await SyncOrCloneBookAsync(user, conn, project, text, TextType.Source,
-                                    sourceParatextId);
+                                var chaptersToInclude = new HashSet<int>(newChapters.Select(c => c.Number));
+                                await SyncOrCloneBookUsxAsync(user, conn, project, text, TextType.Source,
+                                    sourceParatextId, true, chaptersToInclude);
                             }
-                            await SyncOrCloneBookAsync(user, conn, project, text, TextType.Target,
-                                targetParatextId);
+                            await UpdateNotesData(conn, text, newChapters);
                         }
 
                         foreach (string bookId in booksToDelete)
@@ -214,9 +217,10 @@ namespace SIL.XForge.Scripture.Services
                             TextEntity text = await _texts.DeleteAsync(
                                 t => t.ProjectRef == project.Id && t.BookId == bookId);
 
+                            await DeleteBookUsxAsync(conn, project, text, TextType.Target, targetParatextId);
                             if (hasSource)
-                                await DeleteBookAsync(conn, project, text, TextType.Source, sourceParatextId);
-                            await DeleteBookAsync(conn, project, text, TextType.Target, targetParatextId);
+                                await DeleteBookUsxAsync(conn, project, text, TextType.Source, sourceParatextId);
+                            await DeleteNotesData(conn, text);
                             await UpdateProgress();
                         }
 
@@ -249,12 +253,226 @@ namespace SIL.XForge.Scripture.Services
             }
         }
 
-        private async Task UpdateProgress()
+        private async Task<List<Chapter>> SyncOrCloneBookUsxAsync(UserEntity user, Connection conn,
+            SFProjectEntity project, TextEntity text, TextType textType, string paratextId, bool isReadOnly,
+            ISet<int> chaptersToInclude = null)
         {
-            _step++;
-            double percentCompleted = (double)_step / _stepCount;
-            _job = await _jobs.UpdateAsync(_job, u => u
-                .Set(j => j.PercentCompleted, percentCompleted));
+            string projectPath = GetProjectPath(project, paratextId);
+            if (!Directory.Exists(projectPath))
+                Directory.CreateDirectory(projectPath);
+
+            string fileName = GetUsxFileName(projectPath, text.BookId);
+            if (File.Exists(fileName))
+            {
+                return await SyncBookUsxAsync(user, conn, text, textType, paratextId, fileName, isReadOnly,
+                    chaptersToInclude);
+            }
+            else
+            {
+                return await CloneBookUsxAsync(user, conn, text, textType, paratextId, fileName, chaptersToInclude);
+            }
+        }
+
+        private async Task<List<Chapter>> SyncBookUsxAsync(UserEntity user, Connection conn, TextEntity text,
+            TextType textType, string paratextId, string fileName, bool isReadOnly, ISet<int> chaptersToInclude)
+        {
+            var textDataDocs = new SortedList<int, Document<Delta>>();
+            var tasks = new List<Task>();
+            foreach (Chapter chapter in text.Chapters)
+            {
+                Document<Delta> textDataDoc = GetTextDataDocument(conn, text, chapter.Number, textType);
+                textDataDocs[chapter.Number] = textDataDoc;
+                tasks.Add(textDataDoc.FetchAsync());
+            }
+            await Task.WhenAll(tasks);
+
+            XElement bookTextElem;
+            string bookText;
+            if (isReadOnly)
+            {
+                bookText = await _paratextService.GetBookTextAsync(user, paratextId, text.BookId);
+            }
+            else
+            {
+                bookTextElem = await LoadUsxFileAsync(fileName);
+
+                XElement oldUsxElem = bookTextElem.Element("usx");
+                if (oldUsxElem == null)
+                    throw new InvalidOperationException("Invalid USX data, missing 'usx' element.");
+                XElement bookElem = oldUsxElem.Element("book");
+                if (bookElem == null)
+                    throw new InvalidOperationException("Invalid USX data, missing 'book' element.");
+                XElement newUsxElem = _deltaUsxMapper.ToUsx((string)oldUsxElem.Attribute("version"),
+                    (string)bookElem.Attribute("code"), (string)bookElem, textDataDocs.Values.Select(d => d.Data));
+
+                var revision = (string)bookTextElem.Attribute("revision");
+
+                if (XNode.DeepEquals(oldUsxElem, newUsxElem))
+                {
+                    bookText = await _paratextService.GetBookTextAsync(user, paratextId, text.BookId);
+                }
+                else
+                {
+                    bookText = await _paratextService.UpdateBookTextAsync(user, paratextId, text.BookId, revision,
+                        newUsxElem.ToString());
+                }
+            }
+            await UpdateProgress();
+
+            bookTextElem = XElement.Parse(bookText);
+
+            tasks.Clear();
+            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> deltas = _deltaUsxMapper.ToChapterDeltas(paratextId,
+                bookTextElem.Element("usx"));
+            var chapters = new List<Chapter>();
+            foreach (KeyValuePair<int, (Delta Delta, int LastVerse)> kvp in deltas)
+            {
+                if (textDataDocs.TryGetValue(kvp.Key, out Document<Delta> textDataDoc))
+                {
+                    Delta diffDelta = textDataDoc.Data.Diff(kvp.Value.Delta);
+                    tasks.Add(textDataDoc.SubmitOpAsync(diffDelta));
+                    textDataDocs.Remove(kvp.Key);
+                }
+                else if (chaptersToInclude == null || chaptersToInclude.Contains(kvp.Key))
+                {
+                    tasks.Add(textDataDoc.CreateAsync(kvp.Value.Delta));
+                }
+                chapters.Add(new Chapter { Number = kvp.Key, LastVerse = kvp.Value.LastVerse });
+            }
+            foreach (KeyValuePair<int, Document<Delta>> kvp in textDataDocs)
+                tasks.Add(kvp.Value.DeleteAsync());
+            await Task.WhenAll(tasks);
+            await UpdateProgress();
+
+            await SaveUsxFileAsync(bookTextElem, fileName);
+            await UpdateProgress();
+            return chapters;
+        }
+
+        private async Task<List<Chapter>> CloneBookUsxAsync(UserEntity user, Connection conn, TextEntity text,
+            TextType textType, string paratextId, string fileName, ISet<int> chaptersToInclude)
+        {
+            string bookText = await _paratextService.GetBookTextAsync(user, paratextId, text.BookId);
+            await UpdateProgress();
+
+            var bookTextElem = XElement.Parse(bookText);
+
+            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> deltas = _deltaUsxMapper.ToChapterDeltas(paratextId,
+                bookTextElem.Element("usx"));
+            var tasks = new List<Task>();
+            var chapters = new List<Chapter>();
+            foreach (KeyValuePair<int, (Delta Delta, int LastVerse)> kvp in deltas)
+            {
+                if (chaptersToInclude != null && !chaptersToInclude.Contains(kvp.Key))
+                    continue;
+
+                Document<Delta> textDataDoc = GetTextDataDocument(conn, text, kvp.Key, textType);
+                tasks.Add(textDataDoc.CreateAsync(kvp.Value.Delta));
+                chapters.Add(new Chapter { Number = kvp.Key, LastVerse = kvp.Value.LastVerse });
+            }
+            await Task.WhenAll(tasks);
+            await UpdateProgress();
+
+            await SaveUsxFileAsync(bookTextElem, fileName);
+            await UpdateProgress();
+            return chapters;
+        }
+
+        private async Task DeleteBookUsxAsync(Connection conn, SFProjectEntity project, TextEntity text,
+            TextType textType, string paratextId)
+        {
+            string projectPath = GetProjectPath(project, paratextId);
+            File.Delete(GetUsxFileName(projectPath, text.BookId));
+            var tasks = new List<Task>();
+            foreach (Chapter chapter in text.Chapters)
+                tasks.Add(DeleteTextDataAsync(conn, text, chapter.Number, textType));
+            await Task.WhenAll(tasks);
+        }
+
+        private async Task UpdateNotesData(Connection conn, TextEntity text, List<Chapter> newChapters)
+        {
+            bool chaptersChanged = false;
+            var oldChapters = new HashSet<int>(text.Chapters.Select(c => c.Number));
+            var tasks = new List<Task>();
+            foreach (Chapter newChapter in newChapters)
+            {
+                if (oldChapters.Contains(newChapter.Number))
+                {
+                    oldChapters.Remove(newChapter.Number);
+                }
+                else
+                {
+                    Document<JToken> questionDataDoc = GetQuestionDataDocument(conn, text, newChapter.Number);
+                    tasks.Add(questionDataDoc.CreateAsync(new JArray()));
+                    Document<JToken> commentDataDoc = GetCommentDataDocument(conn, text, newChapter.Number);
+                    tasks.Add(commentDataDoc.CreateAsync(new JArray()));
+                    chaptersChanged = true;
+                }
+            }
+            foreach (int oldChapter in oldChapters)
+            {
+                tasks.Add(DeleteQuestionDataAsync(conn, text, oldChapter));
+                tasks.Add(DeleteCommentDataAsync(conn, text, oldChapter));
+                chaptersChanged = true;
+            }
+            await Task.WhenAll(tasks);
+            if (chaptersChanged)
+                await _texts.UpdateAsync(text, u => u.Set(t => t.Chapters, newChapters));
+        }
+
+        private async Task DeleteNotesData(Connection conn, TextEntity text)
+        {
+            var tasks = new List<Task>();
+            foreach (Chapter chapter in text.Chapters)
+            {
+                tasks.Add(DeleteQuestionDataAsync(conn, text, chapter.Number));
+                tasks.Add(DeleteCommentDataAsync(conn, text, chapter.Number));
+            }
+            await Task.WhenAll(tasks);
+        }
+
+        private string GetProjectPath(SFProjectEntity project, string paratextId)
+        {
+            return Path.Combine(WorkingDir, project.Id, paratextId);
+        }
+
+        private string GetUsxFileName(string projectPath, string bookId)
+        {
+            return Path.Combine(projectPath, bookId + ".xml");
+        }
+
+        private async Task<XElement> LoadUsxFileAsync(string fileName)
+        {
+            using (var stream = new FileStream(fileName, FileMode.Open))
+            {
+                return await XElement.LoadAsync(stream, LoadOptions.None, CancellationToken.None);
+            }
+        }
+
+        private async Task SaveUsxFileAsync(XElement bookTextElem, string fileName)
+        {
+            using (var stream = new FileStream(fileName, FileMode.Create))
+            {
+                await bookTextElem.SaveAsync(stream, SaveOptions.None, CancellationToken.None);
+            }
+        }
+
+        private Document<Delta> GetTextDataDocument(Connection conn, TextEntity text, int chapter, TextType textType)
+        {
+            return conn.Get<Delta>(SFDataAccessConstants.TextDataCollectionName,
+                TextEntity.GetTextDataId(text.Id, chapter, textType));
+        }
+
+        private Document<JToken> GetQuestionDataDocument(Connection conn, TextEntity text, int chapter)
+        {
+            return conn.Get<JToken>(SFDataAccessConstants.QuestionDataCollectionName,
+                TextEntity.GetJsonDataId(text.Id, chapter));
+        }
+
+        private Document<JToken> GetCommentDataDocument(Connection conn, TextEntity text, int chapter)
+        {
+            return conn.Get<JToken>(SFDataAccessConstants.CommentDataCollectionName,
+                TextEntity.GetJsonDataId(text.Id, chapter));
         }
 
         private IEnumerable<string> GetBooksToDelete(SFProjectEntity project, string paratextId,
@@ -266,24 +484,6 @@ namespace SIL.XForge.Scripture.Services
                 : Enumerable.Empty<string>());
             booksToDelete.ExceptWith(books);
             return booksToDelete;
-        }
-
-        private async Task DeleteBookAsync(Connection conn, SFProjectEntity project, TextEntity text, TextType textType,
-            string paratextId)
-        {
-            string projectPath = GetProjectPath(project, paratextId);
-            File.Delete(GetBookTextFileName(projectPath, text.BookId));
-            var tasks = new List<Task>();
-            foreach (Chapter chapter in text.Chapters)
-            {
-                tasks.Add(DeleteTextDataAsync(conn, text, chapter.Number, textType));
-                if (textType == TextType.Target)
-                {
-                    tasks.Add(DeleteQuestionDataAsync(conn, text, chapter.Number));
-                    tasks.Add(DeleteCommentDataAsync(conn, text, chapter.Number));
-                }
-            }
-            await Task.WhenAll(tasks);
         }
 
         private async Task DeleteTextDataAsync(Connection conn, TextEntity text, int chapter, TextType textType)
@@ -307,180 +507,12 @@ namespace SIL.XForge.Scripture.Services
             await commentDataDoc.DeleteAsync();
         }
 
-        private async Task SyncOrCloneBookAsync(UserEntity user, Connection conn, SFProjectEntity project,
-            TextEntity text, TextType textType, string paratextId)
+        private async Task UpdateProgress()
         {
-            string projectPath = GetProjectPath(project, paratextId);
-            if (!Directory.Exists(projectPath))
-                Directory.CreateDirectory(projectPath);
-
-            string fileName = GetBookTextFileName(projectPath, text.BookId);
-            if (File.Exists(fileName))
-                await SyncBookAsync(user, conn, text, textType, paratextId, fileName);
-            else
-                await CloneBookAsync(user, conn, text, textType, paratextId, fileName);
-        }
-
-        private async Task SyncBookAsync(UserEntity user, Connection conn, TextEntity text, TextType textType,
-            string paratextId, string fileName)
-        {
-            var textDataDocs = new SortedList<int, Document<Delta>>();
-            var tasks = new List<Task>();
-            foreach (Chapter chapter in text.Chapters)
-            {
-                Document<Delta> textDataDoc = GetTextDataDocument(conn, text, chapter.Number, textType);
-                textDataDocs[chapter.Number] = textDataDoc;
-                tasks.Add(textDataDoc.FetchAsync());
-            }
-            await Task.WhenAll(tasks);
-            XElement bookTextElem = await LoadBookTextAsync(fileName);
-
-            XElement oldUsxElem = bookTextElem.Element("usx");
-            if (oldUsxElem == null)
-                throw new InvalidOperationException("Invalid USX data, missing 'usx' element.");
-            XElement bookElem = oldUsxElem.Element("book");
-            if (bookElem == null)
-                throw new InvalidOperationException("Invalid USX data, missing 'book' element.");
-            XElement newUsxElem = _deltaUsxMapper.ToUsx((string)oldUsxElem.Attribute("version"),
-                (string)bookElem.Attribute("code"), (string)bookElem, textDataDocs.Values.Select(d => d.Data));
-
-            var revision = (string)bookTextElem.Attribute("revision");
-
-            string bookText;
-            if (XNode.DeepEquals(oldUsxElem, newUsxElem))
-            {
-                bookText = await _paratextService.GetBookTextAsync(user, paratextId, text.BookId);
-            }
-            else
-            {
-                bookText = await _paratextService.UpdateBookTextAsync(user, paratextId, text.BookId, revision,
-                    newUsxElem.ToString());
-            }
-            await UpdateProgress();
-
-            bookTextElem = XElement.Parse(bookText);
-
-            tasks.Clear();
-            bool chaptersChanged = false;
-            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> deltas = _deltaUsxMapper.ToChapterDeltas(paratextId,
-                bookTextElem.Element("usx"));
-            var chapters = new List<Chapter>();
-            foreach (KeyValuePair<int, (Delta Delta, int LastVerse)> kvp in deltas)
-            {
-                if (textDataDocs.TryGetValue(kvp.Key, out Document<Delta> textDataDoc))
-                {
-                    Delta diffDelta = textDataDoc.Data.Diff(kvp.Value.Delta);
-                    tasks.Add(textDataDoc.SubmitOpAsync(diffDelta));
-                    textDataDocs.Remove(kvp.Key);
-                }
-                else
-                {
-                    tasks.Add(textDataDoc.CreateAsync(kvp.Value.Delta));
-                    if (textType == TextType.Target)
-                    {
-                        Document<JToken> questionDataDoc = GetQuestionDataDocument(conn, text, kvp.Key);
-                        tasks.Add(questionDataDoc.CreateAsync(new JArray()));
-                        Document<JToken> commentDataDoc = GetCommentDataDocument(conn, text, kvp.Key);
-                        tasks.Add(commentDataDoc.CreateAsync(new JArray()));
-                    }
-                    chaptersChanged = true;
-                }
-                chapters.Add(new Chapter { Number = kvp.Key, LastVerse = kvp.Value.LastVerse });
-            }
-            foreach (KeyValuePair<int, Document<Delta>> kvp in textDataDocs)
-            {
-                tasks.Add(kvp.Value.DeleteAsync());
-                if (textType == TextType.Target)
-                {
-                    tasks.Add(DeleteQuestionDataAsync(conn, text, kvp.Key));
-                    tasks.Add(DeleteCommentDataAsync(conn, text, kvp.Key));
-                }
-                chaptersChanged = true;
-            }
-            await Task.WhenAll(tasks);
-            if (chaptersChanged)
-                await _texts.UpdateAsync(text, u => u.Set(t => t.Chapters, chapters));
-            await UpdateProgress();
-
-            await SaveBookTextAsync(bookTextElem, fileName);
-            await UpdateProgress();
-        }
-
-        private async Task CloneBookAsync(UserEntity user, Connection conn, TextEntity text, TextType textType,
-            string paratextId, string fileName)
-        {
-            string bookText = await _paratextService.GetBookTextAsync(user, paratextId, text.BookId);
-            await UpdateProgress();
-
-            var bookTextElem = XElement.Parse(bookText);
-
-            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> deltas = _deltaUsxMapper.ToChapterDeltas(paratextId,
-                bookTextElem.Element("usx"));
-            var tasks = new List<Task>();
-            var chapters = new List<Chapter>();
-            foreach (KeyValuePair<int, (Delta Delta, int LastVerse)> kvp in deltas)
-            {
-                Document<Delta> textDataDoc = GetTextDataDocument(conn, text, kvp.Key, textType);
-                tasks.Add(textDataDoc.CreateAsync(kvp.Value.Delta));
-                if (textType == TextType.Target)
-                {
-                    Document<JToken> questionDataDoc = GetQuestionDataDocument(conn, text, kvp.Key);
-                    tasks.Add(questionDataDoc.CreateAsync(new JArray()));
-                    Document<JToken> commentDataDoc = GetCommentDataDocument(conn, text, kvp.Key);
-                    tasks.Add(commentDataDoc.CreateAsync(new JArray()));
-                }
-                chapters.Add(new Chapter { Number = kvp.Key, LastVerse = kvp.Value.LastVerse });
-            }
-            await Task.WhenAll(tasks);
-            await _texts.UpdateAsync(text, u => u.Set(t => t.Chapters, chapters));
-            await UpdateProgress();
-
-            await SaveBookTextAsync(bookTextElem, fileName);
-            await UpdateProgress();
-        }
-
-        private async Task<XElement> LoadBookTextAsync(string fileName)
-        {
-            using (var stream = new FileStream(fileName, FileMode.Open))
-            {
-                return await XElement.LoadAsync(stream, LoadOptions.None, CancellationToken.None);
-            }
-        }
-
-        private async Task SaveBookTextAsync(XElement bookTextElem, string fileName)
-        {
-            using (var stream = new FileStream(fileName, FileMode.Create))
-            {
-                await bookTextElem.SaveAsync(stream, SaveOptions.None, CancellationToken.None);
-            }
-        }
-
-        private string GetProjectPath(SFProjectEntity project, string paratextId)
-        {
-            return Path.Combine(WorkingDir, project.Id, paratextId);
-        }
-
-        private string GetBookTextFileName(string projectPath, string bookId)
-        {
-            return Path.Combine(projectPath, bookId + ".xml");
-        }
-
-        private Document<Delta> GetTextDataDocument(Connection conn, TextEntity text, int chapter, TextType textType)
-        {
-            return conn.Get<Delta>(SFDataAccessConstants.TextDataCollectionName,
-                TextEntity.GetTextDataId(text.Id, chapter, textType));
-        }
-
-        private Document<JToken> GetQuestionDataDocument(Connection conn, TextEntity text, int chapter)
-        {
-            return conn.Get<JToken>(SFDataAccessConstants.QuestionDataCollectionName,
-                TextEntity.GetJsonDataId(text.Id, chapter));
-        }
-
-        private Document<JToken> GetCommentDataDocument(Connection conn, TextEntity text, int chapter)
-        {
-            return conn.Get<JToken>(SFDataAccessConstants.CommentDataCollectionName,
-                TextEntity.GetJsonDataId(text.Id, chapter));
+            _step++;
+            double percentCompleted = (double)_step / _stepCount;
+            _job = await _jobs.UpdateAsync(_job, u => u
+                .Set(j => j.PercentCompleted, percentCompleted));
         }
     }
 }
