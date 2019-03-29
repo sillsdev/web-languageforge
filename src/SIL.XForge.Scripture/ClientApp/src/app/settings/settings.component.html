@@ -30,7 +30,19 @@
               Collaborate with other translators working on the same text and use translation suggestions.
             </p>
           </div>
-          <ng-container *ngIf="translate">
+          <div
+            *ngIf="!isLoading && !isLoggedInToParatext"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            class="indented-field-row"
+          >
+            <div fxFlex="2.75rem" class="indent"></div>
+            <button class="action-button" mdc-button (click)="logInWithParatext()" id="btn-log-in-settings">
+              <img src="/assets/paratext_logo.png" alt="Paratext Logo" class="paratext-logo" /> Log in to Paratext
+            </button>
+            <span class="more-options">to enable <b>Translate</b> and see more options</span>
+          </div>
+          <ng-container *ngIf="translate && isLoggedInToParatext">
             <div fxLayout="row" fxLayoutAlign="start center" class="indented-field-row">
               <div fxFlex="2.75rem" class="indent"></div>
               <mdc-form-field>
@@ -148,7 +160,9 @@
         <a [routerLink]="['/projects', projectId, 'sync']">Synchronise</a> first before deleting.
       </p>
       <div fxLayout="row" fxLayoutAlign="end stretch">
-        <button id="delete-btn" mdc-button unelevated (click)="openDeleteProjectDialog()">Delete this project</button>
+        <button id="delete-btn" mdc-button unelevated (click)="openDeleteProjectDialog()" [disabled]="isLoading">
+          Delete this project
+        </button>
       </div>
     </mdc-card>
   </div>
