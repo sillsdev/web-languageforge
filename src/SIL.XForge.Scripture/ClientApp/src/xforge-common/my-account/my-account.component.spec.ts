@@ -580,7 +580,7 @@ class TestEnvironment {
         { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
       ],
       declarations: []
-    }).compileComponents();
+    });
 
     this.fixture = TestBed.createComponent(MyAccountComponent);
     this.component = this.fixture.componentInstance;

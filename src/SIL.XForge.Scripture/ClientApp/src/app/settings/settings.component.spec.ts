@@ -341,7 +341,7 @@ class TestEnvironment {
       // The RouterTestingModule is needed to test routerLink in the html, but this is causing an
       // error with RouterLinkWithHref, so this allows us to skip using the RouterTestingModule.
       schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents();
+    });
     this.fixture = TestBed.createComponent(SettingsComponent);
     this.component = this.fixture.componentInstance;
     this.fixture.detectChanges();

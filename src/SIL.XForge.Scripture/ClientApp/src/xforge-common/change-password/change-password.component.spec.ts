@@ -186,7 +186,7 @@ class TestEnvironment {
         { provide: Router, useFactory: () => instance(this.mockedRouter) }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    }).compileComponents();
+    });
 
     this.fixture = TestBed.createComponent(ChangePasswordComponent);
     this.component = this.fixture.componentInstance;

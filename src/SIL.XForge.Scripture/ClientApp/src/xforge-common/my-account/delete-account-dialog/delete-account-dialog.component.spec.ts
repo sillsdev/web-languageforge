@@ -1,6 +1,6 @@
 import { MdcDialog, MdcDialogRef, OverlayContainer } from '@angular-mdc/web';
 import { Component, Directive, NgModule, ViewChild, ViewContainerRef } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, flush, inject, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, inject, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { instance, mock } from 'ts-mockito';
@@ -54,13 +54,13 @@ describe('DeleteAccountDialogComponent', () => {
 
   const mockedUserService: UserService = mock(UserService);
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [DialogTestModule],
       declarations: [],
       providers: [{ provide: UserService, useFactory: () => instance(mockedUserService) }]
-    }).compileComponents();
-  }));
+    });
+  });
 
   beforeEach(() => {
     viewContainerFixture = TestBed.createComponent(ChildViewContainerComponent);
