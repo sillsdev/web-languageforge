@@ -64,9 +64,9 @@ export class ProjectComponent extends SubscriptionDisposable implements OnInit {
         } else if (project.texts != null && project.texts.length > 0) {
           // the user has not navigated anywhere before, so navigate to the default location in the first enabled task
           let task: string;
-          if (project.translateConfig.enabled) {
+          if (project.translateConfig != null && project.translateConfig.enabled) {
             task = 'translate';
-          } else if (project.checkingConfig.enabled) {
+          } else if (project.checkingConfig != null && project.checkingConfig.enabled) {
             task = 'checking';
           }
           if (task != null) {

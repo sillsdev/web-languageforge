@@ -96,7 +96,7 @@ export class CheckingComponent extends SubscriptionDisposable {
 
   private _chapter: number;
 
-  constructor(private activatedRoute: ActivatedRoute, private textService: TextService) {
+  constructor(private activatedRoute: ActivatedRoute, textService: TextService) {
     super();
     this.subscribe(
       this.activatedRoute.params.pipe(
@@ -107,12 +107,14 @@ export class CheckingComponent extends SubscriptionDisposable {
       textData => {
         const prevTextId = this.text == null ? '' : this.text.id;
         this.text = textData.data;
-        this.project = textData.getIncluded(this.text.project);
-        this.chapters = this.text.chapters.map(c => c.number);
-        if (prevTextId !== this.text.id) {
-          this._chapter = 1;
-          this.textDataId = new TextDataId(this.text.id, this.chapter);
-          this.loadQuestions();
+        if (this.text != null) {
+          this.project = textData.getIncluded(this.text.project);
+          this.chapters = this.text.chapters.map(c => c.number);
+          if (prevTextId !== this.text.id) {
+            this._chapter = 1;
+            this.textDataId = new TextDataId(this.text.id, this.chapter);
+            this.loadQuestions();
+          }
         }
       }
     );

@@ -4,7 +4,6 @@ import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
-
 import { AuthService } from 'xforge-common/auth.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { UserService } from 'xforge-common/user.service';
@@ -12,6 +11,7 @@ import { nameof } from 'xforge-common/utils';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
 import { Text } from '../core/models/text';
+import { SFProjectService } from '../core/sfproject.service';
 import { SFAdminAuthGuard } from '../shared/sfadmin-auth.guard';
 import { ProjectDeletedDialogComponent } from './project-deleted-dialog/project-deleted-dialog.component';
 
@@ -43,7 +43,8 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly userService: UserService,
     private readonly adminAuthGuard: SFAdminAuthGuard,
-    private readonly dialog: MdcDialog
+    private readonly dialog: MdcDialog,
+    private readonly projectService: SFProjectService
   ) {
     super();
     this.subscribe(media.asObservable(), (change: MediaChange) => {
@@ -130,7 +131,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
         ),
         withLatestFrom(this.userService.getCurrentUser())
       ),
-      ([resultsAndProjectId, user]) => {
+      async ([resultsAndProjectId, user]) => {
         const results = resultsAndProjectId.results;
         const projectId = resultsAndProjectId.projectId;
         const projectList: SFProject[] = results.data.map(pu => results.getIncluded(pu.project));
@@ -141,10 +142,14 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
         const selectedProject = projectId == null ? undefined : projectList.find(p => p.id === projectId);
 
         // check if the currently selected project has been deleted
-        if (selectedProject == null && this.selectedProject != null && projectId === this.selectedProject.id) {
+        if (
+          selectedProject == null &&
+          ((this.selectedProject != null && projectId === this.selectedProject.id) ||
+            (projectId != null && !(await this.projectService.onlineExists(projectId))))
+        ) {
           if (user.site != null && user.site.currentProjectId != null) {
             // the project was deleted remotely, so notify the user
-            this.showProjectDeletedDialog();
+            this.showProjectDeletedDialog(user.site.currentProjectId);
           } else {
             // the project was deleted locally, so navigate to the start view
             this.router.navigateByUrl('/projects');
@@ -206,9 +211,12 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
     this.isExpanded = !this.isExpanded;
   }
 
-  private async showProjectDeletedDialog(): Promise<void> {
+  private async showProjectDeletedDialog(projectId: string): Promise<void> {
     await this.userService.updateCurrentProjectId();
     this.projectDeletedDialogRef = this.dialog.open(ProjectDeletedDialogComponent);
-    this.projectDeletedDialogRef.afterClosed().subscribe(() => this.router.navigateByUrl('/projects'));
+    this.projectDeletedDialogRef.afterClosed().subscribe(() => {
+      this.projectService.localDelete(projectId);
+      this.router.navigateByUrl('/projects');
+    });
   }
 }

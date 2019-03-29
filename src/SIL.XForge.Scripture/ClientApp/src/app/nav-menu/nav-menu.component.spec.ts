@@ -7,7 +7,6 @@ import { Route, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-
 import { AuthService } from 'xforge-common/auth.service';
 import { MapQueryResults, QueryResults } from 'xforge-common/json-api.service';
 import { User, UserRef } from 'xforge-common/models/user';
@@ -17,6 +16,7 @@ import { nameof } from 'xforge-common/utils';
 import { SFProject, SFProjectRef } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
 import { Text, TextRef } from '../core/models/text';
+import { SFProjectService } from '../core/sfproject.service';
 import { SFAdminAuthGuard } from '../shared/sfadmin-auth.guard';
 import { NavMenuComponent } from './nav-menu.component';
 import { ProjectDeletedDialogComponent } from './project-deleted-dialog/project-deleted-dialog.component';
@@ -105,6 +105,23 @@ describe('NavMenuComponent', () => {
     env.confirmDialog();
     expect(env.isDrawerVisible).toBeFalsy();
     expect(env.location.path()).toEqual('/projects');
+    verify(env.mockedSFProjectService.localDelete('project01')).once();
+  }));
+
+  it('reponse to remote project deletion when no project selected', fakeAsync(() => {
+    const env = new TestEnvironment();
+    when(env.mockedSFProjectService.onlineExists('project01')).thenResolve(false);
+    env.deleteProject(false);
+    env.navigate(['/projects', 'project01']);
+    env.init();
+
+    expect(env.isDrawerVisible).toBeFalsy();
+    expect(env.projectDeletedDialog).toBeDefined();
+    verify(env.mockedUserService.updateCurrentProjectId()).once();
+    env.confirmDialog();
+    expect(env.isDrawerVisible).toBeFalsy();
+    expect(env.location.path()).toEqual('/projects');
+    verify(env.mockedSFProjectService.localDelete('project01')).once();
   }));
 
   it('response to local project deletion', fakeAsync(() => {
@@ -133,9 +150,8 @@ describe('NavMenuComponent', () => {
     // SF-229 The project properties may only be partiually available
     // the first time we hear back from the observable. Don't prevent
     // it from trying again by crashing in the fixture or component code.
-
-    let env: TestEnvironment;
-    const projectsSubject2 = new BehaviorSubject<QueryResults<SFProjectUser[]>>(
+    const env = new TestEnvironment();
+    env.setProjects(
       new MapQueryResults(
         [
           new SFProjectUser({
@@ -152,11 +168,9 @@ describe('NavMenuComponent', () => {
         ]
       )
     );
-    expect(() => {
-      env = new TestEnvironment(projectsSubject2);
-      env.navigate(['/projects', 'project01']);
-      env.init();
-    }).not.toThrow();
+    env.navigate(['/projects', 'project01']);
+
+    expect(() => env.init()).not.toThrow();
 
     expect(env.component.projects).toBeUndefined();
   }));
@@ -208,17 +222,18 @@ class TestEnvironment {
   readonly mockedAuthService = mock(AuthService);
   readonly mockedUserService = mock(UserService);
   readonly mockedSFAdminAuthGuard: SFAdminAuthGuard = mock(SFAdminAuthGuard);
+  readonly mockedSFProjectService = mock(SFProjectService);
 
   private readonly currentUser: User;
-  private readonly projectsSubject: BehaviorSubject<QueryResults<SFProjectUser[]>>;
+  private readonly projects$: BehaviorSubject<QueryResults<SFProjectUser[]>>;
 
-  constructor(customProjectsSubject?: BehaviorSubject<QueryResults<SFProjectUser[]>>) {
+  constructor() {
     this.currentUser = new User({
       id: 'user01',
       site: { currentProjectId: 'project01' }
     });
 
-    this.projectsSubject = new BehaviorSubject<QueryResults<SFProjectUser[]>>(
+    this.projects$ = new BehaviorSubject<QueryResults<SFProjectUser[]>>(
       new MapQueryResults(
         [
           new SFProjectUser({
@@ -268,10 +283,6 @@ class TestEnvironment {
       )
     );
 
-    if (customProjectsSubject !== undefined) {
-      this.projectsSubject = customProjectsSubject;
-    }
-
     when(this.mockedUserService.currentUserId).thenReturn('user01');
     when(this.mockedAuthService.isLoggedIn).thenResolve(true);
     when(this.mockedUserService.getCurrentUser()).thenReturn(of(this.currentUser));
@@ -280,7 +291,7 @@ class TestEnvironment {
         'user01',
         deepEqual([[nameof<SFProjectUser>('project'), nameof<SFProject>('texts')]])
       )
-    ).thenReturn(this.projectsSubject);
+    ).thenReturn(this.projects$);
     when(this.mockedUserService.updateCurrentProjectId(anything())).thenResolve();
     when(this.mockedSFAdminAuthGuard.allowTransition(anything())).thenReturn(of(true));
 
@@ -290,7 +301,8 @@ class TestEnvironment {
       providers: [
         { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
         { provide: UserService, useFactory: () => instance(this.mockedUserService) },
-        { provide: SFAdminAuthGuard, useFactory: () => instance(this.mockedSFAdminAuthGuard) }
+        { provide: SFAdminAuthGuard, useFactory: () => instance(this.mockedSFAdminAuthGuard) },
+        { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) }
       ]
     });
     this.router = TestBed.get(Router);
@@ -379,12 +391,16 @@ class TestEnvironment {
     if (isLocal) {
       this.currentUser.site.currentProjectId = null;
     }
-    this.projectsSubject.next(new MapQueryResults<SFProjectUser[]>([]));
+    this.projects$.next(new MapQueryResults<SFProjectUser[]>([]));
     this.wait();
   }
 
   confirmDialog(): void {
     this.okButton.click();
     this.wait();
+  }
+
+  setProjects(results: MapQueryResults<SFProjectUser[]>): void {
+    this.projects$.next(results);
   }
 }

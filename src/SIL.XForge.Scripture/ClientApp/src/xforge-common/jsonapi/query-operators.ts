@@ -15,6 +15,7 @@ import {
   Record,
   RelatedRecordFilterSpecifier,
   RelatedRecordsFilterSpecifier,
+  RemoveRecordOperation,
   ReplaceRelatedRecordOperation,
   ReplaceRelatedRecordsOperation,
   SortSpecifier,
@@ -22,7 +23,7 @@ import {
 } from '@orbit/data';
 import JSONAPISource, { JSONAPIDocument } from '@orbit/jsonapi';
 import { Dict, merge, toArray } from '@orbit/utils';
-
+import { isNotFoundError } from 'xforge-common/utils';
 import { CustomFilterSpecifier } from '../custom-filter-specifier';
 import { IndexedPageSpecifier } from '../indexed-page-specifier';
 import { buildFetchSettings, customRequestOptions, Filter, RequestOptions } from './request-settings';
@@ -58,16 +59,25 @@ export const QueryOperators: Dict<QueryOperator> = {
     const requestOptions = customRequestOptions(source, query);
     const settings = buildFetchSettings(requestOptions);
 
-    const document: JSONAPIDocument = await source.fetch(source.resourceURL(record.type, record.id), settings);
+    try {
+      const document: JSONAPIDocument = await source.fetch(source.resourceURL(record.type, record.id), settings);
 
-    const deserialized = source.serializer.deserializeDocument(document);
-    const operations = operationsFromDeserializedDocument(deserialized);
+      const deserialized = source.serializer.deserializeDocument(document);
+      const operations = operationsFromDeserializedDocument(deserialized);
 
-    const transforms = [buildTransform(operations)];
-    const primaryData = deserialized.data;
-    const meta = document.meta;
+      const transforms = [buildTransform(operations)];
+      const primaryData = deserialized.data;
+      const meta = document.meta;
 
-    return { transforms, primaryData, meta };
+      return { transforms, primaryData, meta };
+    } catch (err) {
+      if (isNotFoundError(err)) {
+        const removeOp: RemoveRecordOperation = { op: 'removeRecord', record };
+        const transforms = [buildTransform(removeOp)];
+        return { transforms, primaryData: null };
+      }
+      throw err;
+    }
   },
 
   async findRecords(source: JSONAPISource, query: Query): Promise<QueryOperatorResponse> {
@@ -113,26 +123,35 @@ export const QueryOperators: Dict<QueryOperator> = {
     const requestOptions = customRequestOptions(source, query);
     const settings = buildFetchSettings(requestOptions);
 
-    const document: JSONAPIDocument = await source.fetch(
-      source.relatedResourceURL(record.type, record.id, relationship),
-      settings
-    );
+    try {
+      const document: JSONAPIDocument = await source.fetch(
+        source.relatedResourceURL(record.type, record.id, relationship),
+        settings
+      );
 
-    const deserialized = source.serializer.deserializeDocument(document);
-    const relatedRecord = deserialized.data as Record;
-    const operations = operationsFromDeserializedDocument(deserialized);
-    operations.push({
-      op: 'replaceRelatedRecord',
-      record,
-      relationship,
-      relatedRecord: relatedRecord == null ? null : { type: relatedRecord.type, id: relatedRecord.id }
-    } as ReplaceRelatedRecordOperation);
+      const deserialized = source.serializer.deserializeDocument(document);
+      const relatedRecord = deserialized.data as Record;
+      const operations = operationsFromDeserializedDocument(deserialized);
+      operations.push({
+        op: 'replaceRelatedRecord',
+        record,
+        relationship,
+        relatedRecord: relatedRecord == null ? null : { type: relatedRecord.type, id: relatedRecord.id }
+      } as ReplaceRelatedRecordOperation);
 
-    const transforms = [buildTransform(operations)];
-    const primaryData = relatedRecord;
-    const meta = document.meta;
+      const transforms = [buildTransform(operations)];
+      const primaryData = relatedRecord;
+      const meta = document.meta;
 
-    return { transforms, primaryData, meta };
+      return { transforms, primaryData, meta };
+    } catch (err) {
+      if (isNotFoundError(err)) {
+        const removeOp: RemoveRecordOperation = { op: 'removeRecord', record };
+        const transforms = [buildTransform(removeOp)];
+        return { transforms, primaryData: null };
+      }
+      throw err;
+    }
   },
 
   async findRelatedRecords(source: JSONAPISource, query: Query): Promise<QueryOperatorResponse> {
@@ -141,27 +160,36 @@ export const QueryOperators: Dict<QueryOperator> = {
     const requestOptions = customRequestOptions(source, query);
     const settings = buildFetchSettings(requestOptions);
 
-    const document: JSONAPIDocument = await source.fetch(
-      source.relatedResourceURL(record.type, record.id, relationship),
-      settings
-    );
+    try {
+      const document: JSONAPIDocument = await source.fetch(
+        source.relatedResourceURL(record.type, record.id, relationship),
+        settings
+      );
 
-    const deserialized = source.serializer.deserializeDocument(document);
-    const relatedRecords = deserialized.data as Record[];
+      const deserialized = source.serializer.deserializeDocument(document);
+      const relatedRecords = deserialized.data as Record[];
 
-    const operations = operationsFromDeserializedDocument(deserialized);
-    operations.push({
-      op: 'replaceRelatedRecords',
-      record,
-      relationship,
-      relatedRecords: relatedRecords.map(r => ({ type: r.type, id: r.id }))
-    } as ReplaceRelatedRecordsOperation);
+      const operations = operationsFromDeserializedDocument(deserialized);
+      operations.push({
+        op: 'replaceRelatedRecords',
+        record,
+        relationship,
+        relatedRecords: relatedRecords.map(r => ({ type: r.type, id: r.id }))
+      } as ReplaceRelatedRecordsOperation);
 
-    const transforms = [buildTransform(operations)];
-    const primaryData = relatedRecords;
-    const meta = document.meta;
+      const transforms = [buildTransform(operations)];
+      const primaryData = relatedRecords;
+      const meta = document.meta;
 
-    return { transforms, primaryData, meta };
+      return { transforms, primaryData, meta };
+    } catch (err) {
+      if (isNotFoundError(err)) {
+        const removeOp: RemoveRecordOperation = { op: 'removeRecord', record };
+        const transforms = [buildTransform(removeOp)];
+        return { transforms, primaryData: [] };
+      }
+      throw err;
+    }
   }
 };
 

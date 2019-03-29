@@ -31,9 +31,6 @@ export class RemotePushFailStrategy extends ConnectionStrategy {
         store.rollback(transform.id, -1);
       }
       await this.source.requestQueue.skip();
-      if (isOnlineRequest(transform)) {
-        await this.target.requestQueue.skip();
-      }
     }
   }
 }
