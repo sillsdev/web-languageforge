@@ -1,6 +1,5 @@
 import 'angular';
 import 'angular-route';
-import 'angular-sortable-view';
 import 'angular-ui-bootstrap-4';
 import 'angular-ui-router';
 import 'angular-ui-validate';
@@ -8,9 +7,10 @@ import 'angular-zxcvbn';
 
 import 'ng-file-upload/dist/ng-file-upload-all.js';
 
+import './core/service-worker-registration.js';
+
 import './polyfills.browser';
 
-// these are imported here to ensure JS files can use them
 import './apps/activity/activity-app.module';
 import './apps/changepassword/change-password-app.module';
 import './apps/projects/projects-app.module';
@@ -20,8 +20,4 @@ import './apps/public/oauth-signup/oauth-signup-app.module';
 import './apps/public/reset_password/reset-password-app.module';
 import './apps/public/signup/signup-app.module';
 import './apps/siteadmin/site-admin-app.module';
-import './apps/translate/translate-app.module';
-import './apps/usermanagement/user-management-app.module';
 import './apps/userprofile/user-profile-app.module';
-import './core/core.module';
-import './shared/utils/pui-utils.module';

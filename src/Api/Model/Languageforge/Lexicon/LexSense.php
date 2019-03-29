@@ -2,6 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
+use Api\Library\Shared\Palaso\StringUtil;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\Mapper\ObjectForEncoding;
@@ -23,9 +24,9 @@ class LexSense extends ObjectForEncoding
 
     public function __construct($liftId = '', $guid = '')
     {
-        $this->setPrivateProp('liftId');
-        $this->setReadOnlyProp('guid');
         $this->setReadOnlyProp('authorInfo');
+        $this->setRearrangeableProp('examples');
+        $this->setRearrangeableProp('pictures');
         if ($liftId) $this->liftId = $liftId;
         $this->guid = Guid::makeValid($guid);
 
@@ -341,20 +342,10 @@ class LexSense extends ObjectForEncoding
                 /** @var LexExample $otherExample */
                 $otherExample = $otherExamplesByGuid[$guid];
                 $otherExampleId = 'examples@' . $otherPosition . '#' . $guid;
-                $exampleDifferences = $thisExample->differences($otherExample);
-                foreach ($exampleDifferences as $key => $exampleDifference) {
-                    if (substr($key, 0, 5) === 'this.') {
-                        // We don't use $thisSenseId or $otherSenseId here since those will be handled in the LexEntryModel differences() function
-                        $newKey = str_replace('this.',  'this.' . $thisExampleId . '.', $key);
-                    } elseif (substr($key, 0, 6) === "other.") {
-                        $newKey = str_replace('other.', 'other.' . $otherExampleId . '.', $key);
-                    } else {
-                        $newKey = $key;
-                    }
-                    $differences[$newKey] = $exampleDifference;
-                }
+                $this->addFieldDifferencesFromExample($thisExample, $otherExample, $thisExampleId, $otherExampleId, $differences);
             } else {
                 $differences['deleted.' . $thisSenseId . '.' . $thisExampleId] = $thisExample->nameForActivityLog();
+                $this->addFieldDifferencesFromExample($thisExample, new LexExample(), $thisExampleId, $thisExampleId, $differences);
             }
         }
         $addedGuids = array_diff($otherGuids, $seenGuids);
@@ -364,9 +355,25 @@ class LexSense extends ObjectForEncoding
             $otherPosition  = $otherPositions[$guid];
             $otherExampleId = 'examples@' . $otherPosition . '#' . $guid;
             $differences['added.' . $otherSenseId . '.' . $otherExampleId] = $otherExample->nameForActivityLog();
+            $this->addFieldDifferencesFromExample(new LexExample(), $otherExample, $otherExampleId, $otherExampleId, $differences);
         }
 
         return $differences;
+    }
+
+    protected function addFieldDifferencesFromExample($thisExample, $otherExample, $thisExampleId, $otherExampleId, &$differences)
+    {
+        $exampleDifferences = $thisExample->differences($otherExample, $thisExampleId, $otherExampleId);
+        foreach ($exampleDifferences as $key => $exampleDifference) {
+            if (StringUtil::startsWith($key, 'this.')) {
+                $newKey = 'this.' . $thisExampleId . '.' . substr($key, strlen('this.'));
+            } elseif (StringUtil::startsWith($key, 'other.')) {
+                $newKey = 'other.' . $thisExampleId . '.' . substr($key, strlen('other.'));
+            } else {
+                $newKey = $key;
+            }
+            $differences[$newKey] = $exampleDifference;
+        }
     }
 
     public function differences(LexSense $otherSense, string $thisSenseId, string $otherSenseId)

@@ -76,7 +76,7 @@
                                class="form-control"
                                data-idle-validate-keypress="$ctrl.resetValidateUserForm()"
                                type="text" placeholder="(username)"
-                               data-ng-disabled="$ctrl.vars.state === 'add'"
+                               data-ng-disabled="$ctrl.vars.state !== 'add'"
                                data-ng-model="$ctrl.record.username">
                         <span class="input-group-addon" data-ng-show="$ctrl.uniqueUserState === 'loading'">
                                 <i id="userNameLoading" class="fa fa-spinner fa-spin"></i>

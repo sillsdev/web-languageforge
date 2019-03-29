@@ -1,0 +1,103 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# This Vagrantfile is for the creation of a VirtualBox image where xForge is installed
+# Currently the result is hosted as NathanielPaulus/xenial64-xforge
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "chrisvire/xenial64"
+  config.ssh.insert_key = false
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = true
+    vb.memory = "2048"
+  end
+
+  config.vm.provision "ubuntu-setup", type: "shell", privileged: false, inline: <<~SHELL
+    set -eux
+
+    # Disable automatic updates
+    sudo sed -i 's/APT::Periodic::Update-Package-Lists "1";/APT::Periodic::Update-Package-Lists "0";/g' /etc/apt/apt.conf.d/10periodic
+    sudo apt-get purge -y unattended-upgrades
+
+    CODENAME="$(lsb_release -cs)"
+    MIRRORS="deb mirror://mirrors.ubuntu.com/mirrors.txt $CODENAME main restricted universe multiverse
+    deb mirror://mirrors.ubuntu.com/mirrors.txt $CODENAME-updates main restricted universe multiverse
+    deb mirror://mirrors.ubuntu.com/mirrors.txt $CODENAME-backports main restricted universe multiverse
+    deb mirror://mirrors.ubuntu.com/mirrors.txt $CODENAME-security main restricted universe multiverse
+    "
+
+    # Add sources to the top of sources.list if they're not already there
+    grep --fixed-strings --silent 'deb mirror://mirrors.ubuntu.com/mirrors.txt' /etc/apt/sources.list || { { echo "$MIRRORS" && cat /etc/apt/sources.list; } > sources.list.tmp && sudo mv sources.list.tmp /etc/apt/sources.list; }
+
+    sudo apt-get update
+    sudo apt-get -y upgrade
+
+    # In order to run gsettings over SSH we have to set DBUS_SESSION_BUS_ADDRESS. See https://askubuntu.com/a/457023
+    export DBUS_SESSION_BUS_ADDRESS="$(sudo cat /proc/$(pidof -s pulseaudio)/environ | tr '\\0' '\\n' | grep --text DBUS_SESSION_BUS_ADDRESS | cut -d '=' -f 2-)"
+    if [ "$DBUS_SESSION_BUS_ADDRESS" != "" ]; then
+      gsettings set org.gnome.desktop.screensaver lock-enabled false
+      gsettings set org.gnome.desktop.session idle-delay 0
+      gsettings set com.canonical.Unity.Lenses remote-content-search none
+      gsettings set com.canonical.Unity.Launcher favorites "['application://org.gnome.Nautilus.desktop', 'application://firefox.desktop', 'application://unity-control-center.desktop', 'unity://running-apps', 'application://gnome-terminal.desktop', 'unity://expo-icon', 'unity://devices']"
+    else
+      echo ***COULD NOT MODIFY GSETTINGS***
+    fi
+
+    # Enable automatic login
+    echo $'[SeatDefaults]\nautologin-user=vagrant' | sudo tee /etc/lightdm/lightdm.conf.d/12-autologin.conf > /dev/null
+
+    # remove some of the packages suggested by ubuntu-desktop
+    sudo apt-get -y purge update-manager update-notifier aisleriot cheese deja-dup example-content fwupd fwupdate fwupdate-signed gnome-accessibility-themes gnome-calendar gnome-font-viewer gnome-mahjongg gnome-mines gnome-orca gnome-screensaver gnome-sudoku libreoffice* remmina rhythmbox shotwell simple-scan thunderbird* totem transmission-gtk usb-creator-gtk
+    [ -f ~/examples.desktop ] && rm ~/examples.desktop
+
+    sudo apt-get -y autoremove
+    sudo apt-get clean
+  SHELL
+
+  config.vm.provision "xforge-setup", type: "shell", privileged: false, inline: <<~SHELL
+    set -eux
+
+    sudo add-apt-repository ppa:ansible/ansible
+    # Add mongo public key
+    sudo apt-get update
+    sudo apt-get -y install ansible git
+    mkdir -p ~/src
+    cd ~/src
+
+    if [ ! -d "web-languageforge" ]; then
+      git clone --depth 1 --recurse-submodules https://github.com/sillsdev/web-languageforge.git
+    else
+      cd web-languageforge
+      git pull --ff-only --recurse-submodules
+    fi
+
+    cd ~/src
+    [ -d web-scriptureforge ] || ln -s web-languageforge web-scriptureforge
+
+    cd ~/src/web-languageforge/deploy/
+    ansible-playbook -i hosts playbook_create_config.yml --limit localhost
+    ansible-playbook -i hosts playbook_xenial_server_vagrant.yml --limit localhost
+
+    cd ~/src/web-languageforge
+    ./refreshDeps.sh
+
+    cd
+    if ! command -v code >> /dev/null ; then
+      wget -O vscode.deb https://az764295.vo.msecnd.net/stable/24f62626b222e9a8313213fb64b10d741a326288/code_1.24.1-1528912196_amd64.deb
+      sudo apt-get install ./vscode.deb
+      rm vscode.deb
+    fi
+
+    sudo apt-get -y autoremove
+    sudo apt-get clean
+
+    cd ~/src/web-languageforge
+    # Fix fetch issues caused by cloning with --depth
+    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+    # if it's still a shallow repo
+    [ -f .git/shallow ] && git fetch --unshallow
+
+    echo Install complete
+  SHELL
+end

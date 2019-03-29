@@ -1,14 +1,19 @@
+body {
+  // Overide text-align: left; in Bootstrap's _reboot.scss, so that dir=auto will work
+  text-align: initial;
+}
+
 .no-margin {
     /* Fix Bootstrap's margins on checkboxes, etc. */
     margin: 0 !important;
 }
 
-span.fk { /* TODO: Find a better place for this (partials/questions.css, perhaps?) */
+span.fk { /* TODO: Find a better place for this (text/text.css, perhaps?) */
     /* Used in footnote popups in text display of question page */
     font-weight: bold;
 }
 
-/* TODO: Find a better place for this as well (perhaps in partials/question.css) */
+/* TODO: Find a better place for this as well (perhaps in text/question.css) */
 textarea.newAnswer, textarea.editAnswer {
     padding: 10px;
     background: #ffffff;
@@ -228,4 +233,12 @@ div.new-item.collapse.in {
   margin-top:10px;
   padding: 5px;
   border: #C1DBC1 2px solid;
+}
+
+.text-heading {
+  max-width: 50%;
+}
+
+.question-heading {
+  margin-right: 2em;
 }

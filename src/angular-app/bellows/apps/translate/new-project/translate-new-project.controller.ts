@@ -1,21 +1,21 @@
 import * as angular from 'angular';
 
-import {UserRestApiService} from '../../../core/api/user-rest-api.service';
-import {InputSystemsService} from '../../../core/input-systems/input-systems.service';
-import {LinkService} from '../../../core/link.service';
-import {NoticeService} from '../../../core/notice/notice.service';
-import {SessionService} from '../../../core/session.service';
-import {InputSystem} from '../../../shared/model/input-system.model';
-import {InterfaceConfig} from '../../../shared/model/interface-config.model';
-import {ParatextProject, ParatextUserInfo} from '../../../shared/model/paratext-user-info.model';
-import {MachineService} from '../core/machine.service';
-import {TranslateProjectService} from '../core/translate-project.service';
-import {TranslateSendReceiveService} from '../core/translate-send-receive.service';
-import {TranslateConfig, TranslateConfigDocType} from '../shared/model/translate-config.model';
-import {TranslateProjectSettings} from '../shared/model/translate-project-settings.model';
-import {TranslateProject} from '../shared/model/translate-project.model';
+import { InputSystemsService } from '../../../core/input-systems/input-systems.service';
+import { LinkService } from '../../../core/link.service';
+import { NoticeService } from '../../../core/notice/notice.service';
+import { SessionService } from '../../../core/session.service';
+import { InputSystem } from '../../../shared/model/input-system.model';
+import { InterfaceConfig } from '../../../shared/model/interface-config.model';
+import { ParatextProject, ParatextUserInfo } from '../../../shared/model/paratext-user-info.model';
+import { MachineService } from '../core/machine.service';
+import { ParatextService } from '../core/paratext.service';
+import { TranslateProjectService } from '../core/translate-project.service';
+import { TranslateSendReceiveService } from '../core/translate-send-receive.service';
+import { TranslateConfig, TranslateConfigDocType } from '../shared/model/translate-config.model';
+import { TranslateProjectSettings } from '../shared/model/translate-project-settings.model';
+import { TranslateProject } from '../shared/model/translate-project.model';
 
-class NewProject extends TranslateProject {
+interface NewProject extends TranslateProject {
   editProjectCode: boolean;
 }
 
@@ -44,29 +44,30 @@ export class TranslateNewProjectController implements angular.IController {
   projectCodeStateDefer: angular.IDeferred<string>;
   show: Show;
   paratextUserInfo: ParatextUserInfo;
+  isRetrievingParatextUserInfo: boolean = false;
   sourceParatextProject: ParatextProject;
   targetParatextProject: ParatextProject;
-  isRetrievingParatextUserInfo: boolean = false;
 
   // Shorthand to make things look a touch nicer
   private readonly ok = this.makeFormValid;
   private readonly neutral = this.makeFormNeutral;
   private readonly error = this.makeFormInvalid;
-  private paratextSignInWindow: Window;
 
   static $inject = ['$scope', '$state',
     '$q', '$window',
     'sessionService', 'silNoticeService',
     'translateProjectApi', 'linkService',
-    'userRestApiService', 'machineService',
-    'translateSendReceiveService'
+    'machineService',
+    'translateSendReceiveService',
+    'paratextService'
   ];
   constructor(private readonly $scope: angular.IScope, private readonly $state: angular.ui.IStateService,
               private readonly $q: angular.IQService, private readonly $window: angular.IWindowService,
               private readonly sessionService: SessionService, private readonly notice: NoticeService,
               private readonly projectApi: TranslateProjectService, private readonly linkService: LinkService,
-              private readonly userRestApiService: UserRestApiService, private readonly machine: MachineService,
-              private readonly translateSendReceiveService: TranslateSendReceiveService) {}
+              private readonly machine: MachineService,
+              private readonly translateSendReceiveService: TranslateSendReceiveService,
+              private readonly paratextService: ParatextService) {}
 
   $onInit() {
     this.interfaceConfig = new InterfaceConfig();
@@ -74,7 +75,7 @@ export class TranslateNewProjectController implements angular.IController {
       const projectSettings = session.projectSettings<TranslateProjectSettings>();
       if (projectSettings != null && projectSettings.interfaceConfig != null) {
         angular.merge(this.interfaceConfig, projectSettings.interfaceConfig);
-        if (InputSystemsService.isRightToLeft(this.interfaceConfig.userLanguageCode)) {
+        if (InputSystemsService.isRightToLeft(this.interfaceConfig.languageCode)) {
           this.interfaceConfig.direction = 'rtl';
           this.interfaceConfig.pullToSide = 'float-left';
           this.interfaceConfig.pullNormal = 'float-right';
@@ -84,7 +85,7 @@ export class TranslateNewProjectController implements angular.IController {
       }
     });
 
-    this.newProject = new NewProject();
+    this.newProject = {} as NewProject;
     this.newProject.config = new TranslateConfig();
     this.newProject.appName = 'translate';
     this.newProject.config.isTranslationDataShared = false;
@@ -300,7 +301,7 @@ export class TranslateNewProjectController implements angular.IController {
   }
 
   private validateSendReceiveCredentialsForm(): angular.IPromise<boolean> {
-    if (this.paratextSignInWindow != null && !this.paratextSignInWindow.closed) {
+    if (this.paratextService.isSigningIn) {
       return this.error();
     }
 
@@ -350,7 +351,10 @@ export class TranslateNewProjectController implements angular.IController {
         this.nextButtonLabel = this.isSRProject ? 'Get Started' : 'Next';
         this.makeFormNeutral();
         if (this.isSRProject) {
-          this.getParatextUserInfo();
+          this.isRetrievingParatextUserInfo = true;
+          this.paratextService.getUserInfo()
+            .then(pui => this.paratextUserInfo = pui)
+            .finally(() => this.isRetrievingParatextUserInfo = false);
         }
         break;
       case 'newProject.languages':
@@ -369,41 +373,15 @@ export class TranslateNewProjectController implements angular.IController {
   }
 
   // ----- Step 1: Get S/R credentials -----
+
   get isSignedIntoParatext(): boolean {
     return this.paratextUserInfo != null;
   }
 
   signIntoParatext(): void {
-    if (this.paratextSignInWindow != null && !this.paratextSignInWindow.closed) {
-      this.paratextSignInWindow.focus();
-      return;
-    }
-
-    const wLeft = this.$window.screenLeft ? this.$window.screenLeft : this.$window.screenX;
-    const wTop = this.$window.screenTop ? this.$window.screenTop : this.$window.screenY;
-    const width = 760;
-    const height = 852;
-    const left = wLeft + (this.$window.innerWidth / 2) - (width / 2);
-    const top = wTop + (this.$window.innerHeight / 2) - (height / 2);
-    const features = 'top=' + top + ',left=' + left + ',width=' + width + ',height=' + height + ',menubar=0,toolbar=0';
-    this.paratextSignInWindow = this.$window.open('/oauthcallback/paratext', 'ParatextSignIn', features);
-    const checkWindow = setInterval(() => {
-      if (this.paratextSignInWindow == null || !this.paratextSignInWindow.closed) {
-        return;
-      }
-
-      clearInterval(checkWindow);
-      this.paratextSignInWindow = null;
-      this.getParatextUserInfo();
-    }, 100);
-  }
-
-  private getParatextUserInfo(): void {
     this.isRetrievingParatextUserInfo = true;
-    this.sessionService.getSession()
-      .then(session => this.userRestApiService.getParatextInfo(session.userId()))
-      .then(paratextUserInfo => this.paratextUserInfo = paratextUserInfo)
-      .catch(() => { })
+    this.paratextService.signIn()
+      .then(pui => this.paratextUserInfo = pui)
       .finally(() => this.isRetrievingParatextUserInfo = false);
   }
 

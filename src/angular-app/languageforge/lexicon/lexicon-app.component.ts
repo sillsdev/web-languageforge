@@ -1,6 +1,5 @@
 import * as angular from 'angular';
 
-import {InputSystemsService} from '../../bellows/core/input-systems/input-systems.service';
 import {NoticeService} from '../../bellows/core/notice/notice.service';
 import {InterfaceConfig} from '../../bellows/shared/model/interface-config.model';
 import {User} from '../../bellows/shared/model/user.model';
@@ -16,28 +15,27 @@ import {LexOptionList} from './shared/model/option-list.model';
 
 export class LexiconAppController implements angular.IController {
   finishedLoading: boolean = false;
+  interfaceConfig: InterfaceConfig = {} as InterfaceConfig;
+  users: { [userId: string]: User } = {};
   config: LexiconConfig;
   editorConfig: LexiconConfig;
-  interfaceConfig: InterfaceConfig;
   optionLists: LexOptionList[];
   project: LexiconProject;
   rights: Rights;
-  users: { [userId: string]: User };
 
   private online: boolean;
   private pristineLanguageCode: string;
 
   static $inject = ['$scope', '$location',
-    '$q', 'silNoticeService',
-    'lexConfigService',
+    '$q',
+    'silNoticeService', 'lexConfigService',
     'lexProjectService',
     'lexEditorDataService',
     'lexRightsService',
-    'lexSendReceive'
-  ];
+    'lexSendReceive'];
   constructor(private readonly $scope: angular.IScope, private readonly $location: angular.ILocationService,
-              private readonly $q: angular.IQService, private readonly notice: NoticeService,
-              private readonly configService: LexiconConfigService,
+              private readonly $q: angular.IQService,
+              private readonly notice: NoticeService, private readonly configService: LexiconConfigService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly editorService: LexiconEditorDataService,
               private readonly rightsService: LexiconRightsService,
@@ -61,24 +59,29 @@ export class LexiconAppController implements angular.IController {
 
               this.users = users;
             }
+
+            this.editorConfig = editorConfig;
+            this.project = rights.session.project<LexiconProject>();
+            this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
+            this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
+            this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
+            this.pristineLanguageCode = this.interfaceConfig.languageCode;
+            this.rights = rights;
           });
+        } else {
+          this.editorConfig = editorConfig;
+          this.project = rights.session.project<LexiconProject>();
+          this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
+          this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
+          this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
+          this.pristineLanguageCode = this.interfaceConfig.languageCode;
+          this.rights = rights;
         }
 
-        this.editorConfig = editorConfig;
-        this.project = rights.session.project();
-        this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
-        this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
-        this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
-        this.rights = rights;
-        this.pristineLanguageCode = angular.copy(this.interfaceConfig.userLanguageCode);
-        this.changeInterfaceLanguage(this.interfaceConfig.userLanguageCode);
-
-        this.$scope.$watch(() => this.interfaceConfig.userLanguageCode, (newVal: string) => {
-          if (newVal && newVal !== this.pristineLanguageCode) {
-            const user = { interfaceLanguageCode: '' };
-            user.interfaceLanguageCode = newVal;
-            this.lexProjectService.updateUserProfile(user);
-            this.changeInterfaceLanguage(newVal);
+        this.$scope.$watch(() => this.interfaceConfig.languageCode, (newVal: string) => {
+          if (newVal && this.pristineLanguageCode && newVal !== this.pristineLanguageCode) {
+            this.updateUserProfile(newVal);
+            this.pristineLanguageCode = newVal;
           }
         });
       }
@@ -100,6 +103,11 @@ export class LexiconAppController implements angular.IController {
   ): void => {
     if ($event.project) {
       this.project = $event.project;
+      if (!this.interfaceConfig.isUserLanguageCode) {
+        this.interfaceConfig.languageCode = this.project.interfaceLanguageCode;
+      } else if (this.interfaceConfig.languageCode === this.project.interfaceLanguageCode) {
+        this.updateUserProfile(this.interfaceConfig.languageCode);
+      }
     }
 
     if ($event.config) {
@@ -117,21 +125,15 @@ export class LexiconAppController implements angular.IController {
     }
   }
 
-  private changeInterfaceLanguage(code: string): void {
-    this.pristineLanguageCode = angular.copy(code);
-    if (InputSystemsService.isRightToLeft(code)) {
-      this.interfaceConfig.direction = 'rtl';
-      this.interfaceConfig.pullToSide = 'float-left';
-      this.interfaceConfig.pullNormal = 'float-right';
-      this.interfaceConfig.placementToSide = 'right';
-      this.interfaceConfig.placementNormal = 'left';
+  private updateUserProfile(languageCode: string): void {
+    const user = { interfaceLanguageCode: languageCode };
+    if (languageCode === this.project.interfaceLanguageCode) {
+      user.interfaceLanguageCode = null;
+      this.interfaceConfig.isUserLanguageCode = false;
     } else {
-      this.interfaceConfig.direction = 'ltr';
-      this.interfaceConfig.pullToSide = 'float-right';
-      this.interfaceConfig.pullNormal = 'float-left';
-      this.interfaceConfig.placementToSide = 'left';
-      this.interfaceConfig.placementNormal = 'right';
+      this.interfaceConfig.isUserLanguageCode = true;
     }
+    this.lexProjectService.updateUserProfile(user);
   }
 
   private setupOffline(): void {

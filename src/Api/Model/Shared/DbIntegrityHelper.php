@@ -260,11 +260,11 @@ class DbIntegrityHelper extends DbScriptLogger
             $lexComment = new LexCommentModel($project, $comment['id']);
             $fieldName = $lexComment->regarding->field;
             $contextGuid = $fieldName;
+            $useEntryIdContext = false;
+            $lexEntry = new LexEntryModel($project, $lexComment->entryRef->id);
             // Only need to interact with comments that have no contextGuid
             if(empty($comment['contextGuid'])) {
                 if ($fieldName) {
-                    $useEntryIdContext = false;
-                    $lexEntry = new LexEntryModel($project, $lexComment->entryRef->id);
                     $fieldConfig = $this->getLexiconFieldConfig($lexProject, $fieldName);
                     // Construct the basics of the contextGuid
                     if(!empty($lexComment->regarding->inputSystem)) {

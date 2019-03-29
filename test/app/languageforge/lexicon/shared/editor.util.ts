@@ -106,8 +106,13 @@ export class EditorUtil {
   }
 
   static getFields(searchLabel: string, rootElem: ElementFinder = element(by.className('dc-entry'))) {
-    return rootElem.all(by.cssContainingText('div[data-ng-repeat="fieldName in $ctrl.config.fieldOrder"]',
-      searchLabel));
+    return rootElem.all(by.cssContainingText('div[data-ng-repeat="fieldName in $ctrl.config.fieldOrder"]', searchLabel)).filter(elem => {
+      return elem.getText().then(text => {
+        // getText returns text including child elements, which for fields is generally on a new line
+        if(text.indexOf('\n') !== -1) text = text.substring(0, text.indexOf('\n'));
+        return text === searchLabel;
+      })
+    });
   }
 
   getFieldValues(searchLabel: string, rootElem: ElementFinder = element(by.className('dc-entry')),

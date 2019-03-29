@@ -12,6 +12,7 @@ import {EditorOfflineCacheService} from './editor-offline-cache.service';
 import {LexiconCommentService} from './lexicon-comments.service';
 
 class FilterBy {
+  label?: string;
   level?: string;
   type?: string;
   value?: string;
@@ -566,20 +567,15 @@ export class EditorDataService {
   }
 
   private sortList(config: any, list: any): any {
-    const collator = Intl.Collator(this.getInputSystemForSort(config));
+    const inputSystem = this.getInputSystemForSort(config);
+    const compare = ('Intl' in window) ? Intl.Collator(inputSystem).compare : (a: string, b: string) => a < b ? -1 : 1;
 
-    // temporary mapped array
-    const mapped = list.map((entry: any, i: number) => {
-      return { index: i, value: this.getSortableValue(config, entry) };
-    });
+    const mapped = list.map((entry: any, i: number) => ({
+      index: i,
+      value: this.getSortableValue(config, entry)
+    }));
 
-    mapped.sort((a: any, b: any) => {
-      if (this.entryListModifiers.sortReverse === true) {
-        return -collator.compare(a.value, b.value);
-      } else {
-        return collator.compare(a.value, b.value);
-      }
-    });
+    mapped.sort((a: any, b: any) => compare(a.value, b.value) * (this.entryListModifiers.sortReverse ? -1 : 1));
 
     return mapped.map((el: any) => list[el.index]);
   }

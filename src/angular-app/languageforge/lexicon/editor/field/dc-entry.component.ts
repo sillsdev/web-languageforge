@@ -59,6 +59,17 @@ export class FieldEntryController implements angular.IController {
       }, () => {});
   }
 
+  numSenses = (): number => this.model.senses.length;
+
+  moveSense = (index: number, distance: number): void => {
+    const senses = this.model.senses;
+    const sense = senses[index];
+    const newPosition = index + distance;
+    if (newPosition < 0 || newPosition >= senses.length) throw new Error();
+    senses.splice(index, 1); // remove 1 element starting from index
+    senses.splice(newPosition, 0, sense); // insert sense, overwriting 0 elements
+  }
+
 }
 
 export const FieldEntryComponent: angular.IComponentOptions = {

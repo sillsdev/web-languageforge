@@ -1,8 +1,8 @@
 import * as angular from 'angular';
 
-import { ModalService } from '../../../core/modal/modal.service';
-import { TranslateConfig } from './model/translate-config.model';
-import { TranslateProject } from './model/translate-project.model';
+import {ModalService} from '../../../core/modal/modal.service';
+import {TranslateConfig} from './model/translate-config.model';
+import {TranslateProject} from './model/translate-project.model';
 
 export class LanguagesPickerController implements angular.IController {
   tlpProject: TranslateProject;
@@ -12,7 +12,7 @@ export class LanguagesPickerController implements angular.IController {
   constructor(private $modal: ModalService) {}
 
   $onChanges() {
-    this.tlpProject = this.tlpProject || new TranslateProject();
+    this.tlpProject = this.tlpProject || {} as TranslateProject;
     this.tlpProject.config = this.tlpProject.config || new TranslateConfig();
     if (this.tlpProject.config.isTranslationDataShared == null ||
       this.tlpProject.config.isTranslationDataShared === ''

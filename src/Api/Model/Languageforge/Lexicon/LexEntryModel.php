@@ -2,6 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
+use Api\Library\Shared\Palaso\StringUtil;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\Id;
@@ -54,6 +55,7 @@ class LexEntryModel extends MapperModel
         $this->setPrivateProp('dirtySR');
         $this->setPrivateProp('mercurialSha');
         $this->setReadOnlyProp('authorInfo');
+        $this->setRearrangeableProp('senses');
 
         $this->initLazyProperties([
             'lexeme',
@@ -295,19 +297,11 @@ class LexEntryModel extends MapperModel
                 $otherSense = $otherSensesByGuid[$guid];
                 $otherPosition = $otherPositions[$guid] ?? 0;  // Default to 0 just in case, though this *should* never be necessary
                 $otherSenseId = 'senses@' . $otherPosition . '#' . $guid;
-                $senseDifferences = $thisSense->differences($otherSense, $thisSenseId, $otherSenseId);
-                foreach ($senseDifferences as $key => $senseDifference) {
-                    if (substr($key, 0, 5) === 'this.') {
-                        $newKey = str_replace('this.',  'oldValue.' . $thisSenseId . '.', $key);
-                    } elseif (substr($key, 0, 6) === 'other.') {
-                        $newKey = str_replace('other.', 'newValue.' . $thisSenseId . '.', $key);
-                    } else {
-                        $newKey = $key;
-                    }
-                    $differences[$newKey] = $senseDifference;
-                }
+                $this->addFieldDifferencesFromSense($thisSense, $otherSense, $thisSenseId, $otherSenseId, $differences);
             } else {
                 $differences['deleted.' . $thisSenseId] = $thisSense->nameForActivityLog();
+                // Want "newValue" and "oldValue" for each field inside the sense as well
+                $this->addFieldDifferencesFromSense($thisSense, new LexSense(), $thisSenseId, $thisSenseId, $differences);
             }
         }
         $addedGuids = array_diff($otherGuids, $seenGuids);
@@ -317,9 +311,26 @@ class LexEntryModel extends MapperModel
             $otherPosition  = $otherPositions[$guid];
             $otherSenseId = 'senses@' . $otherPosition . '#' . $guid;
             $differences['added.' . $otherSenseId] = $otherSense->nameForActivityLog();
+            // Want "newValue" and "oldValue" for each field inside the sense as well
+            $this->addFieldDifferencesFromSense(new LexSense(), $otherSense, $otherSenseId, $otherSenseId, $differences);
         }
 
         return $differences;
+    }
+
+    protected function addFieldDifferencesFromSense($thisSense, $otherSense, $thisSenseId, $otherSenseId, &$differences)
+    {
+        $senseDifferences = $thisSense->differences($otherSense, $thisSenseId, $otherSenseId);
+        foreach ($senseDifferences as $key => $senseDifference) {
+            if (StringUtil::startsWith($key, 'this.')) {
+                $newKey = 'oldValue.' . $thisSenseId . '.' . substr($key, strlen('this.'));
+            } elseif (StringUtil::startsWith($key, 'other.')) {
+                $newKey = 'newValue.' . $thisSenseId . '.' . substr($key, strlen('other.'));
+            } else {
+                $newKey = $key;
+            }
+            $differences[$newKey] = $senseDifference;
+        }
     }
 
     public function nameForActivityLog($preferredInputSystem = null)

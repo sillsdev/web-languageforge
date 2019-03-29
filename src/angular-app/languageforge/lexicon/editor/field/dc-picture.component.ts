@@ -4,12 +4,12 @@ import {BytesFilterFunction} from '../../../../bellows/core/filters';
 import {ModalService} from '../../../../bellows/core/modal/modal.service';
 import {NoticeService} from '../../../../bellows/core/notice/notice.service';
 import {SessionService} from '../../../../bellows/core/session.service';
+import {UploadFile, UploadResponse} from '../../../../bellows/shared/model/upload.model';
 import {LexiconConfigService} from '../../core/lexicon-config.service';
 import {LexiconProjectService} from '../../core/lexicon-project.service';
 import {LexiconUtilityService} from '../../core/lexicon-utility.service';
 import {LexPicture} from '../../shared/model/lex-picture.model';
 import {LexConfigInputSystems, LexConfigPictures} from '../../shared/model/lexicon-config.model';
-import {UploadFile, UploadResponse} from '../../shared/model/upload.model';
 import {FieldControl} from './field-control.model';
 
 class FileUpload {

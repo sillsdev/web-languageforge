@@ -15,12 +15,19 @@ define('SF_TEST_DATABASE', 'scriptureforge_test');
 
 class EnsureDBIndexes
 {
+    /**
+     * @param string $userId
+     * @param string $mode
+     * @return string
+     * @throws \Exception
+     */
     public function run(
         /** @noinspection PhpUnusedParameterInspection */
         $userId, $mode = 'test'
     ) {
         $testMode = ($mode != 'run');
         $message = "Ensure DB Indexes\n";
+        ini_set('max_execution_time', 300);
         $numberOfIndexesCreated = 0;
 
         $website = Website::get();

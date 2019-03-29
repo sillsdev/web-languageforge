@@ -8,6 +8,12 @@
   ],
   "configurations": [
     {
+      "type": "node",
+      "request": "attach",
+      "name": "Node debugger",
+      "port": 9229
+    },
+    {
       "name": ".NET Core",
       "type": "coreclr",
       "request": "launch",
@@ -20,6 +26,14 @@
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    {
+      "type": "chrome",
+      "runtimeExecutable": "/usr/bin/chromium-browser",
+      "request": "launch",
+      "name": "Launch Chromium on Linux",
+      "url": "https://languageforge.local",
+      "webRoot": "${workspaceRoot}"
     },
     {
       "type": "chrome",

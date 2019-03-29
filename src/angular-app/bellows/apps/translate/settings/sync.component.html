@@ -2,7 +2,16 @@
     <br>
     <h2 style="font-weight:normal">Synchronize Project with Paratext</h2>
     <div class="card card-body bg-light">
-        <div align="center">
+        <div class="text-center" data-ng-if="!$ctrl.isSignedIntoParatext && !$ctrl.isRetrievingParatextUserInfo">
+            <button class="btn btn-std" data-ng-click="$ctrl.signIntoParatext()">
+                Sign into Paratext
+            </button>
+        </div>
+        <div class="text-center" data-ng-if="$ctrl.isRetrievingParatextUserInfo">
+            <i class="fa fa-spinner fa-spin"></i>
+            <p>Retrieving Paratext information...</p>
+        </div>
+        <div class="text-center" data-ng-if="$ctrl.isSignedIntoParatext && !$ctrl.isRetrievingParatextUserInfo">
             <button class="btn btn-std" title="Send and Receive with Paratext"
                     data-placement="bottom"
                     data-ng-disabled="$ctrl.disableSyncButton"
@@ -10,6 +19,11 @@
                 <i class="fa fa-cloud-upload fa-lg text-info"></i>Send/Receive</button>
             <div class="text-muted">{{$ctrl.syncStateNotice}}</div>
             <div class="text-muted">{{$ctrl.lastSyncNotice}}</div>
+            <div>
+                Signed into Paratext as
+                <span class="font-italic">{{ $ctrl.paratextUserInfo.username }}</span>
+                (<a href data-ng-click="$ctrl.signIntoParatext()">change user</a>)
+            </div>
         </div>
     </div>
 </div>

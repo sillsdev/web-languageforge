@@ -37,8 +37,7 @@ class LexBaseViewDtoTest extends TestCase
         $this->assertEquals('Part of Speech', $dto['config']['entry']['fields']['senses']['fields']['partOfSpeech']['label']);
         $this->assertTrue($dto['config']['roleViews']['contributor']['fields']['lexeme']['show']);
         $this->assertTrue($dto['config']['roleViews']['contributor']['showTasks']['dbe']);
-        // todo re-enable this after userLanguageCode feature is mature
-        //$this->assertEquals('th', $dto['interfaceConfig']['userLanguageCode']);
-        $this->assertEquals('English', $dto['interfaceConfig']['selectLanguages']['options']['en']);
+        $this->assertEquals('th', $dto['interfaceConfig']['languageCode']);
+        $this->assertEquals('English', $dto['interfaceConfig']['selectLanguages']['options']['en']['option']);
     }
 }

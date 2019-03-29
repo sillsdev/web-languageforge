@@ -1,4 +1,4 @@
-export class Project {
+export interface Project {
   appName: string;
   dateModified: string;
   id: string;

@@ -5,8 +5,8 @@ import {BytesFilterFunction} from '../../../bellows/core/filters';
 import {ModalService} from '../../../bellows/core/modal/modal.service';
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
 import {SessionService} from '../../../bellows/core/session.service';
+import {UploadFile, UploadResponse} from '../../../bellows/shared/model/upload.model';
 import {LexiconProjectService} from '../core/lexicon-project.service';
-import {UploadFile, UploadResponse} from '../shared/model/upload.model';
 
 class UploadOptions {
   mergeRule: string = 'createDuplicates';

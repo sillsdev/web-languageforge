@@ -212,7 +212,7 @@ export class UserProfileAppController implements angular.IController {
           const newAvatarUrl = this.getAvatarUrl(this.user.avatar_ref);
           ['mobileSmallAvatarURL', 'smallAvatarURL'].forEach(id => {
             const imageElement = this.$window.document.getElementById(id) as HTMLImageElement;
-            imageElement.src = newAvatarUrl;
+            if (imageElement) imageElement.src = newAvatarUrl;
           });
         }
 

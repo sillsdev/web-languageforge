@@ -1,4 +1,4 @@
-<div id="lexAppEditView" class="animate-switch" data-ng-class="{'panel-closing': $ctrl.rightPanelVisible === null, 'right-panel-visible': $ctrl.rightPanelVisible === true}" data-ng-if="$ctrl.lecFinishedLoading">
+<div ng-init="$ctrl.setUrlParams()" id="lexAppEditView" class="animate-switch" data-ng-class="{'panel-closing': $ctrl.rightPanelVisible === null, 'right-panel-visible': $ctrl.rightPanelVisible === true}" data-ng-if="$ctrl.lecFinishedLoading">
     <div class="container">
         <div class="row">
             <div class="col-md-5 col-lg-4 entries-list-container d-none d-md-block">
@@ -39,7 +39,7 @@
                                         <small><i>{{$ctrl.typeahead.matchCountCaption}}</i></small>
                                     </div>
                                 </pui-typeahead>
-                                <button data-ng-click="$ctrl.show.entryListModifiers = !$ctrl.show.entryListModifiers" class="btn btn-sm">
+                                <button data-ng-click="$ctrl.toggleFilterOptions()" class="btn btn-sm">
                                     Options
                                     <i class="fa" data-ng-class="$ctrl.show.entryListModifiers ? 'fa-angle-up': 'fa-angle-down'"></i>
                                 </button>

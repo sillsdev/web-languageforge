@@ -135,7 +135,7 @@ class LexEntryCommands
             $differences = $oldEntry->calculateDifferences($entry);
             $differences = static::addFieldLabelsToDifferences($project->config, $differences);
         } else {
-            $differences = null;
+            $differences = null; // TODO: Do we want differences even on a brand-new, added, entry?
         }
 
         $entry->write();

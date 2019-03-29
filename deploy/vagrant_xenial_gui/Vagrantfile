@@ -1,0 +1,29 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "NathanielPaulus/xenial64-xforge"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = true
+    vb.memory = "2048"
+  end
+
+  config.vm.provision "shell", privileged: false, inline: <<~SHELL
+    set -eux
+
+    # Delete and generate unique host keys until handled by base box.
+    sudo rm -v /etc/ssh/ssh_host_*
+    sudo dpkg-reconfigure openssh-server
+
+    git config --global user.email "#{`git config --get user.email`.strip}"
+    git config --global user.name "#{`git config --get user.name`.strip}"
+
+    cd ~/src/web-languageforge
+    git pull --ff-only --recurse-submodules
+    ./refreshDeps.sh
+
+    SHELL
+end
+

@@ -37,9 +37,7 @@ export class InputSystemsConfigurationController implements angular.IController 
         return this.iscInputSystemViewModels[this.selectedInputSystemId];
       },
       (newValue: ConfigurationInputSystemsViewModel, oldValue: ConfigurationInputSystemsViewModel) => {
-        if (angular.isUndefined(newValue) || angular.isUndefined(oldValue) ||
-          angular.equals(oldValue, newValue)
-        ) {
+        if (newValue == null || oldValue == null || angular.equals(oldValue, newValue)) {
           return;
         }
 

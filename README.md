@@ -1,6 +1,6 @@
 # web-languageforge / web-scriptureforge #
 
-[Language Forge](https://github.com/sillsdev/web-languageforge) and [Scripture Forge](https://github.com/sillsdev/web-scriptureforge) represent different websites, but have the same code base stored in seperate repositories for the purpose of  version control and issue tracking. Since they are related repos it is easy to merge from one to the other.
+[Language Forge](https://languageforge.org) and [Scripture Forge](https://scriptureforge.org) represent different websites, but have the same code base stored in one [repository](https://github.com/sillsdev/web-languageforge).
 
 ## Users ##
 
@@ -12,7 +12,7 @@ To use **Scripture Forge** go to [scriptureforge.org](https://scriptureforge.org
 
 To report an user issue with the **Language Forge** application, email "issues @ languageforge dot org".
 
-To report an user issue with the **Scripture Forge** application email "issues @ scriptureforge dot org".
+To report an user issue with the **Scripture Forge** application, email "issues @ scriptureforge dot org".
 
 ## Special Thanks To ##
 
@@ -33,14 +33,19 @@ We use [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) with t
 
 We merge from **master** to testing (**qa** branch) then ship from **qa** to **live**.
 
+| Site            | Master Branch | QA Branch | Live Branch |
+| --------------- | ------------- | --------- | ----------- |
+| Language Forge  | `master` | `lf-qa` | `lf-live` |
+| Scripture Forge | `master` | `sf-qa` | `sf-live` |
+
 ### Builds ###
 
 Status of builds from our continuous integration (CI) [server](https://build.palaso.org):
 
 | Site            | Master Unit | Master E2E | QA | Live |
 | --------------- | ----------- | ---------- | -- | ---- |
-| Language Forge  | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt372)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeLive)/statusIcon)|
-| Scripture Forge | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt270)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeLive)/statusIcon)|
+| Language Forge  | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt372)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeLive)/statusIcon) |
+| Scripture Forge | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt270)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeLive)/statusIcon) |
 
 Successful builds from our CI server deploy to:
 
@@ -57,16 +62,16 @@ PHP code conforms to [PSR-2](http://www.php-fig.org/psr/psr-2/).
 
 JavaScript code conforms to [AirBNB JS style guide](https://github.com/airbnb/javascript).
 
-- Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#CodeStyle)).
+- Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#coding-standard-and-style)).
 - We plan to use [Prettier](https://prettier.io/) with pre-commit hook after re-writing the whole repo with Prettier first.
 
-## TypeScript Integration ##
+### TypeScript Style Guide ###
 
-We are in the process of moving our code base from JavaScript to [**TypeScript**](https://www.typescriptlang.org).
+Our code base has moved from JavaScript to [**TypeScript**](https://www.typescriptlang.org).
 
 > Note: this repo is currently AngularJS (1.6) not Angular (2+).
 
-As we make the conversion to TypeScript, we will be following the [Angular Style Guide](https://angular.io/guide/styleguide). This is opinionated not only about things like file name conventions but also file and folder structure. This is an appropriate time to change structure and file names since most file contents will be changed anyway. The reason for following this is to make it easier, not only for new developers to the project (like the FLEx team and hired developers) but also to change to Angular (2+) later.
+Our TypeScript follows the [Angular Style Guide](https://angular.io/guide/styleguide). This is opinionated not only about things like file name conventions but also file and folder structure. This is an appropriate time to change structure and file names since most file contents will be changed anyway. The reason for following this is to make it easier, not only for new developers to the project (like the FLEx team and hired developers) but also to change to Angular (2+) later.
 
 To this end you'll also want to be familiar with [Upgrading from AngularJS](https://angular.io/guide/upgrade) particularly the [Preparation](https://angular.io/guide/upgrade#preparation) section.
 
@@ -89,7 +94,11 @@ The below sections go into detail on how to manually set up the developer enviro
 
 ### Linux Ubuntu Gnome ###
 
-Our recommended development environment for web development is Linux Ubuntu GNOME.  Choose either the [Vagrant VM Setup](#VagrantSetup) or the [Local Linux Development Setup](#LocalSetup).  Even though the Vagrant VM Setup is definitely easier because it always installs from a clean slate on a new virtual box, we recommend doing development on your local development machine.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
+Our recommended development environment for web development is Linux Ubuntu GNOME.
+There are three main installation methods:
+- [Local Linux Development Setup](#local-linux-development-setup). Everything is installed directly on your machine, which needs to be running Ubuntu 16.04. This is the best method because everything runs at full speed.
+- [Vagrant GUI Setup](#vagrant-gui-setup). This is the simplest setup method. A Vagrant box with xForge already installed is downloaded and set up on your machine. The main drawback is speed. In some tests the e2e tests took approximately 10 minutes, rather than the 5 minutes they normally take.
+- [Vagrant headless setup](#vagrant-headless-setup). A small base box is downloaded and xForge is then installed into it. The source code is kept in a shared folder between the host and guest operating systems. This has a number of drawbacks, one of which is that page loads are much slower (50 times slower in some tests; 5000 ms rather than 100 ms). The reason for this is that Virtualbox gives access to the repo files on NTFS via the VirtualBox shared folder feature.  This is notoriously slow.
 
 ### Ubuntu Xenial on Windows 10 WSL ###
 
@@ -134,11 +143,17 @@ After Ubuntu Xenial Bash has finished installing, close the Windows Command Prom
 
 -------------------------------
 
-### Vagrant VM Setup <a id="VagrantSetup"></a> ###
+### Vagrant GUI Setup ###
+
+Install [VirtualBox](https://www.virtualbox.org/) and [Vagrant](https://www.vagrantup.com/) and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and setup **git** for you (at least *name* and *email* is needed in `.gitconfig`). Make sure virtualization is enabled in your BIOS.
+
+Create a directory for the installation, such as `src/xForge`. Download the file [deploy/vagrant_xenial_gui/Vagrantfile](https://raw.githubusercontent.com/sillsdev/web-languageforge/master/deploy/vagrant_xenial_gui/Vagrantfile) to the directory where you want to install. Then open the command line to that directory and run `vagrant up`. This will download a box (it's about 5GB, so expect it to take a while) and run a few setup steps. When it is complete the virtual machine should be open. Launch the web browser and try navigating to languageforge.local or scriptureforge.local. The default login credentials are "admin" and "password".
+
+### Vagrant Headless Setup ###
 
 If you are on Windows, begin by giving your user account permission to create symlinks. This is necessary or `npm install` will not run properly.
 
-- Run `secpol.msc`. This ([reportendly](https://www.virtualbox.org/ticket/10085#comment:32)) does not exist on some versions of Windows and you will have to use [a workaround](https://stackoverflow.com/questions/815472/how-do-i-grant-secreatesymboliclink-on-windows-vista-home-edition).
+- Run `secpol.msc`. This ([reportedly](https://www.virtualbox.org/ticket/10085#comment:32)) does not exist on some versions of Windows and you will have to use [a workaround](https://stackoverflow.com/questions/815472/how-do-i-grant-secreatesymboliclink-on-windows-vista-home-edition).
 - Go to Local Policies -> User Rights Assignment -> Create symbolic links -> Add User or Group...
 - Type your username in the text field and click "Check Names".
 - Click OK, then click OK, and close the Local Security Policy window.
@@ -164,41 +179,39 @@ Edit your hosts file (On Linux, `/etc/hosts`, on Windows, `C:\windows\system32\d
 ```
 Then open languageforge.local and scriptureforge.local ensure they load correctly.
 
-Proceed to [Language Forge Configuration File](#LFConfig) and follow the rest of the steps in this README.
+Proceed to [Language Forge Configuration File](#language-forge-configuration-file) and follow the rest of the steps in this README.
 
 -------------------------------
 
-### Local Linux Development Setup <a id="LocalSetup"></a> ###
+### Local Linux Development Setup ###
 
-Start with the Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure a basic development environment.
+Start by installing Git and Ansible:
+``` shell
+sudo add-apt-repository ppa:ansible/ansible
+sudo apt-get update
+sudo apt-get install -y git ansible
+```
 
-#### Installation and Deployment ####
-
-After creating your Ansible-assisted setup, clone this repository from your *home* folder...
-
-```` bash
-mkdir src
-cd src
-mkdir xForge
-cd xForge
-git clone https://github.com/sillsdev/web-languageforge web-languageforge --recurse-submodules
-````
+Now create a directory for installation and clone the repo:
+``` shell
+mkdir -p src/xForge
+cd src/xForge
+git clone https://github.com/sillsdev/web-languageforge --recurse-submodules
+```
 
 The `--recurse-submodules` is used to fetch many of the Ansible roles used by the Ansible playbooks in the deploy folder. If you've already cloned the repo without `--recurse-submodules`, run `git submodule update --init --recursive` to pull and initialize them.
 
-If you want to run an independant repo for scriptureforge, clone its repo also...
-
+If you want to run an independent repo for Scripture Forge, clone its repo also:
 ``` bash
-git clone https://github.com/sillsdev/web-scriptureforge web-scriptureforge --recurse-submodules
+git clone https://github.com/sillsdev/web-scriptureforge --recurse-submodules
 ```
 
-Otherwise just create a symbolic link between languageforge and scriptureforge...
-
+Otherwise just create a symbolic link between languageforge and scriptureforge:
 ``` bash
 ln -s web-languageforge web-scriptureforge
 ```
 
-Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`. Set it to a location where MongoDB should store its databases.
+Change the variable `mongo_path: /var/lib/mongodb` in `deploy/vars_palaso.yml`. Set it to a location where MongoDB should store its databases.
 
 - **Vagrant VM Setup**: uncomment line 6 and comment line 5
 - **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have Mongo store databases on your HDD rather than SSD). Make sure the `mongodb` user has permission to read and write to the path you specify.
@@ -211,26 +224,25 @@ ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
 ansible-playbook playbook_xenial.yml --limit localhost -K
 ````
 
-If you run into an error on the `ssl_config : LetsEncrypt: Install packages` task, run the playbook again and that task should succeed the second time it is run.
+#### Testing the Installation
 
-Install dependencies used to build Sass files and run E2E tests
+To build the JavaScript and CSS, run `refreshDeps.sh lf` if you are working on Language Forge, or `refreshDeps.sh sf` if you are working on Scripture Forge. Running `refreshDeps.sh` without arguments defaults to Language Forge.
 
-``` bash
-cd web-languageforge
-npm install
-gulp sass
-gulp webpack-lf
-```
+That's it; you should now be able to open your browser to languageforge.local and scriptureforge.local and log in with the credentials "admin" and "password".
 
-or use `gulp webpack-sf` if you are working in **Scripture Forge**.
+Now would be a good time to check that PHP unit tests, TS unit tests, and E2E tests all work. See the [Testing](#Testing) section below.
 
-To watch Sass files for changes, run `gulp sass:watch`. The output will also be in a more readable format (rather than compressed as it is with `gulp sass`). You can also pass the `--debug` flag to enable source comments and source maps in comments in the output files.
+#### Building TypeScript and Sass
 
-To watch TypeScript files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#LiveReloadInstall)).
+`refreshDeps.sh` builds the TypeScript and Sass, but it does a lot of other things as well.
 
-#### Language Forge Configuration File <a id="LFConfig"></a> ####
+To build Sass, run `gulp sass`. To watch the Sass for changes, run `gulp sass:watch`. Pass the `--debug` flag to enable sourcemaps and source comments.
 
-Manually edit the Language Forge config file
+To build TypeScript, run `gulp webpack-lf` or `gulp webpack-sf` to build for Language Forge or Scripture Forge respectively. To watch the files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#livereload-chrome-extension)).
+
+#### Language Forge Configuration File ####
+
+If you are working with FLEx Send and Receive feature, manually edit the Language Forge config file
 
 ``` bash
 sudo gedit /etc/languageforge/conf/sendreceive.conf
@@ -272,7 +284,7 @@ Once the repo is cloned, you can install Ansible in Ubuntu and run the ansible s
 
 #### Installation and Deployment ####
 
-Follow the steps outlined in the [Installation and Deployment](#installation-and-deployment) section of [Local Linux Development Setup](#local-linux-development-setup). Remember that you will need to clone the **xForge** repos in Windows with Unix line endings.
+Follow the installation and deployment steps outlined in [Local Linux Development Setup](#local-linux-development-setup). Remember that you will need to clone the **xForge** repos in Windows with Unix line endings.
 
 ``` bash
 git clone --recurse-submodules --no-checkout https://github.com/sillsdev/web-languageforge
@@ -363,7 +375,7 @@ phpstorm
 
 LSDev members can contact their team lead to get the SIL license information.  PhpStorm also has an option *Evaluate for free for 30 days*.
 
-#### Coding Standard and Style <a id="CodeStyle"></a> ####
+#### Coding Standard and Style ####
 
 [Download](https://plugins.jetbrains.com/plugin/7294) the PhpStorm plugin for EditorConfig and then install:
 
@@ -453,7 +465,7 @@ Reference for [Integrating Xdebug with PhpStorm](https://www.jetbrains.com/help/
 
 ### LiveReload ###
 
-#### LiveReload Chrome extension <a id="LiveReloadInstall"></a> ####
+#### LiveReload Chrome extension ####
 
 Install the [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en-US) extension.
 
@@ -477,7 +489,7 @@ Chrome debugging has also been configured. Launch configurations are defined in 
 
 ### PHP Unit Tests ###
 
-Unit testing currently uses [PHPUnit](https://phpunit.de/) which was already installed by composer.
+Unit testing currently uses [PHPUnit](https://phpunit.de/) which was already installed by composer. To run them use `gulp test-php`.
 
 #### Integrating PHPUnit with PhpStorm ####
 
@@ -495,9 +507,13 @@ To run tests, browse to the project view, right-click `test/php` and select `Run
 
 Note: at least one test will fail if the LFMerge (send/receive) program is not installed and available.  This is OK as long as you are not testing Send/Receive functionality.
 
-### JavaScript and TypeScript Unit Tests ###
+### TypeScript Unit Tests ###
 
-`gulp test-js` or `gulp test-js:watch`
+`gulp test-ts-lf` or `gulp test-ts-sf`
+
+If you are doing a lot of testing use
+
+`gulp test-ts-lf:watch` or `gulp test-ts-sf:watch`
 
 TypeScript unit test spec files live in the `src` folder next to the relevant source file and have the file extension `.spec.ts`. Only E2E test specs will be in the `test` folder.
 
@@ -544,19 +560,20 @@ To test a certain test spec, add a parameter `--specs [spec name]`.  For example
 
 will run the the *lexicon-new-project.e2e-spec.ts* tests on **languageforge**.
 
-To add more verbosity during E2E tests, add a parameter `--verbosity true`
-
 To debug the tests:
-- Place breakpoints in your code (`debugger;` statements).
-- Open Chrome to `chrome://inspect/#devices`.
-- Run `./debuge2e.sh`. It will wait for a Protractor process to appear so it can signal the process.
-- Start the e2e tests. The `./debuge2e.sh` script will exit and the debugger should start listening (The e2e tests will say `Debugger listening on <some url>`).
-- Go back the the Chrome window. It should list under "Remote Target" the Node process that is running the tests.
-- Click inspect. When a breakpoint is reached the process will pause and you can step through it in the Chrome developer tools (This does not work very well though because of the asynchronous nature of Webdriver).
+- Do at least one of the following:
+  * If you are going to debug in VSCode, place breakpoints in the tests.
+  * Place breakpoints in your code (`debugger;` statements).
+  * To pause the debugger on the first test failure, go to `test/app/protractorConf.js` and uncomment the line that adds the `pauseOnFailure` reporter.
+- Start the tests with `./rune2e.sh`. Wait for the tests to actually start running before moving to the next steps.
+- To debug in Chrome, go to `chrome://inspect/#devices`. Under "Remote Target" click to inspect the Node.js process.
+- To debug in VSCode, select the "Node debugger" debug configuration and run it.
 
-Alternatively, to pause the debugger on the first test failure, go to `test/app/protractorConf.js` and uncomment the line that adds the `pauseOnFailure` reporter. All the debugging steps above are still necessary, except for adding breakpoints to your code.
+Unfortunately, debugging the e2e tests does not currently work very well because of the way WebDriver handles control flow.
 
 ## Get a copy of the live database ##
+
+You need to have SSH access to the live database on [Language Forge](https://languageforge.org) or [Scripture Forge](https://scriptureforge.org).
 
 (For installation of npm see https://github.com/nodesource/distributions)
 
@@ -583,7 +600,7 @@ After a fresh factory reset, there is one user.  username: admin password: passw
 
 ## Updating dependencies ##
 
-Occasionally developers need to update composer or npm.  If something isn't working after a recent code change, try to update the dependencies:
+Occasionally developers need to update composer or npm.  If something isn't working after a recent code change, try to update the dependencies using `./refreshDeps.sh lf` or `./refreshDeps sf`. If you know what has changed you can manually run some of the steps below.
 
 ### Update npm packages ###
 
@@ -650,9 +667,6 @@ Before putting data into **ElasticSearch**, setup the index with settings and da
 ./scripts/server/elasticSearch/setupElasticSearchCATIndex.sh
 ```
 
-## Contributors ##
+## Libraries used ##
 
-- Elizabeth Koning
-- Ethan Clark
-- Ziqi Chen
-- Ye Joo Oh
+[lamejs](https://github.com/zhuker/lamejs) is used for encoding recorded audio and is based on [LAME](http://lame.sourceforge.net/), which is licensed under the terms of [the LGPL](https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html).

@@ -27,6 +27,7 @@
         <!--suppress JSUnusedLocalSymbols -->
         <div data-ng-repeat="sense in $ctrl.model.senses">
             <dc-sense model="sense" config="$ctrl.config.fields.senses" control="$ctrl.control" index="$index"
+                      move="$ctrl.moveSense" num-senses="$ctrl.numSenses"
                       parent-context-guid="$ctrl.contextGuid" remove="$ctrl.deleteSense" ></dc-sense>
         </div>
     </div>

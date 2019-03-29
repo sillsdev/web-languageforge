@@ -108,7 +108,9 @@
     "senses": [{"definition": {"en": {"value": "fried rice with pork"}},
                 "pictures": [{"fileName": "FriedRiceWithPork.jpg",
                               "caption": {"en": {"value": "fried rice with pork"}}}],
-                "partOfSpeech": {"value": "n"}}]
+                "partOfSpeech": {"value": "n"},
+                "semanticDomain": {"values": ["1.1"]}
+    }]
   },
   "testEntry2" : {
     "lexeme": {"th":        {"value": "หน่อไม้ฝรั่งผัดกุ้ง"},

@@ -5,6 +5,8 @@ namespace Site\Controller;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\UserModel;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,6 +42,7 @@ class App extends Base
      * @param string $projectId
      * @throws UserUnauthorizedException
      * @throws AppNotFoundException
+     * @throws \Exception
      */
     public function setupAngularAppVariables(Application $app, $appName, $projectId = '')
     {
@@ -90,16 +93,49 @@ class App extends Base
             $this->addJavascriptFiles($appModel->siteFolder . '/lexicon', ['js/vendor', 'js/assets']);
         }
 
-        $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive');
+        $this->addCssFiles(NG_BASE_FOLDER . 'bellows/shared');
         $this->addCssFiles($appModel->appFolder, ['node_modules']);
 
+        $this->addSemanticDomainFile($app, $appModel, $projectId);
+    }
+
+    /**
+     * @param Application $app
+     * @param AppModel $appModel
+     * @param string $projectId
+     * @throws \Exception
+     */
+    private function addSemanticDomainFile(Application $app, AppModel $appModel, string $projectId)
+    {
         $interfaceLanguageCode = 'en';
+        if ($projectId) {
+            $project = ProjectModel::getById($projectId);
+            if ($project->interfaceLanguageCode) {
+                $interfaceLanguageCode = $project->interfaceLanguageCode;
+            }
+
+            $usernameOrEmail = $app['security.token_storage']->getToken()->getUser()->getUsername();
+            $user = new UserModel();
+            if ($user->readByUsernameOrEmail($usernameOrEmail)) {
+                if ($user->interfaceLanguageCode) {
+                    $interfaceLanguageCode = $user->interfaceLanguageCode;
+                }
+            }
+        }
+
         $semDomFilePath = $appModel->siteFolder . '/core/semantic-domains/semantic-domains.' . $interfaceLanguageCode .
             '.generated-data.js';
         if (file_exists($semDomFilePath)) {
             $this->data['jsNotMinifiedFiles'][] = $semDomFilePath;
+            return;
+        }
+
+        $semDomFilePath = $appModel->siteFolder . '/core/semantic-domains/semantic-domains.en.generated-data.js';
+        if (file_exists($semDomFilePath)) {
+            $this->data['jsNotMinifiedFiles'][] = $semDomFilePath;
         }
     }
+
 }
 
 class AppNotFoundException extends \Exception { }
@@ -254,7 +290,7 @@ class AppModel {
         return (
             $appName != '' &&
             file_exists($appFolder) &&
-            file_exists("$appFolder/views")
+            file_exists("$appFolder/$parentAppName-$appName.html")
         );
     }
 

@@ -11,6 +11,8 @@ export class FieldExampleController implements angular.IController {
   control: FieldControl;
   index: number;
   parentContextGuid: string;
+  numExamples: () => number;
+  move: (index: number, distance: number) => void;
   remove: (index: number) => void;
 
   contextGuid: string;
@@ -47,7 +49,9 @@ export const FieldExampleComponent: angular.IComponentOptions = {
     control: '<',
     index: '<',
     parentContextGuid: '<',
-    remove: '&'
+    numExamples: '<',
+    move: '<',
+    remove: '<'
   },
   controller: FieldExampleController,
   templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-example.component.html'
