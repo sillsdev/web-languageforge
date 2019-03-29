@@ -40,7 +40,7 @@ class TestEnvironment {
         { provide: IdentityService, useFactory: () => instance(this.mockedIdentityService) },
         { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) }
       ]
-    }).compileComponents();
+    });
     this.fixture = TestBed.createComponent(VerifyEmailComponent);
     this.component = this.fixture.componentInstance;
   }

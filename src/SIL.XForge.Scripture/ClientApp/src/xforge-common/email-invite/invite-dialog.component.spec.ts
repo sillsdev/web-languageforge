@@ -96,7 +96,7 @@ describe('InviteDialogComponent', () => {
         { provide: NoticeService, useFactory: () => instance(mockedNoticeService) },
         { provide: ProjectService, useFactory: () => instance(mockedProjectService) }
       ]
-    }).compileComponents();
+    });
   });
 
   beforeEach(inject([MdcDialog], (d: MdcDialog) => {

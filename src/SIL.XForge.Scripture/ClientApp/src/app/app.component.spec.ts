@@ -16,14 +16,14 @@ describe('AppComponent', () => {
 
   let fixture: ComponentFixture<AppComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [AppComponent, NavMenuComponent],
       imports: [CoreModule, HttpClientTestingModule, UICommonModule, XForgeCommonModule, RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{ provide: AuthService, useFactory: () => instance(mockedAuthService) }]
-    }).compileComponents();
-  }));
+    });
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AppComponent);

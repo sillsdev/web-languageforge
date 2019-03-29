@@ -96,7 +96,7 @@ class TestEnvironment {
         { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
         { provide: TextService, useFactory: () => instance(this.mockedTextService) }
       ]
-    }).compileComponents();
+    });
 
     this.fixture = TestBed.createComponent(TranslateOverviewComponent);
     this.component = this.fixture.componentInstance;

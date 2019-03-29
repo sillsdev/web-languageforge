@@ -138,7 +138,7 @@ class TestEnvironment {
         { provide: SFProjectService, useFactory: () => instance(this.mockedProjectService) },
         { provide: SyncJobService, useFactory: () => instance(this.mockedSyncJobService) }
       ]
-    }).compileComponents();
+    });
 
     this.fixture = TestBed.createComponent(SyncComponent);
     this.component = this.fixture.componentInstance;
