@@ -8,6 +8,8 @@ namespace SIL.XForge.Scripture.Models
         public string SessionId { get; set; }
         public string UserRef { get; set; }
         public string ProjectRef { get; set; }
+        public string TextRef { get; set; }
+        public int Chapter { get; set; }
 
         // navigation metrics
         public int KeyNavigationCount { get; set; }

@@ -4,6 +4,8 @@ export interface TranslateMetrics {
   id: string;
   type: TranslateMetricsType;
   sessionId: string;
+  textRef: string;
+  chapter: number;
 
   // navigation metrics
   keyNavigationCount?: number;

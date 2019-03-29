@@ -258,7 +258,9 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
     this.metrics = {
       id: objectId(),
       type,
-      sessionId: this.id
+      sessionId: this.id,
+      textRef: this.text.id.textId,
+      chapter: this.text.id.chapter
     };
     if (type === 'edit' && this.navigateSuggestionShown) {
       this.metrics.suggestionTotalCount = 1;
