@@ -209,7 +209,7 @@ class ActivityListDto
             case ActivityModel::ADD_COMMENT:
             case ActivityModel::UPDATE_COMMENT:
                 $commentAuthorId = $activity->userRef->id;
-                $answerAuthorId = $activity->userRef2->id;
+                $answerAuthorId = $activity->userRefRelated->id;
                 return ($answerAuthorId == $userId && $commentAuthorId == $userId);
                 break;
             case ActivityModel::INCREASE_SCORE:
@@ -258,10 +258,18 @@ class ActivityListDto
             $item['type'] = 'project';  // FIXME: Should this always be "project"? Should it sometimes be "entry"? 2018-02 RM
             unset($item['actionContent']);
             if ($projectModel->appName === LfProjectModel::LEXICON_APP) {
-                if ($item['action'] === ActivityModel::UPDATE_ENTRY) {
+                if ($item['action'] === ActivityModel::UPDATE_ENTRY || $item['action'] === ActivityModel::ADD_ENTRY) {
                     $lexProjectModel = new LexProjectModel($projectModel->id->asString());
                     $item['content'] = static::prepareActivityContentForEntryDifferences($item, $lexProjectModel);
-                } else if ($item['action'] === ActivityModel::ADD_LEX_COMMENT || $item['action'] === ActivityModel::UPDATE_LEX_COMMENT) {
+                } else if ($item['action'] === ActivityModel::ADD_LEX_COMMENT ||
+                           $item['action'] === ActivityModel::UPDATE_LEX_COMMENT ||
+                           $item['action'] === ActivityModel::DELETE_LEX_COMMENT ||
+                           $item['action'] === ActivityModel::UPDATE_LEX_COMMENT_STATUS ||
+                           $item['action'] === ActivityModel::LEX_COMMENT_INCREASE_SCORE ||
+                           $item['action'] === ActivityModel::LEX_COMMENT_DECREASE_SCORE ||
+                           $item['action'] === ActivityModel::ADD_LEX_REPLY ||
+                           $item['action'] === ActivityModel::UPDATE_LEX_REPLY ||
+                           $item['action'] === ActivityModel::DELETE_LEX_REPLY) {
                     $labelFromMongo = $item['content'][ActivityModel::LEX_COMMENT_LABEL] ?? '';
                     unset($item['content'][ActivityModel::LEX_COMMENT_LABEL]);
                     if (! empty($labelFromMongo)) {
@@ -463,7 +471,7 @@ class ActivityListDtoEncoder extends JsonEncoder
         if ($model->asString() == '') {
             return '';
         }
-        if ($key == 'userRef' || $key == 'userRef2') {
+        if ($key == 'userRef' || $key == 'userRefRelated') {
             $user = new UserModel();
             if ($user->readIfExists($model->asString())) {
                 return [
@@ -577,7 +585,7 @@ class ActivityListModelByUser extends ActivityListModel
         parent::__construct($projectModel,
             ['action' => ['$regex' => ''],
                 '$or' => ['userRef'  => MongoMapper::mongoID($userId),
-                    'userRef2' => MongoMapper::mongoID($userId)]],
+                    'userRefRelated' => MongoMapper::mongoID($userId)]],
             $filterParams
         );
     }

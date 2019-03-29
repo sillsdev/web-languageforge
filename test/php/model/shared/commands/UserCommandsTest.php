@@ -755,4 +755,29 @@ class UserCommandsTest extends TestCase
         $result = $userWithPassword->verifyPassword('somepass');
         $this->assertTrue($result, 'Could not verify changed password');
     }
+
+    public function testUserTypeaheadList_SearchForUserByUsername_OneResult()
+    {
+        self::$environ->createUser('bob', 'Bob', 'bob@example.com');
+
+        $list = UserCommands::userTypeaheadList('bob', '', self::$environ->website);
+        $this->assertEquals(1, $list->totalCount);
+    }
+
+    public function testUserTypeaheadList_SearchForUserByPartialEmail_NoResults()
+    {
+        self::$environ->createUser('bob', 'Bob', 'bob@example.com');
+
+        $list = UserCommands::userTypeaheadList('bob@e', '', self::$environ->website);
+        $this->assertEquals([], $list->entries);
+    }
+
+    public function testUserTypeaheadList_SearchForUserByCompleteEmail_OneResult()
+    {
+        self::$environ->createUser('bob', 'Bob', 'bob@example.com');
+
+        $list = UserCommands::userTypeaheadList('bob@example.com', '', self::$environ->website);
+        $this->assertEquals(1, $list->totalCount);
+        $this->assertFalse(array_key_exists('email', $list->entries[0]), 'Email should not be returned.');
+    }
 }

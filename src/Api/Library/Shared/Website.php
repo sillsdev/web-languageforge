@@ -9,7 +9,13 @@ class Website
     const SCRIPTUREFORGE = 'scriptureforge';
     const LANGUAGEFORGE = 'languageforge';
 
-    public function __construct(string $domain, string $base)
+    /**
+     * Website constructor.
+     * @param string $domain
+     * @param string $base
+     * @throws \Exception
+     */
+    public function __construct($domain, $base)
     {
         if ($base != self::SCRIPTUREFORGE && $base != self::LANGUAGEFORGE) {
             throw new \Exception('website->base must be either scriptureforge or languageforge');
@@ -136,6 +142,7 @@ class Website
      * FYI Not testable  because of the inclusion of the header() method : test get() and getRedirect() instead
      * @param string $hostname
      * @return Website
+     * @throws \Exception
      */
     public static function getOrRedirect($hostname = '')
     {
@@ -154,8 +161,8 @@ class Website
             $url = self::getRedirect($hostname);
             if ($url) {
                 header("Location: $url", true, 302);
-            } else {
-                header("Location: http://" . substr($hostname, strpos($hostname, '.')+1), true, 302);
+            } elseif (strpos($hostname, '.')) {
+                header("Location: http://" . substr($hostname, strpos($hostname, '.') + 1), true, 302);
             }
         }
 

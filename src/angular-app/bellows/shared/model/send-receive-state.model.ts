@@ -2,6 +2,7 @@
 export enum SendReceiveState {
   Idle = 'IDLE',
   Hold = 'HOLD',
+  Error = 'ERROR',
   Cloning = 'CLONING',
   Syncing = 'SYNCING',
   Pending = 'PENDING',

@@ -1,0 +1,13 @@
+<div class="pui-captcha" id="pui-captcha">
+    <div class="form-group">
+        <div class="controls">
+            <p>If you are a person (not a computer), select the <strong id="expectedItemName">{{$ctrl.puiExpectedItemName}}</strong>:</p>
+            <div class="btn-group">
+                <label class="btn btn-std" data-ng-repeat="item in $ctrl.puiItems" uib-btn-radio="$index"
+                       data-ng-model="$ctrl.record.selected" data-ng-required="!record.selected" id="captcha{{$index}}">
+                    <img data-ng-src="{{item.imgSrc}}">
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

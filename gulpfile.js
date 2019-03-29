@@ -1546,16 +1546,20 @@ function execute(command, options, callback) {
     var process = _execute(command, options, callback || undefined);
 
     process.stdout.on('data', function (data) {
-      gutil.log(data.slice(0, -1)); // remove trailing \n
+      gutil.log(stripTrailingLF(data));
     });
 
     process.stderr.on('data', function (data) {
-      gutil.log(gutil.colors.yellow(data.slice(0, -1))); // remove trailing \n
+      gutil.log(gutil.colors.yellow(stripTrailingLF(data)));
     });
 
   } else {
     callback(null);
   }
+}
+
+function stripTrailingLF (line) {
+  return line[line.length-1] === '\n' ? line.slice(0, -1) : line;
 }
 
 // Determine the path to test/app from a given destination.

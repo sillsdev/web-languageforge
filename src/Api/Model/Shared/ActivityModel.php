@@ -28,9 +28,13 @@ class ActivityModel extends MapperModel
     const DELETE_ENTRY = 'delete_entry';
     const ADD_LEX_COMMENT = 'add_lex_comment';
     const UPDATE_LEX_COMMENT = 'update_lex_comment';
+    const DELETE_LEX_COMMENT = 'delete_lex_comment';
     const UPDATE_LEX_COMMENT_STATUS = 'update_lex_comment_status';
+    const LEX_COMMENT_INCREASE_SCORE = 'lexCommentIncreaseScore';
+    const LEX_COMMENT_DECREASE_SCORE = 'lexCommentDecreaseScore';
     const ADD_LEX_REPLY = 'add_lex_reply';
     const UPDATE_LEX_REPLY = 'update_lex_reply';
+    const DELETE_LEX_REPLY = 'delete_lex_reply';
 
     // content types for use with the addContent method
     const PROJECT = 'project';
@@ -43,11 +47,11 @@ class ActivityModel extends MapperModel
     const LEX_COMMENT_LABEL = 'lexCommentLabel';
     const LEX_COMMENT_FIELD_VALUE = 'lexCommentFieldValue';
     const LEX_COMMENT_STATUS = 'lexCommentStatus';
-    const LEX_COMMENT_INCREASE_SCORE = 'lexCommentIncreaseScore';
-    const LEX_COMMENT_DECREASE_SCORE = 'lexCommentDecreaseScore';
     const LEX_REPLY = 'lexReply';
+    // USER and USER_RELATED usage: USER is the one doing the current activity. USER_RELATED, if present, is the one whose previous activity is being acted on.
+    // E.g., when replying to someone else's comment on a lexical entry, USER_RELATED is the one who made the original comment, and USER is the one making the reply.
     const USER = 'user';
-    const USER2 = 'user2';
+    const USER_RELATED = 'userRelated';
     const ENTRY = 'entry';
     const FIELD_LABEL = 'fieldLabel';
 
@@ -62,7 +66,7 @@ class ActivityModel extends MapperModel
         $this->textRef = new IdReference();
         $this->questionRef = new IdReference();
         $this->userRef = new IdReference();
-        $this->userRef2 = new IdReference();
+        $this->userRefRelated = new IdReference();
         $this->entryRef = new IdReference();
         $this->action = $this::UNKNOWN;
         $this->date = new \DateTime(); // set the timestamp to now
@@ -70,6 +74,50 @@ class ActivityModel extends MapperModel
         $this->addContent($this::PROJECT, $projectModel->projectName);
         $databaseName = $projectModel->databaseName();
         parent::__construct(ActivityModelMongoMapper::connect($databaseName), $id);
+    }
+
+    // TODO add a userFilter ArrayOf type that we can use to query Mongo for activities that only apply to specific users
+
+    /** @var Id */
+    public $id;
+
+    /** @var IdReference */
+    public $projectRef;
+
+    /** @var IdReference */
+    public $textRef;
+
+    /** @var IdReference */
+    public $questionRef;
+
+    /** @var IdReference */
+    public $userRef;
+
+    /** @var IdReference */
+    public $userRefRelated;
+
+    /** @var IdReference */
+    public $entryRef;
+
+    /** @var string */
+    // TODO add broadcast_message as an action on a GlobalActivityModel class cjh 2013-08
+    public $action;
+
+    /** @var MapOf<string> */
+    public $actionContent;
+
+    /** @var \DateTime */
+    public $date;
+
+    /**
+     * @param string $type - this is one of
+     * @param string $content
+     */
+    public function addContent($type, $content)
+    {
+        if (is_null($content)) return;  // Just ignore null content instead of throwing an exception
+        CodeGuard::checkTypeAndThrow($content, 'string');
+        $this->actionContent[$type] = $content;
     }
 
     /**
@@ -101,9 +149,13 @@ class ActivityModel extends MapperModel
                     self::DELETE_ENTRY,
                     self::ADD_LEX_COMMENT,
                     self::UPDATE_LEX_COMMENT,
+                    self::DELETE_LEX_COMMENT,
                     self::UPDATE_LEX_COMMENT_STATUS,
                     self::ADD_LEX_REPLY,
                     self::UPDATE_LEX_REPLY,
+                    self::DELETE_LEX_REPLY,
+                    self::LEX_COMMENT_INCREASE_SCORE,
+                    self::LEX_COMMENT_DECREASE_SCORE,
                     self::UNKNOWN,
                 ];
             default:
@@ -126,7 +178,7 @@ class ActivityModel extends MapperModel
                     self::ANSWER,
                     self::COMMENT,
                     self::USER,
-                    self::USER2,
+                    self::USER_RELATED,
                 ];
             case Website::LANGUAGEFORGE:
                 return [
@@ -136,7 +188,7 @@ class ActivityModel extends MapperModel
                     self::LEX_COMMENT_STATUS,
                     self::LEX_REPLY,
                     self::USER,
-                    self::USER2,
+                    self::USER_RELATED,
                     self::ENTRY,
                 ];
             default:
@@ -144,47 +196,4 @@ class ActivityModel extends MapperModel
         }
     }
 
-    // TODO add a userFilter ArrayOf type that we can use to query Mongo for activities that only apply to specific users
-
-    /** @var Id */
-    public $id;
-
-    /** @var IdReference */
-    public $projectRef;
-
-    /** @var IdReference */
-    public $textRef;
-
-    /** @var IdReference */
-    public $questionRef;
-
-    /** @var IdReference */
-    public $userRef;
-
-    /** @var IdReference */
-    public $userRef2;
-
-    /** @var IdReference */
-    public $entryRef;
-
-    /** @var string */
-    // TODO add broadcast_message as an action on a GlobalActivityModel class cjh 2013-08
-    public $action;
-
-    /** @var MapOf<string> */
-    public $actionContent;
-
-    /** @var \DateTime */
-    public $date;
-
-    /**
-     * @param string $type - this is one of
-     * @param string $content
-     */
-    public function addContent($type, $content)
-    {
-        if (is_null($content)) return;  // Just ignore null content instead of throwing an exception
-        CodeGuard::checkTypeAndThrow($content, 'string');
-        $this->actionContent[$type] = $content;
-    }
 }

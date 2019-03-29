@@ -8,15 +8,15 @@
 </div>
 <form name="configForm" novalidate>
     <fieldset data-ng-disabled="$ctrl.isSaving">
-        <pui-tabset active="$ctrl.active">
+        <pui-tabset active="$ctrl.activeTab">
             <pui-tab heading="Fields">
-                <lsc-unified ucc-field-config="$ctrl.fieldConfig"
-                             ucc-config-dirty="$ctrl.configDirty"
-                             ucc-input-systems-list="$ctrl.inputSystemsList"
-                             ucc-users="$ctrl.lscUsers"
-                             ucc-option-lists="$ctrl.optionListsDirty"
-                             ucc-add-input-system="$ctrl.addNewInputSystem()"
-                             ucc-on-update="$ctrl.onUpdate($event)"></lsc-unified>
+                <lsc-fields fcc-field-config="$ctrl.fieldConfig"
+                            fcc-config-dirty="$ctrl.configDirty"
+                            fcc-input-systems-list="$ctrl.inputSystemsList"
+                            fcc-users="$ctrl.lscUsers"
+                            fcc-option-lists="$ctrl.optionListsDirty"
+                            fcc-add-input-system="$ctrl.addNewInputSystem()"
+                            fcc-on-update="$ctrl.onUpdate($event)"></lsc-fields>
             </pui-tab>
             <pui-tab heading="Input Systems">
                 <lsc-input-systems isc-input-system-view-models="$ctrl.inputSystemViewModels"
@@ -27,7 +27,6 @@
             </pui-tab>
             <pui-tab heading="Option Lists">
                 <lsc-option-lists olc-option-lists-dirty="$ctrl.optionListsDirty"
-                                  olc-option-lists-pristine="$ctrl.optionListsPristine"
                                   olc-on-update="$ctrl.onUpdate($event)"></lsc-option-lists>
             </pui-tab>
         </pui-tabset>

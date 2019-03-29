@@ -4,7 +4,7 @@ $light-text: #555;
 $small-text-size: 0.8em;
 
 @mixin light-border() {
-  border-bottom: 1px solid $lf-lines;
+  border-bottom: 1px solid $line-color;
 }
 
 /* Comments css */
@@ -71,7 +71,7 @@ $small-text-size: 0.8em;
       cursor: pointer
   }
   .deleteX:hover {
-    color: map-get($theme-colors, danger);
+    color: red;
   }
   .commentRegarding {
     .row {
@@ -241,7 +241,7 @@ div.commentListContainer {
 }
 .selectableInputSystemFieldForComment:hover {
     background-color: hsla(80, 100%, 50%, 0.1);
-    border: 1px solid $lf-lines;
+    border: 1px solid $line-color;
     border-radius: $border-radius;
 }
 .selectableInputSystemFieldForComment:hover .input-group-addon {

@@ -144,7 +144,7 @@ export class LexiconUtilityService extends UtilityService {
       const inputSystem = globalConfig.inputSystems[languageTag];
       field = node[fieldName][languageTag];
       if (!LexiconUtilityService.isAudio(languageTag) && field != null && field.value != null && field.value !== '') {
-        if (inputSystem.cssFontFamily && inputSystem.cssFontFamily !== '') {
+        if (inputSystem && inputSystem.cssFontFamily && inputSystem.cssFontFamily !== '') {
           result = '<span style="font-family: ' + inputSystem.cssFontFamily + '">' + field.value + '</span>';
         } else {
           result = field.value;

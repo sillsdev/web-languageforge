@@ -1,6 +1,6 @@
 import {browser, by, By, element, ExpectedConditions} from 'protractor';
 
-import { ProjectsPage } from '../../../bellows/shared/projects.page';
+import {ProjectsPage} from '../../../bellows/shared/projects.page';
 
 export class ProjectSettingsPage {
   private readonly projectsPage = new ProjectsPage();
@@ -13,6 +13,10 @@ export class ProjectSettingsPage {
   get(projectName: string) {
     this.projectsPage.get();
     this.projectsPage.clickOnProject(projectName);
+    this.getByLink();
+  }
+
+  getByLink() {
     browser.wait(ExpectedConditions.visibilityOf(this.settingsMenuLink), this.conditionTimeout);
     this.settingsMenuLink.click();
     browser.wait(ExpectedConditions.visibilityOf(this.projectSettingsLink), this.conditionTimeout);
@@ -31,7 +35,9 @@ export class ProjectSettingsPage {
   };
 
   projectTab = {
-    saveButton: this.tabDivs.get(0).element(by.id('project-settings-save-btn'))
+    saveButton: this.tabDivs.get(0).element(by.id('project-settings-save-btn')),
+    defaultLanguageSelect: element(by.id('language')),
+    defaultLanguageSelected: element(by.css('#language option:checked'))
   };
 
   /** Second parameter is optional, default false. If true, fieldName will be considered

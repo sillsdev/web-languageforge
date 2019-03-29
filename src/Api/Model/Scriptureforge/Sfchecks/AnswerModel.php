@@ -30,6 +30,7 @@ class AnswerModel extends CommentModel
     /** @var MapOf<CommentModel> */
     public $comments;
 
+    /** @var string */
     public $textHighlight;
 
     /** @var int */

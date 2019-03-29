@@ -1,0 +1,12 @@
+<div uib-dropdown>
+    <a class="nav-link" uib-dropdown-toggle href id="languageDropdownButton" aria-haspopup="true" aria-expanded="false"
+       data-ng-model="$ctrl.interfaceConfig.languageCode">
+        <i class="fa fa-language"></i>
+        <span>{{ $ctrl.interfaceConfig.selectLanguages.options[$ctrl.interfaceConfig.languageCode].name }}</span></a>
+    <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu id="languageDropdownMenu" aria-labelledby="languageDropdown">
+        <a class="dropdown-item" data-ng-repeat="languageCode in $ctrl.interfaceConfig.selectLanguages.optionsOrder"
+           target="_blank" href data-ng-click="$ctrl.onCodeChange(languageCode)"
+           data-ng-class="{ selected: $ctrl.interfaceConfig.languageCode === languageCode }">
+            {{ $ctrl.interfaceConfig.selectLanguages.options[languageCode].option }}</a>
+    </div>
+</div>

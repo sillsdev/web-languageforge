@@ -243,7 +243,7 @@ export class EditorPage {
       },
 
       uploadButtons: (searchLabel: string) => {
-        return EditorUtil.getOneField(searchLabel).all(by.css('.dc-audio button.buttonAppend'));
+        return EditorUtil.getOneField(searchLabel).all(by.css('.dc-audio .upload-audio'));
       },
 
       uploadDropBoxes: (searchLabel: string) => {
@@ -267,6 +267,13 @@ export class EditorPage {
 
     senses: element.all(by.css('dc-sense')),
 
+    sense: {
+      actionMenus: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle')),
+      deleteSense: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle ~ .dropdown-menu fa-trash')),
+      moveUp: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle ~ .dropdown-menu .fa-arrow-up')),
+      moveDown: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle ~ .dropdown-menu .fa-arrow-down')),
+    },
+
     pictures: {
       list: EditorUtil.getOneField('Pictures'),
       images: EditorUtil.getOneField('Pictures').all(by.css('img')),
@@ -288,6 +295,10 @@ export class EditorPage {
       addPictureLink: element(by.id('dc-picture-add-btn')),
       addDropBox: EditorUtil.getOneField('Pictures').element(by.css('.drop-box')),
       addCancelButton: element(by.id('addCancel'))
+    },
+
+    semanticDomain: {
+      values: EditorUtil.getOneField('Semantic Domain').all(by.className('dc-semanticdomain-value'))
     },
 
     getMultiTextInputs: (searchLabel: string) => {

@@ -8,7 +8,7 @@
 
     {% if isLoggedIn %}
 
-        <div id="primary-navigation" class="fixed-nav-bar" data-ng-controller="navbarController as $ctrl">
+        <div id="primary-navigation" class="fixed-nav-bar" data-ng-cloak data-ng-controller="navbarController as $ctrl">
             <nav class="navbar navbar-expand navbar-dark align-items-stretch">
                 <span class="navbar-brand d-md-inline-block mr-auto">
                     <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
@@ -28,12 +28,12 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown" uib-dropdown>
-                        <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdown"
+                        <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdownButton"
                            aria-haspopup="true" aria-expanded="false">
                             <span>My Projects</span>
                             <i class="fa fa-bars"></i>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="myProjectDropdown">
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu id="myProjectDropdownMenu" aria-labelledby="myProjectDropdown">
                             {% verbatim %}
                             <div data-ng-switch="$ctrl.projectTypesBySite().length" data-ng-show="$ctrl.rights.canCreateProject">
                                 <div data-ng-switch-when="1">
@@ -52,7 +52,7 @@
                                 <a class="dropdown-item" href="/app/projects"><b>List All Projects</b></a>
                                 <div class="dropdown-divider"></div>
                             {% endif %}
-                            {% if projects|length <= 10 %}
+                            {% if projects|length > 0 and projects|length <= 10 %}
                                 {% verbatim %}
                                 <div class="dropdown-divider" data-ng-show="$ctrl.rights.canCreateProject"></div>
                                 {% endverbatim %}
@@ -61,8 +61,18 @@
                                 <a class="dropdown-item"
                                    href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
                             {% endfor %}
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/app/activity"><b>Activity for All Projects</b></a>
                         </div>
                     </li>
+                    {% verbatim %}
+                    <li class="nav-item notranslate">
+                        <pui-interface-language pui-interface-config="$ctrl.interfaceConfig"
+                                                pui-language-code="$ctrl.interfaceConfig.languageCode"
+                                                pui-on-update="$ctrl.onUpdate($event)">
+                        </pui-interface-language>
+                    </li>
+                    {% endverbatim %}
                 </ul>
             </nav>
             <nav class="navbar navbar-expand navbar-dark align-items-center justify-content-between">
@@ -107,7 +117,7 @@
         </div>
 
     {% else %}
-        <div id="primary-navigation" class="logged-out">
+        <div id="primary-navigation" class="logged-out" data-ng-cloak data-ng-controller="navbarController as $ctrl">
             <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch logged-out">
                 <span class="navbar-brand d-md-inline-block mr-auto">
                     <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
@@ -120,6 +130,14 @@
                     <li class="nav-item header-button-rounded">
                         <a class="nav-link" href="/auth/login">Login</a>
                     </li>
+                    {% verbatim %}
+                    <li class="nav-item notranslate">
+                        <pui-interface-language pui-interface-config="$ctrl.interfaceConfig"
+                                                pui-language-code="$ctrl.interfaceConfig.languageCode"
+                                                pui-on-update="$ctrl.onUpdate($event)">
+                        </pui-interface-language>
+                    </li>
+                    {% endverbatim %}
                 </ul>
             </nav>
         </div>
@@ -129,7 +147,7 @@
 {% block footer %}
     <footer class="footer">
         <div class="d-flex">
-            <div class="d-none d-sm-flex align-items-end" style="margin-left: 120px">
+            <div class="d-none d-sm-flex align-items-end">
                 <div>
                     <a href="https://inter.payap.ac.th/"><img src="/Site/views/shared/image/payap_logo.png"
                                                           alt="Payap University Logo" width="85" height="25" /></a>

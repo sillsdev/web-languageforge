@@ -220,8 +220,8 @@ describe('Lexicon E2E Editor List and Entry', () => {
   });
 
   it('word 2: audio Input System is not playable but has "upload" button (manager)', () => {
-    expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isPresent()).toBe(false);
+    expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isPresent()).toBe(false);
     expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
     expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
     expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isEnabled()).toBe(true);
@@ -253,8 +253,8 @@ describe('Lexicon E2E Editor List and Entry', () => {
   });
 
   it('word 2: audio Input System is not playable but has "upload" button (member)', () => {
-    expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
-    expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
+    expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isPresent()).toBe(false);
+    expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isPresent()).toBe(false);
     expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
     expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(true);
     expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isEnabled()).toBe(true);
@@ -285,8 +285,8 @@ describe('Lexicon E2E Editor List and Entry', () => {
 
   it('word 2: audio Input System is not playable and does not have "upload" button (observer)',
     () => {
-      expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isDisplayed()).toBe(false);
-      expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isDisplayed()).toBe(false);
+      expect<any>(editorPage.edit.audio.playerIcons(lexemeLabel).first().isPresent()).toBe(false);
+      expect<any>(editorPage.edit.audio.players(lexemeLabel).first().isPresent()).toBe(false);
       expect<any>(editorPage.edit.audio.moreControls(lexemeLabel).first().isDisplayed()).toBe(false);
       expect<any>(editorPage.edit.audio.uploadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
       expect<any>(editorPage.edit.audio.downloadButtons(lexemeLabel).first().isDisplayed()).toBe(false);
@@ -418,11 +418,10 @@ describe('Lexicon E2E Editor List and Entry', () => {
   });
 
   it('word with multiple meanings: edit page has correct example sentences, translations', () => {
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. DDW
     expect<any>(editorUtil.getFieldValues('Sentence')).toEqual([
-      '', { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
+      { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value },
-      '', { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
+      { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value }
     ]);
     expect<any>(editorUtil.getFieldValues('Translation')).toEqual([
@@ -448,12 +447,20 @@ describe('Lexicon E2E Editor List and Entry', () => {
     ]);
 
     // First item is empty Etymology Source, now that View Settings all default to visible. IJH
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
     expect<any>(editorUtil.getFieldValues('Source')).toEqual([
-      { en: '' }, '',
-      { en: constants.testMultipleMeaningEntry1.senses[0].source.en.value }, '',
+      { en: constants.testMultipleMeaningEntry1.senses[0].source.en.value },
       { en: constants.testMultipleMeaningEntry1.senses[1].source.en.value }
     ]);
+  });
+
+  it('senses can be reordered and deleted', () => {
+    editorPage.edit.sense.actionMenus.first().click();
+    editorPage.edit.sense.moveDown.first().click();
+    expect<any>(editorUtil.getFieldValues('Definition')).toEqual([
+      { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value },
+      { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value }
+    ]);
+    editorPage.edit.saveBtn.click();
   });
 
   it('back to browse page, create new word', () => {

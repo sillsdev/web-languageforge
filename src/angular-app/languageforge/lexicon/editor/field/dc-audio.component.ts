@@ -1,14 +1,15 @@
 import * as angular from 'angular';
+import * as moment from 'moment';
 
 import {BytesFilterFunction} from '../../../../bellows/core/filters';
 import {ModalService} from '../../../../bellows/core/modal/modal.service';
 import {NoticeService} from '../../../../bellows/core/notice/notice.service';
 import {SessionService} from '../../../../bellows/core/session.service';
 import {InterfaceConfig} from '../../../../bellows/shared/model/interface-config.model';
+import {UploadFile, UploadResponse} from '../../../../bellows/shared/model/upload.model';
 import {LexiconProjectService} from '../../core/lexicon-project.service';
 import {Rights} from '../../core/lexicon-rights.service';
 import {LexiconUtilityService} from '../../core/lexicon-utility.service';
-import {UploadFile, UploadResponse} from '../../shared/model/upload.model';
 
 export class FieldAudioController implements angular.IController {
   dcFilename: string;
@@ -17,16 +18,20 @@ export class FieldAudioController implements angular.IController {
   dcProjectSlug: string;
 
   showAudioUpload: boolean = false;
+  showAudioRecorder: boolean = false;
 
   static $inject = ['$filter', '$state',
     'Upload', 'modalService',
     'silNoticeService', 'sessionService',
-    'lexProjectService'
+    'lexProjectService', '$scope'
   ];
   constructor(private $filter: angular.IFilterService, private $state: angular.ui.IStateService,
               private Upload: any, private modalService: ModalService,
               private notice: NoticeService, private sessionService: SessionService,
-              private lexProjectService: LexiconProjectService) { }
+              private lexProjectService: LexiconProjectService, private $scope: angular.IScope) {
+
+                this.$scope.$watch(() => this.dcFilename, () => this.showAudioRecorder = false);
+              }
 
   hasAudio(): boolean {
     if (this.dcFilename == null) {
@@ -135,6 +140,15 @@ export class FieldAudioController implements angular.IController {
           this.notice.setPercentComplete(Math.floor(100.0 * evt.loaded / evt.total));
         });
     });
+  }
+
+  audioRecorderCallback = (blob: Blob) => {
+    if (blob) {
+      const fileName = 'recording_' + moment.utc().format('YYYY_MM_DD_HH_mm_ss') + '.mp3';
+      const file = new File([blob], fileName);
+      this.uploadAudio(file);
+    }
+    this.showAudioRecorder = false;
   }
 
   // strips the timestamp file prefix (returns everything after the '_')

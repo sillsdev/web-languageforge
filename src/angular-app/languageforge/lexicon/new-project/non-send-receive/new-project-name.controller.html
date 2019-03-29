@@ -1,0 +1,72 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="text-center">
+                <h3 class="no-space-break">Choose a project name</h3>
+                <div class="alert alert-danger" role="alert">
+                    Creating a non-send/receive project in Language Forge is no longer recommended because of the lack of an export path.
+                    Instead, create a new project from Language Depot to enable Send/Receive with FieldWorks. Data can then be exported through FieldWorks.
+                </div>
+            </div>
+            <div class="card card-default">
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 text-md-right">Project Name</label>
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input class="form-control" type="text" id="project-name"
+                                       data-ng-model="$ctrl.npnNewProject.projectName"
+                                       data-ng-blur="$ctrl.npnCheckProjectCode()"
+                                       data-pui-auto-focus="true"
+                                       maxlength="50"
+                                       required placeholder="eg: My Dictionary"
+                                       data-idle-validate="$ctrl.npnCheckProjectCode()"
+                                       data-idle-validate-keypress="$ctrl.npnResetValidateProjectForm()" >
+                                <span class="input-group-addon" data-ng-if="$ctrl.npnNewProject.projectCode.length > 0 && $ctrl.npnProjectCodeState === 'loading'">
+                                    <i id="project-code-loading" class="fa fa-spinner fa-spin"></i>
+                                </span>
+                                <span class="input-group-addon alert-danger" data-ng-if="$ctrl.npnNewProject.projectCode.length > 0 && $ctrl.npnProjectCodeState === 'exists'">
+                                    <i id="project-code-exists" class="fa fa-times" title="Project Code already exists!" ></i>
+                                </span>
+                                <span class="input-group-addon alert-danger" data-ng-if="$ctrl.npnNewProject.projectCode.length > 0 && $ctrl.npnProjectCodeState === 'invalid'">
+                                    <i id="project-code-alphanumeric" class="fa fa-times" title="Project Code must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores!"></i>
+                                </span>
+                                <span class="input-group-addon alert-success" data-ng-if="$ctrl.npnNewProject.projectCode.length > 0 && $ctrl.npnProjectCodeState === 'ok'">
+                                    <i id="project-code-ok" class="fa fa-check" title="Project Code is available!"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center">
+                        <label class="col-form-label col-md-4 text-md-right" for="project-code">Project Code</label>
+                        <div class="col-md-8">
+                            <div class="input-group" data-ng-show="$ctrl.npnNewProject.editProjectCode">
+                                <input class="form-control" type="text" id="project-code"
+                                       data-ng-model="$ctrl.npnNewProject.projectCode"
+                                       data-ng-trim="false" maxlength="50" required data-ng-blur="$ctrl.npnCheckProjectCode()"
+                                       data-idle-validate="$ctrl.npnCheckProjectCode()"
+                                       data-idle-validate-keypress="$ctrl.npnResetValidateProjectForm()">
+                            </div>
+                            <div class="input-group" data-ng-hide="$ctrl.npnNewProject.editProjectCode">
+                                <div class="uneditable-input" id="project-code-uneditable"
+                                     data-ng-hide="$ctrl.npnNewProject.editProjectCode"
+                                     data-ng-bind="$ctrl.npnNewProject.projectCode"
+                                     readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8 offset-md-4">
+                            <div class="input-group">
+                                <label class="checkbox">
+                                    <input type="checkbox" id="edit-project-code" data-ng-model="$ctrl.npnNewProject.editProjectCode">
+                                    Edit project code
+                                    <br><span class="text-muted">(You'll almost never need to check this)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

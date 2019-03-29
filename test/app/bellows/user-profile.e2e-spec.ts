@@ -15,18 +15,45 @@ describe('Bellows E2E User Profile app', () => {
   // Run the Activity E2E as each test user
   usernames.forEach(expectedUsername => {
 
+    const newEmail = 'newemail@example.com';
+    let newColor: string;
+    let newShape: string;
+    let newMobilePhone: string;
+    let expectedAvatar: string;
+    let originalEmail: string;
+    let password: string;
+    let expectedFullname: string;
+
+    switch (expectedUsername) {
+      case constants.memberUsername:
+        newColor = 'Blue';
+        newShape = 'Elephant';
+        newMobilePhone = '+1876 5555555';
+        expectedAvatar = userProfile.blueElephantAvatarUri;
+        originalEmail = constants.memberEmail;
+        password = constants.memberPassword;
+        expectedFullname = constants.memberName;
+        break;
+      case constants.managerUsername:
+        newColor = 'Gold';
+        newShape = 'Pig';
+        newMobilePhone = '+1876 911';
+        expectedAvatar = userProfile.goldPigAvatarUri;
+        originalEmail = constants.managerEmail;
+        password = constants.managerPassword;
+        expectedFullname = constants.managerName;
+        break;
+    }
+
+    function logInAsRole() {
+      if (expectedUsername === constants.memberUsername) loginPage.loginAsMember();
+      else if (expectedUsername === constants.managerUsername) loginPage.loginAsManager();
+    }
+
     // Perform activity E2E tests according to the different roles
     describe('Running as: ' + expectedUsername, () => {
       it('Logging in', () => {
-        // Login before test to ensure proper role
-        switch (expectedUsername) {
-          case constants.memberUsername:
-            loginPage.loginAsUser();
-            break;
-          case constants.managerUsername:
-            loginPage.loginAsManager();
-            break;
-        }
+        logInAsRole();
       });
 
       it('Verify initial "My Account" settings created from setupTestEnvironment.php', () => {
@@ -45,18 +72,8 @@ describe('Bellows E2E User Profile app', () => {
       it('Verify initial "About Me" settings created from setupTestEnvironment.php', () => {
         userProfile.getAboutMe();
 
-        let expectedFullname: string = '';
         const expectedAge: string = '';
         const expectedGender: string = '';
-
-        switch (expectedUsername) {
-          case constants.memberUsername:
-            expectedFullname = constants.memberName;
-            break;
-          case constants.managerUsername:
-            expectedFullname = constants.managerName;
-            break;
-        }
 
         expect<any>(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(expectedFullname);
         expect<any>(userProfile.aboutMeTab.age.getAttribute('value')).toEqual(expectedAge);
@@ -67,29 +84,6 @@ describe('Bellows E2E User Profile app', () => {
         userProfile.getMyAccount();
 
         // Change profile except username
-        const newEmail = 'newemail@example.com';
-        let newColor: string;
-        let newShape: string;
-        let newMobilePhone: string;
-        let expectedAvatar: string;
-        let originalEmail: string;
-
-        switch (expectedUsername) {
-          case constants.memberUsername:
-            newColor = 'Blue';
-            newShape = 'Elephant';
-            newMobilePhone = '+1876 5555555';
-            expectedAvatar = userProfile.blueElephantAvatarUri;
-            originalEmail = constants.memberEmail;
-            break;
-          case constants.managerUsername:
-            newColor = 'Gold';
-            newShape = 'Pig';
-            newMobilePhone = '+1876 911';
-            expectedAvatar = userProfile.goldPigAvatarUri;
-            originalEmail = constants.managerEmail;
-            break;
-        }
 
         userProfile.myAccountTab.updateEmail(newEmail);
 
@@ -105,11 +99,12 @@ describe('Bellows E2E User Profile app', () => {
         // Change Password tested in changepassword e2e
 
         // Submit updated profile
-        userProfile.myAccountTab.saveBtn.click().then(() => {
-          browser.refresh();
-          browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput),
-          constants.conditionTimeout);
-        });
+        userProfile.myAccountTab.saveBtn.click();
+      });
+
+      it('Verify that new profile settings persisted', () => {
+        browser.refresh();
+        browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput), constants.conditionTimeout);
 
         // Verify values.
         expect<any>(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(newEmail);
@@ -131,20 +126,7 @@ describe('Bellows E2E User Profile app', () => {
       });
 
       it('Update and store different username. Login with new credentials', () => {
-        const newEmail = 'newemail@example.com';
-        let originalEmail: string;
-
-        // Login before test to ensure proper role
-        switch (expectedUsername) {
-          case constants.memberUsername:
-            originalEmail = constants.memberEmail;
-            loginPage.loginAsUser();
-            break;
-          case constants.managerUsername:
-            originalEmail = constants.managerEmail;
-            loginPage.loginAsManager();
-            break;
-        }
+        logInAsRole();
 
         userProfile.getMyAccount();
 
@@ -189,13 +171,7 @@ describe('Bellows E2E User Profile app', () => {
         expect<any>(loginPage.infoMessages.count()).toBe(1);
         expect(loginPage.infoMessages.first().getText()).toContain('Username changed. Please login.');
 
-        switch (expectedUsername) {
-          case constants.memberUsername:
-            loginPage.login(newUsername, constants.memberPassword);
-            break;
-          case constants.managerUsername:
-            loginPage.login(newUsername, constants.managerPassword);
-        }
+        loginPage.login(newUsername, password);
 
         userProfile.getMyAccount();
         expect<any>(userProfile.myAccountTab.username.getAttribute('value')).toEqual(newUsername);
@@ -206,14 +182,7 @@ describe('Bellows E2E User Profile app', () => {
       });
 
       it('Update and store "About Me" settings', () => {
-        switch (expectedUsername) {
-          case constants.memberUsername:
-            loginPage.loginAsUser();
-            break;
-          case constants.managerUsername:
-            loginPage.loginAsManager();
-            break;
-        }
+        logInAsRole();
 
         userProfile.getAboutMe();
 

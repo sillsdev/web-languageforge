@@ -164,7 +164,11 @@ class LexEntryModelTest extends TestCase
         $entry2->senses->append($sense1);
 
         $differences = $entry->calculateDifferences($entry2);
-        $this->assertEquals(["deleted.senses@1#$guid2" => 'hi'], $differences);
+        $this->assertEquals([
+            "deleted.senses@1#$guid2"  => 'hi',
+            "oldValue.senses@1#$guid2.definition.en" => 'hi',
+            "newValue.senses@1#$guid2.definition.en" => '',
+        ], $differences);
     }
 
     public function testGetDifferences_DeletingFirstSense_DifferencesIncludeTheDeletionAndPositionChanges()
@@ -185,6 +189,8 @@ class LexEntryModelTest extends TestCase
         $differences = $entry->calculateDifferences($entry2);
         $this->assertEquals([
             "deleted.senses@0#$guid1" => 'hello',
+            "oldValue.senses@0#$guid1.definition.en" => 'hello',
+            "newValue.senses@0#$guid1.definition.en" => '',
             "moved.senses@1#$guid2" => 0], $differences);
     }
 
@@ -204,7 +210,12 @@ class LexEntryModelTest extends TestCase
 
         $differences = $entry->calculateDifferences($entry2);
         $this->assertEquals([
-            "deleted.senses@0#$guid1" => 'hello',
-            "deleted.senses@1#$guid2" => 'hi'], $differences);
+            "deleted.senses@0#$guid1"  => 'hello',
+            "oldValue.senses@0#$guid1.definition.en" => 'hello',
+            "newValue.senses@0#$guid1.definition.en" => '',
+            "deleted.senses@1#$guid2"  => 'hi',
+            "oldValue.senses@1#$guid2.definition.en" => 'hi',
+            "newValue.senses@1#$guid2.definition.en" => '',
+        ], $differences);
     }
 }

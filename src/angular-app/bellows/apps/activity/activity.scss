@@ -157,8 +157,24 @@
                 display: none;
               }
               a {
-                color: #1d64f0;
-                font-weight: bold;
+                text-decoration: underline;
+                &:hover {
+                  color: #1d64f0;
+                }
+              }
+              .activity-label {
+                font-style: italic;
+              }
+              .activity-values {
+                .activity-value {
+                  font-weight: bold;
+                  &:before {
+                    content: "\"";
+                  }
+                  &:after {
+                    content: "\"";
+                  }
+                }
               }
               .activity-reply {
                 padding: 6px;

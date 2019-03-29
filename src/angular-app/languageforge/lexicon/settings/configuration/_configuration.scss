@@ -17,14 +17,3 @@ h2 {
   height: 0;
   line-height: 0
 }
-
-.modal-body .typeahead-clear {
-  position: absolute;
-  right: 13px;
-  top: 8px;
-  z-index: 10;
-  i {
-    cursor: pointer;
-    color: $Eden;
-  }
-}

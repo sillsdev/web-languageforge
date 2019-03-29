@@ -95,7 +95,24 @@ class MapperModel extends ObjectForEncoding
         if (Id::isEmpty($this->id)) {
             $this->dateCreated = $now;
         }
-        $this->id->id = $this->_mapper->write($this, $this->id->id);
+        $rearrangeableProperties = $this->getRearrangeableProperties();
+        $rearrangeableSubproperties = [];
+        foreach ($rearrangeableProperties as $property) {
+            $value = $this->$property;
+            if (is_a($value, 'Api\Model\Shared\Mapper\ArrayOf')) {
+                foreach ($value as $item) {
+                    if (is_a($item, 'Api\Model\Shared\Mapper\ObjectForEncoding')) {
+                        foreach ($item->getRearrangeableProperties() as $subProperty) {
+                            if (! array_key_exists($property, $rearrangeableSubproperties)) {
+                                $rearrangeableSubproperties[$property] = [];
+                            }
+                            $rearrangeableSubproperties[$property][] = $subProperty;
+                        }
+                    }
+                }
+            }
+        }
+        $this->id->id = $this->_mapper->write($this, $this->id->id, $rearrangeableProperties, $rearrangeableSubproperties);
 
         return $this->id->id;
     }

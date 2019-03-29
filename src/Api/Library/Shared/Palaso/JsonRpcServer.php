@@ -112,7 +112,8 @@ class JsonRpcServer
                 $response['error']['message'] = $e->getMessage();
             }
             else {
-                BugsnagExceptionHandler::getBugsnag($app)->notifyException($e);
+                $bugsnag = BugsnagExceptionHandler::getBugsnag($app);
+                if ($bugsnag != null) $bugsnag->notifyException($e);
             }
             $message = '';
             $message .= $e->getMessage() . "\n";

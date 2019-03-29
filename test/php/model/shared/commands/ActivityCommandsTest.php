@@ -5,12 +5,15 @@ use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\Command\ActivityCommands;
+use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\Dto\ActivityListDto;
+use Api\Model\Shared\ProjectModel;
 use PHPUnit\Framework\TestCase;
 
 class ActivityCommandsTest extends TestCase
 {
+    /** @throws Exception */
     public function testGetActivityForProject_ProjectWhereUsersCannotSeeEachOthersResponses_DtoAsExpected()
     {
         $sampleData = $this->createActivityTestEnvironment(false);
@@ -46,6 +49,7 @@ class ActivityCommandsTest extends TestCase
         $this->assertActivityDtoAsExpected($sampleData, $dto2);
     }
 
+    /** @throws Exception */
     public function testGetActivityForProject_ProjectWhereUsersCanSeeEachOthersResponses_DtoAsExpected()
     {
         $sampleData = $this->createActivityTestEnvironment(true);
@@ -81,6 +85,11 @@ class ActivityCommandsTest extends TestCase
         $this->assertActivityDtoAsExpected($sampleData, $dto2);
     }
 
+    /**
+     * @param bool $canUsersSeeEachOthersResponses
+     * @return array
+     * @throws Exception
+     */
     private function createActivityTestEnvironment($canUsersSeeEachOthersResponses = true)
     {
         $environ = new MongoTestEnvironment();
@@ -96,48 +105,56 @@ class ActivityCommandsTest extends TestCase
 
         // We create a text, a question, and an answer, with two comments. Then we update the answer and the first comment.
         // All activity-log entries are also captured so that calling code can check them.
-        list($text, $textId, $a1) = $this->createSampleText($project, "Text 1", "text content", $user1Id);
+        list($text, $textId, $a1) = $this->createSampleText($project, 'Text 1', 'text content', $user1Id);
 
-        list($question, $questionId, $a5) = $this->createSampleQuestion($project, $textId, "the question", "question description", $user1Id);
-        list($answer, $answerId, $a6) = $this->createSampleAnswer($project, $user3Id, $question, $questionId, "first answer", "text highlight");
-        list($comment1, $comment1Id, $a7) = $this->addComment($project, $user1Id, $questionId, $answerId, "first comment");
-        list($comment2, $comment2Id, $a8) = $this->addComment($project, $user2Id, $questionId, $answerId, "second comment");
-        list($answer_updated, $a9) = $this->updateAnswer($project, $question, $questionId, $answerId, "first answer revised");
-        list($comment1_updated, $a10) = $this->updateComment($project, $question, $questionId, $answerId, $comment1Id, "first comment revised");
+        list($question, $questionId, $a5) = $this->createSampleQuestion($project, $textId, 'the question', 'question description', $user1Id);
+        list($answer, $answerId, $a6) = $this->createSampleAnswer($project, $user3Id, $question, $questionId, 'first answer', 'text highlight');
+        list($comment1, $comment1Id, $a7) = $this->addComment($project, $user1Id, $questionId, $answerId, 'first comment');
+        list($comment2, $comment2Id, $a8) = $this->addComment($project, $user2Id, $questionId, $answerId, 'second comment');
+        list($answer_updated, $a9) = $this->updateAnswer($project, $questionId, $answerId, 'first answer revised');
+        list($comment1_updated, $a10) = $this->updateComment($project, $questionId, $answerId, $comment1Id, 'first comment revised');
 
         // All of the variables above are used in the unit tests, so return them all as a single large array.
         // We'll use a keyed array so that calling code doesn't have to deal with more than twenty (!) positional return values.
         return [
-            "environ" => $environ,
-            "project" => $project,
-            "text" => $text,
-            "textId" => $textId,
-            "user1Id" => $user1Id,
-            "user2Id" => $user2Id,
-            "user3Id" => $user3Id,
-            "question" => $question,
-            "questionId" => $questionId,
-            "answer" => $answer,
-            "answerId" => $answerId,
-            "comment1" => $comment1,
-            "comment1Id" => $comment1Id,
-            "comment2" => $comment2,
-            "comment2Id" => $comment2Id,
-            "answer_updated" => $answer_updated,
-            "comment1_updated" => $comment1_updated,
-            "a1" => $a1,
-            "a2" => $a2,
-            "a3" => $a3,
-            "a4" => $a4,
-            "a5" => $a5,
-            "a6" => $a6,
-            "a7" => $a7,
-            "a8" => $a8,
-            "a9" => $a9,
-            "a10" => $a10
+            'environ' => $environ,
+            'project' => $project,
+            'text' => $text,
+            'textId' => $textId,
+            'user1Id' => $user1Id,
+            'user2Id' => $user2Id,
+            'user3Id' => $user3Id,
+            'question' => $question,
+            'questionId' => $questionId,
+            'answer' => $answer,
+            'answerId' => $answerId,
+            'comment1' => $comment1,
+            'comment1Id' => $comment1Id,
+            'comment2' => $comment2,
+            'comment2Id' => $comment2Id,
+            'answer_updated' => $answer_updated,
+            'comment1_updated' => $comment1_updated,
+            'a1' => $a1,
+            'a2' => $a2,
+            'a3' => $a3,
+            'a4' => $a4,
+            'a5' => $a5,
+            'a6' => $a6,
+            'a7' => $a7,
+            'a8' => $a8,
+            'a9' => $a9,
+            'a10' => $a10
         ];
     }
 
+    /**
+     * @param ProjectModel $project
+     * @param string $title
+     * @param string $content
+     * @param string $userId
+     * @return array
+     * @throws Exception
+     */
     private function createSampleText($project, $title, $content, $userId): array
     {
         $text = new TextModel($project);
@@ -148,24 +165,46 @@ class ActivityCommandsTest extends TestCase
         return [$text, $textId, $a1];
     }
 
+    /**
+     * @param MongoTestEnvironment $environ
+     * @param ProjectModel $project
+     * @param string $username
+     * @return string
+     * @throws Exception
+     */
     private function createSampleUser($environ, $project, $username): string
     {
-        $userId = $environ->createUser($username, $username, $username . "@example.com");
-        \Api\Model\Shared\Command\ProjectCommands::updateUserRole($project->id->asString(), $userId);
+        $userId = $environ->createUser($username, $username, $username . '@example.com');
+        ProjectCommands::updateUserRole($project->id->asString(), $userId);
         return $userId;
     }
 
+    /**
+     * @param MongoTestEnvironment$environ
+     * @param ProjectModel $project
+     * @return array
+     * @throws Exception
+     */
     private function createSampleUsers($environ, $project): array
     {
-        $user1Id = $this->createSampleUser($environ, $project, "user1");
-        $user2Id = $this->createSampleUser($environ, $project, "user2");
-        $user3Id = $this->createSampleUser($environ, $project, "user3");
+        $user1Id = $this->createSampleUser($environ, $project, 'user1');
+        $user2Id = $this->createSampleUser($environ, $project, 'user2');
+        $user3Id = $this->createSampleUser($environ, $project, 'user3');
         $a2 = ActivityCommands::addUserToProject($project, $user1Id);
         $a3 = ActivityCommands::addUserToProject($project, $user2Id);
         $a4 = ActivityCommands::addUserToProject($project, $user3Id);
         return [$user1Id, $user2Id, $user3Id, $a2, $a3, $a4];
     }
 
+    /**
+     * @param ProjectModel $project
+     * @param string $textId
+     * @param string $title
+     * @param string $description
+     * @param string $userId
+     * @return array
+     * @throws Exception
+     */
     private function createSampleQuestion($project, $textId, $title, $description, $userId): array
     {
         $question = new QuestionModel($project);
@@ -177,6 +216,16 @@ class ActivityCommandsTest extends TestCase
         return [$question, $questionId, $a5];
     }
 
+    /**
+     * @param ProjectModel $project
+     * @param string $user3Id
+     * @param QuestionModel $question
+     * @param string $questionId
+     * @param string $content
+     * @param string $textHighlight
+     * @return array
+     * @throws Exception
+     */
     private function createSampleAnswer($project, $user3Id, $question, $questionId, $content, $textHighlight = null): array
     {
         $answer = new AnswerModel();
@@ -191,6 +240,15 @@ class ActivityCommandsTest extends TestCase
         return [$answer, $answerId, $a6];
     }
 
+    /**
+     * @param ProjectModel $project
+     * @param string $userId
+     * @param string $questionId
+     * @param string $answerId
+     * @param string $commentText
+     * @return array
+     * @throws Exception
+     */
     private function addComment($project, $userId, $questionId, $answerId, $commentText): array
     {
         $comment = new CommentModel();
@@ -201,7 +259,15 @@ class ActivityCommandsTest extends TestCase
         return [$comment, $commentId, $activity];
     }
 
-    private function updateAnswer($project, $question, $questionId, $answerId, $newContent): array
+    /**
+     * @param ProjectModel $project
+     * @param string $questionId
+     * @param string $answerId
+     * @param string $newContent
+     * @return array
+     * @throws Exception
+     */
+    private function updateAnswer($project, $questionId, $answerId, $newContent): array
     {
         $question = new QuestionModel($project, $questionId);
         $answer_updated = $question->readAnswer($answerId);
@@ -211,7 +277,16 @@ class ActivityCommandsTest extends TestCase
         return [$answer_updated, $a9];
     }
 
-    private function updateComment($project, $question, $questionId, $answerId, $comment1Id, $newContent): array
+    /**
+     * @param ProjectModel $project
+     * @param string $questionId
+     * @param string $answerId
+     * @param string $comment1Id
+     * @param string $newContent
+     * @return array
+     * @throws Exception
+     */
+    private function updateComment($project, $questionId, $answerId, $comment1Id, $newContent): array
     {
         $question = new QuestionModel($project, $questionId);
         $comment1_updated = $question->readComment($answerId, $comment1Id);
@@ -221,13 +296,10 @@ class ActivityCommandsTest extends TestCase
         return [$comment1_updated, $a10];
     }
 
-    private function setResponseVisibility($projectId, $value)
-    {
-        $sfproject = new SfchecksProjectModel($projectId);
-        $sfproject->usersSeeEachOthersResponses = $value;
-        $sfproject->write();
-    }
-
+    /**
+     * @param array $sampleData
+     * @param array $dto
+     */
     private function assertActivityDtoAsExpected($sampleData, $dto)
     {
         $project = $sampleData['project'];
@@ -298,10 +370,10 @@ class ActivityCommandsTest extends TestCase
         $this->assertEquals('user1', $dto['activity'][$sampleData['a7']]['userRef']['username']);
         $this->assertEquals('user1.png', $dto['activity'][$sampleData['a7']]['userRef']['avatar_ref']);
         $this->assertEquals('user1', $dto['activity'][$sampleData['a7']]['content']['user']);
-        $this->assertEquals($sampleData['user3Id'], $dto['activity'][$sampleData['a7']]['userRef2']['id']);
-        $this->assertEquals('user3', $dto['activity'][$sampleData['a7']]['userRef2']['username']);
-        $this->assertEquals('user3.png', $dto['activity'][$sampleData['a7']]['userRef2']['avatar_ref']);
-        $this->assertEquals('user3', $dto['activity'][$sampleData['a7']]['content']['user2']);
+        $this->assertEquals($sampleData['user3Id'], $dto['activity'][$sampleData['a7']]['userRefRelated']['id']);
+        $this->assertEquals('user3', $dto['activity'][$sampleData['a7']]['userRefRelated']['username']);
+        $this->assertEquals('user3.png', $dto['activity'][$sampleData['a7']]['userRefRelated']['avatar_ref']);
+        $this->assertEquals('user3', $dto['activity'][$sampleData['a7']]['content']['userRelated']);
         $this->assertEquals($sampleData['answer']->content, $dto['activity'][$sampleData['a7']]['content']['answer']);
         $this->assertEquals($sampleData['comment1']->content, $dto['activity'][$sampleData['a7']]['content']['comment']);
 
@@ -316,10 +388,10 @@ class ActivityCommandsTest extends TestCase
         $this->assertEquals('user2', $dto['activity'][$sampleData['a8']]['userRef']['username']);
         $this->assertEquals('user2.png', $dto['activity'][$sampleData['a8']]['userRef']['avatar_ref']);
         $this->assertEquals('user2', $dto['activity'][$sampleData['a8']]['content']['user']);
-        $this->assertEquals($sampleData['user3Id'], $dto['activity'][$sampleData['a8']]['userRef2']['id']);
-        $this->assertEquals('user3', $dto['activity'][$sampleData['a8']]['userRef2']['username']);
-        $this->assertEquals('user3.png', $dto['activity'][$sampleData['a8']]['userRef2']['avatar_ref']);
-        $this->assertEquals('user3', $dto['activity'][$sampleData['a8']]['content']['user2']);
+        $this->assertEquals($sampleData['user3Id'], $dto['activity'][$sampleData['a8']]['userRefRelated']['id']);
+        $this->assertEquals('user3', $dto['activity'][$sampleData['a8']]['userRefRelated']['username']);
+        $this->assertEquals('user3.png', $dto['activity'][$sampleData['a8']]['userRefRelated']['avatar_ref']);
+        $this->assertEquals('user3', $dto['activity'][$sampleData['a8']]['content']['userRelated']);
         $this->assertEquals($sampleData['answer']->content, $dto['activity'][$sampleData['a8']]['content']['answer']);
         $this->assertEquals($sampleData['comment2']->content, $dto['activity'][$sampleData['a8']]['content']['comment']);
 
@@ -347,11 +419,12 @@ class ActivityCommandsTest extends TestCase
         $this->assertEquals('user1', $dto['activity'][$sampleData['a10']]['userRef']['username']);
         $this->assertEquals('user1.png', $dto['activity'][$sampleData['a10']]['userRef']['avatar_ref']);
         $this->assertEquals('user1', $dto['activity'][$sampleData['a10']]['content']['user']);
-        $this->assertEquals($sampleData['user3Id'], $dto['activity'][$sampleData['a10']]['userRef2']['id']);
-        $this->assertEquals('user3', $dto['activity'][$sampleData['a10']]['userRef2']['username']);
-        $this->assertEquals('user3.png', $dto['activity'][$sampleData['a10']]['userRef2']['avatar_ref']);
-        $this->assertEquals('user3', $dto['activity'][$sampleData['a10']]['content']['user2']);
+        $this->assertEquals($sampleData['user3Id'], $dto['activity'][$sampleData['a10']]['userRefRelated']['id']);
+        $this->assertEquals('user3', $dto['activity'][$sampleData['a10']]['userRefRelated']['username']);
+        $this->assertEquals('user3.png', $dto['activity'][$sampleData['a10']]['userRefRelated']['avatar_ref']);
+        $this->assertEquals('user3', $dto['activity'][$sampleData['a10']]['content']['userRelated']);
         $this->assertEquals($sampleData['answer_updated']->content, $dto['activity'][$sampleData['a10']]['content']['answer']);
         $this->assertEquals($sampleData['comment1_updated']->content, $dto['activity'][$sampleData['a10']]['content']['comment']);
     }
+
 }

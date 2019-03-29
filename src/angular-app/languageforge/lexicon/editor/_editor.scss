@@ -14,7 +14,7 @@
 @import 'field/dc-semanticdomain';
 
 .lexAppToolbar {
-    border: 1px solid $lf-lines;
+    border: 1px solid $line-color;
     margin: 10px 0 20px;
     padding: 4px;
     width: 100%;
@@ -352,6 +352,7 @@ dc-entry .card {
     cursor: pointer;
   }
   .listItemPrimary {
+    text-align: initial;
     z-index: 2;
     font-size: 1.0em;
   }
@@ -363,11 +364,11 @@ dc-entry .card {
     text-overflow: ellipsis;
   }
   .deleteX {
-    i {
+    .fa {
       cursor: pointer;
     }
-    i:hover {
-      color: map-get($theme-colors, danger);
+    .fa:hover {
+      color: red;
     }
   }
   h5 {
@@ -577,7 +578,7 @@ dc-entry .card {
   }
   .words-search {
     background: $WildSand;
-    border: 1px solid $lf-lines;
+    border: 1px solid $line-color;
     border-top: 0;
     width: 100%;
     display: flex;
@@ -594,16 +595,6 @@ dc-entry .card {
         font-size: 14px;
         line-height: 45px;
         padding: 0 2.5em 0 1.5em;
-      }
-      .typeahead-clear {
-        position: absolute;
-        right: 13px;
-        top: 11px;
-        z-index: 10;
-        i {
-          cursor: pointer;
-          color: $Eden;
-        }
       }
       .typeahead-results {
         ul {
@@ -645,7 +636,7 @@ dc-entry .card {
   }
   .word-form-filters {
     .sortfilter-form {
-      border: 1px solid $lf-lines;
+      border: 1px solid $line-color;
       padding: 0.7em 1.25em 1.2em;
       margin: 0;
       font-size: 14px;

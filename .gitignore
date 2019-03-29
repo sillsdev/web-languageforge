@@ -36,8 +36,9 @@ src/userConfig.php
 
 # CSS files generated from Sass
 src/angular-app/bellows/apps/**/*.css
+src/angular-app/bellows/shared/*.css
+src/angular-app/bellows/shared/**/*.css
 src/angular-app/bellows/directive/*.css
-src/angular-app/bellows/directive/**/*.css
 src/angular-app/languageforge/**/*.css
 src/angular-app/scriptureforge/**/*.css
 src/Site/views/**/*.css
@@ -50,6 +51,7 @@ secrets/
 [Dd]ebug*/
 obj/
 [Rr]elease*/
+!/src/releasenotes
 _ReSharper*/
 *.user
 
