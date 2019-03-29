@@ -33,6 +33,8 @@ describe('TranslateMetricsSession', () => {
             id: env.session.prevMetricsId,
             type: 'navigate',
             sessionId: env.session.id,
+            textRef: 'text01',
+            chapter: 1,
             keyNavigationCount: 1
           })
         )
@@ -72,6 +74,8 @@ describe('TranslateMetricsSession', () => {
             id: env.session.prevMetricsId,
             type: 'navigate',
             sessionId: env.session.id,
+            textRef: 'text01',
+            chapter: 1,
             mouseClickCount: 2
           })
         )
@@ -144,6 +148,8 @@ describe('TranslateMetricsSession', () => {
             id: env.session.prevMetricsId,
             type: 'edit',
             sessionId: env.session.id,
+            textRef: 'text01',
+            chapter: 1,
             keyCharacterCount: 1
           })
         )
@@ -178,6 +184,8 @@ describe('TranslateMetricsSession', () => {
             id: env.session.prevMetricsId,
             type: 'edit',
             sessionId: env.session.id,
+            textRef: 'text01',
+            chapter: 1,
             keyCharacterCount: 1
           })
         )
@@ -259,6 +267,8 @@ describe('TranslateMetricsSession', () => {
           id: metricsId,
           type: 'navigate',
           sessionId: sessionId,
+          textRef: 'text01',
+          chapter: 1,
           keyNavigationCount: 2
         })
       )
@@ -283,6 +293,8 @@ describe('TranslateMetricsSession', () => {
           id: env.session.metrics.id,
           type: 'navigate',
           sessionId: env.session.id,
+          textRef: 'text01',
+          chapter: 1,
           keyNavigationCount: 2
         })
       )
@@ -302,6 +314,8 @@ describe('TranslateMetricsSession', () => {
           id: env.session.metrics.id,
           type: 'navigate',
           sessionId: env.session.id,
+          textRef: 'text01',
+          chapter: 1,
           keyNavigationCount: 2,
           mouseClickCount: 1
         })
