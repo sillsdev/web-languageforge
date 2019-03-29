@@ -29,7 +29,14 @@ module.exports = function(config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
+    captureTimeout: 120000, // compile needs to finished otherwise first capture fails
+    browsers: isTC ? ['ChromiumHeadless'] : ['Chrome'],
+    browserDisconnectTimeout: isTC ? 10000 : config.browserDisconnectTimeout,
+    browserDisconnectTolerance: isTC ? 3 : config.browserDisconnectTolerance,
+    browserNoActivityTimeout: isTC ? 60000 : config.browserNoActivityTimeout,
+    flags: isTC
+      ? ['--no-sandbox', '--headless', '--disable-gpu', '--disable-translate', '--disable-extensions']
+      : config.flags,
     singleRun: false
   });
 };
