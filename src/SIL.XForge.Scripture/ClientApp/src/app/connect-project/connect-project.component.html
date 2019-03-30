@@ -10,7 +10,7 @@
           fxLayout="column"
           fxLayoutAlign="center center"
         >
-          <div class="progress-label">Retrieving Paratext information</div>
+          <div class="progress-label">Retrieving Paratext information...</div>
           <mdc-linear-progress [secondary]="true" reversed></mdc-linear-progress>
         </div>
         <div *ngSwitchCase="'login'" fxLayout="column" fxLayoutAlign="center center">
@@ -21,42 +21,53 @@
         <div *ngSwitchCase="'input'">
           <form [formGroup]="connectProjectForm" (ngSubmit)="submit()" fxLayout="column">
             <mdc-form-field>
-              <mdc-select class="project-selection" placeholder="Paratext Project" formControlName="project">
+              <mdc-select placeholder="Paratext Project" formControlName="paratextId" id="project-select">
                 <mdc-menu class="project-selection-menu">
                   <mdc-list>
-                    <mdc-list-item *ngFor="let project of targetProjects" [value]="project">{{
-                      project.name
-                    }}</mdc-list-item>
+                    <mdc-list-item *ngFor="let project of targetProjects" [value]="project.paratextId">
+                      {{ project.name }}
+                    </mdc-list-item>
                   </mdc-list>
                 </mdc-menu>
               </mdc-select>
             </mdc-form-field>
-            <div *ngIf="showTasks" formGroupName="tasks" fxLayout="column">
+            <div *ngIf="showTasks" formGroupName="tasks" fxLayout="column" id="connect-tasks">
               <div>Include Tasks</div>
+              <div
+                class="at-least-one-msg"
+                *ngIf="connectProjectForm.errors && connectProjectForm.errors.requireAtLeastOneWithValue"
+              >
+                *At least one task must be selected
+              </div>
               <mdc-form-field>
-                <mdc-checkbox formControlName="checking"></mdc-checkbox><label>Community Checking</label>
+                <mdc-checkbox formControlName="checking" id="connect-checking-checkbox"></mdc-checkbox>
+                <label>Community Checking</label>
               </mdc-form-field>
               <mdc-form-field>
-                <mdc-checkbox (change)="onTranslateToggled($event)" formControlName="translate"></mdc-checkbox
-                ><label>Translate</label>
+                <mdc-checkbox
+                  (change)="onTranslateToggled($event)"
+                  formControlName="translate"
+                  id="connect-translate-checkbox"
+                ></mdc-checkbox>
+                <label>Translate</label>
               </mdc-form-field>
               <mdc-form-field>
-                <mdc-select class="project-selection" placeholder="Based on" formControlName="sourceProject">
+                <mdc-select placeholder="Based on" formControlName="sourceParatextId" id="connect-source-select">
                   <mdc-menu class="project-selection-menu">
                     <mdc-list>
-                      <mdc-list-item *ngFor="let project of sourceProjects" [value]="project">{{
-                        project.name
-                      }}</mdc-list-item>
+                      <mdc-list-item *ngFor="let project of sourceProjects" [value]="project.paratextId">
+                        {{ project.name }}
+                      </mdc-list-item>
                     </mdc-list>
                   </mdc-menu>
                 </mdc-select>
               </mdc-form-field>
             </div>
-            <button mdc-button primary type="submit" class="submit-button">Connect</button>
+            <button mdc-button primary type="submit" id="connect-submit-button">Connect</button>
           </form>
         </div>
         <div *ngSwitchCase="'connecting'" class="progress-container" fxLayout="column" fxLayoutAlign="center center">
-          <div class="progress-label">Connecting to Paratext project</div>
+          <div class="progress-label">Connecting to Paratext project...</div>
           <mdc-linear-progress
             [secondary]="true"
             [determinate]="!connectPending"

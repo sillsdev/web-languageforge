@@ -23,7 +23,12 @@
   height: 2.5rem;
 }
 
-.submit-button {
+.at-least-one-msg {
+  font-size: small;
+  color: var(--mdc-theme-error);
+}
+
+#connect-submit-button {
   width: 7.5rem;
   height: 2.5rem;
   align-self: center;
@@ -41,7 +46,7 @@
   margin: 2rem;
 }
 
-.project-selection {
+#project-select {
   width: 100%;
   margin-bottom: 1.2rem;
 }

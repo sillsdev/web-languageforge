@@ -11,6 +11,7 @@ import { NoticeService } from 'xforge-common/notice.service';
 import { ParatextService } from 'xforge-common/paratext.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { UserService } from 'xforge-common/user.service';
+import { XFValidators } from 'xforge-common/xfvalidators';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectService } from '../core/sfproject.service';
 import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-project-dialog.component';
@@ -31,7 +32,7 @@ export class SettingsComponent extends SubscriptionDisposable implements OnInit,
       seeOthersResponses: new FormControl(false),
       shareViaEmail: new FormControl(false)
     },
-    this.requireOneSelectedTask()
+    XFValidators.requireOneWithValue(['translate', 'checking'], true)
   );
   projectId: string;
   project: SFProject;
@@ -193,7 +194,7 @@ export class SettingsComponent extends SubscriptionDisposable implements OnInit,
               failStateHandlers.pop().call(this);
             }
           });
-      } else if (this.previousFormValues && this.form.errors && this.form.errors.requireCheckboxesToBeChecked) {
+      } else if (this.previousFormValues && this.form.errors && this.form.errors.requireAtLeastOneWithValue) {
         // reset invalid form value
         setTimeout(() => this.form.patchValue(this.previousFormValues), 1000);
       }
@@ -289,27 +290,5 @@ export class SettingsComponent extends SubscriptionDisposable implements OnInit,
     this.controlStates.set(formControl, ElementState.Submitting);
     successHandlers.push(() => this.controlStates.set(formControl, ElementState.Submitted));
     failureHandlers.push(() => this.controlStates.set(formControl, ElementState.Error));
-  }
-
-  private requireOneSelectedTask(): ValidatorFn {
-    return function validate(formGroup: FormGroup) {
-      let checked = 0;
-
-      ['translate', 'checking'].forEach(key => {
-        const control = formGroup.controls[key];
-
-        if (control.value === true) {
-          checked++;
-        }
-      });
-
-      if (checked < 1) {
-        return {
-          requireCheckboxesToBeChecked: true
-        };
-      }
-
-      return null;
-    };
   }
 }
