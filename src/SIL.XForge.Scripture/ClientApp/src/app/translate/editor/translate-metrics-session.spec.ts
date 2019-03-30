@@ -1,4 +1,5 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { LatinWordTokenizer } from '@sillsdev/machine';
 import { QuillModule } from 'ngx-quill';
 import Quill, { DeltaStatic } from 'quill';
 import { anything, deepEqual, instance, mock, objectContaining, resetCalls, verify, when } from 'ts-mockito';
@@ -19,7 +20,7 @@ describe('TranslateMetricsSession', () => {
   describe('edit', () => {
     it('start with edit keystroke', fakeAsync(() => {
       const env = new TestEnvironment();
-      env.session.start('project01', env.component);
+      env.startSession();
 
       env.keyPress('ArrowRight');
       expect(env.session.metrics.type).toBe('navigate');
@@ -54,7 +55,7 @@ describe('TranslateMetricsSession', () => {
 
     it('start with accepted suggestion', fakeAsync(() => {
       const env = new TestEnvironment();
-      env.session.start('project01', env.component);
+      env.startSession();
 
       env.mouseClick();
       env.showSuggestion();
@@ -94,7 +95,7 @@ describe('TranslateMetricsSession', () => {
 
     it('navigate keystroke', fakeAsync(() => {
       const env = new TestEnvironment();
-      env.session.start('project01', env.component);
+      env.startSession();
 
       env.keyPress('a');
       verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
@@ -113,7 +114,7 @@ describe('TranslateMetricsSession', () => {
 
     it('mouse click', fakeAsync(() => {
       const env = new TestEnvironment();
-      env.session.start('project01', env.component);
+      env.startSession();
 
       env.keyPress('a');
       verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
@@ -132,7 +133,7 @@ describe('TranslateMetricsSession', () => {
 
     it('timeout', fakeAsync(() => {
       const env = new TestEnvironment();
-      env.session.start('project01', env.component);
+      env.startSession();
 
       env.keyPress('a');
       tick(ACTIVE_EDIT_TIMEOUT);
@@ -150,7 +151,10 @@ describe('TranslateMetricsSession', () => {
             sessionId: env.session.id,
             textRef: 'text01',
             chapter: 1,
-            keyCharacterCount: 1
+            keyCharacterCount: 1,
+            segment: 'verse_1_1',
+            sourceWordCount: 8,
+            targetWordCount: 8
           })
         )
       ).once();
@@ -166,7 +170,7 @@ describe('TranslateMetricsSession', () => {
 
     it('segment change', fakeAsync(() => {
       const env = new TestEnvironment();
-      env.session.start('project01', env.component);
+      env.startSession();
 
       env.keyPress('a');
       tick(ACTIVE_EDIT_TIMEOUT);
@@ -174,8 +178,9 @@ describe('TranslateMetricsSession', () => {
       expect(env.session.metrics.timeEditActive).toBeDefined();
       expect(env.session.metrics.keyCharacterCount).toBe(1);
 
-      env.component.segmentRef = 'verse_1_2';
-      env.fixture.detectChanges();
+      const range = env.target.getSegmentRange('verse_1_2');
+      env.target.editor.setSelection(range.index, 0, 'user');
+      env.targetFixture.detectChanges();
       tick();
       verify(
         env.mockedSFProjectService.addTranslateMetrics(
@@ -186,7 +191,10 @@ describe('TranslateMetricsSession', () => {
             sessionId: env.session.id,
             textRef: 'text01',
             chapter: 1,
-            keyCharacterCount: 1
+            keyCharacterCount: 1,
+            segment: 'verse_1_1',
+            sourceWordCount: 8,
+            targetWordCount: 8
           })
         )
       ).once();
@@ -199,7 +207,7 @@ describe('TranslateMetricsSession', () => {
   describe('navigate', () => {
     it('navigate keystroke', fakeAsync(() => {
       const env = new TestEnvironment();
-      env.session.start('project01', env.component);
+      env.startSession();
 
       env.keyPress('ArrowRight');
       env.keyPress('ArrowLeft');
@@ -211,7 +219,7 @@ describe('TranslateMetricsSession', () => {
 
     it('mouse click', fakeAsync(() => {
       const env = new TestEnvironment();
-      env.session.start('project01', env.component);
+      env.startSession();
 
       env.mouseClick();
       env.mouseClick();
@@ -223,7 +231,7 @@ describe('TranslateMetricsSession', () => {
 
     it('segment change', fakeAsync(() => {
       const env = new TestEnvironment();
-      env.session.start('project01', env.component);
+      env.startSession();
 
       env.keyPress('ArrowDown');
       env.mouseClick();
@@ -231,8 +239,8 @@ describe('TranslateMetricsSession', () => {
       expect(env.session.metrics.keyNavigationCount).toBe(1);
       expect(env.session.metrics.mouseClickCount).toBe(1);
 
-      env.component.segmentRef = 'verse_1_2';
-      env.fixture.detectChanges();
+      env.target.segmentRef = 'verse_1_2';
+      env.targetFixture.detectChanges();
       tick();
       verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
       expect(env.session.metrics.type).toBe('navigate');
@@ -249,7 +257,7 @@ describe('TranslateMetricsSession', () => {
 
   it('dispose', fakeAsync(() => {
     const env = new TestEnvironment();
-    env.session.start('project01', env.component);
+    env.startSession();
 
     env.keyPress('ArrowRight');
     env.keyPress('ArrowLeft');
@@ -277,7 +285,7 @@ describe('TranslateMetricsSession', () => {
 
   it('periodic send', fakeAsync(() => {
     const env = new TestEnvironment();
-    env.session.start('project01', env.component);
+    env.startSession();
 
     env.keyPress('ArrowRight');
     env.keyPress('ArrowLeft');
@@ -329,15 +337,20 @@ describe('TranslateMetricsSession', () => {
 const Delta: new () => DeltaStatic = Quill.import('delta');
 
 class TestEnvironment {
-  readonly component: TextComponent;
-  readonly fixture: ComponentFixture<TextComponent>;
+  readonly source: TextComponent;
+  readonly sourceFixture: ComponentFixture<TextComponent>;
+  readonly target: TextComponent;
+  readonly targetFixture: ComponentFixture<TextComponent>;
   readonly session: TranslateMetricsSession;
 
   readonly mockedSFProjectService = mock(SFProjectService);
   readonly mockedTextService = mock(TextService);
   readonly mockedRealtimeOfflineStore = mock(RealtimeOfflineStore);
 
+  private readonly tokenizer = new LatinWordTokenizer();
+
   constructor() {
+    this.addTextData(new TextDataId('text01', 1, 'source'));
     this.addTextData(new TextDataId('text01', 1, 'target'));
     when(this.mockedSFProjectService.addTranslateMetrics('project01', anything())).thenResolve();
 
@@ -346,14 +359,23 @@ class TestEnvironment {
       imports: [QuillModule],
       providers: [{ provide: TextService, useFactory: () => instance(this.mockedTextService) }]
     });
-    this.fixture = TestBed.createComponent(TextComponent);
-    this.component = this.fixture.componentInstance;
-    this.component.id = new TextDataId('text01', 1, 'target');
-    this.component.segmentRef = 'verse_1_1';
+    this.sourceFixture = TestBed.createComponent(TextComponent);
+    this.source = this.sourceFixture.componentInstance;
+    this.source.id = new TextDataId('text01', 1, 'source');
+    this.source.segmentRef = 'verse_1_1';
+    this.targetFixture = TestBed.createComponent(TextComponent);
+    this.target = this.targetFixture.componentInstance;
+    this.target.id = new TextDataId('text01', 1, 'target');
+    this.target.segmentRef = 'verse_1_1';
     this.session = new TranslateMetricsSession(instance(this.mockedSFProjectService));
 
-    this.fixture.detectChanges();
+    this.sourceFixture.detectChanges();
+    this.targetFixture.detectChanges();
     tick();
+  }
+
+  startSession(): void {
+    this.session.start('project01', this.source, this.target, this.tokenizer, this.tokenizer);
   }
 
   keyPress(key: string): void {
@@ -362,24 +384,24 @@ class TestEnvironment {
     keydownEvent.ctrlKey = false;
     keydownEvent.metaKey = false;
     keydownEvent.initEvent('keydown', true, true);
-    this.component.editor.root.dispatchEvent(keydownEvent);
+    this.target.editor.root.dispatchEvent(keydownEvent);
 
     const keyupEvent: any = document.createEvent('CustomEvent');
     keyupEvent.key = key;
     keyupEvent.ctrlKey = false;
     keyupEvent.metaKey = false;
     keyupEvent.initEvent('keyup', true, true);
-    this.component.editor.root.dispatchEvent(keyupEvent);
+    this.target.editor.root.dispatchEvent(keyupEvent);
   }
 
   mouseClick(): void {
     const mousedownEvent: any = document.createEvent('CustomEvent');
     mousedownEvent.initEvent('mousedown', true, true);
-    this.component.editor.root.dispatchEvent(mousedownEvent);
+    this.target.editor.root.dispatchEvent(mousedownEvent);
 
     const mouseupEvent: any = document.createEvent('CustomEvent');
     mouseupEvent.initEvent('mouseup', true, true);
-    this.component.editor.root.dispatchEvent(mouseupEvent);
+    this.target.editor.root.dispatchEvent(mouseupEvent);
   }
 
   showSuggestion(): void {
@@ -390,7 +412,7 @@ class TestEnvironment {
     this.mouseClick();
     const clickEvent: any = document.createEvent('CustomEvent');
     clickEvent.initEvent('click', true, true);
-    this.component.editor.root.dispatchEvent(clickEvent);
+    this.target.editor.root.dispatchEvent(clickEvent);
     this.session.onSuggestionAccepted(clickEvent);
   }
 
