@@ -1,4 +1,5 @@
 export type TranslateMetricsType = 'edit' | 'navigate';
+export type EditEndEvent = 'segment-change' | 'timeout' | 'task-exit';
 
 export interface TranslateMetrics {
   id: string;
@@ -18,6 +19,7 @@ export interface TranslateMetrics {
   suggestionAcceptedCount?: number;
   suggestionTotalCount?: number;
   timeEditActive?: number;
+  editEndEvent?: EditEndEvent;
 
   // navigation metrics
   keyNavigationCount?: number;

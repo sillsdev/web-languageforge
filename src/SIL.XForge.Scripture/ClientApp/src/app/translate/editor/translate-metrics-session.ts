@@ -4,7 +4,7 @@ import { fromEvent, interval, merge, Subject } from 'rxjs';
 import { buffer, debounceTime, filter, map, tap } from 'rxjs/operators';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { objectId } from 'xforge-common/utils';
-import { TranslateMetrics, TranslateMetricsType } from '../../core/models/translate-metrics';
+import { EditEndEvent, TranslateMetrics, TranslateMetricsType } from '../../core/models/translate-metrics';
 import { SFProjectService } from '../../core/sfproject.service';
 import { Segment } from '../../shared/text/segment';
 import { TextComponent } from '../../shared/text/text.component';
@@ -130,7 +130,10 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
 
   dispose(): void {
     super.dispose();
-    this.sendMetrics(this.target.segment);
+    if (this.metrics != null && this.metrics.type === 'edit') {
+      this.metrics.editEndEvent = 'task-exit';
+    }
+    this.sendMetrics(this.target == null ? null : this.target.segment);
     this.id = undefined;
     this.metrics = undefined;
     this.target = undefined;
@@ -173,11 +176,13 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
 
     // edit activity
     const editActivity$ = merge(keyDowns$, mouseClicks$);
-    this.subscribe(editActivity$.pipe(debounceTime(EDIT_TIMEOUT)), () => this.endEditIfNecessary(this.target.segment));
+    this.subscribe(editActivity$.pipe(debounceTime(EDIT_TIMEOUT)), () =>
+      this.endEditIfNecessary(this.target.segment, 'timeout')
+    );
 
     // segment changes
     this.subscribe(this.target.updated.pipe(filter(event => event.prevSegment !== event.segment)), event =>
-      this.endEditIfNecessary(event.prevSegment)
+      this.endEditIfNecessary(event.prevSegment, 'segment-change')
     );
 
     // active edit activity
@@ -264,8 +269,9 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
     }
   }
 
-  private endEditIfNecessary(segment: Segment): void {
+  private endEditIfNecessary(segment: Segment, editEndEvent: EditEndEvent): void {
     if (this.metrics.type === 'edit') {
+      this.metrics.editEndEvent = editEndEvent;
       this.sendMetrics(segment);
       this.createMetrics('navigate');
     }

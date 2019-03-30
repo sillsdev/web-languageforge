@@ -141,6 +141,9 @@ describe('TranslateMetricsSession', () => {
       expect(env.session.metrics.timeEditActive).toBeDefined();
       expect(env.session.metrics.keyCharacterCount).toBe(1);
 
+      tick(SEND_METRICS_INTERVAL);
+      resetCalls(env.mockedSFProjectService);
+
       tick(EDIT_TIMEOUT);
       verify(
         env.mockedSFProjectService.addTranslateMetrics(
@@ -154,7 +157,8 @@ describe('TranslateMetricsSession', () => {
             keyCharacterCount: 1,
             segment: 'verse_1_1',
             sourceWordCount: 8,
-            targetWordCount: 8
+            targetWordCount: 8,
+            editEndEvent: 'timeout'
           })
         )
       ).once();
@@ -194,7 +198,8 @@ describe('TranslateMetricsSession', () => {
             keyCharacterCount: 1,
             segment: 'verse_1_1',
             sourceWordCount: 8,
-            targetWordCount: 8
+            targetWordCount: 8,
+            editEndEvent: 'segment-change'
           })
         )
       ).once();
@@ -259,10 +264,12 @@ describe('TranslateMetricsSession', () => {
     const env = new TestEnvironment();
     env.startSession();
 
-    env.keyPress('ArrowRight');
-    env.keyPress('ArrowLeft');
-    expect(env.session.metrics.type).toBe('navigate');
-    expect(env.session.metrics.keyNavigationCount).toBe(2);
+    env.keyPress('a');
+    env.keyPress('b');
+    tick(ACTIVE_EDIT_TIMEOUT);
+    expect(env.session.metrics.type).toBe('edit');
+    expect(env.session.metrics.timeEditActive).toBeDefined();
+    expect(env.session.metrics.keyCharacterCount).toBe(2);
     verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
 
     const sessionId = env.session.id;
@@ -271,13 +278,17 @@ describe('TranslateMetricsSession', () => {
     verify(
       env.mockedSFProjectService.addTranslateMetrics(
         'project01',
-        deepEqual({
+        objectContaining({
           id: metricsId,
-          type: 'navigate',
+          type: 'edit',
           sessionId: sessionId,
           textRef: 'text01',
           chapter: 1,
-          keyNavigationCount: 2
+          keyCharacterCount: 2,
+          segment: 'verse_1_1',
+          sourceWordCount: 8,
+          targetWordCount: 8,
+          editEndEvent: 'task-exit'
         })
       )
     ).once();
