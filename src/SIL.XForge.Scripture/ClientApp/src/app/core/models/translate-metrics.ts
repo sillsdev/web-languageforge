@@ -7,11 +7,10 @@ export interface TranslateMetrics {
   textRef: string;
   chapter: number;
 
-  // navigation metrics
-  keyNavigationCount?: number;
-  mouseClickCount?: number;
-
   // editing metrics
+  segment?: string;
+  sourceWordCount?: number;
+  targetWordCount?: number;
   keyBackspaceCount?: number;
   keyDeleteCount?: number;
   keyCharacterCount?: number;
@@ -19,4 +18,8 @@ export interface TranslateMetrics {
   suggestionAcceptedCount?: number;
   suggestionTotalCount?: number;
   timeEditActive?: number;
+
+  // navigation metrics
+  keyNavigationCount?: number;
+  mouseClickCount?: number;
 }

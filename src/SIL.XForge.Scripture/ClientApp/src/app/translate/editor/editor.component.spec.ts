@@ -171,15 +171,11 @@ describe('EditorComponent', () => {
     expect(env.component.target.segmentText).toBe('target: chapter 1, verse');
     expect(env.component.showSuggestion).toBe(true);
 
-    let selection = env.component.target.editor.getSelection();
-    const selectionIndex = selection.index;
-    env.component.target.editor.insertText(selectionIndex, '5', 'user');
-    env.component.target.editor.setSelection(selectionIndex + 1, 0, 'user');
-    env.waitForSuggestion();
+    const selectionIndex = env.typeCharacters('5');
     expect(env.component.target.segmentText).toBe('target: chapter 1, verse 5');
     expect(env.component.showSuggestion).toBe(false);
-    selection = env.component.target.editor.getSelection();
-    expect(selection.index).toBe(selectionIndex + 2);
+    const selection = env.component.target.editor.getSelection();
+    expect(selection.index).toBe(selectionIndex + 1);
     expect(selection.length).toBe(0);
 
     env.dispose();
@@ -219,15 +215,11 @@ describe('EditorComponent', () => {
     expect(env.component.target.segmentText).toBe('target: chapter 1, verse');
     expect(env.component.showSuggestion).toBe(true);
 
-    let selection = env.component.target.editor.getSelection();
-    const selectionIndex = selection.index;
-    env.component.target.editor.insertText(selectionIndex, '.', 'user');
-    env.component.target.editor.setSelection(selectionIndex + 1, 0, 'user');
-    env.waitForSuggestion();
+    const selectionIndex = env.typeCharacters('.');
     expect(env.component.target.segmentText).toBe('target: chapter 1, verse.');
     expect(env.component.showSuggestion).toBe(false);
-    selection = env.component.target.editor.getSelection();
-    expect(selection.index).toBe(selectionIndex + 1);
+    const selection = env.component.target.editor.getSelection();
+    expect(selection.index).toBe(selectionIndex);
     expect(selection.length).toBe(0);
 
     env.dispose();
@@ -266,6 +258,25 @@ describe('EditorComponent', () => {
     env.component.target.editor.deleteText(selection.index - 7, 7, 'user');
     env.waitForSuggestion();
     expect(env.component.target.segmentText).toBe('target: chapter 1, ');
+
+    const range = env.component.target.getSegmentRange('verse_1_1');
+    env.component.target.editor.setSelection(range.index, 0, 'user');
+    env.waitForSuggestion();
+    expect(env.component.target.segmentRef).toBe('verse_1_1');
+    expect(env.lastApprovedPrefix).toEqual([]);
+
+    env.dispose();
+  }));
+
+  it('do not train a segment that is too short after selecting a different segment', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.setTranslateConfig({ selectedTextRef: 'text01', selectedChapter: 1, selectedSegment: 'verse_1_2' });
+    env.waitForSuggestion();
+    expect(env.component.target.segmentRef).toBe('verse_1_2');
+    expect(env.component.showSuggestion).toBe(true);
+
+    env.typeCharacters('target: chapter 1');
+    expect(env.component.target.segmentText).toBe('target: chapter 1');
 
     const range = env.component.target.getSegmentRange('verse_1_1');
     env.component.target.editor.setSelection(range.index, 0, 'user');
@@ -662,6 +673,19 @@ class TestEnvironment {
     trainingProgress$.complete();
     this.fixture.detectChanges();
     tick();
+  }
+
+  typeCharacters(str: string): number {
+    const selection = this.component.target.editor.getSelection();
+    const delta = new Delta()
+      .retain(selection.index)
+      .delete(selection.length)
+      .insert(str);
+    this.component.target.editor.updateContents(delta, 'user');
+    const selectionIndex = selection.index + str.length;
+    this.component.target.editor.setSelection(selectionIndex, 0, 'user');
+    this.waitForSuggestion();
+    return selectionIndex;
   }
 
   dispose(): void {

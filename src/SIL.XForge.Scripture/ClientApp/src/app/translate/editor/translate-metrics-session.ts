@@ -1,10 +1,12 @@
 import { clone, eq } from '@orbit/utils';
+import { Tokenizer } from '@sillsdev/machine';
 import { fromEvent, interval, merge, Subject } from 'rxjs';
 import { buffer, debounceTime, filter, map, tap } from 'rxjs/operators';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { objectId } from 'xforge-common/utils';
 import { TranslateMetrics, TranslateMetricsType } from '../../core/models/translate-metrics';
 import { SFProjectService } from '../../core/sfproject.service';
+import { Segment } from '../../shared/text/segment';
 import { TextComponent } from '../../shared/text/text.component';
 
 export const ACTIVE_EDIT_TIMEOUT = 2000; // 2 seconds
@@ -69,7 +71,10 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
   id: string;
   metrics: TranslateMetrics;
 
-  private text: TextComponent;
+  private source: TextComponent;
+  private target: TextComponent;
+  private sourceWordTokenizer: Tokenizer;
+  private targetWordTokenizer: Tokenizer;
   private projectId: string;
   private prevMetrics: TranslateMetrics;
   private readonly suggestionAccepted$ = new Subject<Activity>();
@@ -97,29 +102,38 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
     );
   }
 
-  start(projectId: string, text: TextComponent): void {
+  start(
+    projectId: string,
+    source: TextComponent,
+    target: TextComponent,
+    sourceWordTokenizer: Tokenizer,
+    targetWordTokenizer: Tokenizer
+  ): void {
     if (this.id != null) {
       this.dispose();
     }
 
     this.id = objectId();
     this.projectId = projectId;
-    this.text = text;
+    this.source = source;
+    this.target = target;
+    this.sourceWordTokenizer = sourceWordTokenizer;
+    this.targetWordTokenizer = targetWordTokenizer;
     this.createMetrics('navigate');
 
-    if (this.text.editor != null) {
+    if (this.target.editor != null) {
       this.setupSubscriptions();
     } else {
-      this.text.loaded.subscribe(() => this.setupSubscriptions());
+      this.target.loaded.subscribe(() => this.setupSubscriptions());
     }
   }
 
   dispose(): void {
     super.dispose();
-    this.sendMetrics();
+    this.sendMetrics(this.target.segment);
     this.id = undefined;
     this.metrics = undefined;
-    this.text = undefined;
+    this.target = undefined;
     this.projectId = undefined;
     this.navigateSuggestionShown = false;
     this.prevMetrics = undefined;
@@ -138,11 +152,11 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
   }
 
   private setupSubscriptions(): void {
-    const keyDowns$ = fromEvent<KeyboardEvent>(this.text.editor.root, 'keydown').pipe(
+    const keyDowns$ = fromEvent<KeyboardEvent>(this.target.editor.root, 'keydown').pipe(
       filter(event => getKeyActivityType(event) !== ActivityType.Unknown),
       map<KeyboardEvent, Activity>(event => createKeyActivity(event))
     );
-    const keyUps$ = fromEvent<KeyboardEvent>(this.text.editor.root, 'keyup').pipe(
+    const keyUps$ = fromEvent<KeyboardEvent>(this.target.editor.root, 'keyup').pipe(
       filter(event => getKeyActivityType(event) !== ActivityType.Unknown),
       map<KeyboardEvent, Activity>(event => createKeyActivity(event))
     );
@@ -159,10 +173,12 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
 
     // edit activity
     const editActivity$ = merge(keyDowns$, mouseClicks$);
-    this.subscribe(editActivity$.pipe(debounceTime(EDIT_TIMEOUT)), () => this.endEditIfNecessary());
+    this.subscribe(editActivity$.pipe(debounceTime(EDIT_TIMEOUT)), () => this.endEditIfNecessary(this.target.segment));
 
     // segment changes
-    this.subscribe(this.text.segmentRefChange, () => this.endEditIfNecessary());
+    this.subscribe(this.target.updated.pipe(filter(event => event.prevSegment !== event.segment)), event =>
+      this.endEditIfNecessary(event.prevSegment)
+    );
 
     // active edit activity
     const activeEditKeyDowns$ = keyDowns$.pipe(filter(activity => isActiveEditKeyActivity(activity.type)));
@@ -177,20 +193,22 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
     );
 
     // periodic send
-    this.subscribe(interval(SEND_METRICS_INTERVAL), () => this.sendMetrics());
+    this.subscribe(interval(SEND_METRICS_INTERVAL), () => this.sendMetrics(this.target.segment));
   }
 
-  private async sendMetrics(): Promise<void> {
+  private async sendMetrics(segment: Segment): Promise<void> {
     if (this.metrics == null) {
       return;
     }
 
-    if (this.metrics.type === 'edit') {
-      let prodCharCount = 0;
-      if (this.text.segment != null) {
-        prodCharCount = this.text.segment.productiveCharacterCount;
+    if (this.metrics.type === 'edit' && segment != null) {
+      const prodCharCount = this.target.segment.productiveCharacterCount;
+      if (prodCharCount !== 0) {
+        this.metrics.productiveCharacterCount = prodCharCount;
       }
-      this.metrics.productiveCharacterCount = prodCharCount === 0 ? undefined : prodCharCount;
+      const sourceText = this.source.getSegmentText(segment.ref);
+      this.metrics.sourceWordCount = this.sourceWordTokenizer.tokenize(sourceText).length;
+      this.metrics.targetWordCount = this.targetWordTokenizer.tokenize(segment.text).length;
     }
     if (!this.isMetricsEmpty && !eq(this.prevMetrics, this.metrics)) {
       this.prevMetrics = clone(this.metrics);
@@ -238,7 +256,7 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
       if (activity.event.type === 'click') {
         this.decrementMetric('mouseClickCount');
       }
-      this.sendMetrics();
+      this.sendMetrics(this.target.segment);
       this.createMetrics('edit');
       if (activity.event.type === 'click') {
         this.incrementMetric('mouseClickCount');
@@ -246,9 +264,9 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
     }
   }
 
-  private endEditIfNecessary(): void {
+  private endEditIfNecessary(segment: Segment): void {
     if (this.metrics.type === 'edit') {
-      this.sendMetrics();
+      this.sendMetrics(segment);
       this.createMetrics('navigate');
     }
     this.navigateSuggestionShown = false;
@@ -259,11 +277,16 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
       id: objectId(),
       type,
       sessionId: this.id,
-      textRef: this.text.id.textId,
-      chapter: this.text.id.chapter
+      textRef: this.target.id.textId,
+      chapter: this.target.id.chapter
     };
-    if (type === 'edit' && this.navigateSuggestionShown) {
-      this.metrics.suggestionTotalCount = 1;
+    if (type === 'edit') {
+      if (this.target.segment != null) {
+        this.metrics.segment = this.target.segment.ref;
+      }
+      if (this.navigateSuggestionShown) {
+        this.metrics.suggestionTotalCount = 1;
+      }
     }
     this.navigateSuggestionShown = false;
   }

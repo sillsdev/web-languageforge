@@ -11,17 +11,20 @@ namespace SIL.XForge.Scripture.Models
         public string TextRef { get; set; }
         public int Chapter { get; set; }
 
-        // navigation metrics
-        public int KeyNavigationCount { get; set; }
-        public int MouseClickCount { get; set; }
-
         // editing metrics
-        public int KeyBackspaceCount { get; set; }
-        public int KeyDeleteCount { get; set; }
-        public int KeyCharacterCount { get; set; }
-        public int ProductiveCharacterCount { get; set; }
-        public int SuggestionAcceptedCount { get; set; }
-        public int SuggestionTotalCount { get; set; }
-        public int TimeEditActive { get; set; }
+        public string Segment { get; set; }
+        public int? SourceWordCount { get; set; }
+        public int? TargetWordCount { get; set; }
+        public int? KeyBackspaceCount { get; set; }
+        public int? KeyDeleteCount { get; set; }
+        public int? KeyCharacterCount { get; set; }
+        public int? ProductiveCharacterCount { get; set; }
+        public int? SuggestionAcceptedCount { get; set; }
+        public int? SuggestionTotalCount { get; set; }
+        public int? TimeEditActive { get; set; }
+
+        // navigation metrics
+        public int? KeyNavigationCount { get; set; }
+        public int? MouseClickCount { get; set; }
     }
 }
