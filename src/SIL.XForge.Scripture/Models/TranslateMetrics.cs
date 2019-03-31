@@ -22,6 +22,7 @@ namespace SIL.XForge.Scripture.Models
         public int? SuggestionAcceptedCount { get; set; }
         public int? SuggestionTotalCount { get; set; }
         public int? TimeEditActive { get; set; }
+        public string EditEndEvent { get; set; }
 
         // navigation metrics
         public int? KeyNavigationCount { get; set; }
