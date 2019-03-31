@@ -5,7 +5,7 @@
     <p>Select which tasks are available. At least one task must be selected.</p>
     <mdc-card class="card" outlined>
       <form [formGroup]="form">
-        <ng-container *ngIf="!isLoading && form.errors && form.errors.requireCheckboxesToBeChecked">
+        <ng-container *ngIf="!isLoading && form.errors && form.errors.requireAtLeastOneWithValue">
           <div class="card-content invalid-feedback">You must select at least one option</div>
           <mdc-list-divider></mdc-list-divider>
         </ng-container>

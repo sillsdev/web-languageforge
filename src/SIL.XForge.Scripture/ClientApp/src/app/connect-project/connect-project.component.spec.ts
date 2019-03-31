@@ -1,14 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import {
-  MatCardModule,
-  MatCheckboxModule,
-  MatOptionModule,
-  MatProgressBarModule,
-  MatSelectModule
-} from '@angular/material';
+import { AbstractControl } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -16,9 +9,9 @@ import { RemoteTranslationEngine } from '@sillsdev/machine';
 import { cold, getTestScheduler } from 'jasmine-marbles';
 import { defer, of } from 'rxjs';
 import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-
 import { ParatextProject } from 'xforge-common/models/paratext-project';
 import { ParatextService } from 'xforge-common/paratext.service';
+import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
@@ -52,7 +45,7 @@ describe('ConnectProjectComponent', () => {
     when(env.mockedParatextService.getProjects()).thenReturn(of([]));
     env.fixture.detectChanges();
 
-    env.clickSubmitButton();
+    env.clickElement(env.submitButton);
 
     verify(env.mockedSFProjectService.onlineCreate(anything())).never();
     verify(env.mockedSFProjectUserService.onlineCreate(anything(), anything())).never();
@@ -96,7 +89,7 @@ describe('ConnectProjectComponent', () => {
 
     expect(env.tasksDiv).toBeNull();
 
-    env.clickSubmitButton();
+    env.clickElement(env.submitButton);
 
     verify(env.mockedSFProjectUserService.onlineCreate('project01', 'user01')).once();
 
@@ -127,10 +120,16 @@ describe('ConnectProjectComponent', () => {
     expect(env.component.state).toEqual('input');
 
     env.changeSelectValue(env.projectSelect, 0);
-    env.clickCheckbox(env.translateCheckbox);
-    env.changeSelectValue(env.sourceProjectSelect, 0);
+    expect(env.sourceParatextIdControl.disabled).toBe(true);
+    expect(env.sourceParatextIdControl.hasError('required')).toBe(false);
+    // Simulate clicking the checkbox without firing any events to prevent the error in mdc-select when
+    // the form control is set with a validator
+    env.checkTranslateCheckbox();
+    expect(env.sourceParatextIdControl.disabled).toBe(false);
 
-    env.clickSubmitButton();
+    env.changeSelectValue(env.sourceProjectSelect, 0);
+    expect(env.component.connectProjectForm.valid).toBe(true);
+    env.clickElement(env.submitButton);
     getTestScheduler().flush();
     flush();
 
@@ -164,6 +163,33 @@ describe('ConnectProjectComponent', () => {
     verify(env.mockedSFProjectUserService.onlineCreate('project01', 'user01')).once();
 
     verify(env.mockedRouter.navigate(deepEqual(['/projects', 'project01']))).once();
+  }));
+
+  it('should do nothing when no task is selected', fakeAsync(() => {
+    const env = new TestEnvironment();
+    when(env.mockedParatextService.getProjects()).thenReturn(
+      of<ParatextProject[]>([
+        {
+          paratextId: 'pt01',
+          name: 'Target',
+          languageTag: 'en',
+          languageName: 'English',
+          isConnectable: true
+        }
+      ])
+    );
+    env.fixture.detectChanges();
+    expect(env.component.state).toEqual('input');
+    env.changeSelectValue(env.projectSelect, 0);
+    env.clickElement(env.inputElement(env.checkingCheckbox));
+    expect(env.inputElement(env.checkingCheckbox).checked).toBe(false);
+    expect(env.inputElement(env.translateCheckbox).checked).toBe(false);
+
+    env.clickElement(env.submitButton);
+
+    verify(env.mockedSFProjectService.onlineCreate(anything())).never();
+    verify(env.mockedSFProjectUserService.onlineCreate(anything(), anything())).never();
+    verify(env.mockedRouter.navigate(anything())).never();
   }));
 });
 
@@ -213,16 +239,7 @@ class TestEnvironment {
     );
 
     TestBed.configureTestingModule({
-      imports: [
-        MatCardModule,
-        MatCheckboxModule,
-        MatOptionModule,
-        MatProgressBarModule,
-        MatSelectModule,
-        ReactiveFormsModule,
-        HttpClientTestingModule,
-        NoopAnimationsModule
-      ],
+      imports: [HttpClientTestingModule, NoopAnimationsModule, UICommonModule],
       declarations: [ConnectProjectComponent],
       providers: [
         { provide: ParatextService, useFactory: () => instance(this.mockedParatextService) },
@@ -242,15 +259,15 @@ class TestEnvironment {
   }
 
   get loginButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('.login-button'));
+    return this.fixture.debugElement.query(By.css('#btn-login'));
   }
 
   get projectSelect(): DebugElement {
-    return this.fixture.debugElement.query(By.css('mat-select[formControlName="project"]'));
+    return this.fixture.debugElement.query(By.css('#project-select'));
   }
 
   get submitButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('.submit-button'));
+    return this.fixture.debugElement.query(By.css('#connect-submit-button'));
   }
 
   get connectProjectForm(): DebugElement {
@@ -258,40 +275,52 @@ class TestEnvironment {
   }
 
   get tasksDiv(): DebugElement {
-    return this.fixture.debugElement.query(By.css('div[formGroupName="tasks"'));
+    return this.fixture.debugElement.query(By.css('#connect-tasks'));
+  }
+
+  get checkingCheckbox(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#connect-checking-checkbox'));
   }
 
   get translateCheckbox(): DebugElement {
-    return this.tasksDiv.query(By.css('mat-checkbox[formControlName="translate"'));
+    return this.fixture.debugElement.query(By.css('#connect-translate-checkbox'));
   }
 
   get sourceProjectSelect(): DebugElement {
-    return this.tasksDiv.query(By.css('mat-select[formControlName="sourceProject"]'));
+    return this.fixture.debugElement.query(By.css('#connect-source-select'));
+  }
+
+  get sourceParatextIdControl(): AbstractControl {
+    return this.component.connectProjectForm.get('tasks.sourceParatextId');
   }
 
   changeSelectValue(select: DebugElement, option: number): void {
     select.nativeElement.click();
     this.fixture.detectChanges();
     flush();
-    const options = select.queryAll(By.css('mat-option'));
-    options[option].nativeElement.click();
+    const item = select.queryAll(By.css('mdc-list-item'));
+    item[option].nativeElement.click();
     this.fixture.detectChanges();
     flush();
   }
 
-  clickCheckbox(checkbox: DebugElement): void {
-    checkbox.nativeElement.querySelector('input').click();
+  checkTranslateCheckbox(): void {
+    this.component.connectProjectForm.get('tasks.translate').reset(true);
+    this.sourceParatextIdControl.enable();
     this.fixture.detectChanges();
     flush();
   }
 
-  clickSubmitButton(): void {
-    this.clickButton(this.submitButton);
-  }
-
-  private clickButton(button: DebugElement): void {
-    button.nativeElement.click();
+  clickElement(element: HTMLElement | DebugElement): void {
+    if (element instanceof DebugElement) {
+      element = (element as DebugElement).nativeElement as HTMLElement;
+    }
+    element.click();
     this.fixture.detectChanges();
     flush();
+  }
+
+  inputElement(element: DebugElement): HTMLInputElement {
+    return element.nativeElement.querySelector('input') as HTMLInputElement;
   }
 }
