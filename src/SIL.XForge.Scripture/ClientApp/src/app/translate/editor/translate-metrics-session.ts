@@ -78,6 +78,7 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
   private projectId: string;
   private prevMetrics: TranslateMetrics;
   private readonly suggestionAccepted$ = new Subject<Activity>();
+  private readonly endActiveEdit$ = new Subject<void>();
   private navigateSuggestionShown: boolean = false;
 
   constructor(private readonly projectService: SFProjectService) {
@@ -129,6 +130,7 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
   }
 
   dispose(): void {
+    this.endActiveEdit$.next();
     super.dispose();
     if (this.metrics != null && this.metrics.type === 'edit') {
       this.metrics.editEndEvent = 'task-exit';
@@ -192,7 +194,7 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
     this.subscribe(
       activeEditActivity$.pipe(
         tap(activity => this.startEditIfNecessary(activity)),
-        buffer(activeEditActivity$.pipe(debounceTime(ACTIVE_EDIT_TIMEOUT)))
+        buffer(merge(activeEditActivity$.pipe(debounceTime(ACTIVE_EDIT_TIMEOUT)), this.endActiveEdit$))
       ),
       activities => this.onActiveEdit(activities)
     );

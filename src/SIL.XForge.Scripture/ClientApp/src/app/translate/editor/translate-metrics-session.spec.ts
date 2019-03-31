@@ -266,10 +266,7 @@ describe('TranslateMetricsSession', () => {
 
     env.keyPress('a');
     env.keyPress('b');
-    tick(ACTIVE_EDIT_TIMEOUT);
     expect(env.session.metrics.type).toBe('edit');
-    expect(env.session.metrics.timeEditActive).toBeDefined();
-    expect(env.session.metrics.keyCharacterCount).toBe(2);
     verify(env.mockedSFProjectService.addTranslateMetrics('project01', anything())).never();
 
     const sessionId = env.session.id;
