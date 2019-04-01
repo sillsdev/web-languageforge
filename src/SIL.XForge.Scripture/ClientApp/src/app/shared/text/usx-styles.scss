@@ -1,5 +1,6 @@
 usx-para {
   display: block;
+  word-break: break-word;
 
   &[data-style='toc1'] {
     font-weight: bold;
@@ -138,4 +139,8 @@ usx-note span {
   font-size: 75%;
   line-height: 0;
   vertical-align: baseline;
+}
+
+p span {
+  word-break: break-word;
 }
