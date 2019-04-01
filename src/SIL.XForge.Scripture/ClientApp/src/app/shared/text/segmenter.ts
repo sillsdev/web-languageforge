@@ -1,4 +1,4 @@
-import Quill, { DeltaStatic, RangeStatic } from 'quill';
+import Quill, { RangeStatic } from 'quill';
 
 export abstract class Segmenter {
   protected readonly _segments: Map<string, RangeStatic> = new Map<string, RangeStatic>();
@@ -14,11 +14,6 @@ export abstract class Segmenter {
     return this._segments.entries();
   }
 
-  get text(): string {
-    const text = this.editor.getText();
-    return text.endsWith('\n') ? text.substr(0, text.length - 1) : text;
-  }
-
   update(textChange: boolean): void {
     if (this._lastSegmentRef === '' || textChange) {
       this.updateSegments();
@@ -31,11 +26,7 @@ export abstract class Segmenter {
   }
 
   getSegmentRange(ref: string): RangeStatic {
-    if (this.text === '') {
-      return { index: 0, length: 0 };
-    }
-
-    return this._segments.has(ref) ? this._segments.get(ref) : { index: this.text.length, length: 0 };
+    return this._segments.get(ref);
   }
 
   getSegmentRef(range: RangeStatic): string {

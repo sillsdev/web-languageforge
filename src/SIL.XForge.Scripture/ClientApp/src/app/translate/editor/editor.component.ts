@@ -163,6 +163,12 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
     if (selection == null) {
       return false;
     }
+
+    // if the segment is blank, then we are always at the end
+    if (this.target.segment.text === '') {
+      return true;
+    }
+
     const selectionEndIndex = selection.index + selection.length;
     const segmentEndIndex = this.target.segment.range.index + this.target.segment.range.length;
     return selectionEndIndex === segmentEndIndex;
