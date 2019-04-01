@@ -11,7 +11,7 @@
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
     <UserSecretsId>4d0606c3-0fc7-4d76-b43b-236485004e81</UserSecretsId>
-    <MachineVersion>2.1.0-29</MachineVersion>
+    <MachineVersion>2.1.0-30</MachineVersion>
     <RealtimeRoot>..\SIL.XForge\Realtime\</RealtimeRoot>
   </PropertyGroup>
 

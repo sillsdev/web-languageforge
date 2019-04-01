@@ -32,7 +32,6 @@ import { TranslateMetricsSession } from './translate-metrics-session';
 
 export const UPDATE_SUGGESTIONS_TIMEOUT = 100;
 export const CONFIDENCE_THRESHOLD_TIMEOUT = 500;
-const TRAIN_SEGMENT_THRESHOLD = 0.6;
 
 const Delta: new () => DeltaStatic = Quill.import('delta');
 const PUNCT_SPACE_REGEX = XRegExp('^(\\p{P}|\\p{S}|\\p{Cc}|\\p{Z})+$');
@@ -507,20 +506,13 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
       return;
     }
 
-    await this.translationSession.approve();
+    await this.translationSession.approve(true);
     segment.acceptChanges();
     console.log('Segment ' + segment.ref + ' of document ' + segment.textId + ' was trained successfully.');
   }
 
   private canTrainSegment(segment: Segment): boolean {
-    return (
-      segment != null &&
-      segment.range.length > 0 &&
-      segment.text !== '' &&
-      segment.isChanged &&
-      this.translationSession.sourceSegment.length > 0 &&
-      this.translationSession.prefix.length / this.translationSession.sourceSegment.length >= TRAIN_SEGMENT_THRESHOLD
-    );
+    return segment != null && segment.range.length > 0 && segment.text !== '' && segment.isChanged;
   }
 
   private async updateUserConfig(): Promise<void> {

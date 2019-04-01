@@ -268,25 +268,6 @@ describe('EditorComponent', () => {
     env.dispose();
   }));
 
-  it('do not train a segment that is too short after selecting a different segment', fakeAsync(() => {
-    const env = new TestEnvironment();
-    env.setTranslateConfig({ selectedTextRef: 'text01', selectedChapter: 1, selectedSegment: 'verse_1_2' });
-    env.waitForSuggestion();
-    expect(env.component.target.segmentRef).toBe('verse_1_2');
-    expect(env.component.showSuggestion).toBe(true);
-
-    env.typeCharacters('target: chapter 1');
-    expect(env.component.target.segmentText).toBe('target: chapter 1');
-
-    const range = env.component.target.getSegmentRange('verse_1_1');
-    env.component.target.editor.setSelection(range.index, 0, 'user');
-    env.waitForSuggestion();
-    expect(env.component.target.segmentRef).toBe('verse_1_1');
-    expect(env.lastApprovedPrefix).toEqual([]);
-
-    env.dispose();
-  }));
-
   it('change texts', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({ selectedTextRef: 'text01', selectedChapter: 1, selectedSegment: 'verse_1_1' });
