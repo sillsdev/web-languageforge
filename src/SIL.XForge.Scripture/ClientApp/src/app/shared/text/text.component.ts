@@ -78,10 +78,10 @@ export class TextComponent implements OnDestroy {
   private textData?: TextData;
   private segmenter?: Segmenter;
   private _segment?: Segment;
+  private initialTextFetched: boolean = false;
   private initialSegmentRef?: string;
   private initialSegmentChecksum?: number;
   private initialSegmentFocus?: boolean;
-  private initialSegmentUpdate: boolean = false;
   private _highlightSegment: boolean = false;
 
   constructor(private readonly textService: TextService) {}
@@ -98,7 +98,7 @@ export class TextComponent implements OnDestroy {
       this.initialSegmentRef = undefined;
       this.initialSegmentChecksum = undefined;
       this.initialSegmentFocus = undefined;
-      this.initialSegmentUpdate = false;
+      this.initialTextFetched = false;
       if (this.editor != null) {
         this.segmenter.reset();
         this.bindQuill();
@@ -163,19 +163,6 @@ export class TextComponent implements OnDestroy {
     return this._segment == null ? 0 : this._segment.checksum;
   }
 
-  get isEmpty(): boolean {
-    return this.text === '';
-  }
-
-  get length(): number {
-    return this.text.length;
-  }
-
-  get text(): string {
-    const text = this._editor.getText();
-    return text.endsWith('\n') ? text.substr(0, text.length - 1) : text;
-  }
-
   get editorStyles(): object {
     return this._editorStyles;
   }
@@ -213,7 +200,7 @@ export class TextComponent implements OnDestroy {
   }
 
   changeSegment(segmentRef: string, checksum?: number, focus: boolean = false): boolean {
-    if (!this.initialSegmentUpdate) {
+    if (!this.initialTextFetched) {
       this.initialSegmentRef = segmentRef;
       this.initialSegmentChecksum = checksum;
       this.initialSegmentFocus = focus;
@@ -337,7 +324,7 @@ export class TextComponent implements OnDestroy {
     let checksum: number;
     let focus: boolean;
     let updateUsxFormatForAllSegments = false;
-    if (delta != null && !this.isEmpty && !this.initialSegmentUpdate) {
+    if (delta != null && !this.initialTextFetched) {
       segmentRef = this.initialSegmentRef;
       checksum = this.initialSegmentChecksum;
       focus = this.initialSegmentFocus;
@@ -346,7 +333,7 @@ export class TextComponent implements OnDestroy {
       this.initialSegmentChecksum = undefined;
       this.initialSegmentFocus = undefined;
 
-      this.initialSegmentUpdate = true;
+      this.initialTextFetched = true;
     }
 
     if (segmentRef == null) {
@@ -379,14 +366,7 @@ export class TextComponent implements OnDestroy {
           this.updateUsxSegmentFormat(ref, range);
         }
       } else if (this._segment != null) {
-        if (this.updateUsxSegmentFormat(this._segment.ref, this._segment.range)) {
-          // if the segment is no longer blank, ensure that the selection is at the end of the segment.
-          // Sometimes after typing in a blank segment, the selection will be at the beginning. This seems to be a bug
-          // in Quill.
-          Promise.resolve().then(() =>
-            this.editor.setSelection(this._segment.range.index + this._segment.range.length, 0, 'user')
-          );
-        }
+        this.updateUsxSegmentFormat(this._segment.ref, this._segment.range);
       }
     }
 
@@ -410,8 +390,8 @@ export class TextComponent implements OnDestroy {
     }
     let newSel: RangeStatic;
     if (this._segment.text === '') {
-      // always select whole segment if blank
-      newSel = this._segment.range;
+      // always select at the beginning if blank
+      newSel = { index: this._segment.range.index, length: 0 };
     } else {
       // ensure that selection does not extend across segments
       const newStart = Math.max(sel.index, this._segment.range.index);
@@ -425,25 +405,32 @@ export class TextComponent implements OnDestroy {
     }
   }
 
-  private updateUsxSegmentFormat(ref: string, range: RangeStatic): boolean {
+  private updateUsxSegmentFormat(ref: string, range: RangeStatic): void {
     const text = this._editor.getText(range.index, range.length);
 
-    if (text === '' && range.length === 0) {
-      // insert blank
-      const type = ref.includes('/p') ? 'initial' : 'normal';
-      const delta = new Delta();
-      delta.retain(range.index);
-      delta.insert({ blank: type }, { segment: ref });
-      this._editor.updateContents(delta, 'user');
+    if (text === '') {
+      if (range.length === 0) {
+        // insert blank
+        const type = ref.includes('/p') ? 'initial' : 'normal';
+        const delta = new Delta();
+        delta.retain(range.index);
+        delta.insert({ blank: type }, { segment: ref });
+        this._editor.updateContents(delta, 'user');
+      }
     } else {
-      const formats = this._editor.getFormat(range.index, range.length);
-      if (formats.segment == null) {
-        // add segment format if missing
-        this._editor.formatText(range.index, range.length, 'segment', ref, 'user');
-        return true;
+      const segmentDelta = this._editor.getContents(range.index, range.length);
+      if (segmentDelta.ops.length > 1) {
+        const lastOp = segmentDelta.ops[segmentDelta.ops.length - 1];
+        if (lastOp.insert != null && lastOp.insert.blank != null) {
+          // delete blank
+          const delta = new Delta()
+            .retain(range.index)
+            .retain(range.length - 1, { segment: ref })
+            .delete(1);
+          this._editor.updateContents(delta, 'user');
+        }
       }
     }
-    return false;
   }
 
   private toggleHighlight(range: RangeStatic, value: boolean): void {

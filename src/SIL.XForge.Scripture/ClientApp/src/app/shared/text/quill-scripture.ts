@@ -53,13 +53,19 @@ export function registerScripture(): void {
     return format;
   }
 
+  // zero width space
+  const ZWSP = '\u200b';
+  // non-breaking space
+  const NBSP = '\u00A0';
+
   class VerseEmbed extends Embed {
     static blotName = 'verse';
     static tagName = 'usx-verse';
 
     static create(value: string): Node {
       const node = super.create(value) as HTMLElement;
-      node.innerText = value;
+      // add a ZWSP before the verse number, so that it allows breaking
+      node.innerText = ZWSP + value;
       return node;
     }
 
@@ -68,7 +74,7 @@ export function registerScripture(): void {
     }
 
     static value(node: HTMLElement): any {
-      return node.innerText.trim();
+      return node.innerText.trim().substring(1);
     }
 
     format(name: string, value: any): void {
@@ -92,10 +98,10 @@ export function registerScripture(): void {
       let text: string;
       switch (value) {
         case 'initial':
-          text = ' ';
+          text = NBSP;
           break;
         case 'normal':
-          text = '        ';
+          text = NBSP.repeat(8);
           break;
       }
       node.innerText = text;
