@@ -34,7 +34,7 @@ export class SharedbRealtimeDoc implements RealtimeDoc {
   }
 
   get type(): string {
-    return this.doc.type.name;
+    return this.doc.type == null ? null : this.doc.type.name;
   }
 
   get pendingOps(): any[] {
