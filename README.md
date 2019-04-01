@@ -50,18 +50,18 @@ Successful builds from our CI server deploy to:
 
 We use [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) with two modifications:
 
-- The Gitflow **master** branch is our **live** branch.
-- The Gitflow **develop** branch is our **master** branch. All pull requests go against **master**.
+- Our `live` branch is the the Gitflow `master` production branch.
+- Our `master` branch is the Gitflow `develop` development branch. All pull requests go against `master`.
 
-If you are working on a site _Beta_ then it looks like normal Gitflow and pull requests go against the relevant site **develop** branch.
+If you are working on a site _Beta_ then it looks like normal Gitflow and pull requests go against the relevant site development branch.
 
-We merge from **master** to testing (**qa** branch) then ship from **qa** to **live**.
+We merge from `master` to the QA testing branch, then ship from the QA branch to the live production branch.
 
-| Site                 | Master Branch | QA Branch    | Live Branch    |
-| -------------------- | ------------- | ------------ | -------------- |
-| Language Forge       | `master`      | `lf-qa`      | `lf-live`      |
-| Scripture Forge      | `master`      | `sf-qa`      | `sf-live`      |
-| Scripture Forge Beta | `sf-develop`  | `sf-qa-beta` | `sf-live-beta` |
+| Site                 | Development Branch | QA Branch    | Production Branch |
+| -------------------- | ------------------ | ------------ | ----------------- |
+| Language Forge       | `master`           | `lf-qa`      | `lf-live`         |
+| Scripture Forge      | `master`           | `sf-qa`      | `sf-live`         |
+| Scripture Forge Beta | `sf-develop`       | `sf-qa-beta` | `sf-live-beta`    |
 
 ### Style Guides
 
@@ -168,15 +168,18 @@ src/SIL.XForge.Scripture/ClientApp/monitor-test-headless.sh some.component.spec.
 ```
 
 #### Debugging Unit Tests
+
 The best way to debug Angular unit tests is with Chromium.
-* Run as usual or with `ng test --sourceMap=true`.
-* When the Chromium window appears, press _F12_.
-* Click the Sources tab
-* Files might show up under `webpack://` or `context/localhost:dddd/src` or elsewhere, but you can always press _CTRL-P_ and type the name of a file to get there faster.
+
+- Run as usual or with `ng test --sourceMap=true`.
+- When the Chromium window appears, press _F12_.
+- Click the Sources tab
+- Files might show up under `webpack://` or `context/localhost:dddd/src` or elsewhere, but you can always press _CTRL-P_ and type the name of a file to get there faster.
 
 [This video](https://youtu.be/NVqplMyOZTM) has a live demo of the process.
 
 #### Filtering Unit Tests
+
 To run (or not to run) specific tests or fixtures, you can use the prefixes `f`ocus and e`x`clude, as in `fdescribe` or `fit` to run only the specified functions, or `xdescribe` and `xit` to skip running the specified functions (but all functions will still be built). To skip building extra tests, modify the filter in `src/SIL.XForge.Scripture/ClientApp/src/test.ts` per [these instructions](https://stackoverflow.com/a/50636750/3587084).
 
 See documentation for [running tests](https://github.com/angular/angular-cli/wiki/test) and [writing tests](https://angular.io/guide/testing#testing).
@@ -267,4 +270,9 @@ ng serve
 When files change on the backend it will compile the changes automatically and now `ng serve` won't re-start every time.
 
 ## Database
+
 The VS Code extension [Azure Cosmos DB](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-cosmosdb) can be used to inspect our Mongo DB.
+
+## Debugging
+
+In Visual Studio Code, in the debug sidebar, choose **Full App (SF)** to debug the front-end and back-end at the same time, or **Launch Chrome (SF)** or **.NET Core (SF)** to just debug the front-end or back-end.
