@@ -15,11 +15,6 @@ import { RealtimeOfflineStore } from './realtime-offline-store';
 
 types.register(RichText.type);
 
-interface ConnectedData {
-  promise: Promise<any>;
-  refCount: number;
-}
-
 function serializeRecordIdentity(identity: RecordIdentity): string {
   return `${identity.type}:${identity.id}`;
 }
@@ -30,7 +25,7 @@ function serializeRecordIdentity(identity: RecordIdentity): string {
 export class RealtimeService {
   private readonly ws: ReconnectingWebSocket;
   private readonly connection: Connection;
-  private readonly connectedDataMap = new Map<string, ConnectedData>();
+  private readonly dataMap = new Map<string, Promise<RealtimeData>>();
   private readonly stores = new Map<string, RealtimeOfflineStore>();
 
   constructor(
@@ -42,33 +37,21 @@ export class RealtimeService {
     this.connection = new Connection(this.ws);
   }
 
-  connect<T extends RealtimeData>(identity: RecordIdentity): Promise<T> {
+  get<T extends RealtimeData>(identity: RecordIdentity): Promise<T> {
     const key = serializeRecordIdentity(identity);
-    let connectedData = this.connectedDataMap.get(key);
-    if (connectedData == null) {
-      const sharedbDoc = this.connection.get(underscore(identity.type) + '_data', identity.id);
-      const store = this.getStore(identity.type);
-      const RealtimeDataType = this.domainModel.getRealtimeDataType(identity.type);
-      const realtimeData = new RealtimeDataType(new SharedbRealtimeDoc(sharedbDoc), store);
-      const promise = new Promise<any>((resolve, reject) => {
-        realtimeData.subscribe().then(() => resolve(realtimeData), err => reject(err));
-      });
-      connectedData = { promise, refCount: 0 };
-      this.connectedDataMap.set(key, connectedData);
+    let dataPromise = this.dataMap.get(key);
+    if (dataPromise == null) {
+      dataPromise = this.createData(identity);
+      this.dataMap.set(key, dataPromise);
     }
-    connectedData.refCount++;
-    return connectedData.promise;
+    return dataPromise as Promise<T>;
   }
 
-  disconnect(data: RealtimeData): Promise<void> {
-    const key = serializeRecordIdentity(data);
-    const connectedData = this.connectedDataMap.get(key);
-    connectedData.refCount--;
-    if (connectedData.refCount === 0) {
-      this.connectedDataMap.delete(key);
-      return data.dispose();
+  reset(): void {
+    for (const dataPromise of this.dataMap.values()) {
+      this.disposeData(dataPromise);
     }
-    return Promise.resolve();
+    this.dataMap.clear();
   }
 
   localDelete(identity: RecordIdentity): Promise<void> {
@@ -94,5 +77,19 @@ export class RealtimeService {
       );
     }
     return this.stores.get(type);
+  }
+
+  private async createData(identity: RecordIdentity): Promise<RealtimeData> {
+    const sharedbDoc = this.connection.get(underscore(identity.type) + '_data', identity.id);
+    const store = this.getStore(identity.type);
+    const RealtimeDataType = this.domainModel.getRealtimeDataType(identity.type);
+    const realtimeData = new RealtimeDataType(new SharedbRealtimeDoc(sharedbDoc), store);
+    await realtimeData.subscribe();
+    return realtimeData;
+  }
+
+  private async disposeData(dataPromise: Promise<RealtimeData>) {
+    const data = await dataPromise;
+    await data.dispose();
   }
 }

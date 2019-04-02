@@ -10,6 +10,7 @@ import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { AuthService } from 'xforge-common/auth.service';
 import { MapQueryResults, QueryResults } from 'xforge-common/json-api.service';
 import { User, UserRef } from 'xforge-common/models/user';
+import { RealtimeService } from 'xforge-common/realtime.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
 import { nameof } from 'xforge-common/utils';
@@ -219,8 +220,9 @@ class TestEnvironment {
 
   readonly mockedAuthService = mock(AuthService);
   readonly mockedUserService = mock(UserService);
-  readonly mockedSFAdminAuthGuard: SFAdminAuthGuard = mock(SFAdminAuthGuard);
+  readonly mockedSFAdminAuthGuard = mock(SFAdminAuthGuard);
   readonly mockedSFProjectService = mock(SFProjectService);
+  readonly mockedRealtimeService = mock(RealtimeService);
 
   private readonly currentUser: User;
   private readonly projects$: BehaviorSubject<QueryResults<SFProjectUser[]>>;
@@ -300,7 +302,8 @@ class TestEnvironment {
         { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
         { provide: UserService, useFactory: () => instance(this.mockedUserService) },
         { provide: SFAdminAuthGuard, useFactory: () => instance(this.mockedSFAdminAuthGuard) },
-        { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) }
+        { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
+        { provide: RealtimeService, useFactory: () => instance(this.mockedRealtimeService) }
       ]
     });
     this.router = TestBed.get(Router);

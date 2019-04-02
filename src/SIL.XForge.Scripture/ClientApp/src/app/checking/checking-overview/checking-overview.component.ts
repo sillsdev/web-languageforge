@@ -4,8 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { clone } from '@orbit/utils';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { getJsonDataIdStr, JsonDataId } from 'xforge-common/models/json-data';
-import { UserRef } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { UserService } from 'xforge-common/user.service';
@@ -15,10 +13,10 @@ import { QuestionData } from '../../core/models/question-data';
 import { ScrVers } from '../../core/models/scripture/scr-vers';
 import { VerseRef } from '../../core/models/scripture/verse-ref';
 import { ScrVersType } from '../../core/models/scripture/versification';
-import { SFProjectRef } from '../../core/models/sfproject';
 import { Text } from '../../core/models/text';
-import { QuestionService } from '../../core/question.service';
+import { getTextJsonDataIdStr, TextJsonDataId } from '../../core/models/text-json-data-id';
 import { SFProjectService } from '../../core/sfproject.service';
+import { TextService } from '../../core/text.service';
 import { SFAdminAuthGuard } from '../../shared/sfadmin-auth.guard';
 import {
   QuestionDialogComponent,
@@ -34,7 +32,7 @@ import {
 export class CheckingOverviewComponent extends SubscriptionDisposable implements OnInit, OnDestroy {
   itemVisible: { [textId: string]: boolean } = {};
   questions: { [textId: string]: QuestionData } = {};
-  getJsonDataIdStr = getJsonDataIdStr;
+  getTextJsonDataIdStr = getTextJsonDataIdStr;
   isProjectAdmin$: Observable<boolean>;
   texts: Text[];
   textsByBook: { [bookId: string]: Text };
@@ -47,7 +45,7 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
     private readonly dialog: MdcDialog,
     private readonly noticeService: NoticeService,
     private readonly projectService: SFProjectService,
-    private readonly questionService: QuestionService,
+    private readonly textService: TextService,
     private readonly userService: UserService
   ) {
     super();
@@ -70,7 +68,7 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
           this.textsByBook[text.bookId] = text;
           this.texts.push(text);
           for (const chapter of text.chapters) {
-            await this.bindQuestionData(new JsonDataId(text.id, chapter.number));
+            await this.bindQuestionData(new TextJsonDataId(text.id, chapter.number));
           }
         }
         this.noticeService.loadingFinished();
@@ -79,13 +77,6 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
   }
 
   ngOnDestroy(): void {
-    if (this.texts != null) {
-      for (const text of this.texts) {
-        for (const chapter of text.chapters) {
-          this.unbindQuestionData(new JsonDataId(text.id, chapter.number));
-        }
-      }
-    }
     super.ngOnDestroy();
     this.noticeService.loadingFinished();
   }
@@ -105,7 +96,7 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
   }
 
   questionCount(textId: string, chapterNumber: number): number {
-    const id = new JsonDataId(textId, chapterNumber);
+    const id = new TextJsonDataId(textId, chapterNumber);
     if (!(id.toString() in this.questions)) {
       return undefined;
     }
@@ -132,7 +123,7 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
   }
 
   chapterAnswerCount(textId: string, chapterNumber: number): number {
-    const id = new JsonDataId(textId, chapterNumber);
+    const id = new TextJsonDataId(textId, chapterNumber);
     if (!(id.toString() in this.questions)) {
       return undefined;
     }
@@ -152,7 +143,7 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
   }
 
   answerCount(textId: string, chapterNumber: number, questionIndex: number = 0): number {
-    const id = new JsonDataId(textId, chapterNumber);
+    const id = new TextJsonDataId(textId, chapterNumber);
     if (!(id.toString() in this.questions)) {
       return undefined;
     }
@@ -175,7 +166,7 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
 
   questionDialog(editMode = false, textId?: string, chapterNumber?: number, questionIndex: number = 0): void {
     let newQuestion: Question = { id: undefined, ownerRef: undefined, projectRef: undefined };
-    let id: JsonDataId;
+    let id: TextJsonDataId;
     let question: Question;
     if (editMode) {
       if (
@@ -189,7 +180,7 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
         throw new Error('Must supply valid textId, chapterNumber and questionIndex in editMode');
       }
 
-      id = new JsonDataId(textId, chapterNumber);
+      id = new TextJsonDataId(textId, chapterNumber);
       question = this.questions[id.toString()].data[questionIndex];
       newQuestion = clone(question);
     }
@@ -223,8 +214,8 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
         if (editMode) {
           this.questions[id.toString()].replaceInList(question, newQuestion, [questionIndex]);
         } else {
-          id = new JsonDataId(this.textFromBook(verseStart.book).id, verseStart.chapterNum);
-          const questionData = await this.questionService.connect(id);
+          id = new TextJsonDataId(this.textFromBook(verseStart.book).id, verseStart.chapterNum);
+          const questionData = await this.textService.getQuestionData(id);
           newQuestion.id = objectId();
           newQuestion.ownerRef = this.userService.currentUserId;
           newQuestion.projectRef = this.projectId;
@@ -236,22 +227,21 @@ export class CheckingOverviewComponent extends SubscriptionDisposable implements
     });
   }
 
-  private async bindQuestionData(id: JsonDataId): Promise<void> {
+  private async bindQuestionData(id: TextJsonDataId): Promise<void> {
     if (id == null) {
       return;
     }
 
-    await this.unbindQuestionData(id);
-    const questionData: QuestionData = await this.questionService.connect(id);
+    this.unbindQuestionData(id);
+    const questionData: QuestionData = await this.textService.getQuestionData(id);
     this.questions[id.toString()] = questionData;
   }
 
-  private async unbindQuestionData(id: JsonDataId): Promise<void> {
+  private unbindQuestionData(id: TextJsonDataId): void {
     if (!(id.toString() in this.questions)) {
       return;
     }
 
-    await this.questionService.disconnect(this.questions[id.toString()]);
     delete this.questions[id.toString()];
   }
 

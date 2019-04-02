@@ -274,7 +274,7 @@ export class TextComponent implements OnDestroy {
   }
 
   private async bindQuill(): Promise<void> {
-    await this.unbindQuill();
+    this.unbindQuill();
     if (this._id == null || this._editor == null) {
       return;
     }
@@ -282,7 +282,7 @@ export class TextComponent implements OnDestroy {
     const editorElem = this._editor.container.getElementsByClassName('ql-editor')[0];
     const placeholderText = editorElem.getAttribute('data-placeholder');
     editorElem.setAttribute('data-placeholder', '');
-    this.textData = await this.textService.connect(this._id);
+    this.textData = await this.textService.getTextData(this._id);
     this._editor.setContents(this.textData.data);
     this.textDataSub = this.textData.remoteChanges().subscribe(ops => this._editor.updateContents(ops));
     editorElem.setAttribute('data-placeholder', placeholderText);
@@ -290,12 +290,11 @@ export class TextComponent implements OnDestroy {
     this.applyEditorStyles();
   }
 
-  private async unbindQuill(): Promise<void> {
+  private unbindQuill(): void {
     if (this.textData == null) {
       return;
     }
     this.textDataSub.unsubscribe();
-    await this.textService.disconnect(this.textData);
     this._editor.setText('', 'silent');
   }
 

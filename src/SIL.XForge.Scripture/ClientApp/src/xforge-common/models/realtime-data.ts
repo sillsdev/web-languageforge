@@ -77,5 +77,7 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
     return this.doc.destroy();
   }
 
-  protected abstract prepareDataForStore(data: T): any;
+  protected prepareDataForStore(data: T): any {
+    return data;
+  }
 }
