@@ -79,7 +79,7 @@ export class LexiconEditorController implements angular.IController {
   entries = this.editorService.entries;
   entryListModifiers = this.editorService.entryListModifiers;
   filteredEntries = this.editorService.filteredEntries;
-  getEntryCommentCount = this.commentService.getEntryCommentCount;
+  getEntryCommentCount = this.commentService.getEntryCommentCount.bind(this.commentService);
   getPrimaryListItemForDisplay = this.editorService.getSortableValue;
   visibleEntries = this.editorService.visibleEntries;
   unreadCount = this.activityService.unreadCount;
