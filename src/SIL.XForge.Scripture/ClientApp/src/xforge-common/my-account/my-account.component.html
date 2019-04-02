@@ -259,7 +259,13 @@
             </mat-form-field> -->
             <mdc-form-field fxFlex>
               <mdc-select formControlName="gender" placeholder="Gender" (valueChange)="update('gender', $event.value)">
-                <option value="female">Female</option><option value="male">Male</option><option value="empty"></option>
+                <mdc-menu>
+                  <mdc-list>
+                    <mdc-list-item value="female">Female</mdc-list-item>
+                    <mdc-list-item value="male">Male</mdc-list-item>
+                    <mdc-list-item value="empty"></mdc-list-item>
+                  </mdc-list>
+                </mdc-menu>
               </mdc-select>
             </mdc-form-field>
             <mat-spinner
