@@ -59,7 +59,7 @@ describe('MyAccountComponent', () => {
   // the update button being disabled, the green check icon,
   // arrow icon, and spinner.
   // The test goes thru a sequence of actions, verifying state and icons.
-  fit('should update spinner, arrow, check, and disabled, depending on activity', fakeAsync(() => {
+  it('should update spinner, arrow, check, and disabled, depending on activity', fakeAsync(() => {
     const originalName = env.component.userFromDatabase.name;
     expect(env.component.formGroup.get('name').value).toEqual(originalName, 'test setup problem');
 
@@ -265,22 +265,23 @@ describe('MyAccountComponent', () => {
     });
   }));
 
-  fit('handles network error for comboboxes', fakeAsync(() => {
+  it('handles network error for combobox (select)', fakeAsync(() => {
     const technicalDetails = 'squirrel chewed thru line. smoke lost.';
     when(env.mockedUserService.onlineUpdateCurrentUserAttributes(anything())).thenReject({ stack: technicalDetails });
 
-    const originalvalue = env.component.userFromDatabase.gender;
-    expect(env.component.formGroup.get('gender').value).toBe(originalvalue, 'test setup problem');
+    const newValue = 'female';
+    const originalValue = env.component.userFromDatabase.gender;
+    expect(originalValue).not.toEqual(newValue, 'test set up wrong');
+    expect(env.component.formGroup.get('gender').value).toEqual(originalValue, 'test setup problem');
 
     // change value on page
-    const newValue = 'female';
-    expect(originalvalue).not.toEqual(newValue, 'test set up wrong');
     env.component.formGroup.get('gender').setValue(newValue);
+    env.genderCombo.nativeElement.dispatchEvent(new Event('change'));
+    // flush();
     env.fixture.detectChanges();
 
-    // TODO?: env.clickButton(env.genderToggle('Male'));
-    env.clickButton(env.genderCombo);
-    expect(env.component.formGroup.get('gender').value).toEqual(newValue, 'test setup problem');
+    env.component.formGroup.get('gender').setValue(newValue);
+    env.fixture.detectChanges();
 
     verifyStates(env, 'gender', {
       state: env.component.elementState.Submitting,
@@ -293,10 +294,10 @@ describe('MyAccountComponent', () => {
     // Time passes
     flush();
     env.fixture.detectChanges();
-    expect(env.component.userFromDatabase.gender).toEqual(originalvalue, 'test setup problem?');
+    expect(env.component.userFromDatabase.gender).toEqual(originalValue, 'test setup problem?');
 
     expect(env.component.formGroup.get('gender').value).toEqual(
-      originalvalue,
+      originalValue,
       'should have set form value back to original value'
     );
 
@@ -501,45 +502,6 @@ describe('MyAccountComponent', () => {
       expect(env.component.userFromDatabase.contactMethod).toEqual('email');
       expect(env.component.formGroup.get('contactMethod').value).toEqual('email');
       expect(env.component.controlStates.get('contactMethod')).toBe(env.component.elementState.InSync);
-    }));
-  });
-
-  fdescribe('select and picker', () => {
-    it('should update to the chosen gender', fakeAsync(() => {
-      expect(env.userInDatabase.gender).toEqual('male', 'initial user');
-      expect(env.component.formGroup.get('gender').value).toEqual(env.userInDatabase.gender, 'setup problem');
-
-      const newValue = 'female';
-      // // https://stackoverflow.com/questions/48947374/angular5-click-select-option-in-component-test Emmy's solution:
-      // // env.genderCombo.nativeElement.click();
-      // env.genderCombo.query(By.css('i')).nativeElement.click();
-      // env.fixture.detectChanges();
-      // env.comboItem(newValue).nativeElement.click();
-      // console.log('after click: ' + env.component.formGroup.get('gender').value);
-      // flush();
-      // console.log('after flush: ' + env.component.formGroup.get('gender').value);
-      // env.fixture.detectChanges();
-      // console.log('after detect: ' + env.component.formGroup.get('gender').value);
-      // Ayala's solution
-      // env.genderCombo.nativeElement.value = newValue; // or setValue?
-      env.component.formGroup.get('gender').setValue(newValue);
-      console.log('after set: ' + env.component.formGroup.get('gender').value);
-      env.genderCombo.nativeElement.dispatchEvent(new Event('change'));
-      console.log('after change event: ' + env.component.formGroup.get('gender').value);
-      flush();
-      console.log('after flush: ' + env.component.formGroup.get('gender').value);
-      env.fixture.detectChanges();
-      console.log('after detect: ' + env.component.formGroup.get('gender').value);
-      // // my experiments
-      // env.clickButton(env.comboItem(newValue));
-      // console.log(env.comboItem(newValue).nativeElement.select);
-      // console.log(env.genderCombo.nativeElement.select);
-      // env.genderCombo.nativeElement.select = newValue;
-      // env.comboItem(newValue).nativeElement.select = newValue;
-      // env.fixture.detectChanges();
-      // flush();
-      expect(env.component.formGroup.get('gender').value).toEqual(newValue, 'not clicked?');
-      expect(env.userInDatabase.gender).toEqual(newValue, 'not properly updated in database');
     }));
   });
 
