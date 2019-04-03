@@ -228,8 +228,7 @@ namespace SIL.XForge.Scripture.Services
                     }
 
                     // start training Machine engine
-                    await _engineService.StartBuildAsync(SIL.Machine.WebApi.DataAccess.EngineLocatorType.Project,
-                        _job.ProjectRef);
+                    await _engineService.StartBuildByProjectIdAsync(_job.ProjectRef);
 
                     await _projects.UpdateAsync(_job.ProjectRef, u => u
                         .Set(p => p.LastSyncedDate, DateTime.UtcNow)
