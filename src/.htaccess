@@ -6,3 +6,9 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [QSA,L]
 </IfModule>
+
+<ifModule mod_headers.c>
+   <Files "service-worker.js">
+       Header Set Service-Worker-allowed "/"
+   </Files>
+</IfModule>
