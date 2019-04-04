@@ -125,7 +125,7 @@ export class TranslateMetricsSession extends SubscriptionDisposable {
     if (this.target.editor != null) {
       this.setupSubscriptions();
     } else {
-      this.target.loaded.subscribe(() => this.setupSubscriptions());
+      this.subscribe(this.target.loaded, () => this.setupSubscriptions());
     }
   }
 

@@ -1,80 +1,95 @@
-<div fxLayout="column">
-  <mdc-card outlined class="connect-card">
-    <h2 *ngIf="state === 'input'" class="connect-title">Connect Paratext Project</h2>
-    <div fxLayout="column">
-      <div [ngSwitch]="state">
-        <div
-          *ngSwitchCase="'loading'"
-          id="loading"
-          class="progress-container"
-          fxLayout="column"
-          fxLayoutAlign="center center"
+<div mdcHeadline4 class="title">Connect Paratext Project</div>
+<div class="content" [ngSwitch]="state">
+  <div *ngSwitchCase="'login'" class="paratext-login-container">
+    <div mdcBody1>You must login with your Paratext account to connect to a project.</div>
+    <button mdc-button id="paratext-login-button" (click)="logInWithParatext()">
+      <img src="/assets/paratext_logo.png" alt="Paratext Logo" class="paratext-logo" /> Log in with Paratext
+    </button>
+  </div>
+  <mdc-card outlined *ngSwitchCase="'connecting'" class="progress-container">
+    <div class="progress-label" mdcBody1>Connecting to {{ connectProjectName }}...</div>
+    <mdc-linear-progress
+      [secondary]="true"
+      [determinate]="!connectPending"
+      [progress]="connectProgress"
+    ></mdc-linear-progress>
+  </mdc-card>
+  <form *ngSwitchDefault [formGroup]="connectProjectForm" (ngSubmit)="submit()">
+    <mdc-form-field>
+      <mdc-select
+        #projectSelect
+        id="project-select"
+        placeholder="Paratext Project"
+        formControlName="paratextId"
+        required
+      >
+        <mdc-menu>
+          <mdc-list>
+            <mdc-list-item *ngFor="let project of targetProjects" [value]="project.paratextId">
+              {{ project.name }}
+            </mdc-list-item>
+          </mdc-list>
+        </mdc-menu>
+      </mdc-select>
+    </mdc-form-field>
+
+    <mdc-card id="tasks-card" *ngIf="showTasks" outlined formGroupName="tasks">
+      <div class="card-title">
+        <span mdcHeadline6>Tasks</span>
+        <span
+          *ngIf="connectProjectForm.errors && connectProjectForm.errors.requireAtLeastOneWithValue"
+          class="invalid-feedback"
         >
-          <div class="progress-label">Retrieving Paratext information...</div>
-          <mdc-linear-progress [secondary]="true" reversed></mdc-linear-progress>
+          You must select at least one option
+        </span>
+      </div>
+      <div class="card-content">
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mdc-form-field>
+            <mdc-checkbox formControlName="translate" id="translate-checkbox"></mdc-checkbox>
+            <label>Translate</label>
+          </mdc-form-field>
         </div>
-        <div *ngSwitchCase="'login'" fxLayout="column" fxLayoutAlign="center center">
-          <button mdc-button id="btn-login" class="login-button" (click)="logInWithParatext()">
-            <img src="/assets/paratext_logo.png" alt="Paratext Logo" class="paratext-logo" /> Log in with Paratext
-          </button>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <div fxFlex="2.75rem" class="indent"></div>
+          <p fxFlex class="helper-text">
+            Collaborate with other translators working on the same text and use translation suggestions.
+          </p>
         </div>
-        <div *ngSwitchCase="'input'">
-          <form [formGroup]="connectProjectForm" (ngSubmit)="submit()" fxLayout="column">
-            <mdc-form-field>
-              <mdc-select placeholder="Paratext Project" formControlName="paratextId" id="project-select">
-                <mdc-menu class="project-selection-menu">
-                  <mdc-list>
-                    <mdc-list-item *ngFor="let project of targetProjects" [value]="project.paratextId">
-                      {{ project.name }}
-                    </mdc-list-item>
-                  </mdc-list>
-                </mdc-menu>
-              </mdc-select>
-            </mdc-form-field>
-            <div *ngIf="showTasks" formGroupName="tasks" fxLayout="column" id="connect-tasks">
-              <div>Include Tasks</div>
-              <div
-                class="at-least-one-msg"
-                *ngIf="connectProjectForm.errors && connectProjectForm.errors.requireAtLeastOneWithValue"
-              >
-                *At least one task must be selected
-              </div>
-              <mdc-form-field>
-                <mdc-checkbox formControlName="checking" id="connect-checking-checkbox"></mdc-checkbox>
-                <label>Community Checking</label>
-              </mdc-form-field>
-              <mdc-form-field>
-                <mdc-checkbox
-                  (change)="onTranslateToggled($event)"
-                  formControlName="translate"
-                  id="connect-translate-checkbox"
-                ></mdc-checkbox>
-                <label>Translate</label>
-              </mdc-form-field>
-              <mdc-form-field>
-                <mdc-select placeholder="Based on" formControlName="sourceParatextId" id="connect-source-select">
-                  <mdc-menu class="project-selection-menu">
-                    <mdc-list>
-                      <mdc-list-item *ngFor="let project of sourceProjects" [value]="project.paratextId">
-                        {{ project.name }}
-                      </mdc-list-item>
-                    </mdc-list>
-                  </mdc-menu>
-                </mdc-select>
-              </mdc-form-field>
-            </div>
-            <button mdc-button primary type="submit" id="connect-submit-button">Connect</button>
-          </form>
-        </div>
-        <div *ngSwitchCase="'connecting'" class="progress-container" fxLayout="column" fxLayoutAlign="center center">
-          <div class="progress-label">Connecting to Paratext project...</div>
-          <mdc-linear-progress
-            [secondary]="true"
-            [determinate]="!connectPending"
-            [progress]="connectProgress"
-          ></mdc-linear-progress>
+        <div fxLayout="row" fxLayoutAlign="start center" class="indented-field-row">
+          <div fxFlex="2.75rem" class="indent"></div>
+          <mdc-form-field fxFlex="1 1 0%">
+            <mdc-select placeholder="Based on" formControlName="sourceParatextId" id="based-on-select" required>
+              <mdc-menu>
+                <mdc-list>
+                  <mdc-list-item *ngFor="let project of sourceProjects" [value]="project.paratextId">
+                    {{ project.name }}
+                  </mdc-list-item>
+                </mdc-list>
+              </mdc-menu>
+            </mdc-select>
+          </mdc-form-field>
         </div>
       </div>
-    </div>
-  </mdc-card>
+      <mdc-list-divider></mdc-list-divider>
+      <div class="card-content">
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mdc-form-field>
+            <mdc-checkbox formControlName="checking" id="checking-checkbox"></mdc-checkbox>
+            <label>Community Checking</label>
+          </mdc-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <div fxFlex="2.75rem" class="indent"></div>
+          <p fxFlex class="helper-text">
+            Engage the wider community to ensure that the translation is clear, accurate, and natural. Select verses,
+            ask targeted questions, allow discussion of answers.
+          </p>
+        </div>
+      </div>
+    </mdc-card>
+    <button mdc-button primary type="submit" id="connect-submit-button" [disabled]="state === 'loading'">
+      Connect
+    </button>
+  </form>
 </div>

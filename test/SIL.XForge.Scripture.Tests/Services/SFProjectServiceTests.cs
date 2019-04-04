@@ -107,9 +107,9 @@ namespace SIL.XForge.Scripture.Services
                 Assert.That(updatedResource, Is.Not.Null);
                 Assert.That(updatedResource.TranslateConfig.SourceParatextId, Is.EqualTo("changedId"));
                 SyncJobEntity runningJob = await env.Jobs.GetAsync("job01");
-                Assert.That(runningJob, Is.Not.Null);
+                Assert.That(runningJob, Is.Null);
                 jobs = await env.Jobs.GetAllAsync();
-                Assert.That(jobs.Count, Is.EqualTo(2));
+                Assert.That(jobs.Count, Is.EqualTo(1));
                 env.BackgroundJobClient.Received(1).ChangeState("backgroundJob01", Arg.Any<Hangfire.States.IState>(),
                     Arg.Any<string>());
             }
@@ -213,15 +213,16 @@ namespace SIL.XForge.Scripture.Services
                             ProjectRef = "project01",
                             OwnerRef = "user01",
                             State = SyncJobEntity.SyncingState,
-                            BackgroundJobId = "backgroundJob01"
+                            BackgroundJobId = "backgroundJob01",
+                            StartCount = 1
                         }
                     });
                 EngineService = Substitute.For<IEngineService>();
                 BackgroundJobClient = Substitute.For<IBackgroundJobClient>();
                 SyncJobMapper = Substitute.For<IProjectDataMapper<SyncJobResource, SyncJobEntity>>();
                 TextMapper = Substitute.For<IProjectDataMapper<TextResource, TextEntity>>();
-                Service = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, Jobs, EngineService,
-                    SiteOptions, BackgroundJobClient)
+                Service = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, EngineService,
+                    SiteOptions, new SyncJobManager(Jobs, Entities, BackgroundJobClient))
                 {
                     SyncJobMapper = SyncJobMapper,
                     TextMapper = TextMapper

@@ -1,57 +1,103 @@
 @import '~src/global';
 
-.connect-card {
-  max-width: 36rem;
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  margin-bottom: 2rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  max-width: 32rem;
   width: 100%;
-  align-self: center;
-  padding: 0.4rem 1.2rem 1.2rem 1.2rem;
-}
 
-.connect-title {
-  text-align: center;
-}
+  .paratext-login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-.paratext-logo {
-  width: 2rem;
-  height: 2rem;
-  margin-right: 0.5rem;
-}
+    > button {
+      margin-top: 1.2rem;
+      background-color: $pt-button-green;
+      color: white;
+      height: 2.5rem;
 
-#btn-login {
-  background-color: $pt-button-green;
-  color: white;
-  height: 2.5rem;
-}
+      > .paratext-logo {
+        width: 2rem;
+        height: 2rem;
+        margin-right: 0.5rem;
+      }
+    }
+  }
 
-.at-least-one-msg {
-  font-size: small;
-  color: var(--mdc-theme-error);
-}
+  .progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
 
-#connect-submit-button {
-  width: 7.5rem;
-  height: 2.5rem;
-  align-self: center;
-}
+    > .progress-label {
+      margin-bottom: 1.2rem;
+    }
+  }
 
-.progress-container {
-  padding: 2rem;
-}
+  form {
+    display: flex;
+    flex-direction: column;
 
-.progress-label {
-  padding-bottom: 1.2rem;
-}
+    #project-select {
+      width: 100%;
+      margin-right: 2rem;
+    }
 
-.login-button {
-  margin: 2rem;
-}
+    mdc-card {
+      margin-top: 2rem;
 
-#project-select {
-  width: 100%;
-  margin-bottom: 1.2rem;
-}
+      .card-title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 0.5rem 1rem 0 1rem;
+      }
 
-.project-selection-menu {
-  width: 80%;
-  max-width: 30rem;
+      .card-content {
+        padding: 1rem;
+      }
+
+      mdc-select {
+        width: 100%;
+      }
+
+      mdc-list-divider {
+        margin-left: 1.4rem;
+      }
+    }
+
+    #connect-submit-button {
+      align-self: center;
+      margin-top: 2rem;
+      @include mdc-button-filled-accessible($pt-button-green);
+    }
+
+    p.helper-select,
+    .indented-field-row {
+      margin-top: 1rem;
+    }
+
+    .helper-text {
+      color: var(--mdc-theme-text-hint-on-background);
+      margin: 0;
+    }
+
+    .invalid-feedback {
+      color: var(--mdc-theme-error);
+      font-size: 0.75rem;
+      margin-left: 2rem;
+    }
+  }
 }

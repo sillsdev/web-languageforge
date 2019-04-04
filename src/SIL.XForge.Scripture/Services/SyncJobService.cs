@@ -1,7 +1,5 @@
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Hangfire;
 using JsonApiDotNetCore.Internal;
 using JsonApiDotNetCore.Services;
 using Microsoft.AspNetCore.Http;
@@ -13,51 +11,29 @@ namespace SIL.XForge.Scripture.Services
 {
     public class SyncJobService : SFProjectDataService<SyncJobResource, SyncJobEntity>
     {
-        private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly SyncJobManager _syncJobManager;
         public SyncJobService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
-            IRepository<SyncJobEntity> jobs, IRepository<SFProjectEntity> projects,
-            IBackgroundJobClient backgroundJobClient)
+            IRepository<SyncJobEntity> jobs, IRepository<SFProjectEntity> projects, SyncJobManager syncJobManager)
             : base(jsonApiContext, mapper, userAccessor, jobs, projects)
         {
-            _backgroundJobClient = backgroundJobClient;
+            _syncJobManager = syncJobManager;
         }
 
         protected override int Domain => SFDomain.SyncJobs;
 
         protected override async Task<SyncJobEntity> InsertEntityAsync(SyncJobEntity entity)
         {
-            SyncJobEntity job = await Entities.UpdateAsync(
-                j => j.ProjectRef == entity.ProjectRef && SyncJobEntity.ActiveStates.Contains(j.State),
-                u => u
-                    .SetOnInsert(j => j.Id, entity.Id)
-                    .SetOnInsert(j => j.ProjectRef, entity.ProjectRef)
-                    .SetOnInsert(j => j.State, SyncJobEntity.PendingState)
-                    .Inc(j => j.StartCount, 1),
-                true);
-            if (job.StartCount == 1)
-            {
-                await Projects.UpdateAsync(job.ProjectRef, u => u.Set(p => p.ActiveSyncJobRef, job.Id));
-                // new job, so enqueue the runner
-                string jobId = job.Id;
-                _backgroundJobClient.Enqueue<ParatextSyncRunner>(r => r.RunAsync(null, null, UserId, jobId));
+            SyncJobEntity job = await _syncJobManager.StartAsync(entity);
+            if (job != null)
                 return job;
-            }
 
             throw new JsonApiException(StatusCodes.Status409Conflict,
                 "There is already an active send/receive job for this project.");
         }
 
-        protected override async Task<bool> DeleteEntityAsync(string id)
+        protected override Task<bool> DeleteEntityAsync(string id)
         {
-            SyncJobEntity job = await Entities.DeleteAsync(id);
-            if (job != null)
-            {
-                if (SyncJobEntity.ActiveStates.Contains(job.State))
-                    _backgroundJobClient.Delete(job.BackgroundJobId);
-                return true;
-            }
-
-            return false;
+            return _syncJobManager.CancelAsync(id);
         }
     }
 }

@@ -270,8 +270,8 @@ namespace SIL.XForge.Scripture.Services
                 Service = new SFProjectUserService(JsonApiContext, Mapper, UserAccessor, Entities, Users,
                     ParatextService)
                 {
-                    ProjectMapper = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities, jobs,
-                        engineService, SiteOptions, backgroundJobClient),
+                    ProjectMapper = new SFProjectService(JsonApiContext, Mapper, UserAccessor, Entities,
+                        engineService, SiteOptions, new SyncJobManager(jobs, Entities, backgroundJobClient)),
                     UserMapper = new UserService(JsonApiContext, Mapper, UserAccessor, Users, SiteOptions)
                 };
             }

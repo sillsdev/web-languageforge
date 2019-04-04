@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Hangfire;
 using JsonApiDotNetCore.Services;
 using Microsoft.Extensions.Options;
 using SIL.Machine.WebApi.Models;
@@ -18,20 +15,18 @@ namespace SIL.XForge.Scripture.Services
 {
     public class SFProjectService : ProjectService<SFProjectResource, SFProjectEntity>
     {
-        private readonly IRepository<SyncJobEntity> _jobs;
         private readonly IEngineService _engineService;
         private readonly IOptions<SiteOptions> _siteOptions;
-        private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly SyncJobManager _syncJobManager;
 
         public SFProjectService(IJsonApiContext jsonApiContext, IMapper mapper, IUserAccessor userAccessor,
-            IRepository<SFProjectEntity> projects, IRepository<SyncJobEntity> jobs, IEngineService engineService,
-            IOptions<SiteOptions> siteOptions, IBackgroundJobClient backgroundJobClient)
+            IRepository<SFProjectEntity> projects, IEngineService engineService, IOptions<SiteOptions> siteOptions,
+            SyncJobManager syncJobManager)
             : base(jsonApiContext, mapper, userAccessor, projects)
         {
-            _jobs = jobs;
             _engineService = engineService;
             _siteOptions = siteOptions;
-            _backgroundJobClient = backgroundJobClient;
+            _syncJobManager = syncJobManager;
         }
 
         public IProjectDataMapper<SyncJobResource, SyncJobEntity> SyncJobMapper { get; set; }
@@ -62,6 +57,15 @@ namespace SIL.XForge.Scripture.Services
                 };
                 await _engineService.AddProjectAsync(project);
             }
+
+            var job = new SyncJobEntity()
+            {
+                Id = entity.ActiveSyncJobRef,
+                ProjectRef = entity.Id,
+                OwnerRef = UserId
+            };
+            await _syncJobManager.StartAsync(job);
+
             return entity;
         }
 
@@ -88,13 +92,7 @@ namespace SIL.XForge.Scripture.Services
                 ((TranslateConfig)translateConfig).SourceParatextId != null)
             {
                 // if currently running sync job for project is found, cancel it
-                string backgroundJobId = await _jobs.Query()
-                    .Where(j => j.ProjectRef == id && SyncJobEntity.ActiveStates.Contains(j.State))
-                    .Select(j => j.BackgroundJobId).SingleOrDefaultAsync();
-                if (backgroundJobId != null)
-                {
-                    _backgroundJobClient.Delete(backgroundJobId);
-                }
+                await _syncJobManager.CancelByProjectIdAsync(id);
 
                 await _engineService.RemoveProjectAsync(entity.Id);
                 var project = new Project
@@ -110,7 +108,7 @@ namespace SIL.XForge.Scripture.Services
                     ProjectRef = id,
                     OwnerRef = UserId
                 };
-                await _jobs.InsertAsync(job);
+                await _syncJobManager.StartAsync(job);
             }
             return entity;
         }

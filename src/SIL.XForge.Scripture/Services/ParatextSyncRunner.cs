@@ -214,6 +214,7 @@ namespace SIL.XForge.Scripture.Services
 
                         foreach (string bookId in booksToDelete)
                         {
+
                             TextEntity text = await _texts.DeleteAsync(
                                 t => t.ProjectRef == project.Id && t.BookId == bookId);
 
@@ -226,6 +227,9 @@ namespace SIL.XForge.Scripture.Services
 
                         await conn.CloseAsync();
                     }
+
+                    // TODO: Properly handle job cancellation
+                    cancellationToken.ThrowIfCancellationRequested();
 
                     // start training Machine engine
                     await _engineService.StartBuildByProjectIdAsync(_job.ProjectRef);
@@ -241,6 +245,10 @@ namespace SIL.XForge.Scripture.Services
                 _job = await _jobs.UpdateAsync(_job, u => u
                     .Set(j => j.State, SyncJobEntity.IdleState)
                     .Unset(j => j.BackgroundJobId));
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogInformation("The Paratext sync job '{Job}' was cancelled.", _job.Id);
             }
             catch (Exception e)
             {
