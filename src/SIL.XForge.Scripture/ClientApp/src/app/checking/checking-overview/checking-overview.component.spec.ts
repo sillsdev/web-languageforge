@@ -8,7 +8,6 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { anything, deepEqual, instance, mock, resetCalls, verify, when } from 'ts-mockito';
 import { AuthService } from 'xforge-common/auth.service';
-import { JsonDataId } from 'xforge-common/models/json-data';
 import { NoticeService } from 'xforge-common/notice.service';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
@@ -16,8 +15,9 @@ import { UserService } from 'xforge-common/user.service';
 import { Question } from '../../core/models/question';
 import { QuestionData } from '../../core/models/question-data';
 import { Text } from '../../core/models/text';
-import { QuestionService } from '../../core/question.service';
+import { TextJsonDataId } from '../../core/models/text-json-data-id';
 import { SFProjectService } from '../../core/sfproject.service';
+import { TextService } from '../../core/text.service';
 import { MockRealtimeDoc } from '../../shared/models/mock-realtime-doc';
 import { SFAdminAuthGuard } from '../../shared/sfadmin-auth.guard';
 import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
@@ -47,12 +47,12 @@ describe('CheckingOverviewComponent', () => {
       when(env.mockedQuestionDialogRef.afterClosed()).thenReturn(of('close'));
       env.fixture.detectChanges();
       flush();
-      verify(env.mockedQuestionService.connect(anything())).twice();
+      verify(env.mockedTextService.getQuestionData(anything())).twice();
 
-      resetCalls(env.mockedQuestionService);
+      resetCalls(env.mockedTextService);
       env.clickElement(env.addQuestionButton);
       verify(env.mockedMdcDialog.open(anything(), anything())).once();
-      verify(env.mockedQuestionService.connect(anything())).never();
+      verify(env.mockedTextService.getQuestionData(anything())).never();
       expect().nothing();
     }));
 
@@ -67,12 +67,12 @@ describe('CheckingOverviewComponent', () => {
       );
       env.fixture.detectChanges();
       flush();
-      verify(env.mockedQuestionService.connect(anything())).twice();
+      verify(env.mockedTextService.getQuestionData(anything())).twice();
 
-      resetCalls(env.mockedQuestionService);
+      resetCalls(env.mockedTextService);
       env.clickElement(env.addQuestionButton);
       verify(env.mockedMdcDialog.open(anything(), anything())).once();
-      verify(env.mockedQuestionService.connect(anything())).once();
+      verify(env.mockedTextService.getQuestionData(anything())).once();
       expect().nothing();
     }));
   });
@@ -80,7 +80,7 @@ describe('CheckingOverviewComponent', () => {
   describe('Edit Question', () => {
     it('should expand/collapse questions in book text', fakeAsync(() => {
       const env = new TestEnvironment();
-      const id = new JsonDataId('text01', 1);
+      const id = new TextJsonDataId('text01', 1);
       env.waitForQuestions();
       expect(env.textRows.length).toEqual(2);
       expect(env.questionEdits.length).toEqual(0);
@@ -103,7 +103,7 @@ describe('CheckingOverviewComponent', () => {
 
     it('should edit question', fakeAsync(() => {
       const env = new TestEnvironment();
-      const id = new JsonDataId('text01', 1);
+      const id = new TextJsonDataId('text01', 1);
       when(env.mockedQuestionDialogRef.afterClosed()).thenReturn(
         of({
           scriptureStart: 'MAT 3:3',
@@ -116,12 +116,12 @@ describe('CheckingOverviewComponent', () => {
       env.simulateRowClick(1, id);
       expect(env.textRows.length).toEqual(5);
       expect(env.questionEdits.length).toEqual(2);
-      verify(env.mockedQuestionService.connect(anything())).twice();
+      verify(env.mockedTextService.getQuestionData(anything())).twice();
 
-      resetCalls(env.mockedQuestionService);
+      resetCalls(env.mockedTextService);
       env.clickElement(env.questionEdits[0]);
       verify(env.mockedMdcDialog.open(anything(), anything())).once();
-      verify(env.mockedQuestionService.connect(anything())).never();
+      verify(env.mockedTextService.getQuestionData(anything())).never();
     }));
   });
 });
@@ -144,7 +144,7 @@ class TestEnvironment {
   mockedQuestionDialogRef: MdcDialogRef<QuestionDialogComponent> = mock(MdcDialogRef);
   mockedNoticeService = mock(NoticeService);
   mockedProjectService: SFProjectService = mock(SFProjectService);
-  mockedQuestionService: QuestionService = mock(QuestionService);
+  mockedTextService: TextService = mock(TextService);
   mockedUserService: UserService = mock(UserService);
   mockedAuthService: AuthService = mock(AuthService);
   mockedRealtimeOfflineStore: RealtimeOfflineStore = mock(RealtimeOfflineStore);
@@ -160,17 +160,19 @@ class TestEnvironment {
         { id: 'text02', bookId: 'LUK', name: 'Luke', chapters: [{ number: 1 }] } as Text
       ])
     );
-    const text1_1id = new JsonDataId('text01', 1);
-    when(this.mockedQuestionService.connect(deepEqual(text1_1id))).thenResolve(
+    const text1_1id = new TextJsonDataId('text01', 1);
+    when(this.mockedTextService.getQuestionData(deepEqual(text1_1id))).thenResolve(
       this.createQuestionData(text1_1id, [
         { id: 'q1Id', ownerRef: undefined, projectRef: undefined, text: 'Book 1, Q1 text' },
         { id: 'q2Id', ownerRef: undefined, projectRef: undefined, text: 'Book 1, Q2 text' }
       ])
     );
-    const text1_3id = new JsonDataId('text01', 3);
-    when(this.mockedQuestionService.connect(deepEqual(text1_3id))).thenResolve(this.createQuestionData(text1_3id, []));
-    const text2_1id = new JsonDataId('text02', 1);
-    when(this.mockedQuestionService.connect(deepEqual(text2_1id))).thenResolve(
+    const text1_3id = new TextJsonDataId('text01', 3);
+    when(this.mockedTextService.getQuestionData(deepEqual(text1_3id))).thenResolve(
+      this.createQuestionData(text1_3id, [])
+    );
+    const text2_1id = new TextJsonDataId('text02', 1);
+    when(this.mockedTextService.getQuestionData(deepEqual(text2_1id))).thenResolve(
       this.createQuestionData(text2_1id, [
         { id: 'q3Id', ownerRef: undefined, projectRef: undefined, text: 'Book 2, Q3 text' }
       ])
@@ -186,7 +188,7 @@ class TestEnvironment {
         { provide: MdcDialog, useFactory: () => instance(this.mockedMdcDialog) },
         { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) },
         { provide: SFProjectService, useFactory: () => instance(this.mockedProjectService) },
-        { provide: QuestionService, useFactory: () => instance(this.mockedQuestionService) },
+        { provide: TextService, useFactory: () => instance(this.mockedTextService) },
         { provide: UserService, useFactory: () => instance(this.mockedUserService) },
         { provide: AuthService, useFactory: () => instance(this.mockedAuthService) }
       ]
@@ -217,7 +219,7 @@ class TestEnvironment {
   /**
    * simulate row click since actually clicking on the row deosn't fire the selectionChange event
    */
-  simulateRowClick(index: number, id?: JsonDataId): void {
+  simulateRowClick(index: number, id?: TextJsonDataId): void {
     let idStr: string;
     if (id) {
       idStr = id.toString();
@@ -242,7 +244,7 @@ class TestEnvironment {
     this.component.isProjectAdmin$ = of(isProjectAdmin);
   }
 
-  private createQuestionData(id: JsonDataId, data: Question[]): QuestionData {
+  private createQuestionData(id: TextJsonDataId, data: Question[]): QuestionData {
     const doc = new MockRealtimeDoc<Question[]>('ot-json0', id.toString(), data);
     return new QuestionData(doc, instance(this.mockedRealtimeOfflineStore));
   }

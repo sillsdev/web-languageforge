@@ -5,6 +5,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { AuthService } from 'xforge-common/auth.service';
+import { RealtimeService } from 'xforge-common/realtime.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { UserService } from 'xforge-common/user.service';
 import { nameof } from 'xforge-common/utils';
@@ -44,7 +45,8 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
     private readonly userService: UserService,
     private readonly adminAuthGuard: SFAdminAuthGuard,
     private readonly dialog: MdcDialog,
-    private readonly projectService: SFProjectService
+    private readonly projectService: SFProjectService,
+    private readonly realtimeService: RealtimeService
   ) {
     super();
     this.subscribe(media.asObservable(), (change: MediaChange) => {
@@ -117,6 +119,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
         if (projectId == null) {
           this.projectDeletedDialogRef = null;
         }
+        this.realtimeService.reset();
       })
     );
 

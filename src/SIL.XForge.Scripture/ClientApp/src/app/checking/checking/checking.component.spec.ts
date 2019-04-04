@@ -269,7 +269,7 @@ class TestEnvironment {
         )
       )
     );
-    when(this.mockedTextService.connect(deepEqual(new TextDataId('text01', 1)))).thenResolve(this.createTextData());
+    when(this.mockedTextService.getTextData(deepEqual(new TextDataId('text01', 1)))).thenResolve(this.createTextData());
   }
 
   private createTextData(): TextData {

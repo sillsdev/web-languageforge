@@ -674,7 +674,7 @@ class TestEnvironment {
   }
 
   private addTextData(id: TextDataId): void {
-    when(this.mockedTextService.connect(deepEqual(id))).thenResolve(this.createTextData(id));
+    when(this.mockedTextService.getTextData(deepEqual(id))).thenResolve(this.createTextData(id));
   }
 
   private createTextData(id: TextDataId): TextData {

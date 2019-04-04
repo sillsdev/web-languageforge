@@ -33,23 +33,7 @@ export abstract class JsonData<T = any, R = T> extends RealtimeData<T[], OtJson0
    * String Delete
    */
 
-  async submit(ops: OtJson0Op[], source?: any): Promise<void> {
+  async submit(_ops: OtJson0Op[], _source?: any): Promise<void> {
     throw new SyntaxError('Use access methods instead of submit.');
   }
-
-  protected prepareDataForStore(data: T[]): any {
-    return data;
-  }
-}
-
-export class JsonDataId {
-  constructor(public readonly textId: string, public readonly chapter: number) {}
-
-  toString(): string {
-    return getJsonDataIdStr(this.textId, this.chapter);
-  }
-}
-
-export function getJsonDataIdStr(textId: string, chapter: number): string {
-  return `${textId}:${chapter}`;
 }

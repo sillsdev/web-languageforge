@@ -102,21 +102,22 @@ export class TranslateOverviewComponent extends SubscriptionDisposable implement
 
   private async calculateProgress(): Promise<void> {
     this.overallProgress = new Progress();
+    const updateTextProgressPromises: Promise<void>[] = [];
     for (const textInfo of this.texts) {
-      await this.updateTextProgress(textInfo);
-      this.overallProgress.translated += textInfo.progress.translated;
-      this.overallProgress.blank += textInfo.progress.blank;
+      updateTextProgressPromises.push(this.updateTextProgress(textInfo));
     }
+    await Promise.all(updateTextProgressPromises);
   }
 
   private async updateTextProgress(textInfo: TextInfo): Promise<void> {
     for (const chapter of textInfo.text.chapters) {
       const textId = new TextDataId(textInfo.text.id, chapter.number);
-      const chapterText = await this.textService.connect(textId);
+      const chapterText = await this.textService.getTextData(textId);
       const { translated, blank } = chapterText.getSegmentCount();
       textInfo.progress.translated += translated;
       textInfo.progress.blank += blank;
-      await this.textService.disconnect(chapterText);
+      this.overallProgress.translated += translated;
+      this.overallProgress.blank += blank;
     }
   }
 

@@ -125,7 +125,7 @@ class TestEnvironment {
   constructor() {
     const params = { ['projectId']: 'projectid01' } as Params;
     when(this.mockedActivatedRoute.params).thenReturn(of(params));
-    when(this.mockedTextService.connect(anything())).thenResolve(new TestTextData(new TestDoc()));
+    when(this.mockedTextService.getTextData(anything())).thenResolve(new TestTextData(new TestDoc()));
     when(this.mockedSFProjectService.createTranslationEngine('projectid01')).thenReturn(
       instance(this.mockedRemoteTranslationEngine)
     );

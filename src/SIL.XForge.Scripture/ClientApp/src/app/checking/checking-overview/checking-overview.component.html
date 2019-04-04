@@ -32,8 +32,8 @@
               <mdc-list-item
                 *ngIf="questionCount(text.id, chapter.number) > 0"
                 (selectionChange)="
-                  itemVisible[getJsonDataIdStr(text.id, chapter.number)] = !itemVisible[
-                    getJsonDataIdStr(text.id, chapter.number)
+                  itemVisible[getTextJsonDataIdStr(text.id, chapter.number)] = !itemVisible[
+                    getTextJsonDataIdStr(text.id, chapter.number)
                   ]
                 "
               >
@@ -41,7 +41,9 @@
                   <span fxFlex="1rem" class="indent"></span>
                   <span fxLayoutAlign="start center">
                     <mdc-icon mdcListItemMeta
-                      >keyboard_arrow_{{ itemVisible[getJsonDataIdStr(text.id, chapter.number)] ? "down" : "right" }}
+                      >keyboard_arrow_{{
+                        itemVisible[getTextJsonDataIdStr(text.id, chapter.number)] ? "down" : "right"
+                      }}
                     </mdc-icon>
                     {{ text?.name + " " + chapter?.number }}
                   </span>
@@ -53,9 +55,9 @@
                   </span>
                 </div>
               </mdc-list-item>
-              <ng-container *ngIf="itemVisible[getJsonDataIdStr(text.id, chapter.number)]">
+              <ng-container *ngIf="itemVisible[getTextJsonDataIdStr(text.id, chapter.number)]">
                 <mdc-list-item
-                  *ngFor="let question of questions[getJsonDataIdStr(text.id, chapter.number)].data; let i = index"
+                  *ngFor="let question of questions[getTextJsonDataIdStr(text.id, chapter.number)].data; let i = index"
                 >
                   <div fxFlex fxLayout="row" fxLayoutAlign="start center">
                     <span fxFlex="1rem" class="indent"></span>
