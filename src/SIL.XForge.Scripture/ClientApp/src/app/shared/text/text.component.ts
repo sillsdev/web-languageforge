@@ -58,6 +58,10 @@ export class TextComponent implements OnDestroy {
       bindings: {
         disableBackspace: {
           key: 'backspace',
+          altKey: null,
+          ctrlKey: null,
+          metaKey: null,
+          shiftKey: null,
           handler: (range: RangeStatic) => this.isBackspaceAllowed(range)
         },
         disableDelete: {
@@ -66,6 +70,7 @@ export class TextComponent implements OnDestroy {
         },
         disableEnter: {
           key: 'enter',
+          shiftKey: null,
           handler: () => false
         }
       }
