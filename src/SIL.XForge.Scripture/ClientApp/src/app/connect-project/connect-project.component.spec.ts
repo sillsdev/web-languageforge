@@ -1,21 +1,22 @@
+import { MdcSelect } from '@angular-mdc/web';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { AbstractControl } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
-import { RemoteTranslationEngine } from '@sillsdev/machine';
 import { cold, getTestScheduler } from 'jasmine-marbles';
 import { defer, of } from 'rxjs';
-import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { ParatextProject } from 'xforge-common/models/paratext-project';
+import { NoticeService } from 'xforge-common/notice.service';
 import { ParatextService } from 'xforge-common/paratext.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
 import { SFProject } from '../core/models/sfproject';
 import { SFProjectUser } from '../core/models/sfproject-user';
-import { SyncJob, SyncJobState } from '../core/models/sync-job';
+import { SyncJob, SyncJobRef, SyncJobState } from '../core/models/sync-job';
 import { SFProjectUserService } from '../core/sfproject-user.service';
 import { SFProjectService } from '../core/sfproject.service';
 import { SyncJobService } from '../core/sync-job.service';
@@ -59,13 +60,14 @@ describe('ConnectProjectComponent', () => {
     env.fixture.detectChanges();
 
     expect(env.component.state).toEqual('loading');
-    expect(env.loadingDiv).not.toBeNull();
+    verify(env.mockedNoticeService.loadingStarted()).once();
 
-    flush();
+    tick();
     env.fixture.detectChanges();
 
     expect(env.component.state).toEqual('input');
     expect(env.connectProjectForm).not.toBeNull();
+    verify(env.mockedNoticeService.loadingFinished()).once();
   }));
 
   it('should join when existing project is selected', fakeAsync(() => {
@@ -85,9 +87,9 @@ describe('ConnectProjectComponent', () => {
     env.fixture.detectChanges();
     expect(env.component.state).toEqual('input');
 
-    env.changeSelectValue(env.projectSelect, 0);
+    env.changeSelectValue(env.projectSelect, 'pt01');
 
-    expect(env.tasksDiv).toBeNull();
+    expect(env.tasksCard).toBeNull();
 
     env.clickElement(env.submitButton);
 
@@ -119,19 +121,17 @@ describe('ConnectProjectComponent', () => {
     env.fixture.detectChanges();
     expect(env.component.state).toEqual('input');
 
-    env.changeSelectValue(env.projectSelect, 0);
-    expect(env.sourceParatextIdControl.disabled).toBe(true);
-    expect(env.sourceParatextIdControl.hasError('required')).toBe(false);
-    // Simulate clicking the checkbox without firing any events to prevent the error in mdc-select when
-    // the form control is set with a validator
-    env.checkTranslateCheckbox();
+    env.changeSelectValue(env.projectSelect, 'pt01');
+    expect(env.sourceParatextIdControl.hasError('required')).toBe(true);
     expect(env.sourceParatextIdControl.disabled).toBe(false);
 
-    env.changeSelectValue(env.sourceProjectSelect, 0);
+    env.clickElement(env.inputElement(env.checkingCheckbox));
+
+    env.changeSelectValue(env.sourceProjectSelect, 'pt02');
     expect(env.component.connectProjectForm.valid).toBe(true);
     env.clickElement(env.submitButton);
     getTestScheduler().flush();
-    flush();
+    tick();
 
     expect(env.component.state).toEqual('connecting');
 
@@ -180,10 +180,10 @@ describe('ConnectProjectComponent', () => {
     );
     env.fixture.detectChanges();
     expect(env.component.state).toEqual('input');
-    env.changeSelectValue(env.projectSelect, 0);
-    env.clickElement(env.inputElement(env.checkingCheckbox));
-    expect(env.inputElement(env.checkingCheckbox).checked).toBe(false);
+    env.changeSelectValue(env.projectSelect, 'pt01');
+    env.clickElement(env.inputElement(env.translateCheckbox));
     expect(env.inputElement(env.translateCheckbox).checked).toBe(false);
+    expect(env.inputElement(env.checkingCheckbox).checked).toBe(false);
 
     env.clickElement(env.submitButton);
 
@@ -194,27 +194,18 @@ describe('ConnectProjectComponent', () => {
 });
 
 class TestEnvironment {
-  component: ConnectProjectComponent;
-  fixture: ComponentFixture<ConnectProjectComponent>;
+  readonly component: ConnectProjectComponent;
+  readonly fixture: ComponentFixture<ConnectProjectComponent>;
 
-  mockedParatextService: ParatextService;
-  mockedRouter: Router;
-  mockedSyncJobService: SyncJobService;
-  mockedSFProjectUserService: SFProjectUserService;
-  mockedSFProjectService: SFProjectService;
-  mockedUserService: UserService;
-  mockedRemoteTranslationEngine: RemoteTranslationEngine;
+  readonly mockedParatextService = mock(ParatextService);
+  readonly mockedRouter = mock(Router);
+  readonly mockedSyncJobService = mock(SyncJobService);
+  readonly mockedSFProjectUserService = mock(SFProjectUserService);
+  readonly mockedSFProjectService = mock(SFProjectService);
+  readonly mockedUserService = mock(UserService);
+  readonly mockedNoticeService = mock(NoticeService);
 
   constructor() {
-    this.mockedParatextService = mock(ParatextService);
-    this.mockedRouter = mock(Router);
-    this.mockedSyncJobService = mock(SyncJobService);
-    this.mockedSFProjectUserService = mock(SFProjectUserService);
-    this.mockedSFProjectService = mock(SFProjectService);
-    this.mockedUserService = mock(UserService);
-    this.mockedRemoteTranslationEngine = mock(RemoteTranslationEngine);
-
-    when(this.mockedSyncJobService.start(anyString())).thenResolve('job01');
     const a = new SyncJob({
       id: 'job01',
       percentCompleted: 0,
@@ -231,12 +222,13 @@ class TestEnvironment {
     when(this.mockedSFProjectUserService.onlineCreate(anything(), anything())).thenResolve(
       new SFProjectUser({ id: 'projectuser01' })
     );
-    when(this.mockedSFProjectService.onlineCreate(anything())).thenResolve(new SFProject({ id: 'project01' }));
+    when(this.mockedSFProjectService.onlineCreate(anything())).thenCall((project: SFProject) => {
+      const newProject = new SFProject(project);
+      newProject.id = 'project01';
+      newProject.activeSyncJob = new SyncJobRef('job01');
+      return Promise.resolve(newProject);
+    });
     when(this.mockedUserService.currentUserId).thenReturn('user01');
-    when(this.mockedRemoteTranslationEngine.startTraining()).thenResolve();
-    when(this.mockedSFProjectService.createTranslationEngine(anything())).thenReturn(
-      instance(this.mockedRemoteTranslationEngine)
-    );
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, NoopAnimationsModule, UICommonModule],
@@ -247,19 +239,16 @@ class TestEnvironment {
         { provide: SyncJobService, useFactory: () => instance(this.mockedSyncJobService) },
         { provide: SFProjectUserService, useFactory: () => instance(this.mockedSFProjectUserService) },
         { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
-        { provide: UserService, useFactory: () => instance(this.mockedUserService) }
+        { provide: UserService, useFactory: () => instance(this.mockedUserService) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) }
       ]
     });
     this.fixture = TestBed.createComponent(ConnectProjectComponent);
     this.component = this.fixture.componentInstance;
   }
 
-  get loadingDiv(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#loading'));
-  }
-
   get loginButton(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#btn-login'));
+    return this.fixture.debugElement.query(By.css('#paratext-login-button'));
   }
 
   get projectSelect(): DebugElement {
@@ -274,41 +263,31 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('form'));
   }
 
-  get tasksDiv(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#connect-tasks'));
+  get tasksCard(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#tasks-card'));
   }
 
   get checkingCheckbox(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#connect-checking-checkbox'));
+    return this.fixture.debugElement.query(By.css('#checking-checkbox'));
   }
 
   get translateCheckbox(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#connect-translate-checkbox'));
+    return this.fixture.debugElement.query(By.css('#translate-checkbox'));
   }
 
   get sourceProjectSelect(): DebugElement {
-    return this.fixture.debugElement.query(By.css('#connect-source-select'));
+    return this.fixture.debugElement.query(By.css('#based-on-select'));
   }
 
   get sourceParatextIdControl(): AbstractControl {
     return this.component.connectProjectForm.get('tasks.sourceParatextId');
   }
 
-  changeSelectValue(select: DebugElement, option: number): void {
-    select.nativeElement.click();
+  changeSelectValue(select: DebugElement, value: string): void {
+    const mdcSelect: MdcSelect = select.componentInstance;
+    mdcSelect.value = value;
     this.fixture.detectChanges();
-    flush();
-    const item = select.queryAll(By.css('mdc-list-item'));
-    item[option].nativeElement.click();
-    this.fixture.detectChanges();
-    flush();
-  }
-
-  checkTranslateCheckbox(): void {
-    this.component.connectProjectForm.get('tasks.translate').reset(true);
-    this.sourceParatextIdControl.enable();
-    this.fixture.detectChanges();
-    flush();
+    tick();
   }
 
   clickElement(element: HTMLElement | DebugElement): void {
@@ -317,7 +296,7 @@ class TestEnvironment {
     }
     element.click();
     this.fixture.detectChanges();
-    flush();
+    tick();
   }
 
   inputElement(element: DebugElement): HTMLInputElement {

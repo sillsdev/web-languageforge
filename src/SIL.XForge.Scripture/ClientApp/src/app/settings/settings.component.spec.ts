@@ -401,7 +401,7 @@ class TestEnvironment {
   }
 
   get dangerZoneTitle(): HTMLElement {
-    return this.fixture.nativeElement.querySelector('#danger-zone h3');
+    return this.fixture.nativeElement.querySelector('#danger-zone div');
   }
 
   get deleteProjectButton(): HTMLButtonElement {

@@ -16,6 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton<IParatextService, ParatextService>();
             services.AddSingleton<DeltaUsxMapper>();
+            services.AddSingleton<SyncJobManager>();
             return services;
         }
     }
