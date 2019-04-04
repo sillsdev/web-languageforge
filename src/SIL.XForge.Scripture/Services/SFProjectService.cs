@@ -7,6 +7,7 @@ using AutoMapper;
 using Hangfire;
 using JsonApiDotNetCore.Services;
 using Microsoft.Extensions.Options;
+using SIL.Machine.WebApi.Models;
 using SIL.Machine.WebApi.Services;
 using SIL.XForge.Configuration;
 using SIL.XForge.DataAccess;
@@ -53,8 +54,13 @@ namespace SIL.XForge.Scripture.Services
             entity = await base.InsertEntityAsync(entity);
             if (entity.TranslateConfig.Enabled)
             {
-                await _engineService.AddProjectAsync(entity.Id, entity.TranslateConfig.SourceInputSystem.Tag,
-                    entity.InputSystem.Tag, null, null, false);
+                var project = new Project
+                {
+                    Id = entity.Id,
+                    SourceLanguageTag = entity.TranslateConfig.SourceInputSystem.Tag,
+                    TargetLanguageTag = entity.InputSystem.Tag
+                };
+                await _engineService.AddProjectAsync(project);
             }
             return entity;
         }
@@ -91,8 +97,13 @@ namespace SIL.XForge.Scripture.Services
                 }
 
                 await _engineService.RemoveProjectAsync(entity.Id);
-                await _engineService.AddProjectAsync(entity.Id, entity.TranslateConfig.SourceInputSystem.Tag,
-                    entity.InputSystem.Tag, null, null, false);
+                var project = new Project
+                {
+                    Id = entity.Id,
+                    SourceLanguageTag = entity.TranslateConfig.SourceInputSystem.Tag,
+                    TargetLanguageTag = entity.InputSystem.Tag
+                };
+                await _engineService.AddProjectAsync(project);
 
                 var job = new SyncJobEntity()
                 {

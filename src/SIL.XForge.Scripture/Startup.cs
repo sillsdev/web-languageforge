@@ -5,6 +5,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using JsonApiDotNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -120,6 +121,7 @@ namespace SIL.XForge.Scripture
                 .AddEngineOptions(o => o.EnginesDir = Path.Combine(siteOptions.SiteDir, "engines"))
                 .AddMongoDataAccess(o => o.MachineDatabaseName = "xforge_machine")
                 .AddTextCorpus<SFTextCorpusFactory>();
+            services.AddSingleton<IAuthorizationHandler, MachineAuthorizationHandler>();
 
             containerBuilder.Populate(services);
 

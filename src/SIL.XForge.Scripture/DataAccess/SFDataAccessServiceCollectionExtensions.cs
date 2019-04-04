@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 using SIL.XForge.DataAccess;
 using SIL.XForge.Models;
 using SIL.XForge.Scripture.DataAccess;
@@ -17,7 +18,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
             DataAccessClassMap.RegisterConcreteClass<ProjectUserEntity, SFProjectUserEntity>();
 
-            services.AddMongoRepository<SFProjectEntity>(SFDataAccessConstants.ProjectsCollectionName);
+            services.AddMongoRepository<SFProjectEntity>(SFDataAccessConstants.ProjectsCollectionName,
+                indexSetup: indexes =>
+                {
+                    IndexKeysDefinitionBuilder<SFProjectEntity> builder = Builders<SFProjectEntity>.IndexKeys;
+                    indexes.CreateOrUpdate(new CreateIndexModel<SFProjectEntity>(builder.Ascending("Users.Id"),
+                        new CreateIndexOptions { Unique = true }));
+                    indexes.CreateOrUpdate(new CreateIndexModel<SFProjectEntity>(builder.Ascending("Users.UserRef")));
+                });
             services.AddMongoRepository<SyncJobEntity>("sync_jobs");
             services.AddMongoRepository<TextEntity>(SFDataAccessConstants.TextsCollectionName);
             services.AddMongoRepository<TranslateMetrics>("translate_metrics",
