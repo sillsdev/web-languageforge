@@ -103,6 +103,8 @@ export class SuggestionComponent extends SubscriptionDisposable implements After
     this.subscribe(fromEvent(window, 'resize'), () => this.setPosition());
     this.subscribe(this.text.updated, () => this.setPosition());
     this.show = false;
+    this.root.style.left = '0px';
+    this.root.style.top = '0px';
   }
 
   toggleHelp(): void {

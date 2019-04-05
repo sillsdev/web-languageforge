@@ -423,7 +423,18 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
     const bounds = elem.getBoundingClientRect();
     // add bottom padding
     const top = bounds.top + 14;
+    if (this.target.hasFocus) {
+      // reset scroll position
+      this.target.editor.scrollingContainer.scrollTop = 0;
+    }
     this.textHeight = `calc(100vh - ${top}px)`;
+    if (this.target.hasFocus) {
+      setTimeout(() => {
+        // reset focus, which causes Quill to scroll to the selection
+        this.target.blur();
+        this.target.focus();
+      });
+    }
   }
 
   private changeText(): void {
