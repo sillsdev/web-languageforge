@@ -245,6 +245,9 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
                   }, 5000);
                 }
 
+                if (this.target.segment != null) {
+                  this.target.segment.acceptChanges();
+                }
                 // re-translate current segment
                 this.onStartTranslating();
                 try {

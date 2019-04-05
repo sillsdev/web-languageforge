@@ -90,7 +90,15 @@ export class SuggestionComponent extends SubscriptionDisposable implements After
     }
     this.subscribe(
       fromEvent<KeyboardEvent>(this.editor.root, 'keydown').pipe(filter(event => this.isSelectSuggestionEvent(event))),
-      event => this.selected.emit({ index: parseInt(event.key, 10) - 1, event })
+      event => {
+        let index: number;
+        if (event.key === 'Enter') {
+          index = -1;
+        } else {
+          index = parseInt(event.key, 10) - 1;
+        }
+        this.selected.emit({ index, event });
+      }
     );
     this.subscribe(fromEvent(window, 'resize'), () => this.setPosition());
     this.subscribe(this.text.updated, () => this.setPosition());
@@ -154,6 +162,12 @@ export class SuggestionComponent extends SubscriptionDisposable implements After
   }
 
   private isSelectSuggestionEvent(event: KeyboardEvent): boolean {
+    if (!this.show) {
+      return false;
+    }
+    if (event.key === 'Enter') {
+      return true;
+    }
     if (event.key.length !== 1) {
       return false;
     }
