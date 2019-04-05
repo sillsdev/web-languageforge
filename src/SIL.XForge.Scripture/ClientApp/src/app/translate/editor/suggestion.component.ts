@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
+import { eq } from '@orbit/utils';
 import Quill from 'quill';
 import { fromEvent } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -16,28 +17,43 @@ export interface SuggestionSelectedEvent {
   styleUrls: ['./suggestion.component.scss']
 })
 export class SuggestionComponent extends SubscriptionDisposable implements AfterViewInit {
-  @Input() words: string[] = [];
   @Input() confidence: number;
   @Input() text: TextComponent;
   @Output() selected = new EventEmitter<SuggestionSelectedEvent>();
 
   showHelp: boolean = false;
 
+  private _words: string[] = [];
   private top: number;
 
   constructor(private readonly elemRef: ElementRef) {
     super();
   }
 
+  get words(): string[] {
+    return this._words;
+  }
+
+  @Input()
+  set words(value: string[]) {
+    if (!eq(this._words, value)) {
+      this._words = value;
+      setTimeout(() => this.setPosition());
+    }
+  }
+
   get show(): boolean {
     return !this.root.classList.contains('hidden');
   }
+
   @Input()
   set show(value: boolean) {
-    if (value) {
-      this.root.classList.remove('hidden');
-    } else {
-      this.root.classList.add('hidden');
+    if (value !== this.show) {
+      if (value) {
+        this.root.classList.remove('hidden');
+      } else {
+        this.root.classList.add('hidden');
+      }
     }
   }
 

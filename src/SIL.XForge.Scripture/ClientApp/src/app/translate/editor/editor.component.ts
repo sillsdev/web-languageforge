@@ -1,5 +1,5 @@
 import { MdcIconButton } from '@angular-mdc/web';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { eq } from '@orbit/utils';
 import {
@@ -12,7 +12,7 @@ import {
   TranslationSuggester
 } from '@sillsdev/machine';
 import Quill, { DeltaStatic, RangeStatic } from 'quill';
-import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, fromEvent, Subject, Subscription } from 'rxjs';
 import { debounceTime, filter, map, repeat, skip, switchMap, tap } from 'rxjs/operators';
 import { NoticeService } from 'xforge-common/notice.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
@@ -41,7 +41,7 @@ const PUNCT_SPACE_REGEX = XRegExp('^(\\p{P}|\\p{S}|\\p{Cc}|\\p{Z})+$');
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
-export class EditorComponent extends SubscriptionDisposable implements OnInit, OnDestroy {
+export class EditorComponent extends SubscriptionDisposable implements OnInit, OnDestroy, AfterViewInit {
   suggestionWords: string[] = [];
   suggestionConfidence: number = 0;
   showSuggestion: boolean = false;
@@ -51,7 +51,9 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   trainingPercentage: number;
   trainingMessage: string;
   showTrainingProgress: boolean = false;
+  textHeight: string = '';
 
+  @ViewChild('sourceContainer') sourceContainer: ElementRef;
   @ViewChild('source') source: TextComponent;
   @ViewChild('target') target: TextComponent;
   @ViewChild('suggestionsMenuButton') suggestionsMenuButton: MdcIconButton;
@@ -179,6 +181,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   }
 
   ngOnInit(): void {
+    this.subscribe(fromEvent(window, 'resize'), () => this.setTextHeight());
     this.subscribe(
       this.activatedRoute.params.pipe(
         tap(() => {
@@ -275,6 +278,10 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
         }
       }
     );
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.setTextHeight());
   }
 
   ngOnDestroy(): void {
@@ -404,6 +411,16 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
     this.target.editor.setSelection(selectIndex, 0, 'user');
 
     this.metricsSession.onSuggestionAccepted(event);
+  }
+
+  private setTextHeight(): void {
+    // this is a horrible hack to set the height of the text components
+    // we don't want to use flexbox because it makes editing very slow
+    const elem: HTMLElement = this.sourceContainer.nativeElement;
+    const bounds = elem.getBoundingClientRect();
+    // add bottom padding
+    const top = bounds.top + 14;
+    this.textHeight = `calc(100vh - ${top}px)`;
   }
 
   private changeText(): void {

@@ -45,7 +45,7 @@
   <div [fxLayout]="isTargetTextRight ? 'row' : 'row-reverse'" fxFlex="1 1 0%" fxLayoutGap="5px">
     <div class="text-area">
       <div mdcSubtitle1>{{ sourceLabel }}</div>
-      <div class="text-container">
+      <div #sourceContainer class="text-container" [style.height]="textHeight">
         <app-text
           #source
           [isReadOnly]="true"
@@ -57,7 +57,7 @@
     <div class="swap-button-container"></div>
     <div class="text-area">
       <div mdcSubtitle1>{{ targetLabel }}</div>
-      <div class="text-container">
+      <div class="text-container" [style.height]="textHeight">
         <app-text
           #target
           [isReadOnly]="false"
