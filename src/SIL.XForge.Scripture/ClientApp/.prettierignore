@@ -1,3 +1,4 @@
 # Can't be parsed because it has multiple root elements
 e2e/data/mongodb-xforge_test-users.json
 coverage/**
+dist/**
