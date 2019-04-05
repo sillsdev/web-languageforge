@@ -370,7 +370,14 @@ export class TextComponent implements OnDestroy {
           this.updateUsxSegmentFormat(ref, range);
         }
       } else if (this._segment != null) {
-        this.updateUsxSegmentFormat(this._segment.ref, this._segment.range);
+        if (this.updateUsxSegmentFormat(this._segment.ref, this._segment.range)) {
+          // if the segment is no longer blank, ensure that the selection is at the end of the segment.
+          // Sometimes after typing in a blank segment, the selection will be at the beginning. This seems to be a bug
+          // in Quill.
+          Promise.resolve().then(() =>
+            this.editor.setSelection(this._segment.range.index + this._segment.range.length, 0, 'user')
+          );
+        }
       }
     }
 
@@ -409,7 +416,7 @@ export class TextComponent implements OnDestroy {
     }
   }
 
-  private updateUsxSegmentFormat(ref: string, range: RangeStatic): void {
+  private updateUsxSegmentFormat(ref: string, range: RangeStatic): boolean {
     const text = this._editor.getText(range.index, range.length);
 
     if (text === '') {
@@ -432,9 +439,14 @@ export class TextComponent implements OnDestroy {
             .retain(range.length - 1, { segment: ref })
             .delete(1);
           this._editor.updateContents(delta, 'user');
+          return true;
+        } else if (segmentDelta.ops.some(op => op.attributes == null || op.attributes.segment == null)) {
+          // add segment format if missing
+          this._editor.formatText(range.index, range.length, 'segment', ref, 'user');
         }
       }
     }
+    return false;
   }
 
   private toggleHighlight(range: RangeStatic, value: boolean): void {

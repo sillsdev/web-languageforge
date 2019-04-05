@@ -604,6 +604,8 @@ class TestEnvironment {
     this.fixture.detectChanges();
     tick(UPDATE_SUGGESTIONS_TIMEOUT);
     this.fixture.detectChanges();
+    tick();
+    this.fixture.detectChanges();
   }
 
   insertSuggestion(i: number = 0): void {

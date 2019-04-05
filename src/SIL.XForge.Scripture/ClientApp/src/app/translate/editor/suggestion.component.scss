@@ -10,7 +10,7 @@
 }
 
 :host(.hidden) {
-  display: none;
+  visibility: hidden;
 }
 
 :host(.flip) {
