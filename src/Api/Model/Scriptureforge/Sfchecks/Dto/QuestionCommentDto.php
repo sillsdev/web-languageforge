@@ -99,6 +99,8 @@ class QuestionCommentDto
         $dto['votes'] = $votesDto;
         $dto['text'] = JsonEncoder::encode($text);
         $dto['text']['content'] = $usxHelper->toHtml();
+        $dto['text']['isRightToLeft'] = $project->isRightToLeft;
+        $dto['text']['fontSize'] = $project->fontSize;
         $dto['project'] = JsonEncoder::encode($project);
         $dto['project']['slug'] = $project->databaseName();
         $dto['rights'] = RightsHelper::encode($user, $project);
