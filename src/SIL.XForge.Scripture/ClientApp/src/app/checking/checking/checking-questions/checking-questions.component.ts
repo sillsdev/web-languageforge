@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
-import { Question } from '../checking.component';
+import { Question } from '../../../core/models/question';
 
 @Component({
   selector: 'app-checking-questions',
@@ -24,10 +24,15 @@ export class CheckingQuestionsComponent extends SubscriptionDisposable {
     // Only mark as read if it has been viewed for a set period of time and not an accidental click
     this.subscribe(this.activeQuestionSubject.pipe(debounceTime(2000)), question => {
       if (question) {
-        question.markAsRead();
+        question.read = true;
         this.update.emit(question);
       }
     });
+  }
+
+  getUserAnswers(question: Question) {
+    // TODO: (NW) Limit to answers by the current user
+    return question.answers.length;
   }
 
   checkCanChangeQuestion(newIndex: number) {

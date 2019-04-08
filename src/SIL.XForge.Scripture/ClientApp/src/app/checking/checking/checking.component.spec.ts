@@ -16,10 +16,13 @@ import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { nameof } from 'xforge-common/utils';
 import { XForgeCommonModule } from 'xforge-common/xforge-common.module';
+import { Question } from '../../core/models/question';
+import { QuestionData } from '../../core/models/question-data';
 import { SFProjectRef } from '../../core/models/sfdomain-model.generated';
 import { SFProject } from '../../core/models/sfproject';
 import { Text } from '../../core/models/text';
 import { getTextDataIdStr, TextData, TextDataId } from '../../core/models/text-data';
+import { TextJsonDataId } from '../../core/models/text-json-data-id';
 import { TextService } from '../../core/text.service';
 import { MockRealtimeDoc } from '../../shared/models/mock-realtime-doc';
 import { SharedModule } from '../../shared/shared.module';
@@ -31,10 +34,13 @@ import { FontSizeComponent } from './font-size/font-size.component';
 
 describe('CheckingComponent', () => {
   let env: TestEnvironment;
-  beforeEach(() => {
+  beforeEach(fakeAsync(() => {
     env = new TestEnvironment();
+    // Need to wait for questions and text promises to finish
     env.fixture.detectChanges();
-  });
+    tick();
+    env.fixture.detectChanges();
+  }));
 
   describe('Interface', () => {
     it('can load a project', () => {
@@ -120,22 +126,19 @@ describe('CheckingComponent', () => {
     it('answer panel is now showing', () => {
       env.selectQuestion(1);
       expect(env.answerPanel).toBeDefined();
-      expect(env.answerPanel.query(By.css('.question')).nativeElement.textContent).toBe('Question 1?');
+      expect(env.answerPanel.query(By.css('.question')).nativeElement.textContent).toBe('Book 1, Q1 text');
     });
   });
 
   describe('Text', () => {
-    it('can increase and decrease font size', done => {
-      env.component.scripturePanel.textComponent.loaded.subscribe(() => {
-        const editor = env.quillEditor;
-        expect(editor.style.fontSize).toBe('1rem');
-        env.clickButton(env.increaseFontSizeButton);
-        expect(editor.style.fontSize).toBe('1.1rem');
-        env.clickButton(env.decreaseFontSizeButton);
-        expect(editor.style.fontSize).toBe('1rem');
-        done();
-      });
-    });
+    it('can increase and decrease font size', fakeAsync(() => {
+      const editor = env.quillEditor;
+      expect(editor.style.fontSize).toBe('1rem');
+      env.clickButton(env.increaseFontSizeButton);
+      expect(editor.style.fontSize).toBe('1.1rem');
+      env.clickButton(env.decreaseFontSizeButton);
+      expect(editor.style.fontSize).toBe('1rem');
+    }));
   });
 });
 
@@ -234,6 +237,12 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('app-font-size button:first-child'));
   }
 
+  waitForQuestions(): void {
+    this.fixture.detectChanges();
+    tick();
+    this.fixture.detectChanges();
+  }
+
   clickButton(button: DebugElement): void {
     button.nativeElement.click();
     this.fixture.detectChanges();
@@ -270,6 +279,27 @@ class TestEnvironment {
       )
     );
     when(this.mockedTextService.getTextData(deepEqual(new TextDataId('text01', 1)))).thenResolve(this.createTextData());
+    const text1_1id = new TextJsonDataId('text01', 1);
+    const questionData = [];
+    for (let questionNumber = 1; questionNumber <= 14; questionNumber++) {
+      questionData.push({
+        id: 'q' + questionNumber + 'Id',
+        ownerRef: undefined,
+        projectRef: undefined,
+        text: 'Book 1, Q' + questionNumber + ' text',
+        scriptureStart: { book: 'JHN', chapter: '1', verse: '1', versification: 'English' },
+        scriptureEnd: { book: 'JHN', chapter: '1', verse: '2', versification: 'English' },
+        answers: []
+      });
+    }
+    when(this.mockedTextService.getQuestionData(deepEqual(text1_1id))).thenResolve(
+      this.createQuestionData(text1_1id, questionData)
+    );
+  }
+
+  private createQuestionData(id: TextJsonDataId, data: Question[]): QuestionData {
+    const doc = new MockRealtimeDoc<Question[]>('ot-json0', id.toString(), data);
+    return new QuestionData(doc, instance(this.mockedRealtimeOfflineStore));
   }
 
   private createTextData(): TextData {
