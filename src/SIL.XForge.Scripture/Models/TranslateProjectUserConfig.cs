@@ -7,6 +7,6 @@ namespace SIL.XForge.Scripture.Models
         public string SelectedTextRef { get; set; }
         public int SelectedChapter { get; set; }
         public string SelectedSegment { get; set; } = "";
-        public int SelectedSegmentChecksum { get; set; }
+        public int? SelectedSegmentChecksum { get; set; }
     }
 }

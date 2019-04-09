@@ -25,5 +25,12 @@ namespace SIL.XForge.Utils
             flattener.Visit(field);
             return flattener.Nodes;
         }
+
+        public static object FindConstantValue(Expression expression)
+        {
+            var finder = new ConstantFinder();
+            finder.Visit(expression);
+            return finder.Value;
+        }
     }
 }

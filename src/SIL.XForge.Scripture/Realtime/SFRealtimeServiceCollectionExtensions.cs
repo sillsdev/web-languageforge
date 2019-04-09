@@ -1,7 +1,6 @@
 using ShareDB.Json0;
 using ShareDB.RichText;
 using SIL.XForge.Configuration;
-using SIL.XForge.Models;
 using SIL.XForge.Scripture.DataAccess;
 using SIL.XForge.Scripture.Models;
 
