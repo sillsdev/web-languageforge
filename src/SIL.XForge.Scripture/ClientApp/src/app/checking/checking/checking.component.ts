@@ -67,7 +67,7 @@ export class CheckingComponent extends SubscriptionDisposable implements OnInit 
           return this.textService.get(params['textId'], [[nameof<Text>('project')]]);
         })
       ),
-      async textData => {
+      textData => {
         const prevTextId = this.text == null ? '' : this.text.id;
         this.text = textData.data;
         if (this.text != null) {
@@ -75,11 +75,7 @@ export class CheckingComponent extends SubscriptionDisposable implements OnInit 
           this.chapters = this.text.chapters.map(c => c.number);
           this._chapter = undefined;
           if (prevTextId !== this.text.id) {
-            for (const chapter of this.chapters) {
-              await this.bindQuestionData(new TextJsonDataId(this.text.id, chapter));
-            }
             this.chapter = 1;
-            this.textDataId = new TextDataId(this.text.id, this.chapter);
           }
         }
       }
@@ -94,7 +90,9 @@ export class CheckingComponent extends SubscriptionDisposable implements OnInit 
     if (this._chapter !== value) {
       this._chapter = value;
       this.textDataId = new TextDataId(this.text.id, this.chapter);
-      this.questions = this.questionData[getTextJsonDataIdStr(this.text.id, this.chapter)].data;
+      this.bindQuestionData(new TextJsonDataId(this.text.id, this.chapter)).then(() => {
+        this.questions = this.questionData[getTextJsonDataIdStr(this.text.id, this.chapter)].data;
+      });
     }
   }
 
