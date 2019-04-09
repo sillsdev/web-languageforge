@@ -196,7 +196,6 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
         filter(r => r.data != null)
       ),
       r => {
-        const prevTextId = this.text == null ? '' : this.text.id;
         const prevProjectId = this.project == null ? '' : this.project.id;
         this.text = r.data;
         this.project = r.getIncluded(this.text.project);
@@ -205,25 +204,24 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
           .find(pu => pu.user.id === this.userService.currentUserId);
         this.chapters = this.text.chapters.map(c => c.number);
 
-        if (this.text.id !== prevTextId) {
-          this._chapter = 1;
-          if (this.translateUserConfig != null) {
-            if (this.translateUserConfig.isTargetTextRight == null) {
-              this.translateUserConfig.isTargetTextRight = true;
-            }
-            if (this.translateUserConfig.confidenceThreshold != null) {
-              const pcnt = Math.round(this.translateUserConfig.confidenceThreshold * 100);
-              this.translationSuggester.confidenceThreshold = pcnt / 100;
-              this.confidenceThreshold$.next(pcnt);
-            }
-            if (this.translateUserConfig.selectedTextRef === this.text.id) {
-              if (this.translateUserConfig.selectedChapter != null && this.translateUserConfig.selectedChapter !== 0) {
-                this._chapter = this.translateUserConfig.selectedChapter;
-              }
+        if (this.translateUserConfig != null) {
+          if (this.translateUserConfig.isTargetTextRight == null) {
+            this.translateUserConfig.isTargetTextRight = true;
+          }
+          if (this.translateUserConfig.confidenceThreshold != null) {
+            const pcnt = Math.round(this.translateUserConfig.confidenceThreshold * 100);
+            this.translationSuggester.confidenceThreshold = pcnt / 100;
+            this.confidenceThreshold$.next(pcnt);
+          }
+          let chapter = 1;
+          if (this.translateUserConfig.selectedTextRef === this.text.id) {
+            if (this.translateUserConfig.selectedChapter != null && this.translateUserConfig.selectedChapter !== 0) {
+              chapter = this.translateUserConfig.selectedChapter;
             }
           }
-          this.changeText();
+          this._chapter = chapter;
         }
+        this.changeText();
 
         if (this.project.id !== prevProjectId) {
           if (this.trainingSubscription != null) {
@@ -245,6 +243,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
                   }, 5000);
                 }
 
+                // ensure that any changes to the segment will be trained
                 if (this.target.segment != null) {
                   this.target.segment.acceptChanges();
                 }
@@ -315,7 +314,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   async onTargetUpdated(segment: Segment, delta?: DeltaStatic, prevSegment?: Segment): Promise<void> {
     if (segment !== prevSegment) {
       this.lastShownSuggestionWords = [];
-      this.source.changeSegment(this.target.segmentRef);
+      this.source.setSegment(this.target.segmentRef);
       this.syncScroll();
 
       this.insertSuggestionEnd = -1;
@@ -364,6 +363,18 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
       }
       this.segmentUpdated$.next();
       this.syncScroll();
+    }
+  }
+
+  async onSourceUpdated(textChange: boolean): Promise<void> {
+    if (textChange) {
+      this.syncScroll();
+      this.onStartTranslating();
+      try {
+        await this.translateSegment();
+      } finally {
+        this.onFinishTranslating();
+      }
     }
   }
 
@@ -438,7 +449,6 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   }
 
   private changeText(): void {
-    this.target.blur();
     let selectedSegment: string;
     let selectedSegmentChecksum: number;
     if (
@@ -450,10 +460,20 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
       selectedSegment = this.translateUserConfig.selectedSegment;
       selectedSegmentChecksum = this.translateUserConfig.selectedSegmentChecksum;
     }
-    this.source.id = new TextDataId(this.text.id, this._chapter, 'source');
-    this.target.id = new TextDataId(this.text.id, this._chapter, 'target');
+    const sourceId = new TextDataId(this.text.id, this._chapter, 'source');
+    const targetId = new TextDataId(this.text.id, this._chapter, 'target');
+    if (!eq(targetId, this.target.id)) {
+      // blur the target before switching so that scrolling is reset to the top
+      this.target.blur();
+    }
+    this.source.id = sourceId;
+    this.target.id = targetId;
     if (selectedSegment != null) {
-      this.target.changeSegment(selectedSegment, selectedSegmentChecksum, true);
+      const segmentChanged = this.target.setSegment(selectedSegment, selectedSegmentChecksum, true);
+      if (!segmentChanged && selectedSegmentChecksum == null) {
+        // the segment checksum was unset on the server, so accept the current segment changes
+        this.target.segment.acceptChanges();
+      }
     }
   }
 
@@ -467,7 +487,9 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
     this.translationSession = null;
     const sourceSegment = this.source.segmentText;
     const words = this.sourceWordTokenizer.tokenizeToStrings(sourceSegment);
-    if (words.length > MAX_SEGMENT_LENGTH) {
+    if (words.length === 0) {
+      return;
+    } else if (words.length > MAX_SEGMENT_LENGTH) {
       this.translationSession = null;
       this.noticeService.show('This verse is too long to generate suggestions.');
       return;

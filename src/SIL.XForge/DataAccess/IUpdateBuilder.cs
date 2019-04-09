@@ -9,11 +9,6 @@ namespace SIL.XForge.DataAccess
     {
         IUpdateBuilder<T> Set<TField>(Expression<Func<T, TField>> field, TField value);
 
-        IUpdateBuilder<T> SetDictionaryValue<TItem>(Expression<Func<T, IDictionary<string, TItem>>> dictionaryField,
-            string key, TItem value);
-        IUpdateBuilder<T> RemoveDictionaryValue<TItem>(Expression<Func<T, IDictionary<string, TItem>>> dictionaryField,
-            string key);
-
         IUpdateBuilder<T> SetOnInsert<TField>(Expression<Func<T, TField>> field, TField value);
 
         IUpdateBuilder<T> Unset<TField>(Expression<Func<T, TField>> field);

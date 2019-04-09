@@ -144,7 +144,7 @@ export class TextComponent implements OnDestroy {
   @Input()
   set segmentRef(value: string) {
     if (value !== this.segmentRef) {
-      this.changeSegment(value);
+      this.setSegment(value);
     }
   }
 
@@ -204,41 +204,19 @@ export class TextComponent implements OnDestroy {
     }
   }
 
-  changeSegment(segmentRef: string, checksum?: number, focus: boolean = false): boolean {
+  setSegment(segmentRef: string, checksum?: number, focus: boolean = false): boolean {
     if (!this.initialTextFetched) {
       this.initialSegmentRef = segmentRef;
       this.initialSegmentChecksum = checksum;
       this.initialSegmentFocus = focus;
-      return;
+      return true;
     }
-
-    if (this._segment != null && this._id.textId === this._segment.textId && segmentRef === this._segment.ref) {
-      // the selection has not changed to a different segment
-      return false;
+    const prevSegment = this.segment;
+    if (this.tryChangeSegment(segmentRef, checksum, focus)) {
+      this.updated.emit({ prevSegment, segment: this._segment });
+      return true;
     }
-
-    if (focus) {
-      const selection = this._editor.getSelection();
-      const selectedSegmentRef = selection == null ? null : this.segmenter.getSegmentRef(selection);
-      if (selectedSegmentRef !== segmentRef) {
-        const range = this.segmenter.getSegmentRange(segmentRef);
-        Promise.resolve().then(() => this._editor.setSelection(range.index + range.length, 0, 'user'));
-      }
-    }
-
-    if (this._segment != null && this.highlightSegment) {
-      this.toggleHighlight(this._segment.range, false);
-    }
-    this._segment = new Segment(this._id.textId, segmentRef);
-    if (checksum != null) {
-      this._segment.initialChecksum = checksum;
-    }
-    this.updateSegment();
-    this.segmentRefChange.emit(this.segmentRef);
-    if (this.highlightSegment) {
-      this.toggleHighlight(this._segment.range, true);
-    }
-    return true;
+    return false;
   }
 
   getSegmentRange(ref: string): RangeStatic {
@@ -351,7 +329,7 @@ export class TextComponent implements OnDestroy {
     const prevSegment = this._segment;
     if (segmentRef != null) {
       // update/switch current segment
-      if (!this.changeSegment(segmentRef, checksum, focus)) {
+      if (!this.tryChangeSegment(segmentRef, checksum, focus)) {
         if (this.highlightSegment) {
           this.toggleHighlight(this._segment.range, false);
         }
@@ -383,6 +361,36 @@ export class TextComponent implements OnDestroy {
 
     Promise.resolve().then(() => this.adjustSelection());
     this.updated.emit({ delta, prevSegment, segment: this._segment });
+  }
+
+  private tryChangeSegment(segmentRef: string, checksum?: number, focus: boolean = false): boolean {
+    if (this._segment != null && this._id.textId === this._segment.textId && segmentRef === this._segment.ref) {
+      // the selection has not changed to a different segment
+      return false;
+    }
+
+    if (focus) {
+      const selection = this._editor.getSelection();
+      const selectedSegmentRef = selection == null ? null : this.segmenter.getSegmentRef(selection);
+      if (selectedSegmentRef !== segmentRef) {
+        const range = this.segmenter.getSegmentRange(segmentRef);
+        Promise.resolve().then(() => this._editor.setSelection(range.index + range.length, 0, 'user'));
+      }
+    }
+
+    if (this._segment != null && this.highlightSegment) {
+      this.toggleHighlight(this._segment.range, false);
+    }
+    this._segment = new Segment(this._id.textId, segmentRef);
+    if (checksum != null) {
+      this._segment.initialChecksum = checksum;
+    }
+    this.updateSegment();
+    this.segmentRefChange.emit(this.segmentRef);
+    if (this.highlightSegment) {
+      this.toggleHighlight(this._segment.range, true);
+    }
+    return true;
   }
 
   private updateSegment(): void {

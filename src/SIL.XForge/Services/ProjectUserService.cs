@@ -107,7 +107,7 @@ namespace SIL.XForge.Services
                 update =>
                 {
                     foreach (KeyValuePair<string, object> attr in attrs)
-                        update.Set(GetField(attr.Key), attr.Value);
+                        update.Set(GetFieldExpression(attr.Key), attr.Value);
                 });
             return GetProjectUser(project, id);
         }
@@ -169,12 +169,12 @@ namespace SIL.XForge.Services
             return projectUser;
         }
 
-        private static Expression<Func<TProjectEntity, object>> GetField(string fieldName)
+        private static Expression<Func<TProjectEntity, object>> GetFieldExpression(string fieldName)
         {
-            Expression<Func<TProjectEntity, TEntity>> getProjectUserExpr = p => (TEntity)p.Users[-1];
-            Expression body = Expression.Convert(Expression.Property(getProjectUserExpr.Body, fieldName),
+            Expression<Func<TProjectEntity, TEntity>> userExpr = p => (TEntity)p.Users[ArrayPosition.FirstMatching];
+            Expression body = Expression.Convert(Expression.Property(userExpr.Body, fieldName),
                 typeof(object));
-            return Expression.Lambda<Func<TProjectEntity, object>>(body, getProjectUserExpr.Parameters);
+            return Expression.Lambda<Func<TProjectEntity, object>>(body, userExpr.Parameters);
         }
 
         async Task<ProjectUserResource> IResourceMapper<ProjectUserResource, ProjectUserEntity>.MapAsync(

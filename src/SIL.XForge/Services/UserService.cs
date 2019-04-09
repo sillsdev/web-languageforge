@@ -114,9 +114,9 @@ namespace SIL.XForge.Services
                     SiteOptions siteOptions = _siteOptions.Value;
                     string site = siteOptions.Origin.Authority;
                     if (value == null)
-                        update.RemoveDictionaryValue(u => u.Sites, site);
+                        update.Unset(u => u.Sites[site]);
                     else
-                        update.SetDictionaryValue(u => u.Sites, site, (Site)value);
+                        update.Set(u => u.Sites[site], (Site)value);
                     break;
                 default:
                     base.UpdateAttribute(update, name, value);

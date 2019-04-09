@@ -17,7 +17,7 @@ import {
 import Quill, { DeltaStatic } from 'quill';
 import { BehaviorSubject, defer, of, Subject } from 'rxjs';
 import { anything, deepEqual, instance, mock, resetCalls, verify, when } from 'ts-mockito';
-import { MapQueryResults } from 'xforge-common/json-api.service';
+import { MapQueryResults, QueryResults } from 'xforge-common/json-api.service';
 import { UserRef } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
@@ -63,6 +63,26 @@ describe('EditorComponent', () => {
     expect(selection.length).toBe(0);
     verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
     expect(env.component.showSuggestion).toBe(false);
+    env.dispose();
+  }));
+
+  it('source retrieved after target', fakeAsync(() => {
+    const env = new TestEnvironment();
+    const sourceId = new TextDataId('text01', 1, 'source');
+    let resolve: (value?: TextData) => void;
+    when(env.mockedTextService.getTextData(deepEqual(sourceId))).thenReturn(new Promise(r => (resolve = r)));
+    env.setTranslateConfig({ selectedTextRef: 'text01', selectedChapter: 1, selectedSegment: 'verse_1_2' });
+    env.waitForSuggestion();
+    expect(env.component.target.segmentRef).toBe('verse_1_2');
+    verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).never();
+    expect(env.component.showSuggestion).toBe(false);
+
+    resolve(env.createTextData(sourceId));
+    env.waitForSuggestion();
+    expect(env.component.target.segmentRef).toBe('verse_1_2');
+    verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
+    expect(env.component.showSuggestion).toBe(true);
+
     env.dispose();
   }));
 
@@ -318,6 +338,44 @@ describe('EditorComponent', () => {
     env.dispose();
   }));
 
+  it('local and remote selected segment are different', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.setTranslateConfig({ selectedTextRef: 'text01', selectedChapter: 1, selectedSegment: 'verse_1_1' });
+    env.waitForSuggestion();
+    expect(env.component.chapter).toBe(1);
+    expect(env.component.target.segmentRef).toBe('verse_1_1');
+    verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
+
+    resetCalls(env.mockedRemoteTranslationEngine);
+    env.setTranslateConfig({ selectedTextRef: 'text01', selectedChapter: 1, selectedSegment: 'verse_1_2' });
+    env.waitForSuggestion();
+    expect(env.component.target.segmentRef).toBe('verse_1_2');
+    verify(env.mockedRemoteTranslationEngine.translateInteractively(1, anything())).once();
+
+    env.dispose();
+  }));
+
+  it('selected segment checksum unset on server', fakeAsync(() => {
+    const env = new TestEnvironment();
+    env.setTranslateConfig({
+      selectedTextRef: 'text01',
+      selectedChapter: 1,
+      selectedSegment: 'verse_1_1',
+      selectedSegmentChecksum: 0
+    });
+    env.waitForSuggestion();
+    expect(env.component.chapter).toBe(1);
+    expect(env.component.target.segmentRef).toBe('verse_1_1');
+    expect(env.component.target.segment.initialChecksum).toBe(0);
+
+    env.setTranslateConfig({ selectedTextRef: 'text01', selectedChapter: 1, selectedSegment: 'verse_1_1' });
+    env.waitForSuggestion();
+    expect(env.component.target.segmentRef).toBe('verse_1_1');
+    expect(env.component.target.segment.initialChecksum).not.toBe(0);
+
+    env.dispose();
+  }));
+
   it('update confidence threshold', fakeAsync(() => {
     const env = new TestEnvironment();
     env.setTranslateConfig({
@@ -491,6 +549,8 @@ class TestEnvironment {
   lastApprovedPrefix: string[] = [];
 
   private readonly params$: BehaviorSubject<Params>;
+  private readonly text01$: BehaviorSubject<QueryResults<Text>>;
+  private readonly text02$: BehaviorSubject<QueryResults<Text>>;
   private trainingProgress$ = new Subject<ProgressStatus>();
 
   constructor() {
@@ -501,6 +561,9 @@ class TestEnvironment {
     this.addTextData(new TextDataId('text01', 2, 'target'));
     this.addTextData(new TextDataId('text02', 1, 'source'));
     this.addTextData(new TextDataId('text02', 1, 'target'));
+    this.text01$ = new BehaviorSubject<QueryResults<Text>>(new MapQueryResults(null));
+    this.text02$ = new BehaviorSubject<QueryResults<Text>>(new MapQueryResults(null));
+
     when(this.mockedActivatedRoute.params).thenReturn(this.params$);
     when(this.mockedUserService.currentUserId).thenReturn('user01');
     when(this.mockedSFProjectService.get('project01')).thenReturn(of());
@@ -513,6 +576,12 @@ class TestEnvironment {
     );
     when(this.mockedRemoteTranslationEngine.listenForTrainingStatus()).thenReturn(defer(() => this.trainingProgress$));
     when(this.mockedSFProjectService.addTranslateMetrics('project01', anything())).thenResolve();
+    when(
+      this.mockedTextService.get('text01', deepEqual([[nameof<Text>('project'), nameof<SFProject>('users')]]))
+    ).thenReturn(this.text01$);
+    when(
+      this.mockedTextService.get('text02', deepEqual([[nameof<Text>('project'), nameof<SFProject>('users')]]))
+    ).thenReturn(this.text02$);
 
     TestBed.configureTestingModule({
       declarations: [EditorComponent, SuggestionComponent],
@@ -569,31 +638,23 @@ class TestEnvironment {
         translateConfig: userTranslateConfig
       })
     ];
-    when(
-      this.mockedTextService.get('text01', deepEqual([[nameof<Text>('project'), nameof<SFProject>('users')]]))
-    ).thenReturn(
-      of(
-        new MapQueryResults(
-          new Text({
-            id: 'text01',
-            name: 'Book 1',
-            chapters: [{ number: 1 }, { number: 2 }],
-            project: new SFProjectRef('project01')
-          }),
-          undefined,
-          included
-        )
+    this.text01$.next(
+      new MapQueryResults(
+        new Text({
+          id: 'text01',
+          name: 'Book 1',
+          chapters: [{ number: 1 }, { number: 2 }],
+          project: new SFProjectRef('project01')
+        }),
+        undefined,
+        included
       )
     );
-    when(
-      this.mockedTextService.get('text02', deepEqual([[nameof<Text>('project'), nameof<SFProject>('users')]]))
-    ).thenReturn(
-      of(
-        new MapQueryResults(
-          new Text({ id: 'text02', name: 'Book 2', chapters: [{ number: 1 }], project: new SFProjectRef('project01') }),
-          undefined,
-          included
-        )
+    this.text02$.next(
+      new MapQueryResults(
+        new Text({ id: 'text02', name: 'Book 2', chapters: [{ number: 1 }], project: new SFProjectRef('project01') }),
+        undefined,
+        included
       )
     );
   }
@@ -675,11 +736,7 @@ class TestEnvironment {
     this.component.metricsSession.dispose();
   }
 
-  private addTextData(id: TextDataId): void {
-    when(this.mockedTextService.getTextData(deepEqual(id))).thenResolve(this.createTextData(id));
-  }
-
-  private createTextData(id: TextDataId): TextData {
+  createTextData(id: TextDataId): TextData {
     const delta = new Delta();
     delta.insert({ chapter: id.chapter }, { chapter: { style: 'c' } });
     delta.insert({ verse: '1' }, { verse: { style: 'v' } });
@@ -711,5 +768,9 @@ class TestEnvironment {
     delta.insert('\n', { para: { style: 'p' } });
     const doc = new MockRealtimeDoc<DeltaStatic>('rich-text', id.toString(), delta);
     return new TextData(doc, instance(this.mockedRealtimeOfflineStore));
+  }
+
+  private addTextData(id: TextDataId): void {
+    when(this.mockedTextService.getTextData(deepEqual(id))).thenResolve(this.createTextData(id));
   }
 }

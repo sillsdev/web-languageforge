@@ -51,6 +51,7 @@
           [isReadOnly]="true"
           [highlightSegment]="target.hasFocus"
           (loaded)="onTextLoaded('source')"
+          (updated)="onSourceUpdated($event.delta != null)"
         ></app-text>
       </div>
     </div>

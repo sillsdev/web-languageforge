@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -23,26 +24,10 @@ namespace SIL.XForge.DataAccess
 
         public IUpdateBuilder<T> Set<TField>(Expression<Func<T, TField>> field, TField value)
         {
-            (object owner, PropertyInfo propInfo) = GetFieldOwner(field);
-            propInfo.SetValue(owner, value);
-            return this;
-        }
-
-        public IUpdateBuilder<T> SetDictionaryValue<TItem>(
-            Expression<Func<T, IDictionary<string, TItem>>> dictionaryField, string key, TItem value)
-        {
-            Func<T, IDictionary<string, TItem>> getDictionary = dictionaryField.Compile();
-            IDictionary<string, TItem> dictionary = getDictionary(_entity);
-            dictionary[key] = value;
-            return this;
-        }
-
-        public IUpdateBuilder<T> RemoveDictionaryValue<TItem>(
-            Expression<Func<T, IDictionary<string, TItem>>> dictionaryField, string key)
-        {
-            Func<T, IDictionary<string, TItem>> getDictionary = dictionaryField.Compile();
-            IDictionary<string, TItem> dictionary = getDictionary(_entity);
-            dictionary.Remove(key);
+            (IEnumerable<object> owners, PropertyInfo propInfo, object index) = GetFieldOwners(field);
+            object[] indices = index == null ? null : new[] { index };
+            foreach (object owner in owners)
+                propInfo.SetValue(owner, value, indices);
             return this;
         }
 
@@ -55,20 +40,38 @@ namespace SIL.XForge.DataAccess
 
         public IUpdateBuilder<T> Unset<TField>(Expression<Func<T, TField>> field)
         {
-            (object owner, PropertyInfo prop) = GetFieldOwner(field);
-            object value = null;
-            if (prop.PropertyType.IsValueType)
-                value = Activator.CreateInstance(prop.PropertyType);
-            prop.SetValue(owner, value);
+            (IEnumerable<object> owners, PropertyInfo prop, object index) = GetFieldOwners(field);
+            if (index != null)
+            {
+                // remove value from a dictionary
+                Type dictionaryType = prop.DeclaringType;
+                Type keyType = dictionaryType.GetGenericArguments()[0];
+                MethodInfo removeMethod = dictionaryType.GetMethod("Remove", new[] { keyType });
+                foreach (object owner in owners)
+                    removeMethod.Invoke(owner, new[] { index });
+            }
+            else
+            {
+                // set property to default value
+                object value = null;
+                if (prop.PropertyType.IsValueType)
+                    value = Activator.CreateInstance(prop.PropertyType);
+                foreach (object owner in owners)
+                    prop.SetValue(owner, value);
+            }
             return this;
         }
 
         public IUpdateBuilder<T> Inc(Expression<Func<T, int>> field, int value)
         {
-            (object owner, PropertyInfo prop) = GetFieldOwner(field);
-            var curValue = (int)prop.GetValue(owner);
-            curValue += value;
-            prop.SetValue(owner, curValue);
+            (IEnumerable<object> owners, PropertyInfo prop, object index) = GetFieldOwners(field);
+            object[] indices = index == null ? null : new[] { index };
+            foreach (object owner in owners)
+            {
+                var curValue = (int)prop.GetValue(owner, indices);
+                curValue += value;
+                prop.SetValue(owner, curValue, indices);
+            }
             return this;
         }
 
@@ -104,62 +107,86 @@ namespace SIL.XForge.DataAccess
                 .Single(m => m.GetParameters().Length == 2).MakeGenericMethod(type);
         }
 
-        private (object Owner, PropertyInfo Property) GetFieldOwner<TField>(Expression<Func<T, TField>> field)
+        private (IEnumerable<object> Owners, PropertyInfo Property, object Index) GetFieldOwners<TField>(
+            Expression<Func<T, TField>> field)
         {
-            object owner = null;
+            List<object> owners = null;
             MemberInfo member = null;
-            int index = int.MinValue;
+            object index = null;
             foreach (Expression node in ExpressionHelper.Flatten(field))
             {
-                if (owner == null)
+                var newOwners = new List<object>();
+                if (owners == null)
                 {
-                    owner = _entity;
+                    if (_entity != null)
+                        newOwners.Add(_entity);
                 }
                 else
                 {
-                    switch (member)
+                    foreach (object owner in owners)
                     {
-                        case MethodInfo method:
-                            if (index < 0)
-                            {
-                                if (_filter.Body is MethodCallExpression callExpr && IsAnyMethod(callExpr.Method))
+                        object newOwner;
+                        switch (member)
+                        {
+                            case MethodInfo method:
+                                switch (index)
                                 {
-                                    var predicate = (LambdaExpression)callExpr.Arguments[1];
-                                    Type itemType = predicate.Parameters[0].Type;
-                                    MethodInfo firstOrDefault = GetFirstOrDefaultMethod(itemType);
-                                    owner = firstOrDefault.Invoke(null,
-                                        new object[] { owner, predicate.Compile() });
+                                    case ArrayPosition.FirstMatching:
+                                        if (_filter.Body is MethodCallExpression callExpr
+                                            && IsAnyMethod(callExpr.Method))
+                                        {
+                                            var predicate = (LambdaExpression)callExpr.Arguments[1];
+                                            Type itemType = predicate.Parameters[0].Type;
+                                            MethodInfo firstOrDefault = GetFirstOrDefaultMethod(itemType);
+                                            newOwner = firstOrDefault.Invoke(null,
+                                                new object[] { owner, predicate.Compile() });
+                                            if (newOwner != null)
+                                                newOwners.Add(newOwner);
+                                        }
+                                        break;
+                                    case ArrayPosition.All:
+                                        newOwners.AddRange(((IEnumerable)owner).Cast<object>());
+                                        break;
+                                    default:
+                                        newOwner = method.Invoke(owner, new object[] { index });
+                                        if (newOwner != null)
+                                            newOwners.Add(newOwner);
+                                        break;
                                 }
-                            }
-                            else
-                            {
-                                owner = method.Invoke(owner, new object[] { index });
-                            }
-                            break;
+                                break;
 
-                        case PropertyInfo prop:
-                            owner = prop.GetValue(owner);
-                            break;
+                            case PropertyInfo prop:
+                                newOwner = prop.GetValue(owner);
+                                if (newOwner != null)
+                                    newOwners.Add(newOwner);
+                                break;
+                        }
                     }
                 }
+                owners = newOwners;
 
                 switch (node)
                 {
                     case MemberExpression memberExpr:
                         member = memberExpr.Member;
-                        index = int.MinValue;
+                        index = null;
                         break;
 
                     case MethodCallExpression methodExpr:
                         member = methodExpr.Method;
                         if (member.Name != "get_Item")
                             throw new ArgumentException("Invalid method call in field expression.", nameof(field));
-                        var constant = (ConstantExpression)methodExpr.Arguments[0];
-                        index = (int)constant.Value;
+
+                        Expression argExpr = methodExpr.Arguments[0];
+                        index = ExpressionHelper.FindConstantValue(argExpr);
                         break;
                 }
             }
-            return (owner, (PropertyInfo)member);
+
+            PropertyInfo property = member as PropertyInfo;
+            if (property == null && index != null)
+                property = member.DeclaringType.GetProperty("Item");
+            return (owners, property, index);
         }
     }
 }

@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
+using SIL.Machine.WebApi.Services;
 using SIL.XForge.Configuration;
 using SIL.XForge.Scripture.Services;
 
@@ -122,6 +123,7 @@ namespace SIL.XForge.Scripture
                 .AddMongoDataAccess(o => o.MachineDatabaseName = "xforge_machine")
                 .AddTextCorpus<SFTextCorpusFactory>();
             services.AddSingleton<IAuthorizationHandler, MachineAuthorizationHandler>();
+            services.AddSingleton<IBuildHandler, SFBuildHandler>();
 
             containerBuilder.Populate(services);
 

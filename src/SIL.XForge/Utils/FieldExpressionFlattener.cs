@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace SIL.XForge.Utils
 {
@@ -11,7 +12,8 @@ namespace SIL.XForge.Utils
 
         protected override Expression VisitMember(MemberExpression node)
         {
-            _nodes.Push(node);
+            if (node.Member is PropertyInfo)
+                _nodes.Push(node);
             return base.VisitMember(node);
         }
 
