@@ -31,9 +31,8 @@ module.exports = function(config) {
     autoWatch: true,
     captureTimeout: 120000, // compile needs to finished otherwise first capture fails
     browsers: isTC ? ['ChromiumHeadless'] : ['Chrome'],
-    browserDisconnectTimeout: isTC ? 10000 : config.browserDisconnectTimeout,
-    browserDisconnectTolerance: isTC ? 3 : config.browserDisconnectTolerance,
-    browserNoActivityTimeout: isTC ? 60000 : config.browserNoActivityTimeout,
+    browserDisconnectTimeout: 10000,
+    browserNoActivityTimeout: 60000,
     flags: isTC
       ? ['--no-sandbox', '--headless', '--disable-gpu', '--disable-translate', '--disable-extensions']
       : config.flags,
