@@ -16,7 +16,13 @@ $questionAnswerBubbleBackgroundColor: $sf_grey;
   width: 100%;
 
   .mdc-list-item {
+    cursor: pointer;
+
     .question-title {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+
       &:before {
         position: absolute;
         content: '';

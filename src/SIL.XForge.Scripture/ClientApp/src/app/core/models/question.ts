@@ -14,6 +14,8 @@ export interface Question {
   audioUrl?: string;
   modelAnswer?: string;
   answers?: Answer[];
+  // TODO: (NW) Remove once user project data is setup to store this value - currently used only for testing purposes
+  read?: boolean;
 }
 
 export enum QuestionSource {

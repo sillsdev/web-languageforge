@@ -5,14 +5,14 @@
     [ngClass]="{
       'question-read': question.read,
       'question-unread': !question.read,
-      'question-answered': question.answered,
-      'question-has-answers': question.totalAnswers(),
+      'question-answered': question.answers.length,
+      'question-has-answers': getUserAnswers(question),
       'mdc-list-item--activated': activeQuestion && activeQuestion.id === question.id
     }"
   >
-    <div class="question-title">{{ question.title }}</div>
+    <div class="question-title">{{ question.text }}</div>
     <a class="view-answers" mdcListItemMeta title="View Answers">
-      <i mdcIcon>forum</i> <span>{{ question.totalAnswers() }}</span>
+      <i mdcIcon>forum</i> <span>{{ getUserAnswers(question) }}</span>
     </a>
   </mdc-list-item>
 </mdc-list>

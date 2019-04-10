@@ -1,14 +1,17 @@
-import { Component, ElementRef, HostBinding, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostBinding, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SplitComponent } from 'angular-split';
 import { switchMap } from 'rxjs/operators';
 
-import { Resource } from 'xforge-common/models/resource';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { nameof } from 'xforge-common/utils';
+import { Answer } from '../../core/models/answer';
+import { Question } from '../../core/models/question';
+import { QuestionData } from '../../core/models/question-data';
 import { SFProject } from '../../core/models/sfproject';
 import { Text } from '../../core/models/text';
 import { TextDataId } from '../../core/models/text-data';
+import { getTextJsonDataIdStr, TextJsonDataId } from '../../core/models/text-json-data-id';
 import { TextService } from '../../core/text.service';
 import { CheckingQuestionsComponent } from './checking-questions/checking-questions.component';
 import { CheckingTextComponent } from './checking-text/checking-text.component';
@@ -19,63 +22,19 @@ interface Summary {
   answered: number;
 }
 
-export class Question extends Resource {
-  title: string;
-  read: boolean = false;
-  answered: boolean = false;
-  answers: Answer[] = [];
-
-  constructor(init?: Partial<Question>) {
-    super('question', init);
-  }
-
-  totalAnswers() {
-    return this.answers.length;
-  }
-
-  markAsRead() {
-    // TODO: Temporary solution to test functionality - remove when answering panel is ready
-    if (this.read) {
-      this.addAnswer(
-        new Answer({
-          id: 'a1',
-          text: 'Answer ' + (this.totalAnswers() + 1)
-        })
-      );
-    }
-    this.read = true;
-  }
-
-  markAsAnswered() {
-    this.answered = true;
-  }
-
-  addAnswer(answer: Answer) {
-    this.answers.push(answer);
-    this.markAsAnswered();
-  }
-}
-
-export class Answer extends Resource {
-  text: string;
-
-  constructor(init?: Partial<Answer>) {
-    super('answer', init);
-  }
-}
-
 @Component({
   selector: 'app-checking',
   templateUrl: './checking.component.html',
   styleUrls: ['./checking.component.scss']
 })
-export class CheckingComponent extends SubscriptionDisposable {
+export class CheckingComponent extends SubscriptionDisposable implements OnInit {
   @HostBinding('class') classes = 'flex-max';
   @ViewChild(CheckingTextComponent) scripturePanel: CheckingTextComponent;
   @ViewChild(CheckingQuestionsComponent) questionsPanel: CheckingQuestionsComponent;
   @ViewChild(SplitComponent) splitComponent: SplitComponent;
   @ViewChild('splitContainer') splitContainerElement: ElementRef;
   @ViewChild('scripturePanelContainer') scripturePanelContainerElement: ElementRef;
+
   @ViewChild('answerPanelContainer') set answersPanelElement(answersPanelContainerElement: ElementRef) {
     // Need to trigger the calculation for the slider after DOM has been updated
     this.answersPanelContainerElement = answersPanelContainerElement;
@@ -84,7 +43,8 @@ export class CheckingComponent extends SubscriptionDisposable {
 
   project: SFProject;
   text: Text;
-  questions: Question[];
+  questions: Question[] = [];
+  questionData: { [textId: string]: QuestionData } = {};
   summary: Summary = {
     read: 0,
     unread: 0,
@@ -96,12 +56,15 @@ export class CheckingComponent extends SubscriptionDisposable {
 
   private _chapter: number;
 
-  constructor(private activatedRoute: ActivatedRoute, textService: TextService) {
+  constructor(private activatedRoute: ActivatedRoute, private textService: TextService) {
     super();
+  }
+
+  ngOnInit(): void {
     this.subscribe(
       this.activatedRoute.params.pipe(
         switchMap(params => {
-          return textService.get(params['textId'], [[nameof<Text>('project')]]);
+          return this.textService.get(params['textId'], [[nameof<Text>('project')]]);
         })
       ),
       textData => {
@@ -110,10 +73,9 @@ export class CheckingComponent extends SubscriptionDisposable {
         if (this.text != null) {
           this.project = textData.getIncluded(this.text.project);
           this.chapters = this.text.chapters.map(c => c.number);
+          this._chapter = undefined;
           if (prevTextId !== this.text.id) {
-            this._chapter = 1;
-            this.textDataId = new TextDataId(this.text.id, this.chapter);
-            this.loadQuestions();
+            this.chapter = 1;
           }
         }
       }
@@ -128,6 +90,9 @@ export class CheckingComponent extends SubscriptionDisposable {
     if (this._chapter !== value) {
       this._chapter = value;
       this.textDataId = new TextDataId(this.text.id, this.chapter);
+      this.bindQuestionData(new TextJsonDataId(this.text.id, this.chapter)).then(() => {
+        this.questions = this.questionData[getTextJsonDataIdStr(this.text.id, this.chapter)].data;
+      });
     }
   }
 
@@ -148,6 +113,11 @@ export class CheckingComponent extends SubscriptionDisposable {
     this.scripturePanel.applyFontChange(fontSize);
   }
 
+  addAnswer(answer: Answer) {
+    // TODO: (NW) Update the document once the answer functionality is ready
+    this.questionsPanel.activeQuestion.answers.push(answer);
+  }
+
   checkSliderPosition(event: any) {
     if (event.hasOwnProperty('sizes')) {
       if (event.sizes[1] < this.minAnswerPanelHeight) {
@@ -161,6 +131,14 @@ export class CheckingComponent extends SubscriptionDisposable {
   }
 
   questionChanged(question: Question) {
+    // TODO: (NW) Temporary solution to test functionality - remove when answering panel is ready
+    if (question.read) {
+      this.addAnswer({
+        id: 'a1',
+        ownerRef: '',
+        text: 'Answer ' + (question.answers.length + 1)
+      });
+    }
     this.calculateScriptureSliderPosition();
   }
 
@@ -174,18 +152,22 @@ export class CheckingComponent extends SubscriptionDisposable {
     this.splitComponent.setVisibleAreaSizes([scripturePanelHeight, answerPanelHeight]);
   }
 
-  private loadQuestions() {
-    const questions = [];
-    for (let q = 1; q < 15; q++) {
-      questions.push(
-        new Question({
-          id: 'q' + q,
-          title: 'Question ' + q
-        })
-      );
+  private async bindQuestionData(id: TextJsonDataId): Promise<void> {
+    if (id == null) {
+      return;
     }
-    this.questions = questions;
-    this.refreshSummary();
+
+    this.unbindQuestionData(id);
+    const questionData: QuestionData = await this.textService.getQuestionData(id);
+    this.questionData[id.toString()] = questionData;
+  }
+
+  private unbindQuestionData(id: TextJsonDataId): void {
+    if (!(id.toString() in this.questionData)) {
+      return;
+    }
+
+    delete this.questionData[id.toString()];
   }
 
   private refreshSummary() {
@@ -193,7 +175,8 @@ export class CheckingComponent extends SubscriptionDisposable {
     this.summary.read = 0;
     this.summary.unread = 0;
     for (const question of this.questions) {
-      if (question.answered) {
+      if (question.answers.length) {
+        // TODO: (NW) Only check answers for the current user - requires real answers being in the question document
         this.summary.answered++;
       } else if (question.read) {
         this.summary.read++;

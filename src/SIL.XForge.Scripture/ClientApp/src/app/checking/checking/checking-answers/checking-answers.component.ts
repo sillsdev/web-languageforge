@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Question } from '../checking.component';
+import { Question } from '../../../core/models/question';
 
 @Component({
   selector: 'app-checking-answers',
