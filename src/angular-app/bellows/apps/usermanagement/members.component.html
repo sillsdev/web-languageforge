@@ -33,7 +33,7 @@
         </div>
         </form>
     </div>
-    <listview search="$ctrl.queryUserList()" items="$ctrl.list.users" items-filter="$ctrl.userFilter" visible-items="$ctrl.list.visibleUsers" select="">
+    <listview search="$ctrl.queryUserList()" items="$ctrl.list.allUsers" items-filter="$ctrl.userFilter" visible-items="$ctrl.list.visibleUsers" select="">
         <table class="table table-hover table-responsive" >
             <thead class="thead-dark">
             <tr>
@@ -50,7 +50,8 @@
                     <input data-ng-show="$ctrl.rights.remove" type="checkbox" data-ng-checked="$ctrl.isSelected(user)"
                            data-ng-click="$ctrl.updateSelection($event, user)">
                 </td>
-                <td>{{user.username}}</td>
+                <td ng-if="!user.isInvitee">{{user.username}}</td>
+                <td ng-if="user.isInvitee" class="invited-user">{{user.username || user.email}} [invited]</td>
                 <td>{{user.name}}</td>
                 <td data-ng-show="user.id == $ctrl.project.ownerRef.id">
                     <!--suppress HtmlFormInputWithoutLabel -->

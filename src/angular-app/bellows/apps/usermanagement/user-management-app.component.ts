@@ -24,6 +24,7 @@ export class UserManagementAppController implements angular.IController {
   list = {
     visibleUsers: {},
     users: {},
+    allUsers: {},
     userCount: 0
   };
   joinRequests = {};
@@ -66,6 +67,10 @@ export class UserManagementAppController implements angular.IController {
       if (result.ok) {
         this.list.users = result.data.users;
         this.list.userCount = result.data.userCount;
+        this.list.allUsers = result.data.users.concat(result.data.invitees.map((invitee: any) => {
+          invitee.isInvitee = true;
+          return invitee;
+        }));
         this.project = result.data.project;
         this.roles = this.project.roles;
         this.applicationHeaderService.setPageName(this.project.projectName + ' User Management');
