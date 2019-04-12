@@ -1,4 +1,4 @@
-<div mdcMenuSurfaceAnchor #trainingProgressAnchor fxLayout="column" fxFlex="1 1 0%">
+<div mdcMenuSurfaceAnchor #trainingProgressAnchor fxLayout="column">
   <div mdcHeadline4>{{ textName }}</div>
   <div class="toolbar" fxLayout="row" fxLayoutAlign="start center">
     <app-chapter-nav [(chapter)]="chapter" [chapters]="chapters"></app-chapter-nav>
@@ -42,7 +42,7 @@
       title="Swap source and target"
     ></button>
   </div>
-  <div [fxLayout]="isTargetTextRight ? 'row' : 'row-reverse'" fxFlex="1 1 0%" fxLayoutGap="5px">
+  <div [fxLayout]="isTargetTextRight ? 'row' : 'row-reverse'" fxLayoutGap="5px">
     <div class="text-area">
       <div mdcSubtitle1>{{ sourceLabel }}</div>
       <div #sourceContainer class="text-container" [style.height]="textHeight">
@@ -55,7 +55,6 @@
         ></app-text>
       </div>
     </div>
-    <div class="swap-button-container"></div>
     <div class="text-area">
       <div mdcSubtitle1>{{ targetLabel }}</div>
       <div class="text-container" [style.height]="textHeight">

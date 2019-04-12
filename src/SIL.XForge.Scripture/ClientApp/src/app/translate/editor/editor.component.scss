@@ -3,7 +3,6 @@
 :host {
   display: flex;
   flex-direction: column;
-  flex: 1;
 }
 
 .toolbar {
@@ -36,9 +35,7 @@
 }
 
 .text-area {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+  width: 50%;
 }
 
 .text-container {
