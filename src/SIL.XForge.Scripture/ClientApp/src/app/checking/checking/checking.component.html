@@ -26,11 +26,13 @@
     <div class="col" id="text-panel">
       <div class="flex-max" id="scripture-panel">
         <div class="panel">
-          <div class="panel-heading">
-            <mdc-icon>library_books</mdc-icon>
-            <h2>{{ text?.name }}</h2>
-            <div class="panel-activity">
+          <div class="panel-heading row">
+            <div class="panel-nav">
+              <mdc-icon>library_books</mdc-icon>
+              <h2>{{ text?.name }}</h2>
               <app-chapter-nav [chapters]="chapters" [(chapter)]="chapter"></app-chapter-nav>
+            </div>
+            <div class="panel-activity">
               <app-font-size (apply)="applyFontChange($event)"></app-font-size>
               <app-email-invite></app-email-invite>
             </div>
