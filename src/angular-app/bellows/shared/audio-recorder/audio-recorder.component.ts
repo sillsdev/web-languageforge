@@ -27,7 +27,7 @@ export class AudioRecorderController implements angular.IController {
   }
 
   close() {
-    this.cleanup();
+    this.stopRecording();
     this.callback(null);
   }
 
@@ -41,7 +41,7 @@ export class AudioRecorderController implements angular.IController {
   }
 
   $onDestroy() {
-    this.cleanup();
+    this.stopRecording();
   }
 
   private startRecording() {
@@ -83,9 +83,9 @@ export class AudioRecorderController implements angular.IController {
       }, 1000);
 
       this.stopMediaStream = () => {
-        this.destroyInterval();
         processor.removeEventListener('audioprocess', handleAudioData);
         mp3Encoder.end();
+        stream.getAudioTracks()[0].stop();
       };
 
     }, err => {
@@ -99,18 +99,10 @@ export class AudioRecorderController implements angular.IController {
   }
 
   private stopRecording() {
+    if (this.interval) this.$interval.cancel(this.interval);
     if (this.stopMediaStream) this.stopMediaStream();
   }
 
-  private cleanup() {
-    this.destroyInterval();
-    this.stopRecording();
-  }
-
-  private destroyInterval() {
-    // AngularJS does not automatically cancel the interval; it has to be done manually
-    if (this.interval) this.$interval.cancel(this.interval);
-  }
 }
 
 export class MP3Encoder {
