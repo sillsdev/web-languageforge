@@ -19,6 +19,7 @@ class ManageUsersDto
         $data = array();
         $data['userCount'] = $list->count;
         $data['users'] = $list->entries;
+        $data['invitees'] = $projectModel->listInvitees()->entries;
         $data['project'] = array(
             'roles' => $projectModel->getRolesList(),
             'ownerRef' => $projectModel->ownerRef,
