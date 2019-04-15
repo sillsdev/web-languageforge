@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { QuillModule } from 'ngx-quill';
 import { instance, mock } from 'ts-mockito';
-
 import { TextService } from '../../core/text.service';
 import { TextComponent } from './text.component';
 

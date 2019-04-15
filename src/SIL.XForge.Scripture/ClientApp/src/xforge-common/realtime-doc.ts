@@ -1,5 +1,5 @@
 import * as RichText from 'rich-text';
-import { fromEvent, Observable, of } from 'rxjs';
+import { fromEvent, Observable, of, Subject, merge } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Doc, OTType, Snapshot, types } from 'sharedb/lib/client';
 
@@ -21,12 +21,21 @@ export interface RealtimeDoc {
   ingestSnapshot(snapshot: Snapshot): Promise<void>;
   subscribe(): Promise<void>;
   submitOp(op: any, source?: any): Promise<void>;
+
+  /** Fires when underlying data is recreated. */
+  onCreate(): Observable<void>;
+
+  /** Fires when there are changes to underlying data. */
   remoteChanges(): Observable<any>;
+
   destroy(): Promise<void>;
 }
 
 /**
  * This is a ShareDB implementation of the realtime document interface.
+ * 
+ * Cache for an IndexedDB record. Also allows access thru to a mongodb record.
+ * See RealtimeData for syncing this with IndexedDB.
  */
 export class SharedbRealtimeDoc implements RealtimeDoc {
   constructor(private readonly doc: Doc) {}
@@ -65,6 +74,10 @@ export class SharedbRealtimeDoc implements RealtimeDoc {
 
   idle(): Observable<void> {
     return fromEvent(this.doc, 'no write pending');
+  }
+
+  onCreate(): Observable<void> {
+    return fromEvent(this.doc, 'create');
   }
 
   fetch(): Promise<void> {
@@ -148,6 +161,8 @@ export class MemoryRealtimeDoc implements RealtimeDoc {
 
   constructor(public readonly type: OTType, public readonly id: string, public data: any) {}
 
+  onCreateSubject = new Subject<void>();
+
   idle(): Observable<void> {
     return of();
   }
@@ -175,6 +190,10 @@ export class MemoryRealtimeDoc implements RealtimeDoc {
 
   remoteChanges(): Observable<any> {
     return of();
+  }
+
+  onCreate(): Observable<void> {
+    return this.onCreateSubject.asObservable();
   }
 
   destroy(): Promise<void> {

@@ -82,6 +82,11 @@ namespace SIL.XForge.DataAccess
             return _entities.ContainsKey(id);
         }
 
+        public T Get(string id)
+        {
+            return JsonConvert.DeserializeObject<T>(_entities[id], Settings);
+        }
+
         public IQueryable<T> Query()
         {
             return _entities.Values.Select(e => JsonConvert.DeserializeObject<T>(e, Settings)).AsQueryable();

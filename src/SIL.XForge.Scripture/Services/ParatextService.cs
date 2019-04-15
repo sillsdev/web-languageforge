@@ -21,6 +21,7 @@ using SIL.XForge.Scripture.Models;
 
 namespace SIL.XForge.Scripture.Services
 {
+    /// <summary>Exchanges data with PT projects in the cloud.</summary>
     public class ParatextService : IParatextService, IDisposable
     {
         private readonly IOptions<ParatextOptions> _options;
@@ -150,6 +151,7 @@ namespace SIL.XForge.Scripture.Services
             return CallApiAsync(_dataAccessClient, user, HttpMethod.Get, $"text/{projectId}/{bookId}");
         }
 
+        /// <summary>Update cloud with new edits in usxText and return the combined result.</summary>
         public Task<string> UpdateBookTextAsync(UserEntity user, string projectId, string bookId, string revision,
             string usxText)
         {

@@ -24,6 +24,8 @@ export class TextDataId {
   }
 }
 
+/** Records in the text_data collection in the local or remote database are the content
+ * of a chapter of a Scripture book. */
 export class TextData extends RealtimeData<DeltaStatic, DeltaStatic> {
   static readonly TYPE = Text.TYPE;
 

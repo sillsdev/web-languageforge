@@ -1,5 +1,6 @@
 import Quill, { RangeStatic } from 'quill';
 
+/** A segmenter is responsible for parsing text and finding all segments and their locations. */
 export abstract class Segmenter {
   protected readonly _segments: Map<string, RangeStatic> = new Map<string, RangeStatic>();
   protected _lastSegmentRef: string = '';

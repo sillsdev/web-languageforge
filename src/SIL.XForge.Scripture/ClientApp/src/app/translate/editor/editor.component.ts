@@ -35,6 +35,7 @@ export const CONFIDENCE_THRESHOLD_TIMEOUT = 500;
 
 const PUNCT_SPACE_REGEX = XRegExp('^(\\p{P}|\\p{S}|\\p{Cc}|\\p{Z})+$');
 
+/** Scripture editing area. Used for Translate task. */
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -366,14 +367,15 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   }
 
   async onSourceUpdated(textChange: boolean): Promise<void> {
-    if (textChange) {
-      this.syncScroll();
-      this.onStartTranslating();
-      try {
-        await this.translateSegment();
-      } finally {
-        this.onFinishTranslating();
-      }
+    if (!textChange) {
+      return;
+    }
+    this.syncScroll();
+    this.onStartTranslating();
+    try {
+      await this.translateSegment();
+    } finally {
+      this.onFinishTranslating();
     }
   }
 

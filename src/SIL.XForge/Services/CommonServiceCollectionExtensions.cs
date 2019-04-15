@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<IHttpRequestAccessor, HttpRequestAccessor>();
             services.AddTransient<IEmailService, EmailService>();
-
+            services.AddTransient<IFileSystemService, FileSystemService>();
             return services;
         }
     }

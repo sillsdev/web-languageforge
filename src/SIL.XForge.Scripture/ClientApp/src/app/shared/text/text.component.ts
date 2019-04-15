@@ -37,6 +37,7 @@ export interface TextUpdatedEvent {
   segment: Segment;
 }
 
+/** View of an editable text document. Used for displaying Scripture. */
 @Component({
   selector: 'app-text',
   templateUrl: './text.component.html',
@@ -270,6 +271,11 @@ export class TextComponent implements OnDestroy {
     this._editor.setContents(this.textData.data);
     this._editor.history.clear();
     this.textDataSub = this.textData.remoteChanges().subscribe(ops => this._editor.updateContents(ops));
+    this.textData.onCreate().subscribe(() => {
+      this._editor.setContents(this.textData.data);
+      this._editor.history.clear();
+    });
+
     editorElem.setAttribute('data-placeholder', placeholderText);
     this.loaded.emit();
     this.applyEditorStyles();

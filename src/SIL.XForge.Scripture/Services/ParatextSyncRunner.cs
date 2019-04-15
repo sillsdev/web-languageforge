@@ -19,9 +19,14 @@ using SIL.XForge.Models;
 using SIL.XForge.Realtime;
 using SIL.XForge.Scripture.DataAccess;
 using SIL.XForge.Scripture.Models;
+using SIL.XForge.Services;
 
 namespace SIL.XForge.Scripture.Services
 {
+    /// <summary>Merges data between database and PT cloud, updating both and saving
+    /// the result to disk. This code will be invoked in the background on the
+    /// server. The user can trigger this by activities such as the sync,
+    /// connect-project, or settings components.</summary>
     public class ParatextSyncRunner
     {
         private static readonly Dictionary<string, string> BookNames = new Dictionary<string, string>
@@ -118,16 +123,17 @@ namespace SIL.XForge.Scripture.Services
         private readonly IParatextService _paratextService;
         private readonly IRealtimeService _realtimeService;
         private readonly DeltaUsxMapper _deltaUsxMapper;
+        private readonly IFileSystemService _fileSystemService;
         private readonly ILogger<ParatextSyncRunner> _logger;
 
-        private SyncJobEntity _job;
+        internal SyncJobEntity _job;
         private int _stepCount;
         private int _step;
 
         public ParatextSyncRunner(IOptions<SiteOptions> siteOptions, IRepository<UserEntity> users,
             IRepository<SyncJobEntity> jobs, IRepository<SFProjectEntity> projects, IRepository<TextEntity> texts,
             IEngineService engineService, IParatextService paratextService, IRealtimeService realtimeService,
-            ILogger<ParatextSyncRunner> logger)
+            IFileSystemService fileSystemService, ILogger<ParatextSyncRunner> logger)
         {
             _siteOptions = siteOptions;
             _users = users;
@@ -137,6 +143,7 @@ namespace SIL.XForge.Scripture.Services
             _engineService = engineService;
             _paratextService = paratextService;
             _realtimeService = realtimeService;
+            _fileSystemService = fileSystemService;
             _logger = logger;
             _deltaUsxMapper = new DeltaUsxMapper();
         }
@@ -157,8 +164,8 @@ namespace SIL.XForge.Scripture.Services
                 if ((await _users.TryGetAsync(userId)).TryResult(out UserEntity user)
                     && (await _projects.TryGetAsync(_job.ProjectRef)).TryResult(out SFProjectEntity project))
                 {
-                    if (!Directory.Exists(WorkingDir))
-                        Directory.CreateDirectory(WorkingDir);
+                    if (!_fileSystemService.DirectoryExists(WorkingDir))
+                        _fileSystemService.CreateDirectory(WorkingDir);
 
                     bool translateEnabled = project.TranslateConfig.Enabled;
                     using (IConnection conn = await _realtimeService.ConnectAsync())
@@ -258,16 +265,16 @@ namespace SIL.XForge.Scripture.Services
             }
         }
 
-        private async Task<List<Chapter>> SyncOrCloneBookUsxAsync(UserEntity user, IConnection conn,
-            SFProjectEntity project, TextEntity text, TextType textType, string paratextId, bool isReadOnly,
-            ISet<int> chaptersToInclude = null)
+        internal async Task<List<Chapter>> SyncOrCloneBookUsxAsync(UserEntity user, IConnection conn,
+             SFProjectEntity project, TextEntity text, TextType textType, string paratextId, bool isReadOnly,
+             ISet<int> chaptersToInclude = null)
         {
             string projectPath = GetProjectPath(project, paratextId);
-            if (!Directory.Exists(projectPath))
-                Directory.CreateDirectory(projectPath);
+            if (!_fileSystemService.DirectoryExists(projectPath))
+                _fileSystemService.CreateDirectory(projectPath);
 
             string fileName = GetUsxFileName(projectPath, text.BookId);
-            if (File.Exists(fileName))
+            if (_fileSystemService.FileExists(fileName))
             {
                 return await SyncBookUsxAsync(user, conn, text, textType, paratextId, fileName, isReadOnly,
                     chaptersToInclude);
@@ -281,15 +288,9 @@ namespace SIL.XForge.Scripture.Services
         private async Task<List<Chapter>> SyncBookUsxAsync(UserEntity user, IConnection conn, TextEntity text,
             TextType textType, string paratextId, string fileName, bool isReadOnly, ISet<int> chaptersToInclude)
         {
-            var textDataDocs = new SortedList<int, IDocument<Delta>>();
-            var tasks = new List<Task>();
-            foreach (Chapter chapter in text.Chapters)
-            {
-                IDocument<Delta> textDataDoc = GetTextDataDocument(conn, text, chapter.Number, textType);
-                textDataDocs[chapter.Number] = textDataDoc;
-                tasks.Add(textDataDoc.FetchAsync());
-            }
-            await Task.WhenAll(tasks);
+            var textDataDocs = await FetchTextDataAsync(conn, text, textType);
+
+            // Merge mongo data to PT cloud.
 
             XElement bookTextElem;
             string bookText;
@@ -326,7 +327,8 @@ namespace SIL.XForge.Scripture.Services
 
             bookTextElem = XElement.Parse(bookText);
 
-            tasks.Clear();
+            // Merge updated PT cloud data into mongo.
+            var tasks = new List<Task>();
             IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> deltas = _deltaUsxMapper.ToChapterDeltas(
                 bookTextElem.Element("usx"));
             var chapters = new List<Chapter>();
@@ -349,18 +351,36 @@ namespace SIL.XForge.Scripture.Services
             await Task.WhenAll(tasks);
             await UpdateProgress();
 
+            // Save to disk
             await SaveUsxFileAsync(bookTextElem, fileName);
             await UpdateProgress();
             return chapters;
         }
 
+        /// <summary>Fetch from backend database</summary>
+        internal async Task<SortedList<int, IDocument<Delta>>> FetchTextDataAsync(IConnection conn, TextEntity text,
+            TextType textType)
+        {
+            var textDataDocs = new SortedList<int, IDocument<Delta>>();
+            var tasks = new List<Task>();
+            foreach (Chapter chapter in text.Chapters)
+            {
+                IDocument<Delta> textDataDoc = GetTextDataDocument(conn, text, chapter.Number, textType);
+                textDataDocs[chapter.Number] = textDataDoc;
+                tasks.Add(textDataDoc.FetchAsync());
+            }
+            await Task.WhenAll(tasks);
+            return textDataDocs;
+        }
+
         private async Task<List<Chapter>> CloneBookUsxAsync(UserEntity user, IConnection conn, TextEntity text,
             TextType textType, string paratextId, string fileName, ISet<int> chaptersToInclude)
         {
-            string bookText = await _paratextService.GetBookTextAsync(user, paratextId, text.BookId);
-            await UpdateProgress();
+            // Remove any stale text_data records that may be in the way.
+            await DeleteAllTextDataForBookAsync(conn, text, textType);
 
-            var bookTextElem = XElement.Parse(bookText);
+            var bookTextElem = await FetchAndSaveBookUsxAsync(user, text, paratextId, fileName);
+            await UpdateProgress();
 
             IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> deltas = _deltaUsxMapper.ToChapterDeltas(
                 bookTextElem.Element("usx"));
@@ -377,17 +397,33 @@ namespace SIL.XForge.Scripture.Services
             }
             await Task.WhenAll(tasks);
             await UpdateProgress();
-
-            await SaveUsxFileAsync(bookTextElem, fileName);
-            await UpdateProgress();
             return chapters;
         }
 
+
+        internal async Task<XElement> FetchAndSaveBookUsxAsync(UserEntity user, TextEntity text, string paratextId, string fileName)
+        {
+            string bookText = await _paratextService.GetBookTextAsync(user, paratextId, text.BookId);
+            var bookTextElem = XElement.Parse(bookText);
+
+            await SaveUsxFileAsync(bookTextElem, fileName);
+            return bookTextElem;
+
+        }
+
+        /// <summary>From filesystem and backend database</summary>
         private async Task DeleteBookUsxAsync(IConnection conn, SFProjectEntity project, TextEntity text,
             TextType textType, string paratextId)
         {
             string projectPath = GetProjectPath(project, paratextId);
-            File.Delete(GetUsxFileName(projectPath, text.BookId));
+            _fileSystemService.DeleteFile(GetUsxFileName(projectPath, text.BookId));
+            await DeleteAllTextDataForBookAsync(conn, text, textType);
+        }
+
+        /// <summary>From backend database</summary>
+        private async Task DeleteAllTextDataForBookAsync(IConnection conn, TextEntity text,
+            TextType textType)
+        {
             var tasks = new List<Task>();
             foreach (Chapter chapter in text.Chapters)
                 tasks.Add(DeleteTextDataAsync(conn, text, chapter.Number, textType));
@@ -448,7 +484,7 @@ namespace SIL.XForge.Scripture.Services
 
         private async Task<XElement> LoadUsxFileAsync(string fileName)
         {
-            using (var stream = new FileStream(fileName, FileMode.Open))
+            using (Stream stream = _fileSystemService.OpenFile(fileName, FileMode.Open))
             {
                 return await XElement.LoadAsync(stream, LoadOptions.None, CancellationToken.None);
             }
@@ -456,7 +492,7 @@ namespace SIL.XForge.Scripture.Services
 
         private async Task SaveUsxFileAsync(XElement bookTextElem, string fileName)
         {
-            using (var stream = new FileStream(fileName, FileMode.Create))
+            using (Stream stream = _fileSystemService.CreateFile(fileName))
             {
                 await bookTextElem.SaveAsync(stream, SaveOptions.None, CancellationToken.None);
             }
@@ -484,8 +520,8 @@ namespace SIL.XForge.Scripture.Services
             IEnumerable<string> books)
         {
             string projectPath = GetProjectPath(project, paratextId);
-            var booksToDelete = new HashSet<string>(Directory.Exists(projectPath)
-                ? Directory.EnumerateFiles(projectPath).Select(Path.GetFileNameWithoutExtension)
+            var booksToDelete = new HashSet<string>(_fileSystemService.DirectoryExists(projectPath)
+                ? _fileSystemService.EnumerateFiles(projectPath).Select(Path.GetFileNameWithoutExtension)
                 : Enumerable.Empty<string>());
             booksToDelete.ExceptWith(books);
             return booksToDelete;

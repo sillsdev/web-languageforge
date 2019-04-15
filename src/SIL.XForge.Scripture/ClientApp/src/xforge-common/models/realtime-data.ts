@@ -27,7 +27,9 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
     private readonly doc: RealtimeDoc,
     private readonly store: RealtimeOfflineStore
   ) {
-    this.subscription = merge(this.doc.remoteChanges(), this.doc.idle()).subscribe(() => this.updateOfflineData());
+    this.subscription = merge(this.doc.remoteChanges(), this.doc.idle(), this.doc.onCreate()).subscribe(() =>
+      this.updateOfflineData()
+    );
   }
 
   get id(): string {
@@ -40,6 +42,7 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
 
   /**
    * Subscribes to remote changes for the realtime data.
+   * For this record, update the RealtimeDoc cache, if any, from IndexedDB.
    *
    * @returns {Promise<void>} Resolves when succesfully subscribed to remote changes.
    */
@@ -55,6 +58,11 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
       }
     }
     await this.doc.subscribe();
+  }
+
+  /** Fires when underlying data is recreated. */
+  onCreate(): Observable<void> {
+    return this.doc.onCreate();
   }
 
   /**

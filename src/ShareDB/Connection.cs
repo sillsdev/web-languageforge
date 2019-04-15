@@ -13,6 +13,7 @@ namespace ShareDB
         Delete
     }
 
+    /// <summary>Exchanges data with ShareDB.</summary>
     public class Connection : IConnection, IDisposable
     {
         private readonly Uri _uri;

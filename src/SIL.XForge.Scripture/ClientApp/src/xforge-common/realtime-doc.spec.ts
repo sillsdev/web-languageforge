@@ -1,5 +1,6 @@
 import { Callback, Doc, OTType, Snapshot } from 'sharedb/lib/client';
 import { SharedbRealtimeDoc } from './realtime-doc';
+import { async } from '@angular/core/testing';
 
 describe('SharedbRealtimeDoc', () => {
   it('does not crash with null type', () => {
@@ -9,6 +10,18 @@ describe('SharedbRealtimeDoc', () => {
     const realtimeDoc = new SharedbRealtimeDoc(doc);
     expect(() => {}).not.toThrow();
   });
+
+  it('reports create events', async(() => {
+    const doc = new MockDoc();
+    doc.type = null;
+    const realtimeDoc = new SharedbRealtimeDoc(doc);
+    let callbackCount = 0;
+    const callback = () => {
+      callbackCount++;
+    };
+    realtimeDoc.onCreate().subscribe(callback);
+    expect(callbackCount).toEqual(2);
+  }));
 });
 
 class MockDoc implements Doc {
@@ -21,7 +34,12 @@ class MockDoc implements Doc {
   inflightOp: any;
   pendingOps: any[];
   on(event: any, callback: any): this {
-    throw new Error('Method not implemented.');
+    if (event === 'create') {
+      // Fire create a couple times
+      callback();
+      callback();
+    }
+    return this;
   }
   off(event: any, callback: any): this {
     throw new Error('Method not implemented.');

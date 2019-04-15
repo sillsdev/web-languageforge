@@ -18,6 +18,7 @@ import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-pro
 
 type VoidFunc = (() => void);
 
+/** Allows user to configure high-level settings of how SF will use their Paratext project. */
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -117,88 +118,7 @@ export class SettingsComponent extends SubscriptionDisposable implements OnInit,
   ngOnInit() {
     this.form.disable();
     this.form.setErrors({ required: true });
-    this.form.valueChanges.subscribe(newValue => {
-      if (this.form.valid || this.isOnlyBasedOnInvalid) {
-        let isUpdateNeeded: boolean = false;
-        const updatedProject = {
-          translateConfig: clone(this.project.translateConfig),
-          checkingConfig: clone(this.project.checkingConfig)
-        } as SFProject;
-        const successHandlers: VoidFunc[] = [];
-        const failStateHandlers: VoidFunc[] = [];
-        // Set status and include values for changed form items
-        if (newValue.translate !== this.project.translateConfig.enabled && this.form.controls.translate.enabled) {
-          updatedProject.translateConfig.enabled = newValue.translate;
-          this.project.translateConfig.enabled = newValue.translate;
-          this.setValidators();
-          if (!newValue.translate || (this.form.valid && this.project.translateConfig.sourceParatextId)) {
-            this.updateControlState('translate', successHandlers, failStateHandlers);
-            isUpdateNeeded = true;
-          } else {
-            this.controlStates.set('translate', ElementState.InSync);
-          }
-        }
-        if (newValue.sourceParatextId !== this.project.translateConfig.sourceParatextId) {
-          if (newValue.translate && newValue.sourceParatextId != null) {
-            updatedProject.translateConfig.sourceParatextId = newValue.sourceParatextId;
-            updatedProject.translateConfig.sourceInputSystem = ParatextService.getInputSystem(
-              this.sourceProjects.find(project => project.paratextId === newValue.sourceParatextId)
-            );
-            this.project.translateConfig.sourceParatextId = updatedProject.translateConfig.sourceParatextId;
-            this.project.translateConfig.sourceInputSystem = updatedProject.translateConfig.sourceInputSystem;
-            this.updateControlState('sourceParatextId', successHandlers, failStateHandlers);
-            if (this.previousFormValues.sourceParatextId == null) {
-              this.updateControlState('translate', successHandlers, failStateHandlers);
-            }
-            isUpdateNeeded = true;
-          }
-        }
-        if (newValue.checking !== this.project.checkingConfig.enabled) {
-          updatedProject.checkingConfig.enabled = newValue.checking;
-          this.project.checkingConfig.enabled = newValue.checking;
-          this.updateControlState('checking', successHandlers, failStateHandlers);
-          isUpdateNeeded = true;
-        }
-        if (newValue.seeOthersResponses !== this.project.checkingConfig.usersSeeEachOthersResponses) {
-          updatedProject.checkingConfig.usersSeeEachOthersResponses = newValue.seeOthersResponses;
-          this.project.checkingConfig.usersSeeEachOthersResponses = newValue.seeOthersResponses;
-          this.updateControlState('seeOthersResponses', successHandlers, failStateHandlers);
-          isUpdateNeeded = true;
-        }
-        if (newValue.shareViaEmail !== this.project.checkingConfig.share.viaEmail) {
-          if (!updatedProject.checkingConfig.share) {
-            updatedProject.checkingConfig.share = {};
-          }
-          if (!this.project.checkingConfig.share) {
-            this.project.checkingConfig.share = {};
-          }
-          updatedProject.checkingConfig.share.viaEmail = newValue.shareViaEmail;
-          this.project.checkingConfig.share.viaEmail = newValue.shareViaEmail;
-          this.updateControlState('shareViaEmail', successHandlers, failStateHandlers);
-          isUpdateNeeded = true;
-        }
-
-        if (!isUpdateNeeded) {
-          return;
-        }
-        this.previousFormValues = newValue;
-        this.projectService
-          .onlineUpdateAttributes(this.project.id, updatedProject)
-          .then(() => {
-            while (successHandlers.length) {
-              successHandlers.pop().call(this);
-            }
-          })
-          .catch(() => {
-            while (failStateHandlers.length) {
-              failStateHandlers.pop().call(this);
-            }
-          });
-      } else if (this.previousFormValues && this.form.errors && this.form.errors.requireAtLeastOneWithValue) {
-        // reset invalid form value
-        setTimeout(() => this.form.patchValue(this.previousFormValues), 1000);
-      }
-    });
+    this.form.valueChanges.subscribe((value: any) => this.onFormValueChanges(value));
     this.setAllControlsToInSync();
     this.subscribe(
       this.route.params.pipe(
@@ -230,6 +150,88 @@ export class SettingsComponent extends SubscriptionDisposable implements OnInit,
         this.noticeService.loadingFinished();
       }
     );
+  }
+
+  private onFormValueChanges(newValue: any): void {
+    if (this.form.valid || this.isOnlyBasedOnInvalid) {
+      let isUpdateNeeded: boolean = false;
+      const updatedProject = {
+        translateConfig: clone(this.project.translateConfig),
+        checkingConfig: clone(this.project.checkingConfig)
+      } as SFProject;
+      const successHandlers: VoidFunc[] = [];
+      const failStateHandlers: VoidFunc[] = [];
+      // Set status and include values for changed form items
+      if (newValue.translate !== this.project.translateConfig.enabled && this.form.controls.translate.enabled) {
+        updatedProject.translateConfig.enabled = newValue.translate;
+        this.project.translateConfig.enabled = newValue.translate;
+        this.setValidators();
+        if (!newValue.translate || (this.form.valid && this.project.translateConfig.sourceParatextId)) {
+          this.updateControlState('translate', successHandlers, failStateHandlers);
+          isUpdateNeeded = true;
+        } else {
+          this.controlStates.set('translate', ElementState.InSync);
+        }
+      }
+      if (newValue.sourceParatextId !== this.project.translateConfig.sourceParatextId) {
+        if (newValue.translate && newValue.sourceParatextId != null) {
+          updatedProject.translateConfig.sourceParatextId = newValue.sourceParatextId;
+          updatedProject.translateConfig.sourceInputSystem = ParatextService.getInputSystem(
+            this.sourceProjects.find(project => project.paratextId === newValue.sourceParatextId)
+          );
+          this.project.translateConfig.sourceParatextId = updatedProject.translateConfig.sourceParatextId;
+          this.project.translateConfig.sourceInputSystem = updatedProject.translateConfig.sourceInputSystem;
+          this.updateControlState('sourceParatextId', successHandlers, failStateHandlers);
+          if (this.previousFormValues.sourceParatextId == null) {
+            this.updateControlState('translate', successHandlers, failStateHandlers);
+          }
+          isUpdateNeeded = true;
+        }
+      }
+      if (newValue.checking !== this.project.checkingConfig.enabled) {
+        updatedProject.checkingConfig.enabled = newValue.checking;
+        this.project.checkingConfig.enabled = newValue.checking;
+        this.updateControlState('checking', successHandlers, failStateHandlers);
+        isUpdateNeeded = true;
+      }
+      if (newValue.seeOthersResponses !== this.project.checkingConfig.usersSeeEachOthersResponses) {
+        updatedProject.checkingConfig.usersSeeEachOthersResponses = newValue.seeOthersResponses;
+        this.project.checkingConfig.usersSeeEachOthersResponses = newValue.seeOthersResponses;
+        this.updateControlState('seeOthersResponses', successHandlers, failStateHandlers);
+        isUpdateNeeded = true;
+      }
+      if (newValue.shareViaEmail !== this.project.checkingConfig.share.viaEmail) {
+        if (!updatedProject.checkingConfig.share) {
+          updatedProject.checkingConfig.share = {};
+        }
+        if (!this.project.checkingConfig.share) {
+          this.project.checkingConfig.share = {};
+        }
+        updatedProject.checkingConfig.share.viaEmail = newValue.shareViaEmail;
+        this.project.checkingConfig.share.viaEmail = newValue.shareViaEmail;
+        this.updateControlState('shareViaEmail', successHandlers, failStateHandlers);
+        isUpdateNeeded = true;
+      }
+      if (!isUpdateNeeded) {
+        return;
+      }
+      this.previousFormValues = newValue;
+      this.projectService
+        .onlineUpdateAttributes(this.project.id, updatedProject)
+        .then(() => {
+          while (successHandlers.length) {
+            successHandlers.pop().call(this);
+          }
+        })
+        .catch(() => {
+          while (failStateHandlers.length) {
+            failStateHandlers.pop().call(this);
+          }
+        });
+    } else if (this.previousFormValues && this.form.errors && this.form.errors.requireAtLeastOneWithValue) {
+      // reset invalid form value
+      setTimeout(() => this.form.patchValue(this.previousFormValues), 1000);
+    }
   }
 
   ngOnDestroy(): void {
