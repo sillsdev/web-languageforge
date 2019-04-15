@@ -43,11 +43,11 @@ class ProjectSettingsDtoTest extends TestCase
 
         $dto = ProjectSettingsDto::encode($projectId, $user2Id);
 
-        $this->assertEquals(1, $dto['count']);
+        $this->assertEquals(2, $dto['count']);
         $this->assertInternalType('array', $dto['entries']);
-        $this->assertEquals($user2Id, $dto['entries'][0]['id']);
-        $this->assertEquals('Name', $dto['entries'][0]['name']);
-        $this->assertEquals(ProjectRoles::CONTRIBUTOR, $dto['entries'][0]['role']);
+        $this->assertEquals($user2Id, $dto['entries'][1]['id']);
+        $this->assertEquals('Name', $dto['entries'][1]['name']);
+        $this->assertEquals(ProjectRoles::CONTRIBUTOR, $dto['entries'][1]['role']);
         $this->assertCount(1, $dto['archivedTexts']);
         $this->assertEquals('Archived Title', $dto['archivedTexts'][0]['title']);
         $this->assertTrue(count($dto['rights']) > 0, 'No rights in dto');
