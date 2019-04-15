@@ -24,10 +24,13 @@
         required
         outlined
       >
-        <mdc-menu>
+        <mdc-menu id="projects-menu">
           <mdc-list>
             <mdc-list-item *ngFor="let project of targetProjects" [value]="project.paratextId">
               {{ project.name }}
+            </mdc-list-item>
+            <mdc-list-item *ngIf="targetProjects?.length === 0" disabled>
+              Please go to paratext to register a project to connect
             </mdc-list-item>
           </mdc-list>
         </mdc-menu>

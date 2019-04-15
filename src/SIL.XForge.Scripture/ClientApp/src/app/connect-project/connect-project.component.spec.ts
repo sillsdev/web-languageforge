@@ -32,14 +32,15 @@ describe('ConnectProjectComponent', () => {
     expect(env.loginButton).not.toBeNull();
   });
 
-  it('should display form when PT projects is empty', () => {
+  it('should display form when PT projects is empty', fakeAsync(() => {
     const env = new TestEnvironment();
     when(env.mockedParatextService.getProjects()).thenReturn(of([]));
     env.fixture.detectChanges();
-
     expect(env.component.state).toEqual('input');
     expect(env.connectProjectForm).not.toBeNull();
-  });
+    env.clickElement(env.projectSelect);
+    expect(env.getMenuItem(env.projectsMenu, 0)).toContain('Please go to paratext to register a project to connect');
+  }));
 
   it('should do nothing when form is invalid', fakeAsync(() => {
     const env = new TestEnvironment();
@@ -263,6 +264,10 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('form'));
   }
 
+  get projectsMenu(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#projects-menu'));
+  }
+
   get tasksCard(): DebugElement {
     return this.fixture.debugElement.query(By.css('#tasks-card'));
   }
@@ -297,6 +302,11 @@ class TestEnvironment {
     element.click();
     this.fixture.detectChanges();
     tick();
+  }
+
+  getMenuItem(menu: DebugElement, index: number): string {
+    const items = menu.nativeElement.querySelectorAll('mdc-list-item');
+    return items.item(index).textContent;
   }
 
   inputElement(element: DebugElement): HTMLInputElement {
