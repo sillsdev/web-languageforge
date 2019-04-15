@@ -7,12 +7,14 @@ export class SoundController implements angular.IController {
   playing = false;
 
   private isUserMovingSlider: boolean = false;
-  private readonly slider = document.getElementById('puiSoundplayerSlider') as HTMLInputElement;
+  private slider: HTMLInputElement;
 
-  static $inject = ['$scope'];
-  constructor(private $scope: angular.IScope) { }
+  static $inject = ['$scope', '$element'];
+  constructor(private $scope: angular.IScope, private $element: angular.IRootElementService) { }
 
   $onInit(): void {
+    this.slider = this.$element.find('.seek-slider').get(0) as HTMLInputElement;
+
     this.audioElement.addEventListener('ended', () => {
       this.$scope.$apply(() => {
         if (this.playing) {
