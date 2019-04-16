@@ -33,7 +33,7 @@ describe('MyAccountComponent', () => {
         email: 'bob@example.com',
         contactMethod: 'email',
         mobilePhone: '+123 11 2222-33-4444',
-        site: { currentProjectId: 'testproject01', lastLogin: date } as Site
+        site: { currentProjectId: 'testproject01', lastLogin: date.toISOString() } as Site
       })
     );
   });

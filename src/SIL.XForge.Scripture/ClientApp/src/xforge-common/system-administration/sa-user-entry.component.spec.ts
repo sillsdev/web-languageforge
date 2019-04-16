@@ -30,7 +30,7 @@ class TestUserEntryComponent {
     dateCreated: '2019-01-01T12:00:00.000Z',
     site: {
       currentProjectId: 'testproject01',
-      lastLogin: new Date('2019-02-01T12:00:00.000Z')
+      lastLogin: '2019-02-01T12:00:00.000Z'
     } as Site
   });
 
