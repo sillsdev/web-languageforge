@@ -27,7 +27,7 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
   pageIndex: number = 0;
   pageSize: number = 50;
   users: User[];
-  usersInProject: UserRef[] = [];
+  usersInProject: UserRef[];
   userSelectionForm = new FormGroup({
     user: new FormControl('')
   });
@@ -41,6 +41,7 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
   private addButtonClicked = false;
   private inviteButtonClicked = false;
   private isUserSelected = false;
+  private emailWasLastEditedField = false;
   private searchTerm$ = new BehaviorSubject<string>('');
   private parameters$ = new BehaviorSubject<GetAllParameters<User>>(this.getParameters());
   private reload$ = new BehaviorSubject<void>(null);
@@ -84,13 +85,17 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
       ),
       project => {
         const projectUsers = project.getManyIncluded<ProjectUser>(project.data.users);
+        this.usersInProject = [];
         for (const pu of projectUsers) {
-          this.usersInProject.push(pu.user);
+          if (pu.user != null) {
+            this.usersInProject.push(pu.user);
+          }
         }
       }
     );
     this.subscribe(this.userService.onlineSearch(this.searchTerm$, this.parameters$, this.reload$), users => {
       this.users = users.data;
+      this.openMenuWhenNecessary();
     });
   }
 
@@ -130,24 +135,19 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
 
   refocusInput(): void {
     // Return focus back to the text input when the user menu opens and the text input loses focus
-    if (this.userMenu.open) {
+    if (this.userMenu && this.userMenu.open) {
       this.addUserInput.focus();
     }
   }
 
   searchForExistingEmail(term: string): void {
+    this.emailWasLastEditedField = true;
     this.searchTerm$.next(term);
   }
 
   updateSearchTerms(term: string): void {
+    this.emailWasLastEditedField = false;
     this.searchTerm$.next(term);
-    if (this.usersFound && this.users.length <= 10 && term.length > 2) {
-      if (!this.userMenu.open) {
-        this.userMenu.open = true;
-      }
-    } else {
-      this.userMenu.open = false;
-    }
   }
 
   userSelected(event: { index: number; source: MdcListItem }) {
@@ -163,5 +163,16 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
 
   private getParameters(): GetAllParameters<User> {
     return { sort: [{ name: 'name', order: 'ascending' }] };
+  }
+
+  private openMenuWhenNecessary(): void {
+    if (this.emailWasLastEditedField) {
+      return;
+    }
+    if (this.usersFound && this.users.length <= 10 && this.userSelectionForm.value.user.length > 2) {
+      if (this.userMenu && !this.userMenu.open) {
+        this.userMenu.open = true;
+      }
+    }
   }
 }

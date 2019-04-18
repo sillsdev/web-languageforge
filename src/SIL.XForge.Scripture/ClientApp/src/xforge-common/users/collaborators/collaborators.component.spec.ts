@@ -68,9 +68,9 @@ describe('CollaboratorsComponent', () => {
     env.setTextFieldValue(env.emailInput, newEmail);
     expect(env.component.inviteDisabled).toBe(false);
     env.clickButton(env.inviteButton);
-    verify(env.mockedProjectService.onlineInvite(newEmail));
+    verify(env.mockedProjectService.onlineInvite(newEmail)).once();
     const message = 'An invitation email has been sent to ' + newEmail + '.';
-    verify(env.mockedNoticeService.show(deepEqual(message)));
+    verify(env.mockedNoticeService.show(deepEqual(message))).once();
   }));
 });
 

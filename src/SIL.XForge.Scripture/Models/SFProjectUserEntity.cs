@@ -6,5 +6,6 @@ namespace SIL.XForge.Scripture.Models
     {
         public string SelectedTask { get; set; }
         public TranslateProjectUserConfig TranslateConfig { get; set; } = new TranslateProjectUserConfig();
+        public override string ProjectAdminLabel => SFProjectRoles.Administrator;
     }
 }

@@ -16,7 +16,7 @@ using SIL.XForge.Utils;
 namespace SIL.XForge.Services
 {
     public abstract class ProjectUserService<TResource, TEntity, TProjectEntity>
-        : ResourceServiceBase<TResource, TEntity>, IResourceMapper<ProjectUserResource, ProjectUserEntity>
+        : ResourceServiceBase<TResource, TEntity>, IResourceMapper<ProjectUserResource, ProjectUserEntity>, IProjectUserRoleHelper
         where TResource : ProjectUserResource
         where TEntity : ProjectUserEntity
         where TProjectEntity : ProjectEntity
@@ -32,6 +32,16 @@ namespace SIL.XForge.Services
 
         public IResourceMapper<UserResource, UserEntity> UserMapper { get; set; }
         public IResourceMapper<ProjectResource, ProjectEntity> ProjectMapper { get; set; }
+
+        bool IProjectUserRoleHelper.IsProjectAdmin()
+        {
+            foreach (ProjectUserEntity projectUser in Projects.Query().SelectMany(p => p.Users).Where(pu => pu.UserRef == UserId))
+            {
+                if (projectUser.Role == projectUser.ProjectAdminLabel)
+                    return true;
+            }
+            return false;
+        }
 
         protected override async Task<object> GetRelationshipResourcesAsync(RelationshipAttribute relAttr,
             IEnumerable<string> included, Dictionary<string, IResource> resources, TEntity entity)
@@ -133,6 +143,10 @@ namespace SIL.XForge.Services
             var bindings = new List<MemberBinding>();
             foreach (PropertyInfo propInfo in entityType.GetProperties())
             {
+                if (propInfo.Name == nameof(ProjectUserEntity.ProjectAdminLabel))
+                {
+                    continue;
+                }
                 MemberExpression propExpr;
                 if (propInfo.Name == nameof(ProjectUserEntity.ProjectRef))
                 {

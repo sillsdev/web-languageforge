@@ -373,9 +373,9 @@ class TestEnvironment {
 
   wait(): void {
     this.fixture.detectChanges();
-    flush(30);
+    flush(40);
     this.fixture.detectChanges();
-    flush(30);
+    flush(40);
   }
 
   deleteProject(isLocal: boolean): void {

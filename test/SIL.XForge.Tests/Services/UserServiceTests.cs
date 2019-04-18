@@ -22,6 +22,7 @@ namespace SIL.XForge.Services
         private const string User01Id = "user01";
         private const string User02Id = "user02";
         private const string User01Email = "user01@example.com";
+        private const string ProjectAdminUser01 = "projectadmin01";
 
         [Test]
         public void CreateAsync_UserRole()
@@ -161,10 +162,10 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(User01Id, SystemRoles.User);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
                 Assert.That(initialEntity.Username, Is.Not.EqualTo("new"));
 
-                env.SetUser(User01Id, SystemRoles.User);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("username"), "new" }
@@ -197,10 +198,10 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(User02Id);
                 Assert.That(initialEntity.Username, Is.Not.EqualTo("new"));
 
-                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("username"), "new" }
@@ -249,10 +250,10 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
                 Assert.That(initialEntity.CanonicalEmail, Is.Not.EqualTo("new@example.com"));
 
-                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("email"), "New@example.com" }
@@ -301,10 +302,10 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
                 Assert.That(initialEntity.ContactMethod, Is.Not.EqualTo(UserEntity.ContactMethods.emailSms));
 
-                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                 {
                     {env.GetAttribute("contact-method"), "emailSms"}
@@ -328,10 +329,10 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
                 CollectionAssert.IsEmpty(initialEntity.Sites);
 
-                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("site"), new Site { CurrentProjectId = "project01" } }
@@ -361,12 +362,12 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(User02Id);
                 Assert.That(initialEntity.Sites.Count, Is.EqualTo(1));
                 Assert.That(initialEntity.Sites[TestEnvironment.SiteAuthority].CurrentProjectId,
                     Is.EqualTo("project01"));
 
-                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("site"), null }
@@ -392,11 +393,11 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(ParatextUserId, SystemRoles.User);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(ParatextUserId);
                 Assert.That(initialEntity.ParatextId, Is.Not.Empty);
                 Assert.That(initialEntity.ParatextTokens, Is.Not.Null);
 
-                env.SetUser(ParatextUserId, SystemRoles.User);
 
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                 {
@@ -434,6 +435,28 @@ namespace SIL.XForge.Services
         }
 
         [Test]
+        public async Task GetAsync_UserRoleProjectAdmin()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser(ProjectAdminUser01, SystemRoles.User);
+                env.JsonApiContext.QuerySet.Returns(new QuerySet());
+                env.JsonApiContext.PageManager.Returns(new PageManager());
+
+                UserResource[] resources = (await env.Service.GetAsync()).ToArray();
+
+                Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[]
+                    {
+                        User01Id,
+                        User02Id,
+                        "user03",
+                        ParatextUserId,
+                        ProjectAdminUser01
+                    }));
+            }
+        }
+
+        [Test]
         public async Task GetAsync_SystemAdminRole()
         {
             using (var env = new TestEnvironment())
@@ -449,7 +472,8 @@ namespace SIL.XForge.Services
                         User01Id,
                         User02Id,
                         "user03",
-                        ParatextUserId
+                        ParatextUserId,
+                        ProjectAdminUser01
                     }));
             }
         }
@@ -558,6 +582,12 @@ namespace SIL.XForge.Services
                                     Id = "projectuser01",
                                     UserRef = User01Id,
                                     Role = TestProjectRoles.Manager
+                                },
+                                new TestProjectUserEntity
+                                {
+                                    Id = "projectadminuser01",
+                                    UserRef = ProjectAdminUser01,
+                                    Role = "administrator"
                                 }
                             }
                         },
@@ -578,7 +608,8 @@ namespace SIL.XForge.Services
 
                 Service = new UserService(JsonApiContext, Mapper, UserAccessor, Entities, SiteOptions)
                 {
-                    ProjectUserMapper = new TestProjectUserService(JsonApiContext, Mapper, UserAccessor, projects)
+                    ProjectUserMapper = new TestProjectUserService(JsonApiContext, Mapper, UserAccessor, projects),
+                    PURHelper = new TestProjectUserService(JsonApiContext, Mapper, UserAccessor, projects)
                 };
             }
 
@@ -633,6 +664,13 @@ namespace SIL.XForge.Services
                             AccessToken = "paratextuser01accesstoken",
                             RefreshToken = "paratextuser01refreshtoken"
                         }
+                    },
+                    new UserEntity
+                    {
+                        Id = ProjectAdminUser01,
+                        Username = ProjectAdminUser01,
+                        Email = "projectadminuser01@example.com",
+                        CanonicalEmail = "projectadminuser01@example.com"
                     }
                 };
             }
