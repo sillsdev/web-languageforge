@@ -22,7 +22,9 @@
 >
   <mdc-menu>
     <mdc-list>
-      <mdc-list-item *ngFor="let cs of chapterStrings" [value]="cs">Chapter {{ cs }}</mdc-list-item>
+      <mdc-list-item *ngFor="let cs of chapterStrings" [value]="cs"
+        ><span class="chapter-label">Chapter&nbsp;{{ cs }}</span></mdc-list-item
+      >
     </mdc-list>
   </mdc-menu>
 </mdc-select>

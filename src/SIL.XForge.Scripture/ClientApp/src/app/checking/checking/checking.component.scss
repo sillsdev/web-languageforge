@@ -19,6 +19,14 @@
       .panel-content {
         height: 100%;
       }
+      .panel-nav {
+        display: flex;
+      }
+      .panel-activity {
+        display: flex;
+        place-content: center space-between;
+        width: 100%;
+      }
     }
     #answer-panel {
       padding: 12px 15px;
