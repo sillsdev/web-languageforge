@@ -100,11 +100,7 @@ export class LexiconCommentService {
   }
 
   getFieldCommentCount(contextGuid: string): number {
-    if (this.comments == null || this.comments.counts.currentEntry.fields[contextGuid] == null) {
-      return 0;
-    }
-
-    return this.comments.counts.currentEntry.fields[contextGuid];
+    return this.comments.counts.currentEntry.fields[contextGuid] || 0;
   }
 
   getEntryCommentCount(entryId: string): number {
