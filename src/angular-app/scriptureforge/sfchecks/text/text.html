@@ -78,7 +78,7 @@
                 </a>
                 <pui-soundplayer pui-url="audioPlayUrl" title="Play audio"></pui-soundplayer>
             </div>
-            <div id="textcontrol" style="font-family: {{text.fontfamily}}" dir="auto" data-ng-bind-html="text.content"></div>
+            <div id="textcontrol" ng-attr-dir="{{text.isRightToLeft ? 'rtl' : 'ltr'}}" style="font-size: {{text.fontSize}}px; font-family: {{text.fontfamily}}" dir="auto" data-ng-bind-html="text.content"></div>
         </div>
         <div class="col-md-7">
             <listview hide-if-empty="true" search="queryQuestions()"
