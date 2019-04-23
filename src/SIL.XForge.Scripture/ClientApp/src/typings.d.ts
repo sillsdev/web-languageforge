@@ -22,11 +22,19 @@ declare module '@orbit/data' {
 }
 
 declare module 'quill' {
+  export interface History {
+    clear(): void;
+    undo(): void;
+    redo(): void;
+    cutoff(): void;
+  }
+
   export interface Quill {
     theme: Theme;
     container: Element;
     scrollingContainer: Element;
     selection: Selection;
+    history: History;
   }
 
   export interface Selection {

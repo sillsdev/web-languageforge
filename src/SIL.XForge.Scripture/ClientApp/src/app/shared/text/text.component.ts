@@ -74,6 +74,9 @@ export class TextComponent implements OnDestroy {
           handler: () => false
         }
       }
+    },
+    history: {
+      userOnly: true
     }
   };
   private _id?: TextDataId;
@@ -267,6 +270,7 @@ export class TextComponent implements OnDestroy {
     editorElem.setAttribute('data-placeholder', '');
     this.textData = await this.textService.getTextData(this._id);
     this._editor.setContents(this.textData.data);
+    this._editor.history.clear();
     this.textDataSub = this.textData.remoteChanges().subscribe(ops => this._editor.updateContents(ops));
     editorElem.setAttribute('data-placeholder', placeholderText);
     this.loaded.emit();
@@ -341,21 +345,19 @@ export class TextComponent implements OnDestroy {
       }
     }
 
-    if (delta != null) {
-      // ensure that segment format is correct
-      if (updateUsxFormatForAllSegments) {
-        for (const [ref, range] of this.segmenter.segments) {
-          this.updateUsxSegmentFormat(ref, range);
-        }
-      } else if (this._segment != null) {
-        if (this.updateUsxSegmentFormat(this._segment.ref, this._segment.range)) {
-          // if the segment is no longer blank, ensure that the selection is at the end of the segment.
-          // Sometimes after typing in a blank segment, the selection will be at the beginning. This seems to be a bug
-          // in Quill.
-          Promise.resolve().then(() =>
-            this.editor.setSelection(this._segment.range.index + this._segment.range.length, 0, 'user')
-          );
-        }
+    // ensure that segment format is correct
+    if (updateUsxFormatForAllSegments) {
+      for (const [ref, range] of this.segmenter.segments) {
+        this.updateUsxSegmentFormat(ref, range);
+      }
+    } else if (this._segment != null) {
+      if (this.updateUsxSegmentFormat(this._segment.ref, this._segment.range)) {
+        // if the segment is no longer blank, ensure that the selection is at the end of the segment.
+        // Sometimes after typing in a blank segment, the selection will be at the beginning. This seems to be a bug
+        // in Quill.
+        Promise.resolve().then(() =>
+          this.editor.setSelection(this._segment.range.index + this._segment.range.length, 0, 'user')
+        );
       }
     }
 
