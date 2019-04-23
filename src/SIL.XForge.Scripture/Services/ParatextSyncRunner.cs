@@ -161,6 +161,7 @@ namespace SIL.XForge.Scripture.Services
                     if (!Directory.Exists(WorkingDir))
                         Directory.CreateDirectory(WorkingDir);
 
+                    bool translateEnabled = project.TranslateConfig.Enabled;
                     using (var conn = new Connection(new Uri($"ws://localhost:{_realtimeOptions.Value.Port}")))
                     {
                         await conn.ConnectAsync();
@@ -169,24 +170,23 @@ namespace SIL.XForge.Scripture.Services
                         IReadOnlyList<string> targetBooks = await _paratextService.GetBooksAsync(user,
                             targetParatextId);
 
-                        bool hasSource = project.TranslateConfig.Enabled;
                         string sourceParatextId = project.TranslateConfig.SourceParatextId;
                         IReadOnlyList<string> sourceBooks = null;
-                        if (hasSource)
+                        if (translateEnabled)
                             sourceBooks = await _paratextService.GetBooksAsync(user, sourceParatextId);
 
                         var booksToSync = new HashSet<string>(targetBooks);
-                        if (hasSource)
+                        if (translateEnabled)
                             booksToSync.IntersectWith(sourceBooks);
 
                         var booksToDelete = new HashSet<string>(
                             GetBooksToDelete(project, targetParatextId, targetBooks));
-                        if (hasSource)
+                        if (translateEnabled)
                             booksToDelete.UnionWith(GetBooksToDelete(project, sourceParatextId, sourceBooks));
 
                         _step = 0;
                         _stepCount = booksToSync.Count * 3;
-                        if (hasSource)
+                        if (translateEnabled)
                             _stepCount *= 2;
                         _stepCount += booksToDelete.Count;
                         foreach (string bookId in booksToSync)
@@ -203,7 +203,7 @@ namespace SIL.XForge.Scripture.Services
 
                             List<Chapter> newChapters = await SyncOrCloneBookUsxAsync(user, conn, project, text,
                                 TextType.Target, targetParatextId, false);
-                            if (hasSource)
+                            if (translateEnabled)
                             {
                                 var chaptersToInclude = new HashSet<int>(newChapters.Select(c => c.Number));
                                 await SyncOrCloneBookUsxAsync(user, conn, project, text, TextType.Source,
@@ -219,7 +219,7 @@ namespace SIL.XForge.Scripture.Services
                                 t => t.ProjectRef == project.Id && t.BookId == bookId);
 
                             await DeleteBookUsxAsync(conn, project, text, TextType.Target, targetParatextId);
-                            if (hasSource)
+                            if (translateEnabled)
                                 await DeleteBookUsxAsync(conn, project, text, TextType.Source, sourceParatextId);
                             await DeleteNotesData(conn, text);
                             await UpdateProgress();
@@ -231,8 +231,11 @@ namespace SIL.XForge.Scripture.Services
                     // TODO: Properly handle job cancellation
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    // start training Machine engine
-                    await _engineService.StartBuildByProjectIdAsync(_job.ProjectRef);
+                    if (translateEnabled)
+                    {
+                        // start training Machine engine
+                        await _engineService.StartBuildByProjectIdAsync(_job.ProjectRef);
+                    }
 
                     await _projects.UpdateAsync(_job.ProjectRef, u => u
                         .Set(p => p.LastSyncedDate, DateTime.UtcNow)
