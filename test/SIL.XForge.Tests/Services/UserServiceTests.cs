@@ -448,9 +448,6 @@ namespace SIL.XForge.Services
                 Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[]
                     {
                         User01Id,
-                        User02Id,
-                        "user03",
-                        ParatextUserId,
                         ProjectAdminUser01
                     }));
             }
@@ -587,7 +584,7 @@ namespace SIL.XForge.Services
                                 {
                                     Id = "projectadminuser01",
                                     UserRef = ProjectAdminUser01,
-                                    Role = "administrator"
+                                    Role = TestProjectRoles.Administrator
                                 }
                             }
                         },
@@ -609,7 +606,6 @@ namespace SIL.XForge.Services
                 Service = new UserService(JsonApiContext, Mapper, UserAccessor, Entities, SiteOptions)
                 {
                     ProjectUserMapper = new TestProjectUserService(JsonApiContext, Mapper, UserAccessor, projects),
-                    PURHelper = new TestProjectUserService(JsonApiContext, Mapper, UserAccessor, projects)
                 };
             }
 

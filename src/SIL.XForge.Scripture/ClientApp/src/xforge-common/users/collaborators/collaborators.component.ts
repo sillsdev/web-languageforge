@@ -59,6 +59,13 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
     return !(this.userSelectionForm.value.user && this.isUserSelected) || this.addButtonClicked;
   }
 
+  get canBeAddedUsers(): User[] {
+    if (!this.usersFound) {
+      return [];
+    }
+    return this.users.filter(u => !this.isUserInProject(u));
+  }
+
   get inviteDisabled(): boolean {
     return (
       this.emailExists || this.userInviteForm.invalid || !this.userInviteForm.value.email || this.inviteButtonClicked
@@ -95,7 +102,7 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
     );
     this.subscribe(this.userService.onlineSearch(this.searchTerm$, this.parameters$, this.reload$), users => {
       this.users = users.data;
-      this.openMenuWhenNecessary();
+      this.openOrCloseMenu();
     });
   }
 
@@ -165,14 +172,18 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
     return { sort: [{ name: 'name', order: 'ascending' }] };
   }
 
-  private openMenuWhenNecessary(): void {
+  private openOrCloseMenu(): void {
     if (this.emailWasLastEditedField) {
       return;
     }
-    if (this.usersFound && this.users.length <= 10 && this.userSelectionForm.value.user.length > 2) {
-      if (this.userMenu && !this.userMenu.open) {
-        this.userMenu.open = true;
-      }
+    if (
+      this.canBeAddedUsers.length <= 10 &&
+      this.canBeAddedUsers.length > 0 &&
+      this.userSelectionForm.value.user.length > 2
+    ) {
+      this.userMenu.open = true;
+    } else {
+      this.userMenu.open = false;
     }
   }
 }

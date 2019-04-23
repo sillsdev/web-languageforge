@@ -23,8 +23,7 @@ describe('CollaboratorsComponent', () => {
     env.setTextFieldValue(env.searchUserInput, 'use');
     expect(env.component.userMenu.open).toBe(true);
     expect(env.component.users.length).toEqual(3);
-    expect(env.component.usersInProject.length).toEqual(1);
-    expect(env.component.usersInProject[0].id).toBe('user01');
+    expect(env.component.canBeAddedUsers.length).toEqual(2);
     expect(env.menuItemExists(env.searchMenuElement, 0, 'User 02 (user02@example.com)')).toBe(true);
   }));
 
@@ -51,11 +50,11 @@ describe('CollaboratorsComponent', () => {
     env.setTextFieldValue(env.emailInput, 'notavalidemail');
     expect(env.component.userInviteForm.controls.email.hasError('email')).toBe(true);
     env.setTextFieldValue(env.emailInput, 'notavalidemail@bad');
-    expect(env.component.userInviteForm.controls.email.hasError('email'));
+    expect(env.component.userInviteForm.controls.email.hasError('email')).toBe(true);
 
     // A error will show explaining that existing users must be added
     env.setTextFieldValue(env.emailInput, 'user01@example.com');
-    expect(env.component.userInviteForm.hasError('invite-disallowed'));
+    expect(env.component.userInviteForm.hasError('invite-disallowed')).toBe(true);
     expect(env.component.inviteDisabled).toBe(true);
     expect(env.inviteError.textContent).toContain('Please use Add');
   }));

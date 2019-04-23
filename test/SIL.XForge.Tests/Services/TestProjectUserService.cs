@@ -12,5 +12,7 @@ namespace SIL.XForge.Services
             IRepository<TestProjectEntity> projects) : base(jsonApiContext, mapper, userAccessor, projects)
         {
         }
+
+        protected override string ProjectAdminRole => TestProjectRoles.Administrator;
     }
 }

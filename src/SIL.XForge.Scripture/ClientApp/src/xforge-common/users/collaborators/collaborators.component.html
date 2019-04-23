@@ -2,30 +2,29 @@
   <div fxLayout="row wrap" fxLayoutAlign="space-between center" class="text-entry">
     <form [formGroup]="userSelectionForm">
       <div mdcMenuSurfaceAnchor #userSearchAnchor>
-        <mdc-text-field
-          #userAddInput
-          id="user-search"
-          formControlName="user"
-          label="Search by name, email or phone"
-          (input)="updateSearchTerms($event)"
-          (blur)="refocusInput()"
-        ></mdc-text-field>
-        <mdc-menu
-          #userSearch
-          id="search-menu"
-          [anchorElement]="userSearchAnchor"
-          anchorCorner="bottomStart"
-          *ngIf="usersFound"
-          (selected)="userSelected($event)"
-        >
-          <mdc-list>
-            <ng-container *ngFor="let user of users">
-              <mdc-list-item *ngIf="!isUserInProject(user)" [value]="user.email"
-                >{{ user.name }} ({{ user.email }})</mdc-list-item
-              >
-            </ng-container>
-          </mdc-list>
-        </mdc-menu>
+        <mdc-form-field>
+          <mdc-text-field
+            #userAddInput
+            id="user-search"
+            formControlName="user"
+            label="Search by name, email or phone"
+            (input)="updateSearchTerms($event)"
+            (blur)="refocusInput()"
+          ></mdc-text-field>
+          <mdc-menu
+            #userSearch
+            id="search-menu"
+            [anchorElement]="userSearchAnchor"
+            anchorCorner="bottomStart"
+            (selected)="userSelected($event)"
+          >
+            <mdc-list>
+              <ng-container *ngFor="let user of canBeAddedUsers">
+                <mdc-list-item [value]="user.email">{{ user.name }} ({{ user.email }})</mdc-list-item>
+              </ng-container>
+            </mdc-list>
+          </mdc-menu>
+        </mdc-form-field>
       </div>
     </form>
     <button mdc-button id="btn-add" class="add-user-btn" outlined (click)="onAdd()" [disabled]="addDisabled">
@@ -45,7 +44,7 @@
           <span *ngIf="userInviteForm.controls.email.hasError('email')">Email is invalid</span>
         </mdc-helper-text>
       </mdc-form-field>
-      <div class="invite-error-message">
+      <div class="collaborators-form-error">
         <span *ngIf="userInviteForm.hasError('invite-disallowed')" id="invite-error">
           Please use <span fxShow fxHide.xs><b>Add user</b></span
           ><span fxHide fxShow.xs><b>Add</b></span> for existing users

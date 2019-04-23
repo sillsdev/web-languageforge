@@ -24,9 +24,7 @@ namespace SIL.XForge.Services
             _siteOptions = siteOptions;
         }
 
-        public IResourceMapper<ProjectUserResource, ProjectUserEntity> ProjectUserMapper { get; set; }
-
-        public IProjectUserRoleHelper PURHelper { get; set; }
+        public IProjectUserMapper ProjectUserMapper { get; set; }
 
         protected override IRelationship<UserEntity> GetRelationship(string relationshipName)
         {
@@ -149,11 +147,14 @@ namespace SIL.XForge.Services
             return CheckCanUpdateDeleteAsync(id);
         }
 
-        protected override Task<IQueryable<UserEntity>> ApplyPermissionFilterAsync(IQueryable<UserEntity> query)
+        protected override async Task<IQueryable<UserEntity>> ApplyPermissionFilterAsync(IQueryable<UserEntity> query)
         {
-            if (SystemRole == SystemRoles.User && !PURHelper.IsProjectAdmin())
-                query = query.Where(u => u.Id == UserId);
-            return Task.FromResult(query);
+            if (SystemRole == SystemRoles.User)
+            {
+                List<string> memberUsers = await ProjectUserMapper.MembersInAdminProjects();
+                query = query.Where(u => memberUsers.Contains(u.Id));
+            }
+            return query;
         }
 
         private Task CheckCanUpdateDeleteAsync(string id)

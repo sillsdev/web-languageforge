@@ -6,6 +6,5 @@ namespace SIL.XForge.Models
         public string Role { get; set; }
         public string UserRef { get; set; }
         public string ProjectRef { get; set; }
-        public abstract string ProjectAdminLabel { get; }
     }
 }

@@ -16,7 +16,7 @@ using SIL.XForge.Utils;
 namespace SIL.XForge.Services
 {
     public abstract class ProjectUserService<TResource, TEntity, TProjectEntity>
-        : ResourceServiceBase<TResource, TEntity>, IResourceMapper<ProjectUserResource, ProjectUserEntity>, IProjectUserRoleHelper
+        : ResourceServiceBase<TResource, TEntity>, IResourceMapper<ProjectUserResource, ProjectUserEntity>, IProjectUserMapper
         where TResource : ProjectUserResource
         where TEntity : ProjectUserEntity
         where TProjectEntity : ProjectEntity
@@ -29,18 +29,24 @@ namespace SIL.XForge.Services
         }
 
         protected IRepository<TProjectEntity> Projects { get; }
+        protected abstract string ProjectAdminRole { get; }
 
         public IResourceMapper<UserResource, UserEntity> UserMapper { get; set; }
         public IResourceMapper<ProjectResource, ProjectEntity> ProjectMapper { get; set; }
 
-        bool IProjectUserRoleHelper.IsProjectAdmin()
+        public async Task<List<string>> MembersInAdminProjects()
         {
-            foreach (ProjectUserEntity projectUser in Projects.Query().SelectMany(p => p.Users).Where(pu => pu.UserRef == UserId))
+            IEnumerable<ProjectEntity> projects = await Projects.Query().ToListAsync();
+            projects = projects.Where(p => p.Users.Any(pu => pu.UserRef == UserId));
+            IEnumerable<string> membersInAdminProjects = new List<string>() { UserId };
+            foreach (ProjectEntity project in projects)
             {
-                if (projectUser.Role == projectUser.ProjectAdminLabel)
-                    return true;
+                if (project.Users.Single(pu => pu.UserRef == UserId).Role == ProjectAdminRole)
+                {
+                    membersInAdminProjects = membersInAdminProjects.Union(project.Users.Select(pu => pu.UserRef));
+                }
             }
-            return false;
+            return membersInAdminProjects.ToList();
         }
 
         protected override async Task<object> GetRelationshipResourcesAsync(RelationshipAttribute relAttr,
@@ -58,11 +64,14 @@ namespace SIL.XForge.Services
             return null;
         }
 
-        protected override Task<IQueryable<TEntity>> ApplyPermissionFilterAsync(IQueryable<TEntity> query)
+        protected override async Task<IQueryable<TEntity>> ApplyPermissionFilterAsync(IQueryable<TEntity> query)
         {
             if (SystemRole == SystemRoles.User)
-                query = query.Where(u => u.UserRef == UserId);
-            return Task.FromResult(query);
+            {
+                List<string> memberUsers = await MembersInAdminProjects();
+                query = query.Where(u => memberUsers.Contains(u.UserRef));
+            }
+            return query;
         }
 
         protected override Task CheckCanCreateAsync(TResource resource)
@@ -140,13 +149,10 @@ namespace SIL.XForge.Services
             ParameterExpression projectParam = Expression.Parameter(typeof(TProjectEntity), "p");
             ParameterExpression projectUserParam = Expression.Parameter(typeof(ProjectUserEntity), "u");
             NewExpression newExpr = Expression.New(entityType);
+            IEnumerable<PropertyInfo> properties = entityType.GetProperties().ToList().Where(p => p.CanWrite == true);
             var bindings = new List<MemberBinding>();
-            foreach (PropertyInfo propInfo in entityType.GetProperties())
+            foreach (PropertyInfo propInfo in properties)
             {
-                if (propInfo.Name == nameof(ProjectUserEntity.ProjectAdminLabel))
-                {
-                    continue;
-                }
                 MemberExpression propExpr;
                 if (propInfo.Name == nameof(ProjectUserEntity.ProjectRef))
                 {
