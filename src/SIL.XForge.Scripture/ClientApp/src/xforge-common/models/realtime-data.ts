@@ -13,6 +13,8 @@ export interface RealtimeDataConstructor {
 export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity {
   private readonly subscription: Subscription;
 
+  private offlineSnapshotVersion: number;
+
   constructor(
     public readonly type: string,
     private readonly doc: RealtimeDoc,
@@ -37,6 +39,7 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
         await Promise.all(offlineData.pendingOps.map(op => this.doc.submitOp(op)));
       } else {
         await this.doc.ingestSnapshot(offlineData.snapshot);
+        this.offlineSnapshotVersion = this.doc.version;
       }
     }
     await this.doc.subscribe();
@@ -61,6 +64,13 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
     }
 
     const pendingOps = this.doc.pendingOps.map(op => this.prepareDataForStore(op));
+
+    // if the snapshot hasn't changed, then don't bother to update
+    if (pendingOps.length === 0 && this.doc.version === this.offlineSnapshotVersion) {
+      return;
+    }
+
+    this.offlineSnapshotVersion = this.doc.version;
     const offlineData: RealtimeOfflineData = {
       snapshot: {
         v: this.doc.version,

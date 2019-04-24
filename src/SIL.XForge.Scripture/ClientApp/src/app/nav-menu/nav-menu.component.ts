@@ -16,6 +16,8 @@ import { SFProjectService } from '../core/sfproject.service';
 import { SFAdminAuthGuard } from '../shared/sfadmin-auth.guard';
 import { ProjectDeletedDialogComponent } from './project-deleted-dialog/project-deleted-dialog.component';
 
+export const CONNECT_PROJECT_OPTION = '*connect-project*';
+
 /** Project navigation menu, shown while working on a project. */
 @Component({
   selector: 'app-nav-menu',
@@ -135,7 +137,7 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
         ),
         withLatestFrom(this.userService.getCurrentUser())
       ),
-      async ([resultsAndProjectId, user]) => {
+      ([resultsAndProjectId, user]) => {
         const results = resultsAndProjectId.results;
         const projectId = resultsAndProjectId.projectId;
         this.projects = results.data.map(pu => results.getIncluded(pu.project));
@@ -146,58 +148,62 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
         const selectedProject = projectId == null ? undefined : this.projects.find(p => p.id === projectId);
 
         // check if the currently selected project has been deleted
-        if (
-          selectedProject == null &&
-          ((this.selectedProject != null && projectId === this.selectedProject.id) ||
-            (projectId != null && !(await this.projectService.onlineExists(projectId))))
-        ) {
-          if (user.site != null && user.site.currentProjectId != null) {
-            // the project was deleted remotely, so notify the user
-            this.showProjectDeletedDialog(user.site.currentProjectId);
-          } else {
-            // the project was deleted locally, so navigate to the start view
-            this.router.navigateByUrl('/projects');
-          }
-        } else {
-          this.selectedProject = selectedProject;
-
-          // Return early if 'Connect project' was clicked, or if we don't have all the
-          // properties we need yet for the below or template.
-          if (
-            this.selectedProject == null ||
-            this.selectedProject.texts == null ||
-            this.selectedProject.translateConfig == null ||
-            this.selectedProject.checkingConfig == null ||
-            this.selectedProject.id == null ||
-            this.selectedProject.projectName == null
-          ) {
+        if (selectedProject == null && projectId != null) {
+          if (this.selectedProject != null && projectId === this.selectedProject.id) {
+            if (user.site != null && user.site.currentProjectId != null) {
+              // the project was deleted remotely, so notify the user
+              this.showProjectDeletedDialog(user.site.currentProjectId);
+            } else {
+              // the project was deleted locally, so navigate to the start view
+              this.navigateToStart();
+            }
             return;
+          } else {
+            // the current project does not exist locally.
+            // Check if the project exists online. If it doesn't, navigate to the start component.
+            // If we don't check, we could be waiting forever.
+            this.checkProjectExists(projectId);
           }
+        }
 
-          this.texts = results.getManyIncluded(this.selectedProject.texts);
-          if (!this.selectedProject.translateConfig.enabled) {
-            this.translateVisible = false;
-          }
-          if (!this.selectedProject.checkingConfig.enabled) {
-            this.checkingVisible = false;
-          }
-          if (this._projectSelect != null) {
-            this._projectSelect.reset();
-            this._projectSelect.value = this.selectedProject.id;
-          }
+        this.selectedProject = selectedProject;
 
-          if (user.site == null || user.site.currentProjectId !== this.selectedProject.id) {
-            this.userService.updateCurrentProjectId(this.selectedProject.id);
-          }
+        // Return early if 'Connect project' was clicked, or if we don't have all the
+        // properties we need yet for the below or template.
+        if (
+          this.selectedProject == null ||
+          this.selectedProject.texts == null ||
+          this.selectedProject.translateConfig == null ||
+          this.selectedProject.checkingConfig == null ||
+          this.selectedProject.id == null ||
+          this.selectedProject.projectName == null
+        ) {
+          return;
+        }
+
+        this.texts = results.getManyIncluded(this.selectedProject.texts);
+        if (!this.selectedProject.translateConfig.enabled) {
+          this.translateVisible = false;
+        }
+        if (!this.selectedProject.checkingConfig.enabled) {
+          this.checkingVisible = false;
+        }
+        if (this._projectSelect != null) {
+          this._projectSelect.reset();
+          this._projectSelect.value = this.selectedProject.id;
+        }
+
+        if (user.site == null || user.site.currentProjectId !== this.selectedProject.id) {
+          this.userService.updateCurrentProjectId(this.selectedProject.id);
         }
       }
     );
   }
 
   projectChanged(value: string): void {
-    if (value === '') {
+    if (value === CONNECT_PROJECT_OPTION) {
       this.router.navigateByUrl('/connect-project');
-    } else if (this.selectedProject != null && value !== this.selectedProject.id) {
+    } else if (value !== '' && this.selectedProject != null && value !== this.selectedProject.id) {
       this.router.navigate(['/projects', value]);
     }
   }
@@ -214,12 +220,23 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
     this.isExpanded = !this.isExpanded;
   }
 
+  private async checkProjectExists(projectId: string): Promise<void> {
+    if (!(await this.projectService.onlineExists(projectId))) {
+      await this.userService.updateCurrentProjectId();
+      this.navigateToStart();
+    }
+  }
+
   private async showProjectDeletedDialog(projectId: string): Promise<void> {
     await this.userService.updateCurrentProjectId();
     this.projectDeletedDialogRef = this.dialog.open(ProjectDeletedDialogComponent);
     this.projectDeletedDialogRef.afterClosed().subscribe(() => {
       this.projectService.localDelete(projectId);
-      this.router.navigateByUrl('/projects');
+      this.navigateToStart();
     });
+  }
+
+  private navigateToStart(): void {
+    setTimeout(() => this.router.navigateByUrl('/projects'));
   }
 }

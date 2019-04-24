@@ -1,5 +1,4 @@
-import { MdcSelect } from '@angular-mdc/web';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ParatextProject } from 'xforge-common/models/paratext-project';
@@ -44,7 +43,6 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
 
   private projects: ParatextProject[] = null;
   private job: SyncJob;
-  private _projectSelect: MdcSelect;
 
   constructor(
     private readonly paratextService: ParatextService,
@@ -74,21 +72,6 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
     const paratextId: string = this.connectProjectForm.controls.paratextId.value;
     const project = this.projects.find(p => p.paratextId === paratextId);
     return project != null && project.projectId == null;
-  }
-
-  get projectSelect(): MdcSelect {
-    return this._projectSelect;
-  }
-
-  @ViewChild('projectSelect')
-  set projectSelect(value: MdcSelect) {
-    this._projectSelect = value;
-    // workaround for bug in Angular MDC Web, see https://github.com/trimox/angular-mdc-web/issues/1852
-    // when the select is outlined, required, enhanced, and bound to a FormControl, an exception might be thrown
-    // if we set outlined after required is set, then it seems to be okay
-    if (this._projectSelect != null && !this._projectSelect.outlined) {
-      setTimeout(() => (this._projectSelect.outlined = true));
-    }
   }
 
   ngOnInit(): void {
