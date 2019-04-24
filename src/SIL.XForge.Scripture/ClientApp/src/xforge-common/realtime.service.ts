@@ -27,6 +27,7 @@ export class RealtimeService {
   private readonly connection: Connection;
   private readonly dataMap = new Map<string, Promise<RealtimeData>>();
   private readonly stores = new Map<string, RealtimeOfflineStore>();
+  private resetPromise: Promise<void> = Promise.resolve();
 
   constructor(
     private readonly domainModel: DomainModel,
@@ -37,21 +38,22 @@ export class RealtimeService {
     this.connection = new Connection(this.ws);
   }
 
-  get<T extends RealtimeData>(identity: RecordIdentity): Promise<T> {
+  async get<T extends RealtimeData>(identity: RecordIdentity): Promise<T> {
+    // wait for pending reset to complete before getting data
+    await this.resetPromise;
     const key = serializeRecordIdentity(identity);
     let dataPromise = this.dataMap.get(key);
     if (dataPromise == null) {
       dataPromise = this.createData(identity);
       this.dataMap.set(key, dataPromise);
     }
-    return dataPromise as Promise<T>;
+    return await (dataPromise as Promise<T>);
   }
 
   reset(): void {
-    for (const dataPromise of this.dataMap.values()) {
-      this.disposeData(dataPromise);
+    if (this.dataMap.size > 0) {
+      this.resetPromise = this.clearDataMap();
     }
-    this.dataMap.clear();
   }
 
   localDelete(identity: RecordIdentity): Promise<void> {
@@ -88,7 +90,16 @@ export class RealtimeService {
     return realtimeData;
   }
 
-  private async disposeData(dataPromise: Promise<RealtimeData>) {
+  private async clearDataMap(): Promise<void> {
+    const disposePromises: Promise<void>[] = [];
+    for (const dataPromise of this.dataMap.values()) {
+      disposePromises.push(this.disposeData(dataPromise));
+    }
+    this.dataMap.clear();
+    await Promise.all(disposePromises);
+  }
+
+  private async disposeData(dataPromise: Promise<RealtimeData>): Promise<void> {
     const data = await dataPromise;
     await data.dispose();
   }
