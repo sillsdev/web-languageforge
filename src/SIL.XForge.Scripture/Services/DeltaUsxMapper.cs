@@ -12,7 +12,8 @@ namespace SIL.XForge.Scripture.Services
     {
         private static readonly HashSet<string> ParagraphStyles = new HashSet<string>
         {
-            "p", "m", "pmo", "pm", "pmc", "pmr", "pi", "mi", "cls", "li", "pc", "pr", "ph", "lit"
+            "p", "m", "pmo", "pm", "pmc", "pmr", "pi", "mi", "cls", "li", "pc", "pr", "ph", "lit", "q", "qc", "qr",
+            "qa", "qm", "b"
         };
 
         private readonly ILogger<DeltaUsxMapper> _logger;

@@ -25,6 +25,10 @@ export abstract class Segmenter {
     this._lastSegmentRef = '';
   }
 
+  hasSegmentRange(ref: string): boolean {
+    return this._segments.has(ref);
+  }
+
   getSegmentRange(ref: string): RangeStatic {
     return this._segments.get(ref);
   }

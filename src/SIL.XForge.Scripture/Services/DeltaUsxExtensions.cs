@@ -61,7 +61,7 @@ namespace SIL.XForge.Scripture.Services
 
         public static Delta InsertBlank(this Delta delta, string segRef)
         {
-            string type = segRef.Contains("/p") ? "initial" : "normal";
+            string type = segRef.Contains("/p") || segRef.Contains("/m") ? "initial" : "normal";
 
             var attrs = new JObject();
             if (segRef != null)

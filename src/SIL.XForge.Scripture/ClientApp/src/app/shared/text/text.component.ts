@@ -228,7 +228,7 @@ export class TextComponent implements OnDestroy {
 
   getSegmentText(ref: string): string {
     const range = this.segmenter.getSegmentRange(ref);
-    return this._editor.getText(range.index, range.length);
+    return range == null ? '' : this._editor.getText(range.index, range.length);
   }
 
   onContentChanged(delta: DeltaStatic, source: Sources): void {
@@ -333,7 +333,7 @@ export class TextComponent implements OnDestroy {
     const prevSegment = this._segment;
     if (segmentRef != null) {
       // update/switch current segment
-      if (!this.tryChangeSegment(segmentRef, checksum, focus)) {
+      if (!this.tryChangeSegment(segmentRef, checksum, focus) && this._segment != null) {
         if (this.highlightSegment) {
           this.toggleHighlight(this._segment.range, false);
         }
@@ -369,6 +369,15 @@ export class TextComponent implements OnDestroy {
     if (this._segment != null && this._id.textId === this._segment.textId && segmentRef === this._segment.ref) {
       // the selection has not changed to a different segment
       return false;
+    }
+
+    if (!this.segmenter.hasSegmentRange(segmentRef)) {
+      if (this._segment != null && this.highlightSegment) {
+        this.toggleHighlight(this._segment.range, false);
+      }
+      this._segment = undefined;
+      this.segmentRefChange.emit();
+      return true;
     }
 
     if (focus) {
@@ -432,7 +441,7 @@ export class TextComponent implements OnDestroy {
     if (text === '') {
       if (range.length === 0) {
         // insert blank
-        const type = ref.includes('/p') ? 'initial' : 'normal';
+        const type = ref.includes('/p') || ref.includes('/m') ? 'initial' : 'normal';
         const delta = new Delta();
         delta.retain(range.index);
         delta.insert({ blank: type }, { segment: ref });

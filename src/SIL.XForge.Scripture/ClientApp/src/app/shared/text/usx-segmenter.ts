@@ -16,7 +16,13 @@ const PARA_STYLES: Set<string> = new Set<string>([
   'pc',
   'pr',
   'ph',
-  'lit'
+  'lit',
+  'q',
+  'qc',
+  'qr',
+  'qa',
+  'qm',
+  'b'
 ]);
 
 function isParagraphStyle(style: string): boolean {
