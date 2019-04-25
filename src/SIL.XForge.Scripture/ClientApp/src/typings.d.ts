@@ -1,5 +1,5 @@
 import { Operation, Query, QueryBuilder, QueryExpression, QueryTerm, Transform, TransformBuilder } from '@orbit/data';
-import Quill, { RangeStatic, QuillOptionsStatic, BoundsStatic } from 'quill';
+import Quill, { BoundsStatic, QuillOptionsStatic, RangeStatic, DeltaStatic, Sources, ClipboardStatic } from 'quill';
 
 /* SystemJS module definition */
 declare var module: NodeModule;
@@ -35,10 +35,14 @@ declare module 'quill' {
     scrollingContainer: Element;
     selection: Selection;
     history: History;
+
+    isEnabled(): boolean;
+    setSelection(index: number, source?: Sources): void;
   }
 
   export interface Selection {
     getBounds(index: number, length?: number): ClientRect;
+    update(sources: Sources): void;
   }
 
   export class Theme {
@@ -74,6 +78,17 @@ declare module 'quill' {
 
     attach(input: HTMLElement): void;
     update(range: RangeStatic): void;
+  }
+
+  export class Clipboard extends Module implements ClipboardStatic {
+    container: HTMLElement;
+
+    addMatcher(selectorOrNodeType: string | number, callback: (node: any, delta: DeltaStatic) => DeltaStatic): void;
+    dangerouslyPasteHTML(html: string, source?: Sources): void;
+    dangerouslyPasteHTML(index: number, html: string, source?: Sources): void;
+    dangerouslyPasteHTML(index: any, html?: any, source?: any): void;
+    onPaste(e: ClipboardEvent): void;
+    convert(html?: string): DeltaStatic;
   }
 
   export class Picker {

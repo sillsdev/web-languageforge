@@ -1,6 +1,10 @@
 usx-para {
   display: block;
 
+  &[data-style='p'] {
+    text-indent: 0.125em;
+  }
+
   &[data-style='toc1'] {
     font-weight: bold;
     font-style: italic;
@@ -18,14 +22,7 @@ usx-para {
     color: #800000;
   }
 
-  &[data-style='mt'] {
-    font-weight: bold;
-    text-align: center;
-    font-size: 1.66em;
-    margin-top: 0.66em;
-    margin-bottom: 0.33em;
-  }
-
+  &[data-style='mt'],
   &[data-style='mt1'] {
     font-weight: bold;
     text-align: center;
@@ -86,6 +83,28 @@ usx-para {
     margin-bottom: 0.16em;
   }
 
+  &[data-style='iot'] {
+    font-weight: bold;
+    text-align: center;
+  }
+
+  &[data-style='io'],
+  &[data-style='io1'] {
+    margin-left: 0.5em;
+  }
+
+  &[data-style='io2'] {
+    margin-left: 0.75em;
+  }
+
+  &[data-style='io3'] {
+    margin-left: 1em;
+  }
+
+  &[data-style='io4'] {
+    margin-left: 1.25em;
+  }
+
   &[data-style='s'],
   &[data-style='s1'] {
     font-weight: bold;
@@ -111,9 +130,74 @@ usx-para {
   &[data-style='li'] {
     padding-left: 3em;
   }
+
+  &[data-style='q'],
+  &[data-style='q1'] {
+    margin-left: 1.25em;
+    text-indent: -1em;
+  }
+
+  &[data-style='q2'] {
+    margin-left: 1.25em;
+    text-indent: -0.75em;
+  }
+
+  &[data-style='q3'] {
+    margin-left: 1.25em;
+    text-indent: -0.5em;
+  }
+
+  &[data-style='q4'] {
+    margin-left: 1.25em;
+    text-indent: -0.25em;
+  }
+
+  &[data-style='qc'] {
+    text-align: center;
+  }
+
+  &[data-style='qr'] {
+    text-align: right;
+  }
+
+  &[data-style='qa'] {
+    font-style: italic;
+  }
+
+  &[data-style='qm'],
+  &[data-style='qm1'] {
+    margin-left: 1em;
+    text-indent: -0.75em;
+  }
+
+  &[data-style='qm2'] {
+    margin-left: 1em;
+    text-indent: -0.5em;
+  }
+
+  &[data-style='qm3'] {
+    margin-left: 1em;
+    text-indent: -0.25em;
+  }
+
+  &[data-style='b'] {
+    font-size: 0.8em;
+  }
+
+  &[data-style='r'] {
+    font-style: italic;
+    text-align: center;
+  }
+}
+
+usx-char {
+  &[data-style='it'] {
+    font-style: italic;
+  }
 }
 
 usx-chapter {
+  user-select: none;
   display: block;
   font-weight: bold;
   font-size: 1.5em;
@@ -121,21 +205,26 @@ usx-chapter {
   margin-bottom: 0.33em;
 }
 
-usx-verse span {
-  // superscript
-  top: -0.5em;
-  position: relative;
-  font-size: 75%;
-  line-height: 0;
-  vertical-align: baseline;
-  padding-right: 0.12em;
+usx-verse {
+  user-select: none;
+  > span {
+    // superscript
+    top: -0.5em;
+    position: relative;
+    font-size: 75%;
+    line-height: 0;
+    vertical-align: baseline;
+    padding-right: 0.12em;
+  }
 }
 
-usx-note span {
-  // superscript
-  top: -0.5em;
-  position: relative;
-  font-size: 75%;
-  line-height: 0;
-  vertical-align: baseline;
+usx-note {
+  > span {
+    // superscript
+    top: -0.5em;
+    position: relative;
+    font-size: 75%;
+    line-height: 0;
+    vertical-align: baseline;
+  }
 }

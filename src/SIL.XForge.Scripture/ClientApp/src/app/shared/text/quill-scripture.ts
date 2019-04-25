@@ -1,5 +1,7 @@
 import Parchment from 'parchment';
-import Quill, { DeltaOperation, Module, Picker, QuillOptionsStatic, RangeStatic, SnowTheme, Toolbar } from 'quill';
+import Quill, { Clipboard, DeltaOperation, DeltaStatic } from 'quill';
+
+const Delta: new () => DeltaStatic = Quill.import('delta');
 
 class UsxFormat {
   static readonly KEYS = new Set<string>(['style', 'altnumber', 'pubnumber', 'caller', 'closed']);
@@ -16,13 +18,8 @@ class Note {
   delta: { ops: DeltaOperation[] };
 }
 
-export type DropFunction = (file: File, editor: Quill, event: DragEvent | ClipboardEvent) => void;
-export type PasteFunction = (item: DataTransferItem, editor: Quill, event: ClipboardEvent) => void;
-
 export function registerScripture(): void {
-  const QuillModule = Quill.import('core/module') as typeof Module;
-  const QuillSnowTheme = Quill.import('themes/snow') as typeof SnowTheme;
-  const QuillToolbar = Quill.import('modules/toolbar') as typeof Toolbar;
+  const QuillClipboard = Quill.import('modules/clipboard') as typeof Clipboard;
   const QuillParchment = Quill.import('parchment') as typeof Parchment;
   const Inline = Quill.import('blots/inline') as typeof Parchment.Inline;
   const Block = Quill.import('blots/block') as typeof Parchment.Block;
@@ -136,13 +133,13 @@ export function registerScripture(): void {
     static blotName = 'note';
     static tagName = 'usx-note';
 
-    private static readonly DELTA_KEY = '__note_delta';
+    private static readonly VALUE_KEY = '__note_value';
 
     static create(value: Note): Node {
       const node = super.create(value) as HTMLElement;
       node.innerText = String.fromCharCode(0x61 + value.index);
       node.title = value.delta.ops.reduce((text, op) => text + op.insert, '');
-      node[NoteEmbed.DELTA_KEY] = value.delta;
+      node[NoteEmbed.VALUE_KEY] = value;
       return node;
     }
 
@@ -151,14 +148,16 @@ export function registerScripture(): void {
     }
 
     static value(node: HTMLElement): Note {
-      const code = node.innerText.trim().charCodeAt(0);
-      return { index: code - 0x61, delta: node[NoteEmbed.DELTA_KEY] };
+      return node[NoteEmbed.VALUE_KEY];
     }
 
     format(name: string, value: any): void {
       if (name === 'note') {
         const format = value as UsxFormat;
         const elem = this.domNode as HTMLElement;
+        if (format.caller != null) {
+          elem.innerText = format.caller;
+        }
         setFormatUsx(elem, format);
       } else {
         super.format(name, value);
@@ -238,167 +237,27 @@ export function registerScripture(): void {
     scope: Parchment.Scope.INLINE
   });
 
-  interface DropOptions extends QuillOptionsStatic {
-    onDrop?: DropFunction;
-    onPaste?: PasteFunction;
-  }
-
-  // inspired by https://github.com/kensnyder/quill-image-drop-module and
-  // https://github.com/immense/quill-drag-and-drop-module
-  class DragAndDrop extends QuillModule {
-    options: DropOptions;
-    private dragTimer: number;
-
-    constructor(quill: Quill, options: DropOptions) {
-      super(quill, options);
-      if (options.onDrop) {
-        this.options.onDrop = options.onDrop;
-        this.quill.root.addEventListener('dragover', event => this.handleDragOver(event));
-        this.quill.root.addEventListener('dragleave', event => this.handleDragLeave(event));
-        this.quill.root.addEventListener('drop', event => this.handleDrop(event));
-      }
-
-      if (options.onPaste) {
-        this.options.onPaste = options.onPaste;
-        this.quill.root.addEventListener('paste', event => this.handlePaste(event));
-      }
-    }
-
-    handleDrop(event: DragEvent): void {
-      event.preventDefault();
-      this.quill.root.classList.remove('drop-box');
-      if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length) {
-        if (document.caretRangeFromPoint) {
-          const selection = document.getSelection();
-          const range = document.caretRangeFromPoint(event.clientX, event.clientY);
-          if (selection && range) {
-            selection.setBaseAndExtent(
-              range.startContainer,
-              range.startOffset,
-              range.startContainer,
-              range.startOffset
-            );
-          }
-        }
-
-        [].forEach.call(event.dataTransfer.files, (file: File) => {
-          if (this.options.onDrop) {
-            this.options.onDrop(file, this.quill, event);
-          }
-        });
-      }
-    }
-
-    handleDragOver(event: DragEvent): void {
-      event.preventDefault();
-      const dt = event.dataTransfer;
-      if (dt.types && (dt.types.indexOf ? dt.types.indexOf('Files') !== -1 : dt.types.includes('Files'))) {
-        this.quill.root.classList.add('drop-box');
-        window.clearTimeout(this.dragTimer);
-      }
-    }
-
-    handleDragLeave(event: DragEvent): void {
-      this.dragTimer = window.setTimeout(() => this.quill.root.classList.remove('drop-box'), 25);
-    }
-
-    handlePaste(event: ClipboardEvent): void {
-      if (event.clipboardData && event.clipboardData.items && event.clipboardData.items.length) {
-        [].forEach.call(event.clipboardData.items, (item: DataTransferItem) => {
-          if (this.options.onPaste) {
-            this.options.onPaste(item, this.quill, event);
-          }
-        });
-      }
-    }
-  }
-
-  // Customize the Snow theme in Quill
-  class MultiEditorSnowTheme extends QuillSnowTheme {
-    private static pickers: Picker[];
-
-    constructor(quill: Quill, options: QuillOptionsStatic) {
-      super(quill, options);
-    }
-
-    extendToolbar(toolbar: any): void {
-      if (toolbar.container.classList.contains('ql-snow')) {
-        // hook up the update() method for pickers to the editor-change event
-        this.pickers = MultiEditorSnowTheme.pickers;
-        this.quill.on('editor-change', () => {
-          for (const picker of this.pickers) {
-            picker.update();
-          }
-        });
-      } else {
-        super.extendToolbar(toolbar);
-        MultiEditorSnowTheme.pickers = this.pickers;
-      }
-    }
-  }
-
-  class MultiEditorToolbar extends QuillToolbar {
-    private static currentQuill: Quill;
-
-    attach(input: HTMLElement): void {
-      let format: string = [].find.call(input.classList, (className: string) => {
-        return className.indexOf('ql-') === 0;
-      });
-      if (!format) {
+  class DisableHtmlClipboard extends QuillClipboard {
+    onPaste(e: ClipboardEvent): void {
+      if (e.defaultPrevented || !this.quill.isEnabled()) {
         return;
       }
-      format = format.slice('ql-'.length);
-      if (input.tagName === 'BUTTON') {
-        input.setAttribute('type', 'button');
-      }
-      const eventName = input.tagName === 'SELECT' ? 'change' : 'click';
-      input.addEventListener(eventName, e => {
-        if (MultiEditorToolbar.currentQuill !== this.quill) {
-          return;
-        }
+      const range = this.quill.getSelection();
+      let delta = new Delta().retain(range.index);
+      const scrollTop = this.quill.scrollingContainer.scrollTop;
+      this.container.focus();
+      this.quill.selection.update('silent');
 
-        let value: string | boolean;
-        if (input.tagName === 'SELECT') {
-          const select = input as HTMLSelectElement;
-          if (select.selectedIndex < 0) {
-            return;
-          }
-          const selected = select.options[select.selectedIndex];
-          if (selected.hasAttribute('selected')) {
-            value = false;
-          } else {
-            value = selected.value || false;
-          }
-        } else {
-          const button = input as HTMLButtonElement;
-          if (button.classList.contains('ql-active')) {
-            value = false;
-          } else {
-            value = button.value || !input.hasAttribute('value');
-          }
-          e.preventDefault();
-        }
+      const text = e.clipboardData.getData('text/plain');
+      setTimeout(() => {
+        this.container.innerHTML = text;
+        delta = delta.concat(this.convert()).delete(range.length);
+        this.quill.updateContents(delta, 'user');
+        // range.length contributes to delta.length()
+        this.quill.setSelection(delta.length() - range.length, 'silent');
+        this.quill.scrollingContainer.scrollTop = scrollTop;
         this.quill.focus();
-        const range = this.quill.getSelection();
-        if (this.handlers[format] != null) {
-          this.handlers[format].call(this, value);
-        } else {
-          this.quill.format(format, value, 'user');
-        }
-        this.update(range);
-      });
-      // TODO use weakmap
-      this.controls.push([format, input]);
-    }
-
-    update(range: RangeStatic): void {
-      // save the last used editor, so the toolbar knows which editor to update
-      if (MultiEditorToolbar.currentQuill === this.quill) {
-        super.update(range);
-      } else if (this.quill.hasFocus()) {
-        MultiEditorToolbar.currentQuill = this.quill;
-        super.update(range);
-      }
+      }, 1);
     }
   }
 
@@ -413,7 +272,5 @@ export function registerScripture(): void {
   Quill.register('blots/para', ParaBlock);
   Quill.register('blots/chapter', ChapterEmbed);
   Quill.register('blots/scroll', Scroll, true);
-  Quill.register('modules/dragAndDrop', DragAndDrop);
-  Quill.register('modules/toolbar', MultiEditorToolbar, true);
-  Quill.register('themes/multiEditorSnow', MultiEditorSnowTheme);
+  Quill.register('modules/clipboard', DisableHtmlClipboard, true);
 }
