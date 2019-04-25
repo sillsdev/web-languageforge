@@ -1,14 +1,22 @@
+<mdc-linear-progress
+  [secondary]="true"
+  *ngIf="isLoading != null"
+  [open]="isLoading"
+  fxFlex="none"
+></mdc-linear-progress>
 <header>
-  <mdc-top-app-bar [fixedAdjustElement]="appContainer">
+  <mdc-top-app-bar #topAppBar [scrollTarget]="appContent">
     <mdc-top-app-bar-row>
       <mdc-top-app-bar-section align="start">
-        <a (click)="navMenu.toggleDrawer()" *ngIf="(isLoggedIn | async) && !navMenu.isDrawerPermanent">
+        <a (click)="navMenu.toggleDrawer()" *ngIf="(isLoggedIn | async) && navMenu.showDrawerButton">
           <mdc-icon mdcTopAppBarNavIcon>menu</mdc-icon>
         </a>
         <a (click)="goHome()">
           <mdc-icon mdcTopAppBarNavIcon><img id="nav-logo" src="/assets/images/logo-sf.svg" height="30"/></mdc-icon>
         </a>
-        <mdc-top-app-bar-title (click)="goHome()" fxHide.xs>Scripture Forge</mdc-top-app-bar-title>
+        <mdc-top-app-bar-title *ngIf="!topAppBar.isCollapsed()" (click)="goHome()" fxHide.xs
+          >Scripture Forge</mdc-top-app-bar-title
+        >
       </mdc-top-app-bar-section>
       <mdc-top-app-bar-section align="end" *ngIf="(currentUser$ | async) as currentUser">
         <mdc-icon mdcTopAppBarActionItem title="Notifications">notifications</mdc-icon>
@@ -46,31 +54,11 @@
     </mdc-top-app-bar-row>
   </mdc-top-app-bar>
 </header>
-<div class="app-container" fxLayout="row" #appContainer>
-  <app-nav-menu #navMenu></app-nav-menu>
-  <div class="app-content">
-    <mdc-linear-progress *ngIf="isLoading != null" [open]="isLoading"></mdc-linear-progress>
-    <div><router-outlet></router-outlet></div>
-  </div>
+<app-nav-menu #navMenu></app-nav-menu>
+<div
+  #appContent
+  class="app-content"
+  [ngClass]="isTopAppBarShort ? 'mdc-top-app-bar--short-fixed-adjust' : 'mdc-top-app-bar--dense-fixed-adjust'"
+>
+  <div><router-outlet></router-outlet></div>
 </div>
-<footer class="container-fluid" *ngIf="!(isLoggedIn | async)">
-  <div class="row">
-    <div class="col d-flex justify-content-between align-items-center">
-      <div class="partner-logos" fxHide.xs>
-        <a href="https://inter.payap.ac.th/">
-          <img src="/assets/images/logo-payap.svg" alt="Payap University Logo" height="30" />
-        </a>
-        <a href="http://www.sil.org">
-          <img src="/assets/images/logo-sil.svg" alt="SIL International Logo" height="30" />
-        </a>
-      </div>
-      <div class="app-details">
-        <span class="app-version">v {{ version }} © {{ today | date: "yyyy" }}</span>
-        <ul>
-          <li><a href="http://www.sil.org">SIL International</a></li>
-          <li><a href="/terms_and_conditions">Terms</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</footer>
