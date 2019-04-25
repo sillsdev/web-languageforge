@@ -26,7 +26,8 @@ class FixCommentGuid
         $projectList = new ProjectListModel();
         $projectList->read();
         $projectCount = 0;
-        $fixCommentCount = 0;
+        $fixDoubleInputSystemTagCount = 0;
+        $changeLanguageAbbreviationToTagCount = 0;
         foreach ($projectList->entries as $projectParams) { // foreach existing project
             $projectId = $projectParams['id'];
             $project = ProjectModel::getById($projectId);
@@ -43,10 +44,22 @@ class FixCommentGuid
                         $contextTokens = explode(' ', $comment->contextGuid);
                         $contextTokenCount = count($contextTokens);
                         if ($contextTokenCount > 0 && !empty($lastToken = $contextTokens[$contextTokenCount - 1])) {
-                            $fieldTokens =  explode('.', $lastToken);
+                            $fieldTokens = explode('.', $lastToken);
                             if (count($fieldTokens) > 2) {
-                                print("\nError: more than 2 field tokens in comment contextGuid - $comment->contextGuid, commentId - $commentId\n");
-                                break 2; // quit
+                                if (count($fieldTokens) == 3 && $fieldTokens[1] == $fieldTokens[2]) {
+                                    $fixDoubleInputSystemTokenCount++;
+                                    print("Change from $comment->contextGuid");
+                                    array_pop($fieldTokens);
+                                    $contextTokens[$contextTokenCount - 1] = implode('.', $fieldTokens);
+                                    $comment->contextGuid = implode(' ', $contextTokens);
+                                    print(" to $comment->contextGuid\n");
+
+                                    if (!$testMode) $comment->write();
+                                }
+                                else {
+                                    print("\nError: too many tokens in comment contextGuid - $comment->contextGuid, commentId - $commentId\n");
+                                    break 2; // quit
+                                }
                             }
 
                             if (count($fieldTokens) === 2) {
@@ -57,7 +70,7 @@ class FixCommentGuid
                                     }
                                 }
 
-                                $fixCommentCount++;
+                                $changeLanguageAbbreviationToTagCount++;
                                 foreach($project->inputSystems as $tag => $inputSystem) {
                                     if ($inputSystem->abbreviation == $fieldTag) {
                                         print("Change from $comment->contextGuid");
@@ -84,7 +97,8 @@ class FixCommentGuid
         if ($projectCount > 0) {
             print("\n- $mode mode results:\n");
             print("$projectCount lexicon projects.\n");
-            print("$fixCommentCount comments needed fixing.\n");
+            print("$fixDoubleInputSystemTokenCount comments needed a double language tag to be fixed.\n");
+            print("$changeLanguageAbbreviationToTagCount comments needed language abbreviations changed to language tag.\n");
         } else {
             print("\n- No projects needed fixing\n");
         }

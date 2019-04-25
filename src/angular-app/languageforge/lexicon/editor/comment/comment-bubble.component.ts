@@ -49,12 +49,7 @@ export class CommentBubbleController implements angular.IController {
   }
 
   getCountForDisplay(): number | string {
-    const count = this.getCount();
-    if (count) {
-      return count;
-    } else {
-      return '';
-    }
+    return this.getCount() || '';
   }
 
   getComments(): void {
@@ -115,8 +110,8 @@ export class CommentBubbleController implements angular.IController {
   }
 
   private setContextGuid(): void {
-    this.contextGuid = this.parentContextGuid + (this.parentContextGuid ? ' ' : '') + this.field;
     this.lexConfig.getFieldConfig(this.field).then(fieldConfig => {
+      this.contextGuid = this.parentContextGuid + (this.parentContextGuid ? ' ' : '') + this.field;
       if (this.configType == null) {
         this.configType = fieldConfig.type;
       }

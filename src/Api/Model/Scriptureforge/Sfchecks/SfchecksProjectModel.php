@@ -12,6 +12,8 @@ class SfchecksProjectModel extends SfProjectModel
         $this->rolesClass = 'Api\Model\Scriptureforge\Sfchecks\SfchecksRoles';
         $this->appName = SfProjectModel::SFCHECKS_APP;
         $this->usersSeeEachOthersResponses = true;
+        $this->isRightToLeft = false;
+        $this->fontSize = 16;
 
         // This must be last, the constructor reads data in from the database which must overwrite the defaults above.
         parent::__construct($id);
@@ -39,4 +41,11 @@ class SfchecksProjectModel extends SfProjectModel
 
     /** @var boolean Does this project allows users to see each other's answers and comments, or just their own? */
     public $usersSeeEachOthersResponses;
+
+    /** @var boolean (optional) Indicates if the project deals primarily with a right-to-left script.  Controls the RTL direction property
+     *  for all texts in this project */
+    public $isRightToLeft;
+
+    /** @var int (optional) Specifies a font size for all texts in the project.  Some scripts may tend not to be readable at the default font size. */
+    public $fontSize;
 }

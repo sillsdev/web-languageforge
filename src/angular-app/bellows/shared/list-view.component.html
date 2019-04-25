@@ -2,7 +2,7 @@
     <div data-ng-transclude></div>
     <div class="row" data-ng-hide="$ctrl.filteredItems.length <= 10">
         <div class="col-md-8 col-lg-10" data-ng-hide="$ctrl.filteredItems.length <= $ctrl.itemsPerPage">
-            <ul uib-pagination data-ng-model="$ctrl.currentPage" data-ng-chamge="$ctrl.updateVisibleItems()"
+            <ul uib-pagination data-ng-model="$ctrl.currentPage" data-ng-change="$ctrl.updateVisibleItems()"
                 total-items="$ctrl.filteredItems.length" boundary-links="true"
                 items-per-page="$ctrl.itemsPerPage" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
             </ul>
