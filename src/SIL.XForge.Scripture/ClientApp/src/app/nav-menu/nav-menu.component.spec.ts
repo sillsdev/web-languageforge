@@ -19,7 +19,7 @@ import { SFProjectUser } from '../core/models/sfproject-user';
 import { Text, TextRef } from '../core/models/text';
 import { SFProjectService } from '../core/sfproject.service';
 import { SFAdminAuthGuard } from '../shared/sfadmin-auth.guard';
-import { NavMenuComponent } from './nav-menu.component';
+import { CONNECT_PROJECT_OPTION, NavMenuComponent } from './nav-menu.component';
 import { ProjectDeletedDialogComponent } from './project-deleted-dialog/project-deleted-dialog.component';
 
 describe('NavMenuComponent', () => {
@@ -79,7 +79,7 @@ describe('NavMenuComponent', () => {
 
     expect(env.isDrawerVisible).toBeTruthy();
     expect(env.selectedProjectId).toEqual('project01');
-    env.selectProject('');
+    env.selectProject(CONNECT_PROJECT_OPTION);
     expect(env.isDrawerVisible).toBeFalsy();
     expect(env.location.path()).toEqual('/connect-project');
   }));
@@ -117,12 +117,8 @@ describe('NavMenuComponent', () => {
     env.init();
 
     expect(env.isDrawerVisible).toBeFalsy();
-    expect(env.projectDeletedDialog).toBeDefined();
     verify(env.mockedUserService.updateCurrentProjectId()).once();
-    env.confirmDialog();
-    expect(env.isDrawerVisible).toBeFalsy();
     expect(env.location.path()).toEqual('/projects');
-    verify(env.mockedSFProjectService.localDelete('project01')).once();
   }));
 
   it('response to local project deletion', fakeAsync(() => {

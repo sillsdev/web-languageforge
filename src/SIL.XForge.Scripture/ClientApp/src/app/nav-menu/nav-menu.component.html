@@ -5,7 +5,7 @@
         <mdc-list>
           <mdc-list-item *ngFor="let project of projects" [value]="project.id">{{ project.projectName }}</mdc-list-item>
           <mdc-list-divider></mdc-list-divider>
-          <mdc-list-item value="">
+          <mdc-list-item value="*connect-project*">
             <mdc-icon mdcListItemGraphic>add</mdc-icon>
             Connect project
           </mdc-list-item>

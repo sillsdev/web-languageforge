@@ -85,7 +85,7 @@ export abstract class ProjectService<T extends Project = Project> extends Resour
     const project = await this.onlineGet(id)
       .pipe(first())
       .toPromise();
-    return project != null;
+    return project.data != null;
   }
 
   localDelete(id: string): Promise<void> {
