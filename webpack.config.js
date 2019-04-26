@@ -142,7 +142,7 @@ module.exports = function (env) {
       'process.env.NODE_ENV': JSON.stringify('production')
     }));
     webpackConfig.plugins.push(new UglifyJsPlugin({
-      sourceMap: webpackConfig.devtool === 'source-map'
+      sourceMap: true
     }));
     webpackConfig.plugins.push(new LoaderOptionsPlugin({
       minimize: true
