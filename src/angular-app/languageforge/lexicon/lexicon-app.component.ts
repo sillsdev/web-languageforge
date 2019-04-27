@@ -146,11 +146,9 @@ export class LexiconAppController implements angular.IController {
 
     // Set the page's Language Forge title, font size, and nav's background color
     function setTitle(text: string, fontSize: string, backgroundColor: string): void {
-      const title = document.querySelector('nav .mobile-title a') as HTMLElement;
+      const title = document.querySelector('nav .navbar-brand') as HTMLElement;
       title.textContent = text;
       title.style.fontSize = fontSize;
-
-      document.querySelector('nav a.navbar-brand').textContent = text;
       (document.querySelector('nav.navbar') as HTMLElement).style.backgroundColor = backgroundColor;
     }
 
