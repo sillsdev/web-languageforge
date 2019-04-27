@@ -32,3 +32,9 @@
     bottom: 45px;
   }
 }
+
+.mdc-select__selected-text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
