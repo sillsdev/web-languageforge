@@ -6,7 +6,6 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import * as RichText from 'rich-text';
 import { Connection, types } from 'sharedb/lib/client';
 import { environment } from '../environments/environment';
-import { AuthService } from './auth.service';
 import { LocationService } from './location.service';
 import { DomainModel } from './models/domain-model';
 import { RealtimeData } from './models/realtime-data';
@@ -23,19 +22,23 @@ function serializeRecordIdentity(identity: RecordIdentity): string {
   providedIn: 'root'
 })
 export class RealtimeService {
-  private readonly ws: ReconnectingWebSocket;
-  private readonly connection: Connection;
+  private ws: ReconnectingWebSocket;
+  private connection: Connection;
   private readonly dataMap = new Map<string, Promise<RealtimeData>>();
   private readonly stores = new Map<string, RealtimeOfflineStore>();
   private resetPromise: Promise<void> = Promise.resolve();
+  private accessToken: string;
 
-  constructor(
-    private readonly domainModel: DomainModel,
-    private readonly locationService: LocationService,
-    private readonly authService: AuthService
-  ) {
+  constructor(private readonly domainModel: DomainModel, private readonly locationService: LocationService) {}
+
+  init(accessToken: string): void {
+    this.accessToken = accessToken;
     this.ws = new ReconnectingWebSocket(() => this.getUrl());
     this.connection = new Connection(this.ws);
+  }
+
+  setAccessToken(accessToken: string): void {
+    this.accessToken = accessToken;
   }
 
   async get<T extends RealtimeData>(identity: RecordIdentity): Promise<T> {
@@ -67,7 +70,7 @@ export class RealtimeService {
     if ('realtimePort' in environment && environment.realtimePort != null && environment.realtimePort !== 0) {
       url += `:${environment.realtimePort}`;
     }
-    url += environment.realtimeUrl + '?access_token=' + this.authService.accessToken;
+    url += environment.realtimeUrl + '?access_token=' + this.accessToken;
     return url;
   }
 

@@ -26,7 +26,7 @@ export const CONNECT_PROJECT_OPTION = '*connect-project*';
 })
 export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
   isExpanded = false;
-  drawerType = 'permanent';
+  isDrawerPermanent: boolean = true;
 
   translateVisible: boolean = false;
   checkingVisible: boolean = false;
@@ -54,9 +54,9 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
     this.subscribe(media.asObservable(), (change: MediaChange) => {
       if (['xs', 'sm'].includes(change.mqAlias)) {
         this.collapseDrawer();
-        this.drawerType = 'dismissible';
+        this.isDrawerPermanent = false;
       } else {
-        this.drawerType = 'permanent';
+        this.isDrawerPermanent = true;
       }
     });
   }
@@ -78,8 +78,8 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
     }
   }
 
-  get isDrawerPermanent() {
-    return this.drawerType === 'permanent';
+  get showDrawerButton() {
+    return !this.isDrawerPermanent && this.selectedProject != null;
   }
 
   async ngOnInit(): Promise<void> {
@@ -202,9 +202,18 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
 
   projectChanged(value: string): void {
     if (value === CONNECT_PROJECT_OPTION) {
+      if (!this.isDrawerPermanent) {
+        this.collapseDrawer();
+      }
       this.router.navigateByUrl('/connect-project');
     } else if (value !== '' && this.selectedProject != null && value !== this.selectedProject.id) {
       this.router.navigate(['/projects', value]);
+    }
+  }
+
+  itemSelected(): void {
+    if (!this.isDrawerPermanent) {
+      this.collapseDrawer();
     }
   }
 
@@ -218,6 +227,10 @@ export class NavMenuComponent extends SubscriptionDisposable implements OnInit {
 
   toggleDrawer() {
     this.isExpanded = !this.isExpanded;
+  }
+
+  drawerCollapsed(): void {
+    this.isExpanded = false;
   }
 
   private async checkProjectExists(projectId: string): Promise<void> {

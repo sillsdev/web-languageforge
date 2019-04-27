@@ -1,18 +1,6 @@
 /* Generic styles for the main html/body page itself */
 @import '~src/global';
 
-html,
-body {
-  height: 100%;
-}
-
-body {
-  margin: 0;
-  font-family: 'Roboto', sans-serif;
-  display: flex;
-  flex-direction: column;
-}
-
 .flex-column {
   display: flex;
   flex-direction: column;

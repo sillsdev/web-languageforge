@@ -1,5 +1,12 @@
-<mdc-drawer id="menu-drawer" [drawer]="drawerType" *ngIf="selectedProject != null" [open]="isExpanded">
-  <mdc-drawer-content>
+<mdc-drawer
+  id="menu-drawer"
+  *ngIf="selectedProject != null"
+  [drawer]="isDrawerPermanent ? 'permanent' : 'modal'"
+  [open]="isExpanded"
+  (closed)="drawerCollapsed()"
+>
+  <mdc-drawer-header>
+    <div *ngIf="isDrawerPermanent" class="top-app-bar-adjust-height"></div>
     <mdc-select *ngIf="projects != null" class="project-select" (valueChange)="projectChanged($event.value)">
       <mdc-menu>
         <mdc-list>
@@ -12,6 +19,8 @@
         </mdc-list>
       </mdc-menu>
     </mdc-select>
+  </mdc-drawer-header>
+  <mdc-drawer-content>
     <mdc-list id="menu-list">
       <mdc-list-item
         *ngIf="selectedProject.translateConfig?.enabled"
@@ -28,6 +37,7 @@
           routerLinkActive
           [routerLinkActiveOptions]="{ exact: true }"
           #rlaTranslateOverview="routerLinkActive"
+          (selectionChange)="itemSelected()"
         >
           <mdc-icon mdcListItemGraphic>apps</mdc-icon>
           Overview
@@ -38,6 +48,7 @@
           [activated]="rla.isActive"
           routerLinkActive
           #rla="routerLinkActive"
+          (selectionChange)="itemSelected()"
         >
           <mdc-icon mdcListItemGraphic>book</mdc-icon>
           {{ text.name }}
@@ -59,6 +70,7 @@
           routerLinkActive
           [routerLinkActiveOptions]="{ exact: true }"
           #rlaCheckingOverview="routerLinkActive"
+          (selectionChange)="itemSelected()"
         >
           <mdc-icon mdcListItemGraphic>apps</mdc-icon>
           Overview
@@ -69,6 +81,7 @@
           [activated]="rla.isActive"
           routerLinkActive
           #rla="routerLinkActive"
+          (selectionChange)="itemSelected()"
         >
           <mdc-icon mdcListItemGraphic>book</mdc-icon>
           {{ text.name }}
@@ -82,6 +95,7 @@
           routerLinkActive
           #rlaSync="routerLinkActive"
           id="sync-item"
+          (selectionChange)="itemSelected()"
         >
           <mdc-icon mdcListItemGraphic>sync</mdc-icon>
           Synchronize
@@ -92,6 +106,7 @@
           routerLinkActive
           #rlaSettings="routerLinkActive"
           id="settings-item"
+          (selectionChange)="itemSelected()"
         >
           <mdc-icon mdcListItemGraphic>settings</mdc-icon>
           Settings

@@ -2,97 +2,41 @@
 
 :host {
   display: flex;
-  flex-direction: column;
-  flex: 1;
+  height: 100vh;
+  position: relative;
+
+  > mdc-linear-progress {
+    position: absolute;
+    z-index: 10;
+  }
 
   > header {
+    position: absolute;
     mdc-top-app-bar-title {
       cursor: pointer;
     }
 
     mdc-top-app-bar-section {
-      .mdc-list-item {
-        cursor: pointer;
-        @include media-breakpoint-down(sm) {
-          padding: 0;
-          > span {
-            display: none;
-          }
-        }
-      }
       mdc-menu {
         min-width: 200px;
       }
     }
   }
 
-  .app-container {
+  .app-content {
+    display: flex;
+    flex-direction: column;
     flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
 
-    .app-content {
-      display: flex;
-      flex-direction: column;
+    > div {
       flex: 1;
-      > div {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        overflow-y: auto;
-        overflow-x: hidden;
-        padding: 10px 20px 14px 20px;
-        @include media-breakpoint-only(xs) {
-          padding: 0px 4px 4px 4px;
-        }
-      }
+      padding: 14px 20px;
     }
   }
 
-  > footer {
-    background: $sf_footer;
-    color: #fff;
-    font-size: 0.8rem;
-    .col {
-      padding-top: ($grid-gutter-width / 2);
-      padding-bottom: ($grid-gutter-width / 2);
-      @include media-breakpoint-only(xs) {
-        flex-direction: column;
-        align-items: center;
-      }
-    }
-
-    .partner-logos {
-      img {
-        &:first-child {
-          margin-right: 15px;
-        }
-      }
-      @include media-breakpoint-only(xs) {
-        margin-bottom: 10px;
-      }
-    }
-
-    .app-details {
-      display: flex;
-      ul {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        list-style-type: none;
-
-        li {
-          margin-left: 15px;
-
-          a {
-            color: #fff;
-            text-decoration: underline;
-
-            &:hover {
-              color: #fff;
-              opacity: 0.8;
-            }
-          }
-        }
-      }
-    }
+  .mdc-top-app-bar--short-collapsed {
+    width: 255px !important;
   }
 }
