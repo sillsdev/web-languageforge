@@ -42,8 +42,12 @@
       title="Swap source and target"
     ></button>
   </div>
-  <div [fxLayout]="isTargetTextRight ? 'row' : 'row-reverse'" fxLayoutGap="5px">
-    <div class="text-area">
+  <div
+    [fxLayout.gt-xs]="isTargetTextRight ? 'row' : 'row-reverse'"
+    [fxLayout.xs]="isTargetTextRight ? 'column' : 'column-reverse'"
+    fxLayoutGap="5px"
+  >
+    <div class="text-area" ngClass.xs="text-area-vertical">
       <div mdcSubtitle1>{{ sourceLabel }}</div>
       <div #sourceContainer class="text-container" [style.height]="textHeight">
         <app-text
@@ -55,7 +59,7 @@
         ></app-text>
       </div>
     </div>
-    <div class="text-area">
+    <div class="text-area" ngClass.xs="text-area-vertical">
       <div mdcSubtitle1>{{ targetLabel }}</div>
       <div class="text-container" [style.height]="textHeight">
         <app-text
