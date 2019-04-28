@@ -268,6 +268,18 @@ class ProjectModel extends MapperModel
          return $userList;
     }
 
+    public function listInvitees()
+    {
+        $invitees = new InviteeListProjectModel($this->id->asString());
+        $invitees->read();
+        foreach ($invitees->entries as $i => $invitee) {
+            if (array_key_exists($invitee['id'], $this->users)) {
+                $invitees->entries[$i]['role'] = $this->users[$invitee['id']]->role;
+            }
+        }
+        return $invitees;
+    }
+
     public function listRequests()
     {
         $allUserList = UserCommands::listUsers();
