@@ -44,6 +44,8 @@ class QuestionListDto
         $data['text'] = JsonEncoder::encode($text);
         $usxHelper = new UsxHelper($text->content);
         $data['text']['content'] = $usxHelper->toHtml();
+        $data['text']['isRightToLeft'] = $project->isRightToLeft;
+        $data['text']['fontSize'] = $project->fontSize;
         $shouldSeeOtherUsersResponses = $project->shouldSeeOtherUsersResponses($userId);  // Look it up just once
         foreach ($questionList->entries as $questionData) {
             $question = new QuestionModel($project, $questionData['id']);
