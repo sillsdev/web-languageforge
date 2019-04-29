@@ -1,6 +1,6 @@
 import { MdcList, OverlayContainer } from '@angular-mdc/web';
 import { Location } from '@angular/common';
-import { Component, DebugElement, NgModule } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, NgModule } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Route, Router } from '@angular/router';
@@ -9,20 +9,22 @@ import { BehaviorSubject, of } from 'rxjs';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { AuthService } from 'xforge-common/auth.service';
 import { MapQueryResults, QueryResults } from 'xforge-common/json-api.service';
+import { LocationService } from 'xforge-common/location.service';
 import { User, UserRef } from 'xforge-common/models/user';
+import { NoticeService } from 'xforge-common/notice.service';
 import { RealtimeService } from 'xforge-common/realtime.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
 import { nameof } from 'xforge-common/utils';
-import { SFProject, SFProjectRef } from '../core/models/sfproject';
-import { SFProjectUser } from '../core/models/sfproject-user';
-import { Text, TextRef } from '../core/models/text';
-import { SFProjectService } from '../core/sfproject.service';
-import { SFAdminAuthGuard } from '../shared/sfadmin-auth.guard';
-import { CONNECT_PROJECT_OPTION, NavMenuComponent } from './nav-menu.component';
+import { AppComponent, CONNECT_PROJECT_OPTION } from './app.component';
+import { SFProject, SFProjectRef } from './core/models/sfproject';
+import { SFProjectUser } from './core/models/sfproject-user';
+import { Text, TextRef } from './core/models/text';
+import { SFProjectService } from './core/sfproject.service';
 import { ProjectDeletedDialogComponent } from './project-deleted-dialog/project-deleted-dialog.component';
+import { SFAdminAuthGuard } from './shared/sfadmin-auth.guard';
 
-describe('NavMenuComponent', () => {
+describe('AppComponent', () => {
   it('navigate to last project', fakeAsync(() => {
     const env = new TestEnvironment();
     env.navigate(['/projects', 'project01']);
@@ -173,16 +175,6 @@ describe('NavMenuComponent', () => {
 
 @Component({
   template: `
-    <div fxLayout="row">
-      <app-nav-menu></app-nav-menu>
-      <div fxLayout="column"><router-outlet></router-outlet></div>
-    </div>
-  `
-})
-class AppComponent {}
-
-@Component({
-  template: `
     <div>Mock</div>
   `
 })
@@ -209,6 +201,7 @@ const ROUTES: Route[] = [
 class DialogTestModule {}
 
 class TestEnvironment {
+  readonly component: AppComponent;
   readonly fixture: ComponentFixture<AppComponent>;
   readonly router: Router;
   readonly location: Location;
@@ -219,6 +212,8 @@ class TestEnvironment {
   readonly mockedSFAdminAuthGuard = mock(SFAdminAuthGuard);
   readonly mockedSFProjectService = mock(SFProjectService);
   readonly mockedRealtimeService = mock(RealtimeService);
+  readonly mockedLocationService = mock(LocationService);
+  readonly mockedNoticeService = mock(NoticeService);
 
   private readonly currentUser: User;
   private readonly projects$: BehaviorSubject<QueryResults<SFProjectUser[]>>;
@@ -292,26 +287,25 @@ class TestEnvironment {
     when(this.mockedSFAdminAuthGuard.allowTransition(anything())).thenReturn(of(true));
 
     TestBed.configureTestingModule({
-      declarations: [AppComponent, MockComponent, NavMenuComponent],
+      declarations: [AppComponent, MockComponent],
       imports: [UICommonModule, DialogTestModule, RouterTestingModule.withRoutes(ROUTES)],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: AuthService, useFactory: () => instance(this.mockedAuthService) },
         { provide: UserService, useFactory: () => instance(this.mockedUserService) },
         { provide: SFAdminAuthGuard, useFactory: () => instance(this.mockedSFAdminAuthGuard) },
         { provide: SFProjectService, useFactory: () => instance(this.mockedSFProjectService) },
-        { provide: RealtimeService, useFactory: () => instance(this.mockedRealtimeService) }
+        { provide: RealtimeService, useFactory: () => instance(this.mockedRealtimeService) },
+        { provide: LocationService, useFactory: () => instance(this.mockedLocationService) },
+        { provide: NoticeService, useFactory: () => instance(this.mockedNoticeService) }
       ]
     });
     this.router = TestBed.get(Router);
     this.location = TestBed.get(Location);
     this.fixture = TestBed.createComponent(AppComponent);
+    this.component = this.fixture.componentInstance;
     this.overlayContainer = TestBed.get(OverlayContainer);
     this.fixture.ngZone.run(() => this.router.initialNavigation());
-  }
-
-  get component(): NavMenuComponent {
-    const navMenuElem = this.fixture.debugElement.query(By.directive(NavMenuComponent));
-    return navMenuElem.componentInstance;
   }
 
   get menuDrawer(): DebugElement {

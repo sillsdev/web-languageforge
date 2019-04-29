@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  templateUrl: './project-deleted-dialog.component.html',
-  styleUrls: ['./project-deleted-dialog.component.scss']
+  templateUrl: './project-deleted-dialog.component.html'
 })
 export class ProjectDeletedDialogComponent implements OnInit {
   constructor() {}
