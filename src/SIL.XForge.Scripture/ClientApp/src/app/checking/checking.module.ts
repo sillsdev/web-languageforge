@@ -8,6 +8,7 @@ import { SharedModule } from '../shared/shared.module';
 import { CheckingOverviewComponent } from './checking-overview/checking-overview.component';
 import { CheckingRoutingModule } from './checking-routing.module';
 import { CheckingAnswersComponent } from './checking/checking-answers/checking-answers.component';
+import { CheckingOwnerComponent } from './checking/checking-answers/checking-owner/checking-owner.component';
 import { CheckingQuestionsComponent } from './checking/checking-questions/checking-questions.component';
 import { CheckingTextComponent } from './checking/checking-text/checking-text.component';
 import { CheckingComponent } from './checking/checking.component';
@@ -22,7 +23,8 @@ import { QuestionDialogComponent } from './question-dialog/question-dialog.compo
     CheckingTextComponent,
     CheckingAnswersComponent,
     QuestionDialogComponent,
-    FontSizeComponent
+    FontSizeComponent,
+    CheckingOwnerComponent
   ],
   imports: [
     CheckingRoutingModule,

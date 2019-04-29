@@ -1,0 +1,27 @@
+.layout {
+  display: flex;
+  align-items: center;
+  &.layout-inline {
+    > div {
+      display: flex;
+      img {
+        width: 1em;
+        height: 1em;
+      }
+    }
+  }
+}
+.avatar {
+  margin-right: 5px;
+  img {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+  }
+}
+.date-time {
+  opacity: 0.5;
+  .time {
+    text-transform: lowercase;
+  }
+}
