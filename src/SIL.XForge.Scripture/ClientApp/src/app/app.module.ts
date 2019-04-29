@@ -13,8 +13,7 @@ import { AppComponent } from './app.component';
 import { CheckingModule } from './checking/checking.module';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
 import { CoreModule } from './core/core.module';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { ProjectDeletedDialogComponent } from './nav-menu/project-deleted-dialog/project-deleted-dialog.component';
+import { ProjectDeletedDialogComponent } from './project-deleted-dialog/project-deleted-dialog.component';
 import { ProjectComponent } from './project/project.component';
 import { DeleteProjectDialogComponent } from './settings/delete-project-dialog/delete-project-dialog.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -28,7 +27,6 @@ import { TranslateModule } from './translate/translate.module';
     AppComponent,
     ConnectProjectComponent,
     DeleteProjectDialogComponent,
-    NavMenuComponent,
     ProjectComponent,
     ProjectDeletedDialogComponent,
     SettingsComponent,
