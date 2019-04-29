@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
+import { UserService } from 'xforge-common/user.service';
 import { Question } from '../../../core/models/question';
 
 @Component({
@@ -10,16 +11,13 @@ import { Question } from '../../../core/models/question';
   styleUrls: ['./checking-questions.component.scss']
 })
 export class CheckingQuestionsComponent extends SubscriptionDisposable {
-  private get activeQuestionIndex() {
-    return this.questions.findIndex(question => question.id === this.activeQuestion.id);
-  }
-  @Input() questions: Question[] = [];
   @Output() update: EventEmitter<Question> = new EventEmitter<Question>();
   @Output() changed: EventEmitter<Question> = new EventEmitter<Question>();
+  _questions: Question[] = [];
   activeQuestion: Question;
   activeQuestionSubject: Subject<Question> = new Subject<Question>();
 
-  constructor() {
+  constructor(private userService: UserService) {
     super();
     // Only mark as read if it has been viewed for a set period of time and not an accidental click
     this.subscribe(this.activeQuestionSubject.pipe(debounceTime(2000)), question => {
@@ -30,13 +28,34 @@ export class CheckingQuestionsComponent extends SubscriptionDisposable {
     });
   }
 
-  getUserAnswers(question: Question) {
-    // TODO: (NW) Limit to answers by the current user
+  get activeQuestionIndex() {
+    return this.questions.findIndex(question => question.id === this.activeQuestion.id);
+  }
+
+  get questions(): Question[] {
+    return this._questions;
+  }
+
+  @Input() set questions(questions: Question[]) {
+    if (this.activeQuestion && questions.length) {
+      this.activateQuestion(questions[Object.keys(questions)[0]]);
+    } else {
+      this.activeQuestion = undefined;
+    }
+    this._questions = questions;
+  }
+
+  getUnreadAnswers(question: Question) {
+    // TODO: (NW) Limit to unread answers and comments
     return question.answers.length;
   }
 
   checkCanChangeQuestion(newIndex: number) {
     return !!this.questions[this.activeQuestionIndex + newIndex];
+  }
+
+  hasUserAnswered(question: Question) {
+    return question.answers.filter(answer => (answer.ownerRef = this.userService.currentUserId)).length > 0;
   }
 
   nextQuestion() {

@@ -51,7 +51,10 @@
               </as-split-area>
               <as-split-area size="0">
                 <div *ngIf="questionsPanel.activeQuestion" id="answer-panel" #answerPanelContainer>
-                  <app-checking-answers [question]="questionsPanel.activeQuestion"></app-checking-answers>
+                  <app-checking-answers
+                    [question]="questionsPanel.activeQuestion"
+                    (action)="answerAction($event)"
+                  ></app-checking-answers>
                 </div>
               </as-split-area>
             </as-split>

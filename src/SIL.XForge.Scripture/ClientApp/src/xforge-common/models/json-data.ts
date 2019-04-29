@@ -8,7 +8,7 @@ export abstract class JsonData<T = any, R = T> extends RealtimeData<T[], OtJson0
     return this; // so that operations can be chained
   }
 
-  replaceInList(item: T | R, newItem: T, path: OtJson0Path = [0]): JsonData<T> {
+  replaceInList(item: T | R, newItem: T | R, path: OtJson0Path = [0]): JsonData<T> {
     super.submit([{ p: path, ld: item, li: newItem }]);
     return this;
   }

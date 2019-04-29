@@ -1,4 +1,62 @@
-.question {
-  font-weight: bold;
-  margin-bottom: 10px;
+@import '../checking-global';
+
+.answer-question {
+  padding-left: 15px;
+  position: relative;
+  &:before {
+    position: absolute;
+    content: '';
+    background-color: transparent;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 5px;
+  }
+  &.question-unread {
+    &:before {
+      background-color: $questionUnread;
+    }
+  }
+  &.question-answered {
+    &:before {
+      background-color: $questionAnswered;
+    }
+  }
+  .question {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+}
+#answer-form {
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+.answers-container {
+  .answer {
+    display: flex;
+    padding: 10px 0;
+    .like {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 0 0 70px;
+    }
+    .answer-detail {
+      flex: 1;
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .answer-text {
+      }
+
+      .answer-footer {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
 }

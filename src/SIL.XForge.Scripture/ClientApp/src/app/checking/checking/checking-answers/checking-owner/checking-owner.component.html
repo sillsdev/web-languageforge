@@ -1,0 +1,15 @@
+<div
+  class="layout"
+  [ngClass]="{
+    'layout-stacked': layoutStacked,
+    'layout-inline': !layoutStacked
+  }"
+>
+  <div class="avatar" *ngIf="includeAvatar"><app-avatar [user]="owner" size="32" [round]="false"></app-avatar></div>
+  <div>
+    <div class="name">{{ owner.name }}</div>
+    <div class="date-time" *ngIf="dateTime">
+      {{ dateTime | date: "d MMM yy" }} at <span class="time">{{ dateTime | date: "h:mma" }}</span>
+    </div>
+  </div>
+</div>

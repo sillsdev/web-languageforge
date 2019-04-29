@@ -64,6 +64,8 @@
     > div {
       flex: 1;
       padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
     }
   }
 }

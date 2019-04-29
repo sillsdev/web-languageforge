@@ -1,2 +1,63 @@
-<div class="question">{{ question.text }}</div>
-<div class="actions"><button mdc-button primary>Add Answer</button> <button mdc-button>View Answers</button></div>
+<div
+  class="answer-question"
+  [ngClass]="{
+    'question-read': question.read,
+    'question-unread': !question.read,
+    'question-answered': currentUserTotalAnswers
+  }"
+>
+  <div class="question">{{ question.text }}</div>
+  <div *ngIf="!answerFormVisible" class="actions">
+    <button *ngIf="!currentUserTotalAnswers" mdc-button primary (click)="showAnswerForm()" id="add-answer">
+      Add Answer
+    </button>
+  </div>
+</div>
+<div *ngIf="answerFormVisible">
+  <form [formGroup]="answerForm" (ngSubmit)="submit()" autocomplete="off" id="answer-form">
+    <mdc-form-field fluid>
+      <mdc-text-field
+        label="Your Answer"
+        type="text"
+        formControlName="answerText"
+        outlined
+        [value]="activeAnswer?.text"
+      ></mdc-text-field>
+      <mdc-helper-text validation>You need to enter your answer before saving</mdc-helper-text>
+    </mdc-form-field>
+    <div class="form-actions">
+      <button mdc-button (click)="hideAnswerForm()" id="cancel-answer">Cancel</button>
+      <button mdc-button primary form="answer-form" id="save-answer">Save Answer</button>
+    </div>
+  </form>
+</div>
+<div class="answers-container" *ngIf="!answerFormVisible">
+  <div class="answer" *ngFor="let answer of question.answers">
+    <div class="like"><mdc-icon>thumb_up</mdc-icon><span class="like-count">0</span></div>
+    <div class="answer-detail">
+      <div class="scripture-reference"></div>
+      <div class="answer-text">{{ answer.text }}</div>
+      <div class="audio-control"></div>
+      <div class="answer-footer">
+        <div class="actions">
+          <button *ngIf="hasPermission(answer, 'edit')" mdc-button (click)="editAnswer(answer)" class="answer-edit">
+            Edit
+          </button>
+          <button
+            *ngIf="hasPermission(answer, 'delete')"
+            mdc-button
+            (click)="deleteAnswer(answer)"
+            class="answer-delete"
+          >
+            Delete
+          </button>
+        </div>
+        <app-checking-owner
+          [ownerRef]="answer.ownerRef"
+          [includeAvatar]="true"
+          [layoutStacked]="true"
+        ></app-checking-owner>
+      </div>
+    </div>
+  </div>
+</div>
