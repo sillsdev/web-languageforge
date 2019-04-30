@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-
 import { MapQueryResults } from 'xforge-common/json-api.service';
 import { User } from 'xforge-common/models/user';
 import { UICommonModule } from 'xforge-common/ui-common.module';
@@ -74,7 +73,7 @@ class TestEnvironment {
       of(
         new User({
           id: 'user01',
-          site: { currentProjectId: projectId }
+          site: projectId == null ? undefined : { currentProjectId: projectId }
         })
       )
     );
