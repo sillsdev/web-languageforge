@@ -75,6 +75,17 @@ We plan to use [Prettier](https://prettier.io/) with pre-commit hook after re-wr
 
 We use [Angular Flex-Layout](https://github.com/angular/flex-layout) with [Material Design components for Angular](https://material.angular.io/guides) including the [Material Design Icons](https://google.github.io/material-design-icons/).
 
+### Recommended Development Environment ###
+
+Our recommended development environment for web development is Linux Ubuntu GNOME.
+- [Vagrant GUI Setup](#vagrant-gui-setup). A Vagrant box with xForge already installed is downloaded and set up on your machine.
+
+### Vagrant GUI Setup ###
+
+Install [VirtualBox](https://www.virtualbox.org/) and [Vagrant](https://www.vagrantup.com/) and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and setup **git** for you (at least *name* and *email* is needed in `.gitconfig`). Make sure virtualization is enabled in your BIOS.
+
+Create a directory for the installation, such as `src/xForge`. Download the file [deploy/vagrant_xenial_gui/Vagrantfile](https://raw.githubusercontent.com/sillsdev/web-languageforge/sf-develop/deploy/vagrant_xenial_gui/Vagrantfile) to the directory where you want to install. Then open the command line to that directory and run `vagrant up`. This will download a box (it's about 5GB, so expect it to take a while) and run a few setup steps. When it is complete the virtual machine should be open. After compiling Scripture Forge, browse to http://localhost:5000 and use the default login credentials "admin" and "password".
+
 ### Development Process
 
 The first task on a job is to create a feature branch. Branch off of the **sf-develop** branch.
