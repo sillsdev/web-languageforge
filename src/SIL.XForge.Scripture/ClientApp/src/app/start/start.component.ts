@@ -24,13 +24,14 @@ export class StartComponent extends SubscriptionDisposable implements OnInit {
     this.subscribe(
       this.userService.getCurrentUser().pipe(
         filter(user => user != null),
-        switchMap(user =>
-          iif(
-            () => user.site != null && user.site.currentProjectId != null,
-            of(user.site.currentProjectId),
-            this.userService.getProjects(user.id).pipe(map(r => (r.data.length > 0 ? r.data[0].project.id : null)))
-          )
-        ),
+        switchMap(user => {
+          if (user.site != null && user.site.currentProjectId != null) {
+            return of(user.site.currentProjectId);
+          }
+          return this.userService
+            .getProjects(user.id)
+            .pipe(map(r => (r.data.length > 0 ? r.data[0].project.id : null)));
+        }),
         filter(projectId => projectId != null)
       ),
       projectId => this.router.navigate(['./', projectId], { relativeTo: this.route })

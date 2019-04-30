@@ -201,7 +201,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
         this.project = r.getIncluded(this.text.project);
         this.projectUser = r
           .getManyIncluded<SFProjectUser>(this.project.users)
-          .find(pu => pu.user.id === this.userService.currentUserId);
+          .find(pu => (pu.user == null ? '' : pu.user.id) === this.userService.currentUserId);
         this.chapters = this.text.chapters.map(c => c.number);
 
         if (this.translateUserConfig != null) {
