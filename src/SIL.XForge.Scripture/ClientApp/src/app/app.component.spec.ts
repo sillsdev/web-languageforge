@@ -135,14 +135,16 @@ describe('AppComponent', () => {
     expect(env.location.path()).toEqual('/projects');
   }));
 
-  it('should only display Sync and Settings for admin', fakeAsync(() => {
+  it('should only display Sync, Settings and Users for admin', fakeAsync(() => {
     const env = new TestEnvironment();
     env.makeUserAProjectAdmin(false);
     expect(env.syncItem).toBeNull();
     expect(env.settingsItem).toBeNull();
+    expect(env.usersItem).toBeNull();
     env.makeUserAProjectAdmin();
     expect(env.syncItem).toBeDefined();
     expect(env.settingsItem).toBeDefined();
+    expect(env.usersItem).toBeDefined();
   }));
 
   it('partial data does not throw', fakeAsync(() => {
@@ -323,6 +325,10 @@ class TestEnvironment {
 
   get settingsItem(): DebugElement {
     return this.fixture.debugElement.query(By.css('#settings-item'));
+  }
+
+  get usersItem(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#usersItem'));
   }
 
   get selectedProjectId(): string {

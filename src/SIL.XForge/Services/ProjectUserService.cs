@@ -16,7 +16,7 @@ using SIL.XForge.Utils;
 namespace SIL.XForge.Services
 {
     public abstract class ProjectUserService<TResource, TEntity, TProjectEntity>
-        : ResourceServiceBase<TResource, TEntity>, IResourceMapper<ProjectUserResource, ProjectUserEntity>, IProjectUserMapper
+        : ResourceServiceBase<TResource, TEntity>, IResourceMapper<ProjectUserResource, ProjectUserEntity>
         where TResource : ProjectUserResource
         where TEntity : ProjectUserEntity
         where TProjectEntity : ProjectEntity
@@ -34,21 +34,6 @@ namespace SIL.XForge.Services
         public IResourceMapper<UserResource, UserEntity> UserMapper { get; set; }
         public IResourceMapper<ProjectResource, ProjectEntity> ProjectMapper { get; set; }
 
-        public async Task<List<string>> MembersInAdminProjects()
-        {
-            IEnumerable<ProjectEntity> projects = await Projects.Query().ToListAsync();
-            projects = projects.Where(p => p.Users.Any(pu => pu.UserRef == UserId));
-            IEnumerable<string> membersInAdminProjects = new List<string>() { UserId };
-            foreach (ProjectEntity project in projects)
-            {
-                if (project.Users.Single(pu => pu.UserRef == UserId).Role == ProjectAdminRole)
-                {
-                    membersInAdminProjects = membersInAdminProjects.Union(project.Users.Select(pu => pu.UserRef));
-                }
-            }
-            return membersInAdminProjects.ToList();
-        }
-
         protected override async Task<object> GetRelationshipResourcesAsync(RelationshipAttribute relAttr,
             IEnumerable<string> included, Dictionary<string, IResource> resources, TEntity entity)
         {
@@ -64,14 +49,11 @@ namespace SIL.XForge.Services
             return null;
         }
 
-        protected override async Task<IQueryable<TEntity>> ApplyPermissionFilterAsync(IQueryable<TEntity> query)
+        protected override Task<IQueryable<TEntity>> ApplyPermissionFilterAsync(IQueryable<TEntity> query)
         {
             if (SystemRole == SystemRoles.User)
-            {
-                List<string> memberUsers = await MembersInAdminProjects();
-                query = query.Where(u => memberUsers.Contains(u.UserRef));
-            }
-            return query;
+                query = query.Where(u => u.UserRef == UserId);
+            return Task.FromResult(query);
         }
 
         protected override Task CheckCanCreateAsync(TResource resource)

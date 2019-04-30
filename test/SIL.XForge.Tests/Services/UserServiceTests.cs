@@ -22,7 +22,6 @@ namespace SIL.XForge.Services
         private const string User01Id = "user01";
         private const string User02Id = "user02";
         private const string User01Email = "user01@example.com";
-        private const string ProjectAdminUser01 = "projectadmin01";
 
         [Test]
         public void CreateAsync_UserRole()
@@ -435,25 +434,6 @@ namespace SIL.XForge.Services
         }
 
         [Test]
-        public async Task GetAsync_UserRoleProjectAdmin()
-        {
-            using (var env = new TestEnvironment())
-            {
-                env.SetUser(ProjectAdminUser01, SystemRoles.User);
-                env.JsonApiContext.QuerySet.Returns(new QuerySet());
-                env.JsonApiContext.PageManager.Returns(new PageManager());
-
-                UserResource[] resources = (await env.Service.GetAsync()).ToArray();
-
-                Assert.That(resources.Select(r => r.Id), Is.EquivalentTo(new[]
-                    {
-                        User01Id,
-                        ProjectAdminUser01
-                    }));
-            }
-        }
-
-        [Test]
         public async Task GetAsync_SystemAdminRole()
         {
             using (var env = new TestEnvironment())
@@ -469,8 +449,7 @@ namespace SIL.XForge.Services
                         User01Id,
                         User02Id,
                         "user03",
-                        ParatextUserId,
-                        ProjectAdminUser01
+                        ParatextUserId
                     }));
             }
         }
@@ -579,12 +558,6 @@ namespace SIL.XForge.Services
                                     Id = "projectuser01",
                                     UserRef = User01Id,
                                     Role = TestProjectRoles.Manager
-                                },
-                                new TestProjectUserEntity
-                                {
-                                    Id = "projectadminuser01",
-                                    UserRef = ProjectAdminUser01,
-                                    Role = TestProjectRoles.Administrator
                                 }
                             }
                         },
@@ -605,7 +578,7 @@ namespace SIL.XForge.Services
 
                 Service = new UserService(JsonApiContext, Mapper, UserAccessor, Entities, SiteOptions)
                 {
-                    ProjectUserMapper = new TestProjectUserService(JsonApiContext, Mapper, UserAccessor, projects),
+                    ProjectUserMapper = new TestProjectUserService(JsonApiContext, Mapper, UserAccessor, projects)
                 };
             }
 
@@ -660,13 +633,6 @@ namespace SIL.XForge.Services
                             AccessToken = "paratextuser01accesstoken",
                             RefreshToken = "paratextuser01refreshtoken"
                         }
-                    },
-                    new UserEntity
-                    {
-                        Id = ProjectAdminUser01,
-                        Username = ProjectAdminUser01,
-                        Email = "projectadminuser01@example.com",
-                        CanonicalEmail = "projectadminuser01@example.com"
                     }
                 };
             }

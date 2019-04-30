@@ -1,19 +1,8 @@
-import { MdcListItem, MdcMenu, MdcTextField } from '@angular-mdc/web';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-
-import { GetAllParameters } from '../../json-api.service';
-import { Project } from '../../models/project';
-import { ProjectUser } from '../../models/project-user';
-import { User, UserRef } from '../../models/user';
+import { Component } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { NoticeService } from '../../notice.service';
 import { InviteAction, ProjectService } from '../../project.service';
 import { SubscriptionDisposable } from '../../subscription-disposable';
-import { UserService } from '../../user.service';
-import { nameof } from '../../utils';
 import { XFValidators } from '../../xfvalidators';
 
 @Component({
@@ -21,109 +10,22 @@ import { XFValidators } from '../../xfvalidators';
   templateUrl: './collaborators.component.html',
   styleUrls: ['./collaborators.component.scss']
 })
-export class CollaboratorsComponent extends SubscriptionDisposable implements OnInit {
-  @ViewChild('userSearch') userMenu: MdcMenu;
-  @ViewChild('userAddInput') addUserInput: MdcTextField;
-  pageIndex: number = 0;
-  pageSize: number = 50;
-  users: User[];
-  usersInProject: UserRef[];
+export class CollaboratorsComponent extends SubscriptionDisposable {
   userSelectionForm = new FormGroup({
     user: new FormControl('')
   });
-  userInviteForm = new FormGroup(
-    {
-      email: new FormControl('', [XFValidators.email])
-    },
-    this.checkUserDoesNotExist()
-  );
+  userInviteForm = new FormGroup({
+    email: new FormControl('', [XFValidators.email])
+  });
 
-  private addButtonClicked = false;
   private inviteButtonClicked = false;
-  private isUserSelected = false;
-  private emailWasLastEditedField = false;
-  private searchTerm$ = new BehaviorSubject<string>('');
-  private parameters$ = new BehaviorSubject<GetAllParameters<User>>(this.getParameters());
-  private reload$ = new BehaviorSubject<void>(null);
 
-  constructor(
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly userService: UserService,
-    private readonly projectService: ProjectService,
-    private readonly noticeService: NoticeService
-  ) {
+  constructor(private readonly projectService: ProjectService, private readonly noticeService: NoticeService) {
     super();
   }
 
-  get addDisabled(): boolean {
-    return !(this.userSelectionForm.value.user && this.isUserSelected) || this.addButtonClicked;
-  }
-
-  get canBeAddedUsers(): User[] {
-    if (!this.usersFound) {
-      return [];
-    }
-    return this.users.filter(u => !this.isUserInProject(u));
-  }
-
   get inviteDisabled(): boolean {
-    return (
-      this.emailExists || this.userInviteForm.invalid || !this.userInviteForm.value.email || this.inviteButtonClicked
-    );
-  }
-
-  get usersFound(): boolean {
-    return this.users != null && this.users.length > 0;
-  }
-
-  private get emailExists(): boolean {
-    if (this.usersFound) {
-      const email: string = this.userInviteForm.value.email ? this.userInviteForm.value.email : '';
-      const existingUser = this.users.find(user => user.canonicalEmail === email.toLowerCase());
-      return existingUser != null;
-    }
-    return false;
-  }
-
-  ngOnInit() {
-    this.subscribe(
-      this.activatedRoute.params.pipe(
-        switchMap(params => this.projectService.get(params['projectId'], [[nameof<Project>('users')]]))
-      ),
-      project => {
-        const projectUsers = project.getManyIncluded<ProjectUser>(project.data.users);
-        this.usersInProject = [];
-        for (const pu of projectUsers) {
-          if (pu.user != null) {
-            this.usersInProject.push(pu.user);
-          }
-        }
-      }
-    );
-    this.subscribe(this.userService.onlineSearch(this.searchTerm$, this.parameters$, this.reload$), users => {
-      this.users = users.data;
-      this.openOrCloseMenu();
-    });
-  }
-
-  isUserInProject(user: User): boolean {
-    return this.usersInProject.findIndex(u => u.id === user.id) > -1;
-  }
-
-  async onAdd(): Promise<void> {
-    this.addButtonClicked = true;
-    const email = this.userSelectionForm.value.user;
-    const action = await this.projectService.onlineInvite(email);
-    if (action === InviteAction.Joined) {
-      const message =
-        'An email has been sent to ' + this.userSelectionForm.value.user + ' adding them to this project.';
-      this.noticeService.show(message);
-    } else {
-      this.noticeService.show('Unable to add the user to this project.');
-    }
-    this.userSelectionForm.reset();
-    this.addButtonClicked = false;
-    this.isUserSelected = false;
+    return this.userInviteForm.invalid || !this.userInviteForm.value.email || this.inviteButtonClicked;
   }
 
   async onInvite(): Promise<void> {
@@ -131,59 +33,16 @@ export class CollaboratorsComponent extends SubscriptionDisposable implements On
     const email = this.userInviteForm.value.email;
     const action = await this.projectService.onlineInvite(email);
     if (action === InviteAction.Invited) {
-      const message = 'An invitation email has been sent to ' + this.userInviteForm.value.email + '.';
+      const message = 'An invitation email has been sent to ' + email + '.';
       this.noticeService.show(message);
-    } else {
-      this.noticeService.show('Unable to invite the user to this project.');
+    } else if (action === InviteAction.Joined) {
+      const message = 'An email has been sent to ' + email + ' adding them to this project.';
+      this.noticeService.show(message);
+    } else if (action === InviteAction.None) {
+      const message = 'This user is already part of the project.';
+      this.noticeService.show(message);
     }
     this.userInviteForm.reset();
     this.inviteButtonClicked = false;
-  }
-
-  refocusInput(): void {
-    // Return focus back to the text input when the user menu opens and the text input loses focus
-    if (this.userMenu && this.userMenu.open) {
-      this.addUserInput.focus();
-    }
-  }
-
-  searchForExistingEmail(term: string): void {
-    this.emailWasLastEditedField = true;
-    this.searchTerm$.next(term);
-  }
-
-  updateSearchTerms(term: string): void {
-    this.emailWasLastEditedField = false;
-    this.searchTerm$.next(term);
-  }
-
-  userSelected(event: { index: number; source: MdcListItem }) {
-    this.userSelectionForm.controls.user.setValue(event.source.value as string);
-    this.isUserSelected = true;
-  }
-
-  private checkUserDoesNotExist(): ValidatorFn {
-    return (): { [key: string]: any } | null => {
-      return this.emailExists ? { 'invite-disallowed': true } : null;
-    };
-  }
-
-  private getParameters(): GetAllParameters<User> {
-    return { sort: [{ name: 'name', order: 'ascending' }] };
-  }
-
-  private openOrCloseMenu(): void {
-    if (this.emailWasLastEditedField) {
-      return;
-    }
-    if (
-      this.canBeAddedUsers.length <= 10 &&
-      this.canBeAddedUsers.length > 0 &&
-      this.userSelectionForm.value.user.length > 2
-    ) {
-      this.userMenu.open = true;
-    } else {
-      this.userMenu.open = false;
-    }
   }
 }

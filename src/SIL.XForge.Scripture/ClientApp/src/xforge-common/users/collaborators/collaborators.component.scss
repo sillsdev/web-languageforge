@@ -1,16 +1,10 @@
-.add-invite-user {
+.invite-user {
   padding-top: 1rem;
   max-width: 27rem;
 }
 
 mdc-text-field {
   min-width: 17rem;
-}
-
-.add-user-btn {
-  margin: 0.6rem;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
 }
 
 .invite-user-btn {
@@ -20,10 +14,4 @@ mdc-text-field {
 
 .text-entry {
   margin-bottom: 0.6rem;
-}
-
-.collaborators-form-error {
-  font-size: smaller;
-  height: 1rem;
-  color: var(--mdc-theme-error);
 }
