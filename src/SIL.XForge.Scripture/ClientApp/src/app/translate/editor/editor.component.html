@@ -1,6 +1,6 @@
 <div mdcMenuSurfaceAnchor #trainingProgressAnchor fxLayout="column">
   <div mdcHeadline4>{{ textName }}</div>
-  <div class="toolbar" fxLayout="row" fxLayoutAlign="start center">
+  <div class="toolbar" fxLayout="row wrap" fxLayoutAlign="start center">
     <app-chapter-nav [(chapter)]="chapter" [chapters]="chapters"></app-chapter-nav>
     <div class="toolbar-separator">&nbsp;</div>
     <div mdcMenuSurfaceAnchor #suggestionsAnchor>
@@ -42,12 +42,8 @@
       title="Swap source and target"
     ></button>
   </div>
-  <div
-    [fxLayout.gt-xs]="isTargetTextRight ? 'row' : 'row-reverse'"
-    [fxLayout.xs]="isTargetTextRight ? 'column' : 'column-reverse'"
-    fxLayoutGap="5px"
-  >
-    <div class="text-area" ngClass.xs="text-area-vertical">
+  <div [fxLayout]="isTargetTextRight ? 'row' : 'row-reverse'" fxLayoutGap="5px">
+    <div fxHide.xs class="text-area" ngClass.xs="text-area-vertical">
       <div mdcSubtitle1>{{ sourceLabel }}</div>
       <div #sourceContainer class="text-container" [style.height]="textHeight">
         <app-text
@@ -60,8 +56,8 @@
       </div>
     </div>
     <div class="text-area" ngClass.xs="text-area-vertical">
-      <div mdcSubtitle1>{{ targetLabel }}</div>
-      <div class="text-container" [style.height]="textHeight">
+      <div fxHide.xs mdcSubtitle1>{{ targetLabel }}</div>
+      <div #targetContainer class="text-container" [style.height]="textHeight">
         <app-text
           #target
           [isReadOnly]="false"

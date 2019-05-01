@@ -52,7 +52,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   showTrainingProgress: boolean = false;
   textHeight: string = '';
 
-  @ViewChild('sourceContainer') sourceContainer: ElementRef;
+  @ViewChild('targetContainer') targetContainer: ElementRef;
   @ViewChild('source') source: TextComponent;
   @ViewChild('target') target: TextComponent;
   @ViewChild('suggestionsMenuButton') suggestionsMenuButton: MdcIconButton;
@@ -429,7 +429,7 @@ export class EditorComponent extends SubscriptionDisposable implements OnInit, O
   private setTextHeight(): void {
     // this is a horrible hack to set the height of the text components
     // we don't want to use flexbox because it makes editing very slow
-    const elem: HTMLElement = this.sourceContainer.nativeElement;
+    const elem: HTMLElement = this.targetContainer.nativeElement;
     const bounds = elem.getBoundingClientRect();
     // add bottom padding
     const top = bounds.top + 14;
