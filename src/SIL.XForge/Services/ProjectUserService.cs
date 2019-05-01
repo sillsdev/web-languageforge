@@ -29,7 +29,6 @@ namespace SIL.XForge.Services
         }
 
         protected IRepository<TProjectEntity> Projects { get; }
-        protected abstract string ProjectAdminRole { get; }
 
         public IResourceMapper<UserResource, UserEntity> UserMapper { get; set; }
         public IResourceMapper<ProjectResource, ProjectEntity> ProjectMapper { get; set; }
@@ -131,9 +130,8 @@ namespace SIL.XForge.Services
             ParameterExpression projectParam = Expression.Parameter(typeof(TProjectEntity), "p");
             ParameterExpression projectUserParam = Expression.Parameter(typeof(ProjectUserEntity), "u");
             NewExpression newExpr = Expression.New(entityType);
-            IEnumerable<PropertyInfo> properties = entityType.GetProperties().ToList().Where(p => p.CanWrite == true);
             var bindings = new List<MemberBinding>();
-            foreach (PropertyInfo propInfo in properties)
+            foreach (PropertyInfo propInfo in entityType.GetProperties())
             {
                 MemberExpression propExpr;
                 if (propInfo.Name == nameof(ProjectUserEntity.ProjectRef))
