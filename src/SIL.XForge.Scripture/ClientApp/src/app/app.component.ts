@@ -59,12 +59,7 @@ export class AppComponent extends SubscriptionDisposable implements OnInit {
   ) {
     super();
     this.subscribe(media.asObservable(), (change: MediaChange) => {
-      if (['xs', 'sm'].includes(change.mqAlias)) {
-        this.collapseDrawer();
-        this.isDrawerPermanent = false;
-      } else {
-        this.isDrawerPermanent = true;
-      }
+      this.isDrawerPermanent = change.mqAlias !== 'xs' && change.mqAlias !== 'sm';
     });
   }
 
@@ -107,6 +102,9 @@ export class AppComponent extends SubscriptionDisposable implements OnInit {
   set isDrawerPermanent(value: boolean) {
     if (this._isDrawerPermanent !== value) {
       this._isDrawerPermanent = value;
+      if (!this._isDrawerPermanent) {
+        this.collapseDrawer();
+      }
       this.setTopAppBarVariant();
     }
   }
