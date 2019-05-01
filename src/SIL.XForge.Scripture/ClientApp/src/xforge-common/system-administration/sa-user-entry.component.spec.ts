@@ -162,8 +162,8 @@ describe('System Administration User Entry Component', () => {
       expect(env.updateButton.nativeElement.textContent).toContain('Update');
       expect(env.title.nativeElement.textContent).toContain('Account details');
       expect(env.component.showActivateDeActivatePanel).toBe(true);
-      expect(env.dateCreated.nativeElement.textContent).toContain('01 January 2019');
-      expect(env.lastLogin.nativeElement.textContent).toContain('01 February 2019');
+      expect(env.dateCreated.nativeElement.textContent).toMatch(new RegExp('.*0(1|2) January 2019'));
+      expect(env.lastLogin.nativeElement.textContent).toMatch(new RegExp('.*0(1|2) February 2019'));
     }));
 
     it('should update user if form is valid', fakeAsync(() => {
