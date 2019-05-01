@@ -32,26 +32,29 @@ describe('ConnectProjectComponent', () => {
     expect(env.loginButton).not.toBeNull();
   });
 
-  it('should display form when PT projects is empty', () => {
+  it('should display form when PT projects is empty', fakeAsync(() => {
     const env = new TestEnvironment();
     when(env.mockedParatextService.getProjects()).thenReturn(of([]));
     env.fixture.detectChanges();
-
     expect(env.component.state).toEqual('input');
     expect(env.connectProjectForm).not.toBeNull();
-  });
+    expect(env.projectSelect).toBeNull();
+    expect(env.noProjectsMessage.nativeElement.textContent).toContain(
+      'Looks like there are no connectable projects for you.'
+    );
+  }));
 
   it('should do nothing when form is invalid', fakeAsync(() => {
     const env = new TestEnvironment();
     when(env.mockedParatextService.getProjects()).thenReturn(of([]));
     env.fixture.detectChanges();
 
+    expect(env.submitButton.nativeElement.disabled).toBe(true);
     env.clickElement(env.submitButton);
 
     verify(env.mockedSFProjectService.onlineCreate(anything())).never();
     verify(env.mockedSFProjectUserService.onlineCreate(anything(), anything())).never();
     verify(env.mockedRouter.navigate(anything())).never();
-    expect().nothing();
   }));
 
   it('should display loading when getting PT projects', fakeAsync(() => {
@@ -61,6 +64,9 @@ describe('ConnectProjectComponent', () => {
 
     expect(env.component.state).toEqual('loading');
     verify(env.mockedNoticeService.loadingStarted()).once();
+    expect(env.projectSelect).toBeNull();
+    expect(env.noProjectsMessage).toBeNull();
+    expect(env.submitButton.nativeElement.disabled).toBe(true);
 
     tick();
     env.fixture.detectChanges();
@@ -263,6 +269,14 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('form'));
   }
 
+  get noProjectsMessage(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#no-projects-msg'));
+  }
+
+  get projectsMenu(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#projects-menu'));
+  }
+
   get tasksCard(): DebugElement {
     return this.fixture.debugElement.query(By.css('#tasks-card'));
   }
@@ -297,6 +311,11 @@ class TestEnvironment {
     element.click();
     this.fixture.detectChanges();
     tick();
+  }
+
+  getMenuItem(menu: DebugElement, index: number): string {
+    const items = menu.nativeElement.querySelectorAll('mdc-list-item');
+    return items.item(index).textContent;
   }
 
   inputElement(element: DebugElement): HTMLInputElement {

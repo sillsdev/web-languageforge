@@ -15,7 +15,7 @@
     ></mdc-linear-progress>
   </mdc-card>
   <form *ngSwitchDefault [formGroup]="connectProjectForm" (ngSubmit)="submit()">
-    <mdc-form-field>
+    <mdc-form-field *ngIf="hasConnectableProjects; else noProjectMsg">
       <mdc-select
         #projectSelect
         id="project-select"
@@ -24,7 +24,7 @@
         required
         outlined
       >
-        <mdc-menu>
+        <mdc-menu id="projects-menu">
           <mdc-list>
             <mdc-list-item *ngFor="let project of targetProjects" [value]="project.paratextId">
               {{ project.name }}
@@ -33,7 +33,12 @@
         </mdc-menu>
       </mdc-select>
     </mdc-form-field>
-
+    <ng-template #noProjectMsg>
+      <p *ngIf="state !== 'loading'" id="no-projects-msg">
+        Looks like there are no connectable projects for you.<br />Please go to Paratext to register a project to
+        connect to.
+      </p>
+    </ng-template>
     <mdc-card id="tasks-card" *ngIf="showTasks" outlined formGroupName="tasks">
       <div class="card-title">
         <span mdcHeadline6>Tasks</span>
@@ -89,7 +94,7 @@
         </div>
       </div>
     </mdc-card>
-    <button mdc-button primary type="submit" id="connect-submit-button" [disabled]="state === 'loading'">
+    <button mdc-button primary type="submit" id="connect-submit-button" [disabled]="!hasConnectableProjects">
       Connect
     </button>
   </form>
