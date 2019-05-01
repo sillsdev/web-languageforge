@@ -38,8 +38,10 @@ describe('ConnectProjectComponent', () => {
     env.fixture.detectChanges();
     expect(env.component.state).toEqual('input');
     expect(env.connectProjectForm).not.toBeNull();
-    env.clickElement(env.projectSelect);
-    expect(env.getMenuItem(env.projectsMenu, 0)).toContain('Please go to paratext to register a project to connect');
+    expect(env.projectSelect).toBeNull();
+    expect(env.noProjectsMessage.nativeElement.textContent).toContain(
+      'Looks like there are no connectable projects for you.'
+    );
   }));
 
   it('should do nothing when form is invalid', fakeAsync(() => {
@@ -47,12 +49,12 @@ describe('ConnectProjectComponent', () => {
     when(env.mockedParatextService.getProjects()).thenReturn(of([]));
     env.fixture.detectChanges();
 
+    expect(env.submitButton.nativeElement.disabled).toBe(true);
     env.clickElement(env.submitButton);
 
     verify(env.mockedSFProjectService.onlineCreate(anything())).never();
     verify(env.mockedSFProjectUserService.onlineCreate(anything(), anything())).never();
     verify(env.mockedRouter.navigate(anything())).never();
-    expect().nothing();
   }));
 
   it('should display loading when getting PT projects', fakeAsync(() => {
@@ -62,6 +64,9 @@ describe('ConnectProjectComponent', () => {
 
     expect(env.component.state).toEqual('loading');
     verify(env.mockedNoticeService.loadingStarted()).once();
+    expect(env.projectSelect).toBeNull();
+    expect(env.noProjectsMessage).toBeNull();
+    expect(env.submitButton.nativeElement.disabled).toBe(true);
 
     tick();
     env.fixture.detectChanges();
@@ -262,6 +267,10 @@ class TestEnvironment {
 
   get connectProjectForm(): DebugElement {
     return this.fixture.debugElement.query(By.css('form'));
+  }
+
+  get noProjectsMessage(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#no-projects-msg'));
   }
 
   get projectsMenu(): DebugElement {

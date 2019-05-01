@@ -65,6 +65,10 @@ export class ConnectProjectComponent extends SubscriptionDisposable implements O
     return this.connectProgress === 0;
   }
 
+  get hasConnectableProjects(): boolean {
+    return this.state === 'input' && this.targetProjects.length > 0;
+  }
+
   get showTasks(): boolean {
     if (this.state !== 'input') {
       return false;
