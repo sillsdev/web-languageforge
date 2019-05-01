@@ -1,9 +1,5 @@
-<mdc-linear-progress
-  [secondary]="true"
-  *ngIf="isLoading != null"
-  [open]="isLoading"
-  fxFlex="none"
-></mdc-linear-progress>
+<mdc-linear-progress [secondary]="true" *ngIf="isLoading != null" [open]="isLoading" fxFlex="none">
+</mdc-linear-progress>
 <header [class.overlay-drawer]="isDrawerPermanent">
   <mdc-top-app-bar #topAppBar [scrollTarget]="appContent">
     <mdc-top-app-bar-row>
@@ -15,8 +11,8 @@
           <mdc-icon mdcTopAppBarNavIcon><img id="nav-logo" src="/assets/images/logo-sf.svg" height="30"/></mdc-icon>
         </a>
         <mdc-top-app-bar-title *ngIf="!topAppBar.isCollapsed()" (click)="goHome()" fxHide.xs
-          >Scripture Forge</mdc-top-app-bar-title
-        >
+          >Scripture Forge
+        </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
       <mdc-top-app-bar-section align="end" *ngIf="(currentUser$ | async) as currentUser">
         <mdc-icon mdcTopAppBarActionItem title="Notifications">notifications</mdc-icon>
@@ -166,6 +162,17 @@
         >
           <mdc-icon mdcListItemGraphic>settings</mdc-icon>
           Settings
+        </mdc-list-item>
+        <mdc-list-item
+          [routerLink]="['/projects', selectedProject.id, 'users']"
+          [activated]="rlaUsers.isActive"
+          routerLinkActive
+          #rlaUsers="routerLinkActive"
+          id="users-item"
+          (selectionChange)="itemSelected()"
+        >
+          <mdc-icon mdcListItemGraphic>people</mdc-icon>
+          Users
         </mdc-list-item>
       </div>
     </mdc-list>

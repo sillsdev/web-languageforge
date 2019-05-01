@@ -1,0 +1,9 @@
+<h1>Users</h1>
+<mdc-tab-bar #tabBar fixed="true">
+  <mdc-tab-scroller>
+    <mdc-tab label="Collaborators"></mdc-tab>
+    <!-- (15-03-2019) The Send Message tab is not available in the MVP -->
+    <!--mdc-tab label="Send Message"></mdc-tab-->
+  </mdc-tab-scroller>
+</mdc-tab-bar>
+<app-collaborators *ngIf="tabBar.activeTabIndex == 0"></app-collaborators>

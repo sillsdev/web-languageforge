@@ -1,0 +1,22 @@
+<div class="invite-user">
+  <div fxLayout="row wrap" fxLayoutAlign="space-between center" class="text-entry">
+    <form [formGroup]="userInviteForm">
+      <mdc-form-field>
+        <mdc-text-field id="email-input" formControlName="email" label="Email"> </mdc-text-field>
+        <mdc-helper-text validation>
+          <span *ngIf="userInviteForm.controls.email.hasError('email')">Email is invalid</span>
+        </mdc-helper-text>
+      </mdc-form-field>
+    </form>
+    <button
+      mdc-button
+      id="btn-invite"
+      class="invite-user-btn"
+      outlined
+      (click)="onInvite()"
+      [disabled]="inviteDisabled"
+    >
+      <span fxShow fxHide.xs>Invite user</span> <span fxHide fxShow.xs>Invite</span>
+    </button>
+  </div>
+</div>

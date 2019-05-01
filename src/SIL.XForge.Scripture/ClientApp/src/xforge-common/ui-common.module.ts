@@ -15,6 +15,7 @@ import {
   MdcSelectModule,
   MdcSliderModule,
   MdcSnackbarModule,
+  MdcTabBarModule,
   MdcTextFieldModule,
   MdcTopAppBarModule,
   MdcTypographyModule
@@ -92,6 +93,7 @@ const modules = [
   MdcSelectModule,
   MdcSliderModule,
   MdcSnackbarModule,
+  MdcTabBarModule,
   MdcTextFieldModule,
   MdcTopAppBarModule,
   MdcTypographyModule,

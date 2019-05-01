@@ -32,7 +32,7 @@ describe('AppComponent', () => {
 
     expect(env.isDrawerVisible).toBeTruthy();
     expect(env.selectedProjectId).toEqual('project01');
-    expect(env.menuLength).toEqual(4);
+    expect(env.menuLength).toEqual(5);
     verify(env.mockedUserService.updateCurrentProjectId(anything())).never();
   }));
 
@@ -43,7 +43,7 @@ describe('AppComponent', () => {
 
     expect(env.isDrawerVisible).toBeTruthy();
     expect(env.selectedProjectId).toEqual('project02');
-    expect(env.menuLength).toEqual(3);
+    expect(env.menuLength).toEqual(4);
     verify(env.mockedUserService.updateCurrentProjectId('project02')).once();
   }));
 
@@ -55,9 +55,9 @@ describe('AppComponent', () => {
     expect(env.isDrawerVisible).toBeTruthy();
     expect(env.selectedProjectId).toEqual('project01');
     env.selectItem(0);
-    expect(env.menuLength).toEqual(7);
+    expect(env.menuLength).toEqual(8);
     env.selectItem(0);
-    expect(env.menuLength).toEqual(4);
+    expect(env.menuLength).toEqual(5);
   }));
 
   it('change project', fakeAsync(() => {
@@ -135,14 +135,16 @@ describe('AppComponent', () => {
     expect(env.location.path()).toEqual('/projects');
   }));
 
-  it('should only display Sync and Settings for admin', fakeAsync(() => {
+  it('should only display Sync, Settings and Users for admin', fakeAsync(() => {
     const env = new TestEnvironment();
     env.makeUserAProjectAdmin(false);
     expect(env.syncItem).toBeNull();
     expect(env.settingsItem).toBeNull();
+    expect(env.usersItem).toBeNull();
     env.makeUserAProjectAdmin();
     expect(env.syncItem).toBeDefined();
     expect(env.settingsItem).toBeDefined();
+    expect(env.usersItem).toBeDefined();
   }));
 
   it('partial data does not throw', fakeAsync(() => {
@@ -325,6 +327,10 @@ class TestEnvironment {
     return this.fixture.debugElement.query(By.css('#settings-item'));
   }
 
+  get usersItem(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#usersItem'));
+  }
+
   get selectedProjectId(): string {
     return this.component.projectSelect.value;
   }
@@ -373,9 +379,9 @@ class TestEnvironment {
 
   wait(): void {
     this.fixture.detectChanges();
-    flush(30);
+    flush(40);
     this.fixture.detectChanges();
-    flush(30);
+    flush(40);
   }
 
   deleteProject(isLocal: boolean): void {

@@ -16,11 +16,14 @@ import { SaUserEntryComponent } from './system-administration/sa-user-entry.comp
 import { SaUsersComponent } from './system-administration/sa-users.component';
 import { SystemAdministrationComponent } from './system-administration/system-administration.component';
 import { UICommonModule } from './ui-common.module';
+import { CollaboratorsComponent } from './users/collaborators/collaborators.component';
+import { UsersComponent } from './users/users.component';
 import { WriteStatusComponent } from './write-status/write-status.component';
 
 const componentExports = [
   AvatarComponent,
   ChangePasswordComponent,
+  CollaboratorsComponent,
   DeleteAccountDialogComponent,
   EmailInviteComponent,
   InviteDialogComponent,
@@ -30,6 +33,7 @@ const componentExports = [
   SaUserEntryComponent,
   SaUsersComponent,
   SystemAdministrationComponent,
+  UsersComponent,
   WriteStatusComponent
 ];
 

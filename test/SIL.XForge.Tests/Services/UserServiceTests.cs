@@ -161,10 +161,10 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(User01Id, SystemRoles.User);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
                 Assert.That(initialEntity.Username, Is.Not.EqualTo("new"));
 
-                env.SetUser(User01Id, SystemRoles.User);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("username"), "new" }
@@ -197,10 +197,10 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(User02Id);
                 Assert.That(initialEntity.Username, Is.Not.EqualTo("new"));
 
-                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("username"), "new" }
@@ -249,10 +249,10 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
                 Assert.That(initialEntity.CanonicalEmail, Is.Not.EqualTo("new@example.com"));
 
-                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("email"), "New@example.com" }
@@ -301,10 +301,10 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
                 Assert.That(initialEntity.ContactMethod, Is.Not.EqualTo(UserEntity.ContactMethods.emailSms));
 
-                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                 {
                     {env.GetAttribute("contact-method"), "emailSms"}
@@ -328,10 +328,10 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
                 CollectionAssert.IsEmpty(initialEntity.Sites);
 
-                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("site"), new Site { CurrentProjectId = "project01" } }
@@ -361,12 +361,12 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(User02Id);
                 Assert.That(initialEntity.Sites.Count, Is.EqualTo(1));
                 Assert.That(initialEntity.Sites[TestEnvironment.SiteAuthority].CurrentProjectId,
                     Is.EqualTo("project01"));
 
-                env.SetUser(User01Id, SystemRoles.SystemAdmin);
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("site"), null }
@@ -392,11 +392,11 @@ namespace SIL.XForge.Services
         {
             using (var env = new TestEnvironment())
             {
+                env.SetUser(ParatextUserId, SystemRoles.User);
                 UserEntity initialEntity = await env.Service.GetEntityAsync(ParatextUserId);
                 Assert.That(initialEntity.ParatextId, Is.Not.Empty);
                 Assert.That(initialEntity.ParatextTokens, Is.Not.Null);
 
-                env.SetUser(ParatextUserId, SystemRoles.User);
 
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                 {

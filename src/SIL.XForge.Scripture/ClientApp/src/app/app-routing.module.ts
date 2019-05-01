@@ -6,6 +6,7 @@ import { ChangePasswordComponent } from 'xforge-common/change-password/change-pa
 import { MyAccountComponent } from 'xforge-common/my-account/my-account.component';
 import { SystemAdminAuthGuard } from 'xforge-common/system-admin-auth.guard';
 import { SystemAdministrationComponent } from 'xforge-common/system-administration/system-administration.component';
+import { UsersComponent } from 'xforge-common/users/users.component';
 import { ConnectProjectComponent } from './connect-project/connect-project.component';
 import { ProjectComponent } from './project/project.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'my-account', component: MyAccountComponent, canActivate: [AuthGuard] },
   { path: 'projects/:projectId/settings', component: SettingsComponent, canActivate: [SFAdminAuthGuard] },
   { path: 'projects/:projectId/sync', component: SyncComponent, canActivate: [SFAdminAuthGuard] },
+  { path: 'projects/:projectId/users', component: UsersComponent, canActivate: [SFAdminAuthGuard] },
   { path: 'projects/:projectId', component: ProjectComponent, canActivate: [AuthGuard] },
   { path: 'projects', component: StartComponent, canActivate: [AuthGuard] },
   { path: 'system-administration', component: SystemAdministrationComponent, canActivate: [SystemAdminAuthGuard] },
