@@ -1,9 +1,8 @@
 import { Component, ElementRef, HostBinding, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { clone } from '@orbit/utils';
 import { SplitComponent } from 'angular-split';
 import { switchMap } from 'rxjs/operators';
-
-import { clone } from '@orbit/utils';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
 import { UserService } from 'xforge-common/user.service';
 import { nameof, objectId } from 'xforge-common/utils';
@@ -220,8 +219,7 @@ export class CheckingComponent extends SubscriptionDisposable implements OnInit 
     }
 
     this.unbindQuestionData(id);
-    const questionData: QuestionData = await this.textService.getQuestionData(id);
-    this.questionData[id.toString()] = questionData;
+    this.questionData[id.toString()] = await this.textService.getQuestionData(id);
   }
 
   private unbindQuestionData(id: TextJsonDataId): void {

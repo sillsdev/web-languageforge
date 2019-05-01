@@ -1,13 +1,13 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { LatinWordTokenizer } from '@sillsdev/machine';
 import { QuillModule } from 'ngx-quill';
-import Quill, { DeltaStatic } from 'quill';
+import * as RichText from 'rich-text';
 import { anything, deepEqual, instance, mock, objectContaining, resetCalls, verify, when } from 'ts-mockito';
+import { MemoryRealtimeDoc } from 'xforge-common/realtime-doc';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
-import { TextData, TextDataId } from '../../core/models/text-data';
+import { Delta, TextData, TextDataId } from '../../core/models/text-data';
 import { SFProjectService } from '../../core/sfproject.service';
 import { TextService } from '../../core/text.service';
-import { MockRealtimeDoc } from '../../shared/models/mock-realtime-doc';
 import { TextComponent } from '../../shared/text/text.component';
 import {
   ACTIVE_EDIT_TIMEOUT,
@@ -342,8 +342,6 @@ describe('TranslateMetricsSession', () => {
   }));
 });
 
-const Delta: new () => DeltaStatic = Quill.import('delta');
-
 class TestEnvironment {
   readonly source: TextComponent;
   readonly sourceFixture: ComponentFixture<TextComponent>;
@@ -436,7 +434,7 @@ class TestEnvironment {
     delta.insert({ verse: '2' }, { verse: { style: 'v' } });
     delta.insert(`${id.textType}: chapter ${id.chapter}, verse 2.`, { segment: `verse_${id.chapter}_2` });
     delta.insert('\n', { para: { style: 'p' } });
-    const doc = new MockRealtimeDoc<DeltaStatic>('rich-text', id.toString(), delta);
+    const doc = new MemoryRealtimeDoc(RichText.type, id.toString(), delta);
     return new TextData(doc, instance(this.mockedRealtimeOfflineStore));
   }
 }

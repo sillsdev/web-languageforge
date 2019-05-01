@@ -11,7 +11,7 @@ import {
   Tokenizer,
   TranslationSuggester
 } from '@sillsdev/machine';
-import Quill, { DeltaStatic, RangeStatic } from 'quill';
+import { DeltaStatic, RangeStatic } from 'quill';
 import { BehaviorSubject, fromEvent, Subject, Subscription } from 'rxjs';
 import { debounceTime, filter, map, repeat, skip, switchMap, tap } from 'rxjs/operators';
 import { NoticeService } from 'xforge-common/notice.service';
@@ -22,7 +22,7 @@ import XRegExp from 'xregexp';
 import { SFProject } from '../../core/models/sfproject';
 import { SFProjectUser, TranslateProjectUserConfig } from '../../core/models/sfproject-user';
 import { Text } from '../../core/models/text';
-import { TextDataId, TextType } from '../../core/models/text-data';
+import { Delta, TextDataId, TextType } from '../../core/models/text-data';
 import { SFProjectUserService } from '../../core/sfproject-user.service';
 import { SFProjectService } from '../../core/sfproject.service';
 import { TextService } from '../../core/text.service';
@@ -33,7 +33,6 @@ import { TranslateMetricsSession } from './translate-metrics-session';
 export const UPDATE_SUGGESTIONS_TIMEOUT = 100;
 export const CONFIDENCE_THRESHOLD_TIMEOUT = 500;
 
-const Delta: new () => DeltaStatic = Quill.import('delta');
 const PUNCT_SPACE_REGEX = XRegExp('^(\\p{P}|\\p{S}|\\p{Cc}|\\p{Z})+$');
 
 @Component({

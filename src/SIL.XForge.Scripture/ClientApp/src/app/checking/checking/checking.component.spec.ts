@@ -3,12 +3,13 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { AngularSplitModule } from 'angular-split';
-import Quill, { DeltaStatic } from 'quill';
+import * as OTJson0 from 'ot-json0';
+import * as RichText from 'rich-text';
 import { of } from 'rxjs';
 import { deepEqual, instance, mock, when } from 'ts-mockito';
-
 import { MapQueryResults } from 'xforge-common/json-api.service';
 import { User } from 'xforge-common/models/user';
+import { MemoryRealtimeDoc } from 'xforge-common/realtime-doc';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
@@ -18,10 +19,9 @@ import { QuestionData } from '../../core/models/question-data';
 import { SFProjectRef } from '../../core/models/sfdomain-model.generated';
 import { SFProject } from '../../core/models/sfproject';
 import { Text } from '../../core/models/text';
-import { getTextDataIdStr, TextData, TextDataId } from '../../core/models/text-data';
+import { Delta, getTextDataIdStr, TextData, TextDataId } from '../../core/models/text-data';
 import { TextJsonDataId } from '../../core/models/text-json-data-id';
 import { TextService } from '../../core/text.service';
-import { MockRealtimeDoc } from '../../shared/models/mock-realtime-doc';
 import { SharedModule } from '../../shared/shared.module';
 import { CheckingAnswersComponent } from './checking-answers/checking-answers.component';
 import { CheckingOwnerComponent } from './checking-answers/checking-owner/checking-owner.component';
@@ -374,7 +374,7 @@ class TestEnvironment {
   }
 
   private createQuestionData(id: TextJsonDataId, data: Question[]): QuestionData {
-    const doc = new MockRealtimeDoc<Question[]>('ot-json0', id.toString(), data);
+    const doc = new MemoryRealtimeDoc(OTJson0.type, id.toString(), data);
     return new QuestionData(doc, instance(this.mockedRealtimeOfflineStore));
   }
 
@@ -396,9 +396,7 @@ class TestEnvironment {
     delta.insert({ verse: 5 }, { verse: { style: 'v' } });
     delta.insert(`target: chapter 1, `, { segment: 'verse_1_5' });
     delta.insert('\n', { para: { style: 'p' } });
-    const doc = new MockRealtimeDoc<DeltaStatic>('rich-text', getTextDataIdStr('text01', 1, 'target'), delta);
+    const doc = new MemoryRealtimeDoc(RichText.type, getTextDataIdStr('text01', 1, 'target'), delta);
     return new TextData(doc, instance(mockedRealtimeOfflineStore));
   }
 }
-
-const Delta: new () => DeltaStatic = Quill.import('delta');

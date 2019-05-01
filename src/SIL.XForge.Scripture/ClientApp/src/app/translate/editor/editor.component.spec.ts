@@ -14,12 +14,13 @@ import {
   TranslationResultBuilder,
   WordAlignmentMatrix
 } from '@sillsdev/machine';
-import Quill, { DeltaStatic } from 'quill';
+import * as RichText from 'rich-text';
 import { BehaviorSubject, defer, of, Subject } from 'rxjs';
 import { anything, deepEqual, instance, mock, resetCalls, verify, when } from 'ts-mockito';
 import { MapQueryResults, QueryResults } from 'xforge-common/json-api.service';
 import { UserRef } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
+import { MemoryRealtimeDoc } from 'xforge-common/realtime-doc';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
@@ -27,11 +28,10 @@ import { nameof } from 'xforge-common/utils';
 import { SFProject, SFProjectRef } from '../../core/models/sfproject';
 import { SFProjectUser, SFProjectUserRef, TranslateProjectUserConfig } from '../../core/models/sfproject-user';
 import { Text } from '../../core/models/text';
-import { TextData, TextDataId } from '../../core/models/text-data';
+import { Delta, TextData, TextDataId } from '../../core/models/text-data';
 import { SFProjectUserService } from '../../core/sfproject-user.service';
 import { SFProjectService } from '../../core/sfproject.service';
 import { TextService } from '../../core/text.service';
-import { MockRealtimeDoc } from '../../shared/models/mock-realtime-doc';
 import { SharedModule } from '../../shared/shared.module';
 import { CONFIDENCE_THRESHOLD_TIMEOUT, EditorComponent, UPDATE_SUGGESTIONS_TIMEOUT } from './editor.component';
 import { SuggestionComponent } from './suggestion.component';
@@ -469,8 +469,6 @@ describe('EditorComponent', () => {
   }));
 });
 
-const Delta: new () => DeltaStatic = Quill.import('delta');
-
 class MockInteractiveTranslationSession implements InteractiveTranslationSession {
   prefix: string[] = [];
   isLastWordComplete: boolean = true;
@@ -766,7 +764,7 @@ class TestEnvironment {
         break;
     }
     delta.insert('\n', { para: { style: 'p' } });
-    const doc = new MockRealtimeDoc<DeltaStatic>('rich-text', id.toString(), delta);
+    const doc = new MemoryRealtimeDoc(RichText.type, id.toString(), delta);
     return new TextData(doc, instance(this.mockedRealtimeOfflineStore));
   }
 

@@ -3,16 +3,13 @@ import { RecordIdentity } from '@orbit/data';
 import { underscore } from '@orbit/utils';
 import * as localforage from 'localforage';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import * as RichText from 'rich-text';
-import { Connection, types } from 'sharedb/lib/client';
+import { Connection } from 'sharedb/lib/client';
 import { environment } from '../environments/environment';
 import { LocationService } from './location.service';
 import { DomainModel } from './models/domain-model';
 import { RealtimeData } from './models/realtime-data';
 import { SharedbRealtimeDoc } from './realtime-doc';
 import { RealtimeOfflineStore } from './realtime-offline-store';
-
-types.register(RichText.type);
 
 function serializeRecordIdentity(identity: RecordIdentity): string {
   return `${identity.type}:${identity.id}`;

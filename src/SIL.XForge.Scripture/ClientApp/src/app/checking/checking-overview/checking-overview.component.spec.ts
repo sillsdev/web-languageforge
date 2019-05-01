@@ -5,10 +5,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
+import * as OTJson0 from 'ot-json0';
 import { of } from 'rxjs';
 import { anything, deepEqual, instance, mock, resetCalls, verify, when } from 'ts-mockito';
 import { AuthService } from 'xforge-common/auth.service';
 import { NoticeService } from 'xforge-common/notice.service';
+import { MemoryRealtimeDoc } from 'xforge-common/realtime-doc';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { UserService } from 'xforge-common/user.service';
@@ -18,7 +20,6 @@ import { Text } from '../../core/models/text';
 import { TextJsonDataId } from '../../core/models/text-json-data-id';
 import { SFProjectService } from '../../core/sfproject.service';
 import { TextService } from '../../core/text.service';
-import { MockRealtimeDoc } from '../../shared/models/mock-realtime-doc';
 import { SFAdminAuthGuard } from '../../shared/sfadmin-auth.guard';
 import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
 import { CheckingOverviewComponent } from './checking-overview.component';
@@ -245,7 +246,7 @@ class TestEnvironment {
   }
 
   private createQuestionData(id: TextJsonDataId, data: Question[]): QuestionData {
-    const doc = new MockRealtimeDoc<Question[]>('ot-json0', id.toString(), data);
+    const doc = new MemoryRealtimeDoc(OTJson0.type, id.toString(), data);
     return new QuestionData(doc, instance(this.mockedRealtimeOfflineStore));
   }
 }

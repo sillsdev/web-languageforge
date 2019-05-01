@@ -75,7 +75,7 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
       snapshot: {
         v: this.doc.version,
         data: this.prepareDataForStore(this.doc.data),
-        type: this.doc.type
+        type: this.doc.type.name
       },
       pendingOps
     };

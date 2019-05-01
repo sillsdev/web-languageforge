@@ -4,13 +4,15 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ProgressStatus, RemoteTranslationEngine } from '@sillsdev/machine';
-import { defer, Observable, of, Subject } from 'rxjs';
-import { anything, instance, mock, verify, when } from 'ts-mockito';
+import * as RichText from 'rich-text';
+import { defer, of, Subject } from 'rxjs';
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { NoticeService } from 'xforge-common/notice.service';
-import { RealtimeDoc } from 'xforge-common/realtime-doc';
+import { MemoryRealtimeDoc } from 'xforge-common/realtime-doc';
+import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { UICommonModule } from 'xforge-common/ui-common.module';
 import { Text } from '../../core/models/text';
-import { TextData } from '../../core/models/text-data';
+import { Delta, TextData, TextDataId } from '../../core/models/text-data';
 import { SFProjectService } from '../../core/sfproject.service';
 import { TextService } from '../../core/text.service';
 import { TranslateOverviewComponent } from './translate-overview.component';
@@ -70,52 +72,13 @@ describe('TranslateOverviewComponent', () => {
   });
 });
 
-class TestTextData extends TextData {
-  constructor(doc: RealtimeDoc) {
-    super(doc, null);
-  }
-
-  getSegmentCount(): { translated: number; blank: number } {
-    return { translated: 5, blank: 5 };
-  }
-}
-
-class TestDoc implements Partial<RealtimeDoc> {
-  id = 'testdoc01';
-  data = 'some data';
-  version = 0;
-  type = 'TestDoc';
-  pendingOps = ['ops'];
-
-  idle() {
-    return new Observable<void>();
-  }
-  fetch() {
-    return new Observable<void>().toPromise();
-  }
-  remoteChanges() {
-    return new Observable<void>();
-  }
-  ingestSnapshot() {
-    return new Observable<void>().toPromise();
-  }
-  subscribe() {
-    return new Observable<void>().toPromise();
-  }
-  submitOp() {
-    return new Observable<void>().toPromise();
-  }
-  destroy() {
-    return new Observable<void>().toPromise();
-  }
-}
-
 class TestEnvironment {
   readonly mockedActivatedRoute = mock(ActivatedRoute);
   readonly mockedSFProjectService = mock(SFProjectService);
   readonly mockedNoticeService = mock(NoticeService);
   readonly mockedTextService = mock(TextService);
   readonly mockedRemoteTranslationEngine = mock(RemoteTranslationEngine);
+  readonly mockedRealtimeOfflineStore = mock(RealtimeOfflineStore);
 
   readonly component: TranslateOverviewComponent;
   readonly fixture: ComponentFixture<TranslateOverviewComponent>;
@@ -125,7 +88,6 @@ class TestEnvironment {
   constructor() {
     const params = { ['projectId']: 'projectid01' } as Params;
     when(this.mockedActivatedRoute.params).thenReturn(of(params));
-    when(this.mockedTextService.getTextData(anything())).thenResolve(new TestTextData(new TestDoc()));
     when(this.mockedSFProjectService.createTranslationEngine('projectid01')).thenReturn(
       instance(this.mockedRemoteTranslationEngine)
     );
@@ -211,6 +173,13 @@ class TestEnvironment {
     ];
 
     when(this.mockedSFProjectService.getTexts(anything())).thenReturn(of(projectTexts));
+
+    this.addTextData(new TextDataId('text01', 1));
+    this.addTextData(new TextDataId('text01', 2));
+    this.addTextData(new TextDataId('text02', 1));
+    this.addTextData(new TextDataId('text02', 2));
+    this.addTextData(new TextDataId('text03', 1));
+    this.addTextData(new TextDataId('text03', 2));
   }
 
   updateTrainingProgress(percentCompleted: number): void {
@@ -229,5 +198,37 @@ class TestEnvironment {
   clickRetrainButton(): void {
     this.retrainButton.nativeElement.click();
     this.fixture.detectChanges();
+  }
+
+  private addTextData(id: TextDataId): void {
+    when(this.mockedTextService.getTextData(deepEqual(id))).thenResolve(this.createTextData(id));
+  }
+
+  private createTextData(id: TextDataId): TextData {
+    const delta = new Delta();
+    delta.insert({ chapter: id.chapter }, { chapter: { style: 'c' } });
+    delta.insert({ verse: '1' }, { verse: { style: 'v' } });
+    delta.insert(`chapter ${id.chapter}, verse 1.`, { segment: `verse_${id.chapter}_1` });
+    delta.insert({ verse: '2' }, { verse: { style: 'v' } });
+    delta.insert({ blank: 'normal' }, { segment: `verse_${id.chapter}_2` });
+    delta.insert({ verse: '3' }, { verse: { style: 'v' } });
+    delta.insert(`chapter ${id.chapter}, verse 3.`, { segment: `verse_${id.chapter}_3` });
+    delta.insert({ verse: '4' }, { verse: { style: 'v' } });
+    delta.insert({ blank: 'normal' }, { segment: `verse_${id.chapter}_4` });
+    delta.insert({ verse: '5' }, { verse: { style: 'v' } });
+    delta.insert(`chapter ${id.chapter}, verse 5.`, { segment: `verse_${id.chapter}_5` });
+    delta.insert({ verse: '6' }, { verse: { style: 'v' } });
+    delta.insert({ blank: 'normal' }, { segment: `verse_${id.chapter}_6` });
+    delta.insert({ verse: '7' }, { verse: { style: 'v' } });
+    delta.insert(`chapter ${id.chapter}, verse 7.`, { segment: `verse_${id.chapter}_7` });
+    delta.insert({ verse: '8' }, { verse: { style: 'v' } });
+    delta.insert({ blank: 'normal' }, { segment: `verse_${id.chapter}_8` });
+    delta.insert({ verse: '9' }, { verse: { style: 'v' } });
+    delta.insert(`chapter ${id.chapter}, verse 9.`, { segment: `verse_${id.chapter}_9` });
+    delta.insert({ verse: '10' }, { verse: { style: 'v' } });
+    delta.insert({ blank: 'normal' }, { segment: `verse_${id.chapter}_10` });
+    delta.insert('\n', { para: { style: 'p' } });
+    const doc = new MemoryRealtimeDoc(RichText.type, id.toString(), delta);
+    return new TextData(doc, instance(this.mockedRealtimeOfflineStore));
   }
 }
