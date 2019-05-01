@@ -3,22 +3,22 @@ import { RealtimeData } from './realtime-data';
 
 /** See https://github.com/ottypes/json0 */
 export abstract class JsonData<T = any, R = T> extends RealtimeData<T[], OtJson0Op[]> {
-  insertInList(newItem: T | R, path: OtJson0Path = [0]): JsonData<T> {
+  insertInList(newItem: T | R, path: OtJson0Path = [0]): JsonData<T, R> {
     super.submit([{ p: path, li: newItem }]);
     return this; // so that operations can be chained
   }
 
-  replaceInList(item: T | R, newItem: T | R, path: OtJson0Path = [0]): JsonData<T> {
+  replaceInList(item: T | R, newItem: T | R, path: OtJson0Path = [0]): JsonData<T, R> {
     super.submit([{ p: path, ld: item, li: newItem }]);
     return this;
   }
 
-  deleteFromList(item: T | R, path: OtJson0Path = [0]): JsonData<T> {
+  deleteFromList(item: T | R, path: OtJson0Path = [0]): JsonData<T, R> {
     super.submit([{ p: path, ld: item }]);
     return this;
   }
 
-  moveInList(pathFrom: OtJson0Path, indexTo: number): JsonData<T> {
+  moveInList(pathFrom: OtJson0Path, indexTo: number): JsonData<T, R> {
     super.submit([{ p: pathFrom, lm: indexTo }]);
     return this;
   }

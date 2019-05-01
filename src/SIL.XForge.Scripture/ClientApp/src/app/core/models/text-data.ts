@@ -1,9 +1,10 @@
-import { DeltaStatic } from 'quill';
-
+import Quill, { DeltaStatic } from 'quill';
 import { RealtimeData } from 'xforge-common/models/realtime-data';
 import { RealtimeDoc } from 'xforge-common/realtime-doc';
 import { RealtimeOfflineStore } from 'xforge-common/realtime-offline-store';
 import { Text } from './text';
+
+export const Delta: new () => DeltaStatic = Quill.import('delta');
 
 export type TextType = 'source' | 'target';
 

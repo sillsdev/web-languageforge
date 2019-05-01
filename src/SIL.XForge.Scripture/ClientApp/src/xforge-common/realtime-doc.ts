@@ -1,19 +1,22 @@
-import { fromEvent, Observable } from 'rxjs';
+import * as RichText from 'rich-text';
+import { fromEvent, Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { Doc, Snapshot } from 'sharedb/lib/client';
+import { Doc, OTType, Snapshot, types } from 'sharedb/lib/client';
+
+types.register(RichText.type);
 
 export interface RealtimeDoc {
   readonly id: string;
   readonly data: any;
   readonly version: number;
-  readonly type: string;
+  readonly type: OTType;
   readonly pendingOps: any[];
 
   idle(): Observable<void>;
   fetch(): Promise<void>;
   ingestSnapshot(snapshot: Snapshot): Promise<void>;
   subscribe(): Promise<void>;
-  submitOp(data: any, source?: any): Promise<void>;
+  submitOp(op: any, source?: any): Promise<void>;
   remoteChanges(): Observable<any>;
   destroy(): Promise<void>;
 }
@@ -33,8 +36,8 @@ export class SharedbRealtimeDoc implements RealtimeDoc {
     return this.doc.version;
   }
 
-  get type(): string {
-    return this.doc.type == null ? null : this.doc.type.name;
+  get type(): OTType {
+    return this.doc.type;
   }
 
   get pendingOps(): any[] {
@@ -93,13 +96,13 @@ export class SharedbRealtimeDoc implements RealtimeDoc {
     });
   }
 
-  submitOp(data: any, source?: any): Promise<void> {
+  submitOp(op: any, source?: any): Promise<void> {
     return new Promise((resolve, reject) => {
       const options: any = {};
       if (source != null) {
         options.source = source;
       }
-      this.doc.submitOp(data, options, err => {
+      this.doc.submitOp(op, options, err => {
         if (err != null) {
           reject(err);
         } else {
@@ -126,5 +129,45 @@ export class SharedbRealtimeDoc implements RealtimeDoc {
         }
       });
     });
+  }
+}
+
+export class MemoryRealtimeDoc implements RealtimeDoc {
+  version: number = 1;
+  readonly pendingOps: any[] = [];
+
+  constructor(public readonly type: OTType, public readonly id: string, public data: any) {}
+
+  idle(): Observable<void> {
+    return of();
+  }
+
+  fetch(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  ingestSnapshot(_snapshot: Snapshot): Promise<void> {
+    return Promise.resolve();
+  }
+
+  subscribe(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  submitOp(op: any, _source?: any): Promise<void> {
+    if (op != null && this.type.normalize != null) {
+      op = this.type.normalize(op);
+    }
+    this.data = this.type.apply(this.data, op);
+    this.version++;
+    return Promise.resolve();
+  }
+
+  remoteChanges(): Observable<any> {
+    return of();
+  }
+
+  destroy(): Promise<void> {
+    return Promise.resolve();
   }
 }

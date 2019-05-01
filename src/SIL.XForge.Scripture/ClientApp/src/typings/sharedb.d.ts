@@ -1,9 +1,22 @@
 declare module 'sharedb/lib/client' {
   import { EventEmitter } from 'events';
 
+  export type OTTypeName = 'text' | 'json0' | 'rich-text';
+
   export interface OTType {
-    name: 'ot-text' | 'ot-json0' | 'ot-text-tp2' | 'rich-text';
+    name: OTTypeName;
     uri: string;
+
+    create(initial: any): any;
+    apply(snapshot: any, op: any): any;
+    transform(op1: any, op2: any, side: 'left' | 'right'): any;
+    compose(op1: any, op2: any): any;
+
+    invert?(op: any): any;
+    normalize?(op: any): any;
+    transformCursor?(cursor: any, op: any, isOwnOp: boolean): any;
+    serialize?(snapshot: any): any;
+    deserialize?(data: any): any;
   }
 
   export interface Snapshot {

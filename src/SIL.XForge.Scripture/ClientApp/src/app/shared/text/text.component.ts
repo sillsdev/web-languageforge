@@ -2,14 +2,12 @@ import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } 
 import { deepMerge, eq } from '@orbit/utils';
 import Quill, { DeltaStatic, RangeStatic, Sources } from 'quill';
 import { Subscription } from 'rxjs';
-import { TextData, TextDataId } from '../../core/models/text-data';
+import { Delta, TextData, TextDataId } from '../../core/models/text-data';
 import { TextService } from '../../core/text.service';
 import { registerScripture } from './quill-scripture';
 import { Segment } from './segment';
 import { Segmenter } from './segmenter';
 import { UsxSegmenter } from './usx-segmenter';
-
-const Delta: new () => DeltaStatic = Quill.import('delta');
 
 const EDITORS = new Set<Quill>();
 
