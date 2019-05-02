@@ -7,7 +7,6 @@ import { combineLatest } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { ElementState } from 'xforge-common/models/element-state';
 import { ParatextProject } from 'xforge-common/models/paratext-project';
-import { User } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
 import { ParatextService } from 'xforge-common/paratext.service';
 import { SubscriptionDisposable } from 'xforge-common/subscription-disposable';
@@ -46,7 +45,6 @@ export class SettingsComponent extends SubscriptionDisposable implements OnInit,
   private isFirstLoad: boolean = true;
   private paratextProjects: ParatextProject[];
   private previousFormValues: any;
-  private currentUser: User;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -232,7 +230,6 @@ export class SettingsComponent extends SubscriptionDisposable implements OnInit,
         this.noticeService.loadingFinished();
       }
     );
-    this.subscribe(this.userService.getCurrentUser(), user => (this.currentUser = user));
   }
 
   ngOnDestroy(): void {
@@ -252,9 +249,7 @@ export class SettingsComponent extends SubscriptionDisposable implements OnInit,
     const dialogRef = this.dialog.open(DeleteProjectDialogComponent, config);
     dialogRef.afterClosed().subscribe(async result => {
       if (result === 'accept') {
-        const site = this.currentUser.site;
-        site.currentProjectId = null;
-        await this.userService.updateSiteValues(site);
+        await this.userService.updateCurrentProjectId();
         await this.projectService.onlineDelete(this.projectId);
       }
     });

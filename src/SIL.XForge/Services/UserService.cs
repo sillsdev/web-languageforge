@@ -115,8 +115,10 @@ namespace SIL.XForge.Services
                     string site = siteOptions.Origin.Authority;
                     if (value == null)
                         update.Unset(u => u.Sites[site]);
+                    else if (((Site)value).CurrentProjectId == null)
+                        update.Unset(u => u.Sites[site].CurrentProjectId);
                     else
-                        update.Set(u => u.Sites[site], (Site)value);
+                        update.Set(u => u.Sites[site].CurrentProjectId, ((Site)value).CurrentProjectId);
                     break;
                 default:
                     base.UpdateAttribute(update, name, value);

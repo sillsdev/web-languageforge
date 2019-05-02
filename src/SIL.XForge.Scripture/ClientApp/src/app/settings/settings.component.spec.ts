@@ -5,12 +5,10 @@ import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { AuthService } from 'xforge-common/auth.service';
 import { MapQueryResults } from 'xforge-common/json-api.service';
 import { ParatextProject } from 'xforge-common/models/paratext-project';
-import { Site } from 'xforge-common/models/site';
-import { User } from 'xforge-common/models/user';
 import { NoticeService } from 'xforge-common/notice.service';
 import { ParatextService } from 'xforge-common/paratext.service';
 import { UICommonModule } from 'xforge-common/ui-common.module';
@@ -260,8 +258,7 @@ describe('SettingsComponent', () => {
       env.clickElement(env.deleteProjectButton);
       expect(env.deleteDialog).toBeDefined();
       env.confirmDialog(true);
-      const site = { currentProjectId: null, lastLogin: env.lastLogin } as Site;
-      verify(env.mockedUserService.updateSiteValues(deepEqual(site))).once();
+      verify(env.mockedUserService.updateCurrentProjectId()).once();
       verify(env.mockedSFProjectService.onlineDelete(anything())).once();
     }));
 
@@ -270,7 +267,7 @@ describe('SettingsComponent', () => {
       env.clickElement(env.deleteProjectButton);
       expect(env.deleteDialog).toBeDefined();
       env.confirmDialog(false);
-      verify(env.mockedUserService.updateSiteValues(anything())).never();
+      verify(env.mockedUserService.updateCurrentProjectId()).never();
       verify(env.mockedSFProjectService.onlineDelete(anything())).never();
     }));
   });
@@ -290,7 +287,6 @@ class TestEnvironment {
   fixture: ComponentFixture<SettingsComponent>;
   overlayContainer: OverlayContainer;
 
-  readonly lastLogin: string = '2019-02-01T12:00:00.000Z';
   isLoading: boolean = false;
   mockedActivatedRoute: ActivatedRoute = mock(ActivatedRoute);
   mockedAuthService: AuthService = mock(AuthService);
@@ -304,11 +300,6 @@ class TestEnvironment {
 
   constructor() {
     when(this.mockedActivatedRoute.params).thenReturn(of({ projectId: 'project01' }));
-    const user = new User({
-      id: 'testuser01',
-      site: { currentProjectId: 'project01', lastLogin: this.lastLogin }
-    });
-    when(this.mockedUserService.getCurrentUser()).thenReturn(of(user));
     when(this.mockedNoticeService.isLoading).thenCall(() => this.isLoading);
     this.paratectProjects$ = new BehaviorSubject<ParatextProject[]>([
       {
@@ -339,7 +330,7 @@ class TestEnvironment {
     when(this.mockedSFProjectService.onlineGet(anything())).thenReturn(this.project$);
     when(this.mockedSFProjectService.onlineUpdateAttributes(anything(), anything())).thenCall(() => Promise.resolve());
     when(this.mockedSFProjectService.onlineDelete(anything())).thenResolve();
-    when(this.mockedUserService.updateSiteValues(anything())).thenResolve();
+    when(this.mockedUserService.updateCurrentProjectId(anything())).thenResolve();
     TestBed.configureTestingModule({
       imports: [DialogTestModule, HttpClientTestingModule, UICommonModule, XForgeCommonModule],
       declarations: [SettingsComponent],

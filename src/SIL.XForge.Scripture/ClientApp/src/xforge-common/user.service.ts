@@ -9,7 +9,6 @@ import { AuthService } from './auth.service';
 import { registerCustomFilter } from './custom-filter-specifier';
 import { GetAllParameters, JsonApiService, QueryObservable } from './json-api.service';
 import { ProjectUser } from './models/project-user';
-import { Site } from './models/site';
 import { User } from './models/user';
 import { ResourceService } from './resource.service';
 import { nameof } from './utils';
@@ -77,8 +76,10 @@ export class UserService extends ResourceService {
     return this.jsonApiService.getAllRelated(this.identity(id), nameof<User>('projects'), include);
   }
 
-  async updateSiteValues(site: Site): Promise<User> {
-    return this.jsonApiService.updateAttributes<User>(this.identity(this.currentUserId), { site });
+  async updateCurrentProjectId(projectId: string = null): Promise<User> {
+    return this.jsonApiService.updateAttributes<User>(this.identity(this.currentUserId), {
+      site: { currentProjectId: projectId }
+    });
   }
 
   /**
