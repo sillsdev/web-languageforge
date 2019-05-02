@@ -1,5 +1,6 @@
 import { Snapshot } from 'sharedb/lib/client';
 
+/** Structure of a record in the xforge-realtime IndexedDB database. */
 export interface RealtimeOfflineData {
   snapshot: Snapshot;
   pendingOps: any[];

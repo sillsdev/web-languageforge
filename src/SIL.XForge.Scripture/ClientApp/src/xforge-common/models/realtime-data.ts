@@ -10,6 +10,7 @@ export interface RealtimeDataConstructor {
   new (doc: RealtimeDoc, store: RealtimeOfflineStore): RealtimeData;
 }
 
+/** Performs updates between IndexedDB and its associated RealtimeDoc for a given record. */
 export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity {
   private readonly subscription: Subscription;
 
@@ -31,6 +32,7 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
     return this.doc.data;
   }
 
+  /** For this record, update the RealtimeDoc cache, if any, from IndexedDB. */
   async subscribe(): Promise<void> {
     const offlineData = await this.store.getItem(this.id);
     if (offlineData != null) {
@@ -58,6 +60,7 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
     this.updateOfflineData();
   }
 
+  /** For this record, update the IndexedDB from the RealtimeDoc cache. */
   updateOfflineData(): void {
     if (this.doc.type == null) {
       return;

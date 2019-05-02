@@ -15,6 +15,10 @@ function serializeRecordIdentity(identity: RecordIdentity): string {
   return `${identity.type}:${identity.id}`;
 }
 
+/**
+ * Maintains and provides access to records of data, stored in mongodb, IndexedDB,
+ * or its cache.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -50,6 +54,7 @@ export class RealtimeService {
     return await (dataPromise as Promise<T>);
   }
 
+  /** Clear the list of pointers to data. */
   reset(): void {
     if (this.dataMap.size > 0) {
       this.resetPromise = this.clearDataMap();

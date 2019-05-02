@@ -21,6 +21,10 @@ export interface RealtimeDoc {
   destroy(): Promise<void>;
 }
 
+/**
+ * Cache for an IndexedDB record. Also allows access thru to a mongodb record.
+ * See RealtimeData for syncing this with IndexedDB.
+ */
 export class SharedbRealtimeDoc implements RealtimeDoc {
   constructor(private readonly doc: Doc) {}
 
