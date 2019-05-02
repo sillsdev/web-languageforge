@@ -208,6 +208,7 @@ class TestEnvironment {
   readonly router: Router;
   readonly location: Location;
   readonly overlayContainer: OverlayContainer;
+  readonly lastLogin: string = '2019-02-01T12:00:00.000Z';
 
   readonly mockedAuthService = mock(AuthService);
   readonly mockedUserService = mock(UserService);
@@ -223,7 +224,7 @@ class TestEnvironment {
   constructor() {
     this.currentUser = new User({
       id: 'user01',
-      site: { currentProjectId: 'project01' }
+      site: { currentProjectId: 'project01', lastLogin: this.lastLogin }
     });
 
     this.projects$ = new BehaviorSubject<QueryResults<SFProjectUser[]>>(

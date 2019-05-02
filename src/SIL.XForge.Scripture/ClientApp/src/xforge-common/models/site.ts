@@ -1,4 +1,4 @@
 export interface Site {
   currentProjectId: string;
-  lastLogin?: Date;
+  lastLogin?: string;
 }

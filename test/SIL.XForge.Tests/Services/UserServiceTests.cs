@@ -21,6 +21,7 @@ namespace SIL.XForge.Services
         private const string ParatextUserId = "paratextuser01";
         private const string User01Id = "user01";
         private const string User02Id = "user02";
+        private const string User03Id = "user03";
         private const string User01Email = "user01@example.com";
 
         [Test]
@@ -324,14 +325,16 @@ namespace SIL.XForge.Services
         }
 
         [Test]
-        public async Task UpdateAsync_SetSite()
+        public async Task UpdateAsync_SetSiteProjectId()
         {
             using (var env = new TestEnvironment())
             {
-                env.SetUser(User01Id, SystemRoles.SystemAdmin);
-                UserEntity initialEntity = await env.Service.GetEntityAsync(User01Id);
-                CollectionAssert.IsEmpty(initialEntity.Sites);
+                env.SetUser(User02Id, SystemRoles.User);
+                UserEntity initialEntity = await env.Service.GetEntityAsync(User02Id);
+                CollectionAssert.IsNotEmpty(initialEntity.Sites);
 
+                DateTime lastLogin = env.Entities.Query()
+                    .FirstOrDefault(u => u.Id == User02Id).Sites[TestEnvironment.SiteAuthority].LastLogin;
                 env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
                     {
                         { env.GetAttribute("site"), new Site { CurrentProjectId = "project01" } }
@@ -340,7 +343,7 @@ namespace SIL.XForge.Services
 
                 var resource = new UserResource
                 {
-                    Id = User01Id,
+                    Id = User02Id,
                     Site = new Site { CurrentProjectId = "project01" }
                 };
                 UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
@@ -348,11 +351,13 @@ namespace SIL.XForge.Services
                 Assert.That(updatedResource, Is.Not.Null);
                 Assert.That(updatedResource.Site, Is.Not.Null);
                 Assert.That(updatedResource.Site.CurrentProjectId, Is.EqualTo("project01"));
+                Assert.That(updatedResource.Site.LastLogin, Is.EqualTo(lastLogin));
 
                 UserEntity updatedEntity = await env.Service.GetEntityAsync(resource.Id);
                 Assert.That(updatedEntity.Sites.Count, Is.EqualTo(1));
                 Assert.That(updatedEntity.Sites[TestEnvironment.SiteAuthority].CurrentProjectId,
                     Is.EqualTo("project01"));
+                Assert.That(updatedEntity.Sites[TestEnvironment.SiteAuthority].LastLogin, Is.EqualTo(lastLogin));
             }
         }
 
@@ -384,6 +389,43 @@ namespace SIL.XForge.Services
 
                 UserEntity updatedEntity = await env.Service.GetEntityAsync(resource.Id);
                 Assert.That(updatedEntity.Sites.Count, Is.EqualTo(0));
+            }
+        }
+
+        [Test]
+        public async Task UpdateAsync_UnsetSiteProjectId()
+        {
+            using (var env = new TestEnvironment())
+            {
+                env.SetUser(User03Id, SystemRoles.User);
+                UserEntity initialEntity = await env.Service.GetEntityAsync(User03Id);
+                Assert.That(initialEntity.Sites.Count, Is.EqualTo(1));
+                Assert.That(initialEntity.Sites[TestEnvironment.SiteAuthority].CurrentProjectId,
+                    Is.EqualTo("project03"));
+                DateTime lastLogin = env.Entities.Query()
+                    .FirstOrDefault(u => u.Id == User03Id).Sites[TestEnvironment.SiteAuthority].LastLogin;
+                env.JsonApiContext.AttributesToUpdate.Returns(new Dictionary<AttrAttribute, object>
+                    {
+                        { env.GetAttribute("site"), new Site { CurrentProjectId = null } }
+                    });
+                env.JsonApiContext.RelationshipsToUpdate.Returns(new Dictionary<RelationshipAttribute, object>());
+
+                var resource = new UserResource
+                {
+                    Id = User03Id,
+                    Site = new Site { CurrentProjectId = null }
+                };
+                UserResource updatedResource = await env.Service.UpdateAsync(resource.Id, resource);
+
+                Assert.That(updatedResource, Is.Not.Null);
+                Assert.That(updatedResource.Site, Is.Not.Null);
+                Assert.That(updatedResource.Site.CurrentProjectId, Is.Null);
+                Assert.That(updatedResource.Site.LastLogin, Is.EqualTo(lastLogin));
+
+                UserEntity updatedEntity = await env.Service.GetEntityAsync(resource.Id);
+                Assert.That(updatedEntity.Sites.Count, Is.EqualTo(1));
+                Assert.That(updatedEntity.Sites[TestEnvironment.SiteAuthority].CurrentProjectId, Is.Null);
+                Assert.That(updatedEntity.Sites[TestEnvironment.SiteAuthority].LastLogin, Is.EqualTo(lastLogin));
             }
         }
 
@@ -448,7 +490,7 @@ namespace SIL.XForge.Services
                     {
                         User01Id,
                         User02Id,
-                        "user03",
+                        User03Id,
                         ParatextUserId
                     }));
             }
@@ -611,15 +653,23 @@ namespace SIL.XForge.Services
                         CanonicalEmail = "user02@example.com",
                         Sites = new Dictionary<string, Site>
                         {
-                            { SiteAuthority, new Site { CurrentProjectId = "project01" } }
+                            { SiteAuthority, new Site
+                                { CurrentProjectId = "project01", LastLogin = new DateTime(2019, 5, 1) }
+                            }
                         }
                     },
                     new UserEntity
                     {
-                        Id = "user03",
-                        Username = "user03",
+                        Id = User03Id,
+                        Username = User03Id,
                         Email = "user03@example.com",
-                        CanonicalEmail = "user03@example.com"
+                        CanonicalEmail = "user03@example.com",
+                        Sites = new Dictionary<string, Site>
+                        {
+                            { SiteAuthority, new Site
+                                { CurrentProjectId = "project03", LastLogin = new DateTime(2019, 5, 1) }
+                            }
+                        }
                     },
                     new UserEntity
                     {
