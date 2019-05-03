@@ -1,6 +1,6 @@
-# web-languageforge / web-scriptureforge
+# web-xforge
 
-The existing site details are [here](README-legacy.md). This document is for the **Beta** sites.
+The existing site details are [here](https://github.com/sillsdev/web-languageforge/blob/master/README-legacy.md). This document is for the **Beta** sites.
 
 [Language Forge](https://languageforge.org) and [Scripture Forge](https://scriptureforge.org) represent different websites, but have the same code base stored in one [repository](https://github.com/sillsdev/web-languageforge).
 
@@ -32,19 +32,15 @@ For error reporting:
 
 Status of builds from our continuous integration (CI) [server](https://build.palaso.org):
 
-| Site                 | Master Unit                                                                                                                         | Master E2E          | QA                                                                                                                      | Live                                                                                                                    |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Language Forge       | ![Build Status](<https://build.palaso.org/app/rest/builds/buildType:(id:bt372)/statusIcon>)                                         | in transition       | ![Build Status](<https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeQa)/statusIcon>)     | ![Build Status](<https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeLive)/statusIcon>)   |
-| Scripture Forge      | ![Build Status](<https://build.palaso.org/app/rest/builds/buildType:(id:bt270)/statusIcon>)                                         | in transition       | ![Build Status](<https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeQa)/statusIcon>)   | ![Build Status](<https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeLive)/statusIcon>) |
-| Scripture Forge Beta | ![Build Status](<https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeDevelopUnitTests)/statusIcon>) | not yet operational | ![Build Status](<https://build.palaso.org/app/rest/builds/buildType:(id:xForgeDeploy_ScriptureForgeQaBeta)/statusIcon>) | not yet live                                                                                                            |
+| Site               | Master Unit                                                                                                              | Master E2E          | QA                                                                                                                      | Live         |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------ |
+| Scripture Forge v2 | ![Build Status](<https://build.palaso.org/app/rest/builds/buildType:(id:SFv2_ScriptureForgeMasterUnitTests)/statusIcon>) | not yet operational | ![Build Status](<https://build.palaso.org/app/rest/builds/buildType:(id:xForgeDeploy_ScriptureForgeQaBeta)/statusIcon>) | not yet live |
 
 Successful builds from our CI server deploy to:
 
-| Site                 | Master                                                   | QA                                                               | Live                                                       |
-| -------------------- | -------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------- |
-| Language Forge       | [dev.languageforge.org](https://dev.languageforge.org)   | [qa.languageforge.org](https://qa.languageforge.org)             | [languageforge.org](https://languageforge.org)             |
-| Scripture Forge      | [dev.scriptureforge.org](https://dev.scriptureforge.org) | [qa.scriptureforge.org](https://qa.scriptureforge.org)           | [scriptureforge.org](https://scriptureforge.org)           |
-| Scripture Forge Beta | -                                                        | [beta.qa.scriptureforge.org](https://beta.qa.scriptureforge.org) | [beta.scriptureforge.org](https://beta.scriptureforge.org) |
+| Site               | QA                                                               | Live                                                       |
+| ------------------ | ---------------------------------------------------------------- | ---------------------------------------------------------- |
+| Scripture Forge v2 | [beta.qa.scriptureforge.org](https://beta.qa.scriptureforge.org) | [beta.scriptureforge.org](https://beta.scriptureforge.org) |
 
 ### Gitflow
 
@@ -57,11 +53,9 @@ If you are working on a site _Beta_ then it looks like normal Gitflow and pull r
 
 We merge from `master` to the QA testing branch, then ship from the QA branch to the live production branch.
 
-| Site                 | Development Branch | QA Branch    | Production Branch |
-| -------------------- | ------------------ | ------------ | ----------------- |
-| Language Forge       | `master`           | `lf-qa`      | `lf-live`         |
-| Scripture Forge      | `master`           | `sf-qa`      | `sf-live`         |
-| Scripture Forge Beta | `sf-develop`       | `sf-qa-beta` | `sf-live-beta`    |
+| Site               | Development Branch | QA Branch | Production Branch |
+| ------------------ | ------------------ | --------- | ----------------- |
+| Scripture Forge v2 | `master`           | `sf-qa`   | `sf-live`         |
 
 ### Style Guides
 
@@ -75,23 +69,56 @@ We plan to use [Prettier](https://prettier.io/) with pre-commit hook after re-wr
 
 We use [Angular Flex-Layout](https://github.com/angular/flex-layout) with [Material Design components for Angular](https://material.angular.io/guides) including the [Material Design Icons](https://google.github.io/material-design-icons/).
 
-### Recommended Development Environment ###
+### Recommended Development Environment
 
 Our recommended development environment for web development is Linux Ubuntu GNOME.
-- [Vagrant GUI Setup](#vagrant-gui-setup). A Vagrant box with xForge already installed is downloaded and set up on your machine.
 
-### Vagrant GUI Setup ###
+- [Vagrant GUI Setup](#vagrant-gui-setup). A Vagrant box with xForge already installed is downloaded and set up on your machine. This is the easiest and cleanest to setup.
+- [Local Linux Development Setup](#local-linux-development-setup). Everything is installed directly on your machine, which needs to be running Ubuntu 16.04. This is the best method because everything runs at full speed.
 
-Install [VirtualBox](https://www.virtualbox.org/) and [Vagrant](https://www.vagrantup.com/) and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and setup **git** for you (at least *name* and *email* is needed in `.gitconfig`). Make sure virtualization is enabled in your BIOS.
+#### Vagrant GUI Setup
+
+Install [VirtualBox](https://www.virtualbox.org/) and [Vagrant](https://www.vagrantup.com/) and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and setup **git** for you (at least _name_ and _email_ is needed in `.gitconfig`). Make sure virtualization is enabled in your BIOS.
 
 Create a directory for the installation, such as `src/xForge`. Download the file [deploy/vagrant_xenial_gui/Vagrantfile](https://raw.githubusercontent.com/sillsdev/web-languageforge/sf-develop/deploy/vagrant_xenial_gui/Vagrantfile) to the directory where you want to install. Then open the command line to that directory and run `vagrant up`. This will download a box (it's about 5GB, so expect it to take a while) and run a few setup steps. When it is complete the virtual machine should be open. After compiling Scripture Forge, browse to http://localhost:5000 and use the default login credentials "admin" and "password".
 
-### Development Process
+#### Local Linux Development Setup
 
-The first task on a job is to create a feature branch. Branch off of the **sf-develop** branch.
+Start by installing Git and Ansible:
+
+```shell
+sudo add-apt-repository ppa:ansible/ansible
+sudo apt update
+sudo apt install -y git ansible
+```
+
+Now create a directory for installation and clone the repo:
+
+```shell
+git clone --recurse-submodules https://github.com/sillsdev/web-xforge
+```
+
+The `--recurse-submodules` is used to fetch many of the Ansible roles used by the Ansible playbooks in the deploy folder. If you've already cloned the repo without `--recurse-submodules`, run `git submodule update --init --recursive` to pull and initialize them.
+
+Change the variable `mongo_path: /var/lib/mongodb` in `deploy/vars_palaso.yml`. Set it to a location where MongoDB should store its databases.
+
+- **Vagrant VM Setup**: uncomment line 6 and comment line 5
+- **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have Mongo store databases on your HDD rather than SSD). Make sure the `mongodb` user has permission to read and write to the path you specify.
+
+Run the following Ansible playbooks to configure Ansible and run both sites.
 
 ```bash
-git checkout sf-develop
+cd web-xforge/deploy
+ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
+ansible-playbook playbook_xenial.yml --limit localhost -K
+```
+
+### Development Process
+
+The first task on a job is to create a feature branch. Branch off of the **master** branch.
+
+```bash
+git checkout master
 git pull
 git checkout -b feature/<featureName>
 ```
@@ -104,7 +131,7 @@ git push origin feature/<featureName>
 
 Rebase often (at least at the start of the day, and before making a PR). Force pushing to your own branch is fine (even during review).
 
-Make PR's against the **sf-develop** branch. If the **sf-develop** branch has moved on since the feature branch was made, rebase your changes on top of the **sf-develop** branch before making your PR.
+Make PR's against the **master** branch. If the **master** branch has moved on since the feature branch was made, rebase your changes on top of the **master** branch before making your PR.
 
 Ensure all [tests](#testing) are passing before submitting a PR.
 
@@ -149,6 +176,8 @@ npm run prettier
 ng lint
 ```
 
+Or just use VS Code with this project's recommended extensions.
+
 ### Angular Unit Testing
 
 To run front end unit tests, make sure `ng serve` and `dotnet run` are **not** running (_CTRL-C_ to end them), then from the repo root
@@ -182,8 +211,8 @@ src/SIL.XForge.Scripture/ClientApp/monitor-test-headless.sh some.component.spec.
 
 The best way to debug Angular unit tests is with Chromium.
 
-- Run as usual or with `ng test --sourceMap=true`.
-- When the Chromium window appears, press _F12_.
+- Run `npm test` (which will include source maps, `ng test` does not)
+- When the Chromium window appears, press _F12_
 - Click the Sources tab
 - Files might show up under `webpack://` or `context/localhost:dddd/src` or elsewhere, but you can always press _CTRL-P_ and type the name of a file to get there faster.
 
@@ -287,3 +316,7 @@ The VS Code extension [Azure Cosmos DB](https://marketplace.visualstudio.com/ite
 ## Debugging
 
 In Visual Studio Code, in the debug sidebar, choose **Full App (SF)** to debug the front-end and back-end at the same time, or **Launch Chrome (SF)** or **.NET Core (SF)** to just debug the front-end or back-end.
+
+## Code Generator
+
+In Visual Studio Code, ensure `dotnet` is not running, then click **Terminal** > **Run Task** > **Generate SF model**.
