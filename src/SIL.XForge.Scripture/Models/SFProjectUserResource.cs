@@ -11,10 +11,10 @@ namespace SIL.XForge.Scripture.Models
         [Attr]
         public TranslateProjectUserConfig TranslateConfig { get; set; }
         [Attr(isFilterable: false, isSortable: false)]
-        public IReadOnlyList<string> QuestionRefsRead { get; set; }
+        public List<string> QuestionRefsRead { get; set; }
         [Attr(isFilterable: false, isSortable: false)]
-        public IReadOnlyList<string> AnswerRefsRead { get; set; }
+        public List<string> AnswerRefsRead { get; set; }
         [Attr(isFilterable: false, isSortable: false)]
-        public IReadOnlyList<string> CommentRefsRead { get; set; }
+        public List<string> CommentRefsRead { get; set; }
     }
 }

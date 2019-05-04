@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
 using JsonApiDotNetCore.Internal;
@@ -111,12 +112,22 @@ namespace SIL.XForge.Services
 
         protected virtual void UpdateAttribute(IUpdateBuilder<TEntity> update, string name, object value)
         {
-            Expression<Func<TEntity, object>> field = GetField(name);
             // by default, resource attribute names are the same as entity property names
+            PropertyInfo propInfo = typeof(TEntity).GetProperty(name);
+            LambdaExpression field = GetField(propInfo.PropertyType, name);
+
             if (value == null)
-                update.Unset(field);
+            {
+                MethodInfo unsetMethod = update.GetType().GetMethod("Unset");
+                MethodInfo genericUnsetMethod = unsetMethod.MakeGenericMethod(propInfo.PropertyType);
+                genericUnsetMethod.Invoke(update, new object[] { field });
+            }
             else
-                update.Set(field, value);
+            {
+                MethodInfo setMethod = update.GetType().GetMethod("Set");
+                MethodInfo genericSetMethod = setMethod.MakeGenericMethod(propInfo.PropertyType);
+                genericSetMethod.Invoke(update, new object[] { field, value });
+            }
         }
 
         protected IRelationship<TEntity> HasOne<TOtherResource, TOtherEntity>(
@@ -138,11 +149,11 @@ namespace SIL.XForge.Services
             return new HasManyRelationship<TEntity, TOtherResource, TOtherEntity>(otherResourceMapper, getFieldExpr);
         }
 
-        private static Expression<Func<TEntity, object>> GetField(string fieldName)
+        private static LambdaExpression GetField(Type returnType, string fieldName)
         {
             ParameterExpression param = Expression.Parameter(typeof(TEntity), "e");
-            Expression body = Expression.Convert(Expression.Property(param, fieldName), typeof(object));
-            return Expression.Lambda<Func<TEntity, object>>(body, param);
+            Expression body = Expression.Convert(Expression.Property(param, fieldName), returnType);
+            return Expression.Lambda(body, param);
         }
     }
 }

@@ -11,6 +11,6 @@ namespace SIL.XForge.Scripture.Models
         [Attr(isImmutable: true)]
         public string BookId { get; set; }
         [Attr(isImmutable: true, isFilterable: false, isSortable: false)]
-        public IReadOnlyList<Chapter> Chapters { get; set; }
+        public List<Chapter> Chapters { get; set; }
     }
 }

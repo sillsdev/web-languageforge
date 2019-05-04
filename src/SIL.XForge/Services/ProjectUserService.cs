@@ -107,7 +107,13 @@ namespace SIL.XForge.Services
                 update =>
                 {
                     foreach (KeyValuePair<string, object> attr in attrs)
-                        update.Set(GetFieldExpression(attr.Key), attr.Value);
+                    {
+                        PropertyInfo propInfo = typeof(TEntity).GetProperty(attr.Key);
+                        MethodInfo setMethod = update.GetType().GetMethod("Set");
+                        MethodInfo genericSetMethod = setMethod.MakeGenericMethod(propInfo.PropertyType);
+                        LambdaExpression field = GetField(propInfo.PropertyType, attr.Key);
+                        genericSetMethod.Invoke(update, new object[] { field, attr.Value });
+                    }
                 });
             return GetProjectUser(project, id);
         }
@@ -169,12 +175,11 @@ namespace SIL.XForge.Services
             return projectUser;
         }
 
-        private static Expression<Func<TProjectEntity, object>> GetFieldExpression(string fieldName)
+        private static LambdaExpression GetField(Type returnType, string fieldName)
         {
             Expression<Func<TProjectEntity, TEntity>> userExpr = p => (TEntity)p.Users[ArrayPosition.FirstMatching];
-            Expression body = Expression.Convert(Expression.Property(userExpr.Body, fieldName),
-                typeof(object));
-            return Expression.Lambda<Func<TProjectEntity, object>>(body, userExpr.Parameters);
+            Expression body = Expression.Convert(Expression.Property(userExpr.Body, fieldName), returnType);
+            return Expression.Lambda(body, userExpr.Parameters);
         }
 
         async Task<ProjectUserResource> IResourceMapper<ProjectUserResource, ProjectUserEntity>.MapAsync(
