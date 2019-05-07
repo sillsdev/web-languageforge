@@ -17,6 +17,6 @@ namespace SIL.XForge.Models
 
         [HasMany]
         [SchemaInfo(Inverse = nameof(ProjectUserResource.Project), IsDependent = true)]
-        public List<ProjectUserResource> Users { get; set; }
+        public IReadOnlyList<ProjectUserResource> Users { get; set; }
     }
 }
