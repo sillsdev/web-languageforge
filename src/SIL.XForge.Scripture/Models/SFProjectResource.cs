@@ -19,6 +19,6 @@ namespace SIL.XForge.Scripture.Models
         public SyncJobResource ActiveSyncJob { get; set; }
         [HasMany]
         [SchemaInfo(Inverse = nameof(TextResource.Project), IsDependent = true)]
-        public List<TextResource> Texts { get; set; }
+        public IReadOnlyList<TextResource> Texts { get; set; }
     }
 }
