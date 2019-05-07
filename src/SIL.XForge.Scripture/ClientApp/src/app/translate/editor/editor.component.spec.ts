@@ -736,10 +736,10 @@ class TestEnvironment {
 
   createTextData(id: TextDataId): TextData {
     const delta = new Delta();
-    delta.insert({ chapter: id.chapter }, { chapter: { style: 'c' } });
-    delta.insert({ verse: '1' }, { verse: { style: 'v' } });
+    delta.insert({ chapter: { number: id.chapter.toString(), style: 'c' } });
+    delta.insert({ verse: { number: '1', style: 'v' } });
     delta.insert(`${id.textType}: chapter ${id.chapter}, verse 1.`, { segment: `verse_${id.chapter}_1` });
-    delta.insert({ verse: '2' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '2', style: 'v' } });
     switch (id.textType) {
       case 'source':
         delta.insert(`${id.textType}: chapter ${id.chapter}, verse 2.`, { segment: `verse_${id.chapter}_2` });
@@ -748,13 +748,13 @@ class TestEnvironment {
         delta.insert({ blank: 'normal' }, { segment: `verse_${id.chapter}_2` });
         break;
     }
-    delta.insert({ verse: '3' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '3', style: 'v' } });
     delta.insert(`${id.textType}: chapter ${id.chapter}, verse 3.`, { segment: `verse_${id.chapter}_3` });
-    delta.insert({ verse: '4' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '4', style: 'v' } });
     delta.insert(`${id.textType}: chapter ${id.chapter}, verse 4.`, { segment: `verse_${id.chapter}_4` });
     delta.insert('\n', { para: { style: 'p' } });
     delta.insert({ blank: 'initial' }, { segment: `verse_${id.chapter}_4/p_1` });
-    delta.insert({ verse: '5' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '5', style: 'v' } });
     switch (id.textType) {
       case 'source':
         delta.insert(`${id.textType}: chapter ${id.chapter}, verse 5.`, { segment: `verse_${id.chapter}_5` });

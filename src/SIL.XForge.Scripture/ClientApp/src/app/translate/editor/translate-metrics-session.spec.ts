@@ -428,10 +428,10 @@ class TestEnvironment {
 
   private createTextData(id: TextDataId): TextData {
     const delta = new Delta();
-    delta.insert({ chapter: id.chapter }, { chapter: { style: 'c' } });
-    delta.insert({ verse: '1' }, { verse: { style: 'v' } });
+    delta.insert({ chapter: { number: id.chapter.toString(), style: 'c' } });
+    delta.insert({ verse: { number: '1', style: 'v' } });
     delta.insert(`${id.textType}: chapter ${id.chapter}, verse 1.`, { segment: `verse_${id.chapter}_1` });
-    delta.insert({ verse: '2' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '2', style: 'v' } });
     delta.insert(`${id.textType}: chapter ${id.chapter}, verse 2.`, { segment: `verse_${id.chapter}_2` });
     delta.insert('\n', { para: { style: 'p' } });
     const doc = new MemoryRealtimeDoc(RichText.type, id.toString(), delta);

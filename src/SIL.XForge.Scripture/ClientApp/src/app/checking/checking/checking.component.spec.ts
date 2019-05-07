@@ -381,19 +381,19 @@ class TestEnvironment {
   private createTextData(): TextData {
     const mockedRealtimeOfflineStore = mock(RealtimeOfflineStore);
     const delta = new Delta();
-    delta.insert({ chapter: 1 }, { chapter: { style: 'c' } });
-    delta.insert({ verse: 1 }, { verse: { style: 'v' } });
+    delta.insert({ chapter: { number: '1', style: 'c' } });
+    delta.insert({ verse: { number: '1', style: 'v' } });
     delta.insert('target: chapter 1, verse 1.', { segment: 'verse_1_1' });
-    delta.insert({ verse: 2 }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '2', style: 'v' } });
     delta.insert({ blank: 'normal' }, { segment: 'verse_1_2' });
     delta.insert('\n', { para: { style: 'p' } });
-    delta.insert({ verse: 3 }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '3', style: 'v' } });
     delta.insert(`target: chapter 1, verse 3.`, { segment: 'verse_1_3' });
-    delta.insert({ verse: 4 }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '4', style: 'v' } });
     delta.insert(`target: chapter 1, verse 4.`, { segment: 'verse_1_4' });
     delta.insert('\n', { para: { style: 'p' } });
     delta.insert({ blank: 'initial' }, { segment: 'verse_1_4/p_1' });
-    delta.insert({ verse: 5 }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '5', style: 'v' } });
     delta.insert(`target: chapter 1, `, { segment: 'verse_1_5' });
     delta.insert('\n', { para: { style: 'p' } });
     const doc = new MemoryRealtimeDoc(RichText.type, getTextDataIdStr('text01', 1, 'target'), delta);

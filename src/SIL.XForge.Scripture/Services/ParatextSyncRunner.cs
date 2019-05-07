@@ -332,7 +332,7 @@ namespace SIL.XForge.Scripture.Services
             bookTextElem = XElement.Parse(bookText);
 
             tasks.Clear();
-            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> deltas = _deltaUsxMapper.ToChapterDeltas(paratextId,
+            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> deltas = _deltaUsxMapper.ToChapterDeltas(
                 bookTextElem.Element("usx"));
             var chapters = new List<Chapter>();
             foreach (KeyValuePair<int, (Delta Delta, int LastVerse)> kvp in deltas)
@@ -367,7 +367,7 @@ namespace SIL.XForge.Scripture.Services
 
             var bookTextElem = XElement.Parse(bookText);
 
-            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> deltas = _deltaUsxMapper.ToChapterDeltas(paratextId,
+            IReadOnlyDictionary<int, (Delta Delta, int LastVerse)> deltas = _deltaUsxMapper.ToChapterDeltas(
                 bookTextElem.Element("usx"));
             var tasks = new List<Task>();
             var chapters = new List<Chapter>();

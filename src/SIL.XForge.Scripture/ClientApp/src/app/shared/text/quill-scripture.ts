@@ -3,19 +3,56 @@ import Quill, { Clipboard, DeltaOperation, DeltaStatic } from 'quill';
 
 const Delta: new () => DeltaStatic = Quill.import('delta');
 
-class UsxFormat {
-  static readonly KEYS = new Set<string>(['style', 'altnumber', 'pubnumber', 'caller', 'closed']);
-
-  style?: string;
-  altnumber?: string;
-  pubnumber?: string;
-  caller?: string;
-  closed?: string;
+function customAttributeName(key: string): string {
+  return 'data-' + key;
 }
 
-class Note {
-  index: number;
-  delta: { ops: DeltaOperation[] };
+const USX_VALUE = '__usx_value';
+
+function getUsxValue<T>(node: HTMLElement): T {
+  return node[USX_VALUE];
+}
+
+function setUsxValue(node: HTMLElement, value: any): void {
+  node[USX_VALUE] = value;
+}
+
+interface UsxStyle {
+  style?: string;
+}
+
+interface Chapter extends UsxStyle {
+  number?: number;
+  altnumber?: string;
+  pubnumber?: string;
+}
+
+interface Verse extends UsxStyle {
+  number?: string;
+  altnumber?: string;
+  pubnumber?: string;
+}
+
+interface Note extends UsxStyle {
+  index?: number;
+  caller?: string;
+  closed?: string;
+  contents?: { ops: DeltaOperation[] };
+}
+
+interface Figure extends UsxStyle {
+  alt?: string;
+  file?: string;
+  src?: string;
+  size?: string;
+  loc?: string;
+  copy?: string;
+  ref?: string;
+  contents?: { ops: DeltaOperation[] };
+}
+
+interface Ref {
+  loc?: string;
 }
 
 export function registerScripture(): void {
@@ -27,29 +64,6 @@ export function registerScripture(): void {
   const Embed = Quill.import('blots/embed') as typeof Parchment.Embed;
   const BlockEmbed = Quill.import('blots/block/embed') as typeof Parchment.Embed;
 
-  const customAttributeName = (key: string) => 'data-' + key;
-
-  function setFormatUsx(node: HTMLElement, format: UsxFormat): void {
-    if (format) {
-      for (const key in format) {
-        if (format.hasOwnProperty(key) && format[key] != null && typeof format[key] === 'string') {
-          node.setAttribute(customAttributeName(key), format[key]);
-        }
-      }
-    }
-  }
-
-  function createFormatUsx(node: HTMLElement): UsxFormat {
-    const format = new UsxFormat();
-    for (const key of UsxFormat.KEYS) {
-      if (node.hasAttribute(customAttributeName(key))) {
-        format[key] = node.getAttribute(customAttributeName(key));
-      }
-    }
-
-    return format;
-  }
-
   // zero width space
   const ZWSP = '\u200b';
   // non-breaking space
@@ -59,29 +73,16 @@ export function registerScripture(): void {
     static blotName = 'verse';
     static tagName = 'usx-verse';
 
-    static create(value: string): Node {
+    static create(value: Verse): Node {
       const node = super.create(value) as HTMLElement;
       // add a ZWSP before the verse number, so that it allows breaking
-      node.innerText = ZWSP + value;
+      node.innerText = ZWSP + value.number;
+      setUsxValue(node, value);
       return node;
     }
 
-    static formats(node: HTMLElement): any {
-      return { verse: createFormatUsx(node) };
-    }
-
-    static value(node: HTMLElement): any {
-      return node.innerText.trim().substring(1);
-    }
-
-    format(name: string, value: any): void {
-      if (name === 'verse') {
-        const format = value as UsxFormat;
-        const elem = this.domNode as HTMLElement;
-        setFormatUsx(elem, format);
-      } else {
-        super.format(name, value);
-      }
+    static value(node: HTMLElement): Verse {
+      return getUsxValue(node);
     }
   }
 
@@ -114,18 +115,57 @@ export function registerScripture(): void {
     static blotName = 'char';
     static tagName = 'usx-char';
 
-    static create(value: UsxFormat): Node {
+    static create(value: UsxStyle): Node {
       const node = super.create(value) as HTMLElement;
-      setFormatUsx(node, value);
+      node.setAttribute(customAttributeName('style'), value.style);
       return node;
     }
 
-    static formats(node: HTMLElement): UsxFormat {
-      return createFormatUsx(node);
+    static formats(node: HTMLElement): UsxStyle {
+      return CharInline.value(node);
     }
 
-    static value(node: HTMLElement): UsxFormat {
-      return createFormatUsx(node);
+    static value(node: HTMLElement): UsxStyle {
+      return { style: node.getAttribute(customAttributeName('style')) };
+    }
+
+    format(name: string, value: any): void {
+      if (name === 'char') {
+        const usxStyle = value as UsxStyle;
+        const elem = this.domNode as HTMLElement;
+        elem.setAttribute(customAttributeName('style'), usxStyle.style);
+      } else {
+        super.format(name, value);
+      }
+    }
+  }
+
+  class RefInline extends Inline {
+    static blotName = 'ref';
+    static tagName = 'usx-ref';
+
+    static create(value: Ref): Node {
+      const node = super.create(value) as HTMLElement;
+      node.setAttribute(customAttributeName('loc'), value.loc);
+      return node;
+    }
+
+    static formats(node: HTMLElement): Ref {
+      return RefInline.value(node);
+    }
+
+    static value(node: HTMLElement): Ref {
+      return { loc: node.getAttribute(customAttributeName('loc')) };
+    }
+
+    format(name: string, value: any): void {
+      if (name === 'ref') {
+        const ref = value as Ref;
+        const elem = this.domNode as HTMLElement;
+        elem.setAttribute(customAttributeName('loc'), ref.loc);
+      } else {
+        super.format(name, value);
+      }
     }
   }
 
@@ -133,63 +173,110 @@ export function registerScripture(): void {
     static blotName = 'note';
     static tagName = 'usx-note';
 
-    private static readonly VALUE_KEY = '__note_value';
-
     static create(value: Note): Node {
       const node = super.create(value) as HTMLElement;
-      node.innerText = String.fromCharCode(0x61 + value.index);
-      node.title = value.delta.ops.reduce((text, op) => text + op.insert, '');
-      node[NoteEmbed.VALUE_KEY] = value;
+      node.setAttribute(customAttributeName('style'), value.style);
+      node.setAttribute(customAttributeName('caller'), value.caller);
+      if (value.caller !== '+' && value.caller !== '-') {
+        node.innerText = value.caller;
+      }
+      node.title = value.contents.ops.reduce((text, op) => text + op.insert, '');
+      setUsxValue(node, value);
       return node;
     }
 
-    static formats(node: HTMLElement): any {
-      return { note: createFormatUsx(node) };
-    }
-
     static value(node: HTMLElement): Note {
-      return node[NoteEmbed.VALUE_KEY];
+      return getUsxValue(node);
+    }
+  }
+
+  class OptBreakEmbed extends Embed {
+    static blotName = 'optbreak';
+    static tagName = 'usx-optbreak';
+
+    static create(value: UsxStyle): Node {
+      const node = super.create(value) as HTMLElement;
+      node.innerHTML = '<br>';
+      setUsxValue(node, value);
+      return node;
     }
 
-    format(name: string, value: any): void {
-      if (name === 'note') {
-        const format = value as UsxFormat;
-        const elem = this.domNode as HTMLElement;
-        if (format.caller != null) {
-          elem.innerText = format.caller;
-        }
-        setFormatUsx(elem, format);
-      } else {
-        super.format(name, value);
+    static value(node: HTMLElement): UsxStyle {
+      return getUsxValue(node);
+    }
+  }
+
+  class FigureEmbed extends Embed {
+    static blotName = 'figure';
+    static tagName = 'usx-figure';
+
+    static create(value: Figure): Node {
+      const node = super.create(value) as HTMLElement;
+      node.innerHTML = '&#x1f4c8';
+      const title: string[] = [];
+      if (value.alt != null) {
+        title.push(value.alt);
       }
+      if (value.file != null) {
+        title.push(value.file);
+      }
+      if (value.src != null) {
+        title.push(value.src);
+      }
+      if (value.size != null) {
+        title.push(value.size);
+      }
+      if (value.loc != null) {
+        title.push(value.loc);
+      }
+      if (value.copy != null) {
+        title.push(value.copy);
+      }
+      if (value.contents != null) {
+        title.push(value.contents.ops.reduce((text, op) => text + op.insert, ''));
+      }
+      if (value.ref != null) {
+        title.push(value.ref);
+      }
+      node.title = title.join('|');
+      setUsxValue(node, value);
+      return node;
+    }
+
+    static value(node: HTMLElement): Figure {
+      return getUsxValue(node);
     }
   }
 
   Block.allowedChildren.push(VerseEmbed);
   Block.allowedChildren.push(BlankEmbed);
   Block.allowedChildren.push(NoteEmbed);
+  Block.allowedChildren.push(OptBreakEmbed);
+  Block.allowedChildren.push(FigureEmbed);
 
   class ParaBlock extends Block {
     static blotName = 'para';
     static tagName = 'usx-para';
 
-    static create(value: UsxFormat): Node {
+    static create(value: UsxStyle): Node {
       const node = super.create(value) as HTMLElement;
-      setFormatUsx(node, value);
+      node.setAttribute(customAttributeName('style'), value.style);
       return node;
     }
 
-    static formats(node: HTMLElement): UsxFormat {
-      return createFormatUsx(node);
+    static formats(node: HTMLElement): UsxStyle {
+      return ParaBlock.value(node);
     }
 
-    static value(node: HTMLElement): UsxFormat {
-      return createFormatUsx(node);
+    static value(node: HTMLElement): UsxStyle {
+      return { style: node.getAttribute(customAttributeName('style')) };
     }
 
     format(name: string, value: any): void {
-      if (UsxFormat.KEYS.has(name)) {
-        this.domNode.setAttribute(customAttributeName(name), value);
+      if (name === 'para') {
+        const usxStyle = value as UsxStyle;
+        const elem = this.domNode as HTMLElement;
+        elem.setAttribute(customAttributeName('style'), usxStyle.style);
       } else {
         super.format(name, value);
       }
@@ -200,29 +287,16 @@ export function registerScripture(): void {
     static blotName = 'chapter';
     static tagName = 'usx-chapter';
 
-    static create(value: string): Node {
+    static create(value: Chapter): Node {
       const node = super.create(value) as HTMLElement;
-      node.innerText = value;
+      node.innerText = value.number.toString();
       node.contentEditable = 'false';
+      setUsxValue(node, value);
       return node;
     }
 
-    static formats(node: HTMLElement): any {
-      return { chapter: createFormatUsx(node) };
-    }
-
-    static value(node: HTMLElement): string {
-      return node.innerText;
-    }
-
-    format(name: string, value: any): void {
-      if (name === 'chapter') {
-        const format = value as UsxFormat;
-        const elem = this.domNode as HTMLElement;
-        setFormatUsx(elem, format);
-      } else {
-        super.format(name, value);
-      }
+    static value(node: HTMLElement): Chapter {
+      return getUsxValue(node);
     }
   }
 
@@ -269,8 +343,11 @@ export function registerScripture(): void {
   Quill.register('blots/blank', BlankEmbed);
   Quill.register('blots/note', NoteEmbed);
   Quill.register('blots/char', CharInline);
+  Quill.register('blots/ref', RefInline);
   Quill.register('blots/para', ParaBlock);
   Quill.register('blots/chapter', ChapterEmbed);
+  Quill.register('blots/figure', FigureEmbed);
+  Quill.register('blots/optbreak', OptBreakEmbed);
   Quill.register('blots/scroll', Scroll, true);
   Quill.register('modules/clipboard', DisableHtmlClipboard, true);
 }

@@ -42,54 +42,50 @@ export class UsxSegmenter extends Segmenter {
     let curVerseRef = '';
     for (const op of delta.ops) {
       const len = typeof op.insert === 'string' ? op.insert.length : 1;
-      if (op.insert !== '\n' && op.attributes == null) {
-        curRangeLen += len;
-      } else {
-        if (op.insert === '\n' || op.attributes.para != null) {
-          const style = op.attributes == null ? null : (op.attributes.para.style as string);
-          if (style == null || isParagraphStyle(style)) {
-            for (const _ch of op.insert) {
-              if (curVerseRef !== '') {
-                paraVerses.set(curVerseRef, { index: curIndex, length: curRangeLen });
-                curIndex += curRangeLen;
-                curRangeLen = 0;
-              }
-
-              for (let [verseRef, verseRange] of paraVerses) {
-                if (this._segments.has(verseRef)) {
-                  verseRef = this.getParagraphRef(nextIds, verseRef + '/' + style);
-                }
-                this._segments.set(verseRef, verseRange);
-                this._lastSegmentRef = verseRef;
-              }
-              paraVerses.clear();
-              curIndex++;
+      if (op.insert === '\n' || (op.attributes != null && op.attributes.para != null)) {
+        const style = op.attributes == null ? null : (op.attributes.para.style as string);
+        if (style == null || isParagraphStyle(style)) {
+          for (const _ch of op.insert) {
+            if (curVerseRef !== '') {
+              paraVerses.set(curVerseRef, { index: curIndex, length: curRangeLen });
+              curIndex += curRangeLen;
+              curRangeLen = 0;
             }
-            continue;
-          }
 
-          const ref = this.getParagraphRef(nextIds, style);
-          this._segments.set(ref, { index: curIndex, length: curRangeLen });
-          this._lastSegmentRef = ref;
-          curVerseRef = '';
-          paraVerses.clear();
-          curIndex += curRangeLen + len;
-          curRangeLen = 0;
-        } else if (op.attributes.chapter != null) {
-          chapter = op.insert.chapter;
-          curVerseRef = '';
-          curIndex += curRangeLen + len;
-          curRangeLen = 0;
-        } else if (op.attributes.verse != null) {
-          if (curVerseRef !== '') {
-            paraVerses.set(curVerseRef, { index: curIndex, length: curRangeLen });
+            for (let [verseRef, verseRange] of paraVerses) {
+              if (this._segments.has(verseRef)) {
+                verseRef = this.getParagraphRef(nextIds, verseRef + '/' + style);
+              }
+              this._segments.set(verseRef, verseRange);
+              this._lastSegmentRef = verseRef;
+            }
+            paraVerses.clear();
+            curIndex++;
           }
-          curVerseRef = 'verse_' + chapter + '_' + op.insert.verse;
-          curIndex += curRangeLen + len;
-          curRangeLen = 0;
-        } else {
-          curRangeLen += len;
+          continue;
         }
+
+        const ref = this.getParagraphRef(nextIds, style);
+        this._segments.set(ref, { index: curIndex, length: curRangeLen });
+        this._lastSegmentRef = ref;
+        curVerseRef = '';
+        paraVerses.clear();
+        curIndex += curRangeLen + len;
+        curRangeLen = 0;
+      } else if (op.insert.chapter != null) {
+        chapter = op.insert.chapter.number;
+        curVerseRef = '';
+        curIndex += curRangeLen + len;
+        curRangeLen = 0;
+      } else if (op.insert.verse != null) {
+        if (curVerseRef !== '') {
+          paraVerses.set(curVerseRef, { index: curIndex, length: curRangeLen });
+        }
+        curVerseRef = 'verse_' + chapter + '_' + op.insert.verse.number;
+        curIndex += curRangeLen + len;
+        curRangeLen = 0;
+      } else {
+        curRangeLen += len;
       }
     }
   }

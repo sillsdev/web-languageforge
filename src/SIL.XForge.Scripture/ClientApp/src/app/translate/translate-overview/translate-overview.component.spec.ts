@@ -206,26 +206,26 @@ class TestEnvironment {
 
   private createTextData(id: TextDataId): TextData {
     const delta = new Delta();
-    delta.insert({ chapter: id.chapter }, { chapter: { style: 'c' } });
-    delta.insert({ verse: '1' }, { verse: { style: 'v' } });
+    delta.insert({ chapter: { number: id.chapter.toString(), style: 'c' } });
+    delta.insert({ verse: { number: '1', style: 'v' } });
     delta.insert(`chapter ${id.chapter}, verse 1.`, { segment: `verse_${id.chapter}_1` });
-    delta.insert({ verse: '2' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '2', style: 'v' } });
     delta.insert({ blank: 'normal' }, { segment: `verse_${id.chapter}_2` });
-    delta.insert({ verse: '3' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '3', style: 'v' } });
     delta.insert(`chapter ${id.chapter}, verse 3.`, { segment: `verse_${id.chapter}_3` });
-    delta.insert({ verse: '4' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '4', style: 'v' } });
     delta.insert({ blank: 'normal' }, { segment: `verse_${id.chapter}_4` });
-    delta.insert({ verse: '5' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '5', style: 'v' } });
     delta.insert(`chapter ${id.chapter}, verse 5.`, { segment: `verse_${id.chapter}_5` });
-    delta.insert({ verse: '6' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '6', style: 'v' } });
     delta.insert({ blank: 'normal' }, { segment: `verse_${id.chapter}_6` });
-    delta.insert({ verse: '7' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '7', style: 'v' } });
     delta.insert(`chapter ${id.chapter}, verse 7.`, { segment: `verse_${id.chapter}_7` });
-    delta.insert({ verse: '8' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '8', style: 'v' } });
     delta.insert({ blank: 'normal' }, { segment: `verse_${id.chapter}_8` });
-    delta.insert({ verse: '9' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '9', style: 'v' } });
     delta.insert(`chapter ${id.chapter}, verse 9.`, { segment: `verse_${id.chapter}_9` });
-    delta.insert({ verse: '10' }, { verse: { style: 'v' } });
+    delta.insert({ verse: { number: '10', style: 'v' } });
     delta.insert({ blank: 'normal' }, { segment: `verse_${id.chapter}_10` });
     delta.insert('\n', { para: { style: 'p' } });
     const doc = new MemoryRealtimeDoc(RichText.type, id.toString(), delta);

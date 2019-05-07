@@ -1,3 +1,7 @@
+.ql-editor {
+  counter-reset: note;
+}
+
 usx-para {
   display: block;
 
@@ -227,4 +231,15 @@ usx-note {
     line-height: 0;
     vertical-align: baseline;
   }
+
+  &[data-caller='+'] {
+    > span::before {
+      counter-increment: note;
+      content: counter(note, lower-alpha);
+    }
+  }
+}
+
+usx-ref {
+  font-style: italic;
 }

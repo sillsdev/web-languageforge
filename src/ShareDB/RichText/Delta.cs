@@ -53,7 +53,7 @@ namespace ShareDB.RichText
                     attrsToken = JToken.FromObject(attributes);
             }
 
-            if (textToken.Type == JTokenType.String && ((string) textToken).Length == 0)
+            if (textToken.Type == JTokenType.String && ((string)textToken).Length == 0)
                 return this;
 
             var newOp = new JObject(new JProperty(InsertType, textToken));
@@ -212,16 +212,22 @@ namespace ShareDB.RichText
             return true;
         }
 
+        public override string ToString()
+        {
+            var array = new JArray(_ops);
+            return array.ToString();
+        }
+
         private Delta Add(JToken newOp)
         {
             int index = _ops.Count;
             JToken lastOp = _ops.Count == 0 ? null : _ops[_ops.Count - 1];
-            newOp = (JObject) newOp.DeepClone();
+            newOp = (JObject)newOp.DeepClone();
             if (lastOp != null && lastOp.Type == JTokenType.Object)
             {
                 if (newOp.OpType() == DeleteType && lastOp.OpType() == DeleteType)
                 {
-                    int delete = (int) lastOp[DeleteType] + (int) newOp[DeleteType];
+                    int delete = (int)lastOp[DeleteType] + (int)newOp[DeleteType];
                     _ops[index - 1] = new JObject(new JProperty(DeleteType, delete));
                     return this;
                 }
@@ -241,7 +247,7 @@ namespace ShareDB.RichText
                 {
                     if (newOp[InsertType]?.Type == JTokenType.String && lastOp[InsertType]?.Type == JTokenType.String)
                     {
-                        string insert = (string) lastOp[InsertType] + (string) newOp[InsertType];
+                        string insert = (string)lastOp[InsertType] + (string)newOp[InsertType];
                         var op = new JObject(new JProperty(InsertType, insert));
                         if (newOp[Attributes]?.Type == JTokenType.Object)
                             op[Attributes] = newOp[Attributes];
@@ -250,7 +256,7 @@ namespace ShareDB.RichText
                     }
                     else if (newOp.OpType() == RetainType && lastOp.OpType() == RetainType)
                     {
-                        int retain = (int) lastOp[RetainType] + (int) newOp[RetainType];
+                        int retain = (int)lastOp[RetainType] + (int)newOp[RetainType];
                         var op = new JObject(new JProperty(RetainType, retain));
                         if (newOp[Attributes]?.Type == JTokenType.Object)
                             op[Attributes] = newOp[Attributes];
@@ -266,9 +272,9 @@ namespace ShareDB.RichText
 
         private static JToken ComposeAttributes(JToken a, JToken b, bool keepNull)
         {
-            JObject aObj = a?.Type == JTokenType.Object ? (JObject) a : new JObject();
-            JObject bObj = b?.Type == JTokenType.Object ? (JObject) b : new JObject();
-            JObject attributes = (JObject) bObj.DeepClone();
+            JObject aObj = a?.Type == JTokenType.Object ? (JObject)a : new JObject();
+            JObject bObj = b?.Type == JTokenType.Object ? (JObject)b : new JObject();
+            JObject attributes = (JObject)bObj.DeepClone();
             if (!keepNull)
                 attributes = new JObject(attributes.Properties().Where(p => p.Value.Type != JTokenType.Null));
 
@@ -288,7 +294,7 @@ namespace ShareDB.RichText
             {
                 if (op[InsertType] != null)
                 {
-                    sb.Append(op[InsertType]?.Type == JTokenType.String ? (string) op[InsertType] : "\0");
+                    sb.Append(op[InsertType]?.Type == JTokenType.String ? (string)op[InsertType] : "\0");
                 }
                 else
                 {
@@ -302,10 +308,11 @@ namespace ShareDB.RichText
 
         private static JToken DiffAttributes(JToken a, JToken b)
         {
-            JObject aObj = a?.Type == JTokenType.Object ? (JObject) a : new JObject();
-            JObject bObj = b?.Type == JTokenType.Object ? (JObject) b : new JObject();
+            JObject aObj = a?.Type == JTokenType.Object ? (JObject)a : new JObject();
+            JObject bObj = b?.Type == JTokenType.Object ? (JObject)b : new JObject();
             JObject attributes = aObj.Properties().Select(p => p.Name).Concat(bObj.Properties().Select(p => p.Name))
-                .Aggregate(new JObject(), (attrs, key) => {
+                .Aggregate(new JObject(), (attrs, key) =>
+                {
                     if (!JToken.DeepEquals(aObj[key], bObj[key]))
                         attrs[key] = bObj[key] == null ? JValue.CreateNull() : bObj[key];
                     return attrs;
@@ -357,7 +364,7 @@ namespace ShareDB.RichText
                 if (nextOp.OpType() == RetainType)
                     retOp[RetainType] = length;
                 else if (nextOp[InsertType]?.Type == JTokenType.String)
-                    retOp[InsertType] = ((string) nextOp[InsertType]).Substring(offset, length);
+                    retOp[InsertType] = ((string)nextOp[InsertType]).Substring(offset, length);
                 else
                     retOp[InsertType] = nextOp[InsertType];
                 return retOp;
