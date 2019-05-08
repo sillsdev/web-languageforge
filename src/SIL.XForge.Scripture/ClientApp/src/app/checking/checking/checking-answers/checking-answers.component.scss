@@ -42,6 +42,9 @@
       flex-direction: column;
       align-items: center;
       flex: 0 0 70px;
+      mdc-icon {
+        cursor: pointer;
+      }
     }
     .answer-detail {
       flex: 1;

@@ -7,4 +7,5 @@ export interface Answer {
   scriptureEnd?: VerseRefData;
   text?: string;
   audioUrl?: string;
+  likes: string[];
 }

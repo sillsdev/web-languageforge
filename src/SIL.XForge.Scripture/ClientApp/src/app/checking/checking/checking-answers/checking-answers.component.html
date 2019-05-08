@@ -33,7 +33,10 @@
 </div>
 <div class="answers-container" *ngIf="!answerFormVisible">
   <div class="answer" *ngFor="let answer of question.answers">
-    <div class="like"><mdc-icon>thumb_up</mdc-icon><span class="like-count">0</span></div>
+    <div class="like">
+      <mdc-icon id="like-answer" (click)="likeAnswer(answer)">thumb_up</mdc-icon
+      ><span class="like-count">{{ answer.likes.length }}</span>
+    </div>
     <div class="answer-detail">
       <div class="scripture-reference"></div>
       <div class="answer-text">{{ answer.text }}</div>

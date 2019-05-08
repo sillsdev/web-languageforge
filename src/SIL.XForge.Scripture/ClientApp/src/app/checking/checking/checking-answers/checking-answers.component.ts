@@ -5,7 +5,7 @@ import { Answer } from '../../../core/models/answer';
 import { Question } from '../../../core/models/question';
 
 export interface AnswerAction {
-  action: 'delete' | 'save' | 'show-form' | 'hide-form';
+  action: 'delete' | 'save' | 'show-form' | 'hide-form' | 'like';
   answer?: Answer;
   text?: string;
 }
@@ -81,6 +81,13 @@ export class CheckingAnswersComponent {
     this.answerForm.reset();
     this.action.emit({
       action: 'hide-form'
+    });
+  }
+
+  likeAnswer(answer: Answer) {
+    this.action.emit({
+      action: 'like',
+      answer: answer
     });
   }
 }

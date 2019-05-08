@@ -126,7 +126,7 @@ describe('CheckingComponent', () => {
       env.clickButton(env.addAnswerButton);
       expect(env.yourAnswerField).toBeDefined();
       env.clickButton(env.cancelAnswerButton);
-      tick(1);
+      env.waitForSliderUpdate();
       expect(env.yourAnswerField).toBeNull();
       expect(env.addAnswerButton).toBeDefined();
     }));
@@ -135,7 +135,7 @@ describe('CheckingComponent', () => {
       const question = env.selectQuestion(2);
       env.clickButton(env.addAnswerButton);
       env.clickButton(env.saveAnswerButton);
-      tick(1);
+      env.waitForSliderUpdate();
       expect(env.yourAnswerField.classes['mdc-text-field--invalid']).toBeTruthy();
     }));
 
@@ -145,8 +145,7 @@ describe('CheckingComponent', () => {
       env.clickButton(env.answers[0].query(By.css('.answer-edit')));
       env.setTextFieldValue(env.yourAnswerField, 'Edited question 2 answer');
       env.clickButton(env.saveAnswerButton);
-      tick(1);
-      env.fixture.detectChanges();
+      env.waitForSliderUpdate();
       expect(env.answers[0].query(By.css('.answer-text')).nativeElement.textContent).toBe('Edited question 2 answer');
     }));
 
@@ -155,8 +154,7 @@ describe('CheckingComponent', () => {
       env.answerQuestion('Answer question 2');
       expect(env.answers.length).toEqual(1);
       env.clickButton(env.answers[0].query(By.css('.answer-delete')));
-      tick(1);
-      env.fixture.detectChanges();
+      env.waitForSliderUpdate();
       expect(env.answers.length).toEqual(0);
     }));
 
@@ -166,6 +164,18 @@ describe('CheckingComponent', () => {
       expect(env.answers.length).toEqual(1);
       env.selectQuestion(1);
       expect(env.answers.length).toEqual(0);
+    }));
+
+    it('can like and unlike an answer', fakeAsync(() => {
+      env.selectQuestion(1);
+      env.answerQuestion('Answer question to be liked');
+      expect(env.likeTotal).toBe(0);
+      env.clickButton(env.likeButton);
+      env.waitForSliderUpdate();
+      expect(env.likeTotal).toBe(1);
+      env.clickButton(env.likeButton);
+      env.waitForSliderUpdate();
+      expect(env.likeTotal).toBe(0);
     }));
   });
 
@@ -267,6 +277,17 @@ class TestEnvironment {
     return -1;
   }
 
+  get likeButton(): DebugElement {
+    return this.fixture.debugElement.query(By.css('#like-answer'));
+  }
+
+  get likeTotal(): number {
+    return parseInt(
+      this.fixture.debugElement.query(By.css('.answers-container .answer .like-count')).nativeElement.textContent,
+      10
+    );
+  }
+
   get nextButton(): DebugElement {
     return this.fixture.debugElement.query(By.css('#project-navigation .next-question'));
   }
@@ -299,8 +320,7 @@ class TestEnvironment {
     this.clickButton(this.addAnswerButton);
     this.setTextFieldValue(this.yourAnswerField, answer);
     this.clickButton(this.saveAnswerButton);
-    tick(1);
-    this.fixture.detectChanges();
+    this.waitForSliderUpdate();
   }
 
   clickButton(button: DebugElement): void {
@@ -329,6 +349,11 @@ class TestEnvironment {
     inputElem.dispatchEvent(new Event('input'));
     this.fixture.detectChanges();
     tick();
+  }
+
+  waitForSliderUpdate(): void {
+    tick(1);
+    this.fixture.detectChanges();
   }
 
   private setupProjectData(): void {

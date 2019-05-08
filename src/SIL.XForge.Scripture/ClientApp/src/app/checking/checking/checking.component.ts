@@ -125,13 +125,16 @@ export class CheckingComponent extends SubscriptionDisposable implements OnInit 
         answer = {
           id: objectId(),
           ownerRef: this.userService.currentUserId,
-          text: ''
+          text: '',
+          likes: []
         };
       }
       answer.text = answerAction.text;
       this.saveAnswer(answer);
     } else if (answerAction.action === 'delete') {
       this.deleteAnswer(answerAction.answer);
+    } else if (answerAction.action === 'like') {
+      this.likeAnswer(answerAction.answer);
     }
     this.calculateScriptureSliderPosition();
   }
@@ -164,8 +167,6 @@ export class CheckingComponent extends SubscriptionDisposable implements OnInit 
   private deleteAnswer(answer: Answer) {
     const answerIndex = this.getAnswerIndex(answer);
     if (answerIndex >= 0) {
-      const answers = clone(this.questionsPanel.activeQuestion.answers);
-      answers.splice(answerIndex, 1);
       this.questionData[getTextJsonDataIdStr(this.text.id, this.chapter)].deleteFromList(
         this.questionsPanel.activeQuestion,
         [this.questionsPanel.activeQuestionIndex, 'answers', answerIndex]
@@ -202,6 +203,27 @@ export class CheckingComponent extends SubscriptionDisposable implements OnInit 
       ]);
     }
     this.refreshSummary();
+  }
+
+  private likeAnswer(answer: Answer) {
+    const currentUserId = this.userService.currentUserId;
+    const userRefIndex = answer.likes.findIndex(userRef => userRef.toString() === currentUserId);
+    const answerIndex = this.getAnswerIndex(answer);
+
+    if (userRefIndex >= 0) {
+      this.questionData[getTextJsonDataIdStr(this.text.id, this.chapter)].deleteFromList(
+        this.questionsPanel.activeQuestion,
+        [this.questionsPanel.activeQuestionIndex, 'answers', answerIndex, 'likes', userRefIndex]
+      );
+    } else {
+      this.questionData[getTextJsonDataIdStr(this.text.id, this.chapter)].insertInList(currentUserId, [
+        this.questionsPanel.activeQuestionIndex,
+        'answers',
+        answerIndex,
+        'likes',
+        0
+      ]);
+    }
   }
 
   private calculateScriptureSliderPosition(): void {
