@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'xforge-common/user.service';
 import { Answer } from '../../../core/models/answer';
 import { Question } from '../../../core/models/question';
+import { SFProjectUser } from '../../../core/models/sfproject-user';
 
 export interface AnswerAction {
   action: 'delete' | 'save' | 'show-form' | 'hide-form' | 'like';
@@ -16,6 +17,7 @@ export interface AnswerAction {
   styleUrls: ['./checking-answers.component.scss']
 })
 export class CheckingAnswersComponent {
+  @Input() projectCurrentUser: SFProjectUser;
   @Input() set question(question: Question) {
     if (question !== this._question) {
       this.hideAnswerForm();
@@ -36,6 +38,13 @@ export class CheckingAnswersComponent {
   get currentUserTotalAnswers(): number {
     return this.question.answers.filter(answer => (answer.ownerRef = this.userService.currentUserId)).length;
   }
+
+  get hasUserRead(): boolean {
+    return this.projectCurrentUser.questionRefsRead
+      ? this.projectCurrentUser.questionRefsRead.includes(this.question.id)
+      : false;
+  }
+
   get question(): Question {
     return this._question;
   }
@@ -71,10 +80,6 @@ export class CheckingAnswersComponent {
     });
   }
 
-  hasPermission(answer: Answer, permission: string): boolean {
-    // TODO: Improve permission checking in later Jira task
-    return this.userService.currentUserId === answer.ownerRef;
-  }
   hideAnswerForm() {
     this.answerFormVisible = false;
     this.activeAnswer = undefined;
@@ -82,6 +87,11 @@ export class CheckingAnswersComponent {
     this.action.emit({
       action: 'hide-form'
     });
+  }
+
+  hasPermission(answer: Answer, permission: string): boolean {
+    // TODO: Improve permission checking in later Jira task
+    return this.userService.currentUserId === answer.ownerRef;
   }
 
   likeAnswer(answer: Answer) {

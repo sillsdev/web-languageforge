@@ -6,7 +6,7 @@ import { AngularSplitModule } from 'angular-split';
 import * as OTJson0 from 'ot-json0';
 import * as RichText from 'rich-text';
 import { of } from 'rxjs';
-import { deepEqual, instance, mock, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, when } from 'ts-mockito';
 import { MapQueryResults } from 'xforge-common/json-api.service';
 import { User } from 'xforge-common/models/user';
 import { MemoryRealtimeDoc } from 'xforge-common/realtime-doc';
@@ -16,11 +16,13 @@ import { UserService } from 'xforge-common/user.service';
 import { nameof } from 'xforge-common/utils';
 import { Question } from '../../core/models/question';
 import { QuestionData } from '../../core/models/question-data';
-import { SFProjectRef } from '../../core/models/sfdomain-model.generated';
+import { SFProjectRef, SFProjectUserRef } from '../../core/models/sfdomain-model.generated';
 import { SFProject } from '../../core/models/sfproject';
+import { SFProjectUser } from '../../core/models/sfproject-user';
 import { Text } from '../../core/models/text';
 import { Delta, getTextDataIdStr, TextData, TextDataId } from '../../core/models/text-data';
 import { TextJsonDataId } from '../../core/models/text-json-data-id';
+import { SFProjectUserService } from '../../core/sfproject-user.service';
 import { TextService } from '../../core/text.service';
 import { SharedModule } from '../../shared/shared.module';
 import { CheckingAnswersComponent } from './checking-answers/checking-answers.component';
@@ -199,6 +201,7 @@ class TestEnvironment {
   mockedTextService: TextService;
   mockedRealtimeOfflineStore: RealtimeOfflineStore;
   mockedUserService: UserService;
+  mockedProjectUserService: SFProjectUserService;
   testUser = new User({
     id: 'user01',
     email: 'user01@example.com',
@@ -213,6 +216,7 @@ class TestEnvironment {
     this.mockedTextService = mock(TextService);
     this.mockedRealtimeOfflineStore = mock(RealtimeOfflineStore);
     this.mockedUserService = mock(UserService);
+    this.mockedProjectUserService = mock(SFProjectUserService);
 
     TestBed.configureTestingModule({
       declarations: [
@@ -231,7 +235,8 @@ class TestEnvironment {
           useValue: { params: of({ textId: 'text01' }) }
         },
         { provide: TextService, useFactory: () => instance(this.mockedTextService) },
-        { provide: UserService, useFactory: () => instance(this.mockedUserService) }
+        { provide: UserService, useFactory: () => instance(this.mockedUserService) },
+        { provide: SFProjectUserService, useFactory: () => instance(this.mockedProjectUserService) }
       ]
     });
     this.setupProjectData();
@@ -357,7 +362,9 @@ class TestEnvironment {
   }
 
   private setupProjectData(): void {
-    when(this.mockedTextService.get('text01', deepEqual([[nameof<Text>('project')]]))).thenReturn(
+    when(
+      this.mockedTextService.get('text01', deepEqual([[nameof<Text>('project'), nameof<SFProject>('users')]]))
+    ).thenReturn(
       of(
         new MapQueryResults<Text>(
           new Text({
@@ -371,7 +378,15 @@ class TestEnvironment {
           [
             new SFProject({
               id: 'project01',
-              projectName: 'Project 01'
+              projectName: 'Project 01',
+              users: [new SFProjectUserRef('u01')]
+            }),
+            new SFProjectUser({
+              id: 'u01',
+              user: this.testUser,
+              questionRefsRead: [],
+              answerRefsRead: [],
+              commentRefsRead: []
             })
           ]
         )
@@ -396,6 +411,7 @@ class TestEnvironment {
     );
     when(this.mockedUserService.currentUserId).thenReturn('user01');
     when(this.mockedUserService.onlineGet('user01')).thenReturn(of(new MapQueryResults(this.testUser)));
+    when(this.mockedProjectUserService.update(anything())).thenReturn(new Promise(() => {}));
   }
 
   private createQuestionData(id: TextJsonDataId, data: Question[]): QuestionData {

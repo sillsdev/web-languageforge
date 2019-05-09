@@ -18,6 +18,7 @@
               (update)="questionUpdated($event)"
               (changed)="questionChanged($event)"
               [questions]="questions"
+              [projectCurrentUser]="projectCurrentUser"
             ></app-checking-questions>
           </div>
         </div>
@@ -53,6 +54,7 @@
                 <div *ngIf="questionsPanel.activeQuestion" id="answer-panel" #answerPanelContainer>
                   <app-checking-answers
                     [question]="questionsPanel.activeQuestion"
+                    [projectCurrentUser]="projectCurrentUser"
                     (action)="answerAction($event)"
                   ></app-checking-answers>
                 </div>

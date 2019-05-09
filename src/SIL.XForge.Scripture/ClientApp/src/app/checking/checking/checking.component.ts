@@ -10,6 +10,7 @@ import { Answer } from '../../core/models/answer';
 import { Question } from '../../core/models/question';
 import { QuestionData } from '../../core/models/question-data';
 import { SFProject } from '../../core/models/sfproject';
+import { SFProjectUser } from '../../core/models/sfproject-user';
 import { Text } from '../../core/models/text';
 import { TextDataId } from '../../core/models/text-data';
 import { getTextJsonDataIdStr, TextJsonDataId } from '../../core/models/text-json-data-id';
@@ -43,6 +44,7 @@ export class CheckingComponent extends SubscriptionDisposable implements OnInit 
   @ViewChild('scripturePanelContainer') scripturePanelContainerElement: ElementRef;
 
   project: SFProject;
+  projectCurrentUser: SFProjectUser;
   text: Text;
   questions: Question[] = [];
   questionData: { [textId: string]: QuestionData } = {};
@@ -96,7 +98,7 @@ export class CheckingComponent extends SubscriptionDisposable implements OnInit 
     this.subscribe(
       this.activatedRoute.params.pipe(
         switchMap(params => {
-          return this.textService.get(params['textId'], [[nameof<Text>('project')]]);
+          return this.textService.get(params['textId'], [[nameof<Text>('project'), nameof<SFProject>('users')]]);
         })
       ),
       textData => {
@@ -104,6 +106,9 @@ export class CheckingComponent extends SubscriptionDisposable implements OnInit 
         this.text = textData.data;
         if (this.text != null) {
           this.project = textData.getIncluded(this.text.project);
+          this.projectCurrentUser = textData
+            .getManyIncluded<SFProjectUser>(this.project.users)
+            .find(pu => (pu.user == null ? '' : pu.user.id) === this.userService.currentUserId);
           this.chapters = this.text.chapters.map(c => c.number);
           this._chapter = undefined;
           if (prevTextId !== this.text.id) {
@@ -261,11 +266,9 @@ export class CheckingComponent extends SubscriptionDisposable implements OnInit 
         if (question.answers.filter(answer => (answer.ownerRef = this.userService.currentUserId)).length) {
           this.summary.answered++;
         }
-      } else if (question.read) {
-        // TODO: (NW) Change once read variable is actually being set
+      } else if (this.questionsPanel.hasUserRead(question)) {
         this.summary.read++;
-      } else if (!question.read) {
-        // TODO: (NW) Change once read variable is actually being set
+      } else {
         this.summary.unread++;
       }
     }

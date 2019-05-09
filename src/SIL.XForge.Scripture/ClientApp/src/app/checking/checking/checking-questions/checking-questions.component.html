@@ -3,8 +3,8 @@
     (click)="activateQuestion(question)"
     *ngFor="let question of questions"
     [ngClass]="{
-      'question-read': question.read,
-      'question-unread': !question.read,
+      'question-read': hasUserRead(question),
+      'question-unread': !hasUserRead(question),
       'question-answered': hasUserAnswered(question),
       'question-has-answers': getUnreadAnswers(question),
       'mdc-list-item--activated': activeQuestion && activeQuestion.id === question.id

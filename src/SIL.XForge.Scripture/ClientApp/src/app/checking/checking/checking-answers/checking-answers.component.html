@@ -1,8 +1,8 @@
 <div
   class="answer-question"
   [ngClass]="{
-    'question-read': question.read,
-    'question-unread': !question.read,
+    'question-read': hasUserRead,
+    'question-unread': !hasUserRead,
     'question-answered': currentUserTotalAnswers
   }"
 >
