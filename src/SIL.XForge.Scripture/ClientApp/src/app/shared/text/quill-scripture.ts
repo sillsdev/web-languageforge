@@ -55,6 +55,10 @@ interface Ref {
   loc?: string;
 }
 
+interface Unmatched {
+  marker?: string;
+}
+
 export function registerScripture(): void {
   const QuillClipboard = Quill.import('modules/clipboard') as typeof Clipboard;
   const QuillParchment = Quill.import('parchment') as typeof Parchment;
@@ -248,11 +252,28 @@ export function registerScripture(): void {
     }
   }
 
+  class UnmatchedEmbed extends Embed {
+    static blotName = 'unmatched';
+    static tagName = 'usx-unmatched';
+
+    static create(value: Unmatched): Node {
+      const node = super.create(value) as HTMLElement;
+      node.innerText = value.marker;
+      setUsxValue(node, value);
+      return node;
+    }
+
+    static value(node: HTMLElement): Unmatched {
+      return getUsxValue(node);
+    }
+  }
+
   Block.allowedChildren.push(VerseEmbed);
   Block.allowedChildren.push(BlankEmbed);
   Block.allowedChildren.push(NoteEmbed);
   Block.allowedChildren.push(OptBreakEmbed);
   Block.allowedChildren.push(FigureEmbed);
+  Block.allowedChildren.push(UnmatchedEmbed);
 
   class ParaBlock extends Block {
     static blotName = 'para';
@@ -348,6 +369,7 @@ export function registerScripture(): void {
   Quill.register('blots/chapter', ChapterEmbed);
   Quill.register('blots/figure', FigureEmbed);
   Quill.register('blots/optbreak', OptBreakEmbed);
+  Quill.register('blots/unmatched', UnmatchedEmbed);
   Quill.register('blots/scroll', Scroll, true);
   Quill.register('modules/clipboard', DisableHtmlClipboard, true);
 }
