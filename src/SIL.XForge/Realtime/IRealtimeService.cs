@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ShareDB;
 
 namespace SIL.XForge.Realtime
 {
@@ -7,6 +8,8 @@ namespace SIL.XForge.Realtime
     {
         void StartServer();
         void StopServer();
+
+        Task<IConnection> ConnectAsync();
 
         Task DeleteAllAsync(string type, IEnumerable<string> ids);
     }

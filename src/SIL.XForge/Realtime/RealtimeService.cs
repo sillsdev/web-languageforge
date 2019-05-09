@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.NodeServices;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using ShareDB;
 using SIL.ObjectModel;
 using SIL.XForge.Configuration;
 using SIL.XForge.Models;
@@ -57,6 +59,22 @@ namespace SIL.XForge.Realtime
 
             _nodeServices.InvokeExportAsync<object>(_modulePath, "stop").GetAwaiter().GetResult();
             _started = false;
+        }
+
+
+        public async Task<IConnection> ConnectAsync()
+        {
+            var conn = new Connection(new Uri($"ws://localhost:{_realtimeOptions.Value.Port}"));
+            try
+            {
+                await conn.StartAsync();
+                return conn;
+            }
+            catch (Exception)
+            {
+                conn.Dispose();
+                throw;
+            }
         }
 
         public async Task DeleteAllAsync(string type, IEnumerable<string> ids)

@@ -6,24 +6,25 @@ using System.Threading.Tasks;
 
 namespace ShareDB
 {
-    public class Document<T> : IDocumentInternal
+    public class Document<T> : IDocument<T>, IDocumentInternal
     {
         private readonly ConcurrentQueue<TaskCompletionSource<bool>> _inflightFetches;
         private TaskCompletionSource<bool> _inflightOp;
         private OpInfo _inflightOpInfo;
+        private readonly Connection _conn;
 
         internal Document(Connection conn, string collection, string id, IOTType type = null)
         {
             _inflightFetches = new ConcurrentQueue<TaskCompletionSource<bool>>();
 
-            Connection = conn;
+            _conn = conn;
             Collection = collection;
             Id = id;
             Version = -1;
             Type = type;
         }
 
-        public Connection Connection { get; }
+        public IConnection Connection => _conn;
         public string Collection { get; }
         public string Id { get; }
         public int Version { get; private set; }
@@ -51,7 +52,7 @@ namespace ShareDB
         {
             var tcs = new TaskCompletionSource<bool>();
             _inflightFetches.Enqueue(tcs);
-            await Connection.SendFetchAsync(this);
+            await _conn.SendFetchAsync(this);
             return await tcs.Task;
         }
 
@@ -100,9 +101,9 @@ namespace ShareDB
 
             // send op to server
             _inflightOp = new TaskCompletionSource<bool>();
-            int seq = Connection.NextSeq();
+            int seq = _conn.NextSeq();
             _inflightOpInfo = new OpInfo(msgType, seq, composedOp);
-            await Connection.SendOpAsync(this, msgType, seq, composedOp);
+            await _conn.SendOpAsync(this, msgType, seq, composedOp);
             return await _inflightOp.Task;
         }
 
@@ -133,7 +134,7 @@ namespace ShareDB
                     Version = version;
                     if (ops != null)
                     {
-                        Data = (T) Type.Deserialize(ops);
+                        Data = (T)Type.Deserialize(ops);
                         IsLoaded = true;
                         tcs.SetResult(true);
                     }
@@ -166,12 +167,12 @@ namespace ShareDB
                 {
                     case OpMessageType.Create:
                         Version = version;
-                        Data = (T) Type.Deserialize(opInfo.Op);
+                        Data = (T)Type.Deserialize(opInfo.Op);
                         IsLoaded = true;
                         break;
 
                     case OpMessageType.Op:
-                        Data = (T) Type.Apply(Data, opInfo.Op);
+                        Data = (T)Type.Apply(Data, opInfo.Op);
                         IsLoaded = true;
                         break;
 
