@@ -91,8 +91,16 @@ export class MyAccountComponent extends SubscriptionDisposable implements OnInit
     return this.userFromDatabase.name ? this.userFromDatabase.name : 'unknown';
   }
 
-  get timeSinceLastLogin(): string {
-    return distanceInWordsToNow(this.userFromDatabase.site.lastLogin);
+  get lastLoginMessage(): string {
+    if (
+      this.userFromDatabase.site == null ||
+      this.userFromDatabase.site.lastLogin == null ||
+      this.userFromDatabase.site.lastLogin === '' ||
+      Date.parse(this.userFromDatabase.site.lastLogin) <= 0
+    ) {
+      return 'Never logged in';
+    }
+    return 'Last login ' + distanceInWordsToNow(this.userFromDatabase.site.lastLogin) + ' ago';
   }
 
   get isLinkedToParatext() {

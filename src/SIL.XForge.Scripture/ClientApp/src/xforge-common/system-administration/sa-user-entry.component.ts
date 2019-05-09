@@ -216,7 +216,16 @@ export class SaUserEntryComponent implements OnInit {
           role: response.data.role,
           activateStatus: response.data.active
         });
-        this.userLastLoginDate = this.datePipe.transform(response.data.site.lastLogin, 'dd MMMM yyyy');
+        if (
+          response.data.site == null ||
+          response.data.site.lastLogin == null ||
+          response.data.site.lastLogin === '' ||
+          Date.parse(response.data.site.lastLogin) <= 0
+        ) {
+          this.userLastLoginDate = 'Never';
+        } else {
+          this.userLastLoginDate = this.datePipe.transform(response.data.site.lastLogin, 'dd MMMM yyyy');
+        }
         this.userCreatedDate = this.datePipe.transform(response.data.dateCreated, 'dd MMMM yyyy');
         this.activateStatus.setValue(response.data.active);
         this.onChange({ checked: response.data.active });

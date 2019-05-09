@@ -50,7 +50,7 @@
 
         <div fxLayout="row wrap">
           <div fxFlex class="login-info">
-            <span id="last-login">Last login {{ timeSinceLastLogin }} ago</span>
+            <span id="last-login">{{ lastLoginMessage }}</span>
           </div>
           <div fxLayoutAlign="end stretch">
             <button id="my-account-change-password-btn" mat-stroked-button [routerLink]="['/change-password']">

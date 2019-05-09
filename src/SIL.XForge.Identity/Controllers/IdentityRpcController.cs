@@ -287,7 +287,10 @@ namespace SIL.XForge.Identity.Controllers
             await _httpContextAccessor.HttpContext.SignInAsync(user.Id, user.Name, props);
             // update the last login date
             Dictionary<string, Site> sites = user.Sites;
-            sites[_siteOptions.Value.Origin.Authority].LastLogin = DateTime.UtcNow;
+            if (!sites.TryGetValue(_siteOptions.Value.Origin.Authority, out Site site))
+                site = new Site();
+            site.LastLogin = DateTime.UtcNow;
+            sites[_siteOptions.Value.Origin.Authority] = site;
             await _users.UpdateAsync(u => u.Id == user.Id, update => update
                 .Set(u => u.Sites, sites)
             );

@@ -95,6 +95,28 @@ namespace SIL.XForge.Identity.Controllers
         }
 
         [Test]
+        public async Task LogIn_SiteValueSet()
+        {
+            var env = new TestEnvironment();
+            string password = "newuserpassword";
+
+            env.Users.Add(new UserEntity
+            {
+                Id = "newuser",
+                Email = "newuser@example.com",
+                CanonicalEmail = "newuser@example.com",
+                Password = UserEntity.HashPassword(password)
+            });
+            LogInResult result = await env.Controller.LogIn("newuser@example.com", password, false, TestReturnUrl);
+
+            Assert.That(result.Success, Is.True);
+            UserEntity newUser = await env.Users.GetAsync("newuser");
+            Assert.That(newUser.Sites.Keys.ToArray(), Is.EquivalentTo(new[] {
+                env.SiteOptions.Value.Origin.Authority
+            }));
+        }
+
+        [Test]
         public async Task LogIn_IncorrectPassword()
         {
             var env = new TestEnvironment();
