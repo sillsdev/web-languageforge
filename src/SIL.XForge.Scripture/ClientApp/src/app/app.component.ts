@@ -294,7 +294,7 @@ export class AppComponent extends SubscriptionDisposable implements OnInit {
   }
 
   private navigateToStart(): void {
-    setTimeout(() => this.router.navigateByUrl('/projects'));
+    setTimeout(() => this.router.navigateByUrl('/projects', { replaceUrl: true }));
   }
 
   private setTopAppBarVariant(): void {
