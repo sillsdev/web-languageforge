@@ -34,7 +34,7 @@ export class StartComponent extends SubscriptionDisposable implements OnInit {
         }),
         filter(projectId => projectId != null)
       ),
-      projectId => this.router.navigate(['./', projectId], { relativeTo: this.route })
+      projectId => this.router.navigate(['./', projectId], { relativeTo: this.route, replaceUrl: true })
     );
   }
 }

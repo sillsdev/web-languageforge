@@ -59,7 +59,10 @@ export class ProjectComponent extends SubscriptionDisposable implements OnInit {
               break;
           }
           if (textId != null) {
-            this.router.navigate(['./', projectUser.selectedTask, textId], { relativeTo: this.route });
+            this.router.navigate(['./', projectUser.selectedTask, textId], {
+              relativeTo: this.route,
+              replaceUrl: true
+            });
           }
         } else if (project.texts != null && project.texts.length > 0) {
           // the user has not navigated anywhere before, so navigate to the default location in the first enabled task
@@ -70,7 +73,10 @@ export class ProjectComponent extends SubscriptionDisposable implements OnInit {
             task = 'checking';
           }
           if (task != null) {
-            this.router.navigate(['./', task, project.texts[0].id], { relativeTo: this.route });
+            this.router.navigate(['./', task, project.texts[0].id], {
+              relativeTo: this.route,
+              replaceUrl: true
+            });
           }
         }
       }
