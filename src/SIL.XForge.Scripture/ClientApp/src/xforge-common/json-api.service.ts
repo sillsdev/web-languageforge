@@ -5,7 +5,6 @@ import {
   AttributeFilterSpecifier,
   AttributeSortSpecifier,
   buildQuery,
-  ClientError,
   equalRecordIdentities,
   FilterSpecifier,
   FindRecord,
@@ -560,7 +559,7 @@ export class JsonApiService {
   }
 
   /**
-   * Gets the resource with the specified identity from the local cache.
+   * Gets the resource with the specified identity from the local cache/storage.
    *
    * @template T The resource type.
    * @param {RecordIdentity} identity The resource identity.
@@ -575,7 +574,7 @@ export class JsonApiService {
   }
 
   /**
-   * Gets all of the resources with the specified identities from the local cache.
+   * Gets all of the resources with the specified identities from the local cache/storage.
    *
    * @template T The resource type.
    * @param {RecordIdentity[]} identities The resource identities.
@@ -589,7 +588,7 @@ export class JsonApiService {
   }
 
   /**
-   * Updates the attributes of an existing resource in the local cache.
+   * Updates the attributes of an existing resource in the local cache/storage.
    *
    * @param {RecordIdentity} identity The resource identity.
    * @param {Dict<any>} attrs The attribute values to update.
@@ -600,7 +599,7 @@ export class JsonApiService {
   }
 
   /**
-   * Deletes a resource in the local cache.
+   * Deletes a resource in the local cache/storage.
    *
    * @param {RecordIdentity} identity The resource identity.
    * @returns {Promise<void>} Resolves when the resource is deleted locally.

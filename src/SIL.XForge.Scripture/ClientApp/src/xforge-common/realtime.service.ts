@@ -15,6 +15,11 @@ function serializeRecordIdentity(identity: RecordIdentity): string {
   return `${identity.type}:${identity.id}`;
 }
 
+/**
+ * The realtime service is responsible for retrieving realtime data models. This service transparently manages the
+ * interaction between three data sources: a memory cache, an IndexedDB database, and a realtime collaboration server
+ * (ShareDB). Models are cached and reused until the service is reset.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -38,6 +43,12 @@ export class RealtimeService {
     this.accessToken = accessToken;
   }
 
+  /**
+   * Gets the realtime data with the specified identity. It is not necessary to subscribe to the returned model.
+   *
+   * @param {RecordIdentity} identity The data identity.
+   * @returns {Promise<T>} The realtime data.
+   */
   async get<T extends RealtimeData>(identity: RecordIdentity): Promise<T> {
     // wait for pending reset to complete before getting data
     await this.resetPromise;
@@ -50,12 +61,21 @@ export class RealtimeService {
     return await (dataPromise as Promise<T>);
   }
 
+  /**
+   * Resets the realtime data cache.
+   */
   reset(): void {
     if (this.dataMap.size > 0) {
       this.resetPromise = this.clearDataMap();
     }
   }
 
+  /**
+   * Deletes realtime data from local storage.
+   *
+   * @param {RecordIdentity} identity The data identity.
+   * @returns {Promise<void>} Resolves when the data has been deleted.
+   */
   localDelete(identity: RecordIdentity): Promise<void> {
     const store = this.getStore(identity.type);
     return store.delete(identity.id);

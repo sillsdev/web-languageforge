@@ -10,6 +10,13 @@ export interface RealtimeDataConstructor {
   new (doc: RealtimeDoc, store: RealtimeOfflineStore): RealtimeData;
 }
 
+/**
+ * This is the base class for all realtime data models. This class manages the interaction between offline storage of
+ * the data and the underlying realtime (ShareDB) document.
+ *
+ * @template T The actual data type.
+ * @template Ops The operations data type.
+ */
 export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity {
   private readonly subscription: Subscription;
 
@@ -27,10 +34,15 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
     return this.doc.id;
   }
 
-  get data(): T {
+  get data(): Readonly<T> {
     return this.doc.data;
   }
 
+  /**
+   * Subscribes to remote changes for the realtime data.
+   *
+   * @returns {Promise<void>} Resolves when succesfully subscribed to remote changes.
+   */
   async subscribe(): Promise<void> {
     const offlineData = await this.store.getItem(this.id);
     if (offlineData != null) {
@@ -45,10 +57,23 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
     await this.doc.subscribe();
   }
 
+  /**
+   * Returns an observable that emits whenever any remote changes occur.
+   *
+   * @returns {Observable<Ops>} The remote changes observable.
+   */
   remoteChanges(): Observable<Ops> {
     return this.doc.remoteChanges();
   }
 
+  /**
+   * Submits the specified mutation operations. The operations are applied to the actual data and then submitted to the
+   * realtime server. Data can only be updated using operations and should not be updated directly.
+   *
+   * @param {Ops} ops The operations to submit.
+   * @param {*} [source] The source.
+   * @returns {Promise<void>} Resolves when the operations have been successfully submitted.
+   */
   async submit(ops: Ops, source?: any): Promise<void> {
     const submitPromise = this.doc.submitOp(ops, source);
     // update offline data when the op is first submitted
@@ -58,6 +83,9 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
     this.updateOfflineData();
   }
 
+  /**
+   * Updates offline storage with the current state of the realtime data.
+   */
   updateOfflineData(): void {
     if (this.doc.type == null) {
       return;
@@ -82,6 +110,11 @@ export abstract class RealtimeData<T = any, Ops = any> implements RecordIdentity
     this.store.setItem(this.id, offlineData);
   }
 
+  /**
+   * Unsubscribes and destroys this realtime data model.
+   *
+   * @returns {Promise<void>} Resolves when the data has been successfully disposed.
+   */
   dispose(): Promise<void> {
     this.subscription.unsubscribe();
     return this.doc.destroy();

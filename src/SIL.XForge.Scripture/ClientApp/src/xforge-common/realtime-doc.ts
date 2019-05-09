@@ -5,6 +5,10 @@ import { Doc, OTType, Snapshot, types } from 'sharedb/lib/client';
 
 types.register(RichText.type);
 
+/**
+ * This interface represents a realtime document. Realtime documents can be concurrently updated by multiple users. The
+ * realtime document is synchronized in realtime for all users.
+ */
 export interface RealtimeDoc {
   readonly id: string;
   readonly data: any;
@@ -21,6 +25,9 @@ export interface RealtimeDoc {
   destroy(): Promise<void>;
 }
 
+/**
+ * This is a ShareDB implementation of the realtime document interface.
+ */
 export class SharedbRealtimeDoc implements RealtimeDoc {
   constructor(private readonly doc: Doc) {}
 
@@ -132,6 +139,9 @@ export class SharedbRealtimeDoc implements RealtimeDoc {
   }
 }
 
+/**
+ * This is a memory-based implementation of the realtime document interface. It is useful for unit tests.
+ */
 export class MemoryRealtimeDoc implements RealtimeDoc {
   version: number = 1;
   readonly pendingOps: any[] = [];

@@ -6,7 +6,9 @@ export interface RealtimeOfflineData {
 }
 
 /**
- * This class is an abstraction for the local database, i.e LocalForage/IndexedDB. This allows for easier unit testing.
+ * This class is an abstraction for the offline storage of realtime documents. Each instance is used to store documents
+ * for a particular type. This implemenation is based on LocalForage/IndexedDB. This abstraction can be mocked for
+ * easier unit testing.
  */
 export class RealtimeOfflineStore {
   constructor(private readonly store: LocalForage) {}
