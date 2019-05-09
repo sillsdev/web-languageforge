@@ -1,9 +1,8 @@
 ---
-
-- name: Linux Build Agent webserver
+- name: Linux Build Agent
   hosts: build_agents
   become: yes
 
-- include: dependencies.yml
+- import_playbook: dependencies.yml
   vars:
-    deploy: buildagent
+    config: buildagent

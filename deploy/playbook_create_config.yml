@@ -5,29 +5,28 @@
   become: no
 
   tasks:
-   - name: Check if ansible.cfg exists
-     stat: path="ansible.cfg"
-     register: cfg
+    - name: Check if ansible.cfg exists
+      stat: path="ansible.cfg"
+      register: cfg
 
-   - name: Copy default ansible.cfg
-     copy: src=/etc/ansible/ansible.cfg dest=./ansible.cfg mode="u=rw,g=r,o=r"
-     when: cfg.stat.exists == False
+    - name: Copy default ansible.cfg
+      copy: src=/etc/ansible/ansible.cfg dest=./ansible.cfg mode="u=rw,g=r,o=r"
+      when: cfg.stat.exists == False
 
-   - name: Modify ansible.cfg
-     lineinfile:
-       dest: ansible.cfg
-       regexp: '^#?\s*{{item.property}}'
-       line: "{{item.property}} = {{item.value}}"
-       backrefs: yes
-     with_items:
-       - property: 'nocows'
-         value: '1'
-       - property: 'roles_path'
-         value: '/etc/ansible/roles:./roles_common:./roles'
-       - property: 'ssh_args'
-         value: '-o ControlMaster=auto -o ControlPersist=600s'
-       - property: 'pipelining'
-         value: 'true'
-       - property: 'inventory'
-         value: 'hosts'
-
+    - name: Modify ansible.cfg
+      lineinfile:
+        path: ansible.cfg
+        regexp: '^#?\s*{{item.property}}'
+        line: "{{item.property}} = {{item.value}}"
+        backrefs: yes
+      with_items:
+        - property: "nocows"
+          value: "1"
+        - property: "roles_path"
+          value: "/etc/ansible/roles:./roles_common:./roles"
+        - property: "ssh_args"
+          value: "-o ControlMaster=auto -o ControlPersist=600s"
+        - property: "pipelining"
+          value: "true"
+        - property: "inventory"
+          value: "hosts"

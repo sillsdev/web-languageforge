@@ -151,7 +151,7 @@ Vagrant.configure("2") do |config|
     Version=1.0
     Type=Application
     Terminal=false
-    Exec=bash -c 'cd \$HOME/src/web-languageforge && git cola'
+    Exec=bash -c 'cd \$HOME/src/web-xforge && git cola'
     Name=XF Git Cola Commit Tool
     Icon=/usr/share/git-cola/icons/git-cola.svg
     ENDOFOUTPUTFILE
@@ -165,7 +165,7 @@ Vagrant.configure("2") do |config|
     Version=1.0
     Type=Application
     Terminal=false
-    Exec=bash -c 'cd \$HOME/src/web-languageforge && gitk --branches --remotes --tags'
+    Exec=bash -c 'cd \$HOME/src/web-xforge && gitk --branches --remotes --tags'
     Name=XF Git History Viewer
     Icon=/usr/share/git-gui/lib/git-gui.ico
     ENDOFOUTPUTFILE
@@ -217,58 +217,36 @@ Vagrant.configure("2") do |config|
     mkdir -p ~/src
     cd ~/src
 
-    if [ ! -d "web-languageforge" ]; then
-      git clone --depth 1 --recurse-submodules https://github.com/sillsdev/web-languageforge.git
+    if [ ! -d "web-xforge" ]; then
+      git clone --depth 1 --recurse-submodules https://github.com/sillsdev/web-xforge.git
     else
-      cd web-languageforge
+      cd web-xforge
       git pull --ff-only --recurse-submodules
     fi
 
-    cd ~/src/web-languageforge
+    cd ~/src/web-xforge
     # Fix fetch issues caused by cloning with --depth
     git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     # if it's still a shallow repo
     [ ! -f .git/shallow ] || git fetch --unshallow
 
-    cd ~/src
-    [ -d web-scriptureforge ] || ln -s web-languageforge web-scriptureforge
-
-    cd ~/src/web-languageforge/deploy/
+    cd ~/src/web-xforge/deploy/
     # REVIEW Should these be from master or sf-develop branch?
     ansible-playbook -i hosts playbook_create_config.yml --limit localhost
-    ansible-playbook -i hosts playbook_xenial_server_vagrant.yml --limit localhost
-
-    sudo adduser vagrant www-data
-    sudo chown vagrant:www-data -R /var/lib/languageforge
-    chmod u=rwX,g=rwX,o=rX -R /var/lib/languageforge
-	
-    sudo mkdir -p /var/lib/xforge/avatars
-    sudo chown vagrant:www-data -R /var/lib/xforge
-    chmod u=rwX,g=rwX,o=rX -R /var/lib/xforge
+    ansible-playbook playbook_xenial.yml --limit localhost
 
     npm config set prefix /usr/local
 
-    cd ~/src/web-languageforge
-    ./refreshDeps.sh
-
-    cd ~/src/web-languageforge
-    git checkout -- package-lock.json
-    git checkout sf-develop
-    git submodule update --init --recursive
-    cd deploy
-    ansible-playbook playbook_xenial_beta.yml --limit localhost -K
-
     # Set assets directory to be usable both by vagrant and www-data users.
-    setfacl -d -m u::rwX,g::rwX ~/src/web-languageforge/src/assets
-    sudo chown -R vagrant:www-data ~/src/web-languageforge/src/assets
-    chmod g+w ~/src/web-languageforge/src/assets
+    setfacl -d -m u::rwX,g::rwX ~/src/web-xforge/src/assets
+    sudo chown -R vagrant:www-data ~/src/web-xforge/src/assets
+    chmod g+w ~/src/web-xforge/src/assets
     # This chmod needs to be sudo since vagrant isn't effectively in www-data group yet.
-    sudo chmod g+s ~/src/web-languageforge/src/assets
+    sudo chmod g+s ~/src/web-xforge/src/assets
 
-    sudo npm i -g npm
+    sudo npm i -g npm@6.4.1
 
-    cd ~/src/web-languageforge
-    ./refreshDeps.sh
+    cd ~/src/web-xforge
 
     echo "Section ended successfully."
   SHELL

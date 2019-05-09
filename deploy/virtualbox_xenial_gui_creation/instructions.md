@@ -13,11 +13,11 @@ Don't halt the vagrant box too quickly after it finishes provisioning, so the ze
 After making the base box, you can do the following smoke test. Note that you should not publish the box that you did the smoke test in, since it won't be cleaned up from the original provision (such as deleting ssh host keys).
 
 ```
-cd ~/src/web-languageforge
+cd ~/src/web-xforge
 ./refreshDeps.sh
 gulp test-php
 gulp webpack-sf
-cd ~/src/web-languageforge/src/SIL.XForge.Scripture
+cd ~/src/web-xforge/src/SIL.XForge.Scripture
 dotnet run &
 ```
 
@@ -26,7 +26,7 @@ A more thorough test could be:
 ```
 #!/bin/bash
 set -e -o pipefail -x
-cd ~/src/web-languageforge
+cd ~/src/web-xforge
 ./refreshDeps.sh
 gulp test-php && gulp test-ts-lf && gulp test-ts-sf
 gulp webpack-lf
@@ -35,19 +35,19 @@ sleep 30s
 ./rune2e.sh lf
 gulp webpack-sf
 ./rune2e.sh sf
-cd ~/src/web-languageforge/src/SIL.XForge.Scripture
+cd ~/src/web-xforge/src/SIL.XForge.Scripture
 dotnet run &
 sleep 5m
 killall dotnet
 sleep 1m
-cd ~/src/web-languageforge/src/SIL.XForge.Scripture/ClientApp
+cd ~/src/web-xforge/src/SIL.XForge.Scripture/ClientApp
 ng test
 ```
 
 Kill ng.
 
 ```
-cd ~/src/web-languageforge/src/SIL.XForge.Scripture
+cd ~/src/web-xforge/src/SIL.XForge.Scripture
 dotnet run
 ```
 

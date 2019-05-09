@@ -1,18 +1,16 @@
 ---
-
-- name: Deploy development environment for xForge (languageforge.org and scriptureforge.org)
+- name: Deploy development environment for beta.scriptureforge.org
   hosts: all
   become: yes
   vars_files:
-    - "vars_{{deploy}}.yml"
+    - "vars/config_{{config}}.yml"
     # conditional import
-    -
-      - "vars/{{ansible_distribution}}-{{ansible_distribution_major_version | int}}.yml"
+    - - "vars/{{ansible_distribution}}-{{ansible_distribution_major_version | int}}.yml"
       - "vars/{{ansible_distribution}}.yml"
       - "vars/{{ansible_os_family}}.yml"
       - "vars/os_defaults.yml"
   vars:
-    node_version: 8.9.4
+    node_version: 8.11.4
   pre_tasks:
     - name: "Add .NET Core | add source"
       apt_repository:
@@ -25,14 +23,6 @@
         url: https://packages.microsoft.com/keys/microsoft.asc
         keyring: /etc/apt/trusted.gpg.d/microsoft.gpg
       when: base_distribution == 'ubuntu'
-    - name: "Add GeoIP Update | add source"
-      apt_repository:
-        repo: "ppa:maxmind/ppa"
-        state: present
-      when: base_distribution == 'ubuntu'
-    - name: Add PHP7.0 ppa for Trusty
-      apt_repository: repo='ppa:ondrej/php' state=present
-      when: base_distribution == 'ubuntu' and base_distribution_release == 'trusty'
     - name: add Mongo apt key
       apt_key:
         keyserver: keyserver.ubuntu.com
@@ -43,46 +33,14 @@
         filename: mongodb-org-3.6
         update_cache: yes
       when: base_distribution == 'ubuntu' and (base_distribution_release == 'xenial' or base_distribution_release == 'bionic')
-    - name: Remove PHP5 for Trusty
-      apt: name=php5-fpm state=absent
-      when: base_distribution == 'ubuntu' and base_distribution_release == 'trusty'
-  roles:
-    - fix
-    # locale_install may be needed if locale has been changed away from defaults
-#    - locale_install
-    - ssl_config
-    - apache_config
   tasks:
     - name: install packages
       apt: name="{{item}}" state=present update_cache='yes'
       with_items:
-        - dotnet-sdk-2.0.2
-        - geoipupdate
-        - libapache2-mod-php
+        - dotnet-sdk-2.1
         - mongodb-org
         - nodejs
-        - p7zip-full
-        - php7.0-cli
-        - php7.0-curl
-        - php7.0-dev
-        - php7.0-gd
-        - php7.0-intl
-        - php7.0-mbstring
-        - php-pear
-        - php-xdebug
-        - postfix
-        - unzip
-        - chromium-browser
-        - default-jre-headless
-      tags: [ 'packages' ]
-
-    - name: check for node binary
-      stat: path=/usr/local/bin/node
-      register: node_binary
-
-    - name: symlink node to nodejs
-      file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
-      when: node_binary.stat.exists == False
+      tags: ["packages"]
 
     - name: install n
       shell: npm install -g n
@@ -92,171 +50,9 @@
     - name: change node version
       shell: "n {{node_version}}"
 
-    - name: install Composer
-      shell: php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/local/bin --filename=composer
-      args:
-        creates: /usr/local/bin/composer
-
-    - name: install gulp cli
-      shell: npm install -g gulp-cli
-      args:
-        creates: /usr/local/bin/gulp
-
-    - name: php log folder exists
-      file: path={{php_log_folder}} state=directory owner=www-data group=www-data mode=0775 recurse=yes
-
-    - name: php.ini changes
-      lineinfile:
-        dest: /etc/php/7.0/apache2/php.ini
-        regexp: '^;?{{item.property}}'
-        line: "{{item.property}} = {{item.value}}"
-        backrefs: yes
-      with_items:
-        - property: 'memory_limit'
-          value: '256M'
-        - property: 'display_errors'
-          value: 'On'
-        - property: 'display_startup_errors'
-          value: 'On'
-        - property: 'error_log'
-          value: '{{php_log_folder}}/php_error.log'
-        - property: 'post_max_size'
-          value: '60M'
-        - property: 'upload_max_filesize'
-          value: '60M'
-      notify: Restart apache
-
-    - name: postfix | halt emails in output queue
-      when: inventory_hostname == "localhost"
-      lineinfile:
-        dest: /etc/postfix/main.cf
-        state: present
-        create: yes
-        regexp: '^#?{{item.property}}'
-        line: "{{item.property}} = {{item.value}}"
-      with_items:
-        - property: 'default_transport'
-          value: 'retry:no outbound email allowed'
-      notify: restart postfix
-
-    # This stanza ensures that the /var/www/virtual/default_local links to wherever your source actually is.
-    - name: "Ensure Source Link: default_local folder does not exist (localhost)"
-      file: path="/var/www/virtual/default_local" state=absent force=true
-      when: inventory_hostname == "localhost"
-    - name: "Ensure Source Link: Get current location of the source code (localhost)"
-      local_action: shell pwd
-      register: local_dir
-      when: inventory_hostname == "localhost"
-    - name: "Ensure Source Link: default_local link exists (localhost)"
-      file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/virtual/default_local" state=link group=www-data force=true
-      when: inventory_hostname == "localhost"
-
-    - apt_key: url=http://linux.lsdev.sil.org/downloads/sil-testing.gpg state=present
-
-    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu {{base_distribution_release}} main' state=present
-      when: base_distribution == 'ubuntu'
-    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu {{base_distribution_release}}-experimental main' state=present update_cache='yes'
-      when: base_distribution == 'ubuntu'
-
-    - name: install LfMerge package
-      apt: name="{{item}}" state=present
-      with_items:
-        - lfmerge
-
-     # group permissions from LfMerge deploy
-    - name: ensure www-data group exists
-      become: yes
-      group: name=www-data state=present
-
-    - name: make www-data user a member of fieldworks group
-      become: yes
-      user: name=www-data state=present group=www-data home=/var/www shell=/usr/sbin/nologin groups=fieldworks append=yes
-
-      # Could look up home dir of www-data user on remote system, but that turns out to
-      # be a bit complicated. And since we just set it to /var/www, just use that.
-    - name: ensure www-data has setguid, group-writeable .local folder
-      become: yes
-      # mode 02775 is u+rwx, g+rwx, o+rx plus the setgid bit (octal 02000)
-      file: path=/var/www/.local state=directory mode=02775 owner=www-data group=fieldworks
-
-    - name: Ensure folder permissions
-      # see http://stackoverflow.com/questions/28778738/ansible-mode-755-for-directories-and-644-for-files-recursively
-      file:
-        path: "{{item.path}}"
-        state: directory
-        mode: "{{item.mode}}"
-        recurse: yes
-      with_items:
-        - path: "{{lf_path}}/src"
-          mode: 'u=rwX,g=rX,o=rX'
-        - path: "{{sf_path}}/src"
-          mode: 'u=rwX,g=rX,o=rX'
-        - path: "{{lf_path}}/test"
-          mode: 'u=rwX,g=rX,o=rX'
-        - path: "{{sf_path}}/test"
-          mode: 'u=rwX,g=rX,o=rX'
-        - path: "{{lf_path}}/docs"
-          mode: 'u=rwX,g=rX,o=rX'
-        - path: "{{sf_path}}/docs"
-          mode: 'u=rwX,g=rX,o=rX'
-
-    - name: Ensure www-data has permission to folders
-      # see http://stackoverflow.com/questions/28778738/ansible-mode-755-for-directories-and-644-for-files-recursively
-      file:
-        path: "{{item.path}}"
-        state: directory
-        group: www-data
-        mode: "{{item.mode}}"
-        recurse: yes
-      with_items:
-        - path: "{{lf_path}}/src/assets"
-          mode: 'u=rwX,g=rwX'
-        - path: "{{sf_path}}/src/assets"
-          mode: 'u=rwX,g=rwX'
-        - path: "{{lf_path}}/src/cache"
-          mode: 'u=rwX,g=rwX'
-        - path: "{{sf_path}}/src/cache"
-          mode: 'u=rwX,g=rwX'
-
-    - name: Ensure /var/lib/languageforge directory is writeable (for LfMerge)
-      file: path="/var/lib/languageforge" state=directory owner=www-data group=www-data mode=0755
-    - name: Ensure /var/www/.local directory is writeable (for LfMerge)
-      file: path="/var/www/.local" state=directory owner=www-data group=www-data mode=0755
-
-    - name: install PECL mongo extension
-      # yes types empty line over and over to accept defaults
-      shell: yes '' | /usr/bin/pecl install mongodb
-      register: pecl_result
-      changed_when: "pecl_result.rc == 0"
-      failed_when: "not (('already installed' in pecl_result.stdout) or ('install ok:' in pecl_result.stdout))"
-    - name: install PECL mongo extension | enable module in mods-available
-      lineinfile:
-        dest: /etc/php/7.0/mods-available/mongodb.ini
-        regexp: 'mongodb.so'
-        line: 'extension=mongodb.so'
-        state: present
-        create: yes
-        mode: 'u=rw,g=r,o=r'
-    - name: install PECL mongo extension | ensure conf.d exists
-      file: path=/etc/php/7.0/cli/conf.d state=directory mode=0755
-    - name: install PECL mongo extension | add mods-available in cli/conf.d
-      file: src=/etc/php/7.0/mods-available/mongodb.ini dest=/etc/php/7.0/cli/conf.d/20-mongodb.ini state=link
-      notify: Restart apache
-    - name: install PECL mongo extension | add mods-available in apache2/conf.d
-      file: src=/etc/php/7.0/mods-available/mongodb.ini dest=/etc/php/7.0/apache2/conf.d/20-mongodb.ini state=link
-      notify: Restart apache
-
-    - name: Set Apache umask to 002
-      lineinfile:
-        dest: /etc/apache2/envvars
-        regexp: '^umask \d+'
-        line: 'umask 002'
-        backrefs: no
-      notify: Restart apache
-
     - name: update the mongo config file
       lineinfile:
-        dest: /etc/mongod.conf
+        path: /etc/mongod.conf
         regexp: '^(\s*dbPath: ).*$'
         line: '\1{{mongo_path}}'
         backrefs: yes
@@ -269,69 +65,40 @@
         state: started
         enabled: yes
 
-    - name: 'Add GeoLite2 configuration'
-      copy:
-        content: |
-          # The following UserId and LicenseKey are required placeholders:
-          UserId 999999
-          LicenseKey 000000000000
-
-          # Include one or more of the following ProductIds:
-          # * GeoLite2-City - GeoLite 2 City
-          # * GeoLite2-Country - GeoLite2 Country
-          # * GeoLite-Legacy-IPv6-City - GeoLite Legacy IPv6 City
-          # * GeoLite-Legacy-IPv6-Country - GeoLite Legacy IPv6 Country
-          # * 506 - GeoLite Legacy Country
-          # * 517 - GeoLite Legacy ASN
-          # * 533 - GeoLite Legacy City
-          ProductIds GeoLite2-City
-        dest: /etc/GeoIP.conf
-
-    - name: 'Fetch GeoLite2 database'
-      shell: /usr/bin/geoipupdate
+    - name: get the username running the deploy
+      become: no
+      local_action: command whoami
+      register: username_on_the_host
+    - name: Add folders
+      file:
+        path: "{{item}}"
+        state: directory
+        owner: "{{ username_on_the_host.stdout }}"
+        group: "{{ username_on_the_host.stdout }}"
+        mode: "u=rwX,g=rX,o=rX"
+      with_items:
+        - "/var/lib/scriptureforge"
+        - "/var/lib/scriptureforge/sync"
+        - "/var/lib/xforge"
+        - "/var/lib/xforge/avatars"
 
     - name: add localhost to dnsmasq
       lineinfile:
-        dest: /etc/NetworkManager/dnsmasq.d/localhost-domain
+        path: /etc/NetworkManager/dnsmasq.d/localhost-domain
         line: "{{item}}"
         state: present
         create: yes
-        mode: 'u=rw,g=r,o=r'
+        mode: "u=rw,g=r,o=r"
       with_items:
         - "address=/localhost/127.0.0.1"
         - "address=/localhost/::1"
       when: inventory_hostname == "localhost"
       notify: restart network
-      tags: [ 'network' ]
-
-    - name: add host aliases
-      lineinfile:
-        dest: /etc/hosts
-        regexp: '\s{{item}}'
-        line: "127.0.0.1    {{item}}"
-        state: present
-        create: yes
-      with_items:
-        - "default.local"
-        - "languageforge.local"
-        - "scriptureforge.local"
-        - "es_401"
-      when: inventory_hostname == "localhost"
-
-    - name: install languageforge-web-api init script
-      copy: src=../scripts/server/init/languageforge-web-api dest=/etc/init.d/languageforge-web-api owner=root group=root mode=0755
-      when: is_build_agent is defined and is_build_agent == true
-
-    - name: enable languageforge-web-api service
-      service: name=languageforge-web-api enabled=yes
-      when: is_build_agent is defined and is_build_agent == true
+      tags: ["network"]
 
   handlers:
     - name: restart mongod
       service: name=mongod state=restarted
-
-    - name: restart postfix
-      service: name=postfix state=restarted
 
     - name: restart network
       service: name=network-manager state=restarted

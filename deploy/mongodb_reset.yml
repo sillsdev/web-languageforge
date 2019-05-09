@@ -1,0 +1,25 @@
+---
+- name: Reset mongodb to empty with admin user in development environment for xForge v2
+  hosts: all
+  become: true
+  vars:
+    - db_name: "xforge"
+    - db_collection_user: "users"
+    - db_user_admin: '{
+        "name": "Admin",
+        "active": true,
+        "email": "admin@example.com",
+        "canonicalEmail": "admin@example.com",
+        "role": "system_admin",
+        "username": "admin",
+        "password": "$2y$07$4x9EkhgIzZL2W5p8H5kBm.FKIln.LfHW1Go6P30tpgqlFfl3mg3sG"
+      }'
+  tasks:
+    - name: Drop DB
+      shell: "mongo {{db_name}} --eval 'db.dropDatabase();'"
+
+    - name: Create DB and collection
+      shell: 'mongo {{db_name}} --eval ''db.createCollection("{{db_collection_user}}");'''
+
+    - name: Add admin user
+      shell: "mongo {{db_name}} --eval 'db.{{db_collection_user}}.insert({{db_user_admin}});'"

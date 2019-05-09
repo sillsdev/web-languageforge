@@ -1,16 +1,11 @@
 ---
-
-- name: Linux Xenial local webserver
+- name: Linux Xenial local webserver for xForge v2 developers
   hosts: all
   become: yes
-  tasks:
+  tasks: []
 
-- include: dependencies.yml
+- import_playbook: dependencies.yml
   vars:
-    deploy: palaso
-- include: code.yml
-  vars:
-    lf_path: /var/www/virtual/default_local/web-languageforge
-    site_src_paths:
-      - /var/www/virtual/default_local/web-languageforge/src
-      
+    config: palaso
+
+- import_playbook: mongodb_reset.yml

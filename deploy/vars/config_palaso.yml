@@ -1,6 +1,5 @@
 ---
-
-# vars_palaso
+# vars/config_palaso
 
 # mongo_path: /hddlinux/mongodb
 mongo_path: /var/lib/mongodb

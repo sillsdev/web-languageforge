@@ -38,32 +38,25 @@ Vagrant.configure("2") do |config|
     git config --global user.email "#{`git config --get user.email`.strip}"
     git config --global user.name "#{`git config --get user.name`.strip}"
 
-    cd ~/src/web-languageforge
+    cd ~/src/web-xforge
     git checkout -- package-lock.json
     git pull --ff-only --recurse-submodules
 
-    cd ~/src/web-languageforge/deploy
-    tryharderto ansible-playbook playbook_xenial_beta.yml --limit localhost -K
+    cd ~/src/web-xforge/deploy
+    tryharderto ansible-playbook playbook_xenial.yml --limit localhost -K
     sudo npm install -g npm@6.4.1
 
-    sudo npm install -g @angular/cli@6.1.5
-
-    cd ~/src/web-languageforge
-    npm install
-    ./refreshDeps.sh
+    sudo npm install -g @angular/cli@7.3.8
 
     # These permission fixes need done in the ansible that is reverting them.
-    sudo chown -R vagrant:www-data ~/src/web-languageforge/src/assets
-    sudo chmod g+s ~/src/web-languageforge/src/assets
+    sudo chown -R $USER:$USER ~/src/web-xforge/src/assets
+    sudo chmod g+s ~/src/web-xforge/src/assets
 
     # Until baked into base box:
 
     # Let VS Code watch lots of files.
     sudo tee -a /etc/sysctl.conf >/dev/null <<< 'fs.inotify.max_user_watches=524288'
     sudo sysctl -p # Only needed if we want to use the change before rebooting.
-
-    sudo mkdir -p /var/lib/scriptureforge/sync
-    sudo chown $USER:$USER -R /var/lib/scriptureforge
 
     cp -aL /usr/share/applications/chromium-browser.desktop ~/Desktop/development-tools/
     chmod +x ~/Desktop/development-tools/chromium-browser.desktop
