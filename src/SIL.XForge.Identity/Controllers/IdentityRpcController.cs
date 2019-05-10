@@ -285,14 +285,9 @@ namespace SIL.XForge.Identity.Controllers
             };
             // issue authentication cookie with subject ID and name
             await _httpContextAccessor.HttpContext.SignInAsync(user.Id, user.Name, props);
-            // update the last login date
-            Dictionary<string, Site> sites = user.Sites;
-            if (!sites.TryGetValue(_siteOptions.Value.Origin.Authority, out Site site))
-                site = new Site();
-            site.LastLogin = DateTime.UtcNow;
-            sites[_siteOptions.Value.Origin.Authority] = site;
+            string siteKey = DictionaryKeySerializer.SerializeKey(_siteOptions.Value.Origin.Authority);
             await _users.UpdateAsync(u => u.Id == user.Id, update => update
-                .Set(u => u.Sites, sites)
+                .Set(u => u.Sites[siteKey].LastLogin, DateTime.UtcNow)
             );
         }
     }
