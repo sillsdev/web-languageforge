@@ -51,7 +51,7 @@ export class ProjectService {
       const types = {
         // 'languageforge': ['lexicon', 'semdomtrans'],
         languageforge: ['lexicon'],
-        scriptureforge: ['sfchecks', 'translate']
+        scriptureforge: ['sfchecks']
       };
 
       this.projectTypesBySite = types[session.baseSite()];
