@@ -260,7 +260,7 @@ export class LexiconEditorController implements angular.IController {
       if (this.$state.params.sortReverse === 'true') {
         this.entryListModifiers.sortReverse = true;
         this.sortEntries(true);
-      }else {
+      } else {
         this.entryListModifiers.sortReverse = false;
         this.sortEntries(false);
        }
@@ -435,6 +435,16 @@ export class LexiconEditorController implements angular.IController {
     }
 
     this.goToEntry(id);
+  }
+
+  canSkipToEntry(distance: number): boolean {
+    const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
+    return i >= 0 && i < this.visibleEntries.length;
+  }
+
+  skipToEntry(distance: number): void {
+    const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
+    this.editEntry(this.visibleEntries[i].id);
   }
 
   newEntry(): void {
