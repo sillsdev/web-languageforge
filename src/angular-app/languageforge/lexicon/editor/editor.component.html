@@ -12,7 +12,6 @@
                     </div>
                     <div class="float-right" data-ng-show="$ctrl.isAtEditorEntry()">
                         <span data-ng-if="$ctrl.lecRights.canEditEntry()">
-                            <span class="text-muted">{{$ctrl.saveNotice()}}</span>
                             <button id="saveEntryBtn" class="btn btn-primary" data-ng-click="$ctrl.saveCurrentEntry(true)"
                                     data-ng-disabled="!$ctrl.currentEntryIsDirty()">
                                 <i class="fa fa-save"></i> <span class="d-none d-md-inline-block">{{$ctrl.saveButtonTitle()}}</span>
