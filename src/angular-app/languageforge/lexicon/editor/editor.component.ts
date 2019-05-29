@@ -305,25 +305,11 @@ export class LexiconEditorController implements angular.IController {
     this.filterEntries(true);
   }
 
-  saveNotice(): string {
-    switch (this.saveStatus) {
-      case 'saving':
-        return 'Saving';
-      case 'saved':
-        return 'Saved';
-      default:
-        return '';
-    }
-  }
-
   saveButtonTitle(): string {
-    if (this.currentEntryIsDirty()) {
-      return 'Save Entry';
-    } else if (LexiconEditorController.entryIsNew(this.currentEntry)) {
-      return 'Entry unchanged';
-    } else {
-      return 'Entry saved';
-    }
+    if (this.saveStatus === 'saving') return 'Saving';
+    else if (this.currentEntryIsDirty()) return 'Save Entry';
+    else if (LexiconEditorController.entryIsNew(this.currentEntry)) return 'Entry unchanged';
+    else return 'Entry saved';
   }
 
   currentEntryIsDirty(): boolean {
