@@ -7,12 +7,19 @@
                         <a id="toListLink" data-ng-show="$ctrl.isAtEditorEntry()" class="btn btn-std"
                            data-ng-click="$ctrl.returnToList()"
                            title="Back to List">
-                            <i class="fa fa-arrow-circle-left"></i>
+                            <i class="fa fa-reply"></i>
                             <span class="d-none d-md-inline-block">List</span></a>
                     </div>
                     <div class="float-right" data-ng-show="$ctrl.isAtEditorEntry()">
+                        <div class="btn-group">
+                            <button class="btn btn-std" data-ng-click="$ctrl.skipToEntry(-1)" ng-disabled="!$ctrl.canSkipToEntry(-1)">
+                                <span class="fa fa-arrow-left"></span> <span class="d-none d-lg-inline-block">Previous</span>
+                            </button>
+                            <button class="btn btn-std" data-ng-click="$ctrl.skipToEntry(1)" ng-disabled="!$ctrl.canSkipToEntry(1)">
+                                <span class="d-none d-lg-inline-block">Next</span> <span class="fa fa-arrow-right"></span>
+                            </button>
+                        </div>
                         <span data-ng-if="$ctrl.lecRights.canEditEntry()">
-                            <span class="text-muted">{{$ctrl.saveNotice()}}</span>
                             <button id="saveEntryBtn" class="btn btn-primary" data-ng-click="$ctrl.saveCurrentEntry(true)"
                                     data-ng-disabled="!$ctrl.currentEntryIsDirty()">
                                 <i class="fa fa-save"></i> <span class="d-none d-md-inline-block">{{$ctrl.saveButtonTitle()}}</span>
@@ -22,7 +29,7 @@
                             <button id="toggleHiddenFieldsBtn" class="btn btn-std"
                                     data-ng-click="$ctrl.show.emptyFields = !$ctrl.show.emptyFields">
                                 <i class="fa" data-ng-class="$ctrl.show.emptyFields ? 'fa-minus-square-o' : 'fa-plus-square-o'"></i>
-                                <span class="d-none d-md-inline-block">{{$ctrl.show.emptyFields ? 'Hide Extra Fields' : 'Show Extra Fields'}}</span>
+                                <span class="d-none d-lg-inline-block">{{$ctrl.show.emptyFields ? 'Hide Extra Fields' : 'Show Extra Fields'}}</span>
                             </button>
                         </span>
                         <button id="toCommentsLink"
