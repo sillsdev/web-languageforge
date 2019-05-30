@@ -260,7 +260,7 @@ export class LexiconEditorController implements angular.IController {
       if (this.$state.params.sortReverse === 'true') {
         this.entryListModifiers.sortReverse = true;
         this.sortEntries(true);
-      }else {
+      } else {
         this.entryListModifiers.sortReverse = false;
         this.sortEntries(false);
        }
@@ -305,25 +305,11 @@ export class LexiconEditorController implements angular.IController {
     this.filterEntries(true);
   }
 
-  saveNotice(): string {
-    switch (this.saveStatus) {
-      case 'saving':
-        return 'Saving';
-      case 'saved':
-        return 'Saved';
-      default:
-        return '';
-    }
-  }
-
   saveButtonTitle(): string {
-    if (this.currentEntryIsDirty()) {
-      return 'Save Entry';
-    } else if (LexiconEditorController.entryIsNew(this.currentEntry)) {
-      return 'Entry unchanged';
-    } else {
-      return 'Entry saved';
-    }
+    if (this.saveStatus === 'saving') return 'Saving';
+    else if (this.currentEntryIsDirty()) return 'Save Entry';
+    else if (LexiconEditorController.entryIsNew(this.currentEntry)) return 'Entry unchanged';
+    else return 'Entry saved';
   }
 
   currentEntryIsDirty(): boolean {
@@ -449,6 +435,16 @@ export class LexiconEditorController implements angular.IController {
     }
 
     this.goToEntry(id);
+  }
+
+  canSkipToEntry(distance: number): boolean {
+    const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
+    return i >= 0 && i < this.visibleEntries.length;
+  }
+
+  skipToEntry(distance: number): void {
+    const i = this.editorService.getIndexInList(this.currentEntry.id, this.visibleEntries) + distance;
+    this.editEntry(this.visibleEntries[i].id);
   }
 
   newEntry(): void {
