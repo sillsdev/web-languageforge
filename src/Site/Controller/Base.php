@@ -162,6 +162,7 @@ class Base
                 $this->data['isAdmin'] = SystemRoles::hasRight($this->_user->role, Domain::USERS + Operation::CREATE);
             }
             $this->data['userName'] = $this->_user->username;
+            $this->data['userId'] = $this->_userId;
             if ($this->_user->avatar_ref && substr($this->_user->avatar_ref, 0, 4) === 'http')
             {
                 $this->data['smallAvatarUrl'] = $this->_user->avatar_ref;
