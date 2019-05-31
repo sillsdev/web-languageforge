@@ -32,8 +32,6 @@ var _template = require('lodash.template');
 var Server = require('karma').Server;
 var path = require('path');
 var stylish = require('jshint-stylish');
-var dotnetPublish = require('gulp-dotnet-cli').publish;
-var dotnetTest = require('gulp-dotnet-cli').test;
 var fs = require('fs');
 var del = require('del');
 var data = require('gulp-data');
@@ -558,130 +556,6 @@ gulp.task('remote-restart-php-fpm', function (cb) {
 });
 
 // -------------------------------------
-//   Task: Local Restart xForge Web API
-// -------------------------------------
-gulp.task('local-restart-xforge-web-api', function (cb) {
-  var params = require('yargs')
-    .option('applicationName', {
-      demand: true,
-      type: 'string' })
-    .option('dest', {
-      demand: true,
-      type: 'string' })
-    .fail(yargFailure)
-    .argv;
-
-  var options = {
-    applicationName: params.applicationName,
-    suffix: getServiceSuffix(params.dest)
-  };
-  execute(
-    'sudo systemctl restart <%= applicationName %>-web-api<%= suffix %>',
-    options,
-    cb
-  );
-});
-
-// -------------------------------------
-//   Task: Remote Restart xForge Web API
-// -------------------------------------
-gulp.task('remote-restart-xforge-web-api', function (cb) {
-  var params = require('yargs')
-    .option('applicationName', {
-      demand: true,
-      type: 'string' })
-    .option('dest', {
-      demand: true,
-      type: 'string' })
-    .option('uploadCredentials', {
-      demand: true,
-      type: 'string' })
-    .fail(yargFailure)
-    .argv;
-
-  var options = {
-    applicationName: params.applicationName,
-    credentials: params.uploadCredentials,
-    destination: params.dest.slice(0, params.dest.indexOf(':')),
-    suffix: getServiceSuffix(params.dest)
-  };
-
-  execute(
-    'ssh -i <%= credentials %> <%= destination %>' +
-      " 'systemctl restart <%= applicationName %>-web-api<%= suffix %>'",
-    options,
-    cb
-  );
-});
-
-// -------------------------------------
-//   Task: Local Restart Node Server
-// -------------------------------------
-gulp.task('local-restart-node-server', function (cb) {
-  var params = require('yargs')
-    .option('applicationName', {
-      demand: true,
-      type: 'string' })
-    .option('dest', {
-      demand: true,
-      type: 'string' })
-    .fail(yargFailure)
-    .argv;
-
-  if (params.applicationName === 'languageforge') {
-    cb();
-    return;
-  }
-
-  var options = {
-    applicationName: params.applicationName,
-    suffix: getServiceSuffix(params.dest)
-  };
-  execute(
-    'sudo systemctl restart <%= applicationName %>-sharedb<%= suffix %>',
-    options,
-    cb
-  );
-});
-
-// -------------------------------------
-//   Task: Remote Restart Node Server
-// -------------------------------------
-gulp.task('remote-restart-node-server', function (cb) {
-  var params = require('yargs')
-    .option('applicationName', {
-      demand: true,
-      type: 'string' })
-    .option('dest', {
-      demand: true,
-      type: 'string' })
-    .option('uploadCredentials', {
-      demand: true,
-      type: 'string' })
-    .fail(yargFailure)
-    .argv;
-
-  if (params.applicationName === 'languageforge') {
-    cb();
-    return;
-  }
-
-  var options = {
-    applicationName: params.applicationName,
-    credentials: params.uploadCredentials,
-    destination: params.dest.slice(0, params.dest.indexOf(':')),
-    suffix: getServiceSuffix(params.dest)
-  };
-
-  execute(
-    'ssh -i <%= credentials %> <%= destination %>' +
-      " 'systemctl restart <%= applicationName %>-sharedb<%= suffix %>'",
-    options,
-    cb
-  );
-});
-
-// -------------------------------------
 //   Task: E2E Test: Modify Environment
 // -------------------------------------
 gulp.task('test-e2e-env', function () {
@@ -917,13 +791,6 @@ gulp.task('test-e2e-local-lf', gulp.series(
     'test-restart-webserver')
 );
 
-// -------------------------------------
-//   Task: Run .NET Core unit tests
-// -------------------------------------
-gulp.task('test-dotnet', function () {
-  return gulp.src('**/*.Tests.csproj', { read: false }).pipe(dotnetTest());
-});
-
 //endregion
 
 //region build
@@ -952,22 +819,6 @@ gulp.task('build-npm-front-end', function (cb) {
     dryRun: false,
     silent: false,
     cwd: '.'
-  };
-  execute(
-    'npm install',
-    options,
-    cb
-  );
-});
-
-// -------------------------------------
-//   Task: Build npm back-end
-// -------------------------------------
-gulp.task('build-npm-back-end', function (cb) {
-  var options = {
-    dryRun: false,
-    silent: false,
-    cwd: 'src/node'
   };
   execute(
     'npm install',
@@ -1075,15 +926,15 @@ gulp.task('build-version', function () {
 // -------------------------------------
 gulp.task('build-changeGroup', function (cb) {
   execute(
-    'sudo chgrp -R www-data src; sudo chgrp -R www-data test; sudo chgrp -R www-data artifacts; ' +
-    'sudo chmod -R g+w src; sudo chmod -R g+w test; sudo chmod -R g+wx artifacts',
+    'sudo chgrp -R www-data src; sudo chgrp -R www-data test; ' +
+    'sudo chmod -R g+w src; sudo chmod -R g+w test',
     null,
     cb
   );
 });
 
 gulp.task('build-changeGroup').description =
-  'Ensure www-data is the group and can write for src, test, and artifacts folder';
+  'Ensure www-data is the group and can write for src and test folder';
 
 // -------------------------------------
 //   Task: Build Production Config
@@ -1235,88 +1086,6 @@ gulp.task('build-clearLocalCache').description =
   'Clear all subdirectories of local cache/';
 
 // -------------------------------------
-//   Task: .NET Core publish
-// -------------------------------------
-gulp.task('build-dotnet-publish', function () {
-  del('artifacts/netcore-api/**/*');
-  return gulp.src('src/netcore-api/SIL.XForge.WebApi.Server/SIL.XForge.WebApi.Server.csproj',
-    { read: false })
-      .pipe(dotnetPublish({
-        configuration: 'Release',
-        runtime: 'linux-x64',
-        output: '../../../artifacts/netcore-api'
-      }));
-});
-
-// -------------------------------------
-//   Task: Build .NET Core host config
-// -------------------------------------
-gulp.task('build-dotnet-host-config', function (cb) {
-  var paratextClientId = process.env.PARATEXT_CLIENT_ID;
-  if (paratextClientId === undefined) {
-    paratextClientId = 'paratextClientId';
-  }
-
-  var paratextApiToken = process.env.PARATEXT_API_TOKEN;
-  if (paratextApiToken === undefined) {
-    paratextApiToken = 'paratextApiToken';
-  }
-
-  var jwtKey = process.env.JWT_KEY;
-  if (jwtKey === undefined) {
-    jwtKey = 'jwtKey';
-  }
-
-  var bugsnagApiKey = process.env.XFORGE_BUGSNAG_API_KEY;
-  if (bugsnagApiKey === undefined) {
-    bugsnagApiKey = 'missing-bugsnag-api-key';
-  }
-
-  var params = require('yargs')
-    .option('applicationName', {
-      demand: true,
-      type: 'string' })
-    .option('bugsnagApiKey', {
-      demand: false,
-      default: bugsnagApiKey,
-      type: 'string' })
-    .option('buildNumber', {
-      demand: true,
-      type: 'string' })
-    .fail(yargFailure)
-    .argv;
-  console.log('version =', params.buildNumber);
-
-  var jobDatabase = params.applicationName + '_jobs';
-
-  fs.writeFile('artifacts/netcore-api/appsettings.host.json', JSON.stringify({
-    Security: {
-      JwtKey: jwtKey
-    },
-    Paratext: {
-      ClientId: paratextClientId,
-      ClientSecret: paratextApiToken
-    },
-    DataAccess: {
-      JobDatabase: jobDatabase
-    },
-    Bugsnag: {
-      ApiKey: bugsnagApiKey,
-      Version: params.buildNumber
-    }
-  }), cb);
-});
-
-// -------------------------------------
-//   Task: Build .NET Core
-// -------------------------------------
-gulp.task('build-dotnet',
-  gulp.series(
-    'build-dotnet-publish',
-    'build-dotnet-host-config')
-);
-
-// -------------------------------------
 //   Task: Build Upload to destination
 // -------------------------------------
 gulp.task('build-upload', function (cb) {
@@ -1362,17 +1131,6 @@ gulp.task('build-upload', function (cb) {
       cb
     );
   }
-
-  options.src = 'artifacts/netcore-api/';
-  options.dest = path.join(params.dest, '/api2');
-
-  execute(
-    'rsync -progzlt --chmod=Dug=rwx,Fug=rwx,o-rwx ' +
-    '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
-    '<%= src %> <%= dest %>',
-    options,
-    cb
-  );
 });
 
 // ------------------------------------------
@@ -1407,7 +1165,8 @@ gulp.task('build-createWebsiteDefsTs', function () {
 gulp.task('build-createWebsiteDefs',
   gulp.parallel(
     'build-createWebsiteDefsPhp',
-    'build-createWebsiteDefsTs')
+    'build-createWebsiteDefsTs'
+  )
 );
 
 // -------------------------------------
@@ -1418,17 +1177,17 @@ gulp.task('build',
     gulp.parallel(
       'build-composer',
       'build-npm-front-end',
-      'build-npm-back-end',
       'build-version',
       'build-productionConfig',
       'build-clearLocalCache',
       'build-remove-test-fixtures',
-      'build-dotnet',
-      'build-createWebsiteDefs'),
+      'build-createWebsiteDefs'
+    ),
     'sass',
     'build-webpack',
     'build-minify',
-    'build-changeGroup')
+    'build-changeGroup'
+  )
 );
 
 // -------------------------------------
@@ -1437,8 +1196,7 @@ gulp.task('build',
 gulp.task('get-dependencies',
   gulp.parallel(
     'build-composer',
-    'build-npm-front-end',
-    'build-npm-back-end'
+    'build-npm-front-end'
   )
 );
 
@@ -1472,9 +1230,8 @@ gulp.task('build-and-upload',
   gulp.series(
     'build',
     'build-upload',
-    'remote-restart-php-fpm',
-    'remote-restart-xforge-web-api',
-    'remote-restart-node-server')
+    'remote-restart-php-fpm'
+  )
 );
 
 // -------------------------------------
@@ -1485,7 +1242,6 @@ gulp.task('build-e2e',
     'test-e2e-useTestConfig',
     'build',
     'build-upload',
-    'local-restart-xforge-web-api',
     'test-e2e-env',
     'test-e2e-setupTestEnvironment',
     'test-e2e-doTest'
@@ -1502,10 +1258,8 @@ gulp.task('build-and-test',
     'build',
     'test-php',
     'test-ts',
-    'test-dotnet',
-    'test-restart-webserver',
-    'local-restart-xforge-web-api',
-    'local-restart-node-server')
+    'test-restart-webserver'
+  )
 );
 gulp.task('build-and-test').description =
   'Build and Run PHP tests on CI server; Deploy to dev site';
@@ -1516,7 +1270,8 @@ gulp.task('build-and-test').description =
 gulp.task('build-php-coverage',
   gulp.series(
     'build',
-    'test-php-coverage')
+    'test-php-coverage'
+  )
 );
 
 //endregion
