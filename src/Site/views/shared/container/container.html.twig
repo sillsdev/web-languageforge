@@ -81,7 +81,7 @@
 <script src="https://unpkg.com/helphero"></script>
 <script type="text/javascript">
 var hlp = window.helphero('9yZMlWWMsDS');
-{% if userId %}
+{% if userId is defined %}
     hlp.identify("{{ userId }}");
 {% else %}
     hlp.anonymous();
