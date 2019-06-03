@@ -228,11 +228,10 @@ export class EditorDataService {
 
       this.commentService.updateGlobalCommentCounts();
       deferred.resolve(result);
-      return deferred.promise;
     } else {  // if (result.ok)
       deferred.reject(result);
-      return deferred.promise;
     }
+    return deferred.promise;
   }
 
   // noinspection JSMethodCanBeStatic
