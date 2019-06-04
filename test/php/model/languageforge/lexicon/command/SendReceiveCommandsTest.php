@@ -291,19 +291,19 @@ class SendReceiveCommandsTest extends TestCase
         // nothing runs in the current test function after an exception. IJH 2015-12
     }
 
-    private function WaitForFileExist($file, $timeoutSeconds)
+    private function WaitForFileExistAndNotEmpty($file, $timeoutSeconds)
     {
         $tenMicroSeconds = 10;
         $timeoutMicroSeconds = $timeoutSeconds * 1000000;
         for ($waitMicroSeconds = 0;
              $waitMicroSeconds < $timeoutMicroSeconds;
              $waitMicroSeconds += $tenMicroSeconds) {
-            if (file_exists($file)) {
+            if (file_exists($file) && filesize($file) > 0) {
                 break;
             }
             usleep($tenMicroSeconds);
         }
-        return file_exists($file);
+        return file_exists($file) && filesize($file) > 0;
     }
 
     public function testStartLFMergeIfRequired_HasSendReceiveButNoPidFile_Started()
@@ -321,7 +321,7 @@ class SendReceiveCommandsTest extends TestCase
 
         $this->assertTrue($isRunning);
 
-        if (!$this->WaitForFileExist($mockPidFilePath, $timeoutSeconds)) {
+        if (!$this->WaitForFileExistAndNotEmpty($mockPidFilePath, $timeoutSeconds)) {
             $this->fail('Waiting for PID file creation timed out - machine too busy?');
         }
 
