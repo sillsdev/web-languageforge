@@ -55,7 +55,7 @@ echo Install postfix non-interactively
 sudo DEBIAN_FRONTEND=noninteractive apt install -y postfix || exit
 
 echo Install and upgrade packages
-sudo apt install -y flip php7.0-curl chromium-browser git ansible php7.0-cli libapache2-mod-php mongodb-server p7zip-full php7.0-dev php7.0-gd php7.0-intl php7.0-mbstring php-pear php-xdebug postfix unzip lfmerge default-jre || exit
+sudo apt install -y flip php7.0-curl chromium-browser git ansible php7.0-cli libapache2-mod-php p7zip-full php7.0-dev php7.0-gd php7.0-intl php7.0-mbstring php-pear php-xdebug postfix unzip lfmerge default-jre || exit
 sudo apt -y upgrade || exit
 
 if [ ! -d "web-languageforge/deploy" ]
