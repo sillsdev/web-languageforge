@@ -106,6 +106,7 @@ fi
 cd web-languageforge
 
 echo "Refresh xForge dependencies"
+npm install
 ./refreshDeps.sh || exit
 
 echo "Factory Reset the database"
