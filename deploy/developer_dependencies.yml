@@ -178,6 +178,11 @@
     - name: Ensure /var/www/.local directory is writeable (for LfMerge)
       file: path="/var/www/.local" state=directory owner=www-data group=www-data mode=0755
 
+    - name: add Mongo apt key
+      apt_key:
+        keyserver: hkp://keyserver.ubuntu.com:80
+        id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+
     - name: install PECL mongo extension
       # yes types empty line over and over to accept defaults
       shell: yes '' | /usr/bin/pecl install mongodb
