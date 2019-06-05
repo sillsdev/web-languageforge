@@ -11,17 +11,13 @@
         repo: "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse"
         filename: mongodb-org-3.6
         update_cache: yes
-    - name: add Mongo apt key
-      apt_key:
-        keyserver: keyserver.ubuntu.com
-        id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
   roles:
     - fix
     - ssl_config
     - apache_config
   tasks:
     - name: install packages
-      apt: name="{{item}}" state=present allow_unauthenticated=yes
+      apt: name="{{item}}" state=present
       with_items:
         - libapache2-mod-php
         - mongodb-org
