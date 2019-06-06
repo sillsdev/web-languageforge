@@ -215,7 +215,7 @@
 
     - name: update the mongo config file
       lineinfile:
-        dest: /etc/mongodb.conf
+        dest: /etc/mongod.conf
         regexp: '^(\s*dbPath: ).*$'
         line: '\1{{mongo_path}}'
         backrefs: yes
@@ -227,7 +227,7 @@
         state: "{{item.state}}"
         enabled: "{{item.enabled}}"
       with_items:
-        - name: mongodb
+        - name: mongod
           state: stopped
           enabled: no
         - name: mongod
