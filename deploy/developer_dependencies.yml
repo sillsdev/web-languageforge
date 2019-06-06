@@ -5,6 +5,10 @@
   become: yes
   pre_tasks:
     - include_vars: "vars_{{ deploy }}.yml"
+    - name: add Mongo apt key
+      apt_key:
+        keyserver: hkp://keyserver.ubuntu.com:80
+        id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
     - name: add Mongo 3.6 repository
       # TODO: use ansible system variable instead of hardcoding "xenial" in repo line -- except that it can only be from a restricted list of distros (e.g. xenial & bionic only)
       apt_repository:
