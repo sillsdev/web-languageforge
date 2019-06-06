@@ -42,6 +42,7 @@ if [ ! -n "$ALREADYHASMIRROR" ]; then
 fi
 
 echo Add extra apt repositories
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
 wget -O- http://linux.lsdev.sil.org/downloads/sil-testing.gpg | sudo apt-key add -
 sudo add-apt-repository -y 'deb http://linux.lsdev.sil.org/ubuntu xenial main'
 sudo add-apt-repository -y 'deb http://linux.lsdev.sil.org/ubuntu xenial-experimental main'
