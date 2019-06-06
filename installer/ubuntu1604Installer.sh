@@ -105,6 +105,9 @@ if [ ! -L web-scriptureforge ]; then
 fi
 cd web-languageforge
 
+echo "Run npm install"
+npm install || exit
+
 echo "Refresh xForge dependencies"
 ./refreshDeps.sh || exit
 
