@@ -56,6 +56,15 @@ export class ExceptionHandlingService {
       return;
     }
 
+    // Silence errors coming from out-of-date browser versions
+    // So far we've only seen errors from Chrome version 30, but if other old
+    // browser versions trigger errors, they can be added below as well
+    const userAgent = navigator.userAgent;
+    if (userAgent.indexOf('Chrome/30') >= 0) {
+      // Outdated browser: don't submit error to Bugsnag
+      return;
+    }
+
     this.bugsnagClient.notify(exception, {
       beforeSend: report => {
         if (this.metadata != null) {
