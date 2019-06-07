@@ -42,6 +42,7 @@ if [ ! -n "$ALREADYHASMIRROR" ]; then
 fi
 
 echo Add extra apt repositories
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
 wget -O- http://linux.lsdev.sil.org/downloads/sil-testing.gpg | sudo apt-key add -
 sudo add-apt-repository -y 'deb http://linux.lsdev.sil.org/ubuntu xenial main'
 sudo add-apt-repository -y 'deb http://linux.lsdev.sil.org/ubuntu xenial-experimental main'
@@ -55,7 +56,7 @@ echo Install postfix non-interactively
 sudo DEBIAN_FRONTEND=noninteractive apt install -y postfix || exit
 
 echo Install and upgrade packages
-sudo apt install -y flip php7.0-curl chromium-browser git ansible php7.0-cli libapache2-mod-php mongodb-server p7zip-full php7.0-dev php7.0-gd php7.0-intl php7.0-mbstring php-pear php-xdebug postfix unzip lfmerge default-jre || exit
+sudo apt install -y flip php7.0-curl chromium-browser git ansible php7.0-cli libapache2-mod-php p7zip-full php7.0-dev php7.0-gd php7.0-intl php7.0-mbstring php-pear php-xdebug postfix unzip lfmerge default-jre || exit
 sudo apt -y upgrade || exit
 
 if [ ! -d "web-languageforge/deploy" ]
@@ -109,6 +110,7 @@ echo "Run npm install"
 npm install || exit
 
 echo "Refresh xForge dependencies"
+npm install
 ./refreshDeps.sh || exit
 
 echo "Factory Reset the database"
