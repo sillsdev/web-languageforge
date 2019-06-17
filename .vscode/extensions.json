@@ -6,6 +6,6 @@
     "msjsdiag.debugger-for-chrome",
     "EditorConfig.editorconfig",
     "felixfbecker.php-pack",
-    "eg2.tslint"
+    "ms-vscode.vscode-typescript-tslint-plugin"
 	]
 }
