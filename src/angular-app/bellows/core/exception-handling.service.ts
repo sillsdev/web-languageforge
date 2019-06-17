@@ -58,7 +58,7 @@ export class ExceptionHandlingService {
 
     this.bugsnagClient.notify(exception, {
       beforeSend: report => {
-        (this.metadata.userName == null) ? this.metadata.userName = "unknown" 
+        (this.metadata.userName == null) ? this.metadata.userName = "unknown";
         if (this.metadata != null) {
           report.user = {
             id: this.metadata.userId,
