@@ -926,15 +926,15 @@ gulp.task('build-version', function () {
 // -------------------------------------
 gulp.task('build-changeGroup', function (cb) {
   execute(
-    'sudo chgrp -R www-data src; sudo chgrp -R www-data test; sudo chgrp -R www-data artifacts; ' +
-    'sudo chmod -R g+w src; sudo chmod -R g+w test; sudo chmod -R g+wx artifacts',
+    'sudo chgrp -R www-data src; sudo chgrp -R www-data test; ' +
+    'sudo chmod -R g+w src; sudo chmod -R g+w test',
     null,
     cb
   );
 });
 
 gulp.task('build-changeGroup').description =
-  'Ensure www-data is the group and can write for src, test, and artifacts folder';
+  'Ensure www-data is the group and can write for src and test folder';
 
 // -------------------------------------
 //   Task: Build Production Config
