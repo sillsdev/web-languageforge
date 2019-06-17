@@ -189,7 +189,9 @@ class JsonEncoder
      */
     public function encodeDateTime($model)
     {
-        return $model->format(\DateTime::ISO8601);
+        // Can't use DateTime::ISO8601 here since it returns timezones like "+0700" (format code "O") and we need "+07:00" (format code "P")
+        // But format code "c" returns a proper RFC 3339 date (2012-12-25T12:34:56+00:00) which will be parsed by every browser
+        return $model->format('c');
     }
 
     /**
@@ -198,7 +200,9 @@ class JsonEncoder
      */
     public function encodeUniversalTimestamp($model)
     {
-        return $model->asFormattedString(UniversalTimestamp::ISO8601_WITH_MILLISECONDS);
+        // Unfortunately, UniversalTimestamp::ISO8601_WITH_MILLISECONDS returns timezones like "+0700" (format code "O") and we need "+07:00" (format code "P")
+        $dt = $model->asDateTimeInterface();
+        return $model->asFormattedString(UniversalTimestamp::ISO8601_WITH_MILLISECONDS_WITHOUT_TZ) . $dt->format('P');
     }
 
 }

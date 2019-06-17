@@ -33,10 +33,10 @@ class JsonDateMapperTest extends TestCase
 
         $decodedModel = new TestJsonDateModel();
         JsonDecoder::decode($decodedModel, $encoded);
-        $iso8601 = $decodedModel->dateTime->format(DateTime::ISO8601);
-        $this->assertEquals($encoded['dateTime'], $iso8601);
+        $rfc3339 = $decodedModel->dateTime->format('c');
+        $this->assertEquals($encoded['dateTime'], $rfc3339);
         $this->assertEquals($model->dateTime, $decodedModel->dateTime);
- //       var_dump($iso8601);
+ //       var_dump($rfc3339);
     }
 
     public function testEncodeDecodeUniversalTimestamp_HistoricalDate_Same()
@@ -49,9 +49,10 @@ class JsonDateMapperTest extends TestCase
 
         $decodedModel = new TestJsonDateModel();
         JsonDecoder::decode($decodedModel, $encoded);
-        $iso8601 = $decodedModel->universalTimestamp->asFormattedString(UniversalTimestamp::ISO8601_WITH_MILLISECONDS);
-        $this->assertEquals($encoded['universalTimestamp'], $iso8601);
+        $rfc3339 = $decodedModel->universalTimestamp->asFormattedString(UniversalTimestamp::ISO8601_WITH_MILLISECONDS_WITHOUT_TZ) .
+                   $decodedModel->universalTimestamp->asDateTimeInterface()->format('P');
+        $this->assertEquals($encoded['universalTimestamp'], $rfc3339);
         $this->assertEquals($model->universalTimestamp, $decodedModel->universalTimestamp);
-//        var_dump($iso8601);
+//        var_dump($rfc3339);
     }
 }
