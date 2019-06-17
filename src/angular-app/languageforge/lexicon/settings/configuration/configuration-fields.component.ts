@@ -67,6 +67,11 @@ export class FieldsConfigurationController implements angular.IController {
   checkIfAllGroupSelected = ConfigurationFieldUnifiedViewModel.checkIfAllGroupSelected;
   overrideRoleInputSystem = ConfigurationFieldUnifiedViewModel.overrideRoleInputSystem;
   overrideGroupInputSystem = ConfigurationFieldUnifiedViewModel.overrideGroupInputSystem;
+  overrideRoleColumn = ConfigurationFieldUnifiedViewModel.overrideRoleColumn;
+  overrideGroupColumn = ConfigurationFieldUnifiedViewModel.overrideGroupColumn;
+  overrideAll = ConfigurationFieldUnifiedViewModel.overrideAll;
+  resetInputSystemsForRole = ConfigurationFieldUnifiedViewModel.resetInputSystemsForRole;
+  resetInputSystemsForGroup = ConfigurationFieldUnifiedViewModel.resetInputSystemsForGroup;
 
   openNewCustomFieldModal(fieldLevel: string): void {
     interface NewCustomData {
