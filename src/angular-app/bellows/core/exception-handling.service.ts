@@ -51,13 +51,14 @@ export class ExceptionHandlingService {
   }
 
   private notifyBugsnag(exception: Error, cause?: string) {
-    if (this.metadata != null && this.metadata.userName != null && this.metadata.userName.startsWith('test_runner_')) {
+    if (this.metadata != null && this.metadata.userName.startsWith('test_runner_')) {
       // running unit tests
       return;
     }
 
     this.bugsnagClient.notify(exception, {
       beforeSend: report => {
+        (this.metadata.userName == null) ? this.metadata.userName = "unknown" 
         if (this.metadata != null) {
           report.user = {
             id: this.metadata.userId,
