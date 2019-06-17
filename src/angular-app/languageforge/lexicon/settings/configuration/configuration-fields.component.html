@@ -31,32 +31,37 @@
                 <td class="text-center align-middle">
                     <input class="position-static" id="input-system-select-all-observer-checkbox"
                            data-ng-model="$ctrl.unifiedViewModel.inputSystems.selectAllColumns.observer"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'observer')"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'observer');
+                                          $ctrl.overrideRoleColumn($ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, 'observer')"
                            aria-label="..."  type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="position-static" id="input-system-select-all-commenter-checkbox"
                            data-ng-model="$ctrl.unifiedViewModel.inputSystems.selectAllColumns.commenter"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'commenter')"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'commenter');
+                                          $ctrl.overrideRoleColumn($ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, 'commenter')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="position-static" id="input-system-select-all-contributor-checkbox"
                            data-ng-model="$ctrl.unifiedViewModel.inputSystems.selectAllColumns.contributor"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'contributor')"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'contributor');
+                                          $ctrl.overrideRoleColumn($ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, 'contributor')"
                            aria-label="..." type="checkbox">
                 </td>
                 <td class="text-center align-middle">
                     <input class="position-static" id="input-system-select-all-manager-checkbox"
                            data-ng-model="$ctrl.unifiedViewModel.inputSystems.selectAllColumns.manager"
-                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'manager')"
+                           data-ng-click="$ctrl.selectAllRoleColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, 'manager');
+                                          $ctrl.overrideRoleColumn($ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, 'manager')"
                            aria-label="..." type="checkbox">
                 </td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td class="text-center align-middle" data-ng-repeat="group in $ctrl.unifiedViewModel.inputSystems.selectAllColumns.groups">
                     <input class="position-static input-system-select-all-group-checkbox"
                            data-ng-model="group.show"
-                           data-ng-click="$ctrl.selectAllGroupColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $index)"
+                           data-ng-click="$ctrl.selectAllGroupColumn($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $index);
+                                          $ctrl.overrideGroupColumn($ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $index)"
                            aria-label="..." type="checkbox">
                 </td>
                 <td></td>
@@ -68,7 +73,8 @@
                 <th class="table-secondary text-center align-middle">
                     <input class="position-static select-row-checkbox"
                            data-ng-model="inputSystem.isAllRowSelected"
-                           data-ng-click="$ctrl.selectAllRow(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns)"
+                           data-ng-click="$ctrl.selectAllRow(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.selectAllColumns);
+                                          $ctrl.overrideAll(inputSystem, $ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns)"
                            aria-label="..." type="checkbox">
                 </th>
                 <td class="text-center align-middle">
@@ -115,28 +121,28 @@
                 <td></td>
                 <td></td>
                 <td class="text-middle align-middle">
-                    <button type="button" class="btn btn-std text-middle" data-ng-click="$ctrl.fccResetInputSystems({column: 'observer'})"
+                    <button type="button" class="btn btn-std text-middle" data-ng-click="$ctrl.resetInputSystemsForRole($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $ctrl.fccConfigDirty, 'observer')"
                             data-ng-show="$ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride.observer"
                             id="reset-input-system-observer-btn" title="Reset input systems for observer">
                         Reset
                     </button>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.fccResetInputSystems({column: 'commenter'})"
+                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.resetInputSystemsForRole($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $ctrl.fccConfigDirty, 'commenter')"
                             data-ng-show="$ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride.commenter"
                             id="reset-input-system-commenter-btn" title="Reset input systems for commenter">
                         Reset
                     </button>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.fccResetInputSystems({column: 'contributor'})"
+                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.resetInputSystemsForRole($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $ctrl.fccConfigDirty, 'contributor')"
                             data-ng-show="$ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride.contributor"
                             id="reset-input-system-contributor-btn" title="Reset input systems for contributor">
                         Reset
                     </button>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.fccResetInputSystems({column: 'manager'})"
+                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.resetInputSystemsForRole($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $ctrl.fccConfigDirty, 'manager')"
                             data-ng-show="$ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride.manager"
                             id="reset-input-system-manager-btn" title="Reset input systems for manager">
                         Reset
@@ -144,7 +150,7 @@
                 </td>
                 <!--suppress JSUnusedLocalSymbols -->
                 <td data-ng-repeat="group in $ctrl.unifiedViewModel.inputSystems.selectAllColumns.groups">
-                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.fccResetInputSystems({column: $index})"
+                    <button type="button" class="btn btn-std" data-ng-click="$ctrl.resetInputSystemsForGroup($ctrl.unifiedViewModel.inputSystems.settings, $ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride, $ctrl.unifiedViewModel.inputSystems.selectAllColumns, $ctrl.fccConfigDirty, $index)"
                             data-ng-show="$ctrl.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride.groups[$index]"
                             title="Reset input systems for user">
                         Reset
