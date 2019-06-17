@@ -128,60 +128,6 @@ export class LexiconConfigurationController implements angular.IController {
     this.addInputSystem = true; // Show New Input System window
   }
 
-  // TODO: Splitting this into two functions for role and group leads to too much code duplication.
-  // I think I should re-combine this into a single function, which will have less duplication. 2019-06 RM
-  resetInputSystems(column: number | string): void {
-    if (typeof column === 'string') {
-      this.resetInputSystemsForRole(column);
-    } else if (typeof column === 'number') {
-      this.resetInputSystemsForGroup(column);
-    }
-  }
-
-  resetInputSystemsForRole(role: string): void {
-    const overrides = this.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride;
-    // const overridesPristine = this.unifiedViewModel.inputSystemsPristine.hasCustomInputSystemsOverride;
-    const settings = this.unifiedViewModel.inputSystems.settings;
-    const settingsPristine = this.unifiedViewModel.inputSystemsPristine.settings;
-    const selectAllColumns = this.unifiedViewModel.inputSystems.selectAllColumns;
-    overrides[role] = false;
-    // This is O(N^2), but robust even if input systems get re-ordered
-    for (const inputSystemPristine of settingsPristine) {
-      const tag = inputSystemPristine.tag;
-      for (const inputSystem of settings) {
-        if (inputSystem.tag === tag) {
-          inputSystem[role] = inputSystemPristine[role];
-          ConfigurationFieldUnifiedViewModel.checkIfAllRoleSelected(inputSystem, settings, selectAllColumns, role);
-        }
-      }
-    }
-    // TODO: That logic doesn't work very well if the original, pristine config had an override, and we're trying
-    // to get back to the un-overridden state of the checkboxes, i.e. the state calculated from the field settings.
-    // To fix that, we'll need to tweak ConfigurationFieldUnifiedViewModel.setInputSystemRoleSettings to work
-    // on a per-role model, i.e. extract the body of "for (const role of roles)" into a separate function.
-  }
-
-  resetInputSystemsForGroup(groupIndex: number): void {
-    const overrides = this.unifiedViewModel.inputSystems.hasCustomInputSystemsOverride;
-    // const overridesPristine = this.unifiedViewModel.inputSystemsPristine.hasCustomInputSystemsOverride;
-    const settings = this.unifiedViewModel.inputSystems.settings;
-    const settingsPristine = this.unifiedViewModel.inputSystemsPristine.settings;
-    const selectAllColumns = this.unifiedViewModel.inputSystems.selectAllColumns;
-    overrides.groups[groupIndex].show = false;
-    // This is O(N^2), but robust even if input systems get re-ordered
-    for (const inputSystemPristine of settingsPristine) {
-      const tag = inputSystemPristine.tag;
-      for (const inputSystem of settings) {
-        if (inputSystem.tag === tag) {
-          inputSystem.groups[groupIndex].show = inputSystemPristine.groups[groupIndex].show;
-          ConfigurationFieldUnifiedViewModel.checkIfAllGroupSelected(inputSystem, settings, selectAllColumns,
-                                                                     groupIndex);
-        }
-      }
-    }
-
-  }
-
   // noinspection JSUnusedGlobalSymbols
   onUpdate = (
     $event: {
