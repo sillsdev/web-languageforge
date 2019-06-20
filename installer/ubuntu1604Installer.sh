@@ -119,6 +119,9 @@ cd scripts/tools
 sudo php FactoryReset.php run || exit
 cd ../..
 
+echo "Set file permissions"
+sudo chmod g+w src/assets/lexicon/
+
 echo "You should now be able to access Language Forge locally at http://languageforge.local"
 echo "You should now be able to access Scripture Forge locally at http://scriptureforge.local"
 echo "username: admin"
