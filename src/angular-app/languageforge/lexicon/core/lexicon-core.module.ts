@@ -2,6 +2,7 @@ import * as angular from 'angular';
 
 import {BreadcrumbModule} from '../../../bellows/core/breadcrumbs/breadcrumb.module';
 import {CoreModule} from '../../../bellows/core/core.module';
+import {HelpHeroService} from '../../../bellows/core/helphero.service';
 import {SemanticDomainsModule} from '../../core/semantic-domains/semantic-domains.service';
 import {LexiconConfigService} from './lexicon-config.service';
 import {LexiconEditorDataService} from './lexicon-editor-data.service';
@@ -28,4 +29,5 @@ export const LexiconCoreModule = angular
   .service('lexSendReceiveApi', LexiconSendReceiveApiService)
   .service('lexSendReceive', LexiconSendReceiveService)
   .service('lexUtils', LexiconUtilityService)
+  .service('helpHeroService', HelpHeroService)
   .name;
