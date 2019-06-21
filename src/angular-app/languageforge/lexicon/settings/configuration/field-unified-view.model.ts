@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 import {User} from '../../../../bellows/shared/model/user.model';
 import {
   LexConfigFieldList, LexConfigMultiText, LexConfigPictures, LexiconConfig, LexRoleViewConfig, LexUserViewConfig,
@@ -9,6 +10,7 @@ import {OptionSelects} from './option-selects.model';
 export class ConfigurationFieldUnifiedViewModel {
   groupLists: GroupList[];
   inputSystems: InputSystemSettingsList;
+  inputSystemsPristine: InputSystemSettingsList;
   entryFields: FieldSettingsList;
   senseFields: FieldSettingsList;
   exampleFields: FieldSettingsList;
@@ -17,7 +19,10 @@ export class ConfigurationFieldUnifiedViewModel {
     this.groupLists = ConfigurationFieldUnifiedViewModel.setGroupLists(config, users);
 
     this.inputSystems = new InputSystemSettingsList();
-    this.inputSystems.settings = ConfigurationFieldUnifiedViewModel.setInputSystemsViewModel(config);
+    const [settings, overrides] = ConfigurationFieldUnifiedViewModel.setInputSystemsViewModel(config);
+    this.inputSystems.settings = settings;
+    this.inputSystems.hasCustomInputSystemsOverride = overrides;
+    this.inputSystemsPristine = angular.copy(this.inputSystems);
     const optionSelects = new OptionSelects();
     for (const tag in config.inputSystems) {
       if (config.inputSystems.hasOwnProperty(tag)) {
@@ -53,6 +58,7 @@ export class ConfigurationFieldUnifiedViewModel {
     }
 
     for (let i = 0; i < this.inputSystems.settings[0].groups.length; i++) {
+      this.inputSystems.hasCustomInputSystemsOverride.groups.push(new Group());
       this.inputSystems.selectAllColumns.groups.push(new Group());
       this.entryFields.selectAllColumns.groups.push(new Group());
       this.senseFields.selectAllColumns.groups.push(new Group());
@@ -70,7 +76,8 @@ export class ConfigurationFieldUnifiedViewModel {
 
   toConfig(config: LexiconConfig): void {
     // Config updates for Input Systems
-    ConfigurationFieldUnifiedViewModel.inputSystemsToConfig(this.inputSystems.settings, config, this.groupLists);
+    ConfigurationFieldUnifiedViewModel.inputSystemsToConfig(this.inputSystems.settings,
+      this.inputSystems.hasCustomInputSystemsOverride, config, this.groupLists);
 
     // Config updates for fields
     const entryConfig = config.entry;
@@ -168,12 +175,76 @@ export class ConfigurationFieldUnifiedViewModel {
     ConfigurationFieldUnifiedViewModel.checkIfAllGroupColumnSelected(settings, selectAll, groupIndex);
   }
 
-  private static inputSystemsToConfig(inputSystems: InputSystemSettings[], config: LexiconConfig,
-                                      groupLists: GroupList[]): void {
+  static overrideRoleInputSystem(setting: SettingsBase, settings: SettingsBase[], overrides: InputSystemSettings,
+                                 selectAll: SettingsBase, role: string): void {
+    overrides[role] = true;
+    ConfigurationFieldUnifiedViewModel.checkIfAllRoleSelected(setting, settings, selectAll, role);
+  }
+
+  static overrideGroupInputSystem(setting: SettingsBase, settings: SettingsBase[], overrides: InputSystemSettings,
+                                  selectAll: SettingsBase, groupIndex: number): void {
+    overrides.groups[groupIndex].show = true;
+    ConfigurationFieldUnifiedViewModel.checkIfAllGroupSelected(setting, settings, selectAll, groupIndex);
+  }
+
+  static overrideRoleColumn(overrides: InputSystemSettings, role: string): void {
+    overrides[role] = true;
+  }
+
+  static overrideGroupColumn(overrides: InputSystemSettings, groupIndex: number): void {
+    overrides.groups[groupIndex].show = true;
+  }
+
+  static overrideAll(setting: SettingsBase, settings: SettingsBase[], overrides: InputSystemSettings,
+                     selectAll: SettingsBase): void {
+    const roles = RoleType.roles();
+    for (const role of roles) {
+      ConfigurationFieldUnifiedViewModel.overrideRoleInputSystem(
+        setting, settings, overrides, selectAll, role);
+    }
+    for (const group of setting.groups) {
+      ConfigurationFieldUnifiedViewModel.overrideGroupInputSystem(
+        setting, settings, overrides, selectAll, setting.groups.indexOf(group));
+    }
+  }
+
+  static resetInputSystemsForRole(settings: InputSystemSettings[], overrides: InputSystemSettings,
+                                  selectAll: SettingsBase, config: LexiconConfig, role: string): void {
+    for (const inputSystem of settings) {
+      const tag = inputSystem.tag;
+      ConfigurationFieldUnifiedViewModel.setInputSystemRoleSettingsFromFields(
+        tag, config, role, inputSystem);
+      ConfigurationFieldUnifiedViewModel.checkIfAllRoleSelected(
+        inputSystem, settings, selectAll, role);
+    }
+    overrides[role] = false;
+  }
+
+  static resetInputSystemsForGroup(settings: InputSystemSettings[], overrides: InputSystemSettings,
+                                   selectAll: SettingsBase, config: LexiconConfig, groupIndex: number): void {
+    for (const inputSystem of settings) {
+      const tag = inputSystem.tag;
+      ConfigurationFieldUnifiedViewModel.setInputSystemGroupSettingsFromFields(
+        tag, config, groupIndex, inputSystem);
+      ConfigurationFieldUnifiedViewModel.checkIfAllGroupSelected(
+        inputSystem, settings, selectAll, groupIndex);
+    }
+    overrides.groups[groupIndex].show = false;
+  }
+
+  private static isMultitextFieldType(fieldType: string) {
+    // Picture fields are also multitext fields and have lists of input systems
+    return (fieldType === 'multitext' || fieldType === 'pictures');
+  }
+
+  private static inputSystemsToConfig(inputSystems: InputSystemSettings[],
+                                      overrides: InputSystemSettings,
+                                      config: LexiconConfig, groupLists: GroupList[]): void {
     // iterate over every role type
     const roleType = new RoleType();
     for (const role of RoleType.roles()) {
       const roleView: LexRoleViewConfig = config.roleViews[roleType[role]];
+      const overrideInputSystems: boolean = overrides[role];
       if (roleView != null && roleView.fields != null) {
         // add any Input Systems to the array for this role
         const tags: string[] = [];
@@ -185,10 +256,16 @@ export class ConfigurationFieldUnifiedViewModel {
         }
 
         for (const fieldName in roleView.fields) {
-          if (roleView.fields.hasOwnProperty(fieldName) && roleView.fields[fieldName].type === 'multitext') {
+          if (roleView.fields.hasOwnProperty(fieldName) &&
+              ConfigurationFieldUnifiedViewModel.isMultitextFieldType(roleView.fields[fieldName].type)) {
             const multiTextFieldConfig = roleView.fields[fieldName] as LexViewMultiTextFieldConfig;
-            multiTextFieldConfig.overrideInputSystems = true;
-            multiTextFieldConfig.inputSystems = tags;
+            if (overrideInputSystems) {
+              multiTextFieldConfig.overrideInputSystems = true;
+              multiTextFieldConfig.inputSystems = tags;
+            } else {
+              multiTextFieldConfig.overrideInputSystems = false;
+              multiTextFieldConfig.inputSystems = [];
+            }
           }
         }
       }
@@ -197,6 +274,7 @@ export class ConfigurationFieldUnifiedViewModel {
     // iterate over groups
     for (let i = 0; i < groupLists.length; i++) {
       const userView: LexUserViewConfig = config.userViews[groupLists[i].userId];
+      const overrideInputSystems: boolean = overrides.groups[i].show;
       if (userView != null && userView.fields != null) {
         // add any Input Systems to the array for this group
         const tags: string[] = [];
@@ -208,10 +286,16 @@ export class ConfigurationFieldUnifiedViewModel {
         }
 
         for (const fieldName in userView.fields) {
-          if (userView.fields.hasOwnProperty(fieldName) && userView.fields[fieldName].type === 'multitext') {
+          if (userView.fields.hasOwnProperty(fieldName) &&
+              ConfigurationFieldUnifiedViewModel.isMultitextFieldType(userView.fields[fieldName].type)) {
             const multiTextFieldConfig = userView.fields[fieldName] as LexViewMultiTextFieldConfig;
-            multiTextFieldConfig.overrideInputSystems = true;
-            multiTextFieldConfig.inputSystems = tags;
+            if (overrideInputSystems) {
+              multiTextFieldConfig.overrideInputSystems = true;
+              multiTextFieldConfig.inputSystems = tags;
+            } else {
+              multiTextFieldConfig.overrideInputSystems = false;
+              multiTextFieldConfig.inputSystems = [];
+            }
           }
         }
       }
@@ -230,6 +314,15 @@ export class ConfigurationFieldUnifiedViewModel {
       if (levelConfigField.type === 'pictures') {
         (levelConfigField as LexConfigPictures).captionHideIfEmpty = field.captionHiddenIfEmpty;
       }
+      if (ConfigurationFieldUnifiedViewModel.isMultitextFieldType(levelConfigField.type)) {
+        const multiTextLevelConfigField = levelConfigField as LexConfigMultiText;
+        multiTextLevelConfigField.inputSystems = [];
+        for (const inputSystemSettings of field.inputSystems) {
+          if (inputSystemSettings.isAllRowSelected) {
+            multiTextLevelConfigField.inputSystems.push(inputSystemSettings.tag);
+          }
+        }
+      }
 
       // from setLevelRoleSettings
       const roleType = new RoleType();
@@ -238,67 +331,58 @@ export class ConfigurationFieldUnifiedViewModel {
         if (roleView != null && roleView.fields != null) {
           roleView.fields[field.fieldName].show = field[role];
         }
-
-        if (config.roleViews[roleType[role]].fields[field.fieldName].type === 'multitext') {
-          const multiTextLevelConfigField = levelConfigField as LexConfigMultiText;
-          const multiTextFieldConfig = roleView.fields[field.fieldName] as LexViewMultiTextFieldConfig;
-          multiTextFieldConfig.overrideInputSystems = !field.hasCustomInputSystemsOverride;
-          multiTextLevelConfigField.inputSystems = [];
-          for (const inputSystemSettings of field.inputSystems) {
-            if (inputSystemSettings.isAllRowSelected) {
-              multiTextLevelConfigField.inputSystems.push(inputSystemSettings.tag);
-            }
-          }
-        }
       }
 
       // from setLevelGroupSettings
       for (let i = 0; i < groupLists.length; i++) {
         const userView = config.userViews[groupLists[i].userId];
         userView.fields[field.fieldName].show = field.groups[i].show;
-        if (userView.fields[field.fieldName].type === 'multitext') {
-          const multiTextLevelConfigField = levelConfigField as LexConfigMultiText;
-          const multiTextFieldConfig = userView.fields[field.fieldName] as LexViewMultiTextFieldConfig;
-          multiTextFieldConfig.overrideInputSystems = !field.hasCustomInputSystemsOverride;
-          multiTextLevelConfigField.inputSystems = [];
-          for (const inputSystemSettings of field.inputSystems) {
-            if (inputSystemSettings.isAllRowSelected) {
-              multiTextLevelConfigField.inputSystems.push(inputSystemSettings.tag);
-            }
-          }
-        }
       }
 
       levelConfig.fieldOrder.push(field.fieldName);
     }
   }
 
-  private static setInputSystemsViewModel(config: LexiconConfig): InputSystemSettings[] {
+  private static setInputSystemsViewModel(config: LexiconConfig): [InputSystemSettings[], InputSystemSettings] {
     const inputSystems: InputSystemSettings[] = [];
+    const overrides: InputSystemSettings = new InputSystemSettings();
     const selectedManagerTags = ConfigurationFieldUnifiedViewModel.getSelectedInputSystemsManagerTags(config);
     let i = 0;
     for (const tag of selectedManagerTags) {
-      ConfigurationFieldUnifiedViewModel.setInputSystemViewModel(config, inputSystems, tag, i);
+      ConfigurationFieldUnifiedViewModel.setInputSystemViewModel(config, inputSystems, overrides, tag, i);
       i++;
     }
     for (const tag in config.inputSystems) {
       if (config.inputSystems.hasOwnProperty(tag) && !selectedManagerTags.includes(tag)) {
-        ConfigurationFieldUnifiedViewModel.setInputSystemViewModel(config, inputSystems, tag, i);
+        ConfigurationFieldUnifiedViewModel.setInputSystemViewModel(config, inputSystems, overrides, tag, i);
         i++;
       }
     }
 
-    return inputSystems;
+    return [inputSystems, overrides];
   }
 
-  private static setInputSystemViewModel(config: LexiconConfig, inputSystems: InputSystemSettings[], tag: string,
-                                         index: number): void {
+  private static setInputSystemViewModel(config: LexiconConfig, inputSystems: InputSystemSettings[],
+                                         overrides: InputSystemSettings, tag: string, index: number): void {
     const inputSystemSettings = new InputSystemSettings();
     inputSystemSettings.tag = tag;
-    ConfigurationFieldUnifiedViewModel.setInputSystemRoleSettings(tag, config, inputSystemSettings);
-    ConfigurationFieldUnifiedViewModel.setInputSystemGroupSettings(tag, config, inputSystemSettings);
+    const roles = RoleType.roles();
+    const roleType = new RoleType();
+    for (const role of roles) {
+      ConfigurationFieldUnifiedViewModel.setInputSystemRoleSettings(
+        tag, config, role, roleType[role], inputSystemSettings, overrides);
+    }
+    let groupIndex = 0;
+    for (const userId in config.userViews) {
+      if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null &&
+        config.userViews[userId].fields != null
+      ) {
+        ConfigurationFieldUnifiedViewModel.setInputSystemGroupSettings(
+          tag, config, userId, groupIndex, inputSystemSettings, overrides);
+        groupIndex++;
+      }
+    }
     inputSystems[index] = inputSystemSettings;
-
     ConfigurationFieldUnifiedViewModel.checkIfAllRowSelected(inputSystemSettings);
   }
 
@@ -308,7 +392,8 @@ export class ConfigurationFieldUnifiedViewModel {
     let tags: string[] = [];
     if (roleView != null && roleView.fields != null) {
       for (const fieldName in roleView.fields) {
-        if (roleView.fields.hasOwnProperty(fieldName) && roleView.fields[fieldName].type === 'multitext') {
+        if (roleView.fields.hasOwnProperty(fieldName) &&
+            ConfigurationFieldUnifiedViewModel.isMultitextFieldType(roleView.fields[fieldName].type)) {
           const multiTextField = roleView.fields[fieldName] as LexViewMultiTextFieldConfig;
           if (multiTextField.overrideInputSystems) {
             tags = multiTextField.inputSystems;
@@ -321,48 +406,113 @@ export class ConfigurationFieldUnifiedViewModel {
     return tags;
   }
 
-  private static setInputSystemRoleSettings(tag: string, config: LexiconConfig,
-                                            inputSystemSettings: InputSystemSettings): void {
-    const roles = RoleType.roles();
-    const roleType = new RoleType();
-    for (const role of roles) {
-      inputSystemSettings[role] = false;
-      const roleView: LexRoleViewConfig = config.roleViews[roleType[role]];
-      if (roleView != null && roleView.fields != null) {
-        for (const fieldName in roleView.fields) {
-          if (roleView.fields.hasOwnProperty(fieldName) && roleView.fields[fieldName].type === 'multitext') {
-            const multiTextField = roleView.fields[fieldName] as LexViewMultiTextFieldConfig;
-            if (multiTextField.overrideInputSystems) {
-              inputSystemSettings[role] = multiTextField.inputSystems.includes(tag);
-              break;
-            }
+  private static setInputSystemRoleSettings(tag: string, config: LexiconConfig, role: string, roleType: string,
+                                            inputSystemSettings: InputSystemSettings,
+                                            overrides: InputSystemSettings): void {
+    let hasOverride = false;
+    const roleView: LexRoleViewConfig = config.roleViews[roleType];
+    if (roleView != null && roleView.fields != null) {
+      for (const fieldName in roleView.fields) {
+        if (roleView.fields.hasOwnProperty(fieldName) &&
+            ConfigurationFieldUnifiedViewModel.isMultitextFieldType(roleView.fields[fieldName].type)) {
+          const multiTextField = roleView.fields[fieldName] as LexViewMultiTextFieldConfig;
+          if (multiTextField.overrideInputSystems) {
+            hasOverride = true;
+            inputSystemSettings[role] = multiTextField.inputSystems.includes(tag);
+            break;
           }
         }
       }
+    }
+    if (hasOverride) {
+      overrides[role] = true;
+    } else {
+      ConfigurationFieldUnifiedViewModel.setInputSystemRoleSettingsFromFields(
+        tag, config, role, inputSystemSettings);
+      overrides[role] = false;
     }
   }
 
-  private static setInputSystemGroupSettings(tag: string, config: LexiconConfig,
-                                             inputSystemSettings: InputSystemSettings): void {
-    let groupIndex = 0;
-    for (const userId in config.userViews) {
-      if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null &&
-        config.userViews[userId].fields != null
+  static setInputSystemRoleSettingsFromFields(tag: string, config: LexiconConfig, role: string,
+                                              inputSystemSettings: InputSystemSettings): void {
+    inputSystemSettings[role] = ConfigurationFieldUnifiedViewModel.isInputSystemUsed(tag, config);
+  }
+
+  private static setInputSystemGroupSettings(tag: string, config: LexiconConfig, userId: string, groupIndex: number,
+                                             inputSystemSettings: InputSystemSettings,
+                                             overrides: InputSystemSettings): void {
+    let hasOverride = false;
+    for (const fieldName in config.userViews[userId].fields) {
+      if (config.userViews[userId].fields.hasOwnProperty(fieldName) &&
+          ConfigurationFieldUnifiedViewModel.isMultitextFieldType(config.userViews[userId].fields[fieldName].type)
       ) {
-        for (const fieldName in config.userViews[userId].fields) {
-          if (config.userViews[userId].fields.hasOwnProperty(fieldName) &&
-            config.userViews[userId].fields[fieldName].type === 'multitext'
-          ) {
-            const multiTextField = config.userViews[userId].fields[fieldName] as LexViewMultiTextFieldConfig;
-            inputSystemSettings.groups[groupIndex] = new Group();
-            if (multiTextField.overrideInputSystems) {
-              inputSystemSettings.groups[groupIndex++].show = multiTextField.inputSystems.includes(tag);
-              break;
-            }
-          }
+        const multiTextField = config.userViews[userId].fields[fieldName] as LexViewMultiTextFieldConfig;
+        inputSystemSettings.groups[groupIndex] = new Group();
+        if (multiTextField.overrideInputSystems) {
+          hasOverride = true;
+          inputSystemSettings.groups[groupIndex].show = multiTextField.inputSystems.includes(tag);
+          break;
         }
       }
     }
+    if (hasOverride) {
+      overrides.groups[groupIndex].show = true;
+    } else {
+      ConfigurationFieldUnifiedViewModel.setInputSystemGroupSettingsFromFields(
+        tag, config, groupIndex, inputSystemSettings);
+      overrides.groups[groupIndex].show = false;
+    }
+  }
+
+  static setInputSystemGroupSettingsFromFields(tag: string, config: LexiconConfig, groupIndex: number,
+                                               inputSystemSettings: InputSystemSettings): void {
+    inputSystemSettings.groups[groupIndex].show = ConfigurationFieldUnifiedViewModel.isInputSystemUsed(tag, config);
+  }
+
+  private static isInputSystemUsed(tag: string, config: LexiconConfig): boolean {
+    if (!config) {
+      return false;
+    }
+    const entryConfig = config.entry;
+    if (!entryConfig || !entryConfig.fields) {
+      return false;
+    }
+    for (const fieldName in entryConfig.fields) {
+      if (ConfigurationFieldUnifiedViewModel.isInputSystemUsedInFieldList(tag, fieldName, entryConfig)) {
+        return true;
+      }
+    }
+    const sensesConfig = entryConfig.fields.senses as LexConfigFieldList;
+    if (!sensesConfig || !sensesConfig.fields) {
+      return false;
+    }
+    for (const fieldName in sensesConfig.fields) {
+      if (ConfigurationFieldUnifiedViewModel.isInputSystemUsedInFieldList(tag, fieldName, sensesConfig)) {
+        return true;
+      }
+    }
+    const examplesConfig = sensesConfig.fields.examples as LexConfigFieldList;
+    if (!examplesConfig || !examplesConfig.fields) {
+      return false;
+    }
+    for (const fieldName in examplesConfig.fields) {
+      if (ConfigurationFieldUnifiedViewModel.isInputSystemUsedInFieldList(tag, fieldName, examplesConfig)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static isInputSystemUsedInFieldList(tag: string, fieldName: string, fieldList: LexConfigFieldList): boolean {
+    if (fieldList.fields.hasOwnProperty(fieldName)) {
+      if (ConfigurationFieldUnifiedViewModel.isMultitextFieldType(fieldList.fields[fieldName].type)) {
+        const fieldConfig = fieldList.fields[fieldName] as LexConfigMultiText;
+        if (fieldConfig.inputSystems.includes(tag)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private static setLevelViewModel(levelConfig: LexConfigFieldList, config: LexiconConfig): FieldSettings[] {
@@ -382,10 +532,10 @@ export class ConfigurationFieldUnifiedViewModel {
 
         const roleType = new RoleType();
         const managerRoleViewField = config.roleViews[roleType.manager].fields[fieldName];
-        if (managerRoleViewField.type === 'multitext') {
+        if (ConfigurationFieldUnifiedViewModel.isMultitextFieldType(levelConfig.fields[fieldName].type)) {
           const multiTextLevelConfigField = levelConfig.fields[fieldName] as LexConfigMultiText;
-          const multiTextFieldConfig = managerRoleViewField as LexViewMultiTextFieldConfig;
-          fieldSettings.hasCustomInputSystemsOverride = !multiTextFieldConfig.overrideInputSystems;
+          // const multiTextFieldConfig = managerRoleViewField as LexViewMultiTextFieldConfig;
+          // fieldSettings.hasCustomInputSystemsOverride = !multiTextFieldConfig.overrideInputSystems;
           for (const tag of multiTextLevelConfigField.inputSystems) {
             const inputSystemSettings = new InputSystemSettings();
             inputSystemSettings.tag = tag;
@@ -470,12 +620,12 @@ export class FieldSettings extends SettingsBase {
   hiddenIfEmpty: boolean;
   captionHiddenIfEmpty?: boolean;
   isCustomInputSystemsCollapsed: boolean = true;
-  hasCustomInputSystemsOverride: boolean;
   inputSystems: InputSystemSettings[] = [];
 }
 
 export class InputSystemSettingsList {
   settings: InputSystemSettings[] = [];
+  hasCustomInputSystemsOverride: InputSystemSettings = new InputSystemSettings();
   selectAllColumns: InputSystemSettings = new InputSystemSettings();
   labels: { [tag: string]: string } = {};
 }
