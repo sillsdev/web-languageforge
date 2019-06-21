@@ -65,6 +65,13 @@ export class FieldsConfigurationController implements angular.IController {
   selectAllGroupColumn = ConfigurationFieldUnifiedViewModel.selectAllGroupColumn;
   checkIfAllRoleSelected = ConfigurationFieldUnifiedViewModel.checkIfAllRoleSelected;
   checkIfAllGroupSelected = ConfigurationFieldUnifiedViewModel.checkIfAllGroupSelected;
+  overrideRoleInputSystem = ConfigurationFieldUnifiedViewModel.overrideRoleInputSystem;
+  overrideGroupInputSystem = ConfigurationFieldUnifiedViewModel.overrideGroupInputSystem;
+  overrideRoleColumn = ConfigurationFieldUnifiedViewModel.overrideRoleColumn;
+  overrideGroupColumn = ConfigurationFieldUnifiedViewModel.overrideGroupColumn;
+  overrideAll = ConfigurationFieldUnifiedViewModel.overrideAll;
+  resetInputSystemsForRole = ConfigurationFieldUnifiedViewModel.resetInputSystemsForRole;
+  resetInputSystemsForGroup = ConfigurationFieldUnifiedViewModel.resetInputSystemsForGroup;
 
   openNewCustomFieldModal(fieldLevel: string): void {
     interface NewCustomData {
@@ -287,11 +294,7 @@ export class FieldsConfigurationController implements angular.IController {
   // noinspection JSMethodCanBeStatic
   collapseIconClass(fieldSetting: FieldSettings): string {
     if (fieldSetting.isCustomInputSystemsCollapsed) {
-      if (fieldSetting.hasCustomInputSystemsOverride) {
-        return 'fa fa-check-square-o';
-      } else {
-        return 'fa fa-chevron-down';
-      }
+      return 'fa fa-chevron-down';
     } else {
       return 'fa fa-chevron-up';
     }
@@ -362,6 +365,7 @@ export const FieldsConfigurationComponent: angular.IComponentOptions = {
     fccUsers: '<',
     fccOptionLists: '<',
     fccAddInputSystem: '&',
+    fccResetInputSystems: '&',
     fccOnUpdate: '&'
   },
   controller: FieldsConfigurationController,
