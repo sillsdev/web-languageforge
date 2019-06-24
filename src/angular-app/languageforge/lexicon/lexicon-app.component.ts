@@ -42,11 +42,6 @@ export class LexiconAppController implements angular.IController {
               private readonly sendReceive: LexiconSendReceiveService) { }
 
   $onInit(): void {
-    this.editorService.loadEditorData().then(() => {
-      this.finishedLoading = true;
-      this.sendReceive.checkInitialState();
-    });
-
     this.$q.all([this.rightsService.getRights(), this.configService.getEditorConfig()])
       .then(([rights, editorConfig]) => {
         if (rights.canEditProject()) {
@@ -85,7 +80,13 @@ export class LexiconAppController implements angular.IController {
           }
         });
       }
-    );
+    )
+    .then(() => {
+      this.editorService.loadEditorData().then(() => {
+        this.finishedLoading = true;
+        this.sendReceive.checkInitialState();
+      });
+    });
 
     this.setupOffline();
   }
@@ -146,11 +147,9 @@ export class LexiconAppController implements angular.IController {
 
     // Set the page's Language Forge title, font size, and nav's background color
     function setTitle(text: string, fontSize: string, backgroundColor: string): void {
-      const title = document.querySelector('nav .mobile-title a') as HTMLElement;
+      const title = document.querySelector('nav .navbar-brand') as HTMLElement;
       title.textContent = text;
       title.style.fontSize = fontSize;
-
-      document.querySelector('nav a.navbar-brand').textContent = text;
       (document.querySelector('nav.navbar') as HTMLElement).style.backgroundColor = backgroundColor;
     }
 

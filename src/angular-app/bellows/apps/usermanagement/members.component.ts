@@ -97,7 +97,8 @@ export class UserManagementMembersController implements angular.IController {
   onRoleChange(user: User): void {
     this.projectService.updateUserRole(user.id, user.role, result => {
       if (result.ok) {
-        this.notice.push(this.notice.SUCCESS, user.username + '\'s role was changed to ' + user.role);
+        const message = `${user.username || user.email}'s role was changed to ${this.roles[user.role]}.`;
+        this.notice.push(this.notice.SUCCESS, message);
       }
     });
   }
