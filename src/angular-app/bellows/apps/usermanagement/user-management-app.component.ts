@@ -5,6 +5,7 @@ import { ProjectService } from '../../core/api/project.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
 import { SessionService } from '../../core/session.service';
+import { HelpHeroService } from '../../core/helphero.service';
 
 export class Rights {
   remove: boolean;
@@ -30,10 +31,11 @@ export class UserManagementAppController implements angular.IController {
   joinRequests = {};
 
   static $inject = ['$location', 'projectService', 'sessionService', 'applicationHeaderService',
-                    'breadcrumbService', 'lexProjectService'];
+                    'breadcrumbService', 'lexProjectService', 'helpHeroService'];
   constructor(private $location: angular.ILocationService, private projectService: ProjectService,
               private sessionService: SessionService, private applicationHeaderService: ApplicationHeaderService,
-              private breadcrumbService: BreadcrumbService, private lexProjectService: LexiconProjectService) { }
+              private breadcrumbService: BreadcrumbService, private lexProjectService: LexiconProjectService,
+              private readonly helpHeroService: HelpHeroService) { }
 
   $onInit(): void {
     this.joinRequests = [];
@@ -54,6 +56,13 @@ export class UserManagementAppController implements angular.IController {
         this.sessionService.operation.EDIT);
       this.rights.showControlBar =
         this.rights.add || this.rights.remove || this.rights.changeRole;
+
+      const userId = session.userId();
+      if (userId) {
+        this.helpHeroService.setIdentity(userId);
+      } else {
+        this.helpHeroService.anonymous();
+      }
     });
   }
 
