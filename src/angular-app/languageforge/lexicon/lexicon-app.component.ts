@@ -3,6 +3,7 @@ import * as angular from 'angular';
 import {NoticeService} from '../../bellows/core/notice/notice.service';
 import {InterfaceConfig} from '../../bellows/shared/model/interface-config.model';
 import {User} from '../../bellows/shared/model/user.model';
+import {HelpHeroService} from '../../bellows/core/helphero.service'
 import {LexiconConfigService} from './core/lexicon-config.service';
 import {LexiconEditorDataService} from './core/lexicon-editor-data.service';
 import {LexiconProjectService} from './core/lexicon-project.service';
@@ -22,6 +23,7 @@ export class LexiconAppController implements angular.IController {
   optionLists: LexOptionList[];
   project: LexiconProject;
   rights: Rights;
+  helpHero : HelpHeroService;
 
   private online: boolean;
   private pristineLanguageCode: string;
@@ -32,45 +34,43 @@ export class LexiconAppController implements angular.IController {
     'lexProjectService',
     'lexEditorDataService',
     'lexRightsService',
-    'lexSendReceive'];
+    'lexSendReceive',
+    'helpHeroService'];
   constructor(private readonly $scope: angular.IScope, private readonly $location: angular.ILocationService,
               private readonly $q: angular.IQService,
               private readonly notice: NoticeService, private readonly configService: LexiconConfigService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly editorService: LexiconEditorDataService,
               private readonly rightsService: LexiconRightsService,
-              private readonly sendReceive: LexiconSendReceiveService) { }
+              private readonly sendReceive: LexiconSendReceiveService,
+              private readonly helpHeroService: HelpHeroService) { }
 
   $onInit(): void {
-    this.$q.all([this.rightsService.getRights(), this.configService.getEditorConfig()])
-      .then(([rights, editorConfig]) => {
+    this.$q.all([this.rightsService.getRights(), this.configService.getEditorConfig(), this.lexProjectService.users()])
+      .then(([rights, editorConfig, userResults]) => {
         if (rights.canEditProject()) {
-          this.lexProjectService.users().then(result => {
-            if (result.ok) {
-              const users = {};
-              for (const user of (result.data.users as User[])) {
-                users[user.id] = user;
-              }
-
-              this.users = users;
+          if (userResults.ok) {
+            const users = {};
+            for (const user of (userResults.data.users as User[])) {
+              users[user.id] = user;
             }
 
-            this.editorConfig = editorConfig;
-            this.project = rights.session.project<LexiconProject>();
-            this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
-            this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
-            this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
-            this.pristineLanguageCode = this.interfaceConfig.languageCode;
-            this.rights = rights;
-          });
+            this.users = users;
+          }
+        }
+        this.editorConfig = editorConfig;
+        this.project = rights.session.project<LexiconProject>();
+        this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
+        this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
+        this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
+        this.pristineLanguageCode = this.interfaceConfig.languageCode;
+        this.rights = rights;
+        
+        // Pass the userId on to HelpHero for identification
+        if (rights) {
+          this.helpHeroService.setIdentity(rights.session.userId());
         } else {
-          this.editorConfig = editorConfig;
-          this.project = rights.session.project<LexiconProject>();
-          this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
-          this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
-          this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
-          this.pristineLanguageCode = this.interfaceConfig.languageCode;
-          this.rights = rights;
+          this.helpHeroService.anonymous();
         }
 
         this.$scope.$watch(() => this.interfaceConfig.languageCode, (newVal: string) => {
