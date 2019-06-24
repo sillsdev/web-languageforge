@@ -6,6 +6,7 @@ import {NoticeModule} from '../../core/notice/notice.module';
 import {ListViewModule} from '../../shared/list-view.component';
 import {PuiUtilityModule} from '../../shared/utils/pui-utils.module';
 import {ProjectsAppComponent} from './projects-app.component';
+import {HelpHeroService} from '../../../bellows/core/helphero.service';
 
 export const ProjectsAppModule = angular
   .module('projects', [
@@ -17,4 +18,5 @@ export const ProjectsAppModule = angular
     BreadcrumbModule
   ])
   .component('projectsApp', ProjectsAppComponent)
+  .service('helpHeroService', HelpHeroService)
   .name;
