@@ -76,16 +76,5 @@
 {% block script %}{% endblock %}
 {% block footer %}{% endblock %}
 {% block analytics %}{% endblock %}
-
-{# Help Hero script snippet #}
-<script src="https://unpkg.com/helphero"></script>
-<script type="text/javascript">
-var hlp = window.helphero('9yZMlWWMsDS');
-{% if userId is defined %}
-    hlp.identify("{{ userId }}");
-{% else %}
-    hlp.anonymous();
-{% endif %}
-</script>
 </body>
 </html>
