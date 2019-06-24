@@ -42,11 +42,6 @@ export class LexiconAppController implements angular.IController {
               private readonly sendReceive: LexiconSendReceiveService) { }
 
   $onInit(): void {
-    this.editorService.loadEditorData().then(() => {
-      this.finishedLoading = true;
-      this.sendReceive.checkInitialState();
-    });
-
     this.$q.all([this.rightsService.getRights(), this.configService.getEditorConfig()])
       .then(([rights, editorConfig]) => {
         if (rights.canEditProject()) {
@@ -85,7 +80,13 @@ export class LexiconAppController implements angular.IController {
           }
         });
       }
-    );
+    )
+    .then(() => {
+      this.editorService.loadEditorData().then(() => {
+        this.finishedLoading = true;
+        this.sendReceive.checkInitialState();
+      });
+    });
 
     this.setupOffline();
   }
