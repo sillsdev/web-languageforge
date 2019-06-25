@@ -54,7 +54,7 @@ describe('Lexicon E2E Configuration Fields', () => {
     expect<any>(configPage.applyButton.isEnabled()).toBe(false);
     configPage.unifiedPane.observerCheckbox('English').click();
     expect<any>(configPage.applyButton.isEnabled()).toBe(true);
-    configPage.unifiedPane.observerCheckbox('English').click();
+    configPage.unifiedPane.resetInputSystemButton('observer').click();
     expect<any>(configPage.applyButton.isEnabled()).toBe(false);
   });
 
@@ -69,31 +69,24 @@ describe('Lexicon E2E Configuration Fields', () => {
       const rowLabel = new RegExp('^Pictures$');
       expect<any>(configPage.unifiedPane.fieldSpecificButton(rowLabel).isDisplayed()).toBe(true);
       expect<any>(configPage.unifiedPane.fieldSpecificIcon(rowLabel).getAttribute('class'))
-        .toEqual('fa fa-check-square-o');
-      expect<any>(configPage.unifiedPane.useFieldSpecificInputSystemsCheckbox(rowLabel).isPresent()).toBe(false);
+        .toEqual('fa fa-chevron-down');
       configPage.unifiedPane.fieldSpecificButton(rowLabel).click();
-      expect<any>(configPage.unifiedPane.useFieldSpecificInputSystemsCheckbox(rowLabel).isDisplayed()).toBe(true);
       expect<any>(configPage.unifiedPane.fieldSpecificCaptionHiddenIfEmptyCheckbox(rowLabel).isDisplayed()).toBe(true);
       configPage.unifiedPane.fieldSpecificButton(rowLabel).click();
-      expect<any>(configPage.unifiedPane.useFieldSpecificInputSystemsCheckbox(rowLabel).isPresent()).toBe(false);
+      expect<any>(configPage.unifiedPane.fieldSpecificCaptionHiddenIfEmptyCheckbox(rowLabel).isPresent()).toBe(false);
     });
 
     it('check sense field-specific settings', () => {
       const rowLabel = new RegExp('^Scientific Name$');
       expect<any>(configPage.unifiedPane.fieldSpecificButton(rowLabel).isDisplayed()).toBe(true);
       expect<any>(configPage.unifiedPane.fieldSpecificIcon(rowLabel).getAttribute('class'))
-        .toEqual('fa fa-check-square-o');
-      expect<any>(configPage.unifiedPane.useFieldSpecificInputSystemsCheckbox(rowLabel).isPresent()).toBe(false);
+        .toEqual('fa fa-chevron-down');
       configPage.unifiedPane.fieldSpecificButton(rowLabel).click();
       expect<any>(configPage.unifiedPane.fieldSpecificCaptionHiddenIfEmptyCheckbox(rowLabel).isPresent()).toBe(false);
-      expect<any>(configPage.unifiedPane.useFieldSpecificInputSystemsCheckbox(rowLabel).isDisplayed()).toBe(true);
-      expect<any>(configPage.unifiedPane.useFieldSpecificInputSystemsCheckbox(rowLabel).isSelected()).toBe(true);
-      util.setCheckbox(configPage.unifiedPane.useFieldSpecificInputSystemsCheckbox(rowLabel), false);
       configPage.unifiedPane.fieldSpecificButton(rowLabel).click();
       expect<any>(configPage.unifiedPane.fieldSpecificIcon(rowLabel).getAttribute('class'))
         .toEqual('fa fa-chevron-down');
       configPage.unifiedPane.fieldSpecificButton(rowLabel).click();
-      util.setCheckbox(configPage.unifiedPane.useFieldSpecificInputSystemsCheckbox(rowLabel), true);
       util.setCheckbox(configPage.unifiedPane.sense.fieldSpecificInputSystemCheckbox(rowLabel, 1), true);
       expect<any>(configPage.unifiedPane.sense.fieldSpecificInputSystemCheckbox(rowLabel, 0).isSelected()).toBe(true);
       expect<any>(configPage.unifiedPane.sense.fieldSpecificInputSystemCheckbox(rowLabel, 1).isSelected()).toBe(true);
@@ -190,9 +183,6 @@ describe('Lexicon E2E Configuration Fields', () => {
     it('can fully function "Select All" down the Input System observer column', () => {
       const column = 'observer';
       const rowLabel = 'English';
-      util.setCheckbox(configPage.unifiedPane.observerCheckbox(rowLabel), true);
-      expect<any>(configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(false);
-      util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.observer, true);
       expect<any>(configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(true);
       expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
         .toBe(true);
@@ -210,14 +200,19 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(false);
       expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), false))
         .toBe(true);
+      util.setCheckbox(configPage.unifiedPane.observerCheckbox(rowLabel), true);
+      expect<any>(configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(false);
+      expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
+        .toBe(false);
+      expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), false))
+        .toBe(false);
+      util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.observer, true);
+      expect<any>(configPage.unifiedPane.inputSystem.selectAll.observer.isSelected()).toBe(true);
+      configPage.unifiedPane.resetInputSystemButton('observer').click();
     });
 
     it('can select and de-select all down the Input System commenter column', () => {
       const column = 'commenter';
-      expect<any>(configPage.unifiedPane.inputSystem.selectAll.commenter.isSelected()).toBe(false);
-      expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), false))
-        .toBe(true);
-      util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.commenter, true);
       expect<any>(configPage.unifiedPane.inputSystem.selectAll.commenter.isSelected()).toBe(true);
       expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
         .toBe(true);
@@ -225,14 +220,15 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(configPage.unifiedPane.inputSystem.selectAll.commenter.isSelected()).toBe(false);
       expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), false))
         .toBe(true);
+      util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.commenter, true);
+      expect<any>(configPage.unifiedPane.inputSystem.selectAll.commenter.isSelected()).toBe(true);
+      expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
+        .toBe(true);
+      configPage.unifiedPane.resetInputSystemButton('commenter').click();
     });
 
     it('can select and de-select all down the Input System contributor column', () => {
       const column = 'contributor';
-      expect<any>(configPage.unifiedPane.inputSystem.selectAll.contributor.isSelected()).toBe(false);
-      expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), false))
-        .toBe(true);
-      util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.contributor, true);
       expect<any>(configPage.unifiedPane.inputSystem.selectAll.contributor.isSelected()).toBe(true);
       expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
         .toBe(true);
@@ -240,14 +236,15 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(configPage.unifiedPane.inputSystem.selectAll.contributor.isSelected()).toBe(false);
       expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), false))
         .toBe(true);
+      util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.contributor, true);
+      expect<any>(configPage.unifiedPane.inputSystem.selectAll.contributor.isSelected()).toBe(true);
+      expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
+        .toBe(true);
+      configPage.unifiedPane.resetInputSystemButton('contributor').click();
     });
 
     it('can select and de-select all down the Input System manager column', () => {
       const column = 'manager';
-      expect<any>(configPage.unifiedPane.inputSystem.selectAll.manager.isSelected()).toBe(false);
-      expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), false))
-        .toBe(true);
-      util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.manager, true);
       expect<any>(configPage.unifiedPane.inputSystem.selectAll.manager.isSelected()).toBe(true);
       expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
         .toBe(true);
@@ -255,6 +252,11 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(configPage.unifiedPane.inputSystem.selectAll.manager.isSelected()).toBe(false);
       expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), false))
         .toBe(true);
+      util.setCheckbox(configPage.unifiedPane.inputSystem.selectAll.manager, true);
+      expect<any>(configPage.unifiedPane.inputSystem.selectAll.manager.isSelected()).toBe(true);
+      expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes(column), true))
+        .toBe(true);
+      configPage.unifiedPane.resetInputSystemButton('manager').click();
     });
 
     it('can de-select and select all down the entry observer column', () => {
@@ -474,7 +476,7 @@ describe('Lexicon E2E Configuration Fields', () => {
     it('can fully function "Select All" along an Input System row', () => {
       const rowLabel = new RegExp('^Thai$');
       expect<any>(configPage.unifiedPane.rowCheckboxes(rowLabel).count()).toEqual(5);
-      util.setCheckbox(configPage.unifiedPane.commenterCheckbox(rowLabel), true);
+      util.setCheckbox(configPage.unifiedPane.commenterCheckbox(rowLabel), false);
       expect<any>(configPage.unifiedPane.selectRowCheckbox(rowLabel).isSelected()).toBe(false);
       util.setCheckbox(configPage.unifiedPane.selectRowCheckbox(rowLabel), true);
       expect<any>(configPage.unifiedPane.selectRowCheckbox(rowLabel).isSelected()).toBe(true);
@@ -487,6 +489,10 @@ describe('Lexicon E2E Configuration Fields', () => {
       expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.rowCheckboxes(rowLabel), true)).toBe(true);
       util.setCheckbox(configPage.unifiedPane.selectRowCheckbox(rowLabel), false);
       expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.rowCheckboxes(rowLabel), false)).toBe(true);
+      configPage.unifiedPane.resetInputSystemButton('observer').click();
+      configPage.unifiedPane.resetInputSystemButton('commenter').click();
+      configPage.unifiedPane.resetInputSystemButton('contributor').click();
+      configPage.unifiedPane.resetInputSystemButton('manager').click();
     });
 
     it('can fully function "Select All" along an entry row', () => {
@@ -558,6 +564,7 @@ describe('Lexicon E2E Configuration Fields', () => {
     it('can add a member-specific user settings', () => {
       expect<any>(configPage.unifiedPane.inputSystem.selectAll.groups().count()).toEqual(0);
       configPage.unifiedPane.entry.addGroupButton.click();
+      browser.wait(configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.isDisplayed(), 500);
       expect<any>(configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.isDisplayed()).toBe(true);
       expect<any>(configPage.unifiedPane.addGroupModal.usernameTypeaheadResults.count()).toEqual(0);
       expect<any>(configPage.unifiedPane.addGroupModal.addMemberSpecificSettingsButton.isDisplayed()).toBe(true);
@@ -574,6 +581,7 @@ describe('Lexicon E2E Configuration Fields', () => {
     it('cannot add the same member-specific user settings', () => {
       expect<any>(configPage.unifiedPane.inputSystem.selectAll.groups().count()).toEqual(1);
       configPage.unifiedPane.entry.addGroupButton.click();
+      browser.wait(configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.isDisplayed(), 500);
       expect<any>(configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.isDisplayed()).toBe(true);
       configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.sendKeys('a');
       expect<any>(configPage.unifiedPane.addGroupModal.usernameTypeaheadResults.count()).toEqual(5);
@@ -588,6 +596,7 @@ describe('Lexicon E2E Configuration Fields', () => {
     it('can add a second member-specific user settings', () => {
       const rowLabel = 'English';
       configPage.unifiedPane.entry.addGroupButton.click();
+      browser.wait(configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.isDisplayed(), 500);
       expect<any>(configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.isDisplayed()).toBe(true);
       configPage.unifiedPane.addGroupModal.usernameTypeaheadInput.clear();
       configPage.unifiedPane.addGroupModal.usernameTypeaheadInput
@@ -664,11 +673,15 @@ describe('Lexicon E2E Configuration Fields', () => {
     });
 
     it('can remove member-specific user settings', () => {
+      configPage.unifiedPane.resetInputSystemButton('observer').click();
+      configPage.unifiedPane.resetInputSystemButton('commenter').click();
+      configPage.unifiedPane.resetInputSystemButton('contributor').click();
+      configPage.unifiedPane.resetInputSystemButton('manager').click();
       configPage.unifiedPane.entry.removeGroupButton(0).click();
       expect<any>(configPage.unifiedPane.inputSystem.selectAll.groups().count()).toEqual(1);
       configPage.unifiedPane.entry.removeGroupButton(0).click();
       expect<any>(configPage.unifiedPane.inputSystem.selectAll.groups().count()).toEqual(0);
-      expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes('select-row'), false))
+      expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.inputSystem.columnCheckboxes('select-row'), true))
         .toBe(true);
       expect<any>(Utils.isAllCheckboxes(configPage.unifiedPane.entry.columnCheckboxes('select-row'), true))
         .toBe(true);
@@ -698,6 +711,7 @@ describe('Lexicon E2E Configuration Fields', () => {
     it('can open the custom field modal for an entry', () => {
       expect<any>(configPage.unifiedPane.entry.addCustomEntryButton.isEnabled()).toBe(true);
       configPage.unifiedPane.entry.addCustomEntryButton.click();
+      browser.wait(configPage.modal.customField.displayNameInput.isDisplayed(), 500);
       expect<any>(configPage.modal.customField.displayNameInput.isDisplayed()).toBe(true);
       expect<any>(configPage.modal.customField.typeDropdown.isDisplayed()).toBe(true);
       expect<any>(configPage.modal.customField.listCodeDropdown.isPresent()).toBe(false);
