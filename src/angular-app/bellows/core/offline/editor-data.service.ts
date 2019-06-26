@@ -385,7 +385,7 @@ export class EditorDataService {
             deferred.resolve(newResult);
           });
         } else {
-          this.sortAndFilterEntries(false).then(() => {
+          this.sortAndFilterEntries(true).then(() => {
             deferred.resolve(result);
           });
         }
