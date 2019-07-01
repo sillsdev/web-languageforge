@@ -664,15 +664,12 @@ gulp.task('test-e2e-doTest', function (cb) {
   }
 
   var webserverHost = params.webserverHost;
-  if (isBrowserStack) {
-    webserverHost = webserverHost.replace('.local', '.org');
-  }
 
   if (params.conf && params.conf.length > 0) {
     configFile = './test/app/' + params.conf;
   } else {
     if (isBrowserStack) {
-      configFile = './test/app/browserStackLFProtractorConf.js';
+      configFile = './test/app/browserstackConf.js';
     } else {
       configFile = './test/app/protractorConf.js';
     }
