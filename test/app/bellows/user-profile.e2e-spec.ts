@@ -126,10 +126,6 @@ describe('Bellows E2E User Profile app', () => {
       });
 
       it('Update and store different username. Login with new credentials', () => {
-        logInAsRole();
-
-        userProfile.getMyAccount();
-
         // Change email
         userProfile.myAccountTab.updateEmail(newEmail);
 
@@ -148,10 +144,13 @@ describe('Bellows E2E User Profile app', () => {
         expect<any>(userProfile.myAccountTab.saveBtn.isEnabled()).toBe(true);
         userProfile.myAccountTab.saveBtn.click();
         Utils.clickModalButton('Cancel');
+        browser.wait(ExpectedConditions.elementToBeClickable(userProfile.myAccountTab.saveBtn));
+
         browser.refresh();
 
         // Confirm email not changed
         browser.wait(ExpectedConditions.visibilityOf(userProfile.myAccountTab.emailInput), constants.conditionTimeout);
+        browser.wait(ExpectedConditions.elementToBeClickable(userProfile.myAccountTab.saveBtn));
         Utils.scrollTop();
         expect<any>(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(originalEmail);
 
@@ -162,15 +161,16 @@ describe('Bellows E2E User Profile app', () => {
         // Save changes
         expect<any>(userProfile.myAccountTab.saveBtn.isEnabled()).toBe(true);
         userProfile.myAccountTab.saveBtn.click();
+
         Utils.clickModalButton('Save changes');
+        Utils.waitForNewAngularPage('login');
+        browser.wait(ExpectedConditions.visibilityOf(loginPage.username), constants.conditionTimeout);
+        expect<any>(loginPage.infoMessages.count()).toBe(1);
+        expect(loginPage.infoMessages.first().getText()).toContain('Username changed. Please login.');
       });
 
       it('Login with new username and revert to original username', () => {
         // user is automatically logged out and taken to login page when username is changed
-        browser.wait(ExpectedConditions.visibilityOf(loginPage.username), constants.conditionTimeout);
-        expect<any>(loginPage.infoMessages.count()).toBe(1);
-        expect(loginPage.infoMessages.first().getText()).toContain('Username changed. Please login.');
-
         loginPage.login(newUsername, password);
 
         userProfile.getMyAccount();

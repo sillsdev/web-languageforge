@@ -159,7 +159,7 @@ export class EditorUtil {
   selectElement = {
     sendKeys(elem: any, keys: string) {
       elem.click();
-      browser.actions().sendKeys(keys).perform();
+      elem.sendKeys(keys);
     },
 
     clear(elem: any) {
@@ -172,8 +172,8 @@ export class EditorUtil {
 
       elem.click();
       const ctrlA = Key.chord(Key.CONTROL, 'a');
-      browser.actions().sendKeys(ctrlA).perform();
-      browser.actions().sendKeys(Key.DELETE).perform();
+      elem.sendKeys(ctrlA);
+      elem.sendKeys(Key.DELETE);
     }
   };
 }

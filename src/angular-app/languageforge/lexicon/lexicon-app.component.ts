@@ -3,7 +3,6 @@ import * as angular from 'angular';
 import {NoticeService} from '../../bellows/core/notice/notice.service';
 import {InterfaceConfig} from '../../bellows/shared/model/interface-config.model';
 import {User} from '../../bellows/shared/model/user.model';
-import {HelpHeroService} from '../../bellows/core/helphero.service'
 import {LexiconConfigService} from './core/lexicon-config.service';
 import {LexiconEditorDataService} from './core/lexicon-editor-data.service';
 import {LexiconProjectService} from './core/lexicon-project.service';
@@ -13,6 +12,7 @@ import {LexiconConfig} from './shared/model/lexicon-config.model';
 import {LexiconProjectSettings} from './shared/model/lexicon-project-settings.model';
 import {LexiconProject} from './shared/model/lexicon-project.model';
 import {LexOptionList} from './shared/model/option-list.model';
+import {HelpHeroService} from '../../bellows/core/helphero.service';
 
 export class LexiconAppController implements angular.IController {
   finishedLoading: boolean = false;
@@ -23,7 +23,6 @@ export class LexiconAppController implements angular.IController {
   optionLists: LexOptionList[];
   project: LexiconProject;
   rights: Rights;
-  helpHero : HelpHeroService;
 
   private online: boolean;
   private pristineLanguageCode: string;
@@ -46,29 +45,39 @@ export class LexiconAppController implements angular.IController {
               private readonly helpHeroService: HelpHeroService) { }
 
   $onInit(): void {
-    this.$q.all([this.rightsService.getRights(), this.configService.getEditorConfig(), this.lexProjectService.users()])
-      .then(([rights, editorConfig, userResults]) => {
+    this.$q.all([this.rightsService.getRights(), this.configService.getEditorConfig()])
+      .then(([rights, editorConfig]) => {
         if (rights.canEditProject()) {
-          if (userResults.ok) {
-            const users = {};
-            for (const user of (userResults.data.users as User[])) {
-              users[user.id] = user;
+          this.lexProjectService.users().then(result => {
+            if (result.ok) {
+              const users = {};
+              for (const user of (result.data.users as User[])) {
+                users[user.id] = user;
+              }
+
+              this.users = users;
             }
 
-            this.users = users;
-          }
+            this.editorConfig = editorConfig;
+            this.project = rights.session.project<LexiconProject>();
+            this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
+            this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
+            this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
+            this.pristineLanguageCode = this.interfaceConfig.languageCode;
+            this.rights = rights;
+          });
+        } else {
+          this.editorConfig = editorConfig;
+          this.project = rights.session.project<LexiconProject>();
+          this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
+          this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
+          this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
+          this.pristineLanguageCode = this.interfaceConfig.languageCode;
+          this.rights = rights;
         }
-        this.editorConfig = editorConfig;
-        this.project = rights.session.project<LexiconProject>();
-        this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
-        this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
-        this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
-        this.pristineLanguageCode = this.interfaceConfig.languageCode;
-        this.rights = rights;
-        
-        // Pass the userId on to HelpHero for identification
-        if (rights) {
-          this.helpHeroService.setIdentity(rights.session.userId());
+
+        if (this.rights) {
+          this.helpHeroService.setIdentity(this.rights.session.userId());
         } else {
           this.helpHeroService.anonymous();
         }
