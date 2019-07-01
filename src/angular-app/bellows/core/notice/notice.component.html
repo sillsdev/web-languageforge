@@ -24,7 +24,7 @@
     </div>
     <div uib-alert class="col-md-12" data-ng-class="'alert-warning'" data-ng-show="$ctrl.isLoading()">
         <div>
-            <div>
+            <div id="loadingMessage">
                 <i class="fa fa-spin fa-spinner"></i> <b>{{$ctrl.getLoadingMessage()}}</b>
             </div>
             <div data-ng-show="$ctrl.showProgressBar()">
