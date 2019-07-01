@@ -1,4 +1,4 @@
-import {browser, by, element} from 'protractor';
+import {browser, by, element, ExpectedConditions} from 'protractor';
 
 export class BellowsLoginPage {
   private readonly constants = require('../../testConstants');
@@ -14,6 +14,7 @@ export class BellowsLoginPage {
   password = element(by.id('password'));
   forgotPasswordLink = element(by.id('forgot_password'));
   submit     = element(by.id('login-submit'));
+  lexiconLoading = element(by.id('loadingMessage'));
 
   login(username: string, password: string) {
     browser.get(browser.baseUrl + '/auth/logout');
@@ -22,6 +23,9 @@ export class BellowsLoginPage {
     this.username.sendKeys(username);
     this.password.sendKeys(password);
     this.submit.click();
+    browser.wait(ExpectedConditions.not(ExpectedConditions.urlContains('/auth/login')),
+      this.constants.conditionTimeout);
+    browser.wait(ExpectedConditions.invisibilityOf(this.lexiconLoading), this.constants.conditionTimeout);
   }
 
   loginAsAdmin() {

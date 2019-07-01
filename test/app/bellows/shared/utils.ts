@@ -201,4 +201,16 @@ export class Utils {
     dispatchEvent(sourceNode, EVENT_TYPES.DRAG_END, dragEndEvent);
   }
 
+  static waitForNewAngularPage(pageToLoad: string): any {
+    // Switching between SPAs often creates a "document unloaded while waiting for result" error
+    // After extensive research, a forced sleep is the best solution availible as of June 2019
+    return browser.driver.wait( () => {
+      return browser.driver.getCurrentUrl().then( url => {
+        return url.indexOf(pageToLoad) > -1;
+      });
+    }, Utils.conditionTimeout).then( () => {
+      return browser.sleep(2000);
+    });
+  }
+
 }
