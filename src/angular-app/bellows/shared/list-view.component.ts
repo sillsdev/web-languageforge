@@ -57,7 +57,13 @@ export class ListViewController implements angular.IController {
       sliceEnd = parseInt(this.itemsPerPage, 10);
     }
 
-    this.visibleItems = this.filteredItems.slice(sliceStart, sliceEnd);
+    // On some E2E runs, up to two instances of this.filteredItems are not arrays
+    // This occurs when loading the user-management app
+    // Only once was it reproduced manually, with no noticable effects
+    if (Array.isArray(this.filteredItems)) {
+      this.visibleItems = this.filteredItems.slice(sliceStart, sliceEnd);
+    }
+    
   }
 
   private updatePages(): void {
