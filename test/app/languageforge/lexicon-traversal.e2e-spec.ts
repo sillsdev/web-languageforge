@@ -23,20 +23,20 @@ describe('Lexicon E2E Page Traversal', () => {
       configurationPage.get();
       configurationPage.tabs.unified.click();
       configurationPage.unifiedPane.inputSystem.addGroupButton.click();
-      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.$('body').sendKeys(protractor.Key.ESCAPE);
       browser.wait(
         ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.inputSystem.addInputSystemButton),
         constants.conditionTimeout);
       configurationPage.unifiedPane.inputSystem.addInputSystemButton.click();
-      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.$('body').sendKeys(protractor.Key.ESCAPE);
       browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.tabs.unified), constants.conditionTimeout);
       configurationPage.tabs.unified.click();
       configurationPage.unifiedPane.entry.addGroupButton.click();
-      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.$('body').sendKeys(protractor.Key.ESCAPE);
       browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.entry.addCustomEntryButton),
         constants.conditionTimeout);
       configurationPage.unifiedPane.entry.addCustomEntryButton.click();
-      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.$('body').sendKeys(protractor.Key.ESCAPE);
       browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.sense.addGroupButton),
         constants.conditionTimeout);
       configurationPage.unifiedPane.hiddenIfEmptyCheckbox('Citation Form').click();
@@ -44,11 +44,11 @@ describe('Lexicon E2E Page Traversal', () => {
       configurationPage.unifiedPane.entry.fieldSpecificInputSystemCheckbox('Citation Form', 1).click();
       configurationPage.unifiedPane.fieldSpecificButton('Citation Form').click();
       configurationPage.unifiedPane.sense.addGroupButton.click();
-      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.$('body').sendKeys(protractor.Key.ESCAPE);
       browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.sense.addCustomSenseButton),
         constants.conditionTimeout);
       configurationPage.unifiedPane.sense.addCustomSenseButton.click();
-      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.$('body').sendKeys(protractor.Key.ESCAPE);
       browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.example.addGroupButton),
         constants.conditionTimeout);
       configurationPage.unifiedPane.hiddenIfEmptyCheckbox('Pictures').click();
@@ -57,12 +57,12 @@ describe('Lexicon E2E Page Traversal', () => {
       configurationPage.unifiedPane.fieldSpecificCaptionHiddenIfEmptyCheckbox('Pictures').click();
       configurationPage.unifiedPane.fieldSpecificButton('Pictures').click();
       configurationPage.unifiedPane.example.addGroupButton.click();
-      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.$('body').sendKeys(protractor.Key.ESCAPE);
       browser.wait(
         ExpectedConditions.elementToBeClickable(configurationPage.unifiedPane.example.addCustomExampleButton),
         constants.conditionTimeout);
       configurationPage.unifiedPane.example.addCustomExampleButton.click();
-      browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+      browser.$('body').sendKeys(protractor.Key.ESCAPE);
       browser.wait(ExpectedConditions.elementToBeClickable(configurationPage.tabs.unified), constants.conditionTimeout);
       configurationPage.unifiedPane.hiddenIfEmptyCheckbox('Translation').click();
       configurationPage.unifiedPane.fieldSpecificButton('Translation').click();
@@ -116,7 +116,7 @@ describe('Lexicon E2E Page Traversal', () => {
   // });
 
   // TODO this is an lf-specific view
-  // xit('Explore user management page', function() {
+  // it('Explore user management page', function() {
   //   userManagementPage.get();
   //   // TODO click on things
   // });
