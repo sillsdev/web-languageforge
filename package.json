@@ -70,6 +70,7 @@
     "angular-mocks": "^1.6.5",
     "awesome-typescript-loader": "^3.2.2",
     "babel-core": "^6.26.0",
+    "browserstack-local": "^1.4.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.4",
     "del": "^3.0.0",
