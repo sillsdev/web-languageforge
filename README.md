@@ -143,46 +143,6 @@ After Ubuntu Xenial Bash has finished installing, close the Windows Command Prom
 
 -------------------------------
 
-### Vagrant GUI Setup ###
-
-Install [VirtualBox](https://www.virtualbox.org/) and [Vagrant](https://www.vagrantup.com/) and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and setup **git** for you (at least *name* and *email* is needed in `.gitconfig`). Make sure virtualization is enabled in your BIOS.
-
-Create a directory for the installation, such as `src/xForge`. Download the file [deploy/vagrant_xenial_gui/Vagrantfile](https://raw.githubusercontent.com/sillsdev/web-languageforge/master/deploy/vagrant_xenial_gui/Vagrantfile) to the directory where you want to install. Then open the command line to that directory and run `vagrant up`. This will download a box (it's about 5GB, so expect it to take a while) and run a few setup steps. When it is complete the virtual machine should be open. Launch the web browser and try navigating to languageforge.local or scriptureforge.local. The default login credentials are "admin" and "password".
-
-### Vagrant Headless Setup ###
-
-If you are on Windows, begin by giving your user account permission to create symlinks. This is necessary or `npm install` will not run properly.
-
-- Run `secpol.msc`. This ([reportedly](https://www.virtualbox.org/ticket/10085#comment:32)) does not exist on some versions of Windows and you will have to use [a workaround](https://stackoverflow.com/questions/815472/how-do-i-grant-secreatesymboliclink-on-windows-vista-home-edition).
-- Go to Local Policies -> User Rights Assignment -> Create symbolic links -> Add User or Group...
-- Type your username in the text field and click "Check Names".
-- Click OK, then click OK, and close the Local Security Policy window.
-- You might have to log out of your user account and log back in for the change to take effect.
-
-See [the screenshot.](readme_images/windows_allow_symlinks.png)
-
-- Download the file https://github.com/sillsdev/web-languageforge/blob/master/deploy/xenial/Vagrantfile and save it as Vagrantfile.
-- Open the command line to the directory where the Vagrantfile is and run `vagrant up --no-provision` (this delays provisioning so the VirtualBox guest additions updates don't interfere with the provisioning process.)
-- Run `vagrant up --provision`
-
-``` bash
-wget https://raw.githubusercontent.com/sillsdev/web-languageforge/master/deploy/xenial/Vagrantfile
-vagrant up --no-provision
-vagrant up --provision
-```
-
-Edit your hosts file (On Linux, `/etc/hosts`, on Windows, `C:\windows\system32\drivers\etc\hosts`. You will have to use sudo on Linux and edit as Administrator on Windows). Add the following lines:
-```
-192.168.33.10     languageforge.local
-192.168.33.10     scriptureforge.local
-192.168.33.10     jamaicanpsalms.scriptureforge.local
-```
-Then open languageforge.local and scriptureforge.local ensure they load correctly.
-
-Proceed to [Language Forge Configuration File](#language-forge-configuration-file) and follow the rest of the steps in this README.
-
--------------------------------
-
 ### Local Linux Development Setup ###
 
 Start by installing Git and Ansible:
@@ -211,17 +171,15 @@ Otherwise just create a symbolic link between languageforge and scriptureforge:
 ln -s web-languageforge web-scriptureforge
 ```
 
-Change the variable `mongo_path: /var/lib/mongodb` in `deploy/vars_palaso.yml`. Set it to a location where MongoDB should store its databases.
+Change the variable `mongo_path: /var/lib/mongodb` in `deploy/vars/palaso.yml`. Set it to a location where MongoDB should store its databases.
 
-- **Vagrant VM Setup**: uncomment line 6 and comment line 5
-- **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have Mongo store databases on your HDD rather than SSD). Make sure the `mongodb` user has permission to read and write to the path you specify.
+- **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have Mongo store databases on your HDD rather than SSD).
 
-Run the following Ansible playbooks to configure Ansible and run both sites.
+Run the following Ansible playbook to configure Ansible and run both sites.
 
 ```` bash
 cd web-languageforge/deploy
-ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
-ansible-playbook playbook_xenial.yml --limit localhost -K
+ansible-playbook playbook_bionic.yml --limit localhost -K
 ````
 
 #### Testing the Installation
