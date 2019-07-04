@@ -685,7 +685,7 @@ gulp.task('test-e2e-doTest', function (cb) {
   if (specString === '*') {
     specs.push('test/app/bellows/**/*-traversal.e2e-spec.js');
     if (params.webserverHost.includes('languageforge')) {
-      specs.push('test/app/languageforge/**/*.e2e-spec.js');
+      specs.push('test/app/languageforge/**/*-traversal.e2e-spec.js');
     } else {
       specs.push('test/app/scriptureforge/**/*-traversal.e2e-spec.js');
     }
@@ -767,7 +767,7 @@ gulp.task('test-e2e-teardownForLocalDev', gulp.series(
 // -------------------------------------
 //   Task: E2E Test: Run
 // -------------------------------------
-gulp.task('test-e2e-run', //HERE
+gulp.task('test-e2e-run',
   gulp.series(
     'test-e2e-clean-compile',
     'test-e2e-useTestConfig',
@@ -1182,8 +1182,8 @@ gulp.task('build',
     ),
     'sass',
     'build-webpack',
-    'build-minify', // TODO: Review if this is necessary (CJH)
-    'build-changeGroup' // TODO: Review if this is necessary (CJH)
+    'build-minify',
+    'build-changeGroup'
   )
 );
 
@@ -1239,10 +1239,9 @@ gulp.task('build-e2e',
     'test-e2e-useTestConfig',
     'build',
     'build-upload',
-    'test-e2e-clean-compile',
     'test-e2e-env',
     'test-e2e-setupTestEnvironment',
-    'test-e2e-doTest' // HERE2
+    'test-e2e-doTest'
   )
 );
 gulp.task('build-e2e').description =
