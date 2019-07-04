@@ -9,6 +9,7 @@ import {RestApiService} from './api/rest-api.service';
 import {UserRestApiService} from './api/user-rest-api.service';
 import {UserService} from './api/user.service';
 import {ApplicationHeaderService} from './application-header.service';
+import {beforeUnload} from './beforeunload.factory';
 import {ExceptionOverrideModule} from './exception-handling.service';
 import {BytesFilter, EncodeURIFilter, RelativeTimeFilter} from './filters';
 import {LinkService} from './link.service';
@@ -38,6 +39,7 @@ export const CoreModule = angular
   .service('restApiService', RestApiService)
   .service('noticeService', NoticeService)
   .service('userRestApiService', UserRestApiService)
+  .factory('beforeunload', ['$rootScope', '$window', beforeUnload]).run(['beforeunload', (beforeunload: any) => {}])
   .filter('bytes', BytesFilter)
   .filter('relativetime', RelativeTimeFilter)
   .filter('encodeURI', ['$window', EncodeURIFilter])
