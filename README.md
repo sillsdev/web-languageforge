@@ -87,41 +87,15 @@ Other useful resources:
 
 ## Recommended Development Environment ##
 
-### Automatic Install ###
-
-The below sections go into detail on how to manually set up the developer environment.  As an alternative to these instructions, you can download and run the automatic install script that is known to work on Ubuntu Xenial Native and Ubuntu Xenial on Windows 10 WSL.
-[Click here for the Automatic Install instructions](#automatic-install-script).
-
 ### Linux Ubuntu Gnome ###
 
 Our recommended development environment for web development is Linux Ubuntu GNOME.
-There are three main installation methods:
-- [Local Linux Development Setup](#local-linux-development-setup). Everything is installed directly on your machine, which needs to be running Ubuntu 16.04. This is the best method because everything runs at full speed.
-- [Vagrant GUI Setup](#vagrant-gui-setup). This is the simplest setup method. A Vagrant box with xForge already installed is downloaded and set up on your machine. The main drawback is speed. In some tests the e2e tests took approximately 10 minutes, rather than the 5 minutes they normally take.
-- [Vagrant headless setup](#vagrant-headless-setup). A small base box is downloaded and xForge is then installed into it. The source code is kept in a shared folder between the host and guest operating systems. This has a number of drawbacks, one of which is that page loads are much slower (50 times slower in some tests; 5000 ms rather than 100 ms). The reason for this is that Virtualbox gives access to the repo files on NTFS via the VirtualBox shared folder feature.  This is notoriously slow.
 
-### Ubuntu Xenial on Windows 10 WSL ###
+[Local Linux Development Setup](#local-linux-development-setup). Everything is installed directly on your machine, which needs to be running Ubuntu 18.04. This is the best method because everything runs at full speed.
+
+### Ubuntu Bionic on Windows 10 WSL ###
 
 It is also possible to develop on Windows 10 using the Windows Subsystem for Linux (WSL). This allows you to run a Linux distribution, such as Ubuntu, in Windows. The development environment has only been tested on Windows 10 Creators Update (1703). For the full steps on setting up a development environment in Windows 10, see [Windows 10 Setup](#windows-10-setup).
-
-## Automatic Install Script ##
-
-This automatic install script assumes that you are starting with a fresh install of Ubuntu Xenial, either native or on Windows 10 WSL.
-
-To begin the automatic installation, cd into a source directory (creating one if necessary).  On Windows 10 WSL this might look like this (make sure you are in Bash!):
-
-``` bash
-mkdir -p /mnt/c/src
-cd /mnt/c/src
-```
-
-Now, download and run the install script:
-
-``` bash
-wget -O- https://raw.githubusercontent.com/sillsdev/web-languageforge/master/installer/ubuntu1604Installer.sh | bash -
-```
-
-Expect the install to take 30-60 minutes on a fresh Ubuntu Xenial install, depending upon your internet connection.
 
 ### How to Setup/Uninstall/Reinstall Ubuntu on Windows 10 WSL ###
 
@@ -133,53 +107,13 @@ If you have already installed Ubuntu on Windows 10 but want to uninstall and re-
 lxrun /uninstall /full
 ```
 
-If this is your first time installing Ubuntu Xenial on Windows 10 (or if you just uninstalled in the previous step) type the following:
+If this is your first time installing Ubuntu 18.04 on Windows 10 (or if you just uninstalled in the previous step) type the following:
 
 ``` bash
 lxrun /install
 ```
 
-After Ubuntu Xenial Bash has finished installing, close the Windows Command Prompt and open a Bash prompt (now available in the start menu)
-
--------------------------------
-
-### Vagrant GUI Setup ###
-
-Install [VirtualBox](https://www.virtualbox.org/) and [Vagrant](https://www.vagrantup.com/) and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and setup **git** for you (at least *name* and *email* is needed in `.gitconfig`). Make sure virtualization is enabled in your BIOS.
-
-Create a directory for the installation, such as `src/xForge`. Download the file [deploy/vagrant_xenial_gui/Vagrantfile](https://raw.githubusercontent.com/sillsdev/web-languageforge/master/deploy/vagrant_xenial_gui/Vagrantfile) to the directory where you want to install. Then open the command line to that directory and run `vagrant up`. This will download a box (it's about 5GB, so expect it to take a while) and run a few setup steps. When it is complete the virtual machine should be open. Launch the web browser and try navigating to languageforge.local or scriptureforge.local. The default login credentials are "admin" and "password".
-
-### Vagrant Headless Setup ###
-
-If you are on Windows, begin by giving your user account permission to create symlinks. This is necessary or `npm install` will not run properly.
-
-- Run `secpol.msc`. This ([reportedly](https://www.virtualbox.org/ticket/10085#comment:32)) does not exist on some versions of Windows and you will have to use [a workaround](https://stackoverflow.com/questions/815472/how-do-i-grant-secreatesymboliclink-on-windows-vista-home-edition).
-- Go to Local Policies -> User Rights Assignment -> Create symbolic links -> Add User or Group...
-- Type your username in the text field and click "Check Names".
-- Click OK, then click OK, and close the Local Security Policy window.
-- You might have to log out of your user account and log back in for the change to take effect.
-
-See [the screenshot.](readme_images/windows_allow_symlinks.png)
-
-- Download the file https://github.com/sillsdev/web-languageforge/blob/master/deploy/xenial/Vagrantfile and save it as Vagrantfile.
-- Open the command line to the directory where the Vagrantfile is and run `vagrant up --no-provision` (this delays provisioning so the VirtualBox guest additions updates don't interfere with the provisioning process.)
-- Run `vagrant up --provision`
-
-``` bash
-wget https://raw.githubusercontent.com/sillsdev/web-languageforge/master/deploy/xenial/Vagrantfile
-vagrant up --no-provision
-vagrant up --provision
-```
-
-Edit your hosts file (On Linux, `/etc/hosts`, on Windows, `C:\windows\system32\drivers\etc\hosts`. You will have to use sudo on Linux and edit as Administrator on Windows). Add the following lines:
-```
-192.168.33.10     languageforge.local
-192.168.33.10     scriptureforge.local
-192.168.33.10     jamaicanpsalms.scriptureforge.local
-```
-Then open languageforge.local and scriptureforge.local ensure they load correctly.
-
-Proceed to [Language Forge Configuration File](#language-forge-configuration-file) and follow the rest of the steps in this README.
+After Ubuntu Bash has finished installing, close the Windows Command Prompt and open a Bash prompt (now available in the start menu)
 
 -------------------------------
 
@@ -211,17 +145,15 @@ Otherwise just create a symbolic link between languageforge and scriptureforge:
 ln -s web-languageforge web-scriptureforge
 ```
 
-Change the variable `mongo_path: /var/lib/mongodb` in `deploy/vars_palaso.yml`. Set it to a location where MongoDB should store its databases.
+Change the variable `mongo_path: /var/lib/mongodb` in `deploy/vars/config_developer.yml`. Set it to a location where MongoDB should store its databases.
 
-- **Vagrant VM Setup**: uncomment line 6 and comment line 5
-- **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have Mongo store databases on your HDD rather than SSD). Make sure the `mongodb` user has permission to read and write to the path you specify.
+- **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have Mongo store databases on your HDD rather than SSD).
 
-Run the following Ansible playbooks to configure Ansible and run both sites.
+Run the following Ansible playbook to configure Ansible and run both sites.
 
 ```` bash
 cd web-languageforge/deploy
-ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
-ansible-playbook playbook_xenial.yml --limit localhost -K
+ansible-playbook playbook_bionic.yml --limit localhost -K
 ````
 
 #### Testing the Installation
@@ -251,7 +183,7 @@ sudo gedit /etc/languageforge/conf/sendreceive.conf
 and modify PhpSourcePath to
 
 ``` bash
-PhpSourcePath = /var/www/virtual/languageforge.org/htdocs
+PhpSourcePath = /var/www/languageforge.org/htdocs
 ```
 
 -------------------------------
@@ -265,7 +197,7 @@ Before setting up a development environment on Windows 10, it is important to un
 
 #### Prerequisites ####
 
-The first step is to install Ubuntu 16.04 on Windows. Follow the steps outlined on this [page](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide).
+The first step is to install Ubuntu 18.04 on Windows. Follow the steps outlined on this [page](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide).
 
 Download and install [Git for Windows](https://git-for-windows.github.io/). If you would like a full-fledged GUI for Git, you can install [Git Extensions](https://gitextensions.github.io/).
 
@@ -411,7 +343,7 @@ Web server root URL: `http://languageforge.local`
 
 ### Xdebug ###
 
-Ansible will have installed Xdebug, but you still need to manually edit `/etc/php/7.0/apache2/php.ini` and append the following lines:
+Ansible will have installed Xdebug, but you still need to manually edit `/etc/php/7.3/apache2/php.ini` and append the following lines:
 
 ``` ini
 [Xdebug]
