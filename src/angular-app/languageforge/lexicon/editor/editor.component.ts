@@ -72,6 +72,7 @@ export class LexiconEditorController implements angular.IController {
   show: Show = new Show();
   // status is tri-state: unsaved, saving, saved
   saveStatus = 'unsaved';
+  hasUnsavedChanges = false;
 
   autoSaveTimer: angular.IPromise<void>;
   control: FieldControl = new FieldControl();
@@ -137,6 +138,12 @@ export class LexiconEditorController implements angular.IController {
     this.$scope.$on('$locationChangeStart', (event, next, current) => {
       if (current.includes('#!/editor/entry') && !next.includes('#!/editor/entry')) {
         this.cancelAutoSaveTimer();
+        this.saveCurrentEntry();
+      }
+    });
+
+    this.$scope.$on('beforeUnload', event => {
+      if (this.hasUnsavedChanges) {
         this.saveCurrentEntry();
       }
     });
@@ -307,13 +314,6 @@ export class LexiconEditorController implements angular.IController {
   resetEntryListFilter(): void {
     this.entryListModifiers.filterBy = null;
     this.filterEntries(true);
-  }
-
-  saveButtonTitle(): string {
-    if (this.saveStatus === 'saving') return 'Saving';
-    else if (this.currentEntryIsDirty()) return 'Save Entry';
-    else if (LexiconEditorController.entryIsNew(this.currentEntry)) return 'Entry unchanged';
-    else return 'Entry saved';
   }
 
   currentEntryIsDirty(): boolean {
@@ -1206,8 +1206,10 @@ export class LexiconEditorController implements angular.IController {
       return;
     }
 
+    this.hasUnsavedChanges = true;
     this.autoSaveTimer = this.$interval(() => {
       this.saveCurrentEntry(true);
+      this.hasUnsavedChanges = false;
     }, 5000, 1);
   }
 
