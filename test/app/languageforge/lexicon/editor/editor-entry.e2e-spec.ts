@@ -6,6 +6,7 @@ import {Utils} from '../../../bellows/shared/utils';
 import {ConfigurationPage} from '../shared/configuration.page';
 import {EditorPage} from '../shared/editor.page';
 import {EditorUtil} from '../shared/editor.util';
+import { protractor } from 'protractor/built/ptor';
 
 describe('Lexicon E2E Editor List and Entry', () => {
   const constants = require('../../../testConstants.json');
@@ -460,7 +461,6 @@ describe('Lexicon E2E Editor List and Entry', () => {
       { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value },
       { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value }
     ]);
-    editorPage.edit.saveBtn.click();
   });
 
   it('back to browse page, create new word', () => {
@@ -481,7 +481,6 @@ describe('Lexicon E2E Editor List and Entry', () => {
     Utils.clickDropdownByValue(editorPage.edit.getOneField('Part of Speech').element(by.css('select')),
       new RegExp('Noun \\(n\\)'));
     Utils.scrollTop();
-    editorPage.edit.saveBtn.click();
   });
 
   it('new word is visible in edit page', () => {
