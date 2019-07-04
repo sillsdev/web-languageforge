@@ -111,6 +111,12 @@
         recurse: yes
       with_items:
         - "{{php_log_folder}}"
+    - name: Create a symbolic link for scriptureforge
+      file:
+        src: web-languageforge
+        dest: ../../web-scriptureforge
+        group: www-data
+        state: link
 
     - name: php.ini changes
       lineinfile:
@@ -205,6 +211,10 @@
           mode: 'u=rwX,g=rX,o=rX'
         - path: "{{sf_path}}/docs"
           mode: 'u=rwX,g=rX,o=rX'
+        - path: "{{lf_path}}/src/assets/lexicon"
+          mode: 'g+w'
+        - path: "{{sf_path}}/src/assets/lexicon"
+          mode: 'g+w'
 
     - name: Ensure www-data has permission to folders
       # see http://stackoverflow.com/questions/28778738/ansible-mode-755-for-directories-and-644-for-files-recursively
