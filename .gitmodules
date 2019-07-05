@@ -5,6 +5,8 @@
 	path = deploy/roles/apache_config
 	url = https://github.com/saygoweb/ansible-role-apache.git
 [submodule "deploy_archive/roles/apache_config"]
+    path = deploy_archive/roles/apache_config
 	url = https://github.com/saygoweb/ansible-role-apache.git
 [submodule "deploy_archive/roles_common"]
+    path = deploy_archive/roles_common
 	url = https://github.com/sillsdev/ops-ansible-common-roles
