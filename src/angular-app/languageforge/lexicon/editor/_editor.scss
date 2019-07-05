@@ -293,12 +293,6 @@ dc-entry .card {
     justify-content: space-between;
 }
 
-.lexiconHeaderItem {
-}
-
-.flexColumnContainer {
-}
-
 #lexAppListView {
     margin-top: 20px;
     .lexiconListItem {
@@ -583,40 +577,6 @@ dc-entry .card {
     width: 100%;
     display: flex;
     position: relative;
-    .typeahead {
-      flex: 1 1 100%;
-      border-right: 1px solid $Downriver;
-      border-radius: 0;
-      #typeaheadInput {
-        width: 100%;
-        border: 0;
-        background: transparent;
-        border-radius: 0;
-        font-size: 14px;
-        line-height: 45px;
-        padding: 0 2.5em 0 1.5em;
-      }
-      .typeahead-results {
-        ul {
-          border-radius: 0;
-          .typeahead-item {
-            border-radius: 0;
-            padding: 0.35rem 1.25rem;
-            line-height: 1.2em;
-            &:hover {
-              background: $Botticelli;
-              color: $Eden;
-            }
-            small {
-              text-overflow: ellipsis;
-              overflow: hidden;
-              display: block;
-              white-space: nowrap;
-            }
-          }
-        }
-      }
-    }
     > .btn {
       flex: 0 0 110px;
       border-radius: 0;
@@ -683,6 +643,21 @@ dc-entry .card {
       border-top-right-radius: 0;
     }
   }
+}
+
+.filter-entries {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  font-size: 14px;
+  line-height: 45px;
+  padding: 0 2.5em 0 1.5em;
+}
+
+.filter-entries-wrapper {
+  flex-grow: 1;
+  border-right: 1px solid $Downriver;
 }
 
 .lexiconListItemCompact {

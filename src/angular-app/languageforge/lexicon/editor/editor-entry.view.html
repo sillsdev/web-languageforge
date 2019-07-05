@@ -23,22 +23,9 @@
                     <div class="row">
                         <div class="col d-flex align-content-stretch">
                             <div class="words-search">
-                                <pui-typeahead id="editor-entry-search-entries"
-                                               class="typeahead" placeholder="'Search Entries'"
-                                               items="$ctrl.typeahead.searchResults" term="$ctrl.typeahead.searchItemSelected"
-                                               search="$ctrl.typeahead.searchEntries" select="$ctrl.typeahead.searchSelect">
-                                    <ul data-ng-if="$ctrl.typeahead.searchResults.length > 0" class="list-group">
-                                        <li data-typeahead-item="e" class="typeahead-item list-group-item"
-                                            data-ng-repeat="e in $ctrl.typeahead.searchResults | limitTo: $ctrl.typeahead.limit">
-                                            <div class="listItemPrimary" data-ng-bind-html="$ctrl.getPrimaryListItemForDisplay($ctrl.lecConfig, e)"></div>
-                                            <small class="listItemSecondary" data-ng-bind-html="$ctrl.getMeaningForDisplay(e)"></small>
-                                        </li>
-                                    </ul>
-                                    <div style="text-align:center; background-color: #d3d3d3; color:black;"
-                                         data-ng-if="$ctrl.typeahead.searchResults.length > 0">
-                                        <small><i>{{$ctrl.typeahead.matchCountCaption}}</i></small>
-                                    </div>
-                                </pui-typeahead>
+                                <div class="filter-entries-wrapper">
+                                    <input id="editor-entry-search-entries" class="filter-entries" placeholder="Filter Entries"></input>
+                                </div>
                                 <button data-ng-click="$ctrl.toggleFilterOptions()" class="btn btn-sm">
                                     Options
                                     <i class="fa" data-ng-class="$ctrl.show.entryListModifiers ? 'fa-angle-up': 'fa-angle-down'"></i>
