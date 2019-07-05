@@ -1,12 +1,12 @@
-import {browser, by} from 'protractor';
+import {browser, by, ExpectedConditions} from 'protractor';
 
+import { protractor } from 'protractor/built/ptor';
 import {BellowsLoginPage} from '../../../bellows/shared/login.page';
 import {ProjectsPage} from '../../../bellows/shared/projects.page';
 import {Utils} from '../../../bellows/shared/utils';
 import {ConfigurationPage} from '../shared/configuration.page';
 import {EditorPage} from '../shared/editor.page';
 import {EditorUtil} from '../shared/editor.util';
-import { protractor } from 'protractor/built/ptor';
 
 describe('Lexicon E2E Editor List and Entry', () => {
   const constants = require('../../../testConstants.json');
@@ -481,6 +481,18 @@ describe('Lexicon E2E Editor List and Entry', () => {
     Utils.clickDropdownByValue(editorPage.edit.getOneField('Part of Speech').element(by.css('select')),
       new RegExp('Noun \\(n\\)'));
     Utils.scrollTop();
+  });
+
+  it('autosaves changes', () => {
+    browser.refresh();
+    browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.fields.last()));
+    editorPage.edit.getMultiTextInputs(lexemeLabel).first().getAttribute('value').then(text => {
+      editorPage.edit.getMultiTextInputs(lexemeLabel).first().sendKeys('a');
+      browser.refresh();
+      browser.wait(ExpectedConditions.visibilityOf(editorPage.edit.fields.last()));
+      expect<any>(editorPage.edit.getMultiTextInputs(lexemeLabel).first().getAttribute('value')).toEqual(text + 'a');
+      editorPage.edit.getMultiTextInputs(lexemeLabel).first().sendKeys(protractor.Key.BACK_SPACE);
+    });
   });
 
   it('new word is visible in edit page', () => {
