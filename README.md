@@ -247,16 +247,7 @@ Web server root URL: `http://languageforge.local`
 
 ### Xdebug ###
 
-Ansible will have installed Xdebug, but you still need to manually edit `/etc/php/7.3/apache2/php.ini` and append the following lines:
-
-``` ini
-[Xdebug]
-xdebug.remote_enable = 1
-xdebug.remote_port = 9000
-xdebug.idekey=PHPSTORM
-```
-
-For more detailed installation instructions, reference the [Xdebug wizard](https://xdebug.org/wizard.php)
+The Ansible script should automatically install and configure php-xdebug for you. If using VS Code, a debug extension is included in the recommended extensions to install for this project.
 
 #### Integrating Xdebug with PhpStorm ####
 
@@ -317,7 +308,7 @@ Visual Studio Code is a simple, free, cross-platform code editor. You can downlo
 
 The first time you open VS Code in the `web-languageforge` directory, it will recommend a list of extensions that are useful for developing **xForge** apps.
 
-Build tasks have been setup to work on both Windows 10 and Linux. Tasks are available for performing webpack build, sass build, and npm install. Tasks are defined in the `.vscode/tasks.json` file.
+Build tasks have been setup to work on both and Linux. Tasks are available for performing webpack build, sass build, and npm install. Tasks are defined in the `.vscode/tasks.json` file.
 
 Chrome debugging has also been configured. Launch configurations are defined in the `.vscode/launch.json` file.
 
