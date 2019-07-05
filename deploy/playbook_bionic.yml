@@ -137,6 +137,15 @@
           value: '60M'
         - property: 'upload_max_filesize'
           value: '60M'
+    - name: configure xdebug.ini
+      blockinfile:
+        path: /etc/php/{{php_version}}/mods-available/xdebug.ini
+        block: |
+
+          [XDebug]
+          xdebug.remote_enable=1
+          xdebug.remote_autostart=1
+
       notify: Restart apache
 
     - name: postfix | halt emails in output queue
