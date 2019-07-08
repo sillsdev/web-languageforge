@@ -72,7 +72,7 @@ class SilexSessionHelper
                 if (!$project->userIsMember($userId)) {
                     $project->addUser($userId, ProjectRoles::MANAGER);
                     $projectId = $project->write();
-                    $user->addProject($projectId);
+                    $user->addProject($projectId); // $user->write() occurs in the following if-block
                 }
             }
 
