@@ -63,22 +63,18 @@ class Base
      * all child classes should call this method first to setup base variables
      *
      * @param Application $app
-     * @return RedirectResponse
+     * @throws Exception Of unknown type or origin. Try/catch extracted to calling functions July 2019.
      */
     protected function setupBaseVariables(Application $app) {
         $this->_isLoggedIn = $this->isLoggedIn($app);
         $this->data['isLoggedIn'] = $this->_isLoggedIn;
         if ($this->_isLoggedIn) {
-            try {
-                $this->_userId = SilexSessionHelper::getUserId($app);
+            $this->_userId = SilexSessionHelper::getUserId($app);
 
-                if ($this->_userId) {
-                    $this->_user = new UserModel($this->_userId);
-                } /** @noinspection PhpStatementHasEmptyBodyInspection */ else {
-                    //TODO: load anonymous user here
-                }
-            } catch (\Exception $e) {
-                return $app->redirect('/auth/logout');
+            if ($this->_userId) {
+                $this->_user = new UserModel($this->_userId);
+            } /** @noinspection PhpStatementHasEmptyBodyInspection */ else {
+                //TODO: load anonymous user here
             }
         }
 
