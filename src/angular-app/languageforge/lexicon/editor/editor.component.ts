@@ -72,7 +72,6 @@ export class LexiconEditorController implements angular.IController {
   show: Show = new Show();
   // status is tri-state: unsaved, saving, saved
   saveStatus = 'unsaved';
-  hasUnsavedChanges = false;
 
   autoSaveTimer: angular.IPromise<void>;
   control: FieldControl = new FieldControl();
@@ -142,11 +141,11 @@ export class LexiconEditorController implements angular.IController {
       }
     });
 
-    this.$scope.$on('beforeUnload', event => {
-      if (this.hasUnsavedChanges) {
+    this.$window.onbeforeunload = () => {
+      if (this.hasUnsavedChanges()) {
         this.saveCurrentEntry();
       }
-    });
+    };
 
     this.setupTypeAheadSearch();
 
@@ -203,7 +202,7 @@ export class LexiconEditorController implements angular.IController {
         this.$scope.$watch(() => this.currentEntry, newValue => {
           if (newValue !== undefined) {
             this.cancelAutoSaveTimer();
-            if (this.currentEntryIsDirty()) {
+            if (this.hasUnsavedChanges()) {
               this.startAutoSaveTimer();
             }
           }
@@ -316,11 +315,10 @@ export class LexiconEditorController implements angular.IController {
     this.filterEntries(true);
   }
 
-  currentEntryIsDirty(): boolean {
+  hasUnsavedChanges(): boolean {
     if (!this.entryLoaded()) {
       return false;
     }
-
     return !angular.equals(this.currentEntry, this.pristineEntry);
   }
 
@@ -335,7 +333,7 @@ export class LexiconEditorController implements angular.IController {
     let isNewEntry = false;
     let newEntryTempId: string;
 
-    if (this.currentEntryIsDirty() && this.lecRights.canEditEntry()) {
+    if (this.hasUnsavedChanges() && this.lecRights.canEditEntry()) {
       this.cancelAutoSaveTimer();
       this.sendReceive.setStateUnsynced();
       this.saveStatus = 'saving';
@@ -1206,10 +1204,8 @@ export class LexiconEditorController implements angular.IController {
       return;
     }
 
-    this.hasUnsavedChanges = true;
     this.autoSaveTimer = this.$interval(() => {
       this.saveCurrentEntry(true);
-      this.hasUnsavedChanges = false;
     }, 5000, 1);
   }
 
@@ -1227,7 +1223,7 @@ export class LexiconEditorController implements angular.IController {
   }
 
   private pollUpdateSuccess = (): void => {
-    if (this.currentEntryIsDirty()) {
+    if (this.hasUnsavedChanges()) {
       if (this.sendReceive.isInProgress()) {
         this.cancelAutoSaveTimer();
         this.warnOfUnsavedEdits(this.currentEntry);
