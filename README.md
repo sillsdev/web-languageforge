@@ -87,33 +87,9 @@ Other useful resources:
 
 ## Recommended Development Environment ##
 
-### Linux Ubuntu Gnome ###
-
-Our recommended development environment for web development is Linux Ubuntu GNOME.
+### Linux Ubuntu Bionic ###
 
 [Local Linux Development Setup](#local-linux-development-setup). Everything is installed directly on your machine, which needs to be running Ubuntu 18.04. This is the best method because everything runs at full speed.
-
-### Ubuntu Bionic on Windows 10 WSL ###
-
-It is also possible to develop on Windows 10 using the Windows Subsystem for Linux (WSL). This allows you to run a Linux distribution, such as Ubuntu, in Windows. The development environment has only been tested on Windows 10 Creators Update (1703). For the full steps on setting up a development environment in Windows 10, see [Windows 10 Setup](#windows-10-setup).
-
-### How to Setup/Uninstall/Reinstall Ubuntu on Windows 10 WSL ###
-
-If you have never installed Ubuntu on Windows 10, [follow the instructions in this guide](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide) to ensure the pre-requisites are installed
-
-If you have already installed Ubuntu on Windows 10 but want to uninstall and re-install fresh open a Windows Command Prompt (Run as Administrator) and type the following:
-
-``` bash
-lxrun /uninstall /full
-```
-
-If this is your first time installing Ubuntu 18.04 on Windows 10 (or if you just uninstalled in the previous step) type the following:
-
-``` bash
-lxrun /install
-```
-
-After Ubuntu Bash has finished installing, close the Windows Command Prompt and open a Bash prompt (now available in the start menu)
 
 -------------------------------
 
@@ -134,20 +110,6 @@ git clone https://github.com/sillsdev/web-languageforge --recurse-submodules
 ```
 
 The `--recurse-submodules` is used to fetch many of the Ansible roles used by the Ansible playbooks in the deploy folder. If you've already cloned the repo without `--recurse-submodules`, run `git submodule update --init --recursive` to pull and initialize them.
-
-If you want to run an independent repo for Scripture Forge, clone its repo also:
-``` bash
-git clone https://github.com/sillsdev/web-scriptureforge --recurse-submodules
-```
-
-Otherwise just create a symbolic link between languageforge and scriptureforge:
-``` bash
-ln -s web-languageforge web-scriptureforge
-```
-
-Change the variable `mongo_path: /var/lib/mongodb` in `deploy/vars/config_developer.yml`. Set it to a location where MongoDB should store its databases.
-
-- **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have Mongo store databases on your HDD rather than SSD).
 
 Run the following Ansible playbook to configure Ansible and run both sites.
 
@@ -187,64 +149,6 @@ PhpSourcePath = /var/www/languageforge.org/htdocs
 ```
 
 -------------------------------
-
-### Windows 10 Setup ###
-Before setting up a development environment on Windows 10, it is important to understand a couple of things about how WSL works.
-
-1. You cannot make changes to the Linux filesystem from Windows, but you can make changes to the Windows filesystem from Linux. In practical terms, this means that any files that you want to be able to modify should be stored in the Windows filesystem. For example, Git repos should be cloned to the Windows filesystem. Windows drives are automatically mounted in Linux under the `/mnt` directory. A good practice is to store all Git repos in a directory on Windows, and then create a symbolic link to the directory in your home directory on Linux.
-2. WSL is designed to only work with command-line tools. It cannot run GUI applications. This means that any GUI-based code editors or IDEs will need to be run in Windows.
-3. Linux processes only run as long as a Bash shell is open. You can start a Bash shell on Ubuntu by running **Bash on Ubuntu on Windows** from the Start menu or by running `bash` from the command prompt. Once you close all Ubuntu Bash shells, all Linux processes will shutdown gracefully. This means that you will have to start any services that you need when you open an Ubuntu Bash shell.
-
-#### Prerequisites ####
-
-The first step is to install Ubuntu 18.04 on Windows. Follow the steps outlined on this [page](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide).
-
-Download and install [Git for Windows](https://git-for-windows.github.io/). If you would like a full-fledged GUI for Git, you can install [Git Extensions](https://gitextensions.github.io/).
-
-After, WSL and Git are installed, you will need to perform an Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure a basic development environment. The **ops-devbox** repo will need to be cloned in Windows. You will also need to ensure that the repo is checked out with Unix line endings, so that Linux can read them properly.
-
-To clone **ops-devbox** with Linux line endings, open **Git Bash** in Windows (not **Bash on Ubuntu on Windows**) and run:
-
-``` bash
-git clone --recurse-submodules --no-checkout https://github.com/sillsdev/ops-devbox
-cd ops-devbox
-git config core.autocrlf input
-git checkout
-```
-
-Once the repo is cloned, you can install Ansible in Ubuntu and run the ansible scripts as outlined in the [**ops-devbox** README](https://github.com/sillsdev/ops-devbox).
-
-#### Installation and Deployment ####
-
-Follow the installation and deployment steps outlined in [Local Linux Development Setup](#local-linux-development-setup). Remember that you will need to clone the **xForge** repos in Windows with Unix line endings.
-
-``` bash
-git clone --recurse-submodules --no-checkout https://github.com/sillsdev/web-languageforge
-cd web-languageforge
-git config core.autocrlf input
-git checkout
-```
-
-The rest of the steps should be performed in an Ubuntu Bash shell.
-
-In order to access the local deployment of **xForge** apps, the local host names need to be added to Windows hosts file. The following lines should be added to the hosts file located at `C:\Windows\System32\drivers\etc\hosts`:
-
-``` bash
-127.0.0.1  languageforge.local
-127.0.0.1  scriptureforge.local
-```
-
-#### Starting Services ####
-
-All required Linux services must be restarted when you open the first Ubuntu Bash shell. You can start the services required for development with the following commands:
-
-``` bash
-sudo service postfix start
-sudo service mongodb start
-sudo service apache2 start
-```
-
-You can create a shell script that executes these commands in order to make it more convenient to start the services.
 
 ## Installing IDEs and Debugger ##
 
@@ -343,16 +247,7 @@ Web server root URL: `http://languageforge.local`
 
 ### Xdebug ###
 
-Ansible will have installed Xdebug, but you still need to manually edit `/etc/php/7.3/apache2/php.ini` and append the following lines:
-
-``` ini
-[Xdebug]
-xdebug.remote_enable = 1
-xdebug.remote_port = 9000
-xdebug.idekey=PHPSTORM
-```
-
-For more detailed installation instructions, reference the [Xdebug wizard](https://xdebug.org/wizard.php)
+The Ansible script should automatically install and configure php-xdebug for you. If using VS Code, a debug extension is included in the recommended extensions to install for this project.
 
 #### Integrating Xdebug with PhpStorm ####
 
@@ -413,7 +308,7 @@ Visual Studio Code is a simple, free, cross-platform code editor. You can downlo
 
 The first time you open VS Code in the `web-languageforge` directory, it will recommend a list of extensions that are useful for developing **xForge** apps.
 
-Build tasks have been setup to work on both Windows 10 and Linux. Tasks are available for performing webpack build, sass build, and npm install. Tasks are defined in the `.vscode/tasks.json` file.
+Build tasks have been setup to work on both and Linux. Tasks are available for performing webpack build, sass build, and npm install. Tasks are defined in the `.vscode/tasks.json` file.
 
 Chrome debugging has also been configured. Launch configurations are defined in the `.vscode/launch.json` file.
 
@@ -541,63 +436,6 @@ In the *root* folder: `npm install`
 ### Update composer ###
 
 In the **src/** folder: `composer install`
-
-## Running the Node Server ##
-
-To run the node server to get real time updating...
-
-```` bash
-cd src/node
-sudo node server.js
-````
-
-## Setting up and running the Machine Web Server ##
-
-### Installation and Deployment ###
-
-From the **web-languageforge** repo root folder...
-
-```` bash
-cd ..
-git clone git@github.com:sillsdev/machine.git
-````
-
-To deploy the machine server...
-
-```` bash
-cd machine/build
-./deploy-local.sh
-````
-
-On a development machine call `build.sh` instead of `deploy-local.sh`:
-
-``` bash
-cd machine/build
-./build.sh
-```
-
-### Running ###
-
-To run the machine server...
-
-```` bash
-./run-developer.sh
-````
-
-Sometimes you may have to remove the `json` file in `/var/lib/languageforge/machine/data/build/` and then restart.
-
-### Suggestion data ###
-
-Copy `/var/lib/languageforge/machine/` from live server.
-Add any project slugs to the `Projects` section of the `json` file in `/var/lib/languageforge/machine/data/engine/`.
-
-## ElasticSearch Data ##
-
-Before putting data into **ElasticSearch**, setup the index with settings and data mappings...
-
-``` bash
-./scripts/server/elasticSearch/setupElasticSearchCATIndex.sh
-```
 
 ## Libraries used ##
 
