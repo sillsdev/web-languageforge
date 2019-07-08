@@ -19,16 +19,28 @@ class App extends Base
      * @param $appName
      * @param string $projectId
      * @return Response
-     * @throws UserUnauthorizedException
-     * @throws \Exception
      */
     public function view(
         /** @noinspection PhpUnusedParameterInspection */
         Request $request, Application $app, $appName, $projectId = ''
     ) {
-        $this->setupBaseVariables($app);
-        $this->setupAngularAppVariables($app, $appName, $projectId);
-        return $this->renderPage($app, 'angular-app');
+        $model = new AppModel($app, $appName, $this->website, $projectId);
+        try {
+            $this->setupBaseVariables($model->app);
+            $this->setupAngularAppVariables($model);
+        } catch (UserUnauthorizedException $e)
+        {
+            if (SilexSessionHelper::getUserId($model->app)) {
+                return $model->app->redirect('/app/projects');
+            }
+            return $model->app->redirect('/auth/logout');
+
+        } catch (\Exception $e) {
+            // setupBaseVariables() had a catch block for exceptions of unspecified type and it has been refactored here
+            // Investigations into exception type were unsuccessful
+            return $model->app->redirect('/auth/logout');
+        }
+        return $this->renderPage($model->app, 'angular-app');
     }
 
     /**
@@ -37,84 +49,77 @@ class App extends Base
      * both /app/[appName] and /public/[appName] are handled by this controller
      * /public/[appName] does not require authentication whereas /app/[appName] requires a user to be logged in
      *
-     * @param Application $app
-     * @param string $appName
-     * @param string $projectId
+     * @param AppModel $model
      * @throws UserUnauthorizedException
      * @throws AppNotFoundException
      * @throws \Exception
      */
-    public function setupAngularAppVariables(Application $app, $appName, $projectId = '')
+    public function setupAngularAppVariables(AppModel $model)
     {
-        if ($projectId == 'favicon.ico') {
-            $projectId = '';
+        if ($model->projectId == 'favicon.ico') {
+            $model->projectId = '';
         }
 
-        $isPublicApp = (preg_match('@^/(public|auth)/@', $app['request']->getRequestUri()) == 1);
-
-        $appModel = new AppModel($appName, $projectId, $this->website, $isPublicApp);
-
-        if ($appModel->isChildApp) {
-            $appName = "$appName-$projectId";
-            $projectId = '';
+        if ($model->isChildApp) {
+            $model->appName = "{$model->appName}-{$model->projectId}";
+            $model->projectId = '';
         }
 
-        $this->_appName = $appName;
-        $this->data['isAngular2'] = $appModel->isAppAngular2();
-        $this->data['appName'] = $appName;
-        $this->data['appFolder'] = $appModel->appFolder;
+        $this->_appName = $model->appName;
+        $this->data['isAngular2'] = $model->isAppAngular2();
+        $this->data['appName'] = $model->appName;
+        $this->data['appFolder'] = $model->appFolder;
 
-        if ($appModel->requireProject) {
-            if ($isPublicApp) {
-                $projectId = SilexSessionHelper::requireValidProjectIdForThisWebsite($app, $this->website, $projectId);
+        if ($model->requireProject) {
+            if ($model->isPublicApp) {
+                $model->projectId = SilexSessionHelper::requireValidProjectIdForThisWebsite($model->app, $this->website, $model->projectId);
             } else {
-                $projectId = SilexSessionHelper::requireValidProjectIdForThisWebsiteAndValidateUserMembership($app, $this->website, $projectId);
+                $model->projectId =
+                    SilexSessionHelper::requireValidProjectIdForThisWebsiteAndValidateUserMembership($model->app, $this->website, $model->projectId);
             }
         }
 
-        $app['session']->set('projectId', $projectId);
-        $this->_projectId = $projectId;
+        $model->app['session']->set('projectId', $model->projectId);
+        $this->_projectId = $model->projectId;
 
-        $this->addJavascriptFiles($appModel->siteFolder . '/js', ['vendor', 'assets']);
+        $this->addJavascriptFiles($model->siteFolder . '/js', ['vendor', 'assets']);
 
         if ($this->data['isAngular2']) {
-            $this->addJavascriptFiles($appModel->appFolder . '/dist');
+            $this->addJavascriptFiles($model->appFolder . '/dist');
         } else {
-            $this->addJavascriptFiles($appModel->appFolder, ['js/vendor', 'js/assets']);
+            $this->addJavascriptFiles($model->appFolder, ['js/vendor', 'js/assets']);
         }
 
-        if ($appModel->parentAppFolder) {
-            $this->addJavascriptFiles($appModel->parentAppFolder, ['js/vendor', 'js/assets']);
+        if ($model->parentAppFolder) {
+            $this->addJavascriptFiles($model->parentAppFolder, ['js/vendor', 'js/assets']);
         }
 
-        if ($appName == 'semdomtrans' || $appName == 'semdomtrans-new-project') {
+        if ($model->appName == 'semdomtrans' || $model->appName == 'semdomtrans-new-project') {
             // special case for semdomtrans app
             // add lexicon JS files since the semdomtrans app depends upon these JS files
-            $this->addJavascriptFiles($appModel->siteFolder . '/lexicon', ['js/vendor', 'js/assets']);
+            $this->addJavascriptFiles($model->siteFolder . '/lexicon', ['js/vendor', 'js/assets']);
         }
 
         $this->addCssFiles(NG_BASE_FOLDER . 'bellows/shared');
-        $this->addCssFiles($appModel->appFolder, ['node_modules']);
+        $this->addCssFiles($model->appFolder, ['node_modules']);
 
-        $this->addSemanticDomainFile($app, $appModel, $projectId);
+        $this->addSemanticDomainFile($model);
     }
 
     /**
-     * @param Application $app
-     * @param AppModel $appModel
-     * @param string $projectId
+     * @param AppModel $model
      * @throws \Exception
      */
-    private function addSemanticDomainFile(Application $app, AppModel $appModel, string $projectId)
+    private function addSemanticDomainFile(AppModel $model)
     {
         $interfaceLanguageCode = 'en';
-        if ($projectId) {
-            $project = ProjectModel::getById($projectId);
+        if ($model->projectId) {
+            $project = ProjectModel::getById($model->projectId);
             if ($project->interfaceLanguageCode) {
                 $interfaceLanguageCode = $project->interfaceLanguageCode;
             }
 
-            $usernameOrEmail = $app['security.token_storage']->getToken()->getUser()->getUsername();
+            $usernameOrEmail = $model->app['security.token_storage']->getToken()->getUser()->getUsername();
             $user = new UserModel();
             if ($user->readByUsernameOrEmail($usernameOrEmail)) {
                 if ($user->interfaceLanguageCode) {
@@ -123,14 +128,14 @@ class App extends Base
             }
         }
 
-        $semDomFilePath = $appModel->siteFolder . '/core/semantic-domains/semantic-domains.' . $interfaceLanguageCode .
+        $semDomFilePath = $model->siteFolder . '/core/semantic-domains/semantic-domains.' . $interfaceLanguageCode .
             '.generated-data.js';
         if (file_exists($semDomFilePath)) {
             $this->data['jsNotMinifiedFiles'][] = $semDomFilePath;
             return;
         }
 
-        $semDomFilePath = $appModel->siteFolder . '/core/semantic-domains/semantic-domains.en.generated-data.js';
+        $semDomFilePath = $model->siteFolder . '/core/semantic-domains/semantic-domains.en.generated-data.js';
         if (file_exists($semDomFilePath)) {
             $this->data['jsNotMinifiedFiles'][] = $semDomFilePath;
         }
@@ -141,6 +146,11 @@ class App extends Base
 class AppNotFoundException extends \Exception { }
 
 class AppModel {
+    /**
+     * @var Application
+     */
+    public $app;
+
     /**
      * @var string
      */
@@ -155,6 +165,11 @@ class AppModel {
      * @var string
      */
     public $appFolder;
+
+    /**
+     * @var string
+     */
+    public $projectId;
 
     /**
      * @var bool
@@ -182,6 +197,11 @@ class AppModel {
     public $requireProject;
 
     /**
+     * @var bool
+     */
+    public $isPublicApp;
+
+    /**
      * AppModel constructor
      * @param string $appName
      * @param string $projectId
@@ -189,11 +209,13 @@ class AppModel {
      * @param boolean $isPublicApp
      * @throws AppNotFoundException
      */
-    public function __construct($appName, $projectId, $website, $isPublicApp)
-    {
+    public function __construct(Application $app, $appName, $website, $projectId = '') {
+        $this->app = $app;
         $this->appName = $appName;
-        $this->determineFolderPaths($appName, $projectId, $website, $isPublicApp);
-    }
+        $this->projectId = $projectId;
+        $this->isPublicApp = (preg_match('@^/(public|auth)/@', $app['request']->getRequestUri()) == 1);
+        $this->determineFolderPaths($appName, $projectId, $website, $this->isPublicApp);
+     }
 
     /**
      * @param string $appName
