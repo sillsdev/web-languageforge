@@ -26,21 +26,21 @@ class App extends Base
     ) {
         $model = new AppModel($app, $appName, $this->website, $projectId);
         try {
-            $this->setupBaseVariables($model->app);
+            $this->setupBaseVariables($app);
             $this->setupAngularAppVariables($model);
         } catch (UserUnauthorizedException $e)
         {
-            if (SilexSessionHelper::getUserId($model->app)) {
-                return $model->app->redirect('/app/projects');
+            if (SilexSessionHelper::getUserId($app)) {
+                return $app->redirect('/app/projects');
             }
-            return $model->app->redirect('/auth/logout');
+            return $app->redirect('/auth/logout');
 
         } catch (\Exception $e) {
             // setupBaseVariables() had a catch block for exceptions of unspecified type and it has been refactored here
             // Investigations into exception type were unsuccessful
-            return $model->app->redirect('/auth/logout');
+            return $app->redirect('/auth/logout');
         }
-        return $this->renderPage($model->app, 'angular-app');
+        return $this->renderPage($app, 'angular-app');
     }
 
     /**
