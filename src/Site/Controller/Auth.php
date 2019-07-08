@@ -53,7 +53,8 @@ class Auth extends App
                 if($this->isLoggedIn($app)) {
                     return $app->redirect('/app/projects');
                 }
-                $this->setupAngularAppVariables($app, $appName);
+                $model = new AppModel($app, $appName, $this->website);
+                $this->setupAngularAppVariables($model);
                 $this->setupAuthView($request, $app);
                 if ($appName === 'oauth-signup') {
                     $this->setupOAuthView($app);

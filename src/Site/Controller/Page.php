@@ -18,7 +18,12 @@ class Page extends Base
         /** @noinspection PhpUnusedParameterInspection */ Request $request,
         Application $app, $pageName
     ) {
-        $this->setupBaseVariables($app);
+        try {
+            $this->setupBaseVariables($app);
+        } catch (\Exception $e) {
+            return $app->redirect('/auth/logout');
+        }
+
         $this->setupPageVariables($app);
 
         // special case for "brochure" HTML5 homepage
