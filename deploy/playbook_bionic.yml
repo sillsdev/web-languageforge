@@ -189,6 +189,12 @@
         groups: fieldworks
         append: yes
 
+    - name: make "{{ lookup('env','USER') }}" a member of fieldworks group
+      user:
+        name: "{{ lookup('env','USER') }}"
+        groups: fieldworks
+        append: yes
+
       # Could look up home dir of www-data user on remote system, but that turns out to
       # be a bit complicated. And since we just set it to /var/www, just use that.
     - name: ensure www-data has setguid, group-writeable .local folder
