@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import {HelpHeroService} from '../../bellows/core/helphero.service';
 import {NoticeService} from '../../bellows/core/notice/notice.service';
 import {InterfaceConfig} from '../../bellows/shared/model/interface-config.model';
 import {User} from '../../bellows/shared/model/user.model';
@@ -12,7 +13,6 @@ import {LexiconConfig} from './shared/model/lexicon-config.model';
 import {LexiconProjectSettings} from './shared/model/lexicon-project-settings.model';
 import {LexiconProject} from './shared/model/lexicon-project.model';
 import {LexOptionList} from './shared/model/option-list.model';
-import {HelpHeroService} from '../../bellows/core/helphero.service';
 
 export class LexiconAppController implements angular.IController {
   finishedLoading: boolean = false;
@@ -45,6 +45,26 @@ export class LexiconAppController implements angular.IController {
               private readonly helpHeroService: HelpHeroService) { }
 
   $onInit(): void {
+    let finishedPreloading = false;
+
+    function setupConfig(rights: Rights, editorConfig: LexiconConfig): void {
+      this.editorConfig = editorConfig;
+      this.project = rights.session.project<LexiconProject>();
+      this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
+      this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
+      this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
+      this.pristineLanguageCode = this.interfaceConfig.languageCode;
+      this.rights = rights;
+      finishedPreloading = true;
+    }
+
+    function finishLoading() {
+      this.editorService.loadEditorData().then(() => {
+        this.finishedLoading = true;
+        this.sendReceive.checkInitialState();
+      });
+    }
+
     this.$q.all([this.rightsService.getRights(), this.configService.getEditorConfig()])
       .then(([rights, editorConfig]) => {
         if (rights.canEditProject()) {
@@ -57,23 +77,12 @@ export class LexiconAppController implements angular.IController {
 
               this.users = users;
             }
-
-            this.editorConfig = editorConfig;
-            this.project = rights.session.project<LexiconProject>();
-            this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
-            this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
-            this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
-            this.pristineLanguageCode = this.interfaceConfig.languageCode;
-            this.rights = rights;
+            setupConfig.call(this, rights, editorConfig);
+          }).then(() => { // end of path "B" -- user can edit
+            if (finishedPreloading && !this.finishedLoading) finishLoading.call(this);
           });
         } else {
-          this.editorConfig = editorConfig;
-          this.project = rights.session.project<LexiconProject>();
-          this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
-          this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
-          this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
-          this.pristineLanguageCode = this.interfaceConfig.languageCode;
-          this.rights = rights;
+          setupConfig.call(this, rights, editorConfig);
         }
 
         if (this.rights) {
@@ -90,11 +99,8 @@ export class LexiconAppController implements angular.IController {
         });
       }
     )
-    .then(() => {
-      this.editorService.loadEditorData().then(() => {
-        this.finishedLoading = true;
-        this.sendReceive.checkInitialState();
-      });
+    .then(() => { // end of path "A" -- user cannot edit
+      if (finishedPreloading && !this.finishedLoading) finishLoading.call(this);
     });
 
     this.setupOffline();
