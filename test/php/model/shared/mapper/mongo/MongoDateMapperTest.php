@@ -24,10 +24,9 @@ class MongoDateMapperTest extends TestCase
     public function testEncodeDecodeDateTime_HistoricalDate_Same()
     {
         $model = new TestMongoDateModel();
-        $model->dateTime = new DateTime('2001-01-01 12:01:01.321');
+        $model->dateTime = new DateTime('2001-01-01 12:01:01.000');
         $encoded = MongoEncoder::encode($model);
         $this->assertInstanceOf(UTCDateTime::class, $encoded['dateTime']);
-//        var_dump($encoded);
 
         $decodedModel = new TestMongoDateModel();
         MongoDecoder::decode($decodedModel, $encoded);
