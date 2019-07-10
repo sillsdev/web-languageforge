@@ -58,7 +58,7 @@
       vars:
         packages:
           - default-jre-headless
-          #- lfmerge # waiting for lfmerge bionic package
+          - lfmerge
           - libapache2-mod-php
           - mongodb-org
           - nodejs
