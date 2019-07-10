@@ -47,24 +47,6 @@ export class LexiconAppController implements angular.IController {
   $onInit(): void {
     let finishedPreloading = false;
 
-    function setupConfig(rights: Rights, editorConfig: LexiconConfig): void {
-      this.editorConfig = editorConfig;
-      this.project = rights.session.project<LexiconProject>();
-      this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
-      this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
-      this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
-      this.pristineLanguageCode = this.interfaceConfig.languageCode;
-      this.rights = rights;
-      finishedPreloading = true;
-    }
-
-    function finishLoading() {
-      this.editorService.loadEditorData().then(() => {
-        this.finishedLoading = true;
-        this.sendReceive.checkInitialState();
-      });
-    }
-
     this.$q.all([this.rightsService.getRights(), this.configService.getEditorConfig()])
       .then(([rights, editorConfig]) => {
         if (rights.canEditProject()) {
@@ -77,12 +59,14 @@ export class LexiconAppController implements angular.IController {
 
               this.users = users;
             }
-            setupConfig.call(this, rights, editorConfig);
+            this.setupConfig(rights, editorConfig);
+            finishedPreloading = true;
           }).then(() => { // end of path "B" -- user can edit
-            if (finishedPreloading && !this.finishedLoading) finishLoading.call(this);
+            if (finishedPreloading && !this.finishedLoading) this.postLoad();
           });
         } else {
-          setupConfig.call(this, rights, editorConfig);
+          this.setupConfig(rights, editorConfig);
+          finishedPreloading = true;
         }
 
         if (this.rights) {
@@ -100,7 +84,7 @@ export class LexiconAppController implements angular.IController {
       }
     )
     .then(() => { // end of path "A" -- user cannot edit
-      if (finishedPreloading && !this.finishedLoading) finishLoading.call(this);
+      if (finishedPreloading && !this.finishedLoading) this.postLoad();
     });
 
     this.setupOffline();
@@ -139,6 +123,23 @@ export class LexiconAppController implements angular.IController {
         this.editorConfig = configEditor;
       });
     }
+  }
+
+  private setupConfig(rights: Rights, editorConfig: LexiconConfig): void {
+    this.editorConfig = editorConfig;
+    this.project = rights.session.project<LexiconProject>();
+    this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
+    this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
+    this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
+    this.pristineLanguageCode = this.interfaceConfig.languageCode;
+    this.rights = rights;
+  }
+
+  private postLoad() {
+    this.editorService.loadEditorData().then(() => {
+      this.finishedLoading = true;
+      this.sendReceive.checkInitialState();
+    });
   }
 
   private updateUserProfile(languageCode: string): void {
