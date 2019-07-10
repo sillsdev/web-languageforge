@@ -137,6 +137,18 @@
           value: '60M'
         - property: 'upload_max_filesize'
           value: '60M'
+    - name: copy apache2 service config from /lib to /etc for modification
+      copy:
+        src: /lib/systemd/system/apache2.service
+        dest: /etc/systemd/system/apache2.service
+        owner: root
+        group: root
+        mode: 0644
+    - name: disable systemd /tmp isolation for apache2
+      lineinfile:
+        dest: /etc/systemd/system/apache2.service
+        regexp: '^#?PrivateTmp=true'
+        line: "PrivateTmp=false"
     - name: configure xdebug.ini
       blockinfile:
         path: /etc/php/{{php_version}}/mods-available/xdebug.ini
