@@ -122,7 +122,7 @@ ansible-playbook playbook_bionic.yml --limit localhost -K
 
 To build the JavaScript and CSS, run `refreshDeps.sh lf` if you are working on Language Forge, or `refreshDeps.sh sf` if you are working on Scripture Forge. Running `refreshDeps.sh` without arguments defaults to Language Forge.
 
-That's it; you should now be able to open your browser to languageforge.localhost and scriptureforge.local and log in with the credentials "admin" and "password".
+That's it; you should now be able to open your browser to languageforge.localhost and scriptureforge.localhost and log in with the credentials "admin" and "password".
 
 Now would be a good time to check that PHP unit tests, TS unit tests, and E2E tests all work. See the [Testing](#Testing) section below.
 
@@ -268,7 +268,7 @@ Click the "+" to add the following Name & Hosts:
 
 - default.local
 - languageforge.localhost
-- scriptureforge.local
+- scriptureforge.localhost
 
 Restart apache2
 

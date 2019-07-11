@@ -47,7 +47,7 @@ class AuthUserProvider implements UserProviderInterface
             // This is because scriptureforge and languageforge are sister sites where cross-login is expected and allowed.
             $sisterSiteMap = array(
                 'scriptureforge.org' => 'languageforge.org',
-                'scriptureforge.local' => 'languageforge.localhost',
+                'scriptureforge.localhost' => 'languageforge.localhost',
                 'dev.scriptureforge.org' => 'dev.languageforge.org',
                 'qa.scriptureforge.org' => 'qa.languageforge.org'
             );

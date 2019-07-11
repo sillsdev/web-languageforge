@@ -638,13 +638,13 @@ gulp.task('test-e2e-doTest', function (cb) {
     .alias('?', 'help')
     .example('$0 test-e2e-run --webserverHost languageforge.localhost',
       'Runs all the E2E tests for languageforge')
-    .example('$0 test-e2e-run --webserverHost scriptureforge.local --specs projectSettingsPage',
+    .example('$0 test-e2e-run --webserverHost scriptureforge.localhost --specs projectSettingsPage',
       'Runs the scriptureforge E2E test for projectSettingsPage')
     .fail(yargFailure)
     .argv;
 
   var protocol =
-    (params.webserverHost === 'jamaicanpsalms.scriptureforge.local') ? 'https://' : 'http://';
+    (params.webserverHost === 'jamaicanpsalms.scriptureforge.localhost') ? 'https://' : 'http://';
 
   var configFile;
   var isBrowserStack = false;
