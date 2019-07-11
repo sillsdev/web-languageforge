@@ -1,6 +1,6 @@
 exports.config = {
   directConnect: true,
-  baseUrl: 'http://languageforge.local',
+  baseUrl: 'http://languageforge.localhost',
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {

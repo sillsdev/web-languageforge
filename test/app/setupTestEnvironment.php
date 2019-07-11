@@ -25,7 +25,7 @@ use Api\Model\Shared\UserModel;
 $constants = json_decode(file_get_contents(TestPath . 'app/testConstants.json'), true);
 
 // Fake some $_SERVER variables like HTTP_HOST for the sake of the code that needs it
-$hostname = "languageforge.local";
+$hostname = "languageforge.localhost";
 if (count($argv) > 1) {
     // hostname is passed in on command line
     $hostname = $argv[1];
