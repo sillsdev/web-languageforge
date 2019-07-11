@@ -14,7 +14,7 @@ class LiftImportTest extends TestCase
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$environ = new LexiconMongoTestEnvironment();
         self::$environ->clean();
@@ -23,7 +23,7 @@ class LiftImportTest extends TestCase
     /**
      * Cleanup test lift files
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         self::$environ->cleanupTestUploadFiles();
         self::$environ->clean();

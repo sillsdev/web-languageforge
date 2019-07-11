@@ -33,6 +33,6 @@ class SfchecksRolesTest extends TestCase
     public function testGetRights_Ok()
     {
         $result = SfchecksRoles::getRightsArray(ProjectRoles::CONTRIBUTOR);
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
     }
 }

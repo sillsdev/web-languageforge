@@ -25,7 +25,7 @@ class TextModelTest extends TestCase
         $text->content = $usx;
         $id = $text->write();
         $this->assertNotNull($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
         $this->assertEquals($text->id->asString(), $id);
 
         // Read back

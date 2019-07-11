@@ -26,7 +26,7 @@ class QuestionModelTest extends TestCase
         $question->textRef->id = $textRef;
         $id = $question->write();
         $this->assertNotNull($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
         $this->assertEquals($question->id->asString(), $id);
 
         // Read back
