@@ -15,7 +15,8 @@ site_src_paths:
 base_distribution: "{{ansible_distribution | lower}}"
 base_distribution_release: "{{ansible_distribution_release}}"
 
-node_version: 8.11.4
+node_version: 10.16.0
+npm_version: 6.10.0
 mongodb_version: 4.0
 php_version: 7.3
 

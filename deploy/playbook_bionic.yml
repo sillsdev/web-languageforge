@@ -85,12 +85,15 @@
         state: link
       when: node_binary.stat.exists == False
     - name: install n
-      shell: npm install -g n
+      shell: npm install -g n # TODO: idempotent
       args:
         creates: /usr/local/bin/n
 
     - name: change node version
       shell: "n {{node_version}}" # TODO: idempotent
+
+    - name: change npm version
+      shell: "npm install -g npm@{{npm_version}}" # TODO: idempotent
 
     - name: install Composer
       shell: php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/local/bin --filename=composer
