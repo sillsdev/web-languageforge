@@ -1,0 +1,5 @@
+{
+  "phpunit.args": [
+        "--configuration", "test/php/phpunit.xml"
+    ]
+}
