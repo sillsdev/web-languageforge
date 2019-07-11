@@ -52,6 +52,8 @@ class LexRoles extends ProjectRoles
         $rights[] = Domain::USERS + Operation::VIEW;
         self::grantAllOnDomain($rights, Domain::ENTRIES);
         self::$_rights[self::MANAGER] = $rights;
+
+        self::$_rights[self::TECH_SUPPORT] = $rights;
     }
 
     private static $_rights;

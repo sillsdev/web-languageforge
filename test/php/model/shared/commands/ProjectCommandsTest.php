@@ -15,6 +15,7 @@ use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\UserModel;
 use Palaso\Utilities\FileUtilities;
 use PHPUnit\Framework\TestCase;
+use Api\Model\Shared\Rights\SystemRoles;
 
 class ProjectCommandsTest extends TestCase
 {
@@ -647,5 +648,40 @@ class ProjectCommandsTest extends TestCase
         // list members of project2 - there should be two members
         $usersDto = ProjectCommands::usersDto($project2Id);
         $this->assertEquals(2, $usersDto['userCount']);
+    }
+
+    public function testAddTechSupport()
+    {
+        self::$environ->clean();
+
+        $adminId = self::$environ->createUser("adminname", "admin Name", "admin@example.com");
+        $admin = new UserModel($adminId);
+        $admin->role = SystemRoles::SYSTEM_ADMIN;
+        $admin->write();
+
+        $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
+
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        ProjectCommands::updateUserRole($projectId, $adminId, ProjectRoles::TECH_SUPPORT);
+
+        $project = ProjectModel::getById($projectId);
+        $this->assertArrayHasKey($adminId, $project->users);
+        $this->assertEquals($project->users[$adminId]->role, ProjectRoles::TECH_SUPPORT);
+    }
+
+    public function testAddTechSupport_Exception()
+    {
+        $this->expectException(UserUnauthorizedException::class); // TODO: Add proper exception
+        self::$environ->clean();
+
+        $userId = self::$environ->createUser("username", "user Name", "user@example.com");
+        $user = new UserModel($userId);
+        $user->role = SystemRoles::USER;
+        $user->write();
+
+        $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
+
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::TECH_SUPPORT);
     }
 }
