@@ -16,7 +16,7 @@ class ProjectPageDtoTest extends TestCase
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$environ = new MongoTestEnvironment();
         self::$environ->clean();
@@ -25,7 +25,7 @@ class ProjectPageDtoTest extends TestCase
     /**
      * Cleanup test environment
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         self::$environ->clean();
     }
@@ -122,7 +122,7 @@ class ProjectPageDtoTest extends TestCase
         $encodedText1 = $encodedTexts[$text1Id];
         $encodedText2 = $encodedTexts[$text2Id];
 
-        $this->assertInternalType('array', $dto['texts']);
+        $this->assertIsArray($dto['texts']);
         $this->assertEquals($text1Id, $encodedText1['id']);
         $this->assertEquals($text2Id, $encodedText2['id']);
         $this->assertEquals('Chapter 3', $encodedText1['title']);

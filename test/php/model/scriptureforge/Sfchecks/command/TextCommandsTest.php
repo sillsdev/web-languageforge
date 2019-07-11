@@ -9,7 +9,7 @@ class TextCommandsTest extends TestCase
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
 
-    public function setUp()
+    public function setUp(): void
     {
         self::$environ = new MongoTestEnvironment();
         self::$environ->clean();

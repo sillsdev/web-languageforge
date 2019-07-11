@@ -10,7 +10,7 @@ class LexCommentCommandsTest extends TestCase
     /** @var mixed[] Data storage between tests */
     private static $save;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$save = [];
     }
