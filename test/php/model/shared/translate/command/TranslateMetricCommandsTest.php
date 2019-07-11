@@ -14,13 +14,13 @@ class TranslateMetricCommandsTest extends TestCase
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;
 
-    public function setUp()
+    public function setUp(): void
     {
         self::$environ = new MongoTestEnvironment();
         self::$environ->clean();
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::$environ->clean();
     }

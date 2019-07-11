@@ -17,7 +17,7 @@ class QuestionListDtoTest extends TestCase
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$environ = new MongoTestEnvironment();
         self::$environ->clean();
@@ -26,7 +26,7 @@ class QuestionListDtoTest extends TestCase
     /**
      * Cleanup test environment
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         self::$environ->clean();
     }
@@ -46,7 +46,7 @@ class QuestionListDtoTest extends TestCase
 
         // Now check that it all looks right, 1 Text & 2 Questions
         $this->assertEquals(2, $dto['count']);
-        $this->assertInternalType('array', $dto['entries']);
+        $this->assertIsArray($dto['entries']);
         $entriesById = self::$environ->indexItemsBy($dto['entries'], 'id');
         $entry0 = $entriesById[$question1Id];
         $entry1 = $entriesById[$question2Id];
@@ -65,7 +65,7 @@ class QuestionListDtoTest extends TestCase
         $dto = QuestionListDto::encode($projectId, $textId, $user2Id);
         // In this test, the expected counts should be *exactly* the same as from John Carter's POV
         $this->assertEquals(2, $dto['count']);
-        $this->assertInternalType('array', $dto['entries']);
+        $this->assertIsArray($dto['entries']);
         $entriesById = self::$environ->indexItemsBy($dto['entries'], 'id');
         $entry0 = $entriesById[$question1Id];
         $entry1 = $entriesById[$question2Id];
@@ -83,7 +83,7 @@ class QuestionListDtoTest extends TestCase
         // And also from the point of view of Tars Tarkas, a project manager
         $dto = QuestionListDto::encode($projectId, $textId, $user3Id);
         $this->assertEquals(2, $dto['count']);
-        $this->assertInternalType('array', $dto['entries']);
+        $this->assertIsArray($dto['entries']);
         $entriesById = self::$environ->indexItemsBy($dto['entries'], 'id');
         $entry0 = $entriesById[$question1Id];
         $entry1 = $entriesById[$question2Id];
@@ -126,7 +126,7 @@ class QuestionListDtoTest extends TestCase
 
         // Now check that it all looks right, 1 Text & 2 Questions
         $this->assertEquals(2, $dto['count']);
-        $this->assertInternalType('array', $dto['entries']);
+        $this->assertIsArray($dto['entries']);
         $entriesById = self::$environ->indexItemsBy($dto['entries'], 'id');
         $entry1 = $entriesById[$question1Id];
         $entry2 = $entriesById[$question2Id];
@@ -147,7 +147,7 @@ class QuestionListDtoTest extends TestCase
         $dto = QuestionListDto::encode($projectId, $textId, $user2Id);
         // The expected counts should be different from what John Carter sees
         $this->assertEquals(2, $dto['count']);
-        $this->assertInternalType('array', $dto['entries']);
+        $this->assertIsArray($dto['entries']);
         $entriesById = self::$environ->indexItemsBy($dto['entries'], 'id');
         $entry1 = $entriesById[$question1Id];
         $entry2 = $entriesById[$question2Id];
@@ -169,7 +169,7 @@ class QuestionListDtoTest extends TestCase
         // And also from the point of view of Tars Tarkas, a project manager
         $dto = QuestionListDto::encode($projectId, $textId, $user3Id);
         $this->assertEquals(2, $dto['count']);
-        $this->assertInternalType('array', $dto['entries']);
+        $this->assertIsArray($dto['entries']);
         $entriesById = self::$environ->indexItemsBy($dto['entries'], 'id');
         $entry0 = $entriesById[$question1Id];
         $entry1 = $entriesById[$question2Id];

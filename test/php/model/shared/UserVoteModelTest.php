@@ -31,12 +31,12 @@ class UserVoteModelTest extends TestCase
 
         $id = $vote->write();
         $this->assertNotNull($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
         $this->assertEquals($vote->id->asString(), $id);
 
         // Read back
         $otherVote = new UserVoteModel($userId, $projectId, $questionId);
-        $this->assertInternalType('string', $otherVote->id->id);
+        $this->assertIsString($otherVote->id->id);
         $this->assertEquals($vote->id->asString(), $id);
         $result = $otherVote->hasVote($answerId);
         $this->assertTrue($result);

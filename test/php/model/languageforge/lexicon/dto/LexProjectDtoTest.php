@@ -12,7 +12,7 @@ class LexProjectDtoTest extends TestCase
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;
 
-    public function setUp()
+    public function setUp(): void
     {
         self::$environ = new LexiconMongoTestEnvironment();
         self::$environ->clean();
