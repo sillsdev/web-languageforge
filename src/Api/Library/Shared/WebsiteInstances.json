@@ -1,28 +1,11 @@
 {
   "scriptureforge": [
     {
-      "__comment": "scriptureforge.local sites",
-      "domain": "scriptureforge.local",
-      "base": "Website::SCRIPTUREFORGE",
-      "name": "Scripture Forge",
-      "ssl": false,
-      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
-      "releaseStage": "local"
-    },
-    {
       "__comment": "scriptureforge.localhost sites",
       "domain": "scriptureforge.localhost",
       "base": "Website::SCRIPTUREFORGE",
       "name": "Scripture Forge",
       "ssl": false,
-      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
-      "releaseStage": "local"
-    },
-    {
-      "domain": "e2etest.scriptureforge.localhost",
-      "base": "Website::SCRIPTUREFORGE",
-      "name": "Scripture Forge",
-      "ssl": "false",
       "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
       "releaseStage": "local"
     },
@@ -36,15 +19,6 @@
       "releaseStage": "local"
     },
     {
-      "domain": "jamaicanpsalms.e2etest.scriptureforge.localhost",
-      "base": "Website::SCRIPTUREFORGE",
-      "name": "The Jamaican Psalms Project",
-      "ssl": "true",
-      "theme": "jamaicanpsalms",
-      "defaultProjectCode": "jamaicanpsalms",
-      "releaseStage": "local"
-    },
-    {
       "domain": "demo.scriptureforge.localhost",
       "base": "Website::SCRIPTUREFORGE",
       "name": "Scripture Forge",
@@ -54,47 +28,11 @@
       "releaseStage": "local"
     },
     {
-      "__comment": "dev.scriptureforge.org sites",
-      "domain": "dev.scriptureforge.org",
-      "base": "Website::SCRIPTUREFORGE",
-      "name": "Scripture Forge",
-      "ssl": "true",
-      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
-      "releaseStage": "development"
-    },
-    {
-      "domain": "demo.dev.scriptureforge.org",
-      "base": "Website::SCRIPTUREFORGE",
-      "name": "Scripture Forge",
-      "ssl": "true",
-      "theme": "simple",
-      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
-      "releaseStage": "development"
-    },
-    {
-      "domain": "jamaicanpsalms.dev.scriptureforge.org",
-      "base": "Website::SCRIPTUREFORGE",
-      "name": "The Jamaican Psalms Project",
-      "ssl": "true",
-      "theme": "jamaicanpsalms",
-      "defaultProjectCode": "jamaican_psalms",
-      "releaseStage": "development"
-    },
-    {
       "__comment": "qa.scriptureforge.org",
       "domain": "qa.scriptureforge.org",
       "base": "Website::SCRIPTUREFORGE",
       "name": "Scripture Forge",
       "ssl": "true",
-      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
-      "releaseStage": "qa"
-    },
-    {
-      "domain": "demo.qa.scriptureforge.org",
-      "base": "Website::SCRIPTUREFORGE",
-      "name": "Scripture Forge",
-      "ssl": "true",
-      "theme": "simple",
       "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
       "releaseStage": "qa"
     },
@@ -133,15 +71,6 @@
   ],
   "languageforge": [
     {
-      "__comment": "languageforge.local sites",
-      "domain": "languageforge.local",
-      "base": "Website::LANGUAGEFORGE",
-      "name": "Language Forge",
-      "ssl": "false",
-      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
-      "releaseStage": "local"
-    },
-    {
       "__comment": "languageforge.localhost sites",
       "domain": "languageforge.localhost",
       "base": "Website::LANGUAGEFORGE",
@@ -149,23 +78,6 @@
       "ssl": "false",
       "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
       "releaseStage": "local"
-    },
-    {
-      "domain": "e2etest.languageforge.localhost",
-      "base": "Website::LANGUAGEFORGE",
-      "name": "Language Forge",
-      "ssl": "false",
-      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
-      "releaseStage": "local"
-    },
-    {
-      "__comment": "dev.languageforge.org",
-      "domain": "dev.languageforge.org",
-      "base": "Website::LANGUAGEFORGE",
-      "name": "Language Forge",
-      "ssl": "true",
-      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
-      "releaseStage": "development"
     },
     {
       "__comment": "qa.languageforge.org",

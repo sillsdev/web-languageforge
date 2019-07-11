@@ -122,7 +122,7 @@ ansible-playbook playbook_bionic.yml --limit localhost -K
 
 To build the JavaScript and CSS, run `refreshDeps.sh lf` if you are working on Language Forge, or `refreshDeps.sh sf` if you are working on Scripture Forge. Running `refreshDeps.sh` without arguments defaults to Language Forge.
 
-That's it; you should now be able to open your browser to languageforge.local and scriptureforge.local and log in with the credentials "admin" and "password".
+That's it; you should now be able to open your browser to languageforge.localhost and scriptureforge.local and log in with the credentials "admin" and "password".
 
 Now would be a good time to check that PHP unit tests, TS unit tests, and E2E tests all work. See the [Testing](#Testing) section below.
 
@@ -241,8 +241,8 @@ Click **Create New Project from Existing Files**. Leave the default option (Web 
  From the **Create New Project: Choose Project Directory** dialog,  browse to the `web-languageforge` directory, then mark it as **Project Root** (using the `Project Root` button in the toolbar) and click **Next**.
 
 From the **Add Local Server** dialog set
-Name: `languageforge.local`
-Web server root URL: `http://languageforge.local`
+Name: `languageforge.localhost`
+Web server root URL: `http://languageforge.localhost`
 --> **Next** --> **Finish**
 
 ### Xdebug ###
@@ -267,7 +267,7 @@ Adding *Servers* from PhpStorm
 Click the "+" to add the following Name & Hosts:
 
 - default.local
-- languageforge.local
+- languageforge.localhost
 - scriptureforge.local
 
 Restart apache2
