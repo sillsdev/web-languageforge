@@ -32,12 +32,12 @@ ssl_items:
         locality: "Chiang Mai"
         organization: "SIL"
         organization_unit: ""
-        common_name: "scriptureforge.local"
+        common_name: "scriptureforge.localhost"
         alt_names:
           - key: DNS.1
-            value: "www.scriptureforge.local"
+            value: "www.scriptureforge.localhost"
           - key: DNS.2
-            value: "scriptureforge.local"
+            value: "scriptureforge.localhost"
     sign:
 
 

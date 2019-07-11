@@ -417,7 +417,7 @@ if ($site == 'scriptureforge') {
     copy(TestPath . "common/$fileName", $tmpFilePath);
 }
 
-if ($website->domain == 'jamaicanpsalms.scriptureforge.local') {
+if ($website->domain == 'jamaicanpsalms.scriptureforge.localhost') {
     $jpProject = ProjectCommands::createProject(
         "The Jamaican Psalms Project",
         "jamaican_psalms",
