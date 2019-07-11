@@ -43,10 +43,10 @@ class TextSettingsDtoTest extends TestCase
 
         $dto = TextSettingsDto::encode($projectId, $textId, $userId);
 
-        $this->assertInternalType('array', $dto['text']);
+        $this->assertIsArray($dto['text']);
         $this->assertEquals($textId, $dto['text']['id']);
         $this->assertEquals('Text Title', $dto['text']['title']);
-        $this->assertInternalType('array', $dto['archivedQuestions']);
+        $this->assertIsArray($dto['archivedQuestions']);
         $this->assertCount(1, $dto['archivedQuestions']);
         $this->assertEquals('Archived Title', $dto['archivedQuestions'][0]['title']);
         $this->assertTrue(count($dto['rights']) > 0, "No rights in dto");

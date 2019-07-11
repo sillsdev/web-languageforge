@@ -73,7 +73,7 @@ class ApiCrudTest extends TestCase
     /** @var ApiCrudTestEnvironment */
     public static $environ;
 
-    public function setUp()
+    public function setUp(): void
     {
         self::$environ = new ApiCrudTestEnvironment();
         self::$environ->clean();

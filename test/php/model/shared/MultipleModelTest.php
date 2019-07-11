@@ -15,7 +15,7 @@ class MultipleModelTest extends TestCase
         $model->username = 'SomeUser';
         $id = $model->write();
         $this->assertNotNull($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
         $otherModel = new UserModel($id);
         $this->assertEquals($id, $otherModel->id->asString());
         $this->assertEquals('user@example.com', $otherModel->email);
@@ -26,7 +26,7 @@ class MultipleModelTest extends TestCase
         $model->projectName = 'SomeProject';
         $id = $model->write();
         $this->assertNotNull($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
         $otherModel = new ProjectModel($id);
         $this->assertEquals($id, $otherModel->id->asString());
         $this->assertEquals('SomeLanguage', $otherModel->language);

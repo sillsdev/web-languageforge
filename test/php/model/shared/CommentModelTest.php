@@ -35,7 +35,7 @@ class CommentModelTest extends TestCase
         $comment->content = 'Some comment';
         $id = QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment);
         $this->assertNotNull($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
         $this->assertEquals(24, strlen($id));
         $this->assertEquals($comment->id->asString(), $id);
 

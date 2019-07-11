@@ -16,7 +16,7 @@ class UserUnreadModelTest extends TestCase
     /** @var MongoTestEnvironment */
     private static $environ;
 
-    public function setUp()
+    public function setUp(): void
     {
         self::$environ = new MongoTestEnvironment();
         self::$environ->clean();

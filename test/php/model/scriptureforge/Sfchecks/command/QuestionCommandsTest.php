@@ -199,7 +199,7 @@ class QuestionCommandsTest extends TestCase
         $this->assertEquals(0, $answer0['score']);
 
         $dto = QuestionCommands::voteDown($environ->userId, $environ->projectId, $environ->questionId, $environ->answerId);
-        $this->assertInternalType('array', $dto);
+        $this->assertIsArray($dto);
 
         $answer1 = $dto[$environ->answerId];
         $this->assertEquals(0, $answer1['score']);

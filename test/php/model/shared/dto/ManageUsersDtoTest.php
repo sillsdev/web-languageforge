@@ -28,7 +28,7 @@ class ManageUsersDtoTest extends TestCase
         $dto = ManageUsersDto::encode($projectId);
 
         $this->assertEquals(1, $dto['userCount']);
-        $this->assertInternalType('array', $dto['users']);
+        $this->assertIsArray($dto['users']);
         $this->assertEquals($userId, $dto['users'][0]['id']);
         $this->assertEquals('Name', $dto['users'][0]['name']);
         $this->assertEquals(ProjectRoles::CONTRIBUTOR, $dto['users'][0]['role']);
