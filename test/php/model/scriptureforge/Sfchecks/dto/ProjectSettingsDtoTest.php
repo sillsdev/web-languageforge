@@ -44,7 +44,7 @@ class ProjectSettingsDtoTest extends TestCase
         $dto = ProjectSettingsDto::encode($projectId, $user2Id);
 
         $this->assertEquals(2, $dto['count']);
-        $this->assertInternalType('array', $dto['entries']);
+        $this->assertIsArray($dto['entries']);
         $this->assertEquals($user2Id, $dto['entries'][1]['id']);
         $this->assertEquals('Name', $dto['entries'][1]['name']);
         $this->assertEquals(ProjectRoles::CONTRIBUTOR, $dto['entries'][1]['role']);
