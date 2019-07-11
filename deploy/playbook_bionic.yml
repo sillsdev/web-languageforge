@@ -349,7 +349,7 @@
       with_items:
         - "default.local"
         - "languageforge.localhost"
-        - "scriptureforge.local"
+        - "scriptureforge.localhost"
       when: inventory_hostname == "localhost"
 
   handlers:
