@@ -26,7 +26,7 @@ exports.config = {
     // }
   ],
 
-    baseUrl: 'http://languageforge.local', // GULP and specs
+    baseUrl: 'http://languageforge.localhost', // GULP and specs
     framework: 'jasmine',
     jasmineNodeOpts: {
         showColors: true,

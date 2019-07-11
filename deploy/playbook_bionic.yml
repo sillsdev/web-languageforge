@@ -348,7 +348,7 @@
         create: yes
       with_items:
         - "default.local"
-        - "languageforge.local"
+        - "languageforge.localhost"
         - "scriptureforge.local"
       when: inventory_hostname == "localhost"
 

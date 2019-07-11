@@ -126,7 +126,7 @@ class FactoryReset
             print "Site names being converted for LOCAL MACHINE khrap\n";
             $siteNameMap['scriptureforge.org'] = 'scriptureforge.local';
             $siteNameMap['jamaicanpsalms.scriptureforge.org'] = 'jamaicanpsalms.scriptureforge.local';
-            $siteNameMap['languageforge.org'] = 'languageforge.local';
+            $siteNameMap['languageforge.org'] = 'languageforge.localhost';
         }
 
         $siteNameCount = array();
