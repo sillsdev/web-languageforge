@@ -1,6 +1,7 @@
-import {browser, by, ExpectedConditions} from 'protractor';
+import {browser, by, ExpectedConditions, element} from 'protractor';
 import {ElementFinder} from 'protractor/built/element';
 
+import {EditorPage} from '../languageforge/lexicon/shared/editor.page';
 import {BellowsLoginPage} from './shared/login.page';
 import {ProjectsPage} from './shared/projects.page';
 
@@ -8,6 +9,8 @@ describe('Bellows E2E Projects List app', () => {
   const constants = require('../testConstants.json');
   const loginPage = new BellowsLoginPage();
   const projectsPage = new ProjectsPage();
+  const editorPage = new EditorPage();
+  const projectNameLabel = element(by.className('page-name ng-binding'));
 
   describe('for Normal User', () => {
 
@@ -94,6 +97,35 @@ describe('Bellows E2E Projects List app', () => {
         shouldProjectBeLinked(constants.otherProjectName, projectRow, true);
         shouldProjectHaveButtons(projectRow, false);
       });
+    });
+
+  });
+
+  describe('Lexicon E2E Project Access', () => {
+
+    it('Admin added to project when accessing without membership', () => {
+      loginPage.loginAsManager();
+      browser.getCurrentUrl().then(url => {
+        projectNameLabel.getText().then( projectName => {
+          projectsPage.get();
+          browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
+          projectsPage.removeUserFromProject(projectName, constants.adminUsername);
+          loginPage.loginAsAdmin();
+          browser.get(url);
+          browser.wait(ExpectedConditions.visibilityOf(editorPage.browseDiv), constants.conditionTimeout);
+          expect<any>(editorPage.browseDiv.isPresent()).toBe(true);
+        });
+      });
+    });
+
+    it('User redirected to projects app when accessing without membership', () => {
+        loginPage.loginAsManager();
+        browser.getCurrentUrl().then(url => {
+          loginPage.loginAsSecondUser();
+          browser.get(url);
+          browser.wait(ExpectedConditions.visibilityOf(projectsPage.createBtn), constants.conditionTimeout);
+          expect<any>(projectsPage.createBtn.isPresent()).toBe(true);
+        });
     });
 
   });
