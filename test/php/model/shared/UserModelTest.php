@@ -20,7 +20,7 @@ class UserModelTest extends TestCase
         $user->avatar_ref = "Site/views/shared/image/avatar/pinkbat.png";
         $id = $user->write();
         $this->assertNotNull($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
         $this->assertEquals($user->id, $id);
         $otherModel = new UserModel($id);
         $this->assertEquals($id, $otherModel->id);
@@ -412,7 +412,7 @@ class UserModelTest extends TestCase
         $today = new \DateTime();
         $future = $today->add(new DateInterval('P7D'));
         $hourMargin = 60;
-        $this->assertEquals($user->resetPasswordExpirationDate->getTimestamp(), $future->getTimestamp(), '', $hourMargin);
+        $this->assertEqualsWithDelta($user->resetPasswordExpirationDate->getTimestamp(), $future->getTimestamp(), $hourMargin, '');
     }
 
     public function testHasForgottenPassword_KeySetConsumeKey_HasForgottenKeyConsumed()
@@ -430,7 +430,7 @@ class UserModelTest extends TestCase
         $this->assertEmpty($user->resetPasswordKey);
         $today = new \DateTime();
         $hourMargin = 60;
-        $this->assertEquals($user->resetPasswordExpirationDate->getTimestamp(), $today->getTimestamp(), '', $hourMargin);
+        $this->assertEqualsWithDelta($user->resetPasswordExpirationDate->getTimestamp(), $today->getTimestamp(), $hourMargin, '');
     }
 
     public function testSetUniqueUsernameFromString_ExistingUsernameSelf_SetsUniqueUsername() {

@@ -12,7 +12,7 @@ class ParatextExportTest extends TestCase
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$environ = new MongoTestEnvironment();
         self::$environ->clean();

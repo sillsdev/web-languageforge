@@ -14,7 +14,7 @@ class SfchecksProjectModelTest extends TestCase
         $project = new SfchecksProjectModel();
         $project->addUser($userId, ProjectRoles::MANAGER);
         $result = $project->getRightsArray($userId);
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertTrue(in_array(Domain::QUESTIONS + Operation::CREATE, $result));
     }
 

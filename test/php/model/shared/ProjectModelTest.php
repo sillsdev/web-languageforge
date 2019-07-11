@@ -21,7 +21,7 @@ class ProjectModelTest extends TestCase
         //$model->users->refs = array('1234');
         $id = $model->write();
         $this->assertNotNull($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
         $this->assertEquals($model->id->asString(), $id);
         $otherModel = new ProjectModel($id);
         $this->assertEquals($id, $otherModel->id->asString());
