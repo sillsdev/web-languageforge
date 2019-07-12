@@ -401,5 +401,6 @@
         chdir: ..
     - name: run php unit tests (gulp test-php)
       shell: "gulp test-php"
+      become_user: www-data
       args:
         chdir: ..
