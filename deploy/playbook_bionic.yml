@@ -279,10 +279,15 @@
         group: www-data
         mode: 0755
 
+    - name: check for PECL Mongo Extension
+      command: ls /etc/php/{{php_version}}/mods-available/
+      register: pecl_mongo_ini
+      changed_when: false
     - name: Install PECL Mongo Extension
       pear:
         name: pecl/mongodb
         state: present
+      when: pecl_mongo_ini.stdout is not search('mongodb.ini')
     - name: Enable PECL Mongo module in mods-available
       lineinfile:
         dest: /etc/php/{{php_version}}/mods-available/mongodb.ini
