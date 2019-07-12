@@ -124,9 +124,9 @@ class FactoryReset
             $siteNameMap['languageforge.org'] = 'qa.languageforge.org';
         } else if ($this->environment == "local") {
             print "Site names being converted for LOCAL MACHINE khrap\n";
-            $siteNameMap['scriptureforge.org'] = 'scriptureforge.local';
-            $siteNameMap['jamaicanpsalms.scriptureforge.org'] = 'jamaicanpsalms.scriptureforge.local';
-            $siteNameMap['languageforge.org'] = 'languageforge.local';
+            $siteNameMap['scriptureforge.org'] = 'scriptureforge.localhost';
+            $siteNameMap['jamaicanpsalms.scriptureforge.org'] = 'jamaicanpsalms.scriptureforge.localhost';
+            $siteNameMap['languageforge.org'] = 'languageforge.localhost';
         }
 
         $siteNameCount = array();
