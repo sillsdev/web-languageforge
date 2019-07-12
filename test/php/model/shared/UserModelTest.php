@@ -79,7 +79,7 @@ class UserModelTest extends TestCase
         $environ->createUser('someuser', 'Some User','user@example.com');
 
         // Check no users exist on another website
-        $website = new Website('languageforge.local', Website::LANGUAGEFORGE);
+        $website = new Website('languageforge.localhost', Website::LANGUAGEFORGE);
         $model = new UserTypeaheadModel('some', '', $website);
         $model->read();
 

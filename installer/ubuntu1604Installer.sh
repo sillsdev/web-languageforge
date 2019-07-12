@@ -79,7 +79,7 @@ sudo adduser $USER fieldworks
 
 if [ $OS == "Windows" ]; then
     HOSTSFILE=/mnt/c/Windows/System32/drivers/etc/hosts
-    ALREADYHASHOSTS=`grep "languageforge.local" $HOSTSFILE`
+    ALREADYHASHOSTS=`grep "languageforge.localhost" $HOSTSFILE`
     if [ -f "$HOSTSFILE" -a ! -n "$ALREADYHASHOSTS" ]; then
         echo "Modifying Windows hosts file"
         ADDITIONSFILE=installer/windowsHostFileAdditions.txt
@@ -95,12 +95,12 @@ if [ $OS == "Windows" ]; then
         cat installer/bashrcFileAdditions.txt >> $BASHRCFILE
     fi
 
-    echo "Note: the Windows Bash window must be open in order for languageforge.local to work"
+    echo "Note: the Windows Bash window must be open in order for languageforge.localhost to work"
 fi
 
 cd ..
 if [ ! -L web-scriptureforge ]; then
-    echo "Fix scriptureforge.local symlink"
+    echo "Fix scriptureforge.localhost symlink"
     sudo rm -r web-scriptureforge
     ln -s web-languageforge web-scriptureforge
 fi
@@ -122,8 +122,8 @@ cd ../..
 echo "Set file permissions"
 sudo chmod g+w src/assets/lexicon/
 
-echo "You should now be able to access Language Forge locally at http://languageforge.local"
-echo "You should now be able to access Scripture Forge locally at http://scriptureforge.local"
+echo "You should now be able to access Language Forge locally at http://languageforge.localhost"
+echo "You should now be able to access Scripture Forge locally at http://scriptureforge.localhost"
 echo "username: admin"
 echo "password: password"
 echo "Installation finished!"

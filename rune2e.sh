@@ -10,15 +10,15 @@
 
 if [ "$1" = "lf" ]
   then
-    E2EHOSTNAME="languageforge.local"
+    E2EHOSTNAME="languageforge.localhost"
 elif [ "$1" = "sf" ]
   then
-    E2EHOSTNAME="scriptureforge.local"
+    E2EHOSTNAME="scriptureforge.localhost"
 elif [ "$1" = "jp" ]
   then
-    E2EHOSTNAME="jamaicanpsalms.scriptureforge.local"
+    E2EHOSTNAME="jamaicanpsalms.scriptureforge.localhost"
 else
-    E2EHOSTNAME="languageforge.local"
+    E2EHOSTNAME="languageforge.localhost"
 fi
 
 attach_debugger () {
