@@ -32,14 +32,14 @@
       "runtimeExecutable": "/usr/bin/chromium-browser",
       "request": "launch",
       "name": "Launch Chromium on Linux",
-      "url": "https://languageforge.local",
+      "url": "https://languageforge.localhost",
       "webRoot": "${workspaceRoot}"
     },
     {
       "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome",
-      "url": "https://languageforge.local",
+      "url": "https://languageforge.localhost",
       "webRoot": "${workspaceRoot}"
     },
     {
