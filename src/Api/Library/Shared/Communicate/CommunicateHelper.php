@@ -35,7 +35,7 @@ class CommunicateHelper
     /**
      *
      * @param string $fileName
-     * @return \Twig_Template
+     * @return \Twig\Template
      */
     public static function templateFromFile($fileName)
     {
@@ -46,8 +46,8 @@ class CommunicateHelper
                     'cache' => APPPATH . 'cache',
             );
         }
-        $loader = new \Twig_Loader_Filesystem(APPPATH . 'Site/views');
-        $twig = new \Twig_Environment($loader, $options);
+        $loader = new \Twig\Loader\FilesystemLoader(APPPATH . 'Site/views');
+        $twig = new \Twig\Environment($loader, $options);
         $template = $twig->loadTemplate($fileName);
 
         return $template;
@@ -56,7 +56,7 @@ class CommunicateHelper
     /**
      *
      * @param string $templateCode
-     * @return \Twig_Template
+     * @return \Twig\Template
      */
     public static function templateFromString($templateCode)
     {
@@ -67,8 +67,8 @@ class CommunicateHelper
                     'cache' => APPPATH . 'cache',
             );
         }
-        $loader = new \Twig_Loader_Array(array());
-        $twig = new \Twig_Environment($loader, $options);
+        $loader = new \Twig\Loader\ArrayLoader(array());
+        $twig = new \Twig\Environment($loader, $options);
         $template = $twig->createTemplate($templateCode);
 
         return $template;
