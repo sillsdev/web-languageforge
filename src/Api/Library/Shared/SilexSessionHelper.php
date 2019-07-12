@@ -8,6 +8,7 @@ use Silex\Application;
 use Site\Model\UserWithId;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\Shared\Rights\ProjectRoles;
 
 class SilexSessionHelper
 {
@@ -66,6 +67,15 @@ class SilexSessionHelper
         if ($userId) {
             $project = ProjectModel::getById($projectId);
             $user = new UserModel($userId);
+            // Add an admin to the project if they are not already a member
+            if ($user->role == SystemRoles::SYSTEM_ADMIN) {
+                if (!$project->userIsMember($userId)) {
+                    $project->addUser($userId, ProjectRoles::MANAGER);
+                    $projectId = $project->write();
+                    $user->addProject($projectId); // $user->write() occurs in the following if-block
+                }
+            }
+
             if ($project->userIsMember($userId)) {
                 $user->lastUsedProjectId = $projectId;
                 $user->write();

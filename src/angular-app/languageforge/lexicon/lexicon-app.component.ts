@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import {HelpHeroService} from '../../bellows/core/helphero.service';
 import {NoticeService} from '../../bellows/core/notice/notice.service';
 import {InterfaceConfig} from '../../bellows/shared/model/interface-config.model';
 import {User} from '../../bellows/shared/model/user.model';
@@ -32,16 +33,20 @@ export class LexiconAppController implements angular.IController {
     'lexProjectService',
     'lexEditorDataService',
     'lexRightsService',
-    'lexSendReceive'];
+    'lexSendReceive',
+    'helpHeroService'];
   constructor(private readonly $scope: angular.IScope, private readonly $location: angular.ILocationService,
               private readonly $q: angular.IQService,
               private readonly notice: NoticeService, private readonly configService: LexiconConfigService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly editorService: LexiconEditorDataService,
               private readonly rightsService: LexiconRightsService,
-              private readonly sendReceive: LexiconSendReceiveService) { }
+              private readonly sendReceive: LexiconSendReceiveService,
+              private readonly helpHeroService: HelpHeroService) { }
 
   $onInit(): void {
+    let finishedPreloading = false;
+
     this.$q.all([this.rightsService.getRights(), this.configService.getEditorConfig()])
       .then(([rights, editorConfig]) => {
         if (rights.canEditProject()) {
@@ -54,23 +59,20 @@ export class LexiconAppController implements angular.IController {
 
               this.users = users;
             }
-
-            this.editorConfig = editorConfig;
-            this.project = rights.session.project<LexiconProject>();
-            this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
-            this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
-            this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
-            this.pristineLanguageCode = this.interfaceConfig.languageCode;
-            this.rights = rights;
+            this.setupConfig(rights, editorConfig);
+            finishedPreloading = true;
+          }).then(() => { // end of path "B" -- user can edit
+            if (finishedPreloading && !this.finishedLoading) this.postLoad();
           });
         } else {
-          this.editorConfig = editorConfig;
-          this.project = rights.session.project<LexiconProject>();
-          this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
-          this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
-          this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
-          this.pristineLanguageCode = this.interfaceConfig.languageCode;
-          this.rights = rights;
+          this.setupConfig(rights, editorConfig);
+          finishedPreloading = true;
+        }
+
+        if (this.rights) {
+          this.helpHeroService.setIdentity(this.rights.session.userId());
+        } else {
+          this.helpHeroService.anonymous();
         }
 
         this.$scope.$watch(() => this.interfaceConfig.languageCode, (newVal: string) => {
@@ -81,11 +83,8 @@ export class LexiconAppController implements angular.IController {
         });
       }
     )
-    .then(() => {
-      this.editorService.loadEditorData().then(() => {
-        this.finishedLoading = true;
-        this.sendReceive.checkInitialState();
-      });
+    .then(() => { // end of path "A" -- user cannot edit
+      if (finishedPreloading && !this.finishedLoading) this.postLoad();
     });
 
     this.setupOffline();
@@ -124,6 +123,23 @@ export class LexiconAppController implements angular.IController {
         this.editorConfig = configEditor;
       });
     }
+  }
+
+  private setupConfig(rights: Rights, editorConfig: LexiconConfig): void {
+    this.editorConfig = editorConfig;
+    this.project = rights.session.project<LexiconProject>();
+    this.config = rights.session.projectSettings<LexiconProjectSettings>().config;
+    this.optionLists = rights.session.projectSettings<LexiconProjectSettings>().optionlists;
+    this.interfaceConfig = rights.session.projectSettings<LexiconProjectSettings>().interfaceConfig;
+    this.pristineLanguageCode = this.interfaceConfig.languageCode;
+    this.rights = rights;
+  }
+
+  private postLoad() {
+    this.editorService.loadEditorData().then(() => {
+      this.finishedLoading = true;
+      this.sendReceive.checkInitialState();
+    });
   }
 
   private updateUserProfile(languageCode: string): void {

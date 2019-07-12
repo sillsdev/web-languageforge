@@ -4,6 +4,13 @@
   hosts: all
   become: no
   tasks:
+    - name: install JSCS
+      become: yes
+      shell: npm install -g jscs
+      args:
+        creates: /usr/local/bin/jscs
+      when: inventory_hostname == "localhost"
+
     - name: composer install
       command: composer install
       args:
