@@ -1,5 +1,6 @@
 import {browser, ExpectedConditions} from 'protractor';
 
+import { protractor } from 'protractor/built/ptor';
 import {BellowsLoginPage} from '../../../bellows/shared/login.page';
 import {ProjectsPage} from '../../../bellows/shared/projects.page';
 import {EditorPage} from '../shared/editor.page';
@@ -70,17 +71,22 @@ describe('Lexicon E2E Editor Comments', () => {
 
   it('comments panel: check regarding value is hidden when the field value matches', () => {
     const comment = editorPage.comment.getComment(-1);
+    const updateText = 'update -';
 
     // Make sure it is hidden
     expect<any>(comment.regarding.container.isDisplayed()).toBe(false);
 
     // Change the field value and then make sure it appears
-    editorPage.edit.getMultiTextInputs('Definition').first().sendKeys('update - ');
+    editorPage.edit.getMultiTextInputs('Definition').first().sendKeys(updateText);
     expect<any>(comment.regarding.container.isDisplayed()).toBe(true);
 
     // Make sure the regarding value matches what was originally there
     const word    = constants.testEntry1.senses[0].definition.en.value;
     expect<any>(comment.regarding.fieldValue.getText()).toEqual(word);
+    // Restore original value of Definition to not distort other tests
+    for (let i = 0; i < updateText.length; i++) {
+      editorPage.edit.getMultiTextInputs('Definition').first().sendKeys(protractor.Key.BACK_SPACE);
+    }
 
     // old stuff
     // This comment should have a "regarding" section
