@@ -362,6 +362,7 @@ class LexConfiguration
         $this->roleViews[LexRoles::OBSERVER_WITH_COMMENT] = new LexRoleViewConfig();
         $this->roleViews[LexRoles::CONTRIBUTOR] = new LexRoleViewConfig();
         $this->roleViews[LexRoles::MANAGER] = new LexRoleViewConfig();
+        $this->roleViews[LexRoles::TECH_SUPPORT] = new LexRoleViewConfig();
 
         $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::LEXEME] = new LexViewMultiTextFieldConfig(true);
         $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::DEFINITION] = new LexViewMultiTextFieldConfig(true);
@@ -413,6 +414,7 @@ class LexConfiguration
         $this->roleViews[LexRoles::OBSERVER_WITH_COMMENT]->fields = clone $this->roleViews[LexRoles::OBSERVER]->fields;
         $this->roleViews[LexRoles::CONTRIBUTOR]->fields = clone $this->roleViews[LexRoles::OBSERVER]->fields;
         $this->roleViews[LexRoles::MANAGER]->fields = clone $this->roleViews[LexRoles::OBSERVER]->fields;
+        $this->roleViews[LexRoles::TECH_SUPPORT]->fields = clone $this->roleViews[LexRoles::MANAGER]->fields;
 
         $this->roleViews[LexRoles::OBSERVER]->showTasks[LexTask::VIEW] = true;
         $this->roleViews[LexRoles::OBSERVER]->showTasks[LexTask::DASHBOARD] = true;
@@ -438,6 +440,7 @@ class LexConfiguration
         $this->roleViews[LexRoles::MANAGER]->showTasks[LexTask::WORDLIST] = true;
         $this->roleViews[LexRoles::MANAGER]->showTasks[LexTask::REVIEW] = true;
 
+        $this->roleViews[LexRoles::TECH_SUPPORT]->showTasks = clone $this->roleViews[LexRoles::MANAGER]->showTasks;
     }
 
     /**

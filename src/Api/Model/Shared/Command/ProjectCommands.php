@@ -197,9 +197,9 @@ class ProjectCommands
      * @param string $projectId
      * @return array of users join requests
      */
-    public static function getJoinRequests($projectId) 
-    {        
-        $projectModel = ProjectModel::getById($projectId);        
+    public static function getJoinRequests($projectId)
+    {
+        $projectModel = ProjectModel::getById($projectId);
         $list = $projectModel->listRequests();
         return $list;
     }
@@ -227,6 +227,10 @@ class ProjectCommands
 
         if ($userId == $project->ownerRef->asString()) {
             throw new \Exception("Cannot update role for project owner");
+        }
+
+        if ($projectRole == ProjectRoles::TECH_SUPPORT && $user->role != SystemRoles::SYSTEM_ADMIN) {
+            throw new UserUnauthorizedException("Attempted to add non-admin as Tech Support");
         }
 
         ProjectCommands::usersDto($projectId);
@@ -267,7 +271,7 @@ class ProjectCommands
 
         return $projectId;
     }
-    
+
     /**
      * Removes users from the project (two-way unlink)
      * @param string $projectId
@@ -280,20 +284,20 @@ class ProjectCommands
         $project->removeUserJoinRequest($joinRequestId);
         return $project->write();
     }
-    
+
     public static function grantAccessForUserRequest($projectId, $userId, $projectRole) {
         // check if userId exists in request queue on project model
         self::updateUserRole($projectId, $userId, $projectRole);
         // remove userId from request queue
         // send email notifying of acceptance
     }
-    
+
     public static function requestAccessForProject($projectId, $userId) {
         // add userId to request queue
         // send email to project owner and all managers
     }
-    
-    
+
+
 
     public static function renameProject($projectId, $oldName, $newName)
     {
