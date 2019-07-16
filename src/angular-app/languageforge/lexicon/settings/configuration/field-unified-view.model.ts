@@ -343,7 +343,7 @@ export class ConfigurationFieldUnifiedViewModel {
     }
   }
 
-  private static setInputSystemsViewModel(config: LexiconConfig): [InputSystemSettings[], InputSystemSettings] {
+  private static setInputSystemsViewModel(config: LexiconConfig): [InputSystemSettings[], InputSystemSettings] { // ANDREW
     const inputSystems: InputSystemSettings[] = [];
     const overrides: InputSystemSettings = new InputSystemSettings();
     const selectedManagerTags = ConfigurationFieldUnifiedViewModel.getSelectedInputSystemsManagerTags(config);
@@ -640,9 +640,10 @@ export class RoleType {
   commenter: string = 'observer_with_comment';
   contributor: string = 'contributor';
   manager: string = 'project_manager';
+  techSupport: string = 'tech_support';
 
   static roles(): string[] {
-    return ['observer', 'commenter', 'contributor', 'manager'];
+    return ['observer', 'commenter', 'contributor', 'manager', 'tech_support'];
   }
 }
 
