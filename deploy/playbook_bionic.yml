@@ -1,12 +1,13 @@
 ---
 
 # begin install
+# NOTE: to install on a build-agent, or to merely reset the environment, run with --skip-tags "developer"
 - name: Linux Bionic local webserver
   hosts: all
   become: yes
   tasks:
 
-- name: Deploy development environment for xForge (languageforge.org and scriptureforge.org)
+- name: Deploy (development) environment for xForge (languageforge.org and scriptureforge.org)
   hosts: all
   become: yes
   vars:
@@ -120,6 +121,7 @@
         dest: ../../web-scriptureforge
         group: www-data
         state: link
+      tags: developer
 
     - name: php.ini changes
       lineinfile:
@@ -164,7 +166,6 @@
       notify: Restart apache
 
     - name: postfix | halt emails in output queue
-      when: inventory_hostname == "localhost"
       lineinfile:
         dest: /etc/postfix/main.cf
         state: present
@@ -175,18 +176,19 @@
         - property: 'default_transport'
           value: 'retry:no outbound email allowed'
       notify: restart postfix
+      tags: test
 
     # This stanza ensures that the /var/www/default_local links to wherever your source actually is.
     - name: "Ensure Source Link: default_local folder does not exist (localhost)"
       file: path="/var/www/default_local" state=absent force=true
-      when: inventory_hostname == "localhost"
+      tags: developer
     - name: "Ensure Source Link: Get current location of the source code (localhost)"
       local_action: shell pwd
       register: local_dir
-      when: inventory_hostname == "localhost"
+      tags: developer
     - name: "Ensure Source Link: default_local link exists (localhost)"
       file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/default_local" state=link group=www-data force=true
-      when: inventory_hostname == "localhost"
+      tags: developer
 
      # group permissions from LfMerge deploy
     - name: ensure www-data group exists
@@ -340,9 +342,8 @@
       with_items:
         - "address=/localhost/127.0.0.1"
         - "address=/localhost/::1"
-      when: inventory_hostname == "localhost"
       notify: restart network
-      tags: [ 'network' ]
+      tags: developer
 
     - name: add host aliases
       lineinfile:
@@ -355,7 +356,7 @@
         - "default.local"
         - "languageforge.localhost"
         - "scriptureforge.localhost"
-      when: inventory_hostname == "localhost"
+      tags: developer
 
   handlers:
     - name: restart mongod
@@ -380,25 +381,27 @@
       args:
         chdir: "{{item}}"
       changed_when: false
-      when: inventory_hostname == "localhost"
       with_items: "{{site_src_paths}}"
+      tags: developer
 
     - name: npm install
       command: npm install
       args:
         chdir: "{{item}}"
       changed_when: false
-      when: inventory_hostname == "localhost"
       with_items: "{{lf_path}}"
+      tags: developer
 
     - name: 'generate website definitions'
       shell: gulp build-createWebsiteDefs
+      tags: developer
 
     - name: factory reset mongodb to empty with admin user
       shell: php FactoryReset.php run
       become: true
       args:
         chdir: "{{lf_path}}/scripts/tools/"
+      tags: developer
 
 - name: post-install tasks
   hosts: all
@@ -407,8 +410,10 @@
       shell: ./refreshDeps.sh
       args:
         chdir: ..
+      tags: developer
     - name: run php unit tests (gulp test-php)
       shell: "gulp test-php"
       become_user: www-data
       args:
         chdir: ..
+      tags: developer
