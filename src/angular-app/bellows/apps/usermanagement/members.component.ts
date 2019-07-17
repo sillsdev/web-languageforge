@@ -13,6 +13,7 @@ export class UserManagementMembersController implements angular.IController {
   project: any;
   roles: any;
   rights: Rights;
+  currentUserId: any;
 
   userFilter = '';
   selected: User[] = [];
@@ -52,6 +53,17 @@ export class UserManagementMembersController implements angular.IController {
 
   isSelected(user: User): boolean {
     return user !== null && this.selected.indexOf(user) >= 0;
+  }
+
+  isRoleDropdownEnabled(user: User): boolean {
+    if (user.role === 'tech_support' && this.currentUserId !== user.id) {
+
+      return false;
+    }
+    if (this.rights.changeRole) {
+      return true;
+    }
+    return false;
   }
 
   removeProjectUsers(): void {
@@ -260,7 +272,8 @@ export const UserManagementMembersComponent: angular.IComponentOptions = {
     list: '<',
     project: '<',
     rights: '<',
-    roles: '<'
+    roles: '<',
+    currentUserId: '<'
   },
   controller: UserManagementMembersController,
   templateUrl: '/angular-app/bellows/apps/usermanagement/members.component.html'

@@ -30,6 +30,8 @@ export class UserManagementAppController implements angular.IController {
   };
   joinRequests = {};
 
+  currentUserId: string = '';
+
   static $inject = ['$location', 'projectService', 'sessionService', 'applicationHeaderService',
                     'breadcrumbService', 'lexProjectService', 'helpHeroService'];
   constructor(private $location: angular.ILocationService, private projectService: ProjectService,
@@ -57,9 +59,9 @@ export class UserManagementAppController implements angular.IController {
       this.rights.showControlBar =
         this.rights.add || this.rights.remove || this.rights.changeRole;
 
-      const userId = session.userId();
-      if (userId) {
-        this.helpHeroService.setIdentity(userId);
+      this.currentUserId = session.userId();
+      if (this.currentUserId) {
+        this.helpHeroService.setIdentity(this.currentUserId);
       } else {
         this.helpHeroService.anonymous();
       }
