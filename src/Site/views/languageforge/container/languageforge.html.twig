@@ -21,6 +21,9 @@
                     <li class="nav-item" uib-dropdown>
                         <a class="nav-link" uib-dropdown-toggle href id="helpDropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-life-ring"></i> <span>Help</span></a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="helpDropdown">
+                            {% if projectId is not empty %}
+                                <a class="dropdown-item" target="_blank" href="https://hlp.sh/t/_/GsubLqNFYR2?~id={{projectId}}">Start Language Forge Tour</a>
+                            {% endif %}
                             <a class="dropdown-item" target="_blank" href="https://community.software.sil.org/c/language-forge/how-to">Tutorials and How-Tos</a>
                             <a class="dropdown-item" target="_blank" href="https://community.software.sil.org/c/language-forge">Community Support</a>
                             <a class="dropdown-item" target="_blank" href="mailto:issues@languageforge.org">Report a Problem<br />(email issues@languageforge.org)</a>
