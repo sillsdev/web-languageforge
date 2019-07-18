@@ -4,16 +4,17 @@ import { ProjectService } from '../../core/api/project.service';
 import { UserService } from '../../core/api/user.service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
+import { Project } from '../../shared/model/project.model';
 import { User } from '../../shared/model/user.model';
 import { Rights } from './user-management-app.component';
 
 export class UserManagementMembersController implements angular.IController {
   queryUserList: () => void;
   list: any;
-  project: any;
+  project: Partial<Project>;
   roles: any;
   rights: Rights;
-  currentUserId: any;
+  currentUser: Partial<User>;
 
   userFilter = '';
   selected: User[] = [];
@@ -56,8 +57,7 @@ export class UserManagementMembersController implements angular.IController {
   }
 
   isRoleDropdownEnabled(user: User): boolean {
-    if (user.role === 'tech_support' && this.currentUserId !== user.id) {
-
+    if (user.role === 'tech_support' && this.currentUser.id !== user.id) {
       return false;
     }
     if (this.rights.changeRole) {
@@ -273,7 +273,7 @@ export const UserManagementMembersComponent: angular.IComponentOptions = {
     project: '<',
     rights: '<',
     roles: '<',
-    currentUserId: '<'
+    currentUser: '<'
   },
   controller: UserManagementMembersController,
   templateUrl: '/angular-app/bellows/apps/usermanagement/members.component.html'

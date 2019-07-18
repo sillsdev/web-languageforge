@@ -53,12 +53,12 @@
                 <td ng-if="!user.isInvitee">{{user.username}}</td>
                 <td ng-if="user.isInvitee" class="invited-user">{{user.username || user.email}} [invited]</td>
                 <td>{{user.name}}</td>
-                <td>{{$ctrl.currentUserId}}</td>
+                <td>{{$ctrl.currentUser.id}}</td>
                 <td data-ng-show="user.id == $ctrl.project.ownerRef.id">
                     <!--suppress HtmlFormInputWithoutLabel -->
                     <select class="form-control custom-select" disabled><option>Manager and Project Owner</option></select>
                 </td>
-                <td data-ng-hide="user.id == $ctrl.project.ownerRef.id || ($ctrl.isTechSupport(user) && !$ctrl.getUserId() == user.id)">
+                <td data-ng-hide="user.id == $ctrl.project.ownerRef.id">
                     <!-- suppress HtmlFormInputWithoutLabel -->
                     <select class="form-control custom-select col-12" data-ng-model="user.role" data-ng-disabled="!$ctrl.isRoleDropdownEnabled(user)"
                             data-ng-change="$ctrl.onRoleChange(user)"
