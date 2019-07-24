@@ -271,9 +271,9 @@ export const UserManagementMembersComponent: angular.IComponentOptions = {
     queryUserList: '&',
     list: '<',
     project: '<',
+    currentUser: '<',
     rights: '<',
-    roles: '<',
-    currentUser: '<'
+    roles: '<'
   },
   controller: UserManagementMembersController,
   templateUrl: '/angular-app/bellows/apps/usermanagement/members.component.html'

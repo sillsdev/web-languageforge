@@ -37,7 +37,7 @@ export const UserManagementAppModule = angular
             '@': {
               template: `<user-management-members query-user-list="$ctrl.queryUserList()"
                 list="$ctrl.list" project="$ctrl.project" roles="$ctrl.roles" rights="$ctrl.rights"
-                currentUser="$ctrl.currentUser">
+                current-user="$ctrl.currentUser">
                 </user-management-members>`
             }
           }

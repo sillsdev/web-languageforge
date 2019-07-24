@@ -62,7 +62,7 @@ export class UserManagementAppController implements angular.IController {
       this.rights.showControlBar =
         this.rights.add || this.rights.remove || this.rights.changeRole;
 
-      const userId = session.userId();
+      const userId = session.userId(); // TODO: Restore this assignment
       if (userId) {
         this.helpHeroService.setIdentity(userId);
       } else {
