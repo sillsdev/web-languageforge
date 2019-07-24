@@ -53,15 +53,25 @@
                 <td ng-if="!user.isInvitee">{{user.username}}</td>
                 <td ng-if="user.isInvitee" class="invited-user">{{user.username || user.email}} [invited]</td>
                 <td>{{user.name}}</td>
-                <td data-ng-show="user.id == $ctrl.project.ownerRef.id">
+                <td data-ng-show="$ctrl.selectRoleDropdown(user) == 'owner'">
                     <!--suppress HtmlFormInputWithoutLabel -->
                     <select class="form-control custom-select" disabled><option>Manager and Project Owner</option></select>
                 </td>
-                <td data-ng-hide="user.id == $ctrl.project.ownerRef.id">
+                <td data-ng-show="$ctrl.selectRoleDropdown(user) == 'tech_support'">
+                    <!--suppress HtmlFormInputWithoutLabel -->
+                    <select class="form-control custom-select" disabled><option>Tech Support</option></select>
+                </td>
+                <td data-ng-show="$ctrl.selectRoleDropdown(user) == 'admin'">
                     <!-- suppress HtmlFormInputWithoutLabel -->
                     <select class="form-control custom-select col-12" data-ng-model="user.role" data-ng-disabled="!$ctrl.isRoleDropdownEnabled(user)"
                             data-ng-change="$ctrl.onRoleChange(user)"
-                            data-ng-options="roleKey as roleName for (roleKey, roleName) in $ctrl.roles"></select>
+                            data-ng-options="role.roleKey as role.roleName for role in $ctrl.roles"></select>
+                </td>
+                <td data-ng-show="$ctrl.selectRoleDropdown(user) == 'default'">
+                    <!-- suppress HtmlFormInputWithoutLabel -->
+                    <select class="form-control custom-select col-12" data-ng-model="user.role" data-ng-disabled="!$ctrl.isRoleDropdownEnabled(user)"
+                            data-ng-change="$ctrl.onRoleChange(user)"
+                            data-ng-options="role.roleKey as role.roleName for role in $ctrl.roles | filter:{roleKey:'!tech_support'}"></select>
                 </td>
             </tr>
             </tbody>
