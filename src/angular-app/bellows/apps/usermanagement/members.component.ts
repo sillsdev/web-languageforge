@@ -4,15 +4,17 @@ import { ProjectService } from '../../core/api/project.service';
 import { UserService } from '../../core/api/user.service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
+import { Project } from '../../shared/model/project.model';
 import { User } from '../../shared/model/user.model';
 import { Rights } from './user-management-app.component';
 
 export class UserManagementMembersController implements angular.IController {
   queryUserList: () => void;
   list: any;
-  project: any;
+  project: Partial<Project>;
   roles: any;
   rights: Rights;
+  currentUser: Partial<User>;
 
   userFilter = '';
   selected: User[] = [];
@@ -53,6 +55,32 @@ export class UserManagementMembersController implements angular.IController {
   isSelected(user: User): boolean {
     return user !== null && this.selected.indexOf(user) >= 0;
   }
+
+  selectRoleDropdown(user: User): string {
+    if (user.id === this.project.ownerRef.id) {
+      return 'owner';
+    }
+    if (user.role === 'tech_support') {
+      if (user.id === this.currentUser.id) {
+        return 'admin';
+      } else {
+        return 'tech_support';
+      }
+    }
+
+    return 'default';
+  }
+
+  isRoleDropdownEnabled(user: User): boolean {
+    if (user.role === 'tech_support' && this.currentUser.id !== user.id) {
+      return false;
+    }
+    if (this.rights.changeRole) {
+      return true;
+    }
+    return false;
+  }
+
 
   removeProjectUsers(): void {
     const userIds: string[] = [];
@@ -97,7 +125,10 @@ export class UserManagementMembersController implements angular.IController {
   onRoleChange(user: User): void {
     this.projectService.updateUserRole(user.id, user.role, result => {
       if (result.ok) {
-        const message = `${user.username || user.email}'s role was changed to ${this.roles[user.role]}.`;
+        const role = this.roles.find( (obj: any) => {
+          return obj.roleKey === user.role;
+        });
+        const message = `${user.username || user.email}'s role was changed to ${role.roleName}.`;
         this.notice.push(this.notice.SUCCESS, message);
       }
     });
@@ -259,6 +290,7 @@ export const UserManagementMembersComponent: angular.IComponentOptions = {
     queryUserList: '&',
     list: '<',
     project: '<',
+    currentUser: '<',
     rights: '<',
     roles: '<'
   },
