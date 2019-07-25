@@ -69,6 +69,7 @@ class App extends Base
         $this->data['isAngular2'] = $model->isAppAngular2();
         $this->data['appName'] = $model->appName;
         $this->data['appFolder'] = $model->appFolder;
+        $this->data['projectId'] = $model->projectId;
 
         if ($model->requireProject) {
             if ($model->isPublicApp) {
