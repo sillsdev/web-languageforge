@@ -59,17 +59,17 @@
                 </td>
                 <td data-ng-show="$ctrl.selectRoleDropdown(user) == 'tech_support'">
                     <!--suppress HtmlFormInputWithoutLabel -->
-                    <select class="form-control custom-select" disabled><option>Tech Support</option></select>
+                    <select id="tech-support-dropdown" class="form-control custom-select" disabled><option>Tech Support</option></select>
                 </td>
                 <td data-ng-show="$ctrl.selectRoleDropdown(user) == 'admin'">
                     <!-- suppress HtmlFormInputWithoutLabel -->
-                    <select class="form-control custom-select col-12" data-ng-model="user.role" data-ng-disabled="!$ctrl.isRoleDropdownEnabled(user)"
+                    <select id="admin-dropdown" class="form-control custom-select col-12" data-ng-model="user.role" data-ng-disabled="$ctrl.selectRoleDropdown(user) != 'admin'"
                             data-ng-change="$ctrl.onRoleChange(user)"
                             data-ng-options="role.roleKey as role.roleName for role in $ctrl.roles"></select>
                 </td>
                 <td data-ng-show="$ctrl.selectRoleDropdown(user) == 'default'">
                     <!-- suppress HtmlFormInputWithoutLabel -->
-                    <select id="default-dropdown" class="form-control custom-select col-12" data-ng-model="user.role" data-ng-disabled="!$ctrl.isRoleDropdownEnabled(user)"
+                    <select id="default-dropdown" class="form-control custom-select col-12" data-ng-model="user.role" data-ng-disabled="$ctrl.selectRoleDropdown(user) != 'default'"
                             data-ng-change="$ctrl.onRoleChange(user)"
                             data-ng-options="role.roleKey as role.roleName for role in $ctrl.roles | filter:{roleKey:'!tech_support'}"></select>
                 </td>

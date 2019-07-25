@@ -1,9 +1,11 @@
 import {browser, by, element, ExpectedConditions, protractor} from 'protractor';
+import {UserManagementPage} from './user-management.page'
 
 import {Utils} from './utils';
 
 export class ProjectsPage {
   private readonly utils = new Utils();
+  private readonly userManagementPage = new UserManagementPage();
 
   url = '/app/projects';
   get() {
@@ -80,7 +82,6 @@ export class ProjectsPage {
       // This should be unique no matter what
       newMembersDiv.element(by.id('addUserButton')).click();
 
-      // Now set the user to member or manager, as needed
       const projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
       let foundUserRow: any;
       projectMemberRows.map((row: any) => {
