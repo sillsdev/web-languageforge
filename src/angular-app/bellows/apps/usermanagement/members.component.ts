@@ -56,7 +56,7 @@ export class UserManagementMembersController implements angular.IController {
     return user !== null && this.selected.indexOf(user) >= 0;
   }
 
-  selectRoleDropdown(user: User): string {
+  getRoleSelectMode(user: User): string {
     if (user.id === this.project.ownerRef.id) {
       return 'owner';
     }

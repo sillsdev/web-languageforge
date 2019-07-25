@@ -9,8 +9,9 @@ export class UserManagementPage {
 
   usersList = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
 
+  // NOTE: This function is untested
   changeUserRole(userName: string, roleText: string) {
-    this.findUserRow(userName).then( (row: ElementFinder) => {
+    this.getUserRow(userName).then( (row: ElementFinder) => {
       if (row) {
         const select = row.element(by.css('select:not([disabled])'));
         Utils.clickDropdownByValue(select, roleText);
@@ -18,12 +19,12 @@ export class UserManagementPage {
     });
   }
 
-  findUserRow(userName: string) {
+  getUserRow(userName: string) {
     const result = protractor.promise.defer();
-    let foundUserRow: any;
+    let foundUserRow: ElementFinder;
     this.usersList.map((row: any) => {
       const nameColumn = row.element(by.binding('user.username'));
-      nameColumn.getText().then((text: string) => {
+      nameColumn.getText().then( (text: string) => {
         if (text === userName) {
           foundUserRow = row;
         }

@@ -4,9 +4,8 @@ import { LexiconProjectService } from '../../../languageforge/lexicon/core/lexic
 import { ProjectService } from '../../core/api/project.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
-import { SessionService } from '../../core/session.service';
 import { HelpHeroService } from '../../core/helphero.service';
-import { User } from '../../shared/model/user.model';
+import { SessionService } from '../../core/session.service';
 
 export class Rights {
   remove: boolean;
@@ -36,11 +35,11 @@ export class UserManagementAppController implements angular.IController {
   };
 
   static $inject = ['$location', 'projectService', 'sessionService', 'applicationHeaderService',
-                    'breadcrumbService', 'lexProjectService', 'helpHeroService', '$q'];
+                    'breadcrumbService', 'lexProjectService', 'helpHeroService'];
   constructor(private $location: angular.ILocationService, private projectService: ProjectService,
               private sessionService: SessionService, private applicationHeaderService: ApplicationHeaderService,
               private breadcrumbService: BreadcrumbService, private lexProjectService: LexiconProjectService,
-              private readonly helpHeroService: HelpHeroService, private readonly $q: angular.IQService) { }
+              private readonly helpHeroService: HelpHeroService) { }
 
   $onInit(): void {
     this.joinRequests = [];
@@ -62,9 +61,9 @@ export class UserManagementAppController implements angular.IController {
       this.rights.showControlBar =
         this.rights.add || this.rights.remove || this.rights.changeRole;
 
-      const userId = session.userId(); // TODO: Restore this assignment
-      if (userId) {
-        this.helpHeroService.setIdentity(userId);
+      this.currentUser.id = session.userId();
+      if (this.currentUser.id) {
+        this.helpHeroService.setIdentity(this.currentUser.id);
       } else {
         this.helpHeroService.anonymous();
       }
@@ -77,20 +76,19 @@ export class UserManagementAppController implements angular.IController {
   }
 
   queryUserList() {
-    this.$q.all([this.projectService.listUsers(), this.sessionService.getSession()]).then(([users, session]) => {
-      if (users.ok) {
-        this.list.users = users.data.users;
-        this.list.userCount = users.data.userCount;
-        this.list.allUsers = users.data.users.concat(users.data.invitees.map((invitee: any) => {
+    this.projectService.listUsers( result => {
+      if (result.ok) {
+        this.list.users = result.data.users;
+        this.list.userCount = result.data.userCount;
+        this.list.allUsers = result.data.users.concat(result.data.invitees.map((invitee: any) => {
           invitee.isInvitee = true;
           return invitee;
         }));
-        this.project = users.data.project;
+        this.project = result.data.project;
         this.roles = this.project.roles;
         this.applicationHeaderService.setPageName(this.project.projectName + ' User Management');
         this.lexProjectService.setBreadcrumbs('', 'User Management');
         this.lexProjectService.setupSettings();
-        this.currentUser.id = session.userId();
       }
     });
   }
