@@ -4,9 +4,8 @@ import { LexiconProjectService } from '../../../languageforge/lexicon/core/lexic
 import { ProjectService } from '../../core/api/project.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
-import { SessionService } from '../../core/session.service';
 import { HelpHeroService } from '../../core/helphero.service';
-import { User } from '../../shared/model/user.model';
+import { SessionService } from '../../core/session.service';
 
 export class Rights {
   remove: boolean;
@@ -62,9 +61,9 @@ export class UserManagementAppController implements angular.IController {
       this.rights.showControlBar =
         this.rights.add || this.rights.remove || this.rights.changeRole;
 
-      const userId = session.userId(); // TODO: Restore this assignment
-      if (userId) {
-        this.helpHeroService.setIdentity(userId);
+      this.currentUser.id = session.userId(); // TODO: Restore this assignment
+      if (this.currentUser.id) {
+        this.helpHeroService.setIdentity(this.currentUser.id);
       } else {
         this.helpHeroService.anonymous();
       }
@@ -77,7 +76,7 @@ export class UserManagementAppController implements angular.IController {
   }
 
   queryUserList() {
-    this.$q.all([this.projectService.listUsers(), this.sessionService.getSession()]).then(([users, session]) => {
+    this.projectService.listUsers().then( users => {
       if (users.ok) {
         this.list.users = users.data.users;
         this.list.userCount = users.data.userCount;
@@ -90,7 +89,6 @@ export class UserManagementAppController implements angular.IController {
         this.applicationHeaderService.setPageName(this.project.projectName + ' User Management');
         this.lexProjectService.setBreadcrumbs('', 'User Management');
         this.lexProjectService.setupSettings();
-        this.currentUser.id = session.userId();
       }
     });
   }

@@ -22,9 +22,9 @@ describe('Bellows E2E User Management App', () => {
     projectsPage.clickOnProject(constants.otherProjectName);
     projectsPage.settingsBtn.click();
     projectsPage.userManagementLink.click();
-    userManagementPage.findUserRow(constants.adminUsername).then( (row: ElementFinder) => {
-      expect<any>(element(by.id('admin-dropdown')).isDisplayed()).toBe(true);
-      expect<any>(element(by.id('admin-dropdown')).isEnabled()).toBe(true);
+    userManagementPage.getUserRow(constants.adminUsername).then( (row: ElementFinder) => {
+      expect<any>(element(by.id('admin-role-select')).isDisplayed()).toBe(true);
+      expect<any>(element(by.id('admin-role-select')).isEnabled()).toBe(true);
     });
   });
 
@@ -34,9 +34,9 @@ describe('Bellows E2E User Management App', () => {
     projectsPage.clickOnProject(constants.otherProjectName);
     projectsPage.settingsBtn.click();
     projectsPage.userManagementLink.click();
-    userManagementPage.findUserRow(constants.adminUsername).then( (row: ElementFinder) => {
-      expect<any>(element(by.id('tech-support-dropdown')).isDisplayed()).toBe(true);
-      expect<any>(element(by.id('tech-support-dropdown')).isEnabled()).toBe(false);
+    userManagementPage.getUserRow(constants.adminUsername).then( (row: ElementFinder) => {
+      expect<any>(element(by.id('tech-support-role-select')).isDisplayed()).toBe(true);
+      expect<any>(element(by.id('tech-support-role-select')).isEnabled()).toBe(false);
     });
   });
 
@@ -47,7 +47,7 @@ describe('Bellows E2E User Management App', () => {
     projectsPage.settingsBtn.click();
     projectsPage.userManagementLink.click();
     userManagementPage.changeUserRole(constants.adminUsername, 'Manager');
-    userManagementPage.findUserRow(constants.adminUsername).then( (row: ElementFinder) => {
+    userManagementPage.getUserRow(constants.adminUsername).then( (row: ElementFinder) => {
       const selectedRole = row.element(by.css('select:not([disabled])')).element(by.css('option[selected=selected]'));
       selectedRole.getText().then( text => {
         expect<any>(text).toBe('Manager');
@@ -61,7 +61,7 @@ describe('Bellows E2E User Management App', () => {
     projectsPage.clickOnProject(constants.otherProjectName);
     projectsPage.settingsBtn.click();
     projectsPage.userManagementLink.click();
-    userManagementPage.findUserRow(constants.adminUsername).then( (row: ElementFinder) => {
+    userManagementPage.getUserRow(constants.adminUsername).then( (row: ElementFinder) => {
       row.element(by.css('select:not([disabled])')).getText().then( text => {
         expect<any>(text).toContain('Manager');
         expect<any>(text).toContain('Contributor');

@@ -343,7 +343,7 @@ export class ConfigurationFieldUnifiedViewModel {
     }
   }
 
-  private static setInputSystemsViewModel(config: LexiconConfig): [InputSystemSettings[], InputSystemSettings] { // ANDREW
+  private static setInputSystemsViewModel(config: LexiconConfig): [InputSystemSettings[], InputSystemSettings] {
     const inputSystems: InputSystemSettings[] = [];
     const overrides: InputSystemSettings = new InputSystemSettings();
     const selectedManagerTags = ConfigurationFieldUnifiedViewModel.getSelectedInputSystemsManagerTags(config);
