@@ -14,7 +14,6 @@
     "bugsnag/bugsnag-silex": "^2.0",
     "elasticsearch/elasticsearch": "^5.3",
     "firebase/php-jwt": "^5.0",
-    "geoip2/geoip2": "^2.6",
     "guzzlehttp/guzzle": "~6.0",
     "ircmaxell/password-compat": "^1.0",
     "litipk/php-jiffy": "^1.4",

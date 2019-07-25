@@ -18,8 +18,6 @@ curl -XPUT "http://es_401:9200/cat_metrics_2" -H 'Content-Type: application/json
             "name": { "type": "text" }
           }
         },
-        "geoCountryIsoCode": { "type": "keyword" },
-        "geoLocation": { "type": "geo_point" },
         "isTestData": { "type": "boolean" },
         "metrics": {
           "properties": {
