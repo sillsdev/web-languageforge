@@ -115,7 +115,9 @@ export class ProjectsPage {
       const projectLink = projectRow.element(by.css('a'));
       projectLink.click();
 
+      browser.wait(ExpectedConditions.visibilityOf(this.settingsBtn), Utils.conditionTimeout);
       this.settingsBtn.click();
+      browser.wait(ExpectedConditions.visibilityOf(this.userManagementLink), Utils.conditionTimeout);
       this.userManagementLink.click();
 
       let userFilter: any;
