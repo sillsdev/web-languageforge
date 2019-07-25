@@ -69,7 +69,7 @@
                 </td>
                 <td data-ng-show="$ctrl.selectRoleDropdown(user) == 'default'">
                     <!-- suppress HtmlFormInputWithoutLabel -->
-                    <select class="form-control custom-select col-12" data-ng-model="user.role" data-ng-disabled="!$ctrl.isRoleDropdownEnabled(user)"
+                    <select id="default-dropdown" class="form-control custom-select col-12" data-ng-model="user.role" data-ng-disabled="!$ctrl.isRoleDropdownEnabled(user)"
                             data-ng-change="$ctrl.onRoleChange(user)"
                             data-ng-options="role.roleKey as role.roleName for role in $ctrl.roles | filter:{roleKey:'!tech_support'}"></select>
                 </td>

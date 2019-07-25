@@ -56,7 +56,7 @@
                             <small class="text-muted">{{$ctrl.projectTypeNames[project.appName]}}</small>
                         </div>
                         <div class="col-5 col-md-3 text-right" data-ng-show="$ctrl.rights.canEditProjects">
-                            <button id="managerButton" class="btn btn-std" data-ng-show="!$ctrl.isTechSupport(project)"
+                            <button id="techSupportButton" class="btn btn-std" data-ng-show="!$ctrl.isTechSupport(project)"
                                     data-ng-click="$ctrl.addTechSupportToProject(project)">
                                 <i class="fa fa-plus"></i> Tech Support</button>
                         </div>
