@@ -1435,12 +1435,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sillsdev/web-php-utilities.git",
-                "reference": "49c320b3960841c84f5a7aad6f5ea9c8874e240e"
+                "reference": "1060053acfa143b9a24201620d46d02fffa9af7a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/49c320b3960841c84f5a7aad6f5ea9c8874e240e",
-                "reference": "49c320b3960841c84f5a7aad6f5ea9c8874e240e",
+                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/1060053acfa143b9a24201620d46d02fffa9af7a",
+                "reference": "1060053acfa143b9a24201620d46d02fffa9af7a",
                 "shasum": ""
             },
             "require-dev": {
@@ -1458,7 +1458,7 @@
                 "source": "https://github.com/sillsdev/web-php-utilities/tree/master",
                 "issues": "https://github.com/sillsdev/web-php-utilities/issues"
             },
-            "time": "2017-11-07T08:59:09+00:00"
+            "time": "2019-07-25T03:25:51+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
