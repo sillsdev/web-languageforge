@@ -71,17 +71,6 @@ export class UserManagementMembersController implements angular.IController {
     return 'default';
   }
 
-  isRoleDropdownEnabled(user: User): boolean {
-    if (user.role === 'tech_support' && this.currentUser.id !== user.id) {
-      return false;
-    }
-    if (this.rights.changeRole) {
-      return true;
-    }
-    return false;
-  }
-
-
   removeProjectUsers(): void {
     const userIds: string[] = [];
     const l = this.selected.length;
