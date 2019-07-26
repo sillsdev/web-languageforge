@@ -302,6 +302,10 @@ class SendReceiveCommandsTest extends TestCase
                 break;
             }
             usleep($tenMicroSeconds);
+
+            // See https://www.php.net/manual/en/function.clearstatcache.php
+            // clearstatcache is necessary when checking file stat changes within a single script run
+            clearstatcache();
         }
         return file_exists($file) && filesize($file) > 0;
     }
