@@ -412,7 +412,7 @@ class LiftImport
         $destFilesBeforeUnpacking = scandir($destDir);
 
         // ensure non-roman filesnames are returned
-        $cmd = 'LANG="en_US.UTF-8" ' . $cmd;
+        $cmd = 'LANG="C.UTF-8" ' . $cmd;
         $output = array();
         $retcode = 0;
         exec($cmd, $output, $retcode);
