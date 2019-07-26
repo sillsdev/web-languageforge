@@ -14,11 +14,16 @@ export class Rights {
   showControlBar: boolean;
 }
 
+export interface Role {
+  roleKey: string;
+  roleName: string;
+}
+
 export class UserManagementAppController implements angular.IController {
   rights = new Rights();
-  roles = {};
+  roles: Role[] = [];
   project = {
-    roles: {},
+    roles: [] as Role[],
     projectName: '',
     appLink: ''
   };
@@ -48,7 +53,7 @@ export class UserManagementAppController implements angular.IController {
     });
 
     // load roles if they have not been loaded yet
-    if (Object.keys(this.roles).length === 0) {
+    if (this.roles.length === 0) {
       this.queryUserList();
     }
 

@@ -6,13 +6,15 @@ import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
 import { Project } from '../../shared/model/project.model';
 import { User } from '../../shared/model/user.model';
-import { Rights } from './user-management-app.component';
+import { Rights, Role } from './user-management-app.component';
 
 export class UserManagementMembersController implements angular.IController {
   queryUserList: () => void;
   list: any;
   project: Partial<Project>;
-  roles: any;
+  roles: Role[];
+  rolesAsOwner: Role[];
+  rolesWithoutTechSupport: Role[];
   rights: Rights;
   currentUser: Partial<User>;
 
@@ -37,7 +39,16 @@ export class UserManagementMembersController implements angular.IController {
   static $inject = ['$window', 'userService', 'projectService', 'sessionService', 'silNoticeService'];
   constructor(private $window: angular.IWindowService, private userService: UserService,
               private projectService: ProjectService, private sessionService: SessionService,
-              private notice: NoticeService) {}
+              private notice: NoticeService) { }
+
+  $onChanges(changes: angular.IOnChangesObject): void {
+    const rolesChangeObj = changes.roles as angular.IChangesObject<any>;
+    if (rolesChangeObj != null && rolesChangeObj.currentValue) {
+      const roles = rolesChangeObj.currentValue;
+      this.rolesAsOwner = [{roleKey: 'project_manager', roleName: 'Manager and Project Owner'}];
+      this.rolesWithoutTechSupport = roles.filter((elem: any) => elem.roleKey !== 'tech_support');
+    }
+  }
 
   /* ----------------------------------------------------------
    * List
@@ -56,19 +67,24 @@ export class UserManagementMembersController implements angular.IController {
     return user !== null && this.selected.indexOf(user) >= 0;
   }
 
-  getRoleSelectMode(user: User): string {
+  getRoles(user: User) {
     if (user.id === this.project.ownerRef.id) {
-      return 'owner';
-    }
-    if (user.role === 'tech_support') {
-      if (user.id === this.currentUser.id) {
-        return 'admin';
-      } else {
-        return 'tech_support';
-      }
+      return this.rolesAsOwner;
     }
 
-    return 'default';
+    if (user.role !== 'tech_support') {
+      return this.rolesWithoutTechSupport;
+    }
+
+    return this.roles;
+  }
+
+  isRoleSelectDisabled(user: User): boolean {
+    if (user.id === this.project.ownerRef.id ||
+      (user.role === 'tech_support' && user.id !== this.currentUser.id) ||
+      !this.rights.changeRole) { return true; }
+
+    return false;
   }
 
   removeProjectUsers(): void {
@@ -114,7 +130,7 @@ export class UserManagementMembersController implements angular.IController {
   onRoleChange(user: User): void {
     this.projectService.updateUserRole(user.id, user.role, result => {
       if (result.ok) {
-        const role = this.roles.find( (obj: any) => {
+        const role = this.roles.find((obj: any) => {
           return obj.roleKey === user.role;
         });
         const message = `${user.username || user.email}'s role was changed to ${role.roleName}.`;
@@ -186,7 +202,7 @@ export class UserManagementMembersController implements angular.IController {
 
     for (let i = 0, l = this.excludedUsers.length; i < l; i++) {
       if (userName === this.excludedUsers[i].username ||
-        userName === this.excludedUsers[i].name     ||
+        userName === this.excludedUsers[i].name ||
         userName === this.excludedUsers[i].email) {
         return this.excludedUsers[i];
       }

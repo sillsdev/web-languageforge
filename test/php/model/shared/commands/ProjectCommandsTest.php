@@ -650,7 +650,7 @@ class ProjectCommandsTest extends TestCase
         $this->assertEquals(2, $usersDto['userCount']);
     }
 
-    public function testAddTechSupport()
+    public function testUpdateUserRole_userIsAdminAndSetTechSupportRole_techSupportRoleSet()
     {
         self::$environ->clean();
 
@@ -669,7 +669,7 @@ class ProjectCommandsTest extends TestCase
         $this->assertEquals($project->users[$adminId]->role, ProjectRoles::TECH_SUPPORT);
     }
 
-    public function testAddTechSupport_Exception()
+    public function testUpdateUserRole_userIsNotAdminAndSetTechSupportRole_throwsException()
     {
         $this->expectException(UserUnauthorizedException::class); // TODO: Add proper exception
         self::$environ->clean();

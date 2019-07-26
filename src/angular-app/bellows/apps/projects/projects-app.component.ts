@@ -82,8 +82,8 @@ export class ProjectsAppController implements angular.IController {
     return (project.role !== 'none');
   }
 
-  isTechSupport(project: Project) {
-    return project.role === 'tech_support';
+  isManager(project: Project) {
+    return project.role === 'project_manager' || project.role === 'tech_support';
   }
 
   // Add user as Manager of project

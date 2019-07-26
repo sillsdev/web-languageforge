@@ -70,7 +70,7 @@ class SilexSessionHelper
             // Add an admin to the project if they are not already a member
             if ($user->role == SystemRoles::SYSTEM_ADMIN) {
                 if (!$project->userIsMember($userId)) {
-                    $project->addUser($userId, ProjectRoles::MANAGER);
+                    $project->addUser($userId, ProjectRoles::TECH_SUPPORT);
                     $projectId = $project->write();
                     $user->addProject($projectId); // $user->write() occurs in the following if-block
                 }

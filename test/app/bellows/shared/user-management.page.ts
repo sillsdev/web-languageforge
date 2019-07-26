@@ -1,19 +1,22 @@
 import { browser, element, by, ElementFinder, ElementArrayFinder, protractor } from "protractor";
 import { Utils } from "./utils";
 
-
 export class UserManagementPage {
   static get(projectId: string) {
     browser.get(browser.baseUrl + '/app/usermanagement' + projectId );
   }
 
-  usersList = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
+  addMembersBtn = element(by.id('addMembersButton'));
+  newMembersDiv = element(by.id('newMembersDiv'));
+  projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
+  typeaheadDiv = element(by.id('typeaheadDiv'));
+  typeaheadItems = this.typeaheadDiv.all(by.css('ul li'));
+  userNameInput = this.newMembersDiv.element(by.id('typeaheadInput'));
 
-  // NOTE: This function is untested
   changeUserRole(userName: string, roleText: string) {
     this.getUserRow(userName).then( (row: ElementFinder) => {
       if (row) {
-        const select = row.element(by.css('select:not([disabled])'));
+        const select = row.element(by.css('select'));
         Utils.clickDropdownByValue(select, roleText);
       }
     });
@@ -22,7 +25,7 @@ export class UserManagementPage {
   getUserRow(userName: string) {
     const result = protractor.promise.defer();
     let foundUserRow: ElementFinder;
-    this.usersList.map((row: any) => {
+    this.projectMemberRows.map((row: any) => {
       const nameColumn = row.element(by.binding('user.username'));
       nameColumn.getText().then( (text: string) => {
         if (text === userName) {
