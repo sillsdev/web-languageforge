@@ -43,8 +43,8 @@ describe('Bellows E2E Projects List app', () => {
   };
 
   const shouldProjectHaveButtons = (projectRow: ElementFinder, bool: boolean) => {
-    const addAsManagerBtn = projectRow.element(by.id('managerButton'));
-    expect<any>(addAsManagerBtn.isDisplayed()).toBe(bool);
+    const addAsTechSupportBtn = projectRow.element(by.id('techSupportButton'));
+    expect<any>(addAsTechSupportBtn.isDisplayed()).toBe(bool);
   };
 
   describe('for System Admin User', () => {
@@ -89,7 +89,7 @@ describe('Bellows E2E Projects List app', () => {
         shouldProjectHaveButtons(projectRow, true);
 
         // Now add the admin back to the project
-        projectRow.element(by.id('managerButton')).click();
+        projectRow.element(by.id('techSupportButton')).click();
       });
 
       // And the buttons should go away after one of them is clicked

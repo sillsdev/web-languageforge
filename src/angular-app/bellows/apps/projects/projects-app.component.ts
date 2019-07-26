@@ -83,14 +83,14 @@ export class ProjectsAppController implements angular.IController {
   }
 
   isManager(project: Project) {
-    return (project.role === 'project_manager');
+    return project.role === 'project_manager' || project.role === 'tech_support';
   }
 
   // Add user as Manager of project
-  addManagerToProject(project: Project) {
-    this.projectService.joinProject(project.id, 'project_manager', result => {
+  addTechSupportToProject(project: Project) {
+    this.projectService.joinProject(project.id, 'tech_support', result => {
       if (result.ok) {
-        this.notice.push(this.notice.SUCCESS, 'You are now a Manager of the \'' +
+        this.notice.push(this.notice.SUCCESS, 'You are now Tech Support for the \'' +
           project.projectName + '\' project.');
         this.queryProjectsForUser();
       }
