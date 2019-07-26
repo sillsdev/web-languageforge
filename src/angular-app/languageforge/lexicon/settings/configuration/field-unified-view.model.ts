@@ -640,10 +640,9 @@ export class RoleType {
   commenter: string = 'observer_with_comment';
   contributor: string = 'contributor';
   manager: string = 'project_manager';
-  techSupport: string = 'tech_support';
 
   static roles(): string[] {
-    return ['observer', 'commenter', 'contributor', 'manager', 'tech_support'];
+    return ['observer', 'commenter', 'contributor', 'manager'];
   }
 }
 

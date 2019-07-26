@@ -13,6 +13,7 @@ export class UserManagementMembersController implements angular.IController {
   list: any;
   project: Partial<Project>;
   roles: any;
+  rolesVariants: any = {};
   rights: Rights;
   currentUser: Partial<User>;
 
@@ -37,7 +38,7 @@ export class UserManagementMembersController implements angular.IController {
   static $inject = ['$window', 'userService', 'projectService', 'sessionService', 'silNoticeService'];
   constructor(private $window: angular.IWindowService, private userService: UserService,
               private projectService: ProjectService, private sessionService: SessionService,
-              private notice: NoticeService) {}
+              private notice: NoticeService) { }
 
   /* ----------------------------------------------------------
    * List
@@ -56,19 +57,34 @@ export class UserManagementMembersController implements angular.IController {
     return user !== null && this.selected.indexOf(user) >= 0;
   }
 
-  getRoleSelectMode(user: User): string {
+  getRoles(user: User) {
+    // Angular cannot handle new arrays being returned every call because each causes a refresh
+    // To avoid this infinite loop, different sets of roles are stored in a rolesCache object
+    // For more information: https://code.angularjs.org/1.6.10/docs/error/$rootScope/infdig
     if (user.id === this.project.ownerRef.id) {
-      return 'owner';
-    }
-    if (user.role === 'tech_support') {
-      if (user.id === this.currentUser.id) {
-        return 'admin';
-      } else {
-        return 'tech_support';
+      if (!this.rolesVariants.owner) {
+        this.rolesVariants.owner = [{ roleKey: 'project_manager', roleName: 'Manager and Project Owner' }];
       }
+      return this.rolesVariants.owner;
     }
 
-    return 'default';
+    if (user.role !== 'tech_support') {
+      if (!this.rolesVariants.noTechSupport) {
+        this.rolesVariants.noTechSupport = angular.copy(this.roles)
+          .filter((elem: any) => elem.roleKey !== 'tech_support');
+      }
+      return this.rolesVariants.noTechSupport;
+    }
+
+    return this.roles;
+  }
+
+  isRoleSelectEnabled(user: User): boolean {
+    if (user.id === this.project.ownerRef.id ||
+      (user.role === 'tech_support' && user.id !== this.currentUser.id) ||
+      !this.rights.changeRole) { return false; }
+
+    return true;
   }
 
   removeProjectUsers(): void {
@@ -114,7 +130,7 @@ export class UserManagementMembersController implements angular.IController {
   onRoleChange(user: User): void {
     this.projectService.updateUserRole(user.id, user.role, result => {
       if (result.ok) {
-        const role = this.roles.find( (obj: any) => {
+        const role = this.roles.find((obj: any) => {
           return obj.roleKey === user.role;
         });
         const message = `${user.username || user.email}'s role was changed to ${role.roleName}.`;
@@ -186,7 +202,7 @@ export class UserManagementMembersController implements angular.IController {
 
     for (let i = 0, l = this.excludedUsers.length; i < l; i++) {
       if (userName === this.excludedUsers[i].username ||
-        userName === this.excludedUsers[i].name     ||
+        userName === this.excludedUsers[i].name ||
         userName === this.excludedUsers[i].email) {
         return this.excludedUsers[i];
       }
