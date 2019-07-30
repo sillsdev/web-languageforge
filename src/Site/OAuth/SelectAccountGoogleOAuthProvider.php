@@ -4,7 +4,7 @@ namespace Site\OAuth;
 
 use League\OAuth2\Client\Provider\Google as GoogleOAuthProvider;
 
-class SelectAccountOAuthProvider extends GoogleOAuthProvider
+class SelectAccountGoogleOAuthProvider extends GoogleOAuthProvider
 {
     use SelectAccountAuthorizationParametersTrait;
 }

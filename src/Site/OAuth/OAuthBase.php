@@ -251,7 +251,13 @@ abstract class OAuthBase extends Base
                     // And no match by email either
 
                     // Pass all OAuth information into the "what next?" page via the session, so that the user doesn't see it in the login page URL
-                    $avatar = $userDetails->getAvatar();
+                    if (is_callable([$userDetails, 'getAvatar'])) {
+                        $avatar = $userDetails->getAvatar();
+                    } elseif (is_callable([$userDetails, 'getPictureUrl'])) {
+                        $avatar = $userDetails->getPictureUrl();
+                    } else {
+                        $avatar = null;
+                    }
                     if (!is_null($avatar)) {
                         $avatar = $this->getFullSizeAvatarUrl($avatar);
                     }
