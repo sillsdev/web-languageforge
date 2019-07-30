@@ -6,10 +6,9 @@
                     <div class="col">
                         <div class="words-container-title lexiconListItem list-group-item list-group-item-action active">
                             <div>
-                                <h5>Words in dictionary</h5>
-                                <small data-ng-hide="$ctrl.entryListModifiers.filterActive()" id="totalNumberOfEntries">
-                                    <span class="notranslate">{{$ctrl.entries.length}}</span> {{ ($ctrl.entries.length == 1 ? 'entry' : 'entries') }}</small>
-                                <small data-ng-show="$ctrl.entryListModifiers.filterActive()" class="float-right notranslate">{{$ctrl.filteredEntries.length}} / {{$ctrl.entries.length}}</small>
+                                Showing <span data-ng-hide="$ctrl.entryListModifiers.filterActive()">all </span>
+                                <span class="notranslate"><span data-ng-show="$ctrl.entryListModifiers.filterActive()">{{$ctrl.filteredEntries.length}} / </span>{{$ctrl.entries.length}}</span>
+                                entries
                             </div>
                             <button id="newWord" type="button" class="btn btn-primary"
                                 data-ng-if="$ctrl.lecRights.canEditEntry()"
