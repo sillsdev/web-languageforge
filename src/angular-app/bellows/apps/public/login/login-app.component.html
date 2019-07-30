@@ -1,0 +1,39 @@
+<div class="content container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 col-xl-4" id="form-container">
+            <div class="text-center">
+                <h1>Login</h1>
+                <sil-notices></sil-notices>
+            </div>
+
+            <p><a href="/oauthcallback/google"><img src="/Site/views/shared/image/btn_google_signin_dark_normal_web.png"></a></p>
+            <p><a href="/oauthcallback/facebook"><img src="/Site/views/shared/image/facebook_login_button.png" height="46" width="191"></a></p>
+            <!-- TODO: Replace the PNG button with an HTML+CSS one to allow translation, as in http://tech.yeesiang.com/social-login-button-with-font-awesome-bootstrap/ -->
+            <form id="login-loginForm" action="/app/login_check" method="post"
+                  accept-charset="utf-8" name="loginForm" novalidate>
+                <div class="form-group">
+                    <label class="col-form-label" for="username">Username or Email</label>
+                    <input class="form-control form-control-lg" id="username"
+                           required type="text" name="_username">
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="password">Password</label>
+                    <input class="form-control form-control-lg" id="password"
+                           required type="password" name="_password"
+                           value="">
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input"type="checkbox" id="remember" checked name="_remember_me">
+                        Remember me on this device
+                    </label>
+                </div>
+                <div class="form-group form-group-last">
+                    <button id="login-submit" type="submit" class="btn btn-primary" name="submit">Login</button>
+                    <a href="forgot_password" id="forgot_password">Forgot your password?</a>
+                </div>
+                <p>Don't have an account? <a href="/public/signup">Register now.</a></p>
+            </form>
+        </div>
+    </div>
+</div>

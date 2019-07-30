@@ -2,10 +2,13 @@
 
 namespace Site\Controller;
 
+use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
+use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +27,22 @@ class App extends Base
         /** @noinspection PhpUnusedParameterInspection */
         Request $request, Application $app, $appName, $projectId = ''
     ) {
+        // Check if an invite token should be processed
+        if (($appName == LfProjectModel::LEXICON_APP || $appName == 'projects') && $app['session']->get('inviteToken'))
+        {
+            try
+            {
+                $projectId = $this->processInviteToken($app);
+            }
+            catch (ResourceNotAvailableException $e)
+            {
+                return $app->redirect('/app/projects#!/?errorMessage=' . base64_encode($e->getMessage()));
+            } finally
+            {
+                $app['session']->set('inviteToken', '');
+            }
+        }
+
         $model = new AppModel($app, $appName, $this->website, $projectId);
         try {
             $this->setupBaseVariables($app);
@@ -140,6 +159,21 @@ class App extends Base
         if (file_exists($semDomFilePath)) {
             $this->data['jsNotMinifiedFiles'][] = $semDomFilePath;
         }
+    }
+
+    private function processInviteToken(Application $app)
+    {
+        try
+        {
+            $projectId = ProjectModel::getIdByInviteToken($app['session']->get('inviteToken'));
+        } catch (ResourceNotAvailableException $e)
+        {
+            throw new ResourceNotAvailableException('This invite link is not valid, it may have been disabled. Please check with your project manager.');
+        }
+        $userId = SilexSessionHelper::getUserId($app);
+        ProjectCommands::useInviteToken($userId, $projectId);
+
+        return $projectId;
     }
 
 }
