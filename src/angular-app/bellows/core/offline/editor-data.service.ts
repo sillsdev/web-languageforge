@@ -11,7 +11,7 @@ import {CommentsOfflineCacheService} from './comments-offline-cache.service';
 import {EditorOfflineCacheService} from './editor-offline-cache.service';
 import {LexiconCommentService} from './lexicon-comments.service';
 
-class FilterBy {
+class FilterOption {
   label?: string;
   level?: string;
   type?: string;
@@ -26,9 +26,16 @@ class EntryListModifiers {
   };
   sortOptions: any;
   sortReverse: boolean;
-  filterBy: FilterBy;
+  filterBy: {
+    text: string;
+    option: FilterOption;
+  };
   filterOptions: any;
   filterType: string;
+
+  filterText = () => this.filterBy && this.filterBy.text || '';
+  filterByLabel = () => this.filterBy && this.filterBy.option && this.filterBy.option.label ? this.filterBy.option.label : 'null';
+  filterActive = () => this.filterText() || this.filterBy && this.filterBy.option;
 }
 
 export class EditorDataService {
@@ -37,17 +44,19 @@ export class EditorDataService {
   entries: any[] = [];
   visibleEntries: any[] = [];
   filteredEntries: any[] = [];
-  entryListModifiers: EntryListModifiers = {
-    sortBy: {
-      label: 'Word',
-      value: 'lexeme'
-    },
-    sortOptions: {},
-    sortReverse: false,
-    filterBy: null,
-    filterOptions: {},
-    filterType: 'isNotEmpty'
-  };
+  entryListModifiers = Object.assign(
+    new EntryListModifiers(),
+    {
+      sortBy: {
+        label: 'Word',
+        value: 'lexeme'
+      },
+      sortOptions: {},
+      sortReverse: false,
+      filterBy: null,
+      filterOptions: {},
+      filterType: 'isNotEmpty'
+    });
 
   private api: any;
 
@@ -396,9 +405,55 @@ export class EditorDataService {
   }
 
   private entryMeetsFilterCriteria(config: any, entry: any): boolean {
+    // object keys on the entry that should not be used for searching
+    const blacklistKeys = [
+      'isDeleted',
+      'id',
+      'guid',
+      'translationGuid',
+      '$$hashKey',
+      'dateModified',
+      'dateCreated',
+      'projectId',
+      'authorInfo',
+      'fileName'
+    ];
+    // TODO consider whitelisting all properties under customFields
+
+    const isBlacklisted = (key: string): boolean => {
+      const audio = '-audio';
+      return blacklistKeys.includes(key) || key.includes(audio, key.length - audio.length);
+    };
+
+    const isMatch = (query: string, value: any): boolean => {
+      // toUpperCase is better than toLowerCase, but still has issues,
+      // e.g. 'ß'.toUpperCase() === 'SS'
+      const queryCapital = query.toUpperCase();
+      switch (value == null ? 'null' : typeof value) {
+        // Array.prototype.some tests whether some element satisfies the function
+        case 'object':
+          return Object.keys(value).some(key => !isBlacklisted(key) && isMatch(query, value[key]));
+        case 'string':
+          return value.toUpperCase().includes(queryCapital);
+        case 'null':
+          return false;
+        case 'boolean':
+          return false;
+        default:
+          console.error('Unexpected type ' + (typeof value) + ' on entry.');
+          return false;
+      }
+    };
+
+    if (this.entryListModifiers.filterBy.text && this.entryListModifiers.filterBy.text !== '') {
+      const matchesSearch = isMatch(this.entryListModifiers.filterBy.text, entry);
+      if (!matchesSearch) return false;
+    }
+    if (!this.entryListModifiers.filterBy.option) return true;
+
     const mustNotBeEmpty = this.entryListModifiers.filterType === 'isNotEmpty';
     let containsData = false;
-    const filterType = this.entryListModifiers.filterBy.type;
+    const filterType = this.entryListModifiers.filterBy.option.type;
     if (['comments', 'exampleSentences', 'pictures', 'audio'].indexOf(filterType) !== -1) {
       // special filter types
       switch (filterType) {
@@ -473,19 +528,19 @@ export class EditorDataService {
     } else {
       // filter by entry or sense field
       let dataNode;
-      if (this.entryListModifiers.filterBy.level === 'entry') {
-        dataNode = entry[this.entryListModifiers.filterBy.value];
+      if (this.entryListModifiers.filterBy.option.level === 'entry') {
+        dataNode = entry[this.entryListModifiers.filterBy.option.value];
       } else { // sense level
         if (entry.senses && entry.senses.length > 0) {
-          dataNode = entry.senses[0][this.entryListModifiers.filterBy.value];
+          dataNode = entry.senses[0][this.entryListModifiers.filterBy.option.value];
         }
       }
 
       if (dataNode) {
         switch (filterType) {
           case 'multitext':
-            if (dataNode[this.entryListModifiers.filterBy.inputSystem]) {
-              containsData = dataNode[this.entryListModifiers.filterBy.inputSystem].value !== '';
+            if (dataNode[this.entryListModifiers.filterBy.option.inputSystem]) {
+              containsData = dataNode[this.entryListModifiers.filterBy.option.inputSystem].value !== '';
             }
             break;
           case 'optionlist':
@@ -498,7 +553,7 @@ export class EditorDataService {
       }
     }
 
-    return (mustNotBeEmpty && containsData || !mustNotBeEmpty && !containsData);
+    return mustNotBeEmpty && containsData || !mustNotBeEmpty && !containsData;
   }
 
   private getOptionListItem(optionlist: any, key: string): any {

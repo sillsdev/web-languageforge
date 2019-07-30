@@ -7,9 +7,9 @@
                         <div class="words-container-title lexiconListItem list-group-item list-group-item-action active">
                             <div>
                                 <h5>Words in dictionary</h5>
-                                <small data-ng-hide="$ctrl.entryListModifiers.filterBy" id="totalNumberOfEntries">
+                                <small data-ng-show="$ctrl.filteredEntries.length == $ctrl.entries.length" id="totalNumberOfEntries">
                                     <span class="notranslate">{{$ctrl.entries.length}}</span> {{ ($ctrl.entries.length == 1 ? 'entry' : 'entries') }}</small>
-                                <small data-ng-show="$ctrl.entryListModifiers.filterBy" class="float-right notranslate">{{$ctrl.filteredEntries.length}} / {{$ctrl.entries.length}}</small>
+                                <small data-ng-hide="$ctrl.filteredEntries.length == $ctrl.entries.length" class="float-right notranslate">{{$ctrl.filteredEntries.length}} / {{$ctrl.entries.length}}</small>
                             </div>
                             <button id="newWord" type="button" class="btn btn-primary"
                                 data-ng-if="$ctrl.lecRights.canEditEntry()"
@@ -21,9 +21,10 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <div data-ng-hide="$ctrl.visibleEntries.length === 0" class="words-search">
+                        <div data-ng-hide="$ctrl.entries.length === 0" class="words-search">
                             <div class="filter-entries-wrapper">
-                                <input type="text" id="editor-list-search-entries" class="filter-entries" placeholder="Filter Entries"></input>
+                                <input type="text" id="editor-list-search-entries" class="filter-entries" placeholder="Filter Entries"
+                                       data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterBy.text"></input>
                             </div>
                             <button class="btn btn-sm" type="button" data-ng-click="$ctrl.toggleFilterOptions()">
                                 Options
@@ -51,17 +52,17 @@
                                 <label class="font-weight-bold" for="filterEntriesFor">Filter Entries</label>
                                 <div class="form-inline">
                                     <!--suppress HtmlFormInputWithoutLabel -->
-                                    <select class="custom-select sortfilter-control" data-ng-show="$ctrl.entryListModifiers.filterBy"
+                                    <select class="custom-select sortfilter-control" data-ng-show="$ctrl.entryListModifiers.filterBy.option"
                                             data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterType">
                                         <option value="isEmpty">Doesn't have</option>
                                         <option value="isNotEmpty">Has</option>
                                     </select>
                                     <select class="custom-select sortfilter-control" id="filterEntriesFor"
-                                            data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterBy"
+                                            data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterBy.option"
                                             data-ng-options="item as item.label for item in $ctrl.entryListModifiers.filterOptions track by item.key">
                                         <option value="">Show All</option>
                                     </select>
-                                    <button data-ng-click="$ctrl.resetEntryListFilter()" data-ng-show="$ctrl.entryListModifiers.filterBy" class="btn btn-sm">Reset</button>
+                                    <button data-ng-click="$ctrl.resetEntryListFilter()" data-ng-show="$ctrl.entryListModifiers.filterActive()" class="btn btn-sm">Reset Filter</button>
                                 </div>
                             </div>
                         </div>
