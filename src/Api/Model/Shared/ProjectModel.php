@@ -16,6 +16,7 @@ use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\IdReference;
+use Api\Model\Shared\InviteLink;
 use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\Mapper\MapperModel;
 use Api\Model\Shared\Mapper\MapperUtils;
@@ -46,6 +47,8 @@ class ProjectModel extends MapperModel
         $this->allowAudioDownload = true;
         $this->allowInviteAFriend = true;
         $this->interfaceLanguageCode = 'en';
+
+        $this->inviteLink = new InviteLink();
 
         $this->setReadOnlyProp('id');
         $this->setReadOnlyProp('ownerRef');
@@ -95,6 +98,9 @@ class ProjectModel extends MapperModel
 
     /** @var boolean Flag to indicate if this project allows users to invite a friend */
     public $allowInviteAFriend;
+
+    /** @var InviteLink Stores the information about the projects invitation link */
+    public $inviteLink;
 
     /** @var boolean Flag to indicate if this project is archived */
     public $isArchived;
