@@ -9,8 +9,8 @@
                             <div class="words-container-title list-group-item list-group-item-action active">
                                 <div>
                                     <h5>Words in dictionary</h5>
-                                    <small data-ng-hide="$ctrl.entryListModifiers.filterBy" id="totalNumberOfEntries"><span class="notranslate">{{$ctrl.entries.length}}</span> {{ ($ctrl.entries.length == 1 ? 'entry' : 'entries') }}</small>
-                                    <small data-ng-show="$ctrl.entryListModifiers.filterBy" class="notranslate">{{$ctrl.filteredEntries.length}} / {{$ctrl.entries.length}}</small>
+                                    <small data-ng-hide="$ctrl.entryListModifiers.filterActive()" id="totalNumberOfEntries"><span class="notranslate">{{$ctrl.entries.length}}</span> {{ ($ctrl.entries.length == 1 ? 'entry' : 'entries') }}</small>
+                                    <small data-ng-show="$ctrl.entryListModifiers.filterActive()" class="notranslate">{{$ctrl.filteredEntries.length}} / {{$ctrl.entries.length}}</small>
                                 </div>
                                 <button id="editorNewWordBtn" class="btn btn-primary"
                                     data-ng-show="$ctrl.isAtEditorEntry()" data-ng-if="$ctrl.lecRights.canEditEntry()"
@@ -24,7 +24,8 @@
                         <div class="col d-flex align-content-stretch">
                             <div class="words-search">
                                 <div class="filter-entries-wrapper">
-                                    <input id="editor-entry-search-entries" class="filter-entries" placeholder="Filter Entries"></input>
+                                    <input type="text" id="editor-entry-search-entries" class="filter-entries" placeholder="Filter Entries"
+                                           data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterBy.text"></input>
                                 </div>
                                 <button data-ng-click="$ctrl.toggleFilterOptions()" class="btn btn-sm">
                                     Options
@@ -52,13 +53,13 @@
                                     <label class="font-weight-bold" for="filterEntriesFor">Filter Entries</label>
                                     <div class="form-inline">
                                         <!--suppress HtmlFormInputWithoutLabel -->
-                                        <select class="custom-select sortfilter-control" data-ng-show="$ctrl.entryListModifiers.filterBy"
+                                        <select class="custom-select sortfilter-control" data-ng-show="$ctrl.entryListModifiers.filterBy.option"
                                                 data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterType">
                                             <option value="isEmpty">Doesn't have</option>
                                             <option value="isNotEmpty">Has</option>
                                         </select>
                                         <select class="custom-select sortfilter-control" id="filterEntriesFor"
-                                                data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterBy"
+                                                data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterBy.option"
                                                 data-ng-options="item as item.label for item in $ctrl.entryListModifiers.filterOptions track by item.key">
                                             <option value="">Show All</option>
                                         </select>
