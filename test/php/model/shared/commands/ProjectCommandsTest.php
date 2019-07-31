@@ -684,4 +684,45 @@ class ProjectCommandsTest extends TestCase
         $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
         ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::TECH_SUPPORT);
     }
+
+    public function testProjectInviteLink_enableAndDisableInviteLink_successfulEnableAndDisable()
+    {
+        self::$environ->clean();
+        $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectModel = ProjectModel::getById($projectId);
+        $inviteUrl = ProjectCommands::getNewInviteLink($projectId, 'Manager');
+
+        // Assert URL is valid to site
+        $this->assertStringContainsString($projectModel->siteName, $inviteUrl);
+        $this->assertStringContainsString('.org/invite/', $inviteUrl);
+
+        // Assert invite token is found in the database
+        $lastSlashPos = strrpos($inviteUrl, '/');
+        $token = substr($inviteUrl, $lastSlashPos + 1);
+        $this->assertTrue($projectModel->readByProperties(['inviteLink.authToken' => $token, 'inviteLink.defaultRole' => 'Manager']));
+
+        // Disable invite link and make sure it no longer exists in the DB
+        ProjectCommands::disableInviteLink($projectId);
+        $this->assertFalse($projectModel->readByProperty('inviteLink.authToken', $token));
+    }
+
+    public function testProjectInviteLink_changeInviteLinkDefaultRole_roleChangeSuccessful()
+    {
+        self::$environ->clean();
+        $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectModel = ProjectModel::getById($projectId);
+        $inviteUrl = ProjectCommands::getNewInviteLink($projectId, 'Manager');
+
+        // Assert defaultRole is set to initialized role
+        $lastSlashPos = strrpos($inviteUrl, '/');
+        $token = substr($inviteUrl, $lastSlashPos + 1);
+        $this->assertTrue($projectModel->readByProperties(['inviteLink.authToken' => $token, 'inviteLink.defaultRole' => 'Manager']));
+
+        // Change defaultRole
+        ProjectCommands::updateInviteLinkRole($projectId, 'Observer');
+        $this->assertTrue($projectModel->readByProperties(['inviteLink.authToken' => $token, 'inviteLink.defaultRole' => 'Observer']));
+    }
+
 }

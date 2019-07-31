@@ -344,4 +344,48 @@ class ProjectCommands
 
         return $project->readByProperties(array('projectCode' => $code));
     }
+
+    /**
+     * @param string $projectId
+     * @return string invite link to project
+     */
+    public static function getNewInviteLink($projectId, $defaultRole)
+    {
+        $project = new ProjectModel($projectId);
+
+        $newAuthToken = $project->inviteLink->generateNewAuthToken($project);
+        $project->inviteLink->setDefaultRole($defaultRole);
+
+        $result = $project->write();
+
+        if (!$result)
+        {
+            return 'Link generation failed. Please try again.';
+        }
+        return 'https://' . $project->siteName . '.org/invite/' . $newAuthToken;
+    }
+
+    public static function disableInviteLink($projectId)
+    {
+        $project = new ProjectModel($projectId);
+        $project->inviteLink->authToken = '';
+        $result = $project->write();
+
+        if (!$result) // Todo: Should this return a string?
+        {
+            return 'Link generation failed. Please try again.';
+        }
+    }
+
+    public static function updateInviteLinkRole($projectId, $newRole)
+    {
+        $project = new ProjectModel($projectId);
+        $project->inviteLink->setDefaultRole($newRole);
+        $result = $project->write();
+
+        if (!$result) // Todo: Should this return a string?
+        {
+            return 'Role change failed. Please try again.';
+        }
+    }
 }
