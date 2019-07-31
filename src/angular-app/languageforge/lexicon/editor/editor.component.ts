@@ -122,6 +122,7 @@ export class LexiconEditorController implements angular.IController {
     this.$scope.$watch(() => this.lecConfig, () => {
       this.setSortAndFilterOptionsFromConfig();
     });
+    this.initFilterAndSearchOptions();
 
     this.sendReceive.setPollUpdateSuccessCallback(this.pollUpdateSuccess);
     this.sendReceive.setSyncProjectStatusSuccessCallback(this.syncProjectStatusSuccess);
@@ -242,7 +243,7 @@ export class LexiconEditorController implements angular.IController {
     }
   }
 
-  setUrlParams(): void {
+  initFilterAndSearchOptions(): void {
     const clear = this.$scope.$watch(() => this.entryListModifiers.sortOptions.length > 0, (ready: boolean) => {
       if (!ready) return;
       clear(); // remove the watcher
