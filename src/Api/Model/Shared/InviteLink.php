@@ -21,7 +21,8 @@ class InviteLink
     public $isEnabled;
 
     /**
-     * @param ProjectModel $model in order to pass to MongoMapper->readByProperty()
+     * @param ProjectModel $model in order to call to MongoMapper->readByProperty()
+     * @return string the invite token stored in the db for the project
      */
     public function generateNewAuthToken($model, $testMode = false)
     {
@@ -37,13 +38,17 @@ class InviteLink
         return $newToken;
     }
 
+    /**
+     * @param string $newRole role to set users joining the project via the link to
+     * @throws InvalidArgumentException
+     */
     public function setDefaultRole($newRole)
     {
-        $validRoles = LexRoles::getRolesList();
+        $validRoles = LexRoles::getRolesList(); // Andrew: Do I want only LexRoles though??
         if (in_array($newRole, $validRoles)) {
             $this->defaultRole = $newRole;
         } else {
-            throw new InvalidArgumentException("An invite link tried to set an invalid role");
+            throw new InvalidArgumentException("An invite link tried to set a nonexistant role");
         }
     }
 }

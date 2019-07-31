@@ -370,11 +370,6 @@ class ProjectCommands
         $project = new ProjectModel($projectId);
         $project->inviteLink->authToken = '';
         $result = $project->write();
-
-        if (!$result) // Todo: Should this return a string?
-        {
-            return 'Link generation failed. Please try again.';
-        }
     }
 
     public static function updateInviteLinkRole($projectId, $newRole)
@@ -382,10 +377,5 @@ class ProjectCommands
         $project = new ProjectModel($projectId);
         $project->inviteLink->setDefaultRole($newRole);
         $result = $project->write();
-
-        if (!$result) // Todo: Should this return a string?
-        {
-            return 'Role change failed. Please try again.';
-        }
     }
 }
