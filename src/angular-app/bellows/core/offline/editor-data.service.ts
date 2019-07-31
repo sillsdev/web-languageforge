@@ -1,7 +1,8 @@
 import * as angular from 'angular';
 
 import {SemanticDomainsService} from '../../../languageforge/core/semantic-domains/semantic-domains.service';
-import {LexConfigMultiText} from '../../../languageforge/lexicon/shared/model/lexicon-config.model';
+import {LexEntry} from '../../../languageforge/lexicon/shared/model/lex-entry.model';
+import {LexConfigMultiText, LexiconConfig} from '../../../languageforge/lexicon/shared/model/lexicon-config.model';
 import {LexiconProjectSettings} from '../../../languageforge/lexicon/shared/model/lexicon-project-settings.model';
 import {JsonRpcResult} from '../api/api.service';
 import {NoticeService} from '../notice/notice.service';
@@ -43,15 +44,15 @@ const entriesIncrement = 50;
 export class EditorDataService {
   readonly browserInstanceId: string = Math.floor(Math.random() * 1000000).toString();
 
-  entries: any[] = [];
-  visibleEntries: any[] = [];
-  filteredEntries: any[] = [];
+  entries: LexEntry[] = [];
+  visibleEntries: LexEntry[] = [];
+  filteredEntries: LexEntry[] = [];
   entryListModifiers = Object.assign(
     new EntryListModifiers(),
     {
       sortBy: {
-        label: 'Word',
-        value: 'lexeme'
+        label: 'Default',
+        value: 'default'
       },
       sortOptions: {},
       sortReverse: false,
@@ -296,7 +297,8 @@ export class EditorDataService {
   }
 
   getSortableValue = (config: any, entry: any): string => {
-    const fieldKey = this.entryListModifiers.sortBy.value;
+    const fieldKey = this.entryListModifiers.sortBy.value === 'default' ?
+                      'lexeme' : this.entryListModifiers.sortBy.value;
     let sortableValue = '';
     let field;
     let dataNode;
@@ -442,7 +444,7 @@ export class EditorDataService {
       }
     };
 
-    if (this.entryListModifiers.filterBy.text && this.entryListModifiers.filterBy.text !== '') {
+    if (this.entryListModifiers.filterText() !== '') {
       const matchesSearch = isMatch(this.entryListModifiers.filterBy.text, entry);
       if (!matchesSearch) return false;
     }
@@ -620,7 +622,49 @@ export class EditorDataService {
     });
   }
 
-  private sortList(config: any, list: any[]): any {
+  private sortList(config: LexiconConfig, list: LexEntry[]): any[] {
+    if (this.entryListModifiers.sortBy.value === 'default' && this.entryListModifiers.filterText() !== '') {
+
+      // each of the five slots contain results of varying relevance:
+      // word matched at beginning, word matched anywhere, sense matched at beginning, sense matched anywhere, and everything else
+      const prioritizedResults = [[], [], [], [], []] as LexEntry[][];
+
+      const query = this.entryListModifiers.filterText();
+
+      for (const entry of list) {
+        if (entry.lexeme) {
+          const allMatches = Object.keys(entry.lexeme).map(key => entry.lexeme[key].value.indexOf(query))
+                                  .filter(i => i !== -1);
+          const beginningMatches = allMatches.filter(i => i === 0);
+          if (allMatches.length > 0) {
+            prioritizedResults[beginningMatches.length > 0 ? 0 : 1].push(entry);
+            continue;
+          }
+        }
+
+        if (entry.senses) {
+          const allMatches = entry.senses.filter(sense => sense.gloss)
+              .map(sense => Object.keys(sense.gloss).map(key => sense.gloss[key].value.indexOf(query)))
+              .reduce((main, sub) => main.concat(sub), []).filter(i => i !== -1);
+          const beginningMatches = allMatches.filter(i => i === 0);
+          if (allMatches.length > 0) {
+            prioritizedResults[beginningMatches.length > 0 ? 2 : 3].push(entry);
+            continue;
+          }
+
+        }
+
+        prioritizedResults[4].push(entry);
+      }
+
+      // sort the individual lists and then flatten the results
+      return prioritizedResults.map(section => this.sortListAlphabetically(config, section))
+                                .reduce((main, sub) => main.concat(sub), []);
+
+    } else return this.sortListAlphabetically(config, list);
+  }
+
+  private sortListAlphabetically(config: LexiconConfig, list: LexEntry[]): LexEntry[] {
     const inputSystem = this.getInputSystemForSort(config);
     const compare = ('Intl' in window) ? Intl.Collator(inputSystem).compare : (a: string, b: string) => a < b ? -1 : 1;
 
@@ -658,7 +702,7 @@ export class EditorDataService {
   /**
    * A function useful for debugging (prints out to the console the lexeme values)
    */
-  private printLexemesInList(entryList: any[]): void {
+  private printLexemesInList(entryList: LexEntry[]): void {
     this.sessionService.getSession().then(session => {
       const config = session.projectSettings<LexiconProjectSettings>().config;
       const ws = (config.entry.fields.lexeme as LexConfigMultiText).inputSystems[1];
