@@ -904,7 +904,10 @@ export class LexiconEditorController implements angular.IController {
       return;
     }
 
-    const sortOptions: SortOption[] = [];
+    const sortOptions: SortOption[] = [{
+      label: 'Default',
+      value: 'default'
+    }];
     const filterOptions: FilterOption[] = [];
     for (const entryFieldName of this.lecConfig.entry.fieldOrder) {
       const entryField = this.lecConfig.entry.fields[entryFieldName];
