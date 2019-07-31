@@ -48,15 +48,6 @@ class Show {
   entryListModifiers: boolean = false;
 }
 
-class TypeAhead {
-  limit: number;
-  matchCountCaption: string;
-  searchEntries?: (query: string) => void;
-  searchItemSelected: string;
-  searchResults: string[];
-  searchSelect?: (entry: LexEntry) => void;
-}
-
 export class LexiconEditorController implements angular.IController {
   lecConfig: LexiconConfig;
   lecInterfaceConfig: InterfaceConfig;
@@ -77,7 +68,6 @@ export class LexiconEditorController implements angular.IController {
 
   autoSaveTimer: angular.IPromise<void>;
   control: FieldControl = new FieldControl();
-  typeahead: TypeAhead;
 
   entries = this.editorService.entries;
   entryListModifiers = this.editorService.entryListModifiers;
@@ -148,8 +138,6 @@ export class LexiconEditorController implements angular.IController {
         this.saveCurrentEntry();
       }
     };
-
-    this.setupTypeAheadSearch();
 
     this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
       this.$window.localStorage.getItem('viewFilter') === 'false');
@@ -300,9 +288,7 @@ export class LexiconEditorController implements angular.IController {
       filterType: this.entryListModifiers.filterType,
       filterBy: this.entryListModifiers.filterByLabel()
     }, { notify: false });
-    this.editorService.sortEntries.apply(this, arguments).then(() => {
-      this.typeahead.searchEntries(this.typeahead.searchItemSelected);
-    });
+    this.editorService.sortEntries.apply(this, arguments);
   }
 
   filterEntries(args: any): void {
@@ -313,9 +299,7 @@ export class LexiconEditorController implements angular.IController {
       filterType: this.entryListModifiers.filterType,
       filterBy: this.entryListModifiers.filterByLabel()
     }, { notify: false });
-    this.editorService.filterEntries.apply(this, arguments).then(() => {
-      this.typeahead.searchEntries(this.typeahead.searchItemSelected);
-    });
+    this.editorService.filterEntries.apply(this, arguments);
   }
 
   resetEntryListFilter(): void {
@@ -874,107 +858,6 @@ export class LexiconEditorController implements angular.IController {
     parts.example.index = exampleIndex;
     parts.example.guid = exampleGuid;
     return parts;
-  }
-
-  private setupTypeAheadSearch(): void {
-    this.typeahead = {
-      searchItemSelected: '',
-      searchResults: [],
-      limit: 50,
-      matchCountCaption: ''
-    };
-
-    this.typeahead.searchEntries = (query = '') => {
-      const blacklistKeys = [
-        'isDeleted',
-        'id',
-        'guid',
-        'translationGuid',
-        '$$hashKey',
-        'dateModified',
-        'dateCreated',
-        'projectId',
-        'authorInfo',
-        'fileName'
-      ];
-
-      const isBlacklisted = (key: string): boolean => {
-        const audio = '-audio';
-        return blacklistKeys.includes(key) || key.includes(audio, key.length - audio.length);
-      };
-
-      // TODO consider whitelisting all properties under customFields
-
-      const isMatch = (value: any): boolean => {
-        // toUpperCase is better than toLowerCase, but still has issues,
-        // e.g. 'ß'.toUpperCase() === 'SS'
-        const queryCapital = query.toUpperCase();
-        switch (value == null ? 'null' : typeof value) {
-          // Array.prototype.some tests whether some element satisfies the function
-          case 'object':
-            return Object.keys(value).some(key => !isBlacklisted(key) && isMatch(value[key]));
-          case 'string':
-            return value.toUpperCase().includes(queryCapital);
-          case 'null':
-            return false;
-          case 'boolean':
-            return false;
-          default:
-            console.error('Unexpected type ' + (typeof value) + ' on entry.');
-            return false;
-        }
-      };
-      const filteredEntries = this.filteredEntries.filter(isMatch);
-
-      const prioritizedEntries = {
-        wordBeginning: [] as LexEntry[],
-        word: [] as LexEntry[],
-        meaningBeginning: [] as LexEntry[],
-        meaning: [] as LexEntry[],
-        everythingElse: [] as LexEntry[]
-      };
-
-      for (const entry of filteredEntries) {
-        const word = this.getPrimaryListItemForDisplay(this.lecConfig, entry);
-        const meaning = this.getMeaningForDisplay(entry);
-        if (word.startsWith(query)) {
-          prioritizedEntries.wordBeginning.push(entry);
-        } else if (word.includes(query)) {
-          prioritizedEntries.word.push(entry);
-        } else if (meaning.startsWith(query)) {
-          prioritizedEntries.meaningBeginning.push(entry);
-        } else if (meaning.includes(query)) {
-          prioritizedEntries.meaning.push(entry);
-        } else {
-          prioritizedEntries.everythingElse.push(entry);
-        }
-      }
-
-      this.typeahead.searchResults = [].concat(
-        prioritizedEntries.wordBeginning,
-        prioritizedEntries.word,
-        prioritizedEntries.meaningBeginning,
-        prioritizedEntries.meaning,
-        prioritizedEntries.everythingElse
-      );
-      this.typeahead.matchCountCaption = '';
-      const numMatches = this.typeahead.searchResults.length;
-      if (numMatches > this.typeahead.limit) {
-        this.typeahead.matchCountCaption = this.typeahead.limit + ' of ' + numMatches + ' matches';
-      } else if (numMatches > 1) {
-        this.typeahead.matchCountCaption = numMatches + ' matches';
-      } else if (numMatches === 1) {
-        this.typeahead.matchCountCaption = numMatches + ' match';
-      }
-    };
-
-    this.typeahead.searchSelect = (entry: LexEntry) => {
-      this.typeahead.searchItemSelected = '';
-      this.typeahead.searchResults = [];
-      if (entry.id) {
-        this.editEntryAndScroll(entry.id);
-      }
-    };
   }
 
   private goToEntry(entryId: string): void {
