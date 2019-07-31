@@ -247,28 +247,15 @@ export class LexiconEditorController implements angular.IController {
     const clear = this.$scope.$watch(() => this.entryListModifiers.sortOptions.length > 0, (ready: boolean) => {
       if (!ready) return;
       clear(); // remove the watcher
-      this.$state.go('.', {
-        sortBy: this.entryListModifiers.sortBy.label,
-        filterText: this.entryListModifiers.filterText(),
-        sortReverse: this.entryListModifiers.sortReverse,
-        filterType: this.entryListModifiers.filterType,
-        filterBy: this.entryListModifiers.filterByLabel()
-      }, { notify: false });
+
       if (this.$state.params.sortBy) {
         this.entryListModifiers.sortBy =
         this.setSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params.sortBy)[0];
-        this.sortEntries(true);
       }
-      if (this.$state.params.sortReverse === 'true') {
-        this.entryListModifiers.sortReverse = true;
-        this.sortEntries(true);
-      } else {
-        this.entryListModifiers.sortReverse = false;
-        this.sortEntries(false);
-       }
+      this.entryListModifiers.sortReverse = this.$state.params.sortReverse === 'true';
+
       if (this.$state.params.filterType) {
         this.entryListModifiers.filterType = this.$state.params.filterType;
-        this.filterEntries(true);
       }
       if (this.$state.params.filterBy || this.$state.params.filterText) {
         this.entryListModifiers.filterBy = {
@@ -276,8 +263,10 @@ export class LexiconEditorController implements angular.IController {
           option: this.$state.params.filterBy ?
                   this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params.filterBy)[0] : null
         };
-        this.filterEntries(true);
       }
+
+      this.filterEntries(true);
+      this.sortEntries(true);
     });
   }
 

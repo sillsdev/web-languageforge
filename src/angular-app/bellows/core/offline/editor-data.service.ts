@@ -38,6 +38,8 @@ class EntryListModifiers {
   filterActive = () => this.filterText() || this.filterBy && this.filterBy.option;
 }
 
+const entriesIncrement = 50;
+
 export class EditorDataService {
   readonly browserInstanceId: string = Math.floor(Math.random() * 1000000).toString();
 
@@ -77,10 +79,9 @@ export class EditorDataService {
   }
 
   showMoreEntries = (): void => {
-    const increment = 50;
     if (this.visibleEntries.length < this.filteredEntries.length) {
       UtilityService.arrayCopyRetainingReferences(
-        this.filteredEntries.slice(0, this.visibleEntries.length + increment), this.visibleEntries);
+        this.filteredEntries.slice(0, this.visibleEntries.length + entriesIncrement), this.visibleEntries);
     }
   }
 
@@ -262,16 +263,13 @@ export class EditorDataService {
     return this.sessionService.getSession().then(session => {
       const config = session.projectSettings<LexiconProjectSettings>().config;
 
-      // the length = 0 followed by Array.push.apply is a method of replacing the contents of an array without creating
-      // a new array thereby keeping original references to the array
+      // Copies entries into the arrays while preserving references to the arrays
       const entriesSorted = this.sortList(config, this.entries);
       UtilityService.arrayCopyRetainingReferences(entriesSorted, this.entries);
       const filteredEntriesSorted = this.sortList(config, this.filteredEntries);
       UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted, this.filteredEntries);
-      this.sortList(config, this.visibleEntries);
       if (shouldResetVisibleEntriesList) {
-        // TODO: Magic number "50" below should become a constant somewhere
-        UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, 50), this.visibleEntries);
+        UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, entriesIncrement), this.visibleEntries);
       }
       const sortTime = (performance.now() - startTime) / 1000;
       if (sortTime > 0.5) {
@@ -292,8 +290,7 @@ export class EditorDataService {
       }
 
       if (shouldResetVisibleEntriesList) {
-        // TODO: Magic number "50" below should become a constant somewhere
-        UtilityService.arrayCopyRetainingReferences(this.filteredEntries.slice(0, 50), this.visibleEntries);
+        UtilityService.arrayCopyRetainingReferences(this.filteredEntries.slice(0, entriesIncrement), this.visibleEntries);
       }
     });
   }
@@ -618,12 +615,12 @@ export class EditorDataService {
   private sortAndFilterEntries(shouldResetVisibleEntriesList: boolean): angular.IPromise<any> {
     // ToDo: so far I haven't found a good case for NOT resetting visibleEntriesList.
     // and always reset visibleEntriesList - chris 2017-07
-    return this.sortEntries(shouldResetVisibleEntriesList).then(() => {
-      return this.filterEntries(shouldResetVisibleEntriesList);
+    return this.filterEntries(shouldResetVisibleEntriesList).then(() => {
+      return this.sortEntries(shouldResetVisibleEntriesList);
     });
   }
 
-  private sortList(config: any, list: any): any {
+  private sortList(config: any, list: any[]): any {
     const inputSystem = this.getInputSystemForSort(config);
     const compare = ('Intl' in window) ? Intl.Collator(inputSystem).compare : (a: string, b: string) => a < b ? -1 : 1;
 
