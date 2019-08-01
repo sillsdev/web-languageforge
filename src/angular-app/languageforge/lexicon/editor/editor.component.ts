@@ -251,7 +251,7 @@ export class LexiconEditorController implements angular.IController {
       }
       if (this.$state.params.filterBy || this.$state.params.filterText) {
         this.entryListModifiers.filterBy = {
-          text: this.$state.params.filterText,
+          text: this.$state.params.filterText || '',
           option: this.$state.params.filterBy ?
                   this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params.filterBy)[0] : null
         };
