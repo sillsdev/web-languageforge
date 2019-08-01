@@ -21,18 +21,18 @@ class FilterOption {
 }
 
 class EntryListModifiers {
-  sortBy: {
-    label: string,
-    value: string
+  sortBy = {
+    label: 'Default',
+    value: 'default'
   };
-  sortOptions: any;
-  sortReverse: boolean;
+  sortOptions: any[] = [];
+  sortReverse = false;
   filterBy: {
     text: string;
     option: FilterOption;
-  };
-  filterOptions: any;
-  filterType: string;
+  } = null;
+  filterOptions: any[] = [];
+  filterType = 'isNotEmpty';
 
   filterText = () => this.filterBy && this.filterBy.text || '';
   filterByLabel = () => this.filterBy && this.filterBy.option && this.filterBy.option.label || '';
@@ -48,19 +48,7 @@ export class EditorDataService {
   entries: LexEntry[] = [];
   visibleEntries: LexEntry[] = [];
   filteredEntries: LexEntry[] = [];
-  entryListModifiers = Object.assign(
-    new EntryListModifiers(),
-    {
-      sortBy: {
-        label: 'Default',
-        value: 'default'
-      },
-      sortOptions: {},
-      sortReverse: false,
-      filterBy: null,
-      filterOptions: {},
-      filterType: 'isNotEmpty'
-    });
+  entryListModifiers = new EntryListModifiers();
 
   private api: any;
 
