@@ -25,7 +25,7 @@
                             <div class="words-search">
                                 <div class="filter-entries-wrapper">
                                     <input type="text" id="editor-entry-search-entries" class="filter-entries" placeholder="Filter Entries"
-                                           data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterBy.text"></input>
+                                           data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.filterBy.text"></input>
                                 </div>
                                 <button data-ng-click="$ctrl.toggleFilterOptions()" class="btn btn-sm">
                                     Options
@@ -41,11 +41,11 @@
                                     <label class="font-weight-bold" for="sortEntriesBy">Sort Entries By</label>
                                     <div class="form-inline">
                                         <select id="sortEntriesBy" class="custom-select sortfilter-control"
-                                                data-ng-change="$ctrl.sortEntries(true)" data-ng-model="$ctrl.entryListModifiers.sortBy"
+                                                data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortBy"
                                                 data-ng-options="item as item.label for item in $ctrl.entryListModifiers.sortOptions track by item.value">
                                         </select>
                                         <label>
-                                            <input type="checkbox" data-ng-change="$ctrl.sortEntries(true)" data-ng-model="$ctrl.entryListModifiers.sortReverse"> Reverse
+                                            <input type="checkbox" data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortReverse"> Reverse
                                         </label>
                                     </div>
                                 </div>
@@ -54,12 +54,12 @@
                                     <div class="form-inline">
                                         <!--suppress HtmlFormInputWithoutLabel -->
                                         <select class="custom-select sortfilter-control" data-ng-show="$ctrl.entryListModifiers.filterBy.option"
-                                                data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterType">
+                                                data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.filterType">
                                             <option value="isEmpty">Doesn't have</option>
                                             <option value="isNotEmpty">Has</option>
                                         </select>
                                         <select class="custom-select sortfilter-control" id="filterEntriesFor"
-                                                data-ng-change="$ctrl.filterEntries(true)" data-ng-model="$ctrl.entryListModifiers.filterBy.option"
+                                                data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.filterBy.option"
                                                 data-ng-options="item as item.label for item in $ctrl.entryListModifiers.filterOptions track by item.key">
                                             <option value="">Show All</option>
                                         </select>
