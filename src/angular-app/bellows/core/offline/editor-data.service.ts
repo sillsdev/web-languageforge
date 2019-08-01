@@ -35,7 +35,7 @@ class EntryListModifiers {
   filterType: string;
 
   filterText = () => this.filterBy && this.filterBy.text || '';
-  filterByLabel = () => this.filterBy && this.filterBy.option && this.filterBy.option.label || 'null';
+  filterByLabel = () => this.filterBy && this.filterBy.option && this.filterBy.option.label || '';
   filterActive = () => this.filterText() || this.filterBy && this.filterBy.option;
 }
 
@@ -448,7 +448,7 @@ export class EditorDataService {
     };
 
     if (this.entryListModifiers.filterText() !== '') {
-      const matchesSearch = isMatch(this.entryListModifiers.filterBy.text, entry);
+      const matchesSearch = isMatch(this.entryListModifiers.filterText(), entry);
       if (!matchesSearch) return false;
     }
     if (!this.entryListModifiers.filterBy.option) return true;
