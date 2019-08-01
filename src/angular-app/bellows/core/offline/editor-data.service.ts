@@ -427,24 +427,15 @@ export class EditorDataService {
       return blacklistKeys.includes(key) || key.includes(audio, key.length - audio.length);
     };
 
+    // toUpperCase is better than toLowerCase, but still has issues,
+    // e.g. 'ß'.toUpperCase() === 'SS'
+    const queryCapital = this.entryListModifiers.filterText().toUpperCase();
+
     const isMatch = (query: string, value: any): boolean => {
-      // toUpperCase is better than toLowerCase, but still has issues,
-      // e.g. 'ß'.toUpperCase() === 'SS'
-      const queryCapital = query.toUpperCase();
-      switch (value == null ? 'null' : typeof value) {
-        // Array.prototype.some tests whether some element satisfies the function
-        case 'object':
-          return Object.keys(value).some(key => !isBlacklisted(key) && isMatch(query, value[key]));
-        case 'string':
-          return value.toUpperCase().includes(queryCapital);
-        case 'null':
-          return false;
-        case 'boolean':
-          return false;
-        default:
-          console.error('Unexpected type ' + (typeof value) + ' on entry.');
-          return false;
-      }
+      if (typeof value === 'string') return value.toUpperCase().includes(queryCapital);
+      else if (value != null && typeof value === 'object') {
+        return Object.keys(value).some(key => !isBlacklisted(key) && isMatch(query, value[key]));
+      } else return false;
     };
 
     if (this.entryListModifiers.filterText() !== '') {
