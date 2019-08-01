@@ -63,7 +63,7 @@
                                                 data-ng-options="item as item.label for item in $ctrl.entryListModifiers.filterOptions track by item.key">
                                             <option value="">Show All</option>
                                         </select>
-                                        <button data-ng-click="$ctrl.resetEntryListFilter()" data-ng-show="$ctrl.entryListModifiers.filterActive()" class="btn btn-sm">Reset Filter</button>
+                                        <button data-ng-click="$ctrl.resetEntryListFilter()" data-ng-show="$ctrl.shouldShowFilterReset()" class="btn btn-sm">Reset Filter</button>
                                     </div>
                                 </div>
                             </div>
