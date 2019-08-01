@@ -37,6 +37,7 @@ class EntryListModifiers {
   filterText = () => this.filterBy && this.filterBy.text || '';
   filterByLabel = () => this.filterBy && this.filterBy.option && this.filterBy.option.label || '';
   filterActive = () => this.filterText() || this.filterBy && this.filterBy.option;
+  sortOptionLabel = (s: string) => s === 'Default' ? `Default (${this.filterText() ? 'Relevance' : 'Word'})` : s;
 }
 
 const entriesIncrement = 50;
