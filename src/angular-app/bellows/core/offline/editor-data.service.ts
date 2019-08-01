@@ -35,7 +35,7 @@ class EntryListModifiers {
   filterType: string;
 
   filterText = () => this.filterBy && this.filterBy.text || '';
-  filterByLabel = () => this.filterBy && this.filterBy.option && this.filterBy.option.label ? this.filterBy.option.label : 'null';
+  filterByLabel = () => this.filterBy && this.filterBy.option && this.filterBy.option.label || 'null';
   filterActive = () => this.filterText() || this.filterBy && this.filterBy.option;
 }
 
@@ -76,7 +76,7 @@ export class EditorDataService {
               private readonly commentService: LexiconCommentService) { }
 
   showInitialEntries = (): angular.IPromise<any> => {
-    return this.sortAndFilterEntries(true);
+    return this.filterAndSortEntries(true);
   }
 
   showMoreEntries = (): void => {
@@ -198,7 +198,7 @@ export class EditorDataService {
         this.commentService.comments.items.all.push.apply(this.commentService.comments.items.all, result.data.comments);
       } else {
         // splice updates into entry list don't need to modify filteredEntries or visibleEntries since those are
-        // regenerated from sortAndFilterEntries() below
+        // regenerated from filterAndSortEntries() below
         angular.forEach(result.data.entries, entry => {
           // splice into entries list
           const i = this.getIndexInList(entry.id, this.entries);
@@ -226,7 +226,7 @@ export class EditorDataService {
 
         // only sort and filter the list if there have been changes to entries (or deleted entries)
         if (result.data.entries.length > 0 || result.data.deletedEntryIds.length > 0) {
-          this.sortAndFilterEntries(true);
+          this.filterAndSortEntries(true);
         }
       }
 
@@ -270,7 +270,8 @@ export class EditorDataService {
       const filteredEntriesSorted = this.sortList(config, this.filteredEntries);
       UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted, this.filteredEntries);
       if (shouldResetVisibleEntriesList) {
-        UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, entriesIncrement), this.visibleEntries);
+        UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, entriesIncrement),
+            this.visibleEntries);
       }
       const sortTime = (performance.now() - startTime) / 1000;
       if (sortTime > 0.5) {
@@ -291,7 +292,8 @@ export class EditorDataService {
       }
 
       if (shouldResetVisibleEntriesList) {
-        UtilityService.arrayCopyRetainingReferences(this.filteredEntries.slice(0, entriesIncrement), this.visibleEntries);
+        UtilityService.arrayCopyRetainingReferences(this.filteredEntries.slice(0, entriesIncrement),
+            this.visibleEntries);
       }
     });
   }
@@ -393,7 +395,7 @@ export class EditorDataService {
             deferred.resolve(newResult);
           });
         } else {
-          this.sortAndFilterEntries(false).then(() => {
+          this.filterAndSortEntries(false).then(() => {
             deferred.resolve(result);
           });
         }
@@ -415,7 +417,8 @@ export class EditorDataService {
       'dateCreated',
       'projectId',
       'authorInfo',
-      'fileName'
+      'fileName',
+      'liftId'
     ];
     // TODO consider whitelisting all properties under customFields
 
@@ -614,9 +617,10 @@ export class EditorDataService {
     return deferred.promise;
   }
 
-  private sortAndFilterEntries(shouldResetVisibleEntriesList: boolean): angular.IPromise<any> {
+  filterAndSortEntries = (shouldResetVisibleEntriesList: boolean): angular.IPromise<any> => {
     // ToDo: so far I haven't found a good case for NOT resetting visibleEntriesList.
     // and always reset visibleEntriesList - chris 2017-07
+    if (shouldResetVisibleEntriesList !== false) shouldResetVisibleEntriesList = true;
     return this.filterEntries(shouldResetVisibleEntriesList).then(() => {
       return this.sortEntries(shouldResetVisibleEntriesList);
     });
@@ -626,7 +630,8 @@ export class EditorDataService {
     if (this.entryListModifiers.sortBy.value === 'default' && this.entryListModifiers.filterText() !== '') {
 
       // each of the five slots contain results of varying relevance:
-      // word matched at beginning, word matched anywhere, sense matched at beginning, sense matched anywhere, and everything else
+      // lexeme matched at beginning, lexeme matched anywhere, sense matched at beginning, sense matched anywhere,
+      // and everything else
       const prioritizedResults = [[], [], [], [], []] as LexEntry[][];
 
       const query = this.entryListModifiers.filterText();

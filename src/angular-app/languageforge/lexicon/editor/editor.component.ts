@@ -257,12 +257,11 @@ export class LexiconEditorController implements angular.IController {
         };
       }
 
-      this.filterEntries(true);
-      this.sortEntries(true);
+      this.filterAndSortEntries();
     });
   }
 
-  sortEntries(args: any): void {
+  filterAndSortEntries(): void {
     this.$state.go('.', {
       sortBy: this.entryListModifiers.sortBy.label,
       filterText: this.entryListModifiers.filterText(),
@@ -270,23 +269,13 @@ export class LexiconEditorController implements angular.IController {
       filterType: this.entryListModifiers.filterType,
       filterBy: this.entryListModifiers.filterByLabel()
     }, { notify: false });
-    this.editorService.sortEntries.apply(this, arguments);
-  }
-
-  filterEntries(args: any): void {
-    this.$state.go('.', {
-      sortBy: this.entryListModifiers.sortBy.label,
-      filterText: this.entryListModifiers.filterText(),
-      sortReverse: this.entryListModifiers.sortReverse,
-      filterType: this.entryListModifiers.filterType,
-      filterBy: this.entryListModifiers.filterByLabel()
-    }, { notify: false });
-    this.editorService.filterEntries.apply(this, arguments);
+    this.editorService.filterAndSortEntries.apply(this, arguments);
   }
 
   resetEntryListFilter(): void {
     this.entryListModifiers.filterBy = null;
-    this.filterEntries(true);
+    this.entryListModifiers.sortReverse = false;
+    this.filterAndSortEntries();
   }
 
   saveButtonTitle(): string {
