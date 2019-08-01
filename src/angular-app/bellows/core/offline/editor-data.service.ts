@@ -619,6 +619,7 @@ export class EditorDataService {
   }
 
   private sortList(config: LexiconConfig, list: LexEntry[]): any[] {
+    const reverse = this.entryListModifiers.sortReverse;
     if (this.entryListModifiers.sortBy.value === 'default' && this.entryListModifiers.filterText() !== '') {
 
       // each of the five slots contain results of varying relevance:
@@ -654,14 +655,15 @@ export class EditorDataService {
         prioritizedResults[4].push(entry);
       }
 
+      if (reverse) prioritizedResults.reverse();
       // sort the individual lists and then flatten the results
-      return prioritizedResults.map(section => this.sortListAlphabetically(config, section))
+      return prioritizedResults.map(section => this.sortListAlphabetically(config, section, reverse))
                                 .reduce((main, sub) => main.concat(sub), []);
 
-    } else return this.sortListAlphabetically(config, list);
+    } else return this.sortListAlphabetically(config, list, reverse);
   }
 
-  private sortListAlphabetically(config: LexiconConfig, list: LexEntry[]): LexEntry[] {
+  private sortListAlphabetically(config: LexiconConfig, list: LexEntry[], reverse: boolean): LexEntry[] {
     const inputSystem = this.getInputSystemForSort(config);
     const compare = ('Intl' in window) ? Intl.Collator(inputSystem).compare : (a: string, b: string) => a < b ? -1 : 1;
 
@@ -670,7 +672,7 @@ export class EditorDataService {
       value: this.getSortableValue(config, entry)
     }));
 
-    mapped.sort((a: any, b: any) => compare(a.value, b.value) * (this.entryListModifiers.sortReverse ? -1 : 1));
+    mapped.sort((a: any, b: any) => compare(a.value, b.value) * (reverse ? -1 : 1));
 
     return mapped.map((el: any) => list[el.index]);
   }
