@@ -61,7 +61,7 @@ class LfSessionTestEnvironment extends SessionTestEnvironment {
 
 class SessionCommandsTest extends TestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         @unlink(SessionCommands::getSessionFilePath('mockSessionFile'));
     }
@@ -169,11 +169,11 @@ class SessionCommandsTest extends TestCase
         $environ = new SessionTestEnvironment();
         $environ->create();
         ProjectCommands::updateUserRole($environ->projectId, $environ->userId);
-        
+
         $this->assertFalse(file_exists(SessionCommands::getSessionFilePath('mockSessionFile')));
 
         $data = SessionCommands::getSessionData($environ->projectId, $environ->userId, $environ->website, 'mockSessionFile');
-        
+
         $this->assertTrue(file_exists(SessionCommands::getSessionFilePath('mockSessionFile')));
         $this->assertJsonStringEqualsJsonFile(SessionCommands::getSessionFilePath('mockSessionFile'), json_encode($data));
     }

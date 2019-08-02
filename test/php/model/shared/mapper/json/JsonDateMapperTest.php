@@ -28,7 +28,7 @@ class JsonDateMapperTest extends TestCase
         $model->dateTime = new DateTime(self::StringTimestamp);
         $model->universalTimestamp = UniversalTimestamp::fromStringTimestamp(self::StringTimestamp);
         $encoded = JsonEncoder::encode($model);
-        $this->assertInternalType('string', $encoded['dateTime']);
+        $this->assertIsString($encoded['dateTime']);
 //        var_dump($encoded);
 
         $decodedModel = new TestJsonDateModel();
@@ -44,7 +44,7 @@ class JsonDateMapperTest extends TestCase
         $model = new TestJsonDateModel();
         $model->universalTimestamp = UniversalTimestamp::fromStringTimestamp(self::StringTimestampWithMilliseconds);
         $encoded = JsonEncoder::encode($model);
-        $this->assertInternalType('string', $encoded['universalTimestamp']);
+        $this->assertIsString($encoded['universalTimestamp']);
 //        var_dump($encoded);
 
         $decodedModel = new TestJsonDateModel();

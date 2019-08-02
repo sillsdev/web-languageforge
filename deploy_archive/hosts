@@ -1,0 +1,9 @@
+[all]
+localhost ansible_connection=local
+
+[languageforge_production]
+languageforge.org
+qa.languageforge.org
+
+[build_agents]
+ba_xenial_web_s2_138 ansible_ssh_host=lf-dev

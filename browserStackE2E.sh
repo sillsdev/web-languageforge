@@ -12,7 +12,7 @@ if [ "$1" = "sf" ]
   then
     E2EHOSTNAME="e2etest.scriptureforge.local"
 else
-    E2EHOSTNAME="e2etest.languageforge.local"
+    E2EHOSTNAME="e2etest.languageforge.localhost"
 fi
 gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 STATUS=$?

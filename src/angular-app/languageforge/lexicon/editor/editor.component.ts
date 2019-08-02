@@ -132,6 +132,10 @@ export class LexiconEditorController implements angular.IController {
       }
     });
 
+    this.$window.onbeforeunload = () => {
+      if (this.hasUnsavedChanges()) this.saveCurrentEntry();
+    };
+
     this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
       this.$window.localStorage.getItem('viewFilter') === 'false');
   }
@@ -185,7 +189,7 @@ export class LexiconEditorController implements angular.IController {
         this.$scope.$watch(() => this.currentEntry, newValue => {
           if (newValue !== undefined) {
             this.cancelAutoSaveTimer();
-            if (this.currentEntryIsDirty()) {
+            if (this.hasUnsavedChanges()) {
               this.startAutoSaveTimer();
             }
           }
@@ -284,18 +288,10 @@ export class LexiconEditorController implements angular.IController {
     this.filterAndSortEntries();
   }
 
-  saveButtonTitle(): string {
-    if (this.saveStatus === 'saving') return 'Saving';
-    else if (this.currentEntryIsDirty()) return 'Save Entry';
-    else if (LexiconEditorController.entryIsNew(this.currentEntry)) return 'Entry unchanged';
-    else return 'Entry saved';
-  }
-
-  currentEntryIsDirty(): boolean {
+  hasUnsavedChanges(): boolean {
     if (!this.entryLoaded()) {
       return false;
     }
-
     return !angular.equals(this.currentEntry, this.pristineEntry);
   }
 
@@ -310,7 +306,7 @@ export class LexiconEditorController implements angular.IController {
     let isNewEntry = false;
     let newEntryTempId: string;
 
-    if (this.currentEntryIsDirty() && this.lecRights.canEditEntry()) {
+    if (this.hasUnsavedChanges() && this.lecRights.canEditEntry()) {
       this.cancelAutoSaveTimer();
       this.sendReceive.setStateUnsynced();
       this.saveStatus = 'saving';
@@ -1100,7 +1096,7 @@ export class LexiconEditorController implements angular.IController {
   }
 
   private pollUpdateSuccess = (): void => {
-    if (this.currentEntryIsDirty()) {
+    if (this.hasUnsavedChanges()) {
       if (this.sendReceive.isInProgress()) {
         this.cancelAutoSaveTimer();
         this.warnOfUnsavedEdits(this.currentEntry);

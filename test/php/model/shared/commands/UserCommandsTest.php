@@ -44,13 +44,13 @@ class UserCommandsTest extends TestCase
 
     const CROSS_SITE_DOMAIN = 'languageforge.org';
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$environ = new MongoTestEnvironment();
         self::$save = [];
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         self::$environ->clean();
     }

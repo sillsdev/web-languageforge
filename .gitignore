@@ -6,10 +6,10 @@
 .settings
 .vagrant/
 deploy/**/*.retry
-deploy/ansible.cfg
 deploy/callback_plugins/*.pyc
 deploy/site_files/
 deploy/site_info/
+deploy/output.log
 docs/semdom/*.xml
 docs/semdom/semdom lists/*.xml
 node_modules/
@@ -66,3 +66,5 @@ test/app/**/shared/*.js
 # Generated files
 src/Api/Library/Shared/WebsiteInstances.php
 src/angular-app/bellows/core/website-instances.generated-data.ts
+
+test/php/\.phpunit\.result\.cache

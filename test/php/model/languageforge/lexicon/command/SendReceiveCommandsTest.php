@@ -19,7 +19,7 @@ class SendReceiveCommandsTest extends TestCase
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$environ = new LexiconMongoTestEnvironment();
         self::$environ->clean();
@@ -302,6 +302,10 @@ class SendReceiveCommandsTest extends TestCase
                 break;
             }
             usleep($tenMicroSeconds);
+
+            // See https://www.php.net/manual/en/function.clearstatcache.php
+            // clearstatcache is necessary when checking file stat changes within a single script run
+            clearstatcache();
         }
         return file_exists($file) && filesize($file) > 0;
     }

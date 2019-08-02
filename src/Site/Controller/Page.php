@@ -18,7 +18,12 @@ class Page extends Base
         /** @noinspection PhpUnusedParameterInspection */ Request $request,
         Application $app, $pageName
     ) {
-        $this->setupBaseVariables($app);
+        try {
+            $this->setupBaseVariables($app);
+        } catch (\Exception $e) {
+            return $app->redirect('/auth/logout');
+        }
+
         $this->setupPageVariables($app);
 
         // special case for "brochure" HTML5 homepage
@@ -31,7 +36,7 @@ class Page extends Base
                 $this->data['baseDir'] = $this->getThemePath() . '/page/home';
                 try {
                     return $app['twig']->render('home/index.html.twig', $this->data);
-                } catch (\Twig_Error_Loader $e) {
+                } catch (\Twig\Loader\ErrorLoader $e) {
                     $app->abort(404, "Page not found: home/index.html.twig");
                 }
             }
