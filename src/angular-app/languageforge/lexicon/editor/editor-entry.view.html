@@ -9,7 +9,7 @@
                             <div class="words-container-title list-group-item list-group-item-action active">
                                 <div>
                                     Showing <span data-ng-hide="$ctrl.entryListModifiers.filterActive()">all </span>
-                                    <span class="notranslate"><span data-ng-show="$ctrl.entryListModifiers.filterActive()">{{$ctrl.filteredEntries.length}} / </span>{{$ctrl.entries.length}}</span>
+                                    <span id="totalNumberOfEntries" class="notranslate"><span data-ng-show="$ctrl.entryListModifiers.filterActive()">{{$ctrl.filteredEntries.length}} / </span>{{$ctrl.entries.length}}</span>
                                     <span data-ng-hide="$ctrl.entryListModifiers.filterActive()">entries</span>
                                 </div>
                                 <button id="editorNewWordBtn" class="btn btn-primary"

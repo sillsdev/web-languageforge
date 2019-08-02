@@ -7,7 +7,7 @@
                         <div class="words-container-title lexiconListItem list-group-item list-group-item-action active">
                             <div>
                                 Showing <span data-ng-hide="$ctrl.entryListModifiers.filterActive()">all </span>
-                                <span class="notranslate"><span data-ng-show="$ctrl.entryListModifiers.filterActive()">{{$ctrl.filteredEntries.length}} / </span>{{$ctrl.entries.length}}</span>
+                                <span id="totalNumberOfEntries" class="notranslate"><span data-ng-show="$ctrl.entryListModifiers.filterActive()">{{$ctrl.filteredEntries.length}} / </span>{{$ctrl.entries.length}}</span>
                                 entries
                             </div>
                             <button id="newWord" type="button" class="btn btn-primary"
