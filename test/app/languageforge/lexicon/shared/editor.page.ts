@@ -63,7 +63,7 @@ export class EditorPage {
       // assumption is entry count > 0
       browser.wait(ExpectedConditions.visibilityOf(this.browse.entryCountElem), Utils.conditionTimeout);
       return this.browse.entryCountElem.getText().then((s: string) =>
-        parseInt(s, 10)
+        parseInt(/(\d+)$/.exec(s)[1], 10)
       );
     },
 
