@@ -46,9 +46,7 @@ export class EditorPage {
   firstNoticeCloseButton = this.noticeList.first().element(by.partialButtonText('×'));
 
   browseDiv = element(by.id('lexAppListView'));
-  browseDivSearch = this.browseDiv.element(by.id('editor-list-search-entries'));
   editDiv = element(by.id('lexAppEditView'));
-  editDivSearch = this.editDiv.element(by.id('editor-entry-search-entries'));
   editToolbarDiv = element(by.id('lexAppToolbar'));
   commentDiv = element(by.id('lexAppCommentView'));
 
@@ -67,16 +65,13 @@ export class EditorPage {
       );
     },
 
-    // Search typeahead
+    // Search/filter
     search: {
-      input: this.browseDivSearch.element(by.css('input')),
-      clearBtn: this.browseDivSearch.element(by.className('fa-times')),
-      results: this.browseDivSearch.all(by.repeater('e in $ctrl.typeahead.searchResults')),
-      matchCountElem: this.browseDivSearch.element(by.binding('$ctrl.typeahead.matchCountCaption')),
+      input: this.browseDiv.element(by.id('editor-list-search-entries')),
       getMatchCount: () => {
         // Inside this function, "this" ==  EditorPage.browse.search
-        return this.browse.search.matchCountElem.getText().then((s: string) =>
-          parseInt(s, 10)
+        return this.browse.entryCountElem.getText().then((s: string) =>
+          parseInt(/^(\d+)/.exec(s)[1], 10)
         );
       }
     },
@@ -154,14 +149,12 @@ export class EditorPage {
     },
 
     search: {
-      input: this.editDivSearch.element(by.css('input')),
-      clearBtn: this.editDivSearch.element(by.className('fa-times')),
-      results: this.editDivSearch.all(by.repeater('e in $ctrl.typeahead.searchResults')),
-      matchCountElem: this.editDivSearch.element(by.binding('$ctrl.typeahead.matchCountCaption')),
+      input: this.editDiv.element(by.id('editor-entry-search-entries')),
+      entryCountElem: this.editDiv.element(by.id('totalNumberOfEntries')),
       getMatchCount: () => {
         // Inside this function, "this" == EditorPage.edit.search
-        return this.edit.search.matchCountElem.getText().then((s: string) =>
-          parseInt(s, 10)
+        return this.edit.search.entryCountElem.getText().then((s: string) =>
+          parseInt(/^(\d+)/.exec(s)[1], 10)
         );
       }
     },
@@ -271,7 +264,7 @@ export class EditorPage {
       actionMenus: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle')),
       deleteSense: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle ~ .dropdown-menu fa-trash')),
       moveUp: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle ~ .dropdown-menu .fa-arrow-up')),
-      moveDown: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle ~ .dropdown-menu .fa-arrow-down')),
+      moveDown: this.editDiv.all(by.css('dc-sense .ellipsis-menu-toggle ~ .dropdown-menu .fa-arrow-down'))
     },
 
     pictures: {

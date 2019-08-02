@@ -33,10 +33,10 @@ describe('Lexicon E2E Editor List and Entry', () => {
   it('search function works correctly', () => {
     editorPage.browse.search.input.sendKeys('asparagus');
     expect<any>(editorPage.browse.search.getMatchCount()).toBe(1);
-    editorPage.browse.search.clearBtn.click();
+    editorPage.browse.search.input.clear();
     editorPage.browse.search.input.sendKeys('Asparagus');
     expect<any>(editorPage.browse.search.getMatchCount()).toBe(1);
-    editorPage.browse.search.clearBtn.click();
+    editorPage.browse.search.input.clear();
   });
 
   it('refresh returns to list view', () => {
@@ -487,7 +487,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
   it('new word is visible in edit page', () => {
     editorPage.edit.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
     expect<any>(editorPage.edit.search.getMatchCount()).toBe(1);
-    editorPage.edit.search.clearBtn.click();
+    editorPage.edit.search.input.clear();
   });
 
   it('check that Semantic Domain field is visible (for view settings test later)', () => {
@@ -569,7 +569,7 @@ describe('Lexicon E2E Editor List and Entry', () => {
     editorPage.edit.toListLink.click();
     editorPage.browse.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
     expect<any>(editorPage.browse.search.getMatchCount()).toBe(1);
-    editorPage.browse.search.clearBtn.click();
+    editorPage.browse.search.input.clear();
   });
 
   it('check that word count is still correct in browse page', () => {

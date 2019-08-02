@@ -27,8 +27,8 @@ attach_debugger () {
 
   PID=""
   while [ "$PID" = "" ]; do
-    PID=$(pgrep -f protractor/built/cli.js)
     sleep 0.25;
+    PID=$(pgrep -f protractor/built/cli.js)
   done
 
   # See https://nodejs.org/en/docs/guides/debugging-getting-started/
