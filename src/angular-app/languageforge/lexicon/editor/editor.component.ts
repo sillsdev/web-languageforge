@@ -265,6 +265,13 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
+  clearSearchText = () => {
+    if (this.entryListModifiers.filterBy) {
+      this.entryListModifiers.filterBy.text = '';
+      this.filterAndSortEntries();
+    }
+  }
+
   filterAndSortEntries(): void {
     this.$state.go('.', {
       sortBy: this.entryListModifiers.sortBy.label,
