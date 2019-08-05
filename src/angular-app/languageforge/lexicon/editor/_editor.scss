@@ -550,7 +550,7 @@ dc-entry .card {
         padding: 0.75rem 0.8rem;
     }
     button {
-      width: 65px;
+      width: 50px;
       background: $Downriver;
       cursor: pointer;
       &:hover {
@@ -595,9 +595,13 @@ dc-entry .card {
     }
   }
   .word-form-filters {
+    display: flex;
+    flex-direction: column;
     .sortfilter-form {
+      flex-basis: 1;
+      width: 100%;
       border: 1px solid $line-color;
-      padding: 0.7em 1.25em 1.2em;
+      padding: 0.5em 1em 0.5em;
       margin: 0;
       font-size: 14px;
       background: #E5E5E5;
@@ -605,7 +609,7 @@ dc-entry .card {
         border-bottom: 0;
       }
       .sortfilter-control {
-        width: 150px;
+        width: 200px;
         font-size: 14px;
       }
       .form-inline {
@@ -623,16 +627,8 @@ dc-entry .card {
       input[type=checkbox] {
         margin-right: 5px;
       }
-      @include media-breakpoint-down(lg) {
-        .sortfilter-control {
-          margin: 0 0 5px;
-          width: 100%;
-        }
-        .form-inline {
-          label {
-            margin: 0;
-          }
-        }
+      .sortfilter-control {
+        width: 100%;
       }
     }
   }
@@ -641,6 +637,19 @@ dc-entry .card {
       border-top: 0;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
+    }
+  }
+}
+
+#lexAppListView {
+  @include media-breakpoint-up(sm) {
+    .word-form-filters {
+      flex-direction: row;
+    }
+  }
+  @include media-breakpoint-up(md) {
+    .sortfilter-control {
+      width: unset;
     }
   }
 }
