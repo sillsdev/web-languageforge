@@ -298,8 +298,8 @@ export class LexiconSendReceiveService {
       isSR: this.isSendReceiveProject()
     }).then((data: any) => {
       if (data.isSR) {
-        const editorData = data.editorData.data;
-        if (editorData == null || editorData.sendReceive == null || editorData.sendReceive.status == null) {
+        const editorData = data.editorData;
+        if (editorData == null || editorData.data == null || editorData.data.sendReceive == null || editorData.data.sendReceive.status == null) {
           this.clearState();
           return;
         }
