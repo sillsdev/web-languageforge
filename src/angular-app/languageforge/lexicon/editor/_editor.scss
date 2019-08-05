@@ -665,8 +665,12 @@ dc-entry .card {
 }
 
 .filter-entries-wrapper {
+  position: relative;
   flex-grow: 1;
   border-right: 1px solid $Downriver;
+  .clear-search-button {
+    top: 1em;
+  }
 }
 
 .lexiconListItemCompact {

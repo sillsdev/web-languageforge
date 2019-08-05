@@ -68,6 +68,7 @@ export class EditorPage {
     // Search/filter
     search: {
       input: this.browseDiv.element(by.id('editor-list-search-entries')),
+      clearBtn: this.browseDiv.element(by.className('clear-search-button')),
       getMatchCount: () => {
         // Inside this function, "this" ==  EditorPage.browse.search
         return this.browse.entryCountElem.getText().then((s: string) =>
@@ -150,6 +151,7 @@ export class EditorPage {
 
     search: {
       input: this.editDiv.element(by.id('editor-entry-search-entries')),
+      clearBtn: this.editDiv.element(by.className('clear-search-button')),
       entryCountElem: this.editDiv.element(by.id('totalNumberOfEntries')),
       getMatchCount: () => {
         // Inside this function, "this" == EditorPage.edit.search

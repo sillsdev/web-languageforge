@@ -26,6 +26,7 @@
                                 <div class="filter-entries-wrapper">
                                     <input type="text" id="editor-entry-search-entries" class="filter-entries" placeholder="Filter Entries"
                                            data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.filterBy.text"></input>
+                                           <span class="fa fa-times clear-search-button" data-ng-show="$ctrl.entryListModifiers.filterBy.text" data-ng-click="$ctrl.clearSearchText()"></span>
                                 </div>
                                 <button data-ng-click="$ctrl.toggleFilterOptions()" class="btn btn-sm">
                                     Options
