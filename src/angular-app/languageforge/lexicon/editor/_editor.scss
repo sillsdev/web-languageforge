@@ -673,6 +673,15 @@ dc-entry .card {
   }
 }
 
+.options-active-icon {
+  color: orange;
+  visibility: hidden;
+}
+
+.icon-active {
+  visibility: visible;
+}
+
 .lexiconListItemCompact {
     position: relative;
     overflow-y: hidden;

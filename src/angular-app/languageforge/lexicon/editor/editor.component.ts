@@ -287,6 +287,11 @@ export class LexiconEditorController implements angular.IController {
     this.editorService.filterAndSortEntries.apply(this, arguments);
   }
 
+  filterSortOptionsActive() {
+    const mod = this.entryListModifiers;
+    return mod.filterBy && mod.filterBy.option || mod.sortBy.value !== 'default' || mod.sortReverse;
+  }
+
   shouldShowFilterReset() {
     const modifiers = this.entryListModifiers;
     return modifiers.filterActive() || modifiers.sortBy.value !== 'default' || modifiers.sortReverse;
