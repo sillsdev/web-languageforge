@@ -299,8 +299,6 @@ export class LexiconEditorController implements angular.IController {
 
   resetEntryListFilter(): void {
     this.entryListModifiers.filterBy = null;
-    this.entryListModifiers.sortReverse = false;
-    this.entryListModifiers.sortBy = this.findSelectedFilter(this.entryListModifiers.sortOptions, 'Default');
     this.filterAndSortEntries();
   }
 
