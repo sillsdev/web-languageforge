@@ -11,6 +11,9 @@
                                     Showing <span data-ng-hide="$ctrl.entryListModifiers.filterActive()">all </span>
                                     <span id="totalNumberOfEntries" class="notranslate"><span data-ng-show="$ctrl.entryListModifiers.filterActive()">{{$ctrl.filteredEntries.length}} / </span>{{$ctrl.entries.length}}</span>
                                     <span data-ng-hide="$ctrl.entryListModifiers.filterActive()">entries</span>
+                                    <button data-ng-click="$ctrl.resetEntryListFilter()" data-ng-show="$ctrl.entryListModifiers.filterActive()" class="btn btn-sm btn-std reset-filter-btn">
+                                        <span class="fa fa-undo"></span><span class="btn-text"> Show All</span>
+                                    </button>
                                 </div>
                                 <button id="editorNewWordBtn" class="btn btn-primary"
                                     data-ng-show="$ctrl.isAtEditorEntry()" data-ng-if="$ctrl.lecRights.canEditEntry()"
@@ -52,7 +55,6 @@
                                                 data-ng-options="item as item.label for item in $ctrl.entryListModifiers.filterOptions track by item.key">
                                             <option value="">Show All</option>
                                         </select>
-                                        <button data-ng-click="$ctrl.resetEntryListFilter()" data-ng-show="$ctrl.shouldShowFilterReset()" class="btn btn-sm btn-std">Reset Filter</button>
                                     </div>
                                 </div>
                                 <div class="form-group sortfilter-form">
