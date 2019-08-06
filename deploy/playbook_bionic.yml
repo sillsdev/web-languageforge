@@ -211,6 +211,8 @@
         name: "{{ lookup('env','USER') }}"
         groups: fieldworks
         append: yes
+      when: inventory_hostname == "localhost"
+      tags: developer
 
       # Could look up home dir of www-data user on remote system, but that turns out to
       # be a bit complicated. And since we just set it to /var/www, just use that.
