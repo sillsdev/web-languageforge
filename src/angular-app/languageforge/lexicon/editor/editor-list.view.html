@@ -57,14 +57,14 @@
                             </div>
                             <div class="form-group sortfilter-form">
                                 <label class="font-weight-bold" for="sortEntriesBy">Sort Entries By</label>
+                                <label class="reverse-label">
+                                    <input type="checkbox" data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortReverse"> Reverse
+                                </label>
                                 <div class="form-inline">
                                     <select id="sortEntriesBy" class="custom-select sortfilter-control"
                                             data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortBy"
                                             data-ng-options="item as $ctrl.entryListModifiers.sortOptionLabel(item.label) for item in $ctrl.entryListModifiers.sortOptions track by item.value">
                                     </select>
-                                    <label style="margin: 7px">
-                                        <input type="checkbox" data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.sortReverse"> Reverse
-                                    </label>
                                 </div>
                             </div>
                         </div>
