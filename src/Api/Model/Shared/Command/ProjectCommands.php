@@ -358,10 +358,6 @@ class ProjectCommands
 
         $result = $project->write();
 
-        if (!$result)
-        {
-            return 'Link generation failed. Please try again.';
-        }
         return 'https://' . $project->siteName . '.org/invite/' . $newAuthToken;
     }
 
