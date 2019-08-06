@@ -639,9 +639,6 @@ dc-entry .card {
           cursor: pointer;
         }
       }
-      input[type=checkbox] {
-        margin-right: 5px;
-      }
       .sortfilter-control {
         width: 100%;
       }
@@ -653,6 +650,15 @@ dc-entry .card {
       border-top-left-radius: 0;
       border-top-right-radius: 0;
     }
+  }
+}
+
+.reverse-label {
+  float: right;
+  margin-right: 0.75em;
+  input[type=checkbox] {
+    margin-right: 0.25em;
+    vertical-align: middle;
   }
 }
 
