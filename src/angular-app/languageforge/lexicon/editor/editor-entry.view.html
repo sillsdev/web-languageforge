@@ -29,7 +29,7 @@
                                            <span class="fa fa-times clear-search-button" data-ng-show="$ctrl.entryListModifiers.filterBy.text" data-ng-click="$ctrl.clearSearchText()"></span>
                                 </div>
                                 <button data-ng-click="$ctrl.toggleFilterOptions()" class="btn btn-sm">
-                                    Options
+                                    <span class="options-active-icon fa fa-circle" data-ng-class="{'icon-active': $ctrl.filterSortOptionsActive()}"></span> Options
                                     <i class="fa" data-ng-class="$ctrl.show.entryListModifiers ? 'fa-angle-up': 'fa-angle-down'"></i>
                                 </button>
                             </div>
