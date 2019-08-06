@@ -114,9 +114,9 @@ class RightsHelper
                 return true;
             case 'project_getNewInviteLink':
                 return $this-userHasProjectRight(Domain::USERS + Operation::EDIT);
-            case 'project_disableInviteLink':
+            case 'project_disableInviteToken':
                 return $this-userHasProjectRight(Domain::USERS + Operation::EDIT);
-            case 'project_updateInviteLinkRole':
+            case 'project_updateInviteTokenRole':
                 return $this-userHasProjectRight(Domain::USERS + Operation::EDIT);
             case 'semdom_does_googletranslatedata_exist':
                 return true;

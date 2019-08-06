@@ -16,7 +16,7 @@ use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\IdReference;
-use Api\Model\Shared\InviteLink;
+use Api\Model\Shared\InviteToken;
 use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\Mapper\MapperModel;
 use Api\Model\Shared\Mapper\MapperUtils;
@@ -48,7 +48,7 @@ class ProjectModel extends MapperModel
         $this->allowInviteAFriend = true;
         $this->interfaceLanguageCode = 'en';
 
-        $this->inviteLink = new InviteLink();
+        $this->inviteToken = new InviteToken();
 
         $this->setReadOnlyProp('id');
         $this->setReadOnlyProp('ownerRef');
@@ -99,8 +99,8 @@ class ProjectModel extends MapperModel
     /** @var boolean Flag to indicate if this project allows users to invite a friend */
     public $allowInviteAFriend;
 
-    /** @var InviteLink Stores the information about the projects invitation link */
-    public $inviteLink;
+    /** @var InviteToken Stores the information about the projects invitation link */
+    public $inviteToken;
 
     /** @var boolean Flag to indicate if this project is archived */
     public $isArchived;
@@ -201,6 +201,7 @@ class ProjectModel extends MapperModel
         ProjectModelMongoMapper::instance()->remove($this->id->asString());
     }
 
+
     /**
      * Adds the $userId as a member of this project.
      * @param string $userId
@@ -214,6 +215,24 @@ class ProjectModel extends MapperModel
         $model = new ProjectRoleModel();
         $model->role = $role;
         $this->users[$userId] = $model;
+    }
+
+    /**
+     * Adds the $userId as a member of this project.
+     * @param string $userId
+     * @param string $role The system role the user has.
+     * @see Roles;
+     */
+    public function addUserByInviteToken($userId)
+    {
+        $rolesArray = $this->getRolesList();
+        $roleKey = array_search($this->inviteToken->defaultRole, $rolesArray);
+        if(!$roleKey)
+        {
+            throw new \ResourceNotAvailableException('Project ' . $projectId . '\'s invite token is associated with nonexistant role '
+                . $model->inviteToken->defaultRole);
+        }
+        $this->addUser($userId, $roleKey);
     }
 
     /**
@@ -300,6 +319,38 @@ class ProjectModel extends MapperModel
             }
         }
         return $userList;
+    }
+
+        /**
+     * @param ProjectModel $model in order to call to MongoMapper->readByProperty()
+     * @return string the invite token stored in the db for the project
+     */
+    public function generateNewInviteToken()
+    {
+        // Generate a new key that does not exist in the DB
+        do
+        {
+            $newToken = bin2hex(random_bytes(6));
+        } while ($this->readByProperty('inviteToken.token', $newToken));
+
+
+        $this->inviteToken->token = $newToken;
+
+        return $newToken;
+    }
+
+    /**
+     * @param string $newRole role to set users joining the project via the link to
+     * @throws \InvalidArgumentException
+     */
+    public function setInviteTokenDefaultRole($newRole)
+    {
+        $validRoles = $this->getRolesList();
+        if (in_array($newRole, $validRoles)) {
+            $this->inviteToken->defaultRole = $newRole;
+        } else {
+            throw new \InvalidArgumentException("A nonexistant role tried to be linked to an invite token.");
+        }
     }
 
     /**
@@ -410,7 +461,34 @@ class ProjectModel extends MapperModel
             case 'semdomtrans':
                 return new SemDomTransProjectModel($projectId);
             default:
-                throw new \Exception("projectId '$projectId' could not be found when calling ProjectModel::getById()");
+                throw new \ResourceNotAvailibleException(
+                    "projectId '$projectId' could not be found when calling ProjectModel::getById()");
+        }
+    }
+
+    /**
+     * @param string $token
+     * @return ProjectModel
+     * @throws \ResourceNotAvailibleException
+     */
+    public static function getByInviteToken($token)
+    {
+        $model = new ProjectModel();
+        $model->readByProperty('inviteToken.token', $token);
+        switch ($model->appName) {
+            case 'sfchecks':
+                return new SfchecksProjectModel($model->id->id);
+            case 'rapuma':
+                return new RapumaProjectModel($model->id->id);
+            case 'lexicon':
+                return new LexProjectModel($model->id->id);
+            case 'translate':
+                return new TranslateProjectModel($model->id->id);
+            case 'semdomtrans':
+                return new SemDomTransProjectModel($model->id->id);
+            default:
+                throw new \ResourceNotAvailibleException(
+                    "inviteToken '$token' could not be found when calling ProjectModel::getByInviteToke()");
         }
     }
 

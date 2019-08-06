@@ -671,7 +671,7 @@ class ProjectCommandsTest extends TestCase
 
     public function testUpdateUserRole_userIsNotAdminAndSetTechSupportRole_throwsException()
     {
-        $this->expectException(UserUnauthorizedException::class); // TODO: Add proper exception
+        $this->expectException(UserUnauthorizedException::class);
         self::$environ->clean();
 
         $userId = self::$environ->createUser("username", "user Name", "user@example.com");
@@ -700,11 +700,11 @@ class ProjectCommandsTest extends TestCase
         // Assert invite token is found in the database
         $lastSlashPos = strrpos($inviteUrl, '/');
         $token = substr($inviteUrl, $lastSlashPos + 1);
-        $this->assertTrue($projectModel->readByProperties(['inviteLink.authToken' => $token, 'inviteLink.defaultRole' => 'Manager']));
+        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => 'Manager']));
 
         // Disable invite link and make sure it no longer exists in the DB
-        ProjectCommands::disableInviteLink($projectId);
-        $this->assertFalse($projectModel->readByProperty('inviteLink.authToken', $token));
+        ProjectCommands::disableInviteToken($projectId);
+        $this->assertFalse($projectModel->readByProperty('inviteToken.token', $token));
     }
 
     public function testProjectInviteLink_changeInviteLinkDefaultRole_roleChangeSuccessful()
@@ -718,11 +718,27 @@ class ProjectCommandsTest extends TestCase
         // Assert defaultRole is set to initialized role
         $lastSlashPos = strrpos($inviteUrl, '/');
         $token = substr($inviteUrl, $lastSlashPos + 1);
-        $this->assertTrue($projectModel->readByProperties(['inviteLink.authToken' => $token, 'inviteLink.defaultRole' => 'Manager']));
+        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => 'Manager']));
 
         // Change defaultRole
-        ProjectCommands::updateInviteLinkRole($projectId, 'Observer');
-        $this->assertTrue($projectModel->readByProperties(['inviteLink.authToken' => $token, 'inviteLink.defaultRole' => 'Observer']));
+        ProjectCommands::updateInviteTokenRole($projectId, 'Contributor');
+        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => 'Contributor']));
     }
 
+    public function testProjectInviteLink_addUserFromLink_additionSuccessful()
+    {
+        self::$environ->clean();
+        $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectModel = ProjectModel::getById($projectId);
+        $inviteUrl = ProjectCommands::getNewInviteLink($projectId, 'Manager');
+
+        // Assert defaultRole is set to initialized role
+        $userId = self::$environ->createUser("user name", "user Name", "user@example.com");
+        ProjectCommands::useInviteToken($userId, $projectId);
+
+        $projectModel = ProjectModel::getById($projectId);
+        $this->assertArrayHasKey($userId, $projectModel->users);
+        $this->assertEquals($projectModel->users[$userId]->role, ProjectRoles::MANAGER);
+    }
 }

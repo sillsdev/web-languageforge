@@ -351,10 +351,10 @@ class ProjectCommands
      */
     public static function getNewInviteLink($projectId, $defaultRole)
     {
-        $project = new ProjectModel($projectId);
+        $project = ProjectModel::getById($projectId);
 
-        $newAuthToken = $project->inviteLink->generateNewAuthToken($project);
-        $project->inviteLink->setDefaultRole($defaultRole);
+        $newAuthToken = $project->generateNewInviteToken($project);
+        $project->setInviteTokenDefaultRole($defaultRole);
 
         $result = $project->write();
 
@@ -365,17 +365,41 @@ class ProjectCommands
         return 'https://' . $project->siteName . '.org/invite/' . $newAuthToken;
     }
 
-    public static function disableInviteLink($projectId)
+    /**
+     * Removes the invite token from a project
+     * @param $projectId
+     */
+    public static function disableInviteToken($projectId)
     {
-        $project = new ProjectModel($projectId);
-        $project->inviteLink->authToken = '';
+        $project = ProjectModel::getById($projectId);
+        $project->inviteToken->token = '';
         $result = $project->write();
     }
 
-    public static function updateInviteLinkRole($projectId, $newRole)
+    /**
+     * Updates the role associated with an invite token
+     * @param $projectId
+     * @param $newRole the roleName to associate with
+     */
+    public static function updateInviteTokenRole($projectId, $newRole)
     {
-        $project = new ProjectModel($projectId);
-        $project->inviteLink->setDefaultRole($newRole);
+        $project = ProjectModel::getById($projectId);
+        $project->setInviteTokenDefaultRole($newRole);
         $result = $project->write();
+    }
+
+    /**
+     * Add a user to the project based on the invite token for the project
+     * @param $projectId
+     * @param $newRole the value of the roles array to link
+     */
+    public static function useInviteToken($userId, $projectId) {
+        $model = ProjectModel::getById($projectId);
+        $model->addUserByInviteToken($userId);
+        $model->write();
+
+        $user = new UserModel($userId);
+        $user->addProject($projectId);
+        $user->write();
     }
 }

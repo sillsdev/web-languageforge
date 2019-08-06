@@ -383,14 +383,14 @@ class Sf
         return ProjectCommands::getNewInviteLink($this->projectId, $defaultRole);
     }
 
-    public function project_disableInviteLink()
+    public function project_disableInviteToken()
     {
-        ProjectCommands::disableInviteLink($this->projectId);
+        ProjectCommands::disableInviteToken($this->projectId);
     }
 
-    public function project_updateInviteLinkRole($newRole)
+    public function project_updateInviteTokenRole($newRole)
     {
-        ProjectCommands::updateInviteLinkRole($this->projectId, $newRole);
+        ProjectCommands::updateInviteTokenRole($this->projectId, $newRole);
     }
 
     /**

@@ -255,6 +255,8 @@ $app->get('/script',  'Site\Controller\Script::run');
 //public
 $app->post('/api/{apiName}',    'Site\Controller\Api::service');
 
+$app->get('/invite/{inviteToken}', 'Site\Controller\Validate::processInviteAndRedirect');
+
 $app->get('/public/{appName}/{projectId}/', 'Site\Controller\App::view');
 $app->get('/public/{appName}/{projectId}', 'Site\Controller\App::view');
 $app->get('/public/{appName}/', 'Site\Controller\App::view');
