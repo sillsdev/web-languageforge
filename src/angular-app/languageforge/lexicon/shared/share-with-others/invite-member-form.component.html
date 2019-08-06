@@ -1,0 +1,16 @@
+<b>Invite a new member</b>
+<div class="inline-form">
+  <label>via: </label>
+  <input type="email" class="form-control" placeholder="Email">
+  <button type="button" class="btn btn-primary"><i class="fa fa-paper-plane"></i></button>
+  <user-permissions-dropdown></user-permissions-dropdown>
+</div>
+
+<b>or</b>
+<div class="inline-form">
+  <label>via: </label>
+  <div class="input-group">
+    <input type="text" class="form-control" value="{{$ctrl.inviteLink}}" ng-readonly="true" onfocus="this.select();">
+  </div>
+  <user-permissions-dropdown></user-permissions-dropdown>
+</div>
