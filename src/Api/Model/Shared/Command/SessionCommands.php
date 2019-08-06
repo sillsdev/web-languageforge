@@ -83,51 +83,8 @@ class SessionCommands
         $sessionData['accessToken'] = JWTToken::getAccessToken(720, $userId, $website);
 
         //return JsonEncoder::encode($sessionData);  // This is handled elsewhere
-        self::write($sessionData, $mockFilename);
 
         return $sessionData;
-    }
-
-    public static function getSessionFilePath($mockFilename = null)
-    {
-        $sessionId = session_id();
-        if(!is_null($mockFilename)){
-            $sessionId = $mockFilename;
-        }
-        if($sessionId == ""){
-            return false;
-        }
-
-        return self::getSessionDirectory($mockFilename) . DIRECTORY_SEPARATOR . $sessionId . ".json";
-    }
-
-    private static function getSessionDirectory($mockFilename = null)
-    {
-        if(is_null($mockFilename)) {
-            $subdir = "jsonSessionData";
-        } else {
-            $subdir = "jsonSessionData4tests";
-        }
-
-        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $subdir;
-    }
-
-    private static function write($data, $mockFilename = null)
-    {
-        $jsonData = json_encode($data);
-
-        if(!file_exists(self::getSessionDirectory($mockFilename))){
-            mkdir(self::getSessionDirectory($mockFilename));
-        }
-
-        //May pose a possible security risk to save with ID as filename.
-        $filePath = self::getSessionFilePath($mockFilename);
-        if(!$filePath){
-            return false;
-        }
-        $isWritten = file_put_contents($filePath, $jsonData);
-
-        return $isWritten !== false;
     }
 
     /**
