@@ -3,10 +3,10 @@ import * as angular from 'angular';
 import { ProjectService } from '../../core/api/project.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
+import { HelpHeroService } from '../../core/helphero.service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
 import { Project } from '../../shared/model/project.model';
-import { HelpHeroService } from '../../core/helphero.service';
 
 class Rights {
   canEditProjects: boolean;
@@ -29,12 +29,14 @@ export class ProjectsAppController implements angular.IController {
                     'sessionService', 'silNoticeService',
                     'breadcrumbService',
                     'applicationHeaderService',
-                    'helpHeroService'];
+                    'helpHeroService',
+                    '$location'];
   constructor(private $window: angular.IWindowService, private projectService: ProjectService,
               private sessionService: SessionService, private notice: NoticeService,
               private breadcrumbService: BreadcrumbService,
               private applicationHeaderService: ApplicationHeaderService,
-              private readonly helpHeroService: HelpHeroService) { }
+              private readonly helpHeroService: HelpHeroService,
+              private $location: angular.ILocationService) { }
 
   $onInit() {
     this.projectTypeNames = this.projectService.data.projectTypeNames;
@@ -60,6 +62,8 @@ export class ProjectsAppController implements angular.IController {
         this.helpHeroService.anonymous();
       }
     });
+
+    this.notice.checkUrlForNotices(this.$location.search());
   }
 
   isSelected(project: Project) {
@@ -86,7 +90,7 @@ export class ProjectsAppController implements angular.IController {
     return project.role === 'project_manager' || project.role === 'tech_support';
   }
 
-  // Add user as Manager of project
+  // Add user as Tech Support to a project
   addTechSupportToProject(project: Project) {
     this.projectService.joinProject(project.id, 'tech_support', result => {
       if (result.ok) {

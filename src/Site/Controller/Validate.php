@@ -37,14 +37,27 @@ class Validate extends Base
 
     public function processInviteAndRedirect(Application $app, $inviteToken = '')
     {
+        // Attempt to find the project with the given invite link
         try
         {
             $model = ProjectModel::getByInviteToken($inviteToken);
         } catch (ResourceNotAvailableException $e)
         {
-            $app['session']->getFlashBag()->add('errorMessage', 'This invite link is not valid, it may have been disabled. Please check with your project manager.');
-            return $app->redirect('/app/projects');
+            $errorString = 'This invite link is not valid, it may have been disabled. Please check with your project manager.';
+            // If the user is logged in, pass an error message through the URL
+            if ($this->isLoggedIn($app))
+            {
+                $encodedError = base64_encode($errorString);
+                return $app->redirect('/app/projects#!/?errorMessage=' . $encodedError);
+            // Otherwise send it through the FlashBag
+            } else
+            {
+                $app['session']->getFlashBag()->add('errorMessage', $errorString);
+                return $app->redirect('/app/projects');
+            }
         }
+
+        // Add the user based on the invite token if they are logged in
         if ($this->isLoggedIn($app))
         {
             if ($inviteToken == 'test') { // ANDREW: Remove test code
