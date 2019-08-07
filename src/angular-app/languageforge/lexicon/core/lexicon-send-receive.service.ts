@@ -305,7 +305,7 @@ export class LexiconSendReceiveService {
         }
 
         this.previousSRState = this.status.SRState;
-        this.status = editorData.sendReceive.status;
+        this.status = editorData.data.sendReceive.status;
         if (this.isInProgress()) {
           if (this.pollUpdateSuccessCallback) this.pollUpdateSuccessCallback();
           this.setSyncStarted();
