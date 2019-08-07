@@ -309,8 +309,7 @@ export class LexiconSendReceiveService {
         if (this.isInProgress()) {
           if (this.pollUpdateSuccessCallback) this.pollUpdateSuccessCallback();
           this.setSyncStarted();
-        } else if (this.previousSRState === SendReceiveState.Unsynced && this.status.SRState === SendReceiveState.Idle
-        ) {
+        } else if (this.previousSRState === SendReceiveState.Unsynced && this.status.SRState === SendReceiveState.Idle) {
           this.status.SRState = this.previousSRState;
         } else {
           if (this.pollUpdateSuccessCallback) this.pollUpdateSuccessCallback();
