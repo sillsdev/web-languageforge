@@ -312,8 +312,6 @@ export class LexiconSendReceiveService {
         } else if (this.previousSRState === SendReceiveState.Unsynced && this.status.SRState === SendReceiveState.Idle
         ) {
           this.status.SRState = this.previousSRState;
-        } else if (this.previousSRState === SendReceiveState.Unknown) {
-          this.clearState();
         } else {
           if (this.pollUpdateSuccessCallback) this.pollUpdateSuccessCallback();
         }
