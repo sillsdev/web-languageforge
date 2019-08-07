@@ -26,6 +26,7 @@ import {
 } from '../shared/model/lexicon-config.model';
 import {LexiconProject} from '../shared/model/lexicon-project.model';
 import {FieldControl} from './field/field-control.model';
+import {LexOptionList} from '../shared/model/option-list.model';
 
 class SortOption {
   label: string;
@@ -61,6 +62,7 @@ export class LexiconEditorController implements angular.IController {
   lecInterfaceConfig: InterfaceConfig;
   lecFinishedLoading: boolean;
   lecProject: LexiconProject;
+  lecOptionLists: LexOptionList[];
   lecRights: Rights;
 
   lastSavedDate = new Date();
@@ -1350,6 +1352,7 @@ export const LexiconEditorComponent: angular.IComponentOptions = {
     lecInterfaceConfig: '<',
     lecFinishedLoading: '<',
     lecProject: '<',
+    lecOptionLists: '<',
     lecRights: '<'
   },
   controller: LexiconEditorController,
