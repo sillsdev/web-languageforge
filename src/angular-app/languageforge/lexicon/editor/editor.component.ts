@@ -74,6 +74,7 @@ export class LexiconEditorController implements angular.IController {
   getPrimaryListItemForDisplay = this.editorService.getSortableValue;
   visibleEntries = this.editorService.visibleEntries;
   unreadCount = this.activityService.unreadCount;
+  getMeaningForDisplay = this.editorService.getMeaningForDisplay;
 
   private pristineEntry: LexEntry = new LexEntry();
   private warnOfUnsavedEditsId: string;
@@ -597,25 +598,15 @@ export class LexiconEditorController implements angular.IController {
     return lexeme;
   }
 
-  getMeaningForDisplay(entry: LexEntry): string {
-    let meaning = '';
-    if (entry.senses && entry.senses[0]) {
-      meaning = LexiconUtilityService.getMeaning(this.lecConfig,
-        this.lecConfig.entry.fields.senses as LexConfigFieldList, entry.senses[0]);
-    }
-
-    if (!meaning) {
-      return '[Empty]';
-    }
-
-    return meaning;
+  getSecondaryListItemForDisplay(entry: LexEntry): string {
+    return this.getMeaningForDisplay(this.lecConfig, entry);
   }
 
   getCompactItemListOverlay(entry: LexEntry): string {
     let title;
     let subtitle;
     title = this.getWordForDisplay(entry);
-    subtitle = this.getMeaningForDisplay(entry);
+    subtitle = this.getMeaningForDisplay(this.lecConfig, entry);
     if (title.length > 19 || subtitle.length > 25) {
       return title + '         ' + subtitle;
     } else {

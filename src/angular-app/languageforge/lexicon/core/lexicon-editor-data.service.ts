@@ -22,5 +22,6 @@ export class LexiconEditorDataService {
   sortEntries = this.editorDataService.sortEntries;
   filterEntries = this.editorDataService.filterEntries;
   filterAndSortEntries = this.editorDataService.filterAndSortEntries;
+  getMeaningForDisplay = this.editorDataService.getMeaningForDisplay;
   getSortableValue = this.editorDataService.getSortableValue;
 }

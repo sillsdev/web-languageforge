@@ -1,8 +1,13 @@
 import * as angular from 'angular';
 
 import {SemanticDomainsService} from '../../../languageforge/core/semantic-domains/semantic-domains.service';
+import {LexiconUtilityService} from '../../../languageforge/lexicon/core/lexicon-utility.service';
 import {LexEntry} from '../../../languageforge/lexicon/shared/model/lex-entry.model';
-import {LexConfigMultiText, LexiconConfig} from '../../../languageforge/lexicon/shared/model/lexicon-config.model';
+import {
+  LexConfigFieldList,
+  LexConfigMultiText,
+  LexiconConfig
+} from '../../../languageforge/lexicon/shared/model/lexicon-config.model';
 import {LexiconProjectSettings} from '../../../languageforge/lexicon/shared/model/lexicon-project-settings.model';
 import {JsonRpcResult} from '../api/api.service';
 import {NoticeService} from '../notice/notice.service';
@@ -287,6 +292,21 @@ export class EditorDataService {
     });
   }
 
+  getMeaningForDisplay(config: LexiconConfig, entry: LexEntry): string {
+    let meaning = '';
+    if (entry.senses && entry.senses[0]) {
+      meaning = LexiconUtilityService.getMeaning(
+          config, config.entry.fields.senses as LexConfigFieldList, entry.senses[0]
+        );
+    }
+
+    if (!meaning) {
+      return '[Empty]';
+    }
+
+    return meaning;
+  }
+
   getSortableValue = (config: any, entry: any): string => {
     const fieldKey = this.entryListModifiers.sortBy.value === 'default' ?
                       'lexeme' : this.entryListModifiers.sortBy.value;
@@ -394,41 +414,29 @@ export class EditorDataService {
     return deferred.promise;
   }
 
+  private walkEntry(config: LexConfigFieldList, node: any, cb: (value: string) => void) {
+    for (const fieldName of config.fieldOrder) {
+      if (!(fieldName in node)) continue;
+      const childConfig: any = config.fields[fieldName];
+      const childNode = node[fieldName];
+      if (childConfig.type === 'fields') {
+        for (const element of childNode) this.walkEntry(childConfig, element, cb);
+      } else if (childConfig.type === 'multitext') {
+        for (const inputSystem of childConfig.inputSystems) {
+          if (childNode[inputSystem] && childNode[inputSystem].value) cb(childNode[inputSystem].value);
+        }
+      }
+    }
+  }
+
   private entryMeetsFilterCriteria(config: any, entry: any): boolean {
-    // object keys on the entry that should not be used for searching
-    const blacklistKeys = [
-      'isDeleted',
-      'id',
-      'guid',
-      'translationGuid',
-      '$$hashKey',
-      'dateModified',
-      'dateCreated',
-      'projectId',
-      'authorInfo',
-      'fileName',
-      'liftId'
-    ];
-    // TODO consider whitelisting all properties under customFields
-
-    const isBlacklisted = (key: string): boolean => {
-      const audio = '-audio';
-      return blacklistKeys.includes(key) || key.includes(audio, key.length - audio.length);
-    };
-
-    // toUpperCase is better than toLowerCase, but still has issues,
-    // e.g. 'ß'.toUpperCase() === 'SS'
-    const queryCapital = this.entryListModifiers.filterText().toUpperCase();
-
-    const isMatch = (query: string, value: any): boolean => {
-      if (typeof value === 'string') return value.toUpperCase().includes(queryCapital);
-      else if (value != null && typeof value === 'object') {
-        return Object.keys(value).some(key => !isBlacklisted(key) && isMatch(query, value[key]));
-      } else return false;
-    };
 
     if (this.entryListModifiers.filterText() !== '') {
-      const matchesSearch = isMatch(this.entryListModifiers.filterText(), entry);
+      const queryCapital = this.entryListModifiers.filterText().toUpperCase();
+      let matchesSearch = false;
+      this.walkEntry(config.entry, entry, val => {
+        if (val.toUpperCase().indexOf(queryCapital) !== -1) matchesSearch = true;
+      });
       if (!matchesSearch) return false;
     }
     if (!this.entryListModifiers.filterBy.option) return true;
@@ -606,47 +614,49 @@ export class EditorDataService {
     });
   }
 
-  private sortList(config: LexiconConfig, list: LexEntry[]): any[] {
+  private sortList(config: LexiconConfig, list: LexEntry[]): LexEntry[] {
     const reverse = this.entryListModifiers.sortReverse;
     if (this.entryListModifiers.sortBy.value === 'default' && this.entryListModifiers.filterText() !== '') {
 
-      // each of the five slots contain results of varying relevance:
-      // lexeme matched at beginning, lexeme matched anywhere, sense matched at beginning, sense matched anywhere,
-      // and everything else
-      const prioritizedResults = [[], [], [], [], []] as LexEntry[][];
+      let prioritizedResults: LexEntry[][] = [[], [], []];
 
-      const query = this.entryListModifiers.filterText();
+      const queryCapital = this.entryListModifiers.filterText().toUpperCase();
 
       for (const entry of list) {
-        if (entry.lexeme) {
-          const allMatches = Object.keys(entry.lexeme).map(key => entry.lexeme[key].value.indexOf(query))
-                                  .filter(i => i !== -1);
-          const beginningMatches = allMatches.filter(i => i === 0);
-          if (allMatches.length > 0) {
-            prioritizedResults[beginningMatches.length > 0 ? 0 : 1].push(entry);
-            continue;
+        let exactMatch = false;
+        let matchAtBeginning = false;
+        this.walkEntry(config.entry, entry, val => {
+          const index = val.toUpperCase().indexOf(queryCapital);
+          if (index === 0) {
+            matchAtBeginning = true;
+            if (val.length === queryCapital.length) exactMatch = true;
           }
-        }
-
-        if (entry.senses) {
-          const allMatches = entry.senses.filter(sense => sense.gloss)
-              .map(sense => Object.keys(sense.gloss).map(key => sense.gloss[key].value.indexOf(query)))
-              .reduce((main, sub) => main.concat(sub), []).filter(i => i !== -1);
-          const beginningMatches = allMatches.filter(i => i === 0);
-          if (allMatches.length > 0) {
-            prioritizedResults[beginningMatches.length > 0 ? 2 : 3].push(entry);
-            continue;
-          }
-
-        }
-
-        prioritizedResults[4].push(entry);
+        });
+        if (exactMatch) prioritizedResults[0].push(entry);
+        else if (matchAtBeginning) prioritizedResults[1].push(entry);
+        else prioritizedResults[2].push(entry);
       }
 
-      if (reverse) prioritizedResults.reverse();
-      // sort the individual lists and then flatten the results
-      return prioritizedResults.map(section => this.sortListAlphabetically(config, section, reverse))
-                                .reduce((main, sub) => main.concat(sub), []);
+      prioritizedResults = prioritizedResults.map(section => {
+        const subList: LexEntry[][] = [[], [], [], [], []];
+        for (const entry of section) {
+          const indexA = this.getSortableValue(config, entry).toUpperCase().indexOf(queryCapital);
+          if (indexA !== -1) {
+            subList[indexA === 0 ? 0 : 1].push(entry);
+            continue;
+          }
+          const indexB = this.getMeaningForDisplay(config, entry).toUpperCase().indexOf(queryCapital);
+          if (indexB !== -1) {
+            subList[indexB === 0 ? 2 : 3].push(entry);
+          } else subList[4].push(entry);
+        }
+        return subList.map(subSubList => this.sortListAlphabetically(config, subSubList, false))
+                      .reduce((main, sub) => main.concat(sub), []);
+      });
+
+      const flattenedResults = prioritizedResults.reduce((main, sub) => main.concat(sub), []);
+      if (reverse) flattenedResults.reverse();
+      return flattenedResults;
 
     } else return this.sortListAlphabetically(config, list, reverse);
   }

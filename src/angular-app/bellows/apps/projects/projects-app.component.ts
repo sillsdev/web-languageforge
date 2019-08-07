@@ -3,10 +3,10 @@ import * as angular from 'angular';
 import { ProjectService } from '../../core/api/project.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
+import { HelpHeroService } from '../../core/helphero.service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
 import { Project } from '../../shared/model/project.model';
-import { HelpHeroService } from '../../core/helphero.service';
 
 class Rights {
   canEditProjects: boolean;
