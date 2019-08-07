@@ -39,6 +39,7 @@ export const LexiconEditorModule = angular
                             lec-interface-config="$ctrl.interfaceConfig"
                             lec-finished-loading="$ctrl.finishedLoading"
                             lec-project="$ctrl.project"
+                            lec-option-lists="$ctrl.optionLists"
                             lec-rights="$ctrl.rights"></lexicon-editor>`
       })
       .state('editor.list', {
