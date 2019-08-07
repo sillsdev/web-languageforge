@@ -43,6 +43,18 @@ export class NoticeService {
     }
   }
 
+  checkUrlForNotices(query: any): void {
+    if (query.errorMessage) {
+      this.push(this.ERROR, atob(query.errorMessage));
+    }
+    if (query.infoMessage) {
+      this.push(this.INFO, atob(query.infoMessage));
+    }
+    if (query.successMessage) {
+      this.push(this.SUCCESS, atob(query.successMessage));
+    }
+  }
+
   push(type: () => string, message: string, details?: string, cannotClose?: boolean, time?: number): string {
     const id = UtilityService.uuid();
 
