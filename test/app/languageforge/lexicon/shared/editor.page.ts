@@ -162,7 +162,7 @@ export class EditorPage {
     },
 
     // Top-row
-    renderedDiv: this.editDiv.element(by.id('entryContainer')),
+    renderedDiv: this.editDiv.element(by.className('dc-rendered-entryContainer')),
     actionMenu: this.editDiv.element(by.css('.entry-card .card-header .ellipsis-menu-toggle')),
     deleteMenuItem: this.editDiv.element(by.css('.entry-card .card-header .dropdown-menu .dropdown-item')),
 
