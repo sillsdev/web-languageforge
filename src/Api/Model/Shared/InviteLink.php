@@ -27,13 +27,9 @@ class InviteLink
     public function generateNewAuthToken($model, $testMode = false)
     {
         // Generate a new key that does not exist in the DB
-        do
-        {
-            $newToken = bin2hex(random_bytes(6));
-        } while ($model->readByProperty('inviteLink.authToken', $newToken));
 
 
-        $this->authToken = $newToken;
+        $this->authToken = uniqid();
 
         return $newToken;
     }
@@ -48,7 +44,7 @@ class InviteLink
         if (in_array($newRole, $validRoles)) {
             $this->defaultRole = $newRole;
         } else {
-            throw new InvalidArgumentException("An invite link tried to set a nonexistant role");
+            throw new InvalidArgumentException("An invite link tried to set a nonexistent role");
         }
     }
 }
