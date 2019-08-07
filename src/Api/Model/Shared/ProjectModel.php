@@ -3,6 +3,7 @@
 namespace Api\Model\Shared;
 
 use Api\Library\Shared\Website;
+use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
@@ -444,7 +445,7 @@ class ProjectModel extends MapperModel
     /**
      * @param string $projectId
      * @return ProjectModel
-     * @throws \Exception
+     * @throws \ResourceNotAvailableException
      */
     public static function getById($projectId)
     {
@@ -461,7 +462,7 @@ class ProjectModel extends MapperModel
             case 'semdomtrans':
                 return new SemDomTransProjectModel($projectId);
             default:
-                throw new \ResourceNotAvailibleException(
+                throw new ResourceNotAvailableException(
                     "projectId '$projectId' could not be found when calling ProjectModel::getById()");
         }
     }
@@ -469,7 +470,7 @@ class ProjectModel extends MapperModel
     /**
      * @param string $token
      * @return ProjectModel
-     * @throws \ResourceNotAvailibleException
+     * @throws ResourceNotAvailableException
      */
     public static function getByInviteToken($token)
     {
@@ -487,7 +488,7 @@ class ProjectModel extends MapperModel
             case 'semdomtrans':
                 return new SemDomTransProjectModel($model->id->id);
             default:
-                throw new \ResourceNotAvailibleException(
+                throw new ResourceNotAvailableException(
                     "inviteToken '$token' could not be found when calling ProjectModel::getByInviteToke()");
         }
     }

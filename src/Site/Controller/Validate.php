@@ -5,6 +5,7 @@ namespace Site\Controller;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Library\Shared\SilexSessionHelper;
+use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 
 use Api\Model\Shared\Mapper\MongoMapper;
 use Api\Model\Shared\ProjectModel;
@@ -36,22 +37,23 @@ class Validate extends Base
 
     public function processInviteAndRedirect(Application $app, $inviteToken = '')
     {
+        try
+        {
+            $model = ProjectModel::getByInviteToken($inviteToken);
+        } catch (ResourceNotAvailableException $e)
+        {
+            $app['session']->getFlashBag()->add('errorMessage', 'This invite link is not valid, it may have been disabled. Please check with your project manager.');
+            return $app->redirect('/app/projects');
+        }
         if ($this->isLoggedIn($app))
         {
-            $testProjectId = ProjectCommands::createProject('Test ready', 'testcode39', LfProjectModel::LEXICON_APP, SilexSessionHelper::getUserId($app), $this->website, $srProject = null);
-            $testLink = ProjectCommands::getNewInviteLink($testProjectId, 'Manager');
-            $lastSlashPos = strrpos($testLink, '/');
-            $testToken = substr($testLink, $lastSlashPos + 1);
-
-            try
-            {
-                $model = ProjectModel::getByInviteToken($testToken);
-                ProjectCommands::useInviteToken(SilexSessionHelper::getUserId($app), $model->id->id);
-                return $app->redirect('/app/lexicon/' . $model->id->id);
-            } catch (ResourceNotAvailibleException $e)
-            {
-                return 'Bad invite token!';
+            if ($inviteToken == 'test') { // ANDREW: Remove test code
+                $testProjectId = ProjectCommands::createProject('Test ready', 'testcode39', LfProjectModel::LEXICON_APP, SilexSessionHelper::getUserId($app), $this->website, $srProject = null);
+                ProjectCommands::getNewInviteLink($testProjectId, 'Manager');
+                $model = ProjectModel::getById($testProjectId);
             }
+            ProjectCommands::useInviteToken(SilexSessionHelper::getUserId($app), $model->id->id);
         }
+        return $app->redirect('/app/lexicon/' . $model->id->id);
     }
 }
