@@ -166,8 +166,7 @@ export class LexiconUtilityService extends UtilityService {
                                fieldName: string): string {
     let result = '';
     const multiTextConfigField = config.fields[fieldName] as LexConfigMultiText;
-    if (node[fieldName] && config && config.fields && multiTextConfigField &&
-      multiTextConfigField.inputSystems) {
+    if (node[fieldName] && multiTextConfigField && multiTextConfigField.inputSystems) {
       const inputSystems = multiTextConfigField.inputSystems;
       for (const languageTag of inputSystems) {
         result = LexiconUtilityService.getField(globalConfig, node, fieldName, languageTag);
