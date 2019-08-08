@@ -540,12 +540,18 @@ dc-entry .card {
 }
 
 .reset-filter-btn {
+  background-color: $Eden;
+  color: white;
   float: right;
-  .fa-undo {
-    color: orange;
-  }
   .btn-text {
     display: none;
+  }
+}
+
+@include media-breakpoint-up(sm) {
+  #lexAppListView .reset-filter-btn {
+    float: none;
+    margin-left: 2em;
   }
 }
 
