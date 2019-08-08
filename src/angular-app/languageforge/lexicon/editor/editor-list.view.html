@@ -84,7 +84,7 @@
                             <div class="list-group" data-ng-show="$ctrl.entries.length > 0 && $ctrl.lecFinishedLoading">
                                 <div class="lexiconListItem list-group-item list-group-item-action" data-ng-repeat="entry in $ctrl.visibleEntries track by entry.id"
                                      data-ng-click="$ctrl.editEntryAndScroll(entry.id)">
-                                    <dc-rendered global-config="$ctrl.lecConfig" config="$ctrl.lecConfig.entry" model="entry" option-lists="$ctrl.optionLists"></dc-rendered>
+                                    <dc-rendered global-config="$ctrl.lecConfig" config="$ctrl.lecConfig.entry" model="entry" option-lists="$ctrl.lecOptionLists"></dc-rendered>
                                     <div data-ng-show="$ctrl.getEntryCommentCount(entry.id) > 0"
                                          style="position:absolute; right:5px;top:3px">
                                         <i class="fa fa-comment commentColor"></i>
