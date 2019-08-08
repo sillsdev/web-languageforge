@@ -63,7 +63,7 @@ export class ProjectsAppController implements angular.IController {
       }
     });
 
-    this.notice.checkUrlForNotices(this.$location.search());
+    this.notice.checkUrlForNotices();
   }
 
   isSelected(project: Project) {

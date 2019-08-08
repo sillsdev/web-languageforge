@@ -26,8 +26,8 @@ export class NoticeService {
   private isLoadingNotice: boolean;
   private loadingMessage: string;
 
-  static $inject: string[] = ['$interval'];
-  constructor(private $interval: angular.IIntervalService) {
+  static $inject: string[] = ['$interval', '$location'];
+  constructor(private $interval: angular.IIntervalService, private $location: angular.ILocationService) {
     this.notices = [];
     this.timers = {};
     this.percentComplete = 0;
@@ -43,15 +43,19 @@ export class NoticeService {
     }
   }
 
-  checkUrlForNotices(query: any): void {
+  checkUrlForNotices(): void {
+    const query = this.$location.search();
     if (query.errorMessage) {
       this.push(this.ERROR, atob(query.errorMessage));
+      this.$location.search('errorMessage', null);
     }
     if (query.infoMessage) {
       this.push(this.INFO, atob(query.infoMessage));
+      this.$location.search('infoMessage', null);
     }
     if (query.successMessage) {
       this.push(this.SUCCESS, atob(query.successMessage));
+      this.$location.search('successMessage', null);
     }
   }
 
