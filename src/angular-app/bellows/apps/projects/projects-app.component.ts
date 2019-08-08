@@ -29,14 +29,12 @@ export class ProjectsAppController implements angular.IController {
                     'sessionService', 'silNoticeService',
                     'breadcrumbService',
                     'applicationHeaderService',
-                    'helpHeroService',
-                    '$location'];
+                    'helpHeroService'];
   constructor(private $window: angular.IWindowService, private projectService: ProjectService,
               private sessionService: SessionService, private notice: NoticeService,
               private breadcrumbService: BreadcrumbService,
               private applicationHeaderService: ApplicationHeaderService,
-              private readonly helpHeroService: HelpHeroService,
-              private $location: angular.ILocationService) { }
+              private readonly helpHeroService: HelpHeroService) { }
 
   $onInit() {
     this.projectTypeNames = this.projectService.data.projectTypeNames;

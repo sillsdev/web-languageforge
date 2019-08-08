@@ -40,10 +40,18 @@ class Validate extends Base
         // Attempt to find the project with the given invite link
         try
         {
-            $model = ProjectModel::getByInviteToken($inviteToken);
+            if ($inviteToken == 'test') { // ANDREW: Remove test code
+                $testProjectId = ProjectCommands::createProject('proj69', 'testcode69', LfProjectModel::LEXICON_APP, '5d3922ab8d7502674e0ae2e2', $this->website, $srProject = null);
+                ProjectCommands::getNewInviteLink($testProjectId, 'Manager');
+                $model = ProjectModel::getById($testProjectId);
+            }
+            else {
+                $model = ProjectModel::getByInviteToken($inviteToken);
+            }
+
         } catch (ResourceNotAvailableException $e)
         {
-            $errorString = 'This invite link is not valid, it may have been disabled. Please check with your project manager.';
+            $errorString = 'This invite link is not valid, it may have been disabled. Please check with the project manager';
             // If the user is logged in, pass an error message through the URL
             if ($this->isLoggedIn($app))
             {
@@ -53,20 +61,22 @@ class Validate extends Base
             } else
             {
                 $app['session']->getFlashBag()->add('errorMessage', $errorString);
-                return $app->redirect('/app/projects');
+                return $app->redirect('/auth/login');
             }
         }
 
         // Add the user based on the invite token if they are logged in
         if ($this->isLoggedIn($app))
         {
-            if ($inviteToken == 'test') { // ANDREW: Remove test code
-                $testProjectId = ProjectCommands::createProject('Test ready', 'testcode39', LfProjectModel::LEXICON_APP, SilexSessionHelper::getUserId($app), $this->website, $srProject = null);
-                ProjectCommands::getNewInviteLink($testProjectId, 'Manager');
-                $model = ProjectModel::getById($testProjectId);
-            }
             ProjectCommands::useInviteToken(SilexSessionHelper::getUserId($app), $model->id->id);
+            return $app->redirect('/app/lexicon/' . $model->id->id);
+        } else
+        {
+            $app['session']->set('inviteToken', $model->inviteToken->token);
+            // $app['session']->set('inviteToken', $inviteToken);
+            $app['session']->getFlashBag()->add('infoMessage', 'Please log in or create an account to access this project');
+            return $app->redirect('/auth/login');
         }
-        return $app->redirect('/app/lexicon/' . $model->id->id);
+
     }
 }
