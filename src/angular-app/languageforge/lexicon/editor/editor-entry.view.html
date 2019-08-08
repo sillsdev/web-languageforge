@@ -28,7 +28,8 @@
                             <div class="words-search">
                                 <div class="filter-entries-wrapper">
                                     <input type="text" id="editor-entry-search-entries" class="filter-entries" placeholder="Filter Entries"
-                                           data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.filterBy.text"></input>
+                                           data-ng-change="$ctrl.filterAndSortEntries()" data-ng-model="$ctrl.entryListModifiers.filterBy.text"
+                                           data-ng-model-options="{debounce: 200}"></input>
                                            <span class="fa fa-times clear-search-button" data-ng-show="$ctrl.entryListModifiers.filterBy.text" data-ng-click="$ctrl.clearSearchText()"></span>
                                 </div>
                                 <button data-ng-click="$ctrl.toggleFilterOptions()" class="btn btn-sm">
@@ -80,7 +81,7 @@
                                          data-ng-class="{selected: entry.id == $ctrl.currentEntry.id, listItemHasComment: $ctrl.getEntryCommentCount(entry.id) > 0}"
                                          title="{{$ctrl.getCompactItemListOverlay(entry)}}"
                                          data-ng-repeat="entry in $ctrl.visibleEntries track by entry.id" data-ng-click="$ctrl.editEntry(entry.id)">
-                                        <div dir="auto" class="listItemPrimary" data-ng-bind-html="$ctrl.getPrimaryListItemForDisplay($ctrl.lecConfig, entry)"></div>
+                                        <div dir="auto" class="listItemPrimary" data-ng-bind-html="$ctrl.getPrimaryListItemForDisplay(entry)"></div>
                                         <div dir="auto" class="listItemSecondary" data-ng-bind-html="$ctrl.getSecondaryListItemForDisplay(entry)"></div>
                                     </div>
                                 </div>

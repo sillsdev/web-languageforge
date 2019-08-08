@@ -73,7 +73,7 @@ export class LexiconEditorController implements angular.IController {
   entryListModifiers = this.editorService.entryListModifiers;
   filteredEntries = this.editorService.filteredEntries;
   getEntryCommentCount = this.commentService.getEntryCommentCount.bind(this.commentService);
-  getPrimaryListItemForDisplay = this.editorService.getSortableValue;
+  getSortableValue = this.editorService.getSortableValue;
   visibleEntries = this.editorService.visibleEntries;
   unreadCount = this.activityService.unreadCount;
   getMeaningForDisplay = this.editorService.getMeaningForDisplay;
@@ -602,8 +602,33 @@ export class LexiconEditorController implements angular.IController {
     return lexeme;
   }
 
+  getPrimaryListItemForDisplay(entry: LexEntry) {
+    return this.highlightMatches(this.getSortableValue(this.lecConfig, entry));
+  }
+
   getSecondaryListItemForDisplay(entry: LexEntry): string {
-    return this.getMeaningForDisplay(this.lecConfig, entry);
+    return this.highlightMatches(this.getMeaningForDisplay(this.lecConfig, entry));
+  }
+
+  highlightMatches(text: string) {
+    let filterText = this.entryListModifiers.filterText();
+    if (!filterText || text === '[Empty]') return text;
+
+    // FIXME this assumes the uppercase length of a string is the same as its lowercase, which is not necessarily true
+    //  e.g. 'ß'.length !== 'ß'.toUpperCase().length
+    filterText = filterText.toUpperCase();
+    const upperCaseText = text.toUpperCase();
+    let output = '';
+    let previousIndex = 0;
+    while (upperCaseText.indexOf(filterText, previousIndex) !== -1) {
+      const resultIndex = upperCaseText.indexOf(filterText, previousIndex);
+      const end = resultIndex + filterText.length;
+      output += text.slice(previousIndex, resultIndex) + '<span class="highlight-result">'
+              + text.slice(resultIndex, end) + '</span>';
+      previousIndex = end;
+    }
+    output += text.slice(previousIndex);
+    return output;
   }
 
   getCompactItemListOverlay(entry: LexEntry): string {
