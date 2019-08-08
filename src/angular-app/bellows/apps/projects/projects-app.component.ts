@@ -60,6 +60,8 @@ export class ProjectsAppController implements angular.IController {
         this.helpHeroService.anonymous();
       }
     });
+
+    this.notice.checkUrlForNotices();
   }
 
   isSelected(project: Project) {
