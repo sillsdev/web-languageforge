@@ -3,6 +3,7 @@ import * as angular from 'angular';
 import {SemanticDomainsService} from '../../../languageforge/core/semantic-domains/semantic-domains.service';
 import {LexiconUtilityService} from '../../../languageforge/lexicon/core/lexicon-utility.service';
 import {LexEntry} from '../../../languageforge/lexicon/shared/model/lex-entry.model';
+import {LexMultiValue} from '../../../languageforge/lexicon/shared/model/lex-multi-value.model';
 import {
   LexConfigFieldList,
   LexConfigMultiText,
@@ -414,28 +415,42 @@ export class EditorDataService {
     return deferred.promise;
   }
 
-  private walkEntry(config: LexConfigFieldList, node: any, cb: (value: string) => void) {
+  private walkEntry(config: LexConfigFieldList, node: any, cb: (value: string, isSemanticDomain: boolean) => void) {
     for (const fieldName of config.fieldOrder) {
       if (!(fieldName in node)) continue;
-      const childConfig: any = config.fields[fieldName];
+      const childConfig = config.fields[fieldName];
       const childNode = node[fieldName];
       if (childConfig.type === 'fields') {
-        for (const element of childNode) this.walkEntry(childConfig, element, cb);
+        for (const element of childNode) this.walkEntry(childConfig as LexConfigFieldList, element, cb);
       } else if (childConfig.type === 'multitext') {
-        for (const inputSystem of childConfig.inputSystems) {
-          if (childNode[inputSystem] && childNode[inputSystem].value) cb(childNode[inputSystem].value);
+        for (const inputSystem of (childConfig as LexConfigMultiText).inputSystems) {
+          if (childNode[inputSystem] && childNode[inputSystem].value) cb(childNode[inputSystem].value, false);
         }
+      } else if (childConfig.type === 'multioptionlist' && fieldName === 'semanticDomain') {
+        for (const element of (childNode as LexMultiValue).values) cb(element, true);
       }
     }
   }
 
-  private entryMeetsFilterCriteria(config: any, entry: any): boolean {
+  private semanticDomainsMatch(text: string, query: string): boolean {
+    // Semantic domains must match from the very beginning ('1.2' should not match '1.1.2').
+    // If length differs, the next character must not be a digit ('1.1' should match '1.1.3' but not '1.12'),
+    // unless the last character of the query isn't a digit ('1.2.' should match '1.2.3'). This is important
+    // because otherwise when the user types a '.' the number of results drops to zero.
+    return text === query ||
+        text.indexOf(query) === 0 && !UtilityService.isDigitsOnly(text.slice(query.length - 1, query.length + 1));
+  }
+
+  private entryMeetsFilterCriteria(config: any, entry: LexEntry): boolean {
 
     if (this.entryListModifiers.filterText() !== '') {
-      const queryCapital = this.entryListModifiers.filterText().toUpperCase();
+      const query = this.entryListModifiers.filterText().toUpperCase();
       let matchesSearch = false;
-      this.walkEntry(config.entry, entry, val => {
-        if (val.toUpperCase().indexOf(queryCapital) !== -1) matchesSearch = true;
+      this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
+        val = val.toUpperCase();
+        if (isSemanticDomain) {
+          if (this.semanticDomainsMatch(val, query)) matchesSearch = true;
+        } else if (val.indexOf(query) !== -1) matchesSearch = true;
       });
       if (!matchesSearch) return false;
     }
@@ -625,9 +640,9 @@ export class EditorDataService {
       for (const entry of list) {
         let exactMatch = false;
         let matchAtBeginning = false;
-        this.walkEntry(config.entry, entry, val => {
+        this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
           const index = val.toUpperCase().indexOf(queryCapital);
-          if (index === 0) {
+          if (index === 0 && (!isSemanticDomain || this.semanticDomainsMatch(val, queryCapital))) {
             matchAtBeginning = true;
             if (val.length === queryCapital.length) exactMatch = true;
           }
