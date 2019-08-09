@@ -7,8 +7,8 @@ use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
 use Api\Model\Languageforge\LfProjectModel;
-use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +27,7 @@ class App extends Base
         /** @noinspection PhpUnusedParameterInspection */
         Request $request, Application $app, $appName, $projectId = ''
     ) {
+        // Check if an invite token should be processed
         if (($appName == LfProjectModel::LEXICON_APP || $appName == 'projects') && $app['session']->get('inviteToken'))
         {
             try
@@ -164,15 +165,15 @@ class App extends Base
     {
         try
         {
-            $model = ProjectModel::getByInviteToken($app['session']->get('inviteToken'));
+            $projectId = ProjectModel::getIdByInviteToken($app['session']->get('inviteToken'));
         } catch (ResourceNotAvailableException $e)
         {
             throw new ResourceNotAvailableException('This invite link is not valid, it may have been disabled. Please check with your project manager.');
         }
         $userId = SilexSessionHelper::getUserId($app);
-        ProjectCommands::useInviteToken($userId, $model->id->id);
+        ProjectCommands::useInviteToken($userId, $projectId);
 
-        return $model->id->id;
+        return $projectId;
     }
 
 }

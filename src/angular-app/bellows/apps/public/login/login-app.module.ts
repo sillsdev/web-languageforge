@@ -8,8 +8,5 @@ export const LoginAppModule = angular
     'ui.bootstrap',
     CoreModule
   ])
-  .value('loginPath', "pasta")
-  .value('last_username', '{{ last_username }}')
-  // .controller('LoginCtrl', () => {})
   .component('loginApp', LoginAppComponent)
   .name;
