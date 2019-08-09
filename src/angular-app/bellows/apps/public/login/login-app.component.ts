@@ -3,8 +3,8 @@ import * as angular from 'angular';
 import { NoticeService } from '../../../core/notice/notice.service';
 
 export class LoginAppController implements angular.IController {
-  static $inject = ['silNoticeService', 'loginPath'];
-  constructor(private notice: NoticeService, private loginPath: any) { }
+  static $inject = ['silNoticeService'];
+  constructor(private notice: NoticeService) { }
 
   $onInit() {
     this.notice.checkUrlForNotices();

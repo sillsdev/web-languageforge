@@ -220,7 +220,6 @@ class ProjectModel extends MapperModel
     /**
      * Adds the $userId as a member of this project.
      * @param string $userId
-     * @param string $role The system role the user has.
      * @see Roles;
      */
     public function addUserByInviteToken($userId)
@@ -463,24 +462,20 @@ class ProjectModel extends MapperModel
      * @return ProjectModel
      * @throws ResourceNotAvailableException
      */
-    public static function getByInviteToken($token)
+    public static function getIdByInviteToken($token)
     {
         $model = new ProjectModel();
         $model->readByProperty('inviteToken.token', $token);
         switch ($model->appName) {
             case 'sfchecks':
-                return new SfchecksProjectModel($model->id->id);
             case 'rapuma':
-                return new RapumaProjectModel($model->id->id);
             case 'lexicon':
-                return new LexProjectModel($model->id->id);
             case 'translate':
-                return new TranslateProjectModel($model->id->id);
             case 'semdomtrans':
-                return new SemDomTransProjectModel($model->id->id);
+                return $model->id->id;
             default:
                 throw new ResourceNotAvailableException(
-                    "inviteToken '$token' could not be found when calling ProjectModel::getByInviteToke()");
+                    "inviteToken '$token' could not be found when calling ProjectModel::getIdByInviteToken()");
         }
     }
 

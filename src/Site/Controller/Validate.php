@@ -2,7 +2,6 @@
 
 namespace Site\Controller;
 
-use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
@@ -40,7 +39,7 @@ class Validate extends Base
         // Attempt to find the project with the given invite link
         try
         {
-            $model = ProjectModel::getByInviteToken($inviteToken);
+            $projectId = ProjectModel::getIdByInviteToken($inviteToken);
 
         } catch (ResourceNotAvailableException $e)
         {
@@ -55,8 +54,8 @@ class Validate extends Base
         // Add the user based on the invite token if they are logged in, otherwise redirect to login
         if ($this->isLoggedIn($app))
         {
-            ProjectCommands::useInviteToken(SilexSessionHelper::getUserId($app), $model->id->id);
-            return $app->redirect('/app/lexicon/' . $model->id->id);
+            ProjectCommands::useInviteToken(SilexSessionHelper::getUserId($app), $projectId);
+            return $app->redirect('/app/lexicon/' . $projectId);
         } else
         {
             $app['session']->set('inviteToken', $inviteToken);

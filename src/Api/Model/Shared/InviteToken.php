@@ -16,7 +16,4 @@ class InviteToken
 
     /** @var LexRole */
     public $defaultRole;
-
-    /** @var boolean */
-    public $isEnabled;
 }
