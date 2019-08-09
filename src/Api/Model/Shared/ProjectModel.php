@@ -202,7 +202,6 @@ class ProjectModel extends MapperModel
         ProjectModelMongoMapper::instance()->remove($this->id->asString());
     }
 
-
     /**
      * Adds the $userId as a member of this project.
      * @param string $userId
@@ -227,13 +226,13 @@ class ProjectModel extends MapperModel
     public function addUserByInviteToken($userId)
     {
         $rolesArray = $this->getRolesList();
-        $roleKey = array_search($this->inviteToken->defaultRole, $rolesArray);
-        if(!$roleKey)
+        $validRole = array_key_exists($this->inviteToken->defaultRole, $rolesArray);
+        if(!$validRole)
         {
-            throw new \ResourceNotAvailableException('Project ' . $projectId . '\'s invite token is associated with nonexistant role '
+            throw new ResourceNotAvailableException('Project ' . $projectId . '\'s invite token is associated with nonexistant role '
                 . $model->inviteToken->defaultRole);
         }
-        $this->addUser($userId, $roleKey);
+        $this->addUser($userId, $this->inviteToken->defaultRole);
     }
 
     /**
@@ -322,21 +321,13 @@ class ProjectModel extends MapperModel
         return $userList;
     }
 
-        /**
-     * @param ProjectModel $model in order to call to MongoMapper->readByProperty()
+    /**
      * @return string the invite token stored in the db for the project
      */
     public function generateNewInviteToken()
     {
-        // Generate a new key that does not exist in the DB
-        do
-        {
-            $newToken = bin2hex(random_bytes(6));
-        } while ($this->readByProperty('inviteToken.token', $newToken));
-
-
+        $newToken = uniqid();
         $this->inviteToken->token = $newToken;
-
         return $newToken;
     }
 
@@ -347,7 +338,7 @@ class ProjectModel extends MapperModel
     public function setInviteTokenDefaultRole($newRole)
     {
         $validRoles = $this->getRolesList();
-        if (in_array($newRole, $validRoles)) {
+        if (array_key_exists($newRole, $validRoles)) {
             $this->inviteToken->defaultRole = $newRole;
         } else {
             throw new \InvalidArgumentException("A nonexistant role tried to be linked to an invite token.");

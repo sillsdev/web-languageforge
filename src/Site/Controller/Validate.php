@@ -40,42 +40,28 @@ class Validate extends Base
         // Attempt to find the project with the given invite link
         try
         {
-            if ($inviteToken == 'test') { // ANDREW: Remove test code
-                $testProjectId = ProjectCommands::createProject('proj69', 'testcode69', LfProjectModel::LEXICON_APP, '5d3922ab8d7502674e0ae2e2', $this->website, $srProject = null);
-                ProjectCommands::getNewInviteLink($testProjectId, 'Manager');
-                $model = ProjectModel::getById($testProjectId);
-            }
-            else {
-                $model = ProjectModel::getByInviteToken($inviteToken);
-            }
+            $model = ProjectModel::getByInviteToken($inviteToken);
 
         } catch (ResourceNotAvailableException $e)
         {
             $errorString = 'This invite link is not valid, it may have been disabled. Please check with the project manager';
-            // If the user is logged in, pass an error message through the URL
-            if ($this->isLoggedIn($app))
-            {
-                $encodedError = base64_encode($errorString);
-                return $app->redirect('/app/projects#!/?errorMessage=' . $encodedError);
-            // Otherwise send it through the FlashBag
-            } else
-            {
-                $app['session']->getFlashBag()->add('errorMessage', $errorString);
-                return $app->redirect('/auth/login');
-            }
+            $encodedError = base64_encode($errorString);
+            $redirectPath = $this->isLoggedIn($app) ? '/app/projects': '/auth/login';
+            $redirectPath .= '#!/?errorMessage=' . $encodedError;
+
+            return $app->redirect($redirectPath);
         }
 
-        // Add the user based on the invite token if they are logged in
+        // Add the user based on the invite token if they are logged in, otherwise redirect to login
         if ($this->isLoggedIn($app))
         {
             ProjectCommands::useInviteToken(SilexSessionHelper::getUserId($app), $model->id->id);
             return $app->redirect('/app/lexicon/' . $model->id->id);
         } else
         {
-            $app['session']->set('inviteToken', $model->inviteToken->token);
-            // $app['session']->set('inviteToken', $inviteToken);
-            $app['session']->getFlashBag()->add('infoMessage', 'Please log in or create an account to access this project');
-            return $app->redirect('/auth/login');
+            $app['session']->set('inviteToken', $inviteToken);
+            $redirectPath = 'auth/login' . base64_encode('Please log in or create an account to access this project');
+            return $app->redirect('/auth/login#!/?errorMessage=');
         }
 
     }

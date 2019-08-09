@@ -112,7 +112,7 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
             case 'project_sendJoinRequest':
                 return true;
-            case 'project_getNewInviteLink':
+            case 'project_getInviteLink':
                 return $this-userHasProjectRight(Domain::USERS + Operation::EDIT);
             case 'project_disableInviteToken':
                 return $this-userHasProjectRight(Domain::USERS + Operation::EDIT);

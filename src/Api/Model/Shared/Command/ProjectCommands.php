@@ -347,16 +347,17 @@ class ProjectCommands
 
     /**
      * @param string $projectId
+     * @param string $defaultRole
      * @return string invite link to project
      */
-    public static function getNewInviteLink($projectId, $defaultRole)
+    public static function getInviteLink($projectId, $defaultRole)
     {
         $project = ProjectModel::getById($projectId);
 
         $newAuthToken = $project->generateNewInviteToken($project);
         $project->setInviteTokenDefaultRole($defaultRole);
 
-        $result = $project->write();
+        $project->write();
 
         return 'https://' . $project->siteName . '.org/invite/' . $newAuthToken;
     }
@@ -369,7 +370,7 @@ class ProjectCommands
     {
         $project = ProjectModel::getById($projectId);
         $project->inviteToken->token = '';
-        $result = $project->write();
+        $project->write();
     }
 
     /**
@@ -381,7 +382,7 @@ class ProjectCommands
     {
         $project = ProjectModel::getById($projectId);
         $project->setInviteTokenDefaultRole($newRole);
-        $result = $project->write();
+        $project->write();
     }
 
     /**

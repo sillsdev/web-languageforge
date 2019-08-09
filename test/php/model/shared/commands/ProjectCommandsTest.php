@@ -691,7 +691,7 @@ class ProjectCommandsTest extends TestCase
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
         $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
         $projectModel = ProjectModel::getById($projectId);
-        $inviteUrl = ProjectCommands::getNewInviteLink($projectId, 'Manager');
+        $inviteUrl = ProjectCommands::getInviteLink($projectId, ProjectRoles::MANAGER);
 
         // Assert URL is valid to site
         $this->assertStringContainsString($projectModel->siteName, $inviteUrl);
@@ -700,7 +700,7 @@ class ProjectCommandsTest extends TestCase
         // Assert invite token is found in the database
         $lastSlashPos = strrpos($inviteUrl, '/');
         $token = substr($inviteUrl, $lastSlashPos + 1);
-        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => 'Manager']));
+        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => ProjectRoles::MANAGER]));
 
         // Disable invite link and make sure it no longer exists in the DB
         ProjectCommands::disableInviteToken($projectId);
@@ -713,16 +713,16 @@ class ProjectCommandsTest extends TestCase
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
         $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
         $projectModel = ProjectModel::getById($projectId);
-        $inviteUrl = ProjectCommands::getNewInviteLink($projectId, 'Manager');
+        $inviteUrl = ProjectCommands::getInviteLink($projectId, ProjectRoles::MANAGER);
 
         // Assert defaultRole is set to initialized role
         $lastSlashPos = strrpos($inviteUrl, '/');
         $token = substr($inviteUrl, $lastSlashPos + 1);
-        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => 'Manager']));
+        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => ProjectRoles::MANAGER]));
 
         // Change defaultRole
-        ProjectCommands::updateInviteTokenRole($projectId, 'Contributor');
-        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => 'Contributor']));
+        ProjectCommands::updateInviteTokenRole($projectId, ProjectRoles::CONTRIBUTOR);
+        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => ProjectRoles::CONTRIBUTOR]));
     }
 
     public function testProjectInviteLink_addUserFromLink_additionSuccessful()
@@ -731,7 +731,7 @@ class ProjectCommandsTest extends TestCase
         $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
         $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
         $projectModel = ProjectModel::getById($projectId);
-        $inviteUrl = ProjectCommands::getNewInviteLink($projectId, 'Manager');
+        $inviteUrl = ProjectCommands::getInviteLink($projectId, ProjectRoles::MANAGER);
 
         // Assert defaultRole is set to initialized role
         $userId = self::$environ->createUser("user name", "user Name", "user@example.com");

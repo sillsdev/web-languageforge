@@ -27,7 +27,7 @@ class App extends Base
         /** @noinspection PhpUnusedParameterInspection */
         Request $request, Application $app, $appName, $projectId = ''
     ) {
-        if (($appName == LfProjectModel::LEXICON_APP || $appName != 'signup') && $app['session']->get('inviteToken'))
+        if (($appName == LfProjectModel::LEXICON_APP || $appName == 'projects') && $app['session']->get('inviteToken'))
         {
             try
             {

@@ -44,7 +44,7 @@ export class NoticeService {
   }
 
   checkUrlForNotices(): void {
-    const query = this.$location.search();
+    const query: {[key: string]: string} = this.$location.search();
     if (query.errorMessage) {
       this.push(this.ERROR, atob(query.errorMessage));
       this.$location.search('errorMessage', null);

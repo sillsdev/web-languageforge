@@ -378,9 +378,9 @@ class Sf
         return ProjectCommands::getJoinRequests($this->projectId);
     }
 
-    public function project_getNewInviteLink($defaultRole)
+    public function project_getInviteLink($defaultRole)
     {
-        return ProjectCommands::getNewInviteLink($this->projectId, $defaultRole);
+        return ProjectCommands::getInviteLink($this->projectId, $defaultRole);
     }
 
     public function project_disableInviteToken()
