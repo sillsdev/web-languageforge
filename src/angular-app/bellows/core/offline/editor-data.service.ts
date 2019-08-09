@@ -678,16 +678,17 @@ export class EditorDataService {
 
   private sortListAlphabetically(config: LexiconConfig, list: LexEntry[], reverse: boolean): LexEntry[] {
     const inputSystem = this.getInputSystemForSort(config);
-    const compare = ('Intl' in window) ? Intl.Collator(inputSystem).compare : (a: string, b: string) => a < b ? -1 : 1;
+    const compare = ('Intl' in window) ?
+          Intl.Collator(inputSystem).compare : (a: string, b: string) => a.localeCompare(b);
 
-    const mapped = list.map((entry: any, i: number) => ({
+    const mapped = list.map((entry: LexEntry, i: number) => ({
       index: i,
       value: this.getSortableValue(config, entry)
     }));
 
-    mapped.sort((a: any, b: any) => compare(a.value, b.value) * (reverse ? -1 : 1));
+    mapped.sort((a, b) => compare(a.value, b.value) * (reverse ? -1 : 1));
 
-    return mapped.map((el: any) => list[el.index]);
+    return mapped.map(el => list[el.index]);
   }
 
   /**
