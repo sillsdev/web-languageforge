@@ -17,3 +17,56 @@
     margin-bottom: 0;
   }
 }
+
+#who-has-access {
+  margin-top: 2rem;
+}
+
+#invite-member-form {
+  border-right: 1px solid white;
+
+  .permissions-spacer {
+    width: 2.25rem;
+    flex-shrink: 0;
+  }
+}
+
+#sharing-checkboxes {
+  margin-top: 1rem;
+  margin-bottom: 0;
+
+  input[type=checkbox] {
+    margin-left: 0;
+  }
+}
+
+.user-summary-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  img.rounded-circle {
+    max-width: 3em;
+  }
+
+  input[type=text] {
+    height: 1.5em;
+    margin-left: 0.5em;
+    padding: 0.25em;
+  }
+
+  .permissions-indicator {
+    width: 4em;
+    text-align: center;
+  }
+
+  .delete-member {
+    width: 1rem;
+    text-align:right;
+  }
+
+  > *:not(:last-child) {
+    margin-right: 0.5em;
+    margin-bottom: 0;
+  }
+}

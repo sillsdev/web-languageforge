@@ -3,6 +3,8 @@ import { NoticeService } from '../../../../bellows/core/notice/notice.service';
 
 export class InviteMemberFormController implements angular.IController {
   inviteLink: string;
+  emailInviteUser: object;
+
   static $inject = ['$scope', 'silNoticeService'];
   constructor(private $scope: angular.IScope) { }
 
@@ -18,6 +20,9 @@ export class InviteMemberFormController implements angular.IController {
 
 export const InviteMemberFormComponent: angular.IComponentOptions = {
   bindings: {
+    emailInviteUser: '<',
+    setEmailInviteUserAttr: '&',
+    onPermissionChanged: '<'
   },
   controller: InviteMemberFormController,
   templateUrl: '/angular-app/languageforge/lexicon/shared/share-with-others/invite-member-form.component.html'
