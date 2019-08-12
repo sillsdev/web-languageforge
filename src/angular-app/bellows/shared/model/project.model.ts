@@ -6,6 +6,8 @@ export interface Project {
   projectCode?: string;
   projectName: string;
   role: string;
+  anonymousUserRole: string;
+  reusableInviteLinkRole: string;
   siteName: string;
   type?: string;
   isArchived: boolean;

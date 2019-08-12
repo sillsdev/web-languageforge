@@ -1,0 +1,54 @@
+<div id="who-has-access" >
+  <div class="row" style="position: relative;">
+    <div class="col-6">
+      <b style="position: absolute; bottom: 0;">Who has access</b>
+    </div>
+    <div class="col-6">
+      <div class="float-right" style="position: relative;">
+        <input class="form-control" type="text" data-ng-model="$ctrl.userFilter" placeholder="Member List Filter">
+        <a class="clear-search-button" data-ng-show="$ctrl.userFilter != ''" title="Clear Filter" data-ng-click="$ctrl.userFilter = ''"><i class="fa fa-times" style="color:gray"></i></a>
+      </div>
+    </div>
+  </div>
+
+
+  <listview search="$ctrl.queryUserList()" items="$ctrl.allMembers" items-filter="$ctrl.userFilter" visible-items="$ctrl.visibleMembers" select="">
+    <ul class="list-group">
+      <li class="list-group-item user-summary-item">
+        <div>
+          <img src="/Site/views/shared/image/globe.png" class="rounded-circle" id="smallAvatarURL"/>
+        </div>
+        <div style="flex-grow: 1;">
+          <span ng-class="{'text-muted': $ctrl.specialPermissionTargets.anonymousUser.role === 'disabled'}">Anyone</span><br>
+          <div style="display: flex; flex-direction: row;">
+            <span ng-class="{'text-muted': $ctrl.specialPermissionTargets.anonymousUser.role === 'disabled'}">via</span>
+            <input type="text" class="form-control" value="{{$ctrl.projectUrl}}" ng-readonly="true" onfocus="this.select();">
+          </div>
+        </div>
+        <permissions-dropdown allow-disable="true" permission-target="$ctrl.specialPermissionTargets.anonymousUser"></permissions-dropdown>
+        <div class="delete-member"></div>
+      </li>
+
+      <li class="list-group-item user-summary-item" data-ng-repeat="user in $ctrl.visibleMembers">
+        <div>
+          <img src="{{$ctrl.getAvatarUrl(user.avatar_ref)}}" class="rounded-circle" id="smallAvatarURL" />
+        </div>
+        <div style="flex-grow: 1;" ng-class="{'text-muted': user.isInvitee}">
+          <span ng-if="user.name">{{user.name}}<br></span>
+          <span ng-if="!user.isInvitee">{{user.username}}</span>
+          <span ng-if="user.isInvitee" class="invited-user">{{user.username || user.email}} [invited]</span>
+          <span ng-if="$ctrl.sessionData.username === user.username"> (you)</span>
+        </div>
+        <div>
+          <div ng-if="$ctrl.userIsOwner(user)" class="permissions-indicator text-muted">owner</div>
+          <permissions-dropdown ng-if="!$ctrl.userIsOwner(user)" permission-target="user"
+                                on-permission-changed="$ctrl.onPermissionChanged($event)"
+                                selected="user.role"></permissions-dropdown>
+        </div>
+        <i class="fa fa-times delete-member" ng-click="$ctrl.visibleMembers.splice($index,1);"
+           ng-if="!$ctrl.userIsOwner(user) && $ctrl.sessionData.username !== user.username"></i>
+        <div class="delete-member" ng-if="$ctrl.userIsOwner(user) || $ctrl.sessionData.username === user.username"></div>
+      </li>
+    </ul>
+  </listview>
+</div>
