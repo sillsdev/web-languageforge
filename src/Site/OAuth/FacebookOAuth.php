@@ -12,25 +12,25 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken as OAuthAccessToken;
 use Silex\Application;
 use Site\OAuth\OAuthBase;
-use Site\OAuth\SelectAccountGoogleOAuthProvider;
+use Site\OAuth\SelectAccountFacebookOAuthProvider;
 use Symfony\Component\HttpFoundation\Request;
 
-class GoogleOAuth extends OAuthBase
+class FacebookOAuth extends OAuthBase
 {
     public function getProviderName(): string
     {
-        return "google";
+        return "facebook";
     }
 
     public function getFullSizeAvatarUrl(string $avatarUrl)
     {
-        // Google OAuth gives you avatar URLs that end in "?sz=50", but we want to specify our own size
-        $fullSizeUrl = preg_replace("/\\?sz=\\d+$/", "", $avatarUrl);
-        return is_null($fullSizeUrl) ? $avatarUrl : $fullSizeUrl;
+        // TODO: Learn what Facebook avatar URLs look like
+        return $avatarUrl;
     }
 
     protected function handleOAuthToken(Application $app, AbstractProvider $provider, OAuthAccessToken $token)
     {
+        error_log("Handling Facebook OAuth token");
         return $this->loginWithOAuthToken($app, $provider, $token);
     }
 
@@ -45,10 +45,11 @@ class GoogleOAuth extends OAuthBase
      */
     protected function getOAuthProvider($redirectUri): AbstractProvider
     {
-        $provider = new SelectAccountGoogleOAuthProvider([
-            'clientId' => GOOGLE_CLIENT_ID,
-            'clientSecret' => GOOGLE_CLIENT_SECRET,
+        $provider = new SelectAccountFacebookOAuthProvider([
+            'clientId' => FACEBOOK_CLIENT_ID,
+            'clientSecret' => FACEBOOK_CLIENT_SECRET,
             'redirectUri' => $redirectUri,
+            'graphApiVersion' => 'v4.0',
         ]);
         return $provider;
     }
