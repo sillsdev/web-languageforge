@@ -14,6 +14,10 @@ export class NoticeController implements angular.IController {
     });
   }
 
+  $onInit() {
+    this.noticeService.checkUrlForNotices();
+  }
+
   closeNotice(id: string): void {
     this.noticeService.removeById(id);
   }

@@ -228,7 +228,7 @@ class ProjectModel extends MapperModel
         $validRole = array_key_exists($this->inviteToken->defaultRole, $rolesArray);
         if(!$validRole)
         {
-            throw new ResourceNotAvailableException('Project ' . $projectId . '\'s invite token is associated with nonexistant role '
+            throw new ResourceNotAvailableException('Project ' . $projectId . '\'s invite token is associated with nonexistent role '
                 . $model->inviteToken->defaultRole);
         }
         $this->addUser($userId, $this->inviteToken->defaultRole);
@@ -340,7 +340,7 @@ class ProjectModel extends MapperModel
         if (array_key_exists($newRole, $validRoles)) {
             $this->inviteToken->defaultRole = $newRole;
         } else {
-            throw new \InvalidArgumentException("A nonexistant role tried to be linked to an invite token.");
+            throw new \InvalidArgumentException("A nonexistent role tried to be linked to an invite token.");
         }
     }
 

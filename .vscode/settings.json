@@ -1,5 +1,7 @@
 {
   "phpunit.args": [
-        "--configuration", "test/php/phpunit.xml"
-    ]
+    "--configuration",
+    "test/php/phpunit.xml"
+  ],
+  "phpcs.composerJsonPath": "src"
 }

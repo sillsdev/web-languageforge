@@ -27,16 +27,25 @@ class App extends Base
         /** @noinspection PhpUnusedParameterInspection */
         Request $request, Application $app, $appName, $projectId = ''
     ) {
-        // Check if an invite token should be processed
-        if (($appName == LfProjectModel::LEXICON_APP || $appName == 'projects') && $app['session']->get('inviteToken'))
-        {
+
+
+        /**
+         * TODO: This logic should be moved into a future Authentication handler.
+         * As of right now, Auth.php cannot give us the answer we need to know if
+         * Authentication was successfully or not, so we check and process the invite token
+         * here.  CJH - 2019-08
+         */
+        if ($app['session']->get('inviteToken')) {
             try
             {
                 $projectId = $this->processInviteToken($app);
             }
             catch (ResourceNotAvailableException $e)
             {
-                return $app->redirect('/app/projects#!/?errorMessage=' . base64_encode($e->getMessage()));
+                return $app->redirect(
+                    '/app/projects#!/?errorMessage=' .
+                    base64_encode($e->getMessage())
+                );
             } finally
             {
                 $app['session']->set('inviteToken', '');

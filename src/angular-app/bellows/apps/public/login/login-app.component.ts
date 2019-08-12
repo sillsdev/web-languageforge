@@ -5,10 +5,6 @@ import { NoticeService } from '../../../core/notice/notice.service';
 export class LoginAppController implements angular.IController {
   static $inject = ['silNoticeService'];
   constructor(private notice: NoticeService) { }
-
-  $onInit() {
-    this.notice.checkUrlForNotices();
-  }
 }
 
 export const LoginAppComponent: angular.IComponentOptions = {

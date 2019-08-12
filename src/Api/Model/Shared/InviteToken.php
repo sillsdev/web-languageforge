@@ -6,11 +6,6 @@ use Api\Model\Languageforge\Lexicon\LexRoles;
 
 class InviteToken
 {
-
-    public function __construct() {
-
-    }
-
     /** @var string */
     public $token;
 
