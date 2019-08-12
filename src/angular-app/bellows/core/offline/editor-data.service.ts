@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import {SemanticDomainsService} from '../../../languageforge/core/semantic-domains/semantic-domains.service';
+import {LexiconConfigService} from '../../../languageforge/lexicon/core/lexicon-config.service';
 import {LexiconUtilityService} from '../../../languageforge/lexicon/core/lexicon-utility.service';
 import {LexEntry} from '../../../languageforge/lexicon/shared/model/lex-entry.model';
 import {LexMultiValue} from '../../../languageforge/lexicon/shared/model/lex-multi-value.model';
@@ -62,13 +63,15 @@ export class EditorDataService {
     'sessionService', 'editorOfflineCache',
     'commentsOfflineCache',
     'semanticDomainsService',
-    'lexCommentService'
+    'lexCommentService',
+    'lexConfigService'
   ];
   constructor(private readonly $q: angular.IQService, private readonly notice: NoticeService,
               private readonly sessionService: SessionService, private readonly cache: EditorOfflineCacheService,
               private readonly commentsCache: CommentsOfflineCacheService,
               private readonly semanticDomains: SemanticDomainsService,
-              private readonly commentService: LexiconCommentService) { }
+              private readonly commentService: LexiconCommentService,
+              private readonly configService: LexiconConfigService) { }
 
   showInitialEntries = (): angular.IPromise<any> => {
     return this.filterAndSortEntries(true);
@@ -256,9 +259,7 @@ export class EditorDataService {
 
   sortEntries = (shouldResetVisibleEntriesList: boolean): angular.IPromise<any> => {
     const startTime = performance.now();
-    return this.sessionService.getSession().then(session => {
-      const config = session.projectSettings<LexiconProjectSettings>().config;
-
+    return this.configService.getEditorConfig().then(config => {
       // Copies entries into the arrays while preserving references to the arrays
       const entriesSorted = this.sortList(config, this.entries);
       UtilityService.arrayCopyRetainingReferences(entriesSorted, this.entries);
@@ -276,8 +277,7 @@ export class EditorDataService {
   }
 
   filterEntries = (shouldResetVisibleEntriesList: boolean): angular.IPromise<any> => {
-    return this.sessionService.getSession().then(session => {
-      const config = session.projectSettings<LexiconProjectSettings>().config;
+    return this.configService.getEditorConfig().then(config => {
       if (this.entryListModifiers.filterBy) {
         UtilityService.arrayCopyRetainingReferences(this.entries.filter((entry: any) => {
           return this.entryMeetsFilterCriteria(config, entry);
