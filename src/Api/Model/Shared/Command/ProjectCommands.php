@@ -359,11 +359,7 @@ class ProjectCommands
 
         $project->write();
 
-        if (!$result)
-        {
-            return 'Link generation failed. Please try again.';
-        }
-        return 'https://' . $project->siteName . '.org/invite/' . $newAuthToken;
+        return $project->website()->baseUrl() . '/invite/' . $newAuthToken;
     }
 
     /**
@@ -374,7 +370,7 @@ class ProjectCommands
     public static function getInviteLink($projectId)
     {
         $project = ProjectModel::getById($projectId);
-        return 'https://' . $project->siteName . '.org/invite/' . $project->inviteToken->token;
+        return $project->website()->baseUrl() . '/invite/' . $project->inviteToken->token;
     }
 
     /**
