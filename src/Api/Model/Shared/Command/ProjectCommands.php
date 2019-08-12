@@ -344,4 +344,72 @@ class ProjectCommands
 
         return $project->readByProperties(array('projectCode' => $code));
     }
+
+    /**
+     * @param string $projectId
+     * @param string $defaultRole
+     * @return string invite link to project
+     */
+    public static function createInviteLink($projectId, $defaultRole)
+    {
+        $project = ProjectModel::getById($projectId);
+
+        $newAuthToken = $project->generateNewInviteToken();
+        $project->setInviteTokenDefaultRole($defaultRole);
+
+        $project->write();
+
+        return $project->website()->baseUrl() . '/invite/' . $newAuthToken;
+    }
+
+    /**
+     * @param string $projectId
+     * @param string $defaultRole
+     * @return string invite link to project
+     */
+    public static function getInviteLink($projectId)
+    {
+        // TODO: check that invite token exists.  If not, throw exception.
+        // TODO: check that project invite sharing is enabled.  If not, throw exception if disabled.
+        $project = ProjectModel::getById($projectId);
+        return $project->website()->baseUrl() . '/invite/' . $project->inviteToken->token;
+    }
+
+    /**
+     * Removes the invite token from a project
+     * @param $projectId
+     */
+    public static function disableInviteToken($projectId)
+    {
+        $project = ProjectModel::getById($projectId);
+        $project->inviteToken->token = '';
+        $project->write();
+    }
+
+    /**
+     * Updates the role associated with an invite token
+     * @param $projectId
+     * @param $newRole the roleName to associate with
+     */
+    public static function updateInviteTokenRole($projectId, $newRole)
+    {
+        $project = ProjectModel::getById($projectId);
+        $project->setInviteTokenDefaultRole($newRole);
+        $project->write();
+    }
+
+    /**
+     * Add a user to the project based on the invite token for the project
+     * @param $projectId
+     * @param $newRole the value of the roles array to link
+     */
+    public static function useInviteToken($userId, $projectId) {
+        $model = ProjectModel::getById($projectId);
+        $model->addUserByInviteToken($userId);
+        $model->write();
+
+        $user = new UserModel($userId);
+        $user->addProject($projectId);
+        $user->write();
+    }
 }

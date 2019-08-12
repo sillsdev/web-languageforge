@@ -378,6 +378,26 @@ class Sf
         return ProjectCommands::getJoinRequests($this->projectId);
     }
 
+    public function project_createInviteLink($defaultRole)
+    {
+        return ProjectCommands::createInviteLink($this->projectId, $defaultRole);
+    }
+
+    public function project_getInviteLink()
+    {
+        return ProjectCommands::getInviteLink($this->projectId);
+    }
+
+    public function project_disableInviteToken()
+    {
+        ProjectCommands::disableInviteToken($this->projectId);
+    }
+
+    public function project_updateInviteTokenRole($newRole)
+    {
+        ProjectCommands::updateInviteTokenRole($this->projectId, $newRole);
+    }
+
     /**
      * Clear out the session projectId and permanently delete selected list of projects.
      *

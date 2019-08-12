@@ -2,6 +2,12 @@
 
 namespace Site\Controller;
 
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Library\Shared\SilexSessionHelper;
+use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
+
+use Api\Model\Shared\Mapper\MongoMapper;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
 
@@ -26,5 +32,36 @@ class Validate extends Base
             $app['session']->getFlashBag()->add('infoMessage', 'Congratulations!  Your email has been validated and you\'re ready to login.');
         }
         return $app->redirect('/auth/login');
+    }
+
+    public function processInviteAndRedirect(Application $app, $inviteToken = '')
+    {
+        // Attempt to find the project with the given invite link
+        try
+        {
+            $projectId = ProjectModel::getIdByInviteToken($inviteToken);
+
+        } catch (ResourceNotAvailableException $e)
+        {
+            $errorString = 'This invite link is not valid, it may have been disabled. Please check with the project manager';
+            $encodedError = base64_encode($errorString);
+            $redirectPath = $this->isLoggedIn($app) ? '/app/projects': '/auth/login';
+            $redirectPath .= '#!/?errorMessage=' . $encodedError;
+
+            return $app->redirect($redirectPath);
+        }
+
+        // Add the user based on the invite token if they are logged in, otherwise redirect to login
+        if ($this->isLoggedIn($app))
+        {
+            ProjectCommands::useInviteToken(SilexSessionHelper::getUserId($app), $projectId);
+            return $app->redirect('/app/lexicon/' . $projectId);
+        } else
+        {
+            $app['session']->set('inviteToken', $inviteToken);
+            $redirectPath = '/auth/login#!/?errorMessage=' . base64_encode('Please log in or create an account to access this project');
+            return $app->redirect($redirectPath);
+        }
+
     }
 }
