@@ -3,6 +3,7 @@ import * as angular from 'angular';
 /*
 * The options in the dropdown can be changed by using the `permissions=` attribute in HTML.
 * setting `allow-disable="true"` will add a disable option to the dropdown
+* setting `allow-delete="true"` will add a delete option to the dropdown with a corresponding `on-delete-target` call
 */
 
 export interface Permission {

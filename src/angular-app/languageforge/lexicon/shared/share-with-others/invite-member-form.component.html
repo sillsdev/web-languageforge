@@ -2,10 +2,12 @@
   <b>Invite a new member</b>
   <div class="inline-form" style="margin-top: 8px;">
     <label>via: </label>
-    <input type="email" class="form-control" placeholder="Email" ng-model="inviteUserEmail"
-           ng-change="$ctrl.setEmailInviteUserAttr('email', this.value)">
-    <button type="button" class="btn btn-primary"><i class="fa fa-paper-plane"></i></button>
-    <permissions-dropdown class="sm-no-margin" target="$ctrl.specialPermissionTargets.emailInviteUser"
+    <input type="email" class="form-control" placeholder="Email" ng-model="inviteUserEmail">
+    <button type="button" class="btn btn-primary"
+            ng-click="$ctrl.onSendEmailInvite({$event: {email: inviteUserEmail, role: $ctrl.emailInviteUserRole}})">
+      <i class="fa fa-paper-plane"></i>
+    </button>
+    <permissions-dropdown class="sm-no-margin" target="'email_invite_user'"
                           on-permission-changed="$ctrl.onPermissionChanged($event)"></permissions-dropdown>
   </div>
 

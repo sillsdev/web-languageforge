@@ -1,28 +1,34 @@
 import * as angular from 'angular';
-import { NoticeService } from '../../../../bellows/core/notice/notice.service';
+import { Permission } from './permissions-dropdown.component';
+import { SpecialPermissionTargets } from './user-management-app.component';
 
 export class InviteMemberFormController implements angular.IController {
+  specialPermissionTargets: SpecialPermissionTargets;
   inviteLink: string;
-  emailInviteUser: object;
+  emailInviteUserRole: string;
+  onSendEmailInvite: (params: { $event: { email: string, role: string } }) => void;
 
-  static $inject = ['$scope', 'silNoticeService'];
-  constructor(private $scope: angular.IScope) { }
+  constructor() { }
 
   $onInit(): void {
     this.inviteLink = this.generateInviteLink();
   }
 
   generateInviteLink(): string {
+    // TODO: get this invite link from the server
     return 'http://languageforge.org/join/5XxyT47eWBdS';
+  }
+
+  onPermissionChanged($event: {permission: Permission, target: any}) {
+    if ($event.target === 'email_invite_user') this.emailInviteUserRole = $event.permission.name;
   }
 
 }
 
 export const InviteMemberFormComponent: angular.IComponentOptions = {
   bindings: {
-    emailInviteUser: '<',
-    setEmailInviteUserAttr: '&',
-    onPermissionChanged: '<'
+    specialPermissionTargets: '<',
+    onSendEmailInvite: '&'
   },
   controller: InviteMemberFormController,
   templateUrl: '/angular-app/languageforge/lexicon/shared/share-with-others/invite-member-form.component.html'

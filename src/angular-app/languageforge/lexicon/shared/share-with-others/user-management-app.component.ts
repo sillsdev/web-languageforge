@@ -14,13 +14,12 @@ export interface SpecialPermissionTargets {
 export class UserManagementAppController implements angular.IController {
   getAvatarUrl = UtilityService.getAvatarUrl;
   allMembers: User[];
-  visibleMembers: User[];
+  visibleMembers: Array<Partial<User>>;
   userFilter: string = '';
   projectUrl = 'http://languageforge.org/app/lexicon/real_project_url';
   sessionData: any;
-  project: Partial<Project>;
+  project: Project;
   specialPermissionTargets: SpecialPermissionTargets;
-  emailInviteUser: Partial<User> = {};
 
   static $inject = ['$q', 'projectService', 'sessionService'];
   constructor(
@@ -42,10 +41,6 @@ export class UserManagementAppController implements angular.IController {
         reusableInviteLinkUser: {role: this.project.reusableInviteLinkRole}
       };
     });
-  }
-
-  setEmailInviteUserAttr(attr: string, value: string) {
-    this.emailInviteUser[attr] = value;
   }
 
   userisCurrentUser(user: User) {
@@ -79,6 +74,17 @@ export class UserManagementAppController implements angular.IController {
         }
       });
     });
+  }
+
+  onSendEmailInvite($event: { email: string, role: string }) {
+    // TODO: actually send the email
+    const freshInviteUser: Partial<User> = {
+      email: $event.email,
+      role: $event.role,
+      isInvitee: true,
+      avatar_ref: 'anonymoose.png'
+    };
+    this.visibleMembers.push(freshInviteUser);
   }
 
   removeUser(user: User) {

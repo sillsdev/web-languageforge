@@ -1,4 +1,4 @@
-<invite-member-form style="max-width: 30em;"></invite-member-form>
+<invite-member-form style="max-width: 30em;" on-send-email-invite="$ctrl.onSendEmailInvite($event)"></invite-member-form>
 
 <div id="who-has-access" style="max-width: 30em;">
   <div class="row" style="position: relative;">
@@ -7,7 +7,7 @@
     </div>
     <div class="col-6">
       <div class="float-right" style="position: relative;">
-        <input class="form-control" type="text" data-ng-model="$ctrl.userFilter" placeholder="Member List Filter">
+        <input class="form-control" type="text" data-ng-model="$ctrl.userFilter" placeholder="Filter Members">
         <a class="clear-search-button" data-ng-show="$ctrl.userFilter != ''" title="Clear Filter" data-ng-click="$ctrl.userFilter = ''"><i class="fa fa-times" style="color:gray"></i></a>
       </div>
     </div>
