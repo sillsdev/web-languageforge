@@ -1,31 +1,57 @@
 import * as angular from 'angular';
-import { CommentsOfflineCacheService } from '../../../../bellows/core/offline/comments-offline-cache.service';
+
+/*
+* The options in the dropdown can be changed by using the `permissions=` attribute in HTML.
+* setting `allow-disable="true"` will add a disable option to the dropdown
+*/
+
+export interface Permission {
+  name: string;
+  description: string;
+  icon: string;
+}
 
 export class PermissionsDropdownController implements angular.IController {
-  permissions: any[];
-  selectedPermission: object;
+  target: any;
+  permissions: Permission[];
+  selectedPermission: Permission;
+  selected: string;
+  allowDisable: boolean;
+  onPermissionChanged: (params: {$event: {permission: Permission, target: any}}) => void;
 
   static $inject = ['$scope'];
   constructor(private $scope: angular.IScope) { }
 
   $onInit(): void {
-    this.permissions = [
-      {name: 'edit', description: 'can edit', icon: 'pencil'},
-      {name: 'comment', description: 'can comment', icon: 'comment'},
-      {name: 'view', description: 'can view', icon: 'eye'}
+    this.permissions = this.permissions || [
+      {name: 'contributor', description: 'can edit', icon: 'pencil'},
+      {name: 'observer_with_comment', description: 'can comment', icon: 'comment'},
+      {name: 'observer', description: 'can view', icon: 'eye'}
     ];
+    if (this.allowDisable) {
+      this.permissions.push({name: 'disabled', description: 'turn off', icon: 'ban'});
+    }
 
-    this.setSelectedPermission(this.permissions[this.permissions.length-1]);
+    this.selectedPermission = this.permissions.find(permission => permission.name === this.selected)
+      || this.permissions[this.permissions.length-1];
   }
 
-  setSelectedPermission(permission: object) {
-    this.selectedPermission = permission;
+  selectPermission(permission: Permission) {
+    if (this.selectedPermission.name !== permission.name) {
+      this.selectedPermission = permission;
+      this.onPermissionChanged({ $event: { permission, target: this.target } });
+    }
   }
 
 }
 
 export const PermissionsDropdownComponent: angular.IComponentOptions = {
   bindings: {
+    target: '<',
+    selected: '<',
+    onPermissionChanged: '&',
+    onDeleteTarget: '&',
+    allowDisable: '<',
   },
   controller: PermissionsDropdownController,
   templateUrl: '/angular-app/languageforge/lexicon/shared/share-with-others/permissions-dropdown.component.html'

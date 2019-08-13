@@ -2,6 +2,7 @@ export class User {
   active: boolean = false;
   // noinspection TsLint
   avatar_ref?: string;
+  avatarUrl?: string;
   dateCreated: string = '';
   email: string = '';
   id: string = '';

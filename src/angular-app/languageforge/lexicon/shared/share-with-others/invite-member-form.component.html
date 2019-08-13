@@ -1,16 +1,23 @@
-<b>Invite a new member</b>
-<div class="inline-form">
-  <label>via: </label>
-  <input type="email" class="form-control" placeholder="Email">
-  <button type="button" class="btn btn-primary"><i class="fa fa-paper-plane"></i></button>
-  <user-permissions-dropdown></user-permissions-dropdown>
-</div>
-
-<b>or</b>
-<div class="inline-form">
-  <label>via: </label>
-  <div class="input-group">
-    <input type="text" class="form-control" value="{{$ctrl.inviteLink}}" ng-readonly="true" onfocus="this.select();">
+<div id="invite-member-form">
+  <b>Invite a new member</b>
+  <div class="inline-form" style="margin-top: 8px;">
+    <label>via: </label>
+    <input type="email" class="form-control" placeholder="Email" ng-model="inviteUserEmail"
+           ng-change="$ctrl.setEmailInviteUserAttr('email', this.value)">
+    <button type="button" class="btn btn-primary"><i class="fa fa-paper-plane"></i></button>
+    <permissions-dropdown class="sm-no-margin" target="$ctrl.specialPermissionTargets.emailInviteUser"
+                          on-permission-changed="$ctrl.onPermissionChanged($event)"></permissions-dropdown>
+    <div class="permissions-spacer d-none d-md-block"></div>
   </div>
-  <user-permissions-dropdown></user-permissions-dropdown>
+
+  <b>or</b>
+  <div class="inline-form">
+    <label>via: </label>
+    <div class="input-group">
+      <input type="text" class="form-control" value="{{$ctrl.inviteLink}}" ng-readonly="true" onfocus="this.select();">
+    </div>
+    <permissions-dropdown class="sm-no-margin" target="$ctrl.specialPermissionTargets.reusableInviteLinkUser"
+                          on-permission-changed="$ctrl.onPermissionChanged($event)"></permissions-dropdown>
+    <div class="permissions-spacer d-none d-md-block"></div>
+  </div>
 </div>

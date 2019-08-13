@@ -130,26 +130,11 @@ export class LexiconAppController implements angular.IController {
 
   openShareWithOthersModal(): void {
     const modalInstance = this.$modal.open({
-      templateUrl: '/angular-app/languageforge/lexicon/shared/share-with-others.modal.html',
-      controller: ['$scope', '$uibModalInstance',
-        ($scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
-          $scope.selected = {
-            code: '',
-            language: {}
-          };
-          $scope.add = () => {
-            $modalInstance.close($scope.selected);
-          };
-
-          $scope.close = $modalInstance.dismiss;
-        }
-      ],
-      windowTopClass: 'modal-select-language'
+      component: 'shareWithOthersModal'
     });
-    // modalInstance.result.then(selected => {
-    //   this.npsNewProject.languageCode = selected.code;
-    //   this.npsNewProject.language = selected.language;
-    // }, () => {});
+    modalInstance.result.then(data => {
+      // TODO: save the data if not already
+    }, () => {});
   }
 
   private setupConfig(rights: Rights, editorConfig: LexiconConfig): void {
