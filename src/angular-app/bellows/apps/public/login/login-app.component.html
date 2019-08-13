@@ -6,9 +6,23 @@
                 <sil-notices></sil-notices>
             </div>
 
-            <p><a href="/oauthcallback/google"><img src="/Site/views/shared/image/btn_google_signin_dark_normal_web.png"></a></p>
-            <p><a href="/oauthcallback/facebook"><img src="/Site/views/shared/image/facebook_login_button.png" width="191"></a></p>
-            <!-- TODO: Replace the PNG button with an HTML+CSS one to allow translation, as in http://tech.yeesiang.com/social-login-button-with-font-awesome-bootstrap/ -->
+            <p><a href="/oauthcallback/google">
+                <button type="button" class="social-button google">
+                    <span class="social-button__icon google">
+                        <img src="/Site/views/shared/image/google-logo.svg" width="22">
+                    </span>
+                    <span class="social-button__text google">Sign in with Google</span>
+                </button>
+            </a></p>
+
+            <p><a href="/oauthcallback/facebook">
+                <button type="button" class="social-button facebook">
+                    <span class="social-button__icon facebook">
+                        <img src="/Site/views/shared/image/facebook-logo.png" width="22">
+                    </span>
+                    <span class="social-button__text facebook">Sign in with Facebook</span>
+                </button>
+            </a></p>
             <form id="login-loginForm" action="/app/login_check" method="post"
                   accept-charset="utf-8" name="loginForm" novalidate>
                 <div class="form-group">

@@ -155,7 +155,11 @@ export class OAuthSignupAppController implements angular.IController {
     if (avatarRef) {
       if (avatarRef.startsWith('http')) {
         if (size) {
-          return avatarRef + '?sz=' + size;  // TODO: This will be different for Facebook
+          if (avatarRef.startsWith('https://graph.facebook.com')) {
+            return avatarRef + '?type=square&height=' + size;
+          } else {
+            return avatarRef + '?sz=' + size;
+          }
         } else {
           return avatarRef;
         }
