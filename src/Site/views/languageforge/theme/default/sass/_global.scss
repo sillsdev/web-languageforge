@@ -40,6 +40,11 @@
       height: initial;
     }
   }
+
+  #shareBtn {
+    font-size: 1em !important;
+    padding: 0 0.375rem;
+  }
 }
 
 .close-modal {
@@ -256,8 +261,24 @@
       }
     }
   }
+
+  ul.navbar-nav {
+    li {
+      display: flex;
+    }
+  }
+
+  #shareBtn {
+    margin: 12px;
+    font-size: 1.5em;
+
+    i.fa, span {
+      line-height: 24px;
+    }
+  }
 }
 
 .notices button.close {
   margin-right: 0.5em;
 }
+
