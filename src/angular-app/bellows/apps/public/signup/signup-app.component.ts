@@ -40,6 +40,8 @@ export class SignupAppController implements angular.IController {
     this.record.id = '';
     this.record.password = '';
 
+    (document.querySelector('input[name="name"]') as HTMLElement).focus();
+
     // Parse for user details if given
     const email = this.$location.search().e;
     if (email != null && email.length > 0) {

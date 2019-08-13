@@ -1,5 +1,4 @@
 <div class="text-center">
-    <h1>Login</h1>
     {% for infoMessage in app.session.getFlashBag.get('infoMessage') %}
         <div uib-alert class="alert-info">{{ infoMessage }}</div>
     {% endfor %}
