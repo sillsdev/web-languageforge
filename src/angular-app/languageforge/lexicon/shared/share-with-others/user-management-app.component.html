@@ -29,9 +29,9 @@
                    class="form-control" value="{{$ctrl.projectUrl}}" ng-readonly="true" onfocus="this.select();">
           </div>
         </div>
-        <permissions-dropdown allow-disable="true" permission-target="$ctrl.specialPermissionTargets.anonymousUser"
-                              on-permission-changed=$ctrl.onPermissionChanged($event)></permissions-dropdown>
-        <div class="delete-member"></div>
+        <permissions-dropdown allow-disable="true" target="$ctrl.specialPermissionTargets.anonymousUser"
+                              on-permission-changed=$ctrl.onPermissionChanged($event) class="sm-no-margin"></permissions-dropdown>
+        <div class="delete-member d-none d-md-block"></div>
       </li>
 
       <li class="list-group-item user-summary-item" data-ng-repeat="user in $ctrl.visibleMembers">
@@ -39,21 +39,24 @@
           <img src="{{$ctrl.getAvatarUrl(user.avatar_ref)}}" class="rounded-circle" id="smallAvatarURL" />
         </div>
         <div style="flex-grow: 1;" ng-class="{'text-muted': user.isInvitee}">
-          <span ng-if="user.name">{{user.name}}<br></span>
-          <span ng-if="!user.isInvitee">{{user.username}}</span>
-          <span ng-if="user.isInvitee" class="invited-user">{{user.username || user.email}} [invited]</span>
-          <span ng-if="$ctrl.sessionData.username === user.username"> (you)</span>
+          <span ng-if="user.name">{{user.name}}<span ng-if="$ctrl.sessionData.username === user.username"> (you)</span><br></span>
+          <span ng-if="!user.isInvitee" class='username-email'>{{user.username}}</span>
+          <span ng-if="user.isInvitee" class="invited-user username-email">{{user.username || user.email}} <br class="d-md-none">[invited]</span>
+          <span ng-if="$ctrl.sessionData.username === user.username && !user.name"> (you)</span>
         </div>
-        <div>
+        <div class="sm-no-margin">
           <div ng-if="$ctrl.userIsOwner(user)" class="permissions-indicator text-muted">owner</div>
-          <permissions-dropdown ng-if="!$ctrl.userIsOwner(user)" permission-target="user"
+          <permissions-dropdown ng-if="!$ctrl.userIsOwner(user)" target="user"
                                 on-permission-changed="$ctrl.onPermissionChanged($event)"
+                                on-delete-target="$ctrl.onDeleteTarget($event)"
+                                allow-delete="true"
                                 selected="user.role"></permissions-dropdown>
         </div>
-        <i class="fa fa-times delete-member" ng-click="$ctrl.visibleMembers.splice($index,1);"
+        <i class="fa fa-times delete-member d-none d-md-block" ng-click="$ctrl.removeUser(user);"
             ng-if="!$ctrl.userIsOwner(user) && $ctrl.sessionData.username !== user.username"></i>
-        <div class="delete-member" ng-if="$ctrl.userIsOwner(user) || $ctrl.sessionData.username === user.username"></div>
+        <div class="delete-member d-none d-md-block" ng-if="$ctrl.userIsOwner(user) || $ctrl.sessionData.username === user.username"></div>
       </li>
+      <div class="scroll-gradient" id="scroll-gradient-lower"></div>
     </ul>
   </listview>
 </div>

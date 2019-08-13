@@ -12,7 +12,7 @@ export interface Permission {
 }
 
 export class PermissionsDropdownController implements angular.IController {
-  permissionTarget: any;
+  target: any;
   permissions: Permission[];
   selectedPermission: Permission;
   selected: string;
@@ -39,7 +39,7 @@ export class PermissionsDropdownController implements angular.IController {
   selectPermission(permission: Permission) {
     if (this.selectedPermission.name !== permission.name) {
       this.selectedPermission = permission;
-      this.onPermissionChanged({$event: { permission, target: this.permissionTarget}});
+      this.onPermissionChanged({ $event: { permission, target: this.target } });
     }
   }
 
@@ -47,10 +47,11 @@ export class PermissionsDropdownController implements angular.IController {
 
 export const PermissionsDropdownComponent: angular.IComponentOptions = {
   bindings: {
-    allowDisable: '=',
+    target: '<',
+    selected: '<',
     onPermissionChanged: '&',
-    permissionTarget: '<',
-    selected: '<'
+    onDeleteTarget: '&',
+    allowDisable: '<',
   },
   controller: PermissionsDropdownController,
   templateUrl: '/angular-app/languageforge/lexicon/shared/share-with-others/permissions-dropdown.component.html'
