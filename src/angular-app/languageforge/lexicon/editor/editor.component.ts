@@ -48,15 +48,6 @@ class Show {
   entryListModifiers: boolean = false;
 }
 
-class TypeAhead {
-  limit: number;
-  matchCountCaption: string;
-  searchEntries?: (query: string) => void;
-  searchItemSelected: string;
-  searchResults: string[];
-  searchSelect?: (entry: LexEntry) => void;
-}
-
 export class LexiconEditorController implements angular.IController {
   lecConfig: LexiconConfig;
   lecInterfaceConfig: InterfaceConfig;
@@ -77,15 +68,15 @@ export class LexiconEditorController implements angular.IController {
 
   autoSaveTimer: angular.IPromise<void>;
   control: FieldControl = new FieldControl();
-  typeahead: TypeAhead;
 
   entries = this.editorService.entries;
   entryListModifiers = this.editorService.entryListModifiers;
   filteredEntries = this.editorService.filteredEntries;
   getEntryCommentCount = this.commentService.getEntryCommentCount.bind(this.commentService);
-  getPrimaryListItemForDisplay = this.editorService.getSortableValue;
+  getSortableValue = this.editorService.getSortableValue;
   visibleEntries = this.editorService.visibleEntries;
   unreadCount = this.activityService.unreadCount;
+  getMeaningForDisplay = this.editorService.getMeaningForDisplay;
 
   private pristineEntry: LexEntry = new LexEntry();
   private warnOfUnsavedEditsId: string;
@@ -132,6 +123,7 @@ export class LexiconEditorController implements angular.IController {
     this.$scope.$watch(() => this.lecConfig, () => {
       this.setSortAndFilterOptionsFromConfig();
     });
+    this.initFilterAndSearchOptions();
 
     this.sendReceive.setPollUpdateSuccessCallback(this.pollUpdateSuccess);
     this.sendReceive.setSyncProjectStatusSuccessCallback(this.syncProjectStatusSuccess);
@@ -148,8 +140,6 @@ export class LexiconEditorController implements angular.IController {
         this.saveCurrentEntry();
       }
     };
-
-    this.setupTypeAheadSearch();
 
     this.show.entryListModifiers = !(this.$window.localStorage.getItem('viewFilter') == null ||
       this.$window.localStorage.getItem('viewFilter') === 'false');
@@ -227,6 +217,7 @@ export class LexiconEditorController implements angular.IController {
     this.setCurrentEntry();
     this.$state.go('editor.list', {
       sortBy: this.$state.params.sortBy,
+      filterText: this.$state.params.filterText,
       sortReverse: this.$state.params.sortReverse,
       filterType: this.$state.params.filterType,
       filterBy: this.$state.params.filterBy
@@ -253,68 +244,63 @@ export class LexiconEditorController implements angular.IController {
     }
   }
 
-  setUrlParams(): void {
+  initFilterAndSearchOptions(): void {
     const clear = this.$scope.$watch(() => this.entryListModifiers.sortOptions.length > 0, (ready: boolean) => {
       if (!ready) return;
       clear(); // remove the watcher
-      this.$state.go('.', {
-        sortBy: this.entryListModifiers.sortBy.label,
-        sortReverse: this.entryListModifiers.sortReverse,
-        filterType: this.entryListModifiers.filterType,
-        filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
-      }, { notify: false });
+
       if (this.$state.params.sortBy) {
         this.entryListModifiers.sortBy =
-        this.setSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params.sortBy)[0];
-        this.sortEntries(true);
+        this.findSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params.sortBy);
       }
+      this.entryListModifiers.sortReverse = this.$state.params.sortReverse === 'true';
 
-      if (this.$state.params.sortReverse === 'true') {
-        this.entryListModifiers.sortReverse = true;
-        this.sortEntries(true);
-      } else {
-        this.entryListModifiers.sortReverse = false;
-        this.sortEntries(false);
-       }
       if (this.$state.params.filterType) {
         this.entryListModifiers.filterType = this.$state.params.filterType;
-        this.filterEntries(true);
       }
-      if (this.$state.params.filterBy) {
-        this.entryListModifiers.filterBy =
-        this.setSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params.filterBy)[0];
-        this.filterEntries(true);
+      if (this.$state.params.filterBy || this.$state.params.filterText) {
+        this.entryListModifiers.filterBy = {
+          text: this.$state.params.filterText || '',
+          option: this.$state.params.filterBy ?
+                  this.findSelectedFilter(this.entryListModifiers.filterOptions, this.$state.params.filterBy) : null
+        };
       }
+
+      this.filterAndSortEntries();
     });
   }
 
-  sortEntries(args: any): void {
-    this.$state.go('.', {
-      sortBy: this.entryListModifiers.sortBy.label,
-      sortReverse: this.entryListModifiers.sortReverse,
-      filterType: this.entryListModifiers.filterType,
-      filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
-    }, { notify: false });
-    this.editorService.sortEntries.apply(this, arguments).then(() => {
-      this.typeahead.searchEntries(this.typeahead.searchItemSelected);
-    });
+  clearSearchText = () => {
+    if (this.entryListModifiers.filterBy) {
+      this.entryListModifiers.filterBy.text = '';
+      this.filterAndSortEntries();
+    }
   }
 
-  filterEntries(args: any): void {
+  filterAndSortEntries(): void {
     this.$state.go('.', {
       sortBy: this.entryListModifiers.sortBy.label,
+      filterText: this.entryListModifiers.filterText(),
       sortReverse: this.entryListModifiers.sortReverse,
       filterType: this.entryListModifiers.filterType,
-      filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+      filterBy: this.entryListModifiers.filterByLabel()
     }, { notify: false });
-    this.editorService.filterEntries.apply(this, arguments).then(() => {
-      this.typeahead.searchEntries(this.typeahead.searchItemSelected);
-    });
+    this.editorService.filterAndSortEntries.apply(this, arguments);
+  }
+
+  filterSortOptionsActive() {
+    const mod = this.entryListModifiers;
+    return mod.filterBy && mod.filterBy.option || mod.sortBy.value !== 'default' || mod.sortReverse;
+  }
+
+  shouldShowFilterReset() {
+    const modifiers = this.entryListModifiers;
+    return modifiers.filterActive() || modifiers.sortBy.value !== 'default' || modifiers.sortReverse;
   }
 
   resetEntryListFilter(): void {
     this.entryListModifiers.filterBy = null;
-    this.filterEntries(true);
+    this.filterAndSortEntries();
   }
 
   hasUnsavedChanges(): boolean {
@@ -401,9 +387,10 @@ export class LexiconEditorController implements angular.IController {
               this.$state.go('.', {
                 entryId: entry.id,
                 sortBy: this.entryListModifiers.sortBy.label,
+                filterText: this.entryListModifiers.filterText(),
                 sortReverse: this.entryListModifiers.sortReverse,
                 filterType: this.entryListModifiers.filterType,
-                filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+                filterBy: this.entryListModifiers.filterByLabel()
               }, { notify: false });
               this.scrollListToEntry(entry.id, 'top');
             }
@@ -484,9 +471,10 @@ export class LexiconEditorController implements angular.IController {
         this.$state.go('.', {
           entryId: this.visibleEntries[iShowList].id,
           sortBy: this.entryListModifiers.sortBy.label,
+          filterText: this.entryListModifiers.filterText(),
           sortReverse: this.entryListModifiers.sortReverse,
           filterType: this.entryListModifiers.filterType,
-          filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+          filterBy: this.entryListModifiers.filterByLabel()
         }, { notify: false });
       } else {
         this.returnToList();
@@ -614,25 +602,40 @@ export class LexiconEditorController implements angular.IController {
     return lexeme;
   }
 
-  getMeaningForDisplay(entry: LexEntry): string {
-    let meaning = '';
-    if (entry.senses && entry.senses[0]) {
-      meaning = LexiconUtilityService.getMeaning(this.lecConfig,
-        this.lecConfig.entry.fields.senses as LexConfigFieldList, entry.senses[0]);
-    }
+  getPrimaryListItemForDisplay(entry: LexEntry) {
+    return this.highlightMatches(this.getSortableValue(this.lecConfig, entry));
+  }
 
-    if (!meaning) {
-      return '[Empty]';
-    }
+  getSecondaryListItemForDisplay(entry: LexEntry): string {
+    return this.highlightMatches(this.getMeaningForDisplay(this.lecConfig, entry));
+  }
 
-    return meaning;
+  highlightMatches(text: string) {
+    let filterText = this.entryListModifiers.filterText();
+    if (!filterText || text === '[Empty]') return text;
+
+    // FIXME this assumes the uppercase length of a string is the same as its lowercase, which is not necessarily true
+    //  e.g. 'ß'.length !== 'ß'.toUpperCase().length
+    filterText = filterText.toUpperCase();
+    const upperCaseText = text.toUpperCase();
+    let output = '';
+    let previousIndex = 0;
+    while (upperCaseText.indexOf(filterText, previousIndex) !== -1) {
+      const resultIndex = upperCaseText.indexOf(filterText, previousIndex);
+      const end = resultIndex + filterText.length;
+      output += text.slice(previousIndex, resultIndex) + '<span class="highlight-result">'
+              + text.slice(resultIndex, end) + '</span>';
+      previousIndex = end;
+    }
+    output += text.slice(previousIndex);
+    return output;
   }
 
   getCompactItemListOverlay(entry: LexEntry): string {
     let title;
     let subtitle;
     title = this.getWordForDisplay(entry);
-    subtitle = this.getMeaningForDisplay(entry);
+    subtitle = this.getMeaningForDisplay(this.lecConfig, entry);
     if (title.length > 19 || subtitle.length > 25) {
       return title + '         ' + subtitle;
     } else {
@@ -868,120 +871,21 @@ export class LexiconEditorController implements angular.IController {
     return parts;
   }
 
-  private setupTypeAheadSearch(): void {
-    this.typeahead = {
-      searchItemSelected: '',
-      searchResults: [],
-      limit: 50,
-      matchCountCaption: ''
-    };
-
-    this.typeahead.searchEntries = (query = '') => {
-      const blacklistKeys = [
-        'isDeleted',
-        'id',
-        'guid',
-        'translationGuid',
-        '$$hashKey',
-        'dateModified',
-        'dateCreated',
-        'projectId',
-        'authorInfo',
-        'fileName'
-      ];
-
-      const isBlacklisted = (key: string): boolean => {
-        const audio = '-audio';
-        return blacklistKeys.includes(key) || key.includes(audio, key.length - audio.length);
-      };
-
-      // TODO consider whitelisting all properties under customFields
-
-      const isMatch = (value: any): boolean => {
-        // toUpperCase is better than toLowerCase, but still has issues,
-        // e.g. 'ß'.toUpperCase() === 'SS'
-        const queryCapital = query.toUpperCase();
-        switch (value == null ? 'null' : typeof value) {
-          // Array.prototype.some tests whether some element satisfies the function
-          case 'object':
-            return Object.keys(value).some(key => !isBlacklisted(key) && isMatch(value[key]));
-          case 'string':
-            return value.toUpperCase().includes(queryCapital);
-          case 'null':
-            return false;
-          case 'boolean':
-            return false;
-          default:
-            console.error('Unexpected type ' + (typeof value) + ' on entry.');
-            return false;
-        }
-      };
-      const filteredEntries = this.filteredEntries.filter(isMatch);
-
-      const prioritizedEntries = {
-        wordBeginning: [] as LexEntry[],
-        word: [] as LexEntry[],
-        meaningBeginning: [] as LexEntry[],
-        meaning: [] as LexEntry[],
-        everythingElse: [] as LexEntry[]
-      };
-
-      for (const entry of filteredEntries) {
-        const word = this.getPrimaryListItemForDisplay(this.lecConfig, entry);
-        const meaning = this.getMeaningForDisplay(entry);
-        if (word.startsWith(query)) {
-          prioritizedEntries.wordBeginning.push(entry);
-        } else if (word.includes(query)) {
-          prioritizedEntries.word.push(entry);
-        } else if (meaning.startsWith(query)) {
-          prioritizedEntries.meaningBeginning.push(entry);
-        } else if (meaning.includes(query)) {
-          prioritizedEntries.meaning.push(entry);
-        } else {
-          prioritizedEntries.everythingElse.push(entry);
-        }
-      }
-
-      this.typeahead.searchResults = [].concat(
-        prioritizedEntries.wordBeginning,
-        prioritizedEntries.word,
-        prioritizedEntries.meaningBeginning,
-        prioritizedEntries.meaning,
-        prioritizedEntries.everythingElse
-      );
-      this.typeahead.matchCountCaption = '';
-      const numMatches = this.typeahead.searchResults.length;
-      if (numMatches > this.typeahead.limit) {
-        this.typeahead.matchCountCaption = this.typeahead.limit + ' of ' + numMatches + ' matches';
-      } else if (numMatches > 1) {
-        this.typeahead.matchCountCaption = numMatches + ' matches';
-      } else if (numMatches === 1) {
-        this.typeahead.matchCountCaption = numMatches + ' match';
-      }
-    };
-
-    this.typeahead.searchSelect = (entry: LexEntry) => {
-      this.typeahead.searchItemSelected = '';
-      this.typeahead.searchResults = [];
-      if (entry.id) {
-        this.editEntryAndScroll(entry.id);
-      }
-    };
-  }
-
   private goToEntry(entryId: string): void {
     if (this.$state.is('editor.entry')) {
       this.$state.go('.', {
         entryId,
         sortBy: this.entryListModifiers.sortBy.label,
+        filterText: this.entryListModifiers.filterText(),
         sortReverse: this.entryListModifiers.sortReverse,
         filterType: this.entryListModifiers.filterType,
-        filterBy: this.entryListModifiers.filterBy ? this.entryListModifiers.filterBy.label : 'null'
+        filterBy: this.entryListModifiers.filterByLabel()
       }, { notify: false });
     } else {
       this.$state.go('editor.entry', {
         entryId,
         sortBy: this.$state.params.sortBy,
+        filterText: this.$state.params.filterText,
         sortReverse: this.$state.params.sortReverse,
         filterType: this.$state.params.filterType,
         filterBy: this.$state.params.filterBy
@@ -1006,14 +910,8 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
-  private setSelectedFilter(collections: any[], params: string) {
-    if (collections && params) {
-      return this.$filter('filter')(collections, (item: any) => {
-        if (item.label === params) {
-          return item;
-        }
-      });
-    }
+  private findSelectedFilter(collections: any[], params: string) {
+    if (collections && params) return collections.filter(item => item.label === params)[0];
   }
 
   private setSortAndFilterOptionsFromConfig(): void {
@@ -1021,7 +919,10 @@ export class LexiconEditorController implements angular.IController {
       return;
     }
 
-    const sortOptions: SortOption[] = [];
+    const sortOptions: SortOption[] = [{
+      label: 'Default',
+      value: 'default'
+    }];
     const filterOptions: FilterOption[] = [];
     for (const entryFieldName of this.lecConfig.entry.fieldOrder) {
       const entryField = this.lecConfig.entry.fields[entryFieldName];

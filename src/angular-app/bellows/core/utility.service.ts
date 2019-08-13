@@ -45,6 +45,11 @@ export class UtilityService {
     Array.prototype.push.apply(target, extra);
   }
 
+  static isDigitsOnly(text: string) {
+    for (const char of text) if (char < '0' || char > '9') return false;
+    return text.length !== 0;
+  }
+
   // FixMe: move to sfchecks-utility service - IJH 2017-11
   readUsxFile(file: any): angular.IPromise<string> {
     return this.readFile(file, true);
