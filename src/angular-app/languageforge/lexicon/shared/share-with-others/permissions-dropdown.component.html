@@ -10,5 +10,9 @@
           {{ permission.description }} <i class="fa fa-check" ng-show="$ctrl.selectedPermission == permission"></i>
       </div>
     </li>
+    <div class="dropdown-divider" ng-if="$ctrl.allowDelete"></div>
+    <li class="dropdown-item" role="menuitem" ng-if="$ctrl.allowDelete">
+      <div ng-click="$ctrl.onDeleteTarget({$event: {target: $ctrl.target}})" class="text-danger">remove member from project</div>
+    </li>
   </ul>
 </div>

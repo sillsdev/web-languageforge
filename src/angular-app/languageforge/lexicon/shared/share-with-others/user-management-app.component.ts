@@ -34,7 +34,6 @@ export class UserManagementAppController implements angular.IController {
     });
     this.queryUserList().then(() => {
       this.visibleMembers = this.allMembers;
-      console.log(this.visibleMembers);
 
       // TODO: actually hook anonymousUserRole up to the backend
       this.project.anonymousUserRole = 'disabled';
@@ -42,17 +41,11 @@ export class UserManagementAppController implements angular.IController {
         anonymousUser: {role: this.project.anonymousUserRole},
         reusableInviteLinkUser: {role: this.project.reusableInviteLinkRole}
       };
-
-      // control the gradients for scrolling
-      const memberList: HTMLElement = document.getElementById('who-has-access');
-      const gradient: HTMLElement = document.getElementById('scroll-gradient-lower');
-      gradient.style.width = memberList.offsetWidth + 'px';
     });
   }
 
   setEmailInviteUserAttr(attr: string, value: string) {
     this.emailInviteUser[attr] = value;
-    console.log('emailInviteUser', this.emailInviteUser);
   }
 
   userisCurrentUser(user: User) {
@@ -89,10 +82,15 @@ export class UserManagementAppController implements angular.IController {
   }
 
   removeUser(user: User) {
-    const index = this.allMembers.indexOf(user);
-    this.allMembers.splice(index, 1);
+    const index = this.visibleMembers.indexOf(user);
+    this.visibleMembers.splice(index, 1);
     // TODO: actually remove the user from the project
-    console.log('remove user from project');
+  }
+
+  onDeleteTarget($event: { target: any }) {
+    if (($event.target as User).avatar_ref !== undefined) { // target is a User
+      this.removeUser($event.target);
+    }
   }
 
 }

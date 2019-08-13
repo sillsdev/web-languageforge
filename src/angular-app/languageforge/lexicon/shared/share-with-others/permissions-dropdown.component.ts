@@ -17,10 +17,11 @@ export class PermissionsDropdownController implements angular.IController {
   selectedPermission: Permission;
   selected: string;
   allowDisable: boolean;
-  onPermissionChanged: (params: {$event: {permission: Permission, target: any}}) => void;
+  allowDelete: boolean;
+  onPermissionChanged: (params: { $event: { permission: Permission, target: any } }) => void;
+  onDeleteTarget: (params: { $event: { target: any } }) => void;
 
-  static $inject = ['$scope'];
-  constructor(private $scope: angular.IScope) { }
+  constructor() { }
 
   $onInit(): void {
     this.permissions = this.permissions || [
@@ -33,7 +34,7 @@ export class PermissionsDropdownController implements angular.IController {
     }
 
     this.selectedPermission = this.permissions.find(permission => permission.name === this.selected)
-      || this.permissions[this.permissions.length-1];
+      || this.permissions[this.permissions.length - 1];
   }
 
   selectPermission(permission: Permission) {
@@ -52,6 +53,7 @@ export const PermissionsDropdownComponent: angular.IComponentOptions = {
     onPermissionChanged: '&',
     onDeleteTarget: '&',
     allowDisable: '<',
+    allowDelete: '<'
   },
   controller: PermissionsDropdownController,
   templateUrl: '/angular-app/languageforge/lexicon/shared/share-with-others/permissions-dropdown.component.html'
