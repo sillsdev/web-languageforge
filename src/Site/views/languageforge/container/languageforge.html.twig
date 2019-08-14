@@ -92,7 +92,8 @@
                                     {% verbatim %}
                                     <div data-ng-repeat="setting in $ctrl.header.settings">
                                         <div class="dropdown-divider" data-ng-show="setting.divider"></div>
-                                        <a id="{{ setting.id }}" class="dropdown-item" data-ng-href="{{ setting.href }}">{{ setting.label }}</a>
+                                        <a ng-if="setting.id === 'userManagementLink'" id="{{ setting.id }}" class="dropdown-item" data-ng-href="{{ setting.href }}" ng-click="$ctrl.openShareWithOthersModal()">{{ setting.label }}</a>
+                                        <a ng-if="setting.id !== 'userManagementLink'" id="{{ setting.id }}" class="dropdown-item" data-ng-href="{{ setting.href }}">{{ setting.label }}</a>
                                     </div>
                                     {% endverbatim %}
                                 </div>
@@ -104,7 +105,7 @@
                 <ul class="nav navbar-nav">
                     <li class='nav-item' ng-if="$ctrl.header.settings.length > 0 && $ctrl.currentUserIsProjectOwner">
                         <a id="shareBtn" class="btn btn-std my-auto" title="Share" href="#"
-                                         data-ng-click="$ctrl.openShareWithOthersModal()">
+                                         ng-click="$ctrl.openShareWithOthersModal()">
                             <span>Share </span><i class="fa fa-share-alt"></i>
                         </a>
                     </li>

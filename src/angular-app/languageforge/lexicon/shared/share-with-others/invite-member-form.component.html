@@ -1,6 +1,6 @@
 <div id="invite-member-form">
   <b>Invite a new member</b>
-  <div class="inline-form" style="margin-top: 8px;">
+  <div class="inline-invite-form" style="margin-top: 8px;">
     <label>via: </label>
     <input type="email" class="form-control" placeholder="Email" ng-model="inviteUserEmail">
     <button type="button" class="btn btn-primary"
@@ -12,7 +12,7 @@
   </div>
 
   <b>or</b>
-  <div class="inline-form">
+  <div class="inline-invite-form">
     <label>via: </label>
     <div class="input-group">
       <input type="text" class="form-control" value="{{$ctrl.inviteLink}}" ng-readonly="true" onfocus="this.select();">

@@ -13,7 +13,7 @@
     </div>
   </div>
 
-  <listview search="$ctrl.queryUserList()" items="$ctrl.allMembers" items-filter="$ctrl.userFilter" visible-items="$ctrl.visibleMembers" select="">
+  <listview search="$ctrl.loadMemberData()" items="$ctrl.allMembers" items-filter="$ctrl.userFilter" visible-items="$ctrl.visibleMembers" select="">
     <ul class="list-group">
       <li class="list-group-item user-summary-item">
         <div>
@@ -39,10 +39,10 @@
           <img src="{{$ctrl.getAvatarUrl(user.avatar_ref)}}" class="rounded-circle" id="smallAvatarURL" />
         </div>
         <div style="flex-grow: 1;" ng-class="{'text-muted': user.isInvitee}">
-          <span ng-if="user.name">{{user.name}}<span ng-if="$ctrl.sessionData.username === user.username"> (you)</span><br></span>
+          <span ng-if="user.name">{{user.name}}<span ng-if="$ctrl.userIsCurrentUser(user)"> (you)</span><br></span>
           <span ng-if="!user.isInvitee" class='username-email'>{{user.username}}</span>
           <span ng-if="user.isInvitee" class="invited-user username-email">{{user.username || user.email}} <br class="d-md-none">[invited]</span>
-          <span ng-if="$ctrl.sessionData.username === user.username && !user.name"> (you)</span>
+          <span ng-if="$ctrl.userIsCurrentUser(user) && !user.name"> (you)</span>
         </div>
         <div class="sm-no-margin">
           <div ng-if="$ctrl.userIsOwner(user)" class="permissions-indicator text-muted">owner</div>
@@ -53,25 +53,10 @@
                                 selected="user.role"></permissions-dropdown>
         </div>
         <i class="fa fa-times delete-member d-none d-md-block" ng-click="$ctrl.removeUser(user);"
-            ng-if="!$ctrl.userIsOwner(user) && $ctrl.sessionData.username !== user.username"></i>
-        <div class="delete-member d-none d-md-block" ng-if="$ctrl.userIsOwner(user) || $ctrl.sessionData.username === user.username"></div>
+            ng-if="!$ctrl.userIsOwner(user) && !$ctrl.userIsCurrentUser(user)"></i>
+        <div class="delete-member d-none d-md-block" ng-if="$ctrl.userIsOwner(user) || $ctrl.userIsCurrentUser(user)"></div>
       </li>
       <div class="scroll-gradient" id="scroll-gradient-lower"></div>
     </ul>
   </listview>
-</div>
-
-<div id="sharing-checkboxes" class="form-group">
-  <div class="form-check">
-    <input class="form-check-input" type="checkbox" value="" id="sharing-check-1">
-    <label class="form-check-label" for="sharing-check-1">
-      Allow others to share <i class="fa fa-share-alt"></i>
-    </label>
-  </div>
-  <div class="form-check">
-    <input class="form-check-input" type="checkbox" value="" id="sharing-check-2">
-    <label class="form-check-label" for="sharing-check-2">
-      Project is publicly listed on languageforge.org
-    </label>
-  </div>
 </div>

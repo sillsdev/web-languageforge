@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 import { Permission } from './permissions-dropdown.component';
-import { SpecialPermissionTargets } from './user-management-app.component';
+import { SpecialPermissionTargets } from './user-management.component';
 
 export class InviteMemberFormController implements angular.IController {
   specialPermissionTargets: SpecialPermissionTargets;
