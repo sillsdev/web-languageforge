@@ -1,7 +1,6 @@
 import * as angular from 'angular';
 
 import {HelpHeroService} from '../../bellows/core/helphero.service';
-import {ModalService} from '../../bellows/core/modal/modal.service';
 import {NoticeService} from '../../bellows/core/notice/notice.service';
 import {InterfaceConfig} from '../../bellows/shared/model/interface-config.model';
 import {User} from '../../bellows/shared/model/user.model';
@@ -30,7 +29,6 @@ export class LexiconAppController implements angular.IController {
 
   static $inject = ['$scope', '$location',
     '$q',
-    '$uibModal',
     'silNoticeService', 'lexConfigService',
     'lexProjectService',
     'lexEditorDataService',
@@ -39,7 +37,6 @@ export class LexiconAppController implements angular.IController {
     'helpHeroService'];
   constructor(private readonly $scope: angular.IScope, private readonly $location: angular.ILocationService,
               private readonly $q: angular.IQService,
-              private readonly $modal: ModalService,
               private readonly notice: NoticeService, private readonly configService: LexiconConfigService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly editorService: LexiconEditorDataService,
@@ -126,15 +123,6 @@ export class LexiconAppController implements angular.IController {
         this.editorConfig = configEditor;
       });
     }
-  }
-
-  openShareWithOthersModal(): void {
-    const modalInstance = this.$modal.open({
-      component: 'shareWithOthersModal'
-    });
-    modalInstance.result.then(data => {
-      // TODO: save the data if not already
-    }, () => {});
   }
 
   private setupConfig(rights: Rights, editorConfig: LexiconConfig): void {

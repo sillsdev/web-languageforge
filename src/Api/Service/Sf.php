@@ -263,9 +263,9 @@ class Sf
         return UserCommands::getCaptchaData($this->app['session']);
     }
 
-    public function user_sendInvite($toEmail)
+    public function user_sendInvite($toEmail, $lexRoleKey)
     {
-        return UserCommands::sendInvite($this->projectId, $this->userId, $this->website, $toEmail);
+        return UserCommands::sendInvite($this->projectId, $this->userId, $this->website, $toEmail, null, $lexRoleKey);
     }
 
     // ---------------------------------------------------------------

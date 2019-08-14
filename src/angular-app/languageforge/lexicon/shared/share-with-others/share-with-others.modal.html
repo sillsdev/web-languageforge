@@ -4,7 +4,22 @@
     <i ng-click="$ctrl.dismiss()" class="close-modal fa fa-times"></i>
   </div>
   <div class="modal-body">
-    <user-management-app></user-management-app>
+    <user-management project="$ctrl.project" session="$ctrl.session"></user-management>
+
+    <div id="sharing-checkboxes" class="form-group">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="sharing-check-1" ng-model="$ctrl.allowSharing" ng-change="$ctrl.setProjectSharability()">
+        <label class="form-check-label" for="sharing-check-1">
+          Allow others to share <i class="fa fa-share-alt"></i>
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="sharing-check-2" ng-model="$ctrl.listProject" ng-change="$ctrl.setProjectListability()">
+        <label class="form-check-label" for="sharing-check-2">
+          Project is publicly listed on languageforge.org
+        </label>
+      </div>
+    </div>
   </div>
   <div class="modal-footer d-block clearfix">
     <button class="btn btn-primary float-right" id="apply-sharing-config-button" ng-click="$ctrl.close()">

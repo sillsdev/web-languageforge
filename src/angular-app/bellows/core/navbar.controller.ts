@@ -4,8 +4,9 @@ import {InterfaceConfig} from '../shared/model/interface-config.model';
 import {ProjectSettings} from '../shared/model/project-settings.model';
 import {ProjectService, ProjectTypeNames} from './api/project.service';
 import {ApplicationHeaderService, HeaderData} from './application-header.service';
+import { ModalService } from './modal/modal.service';
 import {OfflineCacheUtilsService} from './offline/offline-cache-utils.service';
-import {SessionService} from './session.service';
+import {Session, SessionService} from './session.service';
 
 interface Rights {
   canCreateProject: boolean;
@@ -16,13 +17,16 @@ export class NavbarController implements angular.IController {
   projectTypesBySite: () => string[];
   header: HeaderData;
   interfaceConfig: InterfaceConfig;
+  currentUserIsProjectOwner: boolean;
   projectTypeNames: ProjectTypeNames;
   siteName: string;
 
-  static $inject = ['projectService', 'sessionService',
+  static $inject = ['$uibModal',
+    'projectService', 'sessionService',
     'offlineCacheUtils',
     'applicationHeaderService'];
-  constructor(private readonly projectService: ProjectService, private readonly sessionService: SessionService,
+  constructor(private readonly $modal: ModalService,
+              private readonly projectService: ProjectService, private readonly sessionService: SessionService,
               private readonly offlineCacheUtils: OfflineCacheUtilsService,
               private readonly applicationHeaderService: ApplicationHeaderService) { }
 
@@ -55,6 +59,7 @@ export class NavbarController implements angular.IController {
           this.useLocallyStoredLanguageCode();
         }
       }
+      this.currentUserIsProjectOwner = session.data.userId === session.data.project.ownerRef.id;
       this.rights.canCreateProject =
         session.hasSiteRight(this.sessionService.domain.PROJECTS, this.sessionService.operation.CREATE);
       this.siteName = session.baseSite();
@@ -65,6 +70,15 @@ export class NavbarController implements angular.IController {
     if ($event.interfaceConfig) {
       this.interfaceConfig = $event.interfaceConfig;
     }
+  }
+
+  openShareWithOthersModal(): void {
+    const modalInstance = this.$modal.open({
+      component: 'shareWithOthersModal'
+    });
+    modalInstance.result.then(data => {
+      // TODO: save the data if not already
+    }, () => {});
   }
 
   private isNotInProject(): boolean {

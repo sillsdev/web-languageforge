@@ -53,8 +53,9 @@ export class LexiconProjectService {
         ));
         settings.push(new HeaderSetting(
           'userManagementLink',
-          'User Management',
-          '/app/usermanagement/' + rights.session.project<LexiconProject>().id
+          'Share With Others',
+          '#',
+          false
         ));
         settings.push(new HeaderSetting(
           'dropdown-project-settings',

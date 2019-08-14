@@ -272,7 +272,7 @@ export class UserManagementMembersController implements angular.IController {
     } else if (this.addMode === 'invite') {
       this.queryUserList();
 
-      this.userService.sendInvite(this.typeahead.userName, result => {
+      this.userService.sendInvite(this.typeahead.userName, 'contributor', result => {
         if (result.ok && result.data) {
           this.notice.push(this.notice.SUCCESS, '\'' + this.typeahead.userName +
             '\' was invited to join the project ' + this.project.projectName);

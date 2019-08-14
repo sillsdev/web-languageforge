@@ -1,8 +1,10 @@
 import * as angular from 'angular';
+import { LexRoleKey } from './user-management.component';
 
 /*
 * The options in the dropdown can be changed by using the `permissions=` attribute in HTML.
 * setting `allow-disable="true"` will add a disable option to the dropdown
+* setting `allow-delete="true"` will add a delete option to the dropdown with a corresponding `on-delete-target` call
 */
 
 export interface Permission {
@@ -15,12 +17,13 @@ export class PermissionsDropdownController implements angular.IController {
   target: any;
   permissions: Permission[];
   selectedPermission: Permission;
-  selected: string;
+  initial: LexRoleKey | 'disabled';
   allowDisable: boolean;
-  onPermissionChanged: (params: {$event: {permission: Permission, target: any}}) => void;
+  allowDelete: boolean;
+  onPermissionChanged: (params: { $event: { permission: Permission, target: any } }) => void;
+  onDeleteTarget: (params: { $event: { target: any } }) => void;
 
-  static $inject = ['$scope'];
-  constructor(private $scope: angular.IScope) { }
+  constructor() { }
 
   $onInit(): void {
     this.permissions = this.permissions || [
@@ -32,8 +35,8 @@ export class PermissionsDropdownController implements angular.IController {
       this.permissions.push({name: 'disabled', description: 'turn off', icon: 'ban'});
     }
 
-    this.selectedPermission = this.permissions.find(permission => permission.name === this.selected)
-      || this.permissions[this.permissions.length-1];
+    this.selectedPermission = this.permissions.find(permission => permission.name === this.initial)
+      || this.permissions[this.permissions.length - 1];
   }
 
   selectPermission(permission: Permission) {
@@ -48,10 +51,11 @@ export class PermissionsDropdownController implements angular.IController {
 export const PermissionsDropdownComponent: angular.IComponentOptions = {
   bindings: {
     target: '<',
-    selected: '<',
+    initial: '<',
     onPermissionChanged: '&',
     onDeleteTarget: '&',
     allowDisable: '<',
+    allowDelete: '<'
   },
   controller: PermissionsDropdownController,
   templateUrl: '/angular-app/languageforge/lexicon/shared/share-with-others/permissions-dropdown.component.html'

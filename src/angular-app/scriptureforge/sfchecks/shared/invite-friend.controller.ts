@@ -32,7 +32,7 @@ export const SfChecksInviteFriendModule = angular
     });
 
     $scope.sendInvite = function sendInvite() {
-      userService.sendInvite($scope.email).then(result => {
+      userService.sendInvite($scope.email, 'contributor').then(result => {
         if (result.ok) {
           notice.push(notice.SUCCESS, 'An invitation email has been sent to ' + $scope.email);
           $scope.showInviteForm = false;
