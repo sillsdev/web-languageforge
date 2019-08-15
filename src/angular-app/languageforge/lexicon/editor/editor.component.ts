@@ -215,6 +215,7 @@ export class LexiconEditorController implements angular.IController {
   returnToList(): void {
     this.saveCurrentEntry();
     this.setCurrentEntry();
+    this.hideRightPanelWithoutAnimation();
     this.$state.go('editor.list', {
       sortBy: this.$state.params.sortBy,
       filterText: this.$state.params.filterText,
@@ -716,6 +717,12 @@ export class LexiconEditorController implements angular.IController {
       }, delay, 1);
     }
   }
+
+  hideRightPanelWithoutAnimation = (): void => {
+    this.rightPanelVisible = false;
+    this.control.rightPanelVisible = this.rightPanelVisible;
+    this.setCommentContext('');
+}
 
   setCommentContext = (contextGuid: string): void => {
     this.commentContext.contextGuid = contextGuid;
