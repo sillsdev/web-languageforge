@@ -76,9 +76,9 @@ export class UserManagementController implements angular.IController {
   }
 
   removeUser(user: User) {
-    const index = this.visibleMembers.indexOf(user);
-    this.visibleMembers.splice(index, 1);
-    // TODO: actually remove the user from the project
+    this.projectService.removeUsers([user.id]).then(() => {
+      this.loadMemberData();
+    });
   }
 
   onDeleteTarget($event: { target: any }) {

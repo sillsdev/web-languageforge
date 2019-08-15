@@ -617,7 +617,7 @@ class UserCommandsTest extends TestCase
         $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
-        $project->addUser($invitingUserId, ProjectRoles::CONTRIBUTOR);
+        $project->addUser($invitingUserId, ProjectRoles::MANAGER);
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
@@ -650,7 +650,7 @@ class UserCommandsTest extends TestCase
         $toEmail = 'someone@example.com';
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
-        $project->addUser($invitingUserId, ProjectRoles::CONTRIBUTOR);
+        $project->addUser($invitingUserId, ProjectRoles::MANAGER);
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
@@ -675,7 +675,7 @@ class UserCommandsTest extends TestCase
         $someoneUserId = self::$environ->createUser('someone', 'Someone', $toEmail);
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
-        $project->addUser($invitingUserId, ProjectRoles::CONTRIBUTOR);
+        $project->addUser($invitingUserId, ProjectRoles::MANAGER);
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
@@ -700,7 +700,7 @@ class UserCommandsTest extends TestCase
         $toEmail = 'someone@example.com';
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
-        $project->addUser($invitingUserId, ProjectRoles::CONTRIBUTOR);
+        $project->addUser($invitingUserId, ProjectRoles::MANAGER);
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
@@ -729,7 +729,7 @@ class UserCommandsTest extends TestCase
         $someoneUserId = self::$environ->createUser('someone', 'Someone', $toEmail);
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
-        $project->addUser($invitingUserId, ProjectRoles::CONTRIBUTOR);
+        $project->addUser($invitingUserId, ProjectRoles::MANAGER);
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
@@ -746,12 +746,10 @@ class UserCommandsTest extends TestCase
     /** @throws Exception */
     public function testSendInvite_InvitingUserLacksAuthorityToInviteManager()
     {
-        $ownerUserId = self::$environ->createUser('owner', 'Owner Name', 'owner@example.com');
         $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
         $toEmail = 'someone@example.com';
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
-        $project->addUser($ownerUserId, ProjectRoles::MANAGER);
         $project->addUser($invitingUserId, ProjectRoles::CONTRIBUTOR);
         $project->write();
         $delivery = new MockUserCommandsDelivery();

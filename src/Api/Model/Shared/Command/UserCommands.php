@@ -581,7 +581,7 @@ class UserCommands
             $userIsAuthorized = in_array($invitingUserRole, $authorizedRoles);
         }
 
-        if ($invitingUserRole !== ProjectRoles::MANAGER) throw new Exception("Not implemented: Non-managers cannot send invites.");
+        if ($invitingUserRole !== ProjectRoles::MANAGER) throw new \Exception("Not implemented: Non-managers cannot send invites.");
 
         if (!$userIsAuthorized) throw new \Exception("User does not have permission to invite someone of that role (or invalid roleKey).");
 
