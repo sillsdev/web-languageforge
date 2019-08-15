@@ -2,6 +2,13 @@
 
 {% block content %}
     <div id="app-container">
+        {% if isIE %}
+            <div id="ie-alert" class="alert alert-danger">
+                It looks like you're using Internet Explorer.<br/>
+                This website is not designed for Internet Explorer, and some things may not work as expected.<br/>
+                Please use a different browser (such as <a href="https://www.microsoft.com/en-us/windows/microsoft-edge">Microsoft Edge</a>, <a href="https://google.com/chrome">Google Chrome</a>, or <a href="https://mozilla.org/firefox">Mozilla Firefox</a>) to browse this site.
+            </div>
+        {% endif %}
         {% include appFolder~'/'~appName~'.html' %}
     </div>
 
