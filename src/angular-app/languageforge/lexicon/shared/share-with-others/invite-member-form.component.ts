@@ -1,9 +1,9 @@
 import * as angular from 'angular';
 import { Permission } from './permissions-dropdown.component';
-import { SpecialPermissionTargets } from './user-management.component';
+import { PermissionTarget } from './user-management.component';
 
 export class InviteMemberFormController implements angular.IController {
-  specialPermissionTargets: SpecialPermissionTargets;
+  reusableInviteLinkUser: PermissionTarget;
   inviteLink: string;
   emailInviteUserRole: string;
   onSendEmailInvite: (params: { $event: { email: string, role: string } }) => void;
@@ -28,7 +28,7 @@ export class InviteMemberFormController implements angular.IController {
 
 export const InviteMemberFormComponent: angular.IComponentOptions = {
   bindings: {
-    specialPermissionTargets: '<',
+    reusableInviteLinkUser: '<',
     onSendEmailInvite: '&'
   },
   controller: InviteMemberFormController,

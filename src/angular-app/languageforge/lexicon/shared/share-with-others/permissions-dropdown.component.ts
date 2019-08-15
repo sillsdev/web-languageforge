@@ -1,5 +1,7 @@
 import * as angular from 'angular';
-import { LexRoleKey } from './user-management.component';
+import { User } from '../../../../bellows/shared/model/user.model';
+import { LexRoleKey } from '../model/lexicon-project.model';
+import { PermissionTarget } from './user-management.component';
 
 /*
 * The options in the dropdown can be changed by using the `permissions=` attribute in HTML.
@@ -14,7 +16,7 @@ export interface Permission {
 }
 
 export class PermissionsDropdownController implements angular.IController {
-  target: any;
+  target: Partial<User> | PermissionTarget;
   permissions: Permission[];
   selectedPermission: Permission;
   initial: LexRoleKey | 'disabled';

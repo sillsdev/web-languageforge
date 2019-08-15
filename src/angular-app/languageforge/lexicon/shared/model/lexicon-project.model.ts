@@ -7,6 +7,8 @@ export interface LexiconProject extends Project {
   sendReceive?: SendReceive;
 }
 
+export type LexRoleKey = 'manager' | 'contributor' | 'observer_with_comment' | 'observer' | 'tech_support';
+
 export class SendReceive {
   credentialsStatus?: string;
   isUnchecked?: boolean;

@@ -1,4 +1,3 @@
-import { LexRoleKey } from '../../../languageforge/lexicon/shared/share-with-others/user-management.component';
 import { ApiService, JsonRpcCallback } from './api.service';
 
 export class UserService {
@@ -74,7 +73,7 @@ export class UserService {
     return this.api.call('user_create', [params], callback);
   }
 
-  sendInvite(toEmail: string, roleKey: LexRoleKey, callback?: JsonRpcCallback) {
+  sendInvite(toEmail: string, roleKey: string, callback?: JsonRpcCallback) {
     return this.api.call('user_sendInvite', [toEmail, roleKey], callback);
   }
 

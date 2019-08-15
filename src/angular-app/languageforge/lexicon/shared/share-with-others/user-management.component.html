@@ -1,4 +1,5 @@
-<invite-member-form style="max-width: 30em;" on-send-email-invite="$ctrl.onSendEmailInvite($event)"></invite-member-form>
+<invite-member-form style="max-width: 30em;" on-send-email-invite="$ctrl.onSendEmailInvite($event)"
+                    reusable-invite-link-user="$ctrl.reusableInviteLinkUser"></invite-member-form>
 
 <div id="who-has-access" style="max-width: 30em;">
   <div class="row" style="position: relative;">
@@ -29,8 +30,8 @@
                    class="form-control" value="{{$ctrl.projectUrl}}" ng-readonly="true" onfocus="this.select();">
           </div>
         </div>
-        <permissions-dropdown allow-disable="true" target="$ctrl.specialPermissionTargets.anonymousUser" initial="'disabled'"
-                              on-permission-changed=$ctrl.onPermissionChanged($event) class="sm-no-margin"></permissions-dropdown>
+        <permissions-dropdown allow-disable="true" target="$ctrl.anonymousUser" initial="'disabled'"
+                              on-permission-changed=$ctrl.onSpecialPermissionChanged($event) class="sm-no-margin"></permissions-dropdown>
         <div class="delete-member d-none d-md-block"></div>
       </li>
 
@@ -47,7 +48,7 @@
         <div class="sm-no-margin">
           <div ng-if="$ctrl.userIsOwner(user)" class="permissions-indicator text-muted">owner</div>
           <permissions-dropdown ng-if="!$ctrl.userIsOwner(user)" target="user"
-                                on-permission-changed="$ctrl.onPermissionChanged($event)"
+                                on-permission-changed="$ctrl.onUserPermissionChanged($event)"
                                 on-delete-target="$ctrl.onDeleteTarget($event)"
                                 allow-delete="true"
                                 initial="user.role"></permissions-dropdown>

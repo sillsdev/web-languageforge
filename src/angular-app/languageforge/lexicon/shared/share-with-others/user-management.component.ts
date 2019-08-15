@@ -5,13 +5,12 @@ import { Session } from '../../../../bellows/core/session.service';
 import { UtilityService } from '../../../../bellows/core/utility.service';
 import { Project } from '../../../../bellows/shared/model/project.model';
 import { User } from '../../../../bellows/shared/model/user.model';
+import { LexRoleKey } from '../model/lexicon-project.model';
 import { Permission } from './permissions-dropdown.component';
 
-export type LexRoleKey = 'manager' | 'contributor' | 'observer_with_comment' | 'observer';
-
-export interface SpecialPermissionTargets {
-  anonymousUser: {role: string};
-  reusableInviteLinkUser: {role: string};
+export interface PermissionTarget {
+  name: string;
+  role: string;
 }
 
 export class UserManagementController implements angular.IController {
@@ -22,7 +21,8 @@ export class UserManagementController implements angular.IController {
   projectUrl = 'http://languageforge.org/app/lexicon/real_project_url';
   project: Project;
   session: Session;
-  specialPermissionTargets: SpecialPermissionTargets;
+  anonymousUser: PermissionTarget;
+  reusableInviteLinkUser: PermissionTarget;
 
   static $inject = ['$q', 'projectService', 'userService'];
   constructor(
@@ -32,11 +32,11 @@ export class UserManagementController implements angular.IController {
 
   $onInit(): void {
     // TODO: actually hook anonymousUserRole up to the backend
+    // TODO: actually hook reusableInviteLinkRole up to the backend
     this.project.anonymousUserRole = 'disabled';
-    this.specialPermissionTargets = {
-      anonymousUser: {role: this.project.anonymousUserRole},
-      reusableInviteLinkUser: {role: this.project.reusableInviteLinkRole}
-    };
+    this.project.reusableInviteLinkRole = 'disabled';
+    this.anonymousUser = { name: 'annonymousUser', role: this.project.anonymousUserRole };
+    this.reusableInviteLinkUser = { name: 'reusableInviteLinkUser', role: this.project.reusableInviteLinkRole };
   }
 
   userisCurrentUser(user: User) {
@@ -47,8 +47,14 @@ export class UserManagementController implements angular.IController {
     return user.id === this.project.ownerRef.id;
   }
 
-  onPermissionChanged($event: {permission: Permission, target: any}) {
+  onUserPermissionChanged($event: {permission: Permission, target: Partial<User>}) {
     $event.target.role = $event.permission.name;
+    this.projectService.updateUserRole($event.target.id, $event.permission.name);
+  }
+
+  onSpecialPermissionChanged($event: {permission: Permission, target: PermissionTarget}) {
+    $event.target.role = $event.permission.name;
+    console.log('TODO: actually set ' + $event.target.name + ' permissions to ' + $event.target.role);
   }
 
   loadMemberData(): angular.IPromise<void> {
