@@ -162,11 +162,10 @@ export class LexiconAppController implements angular.IController {
     Offline.options.checks = { xhr: { url: '/offlineCheck.txt' } };
 
     // Set the page's Language Forge title, font size, and nav's background color
-    function setTitle(text: string, fontSize: string, backgroundColor: string): void {
-      const title = document.querySelector('nav .navbar-brand') as HTMLElement;
-      title.textContent = text;
-      title.style.fontSize = fontSize;
-      (document.querySelector('nav.navbar') as HTMLElement).style.backgroundColor = backgroundColor;
+    function setTitle(text: string, backgroundColorA: string, backgroundColorB: string): void {
+      (document.querySelector('nav .navbar-brand .website-title') as HTMLElement).textContent = text;
+      (document.querySelectorAll('nav.navbar')[0] as HTMLElement).style.backgroundColor = backgroundColorA;
+      (document.querySelectorAll('nav.navbar-expand')[1] as HTMLElement).style.backgroundColor = backgroundColorB;
     }
 
     let offlineMessageId: string;
@@ -183,7 +182,7 @@ export class LexiconAppController implements angular.IController {
     });
 
     Offline.on('down', () => {
-      setTitle('Language Forge Offline', '0.8em', '#555');
+      setTitle('Language Forge Offline', '#555', '#777');
       offlineMessageId = this.notice.push(this.notice.ERROR, 'You are offline. Some features are not available', null,
         true, 5 * 1000);
       this.online = false;

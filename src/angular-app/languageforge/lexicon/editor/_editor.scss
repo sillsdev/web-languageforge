@@ -302,9 +302,11 @@ dc-entry .card {
         }
     }
     .lexiconItemListContainer {
+      margin-bottom: 15px;
+      @include media-breakpoint-up(sm) {
         height: 460px;
         overflow: auto;
-        margin-bottom: 15px;
+        }
     }
     .lexiconListItem.active {
         cursor: default;
