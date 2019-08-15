@@ -42,8 +42,12 @@
   }
 
   #shareBtn {
-    font-size: 1em !important;
     padding: 0 0.375rem;
+    font-size: 1em !important;
+
+    i.fa {
+      padding-right: 0.5em;
+    }
   }
 }
 
@@ -264,6 +268,8 @@
   }
 
   ul.navbar-nav {
+    flex-flow: row;
+
     li {
       display: flex;
     }
@@ -271,10 +277,12 @@
 
   #shareBtn {
     margin: 12px;
-    font-size: 1.5em;
+    border: 1px solid white;
+
 
     i.fa, span {
       line-height: 24px;
+      font-size: 1rem;
     }
   }
 }
