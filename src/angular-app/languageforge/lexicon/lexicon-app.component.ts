@@ -60,12 +60,14 @@ export class LexiconAppController implements angular.IController {
               this.users = users;
             }
             this.setupConfig(rights, editorConfig);
+            this.setUpCustomFonts();
             finishedPreloading = true;
           }).then(() => { // end of path "B" -- user can edit
             if (finishedPreloading && !this.finishedLoading) this.postLoad();
           });
         } else {
           this.setupConfig(rights, editorConfig);
+          this.setUpCustomFonts();
           finishedPreloading = true;
         }
 
@@ -88,6 +90,29 @@ export class LexiconAppController implements angular.IController {
     });
 
     this.setupOffline();
+  }
+
+  setUpCustomFonts() {
+    const fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, '
+                   + '"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
+    if (fontFamily !== window.getComputedStyle(document.body).fontFamily) {
+      console.warn('Default fonts may have changed and need to be updated here.');
+    }
+
+    const div = document.createElement('div');
+    const inputSystems = this.editorConfig.inputSystems;
+    const userFonts = Object.keys(inputSystems).map(key => inputSystems[key].cssFontFamily)
+                  .filter(font => {
+                    // ensure it's a valid font value so a single invalid font won't affect other fonts
+                    div.style.fontFamily = font;
+                    return div.style.fontFamily !== '';
+                  }).map(font => `"${font}"`).join(', ');
+
+    const style = document.createElement('style');
+    document.head.appendChild(style);
+    const sheet = style.sheet as any;
+    sheet.insertRule('.user-fonts {font-family: ' + fontFamily + ';}', 0);
+    sheet.rules[0].style.setProperty('font-family', fontFamily + (userFonts ? ', ' + userFonts : ''));
   }
 
   $onDestroy(): void {

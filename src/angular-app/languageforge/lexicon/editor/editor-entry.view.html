@@ -77,7 +77,7 @@
                         <div class="col d-none d-md-block">
                             <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="$ctrl.show.more()">
                                 <div class="list-group">
-                                    <div id="entryId_{{entry.id}}" class="list-group-item lexiconListItemCompact"
+                                    <div id="entryId_{{entry.id}}" class="list-group-item lexiconListItemCompact user-fonts"
                                          data-ng-class="{selected: entry.id == $ctrl.currentEntry.id, listItemHasComment: $ctrl.getEntryCommentCount(entry.id) > 0}"
                                          title="{{$ctrl.getCompactItemListOverlay(entry)}}"
                                          data-ng-repeat="entry in $ctrl.visibleEntries track by entry.id" data-ng-click="$ctrl.editEntry(entry.id)">
