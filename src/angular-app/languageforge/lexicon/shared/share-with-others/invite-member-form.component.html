@@ -4,20 +4,31 @@
     <label>via: </label>
     <input type="email" class="form-control" placeholder="Email" ng-model="inviteUserEmail">
     <button type="button" class="btn btn-primary"
-            ng-click="$ctrl.onSendEmailInvite({$event: {email: inviteUserEmail, role: $ctrl.emailInviteUserRole}})">
+            ng-click="$ctrl.onSendEmailInvite({$event: {email: inviteUserEmail, role: $ctrl.emailInviteRole}})">
       <i class="fa fa-paper-plane"></i>
     </button>
-    <permissions-dropdown class="sm-no-margin" target="'email_invite_user'" initial="'contributor'"
-                          on-permission-changed="$ctrl.onPermissionChanged($event)"></permissions-dropdown>
+    <role-dropdown class="sm-no-margin"
+                          target="'email_invite'"
+                          roles="$ctrl.emailInviteRoles"
+                          selected-role="$ctrl.emailInviteRole"
+                          on-role-changed="$ctrl.onRoleChanged($event)"></role-dropdown>
   </div>
 
   <b>or</b>
   <div class="inline-invite-form">
     <label>via: </label>
     <div class="input-group">
-      <input type="text" class="form-control" value="{{$ctrl.inviteLink}}" ng-readonly="true" onfocus="this.select();">
+      <input type="text" class="form-control"
+             ng-model="$ctrl.inviteLink"
+             ng-readonly="true"
+             ng-disabled="!$ctrl.inviteLink"
+             placeholder="Reusable Invite Link"
+             onfocus="this.select();">
     </div>
-    <permissions-dropdown class="sm-no-margin" target="$ctrl.specialPermissionTargets.reusableInviteLinkUser" initial="'contributor'"
-                          on-permission-changed="$ctrl.onPermissionChanged($event)"></permissions-dropdown>
+    <role-dropdown class="sm-no-margin"
+                          target="'reusable_invite_link'"
+                          roles="$ctrl.reusableInviteLinkRoles"
+                          selected-role="$ctrl.project.inviteToken.defaultRole"
+                          on-role-changed="$ctrl.onRoleChanged($event)"></role-dropdown>
   </div>
 </div>

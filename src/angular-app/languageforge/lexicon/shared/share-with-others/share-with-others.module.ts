@@ -1,7 +1,7 @@
 import * as angular from 'angular';
 
 import { InviteMemberFormComponent } from './invite-member-form.component';
-import { PermissionsDropdownComponent } from './permissions-dropdown.component';
+import { RoleDropdownComponent } from './role-dropdown.component';
 import { ShareWithOthersComponent } from './share-with-others.component';
 import { UserManagementComponent } from './user-management.component';
 
@@ -11,6 +11,6 @@ export const ShareWithOthersModule = angular
   ])
   .component('shareWithOthersModal', ShareWithOthersComponent)
   .component('userManagement', UserManagementComponent)
-  .component('permissionsDropdown', PermissionsDropdownComponent)
+  .component('roleDropdown', RoleDropdownComponent)
   .component('inviteMemberForm', InviteMemberFormComponent)
   .name;

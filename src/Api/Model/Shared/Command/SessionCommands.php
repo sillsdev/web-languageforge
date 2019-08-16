@@ -74,6 +74,8 @@ class SessionCommands
                 $sessionData['project']['slug'] = $project->databaseName();
                 $sessionData['project']['isArchived'] = $project->isArchived;
                 $sessionData['project']['interfaceLanguageCode'] = $project->interfaceLanguageCode;
+                $sessionData['project']['inviteToken']['token'] = $project->inviteToken->token;
+                $sessionData['project']['inviteToken']['defaultRole'] = $project->inviteToken->defaultRole;
                 $sessionData['userProjectRights'] = $project->getRightsArray($userId);
                 $sessionData['projectSettings'] = $project->getPublicSettings($userId);
             }

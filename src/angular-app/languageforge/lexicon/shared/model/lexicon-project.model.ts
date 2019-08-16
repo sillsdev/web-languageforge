@@ -1,4 +1,4 @@
-import {Project} from '../../../../bellows/shared/model/project.model';
+import {Project, ProjectRole, ProjectRoles} from '../../../../bellows/shared/model/project.model';
 import {LexiconConfig} from './lexicon-config.model';
 
 export interface LexiconProject extends Project {
@@ -6,8 +6,6 @@ export interface LexiconProject extends Project {
   languageCode: string;
   sendReceive?: SendReceive;
 }
-
-export type LexRoleKey = 'manager' | 'contributor' | 'observer_with_comment' | 'observer' | 'tech_support';
 
 export class SendReceive {
   credentialsStatus?: string;
@@ -26,4 +24,9 @@ export class SendReceiveProject {
   repoClarification: string;
   repository: string;
   role: string;
+}
+
+export class LexRoles extends ProjectRoles {
+  static OBSERVER_WITH_COMMENT: ProjectRole = { name: 'Observer With Comment', key: 'observer_with_comment' };
+  static OBSERVER: ProjectRole = { name: 'Observer', key: 'observer' };
 }

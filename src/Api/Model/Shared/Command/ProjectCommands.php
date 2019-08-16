@@ -369,10 +369,13 @@ class ProjectCommands
      */
     public static function getInviteLink($projectId)
     {
-        // TODO: check that invite token exists.  If not, throw exception.
         // TODO: check that project invite sharing is enabled.  If not, throw exception if disabled.
         $project = ProjectModel::getById($projectId);
-        return $project->website()->baseUrl() . '/invite/' . $project->inviteToken->token;
+        if (empty($project->inviteToken->token)) {
+            return '';
+        } else {
+            return $project->website()->baseUrl() . '/invite/' . $project->inviteToken->token;
+        }
     }
 
     /**
@@ -405,11 +408,15 @@ class ProjectCommands
      */
     public static function useInviteToken($userId, $projectId) {
         $model = ProjectModel::getById($projectId);
-        $model->addUserByInviteToken($userId);
-        $model->write();
+        // only invite/change permissions if the user is not yet a member
+        if (!$model->userIsMember($userId))
+        {
+            $model->addUserByInviteToken($userId);
+            $model->write();
 
-        $user = new UserModel($userId);
-        $user->addProject($projectId);
-        $user->write();
+            $user = new UserModel($userId);
+            $user->addProject($projectId);
+            $user->write();
+        }
     }
 }

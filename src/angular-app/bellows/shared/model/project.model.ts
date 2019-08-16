@@ -20,4 +20,20 @@ export interface Project {
   appLink: string;
   featured?: boolean | string;
   interfaceLanguageCode?: string;
+  inviteToken: {
+    token: string;
+    defaultRole: string;
+  };
+}
+
+export interface ProjectRole {
+  name: string;
+  key: string;
+}
+
+export class ProjectRoles {
+  static MANAGER: ProjectRole = { name: 'Manager', key: 'manager' };
+  static CONTRIBUTOR: ProjectRole = { name: 'Contributor', key: 'contributor' };
+  static TECH_SUPPORT: ProjectRole = { name: 'Tech Support', key: 'tech_support' };
+  static NONE: ProjectRole = { name: 'none', key: 'none' };
 }
