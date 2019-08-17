@@ -27,9 +27,7 @@ export class UserManagementController implements angular.IController {
 
   $onInit(): void {
     // TODO: actually hook anonymousUserRole up to the backend
-    // TODO: actually hook reusableInviteLinkRole up to the backend
     this.project.anonymousUserRole = LexRoles.NONE.key;
-    this.project.reusableInviteLinkRole = LexRoles.NONE.key;
 
     this.anonymousUserRoles = [
       LexRoles.CONTRIBUTOR,
@@ -46,7 +44,7 @@ export class UserManagementController implements angular.IController {
     ];
   }
 
-  userisCurrentUser(user: User) {
+  userIsCurrentUser(user: User) {
     return this.session.data.username === user.username;
   }
 
@@ -82,12 +80,6 @@ export class UserManagementController implements angular.IController {
           this.allMembers[i].avatarUrl = this.getAvatarUrl(this.allMembers[i].avatar_ref);
         }
       }
-    });
-  }
-
-  onSendEmailInvite($event: { email: string, role: ProjectRole }) {
-    this.userService.sendInvite($event.email, $event.role.key).then(() => {
-      this.loadMemberData();
     });
   }
 

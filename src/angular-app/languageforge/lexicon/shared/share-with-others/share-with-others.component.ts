@@ -1,6 +1,8 @@
 import * as angular from 'angular';
 import { Session, SessionService } from '../../../../bellows/core/session.service';
 import { Project } from '../../../../bellows/shared/model/project.model';
+import { LexiconProjectService } from '../../core/lexicon-project.service';
+import { LexRoles } from '../model/lexicon-project.model';
 
 export class ShareWithOthersModalInstanceController implements angular.IController {
   modalInstance: any;
@@ -8,19 +10,27 @@ export class ShareWithOthersModalInstanceController implements angular.IControll
   listProject: boolean;
   project: Project;
   session: Session;
+  currentUserIsManager: boolean;
 
-  static $inject = ['sessionService'];
-  constructor(private readonly sessionService: SessionService) {}
+  static $inject = ['lexProjectService', 'sessionService'];
+  constructor(private readonly lexProjectService: LexiconProjectService,
+              private readonly sessionService: SessionService) {}
 
   $onInit(): void {
     this.sessionService.getSession().then(session => {
       this.session = session;
       this.project = session.data.project;
+      this.currentUserIsManager = this.session.data.userProjectRole === LexRoles.MANAGER.key;
     });
   }
 
   setProjectSharability(): void {
-    console.log('TODO: actually set project.allowSharing = ' + this.allowSharing);
+    this.lexProjectService.updateProject({allowSharing: this.project.allowSharing}).then(result => {
+      this.sessionService.getSession(true).then(session => {
+        this.session = session;
+        this.project = session.data.project;
+      });
+    });
   }
 
   setProjectListability(): void {

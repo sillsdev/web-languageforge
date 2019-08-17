@@ -1,6 +1,4 @@
-<invite-member-form style="max-width: 30em;"
-                    on-send-email-invite="$ctrl.onSendEmailInvite($event)"
-                    project="$ctrl.project"></invite-member-form>
+<invite-member-form style="max-width: 30em;" on-send-email-invite="$ctrl.loadMemberData()"></invite-member-form>
 
 <div id="who-has-access" style="max-width: 30em;">
   <div class="row" style="position: relative;">
@@ -17,7 +15,7 @@
 
   <listview search="$ctrl.loadMemberData()" items="$ctrl.allMembers" items-filter="$ctrl.userFilter" visible-items="$ctrl.visibleMembers" select="">
     <ul class="list-group">
-      <li class="list-group-item user-summary-item">
+      <!-- <li class="list-group-item user-summary-item">
         <div>
           <img src="/Site/views/shared/image/globe.png" class="rounded-circle" id="smallAvatarURL"/>
         </div>
@@ -37,7 +35,7 @@
                               on-role-changed=$ctrl.onSpecialRoleChanged($event)
                               class="sm-no-margin"></role-dropdown>
         <div class="delete-member d-none d-md-block"></div>
-      </li>
+      </li> -->
 
       <li class="list-group-item user-summary-item" data-ng-repeat="user in $ctrl.visibleMembers">
         <div>
@@ -45,8 +43,8 @@
         </div>
         <div style="flex-grow: 1;" ng-class="{'text-muted': user.isInvitee}">
           <span ng-if="user.name">{{user.name}}<span ng-if="$ctrl.userIsCurrentUser(user)"> (you)</span><br></span>
-          <span ng-if="!user.isInvitee" class='username-email'>{{user.username}}</span>
-          <span ng-if="user.isInvitee" class="invited-user username-email">{{user.username || user.email}} <br class="d-md-none">[invited]</span>
+          <span ng-if="!user.isInvitee && user.email" class='username-email'>{{user.email}}</span>
+          <span ng-if="user.isInvitee" class="invited-user username-email">{{user.email}} <br class="d-md-none">[invited]</span>
           <span ng-if="$ctrl.userIsCurrentUser(user) && !user.name"> (you)</span>
         </div>
         <div class="sm-no-margin">

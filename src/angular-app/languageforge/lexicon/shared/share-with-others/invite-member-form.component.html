@@ -2,33 +2,37 @@
   <b>Invite a new member</b>
   <div class="inline-invite-form" style="margin-top: 8px;">
     <label>via: </label>
-    <input type="email" class="form-control" placeholder="Email" ng-model="inviteUserEmail">
+    <input type="email" class="form-control" placeholder="Email" ng-model="$ctrl.inviteEmail">
     <button type="button" class="btn btn-primary"
-            ng-click="$ctrl.onSendEmailInvite({$event: {email: inviteUserEmail, role: $ctrl.emailInviteRole}})">
+            ng-click="$ctrl.sendEmailInvite()">
       <i class="fa fa-paper-plane"></i>
     </button>
     <role-dropdown class="sm-no-margin"
-                          target="'email_invite'"
-                          roles="$ctrl.emailInviteRoles"
-                          selected-role="$ctrl.emailInviteRole"
-                          on-role-changed="$ctrl.onRoleChanged($event)"></role-dropdown>
+                   ng-if="$ctrl.currentUserIsManager"
+                   target="'email_invite'"
+                   roles="$ctrl.emailInviteRoles"
+                   selected-role="$ctrl.emailInviteRole"
+                   on-role-changed="$ctrl.onRoleChanged($event)"></role-dropdown>
   </div>
 
-  <b>or</b>
-  <div class="inline-invite-form">
-    <label>via: </label>
-    <div class="input-group">
-      <input type="text" class="form-control"
-             ng-model="$ctrl.inviteLink"
-             ng-readonly="true"
-             ng-disabled="!$ctrl.inviteLink"
-             placeholder="Reusable Invite Link"
-             onfocus="this.select();">
+  <div ng-if="$ctrl.currentUserIsManager || !$ctrl.inviteLink">
+    <b>or</b>
+    <div class="inline-invite-form">
+      <label>via: </label>
+      <div class="input-group">
+        <input type="text" class="form-control"
+              ng-model="$ctrl.inviteLink"
+              ng-readonly="true"
+              ng-disabled="!$ctrl.inviteLink"
+              placeholder="Reusable Invite Link"
+              onfocus="this.select();">
+      </div>
+      <role-dropdown class="sm-no-margin"
+                    ng-if="$ctrl.currentUserIsManager"
+                    target="'reusable_invite_link'"
+                    roles="$ctrl.reusableInviteLinkRoles"
+                    selected-role="$ctrl.project.inviteToken.defaultRole"
+                    on-role-changed="$ctrl.onRoleChanged($event)"></role-dropdown>
     </div>
-    <role-dropdown class="sm-no-margin"
-                          target="'reusable_invite_link'"
-                          roles="$ctrl.reusableInviteLinkRoles"
-                          selected-role="$ctrl.project.inviteToken.defaultRole"
-                          on-role-changed="$ctrl.onRoleChanged($event)"></role-dropdown>
   </div>
 </div>

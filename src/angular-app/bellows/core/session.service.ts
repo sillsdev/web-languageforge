@@ -66,6 +66,8 @@ class SessionData {
   username: string;
   userSiteRights: any;
   userProjectRights: any;
+  userProjectRole: string;
+  userIsProjectMember: boolean;
   accessToken: string;
   version: string;
 }

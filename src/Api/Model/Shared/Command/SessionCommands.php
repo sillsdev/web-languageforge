@@ -71,12 +71,15 @@ class SessionCommands
                 $sessionData['project']['ownerRef']['username'] = $ownerUserModel->username;
 
                 $sessionData['project']['userIsProjectOwner'] = $project->isOwner($userId);
+                $sessionData['project']['allowSharing'] = $project->allowSharing;
                 $sessionData['project']['slug'] = $project->databaseName();
                 $sessionData['project']['isArchived'] = $project->isArchived;
                 $sessionData['project']['interfaceLanguageCode'] = $project->interfaceLanguageCode;
                 $sessionData['project']['inviteToken']['token'] = $project->inviteToken->token;
                 $sessionData['project']['inviteToken']['defaultRole'] = $project->inviteToken->defaultRole;
                 $sessionData['userProjectRights'] = $project->getRightsArray($userId);
+                $sessionData['userProjectRole'] = $project->users[$userId]->role;
+                $sessionData['userIsProjectMember'] = $project->userIsMember($userId);
                 $sessionData['projectSettings'] = $project->getPublicSettings($userId);
             }
         }

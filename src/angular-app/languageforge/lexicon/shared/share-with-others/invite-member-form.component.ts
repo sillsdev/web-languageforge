@@ -1,30 +1,30 @@
 import * as angular from 'angular';
 import { ProjectService } from '../../../../bellows/core/api/project.service';
+import { UserService } from '../../../../bellows/core/api/user.service';
+import { Session, SessionService } from '../../../../bellows/core/session.service';
 import { Project, ProjectRole } from '../../../../bellows/shared/model/project.model';
 import { LexRoles } from '../model/lexicon-project.model';
 import { RoleDetail } from './role-dropdown.component';
 
 export class InviteMemberFormController implements angular.IController {
   project: Project;
+  session: Session;
+  currentUserIsManager: boolean;
   reusableInviteLinkRoles: ProjectRole[];
   reusableInviteLinkRole: ProjectRole;
   inviteLink: string;
+  inviteEmail: string;
   emailInviteRoles: ProjectRole[];
   emailInviteRole: ProjectRole;
-  onSendEmailInvite: (params: { $event: { email: string, role: string } }) => void;
+  displayManagerElements: boolean;
+  onSendEmailInvite: () => void;
 
-  static $inject = ['projectService'];
-  constructor(private readonly projectService: ProjectService) { }
+  static $inject = ['projectService', 'sessionService', 'userService'];
+  constructor(private readonly projectService: ProjectService,
+              private readonly sessionService: SessionService,
+              private readonly userService: UserService) { }
 
   $onInit(): void {
-
-    this.emailInviteRole = LexRoles.CONTRIBUTOR;
-
-    if (this.project.inviteToken.token) {
-      this.projectService.getInviteLink().then(result => {
-        this.inviteLink = result.data;
-      });
-    }
 
     this.emailInviteRoles = [
       LexRoles.MANAGER,
@@ -40,6 +40,32 @@ export class InviteMemberFormController implements angular.IController {
       LexRoles.OBSERVER,
       LexRoles.NONE
     ];
+
+    this.sessionService.getSession().then(session => {
+      this.session = session;
+      this.project = session.data.project;
+      this.currentUserIsManager = this.session.data.userProjectRole === LexRoles.MANAGER.key;
+
+      if (this.currentUserIsManager) {
+        this.emailInviteRole = LexRoles.CONTRIBUTOR;
+      } else {
+        this.emailInviteRole = this.emailInviteRoles.find(role => role.key === this.session.data.userProjectRole);
+      }
+
+      if (this.project.inviteToken.token) {
+        this.projectService.getInviteLink().then(result => {
+          this.inviteLink = result.data;
+        });
+      }
+    });
+  }
+
+  sendEmailInvite() {
+    if (this.inviteEmail) {
+      this.userService.sendInvite(this.inviteEmail, this.emailInviteRole.key).then(() => {
+        if (this.onSendEmailInvite) this.onSendEmailInvite();
+      });
+    }
   }
 
   onRoleChanged($event: {roleDetail: RoleDetail, target: any}) {
@@ -72,7 +98,6 @@ export class InviteMemberFormController implements angular.IController {
 
 export const InviteMemberFormComponent: angular.IComponentOptions = {
   bindings: {
-    project: '<',
     onSendEmailInvite: '&'
   },
   controller: InviteMemberFormController,

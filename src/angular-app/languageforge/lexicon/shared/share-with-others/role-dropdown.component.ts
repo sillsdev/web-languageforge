@@ -29,6 +29,18 @@ export class RoleDropdownController implements angular.IController {
   constructor(private readonly $scope: angular.IScope) { }
 
   $onInit(): void {
+    if (!this.roleDetails) this.buildRoleDetails();
+    this.selectedRole = this.selectedRole || this.roles[this.roles.length - 1];
+  }
+
+  $onChanges(changes: any): void {
+    if (changes.selectedRole) {
+      if (!this.roleDetails) this.buildRoleDetails();
+      this.selectedRoleDetail = this.roleDetails.find(p => p.role.key === (this.selectedRole.key || this.selectedRole));
+    }
+  }
+
+  buildRoleDetails(): void {
     this.roleDetails = [];
     this.roles.forEach(role => {
       switch (role) {
@@ -36,7 +48,7 @@ export class RoleDropdownController implements angular.IController {
           this.roleDetails.push({
             role,
             description: 'can manage',
-            icon: 'cog'
+            icon: 'vcard'
           });
           break;
         case LexRoles.CONTRIBUTOR:
@@ -69,10 +81,6 @@ export class RoleDropdownController implements angular.IController {
             break;
       }
     });
-    this.selectedRole = this.selectedRole || this.roles[this.roles.length - 1];
-    this.$scope.$watch(() => this.selectedRole, () => {
-      this.selectedRoleDetail = this.roleDetails.find(p => p.role.key === (this.selectedRole.key || this.selectedRole));
-    });
   }
 
   selectRoleDetail(roleDetail: RoleDetail): void {
@@ -88,7 +96,7 @@ export const RoleDropdownComponent: angular.IComponentOptions = {
   bindings: {
     target: '<',
     roles: '<',
-    selectedRole: '=',
+    selectedRole: '<',
     onRoleChanged: '&',
     onDeleteTarget: '&',
     allowDelete: '<'

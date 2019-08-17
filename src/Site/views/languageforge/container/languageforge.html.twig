@@ -81,7 +81,7 @@
             <nav class="navbar navbar-expand navbar-dark align-items-center justify-content-between">
                 <div class="page-header-detail">
                     <div class="page-name-settings">
-                            <div class="btn-group" id="settings-dropdown-button" uib-dropdown data-ng-class="{'app-settings-available': $ctrl.header.settings.length > 0}">
+                            <div class="btn-group" id="settings-dropdown-button" uib-dropdown data-ng-class="{'app-settings-available': $ctrl.header.settings.length > 0 && $ctrl.currentUserIsProjectManager}">
                                 <li class='nav-item'>
                                     <a id="settingsBtn" class="btn btn-std" uib-dropdown-toggle
                                     title="Settings" href="#">
@@ -103,7 +103,7 @@
                     <breadcrumbs id="top" class="breadcrumbs d-none d-md-block"></breadcrumbs>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li class='nav-item' ng-if="$ctrl.header.settings.length > 0 && $ctrl.currentUserIsProjectOwner">
+                    <li class='nav-item' ng-if="$ctrl.project && $ctrl.displayShareButton">
                         <a id="shareBtn" class="btn btn-primary my-auto" title="Share" href="#"
                                          ng-click="$ctrl.openShareWithOthersModal()">
                             <i class="fa fa-share-alt iconPadding"></i><span>Share</span>

@@ -7,7 +7,7 @@ export interface Project {
   projectName: string;
   role: string;
   anonymousUserRole: string;
-  reusableInviteLinkRole: string;
+  allowSharing: boolean;
   siteName: string;
   type?: string;
   isArchived: boolean;
@@ -32,7 +32,7 @@ export interface ProjectRole {
 }
 
 export class ProjectRoles {
-  static MANAGER: ProjectRole = { name: 'Manager', key: 'manager' };
+  static MANAGER: ProjectRole = { name: 'Manager', key: 'project_manager' };
   static CONTRIBUTOR: ProjectRole = { name: 'Contributor', key: 'contributor' };
   static TECH_SUPPORT: ProjectRole = { name: 'Tech Support', key: 'tech_support' };
   static NONE: ProjectRole = { name: 'none', key: 'none' };
