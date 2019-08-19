@@ -22,9 +22,7 @@ export class InviteMemberFormController implements angular.IController {
   static $inject = ['projectService', 'sessionService', 'userService'];
   constructor(private readonly projectService: ProjectService,
               private readonly sessionService: SessionService,
-              private readonly userService: UserService) { }
-
-  $onInit(): void {
+              private readonly userService: UserService) {
 
     this.emailInviteRoles = [
       LexRoles.MANAGER,
@@ -94,6 +92,10 @@ export class InviteMemberFormController implements angular.IController {
         });
       }
     }
+  }
+
+  getInviteRole() {
+    return this.reusableInviteLinkRoles.find(role => role.key === this.project.inviteToken.defaultRole);
   }
 
 }

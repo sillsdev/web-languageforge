@@ -31,7 +31,7 @@
                     ng-if="$ctrl.currentUserIsManager"
                     target="'reusable_invite_link'"
                     roles="$ctrl.reusableInviteLinkRoles"
-                    selected-role="$ctrl.project.inviteToken.defaultRole"
+                    selected-role="$ctrl.getInviteRole()"
                     on-role-changed="$ctrl.onRoleChanged($event)"></role-dropdown>
     </div>
   </div>
