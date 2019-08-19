@@ -5,7 +5,7 @@ import {ApplicationHeaderService} from '../../../bellows/core/application-header
 import {HelpHeroService} from '../../../bellows/core/helphero.service';
 import {ModalService} from '../../../bellows/core/modal/modal.service';
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
-import {EditorDataService} from '../../../bellows/core/offline/editor-data.service';
+import {EditorDataService, LabeledOption, SortOption, FilterOption} from '../../../bellows/core/offline/editor-data.service';
 import {LexiconCommentService} from '../../../bellows/core/offline/lexicon-comments.service';
 import {SessionService} from '../../../bellows/core/session.service';
 import {InterfaceConfig} from '../../../bellows/shared/model/interface-config.model';
@@ -27,20 +27,6 @@ import {
 import {LexiconProject} from '../shared/model/lexicon-project.model';
 import {FieldControl} from './field/field-control.model';
 import {LexOptionList} from '../shared/model/option-list.model';
-
-class SortOption {
-  label: string;
-  value: string;
-}
-
-class FilterOption {
-  inputSystem?: string;
-  key: string;
-  label: string;
-  level?: string;
-  type: string;
-  value: string;
-}
 
 class Show {
   more: () => void;
@@ -251,8 +237,10 @@ export class LexiconEditorController implements angular.IController {
       clear(); // remove the watcher
 
       if (this.$state.params.sortBy) {
-        this.entryListModifiers.sortBy =
-        this.findSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params.sortBy);
+        const sortBy = this.findSelectedFilter(this.entryListModifiers.sortOptions, this.$state.params.sortBy);
+        if (sortBy) {
+          this.entryListModifiers.sortBy = sortBy;
+        }
       }
       this.entryListModifiers.sortReverse = this.$state.params.sortReverse === 'true';
 
@@ -917,7 +905,7 @@ export class LexiconEditorController implements angular.IController {
     });
   }
 
-  private findSelectedFilter(collections: any[], params: string) {
+  private findSelectedFilter<T extends LabeledOption>(collections: T[], params: string) : T {
     if (collections && params) return collections.filter(item => item.label === params)[0];
   }
 
