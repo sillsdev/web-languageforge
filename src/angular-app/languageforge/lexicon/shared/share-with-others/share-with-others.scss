@@ -20,7 +20,7 @@
   align-items: center;
 
   input[type=text], input[type=email], input[type=password] {
-    flex-grow: 1;
+    min-width: 0; // necessary in Firefox for small screens
   }
 
   > *:not(:last-child) {

@@ -4,7 +4,7 @@
     <label>via: </label>
     <input type="email" class="form-control" placeholder="Email" ng-model="$ctrl.inviteEmail">
     <button type="button" class="btn btn-primary"
-            ng-click="$ctrl.sendEmailInvite()">
+            ng-click="$ctrl.sendEmailInvite()" data-ng-disabled="$ctrl.inviteEmailDisabled()">
       <i class="fa fa-paper-plane"></i>
     </button>
     <role-dropdown class="sm-no-margin"
