@@ -19,26 +19,36 @@ import {CommentsOfflineCacheService} from './comments-offline-cache.service';
 import {EditorOfflineCacheService} from './editor-offline-cache.service';
 import {LexiconCommentService} from './lexicon-comments.service';
 
-class FilterOption {
-  label?: string;
-  level?: string;
-  type?: string;
-  value?: string;
+export interface LabeledOption {
+  label: string;
+}
+
+export interface SortOption extends LabeledOption {
+  label: string;
+  value: string;
+}
+
+export interface FilterOption extends LabeledOption {
   inputSystem?: string;
+  key: string;
+  label: string;
+  level?: string;
+  type: string;
+  value: string;
 }
 
 class EntryListModifiers {
-  sortBy = {
+  sortBy: SortOption = {
     label: 'Default',
     value: 'default'
   };
-  sortOptions: any[] = [];
+  sortOptions: SortOption[] = [];
   sortReverse = false;
   filterBy: {
     text: string;
     option: FilterOption;
   } = null;
-  filterOptions: any[] = [];
+  filterOptions: FilterOption[] = [];
   filterType = 'isNotEmpty';
 
   filterText = () => this.filterBy && this.filterBy.text || '';
