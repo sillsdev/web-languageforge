@@ -188,11 +188,7 @@ class Base
     protected function isIE(string $userAgent)
     {
         // Internet Explorer 11 does not report itself as MSIE but does have Trident in the user agent string
-        if (strpos($userAgent, 'MSIE') || strpos($userAgent, 'Trident')) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool)(strpos($userAgent, 'MSIE') || strpos($userAgent, 'Trident'));
     }
 
     protected function getThemePath($theme = "") {
