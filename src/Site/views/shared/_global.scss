@@ -341,3 +341,7 @@ pui-tab {
 .flex-no-grow {
     flex: 0 0 auto;
 }
+
+input::-ms-clear {
+  display: none;
+}
