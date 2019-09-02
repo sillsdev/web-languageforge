@@ -3,6 +3,7 @@ import 'angular-moment-picker/dist/angular-moment-picker.css';
 import 'angular-moment-picker/dist/angular-moment-picker.js';
 
 import {BreadcrumbModule} from '../../core/breadcrumbs/breadcrumb.module';
+import {BrowserCheckModule} from '../../core/browser-check.service';
 import {CoreModule} from '../../core/core.module';
 import {ActivityAppComponent} from './activity-app.component';
 import {ActivityContainerComponent} from './activity-container.component';
@@ -13,7 +14,8 @@ export const ActivityAppModule = angular
     'ui.bootstrap',
     'moment-picker',
     CoreModule,
-    BreadcrumbModule
+    BreadcrumbModule,
+    BrowserCheckModule
   ])
   .component('activityApp', ActivityAppComponent)
   .component('activityContainer', ActivityContainerComponent)

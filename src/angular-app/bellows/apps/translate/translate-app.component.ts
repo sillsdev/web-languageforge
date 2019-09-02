@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import { BrowserCheckService } from '../../core/browser-check.service';
 import { SessionService } from '../../core/session.service';
 import { TranslateProjectService } from './core/translate-project.service';
 import { TranslateRights, TranslateRightsService } from './core/translate-rights.service';
@@ -13,10 +14,12 @@ export class TranslateAppController implements angular.IController {
   interfaceConfig: any;
 
   static $inject = ['$state', 'sessionService',
+    'browserCheckService',
     'translateRightsService',
     'translateProjectApi', '$q'
   ];
   constructor(private $state: angular.ui.IStateService, private sessionService: SessionService,
+              private browserCheckService: BrowserCheckService,
               private rightsService: TranslateRightsService,
               private projectApi: TranslateProjectService, private $q: angular.IQService) {}
 
@@ -42,6 +45,7 @@ export class TranslateAppController implements angular.IController {
       this.interfaceConfig.placementToSide = 'left';
       this.interfaceConfig.placementNormal = 'right';
     });
+    this.browserCheckService.warnIfIE();
   }
 
   get showSync(): boolean {

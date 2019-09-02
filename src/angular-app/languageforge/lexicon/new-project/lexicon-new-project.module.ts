@@ -2,6 +2,7 @@ import * as angular from 'angular';
 import uiRouter from 'angular-ui-router';
 
 import {BreadcrumbModule} from '../../../bellows/core/breadcrumbs/breadcrumb.module';
+import {BrowserCheckModule} from '../../../bellows/core/browser-check.service';
 import {CoreModule} from '../../../bellows/core/core.module';
 import {MockModule} from '../../../bellows/shared/mock.module';
 import {SelectLanguageModule} from '../../../bellows/shared/select-language.component';
@@ -32,6 +33,7 @@ export const LexiconNewProjectModule = angular
     uiRouter,
     'ngFileUpload',
     CoreModule,
+    BrowserCheckModule,
     BreadcrumbModule,
     PuiUtilityModule,
     SelectLanguageModule,

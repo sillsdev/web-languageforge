@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import {BreadcrumbModule} from '../../core/breadcrumbs/breadcrumb.module';
+import {BrowserCheckModule} from '../../core/browser-check.service';
 import {CoreModule} from '../../core/core.module';
 import {NoticeModule} from '../../core/notice/notice.module';
 import {ListViewModule} from '../../shared/list-view.component';
@@ -14,7 +15,8 @@ export const ProjectsAppModule = angular
     ListViewModule,
     NoticeModule,
     PuiUtilityModule,
-    BreadcrumbModule
+    BreadcrumbModule,
+    BrowserCheckModule
   ])
   .component('projectsApp', ProjectsAppComponent)
   .name;

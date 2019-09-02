@@ -28,6 +28,10 @@ export class UtilityService {
     return tagAudioPattern.test(tag);
   }
 
+  static isIE(userAgent: string): boolean {
+    return /MSIE|Trident/.test(userAgent);
+  }
+
   /**
    * Copy array retaining any references to the target.
    */

@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import { BrowserCheckService } from '../../../core/browser-check.service';
 import { InputSystemsService } from '../../../core/input-systems/input-systems.service';
 import { LinkService } from '../../../core/link.service';
 import { NoticeService } from '../../../core/notice/notice.service';
@@ -56,6 +57,7 @@ export class TranslateNewProjectController implements angular.IController {
   static $inject = ['$scope', '$state',
     '$q', '$window',
     'sessionService', 'silNoticeService',
+    'browserCheckService',
     'translateProjectApi', 'linkService',
     'machineService',
     'translateSendReceiveService',
@@ -64,6 +66,7 @@ export class TranslateNewProjectController implements angular.IController {
   constructor(private readonly $scope: angular.IScope, private readonly $state: angular.ui.IStateService,
               private readonly $q: angular.IQService, private readonly $window: angular.IWindowService,
               private readonly sessionService: SessionService, private readonly notice: NoticeService,
+              private readonly browserCheckService: BrowserCheckService,
               private readonly projectApi: TranslateProjectService, private readonly linkService: LinkService,
               private readonly machine: MachineService,
               private readonly translateSendReceiveService: TranslateSendReceiveService,
@@ -84,6 +87,8 @@ export class TranslateNewProjectController implements angular.IController {
         }
       }
     });
+
+    this.browserCheckService.warnIfIE();
 
     this.newProject = {} as NewProject;
     this.newProject.config = new TranslateConfig();

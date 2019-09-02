@@ -3,6 +3,7 @@ import * as angular from 'angular';
 import { ProjectService } from '../../core/api/project.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
+import { BrowserCheckService } from '../../core/browser-check.service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
 import { Project } from '../../shared/model/project.model';
@@ -27,10 +28,12 @@ export class ProjectsAppController implements angular.IController {
   static $inject = ['$window', 'projectService',
                     'sessionService', 'silNoticeService',
                     'breadcrumbService',
+                    'browserCheckService',
                     'applicationHeaderService'];
   constructor(private $window: angular.IWindowService, private projectService: ProjectService,
               private sessionService: SessionService, private notice: NoticeService,
               private breadcrumbService: BreadcrumbService,
+              private browserCheckService: BrowserCheckService,
               private applicationHeaderService: ApplicationHeaderService) {
   }
 
@@ -42,6 +45,7 @@ export class ProjectsAppController implements angular.IController {
           href: '/app/projects',
           label: 'My Projects'
         }]);
+    this.browserCheckService.warnIfIE();
 
     this.sessionService.getSession().then(session => {
       this.rights.canEditProjects =

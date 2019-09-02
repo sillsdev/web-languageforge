@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import { UserService } from '../../../core/api/user.service';
+import { BrowserCheckService } from '../../../core/browser-check.service';
 import { SessionService } from '../../../core/session.service';
 import { User } from '../../../shared/model/user.model';
 
@@ -28,9 +29,11 @@ export class OAuthSignupAppController implements angular.IController {
   hostname: string;
 
   static $inject = ['$scope', '$location', '$window',
+    'browserCheckService',
     'userService', 'sessionService'];
   constructor(private $scope: any, private $location: angular.ILocationService,
               private $window: angular.IWindowService,
+              private browserCheckService: BrowserCheckService,
               private userService: UserService, private sessionService: SessionService) {}
 
   $onInit() {
@@ -56,6 +59,8 @@ export class OAuthSignupAppController implements angular.IController {
         this.$window.location.href = '/app/projects';
       }
     });
+
+    this.browserCheckService.warnIfIE();
 
     // TODO: This is duplicated from the userprofile app. Should refactor avatar stuff into separate library.
     this.dropdown.avatarColors = [
