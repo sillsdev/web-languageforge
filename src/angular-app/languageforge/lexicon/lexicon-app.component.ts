@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import {BrowserCheckService} from '../../bellows/core/browser-check.service';
 import {HelpHeroService} from '../../bellows/core/helphero.service';
 import {NoticeService} from '../../bellows/core/notice/notice.service';
 import {InterfaceConfig} from '../../bellows/shared/model/interface-config.model';
@@ -30,6 +31,7 @@ export class LexiconAppController implements angular.IController {
   static $inject = ['$scope', '$location',
     '$q',
     'silNoticeService', 'lexConfigService',
+    'browserCheckService',
     'lexProjectService',
     'lexEditorDataService',
     'lexRightsService',
@@ -38,6 +40,7 @@ export class LexiconAppController implements angular.IController {
   constructor(private readonly $scope: angular.IScope, private readonly $location: angular.ILocationService,
               private readonly $q: angular.IQService,
               private readonly notice: NoticeService, private readonly configService: LexiconConfigService,
+              private readonly browserCheckService: BrowserCheckService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly editorService: LexiconEditorDataService,
               private readonly rightsService: LexiconRightsService,
@@ -46,6 +49,8 @@ export class LexiconAppController implements angular.IController {
 
   $onInit(): void {
     let finishedPreloading = false;
+
+    this.browserCheckService.warnIfIE();
 
     this.$q.all([this.rightsService.getRights(), this.configService.getEditorConfig()])
       .then(([rights, editorConfig]) => {

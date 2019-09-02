@@ -27,7 +27,6 @@ class Base
         $this->data['version'] = VERSION;
         $this->data['useMinifiedJs'] = USE_MINIFIED_JS;
         $this->data['http_host'] = $_SERVER['HTTP_HOST'];
-        $this->data['isIE'] = $this->isIE($_SERVER['HTTP_USER_AGENT'] ?? '');
 
         $this->data['jsFiles'] = [];
         $this->data['jsNotMinifiedFiles'] = [];
@@ -179,16 +178,6 @@ class Base
     protected function isLoggedIn(Application $app)
     {
         return $app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_REMEMBERED');
-    }
-
-    /**
-     * @param string $userAgent
-     * @return bool
-     */
-    protected function isIE(string $userAgent)
-    {
-        // Internet Explorer 11 does not report itself as MSIE but does have Trident in the user agent string
-        return (bool)(strpos($userAgent, 'MSIE') || strpos($userAgent, 'Trident'));
     }
 
     protected function getThemePath($theme = "") {

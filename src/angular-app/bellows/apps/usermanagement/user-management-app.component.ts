@@ -4,6 +4,7 @@ import { LexiconProjectService } from '../../../languageforge/lexicon/core/lexic
 import { ProjectService } from '../../core/api/project.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
+import { BrowserCheckService } from '../../core/browser-check.service';
 import { HelpHeroService } from '../../core/helphero.service';
 import { SessionService } from '../../core/session.service';
 
@@ -40,9 +41,10 @@ export class UserManagementAppController implements angular.IController {
   };
 
   static $inject = ['$location', 'projectService', 'sessionService', 'applicationHeaderService',
-                    'breadcrumbService', 'lexProjectService', 'helpHeroService'];
+                    'browserCheckService', 'breadcrumbService', 'lexProjectService', 'helpHeroService'];
   constructor(private $location: angular.ILocationService, private projectService: ProjectService,
               private sessionService: SessionService, private applicationHeaderService: ApplicationHeaderService,
+              private browserCheckService: BrowserCheckService,
               private breadcrumbService: BreadcrumbService, private lexProjectService: LexiconProjectService,
               private readonly helpHeroService: HelpHeroService) { }
 
@@ -56,6 +58,8 @@ export class UserManagementAppController implements angular.IController {
     if (this.roles.length === 0) {
       this.queryUserList();
     }
+
+    this.browserCheckService.warnIfIE();
 
     this.sessionService.getSession().then(session => {
       this.rights.remove = session.hasProjectRight(this.sessionService.domain.USERS,
