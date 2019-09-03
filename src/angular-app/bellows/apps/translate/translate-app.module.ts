@@ -2,6 +2,7 @@ import * as angular from 'angular';
 import uiRouter from 'angular-ui-router';
 
 import { ApiService } from '../../core/api/api.service';
+import { BrowserCheckModule } from '../../core/browser-check.service';
 import { CoreModule } from '../../core/core.module';
 import { TranslateCoreModule } from './core/translate-core.module';
 import { TranslateEditorModule } from './editor/editor.module';
@@ -14,6 +15,7 @@ export const TranslateAppModule = angular
     uiRouter,
     'ui.bootstrap',
     'ngSanitize',
+    BrowserCheckModule,
     CoreModule,
     TranslateCoreModule,
     TranslateEditorModule,
