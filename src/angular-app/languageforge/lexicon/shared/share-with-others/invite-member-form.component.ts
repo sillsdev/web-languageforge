@@ -22,9 +22,7 @@ export class InviteMemberFormController implements angular.IController {
   static $inject = ['projectService', 'sessionService', 'userService'];
   constructor(private readonly projectService: ProjectService,
               private readonly sessionService: SessionService,
-              private readonly userService: UserService) { }
-
-  $onInit(): void {
+              private readonly userService: UserService) {
 
     this.emailInviteRoles = [
       LexRoles.MANAGER,
@@ -61,11 +59,13 @@ export class InviteMemberFormController implements angular.IController {
   }
 
   sendEmailInvite() {
-    if (this.inviteEmail) {
-      this.userService.sendInvite(this.inviteEmail, this.emailInviteRole.key).then(() => {
-        if (this.onSendEmailInvite) this.onSendEmailInvite();
-      });
-    }
+    this.userService.sendInvite(this.inviteEmail, this.emailInviteRole.key).then(() => {
+      if (this.onSendEmailInvite) this.onSendEmailInvite();
+    });
+  }
+
+  inviteEmailDisabled() {
+    return !/^\S+@\S+\.\S+$/.test(this.inviteEmail);
   }
 
   onRoleChanged($event: {roleDetail: RoleDetail, target: any}) {
@@ -92,6 +92,10 @@ export class InviteMemberFormController implements angular.IController {
         });
       }
     }
+  }
+
+  getInviteRole() {
+    return this.reusableInviteLinkRoles.find(role => role.key === this.project.inviteToken.defaultRole);
   }
 
 }

@@ -28,59 +28,40 @@ export class RoleDropdownController implements angular.IController {
   static $inject = ['$scope'];
   constructor(private readonly $scope: angular.IScope) { }
 
-  $onInit(): void {
-    if (!this.roleDetails) this.buildRoleDetails();
-    this.selectedRole = this.selectedRole || this.roles[this.roles.length - 1];
-  }
-
   $onChanges(changes: any): void {
+    if (changes.roles) this.buildRoleDetails();
+
     if (changes.selectedRole) {
-      if (!this.roleDetails) this.buildRoleDetails();
-      this.selectedRoleDetail = this.roleDetails.find(p => p.role.key === (this.selectedRole.key || this.selectedRole));
+      if (!this.selectedRole) this.selectedRole = this.roles[this.roles.length - 1];
+      this.selectedRoleDetail = this.roleDetails.find(p => p.role.key === this.selectedRole.key);
     }
   }
 
   buildRoleDetails(): void {
-    this.roleDetails = [];
-    this.roles.forEach(role => {
-      switch (role) {
-        case LexRoles.MANAGER:
-          this.roleDetails.push({
-            role,
-            description: 'can manage',
-            icon: 'vcard'
-          });
-          break;
-        case LexRoles.CONTRIBUTOR:
-          this.roleDetails.push({
-            role,
-            description: 'can edit',
-            icon: 'pencil'
-          });
-          break;
-        case LexRoles.OBSERVER_WITH_COMMENT:
-            this.roleDetails.push({
-              role,
-              description: 'can comment',
-              icon: 'comment'
-            });
-            break;
-        case LexRoles.OBSERVER:
-            this.roleDetails.push({
-              role,
-              description: 'can view',
-              icon: 'eye'
-            });
-            break;
-        case LexRoles.NONE:
-            this.roleDetails.push({
-              role,
-              description: 'disable',
-              icon: 'ban'
-            });
-            break;
+    const allRoleDetails = [{
+        role: LexRoles.MANAGER,
+        description: 'can manage',
+        icon: 'vcard'
+      }, {
+        role: LexRoles.CONTRIBUTOR,
+        description: 'can edit',
+        icon: 'pencil'
+      }, {
+        role: LexRoles.OBSERVER_WITH_COMMENT,
+        description: 'can comment',
+        icon: 'comment'
+      }, {
+        role: LexRoles.OBSERVER,
+        description: 'can view',
+        icon: 'eye'
+      }, {
+        role: LexRoles.NONE,
+        description: 'disable',
+        icon: 'ban'
       }
-    });
+    ];
+
+    this.roleDetails = allRoleDetails.filter(roleDetail => this.roles.includes(roleDetail.role));
   }
 
   selectRoleDetail(roleDetail: RoleDetail): void {

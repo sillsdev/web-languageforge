@@ -3,16 +3,14 @@
     uib-dropdown-toggle>
     <i class="fa fa-{{ $ctrl.selectedRoleDetail.icon }}"></i> <span class="caret"></span>
   </button>
-  <ul class="dropdown-menu modal-dropdown" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-    <li class="dropdown-item" role="menuitem"
-      ng-repeat="roleDetail in $ctrl.roleDetails">
-      <div ng-click="$ctrl.selectRoleDetail(roleDetail)">
-          {{ roleDetail.description }} <i class="fa fa-check" ng-show="$ctrl.selectedRoleDetail == roleDetail"></i>
-      </div>
-    </li>
+  <div class="dropdown-menu dropdown-menu-right modal-dropdown" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+    <a href class="dropdown-item" role="menuitem" ng-repeat="roleDetail in $ctrl.roleDetails" ng-click="$ctrl.selectRoleDetail(roleDetail)">
+      <i class="fa fa-{{ roleDetail.icon }}"></i>
+      {{ roleDetail.description }} <i class="fa fa-check" ng-show="$ctrl.selectedRoleDetail == roleDetail"></i>
+    </a>
     <div class="dropdown-divider" ng-if="$ctrl.allowDelete"></div>
     <li class="dropdown-item" role="menuitem" ng-if="$ctrl.allowDelete">
       <div ng-click="$ctrl.onDeleteTarget({$event: {target: $ctrl.target}})" class="text-danger">remove</div>
     </li>
-  </ul>
+  </div>
 </div>
