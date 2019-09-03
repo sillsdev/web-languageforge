@@ -147,4 +147,20 @@ export class ProjectService {
     return this.api.call('project_management_report_' + reportName, params, callback);
   }
 
+  getInviteLink(callback?: JsonRpcCallback) {
+    return this.api.call('project_getInviteLink', [], callback);
+  }
+
+  createInviteLink(defaultRole: string, callback?: JsonRpcCallback) {
+    return this.api.call('project_createInviteLink', [defaultRole], callback);
+  }
+
+  updateInviteTokenRole(newRole: string, callback?: JsonRpcCallback) {
+    return this.api.call('project_updateInviteTokenRole', [newRole], callback);
+  }
+
+  disableInviteToken(callback?: JsonRpcCallback) {
+    return this.api.call('project_disableInviteToken', [], callback);
+  }
+
 }

@@ -5,6 +5,7 @@ use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
@@ -616,6 +617,7 @@ class UserCommandsTest extends TestCase
         $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
+        $project->addUser($invitingUserId, ProjectRoles::MANAGER);
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
@@ -648,6 +650,7 @@ class UserCommandsTest extends TestCase
         $toEmail = 'someone@example.com';
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
+        $project->addUser($invitingUserId, ProjectRoles::MANAGER);
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
@@ -672,6 +675,7 @@ class UserCommandsTest extends TestCase
         $someoneUserId = self::$environ->createUser('someone', 'Someone', $toEmail);
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
+        $project->addUser($invitingUserId, ProjectRoles::MANAGER);
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
@@ -696,6 +700,7 @@ class UserCommandsTest extends TestCase
         $toEmail = 'someone@example.com';
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
+        $project->addUser($invitingUserId, ProjectRoles::MANAGER);
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
@@ -724,6 +729,7 @@ class UserCommandsTest extends TestCase
         $someoneUserId = self::$environ->createUser('someone', 'Someone', $toEmail);
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
+        $project->addUser($invitingUserId, ProjectRoles::MANAGER);
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
@@ -735,6 +741,51 @@ class UserCommandsTest extends TestCase
         $this->assertEquals($someoneUserId, $toUser1Id);
         $this->assertEmpty($toUser2Id);
         $this->assertEmpty($delivery->content);
+    }
+
+    public function testSendInvite_InvitingUserLacksAuthorityToInviteManager()
+    {
+        $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
+        $toEmail = 'someone@example.com';
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->projectCode = 'someProjectCode';
+        $project->addUser($invitingUserId, ProjectRoles::CONTRIBUTOR);
+        $project->allowSharing = true;
+        $project->write();
+        $delivery = new MockUserCommandsDelivery();
+
+        $this->expectException(Exception::class);
+        $toUserId = UserCommands::sendInvite($project->id->asString(), $invitingUserId, self::$environ->website, $toEmail, $delivery, ProjectRoles::MANAGER);
+    }
+
+    public function testSendInvite_NonManagerMembersCannotShareByDefault()
+    {
+        $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
+        $toEmail = 'someone@example.com';
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->projectCode = 'someProjectCode';
+        $project->addUser($invitingUserId, ProjectRoles::CONTRIBUTOR);
+        $project->write();
+        $delivery = new MockUserCommandsDelivery();
+
+        $this->expectException(Exception::class);
+        $toUserId = UserCommands::sendInvite($project->id->asString(), $invitingUserId, self::$environ->website, $toEmail, $delivery, ProjectRoles::CONTRIBUTOR);
+    }
+
+    public function testSendInvite_NonManagerMembersCanShareIfAllowSharingIsEnabled()
+    {
+        $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
+        $toEmail = 'someone@example.com';
+        $someoneUserId = self::$environ->createUser('someone', 'Someone', $toEmail);
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->projectCode = 'someProjectCode';
+        $project->addUser($invitingUserId, ProjectRoles::CONTRIBUTOR);
+        $project->allowSharing = true;
+        $project->write();
+        $delivery = new MockUserCommandsDelivery();
+
+        $toUserId = UserCommands::sendInvite($project->id->asString(), $invitingUserId, self::$environ->website, $toEmail, $delivery, ProjectRoles::CONTRIBUTOR);
+        $this->assertEquals($someoneUserId, $toUserId);
     }
 
     /** @throws Exception */

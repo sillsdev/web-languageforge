@@ -39,6 +39,8 @@ class ProjectModel extends MapperModel
             return new ProjectRoleModel();
         });
 
+        $this->allowSharing = false;
+
         $this->userJoinRequests = new MapOf(function() {
             return new ProjectRoleModel();
         });
@@ -108,6 +110,9 @@ class ProjectModel extends MapperModel
 
     /** @var ProjectUserPropertiesSettings */
     public $userProperties;
+
+    /** @var boolean When true, non-manager project members can access the sharing dialog */
+    public $allowSharing;
 
     /**
      * Specifies which site this project belongs to e.g. scriptureforge || languageforge, cf. Website class

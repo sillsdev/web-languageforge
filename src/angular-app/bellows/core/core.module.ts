@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import { ShareWithOthersModule } from '../../languageforge/lexicon/shared/share-with-others/share-with-others.module';
 import {InterfaceLanguageModule} from '../shared/interface-language.component';
 import {ActivityService} from './api/activity.service';
 import {ApiService} from './api/api.service';
@@ -24,7 +25,8 @@ export const CoreModule = angular
     JsonRpcModule,
     OfflineModule,
     ExceptionOverrideModule,
-    InterfaceLanguageModule
+    InterfaceLanguageModule,
+    ShareWithOthersModule
   ])
   .service('projectService', ProjectService)
   .service('userService', UserService)

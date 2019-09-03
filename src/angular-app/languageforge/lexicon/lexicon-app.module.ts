@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 import 'angular-sanitize';
 import uiRouter from 'angular-ui-router';
+import './new-project/lexicon-new-project.module';
 
 import {ApiService} from '../../bellows/core/api/api.service';
 import {BrowserCheckModule} from '../../bellows/core/browser-check.service';
@@ -8,8 +9,8 @@ import {CoreModule} from '../../bellows/core/core.module';
 import {LexiconCoreModule} from './core/lexicon-core.module';
 import {LexiconEditorModule} from './editor/editor.module';
 import {LexiconAppComponent} from './lexicon-app.component';
-import './new-project/lexicon-new-project.module';
 import {LexiconSettingsModule} from './settings/settings.module';
+import { ShareWithOthersModule } from './shared/share-with-others/share-with-others.module';
 
 export const LexiconAppModule = angular
   .module('lexicon', [
@@ -20,7 +21,8 @@ export const LexiconAppModule = angular
     BrowserCheckModule,
     LexiconCoreModule,
     LexiconEditorModule,
-    LexiconSettingsModule
+    LexiconSettingsModule,
+    ShareWithOthersModule
   ])
   .component('lexiconApp', LexiconAppComponent)
   .config(['$stateProvider', '$urlRouterProvider',

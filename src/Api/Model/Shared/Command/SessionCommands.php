@@ -56,7 +56,7 @@ class SessionCommands
         if ($projectId && ProjectModel::projectExistsOnWebsite($projectId, $website)) {
             $project = ProjectModel::getById($projectId);
             if (array_key_exists($userId, $project->users)) {
-                $sessionData['project'] = array();
+                $sessionData['project'] = [];
                 $sessionData['project']['id'] = (string) $projectId;
                 $sessionData['project']['projectName'] = $project->projectName;
                 if ($project->isArchived) {
@@ -64,12 +64,22 @@ class SessionCommands
                 }
                 $sessionData['project']['appName'] = $project->appName;
                 $sessionData['project']['appLink'] = "/app/{$project->appName}/$projectId/";
-                $sessionData['project']['ownerRef'] = $project->ownerRef->asString();
+
+                $ownerUserModel = new UserModel($project->ownerRef->asString());
+                $sessionData['project']['ownerRef'] = [];
+                $sessionData['project']['ownerRef']['id'] = $ownerUserModel->id->asString();
+                $sessionData['project']['ownerRef']['username'] = $ownerUserModel->username;
+
                 $sessionData['project']['userIsProjectOwner'] = $project->isOwner($userId);
+                $sessionData['project']['allowSharing'] = $project->allowSharing;
                 $sessionData['project']['slug'] = $project->databaseName();
                 $sessionData['project']['isArchived'] = $project->isArchived;
                 $sessionData['project']['interfaceLanguageCode'] = $project->interfaceLanguageCode;
+                $sessionData['project']['inviteToken']['token'] = $project->inviteToken->token;
+                $sessionData['project']['inviteToken']['defaultRole'] = $project->inviteToken->defaultRole;
                 $sessionData['userProjectRights'] = $project->getRightsArray($userId);
+                $sessionData['userProjectRole'] = $project->users[$userId]->role;
+                $sessionData['userIsProjectMember'] = $project->userIsMember($userId);
                 $sessionData['projectSettings'] = $project->getPublicSettings($userId);
             }
         }

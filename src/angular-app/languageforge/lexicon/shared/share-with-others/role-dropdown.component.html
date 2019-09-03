@@ -1,0 +1,16 @@
+<div class="btn-group" uib-dropdown dropdown-append-to-body is-open="status.isopen">
+  <button id="single-button" type="button" class="btn btn-primary text-dark bg-light role-indicator"
+    uib-dropdown-toggle>
+    <i class="fa fa-{{ $ctrl.selectedRoleDetail.icon }}"></i> <span class="caret"></span>
+  </button>
+  <div class="dropdown-menu dropdown-menu-right modal-dropdown" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+    <a href class="dropdown-item" role="menuitem" ng-repeat="roleDetail in $ctrl.roleDetails" ng-click="$ctrl.selectRoleDetail(roleDetail)">
+      <i class="fa fa-{{ roleDetail.icon }}"></i>
+      {{ roleDetail.description }} <i class="fa fa-check" ng-show="$ctrl.selectedRoleDetail == roleDetail"></i>
+    </a>
+    <div class="dropdown-divider" ng-if="$ctrl.allowDelete"></div>
+    <li class="dropdown-item" role="menuitem" ng-if="$ctrl.allowDelete">
+      <div ng-click="$ctrl.onDeleteTarget({$event: {target: $ctrl.target}})" class="text-danger">remove</div>
+    </li>
+  </div>
+</div>
