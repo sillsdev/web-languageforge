@@ -1,9 +1,9 @@
-import { browser, element, by, ElementFinder, ElementArrayFinder, protractor } from "protractor";
-import { Utils } from "./utils";
+import { browser, by, element, ElementArrayFinder, ElementFinder, protractor } from 'protractor';
+import { Utils } from './utils';
 
 export class UserManagementPage {
   static get(projectId: string) {
-    browser.get(browser.baseUrl + '/app/usermanagement' + projectId );
+    browser.get(browser.baseUrl + '/app/usermanagement/' + projectId );
   }
 
   addMembersBtn = element(by.id('addMembersButton'));
