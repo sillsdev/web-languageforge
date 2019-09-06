@@ -58,11 +58,13 @@ export class ProjectsPage {
   addUserToProject(projectName: any, usersName: string, roleText: string) {
     this.findProject(projectName).then((projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
-      projectLink.click();
-      browser.wait(ExpectedConditions.visibilityOf(this.settingsBtn), Utils.conditionTimeout);
-      this.settingsBtn.click();
-      browser.wait(ExpectedConditions.visibilityOf(this.userManagementLink), Utils.conditionTimeout);
-      this.userManagementLink.click();
+      projectLink.getAttribute('href').then((href: string) => {
+        const results = /app\/lexicon\/([0-9a-fA-F]+)\//.exec(href);
+        expect(results).not.toBeNull();
+        expect(results.length).toBeGreaterThan(1);
+        const projectId = results[1];
+        UserManagementPage.get(projectId);
+      });
 
       browser.wait(ExpectedConditions.visibilityOf(this.userManagementPage.addMembersBtn), Utils.conditionTimeout);
       this.userManagementPage.addMembersBtn.click();
@@ -108,12 +110,14 @@ export class ProjectsPage {
   removeUserFromProject(projectName: string, userName: string) {
     this.findProject(projectName).then((projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
-      projectLink.click();
-
-      browser.wait(ExpectedConditions.visibilityOf(this.settingsBtn), Utils.conditionTimeout);
-      this.settingsBtn.click();
-      browser.wait(ExpectedConditions.visibilityOf(this.userManagementLink), Utils.conditionTimeout);
-      this.userManagementLink.click();
+      projectLink.getAttribute('href').then((href: string) => {
+        const results = /app\/lexicon\/([0-9a-fA-F]+)\//.exec(href);
+        expect(results).not.toBeNull();
+        expect(results.length).toBeGreaterThan(1);
+        const projectId = results[1];
+        UserManagementPage.get(projectId);
+      });
+      browser.wait(ExpectedConditions.visibilityOf(this.userManagementPage.addMembersBtn), Utils.conditionTimeout);
 
       let userFilter: any;
       let projectMemberRows: any;
