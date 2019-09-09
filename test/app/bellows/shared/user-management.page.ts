@@ -1,9 +1,25 @@
 import { browser, by, element, ElementArrayFinder, ElementFinder, protractor } from 'protractor';
+import { ProjectsPage } from './projects.page';
 import { Utils } from './utils';
 
 export class UserManagementPage {
   static get(projectId: string) {
     browser.get(browser.baseUrl + '/app/usermanagement/' + projectId );
+  }
+
+  static getByProjectName(projectName: string) {
+    const projectsPage = new ProjectsPage();
+    projectsPage.get();
+    return projectsPage.findProject(projectName).then((projectRow: ElementFinder) => {
+      const projectLink = projectRow.element(by.css('a'));
+      return projectLink.getAttribute('href').then((href: string) => {
+        const results = /app\/lexicon\/([0-9a-fA-F]+)\//.exec(href);
+        expect(results).not.toBeNull();
+        expect(results.length).toBeGreaterThan(1);
+        const projectId = results[1];
+        UserManagementPage.get(projectId);
+      });
+    });
   }
 
   addMembersBtn = element(by.id('addMembersButton'));
