@@ -66,7 +66,9 @@ export class NavbarController implements angular.IController {
         }
       }
       if (this.project) {
-        this.currentUserIsProjectManager = session.data.userProjectRole === ProjectRoles.MANAGER.key;
+        this.currentUserIsProjectManager =
+          (session.data.userProjectRole === ProjectRoles.MANAGER.key) ||
+          (session.data.userProjectRole === ProjectRoles.TECH_SUPPORT.key);
         this.displayShareButton =
           (this.currentUserIsProjectManager || (this.project.allowSharing && this.session.data.userIsProjectMember));
       }
