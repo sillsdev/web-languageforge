@@ -355,6 +355,8 @@ dc-entry .card {
   .listItemSecondary {
     z-index: 2;
     font-size: 0.8em;
+  }
+  .listItemPrimary, .listItemSecondary {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

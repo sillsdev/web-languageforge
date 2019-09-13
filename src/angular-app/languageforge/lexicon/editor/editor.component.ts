@@ -5,7 +5,12 @@ import {ApplicationHeaderService} from '../../../bellows/core/application-header
 import {HelpHeroService} from '../../../bellows/core/helphero.service';
 import {ModalService} from '../../../bellows/core/modal/modal.service';
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
-import {EditorDataService, LabeledOption, SortOption, FilterOption} from '../../../bellows/core/offline/editor-data.service';
+import {
+  EditorDataService,
+  FilterOption,
+  LabeledOption,
+  SortOption
+} from '../../../bellows/core/offline/editor-data.service';
 import {LexiconCommentService} from '../../../bellows/core/offline/lexicon-comments.service';
 import {SessionService} from '../../../bellows/core/session.service';
 import {InterfaceConfig} from '../../../bellows/shared/model/interface-config.model';
@@ -25,8 +30,8 @@ import {
   LexiconConfig
 } from '../shared/model/lexicon-config.model';
 import {LexiconProject} from '../shared/model/lexicon-project.model';
-import {FieldControl} from './field/field-control.model';
 import {LexOptionList} from '../shared/model/option-list.model';
+import {FieldControl} from './field/field-control.model';
 
 class Show {
   more: () => void;
@@ -595,8 +600,21 @@ export class LexiconEditorController implements angular.IController {
     return this.highlightMatches(this.getSortableValue(this.lecConfig, entry));
   }
 
+  getFontFamilyForPrimaryListItemForDisplay() {
+    // FIXME this is not always accurate, given the complexity in get EditorDataService#getSortableValue
+    return this.lecConfig.inputSystems[
+      (this.lecConfig.entry.fields.lexeme as LexConfigMultiText).inputSystems[0]
+    ].cssFontFamily;
+  }
+
   getSecondaryListItemForDisplay(entry: LexEntry): string {
     return this.highlightMatches(this.getMeaningForDisplay(this.lecConfig, entry));
+  }
+
+  getFontFamilyForSecondaryListItemForDisplay() {
+    return this.lecConfig.inputSystems[
+      ((this.lecConfig.entry.fields.senses as LexConfigFieldList).fields.gloss as LexConfigMultiText).inputSystems[0]
+    ].cssFontFamily;
   }
 
   highlightMatches(text: string) {
@@ -621,10 +639,8 @@ export class LexiconEditorController implements angular.IController {
   }
 
   getCompactItemListOverlay(entry: LexEntry): string {
-    let title;
-    let subtitle;
-    title = this.getWordForDisplay(entry);
-    subtitle = this.getMeaningForDisplay(this.lecConfig, entry);
+    const title = this.getWordForDisplay(entry);
+    const subtitle = this.getMeaningForDisplay(this.lecConfig, entry);
     if (title.length > 19 || subtitle.length > 25) {
       return title + '         ' + subtitle;
     } else {
