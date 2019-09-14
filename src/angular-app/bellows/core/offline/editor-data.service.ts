@@ -311,11 +311,7 @@ export class EditorDataService {
         );
     }
 
-    if (!meaning) {
-      return '[Empty]';
-    }
-
-    return meaning;
+    return meaning || '';
   }
 
   getSortableValue = (config: any, entry: any): string => {
@@ -385,11 +381,7 @@ export class EditorDataService {
       }
     }
 
-    if (!sortableValue) {
-      return '[Empty]';
-    }
-
-    return sortableValue;
+    return sortableValue || '';
   }
 
   private doFullRefresh(offset: number = 0): angular.IPromise<any> {
@@ -696,7 +688,12 @@ export class EditorDataService {
       value: this.getSortableValue(config, entry)
     }));
 
-    mapped.sort((a, b) => compare(a.value, b.value) * (reverse ? -1 : 1));
+    mapped.sort((a, b) =>
+                  compare(a.value, b.value) *
+                  (reverse ? -1 : 1) *
+                  // if one is an empty string and the other is not, reverse order so empty string will be sorted down
+                  ((a.value === '') !== (b.value === '') ? -1 : 1)
+                );
 
     return mapped.map(el => list[el.index]);
   }

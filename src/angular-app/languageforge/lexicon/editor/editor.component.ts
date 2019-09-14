@@ -597,10 +597,11 @@ export class LexiconEditorController implements angular.IController {
   }
 
   getPrimaryListItemForDisplay(entry: LexEntry) {
-    return this.highlightMatches(this.getSortableValue(this.lecConfig, entry));
+    return this.highlightMatches(this.getSortableValue(this.lecConfig, entry)) || '[Empty]';
   }
 
-  getFontFamilyForPrimaryListItemForDisplay() {
+  getFontFamilyForPrimaryListItemForDisplay(entry: LexEntry) {
+    if (!this.getSortableValue(this.lecConfig, entry)) return '';
     // FIXME this is not always accurate, given the complexity in get EditorDataService#getSortableValue
     return this.lecConfig.inputSystems[
       (this.lecConfig.entry.fields.lexeme as LexConfigMultiText).inputSystems[0]
@@ -608,10 +609,11 @@ export class LexiconEditorController implements angular.IController {
   }
 
   getSecondaryListItemForDisplay(entry: LexEntry): string {
-    return this.highlightMatches(this.getMeaningForDisplay(this.lecConfig, entry));
+    return this.highlightMatches(this.getMeaningForDisplay(this.lecConfig, entry)) || '[Empty]';
   }
 
-  getFontFamilyForSecondaryListItemForDisplay() {
+  getFontFamilyForSecondaryListItemForDisplay(entry: LexEntry) {
+    if (!this.getMeaningForDisplay(this.lecConfig, entry)) return '';
     return this.lecConfig.inputSystems[
       ((this.lecConfig.entry.fields.senses as LexConfigFieldList).fields.gloss as LexConfigMultiText).inputSystems[0]
     ].cssFontFamily;
@@ -619,7 +621,7 @@ export class LexiconEditorController implements angular.IController {
 
   highlightMatches(text: string) {
     let filterText = this.entryListModifiers.filterText();
-    if (!filterText || text === '[Empty]') return text;
+    if (!filterText) return text;
 
     // FIXME this assumes the uppercase length of a string is the same as its lowercase, which is not necessarily true
     //  e.g. 'ß'.length !== 'ß'.toUpperCase().length

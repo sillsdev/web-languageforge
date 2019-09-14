@@ -82,9 +82,9 @@
                                          title="{{$ctrl.getCompactItemListOverlay(entry)}}"
                                          data-ng-repeat="entry in $ctrl.visibleEntries track by entry.id" data-ng-click="$ctrl.editEntry(entry.id)">
                                         <div dir="auto" class="listItemPrimary" data-ng-bind-html="$ctrl.getPrimaryListItemForDisplay(entry)"
-                                             data-ng-style="{ 'font-family': $ctrl.getFontFamilyForPrimaryListItemForDisplay() }"></div>
+                                             data-ng-style="{ 'font-family': $ctrl.getFontFamilyForPrimaryListItemForDisplay(entry) }"></div>
                                         <div dir="auto" class="listItemSecondary" data-ng-bind-html="$ctrl.getSecondaryListItemForDisplay(entry)"
-                                             data-ng-style="{ 'font-family': $ctrl.getFontFamilyForSecondaryListItemForDisplay() }"></div>
+                                             data-ng-style="{ 'font-family': $ctrl.getFontFamilyForSecondaryListItemForDisplay(entry) }"></div>
                                     </div>
                                 </div>
                             </div>
