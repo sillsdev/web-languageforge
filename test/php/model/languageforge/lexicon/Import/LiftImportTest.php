@@ -1616,6 +1616,97 @@ EOD;
             'custom field MultiPara has paragraphs separated into paragraph 2 and native language spans removed');
     }
 
+
+    // has range elements defined in the file rather than in external file
+    const liftDataWithInlineRanges = <<<EOD
+<?xml version="1.0" encoding="UTF-8" ?>
+<?oxygen RNGSchema="lift.rng" type="xml"?>
+<?blueprint schema="lift.rng"?>
+
+<lift version="0.13" producer="LexiquePro.3.6">
+
+ <header>
+  <ranges>
+  <range id="dialect">
+   <range-element id="fr">
+    <label>
+     <form lang="en"><text>French</text></form>
+    </label>
+    <abbrev>
+    </abbrev>
+   </range-element>
+   <range-element id="en">
+    <label>
+     <form lang="en"><text>English</text></form>
+     <form lang="fr"><text>anglais</text></form>
+     <form lang="es"><text>Inglés</text></form>
+     <form lang="pt"><text>Inglês</text></form>
+     <form lang="bg"><text>английски</text></form>
+    </label>
+    <abbrev>
+    </abbrev>
+   </range-element>
+  </range>
+  <range id="semantic-domain">
+  </range>
+  </ranges>
+ </header>
+
+ <entry id="a_c1eb9393-beeb-4098-9479-2cc69b689798" guid="5937b605-501e-450d-85b7-993baab79560">
+  <lexical-unit>
+   <form lang="fr"><text>a</text></form>
+  </lexical-unit>
+
+  <sense id="has (in the sense of possessing); has (past marker)_2e5346f1-fed7-4baa-9df1-d3489b296064">
+   <grammatical-info value="prep"/>
+   <gloss lang="en"><text>has (in the sense of possessing)</text></gloss>
+   <gloss lang="en"><text>has (past marker)</text></gloss>
+  </sense>
+ </entry>
+</lift>
+EOD;
+
+    public function testLiftImportMerge_InlineRanges_GetsInputSystems()
+    {
+        $liftFilePath = self::$environ->createTestLiftFile(self::liftDataWithInlineRanges, 'LiftDataWithInlineRanges.lift');
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+
+        LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
+        $entryList = new LexEntryListModel($project);
+        $entryList->read();
+
+        // Input systems should be set from LIFT file: English and French but NOT Thai
+        $this->assertEquals(2, $project->inputSystems->count());
+        $this->assertArrayHasKey('en', $project->inputSystems);
+        $this->assertArrayHasKey('fr', $project->inputSystems);
+        $this->assertArrayNotHasKey('th', $project->inputSystems);
+    }
+
+    public function testLiftImportMerge_MultipleGlossesInOneSense_AreSemicolonSeparated()
+    {
+        $liftFilePath = self::$environ->createTestLiftFile(self::liftDataWithInlineRanges, 'LiftDataWithInlineRanges.lift');
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+
+        LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
+        $entryList = new LexEntryListModel($project);
+        $entryList->read();
+
+        // Entry should have both glosses in one sense
+        $this->assertEquals(1, $entryList->count);
+        $entry0 = $entryList->entries[0];
+        $this->assertEquals('a', $entry0['lexeme']['fr']['value']);
+        $this->assertCount(1, $entry0['senses']);
+        $sense0 = $entry0['senses'][0];
+        $this->assertCount(1, $sense0['gloss']);
+        $this->assertEquals('has (in the sense of possessing); has (past marker)', $sense0['gloss']['en']['value']);
+    }
+
     public function testLiftDecoderGetGuid()
     {
         $guid = Guid::extract('');
