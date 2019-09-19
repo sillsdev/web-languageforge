@@ -25,6 +25,17 @@ class LexMultiText extends MapOf
         }
     }
 
+    public function appendForm($inputSystem, $value, $separator = '; ')
+    {
+        if (array_key_exists($inputSystem, $this)) {
+            $oldValue = $this[$inputSystem]->value;
+            $newValue = $oldValue . $separator . $value;
+            $this[$inputSystem]->value($newValue);
+        } else {
+            $this[$inputSystem] = new LexValue($value);
+        }
+    }
+
     /**
      * @param string $inputSystem
      * @return boolean

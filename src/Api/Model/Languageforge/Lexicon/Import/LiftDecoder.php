@@ -382,7 +382,9 @@ class LiftDecoder
             throw new \Exception("'" . $sxeNode->getName() . "' is not a gloss");
         }
         $inputSystemTag = \Normalizer::normalize((string) $sxeNode['lang']);
-        $multiText->form($inputSystemTag, (string) $sxeNode->{'text'});
+        // Some LIFT files can have multiple <gloss> elements which are supposed to be separated by a semicolon-space
+        // pair, so we use appendForm() here instead of form(). 2019-09 RM
+        $multiText->appendForm($inputSystemTag, (string) $sxeNode->{'text'}, '; ');
 
         $this->project->addInputSystem($inputSystemTag);
         if (isset($inputSystems)) {
