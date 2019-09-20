@@ -3,7 +3,7 @@ import * as angular from 'angular';
 import {UserService} from '../../core/api/user.service';
 import {ApplicationHeaderService} from '../../core/application-header.service';
 import {BreadcrumbService} from '../../core/breadcrumbs/breadcrumb.service';
-import {BrowserCheckService} from '../../core/browser-check.service';
+import {SiteWideNoticeService} from '../../core/site-wide-notice-service';
 import {ModalService} from '../../core/modal/modal.service';
 import {NoticeService} from '../../core/notice/notice.service';
 import {UtilityService} from '../../core/utility.service';
@@ -35,12 +35,12 @@ export class UserProfileAppController implements angular.IController {
   static $inject = ['$scope', '$window',
     'userService', 'modalService', 'silNoticeService',
     'breadcrumbService',
-    'browserCheckService',
+    'siteWideNoticeService',
     'applicationHeaderService'];
   constructor(private $scope: UserProfileAppControllerScope, private $window: angular.IWindowService,
               private userService: UserService, private modalService: ModalService, private notice: NoticeService,
               private breadcrumbService: BreadcrumbService,
-              private browserCheckService: BrowserCheckService,
+              private siteWideNoticeService: SiteWideNoticeService,
               private applicationHeaderService: ApplicationHeaderService) {}
 
   $onInit(): void {
@@ -60,7 +60,7 @@ export class UserProfileAppController implements angular.IController {
       }
     });
 
-    this.browserCheckService.warnIfIE();
+    this.siteWideNoticeService.displayNotices();
 
     this.loadUser(); // load the user data right away
 

@@ -4,7 +4,7 @@ import { NoticeModule } from './notice/notice.module';
 import { NoticeService } from './notice/notice.service';
 import { UtilityService } from './utility.service';
 
-export class BrowserCheckService {
+export class SiteWideNoticeService {
   static $inject: string[] = ['silNoticeService'];
   static message: string = 'It looks like you\'re using Internet Explorer. ' +
   'This website is not designed for Internet Explorer, and some things may not work as expected. ' +
@@ -14,14 +14,14 @@ export class BrowserCheckService {
 
   constructor(private noticeService: NoticeService) { }
 
-  warnIfIE() {
+  displayNotices() {
     if (UtilityService.isIE(window.navigator.userAgent)) {
-      this.noticeService.push(this.noticeService.ERROR, BrowserCheckService.message);
+      this.noticeService.push(this.noticeService.ERROR, SiteWideNoticeService.message);
     }
   }
 }
 
-export const BrowserCheckModule = angular
-  .module('browserCheckModule', [NoticeModule])
-  .service('browserCheckService', BrowserCheckService)
+export const SiteWideNoticeModule = angular
+  .module('siteWideNoticeModule', [NoticeModule])
+  .service('siteWideNoticeService', SiteWideNoticeService)
   .name;
