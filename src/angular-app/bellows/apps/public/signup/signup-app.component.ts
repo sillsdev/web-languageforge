@@ -1,7 +1,7 @@
 import * as angular from 'angular';
 
 import {UserService} from '../../../core/api/user.service';
-import {BrowserCheckService} from '../../../core/browser-check.service';
+import {SiteWideNoticeService} from '../../../core/site-wide-notice-service';
 import {SessionService} from '../../../core/session.service';
 import {CaptchaData} from '../../../shared/model/captcha.model';
 import {UserWithPassword} from '../../../shared/model/user-password.model';
@@ -32,18 +32,18 @@ export class SignupAppController implements angular.IController {
 
   static $inject = ['$scope', '$location',
     '$window',
-    'browserCheckService',
+    'siteWideNoticeService',
     'userService', 'sessionService'];
   constructor(private readonly $scope: any, private readonly $location: angular.ILocationService,
               private readonly $window: angular.IWindowService,
-              private browserCheckService: BrowserCheckService,
+              private siteWideNoticeService: SiteWideNoticeService,
               private readonly userService: UserService, private readonly sessionService: SessionService) {}
 
   $onInit() {
     this.record.id = '';
     this.record.password = '';
 
-    this.browserCheckService.warnIfIE();
+    this.siteWideNoticeService.displayNotices();
 
     (document.querySelector('input[name="name"]') as HTMLElement).focus();
 

@@ -1,7 +1,7 @@
 import * as angular from 'angular';
 
-import {BrowserCheckService} from '../../bellows/core/browser-check.service';
 import {NoticeService} from '../../bellows/core/notice/notice.service';
+import {SiteWideNoticeService} from '../../bellows/core/site-wide-notice-service';
 import {InterfaceConfig} from '../../bellows/shared/model/interface-config.model';
 import {User} from '../../bellows/shared/model/user.model';
 import {LexiconConfigService} from './core/lexicon-config.service';
@@ -30,7 +30,7 @@ export class LexiconAppController implements angular.IController {
   static $inject = ['$scope', '$location',
     '$q',
     'silNoticeService', 'lexConfigService',
-    'browserCheckService',
+    'siteWideNoticeService',
     'lexProjectService',
     'lexEditorDataService',
     'lexRightsService',
@@ -38,7 +38,7 @@ export class LexiconAppController implements angular.IController {
   constructor(private readonly $scope: angular.IScope, private readonly $location: angular.ILocationService,
               private readonly $q: angular.IQService,
               private readonly notice: NoticeService, private readonly configService: LexiconConfigService,
-              private readonly browserCheckService: BrowserCheckService,
+              private readonly siteWideNoticeService: SiteWideNoticeService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly editorService: LexiconEditorDataService,
               private readonly rightsService: LexiconRightsService,
@@ -46,7 +46,7 @@ export class LexiconAppController implements angular.IController {
 
   $onInit(): void {
 
-    this.browserCheckService.warnIfIE();
+    this.siteWideNoticeService.displayNotices();
 
     this.$q.all([this.rightsService.getRights(), this.configService.getEditorConfig()])
       .then(([rights, editorConfig]) => {

@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 
-import { BrowserCheckService } from '../../../core/browser-check.service';
+import { SiteWideNoticeService } from '../../../core/site-wide-notice-service';
 import { NoticeService } from '../../../core/notice/notice.service';
 import { TranslateProjectService } from '../core/translate-project.service';
 import { TranslateRights } from '../core/translate-rights.service';
@@ -18,15 +18,15 @@ export class TranslateSettingsController implements angular.IController {
   project: TranslateProject;
 
   static $inject = ['$scope', '$interval',
-    'browserCheckService',
+    'siteWideNoticeService',
     'silNoticeService', 'translateProjectApi'
   ];
   constructor(private $scope: angular.IScope, private $interval: angular.IIntervalService,
-              private browserCheckService: BrowserCheckService,
+              private siteWideNoticeService: SiteWideNoticeService,
               private notice: NoticeService, private projectApi: TranslateProjectService) {}
 
   $onInit() {
-    this.browserCheckService.warnIfIE();
+    this.siteWideNoticeService.displayNotices();
   }
 
   $onChanges(changes: any) {

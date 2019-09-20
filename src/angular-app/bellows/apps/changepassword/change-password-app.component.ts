@@ -3,7 +3,7 @@ import * as angular from 'angular';
 import { UserService } from '../../core/api/user.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
-import { BrowserCheckService } from '../../core/browser-check.service';
+import { SiteWideNoticeService } from '../../core/site-wide-notice-service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
 
@@ -13,11 +13,11 @@ export class ChangePasswordAppController implements angular.IController {
 
   static $inject = ['userService', 'sessionService',
                     'silNoticeService', 'breadcrumbService',
-                    'browserCheckService',
+                    'siteWideNoticeService',
                     'applicationHeaderService'];
   constructor(private userService: UserService, private sessionService: SessionService,
               private notice: NoticeService, private breadcrumbService: BreadcrumbService,
-              private browserCheckService: BrowserCheckService,
+              private siteWideNoticeService: SiteWideNoticeService,
               private applicationHeaderService: ApplicationHeaderService) {}
 
   $onInit() {
@@ -25,7 +25,7 @@ export class ChangePasswordAppController implements angular.IController {
       { label: 'Change Your Password' }
     ]);
     this.applicationHeaderService.setPageName('Change Your Password');
-    this.browserCheckService.warnIfIE();
+    this.siteWideNoticeService.displayNotices();
   }
 
   updatePassword() {
