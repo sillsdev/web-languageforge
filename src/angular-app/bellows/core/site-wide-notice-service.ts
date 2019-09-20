@@ -13,6 +13,8 @@ export class SiteWideNoticeService {
     '<a href="https://mozilla.org/firefox">Firefox</a>, or <a href="https://google.com/chrome">Chrome</a>) ' +
     'to browse this site.';
 
+  noticesDisplayed = false;
+
   constructor(
     private noticeService: NoticeService,
     private sessionService: SessionService,
@@ -20,6 +22,10 @@ export class SiteWideNoticeService {
   ) { }
 
   async displayNotices() {
+    // Display them once per page load, not every time a new component is constructed
+    if (this.noticesDisplayed) return;
+    else this.noticesDisplayed = true;
+
     if (UtilityService.isIE(window.navigator.userAgent)) {
       this.noticeService.push(this.noticeService.ERROR, SiteWideNoticeService.ieMessage);
     }
