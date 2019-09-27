@@ -147,4 +147,7 @@ export class ProjectService {
     return this.api.call('project_management_report_' + reportName, params, callback);
   }
 
+  insights() {
+    return this.api.call('project_insights');
+  }
 }

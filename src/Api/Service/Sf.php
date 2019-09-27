@@ -40,6 +40,7 @@ use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Communicate\EmailSettings;
 use Api\Model\Shared\Communicate\SmsSettings;
 use Api\Model\Shared\Dto\ActivityListDto;
+use Api\Model\Shared\Dto\ProjectInsightsDto;
 use Api\Model\Shared\Dto\ProjectListDto;
 use Api\Model\Shared\Dto\ProjectManagementDto;
 use Api\Model\Shared\Dto\RightsHelper;
@@ -266,6 +267,11 @@ class Sf
     public function user_sendInvite($toEmail)
     {
         return UserCommands::sendInvite($this->projectId, $this->userId, $this->website, $toEmail);
+    }
+
+    public function project_insights()
+    {
+        return ProjectInsightsDto::insights($this->website);
     }
 
     // ---------------------------------------------------------------
