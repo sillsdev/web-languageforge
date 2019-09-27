@@ -152,6 +152,10 @@ function runWebpack(applicationName, callback, isWatch, isAnalyze, isProduction)
   var compiler = webpack(config);
 
   var log = function (err, stats) {
+    if (err || stats.toString({ chunks: false, colors: false }).includes('ERROR in')) {
+      _execute('paplay /usr/share/sounds/freedesktop/stereo/dialog-error.oga');
+    } else _execute('paplay /usr/share/sounds/freedesktop/stereo/complete.oga');
+
     if (err) console.error(err);
     if (stats) console.log(stats.toString({ chunks: false, colors: true }));
     if (!isWatch) callback();

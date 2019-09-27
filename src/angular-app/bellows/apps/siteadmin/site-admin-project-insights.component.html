@@ -1,0 +1,69 @@
+<a href data-ng-click="$ctrl.runInsights()">Run project insights</a>
+
+<table data-ng-if="$ctrl.projects.length > 0" border="1" cellpadding="5">
+  <thead>
+    <tr>
+      <th>Project name</th>
+      <th>Project code</th>
+      <th>Owner</th>
+      <th>Email</th>
+      <th>Owner name</th>
+      <th>Owner role</th>
+      <th>URL</th>
+      <th>Users</th>
+      <th>Active users*</th>
+      <th>Active recently**</th>
+      <th>Activity events</th>
+      <th>Last activity</th>
+      <th>Interface Language Code</th>
+      <th>Archived</th>
+      <th>Managers</th>
+      <th>Contributors</th>
+      <th>Tech support</th>
+      <th>No role</th>
+      <th ng-if-start="$ctrl.appName === 'lexicon'">Commenters</th>
+      <th>Observers</th>
+      <th>Last Entry Modified</th>
+      <th ng-if-end>Number of comments</th>
+      <th ng-if-start="$ctrl.appName === 'sfchecks'">Open questions</th>
+      <th ng-if-end>Archived questions</th>
+      <th>Date modified</th>
+      <th>Date created</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-ng-repeat="project in $ctrl.projects">
+      <td>{{ project.projectName }}</td>
+      <td>{{ project.projectCode }}</td>
+      <td>{{ project.ownerUserName }}</td>
+      <td>{{ project.ownerEmail }}</td>
+      <td>{{ project.ownerName }}</td>
+      <td>{{ project.ownerRole }}</td>
+      <td>{{ project.url }}</td>
+      <td>{{ project.userCount }}</td>
+      <td>{{ project.activeUsers }}</td>
+      <td>{{ project.recentUsers }}</td>
+      <td>{{ project.activityCount }}</td>
+      <td>{{ project.lastActivityDate }}</td>
+      <td>{{ project.interfaceLanguageCode }}</td>
+      <td>{{ project.isArchived }}</td>
+      <td>{{ project.managers }}</td>
+      <td>{{ project.contributors }}</td>
+      <td>{{ project.techSupport }}</td>
+      <td>{{ project.usersWithNoRole }}</td>
+      <td ng-if-start="$ctrl.appName === 'lexicon'">{{ project.commentors }}</td>
+      <td>{{ project.observers }}</td>
+      <td>{{ project.lastEntryModifiedDate }}</td>
+      <td ng-if-end>#comments</td>
+      <td ng-if-start="$ctrl.appName === 'sfchecks'">#open questions</td>
+      <td ng-if-end>#archived questions</td>
+      <td>{{ project.dateModified }}</td>
+      <td>{{ project.dateCreated }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<p data-ng-if="$ctrl.projects.length > 0">
+  * Refers to users with two or more activity events.<br>
+  ** Refers to users with an activity event in the last 180 days.
+</p>
