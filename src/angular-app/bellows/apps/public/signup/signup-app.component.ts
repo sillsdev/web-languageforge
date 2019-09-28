@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import {UserService} from '../../../core/api/user.service';
+import {SiteWideNoticeService} from '../../../core/site-wide-notice-service';
 import {SessionService} from '../../../core/session.service';
 import {CaptchaData} from '../../../shared/model/captcha.model';
 import {UserWithPassword} from '../../../shared/model/user-password.model';
@@ -31,14 +32,20 @@ export class SignupAppController implements angular.IController {
 
   static $inject = ['$scope', '$location',
     '$window',
+    'siteWideNoticeService',
     'userService', 'sessionService'];
   constructor(private readonly $scope: any, private readonly $location: angular.ILocationService,
               private readonly $window: angular.IWindowService,
+              private siteWideNoticeService: SiteWideNoticeService,
               private readonly userService: UserService, private readonly sessionService: SessionService) {}
 
   $onInit() {
     this.record.id = '';
     this.record.password = '';
+
+    this.siteWideNoticeService.displayNotices();
+
+    (document.querySelector('input[name="name"]') as HTMLElement).focus();
 
     // Parse for user details if given
     const email = this.$location.search().e;

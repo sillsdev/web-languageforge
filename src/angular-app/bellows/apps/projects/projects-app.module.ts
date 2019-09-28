@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import {BreadcrumbModule} from '../../core/breadcrumbs/breadcrumb.module';
+import {SiteWideNoticeModule} from '../../core/site-wide-notice-service';
 import {CoreModule} from '../../core/core.module';
 import {NoticeModule} from '../../core/notice/notice.module';
 import {ListViewModule} from '../../shared/list-view.component';
@@ -14,7 +15,8 @@ export const ProjectsAppModule = angular
     ListViewModule,
     NoticeModule,
     PuiUtilityModule,
-    BreadcrumbModule
+    BreadcrumbModule,
+    SiteWideNoticeModule
   ])
   .component('projectsApp', ProjectsAppComponent)
   .name;

@@ -5,6 +5,7 @@ import { ProjectService } from '../../core/api/project.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
 import { SessionService } from '../../core/session.service';
+import { SiteWideNoticeService } from '../../core/site-wide-notice-service';
 
 export class Rights {
   remove: boolean;
@@ -30,9 +31,10 @@ export class UserManagementAppController implements angular.IController {
   joinRequests = {};
 
   static $inject = ['$location', 'projectService', 'sessionService', 'applicationHeaderService',
-                    'breadcrumbService', 'lexProjectService'];
+                    'siteWideNoticeService', 'breadcrumbService', 'lexProjectService'];
   constructor(private $location: angular.ILocationService, private projectService: ProjectService,
               private sessionService: SessionService, private applicationHeaderService: ApplicationHeaderService,
+              private siteWideNoticeService: SiteWideNoticeService,
               private breadcrumbService: BreadcrumbService, private lexProjectService: LexiconProjectService) { }
 
   $onInit(): void {
@@ -45,6 +47,8 @@ export class UserManagementAppController implements angular.IController {
     if (Object.keys(this.roles).length === 0) {
       this.queryUserList();
     }
+
+    this.siteWideNoticeService.displayNotices();
 
     this.sessionService.getSession().then(session => {
       this.rights.remove = session.hasProjectRight(this.sessionService.domain.USERS,

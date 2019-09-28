@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import {BreadcrumbModule} from '../../core/breadcrumbs/breadcrumb.module';
+import {SiteWideNoticeModule} from '../../core/site-wide-notice-service';
 import {CoreModule} from '../../core/core.module';
 import {NoticeModule} from '../../core/notice/notice.module';
 import {ListViewModule} from '../../shared/list-view.component';
@@ -19,7 +20,8 @@ export const SiteAdminAppModule = angular
     TypeAheadModule,
     NoticeModule,
     PuiUtilityModule,
-    BreadcrumbModule
+    BreadcrumbModule,
+    SiteWideNoticeModule
   ])
   .component('siteAdminApp', SiteAdminComponent)
   .component('siteAdminUsers', SiteAdminUsersComponent)

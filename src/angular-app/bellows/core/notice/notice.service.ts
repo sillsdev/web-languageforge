@@ -18,6 +18,8 @@ export class Notice {
   }
 }
 
+export type NoticeType = 'info' | 'danger' | 'warning' | 'success';
+
 export class NoticeService {
   private notices: Notice[];
   private timers: { [id: string]: angular.IPromise<any>; };
@@ -123,19 +125,19 @@ export class NoticeService {
     return this.isLoadingNotice;
   }
 
-  ERROR(): string {
+  ERROR(): NoticeType {
     return 'danger';
   }
 
-  WARN(): string {
+  WARN(): NoticeType {
     return 'warning';
   }
 
-  INFO(): string {
+  INFO(): NoticeType {
     return 'info';
   }
 
-  SUCCESS(): string {
+  SUCCESS(): NoticeType {
     return 'success';
   }
 }

@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import { UserService } from '../../../core/api/user.service';
+import { SiteWideNoticeModule, SiteWideNoticeService } from '../../../core/site-wide-notice-service';
 import { CoreModule } from '../../../core/core.module';
 import { UserWithPassword } from '../../../shared/model/user-password.model';
 
@@ -11,13 +12,15 @@ export class ResetPasswordController implements angular.IController {
 
   private forgotPasswordKey: string;
 
-  static $inject = ['$location', '$window', 'userService'];
+  static $inject = ['$location', '$window', 'siteWideNoticeService', 'userService'];
   constructor(private $location: angular.ILocationService, private $window: angular.IWindowService,
+              private siteWideNoticeService: SiteWideNoticeService,
               private userService: UserService) {}
 
   $onInit() {
     const absUrl = this.$location.absUrl();
     const appName = '/reset_password/';
+    this.siteWideNoticeService.displayNotices();
     this.forgotPasswordKey = absUrl.substring(absUrl.indexOf(appName) + appName.length);
   }
 
@@ -36,6 +39,6 @@ export class ResetPasswordController implements angular.IController {
 }
 
 export const ResetPasswordAppModule = angular
-  .module('reset_password', ['ui.bootstrap', CoreModule])
+  .module('reset_password', ['ui.bootstrap', CoreModule, SiteWideNoticeModule])
   .controller('ResetPasswordCtrl', ResetPasswordController)
   .name;

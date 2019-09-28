@@ -5,6 +5,7 @@ import { ApplicationHeaderService } from '../../core/application-header.service'
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
+import { SiteWideNoticeService } from '../../core/site-wide-notice-service';
 import { Project } from '../../shared/model/project.model';
 
 class Rights {
@@ -27,10 +28,12 @@ export class ProjectsAppController implements angular.IController {
   static $inject = ['$window', 'projectService',
                     'sessionService', 'silNoticeService',
                     'breadcrumbService',
+                    'siteWideNoticeService',
                     'applicationHeaderService'];
   constructor(private $window: angular.IWindowService, private projectService: ProjectService,
               private sessionService: SessionService, private notice: NoticeService,
               private breadcrumbService: BreadcrumbService,
+              private siteWideNoticeService: SiteWideNoticeService,
               private applicationHeaderService: ApplicationHeaderService) {
   }
 
@@ -42,6 +45,7 @@ export class ProjectsAppController implements angular.IController {
           href: '/app/projects',
           label: 'My Projects'
         }]);
+    this.siteWideNoticeService.displayNotices();
 
     this.sessionService.getSession().then(session => {
       this.rights.canEditProjects =
