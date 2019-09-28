@@ -2,7 +2,7 @@ import * as angular from 'angular';
 import 'angularjs-slider';
 import 'angularjs-slider/dist/rzslider.css';
 
-import {BrowserCheckModule} from '../../../core/browser-check.service';
+import {SiteWideNoticeModule} from '../../../core/site-wide-notice-service';
 import {CoreModule} from '../../../core/core.module';
 import {NoticeModule} from '../../../core/notice/notice.module';
 import {ArchiveProjectModule} from '../../../shared/archive-project.component';
@@ -18,7 +18,7 @@ export const TranslateSettingsModule = angular
     'rzModule',
     'ui.bootstrap',
     CoreModule,
-    BrowserCheckModule,
+    SiteWideNoticeModule,
     ArchiveProjectModule,
     DeleteProjectModule,
     ListViewModule,

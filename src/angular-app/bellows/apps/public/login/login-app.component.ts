@@ -1,14 +1,14 @@
 import * as angular from 'angular';
 
-import {BrowserCheckService} from '../../../core/browser-check.service';
+import {SiteWideNoticeService} from '../../../core/site-wide-notice-service';
 import { NoticeService } from '../../../core/notice/notice.service';
 
 export class LoginAppController implements angular.IController {
-  static $inject = ['silNoticeService', 'browserCheckService'];
-  constructor(private notice: NoticeService, private browserCheckService: BrowserCheckService) { }
+  static $inject = ['silNoticeService', 'siteWideNoticeService'];
+  constructor(private notice: NoticeService, private siteWideNoticeService: SiteWideNoticeService) { }
 
   $onInit() {
-    this.browserCheckService.warnIfIE();
+    this.siteWideNoticeService.displayNotices();
     (document.querySelector('input[name="_username"]') as HTMLElement).focus();
   }
 }

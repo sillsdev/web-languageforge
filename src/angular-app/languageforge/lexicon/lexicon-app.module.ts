@@ -4,7 +4,7 @@ import uiRouter from 'angular-ui-router';
 import './new-project/lexicon-new-project.module';
 
 import {ApiService} from '../../bellows/core/api/api.service';
-import {BrowserCheckModule} from '../../bellows/core/browser-check.service';
+import {SiteWideNoticeModule} from '../../bellows/core/site-wide-notice-service';
 import {CoreModule} from '../../bellows/core/core.module';
 import {LexiconCoreModule} from './core/lexicon-core.module';
 import {LexiconEditorModule} from './editor/editor.module';
@@ -18,7 +18,7 @@ export const LexiconAppModule = angular
     uiRouter,
     'ngSanitize',
     CoreModule,
-    BrowserCheckModule,
+    SiteWideNoticeModule,
     LexiconCoreModule,
     LexiconEditorModule,
     LexiconSettingsModule,

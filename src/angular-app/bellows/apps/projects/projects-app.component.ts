@@ -3,7 +3,7 @@ import * as angular from 'angular';
 import { ProjectService } from '../../core/api/project.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
-import { BrowserCheckService } from '../../core/browser-check.service';
+import { SiteWideNoticeService } from '../../core/site-wide-notice-service';
 import { HelpHeroService } from '../../core/helphero.service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
@@ -29,13 +29,13 @@ export class ProjectsAppController implements angular.IController {
   static $inject = ['$window', 'projectService',
                     'sessionService', 'silNoticeService',
                     'breadcrumbService',
-                    'browserCheckService',
+                    'siteWideNoticeService',
                     'applicationHeaderService',
                     'helpHeroService'];
   constructor(private $window: angular.IWindowService, private projectService: ProjectService,
               private sessionService: SessionService, private notice: NoticeService,
               private breadcrumbService: BreadcrumbService,
-              private browserCheckService: BrowserCheckService,
+              private siteWideNoticeService: SiteWideNoticeService,
               private applicationHeaderService: ApplicationHeaderService,
               private readonly helpHeroService: HelpHeroService) { }
 
@@ -47,7 +47,7 @@ export class ProjectsAppController implements angular.IController {
           href: '/app/projects',
           label: 'My Projects'
         }]);
-    this.browserCheckService.warnIfIE();
+    this.siteWideNoticeService.displayNotices();
 
     this.sessionService.getSession().then(session => {
       this.rights.canEditProjects =

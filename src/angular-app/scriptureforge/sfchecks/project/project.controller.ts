@@ -5,6 +5,7 @@ import {BreadcrumbModule} from '../../../bellows/core/breadcrumbs/breadcrumb.mod
 import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
 import {Session, SessionService} from '../../../bellows/core/session.service';
+import { SiteWideNoticeModule, SiteWideNoticeService } from '../../../bellows/core/site-wide-notice-service';
 import {ListViewModule} from '../../../bellows/shared/list-view.component';
 import {UploadFile} from '../../../bellows/shared/model/upload.model';
 import {TypeAheadModule} from '../../../bellows/shared/type-ahead.module';
@@ -21,14 +22,15 @@ export const SfChecksProjectModule = angular
     ListViewModule,
     TypeAheadModule,
     NoticeModule,
-    TextDropModule
+    TextDropModule,
+    SiteWideNoticeModule
   ])
   .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService',
     'linkService', 'listviewSortingService', 'silNoticeService', 'sfchecksProjectService',
-    'messageService', 'utilService', 'modalService', '$q',
+    'messageService', 'utilService', 'modalService', '$q', 'siteWideNoticeService',
   ($scope, textService, sessionService: SessionService, breadcrumbService,
    linkService, sorting, notice, sfchecksProjectService,
-   messageService, util, modalService, $q) => {
+   messageService, util, modalService, $q, siteWideNoticeService: SiteWideNoticeService) => {
 
     $scope.finishedLoading = false;
 
@@ -216,6 +218,8 @@ export const SfChecksProjectModule = angular
     };
 
     $scope.getPageDto();
+
+    siteWideNoticeService.displayNotices();
 
   }])
   .name;
