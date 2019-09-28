@@ -56,6 +56,9 @@ class SfchecksRoles extends ProjectRoles
         $rights[] = Domain::USERS + Operation::VIEW;
         self::grantAllOnDomain($rights, Domain::TEMPLATES);
         self::$_rights[self::MANAGER] = $rights;
+
+        // Tech support (same as manager)
+        self::$_rights[self::TECH_SUPPORT] = $rights;
     }
 
     private static $_rights;

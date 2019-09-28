@@ -491,6 +491,7 @@ export const SfChecksProjectSettingsModule = angular
     $scope.roles = [
           { key: 'contributor', name: 'Contributor' },
           { key: 'project_manager', name: 'Manager' },
+          { key: 'tech_support', name: 'Tech Support'}
       ];
 
     $scope.onRoleChange = function onRoleChange(user: User): void {
