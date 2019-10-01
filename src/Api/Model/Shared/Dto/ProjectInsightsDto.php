@@ -10,10 +10,12 @@ use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\SfProjectModel;
 use Api\Model\Shared\Command\UserCommands;
-use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\ProjectListModel;
-use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Scriptureforge\Sfchecks\TextListModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionAnswersListModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use stdClass;
 
 class ProjectInsightsDto
@@ -38,26 +40,26 @@ class ProjectInsightsDto
             $id = $project['id'];
             $project = $appName === LfProjectModel::LEXICON_APP ? new LexProjectModel($id) : new SfchecksProjectModel($id);
 
-            $projectData = [];
+            $projectData = new stdClass();
 
             // basic attributes
-            $projectData['projectName'] = $project->projectName;
-            $projectData['projectCode'] = $project->projectCode;
-            $projectData['interfaceLanguageCode'] = $project->interfaceLanguageCode;
-            $projectData['isArchived'] = $project->isArchived;
-            $projectData['dateModified'] = $project->dateModified->asDateTimeInterface()->format(\DateTime::RFC2822);
-            $projectData['dateCreated'] = $project->dateCreated->asDateTimeInterface()->format(\DateTime::RFC2822);
-            $projectData['url'] = '/app/' . $appName . '/' . ((string) $project->id);
+            $projectData->projectName = $project->projectName;
+            $projectData->projectCode = $project->projectCode;
+            $projectData->interfaceLanguageCode = $project->interfaceLanguageCode;
+            $projectData->isArchived = $project->isArchived;
+            $projectData->dateModified = $project->dateModified->asDateTimeInterface()->format(\DateTime::RFC2822);
+            $projectData->dateCreated = $project->dateCreated->asDateTimeInterface()->format(\DateTime::RFC2822);
+            $projectData->url = "/app/{$project->appName}/$project->id/";
 
             // owner data
             $owner = UserCommands::readUser($project->ownerRef->asString());
-            $projectData['ownerUserName'] = $owner['username'];
-            $projectData['ownerEmail'] = $owner['email'];
-            $projectData['ownerName'] = $owner['name'];
-            $projectData['ownerRole'] = $owner['role'];
+            $projectData->ownerUserName = $owner['username'];
+            $projectData->ownerEmail = $owner['email'];
+            $projectData->ownerName = $owner['name'];
+            $projectData->ownerRole = $owner['role'];
 
             // user data
-            $projectData['userCount'] = count($project->users);
+            $projectData->userCount = count($project->users);
             $managers = 0;
             $contributors = 0;
             $techSupport = 0;
@@ -75,14 +77,14 @@ class ProjectInsightsDto
                 else if ($role === LexRoles::OBSERVER) $observers++;
                 else if ($role === LexRoles::OBSERVER_WITH_COMMENT) $commenters++;
             }
-            $projectData['managers'] = $managers;
-            $projectData['contributors'] = $contributors;
-            $projectData['techSupport'] = $techSupport;
-            $projectData['usersWithNoRole'] = $noRole;
+            $projectData->managers = $managers;
+            $projectData->contributors = $contributors;
+            $projectData->techSupport = $techSupport;
+            $projectData->usersWithNoRole = $noRole;
 
             // activity data
             $projectActivity = ActivityListDto::getActivityForProject($project);
-            $projectData['activityCount'] = count($projectActivity);
+            $projectData->activityCount = count($projectActivity);
 
             $users = array();
             $recentUsers = array();
@@ -101,18 +103,54 @@ class ProjectInsightsDto
                     $activeUserCount++;
                 }
             }
-            $projectData['activeUsers'] = $activeUserCount;
-            $projectData['recentUsers'] = count($recentUsers);
-            $projectData['lastActivityDate'] = $lastActivityDate->format(\DateTime::RFC2822);
+            $projectData->activeUsers = $activeUserCount;
+            $projectData->recentUsers = count($recentUsers);
+            $projectData->lastActivityDate = $lastActivityDate->format(\DateTime::RFC2822);
 
-            // app-specific data
+            // sf-specific data
             if ($appName === SfProjectModel::SFCHECKS_APP) {
+                $textList = new TextListModel($project);
+                $textList->read();
+                $projectData->texts = $textList->count;
+                $openTexts = 0;
+                $questions = 0;
+                $openQuestions = 0;
+                $answers = 0;
+                $openAnswers = 0;
+                $comments = 0;
+                $openComments = 0;
+                foreach ($textList->entries as $textData) {
+                    $text = new TextModel($project, $textData['id']);
+                    if (!$text->isArchived) $openTexts++;
 
+                    $questionList = new QuestionAnswersListModel($project, $textData['id']);
+                    $questionList->read();
+                    $questions += count($questionList->entries);
+                    foreach ($questionList->entries as $questionData) {
+                        $question = new QuestionModel($project, $questionData['id']);
+                        $questionOpen = !$text->isArchived && !$question->isArchived;
+                        if ($questionOpen) $openQuestions++;
+                        $answers += count($question->answers);
+                        if ($questionOpen) $openQuestions += count($question->answers);
+                        foreach ($question->answers as $answer) {
+                            $comments += count($answer->comments);
+                            if ($questionOpen) $openComments += count($answer->comments);
+                        }
+                    }
+                }
+                $projectData->openTexts = $openTexts;
+                $projectData->questions = $questions;
+                $projectData->openQuestions = $openQuestions;
+                $projectData->answers = $answers;
+                $projectData->openAnswers = $openAnswers;
+                $projectData->comments = $comments;
+                $projectData->openComments = $openComments;
             }
+            // lf-specific data
             else if ($appName === LfProjectModel::LEXICON_APP) {
-                $projectData['lastEntryModifiedDate'] = $project->lastEntryModifiedDate->asDateTimeInterface()->format(\DateTime::RFC2822);
-                $projectData['commenters'] = $commenters;
-                $projectData['observers'] = $observers;
+                $projectData->lastEntryModifiedDate = $project->lastEntryModifiedDate->asDateTimeInterface()->format(\DateTime::RFC2822);
+                $projectData->commenters = $commenters;
+                $projectData->observers = $observers;
             }
 
             $insights->projectList[] = $projectData;
