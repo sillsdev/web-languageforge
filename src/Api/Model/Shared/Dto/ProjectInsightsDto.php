@@ -3,7 +3,6 @@
 namespace Api\Model\Shared\Dto;
 
 use Api\Library\Shared\Website;
-use Api\Model\Shared\Dto\ActivityListDto;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\LfProjectModel;
@@ -16,6 +15,8 @@ use Api\Model\Scriptureforge\Sfchecks\TextListModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Scriptureforge\Sfchecks\QuestionAnswersListModel;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Shared\Mapper\MapperListModel;
+use Api\Model\Shared\Mapper\MongoMapper;
 use stdClass;
 
 class ProjectInsightsDto
@@ -79,19 +80,20 @@ class ProjectInsightsDto
             }
 
             // activity data
-            $projectActivity = ActivityListDto::getActivityForProject($project);
-            $projectData->activityCount = count($projectActivity);
+            $projectActivity = new ActivityListModel($project);
+            $projectActivity->read();
+            $projectData->activityCount = $projectActivity->count;
 
-            $users = array();
-            $recentUsers = array();
+            $users = [];
+            $recentUsers = [];
             $lastActivityDate = null;
-            foreach ($projectActivity as $event) {
-                $userId = (string) $event['userRef']['id'];
+            foreach ($projectActivity->entries as $event) {
+                $userId = (string) $event['userRef'];
                 $users[$userId] = array_key_exists($userId, $users) ? $users[$userId] + 1 : 1;
                 if (date_create($event['date']) > date_create()->modify('-180 days')) {
                     $recentUsers[$userId] = true;
                 };
-                $lastActivityDate = $lastActivityDate === null ? date_create($event['date']) : max(date_create($event['date']), $lastActivityDate);
+                $lastActivityDate = $lastActivityDate === null ? $event['date']->toDateTime() : max($event['date']->toDateTime(), $lastActivityDate);
             }
             $projectData->activeUsers = 0;
             foreach ($users as $actvityCount) {
@@ -100,7 +102,7 @@ class ProjectInsightsDto
                 }
             }
             $projectData->recentUsers = count($recentUsers);
-            $projectData->lastActivityDate = $lastActivityDate->format(\DateTime::RFC2822);
+            $projectData->lastActivityDate = $lastActivityDate ? $lastActivityDate->format(\DateTime::RFC2822) : null;
 
             // sf-specific data
             if ($appName === SfProjectModel::SFCHECKS_APP) {
@@ -120,7 +122,7 @@ class ProjectInsightsDto
 
                     $questionList = new QuestionAnswersListModel($project, $textData['id']);
                     $questionList->read();
-                    $projectData->questions += count($questionList->entries);
+                    $projectData->questions += $questionList->count;
                     foreach ($questionList->entries as $questionData) {
                         $question = new QuestionModel($project, $questionData['id']);
                         $questionOpen = !$text->isArchived && !$question->isArchived;
@@ -139,11 +141,55 @@ class ProjectInsightsDto
                 $projectData->lastEntryModifiedDate = $project->lastEntryModifiedDate->asDateTimeInterface()->format(\DateTime::RFC2822);
                 $projectData->commenters = $commenters;
                 $projectData->observers = $observers;
+                $projectData->languageCode = $project->languageCode;
+
+                $entryList = new LexEntryList($project);
+                $entryList->readCounts();
+                $projectData->entries = $entryList->count;
+
+                $entriesWithPictures = new LexEntryList($project, ['senses.pictures' => ['$exists' => true, '$not' => ['$size' => 0]]]);
+                $entriesWithPictures->readCounts();
+                $projectData->pictures = $entriesWithPictures->count;
+
+                $commentList = new LexCommentList($project);
+                $commentList->readCounts();
+                $projectData->comments = $commentList->count;
+
+                $projectData->lastSyncedDate = $project->lastSyncedDate ? $project->lastSyncedDate->asDateTimeInterface()->format(\DateTime::RFC2822) : null;
+                $projectData->inputSystems = count($project->inputSystems);
             }
 
             $insights->projectList[] = $projectData;
         }
 
         return $insights;
+    }
+}
+
+/**
+ * ActivityListModel was created because using ActivityListDto::getActivityForProject was too slow.
+ * With 9 projects it cut the overall time from c. 2000ms to c. 160ms, though the time for handling activity data was
+ * cut from c. 1850ms to 10-20ms.
+ */
+class ActivityListModel extends MapperListModel
+{
+    public function __construct($project)
+    {
+        parent::__construct(new MongoMapper($project->databaseName(), 'activity'), [], ['userRef', 'date']);
+    }
+}
+
+class LexEntryList extends MapperListModel
+{
+    public function __construct($project, $query = [])
+    {
+        parent::__construct(new MongoMapper($project->databaseName(), 'lexicon'), ['isDeleted' => false] + $query);
+    }
+}
+
+class LexCommentList extends MapperListModel
+{
+    public function __construct($project) {
+        parent::__construct(new MongoMapper($project->databaseName(), 'lexiconComments'), ['isDeleted' => false]);
     }
 }

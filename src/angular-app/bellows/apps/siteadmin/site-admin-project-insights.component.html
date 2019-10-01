@@ -23,6 +23,13 @@
       <th>No role</th>
       <th ng-if-start="$ctrl.appName === 'lexicon'">Commenters</th>
       <th>Observers</th>
+      <th>Entries with pictures</th>
+      <th>Language code</th>
+      <th>Entries</th>
+      <th>Entries with pictures</th>
+      <th>Comments</th>
+      <th>Last send/receive</th>
+      <th>Input systems</th>
       <th ng-if-end>Last Entry Modified</th>
       <th ng-if-start="$ctrl.appName === 'sfchecks'">Open questions</th>
       <th>Total questions</th>
@@ -55,9 +62,16 @@
       <td>{{ project.managers }}</td>
       <td>{{ project.contributors }}</td>
       <td>{{ project.techSupport }}</td>
-      <td>{{ project.usersWithNoRole }}</td>
+      <td>{{ project.noRole }}</td>
       <td ng-if-start="$ctrl.appName === 'lexicon'">{{ project.commenters }}</td>
       <td>{{ project.observers }}</td>
+      <td>{{ project.pictures }}</td>
+      <td>{{ project.languageCode }}</td>
+      <td>{{ project.entries }}</td>
+      <td>{{ project.pictures }}</td>
+      <td>{{ project.comments }}</td>
+      <td>{{ project.lastSyncedDate }}</td>
+      <td>{{ project.inputSystems }}</td>
       <td ng-if-end>{{ project.lastEntryModifiedDate }}</td>
       <td ng-if-start="$ctrl.appName === 'sfchecks'">{{ project.openQuestions }}</td>
       <td>{{ project.questions }}</td>
