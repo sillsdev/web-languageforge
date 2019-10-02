@@ -163,8 +163,8 @@ export class ProjectService {
     return this.api.call('project_disableInviteToken', [], callback);
   }
 
-  insights() {
-    return this.api.call('project_insights');
+  csvInsights() {
+    return this.api.call('project_insights_csv');
   }
 
 }

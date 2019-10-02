@@ -226,7 +226,6 @@ class RightsHelper
                     // Admin (system context)
             case 'user_read':
             case 'user_list':
-            case 'project_insights':
                 return $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
 
             case 'user_ban':
@@ -246,6 +245,7 @@ class RightsHelper
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::ARCHIVE);
 
             case 'project_list':
+            case 'project_insights':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);
 
             case 'project_create':
