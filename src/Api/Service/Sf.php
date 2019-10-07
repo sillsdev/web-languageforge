@@ -269,9 +269,9 @@ class Sf
         return UserCommands::sendInvite($this->projectId, $this->userId, $this->website, $toEmail, null, $lexRoleKey);
     }
 
-    public function project_insights()
+    public function project_insights_csv()
     {
-        return ProjectInsightsDto::insights($this->website);
+        return ProjectInsightsDto::csvInsights($this->website);
     }
 
     // ---------------------------------------------------------------
