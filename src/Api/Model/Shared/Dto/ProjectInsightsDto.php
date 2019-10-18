@@ -57,7 +57,6 @@ class ProjectInsightsDto
             $role = $user->role;
             if ($role === ProjectRoles::MANAGER) $projectData->managers++;
             else if ($role === ProjectRoles::CONTRIBUTOR) $projectData->contributors++;
-            else if ($role === ProjectRoles::TECH_SUPPORT) $projectData->techSupport++;
             else if ($role === ProjectRoles::NONE) $projectData->noRole++;
             else if ($role === LexRoles::OBSERVER) $observers++;
             else if ($role === LexRoles::OBSERVER_WITH_COMMENT) $commenters++;
