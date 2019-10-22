@@ -11,6 +11,9 @@ use Api\Model\Shared\UserModel;
 
 (php_sapi_name() == 'cli') or die('this script must be run on the command-line');
 
+// When we change the site name, don't update the date modified timestamps
+define('MAPPERMODEL_NO_TIMESTAMP_UPDATE', true);
+
 class ChangeSiteName
 {
     public static function getNewSiteName($target, $siteName) {
