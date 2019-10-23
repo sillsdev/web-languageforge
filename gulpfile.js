@@ -966,21 +966,6 @@ gulp.task('build-productionConfig', function () {
     gatherWordsClientId = 'gatherWordsClientId';
   }
 
-  var paratextClientId = process.env.PARATEXT_CLIENT_ID;
-  if (paratextClientId === undefined) {
-    paratextClientId = 'paratextClientId';
-  }
-
-  var paratextApiToken = process.env.PARATEXT_API_TOKEN;
-  if (paratextApiToken === undefined) {
-    paratextApiToken = 'paratextApiToken';
-  }
-
-  var jwtKey = process.env.JWT_KEY;
-  if (jwtKey === undefined) {
-    jwtKey = 'jwtKey';
-  }
-
   var bugsnagApiKey = process.env.XFORGE_BUGSNAG_API_KEY;
   if (bugsnagApiKey === undefined) {
     bugsnagApiKey = 'missing-bugsnag-api-key';
@@ -1022,18 +1007,6 @@ gulp.task('build-productionConfig', function () {
       demand: false,
       default: gatherWordsClientId,
       type: 'string' })
-    .option('paratextClientId', {
-      demand: false,
-      default: paratextClientId,
-      type: 'string' })
-    .option('paratextApiToken', {
-      demand: false,
-      default: paratextApiToken,
-      type: 'string' })
-    .option('jwtKey', {
-      demand: false,
-      default: jwtKey,
-      type: 'string' })
     .option('bugsnagApiKey', {
       demand: false,
       default: bugsnagApiKey,
@@ -1070,15 +1043,6 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('GATHERWORDS_CLIENT_ID', ').*;$/m,
       '$1' + params.gatherWordsClientId + '\');'))
-    .pipe(replace(
-      /(define\('PARATEXT_CLIENT_ID', ').*;$/m,
-      '$1' + params.paratextClientId + '\');'))
-    .pipe(replace(
-      /(define\('PARATEXT_API_TOKEN', ').*;$/m,
-      '$1' + params.paratextApiToken + '\');'))
-    .pipe(replace(
-      /(define\('JWT_KEY', ').*;$/m,
-      '$1' + params.jwtKey + '\');'))
     .pipe(replace(
       /(define\('BUGSNAG_API_KEY', ').*;$/m,
       '$1' + params.bugsnagApiKey + '\');'))
@@ -1343,22 +1307,6 @@ function stripTrailingLF (line) {
 // Truncate the remote prefix of the destination
 function getTestCwd(dest) {
   return (dest) ? path.join(dest.replace(/^(.)*:/, ''), 'test/app') : './test/app';
-}
-
-// Get systemd service suffix from destination
-function getServiceSuffix(dest) {
-  var suffix = '';
-  var index = dest.indexOf('_');
-  if (index !== -1) {
-    suffix = dest.substr(index + 1);
-    if (suffix.endsWith('/')) {
-      suffix = suffix.substr(0, suffix.length - 1);
-    }
-
-    suffix = '@' + suffix;
-  }
-
-  return suffix;
 }
 
 function yargFailure(msg, err, yargs) {

@@ -3,7 +3,6 @@
 namespace Api\Model\Shared\Command;
 
 use Api\Library\Shared\Website;
-use Api\Library\Shared\JWTToken;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
 
@@ -89,10 +88,6 @@ class SessionCommands
         $uploadMax = self::fromValueWithSuffix(ini_get("upload_max_filesize"));
         $fileSizeMax = min(array($postMax, $uploadMax));
         $sessionData['fileSizeMax'] = $fileSizeMax;
-
-        $sessionData['accessToken'] = JWTToken::getAccessToken(720, $userId, $website);
-
-        //return JsonEncoder::encode($sessionData);  // This is handled elsewhere
 
         return $sessionData;
     }

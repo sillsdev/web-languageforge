@@ -39,8 +39,7 @@ export class ProjectService {
         sfchecks: 'Community Scripture Checking',
         webtypesetting: 'Typesetting',
         semdomtrans: 'Semantic Domain Translation',
-        lexicon: 'Dictionary',
-        translate: 'Translation'
+        lexicon: 'Dictionary'
       },
       projectTypesBySite: () => {
         return this.projectTypesBySite;

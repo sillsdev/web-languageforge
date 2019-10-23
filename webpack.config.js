@@ -64,23 +64,7 @@ module.exports = function (env) {
           use: 'url-loader?limit=10000'
         },
         { test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/, use: 'file-loader' },
-        { test: /\.(png|jpg)$/, use: 'url-loader?limit=8192' },
-        {
-          // fix critical dependency warning by removing reference to require() in Bridge
-          test: /bridge\.js/,
-          use: {
-            loader: 'string-replace-loader',
-            query: {
-              search: ' || require(name)',
-              replace: ''
-            }
-          }
-        },
-        {
-          // fix conflict between System namespace in Bridge and System variable injection
-          test: /(newtonsoft\.json|machine|bridge)\.js/,
-          parser: { system: false }
-        }
+        { test: /\.(png|jpg)$/, use: 'url-loader?limit=8192' }
       ]
     }
 

@@ -47,11 +47,6 @@ use Api\Model\Shared\Dto\RightsHelper;
 use Api\Model\Shared\Dto\UserProfileDto;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\ProjectModel;
-use Api\Model\Shared\Translate\Command\TranslateDocumentSetCommands;
-use Api\Model\Shared\Translate\Command\TranslateMetricCommands;
-use Api\Model\Shared\Translate\Command\TranslateProjectCommands;
-use Api\Model\Shared\Translate\Dto\TranslateDocumentSetDto;
-use Api\Model\Shared\Translate\Dto\TranslateProjectDto;
 use Api\Model\Shared\UserListModel;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
@@ -863,75 +858,6 @@ class Sf
     public function sendReceive_notification_sendRequest($projectCode)
     {
         return SendReceiveCommands::notificationSendRequest($projectCode);
-    }
-
-
-    /*
-     * --------------------------------------------------------------- TRANSLATION MANAGER API ---------------------------------------------------------------
-     */
-    /**
-     * @param array $projectData
-     * @return string $projectId
-     */
-    public function translate_projectUpdate($projectData)
-    {
-        return TranslateProjectCommands::updateProject($this->projectId, $this->userId, $projectData);
-    }
-
-    /**
-     * @return array
-     */
-    public function translate_projectDto()
-    {
-        return TranslateProjectDto::encode($this->projectId, $this->userId);
-    }
-
-    /**
-     * @param array $configData
-     * @return string $projectId
-     */
-    public function translate_configUpdate($configData)
-    {
-        if (array_key_exists('userPreferences', $configData)) {
-            $this->translate_configUpdateUserPreferences($configData['userPreferences']);
-        }
-
-        return TranslateProjectCommands::updateConfig($this->projectId, $configData);
-    }
-
-    /**
-     * @param array $userPreferenceData
-     * @return string $projectId
-     */
-    public function translate_configUpdateUserPreferences($userPreferenceData)
-    {
-        return TranslateProjectCommands::updateUserPreferences($this->projectId, $this->userId, $userPreferenceData);
-    }
-
-    public function translate_documentSetUpdate($documentSetData)
-    {
-        return TranslateDocumentSetCommands::updateDocumentSet($this->projectId, $documentSetData);
-    }
-
-    public function translate_documentSetListDto()
-    {
-        return TranslateDocumentSetDto::encode($this->projectId, $this->userId);
-    }
-
-    public function translate_documentSetRemove($documentId)
-    {
-        return TranslateDocumentSetCommands::removeDocumentSet($this->projectId, $documentId);
-    }
-
-    public function translate_updateMetrics($metricData, $documentSetId, $metricId)
-    {
-        return TranslateMetricCommands::updateMetric($this->projectId, $metricId, $metricData, $documentSetId, $this->userId);
-    }
-
-    public function translate_usxToHtml($usx)
-    {
-        $usxHelper = new UsxHelper($usx, true);
-        return $usxHelper->toHtml();
     }
 
 

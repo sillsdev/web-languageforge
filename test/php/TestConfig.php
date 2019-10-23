@@ -30,7 +30,6 @@ define('SF_TESTPROJECTCODE',  'testcode1');
 define('SF_TESTPROJECT2',     'Test Project2');
 define('SF_TESTPROJECTCODE2', 'testcode2');
 define('BCRYPT_COST', 7);
-define('JWT_KEY', 'this_is_not_a_secret_dev_only');
 
 global $WEBSITE;
 $WEBSITE = Website::get('languageforge.localhost');

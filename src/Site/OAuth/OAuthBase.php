@@ -120,9 +120,6 @@ abstract class OAuthBase extends Base
             case "facebook":
                 // TODO: Implement FacebookOAuth class
                 break;
-            case "paratext":
-                return new ParatextOAuth();
-                break;
             default:
                 break;
         }

@@ -22,15 +22,11 @@ use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\Mapper\MapperModel;
 use Api\Model\Shared\Mapper\MapperUtils;
 use Api\Model\Shared\Rights\ProjectRoleModel;
-use Api\Model\Shared\Translate\TranslateProjectModel;
 use Palaso\Utilities\CodeGuard;
 use Palaso\Utilities\FileUtilities;
 
 class ProjectModel extends MapperModel
 {
-    // define shared project types here
-    const TRANSLATE_APP = 'translate';
-
     public function __construct($id = '')
     {
         $this->id = new Id();
@@ -452,8 +448,6 @@ class ProjectModel extends MapperModel
                 return new RapumaProjectModel($projectId);
             case 'lexicon':
                 return new LexProjectModel($projectId);
-            case 'translate':
-                return new TranslateProjectModel($projectId);
             case 'semdomtrans':
                 return new SemDomTransProjectModel($projectId);
             default:
@@ -475,7 +469,6 @@ class ProjectModel extends MapperModel
             case 'sfchecks':
             case 'rapuma':
             case 'lexicon':
-            case 'translate':
             case 'semdomtrans':
                 return $model->id->id;
             default:
