@@ -90,8 +90,8 @@ class MapperModel extends ObjectForEncoding
     public function write()
     {
         CodeGuard::checkTypeAndThrow($this->id, 'Api\Model\Shared\Mapper\Id');
+        $now = UniversalTimestamp::now();
         if (! defined('MAPPERMODEL_NO_TIMESTAMP_UPDATE')) {
-            $now = UniversalTimestamp::now();
             $this->dateModified = $now;
         }
         if (Id::isEmpty($this->id)) {
