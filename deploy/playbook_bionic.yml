@@ -17,7 +17,7 @@
   pre_tasks:
     - name: Add PHP{{php_version}} ppa
       apt_repository:
-        repo: 'ppa:ondrej/php'
+        repo: "deb http://ppa.launchpad.net/ondrej/php/ubuntu {{base_distribution_release}} Release"
         state: present
     - name: add Mongo apt key
       apt_key:
@@ -86,7 +86,7 @@
         state: link
       when: node_binary.stat.exists == False
     - name: install n
-      shell: npm install -g n # TODO: idempotent
+      shell: npm install -g n
       args:
         creates: /usr/local/bin/n
 

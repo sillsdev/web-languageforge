@@ -49,10 +49,10 @@ Status of builds from our continuous integration (CI) [server](https://build.pal
 
 Successful builds from our CI server deploy to:
 
-| Site            | Master | QA | Live |
-| --------------- | ------ | -- | ---- |
-| Language Forge  | [dev.languageforge.org](https://dev.languageforge.org) | [qa.languageforge.org](https://qa.languageforge.org) | [languageforge.org](https://languageforge.org) |
-| Scripture Forge | [dev.scriptureforge.org](https://dev.scriptureforge.org) | [qa.scriptureforge.org](https://qa.scriptureforge.org) | [scriptureforge.org](https://scriptureforge.org) |
+| Site            | QA | Live |
+| --------------- | -- | ---- |
+| Language Forge  | [qa.languageforge.org](https://qa.languageforge.org) | [languageforge.org](https://languageforge.org) |
+| Scripture Forge | [qa.scriptureforge.org](https://qa.scriptureforge.org) | [scriptureforge.org](https://scriptureforge.org) |
 
 ## Style Guides ##
 
@@ -97,9 +97,10 @@ Other useful resources:
 
 Start by installing Git and Ansible:
 ``` shell
-sudo add-apt-repository ppa:ansible/ansible
-sudo apt-get update
-sudo apt-get install -y git ansible
+sudo apt update
+sudo apt install software-properties-common
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+sudo apt install git ansible
 ```
 
 Now create a directory for installation and clone the repo:
