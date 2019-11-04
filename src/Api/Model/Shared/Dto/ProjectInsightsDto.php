@@ -85,7 +85,7 @@ class ProjectInsightsDto
             if (array_key_exists('userRef', $event)) {
                 $userId = (string) $event['userRef'];
                 $users[$userId] = array_key_exists($userId, $users) ? $users[$userId] + 1 : 1;
-                if (date_create($event['date']) > date_create()->modify('-180 days')) {
+                if ($event['date']->toDateTime() > date_create()->modify('-180 days')) {
                     $recentUsers[$userId] = true;
                 };
             }
