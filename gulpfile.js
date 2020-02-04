@@ -539,17 +539,17 @@ gulp.task('remote-restart-php-fpm', function (cb) {
       demand: true,
       type: 'string' })
     .option('uploadCredentials', {
-      demand: true,
+      default: '',
       type: 'string' })
     .fail(yargFailure)
     .argv;
   var options = {
-    credentials: params.uploadCredentials,
+    credentials: params.uploadCredentials ? '-i ' + params.uploadCredentials : '',
     destination: params.dest.slice(0, params.dest.indexOf(':'))
   };
 
   execute(
-    "ssh -i <%= credentials %> <%= destination %> 'service php7.3-fpm restart'",
+    "ssh <%= credentials %> <%= destination %> 'service php7.3-fpm restart'",
     options,
     cb
   );
@@ -1091,7 +1091,7 @@ gulp.task('build-upload', function (cb) {
       demand: true,
       type: 'string' })
     .option('uploadCredentials', {
-      demand: true,
+      default: '',
       type: 'string' })
     .fail(yargFailure)
     .argv;
@@ -1100,14 +1100,14 @@ gulp.task('build-upload', function (cb) {
     silent: false,
     includeFile: 'upload-include.txt',  // read include patterns from FILE
     excludeFile: 'upload-exclude.txt',  // read exclude patterns from FILE
-    rsh: '--rsh="ssh -v -i ' + params.uploadCredentials + '"',
+    rsh: params.uploadCredentials ? '--rsh="ssh -v -i ' + params.uploadCredentials + '"' : '--rsh="ssh -v"',
     src: 'src/',
     dest: path.join(params.dest, 'htdocs')
   };
 
   execute(
     'rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx ' +
-    '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
+    '--delete-during --stats <%= rsh %> ' +
     '--include-from="<%= includeFile %>" ' +
     '--exclude-from="<%= excludeFile %>" ' +
     '<%= src %> <%= dest %>',
