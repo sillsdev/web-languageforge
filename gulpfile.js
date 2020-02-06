@@ -1106,7 +1106,7 @@ gulp.task('build-upload', function (cb) {
   };
 
   execute(
-    'rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx ' +
+    'rsync -progzl --chmod=Dug=rwx,Fug=rw,o-rwx ' +
     '--delete-during --stats <%= rsh %> ' +
     '--include-from="<%= includeFile %>" ' +
     '--exclude-from="<%= excludeFile %>" ' +
