@@ -1102,11 +1102,11 @@ gulp.task('build-upload', function (cb) {
     excludeFile: 'upload-exclude.txt',  // read exclude patterns from FILE
     rsh: params.uploadCredentials ? '--rsh="ssh -v -i ' + params.uploadCredentials + '"' : '--rsh="ssh -v"',
     src: 'src/',
-    dest: path.join(params.dest, 'htdocs')
+    dest: path.join(params.dest, 'htdocs/')
   };
 
   execute(
-    'rsync -progzl --chmod=Dug=rwx,Fug=rw,o-rwx ' +
+    'rsync -rzl ' +
     '--delete-during --stats <%= rsh %> ' +
     '--include-from="<%= includeFile %>" ' +
     '--exclude-from="<%= excludeFile %>" ' +
