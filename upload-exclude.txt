@@ -1,4 +1,4 @@
 /angular-app/**/*.js
-/assets/**
+/assets/
 /js/lib/languageforge.js
 /js/lib/scriptureforge.js
