@@ -69,6 +69,7 @@
           - php{{php_version}}-gd
           - php{{php_version}}-intl
           - php{{php_version}}-mbstring
+          - php{{php_version}}-xml
           - php-pear
           - postfix
           - php-xdebug
@@ -187,6 +188,21 @@
     - name: "Ensure Source Link: default_local link exists (localhost)"
       file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/default_local" state=link group=www-data force=true
       when: inventory_hostname == "localhost"
+
+    # Allow deployment to restart php-fpm service without needing sudo
+    - name: "Deploy systemd service-restarter units"
+      template:
+        src: "templates/{{ item }}"
+        dest: "/etc/systemd/system/{{ item }}"
+      with_items:
+        - php-fpm-restarter.path
+        - php-fpm-restarter.service
+      notify:
+        - reload systemd service files
+        - enable systemd restarter path unit
+        - enable systemd restarter service unit
+      when: restart_filename is defined and php_version is defined
+      tags: restarterservice
 
      # group permissions from LfMerge deploy
     - name: ensure www-data group exists
@@ -353,6 +369,16 @@
       when: inventory_hostname == "localhost"
 
   handlers:
+    - name: reload systemd service files
+      systemd:
+        daemon_reload: yes
+
+    - name: enable systemd restarter path unit
+      service: name=php-fpm-restarter.path enabled=yes state=started
+
+    - name: enable systemd restarter service unit
+      service: name=php-fpm-restarter.service enabled=yes state=stopped
+
     - name: restart mongod
       service: name=mongod state=restarted
 
