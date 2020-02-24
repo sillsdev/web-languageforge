@@ -539,17 +539,25 @@ gulp.task('remote-restart-php-fpm', function (cb) {
       demand: true,
       type: 'string' })
     .option('uploadCredentials', {
+      default: '',
+      type: 'string' })
+    .option('createRestartFile', {
       demand: true,
       type: 'string' })
     .fail(yargFailure)
     .argv;
   var options = {
-    credentials: params.uploadCredentials,
-    destination: params.dest.slice(0, params.dest.indexOf(':'))
+    dryRun: false,
+    silent: false,
+    rsh: params.uploadCredentials ? '--rsh="ssh -v -i ' + params.uploadCredentials + '"' : '--rsh="ssh -v"',
+    src: params.createRestartFile,
+    dest: params.dest
   };
-
+  // Create an empty file, or don't overwrite it if it already exists
+  fs.closeSync(fs.openSync(params.createRestartFile, 'a'))
   execute(
-    "ssh -i <%= credentials %> <%= destination %> 'service php7.3-fpm restart'",
+    'rsync -rzl --stats <%= rsh %> ' +
+    '<%= src %> <%= dest %>',
     options,
     cb
   );
@@ -1116,7 +1124,7 @@ gulp.task('build-upload', function (cb) {
       demand: true,
       type: 'string' })
     .option('uploadCredentials', {
-      demand: true,
+      default: '',
       type: 'string' })
     .fail(yargFailure)
     .argv;
@@ -1125,14 +1133,14 @@ gulp.task('build-upload', function (cb) {
     silent: false,
     includeFile: 'upload-include.txt',  // read include patterns from FILE
     excludeFile: 'upload-exclude.txt',  // read exclude patterns from FILE
-    rsh: '--rsh="ssh -v -i ' + params.uploadCredentials + '"',
+    rsh: params.uploadCredentials ? '--rsh="ssh -v -i ' + params.uploadCredentials + '"' : '--rsh="ssh -v"',
     src: 'src/',
-    dest: path.join(params.dest, 'htdocs')
+    dest: path.join(params.dest, 'htdocs/')
   };
 
   execute(
-    'rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx ' +
-    '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
+    'rsync -rzl ' +
+    '--delete-during --stats <%= rsh %> ' +
     '--include-from="<%= includeFile %>" ' +
     '--exclude-from="<%= excludeFile %>" ' +
     '<%= src %> <%= dest %>',
@@ -1142,14 +1150,15 @@ gulp.task('build-upload', function (cb) {
 
   // For E2E tests, upload test dir to destination
   if (params.dest.includes('e2etest')) {
-    options.src = 'test/';
-    options.dest = path.join(params.dest, '/test');
+    let e2eOptions = Object.assign({}, options);
+    e2eOptions.src = 'test/';
+    e2eOptions.dest = path.join(params.dest, '/test');
 
     execute(
-      'rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx ' +
-      '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
+      'rsync -rzl ' +
+      '--delete-during --stats <%= rsh %> ' +
       '<%= src %> <%= dest %> --exclude php',
-      options,
+      e2eOptions,
       cb
     );
   }
