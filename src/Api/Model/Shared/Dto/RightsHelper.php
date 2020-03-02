@@ -26,7 +26,8 @@ class RightsHelper
      * @param ProjectModel $projectModel
      * @return mixed
      */
-    public static function encode($userModel, $projectModel) {
+    public static function encode($userModel, $projectModel)
+    {
         return $projectModel->getRightsArray($userModel->id->asString());
     }
 
@@ -39,7 +40,8 @@ class RightsHelper
     // I named this static function slightly different from userHasSiteRight to avoid this naming conflict
     // @see http://stackoverflow.com/questions/11331616/php-is-it-possible-to-declare-a-method-static-and-nonstatic
     // @see https://bugs.php.net/bug.php?id=40837
-    public static function hasSiteRight($userId, $right) {
+    public static function hasSiteRight($userId, $right)
+    {
         return self::_hasSiteRight($userId, $right);
     }
 
@@ -47,11 +49,13 @@ class RightsHelper
      * @param int $right
      * @return bool
      */
-    public function userHasSiteRight($right) {
+    public function userHasSiteRight($right)
+    {
         return self::_hasSiteRight($this->_userId, $right);
     }
 
-    private static function _hasSiteRight($userId, $right) {
+    private static function _hasSiteRight($userId, $right)
+    {
         $userModel = new UserModel($userId);
         return (SiteRoles::hasRight($userModel->siteRole, $right) || SystemRoles::hasRight($userModel->role, $right));
     }
@@ -61,7 +65,8 @@ class RightsHelper
      * @param ProjectModel $projectModel
      * @param Website $website
      */
-    public function __construct($userId, $projectModel, $website) {
+    public function __construct($userId, $projectModel, $website)
+    {
         $this->_userId = $userId;
         $this->_projectModel = $projectModel;
         $this->_website = $website;
@@ -71,7 +76,8 @@ class RightsHelper
      * @param int $right
      * @return bool
      */
-    public function userHasSystemRight($right) {
+    public function userHasSystemRight($right)
+    {
         $userModel = new UserModel($this->_userId);
 
         return SystemRoles::hasRight($userModel->role, $right);
@@ -82,7 +88,8 @@ class RightsHelper
      * @param int $right
      * @return bool
      */
-    public function userHasProjectRight($right) {
+    public function userHasProjectRight($right)
+    {
         return $this->_projectModel->hasRight($this->_userId, $right);
     }
 
@@ -92,10 +99,11 @@ class RightsHelper
      * @return bool
      * @throws \Exception
      */
-    public function userCanAccessMethod($methodName) {
+    public function userCanAccessMethod($methodName)
+    {
         switch ($methodName) {
 
-            // User Role (Project Context)
+                // User Role (Project Context)
             case 'semdom_editor_dto':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
             case 'semdom_get_open_projects':
@@ -112,6 +120,14 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
             case 'project_sendJoinRequest':
                 return true;
+
+            case 'project_getInviteLink':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+
+            case 'project_disableInviteToken':
+            case 'project_createInviteLink':
+            case 'project_updateInviteTokenRole':
+                return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
             case 'semdom_does_googletranslatedata_exist':
                 return true;
             case 'project_acceptJoinRequest':
@@ -119,7 +135,7 @@ class RightsHelper
             case 'project_denyJoinRequest':
                 return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
             case 'semdom_export_project':
-                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT );
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             case 'user_sendInvite':
             case 'message_markRead':
@@ -149,7 +165,7 @@ class RightsHelper
             case 'question_list_dto':
                 return $this->userHasProjectRight(Domain::QUESTIONS + Operation::VIEW);
 
-            // Project Manager Role (Project Context)
+                    // Project Manager Role (Project Context)
             case 'user_createSimple':
                 return $this->userHasProjectRight(Domain::USERS + Operation::CREATE);
 
@@ -207,9 +223,10 @@ class RightsHelper
             case 'question_publish':
                 return $this->userHasProjectRight(Domain::QUESTIONS + Operation::ARCHIVE);
 
-            // Admin (system context)
+                    // Admin (system context)
             case 'user_read':
             case 'user_list':
+            case 'project_insights_csv':
                 return $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
 
             case 'user_ban':
@@ -257,7 +274,7 @@ class RightsHelper
             case 'questionTemplate_list':
                 return $this->userHasProjectRight(Domain::TEMPLATES + Operation::VIEW);
 
-            // User (site context)
+                    // User (site context)
             case 'user_readProfile':
                 return $this->userHasSiteRight(Domain::USERS + Operation::VIEW_OWN);
 
@@ -265,7 +282,7 @@ class RightsHelper
             case 'check_unique_identity':
             case 'change_password': // change_password requires additional protection in the method itself
 
-                return $this->userHasSiteRight(Domain::USERS + Operation::EDIT_OWN);
+                    return $this->userHasSiteRight(Domain::USERS + Operation::EDIT_OWN);
             case 'project_list_dto':
             case 'activity_list_dto':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW_OWN);
@@ -284,7 +301,7 @@ class RightsHelper
 
 
 
-            // LanguageForge (lexicon)
+                    // LanguageForge (lexicon)
             case 'lex_configuration_update':
             case 'lex_upload_importLift':
             case 'lex_upload_importProjectZip':
@@ -297,7 +314,7 @@ class RightsHelper
             case 'lex_dbeDtoUpdatesOnly':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
 
-            // case 'lex_entry_read':
+                // case 'lex_entry_read':
             case 'lex_entry_update':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 
@@ -323,7 +340,7 @@ class RightsHelper
             case 'lex_project_removeMediaFile':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 
-            // send receive api
+                    // send receive api
             case 'sendReceive_getProjectStatus':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
@@ -332,7 +349,7 @@ class RightsHelper
             case 'sendReceive_commitProject':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
-            // LanguageForge (translate)
+                    // LanguageForge (translate)
             case 'translate_projectDto':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
@@ -352,14 +369,14 @@ class RightsHelper
             case 'translate_documentSetRemove':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::DELETE);
 
-            // project management app
+                    // project management app
             case 'project_management_dto':
             case 'project_management_report_sfchecks_userEngagementReport':
             case 'project_management_report_sfchecks_topContributorsWithTextReport':
             case 'project_management_report_sfchecks_responsesOverTimeReport':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
-            // semdomtrans app management
+                    // semdomtrans app management
             case 'semdomtrans_app_management_dto':
             case 'semdomtrans_export_all_projects':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);

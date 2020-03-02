@@ -3,6 +3,7 @@ import { ProgressStatus, TrainResultCode } from 'machine';
 import Quill, { DeltaStatic, RangeStatic } from 'quill';
 import Worker from 'worker-loader?name=document-cache.worker.js&publicPath=/dist/!./document-cache.worker';
 
+import { SiteWideNoticeService } from '../../../core/site-wide-notice-service';
 import { ModalService } from '../../../core/modal/modal.service';
 import { NoticeService } from '../../../core/notice/notice.service';
 import { DocumentsOfflineCacheService } from '../../../core/offline/documents-offline-cache.service';
@@ -44,12 +45,14 @@ export class TranslateEditorController implements angular.IController {
   private readonly documentCacheWorker: Worker;
 
   static $inject = ['$window', '$scope',
+    'siteWideNoticeService',
     '$q', 'machineService',
     'metricService', 'modalService',
     'silNoticeService', 'realTimeService',
     'translateProjectApi', 'utilService',
     'translateSendReceiveService'];
   constructor(private readonly $window: angular.IWindowService, private readonly $scope: angular.IScope,
+              private readonly siteWideNoticeService: SiteWideNoticeService,
               private readonly $q: angular.IQService, private readonly machine: MachineService,
               private readonly metricService: MetricService, private readonly modal: ModalService,
               private readonly notice: NoticeService, private readonly realTime: RealTimeService,
@@ -65,6 +68,7 @@ export class TranslateEditorController implements angular.IController {
   }
 
   $onInit(): void {
+    this.siteWideNoticeService.displayNotices();
     this.source = new SourceDocumentEditor(this.$q, this.machine, this.realTime);
     this.target = new TargetDocumentEditor(this.$q, this.machine, this.realTime, this.metricService, this.$window);
     // noinspection JSUnusedLocalSymbols

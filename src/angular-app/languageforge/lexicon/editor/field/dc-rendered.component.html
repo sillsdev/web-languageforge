@@ -1,7 +1,7 @@
-<div class="dc-rendered-entryContainer" id="entryContainer" data-ng-hide="$ctrl.hideIfEmpty && !$ctrl.entry.word">
+<div class="dc-rendered-entryContainer" data-ng-hide="$ctrl.hideIfEmpty && !$ctrl.entry.word">
     <span class="dc-rendered-word" data-ng-bind-html="$ctrl.entry.word"></span>
     <span class="dc-rendered-senseContainer" data-ng-repeat="sense in $ctrl.entry.senses track by $index">
-        <span dir="ltr" data-ng-hide="$ctrl.entry.senses.length === 1" class="notranslate dc-rendered-senseNumber">{{$index + 1}})</span>
+        <span dir="ltr" data-ng-if="$ctrl.entry.senses.length !== 1" class="notranslate dc-rendered-senseNumber">{{$index + 1}}</span>
         <span class="dc-rendered-partOfSpeech" data-ng-bind-html="sense.partOfSpeech"></span>
         <span class="dc-rendered-definition" data-ng-bind-html="sense.meaning"></span>
         <span class="dc-rendered-exampleContainer" data-ng-repeat="example in sense.examples track by $index">

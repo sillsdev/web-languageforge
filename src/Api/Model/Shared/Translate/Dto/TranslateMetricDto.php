@@ -7,8 +7,6 @@ use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Translate\TranslateDocumentSetModel;
 use Api\Model\Shared\Translate\TranslateMetricModel;
 use Api\Model\Shared\UserModel;
-use GeoIp2\Database\Reader;
-use GeoIp2\Exception\AddressNotFoundException;
 
 class TranslateMetricDtoEncoder extends JsonEncoder
 {
@@ -72,7 +70,6 @@ class TranslateMetricDtoEncoder extends JsonEncoder
 
 class TranslateMetricDto
 {
-    const GEO_CITY_DB_FILE_PATH = '/usr/share/GeoIP/GeoLite2-City.mmdb';
 
     public static function encode(TranslateMetricModel $metric, ProjectModel $project, $isTestData = false): array
     {
@@ -83,25 +80,6 @@ class TranslateMetricDto
 
         $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
         $data['ipAddress'] = $ipAddress;
-        try {
-            $reader = new Reader(self::GEO_CITY_DB_FILE_PATH);
-            $record = $reader->city($ipAddress);
-            $data['geoCountryIsoCode'] = $record->country->isoCode;
-            $data['geoLocation'] = [
-                'lat' => $record->location->latitude,
-                'lon' => $record->location->longitude
-            ];
-        } catch (AddressNotFoundException $e) {
-            // ignore exceptions if the address in not found in production
-            if ($isTestData && $ipAddress != '127.0.0.1') {
-                throw new \Exception($e->getMessage(), $e->getCode(), $e);
-            }
-        } catch (\InvalidArgumentException $e) {
-            // production code must have the Geo DB
-            if (!$isTestData && $ipAddress) {
-                throw new \Exception($e->getMessage(), $e->getCode(), $e);
-            }
-        }
 
         return $data;
     }

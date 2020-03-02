@@ -79,34 +79,39 @@ class LiftImport
             // Read LIFT ranges in the header of the LIFT file
             if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'range') {
                 $node = $reader->expand();
+                $range = null;
+                $rangeImportNodeError = null;
                 $rangeId = $node->attributes->getNamedItem('id')->textContent;
-                $rangeHref = $node->attributes->getNamedItem('href')->textContent;
-                $hrefPath = parse_url($rangeHref, PHP_URL_PATH);
-                $rangeFilename = basename($hrefPath);
-                $rangeFilePath = null;
-                $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::FILE, $rangeFilename);
-                if (! array_key_exists($rangeFilename, $liftRangeFiles)) {
-                    // Haven't parsed the .lift-ranges file yet. We'll assume it is alongside the .lift file.
-                    $rangeFilePath = $liftFolderPath . "/" . $rangeFilename;
-                    if (file_exists($rangeFilePath)) {
-                        $sxeNode = simplexml_load_file($rangeFilePath);
-                        $parsedRanges = $liftRangeDecoder->decode($sxeNode);
-                        $liftRanges = array_merge($liftRanges, $parsedRanges);
-                        $liftRangeFiles[] = $rangeFilename;
-                    } else {
-                        // Range file was NOT found in alongside the .lift file
-                        $rangeImportNodeError->addRangeFileNotFound(basename($liftFilePath));
+                $rangeHrefAttr = $node->attributes->getNamedItem('href');
+                if ($rangeHrefAttr) {
+                    $rangeHref = $rangeHrefAttr->textContent;
+                    $hrefPath = parse_url($rangeHref, PHP_URL_PATH);
+                    $rangeFilename = basename($hrefPath);
+                    $rangeFilePath = null;
+                    $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::FILE, $rangeFilename);
+                    if (! array_key_exists($rangeFilename, $liftRangeFiles)) {
+                        // Haven't parsed the .lift-ranges file yet. We'll assume it is alongside the .lift file.
+                        $rangeFilePath = $liftFolderPath . "/" . $rangeFilename;
+                        if (file_exists($rangeFilePath)) {
+                            $sxeNode = simplexml_load_file($rangeFilePath);
+                            $parsedRanges = $liftRangeDecoder->decode($sxeNode);
+                            $liftRanges = array_merge($liftRanges, $parsedRanges);
+                            $liftRangeFiles[] = $rangeFilename;
+                        } else {
+                            // Range file was NOT found in alongside the .lift file
+                            $rangeImportNodeError->addRangeFileNotFound(basename($liftFilePath));
+                        }
                     }
-                }
 
-                // pull out the referenced range
-                if (isset($liftRanges[$rangeId])) {
-                    $range = $liftRanges[$rangeId];
-                } else {
-                    $range = null;
-                    if (file_exists($rangeFilePath)) {
-                        // Range was NOT found in referenced .lift-ranges file after parsing it
-                        $rangeImportNodeError->addRangeNotFound($rangeId);
+                    // pull out the referenced range
+                    if (isset($liftRanges[$rangeId])) {
+                        $range = $liftRanges[$rangeId];
+                    } else {
+                        $range = null;
+                        if (file_exists($rangeFilePath)) {
+                            // Range was NOT found in referenced .lift-ranges file after parsing it
+                            $rangeImportNodeError->addRangeNotFound($rangeId);
+                        }
                     }
                 }
 
@@ -117,7 +122,7 @@ class LiftImport
                     $liftRanges[$rangeId] = $range;
                 }
 
-                if ($rangeImportNodeError->hasErrors()) {
+                if (isset($rangeImportNodeError) && $rangeImportNodeError->hasErrors()) {
                     $this->liftImportNodeError->addSubnodeError($rangeImportNodeError);
                 }
             }
@@ -412,7 +417,7 @@ class LiftImport
         $destFilesBeforeUnpacking = scandir($destDir);
 
         // ensure non-roman filesnames are returned
-        $cmd = 'LANG="en_US.UTF-8" ' . $cmd;
+        $cmd = 'LANG="C.UTF-8" ' . $cmd;
         $output = array();
         $retcode = 0;
         exec($cmd, $output, $retcode);

@@ -1,0 +1,94 @@
+@media (max-width: 767px) {
+  .sm-no-margin {
+    margin: 0 !important;
+  }
+
+  #who-has-access {
+    li.user-summary-item {
+      border-radius: 0;
+      padding-left: 0;
+      padding-right: 0;
+      border-left: 0;
+      border-right: 0;
+    }
+  }
+}
+
+#invite-member-form .inline-invite-form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  input[type=text], input[type=email], input[type=password] {
+    min-width: 0; // necessary in Firefox for small screens
+  }
+
+  > *:not(:last-child) {
+    margin-right: 0.5em;
+    margin-bottom: 0;
+  }
+}
+
+#who-has-access {
+  margin-top: 2rem;
+
+  .listview {
+    max-height: 16rem;
+    overflow-y: auto;
+    font-size: 0.8em;
+
+    .scroll-gradient {
+      height: 3em;
+      position: absolute;
+      bottom: 0;
+      background: -webkit-linear-gradient(rgba(255, 255, 255, 1) 100%, rgba(255, 255, 255, 0) 0%);
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 100%, rgba(255, 255, 255, 1) 0%);
+    }
+  }
+}
+
+#sharing-checkboxes {
+  margin-top: 1rem;
+  margin-bottom: 0;
+
+  input[type=checkbox] {
+    margin-left: 0;
+  }
+}
+
+.role-indicator {
+  width: 4rem;
+  text-align: center;
+}
+
+.user-summary-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  img.rounded-circle {
+    max-width: 3em;
+  }
+
+  input[type=text] {
+    height: 1.5em;
+    margin-left: 0.5em;
+    padding: 0.25em;
+  }
+
+  .delete-member {
+    width: 1rem;
+    text-align:right;
+  }
+
+  > *:not(:last-child) {
+    margin-right: 0.5em;
+    margin-bottom: 0;
+  }
+}
+
+/* needed to make the dropdowns in the modal
+appear over top of the modal and not behind it. */
+.modal-dropdown {
+  z-index: 10000 !important;
+}

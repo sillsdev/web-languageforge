@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import {SiteWideNoticeService} from '../../bellows/core/site-wide-notice-service';
 import {HelpHeroService} from '../../bellows/core/helphero.service';
 import {NoticeService} from '../../bellows/core/notice/notice.service';
 import {InterfaceConfig} from '../../bellows/shared/model/interface-config.model';
@@ -30,6 +31,7 @@ export class LexiconAppController implements angular.IController {
   static $inject = ['$scope', '$location',
     '$q',
     'silNoticeService', 'lexConfigService',
+    'siteWideNoticeService',
     'lexProjectService',
     'lexEditorDataService',
     'lexRightsService',
@@ -38,6 +40,7 @@ export class LexiconAppController implements angular.IController {
   constructor(private readonly $scope: angular.IScope, private readonly $location: angular.ILocationService,
               private readonly $q: angular.IQService,
               private readonly notice: NoticeService, private readonly configService: LexiconConfigService,
+              private readonly siteWideNoticeService: SiteWideNoticeService,
               private readonly lexProjectService: LexiconProjectService,
               private readonly editorService: LexiconEditorDataService,
               private readonly rightsService: LexiconRightsService,
@@ -46,6 +49,8 @@ export class LexiconAppController implements angular.IController {
 
   $onInit(): void {
     let finishedPreloading = false;
+
+    this.siteWideNoticeService.displayNotices();
 
     this.$q.all([this.rightsService.getRights(), this.configService.getEditorConfig()])
       .then(([rights, editorConfig]) => {
@@ -162,11 +167,10 @@ export class LexiconAppController implements angular.IController {
     Offline.options.checks = { xhr: { url: '/offlineCheck.txt' } };
 
     // Set the page's Language Forge title, font size, and nav's background color
-    function setTitle(text: string, fontSize: string, backgroundColor: string): void {
-      const title = document.querySelector('nav .navbar-brand') as HTMLElement;
-      title.textContent = text;
-      title.style.fontSize = fontSize;
-      (document.querySelector('nav.navbar') as HTMLElement).style.backgroundColor = backgroundColor;
+    function setTitle(text: string, backgroundColorA: string, backgroundColorB: string): void {
+      (document.querySelector('nav .navbar-brand .website-title') as HTMLElement).textContent = text;
+      (document.querySelectorAll('nav.navbar')[0] as HTMLElement).style.backgroundColor = backgroundColorA;
+      (document.querySelectorAll('nav.navbar-expand')[1] as HTMLElement).style.backgroundColor = backgroundColorB;
     }
 
     let offlineMessageId: string;
@@ -183,7 +187,7 @@ export class LexiconAppController implements angular.IController {
     });
 
     Offline.on('down', () => {
-      setTitle('Language Forge Offline', '0.8em', '#555');
+      setTitle('Language Forge Offline', '#555', '#777');
       offlineMessageId = this.notice.push(this.notice.ERROR, 'You are offline. Some features are not available', null,
         true, 5 * 1000);
       this.online = false;

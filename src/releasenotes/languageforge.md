@@ -1,5 +1,12 @@
 # Language Forge Release Notes #
 
+### 1.7 Release (2-March-2020)
+- Users can now login with Facebook as well as Google
+- Added "Share" button to invite new members to join a project
+- Visual improvements when setting access rights for existing project members
+- Improved look of Sort and Filter options
+- Various internal improvements and bugfixes
+
 ### 1.6 Release (6-August-2018)
 - Activity on each entry can be shown next to each entry. Click **Activity Feed**
 - Activity across all projects. Click **My Projects** > **Activity for All Projects**

@@ -1,7 +1,15 @@
 import * as angular from 'angular';
 
 import {SemanticDomainsService} from '../../../languageforge/core/semantic-domains/semantic-domains.service';
-import {LexConfigMultiText} from '../../../languageforge/lexicon/shared/model/lexicon-config.model';
+import {LexiconConfigService} from '../../../languageforge/lexicon/core/lexicon-config.service';
+import {LexiconUtilityService} from '../../../languageforge/lexicon/core/lexicon-utility.service';
+import {LexEntry} from '../../../languageforge/lexicon/shared/model/lex-entry.model';
+import {LexMultiValue} from '../../../languageforge/lexicon/shared/model/lex-multi-value.model';
+import {
+  LexConfigFieldList,
+  LexConfigMultiText,
+  LexiconConfig
+} from '../../../languageforge/lexicon/shared/model/lexicon-config.model';
 import {LexiconProjectSettings} from '../../../languageforge/lexicon/shared/model/lexicon-project-settings.model';
 import {JsonRpcResult} from '../api/api.service';
 import {NoticeService} from '../notice/notice.service';
@@ -11,43 +19,53 @@ import {CommentsOfflineCacheService} from './comments-offline-cache.service';
 import {EditorOfflineCacheService} from './editor-offline-cache.service';
 import {LexiconCommentService} from './lexicon-comments.service';
 
-class FilterBy {
-  label?: string;
-  level?: string;
-  type?: string;
-  value?: string;
+export interface LabeledOption {
+  label: string;
+}
+
+export interface SortOption extends LabeledOption {
+  label: string;
+  value: string;
+}
+
+export interface FilterOption extends LabeledOption {
   inputSystem?: string;
+  key: string;
+  label: string;
+  level?: string;
+  type: string;
+  value: string;
 }
 
 class EntryListModifiers {
-  sortBy: {
-    label: string,
-    value: string
+  sortBy: SortOption = {
+    label: 'Default',
+    value: 'default'
   };
-  sortOptions: any;
-  sortReverse: boolean;
-  filterBy: FilterBy;
-  filterOptions: any;
-  filterType: string;
+  sortOptions: SortOption[] = [];
+  sortReverse = false;
+  filterBy: {
+    text: string;
+    option: FilterOption;
+  } = null;
+  filterOptions: FilterOption[] = [];
+  filterType = 'isNotEmpty';
+
+  filterText = () => this.filterBy && this.filterBy.text || '';
+  filterByLabel = () => this.filterBy && this.filterBy.option && this.filterBy.option.label || '';
+  filterActive = () => !!(this.filterText() || this.filterBy && this.filterBy.option);
+  sortOptionLabel = (s: string) => s === 'Default' ? `Default (${this.filterText() ? 'Relevance' : 'Word'})` : s;
 }
+
+const entriesIncrement = 50;
 
 export class EditorDataService {
   readonly browserInstanceId: string = Math.floor(Math.random() * 1000000).toString();
 
-  entries: any[] = [];
-  visibleEntries: any[] = [];
-  filteredEntries: any[] = [];
-  entryListModifiers: EntryListModifiers = {
-    sortBy: {
-      label: 'Word',
-      value: 'lexeme'
-    },
-    sortOptions: {},
-    sortReverse: false,
-    filterBy: null,
-    filterOptions: {},
-    filterType: 'isNotEmpty'
-  };
+  entries: LexEntry[] = [];
+  visibleEntries: LexEntry[] = [];
+  filteredEntries: LexEntry[] = [];
+  entryListModifiers = new EntryListModifiers();
 
   private api: any;
 
@@ -55,23 +73,24 @@ export class EditorDataService {
     'sessionService', 'editorOfflineCache',
     'commentsOfflineCache',
     'semanticDomainsService',
-    'lexCommentService'
+    'lexCommentService',
+    'lexConfigService'
   ];
   constructor(private readonly $q: angular.IQService, private readonly notice: NoticeService,
               private readonly sessionService: SessionService, private readonly cache: EditorOfflineCacheService,
               private readonly commentsCache: CommentsOfflineCacheService,
               private readonly semanticDomains: SemanticDomainsService,
-              private readonly commentService: LexiconCommentService) { }
+              private readonly commentService: LexiconCommentService,
+              private readonly configService: LexiconConfigService) { }
 
   showInitialEntries = (): angular.IPromise<any> => {
-    return this.sortAndFilterEntries(true);
+    return this.filterAndSortEntries(true);
   }
 
   showMoreEntries = (): void => {
-    const increment = 50;
     if (this.visibleEntries.length < this.filteredEntries.length) {
       UtilityService.arrayCopyRetainingReferences(
-        this.filteredEntries.slice(0, this.visibleEntries.length + increment), this.visibleEntries);
+        this.filteredEntries.slice(0, this.visibleEntries.length + entriesIncrement), this.visibleEntries);
     }
   }
 
@@ -187,7 +206,7 @@ export class EditorDataService {
         this.commentService.comments.items.all.push.apply(this.commentService.comments.items.all, result.data.comments);
       } else {
         // splice updates into entry list don't need to modify filteredEntries or visibleEntries since those are
-        // regenerated from sortAndFilterEntries() below
+        // regenerated from filterAndSortEntries() below
         angular.forEach(result.data.entries, entry => {
           // splice into entries list
           const i = this.getIndexInList(entry.id, this.entries);
@@ -215,7 +234,7 @@ export class EditorDataService {
 
         // only sort and filter the list if there have been changes to entries (or deleted entries)
         if (result.data.entries.length > 0 || result.data.deletedEntryIds.length > 0) {
-          this.sortAndFilterEntries(true);
+          this.filterAndSortEntries(true);
         }
       }
 
@@ -250,19 +269,15 @@ export class EditorDataService {
 
   sortEntries = (shouldResetVisibleEntriesList: boolean): angular.IPromise<any> => {
     const startTime = performance.now();
-    return this.sessionService.getSession().then(session => {
-      const config = session.projectSettings<LexiconProjectSettings>().config;
-
-      // the length = 0 followed by Array.push.apply is a method of replacing the contents of an array without creating
-      // a new array thereby keeping original references to the array
+    return this.configService.getEditorConfig().then(config => {
+      // Copies entries into the arrays while preserving references to the arrays
       const entriesSorted = this.sortList(config, this.entries);
       UtilityService.arrayCopyRetainingReferences(entriesSorted, this.entries);
       const filteredEntriesSorted = this.sortList(config, this.filteredEntries);
       UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted, this.filteredEntries);
-      this.sortList(config, this.visibleEntries);
       if (shouldResetVisibleEntriesList) {
-        // TODO: Magic number "50" below should become a constant somewhere
-        UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, 50), this.visibleEntries);
+        UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, entriesIncrement),
+            this.visibleEntries);
       }
       const sortTime = (performance.now() - startTime) / 1000;
       if (sortTime > 0.5) {
@@ -272,8 +287,7 @@ export class EditorDataService {
   }
 
   filterEntries = (shouldResetVisibleEntriesList: boolean): angular.IPromise<any> => {
-    return this.sessionService.getSession().then(session => {
-      const config = session.projectSettings<LexiconProjectSettings>().config;
+    return this.configService.getEditorConfig().then(config => {
       if (this.entryListModifiers.filterBy) {
         UtilityService.arrayCopyRetainingReferences(this.entries.filter((entry: any) => {
           return this.entryMeetsFilterCriteria(config, entry);
@@ -283,14 +297,26 @@ export class EditorDataService {
       }
 
       if (shouldResetVisibleEntriesList) {
-        // TODO: Magic number "50" below should become a constant somewhere
-        UtilityService.arrayCopyRetainingReferences(this.filteredEntries.slice(0, 50), this.visibleEntries);
+        UtilityService.arrayCopyRetainingReferences(this.filteredEntries.slice(0, entriesIncrement),
+            this.visibleEntries);
       }
     });
   }
 
+  getMeaningForDisplay(config: LexiconConfig, entry: LexEntry): string {
+    let meaning = '';
+    if (entry.senses && entry.senses[0]) {
+      meaning = LexiconUtilityService.getMeaning(
+          config, config.entry.fields.senses as LexConfigFieldList, entry.senses[0]
+        );
+    }
+
+    return meaning || '';
+  }
+
   getSortableValue = (config: any, entry: any): string => {
-    const fieldKey = this.entryListModifiers.sortBy.value;
+    const fieldKey = this.entryListModifiers.sortBy.value === 'default' ?
+                      'lexeme' : this.entryListModifiers.sortBy.value;
     let sortableValue = '';
     let field;
     let dataNode;
@@ -355,11 +381,7 @@ export class EditorDataService {
       }
     }
 
-    if (!sortableValue) {
-      return '[Empty]';
-    }
-
-    return sortableValue;
+    return sortableValue || '';
   }
 
   private doFullRefresh(offset: number = 0): angular.IPromise<any> {
@@ -385,7 +407,7 @@ export class EditorDataService {
             deferred.resolve(newResult);
           });
         } else {
-          this.sortAndFilterEntries(false).then(() => {
+          this.filterAndSortEntries(false).then(() => {
             deferred.resolve(result);
           });
         }
@@ -395,10 +417,50 @@ export class EditorDataService {
     return deferred.promise;
   }
 
-  private entryMeetsFilterCriteria(config: any, entry: any): boolean {
+  private walkEntry(config: LexConfigFieldList, node: any, cb: (value: string, isSemanticDomain: boolean) => void) {
+    for (const fieldName of config.fieldOrder) {
+      if (!(fieldName in node)) continue;
+      const childConfig = config.fields[fieldName];
+      const childNode = node[fieldName];
+      if (childConfig.type === 'fields') {
+        for (const element of childNode) this.walkEntry(childConfig as LexConfigFieldList, element, cb);
+      } else if (childConfig.type === 'multitext') {
+        for (const inputSystem of (childConfig as LexConfigMultiText).inputSystems) {
+          if (childNode[inputSystem] && childNode[inputSystem].value) cb(childNode[inputSystem].value, false);
+        }
+      } else if (childConfig.type === 'multioptionlist' && fieldName === 'semanticDomain') {
+        for (const element of (childNode as LexMultiValue).values) cb(element, true);
+      }
+    }
+  }
+
+  private semanticDomainsMatch(text: string, query: string): boolean {
+    // Semantic domains must match from the very beginning ('1.2' should not match '1.1.2').
+    // If length differs, the next character must not be a digit ('1.1' should match '1.1.3' but not '1.12'),
+    // unless the last character of the query isn't a digit ('1.2.' should match '1.2.3'). This is important
+    // because otherwise when the user types a '.' the number of results drops to zero.
+    return text === query ||
+        text.indexOf(query) === 0 && !UtilityService.isDigitsOnly(text.slice(query.length - 1, query.length + 1));
+  }
+
+  private entryMeetsFilterCriteria(config: any, entry: LexEntry): boolean {
+
+    if (this.entryListModifiers.filterText() !== '') {
+      const query = this.entryListModifiers.filterText().toUpperCase();
+      let matchesSearch = false;
+      this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
+        val = val.toUpperCase();
+        if (isSemanticDomain) {
+          if (this.semanticDomainsMatch(val, query)) matchesSearch = true;
+        } else if (val.indexOf(query) !== -1) matchesSearch = true;
+      });
+      if (!matchesSearch) return false;
+    }
+    if (!this.entryListModifiers.filterBy.option) return true;
+
     const mustNotBeEmpty = this.entryListModifiers.filterType === 'isNotEmpty';
     let containsData = false;
-    const filterType = this.entryListModifiers.filterBy.type;
+    const filterType = this.entryListModifiers.filterBy.option.type;
     if (['comments', 'exampleSentences', 'pictures', 'audio'].indexOf(filterType) !== -1) {
       // special filter types
       switch (filterType) {
@@ -473,19 +535,19 @@ export class EditorDataService {
     } else {
       // filter by entry or sense field
       let dataNode;
-      if (this.entryListModifiers.filterBy.level === 'entry') {
-        dataNode = entry[this.entryListModifiers.filterBy.value];
+      if (this.entryListModifiers.filterBy.option.level === 'entry') {
+        dataNode = entry[this.entryListModifiers.filterBy.option.value];
       } else { // sense level
         if (entry.senses && entry.senses.length > 0) {
-          dataNode = entry.senses[0][this.entryListModifiers.filterBy.value];
+          dataNode = entry.senses[0][this.entryListModifiers.filterBy.option.value];
         }
       }
 
       if (dataNode) {
         switch (filterType) {
           case 'multitext':
-            if (dataNode[this.entryListModifiers.filterBy.inputSystem]) {
-              containsData = dataNode[this.entryListModifiers.filterBy.inputSystem].value !== '';
+            if (dataNode[this.entryListModifiers.filterBy.option.inputSystem]) {
+              containsData = dataNode[this.entryListModifiers.filterBy.option.inputSystem].value !== '';
             }
             break;
           case 'optionlist':
@@ -498,7 +560,7 @@ export class EditorDataService {
       }
     }
 
-    return (mustNotBeEmpty && containsData || !mustNotBeEmpty && !containsData);
+    return mustNotBeEmpty && containsData || !mustNotBeEmpty && !containsData;
   }
 
   private getOptionListItem(optionlist: any, key: string): any {
@@ -560,26 +622,80 @@ export class EditorDataService {
     return deferred.promise;
   }
 
-  private sortAndFilterEntries(shouldResetVisibleEntriesList: boolean): angular.IPromise<any> {
+  filterAndSortEntries = (shouldResetVisibleEntriesList: boolean): angular.IPromise<any> => {
     // ToDo: so far I haven't found a good case for NOT resetting visibleEntriesList.
     // and always reset visibleEntriesList - chris 2017-07
-    return this.sortEntries(shouldResetVisibleEntriesList).then(() => {
-      return this.filterEntries(shouldResetVisibleEntriesList);
+    if (shouldResetVisibleEntriesList !== false) shouldResetVisibleEntriesList = true;
+    return this.filterEntries(shouldResetVisibleEntriesList).then(() => {
+      return this.sortEntries(shouldResetVisibleEntriesList);
     });
   }
 
-  private sortList(config: any, list: any): any {
-    const inputSystem = this.getInputSystemForSort(config);
-    const compare = ('Intl' in window) ? Intl.Collator(inputSystem).compare : (a: string, b: string) => a < b ? -1 : 1;
+  private sortList(config: LexiconConfig, list: LexEntry[]): LexEntry[] {
+    const reverse = this.entryListModifiers.sortReverse;
+    if (this.entryListModifiers.sortBy.value === 'default' && this.entryListModifiers.filterText() !== '') {
 
-    const mapped = list.map((entry: any, i: number) => ({
+      let prioritizedResults: LexEntry[][] = [[], [], []];
+
+      const queryCapital = this.entryListModifiers.filterText().toUpperCase();
+
+      for (const entry of list) {
+        let exactMatch = false;
+        let matchAtBeginning = false;
+        this.walkEntry(config.entry, entry, (val, isSemanticDomain) => {
+          const index = val.toUpperCase().indexOf(queryCapital);
+          if (index === 0 && (!isSemanticDomain || this.semanticDomainsMatch(val, queryCapital))) {
+            matchAtBeginning = true;
+            if (val.length === queryCapital.length) exactMatch = true;
+          }
+        });
+        if (exactMatch) prioritizedResults[0].push(entry);
+        else if (matchAtBeginning) prioritizedResults[1].push(entry);
+        else prioritizedResults[2].push(entry);
+      }
+
+      prioritizedResults = prioritizedResults.map(section => {
+        const subList: LexEntry[][] = [[], [], [], [], []];
+        for (const entry of section) {
+          const indexA = this.getSortableValue(config, entry).toUpperCase().indexOf(queryCapital);
+          if (indexA !== -1) {
+            subList[indexA === 0 ? 0 : 1].push(entry);
+            continue;
+          }
+          const indexB = this.getMeaningForDisplay(config, entry).toUpperCase().indexOf(queryCapital);
+          if (indexB !== -1) {
+            subList[indexB === 0 ? 2 : 3].push(entry);
+          } else subList[4].push(entry);
+        }
+        return subList.map(subSubList => this.sortListAlphabetically(config, subSubList, false))
+                      .reduce((main, sub) => main.concat(sub), []);
+      });
+
+      const flattenedResults = prioritizedResults.reduce((main, sub) => main.concat(sub), []);
+      if (reverse) flattenedResults.reverse();
+      return flattenedResults;
+
+    } else return this.sortListAlphabetically(config, list, reverse);
+  }
+
+  private sortListAlphabetically(config: LexiconConfig, list: LexEntry[], reverse: boolean): LexEntry[] {
+    const inputSystem = this.getInputSystemForSort(config);
+    const compare = ('Intl' in window) ?
+          Intl.Collator(inputSystem).compare : (a: string, b: string) => a.localeCompare(b);
+
+    const mapped = list.map((entry: LexEntry, i: number) => ({
       index: i,
       value: this.getSortableValue(config, entry)
     }));
 
-    mapped.sort((a: any, b: any) => compare(a.value, b.value) * (this.entryListModifiers.sortReverse ? -1 : 1));
+    mapped.sort((a, b) =>
+                  compare(a.value, b.value) *
+                  (reverse ? -1 : 1) *
+                  // if one is an empty string and the other is not, reverse order so empty string will be sorted down
+                  ((a.value === '') !== (b.value === '') ? -1 : 1)
+                );
 
-    return mapped.map((el: any) => list[el.index]);
+    return mapped.map(el => list[el.index]);
   }
 
   /**
@@ -606,7 +722,7 @@ export class EditorDataService {
   /**
    * A function useful for debugging (prints out to the console the lexeme values)
    */
-  private printLexemesInList(entryList: any[]): void {
+  private printLexemesInList(entryList: LexEntry[]): void {
     this.sessionService.getSession().then(session => {
       const config = session.projectSettings<LexiconProjectSettings>().config;
       const ws = (config.entry.fields.lexeme as LexConfigMultiText).inputSystems[1];

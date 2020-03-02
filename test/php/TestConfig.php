@@ -33,6 +33,6 @@ define('BCRYPT_COST', 7);
 define('JWT_KEY', 'this_is_not_a_secret_dev_only');
 
 global $WEBSITE;
-$WEBSITE = Website::get('dev.scriptureforge.org');
+$WEBSITE = Website::get('languageforge.localhost');
 
 require_once TestCommonPath . 'MongoTestEnvironment.php';

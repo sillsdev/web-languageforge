@@ -1,9 +1,10 @@
 import {browser, by, element, ExpectedConditions, protractor} from 'protractor';
-
+import {UserManagementPage} from './user-management.page';
 import {Utils} from './utils';
 
 export class ProjectsPage {
   private readonly utils = new Utils();
+  private readonly userManagementPage = new UserManagementPage();
 
   url = '/app/projects';
   get() {
@@ -57,33 +58,29 @@ export class ProjectsPage {
   addUserToProject(projectName: any, usersName: string, roleText: string) {
     this.findProject(projectName).then((projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
-      projectLink.click();
-      browser.wait(ExpectedConditions.visibilityOf(this.settingsBtn), Utils.conditionTimeout);
-      this.settingsBtn.click();
-      browser.wait(ExpectedConditions.visibilityOf(this.userManagementLink), Utils.conditionTimeout);
-      this.userManagementLink.click();
+      projectLink.getAttribute('href').then((href: string) => {
+        const results = /app\/lexicon\/([0-9a-fA-F]+)\//.exec(href);
+        expect(results).not.toBeNull();
+        expect(results.length).toBeGreaterThan(1);
+        const projectId = results[1];
+        UserManagementPage.get(projectId);
+      });
 
-      const addMembersBtn = element(by.id('addMembersButton'));
-      browser.wait(ExpectedConditions.visibilityOf(addMembersBtn), Utils.conditionTimeout);
-      addMembersBtn.click();
-      const newMembersDiv = element(by.id('newMembersDiv'));
-      const userNameInput = newMembersDiv.element(by.id('typeaheadInput'));
-      browser.wait(ExpectedConditions.visibilityOf(userNameInput), Utils.conditionTimeout);
-      userNameInput.sendKeys(usersName);
+      browser.wait(ExpectedConditions.visibilityOf(this.userManagementPage.addMembersBtn), Utils.conditionTimeout);
+      this.userManagementPage.addMembersBtn.click();
+      browser.wait(ExpectedConditions.visibilityOf(this.userManagementPage.userNameInput), Utils.conditionTimeout);
+      this.userManagementPage.userNameInput.sendKeys(usersName);
 
-      const typeaheadDiv = element(by.id('typeaheadDiv'));
-      const typeaheadItems = typeaheadDiv.all(by.css('ul li'));
-      this.utils.findRowByText(typeaheadItems, usersName).then((item: any) => {
+      this.utils.findRowByText(this.userManagementPage.typeaheadItems, usersName).then((item: any) => {
         item.click();
       });
 
       // This should be unique no matter what
-      newMembersDiv.element(by.id('addUserButton')).click();
+      this.userManagementPage.newMembersDiv.element(by.id('addUserButton')).click();
 
       // Now set the user to member or manager, as needed
-      const projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
       let foundUserRow: any;
-      projectMemberRows.map((row: any) => {
+      this.userManagementPage.projectMemberRows.map((row: any) => {
         const nameColumn = row.element(by.binding('user.username'));
         nameColumn.getText().then((text: string) => {
           if (text === usersName) {
@@ -92,7 +89,7 @@ export class ProjectsPage {
         });
       }).then(() => {
         if (foundUserRow) {
-          const select = foundUserRow.element(by.css('select:not([disabled])'));
+          const select = foundUserRow.element(by.css('select'));
           Utils.clickDropdownByValue(select, roleText);
         }
       });
@@ -113,10 +110,14 @@ export class ProjectsPage {
   removeUserFromProject(projectName: string, userName: string) {
     this.findProject(projectName).then((projectRow: any) => {
       const projectLink = projectRow.element(by.css('a'));
-      projectLink.click();
-
-      this.settingsBtn.click();
-      this.userManagementLink.click();
+      projectLink.getAttribute('href').then((href: string) => {
+        const results = /app\/lexicon\/([0-9a-fA-F]+)\//.exec(href);
+        expect(results).not.toBeNull();
+        expect(results.length).toBeGreaterThan(1);
+        const projectId = results[1];
+        UserManagementPage.get(projectId);
+      });
+      browser.wait(ExpectedConditions.visibilityOf(this.userManagementPage.addMembersBtn), Utils.conditionTimeout);
 
       let userFilter: any;
       let projectMemberRows: any;

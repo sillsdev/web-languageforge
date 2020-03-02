@@ -18,6 +18,8 @@ export class Notice {
   }
 }
 
+export type NoticeType = 'info' | 'danger' | 'warning' | 'success';
+
 export class NoticeService {
   private notices: Notice[];
   private timers: { [id: string]: angular.IPromise<any>; };
@@ -26,8 +28,8 @@ export class NoticeService {
   private isLoadingNotice: boolean;
   private loadingMessage: string;
 
-  static $inject: string[] = ['$interval'];
-  constructor(private $interval: angular.IIntervalService) {
+  static $inject: string[] = ['$interval', '$location'];
+  constructor(private $interval: angular.IIntervalService, private $location: angular.ILocationService) {
     this.notices = [];
     this.timers = {};
     this.percentComplete = 0;
@@ -40,6 +42,22 @@ export class NoticeService {
       if (this.notices[i].id === id) {
         return i;
       }
+    }
+  }
+
+  checkUrlForNotices(): void {
+    const query: {[key: string]: string} = this.$location.search();
+    if (query.errorMessage) {
+      this.push(this.ERROR, atob(query.errorMessage));
+      this.$location.search('errorMessage', null);
+    }
+    if (query.infoMessage) {
+      this.push(this.INFO, atob(query.infoMessage));
+      this.$location.search('infoMessage', null);
+    }
+    if (query.successMessage) {
+      this.push(this.SUCCESS, atob(query.successMessage));
+      this.$location.search('successMessage', null);
     }
   }
 
@@ -123,19 +141,19 @@ export class NoticeService {
     return this.isLoadingNotice;
   }
 
-  ERROR(): string {
+  ERROR(): NoticeType {
     return 'danger';
   }
 
-  WARN(): string {
+  WARN(): NoticeType {
     return 'warning';
   }
 
-  INFO(): string {
+  INFO(): NoticeType {
     return 'info';
   }
 
-  SUCCESS(): string {
+  SUCCESS(): NoticeType {
     return 'success';
   }
 }

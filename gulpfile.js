@@ -576,7 +576,7 @@ gulp.task('test-e2e-env', function () {
       type: 'string' })
     .option('webserverHost', {
       demand: false,
-      default: 'languageforge.local',
+      default: 'languageforge.localhost',
       type: 'string' })
     .fail(yargFailure)
     .argv;
@@ -644,15 +644,15 @@ gulp.task('test-e2e-doTest', function (cb) {
       type: 'string' })
     .help('?')
     .alias('?', 'help')
-    .example('$0 test-e2e-run --webserverHost languageforge.local',
+    .example('$0 test-e2e-run --webserverHost languageforge.localhost',
       'Runs all the E2E tests for languageforge')
-    .example('$0 test-e2e-run --webserverHost scriptureforge.local --specs projectSettingsPage',
+    .example('$0 test-e2e-run --webserverHost scriptureforge.localhost --specs projectSettingsPage',
       'Runs the scriptureforge E2E test for projectSettingsPage')
     .fail(yargFailure)
     .argv;
 
   var protocol =
-    (params.webserverHost === 'jamaicanpsalms.scriptureforge.local') ? 'https://' : 'http://';
+    (params.webserverHost === 'jamaicanpsalms.scriptureforge.localhost') ? 'https://' : 'http://';
 
   var configFile;
   var isBrowserStack = false;
@@ -947,8 +947,9 @@ gulp.task('build-changeGroup').description =
 gulp.task('build-productionConfig', function () {
   // Pass Google client ID and secret via environment variables so they don't show up in the build
   // logs
-  var googleClientId = process.env.GOOGLE_CLIENT_ID;
   var defaultMongodbConnection = 'localhost:27017';
+
+  var googleClientId = process.env.GOOGLE_CLIENT_ID;
   if (googleClientId === undefined) {
     googleClientId = 'googleClientId';
   }
@@ -956,6 +957,16 @@ gulp.task('build-productionConfig', function () {
   var googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
   if (googleClientSecret === undefined) {
     googleClientSecret = 'googleClientSecret';
+  }
+
+  var facebookClientId = process.env.FACEBOOK_CLIENT_ID;
+  if (facebookClientId === undefined) {
+    facebookClientId = 'facebookClientId';
+  }
+
+  var facebookClientSecret = process.env.FACEBOOK_CLIENT_SECRET;
+  if (facebookClientSecret === undefined) {
+    facebookClientSecret = 'facebookClientSecret';
   }
 
   var gatherWordsClientId = process.env.GATHERWORDS_CLIENT_ID;
@@ -1007,6 +1018,14 @@ gulp.task('build-productionConfig', function () {
       // default: secrets_google_api_client_id.web.client_secret,
       default: googleClientSecret,
       type: 'string' })
+    .option('facebookClientId', {
+      demand: false,
+      default: facebookClientId,
+      type: 'string' })
+    .option('facebookClientSecret', {
+      demand: false,
+      default: facebookClientSecret,
+      type: 'string' })
     .option('gatherWordsClientId', {
       demand: false,
       default: gatherWordsClientId,
@@ -1050,6 +1069,12 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('GOOGLE_CLIENT_SECRET', ').*;$/m,
       '$1' + params.googleClientSecret + '\');'))
+    .pipe(replace(
+      /(define\('FACEBOOK_CLIENT_ID', ').*;$/m,
+      '$1' + params.facebookClientId + '\');'))
+    .pipe(replace(
+      /(define\('FACEBOOK_CLIENT_SECRET', ').*;$/m,
+      '$1' + params.facebookClientSecret + '\');'))
     .pipe(replace(
       /(define\('GATHERWORDS_CLIENT_ID', ').*;$/m,
       '$1' + params.gatherWordsClientId + '\');'))

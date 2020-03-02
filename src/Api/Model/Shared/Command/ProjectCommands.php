@@ -197,9 +197,9 @@ class ProjectCommands
      * @param string $projectId
      * @return array of users join requests
      */
-    public static function getJoinRequests($projectId) 
-    {        
-        $projectModel = ProjectModel::getById($projectId);        
+    public static function getJoinRequests($projectId)
+    {
+        $projectModel = ProjectModel::getById($projectId);
         $list = $projectModel->listRequests();
         return $list;
     }
@@ -227,6 +227,10 @@ class ProjectCommands
 
         if ($userId == $project->ownerRef->asString()) {
             throw new \Exception("Cannot update role for project owner");
+        }
+
+        if ($projectRole == ProjectRoles::TECH_SUPPORT && $user->role != SystemRoles::SYSTEM_ADMIN) {
+            throw new UserUnauthorizedException("Attempted to add non-admin as Tech Support");
         }
 
         ProjectCommands::usersDto($projectId);
@@ -267,7 +271,7 @@ class ProjectCommands
 
         return $projectId;
     }
-    
+
     /**
      * Removes users from the project (two-way unlink)
      * @param string $projectId
@@ -280,20 +284,18 @@ class ProjectCommands
         $project->removeUserJoinRequest($joinRequestId);
         return $project->write();
     }
-    
+
     public static function grantAccessForUserRequest($projectId, $userId, $projectRole) {
         // check if userId exists in request queue on project model
         self::updateUserRole($projectId, $userId, $projectRole);
         // remove userId from request queue
         // send email notifying of acceptance
     }
-    
+
     public static function requestAccessForProject($projectId, $userId) {
         // add userId to request queue
         // send email to project owner and all managers
     }
-    
-    
 
     public static function renameProject($projectId, $oldName, $newName)
     {
@@ -341,5 +343,80 @@ class ProjectCommands
         $project = new ProjectModel();
 
         return $project->readByProperties(array('projectCode' => $code));
+    }
+
+    /**
+     * @param string $projectId
+     * @param string $defaultRole
+     * @return string invite link to project
+     */
+    public static function createInviteLink($projectId, $defaultRole)
+    {
+        $project = ProjectModel::getById($projectId);
+
+        $newAuthToken = $project->generateNewInviteToken();
+        $project->setInviteTokenDefaultRole($defaultRole);
+
+        $project->write();
+
+        return $project->website()->baseUrl() . '/invite/' . $newAuthToken;
+    }
+
+    /**
+     * @param string $projectId
+     * @param string $defaultRole
+     * @return string invite link to project
+     */
+    public static function getInviteLink($projectId)
+    {
+        // TODO: check that project invite sharing is enabled.  If not, throw exception if disabled.
+        $project = ProjectModel::getById($projectId);
+        if (empty($project->inviteToken->token)) {
+            return '';
+        } else {
+            return $project->website()->baseUrl() . '/invite/' . $project->inviteToken->token;
+        }
+    }
+
+    /**
+     * Removes the invite token from a project
+     * @param $projectId
+     */
+    public static function disableInviteToken($projectId)
+    {
+        $project = ProjectModel::getById($projectId);
+        $project->inviteToken->token = '';
+        $project->write();
+    }
+
+    /**
+     * Updates the role associated with an invite token
+     * @param $projectId
+     * @param $newRole the roleName to associate with
+     */
+    public static function updateInviteTokenRole($projectId, $newRole)
+    {
+        $project = ProjectModel::getById($projectId);
+        $project->setInviteTokenDefaultRole($newRole);
+        $project->write();
+    }
+
+    /**
+     * Add a user to the project based on the invite token for the project
+     * @param $projectId
+     * @param $newRole the value of the roles array to link
+     */
+    public static function useInviteToken($userId, $projectId) {
+        $model = ProjectModel::getById($projectId);
+        // only invite/change permissions if the user is not yet a member
+        if (!$model->userIsMember($userId))
+        {
+            $model->addUserByInviteToken($userId);
+            $model->write();
+
+            $user = new UserModel($userId);
+            $user->addProject($projectId);
+            $user->write();
+        }
     }
 }

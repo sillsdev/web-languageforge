@@ -12,7 +12,7 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken as OAuthAccessToken;
 use Silex\Application;
 use Site\OAuth\OAuthBase;
-use Site\OAuth\SelectAccountOAuthProvider;
+use Site\OAuth\SelectAccountGoogleOAuthProvider;
 use Symfony\Component\HttpFoundation\Request;
 
 class GoogleOAuth extends OAuthBase
@@ -45,7 +45,7 @@ class GoogleOAuth extends OAuthBase
      */
     protected function getOAuthProvider($redirectUri): AbstractProvider
     {
-        $provider = new SelectAccountOAuthProvider([
+        $provider = new SelectAccountGoogleOAuthProvider([
             'clientId' => GOOGLE_CLIENT_ID,
             'clientSecret' => GOOGLE_CLIENT_SECRET,
             'redirectUri' => $redirectUri,

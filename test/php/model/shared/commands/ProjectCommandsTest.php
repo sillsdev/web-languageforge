@@ -15,6 +15,7 @@ use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\UserModel;
 use Palaso\Utilities\FileUtilities;
 use PHPUnit\Framework\TestCase;
+use Api\Model\Shared\Rights\SystemRoles;
 
 class ProjectCommandsTest extends TestCase
 {
@@ -24,7 +25,7 @@ class ProjectCommandsTest extends TestCase
     /** @var mixed[] Data storage between tests */
     private static $save;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$environ = new MongoTestEnvironment();
         self::$environ->clean();
@@ -647,5 +648,110 @@ class ProjectCommandsTest extends TestCase
         // list members of project2 - there should be two members
         $usersDto = ProjectCommands::usersDto($project2Id);
         $this->assertEquals(2, $usersDto['userCount']);
+    }
+
+    public function testUpdateUserRole_userIsAdminAndSetTechSupportRole_techSupportRoleSet()
+    {
+        self::$environ->clean();
+
+        $adminId = self::$environ->createUser("adminname", "admin Name", "admin@example.com");
+        $admin = new UserModel($adminId);
+        $admin->role = SystemRoles::SYSTEM_ADMIN;
+        $admin->write();
+
+        $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
+
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        ProjectCommands::updateUserRole($projectId, $adminId, ProjectRoles::TECH_SUPPORT);
+
+        $project = ProjectModel::getById($projectId);
+        $this->assertArrayHasKey($adminId, $project->users);
+        $this->assertEquals($project->users[$adminId]->role, ProjectRoles::TECH_SUPPORT);
+    }
+
+    public function testUpdateUserRole_userIsNotAdminAndSetTechSupportRole_throwsException()
+    {
+        $this->expectException(UserUnauthorizedException::class);
+        self::$environ->clean();
+
+        $userId = self::$environ->createUser("username", "user Name", "user@example.com");
+        $user = new UserModel($userId);
+        $user->role = SystemRoles::USER;
+        $user->write();
+
+        $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
+
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::TECH_SUPPORT);
+    }
+
+    public function testProjectInviteLink_enableAndDisableInviteLink_successfulEnableAndDisable()
+    {
+        self::$environ->clean();
+        $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectModel = ProjectModel::getById($projectId);
+        $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::MANAGER);
+
+        // Assert URL is valid to site
+        $this->assertStringContainsString($projectModel->siteName, $inviteUrl);
+        $this->assertStringContainsString('.org/invite/', $inviteUrl);
+
+        // Assert invite token is found in the database
+        $lastSlashPos = strrpos($inviteUrl, '/');
+        $token = substr($inviteUrl, $lastSlashPos + 1);
+        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => ProjectRoles::MANAGER]));
+
+        // Disable invite link and make sure it no longer exists in the DB
+        ProjectCommands::disableInviteToken($projectId);
+        $this->assertFalse($projectModel->readByProperty('inviteToken.token', $token));
+    }
+
+    public function testProjectInviteLink_changeInviteLinkDefaultRole_roleChangeSuccessful()
+    {
+        self::$environ->clean();
+        $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectModel = ProjectModel::getById($projectId);
+        $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::MANAGER);
+
+        // Assert defaultRole is set to initialized role
+        $lastSlashPos = strrpos($inviteUrl, '/');
+        $token = substr($inviteUrl, $lastSlashPos + 1);
+        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => ProjectRoles::MANAGER]));
+
+        // Change defaultRole
+        ProjectCommands::updateInviteTokenRole($projectId, ProjectRoles::CONTRIBUTOR);
+        $this->assertTrue($projectModel->readByProperties(['inviteToken.token' => $token, 'inviteToken.defaultRole' => ProjectRoles::CONTRIBUTOR]));
+    }
+
+    public function testProjectInviteLink_addMemberFromLink_additionSuccessful()
+    {
+        self::$environ->clean();
+        $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectModel = ProjectModel::getById($projectId);
+        $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::MANAGER);
+
+        $userId = self::$environ->createUser("user name", "user Name", "user@example.com");
+        ProjectCommands::useInviteToken($userId, $projectId);
+
+        $projectModel = ProjectModel::getById($projectId);
+        $this->assertArrayHasKey($userId, $projectModel->users);
+        $this->assertEquals($projectModel->users[$userId]->role, ProjectRoles::MANAGER);
+    }
+
+    public function testProjectInviteLink_addExistingMemberFromLink_additionFails()
+    {
+        self::$environ->clean();
+        $ownerId = self::$environ->createUser("ownername", "owner Name", "owner@example.com");
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $ownerId, self::$environ->website);
+        $projectModel = ProjectModel::getById($projectId);
+        $inviteUrl = ProjectCommands::createInviteLink($projectId, ProjectRoles::CONTRIBUTOR);
+
+        ProjectCommands::useInviteToken($ownerId, $projectId);
+
+        $projectModel = ProjectModel::getById($projectId);
+        $this->assertNotEquals($projectModel->users[$ownerId]->role, ProjectRoles::CONTRIBUTOR);
     }
 }

@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import { SiteWideNoticeService } from '../../../core/site-wide-notice-service';
 import { NoticeService } from '../../../core/notice/notice.service';
 import { TranslateProjectService } from '../core/translate-project.service';
 import { TranslateRights } from '../core/translate-rights.service';
@@ -17,10 +18,16 @@ export class TranslateSettingsController implements angular.IController {
   project: TranslateProject;
 
   static $inject = ['$scope', '$interval',
+    'siteWideNoticeService',
     'silNoticeService', 'translateProjectApi'
   ];
   constructor(private $scope: angular.IScope, private $interval: angular.IIntervalService,
+              private siteWideNoticeService: SiteWideNoticeService,
               private notice: NoticeService, private projectApi: TranslateProjectService) {}
+
+  $onInit() {
+    this.siteWideNoticeService.displayNotices();
+  }
 
   $onChanges(changes: any) {
     if (changes.tscProject.isFirstChange()) {

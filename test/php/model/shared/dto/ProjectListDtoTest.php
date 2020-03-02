@@ -12,7 +12,7 @@ class ProjectListDtoTest extends TestCase
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
 
-    public function setUp()
+    public function setUp(): void
     {
         self::$environ = new MongoTestEnvironment();
         self::$environ->clean();
@@ -43,7 +43,7 @@ class ProjectListDtoTest extends TestCase
         $dto = ProjectListDto::encode($userId, self::$environ->website);
 
         $this->assertEquals(1, $dto['count']);
-        $this->assertInternalType('array', $dto['entries']);
+        $this->assertIsArray($dto['entries']);
         $this->assertEquals($projectId, $dto['entries'][0]['id']);
         $this->assertEquals(SF_TESTPROJECT, $dto['entries'][0]['projectName']);
         $this->assertEquals(ProjectRoles::NONE, $dto['entries'][0]['role']);
@@ -70,7 +70,7 @@ class ProjectListDtoTest extends TestCase
         $dto = ProjectListDto::encode($userId, self::$environ->website);
 
         $this->assertEquals(2, $dto['count']);
-        $this->assertInternalType('array', $dto['entries']);
+        $this->assertIsArray($dto['entries']);
         $this->assertEquals($projectId1, $dto['entries'][0]['id']);
         $this->assertEquals(SF_TESTPROJECT, $dto['entries'][0]['projectName']);
         $this->assertEquals(ProjectRoles::MANAGER, $dto['entries'][0]['role']);
@@ -100,7 +100,7 @@ class ProjectListDtoTest extends TestCase
         $dto = ProjectListDto::encode($userId, self::$environ->website);
 
         $this->assertEquals(1, $dto['count']);
-        $this->assertInternalType('array', $dto['entries']);
+        $this->assertIsArray($dto['entries']);
         $this->assertEquals($projectId2, $dto['entries'][0]['id']);
         $this->assertEquals(SF_TESTPROJECT2, $dto['entries'][0]['projectName']);
         $this->assertEquals(ProjectRoles::NONE, $dto['entries'][0]['role']);
@@ -108,7 +108,7 @@ class ProjectListDtoTest extends TestCase
         $dto = ProjectListDto::encode($userId, self::$environ->website, true);
 
         $this->assertEquals(1, $dto['count']);
-        $this->assertInternalType('array', $dto['entries']);
+        $this->assertIsArray($dto['entries']);
         $this->assertEquals($projectId1, $dto['entries'][0]['id']);
         $this->assertEquals(SF_TESTPROJECT, $dto['entries'][0]['projectName']);
         $this->assertEquals(ProjectRoles::MANAGER, $dto['entries'][0]['role']);
@@ -134,7 +134,7 @@ class ProjectListDtoTest extends TestCase
         $dto = ProjectListDto::encode($userId, self::$environ->website);
 
         $this->assertEquals(1, $dto['count']);
-        $this->assertInternalType('array', $dto['entries']);
+        $this->assertIsArray($dto['entries']);
         $this->assertEquals($projectId1, $dto['entries'][0]['id']);
         $this->assertEquals(SF_TESTPROJECT, $dto['entries'][0]['projectName']);
         $this->assertEquals(ProjectRoles::CONTRIBUTOR, $dto['entries'][0]['role']);

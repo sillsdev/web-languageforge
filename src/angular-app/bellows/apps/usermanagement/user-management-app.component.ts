@@ -4,8 +4,9 @@ import { LexiconProjectService } from '../../../languageforge/lexicon/core/lexic
 import { ProjectService } from '../../core/api/project.service';
 import { ApplicationHeaderService } from '../../core/application-header.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumb.service';
-import { SessionService } from '../../core/session.service';
+import { SiteWideNoticeService } from '../../core/site-wide-notice-service';
 import { HelpHeroService } from '../../core/helphero.service';
+import { SessionService } from '../../core/session.service';
 
 export class Rights {
   remove: boolean;
@@ -14,11 +15,16 @@ export class Rights {
   showControlBar: boolean;
 }
 
+export interface Role {
+  roleKey: string;
+  roleName: string;
+}
+
 export class UserManagementAppController implements angular.IController {
   rights = new Rights();
-  roles = {};
+  roles: Role[] = [];
   project = {
-    roles: {},
+    roles: [] as Role[],
     projectName: '',
     appLink: ''
   };
@@ -30,10 +36,15 @@ export class UserManagementAppController implements angular.IController {
   };
   joinRequests = {};
 
+  currentUser = {
+    id: ''
+  };
+
   static $inject = ['$location', 'projectService', 'sessionService', 'applicationHeaderService',
-                    'breadcrumbService', 'lexProjectService', 'helpHeroService'];
+                    'siteWideNoticeService', 'breadcrumbService', 'lexProjectService', 'helpHeroService'];
   constructor(private $location: angular.ILocationService, private projectService: ProjectService,
               private sessionService: SessionService, private applicationHeaderService: ApplicationHeaderService,
+              private siteWideNoticeService: SiteWideNoticeService,
               private breadcrumbService: BreadcrumbService, private lexProjectService: LexiconProjectService,
               private readonly helpHeroService: HelpHeroService) { }
 
@@ -44,9 +55,11 @@ export class UserManagementAppController implements angular.IController {
     });
 
     // load roles if they have not been loaded yet
-    if (Object.keys(this.roles).length === 0) {
+    if (this.roles.length === 0) {
       this.queryUserList();
     }
+
+    this.siteWideNoticeService.displayNotices();
 
     this.sessionService.getSession().then(session => {
       this.rights.remove = session.hasProjectRight(this.sessionService.domain.USERS,
@@ -57,9 +70,9 @@ export class UserManagementAppController implements angular.IController {
       this.rights.showControlBar =
         this.rights.add || this.rights.remove || this.rights.changeRole;
 
-      const userId = session.userId();
-      if (userId) {
-        this.helpHeroService.setIdentity(userId);
+      this.currentUser.id = session.userId();
+      if (this.currentUser.id) {
+        this.helpHeroService.setIdentity(this.currentUser.id);
       } else {
         this.helpHeroService.anonymous();
       }
@@ -72,7 +85,7 @@ export class UserManagementAppController implements angular.IController {
   }
 
   queryUserList() {
-    this.projectService.listUsers(result => {
+    this.projectService.listUsers( result => {
       if (result.ok) {
         this.list.users = result.data.users;
         this.list.userCount = result.data.userCount;

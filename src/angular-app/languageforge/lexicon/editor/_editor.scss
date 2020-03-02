@@ -293,12 +293,6 @@ dc-entry .card {
     justify-content: space-between;
 }
 
-.lexiconHeaderItem {
-}
-
-.flexColumnContainer {
-}
-
 #lexAppListView {
     margin-top: 20px;
     .lexiconListItem {
@@ -308,9 +302,11 @@ dc-entry .card {
         }
     }
     .lexiconItemListContainer {
+      margin-bottom: 15px;
+      @include media-breakpoint-up(sm) {
         height: 460px;
         overflow: auto;
-        margin-bottom: 15px;
+        }
     }
     .lexiconListItem.active {
         cursor: default;
@@ -359,6 +355,8 @@ dc-entry .card {
   .listItemSecondary {
     z-index: 2;
     font-size: 0.8em;
+  }
+  .listItemPrimary, .listItemSecondary {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -544,35 +542,56 @@ dc-entry .card {
     }
   }
 }
+
+.reset-filter-btn {
+  background-color: $Eden;
+  color: white;
+  float: right;
+  .btn-text {
+    display: none;
+  }
+}
+
+@include media-breakpoint-up(sm) {
+  #lexAppListView .reset-filter-btn {
+    float: none;
+    margin-left: 2em;
+  }
+}
+
+@include media-breakpoint-up(xl) {
+  #lexAppEditView .reset-filter-btn .btn-text {
+    display: inline;
+  }
+}
+
+@media (min-width: 470px) {
+  #lexAppListView .reset-filter-btn .btn-text {
+    display: inline;
+  }
+}
+
 .entry-words-container {
   opacity: 1;
   display: block;
   .words-container-title {
     display: flex;
-    justify-content: space-between;
     padding: 0;
     border-radius: $border-radius $border-radius 0 0;
     > div {
-        padding: 0.75rem 1.25rem;
+        padding: 0.5rem 0.5rem;
+        flex-grow: 1;
+        line-height: 1.9em;
     }
-    button {
-      width: 65px;
+    #newWord, #editorNewWordBtn {
+      width: 47px;
       background: $Downriver;
       cursor: pointer;
       &:hover {
         background: darken($Downriver, 15%);
       }
-      i {
+      .fa-plus {
         font-size: 24px;
-      }
-      @include media-breakpoint-down(md) {
-        width: 48px;
-        i {
-          font-size: 20px;
-        }
-      }
-      @include media-breakpoint-down(xs) {
-        width: 38px;
       }
     }
   }
@@ -583,42 +602,8 @@ dc-entry .card {
     width: 100%;
     display: flex;
     position: relative;
-    .typeahead {
-      flex: 1 1 100%;
-      border-right: 1px solid $Downriver;
-      border-radius: 0;
-      #typeaheadInput {
-        width: 100%;
-        border: 0;
-        background: transparent;
-        border-radius: 0;
-        font-size: 14px;
-        line-height: 45px;
-        padding: 0 2.5em 0 1.5em;
-      }
-      .typeahead-results {
-        ul {
-          border-radius: 0;
-          .typeahead-item {
-            border-radius: 0;
-            padding: 0.35rem 1.25rem;
-            line-height: 1.2em;
-            &:hover {
-              background: $Botticelli;
-              color: $Eden;
-            }
-            small {
-              text-overflow: ellipsis;
-              overflow: hidden;
-              display: block;
-              white-space: nowrap;
-            }
-          }
-        }
-      }
-    }
     > .btn {
-      flex: 0 0 110px;
+      flex: 0 0 100px;
       border-radius: 0;
       cursor: pointer;
       background: transparent;
@@ -635,9 +620,13 @@ dc-entry .card {
     }
   }
   .word-form-filters {
+    display: flex;
+    flex-direction: column;
     .sortfilter-form {
+      flex-basis: 1;
+      width: 100%;
       border: 1px solid $line-color;
-      padding: 0.7em 1.25em 1.2em;
+      padding: 0.5em 1em 0.5em;
       margin: 0;
       font-size: 14px;
       background: #E5E5E5;
@@ -645,7 +634,7 @@ dc-entry .card {
         border-bottom: 0;
       }
       .sortfilter-control {
-        width: 150px;
+        width: 200px;
         font-size: 14px;
       }
       .form-inline {
@@ -660,19 +649,8 @@ dc-entry .card {
           cursor: pointer;
         }
       }
-      input[type=checkbox] {
-        margin-right: 5px;
-      }
-      @include media-breakpoint-down(lg) {
-        .sortfilter-control {
-          margin: 0 0 5px;
-          width: 100%;
-        }
-        .form-inline {
-          label {
-            margin: 0;
-          }
-        }
+      .sortfilter-control {
+        width: 100%;
       }
     }
   }
@@ -683,6 +661,60 @@ dc-entry .card {
       border-top-right-radius: 0;
     }
   }
+}
+
+.reverse-label {
+  float: right;
+  margin-right: 0.75em;
+  input[type=checkbox] {
+    margin-right: 0.25em;
+    vertical-align: middle;
+  }
+}
+
+#lexAppListView {
+  @include media-breakpoint-up(sm) {
+    .word-form-filters {
+      flex-direction: row;
+    }
+  }
+  @include media-breakpoint-up(md) {
+    .sortfilter-control {
+      width: unset;
+    }
+  }
+}
+
+.filter-entries {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  font-size: 14px;
+  line-height: 45px;
+  padding: 0 2.5em 0 1.5em;
+}
+
+.filter-entries-wrapper {
+  position: relative;
+  flex-grow: 1;
+  border-right: 1px solid $Downriver;
+  .clear-search-button {
+    top: 1em;
+  }
+}
+
+.options-active-icon {
+  color: orange;
+  visibility: hidden;
+}
+
+.icon-active {
+  visibility: visible;
+}
+
+.highlight-result {
+  background-color: #ffdf57;
 }
 
 .lexiconListItemCompact {

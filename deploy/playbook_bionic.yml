@@ -1,12 +1,13 @@
 ---
 
 # begin install
+# NOTE: to install on a build-agent, or to merely reset the environment, run with --skip-tags "developer"
 - name: Linux Bionic local webserver
   hosts: all
   become: yes
   tasks:
 
-- name: Deploy development environment for xForge (languageforge.org and scriptureforge.org)
+- name: Deploy (development) environment for xForge (languageforge.org and scriptureforge.org)
   hosts: all
   become: yes
   vars:
@@ -121,6 +122,7 @@
         dest: ../../web-scriptureforge
         group: www-data
         state: link
+      tags: developer
 
     - name: php.ini changes
       lineinfile:
@@ -165,7 +167,6 @@
       notify: Restart apache
 
     - name: postfix | halt emails in output queue
-      when: inventory_hostname == "localhost"
       lineinfile:
         dest: /etc/postfix/main.cf
         state: present
@@ -176,18 +177,19 @@
         - property: 'default_transport'
           value: 'retry:no outbound email allowed'
       notify: restart postfix
+      tags: test
 
     # This stanza ensures that the /var/www/default_local links to wherever your source actually is.
     - name: "Ensure Source Link: default_local folder does not exist (localhost)"
       file: path="/var/www/default_local" state=absent force=true
-      when: inventory_hostname == "localhost"
+      tags: developer
     - name: "Ensure Source Link: Get current location of the source code (localhost)"
       local_action: shell pwd
       register: local_dir
-      when: inventory_hostname == "localhost"
+      tags: developer
     - name: "Ensure Source Link: default_local link exists (localhost)"
       file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/default_local" state=link group=www-data force=true
-      when: inventory_hostname == "localhost"
+      tags: developer
 
     # Allow deployment to restart php-fpm service without needing sudo
     - name: "Deploy systemd service-restarter units"
@@ -225,6 +227,8 @@
         name: "{{ lookup('env','USER') }}"
         groups: fieldworks
         append: yes
+      when: inventory_hostname == "localhost"
+      tags: developer
 
       # Could look up home dir of www-data user on remote system, but that turns out to
       # be a bit complicated. And since we just set it to /var/www, just use that.
@@ -295,10 +299,15 @@
         group: www-data
         mode: 0755
 
+    - name: check for PECL Mongo Extension
+      command: ls /etc/php/{{php_version}}/mods-available/
+      register: pecl_mongo_ini
+      changed_when: false
     - name: Install PECL Mongo Extension
       pear:
         name: pecl/mongodb
         state: present
+      when: pecl_mongo_ini.stdout is not search('mongodb.ini')
     - name: Enable PECL Mongo module in mods-available
       lineinfile:
         dest: /etc/php/{{php_version}}/mods-available/mongodb.ini
@@ -351,9 +360,8 @@
       with_items:
         - "address=/localhost/127.0.0.1"
         - "address=/localhost/::1"
-      when: inventory_hostname == "localhost"
       notify: restart network
-      tags: [ 'network' ]
+      tags: developer
 
     - name: add host aliases
       lineinfile:
@@ -364,9 +372,9 @@
         create: yes
       with_items:
         - "default.local"
-        - "languageforge.local"
-        - "scriptureforge.local"
-      when: inventory_hostname == "localhost"
+        - "languageforge.localhost"
+        - "scriptureforge.localhost"
+      tags: developer
 
   handlers:
     - name: reload systemd service files
@@ -388,16 +396,53 @@
     - name: restart postfix
       service: name=postfix state=restarted
 
-- import_playbook: code.yml
+- name: Deploy development environment for xForge (languageforge.org and scriptureforge.org)
+  hosts: all
+  become: no
   vars:
     lf_path: /var/www/default_local/web-languageforge
     site_src_paths:
       - /var/www/default_local/web-languageforge/src
+  tasks:
+    - name: composer install
+      command: composer install
+      args:
+        chdir: "{{item}}"
+      changed_when: false
+      with_items: "{{site_src_paths}}"
+      tags: developer
 
-- name: refresh dependencies
+    - name: npm install
+      command: npm install
+      args:
+        chdir: "{{item}}"
+      changed_when: false
+      with_items: "{{lf_path}}"
+      tags: developer
+
+    - name: 'generate website definitions'
+      shell: gulp build-createWebsiteDefs
+      tags: developer
+
+    - name: factory reset mongodb to empty with admin user
+      shell: php FactoryReset.php run
+      become: true
+      args:
+        chdir: "{{lf_path}}/scripts/tools/"
+      tags: developer
+
+- name: post-install tasks
   hosts: all
   tasks:
-    - name: run refreshDeps.sh
+    - name: refresh dependencies (refreshDeps.sh)
       shell: ./refreshDeps.sh
       args:
         chdir: ..
+      tags: developer
+    - name: run php unit tests (gulp test-php)
+      shell: "gulp test-php"
+      become: yes
+      become_user: www-data
+      args:
+        chdir: ..
+      tags: developer

@@ -1,5 +1,6 @@
 import {browser, ExpectedConditions} from 'protractor';
 
+import { protractor } from 'protractor/built/ptor';
 import {BellowsLoginPage} from '../../../bellows/shared/login.page';
 import {ProjectsPage} from '../../../bellows/shared/projects.page';
 import {EditorPage} from '../shared/editor.page';
@@ -70,17 +71,22 @@ describe('Lexicon E2E Editor Comments', () => {
 
   it('comments panel: check regarding value is hidden when the field value matches', () => {
     const comment = editorPage.comment.getComment(-1);
+    const updateText = 'update -';
 
     // Make sure it is hidden
     expect<any>(comment.regarding.container.isDisplayed()).toBe(false);
 
     // Change the field value and then make sure it appears
-    editorPage.edit.getMultiTextInputs('Definition').first().sendKeys('update - ');
+    editorPage.edit.getMultiTextInputs('Definition').first().sendKeys(updateText);
     expect<any>(comment.regarding.container.isDisplayed()).toBe(true);
 
     // Make sure the regarding value matches what was originally there
     const word    = constants.testEntry1.senses[0].definition.en.value;
     expect<any>(comment.regarding.fieldValue.getText()).toEqual(word);
+    // Restore original value of Definition to not distort other tests
+    for (let i = 0; i < updateText.length; i++) {
+      editorPage.edit.getMultiTextInputs('Definition').first().sendKeys(protractor.Key.BACK_SPACE);
+    }
 
     // old stuff
     // This comment should have a "regarding" section
@@ -118,11 +124,16 @@ describe('Lexicon E2E Editor Comments', () => {
     editorPage.comment.bubbles.first.click();
     browser.wait(ExpectedConditions.invisibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     expect<any>(editorPage.commentDiv.getAttribute('class')).not.toContain('panel-visible');
+    // Hiding the comments panel triggers an animation (in hideRightPanel() in editor.component.ts) that uses
+    // Angular's $interval() to animate hiding the panel, taking 1500 ms on large screens, or 500 ms on small ones.
+    // Since it uses $interval(), the animation isn't disabled during our test run. Also, only AFTER the animation
+    // completes will control.rightPanelVisible be set to false. But the 'panel-visible' attribute is removed
+    // BEFORE the animation begins, so our browser.wait() call returns 1500 ms too soon. Which means we have to
+    // wait for the animation to complete before subsequent tests will be ready to run. - 2019-08 RM
+    browser.sleep(1500 + 250);  // Extra 250 ms for paranoia
   });
 
   it('comments panel: show all comments', () => {
-    // ToDo: investigate why this was needed to be added after editor.js changed to TS - IJH 2018-05
-    browser.sleep(1000);
     editorPage.edit.toCommentsLink.click();
     browser.wait(ExpectedConditions.visibilityOf(editorPage.commentDiv), constants.conditionTimeout);
     expect<any>(editorPage.commentDiv.getAttribute('class')).toContain('panel-visible');

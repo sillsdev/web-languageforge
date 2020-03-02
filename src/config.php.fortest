@@ -70,6 +70,14 @@ if (! defined('GOOGLE_CLIENT_SECRET')) {
     define('GOOGLE_CLIENT_SECRET', 'googleClientSecret');
 }
 
+if (! defined('FACEBOOK_CLIENT_ID')) {
+    define('FACEBOOK_CLIENT_ID', 'facebookClientId');
+}
+
+if (! defined('FACEBOOK_CLIENT_SECRET')) {
+    define('FACEBOOK_CLIENT_SECRET', 'facebookClientSecret');
+}
+
 if (! defined('GATHERWORDS_CLIENT_ID')) {
     define('GATHERWORDS_CLIENT_ID', 'gatherWordsClientId');
 }

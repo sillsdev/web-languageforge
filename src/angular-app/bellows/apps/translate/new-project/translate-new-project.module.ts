@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 import uiRouter from 'angular-ui-router';
 
+import {SiteWideNoticeModule} from '../../../core/site-wide-notice-service';
 import {CoreModule} from '../../../core/core.module';
 import {InputSystemsModule} from '../../../core/input-systems/input-systems.service';
 import {PuiUtilityModule} from '../../../shared/utils/pui-utils.module';
@@ -13,6 +14,7 @@ export const TranslateNewProjectModule = angular.module('translate-new-project',
     uiRouter,
     'ngFileUpload',
     CoreModule,
+    SiteWideNoticeModule,
     PuiUtilityModule,
     InputSystemsModule,
     TranslateCoreModule,

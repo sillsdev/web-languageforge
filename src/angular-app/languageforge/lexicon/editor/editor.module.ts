@@ -39,15 +39,16 @@ export const LexiconEditorModule = angular
                             lec-interface-config="$ctrl.interfaceConfig"
                             lec-finished-loading="$ctrl.finishedLoading"
                             lec-project="$ctrl.project"
+                            lec-option-lists="$ctrl.optionLists"
                             lec-rights="$ctrl.rights"></lexicon-editor>`
       })
       .state('editor.list', {
-        url: '/list?sortBy&sortReverse&filterType&filterBy',
+        url: '/list?sortBy&filterText&sortReverse&filterType&filterBy',
         templateUrl: '/angular-app/languageforge/lexicon/editor/editor-list.view.html',
         controller: 'EditorListCtrl'
       })
       .state('editor.entry', {
-        url: '/entry/{entryId:[0-9a-z_]{6,24}}?sortBy&sortReverse&filterType&filterBy',
+        url: '/entry/{entryId:[0-9a-z_]{6,24}}?sortBy&filterText&sortReverse&filterType&filterBy',
         templateUrl: '/angular-app/languageforge/lexicon/editor/editor-entry.view.html',
         controller: 'EditorEntryCtrl'
       })

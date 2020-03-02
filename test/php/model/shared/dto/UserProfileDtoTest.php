@@ -36,7 +36,7 @@ class UserProfileDtoTest extends TestCase
 
         $dto = UserProfileDto::encode($userId, $environ->website);
 
-        $this->assertInternalType('array', $dto['userProfile']);
+        $this->assertIsArray($dto['userProfile']);
         $this->assertEquals($userId, $dto['userProfile']['id']);
         $this->assertEquals('Name', $dto['userProfile']['name']);
         $this->assertEquals(SiteRoles::USER, $dto['userProfile']['role']);
@@ -45,7 +45,7 @@ class UserProfileDtoTest extends TestCase
         $this->assertEquals('myCity', $dto['userProfile']['projectUserProfiles'][$projectId]['city']);
         $this->assertFalse(isset($dto['userProfile']['projects']));
 
-        $this->assertInternalType('array', $dto['projectsSettings']);
+        $this->assertIsArray($dto['projectsSettings']);
         $this->assertEquals($projectId, $dto['projectsSettings'][0]['id']);
         $this->assertEquals(SF_TESTPROJECT, $dto['projectsSettings'][0]['name']);
         $this->assertArrayHasKey('city', $dto['projectsSettings'][0]['userProperties']['userProfilePickLists']);
@@ -77,7 +77,7 @@ class UserProfileDtoTest extends TestCase
 
         $dto = UserProfileDto::encode($userId, $environ->website);
 
-        $this->assertInternalType('array', $dto['userProfile']);
+        $this->assertIsArray($dto['userProfile']);
         $this->assertEquals($userId, $dto['userProfile']['id']);
         $this->assertEquals('Name', $dto['userProfile']['name']);
         $this->assertEquals(SiteRoles::USER, $dto['userProfile']['role']);
@@ -85,7 +85,7 @@ class UserProfileDtoTest extends TestCase
         $this->assertArrayHasKey('avatar_color', $dto['userProfile']);
         $this->assertFalse(isset($dto['userProfile']['projects']));
 
-        $this->assertInternalType('array', $dto['projectsSettings']);
+        $this->assertIsArray($dto['projectsSettings']);
         $this->assertEquals(0, count($dto['projectsSettings']));
     }
 }

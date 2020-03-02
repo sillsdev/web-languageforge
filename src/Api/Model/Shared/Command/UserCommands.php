@@ -6,6 +6,7 @@ use Api\Library\Shared\Communicate\Communicate;
 use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Library\Shared\Website;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
+use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Scriptureforge\Sfchecks\SfchecksUserProfile;
 use Api\Model\Shared\Dto\CreateSimpleDto;
 use Api\Model\Shared\Mapper\IdReference;
@@ -531,12 +532,14 @@ class UserCommands
         $invitingUserId,
         $website,
         $toEmail,
-        DeliveryInterface $delivery = null
+        DeliveryInterface $delivery = null,
+        $roleKey = null
     ) {
         $invitedUserId = '';
         $invitingUser = new UserModel($invitingUserId);
         $project = new ProjectModel($projectId);
         $toEmail = UserCommands::sanitizeInput($toEmail);
+        if ($roleKey === null) $roleKey = ProjectRoles::CONTRIBUTOR;
 
         $invitedUser = new UserModel();
         if (!$invitedUser->readByEmail($toEmail)) {
@@ -558,11 +561,39 @@ class UserCommands
             $invitedUser->write();
         }
 
+        // Verify authority of $invitingUser to invite someone of this role
+        $userIsAuthorized = false;
+        $invitingUserRole = $project->users[$invitingUserId]->role;
+        $authorizedRoles = [ProjectRoles::MANAGER];
+        if ($roleKey == ProjectRoles::MANAGER) {
+            $userIsAuthorized = in_array($invitingUserRole, $authorizedRoles);
+        }
+        $authorizedRoles[] = ProjectRoles::CONTRIBUTOR;
+        if ($roleKey == ProjectRoles::CONTRIBUTOR) {
+            $userIsAuthorized = in_array($invitingUserRole, $authorizedRoles);
+        }
+        $authorizedRoles[] = LexRoles::OBSERVER_WITH_COMMENT;
+        if ($roleKey == LexRoles::OBSERVER_WITH_COMMENT) {
+            $userIsAuthorized = in_array($invitingUserRole, $authorizedRoles);
+        }
+        $authorizedRoles[] = LexRoles::OBSERVER;
+        if ($roleKey == LexRoles::OBSERVER) {
+            $userIsAuthorized = in_array($invitingUserRole, $authorizedRoles);
+        }
+
+        $invitees = $project->listInvitees();
+        $members = $project->listUsers();
+
+        $userIsAuthorized = $userIsAuthorized &&
+            ($invitingUserRole === ProjectRoles::MANAGER || ($project->allowSharing && $project->userIsMember($invitingUserId)));
+
+        if (!$userIsAuthorized) throw new \Exception("User does not have permission to invite someone of that role (or invalid roleKey).");
+
         // Add the user to the project, if they are not already a member
         if (!$project->userIsMember($invitedUser->id->asString())) {
             $invitedUser->addProject($project->id->asString());
             $invitedUserId = $invitedUser->write();
-            $project->addUser($invitedUserId, ProjectRoles::CONTRIBUTOR);
+            $project->addUser($invitedUserId, $roleKey);
             $project->write();
             Communicate::sendAddedToProject($invitingUser, $invitedUser, $project, $website, $delivery);
         }

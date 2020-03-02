@@ -61,11 +61,6 @@ class LfSessionTestEnvironment extends SessionTestEnvironment {
 
 class SessionCommandsTest extends TestCase
 {
-    public function tearDown()
-    {
-        @unlink(SessionCommands::getSessionFilePath('mockSessionFile'));
-    }
-
     /**
      * @throws Exception
      */
@@ -159,23 +154,6 @@ class SessionCommandsTest extends TestCase
         // ... which should not be empty once the user has been assigned to the project
         $this->assertFalse(empty($data['userProjectRights']));
         $this->assertTrue(is_integer($data['userProjectRights'][0]));
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testGetSessionData_sessionFileExists_dataInFile()
-    {
-        $environ = new SessionTestEnvironment();
-        $environ->create();
-        ProjectCommands::updateUserRole($environ->projectId, $environ->userId);
-        
-        $this->assertFalse(file_exists(SessionCommands::getSessionFilePath('mockSessionFile')));
-
-        $data = SessionCommands::getSessionData($environ->projectId, $environ->userId, $environ->website, 'mockSessionFile');
-        
-        $this->assertTrue(file_exists(SessionCommands::getSessionFilePath('mockSessionFile')));
-        $this->assertJsonStringEqualsJsonFile(SessionCommands::getSessionFilePath('mockSessionFile'), json_encode($data));
     }
 
 }

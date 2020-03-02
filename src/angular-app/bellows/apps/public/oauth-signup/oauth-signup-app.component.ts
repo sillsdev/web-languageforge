@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import { UserService } from '../../../core/api/user.service';
+import { SiteWideNoticeService } from '../../../core/site-wide-notice-service';
 import { SessionService } from '../../../core/session.service';
 import { User } from '../../../shared/model/user.model';
 
@@ -28,9 +29,11 @@ export class OAuthSignupAppController implements angular.IController {
   hostname: string;
 
   static $inject = ['$scope', '$location', '$window',
+    'siteWideNoticeService',
     'userService', 'sessionService'];
   constructor(private $scope: any, private $location: angular.ILocationService,
               private $window: angular.IWindowService,
+              private siteWideNoticeService: SiteWideNoticeService,
               private userService: UserService, private sessionService: SessionService) {}
 
   $onInit() {
@@ -56,6 +59,8 @@ export class OAuthSignupAppController implements angular.IController {
         this.$window.location.href = '/app/projects';
       }
     });
+
+    this.siteWideNoticeService.displayNotices();
 
     // TODO: This is duplicated from the userprofile app. Should refactor avatar stuff into separate library.
     this.dropdown.avatarColors = [
@@ -155,7 +160,11 @@ export class OAuthSignupAppController implements angular.IController {
     if (avatarRef) {
       if (avatarRef.startsWith('http')) {
         if (size) {
-          return avatarRef + '?sz=' + size;  // TODO: This will be different for Facebook
+          if (avatarRef.startsWith('https://graph.facebook.com')) {
+            return avatarRef + '?type=square&height=' + size;
+          } else {
+            return avatarRef + '?sz=' + size;
+          }
         } else {
           return avatarRef;
         }

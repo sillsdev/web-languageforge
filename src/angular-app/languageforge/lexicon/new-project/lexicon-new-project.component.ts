@@ -3,6 +3,7 @@ import * as angular from 'angular';
 import {ProjectService} from '../../../bellows/core/api/project.service';
 import {ApplicationHeaderService} from '../../../bellows/core/application-header.service';
 import {BreadcrumbService} from '../../../bellows/core/breadcrumbs/breadcrumb.service';
+import {SiteWideNoticeService} from '../../../bellows/core/site-wide-notice-service';
 import {LinkService} from '../../../bellows/core/link.service';
 import {NoticeService} from '../../../bellows/core/notice/notice.service';
 import {SessionService} from '../../../bellows/core/session.service';
@@ -60,6 +61,7 @@ export class LexiconNewProjectController implements angular.IController {
     '$state', '$window',
     'applicationHeaderService',
     'breadcrumbService', 'sessionService',
+    'siteWideNoticeService',
     'silNoticeService', 'linkService',
     'projectService',
     'lexProjectService',
@@ -70,6 +72,7 @@ export class LexiconNewProjectController implements angular.IController {
               readonly $state: angular.ui.IStateService, private readonly $window: angular.IWindowService,
               private readonly applicationHeaderService: ApplicationHeaderService,
               private readonly breadcrumbService: BreadcrumbService, readonly sessionService: SessionService,
+              private readonly siteWideNoticeService: SiteWideNoticeService,
               readonly notice: NoticeService, private readonly linkService: LinkService,
               readonly projectService: ProjectService,
               private readonly lexProjectService: LexiconProjectService,
@@ -105,6 +108,7 @@ export class LexiconNewProjectController implements angular.IController {
       label: 'New Project'
     }]);
     this.applicationHeaderService.setPageName('Start or join a Web Dictionary Project');
+    this.siteWideNoticeService.displayNotices();
 
     // ----- Step 2: Send Receive Clone -----
 

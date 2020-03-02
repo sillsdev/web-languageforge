@@ -21,7 +21,7 @@ class ProjectModelTest extends TestCase
         //$model->users->refs = array('1234');
         $id = $model->write();
         $this->assertNotNull($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
         $this->assertEquals($model->id->asString(), $id);
         $otherModel = new ProjectModel($id);
         $this->assertEquals($id, $otherModel->id->asString());
@@ -148,14 +148,16 @@ class ProjectModelTest extends TestCase
                   'name' => 'User One',
                   'username' => 'user1',
                   'id' => $userId1,
-                  'role' => ProjectRoles::CONTRIBUTOR
+                  'role' => ProjectRoles::CONTRIBUTOR,
+                  'avatar_ref' => 'user1.png'
                 ],
                 [
                   'email' => 'user2@example.com',
                   'name' => 'User Two',
                   'username' => 'user2',
                   'id' => $userId2,
-                  'role' => ProjectRoles::CONTRIBUTOR
+                  'role' => ProjectRoles::CONTRIBUTOR,
+                  'avatar_ref' => 'user2.png'
                 ]
             ],
             $result->entries

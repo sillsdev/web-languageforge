@@ -32,7 +32,7 @@ class AnswerModelTest extends TestCase
         $comment->content = 'Some comment';
         $commentId = QuestionModel::writeComment($project->databaseName(), $questionId, $id, $comment);
         $this->assertNotNull($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
         $this->assertEquals(24, strlen($id));
         $this->assertEquals($answer->id->asString(), $id);
 

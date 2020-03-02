@@ -28,6 +28,10 @@ export class UtilityService {
     return tagAudioPattern.test(tag);
   }
 
+  static isIE(userAgent: string): boolean {
+    return /MSIE|Trident/.test(userAgent);
+  }
+
   /**
    * Copy array retaining any references to the target.
    */
@@ -43,6 +47,11 @@ export class UtilityService {
    */
   static arrayExtend<T>(target: T[], extra: T[]): void {
     Array.prototype.push.apply(target, extra);
+  }
+
+  static isDigitsOnly(text: string) {
+    for (const char of text) if (char < '0' || char > '9') return false;
+    return text.length !== 0;
   }
 
   // FixMe: move to sfchecks-utility service - IJH 2017-11

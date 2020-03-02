@@ -3,6 +3,7 @@ import uiRouter from 'angular-ui-router';
 
 import {LexiconCoreModule} from '../../../languageforge/lexicon/core/lexicon-core.module';
 import {BreadcrumbModule} from '../../core/breadcrumbs/breadcrumb.module';
+import {SiteWideNoticeModule} from '../../core/site-wide-notice-service';
 import {CoreModule} from '../../core/core.module';
 import {NoticeModule} from '../../core/notice/notice.module';
 import {ListViewModule} from '../../shared/list-view.component';
@@ -20,6 +21,7 @@ export const UserManagementAppModule = angular
     ListViewModule,
     TypeAheadModule,
     BreadcrumbModule,
+    SiteWideNoticeModule,
     LexiconCoreModule
   ])
   .component('userManagementApp', UserManagementAppComponent)
@@ -36,7 +38,8 @@ export const UserManagementAppModule = angular
           views: {
             '@': {
               template: `<user-management-members query-user-list="$ctrl.queryUserList()"
-                list="$ctrl.list" project="$ctrl.project" roles="$ctrl.roles" rights="$ctrl.rights">
+                list="$ctrl.list" project="$ctrl.project" roles="$ctrl.roles" rights="$ctrl.rights"
+                current-user="$ctrl.currentUser">
                 </user-management-members>`
             }
           }

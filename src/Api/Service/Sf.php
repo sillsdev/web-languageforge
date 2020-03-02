@@ -40,6 +40,7 @@ use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Communicate\EmailSettings;
 use Api\Model\Shared\Communicate\SmsSettings;
 use Api\Model\Shared\Dto\ActivityListDto;
+use Api\Model\Shared\Dto\ProjectInsightsDto;
 use Api\Model\Shared\Dto\ProjectListDto;
 use Api\Model\Shared\Dto\ProjectManagementDto;
 use Api\Model\Shared\Dto\RightsHelper;
@@ -263,9 +264,14 @@ class Sf
         return UserCommands::getCaptchaData($this->app['session']);
     }
 
-    public function user_sendInvite($toEmail)
+    public function user_sendInvite($toEmail, $lexRoleKey)
     {
-        return UserCommands::sendInvite($this->projectId, $this->userId, $this->website, $toEmail);
+        return UserCommands::sendInvite($this->projectId, $this->userId, $this->website, $toEmail, null, $lexRoleKey);
+    }
+
+    public function project_insights_csv()
+    {
+        return ProjectInsightsDto::csvInsights($this->website);
     }
 
     // ---------------------------------------------------------------
@@ -376,6 +382,26 @@ class Sf
     public function project_getJoinRequests()
     {
         return ProjectCommands::getJoinRequests($this->projectId);
+    }
+
+    public function project_createInviteLink($defaultRole)
+    {
+        return ProjectCommands::createInviteLink($this->projectId, $defaultRole);
+    }
+
+    public function project_getInviteLink()
+    {
+        return ProjectCommands::getInviteLink($this->projectId);
+    }
+
+    public function project_disableInviteToken()
+    {
+        ProjectCommands::disableInviteToken($this->projectId);
+    }
+
+    public function project_updateInviteTokenRole($newRole)
+    {
+        ProjectCommands::updateInviteTokenRole($this->projectId, $newRole);
     }
 
     /**

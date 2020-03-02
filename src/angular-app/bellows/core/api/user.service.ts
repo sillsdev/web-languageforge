@@ -73,8 +73,8 @@ export class UserService {
     return this.api.call('user_create', [params], callback);
   }
 
-  sendInvite(toEmail: string, callback?: JsonRpcCallback) {
-    return this.api.call('user_sendInvite', [toEmail], callback);
+  sendInvite(toEmail: string, roleKey: string, callback?: JsonRpcCallback) {
+    return this.api.call('user_sendInvite', [toEmail, roleKey], callback);
   }
 
 }

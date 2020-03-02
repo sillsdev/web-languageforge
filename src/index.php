@@ -255,6 +255,8 @@ $app->get('/script',  'Site\Controller\Script::run');
 //public
 $app->post('/api/{apiName}',    'Site\Controller\Api::service');
 
+$app->get('/invite/{inviteToken}', 'Site\Controller\Validate::processInviteAndRedirect');
+
 $app->get('/public/{appName}/{projectId}/', 'Site\Controller\App::view');
 $app->get('/public/{appName}/{projectId}', 'Site\Controller\App::view');
 $app->get('/public/{appName}/', 'Site\Controller\App::view');
@@ -266,6 +268,7 @@ $app->get('/auth/{appName}',    'Site\Controller\Auth::view')->value('appName', 
 $app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bind('auth_forgot_password');
 
 $app->get('/oauthcallback/google', 'Site\OAuth\GoogleOAuth::oauthCallback');
+$app->get('/oauthcallback/facebook', 'Site\OAuth\FacebookOAuth::oauthCallback');
 $app->get('/oauthcallback/paratext', 'Site\OAuth\ParatextOAuth::oauthCallback');
 
 $app->post('/oauth/jwt', 'Site\OAuth\OAuthJWTToken::validateOAuthToken');

@@ -40,6 +40,15 @@
       height: initial;
     }
   }
+
+  #shareBtn {
+    padding: 0 0.375rem;
+    font-size: 1em !important;
+
+    i.fa {
+      padding-right: 0.5em;
+    }
+  }
 }
 
 .close-modal {
@@ -167,6 +176,7 @@
         align-items: center;
         #settings-dropdown-button {
           position: relative;
+          list-style: none;
           .dropdown-toggle {
             background: transparent;
             border: 0;
@@ -256,8 +266,28 @@
       }
     }
   }
+
+  ul.navbar-nav {
+    flex-flow: row;
+
+    li {
+      display: flex;
+    }
+  }
+
+  #shareBtn {
+    margin: 12px;
+    border: 1px solid white;
+
+
+    i.fa, span {
+      line-height: 24px;
+      font-size: 1rem;
+    }
+  }
 }
 
 .notices button.close {
   margin-right: 0.5em;
 }
+
