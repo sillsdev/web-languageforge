@@ -4,6 +4,8 @@
 - Users can now login with Facebook as well as Google
 - Added "Share" button to invite new members to join a project
 - Visual improvements when setting access rights for existing project members
+- Added site tour when users first visit the site
+    - Site tour is also available at any time from the Help menu
 - Improved look of Sort and Filter options
 - Various internal improvements and bugfixes
 
