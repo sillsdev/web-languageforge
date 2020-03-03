@@ -39,7 +39,7 @@
 
       <li class="list-group-item user-summary-item" data-ng-repeat="user in $ctrl.visibleMembers">
         <div>
-          <img src="{{$ctrl.getAvatarUrl(user.avatar_ref)}}" class="rounded-circle" id="smallAvatarURL" />
+          <img ng-src="{{$ctrl.getAvatarUrl(user.avatar_ref)}}" class="rounded-circle" id="smallAvatarURL" />
         </div>
         <div style="flex-grow: 1;" ng-class="{'text-muted': user.isInvitee}">
           <span ng-if="user.name">{{user.name}}<span ng-if="$ctrl.userIsCurrentUser(user)"> (you)</span><br></span>

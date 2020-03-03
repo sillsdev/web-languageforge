@@ -37,7 +37,17 @@ class ProjectInsightsDto
         $projectData->url = "/app/{$project->appName}/$project->id/";
 
         // owner data
-        $owner = UserCommands::readUser($project->ownerRef->asString());
+        try {
+            $owner = UserCommands::readUser($project->ownerRef->asString());
+        } catch (\Exception $e) {
+            # there appears to be a dangling owner ref in our data
+            $owner = [
+                'username' => 'unknown',
+                'email' => 'unknown',
+                'name' => 'unknown',
+                'role' => 'unknown',
+            ];
+        }
         $projectData->ownerUserName = $owner['username'];
         $projectData->ownerEmail = $owner['email'];
         $projectData->ownerName = $owner['name'];
@@ -72,11 +82,13 @@ class ProjectInsightsDto
         $recentUsers = [];
         $lastActivityDate = null;
         foreach ($projectActivity->entries as $event) {
-            $userId = (string) $event['userRef'];
-            $users[$userId] = array_key_exists($userId, $users) ? $users[$userId] + 1 : 1;
-            if (date_create($event['date']) > date_create()->modify('-180 days')) {
-                $recentUsers[$userId] = true;
-            };
+            if (array_key_exists('userRef', $event)) {
+                $userId = (string) $event['userRef'];
+                $users[$userId] = array_key_exists($userId, $users) ? $users[$userId] + 1 : 1;
+                if (date_create($event['date']) > date_create()->modify('-180 days')) {
+                    $recentUsers[$userId] = true;
+                };
+            }
             $lastActivityDate = $lastActivityDate === null ? $event['date']->toDateTime() : max($event['date']->toDateTime(), $lastActivityDate);
         }
         $projectData->activeUsers = 0;
@@ -165,6 +177,22 @@ class ProjectInsightsDto
     }
 
     public static function csvInsights($website) {
+        $filePointer = fopen('php://memory', 'r+');
+        self::writeInsightsToCsvFilePointer($website, $filePointer);
+        rewind($filePointer);
+        $csv = stream_get_contents($filePointer);
+        fclose($filePointer);
+        return $csv;
+    }
+
+    public static function csvInsightsToFile($website, $filename) {
+        $filePointer = fopen($filename, 'w');
+        $count = self::writeInsightsToCsvFilePointer($website, $filePointer);
+        fclose($filePointer);
+        print "Wrote $count insights to CSV file $filename\n";
+    }
+
+    private static function writeInsightsToCsvFilePointer($website, $filePointer) {
         $insights = ProjectInsightsDto::allProjectInsights($website);
 
         // convert camelCase properties to sentence case for table headings
@@ -175,15 +203,11 @@ class ProjectInsightsDto
         }
 
         // in order to get automatic escaping of CSV we have to write to a "file"
-        $filePointer = fopen('php://memory', 'r+');
         fputcsv($filePointer, $headings);
         foreach ($insights->projectList as $row) {
             fputcsv($filePointer, array_values((array) $row));
         }
-        rewind($filePointer);
-        $csv = stream_get_contents($filePointer);
-        fclose($filePointer);
-        return $csv;
+        return count($insights->projectList);
     }
 
     private static function appName($website) {

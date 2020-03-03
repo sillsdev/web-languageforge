@@ -91,7 +91,9 @@ class MapperModel extends ObjectForEncoding
     {
         CodeGuard::checkTypeAndThrow($this->id, 'Api\Model\Shared\Mapper\Id');
         $now = UniversalTimestamp::now();
-        $this->dateModified = $now;
+        if (! defined('MAPPERMODEL_NO_TIMESTAMP_UPDATE')) {
+            $this->dateModified = $now;
+        }
         if (Id::isEmpty($this->id)) {
             $this->dateCreated = $now;
         }

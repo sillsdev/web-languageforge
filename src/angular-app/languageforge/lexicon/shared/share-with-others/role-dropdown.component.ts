@@ -32,8 +32,15 @@ export class RoleDropdownController implements angular.IController {
     if (changes.roles) this.buildRoleDetails();
 
     if (changes.selectedRole) {
-      if (!this.selectedRole) this.selectedRole = this.roles[this.roles.length - 1];
-      this.selectedRoleDetail = this.roleDetails.find(p => p.role.key === this.selectedRole.key);
+      const selectedRole = changes.selectedRole.currentValue || changes.selectedRole;
+      const selectedRoleDetail = this.roleDetails.find(p => p.role.key === (selectedRole.key || selectedRole));
+      if (selectedRoleDetail) {
+        this.selectedRole = selectedRoleDetail.role;
+        this.selectedRoleDetail = selectedRoleDetail;
+      } else {
+        this.selectedRole = this.roles[this.roles.length - 1];
+        this.selectedRoleDetail = this.roleDetails.find(p => p.role.key === this.selectedRole.key);
+      }
     }
   }
 
