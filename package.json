@@ -14,7 +14,7 @@
     "alternate-url": "https://github.com/sillsdev/web-scriptureforge.git"
   },
   "dependencies": {
-    "angular": "1.6.10",
+    "angular": "1.7.9",
     "angular-moment-picker": "git+https://github.com/sillsdev/angular-moment-picker.git",
     "angular-route": "1.6.10",
     "angular-sanitize": "1.6.10",
