@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import {SessionService} from '../../../bellows/core/session.service';
+import {ProjectRoles} from '../../../bellows/shared/model/project.model';
 import {LexMultiText} from '../shared/model/lex-multi-text.model';
 import {LexValue} from '../shared/model/lex-value.model';
 import {
@@ -44,13 +45,18 @@ export class LexiconConfigService {
       } else {
         // fallback to role-based field config
         fieldsConfig = config.roleViews[role];
+        // further fallback for projects that don't have anything configured for the Tech Support role
+        if (fieldsConfig == null && role === ProjectRoles.TECH_SUPPORT.key) {
+          fieldsConfig = config.roleViews[ProjectRoles.MANAGER.key];
+        }
       }
 
-      this.removeDisabledConfigFields(config.entry, fieldsConfig);
-      this.removeDisabledConfigFields((config.entry.fields.senses as LexConfigFieldList), fieldsConfig);
-      this.removeDisabledConfigFields(((config.entry.fields.senses as LexConfigFieldList).fields.examples as
-        LexConfigFieldList), fieldsConfig);
-
+      if (fieldsConfig != null) {
+        this.removeDisabledConfigFields(config.entry, fieldsConfig);
+        this.removeDisabledConfigFields((config.entry.fields.senses as LexConfigFieldList), fieldsConfig);
+        this.removeDisabledConfigFields(((config.entry.fields.senses as LexConfigFieldList).fields.examples as
+          LexConfigFieldList), fieldsConfig);
+      }
       return config;
     }));
   }
