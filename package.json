@@ -16,8 +16,8 @@
   "dependencies": {
     "angular": "1.7.9",
     "angular-moment-picker": "git+https://github.com/sillsdev/angular-moment-picker.git",
-    "angular-route": "1.6.10",
-    "angular-sanitize": "1.6.10",
+    "angular-route": "1.7.9",
+    "angular-sanitize": "1.7.9",
     "angular-ui-bootstrap-4": "git+https://github.com/sillsdev/bootstrap.git",
     "angular-ui-router": "0.4.2",
     "angular-ui-validate": "^1.2.3",
