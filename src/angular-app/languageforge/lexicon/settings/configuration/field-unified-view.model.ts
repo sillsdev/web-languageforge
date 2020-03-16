@@ -318,7 +318,7 @@ export class ConfigurationFieldUnifiedViewModel {
         const multiTextLevelConfigField = levelConfigField as LexConfigMultiText;
         multiTextLevelConfigField.inputSystems = [];
         for (const inputSystemSettings of field.inputSystems) {
-          if (inputSystemSettings.isAllRowSelected) {
+          if (inputSystemSettings != null && inputSystemSettings.isAllRowSelected) {
             multiTextLevelConfigField.inputSystems.push(inputSystemSettings.tag);
           }
         }
