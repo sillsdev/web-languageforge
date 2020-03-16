@@ -15,6 +15,16 @@ export class PickListEditorController implements angular.IController {
 
   private isDeletable: { [key: string]: boolean } = {};
 
+  $onChanges(changes: angular.IOnChangesObject): void {
+    // Ensure this.items is always an array even if it was missing in the input data
+    const itemsChangeObj = changes.items as angular.IChangesObject<Item[]>;
+    if (itemsChangeObj != null) {
+      if (itemsChangeObj.currentValue == null) {
+        this.items = [];
+      }
+    }
+  }
+
   pickAddItem(): void {
     if (this.newValue) {
       const key = PickListEditorController.keyFromValue(this.newValue);
