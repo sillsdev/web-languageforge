@@ -13,10 +13,10 @@ site_src_paths:
 
 ### Version/distro
 base_distribution: "{{ansible_distribution | lower}}"
-base_distribution_release: "{{ansible_distribution_release}}"
+base_distribution_release: "bionic"
 
-node_version: 10.16.0
-npm_version: 6.10.0
+node_version: 10.17.0
+npm_version: 6.12.0
 mongodb_version: 4.0
 php_version: 7.3
 
