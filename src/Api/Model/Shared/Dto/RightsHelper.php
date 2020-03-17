@@ -349,26 +349,6 @@ class RightsHelper
             case 'sendReceive_commitProject':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
-                    // LanguageForge (translate)
-            case 'translate_projectDto':
-                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
-
-            case 'translate_projectUpdate':
-            case 'translate_configUpdate':
-                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
-
-            case 'translate_configUpdateUserPreferences':
-            case 'translate_documentSetListDto':
-                return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
-
-            case 'translate_documentSetUpdate':
-            case 'translate_updateMetrics':
-            case 'translate_usxToHtml':
-                return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
-
-            case 'translate_documentSetRemove':
-                return $this->userHasProjectRight(Domain::ENTRIES + Operation::DELETE);
-
                     // project management app
             case 'project_management_dto':
             case 'project_management_report_sfchecks_userEngagementReport':

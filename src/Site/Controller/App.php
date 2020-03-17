@@ -333,7 +333,6 @@ class AppModel {
         switch ($appName) {
             case "sfchecks":
             case "lexicon":
-            case "translate":
             case "semdomtrans":
             case "projectmanagement":
             case "usermanagement":

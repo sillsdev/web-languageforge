@@ -1,13 +1,11 @@
 import * as angular from 'angular';
 
-import { ShareWithOthersModule } from '../../languageforge/lexicon/shared/share-with-others/share-with-others.module';
+import {ShareWithOthersModule} from '../../languageforge/lexicon/shared/share-with-others/share-with-others.module';
 import {InterfaceLanguageModule} from '../shared/interface-language.component';
 import {ActivityService} from './api/activity.service';
 import {ApiService} from './api/api.service';
 import {JsonRpcModule} from './api/json-rpc.service';
 import {ProjectService} from './api/project.service';
-import {RestApiService} from './api/rest-api.service';
-import {UserRestApiService} from './api/user-rest-api.service';
 import {UserService} from './api/user.service';
 import {ApplicationHeaderService} from './application-header.service';
 import {ExceptionOverrideModule} from './exception-handling.service';
@@ -37,9 +35,7 @@ export const CoreModule = angular
   .service('linkService', LinkService)
   .service('applicationHeaderService', ApplicationHeaderService)
   .service('utilService', UtilityService)
-  .service('restApiService', RestApiService)
   .service('noticeService', NoticeService)
-  .service('userRestApiService', UserRestApiService)
   .filter('bytes', BytesFilter)
   .filter('relativetime', RelativeTimeFilter)
   .filter('encodeURI', ['$window', EncodeURIFilter])

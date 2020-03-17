@@ -82,24 +82,8 @@ if (! defined('GATHERWORDS_CLIENT_ID')) {
     define('GATHERWORDS_CLIENT_ID', 'gatherWordsClientId');
 }
 
-if (! defined('PARATEXT_CLIENT_ID')) {
-    define('PARATEXT_CLIENT_ID', 'paratextClientId');
-}
-
-if (! defined('PARATEXT_API_TOKEN')) {
-    define('PARATEXT_API_TOKEN', 'paratextApiToken');
-}
-
 define('NG_BASE_FOLDER', 'angular-app/');
 define('BCRYPT_COST', 7);
-
-if (! defined('JWT_KEY')) {
-    define('JWT_KEY', 'this_is_not_a_secret_dev_only');
-}
-
-if (! defined('SR_TRANSLATE_FOLDER')) {
-    define('SR_TRANSLATE_FOLDER', '/var/lib/scriptureforge/translate/sendreceive');
-}
 
 if (!defined('BUGSNAG_API_KEY')) {
     define('BUGSNAG_API_KEY', 'missing-bugsnag-api-key');
