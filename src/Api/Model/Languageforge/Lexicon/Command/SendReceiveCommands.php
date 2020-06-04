@@ -85,7 +85,8 @@ class SendReceiveCommands
         $client = new Client(['handler' => $handler]);
 
         $url = 'https://admin.languagedepot.org/api/user/'.$username.'/projects';
-        $postData = ['json' => ['password' => $password]];
+        $postData = ['json' => ['password' => $password],
+                     'headers' => ['Authorization' => 'Bearer ' . LANGUAGE_DEPOT_API_TOKEN]];
 
         $tryCounter = 1;
         while ($tryCounter <= 5) {
