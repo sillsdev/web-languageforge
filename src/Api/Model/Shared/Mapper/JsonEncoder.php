@@ -28,13 +28,12 @@ class JsonEncoder
     protected function _encode($model)
     {
         $data = array();
-        $properties = get_object_vars($model);
         $privateProperties = array();
         if (method_exists($model, 'getPrivateProperties')) {
             $privateProperties = (array) $model->getPrivateProperties();
         }
 
-        foreach ($properties as $key => $value) {
+        foreach ($model as $key => $value) {
             if (in_array($key, $privateProperties)) {
                 continue;
             }
