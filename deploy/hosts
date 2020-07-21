@@ -1,5 +1,5 @@
 [all]
-localhost ansible_connection=local
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python3
 
 [build_agents]
 ba_xenial_web_s2_138 ansible_ssh_host=lf-dev
