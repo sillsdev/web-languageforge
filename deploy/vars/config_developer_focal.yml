@@ -13,14 +13,18 @@ site_src_paths:
 
 ### Version/distro
 base_distribution: "{{ansible_distribution | lower}}"
+base_distribution_release: "focal"
 # The mongodb-org packages are not yet available for Focal Fossa as of 2020-07-21, so leave this as "bionic" until they are
-base_distribution_release: "bionic"
+base_distribution_release_for_mongo: "bionic"
+# The linux.lsdev.sil.org repo does not yet have Focal packages as of 2020-07-21, so leave this as "bionic" until Focal is available
+base_distribution_release_for_llso: "bionic"
 
 node_version: 10.17.0
 npm_version: 6.14.4
 # Once we update this to 4.4, also uncomment the appropriate mongodb_signing_key line below
 mongodb_version: 4.2
-php_version: 7.4
+# PHP 7.4 makes some backwards-incompatible changes that break Language Forge, so we'll get 7.3 from the PPA
+php_version: 7.3
 
 # 4.0
 #mongodb_signing_key: 9DA31620334BD75D9DCB49F368818C72E52529D4

@@ -15,13 +15,17 @@
   vars_files:
     - "vars/config_{{config}}.yml"
   pre_tasks:
+    - name: Add PHP{{php_version}} ppa
+      apt_repository:
+        repo: "deb http://ppa.launchpad.net/ondrej/php/ubuntu {{base_distribution_release}} Release"
+        state: present
     - name: add Mongo apt key
       apt_key:
         keyserver: hkp://keyserver.ubuntu.com:80
         id: "{{ mongodb_signing_key }}"
     - name: add Mongo {{mongodb_version}} repository
       apt_repository:
-        repo: "deb [arch=amd64] http://repo.mongodb.org/apt/ubuntu {{base_distribution_release}}/mongodb-org/{{mongodb_version}} multiverse"
+        repo: "deb [arch=amd64] http://repo.mongodb.org/apt/ubuntu {{base_distribution_release_for_mongo}}/mongodb-org/{{mongodb_version}} multiverse"
         filename: mongodb-org
         update_cache: yes
     - name: add sil apt-key
@@ -29,10 +33,10 @@
         url: http://linux.lsdev.sil.org/downloads/sil-testing.gpg
     - name: add sil repo
       apt_repository:
-        repo: deb http://linux.lsdev.sil.org/ubuntu {{base_distribution_release}} main
+        repo: deb http://linux.lsdev.sil.org/ubuntu {{base_distribution_release_for_llso}} main
     - name: add sil experimental repo
       apt_repository:
-        repo: deb http://linux.lsdev.sil.org/ubuntu {{base_distribution_release}}-experimental main
+        repo: deb http://linux.lsdev.sil.org/ubuntu {{base_distribution_release_for_llso}}-experimental main
         update_cache: yes
   roles:
     - fix
