@@ -29,7 +29,8 @@ class MongoEncoder
     protected function _encode($model, $encodeId = false)
     {
         $data = array();
-        foreach ($model as $key => $value) {
+        $properties = get_object_vars($model);
+        foreach ($properties as $key => $value) {
             if (is_a($value, 'Api\Model\Shared\Mapper\ArrayOf')) {
                 $data[$key] = $this->encodeArrayOf($model->{$key});
             } elseif (is_a($value, 'Api\Model\Shared\Mapper\MapOf')) {
