@@ -56,7 +56,7 @@
           - composer
           - default-jre-headless
           - lfmerge
-          - libapache2-mod-php
+          - libapache2-mod-php{{php_version}}
           - mongodb-org
           - nodejs
           - npm
@@ -67,6 +67,7 @@
           - php{{php_version}}-gd
           - php{{php_version}}-intl
           - php{{php_version}}-mbstring
+          - php{{php_version}}-xml
           - php-pear
           - postfix
           - php-xdebug
@@ -280,6 +281,12 @@
       args:
         creates: /etc/php/{{php_version}}/apache2/conf.d/20-mongodb.ini
       notify: Restart apache
+
+    # Must come *after* the PECL Mongo extension is installed
+    - name: ensure PHP {{php_version}} is default
+      alternatives:
+        name: php
+        path: "/usr/bin/php{{php_version}}"
 
     - name: Set Apache umask to 002
       lineinfile:
