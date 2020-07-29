@@ -43,7 +43,7 @@ export const SfChecksProjectSettingsModule = angular
     $scope.queryProjectSettings = function queryProjectSettings() {
       $q.all([sessionService.getSession(), sfchecksProjectService.projectSettings()]).then((data: any[]) => {
         const session = data[0] as Session;
-        const result = data[1] as JsonRpcResult;
+        const result = data[1] as JsonRpcResult<any>;
         $scope.project = result.data.project;
         $scope.list.users = result.data.entries;
         $scope.list.userCount = result.data.count;
@@ -80,7 +80,7 @@ export const SfChecksProjectSettingsModule = angular
     };
 
     $scope.readCommunicationSettings = function readCommunicationSettings() {
-      sfchecksProjectService.readSettings().then((result: JsonRpcResult) => {
+      sfchecksProjectService.readSettings().then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           $scope.settings.sms = result.data.sms;
           $scope.settings.email = result.data.email;
@@ -157,7 +157,7 @@ export const SfChecksProjectSettingsModule = angular
 
     $scope.editTemplate = function editTemplate(): void {
       if ($scope.editedTemplate.title && $scope.editedTemplate.description) {
-        qts.update($scope.editedTemplate).then((result: JsonRpcResult) => {
+        qts.update($scope.editedTemplate).then((result: JsonRpcResult<any>) => {
           if (result.ok) {
             if ($scope.editedTemplate.id) {
               notice.push(notice.SUCCESS, 'The template \'' + $scope.editedTemplate.title +
@@ -180,7 +180,7 @@ export const SfChecksProjectSettingsModule = angular
     $scope.queryTemplates = function queryTemplates(invalidateCache: boolean): void {
       const forceReload = (invalidateCache || (!$scope.templates) || ($scope.templates.length === 0));
       if (forceReload) {
-        qts.list().then((result: JsonRpcResult) => {
+        qts.list().then((result: JsonRpcResult<any>) => {
           if (result.ok) {
             $scope.templates = result.data.entries;
             $scope.finishedLoading = true;
@@ -201,7 +201,7 @@ export const SfChecksProjectSettingsModule = angular
         templateIds.push(user.id);
       }
 
-      qts.remove(templateIds).then((result: JsonRpcResult) => {
+      qts.remove(templateIds).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           if (templateIds.length === 1) {
             notice.push(notice.SUCCESS, 'The template was removed successfully');
@@ -243,7 +243,7 @@ export const SfChecksProjectSettingsModule = angular
         textIds.push(user.id);
       }
 
-      textService.publish(textIds).then((result: JsonRpcResult) => {
+      textService.publish(textIds).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           $scope.selected = []; // Reset the selection
           $scope.queryProjectSettings();
@@ -262,7 +262,7 @@ export const SfChecksProjectSettingsModule = angular
 
     $scope.updateCommunicationSettings = function updateCommunicationSettings(): void {
       sfchecksProjectService.updateSettings($scope.settings.sms, $scope.settings.email)
-        .then((result: JsonRpcResult) => {
+        .then((result: JsonRpcResult<any>) => {
           if (result.ok) {
             notice.push(notice.SUCCESS, $scope.project.projectName + ' SMS settings updated successfully');
           }
@@ -280,7 +280,7 @@ export const SfChecksProjectSettingsModule = angular
         delete project.ownerRef; // ownerRef is expected as string id not array of id and username
       }
 
-      sfchecksProjectService.update(project).then((result: JsonRpcResult) => {
+      sfchecksProjectService.update(project).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           notice.push(notice.SUCCESS, $scope.project.projectName + ' settings updated successfully');
         }
@@ -309,7 +309,7 @@ export const SfChecksProjectSettingsModule = angular
         delete project.ownerRef; // ownerRef is expected as string id not array of id and username
       }
 
-      sfchecksProjectService.update(project).then((result: JsonRpcResult) => {
+      sfchecksProjectService.update(project).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           notice.push(notice.SUCCESS, project.projectName + ' settings updated successfully');
         }
@@ -423,7 +423,7 @@ export const SfChecksProjectSettingsModule = angular
       }
 
       messageService.send(userIds, $scope.message.subject, $scope.message.emailTemplate,
-        $scope.message.smsTemplate).then((result: JsonRpcResult) => {
+        $scope.message.smsTemplate).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           $scope.message.subject = '';
           $scope.message.emailTemplate = '';
@@ -474,7 +474,7 @@ export const SfChecksProjectSettingsModule = angular
         }
       }
 
-      projectService.removeUsers(userIds).then((result: JsonRpcResult) => {
+      projectService.removeUsers(userIds).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           $scope.queryProjectSettings();
           $scope.selected = [];
@@ -495,7 +495,7 @@ export const SfChecksProjectSettingsModule = angular
       ];
 
     $scope.onRoleChange = function onRoleChange(user: User): void {
-      projectService.updateUserRole(user.id, user.role).then((result: JsonRpcResult) => {
+      projectService.updateUserRole(user.id, user.role).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           notice.push(notice.SUCCESS, user.username + '\'s role was changed to ' + user.role);
         }
@@ -517,7 +517,7 @@ export const SfChecksProjectSettingsModule = angular
     $scope.typeahead.userName = '';
 
     $scope.queryUser = function queryUser(userName: string): void {
-      userService.typeaheadExclusive(userName, $scope.project.id).then((result: JsonRpcResult) => {
+      userService.typeaheadExclusive(userName, $scope.project.id).then((result: JsonRpcResult<any>) => {
         // TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
         if (result.ok) {
           $scope.users = result.data.entries;
@@ -598,7 +598,7 @@ export const SfChecksProjectSettingsModule = angular
 
     $scope.addProjectUser = function addProjectUser(): void {
       if ($scope.addMode === 'addNew') {
-        userService.createSimple($scope.typeahead.userName).then((result: JsonRpcResult) => {
+        userService.createSimple($scope.typeahead.userName).then((result: JsonRpcResult<any>) => {
           if (result.ok) {
             notice.push(notice.INFO, 'User created.  Username: ' + $scope.typeahead.userName +
               '    Password: ' + result.data.password);
@@ -611,7 +611,7 @@ export const SfChecksProjectSettingsModule = angular
         } as User;
 
         // Check existing users to see if we're adding someone that already exists in the project
-        projectService.listUsers().then((result: JsonRpcResult) => {
+        projectService.listUsers().then((result: JsonRpcResult<any>) => {
           if (result.ok) {
             for (const user of result.data.users) {
               // This approach works, but is unnecessarily slow. We should have an "is user in  project?" API, rather
@@ -624,7 +624,7 @@ export const SfChecksProjectSettingsModule = angular
               }
             }
 
-            projectService.updateUserRole($scope.user.id, 'contributor').then((updateUserRoleResult: JsonRpcResult) => {
+            projectService.updateUserRole($scope.user.id, 'contributor').then((updateUserRoleResult: JsonRpcResult<any>) => {
               if (updateUserRoleResult.ok) {
                 notice.push(notice.SUCCESS, '\'' + $scope.user.name + '\' was added to ' +
                   $scope.project.projectName + ' successfully');
@@ -634,7 +634,7 @@ export const SfChecksProjectSettingsModule = angular
           }
         });
       } else if ($scope.addMode === 'invite') {
-        userService.sendInvite($scope.typeahead.userName).then((result: JsonRpcResult) => {
+        userService.sendInvite($scope.typeahead.userName).then((result: JsonRpcResult<any>) => {
           if (result.ok) {
             notice.push(notice.SUCCESS, '\'' + $scope.typeahead.userName + '\' was invited to join the project ' +
               $scope.project.projectName);

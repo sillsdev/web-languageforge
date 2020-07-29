@@ -53,7 +53,7 @@ export const SfChecksNewProjectModule = angular
         if ($scope.projectCodeState === 'ok') {
           $scope.isSubmitting = true;
           projectService.create($scope.newProject.projectName, $scope.newProject.projectCode, 'sfchecks', {})
-            .then((result: JsonRpcResult) => {
+            .then((result: JsonRpcResult<any>) => {
               if (result.ok) {
                 notice.push(notice.SUCCESS, 'The ' + $scope.newProject.projectName +
                   ' project was created successfully');
@@ -120,7 +120,7 @@ export const SfChecksNewProjectModule = angular
       $scope.checkProjectCode = function checkProjectCode(): void {
         if (isValidProjectCode($scope.newProject.projectCode)) {
           $scope.projectCodeState = 'loading';
-          projectService.projectCodeExists($scope.newProject.projectCode).then((result: JsonRpcResult) => {
+          projectService.projectCodeExists($scope.newProject.projectCode).then((result: JsonRpcResult<any>) => {
             if (!$scope.isSubmitting) {
               if (result.ok) {
                 if (result.data) {

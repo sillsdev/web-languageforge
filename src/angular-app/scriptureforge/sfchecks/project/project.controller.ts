@@ -100,7 +100,7 @@ export const SfChecksProjectModule = angular
     $scope.getPageDto = function getPageDto(): void {
       $q.all([sessionService.getSession(), sfchecksProjectService.pageDto()]).then((data: any[]) => {
         const session = data[0] as Session;
-        const result = data[1] as JsonRpcResult;
+        const result = data[1] as JsonRpcResult<any>;
         $scope.texts = result.data.texts;
         $scope.textsCount = $scope.texts.length;
         $scope.enhanceDto($scope.texts);
@@ -157,7 +157,7 @@ export const SfChecksProjectModule = angular
         bodyText: message
       };
       modalService.showModal({}, modalOptions).then(() => {
-        textService.archive(textIds).then((result: JsonRpcResult) => {
+        textService.archive(textIds).then((result: JsonRpcResult<any>) => {
           if (result.ok) {
             $scope.selected = []; // Reset the selection
             $scope.getPageDto();
@@ -184,7 +184,7 @@ export const SfChecksProjectModule = angular
         endVs: $scope.endVs,
         fontfamily: $scope.fontfamily
       } as Text;
-      textService.update(text).then((result: JsonRpcResult) => {
+      textService.update(text).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           notice.push(notice.SUCCESS, 'The text \'' + text.title + '\' was added successfully');
         }

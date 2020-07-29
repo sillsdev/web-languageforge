@@ -196,7 +196,7 @@ export class EditorDataService {
     return this.cache.deleteEntry(id);
   }
 
-  processEditorDto(result: JsonRpcResult, updateOnly: boolean): angular.IPromise<any> {
+  processEditorDto(result: JsonRpcResult<any>, updateOnly: boolean): angular.IPromise<any> {
     const deferred = this.$q.defer();
     let isLastRequest = true;
     if (result.ok) {
@@ -386,7 +386,7 @@ export class EditorDataService {
 
   private doFullRefresh(offset: number = 0): angular.IPromise<any> {
     const deferred = this.$q.defer();
-    this.api.dbeDtoFull(this.browserInstanceId, offset, (result: JsonRpcResult) => {
+    this.api.dbeDtoFull(this.browserInstanceId, offset, (result: JsonRpcResult<any>) => {
       if (!result.ok) {
         this.notice.cancelLoading();
         deferred.reject(result);

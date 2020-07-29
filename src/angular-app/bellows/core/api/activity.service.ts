@@ -14,19 +14,19 @@ export class ActivityService {
   static $inject: string[] = ['apiService'];
   constructor(private api: ApiService) {}
 
-  validActivityTypes(callback?: JsonRpcCallback) {
+  validActivityTypes(callback?: JsonRpcCallback<any>) {
     return this.api.call('valid_activity_types_dto', [], callback);
   }
 
-  listActivity(filterParams: FilterParams, callback?: JsonRpcCallback) {
+  listActivity(filterParams: FilterParams, callback?: JsonRpcCallback<any>) {
     return this.api.call('activity_list_dto', [filterParams], callback);
   }
 
-  listActivityForCurrentProject(filterParams: FilterParams, callback?: JsonRpcCallback) {
+  listActivityForCurrentProject(filterParams: FilterParams, callback?: JsonRpcCallback<any>) {
     return this.api.call('activity_list_dto_for_current_project', [filterParams], callback);
   }
 
-  listActivityForLexicalEntry(entryId: string, filterParams: FilterParams, callback?: JsonRpcCallback) {
+  listActivityForLexicalEntry(entryId: string, filterParams: FilterParams, callback?: JsonRpcCallback<any>) {
     return this.api.call('activity_list_dto_for_lexical_entry', [entryId, filterParams], callback);
   }
 

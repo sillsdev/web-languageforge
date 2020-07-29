@@ -549,7 +549,7 @@ export class ActivityContainerController implements angular.IController {
     this.loadActivityFeed();
   }
 
-  processActivityListFeed(result: JsonRpcResult): void {
+  processActivityListFeed(result: JsonRpcResult<any>): void {
     this.loadingFeed = false;
     if (result.ok) {
       // Prepare the activities

@@ -138,32 +138,32 @@ export class LexiconCommentService {
     arr.push.apply(arr, comments);
   }
 
-  update(commentData: any, callback?: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+  update(commentData: any, callback?: JsonRpcCallback<any>): angular.IPromise<JsonRpcResult<any>> {
     return this.api.call('lex_comment_update', [commentData], callback);
   }
 
-  updateReply(commentId: string, reply: LexCommentReply, callback?: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+  updateReply(commentId: string, reply: LexCommentReply, callback?: JsonRpcCallback<any>): angular.IPromise<JsonRpcResult<any>> {
     const comment = this.getCurrentEntryComment(commentId);
     comment.replies.push(reply);
     return this.api.call('lex_commentReply_update', [commentId, reply], callback);
   }
 
-  remove(commentId: string, callback?: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+  remove(commentId: string, callback?: JsonRpcCallback<any>): angular.IPromise<JsonRpcResult<any>> {
     return this.api.call('lex_comment_delete', [commentId], callback);
   }
 
-  deleteReply(commentId: string, replyId: string, callback?: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+  deleteReply(commentId: string, replyId: string, callback?: JsonRpcCallback<any>): angular.IPromise<JsonRpcResult<any>> {
     return this.api.call('lex_commentReply_delete', [commentId, replyId], callback);
   }
 
-  plusOne(commentId: string, callback?: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+  plusOne(commentId: string, callback?: JsonRpcCallback<any>): angular.IPromise<JsonRpcResult<any>> {
     const comment = this.getCurrentEntryComment(commentId);
     comment.score++;
     this.comments.counts.userPlusOne[commentId] = 1;
     return this.api.call('lex_comment_plusOne', [commentId], callback);
   }
 
-  updateStatus(commentId: string, status: string, callback?: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+  updateStatus(commentId: string, status: string, callback?: JsonRpcCallback<any>): angular.IPromise<JsonRpcResult<any>> {
     const comment = this.getCurrentEntryComment(commentId);
     comment.status = status;
     return this.api.call('lex_comment_updateStatus', [commentId, status], callback);

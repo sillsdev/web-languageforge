@@ -77,7 +77,7 @@ export class LexiconProjectService {
     });
   }
 
-  baseViewDto(view: string, label: string, callback: JsonRpcCallback) {
+  baseViewDto(view: string, label: string, callback: JsonRpcCallback<any>) {
     this.api.call('lex_baseViewDto', [], result => {
       if (result.ok) {
         this.setBreadcrumbs(view, label);
@@ -88,35 +88,35 @@ export class LexiconProjectService {
     });
   }
 
-  updateConfiguration(config: any, optionlists: any, callback?: JsonRpcCallback) {
+  updateConfiguration(config: any, optionlists: any, callback?: JsonRpcCallback<any>) {
     return this.api.call('lex_configuration_update', [config, optionlists], callback);
   }
 
-  readProject(callback?: JsonRpcCallback) {
+  readProject(callback?: JsonRpcCallback<any>) {
     return this.api.call('lex_projectDto', [], callback);
   }
 
-  updateProject(settings: any, callback?: JsonRpcCallback) {
+  updateProject(settings: any, callback?: JsonRpcCallback<any>) {
     return this.api.call('lex_project_update', [settings], callback);
   }
 
-  updateSettings(smsSettings: any, emailSettings: any, callback?: JsonRpcCallback) {
+  updateSettings(smsSettings: any, emailSettings: any, callback?: JsonRpcCallback<any>) {
     return this.api.call('project_updateSettings', [smsSettings, emailSettings], callback);
   }
 
-  readSettings(callback?: JsonRpcCallback) {
+  readSettings(callback?: JsonRpcCallback<any>) {
     return this.api.call('project_readSettings', [], callback);
   }
 
-  users(callback?: JsonRpcCallback) {
+  users(callback?: JsonRpcCallback<any>) {
     return this.api.call('project_usersDto', [], callback);
   }
 
-  updateUserProfile(params: any, callback?: JsonRpcCallback) {
+  updateUserProfile(params: any, callback?: JsonRpcCallback<any>) {
     return this.api.call('user_updateProfile', [params], callback);
   }
 
-  removeMediaFile(mediaType: any, filename: any, callback?: JsonRpcCallback) {
+  removeMediaFile(mediaType: any, filename: any, callback?: JsonRpcCallback<any>) {
     return this.api.call('lex_project_removeMediaFile', [mediaType, filename], callback);
   }
 

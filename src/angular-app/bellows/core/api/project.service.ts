@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import {Project} from '../../shared/model/project.model';
 import {OfflineCacheService} from '../offline/offline-cache.service';
 import {Session, SessionService} from '../session.service';
 import {ApiService, JsonRpcCallback} from './api.service';
@@ -11,6 +12,11 @@ export interface ProjectTypeNames {
 export interface ProjectData {
   projectTypeNames: ProjectTypeNames;
   projectTypesBySite: () => string[];
+}
+
+export interface ProjectList {
+  count: number;
+  entries: Project[];
 }
 
 export class ProjectService {
@@ -58,107 +64,108 @@ export class ProjectService {
 
   }
 
-  create(projectName: string, projectCode: string, appName: string, srProject: any = {}, callback?: JsonRpcCallback) {
+  create(projectName: string, projectCode: string, appName: string, srProject: any = {},
+         callback?: JsonRpcCallback<any>) {
     return this.api.call('project_create', [projectName, projectCode, appName, srProject], callback);
   }
 
   createSwitchSession(projectName: string, projectCode: string, appName: string, srProject: any = {},
-                      callback?: JsonRpcCallback) {
+                      callback?: JsonRpcCallback<any>) {
     return this.api.call('project_create_switchSession', [projectName, projectCode, appName, srProject], callback);
   }
 
-  joinSwitchSession(srProject: any, role: string, callback?: JsonRpcCallback) {
+  joinSwitchSession(srProject: any, role: string, callback?: JsonRpcCallback<any>) {
     return this.api.call('project_join_switchSession', [srProject, role], callback);
   }
 
-  archiveProject(callback?: JsonRpcCallback) {
+  archiveProject(callback?: JsonRpcCallback<any>) {
     return this.api.call('project_archive', [], callback);
   }
 
-  archivedList(callback?: JsonRpcCallback) {
+  archivedList(callback?: JsonRpcCallback<any>) {
     return this.api.call('project_archivedList', [], callback);
   }
 
-  publish(projectIds: string[], callback?: JsonRpcCallback) {
+  publish(projectIds: string[], callback?: JsonRpcCallback<any>) {
     return this.api.call('project_publish', [projectIds], callback);
   }
 
   list() {
     if (navigator.onLine /* TODO use Offline.state */) {
-      const deferred = this.$q.defer();
+      const deferred = this.$q.defer<Project[]>();
 
-      this.api.call('project_list_dto', [], response => {
+      this.api.call<ProjectList>('project_list_dto', [], response => {
         if (response.ok) deferred.resolve(response.data.entries);
         else deferred.reject();
       });
 
       return deferred.promise;
     } else {
-      return this.offlineCache.getAllFromStore('projects');
+      return this.offlineCache.getAllFromStore('projects') as angular.IPromise<Project[]>;
     }
   }
 
-  joinProject(projectId: string, role: string, callback?: JsonRpcCallback) {
+  joinProject(projectId: string, role: string, callback?: JsonRpcCallback<string>) {
     return this.api.call('project_joinProject', [projectId, role], callback);
   }
 
-  listUsers(callback?: JsonRpcCallback) {
+  listUsers(callback?: JsonRpcCallback<any>) {
     return this.api.call('project_usersDto', [], callback);
   }
 
-  getJoinRequests(callback?: JsonRpcCallback) {
+  getJoinRequests(callback?: JsonRpcCallback<any>) {
     return this.api.call('project_getJoinRequests', [], callback);
   }
 
-  sendJoinRequest(projectId: string, callback?: JsonRpcCallback) {
+  sendJoinRequest(projectId: string, callback?: JsonRpcCallback<any>) {
     return this.api.call('project_sendJoinRequest', [projectId], callback);
   }
 
-  deleteProject(projectIds: string[], callback?: JsonRpcCallback) {
+  deleteProject(projectIds: string[], callback?: JsonRpcCallback<any>) {
     return this.api.call('project_delete', [projectIds], callback);
   }
 
-  projectCodeExists(projectCode: string, callback?: JsonRpcCallback) {
+  projectCodeExists(projectCode: string, callback?: JsonRpcCallback<any>) {
     return this.api.call('projectcode_exists', [projectCode], callback);
   }
 
-  updateUserRole(userId: string, role: string, callback?: JsonRpcCallback) {
+  updateUserRole(userId: string, role: string, callback?: JsonRpcCallback<any>) {
     return this.api.call('project_updateUserRole', [userId, role], callback);
   }
 
-  acceptJoinRequest(userId: string, role: string, callback?: JsonRpcCallback) {
+  acceptJoinRequest(userId: string, role: string, callback?: JsonRpcCallback<any>) {
     return this.api.call('project_acceptJoinRequest', [userId, role], callback);
   }
 
-  denyJoinRequest(userId: string, callback?: JsonRpcCallback) {
+  denyJoinRequest(userId: string, callback?: JsonRpcCallback<any>) {
     return this.api.call('project_denyJoinRequest', [userId], callback);
   }
 
-  removeUsers(userIds: string[], callback?: JsonRpcCallback) {
+  removeUsers(userIds: string[], callback?: JsonRpcCallback<any>) {
     return this.api.call('project_removeUsers', [userIds], callback);
   }
 
-  getDto(callback?: JsonRpcCallback) {
+  getDto(callback?: JsonRpcCallback<any>) {
     return this.api.call('project_management_dto', [], callback);
   }
 
-  runReport(reportName: string, params: any[] = [], callback?: JsonRpcCallback) {
+  runReport(reportName: string, params: any[] = [], callback?: JsonRpcCallback<any>) {
     return this.api.call('project_management_report_' + reportName, params, callback);
   }
 
-  getInviteLink(callback?: JsonRpcCallback) {
+  getInviteLink(callback?: JsonRpcCallback<any>) {
     return this.api.call('project_getInviteLink', [], callback);
   }
 
-  createInviteLink(defaultRole: string, callback?: JsonRpcCallback) {
+  createInviteLink(defaultRole: string, callback?: JsonRpcCallback<any>) {
     return this.api.call('project_createInviteLink', [defaultRole], callback);
   }
 
-  updateInviteTokenRole(newRole: string, callback?: JsonRpcCallback) {
+  updateInviteTokenRole(newRole: string, callback?: JsonRpcCallback<any>) {
     return this.api.call('project_updateInviteTokenRole', [newRole], callback);
   }
 
-  disableInviteToken(callback?: JsonRpcCallback) {
+  disableInviteToken(callback?: JsonRpcCallback<any>) {
     return this.api.call('project_disableInviteToken', [], callback);
   }
 

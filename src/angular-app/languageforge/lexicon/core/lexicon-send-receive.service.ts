@@ -169,7 +169,7 @@ export class LexiconSendReceiveService {
   }
 
   getSyncProjectStatus = (): void => {
-    this.sendReceiveApi.getProjectStatus().then((result: JsonRpcResult) => {
+    this.sendReceiveApi.getProjectStatus().then((result: JsonRpcResult<any>) => {
       if (!result.data) {
         this.clearState();
         this.startPollUpdateTimer();
@@ -346,7 +346,7 @@ export class LexiconSendReceiveService {
   }
 
   getCloneProjectStatus = (): void => {
-    this.sendReceiveApi.getProjectStatus((result: JsonRpcResult) => {
+    this.sendReceiveApi.getProjectStatus((result: JsonRpcResult<any>) => {
       if (result.ok) {
         if (!result.data) {
           this.clearState();

@@ -48,7 +48,7 @@ export const SfChecksQuestionModule = angular
       return ($scope.unreadAnswers.includes(id) || $scope.myResponses.includes(id));
     };
 
-    questionService.read(questionId).then((result: JsonRpcResult) => {
+    questionService.read(questionId).then((result: JsonRpcResult<any>) => {
       if (result.ok) {
         $scope.project = result.data.project;
         $scope.text = result.data.text;
@@ -214,10 +214,10 @@ export const SfChecksQuestionModule = angular
     });
 
     $scope.updateQuestion = function updateQuestion(newQuestion: Question): void {
-      questionService.update(newQuestion).then((updateResult: JsonRpcResult) => {
+      questionService.update(newQuestion).then((updateResult: JsonRpcResult<any>) => {
         if (updateResult.ok) {
           notice.push(notice.SUCCESS, 'The question was updated successfully');
-          questionService.read(newQuestion.id).then((readResult: JsonRpcResult) => {
+          questionService.read(newQuestion.id).then((readResult: JsonRpcResult<any>) => {
             if (readResult.ok) {
               $scope.question = readResult.data.question;
 
@@ -337,7 +337,7 @@ export const SfChecksQuestionModule = angular
     };
 
     $scope.updateComment = function updateComment(answerId: string, answer: Answer, newComment: Comment): void {
-      questionService.updateComment(questionId, answerId, newComment).then((result: JsonRpcResult) => {
+      questionService.updateComment(questionId, answerId, newComment).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           if (newComment.id === '') {
             notice.push(notice.SUCCESS, 'The comment was submitted successfully');
@@ -383,7 +383,7 @@ export const SfChecksQuestionModule = angular
         bodyText: message
       };
       modalService.showModal({}, modalOptions).then(() => {
-        questionService.removeComment(questionId, answer.id, commentId).then((result: JsonRpcResult) => {
+        questionService.removeComment(questionId, answer.id, commentId).then((result: JsonRpcResult<any>) => {
           if (result.ok) {
             notice.push(notice.SUCCESS, 'The comment was removed successfully');
 
@@ -409,7 +409,7 @@ export const SfChecksQuestionModule = angular
         return;
       }
 
-      questionService.answerVoteUp(questionId, answerId).then((result: JsonRpcResult) => {
+      questionService.answerVoteUp(questionId, answerId).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           $scope.votes[answerId] = true;
           afterUpdateAnswer(result.data);
@@ -422,7 +422,7 @@ export const SfChecksQuestionModule = angular
         return;
       }
 
-      questionService.answerVoteDown(questionId, answerId).then((result: JsonRpcResult) => {
+      questionService.answerVoteDown(questionId, answerId).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           delete $scope.votes[answerId];
           afterUpdateAnswer(result.data);
@@ -431,7 +431,7 @@ export const SfChecksQuestionModule = angular
     };
 
     function updateAnswer(answer: Answer): void {
-      questionService.updateAnswer(questionId, answer).then((result: JsonRpcResult) => {
+      questionService.updateAnswer(questionId, answer).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           if (answer.id === '') {
             notice.push(notice.SUCCESS, 'The answer was submitted successfully');
@@ -473,7 +473,7 @@ export const SfChecksQuestionModule = angular
         bodyText: message
       };
       modalService.showModal({}, modalOptions).then(() => {
-        questionService.removeAnswer(questionId, answerId).then((result: JsonRpcResult) => {
+        questionService.removeAnswer(questionId, answerId).then((result: JsonRpcResult<any>) => {
           if (result.ok) {
             notice.push(notice.SUCCESS, 'The answer was removed successfully');
 
@@ -517,7 +517,7 @@ export const SfChecksQuestionModule = angular
 
     $scope.addTags = function addTags(tags: string[], answer: Answer): void {
       answer.tags = mergeArrays(tags, answer.tags);
-      questionService.updateAnswerTags(questionId, answer.id, answer.tags).then((result: JsonRpcResult) => {
+      questionService.updateAnswerTags(questionId, answer.id, answer.tags).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           notice.push(notice.SUCCESS, 'The answer tag was added successfully');
         }
@@ -525,7 +525,7 @@ export const SfChecksQuestionModule = angular
     };
 
     $scope.deletedTags = function deletedTags(answer: Answer): void {
-      questionService.updateAnswerTags(questionId, answer.id, answer.tags).then((result: JsonRpcResult) => {
+      questionService.updateAnswerTags(questionId, answer.id, answer.tags).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           notice.push(notice.SUCCESS, 'The answer tags were deleted successfully');
         }
@@ -535,7 +535,7 @@ export const SfChecksQuestionModule = angular
     $scope.flagForExport = function flagForExport(answer: Answer): void {
       answer.isToBeExported = !answer.isToBeExported;
       questionService.updateAnswerExportFlag(questionId, answer.id, answer.isToBeExported)
-        .then((result: JsonRpcResult) => {
+        .then((result: JsonRpcResult<any>) => {
           if (result.ok) {
             if (answer.isToBeExported) {
               notice.push(notice.SUCCESS, 'The answer was flagged for export successfully');

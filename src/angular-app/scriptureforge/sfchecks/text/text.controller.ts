@@ -56,7 +56,7 @@ export const SfChecksTextModule = angular
     $scope.templates = [$scope.emptyTemplate];
 
     $scope.queryTemplates = function queryTemplates(): void {
-      qts.list((result: JsonRpcResult) => {
+      qts.list((result: JsonRpcResult<any>) => {
         if (result.ok) {
           $scope.templates = result.data.entries;
 
@@ -131,7 +131,7 @@ export const SfChecksTextModule = angular
     $scope.queryQuestions = function queryQuestions(): void {
       $q.all([sessionService.getSession(), questionService.list(textId)]).then((data: any[]) => {
         const session = data[0] as Session;
-        const result = data[1] as JsonRpcResult;
+        const result = data[1] as JsonRpcResult<any>;
         $scope.selected = [];
         $scope.questions = result.data.entries;
         $scope.questionsCount = result.data.count;
@@ -198,7 +198,7 @@ export const SfChecksTextModule = angular
         bodyText: message
       };
       modalService.showModal({}, modalOptions).then(() => {
-        questionService.archive(questionIds).then((result: JsonRpcResult) => {
+        questionService.archive(questionIds).then((result: JsonRpcResult<any>) => {
           if (result.ok) {
             $scope.selected = []; // Reset the selection
             $scope.queryQuestions();
@@ -220,14 +220,14 @@ export const SfChecksTextModule = angular
         title: $scope.questionTitle,
         description: $scope.questionDescription
       } as Question;
-      questionService.update(question).then((questionUpdateResult: JsonRpcResult) => {
+      questionService.update(question).then((questionUpdateResult: JsonRpcResult<any>) => {
         if (questionUpdateResult.ok) {
           $scope.queryQuestions();
           notice.push(notice.SUCCESS,
             '\'' + questionService.util.calculateTitle(question.title, question.description, Q_TITLE_LIMIT) +
             '\' was added successfully');
           if ($scope.saveAsTemplate) {
-            qts.update(question).then((templateUpdateResult: JsonRpcResult) => {
+            qts.update(question).then((templateUpdateResult: JsonRpcResult<any>) => {
               if (templateUpdateResult.ok) {
                 notice.push(notice.SUCCESS, '\'' + question.title + '\' was added as a template question');
               }
@@ -255,7 +255,7 @@ export const SfChecksTextModule = angular
         title: $scope.selected[0].title,
         description: $scope.selected[0].description
       } as QuestionTemplate;
-      qts.update(questionTemplate).then((result: JsonRpcResult) => {
+      qts.update(questionTemplate).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           $scope.queryTemplates();
           notice.push(notice.SUCCESS, '\'' + questionTemplate.title + '\' was added as a template question');
@@ -297,7 +297,7 @@ export const SfChecksTextModule = angular
     $scope.queryTextSettings = function queryTextSettings() {
       $q.all([sessionService.getSession(), textService.settingsDto($scope.textId)]).then((data: any[]) => {
         const session = data[0] as Session;
-        const result = data[1] as JsonRpcResult;
+        const result = data[1] as JsonRpcResult<any>;
         $scope.dto = result.data;
         $scope.textTitle = $scope.dto.text.title;
         $scope.editedText.title = $scope.dto.text.title;
@@ -332,7 +332,7 @@ export const SfChecksTextModule = angular
         delete newText.content;
       }
 
-      textService.update(newText).then((result: JsonRpcResult) => {
+      textService.update(newText).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           notice.push(notice.SUCCESS, newText.title + ' settings successfully updated');
           $scope.textTitle = newText.title;
@@ -482,7 +482,7 @@ export const SfChecksTextModule = angular
         questionIds.push(selectedQuestion.id);
       }
 
-      questionService.publish(questionIds).then((result: JsonRpcResult) => {
+      questionService.publish(questionIds).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           $scope.selected = []; // Reset the selection
           $scope.queryTextSettings();
@@ -523,7 +523,7 @@ export const SfChecksTextModule = angular
       console.log('Downloading for', ptVersion);
       $scope.exportConfig.commentFormat = ptVersion;
       $scope.download.inprogress = true;
-      textService.exportComments($scope.exportConfig).then((result: JsonRpcResult) => {
+      textService.exportComments($scope.exportConfig).then((result: JsonRpcResult<any>) => {
         if (result.ok) {
           $scope.download = result.data;
           $scope.download.complete = true;

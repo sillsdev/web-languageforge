@@ -168,14 +168,14 @@ export class SessionService {
     });
   }
 
-  getCaptchaData(callback?: JsonRpcCallback): angular.IPromise<any> {
+  getCaptchaData(callback?: JsonRpcCallback<any>): angular.IPromise<any> {
     return this.api.call('get_captcha_data', [], callback);
   }
 
   private fetchSessionData(forceRefresh: boolean): angular.IPromise<SessionData> {
     if (this.sessionDataPromise && !forceRefresh) return this.sessionDataPromise;
 
-    const promise: angular.IPromise<SessionData> = this.api.call('session_getSessionData').then(result => {
+    const promise = this.api.call<SessionData>('session_getSessionData').then(result => {
       return result.data;
     }).catch(result => {
       console.error(result); // TODO decide whether to show to user or just retry

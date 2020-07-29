@@ -3,11 +3,11 @@ import * as angular from 'angular';
 import { ErrorModule, ErrorService } from '../error.service';
 import { ExceptionHandlingService, ExceptionOverrideModule } from '../exception-handling.service';
 
-export interface JsonRpcResult extends angular.IHttpPromiseCallbackArg<any> {
+export interface JsonRpcResult<T> extends angular.IHttpPromiseCallbackArg<T> {
   ok?: boolean;
 }
 
-export type JsonRpcCallback = (result?: JsonRpcResult) => void;
+export type JsonRpcCallback<T> = (result?: JsonRpcResult<T>) => void;
 
 interface JsonRequest {
   version: string;
@@ -49,7 +49,7 @@ export class JsonRpcService {
    *   - {function([headerName])} - headers
    *   - {Object} config
    */
-  call(url: string, method: string, options: any, remoteParams: any[], callback: JsonRpcCallback) {
+  call<T>(url: string, method: string, options: any, remoteParams: any[], callback: JsonRpcCallback<T>) {
     const params: any = {};
     Object.keys(options).forEach(prop => {
       params[prop] = options[prop];
@@ -68,7 +68,7 @@ export class JsonRpcService {
       method: 'POST',
       data: JSON.stringify(jsonRequest)
     };
-    const result: JsonRpcResult | any = {};
+    const result: JsonRpcResult<T> = {};
     const request = this.$http(httpRequest);
 
     const requestSuccess = (response: angular.IHttpPromiseCallbackArg<any>) => {

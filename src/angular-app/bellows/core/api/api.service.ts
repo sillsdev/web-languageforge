@@ -3,7 +3,7 @@ import * as angular from 'angular';
 import { JsonRpcCallback, JsonRpcResult, JsonRpcService } from './json-rpc.service';
 
 export { JsonRpcCallback, JsonRpcResult } from './json-rpc.service';
-export type ApiMethod = () => angular.IPromise<any>;
+export type ApiMethod<T> = () => angular.IPromise<T>;
 
 export class ApiService {
   projectId: string;
@@ -16,13 +16,13 @@ export class ApiService {
     this.isProduction = !/\.local$/.test($window.location.hostname);
   }
 
-  call(method: string, args?: any[], callback?: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+  call<T>(method: string, args?: any[], callback?: JsonRpcCallback<T>): angular.IPromise<JsonRpcResult<T>> {
     const options = {
       projectId: this.projectId
     };
 
     return this.$q((resolve, reject) => {
-      this.jsonRpc.call('/api/sf', method, options, args || [], (result: JsonRpcResult) => {
+      this.jsonRpc.call('/api/sf', method, options, args || [], (result: JsonRpcResult<T>) => {
         if (callback) callback(result);
 
         result.ok ? resolve(result) : reject(result);
@@ -33,14 +33,14 @@ export class ApiService {
   /**
    * @deprecated in TypeScript (Ok still in JS). Use 'call' directly so the method signature is defined
    * @param {string} method
-   * @returns {ApiMethod}
+   * @returns {ApiMethod<T>}
    */
-  method(method: string): ApiMethod {
+  method<T>(method: string): ApiMethod<T> {
     // cannot be an arrow function as that doesn't support use of 'arguments'
-    return function(): angular.IPromise<JsonRpcResult> {
+    return function(): angular.IPromise<JsonRpcResult<T>> {
       // convert to array
       const args = [].slice.call(arguments);
-      let callback: JsonRpcCallback;
+      let callback: JsonRpcCallback<T>;
       if (typeof args[args.length - 1] === 'function') {
         callback = args.pop();
       }
