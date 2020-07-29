@@ -3,5 +3,6 @@
     "--configuration",
     "test/php/phpunit.xml"
   ],
-  "phpcs.composerJsonPath": "src"
+  "phpcs.composerJsonPath": "src",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
