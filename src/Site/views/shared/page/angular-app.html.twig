@@ -4,9 +4,4 @@
     <div id="app-container">
         {% include appFolder~'/'~appName~'.html' %}
     </div>
-
-    <script>
-      'use strict';
-       angular.bootstrap(document.body, ['{{ appName }}'], { strictDi: true });
-    </script>
 {% endblock %}

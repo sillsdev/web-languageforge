@@ -23,6 +23,8 @@
     <link rel="manifest" href="/appManifest/{{ manifestFilename }}">
     {% endif %}
 
+    <script type="text/javascript">'use strict'; window.appName = '{{ appName }}';</script>
+
     {# jquery must be the first js to be loaded #}
     {%  if useMinifiedJs %}
         <script src="/dist/jquery/jquery.min.js?v={{ version }}"></script>
@@ -57,11 +59,11 @@
     {% endfor %}
 
     {% if 'languageforge.org' in app.website.domain %}
-        <script type="text/javascript">window.liveSettings={api_key:"a328216f86c9417cb7583c0100669635"}</script>
+        <script type="text/javascript">'use strict'; window.liveSettings={api_key:"a328216f86c9417cb7583c0100669635"}</script>
         <script type="text/javascript" src="//cdn.transifex.com/live.js"></script>
     {% endif %}
     {% if 'scriptureforge.org' in app.website.domain %}
-        <script type="text/javascript">window.liveSettings={api_key:"f6eeadd6f17f4bd68ea9b12c5afd7124"}</script>
+        <script type="text/javascript">'use strict'; window.liveSettings={api_key:"f6eeadd6f17f4bd68ea9b12c5afd7124"}</script>
         <script type="text/javascript" src="//cdn.transifex.com/live.js"></script>
     {% endif %}
 

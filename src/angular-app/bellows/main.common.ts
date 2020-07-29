@@ -1,4 +1,4 @@
-import 'angular';
+import * as angular from 'angular';
 import 'angular-route';
 import 'angular-ui-bootstrap-4';
 import 'angular-ui-router';
@@ -21,3 +21,10 @@ import './apps/public/reset_password/reset-password-app.module';
 import './apps/public/signup/signup-app.module';
 import './apps/siteadmin/site-admin-app.module';
 import './apps/userprofile/user-profile-app.module';
+
+interface AppWindow extends Window {
+  appName: string;
+}
+
+// allow HTML to load before bootstrapping
+setTimeout(() => angular.bootstrap(document.body, [(window as AppWindow).appName], { strictDi: true }), 0);
