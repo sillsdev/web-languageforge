@@ -58,7 +58,7 @@ export class UserService {
   }
 
   calculateUsername(usernameBase: string) {
-    return this.api.call('user_calculate_username', [usernameBase]);
+    return this.api.call<string>('user_calculate_username', [usernameBase]);
   }
 
   register(params: any, callback?: JsonRpcCallback<any>) {

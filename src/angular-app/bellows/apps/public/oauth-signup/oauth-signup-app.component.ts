@@ -45,7 +45,7 @@ export class OAuthSignupAppController implements angular.IController {
     if (this.oauthFullName !== undefined && this.oauthFullName.length > 0) {
       this.record.name = this.oauthFullName;
       this.calculateUsername(this.record.name).then(username => {
-        this.record.username = username;
+        this.record.username = username as string;
         this.validateForm();
       });
     }

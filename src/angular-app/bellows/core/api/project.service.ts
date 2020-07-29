@@ -170,7 +170,7 @@ export class ProjectService {
   }
 
   csvInsights() {
-    return this.api.call('project_insights_csv');
+    return this.api.call<string>('project_insights_csv');
   }
 
 }

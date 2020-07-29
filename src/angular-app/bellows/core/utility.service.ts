@@ -71,18 +71,19 @@ export class UtilityService {
     const deferred = this.$q.defer<string>();
     const reader = new FileReader();
     reader.addEventListener('loadend', () => {
+      const result = reader.result as string;  // Guaranteed to be string because we call readAsText() below
       if (isUsx) {
         // Basic sanity check: make sure what was uploaded is USX
         // First few characters should be optional BOM, optional <?xml ..., then <usx ...
-        const startOfText = reader.result.slice(0, 1000);
+        const startOfText = result.slice(0, 1000);
         const usxIndex = startOfText.indexOf('<usx');
         if (usxIndex !== -1) {
-          deferred.resolve(reader.result);
+          deferred.resolve(result);
         } else {
           deferred.reject('Error loading USX file. The file doesn\'t appear to be valid USX.');
         }
       } else {
-        deferred.resolve(reader.result);
+        deferred.resolve(result);
       }
     });
 
