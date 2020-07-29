@@ -1,3 +1,5 @@
+import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
+import {setAngularLib} from '@angular/upgrade/static';
 import * as angular from 'angular';
 import 'angular-route';
 import 'angular-ui-bootstrap-4';
@@ -6,6 +8,8 @@ import 'angular-ui-validate';
 import 'angular-zxcvbn';
 
 import 'ng-file-upload/dist/ng-file-upload-all.js';
+
+import {AppModule} from '../../app/app.module';
 
 import './core/service-worker-registration.js';
 
@@ -26,5 +30,7 @@ interface AppWindow extends Window {
   appName: string;
 }
 
+setAngularLib(angular);
+
 // allow HTML to load before bootstrapping
-setTimeout(() => angular.bootstrap(document.body, [(window as AppWindow).appName], { strictDi: true }), 0);
+setTimeout(() => platformBrowserDynamic().bootstrapModule(AppModule), 0);
