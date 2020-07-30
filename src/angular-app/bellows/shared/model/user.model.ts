@@ -4,14 +4,14 @@ export class User {
    * isInvitee */
 
   active: boolean = false;
-  // noinspection TsLint
+  // tslint:disable-next-line: variable-name
   avatar_ref?: string;
   avatarUrl?: string;
   isInvitee?: boolean;
   dateCreated: string = '';
   email: string = '';
   id: string = '';
-  // noinspection TsLint
+  // tslint:disable-next-line: variable-name
   last_login?: number;
   name: string = '';
   role: string = '';

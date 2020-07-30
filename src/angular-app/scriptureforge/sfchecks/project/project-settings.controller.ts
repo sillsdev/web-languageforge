@@ -624,6 +624,7 @@ export const SfChecksProjectSettingsModule = angular
               }
             }
 
+            // tslint:disable-next-line: max-line-length
             projectService.updateUserRole($scope.user.id, 'contributor').then((updateUserRoleResult: JsonRpcResult<any>) => {
               if (updateUserRoleResult.ok) {
                 notice.push(notice.SUCCESS, '\'' + $scope.user.name + '\' was added to ' +

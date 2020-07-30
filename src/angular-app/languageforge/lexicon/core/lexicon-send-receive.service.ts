@@ -299,7 +299,7 @@ export class LexiconSendReceiveService {
     }).then((data: any) => {
       if (data.isSR) {
         const editorData = data.editorData;
-        if (editorData == null || editorData.data == null || editorData.data.sendReceive == null || editorData.data.sendReceive.status == null) {
+        if (editorData?.data?.sendReceive?.status == null) {
           this.clearState();
           return;
         }
@@ -309,7 +309,8 @@ export class LexiconSendReceiveService {
         if (this.isInProgress()) {
           if (this.pollUpdateSuccessCallback) this.pollUpdateSuccessCallback();
           this.setSyncStarted();
-        } else if (this.previousSRState === SendReceiveState.Unsynced && this.status.SRState === SendReceiveState.Idle) {
+        } else if (this.previousSRState === SendReceiveState.Unsynced &&
+                   this.status.SRState === SendReceiveState.Idle) {
           this.status.SRState = this.previousSRState;
         } else {
           if (this.pollUpdateSuccessCallback) this.pollUpdateSuccessCallback();

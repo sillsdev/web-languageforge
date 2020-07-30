@@ -1,8 +1,8 @@
 import * as angular from 'angular';
 
 import { UserService } from '../../../core/api/user.service';
-import { SiteWideNoticeService } from '../../../core/site-wide-notice-service';
 import { SessionService } from '../../../core/session.service';
+import { SiteWideNoticeService } from '../../../core/site-wide-notice-service';
 import { User } from '../../../shared/model/user.model';
 
 export class OAuthSignupAppController implements angular.IController {

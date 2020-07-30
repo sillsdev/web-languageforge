@@ -1,5 +1,6 @@
 import { User } from './user.model';
 
+// tslint:disable: variable-name
 export class UserProfile extends User {
   age: string = '';
   avatar_color: string = '';
