@@ -1,9 +1,12 @@
 import * as angular from 'angular';
 
 import {JsonRpcResult} from '../../../bellows/core/api/json-rpc.service';
+import {ProjectService} from '../../../bellows/core/api/project.service';
+import {UserService} from '../../../bellows/core/api/user.service';
 import {BreadcrumbModule} from '../../../bellows/core/breadcrumbs/breadcrumb.module';
 import {CoreModule} from '../../../bellows/core/core.module';
 import {NoticeModule} from '../../../bellows/core/notice/notice.module';
+import {NoticeService} from '../../../bellows/core/notice/notice.service';
 import {Session, SessionService} from '../../../bellows/core/session.service';
 import {DeleteProjectModule} from '../../../bellows/shared/delete-project.component';
 import {ListViewModule} from '../../../bellows/shared/list-view.component';
@@ -32,7 +35,7 @@ export const SfChecksProjectSettingsModule = angular
   .controller('ProjectSettingsCtrl', ['$scope', '$q', 'breadcrumbService', 'userService',
     'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService', 'linkService',
   ($scope, $q, breadcrumbService, userService,
-   sfchecksProjectService, sessionService: SessionService, notice, messageService, linkService) => {
+   sfchecksProjectService, sessionService: SessionService, notice: NoticeService, messageService, linkService) => {
 
     $scope.project = {};
     $scope.finishedLoading = false;
@@ -365,7 +368,7 @@ export const SfChecksProjectSettingsModule = angular
   }])
   .controller('ProjectSettingsUsersCtrl', ['$scope', 'userService', 'projectService',
     'silNoticeService', 'messageService',
-  ($scope, userService, projectService, notice, messageService) => {
+  ($scope, userService: UserService, projectService: ProjectService, notice: NoticeService, messageService) => {
 
     $scope.userFilter = '';
     $scope.message = {};
@@ -611,7 +614,7 @@ export const SfChecksProjectSettingsModule = angular
         } as User;
 
         // Check existing users to see if we're adding someone that already exists in the project
-        projectService.listUsers().then((result: JsonRpcResult<any>) => {
+        projectService.listUsers().then(result => {
           if (result.ok) {
             for (const user of result.data.users) {
               // This approach works, but is unnecessarily slow. We should have an "is user in  project?" API, rather
@@ -624,8 +627,7 @@ export const SfChecksProjectSettingsModule = angular
               }
             }
 
-            // tslint:disable-next-line: max-line-length
-            projectService.updateUserRole($scope.user.id, 'contributor').then((updateUserRoleResult: JsonRpcResult<any>) => {
+            projectService.updateUserRole($scope.user.id, 'contributor').then(updateUserRoleResult => {
               if (updateUserRoleResult.ok) {
                 notice.push(notice.SUCCESS, '\'' + $scope.user.name + '\' was added to ' +
                   $scope.project.projectName + ' successfully');
@@ -635,7 +637,7 @@ export const SfChecksProjectSettingsModule = angular
           }
         });
       } else if ($scope.addMode === 'invite') {
-        userService.sendInvite($scope.typeahead.userName).then((result: JsonRpcResult<any>) => {
+        userService.sendInvite($scope.typeahead.userName, 'contributor').then(result => {
           if (result.ok) {
             notice.push(notice.SUCCESS, '\'' + $scope.typeahead.userName + '\' was invited to join the project ' +
               $scope.project.projectName);
