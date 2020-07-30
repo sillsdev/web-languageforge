@@ -179,7 +179,9 @@ class UserCommands
                 $projectIds = $item['projects'];
                 $list->entries[$key]['projects'] = [];
                 foreach ($projectIds as $id) {
-                    $list->entries[$key]['projects'][] = $projectList[(string)$id];
+                    if (array_key_exists((string)$id, $projectList)) {
+                        $list->entries[$key]['projects'][] = $projectList[(string)$id];
+                    }
                 }
             }
         }
