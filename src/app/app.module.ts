@@ -1,7 +1,10 @@
 import {Inject, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {UpgradeModule} from '@angular/upgrade/static';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 import 'zone.js';
+import { CaptchaComponent } from '../angular-app/bellows/shared/captcha.component';
 
 interface AppWindow extends Window {
   appName: string;
@@ -10,7 +13,14 @@ interface AppWindow extends Window {
 @NgModule({
   imports: [
     BrowserModule,
-    UpgradeModule
+    UpgradeModule,
+    NgbModule
+  ],
+  entryComponents: [
+    CaptchaComponent
+  ],
+  declarations: [
+    CaptchaComponent
   ],
   providers: [
     { provide: 'APP_NAME', useFactory: getAppName }
