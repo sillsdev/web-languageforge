@@ -4,7 +4,7 @@
             <p>If you are a person (not a computer), select the <strong id="expectedItemName">{{puiExpectedItemName}}</strong>:</p>
             <div class="btn-group" ngbRadioGroup [(ngModel)]="puiSelected">
                 <label class="btn btn-std" *ngFor="let item of puiItems" id="captcha{{index}}">
-                    <img ngbButton type="radio" value="{{item.name}}" [src]="{{item.imgSrc}}">
+                    <img ngbButton type="radio" value="{{item.name}}" [src]="item.imgSrc">
                 </label>
             </div>
         </div>

@@ -39,7 +39,7 @@ import {CaptchaItem} from './model/captcha.model';
 // }
 
 @Component({
-  templateUrl: '/angular-app/bellows/shared/captcha.component.html',
+  templateUrl: 'captcha.component.html',
   inputs: ['puiItems', 'puiExpectedItemName', 'puiSelected']
 })
 export class CaptchaComponent implements OnChanges {
