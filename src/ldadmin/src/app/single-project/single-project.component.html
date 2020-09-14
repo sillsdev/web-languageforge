@@ -1,0 +1,48 @@
+<span style="font-size: large; font-weight: bold;">{{project?.name}}</span> <span style="font-size: medium;"> (<code>{{project?.code}}</code>)</span>
+<p style="white-space: pre-wrap;">{{project?.description}}</p>
+<span style="font-size: large; font-weight: bold;">Members</span><br/>
+<ul>
+  <li *ngFor="let member of project?.membership"><a [routerLink]="['/admin', 'users', member.username]"><span [style.text-decoration]="isPendingDelete(member.username) ? 'line-through' : null">{{member.username}}</span></a>:
+    <ng-container *ngIf="!editMode">{{member.role}}</ng-container>
+    <select *ngIf="editMode" (change)="editRoleForMember(member.username, member.role, $event.target.value)">
+      <option *ngFor="let role of roles" [value]="role.name" [selected]="member.role === role.name">{{role.name}}</option>
+    </select>
+      <a *ngIf="editMode" class="mdc-button" (click)="removeMember(member)"><mdc-icon>person_remove</mdc-icon></a>
+  </li>
+  <li *ngIf="!showAddPersonBox"><a class="mdc-button" (click)="toggleAddPerson()"><mdc-icon style="color: green">person_add</mdc-icon></a></li>
+  <li *ngIf="showAddPersonBox"><app-typeahead (foundData)="foundUsers($event)" [getData]="searchUsers.bind(this)"></app-typeahead></li>
+  <li *ngIf="!editMode"><a class="mdc-button" (click)="enterEditMode()"><mdc-icon style="color: green">edit</mdc-icon></a></li>
+</ul>
+<div *ngIf="userToAdd">
+  <label for="addUser">{{userToAdd.firstName}} {{userToAdd.lastName}}</label>
+  <select id="addUser" #addUserSelect (change)="selectRole($event.target.value)">
+    <option *ngFor="let role of roles" [value]="role.name">{{role.name}}</option>
+  </select>
+  <button class="mdc-button" (click)="addMember(userToAdd, selectedRole)"><mdc-icon style="color: green">person_add</mdc-icon></button>
+</div>
+<div *ngIf="usersFound">
+  Found users:
+  <ul>
+    <li *ngFor="let user of usersFound"><a (click)="selectUser(user)">{{user.firstName}} {{user.lastName}} &lt;{{user.email}}&gt;</a></li>
+  </ul>
+</div>
+<div *ngIf="edits?.length > 0">
+  Pending edits:
+  <ul>
+    <li *ngFor="let edit of edits">{{describeEdit(edit)}}</li>
+    <li><button class="mat-button" (click)="saveEdits()">Save</button><button class="mat-button" (click)="resetEdits()">Reset</button></li>
+  </ul>
+</div>
+<!--
+  Project name up top as a heading
+  Project code underneath it in smaller text, or maybe to the right of it
+  Description underneath heading in normal text, with a "More" link to expand it if there's more than 3 lines of text
+  Members underneath that, one per line:
+    name  Manager
+    name  Contributor
+    + (green, might go in the top row where it says "Project members", gotta think about this one)
+    (Edit memberships button)
+  When you click the Edit memberships button, red X's appear next to all the members, and Manager/Contributor turns into a dropdown
+  Also, the Edit memberships button turns into a Save button, and there's Revert as well
+  Underneath the Edit button goes a list of what will be done if you edit, one per line: "Change rhood from Contributor to Manager", "Remove prince_john from project members"
+-->

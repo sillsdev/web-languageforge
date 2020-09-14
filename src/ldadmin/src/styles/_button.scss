@@ -1,0 +1,13 @@
+// As suggested by https://trimox.github.io/angular-mdc-web/#/angular-mdc-web/getting-started
+
+@use '@material/button/mdc-button';
+@use '@material/button';
+@use '@material/theme';
+
+.button-primary {
+  @include button.filled-accessible(theme.$primary);
+}
+
+.button-secondary {
+  @include button.filled-accessible(theme.$secondary);
+}

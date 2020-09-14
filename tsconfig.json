@@ -14,10 +14,10 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "lib": ["es7", "dom"],
+    "lib": ["es7", "es2017.object", "dom"],
     "module": "es6",
     "moduleResolution": "node",
-    "noImplicitAny": true,
+    // "noImplicitAny": true,
     "outDir": "src/dist",
     "rootDir": ".",
     "sourceMap": true,
@@ -28,6 +28,13 @@
       "typings"
     ]
   },
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ],
   "exclude": [
     "node_modules"
   ]

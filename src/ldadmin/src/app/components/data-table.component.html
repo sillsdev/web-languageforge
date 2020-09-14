@@ -1,0 +1,22 @@
+<div class="data-table" style="display: flex; align-items: flex-start; flex-direction: column;">
+  <mdc-data-table>
+    <table mdcDataTableTable>
+      <thead>
+        <tr mdcDataTableHeaderRow>
+          <th mdcDataTableHeaderCell *ngFor="let name of columnNames">{{name}}</th>
+        </tr>
+      </thead>
+      <tbody mdcDataTableContent>
+        <tr mdcDataTableRow *ngFor="let item of data | async; index as i" (click)="clickRow(i)">
+          <td mdcDataTableCell *ngFor="let key of columnKeys">{{item[key]}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </mdc-data-table>
+  <mat-paginator [length]="dataSource?.data?.length"
+                 [pageSize]="pageSize"
+                 [pageSizeOptions]="pageSizeOptions"
+                 [style.display]="dataSource?.data?.length > 0 ? undefined : 'none'"
+
+  ></mat-paginator>
+</div>

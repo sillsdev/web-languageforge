@@ -1,4 +1,5 @@
 import {Inject, NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -14,6 +15,7 @@ interface AppWindow extends Window {
   imports: [
     BrowserModule,
     UpgradeModule,
+    FormsModule,
     NgbModule
   ],
   entryComponents: [

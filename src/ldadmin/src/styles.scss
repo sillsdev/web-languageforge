@@ -1,0 +1,47 @@
+// https://trimox.github.io/angular-mdc-web/#/angular-mdc-web/getting-started
+@use './styles/body';
+
+@use '@material/theme' with (
+  $primary: #6200ee,
+  $secondary: #faab1a,
+  $background: #fff,
+);
+
+// MDC Typography
+@use '@material/typography/mdc-typography';
+
+// MDC Button
+@use './styles/button';
+
+// MDC Data Table
+@use '@material/data-table/mdc-data-table';
+// Work around https://github.com/webpack-contrib/sass-loader/issues/804 which isn't fixed as it says it is
+// Should be "@use '@material/data-table';" but instead:
+@use '@material/data-table/_index' as data-table;
+
+// MDC Menu
+@use '@material/menu/mdc-menu';
+@use '@material/menu/_index' as menu;
+@use '@material/list/mdc-list';
+@use '@material/list/_index' as list;
+@use '@material/menu-surface/mdc-menu-surface';
+@use '@material/menu-surface/_index' as menu-surface;
+
+// MDC Top app bar
+@use '@material/top-app-bar/mdc-top-app-bar';
+@use '@material/top-app-bar/_index' as top-app-bar;
+@use '@material/icon-button/mdc-icon-button';
+@use '@material/icon-button/_index' as icon-button;
+
+// MDC Dialogs
+@use '@material/dialog/mdc-dialog';
+@use '@material/dialog/_index' as dialog;
+@use '@material/snackbar/mdc-snackbar';
+@use '@material/snackbar/_index' as snackbar;
+
+// MDC Checkbox
+@use '@material/checkbox/mdc-checkbox';
+@use '@material/checkbox/_index' as checkbox;
+
+// Angular MDC
+@use '@angular-mdc/theme/material';

@@ -1,0 +1,24 @@
+<form [formGroup]="formUser" (ngSubmit)="onSubmit()" (ngReset)="onReset()">
+  <label>
+    First name:
+    <input type="text" formControlName="firstName">
+  </label>
+  <br/>
+  <label>
+    Last name:
+    <input type="text" formControlName="lastName">
+  </label>
+  <br/>
+  <label>
+    Email:
+    <input type="text" formControlName="email">
+  </label>
+  <br/>
+  <label>
+    Username:
+    <input type="text" formControlName="username" disabled> Username changes not yet implemented
+  </label>
+  <br/>
+  <button type="submit">Save</button>
+  <button type="reset">Reset</button>
+</form>

@@ -1,0 +1,36 @@
+<div *ngIf="editMode && user; else fieldDisplay">
+  <app-user-details-form [user]="user" (formSubmitted)="onEditUser($event)"></app-user-details-form>
+</div>
+<ng-template #fieldDisplay>
+<span style="font-size: large; font-weight: bold;">{{user?.firstName}} {{user?.lastName}}</span>
+<span style="font-size: medium;"> (<code>{{user?.username}}</code>)</span>
+<a class="mdc-button" (click)="toggleEditMode()"><mdc-icon>edit</mdc-icon></a>
+<br/>
+Email: {{user?.email}} <br/>
+</ng-template>
+<div *ngIf="changePasswordMode; else changePasswordLink">
+  <app-change-password-form [showOldPasswordField]="false" (changePasswordEvent)="changePassword($event)" (cancelEvent)="cancelChangePassword()">
+  </app-change-password-form>
+</div>
+<ng-template #changePasswordLink><a (click)="changePasswordMode = !changePasswordMode" style="cursor: pointer;">Change password</a></ng-template>
+<div *ngIf="memberOf">
+  Member of: <ng-container *ngIf="memberOf?.length &lt;= 0">(no projects)</ng-container>
+  <ul>
+    <li *ngFor="let projectAndRole of memberOf"><a [routerLink]="['/admin', 'projects', projectAndRole[0].code]">{{projectAndRole[0].name}}</a>: {{projectAndRole[1]}} <a class="mdc-button" (click)="removeFromProject(projectAndRole[0].code)"><mdc-icon>highlight_off</mdc-icon></a></li>
+  </ul>
+</div>
+<a class="mdc-button" (click)="addProjectsMode = !addProjectsMode"><mdc-icon>add</mdc-icon></a>
+<div *ngIf="addProjectsMode">
+  Project search: <app-typeahead (foundData)="onFoundProjects($event)" [getData]="searchProjects.bind(this)"></app-typeahead>
+</div>
+<div *ngIf="foundProjects && user">
+  Add {{user.username}} to the following projects as <select (change)="selectedRole = $event.target.value">
+    <option *ngFor="let role of roles" [value]="role.name" [selected]="selectedRole === role.name">{{role.name}}</option>
+  </select>:
+  <ul #foundProjectsList>
+    <li *ngFor="let project of foundProjects; index as i">
+      <input type="checkbox" [value]="project[1]" (click)="toggleProjectSelection(i)"> {{project[0].code}}: {{project[0].name}}
+    </li>
+  </ul>
+  <button class="mdc-button" (click)="addToProjects()">Add</button>
+</div>

@@ -1,0 +1,29 @@
+<div id="loginDiv">
+  <div *ngIf="userProfile$ | async as profile; else loginBtn">
+    <div #loginMenu mdcMenuSurfaceAnchor>
+      <a class="mdc-button" (click)="toggleMenu()">
+        <img [src]="profile.picture" height="24" width="24" /><mdc-icon style="color: white">{{menuIcon}}</mdc-icon>
+      </a>
+      <mdc-menu [anchorElement]="loginMenu"
+                [anchorCorner]="'bottomStart'"
+                [defaultFocusState]="'last'"
+                [open]="menuOpen">  <!-- TODO: Why is the anchorMargin necessary here? -->
+        <mdc-list>
+          <mdc-list-item>
+            {{profile.name}}
+          </mdc-list-item>
+          <mdc-list-item>
+            {{profile.email}}
+          </mdc-list-item>
+          <mdc-list-divider></mdc-list-divider>
+          <mdc-list-item>
+            <button mat-button (click)="logout()">Logout</button>
+          </mdc-list-item>
+        </mdc-list>
+      </mdc-menu>
+    </div>
+  </div>
+  <ng-template #loginBtn>
+    <button mat-button (click)="login()">Login</button>
+  </ng-template>
+</div>

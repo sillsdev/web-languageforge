@@ -1,0 +1,5 @@
+// Override user agent body margin for mdc-top-app-bar
+// As suggested by https://trimox.github.io/angular-mdc-web/#/angular-mdc-web/getting-started
+body {
+  margin: 0;
+}

@@ -1,0 +1,6 @@
+.data-table {
+  // This forces the paginator to be on the left rather than the right
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}

@@ -1,0 +1,24 @@
+<div class="app-root">
+  <mdc-top-app-bar dense [scrollTarget]="fixedContent">
+    <mdc-top-app-bar-row>
+      <mdc-top-app-bar-section align="start" title="LD Admin" style="flex: 0 1 auto">
+        <button mdcTopAppBarNavIcon>
+          <mdc-icon>menu</mdc-icon>
+        </button>
+      </mdc-top-app-bar-section>
+      <mdc-top-app-bar-section align="start">
+        <span class="menu-spacer"></span>
+        <div>
+          <a mat-button [routerLink]="'/admin/users'"> Users </a>
+          <a mat-button [routerLink]="'/admin/projects'"> Projects </a>
+        </div>
+      </mdc-top-app-bar-section>
+      <mdc-top-app-bar-section align="end">
+        <app-login></app-login>
+      </mdc-top-app-bar-section>
+    </mdc-top-app-bar-row>
+  </mdc-top-app-bar>
+  <div #fixedContent mdcTopAppBarFixedAdjust>
+    <router-outlet></router-outlet>
+  </div>
+</div>

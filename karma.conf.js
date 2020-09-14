@@ -12,7 +12,22 @@ module.exports = function (config) {
 
   config.set({
     basePath: '.',
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-chrome-launcher'),
+      require('karma-jasmine-html-reporter'),
+      require('karma-coverage-istanbul-reporter'),
+      require('@angular-devkit/build-angular/plugins/karma')
+    ],
+    client: {
+      clearContext: false // leave Jasmine Spec Runner output visible in browser
+    },
+    coverageIstanbulReporter: {
+      dir: require('path').join(__dirname, './coverage/SafeNg'),
+      reports: ['html', 'lcovonly', 'text-summary'],
+      fixWebpackSourcePaths: true
+    },
 
     // list of files / patterns to load in the browser
     files: [main],
@@ -30,10 +45,10 @@ module.exports = function (config) {
 
     // test results reporter to use
     // possible values: dots || progress || growl
-    reporters: ['progress'],
+    reporters: ['progress', 'kjhtml'],
 
     // web server port
-    port: 8080,
+    port: 9876,
 
     // cli runner port
     runnerPort: 9100,
