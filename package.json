@@ -129,6 +129,7 @@
     "style-loader": "^0.18.2",
     "tslint": "^5.20.1",
     "typescript": "~3.9",
+    "uglifyjs-webpack-plugin": "^2.2.0",
     "url-loader": "^0.5.9",
     "webpack": "^4.1.0",
     "webpack-bundle-analyzer": "^3.8.0",

@@ -6,7 +6,7 @@ var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
 var webpack = require('webpack');
 var webpackMerge = require('webpack-merge');
-var UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 var LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 var workboxPlugin = require('workbox-webpack-plugin');
 
