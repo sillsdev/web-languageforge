@@ -151,22 +151,20 @@ module.exports = function (env) {
     ];
     webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
   } else {
-    var plugins = [
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        minChunks: function (module) {
-          // this assumes your vendor imports exist in the following directories
-          return module.context && (
-            module.context.indexOf('node_modules') !== -1 ||
-            module.context.indexOf('core/input-systems') !== -1
-          );
+    webpackConfig.optimization = {
+      splitChunks: {
+        cacheGroups: {
+          vendor: {
+            name: 'vendor',
+            test: /node_modules|core\/input-systems/
+          },
+          manifest: {
+            name: 'manifest',
+          }
         }
-      }),
-
-      // CommonChunksPlugin will now extract all the common modules from vendor and main bundles
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'manifest'
-      }),
+      }
+    };
+    var plugins = [
       new LiveReloadPlugin()
     ];
     webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
