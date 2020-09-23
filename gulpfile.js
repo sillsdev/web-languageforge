@@ -204,6 +204,26 @@ gulp.task('webpack-sf:analyze', function (cb) {
 
 // endregion
 
+//region ng-cli
+
+function runAngularCli(applicationName, callback, isWatch, isAnalyze, isProduction) {
+  var params = "build ldadmin";
+  if (isProduction) {
+    params += " --prod";
+  }
+  if (isWatch) {
+    params += " --watch";
+  }
+  if (isAnalyze) {
+    params += " --stats-json";
+  }
+
+  const cmd = "ng " + params;
+  execute(cmd, null, callback);
+}
+
+// endregion
+
 //region MongoDB
 
 // -------------------------------------
@@ -866,6 +886,22 @@ gulp.task('build-webpack', function (cb) {
 });
 
 // -------------------------------------
+//   Task: Build Angular
+// -------------------------------------
+gulp.task('build-angular', function (cb) {
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .option('doNoCompression', {
+      demand: false,
+      type: 'boolean' })
+    .fail(yargFailure)
+    .argv;
+  runAngularCli(params.applicationName, cb, false, false, !params.doNoCompression);
+});
+
+// -------------------------------------
 //   Task: Build (Concat and ) Minify
 // -------------------------------------
 gulp.task('build-minify', function () {
@@ -1171,6 +1207,7 @@ gulp.task('build',
     ),
     'sass',
     'build-webpack',
+    'build-angular',
     'build-minify',
     'build-changeGroup'
   )
@@ -1194,6 +1231,7 @@ gulp.task('dev-build',
     'sass',
     'test-e2e-webdriver_update',
     'test-e2e-clean-compile',
+    'build-angular',
     'build-webpack'
   )
 );

@@ -6,7 +6,7 @@ var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
 var webpack = require('webpack');
 var webpackMerge = require('webpack-merge');
-var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+var TerserPlugin = require('terser-webpack-plugin');
 var LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 var workboxPlugin = require('workbox-webpack-plugin');
 
@@ -125,7 +125,7 @@ module.exports = function (env) {
     webpackConfig.plugins.push(new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     }));
-    webpackConfig.plugins.push(new UglifyJsPlugin({
+    webpackConfig.plugins.push(new TerserPlugin({
       sourceMap: true
     }));
     webpackConfig.plugins.push(new LoaderOptionsPlugin({
