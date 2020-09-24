@@ -37,6 +37,7 @@ use Api\Model\Shared\Command\MessageCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\Command\LdapiCommands;
 use Api\Model\Shared\Communicate\EmailSettings;
 use Api\Model\Shared\Communicate\SmsSettings;
 use Api\Model\Shared\Dto\ActivityListDto;
@@ -933,6 +934,11 @@ class Sf
         return ['exportUrl' => '/sampledownload.zip'];
     }
 
+    // ----------------------------------- Language Depot Api -------------------------------------
+    public function ldapi_check_user_password($username, $password) {
+        return LdapiCommands::check_user_password($username, $password);
+    }
+
     // ---------------------------------------------------------------
     // Private Utility Functions
     // ---------------------------------------------------------------
@@ -966,6 +972,23 @@ class Sf
             }
             $rightsHelper = new RightsHelper($this->userId, $projectModel, $this->website);
             if (! $rightsHelper->userCanAccessMethod($methodName)) {
+                throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
+            }
+        }
+    }
+
+    public function checkPermissionsWithParams($methodName, $params = null) {
+        if (! self::isAnonymousMethod($methodName)) {
+            if (! $this->userId) {
+                throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
+            }
+            try {
+                $projectModel = ProjectModel::getById($this->projectId);
+            } catch (\Exception $e) {
+                $projectModel = null;
+            }
+            $rightsHelper = new RightsHelper($this->userId, $projectModel, $this->website);
+            if (! $rightsHelper->userCanAccessMethodWithParams($methodName, $params)) {
                 throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
             }
         }

@@ -361,8 +361,42 @@ class RightsHelper
             case 'semdomtrans_export_all_projects':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 
+                    // Language Depot API access
+            case 'ldapi_check_user_password':
+                return true;  // Handled in userCanAccessMethodWithParams
+
             default:
                 throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");
+        }
+    }
+
+    /**
+     * @param string $methodName
+     * @param array $params parameters passed to the method
+     * @return bool
+     * @throws \Exception
+     */
+    public function userCanAccessMethodWithParams($methodName, $params)
+    {
+        switch ($methodName) {
+            case 'ldapi_check_user_password':
+                $isOwnUserAccount = false;
+                $userModel = new UserModel($this->_userId);
+                if (isset($params[0])) {
+                    $username = $params[0];
+                    if ($userModel->username === $username) {
+                        $isOwnUserAccount = true;
+                    }
+                }
+                if ($isOwnUserAccount) {
+                    return $this->userHasSiteRight(Domain::USERS + Operation::VIEW_OWN);
+                } else {
+                    return $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
+                }
+            break;
+
+            default:
+                return true; // Method names have already been checked in userCanAccessMethod
         }
     }
 }

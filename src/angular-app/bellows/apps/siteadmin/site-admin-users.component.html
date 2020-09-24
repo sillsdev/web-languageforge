@@ -138,6 +138,7 @@
                     <input id="_password" class="form-control" type="text" name="password" data-idle-validate="$ctrl.checkUniqueUser()"
                            data-idle-validate-keypress="$ctrl.resetValidateUserForm()" data-idle-validate-msec="500"
                            data-ng-model="$ctrl.record.password" data-pui-auto-focus="$ctrl.vars.inputfocus">
+                    <a data-ng-click="$ctrl.verifyPassword($ctrl.record)">Verify</a> <!-- Just for testing. TODO: Remove once tested -->
                 </div>
                 <hr>
                 <div>

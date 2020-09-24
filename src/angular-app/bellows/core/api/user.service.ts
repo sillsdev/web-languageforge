@@ -77,4 +77,8 @@ export class UserService {
     return this.api.call('user_sendInvite', [toEmail, roleKey], callback);
   }
 
+  checkUserPassword(username: string, password: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_check_user_password', [username, password], callback);
+  }
+
 }

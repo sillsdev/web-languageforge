@@ -254,6 +254,18 @@ export class SiteAdminUsersController implements angular.IController {
     });
   }
 
+  verifyPassword(record: UserWithPassword): void {
+    this.userService.checkUserPassword(record.id, record.password, result => {
+      if (result.ok) {
+        this.notice.push(this.notice.SUCCESS, 'Password for ' + record.name + ' verified successfully; see JS console for result');
+        console.log('Password check returned:', result.data);
+      } else {
+        this.notice.push(this.notice.ERROR, 'Error verifying password for ' + record.name + '; see JS console for details');
+        console.log('Error checking password:', result.status, result.statusText);
+      }
+    });
+  }
+
   showPasswordForm(): void {
     this.vars.showPasswordForm = true;
   }
