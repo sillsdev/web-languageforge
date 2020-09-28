@@ -936,7 +936,17 @@ class Sf
 
     // ----------------------------------- Language Depot Api -------------------------------------
     public function ldapi_check_user_password($username, $password) {
-        return LdapiCommands::check_user_password($username, $password);
+        return LdapiCommands::checkUserPassword($username, $password);
+    }
+
+    public function ldapi_get_user($username) {
+        $result = LdapiCommands::getUser($username);
+        error_log("ldapi_get_user returning " . print_r($result, true));
+        return $result;
+    }
+
+    public function ldapi_update_user($username, $userdata) {
+        return LdapiCommands::updateUser($username, $userdata);
     }
 
     // ---------------------------------------------------------------

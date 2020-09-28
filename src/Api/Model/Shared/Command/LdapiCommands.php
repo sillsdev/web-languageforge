@@ -22,7 +22,15 @@ class LdapiCommands
         return Ldapi::call('get', self::PROJECTS_BASE_URL . self::URL_PART_GET_ALL);
     }
 
-    public static function check_user_password(string $username, string $password) {
+    public static function getUser(string $username) {
+        return Ldapi::call('get', self::USERS_BASE_URL . '/' . $username);
+    }
+
+    public static function updateUser(string $username, Array $userdetails) {
+        return Ldapi::call('put', self::USERS_BASE_URL . '/' . $username, $userdetails);
+    }
+
+    public static function checkUserPassword(string $username, string $password) {
         $loginData = ['username' => $username, 'password' => $password];
         return Ldapi::call('post', self::URL_VERIFY_PASSWORD, $loginData);
     }

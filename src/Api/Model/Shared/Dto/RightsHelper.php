@@ -363,11 +363,24 @@ class RightsHelper
 
                     // Language Depot API access
             case 'ldapi_check_user_password':
+            case 'ldapi_get_user':
+            case 'ldapi_update_user':
                 return true;  // Handled in userCanAccessMethodWithParams
 
             default:
                 throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");
         }
+    }
+
+    public function firstParamIsCurrentUser($params) {
+        if (isset($this->_userId, $params[0])) {
+            $userModel = new UserModel($this->_userId);
+            $username = $params[0];
+            if ($userModel->username === $username) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -380,15 +393,9 @@ class RightsHelper
     {
         switch ($methodName) {
             case 'ldapi_check_user_password':
-                $isOwnUserAccount = false;
-                $userModel = new UserModel($this->_userId);
-                if (isset($params[0])) {
-                    $username = $params[0];
-                    if ($userModel->username === $username) {
-                        $isOwnUserAccount = true;
-                    }
-                }
-                if ($isOwnUserAccount) {
+            case 'ldapi_get_user':
+            case 'ldapi_update_user':
+                if ($this->firstParamIsCurrentUser($params)) {
                     return $this->userHasSiteRight(Domain::USERS + Operation::VIEW_OWN);
                 } else {
                     return $this->userHasSiteRight(Domain::USERS + Operation::VIEW);

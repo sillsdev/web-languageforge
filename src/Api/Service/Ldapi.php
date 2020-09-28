@@ -26,7 +26,42 @@ class Ldapi
 
         $handler = HandlerStack::create();
         $client = new Client(['handler' => $handler]);
-        return $client->request($method, $url, $opts);
+
+        // To implement retrying, uncomment below
+        // $tryCounter = 1;
+        // while ($tryCounter <= 5) {
+        //     try {
+        //         $result->errorMessage = '';
+        //         $response = $client->request($method, $url, $opts);
+        //         break;
+        //     } catch (RequestException $e) {
+        //         $response = $e->getResponse();
+        //         if ($e->getCode() != 403 && $e->getCode() != 404) {
+        //             $tryCounter++;
+        //             $result->errorMessage = $e->getMessage();
+        //             continue;
+        //         }
+        //         break;
+        //     }
+        // }
+        $response = $client->request($method, $url, $opts);
+
+        if (isset($response)) {
+            $json = \GuzzleHttp\json_decode($response->getBody(), true);
+            $statusCode = $response->getStatusCode();
+            if (isset($json['ok']) && $json['ok']) {
+                return $json['data'];
+            } else {
+                if (isset($json['message'])) {
+                    $message = $json['message'];
+                } else {
+                    $message = '';
+                }
+                throw new Exception($message);
+            }
+        } else {
+            throw new Exception("");
+        }
     }
 }
 

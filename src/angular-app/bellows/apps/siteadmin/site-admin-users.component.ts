@@ -255,7 +255,7 @@ export class SiteAdminUsersController implements angular.IController {
   }
 
   verifyPassword(record: UserWithPassword): void {
-    this.userService.checkUserPassword(record.id, record.password, result => {
+    this.userService.checkLdapiUserPassword(record.id, record.password, result => {
       if (result.ok) {
         this.notice.push(this.notice.SUCCESS, 'Password for ' + record.name + ' verified successfully; see JS console for result');
         console.log('Password check returned:', result.data);
