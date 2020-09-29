@@ -940,9 +940,7 @@ class Sf
     }
 
     public function ldapi_get_user($username) {
-        $result = LdapiCommands::getUser($username);
-        error_log("ldapi_get_user returning " . print_r($result, true));
-        return $result;
+        return LdapiCommands::getUser($username);
     }
 
     public function ldapi_update_user($username, $userdata) {

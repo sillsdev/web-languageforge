@@ -19,7 +19,7 @@ class Ldapi
         $url = 'http://localhost:4200/api/' . $url;
         // Should eventually be: $url = 'https://admin.languagedepot.org/api/' . $url;
 
-        $opts = [];
+        $opts = ['http_errors' => false];
         if (isset($jsonData)) {
             $opts['json'] = $jsonData;
         }
@@ -47,20 +47,24 @@ class Ldapi
         $response = $client->request($method, $url, $opts);
 
         if (isset($response)) {
-            $json = \GuzzleHttp\json_decode($response->getBody(), true);
+            $body = $response->getBody();
+            try {
+                $json = \GuzzleHttp\json_decode($body, true);
+            } catch (\Exception $e) {
+            }
             $statusCode = $response->getStatusCode();
-            if (isset($json['ok']) && $json['ok']) {
+            if (isset($json) && isset($json['ok']) && $json['ok']) {
                 return $json['data'];
             } else {
-                if (isset($json['message'])) {
+                if (isset($json) && isset($json['message'])) {
                     $message = $json['message'];
                 } else {
-                    $message = '';
+                    $message = $body;
                 }
-                throw new Exception($message);
+                throw new \Exception($message);
             }
         } else {
-            throw new Exception("");
+            throw new \Exception("");
         }
     }
 }
