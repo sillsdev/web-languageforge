@@ -365,6 +365,9 @@ class RightsHelper
             case 'ldapi_check_user_password':
             case 'ldapi_get_user':
             case 'ldapi_update_user':
+            case 'ldapi_get_all_projects':
+            case 'ldapi_get_all_users':
+            case 'ldapi_get_project':
                 return true;  // Handled in userCanAccessMethodWithParams
 
             default:
@@ -401,6 +404,13 @@ class RightsHelper
                     return $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
                 }
             break;
+
+            case 'ldapi_get_all_projects':
+            case 'ldapi_get_project':
+                return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);
+
+            case 'ldapi_get_all_users':
+                return true; // $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
 
             default:
                 return true; // Method names have already been checked in userCanAccessMethod

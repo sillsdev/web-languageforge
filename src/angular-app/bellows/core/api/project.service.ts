@@ -166,4 +166,12 @@ export class ProjectService {
     return this.api.call('project_insights_csv');
   }
 
+  getLdapiProject(projectCode: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_get_project', [projectCode], callback);
+  }
+
+  getAllLdapiProjects(callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_get_all_projects', [], callback);
+  }
+
 }

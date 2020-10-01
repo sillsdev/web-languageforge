@@ -939,12 +939,24 @@ class Sf
         return LdapiCommands::checkUserPassword($username, $password);
     }
 
+    public function ldapi_get_all_users() {
+        return LdapiCommands::getAllUsers();
+    }
+
     public function ldapi_get_user($username) {
         return LdapiCommands::getUser($username);
     }
 
     public function ldapi_update_user($username, $userdata) {
         return LdapiCommands::updateUser($username, $userdata);
+    }
+
+    public function ldapi_get_all_projects() {
+        return LdapiCommands::getAllProjects();
+    }
+
+    public function ldapi_get_project($projectCode) {
+        return LdapiCommands::getProject($projectCode);
     }
 
     // ---------------------------------------------------------------

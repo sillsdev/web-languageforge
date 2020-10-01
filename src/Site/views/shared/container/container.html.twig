@@ -13,6 +13,9 @@
         <link rel=stylesheet href="/{{ cssFile }}?v={{ version }}" />
     {% endfor %}
 
+    <link rel="stylesheet" href="/dist/ui-grid/ui-grid.css" type="text/css">
+    <!-- TODO: Add ui-grid CSS and JS properly rather than this hack -->
+
     {% for cssFile in vendorFilesCss %}
         <link rel=stylesheet href="/{{ cssFile }}?v={{ version }}" />
     {% endfor %}
@@ -30,6 +33,8 @@
         <script src="/dist/vendor.bundle.js?v={{ version }}"></script>
         <script src="/dist/main.bundle.js?v={{ version }}"></script>
 
+        <script src="/dist/ui-grid/ui-grid.min.js?v={{ version }}"></script>
+
         {% for filename in vendorFilesMinJs %}
         <script src="/{{ filename }}?v={{ version }}"></script>
         {% endfor %}
@@ -41,6 +46,8 @@
         <script src="/dist/manifest.bundle.js?v={{ version }}"></script>
         <script src="/dist/vendor.bundle.js?v={{ version }}"></script>
         <script src="/dist/main.bundle.js?v={{ version }}"></script>
+
+        <script src="/dist/ui-grid/ui-grid.js?v={{ version }}"></script>
 
         {% for filename in vendorFilesJs %}
         <script src="/{{ filename }}?v={{ version }}"></script>

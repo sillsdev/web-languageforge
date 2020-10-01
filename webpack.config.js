@@ -37,7 +37,8 @@ module.exports = function (env) {
         { from: './node_modules/jquery/dist/', to: 'jquery' },
         { from: './node_modules/offline-js/offline.min.js', to: 'offline-js' },
         { from: './node_modules/rangy/lib/', to: 'rangy' },
-        { from: './node_modules/zxcvbn/dist/', to: 'zxcvbn' }
+        { from: './node_modules/zxcvbn/dist/', to: 'zxcvbn' },
+        { from: './node_modules/angular-ui-grid/', to: 'ui-grid' }
       ]),
       new webpack.ContextReplacementPlugin(
 

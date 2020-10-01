@@ -86,13 +86,19 @@ export class UserService {
     return this.api.call('ldapi_get_user', [username], callback);
   }
 
+  getAllLdapiUsers(callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_get_all_users', [], callback);
+  }
+
   updateLdapiUser(username: string, userDetails: User, callback?: JsonRpcCallback) {
     const nameParts = this.splitName(userDetails.name);
     const apiUser = {
       username: userDetails.username,
       firstName: nameParts[0],
       lastName: nameParts[1],
-      emailAddress: userDetails.email
+      emailAddress: userDetails.email,
+      password: '',  // This means "no change" in the API
+      mustChangePassword: false
     };
     return this.api.call('ldapi_update_user', [username, apiUser], callback);
   }

@@ -14,11 +14,11 @@ class LdapiCommands
 
     const URL_VERIFY_PASSWORD = 'verify-password';
 
-    public static function get_all_users() {
+    public static function getAllUsers() {
         return Ldapi::call('get', self::USERS_BASE_URL . self::URL_PART_GET_ALL);
     }
 
-    public static function get_all_projects() {
+    public static function getAllProjects() {
         return Ldapi::call('get', self::PROJECTS_BASE_URL . self::URL_PART_GET_ALL);
     }
 
@@ -33,6 +33,10 @@ class LdapiCommands
     public static function checkUserPassword(string $username, string $password) {
         $loginData = ['username' => $username, 'password' => $password];
         return Ldapi::call('post', self::URL_VERIFY_PASSWORD, $loginData);
+    }
+
+    public static function getProject(string $projectCode) {
+        return Ldapi::call('get', self::PROJECTS_BASE_URL . '/' . $projectCode);
     }
 }
 
