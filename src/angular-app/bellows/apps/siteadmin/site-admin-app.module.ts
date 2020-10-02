@@ -17,8 +17,8 @@ import {SiteAdminComponent} from './site-admin.component';
 export const SiteAdminAppModule = angular
   .module('siteadmin', [
     'ngRoute',
+    'ngTable',
     'ui.bootstrap',
-    'ui.grid',
     CoreModule,
     ListViewModule,
     TypeAheadModule,

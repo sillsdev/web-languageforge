@@ -1,7 +1,8 @@
 import * as angular from 'angular';
-import * as uiGrid from 'ui-grid';
+import * as ngTable from 'ng-table';
 import {ProjectService} from '../../core/api/project.service';
 import {SendReceiveProject} from '../../../languageforge/lexicon/shared/model/lexicon-project.model';
+import { NgTableParams } from 'ng-table';
 
 export interface LdapiMembershipInfo {
   [username: string]: string;
@@ -17,6 +18,7 @@ export interface LdapiProjectInfo {
 export class LdapiProjectsController implements angular.IController {
   projects = [{name: 'foo', identifier: 'foo'}, {name: 'bar', identifier: 'bar'}];
   loadedProjects: LdapiProjectInfo[];
+  tableParams: NgTableParams<LdapiProjectInfo>;
 
   static $inject = [
     'projectService',
@@ -30,6 +32,7 @@ export class LdapiProjectsController implements angular.IController {
       if (result.ok) {
         this.loadedProjects = result.data;
         console.log("Loaded projects", this.loadedProjects);
+        this.tableParams = new NgTableParams({}, {dataset: this.loadedProjects});
       }
     });
   }

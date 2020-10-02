@@ -1,17 +1,19 @@
 import * as angular from 'angular';
-import * as uiGrid from 'ui-grid';
 import {UserService} from '../../core/api/user.service';
+import { NgTableParams } from 'ng-table';
 
-// export interface LdapiUserInfo {
-//   code: string;
-//   description: string;
-//   name: string;
-//   membership: LdapiMembershipInfo;
-// }
+export interface LdapiUserInfo {
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  language?: string;
+}
 
 export class LdapiUsersController implements angular.IController {
   Users = [{name: 'foo', identifier: 'foo'}, {name: 'bar', identifier: 'bar'}];
   loadedUsers: any[];
+  tableParams: NgTableParams<LdapiUserInfo>;
 
   static $inject = [
     'userService',
@@ -25,6 +27,7 @@ export class LdapiUsersController implements angular.IController {
       if (result.ok) {
         this.loadedUsers = result.data;
         console.log("Loaded users", this.loadedUsers);
+        this.tableParams = new NgTableParams({}, {dataset: this.loadedUsers});
       }
     });
   }

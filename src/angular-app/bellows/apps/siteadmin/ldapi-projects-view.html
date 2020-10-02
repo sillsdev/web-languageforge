@@ -1,3 +1,18 @@
 <div id="ldapiProjectsView" class="animate-switch">
-    <div id="ldapiProjectsGrid" ui-grid="{ data: $ctrl.loadedProjects }"></div>
+    <div class="col col-lg-6">
+        <table id="ldapiProjectsGrid" ng-table="$ctrl.tableParams" class="table table-bordered table-sm table-striped" show-filter="true">
+            <thead>
+                <th>Name</th>
+                <th>Code</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="project in $data">
+                    <td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
+                        {{project.name}}</td>
+                    <td title="'code'" filter="{ code: 'text'}" sortable="'code'">
+                        {{project.code}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

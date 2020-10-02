@@ -15,7 +15,7 @@ import { ShareWithOthersModule } from './shared/share-with-others/share-with-oth
 export const LexiconAppModule = angular
   .module('lexicon', [
     'ui.bootstrap',
-    'ui.grid',
+    'ngTable',
     uiRouter,
     'ngSanitize',
     CoreModule,
