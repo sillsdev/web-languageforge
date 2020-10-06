@@ -24,6 +24,8 @@ export class LdapiProjectsController implements angular.IController {
   membership: [string, string][] = [];
   roles: string[];
   selectedRole: {[username: string]: string};
+  pristineRoles: {[username: string]: string};
+  inProgress: {[username: string]: boolean} = {};
 
   static $inject = [
     'projectService',
@@ -53,11 +55,33 @@ export class LdapiProjectsController implements angular.IController {
     var members: [string, string][] = [];
     angular.forEach(this.selectedProject.membership, (role, username) => {
       members.push([username, role]);
+      console.log("Pushing", username);
+      this.inProgress[username] = false;
     });
     this.membership = members;
     this.selectedRole = {};
     angular.forEach(members, ([username, role]) => this.selectedRole[username] = role);
+    this.pristineRoles = {...this.selectedRole};
     console.log(this.selectedRole);
+  }
+
+  areEqual(obj1:any, obj2:any) {
+    // The === operator does reference equality, and we need value equality here
+    return angular.equals(obj1, obj2);
+  }
+
+  saveMembership() {
+    console.log('Would save', this.selectedRole);
+    // promise.then(() => {this.pristineRoles = roles;})
+  }
+
+  changeRole(member: string, oldRole: string, newRole: string) {
+    if (oldRole !== newRole) {
+      console.log('Would change:', member, 'to have', newRole, 'in', this.selectedProject.code);
+      this.inProgress[member] = true;
+      console.log()
+      this.projectService.updateLdapiUserRole(this.selectedProject.code, member, newRole).then(() => this.inProgress[member] = false);
+    }
   }
 }
 

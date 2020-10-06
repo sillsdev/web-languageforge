@@ -40,6 +40,13 @@ class LdapiCommands
         return Ldapi::call('get', self::PROJECTS_BASE_URL . '/' . $projectCode);
     }
 
+    public static function updateUserRoleInProject(string $projectCode, string $username, string $role) {
+        $addRequest = ['username' => $username, 'role' => $role];
+        // API wants an array of requests even if there is only one request
+        $apiParams = ['add' => [$addRequest]];
+        return Ldapi::call('patch', self::PROJECTS_BASE_URL . '/' . $projectCode, $apiParams);
+    }
+
     public static function getAllRoles() {
         return Ldapi::call('get', self::ROLES_BASE_URL . self::URL_PART_GET_ALL);
     }

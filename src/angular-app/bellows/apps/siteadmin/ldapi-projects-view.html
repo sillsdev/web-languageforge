@@ -20,9 +20,15 @@
             <ul>
               <li data-ng-repeat="member in $ctrl.membership">
                 {{member[0]}}
-                <select data-ng-options="role for role in $ctrl.roles track by role" data-ng-model="$ctrl.selectedRole[member[0]]"></select>
+                <select data-ng-options="role for role in $ctrl.roles track by role"
+                        data-ng-change="$ctrl.changeRole(member[0], member[1], $ctrl.selectedRole[member[0]])"
+                        data-ng-model="$ctrl.selectedRole[member[0]]"></select>
+                <span data-ng-if="$ctrl.inProgress[member[0]]">
+                    <i class="fa fa-spinner fa-spin"></i>
+                </span>
               </li>
             </ul>
+            <button class="form-control" data-ng-click="$ctrl.saveMembership()" data-ng-disabled="$ctrl.areEqual($ctrl.selectedRole, $ctrl.pristineRoles)">Save</button>
           </div>
         </div>
       </div>

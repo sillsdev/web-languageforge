@@ -959,6 +959,10 @@ class Sf
         return LdapiCommands::getProject($projectCode);
     }
 
+    public function ldapi_project_updateUserRole($projectCode, $username, $role) {
+        return LdapiCommands::updateUserRoleInProject($projectCode, $username, $role);
+    }
+
     public function ldapi_get_all_roles() {
         return LdapiCommands::getAllRoles();
     }

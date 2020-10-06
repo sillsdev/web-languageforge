@@ -174,4 +174,7 @@ export class ProjectService {
     return this.api.call('ldapi_get_all_projects', [], callback);
   }
 
+  updateLdapiUserRole(projectCode: string, userId: string, role: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_project_updateUserRole', [projectCode, userId, role], callback);
+  }
 }

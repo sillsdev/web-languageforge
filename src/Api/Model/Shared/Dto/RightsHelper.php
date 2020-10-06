@@ -369,6 +369,7 @@ class RightsHelper
             case 'ldapi_get_all_users':
             case 'ldapi_get_all_roles':
             case 'ldapi_get_project':
+            case 'ldapi_project_updateUserRole':
                 return true;  // Handled in userCanAccessMethodWithParams
 
             default:
@@ -383,6 +384,25 @@ class RightsHelper
             if ($userModel->username === $username) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    // Not yet needed, though we'll probably want it later
+    public function projectIsOwnedByUser($params) {
+        if (isset($params[0], $params[1])) {
+            $projectCode = $params[0];
+            $username = $params[1];
+            $projectModel = ProjectModel::getById($projectCode);
+            if (!isset($projectModel) || !isset($projectModel->ownerRef)) {
+                return false;
+            }
+            $userModel = new UserModel();
+            $userModel->readByUserName($username);
+            if (!isset($userModel) || !isset($userModel->$userId)) {
+                return false;
+            }
+            return ($projectModel->ownerRef->id === $userModel->$userId->id);
         }
         return false;
     }
@@ -415,6 +435,10 @@ class RightsHelper
 
             case 'ldapi_get_all_roles':
                 return true;
+
+            case 'ldapi_project_updateUserRole':
+                return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT) || $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+                // TODO: Also allow this if user is owner of project, though that's probably already covered by userHasProjectRight
 
             default:
                 return true; // Method names have already been checked in userCanAccessMethod
