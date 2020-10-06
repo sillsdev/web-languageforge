@@ -1,18 +1,30 @@
 <div id="ldapiProjectsView" class="animate-switch">
-    <div class="col col-lg-6">
-        <table id="ldapiProjectsGrid" ng-table="$ctrl.tableParams" class="table table-bordered table-sm table-striped" show-filter="true">
-            <thead>
-                <th>Name</th>
-                <th>Code</th>
-            </thead>
-            <tbody>
-                <tr ng-repeat="project in $data">
-                    <td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
-                        {{project.name}}</td>
-                    <td title="'code'" filter="{ code: 'text'}" sortable="'code'">
-                        {{project.code}}</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="row">
+      <div class="col col-lg-6">
+          <table id="ldapiProjectsGrid" ng-table="$ctrl.tableParams" class="table table-bordered table-sm table-striped" show-filter="true">
+              <!-- <thead>
+                  <th>Name</th>
+                  <th>Code</th>
+              </thead> -->
+                  <tr ng-repeat="project in $data">
+                      <td title="'Name'" filter="{ name: 'text'}" sortable="'name'" ng-click="$ctrl.select(project)">
+                          {{project.name}}</td>
+                      <td title="'Code'" filter="{ code: 'text'}" sortable="'code'" ng-click="$ctrl.select(project)">
+                          {{project.code}}</td>
+                  </tr>
+          </table>
+      </div>
+      <div class="col col-lg-6">
+        <div ng-if="$ctrl.selectedProject">
+          <div class="card">
+            <ul>
+              <li data-ng-repeat="member in $ctrl.membership">
+                {{member[0]}}
+                <select data-ng-options="role for role in $ctrl.roles track by role" data-ng-model="$ctrl.selectedRole[member[0]]"></select>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
 </div>

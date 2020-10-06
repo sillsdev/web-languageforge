@@ -8,6 +8,7 @@ class LdapiCommands
 {
     const USERS_BASE_URL = 'users';
     const PROJECTS_BASE_URL = 'projects';
+    const ROLES_BASE_URL = 'roles';
 
     const URL_PART_GET_ALL = '';
     const URL_PART_POST_ONE = '';
@@ -37,6 +38,10 @@ class LdapiCommands
 
     public static function getProject(string $projectCode) {
         return Ldapi::call('get', self::PROJECTS_BASE_URL . '/' . $projectCode);
+    }
+
+    public static function getAllRoles() {
+        return Ldapi::call('get', self::ROLES_BASE_URL . self::URL_PART_GET_ALL);
     }
 }
 

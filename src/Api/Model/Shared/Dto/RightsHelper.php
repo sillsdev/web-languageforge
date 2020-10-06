@@ -367,6 +367,7 @@ class RightsHelper
             case 'ldapi_update_user':
             case 'ldapi_get_all_projects':
             case 'ldapi_get_all_users':
+            case 'ldapi_get_all_roles':
             case 'ldapi_get_project':
                 return true;  // Handled in userCanAccessMethodWithParams
 
@@ -411,6 +412,9 @@ class RightsHelper
 
             case 'ldapi_get_all_users':
                 return true; // $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
+
+            case 'ldapi_get_all_roles':
+                return true;
 
             default:
                 return true; // Method names have already been checked in userCanAccessMethod
