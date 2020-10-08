@@ -23,12 +23,43 @@
                 <select data-ng-options="role for role in $ctrl.roles track by role"
                         data-ng-change="$ctrl.changeRole(member[0], member[1], $ctrl.selectedRole[member[0]])"
                         data-ng-model="$ctrl.selectedRole[member[0]]"></select>
+                <span data-ng-click="$ctrl.deleteFromProject(member[0])">
+                    <i class="fa fa-trash"></i>
+                </span>
                 <span data-ng-if="$ctrl.inProgress[member[0]]">
                     <i class="fa fa-spinner fa-spin"></i>
                 </span>
               </li>
             </ul>
-            <button class="form-control" data-ng-click="$ctrl.saveMembership()" data-ng-disabled="$ctrl.areEqual($ctrl.selectedRole, $ctrl.pristineRoles)">Save</button>
+            <span data-ng-click="$ctrl.showUserSearch = true"><i class="fa fa-plus"></i></span>
+            <input class="form-control" type="text" data-ng-model="$ctrl.filterUsers"
+                   placeholder="User to add (username, name, or email)">
+            <div class="x" data-ng-if="$ctrl.filterUsers">
+              <listview search="$ctrl.queryUsers()" items="$ctrl.users" items-filter="$ctrl.filterUsers"
+                        visible-items="visibleUsers" select="" style="overflow-x: auto">
+                  <table class="table table-hover table-responsive">
+                      <thead class="thead-dark">
+                      <tr>
+                          <th>Username</th>
+                          <th>Email</th>
+                          <th>Name</th>
+                          <th></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr data-ng-repeat="user in visibleUsers" data-ng-class="{ active: $ctrl.isSelected(user) }" >
+                          <td class="username-styling">
+                              <a data-ng-click="$ctrl.addToProject(user.username)" title="Click to add this user to the project"
+                                 class="username-styling">{{user.username}}</a>
+                          </td>
+                          <td>{{user.email}}</td>
+                          <td>{{user.firstName}} {{user.lastName}}</td>
+                          <td><a data-ng-click="$ctrl.addToProject(user.username)" title="Click to add this user to the project"><i class="fa fa-plus"></i></a></td>
+                      </tr>
+                      </tbody>
+                  </table>
+              </listview>
+            </div>
           </div>
         </div>
       </div>

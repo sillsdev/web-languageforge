@@ -370,6 +370,7 @@ class RightsHelper
             case 'ldapi_get_all_roles':
             case 'ldapi_get_project':
             case 'ldapi_project_updateUserRole':
+            case 'ldapi_project_removeUser':
                 return true;  // Handled in userCanAccessMethodWithParams
 
             default:
@@ -437,6 +438,7 @@ class RightsHelper
                 return true;
 
             case 'ldapi_project_updateUserRole':
+            case 'ldapi_project_removeUser':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT) || $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
                 // TODO: Also allow this if user is owner of project, though that's probably already covered by userHasProjectRight
 

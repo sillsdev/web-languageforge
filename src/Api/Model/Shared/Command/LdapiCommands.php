@@ -47,6 +47,11 @@ class LdapiCommands
         return Ldapi::call('patch', self::PROJECTS_BASE_URL . '/' . $projectCode, $apiParams);
     }
 
+    public static function removeUserFromProject(string $projectCode, string $username) {
+        $apiParams = ['removeUser' => $username];
+        return Ldapi::call('patch', self::PROJECTS_BASE_URL . '/' . $projectCode, $apiParams);
+    }
+
     public static function getAllRoles() {
         return Ldapi::call('get', self::ROLES_BASE_URL . self::URL_PART_GET_ALL);
     }

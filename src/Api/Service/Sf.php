@@ -963,6 +963,10 @@ class Sf
         return LdapiCommands::updateUserRoleInProject($projectCode, $username, $role);
     }
 
+    public function ldapi_project_removeUser($projectCode, $username) {
+        return LdapiCommands::removeUserFromProject($projectCode, $username);
+    }
+
     public function ldapi_get_all_roles() {
         return LdapiCommands::getAllRoles();
     }
