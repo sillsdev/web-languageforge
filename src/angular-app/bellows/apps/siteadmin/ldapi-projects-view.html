@@ -17,24 +17,33 @@
       <div class="col col-lg-6">
         <div ng-if="$ctrl.selectedProject">
           <div class="card">
-            <ul>
-              <li data-ng-repeat="member in $ctrl.membership">
-                {{member[0]}}
-                <select data-ng-options="role for role in $ctrl.roles track by role"
-                        data-ng-change="$ctrl.changeRole(member[0], member[1], $ctrl.selectedRole[member[0]])"
-                        data-ng-model="$ctrl.selectedRole[member[0]]"></select>
-                <span data-ng-click="$ctrl.deleteFromProject(member[0])">
+            <table class="table table-sm">
+              <tr data-ng-repeat="member in $ctrl.membership">
+                <td>
+                  {{$ctrl.memberNames[member[0]]}}
+                </td>
+                <td>
+                  {{member[0]}}
+                </td>
+                <td>
+                  <select data-ng-options="role for role in $ctrl.roles track by role"
+                          data-ng-change="$ctrl.changeRole(member[0], member[1], $ctrl.selectedRole[member[0]])"
+                          data-ng-model="$ctrl.selectedRole[member[0]]"></select>
+                </td>
+                <td>
+                  <span data-ng-if="$ctrl.inProgress[member[0]]">
+                      <i class="fa fa-spinner fa-spin"></i>
+                  </span>
+                  <span data-ng-click="$ctrl.deleteFromProject(member[0])">
                     <i class="fa fa-trash"></i>
-                </span>
-                <span data-ng-if="$ctrl.inProgress[member[0]]">
-                    <i class="fa fa-spinner fa-spin"></i>
-                </span>
-              </li>
-            </ul>
-            <span data-ng-click="$ctrl.showUserSearch = true"><i class="fa fa-plus"></i></span>
+                  </span>
+                </td>
+              </tr>
+            </table>
+            <label>Add new members:</label>
             <input class="form-control" type="text" data-ng-model="$ctrl.filterUsers"
                    placeholder="User to add (username, name, or email)">
-            <div class="x" data-ng-if="$ctrl.filterUsers">
+            <div data-ng-if="$ctrl.filterUsers">
               <listview search="$ctrl.queryUsers()" items="$ctrl.users" items-filter="$ctrl.filterUsers"
                         visible-items="visibleUsers" select="" style="overflow-x: auto">
                   <table class="table table-hover table-responsive">

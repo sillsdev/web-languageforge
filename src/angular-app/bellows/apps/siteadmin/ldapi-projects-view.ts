@@ -23,6 +23,7 @@ export class LdapiProjectsController implements angular.IController {
   tableParams: NgTableParams<LdapiProjectInfo>;
   selectedProject: LdapiProjectInfo;
   membership: [string, string][] = [];
+  memberNames: {[username: string]: string};
   roles: string[];
   selectedRole: {[username: string]: string};
   pristineRoles: {[username: string]: string};
@@ -65,9 +66,26 @@ export class LdapiProjectsController implements angular.IController {
     });
     this.membership = members;
     this.selectedRole = {};
-    angular.forEach(members, ([username, role]) => this.selectedRole[username] = role);
+    this.memberNames = {};
+    angular.forEach(members, ([username, role]) => {
+      this.selectedRole[username] = role;
+      this.lookupUserName(username);
+    });
     this.pristineRoles = {...this.selectedRole};
     console.log(this.selectedRole);
+  }
+
+  lookupUserName(username: string): void {
+    this.userService.getLdapiUser(username).then(result => {
+      if (result.ok) {
+        const firstName = result.data.firstName;
+        const lastName = result.data.lastName;
+        const name = firstName && lastName ? firstName + ' ' + lastName : firstName ? firstName : lastName;
+        if (name) {
+          this.memberNames[username] = name;
+        }
+      }
+    });
   }
 
   areEqual(obj1:any, obj2:any) {
@@ -100,6 +118,7 @@ export class LdapiProjectsController implements angular.IController {
     // Adds user as a contributor; if other role is desired, admin can update it with dropdown after adding
     const contributor = this.rolesService.contributor;
     this.projectService.updateLdapiUserRole(this.selectedProject.code, member, contributor).then(() => {
+      this.lookupUserName(member);
       // Add user to UI by creating a *new* membership list (Angular defaults to tracking arrays by reference)
       this.selectedRole[member] = contributor;
       const newMember: [string,string] = [member, contributor];
