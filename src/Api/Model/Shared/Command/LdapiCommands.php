@@ -12,6 +12,7 @@ class LdapiCommands
 
     const URL_PART_GET_ALL = '';
     const URL_PART_POST_ONE = '';
+    const URL_PART_GET_PROJECTS = 'projects';
 
     const URL_VERIFY_PASSWORD = 'verify-password';
 
@@ -38,6 +39,10 @@ class LdapiCommands
 
     public static function getProject(string $projectCode) {
         return Ldapi::call('get', self::PROJECTS_BASE_URL . '/' . $projectCode);
+    }
+
+    public static function getProjectsForUser(string $username) {
+        return Ldapi::call('get', self::USERS_BASE_URL . '/' . $username . '/' . self::URL_PART_GET_PROJECTS);
     }
 
     public static function updateUserRoleInProject(string $projectCode, string $username, string $role) {

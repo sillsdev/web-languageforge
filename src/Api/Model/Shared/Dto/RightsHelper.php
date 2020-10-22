@@ -369,6 +369,7 @@ class RightsHelper
             case 'ldapi_get_all_users':
             case 'ldapi_get_all_roles':
             case 'ldapi_get_project':
+            case 'ldapi_get_projects_for_user':
             case 'ldapi_project_updateUserRole':
             case 'ldapi_project_removeUser':
                 return true;  // Handled in userCanAccessMethodWithParams
@@ -420,6 +421,7 @@ class RightsHelper
             case 'ldapi_check_user_password':
             case 'ldapi_get_user':
             case 'ldapi_update_user':
+            case 'ldapi_get_projects_for_user':
                 if ($this->firstParamIsCurrentUser($params)) {
                     return $this->userHasSiteRight(Domain::USERS + Operation::VIEW_OWN);
                 } else {

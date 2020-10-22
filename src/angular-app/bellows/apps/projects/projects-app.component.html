@@ -52,7 +52,7 @@
                                 <span class="larger-text">{{project.projectName}}</span></a>
                             <span data-ng-show="!$ctrl.isInProject(project)" class="larger-text">{{project.projectName}}</span>
                         </div>
-                        <div class="col-7 col-md-5" data-ng-show="$ctrl.rights.canEditProjects">
+                        <div class="col-7 col-md-5">
                             <small class="text-muted">{{$ctrl.projectTypeNames[project.appName]}}</small>
                         </div>
                         <div class="col-5 col-md-3 text-right" data-ng-show="$ctrl.rights.canEditProjects">

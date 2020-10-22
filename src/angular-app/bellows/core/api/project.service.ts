@@ -39,7 +39,8 @@ export class ProjectService {
         sfchecks: 'Community Scripture Checking',
         webtypesetting: 'Typesetting',
         semdomtrans: 'Semantic Domain Translation',
-        lexicon: 'Dictionary'
+        lexicon: 'Dictionary',
+        languagedepot: 'Language Depot'
       },
       projectTypesBySite: () => {
         return this.projectTypesBySite;
@@ -50,7 +51,8 @@ export class ProjectService {
       const types = {
         // 'languageforge': ['lexicon', 'semdomtrans'],
         languageforge: ['lexicon'],
-        scriptureforge: ['sfchecks']
+        scriptureforge: ['sfchecks'],
+        languagedepot: ['languagedepot']
       };
 
       this.projectTypesBySite = types[session.baseSite()];
