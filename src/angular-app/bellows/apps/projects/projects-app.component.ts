@@ -10,6 +10,7 @@ import { SessionService } from '../../core/session.service';
 import { Project } from '../../shared/model/project.model';
 import { LdapiProjectInfo } from '../siteadmin/ldapi-projects-view';
 import { UserService } from '../../core/api/user.service';
+import { RolesService } from '../../core/api/roles.service';
 
 class Rights {
   canEditProjects: boolean;
@@ -37,6 +38,7 @@ export class ProjectsAppController implements angular.IController {
 
   static $inject = ['$window', 'projectService',
                     'userService',
+                    'rolesService',
                     'sessionService', 'silNoticeService',
                     'breadcrumbService',
                     'siteWideNoticeService',
@@ -44,6 +46,7 @@ export class ProjectsAppController implements angular.IController {
                     'helpHeroService'];
   constructor(private $window: angular.IWindowService, private projectService: ProjectService,
               private userService: UserService,
+              private rolesService: RolesService,
               private sessionService: SessionService, private notice: NoticeService,
               private breadcrumbService: BreadcrumbService,
               private siteWideNoticeService: SiteWideNoticeService,
@@ -92,13 +95,8 @@ export class ProjectsAppController implements angular.IController {
         const username = session.username();  // TODO: Handle cases where LF username and LD username differ
         this.userService.getProjectsForUser(username).then(result => {
           if (result.ok) {
-            console.log('LD query result:', result.data);
             angular.forEach<[LdapiProjectInfo, string]>(result.data, ([ldapiProject, role]) => {
-              const convertedRole = role ? role === 'Manager' ? 'project_manager' : role.toLowerCase() : '';
-              console.log('LD project found with role', convertedRole, ':', ldapiProject);
-              if (role === 'Manager') {
-                role = 'project_manager';
-              }
+              const convertedRole = this.rolesService.ldRoleToLfRole(role);
               const project: ViewModelProject = {
                 id: ldapiProject.code,
                 projectName: ldapiProject.name,
@@ -107,7 +105,6 @@ export class ProjectsAppController implements angular.IController {
               };
               if (this.isManager(project)) {
                 this.projects.push(project);
-                console.log('Was manager, so pushing');
               }
             });
           }

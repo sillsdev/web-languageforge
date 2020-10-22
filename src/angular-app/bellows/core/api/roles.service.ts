@@ -7,13 +7,40 @@ export class RolesService {
   // Role names for the two "well-known" roles that should always exist
   _contributor: string | undefined;
   _manager: string | undefined;
-  static defaultContributorRole: string = 'Contributor';
-  static defaultManagerRole: string = 'Manager';
+  static defaultContributorRole = 'Contributor';
+  static defaultManagerRole = 'Manager';
   get contributor(): string {
     return this._contributor || RolesService.defaultContributorRole;
   }
   get manager(): string {
     return this._manager || RolesService.defaultManagerRole;
+  }
+
+  static lfContributorRole = 'contributor';
+  static lfManagerRole = 'project_manager';
+
+  ldRoleToLfRole(ldRole: string) {
+    ldRole = ldRole || '';
+    switch (ldRole) {
+      case this.contributor:
+        return RolesService.lfContributorRole;
+      case this.manager:
+        return RolesService.lfManagerRole;
+      default:
+        return ldRole.toLowerCase();
+    }
+  }
+
+  lfRoleToLdRole(lfRole: string) {
+    lfRole = lfRole || '';
+    switch (lfRole) {
+      case RolesService.lfContributorRole:
+        return this.contributor;
+      case RolesService.lfManagerRole:
+        return this.manager;
+      default:
+        return lfRole;
+    }
   }
 
   static $inject: string[] = ['apiService'];
