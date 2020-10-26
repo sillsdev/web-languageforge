@@ -100,7 +100,7 @@ export class ProjectsAppController implements angular.IController {
               const project: ViewModelProject = {
                 id: ldapiProject.code,
                 projectName: ldapiProject.name,
-                appName: 'languagedepot',
+                appName: 'ldproject',
                 role: convertedRole,
               };
               if (this.isManager(project)) {

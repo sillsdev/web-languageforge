@@ -40,7 +40,7 @@ export class ProjectService {
         webtypesetting: 'Typesetting',
         semdomtrans: 'Semantic Domain Translation',
         lexicon: 'Dictionary',
-        languagedepot: 'Language Depot'
+        ldproject: 'Language Depot'
       },
       projectTypesBySite: () => {
         return this.projectTypesBySite;
@@ -52,7 +52,7 @@ export class ProjectService {
         // 'languageforge': ['lexicon', 'semdomtrans'],
         languageforge: ['lexicon'],
         scriptureforge: ['sfchecks'],
-        languagedepot: ['languagedepot']
+        languagedepot: ['ldproject']
       };
 
       this.projectTypesBySite = types[session.baseSite()];
