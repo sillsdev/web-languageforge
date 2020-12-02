@@ -365,6 +365,7 @@ class RightsHelper
             case 'ldapi_check_user_password':
             case 'ldapi_get_user':
             case 'ldapi_update_user':
+            case 'ldapi_search_users':
             case 'ldapi_get_all_projects':
             case 'ldapi_get_all_users':
             case 'ldapi_get_all_roles':
@@ -430,8 +431,13 @@ class RightsHelper
             break;
 
             case 'ldapi_get_all_projects':
-            case 'ldapi_get_project':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);
+
+            case 'ldapi_get_project':
+                return true; // TODO: Make an LD API call to verify if user is owner or admin
+
+            case 'ldapi_search_users':
+                return true;
 
             case 'ldapi_get_all_users':
                 return true; // $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
@@ -441,8 +447,11 @@ class RightsHelper
 
             case 'ldapi_project_updateUserRole':
             case 'ldapi_project_removeUser':
-                return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT) || $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+                // return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT) || $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+                // TODO: Fix the above, because this doesn't work for LD projects that don't have an LF project: userHasProjectRight will fail
                 // TODO: Also allow this if user is owner of project, though that's probably already covered by userHasProjectRight
+                // TODO: Need to be able to ask the server for a list of usernames that manage the project
+                return true;
 
             default:
                 return true; // Method names have already been checked in userCanAccessMethod

@@ -943,6 +943,10 @@ class Sf
         return LdapiCommands::getAllUsers();
     }
 
+    public function ldapi_search_users($searchText) {
+        return LdapiCommands::searchUsers($searchText);
+    }
+
     public function ldapi_get_user($username) {
         return LdapiCommands::getUser($username);
     }

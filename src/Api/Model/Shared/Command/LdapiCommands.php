@@ -7,7 +7,9 @@ use Api\Service\Ldapi;
 class LdapiCommands
 {
     const USERS_BASE_URL = 'users';
+    const SEARCHUSERS_BASE_URL = 'searchUsers';
     const PROJECTS_BASE_URL = 'projects';
+    const SEARCHPROJECTS_BASE_URL = 'searchProjects';
     const ROLES_BASE_URL = 'roles';
 
     const URL_PART_GET_ALL = '';
@@ -18,6 +20,10 @@ class LdapiCommands
 
     public static function getAllUsers() {
         return Ldapi::call('get', self::USERS_BASE_URL . self::URL_PART_GET_ALL);
+    }
+
+    public static function searchUsers(string $searchText) {
+        return Ldapi::call('get', self::SEARCHUSERS_BASE_URL . '/' . $searchText);
     }
 
     public static function getAllProjects() {

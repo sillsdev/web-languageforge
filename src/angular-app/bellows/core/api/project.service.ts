@@ -168,7 +168,7 @@ export class ProjectService {
     return this.api.call('project_insights_csv');
   }
 
-  getLdapiProject(projectCode: string, callback?: JsonRpcCallback) {
+  getLdapiProjectDto(projectCode: string, callback?: JsonRpcCallback) {
     return this.api.call('ldapi_get_project', [projectCode], callback);
   }
 

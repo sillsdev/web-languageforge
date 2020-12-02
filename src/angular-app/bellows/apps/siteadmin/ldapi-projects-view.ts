@@ -58,6 +58,7 @@ export class LdapiProjectsController implements angular.IController {
 
   select(project: LdapiProjectInfo) {
     this.selectedProject = project;
+    // TODO: Instead of looking up users one at a time, use the Project DTO API call to get "composed" membership lists
     var members: [string, string][] = [];
     angular.forEach(this.selectedProject.membership, (role, username) => {
       members.push([username, role]);
@@ -116,13 +117,14 @@ export class LdapiProjectsController implements angular.IController {
 
   addToProject(member: string) {
     // Adds user as a contributor; if other role is desired, admin can update it with dropdown after adding
-    const contributor = this.rolesService.contributor;
-    this.projectService.updateLdapiUserRole(this.selectedProject.code, member, contributor).then(() => {
-      this.lookupUserName(member);
-      // Add user to UI by creating a *new* membership list (Angular defaults to tracking arrays by reference)
-      this.selectedRole[member] = contributor;
-      const newMember: [string,string] = [member, contributor];
-      this.membership = [...this.membership, newMember];
+    this.rolesService.contributor.then(contributor => {
+      this.projectService.updateLdapiUserRole(this.selectedProject.code, member, contributor).then(() => {
+        this.lookupUserName(member);
+        // Add user to UI by creating a *new* membership list (Angular defaults to tracking arrays by reference)
+        this.selectedRole[member] = contributor;
+        const newMember: [string,string] = [member, contributor];
+        this.membership = [...this.membership, newMember];
+      });
     });
   }
 

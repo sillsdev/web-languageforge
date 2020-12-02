@@ -94,6 +94,10 @@ export class UserService {
     return this.api.call('ldapi_get_projects_for_user', [username], callback);
   }
 
+  searchLdapiUsers(searchText: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_search_users', [searchText], callback);
+  }
+
   updateLdapiUser(username: string, userDetails: User, callback?: JsonRpcCallback) {
     const nameParts = this.splitName(userDetails.name);
     const apiUser = {

@@ -1,0 +1,67 @@
+<div id="userManagementMembers" data-ng-cloak>
+    <table class="table table-hover table-responsive" >
+        <thead class="thead-dark">
+        <tr>
+            <th></th>
+            <th>Username</th>
+            <th>Full Name</th>
+            <th>Role</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr data-ng-repeat="userAndRole in $ctrl.projectMembers" data-ng-class="{active: false}" >
+            <td width="16px" align="center">
+                <!--suppress HtmlFormInputWithoutLabel -->
+                <input type="checkbox" data-ng-checked="$ctrl.isSelected(userAndRole[0])"
+                        data-ng-click="$ctrl.updateSelection($event, userAndRole[0])">
+            </td>
+            <td>{{userAndRole[0].username}}</td>
+            <td>{{$ctrl.fullname(userAndRole[0])}}</td>
+            <td>
+                <!-- suppress HtmlFormInputWithoutLabel -->
+                <!-- <select id="default-role-select" class="form-control custom-select col-12" data-ng-model="userAndRole[1]" data-ng-disabled="$ctrl.isRoleSelectDisabled(user)"
+                        data-ng-change="$ctrl.onRoleChange(userAndRole)" data-ng-options="role.roleKey as role.roleName for role in $ctrl.getRoles(userAndRole[0])"></select> -->
+                <!-- <role-dropdown roles="$ctrl.ldapiRoles"></role-dropdown> -->
+                <select id="default-role-select" class="form-control custom-select" data-ng-model="userAndRole[1]"
+                        data-ng-change="$ctrl.onRoleChange(userAndRole)" data-ng-options="role as role.name for role in $ctrl.rolesWithTechSupport"></select>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- <listview search="$ctrl.queryUserList()" items="$ctrl.list.allUsers" items-filter="$ctrl.userFilter" visible-items="$ctrl.list.visibleUsers" select="">
+    </listview> -->
+    <form class="form-inline">
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <button id="remove-members-button" class="btn btn-primary" data-ng-disabled="$ctrl.selected.length == 0"
+                        data-ng-click="$ctrl.removeProjectUsers()"><i class="fa fa-trash iconPadding"></i>Remove Members</button>
+            </div>
+        </div>
+    </form>
+    <div id="newMembersDiv">
+        <form class="form-inline">
+        <div class="form-control row gutter-fix" style="position: relative">
+            <pui-typeahead id="typeaheadDiv" class="typeahead" items="$ctrl.userSearchResults" term="$ctrl.typeahead.userName" search="$ctrl.boundSearchUsers" select="$ctrl.selectUser">
+                <ul>
+                    <li typeahead-item="user" data-ng-repeat="user in $ctrl.userSearchResults" class="typeahead-item">
+                        <span class="name">{{$ctrl.fullname(user)}}</span>
+                    </li>
+                </ul>
+            </pui-typeahead>
+            <div></div>
+            <div data-ng-show="$ctrl.usersPendingAdd.length > 0">
+                The following users will be added as {{$ctrl.defaultAddRole.name}}:
+                <ul>
+                    <li data-ng-repeat="user in $ctrl.usersPendingAdd">{{$ctrl.fullname(user)}} ({{user.username}})</li>
+                </ul>
+            </div>
+            <button class="btn btn-primary" id="addMembersButton"
+                    data-ng-click="$ctrl.addProjectUsers()"><i class="fa fa-plus iconPadding"></i>Add Members</button> as
+            <select id="default-role-select" class="form-control custom-select" data-ng-model="$ctrl.defaultAddRole"
+                    data-ng-options="role as role.name for role in $ctrl.rolesWithTechSupport"></select>
+        </div>
+        </form>
+    </div>
+
+</div>
+
