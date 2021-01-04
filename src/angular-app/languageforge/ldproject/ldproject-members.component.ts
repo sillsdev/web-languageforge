@@ -66,7 +66,6 @@ export class LdProjectMembersController implements angular.IController {
     }
     const projectChange = changes.project as angular.IChangesObject<LdapiProjectDto>;
     if (projectChange != null && projectChange.currentValue) {
-      console.log("Now project is:", this.project);
       if (this.project.membership) {
         this.updateRoles();
       }
@@ -112,7 +111,6 @@ export class LdProjectMembersController implements angular.IController {
   queryUserList(): void {
     this.projectService.getLdapiProjectDto(this.project.code, result => {
       if (result.ok) {
-        console.log("queryUserList() got", result.data);
         this.project = result.data;
         this.updateRoles();
       }
@@ -163,15 +161,14 @@ export class LdProjectMembersController implements angular.IController {
       // TODO: "user" here is user-and-role, so we need to disentangle them
       return this.projectService.removeUserFromLdapiProject(this.project.code, user.username, updateResult => {
         if (updateResult.ok) {
-          // this.notice.push(this.notice.SUCCESS, '"' + this.fullname(user) + '" was added to ' +
-          //   this.project.name + ' successfully');
+          this.notice.push(this.notice.SUCCESS, '"' + this.fullname(user) + '" was removed from ' +
+            this.project.name + ' successfully');
           console.log('"' + this.fullname(user) + '" was removed from ' + this.project.name + ' successfully');
         }
       });
     }, this);
     this.$q.all(promises).then(result => {
       // Possibly pop up a notice saying "N users were removed from project X: (list of names)" or just "(name) was removed from project X"
-      console.log("All promises completed with result", result);
       this.selected.splice(0);
       this.queryUserList();
     });
@@ -192,20 +189,52 @@ export class LdProjectMembersController implements angular.IController {
     });
   }
 
+  userIsManager(username: string) {
+    return this.userService.ldapiUserIsManagerOfProject(username, this.project.code).then(result => {
+      if (result.ok) {
+        console.log('userIsManager returned:', result.data);
+        return result.data;
+      } else {
+        return false;
+      }
+    });
+  }
+
+  userIsLastManager(username: string) {
+    // Note that at this point, projectMembers has already recorded the change from Manager to something else, so we can't
+    // just look up whether the username is in projectMembers as a manager
+    return this.userIsManager(username).then(isManager => {
+      if (isManager) {
+        const otherManagers = this.projectMembers.filter(([user, role]) => user.username !== username && role.key === ProjectRoles.MANAGER.key);
+        // NOTE: Tech Support roles are NOT counted here. We want at least one real manager role.
+        return (otherManagers.length === 0);
+      } else {
+        return false;
+      }
+    });
+  }
+
   // noinspection JSUnusedGlobalSymbols
   onRoleChange(userAndRole: [LdapiUserInfo, ProjectRole]): angular.IPromise<JsonRpcResult> {
-    // TODO: can't remove yourself as a manager if you're the only manager (error message should say "Add someone else as manager first before you remove yourself")
     // TODO: warning if you're about to remove yourself as a manager, saying "You won't be able to make further edits to this project if you proceed"
     // TODO: redirect to /app/projects if you just removed yourself from this project as a manager and confirmed that
     const [user, newRole] = userAndRole;
     return this.rolesService.lfRoleToLdRole(newRole.key).then(ldRole => {
       console.log('Will change', user, 'role to', newRole, 'which is', ldRole, 'in LD');
-      return this.projectService.updateLdapiUserRole(this.project.code, user.username, ldRole, result => {
-        if (result.ok) {
-          const name = this.fullname(user);
-          const message = `${name}'s role was changed to ${newRole.name}.`;
-          // this.notice.push(this.notice.SUCCESS, message);
-          console.log(message);
+      return this.userIsLastManager(user.username).then(isLast => {
+        if (isLast) {
+          console.log(`User ${user.username} is the last manager; warn the user about it`)
+          // TODO: actually notify the warning message
+          userAndRole[1] = ProjectRoles.MANAGER;
+        } else {
+          return this.projectService.updateLdapiUserRole(this.project.code, user.username, ldRole, result => {
+            if (result.ok) {
+              const name = this.fullname(user);
+              const message = `${name}'s role was changed to ${newRole.name}.`;
+              this.notice.push(this.notice.SUCCESS, message);
+              console.log(message);
+            }
+          });
         }
       });
     });
@@ -318,20 +347,17 @@ export class LdProjectMembersController implements angular.IController {
     this.typeahead.fullName = '';
     var promises = this.usersPendingAdd.map(user => {
       console.log("Adding user", this.project.code, user, this.rolesService.contributor);
-      // return this.projectService.updateLdapiUserRole(this.project.code, user.username, this.rolesService.contributor || RolesService.defaultContributorRole, updateResult => {
-      // TODO: Figure out why this.rolesService is always undefined and the constructor isn't being called
       return this.rolesService.lfRoleToLdRole(this.defaultAddRole.key).then(ldRole => {
         return this.projectService.updateLdapiUserRole(this.project.code, user.username, ldRole, updateResult => {
           if (updateResult.ok) {
-            // this.notice.push(this.notice.SUCCESS, '"' + this.fullname(user) + '" was added to ' +
-            //   this.project.name + ' successfully');
+            this.notice.push(this.notice.SUCCESS, '"' + this.fullname(user) + '" was added to ' +
+              this.project.name + ' as ' + this.defaultAddRole.name);
             console.log('"' + this.fullname(user) + '" was added to ' + this.project.name + ' as ' + this.defaultAddRole.name);
           }
         });
       });
     }, this);
     this.$q.all(promises).then(result => {
-      console.log("All promises completed with result", result);
       this.usersPendingAdd.splice(0);
       this.queryUserList();
     });

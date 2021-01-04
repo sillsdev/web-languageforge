@@ -94,6 +94,10 @@ export class UserService {
     return this.api.call('ldapi_get_projects_for_user', [username], callback);
   }
 
+  ldapiUserIsManagerOfProject(username: string, projectCode: string, callback?: JsonRpcCallback) {
+    return this.api.call('ldapi_user_is_manager_of_project', [username, projectCode], callback);
+  }
+
   searchLdapiUsers(searchText: string, callback?: JsonRpcCallback) {
     return this.api.call('ldapi_search_users', [searchText], callback);
   }

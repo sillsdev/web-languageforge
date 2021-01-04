@@ -3,6 +3,7 @@
 namespace Api\Model\Shared\Dto;
 
 use Api\Library\Shared\Website;
+use Api\Model\Shared\Command\LdapiCommands;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\SiteRoles;
@@ -373,6 +374,7 @@ class RightsHelper
             case 'ldapi_get_projects_for_user':
             case 'ldapi_project_updateUserRole':
             case 'ldapi_project_removeUser':
+            case 'ldapi_user_is_manager_of_project':
                 return true;  // Handled in userCanAccessMethodWithParams
 
             default:
@@ -410,6 +412,21 @@ class RightsHelper
         return false;
     }
 
+    public function userIsManagerOfProject($username, $projectCode) {
+        $result = LdapiCommands::isUserManagerOfProject($username, $projectCode);
+        error_log(print_r($result, true));
+        // return $result;
+        return true;
+    }
+
+    public function currentUserIsManagerOfProject($projectCode) {
+        $userModel = new UserModel($this->_userId);
+        if (isset($userModel) && isset($userModel->username)) {
+            return $this->userIsManagerOfProject($userModel->username, $projectCode);
+        } else {
+            return false;
+        }
+    }
     /**
      * @param string $methodName
      * @param array $params parameters passed to the method
@@ -433,8 +450,13 @@ class RightsHelper
             case 'ldapi_get_all_projects':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);
 
+            case 'ldapi_user_is_manager_of_project':
+                return true;
+
             case 'ldapi_get_project':
-                return true; // TODO: Make an LD API call to verify if user is owner or admin
+                // Username should be param 1, project should be param 2
+                $projectCode = isset($params[0]) ? $params[0] : null;
+                return isset($projectCode) ? $this->currentUserIsManagerOfProject($projectCode) : false;
 
             case 'ldapi_search_users':
                 return true;

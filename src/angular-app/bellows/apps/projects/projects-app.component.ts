@@ -96,16 +96,17 @@ export class ProjectsAppController implements angular.IController {
         this.userService.getProjectsForUser(username).then(result => {
           if (result.ok) {
             angular.forEach<[LdapiProjectInfo, string]>(result.data, ([ldapiProject, role]) => {
-              const convertedRole = this.rolesService.ldRoleToLfRole(role);
-              const project: ViewModelProject = {
-                id: ldapiProject.code,
-                projectName: ldapiProject.name,
-                appName: 'ldproject',
-                role: convertedRole,
-              };
-              if (this.isManager(project)) {
-                this.projects.push(project);
-              }
+              this.rolesService.ldRoleToLfRole(role).then(convertedRole => {
+                const project: ViewModelProject = {
+                  id: ldapiProject.code,
+                  projectName: ldapiProject.name,
+                  appName: 'ldproject',
+                  role: convertedRole.name,
+                };
+                if (this.isManager(project)) {
+                  this.projects.push(project);
+                }
+              });
             });
           }
         }).catch(console.error);
