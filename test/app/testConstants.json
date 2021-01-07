@@ -70,30 +70,6 @@
 
 
 
-  "ScriptureForge_Test_Constants" : "",
-
-
-  "testText1Title"   : "Chapter 3",
-  "testText1Content" : "Content of chapter 3",
-  "testText2Title"   : "Chapter 4",
-  "testText2Content" : "Fourth chapter goes here",
-  "testText3Title"   : "Chapter 5",
-  "testText3Content" : "Fifth chapter goes here",
-
-  "testText1Question1Title"          : "Who is speaking?",
-  "testText1Question1Content"        : "Who is speaking in this text?",
-  "testText1Question1Answer"         : "Bach is the speaker.",
-  "testText1Question1Answer1Comment" : "This is a manager's comment #1.",
-  "testText1Question2Title"          : "Where is the story happening?",
-  "testText1Question2Content"        : "Where is the story in this text happening?",
-  "testText1Question2Answer"         : "Springfield",
-  "testText1Question2Answer2Comment" : "This is a manager's comment #2.",
-  "testText1Question3Title"          : "What is the meaning of life?",
-  "testText1Question3Summary"        : "Meaning from Hitchhiker's Guide",
-  "testText1Question3Answer"         : "42",
-
-
-
   "LanguageForge_Test_Constants" : "",
 
   "Language added to new project" : "",
