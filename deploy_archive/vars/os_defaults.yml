@@ -1,3 +1,0 @@
----
-base_distribution: "{{ansible_distribution | lower}}"
-base_distribution_release: "{{ansible_distribution_release}}"
