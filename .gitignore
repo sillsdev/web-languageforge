@@ -24,7 +24,6 @@ src/assets/
 src/cache/
 src/dist/
 src/js/lib/languageforge.min.js
-src/js/lib/scriptureforge.min.js
 src/node_modules/
 !src/vendor/lift/
 src/vendor/
@@ -40,7 +39,6 @@ src/angular-app/bellows/shared/*.css
 src/angular-app/bellows/shared/**/*.css
 src/angular-app/bellows/directive/*.css
 src/angular-app/languageforge/**/*.css
-src/angular-app/scriptureforge/**/*.css
 src/Site/views/**/*.css
 
 secrets/

@@ -1,25 +1,12 @@
 #!/usr/bin/env bash
 # Usage
 # rune2e.sh lf                                   : runs E2E tests for LF
-# rune2e.sh sf                                   : runs E2E tests for SF
-# rune2e.sh jp                                   : runs E2E tests for JP
 # rune2e.sh lf --specs lexicon-new-project       : runs lexicon-new-project spec for LF
 #
 # Note, make sure webdriver-manager is running
 # gulp test-e2e-webdriver_standalone
 
-if [ "$1" = "lf" ]
-  then
-    E2EHOSTNAME="localhost"
-elif [ "$1" = "sf" ]
-  then
-    E2EHOSTNAME="scriptureforge.localhost"
-elif [ "$1" = "jp" ]
-  then
-    E2EHOSTNAME="jamaicanpsalms.scriptureforge.localhost"
-else
-    E2EHOSTNAME="localhost"
-fi
+E2EHOSTNAME="languageforge.localhost"
 
 attach_debugger () {
   # Searches for the Node process running Protractor tests, then signals for it to attach the debugger

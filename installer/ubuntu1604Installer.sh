@@ -99,11 +99,6 @@ if [ $OS == "Windows" ]; then
 fi
 
 cd ..
-if [ ! -L web-scriptureforge ]; then
-    echo "Fix scriptureforge.localhost symlink"
-    sudo rm -r web-scriptureforge
-    ln -s web-languageforge web-scriptureforge
-fi
 cd web-languageforge
 
 echo "Run npm install"
@@ -123,7 +118,6 @@ echo "Set file permissions"
 sudo chmod g+w src/assets/lexicon/
 
 echo "You should now be able to access Language Forge locally at http://languageforge.localhost"
-echo "You should now be able to access Scripture Forge locally at http://scriptureforge.localhost"
 echo "username: admin"
 echo "password: password"
 echo "Installation finished!"

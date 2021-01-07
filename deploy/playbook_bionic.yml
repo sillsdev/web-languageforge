@@ -1,6 +1,13 @@
 ---
 
-- name: Deploy (development) environment for xForge (languageforge.org and scriptureforge.org)
+# begin install
+# NOTE: to install on a build-agent, or to merely reset the environment, run with --skip-tags "developer"
+- name: Linux Bionic local webserver
+  hosts: all
+  become: yes
+  tasks:
+
+- name: Deploy (development) environment for languageforge.org
   hosts: all
   become: yes
   vars:
@@ -117,13 +124,6 @@
         recurse: yes
       with_items:
         - "{{php_log_folder}}"
-    - name: Create a symbolic link for scriptureforge
-      file:
-        src: web-languageforge
-        dest: ../../web-scriptureforge
-        group: www-data
-        state: link
-      tags: developer
 
     - name: php.ini changes
       lineinfile:
@@ -359,7 +359,6 @@
       with_items:
         - "default.local"
         - "languageforge.localhost"
-        - "scriptureforge.localhost"
       tags: developer
 
   handlers:
@@ -372,7 +371,7 @@
     - name: restart postfix
       service: name=postfix state=restarted
 
-- name: Deploy development environment for xForge (languageforge.org and scriptureforge.org)
+- name: Deploy development environment for languageforge.org
   hosts: all
   become: no
   vars:

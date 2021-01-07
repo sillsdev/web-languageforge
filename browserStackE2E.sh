@@ -8,12 +8,7 @@
 # Note, make sure webdriver-manager is running
 # gulp test-e2e-webdriver_standalone
 
-if [ "$1" = "sf" ]
-  then
-    E2EHOSTNAME="e2etest.scriptureforge.local"
-else
-    E2EHOSTNAME="e2etest.languageforge.localhost"
-fi
+E2EHOSTNAME="e2etest.languageforge.localhost"
 gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 STATUS=$?
 
