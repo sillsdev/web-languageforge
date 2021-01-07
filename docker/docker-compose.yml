@@ -1,0 +1,21 @@
+# https://docs.docker.com/compose/compose-file
+version: '3.9'
+services:
+    mongo:
+      build: ./mongo/.
+      volumes:
+        - lf-mongo-data:/data/db
+    php-test:
+      build:
+        context: ..
+        dockerfile: docker/php-test/Dockerfile
+    # php-api:
+    #   build: php-api/.
+    lfmerge:
+      build: lfmerge/.
+      volumes:
+        - lf-lfmerge:/var/lib/languageforge
+
+volumes:
+  lf-mongo-data:
+  lf-lfmerge:
