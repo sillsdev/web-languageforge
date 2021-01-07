@@ -8,11 +8,6 @@ use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransRoles;
-use Api\Model\Scriptureforge\Rapuma\RapumaProjectModel;
-use Api\Model\Scriptureforge\Rapuma\RapumaRoles;
-use Api\Model\Scriptureforge\Sfchecks\ProjectUserPropertiesSettings;
-use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
-use Api\Model\Scriptureforge\Sfchecks\SfchecksRoles;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\Id;
@@ -111,7 +106,7 @@ class ProjectModel extends MapperModel
     public $allowSharing;
 
     /**
-     * Specifies which site this project belongs to e.g. scriptureforge || languageforge, cf. Website class
+     * Specifies which site this project belongs to.  e.g. languageforge, cf. Website class
      * @var string
      */
     public $siteName;
@@ -125,7 +120,7 @@ class ProjectModel extends MapperModel
     /** @var ArrayOf */
     public $usersRequestingAccess;
 
-    /** @var LexRoles|SfchecksRoles|SemDomTransRoles|RapumaRoles */
+    /** @var LexRoles */
     protected $rolesClass;
 
     /**

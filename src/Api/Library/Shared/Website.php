@@ -86,11 +86,10 @@ class Website
     private static function getHostname()
     {
         if (array_key_exists('HTTP_X_FORWARDED_SERVER', $_SERVER) && array_key_exists('HTTP_X_FORWARDED_HOST', $_SERVER)) {
-            // special exception for reverse proxy on dev.scriptureforge.org
+            // special exception for reverse proxy
             $forwardedServer = $_SERVER['HTTP_X_FORWARDED_SERVER'];
             $forwardedHost = $_SERVER['HTTP_X_FORWARDED_HOST'];
             switch ($forwardedServer) {
-                case 'dev.scriptureforge.org' :
                 case 'dev.languageforge.org' :
                 case 'qa.languageforge.org' :
                     return $forwardedHost;

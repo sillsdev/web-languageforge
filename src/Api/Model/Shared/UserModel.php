@@ -3,7 +3,6 @@
 namespace Api\Model\Shared;
 
 use Api\Library\Shared\Website;
-use Api\Model\Scriptureforge\Sfchecks\SfchecksUserProfile;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\IdReference;

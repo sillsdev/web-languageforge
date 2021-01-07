@@ -121,11 +121,7 @@ class Base
         if (file_exists('appManifest/' . $this->website->base . '.manifest.json')) {
             $this->data['manifestFilename'] = $this->website->base . '.manifest.json';
         }
-        if($this->website->base == Website::LANGUAGEFORGE) {
-            $this->data['themeColor'] = '#0a2440';
-        } elseif($this->website->base == Website::SCRIPTUREFORGE) {
-            $this->data['themeColor'] = '#3a3a3a';
-        }
+        $this->data['themeColor'] = '#0a2440';
 
         $this->populateHeaderMenuViewdata();
         $this->data['useCdn'] = USE_CDN;

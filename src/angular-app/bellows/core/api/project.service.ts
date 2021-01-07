@@ -36,9 +36,6 @@ export class ProjectService {
     // data constants
     this.data = {
       projectTypeNames: {
-        sfchecks: 'Community Scripture Checking',
-        webtypesetting: 'Typesetting',
-        semdomtrans: 'Semantic Domain Translation',
         lexicon: 'Dictionary'
       },
       projectTypesBySite: () => {
@@ -48,9 +45,7 @@ export class ProjectService {
 
     this.sessionService.getSession().then((session: Session) => {
       const types = {
-        // 'languageforge': ['lexicon', 'semdomtrans'],
-        languageforge: ['lexicon'],
-        scriptureforge: ['sfchecks']
+        languageforge: ['lexicon']
       };
 
       this.projectTypesBySite = types[session.baseSite()];
