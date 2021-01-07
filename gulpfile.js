@@ -181,108 +181,9 @@ gulp.task('webpack-lf:analyze', function (cb) {
   runWebpack('languageforge', cb, false, true);
 });
 
-// -------------------------------------
-//   Task: webpack-sf
-// -------------------------------------
-gulp.task('webpack-sf', function (cb) {
-  runWebpack('scriptureforge', cb);
-});
-
-// -------------------------------------
-//   Task: webpack-sf watch
-// -------------------------------------
-gulp.task('webpack-sf:watch', function (cb) {
-  runWebpack('scriptureforge', cb, true);
-});
-
-// -------------------------------------
-//   Task: webpack-sf analyze
-// -------------------------------------
-gulp.task('webpack-sf:analyze', function (cb) {
-  runWebpack('scriptureforge', cb, false, true);
-});
-
 // endregion
 
 //region MongoDB
-
-// -------------------------------------
-//   Task: MongoDB: Backup Production
-// -------------------------------------
-gulp.task('mongodb-backup-prod-db', function (cb) {
-  execute(
-    'ssh scriptureforge.org \'bash -s\' < scripts/server/mongodb/backupMongoOnServer.sh',
-    null,
-    cb
-  );
-});
-
-// -------------------------------------
-//   Task: MongoDB: Copy Backup to Local
-// -------------------------------------
-gulp.task('mongodb-copy-backup-to-local', function (cb) {
-  var padLeft = function (i, len, ch) {
-    var val = i.toString();
-    while (val.length < len)
-      val = ch + val;
-    return val;
-  };
-
-  var formatDateYMD = function (date) {
-    return date.getFullYear() + '-' + padLeft(date.getMonth() + 1, 2, '0') + '-' +
-        padLeft(date.getDate(), 2, '0');
-  };
-
-  var today = formatDateYMD(new Date());
-  execute(
-    'scp scriptureforge.org:mongodb_backup_' + today + '.tgz /tmp/',
-    null,
-    cb
-  );
-});
-
-// -------------------------------------
-//   Task: MongoDB: Clean Backup Production
-// -------------------------------------
-gulp.task('mongodb-cleanup-backup-prod-db', function (cb) {
-  // To set the username, edit your ssh config file (~/.ssh/config) and add an entry:
-  // Host scriptureforge.org
-  //     User jdoe
-  execute(
-    'ssh scriptureforge.org \'bash -s\' < scripts/server/mongodb/deleteTarFileOnServer.sh',
-    null,
-    cb
-  );
-});
-
-// -------------------------------------
-//   Task: MongoDB: Restore Mongo on Local
-// -------------------------------------
-gulp.task('mongodb-restore-local-db', function (cb) {
-  execute(
-    'scripts/server/mongodb/restoreMongoOnLocal.sh /tmp',
-    null,
-    cb
-  );
-});
-
-gulp.task('mongodb-restore-local-db').description =
-  'Restore mongodb from a local archive file';
-
-// -------------------------------------
-//   Task: MongoDB: Copy Production
-// -------------------------------------
-gulp.task('mongodb-copy-prod-db',
-  gulp.series(
-    'mongodb-backup-prod-db',
-    'mongodb-copy-backup-to-local',
-    gulp.parallel('mongodb-cleanup-backup-prod-db', 'mongodb-restore-local-db')
-  )
-);
-gulp.task('mongodb-copy-prod-db').description =
-  'Backup MongoDB on server and restore on local machine';
-
-//endregion
 
 //region Test (PHP, JS, .NET, and E2E)
 
@@ -408,27 +309,6 @@ gulp.task('test-ts-lf:watch', function (cb) {
 // -------------------------------------
 gulp.task('test-ts-lf:debug', function (cb) {
   runKarmaTests('languageforge', cb, 'debug');
-});
-
-// -------------------------------------
-//   Task: test-ts-sf
-// -------------------------------------
-gulp.task('test-ts-sf', function (cb) {
-  runKarmaTests('scriptureforge', cb);
-});
-
-// -------------------------------------
-//   Task: test-ts-sf:watch
-// -------------------------------------
-gulp.task('test-ts-sf:watch', function (cb) {
-  runKarmaTests('scriptureforge', cb, 'watch');
-});
-
-// -------------------------------------
-//   Task: test-ts-sf:debug
-// -------------------------------------
-gulp.task('test-ts-sf:debug', function (cb) {
-  runKarmaTests('scriptureforge', cb, 'debug');
 });
 
 // -------------------------------------
@@ -638,13 +518,12 @@ gulp.task('test-e2e-doTest', function (cb) {
     .alias('?', 'help')
     .example('$0 test-e2e-run --webserverHost localhost',
       'Runs all the E2E tests for languageforge')
-    .example('$0 test-e2e-run --webserverHost scriptureforge.localhost --specs projectSettingsPage',
-      'Runs the scriptureforge E2E test for projectSettingsPage')
+    .example('$0 test-e2e-run --webserverHost languageforge.localhost --specs projectSettingsPage',
+      'Runs the languageforge E2E test for projectSettingsPage')
     .fail(yargFailure)
     .argv;
 
-  var protocol =
-    (params.webserverHost === 'jamaicanpsalms.scriptureforge.localhost') ? 'https://' : 'http://';
+  var protocol = 'http://';
 
   var configFile;
   var isBrowserStack = false;
@@ -684,19 +563,11 @@ gulp.task('test-e2e-doTest', function (cb) {
   var specs = ['test/app/allspecs/**/*.e2e-spec.js'];
   if (specString === '*') {
     specs.push('test/app/bellows/**/*-traversal.e2e-spec.js');
-    if (params.webserverHost.includes('languageforge')) {
-      specs.push('test/app/languageforge/**/*-traversal.e2e-spec.js');
-    } else {
-      specs.push('test/app/scriptureforge/**/*-traversal.e2e-spec.js');
-    }
+    specs.push('test/app/languageforge/**/*-traversal.e2e-spec.js');
   }
 
   specs.push('test/app/bellows/**/' + specString + '.e2e-spec.js');
-  if (params.webserverHost.includes('languageforge')) {
-    specs.push('test/app/languageforge/**/' + specString + '.e2e-spec.js');
-  } else {
-    specs.push('test/app/scriptureforge/**/' + specString + '.e2e-spec.js');
-  }
+  specs.push('test/app/languageforge/**/' + specString + '.e2e-spec.js');
 
   // Get the selenium server address
   if (params.seleniumAddress && params.seleniumAddress.length > 0) {
