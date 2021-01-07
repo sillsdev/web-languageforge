@@ -6,6 +6,7 @@ import {NoticeService} from '../../bellows/core/notice/notice.service';
 import {InterfaceConfig} from '../../bellows/shared/model/interface-config.model';
 import {User} from '../../bellows/shared/model/user.model';
 import { ProjectService } from '../../bellows/core/api/project.service';
+import { Session, SessionService } from '../../bellows/core/session.service';
 import { LdapiProjectInfo } from '../../bellows/apps/siteadmin/ldapi-projects-view';
 import { UserService } from '../../bellows/core/api/user.service';
 import { LdapiUserInfo } from '../../bellows/apps/siteadmin/ldapi-users-view';
@@ -26,6 +27,8 @@ export class LdProjectAppController implements angular.IController {
   interfaceConfig: InterfaceConfig = {} as InterfaceConfig;
   users: { [userId: string]: User } = {};
   project: LdapiProjectDto = undefined;
+  session: angular.IPromise<Session>;
+  isAdmin: boolean = false;
   projectId: string = "";
   membership: [LdapiUserInfo, string][] = [];
 
@@ -37,6 +40,7 @@ export class LdProjectAppController implements angular.IController {
     'silNoticeService',
     'projectService',
     'userService',
+    'sessionService',
     'siteWideNoticeService',
     ];
   constructor(private readonly $scope: angular.IScope, private readonly $location: angular.ILocationService,
@@ -44,10 +48,17 @@ export class LdProjectAppController implements angular.IController {
               private readonly notice: NoticeService,
               private readonly projectService: ProjectService,
               private readonly userService: UserService,
+              private readonly sessionService: SessionService,
               private readonly siteWideNoticeService: SiteWideNoticeService,
               ) { }
 
   $onInit(): void {
+    this.session = this.sessionService.getSession();
+    this.session.then(session => {
+      if (session.hasSiteRight(this.sessionService.domain.USERS, this.sessionService.operation.EDIT)) {
+        this.isAdmin = true;
+      };
+    });
     var match = this.$location.path().match(/\/app\/ldproject\/([^\/]+)/);
     console.log(match);
     if (match.length > 1) {

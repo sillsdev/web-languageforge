@@ -16,12 +16,12 @@ export class LdProjectMembersController implements angular.IController {
   boundSearchUsers: (searchText: string) => void;
   list: any;
   project: LdapiProjectDto;
+  isAdmin: boolean;
   projectMembers: [LdapiUserInfo, ProjectRole][];
   ldapiRoles: ProjectRole[] = [ProjectRoles.MANAGER, ProjectRoles.CONTRIBUTOR, ProjectRoles.NONE];
   roles: ProjectRole[] = [ProjectRoles.MANAGER, ProjectRoles.CONTRIBUTOR, ProjectRoles.NONE];
   rolesWithTechSupport: ProjectRole[] = [ProjectRoles.MANAGER, ProjectRoles.CONTRIBUTOR, ProjectRoles.TECH_SUPPORT, ProjectRoles.NONE];
   // rights: Rights;
-  currentUser: Partial<User>;
 
   userFilter = '';
   selected: LdapiUserInfo[] = [];
@@ -376,6 +376,7 @@ export const LdProjectMembersComponent: angular.IComponentOptions = {
     // queryUserList: '&',
     // list: '<',
     project: '<',
+    isAdmin: '<',
     // currentUser: '<',
     // rights: '<',
     // roles: '<'

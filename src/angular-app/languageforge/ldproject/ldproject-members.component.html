@@ -5,6 +5,7 @@
             <th></th>
             <th>Username</th>
             <th>Full Name</th>
+            <th data-ng-if="$ctrl.isAdmin">Email</th>
             <th>Role</th>
         </tr>
         </thead>
@@ -17,6 +18,7 @@
             </td>
             <td>{{userAndRole[0].username}}</td>
             <td>{{$ctrl.fullname(userAndRole[0])}}</td>
+            <td data-ng-if="$ctrl.isAdmin">{{userAndRole[0].email}}</td>
             <td>
                 <!-- suppress HtmlFormInputWithoutLabel -->
                 <!-- <select id="default-role-select" class="form-control custom-select col-12" data-ng-model="userAndRole[1]" data-ng-disabled="$ctrl.isRoleSelectDisabled(user)"
@@ -52,7 +54,7 @@
             <div data-ng-show="$ctrl.usersPendingAdd.length > 0">
                 The following users will be added as {{$ctrl.defaultAddRole.name}}:
                 <ul>
-                    <li data-ng-repeat="user in $ctrl.usersPendingAdd">{{$ctrl.fullname(user)}} ({{user.username}})</li>
+                    <li data-ng-repeat="user in $ctrl.usersPendingAdd">{{$ctrl.fullname(user)}} ({{user.username}}) {{$ctrl.isAdmin ? "<" + user.email + ">" : ""}}</li>
                 </ul>
             </div>
             <button class="btn btn-primary" id="addMembersButton"

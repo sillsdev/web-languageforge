@@ -2,7 +2,7 @@
     <div class="container">
       <h3>Project membership for {{$ctrl.project.name}} ({{$ctrl.project.code}})</h3>
       <!-- <i ng-click="$ctrl.dismiss()" class="fa fa-times"></i> -->
-      <ldproject-members project="$ctrl.project" session="$ctrl.session"></ldproject-members>
+      <ldproject-members project="$ctrl.project" session="$ctrl.session" is-admin="$ctrl.isAdmin"></ldproject-members>
       <!-- <invite-member-form style="max-width: 30em;" ng-if="!$ctrl.currentUserIsManager"></invite-member-form> -->
     </div>
     <div class="modal-footer d-block clearfix">
