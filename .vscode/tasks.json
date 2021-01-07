@@ -63,19 +63,6 @@
           "reveal": "silent"
         },
         "problemMatcher": "$node-sass"
-      },
-      {
-        "label": "dotnet",
-        "command": "dotnet build",
-        "type": "shell",
-        "group": "build",
-        "presentation": {
-          "reveal": "silent"
-        },
-        "options": {
-          "cwd": "${workspaceRoot}/src/netcore-api"
-        },
-        "problemMatcher": "$msCompile"
       }
     ]
   }
