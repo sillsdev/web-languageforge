@@ -68,6 +68,7 @@
           - mongodb-org
           - nodejs
           - p7zip-full
+          - php{{php_version}}
           - php{{php_version}}-cli
           - php{{php_version}}-curl
           - php{{php_version}}-dev
