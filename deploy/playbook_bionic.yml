@@ -101,6 +101,9 @@
     - name: change npm version
       shell: "npm install -g npm@{{npm_version}}" # TODO: idempotent
 
+    - name: ensure system is using PHP 7.3
+      shell: "sudo update-alternatives --set php /usr/bin/php7.3"
+
     - name: install Composer
       shell: php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/local/bin --filename=composer
       args:
