@@ -75,6 +75,10 @@ if (! defined('FACEBOOK_CLIENT_SECRET')) {
     define('FACEBOOK_CLIENT_SECRET', 'facebookClientSecret');
 }
 
+if (! defined('LANGUAGE_DEPOT_API_TOKEN')) {
+    define('LANGUAGE_DEPOT_API_TOKEN', 'not-a-secret');
+}
+
 if (! defined('GATHERWORDS_CLIENT_ID')) {
     define('GATHERWORDS_CLIENT_ID', 'gatherWordsClientId');
 }

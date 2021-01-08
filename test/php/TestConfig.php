@@ -31,6 +31,8 @@ define('SF_TESTPROJECT2',     'Test Project2');
 define('SF_TESTPROJECTCODE2', 'testcode2');
 define('BCRYPT_COST', 7);
 
+define('LANGUAGE_DEPOT_API_TOKEN', 'not-a-secret');
+
 global $WEBSITE;
 $WEBSITE = Website::get('languageforge.localhost');
 
