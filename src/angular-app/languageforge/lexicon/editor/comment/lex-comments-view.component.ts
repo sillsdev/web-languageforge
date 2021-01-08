@@ -46,7 +46,7 @@ export class LexCommentsViewController implements angular.IController {
       this.newComment.contextGuid = contextGuid;
       if (inputSystemTag) {
         this.newComment.regarding.fieldValue = LexCommentsViewController.getFieldValue(model, inputSystemTag);
-        this.newComment.regarding.inputSystem = this.control.config.inputSystems[inputSystemTag].languageName;
+        this.newComment.regarding.inputSystem = inputSystemTag;
         this.newComment.regarding.inputSystemAbbreviation =
           this.control.config.inputSystems[inputSystemTag].abbreviation;
       } else if (multioptionValue) {
