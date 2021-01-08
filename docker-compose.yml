@@ -1,0 +1,7 @@
+# https://docs.docker.com/compose/compose-file
+version: '3.9'
+services:
+    lf:
+        build: .
+        # volumes:
+        #     - .:/data

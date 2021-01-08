@@ -32,32 +32,15 @@ Linux 6ae2e9487cad 4.19.121-linuxkit #1 SMP Tue Dec 1 17:50:32 UTC 2020 x86_64 x
 `root@6ae2e9487cad:/# git clone https://github.com/sillsdev/web-languageforge --recurse-submodules` ✅
 
 1. Run from within project root: `docker run -v `pwd`:/data --rm lf ls`
-1. TODO: need to figure out to best handle this recursive thing: should we use instructions in the README to ensure the repo is cloned like this `git clone https://github.com/sillsdev/web-languageforge --recurse-submodules` or is there something we can do to keep that overhead off the dev by doing it in image or contianer via entrypoint.sh `git submodule update --init --recursive`...not sure how to best deal with this right now.
-
+1. TODO: need to figure out how to best handle this submodule thing: should we use instructions in the README to ensure the repo is cloned like this `git clone https://github.com/sillsdev/web-languageforge --recurse-submodules` or is there something we can do to keep that overhead off the dev by doing it in image or container via entrypoint.sh `git submodule update --init --recursive`...not sure how to best deal with this right now so went ahead and just copied things in for now, imaage is now 1.03 GB!!!  Need to talk through this a bit, is ansible part of the env set up and thenother scripts are responsible for starting things or is the ansible script setting the environment up and responsible for starting things up?
 
 ## configure ansible
 `root@6ae2e9487cad:/src/xForge# cd web-languageforge/deploy` ✅
 
-TODO: removing -K here results in same problem about apt cache update
+
+TODO: stuck here for the moment...
 `root@6ae2e9487cad:/src/xForge# ansible-playbook playbook_bionic.yml --limit localhost -K` ❌  => 
 
-`BECOME password: ` ENTER then
-
 ```bash
-PLAY [Linux Bionic local webserver] *******************************************************************************************************************************************************
-
-TASK [Gathering Facts] ********************************************************************************************************************************************************************
-ok: [localhost]
-
-PLAY [Deploy (development) environment for xForge (languageforge.org and scriptureforge.org)] *********************************************************************************************
-
-TASK [Gathering Facts] ********************************************************************************************************************************************************************
-ok: [localhost]
-
-TASK [Add PHP7.3 ppa] *********************************************************************************************************************************************************************
-fatal: [localhost]: FAILED! => {"changed": false, "msg": "apt cache update failed"}
-
-PLAY RECAP ********************************************************************************************************************************************************************************
-localhost                  : ok=2    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
 
 ```
