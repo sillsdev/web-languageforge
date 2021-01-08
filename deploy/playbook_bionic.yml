@@ -21,7 +21,7 @@
         id: 14AA40EC0831756756D7F66C4F4EA0AAE5267A6C
     - name: Add PHP{{php_version}} ppa
       apt_repository:
-        repo: "deb http://ppa.launchpad.net/ondrej/php/ubuntu {{base_distribution_release}} Release"
+        repo: "deb http://ppa.launchpad.net/ondrej/php/ubuntu {{base_distribution_release}} main"
         state: present
     - name: add Mongo apt key
       apt_key:
