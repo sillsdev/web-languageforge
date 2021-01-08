@@ -961,6 +961,11 @@ gulp.task('build-productionConfig', function () {
     facebookClientSecret = 'facebookClientSecret';
   }
 
+  var languageDepotApiToken = process.env.LANGUAGE_DEPOT_API_TOKEN;
+  if (languageDepotApiToken === undefined) {
+    languageDepotApiToken = 'languageDepotApiToken';
+  }
+
   var gatherWordsClientId = process.env.GATHERWORDS_CLIENT_ID;
   if (gatherWordsClientId === undefined) {
     gatherWordsClientId = 'gatherWordsClientId';
@@ -1003,6 +1008,10 @@ gulp.task('build-productionConfig', function () {
       demand: false,
       default: facebookClientSecret,
       type: 'string' })
+    .option('languageDepotApiToken', {
+      demand: false,
+      default: languageDepotApiToken,
+      type: 'string' })
     .option('gatherWordsClientId', {
       demand: false,
       default: gatherWordsClientId,
@@ -1040,6 +1049,9 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('FACEBOOK_CLIENT_SECRET', ').*;$/m,
       '$1' + params.facebookClientSecret + '\');'))
+    .pipe(replace(
+      /(define\('LANGUAGE_DEPOT_API_TOKEN', ').*;$/m,
+      '$1' + params.languageDepotApiToken + '\');'))
     .pipe(replace(
       /(define\('GATHERWORDS_CLIENT_ID', ').*;$/m,
       '$1' + params.gatherWordsClientId + '\');'))
