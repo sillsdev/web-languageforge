@@ -75,9 +75,9 @@
           - php{{php_version}}-gd
           - php{{php_version}}-intl
           - php{{php_version}}-mbstring
-          - php-pear
+          - php{{php_version}}-pear
           - postfix
-          - php-xdebug
+          - php{{php_version}}-xdebug
           - unzip
       tags: [ 'packages' ]
 
