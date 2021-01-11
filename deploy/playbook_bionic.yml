@@ -410,8 +410,8 @@
 - name: post-install tasks
   hosts: all
   tasks:
-    - name: refresh dependencies (refreshDeps.sh)
-      shell: ./refreshDeps.sh
+    - name: build front-end
+      shell: "gulp dev-build --applicationName languageforge"
       args:
         chdir: ..
       tags: developer
