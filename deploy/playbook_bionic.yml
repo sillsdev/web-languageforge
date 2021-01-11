@@ -1,12 +1,5 @@
 ---
 
-# begin install
-# NOTE: to install on a build-agent, or to merely reset the environment, run with --skip-tags "developer"
-- name: Linux Bionic local webserver
-  hosts: all
-  become: yes
-  tasks:
-
 - name: Deploy (development) environment for xForge (languageforge.org and scriptureforge.org)
   hosts: all
   become: yes
@@ -101,8 +94,8 @@
     - name: change npm version
       shell: "npm install -g npm@{{npm_version}}" # TODO: idempotent
 
-    - name: ensure system is using PHP 7.3
-      shell: "sudo update-alternatives --set php /usr/bin/php7.3"
+    - name: ensure system is using desired PHP version
+      shell: "update-alternatives --set php /usr/bin/php{{php_version}}"
 
     - name: install Composer
       shell: php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/local/bin --filename=composer
