@@ -21,7 +21,7 @@ export class LdapiProjectsController implements angular.IController {
   projects = [{name: 'foo', identifier: 'foo'}, {name: 'bar', identifier: 'bar'}];
   loadedProjects: LdapiProjectInfo[];
   tableParams: NgTableParams<LdapiProjectInfo>;
-  selectedProject: LdapiProjectInfo;
+  selectedProject: LdapiProjectDto;
   membership: [string, string][] = [];
   memberNames: {[username: string]: string};
   roles: string[];
@@ -57,23 +57,12 @@ export class LdapiProjectsController implements angular.IController {
   }
 
   select(project: LdapiProjectInfo) {
-    this.selectedProject = project;
-    // TODO: Instead of looking up users one at a time, use the Project DTO API call to get "composed" membership lists
-    var members: [string, string][] = [];
-    angular.forEach(this.selectedProject.membership, (role, username) => {
-      members.push([username, role]);
-      console.log("Pushing", username);
-      this.inProgress[username] = false;
+    this.projectService.getLdapiProjectDto(project.code).then(result => {
+      console.log("Project DTO result:", result);
+      if (result.ok) {
+        this.selectedProject = result.data;
+      }
     });
-    this.membership = members;
-    this.selectedRole = {};
-    this.memberNames = {};
-    angular.forEach(members, ([username, role]) => {
-      this.selectedRole[username] = role;
-      this.lookupUserName(username);
-    });
-    this.pristineRoles = {...this.selectedRole};
-    console.log(this.selectedRole);
   }
 
   lookupUserName(username: string): void {

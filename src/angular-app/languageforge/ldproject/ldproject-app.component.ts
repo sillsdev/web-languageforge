@@ -64,12 +64,9 @@ export class LdProjectAppController implements angular.IController {
     if (match.length > 1) {
       this.projectId = match[1];
       this.projectService.getLdapiProjectDto(this.projectId).then(result => {
-        console.log("Project DTO result:", result);
         if (result.ok) {
           this.project = result.data;
-          console.log("Found project", this.project);
           this.membership = this.project.membership;
-          console.log("Project membership to display:", this.membership);
         }
       });
     }

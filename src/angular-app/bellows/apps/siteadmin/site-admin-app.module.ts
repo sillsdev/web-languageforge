@@ -13,6 +13,7 @@ import {SiteAdminArchivedProjectsComponent} from './site-admin-archived-projects
 import { SiteAdminProjectInsightsComponent } from './site-admin-project-insights.component';
 import {SiteAdminUsersComponent} from './site-admin-users.component';
 import {SiteAdminComponent} from './site-admin.component';
+import {LdProjectMembersComponent} from '../../../languageforge/ldproject/ldproject-members.component';
 
 export const SiteAdminAppModule = angular
   .module('siteadmin', [
@@ -30,6 +31,7 @@ export const SiteAdminAppModule = angular
   .component('siteAdminApp', SiteAdminComponent)
   .component('siteAdminUsers', SiteAdminUsersComponent)
   .component('siteAdminLdprojects', LdapiProjectsComponent)
+  .component('ldprojectmembers', LdProjectMembersComponent)
   .component('siteAdminLdusers', LdapiUsersComponent)
   .component('siteAdminProjectInsights', SiteAdminProjectInsightsComponent)
   .component('siteAdminArchivedProjects', SiteAdminArchivedProjectsComponent)
