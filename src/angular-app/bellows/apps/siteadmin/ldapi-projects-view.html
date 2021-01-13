@@ -1,6 +1,6 @@
 <div id="ldapiProjectsView" class="animate-switch">
     <div class="row">
-      <div class="col col-lg-6">
+      <div class="col col-lg-4">
           <table id="ldapiProjectsGrid" ng-table="$ctrl.tableParams" class="table table-bordered table-sm table-striped" show-filter="true">
               <!-- <thead>
                   <th>Name</th>
@@ -14,7 +14,7 @@
                   </tr>
           </table>
       </div>
-      <div class="col col-lg-6">
+      <div class="col col-lg-8">
         <div ng-if="$ctrl.selectedProject">
           <div class="card">
             <ldprojectmembers isAdmin="true" project="$ctrl.selectedProject"></ldprojectmembers>
