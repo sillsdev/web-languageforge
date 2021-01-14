@@ -16,7 +16,7 @@ class Ldapi
 {
     public static function call($method, $url, array $jsonData = null)
     {
-        $url = 'http://localhost:4200/api/' . $url;
+        $url = 'http://localhost:4200/api/v2/' . $url;
         // Should eventually be: $url = 'https://admin.languagedepot.org/api/' . $url;
 
         $opts = ['http_errors' => false];
