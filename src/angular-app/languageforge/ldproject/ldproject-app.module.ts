@@ -6,11 +6,8 @@ import uiRouter from 'angular-ui-router';
 import {ApiService} from '../../bellows/core/api/api.service';
 import {SiteWideNoticeModule} from '../../bellows/core/site-wide-notice-service';
 import {CoreModule} from '../../bellows/core/core.module';
-// import {LexiconCoreModule} from './core/lexicon-core.module';
-// import {LexiconEditorModule} from './editor/editor.module';
 import {LdProjectAppComponent} from './ldproject-app.component';
 import {LdProjectMembersComponent} from './ldproject-members.component';
-// import {LexiconSettingsModule} from './settings/settings.module';
 import { ShareWithOthersModule } from '../lexicon/shared/share-with-others/share-with-others.module';
 
 export const LdProjectAppModule = angular

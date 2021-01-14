@@ -5,9 +5,7 @@ import { UserService } from '../../bellows/core/api/user.service';
 import { RolesService } from '../../bellows/core/api/roles.service';
 import { NoticeService } from '../../bellows/core/notice/notice.service';
 import { SessionService } from '../../bellows/core/session.service';
-import { User } from '../../bellows/shared/model/user.model';
 import { Project, ProjectRole, ProjectRoles } from '../../bellows/shared/model/project.model';
-import { LdapiProjectInfo } from '../../bellows/apps/siteadmin/ldapi-projects-view';
 import { LdapiProjectDto } from './ldproject-app.component';
 import { LdapiUserInfo } from '../../bellows/apps/siteadmin/ldapi-users-view';
 import { JsonRpcResult } from '../../bellows/core/api/api.service';
@@ -18,10 +16,10 @@ export class LdProjectMembersController implements angular.IController {
   project: LdapiProjectDto;
   isAdmin: boolean;
   projectMembers: [LdapiUserInfo, ProjectRole][];
+  // TODO: Three role arrays? That seems redundant. Whittle that down to one. See commented-out getRoles() function
   ldapiRoles: ProjectRole[] = [ProjectRoles.MANAGER, ProjectRoles.CONTRIBUTOR, ProjectRoles.NONE];
   roles: ProjectRole[] = [ProjectRoles.MANAGER, ProjectRoles.CONTRIBUTOR, ProjectRoles.NONE];
   rolesWithTechSupport: ProjectRole[] = [ProjectRoles.MANAGER, ProjectRoles.CONTRIBUTOR, ProjectRoles.TECH_SUPPORT, ProjectRoles.NONE];
-  // rights: Rights;
 
   userFilter = '';
   selected: LdapiUserInfo[] = [];
@@ -29,12 +27,6 @@ export class LdProjectMembersController implements angular.IController {
   userSearchResults: LdapiUserInfo[] = [];
   usersPendingAdd: LdapiUserInfo[] = [];
   defaultAddRole: ProjectRole = ProjectRoles.CONTRIBUTOR;
-  addModes = {
-    addExisting: { en: 'Add Existing User', icon: 'fa fa-user' },
-    invite: { en: 'Send Email Invite', icon: 'fa fa-envelope' }
-  };
-  addMode = 'addExisting';
-  disableAddButton = true;
   typeahead = {
     userName: '',
     fullName: ''
@@ -43,13 +35,18 @@ export class LdProjectMembersController implements angular.IController {
 
   private user: LdapiUserInfo;
 
-  static $inject = ['$window', '$location', '$q', 'userService', 'projectService', 'sessionService', 'rolesService', 'silNoticeService'];
+  static $inject = [
+    '$window',
+    '$q',
+    'userService',
+    'projectService',
+    'rolesService',
+    'silNoticeService'
+  ];
   constructor(private $window: angular.IWindowService,
-              private $location: angular.ILocationService,
               private $q: angular.IQService,
               private userService: UserService,
               private projectService: ProjectService,
-              private sessionService: SessionService,
               private rolesService: RolesService,
               private notice: NoticeService) {
                 this.boundSearchUsers = this.searchUsers.bind(this);
@@ -129,17 +126,10 @@ export class LdProjectMembersController implements angular.IController {
   //   return this.roles;
   // }
 
-  // isRoleSelectDisabled(user: User): boolean {
-  //   if (user.id === this.project.ownerRef.id ||
-  //     (user.role === 'tech_support' && user.id !== this.currentUser.id) ||
-  //     /* !this.rights.changeRole */ false) { return true; }
-
-  //   return false;
-  // }
-
   removeProjectUsers(): void {
     const usersToRemove: LdapiUserInfo[] = [];
     const l = this.selected.length;
+    // TODO: Remove for loop below since we check for project manager removal elsewhere now
     for (let i = 0; i < l; i++) {
 
       // Guard against project owner being removed
@@ -151,19 +141,17 @@ export class LdProjectMembersController implements angular.IController {
     }
 
     if (l === 0) {
-
-      // TODO ERROR
       return;
     }
 
     var promises = this.selected.map(user => {
-      console.log("Removing user", user, "from", this.project.name);
       // TODO: "user" here is user-and-role, so we need to disentangle them
       return this.projectService.removeUserFromLdapiProject(this.project.code, user.username, updateResult => {
         if (updateResult.ok) {
           this.notice.push(this.notice.SUCCESS, '"' + this.fullname(user) + '" was removed from ' +
             this.project.name + ' successfully');
-          console.log('"' + this.fullname(user) + '" was removed from ' + this.project.name + ' successfully');
+          // TODO: Make this a notice, not a console log
+          // console.log('"' + this.fullname(user) + '" was removed from ' + this.project.name + ' successfully');
         }
       });
     }, this);
@@ -176,6 +164,7 @@ export class LdProjectMembersController implements angular.IController {
     // TODO: redirect to /app/projects if you just removed yourself from this project, e.g. this.$window.location.href = '/app/projects';
   }
 
+  // TODO: rewrite as arrow function so boundSearchUsers won't be needed
   searchUsers(searchText: string): void {
     this.userService.searchLdapiUsers(searchText).then(result => {
       if (result.ok) {
@@ -184,7 +173,6 @@ export class LdProjectMembersController implements angular.IController {
         this.userSearchResults = [];
       }
     }).catch(err => {
-      console.log(`Error ${err} while searching for ${searchText}`);
       this.userSearchResults = [];
     });
   }
@@ -192,7 +180,6 @@ export class LdProjectMembersController implements angular.IController {
   userIsManager(username: string) {
     return this.userService.ldapiUserIsManagerOfProject(username, this.project.code).then(result => {
       if (result.ok) {
-        console.log('userIsManager returned:', result.data);
         return result.data;
       } else {
         return false;
@@ -220,7 +207,6 @@ export class LdProjectMembersController implements angular.IController {
     // TODO: redirect to /app/projects if you just removed yourself from this project as a manager and confirmed that
     const [user, newRole] = userAndRole;
     return this.rolesService.lfRoleToLdRole(newRole.key).then(ldRole => {
-      console.log('Will change', user, 'role to', newRole, 'which is', ldRole, 'in LD');
       return this.userIsLastManager(user.username).then(isLast => {
         if (isLast) {
           console.log(`User ${user.username} is the last manager; warn the user about it`)
@@ -240,119 +226,26 @@ export class LdProjectMembersController implements angular.IController {
     });
   }
 
-  /* ----------------------------------------------------------
-   * Typeahead
-   * ---------------------------------------------------------- */
-
-  // arrow functions used here and below to bind to the class instance. IJH 2017-09
-
+  // arrow function used here to bind to the class instance. IJH 2017-09
   selectUser = (user: LdapiUserInfo): void => {
-    console.log(`User ${user} was selected in the typeahead`);
     if (user && this.usersPendingAdd.indexOf(user) < 0) {
       this.usersPendingAdd.push(user);
-
-      // Name may be blank, so fill with username for now
-      // TODO: Update this with our newly-decided UI - 2020-11-25 RM
-      // this.typeahead.userName = user.username;
-      // this.typeahead.fullName = this.fullname(user);
-      // this.updateAddMode('addExisting');
-      // this.disableAddButton = false;
     }
   }
-
-  // noinspection JSUnusedGlobalSymbols
-  // queryUser = (userName: string): void => {
-  //   this.userService.typeaheadExclusive(userName, this.project.id, result => {
-  //     // TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
-  //     if (result.ok) {
-  //       this.users = result.data.entries;
-  //       if (result.data.excludedUsers) {
-  //         this.excludedUsers = result.data.excludedUsers.entries;
-  //       } else {
-  //         this.excludedUsers = [];
-  //       }
-
-  //       this.updateAddMode();
-  //     }
-  //   });
-  // }
-
-  addModeText(addMode: string): string {
-    return this.addModes[addMode].en;
-  }
-
-  addModeIcon(addMode: string): string {
-    return this.addModes[addMode].icon;
-  }
-
-  updateAddMode(newMode?: string): void {
-    if (newMode in this.addModes) {
-      this.addMode = newMode;
-    } else {
-      // This also covers the case where newMode is undefined
-      // this.calculateAddMode();
-    }
-  }
-
-  // DELETE - Not needed. We're changing the UI a little. 2020-11-25 RM
-  // /* Is this userName in the "excluded users" list? (I.e., users already in current project)
-  //  * Note that it's not enough to check whether the "excluded users" list is non-empty,
-  //  * as the "excluded users" list might include some users that had a partial match on
-  //  * the given username. E.g. when creating a new user Bob Jones with username "bjones",
-  //  * after typing "bjo" the "excluded users" list will include Bob Johnson (bjohnson). */
-  // isExcludedUser(userName: string): User {
-  //   if (!this.excludedUsers) {
-  //     return;
-  //   }
-
-  //   for (let i = 0, l = this.excludedUsers.length; i < l; i++) {
-  //     if (userName === this.excludedUsers[i].username ||
-  //       userName === this.excludedUsers[i].name ||
-  //       userName === this.excludedUsers[i].email) {
-  //       return this.excludedUsers[i];
-  //     }
-  //   }
-
-  //   return;
-  // }
-
-  // calculateAddMode(): void {
-  //   // TODO This isn't adequate.  Need to watch the
-  //   // 'typeahead.userName' and 'selection' also. CP 2013-07
-  //   if (!this.typeahead.userName) {
-  //     this.addMode = 'addExisting';
-  //     this.disableAddButton = true;
-  //     this.warningText = '';
-  //   } else if (this.isExcludedUser(this.typeahead.userName)) {
-  //     const excludedUser = this.isExcludedUser(this.typeahead.userName);
-  //     this.addMode = 'addExisting';
-  //     this.disableAddButton = true;
-  //     this.warningText = excludedUser.name +
-  //       ' (username \'' + excludedUser.username +
-  //       '\', email ' + excludedUser.email +
-  //       ') is already a member.';
-  //   } else if (this.typeahead.userName.indexOf('@') !== -1) {
-  //     this.addMode = 'invite';
-  //     this.disableAddButton = false;
-  //     this.warningText = '';
-  //   } else {
-  //     this.addMode = 'addExisting';
-  //     this.disableAddButton = true;
-  //     this.warningText = '';
-  //   }
-  // }
 
   addProjectUsers(): void {
     this.typeahead.userName = '';
     this.typeahead.fullName = '';
     var promises = this.usersPendingAdd.map(user => {
-      console.log("Adding user", this.project.code, user, this.rolesService.contributor);
+      // TODO: Make this a notice, not a console log
+      // console.log("Adding user", this.project.code, user, this.rolesService.contributor);
       return this.rolesService.lfRoleToLdRole(this.defaultAddRole.key).then(ldRole => {
         return this.projectService.updateLdapiUserRole(this.project.code, user.username, ldRole, updateResult => {
           if (updateResult.ok) {
             this.notice.push(this.notice.SUCCESS, '"' + this.fullname(user) + '" was added to ' +
               this.project.name + ' as ' + this.defaultAddRole.name);
-            console.log('"' + this.fullname(user) + '" was added to ' + this.project.name + ' as ' + this.defaultAddRole.name);
+            // TODO: Make this a notice, not a console log
+            // console.log('"' + this.fullname(user) + '" was added to ' + this.project.name + ' as ' + this.defaultAddRole.name);
           }
         });
       });
@@ -363,23 +256,12 @@ export class LdProjectMembersController implements angular.IController {
     });
   }
 
-  // noinspection JSMethodCanBeStatic
-  imageSource(avatarRef: string): string {
-    return avatarRef ? '/Site/views/shared/image/avatar/' + avatarRef :
-      '/Site/views/shared/image/avatar/anonymous02.png';
-  }
-
 }
 
 export const LdProjectMembersComponent: angular.IComponentOptions = {
   bindings: {
-    // queryUserList: '&',
-    // list: '<',
     project: '<',
     isAdmin: '<',
-    // currentUser: '<',
-    // rights: '<',
-    // roles: '<'
   },
   controller: LdProjectMembersController,
   templateUrl: '/angular-app/languageforge/ldproject/ldproject-members.component.html'

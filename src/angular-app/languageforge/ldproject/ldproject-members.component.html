@@ -21,17 +21,12 @@
             <td data-ng-if="$ctrl.isAdmin">{{userAndRole[0].email}}</td>
             <td>
                 <!-- suppress HtmlFormInputWithoutLabel -->
-                <!-- <select id="default-role-select" class="form-control custom-select col-12" data-ng-model="userAndRole[1]" data-ng-disabled="$ctrl.isRoleSelectDisabled(user)"
-                        data-ng-change="$ctrl.onRoleChange(userAndRole)" data-ng-options="role.roleKey as role.roleName for role in $ctrl.getRoles(userAndRole[0])"></select> -->
-                <!-- <role-dropdown roles="$ctrl.ldapiRoles"></role-dropdown> -->
                 <select id="default-role-select" class="form-control custom-select" data-ng-model="userAndRole[1]"
                         data-ng-change="$ctrl.onRoleChange(userAndRole)" data-ng-options="role as role.name for role in $ctrl.rolesWithTechSupport"></select>
             </td>
         </tr>
         </tbody>
     </table>
-    <!-- <listview search="$ctrl.queryUserList()" items="$ctrl.list.allUsers" items-filter="$ctrl.userFilter" visible-items="$ctrl.list.visibleUsers" select="">
-    </listview> -->
     <form class="form-inline">
         <div class="form-row align-items-center">
             <div class="col-auto">
