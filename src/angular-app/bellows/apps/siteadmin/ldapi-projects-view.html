@@ -2,10 +2,6 @@
     <div class="row">
       <div class="col col-lg-4">
           <table id="ldapiProjectsGrid" ng-table="$ctrl.tableParams" class="table table-bordered table-sm table-striped" show-filter="true">
-              <!-- <thead>
-                  <th>Name</th>
-                  <th>Code</th>
-              </thead> -->
                   <tr ng-repeat="project in $data">
                       <td title="'Name'" filter="{ name: 'text'}" sortable="'name'" ng-click="$ctrl.select(project)">
                           {{project.name}}</td>
