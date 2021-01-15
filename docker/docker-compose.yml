@@ -29,8 +29,10 @@ services:
       build:
         context: ..
         dockerfile: docker/php-test/Dockerfile
+
     # php-api:
     #   build: php-api/.
+
     lfmerge:
       build: lfmerge/.
       volumes:
