@@ -454,7 +454,10 @@ class RightsHelper
                 return true;
 
             case 'ldapi_get_project':
-                // Username should be param 1, project should be param 2
+            case 'ldapi_project_updateUserRole':
+            case 'ldapi_project_removeUser':
+                // CAUTION: This only works if LF usernames line up with LD usernames.
+                // TODO: Make this work by email address as well (if the current LF user has an email address)
                 $projectCode = isset($params[0]) ? $params[0] : null;
                 return isset($projectCode) ? $this->currentUserIsManagerOfProject($projectCode) : false;
 
@@ -465,14 +468,6 @@ class RightsHelper
                 return true; // $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
 
             case 'ldapi_get_all_roles':
-                return true;
-
-            case 'ldapi_project_updateUserRole':
-            case 'ldapi_project_removeUser':
-                // return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT) || $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
-                // TODO: Fix the above, because this doesn't work for LD projects that don't have an LF project: userHasProjectRight will fail
-                // TODO: Also allow this if user is owner of project, though that's probably already covered by userHasProjectRight
-                // TODO: Need to be able to ask the server for a list of usernames that manage the project
                 return true;
 
             default:
