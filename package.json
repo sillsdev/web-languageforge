@@ -13,7 +13,7 @@
     "url": "https://github.com/sillsdev/web-languageforge.git"
   },
   "dependencies": {
-    "angular": "1.6.10",
+    "angular": "1.8.0",
     "angular-moment-picker": "git+https://github.com/sillsdev/angular-moment-picker.git",
     "angular-route": "1.6.10",
     "angular-sanitize": "1.6.10",
