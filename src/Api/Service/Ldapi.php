@@ -19,7 +19,10 @@ class Ldapi
         $url = 'http://localhost:4200/api/v2/' . $url;
         // Should eventually be: $url = 'https://admin.languagedepot.org/api/' . $url;
 
-        $opts = ['http_errors' => false];
+        $opts = [
+            'http_errors' => false,
+            'headers' => [ 'Authorization' => 'Bearer ' . LANGUAGE_DEPOT_API_TOKEN ],
+        ];
         if (isset($jsonData)) {
             $opts['json'] = $jsonData;
         }
