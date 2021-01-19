@@ -59,9 +59,9 @@ class CommunicateTest extends TestCase
         $emailTemplate = 'TestMessage';
         $delivery = new MockCommunicateDelivery();
 
+        ini_set('display_errors', '0'); // do not show xdebug stack traces in PHPUnit output
         Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, '', $delivery);
-
-        // nothing runs in the current test function after an exception. IJH 2016-07
+        ini_set('display_errors', '1'); // do not show xdebug stack traces in PHPUnit output
     }
 
     public function testCommunicateToUser_NoToAddress_Exception()
@@ -80,7 +80,9 @@ class CommunicateTest extends TestCase
         $emailTemplate = 'TestMessage';
         $delivery = new MockCommunicateDelivery();
 
+        ini_set('display_errors', '0'); // do not show xdebug stack traces in PHPUnit output
         Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, '', $delivery);
+        ini_set('display_errors', '1'); // do not show xdebug stack traces in PHPUnit output
 
         // nothing runs in the current test function after an exception. IJH 2016-07
     }
