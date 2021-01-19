@@ -18,12 +18,11 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 # install Language Forge APT dependencies
 RUN apt-get update && apt-get -y install p7zip-full unzip git
 
-# Pull in Language Forge git repo
-# both src and test folders are needed in order to run tests
+# Pull in Language Forge git repo src folder
 RUN mkdir -p /data/src
 COPY src /data/src
 
-# todo configure php.ini
+# todo configure php.ini - probably not necessary since tests seems to run fine without additional PHP modifications
 
 WORKDIR /data/src
 RUN composer install
