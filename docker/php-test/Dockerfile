@@ -20,16 +20,14 @@ RUN apt-get update && apt-get -y install p7zip-full unzip git
 
 # Pull in Language Forge git repo
 # both src and test folders are needed in order to run tests
-RUN mkdir -p /data
-COPY . /data
+RUN mkdir -p /data/src
+COPY src /data/src
 
 # todo configure php.ini
 
 WORKDIR /data/src
 RUN composer install
 WORKDIR /data
-
-# todo configure network to mongo database
 
 # run tests
 CMD ["src/vendor/bin/phpunit", "--configuration", "test/php/phpunit.xml"]
