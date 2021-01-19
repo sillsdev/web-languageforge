@@ -32,6 +32,14 @@ services:
           - db
           - mail
 
+    node:
+      container_name: node
+      build:
+        context: ..
+        dockerfile: docker/node/Dockerfile
+      volumes:
+        - ../.:/data
+
     # php-api:
     #   build: php-api/.
 
