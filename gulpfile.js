@@ -939,7 +939,7 @@ gulp.task('build-changeGroup').description =
 gulp.task('build-productionConfig', function () {
   // Pass Google client ID and secret via environment variables so they don't show up in the build
   // logs
-  var defaultMongodbConnection = 'localhost:27017';
+  var defaultMongodbConnection = 'db:27017';
 
   var googleClientId = process.env.GOOGLE_CLIENT_ID;
   if (googleClientId === undefined) {

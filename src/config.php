@@ -36,7 +36,7 @@ if (! defined('SF_DATABASE')) {
 }
 
 if (! defined('MONGODB_CONN')) {
-    define('MONGODB_CONN', 'mongodb://mongo:27017');
+    define('MONGODB_CONN', 'mongodb://db:27017');
 }
 
 if (! defined('USE_MINIFIED_JS')) {
