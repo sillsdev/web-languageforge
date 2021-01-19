@@ -2,18 +2,14 @@
 version: '3.9'
 services:
     db:
-    #   build: ./mongo/.
-    #   volumes:
-    #     - lf-mongo-data:/data/db
+      volumes:
+        - lf-mongo-data:/data/db
       image: mongo:4.0
+      container_name: db
       restart: always
-      environment:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: example
-      # volumes:
-        # - TODO: need to provide custom conf and get it in the right location=> ./mongod.conf:/data/db
+      # - TODO: need to provide custom conf and get it in the right location=> ./mongod.conf:/data/db
 
-    db-admin-ui: # localhost:81
+    db-admin-ui: # http://localhost:81
       image: mongo-express
       ports:
           - 81:8081
@@ -22,24 +18,39 @@ services:
       restart: always
       environment:
           ME_CONFIG_MONGODB_SERVER: db
-          ME_CONFIG_MONGODB_ADMINUSERNAME: root
-          ME_CONFIG_MONGODB_ADMINPASSWORD: example
+          #ME_CONFIG_MONGODB_ADMINUSERNAME: root
+          #ME_CONFIG_MONGODB_ADMINPASSWORD: example
 
     php-test:
+      container_name: php-test
       build:
         context: ..
         dockerfile: docker/php-test/Dockerfile
+      volumes:
+        - ../.:/data
       depends_on:
           - db
+          - mail
 
     # php-api:
     #   build: php-api/.
 
+    mail:
+      container_name: mail
+      environment:
+        SMTP_SERVER: example.com
+        SMTP_USERNAME: chris
+        SMTP_PASSWORD: password
+        SERVER_HOSTNAME: example.com
+      build:
+        context: mail
+
     lfmerge:
+      container_name: lfmerge
       build: lfmerge/.
       volumes:
         - lf-lfmerge:/var/lib/languageforge
 
 volumes:
-#   lf-mongo-data:
+  lf-mongo-data:
   lf-lfmerge:
