@@ -3,14 +3,15 @@ version: '3.9'
 services:
     db:
       volumes:
+        # ensures the data within the db does not get lost when the container is cycled.
         - lf-mongo-data:/data/db
       image: mongo:4.0
       container_name: db
       restart: always
-      # - TODO: need to provide custom conf and get it in the right location=> ./mongod.conf:/data/db
 
     db-admin-ui: # http://localhost:81
       image: mongo-express
+      container_name: db-admin-ui
       ports:
           - 81:8081
       depends_on:
@@ -18,8 +19,6 @@ services:
       restart: always
       environment:
           ME_CONFIG_MONGODB_SERVER: db
-          #ME_CONFIG_MONGODB_ADMINUSERNAME: root
-          #ME_CONFIG_MONGODB_ADMINPASSWORD: example
 
     php-test:
       container_name: php-test
