@@ -14,7 +14,7 @@ class Email
     public static function send($from, $to, $subject, $content, $htmlContent = '')
     {
         // Create the Transport
-        $transport = \Swift_SmtpTransport::newInstance('localhost', 25);
+        $transport = \Swift_SmtpTransport::newInstance('mail', 25);
 
         // Create the Mailer using your created Transport
         $mailer = \Swift_Mailer::newInstance($transport);
