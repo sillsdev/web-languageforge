@@ -2,16 +2,17 @@
 
 .PHONY: start
 start:
-    docker-compose --project-name=languageforge up
+	docker-compose --project-name=languageforge up -d
 
 .PHONY: db
 db: # admin-ui http://localhost:81
 	docker-compose up -d db
 	docker-compose up -d db-admin-ui
 
-.PHONY: phptest
-phptest: # for troublehsooting, currently drops you into the container
-	docker-compose run php-test bash
+.PHONY: php-test
+php-test:
+	docker-compose --project-name=languageforge run php-test
+	#docker-compose run php-test bash
 
 .PHONY: update
 update:
