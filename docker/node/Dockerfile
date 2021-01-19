@@ -13,6 +13,7 @@ WORKDIR /data
 RUN npm install --no-optional
 
 # QUESTION: can we share a node_modules between containers that lives in src/node_modules but not have that exposed to the host?
+# yes, should be able to create a volume and simply share it between two containers:  https://docs.docker.com/compose/compose-file/compose-file-v3/#volumes & https://phoenixnap.com/kb/how-to-share-data-between-docker-containers
 
 # QUESTION: what about the gulp sass project that generates css files all over the source tree?
 # perhaps this should not be run in the image, but be run only when the container starts up, since it will modify the source directory on the host?
