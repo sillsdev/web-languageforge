@@ -8,6 +8,7 @@ services:
       image: mongo:4.0
       container_name: db
       restart: always
+      # - TODO: need to provide custom conf and get it in the right location=> ./mongod.conf:/data/db
 
     db-admin-ui: # http://localhost:81
       image: mongo-express
