@@ -3,8 +3,7 @@ version: '3.9'
 services:
     db:
       volumes:
-        # ensures the data within the db does not get lost when the container is cycled.
-        - lf-mongo-data:/data/db
+        - mongo-data:/data/db
       image: mongo:4.0
       container_name: db
       restart: always
@@ -57,8 +56,9 @@ services:
       container_name: lfmerge
       build: lfmerge/.
       volumes:
-        - lf-lfmerge:/var/lib/languageforge
+        - lfmerge-data:/var/lib/languageforge
 
 volumes:
-  lf-mongo-data:
-  lf-lfmerge:
+  mongo-data:
+  lfmerge-data:
+  dist-data:
