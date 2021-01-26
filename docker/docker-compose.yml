@@ -39,8 +39,13 @@ services:
       volumes:
         - ../.:/data
 
-    # php-api:
-    #   build: php-api/.
+    php-api: # http://localhost:80
+      container_name: php-api
+      build:
+        context: ..
+        dockerfile: docker/php-api/Dockerfile
+      ports:
+        - 80:80
 
     mail:
       container_name: mail

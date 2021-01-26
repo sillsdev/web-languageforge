@@ -1,6 +1,3 @@
-# this cannot be run from this directory, instead from the root folder, do:
-# docker build -t test:php-api -f docker/php-api/Dockerfile .
-
 FROM php:7.3-apache
 
 # Extensions we know LF requires/desires:
@@ -13,17 +10,15 @@ FROM php:7.3-apache
 #
 # see https://github.com/mlocati/docker-php-extension-installer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-RUN install-php-extensions gd xdebug mongodb intl
-RUN install-php-extensions @composer
+RUN install-php-extensions gd xdebug mongodb intl @composer
 
 # install Language Forge APT dependencies
 RUN apt-get update && apt-get -y install p7zip-full unzip
 
 # Pull in Language Forge git repo
 COPY src /var/www/html
-WORKDIR /var/www/html
 
-# TODO configure php.ini
+# TODO: configure php.ini
 
 # - property: 'memory_limit'
 #   value: '256M'
@@ -38,7 +33,7 @@ WORKDIR /var/www/html
 # - property: 'upload_max_filesize'
 #   value: '60M'
 
-# TODO configure apache
+# TODO: configure apache
 
 # apache_module_enable:
 #   - headers
@@ -70,9 +65,6 @@ WORKDIR /var/www/html
 # regexp: '^#?PrivateTmp=true'
 # line: "PrivateTmp=false"
 
-
-# what port should we use for the API ?
-EXPOSE 80
 
 
 # apt packages to investigate further

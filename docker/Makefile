@@ -14,6 +14,10 @@ php-test:
 	docker-compose --project-name=languageforge run php-test
 	#docker-compose run php-test bash
 
+.PHONY: php-api
+php-api: # http://localhost:80
+	docker-compose up -d php-api
+
 .PHONY: update
 update:
 	docker-compose pull
