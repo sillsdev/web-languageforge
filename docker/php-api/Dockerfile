@@ -22,21 +22,6 @@ COPY src /var/www/html
 
 RUN composer install
 
-# TODO: configure php.ini
-
-# - property: 'memory_limit'
-#   value: '256M'
-# - property: 'display_errors'
-#   value: 'On'
-# - property: 'display_startup_errors'
-#   value: 'On'
-# - property: 'error_log'
-#   value: '{{php_log_folder}}/php_error.log'
-# - property: 'post_max_size'
-#   value: '60M'
-# - property: 'upload_max_filesize'
-#   value: '60M'
-
 # TODO: configure apache
 
 # apache_module_enable:

@@ -46,6 +46,9 @@ services:
         dockerfile: docker/php-api/Dockerfile
       ports:
         - 80:80
+      volumes:
+        # TODO: Review the existing ini files provided by the image and see if we should be using that development version or not.
+        - ./php-api/php.ini:/usr/local/etc/php/php.ini
 
     mail:
       container_name: mail
