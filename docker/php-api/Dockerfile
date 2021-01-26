@@ -13,10 +13,14 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN install-php-extensions gd xdebug mongodb intl @composer
 
 # install Language Forge APT dependencies
-RUN apt-get update && apt-get -y install p7zip-full unzip
+# insalling git to avoid composer error "Cloning failed using an ssh key for authentication, enter your GitHub credentials to access private repos"
+RUN apt-get update && apt-get -y install p7zip-full unzip git
+
 
 # Pull in Language Forge git repo
 COPY src /var/www/html
+
+RUN composer install
 
 # TODO: configure php.ini
 
