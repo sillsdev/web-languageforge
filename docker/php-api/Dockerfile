@@ -23,6 +23,10 @@ COPY src /var/www/html
 RUN composer install
 
 # TODO: configure apache
+# within container /etc/apache2
+# need to review relvant capabilities and determine whether there's more configuration needed.
+# lots of mods eneabled already and many available to be enabled.
+# if some are needed, research techniques for enabling mods (I assume either conf file directive or command line in the Dockerfile)
 
 # apache_module_enable:
 #   - headers
