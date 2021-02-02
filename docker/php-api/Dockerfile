@@ -26,21 +26,4 @@ RUN composer install
 RUN a2enmod headers rewrite
 
 COPY docker/php-api/000-default.conf /etc/apache2/sites-enabled
-# - name: copy apache2 service config from /lib to /etc for modification
-# copy:
-# src: /lib/systemd/system/apache2.service
-# dest: /etc/systemd/system/apache2.service
-# owner: root
-# group: root
-# mode: 0644
-
-# - name: disable systemd /tmp isolation for apache2
-# lineinfile:
-# dest: /etc/systemd/system/apache2.service
-# regexp: '^#?PrivateTmp=true'
-# line: "PrivateTmp=false"
-
-
-
-# apt packages to investigate further
-#   - default-jre-headless
+COPY docker/php-api/apache2.service /etc/systemd/system
