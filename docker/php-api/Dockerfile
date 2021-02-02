@@ -22,7 +22,6 @@ COPY src /var/www/html
 
 RUN composer install
 
-# TODO: configure apache
 RUN a2enmod headers rewrite
 
 COPY docker/php-api/000-default.conf /etc/apache2/sites-enabled
