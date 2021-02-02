@@ -23,21 +23,9 @@ COPY src /var/www/html
 RUN composer install
 
 # TODO: configure apache
-# within container /etc/apache2
-# need to review relvant capabilities and determine whether there's more configuration needed.
-# lots of mods eneabled already and many available to be enabled.
-# if some are needed, research techniques for enabling mods (I assume either conf file directive or command line in the Dockerfile)
-# TODO:
 RUN a2enmod headers rewrite
 
-# - RewriteEngine On
-
-# - '<ifModule mod_headers.c>'
-# - '    <Files "service-worker.js">'
-# - '        Header Set Service-Worker-allowed "/"'
-# - '    </Files>'
-# - '</IfModule>'
-
+COPY docker/php-api/000-default.conf /etc/apache2/sites-enabled
 # - name: copy apache2 service config from /lib to /etc for modification
 # copy:
 # src: /lib/systemd/system/apache2.service
