@@ -46,6 +46,8 @@ services:
         dockerfile: docker/php-api/Dockerfile
       ports:
         - 80:80
+      volumes:
+        - ../src/index.php:/var/www/html/index.php
 
     mail:
       container_name: mail
