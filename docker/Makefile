@@ -15,8 +15,12 @@ php-test:
 	#docker-compose run php-test bash
 
 .PHONY: php-api
-php-api: # http://localhost:80
+php-api:
 	docker-compose up -d php-api
+
+.PHONY: ssl
+ssl: # http://localhost => https://localhost
+	docker-compose up -d ssl
 
 .PHONY: update
 update:

@@ -39,15 +39,27 @@ services:
       volumes:
         - ../.:/data
 
-    php-api: # http://localhost:80
+    php-api:
       container_name: php-api
       build:
         context: ..
         dockerfile: docker/php-api/Dockerfile
-      ports:
-        - 80:80
       volumes:
         - ../src/index.php:/var/www/html/index.php
+
+    ssl:
+        image: caddy
+        restart: unless-stopped
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - caddy_data:/data
+            - caddy_config:/config
+        depends_on:
+          - php-api
+        # https://caddyserver.com/docs/command-line
+        command: caddy reverse-proxy --from localhost --to php-api
 
     mail:
       container_name: mail
@@ -69,3 +81,5 @@ volumes:
   mongo-data:
   lfmerge-data:
   dist-data:
+  caddy_data:
+  caddy_config:
