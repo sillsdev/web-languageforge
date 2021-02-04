@@ -1134,38 +1134,38 @@ gulp.task('build-upload', function (cb) {
 // ------------------------------------------
 // Create WebsiteInstances.php from template
 // ------------------------------------------
-gulp.task('build-createWebsiteDefsPhp', function () {
-  return gulp.src('src/Api/Library/Shared/WebsiteInstances.ejs')
-    .pipe(data(function () {
-      return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
-    }))
-    .pipe(ejs())
-    .pipe(dest('src/Api/Library/Shared/:name.php'))
-    .pipe(gulp.dest('src/Api/Library/Shared/'));
-});
+// gulp.task('build-createWebsiteDefsPhp', function () {
+//   return gulp.src('src/Api/Library/Shared/WebsiteInstances.ejs')
+//     .pipe(data(function () {
+//       return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
+//     }))
+//     .pipe(ejs())
+//     .pipe(dest('src/Api/Library/Shared/:name.php'))
+//     .pipe(gulp.dest('src/Api/Library/Shared/'));
+// });
 
 // ------------------------------------------
 // Create website-instances.generated-data.ts from template
 // ------------------------------------------
-gulp.task('build-createWebsiteDefsTs', function () {
-  return gulp.src('src/angular-app/bellows/core/website-instances.ejs')
-    .pipe(data(function () {
-      return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
-    }))
-    .pipe(ejs())
-    .pipe(dest('src/angular-app/bellows/core/:name.generated-data.ts'))
-    .pipe(gulp.dest('src/angular-app/bellows/core/'));
-});
+// gulp.task('build-createWebsiteDefsTs', function () {
+//   return gulp.src('src/angular-app/bellows/core/website-instances.ejs')
+//     .pipe(data(function () {
+//       return JSON.parse(fs.readFileSync('src/Api/Library/Shared/WebsiteInstances.json'));
+//     }))
+//     .pipe(ejs())
+//     .pipe(dest('src/angular-app/bellows/core/:name.generated-data.ts'))
+//     .pipe(gulp.dest('src/angular-app/bellows/core/'));
+// });
 
 // ------------------------------------------
 // Create files from templates
 // ------------------------------------------
-gulp.task('build-createWebsiteDefs',
-  gulp.parallel(
-    'build-createWebsiteDefsPhp',
-    'build-createWebsiteDefsTs'
-  )
-);
+// gulp.task('build-createWebsiteDefs',
+//   gulp.parallel(
+//     'build-createWebsiteDefsPhp',
+//     'build-createWebsiteDefsTs'
+//   )
+// );
 
 // -------------------------------------
 //   Task: Build (General)
@@ -1179,7 +1179,7 @@ gulp.task('build',
       'build-productionConfig',
       'build-clearLocalCache',
       'build-remove-test-fixtures',
-      'build-createWebsiteDefs'
+      // 'build-createWebsiteDefs'
     ),
     'sass',
     'build-webpack',
@@ -1216,7 +1216,7 @@ gulp.task('dev-build',
 gulp.task('dev-dependencies-and-build',
   gulp.series(
     'get-dependencies',
-    'build-createWebsiteDefs',
+    // 'build-createWebsiteDefs',
     'dev-build'
   )
 );
