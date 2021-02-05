@@ -2,8 +2,8 @@
   "Bellows_Test_Constants" : "",
 
   "siteType"           : "languageforge",
-  "siteHostname"       : "languageforge.localhost",
-  "baseUrl"            : "http://languageforge.localhost",
+  "siteHostname"       : "localhost",
+  "baseUrl"            : "http://localhost",
   "conditionTimeout"   : 3000,
 
   "adminUsername"      : "test_runner_admin",

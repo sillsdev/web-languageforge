@@ -568,7 +568,7 @@ gulp.task('test-e2e-env', function () {
       type: 'string' })
     .option('webserverHost', {
       demand: false,
-      default: 'languageforge.localhost',
+      default: 'localhost',
       type: 'string' })
     .fail(yargFailure)
     .argv;
@@ -636,7 +636,7 @@ gulp.task('test-e2e-doTest', function (cb) {
       type: 'string' })
     .help('?')
     .alias('?', 'help')
-    .example('$0 test-e2e-run --webserverHost languageforge.localhost',
+    .example('$0 test-e2e-run --webserverHost localhost',
       'Runs all the E2E tests for languageforge')
     .example('$0 test-e2e-run --webserverHost scriptureforge.localhost --specs projectSettingsPage',
       'Runs the scriptureforge E2E test for projectSettingsPage')
