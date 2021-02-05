@@ -2,10 +2,24 @@
 
 export const websiteInstances = {
 
+  // scriptureforge.localhost sites
+  'scriptureforge.localhost': 'local',
+  'jamaicanpsalms.scriptureforge.localhost': 'local',
+  'demo.scriptureforge.localhost': 'local',
+
+  // qa.scriptureforge.org
+  'qa.scriptureforge.org': 'qa',
+
   // scriptureforge.org
   'scriptureforge.org': 'live',
 
-  // local development
+  // jamaicanpsalms.com
+  'jamaicanpsalms.scriptureforge.org': 'live',
+
+  // waaqwiinaagiwritings.org
+  'waaqwiinaagiwritings.org': 'live',
+
+  // languageforge local developer
   'localhost': 'local',
 
   // qa.languageforge.org

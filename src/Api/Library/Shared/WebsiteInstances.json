@@ -1,7 +1,77 @@
 {
+  "scriptureforge": [
+    {
+      "__comment": "scriptureforge.localhost sites",
+      "domain": "scriptureforge.localhost",
+      "base": "Website::SCRIPTUREFORGE",
+      "name": "Scripture Forge",
+      "ssl": false,
+      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
+      "releaseStage": "local"
+    },
+    {
+      "domain": "jamaicanpsalms.scriptureforge.localhost",
+      "base": "Website::SCRIPTUREFORGE",
+      "name": "The Jamaican Psalms Project",
+      "ssl": "false",
+      "theme": "jamaicanpsalms",
+      "defaultProjectCode": "jamaican_psalms",
+      "releaseStage": "local"
+    },
+    {
+      "domain": "demo.scriptureforge.localhost",
+      "base": "Website::SCRIPTUREFORGE",
+      "name": "Scripture Forge",
+      "ssl": "true",
+      "theme": "simple",
+      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
+      "releaseStage": "local"
+    },
+    {
+      "__comment": "qa.scriptureforge.org",
+      "domain": "qa.scriptureforge.org",
+      "base": "Website::SCRIPTUREFORGE",
+      "name": "Scripture Forge",
+      "ssl": "true",
+      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
+      "releaseStage": "qa"
+    },
+    {
+      "__comment": "scriptureforge.org",
+      "domain": "scriptureforge.org",
+      "base": "Website::SCRIPTUREFORGE",
+      "name": "Scripture Forge",
+      "ssl": "true",
+      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
+      "isProduction": "true",
+      "releaseStage": "live"
+    },
+    {
+      "__comment": "jamaicanpsalms.com",
+      "domain": "jamaicanpsalms.scriptureforge.org",
+      "base": "Website::SCRIPTUREFORGE",
+      "name": "The Jamaican Psalms Project",
+      "ssl": "true",
+      "theme": "jamaicanpsalms",
+      "defaultProjectCode": "jamaican_psalms",
+      "isProduction": "true",
+      "releaseStage": "live"
+    },
+    {
+      "__comment": "waaqwiinaagiwritings.org",
+      "domain": "waaqwiinaagiwritings.org",
+      "base": "Website::SCRIPTUREFORGE",
+      "name": "Waaqwiinaagi Writings",
+      "ssl": "true",
+      "theme": "simple",
+      "defaultProjectCode": "waaqwiinaagiwritings",
+      "isProduction": "true",
+      "releaseStage": "live"
+    }
+  ],
   "languageforge": [
     {
-      "__comment": "local development",
+      "__comment": "languageforge local developer",
       "domain": "localhost",
       "base": "Website::LANGUAGEFORGE",
       "name": "Language Forge",
@@ -28,18 +98,5 @@
       "isProduction": "true",
       "releaseStage": "live"
     }
-  ],
-  "scriptureforge": [
-    {
-      "__comment": "scriptureforge.org",
-      "domain": "scriptureforge.org",
-      "base": "Website::SCRIPTUREFORGE",
-      "name": "Scripture Forge",
-      "userDefaultSiteRole": "SiteRoles::PROJECT_CREATOR",
-      "ssl": "true",
-      "isProduction": "true",
-      "releaseStage": "live"
-    }
   ]
-
 }

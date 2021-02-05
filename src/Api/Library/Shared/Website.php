@@ -6,6 +6,7 @@ use Api\Model\Shared\Rights\SiteRoles;
 
 class Website
 {
+    const SCRIPTUREFORGE = 'scriptureforge';
     const LANGUAGEFORGE = 'languageforge';
 
     /**
@@ -16,8 +17,8 @@ class Website
      */
     public function __construct($domain, $base)
     {
-        if ($base != self::LANGUAGEFORGE) {
-            throw new \Exception('website->base must be languageforge');
+        if ($base != self::SCRIPTUREFORGE && $base != self::LANGUAGEFORGE) {
+            throw new \Exception('website->base must be either scriptureforge or languageforge');
         }
         $this->domain = $domain;
         $this->name = $domain;
@@ -43,7 +44,7 @@ class Website
     /** @var boolean - whether or not to force HTTPS for this website */
     public $ssl;
 
-    /** @var string - the base site for this website: languageforge */
+    /** @var string - the base site for this website: either scriptureforge or languageforge */
     public $base;
 
     /** @var string - the name of the default project for this site, if any */
@@ -201,7 +202,7 @@ class Website
      */
     public static function init()
     {
-        self::$_sites = WebsiteInstances::getLanguageForgeSites();
+        self::$_sites = WebsiteInstances::getLanguageForgeSites() + WebsiteInstances::getScriptureForgeSites();
         self::$_redirect = WebsiteInstances::getRedirects();
     }
 }
