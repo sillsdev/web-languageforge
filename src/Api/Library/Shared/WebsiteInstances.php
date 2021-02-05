@@ -25,38 +25,6 @@ class WebsiteInstances
          */
 
 
-        // scriptureforge.localhost sites
-        $w = new Website('scriptureforge.localhost', Website::SCRIPTUREFORGE);
-        $w->name = 'Scripture Forge';
-        $w->ssl = false;
-        $w->userDefaultSiteRole = SiteRoles::PROJECT_CREATOR;
-        $w->releaseStage = 'local';
-        $sites['scriptureforge.localhost'] = $w;
-
-        $w = new Website('jamaicanpsalms.scriptureforge.localhost', Website::SCRIPTUREFORGE);
-        $w->name = 'The Jamaican Psalms Project';
-        $w->ssl = false;
-        $w->theme = 'jamaicanpsalms';
-        $w->defaultProjectCode = 'jamaican_psalms';
-        $w->releaseStage = 'local';
-        $sites['jamaicanpsalms.scriptureforge.localhost'] = $w;
-
-        $w = new Website('demo.scriptureforge.localhost', Website::SCRIPTUREFORGE);
-        $w->name = 'Scripture Forge';
-        $w->ssl = true;
-        $w->theme = 'simple';
-        $w->userDefaultSiteRole = SiteRoles::PROJECT_CREATOR;
-        $w->releaseStage = 'local';
-        $sites['demo.scriptureforge.localhost'] = $w;
-
-        // qa.scriptureforge.org
-        $w = new Website('qa.scriptureforge.org', Website::SCRIPTUREFORGE);
-        $w->name = 'Scripture Forge';
-        $w->ssl = true;
-        $w->userDefaultSiteRole = SiteRoles::PROJECT_CREATOR;
-        $w->releaseStage = 'qa';
-        $sites['qa.scriptureforge.org'] = $w;
-
         // scriptureforge.org
         $w = new Website('scriptureforge.org', Website::SCRIPTUREFORGE);
         $w->name = 'Scripture Forge';
@@ -65,26 +33,6 @@ class WebsiteInstances
         $w->isProduction = true;
         $w->releaseStage = 'live';
         $sites['scriptureforge.org'] = $w;
-
-        // jamaicanpsalms.com
-        $w = new Website('jamaicanpsalms.scriptureforge.org', Website::SCRIPTUREFORGE);
-        $w->name = 'The Jamaican Psalms Project';
-        $w->ssl = true;
-        $w->theme = 'jamaicanpsalms';
-        $w->defaultProjectCode = 'jamaican_psalms';
-        $w->isProduction = true;
-        $w->releaseStage = 'live';
-        $sites['jamaicanpsalms.scriptureforge.org'] = $w;
-
-        // waaqwiinaagiwritings.org
-        $w = new Website('waaqwiinaagiwritings.org', Website::SCRIPTUREFORGE);
-        $w->name = 'Waaqwiinaagi Writings';
-        $w->ssl = true;
-        $w->theme = 'simple';
-        $w->defaultProjectCode = 'waaqwiinaagiwritings';
-        $w->isProduction = true;
-        $w->releaseStage = 'live';
-        $sites['waaqwiinaagiwritings.org'] = $w;
 
 
         return $sites;
@@ -108,13 +56,13 @@ class WebsiteInstances
          */
 
 
-        // languageforge.localhost sites
-        $w = new Website('languageforge.localhost', Website::LANGUAGEFORGE);
+        // local development
+        $w = new Website('localhost', Website::LANGUAGEFORGE);
         $w->name = 'Language Forge';
         $w->ssl = false;
         $w->userDefaultSiteRole = SiteRoles::PROJECT_CREATOR;
         $w->releaseStage = 'local';
-        $sites['languageforge.localhost'] = $w;
+        $sites['localhost'] = $w;
 
         // qa.languageforge.org
         $w = new Website('qa.languageforge.org', Website::LANGUAGEFORGE);
