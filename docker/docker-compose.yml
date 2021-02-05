@@ -26,7 +26,7 @@ services:
         context: ..
         dockerfile: docker/php-test/Dockerfile
       volumes:
-        - ../.:/data
+        - ../test:/data/test
       depends_on:
           - db
           - mail
@@ -41,6 +41,7 @@ services:
 
     php-api:
       container_name: php-api
+      image: php-api:latest
       build:
         context: ..
         dockerfile: docker/php-api/Dockerfile

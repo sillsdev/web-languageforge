@@ -1,31 +1,9 @@
-FROM php:7.3-cli
-# this cannot be run from this directory, instead from the root folder, do:
-# docker build -t test:php-api -f docker/php-api/Dockerfile .
+FROM php-api:latest
 
-# Extensions we know LF requires/desires:
-# curl - already provided in image
-# mbstring - already provided in image
-# xdebug
-# intl
-# gd
-# mongodb
-#
-# see https://github.com/mlocati/docker-php-extension-installer
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-RUN install-php-extensions gd xdebug mongodb intl @composer
-ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN mkdir -p /data
+COPY test /data/test
+RUN ln -s /var/www/html /data/src
 
-# install Language Forge APT dependencies
-RUN apt-get update && apt-get -y install p7zip-full unzip git
-
-# Pull in Language Forge git repo src folder
-RUN mkdir -p /data/src
-COPY src /data/src
-
-# todo configure php.ini - probably not necessary since tests seems to run fine without additional PHP modifications
-
-WORKDIR /data/src
-RUN composer install
 WORKDIR /data
 
 # run tests
