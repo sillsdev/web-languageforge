@@ -27,6 +27,11 @@ services:
         dockerfile: docker/php-test/Dockerfile
       volumes:
         - ../test:/data/test
+      # these paths are mapped in for developer convenience
+        - ../src/index.php:/var/www/html/index.php
+        - ../src/angular-app:/var/www/html/angular-app
+        - ../src/Api:/var/www/html/Api
+        - ../src/Site:/var/www/html/Site
       depends_on:
           - db
           - mail
