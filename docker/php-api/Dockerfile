@@ -10,6 +10,7 @@ RUN install-php-extensions gd xdebug mongodb intl @composer
 
 COPY src/composer.json /var/www/html
 COPY src/composer.lock /var/www/html
+ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install
 
 COPY docker/php-api/php.ini /usr/local/etc/php
