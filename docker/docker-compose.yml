@@ -46,7 +46,7 @@ services:
 
     php-api:
       container_name: php-api
-      image: php-api:latest
+      image: lf-php-api:latest
       build:
         context: ..
         dockerfile: docker/php-api/Dockerfile
