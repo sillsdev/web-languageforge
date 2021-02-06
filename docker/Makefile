@@ -11,7 +11,7 @@ db: # admin-ui http://localhost:81
 
 .PHONY: php-test
 php-test:
-	docker-compose --project-name=languageforge run php-test
+	docker-compose run php-test
 	#docker-compose run php-test bash
 
 .PHONY: php-api
