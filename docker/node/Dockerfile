@@ -11,13 +11,12 @@ COPY package.json package-lock.json webpack.config.js tsconfig.json tslint.json 
 
 WORKDIR /dependencies
 
-# TODO --no-optional seems to have no effect on the fsevenevents warnings (irrelevant to the project but I don't like warnings)
-RUN npm install --no-optional
+# unsafe-perm is required to work around an npm bug since we are running as root and also have a git+HTTPS repo source.
+# see https://github.com/npm/npm/issues/17346
+RUN npm config set unsafe-perm true && npm install
 
 # Live Reload
 EXPOSE 35729
-
-RUN gulp build-createWebsiteDefs
 
 CMD ["gulp", "sass:watch", "webpack-lf:watch"]
 
