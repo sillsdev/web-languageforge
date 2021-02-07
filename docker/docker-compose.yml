@@ -42,7 +42,8 @@ services:
         context: ..
         dockerfile: docker/node/Dockerfile
       volumes:
-        - ../.:/data
+        - ../src:/data/src
+        - ../typings:/data/typings
 
     php-api:
       container_name: php-api

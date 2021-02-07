@@ -3,17 +3,16 @@ FROM node:10
 # the setup looks way too complicated.  Let's stick with the official node:10 package even though
 # it's a large image
 
-RUN npm install --no-optional -g gulp-cli
-
 RUN mkdir -p /data
-RUN mkdir -p /dependencies
-COPY package.json package-lock.json webpack.config.js tsconfig.json tslint.json gulpfile.js /dependencies/
-
-WORKDIR /dependencies
+WORKDIR /data
+COPY package.json package-lock.json webpack.config.js tsconfig.json tslint.json gulpfile.js /data/
 
 # unsafe-perm is required to work around an npm bug since we are running as root and also have a git+HTTPS repo source.
 # see https://github.com/npm/npm/issues/17346
-RUN npm config set unsafe-perm true && npm install
+RUN npm config set unsafe-perm true && npm install -g gulp-cli && npm install
+
+COPY src /data
+COPY typings /data
 
 # Live Reload
 EXPOSE 35729
