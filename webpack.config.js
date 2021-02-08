@@ -9,8 +9,6 @@ var webpackMerge = require('webpack-merge');
 var UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 var LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 var workboxPlugin = require('workbox-webpack-plugin');
-var srcPath = "/data/src"
-var distPath = "/dist"
 
 module.exports = function (env) {
   if (env == null) {
@@ -28,7 +26,7 @@ module.exports = function (env) {
 
     output: {
       publicPath: '',
-      path: distPath
+      path: path.resolve(__dirname, 'src', 'dist')
     },
 
     plugins: [
@@ -45,7 +43,7 @@ module.exports = function (env) {
 
         // The ([\\/]) piece accounts for path separators in *nix and Windows
         /angular([\\/])core([\\/])@angular/,
-        srcPath,
+        path.resolve(__dirname, './src'),
 
         // your Angular Async Route paths relative to this root directory
         {}
@@ -120,7 +118,7 @@ module.exports = function (env) {
 
   // Set up and return a customized Webpack config according to the environment we're in
 
-  webpackConfig.entry.main = srcPath + '/angular-app/' + env.applicationName + '/main' +
+  webpackConfig.entry.main = './src/angular-app/' + env.applicationName + '/main' +
     (env.isTest ? '.specs' : '') + '.ts';
 
   if (env.isProduction) {
