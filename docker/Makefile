@@ -2,7 +2,7 @@
 
 .PHONY: start
 start:
-	docker-compose --project-name=languageforge up -d
+	docker-compose up -d
 
 .PHONY: db
 db: # admin-ui http://localhost:81
