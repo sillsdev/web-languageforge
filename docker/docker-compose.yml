@@ -35,6 +35,8 @@ services:
         - ../src:/data/src
         - ../typings:/data/typings
         - node-data:/data/node_modules
+        - ../webpack.config.js:/data/webpack.config.js
+        - ../gulpfile.js:/data/gulpfile.js
 
     php-api:
       container_name: php-api
