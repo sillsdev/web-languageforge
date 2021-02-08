@@ -11,9 +11,6 @@ COPY package.json package-lock.json webpack.config.js tsconfig.json tslint.json 
 # see https://github.com/npm/npm/issues/17346
 RUN npm config set unsafe-perm true && npm install -g gulp-cli && npm install
 
-COPY src /data
-COPY typings /data
-
 # Live Reload
 EXPOSE 35729
 
