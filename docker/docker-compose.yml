@@ -34,7 +34,6 @@ services:
       volumes:
         - ../src:/data/src
         - ../typings:/data/typings
-        - node-data:/data/node_modules
         - ../webpack.config.js:/data/webpack.config.js
         - ../gulpfile.js:/data/gulpfile.js
 
@@ -125,5 +124,4 @@ volumes:
   lfmerge-data:
   caddy_data:
   caddy_config:
-  node-data:
   user-data-assets:
