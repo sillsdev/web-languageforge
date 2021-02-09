@@ -77,19 +77,19 @@ services:
         - ../src/Site:/var/www/html/Site
 
     ssl:
-        image: caddy
-        container_name: lf-ssl
-        ports:
-            - 80:80
-            - 443:443
-        depends_on:
-          - api
-        volumes:
-            - caddy_data:/data
-            - caddy_config:/config
-        # https://caddyserver.com/docs/command-line
-        command: caddy reverse-proxy --from localhost --to api
-        restart: unless-stopped
+      image: caddy
+      container_name: lf-ssl
+      ports:
+          - 80:80
+          - 443:443
+      depends_on:
+        - api
+      volumes:
+          - caddy_data:/data
+          - caddy_config:/config
+      # https://caddyserver.com/docs/command-line
+      command: caddy reverse-proxy --from localhost --to api
+      restart: unless-stopped
 
     mail:
       image: juanluisbaptiste/postfix
