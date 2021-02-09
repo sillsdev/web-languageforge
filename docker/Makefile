@@ -21,6 +21,11 @@ api:
 ssl: # http://localhost => https://localhost
 	docker-compose up -d ssl
 
+.PHONY: mail
+mail:
+	docker-compose up -d mail
+
+
 .PHONY: php-test
 php-test:
 	docker-compose run php-test

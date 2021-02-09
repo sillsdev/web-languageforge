@@ -74,6 +74,17 @@ services:
         command: caddy reverse-proxy --from localhost --to api
         restart: unless-stopped
 
+    mail:
+      image: juanluisbaptiste/postfix
+      container_name: lf-mail
+      volumes:
+        - ./mail/main.cf:/etc/postfix/main.cf
+      environment:
+        SMTP_SERVER: example.com
+        SMTP_USERNAME: chris
+        SMTP_PASSWORD: password
+        SERVER_HOSTNAME: example.com
+
     php-test:
       container_name: php-test
       # profiles: ["test"]
@@ -94,15 +105,6 @@ services:
 
 
 
-    mail:
-      container_name: mail
-      environment:
-        SMTP_SERVER: example.com
-        SMTP_USERNAME: chris
-        SMTP_PASSWORD: password
-        SERVER_HOSTNAME: example.com
-      build:
-        context: mail
 
     lfmerge:
       container_name: lfmerge
