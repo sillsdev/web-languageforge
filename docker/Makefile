@@ -30,6 +30,13 @@ update:
 logs:
 	docker-compose logs
 
+.PHONY: db-reset
+db-reset:
+	docker-compose up -d db
+	docker-compose up -d mail
+	sleep 5
+	docker run -w /var/www/scripts/tools -v `pwd`/../scripts:/var/www/scripts --network=docker_default lf-php-api php FactoryReset.php run
+
 .PHONY: clean
 clean:
 	docker-compose kill

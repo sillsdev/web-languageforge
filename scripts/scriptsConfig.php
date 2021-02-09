@@ -3,7 +3,7 @@
 $rootPath = dirname(__DIR__);
 
 define('TestPath', $rootPath . '/test/');
-define('APPPATH', $rootPath . '/src/');
+define('APPPATH', $rootPath . '/html/');
 
 require_once APPPATH . 'vendor/autoload.php';
 
