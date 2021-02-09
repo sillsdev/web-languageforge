@@ -75,7 +75,6 @@ services:
         - ../src/angular-app:/var/www/html/angular-app
         - ../src/Api:/var/www/html/Api
         - ../src/Site:/var/www/html/Site
-      # profiles: ["test"] TODO: need to understand the compat issues for this config
 
     ssl:
         image: caddy
