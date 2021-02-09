@@ -118,6 +118,15 @@ services:
       environment:
           ME_CONFIG_MONGODB_SERVER: db
 
+    db-reset:
+      image: lf-php-api
+      depends_on:
+        - db
+        - mail
+      working_dir: /var/www/scripts/tools
+      volumes:
+        - ../scripts/:/var/www/scripts
+      command: php FactoryReset.php run
 
 volumes:
   mongo-data:

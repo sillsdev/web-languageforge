@@ -2,7 +2,7 @@
 
 .PHONY: start
 start:
-	docker-compose up -d
+	docker-compose up -d ssl
 
 .PHONY: db
 db: # admin-ui http://localhost:81
@@ -32,10 +32,7 @@ logs:
 
 .PHONY: db-reset
 db-reset:
-	docker-compose up -d db
-	docker-compose up -d mail
-	sleep 5
-	docker run -w /var/www/scripts/tools -v `pwd`/../scripts:/var/www/scripts --network=docker_default lf-php-api php FactoryReset.php run
+	docker-compose run db-reset
 
 .PHONY: clean
 clean:
