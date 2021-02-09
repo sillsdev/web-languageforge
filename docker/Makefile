@@ -8,6 +8,10 @@ start:
 db:
 	docker-compose up -d db
 
+.PHONY: ui
+ui:
+	docker-compose up -d ui
+
 .PHONY: php-test
 php-test:
 	docker-compose run php-test

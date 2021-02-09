@@ -3,9 +3,24 @@ version: '3.9'
 services:
     db:
       image: mongo:4.0
+      container_name: lf-db
       volumes:
         - mongo-data:/data/db
       restart: always
+
+    ui:
+      build:
+        context: ..
+        dockerfile: docker/ui/Dockerfile
+      image: lf-ui
+      container_name: lf-ui
+      depends_on:
+        - php-api
+      volumes:
+        - ../src:/data/src
+        - ../typings:/data/typings
+        - ../webpack.config.js:/data/webpack.config.js
+        - ../gulpfile.js:/data/gulpfile.js
 
     php-test:
       container_name: php-test
@@ -24,16 +39,6 @@ services:
           - db
           - mail
 
-    node:
-      container_name: node
-      build:
-        context: ..
-        dockerfile: docker/node/Dockerfile
-      volumes:
-        - ../src:/data/src
-        - ../typings:/data/typings
-        - ../webpack.config.js:/data/webpack.config.js
-        - ../gulpfile.js:/data/gulpfile.js
 
     php-api:
       container_name: php-api
