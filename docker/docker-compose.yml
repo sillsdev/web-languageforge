@@ -103,7 +103,7 @@ services:
         SERVER_HOSTNAME: example.com
 
     db-reset:
-      image: lf-php-api
+      image: lf-api
       container_name: lf-db-reset
       depends_on:
         - db
