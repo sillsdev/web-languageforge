@@ -1,4 +1,4 @@
-FROM lf-php-api:latest
+FROM lf-api
 
 RUN mkdir -p /data
 COPY test /data/test

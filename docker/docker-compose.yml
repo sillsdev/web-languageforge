@@ -59,6 +59,24 @@ services:
         - ../src/site_wide_notices.json:/var/www/html/site_wide_notices.json
         - ../src/version.php:/var/www/html/version.php
 
+    api-test:
+      build:
+        context: ..
+        dockerfile: docker/api-test/Dockerfile
+      image: lf-api-test
+      container_name: lf-api-test
+      depends_on:
+          - db
+          - mail
+      volumes:
+        - ../test:/data/test
+        # these paths are mapped in for developer convenience
+        - ../src/index.php:/var/www/html/index.php
+        - ../src/angular-app:/var/www/html/angular-app
+        - ../src/Api:/var/www/html/Api
+        - ../src/Site:/var/www/html/Site
+      # profiles: ["test"] TODO: need to understand the compat issues for this config
+
     ssl:
         image: caddy
         container_name: lf-ssl
@@ -84,23 +102,6 @@ services:
         SMTP_USERNAME: chris
         SMTP_PASSWORD: password
         SERVER_HOSTNAME: example.com
-
-    php-test:
-      container_name: php-test
-      # profiles: ["test"]
-      build:
-        context: ..
-        dockerfile: docker/php-test/Dockerfile
-      volumes:
-        - ../test:/data/test
-      # these paths are mapped in for developer convenience
-        - ../src/index.php:/var/www/html/index.php
-        - ../src/angular-app:/var/www/html/angular-app
-        - ../src/Api:/var/www/html/Api
-        - ../src/Site:/var/www/html/Site
-      depends_on:
-          - db
-          - mail
 
 
 

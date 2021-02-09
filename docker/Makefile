@@ -26,10 +26,9 @@ mail:
 	docker-compose up -d mail
 
 
-.PHONY: php-test
-php-test:
-	docker-compose run php-test
-	#docker-compose run php-test bash
+.PHONY: tests
+tests:
+	docker-compose run api-test
 
 
 .PHONY: db-reset
