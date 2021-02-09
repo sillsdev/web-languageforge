@@ -25,11 +25,9 @@ ssl: # http://localhost => https://localhost
 mail:
 	docker-compose up -d mail
 
-
 .PHONY: tests
 tests:
 	docker-compose run api-test
-
 
 .PHONY: db-reset
 db-reset:
