@@ -12,8 +12,8 @@ COPY src/composer.json src/composer.lock /var/www/html/
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install
 
-COPY docker/php-api/php.ini /usr/local/etc/php
+COPY docker/api/php.ini /usr/local/etc/php
 
 RUN a2enmod headers rewrite
-COPY docker/php-api/000-default.conf /etc/apache2/sites-enabled
-COPY docker/php-api/apache2.service /etc/systemd/system
+COPY docker/api/000-default.conf /etc/apache2/sites-enabled
+COPY docker/api/apache2.service /etc/systemd/system

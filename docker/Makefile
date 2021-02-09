@@ -2,6 +2,7 @@
 
 .PHONY: start
 start:
+  # starts the entire runtime infrastructure
 	docker-compose up -d ssl
 
 .PHONY: db
@@ -12,14 +13,15 @@ db:
 ui:
 	docker-compose up -d ui
 
+.PHONY: api
+api:
+	docker-compose up -d api
+
 .PHONY: php-test
 php-test:
 	docker-compose run php-test
 	#docker-compose run php-test bash
 
-.PHONY: php-api
-php-api:
-	docker-compose up -d php-api
 
 .PHONY: ssl
 ssl: # http://localhost => https://localhost

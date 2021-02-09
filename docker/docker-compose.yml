@@ -15,37 +15,22 @@ services:
       image: lf-ui
       container_name: lf-ui
       depends_on:
-        - php-api
+        - api
       volumes:
         - ../src:/data/src
         - ../typings:/data/typings
         - ../webpack.config.js:/data/webpack.config.js
         - ../gulpfile.js:/data/gulpfile.js
 
-    php-test:
-      container_name: php-test
-      # profiles: ["test"]
+    api:
       build:
         context: ..
-        dockerfile: docker/php-test/Dockerfile
-      volumes:
-        - ../test:/data/test
-      # these paths are mapped in for developer convenience
-        - ../src/index.php:/var/www/html/index.php
-        - ../src/angular-app:/var/www/html/angular-app
-        - ../src/Api:/var/www/html/Api
-        - ../src/Site:/var/www/html/Site
+        dockerfile: docker/api/Dockerfile
+      image: lf-api
+      container_name: lf-api
       depends_on:
-          - db
-          - mail
-
-
-    php-api:
-      container_name: php-api
-      image: lf-php-api
-      build:
-        context: ..
-        dockerfile: docker/php-api/Dockerfile
+        - db
+        - mail
       volumes:
         - user-data-assets:/var/www/html/assets
         # because the composer vendor dependencies are build inside the container but reside in /var/www/html,
@@ -74,9 +59,25 @@ services:
         - ../src/site_wide_notices.json:/var/www/html/site_wide_notices.json
         - ../src/version.php:/var/www/html/version.php
 
+
+    php-test:
+      container_name: php-test
+      # profiles: ["test"]
+      build:
+        context: ..
+        dockerfile: docker/php-test/Dockerfile
+      volumes:
+        - ../test:/data/test
+      # these paths are mapped in for developer convenience
+        - ../src/index.php:/var/www/html/index.php
+        - ../src/angular-app:/var/www/html/angular-app
+        - ../src/Api:/var/www/html/Api
+        - ../src/Site:/var/www/html/Site
       depends_on:
-        - db
-        - mail
+          - db
+          - mail
+
+
 
     ssl:
         image: caddy
@@ -88,9 +89,9 @@ services:
             - caddy_data:/data
             - caddy_config:/config
         depends_on:
-          - php-api
+          - api
         # https://caddyserver.com/docs/command-line
-        command: caddy reverse-proxy --from localhost --to php-api
+        command: caddy reverse-proxy --from localhost --to api
 
     mail:
       container_name: mail
