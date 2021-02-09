@@ -103,18 +103,9 @@ services:
         SMTP_PASSWORD: password
         SERVER_HOSTNAME: example.com
 
-
-
-
-
-    lfmerge:
-      container_name: lfmerge
-      build: lfmerge/.
-      volumes:
-        - lfmerge-data:/var/lib/languageforge
-
     db-reset:
       image: lf-php-api
+      container_name: lf-db-reset
       depends_on:
         - db
         - mail
@@ -122,6 +113,13 @@ services:
       volumes:
         - ../scripts/:/var/www/scripts
       command: php FactoryReset.php run
+
+    # TODO: still needs to be built/run/tested, etc.
+    # lfmerge:
+    #   container_name: lfmerge
+    #   build: lfmerge/.
+    #   volumes:
+    #     - lfmerge-data:/var/lib/languageforge
 
 volumes:
   mongo-data:
