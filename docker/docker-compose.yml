@@ -11,7 +11,7 @@ services:
 
     php-test:
       container_name: php-test
-      profiles: ["test"]
+      # profiles: ["test"]
       build:
         context: ..
         dockerfile: docker/php-test/Dockerfile
