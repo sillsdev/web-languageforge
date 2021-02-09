@@ -5,9 +5,8 @@ start:
 	docker-compose up -d ssl
 
 .PHONY: db
-db: # admin-ui http://localhost:81
+db:
 	docker-compose up -d db
-	docker-compose up -d db-admin-ui
 
 .PHONY: php-test
 php-test:

@@ -105,19 +105,6 @@ services:
       volumes:
         - lfmerge-data:/var/lib/languageforge
 
-    # TODO: I would like to discard this container in favor of pointing developers at using the official
-    # MongoDB VSCode extension: https://marketplace.visualstudio.com/items?itemName=mongodb.mongodb-vscode
-    db-admin-ui: # http://localhost:81
-      image: mongo-express
-      container_name: db-admin-ui
-      ports:
-          - 81:8081
-      depends_on:
-          - db
-      restart: always
-      environment:
-          ME_CONFIG_MONGODB_SERVER: db
-
     db-reset:
       image: lf-php-api
       depends_on:
