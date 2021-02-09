@@ -122,8 +122,8 @@ services:
     #     - lfmerge-data:/var/lib/languageforge
 
 volumes:
-  mongo-data:
-  lfmerge-data:
-  caddy_data:
   caddy_config:
+  caddy_data:
+  mongo-data:
   user-data-assets:
+  # lfmerge-data:
