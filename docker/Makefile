@@ -17,23 +17,15 @@ ui:
 api:
 	docker-compose up -d api
 
+.PHONY: ssl
+ssl: # http://localhost => https://localhost
+	docker-compose up -d ssl
+
 .PHONY: php-test
 php-test:
 	docker-compose run php-test
 	#docker-compose run php-test bash
 
-
-.PHONY: ssl
-ssl: # http://localhost => https://localhost
-	docker-compose up -d ssl
-
-.PHONY: update
-update:
-	docker-compose pull
-
-.PHONY: logs
-logs:
-	docker-compose logs
 
 .PHONY: db-reset
 db-reset:
