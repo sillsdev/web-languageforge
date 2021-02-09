@@ -4,6 +4,9 @@ services:
     db:
       image: mongo:4.0
       container_name: lf-db
+      ports:
+        # exposed this to host for admin tools
+        - 27017:27017
       volumes:
         - mongo-data:/data/db
       restart: always
