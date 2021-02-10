@@ -69,8 +69,8 @@ services:
       image: lf-api-test
       container_name: lf-api-test
       depends_on:
-          - db
-          - mail
+        - db
+        - mail
       volumes:
         - ../test:/data/test
         # these paths are mapped in for developer convenience
@@ -83,13 +83,13 @@ services:
       image: caddy
       container_name: lf-ssl
       ports:
-          - 80:80
-          - 443:443
+        - 80:80
+        - 443:443
       depends_on:
         - api
       volumes:
-          - caddy_data:/data
-          - caddy_config:/config
+        - caddy_data:/data
+        - caddy_config:/config
       # https://caddyserver.com/docs/command-line
       command: caddy reverse-proxy --from localhost --to api
       restart: unless-stopped
