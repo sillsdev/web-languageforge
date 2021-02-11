@@ -31,7 +31,7 @@ tests:
 
 .PHONY: db-reset
 db-reset:
-	docker-compose run db-reset
+	docker-compose run --workdir="/var/www/scripts/tools" api sh -c "/wait && php FactoryReset.php run"
 
 .PHONY: clean
 clean:

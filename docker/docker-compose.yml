@@ -61,6 +61,8 @@ services:
         - ../src/offlineCheck.txt:/var/www/html/offlineCheck.txt
         - ../src/site_wide_notices.json:/var/www/html/site_wide_notices.json
         - ../src/version.php:/var/www/html/version.php
+        # the scripts directory is used by db-reset but not the application itself
+        - ../scripts/:/var/www/scripts
 
     api-test:
       build:
@@ -95,26 +97,11 @@ services:
       restart: unless-stopped
 
     mail:
-      image: juanluisbaptiste/postfix
+      image: lf-mail
       container_name: lf-mail
-      volumes:
-        - ./mail/main.cf:/etc/postfix/main.cf
-      environment:
-        SMTP_SERVER: example.com
-        SMTP_USERNAME: chris
-        SMTP_PASSWORD: password
-        SERVER_HOSTNAME: example.com
-
-    db-reset:
-      image: lf-api
-      container_name: lf-db-reset
-      depends_on:
-        - db
-        - mail
-      working_dir: /var/www/scripts/tools
-      volumes:
-        - ../scripts/:/var/www/scripts
-      command: php FactoryReset.php run
+      build:
+        context: .
+        dockerfile: mail/Dockerfile
 
     # TODO: still needs to be built/run/tested, etc.
     # lfmerge:
