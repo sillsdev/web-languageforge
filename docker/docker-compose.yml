@@ -89,6 +89,7 @@ services:
         - 443:443
       depends_on:
         - api
+        - ui
       volumes:
         - caddy_data:/data
         - caddy_config:/config
