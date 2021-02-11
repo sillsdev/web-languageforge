@@ -87,53 +87,20 @@ Other useful resources:
 
 ## Recommended Development Environment ##
 
-### Linux Ubuntu Bionic ###
+### Docker ###
 
-[Local Linux Development Setup](#local-linux-development-setup). Everything is installed directly on your machine, which needs to be running Ubuntu 18.04. This is the best method because everything runs at full speed.
-
--------------------------------
-
-### Local Linux Development Setup ###
-
-Start by installing Git and Ansible:
-``` shell
-sudo apt update
-sudo apt install software-properties-common
-sudo apt-add-repository --yes --update ppa:ansible/ansible
-sudo apt install git ansible
-```
-
-Now create a directory for installation and clone the repo:
-``` shell
-mkdir -p src/xForge
-cd src/xForge
-git clone https://github.com/sillsdev/web-languageforge --recurse-submodules
-```
-
-The `--recurse-submodules` is used to fetch many of the Ansible roles used by the Ansible playbooks in the deploy folder. If you've already cloned the repo without `--recurse-submodules`, run `git submodule update --init --recursive` to pull and initialize them.
-
-Run the following Ansible playbook to configure Ansible and run both sites.
-
-```` bash
-cd web-languageforge/deploy
-ansible-playbook playbook_bionic.yml --limit localhost -K
-````
+1. Install [Docker](https://www.docker.com/get-started)
+1. Install [Make](https://www.gnu.org/software/make/).  This is actually optional but simplifies things a bit.
+1. Clone the repo:  `git clone https://github.com/sillsdev/web-languageforge`
+1. `cd web-languageforge/docker`
+1. `make`
 
 #### Testing the Installation
 
-To build the JavaScript and CSS, run `refreshDeps.sh lf` if you are working on Language Forge, or `refreshDeps.sh sf` if you are working on Scripture Forge. Running `refreshDeps.sh` without arguments defaults to Language Forge.
-
-That's it; you should now be able to open your browser to localhost and scriptureforge.localhost and log in with the credentials "admin" and "password".
-
-Now would be a good time to check that PHP unit tests, TS unit tests, and E2E tests all work. See the [Testing](#Testing) section below.
-
-#### Building TypeScript and Sass
-
-`refreshDeps.sh` builds the TypeScript and Sass, but it does a lot of other things as well.
-
-To build Sass, run `gulp sass`. To watch the Sass for changes, run `gulp sass:watch`. Pass the `--debug` flag to enable sourcemaps and source comments.
-
-To build TypeScript, run `gulp webpack-lf` or `gulp webpack-sf` to build for Language Forge or Scripture Forge respectively. To watch the files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#livereload-chrome-extension)).
+1. Within any browser, navigate to https://localhost
+1. Continue through any certificate warnings
+1. You should see a landing page, click "Login"
+1. Use `admin` and `password` to get in
 
 #### Language Forge Configuration File ####
 
