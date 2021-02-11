@@ -97,11 +97,11 @@ services:
       restart: unless-stopped
 
     mail:
-      image: lf-mail
-      container_name: lf-mail
       build:
         context: .
         dockerfile: mail/Dockerfile
+      image: lf-mail
+      container_name: lf-mail
 
     # TODO: still needs to be built/run/tested, etc.
     # lfmerge:
