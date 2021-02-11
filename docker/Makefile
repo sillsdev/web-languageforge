@@ -27,7 +27,7 @@ mail:
 
 .PHONY: tests
 tests:
-	docker-compose run api-test
+	docker-compose run --workdir="/var/www" api sh -c "/wait && ln -s html src && html/vendor/bin/phpunit --configuration test/php/phpunit.xml"
 
 .PHONY: db-reset
 db-reset:

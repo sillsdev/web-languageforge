@@ -63,23 +63,9 @@ services:
         - ../src/version.php:/var/www/html/version.php
         # the scripts directory is used by db-reset but not the application itself
         - ../scripts/:/var/www/scripts
-
-    api-test:
-      build:
-        context: ..
-        dockerfile: docker/api-test/Dockerfile
-      image: lf-api-test
-      container_name: lf-api-test
-      depends_on:
-        - db
-        - mail
-      volumes:
-        - ../test:/data/test
-        # these paths are mapped in for developer convenience
-        - ../src/index.php:/var/www/html/index.php
-        - ../src/angular-app:/var/www/html/angular-app
-        - ../src/Api:/var/www/html/Api
-        - ../src/Site:/var/www/html/Site
+        # these directories are used for tests but not the application itself
+        - ../test:/var/www/test
+        - ../docs:/var/www/docs
 
     ssl:
       image: caddy
