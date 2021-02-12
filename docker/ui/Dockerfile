@@ -5,7 +5,10 @@ FROM node:10
 
 RUN mkdir -p /data
 WORKDIR /data
-COPY package.json package-lock.json tsconfig.json tslint.json /data/
+COPY src /data/src/
+COPY typings /data/typings/
+COPY gulpfile.js webpack.config.js \
+package.json package-lock.json tsconfig.json tslint.json /data/
 
 # unsafe-perm is required to work around an npm bug since we are running as root and also have a git+HTTPS repo source.
 # see https://github.com/npm/npm/issues/17346

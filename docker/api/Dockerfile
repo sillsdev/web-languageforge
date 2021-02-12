@@ -28,7 +28,7 @@ COPY docker/api/apache2.service /etc/systemd/system
 ENV WAIT_VERSION=2.7.2 \
     WAIT_HOSTS=db:27017,mail:25 \
     WAIT_HOSTS_TIMEOUT=300 \
-    WAIT_SLEEP_INTERVAL=5 \
+    WAIT_SLEEP_INTERVAL=2 \
     WAIT_HOST_CONNECT_TIMEOUT=30
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/$WAIT_VERSION/wait /wait
 RUN chmod +x /wait
