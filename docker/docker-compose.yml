@@ -74,7 +74,6 @@ services:
       - 80:80
       - 443:443
     depends_on:
-      - api
       - ui
     volumes:
       - caddy_data:/data
@@ -96,6 +95,37 @@ services:
   #   build: lfmerge/.
   #   volumes:
   #     - lfmerge-data:/var/lib/languageforge
+
+  selenium:
+    # image: selenium/standalone-chrome
+    image: selenium/standalone-chrome-debug
+    links:
+      - "e2e-api:e2e"
+    volumes:
+      - /dev/shm:/dev/shm
+    ports:
+      - "5900:5900"
+
+  e2e-ui:
+    build:
+      context: ..
+      dockerfile: docker/e2e-ui/Dockerfile
+    image: e2e-ui
+    container_name: e2e-ui
+    depends_on:
+      - selenium
+      - e2e-api
+
+  e2e-api:
+    build:
+      context: ..
+      dockerfile: docker/e2e-api/Dockerfile
+    image: e2e-api
+    container_name: e2e-api
+    depends_on:
+      - mail
+      - db
+
 
 volumes:
   caddy_config:
