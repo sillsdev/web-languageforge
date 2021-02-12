@@ -86,20 +86,8 @@ class Website
 
     private static function getHostname()
     {
-        if (array_key_exists('HTTP_X_FORWARDED_SERVER', $_SERVER) && array_key_exists('HTTP_X_FORWARDED_HOST', $_SERVER)) {
-            // special exception for reverse proxy on dev.scriptureforge.org
-            $forwardedServer = $_SERVER['HTTP_X_FORWARDED_SERVER'];
-            $forwardedHost = $_SERVER['HTTP_X_FORWARDED_HOST'];
-            switch ($forwardedServer) {
-                case 'dev.scriptureforge.org' :
-                case 'dev.languageforge.org' :
-                case 'qa.languageforge.org' :
-                    return $forwardedHost;
-                    break;
-            }
-        }
-
-        return $_SERVER['HTTP_HOST'];
+        // the app is no longer limited to certain hostnames.  Always localhost now
+        return 'localhost';
     }
 
     /**

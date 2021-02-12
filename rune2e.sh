@@ -8,19 +8,6 @@
 # Note, make sure webdriver-manager is running
 # gulp test-e2e-webdriver_standalone
 
-if [ "$1" = "lf" ]
-  then
-    E2EHOSTNAME="localhost"
-elif [ "$1" = "sf" ]
-  then
-    E2EHOSTNAME="scriptureforge.localhost"
-elif [ "$1" = "jp" ]
-  then
-    E2EHOSTNAME="jamaicanpsalms.scriptureforge.localhost"
-else
-    E2EHOSTNAME="localhost"
-fi
-
 attach_debugger () {
   # Searches for the Node process running Protractor tests, then signals for it to attach the debugger
   echo "Waiting for a Protractor process to appear so the debugger can be attached..."
@@ -36,8 +23,14 @@ attach_debugger () {
   echo "Protractor process signaled to have debugger listen."
 }
 
+# docker-compose-wait
+/wait
+
 attach_debugger &
-gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
+gulp test-e2e-clean-compile
+gulp test-e2e-doTest --webserverHost e2e ${@:2}
 STATUS=$?
-gulp test-e2e-teardownForLocalDev
+
+# we cannot actually do a teardown because these scripts are written in PHP
+# gulp test-e2e-teardownForLocalDev
 exit $STATUS
