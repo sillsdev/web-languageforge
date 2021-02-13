@@ -1,4 +1,0 @@
-echo 'Starting Language Forge services (from .bashrc)'
-sudo service apache2 start
-sudo service postfix start
-sudo service mongodb start

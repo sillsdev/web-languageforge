@@ -1,5 +1,0 @@
-
-127.0.0.1 languageforge.localhost
-127.0.0.1 default.local
-127.0.0.1 scriptureforge.localhost
-127.0.0.1 jamaicanpsalms.scriptureforge.localhost
