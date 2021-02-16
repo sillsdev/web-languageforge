@@ -344,23 +344,23 @@ class ProjectCommandsTest extends TestCase
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
         $user1 = new UserModel($user1Id);
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP,
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LexProjectModel::LEXICON_APP,
             $user1->id->asString(), self::$environ->website);
 
         $project = new ProjectModel($projectId);
         $this->assertTrue($project->ownerRef->asString() == $user1->id->asString());
     }
 
-    public function testCreateProject_SfChecksProject_IndexesCreated()
+    public function testCreateProject_LexiconProject_IndexesCreated()
     {
         self::$environ->clean();
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
         $user1 = new UserModel($user1Id);
 
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP,
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, LexProjectModel::LEXICON_APP,
             $user1->id->asString(), self::$environ->website);
 
-        $project = new SfchecksProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         $collectionName = 'activity';
         $databaseName = $project->databaseName();
         $indexCount = iterator_count(MongoStore::getCollectionIndexes($databaseName, $collectionName));

@@ -173,7 +173,7 @@ class CommunicateTest extends TestCase
         $userId = self::$environ->createUser('User', 'Name', 'name@example.com');
         $user = new UserModel($userId);
         $delivery = new MockCommunicateDelivery();
-        $website = Website::get('scriptureforge.org');
+        $website = Website::get('languageforge.org');
 
         Communicate::sendVerifyEmail($user, $website, $delivery);
 
@@ -198,7 +198,7 @@ class CommunicateTest extends TestCase
         $project->projectCode = 'test_project';
         $project->write();
         $delivery = new MockCommunicateDelivery();
-        $website = Website::get('scriptureforge.org');
+        $website = Website::get('languageforge.org');
         $website->defaultProjectCode = 'test_project';
 
         Communicate::sendVerifyEmail($user, $website, $delivery);
