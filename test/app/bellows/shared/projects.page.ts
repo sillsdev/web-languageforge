@@ -121,15 +121,9 @@ export class ProjectsPage {
 
       let userFilter: any;
       let projectMemberRows: any;
-      if (browser.baseUrl.includes('scriptureforge')) {
-        userFilter = element(by.model('userFilter'));
-        userFilter.sendKeys(userName);
-        projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
-      } else if (browser.baseUrl.includes('languageforge')) {
-        userFilter = element(by.model('$ctrl.userFilter'));
-        userFilter.sendKeys(userName);
-        projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
-      }
+      userFilter = element(by.model('$ctrl.userFilter'));
+      userFilter.sendKeys(userName);
+      projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
 
       const foundUserRow = projectMemberRows.first();
       const rowCheckbox = foundUserRow.element(by.css('input[type="checkbox"]'));
