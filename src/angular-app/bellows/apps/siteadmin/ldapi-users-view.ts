@@ -4,9 +4,9 @@ import { NgTableParams } from 'ng-table';
 
 export interface LdapiUserInfo {
   username: string;
-  email: string;
-  firstName: string;
-  lastName: string;
+  email?: string;
+  firstname: string;
+  lastname: string;
   language?: string;
 }
 
@@ -26,7 +26,6 @@ export class LdapiUsersController implements angular.IController {
     this.userService.getAllLdapiUsers().then(result => {
       if (result.ok) {
         this.loadedUsers = result.data;
-        console.log("Loaded users", this.loadedUsers);
         this.tableParams = new NgTableParams({}, {dataset: this.loadedUsers});
       }
     });

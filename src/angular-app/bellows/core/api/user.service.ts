@@ -106,8 +106,8 @@ export class UserService {
     const nameParts = this.splitName(userDetails.name);
     const apiUser = {
       username: userDetails.username,
-      firstName: nameParts[0],
-      lastName: nameParts[1],
+      firstname: nameParts[0],
+      lastname: nameParts[1],
       emailAddress: userDetails.email,
       password: '',  // This means "no change" in the API
       mustChangePassword: false

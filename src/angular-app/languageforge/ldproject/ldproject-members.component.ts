@@ -6,8 +6,7 @@ import { RolesService } from '../../bellows/core/api/roles.service';
 import { NoticeService } from '../../bellows/core/notice/notice.service';
 import { SessionService } from '../../bellows/core/session.service';
 import { Project, ProjectRole, ProjectRoles } from '../../bellows/shared/model/project.model';
-import { LdapiProjectDto } from './ldproject-app.component';
-import { LdapiUserInfo } from '../../bellows/apps/siteadmin/ldapi-users-view';
+import { LdapiProjectDto, LdapiUserInfo } from '../../bellows/shared/model/ldapi.model';
 import { JsonRpcResult } from '../../bellows/core/api/api.service';
 
 export class LdProjectMembersController implements angular.IController {
@@ -16,8 +15,8 @@ export class LdProjectMembersController implements angular.IController {
   project: LdapiProjectDto;
   isAdmin: boolean;
   projectMembers: [LdapiUserInfo, ProjectRole][];
-  // TODO: Three role arrays? That seems redundant. Whittle that down to one. See commented-out getRoles() function
-  ldapiRoles: ProjectRole[] = [ProjectRoles.MANAGER, ProjectRoles.CONTRIBUTOR, ProjectRoles.NONE];
+  // TODO: Two role arrays? That seems redundant. Whittle that down to one; just use rolesWithTechSupport (and rename it to "roles")
+  // TODO: Simplify this *greatly* now that we have a better API; e.g., could use numeric keys for the LD roles
   roles: ProjectRole[] = [ProjectRoles.MANAGER, ProjectRoles.CONTRIBUTOR, ProjectRoles.NONE];
   rolesWithTechSupport: ProjectRole[] = [ProjectRoles.MANAGER, ProjectRoles.CONTRIBUTOR, ProjectRoles.TECH_SUPPORT, ProjectRoles.NONE];
 
@@ -63,7 +62,7 @@ export class LdProjectMembersController implements angular.IController {
     }
     const projectChange = changes.project as angular.IChangesObject<LdapiProjectDto>;
     if (projectChange != null && projectChange.currentValue) {
-      if (this.project.membership) {
+      if (this.project && this.project.members) {
         this.updateRoles();
       }
     }
@@ -87,18 +86,18 @@ export class LdProjectMembersController implements angular.IController {
   }
 
   fullname(user: LdapiUserInfo) {
-    if (user.lastName) {
-      return user.firstName ? user.firstName + ' ' + user.lastName : user.lastName;
+    if (user.lastname) {
+      return user.firstname ? user.firstname + ' ' + user.lastname : user.lastname;
     } else {
-      return user.firstName;
+      return user.firstname;
     }
   }
 
   updateRoles(): void {
     this.projectMembers = [];
-    angular.forEach(this.project.membership, (userAndLdRole) => {
-      const user = userAndLdRole[0];
-      const ldRole = userAndLdRole[1];
+    angular.forEach(this.project.members, (userAndLdRole) => {
+      const user = userAndLdRole.user;
+      const ldRole = userAndLdRole.role;
       this.rolesService.ldRoleToLfRole(ldRole).then(lfRole => {
         this.projectMembers.push([user, lfRole]);
       });
@@ -106,7 +105,7 @@ export class LdProjectMembersController implements angular.IController {
   }
 
   queryUserList(): void {
-    this.projectService.getLdapiProjectDto(this.project.code, result => {
+    this.projectService.getLdapiProjectDto(this.project.projectCode, result => {
       if (result.ok) {
         this.project = result.data;
         this.updateRoles();
@@ -146,7 +145,7 @@ export class LdProjectMembersController implements angular.IController {
 
     var promises = this.selected.map(user => {
       // TODO: "user" here is user-and-role, so we need to disentangle them
-      return this.projectService.removeUserFromLdapiProject(this.project.code, user.username, updateResult => {
+      return this.projectService.removeUserFromLdapiProject(this.project.projectCode, user.username, updateResult => {
         if (updateResult.ok) {
           this.notice.push(this.notice.SUCCESS, '"' + this.fullname(user) + '" was removed from ' +
             this.project.name + ' successfully');
@@ -178,7 +177,7 @@ export class LdProjectMembersController implements angular.IController {
   }
 
   userIsManager(username: string) {
-    return this.userService.ldapiUserIsManagerOfProject(username, this.project.code).then(result => {
+    return this.userService.ldapiUserIsManagerOfProject(username, this.project.projectCode).then(result => {
       if (result.ok) {
         return result.data;
       } else {
@@ -213,7 +212,7 @@ export class LdProjectMembersController implements angular.IController {
           // TODO: actually notify the warning message
           userAndRole[1] = ProjectRoles.MANAGER;
         } else {
-          return this.projectService.updateLdapiUserRole(this.project.code, user.username, ldRole, result => {
+          return this.projectService.updateLdapiUserRole(this.project.projectCode, user.username, ldRole, result => {
             if (result.ok) {
               const name = this.fullname(user);
               const message = `${name}'s role was changed to ${newRole.name}.`;
@@ -240,7 +239,7 @@ export class LdProjectMembersController implements angular.IController {
       // TODO: Make this a notice, not a console log
       // console.log("Adding user", this.project.code, user, this.rolesService.contributor);
       return this.rolesService.lfRoleToLdRole(this.defaultAddRole.key).then(ldRole => {
-        return this.projectService.updateLdapiUserRole(this.project.code, user.username, ldRole, updateResult => {
+        return this.projectService.updateLdapiUserRole(this.project.projectCode, user.username, ldRole, updateResult => {
           if (updateResult.ok) {
             this.notice.push(this.notice.SUCCESS, '"' + this.fullname(user) + '" was added to ' +
               this.project.name + ' as ' + this.defaultAddRole.name);

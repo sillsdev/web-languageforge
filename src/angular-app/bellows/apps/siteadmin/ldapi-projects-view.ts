@@ -2,18 +2,15 @@ import * as angular from 'angular';
 import * as ngTable from 'ng-table';
 import {ProjectService} from '../../core/api/project.service';
 import { NgTableParams } from 'ng-table';
-import {LdapiProjectDto} from '../../../languageforge/ldproject/ldproject-app.component';
+// import {LdapiProjectDto} from '../../../languageforge/ldproject/ldproject-app.component';
+import { LdapiProjectDto, LdapiProjectMembership } from '../../../bellows/shared/model/ldapi.model';
 
 // TODO: move this and LdapiProjectInfo to an ldapi-models.ts file
-export interface LdapiMembershipInfo {
-  [username: string]: string;
-}
 
 export interface LdapiProjectInfo {
-  code: string;
+  projectCode: string;
   description: string;
   name: string;
-  membership: LdapiMembershipInfo;
 }
 
 export class LdapiProjectsController implements angular.IController {
@@ -37,7 +34,7 @@ export class LdapiProjectsController implements angular.IController {
   }
 
   select(project: LdapiProjectInfo) {
-    this.projectService.getLdapiProjectDto(project.code).then(result => {
+    this.projectService.getLdapiProjectDto(project.projectCode).then(result => {
       if (result.ok) {
         this.selectedProject = result.data;
       }

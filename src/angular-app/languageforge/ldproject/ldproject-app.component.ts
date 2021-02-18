@@ -2,15 +2,7 @@ import * as angular from 'angular';
 
 import { ProjectService } from '../../bellows/core/api/project.service';
 import { Session, SessionService } from '../../bellows/core/session.service';
-import { LdapiUserInfo } from '../../bellows/apps/siteadmin/ldapi-users-view';
-
-// TODO: Move to a models file so siteadmin app can import from there instead of from here
-export interface LdapiProjectDto {
-  code: string;
-  description: string;
-  name: string;
-  membership: [LdapiUserInfo, string][];
-}
+import { LdapiProjectDto, LdapiUserInfo } from '../../bellows/shared/model/ldapi.model';
 
 export class LdProjectAppController implements angular.IController {
   project: LdapiProjectDto = undefined;

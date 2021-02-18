@@ -5,8 +5,8 @@
                   <tr ng-repeat="project in $data">
                       <td title="'Name'" filter="{ name: 'text'}" sortable="'name'" ng-click="$ctrl.select(project)">
                           {{project.name}}</td>
-                      <td title="'Code'" filter="{ code: 'text'}" sortable="'code'" ng-click="$ctrl.select(project)">
-                          {{project.code}}</td>
+                      <td title="'Code'" filter="{ code: 'text'}" sortable="'projectCode'" ng-click="$ctrl.select(project)">
+                          {{project.projectCode}}</td>
                   </tr>
           </table>
       </div>

@@ -98,7 +98,7 @@ export class ProjectsAppController implements angular.IController {
             angular.forEach<[LdapiProjectInfo, string]>(result.data, ([ldapiProject, role]) => {
               this.rolesService.ldRoleToLfRole(role).then(convertedRole => {
                 const project: ViewModelProject = {
-                  id: ldapiProject.code,
+                  id: ldapiProject.projectCode,
                   projectName: ldapiProject.name,
                   appName: 'ldproject',
                   role: convertedRole.name,

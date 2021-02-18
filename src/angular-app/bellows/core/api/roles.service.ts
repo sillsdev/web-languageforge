@@ -2,7 +2,7 @@ import { ApiService, JsonRpcCallback } from './api.service';
 import { IPromise, forEach } from 'angular';
 import { ProjectRoles, ProjectRole } from '../../shared/model/project.model';
 
-// TODO: import ProjectRoles static class and use that
+// TODO: import LanguageDepotProjectRoles static class and use that, instead of this promise-based approach
 
 export class RolesService {
   roles: IPromise<[number,string][]>;
@@ -69,9 +69,8 @@ export class RolesService {
         var contributorFound = false;
         var managerFound = false;
         var techSupportFound = false;
-        console.log("Roles service got", result.data);
         // Try to populate the well-known role names
-        forEach(result.data, ([roleId, roleName]) => {
+        forEach(result.data, ({ id: roleId, name: roleName }) => {
           if (typeof roleName === 'string') {
             const name = roleName.toLowerCase();
             switch (name) {
@@ -114,7 +113,7 @@ export class RolesService {
         contributorD.reject('No roles found!');
         managerD.reject('No roles found!');
         techSupportD.reject('No roles found!');
-        console.log(result);
+        console.log('Roles service encountered error getting roles from LD API server', result);
         return [];
       }
     });

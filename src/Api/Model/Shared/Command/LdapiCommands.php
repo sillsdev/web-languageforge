@@ -53,17 +53,19 @@ class LdapiCommands
 
     public static function updateUserRoleInProject($languageDepotUsername, string $projectCode, string $username, string $role) {
         $addRequest = ['username' => $username, 'role' => $role];
-        $apiParams = ['add' => $addRequest];
+        $apiParams = ['members' => ['add' => $addRequest]];
         return Ldapi::call($languageDepotUsername, 'patch', self::PROJECTS_BASE_URL . '/' . $projectCode, $apiParams);
     }
 
     public static function removeUserFromProject($languageDepotUsername, string $projectCode, string $username) {
-        $apiParams = ['removeUser' => $username];
+        $apiParams = ['members' => ['remove' => $username]];
         return Ldapi::call($languageDepotUsername, 'patch', self::PROJECTS_BASE_URL . '/' . $projectCode, $apiParams);
     }
 
     public static function isUserManagerOfProject($languageDepotUsername, string $username, string $projectCode) {
-        return Ldapi::call($languageDepotUsername, 'get', self::USERS_BASE_URL . '/' . $username . '/isManagerOfProject/' . $projectCode);
+        // Now uses the GET /api/projects/{projectCode}/user/{username} endpoint, which returns the user's role. Then checks if role is Manager
+        $result = Ldapi::call($languageDepotUsername, 'get', self::PROJECTS_BASE_URL . '/' . $projectCode . '/user/' . $username);
+        return ($result === 'Manager');
     }
 
     public static function getAllRoles($languageDepotUsername) {
